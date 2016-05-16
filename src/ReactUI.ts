@@ -8,9 +8,22 @@ import PlayerControl from "./PlayerControl";
 import Player from "./Player";
 import Game from "./Game";
 import eventManager from "./eventManager";
+import ModuleLoader from "./ModuleLoader";
+import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
 import ReactUIScene from "./ReactUIScene";
 
 import Stage from "./uicomponents/Stage";
+
+const moduleLoadingPhaseByScene =
+{
+  "battle": ModuleFileLoadingPhase.battle,
+  "battlePrep": ModuleFileLoadingPhase.battlePrep,
+  "galaxyMap": ModuleFileLoadingPhase.game,
+  "setupGame": ModuleFileLoadingPhase.setup,
+  
+  "flagMaker": ModuleFileLoadingPhase.setup,
+  "battleSceneTester": ModuleFileLoadingPhase.battle,
+}
 
 export default class ReactUI
 {
@@ -22,9 +35,15 @@ export default class ReactUI
   public playerControl: PlayerControl;
   public player: Player;
   public game: Game;
+  
+  private container: HTMLElement;
+  private moduleLoader: ModuleLoader;
 
-  constructor(public container: HTMLElement)
+  constructor(container: HTMLElement, moduleLoader: ModuleLoader)
   {
+    this.container = container;
+    this.moduleLoader = moduleLoader;
+    
     this.addEventListeners();
   }
   private addEventListeners()
@@ -35,7 +54,15 @@ export default class ReactUI
   public switchScene(newScene: ReactUIScene)
   {
     this.currentScene = newScene;
-    this.render();
+    this.loadModulesNeededForCurrentScene(() =>
+    {
+      this.render();
+    });
+  }
+  private loadModulesNeededForCurrentScene(afterLoaded: () => void): void
+  {
+    const phase = moduleLoadingPhaseByScene[this.currentScene];
+    this.moduleLoader.loadModulesNeededForPhase(phase, afterLoaded);
   }
   public destroy()
   {
@@ -61,4 +88,14 @@ export default class ReactUI
       this.container
     );
   }
+  // public renderLoadingScreen()
+  // {
+  //   ReactDOM.render(
+  //     LoadingScreen(
+  //     {
+        
+  //     }),
+  //     this.container
+  //   );
+  // }
 }

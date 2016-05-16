@@ -13,7 +13,7 @@ declare interface ModuleFile
 {
   key: string;
   metaData: ModuleMetaData;
-  needsToBeLoadedBefore: ModuleFileLoadingPhase[];
+  needsToBeLoadedBefore: ModuleFileLoadingPhase;
   loadAssets?: (callback: Function) => void;
   constructModule?: (ModuleData: ModuleData) => void;
 }

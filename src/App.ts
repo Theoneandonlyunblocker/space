@@ -5,10 +5,12 @@ import idGenerators from "./idGenerators";
 import MapRenderer from "./MapRenderer";
 import ModuleData from "./ModuleData";
 import ModuleLoader from "./ModuleLoader";
+import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
 import NotificationLog from "./NotificationLog";
 import Player from "./Player";
 import PlayerControl from "./PlayerControl";
 import ReactUI from "./ReactUI";
+import ReactUIScene from "./ReactUIScene";
 import Renderer from "./Renderer";
 import Options from "./options";
 import TutorialStatus from "./tutorials/TutorialStatus";
@@ -59,10 +61,12 @@ class App
 
     this.seed = "" + Math.random();
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
+    
+    const moduleLoader = this.moduleLoader = new ModuleLoader();
+    this.initUI();
 
     onDOMLoaded(() =>
     {
-      var moduleLoader = this.moduleLoader = new ModuleLoader();
       this.moduleData = moduleLoader.moduleData;
       
       moduleLoader.addModuleFile(defaultEmblems);
@@ -81,10 +85,14 @@ class App
       
       copyCommonTemplates(moduleLoader.moduleData);
       
-      moduleLoader.loadAll(() =>
+      window.setTimeout(() =>
       {
         this.makeApp();
-      });
+      }, 1);
+      // moduleLoader.loadAll(() =>
+      // {
+      //   this.makeApp();
+      // });
     });
   }
   
@@ -94,13 +102,16 @@ class App
 
     this.initUI();
 
-    this.game = new Game(map, players, players[0]);
-    this.initGame();
+    this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.game, () =>
+    {
+      this.game = new Game(map, players, players[0]);
+      this.initGame();
 
-    this.initDisplay();
-    this.hookUI();
+      this.initDisplay();
+      this.hookUI();
 
-    this.reactUI.switchScene("galaxyMap");
+      this.reactUI.switchScene("galaxyMap");
+    });
   }
   public load(saveKey: string)
   {
@@ -114,44 +125,60 @@ class App
     this.destroy();
 
     this.initUI();
-
-    this.game = new GameLoader().deserializeGame(parsed.gameData);
-    this.game.gameStorageKey = saveKey;
-    this.initGame();
-
-    this.initDisplay();
-    this.hookUI();
-    if (parsed.cameraLocation)
+    
+    this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.game, () =>
     {
-      this.renderer.toCenterOn = parsed.cameraLocation;
-    }
+      this.game = new GameLoader().deserializeGame(parsed.gameData);
+      this.game.gameStorageKey = saveKey;
+      this.initGame();
 
+      this.initDisplay();
+      this.hookUI();
+      if (parsed.cameraLocation)
+      {
+        this.renderer.toCenterOn = parsed.cameraLocation;
+      }
 
-    this.reactUI.switchScene("galaxyMap");
+      this.reactUI.switchScene("galaxyMap");
+    });
+
   }
   
   private makeApp()
   {
     var startTime = Date.now();
+    
+    // this.moduleLoader.progressivelyLoadModulesByPhase(0);
 
     Options.load();
     TutorialStatus.load();
     
-    this.initUI();
-    this.setInitialScene();
-
-    if (this.reactUI.currentScene === "galaxyMap")
+    const initialScene = this.getInitialScene();
+    
+    const switchSceneFN = () =>
     {
-      this.game = this.makeGame();
-      this.initGame();
+      this.reactUI.switchScene(initialScene);
 
-      this.initDisplay();
-      this.hookUI();
+      console.log("Init in " + (Date.now() - startTime) + " ms");
     }
 
-    this.reactUI.render();
+    if (initialScene === "galaxyMap")
+    {
+      this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.game, () =>
+      {
+        this.game = this.makeGame();
+        this.initGame();
 
-    console.log("Init in " + (Date.now() - startTime) + " ms");
+        this.initDisplay();
+        this.hookUI();
+        
+        switchSceneFN();
+      });
+    }
+    else
+    {
+      switchSceneFN();
+    }
   }
   private destroy()
   {
@@ -284,7 +311,9 @@ class App
   private initUI()
   {
     this.reactUI = new ReactUI(
-      document.getElementById("react-container"));
+      document.getElementById("react-container"),
+      this.moduleLoader
+    );
   }
   private hookUI()
   {
@@ -294,19 +323,19 @@ class App
     this.reactUI.renderer = this.renderer;
     this.reactUI.mapRenderer = this.mapRenderer;
   }
-  private setInitialScene()
+  private getInitialScene(): ReactUIScene
   {
-    var uriParser = document.createElement("a");
-    uriParser.href = document.URL;
-    var hash = uriParser.hash;
+    const urlParser = document.createElement("a");
+    urlParser.href = document.URL;
+    const hash = urlParser.hash;
 
     if (hash)
     {
-      this.reactUI.currentScene = hash.slice(1);
+      return <ReactUIScene> hash.slice(1);
     }
     else
     {
-      this.reactUI.currentScene = "setupGame";
+      return "setupGame";
     }
   }
 }
