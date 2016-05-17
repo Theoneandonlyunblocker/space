@@ -47,7 +47,8 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TurnOrder";
   state: StateType;
-  animationDuration: number;
+  
+  timeoutHandle: number;
 
   constructor(props: PropTypes)
   {
@@ -87,6 +88,10 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   componentWillUnmount()
   {
     window.removeEventListener("resize", this.setMaxUnits);
+    if (isFinite(this.timeoutHandle))
+    {
+      window.clearTimeout(this.timeoutHandle);
+    }
   }
   componentWillReceiveProps(newProps: PropTypes)
   {
@@ -139,7 +144,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   }
   private setFinishAnimatingTimeout()
   {
-    window.setTimeout(() =>
+    this.timeoutHandle = window.setTimeout(() =>
     {
       this.setState(
       {
@@ -168,7 +173,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         pendingDeadUnitIndices: deadUnitIndices
       }, () =>
       {
-        window.setTimeout(() =>
+        this.timeoutHandle = window.setTimeout(() =>
         {
           this.fillSpaceLeftByDeadUnits();
         }, this.getTransitionDuration());
@@ -186,7 +191,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.fillSpaceLeftByDeadUnits
     }, () =>
     {
-      window.setTimeout(() =>
+      this.timeoutHandle = window.setTimeout(() =>
       {
         this.setState(
         {
@@ -208,7 +213,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.removeUnit
     }, () =>
     {
-      window.setTimeout(() =>
+      this.timeoutHandle = window.setTimeout(() =>
       {
         this.setState(
         {
@@ -233,7 +238,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.clearSpaceForUnit,
     }, () =>
     {
-      window.setTimeout(() =>
+      this.timeoutHandle = window.setTimeout(() =>
       {
         this.insertUnit();
       }, this.getTransitionDuration());
