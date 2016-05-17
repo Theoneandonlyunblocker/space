@@ -38,7 +38,7 @@ export class BattleFinishComponent extends React.Component<PropTypes, StateType>
         {
           className: "battle-scene-finish-subheader"
         },
-          "Click to continue"
+          "Click anywhere to continue"
         )
       )
     );
