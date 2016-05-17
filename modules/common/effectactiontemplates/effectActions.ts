@@ -54,9 +54,9 @@ export const closeAttack: EffectActionTemplate =
     target.receiveDamage(damage, damageType);
   }
 }
-export const wholeRowAttack: EffectActionTemplate =
+export const beamAttack: EffectActionTemplate =
 {
-  name: "wholeRowAttack",
+  name: "beamAttack",
   targetFormations: TargetFormation.either,
   battleAreaFunction: areaColumn,
   targetRangeFunction: targetAll,

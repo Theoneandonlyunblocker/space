@@ -18,21 +18,23 @@ export var closeAttack: AbilityTemplate =
     sfx: BattleSFX.rocketAttack
   }
 }
-export var wholeRowAttack: AbilityTemplate =
+export var beamAttack: AbilityTemplate =
 {
-  type: "wholeRowAttack",
-  displayName: "Row Attack",
+  type: "beamAttack",
+  displayName: "Beam Attack",
   description: "Attack units in a line",
   moveDelay: 300,
   actionsUse: 1,
   mainEffect:
   {
-    action: EffectActions.wholeRowAttack,
+    action: EffectActions.beamAttack,
     sfx: BattleSFX.particleTest
   },
   
   bypassesGuard: true,
 }
+// legacy alias 17.05.2016
+export var wholeRowAttack = beamAttack;
 
 export var bombAttack: AbilityTemplate =
 {
