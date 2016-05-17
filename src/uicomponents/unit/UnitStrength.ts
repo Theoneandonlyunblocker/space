@@ -55,7 +55,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
       (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)
       )
     {
-      var animateDuration = newProps.animateDuration || 0;
+      const animateDuration = Math.max(newProps.animateDuration || 0, 0);
       this.animateDisplayedStrength(
         newProps.currentHealth, animateDuration);
     }
