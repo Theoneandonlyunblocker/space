@@ -9,7 +9,7 @@ export var closeAttack: AbilityTemplate =
 {
   type: "closeAttack",
   displayName: "Close Attack",
-  description: "Close range attack that hits adjacent targets in same row as well",
+  description: "Close range attack that hits adjacent targets in the same row",
   moveDelay: 90,
   actionsUse: 2,
   mainEffect:
@@ -22,7 +22,7 @@ export var wholeRowAttack: AbilityTemplate =
 {
   type: "wholeRowAttack",
   displayName: "Row Attack",
-  description: "Attack entire row of units",
+  description: "Attack units in a line",
   moveDelay: 300,
   actionsUse: 1,
   mainEffect:
@@ -51,7 +51,7 @@ export var guardRow: AbilityTemplate =
 {
   type: "guardRow",
   displayName: "Guard Row",
-  description: "Protect allies in the same row and boost defence up to 2x",
+  description: "Protect allies in the same row and boost defence against physical attacks",
   moveDelay: 100,
   actionsUse: 1,
   mainEffect:
