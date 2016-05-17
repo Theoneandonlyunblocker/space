@@ -66,6 +66,7 @@ interface StateType
   battleSceneUnit2?: Unit
   playingBattleEffect?: boolean;
   battleEffectDuration?: number;
+  battleEffectDurationAfterTrigger?: number;
   
   battleEvaluation?: number;
   unitDisplayDataByID?: {[unitID: number]: UnitDisplayData};
@@ -93,8 +94,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   
   private MCTree: MCTree = null;
   
-  private battleStartStartTime: number = undefined;
-  private battleEndStartTime: number = undefined;
+  private SFXStartTime: number;
+  private battleStartStartTime: number;
+  private battleEndStartTime: number;
 
   constructor(props: PropTypes)
   {
@@ -170,6 +172,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleSceneUnit2: null,
       playingBattleEffect: false,
       battleEffectDuration: null,
+      battleEffectDurationAfterTrigger: undefined,
       
       battleEvaluation: this.props.battle.getEvaluation(),
       unitDisplayDataByID: initialDisplayData,
@@ -385,7 +388,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     const stateObj: StateType = BattleComponent.getUnitsBySideFromEffect(effect);
     stateObj.playingBattleEffect = true;
     stateObj.UIState = BattleUIState.playingSFX;
-    stateObj.battleEffectDuration = effect.sfx.duration;
+    stateObj.battleEffectDuration = effect.sfx.duration * Options.battleAnimationTiming.effectDuration;
+    
     
     this.setState(stateObj, this.clearHoveredUnit);
   }
@@ -400,7 +404,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       previousUnitDisplayDataByID: this.state.unitDisplayDataByID,
       unitDisplayDataByID: shallowExtend(
         this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
-      battleEvaluation: effect.newEvaluation
+      battleEvaluation: effect.newEvaluation,
+      battleEffectDurationAfterTrigger: this.state.battleEffectDuration -
+        (Date.now() - this.SFXStartTime),
     });
   }
   private finishPlayingQueuedBattleEffects()
@@ -411,6 +417,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleSceneUnit2: null,
       playingBattleEffect: false,
       battleEffectDuration: undefined,
+      battleEffectDurationAfterTrigger: undefined,
     }, this.startTurnTransition);
   }
   private startTurnTransition()
