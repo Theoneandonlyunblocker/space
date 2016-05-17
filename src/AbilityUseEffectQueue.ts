@@ -8,19 +8,30 @@ import
 
 export default class AbilityUseEffectQueue
 {
-  public onEffectStart: (effect: AbilityUseEffect) => void;
-  public onCurrentFinished: () => void;
-  public onAllFinished: () => void;
-  public onEffectTrigger: (abilityUseEffect: AbilityUseEffect) => void;
+  private onEffectStart: (effect: AbilityUseEffect) => void;
+  private onCurrentFinished: () => void;
+  private onAllFinished: () => void;
+  private onEffectTrigger: (abilityUseEffect: AbilityUseEffect) => void;
   
   private queue: AbilityUseEffect[] = [];
   private currentEffect: AbilityUseEffect;
   private battleScene: BattleScene;
   
   
-  constructor(battleScene: BattleScene)
+  constructor(battleScene: BattleScene, callbacks:
+  {
+    onEffectStart?: (effect: AbilityUseEffect) => void;
+    onCurrentFinished?: () => void;
+    onAllFinished?: () => void;
+    onEffectTrigger?: (abilityUseEffect: AbilityUseEffect) => void;
+  })
   {
     this.battleScene = battleScene;
+    
+    for (let key in callbacks)
+    {
+      this[key] = callbacks[key];
+    }
     
     this.triggerEffect = this.triggerEffect.bind(this);
     this.finishEffect = this.finishEffect.bind(this);
