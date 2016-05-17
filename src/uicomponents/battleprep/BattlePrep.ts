@@ -296,6 +296,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           onUnitClick: this.setSelectedUnit,
           handleMouseEnterUnit: this.handleMouseEnterUnit,
           handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+          
+          unitStrengthAnimateDuration: undefined,
 
           isDraggable: true,
           onDragStart: this.handleDragStart,
@@ -320,6 +322,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           onUnitClick: this.setSelectedUnit,
           handleMouseEnterUnit: this.handleMouseEnterUnit,
           handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+          
+          unitStrengthAnimateDuration: undefined,
 
           isDraggable: false,
         });

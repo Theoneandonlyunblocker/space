@@ -21,6 +21,7 @@ export interface PropTypes extends React.Props<any>
 {
   formation: Unit[][];
   facesLeft: boolean;
+  unitStrengthAnimateDuration: number;
   unitDisplayDataByID:
   {
     [unitID: number]: UnitDisplayData;
@@ -125,7 +126,8 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
             isDraggable: this.props.isDraggable,
             onDragStart: this.makeBoundFunction(this.props.onDragStart, unit),
             onDragEnd: this.props.onDragEnd,
-            onMouseUp: onMouseUp
+            onMouseUp: onMouseUp,
+            animateDuration: this.props.unitStrengthAnimateDuration
           }
           const displayProps: UnitDisplayStatus =
           {

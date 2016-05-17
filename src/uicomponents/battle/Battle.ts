@@ -720,6 +720,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
               
               capturedUnits: this.props.battle.capturedUnits,
               destroyedUnits: this.props.battle.deadUnits,
+              unitStrengthAnimateDuration: this.state.battleEffectDurationAfterTrigger,
             }),
             TurnCounterList(
             {
@@ -745,6 +746,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
               
               capturedUnits: this.props.battle.capturedUnits,
               destroyedUnits: this.props.battle.deadUnits,
+              unitStrengthAnimateDuration: this.state.battleEffectDurationAfterTrigger,
             }),
             abilityTooltip,
             this.state.playingBattleEffect ?
