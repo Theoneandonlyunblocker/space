@@ -14,45 +14,46 @@ import UnitBattleSide from "./UnitBattleSide";
 // 
 export default class BattleScene
 {
-  container: PIXI.Container;
-  renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-  containerElement: HTMLElement;
+  public targetUnit: Unit;  // being targeted by ability      | priority
+  public userUnit: Unit;    // using an ability               |
+  public activeUnit: Unit;  // currently acting in turn order |
+  public hoveredUnit: Unit; // hovered by player              V
 
-  layers:
+
+  private container: PIXI.Container;
+  private renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+  private containerElement: HTMLElement;
+
+  private layers:
   {
     battleOverlay: PIXI.Container;
     side1Container: PIXI.Container;
     side2Container: PIXI.Container;
   };
 
-  side1Unit: BattleSceneUnit;
-  side2Unit: BattleSceneUnit;
+  private side1Unit: BattleSceneUnit;
+  private side2Unit: BattleSceneUnit;
 
-  side1Overlay: BattleSceneUnitOverlay;
-  side2Overlay: BattleSceneUnitOverlay;
+  private side1Overlay: BattleSceneUnitOverlay;
+  private side2Overlay: BattleSceneUnitOverlay;
 
-  activeSFX: BattleSFXTemplate;
+  private activeSFX: BattleSFXTemplate;
 
-  targetUnit: Unit;  // being targeted by ability      | priority
-  userUnit: Unit;    // using an ability               |
-  activeUnit: Unit;  // currently acting in turn order |
-  hoveredUnit: Unit; // hovered by player              V
+  private side1UnitHasFinishedUpdating: boolean = false;
+  private side2UnitHasFinishedUpdating: boolean = false;
+  private afterUnitsHaveFinishedUpdatingCallback: () => void;
 
-  side1UnitHasFinishedUpdating: boolean = false;
-  side2UnitHasFinishedUpdating: boolean = false;
-  afterUnitsHaveFinishedUpdatingCallback: () => void;
+  private beforeUseDelayHasFinishedCallback: () => void;
+  private activeSFXHasFinishedCallback: () => void;
+  private afterUseDelayHasFinishedCallback: () => void;
+  private abilityUseHasFinishedCallback: () => void;
 
-  beforeUseDelayHasFinishedCallback: () => void;
-  activeSFXHasFinishedCallback: () => void;
-  afterUseDelayHasFinishedCallback: () => void;
-  abilityUseHasFinishedCallback: () => void;
+  private triggerEffectCallback: () => void;
 
-  triggerEffectCallback: () => void;
+  private isPaused: boolean = false;
+  private forceFrame: boolean = false;
 
-  isPaused: boolean = false;
-  forceFrame: boolean = false;
-
-  resizeListener: (e: Event) => void;
+  private resizeListener: (e: Event) => void;
 
   constructor(containerElement?: HTMLElement)
   {
