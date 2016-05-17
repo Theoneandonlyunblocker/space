@@ -680,7 +680,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             {
               evaluation: this.state.battleEvaluation,
               player1: battle.side1Player,
-              player2: battle.side2Player
+              player2: battle.side2Player,
+              animationDuration: this.state.battleEffectDurationAfterTrigger,
             }),
             upperFooter,
             BattleSceneComponentFactory(

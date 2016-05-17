@@ -6,6 +6,7 @@ import Player from "../../Player";
 export interface PropTypes extends React.Props<any>
 {
   evaluation: number;
+  animationDuration: number;
   
   player1: Player;
   player2: Player;
@@ -30,6 +31,7 @@ export class BattleScoreComponent extends React.Component<PropTypes, StateType>
   render()
   {
     const evaluationPercentage = 50 + this.props.evaluation * 50;
+    const transitionDurationString = "" + this.props.animationDuration + "ms";
 
     return(
       React.DOM.div(
@@ -66,7 +68,8 @@ export class BattleScoreComponent extends React.Component<PropTypes, StateType>
               {
                 width: "" + evaluationPercentage + "%",
                 backgroundColor: "#" + this.props.player1.color.getHexString(),
-                borderColor: "#" + this.props.player1.secondaryColor.getHexString()
+                borderColor: "#" + this.props.player1.secondaryColor.getHexString(),
+                transitionDuration: transitionDurationString
               }
             }),
             React.DOM.div(
@@ -76,7 +79,8 @@ export class BattleScoreComponent extends React.Component<PropTypes, StateType>
               {
                 width: "" + (100 - evaluationPercentage) + "%",
                 backgroundColor: "#" + this.props.player2.color.getHexString(),
-                borderColor: "#" + this.props.player2.secondaryColor.getHexString()
+                borderColor: "#" + this.props.player2.secondaryColor.getHexString(),
+                transitionDuration: transitionDurationString
               }
             })
           ),
