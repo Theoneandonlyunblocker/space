@@ -25,6 +25,7 @@ import
 } from "../../battleAbilityUI";
 import
 {
+  shallowCopy,
   shallowExtend
 } from "../../utility";
 import BattleScore from "./BattleScore";
@@ -401,7 +402,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      previousUnitDisplayDataByID: this.state.unitDisplayDataByID,
+      previousUnitDisplayDataByID: shallowCopy(this.state.unitDisplayDataByID),
       unitDisplayDataByID: shallowExtend(
         this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
       battleEvaluation: effect.newEvaluation,
@@ -586,11 +587,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         {
           className: "battle-display-strength battle-display-strength-side1"
         },
-
           this.state.battleSceneUnit1 ? BattleDisplayStrength(
           {
-            key: "" + this.state.battleSceneUnit1.id + Date.now(),
-            delay: this.state.battleEffectDuration,
+            key: "battleDisplayStrength" + this.state.battleSceneUnit1.id,
+            animationDuration: this.state.battleEffectDurationAfterTrigger,
             from: this.state.previousUnitDisplayDataByID[this.state.battleSceneUnit1.id].currentHealth,
             to: this.state.unitDisplayDataByID[this.state.battleSceneUnit1.id].currentHealth
           }) : null
@@ -601,8 +601,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         },
           this.state.battleSceneUnit2 ? BattleDisplayStrength(
           {
-            key: "" + this.state.battleSceneUnit2.id + Date.now(),
-            delay: this.state.battleEffectDuration,
+            key: "battleDisplayStrength" + this.state.battleSceneUnit2.id,
+            animationDuration: this.state.battleEffectDurationAfterTrigger,
             from: this.state.previousUnitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth,
             to: this.state.unitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth
           }) : null

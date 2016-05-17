@@ -3,7 +3,7 @@
 
 export interface PropTypes extends React.Props<any>
 {
-  delay: number;
+  animationDuration: number;
   from: number;
   to: number;
 }
@@ -44,9 +44,12 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
 
   componentDidMount()
   {
-    this.animateDisplayedStrength(this.props.from, this.props.to, this.props.delay);
+    this.animateDisplayedStrengthIfNeeded(this.props);
   }
-
+  componentWillReceiveProps(newProps: PropTypes)
+  {
+    this.animateDisplayedStrengthIfNeeded(newProps);
+  }
   componentWillUnmount()
   {
     if (this.activeTween)
@@ -54,14 +57,22 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
       this.activeTween.stop();
     }
   }
-  updateDisplayStrength(newAmount: number)
+  
+  private animateDisplayedStrengthIfNeeded(props: PropTypes)
+  {
+    if (isFinite(props.animationDuration) && props.to !== props.from)
+    {
+      this.animateDisplayedStrength(props.from, props.to, props.animationDuration);
+    }
+  }
+  private updateDisplayStrength(newAmount: number)
   {
     this.setState(
     {
       displayedStrength: newAmount
     });
   }
-  animateDisplayedStrength(from: number, newAmount: number, time: number)
+  private animateDisplayedStrength(from: number, to: number, duration: number)
   {
     var self = this;
     var stopped = false;
@@ -71,12 +82,13 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
       this.activeTween.stop();
     }
     
-    if (from === newAmount) return;
+    if (from === to) return;
 
     var animateTween = function()
     {
       if (stopped)
       {
+        cancelAnimationFrame(self.animationFrameHandle);
         return;
       }
 
@@ -89,8 +101,8 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
       health: from
     }).to(
     {
-      health: newAmount
-    }, time).onUpdate(function()
+      health: to
+    }, duration).onUpdate(function()
     {
       self.setState(
       {
