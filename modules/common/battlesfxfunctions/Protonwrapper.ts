@@ -11,7 +11,7 @@ export default class ProtonWrapper
 
   private emitters:
   {
-    [key: string]: Proton.Emitter;
+    [emitterKey: string]: Proton.Emitter;
   } = {};
   private emitterKeysByID:
   {
@@ -20,7 +20,11 @@ export default class ProtonWrapper
 
   public onSpriteCreated:
   {
-    [key: string]: (sprite: PIXI.Sprite) => void;
+    [emitterKey: string]: (sprite: PIXI.Sprite) => void;
+  } = {};
+  public onParticleUpdated:
+  {
+    [emitterKey: string]: (particle: Proton.Particle) => void;
   } = {};
 
   public constructor(renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, container: PIXI.Container)
@@ -77,19 +81,15 @@ export default class ProtonWrapper
 
   private onProtonParticleUpdated(particle: Proton.Particle)
   {
-    // TODO refactor | just use an external function for this to save unneeded updates
-    
-    var sprite: PIXI.DisplayObject = particle.sprite;
-
-    sprite.position.x = particle.p.x;
-    sprite.position.y = particle.p.y;
-
-    sprite.scale.x = particle.scale;
-    sprite.scale.y = particle.scale;
-
-    sprite.alpha = particle.alpha;
-
-    // sprite.rotation = particle.rotation * PIXI.DEG_TO_RAD;
+    if (particle.parent)
+    {
+      const emitter = <Proton.Emitter> particle.parent;
+      const emitterKey = this.emitterKeysByID[emitter.id];
+      if (this.onParticleUpdated[emitterKey])
+      {
+        this.onParticleUpdated[emitterKey](particle);
+      }
+    }
   }
 
   private onProtonParticleDead(particle: Proton.Particle)

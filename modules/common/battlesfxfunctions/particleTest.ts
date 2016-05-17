@@ -154,6 +154,17 @@ export default function particleTest(props: SFXParams)
 
   mainContainer.addChild(beamSprite);
 
+  //----------EMITTERS COMMON
+  const onParticleUpdateFN = function(particle: Proton.Particle)
+  {
+    const sprite = <PIXI.DisplayObject> particle.sprite;
+    
+    sprite.position.x = particle.p.x;
+    sprite.position.y = particle.p.y;
+
+    sprite.scale.x = particle.scale;
+    sprite.scale.y = particle.scale;
+  }
   //----------INIT SMALL EMITTER
   var smallEmitter = new Proton.BehaviourEmitter();
   smallEmitter.p.x = beamOrigin.x + 50;
@@ -194,7 +205,6 @@ export default function particleTest(props: SFXParams)
   )));
 
   smallEmitter.addBehaviour(new Proton.Scale(new Proton.Span(0.8, 1), 0));
-  smallEmitter.addBehaviour(new Proton.Alpha(1, 0));
 
   smallEmitter.addBehaviour(new Proton.RandomDrift(20, 30, props.duration / 2000));
 
@@ -213,6 +223,7 @@ export default function particleTest(props: SFXParams)
     });
   }
 
+  protonWrapper.onParticleUpdated["smallParticles"] = onParticleUpdateFN;
   protonWrapper.onSpriteCreated["smallParticles"] = function(sprite: PIXI.Sprite)
   {
     sprite.shader = smallParticleFilter;
@@ -240,7 +251,6 @@ export default function particleTest(props: SFXParams)
   shinyEmitter.addInitialize(new Proton.Position(emitterZone));
 
   shinyEmitter.addBehaviour(new Proton.Scale(new Proton.Span(60, 100), 0));
-  shinyEmitter.addBehaviour(new Proton.Alpha(1, 0));
   // shinyEmitter.addBehaviour(new Proton.RandomDrift(5, 10, 0.3));
 
   protonWrapper.addEmitter(shinyEmitter, "shinyParticles");
@@ -258,6 +268,7 @@ export default function particleTest(props: SFXParams)
     });
   }
 
+  protonWrapper.onParticleUpdated["shinyParticles"] = onParticleUpdateFN;
   protonWrapper.onSpriteCreated["shinyParticles"] = function(sprite: PIXI.Sprite)
   {
     sprite.shader = shinyParticleFilter;
