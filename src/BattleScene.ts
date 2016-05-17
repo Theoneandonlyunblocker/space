@@ -48,6 +48,7 @@ export default class BattleScene
   private afterUseDelayHasFinishedCallback: () => void;
   private abilityUseHasFinishedCallback: () => void;
 
+  private onSFXStartCallback: () => void;
   private triggerEffectCallback: () => void;
 
   private isPaused: boolean = false;
@@ -118,6 +119,7 @@ export default class BattleScene
   {
     SFXTemplate: BattleSFXTemplate;
     triggerEffectCallback: () => void;
+    onSFXStartCallback: () => void;
     user: Unit;
     target: Unit;
     afterFinishedCallback: () => void;
@@ -129,7 +131,7 @@ export default class BattleScene
     this.targetUnit = props.target;
     this.activeSFX = props.SFXTemplate;
 
-
+    this.onSFXStartCallback = props.onSFXStartCallback;
     this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
     this.activeSFXHasFinishedCallback = this.handleActiveSFXEnd.bind(this);
 
@@ -314,17 +316,24 @@ export default class BattleScene
     this.beforeUseDelayHasFinishedCallback = null;
     temp();
   }
+  private executeOnSFXStartCallback()
+  {
+    if (this.onSFXStartCallback)
+    {
+      const temp = this.onSFXStartCallback;
+      this.onSFXStartCallback = null;
+      temp();
+    }
+  }
   private executeTriggerEffectCallback()
   {
-    if (!this.triggerEffectCallback)
+    if (this.triggerEffectCallback)
     {
-      return;
-      // throw new Error("No callback set for triggering battle effects.");
+      const temp = this.triggerEffectCallback;
+      this.triggerEffectCallback = null;
+      temp();
     }
 
-    var temp = this.triggerEffectCallback;
-    this.triggerEffectCallback = null;
-    temp();
   }
   private executeActiveSFXHasFinishedCallback()
   {
@@ -383,6 +392,8 @@ export default class BattleScene
   {
     var SFXDuration = Options.battleAnimationTiming.effectDuration *
       this.activeSFX.duration;
+      
+    this.executeOnSFXStartCallback();
 
     if (!this.activeSFX.SFXWillTriggerEffect || SFXDuration <= 0)
     {

@@ -9,6 +9,7 @@ import
 export default class AbilityUseEffectQueue
 {
   private onEffectStart: (effect: AbilityUseEffect) => void;
+  private onSFXStart: () => void;
   private onCurrentFinished: () => void;
   private onAllFinished: () => void;
   private onEffectTrigger: (abilityUseEffect: AbilityUseEffect) => void;
@@ -21,6 +22,7 @@ export default class AbilityUseEffectQueue
   constructor(battleScene: BattleScene, callbacks:
   {
     onEffectStart?: (effect: AbilityUseEffect) => void;
+    onSFXStart?: () => void;
     onCurrentFinished?: () => void;
     onAllFinished?: () => void;
     onEffectTrigger?: (abilityUseEffect: AbilityUseEffect) => void;
@@ -62,6 +64,7 @@ export default class AbilityUseEffectQueue
       user: this.currentEffect.sfxUser,
       target: this.currentEffect.sfxTarget,
       triggerEffectCallback: this.triggerEffect,
+      onSFXStartCallback: this.onSFXStart,
       afterFinishedCallback: this.finishEffect
     });
   }

@@ -306,6 +306,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       target: target,
       SFXTemplate: SFXTemplate,
       triggerEffectCallback: function(){console.log("triggerEffect")},
+      onSFXStartCallback: function(){console.log("onSFXStart")},
       afterFinishedCallback: function(){console.log("afterFinishedCallback")}
     });
   }
@@ -329,6 +330,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       target: target,
       SFXTemplate: SFXTemplate,
       triggerEffectCallback: function(){console.log("triggerEffect")},
+      onSFXStartCallback: function(){console.log("onSFXStart")},
       afterFinishedCallback: function(){console.log("afterFinishedCallback")}
     });
   }

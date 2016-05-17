@@ -105,11 +105,17 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     
     this.battleScene = new BattleScene();
     
-    this.abilityUseEffectQueue = new AbilityUseEffectQueue(this.battleScene);
-    this.abilityUseEffectQueue.onEffectStart = this.setStateForBattleEffect;
-    this.abilityUseEffectQueue.onEffectTrigger = this.onBattleEffectTrigger;
-    this.abilityUseEffectQueue.onCurrentFinished = this.playQueuedBattleEffects;
-    this.abilityUseEffectQueue.onAllFinished = this.finishPlayingQueuedBattleEffects;
+    this.abilityUseEffectQueue = new AbilityUseEffectQueue(this.battleScene,
+    {
+      onEffectStart: this.setStateForBattleEffect,
+      onSFXStart: () =>
+      {
+        this.SFXStartTime = Date.now();
+      },
+      onEffectTrigger: this.onBattleEffectTrigger,
+      onCurrentFinished: this.playQueuedBattleEffects,
+      onAllFinished: this.finishPlayingQueuedBattleEffects,
+    });
   }
   private bindMethods()
   {
