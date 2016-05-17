@@ -85,14 +85,12 @@ class App
       
       copyCommonTemplates(moduleLoader.moduleData);
       
+      // some things called in this.makeApp() rely on global app variable
+      // this timeout allows constructor to finish and variable to be assigned
       window.setTimeout(() =>
       {
         this.makeApp();
-      }, 1);
-      // moduleLoader.loadAll(() =>
-      // {
-      //   this.makeApp();
-      // });
+      }, 0);
     });
   }
   
