@@ -26,7 +26,8 @@ const commandShip: UnitTemplate =
   sprite:
   {
     imageSrc: "shieldBoat.png",
-    anchor: {x: 0.5, y: 0.5}
+    anchor: {x: 0.5, y: 0.5},
+    attackOriginPoint: {x: 0.25, y: 0.5}
   },
   isSquadron: false,
   buildCost: 300,

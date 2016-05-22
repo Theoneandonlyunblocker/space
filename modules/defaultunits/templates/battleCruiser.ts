@@ -22,7 +22,8 @@ const battleCruiser: UnitTemplate =
   sprite:
   {
     imageSrc: "battleCruiser.png",
-    anchor: {x: 0.5, y: 0.5}
+    anchor: {x: 0.5, y: 0.5},
+    attackOriginPoint: {x: 0.25, y: 0.5}
   },
   isSquadron: true,
   buildCost: 200,
