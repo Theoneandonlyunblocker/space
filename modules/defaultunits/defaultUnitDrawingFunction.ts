@@ -83,6 +83,23 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
   var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
   zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
+  
+  const boundingBox:
+  {
+    x1: number;
+    x2: number;
+    y1: number;
+    y2: number;
+  } =
+  {
+    x1: undefined,
+    x2: undefined,
+    y1: undefined,
+    y2: undefined
+  }
+  const allUnitBoundingBoxes: PIXI.Rectangle[] = [];
+  let primaryAttackOriginPoint: Point;
+  const sequentialAttackOriginPoints: Point[] = [];
 
   for (let i = unitsToDraw - 1; i >= 0; i--)
   {
@@ -108,41 +125,79 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
       zPos = i % maxUnitsPerColumn;
     }
 
-    var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
+    let xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
     if (isConvex)
     {
       xOffset = 1 - xOffset;
     }
-
     xOffset -= minXOffset;
 
-    var scale = 1 - zPos * props.scalingFactor;
-    var scaledWidth = image.width * scale;
-    var scaledHeight = image.height * scale;
+    const scale = 1 - zPos * props.scalingFactor;
+    const scaledWidth = image.width * scale;
+    const scaledHeight = image.height * scale;
     
 
-    var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
-    var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
+    let x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
+    let y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
 
-    var translated = transformMat3({x: x, y: y}, rotationMatrix);
+    const translated = transformMat3({x: x, y: y}, rotationMatrix);
 
     x = Math.round(translated.x);
     y = Math.round(translated.y);
 
+    
+    const attackOriginPoint = 
+    {
+      x: x + scaledWidth * spriteTemplate.attackOriginPoint.x,
+      y: y + scaledHeight * spriteTemplate.attackOriginPoint.y
+    };
+    
+    sequentialAttackOriginPoints.push(attackOriginPoint);
+
+    if (column === 0 && zPos + 1 === Math.ceil(maxUnitsPerColumn / 2))
+    {
+      primaryAttackOriginPoint = attackOriginPoint;
+    }
+    
+
     var sprite = new PIXI.Sprite(texture);
-
-
     sprite.scale.x = sprite.scale.y = scale;
 
     sprite.x = x;
     sprite.y = y;
 
     container.addChild(sprite);
+    
+    
+    const unitBounds = new PIXI.Rectangle(
+      x,
+      y,
+      scaledWidth,
+      scaledHeight
+    );
+
+    allUnitBoundingBoxes.push(unitBounds);
+    
+    boundingBox.x1 = isFinite(boundingBox.x1) ? Math.min(boundingBox.x1, x) : x;
+    boundingBox.y1 = isFinite(boundingBox.y1) ? Math.min(boundingBox.y1, y) : y;
+    boundingBox.x2 = isFinite(boundingBox.x2) ? Math.max(boundingBox.x2, x + scaledWidth) : x + scaledWidth;
+    boundingBox.y2 = isFinite(boundingBox.y2) ? Math.max(boundingBox.y2, y + scaledHeight) : y + scaledHeight;
   }
 
+  unit.drawingFunctionData =
+  {
+    boundingBox: new PIXI.Rectangle(
+      boundingBox.x1,
+      boundingBox.y1,
+      boundingBox.x2 - boundingBox.x1,
+      boundingBox.y2 - boundingBox.y1
+    ),
+    individualUnitBoundingBoxes: allUnitBoundingBoxes,
+    singleAttackOriginPoint: primaryAttackOriginPoint,
+    sequentialAttackOriginPoints: sequentialAttackOriginPoints,
+  }
+  
   SFXParams.triggerStart(container);
-
-  return container;
 }
 
 export default defaultUnitDrawingFunction;

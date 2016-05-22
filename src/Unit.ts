@@ -11,6 +11,7 @@ import StatusEffectAttributes from "./templateinterfaces/StatusEffectAttributes"
 import AbilityBase from "./templateinterfaces/AbilityBase";
 import SFXParams from "./templateinterfaces/SFXParams";
 import UnitPassiveEffect from "./templateinterfaces/UnitPassiveEffect";
+import UnitDrawingFunctionData from "./templateinterfaces/UnitDrawingFunctionData";
 
 import DamageType from "./DamageType";
 import {default as UnitAttributes, PartialUnitAttributes} from "./UnitAttributes";
@@ -80,6 +81,7 @@ export default class Unit
   }
 
   public battleStats: UnitBattleStats;
+  public drawingFunctionData: UnitDrawingFunctionData;
 
   private abilities: AbilityTemplate[] = [];
   private passiveSkills: PassiveSkillTemplate[] = [];
