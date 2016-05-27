@@ -249,28 +249,27 @@ export default class BattleSceneUnit
       triggerEnd: props.triggerEnd
     });
   }
-  private setContainerPosition(positionOffScreen: boolean = false)
+  private setContainerPosition()
   {
     // TODO battle scene | This & unit drawing FN rely on overly fiddly positioning.
     // This function might not work properly with other drawing functions.
     var sceneBounds = this.getSceneBounds();
-    var shouldReverse = this.activeUnit.battleStats.side === "side1";
-    var container = this.spriteContainer;
+    var shouldReverse = this.activeUnit.battleStats.side === "side2";
 
-    var containerBounds = container.getLocalBounds();
-    var xPadding = 30;
+    var containerBounds = this.spriteContainer.getLocalBounds();
+    var xPadding = 25;
     var yPadding = 40;
 
-    container.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
+    this.spriteContainer.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
 
     if (shouldReverse)
     {
-      container.scale.x = -1;
-      container.x = Math.round(containerBounds.width + containerBounds.x + xPadding);
+      this.spriteContainer.scale.x = -1;
+      this.spriteContainer.x = Math.round(sceneBounds.width - xPadding);
     }
     else
     {
-      container.x = Math.round(sceneBounds.width - containerBounds.width - containerBounds.x - xPadding);
+      this.spriteContainer.x = Math.round(xPadding);
     }
   }
   private setUnit(unit: Unit)
