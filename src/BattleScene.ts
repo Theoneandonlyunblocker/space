@@ -241,6 +241,8 @@ export default class BattleScene
     {
       user: this.userUnit,
       target: this.targetUnit,
+      userOffset: this.getBattleSceneUnit(this.userUnit).spriteContainer.position,
+      targetOffset: this.getBattleSceneUnit(this.targetUnit).spriteContainer.position,
       width: bounds.width,
       height: bounds.height,
       duration: duration,

@@ -20,7 +20,7 @@ export default class BattleSceneUnit
   container: PIXI.Container;
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
 
-  spriteContainer: PIXI.Container;
+  public spriteContainer: PIXI.Container;
 
   activeUnit: Unit;
   
@@ -239,6 +239,7 @@ export default class BattleSceneUnit
     return(
     {
       user: props.unit,
+      userOffset: {x: 0, y: 0},
       width: bounds.width,
       height: bounds.height,
       duration: props.duration,

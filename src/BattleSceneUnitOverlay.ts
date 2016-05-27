@@ -92,6 +92,7 @@ export default class BattleSceneUnitOverlay
     return(
     {
       user: this.activeUnit,
+      userOffset: {x: 0, y: 0},
       width: bounds.width,
       height: bounds.height,
       duration: duration,

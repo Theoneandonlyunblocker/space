@@ -1,17 +1,20 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
 import Unit from "../Unit";
+import Point from "../Point";
 
 declare interface SFXParams
 {
   user: Unit;
   target?: Unit;
+  userOffset: Point;
+  targetOffset?: Point;
   width: number;
   height: number;
   duration?: number; // in milliseconds
   facingRight: boolean;
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-  triggerStart: (container: PIXI.DisplayObject) => void;
+  triggerStart: (displayObject: PIXI.DisplayObject) => void;
   triggerEffect?: () => void;
   triggerEnd?: () => void;
 }
