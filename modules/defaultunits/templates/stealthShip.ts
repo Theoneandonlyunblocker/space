@@ -22,7 +22,7 @@ const stealthShip: UnitTemplate =
   {
     imageSrc: "scout.png",
     anchor: {x: 0.5, y: 0.5},
-    attackOriginPoint: {x: 0.25, y: 0.5}
+    attackOriginPoint: {x: 0.75, y: 0.5}
   },
   isSquadron: true,
   buildCost: 500,
