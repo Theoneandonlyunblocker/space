@@ -89,14 +89,17 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
     battle.init();
 
+    const initialSFXTemplateKey = "rocketAttack";
+    const initialSFXTemplate = app.moduleData.Templates.BattleSFX[initialSFXTemplateKey];
+
     return(
     {
       activeUnit: side1Units[0],
       selectedSide1Unit: side1Units[0],
       selectedSide2Unit: side2Units[0],
-      selectedSFXTemplateKey: "particleTest",
+      selectedSFXTemplateKey: initialSFXTemplateKey,
 
-      duration: null
+      duration: initialSFXTemplate.duration
     });
   }
 
@@ -210,10 +213,13 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   handleSelectSFXTemplate(e: React.FormEvent)
   {
-    var target = <HTMLInputElement> e.target;
+    const target = <HTMLInputElement> e.target;
+    const SFXTemplate = app.moduleData.Templates.BattleSFX[target.value];
+
     this.setState(
     {
-      selectedSFXTemplateKey: target.value
+      selectedSFXTemplateKey: target.value,
+      duration: SFXTemplate.duration
     });
   }
 
@@ -377,14 +383,6 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     var side2UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.unitsBySide["side2"]);
 
     var SFXTemplateSelectOptions: React.ReactHTMLElement<any>[] = [];
-
-    SFXTemplateSelectOptions.push(React.DOM.option(
-    {
-      value: null,
-      key: "null"
-    },
-      "null"
-    ))
 
     for (let key in app.moduleData.Templates.BattleSFX)
     {
