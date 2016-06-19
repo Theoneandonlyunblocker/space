@@ -1,3 +1,5 @@
+/// <reference path="../../lib/pixi.d.ts" />
+
 import UnitDrawingFunction from "../../src/templateinterfaces/UnitDrawingFunction";
 import SFXParams from "../../src/templateinterfaces/SFXParams";
 
@@ -32,13 +34,8 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   };
 
   var maxUnitsPerColumn = props.maxUnitsPerColumn;
-  var isConvex = true
-  var degree = props.degree;
-  if (degree < 0)
-  {
-    isConvex = !isConvex;
-    degree = Math.abs(degree);
-  }
+  const isConvex = props.degree >= 0;
+  const degree = Math.abs(props.degree);
 
   var image = app.images[spriteTemplate.imageSrc];
 
@@ -102,23 +99,25 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   let primaryAttackOriginPoint: Point;
   const sequentialAttackOriginPoints: Point[] = [];
 
-  for (let i = unitsToDraw - 1; i >= 0; i--)
-  {
-    var column = Math.floor(i / maxUnitsPerColumn);
-    var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
+  const lastColumn = Math.floor(unitsToDraw / maxUnitsPerColumn);
+  const maxUnitsInLastColumn = unitsToDraw % maxUnitsPerColumn;
 
-    var zPos: number;
-    if (isLastColumn)
+  for (let i = 0; i < unitsToDraw; i++)
+  {
+    const column = Math.floor(i / maxUnitsPerColumn);
+    const columnFromRight = lastColumn - column;
+
+    let zPos: number;
+    if (column === lastColumn)
     {
-      var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
-      if (maxUnitsInThisColumn === 1)
+      if (maxUnitsInLastColumn === 1)
       {
         zPos = (maxUnitsPerColumn - 1) / 2;
       }
       else
       {
-        var positionInLastColumn = i % maxUnitsInThisColumn;
-        zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+        const positionInLastColumn = i % maxUnitsInLastColumn;
+        zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInLastColumn - 1));
       }
     }
     else
@@ -138,7 +137,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     const scaledHeight = image.height * scale;
     
 
-    let x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
+    let x = xOffset * scaledWidth * degree + columnFromRight * (scaledWidth + xDistance * scale);
     let y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
 
     const translated = transformMat3({x: x, y: y}, rotationMatrix);
