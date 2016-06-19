@@ -101,6 +101,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
 
   const lastColumn = Math.floor(unitsToDraw / maxUnitsPerColumn);
   const maxUnitsInLastColumn = unitsToDraw % maxUnitsPerColumn;
+  const firstIndexForLastColumn = maxUnitsPerColumn * lastColumn;
 
   for (let i = 0; i < unitsToDraw; i++)
   {
@@ -116,7 +117,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
       }
       else
       {
-        const positionInLastColumn = i % maxUnitsInLastColumn;
+        const positionInLastColumn = i - firstIndexForLastColumn;
         zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInLastColumn - 1));
       }
     }
@@ -160,7 +161,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     }
     
 
-    var sprite = new PIXI.Sprite(texture);
+    const sprite = new PIXI.Sprite(texture);
     sprite.scale.x = sprite.scale.y = scale;
 
     sprite.x = x;
