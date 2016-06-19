@@ -25,31 +25,41 @@ export default function projectileAttack(props:
 },
 params: SFXParams)
 {
-  // TODO battleSFX | would be nice to draw SFX based on unit scenes
-  // eg. height here = unit scene height
-  var minY = Math.max(params.height * 0.3, 30); // from top
-  var maxY = params.height - 30;
+  const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSFX(
+    params.targetOffset, params.target);
+  const offsetUserData = params.user.drawingFunctionData.normalizeForBattleSFX(
+    params.userOffset, params.user);
+  
+  const minY = offsetTargetData.boundingBox.y;
+  const maxY = minY + offsetTargetData.boundingBox.height;
 
-  var maxSpeed = (params.width / params.duration) * props.maxSpeed;
-  var acceleration = maxSpeed * props.acceleration;
+  const maxSpeed = (params.width / params.duration) * props.maxSpeed;
+  const acceleration = maxSpeed * props.acceleration;
 
-  var container = new PIXI.Container();
+  const container = new PIXI.Container();
   if (!params.facingRight)
   {
     container.scale.x = -1;
     container.x = params.width;
   }
 
-  var startTime = Date.now();
-  var endTime = startTime + params.duration;
-  var stopSpawningTime = startTime + params.duration / 2;
-  var lastTime = startTime;
-  var nextSpawnTime = startTime;
+  const startTime = Date.now();
+  const endTime = startTime + params.duration;
+  const stopSpawningTime = startTime + params.duration / 2;
+  let lastTime = startTime;
+  let nextSpawnTime = startTime;
 
-  var amountToSpawn = randInt(props.amountToSpawn.min, props.amountToSpawn.max);
-  var spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
+  const spawnLocationsCount = params.user.drawingFunctionData.sequentialAttackOriginPoints.length; 
+  const amountToSpawn = Math.max(
+    Math.min(
+      randInt(props.amountToSpawn.min, props.amountToSpawn.max),
+      spawnLocationsCount
+    ),
+    10
+  );
+  const spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
 
-  var projectiles:
+  const projectiles:
   {
     sprite: PIXI.Sprite;
     speed: number;
@@ -58,7 +68,7 @@ params: SFXParams)
     hasImpact: boolean;
   }[] = []
 
-  var hasTriggeredEffect = false;
+  let hasTriggeredEffect = false;
 
   function animate()
   {
@@ -71,8 +81,10 @@ params: SFXParams)
       nextSpawnTime += spawnRate;
       var texture = getRandomArrayItem(props.projectileTextures);
       var sprite = new PIXI.Sprite(texture);
-      sprite.x = 20;
-      sprite.y = randInt(minY, maxY);
+      const spawnPointIndex = projectiles.length % spawnLocationsCount;
+      const spawnPoint = offsetUserData.sequentialAttackOriginPoints[spawnPointIndex];
+      sprite.x = spawnPoint.x;
+      sprite.y = spawnPoint.y;
       container.addChild(sprite);
 
       projectiles.push(

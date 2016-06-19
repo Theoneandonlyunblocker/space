@@ -62,12 +62,7 @@ export default class UnitDrawingFunctionData
   public normalizeForBattleSFX(offset: Point, unit: Unit): UnitDrawingFunctionData
   {
     const cloned = this.clone();
-    cloned.mirror();
-    // if (unit.battleStats.side === "side1")
-    // {
-    //   cloned.mirror();
-    // }
-    cloned.offset({x: 0, y: offset.y});
+    cloned.offset({x: 25, y: offset.y}); // TODO || x is padding as defined in src/battlescenunit
     
     return cloned;
   }
