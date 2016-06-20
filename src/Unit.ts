@@ -1041,21 +1041,21 @@ export default class Unit
 
     return false;
   }
-  private getLearnableAbilities(allAbilities: AbilityBase[])
+  private getLearnableAbilities(allAbilities: AbilityBase[]): AbilityBase[]
   {
-    var abilities: AbilityBase[] = [];
+    const abilities: AbilityBase[] = [];
 
     if (!this.template.learnableAbilities) return abilities;
 
     for (let i = 0; i < this.template.learnableAbilities.length; i++)
     {
-      var learnableItem = this.template.learnableAbilities[i];
-      if (Array.isArray(learnableItem))
+      if (Array.isArray(this.template.learnableAbilities[i]))
       {
-        var hasAbilityFromGroup: boolean = false;
-        for (let j = 0; j < learnableItem.length; j++)
+        const learnableAbilityGroup = <AbilityBase[]> this.template.learnableAbilities[i];
+        let hasAbilityFromGroup: boolean = false;
+        for (let j = 0; j < learnableAbilityGroup.length; j++)
         {
-          if (this.hasAbility(learnableItem[j], allAbilities))
+          if (this.hasAbility(learnableAbilityGroup[j], allAbilities))
           {
             hasAbilityFromGroup = true;
             break;
@@ -1064,12 +1064,16 @@ export default class Unit
 
         if (!hasAbilityFromGroup)
         {
-          abilities = abilities.concat(learnableItem);
+          abilities.push(...learnableAbilityGroup);
         }
       }
-      else if (!this.hasAbility(learnableItem, allAbilities))
+      else
       {
-        abilities.push(learnableItem);
+        const learnableAbility = <AbilityBase> this.template.learnableAbilities[i];
+        if (!this.hasAbility(learnableAbility, allAbilities))
+        {
+          abilities.push(learnableAbility);
+        }
       }
     }
 
