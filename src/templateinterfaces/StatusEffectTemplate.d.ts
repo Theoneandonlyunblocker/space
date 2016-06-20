@@ -1,5 +1,5 @@
 import AbilityEffectTemplate from "./AbilityEffectTemplate";
-import StatusEffectAttributes from "./StatusEffectAttributes";
+import {UnitAttributeAdjustments} from "../UnitAttributes";
 import UnitPassiveEffect from "./UnitPassiveEffect";
 
 declare interface StatusEffectTemplate extends UnitPassiveEffect
@@ -9,7 +9,7 @@ declare interface StatusEffectTemplate extends UnitPassiveEffect
   description?: string;
   isHidden?: boolean;
   
-  attributes?: StatusEffectAttributes;
+  attributes?: UnitAttributeAdjustments;
   beforeAbilityUse?: AbilityEffectTemplate[];
   afterAbilityUse?: AbilityEffectTemplate[];
 }

@@ -7,14 +7,18 @@ import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import PortraitTemplate from "./templateinterfaces/PortraitTemplate";
 import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
 import CultureTemplate from "./templateinterfaces/CultureTemplate";
-import StatusEffectAttributes from "./templateinterfaces/StatusEffectAttributes";
 import AbilityBase from "./templateinterfaces/AbilityBase";
 import SFXParams from "./templateinterfaces/SFXParams";
 import UnitPassiveEffect from "./templateinterfaces/UnitPassiveEffect";
 import UnitDrawingFunctionData from "./UnitDrawingFunctionData";
 
 import DamageType from "./DamageType";
-import {default as UnitAttributes, PartialUnitAttributes} from "./UnitAttributes";
+import
+{
+  default as UnitAttributes,
+  PartialUnitAttributes,
+  UnitAttributeAdjustments
+} from "./UnitAttributes";
 import
 {
   extendObject,
@@ -595,7 +599,7 @@ export default class Unit
       return null;
     }
 
-    var adjustments: StatusEffectAttributes = {};
+    var adjustments: UnitAttributeAdjustments = {};
     for (let i = 0; i < this.battleStats.statusEffects.length; i++)
     {
       var statusEffect = this.battleStats.statusEffects[i];
