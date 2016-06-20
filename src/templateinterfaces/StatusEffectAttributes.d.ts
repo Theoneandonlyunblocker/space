@@ -1,11 +1,11 @@
-import StatusEffectAttributeAdjustment from "./StatusEffectAttributeAdjustment";
+import FlatAndMultiplierAdjustment from "../FlatAndMultiplierAdjustment";
 
 declare interface StatusEffectAttributes
 {
-  attack?: StatusEffectAttributeAdjustment;
-  defence?: StatusEffectAttributeAdjustment;
-  intelligence?: StatusEffectAttributeAdjustment;
-  speed?: StatusEffectAttributeAdjustment;
+  attack?: FlatAndMultiplierAdjustment;
+  defence?: FlatAndMultiplierAdjustment;
+  intelligence?: FlatAndMultiplierAdjustment;
+  speed?: FlatAndMultiplierAdjustment;
 }
 
 export default StatusEffectAttributes;
