@@ -2,6 +2,8 @@ import ManufacturableThing from "./ManufacturableThing";
 import AbilityTemplate from "./AbilityTemplate";
 import PassiveSkillTemplate from "./PassiveSkillTemplate";
 
+import {UnitAttributeAdjustments} from "../UnitAttributes";
+
 declare interface ItemTemplate extends ManufacturableThing
 {
   type: string;
@@ -17,14 +19,7 @@ declare interface ItemTemplate extends ManufacturableThing
   
   ability?: AbilityTemplate;
   passiveSkill?: PassiveSkillTemplate;
-  attributes?:
-  {
-    maxActionPoints?: number;
-    attack?: number;
-    defence?: number;
-    intelligence?: number;
-    speed?: number;
-  };
+  attributeAdjustments?: UnitAttributeAdjustments;
 }
 
 export default ItemTemplate;

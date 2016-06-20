@@ -1,4 +1,4 @@
-import UnitAttributes from "../UnitAttributes";
+import {UnitAttributesObject} from "../UnitAttributes";
 
 import UnitItemsSaveData from "./UnitItemsSaveData";
 import UnitBattleStatsSaveData from "./UnitBattleStatsSaveData";
@@ -13,7 +13,7 @@ declare interface UnitSaveData
   currentMovePoints: number;
   maxMovePoints: number;
   timesActedThisTurn: number;
-  baseAttributes: UnitAttributes;
+  baseAttributes: UnitAttributesObject;
   abilityTemplateTypes: string[];
   passiveSkillTemplateTypes: string[];
   experienceForCurrentLevel: number;
