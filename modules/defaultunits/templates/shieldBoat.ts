@@ -4,6 +4,7 @@ import * as UnitArchetypes from "../unitArchetypes";
 import * as UnitFamilies from "../unitFamilies";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
+import itemSlot from "../common/itemSlot";
 import
 {
   rangedAttack,
@@ -66,6 +67,12 @@ const shieldBoat: UnitTemplate =
       ]
     }
   ],
+  itemSlots:
+  {
+    [itemSlot.low]: 1,
+    [itemSlot.mid]: 1,
+    [itemSlot.high]: 1,
+  },
   unitDrawingFN: defaultUnitDrawingFunction
 }
 
