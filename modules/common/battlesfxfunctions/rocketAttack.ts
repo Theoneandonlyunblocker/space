@@ -29,7 +29,7 @@ function rocketAttack(params: SFXParams)
       min: 20,
       max: 20
     },
-    impactRate: 5
+    impactRate: 0.75
   };
 
   projectileAttack(props, params);

@@ -5,6 +5,7 @@ import SFXParams from "../../../src/templateinterfaces/SFXParams";
 import
 {
   randInt,
+  randRange,
   getRandomArrayItem
 } from "../../../src/utility";
 
@@ -59,6 +60,8 @@ params: SFXParams)
   );
   const spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
 
+  const impactRate = props.impactRate || 0;
+
   const projectiles:
   {
     sprite: PIXI.Sprite;
@@ -79,19 +82,22 @@ params: SFXParams)
     if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime)
     {
       nextSpawnTime += spawnRate;
-      var texture = getRandomArrayItem(props.projectileTextures);
-      var sprite = new PIXI.Sprite(texture);
+      const texture = getRandomArrayItem(props.projectileTextures);
+      const sprite = new PIXI.Sprite(texture);
+      container.addChild(sprite);
+
       const spawnPointIndex = projectiles.length % spawnLocationsCount;
       const spawnPoint = offsetUserData.sequentialAttackOriginPoints[spawnPointIndex];
       sprite.x = spawnPoint.x;
       sprite.y = spawnPoint.y;
-      container.addChild(sprite);
+
+      const willImpact = Math.random() < impactRate;
 
       projectiles.push(
       {
         sprite: sprite,
         speed: 0,
-        willImpact: (projectiles.length - 1) % props.impactRate === 0,
+        willImpact: willImpact,
         impactX: randInt(params.width - 200, params.width - 50),
         hasImpact: false
       });
