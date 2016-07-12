@@ -1,7 +1,12 @@
 import FlatAndMultiplierAdjustment from "./FlatAndMultiplierAdjustment";
 import Item from "./Item";
 import StatusEffect from "./StatusEffect";
+import
+{
+  clamp
+} from "./utility";
 
+// https://github.com/Microsoft/TypeScript/issues/7485
 export interface PartialUnitAttributes
 {
   maxActionPoints?: number;
@@ -11,9 +16,10 @@ export interface PartialUnitAttributes
   speed?: number;
 }
 
+// https://github.com/Microsoft/TypeScript/issues/7485
 export interface UnitAttributeAdjustments
 {
-  [attribute: string]: FlatAndMultiplierAdjustment;
+  // [attribute: string]: FlatAndMultiplierAdjustment;
   maxActionPoints?: FlatAndMultiplierAdjustment;
   attack?: FlatAndMultiplierAdjustment;
   defence?: FlatAndMultiplierAdjustment;
@@ -93,7 +99,7 @@ export default class UnitAttributes implements UnitAttributesObject
   {
     return new UnitAttributes(this);
   }
-  public applyAdjustment(adjustment: UnitAttributeAdjustments): void
+  public applyAdjustment(adjustment: UnitAttributeAdjustments): UnitAttributes
   {
     for (let attribute in adjustment)
     {
@@ -106,6 +112,17 @@ export default class UnitAttributes implements UnitAttributesObject
         this[attribute] *= adjustment[attribute].multiplier;
       }
     }
+
+    return this;
+  }
+  public clamp(min?: number, max?: number): UnitAttributes
+  {
+    for (let attribute in this)
+    {
+      this[attribute] = clamp(this[attribute], min, max);
+    }
+
+    return this;
   }
   public getAdjustedAttributes(adjustments: UnitAttributeAdjustments[]): UnitAttributes
   {

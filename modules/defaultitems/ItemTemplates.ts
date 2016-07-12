@@ -34,9 +34,9 @@ const bombLauncher2: ItemTemplate =
   techLevel: 2,
   buildCost: 200,
 
-  attributes:
+  attributeAdjustments:
   {
-    attack: 1
+    attack: {flat: 1}
   },
 
   slot: "high",
@@ -52,9 +52,9 @@ const bombLauncher3: ItemTemplate =
   techLevel: 3,
   buildCost: 300,
 
-  attributes:
+  attributeAdjustments:
   {
-    attack: 3
+    attack: {flat: 3}
   },
 
   slot: "high",
@@ -71,9 +71,9 @@ const afterBurner1: ItemTemplate =
   techLevel: 1,
   buildCost: 100,
 
-  attributes:
+  attributeAdjustments:
   {
-    speed: 1
+    speed: {flat: 1}
   },
 
   slot: "mid",
@@ -89,9 +89,9 @@ const afterBurner2: ItemTemplate =
   techLevel: 2,
   buildCost: 200,
 
-  attributes:
+  attributeAdjustments:
   {
-    speed: 2
+    speed: {flat: 2}
   },
 
   slot: "mid"
@@ -106,10 +106,10 @@ const afterBurner3: ItemTemplate =
   techLevel: 3,
   buildCost: 300,
 
-  attributes:
+  attributeAdjustments:
   {
-    maxActionPoints: 1,
-    speed: 3
+    maxActionPoints: {flat: 1},
+    speed: {flat: 3}
   },
 
   slot: "mid"
@@ -124,9 +124,9 @@ const shieldPlating1: ItemTemplate =
   techLevel: 1,
   buildCost: 100,
 
-  attributes:
+  attributeAdjustments:
   {
-    defence: 1
+    defence: {flat: 1}
   },
 
   slot: "low"
@@ -141,9 +141,9 @@ const shieldPlating2: ItemTemplate =
   techLevel: 2,
   buildCost: 200,
 
-  attributes:
+  attributeAdjustments:
   {
-    defence: 2
+    defence: {flat: 2}
   },
 
   slot: "low"
@@ -158,10 +158,10 @@ const shieldPlating3: ItemTemplate =
   techLevel: 3,
   buildCost: 300,
 
-  attributes:
+  attributeAdjustments:
   {
-    defence: 3,
-    speed: -1
+    defence: {flat: 3},
+    speed: {flat: -1}
   },
 
   slot: "low",

@@ -16,7 +16,6 @@ import DamageType from "./DamageType";
 import
 {
   default as UnitAttributes,
-  PartialUnitAttributes,
   UnitAttributeAdjustments
 } from "./UnitAttributes";
 import
@@ -44,6 +43,7 @@ import UnitBattleStats from "./UnitBattleStats";
 import UnitBattleSide from "./UnitBattleSide";
 import AbilityUpgradeData from "./AbilityUpgradeData";
 import UnitDisplayData from "./UnitDisplayData";
+import UnitItems from "./UnitItems";
 
 import UnitSaveData from "./savedata/UnitSaveData";
 import UnitItemsSaveData from "./savedata/UnitItemsSaveData";
@@ -95,17 +95,7 @@ export default class Unit
 
   public fleet: Fleet;
 
-  public items:
-  {
-    low: Item;
-    mid: Item;
-    high: Item;
-  } =
-  {
-    low: null,
-    mid: null,
-    high: null
-  };
+  public items: UnitItems;
 
   private passiveSkillsByPhase:
   {
@@ -134,6 +124,7 @@ export default class Unit
     }
     else
     {
+      this.items = new UnitItems();
       this.setCulture();
       this.setInitialValues();
     }
@@ -201,30 +192,11 @@ export default class Unit
       isAnnihilated: data.battleStats.isAnnihilated
     };
 
-    var items: any = {};
-
-    ["low", "mid", "high"].forEach(function(slot)
+    data.items.forEach(itemData =>
     {
-      if (data.items[slot])
-      {
-        var item = data.items[slot];
-        if (!item) return;
-
-        items[slot] = new Item(app.moduleData.Templates.Items[item.templateType], item.id);
-      }
+      const item = new Item(app.moduleData.Templates.Items[itemData.templateType], itemData.id);
+      this.addItem(item);
     });
-
-    this.items =
-    {
-      low: null,
-      mid: null,
-      high: null
-    };
-
-    for (let slot in items)
-    {
-      this.addItem(items[slot]);
-    }
 
     if (data.portraitKey)
     {
@@ -280,9 +252,9 @@ export default class Unit
       if (attributes[attribute] > 9) attributes[attribute] = 9;
     }
 
-    this.baseAttributes = extendObject(attributes);
-    this.cachedAttributes = attributes;
-    this.attributesAreDirty = true;
+    this.baseAttributes = new UnitAttributes(attributes);
+    this.cachedAttributes = this.baseAttributes.clone();
+    this.attributesAreDirty = false;
   }
   private setCulture()
   {
@@ -490,7 +462,7 @@ export default class Unit
     this.items[itemSlot] = item;
     item.unit = this;
 
-    if (item.template.attributes)
+    if (item.template.attributeAdjustments)
     {
       this.attributesAreDirty = true;
     }
@@ -508,7 +480,7 @@ export default class Unit
       this.items[itemSlot] = null;
       item.unit = null;
 
-      if (item.template.attributes)
+      if (item.template.attributeAdjustments)
       {
         this.attributesAreDirty = true;
       }
@@ -522,35 +494,9 @@ export default class Unit
 
     return false;
   }
-  private destroyAllItems()
-  {
-    for (let slot in this.items)
-    {
-      var item = this.items[slot];
-      if (item)
-      {
-        this.fleet.player.removeItem(item);
-      }
-    }
-  }
   private getAttributesWithItems()
   {
-    var attributes = extendObject(this.baseAttributes);
-
-    for (let itemSlot in this.items)
-    {
-      if (this.items[itemSlot])
-      {
-        var item = this.items[itemSlot];
-        for (let attribute in item.template.attributes)
-        {
-          attributes[attribute] = clamp(
-            attributes[attribute] + item.template.attributes[attribute], 1, 9);
-        }
-      }
-    }
-
-    return attributes;
+    return this.baseAttributes.getAdjustedAttributes(this.items.getAttributeAdjustments()).clamp(1, 9);
   }
   public addStatusEffect(statusEffect: StatusEffect)
   {
@@ -588,11 +534,21 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
+  private getStatusEffectAttributeAdjustments(): UnitAttributeAdjustments[]
+  {
+    return this.battleStats.statusEffects.filter(statusEffect =>
+    {
+      return Boolean(statusEffect.template.attributes);
+    }).map(statusEffect =>
+    {
+      return statusEffect.template.attributes;
+    });
+  }
   /*
   sort by attribute, positive/negative, additive vs multiplicative
   apply additive, multiplicative
    */
-  private getTotalStatusEffectAttributeAdjustments()
+  private getTotalStatusEffectAttributeAdjustments(): UnitAttributeAdjustments
   {
     if (!this.battleStats || !this.battleStats.statusEffects)
     {
@@ -643,23 +599,12 @@ export default class Unit
 
     return withItems;
   }
-  private getAttributesWithEffectsDifference(): PartialUnitAttributes
+  private getAttributesWithEffectsDifference(): UnitAttributes
   {
     const withItems = this.getAttributesWithItems();
     const withEffects = this.getAttributesWithEffects();
-    
-    const difference: PartialUnitAttributes = {};
-    
-    for (let attributeType in withEffects)
-    {
-      const differenceForThisAttribute = withEffects[attributeType] - withItems[attributeType]; 
-      if (differenceForThisAttribute !== 0)
-      {
-        difference[attributeType] = differenceForThisAttribute;
-      }
-    }
-    
-    return difference;
+
+    return withEffects.getDifferenceBetween(withItems);
   }
   private updateCachedAttributes()
   {
@@ -686,40 +631,16 @@ export default class Unit
       this.passiveSkills = getItemsFromWeightedProbabilities<PassiveSkillTemplate>(this.template.possiblePassiveSkills);
     }
   }
-  private getItemAbilities(): AbilityTemplate[]
-  {
-    var itemAbilities: AbilityTemplate[] = [];
-
-    for (let slot in this.items)
-    {
-      if (!this.items[slot] || !this.items[slot].template.ability) continue;
-      itemAbilities.push(this.items[slot].template.ability);
-    }
-
-    return itemAbilities;
-  }
   public getAllAbilities(): AbilityTemplate[]
   {
-    return this.abilities.concat(this.getItemAbilities());
-  }
-  private getItemPassiveSkills(): PassiveSkillTemplate[]
-  {
-    var itemPassiveSkills: PassiveSkillTemplate[] = [];
-
-    for (let slot in this.items)
-    {
-      if (!this.items[slot] || !this.items[slot].template.passiveSkill) continue;
-      itemPassiveSkills.push(this.items[slot].template.passiveSkill);
-    }
-
-    return itemPassiveSkills;
+    return this.abilities.concat(this.items.getAbilities());
   }
   public getAllPassiveSkills(): PassiveSkillTemplate[]
   {
     var allSkills: PassiveSkillTemplate[] = [];
     
     allSkills = allSkills.concat(this.passiveSkills);
-    allSkills = allSkills.concat(this.getItemPassiveSkills());
+    allSkills = allSkills.concat(this.items.getPassiveSkills());
 
     return allSkills;
   }
@@ -898,7 +819,7 @@ export default class Unit
   {
     var player = this.fleet.player;
 
-    this.destroyAllItems();
+    this.items.destroyAllItems();
     player.removeUnit(this);
     this.fleet.removeUnit(this);
 
@@ -984,13 +905,13 @@ export default class Unit
   {
     var totalCost = 0;
     totalCost += this.template.buildCost;
-    for (let slot in this.items)
+    totalCost += this.items.getAllItems().map(item =>
     {
-      if (this.items[slot])
-      {
-        totalCost += this.items[slot].template.buildCost;
-      }
-    }
+      return item.template.buildCost;
+    }).reduce((a, b) =>
+    {
+      return a + b;
+    }, 0);
 
     return totalCost;
   }
@@ -1196,18 +1117,6 @@ export default class Unit
   }
   public serialize(includeItems: boolean = true, includeFluff: boolean = true): UnitSaveData
   {
-    var itemsSaveData: UnitItemsSaveData = {};
-
-    if (includeItems)
-    {
-      for (let slot in this.items)
-      {
-        if (this.items[slot])
-        {
-          itemsSaveData[slot] = this.items[slot].serialize();
-        }
-      }
-    }
     var battleStatsSavedData: UnitBattleStatsSaveData =
     {
       moveDelay: this.battleStats.moveDelay,
@@ -1259,7 +1168,7 @@ export default class Unit
       experienceForCurrentLevel: this.experienceForCurrentLevel,
       level: this.level,
 
-      items: itemsSaveData,
+      items: includeItems ? this.items.serialize() : null,
       battleStats: battleStatsSavedData
     };
 

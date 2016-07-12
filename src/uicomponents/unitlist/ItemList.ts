@@ -56,18 +56,6 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
     this.getSlotIndex = this.getSlotIndex.bind(this);    
   }
   
-  private static getAttributeProp(item: Item, attribute: string): number
-  {
-    if (!item.template.attributes)
-    {
-      return null;
-    }
-    else
-    {
-      return item.template.attributes[attribute];
-    }
-  }
-  
   render()
   {
     var rows: ListItem<ItemListItemProps>[] = [];
@@ -94,11 +82,12 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
         typeName: item.template.displayName,
         slot: item.template.slot,
         unitName: item.unit ? item.unit.name : "",
-        maxActionPoints: ItemListComponent.getAttributeProp(item, "maxActionPoints"),
-        attack: ItemListComponent.getAttributeProp(item, "attack"),
-        defence: ItemListComponent.getAttributeProp(item, "defence"),
-        intelligence: ItemListComponent.getAttributeProp(item, "intelligence"),
-        speed: ItemListComponent.getAttributeProp(item, "speed"),
+        // TODO
+        maxActionPoints: 0,
+        attack: 0,
+        defence: 0,
+        intelligence: 0,
+        speed: 0,
         abilityName: ability ? ability.displayName : "",
         
         item: item,
@@ -124,13 +113,6 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
         onDragStart: this.props.onDragStart,
         onDragEnd: this.props.onDragEnd
       };
-
-      ["maxActionPoints", "attack", "defence",
-        "intelligence", "speed"].forEach(function(stat)
-      {
-        if (!item.template.attributes) props[stat] = null;
-        else props[stat] = item.template.attributes[stat] || null;
-      });
 
       rows.push(
       {

@@ -50,6 +50,9 @@ define("src/idGenerators", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = idGenerators;
 });
+define("src/FlatAndMultiplierAdjustment", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
 define("src/RandomGenUnitRarity", ["require", "exports"], function (require, exports) {
     "use strict";
 });
@@ -149,12 +152,27 @@ define("src/pathfinding", ["require", "exports", "src/priorityqueue"], function 
     }
     exports.aStar = aStar;
 });
-define("src/UnitBattleSide", ["require", "exports"], function (require, exports) {
+define("src/Item", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_1) {
     "use strict";
-    exports.UnitBattleSides = ["side1", "side2"];
-});
-define("src/GuardCoverage", ["require", "exports"], function (require, exports) {
-    "use strict";
+    var Item = (function () {
+        function Item(template, id) {
+            this.id = isFinite(id) ? id : idGenerators_1.default.item++;
+            this.template = template;
+        }
+        Item.prototype.serialize = function () {
+            var data = {
+                id: this.id,
+                templateType: this.template.type
+            };
+            if (this.unit) {
+                data.unitId = this.unit.id;
+            }
+            return data;
+        };
+        return Item;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Item;
 });
 define("src/StatusEffect", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -176,269 +194,11 @@ define("src/StatusEffect", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = StatusEffect;
 });
-define("src/eventManager", ["require", "exports"], function (require, exports) {
+define("src/UnitBattleSide", ["require", "exports"], function (require, exports) {
     "use strict";
-    var eventEmitter = new EventEmitter3();
-    var eventManager = {
-        dispatchEvent: eventEmitter.emit.bind(eventEmitter),
-        removeEventListener: eventEmitter.removeListener.bind(eventEmitter),
-        removeAllListeners: eventEmitter.removeAllListeners.bind(eventEmitter),
-        addEventListener: function (eventType, listener) {
-            eventEmitter.on(eventType, listener);
-            return listener;
-        }
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = eventManager;
+    exports.UnitBattleSides = ["side1", "side2"];
 });
-define("src/Fleet", ["require", "exports", "src/idGenerators", "src/App", "src/eventManager", "src/pathfinding"], function (require, exports, idGenerators_1, App_1, eventManager_1, pathFinding_1) {
-    "use strict";
-    var Fleet = (function () {
-        function Fleet(player, units, location, id, shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            this.units = [];
-            this.visionIsDirty = true;
-            this.visibleStars = [];
-            this.detectedStars = [];
-            this.player = player;
-            this.location = location;
-            this.id = isFinite(id) ? id : idGenerators_1.default.fleet++;
-            this.name = "Fleet " + this.id;
-            this.location.addFleet(this);
-            this.player.addFleet(this);
-            this.addUnits(units);
-            if (shouldRender) {
-                eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
-            }
-        }
-        Fleet.prototype.getUnitIndex = function (unit) {
-            return this.units.indexOf(unit);
-        };
-        Fleet.prototype.hasUnit = function (unit) {
-            return this.getUnitIndex(unit) >= 0;
-        };
-        Fleet.prototype.deleteFleet = function (shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            this.location.removeFleet(this);
-            this.player.removeFleet(this);
-            if (shouldRender) {
-                eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
-            }
-        };
-        Fleet.prototype.mergeWith = function (fleet, shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            if (fleet.isStealthy !== this.isStealthy) {
-                console.warn("Tried to merge stealthy fleet with non stealthy or other way around");
-                return;
-            }
-            fleet.addUnits(this.units);
-            this.deleteFleet(shouldRender);
-        };
-        Fleet.prototype.addUnit = function (unit) {
-            if (this.hasUnit(unit))
-                return false;
-            if (this.units.length === 0) {
-                this.isStealthy = unit.isStealthy();
-            }
-            else if (unit.isStealthy() !== this.isStealthy) {
-                console.warn("Tried to add stealthy unit to non stealthy fleet or other way around");
-                return;
-            }
-            this.units.push(unit);
-            unit.addToFleet(this);
-            this.visionIsDirty = true;
-        };
-        Fleet.prototype.addUnits = function (units) {
-            for (var i = 0; i < units.length; i++) {
-                this.addUnit(units[i]);
-            }
-        };
-        Fleet.prototype.removeUnit = function (unit) {
-            var index = this.getUnitIndex(unit);
-            if (index < 0)
-                return false;
-            this.units.splice(index, 1);
-            unit.removeFromFleet();
-            this.visionIsDirty = true;
-            if (this.units.length <= 0) {
-                this.deleteFleet();
-            }
-        };
-        Fleet.prototype.removeUnits = function (units) {
-            for (var i = 0; i < units.length; i++) {
-                this.removeUnit(units[i]);
-            }
-        };
-        Fleet.prototype.transferUnit = function (fleet, unit) {
-            if (fleet === this)
-                return;
-            if (unit.isStealthy() !== this.isStealthy) {
-                console.warn("Tried to transfer stealthy unit to non stealthy fleet");
-                return;
-            }
-            var index = this.getUnitIndex(unit);
-            if (index < 0)
-                return false;
-            fleet.addUnit(unit);
-            this.units.splice(index, 1);
-            eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
-        };
-        Fleet.prototype.split = function () {
-            var newFleet = new Fleet(this.player, [], this.location);
-            this.location.addFleet(newFleet);
-            return newFleet;
-        };
-        Fleet.prototype.splitStealthyUnits = function () {
-            var stealthyUnits = this.units.filter(function (unit) {
-                return unit.isStealthy();
-            });
-            var newFleet = new Fleet(this.player, stealthyUnits, this.location);
-            this.location.addFleet(newFleet);
-            this.removeUnits(stealthyUnits);
-            return newFleet;
-        };
-        Fleet.prototype.getMinCurrentMovePoints = function () {
-            if (!this.units[0])
-                return 0;
-            var min = this.units[0].currentMovePoints;
-            for (var i = 0; i < this.units.length; i++) {
-                min = Math.min(this.units[i].currentMovePoints, min);
-            }
-            return min;
-        };
-        Fleet.prototype.getMinMaxMovePoints = function () {
-            if (!this.units[0])
-                return 0;
-            var min = this.units[0].maxMovePoints;
-            for (var i = 0; i < this.units.length; i++) {
-                min = Math.min(this.units[i].maxMovePoints, min);
-            }
-            return min;
-        };
-        Fleet.prototype.canMove = function () {
-            for (var i = 0; i < this.units.length; i++) {
-                if (this.units[i].currentMovePoints <= 0) {
-                    return false;
-                }
-            }
-            if (this.getMinCurrentMovePoints() > 0) {
-                return true;
-            }
-            return false;
-        };
-        Fleet.prototype.subtractMovePoints = function () {
-            for (var i = 0; i < this.units.length; i++) {
-                this.units[i].currentMovePoints--;
-            }
-        };
-        Fleet.prototype.move = function (newLocation) {
-            if (newLocation === this.location)
-                return;
-            if (!this.canMove())
-                return;
-            var oldLocation = this.location;
-            oldLocation.removeFleet(this);
-            this.location = newLocation;
-            newLocation.addFleet(this);
-            this.subtractMovePoints();
-            this.visionIsDirty = true;
-            this.player.visionIsDirty = true;
-            for (var i = 0; i < App_1.default.game.playerOrder.length; i++) {
-                var player = App_1.default.game.playerOrder[i];
-                if (player.isIndependent || player === this.player) {
-                    continue;
-                }
-                player.updateAllVisibilityInStar(newLocation);
-            }
-            eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
-            eventManager_1.default.dispatchEvent("updateSelection", null);
-        };
-        Fleet.prototype.getPathTo = function (newLocation) {
-            var a = pathFinding_1.aStar(this.location, newLocation);
-            if (!a)
-                return;
-            var path = pathFinding_1.backTrace(a.came, newLocation);
-            return path;
-        };
-        Fleet.prototype.pathFind = function (newLocation, onMove, afterMove) {
-            var path = this.getPathTo(newLocation);
-            var interval = window.setInterval(function () {
-                if (!path || path.length <= 0) {
-                    window.clearInterval(interval);
-                    if (afterMove)
-                        afterMove();
-                    return;
-                }
-                var move = path.shift();
-                this.move(move.star);
-                if (onMove)
-                    onMove();
-            }.bind(this), 10);
-        };
-        Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
-            return this.location.fleets[this.player.id];
-        };
-        Fleet.prototype.getTotalStrengthEvaluation = function () {
-            var total = 0;
-            for (var i = 0; i < this.units.length; i++) {
-                total += this.units[i].getStrengthEvaluation();
-            }
-            return total;
-        };
-        Fleet.prototype.getTotalHealth = function () {
-            var total = {
-                current: 0,
-                max: 0
-            };
-            for (var i = 0; i < this.units.length; i++) {
-                total.current += this.units[i].currentHealth;
-                total.max += this.units[i].maxHealth;
-            }
-            return total;
-        };
-        Fleet.prototype.updateVisibleStars = function () {
-            var highestVisionRange = 0;
-            var highestDetectionRange = -1;
-            for (var i = 0; i < this.units.length; i++) {
-                highestVisionRange = Math.max(this.units[i].getVisionRange(), highestVisionRange);
-                highestDetectionRange = Math.max(this.units[i].getDetectionRange(), highestDetectionRange);
-            }
-            var inVision = this.location.getLinkedInRange(highestVisionRange);
-            var inDetection = this.location.getLinkedInRange(highestDetectionRange);
-            this.visibleStars = inVision.all;
-            this.detectedStars = inDetection.all;
-            this.visionIsDirty = false;
-        };
-        Fleet.prototype.getVision = function () {
-            if (this.visionIsDirty) {
-                this.updateVisibleStars();
-            }
-            return this.visibleStars;
-        };
-        Fleet.prototype.getDetection = function () {
-            if (this.visionIsDirty) {
-                this.updateVisibleStars();
-            }
-            return this.detectedStars;
-        };
-        Fleet.prototype.serialize = function () {
-            var data = {
-                id: this.id,
-                name: this.name,
-                locationId: this.location.id,
-                playerId: this.player.id,
-                units: this.units.map(function (unit) {
-                    return unit.serialize(false);
-                })
-            };
-            return data;
-        };
-        return Fleet;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Fleet;
-});
-define("src/utility", ["require", "exports", "src/App"], function (require, exports, App_2) {
+define("src/utility", ["require", "exports", "src/App"], function (require, exports, App_1) {
     "use strict";
     function randInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
@@ -918,10 +678,10 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
     }
     exports.onDOMLoaded = onDOMLoaded;
     function meetAllPlayers() {
-        for (var i = 0; i < App_2.default.game.playerOrder.length; i++) {
-            var player = App_2.default.game.playerOrder[i];
-            if (player !== App_2.default.humanPlayer) {
-                App_2.default.humanPlayer.diplomacyStatus.meetPlayer(player);
+        for (var i = 0; i < App_1.default.game.playerOrder.length; i++) {
+            var player = App_1.default.game.playerOrder[i];
+            if (player !== App_1.default.humanPlayer) {
+                App_1.default.humanPlayer.diplomacyStatus.meetPlayer(player);
             }
         }
     }
@@ -1024,7 +784,7 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
     exports.pointsEqual = pointsEqual;
     function makeRandomPersonality() {
         var unitCompositionPreference = {};
-        for (var archetype in App_2.default.moduleData.Templates.UnitArchetypes) {
+        for (var archetype in App_1.default.moduleData.Templates.UnitArchetypes) {
             unitCompositionPreference[archetype] = Math.random();
         }
         return ({
@@ -1056,13 +816,358 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
     }
     exports.convertClientRectToPixiRect = convertClientRectToPixiRect;
 });
-define("src/Building", ["require", "exports", "src/idGenerators", "src/App"], function (require, exports, idGenerators_2, App_3) {
+define("src/UnitAttributes", ["require", "exports", "src/utility"], function (require, exports, utility_1) {
+    "use strict";
+    var UnitAttributes = (function () {
+        function UnitAttributes(initialAttributes) {
+            for (var key in initialAttributes) {
+                this[key] = initialAttributes[key];
+            }
+        }
+        UnitAttributes.createBlank = function () {
+            return new UnitAttributes({
+                maxActionPoints: 0,
+                attack: 0,
+                defence: 0,
+                intelligence: 0,
+                speed: 0
+            });
+        };
+        UnitAttributes.squashAdjustments = function (toSquash) {
+            var squashed = {};
+            toSquash.forEach(function (adjustment) {
+                for (var attribute in adjustment) {
+                    if (!squashed[attribute]) {
+                        squashed[attribute] = {};
+                    }
+                    if (adjustment[attribute].flat) {
+                        squashed[attribute].flat = 0 + adjustment[attribute].flat;
+                    }
+                    if (isFinite(adjustment[attribute].multiplier)) {
+                        if (!isFinite(squashed[attribute].multiplier)) {
+                            squashed[attribute].multiplier = 1;
+                        }
+                        squashed[attribute].multiplier += adjustment[attribute].multiplier;
+                    }
+                }
+            });
+            return squashed;
+        };
+        UnitAttributes.prototype.clone = function () {
+            return new UnitAttributes(this);
+        };
+        UnitAttributes.prototype.applyAdjustment = function (adjustment) {
+            for (var attribute in adjustment) {
+                if (adjustment[attribute].flat) {
+                    this[attribute] += adjustment[attribute].flat;
+                }
+                if (isFinite(adjustment[attribute].multiplier)) {
+                    this[attribute] *= adjustment[attribute].multiplier;
+                }
+            }
+            return this;
+        };
+        UnitAttributes.prototype.clamp = function (min, max) {
+            for (var attribute in this) {
+                this[attribute] = utility_1.clamp(this[attribute], min, max);
+            }
+            return this;
+        };
+        UnitAttributes.prototype.getAdjustedAttributes = function (adjustments) {
+            var squashedAdjustments = UnitAttributes.squashAdjustments(adjustments);
+            var cloned = this.clone();
+            cloned.applyAdjustment(squashedAdjustments);
+            return cloned;
+        };
+        UnitAttributes.prototype.getDifferenceBetween = function (toCompare) {
+            return new UnitAttributes({
+                maxActionPoints: this.maxActionPoints - toCompare.maxActionPoints,
+                attack: this.attack - toCompare.attack,
+                defence: this.defence - toCompare.defence,
+                intelligence: this.intelligence - toCompare.intelligence,
+                speed: this.speed - toCompare.speed
+            });
+        };
+        UnitAttributes.prototype.serialize = function () {
+            return JSON.parse(JSON.stringify(this));
+        };
+        return UnitAttributes;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = UnitAttributes;
+});
+define("src/GuardCoverage", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
+define("src/eventManager", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var eventEmitter = new EventEmitter3();
+    var eventManager = {
+        dispatchEvent: eventEmitter.emit.bind(eventEmitter),
+        removeEventListener: eventEmitter.removeListener.bind(eventEmitter),
+        removeAllListeners: eventEmitter.removeAllListeners.bind(eventEmitter),
+        addEventListener: function (eventType, listener) {
+            eventEmitter.on(eventType, listener);
+            return listener;
+        }
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = eventManager;
+});
+define("src/Fleet", ["require", "exports", "src/idGenerators", "src/App", "src/eventManager", "src/pathfinding"], function (require, exports, idGenerators_2, App_2, eventManager_1, pathFinding_1) {
+    "use strict";
+    var Fleet = (function () {
+        function Fleet(player, units, location, id, shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            this.units = [];
+            this.visionIsDirty = true;
+            this.visibleStars = [];
+            this.detectedStars = [];
+            this.player = player;
+            this.location = location;
+            this.id = isFinite(id) ? id : idGenerators_2.default.fleet++;
+            this.name = "Fleet " + this.id;
+            this.location.addFleet(this);
+            this.player.addFleet(this);
+            this.addUnits(units);
+            if (shouldRender) {
+                eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
+            }
+        }
+        Fleet.prototype.getUnitIndex = function (unit) {
+            return this.units.indexOf(unit);
+        };
+        Fleet.prototype.hasUnit = function (unit) {
+            return this.getUnitIndex(unit) >= 0;
+        };
+        Fleet.prototype.deleteFleet = function (shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            this.location.removeFleet(this);
+            this.player.removeFleet(this);
+            if (shouldRender) {
+                eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
+            }
+        };
+        Fleet.prototype.mergeWith = function (fleet, shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            if (fleet.isStealthy !== this.isStealthy) {
+                console.warn("Tried to merge stealthy fleet with non stealthy or other way around");
+                return;
+            }
+            fleet.addUnits(this.units);
+            this.deleteFleet(shouldRender);
+        };
+        Fleet.prototype.addUnit = function (unit) {
+            if (this.hasUnit(unit))
+                return false;
+            if (this.units.length === 0) {
+                this.isStealthy = unit.isStealthy();
+            }
+            else if (unit.isStealthy() !== this.isStealthy) {
+                console.warn("Tried to add stealthy unit to non stealthy fleet or other way around");
+                return;
+            }
+            this.units.push(unit);
+            unit.addToFleet(this);
+            this.visionIsDirty = true;
+        };
+        Fleet.prototype.addUnits = function (units) {
+            for (var i = 0; i < units.length; i++) {
+                this.addUnit(units[i]);
+            }
+        };
+        Fleet.prototype.removeUnit = function (unit) {
+            var index = this.getUnitIndex(unit);
+            if (index < 0)
+                return false;
+            this.units.splice(index, 1);
+            unit.removeFromFleet();
+            this.visionIsDirty = true;
+            if (this.units.length <= 0) {
+                this.deleteFleet();
+            }
+        };
+        Fleet.prototype.removeUnits = function (units) {
+            for (var i = 0; i < units.length; i++) {
+                this.removeUnit(units[i]);
+            }
+        };
+        Fleet.prototype.transferUnit = function (fleet, unit) {
+            if (fleet === this)
+                return;
+            if (unit.isStealthy() !== this.isStealthy) {
+                console.warn("Tried to transfer stealthy unit to non stealthy fleet");
+                return;
+            }
+            var index = this.getUnitIndex(unit);
+            if (index < 0)
+                return false;
+            fleet.addUnit(unit);
+            this.units.splice(index, 1);
+            eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
+        };
+        Fleet.prototype.split = function () {
+            var newFleet = new Fleet(this.player, [], this.location);
+            this.location.addFleet(newFleet);
+            return newFleet;
+        };
+        Fleet.prototype.splitStealthyUnits = function () {
+            var stealthyUnits = this.units.filter(function (unit) {
+                return unit.isStealthy();
+            });
+            var newFleet = new Fleet(this.player, stealthyUnits, this.location);
+            this.location.addFleet(newFleet);
+            this.removeUnits(stealthyUnits);
+            return newFleet;
+        };
+        Fleet.prototype.getMinCurrentMovePoints = function () {
+            if (!this.units[0])
+                return 0;
+            var min = this.units[0].currentMovePoints;
+            for (var i = 0; i < this.units.length; i++) {
+                min = Math.min(this.units[i].currentMovePoints, min);
+            }
+            return min;
+        };
+        Fleet.prototype.getMinMaxMovePoints = function () {
+            if (!this.units[0])
+                return 0;
+            var min = this.units[0].maxMovePoints;
+            for (var i = 0; i < this.units.length; i++) {
+                min = Math.min(this.units[i].maxMovePoints, min);
+            }
+            return min;
+        };
+        Fleet.prototype.canMove = function () {
+            for (var i = 0; i < this.units.length; i++) {
+                if (this.units[i].currentMovePoints <= 0) {
+                    return false;
+                }
+            }
+            if (this.getMinCurrentMovePoints() > 0) {
+                return true;
+            }
+            return false;
+        };
+        Fleet.prototype.subtractMovePoints = function () {
+            for (var i = 0; i < this.units.length; i++) {
+                this.units[i].currentMovePoints--;
+            }
+        };
+        Fleet.prototype.move = function (newLocation) {
+            if (newLocation === this.location)
+                return;
+            if (!this.canMove())
+                return;
+            var oldLocation = this.location;
+            oldLocation.removeFleet(this);
+            this.location = newLocation;
+            newLocation.addFleet(this);
+            this.subtractMovePoints();
+            this.visionIsDirty = true;
+            this.player.visionIsDirty = true;
+            for (var i = 0; i < App_2.default.game.playerOrder.length; i++) {
+                var player = App_2.default.game.playerOrder[i];
+                if (player.isIndependent || player === this.player) {
+                    continue;
+                }
+                player.updateAllVisibilityInStar(newLocation);
+            }
+            eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
+            eventManager_1.default.dispatchEvent("updateSelection", null);
+        };
+        Fleet.prototype.getPathTo = function (newLocation) {
+            var a = pathFinding_1.aStar(this.location, newLocation);
+            if (!a)
+                return;
+            var path = pathFinding_1.backTrace(a.came, newLocation);
+            return path;
+        };
+        Fleet.prototype.pathFind = function (newLocation, onMove, afterMove) {
+            var path = this.getPathTo(newLocation);
+            var interval = window.setInterval(function () {
+                if (!path || path.length <= 0) {
+                    window.clearInterval(interval);
+                    if (afterMove)
+                        afterMove();
+                    return;
+                }
+                var move = path.shift();
+                this.move(move.star);
+                if (onMove)
+                    onMove();
+            }.bind(this), 10);
+        };
+        Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
+            return this.location.fleets[this.player.id];
+        };
+        Fleet.prototype.getTotalStrengthEvaluation = function () {
+            var total = 0;
+            for (var i = 0; i < this.units.length; i++) {
+                total += this.units[i].getStrengthEvaluation();
+            }
+            return total;
+        };
+        Fleet.prototype.getTotalHealth = function () {
+            var total = {
+                current: 0,
+                max: 0
+            };
+            for (var i = 0; i < this.units.length; i++) {
+                total.current += this.units[i].currentHealth;
+                total.max += this.units[i].maxHealth;
+            }
+            return total;
+        };
+        Fleet.prototype.updateVisibleStars = function () {
+            var highestVisionRange = 0;
+            var highestDetectionRange = -1;
+            for (var i = 0; i < this.units.length; i++) {
+                highestVisionRange = Math.max(this.units[i].getVisionRange(), highestVisionRange);
+                highestDetectionRange = Math.max(this.units[i].getDetectionRange(), highestDetectionRange);
+            }
+            var inVision = this.location.getLinkedInRange(highestVisionRange);
+            var inDetection = this.location.getLinkedInRange(highestDetectionRange);
+            this.visibleStars = inVision.all;
+            this.detectedStars = inDetection.all;
+            this.visionIsDirty = false;
+        };
+        Fleet.prototype.getVision = function () {
+            if (this.visionIsDirty) {
+                this.updateVisibleStars();
+            }
+            return this.visibleStars;
+        };
+        Fleet.prototype.getDetection = function () {
+            if (this.visionIsDirty) {
+                this.updateVisibleStars();
+            }
+            return this.detectedStars;
+        };
+        Fleet.prototype.serialize = function () {
+            var data = {
+                id: this.id,
+                name: this.name,
+                locationId: this.location.id,
+                playerId: this.player.id,
+                units: this.units.map(function (unit) {
+                    return unit.serialize(false);
+                })
+            };
+            return data;
+        };
+        return Fleet;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Fleet;
+});
+define("src/Building", ["require", "exports", "src/idGenerators", "src/App"], function (require, exports, idGenerators_3, App_3) {
     "use strict";
     var Building = (function () {
         function Building(props) {
             this.template = props.template;
             this.id = (props.id && isFinite(props.id)) ?
-                props.id : idGenerators_2.default.building++;
+                props.id : idGenerators_3.default.building++;
             this.location = props.location;
             this.controller = props.controller || this.location.owner;
             this.upgradeLevel = props.upgradeLevel || 1;
@@ -1299,7 +1404,7 @@ define("src/SubEmblemCoverage", ["require", "exports"], function (require, expor
 define("src/SubEmblemPosition", ["require", "exports"], function (require, exports) {
     "use strict";
 });
-define("src/Emblem", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_4, utility_1) {
+define("src/Emblem", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_4, utility_2) {
     "use strict";
     var Emblem = (function () {
         function Emblem(color, alpha, inner, outer) {
@@ -1311,7 +1416,7 @@ define("src/Emblem", ["require", "exports", "src/App", "src/utility"], function 
         Emblem.prototype.generateRandom = function (minAlpha, rng) {
             var rng = rng || new RNG(Math.random);
             this.alpha = rng.uniform();
-            this.alpha = utility_1.clamp(this.alpha, minAlpha, 1);
+            this.alpha = utility_2.clamp(this.alpha, minAlpha, 1);
             this.generateSubEmblems(rng);
         };
         Emblem.prototype.canAddOuterTemplate = function () {
@@ -1343,10 +1448,10 @@ define("src/Emblem", ["require", "exports", "src/App", "src/utility"], function 
         };
         Emblem.prototype.generateSubEmblems = function (rng) {
             var candidates = this.getPossibleSubEmblemsToAdd();
-            this.inner = utility_1.getSeededRandomArrayItem(candidates, rng);
+            this.inner = utility_2.getSeededRandomArrayItem(candidates, rng);
             candidates = this.getPossibleSubEmblemsToAdd();
             if (candidates.length > 0 && rng.uniform() > 0.4) {
-                this.outer = utility_1.getSeededRandomArrayItem(candidates, rng);
+                this.outer = utility_2.getSeededRandomArrayItem(candidates, rng);
             }
         };
         Emblem.prototype.canAddBackground = function () {
@@ -1581,28 +1686,6 @@ define("src/Flag", ["require", "exports", "src/Emblem"], function (require, expo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Flag;
 });
-define("src/Item", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_3) {
-    "use strict";
-    var Item = (function () {
-        function Item(template, id) {
-            this.id = isFinite(id) ? id : idGenerators_3.default.item++;
-            this.template = template;
-        }
-        Item.prototype.serialize = function () {
-            var data = {
-                id: this.id,
-                templateType: this.template.type
-            };
-            if (this.unit) {
-                data.unitId = this.unit.id;
-            }
-            return data;
-        };
-        return Item;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Item;
-});
 define("src/BattleTurnOrder", ["require", "exports"], function (require, exports) {
     "use strict";
     var BattleTurnOrder = (function () {
@@ -1676,7 +1759,7 @@ define("src/BattleTurnOrder", ["require", "exports"], function (require, exports
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleTurnOrder;
 });
-define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/BattleTurnOrder", "src/UnitBattleSide", "src/utility"], function (require, exports, App_5, eventManager_2, BattleTurnOrder_1, UnitBattleSide_1, utility_2) {
+define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/BattleTurnOrder", "src/UnitBattleSide", "src/utility"], function (require, exports, App_5, eventManager_2, BattleTurnOrder_1, UnitBattleSide_1, utility_3) {
     "use strict";
     var Battle = (function () {
         function Battle(props) {
@@ -1852,7 +1935,7 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
             if (!victor || victor.isIndependent)
                 return [];
             var winningSide = this.getSideForPlayer(victor);
-            var losingSide = utility_2.reverseSide(winningSide);
+            var losingSide = utility_3.reverseSide(winningSide);
             var losingUnits = this.unitsBySide[losingSide].slice(0);
             losingUnits.sort(function (a, b) {
                 var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
@@ -1860,7 +1943,7 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
                     return captureChanceSort;
                 }
                 else {
-                    return utility_2.randInt(0, 1) * 2 - 1;
+                    return utility_3.randInt(0, 1) * 2 - 1;
                 }
             });
             var capturedUnits = [];
@@ -1972,7 +2055,7 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
                 }
                 evaluation += currentHealthFactor * defenderMultiplier * sign;
             });
-            evaluation = utility_2.clamp(evaluation, -1, 1);
+            evaluation = utility_3.clamp(evaluation, -1, 1);
             this.evaluation[this.currentTurn] = evaluation;
             return this.evaluation[this.currentTurn];
         };
@@ -2120,7 +2203,7 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Battle;
 });
-define("src/targeting", ["require", "exports", "src/utility"], function (require, exports, utility_3) {
+define("src/targeting", ["require", "exports", "src/utility"], function (require, exports, utility_4) {
     "use strict";
     (function (TargetFormation) {
         TargetFormation[TargetFormation["ally"] = 0] = "ally";
@@ -2137,13 +2220,13 @@ define("src/targeting", ["require", "exports", "src/utility"], function (require
         return units[ownPosition[0] + increment];
     };
     exports.targetAll = function (units, user) {
-        return utility_3.flatten2dArray(units);
+        return utility_4.flatten2dArray(units);
     };
     exports.areaSingle = function (units, target) {
-        return utility_3.getFrom2dArray(units, [target]);
+        return utility_4.getFrom2dArray(units, [target]);
     };
     exports.areaAll = function (units, target) {
-        return utility_3.flatten2dArray(units);
+        return utility_4.flatten2dArray(units);
     };
     exports.areaColumn = function (units, target) {
         var y = target[1];
@@ -2151,7 +2234,7 @@ define("src/targeting", ["require", "exports", "src/utility"], function (require
         for (var i = 0; i < units.length; i++) {
             targetLocations.push([i, y]);
         }
-        return utility_3.getFrom2dArray(units, targetLocations);
+        return utility_4.getFrom2dArray(units, targetLocations);
     };
     exports.areaRow = function (units, target) {
         var x = target[0];
@@ -2159,7 +2242,7 @@ define("src/targeting", ["require", "exports", "src/utility"], function (require
         for (var i = 0; i < units[x].length; i++) {
             targetLocations.push([x, i]);
         }
-        return utility_3.getFrom2dArray(units, targetLocations);
+        return utility_4.getFrom2dArray(units, targetLocations);
     };
     exports.areaRowNeighbors = function (units, target) {
         var x = target[0];
@@ -2168,7 +2251,7 @@ define("src/targeting", ["require", "exports", "src/utility"], function (require
         targetLocations.push([x, y]);
         targetLocations.push([x, y - 1]);
         targetLocations.push([x, y + 1]);
-        return utility_3.getFrom2dArray(units, targetLocations);
+        return utility_4.getFrom2dArray(units, targetLocations);
     };
     exports.areaNeighbors = function (units, target) {
         var x = target[0];
@@ -2179,7 +2262,7 @@ define("src/targeting", ["require", "exports", "src/utility"], function (require
         targetLocations.push([x + 1, y]);
         targetLocations.push([x, y - 1]);
         targetLocations.push([x, y + 1]);
-        return utility_3.getFrom2dArray(units, targetLocations);
+        return utility_4.getFrom2dArray(units, targetLocations);
     };
 });
 define("src/getNullFormation", ["require", "exports", "src/App"], function (require, exports, App_6) {
@@ -2199,7 +2282,7 @@ define("src/getNullFormation", ["require", "exports", "src/App"], function (requ
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = getNullFormation;
 });
-define("src/battleAbilityTargeting", ["require", "exports", "src/getNullFormation", "src/utility", "src/targeting"], function (require, exports, getNullFormation_1, utility_4, targeting_1) {
+define("src/battleAbilityTargeting", ["require", "exports", "src/getNullFormation", "src/utility", "src/targeting"], function (require, exports, getNullFormation_1, utility_5, targeting_1) {
     "use strict";
     function getFormationsToTarget(battle, user, effect) {
         if (effect.targetFormations === targeting_1.TargetFormation.either) {
@@ -2214,7 +2297,7 @@ define("src/battleAbilityTargeting", ["require", "exports", "src/getNullFormatio
             toConcat = battle[userSide];
         }
         else if (effect.targetFormations === targeting_1.TargetFormation.enemy) {
-            toConcat = battle[utility_4.reverseSide(userSide)];
+            toConcat = battle[utility_5.reverseSide(userSide)];
         }
         else {
             throw new Error("Invalid target formation for effect: " + effect.name);
@@ -2473,7 +2556,7 @@ define("src/battleAbilityUsage", ["require", "exports", "src/battleAbilityProces
         });
     }
 });
-define("src/MCTreeNode", ["require", "exports", "src/App", "src/utility", "src/battleAbilityUsage", "src/battleAbilityTargeting"], function (require, exports, App_7, utility_5, battleAbilityUsage_1, battleAbilityTargeting_2) {
+define("src/MCTreeNode", ["require", "exports", "src/App", "src/utility", "src/battleAbilityUsage", "src/battleAbilityTargeting"], function (require, exports, App_7, utility_6, battleAbilityUsage_1, battleAbilityTargeting_2) {
     "use strict";
     var MCTreeNode = (function () {
         function MCTreeNode(battle, move) {
@@ -2576,7 +2659,7 @@ define("src/MCTreeNode", ["require", "exports", "src/App", "src/utility", "src/b
                     prioritiesByAbilityAndTarget["" + targetId + ":" + abilities[i].type] = priority;
                 }
             }
-            var selected = utility_5.getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
+            var selected = utility_6.getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
             var separatorIndex = selected.indexOf(":");
             return ({
                 targetId: parseInt(selected.slice(0, separatorIndex)),
@@ -2763,7 +2846,7 @@ define("src/MCTree", ["require", "exports", "src/MCTreeNode"], function (require
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MCTree;
 });
-define("src/options", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_3, utility_6) {
+define("src/options", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_3, utility_7) {
     "use strict";
     var OptionsCategories = [
         "battleAnimationTiming", "debug", "ui", "display"
@@ -2855,7 +2938,7 @@ define("src/options", ["require", "exports", "src/eventManager", "src/utility"],
                             console.log("Reset option: " + key);
                         }
                         else {
-                            parsedOptions[key] = utility_6.deepMerge(parsedOptions[key], parsedData.options[key]);
+                            parsedOptions[key] = utility_7.deepMerge(parsedOptions[key], parsedData.options[key]);
                         }
                     }
                 }
@@ -2872,7 +2955,7 @@ define("src/options", ["require", "exports", "src/eventManager", "src/utility"],
                 parsedData = JSON.parse(localStorage.getItem(baseString + slot));
             }
             else {
-                parsedData = utility_6.getMatchingLocalstorageItemsByDate(baseString)[0];
+                parsedData = utility_7.getMatchingLocalstorageItemsByDate(baseString)[0];
             }
             return parsedData;
         };
@@ -2885,10 +2968,10 @@ define("src/options", ["require", "exports", "src/eventManager", "src/utility"],
             });
         };
         Options.prototype.deSerialize = function (data) {
-            this.battleAnimationTiming = utility_6.deepMerge(this.battleAnimationTiming, data.battleAnimationTiming, true);
-            this.debug = utility_6.deepMerge(this.debug, data.debug, true);
-            this.ui = utility_6.deepMerge(this.ui, data.ui, true);
-            this.display = utility_6.deepMerge(this.display, data.display, true);
+            this.battleAnimationTiming = utility_7.deepMerge(this.battleAnimationTiming, data.battleAnimationTiming, true);
+            this.debug = utility_7.deepMerge(this.debug, data.debug, true);
+            this.ui = utility_7.deepMerge(this.ui, data.ui, true);
+            this.display = utility_7.deepMerge(this.display, data.display, true);
         };
         return Options;
     }());
@@ -2943,7 +3026,7 @@ define("src/DiplomacyState", ["require", "exports"], function (require, exports)
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = DiplomacyState;
 });
-define("src/AttitudeModifier", ["require", "exports", "src/utility"], function (require, exports, utility_7) {
+define("src/AttitudeModifier", ["require", "exports", "src/utility"], function (require, exports, utility_8) {
     "use strict";
     var AttitudeModifier = (function () {
         function AttitudeModifier(props) {
@@ -2990,7 +3073,7 @@ define("src/AttitudeModifier", ["require", "exports", "src/utility"], function (
             if (this.endTurn < 0)
                 return 1;
             else {
-                return 1 - utility_7.getRelativeValue(currentTurn, this.startTurn, this.endTurn);
+                return 1 - utility_8.getRelativeValue(currentTurn, this.startTurn, this.endTurn);
             }
         };
         AttitudeModifier.prototype.refresh = function (newModifier) {
@@ -3722,7 +3805,7 @@ define("src/FillerPoint", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = FillerPoint;
 });
-define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/Star", "src/Unit", "src/Building", "src/Game", "src/NotificationLog", "src/Notification", "src/FillerPoint", "src/Manufactory", "src/Color", "src/AttitudeModifier", "src/Emblem", "src/Flag", "src/Fleet", "src/Item", "src/MapGenResult", "src/utility"], function (require, exports, App_11, Player_1, Star_1, Unit_2, Building_1, Game_1, NotificationLog_1, Notification_1, FillerPoint_1, Manufactory_1, Color_1, AttitudeModifier_2, Emblem_2, Flag_1, Fleet_2, Item_2, MapGenResult_1, utility_8) {
+define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/Star", "src/Unit", "src/Building", "src/Game", "src/NotificationLog", "src/Notification", "src/FillerPoint", "src/Manufactory", "src/Color", "src/AttitudeModifier", "src/Emblem", "src/Flag", "src/Fleet", "src/Item", "src/MapGenResult", "src/utility"], function (require, exports, App_11, Player_1, Star_1, Unit_2, Building_1, Game_1, NotificationLog_1, Notification_1, FillerPoint_1, Manufactory_1, Color_1, AttitudeModifier_2, Emblem_2, Flag_1, Fleet_2, Item_2, MapGenResult_1, utility_9) {
     "use strict";
     var GameLoader = (function () {
         function GameLoader() {
@@ -3852,14 +3935,14 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
         GameLoader.prototype.deserializePlayer = function (data) {
             var personality;
             if (data.personality) {
-                personality = utility_8.extendObject(data.personality, utility_8.makeRandomPersonality(), true);
+                personality = utility_9.extendObject(data.personality, utility_9.makeRandomPersonality(), true);
             }
             var player = new Player_1.default(data.isAI, data.id);
             player.name = data.name;
             player.money = data.money;
             player.isIndependent = data.isIndependent;
             if (data.resources) {
-                player.resources = utility_8.extendObject(data.resources);
+                player.resources = utility_9.extendObject(data.resources);
             }
             player.personality = personality;
             player.color = Color_1.default.deSerialize(data.color);
@@ -3985,7 +4068,7 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = GameLoader;
 });
-define("src/NotificationFilter", ["require", "exports", "src/App", "src/NotificationFilterState", "src/utility"], function (require, exports, App_12, NotificationFilterState_1, utility_9) {
+define("src/NotificationFilter", ["require", "exports", "src/App", "src/NotificationFilterState", "src/utility"], function (require, exports, App_12, NotificationFilterState_1, utility_10) {
     "use strict";
     var NotificationFilter = (function () {
         function NotificationFilter(player) {
@@ -4090,10 +4173,10 @@ define("src/NotificationFilter", ["require", "exports", "src/App", "src/Notifica
                 parsedData = JSON.parse(localStorage.getItem(baseString + slot));
             }
             else {
-                parsedData = utility_9.getMatchingLocalstorageItemsByDate(baseString)[0];
+                parsedData = utility_10.getMatchingLocalstorageItemsByDate(baseString)[0];
             }
             if (parsedData) {
-                this.filters = utility_9.extendObject(parsedData.filters, this.filters, false);
+                this.filters = utility_10.extendObject(parsedData.filters, this.filters, false);
             }
         };
         NotificationFilter.prototype.save = function (slot) {
@@ -4199,7 +4282,7 @@ define("src/NotificationLog", ["require", "exports", "src/App", "src/Notificatio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = NotificationLog;
 });
-define("src/Game", ["require", "exports", "src/App", "src/idGenerators", "src/eventManager", "src/utility"], function (require, exports, App_14, idGenerators_4, eventManager_8, utility_10) {
+define("src/Game", ["require", "exports", "src/App", "src/idGenerators", "src/eventManager", "src/utility"], function (require, exports, App_14, idGenerators_4, eventManager_8, utility_11) {
     "use strict";
     var Game = (function () {
         function Game(map, players, humanPlayer) {
@@ -4316,7 +4399,7 @@ define("src/Game", ["require", "exports", "src/App", "src/idGenerators", "src/ev
                 name: name,
                 date: date,
                 gameData: gameData,
-                idGenerators: utility_10.extendObject(idGenerators_4.default),
+                idGenerators: utility_11.extendObject(idGenerators_4.default),
                 cameraLocation: App_14.default.renderer.camera.getCenterPosition()
             };
             var stringified = JSON.stringify(fullSaveData);
@@ -4330,7 +4413,7 @@ define("src/Game", ["require", "exports", "src/App", "src/idGenerators", "src/ev
 define("src/Range", ["require", "exports"], function (require, exports) {
     "use strict";
 });
-define("src/rangeOperations", ["require", "exports", "src/utility"], function (require, exports, utility_11) {
+define("src/rangeOperations", ["require", "exports", "src/utility"], function (require, exports, utility_12) {
     "use strict";
     function excludeFromRanges(ranges, toExclude) {
         var intersecting = getIntersectingRanges(ranges, toExclude);
@@ -4410,14 +4493,14 @@ define("src/rangeOperations", ["require", "exports", "src/utility"], function (r
         for (var i = 0; i < sortedWeights.length; i++) {
             if (rand < sortedWeights[i]) {
                 var selectedRange = rangesByRelativeWeight[sortedWeights[i]];
-                return utility_11.randRange(selectedRange.min, selectedRange.max);
+                return utility_12.randRange(selectedRange.min, selectedRange.max);
             }
         }
         throw new Error("Couldn't select from ranges.");
     }
     exports.randomSelectFromRanges = randomSelectFromRanges;
 });
-define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOperations", "src/utility"], function (require, exports, Color_2, rangeOperations_1, utility_12) {
+define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOperations", "src/utility"], function (require, exports, Color_2, rangeOperations_1, utility_13) {
     "use strict";
     function makeRandomVibrantColor() {
         var hRanges = [
@@ -4427,15 +4510,15 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
             { min: 320 / 360, max: 1 }
         ];
         var h = rangeOperations_1.randomSelectFromRanges(hRanges);
-        var s = utility_12.randRange(0.8, 0.9);
-        var v = utility_12.randRange(0.88, 0.92);
+        var s = utility_13.randRange(0.8, 0.9);
+        var v = utility_13.randRange(0.88, 0.92);
         return Color_2.default.fromHSV(h, s, v);
     }
     function makeRandomDeepColor() {
         if (Math.random() < 0.1) {
-            var h = utility_12.randRange(15 / 360, 80 / 360);
-            var s = utility_12.randRange(0.92, 1);
-            var v = utility_12.randRange(0.92, 1);
+            var h = utility_13.randRange(15 / 360, 80 / 360);
+            var s = utility_13.randRange(0.92, 1);
+            var v = utility_13.randRange(0.92, 1);
             return Color_2.default.fromHSV(h, s, v);
         }
         else {
@@ -4445,13 +4528,13 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
                 { min: 210 / 360, max: 1 }
             ];
             var h = rangeOperations_1.randomSelectFromRanges(hRanges);
-            var s = utility_12.randRange(0.8, 0.9);
-            var v = utility_12.randRange(0.88, 0.92);
+            var s = utility_13.randRange(0.8, 0.9);
+            var v = utility_13.randRange(0.88, 0.92);
             return Color_2.default.fromHSV(h, s, v);
         }
     }
     function makeRandomLightColor() {
-        return Color_2.default.fromHSV(utility_12.randRange(0, 1), utility_12.randRange(0.55, 0.65), 1);
+        return Color_2.default.fromHSV(utility_13.randRange(0, 1), utility_13.randRange(0.55, 0.65), 1);
     }
     function makeRandomColor(props) {
         var hRanges = props.h || [{ min: 0, max: 1 }];
@@ -4499,18 +4582,18 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
         };
         var hRangeWithMinExclusion = rangeOperations_1.excludeFromRange(hRange, hExclusionRange);
         var candidateHValue = rangeOperations_1.randomSelectFromRanges(hRangeWithMinExclusion);
-        var h = utility_12.clamp(candidateHValue, toContrastWithHUSL[0] - hMaxDifference, toContrastWithHUSL[0] + hMaxDifference);
-        var hDistance = utility_12.getAngleBetweenDegrees(h * 360, toContrastWithHUSL[0]);
+        var h = utility_13.clamp(candidateHValue, toContrastWithHUSL[0] - hMaxDifference, toContrastWithHUSL[0] + hMaxDifference);
+        var hDistance = utility_13.getAngleBetweenDegrees(h * 360, toContrastWithHUSL[0]);
         var relativeHDistance = 1 / (180 / hDistance);
-        var sExclusionRangeMin = utility_12.clamp(toContrastWithHUSL[1] - sMinDifference, sRange.min, 1.0);
+        var sExclusionRangeMin = utility_13.clamp(toContrastWithHUSL[1] - sMinDifference, sRange.min, 1.0);
         var sExclusionRange = {
             min: sExclusionRangeMin,
-            max: utility_12.clamp(toContrastWithHUSL[1] + sMinDifference, sExclusionRangeMin, 1.0)
+            max: utility_13.clamp(toContrastWithHUSL[1] + sMinDifference, sExclusionRangeMin, 1.0)
         };
-        var lExclusionRangeMin = utility_12.clamp(toContrastWithHUSL[2] - lMinDifference, lRange.min, 1.0);
+        var lExclusionRangeMin = utility_13.clamp(toContrastWithHUSL[2] - lMinDifference, lRange.min, 1.0);
         var lExclusionRange = {
             min: lExclusionRangeMin,
-            max: utility_12.clamp(toContrastWithHUSL[2] + lMinDifference, lExclusionRangeMin, 1.0)
+            max: utility_13.clamp(toContrastWithHUSL[2] + lMinDifference, lExclusionRangeMin, 1.0)
         };
         return makeRandomColor({
             h: [{ min: h, max: h }],
@@ -4541,7 +4624,7 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
     }
     exports.generateColorScheme = generateColorScheme;
 });
-define("src/mapai/MapEvaluator", ["require", "exports", "src/utility"], function (require, exports, utility_13) {
+define("src/mapai/MapEvaluator", ["require", "exports", "src/utility"], function (require, exports, utility_14) {
     "use strict";
     exports.defaultEvaluationParameters = {
         starDesirability: {
@@ -4964,7 +5047,7 @@ define("src/mapai/MapEvaluator", ["require", "exports", "src/utility"], function
                 max = isFinite(max) ? Math.max(max, threat) : threat;
             }
             for (var playerId in byPlayer) {
-                relative[playerId] = utility_13.getRelativeValue(byPlayer[playerId], min, max);
+                relative[playerId] = utility_14.getRelativeValue(byPlayer[playerId], min, max);
             }
             return relative;
         };
@@ -5121,7 +5204,7 @@ define("src/mapai/MapEvaluator", ["require", "exports", "src/utility"], function
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapEvaluator;
 });
-define("src/mapai/GrandStrategyAI", ["require", "exports", "src/utility"], function (require, exports, utility_14) {
+define("src/mapai/GrandStrategyAI", ["require", "exports", "src/utility"], function (require, exports, utility_15) {
     "use strict";
     var GrandStrategyAI = (function () {
         function GrandStrategyAI(personality, mapEvaluator) {
@@ -5160,14 +5243,14 @@ define("src/mapai/GrandStrategyAI", ["require", "exports", "src/utility"], funct
                 fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
             }
             var desire = fromAggressiveness + fromExpansiveness;
-            return utility_14.clamp(desire, 0, 1);
+            return utility_15.clamp(desire, 0, 1);
         };
         GrandStrategyAI.prototype.getDesireForExpansion = function () {
             if (!this.desiredStars)
                 this.setDesiredStars();
             var starsOwned = this.mapEvaluator.player.controlledLocations.length;
-            var desire = 1 - utility_14.getRelativeValue(starsOwned, this.desiredStars.min, this.desiredStars.max);
-            return utility_14.clamp(desire, 0.1, 1);
+            var desire = 1 - utility_15.getRelativeValue(starsOwned, this.desiredStars.min, this.desiredStars.max);
+            return utility_15.clamp(desire, 0.1, 1);
         };
         return GrandStrategyAI;
     }());
@@ -5665,7 +5748,7 @@ define("src/mapai/FrontsAI", ["require", "exports", "src/mapai/Front"], function
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = FrontsAI;
 });
-define("src/mapai/EconomyAI", ["require", "exports", "src/utility"], function (require, exports, utility_15) {
+define("src/mapai/EconomyAI", ["require", "exports", "src/utility"], function (require, exports, utility_16) {
     "use strict";
     var EconomyAI = (function () {
         function EconomyAI(props) {
@@ -5720,11 +5803,11 @@ define("src/mapai/EconomyAI", ["require", "exports", "src/utility"], function (r
                 }
                 buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
             }
-            var sortedScores = utility_15.getObjectKeysSortedByValue(archetypeScores, "desc");
+            var sortedScores = utility_16.getObjectKeysSortedByValue(archetypeScores, "desc");
             var unitType;
             for (var i = 0; i < sortedScores.length; i++) {
                 if (buildableUnitTypesByArchetype[sortedScores[i]]) {
-                    unitType = utility_15.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
+                    unitType = utility_16.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
                     if (this.player.money < unitType.buildCost) {
                         return;
                     }
@@ -5742,11 +5825,11 @@ define("src/mapai/EconomyAI", ["require", "exports", "src/utility"], function (r
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = EconomyAI;
 });
-define("src/mapai/AIController", ["require", "exports", "src/mapai/MapEvaluator", "src/mapai/GrandStrategyAI", "src/mapai/EconomyAI", "src/mapai/FrontsAI", "src/mapai/ObjectivesAI", "src/mapai/DiplomacyAI", "src/utility"], function (require, exports, MapEvaluator_1, GrandStrategyAI_1, EconomyAI_1, FrontsAI_1, ObjectivesAI_1, DiplomacyAI_1, utility_16) {
+define("src/mapai/AIController", ["require", "exports", "src/mapai/MapEvaluator", "src/mapai/GrandStrategyAI", "src/mapai/EconomyAI", "src/mapai/FrontsAI", "src/mapai/ObjectivesAI", "src/mapai/DiplomacyAI", "src/utility"], function (require, exports, MapEvaluator_1, GrandStrategyAI_1, EconomyAI_1, FrontsAI_1, ObjectivesAI_1, DiplomacyAI_1, utility_17) {
     "use strict";
     var AIController = (function () {
         function AIController(player, game, personality) {
-            this.personality = personality || utility_16.makeRandomPersonality();
+            this.personality = personality || utility_17.makeRandomPersonality();
             this.player = player;
             this.game = game;
             this.map = game.galaxyMap;
@@ -5792,7 +5875,7 @@ define("src/mapai/AIController", ["require", "exports", "src/mapai/MapEvaluator"
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = AIController;
 });
-define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/utility", "src/Flag", "src/BattleSimulator", "src/BattlePrep", "src/DiplomacyStatus", "src/PlayerTechnology", "src/eventManager", "src/colorGeneration", "src/options", "src/mapai/AIController"], function (require, exports, idGenerators_6, App_16, utility_17, Flag_2, BattleSimulator_1, BattlePrep_1, DiplomacyStatus_1, PlayerTechnology_1, eventManager_9, colorGeneration_1, options_2, AIController_1) {
+define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/utility", "src/Flag", "src/BattleSimulator", "src/BattlePrep", "src/DiplomacyStatus", "src/PlayerTechnology", "src/eventManager", "src/colorGeneration", "src/options", "src/mapai/AIController"], function (require, exports, idGenerators_6, App_16, utility_18, Flag_2, BattleSimulator_1, BattlePrep_1, DiplomacyStatus_1, PlayerTechnology_1, eventManager_9, colorGeneration_1, options_2, AIController_1) {
     "use strict";
     var Player = (function () {
         function Player(isAI, id) {
@@ -6022,8 +6105,8 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
             }
         };
         Player.prototype.updateVisibleStars = function () {
-            var previousVisibleStars = utility_17.extendObject(this.visibleStars);
-            var previousDetectedStars = utility_17.extendObject(this.detectedStars);
+            var previousVisibleStars = utility_18.extendObject(this.visibleStars);
+            var previousDetectedStars = utility_18.extendObject(this.detectedStars);
             var newVisibleStars = [];
             var newDetectedStars = [];
             var visibilityHasChanged = false;
@@ -6352,7 +6435,7 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
                 secondaryColor: this.secondaryColor.serialize(),
                 isIndependent: this.isIndependent,
                 isAI: this.isAI,
-                resources: utility_17.extendObject(this.resources),
+                resources: utility_18.extendObject(this.resources),
                 diplomacyStatus: this.diplomacyStatus.serialize(),
                 fleets: this.fleets.map(function (fleet) { return fleet.serialize(); }),
                 money: this.money,
@@ -6369,7 +6452,7 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
                 data.flag = this.flag.serialize();
             }
             if (this.isAI && this.AIController) {
-                data.personality = utility_17.extendObject(this.AIController.personality);
+                data.personality = utility_18.extendObject(this.AIController.personality);
             }
             return data;
         };
@@ -6658,23 +6741,150 @@ define("src/BattlePrep", ["require", "exports", "src/Battle", "src/BattlePrepFor
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattlePrep;
 });
+define("src/UnitDrawingFunctionData", ["require", "exports"], function (require, exports) {
+    "use strict";
+    function mirrorRectangle(rect, midX) {
+        return new PIXI.Rectangle(getMirroredPosition(rect.x, midX), rect.y, rect.width * -1, rect.height);
+    }
+    function mirrorPoint(point, midX) {
+        return { x: getMirroredPosition(point.x, midX), y: point.y };
+    }
+    function getMirroredPosition(pos, mid) {
+        return pos - (pos - mid) * 2;
+    }
+    function offsetRectangle(rect, offset) {
+        return new PIXI.Rectangle(rect.x + offset.x, rect.y + offset.y, rect.width, rect.height);
+    }
+    function offsetPoint(point, offset) {
+        return ({
+            x: point.x + offset.x,
+            y: point.y + offset.y
+        });
+    }
+    var UnitDrawingFunctionData = (function () {
+        function UnitDrawingFunctionData(props) {
+            this.boundingBox = props.boundingBox;
+            this.individualUnitBoundingBoxes = props.individualUnitBoundingBoxes;
+            this.singleAttackOriginPoint = props.singleAttackOriginPoint;
+            this.sequentialAttackOriginPoints = props.sequentialAttackOriginPoints;
+        }
+        UnitDrawingFunctionData.prototype.normalizeForBattleSFX = function (offset, unit) {
+            var cloned = this.clone();
+            cloned.offset({ x: 25, y: offset.y });
+            return cloned;
+        };
+        UnitDrawingFunctionData.prototype.clone = function () {
+            return new UnitDrawingFunctionData({
+                boundingBox: this.boundingBox.clone(),
+                individualUnitBoundingBoxes: this.individualUnitBoundingBoxes.map(function (bbox) {
+                    return bbox.clone();
+                }),
+                singleAttackOriginPoint: { x: this.singleAttackOriginPoint.x, y: this.singleAttackOriginPoint.y },
+                sequentialAttackOriginPoints: this.sequentialAttackOriginPoints.map(function (point) {
+                    return { x: point.x, y: point.y };
+                })
+            });
+        };
+        UnitDrawingFunctionData.prototype.offset = function (offset) {
+            this.boundingBox = offsetRectangle(this.boundingBox, offset);
+            this.individualUnitBoundingBoxes = this.individualUnitBoundingBoxes.map(function (bbox) {
+                return offsetRectangle(bbox, offset);
+            });
+            this.singleAttackOriginPoint = offsetPoint(this.singleAttackOriginPoint, offset);
+            this.sequentialAttackOriginPoints = this.sequentialAttackOriginPoints.map(function (point) {
+                return offsetPoint(point, offset);
+            });
+            return this;
+        };
+        UnitDrawingFunctionData.prototype.mirror = function () {
+            var midX = this.boundingBox.width / 2;
+            this.boundingBox = mirrorRectangle(this.boundingBox, midX);
+            this.individualUnitBoundingBoxes = this.individualUnitBoundingBoxes.map(function (bbox) {
+                return mirrorRectangle(bbox, midX);
+            });
+            this.singleAttackOriginPoint = mirrorPoint(this.singleAttackOriginPoint, midX);
+            this.sequentialAttackOriginPoints = this.sequentialAttackOriginPoints.map(function (point) {
+                return mirrorPoint(point, midX);
+            });
+            return this;
+        };
+        return UnitDrawingFunctionData;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = UnitDrawingFunctionData;
+});
 define("src/DamageType", ["require", "exports"], function (require, exports) {
     "use strict";
 });
 define("src/AbilityUpgradeData", ["require", "exports"], function (require, exports) {
     "use strict";
 });
-define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/utility", "src/Item", "src/Fleet"], function (require, exports, idGenerators_7, App_18, utility_18, Item_3, Fleet_4) {
+define("src/UnitItems", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var UnitItems = (function () {
+        function UnitItems() {
+        }
+        UnitItems.prototype.getItemsBySlot = function () {
+            var itemsBySlot = {};
+            this.items.forEach(function (item) {
+                var slot = item.template.slot;
+                if (!itemsBySlot[slot]) {
+                    itemsBySlot[slot] = [];
+                }
+                itemsBySlot[slot].push(item);
+            });
+            return itemsBySlot;
+        };
+        UnitItems.prototype.getAttributeAdjustments = function () {
+            return this.items.filter(function (item) {
+                return Boolean(item.template.attributeAdjustments);
+            }).map(function (item) {
+                return item.template.attributeAdjustments;
+            });
+        };
+        UnitItems.prototype.getAbilities = function () {
+            return this.items.filter(function (item) {
+                return Boolean(item.template.ability);
+            }).map(function (item) {
+                return item.template.ability;
+            });
+        };
+        UnitItems.prototype.getPassiveSkills = function () {
+            return this.items.filter(function (item) {
+                return Boolean(item.template.passiveSkill);
+            }).map(function (item) {
+                return item.template.passiveSkill;
+            });
+        };
+        UnitItems.prototype.addItem = function (toAdd) {
+            this.items.push(toAdd);
+        };
+        UnitItems.prototype.removeItem = function (toRemove) {
+            this.items = this.items.filter(function (item) {
+                return item !== toRemove;
+            });
+        };
+        UnitItems.prototype.destroyAllItems = function () {
+            this.items.forEach(function (item) {
+                item.unit.fleet.player.removeItem(item);
+            });
+        };
+        UnitItems.prototype.serialize = function () {
+            return this.items.map(function (item) {
+                return item.serialize();
+            });
+        };
+        return UnitItems;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = UnitItems;
+});
+define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/UnitAttributes", "src/utility", "src/Item", "src/Fleet"], function (require, exports, idGenerators_7, App_18, UnitAttributes_1, utility_19, Item_3, Fleet_4) {
     "use strict";
     var Unit = (function () {
         function Unit(template, id, data) {
             this.abilities = [];
             this.passiveSkills = [];
-            this.items = {
-                low: null,
-                mid: null,
-                high: null
-            };
             this.passiveSkillsByPhase = {};
             this.passiveSkillsByPhaseAreDirty = true;
             this.uiDisplayIsDirty = true;
@@ -6700,14 +6910,15 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             configurable: true
         });
         Unit.prototype.makeFromData = function (data) {
+            var _this = this;
             this.name = data.name;
             this.maxHealth = data.maxHealth;
             this.currentHealth = data.currentHealth;
             this.currentMovePoints = data.currentMovePoints;
             this.maxMovePoints = data.maxMovePoints;
             this.timesActedThisTurn = data.timesActedThisTurn;
-            this.baseAttributes = utility_18.extendObject(data.baseAttributes);
-            this.cachedAttributes = utility_18.extendObject(this.baseAttributes);
+            this.baseAttributes = utility_19.extendObject(data.baseAttributes);
+            this.cachedAttributes = utility_19.extendObject(this.baseAttributes);
             this.abilities = data.abilityTemplateTypes.map(function (key) {
                 var template = App_18.default.moduleData.Templates.Abilities[key];
                 if (!template) {
@@ -6744,26 +6955,12 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                         },
                     isAnnihilated: data.battleStats.isAnnihilated
                 };
-            var items = {};
-            ["low", "mid", "high"].forEach(function (slot) {
-                if (data.items[slot]) {
-                    var item = data.items[slot];
-                    if (!item)
-                        return;
-                    items[slot] = new Item_3.default(App_18.default.moduleData.Templates.Items[item.templateType], item.id);
-                }
+            data.items.forEach(function (itemData) {
+                var item = new Item_3.default(App_18.default.moduleData.Templates.Items[itemData.templateType], itemData.id);
+                _this.addItem(item);
             });
-            this.items =
-                {
-                    low: null,
-                    mid: null,
-                    high: null
-                };
-            for (var slot in items) {
-                this.addItem(items[slot]);
-            }
             if (data.portraitKey) {
-                this.portrait = utility_18.findItemWithKey(App_18.default.moduleData.Templates.Cultures, data.portraitKey, "portraits");
+                this.portrait = utility_19.findItemWithKey(App_18.default.moduleData.Templates.Cultures, data.portraitKey, "portraits");
             }
         };
         Unit.prototype.setInitialValues = function () {
@@ -6782,7 +6979,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             if (multiplier === void 0) { multiplier = 1; }
             var min = 200 * this.template.maxHealth * multiplier;
             var max = 300 * this.template.maxHealth * multiplier;
-            this.maxHealth = utility_18.randInt(min, max);
+            this.maxHealth = utility_19.randInt(min, max);
             this.currentHealth = this.maxHealth;
         };
         Unit.prototype.setAttributes = function (baseSkill, variance) {
@@ -6794,19 +6991,19 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 defence: 1,
                 intelligence: 1,
                 speed: 1,
-                maxActionPoints: utility_18.randInt(3, 5)
+                maxActionPoints: utility_19.randInt(3, 5)
             };
             for (var attribute in template.attributeLevels) {
                 var attributeLevel = template.attributeLevels[attribute];
                 var min = Math.max(3 * baseSkill * attributeLevel, 1);
                 var max = Math.max(5 * baseSkill * attributeLevel + variance, 1);
-                attributes[attribute] = utility_18.randInt(min, max);
+                attributes[attribute] = utility_19.randInt(min, max);
                 if (attributes[attribute] > 9)
                     attributes[attribute] = 9;
             }
-            this.baseAttributes = utility_18.extendObject(attributes);
-            this.cachedAttributes = attributes;
-            this.attributesAreDirty = true;
+            this.baseAttributes = new UnitAttributes_1.default(attributes);
+            this.cachedAttributes = this.baseAttributes.clone();
+            this.attributesAreDirty = false;
         };
         Unit.prototype.setCulture = function () {
             var templateCultures = this.template.cultures;
@@ -6815,17 +7012,17 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 return Boolean(cultureTemplate.nameGenerator);
             });
             if (nameGeneratorCandidateCultures.length > 0) {
-                nameGeneratorFN = utility_18.getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
+                nameGeneratorFN = utility_19.getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
             }
             else {
-                nameGeneratorFN = utility_18.defaultNameGenerator;
+                nameGeneratorFN = utility_19.defaultNameGenerator;
             }
             this.name = nameGeneratorFN(this);
             var portraitCandidateCultures = templateCultures.filter(function (cultureTemplate) {
                 return Boolean(cultureTemplate.portraits);
             });
             if (portraitCandidateCultures.length === 0) {
-                portraitCandidateCultures = utility_18.getAllPropertiesWithKey(App_18.default.moduleData.Templates.Cultures, "portraits");
+                portraitCandidateCultures = utility_19.getAllPropertiesWithKey(App_18.default.moduleData.Templates.Cultures, "portraits");
                 if (portraitCandidateCultures.length === 0) {
                     console.warn("No culture has portraits specified");
                     return;
@@ -6837,8 +7034,8 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                     culture: culture
                 });
             });
-            var portraitCulture = utility_18.getRandomArrayItemWithWeights(portraitCandidateCulturesWithWeights).culture;
-            this.portrait = utility_18.getRandomProperty(portraitCulture.portraits);
+            var portraitCulture = utility_19.getRandomArrayItemWithWeights(portraitCandidateCulturesWithWeights).culture;
+            this.portrait = utility_19.getRandomProperty(portraitCulture.portraits);
         };
         Unit.prototype.getBaseMoveDelay = function () {
             return 30 - this.attributes.speed;
@@ -6875,7 +7072,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
         };
         Unit.prototype.removeStrength = function (amount) {
             this.currentHealth -= Math.round(amount);
-            this.currentHealth = utility_18.clamp(this.currentHealth, 0, this.maxHealth);
+            this.currentHealth = utility_19.clamp(this.currentHealth, 0, this.maxHealth);
             if (amount > 0) {
                 this.removeGuard(40);
             }
@@ -6953,7 +7150,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             }
             this.items[itemSlot] = item;
             item.unit = this;
-            if (item.template.attributes) {
+            if (item.template.attributeAdjustments) {
                 this.attributesAreDirty = true;
             }
             if (item.template.passiveSkill) {
@@ -6965,7 +7162,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             if (this.items[itemSlot] === item) {
                 this.items[itemSlot] = null;
                 item.unit = null;
-                if (item.template.attributes) {
+                if (item.template.attributeAdjustments) {
                     this.attributesAreDirty = true;
                 }
                 if (item.template.passiveSkill) {
@@ -6975,25 +7172,8 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             }
             return false;
         };
-        Unit.prototype.destroyAllItems = function () {
-            for (var slot in this.items) {
-                var item = this.items[slot];
-                if (item) {
-                    this.fleet.player.removeItem(item);
-                }
-            }
-        };
         Unit.prototype.getAttributesWithItems = function () {
-            var attributes = utility_18.extendObject(this.baseAttributes);
-            for (var itemSlot in this.items) {
-                if (this.items[itemSlot]) {
-                    var item = this.items[itemSlot];
-                    for (var attribute in item.template.attributes) {
-                        attributes[attribute] = utility_18.clamp(attributes[attribute] + item.template.attributes[attribute], 1, 9);
-                    }
-                }
-            }
-            return attributes;
+            return this.baseAttributes.getAdjustedAttributes(this.items.getAttributeAdjustments()).clamp(1, 9);
         };
         Unit.prototype.addStatusEffect = function (statusEffect) {
             if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1) {
@@ -7019,6 +7199,13 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 this.attributesAreDirty = true;
             }
             this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.getStatusEffectAttributeAdjustments = function () {
+            return this.battleStats.statusEffects.filter(function (statusEffect) {
+                return Boolean(statusEffect.template.attributes);
+            }).map(function (statusEffect) {
+                return statusEffect.template.attributes;
+            });
         };
         Unit.prototype.getTotalStatusEffectAttributeAdjustments = function () {
             if (!this.battleStats || !this.battleStats.statusEffects) {
@@ -7051,21 +7238,14 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 if (adjustments[attribute].multiplier) {
                     withItems[attribute] *= 1 + adjustments[attribute].multiplier;
                 }
-                withItems[attribute] = utility_18.clamp(withItems[attribute], -5, 20);
+                withItems[attribute] = utility_19.clamp(withItems[attribute], -5, 20);
             }
             return withItems;
         };
         Unit.prototype.getAttributesWithEffectsDifference = function () {
             var withItems = this.getAttributesWithItems();
             var withEffects = this.getAttributesWithEffects();
-            var difference = {};
-            for (var attributeType in withEffects) {
-                var differenceForThisAttribute = withEffects[attributeType] - withItems[attributeType];
-                if (differenceForThisAttribute !== 0) {
-                    difference[attributeType] = differenceForThisAttribute;
-                }
-            }
-            return difference;
+            return withEffects.getDifferenceBetween(withItems);
         };
         Unit.prototype.updateCachedAttributes = function () {
             this.cachedAttributes = this.getAttributesWithEffects();
@@ -7078,11 +7258,11 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             return false;
         };
         Unit.prototype.setInitialAbilities = function () {
-            this.abilities = utility_18.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
+            this.abilities = utility_19.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
         };
         Unit.prototype.setInitialPassiveSkills = function () {
             if (this.template.possiblePassiveSkills) {
-                this.passiveSkills = utility_18.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
+                this.passiveSkills = utility_19.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
             }
         };
         Unit.prototype.getItemAbilities = function () {
@@ -7239,7 +7419,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
         };
         Unit.prototype.removeFromPlayer = function () {
             var player = this.fleet.player;
-            this.destroyAllItems();
+            this.items.destroyAllItems();
             player.removeUnit(this);
             this.fleet.removeUnit(this);
             if (this.front) {
@@ -7345,21 +7525,24 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             if (!this.template.learnableAbilities)
                 return abilities;
             for (var i = 0; i < this.template.learnableAbilities.length; i++) {
-                var learnableItem = this.template.learnableAbilities[i];
-                if (Array.isArray(learnableItem)) {
+                if (Array.isArray(this.template.learnableAbilities[i])) {
+                    var learnableAbilityGroup = this.template.learnableAbilities[i];
                     var hasAbilityFromGroup = false;
-                    for (var j = 0; j < learnableItem.length; j++) {
-                        if (this.hasAbility(learnableItem[j], allAbilities)) {
+                    for (var j = 0; j < learnableAbilityGroup.length; j++) {
+                        if (this.hasAbility(learnableAbilityGroup[j], allAbilities)) {
                             hasAbilityFromGroup = true;
                             break;
                         }
                     }
                     if (!hasAbilityFromGroup) {
-                        abilities = abilities.concat(learnableItem);
+                        abilities.push.apply(abilities, learnableAbilityGroup);
                     }
                 }
-                else if (!this.hasAbility(learnableItem, allAbilities)) {
-                    abilities.push(learnableItem);
+                else {
+                    var learnableAbility = this.template.learnableAbilities[i];
+                    if (!this.hasAbility(learnableAbility, allAbilities)) {
+                        abilities.push(learnableAbility);
+                    }
                 }
             }
             return abilities;
@@ -7452,14 +7635,6 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
         Unit.prototype.serialize = function (includeItems, includeFluff) {
             if (includeItems === void 0) { includeItems = true; }
             if (includeFluff === void 0) { includeFluff = true; }
-            var itemsSaveData = {};
-            if (includeItems) {
-                for (var slot in this.items) {
-                    if (this.items[slot]) {
-                        itemsSaveData[slot] = this.items[slot].serialize();
-                    }
-                }
-            }
             var battleStatsSavedData = {
                 moveDelay: this.battleStats.moveDelay,
                 side: this.battleStats.side,
@@ -7489,7 +7664,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 currentMovePoints: this.currentMovePoints,
                 maxMovePoints: this.maxMovePoints,
                 timesActedThisTurn: this.timesActedThisTurn,
-                baseAttributes: utility_18.extendObject(this.baseAttributes),
+                baseAttributes: utility_19.extendObject(this.baseAttributes),
                 abilityTemplateTypes: this.abilities.map(function (ability) {
                     return ability.type;
                 }),
@@ -7498,7 +7673,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 }),
                 experienceForCurrentLevel: this.experienceForCurrentLevel,
                 level: this.level,
-                items: itemsSaveData,
+                items: includeItems ? this.items.serialize() : null,
                 battleStats: battleStatsSavedData
             };
             if (this.fleet) {
@@ -8709,7 +8884,20 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapRenderer;
 });
-define("src/ModuleData", ["require", "exports", "src/utility"], function (require, exports, utility_19) {
+define("src/ModuleFileLoadingPhase", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var ModuleFileLoadingPhase;
+    (function (ModuleFileLoadingPhase) {
+        ModuleFileLoadingPhase[ModuleFileLoadingPhase["setup"] = 0] = "setup";
+        ModuleFileLoadingPhase[ModuleFileLoadingPhase["mapGen"] = 1] = "mapGen";
+        ModuleFileLoadingPhase[ModuleFileLoadingPhase["game"] = 2] = "game";
+        ModuleFileLoadingPhase[ModuleFileLoadingPhase["battlePrep"] = 3] = "battlePrep";
+        ModuleFileLoadingPhase[ModuleFileLoadingPhase["battle"] = 4] = "battle";
+    })(ModuleFileLoadingPhase || (ModuleFileLoadingPhase = {}));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ModuleFileLoadingPhase;
+});
+define("src/ModuleData", ["require", "exports", "src/utility"], function (require, exports, utility_20) {
     "use strict";
     var ModuleData = (function () {
         function ModuleData() {
@@ -8767,71 +8955,129 @@ define("src/ModuleData", ["require", "exports", "src/utility"], function (requir
             if (this.defaultMap)
                 return this.defaultMap;
             else if (Object.keys(this.Templates.MapGen).length > 0) {
-                return utility_19.getRandomProperty(this.Templates.MapGen);
+                return utility_20.getRandomProperty(this.Templates.MapGen);
             }
             else
                 throw new Error("Module has no maps registered");
         };
         ModuleData.prototype.applyRuleSet = function (ruleSetValuesToCopy) {
-            this.ruleSet = utility_19.deepMerge(this.ruleSet, ruleSetValuesToCopy);
+            this.ruleSet = utility_20.deepMerge(this.ruleSet, ruleSetValuesToCopy);
         };
         return ModuleData;
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ModuleData;
 });
-define("src/ModuleLoader", ["require", "exports", "src/ModuleData"], function (require, exports, ModuleData_1) {
+define("src/ModuleLoader", ["require", "exports", "src/ModuleData", "src/ModuleFileLoadingPhase", "src/eventManager"], function (require, exports, ModuleData_1, ModuleFileLoadingPhase_1, eventManager_12) {
     "use strict";
     var ModuleLoader = (function () {
         function ModuleLoader() {
-            this.moduleFiles = {};
+            this.moduleFilesByKey = {};
+            this.moduleFilesByPhase = {};
             this.hasLoaded = {};
             this.moduleLoadStart = {};
+            this.moduleLoadFinishCallbacks = {};
             this.moduleData = new ModuleData_1.default();
+            eventManager_12.default.addEventListener("loadModulesNeededForPhase", this.loadModulesNeededForPhase.bind(this));
         }
         ModuleLoader.prototype.addModuleFile = function (moduleFile) {
-            if (this.moduleFiles[moduleFile.key]) {
+            if (this.moduleFilesByKey[moduleFile.key]) {
                 throw new Error("Duplicate module key " + moduleFile.key);
             }
-            this.moduleFiles[moduleFile.key] = moduleFile;
+            this.moduleFilesByKey[moduleFile.key] = moduleFile;
             this.hasLoaded[moduleFile.key] = false;
+            if (!this.moduleFilesByPhase[moduleFile.needsToBeLoadedBefore]) {
+                this.moduleFilesByPhase[moduleFile.needsToBeLoadedBefore] = [];
+            }
+            this.moduleFilesByPhase[moduleFile.needsToBeLoadedBefore].push(moduleFile);
         };
         ModuleLoader.prototype.loadModuleFile = function (moduleFile, afterLoaded) {
-            if (!this.moduleFiles[moduleFile.key]) {
+            var _this = this;
+            if (!this.moduleFilesByKey[moduleFile.key]) {
                 this.addModuleFile(moduleFile);
             }
+            if (this.hasLoaded[moduleFile.key]) {
+                afterLoaded();
+                return;
+            }
+            if (!this.moduleLoadFinishCallbacks[moduleFile.key]) {
+                this.moduleLoadFinishCallbacks[moduleFile.key] = [];
+            }
+            this.moduleLoadFinishCallbacks[moduleFile.key].push(afterLoaded);
+            if (isFinite(this.moduleLoadStart[moduleFile.key])) {
+                return;
+            }
+            console.log("start loading module", moduleFile.key);
             this.moduleLoadStart[moduleFile.key] = Date.now();
             if (moduleFile.loadAssets) {
-                moduleFile.loadAssets(this.finishLoadingModuleFile.bind(this, moduleFile, afterLoaded));
+                moduleFile.loadAssets(function () {
+                    _this.finishLoadingModuleFile(moduleFile);
+                });
             }
             else {
-                this.finishLoadingModuleFile(moduleFile, afterLoaded);
+                this.finishLoadingModuleFile(moduleFile);
             }
         };
-        ModuleLoader.prototype.loadAll = function (afterLoaded) {
-            var boundCheckAll = function () {
-                if (this.hasFinishedLoading()) {
+        ModuleLoader.prototype.loadModuleFiles = function (moduleFilesToLoad, afterLoaded) {
+            var _this = this;
+            if (!moduleFilesToLoad || moduleFilesToLoad.length < 1) {
+                if (afterLoaded) {
                     afterLoaded();
                 }
-            }.bind(this);
-            for (var index in this.moduleFiles) {
-                this.loadModuleFile(this.moduleFiles[index], boundCheckAll);
+                return;
             }
+            var loadedModuleFiles = [];
+            var executeIfAllLoaded = function () {
+                if (loadedModuleFiles.length === moduleFilesToLoad.length) {
+                    afterLoaded();
+                }
+            };
+            moduleFilesToLoad.forEach(function (moduleFile) {
+                _this.loadModuleFile(moduleFile, function () {
+                    loadedModuleFiles.push(moduleFile);
+                    if (afterLoaded) {
+                        executeIfAllLoaded();
+                    }
+                });
+            });
         };
-        ModuleLoader.prototype.hasFinishedLoading = function () {
-            for (var index in this.hasLoaded) {
-                if (!this.hasLoaded[index]) {
-                    return false;
+        ModuleLoader.prototype.loadAll = function (afterLoaded) {
+            var allModuleFiles = [];
+            for (var key in this.moduleFilesByKey) {
+                allModuleFiles.push(this.moduleFilesByKey[key]);
+            }
+            this.loadModuleFiles(allModuleFiles, afterLoaded);
+        };
+        ModuleLoader.prototype.loadModulesForPhase = function (phase, afterLoaded) {
+            var moduleFilesToLoad = this.moduleFilesByPhase[phase];
+            this.loadModuleFiles(moduleFilesToLoad, afterLoaded);
+        };
+        ModuleLoader.prototype.loadModulesNeededForPhase = function (phase, afterLoaded) {
+            var moduleFilesNeededForPhase = [];
+            for (var keyString in this.moduleFilesByPhase) {
+                if (parseInt(keyString) <= phase) {
+                    moduleFilesNeededForPhase.push.apply(moduleFilesNeededForPhase, this.moduleFilesByPhase[keyString]);
                 }
             }
-            return true;
+            this.loadModuleFiles(moduleFilesNeededForPhase, afterLoaded);
         };
-        ModuleLoader.prototype.finishLoadingModuleFile = function (moduleFile, afterLoaded) {
+        ModuleLoader.prototype.progressivelyLoadModulesByPhase = function (startingPhase) {
+            var _this = this;
+            this.loadModulesForPhase(startingPhase, function () {
+                if (ModuleFileLoadingPhase_1.default[startingPhase + 1]) {
+                    _this.progressivelyLoadModulesByPhase(startingPhase + 1);
+                }
+            });
+        };
+        ModuleLoader.prototype.finishLoadingModuleFile = function (moduleFile) {
             this.hasLoaded[moduleFile.key] = true;
             this.constructModuleFile(moduleFile);
             var loadTime = Date.now() - this.moduleLoadStart[moduleFile.key];
             console.log("Module '" + moduleFile.key + "' finished loading in " + loadTime + "ms");
-            afterLoaded();
+            while (this.moduleLoadFinishCallbacks[moduleFile.key].length > 0) {
+                var afterLoadedCallback = this.moduleLoadFinishCallbacks[moduleFile.key].pop();
+                afterLoadedCallback();
+            }
         };
         ModuleLoader.prototype.constructModuleFile = function (moduleFile) {
             if (moduleFile.constructModule) {
@@ -8844,7 +9090,7 @@ define("src/ModuleLoader", ["require", "exports", "src/ModuleData"], function (r
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ModuleLoader;
 });
-define("src/RectangleSelect", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_12) {
+define("src/RectangleSelect", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_13) {
     "use strict";
     var RectangleSelect = (function () {
         function RectangleSelect(parentContainer) {
@@ -8861,7 +9107,7 @@ define("src/RectangleSelect", ["require", "exports", "src/eventManager"], functi
         };
         RectangleSelect.prototype.addEventListeners = function () {
             var self = this;
-            eventManager_12.default.dispatchEvent("setRectangleSelectTargetFN", this);
+            eventManager_13.default.dispatchEvent("setRectangleSelectTargetFN", this);
         };
         RectangleSelect.prototype.startSelection = function (point) {
             this.selecting = true;
@@ -8879,7 +9125,7 @@ define("src/RectangleSelect", ["require", "exports", "src/eventManager"], functi
             }
             this.setSelectionTargets();
             var inSelection = this.getAllInSelection();
-            eventManager_12.default.dispatchEvent("selectFleets", inSelection);
+            eventManager_13.default.dispatchEvent("selectFleets", inSelection);
             this.clearSelection();
         };
         RectangleSelect.prototype.clearSelection = function () {
@@ -8939,7 +9185,7 @@ define("src/RectangleSelect", ["require", "exports", "src/eventManager"], functi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = RectangleSelect;
 });
-define("src/PlayerControl", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_13) {
+define("src/PlayerControl", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_14) {
     "use strict";
     var PlayerControl = (function () {
         function PlayerControl(player) {
@@ -8961,7 +9207,7 @@ define("src/PlayerControl", ["require", "exports", "src/eventManager"], function
             this.selectedStar = null;
         };
         PlayerControl.prototype.removeEventListener = function (name) {
-            eventManager_13.default.removeEventListener(name, this.listeners[name]);
+            eventManager_14.default.removeEventListener(name, this.listeners[name]);
         };
         PlayerControl.prototype.removeEventListeners = function () {
             for (var name_3 in this.listeners) {
@@ -8970,7 +9216,7 @@ define("src/PlayerControl", ["require", "exports", "src/eventManager"], function
         };
         PlayerControl.prototype.addEventListener = function (name, handler) {
             this.listeners[name] = handler;
-            eventManager_13.default.addEventListener(name, handler);
+            eventManager_14.default.addEventListener(name, handler);
         };
         PlayerControl.prototype.addEventListeners = function () {
             var self = this;
@@ -9027,8 +9273,8 @@ define("src/PlayerControl", ["require", "exports", "src/eventManager"], function
             if (endReorganizingFleets)
                 this.endReorganizingFleets();
             this.currentAttackTargets = this.getCurrentAttackTargets();
-            eventManager_13.default.dispatchEvent("playerControlUpdated", null);
-            eventManager_13.default.dispatchEvent("clearPossibleActions", null);
+            eventManager_14.default.dispatchEvent("playerControlUpdated", null);
+            eventManager_14.default.dispatchEvent("clearPossibleActions", null);
         };
         PlayerControl.prototype.areAllFleetsInSameLocation = function () {
             if (this.selectedFleets.length <= 0)
@@ -9189,7 +9435,7 @@ define("src/PlayerControl", ["require", "exports", "src/eventManager"], function
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = PlayerControl;
 });
-define("src/Camera", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_14) {
+define("src/Camera", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_15) {
     "use strict";
     var tempCameraId = 0;
     var Camera = (function () {
@@ -9209,7 +9455,7 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
         }
         Camera.prototype.destroy = function () {
             for (var name_4 in this.listeners) {
-                eventManager_14.default.removeEventListener(name_4, this.listeners[name_4]);
+                eventManager_15.default.removeEventListener(name_4, this.listeners[name_4]);
             }
             window.removeEventListener("resize", this.resizeListener);
         };
@@ -9225,7 +9471,7 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
             };
             window.addEventListener("resize", this.resizeListener, false);
             this.listeners["setCameraToCenterOn"] =
-                eventManager_14.default.addEventListener("setCameraToCenterOn", function (position) {
+                eventManager_15.default.addEventListener("setCameraToCenterOn", function (position) {
                     self.toCenterOn = position;
                 });
         };
@@ -9270,7 +9516,7 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
             this.onMove();
         };
         Camera.prototype.onMove = function () {
-            eventManager_14.default.dispatchEvent("cameraMoved", this.container.position.x, this.container.position.y);
+            eventManager_15.default.dispatchEvent("cameraMoved", this.container.position.x, this.container.position.y);
         };
         Camera.prototype.getScreenCenter = function () {
             return ({
@@ -9317,7 +9563,7 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
             this.onZoom();
         };
         Camera.prototype.onZoom = function () {
-            eventManager_14.default.dispatchEvent("cameraZoomed", this.currZoom);
+            eventManager_15.default.dispatchEvent("cameraZoomed", this.currZoom);
         };
         Camera.prototype.deltaZoom = function (delta, scale) {
             if (delta === 0) {
@@ -9354,7 +9600,7 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Camera;
 });
-define("src/MouseEventHandler", ["require", "exports", "src/App", "src/RectangleSelect", "src/eventManager"], function (require, exports, App_21, RectangleSelect_1, eventManager_15) {
+define("src/MouseEventHandler", ["require", "exports", "src/App", "src/RectangleSelect", "src/eventManager"], function (require, exports, App_21, RectangleSelect_1, eventManager_16) {
     "use strict";
     var MouseEventHandler = (function () {
         function MouseEventHandler(renderer, camera) {
@@ -9375,7 +9621,7 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
         }
         MouseEventHandler.prototype.destroy = function () {
             for (var name_5 in this.listeners) {
-                eventManager_15.default.removeEventListener(name_5, this.listeners[name_5]);
+                eventManager_16.default.removeEventListener(name_5, this.listeners[name_5]);
             }
             this.hoveredStar = null;
             this.rectangleSelect.destroy();
@@ -9400,22 +9646,22 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
                 if (e.target.localName !== "canvas")
                     return;
             });
-            this.listeners["mouseDown"] = eventManager_15.default.addEventListener("mouseDown", function (e, star) {
+            this.listeners["mouseDown"] = eventManager_16.default.addEventListener("mouseDown", function (e, star) {
                 self.mouseDown(e, star);
             });
-            this.listeners["mouseUp"] = eventManager_15.default.addEventListener("mouseUp", function (e) {
+            this.listeners["mouseUp"] = eventManager_16.default.addEventListener("mouseUp", function (e) {
                 self.mouseUp(e);
             });
-            this.listeners["touchStart"] = eventManager_15.default.addEventListener("touchStart", function (e) {
+            this.listeners["touchStart"] = eventManager_16.default.addEventListener("touchStart", function (e) {
                 self.touchStart(e);
             });
-            this.listeners["touchEnd"] = eventManager_15.default.addEventListener("touchEnd", function (e) {
+            this.listeners["touchEnd"] = eventManager_16.default.addEventListener("touchEnd", function (e) {
                 self.touchEnd(e);
             });
-            this.listeners["hoverStar"] = eventManager_15.default.addEventListener("hoverStar", function (star) {
+            this.listeners["hoverStar"] = eventManager_16.default.addEventListener("hoverStar", function (star) {
                 self.setHoveredStar(star);
             });
-            this.listeners["clearHover"] = eventManager_15.default.addEventListener("clearHover", function () {
+            this.listeners["clearHover"] = eventManager_16.default.addEventListener("clearHover", function () {
                 self.clearHoveredStar();
             });
         };
@@ -9575,27 +9821,27 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
             }.bind(this), 15);
         };
         MouseEventHandler.prototype.startFleetMove = function (event, star) {
-            eventManager_15.default.dispatchEvent("startPotentialMove", star);
+            eventManager_16.default.dispatchEvent("startPotentialMove", star);
             this.currentAction = "fleetMove";
             this.makeUITransparent();
         };
         MouseEventHandler.prototype.setFleetMoveTarget = function (star) {
             if (this.currentAction !== "fleetMove")
                 return;
-            eventManager_15.default.dispatchEvent("setPotentialMoveTarget", star);
+            eventManager_16.default.dispatchEvent("setPotentialMoveTarget", star);
         };
         MouseEventHandler.prototype.completeFleetMove = function () {
             if (this.hoveredStar) {
-                eventManager_15.default.dispatchEvent("moveFleets", this.hoveredStar);
+                eventManager_16.default.dispatchEvent("moveFleets", this.hoveredStar);
             }
-            eventManager_15.default.dispatchEvent("endPotentialMove");
+            eventManager_16.default.dispatchEvent("endPotentialMove");
             this.currentAction = undefined;
             this.makeUIOpaque();
         };
         MouseEventHandler.prototype.clearFleetMoveTarget = function () {
             if (this.currentAction !== "fleetMove")
                 return;
-            eventManager_15.default.dispatchEvent("clearPotentialMoveTarget");
+            eventManager_16.default.dispatchEvent("clearPotentialMoveTarget");
         };
         MouseEventHandler.prototype.startSelect = function (event) {
             this.currentAction = "select";
@@ -9615,7 +9861,7 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MouseEventHandler;
 });
-define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "src/eventManager"], function (require, exports, App_22, Color_3, eventManager_16) {
+define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "src/eventManager"], function (require, exports, App_22, Color_3, eventManager_17) {
     "use strict";
     var PathfindingArrow = (function () {
         function PathfindingArrow(parentContainer) {
@@ -9646,7 +9892,7 @@ define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "s
             this.labelCache = null;
         };
         PathfindingArrow.prototype.removeEventListener = function (name) {
-            eventManager_16.default.removeEventListener(name, this.listeners[name]);
+            eventManager_17.default.removeEventListener(name, this.listeners[name]);
         };
         PathfindingArrow.prototype.removeEventListeners = function () {
             for (var name_6 in this.listeners) {
@@ -9655,7 +9901,7 @@ define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "s
         };
         PathfindingArrow.prototype.addEventListener = function (name, handler) {
             this.listeners[name] = handler;
-            eventManager_16.default.addEventListener(name, handler);
+            eventManager_17.default.addEventListener(name, handler);
         };
         PathfindingArrow.prototype.addEventListeners = function () {
             var self = this;
@@ -10243,6 +10489,9 @@ define("src/Renderer", ["require", "exports", "src/Camera", "src/MouseEventHandl
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Renderer;
 });
+define("src/ReactUIScene", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
 define("src/uicomponents/unitlist/abilitylist", ["require", "exports"], function (require, exports) {
     "use strict";
     var AbilityListComponent = (function (_super) {
@@ -10375,7 +10624,7 @@ define("src/uicomponents/mixins/normalizeEvent", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = normalizeEvent;
 });
-define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/utility", "src/uicomponents/mixins/normalizeEvent"], function (require, exports, utility_20, normalizeEvent_1) {
+define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/utility", "src/uicomponents/mixins/normalizeEvent"], function (require, exports, utility_21, normalizeEvent_1) {
     "use strict";
     var DragPositioner = (function () {
         function DragPositioner(owner, props) {
@@ -10516,13 +10765,13 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
                         if (!this.makeDragClone) {
                             var nextSibling = this.ownerDOMNode.nextSibling;
                             var clone = this.ownerDOMNode.cloneNode(true);
-                            utility_20.recursiveRemoveAttribute(clone, "data-reactid");
+                            utility_21.recursiveRemoveAttribute(clone, "data-reactid");
                             this.ownerDOMNode.parentNode.insertBefore(clone, nextSibling);
                             this.cloneElement = clone;
                         }
                         else {
                             var clone = this.makeDragClone();
-                            utility_20.recursiveRemoveAttribute(clone, "data-reactid");
+                            utility_21.recursiveRemoveAttribute(clone, "data-reactid");
                             document.body.appendChild(clone);
                             this.cloneElement = clone;
                         }
@@ -10961,7 +11210,7 @@ define("src/uicomponents/popups/PopupResizeHandle", ["require", "exports", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager", "src/uicomponents/popups/PopupResizeHandle", "src/utility", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, eventManager_17, PopupResizeHandle_1, utility_21, DragPositioner_3, applyMixins_3) {
+define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager", "src/uicomponents/popups/PopupResizeHandle", "src/utility", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, eventManager_18, PopupResizeHandle_1, utility_22, DragPositioner_3, applyMixins_3) {
     "use strict";
     var PopupComponent = (function (_super) {
         __extends(PopupComponent, _super);
@@ -11025,8 +11274,8 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
                 left = position.left;
                 top = position.top;
             }
-            left = utility_21.clamp(left, 0, container.offsetWidth - rect.width);
-            top = utility_21.clamp(top, 0, container.offsetHeight - rect.height);
+            left = utility_22.clamp(left, 0, container.offsetWidth - rect.width);
+            top = utility_22.clamp(top, 0, container.offsetHeight - rect.height);
             this.dragPositioner.dragPos.y = top;
             this.dragPositioner.dragPos.x = left;
             this.dragPositioner.dragSize.x = Math.min(window.innerWidth, rect.width);
@@ -11040,10 +11289,10 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
             var maxWidth = this.props.maxWidth || window.innerWidth;
             var minHeight = this.props.minHeight || 0;
             var maxHeight = this.props.maxHeight || window.innerHeight;
-            this.dragPositioner.dragSize.x = utility_21.clamp(x + 5 - this.dragPositioner.dragPos.x, minWidth, maxWidth);
-            this.dragPositioner.dragSize.y = utility_21.clamp(y + 5 - this.dragPositioner.dragPos.y, minHeight, maxHeight);
+            this.dragPositioner.dragSize.x = utility_22.clamp(x + 5 - this.dragPositioner.dragPos.x, minWidth, maxWidth);
+            this.dragPositioner.dragSize.y = utility_22.clamp(y + 5 - this.dragPositioner.dragPos.y, minHeight, maxHeight);
             this.dragPositioner.updateDOMNodeStyle();
-            eventManager_17.default.dispatchEvent("popupResized");
+            eventManager_18.default.dispatchEvent("popupResized");
         };
         PopupComponent.prototype.render = function () {
             var divProps = {
@@ -11078,7 +11327,7 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicomponents/popups/Popup", "src/eventManager", "src/utility"], function (require, exports, Popup_1, eventManager_18, utility_22) {
+define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicomponents/popups/Popup", "src/eventManager", "src/utility"], function (require, exports, Popup_1, eventManager_19, utility_23) {
     "use strict";
     var PopupManagerComponent = (function (_super) {
         __extends(PopupManagerComponent, _super);
@@ -11105,17 +11354,17 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
         PopupManagerComponent.prototype.componentWillMount = function () {
             var self = this;
             this.listeners["makePopup"] =
-                eventManager_18.default.addEventListener("makePopup", function (data) {
+                eventManager_19.default.addEventListener("makePopup", function (data) {
                     self.makePopup(data);
                 });
             this.listeners["closePopup"] =
-                eventManager_18.default.addEventListener("closePopup", function (popupId) {
+                eventManager_19.default.addEventListener("closePopup", function (popupId) {
                     self.closePopup(popupId);
                 });
         };
         PopupManagerComponent.prototype.componentWillUnmount = function () {
             for (var listenerId in this.listeners) {
-                eventManager_18.default.removeEventListener(listenerId, this.listeners[listenerId]);
+                eventManager_19.default.removeEventListener(listenerId, this.listeners[listenerId]);
             }
         };
         PopupManagerComponent.prototype.getInitialStateTODO = function () {
@@ -11185,7 +11434,7 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
         PopupManagerComponent.prototype.makePopup = function (props) {
             var _this = this;
             var id = this.getPopupId();
-            var popupProps = props.popupProps ? utility_22.extendObject(props.popupProps) : {};
+            var popupProps = props.popupProps ? utility_23.extendObject(props.popupProps) : {};
             popupProps.content = props.content;
             popupProps.id = id;
             popupProps.key = id;
@@ -11215,7 +11464,7 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
             var toRender = [];
             for (var i = 0; i < popups.length; i++) {
                 var popup = popups[i];
-                var popupProps = utility_22.extendObject(popup);
+                var popupProps = utility_23.extendObject(popup);
                 popupProps.activePopupsCount = popups.length;
                 toRender.push(Popup_1.default(popupProps));
             }
@@ -11511,7 +11760,7 @@ define("src/uicomponents/unitlist/MenuUnitInfo", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/BackgroundDrawer", "src/utility"], function (require, exports, BackgroundDrawer_2, utility_23) {
+define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/BackgroundDrawer", "src/utility"], function (require, exports, BackgroundDrawer_2, utility_24) {
     "use strict";
     var BattleBackgroundComponent = (function (_super) {
         __extends(BattleBackgroundComponent, _super);
@@ -11539,7 +11788,7 @@ define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/B
         };
         BattleBackgroundComponent.prototype.handleResize = function () {
             var blurarea = this.props.getBlurArea();
-            this.backgroundDrawer.blurArea = utility_23.convertClientRectToPixiRect(blurarea);
+            this.backgroundDrawer.blurArea = utility_24.convertClientRectToPixiRect(blurarea);
             this.backgroundDrawer.handleResize();
         };
         BattleBackgroundComponent.prototype.componentDidMount = function () {
@@ -11567,7 +11816,7 @@ define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/B
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_19, utility_24) {
+define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_20, utility_25) {
     "use strict";
     var ListComponent = (function (_super) {
         __extends(ListComponent, _super);
@@ -11605,7 +11854,7 @@ define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", 
         ListComponent.prototype.componentDidMount = function () {
             var self = this;
             window.addEventListener("resize", this.setDesiredHeight, false);
-            eventManager_19.default.addEventListener("popupResized", this.setDesiredHeight);
+            eventManager_20.default.addEventListener("popupResized", this.setDesiredHeight);
             if (this.props.keyboardSelect) {
                 ReactDOM.findDOMNode(this).addEventListener("keydown", function (event) {
                     switch (event.keyCode) {
@@ -11639,7 +11888,7 @@ define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", 
         };
         ListComponent.prototype.componentWillUnmount = function () {
             window.removeEventListener("resize", this.setDesiredHeight);
-            eventManager_19.default.removeEventListener("popupResized", this.setDesiredHeight);
+            eventManager_20.default.removeEventListener("popupResized", this.setDesiredHeight);
         };
         ListComponent.prototype.componentDidUpdate = function () {
             this.setDesiredHeight();
@@ -11703,7 +11952,7 @@ define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", 
             }
         };
         ListComponent.prototype.getSortingOrderForColumnKeyWithColumnReversed = function (columnToReverse) {
-            var copied = utility_24.shallowCopy(this.state.sortingOrderForColumnKey);
+            var copied = utility_25.shallowCopy(this.state.sortingOrderForColumnKey);
             copied[columnToReverse.key] = ListComponent.reverseListOrder(copied[columnToReverse.key]);
             return copied;
         };
@@ -11977,21 +12226,13 @@ define("src/uicomponents/unitlist/ItemList", ["require", "exports", "src/uicompo
         ItemListComponent.prototype.bindMethods = function () {
             this.getSlotIndex = this.getSlotIndex.bind(this);
         };
-        ItemListComponent.getAttributeProp = function (item, attribute) {
-            if (!item.template.attributes) {
-                return null;
-            }
-            else {
-                return item.template.attributes[attribute];
-            }
-        };
         ItemListComponent.prototype.render = function () {
             var rows = [];
             var items = this.props.items;
-            var _loop_1 = function(i) {
-                item = items[i];
-                ability = null;
-                abilityIsPassive = false;
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var ability = null;
+                var abilityIsPassive = false;
                 if (item.template.ability) {
                     ability = item.template.ability;
                 }
@@ -12003,17 +12244,17 @@ define("src/uicomponents/unitlist/ItemList", ["require", "exports", "src/uicompo
                     typeName: item.template.displayName,
                     slot: item.template.slot,
                     unitName: item.unit ? item.unit.name : "",
-                    maxActionPoints: ItemListComponent.getAttributeProp(item, "maxActionPoints"),
-                    attack: ItemListComponent.getAttributeProp(item, "attack"),
-                    defence: ItemListComponent.getAttributeProp(item, "defence"),
-                    intelligence: ItemListComponent.getAttributeProp(item, "intelligence"),
-                    speed: ItemListComponent.getAttributeProp(item, "speed"),
+                    maxActionPoints: 0,
+                    attack: 0,
+                    defence: 0,
+                    intelligence: 0,
+                    speed: 0,
                     abilityName: ability ? ability.displayName : "",
                     item: item,
                     key: item.id,
                     keyTODO: item.id,
                     id: item.id,
-                    slotIndex: this_1.getSlotIndex(item.template.slot),
+                    slotIndex: this.getSlotIndex(item.template.slot),
                     unit: item.unit ? item.unit : null,
                     techLevel: item.template.techLevel,
                     cost: item.template.buildCost,
@@ -12024,26 +12265,14 @@ define("src/uicomponents/unitlist/ItemList", ["require", "exports", "src/uicompo
                         shouldMakeClone: true,
                         forcedDragOffset: { x: 32, y: 32 },
                     },
-                    isDraggable: this_1.props.isDraggable,
-                    onDragStart: this_1.props.onDragStart,
-                    onDragEnd: this_1.props.onDragEnd
+                    isDraggable: this.props.isDraggable,
+                    onDragStart: this.props.onDragStart,
+                    onDragEnd: this.props.onDragEnd
                 };
-                ["maxActionPoints", "attack", "defence",
-                    "intelligence", "speed"].forEach(function (stat) {
-                    if (!item.template.attributes)
-                        props[stat] = null;
-                    else
-                        props[stat] = item.template.attributes[stat] || null;
-                });
                 rows.push({
                     key: "" + item.id,
                     content: ItemListItem_1.default(props)
                 });
-            };
-            var this_1 = this;
-            var item, ability, abilityIsPassive;
-            for (var i = 0; i < items.length; i++) {
-                _loop_1(i);
             }
             var columns = [
                 {
@@ -12298,7 +12527,7 @@ define("src/uicomponents/unit/UnitAttributeChanges", ["require", "exports"], fun
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_25) {
+define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_26) {
     "use strict";
     var UnitStatusComponent = (function (_super) {
         __extends(UnitStatusComponent, _super);
@@ -12319,7 +12548,7 @@ define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"]
                 }, React.DOM.div({
                     className: "guard-meter-value",
                     style: {
-                        width: "" + utility_25.clamp(guard, 0, 100) + "%"
+                        width: "" + utility_26.clamp(guard, 0, 100) + "%"
                     }
                 }), React.DOM.div({
                     className: "status-inner-wrapper"
@@ -12377,7 +12606,7 @@ define("src/uicomponents/unit/UnitStrength", ["require", "exports"], function (r
             if (newProps.animateStrength &&
                 newProps.currentHealth !== this.props.currentHealth &&
                 (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)) {
-                var animateDuration = newProps.animateDuration || 0;
+                var animateDuration = Math.max(newProps.animateDuration || 0, 0);
                 this.animateDisplayedStrength(newProps.currentHealth, animateDuration);
             }
             else {
@@ -12698,7 +12927,7 @@ define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/un
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, App_23, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_26) {
+define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, App_23, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_27) {
     "use strict";
     var FormationComponent = (function (_super) {
         __extends(FormationComponent, _super);
@@ -12746,7 +12975,8 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
                             isDraggable: this.props.isDraggable,
                             onDragStart: this.makeBoundFunction(this.props.onDragStart, unit),
                             onDragEnd: this.props.onDragEnd,
-                            onMouseUp: onMouseUp
+                            onMouseUp: onMouseUp,
+                            animateDuration: this.props.unitStrengthAnimateDuration
                         };
                         var displayProps = {
                             wasDestroyed: this.unitInArray(unit, this.props.destroyedUnits),
@@ -12759,7 +12989,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
                             hoveredActionPointExpenditure: this.props.hoveredAbility &&
                                 this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
                         };
-                        unitProps = utility_26.shallowExtend(unitDisplayData, componentProps, displayProps);
+                        unitProps = utility_27.shallowExtend(unitDisplayData, componentProps, displayProps);
                     }
                     unitElements.push(UnitWrapper_1.default({ key: ("unit_wrapper_" + i) + j }, EmptyUnit_1.default({
                         facesLeft: this.props.facesLeft,
@@ -12780,7 +13010,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_27, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
+define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_28, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
     "use strict";
     var UnitListItemComponent = (function (_super) {
         __extends(UnitListItemComponent, _super);
@@ -12819,7 +13049,7 @@ define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/uti
         };
         UnitListItemComponent.prototype.makeDragClone = function () {
             var container = document.createElement("div");
-            ReactDOM.render(Unit_4.default(utility_27.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
+            ReactDOM.render(Unit_4.default(utility_28.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
             var renderedElement = container.firstChild;
             var wrapperElement = document.getElementsByClassName("unit-wrapper")[0];
             renderedElement.classList.add("draggable", "dragging");
@@ -13083,7 +13313,7 @@ define("src/uicomponents/PlayerFlag", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_24, PlayerFlag_1, utility_28) {
+define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_24, PlayerFlag_1, utility_29) {
     "use strict";
     var DefenceBuildingComponent = (function (_super) {
         __extends(DefenceBuildingComponent, _super);
@@ -13101,7 +13331,7 @@ define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src
                 className: "defence-building"
             }, React.DOM.img({
                 className: "defence-building-icon",
-                src: utility_28.colorImageInPlayerColor(image, building.controller),
+                src: utility_29.colorImageInPlayerColor(image, building.controller),
                 title: building.template.displayName
             }), PlayerFlag_1.default({
                 props: {
@@ -13201,7 +13431,7 @@ define("src/uicomponents/battleprep/BattleInfo", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/battle/BattleBackground", "src/uicomponents/unitlist/ItemList", "src/uicomponents/battle/Formation", "src/options", "src/BattleSimulator", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_25, eventManager_20, MenuUnitInfo_1, BattleBackground_1, ItemList_1, Formation_1, Options_1, BattleSimulator_2, UnitList_1, BattleInfo_1) {
+define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/battle/BattleBackground", "src/uicomponents/unitlist/ItemList", "src/uicomponents/battle/Formation", "src/options", "src/BattleSimulator", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_25, eventManager_21, MenuUnitInfo_1, BattleBackground_1, ItemList_1, Formation_1, Options_1, BattleSimulator_2, UnitList_1, BattleInfo_1) {
     "use strict";
     var BattlePrepComponent = (function (_super) {
         __extends(BattlePrepComponent, _super);
@@ -13384,6 +13614,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                             onUnitClick: this.setSelectedUnit,
                             handleMouseEnterUnit: this.handleMouseEnterUnit,
                             handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+                            unitStrengthAnimateDuration: undefined,
                             isDraggable: true,
                             onDragStart: this.handleDragStart,
                             onDragEnd: this.handleDragEnd,
@@ -13403,6 +13634,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                             onUnitClick: this.setSelectedUnit,
                             handleMouseEnterUnit: this.handleMouseEnterUnit,
                             handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+                            unitStrengthAnimateDuration: undefined,
                             isDraggable: false,
                         });
                         break;
@@ -13470,8 +13702,8 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                     var simulator = new BattleSimulator_2.default(battle);
                     simulator.simulateBattle();
                     simulator.finishBattle();
-                    eventManager_20.default.dispatchEvent("setCameraToCenterOn", battle.battleData.location);
-                    eventManager_20.default.dispatchEvent("switchScene", "galaxyMap");
+                    eventManager_21.default.dispatchEvent("setCameraToCenterOn", battle.battleData.location);
+                    eventManager_21.default.dispatchEvent("switchScene", "galaxyMap");
                 }.bind(this)
             }, "Simulate battle")), React.DOM.div({ className: "battle-prep-left-lower" }, leftLowerElement)), UnitList_1.default({
                 units: battlePrep.humanFormation.units,
@@ -13627,6 +13859,7 @@ define("src/BattleSceneUnit", ["require", "exports", "src/options"], function (r
             var bounds = this.getSceneBounds();
             return ({
                 user: props.unit,
+                userOffset: { x: 0, y: 0 },
                 width: bounds.width,
                 height: bounds.height,
                 duration: props.duration,
@@ -13636,21 +13869,19 @@ define("src/BattleSceneUnit", ["require", "exports", "src/options"], function (r
                 triggerEnd: props.triggerEnd
             });
         };
-        BattleSceneUnit.prototype.setContainerPosition = function (positionOffScreen) {
-            if (positionOffScreen === void 0) { positionOffScreen = false; }
+        BattleSceneUnit.prototype.setContainerPosition = function () {
             var sceneBounds = this.getSceneBounds();
-            var shouldReverse = this.activeUnit.battleStats.side === "side1";
-            var container = this.spriteContainer;
-            var containerBounds = container.getLocalBounds();
-            var xPadding = 30;
+            var shouldReverse = this.activeUnit.battleStats.side === "side2";
+            var containerBounds = this.spriteContainer.getLocalBounds();
+            var xPadding = 25;
             var yPadding = 40;
-            container.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
+            this.spriteContainer.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
             if (shouldReverse) {
-                container.scale.x = -1;
-                container.x = Math.round(containerBounds.width + containerBounds.x + xPadding);
+                this.spriteContainer.scale.x = -1;
+                this.spriteContainer.x = Math.round(sceneBounds.width - xPadding);
             }
             else {
-                container.x = Math.round(sceneBounds.width - containerBounds.width - containerBounds.x - xPadding);
+                this.spriteContainer.x = Math.round(xPadding);
             }
         };
         BattleSceneUnit.prototype.setUnit = function (unit) {
@@ -13779,6 +14010,7 @@ define("src/BattleSceneUnitOverlay", ["require", "exports", "src/options"], func
             var bounds = this.getSceneBounds();
             return ({
                 user: this.activeUnit,
+                userOffset: { x: 0, y: 0 },
                 width: bounds.width,
                 height: bounds.height,
                 duration: duration,
@@ -13862,6 +14094,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
             this.userUnit = props.user;
             this.targetUnit = props.target;
             this.activeSFX = props.SFXTemplate;
+            this.onSFXStartCallback = props.onSFXStartCallback;
             this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
             this.activeSFXHasFinishedCallback = this.handleActiveSFXEnd.bind(this);
             this.triggerEffectCallback = props.triggerEffectCallback;
@@ -13937,6 +14170,8 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
             return ({
                 user: this.userUnit,
                 target: this.targetUnit,
+                userOffset: this.getBattleSceneUnit(this.userUnit).spriteContainer.position,
+                targetOffset: this.getBattleSceneUnit(this.targetUnit).spriteContainer.position,
                 width: bounds.width,
                 height: bounds.height,
                 duration: duration,
@@ -13993,13 +14228,19 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
             this.beforeUseDelayHasFinishedCallback = null;
             temp();
         };
-        BattleScene.prototype.executeTriggerEffectCallback = function () {
-            if (!this.triggerEffectCallback) {
-                return;
+        BattleScene.prototype.executeOnSFXStartCallback = function () {
+            if (this.onSFXStartCallback) {
+                var temp = this.onSFXStartCallback;
+                this.onSFXStartCallback = null;
+                temp();
             }
-            var temp = this.triggerEffectCallback;
-            this.triggerEffectCallback = null;
-            temp();
+        };
+        BattleScene.prototype.executeTriggerEffectCallback = function () {
+            if (this.triggerEffectCallback) {
+                var temp = this.triggerEffectCallback;
+                this.triggerEffectCallback = null;
+                temp();
+            }
         };
         BattleScene.prototype.executeActiveSFXHasFinishedCallback = function () {
             if (!this.activeSFXHasFinishedCallback) {
@@ -14040,6 +14281,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
         BattleScene.prototype.playSFX = function () {
             var SFXDuration = options_6.default.battleAnimationTiming.effectDuration *
                 this.activeSFX.duration;
+            this.executeOnSFXStartCallback();
             if (!this.activeSFX.SFXWillTriggerEffect || SFXDuration <= 0) {
                 this.executeTriggerEffectCallback();
             }
@@ -14142,7 +14384,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleScene;
 });
-define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_29, App_26) {
+define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_30, App_26) {
     "use strict";
     var BattleSceneTesterComponent = (function (_super) {
         __extends(BattleSceneTesterComponent, _super);
@@ -14185,12 +14427,14 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
                 side2Player: side2Player
             });
             battle.init();
+            var initialSFXTemplateKey = "rocketAttack";
+            var initialSFXTemplate = App_26.default.moduleData.Templates.BattleSFX[initialSFXTemplateKey];
             return ({
                 activeUnit: side1Units[0],
                 selectedSide1Unit: side1Units[0],
                 selectedSide2Unit: side2Units[0],
-                selectedSFXTemplateKey: "particleTest",
-                duration: null
+                selectedSFXTemplateKey: initialSFXTemplateKey,
+                duration: initialSFXTemplate.duration
             });
         };
         BattleSceneTesterComponent.prototype.componentDidMount = function () {
@@ -14200,7 +14444,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             battleScene.updateUnits();
         };
         BattleSceneTesterComponent.prototype.makeUnit = function () {
-            var template = utility_29.getRandomProperty(App_26.default.moduleData.Templates.Units);
+            var template = utility_30.getRandomProperty(App_26.default.moduleData.Templates.Units);
             return new Unit_5.default(template, this.idGenerator++);
         };
         BattleSceneTesterComponent.prototype.makePlayer = function () {
@@ -14266,8 +14510,10 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
         };
         BattleSceneTesterComponent.prototype.handleSelectSFXTemplate = function (e) {
             var target = e.target;
+            var SFXTemplate = App_26.default.moduleData.Templates.BattleSFX[target.value];
             this.setState({
-                selectedSFXTemplateKey: target.value
+                selectedSFXTemplateKey: target.value,
+                duration: SFXTemplate.duration
             });
         };
         BattleSceneTesterComponent.prototype.handleChangeDuration = function (e) {
@@ -14333,6 +14579,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
                 target: target,
                 SFXTemplate: SFXTemplate,
                 triggerEffectCallback: function () { console.log("triggerEffect"); },
+                onSFXStartCallback: function () { console.log("onSFXStart"); },
                 afterFinishedCallback: function () { console.log("afterFinishedCallback"); }
             });
         };
@@ -14340,7 +14587,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             var user = this.state.activeUnit;
             var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
             var bs = this.battleScene;
-            var SFXTemplate = utility_29.extendObject(App_26.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+            var SFXTemplate = utility_30.extendObject(App_26.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
             if (this.state.duration) {
                 SFXTemplate.duration = this.state.duration;
             }
@@ -14349,6 +14596,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
                 target: target,
                 SFXTemplate: SFXTemplate,
                 triggerEffectCallback: function () { console.log("triggerEffect"); },
+                onSFXStartCallback: function () { console.log("onSFXStart"); },
                 afterFinishedCallback: function () { console.log("afterFinishedCallback"); }
             });
         };
@@ -14380,10 +14628,6 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             var side1UnitElements = this.makeUnitElements(battle.unitsBySide["side1"]);
             var side2UnitElements = this.makeUnitElements(battle.unitsBySide["side2"]);
             var SFXTemplateSelectOptions = [];
-            SFXTemplateSelectOptions.push(React.DOM.option({
-                value: null,
-                key: "null"
-            }, "null"));
             for (var key in App_26.default.moduleData.Templates.BattleSFX) {
                 var template = App_26.default.moduleData.Templates.BattleSFX[key];
                 SFXTemplateSelectOptions.push(React.DOM.option({
@@ -15434,23 +15678,23 @@ define("src/uicomponents/setupgame/SetupGamePlayers", ["require", "exports", "sr
         SetupGamePlayersComponent.prototype.render = function () {
             var _this = this;
             var playerSetups = [];
-            var _loop_2 = function(i) {
+            var _loop_1 = function(i) {
                 playerSetups.push(PlayerSetup_1.default({
-                    key: this_2.state.playerKeys[i],
-                    keyTODO: this_2.state.playerKeys[i],
+                    key: this_1.state.playerKeys[i],
+                    keyTODO: this_1.state.playerKeys[i],
                     ref: function (component) {
                         _this.playerSetupComponentsByID[i] = component;
                     },
-                    removePlayers: this_2.removePlayers,
-                    setActiveSetterComponent: this_2.setActiveColorSetter,
-                    initialName: "Player " + this_2.state.playerKeys[i],
+                    removePlayers: this_1.removePlayers,
+                    setActiveSetterComponent: this_1.setActiveColorSetter,
+                    initialName: "Player " + this_1.state.playerKeys[i],
                     isHuman: i === 0,
-                    setHuman: this_2.setHumanPlayer
+                    setHuman: this_1.setHumanPlayer
                 }));
             };
-            var this_2 = this;
+            var this_1 = this;
             for (var i = 0; i < this.state.playerKeys.length; i++) {
-                _loop_2(i);
+                _loop_1(i);
             }
             var canAddPlayers = this.state.playerKeys.length < this.props.maxPlayers;
             return (React.DOM.div({ className: "setup-game-players" }, React.DOM.div({
@@ -15545,7 +15789,7 @@ define("src/uicomponents/galaxymap/OptionsGroup", ["require", "exports"], functi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_30) {
+define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_31) {
     "use strict";
     var MapGenOptionComponent = (function (_super) {
         __extends(MapGenOptionComponent, _super);
@@ -15557,7 +15801,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
         MapGenOptionComponent.prototype.handleChange = function (e) {
             var target = e.target;
             var option = this.props.option;
-            var newValue = utility_30.clamp(parseFloat(target.value), option.range.min, option.range.max);
+            var newValue = utility_31.clamp(parseFloat(target.value), option.range.min, option.range.max);
             this.props.onChange(this.props.id, newValue);
         };
         MapGenOptionComponent.prototype.shouldComponentUpdate = function (newProps) {
@@ -15608,7 +15852,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_31) {
+define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_32) {
     "use strict";
     var MapGenOptionsComponent = (function (_super) {
         __extends(MapGenOptionsComponent, _super);
@@ -15650,13 +15894,13 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                         var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
                         if (!oldOption)
                             continue;
-                        var oldValuePercentage = utility_31.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
+                        var oldValuePercentage = utility_32.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
                         value = option.min + (option.max - option.min) * oldValuePercentage;
                     }
                     else {
                         value = isFinite(option.defaultValue) ? option.defaultValue : (option.min + option.max) / 2;
                     }
-                    value = utility_31.clamp(utility_31.roundToNearestMultiple(value, option.step), option.min, option.max);
+                    value = utility_32.clamp(utility_32.roundToNearestMultiple(value, option.step), option.min, option.max);
                     defaultValues["optionValue_" + optionName] = value;
                 }
             }.bind(this));
@@ -15680,14 +15924,14 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                 var optionGroup = optionGroups[optionGroupName];
                 for (var optionName in optionGroup) {
                     var option = optionGroup[optionName].range;
-                    var optionValue = utility_31.clamp(utility_31.roundToNearestMultiple(utility_31.randInt(option.min, option.max), option.step), option.min, option.max);
+                    var optionValue = utility_32.clamp(utility_32.roundToNearestMultiple(utility_32.randInt(option.min, option.max), option.step), option.min, option.max);
                     newValues["optionValue_" + optionName] = optionValue;
                 }
             }
             this.setState(newValues);
         };
         MapGenOptionsComponent.prototype.getOptionValuesForTemplate = function () {
-            var optionValues = utility_31.extendObject(this.props.mapGenTemplate.options);
+            var optionValues = utility_32.extendObject(this.props.mapGenTemplate.options);
             for (var groupName in optionValues) {
                 var optionsGroup = optionValues[groupName];
                 for (var optionName in optionsGroup) {
@@ -15845,7 +16089,7 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App", "src/uicomponents/setupgame/SetupGamePlayers", "src/uicomponents/setupgame/MapSetup"], function (require, exports, App_29, SetupGamePlayers_1, MapSetup_1) {
+define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App", "src/eventManager", "src/ModuleFileLoadingPhase", "src/uicomponents/setupgame/SetupGamePlayers", "src/uicomponents/setupgame/MapSetup"], function (require, exports, App_29, eventManager_22, ModuleFileLoadingPhase_2, SetupGamePlayers_1, MapSetup_1) {
     "use strict";
     var SetupGameComponent = (function (_super) {
         __extends(SetupGameComponent, _super);
@@ -15873,12 +16117,15 @@ define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App",
             });
         };
         SetupGameComponent.prototype.startGame = function () {
-            var players = this.ref_TODO_players.makeAllPlayers();
-            var mapSetupInfo = this.ref_TODO_mapSetup.getMapSetupInfo();
-            var mapGenFunction = mapSetupInfo.template.mapGenFunction;
-            var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
-            var map = mapGenResult.makeMap();
-            App_29.default.makeGameFromSetup(map, players);
+            var _this = this;
+            eventManager_22.default.dispatchEvent("loadModulesNeededForPhase", ModuleFileLoadingPhase_2.default.mapGen, function () {
+                var players = _this.ref_TODO_players.makeAllPlayers();
+                var mapSetupInfo = _this.ref_TODO_mapSetup.getMapSetupInfo();
+                var mapGenFunction = mapSetupInfo.template.mapGenFunction;
+                var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
+                var map = mapGenResult.makeMap();
+                App_29.default.makeGameFromSetup(map, players);
+            });
         };
         SetupGameComponent.prototype.randomize = function () {
             this.ref_TODO_players.randomizeAllPlayers();
@@ -15923,11 +16170,13 @@ define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App",
 define("src/uicomponents/battle/TurnOrderUnit", ["require", "exports"], function (require, exports) {
     "use strict";
     (function (AnimationState) {
-        AnimationState[AnimationState["removeUnit"] = 0] = "removeUnit";
-        AnimationState[AnimationState["clearSpaceForUnit"] = 1] = "clearSpaceForUnit";
-        AnimationState[AnimationState["insertUnit"] = 2] = "insertUnit";
-        AnimationState[AnimationState["pushUnit"] = 3] = "pushUnit";
-        AnimationState[AnimationState["idle"] = 4] = "idle";
+        AnimationState[AnimationState["removeDeadUnit"] = 0] = "removeDeadUnit";
+        AnimationState[AnimationState["fillSpaceLeftByDeadUnits"] = 1] = "fillSpaceLeftByDeadUnits";
+        AnimationState[AnimationState["removeUnit"] = 2] = "removeUnit";
+        AnimationState[AnimationState["clearSpaceForUnit"] = 3] = "clearSpaceForUnit";
+        AnimationState[AnimationState["insertUnit"] = 4] = "insertUnit";
+        AnimationState[AnimationState["pushUnit"] = 5] = "pushUnit";
+        AnimationState[AnimationState["idle"] = 6] = "idle";
     })(exports.AnimationState || (exports.AnimationState = {}));
     var AnimationState = exports.AnimationState;
     var TurnOrderUnitComponent = (function (_super) {
@@ -15937,6 +16186,8 @@ define("src/uicomponents/battle/TurnOrderUnit", ["require", "exports"], function
             this.displayName = "TurnOrderUnit";
             this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
             this.containerClassForAnimationState = (_a = {},
+                _a[AnimationState.removeDeadUnit] = "remove-dead-unit",
+                _a[AnimationState.fillSpaceLeftByDeadUnits] = "fill-space-left-by-dead-unit",
                 _a[AnimationState.removeUnit] = "remove-unit",
                 _a[AnimationState.clearSpaceForUnit] = "clear-space-for-unit",
                 _a[AnimationState.insertUnit] = "insert-unit",
@@ -15998,6 +16249,8 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports", "src/uicompon
                 maxUnits: 7,
                 currentDisplayData: this.props.turnOrderDisplayData,
                 pendingDisplayData: undefined,
+                pendingDeadUnitsByID: {},
+                pendingDeadUnitIndices: {},
                 insertIndex: undefined,
                 animationState: TurnOrderUnit_1.AnimationState.idle
             });
@@ -16008,8 +16261,12 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports", "src/uicompon
         };
         TurnOrderComponent.prototype.componentWillUnmount = function () {
             window.removeEventListener("resize", this.setMaxUnits);
+            if (isFinite(this.timeoutHandle)) {
+                window.clearTimeout(this.timeoutHandle);
+            }
         };
         TurnOrderComponent.prototype.componentWillReceiveProps = function (newProps) {
+            var _this = this;
             if (newProps.turnIsTransitioning && !this.props.turnIsTransitioning) {
                 var removedUnit = this.state.currentDisplayData[0].unit;
                 var newRemovedUnitIndex = void 0;
@@ -16019,36 +16276,85 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports", "src/uicompon
                         break;
                     }
                 }
+                var pendingDeadUnitsByID_1 = {};
+                this.props.turnOrderDisplayData.forEach(function (currentDisplayData) {
+                    var unit = currentDisplayData.unit;
+                    if (!newProps.turnOrderDisplayData.some(function (newDisplayData) {
+                        return newDisplayData.unit === unit;
+                    })) {
+                        pendingDeadUnitsByID_1[unit.id] = true;
+                    }
+                });
                 var unitsToRender = Math.min(newProps.turnOrderDisplayData.length, this.state.maxUnits);
                 var shouldInsertRemovedUnit = newRemovedUnitIndex < unitsToRender - 1;
                 this.setState({
                     pendingDisplayData: newProps.turnOrderDisplayData,
+                    pendingDeadUnitsByID: pendingDeadUnitsByID_1,
                     insertIndex: shouldInsertRemovedUnit ? newRemovedUnitIndex : undefined,
+                }, function () {
+                    _this.removeDeadUnits();
                 });
-                this.removeUnit(shouldInsertRemovedUnit, newRemovedUnitIndex);
             }
         };
         TurnOrderComponent.prototype.getTransitionDuration = function () {
-            return this.props.turnTransitionDuration / 3;
+            return this.props.turnTransitionDuration / 4;
         };
         TurnOrderComponent.prototype.setFinishAnimatingTimeout = function () {
             var _this = this;
-            window.setTimeout(function () {
+            this.timeoutHandle = window.setTimeout(function () {
                 _this.setState({
                     animationState: TurnOrderUnit_1.AnimationState.idle,
                 });
             }, this.getTransitionDuration());
         };
-        TurnOrderComponent.prototype.removeUnit = function (shouldInsertRemovedUnit, insertIndex) {
+        TurnOrderComponent.prototype.removeDeadUnits = function () {
+            var _this = this;
+            if (Object.keys(this.state.pendingDeadUnitsByID).length > 0) {
+                var deadUnitIndices_1 = {};
+                this.state.currentDisplayData.forEach(function (displayData, i) {
+                    if (_this.state.pendingDeadUnitsByID[displayData.unit.id]) {
+                        deadUnitIndices_1[i] = true;
+                    }
+                });
+                this.setState({
+                    animationState: TurnOrderUnit_1.AnimationState.removeDeadUnit,
+                    pendingDeadUnitIndices: deadUnitIndices_1
+                }, function () {
+                    _this.timeoutHandle = window.setTimeout(function () {
+                        _this.fillSpaceLeftByDeadUnits();
+                    }, _this.getTransitionDuration());
+                });
+            }
+            else {
+                this.removeUnit();
+            }
+        };
+        TurnOrderComponent.prototype.fillSpaceLeftByDeadUnits = function () {
+            var _this = this;
+            this.setState({
+                animationState: TurnOrderUnit_1.AnimationState.fillSpaceLeftByDeadUnits
+            }, function () {
+                _this.timeoutHandle = window.setTimeout(function () {
+                    _this.setState({
+                        currentDisplayData: _this.state.currentDisplayData.filter(function (d) {
+                            return !_this.state.pendingDeadUnitsByID[d.unit.id];
+                        })
+                    }, function () {
+                        _this.removeUnit();
+                    });
+                }, _this.getTransitionDuration());
+            });
+        };
+        TurnOrderComponent.prototype.removeUnit = function () {
             var _this = this;
             this.setState({
                 animationState: TurnOrderUnit_1.AnimationState.removeUnit
             }, function () {
-                window.setTimeout(function () {
+                _this.timeoutHandle = window.setTimeout(function () {
                     _this.setState({
                         currentDisplayData: _this.state.currentDisplayData.slice(1),
                     });
-                    if (shouldInsertRemovedUnit) {
+                    if (isFinite(_this.state.insertIndex)) {
                         _this.clearSpaceForUnit();
                     }
                     else {
@@ -16062,7 +16368,7 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports", "src/uicompon
             this.setState({
                 animationState: TurnOrderUnit_1.AnimationState.clearSpaceForUnit,
             }, function () {
-                window.setTimeout(function () {
+                _this.timeoutHandle = window.setTimeout(function () {
                     _this.insertUnit();
                 }, _this.getTransitionDuration());
             });
@@ -16105,6 +16411,20 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports", "src/uicompon
                 var displayData = this.state.currentDisplayData[i];
                 var unitAnimationState = TurnOrderUnit_1.AnimationState.idle;
                 switch (this.state.animationState) {
+                    case TurnOrderUnit_1.AnimationState.removeDeadUnit:
+                        {
+                            if (this.state.pendingDeadUnitsByID[displayData.unit.id]) {
+                                unitAnimationState = TurnOrderUnit_1.AnimationState.removeDeadUnit;
+                            }
+                            break;
+                        }
+                    case TurnOrderUnit_1.AnimationState.fillSpaceLeftByDeadUnits:
+                        {
+                            if (this.state.pendingDeadUnitIndices[i]) {
+                                unitAnimationState = TurnOrderUnit_1.AnimationState.fillSpaceLeftByDeadUnits;
+                            }
+                            break;
+                        }
                     case TurnOrderUnit_1.AnimationState.removeUnit:
                         {
                             if (i === 0) {
@@ -16241,12 +16561,15 @@ define("src/uicomponents/battle/TurnCounterList", ["require", "exports", "src/ui
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_32) {
+define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_33) {
     "use strict";
     var AbilityUseEffectQueue = (function () {
-        function AbilityUseEffectQueue(battleScene) {
+        function AbilityUseEffectQueue(battleScene, callbacks) {
             this.queue = [];
             this.battleScene = battleScene;
+            for (var key in callbacks) {
+                this[key] = callbacks[key];
+            }
             this.triggerEffect = this.triggerEffect.bind(this);
             this.finishEffect = this.finishEffect.bind(this);
         }
@@ -16268,18 +16591,19 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
                 user: this.currentEffect.sfxUser,
                 target: this.currentEffect.sfxTarget,
                 triggerEffectCallback: this.triggerEffect,
+                onSFXStartCallback: this.onSFXStart,
                 afterFinishedCallback: this.finishEffect
             });
         };
         AbilityUseEffectQueue.squashEffects = function (parent, toSquash, parentIsMostRecent) {
             if (parentIsMostRecent === void 0) { parentIsMostRecent = false; }
-            var squashedChangedUnitDisplayDataByID = utility_32.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
+            var squashedChangedUnitDisplayDataByID = utility_33.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
             if (parentIsMostRecent) {
-                var squashedEffect = utility_32.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
+                var squashedEffect = utility_33.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
                 return squashedEffect;
             }
             else {
-                var squashedEffect = utility_32.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
+                var squashedEffect = utility_33.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
                 return squashedEffect;
             }
         };
@@ -16363,6 +16687,7 @@ define("src/uicomponents/battle/BattleScore", ["require", "exports", "src/uicomp
         }
         BattleScoreComponent.prototype.render = function () {
             var evaluationPercentage = 50 + this.props.evaluation * 50;
+            var transitionDurationString = "" + this.props.animationDuration + "ms";
             return (React.DOM.div({
                 className: "battle-score-wrapper"
             }, React.DOM.div({
@@ -16382,14 +16707,16 @@ define("src/uicomponents/battle/BattleScore", ["require", "exports", "src/uicomp
                 style: {
                     width: "" + evaluationPercentage + "%",
                     backgroundColor: "#" + this.props.player1.color.getHexString(),
-                    borderColor: "#" + this.props.player1.secondaryColor.getHexString()
+                    borderColor: "#" + this.props.player1.secondaryColor.getHexString(),
+                    transitionDuration: transitionDurationString
                 }
             }), React.DOM.div({
                 className: "battle-score-bar-value battle-score-bar-side2",
                 style: {
                     width: "" + (100 - evaluationPercentage) + "%",
                     backgroundColor: "#" + this.props.player2.color.getHexString(),
-                    borderColor: "#" + this.props.player2.secondaryColor.getHexString()
+                    borderColor: "#" + this.props.player2.secondaryColor.getHexString(),
+                    transitionDuration: transitionDurationString
                 }
             })), PlayerFlag_4.default({
                 props: {
@@ -16421,7 +16748,7 @@ define("src/uicomponents/battle/BattleFinish", ["require", "exports"], function 
                 className: "battle-scene-finish-header"
             }, this.props.humanPlayerWonBattle ? "You win" : "You lose"), React.DOM.h3({
                 className: "battle-scene-finish-subheader"
-            }, "Click to continue")));
+            }, "Click anywhere to continue")));
         };
         return BattleFinishComponent;
     }(React.Component));
@@ -16585,11 +16912,19 @@ define("src/uicomponents/battle/BattleDisplayStrength", ["require", "exports"], 
             });
         };
         BattleDisplayStrengthComponent.prototype.componentDidMount = function () {
-            this.animateDisplayedStrength(this.props.from, this.props.to, this.props.delay);
+            this.animateDisplayedStrengthIfNeeded(this.props);
+        };
+        BattleDisplayStrengthComponent.prototype.componentWillReceiveProps = function (newProps) {
+            this.animateDisplayedStrengthIfNeeded(newProps);
         };
         BattleDisplayStrengthComponent.prototype.componentWillUnmount = function () {
             if (this.activeTween) {
                 this.activeTween.stop();
+            }
+        };
+        BattleDisplayStrengthComponent.prototype.animateDisplayedStrengthIfNeeded = function (props) {
+            if (isFinite(props.animationDuration) && props.to !== props.from) {
+                this.animateDisplayedStrength(props.from, props.to, props.animationDuration);
             }
         };
         BattleDisplayStrengthComponent.prototype.updateDisplayStrength = function (newAmount) {
@@ -16597,16 +16932,17 @@ define("src/uicomponents/battle/BattleDisplayStrength", ["require", "exports"], 
                 displayedStrength: newAmount
             });
         };
-        BattleDisplayStrengthComponent.prototype.animateDisplayedStrength = function (from, newAmount, time) {
+        BattleDisplayStrengthComponent.prototype.animateDisplayedStrength = function (from, to, duration) {
             var self = this;
             var stopped = false;
             if (this.activeTween) {
                 this.activeTween.stop();
             }
-            if (from === newAmount)
+            if (from === to)
                 return;
             var animateTween = function () {
                 if (stopped) {
+                    cancelAnimationFrame(self.animationFrameHandle);
                     return;
                 }
                 TWEEN.update();
@@ -16615,8 +16951,8 @@ define("src/uicomponents/battle/BattleDisplayStrength", ["require", "exports"], 
             var tween = new TWEEN.Tween({
                 health: from
             }).to({
-                health: newAmount
-            }, time).onUpdate(function () {
+                health: to
+            }, duration).onUpdate(function () {
                 self.setState({
                     displayedStrength: this.health
                 });
@@ -16715,26 +17051,29 @@ define("src/uicomponents/battle/AbilityTooltip", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounterList", "src/uicomponents/battle/BattleBackground", "src/options", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/BattleUIState", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, App_30, TurnOrder_1, TurnCounterList_1, BattleBackground_2, Options_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_33, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, BattleUIState_1, AbilityTooltip_1) {
+define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounterList", "src/uicomponents/battle/BattleBackground", "src/options", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/BattleUIState", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, App_30, TurnOrder_1, TurnCounterList_1, BattleBackground_2, Options_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_34, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, BattleUIState_1, AbilityTooltip_1) {
     "use strict";
     var BattleComponent = (function (_super) {
         __extends(BattleComponent, _super);
         function BattleComponent(props) {
+            var _this = this;
             _super.call(this, props);
             this.displayName = "Battle";
             this.tempHoveredUnit = null;
             this.idGenerator = 0;
             this.MCTree = null;
-            this.battleStartStartTime = undefined;
-            this.battleEndStartTime = undefined;
             this.state = this.getInitialStateTODO();
             this.bindMethods();
             this.battleScene = new BattleScene_2.default();
-            this.abilityUseEffectQueue = new AbilityUseEffectQueue_1.default(this.battleScene);
-            this.abilityUseEffectQueue.onEffectStart = this.setStateForBattleEffect;
-            this.abilityUseEffectQueue.onEffectTrigger = this.onBattleEffectTrigger;
-            this.abilityUseEffectQueue.onCurrentFinished = this.playQueuedBattleEffects;
-            this.abilityUseEffectQueue.onAllFinished = this.finishPlayingQueuedBattleEffects;
+            this.abilityUseEffectQueue = new AbilityUseEffectQueue_1.default(this.battleScene, {
+                onEffectStart: this.setStateForBattleEffect,
+                onSFXStart: function () {
+                    _this.SFXStartTime = Date.now();
+                },
+                onEffectTrigger: this.onBattleEffectTrigger,
+                onCurrentFinished: this.playQueuedBattleEffects,
+                onAllFinished: this.finishPlayingQueuedBattleEffects,
+            });
         }
         BattleComponent.prototype.bindMethods = function () {
             this.clearHoveredUnit = this.clearHoveredUnit.bind(this);
@@ -16778,6 +17117,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 battleSceneUnit2: null,
                 playingBattleEffect: false,
                 battleEffectDuration: null,
+                battleEffectDurationAfterTrigger: undefined,
                 battleEvaluation: this.props.battle.getEvaluation(),
                 unitDisplayDataByID: initialDisplayData,
                 previousUnitDisplayDataByID: initialDisplayData,
@@ -16915,7 +17255,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
             var stateObj = BattleComponent.getUnitsBySideFromEffect(effect);
             stateObj.playingBattleEffect = true;
             stateObj.UIState = BattleUIState_1.default.playingSFX;
-            stateObj.battleEffectDuration = effect.sfx.duration;
+            stateObj.battleEffectDuration = effect.sfx.duration * Options_2.default.battleAnimationTiming.effectDuration;
             this.setState(stateObj, this.clearHoveredUnit);
         };
         BattleComponent.prototype.playQueuedBattleEffects = function () {
@@ -16923,9 +17263,11 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
         };
         BattleComponent.prototype.onBattleEffectTrigger = function (effect) {
             this.setState({
-                previousUnitDisplayDataByID: this.state.unitDisplayDataByID,
-                unitDisplayDataByID: utility_33.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
-                battleEvaluation: effect.newEvaluation
+                previousUnitDisplayDataByID: utility_34.shallowCopy(this.state.unitDisplayDataByID),
+                unitDisplayDataByID: utility_34.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
+                battleEvaluation: effect.newEvaluation,
+                battleEffectDurationAfterTrigger: this.state.battleEffectDuration -
+                    (Date.now() - this.SFXStartTime),
             });
         };
         BattleComponent.prototype.finishPlayingQueuedBattleEffects = function () {
@@ -16934,6 +17276,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 battleSceneUnit2: null,
                 playingBattleEffect: false,
                 battleEffectDuration: undefined,
+                battleEffectDurationAfterTrigger: undefined,
             }, this.startTurnTransition);
         };
         BattleComponent.prototype.startTurnTransition = function () {
@@ -17050,15 +17393,15 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 }, React.DOM.div({
                     className: "battle-display-strength battle-display-strength-side1"
                 }, this.state.battleSceneUnit1 ? BattleDisplayStrength_1.default({
-                    key: "" + this.state.battleSceneUnit1.id + Date.now(),
-                    delay: this.state.battleEffectDuration,
+                    key: "battleDisplayStrength" + this.state.battleSceneUnit1.id,
+                    animationDuration: this.state.battleEffectDurationAfterTrigger,
                     from: this.state.previousUnitDisplayDataByID[this.state.battleSceneUnit1.id].currentHealth,
                     to: this.state.unitDisplayDataByID[this.state.battleSceneUnit1.id].currentHealth
                 }) : null), React.DOM.div({
                     className: "battle-display-strength battle-display-strength-side2"
                 }, this.state.battleSceneUnit2 ? BattleDisplayStrength_1.default({
-                    key: "" + this.state.battleSceneUnit2.id + Date.now(),
-                    delay: this.state.battleEffectDuration,
+                    key: "battleDisplayStrength" + this.state.battleSceneUnit2.id,
+                    animationDuration: this.state.battleEffectDurationAfterTrigger,
                     from: this.state.previousUnitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth,
                     to: this.state.unitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth
                 }) : null));
@@ -17102,7 +17445,8 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
             }, BattleScore_1.default({
                 evaluation: this.state.battleEvaluation,
                 player1: battle.side1Player,
-                player2: battle.side2Player
+                player2: battle.side2Player,
+                animationDuration: this.state.battleEffectDurationAfterTrigger,
             }), upperFooter, BattleScene_3.default({
                 battleState: battleState,
                 battleScene: this.battleScene,
@@ -17128,6 +17472,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 hoveredAbility: this.state.hoveredAbility,
                 capturedUnits: this.props.battle.capturedUnits,
                 destroyedUnits: this.props.battle.deadUnits,
+                unitStrengthAnimateDuration: this.state.battleEffectDurationAfterTrigger,
             }), TurnCounterList_1.default({
                 turnsLeft: battle.turnsLeft,
                 maxTurns: battle.maxTurns,
@@ -17146,6 +17491,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 hoveredAbility: this.state.hoveredAbility,
                 capturedUnits: this.props.battle.capturedUnits,
                 destroyedUnits: this.props.battle.deadUnits,
+                unitStrengthAnimateDuration: this.state.battleEffectDurationAfterTrigger,
             }), abilityTooltip, this.state.playingBattleEffect ?
                 React.DOM.div({ className: "battle-formations-darken" }, null) :
                 null))));
@@ -17458,7 +17804,7 @@ define("src/uicomponents/mapmodes/MapModeSettings", ["require", "exports", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/PlayerMoney", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_21) {
+define("src/uicomponents/galaxymap/PlayerMoney", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_23) {
     "use strict";
     var PlayerMoneyComponent = (function (_super) {
         __extends(PlayerMoneyComponent, _super);
@@ -17472,10 +17818,10 @@ define("src/uicomponents/galaxymap/PlayerMoney", ["require", "exports", "src/eve
             this.handlePlayerMoneyUpdated = this.handlePlayerMoneyUpdated.bind(this);
         };
         PlayerMoneyComponent.prototype.componentDidMount = function () {
-            eventManager_21.default.addEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
+            eventManager_23.default.addEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
         };
         PlayerMoneyComponent.prototype.componentWillUnmount = function () {
-            eventManager_21.default.removeEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
+            eventManager_23.default.removeEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
         };
         PlayerMoneyComponent.prototype.handlePlayerMoneyUpdated = function () {
             if (this.props.player.money !== this.lastAmountRendered) {
@@ -17557,7 +17903,7 @@ define("src/uicomponents/galaxymap/Resource", ["require", "exports"], function (
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src/App", "src/uicomponents/galaxymap/Resource", "src/eventManager"], function (require, exports, App_31, Resource_1, eventManager_22) {
+define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src/App", "src/uicomponents/galaxymap/Resource", "src/eventManager"], function (require, exports, App_31, Resource_1, eventManager_24) {
     "use strict";
     var TopBarResourcesComponent = (function (_super) {
         __extends(TopBarResourcesComponent, _super);
@@ -17567,10 +17913,10 @@ define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src
             this.updateListener = undefined;
         }
         TopBarResourcesComponent.prototype.componentDidMount = function () {
-            this.updateListener = eventManager_22.default.addEventListener("builtBuildingWithEffect_resourceIncome", this.forceUpdate.bind(this));
+            this.updateListener = eventManager_24.default.addEventListener("builtBuildingWithEffect_resourceIncome", this.forceUpdate.bind(this));
         };
         TopBarResourcesComponent.prototype.componentWillUnmount = function () {
-            eventManager_22.default.removeEventListener("builtBuildingWithEffect_resourceIncome", this.updateListener);
+            eventManager_24.default.removeEventListener("builtBuildingWithEffect_resourceIncome", this.updateListener);
         };
         TopBarResourcesComponent.prototype.render = function () {
             var player = this.props.player;
@@ -17607,7 +17953,7 @@ define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/TopBar", ["require", "exports", "src/uicomponents/PlayerFlag", "src/uicomponents/galaxymap/PlayerMoney", "src/uicomponents/galaxymap/TopBarResources", "src/eventManager"], function (require, exports, PlayerFlag_5, PlayerMoney_1, TopBarResources_1, eventManager_23) {
+define("src/uicomponents/galaxymap/TopBar", ["require", "exports", "src/uicomponents/PlayerFlag", "src/uicomponents/galaxymap/PlayerMoney", "src/uicomponents/galaxymap/TopBarResources", "src/eventManager"], function (require, exports, PlayerFlag_5, PlayerMoney_1, TopBarResources_1, eventManager_25) {
     "use strict";
     var TopBarComponent = (function (_super) {
         __extends(TopBarComponent, _super);
@@ -17617,10 +17963,10 @@ define("src/uicomponents/galaxymap/TopBar", ["require", "exports", "src/uicompon
             this.updateListener = undefined;
         }
         TopBarComponent.prototype.componentDidMount = function () {
-            this.updateListener = eventManager_23.default.addEventListener("builtBuildingWithEffect_income", this.forceUpdate.bind(this));
+            this.updateListener = eventManager_25.default.addEventListener("builtBuildingWithEffect_income", this.forceUpdate.bind(this));
         };
         TopBarComponent.prototype.componentWillUnmount = function () {
-            eventManager_23.default.removeEventListener("builtBuildingWithEffect_income", this.updateListener);
+            eventManager_25.default.removeEventListener("builtBuildingWithEffect_income", this.updateListener);
         };
         TopBarComponent.prototype.render = function () {
             var player = this.props.player;
@@ -17940,7 +18286,7 @@ define("src/uicomponents/popups/ConfirmPopup", ["require", "exports"], function 
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/notifications/NotificationFilterListItem", ["require", "exports", "src/NotificationFilterState", "src/eventManager"], function (require, exports, NotificationFilterState_5, eventManager_24) {
+define("src/uicomponents/notifications/NotificationFilterListItem", ["require", "exports", "src/NotificationFilterState", "src/eventManager"], function (require, exports, NotificationFilterState_5, eventManager_26) {
     "use strict";
     var NotificationFilterListItemComponent = (function (_super) {
         __extends(NotificationFilterListItemComponent, _super);
@@ -17970,7 +18316,7 @@ define("src/uicomponents/notifications/NotificationFilterListItem", ["require", 
             this.setState({
                 filterState: filter.filters[this.props.keyTODO]
             });
-            eventManager_24.default.dispatchEvent("updateNotificationLog");
+            eventManager_26.default.dispatchEvent("updateNotificationLog");
         };
         NotificationFilterListItemComponent.prototype.render = function () {
             var inputElements = [];
@@ -18007,7 +18353,7 @@ define("src/uicomponents/notifications/NotificationFilterListItem", ["require", 
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/notifications/notificationfilterlist", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/notifications/NotificationFilterListItem", "src/eventManager"], function (require, exports, OptionsGroup_2, NotificationFilterListItem_1, eventManager_25) {
+define("src/uicomponents/notifications/notificationfilterlist", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/notifications/NotificationFilterListItem", "src/eventManager"], function (require, exports, OptionsGroup_2, NotificationFilterListItem_1, eventManager_27) {
     "use strict";
     var NotificationFilterListComponent = (function (_super) {
         __extends(NotificationFilterListComponent, _super);
@@ -18025,7 +18371,7 @@ define("src/uicomponents/notifications/notificationfilterlist", ["require", "exp
             filter.setDefaultFilterStatesForCategory(category);
             filter.save();
             this.forceUpdate();
-            eventManager_25.default.dispatchEvent("updateNotificationLog");
+            eventManager_27.default.dispatchEvent("updateNotificationLog");
         };
         NotificationFilterListComponent.prototype.scrollToHighlighted = function () {
             if (this.props.highlightedOptionKey) {
@@ -18172,7 +18518,7 @@ define("src/uicomponents/notifications/NotificationFilterButton", ["require", "e
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/notifications/NotificationLog", ["require", "exports", "src/uicomponents/notifications/Notification", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/uicomponents/popups/PopupManager", "src/eventManager"], function (require, exports, Notification_3, ConfirmPopup_1, NotificationFilterButton_1, PopupManager_4, eventManager_26) {
+define("src/uicomponents/notifications/NotificationLog", ["require", "exports", "src/uicomponents/notifications/Notification", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/uicomponents/popups/PopupManager", "src/eventManager"], function (require, exports, Notification_3, ConfirmPopup_1, NotificationFilterButton_1, PopupManager_4, eventManager_28) {
     "use strict";
     var NotificationLogComponent = (function (_super) {
         __extends(NotificationLogComponent, _super);
@@ -18200,10 +18546,10 @@ define("src/uicomponents/notifications/NotificationLog", ["require", "exports", 
             }
         };
         NotificationLogComponent.prototype.componentDidMount = function () {
-            this.updateListener = eventManager_26.default.addEventListener("updateNotificationLog", this.forceUpdate.bind(this));
+            this.updateListener = eventManager_28.default.addEventListener("updateNotificationLog", this.forceUpdate.bind(this));
         };
         NotificationLogComponent.prototype.componentWillUnmount = function () {
-            eventManager_26.default.removeEventListener("updateNotificationLog", this.updateListener);
+            eventManager_28.default.removeEventListener("updateNotificationLog", this.updateListener);
         };
         NotificationLogComponent.prototype.componentDidUpdate = function () {
             var domNode = ReactDOM.findDOMNode(this);
@@ -18365,7 +18711,7 @@ define("src/uicomponents/galaxymap/StarInfo", ["require", "exports", "src/uicomp
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/fleetcontrols", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_27) {
+define("src/uicomponents/galaxymap/fleetcontrols", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_29) {
     "use strict";
     var FleetControlsComponent = (function (_super) {
         __extends(FleetControlsComponent, _super);
@@ -18380,13 +18726,13 @@ define("src/uicomponents/galaxymap/fleetcontrols", ["require", "exports", "src/e
             this.splitFleet = this.splitFleet.bind(this);
         };
         FleetControlsComponent.prototype.deselectFleet = function () {
-            eventManager_27.default.dispatchEvent("deselectFleet", this.props.fleet);
+            eventManager_29.default.dispatchEvent("deselectFleet", this.props.fleet);
         };
         FleetControlsComponent.prototype.selectFleet = function () {
-            eventManager_27.default.dispatchEvent("selectFleets", [this.props.fleet]);
+            eventManager_29.default.dispatchEvent("selectFleets", [this.props.fleet]);
         };
         FleetControlsComponent.prototype.splitFleet = function () {
-            eventManager_27.default.dispatchEvent("splitFleet", this.props.fleet);
+            eventManager_29.default.dispatchEvent("splitFleet", this.props.fleet);
         };
         FleetControlsComponent.prototype.render = function () {
             var fleet = this.props.fleet;
@@ -18640,7 +18986,7 @@ define("src/uicomponents/galaxymap/fleetcontents", ["require", "exports", "src/u
     exports.default = Factory;
     var _a;
 });
-define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/options", "src/eventManager", "src/App"], function (require, exports, options_7, eventManager_28, App_32) {
+define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/options", "src/eventManager", "src/App"], function (require, exports, options_7, eventManager_30, App_32) {
     "use strict";
     var fleets = {
         key: "fleets",
@@ -18663,13 +19009,13 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
                 points = perspectivePlayer.getVisibleStars();
             }
             var mouseDownFN = function (fleet, event) {
-                eventManager_28.default.dispatchEvent("mouseDown", event, fleet.location);
+                eventManager_30.default.dispatchEvent("mouseDown", event, fleet.location);
             };
             var mouseUpFN = function (event) {
-                eventManager_28.default.dispatchEvent("mouseUp", event);
+                eventManager_30.default.dispatchEvent("mouseUp", event);
             };
             var mouseOverFN = function (fleet) {
-                eventManager_28.default.dispatchEvent("hoverStar", fleet.location);
+                eventManager_30.default.dispatchEvent("hoverStar", fleet.location);
                 if (options_7.default.debug.enabled && fleet.units.length > 0 && fleet.units[0].front) {
                     var objective = fleet.units[0].front.objective;
                     var target = objective.target ? objective.target.id : null;
@@ -18680,7 +19026,7 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
                 var originalEvent = event.data.originalEvent;
                 ;
                 if (originalEvent.button === 0) {
-                    eventManager_28.default.dispatchEvent("selectFleets", [fleet]);
+                    eventManager_30.default.dispatchEvent("selectFleets", [fleet]);
                 }
             };
             function singleFleetDrawFN(fleet) {
@@ -18773,7 +19119,7 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
     }
     var _a;
 });
-define("src/uicomponents/galaxymap/fleetreorganization", ["require", "exports", "src/uicomponents/galaxymap/fleetcontents", "src/eventManager"], function (require, exports, FleetContents_1, eventManager_29) {
+define("src/uicomponents/galaxymap/fleetreorganization", ["require", "exports", "src/uicomponents/galaxymap/fleetcontents", "src/eventManager"], function (require, exports, FleetContents_1, eventManager_31) {
     "use strict";
     var FleetReorganizationComponent = (function (_super) {
         __extends(FleetReorganizationComponent, _super);
@@ -18810,7 +19156,7 @@ define("src/uicomponents/galaxymap/fleetreorganization", ["require", "exports", 
             if (draggingUnit) {
                 var oldFleet = draggingUnit.fleet;
                 oldFleet.transferUnit(fleet, draggingUnit);
-                eventManager_29.default.dispatchEvent("playerControlUpdated", null);
+                eventManager_31.default.dispatchEvent("playerControlUpdated", null);
             }
             this.handleDragEnd();
         };
@@ -18821,7 +19167,7 @@ define("src/uicomponents/galaxymap/fleetreorganization", ["require", "exports", 
         FleetReorganizationComponent.prototype.componentWillUnmount = function () {
             if (this.hasClosed)
                 return;
-            eventManager_29.default.dispatchEvent("endReorganizingFleets");
+            eventManager_31.default.dispatchEvent("endReorganizingFleets");
         };
         FleetReorganizationComponent.prototype.render = function () {
             var selectedFleets = this.props.fleets;
@@ -18873,7 +19219,7 @@ define("src/uicomponents/galaxymap/fleetreorganization", ["require", "exports", 
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/eventManager", "src/uicomponents/galaxymap/fleetinfo", "src/uicomponents/galaxymap/fleetcontents", "src/uicomponents/galaxymap/fleetreorganization"], function (require, exports, eventManager_30, FleetInfo_1, FleetContents_2, FleetReorganization_1) {
+define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/eventManager", "src/uicomponents/galaxymap/fleetinfo", "src/uicomponents/galaxymap/fleetcontents", "src/uicomponents/galaxymap/fleetreorganization"], function (require, exports, eventManager_32, FleetInfo_1, FleetContents_2, FleetReorganization_1) {
     "use strict";
     var FleetSelectionComponent = (function (_super) {
         __extends(FleetSelectionComponent, _super);
@@ -18888,10 +19234,10 @@ define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/
             this.setElementPosition = this.setElementPosition.bind(this);
         };
         FleetSelectionComponent.prototype.mergeFleets = function () {
-            eventManager_30.default.dispatchEvent("mergeFleets", null);
+            eventManager_32.default.dispatchEvent("mergeFleets", null);
         };
         FleetSelectionComponent.prototype.reorganizeFleets = function () {
-            eventManager_30.default.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
+            eventManager_32.default.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
         };
         FleetSelectionComponent.prototype.setElementPosition = function () {
             if (!this.ref_TODO_selected)
@@ -18925,14 +19271,14 @@ define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/
         };
         FleetSelectionComponent.prototype.componentDidMount = function () {
             this.setElementPosition();
-            eventManager_30.default.addEventListener("possibleActionsUpdated", this.setElementPosition);
+            eventManager_32.default.addEventListener("possibleActionsUpdated", this.setElementPosition);
             window.addEventListener("resize", this.setElementPosition, false);
         };
         FleetSelectionComponent.prototype.componentDidUpdate = function () {
             this.setElementPosition();
         };
         FleetSelectionComponent.prototype.componentWillUnmount = function () {
-            eventManager_30.default.removeEventListener("possibleActionsUpdated", this.setElementPosition);
+            eventManager_32.default.removeEventListener("possibleActionsUpdated", this.setElementPosition);
             window.removeEventListener("resize", this.setElementPosition);
         };
         FleetSelectionComponent.prototype.render = function () {
@@ -19025,7 +19371,7 @@ define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/technologies/technologyPrioritySlider", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_31) {
+define("src/uicomponents/technologies/technologyPrioritySlider", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_33) {
     "use strict";
     var TechnologyPrioritySliderComponent = (function (_super) {
         __extends(TechnologyPrioritySliderComponent, _super);
@@ -19046,10 +19392,10 @@ define("src/uicomponents/technologies/technologyPrioritySlider", ["require", "ex
             });
         };
         TechnologyPrioritySliderComponent.prototype.componentDidMount = function () {
-            eventManager_31.default.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
+            eventManager_33.default.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
         };
         TechnologyPrioritySliderComponent.prototype.componentWillUnmount = function () {
-            eventManager_31.default.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
+            eventManager_33.default.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
         };
         TechnologyPrioritySliderComponent.prototype.isTechnologyLocked = function () {
             return this.props.playerTechnology.technologies[this.props.technology.key].priorityIsLocked;
@@ -19761,7 +20107,7 @@ define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "sr
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_34) {
+define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_35) {
     "use strict";
     var AttitudeModifierInfoComponent = (function (_super) {
         __extends(AttitudeModifierInfoComponent, _super);
@@ -19795,8 +20141,8 @@ define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports",
                     }
                 case "strength":
                     {
-                        var relativeValue = utility_34.getRelativeValue(this.props.strength, -20, 20);
-                        relativeValue = utility_34.clamp(relativeValue, 0, 1);
+                        var relativeValue = utility_35.getRelativeValue(this.props.strength, -20, 20);
+                        relativeValue = utility_35.clamp(relativeValue, 0, 1);
                         var deviation = Math.abs(0.5 - relativeValue) * 2;
                         var hue = 110 * relativeValue;
                         var saturation = 0 + 50 * deviation;
@@ -20037,7 +20383,7 @@ define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports",
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_35) {
+define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_36) {
     "use strict";
     var OpinionComponent = (function (_super) {
         __extends(OpinionComponent, _super);
@@ -20069,8 +20415,8 @@ define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicompo
             return firstChild.getBoundingClientRect();
         };
         OpinionComponent.prototype.getColor = function () {
-            var relativeValue = utility_35.getRelativeValue(this.props.opinion, -30, 30);
-            relativeValue = utility_35.clamp(relativeValue, 0, 1);
+            var relativeValue = utility_36.getRelativeValue(this.props.opinion, -30, 30);
+            relativeValue = utility_36.clamp(relativeValue, 0, 1);
             var deviation = Math.abs(0.5 - relativeValue) * 2;
             var hue = 110 * relativeValue;
             var saturation = 0 + 50 * deviation;
@@ -20498,7 +20844,7 @@ define("src/uicomponents/galaxymap/EconomySummary", ["require", "exports", "src/
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/technologies/TechnologiesList", ["require", "exports", "src/uicomponents/technologies/Technology", "src/eventManager"], function (require, exports, Technology_1, eventManager_32) {
+define("src/uicomponents/technologies/TechnologiesList", ["require", "exports", "src/uicomponents/technologies/Technology", "src/eventManager"], function (require, exports, Technology_1, eventManager_34) {
     "use strict";
     var TechnologiesListComponent = (function (_super) {
         __extends(TechnologiesListComponent, _super);
@@ -20508,10 +20854,10 @@ define("src/uicomponents/technologies/TechnologiesList", ["require", "exports", 
             this.updateListener = undefined;
         }
         TechnologiesListComponent.prototype.componentDidMount = function () {
-            this.updateListener = eventManager_32.default.addEventListener("builtBuildingWithEffect_research", this.forceUpdate.bind(this));
+            this.updateListener = eventManager_34.default.addEventListener("builtBuildingWithEffect_research", this.forceUpdate.bind(this));
         };
         TechnologiesListComponent.prototype.componentWillUnmount = function () {
-            eventManager_32.default.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
+            eventManager_34.default.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
         };
         TechnologiesListComponent.prototype.render = function () {
             var playerTechnology = this.props.playerTechnology;
@@ -21106,7 +21452,7 @@ define("src/uicomponents/production/ManufactoryStarsListItem", ["require", "expo
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_36) {
+define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_37) {
     "use strict";
     var ManufactoryStarsListComponent = (function (_super) {
         __extends(ManufactoryStarsListComponent, _super);
@@ -21116,8 +21462,8 @@ define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports"
         }
         ManufactoryStarsListComponent.prototype.render = function () {
             var rows = [];
-            this.props.starsWithManufactories.sort(utility_36.sortByManufactoryCapacityFN);
-            this.props.starsWithoutManufactories.sort(utility_36.sortByManufactoryCapacityFN);
+            this.props.starsWithManufactories.sort(utility_37.sortByManufactoryCapacityFN);
+            this.props.starsWithoutManufactories.sort(utility_37.sortByManufactoryCapacityFN);
             for (var i = 0; i < this.props.starsWithManufactories.length; i++) {
                 var star = this.props.starsWithManufactories[i];
                 var manufactory = star.manufactory;
@@ -21155,7 +21501,7 @@ define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports"
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_33) {
+define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_35) {
     "use strict";
     var UpdateWhenMoneyChanges = (function () {
         function UpdateWhenMoneyChanges(owner, onMoneyChange) {
@@ -21164,10 +21510,10 @@ define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", 
             this.handleMoneyChange = this.handleMoneyChange.bind(this);
         }
         UpdateWhenMoneyChanges.prototype.componentDidMount = function () {
-            eventManager_33.default.addEventListener("playerMoneyUpdated", this.handleMoneyChange);
+            eventManager_35.default.addEventListener("playerMoneyUpdated", this.handleMoneyChange);
         };
         UpdateWhenMoneyChanges.prototype.componentWillUnmount = function () {
-            eventManager_33.default.removeEventListener("playerMoneyUpdated", this.handleMoneyChange);
+            eventManager_35.default.removeEventListener("playerMoneyUpdated", this.handleMoneyChange);
         };
         UpdateWhenMoneyChanges.prototype.handleMoneyChange = function () {
             if (this.onMoneyChange) {
@@ -21183,7 +21529,7 @@ define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", 
     exports.default = UpdateWhenMoneyChanges;
     var _a;
 });
-define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_34, utility_37, UpdateWhenMoneyChanges_1, applyMixins_13) {
+define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_36, utility_38, UpdateWhenMoneyChanges_1, applyMixins_13) {
     "use strict";
     var ProductionOverviewComponent = (function (_super) {
         __extends(ProductionOverviewComponent, _super);
@@ -21205,11 +21551,11 @@ define("src/uicomponents/production/ProductionOverview", ["require", "exports", 
             var player = this.props.player;
             var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
             if (starsByManufactoryPresence.withManufactories.length > 0) {
-                starsByManufactoryPresence.withManufactories.sort(utility_37.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withManufactories.sort(utility_38.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withManufactories[0];
             }
             else if (starsByManufactoryPresence.withoutManufactories.length > 0) {
-                starsByManufactoryPresence.withoutManufactories.sort(utility_37.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withoutManufactories.sort(utility_38.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withoutManufactories[0];
             }
             return ({
@@ -21222,10 +21568,10 @@ define("src/uicomponents/production/ProductionOverview", ["require", "exports", 
             this.forceUpdate();
         };
         ProductionOverviewComponent.prototype.componentDidMount = function () {
-            eventManager_34.default.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+            eventManager_36.default.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
         };
         ProductionOverviewComponent.prototype.componentWillUnmount = function () {
-            eventManager_34.default.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+            eventManager_36.default.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
         };
         ProductionOverviewComponent.prototype.getStarsWithAndWithoutManufactories = function () {
             var player = this.props.player;
@@ -21418,7 +21764,7 @@ define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/list/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_38) {
+define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/list/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_39) {
     "use strict";
     var SaveListComponent = (function (_super) {
         __extends(SaveListComponent, _super);
@@ -21447,7 +21793,7 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
                     content: SaveListItem_1.default({
                         storageKey: saveKeys[i],
                         name: saveData.name,
-                        date: utility_38.prettifyDate(date),
+                        date: utility_39.prettifyDate(date),
                         accurateDate: saveData.date,
                         isMarkedForDeletion: isMarkedForDeletion,
                         handleDelete: this.props.onDelete ?
@@ -21841,7 +22187,7 @@ define("src/uicomponents/galaxymap/OptionsCheckbox", ["require", "exports"], fun
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_39) {
+define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_40) {
     "use strict";
     var OptionsNumericFieldComponent = (function (_super) {
         __extends(OptionsNumericFieldComponent, _super);
@@ -21874,7 +22220,7 @@ define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", 
             if (!isFinite(value)) {
                 return;
             }
-            value = utility_39.clamp(value, parseFloat(target.min), parseFloat(target.max));
+            value = utility_40.clamp(value, parseFloat(target.min), parseFloat(target.max));
             this.setState({
                 value: value
             }, this.triggerOnChangeFN);
@@ -21967,7 +22313,7 @@ define("src/tutorials/TutorialStatus", ["require", "exports", "src/tutorials/Tut
     exports.default = tutorialStatus;
     var _a;
 });
-define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_35, utility_40, TutorialStatus_1) {
+define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_37, utility_41, TutorialStatus_1) {
     "use strict";
     var OptionsListComponent = (function (_super) {
         __extends(OptionsListComponent, _super);
@@ -22081,7 +22427,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                     onChangeFN: function () {
                         Options_3.default.debug.enabled = !Options_3.default.debug.enabled;
                         _this.forceUpdate();
-                        eventManager_35.default.dispatchEvent("renderUI");
+                        eventManager_37.default.dispatchEvent("renderUI");
                     }
                 })
             });
@@ -22101,7 +22447,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                             if (!isFinite(value)) {
                                 return;
                             }
-                            value = utility_40.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                            value = utility_41.clamp(value, parseFloat(target.min), parseFloat(target.max));
                             Options_3.default.debug.battleSimulationDepth = value;
                             _this.forceUpdate();
                         }
@@ -22127,7 +22473,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                     label: "Always expand top right menu on low resolution",
                     onChangeFN: function () {
                         Options_3.default.ui.noHamburger = !Options_3.default.ui.noHamburger;
-                        eventManager_35.default.dispatchEvent("updateHamburgerMenu");
+                        eventManager_37.default.dispatchEvent("updateHamburgerMenu");
                         _this.forceUpdate();
                     }
                 })
@@ -22167,7 +22513,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                     value: Options_3.default.display.borderWidth,
                     onChangeFN: function (value) {
                         Options_3.default.display.borderWidth = value;
-                        eventManager_35.default.dispatchEvent("renderMap");
+                        eventManager_37.default.dispatchEvent("renderMap");
                     }
                 })
             });
@@ -22368,7 +22714,7 @@ define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/u
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options", "src/uicomponents/galaxymap/TopMenuPopups", "src/eventManager"], function (require, exports, Options_5, TopMenuPopups_1, eventManager_36) {
+define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options", "src/uicomponents/galaxymap/TopMenuPopups", "src/eventManager"], function (require, exports, Options_5, TopMenuPopups_1, eventManager_38) {
     "use strict";
     var TopMenuComponent = (function (_super) {
         __extends(TopMenuComponent, _super);
@@ -22398,14 +22744,14 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
         };
         TopMenuComponent.prototype.componentDidMount = function () {
             window.addEventListener("resize", this.handleResize, false);
-            eventManager_36.default.addEventListener("playerControlUpdated", this.delayedResize);
-            eventManager_36.default.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
+            eventManager_38.default.addEventListener("playerControlUpdated", this.delayedResize);
+            eventManager_38.default.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
             this.handleResize();
         };
         TopMenuComponent.prototype.componentWillUnmount = function () {
             window.removeEventListener("resize", this.handleResize);
-            eventManager_36.default.removeEventListener("playerControlUpdated", this.delayedResize);
-            eventManager_36.default.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
+            eventManager_38.default.removeEventListener("playerControlUpdated", this.delayedResize);
+            eventManager_38.default.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
         };
         TopMenuComponent.prototype.handleToggleHamburger = function () {
             this.handleResize();
@@ -22575,7 +22921,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/possibleactions/AttackTarget", ["require", "exports", "src/eventManager", "src/uicomponents/PlayerFlag"], function (require, exports, eventManager_37, PlayerFlag_7) {
+define("src/uicomponents/possibleactions/AttackTarget", ["require", "exports", "src/eventManager", "src/uicomponents/PlayerFlag"], function (require, exports, eventManager_39, PlayerFlag_7) {
     "use strict";
     var AttackTargetComponent = (function (_super) {
         __extends(AttackTargetComponent, _super);
@@ -22588,7 +22934,7 @@ define("src/uicomponents/possibleactions/AttackTarget", ["require", "exports", "
             this.handleAttack = this.handleAttack.bind(this);
         };
         AttackTargetComponent.prototype.handleAttack = function () {
-            eventManager_37.default.dispatchEvent("attackTarget", this.props.attackTarget);
+            eventManager_39.default.dispatchEvent("attackTarget", this.props.attackTarget);
         };
         AttackTargetComponent.prototype.render = function () {
             var target = this.props.attackTarget;
@@ -22924,7 +23270,7 @@ define("src/uicomponents/possibleactions/BuildableBuildingList", ["require", "ex
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/possibleactions/PossibleActions", ["require", "exports", "src/uicomponents/possibleactions/AttackTarget", "src/uicomponents/possibleactions/BuildingUpgradeList", "src/uicomponents/possibleactions/BuildableBuildingList", "src/eventManager"], function (require, exports, AttackTarget_1, BuildingUpgradeList_1, BuildableBuildingList_1, eventManager_38) {
+define("src/uicomponents/possibleactions/PossibleActions", ["require", "exports", "src/uicomponents/possibleactions/AttackTarget", "src/uicomponents/possibleactions/BuildingUpgradeList", "src/uicomponents/possibleactions/BuildableBuildingList", "src/eventManager"], function (require, exports, AttackTarget_1, BuildingUpgradeList_1, BuildableBuildingList_1, eventManager_40) {
     "use strict";
     var PossibleActionsComponent = (function (_super) {
         __extends(PossibleActionsComponent, _super);
@@ -22964,12 +23310,12 @@ define("src/uicomponents/possibleactions/PossibleActions", ["require", "exports"
         };
         PossibleActionsComponent.prototype.componentDidMount = function () {
             var self = this;
-            eventManager_38.default.addEventListener("clearPossibleActions", this.clearExpandedAction);
-            eventManager_38.default.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
+            eventManager_40.default.addEventListener("clearPossibleActions", this.clearExpandedAction);
+            eventManager_40.default.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
         };
         PossibleActionsComponent.prototype.componentWillUnmount = function () {
-            eventManager_38.default.removeAllListeners("clearPossibleActions");
-            eventManager_38.default.removeEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
+            eventManager_40.default.removeAllListeners("clearPossibleActions");
+            eventManager_40.default.removeEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
         };
         PossibleActionsComponent.prototype.canUpgradeBuildings = function (star) {
             return star && Object.keys(star.getBuildingUpgrades()).length > 0;
@@ -22981,7 +23327,7 @@ define("src/uicomponents/possibleactions/PossibleActions", ["require", "exports"
         };
         PossibleActionsComponent.prototype.updateActions = function () {
             this.props.setExpandedActionElementOnParent(this.state.expandedActionElement);
-            eventManager_38.default.dispatchEvent("possibleActionsUpdated");
+            eventManager_40.default.dispatchEvent("possibleActionsUpdated");
         };
         PossibleActionsComponent.prototype.clearExpandedAction = function () {
             this.setState({
@@ -23182,7 +23528,7 @@ define("src/uicomponents/tutorials/DontShowAgain", ["require", "exports", "src/t
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_41, TutorialState_3, TutorialStatus_3, utility_42) {
+define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_42, TutorialState_3, TutorialStatus_3, utility_43) {
     "use strict";
     var TutorialComponent = (function (_super) {
         __extends(TutorialComponent, _super);
@@ -23227,7 +23573,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
         TutorialComponent.prototype.flipPage = function (amount) {
             var lastPage = this.props.pages.length - 1;
             var newPage = this.state.currentPageIndex + amount;
-            newPage = utility_41.clamp(newPage, 0, lastPage);
+            newPage = utility_42.clamp(newPage, 0, lastPage);
             this.handleLeavePage(this.props.pages[this.state.currentPageIndex]);
             this.setState({
                 currentPageIndex: newPage
@@ -23271,7 +23617,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
                 className: "tutorial-inner"
             }, backElement, React.DOM.div({
                 className: "tutorial-content"
-            }, utility_42.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
+            }, utility_43.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
                 tutorialId: this.props.tutorialId
             })));
         };
@@ -23357,7 +23703,7 @@ define("src/uicomponents/tutorials/IntroTutorial", ["require", "exports", "src/t
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uicomponents/mapmodes/MapModeSettings", "src/uicomponents/galaxymap/TopBar", "src/uicomponents/notifications/Notifications", "src/uicomponents/galaxymap/StarInfo", "src/uicomponents/galaxymap/FleetSelection", "src/uicomponents/galaxymap/TopMenu", "src/uicomponents/possibleactions/PossibleActions", "src/uicomponents/tutorials/IntroTutorial", "src/eventManager"], function (require, exports, MapModeSettings_1, TopBar_1, Notifications_1, StarInfo_1, FleetSelection_1, TopMenu_1, PossibleActions_1, IntroTutorial_2, eventManager_39) {
+define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uicomponents/mapmodes/MapModeSettings", "src/uicomponents/galaxymap/TopBar", "src/uicomponents/notifications/Notifications", "src/uicomponents/galaxymap/StarInfo", "src/uicomponents/galaxymap/FleetSelection", "src/uicomponents/galaxymap/TopMenu", "src/uicomponents/possibleactions/PossibleActions", "src/uicomponents/tutorials/IntroTutorial", "src/eventManager"], function (require, exports, MapModeSettings_1, TopBar_1, Notifications_1, StarInfo_1, FleetSelection_1, TopMenu_1, PossibleActions_1, IntroTutorial_2, eventManager_41) {
     "use strict";
     var GalaxyMapUIComponent = (function (_super) {
         __extends(GalaxyMapUIComponent, _super);
@@ -23390,12 +23736,12 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uic
             });
         };
         GalaxyMapUIComponent.prototype.componentWillMount = function () {
-            eventManager_39.default.addEventListener("playerControlUpdated", this.updateSelection);
-            eventManager_39.default.addEventListener("endTurn", this.setPlayerTurn);
+            eventManager_41.default.addEventListener("playerControlUpdated", this.updateSelection);
+            eventManager_41.default.addEventListener("endTurn", this.setPlayerTurn);
         };
         GalaxyMapUIComponent.prototype.componentWillUnmount = function () {
-            eventManager_39.default.removeEventListener("playerControlUpdated", this.updateSelection);
-            eventManager_39.default.removeEventListener("endTurn", this.setPlayerTurn);
+            eventManager_41.default.removeEventListener("playerControlUpdated", this.updateSelection);
+            eventManager_41.default.removeEventListener("endTurn", this.setPlayerTurn);
         };
         GalaxyMapUIComponent.prototype.componentDidUpdate = function () {
             this.clampExpandedActionElement();
@@ -23441,7 +23787,7 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uic
             });
         };
         GalaxyMapUIComponent.prototype.closeReorganization = function () {
-            eventManager_39.default.dispatchEvent("endReorganizingFleets");
+            eventManager_41.default.dispatchEvent("endReorganizingFleets");
             this.updateSelection();
         };
         GalaxyMapUIComponent.prototype.render = function () {
@@ -23534,22 +23880,14 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uic
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App", "src/uicomponents/galaxymap/GalaxyMapUI", "src/options"], function (require, exports, App_36, GalaxyMapUI_1, Options_6) {
+define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/uicomponents/galaxymap/GalaxyMapUI"], function (require, exports, GalaxyMapUI_1) {
     "use strict";
     var GalaxyMapComponent = (function (_super) {
         __extends(GalaxyMapComponent, _super);
         function GalaxyMapComponent(props) {
             _super.call(this, props);
             this.displayName = "GalaxyMap";
-            this.bindMethods();
         }
-        GalaxyMapComponent.prototype.bindMethods = function () {
-            this.changeScene = this.changeScene.bind(this);
-        };
-        GalaxyMapComponent.prototype.changeScene = function (e) {
-            var target = e.target;
-            App_36.default.reactUI.switchScene(target.value);
-        };
         GalaxyMapComponent.prototype.render = function () {
             var _this = this;
             var mapModeOptions = [];
@@ -23572,32 +23910,7 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App",
                 game: this.props.game,
                 mapRenderer: this.props.mapRenderer,
                 key: "galaxyMapUI"
-            })), !Options_6.default.debug.enabled ? null : React.DOM.div({
-                className: "galaxy-map-debug debug"
-            }, React.DOM.select({
-                className: "reactui-selector debug",
-                ref: function (component) {
-                    _this.ref_TODO_sceneSelector = component;
-                },
-                value: App_36.default.reactUI.currentScene,
-                onChange: this.changeScene
-            }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "setupGame" }, "setup game"), React.DOM.option({ value: "battleSceneTester" }, "battle scene test")), React.DOM.button({
-                className: "debug",
-                onClick: function (e) {
-                    var target = e.target;
-                    var position = App_36.default.renderer.camera.container.position.clone();
-                    var zoom = App_36.default.renderer.camera.currZoom;
-                    App_36.default.destroy();
-                    App_36.default.initUI();
-                    App_36.default.game = App_36.default.makeGame();
-                    App_36.default.initGame();
-                    App_36.default.initDisplay();
-                    App_36.default.hookUI();
-                    App_36.default.reactUI.switchScene("galaxyMap");
-                    App_36.default.renderer.camera.zoom(zoom);
-                    App_36.default.renderer.camera.container.position = position;
-                }
-            }, "Reset app"))));
+            }))));
         };
         GalaxyMapComponent.prototype.componentDidMount = function () {
             this.props.renderer.bindRendererView(ReactDOM.findDOMNode(this.ref_TODO_pixiContainer));
@@ -23772,24 +24085,40 @@ define("src/uicomponents/Stage", ["require", "exports", "src/uicomponents/battle
     exports.default = Factory;
     var _a;
 });
-define("src/ReactUI", ["require", "exports", "src/eventManager", "src/uicomponents/Stage"], function (require, exports, eventManager_40, Stage_1) {
+define("src/ReactUI", ["require", "exports", "src/eventManager", "src/ModuleFileLoadingPhase", "src/uicomponents/Stage"], function (require, exports, eventManager_42, ModuleFileLoadingPhase_3, Stage_1) {
     "use strict";
+    var moduleLoadingPhaseByScene = {
+        "battle": ModuleFileLoadingPhase_3.default.battle,
+        "battlePrep": ModuleFileLoadingPhase_3.default.battlePrep,
+        "galaxyMap": ModuleFileLoadingPhase_3.default.game,
+        "setupGame": ModuleFileLoadingPhase_3.default.setup,
+        "flagMaker": ModuleFileLoadingPhase_3.default.setup,
+        "battleSceneTester": ModuleFileLoadingPhase_3.default.battle,
+    };
     var ReactUI = (function () {
-        function ReactUI(container) {
+        function ReactUI(container, moduleLoader) {
             this.container = container;
+            this.moduleLoader = moduleLoader;
             this.addEventListeners();
         }
         ReactUI.prototype.addEventListeners = function () {
-            eventManager_40.default.addEventListener("switchScene", this.switchScene.bind(this));
-            eventManager_40.default.addEventListener("renderUI", this.render.bind(this));
+            eventManager_42.default.addEventListener("switchScene", this.switchScene.bind(this));
+            eventManager_42.default.addEventListener("renderUI", this.render.bind(this));
         };
         ReactUI.prototype.switchScene = function (newScene) {
+            var _this = this;
             this.currentScene = newScene;
-            this.render();
+            this.loadModulesNeededForCurrentScene(function () {
+                _this.render();
+            });
+        };
+        ReactUI.prototype.loadModulesNeededForCurrentScene = function (afterLoaded) {
+            var phase = moduleLoadingPhaseByScene[this.currentScene];
+            this.moduleLoader.loadModulesNeededForPhase(phase, afterLoaded);
         };
         ReactUI.prototype.destroy = function () {
-            eventManager_40.default.removeAllListeners("switchScene");
-            eventManager_40.default.removeAllListeners("renderUI");
+            eventManager_42.default.removeAllListeners("switchScene");
+            eventManager_42.default.removeAllListeners("renderUI");
             ReactDOM.unmountComponentAtNode(this.container);
             this.container = null;
         };
@@ -23809,87 +24138,6 @@ define("src/ReactUI", ["require", "exports", "src/eventManager", "src/uicomponen
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ReactUI;
-    var _a;
-});
-define("src/setDynamicTemplateProperties", ["require", "exports", "src/Unit", "src/utility"], function (require, exports, Unit_6, utility_43) {
-    "use strict";
-    function setDynamicTemplateProperties(moduleData) {
-        setAbilityGuardAddition(moduleData);
-        setAttitudeModifierOverride(moduleData);
-        setUnitFamilyAssociatedTemplates(moduleData);
-        setTechnologyRequirements(moduleData);
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = setDynamicTemplateProperties;
-    function setAbilityGuardAddition(moduleData) {
-        function checkIfAbilityAddsGuard(ability) {
-            var effects = [ability.mainEffect];
-            if (ability.secondaryEffects) {
-                effects = effects.concat(ability.secondaryEffects);
-            }
-            var dummyUser = new Unit_6.default(utility_43.getRandomProperty(moduleData.Templates.Units));
-            var dummyTarget = new Unit_6.default(utility_43.getRandomProperty(moduleData.Templates.Units));
-            for (var i = 0; i < effects.length; i++) {
-                effects[i].action.executeAction(dummyUser, dummyTarget, null, effects[i].data);
-                if (dummyUser.battleStats.guardAmount) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        for (var abilityName in moduleData.Templates.Abilities) {
-            var ability = moduleData.Templates.Abilities[abilityName];
-            ability.addsGuard = checkIfAbilityAddsGuard(ability);
-        }
-    }
-    function setAttitudeModifierOverride(moduleData) {
-        for (var modifierType in moduleData.Templates.AttitudeModifiers) {
-            var modifier = moduleData.Templates.AttitudeModifiers[modifierType];
-            if (modifier.canBeOverriddenBy) {
-                for (var i = 0; i < modifier.canBeOverriddenBy.length; i++) {
-                    if (!modifier.canBeOverriddenBy[i].canOverride) {
-                        modifier.canBeOverriddenBy[i].canOverride = [];
-                    }
-                    modifier.canBeOverriddenBy[i].canOverride.push(modifier);
-                }
-            }
-        }
-    }
-    function setUnitFamilyAssociatedTemplates(moduleData) {
-        for (var unitType in moduleData.Templates.Units) {
-            var template = moduleData.Templates.Units[unitType];
-            for (var i = 0; i < template.families.length; i++) {
-                var family = template.families[i];
-                if (!family.associatedTemplates) {
-                    family.associatedTemplates = [];
-                }
-                family.associatedTemplates.push(template);
-            }
-        }
-    }
-    function setTechnologyRequirements(moduleData) {
-        var _loop_3 = function(technologyKey) {
-            var technology = moduleData.Templates.Technologies[technologyKey];
-            var _loop_4 = function(level) {
-                var unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
-                unlockedTemplatesForLevel.forEach(function (template) {
-                    if (!template.technologyRequirements) {
-                        template.technologyRequirements = [];
-                    }
-                    template.technologyRequirements.push({
-                        technology: technology,
-                        level: parseInt(level)
-                    });
-                });
-            };
-            for (var level in technology.unlocksPerLevel) {
-                _loop_4(level);
-            }
-        };
-        for (var technologyKey in moduleData.Templates.Technologies) {
-            _loop_3(technologyKey);
-        }
-    }
     var _a;
 });
 define("modules/common/battlesfxfunctions/shaders/BlackToAlpha", ["require", "exports"], function (require, exports) {
@@ -23932,8 +24180,10 @@ define("modules/common/battlesfxfunctions/shaders/BlackToAlpha", ["require", "ex
 define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_44) {
     "use strict";
     function projectileAttack(props, params) {
-        var minY = Math.max(params.height * 0.3, 30);
-        var maxY = params.height - 30;
+        var offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSFX(params.targetOffset, params.target);
+        var offsetUserData = params.user.drawingFunctionData.normalizeForBattleSFX(params.userOffset, params.user);
+        var minY = offsetTargetData.boundingBox.y;
+        var maxY = minY + offsetTargetData.boundingBox.height;
         var maxSpeed = (params.width / params.duration) * props.maxSpeed;
         var acceleration = maxSpeed * props.acceleration;
         var container = new PIXI.Container();
@@ -23946,8 +24196,10 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
         var stopSpawningTime = startTime + params.duration / 2;
         var lastTime = startTime;
         var nextSpawnTime = startTime;
-        var amountToSpawn = utility_44.randInt(props.amountToSpawn.min, props.amountToSpawn.max);
+        var spawnLocationsCount = params.user.drawingFunctionData.sequentialAttackOriginPoints.length;
+        var amountToSpawn = Math.max(Math.min(utility_44.randInt(props.amountToSpawn.min, props.amountToSpawn.max), spawnLocationsCount), 10);
         var spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
+        var impactRate = props.impactRate || 0;
         var projectiles = [];
         var hasTriggeredEffect = false;
         function animate() {
@@ -23958,13 +24210,16 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
                 nextSpawnTime += spawnRate;
                 var texture = utility_44.getRandomArrayItem(props.projectileTextures);
                 var sprite = new PIXI.Sprite(texture);
-                sprite.x = 20;
-                sprite.y = utility_44.randInt(minY, maxY);
                 container.addChild(sprite);
+                var spawnPointIndex = projectiles.length % spawnLocationsCount;
+                var spawnPoint = offsetUserData.sequentialAttackOriginPoints[spawnPointIndex];
+                sprite.x = spawnPoint.x;
+                sprite.y = spawnPoint.y;
+                var willImpact = Math.random() < impactRate;
                 projectiles.push({
                     sprite: sprite,
                     speed: 0,
-                    willImpact: (projectiles.length - 1) % props.impactRate === 0,
+                    willImpact: willImpact,
                     impactX: utility_44.randInt(params.width - 200, params.width - 50),
                     hasImpact: false
                 });
@@ -24026,7 +24281,7 @@ define("modules/common/battlesfxfunctions/rocketAttack", ["require", "exports", 
                 min: 20,
                 max: 20
             },
-            impactRate: 5
+            impactRate: 0.75
         };
         projectileAttack_1.default(props, params);
     }
@@ -24756,6 +25011,7 @@ define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"]
             this.emitters = {};
             this.emitterKeysByID = {};
             this.onSpriteCreated = {};
+            this.onParticleUpdated = {};
             this.proton = new Proton();
             this.pixiRenderer = renderer;
             this.container = container;
@@ -24791,12 +25047,13 @@ define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"]
             this.container.addChild(sprite);
         };
         ProtonWrapper.prototype.onProtonParticleUpdated = function (particle) {
-            var sprite = particle.sprite;
-            sprite.position.x = particle.p.x;
-            sprite.position.y = particle.p.y;
-            sprite.scale.x = particle.scale;
-            sprite.scale.y = particle.scale;
-            sprite.alpha = particle.alpha;
+            if (particle.parent) {
+                var emitter = particle.parent;
+                var emitterKey = this.emitterKeysByID[emitter.id];
+                if (this.onParticleUpdated[emitterKey]) {
+                    this.onParticleUpdated[emitterKey](particle);
+                }
+            }
         };
         ProtonWrapper.prototype.onProtonParticleDead = function (particle) {
             this.container.removeChild(particle.sprite);
@@ -24938,6 +25195,13 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         beamSprite.shader = beamFilter;
         beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
         mainContainer.addChild(beamSprite);
+        var onParticleUpdateFN = function (particle) {
+            var sprite = particle.sprite;
+            sprite.position.x = particle.p.x;
+            sprite.position.y = particle.p.y;
+            sprite.scale.x = particle.scale;
+            sprite.scale.y = particle.scale;
+        };
         var smallEmitter = new Proton.BehaviourEmitter();
         smallEmitter.p.x = beamOrigin.x + 50;
         smallEmitter.p.y = beamOrigin.y;
@@ -24956,7 +25220,6 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         smallEmitter.addInitialize(new Proton.Position(new Proton.RectZone(0, -30, props.width + 100 - smallEmitter.p.x, 30)));
         smallEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration * (1.0 - relativeImpactTime) / 6000, props.duration * (1.0 - relativeImpactTime) / 3000)));
         smallEmitter.addBehaviour(new Proton.Scale(new Proton.Span(0.8, 1), 0));
-        smallEmitter.addBehaviour(new Proton.Alpha(1, 0));
         smallEmitter.addBehaviour(new Proton.RandomDrift(20, 30, props.duration / 2000));
         protonWrapper.addEmitter(smallEmitter, "smallParticles");
         var smallParticleFilter = new ShinyParticle_1.default();
@@ -24968,6 +25231,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
                 highlightIntensity: Math.pow(lifeLeft, 1.5)
             });
         };
+        protonWrapper.onParticleUpdated["smallParticles"] = onParticleUpdateFN;
         protonWrapper.onSpriteCreated["smallParticles"] = function (sprite) {
             sprite.shader = smallParticleFilter;
             sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
@@ -24983,7 +25247,6 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         var emitterZone = new Proton.RectZone(0, -5, props.width + 100 - shinyEmitter.p.x, 5);
         shinyEmitter.addInitialize(new Proton.Position(emitterZone));
         shinyEmitter.addBehaviour(new Proton.Scale(new Proton.Span(60, 100), 0));
-        shinyEmitter.addBehaviour(new Proton.Alpha(1, 0));
         protonWrapper.addEmitter(shinyEmitter, "shinyParticles");
         var shinyParticleFilter = new ShinyParticle_1.default();
         var syncShinyParticleUniforms = function (time) {
@@ -24994,6 +25257,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
                 highlightIntensity: Math.pow(lifeLeft, 2.0)
             });
         };
+        protonWrapper.onParticleUpdated["shinyParticles"] = onParticleUpdateFN;
         protonWrapper.onSpriteCreated["shinyParticles"] = function (sprite) {
             sprite.shader = shinyParticleFilter;
             sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
@@ -25277,8 +25541,8 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
             target.receiveDamage(damage, damageType);
         }
     };
-    exports.wholeRowAttack = {
-        name: "wholeRowAttack",
+    exports.beamAttack = {
+        name: "beamAttack",
         targetFormations: targeting_3.TargetFormation.either,
         battleAreaFunction: targeting_3.areaColumn,
         targetRangeFunction: targeting_3.targetAll,
@@ -25397,7 +25661,7 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
     exports.closeAttack = {
         type: "closeAttack",
         displayName: "Close Attack",
-        description: "Close range attack that hits adjacent targets in same row as well",
+        description: "Close range attack that hits adjacent targets in the same row",
         moveDelay: 90,
         actionsUse: 2,
         mainEffect: {
@@ -25405,18 +25669,19 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
             sfx: BattleSFX.rocketAttack
         }
     };
-    exports.wholeRowAttack = {
-        type: "wholeRowAttack",
-        displayName: "Row Attack",
-        description: "Attack entire row of units",
+    exports.beamAttack = {
+        type: "beamAttack",
+        displayName: "Beam Attack",
+        description: "Attack units in a line",
         moveDelay: 300,
         actionsUse: 1,
-        bypassesGuard: true,
         mainEffect: {
-            action: EffectActions.wholeRowAttack,
+            action: EffectActions.beamAttack,
             sfx: BattleSFX.particleTest
-        }
+        },
+        bypassesGuard: true,
     };
+    exports.wholeRowAttack = exports.beamAttack;
     exports.bombAttack = {
         type: "bombAttack",
         displayName: "Bomb Attack",
@@ -25431,7 +25696,7 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
     exports.guardRow = {
         type: "guardRow",
         displayName: "Guard Row",
-        description: "Protect allies in the same row and boost defence up to 2x",
+        description: "Protect allies in the same row and boost defence against physical attacks",
         moveDelay: 100,
         actionsUse: 1,
         mainEffect: {
@@ -25440,9 +25705,9 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
             data: {
                 perInt: 20
             }
-        }
+        },
+        addsGuard: true,
     };
-    exports.guardColumn = exports.guardRow;
     exports.boardingHook = {
         type: "boardingHook",
         displayName: "Boarding Hook",
@@ -25517,15 +25782,16 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
         description: "Skip a turn but next one comes faster",
         moveDelay: 50,
         actionsUse: 1,
-        AIEvaluationPriority: 0.6,
-        AIScoreAdjust: -0.1,
-        disableInAIBattles: true,
         mainEffect: {
             action: EffectActions.standBy,
             sfx: {
                 duration: 750
             }
-        }
+        },
+        addsGuard: true,
+        AIEvaluationPriority: 0.6,
+        AIScoreAdjust: -0.1,
+        disableInAIBattles: true,
     };
     var _a;
 });
@@ -25842,7 +26108,7 @@ define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], func
     exports.default = SubEmblemTemplates;
     var _a, _b;
 });
-define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App"], function (require, exports, SubEmblemTemplates_1, App_37) {
+define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App", "src/ModuleFileLoadingPhase"], function (require, exports, SubEmblemTemplates_1, App_36, ModuleFileLoadingPhase_4) {
     "use strict";
     var defaultEmblems = {
         key: "defaultEmblems",
@@ -25852,6 +26118,7 @@ define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_4.default.setup,
         loadAssets: function (onLoaded) {
             var loader = new PIXI.loaders.Loader();
             for (var templateKey in SubEmblemTemplates_1.default) {
@@ -25866,7 +26133,7 @@ define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/
                 for (var templateKey in SubEmblemTemplates_1.default) {
                     var template = SubEmblemTemplates_1.default[templateKey];
                     var image = loader.resources[template.src].data;
-                    App_37.default.images[template.src] = image;
+                    App_36.default.images[template.src] = image;
                     if (!image.width) {
                         document.body.appendChild(image);
                         image.width = image.offsetWidth;
@@ -25886,7 +26153,7 @@ define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/
     exports.default = defaultEmblems;
     var _a, _b;
 });
-define("modules/defaultruleset/defaultRuleset", ["require", "exports"], function (require, exports) {
+define("modules/defaultruleset/defaultRuleset", ["require", "exports", "src/ModuleFileLoadingPhase"], function (require, exports, ModuleFileLoadingPhase_5) {
     "use strict";
     var defaultRuleSet = {
         key: "defaultRuleSet",
@@ -25896,6 +26163,7 @@ define("modules/defaultruleset/defaultRuleset", ["require", "exports"], function
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_5.default.mapGen,
         constructModule: function (moduleData) {
             moduleData.applyRuleSet({
                 manufactory: {
@@ -26377,7 +26645,7 @@ define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai
     exports.default = conquer;
     var _a, _b;
 });
-define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "exports", "src/mapai/Objective", "src/App"], function (require, exports, Objective_4, App_38) {
+define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "exports", "src/mapai/Objective", "src/App"], function (require, exports, Objective_4, App_37) {
     "use strict";
     var expandManufactoryCapacity = {
         key: "expandManufactoryCapacity",
@@ -26398,7 +26666,7 @@ define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "ex
                     continue;
                 var expansionCost;
                 if (!star.manufactory) {
-                    expansionCost = App_38.default.moduleData.ruleSet.manufactory.buildCost;
+                    expansionCost = App_37.default.moduleData.ruleSet.manufactory.buildCost;
                 }
                 else {
                     expansionCost = star.manufactory.getCapacityUpgradeCost();
@@ -26423,7 +26691,7 @@ define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "ex
             }
             else {
                 star.buildManufactory();
-                player.money -= App_38.default.moduleData.ruleSet.manufactory.buildCost;
+                player.money -= App_37.default.moduleData.ruleSet.manufactory.buildCost;
             }
         }
     };
@@ -26469,7 +26737,7 @@ define("modules/defaultai/Objectives", ["require", "exports", "modules/defaultai
     exports.default = Objectives;
     var _a, _b, _c;
 });
-define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_39) {
+define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_38) {
     "use strict";
     ;
     function processSpriteSheet(sheetData, sheetImg, processFrameFN) {
@@ -26478,7 +26746,7 @@ define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], functi
         }
     }
     function addImageToApp(name, image) {
-        App_39.default.images[name] = image;
+        App_38.default.images[name] = image;
     }
     function cacheSpriteSheetAsImages(sheetData, sheetImg, onImageCreated) {
         if (onImageCreated === void 0) { onImageCreated = addImageToApp; }
@@ -26498,7 +26766,7 @@ define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], functi
     exports.default = cacheSpriteSheetAsImages;
     var _a, _b, _c;
 });
-define("modules/defaultai/defaultAI", ["require", "exports", "modules/defaultai/Objectives"], function (require, exports, Objectives_1) {
+define("modules/defaultai/defaultAI", ["require", "exports", "modules/defaultai/Objectives", "src/ModuleFileLoadingPhase"], function (require, exports, Objectives_1, ModuleFileLoadingPhase_6) {
     "use strict";
     var defaultAI = {
         key: "defaultAI",
@@ -26508,6 +26776,7 @@ define("modules/defaultai/defaultAI", ["require", "exports", "modules/defaultai/
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_6.default.game,
         constructModule: function (moduleData) {
             moduleData.copyTemplates(Objectives_1.default, "Objectives");
             return moduleData;
@@ -26536,8 +26805,8 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         icon: "modules/defaultitems/img/cannon.png",
         techLevel: 2,
         buildCost: 200,
-        attributes: {
-            attack: 1
+        attributeAdjustments: {
+            attack: { flat: 1 }
         },
         slot: "high",
         ability: abilities_1.bombAttack
@@ -26549,8 +26818,8 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         icon: "modules/defaultitems/img/cannon.png",
         techLevel: 3,
         buildCost: 300,
-        attributes: {
-            attack: 3
+        attributeAdjustments: {
+            attack: { flat: 3 }
         },
         slot: "high",
         ability: abilities_1.bombAttack
@@ -26562,8 +26831,8 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         icon: "modules/defaultitems/img/blueThing.png",
         techLevel: 1,
         buildCost: 100,
-        attributes: {
-            speed: 1
+        attributeAdjustments: {
+            speed: { flat: 1 }
         },
         slot: "mid",
         passiveSkill: passiveSkills_1.overdrive
@@ -26575,8 +26844,8 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         icon: "modules/defaultitems/img/blueThing.png",
         techLevel: 2,
         buildCost: 200,
-        attributes: {
-            speed: 2
+        attributeAdjustments: {
+            speed: { flat: 2 }
         },
         slot: "mid"
     };
@@ -26587,9 +26856,9 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         icon: "modules/defaultitems/img/blueThing.png",
         techLevel: 3,
         buildCost: 300,
-        attributes: {
-            maxActionPoints: 1,
-            speed: 3
+        attributeAdjustments: {
+            maxActionPoints: { flat: 1 },
+            speed: { flat: 3 }
         },
         slot: "mid"
     };
@@ -26600,8 +26869,8 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         icon: "modules/defaultitems/img/armor1.png",
         techLevel: 1,
         buildCost: 100,
-        attributes: {
-            defence: 1
+        attributeAdjustments: {
+            defence: { flat: 1 }
         },
         slot: "low"
     };
@@ -26612,8 +26881,8 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         icon: "modules/defaultitems/img/armor1.png",
         techLevel: 2,
         buildCost: 200,
-        attributes: {
-            defence: 2
+        attributeAdjustments: {
+            defence: { flat: 2 }
         },
         slot: "low"
     };
@@ -26624,9 +26893,9 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         icon: "modules/defaultitems/img/armor1.png",
         techLevel: 3,
         buildCost: 300,
-        attributes: {
-            defence: 3,
-            speed: -1
+        attributeAdjustments: {
+            defence: { flat: 3 },
+            speed: { flat: -1 }
         },
         slot: "low",
         ability: abilities_1.guardRow
@@ -26647,7 +26916,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
     exports.default = ItemTemplates;
     var _a, _b, _c, _d;
 });
-define("modules/defaultitems/defaultItems", ["require", "exports", "modules/defaultitems/ItemTemplates"], function (require, exports, ItemTemplates_1) {
+define("modules/defaultitems/defaultItems", ["require", "exports", "modules/defaultitems/ItemTemplates", "src/ModuleFileLoadingPhase"], function (require, exports, ItemTemplates_1, ModuleFileLoadingPhase_7) {
     "use strict";
     var defaultItems = {
         key: "defaultItems",
@@ -26657,6 +26926,7 @@ define("modules/defaultitems/defaultItems", ["require", "exports", "modules/defa
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_7.default.mapGen,
         constructModule: function (moduleData) {
             moduleData.copyTemplates(ItemTemplates_1.default, "Items");
             return moduleData;
@@ -26772,7 +27042,7 @@ define("modules/defaultunits/unitFamilies", ["require", "exports"], function (re
     exports.default = UnitFamilies;
     var _a, _b, _c, _d, _e, _f;
 });
-define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_40, utility_50) {
+define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/UnitDrawingFunctionData", "src/utility"], function (require, exports, App_39, UnitDrawingFunctionData_1, utility_50) {
     "use strict";
     var defaultUnitDrawingFunction = function (unit, SFXParams) {
         var spriteTemplate = unit.template.sprite;
@@ -26787,13 +27057,9 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             scalingFactor: 0.04
         };
         var maxUnitsPerColumn = props.maxUnitsPerColumn;
-        var isConvex = true;
-        var degree = props.degree;
-        if (degree < 0) {
-            isConvex = !isConvex;
-            degree = Math.abs(degree);
-        }
-        var image = App_40.default.images[spriteTemplate.imageSrc];
+        var isConvex = props.degree >= 0;
+        var degree = Math.abs(props.degree);
+        var image = App_39.default.images[spriteTemplate.imageSrc];
         var zDistance = props.zDistance;
         var xDistance = props.xDistance;
         var unitsToDraw;
@@ -26826,18 +27092,29 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
         var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
         var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
         zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
-        for (var i = unitsToDraw - 1; i >= 0; i--) {
+        var boundingBox = {
+            x1: undefined,
+            x2: undefined,
+            y1: undefined,
+            y2: undefined
+        };
+        var allUnitBoundingBoxes = [];
+        var primaryAttackOriginPoint;
+        var sequentialAttackOriginPoints = [];
+        var lastColumn = Math.floor(unitsToDraw / maxUnitsPerColumn);
+        var maxUnitsInLastColumn = unitsToDraw % maxUnitsPerColumn;
+        var firstIndexForLastColumn = maxUnitsPerColumn * lastColumn;
+        for (var i = 0; i < unitsToDraw; i++) {
             var column = Math.floor(i / maxUnitsPerColumn);
-            var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
-            var zPos;
-            if (isLastColumn) {
-                var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
-                if (maxUnitsInThisColumn === 1) {
+            var columnFromRight = lastColumn - column;
+            var zPos = void 0;
+            if (column === lastColumn) {
+                if (maxUnitsInLastColumn === 1) {
                     zPos = (maxUnitsPerColumn - 1) / 2;
                 }
                 else {
-                    var positionInLastColumn = i % maxUnitsInThisColumn;
-                    zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+                    var positionInLastColumn = i - firstIndexForLastColumn;
+                    zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInLastColumn - 1));
                 }
             }
             else {
@@ -26851,25 +27128,55 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             var scale = 1 - zPos * props.scalingFactor;
             var scaledWidth = image.width * scale;
             var scaledHeight = image.height * scale;
-            var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
+            var x = xOffset * scaledWidth * degree + columnFromRight * (scaledWidth + xDistance * scale);
             var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
             var translated = utility_50.transformMat3({ x: x, y: y }, rotationMatrix);
             x = Math.round(translated.x);
             y = Math.round(translated.y);
+            var attackOriginPoint = {
+                x: x + scaledWidth * spriteTemplate.attackOriginPoint.x,
+                y: y + scaledHeight * spriteTemplate.attackOriginPoint.y
+            };
+            sequentialAttackOriginPoints.push(attackOriginPoint);
+            if (column === 0 && zPos + 1 === Math.ceil(maxUnitsPerColumn / 2)) {
+                primaryAttackOriginPoint = attackOriginPoint;
+            }
             var sprite = new PIXI.Sprite(texture);
             sprite.scale.x = sprite.scale.y = scale;
             sprite.x = x;
             sprite.y = y;
             container.addChild(sprite);
+            var unitBounds = new PIXI.Rectangle(x, y, scaledWidth, scaledHeight);
+            allUnitBoundingBoxes.push(unitBounds);
+            boundingBox.x1 = isFinite(boundingBox.x1) ? Math.min(boundingBox.x1, x) : x;
+            boundingBox.y1 = isFinite(boundingBox.y1) ? Math.min(boundingBox.y1, y) : y;
+            boundingBox.x2 = isFinite(boundingBox.x2) ? Math.max(boundingBox.x2, x + scaledWidth) : x + scaledWidth;
+            boundingBox.y2 = isFinite(boundingBox.y2) ? Math.max(boundingBox.y2, y + scaledHeight) : y + scaledHeight;
         }
+        unit.drawingFunctionData = new UnitDrawingFunctionData_1.default({
+            boundingBox: new PIXI.Rectangle(boundingBox.x1, boundingBox.y1, boundingBox.x2 - boundingBox.x1, boundingBox.y2 - boundingBox.y1),
+            individualUnitBoundingBoxes: allUnitBoundingBoxes,
+            singleAttackOriginPoint: primaryAttackOriginPoint,
+            sequentialAttackOriginPoints: sequentialAttackOriginPoints,
+        });
         SFXParams.triggerStart(container);
-        return container;
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultUnitDrawingFunction;
     var _a, _b, _c, _d, _e, _f;
 });
-define("modules/defaultunits/templates/stealthShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_1, abilities_2) {
+define("modules/common/itemSlot", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var itemSlot = {
+        low: "low",
+        mid: "mid",
+        high: "high"
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = itemSlot;
+    var _a, _b, _c, _d, _e, _f;
+});
+define("modules/defaultunits/templates/stealthShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_1, itemSlot_1, abilities_2) {
     "use strict";
     var stealthShip = {
         type: "stealthShip",
@@ -26880,7 +27187,8 @@ define("modules/defaultunits/templates/stealthShip", ["require", "exports", "mod
         cultures: [],
         sprite: {
             imageSrc: "scout.png",
-            anchor: { x: 0.5, y: 0.5 }
+            anchor: { x: 0.5, y: 0.5 },
+            attackOriginPoint: { x: 0.75, y: 0.5 }
         },
         isSquadron: true,
         buildCost: 500,
@@ -26905,11 +27213,17 @@ define("modules/defaultunits/templates/stealthShip", ["require", "exports", "mod
                 ]
             }
         ],
+        itemSlots: (_g = {},
+            _g[itemSlot_1.default.low] = 1,
+            _g[itemSlot_1.default.mid] = 1,
+            _g[itemSlot_1.default.high] = 1,
+            _g
+        ),
         unitDrawingFN: defaultUnitDrawingFunction_1.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = stealthShip;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g;
 });
 define("modules/defaulttechnologies/TechnologyTemplates", ["require", "exports", "modules/defaultunits/templates/stealthShip"], function (require, exports, stealthShip_1) {
     "use strict";
@@ -26950,19 +27264,74 @@ define("modules/defaulttechnologies/TechnologyTemplates", ["require", "exports",
         maxLevel: 2,
         unlocksPerLevel: {}
     };
-    var TechnologyTemplates = (_g = {},
-        _g[stealth.key] = stealth,
-        _g[lasers.key] = lasers,
-        _g[missiles.key] = missiles,
-        _g[test1.key] = test1,
-        _g[test2.key] = test2,
-        _g
+    var TechnologyTemplates = (_h = {},
+        _h[stealth.key] = stealth,
+        _h[lasers.key] = lasers,
+        _h[missiles.key] = missiles,
+        _h[test1.key] = test1,
+        _h[test2.key] = test2,
+        _h
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = TechnologyTemplates;
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates"], function (require, exports, TechnologyTemplates_1) {
+define("src/setDynamicTemplateProperties", ["require", "exports"], function (require, exports) {
+    "use strict";
+    function setAttitudeModifierOverride(attitudeModifiers) {
+        for (var modifierType in attitudeModifiers) {
+            var modifier = attitudeModifiers[modifierType];
+            if (modifier.canBeOverriddenBy) {
+                for (var i = 0; i < modifier.canBeOverriddenBy.length; i++) {
+                    if (!modifier.canBeOverriddenBy[i].canOverride) {
+                        modifier.canBeOverriddenBy[i].canOverride = [];
+                    }
+                    modifier.canBeOverriddenBy[i].canOverride.push(modifier);
+                }
+            }
+        }
+    }
+    exports.setAttitudeModifierOverride = setAttitudeModifierOverride;
+    function setUnitFamilyAssociatedTemplates(unitTemplates) {
+        for (var unitType in unitTemplates) {
+            var template = unitTemplates[unitType];
+            for (var i = 0; i < template.families.length; i++) {
+                var family = template.families[i];
+                if (!family.associatedTemplates) {
+                    family.associatedTemplates = [];
+                }
+                family.associatedTemplates.push(template);
+            }
+        }
+    }
+    exports.setUnitFamilyAssociatedTemplates = setUnitFamilyAssociatedTemplates;
+    function setTechnologyRequirements(technologyTemplates) {
+        var _loop_2 = function(technologyKey) {
+            var technology = technologyTemplates[technologyKey];
+            var _loop_3 = function(level) {
+                var unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
+                unlockedTemplatesForLevel.forEach(function (template) {
+                    if (!template.technologyRequirements) {
+                        template.technologyRequirements = [];
+                    }
+                    template.technologyRequirements.push({
+                        technology: technology,
+                        level: parseInt(level)
+                    });
+                });
+            };
+            for (var level in technology.unlocksPerLevel) {
+                _loop_3(level);
+            }
+        };
+        for (var technologyKey in technologyTemplates) {
+            _loop_2(technologyKey);
+        }
+    }
+    exports.setTechnologyRequirements = setTechnologyRequirements;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+});
+define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates", "src/ModuleFileLoadingPhase", "src/setDynamicTemplateProperties"], function (require, exports, TechnologyTemplates_1, ModuleFileLoadingPhase_8, setDynamicTemplateProperties_1) {
     "use strict";
     var defaultTechnologies = {
         key: "defaultTechnologies",
@@ -26972,14 +27341,16 @@ define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports",
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_8.default.mapGen,
         constructModule: function (moduleData) {
+            setDynamicTemplateProperties_1.setTechnologyRequirements(TechnologyTemplates_1.default);
             moduleData.copyTemplates(TechnologyTemplates_1.default, "Technologies");
             return moduleData;
         }
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultTechnologies;
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
 define("modules/defaultattitudemodifiers/AttitudeModifierTemplates", ["require", "exports", "src/DiplomacyState"], function (require, exports, DiplomacyState_5) {
     "use strict";
@@ -27013,17 +27384,17 @@ define("modules/defaultattitudemodifiers/AttitudeModifierTemplates", ["require",
         triggers: ["addDeclaredWarAttitudeModifier"],
         constantEffect: -35
     };
-    var AttitudeModifierTemplates = (_h = {},
-        _h[neighborStars.type] = neighborStars,
-        _h[atWar.type] = atWar,
-        _h[declaredWar.type] = declaredWar,
-        _h
+    var AttitudeModifierTemplates = (_j = {},
+        _j[neighborStars.type] = neighborStars,
+        _j[atWar.type] = atWar,
+        _j[declaredWar.type] = declaredWar,
+        _j
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = AttitudeModifierTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", "exports", "modules/defaultattitudemodifiers/AttitudeModifierTemplates"], function (require, exports, AttitudeModifierTemplates_1) {
+define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", "exports", "modules/defaultattitudemodifiers/AttitudeModifierTemplates", "src/ModuleFileLoadingPhase", "src/setDynamicTemplateProperties"], function (require, exports, AttitudeModifierTemplates_1, ModuleFileLoadingPhase_9, setDynamicTemplateProperties_2) {
     "use strict";
     var defaultAttitudeModifiers = {
         key: "defaultAttitudeModifiers",
@@ -27033,14 +27404,16 @@ define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", 
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_9.default.mapGen,
         constructModule: function (moduleData) {
+            setDynamicTemplateProperties_2.setAttitudeModifierOverride(AttitudeModifierTemplates_1.default);
             moduleData.copyTemplates(AttitudeModifierTemplates_1.default, "AttitudeModifiers");
             return moduleData;
         }
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultAttitudeModifiers;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("src/Region", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -27197,9 +27570,9 @@ define("src/Region", ["require", "exports"], function (require, exports) {
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Region;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_41) {
+define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_40) {
     "use strict";
     var TemplateIndexes = (function () {
         function TemplateIndexes() {
@@ -27236,13 +27609,13 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
         };
         TemplateIndexes.getDistributablesByTypeAndDistributionGroup = function () {
             return ({
-                unitFamilies: TemplateIndexes.getDistributablesByGroup(App_41.default.moduleData.Templates.UnitFamilies),
-                resources: TemplateIndexes.getDistributablesByGroup(App_41.default.moduleData.Templates.Resources)
+                unitFamilies: TemplateIndexes.getDistributablesByGroup(App_40.default.moduleData.Templates.UnitFamilies),
+                resources: TemplateIndexes.getDistributablesByGroup(App_40.default.moduleData.Templates.Resources)
             });
         };
         TemplateIndexes.getDistributablesByGroup = function (allDistributables) {
             var byGroup = {};
-            var _loop_5 = function(key) {
+            var _loop_4 = function(key) {
                 var distributable = allDistributables[key];
                 distributable.distributionGroups.forEach(function (group) {
                     if (!byGroup[group]) {
@@ -27252,14 +27625,14 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
                 });
             };
             for (var key in allDistributables) {
-                _loop_5(key);
+                _loop_4(key);
             }
             return byGroup;
         };
         TemplateIndexes.getItemsByTechLevel = function () {
             var itemsByTechLevel = {};
-            for (var itemName in App_41.default.moduleData.Templates.Items) {
-                var item = App_41.default.moduleData.Templates.Items[itemName];
+            for (var itemName in App_40.default.moduleData.Templates.Items) {
+                var item = App_40.default.moduleData.Templates.Items[itemName];
                 if (!itemsByTechLevel[item.techLevel]) {
                     itemsByTechLevel[item.techLevel] = [];
                 }
@@ -27272,7 +27645,7 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
     var indexes = new TemplateIndexes();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = indexes;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultmapgen/common/MapGenPoint", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -27286,7 +27659,7 @@ define("modules/defaultmapgen/common/MapGenPoint", ["require", "exports"], funct
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapGenPoint;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultbuildings/templates/Templates", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -27416,7 +27789,7 @@ define("modules/defaultbuildings/templates/Templates", ["require", "exports"], f
         },
         maxUpgradeLevel: 3
     };
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -27497,7 +27870,7 @@ define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Triangle;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_51) {
     "use strict";
@@ -27579,7 +27952,7 @@ define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modul
         return ((utility_51.pointsEqual(e1[0], e2[0]) && utility_51.pointsEqual(e1[1], e2[1])) ||
             (utility_51.pointsEqual(e1[0], e2[1]) && utility_51.pointsEqual(e1[1], e2[0])));
     }
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modules/defaultbuildings/templates/Templates", "modules/defaultemblems/SubEmblemTemplates", "modules/defaultmapgen/common/triangulate", "src/Region", "src/Building", "src/Player", "src/Color", "src/Emblem", "src/Flag", "src/pathfinding", "src/utility"], function (require, exports, Templates_1, SubEmblemTemplates_2, triangulate_1, Region_1, Building_4, Player_4, Color_5, Emblem_4, Flag_5, pathfinding_1, utility_52) {
     "use strict";
@@ -27660,7 +28033,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         unassignedStars.sort(function (a, b) {
             return mapGenDataByStarID[b.id].connectedness - mapGenDataByStarID[a.id].connectedness;
         });
-        var _loop_6 = function() {
+        var _loop_5 = function() {
             var seedStar = unassignedStars.pop();
             var islandForSameSector = seedStar.getIslandForQualifier(function (a, b) {
                 return sectorsByStarID[a.id] === sectorsByStarID[b.id];
@@ -27680,7 +28053,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
                         var starHasSector = Boolean(sectorsByStarID[star.id]);
                         return !starHasSector;
                     });
-                    var _loop_7 = function() {
+                    var _loop_6 = function() {
                         var frontierSortScores = {};
                         frontier.forEach(function (star) {
                             var borderLengthWithSector = sector_1.getBorderLengthWithStars([star]);
@@ -27697,7 +28070,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
                         sectorsByStarID[toAdd.id] = sector_1;
                     };
                     while (sector_1.stars.length < minSize && frontier.length > 0) {
-                        _loop_7();
+                        _loop_6();
                     }
                     discoveryStarIndex++;
                 }
@@ -27708,9 +28081,9 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         };
         var toAdd;
         while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
-            _loop_6();
+            _loop_5();
         }
-        var _loop_8 = function() {
+        var _loop_7 = function() {
             star = leftoverStars.pop();
             neighbors = star.getLinkedInRange(1).all;
             alreadyAddedNeighborSectors = {};
@@ -27755,8 +28128,8 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         };
         var star, neighbors, alreadyAddedNeighborSectors, candidateSectors;
         while (leftoverStars.length > 0) {
-            var state_8 = _loop_8();
-            if (state_8 === "continue") continue;
+            var state_7 = _loop_7();
+            if (state_7 === "continue") continue;
         }
         return Object.keys(sectorsByID).map(function (sectorID) {
             return sectorsByID[sectorID];
@@ -27861,9 +28234,9 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         });
     }
     exports.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", "modules/defaultmapgen/common/mapGenUtils", "src/Unit", "src/Fleet", "src/utility"], function (require, exports, mapGenUtils_1, Unit_7, Fleet_5, utility_53) {
+define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", "modules/defaultmapgen/common/mapGenUtils", "src/Unit", "src/Fleet", "src/utility"], function (require, exports, mapGenUtils_1, Unit_6, Fleet_5, utility_53) {
     "use strict";
     function setupIndependents(props) {
         var independentStars = props.region.stars.filter(function (star) {
@@ -27908,7 +28281,7 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
             var units = [];
             if (star === commanderStar) {
                 var template = utility_53.getRandomArrayItem(unitTypes);
-                var unit = new Unit_7.default(template);
+                var unit = new Unit_6.default(template);
                 unit.name = "Pirate commander";
                 unit.setAttributes(1.35);
                 unit.setBaseHealth(1.35 + inverseMapGenDistance);
@@ -27920,7 +28293,7 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
                 var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
                 var unitStatsModifier = (isElite ? 1.2 : 1);
                 var template = utility_53.getRandomArrayItem(unitTypes);
-                var unit = new Unit_7.default(template);
+                var unit = new Unit_6.default(template);
                 unit.name = (isElite ? "Pirate elite" : "Pirate");
                 unit.setAttributes(unitStatsModifier);
                 unit.setBaseHealth(unitHealthModifier);
@@ -27962,11 +28335,11 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
             }
         })[0];
     }
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultmapgen/spiralGalaxy/SpiralGalaxyOptionValues", ["require", "exports"], function (require, exports) {
     "use strict";
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "exports", "modules/defaultmapgen/common/MapGenPoint", "src/utility"], function (require, exports, MapGenPoint_1, utility_54) {
     "use strict";
@@ -28055,7 +28428,7 @@ define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "e
             galaxyRotation: utility_54.randRange(0, Math.PI * 2)
         });
     }
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", "exports", "src/FillerPoint", "src/Star", "src/Region", "src/TemplateIndexes", "src/MapGenResult", "src/utility", "src/voronoi", "modules/defaultmapgen/common/setupIndependents", "modules/defaultmapgen/common/mapGenUtils", "modules/defaultmapgen/spiralGalaxy/generateSpiralPoints"], function (require, exports, FillerPoint_2, Star_2, Region_2, TemplateIndexes_1, MapGenResult_2, utility_55, voronoi_2, setupIndependents_1, mapGenUtils_2, generateSpiralPoints_1) {
     "use strict";
@@ -28241,7 +28614,7 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = spiralGalaxyGeneration;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultmapgen/templates/spiralGalaxy", ["require", "exports", "modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration"], function (require, exports, spiralGalaxyGeneration_1) {
     "use strict";
@@ -28312,7 +28685,7 @@ define("modules/defaultmapgen/templates/spiralGalaxy", ["require", "exports", "m
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = spiralGalaxy;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultmapgen/templates/tinierSpiralGalaxy", ["require", "exports", "modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration"], function (require, exports, spiralGalaxyGeneration_2) {
     "use strict";
@@ -28384,14 +28757,14 @@ define("modules/defaultmapgen/templates/tinierSpiralGalaxy", ["require", "export
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = tinierSpiralGalaxy;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "modules/defaultmapgen/templates/spiralGalaxy", "modules/defaultmapgen/templates/tinierSpiralGalaxy"], function (require, exports, spiralGalaxy_1, tinierSpiralGalaxy_1) {
+define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultmapgen/templates/spiralGalaxy", "modules/defaultmapgen/templates/tinierSpiralGalaxy"], function (require, exports, ModuleFileLoadingPhase_10, spiralGalaxy_1, tinierSpiralGalaxy_1) {
     "use strict";
-    var Templates = (_j = {},
-        _j[spiralGalaxy_1.default.key] = spiralGalaxy_1.default,
-        _j[tinierSpiralGalaxy_1.default.key] = tinierSpiralGalaxy_1.default,
-        _j
+    var Templates = (_k = {},
+        _k[spiralGalaxy_1.default.key] = spiralGalaxy_1.default,
+        _k[tinierSpiralGalaxy_1.default.key] = tinierSpiralGalaxy_1.default,
+        _k
     );
     var defaultMapGen = {
         key: "defaultMapGen",
@@ -28401,6 +28774,7 @@ define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "modules/de
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_10.default.setup,
         constructModule: function (moduleData) {
             moduleData.copyTemplates(Templates, "MapGen");
             if (!moduleData.defaultMap) {
@@ -28411,9 +28785,9 @@ define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "modules/de
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultMapGen;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultunits/templates/battleCruiser", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_2, abilities_3) {
+define("modules/defaultunits/templates/battleCruiser", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_2, itemSlot_2, abilities_3) {
     "use strict";
     var battleCruiser = {
         type: "battleCruiser",
@@ -28424,7 +28798,8 @@ define("modules/defaultunits/templates/battleCruiser", ["require", "exports", "m
         cultures: [],
         sprite: {
             imageSrc: "battleCruiser.png",
-            anchor: { x: 0.5, y: 0.5 }
+            anchor: { x: 0.5, y: 0.5 },
+            attackOriginPoint: { x: 0.75, y: 0.5 }
         },
         isSquadron: true,
         buildCost: 200,
@@ -28449,13 +28824,19 @@ define("modules/defaultunits/templates/battleCruiser", ["require", "exports", "m
                 ]
             }
         ],
+        itemSlots: (_l = {},
+            _l[itemSlot_2.default.low] = 1,
+            _l[itemSlot_2.default.mid] = 1,
+            _l[itemSlot_2.default.high] = 2,
+            _l
+        ),
         unitDrawingFN: defaultUnitDrawingFunction_2.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = battleCruiser;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
 });
-define("modules/defaultunits/templates/commandShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_3, abilities_4, passiveSkills_2) {
+define("modules/defaultunits/templates/commandShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_3, itemSlot_3, abilities_4, passiveSkills_2) {
     "use strict";
     var commandShip = {
         type: "commandShip",
@@ -28466,7 +28847,8 @@ define("modules/defaultunits/templates/commandShip", ["require", "exports", "mod
         cultures: [],
         sprite: {
             imageSrc: "shieldBoat.png",
-            anchor: { x: 0.5, y: 0.5 }
+            anchor: { x: 0.5, y: 0.5 },
+            attackOriginPoint: { x: 0.75, y: 0.5 }
         },
         isSquadron: false,
         buildCost: 300,
@@ -28498,13 +28880,19 @@ define("modules/defaultunits/templates/commandShip", ["require", "exports", "mod
                 ]
             }
         ],
+        itemSlots: (_m = {},
+            _m[itemSlot_3.default.low] = 1,
+            _m[itemSlot_3.default.mid] = 1,
+            _m[itemSlot_3.default.high] = 1,
+            _m
+        ),
         unitDrawingFN: defaultUnitDrawingFunction_3.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = commandShip;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
 });
-define("modules/defaultunits/templates/redShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_4, abilities_5) {
+define("modules/defaultunits/templates/redShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_4, itemSlot_4, abilities_5) {
     "use strict";
     var redShip = {
         type: "redShip",
@@ -28515,7 +28903,8 @@ define("modules/defaultunits/templates/redShip", ["require", "exports", "modules
         cultures: [],
         sprite: {
             imageSrc: "scout.png",
-            anchor: { x: 0.5, y: 0.5 }
+            anchor: { x: 0.5, y: 0.5 },
+            attackOriginPoint: { x: 0.75, y: 0.5 }
         },
         isSquadron: true,
         buildCost: 200,
@@ -28539,13 +28928,19 @@ define("modules/defaultunits/templates/redShip", ["require", "exports", "modules
                 ]
             }
         ],
+        itemSlots: (_o = {},
+            _o[itemSlot_4.default.low] = 1,
+            _o[itemSlot_4.default.mid] = 1,
+            _o[itemSlot_4.default.high] = 1,
+            _o
+        ),
         unitDrawingFN: defaultUnitDrawingFunction_4.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = redShip;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
 });
-define("modules/defaultunits/templates/blueShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_5, abilities_6) {
+define("modules/defaultunits/templates/blueShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_5, itemSlot_5, abilities_6) {
     "use strict";
     var blueShip = {
         type: "blueShip",
@@ -28556,7 +28951,8 @@ define("modules/defaultunits/templates/blueShip", ["require", "exports", "module
         cultures: [],
         sprite: {
             imageSrc: "scout.png",
-            anchor: { x: 0.5, y: 0.5 }
+            anchor: { x: 0.5, y: 0.5 },
+            attackOriginPoint: { x: 0.75, y: 0.5 }
         },
         isSquadron: true,
         buildCost: 200,
@@ -28580,13 +28976,19 @@ define("modules/defaultunits/templates/blueShip", ["require", "exports", "module
                 ]
             }
         ],
+        itemSlots: (_p = {},
+            _p[itemSlot_5.default.low] = 1,
+            _p[itemSlot_5.default.mid] = 1,
+            _p[itemSlot_5.default.high] = 1,
+            _p
+        ),
         unitDrawingFN: defaultUnitDrawingFunction_5.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = blueShip;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
 });
-define("modules/defaultunits/templates/debugShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_6, abilities_7, passiveSkills_3) {
+define("modules/defaultunits/templates/debugShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_6, itemSlot_6, abilities_7, passiveSkills_3) {
     "use strict";
     var debugShip = {
         type: "debugShip",
@@ -28597,7 +28999,8 @@ define("modules/defaultunits/templates/debugShip", ["require", "exports", "modul
         cultures: [],
         sprite: {
             imageSrc: "debugShip.png",
-            anchor: { x: 0.5, y: 0.5 }
+            anchor: { x: 0.5, y: 0.5 },
+            attackOriginPoint: { x: 0.75, y: 0.5 }
         },
         isSquadron: false,
         buildCost: 0,
@@ -28662,13 +29065,19 @@ define("modules/defaultunits/templates/debugShip", ["require", "exports", "modul
             abilities_7.guardRow,
             abilities_7.closeAttack
         ],
+        itemSlots: (_q = {},
+            _q[itemSlot_6.default.low] = 1,
+            _q[itemSlot_6.default.mid] = 1,
+            _q[itemSlot_6.default.high] = 1,
+            _q
+        ),
         unitDrawingFN: defaultUnitDrawingFunction_6.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = debugShip;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
 });
-define("modules/defaultunits/templates/scout", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_7, abilities_8) {
+define("modules/defaultunits/templates/scout", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_7, itemSlot_7, abilities_8) {
     "use strict";
     var scout = {
         type: "scout",
@@ -28679,7 +29088,8 @@ define("modules/defaultunits/templates/scout", ["require", "exports", "modules/d
         cultures: [],
         sprite: {
             imageSrc: "scout.png",
-            anchor: { x: 0.5, y: 0.5 }
+            anchor: { x: 0.5, y: 0.5 },
+            attackOriginPoint: { x: 0.75, y: 0.5 }
         },
         isSquadron: true,
         buildCost: 200,
@@ -28703,13 +29113,19 @@ define("modules/defaultunits/templates/scout", ["require", "exports", "modules/d
                 ]
             }
         ],
+        itemSlots: (_r = {},
+            _r[itemSlot_7.default.low] = 1,
+            _r[itemSlot_7.default.mid] = 1,
+            _r[itemSlot_7.default.high] = 1,
+            _r
+        ),
         unitDrawingFN: defaultUnitDrawingFunction_7.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = scout;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
 });
-define("modules/defaultunits/templates/bomberSquadron", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_8, abilities_9) {
+define("modules/defaultunits/templates/bomberSquadron", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_8, itemSlot_8, abilities_9) {
     "use strict";
     var bomberSquadron = {
         type: "bomberSquadron",
@@ -28720,7 +29136,8 @@ define("modules/defaultunits/templates/bomberSquadron", ["require", "exports", "
         cultures: [],
         sprite: {
             imageSrc: "bomber.png",
-            anchor: { x: 0.5, y: 0.5 }
+            anchor: { x: 0.5, y: 0.5 },
+            attackOriginPoint: { x: 0.75, y: 0.5 }
         },
         isSquadron: true,
         buildCost: 200,
@@ -28745,13 +29162,19 @@ define("modules/defaultunits/templates/bomberSquadron", ["require", "exports", "
                 ]
             }
         ],
+        itemSlots: (_s = {},
+            _s[itemSlot_8.default.low] = 1,
+            _s[itemSlot_8.default.mid] = 1,
+            _s[itemSlot_8.default.high] = 1,
+            _s
+        ),
         unitDrawingFN: defaultUnitDrawingFunction_8.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = bomberSquadron;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
 });
-define("modules/defaultunits/templates/fighterSquadron", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_9, abilities_10) {
+define("modules/defaultunits/templates/fighterSquadron", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_9, itemSlot_9, abilities_10) {
     "use strict";
     var fighterSquadron = {
         type: "fighterSquadron",
@@ -28762,7 +29185,8 @@ define("modules/defaultunits/templates/fighterSquadron", ["require", "exports", 
         cultures: [],
         sprite: {
             imageSrc: "fighter.png",
-            anchor: { x: 0.5, y: 0.5 }
+            anchor: { x: 0.5, y: 0.5 },
+            attackOriginPoint: { x: 0.75, y: 0.5 }
         },
         isSquadron: true,
         buildCost: 100,
@@ -28787,13 +29211,19 @@ define("modules/defaultunits/templates/fighterSquadron", ["require", "exports", 
                 ]
             }
         ],
+        itemSlots: (_t = {},
+            _t[itemSlot_9.default.low] = 1,
+            _t[itemSlot_9.default.mid] = 1,
+            _t[itemSlot_9.default.high] = 1,
+            _t
+        ),
         unitDrawingFN: defaultUnitDrawingFunction_9.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = fighterSquadron;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
 });
-define("modules/defaultunits/templates/shieldBoat", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_10, abilities_11, passiveSkills_4) {
+define("modules/defaultunits/templates/shieldBoat", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_10, itemSlot_10, abilities_11, passiveSkills_4) {
     "use strict";
     var shieldBoat = {
         type: "shieldBoat",
@@ -28804,7 +29234,8 @@ define("modules/defaultunits/templates/shieldBoat", ["require", "exports", "modu
         cultures: [],
         sprite: {
             imageSrc: "shieldBoat.png",
-            anchor: { x: 0.5, y: 0.5 }
+            anchor: { x: 0.5, y: 0.5 },
+            attackOriginPoint: { x: 0.75, y: 0.5 }
         },
         isSquadron: true,
         buildCost: 200,
@@ -28837,32 +29268,38 @@ define("modules/defaultunits/templates/shieldBoat", ["require", "exports", "modu
                 ]
             }
         ],
+        itemSlots: (_u = {},
+            _u[itemSlot_10.default.low] = 1,
+            _u[itemSlot_10.default.mid] = 1,
+            _u[itemSlot_10.default.high] = 1,
+            _u
+        ),
         unitDrawingFN: defaultUnitDrawingFunction_10.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = shieldBoat;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
 });
 define("modules/defaultunits/UnitTemplates", ["require", "exports", "modules/defaultunits/templates/battleCruiser", "modules/defaultunits/templates/commandShip", "modules/defaultunits/templates/redShip", "modules/defaultunits/templates/stealthShip", "modules/defaultunits/templates/blueShip", "modules/defaultunits/templates/debugShip", "modules/defaultunits/templates/scout", "modules/defaultunits/templates/bomberSquadron", "modules/defaultunits/templates/fighterSquadron", "modules/defaultunits/templates/shieldBoat"], function (require, exports, battleCruiser_1, commandShip_1, redShip_1, stealthShip_2, blueShip_1, debugShip_1, scout_1, bomberSquadron_1, fighterSquadron_1, shieldBoat_1) {
     "use strict";
-    var UnitTemplates = (_k = {},
-        _k[battleCruiser_1.default.type] = battleCruiser_1.default,
-        _k[commandShip_1.default.type] = commandShip_1.default,
-        _k[redShip_1.default.type] = redShip_1.default,
-        _k[stealthShip_2.default.type] = stealthShip_2.default,
-        _k[blueShip_1.default.type] = blueShip_1.default,
-        _k[debugShip_1.default.type] = debugShip_1.default,
-        _k[scout_1.default.type] = scout_1.default,
-        _k[bomberSquadron_1.default.type] = bomberSquadron_1.default,
-        _k[fighterSquadron_1.default.type] = fighterSquadron_1.default,
-        _k[shieldBoat_1.default.type] = shieldBoat_1.default,
-        _k
+    var UnitTemplates = (_v = {},
+        _v[battleCruiser_1.default.type] = battleCruiser_1.default,
+        _v[commandShip_1.default.type] = commandShip_1.default,
+        _v[redShip_1.default.type] = redShip_1.default,
+        _v[stealthShip_2.default.type] = stealthShip_2.default,
+        _v[blueShip_1.default.type] = blueShip_1.default,
+        _v[debugShip_1.default.type] = debugShip_1.default,
+        _v[scout_1.default.type] = scout_1.default,
+        _v[bomberSquadron_1.default.type] = bomberSquadron_1.default,
+        _v[fighterSquadron_1.default.type] = fighterSquadron_1.default,
+        _v[shieldBoat_1.default.type] = shieldBoat_1.default,
+        _v
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = UnitTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
-define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defaultunits/UnitTemplates", "modules/defaultunits/unitFamilies", "modules/defaultunits/unitArchetypes", "src/cacheSpriteSheetAsImages"], function (require, exports, UnitTemplates_1, UnitFamilies_1, UnitArchetypes_1, cacheSpriteSheetAsImages_1) {
+define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defaultunits/UnitTemplates", "modules/defaultunits/unitFamilies", "modules/defaultunits/unitArchetypes", "src/ModuleFileLoadingPhase", "src/cacheSpriteSheetAsImages", "src/setDynamicTemplateProperties"], function (require, exports, UnitTemplates_1, UnitFamilies_1, UnitArchetypes_1, ModuleFileLoadingPhase_11, cacheSpriteSheetAsImages_1, setDynamicTemplateProperties_3) {
     "use strict";
     var defaultUnits = {
         key: "defaultUnits",
@@ -28872,6 +29309,7 @@ define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defa
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_11.default.mapGen,
         loadAssets: function (onLoaded) {
             var loader = new PIXI.loaders.Loader();
             var spriteSheetKey = "units";
@@ -28884,6 +29322,7 @@ define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defa
             });
         },
         constructModule: function (moduleData) {
+            setDynamicTemplateProperties_3.setUnitFamilyAssociatedTemplates(UnitTemplates_1.default);
             moduleData.copyTemplates(UnitTemplates_1.default, "Units");
             moduleData.copyTemplates(UnitFamilies_1.default, "UnitFamilies");
             moduleData.copyTemplates(UnitArchetypes_1.default, "UnitArchetypes");
@@ -28892,7 +29331,7 @@ define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defa
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultUnits;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
 define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -29076,7 +29515,7 @@ define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (re
         "  gl_FragColor = vec4(c, 1.0);",
         "}",
     ];
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
 define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_56) {
     "use strict";
@@ -29116,9 +29555,9 @@ define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = drawNebula;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
-define("modules/defaultbackgrounds/defaultBackgrounds", ["require", "exports", "modules/defaultbackgrounds/drawNebula"], function (require, exports, drawNebula_1) {
+define("modules/defaultbackgrounds/defaultBackgrounds", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultbackgrounds/drawNebula"], function (require, exports, ModuleFileLoadingPhase_12, drawNebula_1) {
     "use strict";
     var defaultBackgrounds = {
         key: "defaultBackgrounds",
@@ -29128,6 +29567,7 @@ define("modules/defaultbackgrounds/defaultBackgrounds", ["require", "exports", "
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_12.default.game,
         constructModule: function (moduleData) {
             if (!moduleData.mapBackgroundDrawingFunction) {
                 moduleData.mapBackgroundDrawingFunction = drawNebula_1.default;
@@ -29140,9 +29580,9 @@ define("modules/defaultbackgrounds/defaultBackgrounds", ["require", "exports", "
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultBackgrounds;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
-define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_41) {
+define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_43) {
     "use strict";
     var nonFillerStars = {
         key: "nonFillerStars",
@@ -29158,25 +29598,25 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
                 points = perspectivePlayer.getRevealedStars();
             }
             var mouseDownFN = function (star, event) {
-                eventManager_41.default.dispatchEvent("mouseDown", event, star);
+                eventManager_43.default.dispatchEvent("mouseDown", event, star);
             };
             var mouseUpFN = function (event) {
-                eventManager_41.default.dispatchEvent("mouseUp", event);
+                eventManager_43.default.dispatchEvent("mouseUp", event);
             };
             var onClickFN = function (star) {
-                eventManager_41.default.dispatchEvent("starClick", star);
+                eventManager_43.default.dispatchEvent("starClick", star);
             };
             var mouseOverFN = function (star) {
-                eventManager_41.default.dispatchEvent("hoverStar", star);
+                eventManager_43.default.dispatchEvent("hoverStar", star);
             };
             var mouseOutFN = function (event) {
-                eventManager_41.default.dispatchEvent("clearHover");
+                eventManager_43.default.dispatchEvent("clearHover");
             };
             var touchStartFN = function (event) {
-                eventManager_41.default.dispatchEvent("touchStart", event);
+                eventManager_43.default.dispatchEvent("touchStart", event);
             };
             var touchEndFN = function (event) {
-                eventManager_41.default.dispatchEvent("touchEnd", event);
+                eventManager_43.default.dispatchEvent("touchEnd", event);
             };
             for (var i = 0; i < points.length; i++) {
                 var star = points[i];
@@ -29217,7 +29657,7 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
                 var local = event.data.getLocalPosition(doc);
                 var starAtLocal = map.voronoi.getStarAtPoint(local);
                 if (starAtLocal) {
-                    eventManager_41.default.dispatchEvent("hoverStar", starAtLocal);
+                    eventManager_43.default.dispatchEvent("hoverStar", starAtLocal);
                 }
             });
             return doc;
@@ -29225,7 +29665,7 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = nonFillerStars;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
 define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", "exports", "src/Color", "src/mapai/MapEvaluator"], function (require, exports, Color_6, MapEvaluator_2) {
     "use strict";
@@ -29298,7 +29738,7 @@ define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", 
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = playerInfluence;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
 define("modules/defaultmapmodes/maplayertemplates/starLinks", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -29338,7 +29778,7 @@ define("modules/defaultmapmodes/maplayertemplates/starLinks", ["require", "expor
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = starLinks;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
 define("modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -29363,7 +29803,7 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", ["requ
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = nonFillerVoronoiLines;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
 define("modules/defaultmapmodes/maplayertemplates/shaders/Occupation", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -29422,9 +29862,9 @@ define("modules/defaultmapmodes/maplayertemplates/shaders/Occupation", ["require
         "  gl_FragColor = mix(color, stripeColor * color.a, stripeIntensity);",
         "}",
     ];
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
-define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "exports", "src/eventManager", "modules/defaultmapmodes/maplayertemplates/shaders/Occupation"], function (require, exports, eventManager_42, Occupation_1) {
+define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "exports", "src/eventManager", "modules/defaultmapmodes/maplayertemplates/shaders/Occupation"], function (require, exports, eventManager_44, Occupation_1) {
     "use strict";
     var starOwners = {
         key: "starOwners",
@@ -29472,8 +29912,8 @@ define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "expo
     var hasAddedEventListeners = false;
     function getOccupationShader(owner, occupier) {
         if (!hasAddedEventListeners) {
-            eventManager_42.default.addEventListener("cameraZoomed", updateShaderZoom);
-            eventManager_42.default.addEventListener("cameraMoved", updateShaderOffset);
+            eventManager_44.default.addEventListener("cameraZoomed", updateShaderZoom);
+            eventManager_44.default.addEventListener("cameraMoved", updateShaderOffset);
         }
         if (!occupationShaders[owner.id]) {
             occupationShaders[owner.id] = {};
@@ -29506,9 +29946,9 @@ define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "expo
             shader.uniforms.scale.value = zoom * 8.0;
         });
     }
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
-define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App"], function (require, exports, App_42) {
+define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App"], function (require, exports, App_41) {
     "use strict";
     var fogOfWar = {
         key: "fogOfWar",
@@ -29560,19 +30000,19 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
             tiled.mask = gfx;
             tiled.addChild(gfx);
             var bounds = tiled.getBounds();
-            var rendered = tiled.generateTexture(App_42.default.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
+            var rendered = tiled.generateTexture(App_41.default.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
             var sprite = new PIXI.Sprite(rendered);
             fogOfWarSpriteByStarID[star.id] = sprite;
             tiled.mask = null;
         }
         return fogOfWarSpriteByStarID[star.id];
     }
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
-define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_7, utility_57) {
+define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_6, utility_57) {
     "use strict";
     function starsOnlyShareNarrowBorder(a, b) {
-        var minBorderWidth = Options_7.default.display.borderWidth * 2;
+        var minBorderWidth = Options_6.default.display.borderWidth * 2;
         var edge = a.getEdgeWith(b);
         if (!edge) {
             return false;
@@ -29704,10 +30144,10 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
                 y: v1.y
             });
         });
-        joinPointsWithin(convertedToPoints, Options_7.default.display.borderWidth / 2);
+        joinPointsWithin(convertedToPoints, Options_6.default.display.borderWidth / 2);
         var offset = new Offset();
         offset.arcSegments(0);
-        var convertedToOffset = offset.data(convertedToPoints).padding(Options_7.default.display.borderWidth / 2);
+        var convertedToOffset = offset.data(convertedToPoints).padding(Options_6.default.display.borderWidth / 2);
         return convertedToOffset;
     }
     exports.convertHalfEdgeDataToOffset = convertHalfEdgeDataToOffset;
@@ -29788,7 +30228,7 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
         return polyLinesData;
     }
     exports.getRevealedBorderEdges = getRevealedBorderEdges;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
 define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "exports", "src/options", "src/borderPolygon"], function (require, exports, options_8, borderPolygon_1) {
     "use strict";
@@ -29819,7 +30259,7 @@ define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "ex
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ownerBorders;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
 define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "exports", "src/Color"], function (require, exports, Color_7) {
     "use strict";
@@ -29879,7 +30319,7 @@ define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "expo
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = starIncome;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
 define("modules/defaultmapmodes/allMapLayerTemplates", ["require", "exports", "modules/defaultmapmodes/maplayertemplates/nonFillerStars", "modules/defaultmapmodes/maplayertemplates/playerInfluence", "modules/defaultmapmodes/maplayertemplates/starLinks", "modules/defaultmapmodes/maplayertemplates/fleets", "modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", "modules/defaultmapmodes/maplayertemplates/resources", "modules/defaultmapmodes/maplayertemplates/starOwners", "modules/defaultmapmodes/maplayertemplates/fogOfWar", "modules/defaultmapmodes/maplayertemplates/ownerBorders", "modules/defaultmapmodes/maplayertemplates/starIncome"], function (require, exports, nonFillerStars_1, playerInfluence_1, starLinks_1, fleets_1, nonFillerVoronoiLines_1, resources_1, starOwners_1, fogOfWar_1, ownerBorders_1, starIncome_1) {
     "use strict";
@@ -29893,26 +30333,26 @@ define("modules/defaultmapmodes/allMapLayerTemplates", ["require", "exports", "m
     exports.fogOfWar = fogOfWar_1.default;
     exports.ownerBorders = ownerBorders_1.default;
     exports.starIncome = starIncome_1.default;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
 define("modules/defaultmapmodes/MapLayerTemplates", ["require", "exports", "modules/defaultmapmodes/allMapLayerTemplates"], function (require, exports, MapLayers) {
     "use strict";
-    var MapLayerTemplates = (_l = {},
-        _l[MapLayers.nonFillerStars.key] = MapLayers.nonFillerStars,
-        _l[MapLayers.playerInfluence.key] = MapLayers.playerInfluence,
-        _l[MapLayers.starLinks.key] = MapLayers.starLinks,
-        _l[MapLayers.fleets.key] = MapLayers.fleets,
-        _l[MapLayers.nonFillerVoronoiLines.key] = MapLayers.nonFillerVoronoiLines,
-        _l[MapLayers.resources.key] = MapLayers.resources,
-        _l[MapLayers.starOwners.key] = MapLayers.starOwners,
-        _l[MapLayers.fogOfWar.key] = MapLayers.fogOfWar,
-        _l[MapLayers.ownerBorders.key] = MapLayers.ownerBorders,
-        _l[MapLayers.starIncome.key] = MapLayers.starIncome,
-        _l
+    var MapLayerTemplates = (_w = {},
+        _w[MapLayers.nonFillerStars.key] = MapLayers.nonFillerStars,
+        _w[MapLayers.playerInfluence.key] = MapLayers.playerInfluence,
+        _w[MapLayers.starLinks.key] = MapLayers.starLinks,
+        _w[MapLayers.fleets.key] = MapLayers.fleets,
+        _w[MapLayers.nonFillerVoronoiLines.key] = MapLayers.nonFillerVoronoiLines,
+        _w[MapLayers.resources.key] = MapLayers.resources,
+        _w[MapLayers.starOwners.key] = MapLayers.starOwners,
+        _w[MapLayers.fogOfWar.key] = MapLayers.fogOfWar,
+        _w[MapLayers.ownerBorders.key] = MapLayers.ownerBorders,
+        _w[MapLayers.starIncome.key] = MapLayers.starIncome,
+        _w
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapLayerTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultmapmodes/mapmodetemplates/mapModes", ["require", "exports", "modules/defaultmapmodes/allMapLayerTemplates"], function (require, exports, MapLayers) {
     "use strict";
@@ -29974,23 +30414,23 @@ define("modules/defaultmapmodes/mapmodetemplates/mapModes", ["require", "exports
             MapLayers.resources
         ]
     };
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultmapmodes/MapModeTemplates", ["require", "exports", "modules/defaultmapmodes/mapmodetemplates/mapModes"], function (require, exports, MapModes) {
     "use strict";
-    var MapModeTemplates = (_m = {},
-        _m[MapModes.defaultMapMode.key] = MapModes.defaultMapMode,
-        _m[MapModes.noStatic.key] = MapModes.noStatic,
-        _m[MapModes.income.key] = MapModes.income,
-        _m[MapModes.influence.key] = MapModes.influence,
-        _m[MapModes.resources.key] = MapModes.resources,
-        _m
+    var MapModeTemplates = (_x = {},
+        _x[MapModes.defaultMapMode.key] = MapModes.defaultMapMode,
+        _x[MapModes.noStatic.key] = MapModes.noStatic,
+        _x[MapModes.income.key] = MapModes.income,
+        _x[MapModes.influence.key] = MapModes.influence,
+        _x[MapModes.resources.key] = MapModes.resources,
+        _x
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapModeTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
 });
-define("modules/defaultmapmodes/defaultMapmodes", ["require", "exports", "modules/defaultmapmodes/MapLayerTemplates", "modules/defaultmapmodes/MapModeTemplates"], function (require, exports, MapLayerTemplates_1, MapModeTemplates_1) {
+define("modules/defaultmapmodes/defaultMapmodes", ["require", "exports", "modules/defaultmapmodes/MapLayerTemplates", "modules/defaultmapmodes/MapModeTemplates", "src/ModuleFileLoadingPhase"], function (require, exports, MapLayerTemplates_1, MapModeTemplates_1, ModuleFileLoadingPhase_13) {
     "use strict";
     var defaultMapModes = {
         key: "defaultMapModes",
@@ -30000,6 +30440,7 @@ define("modules/defaultmapmodes/defaultMapmodes", ["require", "exports", "module
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_13.default.game,
         loadAssets: function (onLoaded) {
             var loader = new PIXI.loaders.Loader();
             loader.add("modules/defaultmapmodes/img/fowTexture.png");
@@ -30015,7 +30456,7 @@ define("modules/defaultmapmodes/defaultMapmodes", ["require", "exports", "module
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultMapModes;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
 });
 define("modules/paintingportraits/paintingPortraitsCulture", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -30764,9 +31205,9 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = paintingPortraitsCulture;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
 });
-define("modules/paintingportraits/paintingPortraits", ["require", "exports", "modules/paintingportraits/paintingPortraitsCulture"], function (require, exports, paintingPortraitsCulture_1) {
+define("modules/paintingportraits/paintingPortraits", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/paintingportraits/paintingPortraitsCulture"], function (require, exports, ModuleFileLoadingPhase_14, paintingPortraitsCulture_1) {
     "use strict";
     var paintingPortraits = {
         key: "paintingPortraits",
@@ -30776,6 +31217,7 @@ define("modules/paintingportraits/paintingPortraits", ["require", "exports", "mo
             author: "various artists",
             description: "old ppl"
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_14.default.mapGen,
         loadAssets: function (onLoaded) {
             onLoaded();
         },
@@ -30786,26 +31228,26 @@ define("modules/paintingportraits/paintingPortraits", ["require", "exports", "mo
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = paintingPortraits;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
 });
 define("modules/defaultbuildings/BuildingTemplates", ["require", "exports", "modules/defaultbuildings/templates/Templates"], function (require, exports, Templates) {
     "use strict";
-    var BuildingTemplates = (_o = {},
-        _o[Templates.sectorCommand.type] = Templates.sectorCommand,
-        _o[Templates.sectorCommand1.type] = Templates.sectorCommand1,
-        _o[Templates.sectorCommand2.type] = Templates.sectorCommand2,
-        _o[Templates.starBase.type] = Templates.starBase,
-        _o[Templates.commercialPort.type] = Templates.commercialPort,
-        _o[Templates.deepSpaceRadar.type] = Templates.deepSpaceRadar,
-        _o[Templates.resourceMine.type] = Templates.resourceMine,
-        _o[Templates.reserachLab.type] = Templates.reserachLab,
-        _o
+    var BuildingTemplates = (_y = {},
+        _y[Templates.sectorCommand.type] = Templates.sectorCommand,
+        _y[Templates.sectorCommand1.type] = Templates.sectorCommand1,
+        _y[Templates.sectorCommand2.type] = Templates.sectorCommand2,
+        _y[Templates.starBase.type] = Templates.starBase,
+        _y[Templates.commercialPort.type] = Templates.commercialPort,
+        _y[Templates.deepSpaceRadar.type] = Templates.deepSpaceRadar,
+        _y[Templates.resourceMine.type] = Templates.resourceMine,
+        _y[Templates.reserachLab.type] = Templates.reserachLab,
+        _y
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BuildingTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
 });
-define("modules/defaultbuildings/defaultBuildings", ["require", "exports", "modules/defaultbuildings/BuildingTemplates", "src/cacheSpriteSheetAsImages"], function (require, exports, BuildingTemplates_1, cacheSpriteSheetAsImages_2) {
+define("modules/defaultbuildings/defaultBuildings", ["require", "exports", "modules/defaultbuildings/BuildingTemplates", "src/ModuleFileLoadingPhase", "src/cacheSpriteSheetAsImages"], function (require, exports, BuildingTemplates_1, ModuleFileLoadingPhase_15, cacheSpriteSheetAsImages_2) {
     "use strict";
     var defaultBuildings = {
         key: "defaultBuildings",
@@ -30815,6 +31257,7 @@ define("modules/defaultbuildings/defaultBuildings", ["require", "exports", "modu
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_15.default.mapGen,
         loadAssets: function (onLoaded) {
             var loader = new PIXI.loaders.Loader();
             var spriteSheetKey = "buildings";
@@ -30833,9 +31276,9 @@ define("modules/defaultbuildings/defaultBuildings", ["require", "exports", "modu
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultBuildings;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
 });
-define("modules/defaultnotifications/defaultNotifications", ["require", "exports", "modules/defaultnotifications/NotificationTemplates"], function (require, exports, NotificationTemplates_1) {
+define("modules/defaultnotifications/defaultNotifications", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultnotifications/NotificationTemplates"], function (require, exports, ModuleFileLoadingPhase_16, NotificationTemplates_1) {
     "use strict";
     var defaultNotifications = {
         key: "defaultNotifications",
@@ -30845,6 +31288,7 @@ define("modules/defaultnotifications/defaultNotifications", ["require", "exports
             author: "giraluna",
             description: ""
         },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_16.default.game,
         constructModule: function (moduleData) {
             moduleData.copyTemplates(NotificationTemplates_1.default, "Notifications");
             return moduleData;
@@ -30852,21 +31296,21 @@ define("modules/defaultnotifications/defaultNotifications", ["require", "exports
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultNotifications;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
 });
-define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/setDynamicTemplateProperties", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, setDynamicTemplateProperties_1, options_9, TutorialStatus_5, utility_58, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
+define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/ModuleFileLoadingPhase", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, ModuleFileLoadingPhase_17, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, options_9, TutorialStatus_5, utility_58, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
     "use strict";
     var App = (function () {
         function App() {
+            var _this = this;
             this.images = {};
-            var self = this;
             PIXI.utils._saidHello = true;
             this.seed = "" + Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
-            var boundMakeApp = this.makeApp.bind(this);
+            var moduleLoader = this.moduleLoader = new ModuleLoader_1.default();
+            this.initUI();
             utility_58.onDOMLoaded(function () {
-                var moduleLoader = self.moduleLoader = new ModuleLoader_1.default();
-                self.moduleData = moduleLoader.moduleData;
+                _this.moduleData = moduleLoader.moduleData;
                 moduleLoader.addModuleFile(defaultEmblems_1.default);
                 moduleLoader.addModuleFile(defaultRuleset_1.default);
                 moduleLoader.addModuleFile(defaultAI_1.default);
@@ -30881,24 +31325,66 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
                 moduleLoader.addModuleFile(defaultBuildings_1.default);
                 moduleLoader.addModuleFile(defaultNotifications_1.default);
                 copyCommonTemplates_1.default(moduleLoader.moduleData);
-                moduleLoader.loadAll(boundMakeApp);
+                window.setTimeout(function () {
+                    _this.makeApp();
+                }, 0);
             });
         }
+        App.prototype.makeGameFromSetup = function (map, players) {
+            var _this = this;
+            this.destroy();
+            this.initUI();
+            this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_17.default.game, function () {
+                _this.game = new Game_2.default(map, players, players[0]);
+                _this.initGame();
+                _this.initDisplay();
+                _this.hookUI();
+                _this.reactUI.switchScene("galaxyMap");
+            });
+        };
+        App.prototype.load = function (saveKey) {
+            var _this = this;
+            var data = localStorage.getItem(saveKey);
+            if (!data)
+                return;
+            var parsed = JSON.parse(data);
+            idGenerators_9.default.setValues(parsed.idGenerators);
+            this.destroy();
+            this.initUI();
+            this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_17.default.game, function () {
+                _this.game = new GameLoader_1.default().deserializeGame(parsed.gameData);
+                _this.game.gameStorageKey = saveKey;
+                _this.initGame();
+                _this.initDisplay();
+                _this.hookUI();
+                if (parsed.cameraLocation) {
+                    _this.renderer.toCenterOn = parsed.cameraLocation;
+                }
+                _this.reactUI.switchScene("galaxyMap");
+            });
+        };
         App.prototype.makeApp = function () {
+            var _this = this;
             var startTime = Date.now();
             options_9.default.load();
             TutorialStatus_5.default.load();
-            setDynamicTemplateProperties_1.default(this.moduleData);
-            this.initUI();
-            this.setInitialScene();
-            if (this.reactUI.currentScene === "galaxyMap") {
-                this.game = this.makeGame();
-                this.initGame();
-                this.initDisplay();
-                this.hookUI();
+            var initialScene = this.getInitialScene();
+            var switchSceneFN = function () {
+                _this.reactUI.switchScene(initialScene);
+                console.log("Init in " + (Date.now() - startTime) + " ms");
+            };
+            if (initialScene === "galaxyMap") {
+                this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_17.default.game, function () {
+                    _this.game = _this.makeGame();
+                    _this.initGame();
+                    _this.initDisplay();
+                    _this.hookUI();
+                    switchSceneFN();
+                });
             }
-            this.reactUI.render();
-            console.log("Init in " + (Date.now() - startTime) + " ms");
+            else {
+                switchSceneFN();
+            }
         };
         App.prototype.destroy = function () {
             if (this.game) {
@@ -30921,33 +31407,6 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
                 this.reactUI.destroy();
                 this.reactUI = null;
             }
-        };
-        App.prototype.load = function (saveKey) {
-            var data = localStorage.getItem(saveKey);
-            if (!data)
-                return;
-            var parsed = JSON.parse(data);
-            idGenerators_9.default.setValues(parsed.idGenerators);
-            this.destroy();
-            this.initUI();
-            this.game = new GameLoader_1.default().deserializeGame(parsed.gameData);
-            this.game.gameStorageKey = saveKey;
-            this.initGame();
-            this.initDisplay();
-            this.hookUI();
-            if (parsed.cameraLocation) {
-                this.renderer.toCenterOn = parsed.cameraLocation;
-            }
-            this.reactUI.switchScene("galaxyMap");
-        };
-        App.prototype.makeGameFromSetup = function (map, players) {
-            this.destroy();
-            this.initUI();
-            this.game = new Game_2.default(map, players, players[0]);
-            this.initGame();
-            this.initDisplay();
-            this.hookUI();
-            this.reactUI.switchScene("galaxyMap");
         };
         App.prototype.makeGame = function () {
             var playerData = this.makePlayers();
@@ -31013,7 +31472,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             this.mapRenderer.init();
         };
         App.prototype.initUI = function () {
-            this.reactUI = new ReactUI_1.default(document.getElementById("react-container"));
+            this.reactUI = new ReactUI_1.default(document.getElementById("react-container"), this.moduleLoader);
         };
         App.prototype.hookUI = function () {
             this.reactUI.game = this.game;
@@ -31022,15 +31481,15 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             this.reactUI.renderer = this.renderer;
             this.reactUI.mapRenderer = this.mapRenderer;
         };
-        App.prototype.setInitialScene = function () {
-            var uriParser = document.createElement("a");
-            uriParser.href = document.URL;
-            var hash = uriParser.hash;
+        App.prototype.getInitialScene = function () {
+            var urlParser = document.createElement("a");
+            urlParser.href = document.URL;
+            var hash = urlParser.hash;
             if (hash) {
-                this.reactUI.currentScene = hash.slice(1);
+                return hash.slice(1);
             }
             else {
-                this.reactUI.currentScene = "setupGame";
+                return "setupGame";
             }
         };
         return App;
@@ -31038,6 +31497,6 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
     var app = new App();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = app;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
 });
 //# sourceMappingURL=main.js.map
