@@ -20,7 +20,7 @@ interface CountBySlot
 export default class UnitItems
 {
   [a: number]: string; // TODO remove
-  public items: ItemsBySlot = {};
+  public itemsBySlot: ItemsBySlot = {};
 
   constructor()
   {
@@ -30,7 +30,11 @@ export default class UnitItems
     const unitItems = new UnitItems();
     for (let slot in itemSlots)
     {
-      unitItems.items[slot] = Array(itemSlots[slot]);
+      unitItems.itemsBySlot[slot] = [];
+      for (let i = 0; i < itemSlots[slot]; i++)
+      {
+        unitItems.itemsBySlot[slot].push(null);
+      }
     }
 
     return unitItems;
@@ -40,11 +44,11 @@ export default class UnitItems
     const unitItems = new UnitItems();
     for (let slot in saveData)
     {
-      unitItems.items[slot] = saveData[slot].map(item =>
+      unitItems.itemsBySlot[slot] = saveData[slot].map(item =>
       {
         if (!item)
         {
-          return undefined;
+          return null;
         }
         else
         {
@@ -60,9 +64,9 @@ export default class UnitItems
   {
     const allItems: Item[] = [];
 
-    for (let slot in this.items)
+    for (let slot in this.itemsBySlot)
     {
-      allItems.push(...this.items[slot]);
+      allItems.push(...this.itemsBySlot[slot].filter(item => Boolean(item)));
     }
 
     return allItems;
@@ -71,9 +75,9 @@ export default class UnitItems
   {
     const availableSlots: CountBySlot = {};
 
-    for (let slot in this.items)
+    for (let slot in this.itemsBySlot)
     {
-      availableSlots[slot] = this.items[slot].reduce(item =>
+      availableSlots[slot] = this.itemsBySlot[slot].reduce(item =>
       {
         return Boolean(item) ? 0 : 1;
       }, 0);
@@ -114,11 +118,11 @@ export default class UnitItems
 
   public addItem(toAdd: Item, index: number): void
   {
-    this.items[toAdd.template.slot][index] = toAdd;
+    this.itemsBySlot[toAdd.template.slot][index] = toAdd;
   }
   public removeItem(toRemove: Item): void
   {
-    this.items[toRemove.template.slot][this.indexOf(toRemove)] = undefined;
+    this.itemsBySlot[toRemove.template.slot][this.indexOf(toRemove)] = null;
   }
   public destroyAllItems(): void
   {
@@ -132,13 +136,13 @@ export default class UnitItems
   {
     const saveData: UnitItemsSaveData = {};
 
-    for (let slot in this.items)
+    for (let slot in this.itemsBySlot)
     {
-      saveData[slot] = this.items[slot].map(item =>
+      saveData[slot] = this.itemsBySlot[slot].map(item =>
       {
         if (!item)
         {
-          return undefined;
+          return null;
         }
         else
         {
@@ -152,11 +156,11 @@ export default class UnitItems
 
   private indexOf(item: Item): number
   {
-    if (!this.items[item.template.slot])
+    if (!this.itemsBySlot[item.template.slot])
     {
       return -1;
     }
 
-    return this.items[item.template.slot].indexOf(item);
+    return this.itemsBySlot[item.template.slot].indexOf(item);
   }
 }

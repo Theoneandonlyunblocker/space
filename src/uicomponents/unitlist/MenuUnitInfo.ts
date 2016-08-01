@@ -1,13 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="abilitylist.ts" />
-/// <reference path="unititemwrapper.ts"/>
-/// <reference path="unitexperience.ts" />
-
 import Item from "../../Item";
 import Unit from "../../Unit";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
-import UnitItemWrapper from "./UnitItemWrapper";
+import UnitItemGroup from "./UnitItemGroup";
 import AbilityList from "./AbilityList";
 import UnitExperience from "./UnitExperience";
 
@@ -48,22 +44,23 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
   }
   render()
   {
-    var unit = this.props.unit;
+    const unit = this.props.unit;
     if (!unit) return(
       React.DOM.div({className: "menu-unit-info"})
     )
 
-    var itemSlots: React.ReactElement<any>[] = [];
+    const itemGroups: React.ReactElement<any>[] = [];
 
-    for (let slot in unit.items)
+    for (let slot in unit.items.itemsBySlot)
     {
-      itemSlots.push(UnitItemWrapper(
+      itemGroups.push(UnitItemGroup(
       {
         key: slot,
-        slot: slot,
-        item: unit.items[slot],
-        onMouseUp: this.props.onMouseUp,
+        
+        slotName: slot,
+        items: unit.items.itemsBySlot[slot],
 
+        onMouseUp: this.props.onMouseUp,
         isDraggable: this.props.isDraggable,
         onDragStart: this.props.onDragStart,
         onDragEnd: this.props.onDragEnd,
@@ -103,7 +100,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
         {
           className: "menu-unit-info-items-wrapper"
         },
-          itemSlots
+          itemGroups
         )
       )
     );
