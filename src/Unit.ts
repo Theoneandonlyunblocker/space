@@ -124,7 +124,7 @@ export default class Unit
     }
     else
     {
-      this.items = new UnitItems();
+      this.items = UnitItems.fromTemplate(template.itemSlots);
       this.setCulture();
       this.setInitialValues();
     }
@@ -192,11 +192,7 @@ export default class Unit
       isAnnihilated: data.battleStats.isAnnihilated
     };
 
-    data.items.forEach(itemData =>
-    {
-      const item = new Item(app.moduleData.Templates.Items[itemData.templateType], itemData.id);
-      this.addItem(item);
-    });
+    this.items = UnitItems.fromData(data.items);
 
     if (data.portraitKey)
     {
@@ -1168,7 +1164,7 @@ export default class Unit
       experienceForCurrentLevel: this.experienceForCurrentLevel,
       level: this.level,
 
-      items: includeItems ? this.items.serialize() : null,
+      items: includeItems ? this.items.serialize() : {},
       battleStats: battleStatsSavedData
     };
 

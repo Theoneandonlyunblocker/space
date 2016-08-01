@@ -1,5 +1,8 @@
 import ItemSaveData from "./ItemSaveData";
 
-declare type UnitItemsSaveData = ItemSaveData[];
+declare interface UnitItemsSaveData
+{
+  [slot: string]: ItemSaveData[];
+}
 
 export default UnitItemsSaveData;

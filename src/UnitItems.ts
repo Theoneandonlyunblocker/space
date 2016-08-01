@@ -1,3 +1,5 @@
+import app from "./App"; // TODO refactor
+
 import Item from "./Item";
 import {UnitAttributeAdjustments} from "./UnitAttributes";
 
@@ -10,40 +12,78 @@ interface ItemsBySlot
 {
   [slot: string]: Item[]
 }
+interface CountBySlot
+{
+  [slot: string]: number;
+}
 
 export default class UnitItems
 {
-  private items: Item[] = [];
+  [a: number]: string; // TODO remove
+  public items: ItemsBySlot = {};
 
   constructor()
   {
+  }
+  public static fromTemplate(itemSlots: CountBySlot): UnitItems
+  {
+    const unitItems = new UnitItems();
+    for (let slot in itemSlots)
+    {
+      unitItems.items[slot] = Array(itemSlots[slot]);
+    }
 
+    return unitItems;
+  }
+  public static fromData(saveData: UnitItemsSaveData): UnitItems
+  {
+    const unitItems = new UnitItems();
+    for (let slot in saveData)
+    {
+      unitItems.items[slot] = saveData[slot].map(item =>
+      {
+        if (!item)
+        {
+          return undefined;
+        }
+        else
+        {
+          return new Item(app.moduleData.Templates.Items[item.templateType], item.id);
+        }
+      });
+    }
+
+    return unitItems;
   }
 
   public getAllItems(): Item[]
   {
-    return this.items.slice(0);
-  }
-  public getItemsBySlot(): ItemsBySlot
-  {
-    const itemsBySlot: ItemsBySlot = {};
+    const allItems: Item[] = [];
 
-    this.items.forEach(item =>
+    for (let slot in this.items)
     {
-      const slot = item.template.slot;
-      if (!itemsBySlot[slot])
+      allItems.push(...this.items[slot]);
+    }
+
+    return allItems;
+  }
+  public getAvailableItemSlots(): CountBySlot
+  {
+    const availableSlots: CountBySlot = {};
+
+    for (let slot in this.items)
+    {
+      availableSlots[slot] = this.items[slot].reduce(item =>
       {
-        itemsBySlot[slot] = [];
-      }
+        return Boolean(item) ? 0 : 1;
+      }, 0);
+    }
 
-      itemsBySlot[slot].push(item);
-    });
-
-    return itemsBySlot;
+    return availableSlots;
   }
   public getAttributeAdjustments(): UnitAttributeAdjustments[]
   {
-    return this.items.filter(item =>
+    return this.getAllItems().filter(item =>
     {
       return Boolean(item.template.attributeAdjustments)
     }).map(item =>
@@ -53,7 +93,7 @@ export default class UnitItems
   }
   public getAbilities(): AbilityTemplate[]
   {
-    return this.items.filter(item =>
+    return this.getAllItems().filter(item =>
     {
       return Boolean(item.template.ability)
     }).map(item =>
@@ -63,7 +103,7 @@ export default class UnitItems
   }
   public getPassiveSkills(): PassiveSkillTemplate[]
   {
-    return this.items.filter(item =>
+    return this.getAllItems().filter(item =>
     {
       return Boolean(item.template.passiveSkill)
     }).map(item =>
@@ -72,20 +112,17 @@ export default class UnitItems
     });
   }
 
-  public addItem(toAdd: Item): void
+  public addItem(toAdd: Item, index: number): void
   {
-    this.items.push(toAdd);
+    this.items[toAdd.template.slot][index] = toAdd;
   }
   public removeItem(toRemove: Item): void
   {
-    this.items = this.items.filter(item =>
-    {
-      return item !== toRemove;
-    })
+    this.items[toRemove.template.slot][this.indexOf(toRemove)] = undefined;
   }
   public destroyAllItems(): void
   {
-    this.items.forEach(item =>
+    this.getAllItems().forEach(item =>
     {
       item.unit.fleet.player.removeItem(item);
     });
@@ -93,9 +130,33 @@ export default class UnitItems
 
   public serialize(): UnitItemsSaveData
   {
-    return this.items.map(item =>
+    const saveData: UnitItemsSaveData = {};
+
+    for (let slot in this.items)
     {
-      return item.serialize();
-    });
+      saveData[slot] = this.items[slot].map(item =>
+      {
+        if (!item)
+        {
+          return undefined;
+        }
+        else
+        {
+          return item.serialize();
+        }
+      });
+    }
+
+    return saveData;
+  }
+
+  private indexOf(item: Item): number
+  {
+    if (!this.items[item.template.slot])
+    {
+      return -1;
+    }
+
+    return this.items[item.template.slot].indexOf(item);
   }
 }
