@@ -22,7 +22,7 @@ export default class UnitItems
 {
   // public itemsBySlot: ItemsBySlot = {};
   public items: Item[] = [];
-  public maxItemSlots: CountBySlot;
+  public itemSlots: CountBySlot;
 
   private addItemToUnit: (item: Item) => void;
   private updateUnit: (changedItem: Item) => void;
@@ -33,7 +33,7 @@ export default class UnitItems
     updateUnit: (changedItem: Item) => void
   )
   {
-    this.maxItemSlots = itemSlots;
+    this.itemSlots = itemSlots;
     this.addItemToUnit = addItemToUnit;
     this.updateUnit = updateUnit;
   }
@@ -57,16 +57,23 @@ export default class UnitItems
       itemsBySlot[item.template.slot].push(item);
     });
 
-    return itemsBySlot;
+    const itemsBySlotWithEmptySlots: ItemsBySlot = {};
+
+    for (let slot in this.itemSlots)
+    {
+      itemsBySlotWithEmptySlots[slot] = itemsBySlot[slot] || [];
+    }
+
+    return itemsBySlotWithEmptySlots;
   }
   public getAvailableItemSlots(): CountBySlot
   {
     const availableSlots: CountBySlot = {};
     const itemsBySlot = this.getItemsBySlot();
 
-    for (let slot in this.maxItemSlots)
+    for (let slot in this.itemSlots)
     {
-      availableSlots[slot] = this.maxItemSlots[slot] - itemsBySlot[slot].length;
+      availableSlots[slot] = this.itemSlots[slot] - itemsBySlot[slot].length;
     }
 
     return availableSlots;
@@ -105,6 +112,19 @@ export default class UnitItems
   public hasSlotForItem(item: Item): boolean
   {
     return this.getAvailableItemSlots()[item.template.slot] > 0;
+  }
+  public getItemAtPosition(slot: string, position: number): Item
+  {
+    const itemsForSlot = this.getItemsBySlot()[slot];
+    for (let i = 0; i < itemsForSlot.length; i++)
+    {
+      if (itemsForSlot[i].positionInUnit === position)
+      {
+        return itemsForSlot[i];
+      }
+    }
+
+    return null;
   }
   public hasItem(item: Item): boolean
   {
@@ -159,7 +179,7 @@ export default class UnitItems
   {
     return(
     {
-      maxItemSlots: this.maxItemSlots
+      maxItemSlots: this.itemSlots
     });
   }
   public serializeItems(): ItemSaveData[]

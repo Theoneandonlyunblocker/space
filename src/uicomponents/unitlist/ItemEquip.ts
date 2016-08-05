@@ -77,7 +77,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
       var item = this.state.currentDragItem;
       if (this.state.selectedUnit.items.hasItem(item))
       {
-        this.state.selectedUnit.removeItem(item);
+        this.state.selectedUnit.items.removeItem(item);
       }
     }
 
@@ -92,12 +92,12 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
     var unit = this.state.selectedUnit;
     if (unit && item)
     {
-      const oldItemAtSlot = unit.items.itemsBySlot[item.template.slot][index]; 
+      const oldItemAtSlot = unit.items.getItemAtPosition(item.template.slot, index); 
       if (oldItemAtSlot)
       {
-        unit.removeItem(oldItemAtSlot)
+        unit.items.removeItem(oldItemAtSlot)
       }
-      unit.addItem(item, index);
+      unit.items.addItem(item, index);
     }
 
     this.handleDragEnd(true);

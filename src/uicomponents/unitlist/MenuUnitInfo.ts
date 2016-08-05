@@ -50,15 +50,17 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
     )
 
     const itemGroups: React.ReactElement<any>[] = [];
+    const itemsBySlot = unit.items.getItemsBySlot();
 
-    for (let slot in unit.items.itemsBySlot)
+    for (let slot in unit.items.itemSlots)
     {
       itemGroups.push(UnitItemGroup(
       {
         key: slot,
         
         slotName: slot,
-        items: unit.items.itemsBySlot[slot],
+        maxItems: unit.items.itemSlots[slot],
+        items: itemsBySlot[slot],
 
         onMouseUp: this.props.onMouseUp,
         isDraggable: this.props.isDraggable,

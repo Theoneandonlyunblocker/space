@@ -6,6 +6,7 @@ import UnitItemWrapper from "./UnitItemWrapper";
 interface PropTypes extends React.Props<any>
 {
   slotName: string;
+  maxItems: number;
   items: Item[];
 
   isDraggable?: boolean;
@@ -31,27 +32,39 @@ export class UnitItemGroupComponent extends React.Component<PropTypes, StateType
   
   render()
   {
+    const itemWrappers: React.ReactElement<any>[] = [];
+    const itemsByPosition: {[position: number]: Item} = {};
+
+    this.props.items.forEach(item =>
+    {
+      itemsByPosition[item.positionInUnit] = item;
+    });
+
+    for (let i = 0; i < this.props.maxItems; i++)
+    {
+      itemWrappers.push(
+        UnitItemWrapper(
+        {
+          key: i,
+          slot: this.props.slotName,
+          item: itemsByPosition[i],
+          index: i,
+
+          onMouseUp: this.props.onMouseUp,
+          isDraggable: this.props.isDraggable,
+          onDragStart: this.props.onDragStart,
+          onDragEnd: this.props.onDragEnd,
+          currentDragItem: this.props.currentDragItem
+        })
+      );
+    }
+
     return(
       React.DOM.div(
       {
         className: "unit-item-group unit-item-group-" + this.props.slotName
       },
-        this.props.items.map((item, i) =>
-        {
-          return UnitItemWrapper(
-          {
-            key: i,
-            slot: this.props.slotName,
-            item: item,
-            index: i,
-
-            onMouseUp: this.props.onMouseUp,
-            isDraggable: this.props.isDraggable,
-            onDragStart: this.props.onDragStart,
-            onDragEnd: this.props.onDragEnd,
-            currentDragItem: this.props.currentDragItem
-          })
-        })
+        itemWrappers
       )
     );
   }
