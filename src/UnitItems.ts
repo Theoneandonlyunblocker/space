@@ -24,18 +24,18 @@ export default class UnitItems
   public items: Item[] = [];
   public maxItemSlots: CountBySlot;
 
-  private updateAttributes: () => void;
-  private updatePassiveSkills: () => void;
+  private addItemToUnit: (item: Item) => void;
+  private updateUnit: (changedItem: Item) => void;
 
   constructor(
     itemSlots: CountBySlot,
-    updateAttributes: () => void,
-    updatePassiveSkills: () => void
+    addItemToUnit: (item: Item) => void,
+    updateUnit: (changedItem: Item) => void
   )
   {
     this.maxItemSlots = itemSlots;
-    this.updateAttributes = updateAttributes;
-    this.updatePassiveSkills = updatePassiveSkills;
+    this.addItemToUnit = addItemToUnit;
+    this.updateUnit = updateUnit;
   }
 
   public getAllItems(): Item[]
@@ -110,13 +110,42 @@ export default class UnitItems
   {
     return this.indexOf(item) !== -1;
   }
-  public addItem(toAdd: Item): void
+  public addItem(toAdd: Item, position: number): void
   {
+    if (!this.hasSlotForItem(toAdd))
+    {
+      throw new Error("");
+    }
+
+    if (toAdd.unit)
+    {
+      throw new Error("");
+    }
+
     this.items.push(toAdd);
+
+    toAdd.positionInUnit = position;
+
+    this.addItemToUnit(toAdd);
+    this.updateUnit(toAdd);
+  }
+  public moveItem(toMove: Item, newPosition: number): void
+  {
+    toMove.positionInUnit = newPosition;
   }
   public removeItem(toRemove: Item): void
   {
+    if (!this.hasItem(toRemove))
+    {
+      throw new Error("");
+    }
+
     this.items.splice(this.indexOf(toRemove), 1);
+
+    toRemove.unit = null;
+    toRemove.positionInUnit = null;
+
+    this.updateUnit(toRemove);
   }
   public destroyAllItems(): void
   {

@@ -198,7 +198,7 @@ export default class Unit
       data.serializedItems.forEach(itemSaveData =>
       {
         const item = new Item(app.moduleData.Templates.Items[itemSaveData.templateType], itemSaveData.id);
-        this.items.addItem(item);
+        this.items.addItem(item, -999);
       })
     }
 
@@ -207,14 +207,6 @@ export default class Unit
       this.portrait = findItemWithKey<PortraitTemplate>(
         app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
     }
-  }
-  private makeUnitItems(itemSlots: {[slot: string]: number})
-  {
-    return new UnitItems(
-      itemSlots,
-      () => {this.attributesAreDirty = true},
-      () => {this.passiveSkillsByPhaseAreDirty = true}
-    );
   }
   private setInitialValues()
   {
@@ -460,6 +452,27 @@ export default class Unit
     return this.currentHealth > 0 && !this.battleStats.isAnnihilated;
   }
 
+  private makeUnitItems(itemSlots: {[slot: string]: number})
+  {
+    return new UnitItems(
+      itemSlots,
+      (item) =>
+      {
+        item.unit = this;
+      },
+      (changedItem) =>
+      {
+        if (changedItem.template.attributeAdjustments)
+        {
+          this.attributesAreDirty = true;
+        }
+        if (changedItem.template.passiveSkill)
+        {
+          this.passiveSkillsByPhaseAreDirty = true;
+        }
+      }
+    );
+  }
   // public addItem(item: Item, index: number)
   // {
   //   var itemSlot = item.template.slot;
@@ -477,14 +490,14 @@ export default class Unit
   //   this.items.addItem(item, index);
   //   item.unit = this;
 
-  //   if (item.template.attributeAdjustments)
-  //   {
-  //     this.attributesAreDirty = true;
-  //   }
-  //   if (item.template.passiveSkill)
-  //   {
-  //     this.passiveSkillsByPhaseAreDirty = true;
-  //   }
+    // if (item.template.attributeAdjustments)
+    // {
+    //   this.attributesAreDirty = true;
+    // }
+    // if (item.template.passiveSkill)
+    // {
+    //   this.passiveSkillsByPhaseAreDirty = true;
+    // }
   // }
   // public removeItem(item: Item)
   // {

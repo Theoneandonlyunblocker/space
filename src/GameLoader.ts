@@ -429,7 +429,7 @@ export default class GameLoader
     player.addItem(item);
     if (isFinite(data.unitId))
     {
-      this.unitsById[data.unitId].addItem(item);
+      this.unitsById[data.unitId].items.addItem(item, data.positionInUnit);
     }
   }
 }
