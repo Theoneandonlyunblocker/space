@@ -7,10 +7,11 @@ import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
 
 import UnitItemsSaveData from "./savedata/UnitItemsSaveData";
+import ItemSaveData from "./savedata/ItemSaveData";
 
 interface ItemsBySlot
 {
-  [slot: string]: Item[]
+  [slot: string]: Item[];
 }
 interface CountBySlot
 {
@@ -19,68 +20,53 @@ interface CountBySlot
 
 export default class UnitItems
 {
-  [a: number]: string; // TODO remove
-  public itemsBySlot: ItemsBySlot = {};
+  // public itemsBySlot: ItemsBySlot = {};
+  public items: Item[] = [];
+  public maxItemSlots: CountBySlot;
 
-  constructor()
-  {
-  }
-  public static fromTemplate(itemSlots: CountBySlot): UnitItems
-  {
-    const unitItems = new UnitItems();
-    for (let slot in itemSlots)
-    {
-      unitItems.itemsBySlot[slot] = [];
-      for (let i = 0; i < itemSlots[slot]; i++)
-      {
-        unitItems.itemsBySlot[slot].push(null);
-      }
-    }
+  private updateAttributes: () => void;
+  private updatePassiveSkills: () => void;
 
-    return unitItems;
-  }
-  public static fromData(saveData: UnitItemsSaveData): UnitItems
+  constructor(
+    itemSlots: CountBySlot,
+    updateAttributes: () => void,
+    updatePassiveSkills: () => void
+  )
   {
-    const unitItems = new UnitItems();
-    for (let slot in saveData)
-    {
-      unitItems.itemsBySlot[slot] = saveData[slot].map(item =>
-      {
-        if (!item)
-        {
-          return null;
-        }
-        else
-        {
-          return new Item(app.moduleData.Templates.Items[item.templateType], item.id);
-        }
-      });
-    }
-
-    return unitItems;
+    this.maxItemSlots = itemSlots;
+    this.updateAttributes = updateAttributes;
+    this.updatePassiveSkills = updatePassiveSkills;
   }
 
   public getAllItems(): Item[]
   {
-    const allItems: Item[] = [];
+    return this.items;
+  }
+  public getItemsBySlot(): ItemsBySlot
+  {
+    const itemsBySlot: ItemsBySlot = {};
+    const allItems = this.getAllItems();
 
-    for (let slot in this.itemsBySlot)
+    allItems.forEach(item =>
     {
-      allItems.push(...this.itemsBySlot[slot].filter(item => Boolean(item)));
-    }
+      if (!itemsBySlot[item.template.slot])
+      {
+        itemsBySlot[item.template.slot] = [];
+      }
 
-    return allItems;
+      itemsBySlot[item.template.slot].push(item);
+    });
+
+    return itemsBySlot;
   }
   public getAvailableItemSlots(): CountBySlot
   {
     const availableSlots: CountBySlot = {};
+    const itemsBySlot = this.getItemsBySlot();
 
-    for (let slot in this.itemsBySlot)
+    for (let slot in this.maxItemSlots)
     {
-      availableSlots[slot] = this.itemsBySlot[slot].reduce(item =>
-      {
-        return Boolean(item) ? 0 : 1;
-      }, 0);
+      availableSlots[slot] = this.maxItemSlots[slot] - itemsBySlot[slot].length;
     }
 
     return availableSlots;
@@ -116,13 +102,21 @@ export default class UnitItems
     });
   }
 
-  public addItem(toAdd: Item, index: number): void
+  public hasSlotForItem(item: Item): boolean
   {
-    this.itemsBySlot[toAdd.template.slot][index] = toAdd;
+    return this.getAvailableItemSlots()[item.template.slot] > 0;
+  }
+  public hasItem(item: Item): boolean
+  {
+    return this.indexOf(item) !== -1;
+  }
+  public addItem(toAdd: Item): void
+  {
+    this.items.push(toAdd);
   }
   public removeItem(toRemove: Item): void
   {
-    this.itemsBySlot[toRemove.template.slot][this.indexOf(toRemove)] = null;
+    this.items.splice(this.indexOf(toRemove), 1);
   }
   public destroyAllItems(): void
   {
@@ -134,33 +128,21 @@ export default class UnitItems
 
   public serialize(): UnitItemsSaveData
   {
-    const saveData: UnitItemsSaveData = {};
-
-    for (let slot in this.itemsBySlot)
+    return(
     {
-      saveData[slot] = this.itemsBySlot[slot].map(item =>
-      {
-        if (!item)
-        {
-          return null;
-        }
-        else
-        {
-          return item.serialize();
-        }
-      });
-    }
-
-    return saveData;
+      maxItemSlots: this.maxItemSlots
+    });
+  }
+  public serializeItems(): ItemSaveData[]
+  {
+    return this.items.map(item =>
+    {
+      return item.serialize();
+    });
   }
 
   private indexOf(item: Item): number
   {
-    if (!this.itemsBySlot[item.template.slot])
-    {
-      return -1;
-    }
-
-    return this.itemsBySlot[item.template.slot].indexOf(item);
+    return this.items.indexOf(item);
   }
 }

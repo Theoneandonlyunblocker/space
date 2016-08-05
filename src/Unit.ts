@@ -124,7 +124,7 @@ export default class Unit
     }
     else
     {
-      this.items = UnitItems.fromTemplate(template.itemSlots);
+      this.items = this.makeUnitItems(template.itemSlots);
       this.setCulture();
       this.setInitialValues();
     }
@@ -192,13 +192,29 @@ export default class Unit
       isAnnihilated: data.battleStats.isAnnihilated
     };
 
-    this.items = UnitItems.fromData(data.items);
+    this.items = this.makeUnitItems(data.items.maxItemSlots);
+    if (data.serializedItems)
+    {
+      data.serializedItems.forEach(itemSaveData =>
+      {
+        const item = new Item(app.moduleData.Templates.Items[itemSaveData.templateType], itemSaveData.id);
+        this.items.addItem(item);
+      })
+    }
 
     if (data.portraitKey)
     {
       this.portrait = findItemWithKey<PortraitTemplate>(
         app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
     }
+  }
+  private makeUnitItems(itemSlots: {[slot: string]: number})
+  {
+    return new UnitItems(
+      itemSlots,
+      () => {this.attributesAreDirty = true},
+      () => {this.passiveSkillsByPhaseAreDirty = true}
+    );
   }
   private setInitialValues()
   {
@@ -444,52 +460,55 @@ export default class Unit
     return this.currentHealth > 0 && !this.battleStats.isAnnihilated;
   }
 
-  public addItem(item: Item)
-  {
-    var itemSlot = item.template.slot;
+  // public addItem(item: Item, index: number)
+  // {
+  //   var itemSlot = item.template.slot;
 
-    if (this.items[itemSlot]) return false;
+  //   if (!this.items.hasSlotForItem(item))
+  //   {
+  //     return false;
+  //   }
 
-    if (item.unit)
-    {
-      item.unit.removeItem(item);
-    }
+  //   if (item.unit)
+  //   {
+  //     item.unit.removeItem(item);
+  //   }
 
-    this.items[itemSlot] = item;
-    item.unit = this;
+  //   this.items.addItem(item, index);
+  //   item.unit = this;
 
-    if (item.template.attributeAdjustments)
-    {
-      this.attributesAreDirty = true;
-    }
-    if (item.template.passiveSkill)
-    {
-      this.passiveSkillsByPhaseAreDirty = true;
-    }
-  }
-  public removeItem(item: Item)
-  {
-    var itemSlot = item.template.slot;
+  //   if (item.template.attributeAdjustments)
+  //   {
+  //     this.attributesAreDirty = true;
+  //   }
+  //   if (item.template.passiveSkill)
+  //   {
+  //     this.passiveSkillsByPhaseAreDirty = true;
+  //   }
+  // }
+  // public removeItem(item: Item)
+  // {
+  //   var itemSlot = item.template.slot;
 
-    if (this.items[itemSlot] === item)
-    {
-      this.items[itemSlot] = null;
-      item.unit = null;
+  //   if (!this.items.hasItem(item))
+  //   {
+  //     return false;
+  //   }
 
-      if (item.template.attributeAdjustments)
-      {
-        this.attributesAreDirty = true;
-      }
-      if (item.template.passiveSkill)
-      {
-        this.passiveSkillsByPhaseAreDirty = true;
-      }
+  //   this.items.removeItem(item);
+  //   item.unit = null;
 
-      return true;
-    }
+  //   if (item.template.attributeAdjustments)
+  //   {
+  //     this.attributesAreDirty = true;
+  //   }
+  //   if (item.template.passiveSkill)
+  //   {
+  //     this.passiveSkillsByPhaseAreDirty = true;
+  //   }
 
-    return false;
-  }
+  //   return true;
+  // }
   private getAttributesWithItems()
   {
     return this.baseAttributes.getAdjustedAttributes(this.items.getAttributeAdjustments()).clamp(1, 9);
@@ -606,16 +625,16 @@ export default class Unit
   {
     this.cachedAttributes = this.getAttributesWithEffects();
   }
-  public removeItemAtSlot(slot: string)
-  {
-    if (this.items[slot])
-    {
-      this.removeItem(this.items[slot]);
-      return true;
-    }
+  // public removeItemAtSlot(slot: string)
+  // {
+  //   if (this.items[slot])
+  //   {
+  //     this.removeItem(this.items[slot]);
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
   private setInitialAbilities()
   {
     this.abilities = getItemsFromWeightedProbabilities<AbilityTemplate>(this.template.possibleAbilities);
@@ -1164,7 +1183,7 @@ export default class Unit
       experienceForCurrentLevel: this.experienceForCurrentLevel,
       level: this.level,
 
-      items: includeItems ? this.items.serialize() : {},
+      items: this.items.serialize(),
       battleStats: battleStatsSavedData
     };
 
@@ -1172,6 +1191,11 @@ export default class Unit
     if (this.fleet)
     {
       data.fleetId = this.fleet.id;
+    }
+
+    if (includeItems)
+    {
+      data.serializedItems = this.items.serializeItems();
     }
 
     if (includeFluff)

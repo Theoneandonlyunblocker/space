@@ -12,6 +12,7 @@ export default class Item
   id: number;
   template: ItemTemplate;
   unit: Unit;
+  positionInUnit: number;
 
   constructor(
     template: ItemTemplate,
@@ -32,6 +33,7 @@ export default class Item
     if (this.unit)
     {
       data.unitId = this.unit.id;
+      data.positionInUnit = this.positionInUnit;
     }
 
     return data;

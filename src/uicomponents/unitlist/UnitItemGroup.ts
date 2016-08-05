@@ -11,7 +11,7 @@ interface PropTypes extends React.Props<any>
   isDraggable?: boolean;
   onDragEnd?: (dropSuccesful?: boolean) => void;
   onDragStart?: (item: Item) => void;
-  onMouseUp?: () => void;
+  onMouseUp?: (index: number) => void;
   currentDragItem?: Item;
 }
 
@@ -43,6 +43,7 @@ export class UnitItemGroupComponent extends React.Component<PropTypes, StateType
             key: i,
             slot: this.props.slotName,
             item: item,
+            index: i,
 
             onMouseUp: this.props.onMouseUp,
             isDraggable: this.props.isDraggable,

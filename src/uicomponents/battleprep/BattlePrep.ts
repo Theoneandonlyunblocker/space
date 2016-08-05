@@ -202,7 +202,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit)
     {
       var item = this.state.currentDragItem;
-      if (this.state.selectedUnit.items[item.template.slot] === item)
+      if (this.state.selectedUnit.items.hasItem(item))
       {
         this.state.selectedUnit.removeItem(item);
       }
@@ -213,17 +213,18 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
       currentDragItem: null
     });
   }
-  handleItemDrop()
+  handleItemDrop(index: number)
   {
     var item = this.state.currentDragItem;
     var unit = this.state.selectedUnit;
     if (unit && item)
     {
-      if (unit.items[item.template.slot])
+      const oldItemAtSlot = unit.items.itemsBySlot[item.template.slot][index]; 
+      if (oldItemAtSlot)
       {
-        unit.removeItemAtSlot(item.template.slot);
+        unit.removeItem(oldItemAtSlot)
       }
-      unit.addItem(item);
+      unit.addItem(item, index);
     }
 
     this.handleItemDragEnd(true);

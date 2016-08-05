@@ -2,7 +2,10 @@ import ItemSaveData from "./ItemSaveData";
 
 declare interface UnitItemsSaveData
 {
-  [slot: string]: ItemSaveData[];
+  maxItemSlots:
+  {
+    [slot: string]: number;
+  }
 }
 
 export default UnitItemsSaveData;

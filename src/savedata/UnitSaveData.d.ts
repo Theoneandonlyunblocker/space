@@ -1,5 +1,6 @@
 import {UnitAttributesObject} from "../UnitAttributes";
 
+import ItemSaveData from "./ItemSaveData";
 import UnitItemsSaveData from "./UnitItemsSaveData";
 import UnitBattleStatsSaveData from "./UnitBattleStatsSaveData";
 
@@ -21,6 +22,9 @@ declare interface UnitSaveData
   items: UnitItemsSaveData;
   battleStats: UnitBattleStatsSaveData;
 
+  // Only used for creating virtual clones of unit.
+  // When saving & loading items are stored by player save data.
+  serializedItems?: ItemSaveData[];
   fleetId?: number;
   portraitKey?: string;
 }

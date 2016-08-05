@@ -6,8 +6,9 @@ import Item from "../../Item";
 export interface PropTypes extends React.Props<any>
 {
   item: Item;
-  onMouseUp: () => void;
+  onMouseUp: (index: number) => void;
   slot: string;
+  index: number;
   currentDragItem: Item;
   
   isDraggable: boolean;
@@ -37,7 +38,7 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
   
   handleMouseUp()
   {
-    this.props.onMouseUp();
+    this.props.onMouseUp(this.props.index);
   }
 
   render()
