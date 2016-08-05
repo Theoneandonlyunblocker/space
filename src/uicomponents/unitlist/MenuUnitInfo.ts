@@ -80,24 +80,29 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
       },
         React.DOM.div(
         {
-          className: "menu-unit-info-name"
-        }, unit.name),
-        React.DOM.div(
-        {
-          className: "menu-unit-info-abilities"
+          className: "menu-unit-info-left"
         },
-          AbilityList(
+          React.DOM.div(
           {
-            abilities: unitAbilities
+            className: "menu-unit-info-name"
+          }, unit.name),
+          React.DOM.div(
+          {
+            className: "menu-unit-info-abilities"
+          },
+            AbilityList(
+            {
+              abilities: unitAbilities
+            })
+          ),
+          UnitExperience(
+          {
+            experienceForCurrentLevel: unit.experienceForCurrentLevel,
+            experienceToNextLevel: unit.getExperienceToNextLevel(),
+            unit: unit,
+            onUnitUpgrade: this.handleUnitUpgrade
           })
         ),
-        UnitExperience(
-        {
-          experienceForCurrentLevel: unit.experienceForCurrentLevel,
-          experienceToNextLevel: unit.getExperienceToNextLevel(),
-          unit: unit,
-          onUnitUpgrade: this.handleUnitUpgrade
-        }),
         React.DOM.div(
         {
           className: "menu-unit-info-items-wrapper"

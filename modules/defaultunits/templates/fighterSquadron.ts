@@ -55,8 +55,8 @@ const fighterSquadron: UnitTemplate =
   itemSlots:
   {
     [itemSlot.low]: 1,
-    [itemSlot.mid]: 1,
-    [itemSlot.high]: 1,
+    [itemSlot.mid]: 3,
+    [itemSlot.high]: 2,
   },
   unitDrawingFN: defaultUnitDrawingFunction
 }
