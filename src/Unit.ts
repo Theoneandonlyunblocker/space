@@ -411,7 +411,10 @@ export default class Unit
   private interruptQueuedAction(interruptStrength: number)
   {
     var action = this.battleStats.queuedAction;
-    if (!action) return;
+    if (!action)
+    {
+      return;
+    }
 
     action.timesInterrupted += interruptStrength;
     if (action.timesInterrupted >= action.ability.preparation.interruptsNeeded)
@@ -424,7 +427,10 @@ export default class Unit
   private updateQueuedAction()
   {
     var action = this.battleStats.queuedAction;
-    if (!action) return;
+    if (!action)
+    {
+      return;
+    }
 
     action.turnsPrepared++;
 
@@ -586,7 +592,10 @@ export default class Unit
     for (let i = 0; i < this.battleStats.statusEffects.length; i++)
     {
       var statusEffect = this.battleStats.statusEffects[i];
-      if (!statusEffect.template.attributes) continue;
+      if (!statusEffect.template.attributes)
+      {
+        continue;
+      }
 
       for (let attribute in statusEffect.template.attributes)
       {
@@ -993,7 +1002,10 @@ export default class Unit
   {
     const abilities: AbilityBase[] = [];
 
-    if (!this.template.learnableAbilities) return abilities;
+    if (!this.template.learnableAbilities)
+    {
+      return abilities;
+    }
 
     for (let i = 0; i < this.template.learnableAbilities.length; i++)
     {
