@@ -20,7 +20,6 @@ import
 } from "./UnitAttributes";
 import
 {
-  extendObject,
   findItemWithKey,
   randInt,
   getRandomArrayItem,
@@ -141,8 +140,8 @@ export default class Unit
 
     this.timesActedThisTurn = data.timesActedThisTurn;
 
-    this.baseAttributes = extendObject(data.baseAttributes);
-    this.cachedAttributes = extendObject(this.baseAttributes);
+    this.baseAttributes = new UnitAttributes(data.baseAttributes);
+    this.cachedAttributes = this.baseAttributes.clone();
 
     this.abilities = data.abilityTemplateTypes.map(function(key: string)
     {
@@ -1182,7 +1181,7 @@ export default class Unit
 
       timesActedThisTurn: this.timesActedThisTurn,
 
-      baseAttributes: extendObject(this.baseAttributes),
+      baseAttributes: this.baseAttributes.serialize(),
       abilityTemplateTypes: this.abilities.map(function(ability: AbilityTemplate)
       {
         return ability.type;
