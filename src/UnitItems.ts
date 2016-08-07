@@ -132,22 +132,45 @@ export default class UnitItems
   }
   public addItem(toAdd: Item, position: number): void
   {
-    if (!this.hasSlotForItem(toAdd))
+    const oldItemAtTargetPosition = this.getItemAtPosition(
+      toAdd.template.slot, position);
+    if (this.hasItem(toAdd))
     {
-      throw new Error("");
+      const oldPositionForItem = toAdd.positionInUnit;
+      
+      if (oldItemAtTargetPosition)
+      {
+        this.moveItem(oldItemAtTargetPosition, oldPositionForItem);
+      }
+
+      this.moveItem(toAdd, position);
+    }
+    else
+    {
+      if (toAdd.unit)
+      {
+        toAdd.unit.items.removeItem(toAdd);
+      }
+
+      if (oldItemAtTargetPosition)
+      {
+        this.removeItem(oldItemAtTargetPosition);
+      }
+
+      if (!this.hasSlotForItem(toAdd))
+      {
+        throw new Error("");
+      }
+
+      this.items.push(toAdd);
+
+      toAdd.positionInUnit = position;
+
+      this.addItemToUnit(toAdd);
+      this.updateUnit(toAdd);
     }
 
-    if (toAdd.unit)
-    {
-      throw new Error("");
-    }
 
-    this.items.push(toAdd);
-
-    toAdd.positionInUnit = position;
-
-    this.addItemToUnit(toAdd);
-    this.updateUnit(toAdd);
   }
   public moveItem(toMove: Item, newPosition: number): void
   {

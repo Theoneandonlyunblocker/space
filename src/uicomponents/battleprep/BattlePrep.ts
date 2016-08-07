@@ -219,11 +219,6 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     var unit = this.state.selectedUnit;
     if (unit && item)
     {
-      const oldItemAtSlot = unit.items.getItemAtPosition(item.template.slot, index); 
-      if (oldItemAtSlot)
-      {
-        unit.items.removeItem(oldItemAtSlot)
-      }
       unit.items.addItem(item, index);
     }
 
