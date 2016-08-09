@@ -78,7 +78,12 @@ export default class UnitAttributes implements UnitAttributesObject
 
         if (adjustment[attribute].flat)
         {
-          squashed[attribute].flat = 0 + adjustment[attribute].flat;
+          if (!isFinite(squashed[attribute].flat))
+          {
+            squashed[attribute].flat = 0;
+          }
+
+          squashed[attribute].flat += adjustment[attribute].flat;
         }
         if (isFinite(adjustment[attribute].multiplier))
         {
