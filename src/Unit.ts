@@ -645,6 +645,7 @@ export default class Unit
   private updateCachedAttributes()
   {
     this.cachedAttributes = this.getAttributesWithEffects();
+    this.attributesAreDirty = false;
   }
   // public removeItemAtSlot(slot: string)
   // {
