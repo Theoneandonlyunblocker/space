@@ -23,22 +23,15 @@ export default function particleTest(props: SFXParams)
   var width2 = props.width / 2;
   var height2 = props.height / 2;
 
+  const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(
+    props.userOffset, props.user);
+
   var mainContainer = new PIXI.Container();
-  var bg = new PIXI.Graphics();
-  bg.beginFill(0x000000);
-  bg.drawRect(0, 0, props.width, props.height);
-  bg.endFill();
-  bg.alpha = 1.0;
-  // mainContainer.addChild(bg);
 
   var impactHasOccurred = false;
   var relativeImpactTime = 0.18;
 
-  var beamOrigin =
-  {
-    x: 100,
-    y: props.height * 0.66
-  }
+  var beamOrigin = offsetUserData.singleAttackOriginPoint;
   var relativeBeamOrigin =
   {
     x: beamOrigin.x / props.width,
