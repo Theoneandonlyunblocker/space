@@ -3242,14 +3242,24 @@ ul, ol
   .unit-info-ability, .upgrade-attributes-attribute
   {
     cursor: pointer;
-    &:hover
-    {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-    &:active
-    {
-      background-color: rgba(255, 255, 255, 0.3);
-    }
+  }
+}
+.upgrade-attributes-list
+{
+  display: inline-block;
+}
+.upgrade-attributes-attribute
+{
+  display: block;
+  float: left;
+  clear: both;
+  &:hover
+  {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+  &:active
+  {
+    background-color: rgba(255, 255, 255, 0.55);
   }
 }
 
@@ -3259,24 +3269,27 @@ ul, ol
   float: left;
   clear: both;
 }
-.active-skill:hover
-{
-  background-color: rgba(255, 255, 255, 0.4);
-}
-.passive-skill:hover
-{
-  background-color: rgba(255, 255, 0, 0.4);
-}
 
+.skill-style(@color)
+{
+  color: @color;
+  .ability-list &:hover
+  {
+    background-color: fade(@color, 40%);
+  }
+  .upgrade-unit &:active
+  {
+    background-color: fade(@color, 55%);
+  }
+}
 .active-skill
 {
-  color: white;
+  .skill-style(white);
 }
-
 .passive-skill
 {
-  color: yellow;
-  
+  .skill-style(yellow);
+}
 }
 
 .redundant-ability
