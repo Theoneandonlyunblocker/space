@@ -1,3 +1,5 @@
+/// <reference path="../../../lib/rng.d.ts" />
+
 import FillerPoint from "../../../src/FillerPoint";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
@@ -40,6 +42,11 @@ import generateSpiralPoints from "./generateSpiralPoints";
 const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOptionValues,
   players: Player[]): MapGenResult
 {
+  // seed
+  const seed = "" + Math.random();
+  const oldRandom = Math.random;
+  Math.random = RNG.prototype.uniform.bind(new RNG(seed));
+  
   // generate points
   const points: MapGenPoint[] = generateSpiralPoints(options);
 
@@ -341,13 +348,16 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     star.baseIncome = randInt(4, 6) * 10;
   });
 
+  // restore Math.random
+  Math.random = oldRandom;
+
   return new MapGenResult(
   {
     stars: stars,
     fillerPoints: fillerPoints,
     width: options.defaultOptions.width,
     height: options.defaultOptions.height,
-    seed: "" + Math.random(), // TODO map gen | actually use seed for generating map
+    seed: seed,
     independents: [pirates]
   });
 }
