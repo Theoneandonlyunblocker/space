@@ -34,6 +34,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   };
 
   var maxUnitsPerColumn = props.maxUnitsPerColumn;
+  const maxColumns = 3;
   const isConvex = props.degree >= 0;
   const degree = Math.abs(props.degree);
 
@@ -57,7 +58,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     unitsToDraw = Math.round(unitsToDraw * heightRatio);
     zDistance *= (1 / heightRatio);
 
-    unitsToDraw = clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+    unitsToDraw = clamp(unitsToDraw, 1, maxUnitsPerColumn * maxColumns);
   }
 
   var xMin: number, xMax: number, yMin: number, yMax: number;
@@ -102,6 +103,9 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   const lastColumn = Math.floor(unitsToDraw / maxUnitsPerColumn);
   const maxUnitsInLastColumn = unitsToDraw % maxUnitsPerColumn;
   const firstIndexForLastColumn = maxUnitsPerColumn * lastColumn;
+
+  const unitsInFirstColumn = lastColumn > 0 ? maxUnitsPerColumn : unitsToDraw;
+  const centermostUnitInFirstColumn = Math.ceil(unitsInFirstColumn / 2) - 1;
 
   for (let i = 0; i < unitsToDraw; i++)
   {
@@ -155,11 +159,10 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     
     sequentialAttackOriginPoints.push(attackOriginPoint);
 
-    if (column === 0 && zPos + 1 === Math.ceil(maxUnitsPerColumn / 2))
+    if (column === 0 && i === centermostUnitInFirstColumn)
     {
       primaryAttackOriginPoint = attackOriginPoint;
     }
-    
 
     const sprite = new PIXI.Sprite(texture);
     sprite.scale.x = sprite.scale.y = scale;
@@ -168,7 +171,6 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     sprite.y = y;
 
     container.addChild(sprite);
-    
     
     const unitBounds = new PIXI.Rectangle(
       x,
