@@ -67,20 +67,29 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
       }
 
       var className = "unit-info-ability";
-      var isPassiveSkill = !ability.mainEffect;
-      if (isPassiveSkill)
+      const isLearnable = ability.type === "learnable";
+      if (isLearnable)
       {
-        className += " passive-skill";
+        className += " learnable-ability";
       }
       else
       {
-        className += " active-skill";
+        var isPassiveSkill = !ability.mainEffect;
+        if (isPassiveSkill)
+        {
+          className += " passive-skill";
+        }
+        else
+        {
+          className += " active-skill";
+        }
+        
+        if (addedAbilityTypes[ability.type] >= 1)
+        {
+          className += " redundant-ability";
+        }
       }
 
-      if (addedAbilityTypes[ability.type] >= 1)
-      {
-        className += " redundant-ability";
-      }
 
       abilityElements.push(
         React.DOM.li(
