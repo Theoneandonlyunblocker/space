@@ -144,6 +144,10 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
           }
           
           unitProps = shallowExtend(unitDisplayData, componentProps, displayProps);
+          if (this.props.facesLeft && this.props.isInBattlePrep)
+          {
+            unitProps.facesLeft = true;
+          }
         }
         
         unitElements.push(
