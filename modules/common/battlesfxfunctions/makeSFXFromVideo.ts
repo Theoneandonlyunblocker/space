@@ -15,6 +15,7 @@ export default function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: P
     clearBaseTextureListeners();
 
     baseTexture.autoUpdate = false;
+    sprite.y = props.height - baseTexture.source.videoHeight;
 
     if (onStartFN)
     {
