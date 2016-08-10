@@ -41,7 +41,7 @@ export class UnitAttributeChangesComponent extends React.Component<PropTypes, St
 
         if (!amountChanged)
         {
-          throw new Error(); // TODO remove this check
+          continue;
         }
 
         const changeIsPositive = amountChanged > 0;

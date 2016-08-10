@@ -1151,7 +1151,7 @@ export default class Unit
       portraitSrc: this.portrait.imageSrc,
       iconSrc: this.template.icon,
       
-      attributeChanges: this.getAttributesWithEffectsDifference(),
+      attributeChanges: this.getAttributesWithEffectsDifference().serialize(),
       passiveEffects: this.getPassiveEffectsForScene(scene),
     });
   }
