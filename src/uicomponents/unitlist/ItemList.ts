@@ -82,12 +82,6 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
         typeName: item.template.displayName,
         slot: item.template.slot,
         unitName: item.unit ? item.unit.name : "",
-        // TODO
-        maxActionPoints: 0,
-        attack: 0,
-        defence: 0,
-        intelligence: 0,
-        speed: 0,
         abilityName: ability ? ability.displayName : "",
         
         item: item,
@@ -137,31 +131,6 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
       {
         label: "Unit",
         key: "unitName",
-        defaultOrder: "desc"
-      },
-      {
-        label: "Act",
-        key: "maxActionPoints",
-        defaultOrder: "desc"
-      },
-      {
-        label: "Atk",
-        key: "attack",
-        defaultOrder: "desc"
-      },
-      {
-        label: "Def",
-        key: "defence",
-        defaultOrder: "desc"
-      },
-      {
-        label: "Int",
-        key: "intelligence",
-        defaultOrder: "desc"
-      },
-      {
-        label: "Spd",
-        key: "speed",
         defaultOrder: "desc"
       },
       {

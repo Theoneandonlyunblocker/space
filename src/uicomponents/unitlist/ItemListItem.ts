@@ -13,11 +13,6 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   typeName: string;
   slot: string;
   unitName: string;
-  maxActionPoints: number;
-  attack: number;
-  defence: number;
-  intelligence: number;
-  speed: number;
   abilityName: string;
   
   item: Item;
