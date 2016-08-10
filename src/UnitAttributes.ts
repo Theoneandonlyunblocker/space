@@ -149,6 +149,32 @@ export default class UnitAttributes implements UnitAttributesObject
       speed: this.speed - toCompare.speed
     });
   }
+  public getAttributesTypesSortedForDisplay(): string[]
+  {
+    const attributeTypes: string[] = [];
+
+    const attributes = this.serialize();
+    for (let attribute in attributes)
+    {
+      attributeTypes.push(attribute);
+    }
+
+    const sortOrder =
+    {
+      maxActionPoints: 0,
+      attack: 1,
+      defence: 2,
+      intelligence: 3,
+      speed: 4
+    }
+
+    const sorted = attributeTypes.sort((a, b) =>
+    {
+      return sortOrder[a] - sortOrder[b];
+    });
+
+    return sorted;
+  }
   public serialize(): UnitAttributesObject
   {
     return JSON.parse(JSON.stringify(this));
