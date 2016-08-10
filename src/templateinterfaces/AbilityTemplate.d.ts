@@ -15,7 +15,7 @@ declare interface AbilityTemplate extends AbilityBase
     prepDelay: number;
   };
   actionsUse: number;
-  // TODO refactor | rename addsGuard
+  // TODO refactor | change from addsGuard => removesUserGuard
   // if not true, user will lose all guard before using ability
   addsGuard?: boolean;
   // if true, ability will always hit intended target. guard can still provide defensive benefits

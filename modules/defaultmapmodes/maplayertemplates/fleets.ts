@@ -71,7 +71,7 @@ const fleets: MapRendererLayerTemplate =
       var color = fleet.player.color.getHex();
       var fillAlpha = fleet.isStealthy ? 0.3 : 0.7;
 
-      var textTexture = getFleetTextTexture(fleet); // TODO layers
+      var textTexture = getFleetTextTexture(fleet);
       var text = new PIXI.Sprite(textTexture);
 
       var containerGfx = new PIXI.Graphics();

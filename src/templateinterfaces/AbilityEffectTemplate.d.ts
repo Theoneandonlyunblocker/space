@@ -5,7 +5,7 @@ import Unit from "../Unit";
 declare interface AbilityEffectTemplate
 {
   action: EffectActionTemplate;
-  // TODO | pass battle parameter?
+  // should we pass the active battle as a parameter?
   trigger?: (user: Unit, target: Unit) => boolean;
   data?: any;
   // called after parent effect with same user and effect target

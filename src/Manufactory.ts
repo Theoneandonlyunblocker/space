@@ -162,7 +162,7 @@ export default class Manufactory
     var manufacturable: ItemTemplate[] = [];
     var potential: ItemTemplate[] = [];
 
-    // TODO manufactory
+    // TODO manufactory | currently no local item types exist
 
     return(
     {

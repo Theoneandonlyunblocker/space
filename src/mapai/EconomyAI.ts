@@ -138,7 +138,10 @@ export default class EconomyAI
         }
       }
     }
-    if (!unitType) debugger;
+    if (!unitType)
+    {
+      throw new Error();
+    }
 
     manufactory.addThingToQueue(unitType, "unit");
   }

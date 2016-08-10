@@ -51,7 +51,7 @@ export function getFormationsToTarget(battle: Battle, user: Unit, effect: Effect
 }
 export function getTargetsForAllAbilities(battle: Battle, user: Unit)
 {
-  // TODO | does this ever happen?
+  // does this ever happen?
   if (!user || !battle.activeUnit)
   {
     throw new Error();
