@@ -8,14 +8,16 @@ import
 
 export default function guard(props: SFXParams)
 {
-  var userCanvasWidth = props.width * 0.4; // TODO BattleSFX | get user scene bbox
-  var maxFrontier = userCanvasWidth;
-  var baseTrailDistance = 80;
-  var maxTrailDistance = maxFrontier;
-  var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
-  var maxBlockWidth = maxFrontier * 2;
+  const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(
+    props.userOffset, props.user);
+  const userX2 = offsetUserData.boundingBox.x + offsetUserData.boundingBox.width;
+  const maxFrontier = Math.min(userX2 + 20, props.width / 2);
+  const baseTrailDistance = 80;
+  const maxTrailDistance = maxFrontier;
+  const trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
+  const maxBlockWidth = maxFrontier * 2;
 
-  var guardFilter = new GuardFilter(
+  const guardFilter = new GuardFilter(
   {
     frontier: 0,
     trailDistance: baseTrailDistance,
@@ -26,14 +28,15 @@ export default function guard(props: SFXParams)
     blockAlpha: 0
   });
 
-  var travelTime = 0.2;
-  var hasTriggeredEffect = false;
+  const maxFrontierRatioOfScreen = props.width / maxFrontier;
+  const travelTime = 0.3;
+  let hasTriggeredEffect = false;
 
-  var syncUniformsFN = function(time: number)
+  const syncUniformsFN = function(time: number)
   {
     if (time < travelTime)
     {
-      var adjustedtime = time / travelTime;
+      const adjustedtime = time / travelTime;
       guardFilter.setUniformValues(
       {
         frontier: maxFrontier * adjustedtime
@@ -46,9 +49,9 @@ export default function guard(props: SFXParams)
         hasTriggeredEffect = true;
         props.triggerEffect();
       }
-      var adjustedtime = getRelativeValue(time, travelTime - 0.02, 1);
-      adjustedtime = Math.pow(adjustedtime, 4);
-      var relativeDistance = getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
+      const relativeTime = getRelativeValue(time, travelTime - 0.02, 1);
+      const adjustedtime = Math.pow(relativeTime, 4);
+      const relativeDistance = getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
 
       guardFilter.setUniformValues(
       {
@@ -60,13 +63,13 @@ export default function guard(props: SFXParams)
     }
   }
 
-  var container = new PIXI.Container();
+  const container = new PIXI.Container();
 
   container.filters = [guardFilter];
   container.filterArea = new PIXI.Rectangle(0, 0, maxFrontier + 20, props.height);
 
-  var renderTexture = new PIXI.RenderTexture(props.renderer, props.width, props.height);
-  var sprite = new PIXI.Sprite(renderTexture);
+  const renderTexture = new PIXI.RenderTexture(props.renderer, props.width, props.height);
+  const sprite = new PIXI.Sprite(renderTexture);
   if (!props.facingRight)
   {
     sprite.x = props.width;
@@ -75,8 +78,8 @@ export default function guard(props: SFXParams)
 
   function animate()
   {
-    var elapsedTime = Date.now() - startTime;
-    var relativeTime = elapsedTime / props.duration;
+    const elapsedTime = Date.now() - startTime;
+    const relativeTime = elapsedTime / props.duration;
     syncUniformsFN(relativeTime);
 
     renderTexture.clear();
@@ -94,6 +97,6 @@ export default function guard(props: SFXParams)
 
   props.triggerStart(sprite);
 
-  var startTime = Date.now();
+  const startTime = Date.now();
   animate();
 }
