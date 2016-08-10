@@ -82,7 +82,6 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
         typeName: item.template.displayName,
         slot: item.template.slot,
         unitName: item.unit ? item.unit.name : "",
-        abilityName: ability ? ability.displayName : "",
         
         item: item,
         key: item.id,
@@ -135,7 +134,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
       },
       {
         label: "Ability",
-        key: "abilityName",
+        key: "ability",
         defaultOrder: "desc"
       }
     ];

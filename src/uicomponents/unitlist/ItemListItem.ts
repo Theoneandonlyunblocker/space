@@ -13,7 +13,6 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   typeName: string;
   slot: string;
   unitName: string;
-  abilityName: string;
   
   item: Item;
   ability: AbilityBase;
@@ -89,7 +88,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
     switch (type)
     {
-      case "abilityName":
+      case "ability":
       {
         if (this.props.ability)
         {
@@ -98,7 +97,10 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
           {
             cellProps.className += " passive-skill";
           }
+          cellContent = this.props.ability.displayName;
         }
+
+        break;
       }
       default:
       {
