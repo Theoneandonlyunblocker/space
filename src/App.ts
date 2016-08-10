@@ -1,3 +1,5 @@
+/// <reference path="../lib/rng.d.ts" />
+
 import GalaxyMap from "./GalaxyMap";
 import Game from "./Game";
 import GameLoader from "./GameLoader";
