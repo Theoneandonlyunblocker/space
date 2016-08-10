@@ -64,14 +64,14 @@ export default function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: P
     var elapsedTime = Date.now() - startTime;
 
     baseTexture.update();
-
-    if (elapsedTime < props.duration && !baseTexture.source.paused)
+    if (!baseTexture.source.paused && !baseTexture.source.ended)
     {
       requestAnimationFrame(animate);
     }
     else
     {
       props.triggerEnd();
+      sprite.parent.removeChild(sprite);
       sprite.destroy(true, true);
     }
     
