@@ -154,7 +154,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     if (isReadyToLevelUp)
     {
       containerProps.onClick = this.makePopup;
-      barProps.className += " ready-to-level-up"
+      containerProps.className += " ready-to-level-up"
     }
 
     return(
