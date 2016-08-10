@@ -172,7 +172,7 @@ ol {
   display: flex;
   border-style: solid;
   border-width: 0;
-  transition: all 1s;
+  transition-property: width;
 }
 .battle-score-bar-side1 {
   border-right-width: 1px;
@@ -237,6 +237,14 @@ ol {
     margin-right: -162px;
   }
 }
+@keyframes fill-space-left-by-dead-unit {
+  from {
+    margin-right: 2px;
+  }
+  to {
+    margin-right: -162px;
+  }
+}
 @keyframes push-unit {
   from {
     left: 100%;
@@ -269,6 +277,20 @@ ol {
   max-width: 160px;
   overflow: hidden;
   margin: 0 2px;
+}
+.turn-order-unit-container.remove-dead-unit .turn-order-unit {
+  animation-name: insert-unit;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-direction: reverse;
+}
+.turn-order-unit-container.fill-space-left-by-dead-unit {
+  animation-name: fill-space-left-by-dead-unit;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+.turn-order-unit-container.fill-space-left-by-dead-unit .turn-order-unit {
+  bottom: -20px;
 }
 .turn-order-unit-container.remove-unit {
   animation-name: remove-unit;
@@ -352,6 +374,10 @@ ol {
   bottom: 0;
 }
 .battle-scene-finish-container {
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   color: #eeeeec;
@@ -359,10 +385,18 @@ ol {
   flex-flow: column;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+@media (max-height: 450px) {
+  .battle-scene-finish-container {
+    position: fixed;
+  }
 }
 .battle-scene-finish-header {
   font-size: 6em;
   margin: 0;
+  margin-top: -0.33em;
 }
 .battle-scene-finish-subheader {
   font-size: 1.5em;
@@ -2482,15 +2516,26 @@ ol {
 .menu-unit-info {
   display: flex;
   flex: 1 0 auto;
-  flex-flow: column;
+  flex-flow: row;
   margin-bottom: 5px;
+  justify-content: space-between;
+  min-width: 150px;
+  min-height: 50px;
+}
+.menu-unit-info > * {
+  margin: 2px;
+}
+.menu-unit-info-left {
+  display: flex;
+  flex-flow: column;
+  flex: 1 0 auto;
 }
 .menu-unit-info-image {
   margin: 5px;
 }
 .menu-unit-info-items-wrapper {
   display: flex;
-  flex-flow: row;
+  flex-flow: column;
 }
 .menu-unit-info-abilities {
   flex: 1;
@@ -2499,18 +2544,20 @@ ol {
 .ability-list {
   display: inline-block;
 }
+.unit-experience-bar-container.ready-to-level-up {
+  cursor: pointer;
+}
+.unit-experience-bar-container.ready-to-level-up .unit-experience-bar {
+  box-shadow: 0px 0px 12px #fff inset, 0px 0px 10px #ff0;
+}
 .unit-experience-bar {
   height: 1em;
   display: flex;
   border: 1px solid #c4e5fb;
-  max-width: 300px;
+  max-width: 200px;
 }
 .unit-experience-bar :last-child {
   border-right: none;
-}
-.unit-experience-bar.ready-to-level-up {
-  cursor: pointer;
-  box-shadow: 0px 0px 12px #fff inset, 0px 0px 10px #ff0;
 }
 .unit-experience-bar-point {
   position: relative;
@@ -2534,40 +2581,68 @@ ol {
 .upgrade-unit .upgrade-attributes-attribute {
   cursor: pointer;
 }
-.upgrade-unit .unit-info-ability:hover,
-.upgrade-unit .upgrade-attributes-attribute:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+.upgrade-attributes-list {
+  display: inline-block;
 }
-.upgrade-unit .unit-info-ability:active,
-.upgrade-unit .upgrade-attributes-attribute:active {
-  background-color: rgba(255, 255, 255, 0.3);
+.upgrade-attributes-attribute {
+  display: block;
+  float: left;
+  clear: both;
+}
+.upgrade-attributes-attribute:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+.upgrade-attributes-attribute:active {
+  background-color: rgba(255, 255, 255, 0.55);
 }
 .unit-info-ability {
   display: block;
   float: left;
   clear: both;
 }
-.active-skill:hover {
+.active-skill {
+  color: #ffffff;
+}
+.ability-list .active-skill:hover {
   background-color: rgba(255, 255, 255, 0.4);
 }
-.passive-skill:hover {
-  background-color: rgba(255, 255, 0, 0.4);
-}
-.active-skill {
-  color: white;
+.upgrade-unit .active-skill:active {
+  background-color: rgba(255, 255, 255, 0.55);
 }
 .passive-skill {
-  color: yellow;
+  color: #ffff00;
+}
+.ability-list .passive-skill:hover {
+  background-color: rgba(255, 255, 0, 0.4);
+}
+.upgrade-unit .passive-skill:active {
+  background-color: rgba(255, 255, 0, 0.55);
+}
+.learnable-ability {
+  color: #00ffff;
+}
+.ability-list .learnable-ability:hover {
+  background-color: rgba(0, 255, 255, 0.4);
+}
+.upgrade-unit .learnable-ability:active {
+  background-color: rgba(0, 255, 255, 0.55);
 }
 .redundant-ability {
   color: grey;
 }
+.unit-item-group {
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-end;
+}
+.unit-item-group + .unit-item-group {
+  margin-top: 4px;
+}
 .unit-item-wrapper {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 32px;
+  height: 32px;
   border: 1px solid #77abce;
-  margin: 5px;
 }
 .unit-item-wrapper > * {
   position: absolute;
@@ -2576,10 +2651,17 @@ ol {
   width: 100%;
   height: 100%;
 }
+.unit-item-wrapper + .unit-item-wrapper {
+  margin-left: 4px;
+}
 .item-icon-container > * {
   position: absolute;
   top: 0;
   left: 0;
+}
+.item-icon-container .item-icon-base {
+  width: 100%;
+  height: 100%;
 }
 .invalid-drop-target::before {
   content: " ";

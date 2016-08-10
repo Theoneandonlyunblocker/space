@@ -166,6 +166,7 @@ define("src/Item", ["require", "exports", "src/idGenerators"], function (require
             };
             if (this.unit) {
                 data.unitId = this.unit.id;
+                data.positionInUnit = this.positionInUnit;
             }
             return data;
         };
@@ -841,7 +842,10 @@ define("src/UnitAttributes", ["require", "exports", "src/utility"], function (re
                         squashed[attribute] = {};
                     }
                     if (adjustment[attribute].flat) {
-                        squashed[attribute].flat = 0 + adjustment[attribute].flat;
+                        if (!isFinite(squashed[attribute].flat)) {
+                            squashed[attribute].flat = 0;
+                        }
+                        squashed[attribute].flat += adjustment[attribute].flat;
                     }
                     if (isFinite(adjustment[attribute].multiplier)) {
                         if (!isFinite(squashed[attribute].multiplier)) {
@@ -887,6 +891,24 @@ define("src/UnitAttributes", ["require", "exports", "src/utility"], function (re
                 intelligence: this.intelligence - toCompare.intelligence,
                 speed: this.speed - toCompare.speed
             });
+        };
+        UnitAttributes.prototype.getAttributesTypesSortedForDisplay = function () {
+            var attributeTypes = [];
+            var attributes = this.serialize();
+            for (var attribute in attributes) {
+                attributeTypes.push(attribute);
+            }
+            var sortOrder = {
+                maxActionPoints: 0,
+                attack: 1,
+                defence: 2,
+                intelligence: 3,
+                speed: 4
+            };
+            var sorted = attributeTypes.sort(function (a, b) {
+                return sortOrder[a] - sortOrder[b];
+            });
+            return sorted;
         };
         UnitAttributes.prototype.serialize = function () {
             return JSON.parse(JSON.stringify(this));
@@ -4060,7 +4082,7 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
             var item = new Item_2.default(template, data.id);
             player.addItem(item);
             if (isFinite(data.unitId)) {
-                this.unitsById[data.unitId].addItem(item);
+                this.unitsById[data.unitId].items.addItem(item, data.positionInUnit);
             }
         };
         return GameLoader;
@@ -6822,64 +6844,135 @@ define("src/AbilityUpgradeData", ["require", "exports"], function (require, expo
 define("src/UnitItems", ["require", "exports"], function (require, exports) {
     "use strict";
     var UnitItems = (function () {
-        function UnitItems() {
+        function UnitItems(itemSlots, addItemToUnit, updateUnit) {
+            this.items = [];
+            this.itemSlots = itemSlots;
+            this.addItemToUnit = addItemToUnit;
+            this.updateUnit = updateUnit;
         }
+        UnitItems.prototype.getAllItems = function () {
+            return this.items;
+        };
         UnitItems.prototype.getItemsBySlot = function () {
             var itemsBySlot = {};
-            this.items.forEach(function (item) {
-                var slot = item.template.slot;
-                if (!itemsBySlot[slot]) {
-                    itemsBySlot[slot] = [];
+            var allItems = this.getAllItems();
+            allItems.forEach(function (item) {
+                if (!itemsBySlot[item.template.slot]) {
+                    itemsBySlot[item.template.slot] = [];
                 }
-                itemsBySlot[slot].push(item);
+                itemsBySlot[item.template.slot].push(item);
             });
-            return itemsBySlot;
+            var itemsBySlotWithEmptySlots = {};
+            for (var slot in this.itemSlots) {
+                itemsBySlotWithEmptySlots[slot] = itemsBySlot[slot] || [];
+            }
+            return itemsBySlotWithEmptySlots;
+        };
+        UnitItems.prototype.getAvailableItemSlots = function () {
+            var availableSlots = {};
+            var itemsBySlot = this.getItemsBySlot();
+            for (var slot in this.itemSlots) {
+                availableSlots[slot] = this.itemSlots[slot] - itemsBySlot[slot].length;
+            }
+            return availableSlots;
         };
         UnitItems.prototype.getAttributeAdjustments = function () {
-            return this.items.filter(function (item) {
+            return this.getAllItems().filter(function (item) {
                 return Boolean(item.template.attributeAdjustments);
             }).map(function (item) {
                 return item.template.attributeAdjustments;
             });
         };
         UnitItems.prototype.getAbilities = function () {
-            return this.items.filter(function (item) {
+            return this.getAllItems().filter(function (item) {
                 return Boolean(item.template.ability);
             }).map(function (item) {
                 return item.template.ability;
             });
         };
         UnitItems.prototype.getPassiveSkills = function () {
-            return this.items.filter(function (item) {
+            return this.getAllItems().filter(function (item) {
                 return Boolean(item.template.passiveSkill);
             }).map(function (item) {
                 return item.template.passiveSkill;
             });
         };
-        UnitItems.prototype.addItem = function (toAdd) {
-            this.items.push(toAdd);
+        UnitItems.prototype.hasSlotForItem = function (item) {
+            return this.getAvailableItemSlots()[item.template.slot] > 0;
+        };
+        UnitItems.prototype.getItemAtPosition = function (slot, position) {
+            var itemsForSlot = this.getItemsBySlot()[slot];
+            for (var i = 0; i < itemsForSlot.length; i++) {
+                if (itemsForSlot[i].positionInUnit === position) {
+                    return itemsForSlot[i];
+                }
+            }
+            return null;
+        };
+        UnitItems.prototype.hasItem = function (item) {
+            return this.indexOf(item) !== -1;
+        };
+        UnitItems.prototype.addItem = function (toAdd, position) {
+            var oldItemAtTargetPosition = this.getItemAtPosition(toAdd.template.slot, position);
+            if (this.hasItem(toAdd)) {
+                var oldPositionForItem = toAdd.positionInUnit;
+                if (oldItemAtTargetPosition) {
+                    this.moveItem(oldItemAtTargetPosition, oldPositionForItem);
+                }
+                this.moveItem(toAdd, position);
+            }
+            else {
+                if (toAdd.unit) {
+                    toAdd.unit.items.removeItem(toAdd);
+                }
+                if (oldItemAtTargetPosition) {
+                    this.removeItem(oldItemAtTargetPosition);
+                }
+                if (!this.hasSlotForItem(toAdd)) {
+                    throw new Error("");
+                }
+                this.items.push(toAdd);
+                toAdd.positionInUnit = position;
+                this.addItemToUnit(toAdd);
+                this.updateUnit(toAdd);
+            }
+        };
+        UnitItems.prototype.moveItem = function (toMove, newPosition) {
+            toMove.positionInUnit = newPosition;
         };
         UnitItems.prototype.removeItem = function (toRemove) {
-            this.items = this.items.filter(function (item) {
-                return item !== toRemove;
-            });
+            if (!this.hasItem(toRemove)) {
+                throw new Error("");
+            }
+            this.items.splice(this.indexOf(toRemove), 1);
+            toRemove.unit = null;
+            toRemove.positionInUnit = null;
+            this.updateUnit(toRemove);
         };
         UnitItems.prototype.destroyAllItems = function () {
-            this.items.forEach(function (item) {
+            this.getAllItems().forEach(function (item) {
                 item.unit.fleet.player.removeItem(item);
             });
         };
         UnitItems.prototype.serialize = function () {
+            return ({
+                maxItemSlots: this.itemSlots
+            });
+        };
+        UnitItems.prototype.serializeItems = function () {
             return this.items.map(function (item) {
                 return item.serialize();
             });
+        };
+        UnitItems.prototype.indexOf = function (item) {
+            return this.items.indexOf(item);
         };
         return UnitItems;
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = UnitItems;
 });
-define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/UnitAttributes", "src/utility", "src/Item", "src/Fleet"], function (require, exports, idGenerators_7, App_18, UnitAttributes_1, utility_19, Item_3, Fleet_4) {
+define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/UnitAttributes", "src/utility", "src/Item", "src/Fleet", "src/UnitItems"], function (require, exports, idGenerators_7, App_18, UnitAttributes_1, utility_19, Item_3, Fleet_4, UnitItems_1) {
     "use strict";
     var Unit = (function () {
         function Unit(template, id, data) {
@@ -6895,6 +6988,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
                 this.makeFromData(data);
             }
             else {
+                this.items = this.makeUnitItems(template.itemSlots);
                 this.setCulture();
                 this.setInitialValues();
             }
@@ -6917,8 +7011,8 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
             this.currentMovePoints = data.currentMovePoints;
             this.maxMovePoints = data.maxMovePoints;
             this.timesActedThisTurn = data.timesActedThisTurn;
-            this.baseAttributes = utility_19.extendObject(data.baseAttributes);
-            this.cachedAttributes = utility_19.extendObject(this.baseAttributes);
+            this.baseAttributes = new UnitAttributes_1.default(data.baseAttributes);
+            this.cachedAttributes = this.baseAttributes.clone();
             this.abilities = data.abilityTemplateTypes.map(function (key) {
                 var template = App_18.default.moduleData.Templates.Abilities[key];
                 if (!template) {
@@ -6955,10 +7049,13 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
                         },
                     isAnnihilated: data.battleStats.isAnnihilated
                 };
-            data.items.forEach(function (itemData) {
-                var item = new Item_3.default(App_18.default.moduleData.Templates.Items[itemData.templateType], itemData.id);
-                _this.addItem(item);
-            });
+            this.items = this.makeUnitItems(data.items.maxItemSlots);
+            if (data.serializedItems) {
+                data.serializedItems.forEach(function (itemSaveData) {
+                    var item = new Item_3.default(App_18.default.moduleData.Templates.Items[itemSaveData.templateType], itemSaveData.id);
+                    _this.items.addItem(item, -999);
+                });
+            }
             if (data.portraitKey) {
                 this.portrait = utility_19.findItemWithKey(App_18.default.moduleData.Templates.Cultures, data.portraitKey, "portraits");
             }
@@ -7112,8 +7209,9 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
         };
         Unit.prototype.interruptQueuedAction = function (interruptStrength) {
             var action = this.battleStats.queuedAction;
-            if (!action)
+            if (!action) {
                 return;
+            }
             action.timesInterrupted += interruptStrength;
             if (action.timesInterrupted >= action.ability.preparation.interruptsNeeded) {
                 this.clearQueuedAction();
@@ -7122,8 +7220,9 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
         };
         Unit.prototype.updateQueuedAction = function () {
             var action = this.battleStats.queuedAction;
-            if (!action)
+            if (!action) {
                 return;
+            }
             action.turnsPrepared++;
             this.uiDisplayIsDirty = true;
         };
@@ -7141,36 +7240,18 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
         Unit.prototype.isActiveInBattle = function () {
             return this.currentHealth > 0 && !this.battleStats.isAnnihilated;
         };
-        Unit.prototype.addItem = function (item) {
-            var itemSlot = item.template.slot;
-            if (this.items[itemSlot])
-                return false;
-            if (item.unit) {
-                item.unit.removeItem(item);
-            }
-            this.items[itemSlot] = item;
-            item.unit = this;
-            if (item.template.attributeAdjustments) {
-                this.attributesAreDirty = true;
-            }
-            if (item.template.passiveSkill) {
-                this.passiveSkillsByPhaseAreDirty = true;
-            }
-        };
-        Unit.prototype.removeItem = function (item) {
-            var itemSlot = item.template.slot;
-            if (this.items[itemSlot] === item) {
-                this.items[itemSlot] = null;
-                item.unit = null;
-                if (item.template.attributeAdjustments) {
-                    this.attributesAreDirty = true;
+        Unit.prototype.makeUnitItems = function (itemSlots) {
+            var _this = this;
+            return new UnitItems_1.default(itemSlots, function (item) {
+                item.unit = _this;
+            }, function (changedItem) {
+                if (changedItem.template.attributeAdjustments) {
+                    _this.attributesAreDirty = true;
                 }
-                if (item.template.passiveSkill) {
-                    this.passiveSkillsByPhaseAreDirty = true;
+                if (changedItem.template.passiveSkill) {
+                    _this.passiveSkillsByPhaseAreDirty = true;
                 }
-                return true;
-            }
-            return false;
+            });
         };
         Unit.prototype.getAttributesWithItems = function () {
             return this.baseAttributes.getAdjustedAttributes(this.items.getAttributeAdjustments()).clamp(1, 9);
@@ -7214,8 +7295,9 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
             var adjustments = {};
             for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
                 var statusEffect = this.battleStats.statusEffects[i];
-                if (!statusEffect.template.attributes)
+                if (!statusEffect.template.attributes) {
                     continue;
+                }
                 for (var attribute in statusEffect.template.attributes) {
                     adjustments[attribute] = {};
                     for (var type in statusEffect.template.attributes[attribute]) {
@@ -7249,13 +7331,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
         };
         Unit.prototype.updateCachedAttributes = function () {
             this.cachedAttributes = this.getAttributesWithEffects();
-        };
-        Unit.prototype.removeItemAtSlot = function (slot) {
-            if (this.items[slot]) {
-                this.removeItem(this.items[slot]);
-                return true;
-            }
-            return false;
+            this.attributesAreDirty = false;
         };
         Unit.prototype.setInitialAbilities = function () {
             this.abilities = utility_19.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
@@ -7265,31 +7341,13 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
                 this.passiveSkills = utility_19.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
             }
         };
-        Unit.prototype.getItemAbilities = function () {
-            var itemAbilities = [];
-            for (var slot in this.items) {
-                if (!this.items[slot] || !this.items[slot].template.ability)
-                    continue;
-                itemAbilities.push(this.items[slot].template.ability);
-            }
-            return itemAbilities;
-        };
         Unit.prototype.getAllAbilities = function () {
-            return this.abilities.concat(this.getItemAbilities());
-        };
-        Unit.prototype.getItemPassiveSkills = function () {
-            var itemPassiveSkills = [];
-            for (var slot in this.items) {
-                if (!this.items[slot] || !this.items[slot].template.passiveSkill)
-                    continue;
-                itemPassiveSkills.push(this.items[slot].template.passiveSkill);
-            }
-            return itemPassiveSkills;
+            return this.abilities.concat(this.items.getAbilities());
         };
         Unit.prototype.getAllPassiveSkills = function () {
             var allSkills = [];
             allSkills = allSkills.concat(this.passiveSkills);
-            allSkills = allSkills.concat(this.getItemPassiveSkills());
+            allSkills = allSkills.concat(this.items.getPassiveSkills());
             return allSkills;
         };
         Unit.prototype.updatePassiveSkillsByPhase = function () {
@@ -7478,11 +7536,11 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
         Unit.prototype.getTotalCost = function () {
             var totalCost = 0;
             totalCost += this.template.buildCost;
-            for (var slot in this.items) {
-                if (this.items[slot]) {
-                    totalCost += this.items[slot].template.buildCost;
-                }
-            }
+            totalCost += this.items.getAllItems().map(function (item) {
+                return item.template.buildCost;
+            }).reduce(function (a, b) {
+                return a + b;
+            }, 0);
             return totalCost;
         };
         Unit.prototype.getTurnsToReachStar = function (star) {
@@ -7522,8 +7580,9 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
         };
         Unit.prototype.getLearnableAbilities = function (allAbilities) {
             var abilities = [];
-            if (!this.template.learnableAbilities)
+            if (!this.template.learnableAbilities) {
                 return abilities;
+            }
             for (var i = 0; i < this.template.learnableAbilities.length; i++) {
                 if (Array.isArray(this.template.learnableAbilities[i])) {
                     var learnableAbilityGroup = this.template.learnableAbilities[i];
@@ -7664,7 +7723,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
                 currentMovePoints: this.currentMovePoints,
                 maxMovePoints: this.maxMovePoints,
                 timesActedThisTurn: this.timesActedThisTurn,
-                baseAttributes: utility_19.extendObject(this.baseAttributes),
+                baseAttributes: this.baseAttributes.serialize(),
                 abilityTemplateTypes: this.abilities.map(function (ability) {
                     return ability.type;
                 }),
@@ -7673,11 +7732,14 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
                 }),
                 experienceForCurrentLevel: this.experienceForCurrentLevel,
                 level: this.level,
-                items: includeItems ? this.items.serialize() : null,
+                items: this.items.serialize(),
                 battleStats: battleStatsSavedData
             };
             if (this.fleet) {
                 data.fleetId = this.fleet.id;
+            }
+            if (includeItems) {
+                data.serializedItems = this.items.serializeItems();
             }
             if (includeFluff) {
                 data.portraitKey = this.portrait.key;
@@ -10492,77 +10554,6 @@ define("src/Renderer", ["require", "exports", "src/Camera", "src/MouseEventHandl
 define("src/ReactUIScene", ["require", "exports"], function (require, exports) {
     "use strict";
 });
-define("src/uicomponents/unitlist/abilitylist", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var AbilityListComponent = (function (_super) {
-        __extends(AbilityListComponent, _super);
-        function AbilityListComponent(props) {
-            _super.call(this, props);
-            this.displayName = "AbilityList";
-        }
-        AbilityListComponent.prototype.render = function () {
-            var abilities = this.props.abilities;
-            var baseClassName = "unit-info-ability";
-            if (abilities.length < 1)
-                return null;
-            var abilityElements = [];
-            var addedAbilityTypes = {};
-            abilities.sort(function (_a, _b) {
-                if (_a.mainEffect && !_b.mainEffect)
-                    return -1;
-                else if (_b.mainEffect && !_a.mainEffect)
-                    return 1;
-                if (_a.type === "learnable")
-                    return 1;
-                else if (_b.type === "learnable")
-                    return -1;
-                var a = _a.displayName.toLowerCase();
-                var b = _b.displayName.toLowerCase();
-                if (a > b)
-                    return 1;
-                else if (a < b)
-                    return -1;
-                else
-                    return 0;
-            });
-            for (var i = 0; i < abilities.length; i++) {
-                var ability = abilities[i];
-                if (ability.isHidden) {
-                    continue;
-                }
-                if (!addedAbilityTypes[ability.type]) {
-                    addedAbilityTypes[ability.type] = 0;
-                }
-                var className = "unit-info-ability";
-                var isPassiveSkill = !ability.mainEffect;
-                if (isPassiveSkill) {
-                    className += " passive-skill";
-                }
-                else {
-                    className += " active-skill";
-                }
-                if (addedAbilityTypes[ability.type] >= 1) {
-                    className += " redundant-ability";
-                }
-                abilityElements.push(React.DOM.li({
-                    className: className,
-                    title: ability.description,
-                    key: ability.type + addedAbilityTypes[ability.type],
-                    onClick: (this.props.handleClick ? this.props.handleClick.bind(null, ability) : undefined)
-                }, "[" + ability.displayName + "]"));
-                addedAbilityTypes[ability.type]++;
-            }
-            return (React.DOM.ul({
-                className: "ability-list"
-            }, abilityElements));
-        };
-        return AbilityListComponent;
-    }(React.Component));
-    exports.AbilityListComponent = AbilityListComponent;
-    var Factory = React.createFactory(AbilityListComponent);
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Factory;
-});
 define("src/uicomponents/mixins/normalizeEvent", ["require", "exports"], function (require, exports) {
     "use strict";
     function normalizeMouseEvent(nativeEvent, reactEvent) {
@@ -11011,7 +11002,7 @@ define("src/uicomponents/unitlist/UnitItem", ["require", "exports", "src/uicompo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/unititemwrapper", ["require", "exports", "src/uicomponents/unitlist/UnitItem"], function (require, exports, UnitItem_1) {
+define("src/uicomponents/unitlist/UnitItemWrapper", ["require", "exports", "src/uicomponents/unitlist/UnitItem"], function (require, exports, UnitItem_1) {
     "use strict";
     var UnitItemWrapperComponent = (function (_super) {
         __extends(UnitItemWrapperComponent, _super);
@@ -11024,7 +11015,7 @@ define("src/uicomponents/unitlist/unititemwrapper", ["require", "exports", "src/
             this.handleMouseUp = this.handleMouseUp.bind(this);
         };
         UnitItemWrapperComponent.prototype.handleMouseUp = function () {
-            this.props.onMouseUp();
+            this.props.onMouseUp(this.props.index);
         };
         UnitItemWrapperComponent.prototype.render = function () {
             var item = this.props.item;
@@ -11061,7 +11052,122 @@ define("src/uicomponents/unitlist/unititemwrapper", ["require", "exports", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/upgradeabilities", ["require", "exports", "src/uicomponents/unitlist/abilitylist"], function (require, exports, AbilityList_1) {
+define("src/uicomponents/unitlist/UnitItemGroup", ["require", "exports", "src/uicomponents/unitlist/UnitItemWrapper"], function (require, exports, UnitItemWrapper_1) {
+    "use strict";
+    var UnitItemGroupComponent = (function (_super) {
+        __extends(UnitItemGroupComponent, _super);
+        function UnitItemGroupComponent(props) {
+            _super.call(this, props);
+            this.displayName = "UnitItemGroup";
+        }
+        UnitItemGroupComponent.prototype.render = function () {
+            var itemWrappers = [];
+            var itemsByPosition = {};
+            this.props.items.forEach(function (item) {
+                itemsByPosition[item.positionInUnit] = item;
+            });
+            for (var i = 0; i < this.props.maxItems; i++) {
+                itemWrappers.push(UnitItemWrapper_1.default({
+                    key: i,
+                    slot: this.props.slotName,
+                    item: itemsByPosition[i],
+                    index: i,
+                    onMouseUp: this.props.onMouseUp,
+                    isDraggable: this.props.isDraggable,
+                    onDragStart: this.props.onDragStart,
+                    onDragEnd: this.props.onDragEnd,
+                    currentDragItem: this.props.currentDragItem
+                }));
+            }
+            return (React.DOM.div({
+                className: "unit-item-group unit-item-group-" + this.props.slotName
+            }, itemWrappers));
+        };
+        return UnitItemGroupComponent;
+    }(React.Component));
+    exports.UnitItemGroupComponent = UnitItemGroupComponent;
+    var Factory = React.createFactory(UnitItemGroupComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+});
+define("src/uicomponents/unitlist/AbilityList", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var AbilityListComponent = (function (_super) {
+        __extends(AbilityListComponent, _super);
+        function AbilityListComponent(props) {
+            _super.call(this, props);
+            this.displayName = "AbilityList";
+        }
+        AbilityListComponent.prototype.render = function () {
+            var abilities = this.props.abilities;
+            var baseClassName = "unit-info-ability";
+            if (abilities.length < 1)
+                return null;
+            var abilityElements = [];
+            var addedAbilityTypes = {};
+            abilities.sort(function (_a, _b) {
+                if (_a.mainEffect && !_b.mainEffect)
+                    return -1;
+                else if (_b.mainEffect && !_a.mainEffect)
+                    return 1;
+                if (_a.type === "learnable")
+                    return 1;
+                else if (_b.type === "learnable")
+                    return -1;
+                var a = _a.displayName.toLowerCase();
+                var b = _b.displayName.toLowerCase();
+                if (a > b)
+                    return 1;
+                else if (a < b)
+                    return -1;
+                else
+                    return 0;
+            });
+            for (var i = 0; i < abilities.length; i++) {
+                var ability = abilities[i];
+                if (ability.isHidden) {
+                    continue;
+                }
+                if (!addedAbilityTypes[ability.type]) {
+                    addedAbilityTypes[ability.type] = 0;
+                }
+                var className = "unit-info-ability";
+                var isLearnable = ability.type === "learnable";
+                if (isLearnable) {
+                    className += " learnable-ability";
+                }
+                else {
+                    var isPassiveSkill = !ability.mainEffect;
+                    if (isPassiveSkill) {
+                        className += " passive-skill";
+                    }
+                    else {
+                        className += " active-skill";
+                    }
+                    if (addedAbilityTypes[ability.type] >= 1) {
+                        className += " redundant-ability";
+                    }
+                }
+                abilityElements.push(React.DOM.li({
+                    className: className,
+                    title: ability.description,
+                    key: ability.type + addedAbilityTypes[ability.type],
+                    onClick: (this.props.handleClick ? this.props.handleClick.bind(null, ability) : undefined)
+                }, "[" + ability.displayName + "]"));
+                addedAbilityTypes[ability.type]++;
+            }
+            return (React.DOM.ul({
+                className: "ability-list"
+            }, abilityElements));
+        };
+        return AbilityListComponent;
+    }(React.Component));
+    exports.AbilityListComponent = AbilityListComponent;
+    var Factory = React.createFactory(AbilityListComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+});
+define("src/uicomponents/unitlist/upgradeabilities", ["require", "exports", "src/uicomponents/unitlist/AbilityList"], function (require, exports, AbilityList_1) {
     "use strict";
     var UpgradeAbilitiesComponent = (function (_super) {
         __extends(UpgradeAbilitiesComponent, _super);
@@ -11117,18 +11223,20 @@ define("src/uicomponents/unitlist/upgradeattributes", ["require", "exports"], fu
             this.upgradeAttribute = this.upgradeAttribute.bind(this);
         };
         UpgradeAttributesComponent.prototype.render = function () {
+            var _this = this;
             var unit = this.props.unit;
             var rows = [];
-            for (var attribute in unit.baseAttributes) {
+            var attributes = unit.baseAttributes.getAttributesTypesSortedForDisplay();
+            attributes.forEach(function (attribute) {
                 var maxAttribute = attribute === "maxActionPoints" ? 6 : 9;
                 if (unit.baseAttributes[attribute] < maxAttribute) {
-                    rows.push(React.DOM.div({
+                    rows.push(React.DOM.li({
                         className: "upgrade-attributes-attribute",
-                        onClick: this.upgradeAttribute.bind(this, attribute),
+                        onClick: _this.upgradeAttribute.bind(_this, attribute),
                         key: attribute
                     }, attribute + ": " + unit.baseAttributes[attribute] + " -> " + (unit.baseAttributes[attribute] + 1)));
                 }
-            }
+            });
             if (rows.length === 0) {
                 return null;
             }
@@ -11136,7 +11244,9 @@ define("src/uicomponents/unitlist/upgradeattributes", ["require", "exports"], fu
                 className: "upgrade-attributes"
             }, React.DOM.div({
                 className: "upgrade-attributes-header"
-            }, "Upgrade stats"), rows));
+            }, "Upgrade stats"), React.DOM.ol({
+                className: "upgrade-attributes-list"
+            }, rows)));
         };
         return UpgradeAttributesComponent;
     }(React.Component));
@@ -11590,7 +11700,7 @@ define("src/uicomponents/unitlist/upgradeunit", ["require", "exports", "src/uico
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/unitexperience", ["require", "exports", "src/uicomponents/unitlist/upgradeunit", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/popups/PopupManager"], function (require, exports, UpgradeUnit_1, TopMenuPopup_2, PopupManager_2) {
+define("src/uicomponents/unitlist/UnitExperience", ["require", "exports", "src/uicomponents/unitlist/upgradeunit", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/popups/PopupManager"], function (require, exports, UpgradeUnit_1, TopMenuPopup_2, PopupManager_2) {
     "use strict";
     var UnitExperienceComponent = (function (_super) {
         __extends(UnitExperienceComponent, _super);
@@ -11682,7 +11792,7 @@ define("src/uicomponents/unitlist/unitexperience", ["require", "exports", "src/u
             };
             if (isReadyToLevelUp) {
                 containerProps.onClick = this.makePopup;
-                barProps.className += " ready-to-level-up";
+                containerProps.className += " ready-to-level-up";
             }
             return (React.DOM.div({
                 className: "unit-experience-wrapper"
@@ -11702,7 +11812,7 @@ define("src/uicomponents/unitlist/unitexperience", ["require", "exports", "src/u
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/MenuUnitInfo", ["require", "exports", "src/uicomponents/unitlist/unititemwrapper", "src/uicomponents/unitlist/abilitylist", "src/uicomponents/unitlist/unitexperience"], function (require, exports, UnitItemWrapper_1, AbilityList_2, UnitExperience_1) {
+define("src/uicomponents/unitlist/MenuUnitInfo", ["require", "exports", "src/uicomponents/unitlist/UnitItemGroup", "src/uicomponents/unitlist/AbilityList", "src/uicomponents/unitlist/UnitExperience"], function (require, exports, UnitItemGroup_1, AbilityList_2, UnitExperience_1) {
     "use strict";
     var MenuUnitInfoComponent = (function (_super) {
         __extends(MenuUnitInfoComponent, _super);
@@ -11721,12 +11831,14 @@ define("src/uicomponents/unitlist/MenuUnitInfo", ["require", "exports", "src/uic
             var unit = this.props.unit;
             if (!unit)
                 return (React.DOM.div({ className: "menu-unit-info" }));
-            var itemSlots = [];
-            for (var slot in unit.items) {
-                itemSlots.push(UnitItemWrapper_1.default({
+            var itemGroups = [];
+            var itemsBySlot = unit.items.getItemsBySlot();
+            for (var slot in unit.items.itemSlots) {
+                itemGroups.push(UnitItemGroup_1.default({
                     key: slot,
-                    slot: slot,
-                    item: unit.items[slot],
+                    slotName: slot,
+                    maxItems: unit.items.itemSlots[slot],
+                    items: itemsBySlot[slot],
                     onMouseUp: this.props.onMouseUp,
                     isDraggable: this.props.isDraggable,
                     onDragStart: this.props.onDragStart,
@@ -11739,6 +11851,8 @@ define("src/uicomponents/unitlist/MenuUnitInfo", ["require", "exports", "src/uic
             return (React.DOM.div({
                 className: "menu-unit-info"
             }, React.DOM.div({
+                className: "menu-unit-info-left"
+            }, React.DOM.div({
                 className: "menu-unit-info-name"
             }, unit.name), React.DOM.div({
                 className: "menu-unit-info-abilities"
@@ -11749,9 +11863,9 @@ define("src/uicomponents/unitlist/MenuUnitInfo", ["require", "exports", "src/uic
                 experienceToNextLevel: unit.getExperienceToNextLevel(),
                 unit: unit,
                 onUnitUpgrade: this.handleUnitUpgrade
-            }), React.DOM.div({
+            })), React.DOM.div({
                 className: "menu-unit-info-items-wrapper"
-            }, itemSlots)));
+            }, itemGroups)));
         };
         return MenuUnitInfoComponent;
     }(React.Component));
@@ -12148,14 +12262,16 @@ define("src/uicomponents/unitlist/ItemListItem", ["require", "exports", "src/uic
             cellProps.className = "item-list-item-cell" + " item-list-" + type;
             var cellContent;
             switch (type) {
-                case "abilityName":
+                case "ability":
                     {
                         if (this.props.ability) {
                             cellProps.title = this.props.ability.description;
                             if (this.props.abilityIsPassive) {
                                 cellProps.className += " passive-skill";
                             }
+                            cellContent = this.props.ability.displayName;
                         }
+                        break;
                     }
                 default:
                     {
@@ -12244,12 +12360,6 @@ define("src/uicomponents/unitlist/ItemList", ["require", "exports", "src/uicompo
                     typeName: item.template.displayName,
                     slot: item.template.slot,
                     unitName: item.unit ? item.unit.name : "",
-                    maxActionPoints: 0,
-                    attack: 0,
-                    defence: 0,
-                    intelligence: 0,
-                    speed: 0,
-                    abilityName: ability ? ability.displayName : "",
                     item: item,
                     key: item.id,
                     keyTODO: item.id,
@@ -12292,33 +12402,8 @@ define("src/uicomponents/unitlist/ItemList", ["require", "exports", "src/uicompo
                     defaultOrder: "desc"
                 },
                 {
-                    label: "Act",
-                    key: "maxActionPoints",
-                    defaultOrder: "desc"
-                },
-                {
-                    label: "Atk",
-                    key: "attack",
-                    defaultOrder: "desc"
-                },
-                {
-                    label: "Def",
-                    key: "defence",
-                    defaultOrder: "desc"
-                },
-                {
-                    label: "Int",
-                    key: "intelligence",
-                    defaultOrder: "desc"
-                },
-                {
-                    label: "Spd",
-                    key: "speed",
-                    defaultOrder: "desc"
-                },
-                {
                     label: "Ability",
-                    key: "abilityName",
+                    key: "ability",
                     defaultOrder: "desc"
                 }
             ];
@@ -13548,22 +13633,19 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
             if (dropSuccesful === void 0) { dropSuccesful = false; }
             if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit) {
                 var item = this.state.currentDragItem;
-                if (this.state.selectedUnit.items[item.template.slot] === item) {
-                    this.state.selectedUnit.removeItem(item);
+                if (this.state.selectedUnit.items.hasItem(item)) {
+                    this.state.selectedUnit.items.removeItem(item);
                 }
             }
             this.setState({
                 currentDragItem: null
             });
         };
-        BattlePrepComponent.prototype.handleItemDrop = function () {
+        BattlePrepComponent.prototype.handleItemDrop = function (index) {
             var item = this.state.currentDragItem;
             var unit = this.state.selectedUnit;
             if (unit && item) {
-                if (unit.items[item.template.slot]) {
-                    unit.removeItemAtSlot(item.template.slot);
-                }
-                unit.addItem(item);
+                unit.items.addItem(item, index);
             }
             this.handleItemDragEnd(true);
         };
@@ -20674,22 +20756,19 @@ define("src/uicomponents/unitlist/ItemEquip", ["require", "exports", "src/uicomp
             if (dropSuccesful === void 0) { dropSuccesful = false; }
             if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit) {
                 var item = this.state.currentDragItem;
-                if (this.state.selectedUnit.items[item.template.slot] === item) {
-                    this.state.selectedUnit.removeItem(item);
+                if (this.state.selectedUnit.items.hasItem(item)) {
+                    this.state.selectedUnit.items.removeItem(item);
                 }
             }
             this.setState({
                 currentDragItem: null
             });
         };
-        ItemEquipComponent.prototype.handleDrop = function () {
+        ItemEquipComponent.prototype.handleDrop = function (index) {
             var item = this.state.currentDragItem;
             var unit = this.state.selectedUnit;
             if (unit && item) {
-                if (unit.items[item.template.slot]) {
-                    unit.removeItemAtSlot(item.template.slot);
-                }
-                unit.addItem(item);
+                unit.items.addItem(item, index);
             }
             this.handleDragEnd(true);
         };
@@ -29213,8 +29292,8 @@ define("modules/defaultunits/templates/fighterSquadron", ["require", "exports", 
         ],
         itemSlots: (_t = {},
             _t[itemSlot_9.default.low] = 1,
-            _t[itemSlot_9.default.mid] = 1,
-            _t[itemSlot_9.default.high] = 1,
+            _t[itemSlot_9.default.mid] = 3,
+            _t[itemSlot_9.default.high] = 2,
             _t
         ),
         unitDrawingFN: defaultUnitDrawingFunction_9.default
