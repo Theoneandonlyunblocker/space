@@ -21,16 +21,6 @@ export default class Triangle<T extends Point>
   {
     return [this.a, this.b, this.c];
   }
-  // TODO refactor 3.4.2016 | remove unused
-  // getCircumCenter()
-  // {
-  //   if (!this.circumRadius)
-  //   {
-  //     this.calculateCircumCircle();
-  //   }
-    
-  //   return [this.circumCenterX, this.circumCenterY];
-  // }
   private calculateCircumCircle(tolerance: number = 0.00001)
   {
     var pA = this.a;
