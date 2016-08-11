@@ -34,37 +34,55 @@ function makeRandomVibrantColor(): Color
 
 function makeRandomDeepColor(): Color
 {
-  // yellow
-  if (Math.random() < 0.1)
+  const randomValue = Math.random();
+  if (randomValue < 0.88)
   {
-    const h = randRange(15 / 360, 80 / 360);
-    const s = randRange(0.92, 1);
-    const v = randRange(0.92, 1);
-    
-    return Color.fromHSV(h, s, v);
-  }
-  else
-  {
+    // skips ugly yellow-greens and over-abundant greens
     const hRanges =
     [
-      {min: 0, max: 15 / 360},
-      {min: 100 / 360, max: 195 / 360},
-      {min: 210 / 360, max: 1}
+      {min: 0 / 360, max: 30 / 360},
+      {min: 100 / 360, max: 360 / 360}
     ];
     
     const h = randomSelectFromRanges(hRanges);
-    const s = randRange(0.8, 0.9);
-    const v = randRange(0.88, 0.92);
+    const s = randRange(0.9, 1.0);
+    const v = randRange(0.6, 0.75);
     
     return Color.fromHSV(h, s, v);
   }
+  else if (randomValue < 0.96)
+  {
+    // yellow
+    return makeRandomColor(
+    {
+      h: [{min: 46 / 360, max: 60 / 360}],
+      s: [{min: 1, max: 1}],
+      l: [{min: 0.72, max: 0.8}]
+    });
+  }
+  else {
+    // orange and brown
+    return makeRandomColor(
+    {
+      h: [{min: 15 / 360, max: 80 / 360}],
+      s: [{min: 1, max: 1}],
+      l: [{min: 0.45, max: 0.55}]
+    });
+  }
 }
-function makeRandomLightColor(): Color
+function makeRandomLightVibrantColor(): Color
 {
   return Color.fromHSV(randRange(0, 1), randRange(0.55, 0.65), 1);
 }
+function makeRandomPastelColor(): Color
+{
+  return makeRandomColor(
+  {
+    s: [{min: 0.4, max: 0.6}],
+    l: [{min: 0.88, max: 1}]
+  });
+}
 
-// 0.0-1.0
 function makeRandomColor(props:
 {
   h?: Range[];
@@ -85,27 +103,22 @@ function makeRandomColor(props:
 
 export function generateMainColor(): Color
 {
-  // TODO refactor | husl color luminosity gets clamped to 0.3-1.0
-  if (Math.random() < 0.6)
+  const randomValue = Math.random();
+  if (randomValue < 0.6)
   {
     return makeRandomDeepColor();
   }
-  else if (Math.random() < 0.25)
-  {
-    return makeRandomLightColor();
-  }
-  else if (Math.random() < 0.3)
+  else if (randomValue < 0.725)
   {
     return makeRandomVibrantColor();
   }
+  else if (randomValue < 0.85)
+  {
+    return makeRandomLightVibrantColor();
+  }
   else
   {
-    // TODO refactor | what kind of color is this?
-    return makeRandomColor(
-    {
-      s: [{min: 1, max: 1}],
-      l: [{min: 0.88, max: 1}]
-    })
+    return makeRandomPastelColor();
   }
 }
 
