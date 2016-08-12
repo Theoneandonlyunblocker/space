@@ -9,9 +9,9 @@ import app from "../../App"; // TODO global
 export interface PropTypes extends React.Props<any>
 {
   handleSelectEmblem: (selectedEmblemTemplate: SubEmblemTemplate) => void;
-  hasImageFailMessage: boolean;
   uploadFiles: (files: FileList) => void;
   flag: Flag;
+  failMessage: React.ReactElement<any>;
 }
 
 interface StateType
@@ -114,14 +114,10 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
       emblemElements.push(this.makeEmblemElement(template));
     }
 
-    var imageInfoMessage: React.ReactHTMLElement<any>;
-    if (this.props.hasImageFailMessage)
+    var imageInfoMessage: React.ReactElement<any>;
+    if (this.props.failMessage)
     {
-      imageInfoMessage =
-      React.DOM.div({className: "image-info-message image-loading-fail-message"},
-        "Linked image failed to load. Try saving it to your own computer " + 
-        "and uploading it."
-      );
+      imageInfoMessage = this.props.failMessage;
     }
     else
     {
