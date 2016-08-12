@@ -23,7 +23,7 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagPicker";
   state: StateType;
-  ref_TODO_imageUploader: HTMLElement;
+  ref_TODO_imageUploader: HTMLInputElement;
 
   constructor(props: PropTypes)
   {
@@ -73,11 +73,13 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
 
   handleUpload()
   {
-    if (!this.props.uploadFiles) throw new Error();
-
     var files = ReactDOM.findDOMNode<HTMLInputElement>(this.ref_TODO_imageUploader).files;
 
-    this.props.uploadFiles(files);
+    const uploadSuccessful = this.props.uploadFiles(files);
+    if (!uploadSuccessful)
+    {
+      this.ref_TODO_imageUploader.value = "";
+    }
   }
   makeEmblemElement(template: SubEmblemTemplate)
   {
@@ -148,7 +150,7 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
             {
               className: "flag-image-upload-button",
               type: "file",
-              ref: (component: HTMLElement) =>
+              ref: (component: HTMLInputElement) =>
               {
                 this.ref_TODO_imageUploader = component;
               },
