@@ -4206,13 +4206,21 @@ button.player-setup-remove-player
   }
   to
   {
-    background-color: initial;
+    background-color: mix(@bg-color, red, 70%);
   }
 }
 
+.image-info-message
+{
+  transition: background-color 1s;
+}
 .image-loading-fail-message
 {
-  animation: flash-bg-red 2s ease-in-quart;
+  background-color: mix(@bg-color, red, 70%);
+
+  animation-name: flash-bg-red;
+  animation-timing-function: ease-in-out;
+  animation-duration: 2000ms;
 }
 
 .emblem-picker
