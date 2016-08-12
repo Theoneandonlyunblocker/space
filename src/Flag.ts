@@ -234,18 +234,15 @@ export default class Flag
     canvas.width = width;
     canvas.height = height;
 
-    if (!this.mainColor)
+    if (!this.mainColor && !this.customImage)
     {
       return canvas;
     }
     
-
     var ctx = canvas.getContext("2d");
 
     ctx.globalCompositeOperation = "source-over";
 
-    ctx.fillStyle = "#" + this.mainColor.getHexString();
-    ctx.fillRect(0, 0, width, height);
 
     if (this._customImageToRender)
     {
@@ -253,6 +250,9 @@ export default class Flag
     }
     else
     {
+      ctx.fillStyle = "#" + this.mainColor.getHexString();
+      ctx.fillRect(0, 0, width, height);
+      
       if (this.backgroundEmblem && this.tetriaryColor)
       {
         var background = this.backgroundEmblem.draw(width, height, stretch);
