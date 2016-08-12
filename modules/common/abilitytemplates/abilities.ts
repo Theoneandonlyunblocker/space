@@ -66,7 +66,7 @@ export var guardRow: AbilityTemplate =
     }
   },
   
-  addsGuard: true,
+  preservesUserGuard: true,
 }
 export var boardingHook: AbilityTemplate =
 {
@@ -170,7 +170,7 @@ export var standBy: AbilityTemplate =
     }
   },
   
-  addsGuard: true,
+  preservesUserGuard: true,
   AIEvaluationPriority: 0.6,
   AIScoreAdjust: -0.1,
   disableInAIBattles: true,

@@ -261,7 +261,7 @@ function getDefaultBeforeUseEffects(abilityUseData: AbilityUseData): AbilityEffe
 {
   const effects: AbilityEffectData[] = [];
   
-  if (!abilityUseData.ability.addsGuard)
+  if (!abilityUseData.ability.preservesUserGuard)
   {
     effects.push(makeSelfAbilityEffectData(
       abilityUseData.user,
