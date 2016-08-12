@@ -10,13 +10,23 @@ import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 import applyMixins from "../mixins/applyMixins";
 
+
+interface FailMessage
+{
+  text: string;
+}
+
 const failMessages =
 {
-  loading: React.DOM.div(
-    {className: "image-info-message image-loading-fail-message"},
-    "Linked image failed to load. Try saving it to your own computer " + 
-    "and uploading it."
-  )
+  hotlinkedImageLoadingFailed:
+  {
+    text: "Linked image failed to load. Try saving it to your own computer " + 
+      "and uploading it."
+  },
+  noValidImageFile:
+  {
+    text: "The attached file wasn't recognized as an image."
+  }
 }
 
 export interface PropTypes extends React.Props<any>
@@ -32,7 +42,7 @@ interface StateType
 {
   flag?: Flag;
   isActive?: boolean;
-  failMessage?: React.ReactElement<any>;
+  failMessageElement?: React.ReactElement<any>;
 }
 
 export class FlagSetterComponent extends React.Component<PropTypes, StateType>
@@ -56,9 +66,9 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   private bindMethods()
   {
     this.getFirstValidImageFromFiles = this.getFirstValidImageFromFiles.bind(this);
-    this.displayImageLoadingFailMessage = this.displayImageLoadingFailMessage.bind(this);
     this.setAsInactive = this.setAsInactive.bind(this);
     this.setForegroundEmblem = this.setForegroundEmblem.bind(this);
+    this.setFailMessage = this.setFailMessage.bind(this);
     this.clearFailMessage = this.clearFailMessage.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.setCustomImageFromFile = this.setCustomImageFromFile.bind(this);
@@ -82,13 +92,26 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     return(
     {
       flag: flag,
-      failMessage: null
+      failMessageElement: null
     });
   }
   componentWillUnmount()
   {
     this.clearFailMessageTimeout();
     document.removeEventListener("click", this.handleClick);
+  }
+  makeFailMessage(message: FailMessage, timeout: number): React.ReactElement<any>
+  {
+    return React.DOM.div(
+    {
+      className: "image-info-message image-loading-fail-message",
+      style:
+      {
+        // animationDuration: "" + timeout + "ms"
+      }
+    },
+      message.text
+    )
   }
   clearFailMessageTimeout()
   {
@@ -101,19 +124,19 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   {
     this.clearFailMessageTimeout();
 
-    this.setState({failMessage: null});
+    this.setState({failMessageElement: null});
   }
-  displayImageLoadingFailMessage()
+  setFailMessage(message: FailMessage, timeout: number)
   {
     this.setState(
     {
-      failMessage: failMessages.loading
+      failMessageElement: this.makeFailMessage(message, timeout)
     });
 
     this.failMessageTimeoutHandle = window.setTimeout(() =>
     {
       this.clearFailMessage();
-    }, 10000);
+    }, timeout);
   }
   handleClick(e: MouseEvent)
   {
@@ -192,11 +215,12 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       {
         // try to get image from any html img element dropped
         var htmlContent = e.dataTransfer.getData("text/html");
-        var imageSource = htmlContent ? htmlContent.match(/src\s*=\s*"(.+?)"/)[1] : null;
+        const imageSourceMatches = htmlContent ? htmlContent.match(/src\s*=\s*"(.+?)"/) : null;
+        const imageSource = imageSourceMatches ? imageSourceMatches[1] : null;
 
         if (!imageSource)
         {
-          console.error("None of the files provided are valid images");
+          this.setFailMessage(failMessages.noValidImageFile, 10000);
           return;
         }
         else
@@ -216,15 +240,15 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
           var img = new Image();
           img.crossOrigin = "Anonymous";
-          img.onload = function(e: Event)
+          img.onload = (e) =>
           {
             this.state.flag.setCustomImage(getImageDataUrl(img));
             this.handleUpdate();
-          }.bind(this)
-          img.onerror = function(e: Event)
+          }
+          img.onerror = (e) =>
           {
-            this.displayImageLoadingFailMessage();
-          }.bind(this);
+            this.setFailMessage(failMessages.hotlinkedImageLoadingFailed, 10000);
+          }
 
           img.src = imageSource;
 
@@ -249,6 +273,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     var image = this.getFirstValidImageFromFiles(files);
     if (!image)
     {
+      this.setFailMessage(failMessages.noValidImageFile, 10000);
       return false;
     }
 
@@ -261,7 +286,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     for (let i = 0; i < files.length; i++)
     {
       var file = files[i];
-      console.log(file.type);
       if (file.type.indexOf("image") !== -1)
       {
         return file;
@@ -273,18 +297,18 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
   setCustomImageFromFile(file: File)
   {
-    var setImageFN = function(file: File)
+    var setImageFN = () =>
     {
       var reader = new FileReader();
 
-      reader.onloadend = function()
+      reader.onloadend = () =>
       {
         this.state.flag.setCustomImage(reader.result);
         this.handleUpdate();
-      }.bind(this);
+      };
 
       reader.readAsDataURL(file);
-    }.bind(this, file);
+    }
 
     var fileSizeInMegaBytes = file.size / 1024 / 1024;
     if (fileSizeInMegaBytes > 20)
@@ -389,7 +413,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
             },
             flag: this.state.flag,
             handleSelectEmblem: this.setForegroundEmblem,
-            failMessage: this.state.failMessage,
+            failMessage: this.state.failMessageElement,
             // onChange: this.handleUpdate,
             uploadFiles: this.handleUpload
           }) : null
