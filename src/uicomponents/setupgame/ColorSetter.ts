@@ -3,7 +3,6 @@
 import Color from "../../Color";
 import ColorPicker from "./ColorPicker";
 
-import {default as FocusTimer, FocusTimerProps} from "../mixins/FocusTimer";
 import applyMixins from "../mixins/applyMixins";
 
 export interface PropTypes extends React.Props<any>
@@ -13,8 +12,6 @@ export interface PropTypes extends React.Props<any>
   color: Color;
   flagHasCustomImage: boolean;
   onChange: (color: Color, isNull: boolean) => void;
-  
-  focusTimerProps?: FocusTimerProps;
 }
 
 interface StateType
@@ -28,16 +25,12 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   state: StateType;
   ref_TODO_main: HTMLElement;
   isMountedTODO/*TODO refactor*/: boolean = false;
-  focusTimer: FocusTimer<ColorSetterComponent>;
 
   constructor(props: PropTypes)
   {
     super(props);
     
     this.state = this.getInitialStateTODO();
-    
-    this.focusTimer = new FocusTimer(this);
-    applyMixins(this, this.focusTimer);
     
     this.bindMethods();
   }
@@ -66,13 +59,10 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   {
     this.isMountedTODO/*TODO refactor*/ = false;
     document.removeEventListener("click", this.handleClick);
-    this.focusTimer.clearListener();
   }
 
   handleClick(e: MouseEvent)
   {
-    if (this.focusTimer.isWithinGracePeriod()) return;
-
     const node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_main);
     const target = <HTMLElement> e.target;
     if (target === node || node.contains(target))
@@ -99,16 +89,18 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
       }
       this.setState({isActive: true});
       document.addEventListener("click", this.handleClick, false);
-      this.focusTimer.registerListener();
     }
   }
   setAsInactive()
   {
+    if (!this.isMountedTODO)
+    {
+      debugger;
+    }
     if (this.isMountedTODO/*TODO refactor*/ && this.state.isActive)
     {
       this.setState({isActive: false});
       document.removeEventListener("click", this.handleClick);
-      this.focusTimer.clearListener();
     }
   }
   updateColor(color: Color, isNull: boolean)
