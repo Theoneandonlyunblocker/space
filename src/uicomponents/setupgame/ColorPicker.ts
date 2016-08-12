@@ -49,7 +49,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     this.updateFromHex = this.updateFromHex.bind(this);
     this.updateFromHsv = this.updateFromHsv.bind(this);
     this.makeGradientStyle = this.makeGradientStyle.bind(this);
-    this.getHueGradientString = this.getHueGradientString.bind(this);
     this.triggerParentOnChange = this.triggerParentOnChange.bind(this);
     this.setHex = this.setHex.bind(this);
     this.setVal = this.setVal.bind(this);
@@ -239,37 +238,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  getHueGradientString()
-  {
-    if (this.hueGradientString) return this.hueGradientString;
-
-    var steps = 10;
-    var gradeStep = 100 / (steps - 1);
-    var hueStep = 360 / steps;
-
-    var gradientString = "linear-gradient(to right, ";
-
-    for (let i = 0; i < steps; i++)
-    {
-      var hue = hueStep * i;
-      var grade = gradeStep * i;
-      var colorString = "hsl(" + hue + ", 100%, 50%) " + grade + "%";
-      if (i < steps - 1)
-      {
-        colorString += ",";
-      }
-      else
-      {
-        colorString += ")";
-      }
-
-      gradientString += colorString;
-    }
-
-    this.hueGradientString = gradientString;
-    return gradientString;
-  }
-
   makeGradientString(min: string, max: string)
   {
     return(
@@ -285,7 +253,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     return color.getHexString();
   }
 
-  makeGradientStyle(type: string)
+  makeGradientStyle(type: string): React.CSSProperties
   {
     var hue = this.state.hue;
     var sat = this.state.sat;
@@ -297,7 +265,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       {
         return(
         {
-          background: this.getHueGradientString()
+
         });
       }
       case "sat":
@@ -337,18 +305,20 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       val: this.setVal
     };
 
+    const idForType = "" + this.baseElementID + "-" + type;
+
     return(
       React.DOM.div({className: "color-picker-input-container", key: type},
-        React.DOM.label({className: "color-picker-label", htmlFor: "" + this.baseElementID + "-" + type}, label),
+        React.DOM.label({className: "color-picker-label", htmlFor: idForType}, label),
         React.DOM.div(
         {
-          className: "color-picker-slider-background",
+          className: "color-picker-slider-background" + " color-picker-slider-background-" + type,
           style: this.makeGradientStyle(type)
         },
           React.DOM.input(
           {
             className: "color-picker-slider",
-            id: "" + this.baseElementID + "-" + type,
+            id: idForType,
             ref: type,
             type: "range",
             min: 0,
