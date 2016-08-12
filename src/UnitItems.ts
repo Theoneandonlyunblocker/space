@@ -1,4 +1,4 @@
-import app from "./App"; // TODO refactor
+import app from "./App"; // TODO global
 
 import Item from "./Item";
 import {UnitAttributeAdjustments} from "./UnitAttributes";

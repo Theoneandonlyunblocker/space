@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import app from "../../App"; // TODO refactor
+import app from "../../App"; // TODO global
 import UnitDisplayData from "../../UnitDisplayData";
 import Player from "../../Player";
 import Battle from "../../Battle";
