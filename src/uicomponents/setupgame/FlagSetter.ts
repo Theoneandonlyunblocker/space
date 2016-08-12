@@ -35,7 +35,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   ref_TODO_main: HTMLElement;
   
   imageLoadingFailTimeoutHandle: number;
-  isMountedTODO/*TODO refactor*/: boolean = false;
   
   constructor(props: PropTypes)
   {
@@ -77,13 +76,8 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       hasImageFailMessage: false
     });
   }
-  componentDidMount()
-  {
-    this.isMountedTODO/*TODO refactor*/ = true;
-  }
   componentWillUnmount()
   {
-    this.isMountedTODO/*TODO refactor*/ = false;
     window.clearTimeout(this.imageLoadingFailTimeoutHandle);
     document.removeEventListener("click", this.handleClick);
   }
@@ -136,7 +130,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   }
   setAsInactive()
   {
-    if (this.isMountedTODO/*TODO refactor*/ && this.state.isActive)
+    if (this.state.isActive)
     {
       this.setState({isActive: false});
       document.removeEventListener("click", this.handleClick);

@@ -24,7 +24,6 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   displayName: string = "ColorSetter";
   state: StateType;
   ref_TODO_main: HTMLElement;
-  isMountedTODO/*TODO refactor*/: boolean = false;
 
   constructor(props: PropTypes)
   {
@@ -49,15 +48,9 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
       isActive: false
     });
   }
-  
-  componentDidMount()
-  {
-    this.isMountedTODO/*TODO refactor*/ = true;
-  }
 
   componentWillUnmount()
   {
-    this.isMountedTODO/*TODO refactor*/ = false;
     document.removeEventListener("click", this.handleClick);
   }
 
@@ -93,11 +86,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   }
   setAsInactive()
   {
-    if (!this.isMountedTODO)
-    {
-      debugger;
-    }
-    if (this.isMountedTODO/*TODO refactor*/ && this.state.isActive)
+    if (this.state.isActive)
     {
       this.setState({isActive: false});
       document.removeEventListener("click", this.handleClick);
