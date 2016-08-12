@@ -13,6 +13,7 @@ export interface AutoPositionerProps
   xMargin?: number;
   yMargin?: number;
   positionOnUpdate?: boolean;
+  positionOnResize?: boolean;
 }
 
 export default class AutoPositioner<T extends React.Component<any, any>> implements MixinBase<T>
@@ -22,16 +23,30 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
   {
     return this.owner.props.autoPositionerProps;
   }
-  
+  private hasResizeListener: boolean = false;
   
   constructor(owner: T)
   {
     this.owner = owner;
+
+    this.setAutoPosition = this.setAutoPosition.bind(this);
   }
   
   public componentDidMount()
   {
     this.setAutoPosition();
+    if (this.props.positionOnResize)
+    {
+      window.addEventListener("resize", this.setAutoPosition, false);
+      this.hasResizeListener = true;
+    }
+  }
+  public componentWillUnmount()
+  {
+    if (this.hasResizeListener)
+    {
+      window.removeEventListener("resize", this.setAutoPosition);
+    }
   }
   public componentDidUpdate()
   {
