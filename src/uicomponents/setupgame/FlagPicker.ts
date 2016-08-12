@@ -150,6 +150,7 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
             {
               className: "flag-image-upload-button",
               type: "file",
+              accept: "image/*",
               ref: (component: HTMLInputElement) =>
               {
                 this.ref_TODO_imageUploader = component;
