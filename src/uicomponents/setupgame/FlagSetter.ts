@@ -362,7 +362,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
   handleUpdate(dontTriggerParentUpdates?: boolean)
   {
-    this.clearFailMessage();
 
     if (this.state.flag.customImage)
     {
@@ -377,7 +376,14 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       this.props.toggleCustomImage(this.state.flag.customImage);
     }
 
-    this.forceUpdate();
+    if (this.state.failMessageElement)
+    {
+      this.clearFailMessage();
+    }
+    else
+    {
+      this.forceUpdate();
+    }
   }
 
   render()
