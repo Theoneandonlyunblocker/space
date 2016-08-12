@@ -82,6 +82,7 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
       }
     }
   }
+  // not currently used
   private static elementFitsYSide(side: side, ownRect: ClientRect, parentRect: ClientRect)
   {
     switch (side)
@@ -100,6 +101,7 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
       }
     }
   }
+  // not currently used
   private static elementFitsXSide(side: side, ownRect: ClientRect, parentRect: ClientRect)
   {
     switch (side)
@@ -120,12 +122,6 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
   }
   private setAutoPosition()
   {
-    /*
-    try to fit prefered y
-      flip if doesnt fit
-    try to fit prefered x alignment
-      flip if doesnt fit
-     */
     const parentRect = this.props.getParentClientRect();
     const ownNode = ReactDOM.findDOMNode<HTMLElement>(this.owner);
     const ownRect = ownNode.getBoundingClientRect();
@@ -136,17 +132,6 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
     const yMargin = this.props.yMargin || 0;
     const xMargin = this.props.xMargin || 0;
 
-    const fitsY = AutoPositioner.elementFitsYSide(ySide, ownRect, parentRect);
-    if (!fitsY)
-    {
-      ySide = AutoPositioner.flipSide(ySide);
-    }
-
-    const fitsX = AutoPositioner.elementFitsXSide(xSide, ownRect, parentRect);
-    if (!fitsX)
-    {
-      xSide = AutoPositioner.flipSide(xSide);
-    }
     let top: number = null;
     let left: number = null;
 
@@ -166,6 +151,24 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
     else
     {
       left = parentRect.right - ownRect.width + xMargin;
+    }
+
+    if (left < 0)
+    {
+      left = 0;
+    }
+    else if (left + ownRect.width > window.innerWidth)
+    {
+      left = left - (left + ownRect.width - window.innerWidth)
+    }
+
+    if (top < 0)
+    {
+      top = 0;
+    }
+    else if (top + ownRect.height > window.innerHeight)
+    {
+      top = top - (top + ownRect.height - window.innerHeight)
     }
 
     ownNode.style.left = "" + left + "px";
