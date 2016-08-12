@@ -37,8 +37,6 @@ export interface CustomPopupProps
 
 export interface PropTypes extends CustomPopupProps, React.Props<any>
 {
-  // contentConstructor: React.Factory<any>;
-  // contentProps: any;
   content: React.ReactElement<any>;
   
   id?: number;
@@ -51,23 +49,6 @@ export interface PropTypes extends CustomPopupProps, React.Props<any>
   }
 }
 
-// export interface PropTypes extends React.Props<any>
-// {
-//   resizable: boolean;
-//   initialPosition?: reactTypeTODO_object;
-//   minWidth?: number;
-//   maxWidth?: number;
-//   minHeight?: number;
-//   maxHeight?: number;
-//   contentConstructor: reactTypeTODO_element; // React.PropTypes.element
-
-//   contentProps: reactTypeTODO_object;
-//   closePopup: reactTypeTODO_func;
-//   incrementZIndex: reactTypeTODO_func;
-//   getInitialPosition: reactTypeTODO_func;
-//   finishedMountingCallback?: reactTypeTODO_func;
-// }
-
 interface StateType
 {
   zIndex?: number;
@@ -78,7 +59,9 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
   displayName: string = "Popup";
   state: StateType;
   
-  dragPositioner: DragPositioner<PopupComponent>; 
+  dragPositioner: DragPositioner<PopupComponent>;
+
+  ref_TODO_content: React.ReactElement<any>;
 
   constructor(props: PropTypes)
   {
@@ -218,9 +201,12 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
 
     var contentProps =
     {
-      closePopup: this.props.closePopup
+      closePopup: this.props.closePopup,
+      ref: (content: React.ReactElement<any>) =>
+      {
+        this.ref_TODO_content = content;
+      }
     }
-    // contentProps.ref = "content";
 
     var resizeHandle = !this.props.resizable ? null : PopupResizeHandle(
     {
@@ -230,7 +216,6 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(divProps,
         React.cloneElement(this.props.content, contentProps),
-        // this.props.contentConstructor(contentProps),
         resizeHandle
       )
     );
