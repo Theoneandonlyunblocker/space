@@ -2,7 +2,7 @@
 
 
 import {default as FlagPicker, FlagPickerComponent} from "./FlagPicker";
-import PlayerFlag from "../PlayerFlag";
+import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
 import Flag from "../../Flag";
 import Color from "../../Color";
 import Emblem from "../../Emblem";
@@ -52,6 +52,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   
   ref_TODO_flagPicker: FlagPickerComponent;
   ref_TODO_main: HTMLElement;
+  ref_TODO_playerFlag: PlayerFlagComponent;
   
   failMessageTimeoutHandle: number;
   
@@ -76,7 +77,8 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     this.handleUpload = this.handleUpload.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.toggleActive = this.toggleActive.bind(this);
-    this.stopEvent = this.stopEvent.bind(this);    
+    this.stopEvent = this.stopEvent.bind(this);
+    this.getClientRect = this.getClientRect.bind(this);
   }
   
   private getInitialStateTODO(): StateType
@@ -386,6 +388,12 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
   }
 
+  getClientRect(): ClientRect
+  {
+    const ownNode = <HTMLElement> ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_playerFlag);
+    return ownNode.getBoundingClientRect();
+  }
+
   render()
   {
     return(
@@ -408,7 +416,11 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
           {
             className: "flag-setter-display",
             onClick: this.toggleActive
-          }
+          },
+          ref: (component: PlayerFlagComponent) =>
+          {
+            this.ref_TODO_playerFlag = component;
+          },
         }),
         this.state.isActive ?
           FlagPicker(
@@ -421,7 +433,15 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
             handleSelectEmblem: this.setForegroundEmblem,
             failMessage: this.state.failMessageElement,
             // onChange: this.handleUpdate,
-            uploadFiles: this.handleUpload
+            uploadFiles: this.handleUpload,
+            autoPositionerProps:
+            {
+              getParentClientRect: this.getClientRect,
+              positionOnUpdate: true,
+              ySide: "bottom",
+              xSide: "left",
+              positionOnResize: true
+            }
           }) : null
       )
     );

@@ -1,5 +1,11 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import
+{
+  default as AutoPositioner,
+  AutoPositionerProps
+} from "../mixins/AutoPositioner";
+import applyMixins from "../mixins/applyMixins";
 
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
@@ -12,6 +18,8 @@ export interface PropTypes extends React.Props<any>
   uploadFiles: (files: FileList) => void;
   flag: Flag;
   failMessage: React.ReactElement<any>;
+
+  autoPositionerProps?: AutoPositionerProps;
 }
 
 interface StateType
@@ -28,6 +36,11 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
+
+    if (this.props.autoPositionerProps)
+    {
+      applyMixins(this, new AutoPositioner(this));
+    }
     
     this.state = this.getInitialStateTODO();
     
