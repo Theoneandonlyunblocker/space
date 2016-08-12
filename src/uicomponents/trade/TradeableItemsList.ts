@@ -12,7 +12,7 @@ import {TradeableItems, TradeableItem} from "../../Trade";
 
 export interface PropTypes extends React.Props<any>
 {
-  tradeableItems: TradeableItems; // TODO refactor | rename -> staged items
+  tradeableItems: TradeableItems;
 
   availableItems?: TradeableItems;
   noListHeader?: boolean;

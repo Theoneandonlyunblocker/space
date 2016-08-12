@@ -60,6 +60,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
   handleClick()
   {
+    debugger;
     this.props.onClick(this.props.keyTODO/*TODO react*/);
   }
 
@@ -94,7 +95,8 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
         rowProps.className += " dragging";
       }
     }
-    else if (this.props.onClick)
+
+    if (this.props.onClick)
     {
       rowProps.onClick = this.handleClick;
     }
