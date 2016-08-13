@@ -125,7 +125,21 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
       {
         return toRemove.indexOf(playerId) === -1;
       })
+    }, () =>
+    {
+      this.cleanSetupComponentsByID();
     });
+  }
+
+  private cleanSetupComponentsByID(): void
+  {
+    for (let playerID in this.playerSetupComponentsByID)
+    {
+      if (!this.playerSetupComponentsByID[playerID])
+      {
+        delete this.playerSetupComponentsByID[playerID];
+      }
+    };
   }
 
   setActiveColorSetter(colorSetter: ColorSetterComponent)
@@ -162,23 +176,23 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   render()
   {
     var playerSetups: React.ReactElement<any>[] = [];
-    for (let i = 0; i < this.state.playerKeys.length; i++)
+    this.state.playerKeys.forEach((playerID, i) =>
     {
       playerSetups.push(PlayerSetup(
       {
-        key: this.state.playerKeys[i],
-        keyTODO: this.state.playerKeys[i],
+        key: playerID,
+        keyTODO: playerID,
         ref: (component: PlayerSetupComponent) =>
         {
-          this.playerSetupComponentsByID[i] = component;
+          this.playerSetupComponentsByID[playerID] = component;
         },
         removePlayers: this.removePlayers,
         setActiveSetterComponent: this.setActiveColorSetter,
-        initialName: "Player " + this.state.playerKeys[i],
+        initialName: "Player " + playerID,
         isHuman: i === 0,
         setHuman: this.setHumanPlayer
       }));
-    }
+    });
 
 
     var canAddPlayers = this.state.playerKeys.length < this.props.maxPlayers;
