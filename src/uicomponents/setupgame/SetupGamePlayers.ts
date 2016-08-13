@@ -94,6 +94,10 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     this.setState(
     {
       playerKeys: this.state.playerKeys.concat(newIds)
+    }, () =>
+    {
+      const ownDOMNode = ReactDOM.findDOMNode(this)
+      ownDOMNode.scrollTop = ownDOMNode.scrollHeight;
     });
   }
 
