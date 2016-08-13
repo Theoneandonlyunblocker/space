@@ -1,3 +1,10 @@
+import
+{
+  getAttackDamageIncrease,
+  getReducedDamageFactor,
+  getAdjustedDamage
+} from "./damageAdjustments";
+
 import poisonedStatusEffect from "../statuseffecttemplates/poisoned";
 
 import EffectActionTemplate from "../../../src/templateinterfaces/EffectActionTemplate";
@@ -28,13 +35,9 @@ export const singleTargetDamage: EffectActionTemplate =
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {baseDamage: number; damageType: number;})
   {
-    const baseDamage = data.baseDamage;
-    const damageType = data.damageType;
+    const adjustedDamage = getAdjustedDamage(user, target, data.baseDamage, data.damageType);
 
-    const damageIncrease = user.getAttackDamageIncrease(damageType);
-    const damage = baseDamage * damageIncrease;
-
-    target.receiveDamage(damage, damageType);
+    target.receiveDamage(adjustedDamage);
   }
 }
 export const closeAttack: EffectActionTemplate =
@@ -45,13 +48,11 @@ export const closeAttack: EffectActionTemplate =
   targetRangeFunction: targetNextRow,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
-    const baseDamage = 0.66;
-    const damageType = DamageType.physical;
-
-    const damageIncrease = user.getAttackDamageIncrease(damageType);
-    const damage = baseDamage * damageIncrease;
-
-    target.receiveDamage(damage, damageType);
+    singleTargetDamage.executeAction(user, target, battle,
+    {
+      baseDamage: 0.66,
+      damageType: DamageType.physical
+    });
   }
 }
 export const beamAttack: EffectActionTemplate =
@@ -65,10 +66,11 @@ export const beamAttack: EffectActionTemplate =
     const baseDamage = 0.75;
     const damageType = DamageType.magical;
 
-    const damageIncrease = user.getAttackDamageIncrease(damageType);
-    const damage = baseDamage * damageIncrease;
-
-    target.receiveDamage(damage, damageType);
+    singleTargetDamage.executeAction(user, target, battle,
+    {
+      baseDamage: 0.75,
+      damageType: DamageType.magical
+    });
   }
 }
 
@@ -80,13 +82,11 @@ export const bombAttack: EffectActionTemplate =
   targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
-    const baseDamage = 0.5;
-    const damageType = DamageType.physical;
-
-    const damageIncrease = user.getAttackDamageIncrease(damageType);
-    const damage = baseDamage * damageIncrease;
-
-    target.receiveDamage(damage, damageType);
+    singleTargetDamage.executeAction(user, target, battle,
+    {
+      baseDamage: 0.5,
+      damageType: DamageType.physical
+    });
   }
 }
 export const guardRow: EffectActionTemplate =
@@ -114,6 +114,7 @@ export const receiveCounterAttack: EffectActionTemplate =
     data: {baseDamage: number; damageType: number;})
   {
     const counterStrength = target.getCounterAttackStrength();
+
     if (counterStrength)
     {
       singleTargetDamage.executeAction(target, user, battle,
@@ -133,7 +134,6 @@ export const increaseCaptureChance: EffectActionTemplate =
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {flat?: number; multiplier?: number;})
   {
-    if (!data) return;
     if (data.flat)
     {
       target.battleStats.captureChance += data.flat;
@@ -176,7 +176,7 @@ export const healTarget: EffectActionTemplate =
     }
     if (data.perUserUnit)
     {
-      healAmount += data.perUserUnit * user.getAttackDamageIncrease(DamageType.magical);
+      healAmount += data.perUserUnit * getAttackDamageIncrease(user, DamageType.magical);
     }
 
     target.removeStrength(-healAmount);

@@ -12,7 +12,6 @@ import SFXParams from "./templateinterfaces/SFXParams";
 import UnitPassiveEffect from "./templateinterfaces/UnitPassiveEffect";
 import UnitDrawingFunctionData from "./UnitDrawingFunctionData";
 
-import DamageType from "./DamageType";
 import
 {
   default as UnitAttributes,
@@ -759,90 +758,10 @@ export default class Unit
     
     return relevantStatusEffectTemplates.concat(relevantPassiveEffectTemplates);
   } 
-  public receiveDamage(amount: number, damageType: DamageType)
+  public receiveDamage(amount: number)
   {
-    var damageReduction = this.getReducedDamageFactor(damageType);
-
-    var adjustedDamage = amount * damageReduction;
-
     this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-    this.removeStrength(adjustedDamage);
-  }
-  private getAdjustedTroopSize()
-  {
-    // used so unit will always counter with at least 1/3 strength it had before being attacked
-    var balancedHealth = this.currentHealth + this.battleStats.lastHealthBeforeReceivingDamage / 3;
-    this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-
-    var currentHealth = this.isSquadron ?
-      balancedHealth :
-      Math.min(this.maxHealth, balancedHealth + this.maxHealth * 0.2);
-
-    if (currentHealth <= 500)
-    {
-      return currentHealth;
-    }
-    else if (currentHealth <= 2000)
-    {
-      return currentHealth / 2 + 250;
-    }
-    else
-    {
-      return currentHealth / 4 + 750;
-    }
-  }
-  public getAttackDamageIncrease(damageType: DamageType)
-  {
-    var attackStat: number, attackFactor: number;
-
-    switch (damageType)
-    {
-      case DamageType.physical:
-      {
-        attackStat = this.attributes.attack;
-        attackFactor = 0.1;
-        break;
-      }
-      case DamageType.magical:
-      {
-        attackStat = this.attributes.intelligence;
-        attackFactor = 0.1;
-        break;
-      }
-    }
-
-    var troopSize = this.getAdjustedTroopSize() / 4;
-
-    return (1 + attackStat * attackFactor) * troopSize;
-  }
-  private getReducedDamageFactor(damageType: DamageType)
-  {
-    var defensiveStat: number, defenceFactor: number;
-    var finalDamageMultiplier = 1;
-
-    switch (damageType)
-    {
-      case DamageType.physical:
-      {
-        defensiveStat = this.attributes.defence;
-        defenceFactor = 0.045;
-
-        var guardAmount = Math.min(this.battleStats.guardAmount, 100);
-        finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
-        break;
-      }
-      case DamageType.magical:
-      {
-        defensiveStat = this.attributes.intelligence;
-        defenceFactor = 0.045;
-        break;
-      }
-    }
-
-    var damageReduction = defensiveStat * defenceFactor;
-    var finalDamageFactor = (1 - damageReduction) * finalDamageMultiplier;
-
-    return finalDamageFactor;
+    this.removeStrength(amount);
   }
   public addToFleet(fleet: Fleet)
   {
