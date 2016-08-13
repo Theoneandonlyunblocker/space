@@ -137,7 +137,14 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
             onChange: this.props.onChange,
             // setAsInactive: this.setAsInactive,
             flagHasCustomImage: this.props.flagHasCustomImage,
-            getParentPosition: this.getClientRect
+            autoPositionerProps:
+            {
+              getParentClientRect: this.getClientRect,
+              positionOnUpdate: true,
+              ySide: "bottom",
+              xSide: "left",
+              positionOnResize: true
+            }
           }) : null
       )
     );

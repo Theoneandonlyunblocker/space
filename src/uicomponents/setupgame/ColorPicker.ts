@@ -2,14 +2,22 @@
 
 import Color from "../../Color";
 
+import
+{
+  default as AutoPositioner,
+  AutoPositionerProps
+} from "../mixins/AutoPositioner";
+import applyMixins from "../mixins/applyMixins";
+
 export interface PropTypes extends React.Props<any>
 {
   generateColor: (toContrastWith?: Color) => Color;
-  getParentPosition: () => ClientRect;
   hexColor?: number;
   flagHasCustomImage: boolean;
   onChange: (color: Color, isNull: boolean) => void;
   limitUpdates?: boolean;
+
+  autoPositionerProps?: AutoPositionerProps;
 }
 
 interface StateType
@@ -34,6 +42,11 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
+
+    if (this.props.autoPositionerProps)
+    {
+      applyMixins(this, new AutoPositioner(this));
+    }
     
     this.state = this.getInitialStateTODO();
     
@@ -42,7 +55,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   private bindMethods()
   {
     this.setHue = this.setHue.bind(this);
-    this.setPosition = this.setPosition.bind(this);
     this.setSat = this.setSat.bind(this);
     this.makeHsvInputs = this.makeHsvInputs.bind(this);
     this.autoGenerateColor = this.autoGenerateColor.bind(this);
@@ -72,25 +84,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       sat: hsvColor[1],
       val: hsvColor[2]
     });
-  }
-
-  componentDidMount()
-  {
-    window.addEventListener("resize", this.setPosition);
-    this.setPosition();
-  }
-
-  componentWillUnmount()
-  {
-    window.removeEventListener("resize", this.setPosition);
-  }
-
-  setPosition()
-  {
-    var parentRect = this.props.getParentPosition();
-    var domNode = ReactDOM.findDOMNode<HTMLElement>(this);
-    domNode.style.top = "" + parentRect.bottom + "px";
-    domNode.style.left = "" + parentRect.left + "px";
   }
 
   triggerParentOnChange(color: Color, isNull: boolean)
