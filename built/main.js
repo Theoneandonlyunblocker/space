@@ -27,6 +27,9 @@ define("src/VoronoiCell", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = VoronoiCell;
 });
+define("src/FlatAndMultiplierAdjustment", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
 define("src/idGenerators", ["require", "exports"], function (require, exports) {
     "use strict";
     var IDGenerator = (function () {
@@ -49,9 +52,6 @@ define("src/idGenerators", ["require", "exports"], function (require, exports) {
     var idGenerators = new IDGenerator();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = idGenerators;
-});
-define("src/FlatAndMultiplierAdjustment", ["require", "exports"], function (require, exports) {
-    "use strict";
 });
 define("src/RandomGenUnitRarity", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -936,7 +936,7 @@ define("src/eventManager", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = eventManager;
 });
-define("src/Fleet", ["require", "exports", "src/idGenerators", "src/App", "src/eventManager", "src/pathfinding"], function (require, exports, idGenerators_2, App_2, eventManager_1, pathFinding_1) {
+define("src/Fleet", ["require", "exports", "src/App", "src/idGenerators", "src/eventManager", "src/pathfinding"], function (require, exports, App_2, idGenerators_2, eventManager_1, pathFinding_1) {
     "use strict";
     var Fleet = (function () {
         function Fleet(player, units, location, id, shouldRender) {
@@ -1183,7 +1183,7 @@ define("src/Fleet", ["require", "exports", "src/idGenerators", "src/App", "src/e
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Fleet;
 });
-define("src/Building", ["require", "exports", "src/idGenerators", "src/App"], function (require, exports, idGenerators_3, App_3) {
+define("src/Building", ["require", "exports", "src/App", "src/idGenerators"], function (require, exports, App_3, idGenerators_3) {
     "use strict";
     var Building = (function () {
         function Building(props) {
@@ -1653,17 +1653,17 @@ define("src/Flag", ["require", "exports", "src/Emblem"], function (require, expo
             var canvas = document.createElement("canvas");
             canvas.width = width;
             canvas.height = height;
-            if (!this.mainColor) {
+            if (!this.mainColor && !this.customImage) {
                 return canvas;
             }
             var ctx = canvas.getContext("2d");
             ctx.globalCompositeOperation = "source-over";
-            ctx.fillStyle = "#" + this.mainColor.getHexString();
-            ctx.fillRect(0, 0, width, height);
             if (this._customImageToRender) {
                 ctx.drawImage(this._customImageToRender, 0, 0);
             }
             else {
+                ctx.fillStyle = "#" + this.mainColor.getHexString();
+                ctx.fillRect(0, 0, width, height);
                 if (this.backgroundEmblem && this.tetriaryColor) {
                     var background = this.backgroundEmblem.draw(width, height, stretch);
                     var x = (width - background.width) / 2;
@@ -2494,7 +2494,7 @@ define("src/battleAbilityProcessing", ["require", "exports", "src/targeting", "s
     }
     function getDefaultBeforeUseEffects(abilityUseData) {
         var effects = [];
-        if (!abilityUseData.ability.addsGuard) {
+        if (!abilityUseData.ability.preservesUserGuard) {
             effects.push(makeSelfAbilityEffectData(abilityUseData.user, "removeGuard", function (user) { return user.removeAllGuard(); }));
         }
         effects.push(makeSelfAbilityEffectData(abilityUseData.user, "removeActionPoints", function (user) { return user.removeActionPoints(abilityUseData.ability.actionsUse); }));
@@ -4537,26 +4537,40 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
         return Color_2.default.fromHSV(h, s, v);
     }
     function makeRandomDeepColor() {
-        if (Math.random() < 0.1) {
-            var h = utility_13.randRange(15 / 360, 80 / 360);
-            var s = utility_13.randRange(0.92, 1);
-            var v = utility_13.randRange(0.92, 1);
-            return Color_2.default.fromHSV(h, s, v);
-        }
-        else {
+        var randomValue = Math.random();
+        if (randomValue < 0.88) {
             var hRanges = [
-                { min: 0, max: 15 / 360 },
-                { min: 100 / 360, max: 195 / 360 },
-                { min: 210 / 360, max: 1 }
+                { min: 0 / 360, max: 30 / 360 },
+                { min: 100 / 360, max: 360 / 360 }
             ];
             var h = rangeOperations_1.randomSelectFromRanges(hRanges);
-            var s = utility_13.randRange(0.8, 0.9);
-            var v = utility_13.randRange(0.88, 0.92);
+            var s = utility_13.randRange(0.9, 1.0);
+            var v = utility_13.randRange(0.6, 0.75);
             return Color_2.default.fromHSV(h, s, v);
         }
+        else if (randomValue < 0.96) {
+            return makeRandomColor({
+                h: [{ min: 46 / 360, max: 60 / 360 }],
+                s: [{ min: 1, max: 1 }],
+                l: [{ min: 0.72, max: 0.8 }]
+            });
+        }
+        else {
+            return makeRandomColor({
+                h: [{ min: 15 / 360, max: 80 / 360 }],
+                s: [{ min: 1, max: 1 }],
+                l: [{ min: 0.45, max: 0.55 }]
+            });
+        }
     }
-    function makeRandomLightColor() {
+    function makeRandomLightVibrantColor() {
         return Color_2.default.fromHSV(utility_13.randRange(0, 1), utility_13.randRange(0.55, 0.65), 1);
+    }
+    function makeRandomPastelColor() {
+        return makeRandomColor({
+            s: [{ min: 0.4, max: 0.6 }],
+            l: [{ min: 0.88, max: 1 }]
+        });
     }
     function makeRandomColor(props) {
         var hRanges = props.h || [{ min: 0, max: 1 }];
@@ -4568,20 +4582,18 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
         return Color_2.default.fromHUSL(h, s, l);
     }
     function generateMainColor() {
-        if (Math.random() < 0.6) {
+        var randomValue = Math.random();
+        if (randomValue < 0.6) {
             return makeRandomDeepColor();
         }
-        else if (Math.random() < 0.25) {
-            return makeRandomLightColor();
-        }
-        else if (Math.random() < 0.3) {
+        else if (randomValue < 0.725) {
             return makeRandomVibrantColor();
         }
+        else if (randomValue < 0.85) {
+            return makeRandomLightVibrantColor();
+        }
         else {
-            return makeRandomColor({
-                s: [{ min: 1, max: 1 }],
-                l: [{ min: 0.88, max: 1 }]
-            });
+            return makeRandomPastelColor();
         }
     }
     exports.generateMainColor = generateMainColor;
@@ -5255,8 +5267,9 @@ define("src/mapai/GrandStrategyAI", ["require", "exports", "src/utility"], funct
             this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
         };
         GrandStrategyAI.prototype.getDesireForWar = function () {
-            if (!this.desiredStars)
+            if (!this.desiredStars) {
                 this.setDesiredStars();
+            }
             var fromAggressiveness = this.personality.aggressiveness;
             var fromExpansiveness = 0;
             var minStarsStillDesired = this.mapEvaluator.player.controlledLocations.length - this.desiredStars.min;
@@ -5838,8 +5851,9 @@ define("src/mapai/EconomyAI", ["require", "exports", "src/utility"], function (r
                     }
                 }
             }
-            if (!unitType)
-                debugger;
+            if (!unitType) {
+                throw new Error();
+            }
             manufactory.addThingToQueue(unitType, "unit");
         };
         return EconomyAI;
@@ -5897,7 +5911,7 @@ define("src/mapai/AIController", ["require", "exports", "src/mapai/MapEvaluator"
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = AIController;
 });
-define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/utility", "src/Flag", "src/BattleSimulator", "src/BattlePrep", "src/DiplomacyStatus", "src/PlayerTechnology", "src/eventManager", "src/colorGeneration", "src/options", "src/mapai/AIController"], function (require, exports, idGenerators_6, App_16, utility_18, Flag_2, BattleSimulator_1, BattlePrep_1, DiplomacyStatus_1, PlayerTechnology_1, eventManager_9, colorGeneration_1, options_2, AIController_1) {
+define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag", "src/BattleSimulator", "src/BattlePrep", "src/DiplomacyStatus", "src/PlayerTechnology", "src/eventManager", "src/idGenerators", "src/colorGeneration", "src/options", "src/mapai/AIController"], function (require, exports, App_16, utility_18, Flag_2, BattleSimulator_1, BattlePrep_1, DiplomacyStatus_1, PlayerTechnology_1, eventManager_9, idGenerators_6, colorGeneration_1, options_2, AIController_1) {
     "use strict";
     var Player = (function () {
         function Player(isAI, id) {
@@ -6972,7 +6986,7 @@ define("src/UnitItems", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = UnitItems;
 });
-define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/UnitAttributes", "src/utility", "src/Item", "src/Fleet", "src/UnitItems"], function (require, exports, idGenerators_7, App_18, UnitAttributes_1, utility_19, Item_3, Fleet_4, UnitItems_1) {
+define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/UnitAttributes", "src/utility", "src/Item", "src/Fleet", "src/UnitItems"], function (require, exports, App_18, idGenerators_7, UnitAttributes_1, utility_19, Item_3, Fleet_4, UnitItems_1) {
     "use strict";
     var Unit = (function () {
         function Unit(template, id, data) {
@@ -7687,7 +7701,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
                 isSquadron: this.isSquadron,
                 portraitSrc: this.portrait.imageSrc,
                 iconSrc: this.template.icon,
-                attributeChanges: this.getAttributesWithEffectsDifference(),
+                attributeChanges: this.getAttributesWithEffectsDifference().serialize(),
                 passiveEffects: this.getPassiveEffectsForScene(scene),
             });
         };
@@ -7756,7 +7770,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Un
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Unit;
 });
-define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/eventManager", "src/Manufactory", "src/pathfinding"], function (require, exports, idGenerators_8, App_19, eventManager_10, Manufactory_2, pathFinding_2) {
+define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Manufactory", "src/idGenerators", "src/pathfinding"], function (require, exports, App_19, eventManager_10, Manufactory_2, idGenerators_8, pathFinding_2) {
     "use strict";
     var Star = (function () {
         function Star(x, y, id) {
@@ -11405,6 +11419,7 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
             eventManager_18.default.dispatchEvent("popupResized");
         };
         PopupComponent.prototype.render = function () {
+            var _this = this;
             var divProps = {
                 className: "popup draggable-container",
                 onTouchStart: this.onMouseDown,
@@ -11423,7 +11438,10 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
                 divProps.className += " dragging";
             }
             var contentProps = {
-                closePopup: this.props.closePopup
+                closePopup: this.props.closePopup,
+                ref: function (content) {
+                    _this.ref_TODO_content = content;
+                }
             };
             var resizeHandle = !this.props.resizable ? null : PopupResizeHandle_1.default({
                 handleResize: this.handleResizeMove
@@ -12586,7 +12604,7 @@ define("src/uicomponents/unit/UnitAttributeChanges", ["require", "exports"], fun
                     }
                     var amountChanged = this.props.attributeChanges[attributeType];
                     if (!amountChanged) {
-                        throw new Error();
+                        continue;
                     }
                     var changeIsPositive = amountChanged > 0;
                     var polarityString = changeIsPositive ? "positive" : "negative";
@@ -13075,6 +13093,9 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
                                 this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
                         };
                         unitProps = utility_27.shallowExtend(unitDisplayData, componentProps, displayProps);
+                        if (this.props.facesLeft && this.props.isInBattlePrep) {
+                            unitProps.facesLeft = true;
+                        }
                     }
                     unitElements.push(UnitWrapper_1.default({ key: ("unit_wrapper_" + i) + j }, EmptyUnit_1.default({
                         facesLeft: this.props.facesLeft,
@@ -14756,13 +14777,146 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"], function (require, exports, App_27) {
+define("src/uicomponents/mixins/AutoPositioner", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var AutoPositioner = (function () {
+        function AutoPositioner(owner) {
+            this.hasResizeListener = false;
+            this.owner = owner;
+            this.setAutoPosition = this.setAutoPosition.bind(this);
+        }
+        Object.defineProperty(AutoPositioner.prototype, "props", {
+            get: function () {
+                return this.owner.props.autoPositionerProps;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        AutoPositioner.prototype.componentDidMount = function () {
+            this.setAutoPosition();
+            if (this.props.positionOnResize) {
+                window.addEventListener("resize", this.setAutoPosition, false);
+                this.hasResizeListener = true;
+            }
+        };
+        AutoPositioner.prototype.componentWillUnmount = function () {
+            if (this.hasResizeListener) {
+                window.removeEventListener("resize", this.setAutoPosition);
+            }
+        };
+        AutoPositioner.prototype.componentDidUpdate = function () {
+            if (this.props.positionOnUpdate) {
+                this.setAutoPosition();
+            }
+        };
+        AutoPositioner.flipSide = function (side) {
+            switch (side) {
+                case "top":
+                    {
+                        return "bottom";
+                    }
+                case "bottom":
+                    {
+                        return "top";
+                    }
+                case "left":
+                    {
+                        return "right";
+                    }
+                case "right":
+                    {
+                        return "left";
+                    }
+                default:
+                    {
+                        throw new Error("Invalid side");
+                    }
+            }
+        };
+        AutoPositioner.elementFitsYSide = function (side, ownRect, parentRect) {
+            switch (side) {
+                case "top":
+                    {
+                        return parentRect.top - ownRect.height >= 0;
+                    }
+                case "bottom":
+                    {
+                        return parentRect.bottom + ownRect.height < window.innerHeight;
+                    }
+                default:
+                    {
+                        throw new Error("Invalid side");
+                    }
+            }
+        };
+        AutoPositioner.elementFitsXSide = function (side, ownRect, parentRect) {
+            switch (side) {
+                case "left":
+                    {
+                        return parentRect.left + ownRect.width < window.innerWidth;
+                    }
+                case "right":
+                    {
+                        return parentRect.right - ownRect.width >= 0;
+                    }
+                default:
+                    {
+                        throw new Error("Invalid side");
+                    }
+            }
+        };
+        AutoPositioner.prototype.setAutoPosition = function () {
+            var parentRect = this.props.getParentClientRect();
+            var ownNode = ReactDOM.findDOMNode(this.owner);
+            var ownRect = ownNode.getBoundingClientRect();
+            var ySide = this.props.ySide || "top";
+            var xSide = this.props.xSide || "right";
+            var yMargin = this.props.yMargin || 0;
+            var xMargin = this.props.xMargin || 0;
+            var top = null;
+            var left = null;
+            if (ySide === "top") {
+                top = parentRect.top - ownRect.height - yMargin;
+            }
+            else {
+                top = parentRect.bottom + yMargin;
+            }
+            if (xSide === "left") {
+                left = parentRect.left - xMargin;
+            }
+            else {
+                left = parentRect.right - ownRect.width + xMargin;
+            }
+            if (left < 0) {
+                left = 0;
+            }
+            else if (left + ownRect.width > window.innerWidth) {
+                left = left - (left + ownRect.width - window.innerWidth);
+            }
+            if (top < 0) {
+                top = 0;
+            }
+            else if (top + ownRect.height > window.innerHeight) {
+                top = top - (top + ownRect.height - window.innerHeight);
+            }
+            ownNode.style.left = "" + left + "px";
+            ownNode.style.top = "" + top + "px";
+        };
+        return AutoPositioner;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = AutoPositioner;
+});
+define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/uicomponents/mixins/AutoPositioner", "src/uicomponents/mixins/applyMixins", "src/App"], function (require, exports, AutoPositioner_1, applyMixins_7, App_27) {
     "use strict";
     var FlagPickerComponent = (function (_super) {
         __extends(FlagPickerComponent, _super);
         function FlagPickerComponent(props) {
             _super.call(this, props);
             this.displayName = "FlagPicker";
+            if (this.props.autoPositionerProps) {
+                applyMixins_7.default(this, new AutoPositioner_1.default(this));
+            }
             this.state = this.getInitialStateTODO();
             this.bindMethods();
         }
@@ -14794,10 +14948,11 @@ define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"
             this.handleSelectEmblem(null);
         };
         FlagPickerComponent.prototype.handleUpload = function () {
-            if (!this.props.uploadFiles)
-                throw new Error();
             var files = ReactDOM.findDOMNode(this.ref_TODO_imageUploader).files;
-            this.props.uploadFiles(files);
+            var uploadSuccessful = this.props.uploadFiles(files);
+            if (!uploadSuccessful) {
+                this.ref_TODO_imageUploader.value = "";
+            }
         };
         FlagPickerComponent.prototype.makeEmblemElement = function (template) {
             var className = "emblem-picker-image";
@@ -14822,10 +14977,8 @@ define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"
                 emblemElements.push(this.makeEmblemElement(template));
             }
             var imageInfoMessage;
-            if (this.props.hasImageFailMessage) {
-                imageInfoMessage =
-                    React.DOM.div({ className: "image-info-message image-loading-fail-message" }, "Linked image failed to load. Try saving it to your own computer " +
-                        "and uploading it.");
+            if (this.props.failMessage) {
+                imageInfoMessage = this.props.failMessage;
             }
             else {
                 imageInfoMessage =
@@ -14840,6 +14993,7 @@ define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"
             }, React.DOM.input({
                 className: "flag-image-upload-button",
                 type: "file",
+                accept: "image/*",
                 ref: function (component) {
                     _this.ref_TODO_imageUploader = component;
                 },
@@ -14855,60 +15009,31 @@ define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/mixins/FocusTimer", ["require", "exports"], function (require, exports) {
+define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uicomponents/setupgame/FlagPicker", "src/uicomponents/PlayerFlag", "src/Flag", "src/Emblem"], function (require, exports, FlagPicker_1, PlayerFlag_3, Flag_3, Emblem_3) {
     "use strict";
-    var FocusTimer = (function () {
-        function FocusTimer(owner) {
-            this.owner = owner;
-            this.setFocusTimer = this.setFocusTimer.bind(this);
+    var failMessages = {
+        hotlinkedImageLoadingFailed: {
+            text: "Linked image failed to load. Try saving it to your own computer " +
+                "and uploading it."
+        },
+        noValidImageFile: {
+            text: "The attached file wasn't recognized as an image."
         }
-        Object.defineProperty(FocusTimer.prototype, "props", {
-            get: function () {
-                return this.owner.props.focusTimerProps;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        FocusTimer.prototype.componentDidMount = function () {
-            this.setFocusTimer();
-        };
-        FocusTimer.prototype.registerListener = function () {
-            window.addEventListener("focus", this.setFocusTimer, false);
-        };
-        FocusTimer.prototype.clearListener = function () {
-            window.removeEventListener("focus", this.setFocusTimer);
-        };
-        FocusTimer.prototype.isWithinGracePeriod = function () {
-            var graceTime = this.props && isFinite(this.props.graceTime) ? this.props.graceTime : 500;
-            return Date.now() < this.lastFocusTime + graceTime;
-        };
-        FocusTimer.prototype.setFocusTimer = function () {
-            this.lastFocusTime = Date.now();
-        };
-        return FocusTimer;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = FocusTimer;
-});
-define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uicomponents/setupgame/FlagPicker", "src/uicomponents/PlayerFlag", "src/Flag", "src/Emblem", "src/uicomponents/mixins/FocusTimer", "src/uicomponents/mixins/applyMixins"], function (require, exports, FlagPicker_1, PlayerFlag_3, Flag_3, Emblem_3, FocusTimer_1, applyMixins_7) {
-    "use strict";
+    };
     var FlagSetterComponent = (function (_super) {
         __extends(FlagSetterComponent, _super);
         function FlagSetterComponent(props) {
             _super.call(this, props);
             this.displayName = "FlagSetter";
-            this.isMountedTODO = false;
             this.state = this.getInitialStateTODO();
-            this.focusTimer = new FocusTimer_1.default(this);
-            applyMixins_7.default(this, this.focusTimer);
             this.bindMethods();
         }
         FlagSetterComponent.prototype.bindMethods = function () {
             this.getFirstValidImageFromFiles = this.getFirstValidImageFromFiles.bind(this);
-            this.displayImageLoadingFailMessage = this.displayImageLoadingFailMessage.bind(this);
             this.setAsInactive = this.setAsInactive.bind(this);
             this.setForegroundEmblem = this.setForegroundEmblem.bind(this);
-            this.clearImageLoadingFailMessage = this.clearImageLoadingFailMessage.bind(this);
+            this.setFailMessage = this.setFailMessage.bind(this);
+            this.clearFailMessage = this.clearFailMessage.bind(this);
             this.handleClick = this.handleClick.bind(this);
             this.setCustomImageFromFile = this.setCustomImageFromFile.bind(this);
             this.handleUpdate = this.handleUpdate.bind(this);
@@ -14916,6 +15041,7 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
             this.handleDrop = this.handleDrop.bind(this);
             this.toggleActive = this.toggleActive.bind(this);
             this.stopEvent = this.stopEvent.bind(this);
+            this.getClientRect = this.getClientRect.bind(this);
         };
         FlagSetterComponent.prototype.getInitialStateTODO = function () {
             var flag = new Flag_3.default({
@@ -14926,34 +15052,38 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
             });
             return ({
                 flag: flag,
-                hasImageFailMessage: false
+                failMessageElement: null
             });
         };
-        FlagSetterComponent.prototype.componentDidMount = function () {
-            this.isMountedTODO = true;
-        };
         FlagSetterComponent.prototype.componentWillUnmount = function () {
-            this.isMountedTODO = false;
-            window.clearTimeout(this.imageLoadingFailTimeoutHandle);
+            this.clearFailMessageTimeout();
             document.removeEventListener("click", this.handleClick);
-            this.focusTimer.clearListener();
         };
-        FlagSetterComponent.prototype.displayImageLoadingFailMessage = function () {
-            var _this = this;
-            this.setState({ hasImageFailMessage: true });
-            this.imageLoadingFailTimeoutHandle = window.setTimeout(function () {
-                _this.setState({ hasImageFailMessage: false });
-            }, 10000);
+        FlagSetterComponent.prototype.makeFailMessage = function (message, timeout) {
+            return React.DOM.div({
+                className: "image-info-message image-loading-fail-message",
+                style: {}
+            }, message.text);
         };
-        FlagSetterComponent.prototype.clearImageLoadingFailMessage = function () {
-            if (this.imageLoadingFailTimeoutHandle) {
-                window.clearTimeout(this.imageLoadingFailTimeoutHandle);
+        FlagSetterComponent.prototype.clearFailMessageTimeout = function () {
+            if (this.failMessageTimeoutHandle) {
+                window.clearTimeout(this.failMessageTimeoutHandle);
             }
-            this.setState({ hasImageFailMessage: false });
+        };
+        FlagSetterComponent.prototype.clearFailMessage = function () {
+            this.clearFailMessageTimeout();
+            this.setState({ failMessageElement: null });
+        };
+        FlagSetterComponent.prototype.setFailMessage = function (message, timeout) {
+            var _this = this;
+            this.setState({
+                failMessageElement: this.makeFailMessage(message, timeout)
+            });
+            this.failMessageTimeoutHandle = window.setTimeout(function () {
+                _this.clearFailMessage();
+            }, timeout);
         };
         FlagSetterComponent.prototype.handleClick = function (e) {
-            if (this.focusTimer.isWithinGracePeriod())
-                return;
             var node = ReactDOM.findDOMNode(this.ref_TODO_main);
             var target = e.target;
             if (target === node || node.contains(target)) {
@@ -14973,14 +15103,12 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
                 }
                 this.setState({ isActive: true });
                 document.addEventListener("click", this.handleClick, false);
-                this.focusTimer.registerListener();
             }
         };
         FlagSetterComponent.prototype.setAsInactive = function () {
-            if (this.isMountedTODO && this.state.isActive) {
+            if (this.state.isActive) {
                 this.setState({ isActive: false });
                 document.removeEventListener("click", this.handleClick);
-                this.focusTimer.clearListener();
             }
         };
         FlagSetterComponent.prototype.setForegroundEmblem = function (emblemTemplate) {
@@ -14999,15 +15127,17 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
             e.preventDefault();
         };
         FlagSetterComponent.prototype.handleDrop = function (e) {
+            var _this = this;
             if (e.dataTransfer) {
                 this.stopEvent(e);
                 var files = e.dataTransfer.files;
                 var image = this.getFirstValidImageFromFiles(files);
                 if (!image) {
                     var htmlContent = e.dataTransfer.getData("text/html");
-                    var imageSource = htmlContent.match(/src\s*=\s*"(.+?)"/)[1];
+                    var imageSourceMatches = htmlContent ? htmlContent.match(/src\s*=\s*"(.+?)"/) : null;
+                    var imageSource = imageSourceMatches ? imageSourceMatches[1] : null;
                     if (!imageSource) {
-                        console.error("None of the files provided are valid images");
+                        this.setFailMessage(failMessages.noValidImageFile, 10000);
                         return;
                     }
                     else {
@@ -15022,12 +15152,12 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
                         var img = new Image();
                         img.crossOrigin = "Anonymous";
                         img.onload = function (e) {
-                            this.state.flag.setCustomImage(getImageDataUrl(img));
-                            this.handleUpdate();
-                        }.bind(this);
+                            _this.state.flag.setCustomImage(getImageDataUrl(img));
+                            _this.handleUpdate();
+                        };
                         img.onerror = function (e) {
-                            this.displayImageLoadingFailMessage();
-                        }.bind(this);
+                            _this.setFailMessage(failMessages.hotlinkedImageLoadingFailed, 10000);
+                        };
                         img.src = imageSource;
                         if (img.complete || img.complete === undefined) {
                             this.state.flag.setCustomImage(getImageDataUrl(img));
@@ -15042,31 +15172,32 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
         };
         FlagSetterComponent.prototype.handleUpload = function (files) {
             var image = this.getFirstValidImageFromFiles(files);
-            if (!image)
+            if (!image) {
+                this.setFailMessage(failMessages.noValidImageFile, 10000);
                 return false;
+            }
             this.setCustomImageFromFile(image);
             return true;
         };
         FlagSetterComponent.prototype.getFirstValidImageFromFiles = function (files) {
-            var image;
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
                 if (file.type.indexOf("image") !== -1) {
-                    image = file;
-                    break;
+                    return file;
                 }
             }
-            return image;
+            return null;
         };
         FlagSetterComponent.prototype.setCustomImageFromFile = function (file) {
-            var setImageFN = function (file) {
+            var _this = this;
+            var setImageFN = function () {
                 var reader = new FileReader();
                 reader.onloadend = function () {
-                    this.state.flag.setCustomImage(reader.result);
-                    this.handleUpdate();
-                }.bind(this);
+                    _this.state.flag.setCustomImage(reader.result);
+                    _this.handleUpdate();
+                };
                 reader.readAsDataURL(file);
-            }.bind(this, file);
+            };
             var fileSizeInMegaBytes = file.size / 1024 / 1024;
             if (fileSizeInMegaBytes > 20) {
                 if (window.confirm("Are you sure you want to load an image that is " +
@@ -15096,7 +15227,6 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
             }
         };
         FlagSetterComponent.prototype.handleUpdate = function (dontTriggerParentUpdates) {
-            this.clearImageLoadingFailMessage();
             if (this.state.flag.customImage) {
                 if (this.ref_TODO_flagPicker) {
                     this.ref_TODO_flagPicker.clearSelectedEmblem();
@@ -15105,7 +15235,16 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
             if (!dontTriggerParentUpdates) {
                 this.props.toggleCustomImage(this.state.flag.customImage);
             }
-            this.forceUpdate();
+            if (this.state.failMessageElement) {
+                this.clearFailMessage();
+            }
+            else {
+                this.forceUpdate();
+            }
+        };
+        FlagSetterComponent.prototype.getClientRect = function () {
+            var ownNode = ReactDOM.findDOMNode(this.ref_TODO_playerFlag);
+            return ownNode.getBoundingClientRect();
         };
         FlagSetterComponent.prototype.render = function () {
             var _this = this;
@@ -15123,7 +15262,10 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
                 props: {
                     className: "flag-setter-display",
                     onClick: this.toggleActive
-                }
+                },
+                ref: function (component) {
+                    _this.ref_TODO_playerFlag = component;
+                },
             }), this.state.isActive ?
                 FlagPicker_1.default({
                     ref: function (component) {
@@ -15131,8 +15273,15 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
                     },
                     flag: this.state.flag,
                     handleSelectEmblem: this.setForegroundEmblem,
-                    hasImageFailMessage: this.state.hasImageFailMessage,
-                    uploadFiles: this.handleUpload
+                    failMessage: this.state.failMessageElement,
+                    uploadFiles: this.handleUpload,
+                    autoPositionerProps: {
+                        getParentClientRect: this.getClientRect,
+                        positionOnUpdate: true,
+                        ySide: "bottom",
+                        xSide: "left",
+                        positionOnResize: true
+                    }
                 }) : null));
         };
         return FlagSetterComponent;
@@ -15142,7 +15291,7 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Color"], function (require, exports, Color_4) {
+define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Color", "src/uicomponents/mixins/AutoPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, Color_4, AutoPositioner_2, applyMixins_8) {
     "use strict";
     var ColorPickerComponent = (function (_super) {
         __extends(ColorPickerComponent, _super);
@@ -15151,19 +15300,20 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
             this.displayName = "ColorPicker";
             this.onChangeTimeoutHandle = null;
             this.baseElementID = "color-picker";
+            if (this.props.autoPositionerProps) {
+                applyMixins_8.default(this, new AutoPositioner_2.default(this));
+            }
             this.state = this.getInitialStateTODO();
             this.bindMethods();
         }
         ColorPickerComponent.prototype.bindMethods = function () {
             this.setHue = this.setHue.bind(this);
-            this.setPosition = this.setPosition.bind(this);
             this.setSat = this.setSat.bind(this);
             this.makeHsvInputs = this.makeHsvInputs.bind(this);
             this.autoGenerateColor = this.autoGenerateColor.bind(this);
             this.updateFromHex = this.updateFromHex.bind(this);
             this.updateFromHsv = this.updateFromHsv.bind(this);
             this.makeGradientStyle = this.makeGradientStyle.bind(this);
-            this.getHueGradientString = this.getHueGradientString.bind(this);
             this.triggerParentOnChange = this.triggerParentOnChange.bind(this);
             this.setHex = this.setHex.bind(this);
             this.setVal = this.setVal.bind(this);
@@ -15183,19 +15333,6 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
                 sat: hsvColor[1],
                 val: hsvColor[2]
             });
-        };
-        ColorPickerComponent.prototype.componentDidMount = function () {
-            window.addEventListener("resize", this.setPosition);
-            this.setPosition();
-        };
-        ColorPickerComponent.prototype.componentWillUnmount = function () {
-            window.removeEventListener("resize", this.setPosition);
-        };
-        ColorPickerComponent.prototype.setPosition = function () {
-            var parentRect = this.props.getParentPosition();
-            var domNode = ReactDOM.findDOMNode(this);
-            domNode.style.top = "" + parentRect.bottom + "px";
-            domNode.style.left = "" + parentRect.left + "px";
         };
         ColorPickerComponent.prototype.triggerParentOnChange = function (color, isNull) {
             var _this = this;
@@ -15303,28 +15440,6 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
                 this.triggerParentOnChange(Color_4.default.fromHex(this.state.hexColor), true);
             }
         };
-        ColorPickerComponent.prototype.getHueGradientString = function () {
-            if (this.hueGradientString)
-                return this.hueGradientString;
-            var steps = 10;
-            var gradeStep = 100 / (steps - 1);
-            var hueStep = 360 / steps;
-            var gradientString = "linear-gradient(to right, ";
-            for (var i = 0; i < steps; i++) {
-                var hue = hueStep * i;
-                var grade = gradeStep * i;
-                var colorString = "hsl(" + hue + ", 100%, 50%) " + grade + "%";
-                if (i < steps - 1) {
-                    colorString += ",";
-                }
-                else {
-                    colorString += ")";
-                }
-                gradientString += colorString;
-            }
-            this.hueGradientString = gradientString;
-            return gradientString;
-        };
         ColorPickerComponent.prototype.makeGradientString = function (min, max) {
             return ("linear-gradient(to right, " +
                 min + " 0%, " +
@@ -15341,9 +15456,7 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
             switch (type) {
                 case "hue":
                     {
-                        return ({
-                            background: this.getHueGradientString()
-                        });
+                        return ({});
                     }
                 case "sat":
                     {
@@ -15375,12 +15488,13 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
                 sat: this.setSat,
                 val: this.setVal
             };
-            return (React.DOM.div({ className: "color-picker-input-container", key: type }, React.DOM.label({ className: "color-picker-label", htmlFor: "" + this.baseElementID + type }, label), React.DOM.div({
-                className: "color-picker-slider-background",
+            var idForType = "" + this.baseElementID + "-" + type;
+            return (React.DOM.div({ className: "color-picker-input-container", key: type }, React.DOM.label({ className: "color-picker-label", htmlFor: idForType }, label), React.DOM.div({
+                className: "color-picker-slider-background" + " color-picker-slider-background-" + type,
                 style: this.makeGradientStyle(type)
             }, React.DOM.input({
                 className: "color-picker-slider",
-                id: "" + this.baseElementID + type,
+                id: idForType,
                 ref: type,
                 type: "range",
                 min: 0,
@@ -15399,7 +15513,7 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
             })));
         };
         ColorPickerComponent.prototype.render = function () {
-            return (React.DOM.div({ className: "color-picker" }, React.DOM.div({ className: "color-picker-hsv" }, this.makeHsvInputs("hue"), this.makeHsvInputs("sat"), this.makeHsvInputs("val")), React.DOM.div({ className: "color-picker-input-container", key: "hex" }, React.DOM.label({ className: "color-picker-label", htmlFor: "" + this.baseElementID + "hex" }, "Hex:"), !this.props.generateColor ? null :
+            return (React.DOM.div({ className: "color-picker" }, React.DOM.div({ className: "color-picker-hsv" }, this.makeHsvInputs("hue"), this.makeHsvInputs("sat"), this.makeHsvInputs("val")), React.DOM.div({ className: "color-picker-input-container", key: "hex" }, React.DOM.label({ className: "color-picker-label", htmlFor: "" + this.baseElementID + "-hex" }, "Hex:"), !this.props.generateColor ? null :
                 React.DOM.button({
                     className: "color-picker-button",
                     onClick: this.autoGenerateColor
@@ -15422,17 +15536,14 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/ColorSetter", ["require", "exports", "src/uicomponents/setupgame/ColorPicker", "src/uicomponents/mixins/FocusTimer", "src/uicomponents/mixins/applyMixins"], function (require, exports, ColorPicker_1, FocusTimer_2, applyMixins_8) {
+define("src/uicomponents/setupgame/ColorSetter", ["require", "exports", "src/uicomponents/setupgame/ColorPicker"], function (require, exports, ColorPicker_1) {
     "use strict";
     var ColorSetterComponent = (function (_super) {
         __extends(ColorSetterComponent, _super);
         function ColorSetterComponent(props) {
             _super.call(this, props);
             this.displayName = "ColorSetter";
-            this.isMountedTODO = false;
             this.state = this.getInitialStateTODO();
-            this.focusTimer = new FocusTimer_2.default(this);
-            applyMixins_8.default(this, this.focusTimer);
             this.bindMethods();
         }
         ColorSetterComponent.prototype.bindMethods = function () {
@@ -15446,17 +15557,10 @@ define("src/uicomponents/setupgame/ColorSetter", ["require", "exports", "src/uic
                 isActive: false
             });
         };
-        ColorSetterComponent.prototype.componentDidMount = function () {
-            this.isMountedTODO = true;
-        };
         ColorSetterComponent.prototype.componentWillUnmount = function () {
-            this.isMountedTODO = false;
             document.removeEventListener("click", this.handleClick);
-            this.focusTimer.clearListener();
         };
         ColorSetterComponent.prototype.handleClick = function (e) {
-            if (this.focusTimer.isWithinGracePeriod())
-                return;
             var node = ReactDOM.findDOMNode(this.ref_TODO_main);
             var target = e.target;
             if (target === node || node.contains(target)) {
@@ -15476,14 +15580,12 @@ define("src/uicomponents/setupgame/ColorSetter", ["require", "exports", "src/uic
                 }
                 this.setState({ isActive: true });
                 document.addEventListener("click", this.handleClick, false);
-                this.focusTimer.registerListener();
             }
         };
         ColorSetterComponent.prototype.setAsInactive = function () {
-            if (this.isMountedTODO && this.state.isActive) {
+            if (this.state.isActive) {
                 this.setState({ isActive: false });
                 document.removeEventListener("click", this.handleClick);
-                this.focusTimer.clearListener();
             }
         };
         ColorSetterComponent.prototype.updateColor = function (color, isNull) {
@@ -15517,7 +15619,13 @@ define("src/uicomponents/setupgame/ColorSetter", ["require", "exports", "src/uic
                     generateColor: this.props.generateColor,
                     onChange: this.props.onChange,
                     flagHasCustomImage: this.props.flagHasCustomImage,
-                    getParentPosition: this.getClientRect
+                    autoPositionerProps: {
+                        getParentClientRect: this.getClientRect,
+                        positionOnUpdate: true,
+                        ySide: "bottom",
+                        xSide: "left",
+                        positionOnResize: true
+                    }
                 }) : null));
         };
         return ColorSetterComponent;
@@ -15710,6 +15818,7 @@ define("src/uicomponents/setupgame/SetupGamePlayers", ["require", "exports", "sr
             }
         };
         SetupGamePlayersComponent.prototype.makeNewPlayers = function (amountToMake) {
+            var _this = this;
             if (amountToMake === void 0) { amountToMake = 1; }
             if (this.state.playerKeys.length >= this.props.maxPlayers) {
                 return;
@@ -15720,6 +15829,9 @@ define("src/uicomponents/setupgame/SetupGamePlayers", ["require", "exports", "sr
             }
             this.setState({
                 playerKeys: this.state.playerKeys.concat(newIds)
+            }, function () {
+                var ownDOMNode = ReactDOM.findDOMNode(_this);
+                ownDOMNode.scrollTop = ownDOMNode.scrollHeight;
             });
         };
         SetupGamePlayersComponent.prototype.setHumanPlayer = function (playerId) {
@@ -15729,6 +15841,7 @@ define("src/uicomponents/setupgame/SetupGamePlayers", ["require", "exports", "sr
             this.setState({ playerKeys: newPlayerOrder });
         };
         SetupGamePlayersComponent.prototype.removePlayers = function (toRemove) {
+            var _this = this;
             if (this.state.playerKeys.length <= this.props.minPlayers) {
                 return;
             }
@@ -15736,7 +15849,17 @@ define("src/uicomponents/setupgame/SetupGamePlayers", ["require", "exports", "sr
                 playerKeys: this.state.playerKeys.filter(function (playerId) {
                     return toRemove.indexOf(playerId) === -1;
                 })
+            }, function () {
+                _this.cleanSetupComponentsByID();
             });
+        };
+        SetupGamePlayersComponent.prototype.cleanSetupComponentsByID = function () {
+            for (var playerID in this.playerSetupComponentsByID) {
+                if (!this.playerSetupComponentsByID[playerID]) {
+                    delete this.playerSetupComponentsByID[playerID];
+                }
+            }
+            ;
         };
         SetupGamePlayersComponent.prototype.setActiveColorSetter = function (colorSetter) {
             if (this.state.activeColorSetter) {
@@ -15760,24 +15883,20 @@ define("src/uicomponents/setupgame/SetupGamePlayers", ["require", "exports", "sr
         SetupGamePlayersComponent.prototype.render = function () {
             var _this = this;
             var playerSetups = [];
-            var _loop_1 = function(i) {
+            this.state.playerKeys.forEach(function (playerID, i) {
                 playerSetups.push(PlayerSetup_1.default({
-                    key: this_1.state.playerKeys[i],
-                    keyTODO: this_1.state.playerKeys[i],
+                    key: playerID,
+                    keyTODO: playerID,
                     ref: function (component) {
-                        _this.playerSetupComponentsByID[i] = component;
+                        _this.playerSetupComponentsByID[playerID] = component;
                     },
-                    removePlayers: this_1.removePlayers,
-                    setActiveSetterComponent: this_1.setActiveColorSetter,
-                    initialName: "Player " + this_1.state.playerKeys[i],
+                    removePlayers: _this.removePlayers,
+                    setActiveSetterComponent: _this.setActiveColorSetter,
+                    initialName: "Player " + playerID,
                     isHuman: i === 0,
-                    setHuman: this_1.setHumanPlayer
+                    setHuman: _this.setHumanPlayer
                 }));
-            };
-            var this_1 = this;
-            for (var i = 0; i < this.state.playerKeys.length; i++) {
-                _loop_1(i);
-            }
+            });
             var canAddPlayers = this.state.playerKeys.length < this.props.maxPlayers;
             return (React.DOM.div({ className: "setup-game-players" }, React.DOM.div({
                 className: "player-setup setup-game-players-header"
@@ -19706,6 +19825,7 @@ define("src/uicomponents/trade/TradeMoney", ["require", "exports", "src/uicompon
             this.props.onDragEnd();
         };
         TradeMoneyComponent.prototype.handleClick = function () {
+            debugger;
             this.props.onClick(this.props.keyTODO);
         };
         TradeMoneyComponent.prototype.handleMoneyAmountChange = function (e) {
@@ -19728,7 +19848,7 @@ define("src/uicomponents/trade/TradeMoney", ["require", "exports", "src/uicompon
                     rowProps.className += " dragging";
                 }
             }
-            else if (this.props.onClick) {
+            if (this.props.onClick) {
                 rowProps.onClick = this.handleClick;
             }
             var moneyElement;
@@ -20264,123 +20384,7 @@ define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports",
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/mixins/AutoPositioner", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var AutoPositioner = (function () {
-        function AutoPositioner(owner) {
-            this.owner = owner;
-        }
-        Object.defineProperty(AutoPositioner.prototype, "props", {
-            get: function () {
-                return this.owner.props.autoPositionerProps;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        AutoPositioner.prototype.componentDidMount = function () {
-            this.setAutoPosition();
-        };
-        AutoPositioner.prototype.componentDidUpdate = function () {
-            if (this.props.positionOnUpdate) {
-                this.setAutoPosition();
-            }
-        };
-        AutoPositioner.flipSide = function (side) {
-            switch (side) {
-                case "top":
-                    {
-                        return "bottom";
-                    }
-                case "bottom":
-                    {
-                        return "top";
-                    }
-                case "left":
-                    {
-                        return "right";
-                    }
-                case "right":
-                    {
-                        return "left";
-                    }
-                default:
-                    {
-                        throw new Error("Invalid side");
-                    }
-            }
-        };
-        AutoPositioner.elementFitsYSide = function (side, ownRect, parentRect) {
-            switch (side) {
-                case "top":
-                    {
-                        return parentRect.top - ownRect.height >= 0;
-                    }
-                case "bottom":
-                    {
-                        return parentRect.bottom + ownRect.height < window.innerHeight;
-                    }
-                default:
-                    {
-                        throw new Error("Invalid side");
-                    }
-            }
-        };
-        AutoPositioner.elementFitsXSide = function (side, ownRect, parentRect) {
-            switch (side) {
-                case "left":
-                    {
-                        return parentRect.left + ownRect.width < window.innerWidth;
-                    }
-                case "right":
-                    {
-                        return parentRect.right - ownRect.width >= 0;
-                    }
-                default:
-                    {
-                        throw new Error("Invalid side");
-                    }
-            }
-        };
-        AutoPositioner.prototype.setAutoPosition = function () {
-            var parentRect = this.props.getParentClientRect();
-            var ownNode = ReactDOM.findDOMNode(this.owner);
-            var ownRect = ownNode.getBoundingClientRect();
-            var ySide = this.props.ySide || "top";
-            var xSide = this.props.xSide || "right";
-            var yMargin = this.props.yMargin || 0;
-            var xMargin = this.props.xMargin || 0;
-            var fitsY = AutoPositioner.elementFitsYSide(ySide, ownRect, parentRect);
-            if (!fitsY) {
-                ySide = AutoPositioner.flipSide(ySide);
-            }
-            var fitsX = AutoPositioner.elementFitsXSide(xSide, ownRect, parentRect);
-            if (!fitsX) {
-                xSide = AutoPositioner.flipSide(xSide);
-            }
-            var top = null;
-            var left = null;
-            if (ySide === "top") {
-                top = parentRect.top - ownRect.height - yMargin;
-            }
-            else {
-                top = parentRect.bottom + yMargin;
-            }
-            if (xSide === "left") {
-                left = parentRect.left - xMargin;
-            }
-            else {
-                left = parentRect.right - ownRect.width + xMargin;
-            }
-            ownNode.style.left = "" + left + "px";
-            ownNode.style.top = "" + top + "px";
-        };
-        return AutoPositioner;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = AutoPositioner;
-    var _a;
-});
-define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/diplomacy/AttitudeModifierInfo", "src/uicomponents/mixins/AutoPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, List_4, AttitudeModifierInfo_1, AutoPositioner_1, applyMixins_12) {
+define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/diplomacy/AttitudeModifierInfo", "src/uicomponents/mixins/AutoPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, List_4, AttitudeModifierInfo_1, AutoPositioner_3, applyMixins_12) {
     "use strict";
     var AttitudeModifierListComponent = (function (_super) {
         __extends(AttitudeModifierListComponent, _super);
@@ -20388,7 +20392,7 @@ define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports",
             _super.call(this, props);
             this.displayName = "AttitudeModifierList";
             if (this.props.autoPositionerProps) {
-                applyMixins_12.default(this, new AutoPositioner_1.default(this));
+                applyMixins_12.default(this, new AutoPositioner_3.default(this));
             }
         }
         AttitudeModifierListComponent.prototype.render = function () {
@@ -20608,7 +20612,7 @@ define("src/uicomponents/diplomacy/DiplomaticStatusPlayer", ["require", "exports
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/diplomacy/DiplomacyActions", "src/uicomponents/diplomacy/DiplomaticStatusPlayer", "src/DiplomacyState", "src/uicomponents/popups/PopupManager"], function (require, exports, List_5, DiplomacyActions_1, DiplomaticStatusPlayer_1, DiplomacyState_2, PopupManager_6) {
+define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/diplomacy/DiplomacyActions", "src/uicomponents/diplomacy/DiplomaticStatusPlayer", "src/uicomponents/popups/PopupManager", "src/DiplomacyState"], function (require, exports, List_5, DiplomacyActions_1, DiplomaticStatusPlayer_1, PopupManager_6, DiplomacyState_2) {
     "use strict";
     var DiplomacyOverviewComponent = (function (_super) {
         __extends(DiplomacyOverviewComponent, _super);
@@ -20862,7 +20866,7 @@ define("src/uicomponents/galaxymap/EconomySummaryItem", ["require", "exports"], 
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/EconomySummary", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/galaxymap/EconomySummaryItem"], function (require, exports, List_6, EconomySummaryItem_1) {
+define("src/uicomponents/galaxymap/EconomySummary", ["require", "exports", "src/uicomponents/galaxymap/EconomySummaryItem", "src/uicomponents/list/List"], function (require, exports, EconomySummaryItem_1, List_6) {
     "use strict";
     var EconomySummaryComponent = (function (_super) {
         __extends(EconomySummaryComponent, _super);
@@ -24497,8 +24501,9 @@ define("modules/common/battlesfxfunctions/shaders/Guard", ["require", "exports"]
 define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_45) {
     "use strict";
     function guard(props) {
-        var userCanvasWidth = props.width * 0.4;
-        var maxFrontier = userCanvasWidth;
+        var offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(props.userOffset, props.user);
+        var userX2 = offsetUserData.boundingBox.x + offsetUserData.boundingBox.width;
+        var maxFrontier = Math.min(userX2 + 20, props.width / 2);
         var baseTrailDistance = 80;
         var maxTrailDistance = maxFrontier;
         var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
@@ -24512,7 +24517,8 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "module
             lineAlpha: 1.5,
             blockAlpha: 0
         });
-        var travelTime = 0.2;
+        var maxFrontierRatioOfScreen = props.width / maxFrontier;
+        var travelTime = 0.3;
         var hasTriggeredEffect = false;
         var syncUniformsFN = function (time) {
             if (time < travelTime) {
@@ -24526,8 +24532,8 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "module
                     hasTriggeredEffect = true;
                     props.triggerEffect();
                 }
-                var adjustedtime = utility_45.getRelativeValue(time, travelTime - 0.02, 1);
-                adjustedtime = Math.pow(adjustedtime, 4);
+                var relativeTime = utility_45.getRelativeValue(time, travelTime - 0.02, 1);
+                var adjustedtime = Math.pow(relativeTime, 4);
                 var relativeDistance = utility_45.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
                 guardFilter.setUniformValues({
                     trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
@@ -25184,18 +25190,11 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
     function particleTest(props) {
         var width2 = props.width / 2;
         var height2 = props.height / 2;
+        var offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(props.userOffset, props.user);
         var mainContainer = new PIXI.Container();
-        var bg = new PIXI.Graphics();
-        bg.beginFill(0x000000);
-        bg.drawRect(0, 0, props.width, props.height);
-        bg.endFill();
-        bg.alpha = 1.0;
         var impactHasOccurred = false;
         var relativeImpactTime = 0.18;
-        var beamOrigin = {
-            x: 100,
-            y: props.height * 0.66
-        };
+        var beamOrigin = offsetUserData.singleAttackOriginPoint;
         var relativeBeamOrigin = {
             x: beamOrigin.x / props.width,
             y: beamOrigin.y / props.height
@@ -25479,6 +25478,7 @@ define("modules/common/battlesfxfunctions/makeSFXFromVideo", ["require", "export
         function onVideoLoaded() {
             clearBaseTextureListeners();
             baseTexture.autoUpdate = false;
+            sprite.y = props.height - baseTexture.source.videoHeight;
             if (onStartFN) {
                 onStartFN(sprite);
             }
@@ -25511,11 +25511,12 @@ define("modules/common/battlesfxfunctions/makeSFXFromVideo", ["require", "export
         function animate() {
             var elapsedTime = Date.now() - startTime;
             baseTexture.update();
-            if (elapsedTime < props.duration && !baseTexture.source.paused) {
+            if (!baseTexture.source.paused && !baseTexture.source.ended) {
                 requestAnimationFrame(animate);
             }
             else {
                 props.triggerEnd();
+                sprite.parent.removeChild(sprite);
                 sprite.destroy(true, true);
             }
         }
@@ -25785,7 +25786,7 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
                 perInt: 20
             }
         },
-        addsGuard: true,
+        preservesUserGuard: true,
     };
     exports.boardingHook = {
         type: "boardingHook",
@@ -25867,7 +25868,7 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
                 duration: 750
             }
         },
-        addsGuard: true,
+        preservesUserGuard: true,
         AIEvaluationPriority: 0.6,
         AIScoreAdjust: -0.1,
         disableInAIBattles: true,
@@ -27136,6 +27137,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             scalingFactor: 0.04
         };
         var maxUnitsPerColumn = props.maxUnitsPerColumn;
+        var maxColumns = 3;
         var isConvex = props.degree >= 0;
         var degree = Math.abs(props.degree);
         var image = App_39.default.images[spriteTemplate.imageSrc];
@@ -27154,7 +27156,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
             unitsToDraw = Math.round(unitsToDraw * heightRatio);
             zDistance *= (1 / heightRatio);
-            unitsToDraw = utility_50.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+            unitsToDraw = utility_50.clamp(unitsToDraw, 1, maxUnitsPerColumn * maxColumns);
         }
         var xMin, xMax, yMin, yMax;
         var rotationAngle = Math.PI / 180 * props.rotationAngle;
@@ -27183,6 +27185,8 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
         var lastColumn = Math.floor(unitsToDraw / maxUnitsPerColumn);
         var maxUnitsInLastColumn = unitsToDraw % maxUnitsPerColumn;
         var firstIndexForLastColumn = maxUnitsPerColumn * lastColumn;
+        var unitsInFirstColumn = lastColumn > 0 ? maxUnitsPerColumn : unitsToDraw;
+        var centermostUnitInFirstColumn = Math.ceil(unitsInFirstColumn / 2) - 1;
         for (var i = 0; i < unitsToDraw; i++) {
             var column = Math.floor(i / maxUnitsPerColumn);
             var columnFromRight = lastColumn - column;
@@ -27217,7 +27221,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
                 y: y + scaledHeight * spriteTemplate.attackOriginPoint.y
             };
             sequentialAttackOriginPoints.push(attackOriginPoint);
-            if (column === 0 && zPos + 1 === Math.ceil(maxUnitsPerColumn / 2)) {
+            if (column === 0 && i === centermostUnitInFirstColumn) {
                 primaryAttackOriginPoint = attackOriginPoint;
             }
             var sprite = new PIXI.Sprite(texture);
@@ -27385,9 +27389,9 @@ define("src/setDynamicTemplateProperties", ["require", "exports"], function (req
     }
     exports.setUnitFamilyAssociatedTemplates = setUnitFamilyAssociatedTemplates;
     function setTechnologyRequirements(technologyTemplates) {
-        var _loop_2 = function(technologyKey) {
+        var _loop_1 = function(technologyKey) {
             var technology = technologyTemplates[technologyKey];
-            var _loop_3 = function(level) {
+            var _loop_2 = function(level) {
                 var unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
                 unlockedTemplatesForLevel.forEach(function (template) {
                     if (!template.technologyRequirements) {
@@ -27400,11 +27404,11 @@ define("src/setDynamicTemplateProperties", ["require", "exports"], function (req
                 });
             };
             for (var level in technology.unlocksPerLevel) {
-                _loop_3(level);
+                _loop_2(level);
             }
         };
         for (var technologyKey in technologyTemplates) {
-            _loop_2(technologyKey);
+            _loop_1(technologyKey);
         }
     }
     exports.setTechnologyRequirements = setTechnologyRequirements;
@@ -27694,7 +27698,7 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
         };
         TemplateIndexes.getDistributablesByGroup = function (allDistributables) {
             var byGroup = {};
-            var _loop_4 = function(key) {
+            var _loop_3 = function(key) {
                 var distributable = allDistributables[key];
                 distributable.distributionGroups.forEach(function (group) {
                     if (!byGroup[group]) {
@@ -27704,7 +27708,7 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
                 });
             };
             for (var key in allDistributables) {
-                _loop_4(key);
+                _loop_3(key);
             }
             return byGroup;
         };
@@ -28112,7 +28116,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         unassignedStars.sort(function (a, b) {
             return mapGenDataByStarID[b.id].connectedness - mapGenDataByStarID[a.id].connectedness;
         });
-        var _loop_5 = function() {
+        var _loop_4 = function() {
             var seedStar = unassignedStars.pop();
             var islandForSameSector = seedStar.getIslandForQualifier(function (a, b) {
                 return sectorsByStarID[a.id] === sectorsByStarID[b.id];
@@ -28132,7 +28136,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
                         var starHasSector = Boolean(sectorsByStarID[star.id]);
                         return !starHasSector;
                     });
-                    var _loop_6 = function() {
+                    var _loop_5 = function() {
                         var frontierSortScores = {};
                         frontier.forEach(function (star) {
                             var borderLengthWithSector = sector_1.getBorderLengthWithStars([star]);
@@ -28149,7 +28153,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
                         sectorsByStarID[toAdd.id] = sector_1;
                     };
                     while (sector_1.stars.length < minSize && frontier.length > 0) {
-                        _loop_6();
+                        _loop_5();
                     }
                     discoveryStarIndex++;
                 }
@@ -28160,9 +28164,9 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         };
         var toAdd;
         while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
-            _loop_5();
+            _loop_4();
         }
-        var _loop_7 = function() {
+        var _loop_6 = function() {
             star = leftoverStars.pop();
             neighbors = star.getLinkedInRange(1).all;
             alreadyAddedNeighborSectors = {};
@@ -28207,8 +28211,8 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         };
         var star, neighbors, alreadyAddedNeighborSectors, candidateSectors;
         while (leftoverStars.length > 0) {
-            var state_7 = _loop_7();
-            if (state_7 === "continue") continue;
+            var state_6 = _loop_6();
+            if (state_6 === "continue") continue;
         }
         return Object.keys(sectorsByID).map(function (sectorID) {
             return sectorsByID[sectorID];
@@ -28512,6 +28516,9 @@ define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "e
 define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", "exports", "src/FillerPoint", "src/Star", "src/Region", "src/TemplateIndexes", "src/MapGenResult", "src/utility", "src/voronoi", "modules/defaultmapgen/common/setupIndependents", "modules/defaultmapgen/common/mapGenUtils", "modules/defaultmapgen/spiralGalaxy/generateSpiralPoints"], function (require, exports, FillerPoint_2, Star_2, Region_2, TemplateIndexes_1, MapGenResult_2, utility_55, voronoi_2, setupIndependents_1, mapGenUtils_2, generateSpiralPoints_1) {
     "use strict";
     var spiralGalaxyGeneration = function (options, players) {
+        var seed = "" + Math.random();
+        var oldRandom = Math.random;
+        Math.random = RNG.prototype.uniform.bind(new RNG(seed));
         var points = generateSpiralPoints_1.default(options);
         var voronoiRegularity = options.basicOptions.starSizeRegularity / 100;
         var centerDensity = options.basicOptions.centerDensity / 100;
@@ -28682,12 +28689,13 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
         stars.forEach(function (star) {
             star.baseIncome = utility_55.randInt(4, 6) * 10;
         });
+        Math.random = oldRandom;
         return new MapGenResult_2.default({
             stars: stars,
             fillerPoints: fillerPoints,
             width: options.defaultOptions.width,
             height: options.defaultOptions.height,
-            seed: "" + Math.random(),
+            seed: seed,
             independents: [pirates]
         });
     };

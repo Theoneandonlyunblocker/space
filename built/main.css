@@ -1325,7 +1325,6 @@ ol {
 }
 .battle-prep-left-upper-wrapper {
   position: relative;
-  flex: 1 0 auto;
   min-height: 16em;
   border-style: solid;
   border-color: #c4e5fb;
@@ -3918,6 +3917,9 @@ button.player-setup-remove-player.disabled {
   max-width: 5em;
   box-sizing: border-box;
 }
+.color-picker-slider-background-hue {
+  background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+}
 .color-picker-input-hex {
   right: 0;
   top: 0;
@@ -3938,22 +3940,6 @@ button.player-setup-remove-player.disabled {
   background-color: #0c1615;
   max-width: 368px;
 }
-@media (max-width: 500px) {
-  .flag-picker {
-    left: 0;
-  }
-}
-@media (max-height: 400px) {
-  .flag-picker {
-    bottom: 0;
-  }
-}
-@media (max-height: 300px) {
-  .flag-picker {
-    left: 0;
-    max-width: 90%;
-  }
-}
 .flag-picker-title {
   background-color: #0d2335;
 }
@@ -3962,11 +3948,17 @@ button.player-setup-remove-player.disabled {
     background-color: red;
   }
   to {
-    background-color: initial;
+    background-color: #550f0f;
   }
 }
+.image-info-message {
+  transition: background-color 1s;
+}
 .image-loading-fail-message {
-  animation: flash-bg-red 2s ease-in-quart;
+  background-color: #550f0f;
+  animation-name: flash-bg-red;
+  animation-timing-function: ease-in-out;
+  animation-duration: 2000ms;
 }
 .emblem-picker {
   background: magenta;
@@ -4125,7 +4117,7 @@ button.player-setup-remove-player.disabled {
   border-radius: 10px;
 }
 .map-gen-option-value {
-  margin: 0 1em;
+  margin: auto 1em;
   flex: 0 0 65px;
   width: 65px;
 }
