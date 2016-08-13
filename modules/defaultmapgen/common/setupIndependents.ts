@@ -8,6 +8,7 @@ import Region from "../../../src/Region";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
+import Name from "../../../src/Name";
 import Fleet from "../../../src/Fleet";
 import
 {
@@ -120,7 +121,7 @@ export default function setupIndependents(props:
     }
     
     const fleet = new Fleet(props.player, units, star, undefined, false);
-    fleet.name = "Pirates";
+    fleet.name = new Name("Pirates", true);
   });
 }
 

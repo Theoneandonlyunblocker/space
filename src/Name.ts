@@ -14,6 +14,11 @@ export default class Name
   {
     return new Name(data.fullName, data.isPlural);
   }
+  public setName(name: string, isPlural: boolean = false): void
+  {
+    this.fullName = name;
+    this.isPlural = isPlural;
+  }
   public toString(): string
   {
     return this.fullName;

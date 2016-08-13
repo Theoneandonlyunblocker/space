@@ -248,7 +248,7 @@ export default class GameLoader
     }
 
     var player = new Player(data.isAI, data.id);
-    // legacy 13.8.2016
+    // legacy savedata 13.8.2016
     if (typeof data.name === "string")
     {
       const castedDataName: string = <any> data.name;
@@ -417,7 +417,16 @@ export default class GameLoader
     }
 
     var fleet = new Fleet(player, units, this.starsById[data.locationId], data.id, false);
-    fleet.name = Name.fromData(data.name);
+    // legacy savedata 13.8.2016
+    if (typeof data.name === "string")
+    {
+      const castedDataName: string = <any> data.name;
+      fleet.name = new Name(castedDataName);
+    }
+    else
+    {
+      fleet.name = Name.fromData(data.name);
+    }
     return fleet;
   }
   deserializeUnit(data: UnitSaveData): Unit
