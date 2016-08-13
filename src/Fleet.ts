@@ -6,6 +6,7 @@ import app from "./App"; // TODO global
 import idGenerators from "./idGenerators";
 import Star from "./Star";
 import Unit from "./Unit";
+import Name from "./Name";
 import Player from "./Player";
 import FleetSaveData from "./savedata/FleetSaveData";
 import eventManager from "./eventManager";
@@ -28,7 +29,7 @@ export default class Fleet
   isStealthy: boolean;
 
   id: number;
-  name: string;
+  name: Name;
 
   constructor(player: Player, units: Unit[], location: Star,
     id?: number, shouldRender: boolean = true)
@@ -36,7 +37,7 @@ export default class Fleet
     this.player = player;
     this.location = location;
     this.id = isFinite(id) ? id : idGenerators.fleet++;
-    this.name = "Fleet " + this.id;
+    this.name = new Name("Fleet " + this.id);
 
     this.location.addFleet(this);
     this.player.addFleet(this);
@@ -346,7 +347,7 @@ export default class Fleet
     var data: FleetSaveData =
     {
       id: this.id,
-      name: this.name,
+      name: this.name.serialize(),
 
       locationId: this.location.id,
       playerId: this.player.id,

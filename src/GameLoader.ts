@@ -417,7 +417,7 @@ export default class GameLoader
     }
 
     var fleet = new Fleet(player, units, this.starsById[data.locationId], data.id, false);
-    fleet.name = data.name;
+    fleet.name = Name.fromData(data.name);
     return fleet;
   }
   deserializeUnit(data: UnitSaveData): Unit
