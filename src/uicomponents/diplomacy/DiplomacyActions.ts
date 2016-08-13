@@ -190,7 +190,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
           {
             className: "diplomacy-actions-header"
           },
-            targetPlayer.name
+            targetPlayer.name.fullName
           ),
           React.DOM.button(declareWarProps,
             "Declare war"

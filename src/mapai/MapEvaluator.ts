@@ -694,8 +694,8 @@ export default class MapEvaluator
   {
     if (!this.player.diplomacyStatus.metPlayers[player.id])
     {
-      throw new Error(this.player.name +
-        " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
+      throw new Error(this.player.name.fullName +
+        " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name.fullName);
     }
 
     var otherInfluenceMap = this.getPlayerInfluenceMap(player);

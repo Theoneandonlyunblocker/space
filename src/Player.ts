@@ -138,7 +138,7 @@ export default class Player
     }
     eventManager.dispatchEvent("makePlayerDiedNotification",
     {
-      deadPlayerName: this.name
+      deadPlayerName: this.name.fullName
     });
     console.log(this.name + " died");
   }

@@ -52,7 +52,7 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
           {
             className: "battle-info-opponent-name"
           },
-            battlePrep.enemyPlayer.name
+            battlePrep.enemyPlayer.name.fullName
           )
         ),
         React.DOM.div(

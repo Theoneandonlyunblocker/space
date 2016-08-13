@@ -204,7 +204,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
         },
           TradeableItemsComponentFactory(
           {
-            header: "tradeable items " + this.props.selfPlayer.name,
+            header: "tradeable items " + this.props.selfPlayer.name.fullName,
             tradeableItems: selfAvailableItems,
             noListHeader: true,
             isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
@@ -215,7 +215,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
           }),
           TradeableItemsComponentFactory(
           {
-            header: "tradeable items " + this.props.otherPlayer.name,
+            header: "tradeable items " + this.props.otherPlayer.name.fullName,
             tradeableItems: otherAvailableItems,
             noListHeader: true,
             isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,

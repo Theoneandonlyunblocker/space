@@ -49,7 +49,7 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         {
           className: "star-info-owner"
         },
-          star.owner ? star.owner.name : null
+          star.owner ? star.owner.name.fullName : null
         ),
         React.DOM.div(
         {
