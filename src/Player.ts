@@ -23,6 +23,7 @@ import Color from "./Color";
 import Game from "./Game";
 import Point from "./Point";
 import Personality from "./Personality";
+import Name from "./Name";
 import idGenerators from "./idGenerators";
 import
 {
@@ -44,7 +45,7 @@ import PlayerSaveData from "./savedata/PlayerSaveData";
 export default class Player
 {
   id: number;
-  name: string;
+  name: Name;
   color: Color;
   colorAlpha: number;
   secondaryColor: Color;
@@ -111,7 +112,7 @@ export default class Player
   constructor(isAI: boolean, id?: number)
   {
     this.id = isFinite(id) ? id : idGenerators.player++;
-    this.name = "Player " + this.id;
+    this.name = new Name("Player " + this.id);
 
     this.isAI = isAI;
     this.diplomacyStatus = new DiplomacyStatus(this);
@@ -855,7 +856,7 @@ export default class Player
     var data: PlayerSaveData =
     {
       id: this.id,
-      name: this.name,
+      name: this.name.serialize(),
       color: this.color.serialize(),
       colorAlpha: this.colorAlpha,
       secondaryColor: this.secondaryColor.serialize(),

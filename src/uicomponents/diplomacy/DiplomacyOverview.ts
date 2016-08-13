@@ -89,7 +89,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         content: DiplomaticStatusPlayer(
         {
           player: player,
-          name: player.name,
+          name: player.name.fullName,
           status: DiplomacyState[status],
           opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
           flag: player.flag,

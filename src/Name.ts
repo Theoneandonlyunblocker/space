@@ -5,7 +5,7 @@ export default class Name
   public fullName: string;
   public isPlural: boolean = false;
 
-  constructor(fullName: string, isPlural: boolean)
+  constructor(fullName: string, isPlural: boolean = false)
   {
     this.fullName = fullName;
     this.isPlural = isPlural;

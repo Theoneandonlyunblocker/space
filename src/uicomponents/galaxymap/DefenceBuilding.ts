@@ -51,7 +51,7 @@ export class DefenceBuildingComponent extends React.Component<PropTypes, StateTy
           props:
           {
             className: "defence-building-controller",
-            title: building.controller.name
+            title: building.controller.name.fullName
           },
           key: "flag",
           flag: building.controller.flag

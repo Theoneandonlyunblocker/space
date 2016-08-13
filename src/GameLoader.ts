@@ -18,6 +18,7 @@ import Fleet from "./Fleet";
 import Item from "./Item";
 import Personality from "./Personality";
 import MapGenResult from "./MapGenResult";
+import Name from "./Name";
 import
 {
   extendObject,
@@ -247,7 +248,16 @@ export default class GameLoader
     }
 
     var player = new Player(data.isAI, data.id);
-    player.name = data.name;
+    // legacy 13.8.2016
+    if (typeof data.name === "string")
+    {
+      const castedDataName: string = <any> data.name;
+      player.name = new Name(castedDataName);
+    }
+    else
+    {
+      player.name = Name.fromData(data.name);
+    }
     player.money = data.money;
     player.isIndependent = data.isIndependent;
 

@@ -4,12 +4,13 @@ import FleetSaveData from "./FleetSaveData";
 import ItemSaveData from "./ItemSaveData";
 import PlayerTechnologySaveData from "./PlayerTechnologySaveData";
 import ColorSaveData from "./ColorSaveData";
+import NameSaveData from "./NameSaveData";
 import Personality from "../Personality";
 
 declare interface PlayerSaveData
 {
   id: number;
-  name: string;
+  name: NameSaveData;
   color: ColorSaveData;
   colorAlpha: number;
   secondaryColor: ColorSaveData;

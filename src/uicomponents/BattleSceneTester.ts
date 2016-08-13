@@ -3,6 +3,7 @@
 
 import Unit from "../Unit";
 import Player from "../Player";
+import Name from "../Name";
 import Battle from "../Battle";
 import BattleScene from "../BattleScene";
 // import BattleComponentFactory from "./battle/Battle";
@@ -120,7 +121,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   makePlayer()
   {
     var player = new Player(false, this.idGenerator++);
-    player.name = "player " + player.id;
+    player.name = new Name("player " + player.id);
     player.makeColorScheme();
     player.makeRandomFlag();
     

@@ -1,6 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Player from "../../Player";
+import Name from "../../Name";
 import Color from "../../Color";
 import {default as FlagSetter, FlagSetterComponent} from "./FlagSetter";
 import {default as ColorSetter, ColorSetterComponent} from "./ColorSetter";
@@ -136,7 +137,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     var player = new Player(!this.props.isHuman);
     player.initTechnologies();
 
-    player.name = this.state.name;
+    player.name = new Name(this.state.name);
     
     player.color = this.state.mainColor === null ?
       this.generateMainColor() : this.state.mainColor;

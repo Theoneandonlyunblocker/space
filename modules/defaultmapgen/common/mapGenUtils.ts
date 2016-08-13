@@ -14,6 +14,7 @@ import MapGenPoint from "./MapGenPoint";
 
 import Region from "../../../src/Region";
 import Star from "../../../src/Star";
+import Name from "../../../src/Name";
 import Building from "../../../src/Building";
 import Player from "../../../src/Player";
 import Color from "../../../src/Color";
@@ -463,7 +464,7 @@ export function makePlayerForPirates(): Player
 {
   const player = new Player(true);
   
-  player.name = "Pirates"
+  player.name = new Name("Pirates", true);
   player.color = Color.fromHex(0x000000);
   player.colorAlpha = 0;
   player.secondaryColor = Color.fromHex(0xFFFFFF);
