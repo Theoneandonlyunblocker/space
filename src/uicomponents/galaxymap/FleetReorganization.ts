@@ -118,7 +118,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
           {
             className: "fleet-reorganization-subheader-fleet-name" +
               " fleet-reorganization-subheader-fleet-name-left",
-          }, selectedFleets[0].name),
+          }, selectedFleets[0].name.fullName),
           React.DOM.div(
           {
             className: "fleet-reorganization-subheader-center"
@@ -127,7 +127,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
           {
             className: "fleet-reorganization-subheader-fleet-name" +
               " fleet-reorganization-subheader-fleet-name-right",
-          }, selectedFleets[1].name)
+          }, selectedFleets[1].name.fullName)
         ),
         React.DOM.div(
         {
