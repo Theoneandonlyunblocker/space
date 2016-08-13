@@ -28,12 +28,16 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
     var victor = p.victor;
     var location = p.location;
 
+    var attackerGainedControl = location.owner === attacker;
+
     var message = notification.makeMessage();
 
-    var attackSuccessString = victor === attacker ? " succesfully " : " unsuccesfully ";
-    var attackerGainedControl = location.owner === attacker;
-    var controllerString = attackerGainedControl ? " now controls " :
-      " maintains control of ";
+    var attackSuccessString = victor === attacker ?
+      " succesfully " :
+      " unsuccesfully ";
+    var controllerString = attackerGainedControl ?
+      ` now ${victor.name.pluralizeVerbWithS("control")} ` :
+      ` ${victor.name.pluralizeVerbWithS("maintain")} control of `
 
     return(
       React.DOM.div(

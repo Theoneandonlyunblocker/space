@@ -14,6 +14,32 @@ export default class Name
   {
     return new Name(data.fullName, data.isPlural);
   }
+  public toString(): string
+  {
+    return this.fullName;
+  }
+  public pluralizeVerb(singularVerb: string, pluralVerb: string): string
+  {
+    if (this.isPlural)
+    {
+      return pluralVerb;
+    }
+    else
+    {
+      return singularVerb
+    }
+  }
+  public pluralizeVerbWithS(sourceVerb: string): string
+  {
+    if (sourceVerb.charAt(sourceVerb.length - 1) === "s")
+    {
+      return this.pluralizeVerb(sourceVerb + "s", sourceVerb)
+    }
+    else
+    {
+      return this.pluralizeVerb(sourceVerb, sourceVerb + "s")
+    }
+  }
   public serialize(): NameSaveData
   {
     return(
