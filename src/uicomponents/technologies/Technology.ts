@@ -59,7 +59,7 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
     var neededToProgressLevel = forNextLevel - forCurrentLevel;
     var relativeProgress: number;
 
-    if (techData.level === technology.maxLevel)
+    if (techData.level === techData.maxLevel)
     {
       relativeProgress = 1;
       progressForLevel =

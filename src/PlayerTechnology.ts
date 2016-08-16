@@ -2,6 +2,7 @@
 import app from "./App"; // TODO global
 import PlayerTechnologySaveData from "./savedata/PlayerTechnologySaveData";
 import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
+import RaceTechnologyValue from "./templateinterfaces/RaceTechnologyValue";
 import eventManager from "./eventManager";
 
 export default class PlayerTechnology
@@ -13,6 +14,7 @@ export default class PlayerTechnology
       technology: TechnologyTemplate;
       totalResearch: number;
       level: number;
+      maxLevel: number;
       priority: number;
       priorityIsLocked: boolean;
     }
@@ -20,33 +22,41 @@ export default class PlayerTechnology
   tempOverflowedResearchAmount: number = 0;
   getResearchSpeed: () => number;
 
-  constructor(getResearchSpeed: () => number, savedData?:
-    {[key: string]: {totalResearch: number; priority: number; priorityIsLocked: boolean}})
+  constructor(getResearchSpeed: () => number, raceTechnologyValues: RaceTechnologyValue[],
+    savedData?: PlayerTechnologySaveData)
   {
     this.getResearchSpeed = getResearchSpeed;
 
     this.technologies = {};
 
-    var totalTechnologies = Object.keys(app.moduleData.Templates.Technologies).length;
-    for (let key in app.moduleData.Templates.Technologies)
+    raceTechnologyValues.forEach(raceValue =>
     {
-      var technology = app.moduleData.Templates.Technologies[key]
-      this.technologies[key] =
+      const techKey = raceValue.tech.key;
+      const technology = app.moduleData.Templates.Technologies[techKey]
+
+      this.technologies[techKey] =
       {
         technology: technology,
         totalResearch: 0,
         level: 0,
+        maxLevel: raceValue.maxLevel,
         priority: undefined,
         priorityIsLocked: false
       }
 
-      if (savedData && savedData[key])
+      if (savedData && savedData[techKey])
       {
-        this.addResearchTowardsTechnology(technology, savedData[key].totalResearch);
-        this.technologies[key].priority = savedData[key].priority;
-        this.technologies[key].priorityIsLocked = savedData[key].priorityIsLocked;
+        this.addResearchTowardsTechnology(technology, savedData[techKey].totalResearch);
+        this.technologies[techKey].priority = savedData[techKey].priority;
+        this.technologies[techKey].priorityIsLocked = savedData[techKey].priorityIsLocked;
       }
-    }
+      else
+      {
+        this.technologies[techKey].level = raceValue.startingLevel;
+        this.technologies[techKey].totalResearch =
+          this.getResearchNeededForTechnologyLevel(raceValue.startingLevel);
+      }
+    });
 
     this.initPriorities();
   }
@@ -68,9 +78,9 @@ export default class PlayerTechnology
       }
     }
 
-    techsToInit.sort(function(a: TechnologyTemplate, b: TechnologyTemplate)
+    techsToInit.sort((a, b) =>
     {
-      return b.maxLevel - a.maxLevel;
+      return this.technologies[b.key].maxLevel - this.technologies[a.key].maxLevel;
     });
 
     while (techsToInit.length > 0)
@@ -153,19 +163,19 @@ export default class PlayerTechnology
     var tech = this.technologies[technology.key]
     var overflow: number = 0;
 
-    if (tech.level >= technology.maxLevel) // probably shouldnt happen in the first place
+    if (tech.level >= tech.maxLevel) // probably shouldnt happen in the first place
     {
       return;
     }
     else
     {
       tech.totalResearch += amount;
-      while (tech.level < technology.maxLevel &&
+      while (tech.level < tech.maxLevel &&
         this.getResearchNeededForTechnologyLevel(tech.level + 1) <= tech.totalResearch)
       {
         tech.level++;
       }
-      if (tech.level === technology.maxLevel)
+      if (tech.level === tech.maxLevel)
       {
         var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
         overflow += tech.totalResearch - neededForMaxLevel;
@@ -179,8 +189,10 @@ export default class PlayerTechnology
   }
   getMaxNeededPriority(technology: TechnologyTemplate)
   {
-    var researchUntilMaxed = this.getResearchNeededForTechnologyLevel(technology.maxLevel) -
-      this.technologies[technology.key].totalResearch;
+    const tech = this.technologies[technology.key];
+
+    var researchUntilMaxed =
+      this.getResearchNeededForTechnologyLevel(tech.maxLevel) - tech.totalResearch;
 
     return researchUntilMaxed / this.getResearchSpeed();
   }
