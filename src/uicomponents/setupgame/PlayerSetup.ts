@@ -1,15 +1,24 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import app from "../../App"; // TODO global
 import Player from "../../Player";
 import Name from "../../Name";
 import Color from "../../Color";
-import {default as FlagSetter, FlagSetterComponent} from "./FlagSetter";
-import {default as ColorSetter, ColorSetterComponent} from "./ColorSetter";
 import
 {
   generateMainColor,
   generateSecondaryColor
 } from "../../colorGeneration";
+import
+{
+  getRandomProperty
+} from "../../utility";
+
+import RaceTemplate from "../../templateinterfaces/RaceTemplate";
+
+import {default as FlagSetter, FlagSetterComponent} from "./FlagSetter";
+import {default as ColorSetter, ColorSetterComponent} from "./ColorSetter";
+import RacePicker from "./RacePicker";
 
 export interface PropTypes extends React.Props<any>
 {
@@ -27,6 +36,7 @@ interface StateType
   name?: string;
   subColor?: Color;
   mainColor?: Color;
+  race?: RaceTemplate;
 }
 
 export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
@@ -56,6 +66,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     this.makePlayer = this.makePlayer.bind(this);
     this.handleSetHuman = this.handleSetHuman.bind(this);
     this.handleSetCustomImage = this.handleSetCustomImage.bind(this);    
+    this.setRace = this.setRace.bind(this);
   }
   
   private getInitialStateTODO(): StateType
@@ -65,7 +76,8 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
       name: this.props.initialName,
       mainColor: null,
       subColor: null,
-      flagHasCustomImage: false
+      flagHasCustomImage: false,
+      race: getRandomProperty(app.moduleData.Templates.Races)
     });
   }
   generateMainColor(subColor = this.state.subColor)
@@ -116,6 +128,13 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   handleSetCustomImage(image?: string)
   {
     this.setState({flagHasCustomImage: Boolean(image)});
+  }
+  setRace(race: RaceTemplate)
+  {
+    this.setState(
+    {
+      race: race
+    });
   }
   randomize()
   {
@@ -186,6 +205,12 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
           className: "player-setup-name",
           value: this.state.name,
           onChange: this.handleNameChange
+        }),
+        RacePicker(
+        {
+          availableRaces: app.moduleData.Templates.Races,
+          selectedRace: this.state.race,
+          changeRace: this.setRace
         }),
         ColorSetter(
         {
