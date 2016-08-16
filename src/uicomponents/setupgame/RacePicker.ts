@@ -57,7 +57,8 @@ export class RacePickerComponent extends React.Component<PropTypes, StateType>
       {
         className: "race-picker",
         value: this.props.selectedRace.key,
-        onChange: this.handleChangeRace
+        onChange: this.handleChangeRace,
+        title: this.props.selectedRace.description
       },
         raceTemplateOptions
       )
