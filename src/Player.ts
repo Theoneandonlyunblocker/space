@@ -35,6 +35,7 @@ import AIController from "./mapai/AIController";
 
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
+import RaceTemplate from "./templateinterfaces/RaceTemplate";
 import TechnologyRequirement from "./templateinterfaces/TechnologyRequirement";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
@@ -50,6 +51,7 @@ export default class Player
   colorAlpha: number;
   secondaryColor: Color;
   flag: Flag;
+  race: RaceTemplate;
   units:
   {
     [id: number]: Unit;
@@ -874,7 +876,9 @@ export default class Player
 
       unitIds: unitIds,
       revealedStarIds: revealedStarIds,
-      identifiedUnitIds: identifiedUnitIds
+      identifiedUnitIds: identifiedUnitIds,
+
+      raceKey: this.race.key
     };
 
     if (this.playerTechnology)

@@ -260,6 +260,7 @@ export default class GameLoader
     }
     player.money = data.money;
     player.isIndependent = data.isIndependent;
+    player.race = app.moduleData.Templates.Races[data.raceKey];
 
     if (data.resources)
     {

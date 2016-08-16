@@ -33,6 +33,7 @@ declare interface PlayerSaveData
   revealedStarIds: number[];
   identifiedUnitIds: number[];
   researchByTechnology?: PlayerTechnologySaveData;
+  raceKey: string;
 }
 
 export default PlayerSaveData;
