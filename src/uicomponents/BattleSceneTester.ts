@@ -3,11 +3,8 @@
 
 import Unit from "../Unit";
 import Player from "../Player";
-import Name from "../Name";
 import Battle from "../Battle";
 import BattleScene from "../BattleScene";
-// import BattleComponentFactory from "./battle/Battle";
-// import BattleSceneComponentFactory from "./battle/BattleScene";
 import SFXParams from "../templateinterfaces/SFXParams";
 import BattleSFXTemplate from "../templateinterfaces/BattleSFXTemplate";
 import
@@ -120,12 +117,17 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   makePlayer()
   {
-    var player = new Player(false, this.idGenerator++);
-    player.name = new Name("player " + player.id);
-    player.makeColorScheme();
-    player.makeRandomFlag();
-    
-    return player;
+    const id = this.idGenerator++;
+    return new Player(
+    {
+      isAI: false,
+      isIndependent: false,
+      id: id,
+      name: "player " + id,
+
+      race: null,
+      money: 0
+    });
   }
 
   makeFormation(units: Unit[])

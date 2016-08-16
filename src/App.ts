@@ -19,7 +19,8 @@ import TutorialStatus from "./tutorials/TutorialStatus";
 import
 {
   extendObject,
-  onDOMLoaded
+  onDOMLoaded,
+  getRandomProperty
 } from "./utility";
 
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
@@ -234,11 +235,14 @@ class App
 
     for (let i = 0; i < 5; i++)
     {
-      var player = new Player(i >= 1);
-      player.makeRandomFlag();
-      player.initTechnologies();
+      players.push(new Player(
+      {
+        isAI: i > 0,
+        isIndependent: false,
 
-      players.push(player);
+        race: getRandomProperty(this.moduleData.Templates.Races),
+        money: 1000
+      }));
     }
 
     return(

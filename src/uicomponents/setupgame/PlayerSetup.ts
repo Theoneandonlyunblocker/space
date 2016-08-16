@@ -153,22 +153,14 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   }
   makePlayer()
   {
-    var player = new Player(!this.props.isHuman);
-    player.initTechnologies();
+    const mainColor = this.state.mainColor || this.generateMainColor();
+    const secondaryColor = this.state.subColor || this.generateSubColor(mainColor);
 
-    player.name = new Name(this.state.name);
-    
-    player.color = this.state.mainColor === null ?
-      this.generateMainColor() : this.state.mainColor;
-    player.secondaryColor = this.state.subColor === null ?
-      this.generateSubColor(player.color) : this.state.subColor;
+    const flag = this.ref_TODO_flagSetter.state.flag;
 
-    var flag = this.ref_TODO_flagSetter.state.flag;
-
-    player.flag = flag;
-    player.flag.setColorScheme(
-      player.color,
-      player.secondaryColor,
+    flag.setColorScheme(
+      mainColor,
+      secondaryColor,
       flag.tetriaryColor
     );
 
@@ -177,6 +169,26 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     {
       flag.generateRandom();
     }
+    
+    const player = new Player(
+    {
+      isAI: !this.props.isHuman,
+      isIndependent: false,
+
+      race: this.state.race,
+      money: 1000,
+
+      name: this.state.name,
+
+      color:
+      {
+        main: mainColor,
+        secondary: secondaryColor,
+        alpha: 1
+      },
+
+      flag: flag
+    });
 
     this.setState(
     {

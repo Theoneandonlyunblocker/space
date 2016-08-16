@@ -22,7 +22,8 @@ import Name from "./Name";
 import
 {
   extendObject,
-  makeRandomPersonality
+  makeRandomPersonality,
+  getRandomProperty
 } from "./utility";
 
 
@@ -40,6 +41,7 @@ import ColorSaveData from "./savedata/ColorSaveData";
 import FleetSaveData from "./savedata/FleetSaveData";
 import UnitSaveData from "./savedata/UnitSaveData";
 import ItemSaveData from "./savedata/ItemSaveData";
+import NameSaveData from "./savedata/NameSaveData";
 
 
 export default class GameLoader
@@ -238,6 +240,20 @@ export default class GameLoader
 
     return building;
   }
+  deserializeName(data: NameSaveData | string): Name
+  {
+    // legacy savedata 13.8.2016
+    if (typeof data === "string")
+    {
+      const castedStringData = <string> data;
+      return new Name(castedStringData);
+    }
+    else
+    {
+      const castedData = <NameSaveData> data;
+      return Name.fromData(castedData);
+    }
+  }
   deserializePlayer(data: PlayerSaveData): Player
   {
     var personality: Personality;
@@ -247,40 +263,30 @@ export default class GameLoader
       personality = extendObject(data.personality, makeRandomPersonality(), true);
     }
 
-    var player = new Player(data.isAI, data.id);
-    // legacy savedata 13.8.2016
-    if (typeof data.name === "string")
+    const player = new Player(
     {
-      const castedDataName: string = <any> data.name;
-      player.name = new Name(castedDataName);
-    }
-    else
-    {
-      player.name = Name.fromData(data.name);
-    }
-    player.money = data.money;
-    player.isIndependent = data.isIndependent;
-    player.race = app.moduleData.Templates.Races[data.raceKey];
+      isAI: data.isAI,
+      isIndependent: data.isIndependent,
 
-    if (data.resources)
-    {
-      player.resources = extendObject(data.resources);
-    }
+      // legacy savedata 16.8.2016
+      race: data.raceKey ? app.moduleData.Templates.Races[data.raceKey] :
+        getRandomProperty(app.moduleData.Templates.Races),
+      money: data.money,
+      
+      id: data.id,
+      name: this.deserializeName(data.name),
+      color:
+      {
+        main: Color.deSerialize(data.color),
+        secondary: Color.deSerialize(data.secondaryColor),
+        alpha: data.colorAlpha
+      },
 
-    player.personality = personality;
-    
-    player.color = Color.deSerialize(data.color);
-    player.secondaryColor = Color.deSerialize(data.secondaryColor);
-    player.colorAlpha = data.colorAlpha;
+      // when is this not true?
+      flag: data.flag ? this.deserializeFlag(data.flag) : null,
 
-    if (data.flag)
-    {
-      player.flag = this.deserializeFlag(data.flag);
-    }
-    else
-    {
-      player.makeRandomFlag();
-    }
+      resources: data.resources
+    });
 
     // fleets & units
     for (let i = 0; i < data.fleets.length; i++)
@@ -305,9 +311,6 @@ export default class GameLoader
       var id = data.revealedStarIds[i];
       player.revealedStars[id] = this.starsById[id];
     }
-
-    // technology
-    player.initTechnologies(data.researchByTechnology);
 
     return player;
   }
