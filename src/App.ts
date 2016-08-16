@@ -148,10 +148,14 @@ class App
   {
     var startTime = Date.now();
     
-    // this.moduleLoader.progressivelyLoadModulesByPhase(0);
-
     Options.load();
     TutorialStatus.load();
+
+    // don't preload modules in debug mode to ensure loading phases work correctly
+    if (!Options.debug.enabled)
+    {
+      this.moduleLoader.progressivelyLoadModulesByPhase(0);
+    }
     
     const initialScene = this.getInitialScene();
     
