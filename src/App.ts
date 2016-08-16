@@ -38,6 +38,7 @@ import defaultMapmodes from "../modules/defaultmapmodes/defaultMapmodes";
 import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
 import defaultBuildings from "../modules/defaultbuildings/defaultBuildings";
 import defaultNotifications from "../modules/defaultnotifications/defaultNotifications";
+import defaultRaces from "../modules/defaultraces/defaultRaces";
 
 class App
 {
@@ -84,6 +85,7 @@ class App
       moduleLoader.addModuleFile(paintingPortraits);
       moduleLoader.addModuleFile(defaultBuildings);
       moduleLoader.addModuleFile(defaultNotifications);
+      moduleLoader.addModuleFile(defaultRaces);
       
       copyCommonTemplates(moduleLoader.moduleData);
       
