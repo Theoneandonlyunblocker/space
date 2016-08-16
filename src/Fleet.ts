@@ -71,8 +71,7 @@ export default class Fleet
   {
     if (fleet.isStealthy !== this.isStealthy)
     {
-      console.warn("Tried to merge stealthy fleet with non stealthy or other way around");
-      return;
+      throw new Error("Tried to merge stealthy fleet with non stealthy or other way around");
     }
 
     fleet.addUnits(this.units);
@@ -80,7 +79,10 @@ export default class Fleet
   }
   addUnit(unit: Unit)
   {
-    if (this.hasUnit(unit)) return false;
+    if (this.hasUnit(unit))
+    {
+      throw new Error("Tried to add unit to fleet which the unit was already part of");
+    }
 
     if (this.units.length === 0)
     {
@@ -88,8 +90,7 @@ export default class Fleet
     }
     else if (unit.isStealthy() !== this.isStealthy)
     {
-      console.warn("Tried to add stealthy unit to non stealthy fleet or other way around");
-      return;
+      throw new Error("Tried to add stealthy unit to non stealthy fleet or other way around");
     }
 
     this.units.push(unit);
@@ -129,15 +130,20 @@ export default class Fleet
   }
   transferUnit(fleet: Fleet, unit: Unit)
   {
-    if (fleet === this) return;
+    if (fleet === this)
+    {
+      return;
+    }
     if (unit.isStealthy() !== this.isStealthy)
     {
-      console.warn("Tried to transfer stealthy unit to non stealthy fleet");
-      return;
+      throw new Error("Tried to transfer stealthy unit to non stealthy fleet");
     }
     var index = this.getUnitIndex(unit);
 
-    if (index < 0) return false;
+    if (index < 0)
+    {
+      return false;
+    }
 
     fleet.addUnit(unit);
 
