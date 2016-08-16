@@ -40,26 +40,3 @@ export function setUnitFamilyAssociatedTemplates(unitTemplates: TemplateCollecti
     }
   }
 }
-export function setTechnologyRequirements(technologyTemplates: TemplateCollection<TechnologyTemplate>)
-{
-  for (let technologyKey in technologyTemplates)
-  {
-    const technology = technologyTemplates[technologyKey];
-    for (let level in technology.unlocksPerLevel)
-    {
-      const unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
-      unlockedTemplatesForLevel.forEach(template =>
-      {
-        if (!template.technologyRequirements)
-        {
-          template.technologyRequirements = [];
-        }
-        template.technologyRequirements.push(
-        {
-          technology: technology,
-          level: parseInt(level)
-        });
-      });
-    }
-  }
-}
