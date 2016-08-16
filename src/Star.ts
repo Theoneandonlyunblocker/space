@@ -334,13 +334,7 @@ export default class Star implements Point
   {
     var allUpgrades:
     {
-      [buildingId: number]:
-      {
-        template: BuildingTemplate;
-        level: number;
-        cost: number;
-        parentBuilding: Building;
-      }[];
+      [buildingId: number]: BuildingUpgradeData[];
     } = {};
 
     var self = this;
