@@ -1,4 +1,4 @@
-import TechnologyTemplate from "./TechnologyTemplate";
+import RaceTechnologyValue from "./RaceTechnologyValue";
 import UnitTemplate from "./UnitTemplate";
 import BuildingTemplate from "./BuildingTemplate";
 import CultureTemplate from "./CultureTemplate";
@@ -12,25 +12,20 @@ import BuildingUpgradeData from "../BuildingUpgradeData";
 
 declare interface RaceTemplate
 {
-  name: string;
+  key: string;
+  displayName: string;
+  description: string;
 
-  startingTechnologies:
-  {
-    tech: TechnologyTemplate;
-    level: number;
-  }[];
-  maxTechnologies:
-  {
-    tech: TechnologyTemplate;
-    maxLevel: number;
-  }[];
+  technologies: RaceTechnologyValue[];
 
-  getBuildableShipTypes(player: Player): UnitTemplate[];
-  getBuildableItemTypes(player: Player): ItemTemplate[];
+  // getBuildableShipTypes(player: Player): UnitTemplate[];
+  // getBuildableItemTypes(player: Player): ItemTemplate[];
 
-  getBuildableBuildings(star: Star): BuildingTemplate[];
-  getBuildingUpgrades(star: Star): BuildingUpgradeData[];
+  // getBuildableBuildings(star: Star): BuildingTemplate[];
+  // getBuildingUpgrades(star: Star): BuildingUpgradeData[];
 
-  getUnitCulture(unit: Unit): CultureTemplate;
-  getUnitPortrait(unit: Unit): PortraitTemplate;
+  // getUnitCulture(unit: Unit): CultureTemplate;
+  // getUnitPortrait(unit: Unit): PortraitTemplate;
 }
+
+export default RaceTemplate;
