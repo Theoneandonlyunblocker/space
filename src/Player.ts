@@ -27,7 +27,8 @@ import Name from "./Name";
 import idGenerators from "./idGenerators";
 import
 {
-  generateColorScheme
+  generateColorScheme,
+  generateSecondaryColor
 } from "./colorGeneration";
 import Options from "./options";
 
@@ -41,6 +42,7 @@ import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
 
 import PlayerSaveData from "./savedata/PlayerSaveData";
+import PlayerTechnologySaveData from "./savedata/PlayerTechnologySaveData";
 
 
 export default class Player
@@ -111,15 +113,89 @@ export default class Player
     [key: string]: Function;
   } = {};
 
-  constructor(isAI: boolean, id?: number)
+  constructor(props:
   {
-    this.id = isFinite(id) ? id : idGenerators.player++;
-    this.name = new Name("Player " + this.id);
+    isAI: boolean;
+    isIndependent: boolean;
 
-    this.isAI = isAI;
+    race: RaceTemplate;
+    money: number;
+    
+    id?: number;
+    name?: string | Name;
+
+    color?:
+    {
+      main: Color;
+      secondary?: Color;
+      alpha?: number;
+    };
+
+    flag?: Flag;
+
+    resources?: {[resourceType: string]: number};
+    personality?: Personality;
+    technologyData?: PlayerTechnologySaveData;
+  })
+  {
+    this.isAI = props.isAI;
+    this.isIndependent = props.isIndependent;
+
+    this.race = props.race;
+    this.money = props.money;
+    
+    this.id = isFinite(props.id) ? props.id : idGenerators.player++;
+
+    if (props.name)
+    {
+      if (typeof props.name === "string")
+      {
+        const castedStringName = <string> props.name;
+        this.name = new Name(castedStringName);
+      }
+      else
+      {
+        const castedName = <Name> props.name;
+        this.name = castedName;
+      }
+    }
+    else
+    {
+      this.name = new Name("Player " + this.id);
+    }
+
+    if (props.color)
+    {
+      this.color = props.color.main;
+      this.secondaryColor = props.color.secondary || generateSecondaryColor(this.color);
+      this.colorAlpha = isFinite(props.color.alpha) ? props.color.alpha : 1;
+    }
+    else
+    {
+      const colorScheme = generateColorScheme();
+      this.color = colorScheme.main;
+      this.secondaryColor = colorScheme.secondary;
+      this.colorAlpha = 1;
+    }
+
+    if (props.flag)
+    {
+      this.flag = props.flag;
+    }
+    else
+    {
+      this.flag = this.makeRandomFlag();
+    }
+
+    if (props.resources)
+    {
+      this.resources = extendObject(props.resources);
+    }
+
+    this.personality = props.personality;
+
     this.diplomacyStatus = new DiplomacyStatus(this);
-
-    this.money = 1000;
+    this.initTechnologies(props.technologyData);
   }
   destroy()
   {
@@ -154,29 +230,27 @@ export default class Player
       this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology)
     );
   }
-  makeColorScheme()
-  {
-    var scheme = generateColorScheme(this.color);
-
-    this.color = scheme.main;
-    this.secondaryColor = scheme.secondary;
-  }
   setupAI(game: Game)
   {
     this.AIController = new AIController(this, game, this.personality);
   }
   makeRandomFlag(seed?: any)
   {
-    if (!this.color || !this.secondaryColor) this.makeColorScheme();
+    if (!this.color || !this.secondaryColor)
+    {
+      throw new Error("Player has no color specified");
+    }
 
-    this.flag = new Flag(
+    const flag = new Flag(
     {
       width: 46, // global FLAG_SIZE
       mainColor: this.color,
       secondaryColor: this.secondaryColor
     });
 
-    this.flag.generateRandom(seed);
+    flag.generateRandom(seed);
+
+    return flag;
   }
   addUnit(unit: Unit)
   {
