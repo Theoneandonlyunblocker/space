@@ -220,8 +220,7 @@ export default class Player
     });
     console.log(this.name + " died");
   }
-  initTechnologies(savedData?:
-    {[key: string]: {totalResearch: number; priority: number; priorityIsLocked: boolean}})
+  initTechnologies(savedData?: PlayerTechnologySaveData)
   {
     this.playerTechnology = new PlayerTechnology(this.getResearchSpeed.bind(this), savedData);
 
