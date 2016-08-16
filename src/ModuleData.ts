@@ -23,6 +23,7 @@ import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeT
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 import ObjectiveTemplate from "./templateinterfaces/ObjectiveTemplate";
 import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
+import RaceTemplate from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
 import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
@@ -46,6 +47,7 @@ type TemplateKey =
   "Objectives" |
   "PassiveSkills" |
   "Personalities" |
+  "Races" |
   "Resources" |
   "StatusEffects" |
   "SubEmblems" |
@@ -113,6 +115,10 @@ interface Templates
   {
     [type: string]: Personality;
   };
+  Races:
+  {
+    [key: string]: RaceTemplate;
+  }
   Resources:
   {
     [type: string]: ResourceTemplate;
@@ -166,6 +172,7 @@ export default class ModuleData
     Objectives: {},
     PassiveSkills: {},
     Personalities: {},
+    Races: {},
     Resources: {},
     StatusEffects: {},
     SubEmblems: {},
