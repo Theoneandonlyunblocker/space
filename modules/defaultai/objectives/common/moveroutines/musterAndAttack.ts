@@ -69,7 +69,9 @@ export default function musterAndAttack(targetFilter: (target: FleetAttackTarget
 
       var attackTargets = star.getTargetsForPlayer(player);
 
-      var target = attackTargets.filter(targetFilter)[0];
+      const target = targetFilter ?
+        attackTargets.filter(targetFilter)[0] :
+        attackTargets[0];
 
       player.attackTarget(star, target, afterMoveCallback);
     }

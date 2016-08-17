@@ -384,18 +384,18 @@ export default class MapEvaluator
   }
   getHostileUnitsAtStar(star: Star)
   {
-    var hostilePlayers = star.getEnemyFleetOwners(this.player);
+    const hostilePlayers = star.getEnemyFleetOwners(this.player);
 
-    var unitsByEnemy:
+    const unitsByEnemy:
     {
       [playerId: number]: Unit[];
     } = {};
-    var allUnits: Unit[] = [];
+    const allUnits: Unit[] = [];
 
     for (let i = 0; i < hostilePlayers.length; i++)
     {
       unitsByEnemy[hostilePlayers[i].id] = star.getAllUnitsOfPlayer(hostilePlayers[i]);
-      allUnits = allUnits.concat(unitsByEnemy[hostilePlayers[i].id]);
+      allUnits.push(...unitsByEnemy[hostilePlayers[i].id]);
     }
 
     return(

@@ -1,7 +1,7 @@
 enum movePriority
 {
   discovery = 999,
-  fightInvadingFleets = 500,
+  fightInvaders = 500,
   scoutingPerimeter = 7,
   conquer = 6,
   expansion = 4,

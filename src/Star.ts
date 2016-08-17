@@ -552,11 +552,6 @@ export default class Star implements Point
   }
 
   // MAP GEN
-  // setPosition(x: number, y: number)
-  // {
-  //   this.x = x;
-  //   this.y = y;
-  // }
   setResource(resource: ResourceTemplate)
   {
     this.resource = resource;
