@@ -119,7 +119,10 @@ class App
   public load(saveKey: string)
   {
     var data = localStorage.getItem(saveKey);
-    if (!data) return;
+    if (!data)
+    {
+      return;
+    }
 
     var parsed = JSON.parse(data);
 
@@ -278,13 +281,18 @@ class App
   }
   private initGame()
   {
-    if (!this.game) throw new Error("App tried to init game without " +
-      "having one specified");
+    if (!this.game)
+    {
+      throw new Error("App tried to init game without having one specified");
+    }
 
     this.humanPlayer = this.game.humanPlayer;
     this.humanPlayer.isAI = false;
 
-    if (this.playerControl) this.playerControl.removeEventListeners();
+    if (this.playerControl)
+    {
+      this.playerControl.removeEventListeners();
+    }
 
     this.playerControl = new PlayerControl(this.humanPlayer);
 
