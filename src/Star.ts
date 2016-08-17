@@ -408,6 +408,20 @@ export default class Star implements Point
 
     return units;
   }
+  public getFleetOwners(): Player[]
+  {
+    const fleetOwners: Player[] = [];
+
+    for (let playerID in this.fleets)
+    {
+      if (this.fleets[playerID].length > 0)
+      {
+        fleetOwners.push(this.fleets[playerID][0].player);
+      }
+    }
+
+    return fleetOwners;
+  }
   getFleetIndex(fleet: Fleet)
   {
     if (!this.fleets[fleet.player.id]) return -1;
@@ -460,7 +474,6 @@ export default class Star implements Point
   {
     var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
     var buildingController = buildingTarget ? buildingTarget.controller : null;
-    var fleetOwners = this.getEnemyFleetOwners(player, buildingController);
 
     var diplomacyStatus = player.diplomacyStatus;
 
@@ -481,16 +494,29 @@ export default class Star implements Point
         units: this.getUnits(player => player === buildingTarget.controller)
       });
     }
-    for (let i = 0; i < fleetOwners.length; i++)
+
+    const hostileFleetOwners = this.getFleetOwners().filter(fleetOwner =>
     {
-      if (diplomacyStatus.canAttackFleetOfPlayer(fleetOwners[i]))
+      if (fleetOwner === buildingController)
+      {
+        return false;
+      }
+      else
+      {
+        return player.diplomacyStatus.canAttackFleetOfPlayer(fleetOwner);
+      }
+    });
+    
+    for (let i = 0; i < hostileFleetOwners.length; i++)
+    {
+      if (diplomacyStatus.canAttackFleetOfPlayer(hostileFleetOwners[i]))
       {
         targets.push(
         {
           type: "fleet",
-          enemy: fleetOwners[i],
+          enemy: hostileFleetOwners[i],
           building: null,
-          units: this.getUnits(player => player === fleetOwners[i])
+          units: this.getUnits(player => player === hostileFleetOwners[i])
         });
       }
     }
@@ -513,22 +539,6 @@ export default class Star implements Point
     }
 
     return null;
-  }
-  getEnemyFleetOwners(player: Player, excludedTarget?: Player): Player[]
-  {
-    var fleetOwners: Player[] = [];
-
-    for (let playerId in this.fleets)
-    {
-      var intPlayerId = parseInt(playerId);
-      if (intPlayerId == player.id) continue;
-      else if (excludedTarget && intPlayerId == excludedTarget.id) continue;
-      else if (this.fleets[playerId].length < 1) continue;
-
-      fleetOwners.push(this.fleets[playerId][0].player);
-    }
-
-    return fleetOwners;
   }
 
   // MAP GEN

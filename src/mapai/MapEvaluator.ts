@@ -384,8 +384,6 @@ export default class MapEvaluator
   }
   getHostileUnitsAtStar(star: Star)
   {
-    const hostilePlayers = star.getEnemyFleetOwners(this.player);
-
     const unitsByEnemy:
     {
       [playerId: number]: Unit[];
@@ -394,7 +392,7 @@ export default class MapEvaluator
 
     const hostileFleets = star.getFleets((player: Player) =>
     {
-      return hostilePlayers.indexOf(player) !== -1;
+      return this.player.diplomacyStatus.canAttackFleetOfPlayer(player);
     });
 
     hostileFleets.forEach(fleet =>
