@@ -392,11 +392,21 @@ export default class MapEvaluator
     } = {};
     const allUnits: Unit[] = [];
 
-    for (let i = 0; i < hostilePlayers.length; i++)
+    const hostileFleets = star.getFleets((player: Player) =>
     {
-      unitsByEnemy[hostilePlayers[i].id] = star.getAllUnitsOfPlayer(hostilePlayers[i]);
-      allUnits.push(...unitsByEnemy[hostilePlayers[i].id]);
-    }
+      return hostilePlayers.indexOf(player) !== -1;
+    });
+
+    hostileFleets.forEach(fleet =>
+    {
+      if (!unitsByEnemy[fleet.player.id])
+      {
+        unitsByEnemy[fleet.player.id] = [];
+      }
+
+      unitsByEnemy[fleet.player.id].push(...fleet.units);
+      allUnits.push(...fleet.units);
+    });
 
     return(
     {
@@ -429,8 +439,9 @@ export default class MapEvaluator
   }
   getIndependentStrengthAtStar(star: Star): number
   {
-    var units = star.getIndependentUnits();
-    var total = 0;
+    const units = star.getUnits(player => player.isIndependent);
+
+    let total = 0;
 
     for (let i = 0; i < units.length; i++)
     {

@@ -454,7 +454,7 @@ export default class Player
       this.meetPlayersInStarByVisibility(star, "detected");
     }
     // identify units
-    var unitsToIdentify = star.getAllUnits();
+    var unitsToIdentify = star.getUnits();
     for (let i = 0; i < unitsToIdentify.length; i++)
     {
       this.identifyUnit(unitsToIdentify[i]);
@@ -753,7 +753,7 @@ export default class Player
       attacker:
       {
         player: this,
-        units: location.getAllUnitsOfPlayer(this)
+        units: location.getUnits(player => player === this)
       },
       defender:
       {

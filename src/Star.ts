@@ -377,10 +377,7 @@ export default class Star implements Point
     return allUpgrades;
   }
   // FLEETS
-  public getFleets(
-    playerFilter?: (player: Player) => boolean,
-    fleetFilter?: (fleet: Fleet) => boolean
-  ): Fleet[]
+  public getFleets(playerFilter?: (player: Player) => boolean): Fleet[]
   {
     const allFleets: Fleet[] = [];
 
@@ -392,14 +389,24 @@ export default class Star implements Point
         const player = this.fleets[playerId][0].player;
         if (!playerFilter || playerFilter(player) === true)
         {
-          const fleetsToAdd = fleetFilter ? playerFleets.filter(fleetFilter) : playerFleets;
-
-          allFleets.push(...fleetsToAdd);
+          allFleets.push(...playerFleets);
         }
       }
     }
 
     return allFleets;
+  }
+  public getUnits(playerFilter?: (player: Player) => boolean): Unit[]
+  {
+    const fleets = this.getFleets(playerFilter);
+    const units: Unit[] = [];
+
+    fleets.forEach(fleet =>
+    {
+      units.push(...fleet.units);
+    });
+
+    return units;
   }
   getFleetIndex(fleet: Fleet)
   {
@@ -449,46 +456,6 @@ export default class Star implements Point
       this.removeFleet(fleets[i]);
     }
   }
-  getAllUnitsOfPlayer(player: Player): Unit[]
-  {
-    var allUnits: Unit[] = [];
-
-    var fleets = this.fleets[player.id];
-    if (!fleets) return [];
-
-    for (let i = 0; i < fleets.length; i++)
-    {
-      allUnits = allUnits.concat(fleets[i].units);
-    }
-
-    return allUnits;
-  }
-  getAllUnits(): Unit[]
-  {
-    var allUnits: Unit[] = [];
-    for (let playerId in this.fleets)
-    {
-      var fleets = this.fleets[playerId];
-      allUnits = allUnits.concat(this.getAllUnitsOfPlayer(fleets[0].player));
-    }
-
-    return allUnits;
-  }
-  getIndependentUnits(): Unit[]
-  {
-    var units: Unit[] = [];
-
-    for (let playerId in this.fleets)
-    {
-      var player = this.fleets[playerId][0].player;
-      if (player.isIndependent)
-      {
-        units = units.concat(this.getAllUnitsOfPlayer(player));
-      }
-    }
-
-    return units;
-  }
   getTargetsForPlayer(player: Player): FleetAttackTarget[]
   {
     var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
@@ -511,7 +478,7 @@ export default class Star implements Point
         type: "building",
         enemy: buildingTarget.controller,
         building: buildingTarget,
-        units: this.getAllUnitsOfPlayer(buildingTarget.controller)
+        units: this.getUnits(player => player === buildingTarget.controller)
       });
     }
     for (let i = 0; i < fleetOwners.length; i++)
@@ -523,7 +490,7 @@ export default class Star implements Point
           type: "fleet",
           enemy: fleetOwners[i],
           building: null,
-          units: this.getAllUnitsOfPlayer(fleetOwners[i])
+          units: this.getUnits(player => player === fleetOwners[i])
         });
       }
     }

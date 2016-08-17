@@ -42,7 +42,14 @@ const cleanUpPirates: ObjectiveTemplate =
 
     var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function(star: Star)
     {
-      return star.getIndependentUnits().length > 0 && !star.getSecondaryController();
+      if (star.getSecondaryController)
+      {
+        return false;
+      }
+      else
+      {
+        return star.getUnits(player => player.isIndependent).length > 0;
+      }
     });
 
     var evaluations = mapEvaluator.evaluateIndependentTargets(ownedStarsWithPirates);
