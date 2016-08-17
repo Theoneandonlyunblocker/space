@@ -225,7 +225,8 @@ export default class Player
   }
   initTechnologies(savedData?: PlayerTechnologySaveData)
   {
-    this.playerTechnology = new PlayerTechnology(this.getResearchSpeed.bind(this), savedData);
+    this.playerTechnology = new PlayerTechnology(this.getResearchSpeed.bind(this),
+      this.race.technologies, savedData);
 
     this.listeners["builtBuildingWithEffect_research"] = eventManager.addEventListener(
       "builtBuildingWithEffect_research",
