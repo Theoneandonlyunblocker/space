@@ -484,7 +484,7 @@ export function makePlayerForPirates(): Player
 
   const player = new Player(
   {
-    isAI: false,
+    isAI: true,
     isIndependent: true,
     name: new Name("Pirates", true),
     
