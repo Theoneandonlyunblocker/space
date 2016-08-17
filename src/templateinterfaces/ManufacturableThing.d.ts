@@ -6,6 +6,9 @@ declare interface ManufacturableThing
   displayName: string;
   description: string;
   buildCost: number;
+  
+  // set dynamically
+  technologyRequirements?: TechnologyRequirement[];
 }
 
 export default ManufacturableThing;

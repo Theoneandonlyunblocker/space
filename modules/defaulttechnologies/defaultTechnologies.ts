@@ -3,6 +3,7 @@ import TechnologyTemplates from "./TechnologyTemplates";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleData from "../../src/ModuleData";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import {setTechnologyRequirements} from "../../src/setDynamicTemplateProperties";
 
 import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate";
 
@@ -19,6 +20,8 @@ const defaultTechnologies: ModuleFile =
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   constructModule: function(moduleData: ModuleData)
   {
+    setTechnologyRequirements(TechnologyTemplates);
+    
     moduleData.copyTemplates<TechnologyTemplate>(TechnologyTemplates, "Technologies");
     
     return moduleData;
