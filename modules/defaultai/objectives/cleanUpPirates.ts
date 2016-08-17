@@ -8,6 +8,7 @@ import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
 
+import movePriority from "./common/movePriority";
 import
 {
   musterAndAttackRoutine,
@@ -21,7 +22,7 @@ import
 const cleanUpPirates: ObjectiveTemplate =
 {
   key: "cleanUpPirates",
-  movePriority: 3,
+  movePriority: movePriority.cleanUpPirates,
   preferredUnitComposition:
   {
     combat: 0.65,

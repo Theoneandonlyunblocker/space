@@ -9,6 +9,7 @@ import Fleet from "../../../src/Fleet";
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
 
+import movePriority from "./common/movePriority";
 import
 {
   moveToRoutine
@@ -17,7 +18,7 @@ import
 const heal: ObjectiveTemplate =
 {
   key: "heal",
-  movePriority: -1,
+  movePriority: movePriority.heal,
   preferredUnitComposition:
   {
 

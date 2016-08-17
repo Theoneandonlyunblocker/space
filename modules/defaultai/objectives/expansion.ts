@@ -7,6 +7,7 @@ import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
 
+import movePriority from "./common/movePriority";
 import
 {
   musterAndAttackRoutine,
@@ -20,7 +21,7 @@ import
 const expansion: ObjectiveTemplate =
 {
   key: "expansion",
-  movePriority: 4,
+  movePriority: movePriority.expansion,
   preferredUnitComposition:
   {
     combat: 0.65,

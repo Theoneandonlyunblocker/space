@@ -14,6 +14,7 @@ import
   getObjectKeysSortedByValueOfProp
 } from "../../../src/utility";
 
+import movePriority from "./common/movePriority";
 import
 {
   musterAndAttackRoutine,
@@ -26,7 +27,7 @@ import
 const conquer: ObjectiveTemplate =
 {
   key: "conquer",
-  movePriority: 6,
+  movePriority: movePriority.conquer,
   preferredUnitComposition:
   {
     combat: 0.65,

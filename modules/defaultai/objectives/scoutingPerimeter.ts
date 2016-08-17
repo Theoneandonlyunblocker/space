@@ -5,6 +5,7 @@ import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate
 
 import Unit from "../../../src/Unit";
 
+import movePriority from "./common/movePriority";
 import
 {
   moveToRoutine,
@@ -16,7 +17,7 @@ import
 const scoutingPerimeter: ObjectiveTemplate =
 {
   key: "scoutingPerimeter",
-  movePriority: 7,
+  movePriority: movePriority.scoutingPerimeter,
   preferredUnitComposition:
   {
     scouting: 1

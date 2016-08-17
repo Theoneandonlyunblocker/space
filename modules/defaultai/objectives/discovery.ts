@@ -11,6 +11,7 @@ import
   getRelativeValue
 } from "../../../src/utility";
 
+import movePriority from "./common/movePriority";
 import
 {
   moveToRoutine,
@@ -23,7 +24,7 @@ import
 const discovery: ObjectiveTemplate =
 {
   key: "discovery",
-  movePriority: 999,
+  movePriority: movePriority.discovery,
   preferredUnitComposition:
   {
     scouting: 1
