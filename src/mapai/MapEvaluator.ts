@@ -10,6 +10,8 @@ import
   getRelativeValue
 } from "../utility";
 
+import ValuesByStar from "./ValuesByStar";
+
 export var defaultEvaluationParameters =
 {
   starDesirability:
@@ -27,13 +29,10 @@ export var defaultEvaluationParameters =
 }
 interface IndependentTargetEvaluations
 {
-  [starId: number]:
-  {
-    star: Star;
-    desirability: number;
-    independentStrength: number;
-    ownInfluence: number;
-  }
+  star: Star;
+  desirability: number;
+  independentStrength: number;
+  ownInfluence: number;
 }
 // TODO refactor | split into multiple classes eg vision, influence maps etc.
 export default class MapEvaluator
@@ -247,33 +246,32 @@ export default class MapEvaluator
     return evaluation;
   }
 
-  evaluateIndependentTargets(targetStars: Star[]): IndependentTargetEvaluations
+  evaluateIndependentTargets(targetStars: Star[]): ValuesByStar<IndependentTargetEvaluations>
   {
-    var evaluationByStar: IndependentTargetEvaluations = {};
-
-    for (let i = 0; i < targetStars.length; i++)
-    {
-      var star = targetStars[i];
-
-      var desirability = this.evaluateStarDesirability(star);
-      var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
-
-      var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
-      var ownInfluenceAtStar = ownInfluenceMap[star.id] || 1;
-
-      evaluationByStar[star.id] =
+    const evaluationByStar = new ValuesByStar<IndependentTargetEvaluations>(
+      targetStars,
+      (star) =>
       {
-        star: star,
-        desirability: desirability,
-        independentStrength: independentStrength,
-        ownInfluence: ownInfluenceAtStar
+        const desirability = this.evaluateStarDesirability(star);
+        const independentStrength = this.getIndependentStrengthAtStar(star) || 1;
+
+        const ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
+        const ownInfluenceAtStar = ownInfluenceMap[star.id] || 1;
+
+        return(
+        {
+          star: star,
+          desirability: desirability,
+          independentStrength: independentStrength,
+          ownInfluence: ownInfluenceAtStar
+        });
       }
-    }
+    );
 
     return evaluationByStar;
   }
 
-  scoreIndependentTargets(evaluations: IndependentTargetEvaluations)
+  scoreIndependentTargets(evaluations: ValuesByStar<IndependentTargetEvaluations>)
   {
     var scores:
     {
@@ -281,9 +279,11 @@ export default class MapEvaluator
       score: number;
     }[] = [];
 
-    for (let starId in evaluations)
+    const evaluationByStarID = evaluations.byStar;
+
+    for (let starID in evaluationByStarID)
     {
-      var evaluation = evaluations[starId];
+      var evaluation = evaluationByStarID[starID];
 
       var easeOfCapturing = evaluation.ownInfluence / evaluation.independentStrength;
 
