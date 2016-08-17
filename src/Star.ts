@@ -377,13 +377,26 @@ export default class Star implements Point
     return allUpgrades;
   }
   // FLEETS
-  getAllFleets()
+  public getFleets(
+    playerFilter?: (player: Player) => boolean,
+    fleetFilter?: (fleet: Fleet) => boolean
+  ): Fleet[]
   {
-    var allFleets: Fleet[] = [];
+    const allFleets: Fleet[] = [];
 
     for (let playerId in this.fleets)
     {
-      allFleets = allFleets.concat(this.fleets[playerId]);
+      const playerFleets = this.fleets[playerId];
+      if (playerFleets.length > 0)
+      {
+        const player = this.fleets[playerId][0].player;
+        if (!playerFilter || playerFilter(player) === true)
+        {
+          const fleetsToAdd = fleetFilter ? playerFleets.filter(fleetFilter) : playerFleets;
+
+          allFleets.push(...fleetsToAdd);
+        }
+      }
     }
 
     return allFleets;

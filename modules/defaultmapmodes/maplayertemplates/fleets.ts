@@ -123,8 +123,11 @@ const fleets: MapRendererLayerTemplate =
     for (let i = 0; i < points.length; i++)
     {
       var star = points[i];
-      var fleets = star.getAllFleets();
-      if (!fleets || fleets.length <= 0) continue;
+      var fleets = star.getFleets();
+      if (!fleets || fleets.length < 1)
+      {
+        continue;
+      }
 
       var fleetsContainer = new PIXI.Container();
       fleetsContainer.x = star.x;
