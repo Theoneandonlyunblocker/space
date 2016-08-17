@@ -27,6 +27,7 @@ export var defaultEvaluationParameters =
     productionWeight: 1,
   }
 }
+
 interface IndependentTargetEvaluations
 {
   star: Star;
@@ -34,6 +35,7 @@ interface IndependentTargetEvaluations
   independentStrength: number;
   ownInfluence: number;
 }
+
 // TODO refactor | split into multiple classes eg vision, influence maps etc.
 export default class MapEvaluator
 {
@@ -44,10 +46,7 @@ export default class MapEvaluator
   {
     [turnNumber: number]:
     {
-      [playerId: number]:
-      {
-        [starID: number]: number;
-      }
+      [playerId: number]: ValuesByStar<number>
     }
   } = {};
   cachedVisibleFleets:
@@ -279,11 +278,9 @@ export default class MapEvaluator
       score: number;
     }[] = [];
 
-    const evaluationByStarID = evaluations.byStar;
-
-    for (let starID in evaluationByStarID)
+    for (let starID in evaluations)
     {
-      var evaluation = evaluationByStarID[starID];
+      var evaluation = evaluations[starID];
 
       var easeOfCapturing = evaluation.ownInfluence / evaluation.independentStrength;
 
@@ -540,34 +537,17 @@ export default class MapEvaluator
 
     return byPlayer;
   }
-  buildPlayerInfluenceMap(player: Player)
+  buildPlayerInfluenceMap(player: Player): ValuesByStar<number>
   {
     var playerIsImmobile = player.isIndependent;
 
-    var influenceByStar:
+
+    const stars = this.player.getRevealedStars();
+    const influence = new ValuesByStar<number>(stars, (star) =>
     {
-      [starID: number]: number;
-    } = {};
-
-    var stars = this.player.getRevealedStars();
-
-    for (let i = 0; i < stars.length; i++)
-    {
-      var star = stars[i];
-
-      var defenceBuildingStrengths =
-        this.getDefenceBuildingStrengthAtStarByPlayer(star);
-
-      if (defenceBuildingStrengths[player.id])
-      {
-        if (!isFinite(influenceByStar[star.id]))
-        {
-          influenceByStar[star.id] = 0;
-        };
-
-        influenceByStar[star.id] += defenceBuildingStrengths[player.id];
-      }
-    }
+      const defenceBuildingStrength = this.getDefenceBuildingStrengthAtStarByPlayer(star);
+      return defenceBuildingStrength[player.id] || 0;
+    });
 
     var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
 
@@ -601,17 +581,17 @@ export default class MapEvaluator
         {
           var star = inFleetRange[distance][j];
 
-          if (!isFinite(influenceByStar[star.id]))
+          if (!isFinite(influence[star.id]))
           {
-            influenceByStar[star.id] = 0;
+            influence[star.id] = 0;
           };
 
-          influenceByStar[star.id] += adjustedStrength;
+          influence[star.id] += adjustedStrength;
         }
       }
     }
 
-    return influenceByStar;
+    return influence;
   }
   getPlayerInfluenceMap(player: Player)
   {
@@ -636,10 +616,7 @@ export default class MapEvaluator
   {
     var byPlayer:
     {
-      [playerId: number]:
-      {
-        [starID: number]: number
-      }
+      [playerId: number]: ValuesByStar<number>
     } = {};
 
     for (let playerId in this.player.diplomacyStatus.metPlayers)
