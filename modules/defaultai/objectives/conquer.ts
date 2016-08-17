@@ -17,12 +17,16 @@ import
 import movePriority from "./common/movePriority";
 import
 {
-  musterAndAttackRoutine,
-  buildingControllerFilter,
   defaultUnitDesireFN,
   defaultUnitFitFN,
   getUnitsToBeatImmediateTarget
 } from "../aiUtils";
+
+import
+{
+  default as musterAndAttack,
+  buildingControllerFilter
+} from "./common/moveroutines/musterAndAttack";
 
 const conquer: ObjectiveTemplate =
 {
@@ -34,7 +38,7 @@ const conquer: ObjectiveTemplate =
     defence: 0.25,
     utility: 0.1
   },
-  moveRoutineFN: musterAndAttackRoutine.bind(null, buildingControllerFilter),
+  moveRoutineFN: musterAndAttack.bind(null, buildingControllerFilter),
   unitDesireFN: defaultUnitDesireFN,
   unitFitFN: defaultUnitFitFN,
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,

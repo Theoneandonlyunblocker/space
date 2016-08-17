@@ -10,13 +10,17 @@ import Unit from "../../../src/Unit";
 import movePriority from "./common/movePriority";
 import
 {
-  musterAndAttackRoutine,
-  independentTargetFilter,
   defaultUnitDesireFN,
   defaultUnitFitFN,
   makeObjectivesFromScores,
   getUnitsToBeatImmediateTarget
 } from "../aiUtils";
+
+import
+{
+  default as musterAndAttack,
+  independentTargetFilter
+} from "./common/moveroutines/musterAndAttack";
 
 const expansion: ObjectiveTemplate =
 {
@@ -28,7 +32,7 @@ const expansion: ObjectiveTemplate =
     defence: 0.25,
     utility: 0.1
   },
-  moveRoutineFN: musterAndAttackRoutine.bind(null, independentTargetFilter),
+  moveRoutineFN: musterAndAttack.bind(null, independentTargetFilter),
   unitDesireFN: defaultUnitDesireFN,
   unitFitFN: defaultUnitFitFN,
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,

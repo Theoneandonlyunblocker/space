@@ -5,10 +5,10 @@ import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate
 
 import Unit from "../../../src/Unit";
 
+import moveTo from "./common/moveroutines/moveTo";
 import movePriority from "./common/movePriority";
 import
 {
-  moveToRoutine,
   scoutingUnitDesireFN,
   scoutingUnitFitFN,
   perimeterObjectiveCreation
@@ -22,7 +22,7 @@ const scoutingPerimeter: ObjectiveTemplate =
   {
     scouting: 1
   },
-  moveRoutineFN: moveToRoutine,
+  moveRoutineFN: moveTo,
   unitDesireFN: scoutingUnitDesireFN,
   unitFitFN: scoutingUnitFitFN,
   creatorFunction: null,

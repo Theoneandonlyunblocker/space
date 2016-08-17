@@ -10,10 +10,7 @@ import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
 
 import movePriority from "./common/movePriority";
-import
-{
-  moveToRoutine
-} from "../aiUtils";
+import moveTo from "./common/moveroutines/moveTo";
 
 const heal: ObjectiveTemplate =
 {
@@ -25,7 +22,7 @@ const heal: ObjectiveTemplate =
   },
   moveRoutineFN: function(front: Front, afterMoveCallback: Function)
   {
-    moveToRoutine(front, afterMoveCallback, function(fleet: Fleet)
+    moveTo(front, afterMoveCallback, function(fleet: Fleet)
     {
       return fleet.player.getNearestOwnedStarTo(fleet.location);
     });

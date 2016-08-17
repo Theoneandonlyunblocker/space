@@ -11,10 +11,12 @@ import
   getRelativeValue
 } from "../../../src/utility";
 
+
 import movePriority from "./common/movePriority";
+import moveTo from "./common/moveroutines/moveTo";
+
 import
 {
-  moveToRoutine,
   scoutingUnitDesireFN,
   scoutingUnitFitFN,
   makeObjectivesFromScores
@@ -29,7 +31,7 @@ const discovery: ObjectiveTemplate =
   {
     scouting: 1
   },
-  moveRoutineFN: moveToRoutine,
+  moveRoutineFN: moveTo,
   unitDesireFN: scoutingUnitDesireFN,
   unitFitFN: scoutingUnitFitFN,
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,
