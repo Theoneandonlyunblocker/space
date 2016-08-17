@@ -5,6 +5,7 @@ import Player from "../../src/Player";
 import ObjectiveTemplate from "../../src/templateinterfaces/ObjectiveTemplate";
 import Objective from "../../src/mapai/Objective";
 import Fleet from "../../src/Fleet";
+import FleetAttackTarget from "../../src/FleetAttackTarget";
 import Front from "../../src/mapai/Front";
 import Star from "../../src/Star";
 import Unit from "../../src/Unit";
@@ -49,15 +50,15 @@ export function moveToRoutine(front: Front,
     fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
   }
 }
-export function independentTargetFilter(target: any)
+export function independentTargetFilter(target: FleetAttackTarget)
 {
   return target.enemy.isIndependent;
 }
-export function buildingControllerFilter(target: any)
+export function buildingControllerFilter(target: FleetAttackTarget)
 {
   return target.building && target.enemy === target.building.controller;
 }
-export function musterAndAttackRoutine(targetFilter: (target: any) => boolean,
+export function musterAndAttackRoutine(targetFilter: (target: FleetAttackTarget) => boolean,
   front: Front, afterMoveCallback: () => void)
 {
   var shouldMoveToTarget: boolean;
