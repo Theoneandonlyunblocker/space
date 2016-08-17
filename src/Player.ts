@@ -195,7 +195,10 @@ export default class Player
     this.personality = props.personality;
 
     this.diplomacyStatus = new DiplomacyStatus(this);
-    this.initTechnologies(props.technologyData);
+    if (!this.isIndependent)
+    {
+      this.initTechnologies(props.technologyData);
+    }
   }
   destroy()
   {
