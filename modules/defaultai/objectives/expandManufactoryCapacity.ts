@@ -25,7 +25,7 @@ const expandManufactoryCapacity: ObjectiveTemplate =
   economyRoutineFN: function(objective: Objective, economyAI: EconomyAI)
   {
     // TODO economy ai
-    var costByStar:
+    var starWithCost:
     {
       star: Star;
       cost: number;
@@ -34,13 +34,19 @@ const expandManufactoryCapacity: ObjectiveTemplate =
     var player: Player = economyAI.player;
     var stars = player.controlledLocations;
 
-    if (player.money < 1200) return;
+    if (player.money < 1200)
+    {
+      return;
+    }
 
     for (let i = 0; i < stars.length; i++)
     {
       var star = stars[i];
       var fullyExpanded = star.manufactory && star.manufactory.capacity >= star.manufactory.maxCapacity;
-      if (fullyExpanded) continue;
+      if (fullyExpanded)
+      {
+        continue;
+      }
       
       var expansionCost: number;
       if (!star.manufactory)
@@ -52,22 +58,25 @@ const expandManufactoryCapacity: ObjectiveTemplate =
         expansionCost = star.manufactory.getCapacityUpgradeCost();
       }
 
-      costByStar.push(
+      starWithCost.push(
       {
         star: star,
         cost: expansionCost
       });
     }
 
-    if (costByStar.length === 0) return;
+    if (starWithCost.length === 0)
+    {
+      return;
+    }
 
-    costByStar.sort(function(a, b)
+    starWithCost.sort(function(a, b)
     {
       return a.cost - b.cost;
     });
 
-    var star = costByStar[0].star;
-    var cost = costByStar[0].cost;
+    var star = starWithCost[0].star;
+    var cost = starWithCost[0].cost;
     if (player.money < cost * 1.1)
     {
       return;
