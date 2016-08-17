@@ -144,6 +144,7 @@ export default class MapEvaluator
     var evaluation = 0;
 
     // neighboring own stars ++
+    // player owns star ++
     // neighboring neutral stars -
     // neighboring other player stars --
     // neighboring other player with low trust stars --- TODO ai
@@ -662,7 +663,8 @@ export default class MapEvaluator
 
     if (player !== this.player)
     {
-      invisibleStrength = visibleStrength * 0.5; // TODO ai
+      // TODO ai | be smarter about estimating invisible strength
+      invisibleStrength = visibleStrength * 0.5;
     }
 
     return visibleStrength + invisibleStrength;
