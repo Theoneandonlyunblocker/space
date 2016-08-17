@@ -46,7 +46,7 @@ export default class MapEvaluator
     {
       [playerId: number]:
       {
-        [starId: number]: number;
+        [starID: number]: number;
       }
     }
   } = {};
@@ -63,11 +63,11 @@ export default class MapEvaluator
     {
       visible:
       {
-        [starId: number]: Star;
+        [starID: number]: Star;
       };
       detected:
       {
-        [starId: number]: Star;
+        [starID: number]: Star;
       };
     }
   } = {};
@@ -309,7 +309,7 @@ export default class MapEvaluator
   {
     var byStar:
     {
-      [starId: number]:
+      [starID: number]:
       {
         star: Star;
         desirability: number;
@@ -352,7 +352,7 @@ export default class MapEvaluator
   {
     const alreadyVisited:
     {
-      [starId: number]: boolean
+      [starID: number]: boolean
     } = {};
 
     const allStars: Star[] = [];
@@ -546,7 +546,7 @@ export default class MapEvaluator
 
     var influenceByStar:
     {
-      [starId: number]: number;
+      [starID: number]: number;
     } = {};
 
     var stars = this.player.getRevealedStars();
@@ -638,7 +638,7 @@ export default class MapEvaluator
     {
       [playerId: number]:
       {
-        [starId: number]: number
+        [starID: number]: number
       }
     } = {};
 
@@ -703,15 +703,15 @@ export default class MapEvaluator
 
     var totalInfluenceInOwnStars = 0;
 
-    for (let starId in otherInfluenceMap)
+    for (let starID in otherInfluenceMap)
     {
       for (let i = 0; i < this.player.controlledLocations.length; i++)
       {
         var star = this.player.controlledLocations[i];
-        if (star.id === parseInt(starId))
+        if (star.id === parseInt(starID))
         {
-          var otherInfluence = otherInfluenceMap[starId];
-          var ownInfluence = ownInfluenceMap[starId];
+          var otherInfluence = otherInfluenceMap[starID];
+          var ownInfluence = ownInfluenceMap[starID];
           totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
           break;
         }
@@ -814,11 +814,11 @@ export default class MapEvaluator
   {
     var detectedStars:
     {
-      [starId: number]: Star;
+      [starID: number]: Star;
     } = {};
     var visibleStars:
     {
-      [starId: number]: Star;
+      [starID: number]: Star;
     } = {};
 
     var revealedStarsOfPlayer: Star[] = this.player.getRevealedStars().filter(function(star: Star)
