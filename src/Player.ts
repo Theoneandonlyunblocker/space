@@ -451,7 +451,7 @@ export default class Player
     // meet players
     if (this.diplomacyStatus.getUnMetPlayerCount() > 0)
     {
-      this.meetPlayersInStarByVisibility(star, "detected");
+      this.meetPlayersInStarByVisibility(star, "stealthy");
     }
     // identify units
     var unitsToIdentify = star.getUnits();

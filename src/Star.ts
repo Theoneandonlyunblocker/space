@@ -868,7 +868,7 @@ export default class Star implements Point
       {
         [playerId: number]: Player;
       }
-      detected:
+      stealthy:
       {
         [playerId: number]: Player;
       }
@@ -879,7 +879,7 @@ export default class Star implements Point
     } =
     {
       visible: {},
-      detected: {},
+      stealthy: {},
       all: {}
     }
 
@@ -897,14 +897,14 @@ export default class Star implements Point
       for (let i = 0; i < fleets.length; i++)
       {
         var fleetPlayer = fleets[i].player;
-        if (byVisibilityAndId.detected[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id])
+        if (byVisibilityAndId.stealthy[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id])
         {
           break;
         }
         byVisibilityAndId.all[fleetPlayer.id] = fleetPlayer;
         if (fleets[i].isStealthy)
         {
-          byVisibilityAndId.detected[fleetPlayer.id] = fleetPlayer;
+          byVisibilityAndId.stealthy[fleetPlayer.id] = fleetPlayer;
         }
         else
         {
