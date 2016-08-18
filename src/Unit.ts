@@ -852,11 +852,6 @@ export default class Unit
 
     this.addStrength(healAmount);
   }
-  public getStrengthEvaluation()
-  {
-    // TODO unit TODO ai
-    return this.currentHealth;
-  }
   public getTotalCost()
   {
     var totalCost = 0;

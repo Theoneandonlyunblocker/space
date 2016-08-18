@@ -11,6 +11,7 @@ import
 } from "../utility";
 
 import ValuesByStar from "./ValuesByStar";
+import evaluateUnitStrength from "../evaluateUnitStrength";
 
 export var defaultEvaluationParameters =
 {
@@ -390,54 +391,17 @@ export default class MapEvaluator
       all: allUnits
     });
   }
-  getHostileStrengthAtStar(star: Star)
-  {
-    var hostileUnitsByPlayer = this.getHostileUnitsAtStar(star).byEnemy;
-
-    var strengthByEnemy:
-    {
-      [playerId: number]: number;
-    } = {};
-
-    for (let playerId in hostileUnitsByPlayer)
-    {
-      var strength = 0;
-
-      for (let i = 0; i < hostileUnitsByPlayer[playerId].length; i++)
-      {
-        strength += hostileUnitsByPlayer[playerId][i].getStrengthEvaluation();
-      }
-
-      strengthByEnemy[playerId] = strength;
-    }
-
-    return strengthByEnemy;
+    return star.getUnits(player =>
+      this.player.diplomacyStatus.canAttackFleetOfPlayer(player));
   }
-  getIndependentStrengthAtStar(star: Star): number
+  public getHostileStrengthAtStar(star: Star): number
   {
-    const units = star.getUnits(player => player.isIndependent);
-
-    let total = 0;
-
-    for (let i = 0; i < units.length; i++)
-    {
-      total += units[i].getStrengthEvaluation();
-    }
-
-    return total;
+    return evaluateUnitStrength(...this.getHostileUnitsAtStar(star));
   }
-  getTotalHostileStrengthAtStar(star: Star): number
+  public getIndependentStrengthAtStar(star: Star): number
   {
-    var byPlayer = this.getHostileStrengthAtStar(star);
-
-    var total = 0;
-
-    for (let playerId in byPlayer)
-    {
-      total += byPlayer[playerId];
-    }
-
-    return total;
+    const independentUnits = star.getUnits(player => player.isIndependent);
+    return evaluateUnitStrength(...independentUnits);
   }
   getDefenceBuildingStrengthAtStarByPlayer(star: Star)
   {
@@ -474,10 +438,6 @@ export default class MapEvaluator
     }
 
     return strength;
-  }
-  evaluateFleetStrength(fleet: Fleet): number
-  {
-    return fleet.getTotalStrengthEvaluation();
   }
 
   getVisibleFleetsByPlayer()
@@ -547,7 +507,7 @@ export default class MapEvaluator
     for (let i = 0; i < fleets.length; i++)
     {
       var fleet = fleets[i];
-      var strength = this.evaluateFleetStrength(fleet);
+      var strength = evaluateUnitStrength(...fleet.units);
       var location = fleet.location;
 
       var range = fleet.getMinMaxMovePoints();
@@ -645,7 +605,7 @@ export default class MapEvaluator
     var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
     for (let i = 0; i < fleets.length; i++)
     {
-      visibleStrength += this.evaluateFleetStrength(fleets[i]);
+      visibleStrength += evaluateUnitStrength(...fleets[i].units);
     }
 
     if (player !== this.player)

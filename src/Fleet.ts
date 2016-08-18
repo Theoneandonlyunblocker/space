@@ -284,17 +284,6 @@ export default class Fleet
   {
     return this.location.fleets[this.player.id];
   }
-  getTotalStrengthEvaluation()
-  {
-    var total = 0;
-
-    for (let i = 0; i < this.units.length; i++)
-    {
-      total += this.units[i].getStrengthEvaluation();
-    }
-
-    return total;
-  }
   getTotalHealth()
   {
     var total =

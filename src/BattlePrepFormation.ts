@@ -1,6 +1,7 @@
 import app from "./App";
 import Player from "./Player";
 import Unit from "./Unit";
+import evaluateUnitStrength from "./evaluateUnitStrength";
 import UnitDisplayData from "./UnitDisplayData";
 import getNullFormation from "./getNullFormation";
 import ArchetypeValues from "./ArchetypeValues";
@@ -196,7 +197,7 @@ export default class BattlePrepFormation
 
     const getUnitScoreFN = (unit: Unit, row: string) =>
     {
-      const baseScore = unit.getStrengthEvaluation();
+      const baseScore = evaluateUnitStrength(unit);
       
       const archetype = unit.template.archetype;
       const idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);

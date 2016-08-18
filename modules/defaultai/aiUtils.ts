@@ -8,6 +8,7 @@ import Fleet from "../../src/Fleet";
 import Front from "../../src/mapai/Front";
 import Star from "../../src/Star";
 import Unit from "../../src/Unit";
+import evaluateUnitStrength from "../../src/evaluateUnitStrength";
 import DiplomacyState from "../../src/DiplomacyState";
 import
 {
@@ -99,7 +100,7 @@ export function scoutingUnitFitFN(unit: Unit, front: Front)
   }
 
   // -- strength
-  var strength = unit.getStrengthEvaluation();
+  var strength = evaluateUnitStrength(unit);
   baseScore -= strength / 1000;
   // -- cost
   var cost = unit.getTotalCost();
