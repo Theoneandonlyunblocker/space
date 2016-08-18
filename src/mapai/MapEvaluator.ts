@@ -6,6 +6,7 @@ import Fleet from "../Fleet";
 import Unit from "../Unit";
 import DiplomacyEvaluation from "../DiplomacyEvaluation";
 import ValuesByStar from "../ValuesByStar";
+import ValuesByPlayer from "../ValuesByPlayer";
 import
 {
   getRelativeValue
