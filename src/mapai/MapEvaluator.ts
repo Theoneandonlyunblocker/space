@@ -29,11 +29,11 @@ export var defaultEvaluationParameters =
   }
 }
 
-interface IndependentTargetEvaluations
+interface StarTargetEvaluation
 {
   star: Star;
   desirability: number;
-  independentStrength: number;
+  hostileStrength: number;
   ownInfluence: number;
 }
 
@@ -247,9 +247,9 @@ export default class MapEvaluator
     return evaluation;
   }
 
-  evaluateIndependentTargets(targetStars: Star[]): ValuesByStar<IndependentTargetEvaluations>
+  evaluateIndependentTargets(targetStars: Star[]): ValuesByStar<StarTargetEvaluation>
   {
-    const evaluationByStar = new ValuesByStar<IndependentTargetEvaluations>(
+    const evaluationByStar = new ValuesByStar<StarTargetEvaluation>(
       targetStars,
       (star) =>
       {
@@ -263,7 +263,7 @@ export default class MapEvaluator
         {
           star: star,
           desirability: desirability,
-          independentStrength: independentStrength,
+          hostileStrength: independentStrength,
           ownInfluence: ownInfluenceAtStar
         });
       }
@@ -272,7 +272,7 @@ export default class MapEvaluator
     return evaluationByStar;
   }
 
-  scoreIndependentTargets(evaluations: ValuesByStar<IndependentTargetEvaluations>)
+  scoreIndependentTargets(evaluations: ValuesByStar<StarTargetEvaluation>)
   {
     var scores:
     {
@@ -284,7 +284,7 @@ export default class MapEvaluator
     {
       var evaluation = evaluations[starID];
 
-      var easeOfCapturing = evaluation.ownInfluence / evaluation.independentStrength;
+      var easeOfCapturing = evaluation.ownInfluence / evaluation.hostileStrength;
 
       var score = evaluation.desirability * easeOfCapturing;
       if (evaluation.star.getSecondaryController() === this.player)
