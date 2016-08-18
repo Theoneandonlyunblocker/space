@@ -361,36 +361,8 @@ export default class MapEvaluator
       this.player.controlledLocations
     );
   }
-  getHostileUnitsAtStar(star: Star)
+  public getHostileUnitsAtStar(star: Star): Unit[]
   {
-    const unitsByEnemy:
-    {
-      [playerId: number]: Unit[];
-    } = {};
-    const allUnits: Unit[] = [];
-
-    const hostileFleets = star.getFleets((player: Player) =>
-    {
-      return this.player.diplomacyStatus.canAttackFleetOfPlayer(player);
-    });
-
-    hostileFleets.forEach(fleet =>
-    {
-      if (!unitsByEnemy[fleet.player.id])
-      {
-        unitsByEnemy[fleet.player.id] = [];
-      }
-
-      unitsByEnemy[fleet.player.id].push(...fleet.units);
-      allUnits.push(...fleet.units);
-    });
-
-    return(
-    {
-      byEnemy: unitsByEnemy,
-      all: allUnits
-    });
-  }
     return star.getUnits(player =>
       this.player.diplomacyStatus.canAttackFleetOfPlayer(player));
   }

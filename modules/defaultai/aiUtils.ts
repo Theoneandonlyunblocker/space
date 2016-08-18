@@ -202,7 +202,7 @@ export function getUnitsToBeatImmediateTarget(mapEvaluator: MapEvaluator,
   var min: number;
   var ideal: number;
   var star = objective.target;
-  var hostileUnits = mapEvaluator.getHostileUnitsAtStar(star).all;
+  var hostileUnits = mapEvaluator.getHostileUnitsAtStar(star);
 
   if (hostileUnits.length <= 1)
   {
