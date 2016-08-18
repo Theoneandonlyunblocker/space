@@ -1,13 +1,13 @@
 import Player from "./Player";
 import IDDictionary from "./IDDictionary";
 
-interface Zipped<T>
+interface PlayerWithValue<T>
 {
   player: Player;
   value: T;
 }
 
-export default class ValuesByPlayer<T> extends IDDictionary<Player, T, Zipped<T>>
+export default class ValuesByPlayer<T> extends IDDictionary<Player, T, PlayerWithValue<T>>
 {
   [playerID: number]: T;
 

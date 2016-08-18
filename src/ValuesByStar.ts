@@ -1,13 +1,13 @@
 import Star from "./Star";
 import IDDictionary from "./IDDictionary";
 
-interface Zipped<T>
+interface StarWithvalue<T>
 {
   star: Star;
   value: T;
 }
 
-export default class ValuesByStar<T> extends IDDictionary<Star, T, Zipped<T>>
+export default class ValuesByStar<T> extends IDDictionary<Star, T, StarWithvalue<T>>
 {
   [starID: number]: T;
 
