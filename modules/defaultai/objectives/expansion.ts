@@ -41,7 +41,7 @@ const expansion: ObjectiveTemplate =
     var basePriority = grandStrategyAI.desireForExpansion;
 
     var independentNeighborStars = mapEvaluator.getIndependentNeighborStars();
-    var evaluations = mapEvaluator.evaluateIndependentTargets(independentNeighborStars);
+    var evaluations = mapEvaluator.evaluateStarTargets(independentNeighborStars);
     var scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
     var template = expansion

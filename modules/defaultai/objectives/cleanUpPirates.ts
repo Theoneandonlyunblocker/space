@@ -52,7 +52,7 @@ const cleanUpPirates: ObjectiveTemplate =
       }
     });
 
-    var evaluations = mapEvaluator.evaluateIndependentTargets(ownedStarsWithPirates);
+    var evaluations = mapEvaluator.evaluateStarTargets(ownedStarsWithPirates);
     var scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
     var template = cleanUpPirates;

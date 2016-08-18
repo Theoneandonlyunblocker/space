@@ -247,14 +247,15 @@ export default class MapEvaluator
     return evaluation;
   }
 
-  evaluateIndependentTargets(targetStars: Star[]): ValuesByStar<StarTargetEvaluation>
+  evaluateStarTargets(targetStars: Star[]): ValuesByStar<StarTargetEvaluation>
   {
     const evaluationByStar = new ValuesByStar<StarTargetEvaluation>(
       targetStars,
       (star) =>
       {
         const desirability = this.evaluateStarDesirability(star);
-        const independentStrength = this.getIndependentStrengthAtStar(star) || 1;
+
+        // TODO
 
         const ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
         const ownInfluenceAtStar = ownInfluenceMap[star.id] || 1;
@@ -263,7 +264,8 @@ export default class MapEvaluator
         {
           star: star,
           desirability: desirability,
-          hostileStrength: independentStrength,
+          // TODO
+          hostileStrength: 1,
           ownInfluence: ownInfluenceAtStar
         });
       }
