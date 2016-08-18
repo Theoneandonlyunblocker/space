@@ -30,11 +30,14 @@ abstract class IDDictionary<K extends ObjectWithID, V, Z>
       });
     }
 
-    keys.forEach(key =>
+    if (keys)
     {
-      this.keysByID[key.id] = key;
-      this[key.id] = getValueFN(key);
-    });
+      keys.forEach(key =>
+      {
+        this.keysByID[key.id] = key;
+        this[key.id] = getValueFN(key);
+      });
+    }
   }
 
   public zip(): Z[]
