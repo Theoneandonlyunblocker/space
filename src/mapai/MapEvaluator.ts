@@ -348,39 +348,17 @@ export default class MapEvaluator
 
   getIndependentNeighborStarIslands(earlyReturnSize?: number)
   {
-    const alreadyVisited:
-    {
-      [starID: number]: boolean
-    } = {};
-
-    const allStars: Star[] = [];
-
     const islandQualifierFN = (a: Star, b: Star) =>
     {
       const secondaryController = b.getSecondaryController();
       return b.owner.isIndependent && (!secondaryController || secondaryController === this.player);
     }
 
-    const neighborStars = this.getIndependentNeighborStars();
-    for (let i = 0; i < neighborStars.length; i++)
-    {
-      const neighborStar = neighborStars[i];
-      if (alreadyVisited[neighborStar.id])
-      {
-        continue;
-      }
-
-      const island = neighborStar.getIslandForQualifier(islandQualifierFN, earlyReturnSize);
-
-      for (let j = 0; j < island.length; j++)
-      {
-        const star = island[j];
-        alreadyVisited[star.id] = true;
-        allStars.push(star);
-      }
-    }
-
-    return allStars;
+    return this.player.controlledLocations[0].getIslandForQualifier(
+      islandQualifierFN,
+      earlyReturnSize,
+      this.player.controlledLocations
+    );
   }
   getHostileUnitsAtStar(star: Star)
   {
