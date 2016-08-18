@@ -5,12 +5,12 @@ import GalaxyMap from "../GalaxyMap";
 import Fleet from "../Fleet";
 import Unit from "../Unit";
 import DiplomacyEvaluation from "../DiplomacyEvaluation";
+import ValuesByStar from "../ValuesByStar";
 import
 {
   getRelativeValue
 } from "../utility";
 
-import ValuesByStar from "./ValuesByStar";
 import evaluateUnitStrength from "../evaluateUnitStrength";
 
 export var defaultEvaluationParameters =

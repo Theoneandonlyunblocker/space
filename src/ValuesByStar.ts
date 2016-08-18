@@ -1,5 +1,5 @@
-import Star from "../Star";
-import IDDictionary from "../IDDictionary";
+import Star from "./Star";
+import IDDictionary from "./IDDictionary";
 
 interface Zipped<T>
 {
