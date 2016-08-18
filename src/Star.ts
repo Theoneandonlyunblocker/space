@@ -711,8 +711,10 @@ export default class Star implements Point
   }
   // Recursively gets all neighbors that fulfill the callback condition with this star
   // Optional earlyReturnSize parameter returns if an island of specified size is found
-  getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean,
-    earlyReturnSize?: number): Star[]
+  getIslandForQualifier(
+    qualifier: (starA: Star, starB: Star) => boolean,
+    earlyReturnSize?: number,
+    initialStars: Star[] = [this]): Star[]
   {
     var visited:
     {
@@ -726,9 +728,11 @@ export default class Star implements Point
 
     var sizeFound = 1;
 
-    var initialStar = this;
-    var frontier: Star[] = [initialStar];
-    visited[initialStar.id] = true;
+    var frontier: Star[] = initialStars.slice(0);
+    initialStars.forEach(star =>
+    {
+      visited[star.id] = true;
+    });
 
     while (frontier.length > 0)
     {
@@ -739,7 +743,10 @@ export default class Star implements Point
       for (let i = 0; i < neighbors.length; i++)
       {
         var neighbor = neighbors[i];
-        if (visited[neighbor.id]) continue;
+        if (visited[neighbor.id])
+        {
+          continue;
+        }
 
         visited[neighbor.id] = true;
         if (qualifier(current, neighbor))
