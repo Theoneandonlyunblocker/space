@@ -1,14 +1,18 @@
 import Star from "../Star";
+import IDDictionary from "../IDDictionary";
 
-export default class ValuesByStar<T>
+interface Zipped<T>
+{
+  star: Star;
+  value: T;
+}
+
+export default class ValuesByStar<T> extends IDDictionary<Star, T, Zipped<T>>
 {
   [starID: number]: T;
 
-  constructor(stars: Star[], getInfluenceFN: (star: Star) => T)
+  constructor(stars: Star[], getValueFN: (star: Star) => T)
   {
-    stars.forEach(star =>
-    {
-      this[star.id] = getInfluenceFN(star);
-    });
+    super("star", "value", stars, getValueFN);
   }
 }
