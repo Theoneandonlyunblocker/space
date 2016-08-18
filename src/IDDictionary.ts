@@ -15,7 +15,7 @@ abstract class IDDictionary<K extends ObjectWithID, V, Z>
   };
 
   constructor(keyName: string, valueName: string,
-    keys: K[], getValueFN: (key: K) => V)
+    keys?: K[], getValueFN?: (key: K) => V)
   {
     this.keyName = keyName;
     this.valueName = valueName;

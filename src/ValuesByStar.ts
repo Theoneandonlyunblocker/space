@@ -11,7 +11,7 @@ export default class ValuesByStar<T> extends IDDictionary<Star, T, Zipped<T>>
 {
   [starID: number]: T;
 
-  constructor(stars: Star[], getValueFN: (star: Star) => T)
+  constructor(stars?: Star[], getValueFN?: (star: Star) => T)
   {
     super("star", "value", stars, getValueFN);
   }

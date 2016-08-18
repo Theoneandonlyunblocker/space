@@ -11,7 +11,7 @@ export default class ValuesByPlayer<T> extends IDDictionary<Player, T, Zipped<T>
 {
   [playerID: number]: T;
 
-  constructor(players: Player[], getValueFN: (player: Player) => T)
+  constructor(players?: Player[], getValueFN?: (player: Player) => T)
   {
     super("player", "value", players, getValueFN);
   }
