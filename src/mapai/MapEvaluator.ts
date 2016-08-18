@@ -549,7 +549,26 @@ export default class MapEvaluator
 
     return byPlayer;
   }
-  getVisibleStarsOfPlayer(player: Player)
+  getKnownPlayersInfluenceOnStar(star: Star)
+  {
+    const influenceMaps = this.getInfluenceMapsForKnownPlayers();
+
+    const influenceByPlayer:
+    {
+      [playerID: number]: number;
+    } = {};
+
+    for (let playerID in influenceMaps)
+    {
+      if (isFinite(influenceMaps[playerID][star.id]))
+      {
+        influenceByPlayer[playerID] = influenceMaps[playerID][star.id];
+      }
+    }
+
+    return influenceByPlayer;
+  }
+  getVisibleStarsOfPlayer(player: Player): Star[]
   {
     return this.player.getVisibleStars().filter(function(star: Star)
     {
