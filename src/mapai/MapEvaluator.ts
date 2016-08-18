@@ -38,6 +38,14 @@ interface StarTargetEvaluation
   ownInfluence: number;
 }
 
+// interface StarsByVisibility
+// {
+//   visible: ValuesByStar<Star>;
+//   detected: ValuesByStar<Star>;
+// }
+
+type InfluenceMap = ValuesByStar<number>;
+
 // TODO refactor | split into multiple classes eg vision, influence maps etc.
 export default class MapEvaluator
 {
@@ -46,18 +54,19 @@ export default class MapEvaluator
   game: Game;
   cachedInfluenceMaps:
   {
-    [turnNumber: number]:
-    {
-      [playerId: number]: ValuesByStar<number>
-    }
+    [turnNumber: number]: ValuesByPlayer<InfluenceMap>;
   } = {};
   cachedVisibleFleets:
   {
-    [turnNumber: number]:
-    {
-      [playerId: number]: Fleet[];
-    }
+    [turnNumber: number]: ValuesByPlayer<Fleet[]>;
   } = {};
+  // cachedVisibleFleets:
+  // {
+  //   [turnNumber: number]:
+  //   {
+  //     [playerId: number]: Fleet[];
+  //   }
+  // } = {};
   cachedVisionMaps:
   {
     [playerId: number]:
@@ -309,15 +318,8 @@ export default class MapEvaluator
   }
   evaluateDesirabilityOfPlayersStars(player: Player)
   {
-    var byStar:
-    {
-      [starID: number]:
-      {
-        star: Star;
-        desirability: number;
-      }
-    } = {};
-    var total = 0;
+    const byStar = new ValuesByStar<number>();
+    let total = 0;
 
     var stars = this.getVisibleStarsOfPlayer(player);
 
@@ -325,11 +327,7 @@ export default class MapEvaluator
     {
       var star = stars[i];
       var desirability = this.evaluateStarDesirability(star);
-      byStar[star.id] = 
-      {
-        star: star,
-        desirability: desirability
-      };
+      byStar[star.id] = desirability;
       total += desirability;
     }
 
@@ -380,10 +378,7 @@ export default class MapEvaluator
   }
   getDefenceBuildingStrengthAtStarByPlayer(star: Star)
   {
-    var byPlayer:
-    {
-      [playerId: number]: number;
-    } = {};
+    var byPlayer = new ValuesByPlayer<number>();
 
     for (let i = 0; i < star.buildings["defence"].length; i++)
     {
@@ -424,10 +419,7 @@ export default class MapEvaluator
 
     var stars = this.player.getVisibleStars();
 
-    var byPlayer:
-    {
-      [playerId: number]: Fleet[];
-    } = {};
+    const byPlayer = new ValuesByPlayer<Fleet[]>();
 
     for (let i = 0; i < stars.length; i++)
     {
@@ -460,7 +452,7 @@ export default class MapEvaluator
 
     return byPlayer;
   }
-  buildPlayerInfluenceMap(player: Player): ValuesByStar<number>
+  buildPlayerInfluenceMap(player: Player): InfluenceMap
   {
     var playerIsImmobile = player.isIndependent;
 
@@ -516,7 +508,7 @@ export default class MapEvaluator
 
     return influence;
   }
-  getPlayerInfluenceMap(player: Player)
+  getPlayerInfluenceMap(player: Player): InfluenceMap
   {
     if (!this.game)
     {
@@ -525,7 +517,7 @@ export default class MapEvaluator
 
     if (!this.cachedInfluenceMaps[this.game.turnNumber])
     {
-      this.cachedInfluenceMaps[this.game.turnNumber] = {};
+      this.cachedInfluenceMaps[this.game.turnNumber] = new ValuesByPlayer<InfluenceMap>();
     }
 
     if (!this.cachedInfluenceMaps[this.game.turnNumber][player.id])
@@ -537,10 +529,7 @@ export default class MapEvaluator
   }
   getInfluenceMapsForKnownPlayers()
   {
-    var byPlayer:
-    {
-      [playerId: number]: ValuesByStar<number>
-    } = {};
+    const byPlayer = new ValuesByPlayer<InfluenceMap>();
 
     for (let playerId in this.player.diplomacyStatus.metPlayers)
     {
@@ -554,10 +543,7 @@ export default class MapEvaluator
   {
     const influenceMaps = this.getInfluenceMapsForKnownPlayers();
 
-    const influenceByPlayer:
-    {
-      [playerID: number]: number;
-    } = {};
+    const influenceByPlayer = new ValuesByPlayer<number>();
 
     for (let playerID in influenceMaps)
     {
@@ -578,10 +564,7 @@ export default class MapEvaluator
   }
   getVisibleStarsOfKnownPlayers()
   {
-    var byPlayer:
-    {
-      [playerId: number]: Star[];
-    } = {};
+    const byPlayer = new ValuesByPlayer<Star[]>();
 
     for (let playerId in this.player.diplomacyStatus.metPlayers)
     {
@@ -645,10 +628,7 @@ export default class MapEvaluator
   }
   getPerceivedThreatOfAllKnownPlayers()
   {
-    var byPlayer:
-    {
-      [playerId: number]: number;
-    } = {};
+    var byPlayer = new ValuesByPlayer<number>();
 
     for (let playerId in this.player.diplomacyStatus.metPlayers)
     {
@@ -661,10 +641,7 @@ export default class MapEvaluator
   getRelativePerceivedThreatOfAllKnownPlayers()
   {
     var byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
-    var relative:
-    {
-      [playerId: number]: number;
-    } = {};
+    var relative = new ValuesByPlayer<number>();
 
     var min: number, max: number;
 
@@ -896,10 +873,7 @@ export default class MapEvaluator
       [playerId: number]: DiplomacyEvaluation;
     } = {};
 
-    var neighborStarsCountByPlayer:
-    {
-      [playerId: number]: number;
-    } = {};
+    var neighborStarsCountByPlayer = new ValuesByPlayer<number>();
 
     var allNeighbors = this.player.getNeighboringStars();
     var neighborStarsForPlayer: Star[] = [];
