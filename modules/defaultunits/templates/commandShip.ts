@@ -4,7 +4,7 @@ import * as UnitArchetypes from "../unitArchetypes";
 import * as UnitFamilies from "../unitFamilies";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
-import itemSlot from "../common/itemSlot";
+import itemSlot from "../../common/itemSlot";
 import
 {
   rangedAttack,
