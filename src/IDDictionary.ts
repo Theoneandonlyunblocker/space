@@ -5,39 +5,42 @@ interface ObjectWithID
 
 abstract class IDDictionary<K extends ObjectWithID, V, Z>
 {
-  [id: number]: V;
-
-  private keyName: string;
-  private valueName: string;
+  [a: number]: null;
+  protected keyName: string;
+  protected valueName: string;
+  private valuesByID:
+  {
+    [id: number]: V;
+  } = {};
   private keysByID:
   {
     [id: number]: K;
-  };
+  } = {};
 
-  constructor(keyName: string, valueName: string,
-    keys?: K[], getValueFN?: (key: K) => V)
+  constructor(keys?: K[], getValueFN?: (key: K) => V)
   {
-    this.keyName = keyName;
-    this.valueName = valueName;
-    
-    this.keysByID = {};
-
-    for (let property in this)
-    {
-      Object.defineProperty(this, property,
-      {
-        enumerable: false
-      });
-    }
-
     if (keys)
     {
       keys.forEach(key =>
       {
-        this.keysByID[key.id] = key;
-        this[key.id] = getValueFN(key);
+        this.set(key, getValueFN(key));
       });
     }
+  }
+
+  public get(key: K): V
+  {
+    return this.valuesByID[key.id];
+  }
+  public set(key: K, value: V): void
+  {
+    this.valuesByID[key.id] = value;
+    this.keysByID[key.id] = key;
+  }
+  public delete(key: K): void
+  {
+    delete this.valuesByID[key.id];
+    delete this.keysByID[key.id];
   }
 
   public zip(): Z[]
@@ -46,11 +49,13 @@ abstract class IDDictionary<K extends ObjectWithID, V, Z>
 
     for (let key in this.keysByID)
     {
-      const zippedPair = <Z>
+      const zippedPair =
       {
         [this.keyName]: this.keysByID[key],
-        [this.valueName]: this[key]
+        [this.valueName]: this.valuesByID[key]
       };
+
+      zipped.push(<any>zippedPair);
     }
 
     return zipped;

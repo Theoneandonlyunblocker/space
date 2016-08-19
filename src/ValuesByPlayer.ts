@@ -9,10 +9,10 @@ interface PlayerWithValue<T>
 
 export default class ValuesByPlayer<T> extends IDDictionary<Player, T, PlayerWithValue<T>>
 {
-  [playerID: number]: T;
-
   constructor(players?: Player[], getValueFN?: (player: Player) => T)
   {
-    super("player", "value", players, getValueFN);
+    super(players, getValueFN);
+    this.keyName = "player";
+    this.valueName = "value";
   }
 }
