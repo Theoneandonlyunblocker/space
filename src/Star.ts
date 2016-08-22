@@ -454,7 +454,10 @@ export default class Star implements Point
   {
     var fleetIndex = this.getFleetIndex(fleet);
 
-    if (fleetIndex < 0) return false;
+    if (fleetIndex < 0)
+    {
+      return false;
+    }
 
     this.fleets[fleet.player.id].splice(fleetIndex, 1);
 
