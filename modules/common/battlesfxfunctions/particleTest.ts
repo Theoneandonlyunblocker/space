@@ -4,9 +4,11 @@ import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
 import BeamFilter from "./shaders/Beam";
 import ShinyParticleFilter from "./shaders/ShinyParticle";
-import IntersectingEllipsesFilter from "./shaders/IntersectingEllipses";
 import LightBurstFilter from "./shaders/LightBurst";
 
+import shockWave from "./sfxfragments/shockWave";
+
+import Color from "../../../src/color";
 import
 {
   createDummySpriteForShader,
@@ -276,6 +278,14 @@ export default function particleTest(props: SFXParams)
 
 
   //----------INIT SHOCKWAVE
+  const shockWaveFragment = shockWave(props,
+  {
+    origin: beamOrigin,
+    mainEllipseMaxSize: {x: 0.3, y: 0.9},
+    intersectingEllipseMaxSize: {x: 0.8, y: 1.0},
+    color: new Color(1.0, 1.0, 1.0),
+    relativeImpactTime: relativeImpactTime
+  });
   var shockWaveMainEllipseMaxSize =
   {
     x: 0.3,
@@ -287,64 +297,7 @@ export default function particleTest(props: SFXParams)
     y: 1.0
   }
 
-  var shockWaveFilter = new IntersectingEllipsesFilter(
-  {
-    mainColor: [1, 1, 1, 1]
-  });
-  const syncShockWaveUniforms = function(time: number)
-  {
-    var burstX: number;
-
-    if (time < (relativeImpactTime - 0.02))
-    {
-      burstX = 0;
-    }
-    else
-    {
-      burstX = time - (relativeImpactTime - 0.02);
-    }
-
-    var shockWaveSize = TWEEN.Easing.Quintic.Out(burstX);
-
-    shockWaveFilter.setUniformValues(
-    {
-      mainEllipseSize:
-      [
-        shockWaveMainEllipseMaxSize.x * shockWaveSize,
-        shockWaveMainEllipseMaxSize.y * shockWaveSize
-      ],
-      intersectingEllipseSize:
-      [
-        shockWaveIntersectingEllipseMaxSize.x * shockWaveSize,
-        shockWaveIntersectingEllipseMaxSize.y * shockWaveSize
-      ],
-      intersectingEllipseCenter:
-      [
-        0.05 + 0.3 * shockWaveSize,
-        0.0
-      ],
-      mainEllipseSharpness: 0.8 + 0.18 * (1.0 - shockWaveSize),
-      intersectingEllipseSharpness: 0.4 + 0.4 * (1.0 - shockWaveSize),
-      mainAlpha: 1.0 - shockWaveSize
-    });
-  }
-
-
-  var shockWaveSpriteSize =
-  {
-    x: props.height * 3.0,
-    y: props.height * 3.0
-  }
-  var shockWaveSprite = createDummySpriteForShader(
-    beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04),
-    beamOrigin.y - shockWaveSpriteSize.y / 2,
-    shockWaveSpriteSize.x,
-    shockWaveSpriteSize.y
-  );
-  shockWaveSprite.shader = shockWaveFilter;
-  // shockWaveSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-
-  mainContainer.addChild(shockWaveSprite);
+  mainContainer.addChild(shockWaveFragment.displayObject);
 
 
   //----------INIT LIGHTBURST
@@ -444,7 +397,7 @@ export default function particleTest(props: SFXParams)
 
     syncBeamUniforms(timePassed);
     syncShinyParticleUniforms(timePassed);
-    syncShockWaveUniforms(timePassed);
+    shockWaveFragment.animate(timePassed);
     syncLightBurstUniforms(timePassed);
 
     renderTexture.clear();
