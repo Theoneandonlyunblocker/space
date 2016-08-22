@@ -65,7 +65,10 @@ const conquer: ObjectiveTemplate =
         return b.value - a.value;
       });
 
-      possibleTargets.push(sortedStarsWithValues[0].star);
+      if (sortedStarsWithValues.length > 0)
+      {
+        possibleTargets.push(sortedStarsWithValues[0].star);
+      }
     }
 
     var template = conquer;
