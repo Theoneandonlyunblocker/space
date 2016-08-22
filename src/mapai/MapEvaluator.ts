@@ -51,7 +51,6 @@ export default class MapEvaluator
   map: GalaxyMap;
   player: Player;
   game: Game;
-  cachedOwnIncome: number;
   evaluationParameters:
   {
     starDesirability:
@@ -75,11 +74,6 @@ export default class MapEvaluator
     this.game = game;
 
     this.evaluationParameters = defaultEvaluationParameters;
-  }
-
-  processTurnStart()
-  {
-    this.cachedOwnIncome = undefined;
   }
 
   evaluateStarIncome(star: Star): number
@@ -165,14 +159,9 @@ export default class MapEvaluator
     var evaluation = 0;
     var p = this.evaluationParameters.starDesirability;
 
-    if (!isFinite(this.cachedOwnIncome))
-    {
-      this.cachedOwnIncome = this.player.getIncome();
-    }
-
     var incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
     // prioritize income when would make big relative boost, penalize when opposite
-    incomeEvaluation *= incomeEvaluation / (this.cachedOwnIncome / 4);
+    incomeEvaluation *= incomeEvaluation / (this.player.getIncome() / 4);
     evaluation += incomeEvaluation;
 
     var infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;

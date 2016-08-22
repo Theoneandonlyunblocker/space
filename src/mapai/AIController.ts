@@ -58,9 +58,6 @@ export default class AIController
 
   processTurn(afterFinishedCallback: () => void)
   {
-    // clear cached stuff from mapevaluator
-    this.mapEvaluator.processTurnStart();
-
     // gsai evaluate grand strategy
     this.grandStrategyAI.setDesires();
 

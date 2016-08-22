@@ -25,7 +25,7 @@ const playerInfluence: MapRendererLayerTemplate =
       points = perspectivePlayer.getRevealedStars();
     }
     var mapEvaluator = new MapEvaluator(map, perspectivePlayer);
-    var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(perspectivePlayer);
+    var influenceByStar = mapEvaluator.getPlayerInfluenceMap(perspectivePlayer);
 
     var minInfluence: number, maxInfluence: number;
 
