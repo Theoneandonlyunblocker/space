@@ -210,7 +210,7 @@ export default class Player
   }
   die()
   {
-    for (let i = 0; i < this.fleets.length; i++)
+    for (var i = this.fleets.length - 1; i >= 0; i--)
     {
       this.fleets[i].deleteFleet(false);
     }
