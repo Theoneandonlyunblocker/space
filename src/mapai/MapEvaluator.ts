@@ -43,12 +43,6 @@ interface StarTargetScore
   score: number;
 }
 
-// interface StarsByVisibility
-// {
-//   visible: ValuesByStar<Star>;
-//   detected: ValuesByStar<Star>;
-// }
-
 type InfluenceMap = ValuesByStar<number>;
 
 // TODO refactor | split into multiple classes eg vision, influence maps etc.
@@ -57,10 +51,6 @@ export default class MapEvaluator
   map: GalaxyMap;
   player: Player;
   game: Game;
-  cachedInfluenceMaps:
-  {
-    [turnNumber: number]: ValuesByPlayer<InfluenceMap>;
-  } = {};
   cachedOwnIncome: number;
   evaluationParameters:
   {
@@ -89,7 +79,6 @@ export default class MapEvaluator
 
   processTurnStart()
   {
-    this.cachedInfluenceMaps = {};
     this.cachedOwnIncome = undefined;
   }
 
@@ -400,7 +389,7 @@ export default class MapEvaluator
 
     return visibleFleets;
   }
-  buildPlayerInfluenceMap(player: Player): InfluenceMap
+  getPlayerInfluenceMap(player: Player): InfluenceMap
   {
     var playerIsImmobile = player.isIndependent;
 
@@ -451,23 +440,6 @@ export default class MapEvaluator
     }
 
     return influence;
-  }
-  getPlayerInfluenceMap(player: Player): InfluenceMap
-  {
-    if (!this.game)
-    {
-      throw new Error("Can't use cached influence maps when game isn't specified for MapEvaluator");
-    }
-
-    if (!this.cachedInfluenceMaps[this.game.turnNumber])
-    {
-      this.cachedInfluenceMaps[this.game.turnNumber] = new ValuesByPlayer<InfluenceMap>();
-    }
-
-    this.cachedInfluenceMaps[this.game.turnNumber].setIfDoesntExist(player,
-      this.buildPlayerInfluenceMap(player));
-
-    return this.cachedInfluenceMaps[this.game.turnNumber].get(player);
   }
   getInfluenceMapsForKnownPlayers()
   {
