@@ -32,7 +32,6 @@ interface StateType
 export class BattleSceneTesterComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleSceneTester";
-  idGenerator: number = 0;
   battle: Battle = null;
   battleScene: BattleScene = null;
 
@@ -60,7 +59,6 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     this.handleUnitHover = this.handleUnitHover.bind(this);
     this.handleClearHover = this.handleClearHover.bind(this);
     this.handleChangeDuration = this.handleChangeDuration.bind(this);
-    this.makePlayer = this.makePlayer.bind(this);
     this.handleSelectSFXTemplate = this.handleSelectSFXTemplate.bind(this);    
   }
   
@@ -74,8 +72,8 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       side2Units.push(this.makeUnit());
     }
 
-    var side1Player = this.makePlayer();
-    var side2Player = this.makePlayer();
+    var side1Player = Player.createDummyPlayer();
+    var side2Player = Player.createDummyPlayer();
 
     var battle = this.battle = this.makeBattle(
     {
@@ -112,22 +110,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   makeUnit()
   {
     var template = getRandomProperty(app.moduleData.Templates.Units);
-    return new Unit(template, this.idGenerator++);
-  }
-
-  makePlayer()
-  {
-    const id = this.idGenerator++;
-    return new Player(
-    {
-      isAI: false,
-      isIndependent: false,
-      id: id,
-      name: "player " + id,
-
-      race: null,
-      money: 0
-    });
+    return new Unit(template);
   }
 
   makeFormation(units: Unit[])

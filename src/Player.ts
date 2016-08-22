@@ -197,6 +197,26 @@ export default class Player
     this.diplomacyStatus = new DiplomacyStatus(this);
     this.initTechnologies(props.technologyData);
   }
+  public static createDummyPlayer(): Player
+  {
+    return new Player(
+    {
+      isAI: false,
+      isIndependent: false,
+      id: -9999,
+      name: "Dummy",
+
+      race:
+      {
+        key: "dummy",
+        displayName: "",
+        description: "",
+
+        technologies: [] 
+      },
+      money: 0
+    });
+  }
   destroy()
   {
     this.diplomacyStatus.destroy();
