@@ -31,7 +31,7 @@ const playerInfluence: MapRendererLayerTemplate =
 
     for (let starId in influenceByStar)
     {
-      var influence = influenceByStar[starId];
+      const influence = influenceByStar.get(star);
       if (!isFinite(minInfluence) || influence < minInfluence)
       {
         minInfluence = influence;
@@ -79,9 +79,12 @@ const playerInfluence: MapRendererLayerTemplate =
     for (let i = 0; i < points.length; i++)
     {
       var star = points[i];
-      var influence = influenceByStar[star.id];
+      const influence = influenceByStar.get(star);
 
-      if (!influence) continue;
+      if (!influence)
+      {
+        continue;
+      }
 
       var relativeInfluence = getRelativeValue(minInfluence, maxInfluence, influence);
       var color = getRelativeColor(minInfluence, maxInfluence, relativeInfluence);

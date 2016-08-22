@@ -37,6 +37,11 @@ interface StarTargetEvaluation
   hostileStrength: number;
   ownInfluence: number;
 }
+interface StarTargetScore
+{
+  star: Star;
+  score: number;
+}
 
 // interface StarsByVisibility
 // {
@@ -56,17 +61,6 @@ export default class MapEvaluator
   {
     [turnNumber: number]: ValuesByPlayer<InfluenceMap>;
   } = {};
-  cachedVisibleFleets:
-  {
-    [turnNumber: number]: ValuesByPlayer<Fleet[]>;
-  } = {};
-  // cachedVisibleFleets:
-  // {
-  //   [turnNumber: number]:
-  //   {
-  //     [playerId: number]: Fleet[];
-  //   }
-  // } = {};
   cachedVisionMaps:
   {
     [playerId: number]:
@@ -110,7 +104,6 @@ export default class MapEvaluator
   processTurnStart()
   {
     this.cachedInfluenceMaps = {};
-    this.cachedVisibleFleets = {};
     this.cachedVisionMaps = {};
     this.cachedOwnIncome = undefined;
   }
@@ -268,7 +261,7 @@ export default class MapEvaluator
         // TODO
 
         const ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
-        const ownInfluenceAtStar = ownInfluenceMap[star.id] || 1;
+        const ownInfluenceAtStar = ownInfluenceMap.get(star) || 1;
 
         return(
         {
@@ -284,18 +277,12 @@ export default class MapEvaluator
     return evaluationByStar;
   }
 
-  scoreIndependentTargets(evaluations: ValuesByStar<StarTargetEvaluation>)
+  scoreIndependentTargets(evaluations: ValuesByStar<StarTargetEvaluation>): StarTargetScore[]
   {
-    var scores:
-    {
-      star: Star;
-      score: number;
-    }[] = [];
+    var scores: StarTargetScore[] = [];
 
-    for (let starID in evaluations)
+    evaluations.forEach((star, evaluation) =>
     {
-      var evaluation = evaluations[starID];
-
       var easeOfCapturing = evaluation.ownInfluence / evaluation.hostileStrength;
 
       var score = evaluation.desirability * easeOfCapturing;
@@ -309,7 +296,7 @@ export default class MapEvaluator
         star: evaluation.star,
         score: score
       });
-    }
+    });
 
     return scores.sort(function(a, b)
     {
@@ -327,7 +314,7 @@ export default class MapEvaluator
     {
       var star = stars[i];
       var desirability = this.evaluateStarDesirability(star);
-      byStar[star.id] = desirability;
+      byStar.set(star, desirability);
       total += desirability;
     }
 
@@ -384,12 +371,8 @@ export default class MapEvaluator
     {
       var building = star.buildings["defence"][i];
 
-      if (!byPlayer[building.controller.id])
-      {
-        byPlayer[building.controller.id] = 0;
-      }
-      
-      byPlayer[building.controller.id] += building.totalCost;
+      const previousValue = byPlayer.get(building.controller) || 0;
+      byPlayer.set(building.controller, previousValue + building.totalCost);
     }
 
     return byPlayer;
@@ -410,47 +393,27 @@ export default class MapEvaluator
     return strength;
   }
 
-  getVisibleFleetsByPlayer()
+  public getVisibleFleetsOfPlayer(player: Player): Fleet[]
   {
-    if (this.game && this.cachedVisibleFleets[this.game.turnNumber])
+    const visibleFleets: Fleet[] = [];
+
+    this.player.getVisibleStars().forEach(star =>
     {
-      return this.cachedVisibleFleets[this.game.turnNumber];
-    }
-
-    var stars = this.player.getVisibleStars();
-
-    const byPlayer = new ValuesByPlayer<Fleet[]>();
-
-    for (let i = 0; i < stars.length; i++)
-    {
-      var star = stars[i];
-
-      for (let playerId in star.fleets)
+      const playerFleetsAtStar = star.fleets[player.id];
+      if (playerFleetsAtStar)
       {
-        var playerFleets = star.fleets[playerId];
-
-        if (!byPlayer[playerId])
-        {
-          byPlayer[playerId] = [];
-        }
-
-        for (let j = 0; j < playerFleets.length; j++)
-        {
-          if (playerFleets[j].isStealthy && !this.player.starIsDetected(star))
+        const hasDetectionInStar = this.player.starIsDetected(star);
+        const visibleFleetsAtStar = hasDetectionInStar ? playerFleetsAtStar :
+          playerFleetsAtStar.filter(fleet =>
           {
-            continue;
-          }
-          byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
-        }
+            return !fleet.isStealthy;
+          });
+        
+        visibleFleets.push(...visibleFleetsAtStar);
       }
-    }
+    });
 
-    if (this.game)
-    {
-      this.cachedVisibleFleets[this.game.turnNumber] = byPlayer;
-    }
-
-    return byPlayer;
+    return visibleFleets;
   }
   buildPlayerInfluenceMap(player: Player): InfluenceMap
   {
@@ -461,10 +424,10 @@ export default class MapEvaluator
     const influence = new ValuesByStar<number>(stars, (star) =>
     {
       const defenceBuildingStrength = this.getDefenceBuildingStrengthAtStarByPlayer(star);
-      return defenceBuildingStrength[player.id] || 0;
+      return defenceBuildingStrength.get(player) || 0;
     });
 
-    var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
+    var fleets = this.getVisibleFleetsOfPlayer(player);
 
     function getDistanceFalloff(distance: number)
     {
@@ -496,12 +459,8 @@ export default class MapEvaluator
         {
           var star = inFleetRange[distance][j];
 
-          if (!isFinite(influence[star.id]))
-          {
-            influence[star.id] = 0;
-          };
-
-          influence[star.id] += adjustedStrength;
+          const previousInfluence = influence.get(star) || 0;
+          influence.set(star, previousInfluence + adjustedStrength);
         }
       }
     }
@@ -520,12 +479,10 @@ export default class MapEvaluator
       this.cachedInfluenceMaps[this.game.turnNumber] = new ValuesByPlayer<InfluenceMap>();
     }
 
-    if (!this.cachedInfluenceMaps[this.game.turnNumber][player.id])
-    {
-      this.cachedInfluenceMaps[this.game.turnNumber][player.id] = this.buildPlayerInfluenceMap(player);
-    }
+    this.cachedInfluenceMaps[this.game.turnNumber].setIfDoesntExist(player,
+      this.buildPlayerInfluenceMap(player));
 
-    return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
+    return this.cachedInfluenceMaps[this.game.turnNumber].get(player);
   }
   getInfluenceMapsForKnownPlayers()
   {
@@ -534,7 +491,7 @@ export default class MapEvaluator
     for (let playerId in this.player.diplomacyStatus.metPlayers)
     {
       var player = this.player.diplomacyStatus.metPlayers[playerId];
-      byPlayer[playerId] = this.getPlayerInfluenceMap(player);
+      byPlayer.set(player, this.getPlayerInfluenceMap(player));
     }
 
     return byPlayer;
@@ -545,13 +502,15 @@ export default class MapEvaluator
 
     const influenceByPlayer = new ValuesByPlayer<number>();
 
-    for (let playerID in influenceMaps)
+    influenceMaps.forEach((player, influenceMap) =>
     {
-      if (isFinite(influenceMaps[playerID][star.id]))
+      const influenceOnStar = influenceMap.get(star);
+
+      if (isFinite(influenceOnStar))
       {
-        influenceByPlayer[playerID] = influenceMaps[playerID][star.id];
+        influenceByPlayer.set(player, influenceOnStar);
       }
-    }
+    });
 
     return influenceByPlayer;
   }
@@ -569,7 +528,7 @@ export default class MapEvaluator
     for (let playerId in this.player.diplomacyStatus.metPlayers)
     {
       var player = this.player.diplomacyStatus.metPlayers[playerId];
-      byPlayer[playerId] = this.getVisibleStarsOfPlayer(player);
+      byPlayer.set(player, this.getVisibleStarsOfPlayer(player));
     }
 
     return byPlayer;
@@ -579,7 +538,7 @@ export default class MapEvaluator
     var visibleStrength = 0;
     var invisibleStrength = 0;
 
-    var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
+    const fleets = this.getVisibleFleetsOfPlayer(player);
     for (let i = 0; i < fleets.length; i++)
     {
       visibleStrength += evaluateUnitStrength(...fleets[i].units);
@@ -606,20 +565,13 @@ export default class MapEvaluator
 
     var totalInfluenceInOwnStars = 0;
 
-    for (let starID in otherInfluenceMap)
+    this.player.controlledLocations.forEach(star =>
     {
-      for (let i = 0; i < this.player.controlledLocations.length; i++)
-      {
-        var star = this.player.controlledLocations[i];
-        if (star.id === parseInt(starID))
-        {
-          var otherInfluence = otherInfluenceMap[starID];
-          var ownInfluence = ownInfluenceMap[starID];
-          totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
-          break;
-        }
-      }
-    }
+      const ownInfluence = ownInfluenceMap.get(star);
+      const otherInfluence = otherInfluenceMap.get(star);
+
+      totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
+    });
 
     var globalStrengthDifference =
       this.estimateGlobalStrength(player) - this.estimateGlobalStrength(this.player);
@@ -633,7 +585,7 @@ export default class MapEvaluator
     for (let playerId in this.player.diplomacyStatus.metPlayers)
     {
       var player = this.player.diplomacyStatus.metPlayers[playerId];
-      byPlayer[playerId] = this.getPerceivedThreatOfPlayer(player);
+      byPlayer.set(player, this.getPerceivedThreatOfPlayer(player));
     }
 
     return byPlayer;
@@ -645,17 +597,16 @@ export default class MapEvaluator
 
     var min: number, max: number;
 
-    for (let playerId in byPlayer)
+    byPlayer.forEach((player, threat) =>
     {
-      var threat = byPlayer[playerId];
       min = isFinite(min) ? Math.min(min, threat) : threat;
       max = isFinite(max) ? Math.max(max, threat) : threat;
-    }
+    });
 
-    for (let playerId in byPlayer)
+    byPlayer.forEach((player, threat) =>
     {
-      relative[playerId] = getRelativeValue(byPlayer[playerId], min, max);
-    }
+      relative.set(player, getRelativeValue(threat, min, max));
+    });
 
     return relative;
   }
@@ -722,7 +673,7 @@ export default class MapEvaluator
     {
       return star.owner === player;
     });
-    var visibleFleetsOfPlayer: Fleet[] = this.getVisibleFleetsByPlayer()[player.id] || [];
+    var visibleFleetsOfPlayer: Fleet[] = this.getVisibleFleetsOfPlayer(player);
 
     var processDetectionSource = function(source: Star, detectionRange: number, visionRange: number)
     {
@@ -804,7 +755,7 @@ export default class MapEvaluator
       distanceToEnemy = Math.max(distanceToEnemy - 1, 1);
       var distanceScore = Math.pow(1 / distanceToEnemy, 2);
 
-      var danger = enemyInfluence[star.id] || 1;
+      var danger = enemyInfluence.get(star) || 1;
       if (!enemyVision.visible[star.id])
       {
         danger *= 0.5;
@@ -812,7 +763,7 @@ export default class MapEvaluator
       danger *= safetyFactor;
       if (forScouting)
       {
-        var safety = ownInfluence[star.id] / (danger * safetyFactor);
+        var safety = ownInfluence.get(star) / (danger * safetyFactor);
         var score = safety * distanceScore;
         // var vision = this.getVisionCoverageAroundStar(star, 2);
         // var lackOfVision = 1 - vision;
@@ -820,7 +771,7 @@ export default class MapEvaluator
       }
       else
       {
-        var score = (danger / ownInfluence[star.id]) / safetyFactor;
+        var score = (danger / ownInfluence.get(star)) / safetyFactor;
       }
 
       scores.push(
@@ -883,12 +834,8 @@ export default class MapEvaluator
       var star: Star = allNeighbors[i];
       if (!star.owner.isIndependent)
       {
-        if (!neighborStarsCountByPlayer[star.owner.id])
-        {
-          neighborStarsCountByPlayer[star.owner.id] = 0;
-        }
-
-        neighborStarsCountByPlayer[star.owner.id]++;
+        const previousCount = neighborStarsCountByPlayer.get(star.owner) || 0;
+        neighborStarsCountByPlayer.set(star.owner, previousCount + 1);
       }
     }
 
@@ -901,7 +848,7 @@ export default class MapEvaluator
       {
         currentTurn: currentTurn,
         opinion: this.player.diplomacyStatus.getOpinionOf(player),
-        neighborStars: neighborStarsCountByPlayer[player.id],
+        neighborStars: neighborStarsCountByPlayer.get(player),
         currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
       }
     }

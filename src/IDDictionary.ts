@@ -5,7 +5,7 @@ interface ObjectWithID
 
 abstract class IDDictionary<K extends ObjectWithID, V, Z>
 {
-  [a: number]: null;
+  readonly [a: number]: boolean;
   protected keyName: string;
   protected valueName: string;
   private valuesByID:
@@ -32,10 +32,21 @@ abstract class IDDictionary<K extends ObjectWithID, V, Z>
   {
     return this.valuesByID[key.id];
   }
+  public getByID(id: number): V
+  {
+    return this.valuesByID[id];
+  }
   public set(key: K, value: V): void
   {
     this.valuesByID[key.id] = value;
     this.keysByID[key.id] = key;
+  }
+  public setIfDoesntExist(key: K, value: V): void
+  {
+    if (!this.keysByID[key.id])
+    {
+      this.set(key, value);
+    }
   }
   public delete(key: K): void
   {
@@ -43,6 +54,13 @@ abstract class IDDictionary<K extends ObjectWithID, V, Z>
     delete this.keysByID[key.id];
   }
 
+  public forEach(callback: (key: K, value: V) => void): void
+  {
+    for (let ID in this.keysByID)
+    {
+      callback(this.keysByID[ID], this.valuesByID[ID]);
+    }
+  }
   public zip(): Z[]
   {
     const zipped: Z[] = [];

@@ -74,7 +74,7 @@ const conquer: ObjectiveTemplate =
     {
       var star = possibleTargets[i];
       var player = star.owner;
-      var threat = relativeThreatOfPlayers[player.id];
+      var threat = relativeThreatOfPlayers.get(player);
       objectives.push(new Objective(template, threat, star));
     }
 
