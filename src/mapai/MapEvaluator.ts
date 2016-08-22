@@ -61,20 +61,6 @@ export default class MapEvaluator
   {
     [turnNumber: number]: ValuesByPlayer<InfluenceMap>;
   } = {};
-  cachedVisionMaps:
-  {
-    [playerId: number]:
-    {
-      visible:
-      {
-        [starID: number]: Star;
-      };
-      detected:
-      {
-        [starID: number]: Star;
-      };
-    }
-  } = {};
   cachedOwnIncome: number;
   evaluationParameters:
   {
@@ -104,7 +90,6 @@ export default class MapEvaluator
   processTurnStart()
   {
     this.cachedInfluenceMaps = {};
-    this.cachedVisionMaps = {};
     this.cachedOwnIncome = undefined;
   }
 
@@ -658,7 +643,7 @@ export default class MapEvaluator
     
     return estimatedRange;
   }
-  buildPlayerVisionMap(player: Player)
+  getPlayerVisionMap(player: Player)
   {
     var detectedStars:
     {
@@ -718,15 +703,6 @@ export default class MapEvaluator
       visible: visibleStars,
       detected: detectedStars
     });
-  }
-  getPlayerVisionMap(player: Player)
-  {
-    if (!this.cachedVisionMaps[player.id])
-    {
-      this.cachedVisionMaps[player.id] = this.buildPlayerVisionMap(player);
-    }
-
-    return this.cachedVisionMaps[player.id];
   }
   getScoredPerimeterLocationsAgainstPlayer(player: Player, safetyFactor: number, forScouting: boolean)
   {
