@@ -6,7 +6,7 @@ import BeamFilter from "./shaders/Beam";
 import ShinyParticleFilter from "./shaders/ShinyParticle";
 import LightBurstFilter from "./shaders/LightBurst";
 
-import shockWave from "./sfxfragments/shockWave";
+import ShockWave from "./sfxfragments/ShockWave";
 
 import Color from "../../../src/color";
 import
@@ -278,26 +278,30 @@ export default function particleTest(props: SFXParams)
 
 
   //----------INIT SHOCKWAVE
-  const shockWaveFragment = shockWave(props,
+  const shockWaveFragment = new ShockWave(
   {
     origin: beamOrigin,
-    mainEllipseMaxSize: {x: 0.3, y: 0.9},
-    intersectingEllipseMaxSize: {x: 0.8, y: 1.0},
+    size: {x: props.width * 3.0, y: props.height * 3.0},
+    mainEllipseMaxScale: {x: 0.3, y: 0.9},
+    intersectingEllipseMaxScale: {x: 0.8, y: 1.0},
+    intersectingEllipseOrigin: {x: 0.05, y: 0.0},
+    intersectingEllipseDrift: {x: 0.3, y: 0.0},
     color: new Color(1.0, 1.0, 1.0),
     relativeImpactTime: relativeImpactTime
   });
-  var shockWaveMainEllipseMaxSize =
-  {
-    x: 0.3,
-    y: 0.9
-  }
-  var shockWaveIntersectingEllipseMaxSize =
-  {
-    x: 0.8,
-    y: 1.0
-  }
+  // const shockWaveFragment = shockWave(props,
+  // {
+  //   origin: beamOrigin,
+  //   size: {x: props.width * 3.0, y: props.height * 3.0},
+  //   mainEllipseMaxScale: {x: 0.3, y: 0.9},
+  //   intersectingEllipseMaxScale: {x: 0.8, y: 1.0},
+  //   intersectingEllipseOrigin: {x: 0.05, y: 0.0},
+  //   intersectingEllipseDrift: {x: 0.3, y: 0.0},
+  //   color: new Color(1.0, 1.0, 1.0),
+  //   relativeImpactTime: relativeImpactTime
+  // });
 
-  mainContainer.addChild(shockWaveFragment.displayObject);
+  // mainContainer.addChild(shockWaveFragment.displayObject);
 
 
   //----------INIT LIGHTBURST

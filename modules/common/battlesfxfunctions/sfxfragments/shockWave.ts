@@ -1,10 +1,15 @@
 /// <reference path="../../../../lib/tween.js.d.ts" />
 
 import SFXFragment from "./SFXFragment";
+import
+{
+  SFXFragmentNumberProp,
+  SFXFragmentPointProp,
+  SFXFragmentColorProp,
+  SFXFragmentPropTypes,
+} from "./SFXFragmentPropTypes";
 
 import IntersectingEllipsesFilter from "../shaders/IntersectingEllipses";
-
-import SFXParams from "../../../../src/templateinterfaces/SFXParams";
 
 import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
@@ -13,8 +18,24 @@ import
   createDummySpriteForShader
 } from "../../../../src/utility";
 
+interface PartialShockWaveProps
+{
+  origin?: Point;
+  size?: Point;
+  
+  mainEllipseMaxScale?: Point;
+  mainEllipseSharpness?: number;
+  mainEllipseSharpnessDrift?: number;
+  
+  intersectingEllipseMaxScale?: Point;
+  intersectingEllipseOrigin?: Point;
+  intersectingEllipseDrift?: Point;
 
-interface ShockWaveProps
+  color?: Color;
+
+  relativeImpactTime?: number;
+}
+interface ShockWaveProps extends PartialShockWaveProps
 {
   origin: Point;
   size: Point;
@@ -31,68 +52,123 @@ interface ShockWaveProps
 
   relativeImpactTime: number;
 }
-
-export default function shockWave(
-  params: SFXParams,
-  props: ShockWaveProps
-): SFXFragment
+const shockWavePropTypes: SFXFragmentPropTypes =
 {
-  const shockWaveFilter = new IntersectingEllipsesFilter(
+  origin:
   {
-    mainColor: props.color.getRGBA(1.0)
-  });
-
-  const animate = function(time: number)
+    type: "point",
+    defaultValue: {x: 0.5, y: 0.5}
+  },
+  size:
   {
-    var burstX: number;
+    type: "point",
+    defaultValue: {x: 200, y: 200}
+  },
+  
+  mainEllipseMaxScale:
+  {
+    type: "point",
+    defaultValue: {x: 0.9, y: 0.9}
+  },
+  mainEllipseSharpness:
+  {
+    type: "number",
+    defaultValue: 1,
+  },
+  mainEllipseSharpnessDrift:
+  {
+    type: "number",
+    defaultValue: 1
+  },
+  
+  intersectingEllipseMaxScale:
+  {
+    type: "point",
+    defaultValue: {x: 1.0, y: 1.0}
+  },
+  intersectingEllipseOrigin:
+  {
+    type: "point",
+    defaultValue: {x: 0.0, y: 0.0}
+  },
+  intersectingEllipseDrift:
+  {
+    type: "point",
+    defaultValue: {x: 0.0, y: 0.0}
+  },
 
-    if (time < (props.relativeImpactTime - 0.02))
-    {
-      burstX = 0;
-    }
-    else
-    {
-      burstX = time - (props.relativeImpactTime - 0.02);
-    }
+  color:
+  {
+    type: "color",
+    defaultValue: new Color(1, 1, 1)
+  },
+
+  relativeImpactTime:
+  {
+    type: "number",
+    defaultValue: 0.3
+  },
+}
+
+export default class ShockWave extends SFXFragment<ShockWaveProps, PartialShockWaveProps>
+{
+  private shockWaveFilter: IntersectingEllipsesFilter;
+  
+  constructor(props: ShockWaveProps)
+  {
+    super(shockWavePropTypes, props);
+  }
+  public static CreatePartial(props: PartialShockWaveProps): ShockWave
+  {
+    return new ShockWave(<ShockWaveProps>props);
+  }
+
+  public animate(time: number): void
+  {
+    const burstX = time < this.props.relativeImpactTime - 0.02 ?
+      0 :
+      time - (this.props.relativeImpactTime - 0.02);
 
     const shockWaveTime = TWEEN.Easing.Quintic.Out(burstX);
 
-    shockWaveFilter.setUniformValues(
+    this.shockWaveFilter.setUniformValues(
     {
       mainEllipseSize:
       [
-        props.mainEllipseMaxScale.x * shockWaveTime,
-        props.mainEllipseMaxScale.y * shockWaveTime
+        this.props.mainEllipseMaxScale.x * shockWaveTime,
+        this.props.mainEllipseMaxScale.y * shockWaveTime
       ],
       intersectingEllipseSize:
       [
-        props.intersectingEllipseMaxScale.x * shockWaveTime,
-        props.intersectingEllipseMaxScale.y * shockWaveTime
+        this.props.intersectingEllipseMaxScale.x * shockWaveTime,
+        this.props.intersectingEllipseMaxScale.y * shockWaveTime
       ],
       intersectingEllipseCenter:
       [
-        props.intersectingEllipseOrigin.x + props.intersectingEllipseDrift.x * shockWaveTime,
-        props.intersectingEllipseOrigin.y + props.intersectingEllipseDrift.y * shockWaveTime
+        this.props.intersectingEllipseOrigin.x + this.props.intersectingEllipseDrift.x * shockWaveTime,
+        this.props.intersectingEllipseOrigin.y + this.props.intersectingEllipseDrift.y * shockWaveTime
       ],
       mainEllipseSharpness: 0.8 + 0.18 * (1.0 - shockWaveTime),
       intersectingEllipseSharpness: 0.4 + 0.4 * (1.0 - shockWaveTime),
       mainAlpha: 1.0 - shockWaveTime
     });
   }
-
-
-
-  const shockWaveSprite = createDummySpriteForShader(
-    props.origin.x - (props.size.x / 2),
-    props.origin.y - props.size.y / 2,
-    props.size.x,
-    props.size.y
-  );
-  shockWaveSprite.shader = shockWaveFilter;
-
-  return(
+  protected draw(): void
   {
-    displayObject: shockWaveSprite,
-    animate: animate
-  });
+    const shockWaveFilter = this.shockWaveFilter = new IntersectingEllipsesFilter(
+    {
+      mainColor: this.props.color.getRGBA(1.0)
+    });
+
+    const shockWaveSprite = createDummySpriteForShader(
+      this.props.origin.x - (this.props.size.x / 2),
+      this.props.origin.y - this.props.size.y / 2,
+      this.props.size.x,
+      this.props.size.y
+    );
+
+    shockWaveSprite.shader = shockWaveFilter;
+
+    this.setDisplayObject(shockWaveSprite);
+  }
 }
