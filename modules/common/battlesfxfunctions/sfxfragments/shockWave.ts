@@ -17,9 +17,15 @@ import
 interface ShockWaveProps
 {
   origin: Point;
+  size: Point;
   
-  mainEllipseMaxSize: Point;
-  intersectingEllipseMaxSize: Point;
+  mainEllipseMaxScale: Point;
+  mainEllipseSharpness: number;
+  mainEllipseSharpnessDrift: number;
+  
+  intersectingEllipseMaxScale: Point;
+  intersectingEllipseOrigin: Point;
+  intersectingEllipseDrift: Point;
 
   color: Color;
 
@@ -49,42 +55,38 @@ export default function shockWave(
       burstX = time - (props.relativeImpactTime - 0.02);
     }
 
-    var shockWaveSize = TWEEN.Easing.Quintic.Out(burstX);
+    const shockWaveTime = TWEEN.Easing.Quintic.Out(burstX);
 
     shockWaveFilter.setUniformValues(
     {
       mainEllipseSize:
       [
-        props.mainEllipseMaxSize.x * shockWaveSize,
-        props.mainEllipseMaxSize.y * shockWaveSize
+        props.mainEllipseMaxScale.x * shockWaveTime,
+        props.mainEllipseMaxScale.y * shockWaveTime
       ],
       intersectingEllipseSize:
       [
-        props.intersectingEllipseMaxSize.x * shockWaveSize,
-        props.intersectingEllipseMaxSize.y * shockWaveSize
+        props.intersectingEllipseMaxScale.x * shockWaveTime,
+        props.intersectingEllipseMaxScale.y * shockWaveTime
       ],
       intersectingEllipseCenter:
       [
-        0.05 + 0.3 * shockWaveSize,
-        0.0
+        props.intersectingEllipseOrigin.x + props.intersectingEllipseDrift.x * shockWaveTime,
+        props.intersectingEllipseOrigin.y + props.intersectingEllipseDrift.y * shockWaveTime
       ],
-      mainEllipseSharpness: 0.8 + 0.18 * (1.0 - shockWaveSize),
-      intersectingEllipseSharpness: 0.4 + 0.4 * (1.0 - shockWaveSize),
-      mainAlpha: 1.0 - shockWaveSize
+      mainEllipseSharpness: 0.8 + 0.18 * (1.0 - shockWaveTime),
+      intersectingEllipseSharpness: 0.4 + 0.4 * (1.0 - shockWaveTime),
+      mainAlpha: 1.0 - shockWaveTime
     });
   }
 
 
-  const shockWaveSpriteSize =
-  {
-    x: params.height * 3.0,
-    y: params.height * 3.0
-  }
+
   const shockWaveSprite = createDummySpriteForShader(
-    props.origin.x - (shockWaveSpriteSize.x / 2 * 1.04),
-    props.origin.y - shockWaveSpriteSize.y / 2,
-    shockWaveSpriteSize.x,
-    shockWaveSpriteSize.y
+    props.origin.x - (props.size.x / 2),
+    props.origin.y - props.size.y / 2,
+    props.size.x,
+    props.size.y
   );
   shockWaveSprite.shader = shockWaveFilter;
 
