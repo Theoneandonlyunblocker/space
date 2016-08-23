@@ -6,6 +6,7 @@ import SetupGame from "./setupgame/SetupGame";
 import BattleComponentFactory from "./battle/Battle";
 import GalaxyMap from "./galaxymap/GalaxyMap";
 import FlagMaker from "./FlagMaker";
+import SFXEditor from "./sfxeditor/SFXEditor";
 
 import BattlePrep from "../BattlePrep";
 import MapRenderer from "../MapRenderer";
@@ -114,6 +115,16 @@ export class StageComponent extends React.Component<PropTypes, StateType>
           BattleSceneTester(
           {
             key: "battleSceneTester"
+          })
+        );
+        break;
+      }
+      case "SFXEditor":
+      {
+        elementsToRender.push(
+          SFXEditor(
+          {
+
           })
         );
         break;
