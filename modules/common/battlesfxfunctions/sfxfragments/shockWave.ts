@@ -1,13 +1,7 @@
 /// <reference path="../../../../lib/tween.js.d.ts" />
 
 import SFXFragment from "./SFXFragment";
-import
-{
-  SFXFragmentNumberProp,
-  SFXFragmentPointProp,
-  SFXFragmentColorProp,
-  SFXFragmentPropTypes,
-} from "./SFXFragmentPropTypes";
+import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
 
 import IntersectingEllipsesFilter from "../shaders/IntersectingEllipses";
 

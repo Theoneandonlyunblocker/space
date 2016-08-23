@@ -10,9 +10,18 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
   {
     return this._displayObject;
   }
-  protected setDisplayObject(o: PIXI.DisplayObject): void
+  protected setDisplayObject(newDisplayObject: PIXI.DisplayObject): void
   {
-    this._displayObject = o;
+    const oldDisplayObject = this.displayObject; 
+    const parent = oldDisplayObject.parent;
+    if (parent)
+    {
+      const childIndex = parent.getChildIndex(oldDisplayObject);
+      parent.removeChildAt(childIndex);
+      parent.addChildAt(newDisplayObject, childIndex);
+    }
+
+    this._displayObject = newDisplayObject;
   }
 
   public get bounds(): PIXI.Rectangle
