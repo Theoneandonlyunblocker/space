@@ -14,7 +14,6 @@ import
 
 interface PartialShockWaveProps
 {
-  origin?: Point;
   size?: Point;
   
   mainEllipseMaxScale?: Point;
@@ -31,7 +30,6 @@ interface PartialShockWaveProps
 }
 interface ShockWaveProps extends PartialShockWaveProps
 {
-  origin: Point;
   size: Point;
   
   mainEllipseMaxScale: Point;
@@ -50,11 +48,6 @@ interface ShockWaveProps extends PartialShockWaveProps
 }
 const shockWavePropTypes: SFXFragmentPropTypes =
 {
-  origin:
-  {
-    type: "point",
-    defaultValue: {x: 0.5, y: 0.5}
-  },
   size:
   {
     type: "point",
@@ -160,8 +153,8 @@ export default class ShockWave extends SFXFragment<ShockWaveProps, PartialShockW
     });
 
     const shockWaveSprite = createDummySpriteForShader(
-      this.props.origin.x - (this.props.size.x / 2),
-      this.props.origin.y - this.props.size.y / 2,
+      0,
+      0,
       this.props.size.x,
       this.props.size.y
     );

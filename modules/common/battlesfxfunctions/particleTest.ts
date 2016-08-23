@@ -278,10 +278,15 @@ export default function particleTest(props: SFXParams)
 
 
   //----------INIT SHOCKWAVE
+  const shockWaveSize =
+  {
+    x: props.width * 3.0,
+    y: props.height * 3.0
+  };
+  
   const shockWaveFragment = new ShockWave(
   {
-    origin: beamOrigin,
-    size: {x: props.width * 3.0, y: props.height * 3.0},
+    size: shockWaveSize,
     mainEllipseMaxScale: {x: 0.3, y: 0.9},
     intersectingEllipseMaxScale: {x: 0.8, y: 1.0},
     intersectingEllipseOrigin: {x: 0.05, y: 0.0},
@@ -295,6 +300,12 @@ export default function particleTest(props: SFXParams)
   });
 
   shockWaveFragment.draw();
+  shockWaveFragment.setPosition(
+  {
+    x: beamOrigin.x - shockWaveSize.x / 2,
+    y: beamOrigin.y - shockWaveSize.y / 2
+  });
+
   mainContainer.addChild(shockWaveFragment.displayObject);
 
   //----------INIT LIGHTBURST
