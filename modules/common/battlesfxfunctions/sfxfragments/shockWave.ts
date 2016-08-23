@@ -43,6 +43,8 @@ interface ShockWaveProps extends PartialShockWaveProps
   mainEllipseMaxScale: Point;
   mainEllipseSharpness: number;
   mainEllipseSharpnessDrift: number;
+  intersectingEllipseSharpness: number;
+  intersectingEllipseSharpnessDrift: number;
   
   intersectingEllipseMaxScale: Point;
   intersectingEllipseOrigin: Point;
@@ -118,16 +120,18 @@ export default class ShockWave extends SFXFragment<ShockWaveProps, PartialShockW
   {
     super(shockWavePropTypes, props);
   }
-  public static CreatePartial(props: PartialShockWaveProps): ShockWave
+  public static CreateFromPartialProps(props: PartialShockWaveProps): ShockWave
   {
     return new ShockWave(<ShockWaveProps>props);
   }
 
   public animate(time: number): void
   {
-    const burstX = time < this.props.relativeImpactTime - 0.02 ?
+    const p = this.props;
+    
+    const burstX = time < p.relativeImpactTime - 0.02 ?
       0 :
-      time - (this.props.relativeImpactTime - 0.02);
+      time - (p.relativeImpactTime - 0.02);
 
     const shockWaveTime = TWEEN.Easing.Quintic.Out(burstX);
 
@@ -135,25 +139,26 @@ export default class ShockWave extends SFXFragment<ShockWaveProps, PartialShockW
     {
       mainEllipseSize:
       [
-        this.props.mainEllipseMaxScale.x * shockWaveTime,
-        this.props.mainEllipseMaxScale.y * shockWaveTime
+        p.mainEllipseMaxScale.x * shockWaveTime,
+        p.mainEllipseMaxScale.y * shockWaveTime
       ],
       intersectingEllipseSize:
       [
-        this.props.intersectingEllipseMaxScale.x * shockWaveTime,
-        this.props.intersectingEllipseMaxScale.y * shockWaveTime
+        p.intersectingEllipseMaxScale.x * shockWaveTime,
+        p.intersectingEllipseMaxScale.y * shockWaveTime
       ],
       intersectingEllipseCenter:
       [
-        this.props.intersectingEllipseOrigin.x + this.props.intersectingEllipseDrift.x * shockWaveTime,
-        this.props.intersectingEllipseOrigin.y + this.props.intersectingEllipseDrift.y * shockWaveTime
+        p.intersectingEllipseOrigin.x + p.intersectingEllipseDrift.x * shockWaveTime,
+        p.intersectingEllipseOrigin.y + p.intersectingEllipseDrift.y * shockWaveTime
       ],
-      mainEllipseSharpness: 0.8 + 0.18 * (1.0 - shockWaveTime),
-      intersectingEllipseSharpness: 0.4 + 0.4 * (1.0 - shockWaveTime),
+      mainEllipseSharpness: p.mainEllipseSharpness + p.mainEllipseSharpnessDrift * shockWaveTime,
+      intersectingEllipseSharpness:
+        p.intersectingEllipseSharpness + p.intersectingEllipseSharpnessDrift * shockWaveTime,
       mainAlpha: 1.0 - shockWaveTime
     });
   }
-  protected draw(): void
+  public draw(): void
   {
     const shockWaveFilter = this.shockWaveFilter = new IntersectingEllipsesFilter(
     {

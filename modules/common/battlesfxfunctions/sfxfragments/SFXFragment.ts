@@ -52,7 +52,7 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
   }
 
   public abstract animate(relativeTime: number): void;
-  protected abstract draw(): void;
+  public abstract draw(): void;
 
   public setProps(props: PartialProps): void
   {
