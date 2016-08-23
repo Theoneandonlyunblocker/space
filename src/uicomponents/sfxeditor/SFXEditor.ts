@@ -1,4 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
+/// <reference path="../../../lib/pixi.d.ts" />
 
 import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 import ShockWave from "../../../modules/common/battlesfxfunctions/sfxfragments/ShockWave";
@@ -10,6 +11,11 @@ import
 } from "../../utility";
 
 import SFXFragmentConstructor from "./SFXFragmentConstructor";
+import
+{
+  default as SFXEditorDisplay,
+  SFXEditorDisplayComponent
+} from "./SFXEditorDisplay";
 import SFXEditorSelection from "./SFXEditorSelection";
 
 
@@ -59,7 +65,8 @@ interface StateType
   currentTime?: number;
   SFXDuration?: number;
 
-  // selectedFragment?: SFXFragment<any, any>;
+  selectedFragment?: SFXFragment<any, any>;
+  draggingFragment?: SFXFragment<any, any>;
 }
 
 export class SFXEditorComponent extends React.Component<PropTypes, StateType>
@@ -69,6 +76,10 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
 
   lastAnimationTickTime: number;
   animationHandle: number;
+
+  oldSelectedFragment: SFXFragment<any, any>;
+
+  display: SFXEditorDisplayComponent;
   
   constructor(props: PropTypes)
   {
@@ -86,6 +97,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     this.togglePlay = this.togglePlay.bind(this);
     this.handleFragmentConstructorDragStart = this.handleFragmentConstructorDragStart.bind(this); 
     this.handleFragmentConstructorDragEnd = this.handleFragmentConstructorDragEnd.bind(this); 
+    this.handleFragmentDragMove = this.handleFragmentDragMove.bind(this);
 
     this.advanceTime = this.advanceTime.bind(this);
   }
@@ -156,6 +168,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     const newRelativeTime = (this.state.currentTime + elapsedRelativeTime) % 1;
 
     this.updateTime(newRelativeTime);
+    this.display.updateRenderer();
 
     this.animationHandle = window.requestAnimationFrame(this.advanceTime);
   }
@@ -167,13 +180,39 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  private handleFragmentConstructorDragStart(fragment: SFXFragmentConstructor): void
+  private handleFragmentConstructorDragStart(fragmentConstructor: SFXFragmentConstructor): void
   {
+    const fragment = new fragmentConstructor.constructorFN();
+    fragment.draw();
+    fragment.animate(this.state.currentTime);
+    this.display.addFragment(fragment);
 
+    this.oldSelectedFragment = this.state.selectedFragment;
+
+    this.setState(
+    {
+      selectedFragment: fragment,
+      draggingFragment: fragment
+    });
   }
   private handleFragmentConstructorDragEnd(): void
   {
-
+    this.setState(
+    {
+      selectedFragment: this.oldSelectedFragment,
+      draggingFragment: undefined
+    }, () =>
+    {
+      this.oldSelectedFragment = undefined;
+    });
+  }
+  private handleFragmentDragMove(e: React.MouseEvent): void
+  {
+    this.state.draggingFragment.position =
+    {
+      x: e.clientX,
+      y: e.clientY
+    }
   }
   
   render()
@@ -187,12 +226,15 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
         {
           className: "sfx-editor-main"
         },
-          React.DOM.div(
+          SFXEditorDisplay(
           {
-            className: "sfx-editor-display"
-          },
-            
-          ),
+            hasDraggingFragment: Boolean(this.state.draggingFragment),
+            moveDraggingFragment: this.handleFragmentDragMove,
+            ref: (component) =>
+            {
+              this.display = component;
+            }
+          }),
           React.DOM.input(
           {
             className: "sfx-editor-time-control",
@@ -201,7 +243,8 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
             max: 1,
             step: 0.002,
             value: "" + this.state.currentTime,
-            onChange: this.handleChangeTime
+            onChange: this.handleChangeTime,
+            title: "Current time"
           },
 
           ),
@@ -218,9 +261,17 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
                 "Pause" :
                 "Play"
             ),
+            React.DOM.label(
+            {
+              className: "sfx-editor-duration-label",
+              htmlFor: "sfx-editor-duration"
+            },
+              "SFX Duration (ms)"
+            ),
             React.DOM.input(
             {
               className: "sfx-editor-duration",
+              id: "sfx-editor-duration",
               type: "number",
               min: 0,
               step: 100,

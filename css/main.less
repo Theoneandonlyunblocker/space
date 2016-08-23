@@ -4783,8 +4783,18 @@ button.player-setup-remove-player
 }
 .sfx-editor-display
 {
-  background: black;
   flex: 1 1 auto;
+  position: relative;
+  display: flex;
+
+  canvas
+  {
+    background: black;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 .sfx-editor-time-control
 {

@@ -2,9 +2,12 @@
 
 import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
 
+let idGenerator = 0;
 
 abstract class SFXFragment<P extends PartialProps, PartialProps>
 {
+  public id: number;
+  
   protected _displayObject: PIXI.DisplayObject;
   public get displayObject(): PIXI.DisplayObject
   {
@@ -12,13 +15,16 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
   }
   protected setDisplayObject(newDisplayObject: PIXI.DisplayObject): void
   {
-    const oldDisplayObject = this.displayObject; 
-    const parent = oldDisplayObject.parent;
-    if (parent)
+    const oldDisplayObject = this.displayObject;
+    if (oldDisplayObject)
     {
-      const childIndex = parent.getChildIndex(oldDisplayObject);
-      parent.removeChildAt(childIndex);
-      parent.addChildAt(newDisplayObject, childIndex);
+      const parent = oldDisplayObject.parent;
+      if (parent)
+      {
+        const childIndex = parent.getChildIndex(oldDisplayObject);
+        parent.removeChildAt(childIndex);
+        parent.addChildAt(newDisplayObject, childIndex);
+      }
     }
 
     this._displayObject = newDisplayObject;
@@ -50,6 +56,8 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
 
   constructor(propTypes: SFXFragmentPropTypes, props?: PartialProps)
   {
+    this.id = idGenerator++;
+
     this.propTypes = propTypes;
 
     this.props = this.getDefaultProps();
