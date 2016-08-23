@@ -108,6 +108,11 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
 
     const newTime = clamp(parseFloat(target.value), 0, 1);
 
+    if (this.state.isPlaying)
+    {
+      this.togglePlay();
+    }
+
     this.updateTime(newTime);
   }
   private handleChangeSFXDuration(e: React.FormEvent): void
