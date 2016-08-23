@@ -344,13 +344,13 @@ export function shallowCopy<T>(toCopy: T): T
 }
 export function shallowExtend(destination: any, ...sources: any[])
 {
-  for (let source of sources)
+  sources.forEach(source =>
   {
     for (let key in source)
     {
       destination[key] = source[key];
     }
-  }
+  });
   
   return destination;
 }

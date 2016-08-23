@@ -21,7 +21,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
   
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
   container: PIXI.Container;
-
+  fragments: SFXFragment<any, any>[] = [];
   
   constructor(props: PropTypes)
   {
@@ -67,12 +67,21 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
   public addFragment(fragment: SFXFragment<any, any>): void
   {
     this.container.addChild(fragment.displayObject);
+    this.fragments.push(fragment);
     this.updateRenderer();
   }
   public removeFragment(fragment: SFXFragment<any, any>): void
   {
     this.container.removeChild(fragment.displayObject);
+    this.fragments.splice(this.fragments.indexOf(fragment), 1);
     this.updateRenderer();
+  }
+  public animateFragments(relativeTime: number): void
+  {
+    this.fragments.forEach(fragment =>
+    {
+      fragment.animate(relativeTime);
+    });
   }
   public updateRenderer(): void
   {

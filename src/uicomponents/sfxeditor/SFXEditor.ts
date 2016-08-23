@@ -173,12 +173,14 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     const newRelativeTime = (this.state.currentTime + elapsedRelativeTime) % 1;
 
     this.updateTime(newRelativeTime);
-    this.display.updateRenderer();
 
     this.animationHandle = window.requestAnimationFrame(this.advanceTime);
   }
   private updateTime(relativeTime: number): void
   {
+    this.display.animateFragments(relativeTime);
+    this.display.updateRenderer();
+    
     this.setState(
     {
       currentTime: relativeTime
@@ -213,11 +215,13 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
   }
   private handleFragmentDragMove(e: React.MouseEvent): void
   {
-    this.state.draggingFragment.position =
+    this.state.draggingFragment.setPosition(
     {
       x: e.clientX,
       y: e.clientY
-    }
+    });
+
+    this.display.updateRenderer();
   }
   
   render()
