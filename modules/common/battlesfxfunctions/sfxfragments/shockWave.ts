@@ -46,57 +46,33 @@ interface ShockWaveProps extends PartialShockWaveProps
 
   relativeImpactTime: number;
 }
+const defaultShockWaveProps: ShockWaveProps =
+{
+  size: {x: 200, y: 200},
+  mainEllipseMaxScale: {x: 0.9, y: 0.9},
+  mainEllipseSharpness: 1,
+  mainEllipseSharpnessDrift: -0.2,
+  intersectingEllipseSharpness: 0.8,
+  intersectingEllipseSharpnessDrift: -0.4,
+  intersectingEllipseMaxScale: {x: 1.0, y: 1.0},
+  intersectingEllipseOrigin: {x: 0.0, y: 0.0},
+  intersectingEllipseDrift: {x: 0.0, y: 0.0},
+  color: new Color(1, 1, 1),
+  relativeImpactTime: 0.3,
+}
 const shockWavePropTypes: SFXFragmentPropTypes =
 {
-  size:
-  {
-    type: "point",
-    defaultValue: {x: 200, y: 200}
-  },
-  
-  mainEllipseMaxScale:
-  {
-    type: "point",
-    defaultValue: {x: 0.9, y: 0.9}
-  },
-  mainEllipseSharpness:
-  {
-    type: "number",
-    defaultValue: 1,
-  },
-  mainEllipseSharpnessDrift:
-  {
-    type: "number",
-    defaultValue: 1
-  },
-  
-  intersectingEllipseMaxScale:
-  {
-    type: "point",
-    defaultValue: {x: 1.0, y: 1.0}
-  },
-  intersectingEllipseOrigin:
-  {
-    type: "point",
-    defaultValue: {x: 0.0, y: 0.0}
-  },
-  intersectingEllipseDrift:
-  {
-    type: "point",
-    defaultValue: {x: 0.0, y: 0.0}
-  },
-
-  color:
-  {
-    type: "color",
-    defaultValue: new Color(1, 1, 1)
-  },
-
-  relativeImpactTime:
-  {
-    type: "number",
-    defaultValue: 0.3
-  },
+  size: "point",
+  mainEllipseMaxScale: "point",
+  mainEllipseSharpness: "number",
+  mainEllipseSharpnessDrift: "number",
+  intersectingEllipseSharpness: "number",
+  intersectingEllipseSharpnessDrift: "number",
+  intersectingEllipseMaxScale: "point",
+  intersectingEllipseOrigin: "point",
+  intersectingEllipseDrift: "point",
+  color: "color",
+  relativeImpactTime: "number",
 }
 
 export default class ShockWave extends SFXFragment<ShockWaveProps, PartialShockWaveProps>
@@ -105,9 +81,9 @@ export default class ShockWave extends SFXFragment<ShockWaveProps, PartialShockW
   
   constructor(props: ShockWaveProps)
   {
-    super(shockWavePropTypes, props);
+    super(shockWavePropTypes, defaultShockWaveProps, props);
   }
-  public static CreateFromPartialProps(props: PartialShockWaveProps): ShockWave
+  public static CreateFromPartialProps(props?: PartialShockWaveProps): ShockWave
   {
     return new ShockWave(<ShockWaveProps>props);
   }

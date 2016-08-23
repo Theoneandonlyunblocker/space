@@ -1,6 +1,10 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
 import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
+import
+{
+  shallowExtend
+} from "../../../../src/utility";
 
 let idGenerator = 0;
 
@@ -34,11 +38,11 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
   {
     return this.displayObject.getBounds();
   }
-  public get position(): Point
+  public get position(): PIXI.Point
   {
     return this.displayObject.position;
   }
-  public set position(pos: Point)
+  public setPosition(pos: Point)
   {
     this.displayObject.position.set(pos.x, pos.y);
   }
@@ -52,20 +56,17 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
   }
 
   public propTypes: SFXFragmentPropTypes;
+  public readonly defaultProps: P;
   public readonly props: P;
 
-  constructor(propTypes: SFXFragmentPropTypes, props?: PartialProps)
+  constructor(propTypes: SFXFragmentPropTypes, defaultProps: P, props?: PartialProps)
   {
     this.id = idGenerator++;
 
     this.propTypes = propTypes;
+    this.defaultProps = defaultProps;
 
-    this.props = this.getDefaultProps();
-    
-    if (props)
-    {
-      this.assignPartialProps(props);
-    }
+    this.props = shallowExtend(defaultProps, <P>props);
   }
 
   public abstract animate(relativeTime: number): void;
@@ -75,17 +76,6 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
   {
     this.assignPartialProps(props);
     this.draw();
-  }
-  public getDefaultProps(): P
-  {
-    const props: PartialProps = <PartialProps>{};
-
-    for (let prop in this.propTypes)
-    {
-      props[prop] = this.propTypes[prop].defaultValue;
-    }
-
-    return <P>props;
   }
   
   private assignPartialProps(props: PartialProps): void
