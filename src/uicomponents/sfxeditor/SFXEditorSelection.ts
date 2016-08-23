@@ -1,19 +1,24 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SFXFragmentConstructor from "./SFXFragmentConstructor";
+import SFXFragmentList from "./SFXFragmentList";
+import
+{
+  default as SFXEditorSelectionTab,
+  SelectionTabType
+} from "./SFXEditorSelectionTab";
 
 interface PropTypes extends React.Props<any>
 {
-  availableFragments:
-  {
-    displayName: string;
-    constructorFN: SFXFragment<any, any>;
-  }[];
+  availableFragments: SFXFragmentConstructor[];
+
+  onFragmentListDragStart: (fragmentConstructor: SFXFragmentConstructor) => void;
+  onFragmentListDragEnd: () => void;
 }
 
 interface StateType
 {
-  activeTab?: "sfx" | "units" | "fragments";
+  activeTab?: SelectionTabType;
 }
 
 export class SFXEditorSelectionComponent extends React.Component<PropTypes, StateType>
@@ -24,16 +29,70 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
   constructor(props: PropTypes)
   {
     super(props);
+
+    this.state =
+    {
+      activeTab: "fragments"
+    }
+
+    this.setActiveTab = this.setActiveTab.bind(this);
+  }
+
+  private setActiveTab(tabType: SelectionTabType): void
+  {
+    this.setState(
+    {
+      activeTab: tabType
+    });
   }
   
   render()
   {
+
+    let activeSelectionElement: React.ReactElement<any>;
+
+    switch (this.state.activeTab)
+    {
+      case "sfx":
+        break;
+      case "units":
+        break;
+      case "fragments":
+        activeSelectionElement = SFXFragmentList(
+        {
+          availableFragments: this.props.availableFragments,
+          onDragStart: this.props.onFragmentListDragStart,
+          onDragEnd: this.props.onFragmentListDragEnd
+        });
+        break;
+    }
+    
     return(
       React.DOM.div(
       {
-        className: "sfx-fragment-editor-selection"
+        className: "sfx-editor-selection"
       },
-        
+        React.DOM.div(
+        {
+          className: "sfx-editor-selection-tabs-container"
+        },
+          ["sfx", "units", "fragments"].map((tabType: SelectionTabType) =>
+          {
+            return SFXEditorSelectionTab(
+            {
+              key: tabType,
+              type: tabType,
+              setTab: this.setActiveTab,
+              isActive: tabType === this.state.activeTab
+            });
+          })
+        ),
+        React.DOM.div(
+        {
+          className: "sfx-editor-selection-active-selector-container"
+        },
+          activeSelectionElement
+        )
       )
     );
   }

@@ -124,7 +124,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           SFXEditor(
           {
-
+            key: "SFXEditor"
           })
         );
         break;
