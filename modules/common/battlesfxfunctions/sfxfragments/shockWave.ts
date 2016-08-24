@@ -26,7 +26,7 @@ interface PartialShockWaveProps
 
   color?: Color;
 
-  relativeImpactTime?: number;
+  delay?: number;
 }
 interface ShockWaveProps extends PartialShockWaveProps
 {
@@ -44,7 +44,7 @@ interface ShockWaveProps extends PartialShockWaveProps
 
   color: Color;
 
-  relativeImpactTime: number;
+  delay: number;
 }
 const defaultShockWaveProps: ShockWaveProps =
 {
@@ -58,7 +58,7 @@ const defaultShockWaveProps: ShockWaveProps =
   intersectingEllipseOrigin: {x: 0.0, y: 0.0},
   intersectingEllipseDrift: {x: 0.0, y: 0.0},
   color: new Color(1, 1, 1),
-  relativeImpactTime: 0.3,
+  delay: 0.3,
 }
 const shockWavePropTypes: SFXFragmentPropTypes =
 {
@@ -72,7 +72,7 @@ const shockWavePropTypes: SFXFragmentPropTypes =
   intersectingEllipseOrigin: "point",
   intersectingEllipseDrift: "point",
   color: "color",
-  relativeImpactTime: "number",
+  delay: "number",
 }
 
 export default class ShockWave extends SFXFragment<ShockWaveProps, PartialShockWaveProps>
@@ -92,9 +92,9 @@ export default class ShockWave extends SFXFragment<ShockWaveProps, PartialShockW
   {
     const p = this.props;
     
-    const burstX = time < p.relativeImpactTime - 0.02 ?
+    const burstX = time < p.delay - 0.02 ?
       0 :
-      time - (p.relativeImpactTime - 0.02);
+      time - (p.delay - 0.02);
 
     const shockWaveTime = TWEEN.Easing.Quintic.Out(burstX);
 

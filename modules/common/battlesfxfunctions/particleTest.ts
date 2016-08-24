@@ -298,7 +298,7 @@ export default function particleTest(props: SFXParams)
     intersectingEllipseSharpness: 0.8,
     intersectingEllipseSharpnessDrift: -0.4,
     color: new Color(1.0, 1.0, 1.0),
-    relativeImpactTime: relativeImpactTime
+    delay: relativeImpactTime
   });
 
   shockWaveFragment.draw();
