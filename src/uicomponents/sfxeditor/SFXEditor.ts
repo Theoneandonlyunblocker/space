@@ -215,11 +215,10 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
   }
   private handleFragmentDragMove(e: React.MouseEvent): void
   {
-    this.state.draggingFragment.setPosition(
-    {
-      x: e.clientX,
-      y: e.clientY
-    });
+    this.state.draggingFragment.position.set(
+      e.clientX,
+      e.clientY
+    );
 
     this.display.updateRenderer();
   }

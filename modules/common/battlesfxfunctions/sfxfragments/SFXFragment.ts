@@ -42,10 +42,6 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
   {
     return this.displayObject.position;
   }
-  public setPosition(pos: Point)
-  {
-    this.displayObject.position.set(pos.x, pos.y);
-  }
   public get scale(): Point
   {
     return this.displayObject.scale;

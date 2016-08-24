@@ -300,11 +300,10 @@ export default function particleTest(props: SFXParams)
   });
 
   shockWaveFragment.draw();
-  shockWaveFragment.setPosition(
-  {
-    x: beamOrigin.x - shockWaveSize.x / 2,
-    y: beamOrigin.y - shockWaveSize.y / 2
-  });
+  shockWaveFragment.position.set(
+    beamOrigin.x - shockWaveSize.x / 2,
+    beamOrigin.y - shockWaveSize.y / 2
+  );
 
   mainContainer.addChild(shockWaveFragment.displayObject);
 
