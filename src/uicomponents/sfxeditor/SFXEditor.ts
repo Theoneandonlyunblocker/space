@@ -3,6 +3,7 @@
 
 import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 import ShockWave from "../../../modules/common/battlesfxfunctions/sfxfragments/ShockWave";
+import LightBurst from "../../../modules/common/battlesfxfunctions/sfxfragments/LightBurst";
 
 // import UnitTemplate from "../../templateinterfaces/UnitTemplate";
 import
@@ -25,6 +26,11 @@ const availableFragments: SFXFragmentConstructor[] =
     key: "shockWave",
     displayName: "ShockWave",
     constructorFN: ShockWave
+  },
+  {
+    key: "lightBurst",
+    displayName: "LightBurst",
+    constructorFN: LightBurst
   }
 ];
 

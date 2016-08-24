@@ -1,4 +1,5 @@
 /// <reference path="../../../lib/tween.js.d.ts" />
+/// <reference path="../../../lib/pixi.d.ts" />
 
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
@@ -7,6 +8,7 @@ import ShinyParticleFilter from "./shaders/ShinyParticle";
 import LightBurstFilter from "./shaders/LightBurst";
 
 import ShockWave from "./sfxfragments/ShockWave";
+import LightBurst from "./sfxfragments/LightBurst";
 
 import Color from "../../../src/color";
 import
@@ -308,49 +310,28 @@ export default function particleTest(props: SFXParams)
   mainContainer.addChild(shockWaveFragment.displayObject);
 
   //----------INIT LIGHTBURST
-  var lightBurstFilter = new LightBurstFilter(
-  {
-    seed: [Math.random() * 69, Math.random() * 420],
-    rotation: 0.0,
-    raySharpness: 2.0,
-    rayColor: [0.75, 0.75, 0.62, 1.0]
-  });
-  const syncLightBurstUniforms = function(time: number)
-  {
-    var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
-    rampUpValue = Math.pow(rampUpValue, 7.0);
-
-    var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
-    var rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
-
-    var lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
-
-    lightBurstFilter.setUniformValues(
-    {
-      centerSize: Math.pow(lightBurstIntensity, 2.0),
-      centerBloomStrength: Math.pow(lightBurstIntensity, 2.0) * 5.0,
-      rayStrength: Math.pow(lightBurstIntensity, 3.0)
-    });
-  }
-
-
-
-
   var lightBurstSize =
   {
     x: props.height * 1.5,
     y: props.height * 3
   }
-  var lightBurstSprite = createDummySpriteForShader(
-    beamOrigin.x - lightBurstSize.x / 2,
-    beamOrigin.y - lightBurstSize.y / 2,
-    lightBurstSize.x,
-    lightBurstSize.y
-  );
-  lightBurstSprite.shader = lightBurstFilter;
-  lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
 
-  mainContainer.addChild(lightBurstSprite);
+  const lightBurstFragment = new LightBurst(
+  {
+    size: lightBurstSize,
+    delay: relativeImpactTime,
+    rotation: 0,
+    sharpness: 2.0,
+    color: new Color(0.75, 0.75, 0.62)
+  });
+
+  lightBurstFragment.draw();
+  lightBurstFragment.position.set(
+    beamOrigin.x - lightBurstSize.x / 2,
+    beamOrigin.y - lightBurstSize.y / 2
+  );
+
+  mainContainer.addChild(lightBurstFragment.displayObject);
 
   //----------ANIMATE
 
@@ -405,7 +386,7 @@ export default function particleTest(props: SFXParams)
     syncBeamUniforms(timePassed);
     syncShinyParticleUniforms(timePassed);
     shockWaveFragment.animate(timePassed);
-    syncLightBurstUniforms(timePassed);
+    lightBurstFragment.animate(timePassed);
 
     renderTexture.clear();
     renderTexture.render(mainContainer);
