@@ -20,7 +20,8 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
   public containerDiv: HTMLDivElement;
   
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-  container: PIXI.Container;
+  stage: PIXI.Container
+  fragmentContainer: PIXI.Container;
   fragments: SFXFragment<any, any>[] = [];
   
   constructor(props: PropTypes)
@@ -32,7 +33,9 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
       autoResize: false
     });
 
-    this.container = new PIXI.Container();
+    this.stage = new PIXI.Container();
+    this.fragmentContainer = new PIXI.Container();
+    this.stage.addChild(this.fragmentContainer);
 
     
     this.updateRenderer = this.updateRenderer.bind(this);
@@ -66,13 +69,13 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
 
   public addFragment(fragment: SFXFragment<any, any>): void
   {
-    this.container.addChild(fragment.displayObject);
+    this.fragmentContainer.addChild(fragment.displayObject);
     this.fragments.push(fragment);
     this.updateRenderer();
   }
   public removeFragment(fragment: SFXFragment<any, any>): void
   {
-    this.container.removeChild(fragment.displayObject);
+    this.fragmentContainer.removeChild(fragment.displayObject);
     this.fragments.splice(this.fragments.indexOf(fragment), 1);
     this.updateRenderer();
   }
@@ -85,7 +88,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
   }
   public updateRenderer(): void
   {
-    this.renderer.render(this.container);
+    this.renderer.render(this.stage);
   }
 
   
