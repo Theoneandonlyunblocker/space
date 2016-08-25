@@ -12,6 +12,7 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
 {
   public id: number;
   public abstract key: string;
+  public abstract displayName: string;
   
   public propTypes: SFXFragmentPropTypes;
   public readonly defaultProps: P;

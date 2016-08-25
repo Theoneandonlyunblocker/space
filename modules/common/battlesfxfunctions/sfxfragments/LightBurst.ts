@@ -48,6 +48,7 @@ const LightBurstPropTypes: SFXFragmentPropTypes =
 
 export default class LightBurst extends SFXFragment<LightBurstProps, PartialLightBurstProps>
 {
+  public displayName: "LightBurst";
   public key: "lightBurst";
   
   private lightBurstFilter: LightBurstFilter;
