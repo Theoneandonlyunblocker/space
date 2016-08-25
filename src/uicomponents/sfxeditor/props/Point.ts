@@ -73,6 +73,7 @@ export class SFXFragmentPropPointComponent extends React.Component<PropTypes, St
             id: baseID + "x",
             type: "number",
             onChange: this.handleXChange,
+            step: 0.1,
             value: "" + this.props.x
           },
             

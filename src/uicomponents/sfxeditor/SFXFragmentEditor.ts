@@ -22,6 +22,14 @@ export class SFXFragmentEditorComponent extends React.Component<PropTypes, State
   constructor(props: PropTypes)
   {
     super(props);
+
+    this.handleReset = this.handleReset.bind(this);
+  }
+
+  private handleReset(): void
+  {
+    this.props.fragment.setDefaultProps();
+    this.props.onActiveFragmentPropValueChange();
   }
   
   render()
@@ -31,6 +39,13 @@ export class SFXFragmentEditorComponent extends React.Component<PropTypes, State
       {
         className: "sfx-fragment-editor"
       },
+        React.DOM.button(
+        {
+          className: "sfx-fragment-reset-props-button",
+          onClick: this.handleReset
+        },
+          "Reset"
+        ),
         SFXFragmentPropsList(
         {
           fragment: this.props.fragment,
