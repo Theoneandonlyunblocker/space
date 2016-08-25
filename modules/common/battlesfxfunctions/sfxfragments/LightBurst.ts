@@ -52,6 +52,7 @@ export default class LightBurst extends SFXFragment<LightBurstProps, PartialLigh
   public key: "lightBurst";
   
   private lightBurstFilter: LightBurstFilter;
+  private seed: number[] = [Math.random() * 69, Math.random() * 420];
 
   constructor(props: LightBurstProps)
   {
@@ -79,7 +80,7 @@ export default class LightBurst extends SFXFragment<LightBurstProps, PartialLigh
   {
     this.lightBurstFilter = new LightBurstFilter(
     {
-      seed: [Math.random() * 69, Math.random() * 420],
+      seed: this.seed,
       rotation: this.props.rotation,
       raySharpness: this.props.sharpness,
       rayColor: this.props.color.getRGBA(1.0)
