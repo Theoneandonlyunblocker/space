@@ -4358,13 +4358,13 @@ button.player-setup-remove-player
   width: 65px;
 }
 
-.collapsible
+.collapsible-base(@faCode)
 {
   cursor: pointer;
 
   &::after
   {
-    .fa("\f077");
+    .fa(@faCode);
     position: absolute;
     right: 1em;
 
@@ -4373,12 +4373,14 @@ button.player-setup-remove-player
   }
 }
 
+.collapsible
+{
+  .collapsible-base("\f077");
+}
+
 .collapsed
 {
-  &::after
-  {
-    .fa("\f078") !important;
-  }
+  .collapsible-base("\f078");
 }
 
 .map-gen-options-buttons

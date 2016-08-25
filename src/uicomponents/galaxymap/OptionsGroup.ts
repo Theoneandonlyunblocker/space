@@ -89,7 +89,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
       },
         React.DOM.div(
         {
-          className: "option-group-header-title collapsible" + (this.state.isCollapsed ? " collapsed" : ""),
+          className: "option-group-header-title" + (this.state.isCollapsed ? " collapsed" : " collapsible"),
           onClick: this.toggleCollapse
         },
           this.props.header
