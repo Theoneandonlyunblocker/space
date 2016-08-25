@@ -212,7 +212,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      selectedFragment: this.oldSelectedFragment,
+      // selectedFragment: this.oldSelectedFragment,
       draggingFragment: undefined
     }, () =>
     {
@@ -299,6 +299,9 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
         SFXEditorSelection(
         {
           availableFragmentConstructors: availableFragmentConstructors,
+          selectedFragment: this.state.selectedFragment,
+          onSelectedFragmentPropValueChange: () => null,
+          selectFragment: () => null,
           onFragmentListDragStart: this.handleFragmentConstructorDragStart,
           onFragmentListDragEnd: this.handleFragmentConstructorDragEnd
         })

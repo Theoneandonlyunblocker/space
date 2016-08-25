@@ -1,12 +1,12 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-export type SelectionTabType = "sfx" | "units" | "fragments";
+export type SelectionTabType = "fragmentConstructors" |
+  "placedFragments";
 
 const displayString =
 {
-  sfx: "SFX",
-  units: "Units",
-  fragments: "Fragments"
+  fragmentConstructors: "Fragments",
+  placedFragments: "Placed"
 }
 
 interface PropTypes extends React.Props<any>
