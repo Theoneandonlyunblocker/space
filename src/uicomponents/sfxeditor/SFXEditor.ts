@@ -102,6 +102,8 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     this.handleFragmentConstructorDragStart = this.handleFragmentConstructorDragStart.bind(this); 
     this.handleFragmentConstructorDragEnd = this.handleFragmentConstructorDragEnd.bind(this); 
     this.handleFragmentDragMove = this.handleFragmentDragMove.bind(this);
+    this.selectFragment = this.selectFragment.bind(this);
+    this.handleSelectedFragmentPropValueChange = this.handleSelectedFragmentPropValueChange.bind(this);
 
     this.advanceTime = this.advanceTime.bind(this);
   }
@@ -220,6 +222,25 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
 
     this.display.updateRenderer();
   }
+
+  private selectFragment(fragment: SFXFragment<any, any>): void
+  {
+    this.setState(
+    {
+      selectedFragment: fragment
+    });
+  }
+  private updateFragment(fragment: SFXFragment<any, any>): void
+  {
+    fragment.draw();
+    fragment.animate(this.state.currentTime);
+    this.display.updateRenderer();
+  }
+  private handleSelectedFragmentPropValueChange(): void
+  {
+    this.updateFragment(this.state.selectedFragment);
+    this.forceUpdate();
+  }
   
   render()
   {
@@ -292,8 +313,8 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
         {
           availableFragmentConstructors: availableFragmentConstructors,
           selectedFragment: this.state.selectedFragment,
-          onSelectedFragmentPropValueChange: () => null,
-          selectFragment: () => null,
+          onSelectedFragmentPropValueChange: this.handleSelectedFragmentPropValueChange,
+          selectFragment: this.selectFragment,
           onFragmentListDragStart: this.handleFragmentConstructorDragStart,
           onFragmentListDragEnd: this.handleFragmentConstructorDragEnd
         })
