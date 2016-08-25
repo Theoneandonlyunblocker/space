@@ -29,6 +29,8 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
     const oldDisplayObject = this.displayObject;
     if (oldDisplayObject)
     {
+      newDisplayObject.position = oldDisplayObject.position.clone();
+      
       const parent = oldDisplayObject.parent;
       if (parent)
       {
