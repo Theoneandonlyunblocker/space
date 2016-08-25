@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import SFXFragmentConstructor from "./SFXFragmentConstructor";
-import SFXFragmentConstructorList from "./SFXFragmentConstructorList";
+import SFXFragmentList from "./SFXFragmentList";
 import
 {
   default as SFXEditorSelectionTab,

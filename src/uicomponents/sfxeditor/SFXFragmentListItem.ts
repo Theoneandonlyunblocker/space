@@ -1,33 +1,37 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
+import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 
 import SFXFragmentConstructor from "./SFXFragmentConstructor";
 
-interface PropTypes extends React.Props<any>
+import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import applyMixins from "../mixins/applyMixins";
+
+type Fragment = SFXFragment<any, any> | SFXFragmentConstructor;
+
+interface PropTypes<P extends Fragment> extends React.Props<any>
 {
-  fragmentConstructor: SFXFragmentConstructor;
+  fragment: P;
 
   isDraggable: boolean;
-  onDragStart?: (fragmentConstructor: SFXFragmentConstructor) => void;
+  onDragStart?: (fragment: P) => void;
   onDragEnd?: () => void;
   
-  onClick?: (fragmentConstructor: SFXFragmentConstructor) => void;
+  onClick?: (fragment: P) => void;
 }
 
 interface StateType
 {
 }
 
-export class SFXFragmentConstructorListItemComponent extends React.Component<PropTypes, StateType>
+export class SFXFragmentListItemComponent<P extends Fragment> extends React.Component<PropTypes<P>, StateType>
 {
-  displayName = "SFXFragmentConstructorListItem";
+  displayName = "SFXFragmentListItem";
   state: StateType;
 
-  dragPositioner: DragPositioner<SFXFragmentConstructorListItemComponent>;
+  dragPositioner: DragPositioner<SFXFragmentListItemComponent<P>>;
   
-  constructor(props: PropTypes)
+  constructor(props: PropTypes<P>)
   {
     super(props);
 
@@ -51,7 +55,7 @@ export class SFXFragmentConstructorListItemComponent extends React.Component<Pro
 
   private onDragStart(): void
   {
-    this.props.onDragStart(this.props.fragmentConstructor);
+    this.props.onDragStart(this.props.fragment);
   }
   private onDragEnd(): void
   {
@@ -59,7 +63,7 @@ export class SFXFragmentConstructorListItemComponent extends React.Component<Pro
   }
   private handleClick(): void
   {
-    this.props.onClick(this.props.fragmentConstructor);
+    this.props.onClick(this.props.fragment);
   }
   
   render()
@@ -83,11 +87,11 @@ export class SFXFragmentConstructorListItemComponent extends React.Component<Pro
 
     return(
       React.DOM.li(listItemProps,
-        this.props.fragmentConstructor.displayName
+        this.props.fragment.displayName
       )
     );
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentConstructorListItemComponent);
+const Factory: React.Factory<PropTypes<Fragment>> = React.createFactory(SFXFragmentListItemComponent);
 export default Factory;
