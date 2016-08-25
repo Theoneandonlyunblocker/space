@@ -20,7 +20,7 @@ import
 import SFXEditorSelection from "./SFXEditorSelection";
 
 
-const availableFragments: SFXFragmentConstructor[] =
+const availableFragmentConstructors: SFXFragmentConstructor[] =
 [
   {
     key: "shockWave",
@@ -55,7 +55,7 @@ function AlphabeticallyByProp<T>(a2: T, b2: T, props: string[]): number
   return 0;
 }
 
-availableFragments.sort((a, b) =>
+availableFragmentConstructors.sort((a, b) =>
 {
   return AlphabeticallyByProp(a, b, ["displayName", "key"]);
 });
@@ -298,7 +298,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
         ),
         SFXEditorSelection(
         {
-          availableFragments: availableFragments,
+          availableFragmentConstructors: availableFragmentConstructors,
           onFragmentListDragStart: this.handleFragmentConstructorDragStart,
           onFragmentListDragEnd: this.handleFragmentConstructorDragEnd
         })

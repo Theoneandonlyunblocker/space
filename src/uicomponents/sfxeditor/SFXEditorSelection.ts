@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import SFXFragmentConstructor from "./SFXFragmentConstructor";
-import SFXFragmentList from "./SFXFragmentList";
+import SFXFragmentConstructorList from "./SFXFragmentConstructorList";
 import
 {
   default as SFXEditorSelectionTab,
@@ -10,7 +10,7 @@ import
 
 interface PropTypes extends React.Props<any>
 {
-  availableFragments: SFXFragmentConstructor[];
+  availableFragmentConstructors: SFXFragmentConstructor[];
 
   onFragmentListDragStart: (fragmentConstructor: SFXFragmentConstructor) => void;
   onFragmentListDragEnd: () => void;
@@ -32,7 +32,7 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
 
     this.state =
     {
-      activeTab: "fragments"
+      activeTab: "fragmentConstructors"
     }
 
     this.setActiveTab = this.setActiveTab.bind(this);
