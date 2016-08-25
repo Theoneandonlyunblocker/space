@@ -5,9 +5,9 @@ import ColorSaveData from "./savedata/ColorSaveData";
 export default class Color
 {
   // 0.0-1.0
-  r: number;
-  g: number;
-  b: number;
+  private r: number;
+  private g: number;
+  private b: number;
   
   constructor(r: number, g: number, b: number)
   {
@@ -180,5 +180,9 @@ export default class Color
     }
     
     return new Color(saveData[0], saveData[1], saveData[2]);
+  }
+  public clone(): Color
+  {
+    return Color.deSerialize(this.serialize());
   }
 }
