@@ -11,7 +11,7 @@ let idGenerator = 0;
 abstract class SFXFragment<P extends PartialProps, PartialProps>
 {
   public id: number;
-  public abstract type: string;
+  public abstract key: string;
   
   public propTypes: SFXFragmentPropTypes;
   public readonly defaultProps: P;
