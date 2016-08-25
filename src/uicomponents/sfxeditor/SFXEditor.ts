@@ -83,8 +83,6 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
   lastAnimationTickTime: number;
   animationHandle: number;
 
-  oldSelectedFragment: SFXFragment<any, any>;
-
   display: SFXEditorDisplayComponent;
   
   constructor(props: PropTypes)
@@ -200,8 +198,6 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     fragment.animate(this.state.currentTime);
     this.display.addFragment(fragment);
 
-    this.oldSelectedFragment = this.state.selectedFragment;
-
     this.setState(
     {
       selectedFragment: fragment,
@@ -212,11 +208,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      // selectedFragment: this.oldSelectedFragment,
       draggingFragment: undefined
-    }, () =>
-    {
-      this.oldSelectedFragment = undefined;
     });
   }
   private handleFragmentDragMove(e: React.MouseEvent): void
