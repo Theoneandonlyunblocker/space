@@ -3,7 +3,7 @@
 import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
 import
 {
-  shallowExtend
+  shallowCopy
 } from "../../../../src/utility";
 
 let idGenerator = 0;
@@ -15,7 +15,7 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
   public abstract displayName: string;
   
   public propTypes: SFXFragmentPropTypes;
-  public readonly defaultProps: P;
+  private readonly defaultProps: P;
   public readonly props: P;
 
   
@@ -66,23 +66,45 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
     this.propTypes = propTypes;
     this.defaultProps = defaultProps;
 
-    this.props = shallowExtend(defaultProps, <P>props);
+    this.props = <P> {};
+    this.setDefaultProps();
+    if (props)
+    {
+      this.setProps(props);
+    }
   }
 
   public abstract animate(relativeTime: number): void;
   public abstract draw(): void;
 
-  public setProps(props: PartialProps): void
+  public setDefaultProps(): void
   {
-    this.assignPartialProps(props);
-    this.draw();
+    this.setProps(this.defaultProps);
   }
-  
-  private assignPartialProps(props: PartialProps): void
+
+  private setProps(props: PartialProps): void
   {
     for (let prop in props)
     {
-      this.props[prop] = props[prop];
+      const propType = this.propTypes[prop];
+      switch (propType)
+      {
+        case "number":
+        {
+          this.props[prop] = props[prop];
+          break;
+        };
+        case "point":
+        {
+          this.props[prop] = shallowCopy(props[prop]);
+          break;
+        }
+        case "color":
+        {
+          this.props[prop] = props[prop].clone();
+          break;
+        }
+      }
     }
   }
 }
