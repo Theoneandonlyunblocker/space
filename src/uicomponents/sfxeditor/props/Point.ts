@@ -36,6 +36,13 @@ export class SFXFragmentPropPointComponent extends React.Component<PropTypes, St
     const target = <HTMLInputElement> e.target;
     const value = parseFloat(target.value);
 
+    const valueIsValid = isFinite(value);
+
+    if (!valueIsValid)
+    {
+      return;
+    }
+
     this.props.fragment.props[this.props.propName][key] = value;
 
     this.props.onValueChange();
@@ -88,6 +95,7 @@ export class SFXFragmentPropPointComponent extends React.Component<PropTypes, St
             id: baseID + "y",
             type: "number",
             onChange: this.handleYChange,
+            step: 0.1,
             value: "" + this.props.y
           },
             

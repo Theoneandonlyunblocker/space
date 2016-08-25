@@ -7,7 +7,7 @@ interface PropTypes extends React.Props<any>
   propName: string;
   fragment: SFXFragment<any, any>;
   onValueChange: () => void;
-  
+
   value: number;
 }
 
@@ -32,6 +32,13 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
     const target = <HTMLInputElement> e.target;
     const value = parseFloat(target.value);
 
+    const valueIsValid = isFinite(value);
+
+    if (!valueIsValid)
+    {
+      return;
+    }
+
     this.props.fragment.props[this.props.propName] = value;
 
     this.props.onValueChange();
@@ -45,6 +52,7 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
         className: "sfx-fragment-prop-number-input",
         type: "number",
         onChange: this.handleChange,
+        step: 0.1,
         value: "" + this.props.value
       },
         
