@@ -77,6 +77,8 @@ const shockWavePropTypes: SFXFragmentPropTypes =
 
 export default class ShockWave extends SFXFragment<ShockWaveProps, PartialShockWaveProps>
 {
+  type: "ShockWave";
+  
   private shockWaveFilter: IntersectingEllipsesFilter;
   
   constructor(props: ShockWaveProps)

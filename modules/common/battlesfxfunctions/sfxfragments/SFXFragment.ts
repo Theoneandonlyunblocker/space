@@ -11,6 +11,12 @@ let idGenerator = 0;
 abstract class SFXFragment<P extends PartialProps, PartialProps>
 {
   public id: number;
+  public abstract type: string;
+  
+  public propTypes: SFXFragmentPropTypes;
+  public readonly defaultProps: P;
+  public readonly props: P;
+
   
   protected _displayObject: PIXI.DisplayObject;
   public get displayObject(): PIXI.DisplayObject
@@ -50,11 +56,6 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
   {
     this.displayObject.scale.set(scale.x, scale.y);
   }
-
-  public propTypes: SFXFragmentPropTypes;
-  public readonly defaultProps: P;
-  public readonly props: P;
-
   constructor(propTypes: SFXFragmentPropTypes, defaultProps: P, props?: PartialProps)
   {
     this.id = idGenerator++;
