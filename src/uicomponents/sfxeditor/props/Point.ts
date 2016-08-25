@@ -43,37 +43,52 @@ export class SFXFragmentPropPointComponent extends React.Component<PropTypes, St
   
   render()
   {
+    const baseID = "sfx-fragment-prop-point-value-" + this.props.propName;
     return(
       React.DOM.div(
       {
         className: "sfx-fragment-prop-point-wrapper"
       },
-        React.DOM.label(
+        React.DOM.div(
         {
-          className: "sfx-fragment-prop-point-label"
+          className: "sfx-fragment-prop-point-value-wrapper"
         },
-          "X:",
+          React.DOM.label(
+          {
+            className: "sfx-fragment-prop-point-label",
+            htmlFor: baseID + "x"
+          },
+            "X:",
+          ),
           React.DOM.input(
           {
             className: "sfx-fragment-prop-point-input",
+            id: baseID + "x",
             type: "number",
             onChange: this.handleXChange,
-            value: this.props.fragment.props[this.props.propName].x
+            value: "" + this.props.x
           },
             
           )
         ),
-        React.DOM.label(
+        React.DOM.div(
         {
-          className: "sfx-fragment-prop-point-label"
+          className: "sfx-fragment-prop-point-value-wrapper"
         },
-          "Y:",
+          React.DOM.label(
+          {
+            className: "sfx-fragment-prop-point-label",
+            htmlFor: baseID + "y"
+          },
+            "Y:",
+          ),
           React.DOM.input(
           {
             className: "sfx-fragment-prop-point-input",
+            id: baseID + "y",
             type: "number",
             onChange: this.handleYChange,
-            value: this.props.fragment.props[this.props.propName].y
+            value: "" + this.props.y
           },
             
           )

@@ -93,10 +93,15 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
       },
         React.DOM.div(
         {
-          className: "sfx-fragment-prop-name" + (this.state.isCollapsed ? " collapsed" : " collapsible"),
+          className: "sfx-fragment-prop-name-container" + (this.state.isCollapsed ? " collapsed" : " collapsible"),
           onClick: this.toggleCollapsed
         },
-          this.props.propName
+          React.DOM.div(
+          {
+            className: "sfx-fragment-prop-name"
+          },
+            this.props.propName
+          )
         ),
         this.state.isCollapsed ? null : React.DOM.div(
         {
