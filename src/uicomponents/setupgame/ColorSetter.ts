@@ -7,10 +7,9 @@ import applyMixins from "../mixins/applyMixins";
 
 export interface PropTypes extends React.Props<any>
 {
-  setActiveColorPicker: (colorSetter: ColorSetterComponent) => void;
-  generateColor: (toContrastWith?: Color) => Color;
+  setActiveColorPicker?: (colorSetter: ColorSetterComponent) => void;
+  generateColor?: (toContrastWith?: Color) => Color;
   color: Color;
-  flagHasCustomImage: boolean;
   onChange: (color: Color, isNull: boolean) => void;
 }
 
@@ -135,8 +134,6 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
             hexColor: this.props.color ? this.props.color.getHex() : null,
             generateColor: this.props.generateColor,
             onChange: this.props.onChange,
-            // setAsInactive: this.setAsInactive,
-            flagHasCustomImage: this.props.flagHasCustomImage,
             autoPositionerProps:
             {
               getParentClientRect: this.getClientRect,

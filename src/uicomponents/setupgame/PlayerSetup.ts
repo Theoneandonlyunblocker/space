@@ -233,7 +233,6 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
           onChange: this.setMainColor,
           setActiveColorPicker: this.props.setActiveSetterComponent,
           generateColor: this.generateMainColor,
-          flagHasCustomImage: this.state.flagHasCustomImage,
           color: this.state.mainColor
         }),
         ColorSetter(
@@ -245,7 +244,6 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
           onChange: this.setSubColor,
           setActiveColorPicker: this.props.setActiveSetterComponent,
           generateColor: this.generateSubColor,
-          flagHasCustomImage: this.state.flagHasCustomImage,
           color: this.state.subColor
         }),
         FlagSetter(

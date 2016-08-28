@@ -11,9 +11,8 @@ import applyMixins from "../mixins/applyMixins";
 
 export interface PropTypes extends React.Props<any>
 {
-  generateColor: (toContrastWith?: Color) => Color;
+  generateColor?: (toContrastWith?: Color) => Color;
   hexColor?: number;
-  flagHasCustomImage: boolean;
   onChange: (color: Color, isNull: boolean) => void;
   limitUpdates?: boolean;
 
@@ -117,9 +116,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       var target = <HTMLInputElement> e.target;
       // prevent onchange events from constantly having to render custom image
       if (!this.props.limitUpdates ||
-        (!this.props.flagHasCustomImage ||
-        target.type !== "range" ||
-        e.type !== "input"))
+        (target.type !== "range" || e.type !== "input"))
       {
         this.triggerParentOnChange(color, false);
       }
