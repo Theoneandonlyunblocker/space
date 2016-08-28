@@ -92,6 +92,11 @@ const fleets: MapRendererLayerTemplate =
             containerGfx.lineStyle(5, 0x0000FF, 1);
             break;
           }
+          case "fightInvadingEnemy":
+          {
+            containerGfx.lineStyle(5, 0x00FFFF, 1);
+            break;
+          }
         }
       }
       // end debug

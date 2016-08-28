@@ -9,6 +9,7 @@ import heal from  "./objectives/heal";
 import conquer from  "./objectives/conquer";
 import expandManufactoryCapacity from  "./objectives/expandManufactoryCapacity";
 import scoutingPerimeter from  "./objectives/scoutingPerimeter";
+import fightInvadingEnemy from "./objectives/fightInvadingEnemy";
 
 const Objectives: TemplateCollection<ObjectiveTemplate> =
 {
@@ -19,7 +20,8 @@ const Objectives: TemplateCollection<ObjectiveTemplate> =
   [heal.key]: heal,
   [conquer.key]: conquer,
   [expandManufactoryCapacity.key]: expandManufactoryCapacity,
-  [scoutingPerimeter.key]: scoutingPerimeter
+  [scoutingPerimeter.key]: scoutingPerimeter,
+  [fightInvadingEnemy.key]: fightInvadingEnemy
 }
 
 export default Objectives;
