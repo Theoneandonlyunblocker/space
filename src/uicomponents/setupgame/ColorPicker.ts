@@ -14,7 +14,6 @@ export interface PropTypes extends React.Props<any>
   generateColor?: (toContrastWith?: Color) => Color;
   hexColor?: number;
   onChange: (color: Color, isNull: boolean) => void;
-  limitUpdates?: boolean;
 
   autoPositionerProps?: AutoPositionerProps;
 }
@@ -101,6 +100,11 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
   updateFromHsv(hue: number, sat: number, val: number, e?: Event)
   {
+    if (e && e.type !== "change")
+    {
+      return;
+    }
+    
     const color: Color = Color.fromHSV.apply(null, Color.convertDegreesToScalars([hue, sat, val]));
     const hexString = "#" + color.getHexString();
 
@@ -114,12 +118,8 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     if (this.props.onChange)
     {
       var target = <HTMLInputElement> e.target;
-      // prevent onchange events from constantly having to render custom image
-      if (!this.props.limitUpdates ||
-        (target.type !== "range" || e.type !== "input"))
-      {
-        this.triggerParentOnChange(color, false);
-      }
+
+      this.triggerParentOnChange(color, false);
     }
   }
   updateFromHex(hexColor: number)
