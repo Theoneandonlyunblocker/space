@@ -11,6 +11,7 @@ export interface PropTypes extends React.Props<any>
   generateColor?: (toContrastWith?: Color) => Color;
   color: Color;
   onChange: (color: Color, isNull: boolean) => void;
+  minUpdateBuffer?: number;
 }
 
 interface StateType
@@ -134,6 +135,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
             hexColor: this.props.color ? this.props.color.getHex() : null,
             generateColor: this.props.generateColor,
             onChange: this.props.onChange,
+            minUpdateBuffer: this.props.minUpdateBuffer,
             autoPositionerProps:
             {
               getParentClientRect: this.getClientRect,

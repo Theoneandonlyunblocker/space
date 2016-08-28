@@ -14,6 +14,7 @@ export interface PropTypes extends React.Props<any>
   generateColor?: (toContrastWith?: Color) => Color;
   hexColor?: number;
   onChange: (color: Color, isNull: boolean) => void;
+  minUpdateBuffer?: number;
 
   autoPositionerProps?: AutoPositionerProps;
 }
@@ -95,7 +96,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     this.onChangeTimeoutHandle = window.setTimeout(() =>
     {
       this.props.onChange(color, isNull);
-    }, 50);
+    }, this.props.minUpdateBuffer || 0);
   }
 
   updateFromHsv(hue: number, sat: number, val: number, e?: Event)
