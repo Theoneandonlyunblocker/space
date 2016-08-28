@@ -3,11 +3,9 @@ interface ObjectWithID
   id: number;
 }
 
-abstract class IDDictionary<K extends ObjectWithID, V, Z>
+abstract class IDDictionary<K extends ObjectWithID, V>
 {
   readonly [a: number]: boolean;
-  protected keyName: string;
-  protected valueName: string;
   private valuesByID:
   {
     [id: number]: V;
@@ -61,16 +59,16 @@ abstract class IDDictionary<K extends ObjectWithID, V, Z>
       callback(this.keysByID[ID], this.valuesByID[ID]);
     }
   }
-  public zip(): Z[]
+  public zip<T>(keyName: string, valueName: string): T[]
   {
-    const zipped: Z[] = [];
+    const zipped: T[] = [];
 
     for (let key in this.keysByID)
     {
       const zippedPair =
       {
-        [this.keyName]: this.keysByID[key],
-        [this.valueName]: this.valuesByID[key]
+        [keyName]: this.keysByID[key],
+        [valueName]: this.valuesByID[key]
       };
 
       zipped.push(<any>zippedPair);

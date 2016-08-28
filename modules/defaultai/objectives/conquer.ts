@@ -60,13 +60,14 @@ const conquer: ObjectiveTemplate =
     for (let i = 0; i < hostilePlayers.length; i++)
     {
       var desirabilityByStar = mapEvaluator.evaluateDesirabilityOfPlayersStars(hostilePlayers[i]).byStar;
-      const sortedStarsWithValues = desirabilityByStar.zip().sort((a, b) =>
+      const starsWithValues = desirabilityByStar.zip<{star: Star, value: number}>("star", "value");
+      if (starsWithValues.length > 0)
       {
-        return b.value - a.value;
-      });
+        const sortedStarsWithValues = starsWithValues.sort((a, b) =>
+        {
+          return b.value - a.value;
+        });
 
-      if (sortedStarsWithValues.length > 0)
-      {
         possibleTargets.push(sortedStarsWithValues[0].star);
       }
     }
