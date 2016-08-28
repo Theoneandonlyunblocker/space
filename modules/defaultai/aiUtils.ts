@@ -145,7 +145,10 @@ export function makeObjectivesFromScores(template: ObjectiveTemplate,
   {
     var star = evaluationScores[i].star || null;
     var player = evaluationScores[i].player || null;
-    if (score < 0.04) continue;
+    if (score < 0.04)
+    {
+      continue;
+    }
     var relativeScore = getRelativeValue(evaluationScores[i].score, minScore, maxScore);
     var priority = relativeScore * basePriority;
 

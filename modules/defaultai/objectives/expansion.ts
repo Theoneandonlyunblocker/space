@@ -44,9 +44,11 @@ const expansion: ObjectiveTemplate =
     var evaluations = mapEvaluator.evaluateStarTargets(independentNeighborStars);
     var scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
+    const zippedScores = scores.zip<{star: Star, score: number}>("star", "score");
+
     var template = expansion
 
-    return makeObjectivesFromScores(template, scores, basePriority);
+    return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
   unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget
 }

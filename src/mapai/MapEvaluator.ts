@@ -32,15 +32,9 @@ export var defaultEvaluationParameters =
 
 interface StarTargetEvaluation
 {
-  star: Star;
   desirability: number;
   hostileStrength: number;
   ownInfluence: number;
-}
-interface StarTargetScore
-{
-  star: Star;
-  score: number;
 }
 
 type InfluenceMap = ValuesByStar<number>;
@@ -222,16 +216,15 @@ export default class MapEvaluator
         const desirability = this.evaluateStarDesirability(star);
 
         // TODO
+        const hostileStrength = 1;
 
         const ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
         const ownInfluenceAtStar = ownInfluenceMap.get(star) || 1;
 
         return(
         {
-          star: star,
           desirability: desirability,
-          // TODO
-          hostileStrength: 1,
+          hostileStrength: hostileStrength,
           ownInfluence: ownInfluenceAtStar
         });
       }
@@ -240,30 +233,33 @@ export default class MapEvaluator
     return evaluationByStar;
   }
 
-  scoreIndependentTargets(evaluations: ValuesByStar<StarTargetEvaluation>): StarTargetScore[]
+  public scoreStarTargets(
+    evaluations: ValuesByStar<StarTargetEvaluation>,
+    getScoreFN: (star: Star, evaluation: StarTargetEvaluation) => number
+  ): ValuesByStar<number>
   {
-    var scores: StarTargetScore[] = [];
+    const scores = new ValuesByStar<number>();
 
     evaluations.forEach((star, evaluation) =>
+    {
+      scores.set(star, getScoreFN(star, evaluation));
+    });
+
+    return scores;
+  }
+  public scoreIndependentTargets(evaluations: ValuesByStar<StarTargetEvaluation>): ValuesByStar<number>
+  {
+    return this.scoreStarTargets(evaluations, (star, evaluation) =>
     {
       var easeOfCapturing = evaluation.ownInfluence / evaluation.hostileStrength;
 
       var score = evaluation.desirability * easeOfCapturing;
-      if (evaluation.star.getSecondaryController() === this.player)
+      if (star.getSecondaryController() === this.player)
       {
         score *= 1.5
       }
 
-      scores.push(
-      {
-        star: evaluation.star,
-        score: score
-      });
-    });
-
-    return scores.sort(function(a, b)
-    {
-      return b.score - a.score;
+      return score
     });
   }
   evaluateDesirabilityOfPlayersStars(player: Player)

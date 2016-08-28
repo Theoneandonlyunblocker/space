@@ -54,10 +54,11 @@ const cleanUpPirates: ObjectiveTemplate =
 
     var evaluations = mapEvaluator.evaluateStarTargets(ownedStarsWithPirates);
     var scores = mapEvaluator.scoreIndependentTargets(evaluations);
+    const zippedScores = scores.zip<{star: Star, score: number}>("star", "score");
 
     var template = cleanUpPirates;
 
-    return makeObjectivesFromScores(template, scores, basePriority);
+    return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
   unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget
 }

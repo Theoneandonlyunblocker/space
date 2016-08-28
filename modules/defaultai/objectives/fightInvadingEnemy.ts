@@ -45,20 +45,29 @@ const fightInvadingEnemy: ObjectiveTemplate =
     {
       const hostileUnits = star.getUnits(player =>
       {
-        return mapEvaluator.player.diplomacyStatus.canAttackFleetOfPlayer(player);
+        return(
+          !player.isIndependent &&
+          mapEvaluator.player.diplomacyStatus.canAttackFleetOfPlayer(player)
+        );
       });
 
       return hostileUnits.length > 0;
     });
 
 
-
     const evaluations = mapEvaluator.evaluateStarTargets(ownedStarsWithInvaders);
-    const scores = evaluations.zip<{star: Star, score: number}>("star", "score");
+    const scores = mapEvaluator.scoreStarTargets(evaluations, (star, evaluation) =>
+    {
+      const strengthRatio = evaluation.ownInfluence / evaluation.hostileStrength;
+      const score = evaluation.desirability * strengthRatio;
+
+      return score;
+    });
+    const zippedScores = scores.zip<{star: Star, score: number}>("star", "score");
 
     const template = fightInvadingEnemy;
 
-    return makeObjectivesFromScores(template, scores, basePriority);
+    return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
   unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget
 }
