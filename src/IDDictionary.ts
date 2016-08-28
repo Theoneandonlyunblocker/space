@@ -59,7 +59,8 @@ abstract class IDDictionary<K extends ObjectWithID, V>
       callback(this.keysByID[ID], this.valuesByID[ID]);
     }
   }
-  public zip<T>(keyName: string, valueName: string): T[]
+  public zip<T extends {[keyName: string]: K | V;}>(
+    keyName: string, valueName: string): T[]
   {
     const zipped: T[] = [];
 
