@@ -1,8 +1,18 @@
 /// <reference path="../../../../lib/react-global.d.ts" />
 
+import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+
+import Color from "../../../Color";
+
+import ColorSetter from "../../setupgame/ColorSetter";
+
 interface PropTypes extends React.Props<any>
 {
-  
+  propName: string;
+  fragment: SFXFragment<any, any>;
+  onValueChange: () => void;
+
+  color: Color;
 }
 
 interface StateType
@@ -17,17 +27,30 @@ export class SFXFragmentPropColorComponent extends React.Component<PropTypes, St
   constructor(props: PropTypes)
   {
     super(props);
+
+    this.onColorChange = this.onColorChange.bind(this);
+  }
+
+  private onColorChange(color: Color, isNull: boolean): void
+  {
+    if (isNull)
+    {
+      return;
+    }
+
+    this.props.fragment.props[this.props.propName] = color;
+
+    this.props.onValueChange();
   }
   
   render()
   {
     return(
-      React.DOM.div(
+      ColorSetter(
       {
-        className: "sfx-fragment-prop-color"
-      },
-        
-      )
+        color: this.props.color,
+        onChange: this.onColorChange
+      })
     );
   }
 }

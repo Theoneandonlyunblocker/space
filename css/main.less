@@ -4843,11 +4843,13 @@ button.player-setup-remove-player
   flex-flow: column;
 
   padding: 5px 0px;
-  &::after
+
+  +.sfx-fragment-prop
   {
-    .civ-splitter-horizontal();
+    border-top: 1px solid grey;
   }
 
+  
   input
   {
     width: 100%;

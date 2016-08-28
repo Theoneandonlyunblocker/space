@@ -7,6 +7,7 @@ import
 } from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragmentPropTypes";
 
 import Point from "../../../Point";
+import Color from "../../../Color";
 
 import SFXFragmentPropNumber from "./Number";
 import SFXFragmentPropPoint from "./Point";
@@ -83,6 +84,21 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
           fragment: this.props.fragment,
           onValueChange: this.props.onPropValueChange
         });
+        break;
+      }
+      case "color":
+      {
+        const propValue: Color = this.props.fragment.props[this.props.propName];
+
+        propValuesElement = SFXFragmentPropColor(
+        {
+          color: propValue,
+
+          propName: this.props.propName,
+          fragment: this.props.fragment,
+          onValueChange: this.props.onPropValueChange
+        });
+        break;
       }
     }
     
