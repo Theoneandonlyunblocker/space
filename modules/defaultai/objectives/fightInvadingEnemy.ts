@@ -16,11 +16,7 @@ import
   makeObjectivesFromScores,
   getUnitsToBeatImmediateTarget
 } from "../aiUtils";
-import
-{
-  default as musterAndAttack,
-  independentTargetFilter
-} from "./common/moveroutines/musterAndAttack";
+import musterAndAttack from "./common/moveroutines/musterAndAttack";
 
 const fightInvadingEnemy: ObjectiveTemplate =
 {
