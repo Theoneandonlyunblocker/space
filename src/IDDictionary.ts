@@ -59,6 +59,20 @@ abstract class IDDictionary<K extends ObjectWithID, V>
       callback(this.keysByID[ID], this.valuesByID[ID]);
     }
   }
+  public filter(filterFN: (key: K, value: V) => boolean): IDDictionary<K, V>
+  {
+    const filtered: IDDictionary<K, V> = this.constructor();
+
+    this.forEach((key, value) =>
+    {
+      if (filterFN(key, value))
+      {
+        filtered.set(key, value);
+      }
+    });
+
+    return filtered;
+  }
   public zip<T extends {[keyName: string]: K | V;}>(
     keyName: string, valueName: string): T[]
   {
