@@ -1,18 +1,18 @@
-import Star from "../Star";
-import Player from "../Player";
-import Game from "../Game";
-import GalaxyMap from "../GalaxyMap";
-import Fleet from "../Fleet";
-import Unit from "../Unit";
-import DiplomacyEvaluation from "../DiplomacyEvaluation";
-import ValuesByStar from "../ValuesByStar";
-import ValuesByPlayer from "../ValuesByPlayer";
+import Star from "../../../src/Star";
+import Player from "../../../src/Player";
+import Game from "../../../src/Game";
+import GalaxyMap from "../../../src/GalaxyMap";
+import Fleet from "../../../src/Fleet";
+import Unit from "../../../src/Unit";
+import DiplomacyEvaluation from "../../../src/DiplomacyEvaluation";
+import ValuesByStar from "../../../src/ValuesByStar";
+import ValuesByPlayer from "../../../src/ValuesByPlayer";
 import
 {
   getRelativeValue
-} from "../utility";
+} from "../../../src/utility";
 
-import evaluateUnitStrength from "../evaluateUnitStrength";
+import evaluateUnitStrength from "../../../src/evaluateUnitStrength";
 
 export var defaultEvaluationParameters =
 {

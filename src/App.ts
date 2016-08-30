@@ -301,7 +301,10 @@ class App
       var player = this.game.playerOrder[i];
       if (player.isAI)
       {
-        player.setupAI(this.game);
+        // TODO | do this somewhere else
+        // player.setupAI(this.game);
+        // used to be:
+        // this.AIController = new AIController(this, game, this.personality);
       }
     }
 

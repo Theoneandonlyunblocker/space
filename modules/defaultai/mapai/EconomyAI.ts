@@ -3,16 +3,16 @@ import ObjectivesAI from "./ObjectivesAI";
 import FrontsAI from "./FrontsAI";
 import Front from "./Front";
 
-import Star from "../Star";
-import Player from "../Player";
-import Personality from "../Personality";
+import Star from "../../../src/Star";
+import Player from "../../../src/Player";
+import Personality from "../../../src/Personality";
 import
 {
   getObjectKeysSortedByValue,
   getRandomArrayItem
-} from "../utility";
+} from "../../../src/utility";
 
-import UnitTemplate from "../templateinterfaces/UnitTemplate";
+import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
 export default class EconomyAI
 {

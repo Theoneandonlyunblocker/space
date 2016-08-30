@@ -1,9 +1,9 @@
-import Front from "../../../src/mapai/Front";
-import GrandStrategyAI from "../../../src/mapai/GrandStrategyAI";
-import MapEvaluator from "../../../src/mapai/MapEvaluator";
-import Objective from "../../../src/mapai/Objective";
+import Front from "../mapai/Front";
+import GrandStrategyAI from "../mapai/GrandStrategyAI";
+import MapEvaluator from "../mapai/MapEvaluator";
+import Objective from "../mapai/Objective";
 
-import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate";
+import ObjectiveTemplate from "./common/ObjectiveTemplate";
 
 import Fleet from "../../../src/Fleet";
 import Star from "../../../src/Star";

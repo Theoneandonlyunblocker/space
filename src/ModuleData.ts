@@ -11,6 +11,7 @@ import
 } from "./utility";
 
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
+import AITemplateConstructor from "./templateinterfaces/AITemplateConstructor";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
@@ -21,7 +22,6 @@ import CultureTemplate from "./templateinterfaces/CultureTemplate";
 import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTemplate";
 import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate";
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
-import ObjectiveTemplate from "./templateinterfaces/ObjectiveTemplate";
 import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
 import RaceTemplate from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
@@ -34,6 +34,7 @@ import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
 type TemplateKey =
   "Abilities" |
+  "AITemplateConstructors" |
   "AttitudeModifiers" |
   "BattleSFX" |
   "Buildings" |
@@ -44,7 +45,6 @@ type TemplateKey =
   "MapRendererLayers" |
   "MapRendererMapModes" |
   "Notifications" |
-  "Objectives" |
   "PassiveSkills" |
   "Personalities" |
   "Races" |
@@ -63,6 +63,10 @@ interface Templates
   {
     [type: string]: AbilityTemplate;
   };
+  AITemplateConstructors:
+  {
+    [type: string]: AITemplateConstructor<any>;
+  }
   AttitudeModifiers:
   {
     [type: string]: AttitudeModifierTemplate;
@@ -103,10 +107,6 @@ interface Templates
   {
     [key: string]: NotificationTemplate;
   };
-  Objectives:
-  {
-    [key: string]: ObjectiveTemplate;
-  }
   PassiveSkills:
   {
     [type: string]: PassiveSkillTemplate;
@@ -159,6 +159,7 @@ export default class ModuleData
   Templates: Templates =
   {
     Abilities: {},
+    AITemplateConstructors: {},
     AttitudeModifiers: {},
     BattleSFX: {},
     Buildings: {},
@@ -169,7 +170,6 @@ export default class ModuleData
     MapRendererLayers: {},
     MapRendererMapModes: {},
     Notifications: {},
-    Objectives: {},
     PassiveSkills: {},
     Personalities: {},
     Races: {},

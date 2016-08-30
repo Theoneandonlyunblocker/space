@@ -99,8 +99,9 @@ export default class DiplomacyStatus
     {
       return;
     }
-
-    this.player.AIController.diplomacyAI.setAttitudes();
+    // TODO
+    // is this necessary? why cant diplo ai look at attitudes as needed?
+    // this.player.AIController.diplomacyAI.setAttitudes();
   }
 
   handleDiplomaticStatusUpdate()

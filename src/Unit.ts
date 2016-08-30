@@ -48,9 +48,6 @@ import UnitItemsSaveData from "./savedata/UnitItemsSaveData";
 import UnitBattleStatsSaveData from "./savedata/UnitBattleStatsSaveData";
 
 
-import Front from "./mapai/Front";
-
-
 export default class Unit
 {
   public template: UnitTemplate;
@@ -104,8 +101,6 @@ export default class Unit
     inBattlePrep?: PassiveSkillTemplate[];
   } = {};
   private passiveSkillsByPhaseAreDirty: boolean = true;
-
-  public front: Front;
 
   public uiDisplayIsDirty: boolean = true;
   public lastHealthDrawnAt: number;

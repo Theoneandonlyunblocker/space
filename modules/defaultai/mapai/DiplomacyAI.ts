@@ -1,9 +1,9 @@
-import RoutineAdjustmentByID from "../templateinterfaces/RoutineAdjustmentByID";
+import RoutineAdjustmentByID from "../RoutineAdjustmentByID";
 
-import Personality from "../Personality";
-import Game from "../Game";
-import Player from "../Player";
-import DiplomacyStatus from "../DiplomacyStatus";
+import Personality from "../../../src/Personality";
+import Game from "../../../src/Game";
+import Player from "../../../src/Player";
+import DiplomacyStatus from "../../../src/DiplomacyStatus";
 
 import MapEvaluator from "./MapEvaluator";
 import ObjectivesAI from "./ObjectivesAI";

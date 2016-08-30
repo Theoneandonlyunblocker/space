@@ -5,7 +5,7 @@ import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
-import ObjectiveTemplate from "../../src/templateinterfaces/ObjectiveTemplate";
+import ObjectiveTemplate from "./objectives/common/ObjectiveTemplate";
 
 const defaultAI: ModuleFile =
 {

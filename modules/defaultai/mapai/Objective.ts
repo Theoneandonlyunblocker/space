@@ -1,11 +1,11 @@
 
-import ObjectiveTemplate from "../templateinterfaces/ObjectiveTemplate";
+import ObjectiveTemplate from "../objectives/common/ObjectiveTemplate";
 
 import MapEvaluator from "./MapEvaluator";
 
-import idGenerators from "../idGenerators";
-import Star from "../Star";
-import Player from "../Player";
+import idGenerators from "../../../src/idGenerators";
+import Star from "../../../src/Star";
+import Player from "../../../src/Player";
 
 /*
 objectives:

@@ -1,18 +1,18 @@
-import RoutineAdjustment from "./RoutineAdjustment";
-import RoutineAdjustmentByID from "./RoutineAdjustmentByID";
+import RoutineAdjustment from "../../RoutineAdjustment";
+import RoutineAdjustmentByID from "../../RoutineAdjustmentByID";
 
-import ArchetypeValues from "../ArchetypeValues";
-import Star from "../Star";
-import Player from "../Player";
-import Unit from "../Unit";
+import ArchetypeValues from "../../../../src/ArchetypeValues";
+import Star from "../../../../src/Star";
+import Player from "../../../../src/Player";
+import Unit from "../../../../src/Unit";
 
-import Front from "../mapai/Front";
-import GrandStrategyAI from "../mapai/GrandStrategyAI";
-import MapEvaluator from "../mapai/MapEvaluator";
-import Objective from "../mapai/Objective";
-import ObjectivesAI from "../mapai/ObjectivesAI";
-import EconomyAI from "../mapai/EconomyAI";
-import DiplomacyAI from "../mapai/DiplomacyAI";
+import Front from "../../mapai/Front";
+import GrandStrategyAI from "../../mapai/GrandStrategyAI";
+import MapEvaluator from "../../mapai/MapEvaluator";
+import Objective from "../../mapai/Objective";
+import ObjectivesAI from "../../mapai/ObjectivesAI";
+import EconomyAI from "../../mapai/EconomyAI";
+import DiplomacyAI from "../../mapai/DiplomacyAI";
 
 
 declare interface ObjectiveTemplate

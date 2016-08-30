@@ -1,10 +1,10 @@
-import DiplomacyAI from "../../../src/mapai/DiplomacyAI";
-import GrandStrategyAI from "../../../src/mapai/GrandStrategyAI";
-import MapEvaluator from "../../../src/mapai/MapEvaluator";
-import Objective from "../../../src/mapai/Objective";
+import DiplomacyAI from "../mapai/DiplomacyAI";
+import GrandStrategyAI from "../mapai/GrandStrategyAI";
+import MapEvaluator from "../mapai/MapEvaluator";
+import Objective from "../mapai/Objective";
 
-import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate";
-import RoutineAdjustmentByID from "../../../src/templateinterfaces/RoutineAdjustmentByID";
+import ObjectiveTemplate from "./common/ObjectiveTemplate";
+import RoutineAdjustmentByID from "../RoutineAdjustmentByID";
 
 import Player from "../../../src/Player";
 

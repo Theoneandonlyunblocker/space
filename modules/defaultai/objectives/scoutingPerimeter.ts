@@ -1,7 +1,7 @@
-import MapEvaluator from "../../../src/mapai/MapEvaluator";
-import Objective from "../../../src/mapai/Objective";
+import MapEvaluator from "../mapai/MapEvaluator";
+import Objective from "../mapai/Objective";
 
-import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate";
+import ObjectiveTemplate from "./common/ObjectiveTemplate";
 
 import Unit from "../../../src/Unit";
 

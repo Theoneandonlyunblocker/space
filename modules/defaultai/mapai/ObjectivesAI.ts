@@ -1,15 +1,15 @@
 
-import app from "../App"; // TODO global
+import app from "../../../src/App"; // TODO global
 
 import MapEvaluator from "./MapEvaluator";
 import GrandStrategyAI from "./GrandStrategyAI";
 import Objective from "./Objective";
 
-import GalaxyMap from "../GalaxyMap";
-import Player from "../Player";
+import GalaxyMap from "../../../src/GalaxyMap";
+import Player from "../../../src/Player";
 
-import RoutineAdjustmentByID from "../templateinterfaces/RoutineAdjustmentByID";
-import ObjectiveTemplate from "../templateinterfaces/ObjectiveTemplate";
+import RoutineAdjustmentByID from "../RoutineAdjustmentByID";
+import ObjectiveTemplate from "../objectives/common/ObjectiveTemplate";
 
 /*
 -- objectives ai

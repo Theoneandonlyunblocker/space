@@ -1,10 +1,12 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
+import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
+
+import MapEvaluator from "../../defaultai/mapai/MapEvaluator";
+
 import Color from "../../../src/Color";
 import Star from "../../../src/Star";
-import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
-import MapEvaluator from "../../../src/mapai/MapEvaluator";
 import Player from "../../../src/Player";
 
 const playerInfluence: MapRendererLayerTemplate =

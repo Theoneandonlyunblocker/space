@@ -1,9 +1,10 @@
 import Objective from "./Objective";
 
-import ArchetypeValues from "../ArchetypeValues";
-import Unit from "../Unit";
-import Star from "../Star";
-import Fleet from "../Fleet";
+import ArchetypeValues from "../../../src/ArchetypeValues";
+import Unit from "../../../src/Unit";
+import Star from "../../../src/Star";
+import Fleet from "../../../src/Fleet";
+import ValuesByUnit from "../../../src/ValuesByUnit";
 
 export default class Front
 {

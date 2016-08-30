@@ -1,5 +1,6 @@
-import ObjectiveTemplate from "../../src/templateinterfaces/ObjectiveTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
+
+import ObjectiveTemplate from "./objectives/common/ObjectiveTemplate";
 
 import declareWar from  "./objectives/declareWar";
 import expansion from  "./objectives/expansion";

@@ -1,7 +1,7 @@
 import Fleet from "../../../../../src/Fleet";
 import Star from "../../../../../src/Star";
 
-import Front from "../../../../../src/mapai/Front";
+import Front from "../../../mapai/Front";
 
 export default function moveTo(front: Front,
   afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star)

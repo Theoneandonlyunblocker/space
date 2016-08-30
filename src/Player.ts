@@ -7,6 +7,7 @@ import
 {
   extendObject
 } from "./utility";
+import AIController from "./AIController";
 import Building from "./Building";
 import Star from "./Star";
 import Flag from "./Flag";
@@ -22,7 +23,6 @@ import eventManager from "./eventManager";
 import Color from "./Color";
 import Game from "./Game";
 import Point from "./Point";
-import Personality from "./Personality";
 import Name from "./Name";
 import idGenerators from "./idGenerators";
 import
@@ -32,7 +32,7 @@ import
 } from "./colorGeneration";
 import Options from "./options";
 
-import AIController from "./mapai/AIController";
+import AITemplateConstructor from "./templateinterfaces/AITemplateConstructor";
 
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
@@ -66,7 +66,6 @@ export default class Player
   items: Item[] = [];
 
   isAI: boolean = false;
-  personality: Personality;
   AIController: AIController;
   isIndependent: boolean = false;
 
@@ -134,7 +133,6 @@ export default class Player
     flag?: Flag;
 
     resources?: {[resourceType: string]: number};
-    personality?: Personality;
     technologyData?: PlayerTechnologySaveData;
   })
   {
@@ -192,8 +190,6 @@ export default class Player
       this.resources = extendObject(props.resources);
     }
 
-    this.personality = props.personality;
-
     this.diplomacyStatus = new DiplomacyStatus(this);
     this.initTechnologies(props.technologyData);
   }
@@ -249,10 +245,6 @@ export default class Player
       "builtBuildingWithEffect_research",
       this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology)
     );
-  }
-  setupAI(game: Game)
-  {
-    this.AIController = new AIController(this, game, this.personality);
   }
   makeRandomFlag(seed?: any)
   {

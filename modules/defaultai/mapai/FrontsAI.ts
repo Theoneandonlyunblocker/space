@@ -3,10 +3,10 @@ import MapEvaluator from "./MapEvaluator";
 import ObjectivesAI from "./ObjectivesAI";
 import Objective from "./Objective";
 
-import Unit from "../Unit";
-import Player from "../Player";
-import GalaxyMap from "../GalaxyMap";
-import Personality from "../Personality";
+import Unit from "../../../src/Unit";
+import Player from "../../../src/Player";
+import GalaxyMap from "../../../src/GalaxyMap";
+import Personality from "../../../src/Personality";
 
 interface IFrontUnitScore
 {

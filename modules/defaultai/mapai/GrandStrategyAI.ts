@@ -1,10 +1,11 @@
 import MapEvaluator from "./MapEvaluator";
-import Personality from "../Personality";
+
+import Personality from "../../../src/Personality";
 import
 {
   clamp,
   getRelativeValue
-} from "..//utility";
+} from "../../../src/utility";
 
 export default class GrandStrategyAI
 {

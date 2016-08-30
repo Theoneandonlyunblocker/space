@@ -1,10 +1,11 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
+import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
+
 import Options from "../../../src/options";
 import eventManager from "../../../src/eventManager";
 import Fleet from "../../../src/Fleet";
 import Star from "../../../src/Star";
-import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
 import app from "../../../src/App";
@@ -49,12 +50,6 @@ const fleets: MapRendererLayerTemplate =
     const mouseOverFN = function(fleet: Fleet)
     {
       eventManager.dispatchEvent("hoverStar", fleet.location);
-      if (Options.debug.enabled && fleet.units.length > 0 && fleet.units[0].front)
-      {
-        const objective = fleet.units[0].front.objective;
-        const target = objective.target ? objective.target.id : null;
-        console.log(objective.type, target, objective.priority);
-      }
     }
     const fleetClickFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
     {
@@ -76,30 +71,6 @@ const fleets: MapRendererLayerTemplate =
 
       var containerGfx = new PIXI.Graphics();
       containerGfx.lineStyle(1, 0x00000, 1);
-      // debug
-      var front = fleet.units[0].front;
-      if (front && Options.debug.enabled)
-      {
-        switch (front.objective.type)
-        {
-          case "discovery":
-          {
-            containerGfx.lineStyle(5, 0xFF0000, 1);
-            break;
-          }
-          case "scoutingPerimeter":
-          {
-            containerGfx.lineStyle(5, 0x0000FF, 1);
-            break;
-          }
-          case "fightInvadingEnemy":
-          {
-            containerGfx.lineStyle(5, 0x00FFFF, 1);
-            break;
-          }
-        }
-      }
-      // end debug
       containerGfx.beginFill(color, fillAlpha);
       containerGfx.drawRect(0, 0, text.width+4, text.height);
       containerGfx.endFill();
