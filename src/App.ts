@@ -25,7 +25,7 @@ import
 
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
 
-import addCommonTomoduleData from "../modules/common/addCommonTomoduleData";
+import addCommonToModuleData from "../modules/common/addCommonToModuleData";
 import defaultEmblems from "../modules/defaultemblems/defaultEmblems";
 import defaultRuleset from "../modules/defaultruleset/defaultRuleset";
 import defaultAI from "../modules/defaultai/defaultAI";
@@ -88,7 +88,7 @@ class App
       moduleLoader.addModuleFile(defaultNotifications);
       moduleLoader.addModuleFile(defaultRaces);
       
-      addCommonTomoduleData(moduleLoader.moduleData);
+      addCommonToModuleData(moduleLoader.moduleData);
       
       // some things called in this.makeApp() rely on global app variable
       // this timeout allows constructor to finish and variable to be assigned
