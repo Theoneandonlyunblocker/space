@@ -4,7 +4,7 @@ import ArchetypeValues from "../../../src/ArchetypeValues";
 import Unit from "../../../src/Unit";
 import Star from "../../../src/Star";
 import Fleet from "../../../src/Fleet";
-import ValuesByUnit from "../../../src/ValuesByUnit";
+import attachedUnitData from "../../common/attachedUnitData";
 
 export default class Front
 {
@@ -191,18 +191,19 @@ export default class Front
   }
   addUnit(unit: Unit)
   {
-    if (unit.front)
+    const unitData = attachedUnitData.get(unit);
+    if (unitData.front)
     {
-      unit.front.removeUnit(unit);
+      unitData.front.removeUnit(unit);
     }
     
-    unit.front = this;
+    unitData.front = this;
     this.units.push(unit);
   }
   removeUnit(unit: Unit)
   {
     var unitIndex = this.getUnitIndex(unit);
-    unit.front = null;
+    attachedUnitData.get(unit).front = null;
     this.units.splice(unitIndex, 1);
   }
   getUnitCountByArchetype()
