@@ -774,10 +774,10 @@ export default class Unit
     player.removeUnit(this);
     this.fleet.removeUnit(this);
 
-    if (this.front)
+    app.moduleData.scripts.unit.removeFromPlayer.forEach(script =>
     {
-      this.front.removeUnit(this);
-    }
+      script(this);
+    });
 
     this.uiDisplayIsDirty = true;
   }
