@@ -4,7 +4,12 @@ import Unit from "../../Unit";
 import {shallowExtend} from "../../utility";
 import UnitStrength from "../unit/UnitStrength";
 import ListItemProps from "../list/ListItemProps";
-import {default as UnitComponentFactory, UnitComponent} from "../unit/Unit";
+import
+{
+  default as UnitComponentFactory,
+  UnitComponent,
+  PropTypes as UnitComponentPropTypes
+} from "../unit/Unit";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
@@ -113,9 +118,10 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   makeDragClone()
   {
     const container = document.createElement("div");
+    const unitComponentProps = 
     
     ReactDOM.render(
-      UnitComponentFactory(shallowExtend(
+      UnitComponentFactory(shallowExtend<UnitComponentPropTypes>(
         this.props.unit.getDisplayData("battlePrep"),
         {id: this.props.unit.id}
       )),

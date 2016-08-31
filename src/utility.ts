@@ -342,7 +342,7 @@ export function shallowCopy<T>(toCopy: T): T
 {
   return <T> shallowExtend({}, toCopy);
 }
-export function shallowExtend(destination: any, ...sources: any[])
+export function shallowExtend<T>(destination: any, ...sources: any[]): T
 {
   sources.forEach(source =>
   {
@@ -352,7 +352,7 @@ export function shallowExtend(destination: any, ...sources: any[])
     }
   });
   
-  return destination;
+  return <T>destination;
 }
 
 // https://github.com/KyleAMathews/deepmerge

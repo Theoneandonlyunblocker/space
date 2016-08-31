@@ -403,7 +403,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       previousUnitDisplayDataByID: shallowCopy(this.state.unitDisplayDataByID),
-      unitDisplayDataByID: shallowExtend(
+      unitDisplayDataByID: shallowExtend<{[unitID: number]: UnitDisplayData}>(
         this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
       battleEvaluation: effect.newEvaluation,
       battleEffectDurationAfterTrigger: this.state.battleEffectDuration -
