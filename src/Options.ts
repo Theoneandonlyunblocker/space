@@ -97,7 +97,6 @@ class Options implements OptionsValues
     let shouldReRenderUI = false;
     let shouldReRenderMap = false;
     
-    // !!!cases are untyped https://github.com/Microsoft/TypeScript/issues/6149
     switch (category)
     {
       case "battleAnimationTiming":

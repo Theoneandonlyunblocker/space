@@ -6,7 +6,6 @@ import
   clamp
 } from "./utility";
 
-// https://github.com/Microsoft/TypeScript/issues/7485
 export interface PartialUnitAttributes
 {
   maxActionPoints?: number;
@@ -16,10 +15,8 @@ export interface PartialUnitAttributes
   speed?: number;
 }
 
-// https://github.com/Microsoft/TypeScript/issues/7485
 export interface UnitAttributeAdjustments
 {
-  // [attribute: string]: FlatAndMultiplierAdjustment;
   maxActionPoints?: FlatAndMultiplierAdjustment;
   attack?: FlatAndMultiplierAdjustment;
   defence?: FlatAndMultiplierAdjustment;
