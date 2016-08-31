@@ -25,7 +25,7 @@ class AttachedUnitData
     this.byUnit = new ValuesByUnit<PartialAttachedUnitData>();
   }
 
-  public get(unit: Unit): PartialAttachedUnitData
+  public get(unit: Unit): PartialAttachedUnitData | undefined
   {
     return this.byUnit.get(unit);
   }

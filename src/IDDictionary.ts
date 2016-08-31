@@ -30,11 +30,11 @@ abstract class IDDictionary<K extends ObjectWithID, V>
   {
     return Boolean(this.valuesByID[key.id]);
   }
-  public get(key: K): V
+  public get(key: K): V | undefined
   {
     return this.valuesByID[key.id];
   }
-  public getByID(id: number): V
+  public getByID(id: number): V | undefined
   {
     return this.valuesByID[id];
   }
