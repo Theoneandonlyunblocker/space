@@ -7,7 +7,9 @@ import poisoned from  "./statuseffecttemplates/poisoned";
 import * as BattleSFXTemplates from  "./battlesfxtemplates/battleSFX";
 import * as PassiveSkillTemplates from  "./passiveskilltemplates/passiveSkills";
 
-export default function copyCommonTemplates(moduleData: ModuleData)
+import {attachedUnitDataScripts} from "./attachedUnitData";
+
+export default function addCommonToModuleData(moduleData: ModuleData)
 {
   moduleData.copyTemplates<any>(AbilityTemplates, "Abilities");
   moduleData.copyTemplates<any>(ResourceTemplates, "Resources");
@@ -17,4 +19,5 @@ export default function copyCommonTemplates(moduleData: ModuleData)
   
   moduleData.copyTemplates<any>({[poisoned.type]: poisoned}, "StatusEffects");
   
+  moduleData.scripts.add(attachedUnitDataScripts);
 }
