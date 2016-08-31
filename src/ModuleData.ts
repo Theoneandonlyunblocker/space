@@ -56,97 +56,32 @@ type TemplateKey =
   "UnitFamilies" |
   "Units";
 
+type TemplateIndex<T> = {[type: string]: T}
 
 interface Templates
 {
-  Abilities:
-  {
-    [type: string]: AbilityTemplate;
-  };
-  AITemplateConstructors:
-  {
-    [type: string]: AITemplateConstructor<any>;
-  }
-  AttitudeModifiers:
-  {
-    [type: string]: AttitudeModifierTemplate;
-  };
-  BattleSFX:
-  {
-    [type: string]: BattleSFXTemplate;
-  };
-  Buildings:
-  {
-    [type: string]: BuildingTemplate;
-  };
-  Cultures:
-  {
-    [key: string]: CultureTemplate;
-  };
-  EffectActions:
-  {
-    [type: string]: EffectActionTemplate;
-  };
-  Items:
-  {
-    [type: string]: ItemTemplate;
-  };
-  MapGen:
-  {
-    [type: string]: MapGenTemplate;
-  };
-  MapRendererLayers:
-  {
-    [layerKey: string]: MapRendererLayerTemplate;
-  };
-  MapRendererMapModes:
-  {
-    [mapModeKey: string]: MapRendererMapModeTemplate;
-  };
-  Notifications:
-  {
-    [key: string]: NotificationTemplate;
-  };
-  PassiveSkills:
-  {
-    [type: string]: PassiveSkillTemplate;
-  };
-  Personalities:
-  {
-    [type: string]: Personality;
-  };
-  Races:
-  {
-    [key: string]: RaceTemplate;
-  }
-  Resources:
-  {
-    [type: string]: ResourceTemplate;
-  };
-  StatusEffects:
-  {
-    [type: string]: StatusEffectTemplate;
-  };
-  SubEmblems:
-  {
-    [type: string]: SubEmblemTemplate;
-  };
-  Technologies:
-  {
-    [key: string]: TechnologyTemplate;
-  };
-  UnitArchetypes:
-  {
-    [type: string]: UnitArchetype;
-  };
-  UnitFamilies:
-  {
-    [type: string]: UnitFamily;
-  };
-  Units:
-  {
-    [type: string]: UnitTemplate;
-  };
+  Abilities: TemplateIndex<AbilityTemplate>;
+  AITemplateConstructors: TemplateIndex<AITemplateConstructor<any>>;
+  AttitudeModifiers: TemplateIndex<AttitudeModifierTemplate>;
+  BattleSFX: TemplateIndex<BattleSFXTemplate>;
+  Buildings: TemplateIndex<BuildingTemplate>;
+  Cultures: TemplateIndex<CultureTemplate>;
+  EffectActions: TemplateIndex<EffectActionTemplate>;
+  Items: TemplateIndex<ItemTemplate>;
+  MapGen: TemplateIndex<MapGenTemplate>;
+  MapRendererLayers: TemplateIndex<MapRendererLayerTemplate>;
+  MapRendererMapModes: TemplateIndex<MapRendererMapModeTemplate>;
+  Notifications: TemplateIndex<NotificationTemplate>;
+  PassiveSkills: TemplateIndex<PassiveSkillTemplate>;
+  Personalities: TemplateIndex<Personality>;
+  Races: TemplateIndex<RaceTemplate>;
+  Resources: TemplateIndex<ResourceTemplate>;
+  StatusEffects: TemplateIndex<StatusEffectTemplate>;
+  SubEmblems: TemplateIndex<SubEmblemTemplate>;
+  Technologies: TemplateIndex<TechnologyTemplate>;
+  UnitArchetypes: TemplateIndex<UnitArchetype>;
+  UnitFamilies: TemplateIndex<UnitFamily>;
+  Units: TemplateIndex<UnitTemplate>;
 }
 
 export default class ModuleData
