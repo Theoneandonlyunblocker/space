@@ -26,6 +26,10 @@ abstract class IDDictionary<K extends ObjectWithID, V>
     }
   }
 
+  public has(key: K): boolean
+  {
+    return Boolean(this.valuesByID[key.id]);
+  }
   public get(key: K): V
   {
     return this.valuesByID[key.id];
