@@ -3,6 +3,7 @@ import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
 import Personality from "../src/Personality";
 import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
 import RuleSetValues from "./RuleSetValues";
+import ModuleScripts from "./ModuleScripts";
 
 import
 {
@@ -31,6 +32,7 @@ import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
 import UnitArchetype from "./templateinterfaces/UnitArchetype";
 import UnitFamily from "./templateinterfaces/UnitFamily";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
+
 
 type TemplateKey =
   "Abilities" |
@@ -91,7 +93,7 @@ export default class ModuleData
   mapBackgroundDrawingFunction: BackgroundDrawingFunction; 
   starBackgroundDrawingFunction: BackgroundDrawingFunction; 
 
-  Templates: Templates =
+  public Templates: Templates =
   {
     Abilities: {},
     AITemplateConstructors: {},
@@ -119,11 +121,13 @@ export default class ModuleData
   
   public ruleSet: RuleSetValues = {};
 
+  public scripts: ModuleScripts;
+
   defaultMap: MapGenTemplate;
 
   constructor()
   {
-    
+    this.scripts = new ModuleScripts();
   }
   public copyTemplates<T>(source: TemplateCollection<T>, category: TemplateKey): void
   {
