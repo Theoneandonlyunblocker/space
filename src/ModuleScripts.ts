@@ -1,15 +1,8 @@
-import
-{
-  UnitScripts,
-  PartialUnitScripts
-} from "./modulescriptinterfaces/UnitScripts";
+import UnitScripts from "./modulescriptinterfaces/UnitScripts";
+import PartialAllScripts from "./modulescriptinterfaces/PartialAllScripts";
 
-interface AllPartialScripts
-{
-  unit?: PartialUnitScripts;
-}
 
-export default class ModuleScripts implements AllPartialScripts
+export default class ModuleScripts implements PartialAllScripts
 {
   public readonly unit: UnitScripts =
   {
@@ -29,7 +22,7 @@ export default class ModuleScripts implements AllPartialScripts
     return merged;
   }
 
-  public add(...toAdd: AllPartialScripts[]): void
+  public add(...toAdd: PartialAllScripts[]): void
   {
     toAdd.forEach(scripts =>
     {
@@ -42,7 +35,7 @@ export default class ModuleScripts implements AllPartialScripts
       }
     });
   }
-  public remove(toRemove: AllPartialScripts): void
+  public remove(toRemove: PartialAllScripts): void
   {
     for (let scriptType in toRemove)
     {
