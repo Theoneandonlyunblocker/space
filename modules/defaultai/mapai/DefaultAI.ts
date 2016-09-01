@@ -4,7 +4,7 @@ import EconomyAI from "./EconomyAI";
 import FrontsAI from "./FrontsAI";
 import ObjectivesAI from "./ObjectivesAI";
 import DiplomacyAI from "./DiplomacyAI";
-import AIControllerSaveData from "./AIControllerSaveData";
+import DefaultAISaveData from "./DefaultAISaveData";
 
 import AITemplate from "../../../src/templateinterfaces/AITemplate";
 
@@ -17,10 +17,10 @@ import
   makeRandomPersonality
 } from "../../../src/utility";
 
-export default class AIController implements AITemplate<AIControllerSaveData>
+export default class DefaultAI implements AITemplate<DefaultAISaveData>
 {
-  static type: string = "AIController";
-  public type: string = "AIController";
+  static type: string = "DefaultAI";
+  public type: string = "DefaultAI";
   
   player: Player;
   game: Game;
@@ -115,7 +115,7 @@ export default class AIController implements AITemplate<AIControllerSaveData>
       afterFinishedCallback();
     }
   }
-  public serialize(): AIControllerSaveData
+  public serialize(): DefaultAISaveData
   {
     // TODO
     return undefined;

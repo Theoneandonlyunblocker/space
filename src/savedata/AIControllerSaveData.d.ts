@@ -3,8 +3,9 @@ import Personality from "../Personality";
 interface AIControllerSaveData<ObjectSaveData>
 {
   templateType: string;
-  objectData: ObjectSaveData;
   personality: Personality;
+  
+  objectData: ObjectSaveData;
 }
 
 export default AIControllerSaveData;

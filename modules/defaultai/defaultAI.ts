@@ -4,7 +4,7 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import AITemplateConstructor from "../../src/templateinterfaces/AITemplateConstructor";
 
-import AIControllerConstructor from "./mapai/AIControllerConstructor";
+import DefaultAIConstructor from "./mapai/DefaultAIConstructor";
 
 const defaultAI: ModuleFile =
 {
@@ -21,7 +21,7 @@ const defaultAI: ModuleFile =
   {
     moduleData.copyTemplates<AITemplateConstructor<any>>(
     {
-      AIController: AIControllerConstructor
+      AIController: DefaultAIConstructor
     }, "AITemplateConstructors");
     
     return moduleData;
