@@ -10,6 +10,7 @@ import Player from "../../../src/Player";
 
 import RoutineAdjustmentByID from "../RoutineAdjustmentByID";
 import ObjectiveTemplate from "../objectives/common/ObjectiveTemplate";
+import allObjectiveTemplates from "../Objectives";
 
 /*
 -- objectives ai
@@ -85,14 +86,12 @@ export default class ObjectivesAI
   }
   setAllObjectivesWithTemplateProperty(propKey: string)
   {
-    var objectiveTemplates = app.moduleData.Templates.Objectives;
-
-    for (let key in objectiveTemplates)
+    for (let key in allObjectiveTemplates)
     {
-      var template = objectiveTemplates[key];
+      var template = allObjectiveTemplates[key];
       if (template[propKey])
       {
-        this.setObjectivesOfType(objectiveTemplates[key]);
+        this.setObjectivesOfType(allObjectiveTemplates[key]);
       }
     }
   }

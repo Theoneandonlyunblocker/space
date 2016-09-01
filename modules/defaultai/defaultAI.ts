@@ -1,11 +1,10 @@
-import Objectives from "./Objectives";
-
-import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
-import ObjectiveTemplate from "./objectives/common/ObjectiveTemplate";
+import AITemplateConstructor from "../../src/templateinterfaces/AITemplateConstructor";
+
+import AIControllerConstructor from "./mapai/AIControllerConstructor";
 
 const defaultAI: ModuleFile =
 {
@@ -20,7 +19,10 @@ const defaultAI: ModuleFile =
   needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
   constructModule: function(moduleData: ModuleData)
   {
-    moduleData.copyTemplates<ObjectiveTemplate>(Objectives, "Objectives");
+    moduleData.copyTemplates<AITemplateConstructor<any>>(
+    {
+      AIController: AIControllerConstructor
+    }, "AITemplateConstructors");
     
     return moduleData;
   }

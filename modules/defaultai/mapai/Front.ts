@@ -192,12 +192,15 @@ export default class Front
   addUnit(unit: Unit)
   {
     const unitData = attachedUnitData.get(unit);
-    if (unitData.front)
+    if (unitData)
     {
-      unitData.front.removeUnit(unit);
+      if (unitData.front)
+      {
+        unitData.front.removeUnit(unit);
+      }
+      
+      unitData.front = this;
     }
-    
-    unitData.front = this;
     this.units.push(unit);
   }
   removeUnit(unit: Unit)
