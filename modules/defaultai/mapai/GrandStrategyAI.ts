@@ -1,5 +1,6 @@
 import MapEvaluator from "./MapEvaluator";
 
+import Game from "../../../src/Game";
 import Personality from "../../../src/Personality";
 import
 {
@@ -9,6 +10,7 @@ import
 
 export default class GrandStrategyAI
 {
+  private game: Game;
   personality: Personality;
   mapEvaluator: MapEvaluator;
 
@@ -22,7 +24,7 @@ export default class GrandStrategyAI
     max: number;
   };
 
-  constructor(personality: Personality, mapEvaluator: MapEvaluator)
+  constructor(personality: Personality, mapEvaluator: MapEvaluator, game: Game)
   {
     this.personality = personality;
     this.mapEvaluator = mapEvaluator;
@@ -31,7 +33,7 @@ export default class GrandStrategyAI
   private setDesiredStars()
   {
     var totalStarsInMap = this.mapEvaluator.map.stars.length;
-    var playersInGame = this.mapEvaluator.game.playerOrder.length;
+    var playersInGame = this.game.playerOrder.length;
 
     var starsPerPlayer = totalStarsInMap / playersInGame;
 

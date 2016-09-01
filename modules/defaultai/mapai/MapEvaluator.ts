@@ -1,6 +1,5 @@
 import Star from "../../../src/Star";
 import Player from "../../../src/Player";
-import Game from "../../../src/Game";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Fleet from "../../../src/Fleet";
 import Unit from "../../../src/Unit";
@@ -44,7 +43,6 @@ export default class MapEvaluator
 {
   map: GalaxyMap;
   player: Player;
-  game: Game;
   evaluationParameters:
   {
     starDesirability:
@@ -61,11 +59,10 @@ export default class MapEvaluator
     };
   };
 
-  constructor(map: GalaxyMap, player: Player, game?: Game)
+  constructor(map: GalaxyMap, player: Player)
   {
     this.map = map;
     this.player = player;
-    this.game = game;
 
     this.evaluationParameters = defaultEvaluationParameters;
   }
