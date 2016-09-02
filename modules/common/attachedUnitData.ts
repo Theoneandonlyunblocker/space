@@ -63,6 +63,18 @@ export const attachedUnitDataScripts: PartialAllScripts =
 {
   unit:
   {
-    removeFromPlayer: [attachedUnitData.delete.bind(attachedUnitData)]
+    removeFromPlayer:
+    [
+      (unit) =>
+      {
+        const front = attachedUnitData.get(unit).front; 
+        if (front)
+        {
+          front.removeUnit(unit);
+        }
+
+        attachedUnitData.delete(unit);
+      }
+    ]
   }
 }
