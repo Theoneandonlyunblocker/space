@@ -25,8 +25,13 @@ class AttachedUnitData
     this.byUnit = new ValuesByUnit<PartialAttachedUnitData>();
   }
 
-  public get(unit: Unit): PartialAttachedUnitData | undefined
+  public get(unit: Unit): PartialAttachedUnitData
   {
+    if (!this.byUnit.has(unit))
+    {
+      this.byUnit.set(unit, {});
+    }
+
     return this.byUnit.get(unit);
   }
   public set(unit: Unit, data: PartialAttachedUnitData): void

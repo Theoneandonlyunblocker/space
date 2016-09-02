@@ -192,21 +192,21 @@ export default class Front
   addUnit(unit: Unit)
   {
     const unitData = attachedUnitData.get(unit);
-    if (unitData)
+
+    if (unitData.front)
     {
-      if (unitData.front)
-      {
-        unitData.front.removeUnit(unit);
-      }
-      
-      unitData.front = this;
+      unitData.front.removeUnit(unit);
     }
+    
+    unitData.front = this;
+
     this.units.push(unit);
   }
   removeUnit(unit: Unit)
   {
-    var unitIndex = this.getUnitIndex(unit);
     attachedUnitData.get(unit).front = null;
+
+    var unitIndex = this.getUnitIndex(unit);
     this.units.splice(unitIndex, 1);
   }
   getUnitCountByArchetype()
