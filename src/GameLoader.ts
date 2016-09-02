@@ -19,6 +19,7 @@ import Item from "./Item";
 import Personality from "./Personality";
 import MapGenResult from "./MapGenResult";
 import Name from "./Name";
+import AIController from "./AIController";
 import
 {
   extendObject,
@@ -26,7 +27,7 @@ import
   getRandomProperty
 } from "./utility";
 
-
+import AIControllerSaveData from "./savedata/AIControllerSaveData";
 import GameSaveData from "./savedata/GameSaveData";
 import NotificationLogSaveData from "./savedata/NotificationLogSaveData";
 import NotificationSaveData from "./savedata/NotificationSaveData";
@@ -111,6 +112,20 @@ export default class GameLoader
       game.notificationLog = this.deserializeNotificationLog(data.notificationLog);
       game.notificationLog.setTurn(game.turnNumber, true);
     }
+
+    data.players.forEach(playerData =>
+    {
+      const player = this.playersById[playerData.id]; 
+
+      if (playerData.AIController)
+      {
+        player.AIController = this.deserializeAIController(
+          playerData.AIController,
+          player,
+          game
+        )
+      }
+    });
 
     return game;
   }
@@ -256,13 +271,6 @@ export default class GameLoader
   }
   deserializePlayer(data: PlayerSaveData): Player
   {
-    var personality: Personality;
-
-    if (data.personality)
-    {
-      personality = extendObject(data.personality, makeRandomPersonality(), true);
-    }
-
     const player = new Player(
     {
       isAI: data.isAI,
@@ -454,6 +462,26 @@ export default class GameLoader
     {
       this.unitsById[data.unitId].items.addItem(item, data.positionInUnit);
     }
+  }
+  private deserializeAIController<S>(
+    data: AIControllerSaveData<S>,
+    player: Player,
+    game: Game
+  ): AIController
+  {
+    const templateConstructor = app.moduleData.Templates.AITemplateConstructors[data.templateType];
+
+    const template = templateConstructor.construct(
+    {
+      game: game,
+      player: player,
+      saveData: data.templateData,
+      personality: data.personality
+    });
+
+    const controller = new AIController(template);
+
+    return controller;
   }
 }
 
