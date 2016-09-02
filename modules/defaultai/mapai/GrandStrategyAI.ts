@@ -28,6 +28,7 @@ export default class GrandStrategyAI
   {
     this.personality = personality;
     this.mapEvaluator = mapEvaluator;
+    this.game = game;
   }
 
   private setDesiredStars()
