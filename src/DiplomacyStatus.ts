@@ -139,11 +139,11 @@ export default class DiplomacyStatus
   }
   canDeclareWarOn(player: Player)
   {
-    return (this.statusByPlayer[player.id] < DiplomacyState.war);
+    return this.statusByPlayer[player.id] < DiplomacyState.war;
   }
   canMakePeaceWith(player: Player)
   {
-    return (this.statusByPlayer[player.id] > DiplomacyState.peace);
+    return this.statusByPlayer[player.id] > DiplomacyState.peace;
   }
   declareWarOn(player: Player)
   {

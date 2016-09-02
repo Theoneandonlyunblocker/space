@@ -429,7 +429,8 @@ export default class Player
 
     return incomeByResource;
   }
-  getNeighboringStars(): Star[]
+  // TODO refactor | should probably be moved
+  public getNeighboringStars(): Star[]
   {
     var stars:
     {
@@ -465,6 +466,26 @@ export default class Player
     }
 
     return allStars;
+  }
+  // TODO refactor | should probably be moved
+  public getNeighboringPlayers(): Player[]
+  {
+    const alreadyAddedPlayersByID:
+    {
+      [playerID: number]: Player;
+    } = {};
+    
+    const neighboringStars = this.getNeighboringStars();
+
+    neighboringStars.forEach(star =>
+    {
+      alreadyAddedPlayersByID[star.owner.id] = star.owner;
+    })
+
+    return Object.keys(alreadyAddedPlayersByID).map(playerID =>
+    {
+      return alreadyAddedPlayersByID[playerID];
+    })
   }
   updateVisionInStar(star: Star)
   {

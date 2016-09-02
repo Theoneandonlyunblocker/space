@@ -28,29 +28,36 @@ const declareWar: ObjectiveTemplate =
       score: number;
     }[] = [];
 
-    for (let playerId in mapEvaluator.player.diplomacyStatus.metPlayers)
+    const neighborPlayers = mapEvaluator.player.getNeighboringPlayers();
+    const metNeighborPlayers = neighborPlayers.filter(player =>
     {
-      var player = mapEvaluator.player.diplomacyStatus.metPlayers[playerId];
-      if (!mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player))
+      return Boolean(mapEvaluator.player.diplomacyStatus.metPlayers[player.id]);
+    });
+
+    metNeighborPlayers.forEach(targetPlayer =>
+    {
+      const canDeclareWar = mapEvaluator.player.diplomacyStatus.canDeclareWarOn(targetPlayer);
+      if (canDeclareWar)
       {
-        continue;
+        const score = mapEvaluator.getDesireToGoToWarWith(targetPlayer) *
+          mapEvaluator.getAbilityToGoToWarWith(targetPlayer);
+
+        console.log("make declare war objective " + mapEvaluator.player.id + "->" + targetPlayer.id);
+
+        scores.push(
+        {
+          player: targetPlayer,
+          score: score
+        });
       }
-
-      var score = mapEvaluator.getDesireToGoToWarWith(player) *
-        mapEvaluator.getAbilityToGoToWarWith(player);
-
-      scores.push(
-      {
-        player: player,
-        score: score
-      });
-    }
+    })
 
     return makeObjectivesFromScores(template, scores, basePriority);
   },
   diplomacyRoutineFN: function(objective: Objective, diplomacyAI: DiplomacyAI,
     adjustments: RoutineAdjustmentByID, afterDoneCallback: () => void)
   {
+    console.log("declare war " + diplomacyAI.mapEvaluator.player.id + "->" + objective.targetPlayer.id);
     diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);
     afterDoneCallback();
   }
