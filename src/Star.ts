@@ -526,12 +526,25 @@ export default class Star implements Point
 
     return targets;
   }
+  public hasBuildingTargetForPlayer(player: Player): boolean
+  {
+    return this.getTargetsForPlayer(player).some(target =>
+    {
+      return target.type === "building";
+    });
+  }
   getFirstEnemyDefenceBuilding(player: Player): Building
   {
-    if (!this.buildings["defence"]) return null;
+    if (!this.buildings["defence"])
+    {
+      return null;
+    }
 
     var defenceBuildings = this.buildings["defence"].slice(0);
-    if (this.owner === player) defenceBuildings = defenceBuildings.reverse();
+    if (this.owner === player)
+    {
+      defenceBuildings = defenceBuildings.reverse();
+    }
 
     for (let i = defenceBuildings.length - 1; i >= 0; i--)
     {

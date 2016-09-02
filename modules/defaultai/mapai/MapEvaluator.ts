@@ -259,27 +259,6 @@ export default class MapEvaluator
       return score
     });
   }
-  evaluateDesirabilityOfPlayersStars(player: Player)
-  {
-    const byStar = new ValuesByStar<number>();
-    let total = 0;
-
-    var stars = this.getVisibleStarsOfPlayer(player);
-
-    for (let i = 0; i < stars.length; i++)
-    {
-      var star = stars[i];
-      var desirability = this.evaluateStarDesirability(star);
-      byStar.set(star, desirability);
-      total += desirability;
-    }
-
-    return(
-    {
-      byStar: byStar,
-      total: total
-    });
-  }
   getIndependentNeighborStars()
   {
     const independentNeighborStars = this.player.getNeighboringStars().filter(star =>

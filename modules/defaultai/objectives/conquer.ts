@@ -19,7 +19,8 @@ import
 {
   defaultUnitDesireFN,
   defaultUnitFitFN,
-  getUnitsToBeatImmediateTarget
+  getUnitsToBeatImmediateTarget,
+  makeObjectivesFromScores
 } from "../aiUtils";
 
 import
@@ -44,45 +45,33 @@ const conquer: ObjectiveTemplate =
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,
     mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI)
   {
-    var hostilePlayers: Player[] = [];
-    var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
-    for (let playerId in diplomacyStatus.metPlayers)
-    {
-      if (diplomacyStatus.statusByPlayer[playerId] >= DiplomacyState.war)
-      {
-        hostilePlayers.push(diplomacyStatus.metPlayers[playerId]);
-      }
-    }
-
+    const basePriority = grandStrategyAI.desireForExpansion;
+    
     var relativeThreatOfPlayers = mapEvaluator.getRelativePerceivedThreatOfAllKnownPlayers();
 
-    var possibleTargets: Star[] = [];
-    for (let i = 0; i < hostilePlayers.length; i++)
+    var possibleTargets: Star[] = mapEvaluator.player.getNeighboringStars().filter(star =>
     {
-      var desirabilityByStar = mapEvaluator.evaluateDesirabilityOfPlayersStars(hostilePlayers[i]).byStar;
-      const starsWithValues = desirabilityByStar.zip<{star: Star, value: number}>("star", "value");
-      if (starsWithValues.length > 0)
+      if (!mapEvaluator.player.starIsRevealed(star))
       {
-        const sortedStarsWithValues = starsWithValues.sort((a, b) =>
-        {
-          return b.value - a.value;
-        });
-
-        possibleTargets.push(sortedStarsWithValues[0].star);
+        return false;
       }
-    }
+
+      return star.hasBuildingTargetForPlayer(mapEvaluator.player);
+    });
+
+    const evaluations = mapEvaluator.evaluateStarTargets(possibleTargets);
+    const scores = mapEvaluator.scoreStarTargets(evaluations, (star, evaluation) =>
+    {
+      const strengthRatio = evaluation.ownInfluence / evaluation.hostileStrength;
+      const score = evaluation.desirability * strengthRatio;
+
+      return score;
+    });
+    const zippedScores = scores.zip<{star: Star, score: number}>("star", "score");
+
 
     var template = conquer;
-    var objectives: Objective[] = [];
-    for (let i = 0; i < possibleTargets.length; i++)
-    {
-      var star = possibleTargets[i];
-      var player = star.owner;
-      var threat = relativeThreatOfPlayers.get(player);
-      objectives.push(new Objective(template, threat, star));
-    }
-
-    return objectives;
+    return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
   unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget
 }
