@@ -1,6 +1,7 @@
 import RaceTemplate from "../../../src/templateinterfaces/RaceTemplate";
 
 import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
+import DefaultAIConstructor from "../../defaultai/mapai/DefaultAIConstructor";
 
 import
 {
@@ -21,7 +22,9 @@ const wormThings: RaceTemplate =
       startingLevel: 1,
       maxLevel: 5
     }
-  ])
+  ]),
+
+  getAITemplateConstructor: (player) => DefaultAIConstructor
 }
 
 export default wormThings;

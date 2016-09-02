@@ -206,7 +206,9 @@ export default class Player
         displayName: "",
         description: "",
 
-        technologies: [] 
+        technologies: [],
+
+        getAITemplateConstructor: (player) => null
       },
       money: 0
     });

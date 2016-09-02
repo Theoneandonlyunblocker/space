@@ -4,6 +4,7 @@ import BuildingTemplate from "./BuildingTemplate";
 import CultureTemplate from "./CultureTemplate";
 import PortraitTemplate from "./PortraitTemplate";
 import ItemTemplate from "./ItemTemplate";
+import AITemplateConstructor from "./AITemplateConstructor";
 
 import Player from "../Player";
 import Star from "../Star";
@@ -26,6 +27,7 @@ declare interface RaceTemplate
 
   // getUnitCulture(unit: Unit): CultureTemplate;
   // getUnitPortrait(unit: Unit): PortraitTemplate;
+  getAITemplateConstructor(player: Player): AITemplateConstructor<any>;
 }
 
 export default RaceTemplate;
