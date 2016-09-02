@@ -32,8 +32,6 @@ import
 } from "./colorGeneration";
 import Options from "./options";
 
-import AITemplateConstructor from "./templateinterfaces/AITemplateConstructor";
-
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 import RaceTemplate from "./templateinterfaces/RaceTemplate";
@@ -65,9 +63,9 @@ export default class Player
   fleets: Fleet[] = [];
   items: Item[] = [];
 
-  isAI: boolean = false;
-  AIController: AIController;
-  isIndependent: boolean = false;
+  public isAI: boolean = false;
+  public AIController: AIController;
+  public isIndependent: boolean = false;
 
   diplomacyStatus: DiplomacyStatus;
 

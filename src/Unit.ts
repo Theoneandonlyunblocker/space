@@ -774,9 +774,9 @@ export default class Unit
     player.removeUnit(this);
     this.fleet.removeUnit(this);
 
-    app.moduleData.scripts.unit.removeFromPlayer.forEach(script =>
+    app.moduleData.scripts.unit.removeFromPlayer.forEach(scriptFN =>
     {
-      script(this);
+      scriptFN(this);
     });
 
     this.uiDisplayIsDirty = true;
