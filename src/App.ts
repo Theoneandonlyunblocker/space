@@ -307,6 +307,13 @@ class App
       scriptFN(this.game);
     });
 
+    this.game.playerOrder.forEach(player =>
+    {
+      if (player.isAI && !player.AIController)
+      {
+        player.AIController = player.makeRandomAIController(this.game);
+      }
+    });
   }
   private initDisplay()
   {

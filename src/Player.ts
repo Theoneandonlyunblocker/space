@@ -5,7 +5,8 @@ import Unit from "./Unit";
 import Fleet from "./Fleet";
 import
 {
-  extendObject
+  extendObject,
+  makeRandomPersonality
 } from "./utility";
 import AIController from "./AIController";
 import Building from "./Building";
@@ -263,6 +264,18 @@ export default class Player
     flag.generateRandom(seed);
 
     return flag;
+  }
+  public makeRandomAIController(game: Game): AIController
+  {
+    const templateConstructor = this.race.getAITemplateConstructor(this);
+    const template = templateConstructor.construct(
+    {
+      player: this,
+      game: game,
+      personality: makeRandomPersonality()
+    });
+
+    return new AIController(template);
   }
   addUnit(unit: Unit)
   {
