@@ -10,6 +10,8 @@ import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
 import app from "../../../src/App";
 
+import attachedUnitData from "../../common/attachedUnitData";
+
 
 const fleets: MapRendererLayerTemplate =
 {
@@ -50,6 +52,15 @@ const fleets: MapRendererLayerTemplate =
     const mouseOverFN = function(fleet: Fleet)
     {
       eventManager.dispatchEvent("hoverStar", fleet.location);
+
+      if (Options.debug.enabled && fleet.units.length > 0)
+      {
+        const front = attachedUnitData.get(fleet.units[0]).front;
+        if (front)
+        {
+          console.log(front.objective.type);
+        }
+      }
     }
     const fleetClickFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
     {
