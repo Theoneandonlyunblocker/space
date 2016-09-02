@@ -5,7 +5,7 @@ import ItemSaveData from "./ItemSaveData";
 import PlayerTechnologySaveData from "./PlayerTechnologySaveData";
 import ColorSaveData from "./ColorSaveData";
 import NameSaveData from "./NameSaveData";
-import Personality from "../Personality";
+import AIControllerSaveData from "./AIControllerSaveData";
 
 declare interface PlayerSaveData
 {
@@ -15,7 +15,6 @@ declare interface PlayerSaveData
   colorAlpha: number;
   secondaryColor: ColorSaveData;
   isIndependent: boolean;
-  isAI: boolean;
   resources:
   {
     [resourceType: string]: number;
@@ -23,7 +22,6 @@ declare interface PlayerSaveData
   diplomacyStatus: DiplomacyStatusSaveData;
 
   flag?: FlagSaveData;
-  personality?: Personality;
 
   unitIds: number[];
   fleets: FleetSaveData[];
@@ -34,6 +32,9 @@ declare interface PlayerSaveData
   identifiedUnitIds: number[];
   researchByTechnology?: PlayerTechnologySaveData;
   raceKey: string;
+
+  isAI: boolean;
+  AIController?: AIControllerSaveData<any>;
 }
 
 export default PlayerSaveData;

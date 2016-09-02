@@ -978,9 +978,9 @@ export default class Player
       data.flag = this.flag.serialize();
     }
 
-    if (this.isAI && this.AIController)
+    if (this.AIController)
     {
-      data.personality = extendObject(this.AIController.personality);
+      data.AIController = this.AIController.serialize();
     }
 
     return data;
