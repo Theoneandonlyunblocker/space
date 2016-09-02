@@ -296,23 +296,17 @@ class App
 
     this.playerControl = new PlayerControl(this.humanPlayer);
 
-    for (let i = 0; i < this.game.playerOrder.length; i++)
-    {
-      var player = this.game.playerOrder[i];
-      if (player.isAI)
-      {
-        // TODO | do this somewhere else
-        // player.setupAI(this.game);
-        // used to be:
-        // this.AIController = new AIController(this, game, this.personality);
-      }
-    }
-
     if (!this.game.notificationLog)
     {
       this.game.notificationLog = new NotificationLog(this.humanPlayer);
       this.game.notificationLog.setTurn(this.game.turnNumber, true);
     }
+
+    app.moduleData.scripts.game.afterInit.forEach(scriptFN =>
+    {
+      scriptFN(this.game);
+    });
+
   }
   private initDisplay()
   {

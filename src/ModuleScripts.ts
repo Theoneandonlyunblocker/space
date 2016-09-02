@@ -1,4 +1,5 @@
 import UnitScripts from "./modulescriptinterfaces/UnitScripts";
+import GameScripts from "./modulescriptinterfaces/GameScripts";
 import PartialAllScripts from "./modulescriptinterfaces/PartialAllScripts";
 
 
@@ -7,6 +8,10 @@ export default class ModuleScripts implements PartialAllScripts
   public readonly unit: UnitScripts =
   {
     removeFromPlayer: []
+  };
+  public readonly game: GameScripts =
+  {
+    afterInit: []
   };
 
   constructor()
