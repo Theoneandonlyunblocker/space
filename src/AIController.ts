@@ -24,7 +24,7 @@ export default class AIController
     return(
     {
       templateType: this.template.type,
-      objectData: this.template.serialize(),
+      templateData: this.template.serialize(),
       personality: this.personality
     });
   }
