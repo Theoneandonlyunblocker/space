@@ -16,33 +16,37 @@ interface PartialLightBurstProps
 {
   size?: Point;
   delay?: number;
-  rotation?: number;
   sharpness?: number;
   color?: Color;
+  centerSize?: number;
+  rayStrength?: number;
 }
 interface LightBurstProps extends PartialLightBurstProps
 {
   size: Point;
   delay: number;
-  rotation: number;
   sharpness: number;
   color: Color;
+  centerSize: number;
+  rayStrength: number;
 }
 const defaultLightBurstProps: LightBurstProps =
 {
   size: {x: 200, y: 200},
   delay: 0.3,
-  rotation: 0.0,
   sharpness: 2.0,
-  color: new Color(0.75, 0.75, 0.62)
+  color: new Color(0.75, 0.75, 0.62),
+  centerSize: 1.0,
+  rayStrength: 1.0,
 }
 const LightBurstPropTypes: SFXFragmentPropTypes =
 {
   size: "point",
   delay: "number",
-  rotation: "number",
   sharpness: "number",
   color: "color",
+  centerSize: "number",
+  rayStrength: "number",
 }
 
 
@@ -71,9 +75,9 @@ export default class LightBurst extends SFXFragment<LightBurstProps, PartialLigh
 
     this.lightBurstFilter.setUniformValues(
     {
-      centerSize: Math.pow(lightBurstIntensity, 2.0),
+      centerSize: Math.pow(lightBurstIntensity, 2.0) * this.props.centerSize,
       centerBloomStrength: Math.pow(lightBurstIntensity, 2.0) * 5.0,
-      rayStrength: Math.pow(lightBurstIntensity, 3.0)
+      rayStrength: Math.pow(lightBurstIntensity, 3.0) * this.props.rayStrength
     });
   }
   public draw(): void
@@ -81,7 +85,7 @@ export default class LightBurst extends SFXFragment<LightBurstProps, PartialLigh
     this.lightBurstFilter = new LightBurstFilter(
     {
       seed: this.seed,
-      rotation: this.props.rotation,
+      rotation: 0,
       raySharpness: this.props.sharpness,
       rayColor: this.props.color.getRGBA(1.0)
     });
