@@ -152,6 +152,53 @@ define("src/pathfinding", ["require", "exports", "src/priorityqueue"], function 
     }
     exports.aStar = aStar;
 });
+define("src/Name", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var Name = (function () {
+        function Name(fullName, isPlural) {
+            if (isPlural === void 0) { isPlural = false; }
+            this.isPlural = false;
+            this.fullName = fullName;
+            this.isPlural = isPlural;
+        }
+        Name.fromData = function (data) {
+            return new Name(data.fullName, data.isPlural);
+        };
+        Name.prototype.setName = function (name, isPlural) {
+            if (isPlural === void 0) { isPlural = false; }
+            this.fullName = name;
+            this.isPlural = isPlural;
+        };
+        Name.prototype.toString = function () {
+            return this.fullName;
+        };
+        Name.prototype.pluralizeVerb = function (singularVerb, pluralVerb) {
+            if (this.isPlural) {
+                return pluralVerb;
+            }
+            else {
+                return singularVerb;
+            }
+        };
+        Name.prototype.pluralizeVerbWithS = function (sourceVerb) {
+            if (sourceVerb.charAt(sourceVerb.length - 1) === "s") {
+                return this.pluralizeVerb(sourceVerb + "s", sourceVerb);
+            }
+            else {
+                return this.pluralizeVerb(sourceVerb, sourceVerb + "s");
+            }
+        };
+        Name.prototype.serialize = function () {
+            return ({
+                fullName: this.fullName,
+                isPlural: this.isPlural
+            });
+        };
+        return Name;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Name;
+});
 define("src/Item", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_1) {
     "use strict";
     var Item = (function () {
@@ -465,12 +512,11 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
         for (var _i = 1; _i < arguments.length; _i++) {
             sources[_i - 1] = arguments[_i];
         }
-        for (var _c = 0, sources_1 = sources; _c < sources_1.length; _c++) {
-            var source = sources_1[_c];
+        sources.forEach(function (source) {
             for (var key in source) {
                 destination[key] = source[key];
             }
-        }
+        });
         return destination;
     }
     exports.shallowExtend = shallowExtend;
@@ -936,7 +982,7 @@ define("src/eventManager", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = eventManager;
 });
-define("src/Fleet", ["require", "exports", "src/App", "src/idGenerators", "src/eventManager", "src/pathfinding"], function (require, exports, App_2, idGenerators_2, eventManager_1, pathFinding_1) {
+define("src/Fleet", ["require", "exports", "src/App", "src/idGenerators", "src/Name", "src/eventManager", "src/pathfinding"], function (require, exports, App_2, idGenerators_2, Name_1, eventManager_1, pathFinding_1) {
     "use strict";
     var Fleet = (function () {
         function Fleet(player, units, location, id, shouldRender) {
@@ -948,7 +994,7 @@ define("src/Fleet", ["require", "exports", "src/App", "src/idGenerators", "src/e
             this.player = player;
             this.location = location;
             this.id = isFinite(id) ? id : idGenerators_2.default.fleet++;
-            this.name = "Fleet " + this.id;
+            this.name = new Name_1.default("Fleet " + this.id);
             this.location.addFleet(this);
             this.player.addFleet(this);
             this.addUnits(units);
@@ -973,21 +1019,20 @@ define("src/Fleet", ["require", "exports", "src/App", "src/idGenerators", "src/e
         Fleet.prototype.mergeWith = function (fleet, shouldRender) {
             if (shouldRender === void 0) { shouldRender = true; }
             if (fleet.isStealthy !== this.isStealthy) {
-                console.warn("Tried to merge stealthy fleet with non stealthy or other way around");
-                return;
+                throw new Error("Tried to merge stealthy fleet with non stealthy or other way around");
             }
             fleet.addUnits(this.units);
             this.deleteFleet(shouldRender);
         };
         Fleet.prototype.addUnit = function (unit) {
-            if (this.hasUnit(unit))
-                return false;
+            if (this.hasUnit(unit)) {
+                throw new Error("Tried to add unit to fleet which the unit was already part of");
+            }
             if (this.units.length === 0) {
                 this.isStealthy = unit.isStealthy();
             }
             else if (unit.isStealthy() !== this.isStealthy) {
-                console.warn("Tried to add stealthy unit to non stealthy fleet or other way around");
-                return;
+                throw new Error("Tried to add stealthy unit to non stealthy fleet or other way around");
             }
             this.units.push(unit);
             unit.addToFleet(this);
@@ -1015,15 +1060,16 @@ define("src/Fleet", ["require", "exports", "src/App", "src/idGenerators", "src/e
             }
         };
         Fleet.prototype.transferUnit = function (fleet, unit) {
-            if (fleet === this)
-                return;
-            if (unit.isStealthy() !== this.isStealthy) {
-                console.warn("Tried to transfer stealthy unit to non stealthy fleet");
+            if (fleet === this) {
                 return;
             }
+            if (unit.isStealthy() !== this.isStealthy) {
+                throw new Error("Tried to transfer stealthy unit to non stealthy fleet");
+            }
             var index = this.getUnitIndex(unit);
-            if (index < 0)
+            if (index < 0) {
                 return false;
+            }
             fleet.addUnit(unit);
             this.units.splice(index, 1);
             eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
@@ -1123,13 +1169,6 @@ define("src/Fleet", ["require", "exports", "src/App", "src/idGenerators", "src/e
         Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
             return this.location.fleets[this.player.id];
         };
-        Fleet.prototype.getTotalStrengthEvaluation = function () {
-            var total = 0;
-            for (var i = 0; i < this.units.length; i++) {
-                total += this.units[i].getStrengthEvaluation();
-            }
-            return total;
-        };
         Fleet.prototype.getTotalHealth = function () {
             var total = {
                 current: 0,
@@ -1169,7 +1208,7 @@ define("src/Fleet", ["require", "exports", "src/App", "src/idGenerators", "src/e
         Fleet.prototype.serialize = function () {
             var data = {
                 id: this.id,
-                name: this.name,
+                name: this.name.serialize(),
                 locationId: this.location.id,
                 playerId: this.player.id,
                 units: this.units.map(function (unit) {
@@ -1182,6 +1221,28 @@ define("src/Fleet", ["require", "exports", "src/App", "src/idGenerators", "src/e
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Fleet;
+});
+define("src/AIController", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var AIController = (function () {
+        function AIController(template) {
+            this.template = template;
+            this.personality = template.personality;
+        }
+        AIController.prototype.processTurn = function (afterFinishedCallback) {
+            this.template.processTurn(afterFinishedCallback);
+        };
+        AIController.prototype.serialize = function () {
+            return ({
+                templateType: this.template.type,
+                templateData: this.template.serialize(),
+                personality: this.personality
+            });
+        };
+        return AIController;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = AIController;
 });
 define("src/Building", ["require", "exports", "src/App", "src/idGenerators"], function (require, exports, App_3, idGenerators_3) {
     "use strict";
@@ -1414,6 +1475,9 @@ define("src/Color", ["require", "exports"], function (require, exports) {
                 return undefined;
             }
             return new Color(saveData[0], saveData[1], saveData[2]);
+        };
+        Color.prototype.clone = function () {
+            return Color.deSerialize(this.serialize());
         };
         return Color;
     }());
@@ -3190,7 +3254,6 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
             if (!this.player.AIController) {
                 return;
             }
-            this.player.AIController.diplomacyAI.setAttitudes();
         };
         DiplomacyStatus.prototype.handleDiplomaticStatusUpdate = function () {
             eventManager_4.default.dispatchEvent("diplomaticStatusUpdated");
@@ -3218,10 +3281,10 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
             }
         };
         DiplomacyStatus.prototype.canDeclareWarOn = function (player) {
-            return (this.statusByPlayer[player.id] < DiplomacyState_1.default.war);
+            return this.statusByPlayer[player.id] < DiplomacyState_1.default.war;
         };
         DiplomacyStatus.prototype.canMakePeaceWith = function (player) {
-            return (this.statusByPlayer[player.id] > DiplomacyState_1.default.peace);
+            return this.statusByPlayer[player.id] > DiplomacyState_1.default.peace;
         };
         DiplomacyStatus.prototype.declareWarOn = function (player) {
             if (this.statusByPlayer[player.id] >= DiplomacyState_1.default.war) {
@@ -3543,30 +3606,38 @@ define("src/Manufactory", ["require", "exports", "src/App", "src/Unit", "src/Ite
 define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManager"], function (require, exports, App_10, eventManager_6) {
     "use strict";
     var PlayerTechnology = (function () {
-        function PlayerTechnology(getResearchSpeed, savedData) {
+        function PlayerTechnology(getResearchSpeed, raceTechnologyValues, savedData) {
+            var _this = this;
             this.tempOverflowedResearchAmount = 0;
             this.getResearchSpeed = getResearchSpeed;
             this.technologies = {};
-            var totalTechnologies = Object.keys(App_10.default.moduleData.Templates.Technologies).length;
-            for (var key in App_10.default.moduleData.Templates.Technologies) {
-                var technology = App_10.default.moduleData.Templates.Technologies[key];
-                this.technologies[key] =
+            raceTechnologyValues.forEach(function (raceValue) {
+                var techKey = raceValue.tech.key;
+                var technology = App_10.default.moduleData.Templates.Technologies[techKey];
+                _this.technologies[techKey] =
                     {
                         technology: technology,
                         totalResearch: 0,
                         level: 0,
+                        maxLevel: raceValue.maxLevel,
                         priority: undefined,
                         priorityIsLocked: false
                     };
-                if (savedData && savedData[key]) {
-                    this.addResearchTowardsTechnology(technology, savedData[key].totalResearch);
-                    this.technologies[key].priority = savedData[key].priority;
-                    this.technologies[key].priorityIsLocked = savedData[key].priorityIsLocked;
+                if (savedData && savedData[techKey]) {
+                    _this.addResearchTowardsTechnology(technology, savedData[techKey].totalResearch);
+                    _this.technologies[techKey].priority = savedData[techKey].priority;
+                    _this.technologies[techKey].priorityIsLocked = savedData[techKey].priorityIsLocked;
                 }
-            }
+                else {
+                    _this.technologies[techKey].level = raceValue.startingLevel;
+                    _this.technologies[techKey].totalResearch =
+                        _this.getResearchNeededForTechnologyLevel(raceValue.startingLevel);
+                }
+            });
             this.initPriorities();
         }
         PlayerTechnology.prototype.initPriorities = function () {
+            var _this = this;
             var priorityToAllocate = 1;
             var techsToInit = [];
             for (var key in this.technologies) {
@@ -3579,7 +3650,7 @@ define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManag
                 }
             }
             techsToInit.sort(function (a, b) {
-                return b.maxLevel - a.maxLevel;
+                return _this.technologies[b.key].maxLevel - _this.technologies[a.key].maxLevel;
             });
             while (techsToInit.length > 0) {
                 var averagePriority = priorityToAllocate / techsToInit.length;
@@ -3639,16 +3710,16 @@ define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManag
         PlayerTechnology.prototype.addResearchTowardsTechnology = function (technology, amount) {
             var tech = this.technologies[technology.key];
             var overflow = 0;
-            if (tech.level >= technology.maxLevel) {
+            if (tech.level >= tech.maxLevel) {
                 return;
             }
             else {
                 tech.totalResearch += amount;
-                while (tech.level < technology.maxLevel &&
+                while (tech.level < tech.maxLevel &&
                     this.getResearchNeededForTechnologyLevel(tech.level + 1) <= tech.totalResearch) {
                     tech.level++;
                 }
-                if (tech.level === technology.maxLevel) {
+                if (tech.level === tech.maxLevel) {
                     var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
                     overflow += tech.totalResearch - neededForMaxLevel;
                     tech.totalResearch -= overflow;
@@ -3659,8 +3730,8 @@ define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManag
             this.tempOverflowedResearchAmount += overflow;
         };
         PlayerTechnology.prototype.getMaxNeededPriority = function (technology) {
-            var researchUntilMaxed = this.getResearchNeededForTechnologyLevel(technology.maxLevel) -
-                this.technologies[technology.key].totalResearch;
+            var tech = this.technologies[technology.key];
+            var researchUntilMaxed = this.getResearchNeededForTechnologyLevel(tech.maxLevel) - tech.totalResearch;
             return researchUntilMaxed / this.getResearchSpeed();
         };
         PlayerTechnology.prototype.getOpenTechnologiesPriority = function () {
@@ -3827,7 +3898,7 @@ define("src/FillerPoint", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = FillerPoint;
 });
-define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/Star", "src/Unit", "src/Building", "src/Game", "src/NotificationLog", "src/Notification", "src/FillerPoint", "src/Manufactory", "src/Color", "src/AttitudeModifier", "src/Emblem", "src/Flag", "src/Fleet", "src/Item", "src/MapGenResult", "src/utility"], function (require, exports, App_11, Player_1, Star_1, Unit_2, Building_1, Game_1, NotificationLog_1, Notification_1, FillerPoint_1, Manufactory_1, Color_1, AttitudeModifier_2, Emblem_2, Flag_1, Fleet_2, Item_2, MapGenResult_1, utility_9) {
+define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/Star", "src/Unit", "src/Building", "src/Game", "src/NotificationLog", "src/Notification", "src/FillerPoint", "src/Manufactory", "src/Color", "src/AttitudeModifier", "src/Emblem", "src/Flag", "src/Fleet", "src/Item", "src/MapGenResult", "src/Name", "src/AIController", "src/utility"], function (require, exports, App_11, Player_1, Star_1, Unit_2, Building_1, Game_1, NotificationLog_1, Notification_1, FillerPoint_1, Manufactory_1, Color_1, AttitudeModifier_2, Emblem_2, Flag_1, Fleet_2, Item_2, MapGenResult_1, Name_2, AIController_1, utility_9) {
     "use strict";
     var GameLoader = (function () {
         function GameLoader() {
@@ -3839,6 +3910,7 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
             this.buildingsByControllerId = {};
         }
         GameLoader.prototype.deserializeGame = function (data) {
+            var _this = this;
             this.map = this.deserializeMap(data.galaxyMap);
             for (var i = 0; i < data.players.length; i++) {
                 var playerData = data.players[i];
@@ -3865,6 +3937,12 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
                 game.notificationLog = this.deserializeNotificationLog(data.notificationLog);
                 game.notificationLog.setTurn(game.turnNumber, true);
             }
+            data.players.forEach(function (playerData) {
+                var player = _this.playersById[playerData.id];
+                if (playerData.AIController) {
+                    player.AIController = _this.deserializeAIController(playerData.AIController, player, game);
+                }
+            });
             return game;
         };
         GameLoader.prototype.deserializeNotificationLog = function (data) {
@@ -3954,28 +4032,33 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
             });
             return building;
         };
-        GameLoader.prototype.deserializePlayer = function (data) {
-            var personality;
-            if (data.personality) {
-                personality = utility_9.extendObject(data.personality, utility_9.makeRandomPersonality(), true);
-            }
-            var player = new Player_1.default(data.isAI, data.id);
-            player.name = data.name;
-            player.money = data.money;
-            player.isIndependent = data.isIndependent;
-            if (data.resources) {
-                player.resources = utility_9.extendObject(data.resources);
-            }
-            player.personality = personality;
-            player.color = Color_1.default.deSerialize(data.color);
-            player.secondaryColor = Color_1.default.deSerialize(data.secondaryColor);
-            player.colorAlpha = data.colorAlpha;
-            if (data.flag) {
-                player.flag = this.deserializeFlag(data.flag);
+        GameLoader.prototype.deserializeName = function (data) {
+            if (typeof data === "string") {
+                var castedStringData = data;
+                return new Name_2.default(castedStringData);
             }
             else {
-                player.makeRandomFlag();
+                var castedData = data;
+                return Name_2.default.fromData(castedData);
             }
+        };
+        GameLoader.prototype.deserializePlayer = function (data) {
+            var player = new Player_1.default({
+                isAI: data.isAI,
+                isIndependent: data.isIndependent,
+                race: data.raceKey ? App_11.default.moduleData.Templates.Races[data.raceKey] :
+                    utility_9.getRandomProperty(App_11.default.moduleData.Templates.Races),
+                money: data.money,
+                id: data.id,
+                name: this.deserializeName(data.name),
+                color: {
+                    main: Color_1.default.deSerialize(data.color),
+                    secondary: Color_1.default.deSerialize(data.secondaryColor),
+                    alpha: data.colorAlpha
+                },
+                flag: data.flag ? this.deserializeFlag(data.flag) : null,
+                resources: data.resources
+            });
             for (var i = 0; i < data.fleets.length; i++) {
                 var fleet = data.fleets[i];
                 player.addFleet(this.deserializeFleet(player, fleet));
@@ -3990,7 +4073,6 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
                 var id = data.revealedStarIds[i];
                 player.revealedStars[id] = this.starsById[id];
             }
-            player.initTechnologies(data.researchByTechnology);
             return player;
         };
         GameLoader.prototype.deserializeDiplomacyStatus = function (player, data) {
@@ -4068,7 +4150,13 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
                 units.push(unit);
             }
             var fleet = new Fleet_2.default(player, units, this.starsById[data.locationId], data.id, false);
-            fleet.name = data.name;
+            if (typeof data.name === "string") {
+                var castedDataName = data.name;
+                fleet.name = new Name_2.default(castedDataName);
+            }
+            else {
+                fleet.name = Name_2.default.fromData(data.name);
+            }
             return fleet;
         };
         GameLoader.prototype.deserializeUnit = function (data) {
@@ -4084,6 +4172,17 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
             if (isFinite(data.unitId)) {
                 this.unitsById[data.unitId].items.addItem(item, data.positionInUnit);
             }
+        };
+        GameLoader.prototype.deserializeAIController = function (data, player, game) {
+            var templateConstructor = App_11.default.moduleData.Templates.AITemplateConstructors[data.templateType];
+            var template = templateConstructor.construct({
+                game: game,
+                player: player,
+                saveData: data.templateData,
+                personality: data.personality
+            });
+            var controller = new AIController_1.default(template);
+            return controller;
         };
         return GameLoader;
     }());
@@ -4658,1263 +4757,10 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
     }
     exports.generateColorScheme = generateColorScheme;
 });
-define("src/mapai/MapEvaluator", ["require", "exports", "src/utility"], function (require, exports, utility_14) {
-    "use strict";
-    exports.defaultEvaluationParameters = {
-        starDesirability: {
-            neighborRange: 1,
-            neighborWeight: 0.5,
-            defendabilityWeight: 1,
-            totalIncomeWeight: 1,
-            baseIncomeWeight: 0.5,
-            infrastructureWeight: 1,
-            productionWeight: 1,
-        }
-    };
-    var MapEvaluator = (function () {
-        function MapEvaluator(map, player, game) {
-            this.cachedInfluenceMaps = {};
-            this.cachedVisibleFleets = {};
-            this.cachedVisionMaps = {};
-            this.map = map;
-            this.player = player;
-            this.game = game;
-            this.evaluationParameters = exports.defaultEvaluationParameters;
-        }
-        MapEvaluator.prototype.processTurnStart = function () {
-            this.cachedInfluenceMaps = {};
-            this.cachedVisibleFleets = {};
-            this.cachedVisionMaps = {};
-            this.cachedOwnIncome = undefined;
-        };
-        MapEvaluator.prototype.evaluateStarIncome = function (star) {
-            var evaluation = 0;
-            evaluation += star.baseIncome;
-            evaluation += (star.getIncome() - star.baseIncome) *
-                (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
-            var evaluation = 0;
-            for (var category in star.buildings) {
-                for (var i = 0; i < star.buildings[category].length; i++) {
-                    evaluation += star.buildings[category][i].totalCost / 25;
-                }
-            }
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateStarProduction = function (star) {
-            var evaluation = 0;
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateStarDefendability = function (star) {
-            var evaluation = 0;
-            var nearbyStars = star.getLinkedInRange(2).byRange;
-            for (var rangeString in nearbyStars) {
-                var distanceMultiplier = 1 / parseInt(rangeString);
-                var starsInRange = nearbyStars[rangeString];
-                for (var i = 0; i < starsInRange.length; i++) {
-                    var neighbor = starsInRange[i];
-                    var neighborDefendability;
-                    if (neighbor.owner === this.player) {
-                        neighborDefendability = 3;
-                    }
-                    else if (neighbor.owner.isIndependent) {
-                        neighborDefendability = -0.75;
-                    }
-                    else {
-                        neighborDefendability = -2;
-                    }
-                    evaluation += neighborDefendability * distanceMultiplier;
-                }
-            }
-            if (star.owner === this.player) {
-                evaluation += 3;
-            }
-            return evaluation * 5;
-        };
-        MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
-            var evaluation = 0;
-            var p = this.evaluationParameters.starDesirability;
-            if (!isFinite(this.cachedOwnIncome)) {
-                this.cachedOwnIncome = this.player.getIncome();
-            }
-            var incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
-            incomeEvaluation *= incomeEvaluation / (this.cachedOwnIncome / 4);
-            evaluation += incomeEvaluation;
-            var infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
-            evaluation += infrastructureEvaluation;
-            var productionEvaluation = this.evaluateStarProduction(star) * p.productionWeight;
-            evaluation += productionEvaluation;
-            var defendabilityEvaluation = this.evaluateStarDefendability(star) * p.defendabilityWeight;
-            evaluation += defendabilityEvaluation;
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
-            var evaluation = 0;
-            var getDistanceFalloff = function (distance) {
-                return 1 / (distance + 1);
-            };
-            var inRange = star.getLinkedInRange(range).byRange;
-            for (var distanceString in inRange) {
-                var stars = inRange[distanceString];
-                var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
-                for (var i = 0; i < stars.length; i++) {
-                    evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
-                }
-            }
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateStarDesirability = function (star) {
-            var evaluation = 0;
-            var p = this.evaluationParameters.starDesirability;
-            evaluation += this.evaluateIndividualStarDesirability(star);
-            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) *
-                p.neighborWeight;
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateIndependentTargets = function (targetStars) {
-            var evaluationByStar = {};
-            for (var i = 0; i < targetStars.length; i++) {
-                var star = targetStars[i];
-                var desirability = this.evaluateStarDesirability(star);
-                var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
-                var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
-                var ownInfluenceAtStar = ownInfluenceMap[star.id] || 1;
-                evaluationByStar[star.id] =
-                    {
-                        star: star,
-                        desirability: desirability,
-                        independentStrength: independentStrength,
-                        ownInfluence: ownInfluenceAtStar
-                    };
-            }
-            return evaluationByStar;
-        };
-        MapEvaluator.prototype.scoreIndependentTargets = function (evaluations) {
-            var scores = [];
-            for (var starId in evaluations) {
-                var evaluation = evaluations[starId];
-                var easeOfCapturing = evaluation.ownInfluence / evaluation.independentStrength;
-                var score = evaluation.desirability * easeOfCapturing;
-                if (evaluation.star.getSecondaryController() === this.player) {
-                    score *= 1.5;
-                }
-                scores.push({
-                    star: evaluation.star,
-                    score: score
-                });
-            }
-            return scores.sort(function (a, b) {
-                return b.score - a.score;
-            });
-        };
-        MapEvaluator.prototype.evaluateDesirabilityOfPlayersStars = function (player) {
-            var byStar = {};
-            var total = 0;
-            var stars = this.getVisibleStarsOfPlayer(player);
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                var desirability = this.evaluateStarDesirability(star);
-                byStar[star.id] =
-                    {
-                        star: star,
-                        desirability: desirability
-                    };
-                total += desirability;
-            }
-            return ({
-                byStar: byStar,
-                total: total
-            });
-        };
-        MapEvaluator.prototype.getIndependentNeighborStars = function () {
-            var _this = this;
-            var independentNeighborStars = this.player.getNeighboringStars().filter(function (star) {
-                var secondaryController = star.getSecondaryController();
-                return star.owner.isIndependent && (!secondaryController || secondaryController === _this.player);
-            });
-            return independentNeighborStars;
-        };
-        MapEvaluator.prototype.getIndependentNeighborStarIslands = function (earlyReturnSize) {
-            var _this = this;
-            var alreadyVisited = {};
-            var allStars = [];
-            var islandQualifierFN = function (a, b) {
-                var secondaryController = b.getSecondaryController();
-                return b.owner.isIndependent && (!secondaryController || secondaryController === _this.player);
-            };
-            var neighborStars = this.getIndependentNeighborStars();
-            for (var i = 0; i < neighborStars.length; i++) {
-                var neighborStar = neighborStars[i];
-                if (alreadyVisited[neighborStar.id]) {
-                    continue;
-                }
-                var island = neighborStar.getIslandForQualifier(islandQualifierFN, earlyReturnSize);
-                for (var j = 0; j < island.length; j++) {
-                    var star = island[j];
-                    alreadyVisited[star.id] = true;
-                    allStars.push(star);
-                }
-            }
-            return allStars;
-        };
-        MapEvaluator.prototype.getHostileUnitsAtStar = function (star) {
-            var hostilePlayers = star.getEnemyFleetOwners(this.player);
-            var unitsByEnemy = {};
-            var allUnits = [];
-            for (var i = 0; i < hostilePlayers.length; i++) {
-                unitsByEnemy[hostilePlayers[i].id] = star.getAllUnitsOfPlayer(hostilePlayers[i]);
-                allUnits = allUnits.concat(unitsByEnemy[hostilePlayers[i].id]);
-            }
-            return ({
-                byEnemy: unitsByEnemy,
-                all: allUnits
-            });
-        };
-        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
-            var hostileUnitsByPlayer = this.getHostileUnitsAtStar(star).byEnemy;
-            var strengthByEnemy = {};
-            for (var playerId in hostileUnitsByPlayer) {
-                var strength = 0;
-                for (var i = 0; i < hostileUnitsByPlayer[playerId].length; i++) {
-                    strength += hostileUnitsByPlayer[playerId][i].getStrengthEvaluation();
-                }
-                strengthByEnemy[playerId] = strength;
-            }
-            return strengthByEnemy;
-        };
-        MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
-            var units = star.getIndependentUnits();
-            var total = 0;
-            for (var i = 0; i < units.length; i++) {
-                total += units[i].getStrengthEvaluation();
-            }
-            return total;
-        };
-        MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
-            var byPlayer = this.getHostileStrengthAtStar(star);
-            var total = 0;
-            for (var playerId in byPlayer) {
-                total += byPlayer[playerId];
-            }
-            return total;
-        };
-        MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
-            var byPlayer = {};
-            for (var i = 0; i < star.buildings["defence"].length; i++) {
-                var building = star.buildings["defence"][i];
-                if (!byPlayer[building.controller.id]) {
-                    byPlayer[building.controller.id] = 0;
-                }
-                byPlayer[building.controller.id] += building.totalCost;
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
-            var strength = 0;
-            for (var i = 0; i < star.buildings["defence"].length; i++) {
-                var building = star.buildings["defence"][i];
-                if (building.controller.id === this.player.id)
-                    continue;
-                strength += building.totalCost;
-            }
-            return strength;
-        };
-        MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
-            return fleet.getTotalStrengthEvaluation();
-        };
-        MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
-            if (this.game && this.cachedVisibleFleets[this.game.turnNumber]) {
-                return this.cachedVisibleFleets[this.game.turnNumber];
-            }
-            var stars = this.player.getVisibleStars();
-            var byPlayer = {};
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                for (var playerId in star.fleets) {
-                    var playerFleets = star.fleets[playerId];
-                    if (!byPlayer[playerId]) {
-                        byPlayer[playerId] = [];
-                    }
-                    for (var j = 0; j < playerFleets.length; j++) {
-                        if (playerFleets[j].isStealthy && !this.player.starIsDetected(star)) {
-                            continue;
-                        }
-                        byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
-                    }
-                }
-            }
-            if (this.game) {
-                this.cachedVisibleFleets[this.game.turnNumber] = byPlayer;
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.buildPlayerInfluenceMap = function (player) {
-            var playerIsImmobile = player.isIndependent;
-            var influenceByStar = {};
-            var stars = this.player.getRevealedStars();
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                var defenceBuildingStrengths = this.getDefenceBuildingStrengthAtStarByPlayer(star);
-                if (defenceBuildingStrengths[player.id]) {
-                    if (!isFinite(influenceByStar[star.id])) {
-                        influenceByStar[star.id] = 0;
-                    }
-                    ;
-                    influenceByStar[star.id] += defenceBuildingStrengths[player.id];
-                }
-            }
-            var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
-            function getDistanceFalloff(distance) {
-                return 1 / (distance + 1);
-            }
-            for (var i = 0; i < fleets.length; i++) {
-                var fleet = fleets[i];
-                var strength = this.evaluateFleetStrength(fleet);
-                var location = fleet.location;
-                var range = fleet.getMinMaxMovePoints();
-                var turnsToCheck = 4;
-                var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
-                inFleetRange[0] = [location];
-                for (var distance in inFleetRange) {
-                    var numericDistance = parseInt(distance);
-                    var turnsToReach = Math.floor((numericDistance - 1) / range);
-                    if (turnsToReach < 0)
-                        turnsToReach = 0;
-                    var distanceFalloff = getDistanceFalloff(turnsToReach);
-                    var adjustedStrength = strength * distanceFalloff;
-                    for (var j = 0; j < inFleetRange[distance].length; j++) {
-                        var star = inFleetRange[distance][j];
-                        if (!isFinite(influenceByStar[star.id])) {
-                            influenceByStar[star.id] = 0;
-                        }
-                        ;
-                        influenceByStar[star.id] += adjustedStrength;
-                    }
-                }
-            }
-            return influenceByStar;
-        };
-        MapEvaluator.prototype.getPlayerInfluenceMap = function (player) {
-            if (!this.game) {
-                throw new Error("Can't use cached influence maps when game isn't specified for MapEvaluator");
-            }
-            if (!this.cachedInfluenceMaps[this.game.turnNumber]) {
-                this.cachedInfluenceMaps[this.game.turnNumber] = {};
-            }
-            if (!this.cachedInfluenceMaps[this.game.turnNumber][player.id]) {
-                this.cachedInfluenceMaps[this.game.turnNumber][player.id] = this.buildPlayerInfluenceMap(player);
-            }
-            return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
-        };
-        MapEvaluator.prototype.getInfluenceMapsForKnownPlayers = function () {
-            var byPlayer = {};
-            for (var playerId in this.player.diplomacyStatus.metPlayers) {
-                var player = this.player.diplomacyStatus.metPlayers[playerId];
-                byPlayer[playerId] = this.getPlayerInfluenceMap(player);
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.getVisibleStarsOfPlayer = function (player) {
-            return this.player.getVisibleStars().filter(function (star) {
-                return star.owner === player;
-            });
-        };
-        MapEvaluator.prototype.getVisibleStarsOfKnownPlayers = function () {
-            var byPlayer = {};
-            for (var playerId in this.player.diplomacyStatus.metPlayers) {
-                var player = this.player.diplomacyStatus.metPlayers[playerId];
-                byPlayer[playerId] = this.getVisibleStarsOfPlayer(player);
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.estimateGlobalStrength = function (player) {
-            var visibleStrength = 0;
-            var invisibleStrength = 0;
-            var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
-            for (var i = 0; i < fleets.length; i++) {
-                visibleStrength += this.evaluateFleetStrength(fleets[i]);
-            }
-            if (player !== this.player) {
-                invisibleStrength = visibleStrength * 0.5;
-            }
-            return visibleStrength + invisibleStrength;
-        };
-        MapEvaluator.prototype.getPerceivedThreatOfPlayer = function (player) {
-            if (!this.player.diplomacyStatus.metPlayers[player.id]) {
-                throw new Error(this.player.name +
-                    " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
-            }
-            var otherInfluenceMap = this.getPlayerInfluenceMap(player);
-            var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
-            var totalInfluenceInOwnStars = 0;
-            for (var starId in otherInfluenceMap) {
-                for (var i = 0; i < this.player.controlledLocations.length; i++) {
-                    var star = this.player.controlledLocations[i];
-                    if (star.id === parseInt(starId)) {
-                        var otherInfluence = otherInfluenceMap[starId];
-                        var ownInfluence = ownInfluenceMap[starId];
-                        totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
-                        break;
-                    }
-                }
-            }
-            var globalStrengthDifference = this.estimateGlobalStrength(player) - this.estimateGlobalStrength(this.player);
-            return totalInfluenceInOwnStars + globalStrengthDifference;
-        };
-        MapEvaluator.prototype.getPerceivedThreatOfAllKnownPlayers = function () {
-            var byPlayer = {};
-            for (var playerId in this.player.diplomacyStatus.metPlayers) {
-                var player = this.player.diplomacyStatus.metPlayers[playerId];
-                byPlayer[playerId] = this.getPerceivedThreatOfPlayer(player);
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.getRelativePerceivedThreatOfAllKnownPlayers = function () {
-            var byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
-            var relative = {};
-            var min, max;
-            for (var playerId in byPlayer) {
-                var threat = byPlayer[playerId];
-                min = isFinite(min) ? Math.min(min, threat) : threat;
-                max = isFinite(max) ? Math.max(max, threat) : threat;
-            }
-            for (var playerId in byPlayer) {
-                relative[playerId] = utility_14.getRelativeValue(byPlayer[playerId], min, max);
-            }
-            return relative;
-        };
-        MapEvaluator.prototype.getVisionCoverageAroundStar = function (star, range, useDetection) {
-            if (useDetection === void 0) { useDetection = false; }
-            var toCheck = star.getLinkedInRange(range).all;
-            var scorePerVisibleStar = 1 / toCheck.length;
-            var coverageScore = 0;
-            var visibilityCheckFN = useDetection ? this.player.starIsDetected : this.player.starIsVisible;
-            for (var i = 0; i < toCheck.length; i++) {
-                var neighbor = toCheck[i];
-                if (visibilityCheckFN.call(this.player, neighbor)) {
-                    coverageScore += scorePerVisibleStar;
-                }
-            }
-            return coverageScore;
-        };
-        MapEvaluator.prototype.estimateFleetVisionRange = function (fleet) {
-            var _this = this;
-            var fleetLikelyHasScoutingUnit = fleet.units.length >= 5;
-            var estimatedRange = fleetLikelyHasScoutingUnit ? 2 : 1;
-            fleet.units.forEach(function (unit) {
-                if (_this.player.unitIsIdentified(unit)) {
-                    estimatedRange = Math.max(estimatedRange, unit.getVisionRange());
-                }
-            });
-            return estimatedRange;
-        };
-        MapEvaluator.prototype.estimateFleetDetectionRange = function (fleet) {
-            var _this = this;
-            var fleetLikelyHasScoutingUnit = fleet.units.length >= 5;
-            var estimatedRange = fleetLikelyHasScoutingUnit ? 0 : -1;
-            fleet.units.forEach(function (unit) {
-                if (_this.player.unitIsIdentified(unit)) {
-                    estimatedRange = Math.max(estimatedRange, unit.getDetectionRange());
-                }
-            });
-            return estimatedRange;
-        };
-        MapEvaluator.prototype.buildPlayerVisionMap = function (player) {
-            var detectedStars = {};
-            var visibleStars = {};
-            var revealedStarsOfPlayer = this.player.getRevealedStars().filter(function (star) {
-                return star.owner === player;
-            });
-            var visibleFleetsOfPlayer = this.getVisibleFleetsByPlayer()[player.id] || [];
-            var processDetectionSource = function (source, detectionRange, visionRange) {
-                var detected = source.getLinkedInRange(detectionRange).all;
-                for (var i = 0; i < detected.length; i++) {
-                    var star = detected[i];
-                    if (!detectedStars[star.id]) {
-                        detectedStars[star.id] = star;
-                    }
-                }
-                var visible = source.getLinkedInRange(visionRange).all;
-                for (var i = 0; i < visible.length; i++) {
-                    var star = visible[i];
-                    if (!visibleStars[star.id]) {
-                        visibleStars[star.id] = star;
-                    }
-                }
-            };
-            for (var i = 0; i < revealedStarsOfPlayer.length; i++) {
-                var star = revealedStarsOfPlayer[i];
-                var detectionRange = this.player.starIsDetected(star) ? star.getDetectionRange() : 0;
-                var visionRange = this.player.starIsDetected(star) ? star.getVisionRange() : 1;
-                processDetectionSource(star, detectionRange, visionRange);
-            }
-            for (var i = 0; i < visibleFleetsOfPlayer.length; i++) {
-                var fleet = visibleFleetsOfPlayer[i];
-                var detectionRange = this.estimateFleetDetectionRange(fleet);
-                var visionRange = this.estimateFleetVisionRange(fleet);
-                processDetectionSource(fleet.location, detectionRange, visionRange);
-            }
-            return ({
-                visible: visibleStars,
-                detected: detectedStars
-            });
-        };
-        MapEvaluator.prototype.getPlayerVisionMap = function (player) {
-            if (!this.cachedVisionMaps[player.id]) {
-                this.cachedVisionMaps[player.id] = this.buildPlayerVisionMap(player);
-            }
-            return this.cachedVisionMaps[player.id];
-        };
-        MapEvaluator.prototype.getScoredPerimeterLocationsAgainstPlayer = function (player, safetyFactor, forScouting) {
-            var ownInfluence = this.getPlayerInfluenceMap(this.player);
-            var enemyInfluence = this.getPlayerInfluenceMap(player);
-            var enemyVision = this.getPlayerVisionMap(player);
-            var scores = [];
-            var revealedStars = this.player.getRevealedStars();
-            var stars = revealedStars.filter(function (star) {
-                return star.owner.isIndependent || star.owner === this.player;
-            }, this);
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                var nearestOwnedStar = player.getNearestOwnedStarTo(star);
-                var distanceToEnemy = star.getDistanceToStar(nearestOwnedStar);
-                distanceToEnemy = Math.max(distanceToEnemy - 1, 1);
-                var distanceScore = Math.pow(1 / distanceToEnemy, 2);
-                var danger = enemyInfluence[star.id] || 1;
-                if (!enemyVision.visible[star.id]) {
-                    danger *= 0.5;
-                }
-                danger *= safetyFactor;
-                if (forScouting) {
-                    var safety = ownInfluence[star.id] / (danger * safetyFactor);
-                    var score = safety * distanceScore;
-                }
-                else {
-                    var score = (danger / ownInfluence[star.id]) / safetyFactor;
-                }
-                scores.push({
-                    star: star,
-                    score: score
-                });
-            }
-            return scores;
-        };
-        MapEvaluator.prototype.getDesireToGoToWarWith = function (player) {
-            return Math.random();
-        };
-        MapEvaluator.prototype.getAbilityToGoToWarWith = function (player) {
-            return Math.random();
-        };
-        MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
-            var evaluationByPlayer = {};
-            var neighborStarsCountByPlayer = {};
-            var allNeighbors = this.player.getNeighboringStars();
-            var neighborStarsForPlayer = [];
-            for (var i = 0; i < allNeighbors.length; i++) {
-                var star = allNeighbors[i];
-                if (!star.owner.isIndependent) {
-                    if (!neighborStarsCountByPlayer[star.owner.id]) {
-                        neighborStarsCountByPlayer[star.owner.id] = 0;
-                    }
-                    neighborStarsCountByPlayer[star.owner.id]++;
-                }
-            }
-            for (var playerId in this.player.diplomacyStatus.metPlayers) {
-                var player = this.player.diplomacyStatus.metPlayers[playerId];
-                evaluationByPlayer[player.id] =
-                    {
-                        currentTurn: currentTurn,
-                        opinion: this.player.diplomacyStatus.getOpinionOf(player),
-                        neighborStars: neighborStarsCountByPlayer[player.id],
-                        currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
-                    };
-            }
-            return evaluationByPlayer;
-        };
-        return MapEvaluator;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = MapEvaluator;
-});
-define("src/mapai/GrandStrategyAI", ["require", "exports", "src/utility"], function (require, exports, utility_15) {
-    "use strict";
-    var GrandStrategyAI = (function () {
-        function GrandStrategyAI(personality, mapEvaluator) {
-            this.personality = personality;
-            this.mapEvaluator = mapEvaluator;
-        }
-        GrandStrategyAI.prototype.setDesiredStars = function () {
-            var totalStarsInMap = this.mapEvaluator.map.stars.length;
-            var playersInGame = this.mapEvaluator.game.playerOrder.length;
-            var starsPerPlayer = totalStarsInMap / playersInGame;
-            var baseMinStarsDesired = starsPerPlayer * 0.34;
-            var baseMaxStarsDesired = starsPerPlayer;
-            var extraMinStarsDesired = this.personality.expansiveness * (starsPerPlayer * 0.66);
-            var extraMaxStarsDesired = this.personality.expansiveness * (starsPerPlayer * (playersInGame / 4));
-            var minStarsDesired = baseMinStarsDesired + extraMinStarsDesired;
-            var maxStarsDesired = baseMaxStarsDesired + extraMaxStarsDesired;
-            this.desiredStars =
-                {
-                    min: minStarsDesired,
-                    max: maxStarsDesired
-                };
-        };
-        GrandStrategyAI.prototype.setDesires = function () {
-            this.desireForExpansion = this.getDesireForExpansion();
-            this.desireForWar = this.getDesireForWar();
-            this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
-        };
-        GrandStrategyAI.prototype.getDesireForWar = function () {
-            if (!this.desiredStars) {
-                this.setDesiredStars();
-            }
-            var fromAggressiveness = this.personality.aggressiveness;
-            var fromExpansiveness = 0;
-            var minStarsStillDesired = this.mapEvaluator.player.controlledLocations.length - this.desiredStars.min;
-            var availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(minStarsStillDesired);
-            if (availableExpansionTargets.length < minStarsStillDesired) {
-                fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
-            }
-            var desire = fromAggressiveness + fromExpansiveness;
-            return utility_15.clamp(desire, 0, 1);
-        };
-        GrandStrategyAI.prototype.getDesireForExpansion = function () {
-            if (!this.desiredStars)
-                this.setDesiredStars();
-            var starsOwned = this.mapEvaluator.player.controlledLocations.length;
-            var desire = 1 - utility_15.getRelativeValue(starsOwned, this.desiredStars.min, this.desiredStars.max);
-            return utility_15.clamp(desire, 0.1, 1);
-        };
-        return GrandStrategyAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = GrandStrategyAI;
-});
-define("src/mapai/Front", ["require", "exports", "src/Fleet"], function (require, exports, Fleet_3) {
-    "use strict";
-    var Front = (function () {
-        function Front(props) {
-            this.hasMustered = false;
-            this.id = props.id;
-            this.objective = props.objective;
-            this.units = props.units || [];
-            this.minUnitsDesired = props.minUnitsDesired;
-            this.idealUnitsDesired = props.idealUnitsDesired;
-            this.targetLocation = props.targetLocation;
-            this.musterLocation = props.musterLocation;
-        }
-        Front.prototype.organizeFleets = function () {
-            var allFleets = this.getAssociatedFleets();
-            var pureFleetsByLocation = {};
-            var impureFleetMembersByLocation = {};
-            var ownUnitFilterFN = function (unit) {
-                return this.getUnitIndex(unit) >= 0;
-            }.bind(this);
-            for (var i = 0; i < allFleets.length; i++) {
-                var fleet = allFleets[i];
-                var star = fleet.location;
-                if (this.isFleetPure(fleet)) {
-                    if (!pureFleetsByLocation[star.id]) {
-                        pureFleetsByLocation[star.id] = [];
-                    }
-                    pureFleetsByLocation[star.id].push(fleet);
-                }
-                else {
-                    var ownUnits = fleet.units.filter(ownUnitFilterFN);
-                    for (var j = 0; j < ownUnits.length; j++) {
-                        if (!impureFleetMembersByLocation[star.id]) {
-                            impureFleetMembersByLocation[star.id] = [];
-                        }
-                        impureFleetMembersByLocation[star.id].push(ownUnits[j]);
-                    }
-                }
-            }
-            var sortFleetsBySizeFN = function (a, b) {
-                return b.units.length - a.units.length;
-            };
-            for (var starId in pureFleetsByLocation) {
-                var fleets = pureFleetsByLocation[starId];
-                if (fleets.length > 1) {
-                    fleets.sort(sortFleetsBySizeFN);
-                    for (var i = fleets.length - 1; i >= 1; i--) {
-                        fleets[i].mergeWith(fleets[0]);
-                        fleets.splice(i, 1);
-                    }
-                }
-                if (impureFleetMembersByLocation[starId]) {
-                    for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--) {
-                        var unit = impureFleetMembersByLocation[starId][i];
-                        unit.fleet.transferUnit(fleets[0], unit);
-                        impureFleetMembersByLocation[starId].splice(i, 1);
-                    }
-                }
-            }
-            for (var starId in impureFleetMembersByLocation) {
-                var units = impureFleetMembersByLocation[starId];
-                if (units.length < 1)
-                    continue;
-                var newFleet = new Fleet_3.default(units[0].fleet.player, [], units[0].fleet.location);
-                for (var i = units.length - 1; i >= 0; i--) {
-                    units[i].fleet.transferUnit(newFleet, units[i]);
-                }
-            }
-        };
-        Front.prototype.isFleetPure = function (fleet) {
-            for (var i = 0; i < fleet.units.length; i++) {
-                if (this.getUnitIndex(fleet.units[i]) === -1) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        Front.prototype.getAssociatedFleets = function () {
-            var fleetsById = {};
-            for (var i = 0; i < this.units.length; i++) {
-                if (!this.units[i].fleet)
-                    continue;
-                if (!fleetsById[this.units[i].fleet.id]) {
-                    fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
-                }
-            }
-            var allFleets = [];
-            for (var fleetId in fleetsById) {
-                allFleets.push(fleetsById[fleetId]);
-            }
-            return allFleets;
-        };
-        Front.prototype.getUnitIndex = function (unit) {
-            return this.units.indexOf(unit);
-        };
-        Front.prototype.addUnit = function (unit) {
-            if (unit.front) {
-                unit.front.removeUnit(unit);
-            }
-            unit.front = this;
-            this.units.push(unit);
-        };
-        Front.prototype.removeUnit = function (unit) {
-            var unitIndex = this.getUnitIndex(unit);
-            unit.front = null;
-            this.units.splice(unitIndex, 1);
-        };
-        Front.prototype.getUnitCountByArchetype = function () {
-            var unitCountByArchetype = {};
-            for (var i = 0; i < this.units.length; i++) {
-                var archetype = this.units[i].template.archetype;
-                if (!unitCountByArchetype[archetype.type]) {
-                    unitCountByArchetype[archetype.type] = 0;
-                }
-                unitCountByArchetype[archetype.type]++;
-            }
-            return unitCountByArchetype;
-        };
-        Front.prototype.getUnitsByLocation = function () {
-            var byLocation = {};
-            for (var i = 0; i < this.units.length; i++) {
-                var star = this.units[i].fleet.location;
-                if (!byLocation[star.id]) {
-                    byLocation[star.id] = [];
-                }
-                byLocation[star.id].push(this.units[i]);
-            }
-            return byLocation;
-        };
-        Front.prototype.moveFleets = function (afterMoveCallback) {
-            if (this.units.length < 1) {
-                afterMoveCallback();
-                return;
-            }
-            else {
-                var moveRoutine = this.objective.template.moveRoutineFN;
-                moveRoutine(this, afterMoveCallback);
-            }
-        };
-        Front.prototype.hasUnit = function (unit) {
-            return this.units.indexOf(unit) !== -1;
-        };
-        Front.prototype.scoreUnitFit = function (unit) {
-            var template = this.objective.template;
-            var score = 1;
-            if (this.hasUnit(unit)) {
-                score += 0.2;
-                if (this.hasMustered) {
-                    score += 0.3;
-                }
-                this.removeUnit(unit);
-            }
-            score *= this.objective.priority;
-            score *= template.unitFitFN(unit, this);
-            score *= template.unitDesireFN(this);
-            return score;
-        };
-        Front.prototype.getNewUnitArchetypeScores = function () {
-            var countByArchetype = this.getUnitCountByArchetype();
-            var totalUnits = this.units.length;
-            var idealWeights = this.objective.template.preferredUnitComposition;
-            var scores = {};
-            for (var unitType in idealWeights) {
-                var archetypeCount = countByArchetype[unitType] || 0;
-                scores[unitType] = totalUnits * idealWeights[unitType] - archetypeCount;
-            }
-            return scores;
-        };
-        return Front;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Front;
-});
-define("src/mapai/DiplomacyAI", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var DiplomacyAI = (function () {
-        function DiplomacyAI(mapEvaluator, objectivesAI, game, personality) {
-            this.game = game;
-            this.player = mapEvaluator.player;
-            this.diplomacyStatus = this.player.diplomacyStatus;
-            this.mapEvaluator = mapEvaluator;
-            this.objectivesAI = objectivesAI;
-            this.personality = personality;
-        }
-        DiplomacyAI.prototype.setAttitudes = function () {
-            var diplomacyEvaluations = this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
-            for (var playerId in diplomacyEvaluations) {
-                this.diplomacyStatus.processAttitudeModifiersForPlayer(this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]);
-            }
-        };
-        DiplomacyAI.prototype.resolveDiplomaticObjectives = function (afterAllDoneCallback) {
-            var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
-            var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
-            this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback);
-        };
-        DiplomacyAI.prototype.resolveNextObjective = function (objectives, adjustments, afterAllDoneCallback) {
-            var objective = objectives.pop();
-            if (!objective) {
-                afterAllDoneCallback();
-                return;
-            }
-            var boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
-            objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN);
-        };
-        return DiplomacyAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = DiplomacyAI;
-});
-define("src/mapai/Objective", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_5) {
-    "use strict";
-    var Objective = (function () {
-        function Objective(template, priority, target, targetPlayer) {
-            this.isOngoing = false;
-            this.id = idGenerators_5.default.objective++;
-            this.template = template;
-            this.type = this.template.key;
-            this.priority = priority;
-            this.target = target;
-            this.targetPlayer = targetPlayer;
-        }
-        Object.defineProperty(Objective.prototype, "priority", {
-            get: function () {
-                return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
-            },
-            set: function (priority) {
-                this._basePriority = priority;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Objective.prototype.getUnitsDesired = function (mapEvaluator) {
-            return this.template.unitsToFillObjectiveFN(mapEvaluator, this);
-        };
-        return Objective;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Objective;
-});
-define("src/mapai/ObjectivesAI", ["require", "exports", "src/App"], function (require, exports, App_15) {
-    "use strict";
-    var ObjectivesAI = (function () {
-        function ObjectivesAI(mapEvaluator, grandStrategyAI) {
-            this.objectivesByType = {};
-            this.objectives = [];
-            this.requests = [];
-            this.mapEvaluator = mapEvaluator;
-            this.map = mapEvaluator.map;
-            this.player = mapEvaluator.player;
-            this.grandStrategyAI = grandStrategyAI;
-        }
-        ObjectivesAI.prototype.clearObjectives = function () {
-            this.objectives = [];
-        };
-        ObjectivesAI.prototype.setAllDiplomaticObjectives = function () {
-            this.clearObjectives();
-            this.setAllObjectivesWithTemplateProperty("diplomacyRoutineFN");
-        };
-        ObjectivesAI.prototype.setAllEconomicObjectives = function () {
-            this.clearObjectives();
-            this.setAllObjectivesWithTemplateProperty("economyRoutineFN");
-        };
-        ObjectivesAI.prototype.setAllMoveObjectives = function () {
-            this.clearObjectives();
-            this.setAllObjectivesWithTemplateProperty("moveRoutineFN");
-        };
-        ObjectivesAI.prototype.setAllObjectivesWithTemplateProperty = function (propKey) {
-            var objectiveTemplates = App_15.default.moduleData.Templates.Objectives;
-            for (var key in objectiveTemplates) {
-                var template = objectiveTemplates[key];
-                if (template[propKey]) {
-                    this.setObjectivesOfType(objectiveTemplates[key]);
-                }
-            }
-        };
-        ObjectivesAI.prototype.getNewObjectivesOfType = function (objectiveTemplate) {
-            var objectiveType = objectiveTemplate.key;
-            var byTarget = this.getObjectivesByTarget(objectiveType, true);
-            var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
-            var finalObjectives = [];
-            for (var i = 0; i < newObjectives.length; i++) {
-                var newObjective = newObjectives[i];
-                if (newObjective.priority < 0.04) {
-                    continue;
-                }
-                var keyString = newObjective.target ? newObjective.target.id : "noTarget";
-                var oldObjective = byTarget[keyString];
-                if (oldObjective) {
-                    oldObjective.priority = newObjective.priority;
-                    finalObjectives.push(oldObjective);
-                }
-                else {
-                    finalObjectives.push(newObjective);
-                }
-            }
-            return finalObjectives;
-        };
-        ObjectivesAI.prototype.setObjectivesOfType = function (objectiveTemplate) {
-            var newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
-            this.objectivesByType[objectiveTemplate.key] = newObjectives;
-            this.objectives = this.objectives.concat(newObjectives);
-        };
-        ObjectivesAI.prototype.getObjectivesByTarget = function (objectiveType, markAsOngoing) {
-            var objectivesByTarget = {};
-            if (!this.objectivesByType[objectiveType]) {
-                return objectivesByTarget;
-            }
-            for (var i = 0; i < this.objectivesByType[objectiveType].length; i++) {
-                var objective = this.objectivesByType[objectiveType][i];
-                if (markAsOngoing)
-                    objective.isOngoing = true;
-                var keyString = objective.target ? objective.target.id : "noTarget";
-                objectivesByTarget[keyString] = objective;
-            }
-            return objectivesByTarget;
-        };
-        ObjectivesAI.prototype.getObjectivesWithTemplateProperty = function (propKey) {
-            return this.objectives.filter(function (objective) {
-                return Boolean(objective.template[propKey]);
-            });
-        };
-        ObjectivesAI.prototype.getAdjustmentsForTemplateProperty = function (propKey) {
-            var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
-            var adjustments;
-            for (var i = 0; i < withAdjustment.length; i++) {
-                for (var j = 0; j < withAdjustment[i].template[propKey].length; j++) {
-                    var adjustment = withAdjustment[i].template[propKey][j];
-                    if (!adjustments[adjustment.target.id]) {
-                        adjustments[adjustment.target.id] =
-                            {
-                                target: adjustment.target,
-                                multiplier: 1
-                            };
-                    }
-                    adjustments[adjustment.target.id].multiplier += adjustment.multiplier;
-                }
-            }
-            return adjustments;
-        };
-        return ObjectivesAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = ObjectivesAI;
-});
-define("src/mapai/FrontsAI", ["require", "exports", "src/mapai/Front"], function (require, exports, Front_1) {
-    "use strict";
-    var FrontsAI = (function () {
-        function FrontsAI(mapEvaluator, objectivesAI, personality) {
-            this.fronts = [];
-            this.frontsRequestingUnits = [];
-            this.frontsToMove = [];
-            this.mapEvaluator = mapEvaluator;
-            this.map = mapEvaluator.map;
-            this.player = mapEvaluator.player;
-            this.objectivesAI = objectivesAI;
-            this.personality = personality;
-        }
-        FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
-            var scores = [];
-            for (var i = 0; i < units.length; i++) {
-                scores.push({
-                    unit: units[i],
-                    score: front.scoreUnitFit(units[i]),
-                    front: front
-                });
-            }
-            return scores;
-        };
-        FrontsAI.prototype.assignUnits = function () {
-            var units = this.player.getAllUnits();
-            var allUnitScores = [];
-            var unitScoresByFront = {};
-            var recalculateScoresForFront = function (front) {
-                var frontScores = unitScoresByFront[front.id];
-                for (var i = 0; i < frontScores.length; i++) {
-                    frontScores[i].score = front.scoreUnitFit(frontScores[i].unit);
-                }
-            };
-            var removeUnit = function (unit) {
-                for (var frontId in unitScoresByFront) {
-                    unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
-                        return score.unit !== unit;
-                    });
-                }
-            };
-            var sortByScoreFN = function (a, b) {
-                return a.score - b.score;
-            };
-            for (var i = 0; i < this.fronts.length; i++) {
-                var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
-                unitScoresByFront[this.fronts[i].id] = frontScores;
-                allUnitScores = allUnitScores.concat(frontScores);
-            }
-            var alreadyAdded = {};
-            while (allUnitScores.length > 0) {
-                allUnitScores.sort(sortByScoreFN);
-                var bestScore = allUnitScores.pop();
-                if (alreadyAdded[bestScore.unit.id]) {
-                    continue;
-                }
-                bestScore.front.addUnit(bestScore.unit);
-                removeUnit(bestScore.unit);
-                alreadyAdded[bestScore.unit.id] = true;
-                recalculateScoresForFront(bestScore.front);
-            }
-        };
-        FrontsAI.prototype.getFrontWithId = function (id) {
-            for (var i = 0; i < this.fronts.length; i++) {
-                if (this.fronts[i].id === id) {
-                    return this.fronts[i];
-                }
-            }
-            return null;
-        };
-        FrontsAI.prototype.createFront = function (objective) {
-            var musterLocation = objective.target ?
-                this.player.getNearestOwnedStarTo(objective.target) :
-                null;
-            var unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
-            var front = new Front_1.default({
-                id: objective.id,
-                objective: objective,
-                minUnitsDesired: unitsDesired.min,
-                idealUnitsDesired: unitsDesired.ideal,
-                targetLocation: objective.target,
-                musterLocation: musterLocation
-            });
-            return front;
-        };
-        FrontsAI.prototype.removeInactiveFronts = function () {
-            for (var i = this.fronts.length - 1; i >= 0; i--) {
-                var front = this.fronts[i];
-                var hasActiveObjective = false;
-                for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
-                    var objective = this.objectivesAI.objectives[j];
-                    if (objective.id === front.id) {
-                        hasActiveObjective = true;
-                        break;
-                    }
-                }
-                if (!hasActiveObjective) {
-                    this.fronts.splice(i, 1);
-                }
-            }
-        };
-        FrontsAI.prototype.formFronts = function () {
-            this.removeInactiveFronts();
-            for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
-                var objective = this.objectivesAI.objectives[i];
-                if (!objective.template.moveRoutineFN) {
-                    continue;
-                }
-                if (!this.getFrontWithId(objective.id)) {
-                    var front = this.createFront(objective);
-                    this.fronts.push(front);
-                }
-            }
-        };
-        FrontsAI.prototype.organizeFleets = function () {
-            for (var i = 0; i < this.fronts.length; i++) {
-                this.fronts[i].organizeFleets();
-            }
-        };
-        FrontsAI.prototype.setFrontsToMove = function () {
-            this.frontsToMove = this.fronts.slice(0);
-            this.frontsToMove.sort(function (a, b) {
-                return a.objective.template.movePriority - b.objective.template.movePriority;
-            });
-        };
-        FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
-            var front = this.frontsToMove.pop();
-            if (!front) {
-                afterMovingAllCallback();
-                return;
-            }
-            front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
-        };
-        FrontsAI.prototype.setUnitRequests = function () {
-            this.frontsRequestingUnits = [];
-            for (var i = 0; i < this.fronts.length; i++) {
-                var front = this.fronts[i];
-                if (front.units.length < front.idealUnitsDesired) {
-                    this.frontsRequestingUnits.push(front);
-                }
-            }
-        };
-        return FrontsAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = FrontsAI;
-});
-define("src/mapai/EconomyAI", ["require", "exports", "src/utility"], function (require, exports, utility_16) {
-    "use strict";
-    var EconomyAI = (function () {
-        function EconomyAI(props) {
-            this.objectivesAI = props.objectivesAI;
-            this.frontsAI = props.frontsAI;
-            this.mapEvaluator = props.mapEvaluator;
-            this.player = props.mapEvaluator.player;
-            this.personality = props.personality;
-        }
-        EconomyAI.prototype.resolveEconomicObjectives = function () {
-            var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("economyRoutineFN");
-            var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("economyRoutineAdjustments");
-            for (var i = 0; i < objectives.length; i++) {
-                var objective = objectives[i];
-                objective.template.economyRoutineFN(objective, this, adjustments);
-            }
-        };
-        EconomyAI.prototype.satisfyAllRequests = function () {
-            var allRequests = this.frontsAI.frontsRequestingUnits;
-            allRequests.sort(function (a, b) {
-                return b.objective.priority - a.objective.priority;
-            });
-            for (var i = 0; i < allRequests.length; i++) {
-                var request = allRequests[i];
-                if (request.targetLocation) {
-                    this.satisfyFrontRequest(request);
-                }
-                else {
-                }
-            }
-        };
-        EconomyAI.prototype.satisfyFrontRequest = function (front) {
-            var player = this.player;
-            var starQualifierFN = function (star) {
-                return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
-            };
-            var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
-            if (!star) {
-                return;
-            }
-            var manufactory = star.manufactory;
-            var archetypeScores = front.getNewUnitArchetypeScores();
-            var buildableUnitTypesByArchetype = {};
-            var buildableUnitTypes = player.getGloballyBuildableUnits().concat(manufactory.getLocalUnitTypes().manufacturable);
-            for (var i = 0; i < buildableUnitTypes.length; i++) {
-                var archetype = buildableUnitTypes[i].archetype;
-                if (!buildableUnitTypesByArchetype[archetype.type]) {
-                    buildableUnitTypesByArchetype[archetype.type] = [];
-                }
-                if (!archetypeScores[archetype.type]) {
-                    archetypeScores[archetype.type] = 0;
-                }
-                buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
-            }
-            var sortedScores = utility_16.getObjectKeysSortedByValue(archetypeScores, "desc");
-            var unitType;
-            for (var i = 0; i < sortedScores.length; i++) {
-                if (buildableUnitTypesByArchetype[sortedScores[i]]) {
-                    unitType = utility_16.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
-                    if (this.player.money < unitType.buildCost) {
-                        return;
-                    }
-                    else {
-                        break;
-                    }
-                }
-            }
-            if (!unitType) {
-                throw new Error();
-            }
-            manufactory.addThingToQueue(unitType, "unit");
-        };
-        return EconomyAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = EconomyAI;
-});
-define("src/mapai/AIController", ["require", "exports", "src/mapai/MapEvaluator", "src/mapai/GrandStrategyAI", "src/mapai/EconomyAI", "src/mapai/FrontsAI", "src/mapai/ObjectivesAI", "src/mapai/DiplomacyAI", "src/utility"], function (require, exports, MapEvaluator_1, GrandStrategyAI_1, EconomyAI_1, FrontsAI_1, ObjectivesAI_1, DiplomacyAI_1, utility_17) {
-    "use strict";
-    var AIController = (function () {
-        function AIController(player, game, personality) {
-            this.personality = personality || utility_17.makeRandomPersonality();
-            this.player = player;
-            this.game = game;
-            this.map = game.galaxyMap;
-            this.mapEvaluator = new MapEvaluator_1.default(this.map, this.player, this.game);
-            this.grandStrategyAI = new GrandStrategyAI_1.default(this.personality, this.mapEvaluator);
-            this.objectivesAI = new ObjectivesAI_1.default(this.mapEvaluator, this.grandStrategyAI);
-            this.frontsAI = new FrontsAI_1.default(this.mapEvaluator, this.objectivesAI, this.personality);
-            this.economyAI = new EconomyAI_1.default({
-                objectivesAI: this.objectivesAI,
-                frontsAI: this.frontsAI,
-                mapEvaluator: this.mapEvaluator,
-                personality: this.personality
-            });
-            this.diplomacyAI = new DiplomacyAI_1.default(this.mapEvaluator, this.objectivesAI, this.game, this.personality);
-        }
-        AIController.prototype.processTurn = function (afterFinishedCallback) {
-            this.mapEvaluator.processTurnStart();
-            this.grandStrategyAI.setDesires();
-            this.diplomacyAI.setAttitudes();
-            this.objectivesAI.setAllDiplomaticObjectives();
-            this.diplomacyAI.resolveDiplomaticObjectives(this.processTurnAfterDiplomaticObjectives.bind(this, afterFinishedCallback));
-        };
-        AIController.prototype.processTurnAfterDiplomaticObjectives = function (afterFinishedCallback) {
-            this.objectivesAI.setAllEconomicObjectives();
-            this.economyAI.resolveEconomicObjectives();
-            this.objectivesAI.setAllMoveObjectives();
-            this.frontsAI.formFronts();
-            this.frontsAI.assignUnits();
-            this.frontsAI.setUnitRequests();
-            this.economyAI.satisfyAllRequests();
-            this.frontsAI.organizeFleets();
-            this.frontsAI.setFrontsToMove();
-            this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
-        };
-        AIController.prototype.finishMovingFleets = function (afterFinishedCallback) {
-            this.frontsAI.organizeFleets();
-            if (afterFinishedCallback) {
-                afterFinishedCallback();
-            }
-        };
-        return AIController;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = AIController;
-});
-define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag", "src/BattleSimulator", "src/BattlePrep", "src/DiplomacyStatus", "src/PlayerTechnology", "src/eventManager", "src/idGenerators", "src/colorGeneration", "src/options", "src/mapai/AIController"], function (require, exports, App_16, utility_18, Flag_2, BattleSimulator_1, BattlePrep_1, DiplomacyStatus_1, PlayerTechnology_1, eventManager_9, idGenerators_6, colorGeneration_1, options_2, AIController_1) {
+define("src/Player", ["require", "exports", "src/App", "src/utility", "src/AIController", "src/Flag", "src/BattleSimulator", "src/BattlePrep", "src/DiplomacyStatus", "src/PlayerTechnology", "src/eventManager", "src/Name", "src/idGenerators", "src/colorGeneration", "src/options"], function (require, exports, App_15, utility_14, AIController_2, Flag_2, BattleSimulator_1, BattlePrep_1, DiplomacyStatus_1, PlayerTechnology_1, eventManager_9, Name_3, idGenerators_5, colorGeneration_1, options_2) {
     "use strict";
     var Player = (function () {
-        function Player(isAI, id) {
+        function Player(props) {
             this.units = {};
             this.resources = {};
             this.fleets = [];
@@ -5929,11 +4775,46 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
             this.identifiedUnits = {};
             this.tempOverflowedResearchAmount = 0;
             this.listeners = {};
-            this.id = isFinite(id) ? id : idGenerators_6.default.player++;
-            this.name = "Player " + this.id;
-            this.isAI = isAI;
+            this.isAI = props.isAI;
+            this.isIndependent = props.isIndependent;
+            this.race = props.race;
+            this.money = props.money;
+            this.id = isFinite(props.id) ? props.id : idGenerators_5.default.player++;
+            if (props.name) {
+                if (typeof props.name === "string") {
+                    var castedStringName = props.name;
+                    this.name = new Name_3.default(castedStringName);
+                }
+                else {
+                    var castedName = props.name;
+                    this.name = castedName;
+                }
+            }
+            else {
+                this.name = new Name_3.default("Player " + this.id);
+            }
+            if (props.color) {
+                this.color = props.color.main;
+                this.secondaryColor = props.color.secondary || colorGeneration_1.generateSecondaryColor(this.color);
+                this.colorAlpha = isFinite(props.color.alpha) ? props.color.alpha : 1;
+            }
+            else {
+                var colorScheme = colorGeneration_1.generateColorScheme();
+                this.color = colorScheme.main;
+                this.secondaryColor = colorScheme.secondary;
+                this.colorAlpha = 1;
+            }
+            if (props.flag) {
+                this.flag = props.flag;
+            }
+            else {
+                this.flag = this.makeRandomFlag();
+            }
+            if (props.resources) {
+                this.resources = utility_14.extendObject(props.resources);
+            }
             this.diplomacyStatus = new DiplomacyStatus_1.default(this);
-            this.money = 1000;
+            this.initTechnologies(props.technologyData);
         }
         Object.defineProperty(Player.prototype, "money", {
             get: function () {
@@ -5948,6 +4829,22 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
             enumerable: true,
             configurable: true
         });
+        Player.createDummyPlayer = function () {
+            return new Player({
+                isAI: false,
+                isIndependent: false,
+                id: -9999,
+                name: "Dummy",
+                race: {
+                    key: "dummy",
+                    displayName: "",
+                    description: "",
+                    technologies: [],
+                    getAITemplateConstructor: function (player) { return null; }
+                },
+                money: 0
+            });
+        };
         Player.prototype.destroy = function () {
             this.diplomacyStatus.destroy();
             this.diplomacyStatus = null;
@@ -5957,35 +4854,38 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
             }
         };
         Player.prototype.die = function () {
-            for (var i = 0; i < this.fleets.length; i++) {
+            for (var i = this.fleets.length - 1; i >= 0; i--) {
                 this.fleets[i].deleteFleet(false);
             }
             eventManager_9.default.dispatchEvent("makePlayerDiedNotification", {
-                deadPlayerName: this.name
+                deadPlayerName: this.name.fullName
             });
             console.log(this.name + " died");
         };
         Player.prototype.initTechnologies = function (savedData) {
-            this.playerTechnology = new PlayerTechnology_1.default(this.getResearchSpeed.bind(this), savedData);
+            this.playerTechnology = new PlayerTechnology_1.default(this.getResearchSpeed.bind(this), this.race.technologies, savedData);
             this.listeners["builtBuildingWithEffect_research"] = eventManager_9.default.addEventListener("builtBuildingWithEffect_research", this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology));
         };
-        Player.prototype.makeColorScheme = function () {
-            var scheme = colorGeneration_1.generateColorScheme(this.color);
-            this.color = scheme.main;
-            this.secondaryColor = scheme.secondary;
-        };
-        Player.prototype.setupAI = function (game) {
-            this.AIController = new AIController_1.default(this, game, this.personality);
-        };
         Player.prototype.makeRandomFlag = function (seed) {
-            if (!this.color || !this.secondaryColor)
-                this.makeColorScheme();
-            this.flag = new Flag_2.default({
+            if (!this.color || !this.secondaryColor) {
+                throw new Error("Player has no color specified");
+            }
+            var flag = new Flag_2.default({
                 width: 46,
                 mainColor: this.color,
                 secondaryColor: this.secondaryColor
             });
-            this.flag.generateRandom(seed);
+            flag.generateRandom(seed);
+            return flag;
+        };
+        Player.prototype.makeRandomAIController = function (game) {
+            var templateConstructor = this.race.getAITemplateConstructor(this);
+            var template = templateConstructor.construct({
+                player: this,
+                game: game,
+                personality: utility_14.makeRandomPersonality()
+            });
+            return new AIController_2.default(template);
         };
         Player.prototype.addUnit = function (unit) {
             this.units[unit.id] = unit;
@@ -6018,8 +4918,9 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
         };
         Player.prototype.removeFleet = function (fleet) {
             var fleetIndex = this.getFleetIndex(fleet);
-            if (fleetIndex < 0)
+            if (fleetIndex < 0) {
                 return;
+            }
             this.fleets.splice(fleetIndex, 1);
             this.visionIsDirty = true;
         };
@@ -6052,7 +4953,7 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
             this.controlledLocations.splice(index, 1);
             this.visionIsDirty = true;
             if (this.controlledLocations.length === 0) {
-                App_16.default.game.killPlayer(this);
+                App_15.default.game.killPlayer(this);
             }
         };
         Player.prototype.getIncome = function () {
@@ -6109,6 +5010,16 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
             }
             return allStars;
         };
+        Player.prototype.getNeighboringPlayers = function () {
+            var alreadyAddedPlayersByID = {};
+            var neighboringStars = this.getNeighboringStars();
+            neighboringStars.forEach(function (star) {
+                alreadyAddedPlayersByID[star.owner.id] = star.owner;
+            });
+            return Object.keys(alreadyAddedPlayersByID).map(function (playerID) {
+                return alreadyAddedPlayersByID[playerID];
+            });
+        };
         Player.prototype.updateVisionInStar = function (star) {
             if (this.diplomacyStatus.getUnMetPlayerCount() > 0) {
                 this.meetPlayersInStarByVisibility(star, "visible");
@@ -6116,9 +5027,9 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
         };
         Player.prototype.updateDetectionInStar = function (star) {
             if (this.diplomacyStatus.getUnMetPlayerCount() > 0) {
-                this.meetPlayersInStarByVisibility(star, "detected");
+                this.meetPlayersInStarByVisibility(star, "stealthy");
             }
-            var unitsToIdentify = star.getAllUnits();
+            var unitsToIdentify = star.getUnits();
             for (var i = 0; i < unitsToIdentify.length; i++) {
                 this.identifyUnit(unitsToIdentify[i]);
             }
@@ -6141,8 +5052,8 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
             }
         };
         Player.prototype.updateVisibleStars = function () {
-            var previousVisibleStars = utility_18.extendObject(this.visibleStars);
-            var previousDetectedStars = utility_18.extendObject(this.detectedStars);
+            var previousVisibleStars = utility_14.extendObject(this.visibleStars);
+            var previousDetectedStars = utility_14.extendObject(this.detectedStars);
             var newVisibleStars = [];
             var newDetectedStars = [];
             var visibilityHasChanged = false;
@@ -6335,12 +5246,13 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
             return star.getNearestStarForQualifier(isOwnedByThisFN);
         };
         Player.prototype.attackTarget = function (location, target, battleFinishCallback) {
+            var _this = this;
             var battleData = {
                 location: location,
                 building: target.building,
                 attacker: {
                     player: this,
-                    units: location.getAllUnitsOfPlayer(this)
+                    units: location.getUnits(function (player) { return player === _this; })
                 },
                 defender: {
                     player: target.enemy,
@@ -6349,11 +5261,11 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
             };
             var battlePrep = new BattlePrep_1.default(battleData);
             if (battlePrep.humanPlayer) {
-                App_16.default.reactUI.battlePrep = battlePrep;
+                App_15.default.reactUI.battlePrep = battlePrep;
                 if (battleFinishCallback) {
                     battlePrep.afterBattleFinishCallbacks.push(battleFinishCallback);
                 }
-                App_16.default.reactUI.switchScene("battlePrep");
+                App_15.default.reactUI.switchScene("battlePrep");
             }
             else {
                 var battle = battlePrep.makeBattle();
@@ -6365,7 +5277,7 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
         };
         Player.prototype.getResearchSpeed = function () {
             var research = 0;
-            research += App_16.default.moduleData.ruleSet.research.baseResearchSpeed;
+            research += App_15.default.moduleData.ruleSet.research.baseResearchSpeed;
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 research += this.controlledLocations[i].getResearchPoints();
             }
@@ -6392,9 +5304,9 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
         Player.prototype.getGloballyBuildableUnits = function () {
             var templates = [];
             var typesAlreadyAddedChecked = {};
-            var unitsToAdd = App_16.default.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
+            var unitsToAdd = App_15.default.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
             if (!this.isAI && options_2.default.debug.enabled) {
-                unitsToAdd = unitsToAdd.concat(App_16.default.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
+                unitsToAdd = unitsToAdd.concat(App_15.default.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
             }
             for (var i = 0; i < unitsToAdd.length; i++) {
                 var template = unitsToAdd[i];
@@ -6413,8 +5325,8 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
         };
         Player.prototype.getGloballyBuildableItems = function () {
             var itemTypes = [];
-            for (var key in App_16.default.moduleData.Templates.Items) {
-                itemTypes.push(App_16.default.moduleData.Templates.Items[key]);
+            for (var key in App_15.default.moduleData.Templates.Items) {
+                itemTypes.push(App_15.default.moduleData.Templates.Items[key]);
             }
             return itemTypes;
         };
@@ -6465,13 +5377,13 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
             }
             var data = {
                 id: this.id,
-                name: this.name,
+                name: this.name.serialize(),
                 color: this.color.serialize(),
                 colorAlpha: this.colorAlpha,
                 secondaryColor: this.secondaryColor.serialize(),
                 isIndependent: this.isIndependent,
                 isAI: this.isAI,
-                resources: utility_18.extendObject(this.resources),
+                resources: utility_14.extendObject(this.resources),
                 diplomacyStatus: this.diplomacyStatus.serialize(),
                 fleets: this.fleets.map(function (fleet) { return fleet.serialize(); }),
                 money: this.money,
@@ -6479,7 +5391,8 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
                 items: this.items.map(function (item) { return item.serialize(); }),
                 unitIds: unitIds,
                 revealedStarIds: revealedStarIds,
-                identifiedUnitIds: identifiedUnitIds
+                identifiedUnitIds: identifiedUnitIds,
+                raceKey: this.race.key
             };
             if (this.playerTechnology) {
                 data.researchByTechnology = this.playerTechnology.serialize();
@@ -6487,8 +5400,8 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
             if (this.flag) {
                 data.flag = this.flag.serialize();
             }
-            if (this.isAI && this.AIController) {
-                data.personality = utility_18.extendObject(this.AIController.personality);
+            if (this.AIController) {
+                data.AIController = this.AIController.serialize();
             }
             return data;
         };
@@ -6497,7 +5410,25 @@ define("src/Player", ["require", "exports", "src/App", "src/utility", "src/Flag"
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Player;
 });
-define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/getNullFormation"], function (require, exports, App_17, getNullFormation_2) {
+define("src/evaluateUnitStrength", ["require", "exports"], function (require, exports) {
+    "use strict";
+    function evaluateUnitStrength() {
+        var units = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            units[_i - 0] = arguments[_i];
+        }
+        var totalStrength = 0;
+        units.forEach(function (unit) {
+            var unitStrength = 0;
+            unitStrength += unit.currentHealth;
+            totalStrength += unitStrength;
+        });
+        return totalStrength;
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = evaluateUnitStrength;
+});
+define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/evaluateUnitStrength", "src/getNullFormation"], function (require, exports, App_16, evaluateUnitStrength_1, getNullFormation_2) {
     "use strict";
     var BattlePrepFormation = (function () {
         function BattlePrepFormation(player, units, hasScouted, minUnits, isAttacker) {
@@ -6615,13 +5546,13 @@ define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/getNull
             var formation = getNullFormation_2.default();
             var unitsToPlace = this.units.filter(function (unit) { return unit.canActThisTurn(); });
             var maxUnitsPerRow = formation[0].length;
-            var maxUnitsPerSide = App_17.default.moduleData.ruleSet.battle.maxUnitsPerSide;
+            var maxUnitsPerSide = App_16.default.moduleData.ruleSet.battle.maxUnitsPerSide;
             var placedInFront = 0;
             var placedInBack = 0;
             var totalPlaced = 0;
             var unitsPlacedByArchetype = {};
             var getUnitScoreFN = function (unit, row) {
-                var baseScore = unit.getStrengthEvaluation();
+                var baseScore = evaluateUnitStrength_1.default(unit);
                 var archetype = unit.template.archetype;
                 var idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
                 var unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.type] || 0;
@@ -6849,9 +5780,6 @@ define("src/UnitDrawingFunctionData", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = UnitDrawingFunctionData;
 });
-define("src/DamageType", ["require", "exports"], function (require, exports) {
-    "use strict";
-});
 define("src/AbilityUpgradeData", ["require", "exports"], function (require, exports) {
     "use strict";
 });
@@ -6986,7 +5914,7 @@ define("src/UnitItems", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = UnitItems;
 });
-define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/UnitAttributes", "src/utility", "src/Item", "src/Fleet", "src/UnitItems"], function (require, exports, App_18, idGenerators_7, UnitAttributes_1, utility_19, Item_3, Fleet_4, UnitItems_1) {
+define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/UnitAttributes", "src/utility", "src/Item", "src/Fleet", "src/UnitItems"], function (require, exports, App_17, idGenerators_6, UnitAttributes_1, utility_15, Item_3, Fleet_3, UnitItems_1) {
     "use strict";
     var Unit = (function () {
         function Unit(template, id, data) {
@@ -6995,7 +5923,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
             this.passiveSkillsByPhase = {};
             this.passiveSkillsByPhaseAreDirty = true;
             this.uiDisplayIsDirty = true;
-            this.id = isFinite(id) ? id : idGenerators_7.default.unit++;
+            this.id = isFinite(id) ? id : idGenerators_6.default.unit++;
             this.template = template;
             this.isSquadron = template.isSquadron;
             if (data) {
@@ -7028,14 +5956,14 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
             this.baseAttributes = new UnitAttributes_1.default(data.baseAttributes);
             this.cachedAttributes = this.baseAttributes.clone();
             this.abilities = data.abilityTemplateTypes.map(function (key) {
-                var template = App_18.default.moduleData.Templates.Abilities[key];
+                var template = App_17.default.moduleData.Templates.Abilities[key];
                 if (!template) {
                     throw new Error("Couldn't find ability " + key);
                 }
                 return template;
             });
             this.passiveSkills = data.passiveSkillTemplateTypes.map(function (key) {
-                var template = App_18.default.moduleData.Templates.PassiveSkills[key];
+                var template = App_17.default.moduleData.Templates.PassiveSkills[key];
                 if (!template) {
                     throw new Error("Couldn't find passive skill " + key);
                 }
@@ -7056,7 +5984,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
                     lastHealthBeforeReceivingDamage: this.currentHealth,
                     queuedAction: !data.battleStats.queuedAction ? null :
                         {
-                            ability: App_18.default.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
+                            ability: App_17.default.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
                             targetId: data.battleStats.queuedAction.targetId,
                             turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
                             timesInterrupted: data.battleStats.queuedAction.timesInterrupted
@@ -7066,12 +5994,12 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
             this.items = this.makeUnitItems(data.items.maxItemSlots);
             if (data.serializedItems) {
                 data.serializedItems.forEach(function (itemSaveData) {
-                    var item = new Item_3.default(App_18.default.moduleData.Templates.Items[itemSaveData.templateType], itemSaveData.id);
+                    var item = new Item_3.default(App_17.default.moduleData.Templates.Items[itemSaveData.templateType], itemSaveData.id);
                     _this.items.addItem(item, -999);
                 });
             }
             if (data.portraitKey) {
-                this.portrait = utility_19.findItemWithKey(App_18.default.moduleData.Templates.Cultures, data.portraitKey, "portraits");
+                this.portrait = utility_15.findItemWithKey(App_17.default.moduleData.Templates.Cultures, data.portraitKey, "portraits");
             }
         };
         Unit.prototype.setInitialValues = function () {
@@ -7090,7 +6018,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
             if (multiplier === void 0) { multiplier = 1; }
             var min = 200 * this.template.maxHealth * multiplier;
             var max = 300 * this.template.maxHealth * multiplier;
-            this.maxHealth = utility_19.randInt(min, max);
+            this.maxHealth = utility_15.randInt(min, max);
             this.currentHealth = this.maxHealth;
         };
         Unit.prototype.setAttributes = function (baseSkill, variance) {
@@ -7102,13 +6030,13 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
                 defence: 1,
                 intelligence: 1,
                 speed: 1,
-                maxActionPoints: utility_19.randInt(3, 5)
+                maxActionPoints: utility_15.randInt(3, 5)
             };
             for (var attribute in template.attributeLevels) {
                 var attributeLevel = template.attributeLevels[attribute];
                 var min = Math.max(3 * baseSkill * attributeLevel, 1);
                 var max = Math.max(5 * baseSkill * attributeLevel + variance, 1);
-                attributes[attribute] = utility_19.randInt(min, max);
+                attributes[attribute] = utility_15.randInt(min, max);
                 if (attributes[attribute] > 9)
                     attributes[attribute] = 9;
             }
@@ -7123,17 +6051,17 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
                 return Boolean(cultureTemplate.nameGenerator);
             });
             if (nameGeneratorCandidateCultures.length > 0) {
-                nameGeneratorFN = utility_19.getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
+                nameGeneratorFN = utility_15.getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
             }
             else {
-                nameGeneratorFN = utility_19.defaultNameGenerator;
+                nameGeneratorFN = utility_15.defaultNameGenerator;
             }
             this.name = nameGeneratorFN(this);
             var portraitCandidateCultures = templateCultures.filter(function (cultureTemplate) {
                 return Boolean(cultureTemplate.portraits);
             });
             if (portraitCandidateCultures.length === 0) {
-                portraitCandidateCultures = utility_19.getAllPropertiesWithKey(App_18.default.moduleData.Templates.Cultures, "portraits");
+                portraitCandidateCultures = utility_15.getAllPropertiesWithKey(App_17.default.moduleData.Templates.Cultures, "portraits");
                 if (portraitCandidateCultures.length === 0) {
                     console.warn("No culture has portraits specified");
                     return;
@@ -7145,8 +6073,8 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
                     culture: culture
                 });
             });
-            var portraitCulture = utility_19.getRandomArrayItemWithWeights(portraitCandidateCulturesWithWeights).culture;
-            this.portrait = utility_19.getRandomProperty(portraitCulture.portraits);
+            var portraitCulture = utility_15.getRandomArrayItemWithWeights(portraitCandidateCulturesWithWeights).culture;
+            this.portrait = utility_15.getRandomProperty(portraitCulture.portraits);
         };
         Unit.prototype.getBaseMoveDelay = function () {
             return 30 - this.attributes.speed;
@@ -7163,7 +6091,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
                     position: null,
                     guardAmount: 0,
                     guardCoverage: null,
-                    captureChance: App_18.default.moduleData.ruleSet.battle.baseUnitCaptureChance,
+                    captureChance: App_17.default.moduleData.ruleSet.battle.baseUnitCaptureChance,
                     statusEffects: [],
                     lastHealthBeforeReceivingDamage: this.currentHealth,
                     queuedAction: null,
@@ -7183,7 +6111,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
         };
         Unit.prototype.removeStrength = function (amount) {
             this.currentHealth -= Math.round(amount);
-            this.currentHealth = utility_19.clamp(this.currentHealth, 0, this.maxHealth);
+            this.currentHealth = utility_15.clamp(this.currentHealth, 0, this.maxHealth);
             if (amount > 0) {
                 this.removeGuard(40);
             }
@@ -7334,7 +6262,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
                 if (adjustments[attribute].multiplier) {
                     withItems[attribute] *= 1 + adjustments[attribute].multiplier;
                 }
-                withItems[attribute] = utility_19.clamp(withItems[attribute], -5, 20);
+                withItems[attribute] = utility_15.clamp(withItems[attribute], -5, 20);
             }
             return withItems;
         };
@@ -7348,11 +6276,11 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
             this.attributesAreDirty = false;
         };
         Unit.prototype.setInitialAbilities = function () {
-            this.abilities = utility_19.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
+            this.abilities = utility_15.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
         };
         Unit.prototype.setInitialPassiveSkills = function () {
             if (this.template.possiblePassiveSkills) {
-                this.passiveSkills = utility_19.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
+                this.passiveSkills = utility_15.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
             }
         };
         Unit.prototype.getAllAbilities = function () {
@@ -7419,69 +6347,9 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
             var relevantPassiveEffectTemplates = this.getAllPassiveSkills().filter(effectFilterFN);
             return relevantStatusEffectTemplates.concat(relevantPassiveEffectTemplates);
         };
-        Unit.prototype.receiveDamage = function (amount, damageType) {
-            var damageReduction = this.getReducedDamageFactor(damageType);
-            var adjustedDamage = amount * damageReduction;
+        Unit.prototype.receiveDamage = function (amount) {
             this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-            this.removeStrength(adjustedDamage);
-        };
-        Unit.prototype.getAdjustedTroopSize = function () {
-            var balancedHealth = this.currentHealth + this.battleStats.lastHealthBeforeReceivingDamage / 3;
-            this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-            var currentHealth = this.isSquadron ?
-                balancedHealth :
-                Math.min(this.maxHealth, balancedHealth + this.maxHealth * 0.2);
-            if (currentHealth <= 500) {
-                return currentHealth;
-            }
-            else if (currentHealth <= 2000) {
-                return currentHealth / 2 + 250;
-            }
-            else {
-                return currentHealth / 4 + 750;
-            }
-        };
-        Unit.prototype.getAttackDamageIncrease = function (damageType) {
-            var attackStat, attackFactor;
-            switch (damageType) {
-                case 0:
-                    {
-                        attackStat = this.attributes.attack;
-                        attackFactor = 0.1;
-                        break;
-                    }
-                case 1:
-                    {
-                        attackStat = this.attributes.intelligence;
-                        attackFactor = 0.1;
-                        break;
-                    }
-            }
-            var troopSize = this.getAdjustedTroopSize() / 4;
-            return (1 + attackStat * attackFactor) * troopSize;
-        };
-        Unit.prototype.getReducedDamageFactor = function (damageType) {
-            var defensiveStat, defenceFactor;
-            var finalDamageMultiplier = 1;
-            switch (damageType) {
-                case 0:
-                    {
-                        defensiveStat = this.attributes.defence;
-                        defenceFactor = 0.045;
-                        var guardAmount = Math.min(this.battleStats.guardAmount, 100);
-                        finalDamageMultiplier = 1 - guardAmount / 200;
-                        break;
-                    }
-                case 1:
-                    {
-                        defensiveStat = this.attributes.intelligence;
-                        defenceFactor = 0.045;
-                        break;
-                    }
-            }
-            var damageReduction = defensiveStat * defenceFactor;
-            var finalDamageFactor = (1 - damageReduction) * finalDamageMultiplier;
-            return finalDamageFactor;
+            this.removeStrength(amount);
         };
         Unit.prototype.addToFleet = function (fleet) {
             this.fleet = fleet;
@@ -7490,13 +6358,14 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
             this.fleet = null;
         };
         Unit.prototype.removeFromPlayer = function () {
+            var _this = this;
             var player = this.fleet.player;
             this.items.destroyAllItems();
             player.removeUnit(this);
             this.fleet.removeUnit(this);
-            if (this.front) {
-                this.front.removeUnit(this);
-            }
+            App_17.default.moduleData.scripts.unit.removeFromPlayer.forEach(function (scriptFN) {
+                scriptFN(_this);
+            });
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.transferToPlayer = function (newPlayer) {
@@ -7504,7 +6373,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
             var location = this.fleet.location;
             this.removeFromPlayer();
             newPlayer.addUnit(this);
-            var newFleet = new Fleet_4.default(newPlayer, [this], location);
+            var newFleet = new Fleet_3.default(newPlayer, [this], location);
         };
         Unit.prototype.removeGuard = function (amount) {
             this.battleStats.guardAmount -= amount;
@@ -7543,9 +6412,6 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
             var healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
             var healAmount = this.maxHealth * healingFactor;
             this.addStrength(healAmount);
-        };
-        Unit.prototype.getStrengthEvaluation = function () {
-            return this.currentHealth;
         };
         Unit.prototype.getTotalCost = function () {
             var totalCost = 0;
@@ -7770,7 +6636,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Un
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Unit;
 });
-define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Manufactory", "src/idGenerators", "src/pathfinding"], function (require, exports, App_19, eventManager_10, Manufactory_2, idGenerators_8, pathFinding_2) {
+define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Manufactory", "src/idGenerators", "src/pathfinding"], function (require, exports, App_18, eventManager_10, Manufactory_2, idGenerators_7, pathFinding_2) {
     "use strict";
     var Star = (function () {
         function Star(x, y, id) {
@@ -7782,7 +6648,7 @@ define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Ma
             this.indexedNeighborsInRange = {};
             this.indexedDistanceToStar = {};
             this.buildableUnitTypes = [];
-            this.id = isFinite(id) ? id : idGenerators_8.default.star++;
+            this.id = isFinite(id) ? id : idGenerators_7.default.star++;
             this.name = "Star " + this.id;
             this.x = x;
             this.y = y;
@@ -7804,7 +6670,7 @@ define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Ma
             if (building.template.category === "vision") {
                 this.owner.updateVisibleStars();
             }
-            if (this.owner === App_19.default.humanPlayer) {
+            if (this.owner === App_18.default.humanPlayer) {
                 for (var key in building.template.effect) {
                     eventManager_10.default.dispatchEvent("builtBuildingWithEffect_" + key);
                 }
@@ -7934,8 +6800,8 @@ define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Ma
         };
         Star.prototype.getBuildableBuildings = function () {
             var canBuild = [];
-            for (var buildingType in App_19.default.moduleData.Templates.Buildings) {
-                var template = App_19.default.moduleData.Templates.Buildings[buildingType];
+            for (var buildingType in App_18.default.moduleData.Templates.Buildings) {
+                var template = App_18.default.moduleData.Templates.Buildings[buildingType];
                 var alreadyBuilt;
                 if (template.category === "mine" && !this.resource) {
                     continue;
@@ -7976,12 +6842,35 @@ define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Ma
             }
             return allUpgrades;
         };
-        Star.prototype.getAllFleets = function () {
+        Star.prototype.getFleets = function (playerFilter) {
             var allFleets = [];
             for (var playerId in this.fleets) {
-                allFleets = allFleets.concat(this.fleets[playerId]);
+                var playerFleets = this.fleets[playerId];
+                if (playerFleets.length > 0) {
+                    var player = this.fleets[playerId][0].player;
+                    if (!playerFilter || playerFilter(player) === true) {
+                        allFleets.push.apply(allFleets, playerFleets);
+                    }
+                }
             }
             return allFleets;
+        };
+        Star.prototype.getUnits = function (playerFilter) {
+            var fleets = this.getFleets(playerFilter);
+            var units = [];
+            fleets.forEach(function (fleet) {
+                units.push.apply(units, fleet.units);
+            });
+            return units;
+        };
+        Star.prototype.getFleetOwners = function () {
+            var fleetOwners = [];
+            for (var playerID in this.fleets) {
+                if (this.fleets[playerID].length > 0) {
+                    fleetOwners.push(this.fleets[playerID][0].player);
+                }
+            }
+            return fleetOwners;
         };
         Star.prototype.getFleetIndex = function (fleet) {
             if (!this.fleets[fleet.player.id])
@@ -8006,8 +6895,9 @@ define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Ma
         };
         Star.prototype.removeFleet = function (fleet) {
             var fleetIndex = this.getFleetIndex(fleet);
-            if (fleetIndex < 0)
+            if (fleetIndex < 0) {
                 return false;
+            }
             this.fleets[fleet.player.id].splice(fleetIndex, 1);
             if (this.fleets[fleet.player.id].length === 0) {
                 delete this.fleets[fleet.player.id];
@@ -8018,38 +6908,9 @@ define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Ma
                 this.removeFleet(fleets[i]);
             }
         };
-        Star.prototype.getAllUnitsOfPlayer = function (player) {
-            var allUnits = [];
-            var fleets = this.fleets[player.id];
-            if (!fleets)
-                return [];
-            for (var i = 0; i < fleets.length; i++) {
-                allUnits = allUnits.concat(fleets[i].units);
-            }
-            return allUnits;
-        };
-        Star.prototype.getAllUnits = function () {
-            var allUnits = [];
-            for (var playerId in this.fleets) {
-                var fleets = this.fleets[playerId];
-                allUnits = allUnits.concat(this.getAllUnitsOfPlayer(fleets[0].player));
-            }
-            return allUnits;
-        };
-        Star.prototype.getIndependentUnits = function () {
-            var units = [];
-            for (var playerId in this.fleets) {
-                var player = this.fleets[playerId][0].player;
-                if (player.isIndependent) {
-                    units = units.concat(this.getAllUnitsOfPlayer(player));
-                }
-            }
-            return units;
-        };
         Star.prototype.getTargetsForPlayer = function (player) {
             var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
             var buildingController = buildingTarget ? buildingTarget.controller : null;
-            var fleetOwners = this.getEnemyFleetOwners(player, buildingController);
             var diplomacyStatus = player.diplomacyStatus;
             var targets = [];
             if (buildingTarget &&
@@ -8059,47 +6920,52 @@ define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Ma
                     type: "building",
                     enemy: buildingTarget.controller,
                     building: buildingTarget,
-                    units: this.getAllUnitsOfPlayer(buildingTarget.controller)
+                    units: this.getUnits(function (player) { return player === buildingTarget.controller; })
                 });
             }
-            for (var i = 0; i < fleetOwners.length; i++) {
-                if (diplomacyStatus.canAttackFleetOfPlayer(fleetOwners[i])) {
+            var hostileFleetOwners = this.getFleetOwners().filter(function (fleetOwner) {
+                if (fleetOwner === buildingController) {
+                    return false;
+                }
+                else {
+                    return player.diplomacyStatus.canAttackFleetOfPlayer(fleetOwner);
+                }
+            });
+            var _loop_1 = function(i) {
+                if (diplomacyStatus.canAttackFleetOfPlayer(hostileFleetOwners[i])) {
                     targets.push({
                         type: "fleet",
-                        enemy: fleetOwners[i],
+                        enemy: hostileFleetOwners[i],
                         building: null,
-                        units: this.getAllUnitsOfPlayer(fleetOwners[i])
+                        units: this_1.getUnits(function (player) { return player === hostileFleetOwners[i]; })
                     });
                 }
+            };
+            var this_1 = this;
+            for (var i = 0; i < hostileFleetOwners.length; i++) {
+                _loop_1(i);
             }
             return targets;
         };
+        Star.prototype.hasBuildingTargetForPlayer = function (player) {
+            return this.getTargetsForPlayer(player).some(function (target) {
+                return target.type === "building";
+            });
+        };
         Star.prototype.getFirstEnemyDefenceBuilding = function (player) {
-            if (!this.buildings["defence"])
+            if (!this.buildings["defence"]) {
                 return null;
+            }
             var defenceBuildings = this.buildings["defence"].slice(0);
-            if (this.owner === player)
+            if (this.owner === player) {
                 defenceBuildings = defenceBuildings.reverse();
+            }
             for (var i = defenceBuildings.length - 1; i >= 0; i--) {
                 if (defenceBuildings[i].controller.id !== player.id) {
                     return defenceBuildings[i];
                 }
             }
             return null;
-        };
-        Star.prototype.getEnemyFleetOwners = function (player, excludedTarget) {
-            var fleetOwners = [];
-            for (var playerId in this.fleets) {
-                var intPlayerId = parseInt(playerId);
-                if (intPlayerId == player.id)
-                    continue;
-                else if (excludedTarget && intPlayerId == excludedTarget.id)
-                    continue;
-                else if (this.fleets[playerId].length < 1)
-                    continue;
-                fleetOwners.push(this.fleets[playerId][0].player);
-            }
-            return fleetOwners;
         };
         Star.prototype.setResource = function (resource) {
             this.resource = resource;
@@ -8213,21 +7079,24 @@ define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Ma
                 byRange: visitedByRange
             });
         };
-        Star.prototype.getIslandForQualifier = function (qualifier, earlyReturnSize) {
+        Star.prototype.getIslandForQualifier = function (qualifier, earlyReturnSize, initialStars) {
+            if (initialStars === void 0) { initialStars = [this]; }
             var visited = {};
             var connected = {};
             var sizeFound = 1;
-            var initialStar = this;
-            var frontier = [initialStar];
-            visited[initialStar.id] = true;
+            var frontier = initialStars.slice(0);
+            initialStars.forEach(function (star) {
+                visited[star.id] = true;
+            });
             while (frontier.length > 0) {
                 var current = frontier.pop();
                 connected[current.id] = current;
                 var neighbors = current.getLinkedInRange(1).all;
                 for (var i = 0; i < neighbors.length; i++) {
                     var neighbor = neighbors[i];
-                    if (visited[neighbor.id])
+                    if (visited[neighbor.id]) {
                         continue;
+                    }
                     visited[neighbor.id] = true;
                     if (qualifier(current, neighbor)) {
                         sizeFound++;
@@ -8272,7 +7141,7 @@ define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Ma
             return null;
         };
         Star.prototype.getDistanceToStar = function (target) {
-            if (!App_19.default.game) {
+            if (!App_18.default.game) {
                 var a = pathFinding_2.aStar(this, target);
                 return a.cost[target.id];
             }
@@ -8311,7 +7180,7 @@ define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Ma
         Star.prototype.getPresentPlayersByVisibility = function () {
             var byVisibilityAndId = {
                 visible: {},
-                detected: {},
+                stealthy: {},
                 all: {}
             };
             var allPlayers = [];
@@ -8324,12 +7193,12 @@ define("src/Star", ["require", "exports", "src/App", "src/eventManager", "src/Ma
                 var fleets = this.fleets[playerId];
                 for (var i = 0; i < fleets.length; i++) {
                     var fleetPlayer = fleets[i].player;
-                    if (byVisibilityAndId.detected[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id]) {
+                    if (byVisibilityAndId.stealthy[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id]) {
                         break;
                     }
                     byVisibilityAndId.all[fleetPlayer.id] = fleetPlayer;
                     if (fleets[i].isStealthy) {
-                        byVisibilityAndId.detected[fleetPlayer.id] = fleetPlayer;
+                        byVisibilityAndId.stealthy[fleetPlayer.id] = fleetPlayer;
                     }
                     else {
                         byVisibilityAndId.visible[fleetPlayer.id] = fleetPlayer;
@@ -8561,7 +7430,8 @@ define("src/MapGenResult", ["require", "exports", "src/MapVoronoiInfo", "src/Gal
             return map;
         };
         MapGenResult.prototype.getAllPoints = function () {
-            return this.fillerPoints.concat(this.stars);
+            var castedFillerPoints = this.fillerPoints;
+            return castedFillerPoints.concat(this.stars);
         };
         MapGenResult.prototype.makeVoronoiInfo = function () {
             var voronoiInfo = new MapVoronoiInfo_1.default();
@@ -8788,7 +7658,7 @@ define("src/MapRendererMapMode", ["require", "exports"], function (require, expo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapRendererMapMode;
 });
-define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLayer", "src/MapRendererMapMode", "src/eventManager", "src/options"], function (require, exports, App_20, MapRendererLayer_1, MapRendererMapMode_1, eventManager_11, options_3) {
+define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLayer", "src/MapRendererMapMode", "src/eventManager", "src/options"], function (require, exports, App_19, MapRendererLayer_1, MapRendererMapMode_1, eventManager_11, options_3) {
     "use strict";
     var MapRenderer = (function () {
         function MapRenderer(map, player) {
@@ -8852,8 +7722,8 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
             this.setAllLayersAsDirty();
         };
         MapRenderer.prototype.initLayers = function () {
-            for (var layerKey in App_20.default.moduleData.Templates.MapRendererLayers) {
-                var template = App_20.default.moduleData.Templates.MapRendererLayers[layerKey];
+            for (var layerKey in App_19.default.moduleData.Templates.MapRendererLayers) {
+                var template = App_19.default.moduleData.Templates.MapRendererLayers[layerKey];
                 var layer = new MapRendererLayer_1.default(template);
                 this.layers[layerKey] = layer;
             }
@@ -8875,8 +7745,8 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
                 }
                 this.mapModes[mapModeKey] = mapMode;
             }.bind(this);
-            for (var mapModeKey in App_20.default.moduleData.Templates.MapRendererMapModes) {
-                var template = App_20.default.moduleData.Templates.MapRendererMapModes[mapModeKey];
+            for (var mapModeKey in App_19.default.moduleData.Templates.MapRendererMapModes) {
+                var template = App_19.default.moduleData.Templates.MapRendererMapModes[mapModeKey];
                 buildMapMode(mapModeKey, template);
             }
         };
@@ -8973,13 +7843,70 @@ define("src/ModuleFileLoadingPhase", ["require", "exports"], function (require, 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ModuleFileLoadingPhase;
 });
-define("src/ModuleData", ["require", "exports", "src/utility"], function (require, exports, utility_20) {
+define("src/ModuleScripts", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var ModuleScripts = (function () {
+        function ModuleScripts() {
+            this.unit = {
+                removeFromPlayer: []
+            };
+            this.game = {
+                afterInit: []
+            };
+        }
+        ModuleScripts.merge = function () {
+            var toMerge = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                toMerge[_i - 0] = arguments[_i];
+            }
+            var merged = new ModuleScripts();
+            merged.add.apply(merged, toMerge);
+            return merged;
+        };
+        ModuleScripts.prototype.add = function () {
+            var _this = this;
+            var toAdd = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                toAdd[_i - 0] = arguments[_i];
+            }
+            toAdd.forEach(function (scripts) {
+                for (var scriptType in scripts) {
+                    for (var scriptKey in scripts[scriptType]) {
+                        (_a = _this[scriptType][scriptKey]).push.apply(_a, scripts[scriptType][scriptKey]);
+                    }
+                }
+                var _a;
+            });
+        };
+        ModuleScripts.prototype.remove = function (toRemove) {
+            for (var scriptType in toRemove) {
+                for (var scriptKey in toRemove[scriptType]) {
+                    var ownScripts = this[scriptType][scriptKey];
+                    var scriptsToRemove = toRemove[scriptType][scriptKey];
+                    for (var j = 0; j < scriptsToRemove.length; j++) {
+                        for (var i = ownScripts.length - 1; i >= 0; i--) {
+                            if (ownScripts[i] === scriptsToRemove[j]) {
+                                ownScripts.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        return ModuleScripts;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ModuleScripts;
+});
+define("src/ModuleData", ["require", "exports", "src/ModuleScripts", "src/utility"], function (require, exports, ModuleScripts_1, utility_16) {
     "use strict";
     var ModuleData = (function () {
         function ModuleData() {
             this.subModuleFiles = [];
             this.Templates = {
                 Abilities: {},
+                AITemplateConstructors: {},
                 AttitudeModifiers: {},
                 BattleSFX: {},
                 Buildings: {},
@@ -8990,9 +7917,9 @@ define("src/ModuleData", ["require", "exports", "src/utility"], function (requir
                 MapRendererLayers: {},
                 MapRendererMapModes: {},
                 Notifications: {},
-                Objectives: {},
                 PassiveSkills: {},
                 Personalities: {},
+                Races: {},
                 Resources: {},
                 StatusEffects: {},
                 SubEmblems: {},
@@ -9002,6 +7929,7 @@ define("src/ModuleData", ["require", "exports", "src/utility"], function (requir
                 Units: {}
             };
             this.ruleSet = {};
+            this.scripts = new ModuleScripts_1.default();
         }
         ModuleData.prototype.copyTemplates = function (source, category) {
             if (!this.Templates[category]) {
@@ -9031,13 +7959,13 @@ define("src/ModuleData", ["require", "exports", "src/utility"], function (requir
             if (this.defaultMap)
                 return this.defaultMap;
             else if (Object.keys(this.Templates.MapGen).length > 0) {
-                return utility_20.getRandomProperty(this.Templates.MapGen);
+                return utility_16.getRandomProperty(this.Templates.MapGen);
             }
             else
                 throw new Error("Module has no maps registered");
         };
         ModuleData.prototype.applyRuleSet = function (ruleSetValuesToCopy) {
-            this.ruleSet = utility_20.deepMerge(this.ruleSet, ruleSetValuesToCopy);
+            this.ruleSet = utility_16.deepMerge(this.ruleSet, ruleSetValuesToCopy);
         };
         return ModuleData;
     }());
@@ -9676,7 +8604,7 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Camera;
 });
-define("src/MouseEventHandler", ["require", "exports", "src/App", "src/RectangleSelect", "src/eventManager"], function (require, exports, App_21, RectangleSelect_1, eventManager_16) {
+define("src/MouseEventHandler", ["require", "exports", "src/App", "src/RectangleSelect", "src/eventManager"], function (require, exports, App_20, RectangleSelect_1, eventManager_16) {
     "use strict";
     var MouseEventHandler = (function () {
         function MouseEventHandler(renderer, camera) {
@@ -9797,7 +8725,7 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
             this.preventGhost(15, "mouseDown");
         };
         MouseEventHandler.prototype.touchStart = function (event, star) {
-            if (App_21.default.playerControl.selectedFleets.length === 0) {
+            if (App_20.default.playerControl.selectedFleets.length === 0) {
                 this.startSelect(event);
             }
             else {
@@ -9937,7 +8865,7 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MouseEventHandler;
 });
-define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "src/eventManager"], function (require, exports, App_22, Color_3, eventManager_17) {
+define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "src/eventManager"], function (require, exports, App_21, Color_3, eventManager_17) {
     "use strict";
     var PathfindingArrow = (function () {
         function PathfindingArrow(parentContainer) {
@@ -9998,7 +8926,7 @@ define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "s
             });
         };
         PathfindingArrow.prototype.startMove = function () {
-            var fleets = App_22.default.playerControl.selectedFleets;
+            var fleets = App_21.default.playerControl.selectedFleets;
             if (this.active || !fleets || fleets.length < 1) {
                 return;
             }
@@ -10629,7 +9557,7 @@ define("src/uicomponents/mixins/normalizeEvent", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = normalizeEvent;
 });
-define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/utility", "src/uicomponents/mixins/normalizeEvent"], function (require, exports, utility_21, normalizeEvent_1) {
+define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/utility", "src/uicomponents/mixins/normalizeEvent"], function (require, exports, utility_17, normalizeEvent_1) {
     "use strict";
     var DragPositioner = (function () {
         function DragPositioner(owner, props) {
@@ -10770,13 +9698,13 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
                         if (!this.makeDragClone) {
                             var nextSibling = this.ownerDOMNode.nextSibling;
                             var clone = this.ownerDOMNode.cloneNode(true);
-                            utility_21.recursiveRemoveAttribute(clone, "data-reactid");
+                            utility_17.recursiveRemoveAttribute(clone, "data-reactid");
                             this.ownerDOMNode.parentNode.insertBefore(clone, nextSibling);
                             this.cloneElement = clone;
                         }
                         else {
                             var clone = this.makeDragClone();
-                            utility_21.recursiveRemoveAttribute(clone, "data-reactid");
+                            utility_17.recursiveRemoveAttribute(clone, "data-reactid");
                             document.body.appendChild(clone);
                             this.cloneElement = clone;
                         }
@@ -11334,7 +10262,7 @@ define("src/uicomponents/popups/PopupResizeHandle", ["require", "exports", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager", "src/uicomponents/popups/PopupResizeHandle", "src/utility", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, eventManager_18, PopupResizeHandle_1, utility_22, DragPositioner_3, applyMixins_3) {
+define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager", "src/uicomponents/popups/PopupResizeHandle", "src/utility", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, eventManager_18, PopupResizeHandle_1, utility_18, DragPositioner_3, applyMixins_3) {
     "use strict";
     var PopupComponent = (function (_super) {
         __extends(PopupComponent, _super);
@@ -11398,8 +10326,8 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
                 left = position.left;
                 top = position.top;
             }
-            left = utility_22.clamp(left, 0, container.offsetWidth - rect.width);
-            top = utility_22.clamp(top, 0, container.offsetHeight - rect.height);
+            left = utility_18.clamp(left, 0, container.offsetWidth - rect.width);
+            top = utility_18.clamp(top, 0, container.offsetHeight - rect.height);
             this.dragPositioner.dragPos.y = top;
             this.dragPositioner.dragPos.x = left;
             this.dragPositioner.dragSize.x = Math.min(window.innerWidth, rect.width);
@@ -11413,8 +10341,8 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
             var maxWidth = this.props.maxWidth || window.innerWidth;
             var minHeight = this.props.minHeight || 0;
             var maxHeight = this.props.maxHeight || window.innerHeight;
-            this.dragPositioner.dragSize.x = utility_22.clamp(x + 5 - this.dragPositioner.dragPos.x, minWidth, maxWidth);
-            this.dragPositioner.dragSize.y = utility_22.clamp(y + 5 - this.dragPositioner.dragPos.y, minHeight, maxHeight);
+            this.dragPositioner.dragSize.x = utility_18.clamp(x + 5 - this.dragPositioner.dragPos.x, minWidth, maxWidth);
+            this.dragPositioner.dragSize.y = utility_18.clamp(y + 5 - this.dragPositioner.dragPos.y, minHeight, maxHeight);
             this.dragPositioner.updateDOMNodeStyle();
             eventManager_18.default.dispatchEvent("popupResized");
         };
@@ -11455,7 +10383,7 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicomponents/popups/Popup", "src/eventManager", "src/utility"], function (require, exports, Popup_1, eventManager_19, utility_23) {
+define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicomponents/popups/Popup", "src/eventManager", "src/utility"], function (require, exports, Popup_1, eventManager_19, utility_19) {
     "use strict";
     var PopupManagerComponent = (function (_super) {
         __extends(PopupManagerComponent, _super);
@@ -11562,7 +10490,7 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
         PopupManagerComponent.prototype.makePopup = function (props) {
             var _this = this;
             var id = this.getPopupId();
-            var popupProps = props.popupProps ? utility_23.extendObject(props.popupProps) : {};
+            var popupProps = props.popupProps ? utility_19.extendObject(props.popupProps) : {};
             popupProps.content = props.content;
             popupProps.id = id;
             popupProps.key = id;
@@ -11592,7 +10520,7 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
             var toRender = [];
             for (var i = 0; i < popups.length; i++) {
                 var popup = popups[i];
-                var popupProps = utility_23.extendObject(popup);
+                var popupProps = utility_19.extendObject(popup);
                 popupProps.activePopupsCount = popups.length;
                 toRender.push(Popup_1.default(popupProps));
             }
@@ -11892,7 +10820,7 @@ define("src/uicomponents/unitlist/MenuUnitInfo", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/BackgroundDrawer", "src/utility"], function (require, exports, BackgroundDrawer_2, utility_24) {
+define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/BackgroundDrawer", "src/utility"], function (require, exports, BackgroundDrawer_2, utility_20) {
     "use strict";
     var BattleBackgroundComponent = (function (_super) {
         __extends(BattleBackgroundComponent, _super);
@@ -11920,7 +10848,7 @@ define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/B
         };
         BattleBackgroundComponent.prototype.handleResize = function () {
             var blurarea = this.props.getBlurArea();
-            this.backgroundDrawer.blurArea = utility_24.convertClientRectToPixiRect(blurarea);
+            this.backgroundDrawer.blurArea = utility_20.convertClientRectToPixiRect(blurarea);
             this.backgroundDrawer.handleResize();
         };
         BattleBackgroundComponent.prototype.componentDidMount = function () {
@@ -11948,7 +10876,7 @@ define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/B
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_20, utility_25) {
+define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_20, utility_21) {
     "use strict";
     var ListComponent = (function (_super) {
         __extends(ListComponent, _super);
@@ -12084,7 +11012,7 @@ define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", 
             }
         };
         ListComponent.prototype.getSortingOrderForColumnKeyWithColumnReversed = function (columnToReverse) {
-            var copied = utility_25.shallowCopy(this.state.sortingOrderForColumnKey);
+            var copied = utility_21.shallowCopy(this.state.sortingOrderForColumnKey);
             copied[columnToReverse.key] = ListComponent.reverseListOrder(copied[columnToReverse.key]);
             return copied;
         };
@@ -12630,7 +11558,7 @@ define("src/uicomponents/unit/UnitAttributeChanges", ["require", "exports"], fun
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_26) {
+define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_22) {
     "use strict";
     var UnitStatusComponent = (function (_super) {
         __extends(UnitStatusComponent, _super);
@@ -12651,7 +11579,7 @@ define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"]
                 }, React.DOM.div({
                     className: "guard-meter-value",
                     style: {
-                        width: "" + utility_26.clamp(guard, 0, 100) + "%"
+                        width: "" + utility_22.clamp(guard, 0, 100) + "%"
                     }
                 }), React.DOM.div({
                     className: "status-inner-wrapper"
@@ -13030,7 +11958,7 @@ define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/un
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, App_23, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_27) {
+define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, App_22, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_23) {
     "use strict";
     var FormationComponent = (function (_super) {
         __extends(FormationComponent, _super);
@@ -13058,7 +11986,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
             var formationRowElements = [];
             for (var i = 0; i < this.props.formation.length; i++) {
                 var absoluteRowIndex = this.props.facesLeft ?
-                    i + App_23.default.moduleData.ruleSet.battle.rowsPerFormation :
+                    i + App_22.default.moduleData.ruleSet.battle.rowsPerFormation :
                     i;
                 var unitElements = [];
                 for (var j = 0; j < this.props.formation[i].length; j++) {
@@ -13092,7 +12020,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
                             hoveredActionPointExpenditure: this.props.hoveredAbility &&
                                 this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
                         };
-                        unitProps = utility_27.shallowExtend(unitDisplayData, componentProps, displayProps);
+                        unitProps = utility_23.shallowExtend(unitDisplayData, componentProps, displayProps);
                         if (this.props.facesLeft && this.props.isInBattlePrep) {
                             unitProps.facesLeft = true;
                         }
@@ -13116,7 +12044,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_28, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
+define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_24, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
     "use strict";
     var UnitListItemComponent = (function (_super) {
         __extends(UnitListItemComponent, _super);
@@ -13155,7 +12083,7 @@ define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/uti
         };
         UnitListItemComponent.prototype.makeDragClone = function () {
             var container = document.createElement("div");
-            ReactDOM.render(Unit_4.default(utility_28.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
+            var unitComponentProps = ReactDOM.render(Unit_4.default(utility_24.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
             var renderedElement = container.firstChild;
             var wrapperElement = document.getElementsByClassName("unit-wrapper")[0];
             renderedElement.classList.add("draggable", "dragging");
@@ -13419,7 +12347,7 @@ define("src/uicomponents/PlayerFlag", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_24, PlayerFlag_1, utility_29) {
+define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_23, PlayerFlag_1, utility_25) {
     "use strict";
     var DefenceBuildingComponent = (function (_super) {
         __extends(DefenceBuildingComponent, _super);
@@ -13432,17 +12360,17 @@ define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src
         };
         DefenceBuildingComponent.prototype.render = function () {
             var building = this.props.building;
-            var image = App_24.default.images[building.template.iconSrc];
+            var image = App_23.default.images[building.template.iconSrc];
             return (React.DOM.div({
                 className: "defence-building"
             }, React.DOM.img({
                 className: "defence-building-icon",
-                src: utility_29.colorImageInPlayerColor(image, building.controller),
+                src: utility_25.colorImageInPlayerColor(image, building.controller),
                 title: building.template.displayName
             }), PlayerFlag_1.default({
                 props: {
                     className: "defence-building-controller",
-                    title: building.controller.name
+                    title: building.controller.name.fullName
                 },
                 key: "flag",
                 flag: building.controller.flag
@@ -13523,7 +12451,7 @@ define("src/uicomponents/battleprep/BattleInfo", ["require", "exports", "src/uic
                 }
             }), React.DOM.div({
                 className: "battle-info-opponent-name"
-            }, battlePrep.enemyPlayer.name)), React.DOM.div({
+            }, battlePrep.enemyPlayer.name.fullName)), React.DOM.div({
                 className: "battle-info-summary"
             }, star.name + ": " + (isAttacker ? "Attacking" : "Defending")), DefenceBuildingList_1.default({
                 buildings: star.buildings["defence"],
@@ -13537,7 +12465,7 @@ define("src/uicomponents/battleprep/BattleInfo", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/battle/BattleBackground", "src/uicomponents/unitlist/ItemList", "src/uicomponents/battle/Formation", "src/options", "src/BattleSimulator", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_25, eventManager_21, MenuUnitInfo_1, BattleBackground_1, ItemList_1, Formation_1, Options_1, BattleSimulator_2, UnitList_1, BattleInfo_1) {
+define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/battle/BattleBackground", "src/uicomponents/unitlist/ItemList", "src/uicomponents/battle/Formation", "src/options", "src/BattleSimulator", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_24, eventManager_21, MenuUnitInfo_1, BattleBackground_1, ItemList_1, Formation_1, Options_1, BattleSimulator_2, UnitList_1, BattleInfo_1) {
     "use strict";
     var BattlePrepComponent = (function (_super) {
         __extends(BattlePrepComponent, _super);
@@ -13764,7 +12692,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                 } }, BattleBackground_1.default({
                 getBlurArea: this.getBackgroundBlurArea,
                 backgroundSeed: battlePrep.battleData.location.getSeed(),
-                backgroundDrawingFunction: App_25.default.moduleData.starBackgroundDrawingFunction,
+                backgroundDrawingFunction: App_24.default.moduleData.starBackgroundDrawingFunction,
                 ref: function (component) {
                     _this.ref_TODO_background = component;
                 },
@@ -13786,7 +12714,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                 onClick: this.autoMakeFormation
             }, "Auto formation"), React.DOM.button({
                 onClick: function () {
-                    App_25.default.reactUI.switchScene("galaxyMap");
+                    App_24.default.reactUI.switchScene("galaxyMap");
                 },
                 disabled: playerIsDefending
             }, "Cancel"), React.DOM.button({
@@ -13795,8 +12723,8 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                 title: humanFormationValidity.description,
                 onClick: function () {
                     var battle = battlePrep.makeBattle();
-                    App_25.default.reactUI.battle = battle;
-                    App_25.default.reactUI.switchScene("battle");
+                    App_24.default.reactUI.battle = battle;
+                    App_24.default.reactUI.switchScene("battle");
                 }.bind(this)
             }, "Start battle"), !Options_1.default.debug.enabled ? null : React.DOM.button({
                 className: "battle-prep-controls-button",
@@ -14487,14 +13415,13 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleScene;
 });
-define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_30, App_26) {
+define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_26, App_25) {
     "use strict";
     var BattleSceneTesterComponent = (function (_super) {
         __extends(BattleSceneTesterComponent, _super);
         function BattleSceneTesterComponent(props) {
             _super.call(this, props);
             this.displayName = "BattleSceneTester";
-            this.idGenerator = 0;
             this.battle = null;
             this.battleScene = null;
             this.state = this.getInitialStateTODO();
@@ -14511,7 +13438,6 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             this.handleUnitHover = this.handleUnitHover.bind(this);
             this.handleClearHover = this.handleClearHover.bind(this);
             this.handleChangeDuration = this.handleChangeDuration.bind(this);
-            this.makePlayer = this.makePlayer.bind(this);
             this.handleSelectSFXTemplate = this.handleSelectSFXTemplate.bind(this);
         };
         BattleSceneTesterComponent.prototype.getInitialStateTODO = function () {
@@ -14521,8 +13447,8 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
                 side1Units.push(this.makeUnit());
                 side2Units.push(this.makeUnit());
             }
-            var side1Player = this.makePlayer();
-            var side2Player = this.makePlayer();
+            var side1Player = Player_2.default.createDummyPlayer();
+            var side2Player = Player_2.default.createDummyPlayer();
             var battle = this.battle = this.makeBattle({
                 side1Units: side1Units,
                 side2Units: side2Units,
@@ -14531,7 +13457,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             });
             battle.init();
             var initialSFXTemplateKey = "rocketAttack";
-            var initialSFXTemplate = App_26.default.moduleData.Templates.BattleSFX[initialSFXTemplateKey];
+            var initialSFXTemplate = App_25.default.moduleData.Templates.BattleSFX[initialSFXTemplateKey];
             return ({
                 activeUnit: side1Units[0],
                 selectedSide1Unit: side1Units[0],
@@ -14547,15 +13473,8 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             battleScene.updateUnits();
         };
         BattleSceneTesterComponent.prototype.makeUnit = function () {
-            var template = utility_30.getRandomProperty(App_26.default.moduleData.Templates.Units);
-            return new Unit_5.default(template, this.idGenerator++);
-        };
-        BattleSceneTesterComponent.prototype.makePlayer = function () {
-            var player = new Player_2.default(false, this.idGenerator++);
-            player.name = "player " + player.id;
-            player.makeColorScheme();
-            player.makeRandomFlag();
-            return player;
+            var template = utility_26.getRandomProperty(App_25.default.moduleData.Templates.Units);
+            return new Unit_5.default(template);
         };
         BattleSceneTesterComponent.prototype.makeFormation = function (units) {
             var formation = [];
@@ -14613,7 +13532,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
         };
         BattleSceneTesterComponent.prototype.handleSelectSFXTemplate = function (e) {
             var target = e.target;
-            var SFXTemplate = App_26.default.moduleData.Templates.BattleSFX[target.value];
+            var SFXTemplate = App_25.default.moduleData.Templates.BattleSFX[target.value];
             this.setState({
                 selectedSFXTemplateKey: target.value,
                 duration: SFXTemplate.duration
@@ -14668,7 +13587,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             };
             var testSFX = {
                 duration: 1000,
-                battleOverlay: App_26.default.moduleData.Templates.BattleSFX["guard"].battleOverlay,
+                battleOverlay: App_25.default.moduleData.Templates.BattleSFX["guard"].battleOverlay,
                 userOverlay: overlayTestFN.bind(null, 0xFF0000),
                 enemyOverlay: overlayTestFN.bind(null, 0x00FF00),
                 userSprite: spriteTestFN
@@ -14690,7 +13609,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             var user = this.state.activeUnit;
             var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
             var bs = this.battleScene;
-            var SFXTemplate = utility_30.extendObject(App_26.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+            var SFXTemplate = utility_26.extendObject(App_25.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
             if (this.state.duration) {
                 SFXTemplate.duration = this.state.duration;
             }
@@ -14731,8 +13650,8 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             var side1UnitElements = this.makeUnitElements(battle.unitsBySide["side1"]);
             var side2UnitElements = this.makeUnitElements(battle.unitsBySide["side2"]);
             var SFXTemplateSelectOptions = [];
-            for (var key in App_26.default.moduleData.Templates.BattleSFX) {
-                var template = App_26.default.moduleData.Templates.BattleSFX[key];
+            for (var key in App_25.default.moduleData.Templates.BattleSFX) {
+                var template = App_25.default.moduleData.Templates.BattleSFX[key];
                 SFXTemplateSelectOptions.push(React.DOM.option({
                     value: key,
                     key: key
@@ -14907,7 +13826,7 @@ define("src/uicomponents/mixins/AutoPositioner", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = AutoPositioner;
 });
-define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/uicomponents/mixins/AutoPositioner", "src/uicomponents/mixins/applyMixins", "src/App"], function (require, exports, AutoPositioner_1, applyMixins_7, App_27) {
+define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/uicomponents/mixins/AutoPositioner", "src/uicomponents/mixins/applyMixins", "src/App"], function (require, exports, AutoPositioner_1, applyMixins_7, App_26) {
     "use strict";
     var FlagPickerComponent = (function (_super) {
         __extends(FlagPickerComponent, _super);
@@ -14966,14 +13885,14 @@ define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/uico
                 onClick: this.handleSelectEmblem.bind(this, template)
             }, React.DOM.img({
                 className: className,
-                src: App_27.default.images[template.src].src
+                src: App_26.default.images[template.src].src
             })));
         };
         FlagPickerComponent.prototype.render = function () {
             var _this = this;
             var emblemElements = [];
-            for (var emblemType in App_27.default.moduleData.Templates.SubEmblems) {
-                var template = App_27.default.moduleData.Templates.SubEmblems[emblemType];
+            for (var emblemType in App_26.default.moduleData.Templates.SubEmblems) {
+                var template = App_26.default.moduleData.Templates.SubEmblems[emblemType];
                 emblemElements.push(this.makeEmblemElement(template));
             }
             var imageInfoMessage;
@@ -15342,9 +14261,12 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
             }
             this.onChangeTimeoutHandle = window.setTimeout(function () {
                 _this.props.onChange(color, isNull);
-            }, 50);
+            }, this.props.minUpdateBuffer || 0);
         };
         ColorPickerComponent.prototype.updateFromHsv = function (hue, sat, val, e) {
+            if (e && e.type !== "change") {
+                return;
+            }
             var color = Color_4.default.fromHSV.apply(null, Color_4.default.convertDegreesToScalars([hue, sat, val]));
             var hexString = "#" + color.getHexString();
             this.setState({
@@ -15354,12 +14276,7 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
             });
             if (this.props.onChange) {
                 var target = e.target;
-                if (!this.props.limitUpdates ||
-                    (!this.props.flagHasCustomImage ||
-                        target.type !== "range" ||
-                        e.type !== "input")) {
-                    this.triggerParentOnChange(color, false);
-                }
+                this.triggerParentOnChange(color, false);
             }
         };
         ColorPickerComponent.prototype.updateFromHex = function (hexColor) {
@@ -15618,7 +14535,7 @@ define("src/uicomponents/setupgame/ColorSetter", ["require", "exports", "src/uic
                     hexColor: this.props.color ? this.props.color.getHex() : null,
                     generateColor: this.props.generateColor,
                     onChange: this.props.onChange,
-                    flagHasCustomImage: this.props.flagHasCustomImage,
+                    minUpdateBuffer: this.props.minUpdateBuffer,
                     autoPositionerProps: {
                         getParentClientRect: this.getClientRect,
                         positionOnUpdate: true,
@@ -15635,7 +14552,45 @@ define("src/uicomponents/setupgame/ColorSetter", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/PlayerSetup", ["require", "exports", "src/Player", "src/uicomponents/setupgame/FlagSetter", "src/uicomponents/setupgame/ColorSetter", "src/colorGeneration"], function (require, exports, Player_3, FlagSetter_1, ColorSetter_1, colorGeneration_2) {
+define("src/uicomponents/setupgame/RacePicker", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var RacePickerComponent = (function (_super) {
+        __extends(RacePickerComponent, _super);
+        function RacePickerComponent(props) {
+            _super.call(this, props);
+            this.displayName = "RacePicker";
+            this.handleChangeRace = this.handleChangeRace.bind(this);
+        }
+        RacePickerComponent.prototype.handleChangeRace = function (e) {
+            var target = e.target;
+            var newRace = this.props.availableRaces[target.value];
+            this.props.changeRace(newRace);
+        };
+        RacePickerComponent.prototype.render = function () {
+            var raceTemplateOptions = [];
+            for (var key in this.props.availableRaces) {
+                var race = this.props.availableRaces[key];
+                raceTemplateOptions.push(React.DOM.option({
+                    value: race.key,
+                    key: race.key,
+                    title: race.description
+                }, race.displayName));
+            }
+            return (React.DOM.select({
+                className: "race-picker",
+                value: this.props.selectedRace.key,
+                onChange: this.handleChangeRace,
+                title: this.props.selectedRace.description
+            }, raceTemplateOptions));
+        };
+        return RacePickerComponent;
+    }(React.Component));
+    exports.RacePickerComponent = RacePickerComponent;
+    var Factory = React.createFactory(RacePickerComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+});
+define("src/uicomponents/setupgame/PlayerSetup", ["require", "exports", "src/App", "src/Player", "src/colorGeneration", "src/utility", "src/uicomponents/setupgame/FlagSetter", "src/uicomponents/setupgame/ColorSetter", "src/uicomponents/setupgame/RacePicker"], function (require, exports, App_27, Player_3, colorGeneration_2, utility_27, FlagSetter_1, ColorSetter_1, RacePicker_1) {
     "use strict";
     var PlayerSetupComponent = (function (_super) {
         __extends(PlayerSetupComponent, _super);
@@ -15656,13 +14611,15 @@ define("src/uicomponents/setupgame/PlayerSetup", ["require", "exports", "src/Pla
             this.makePlayer = this.makePlayer.bind(this);
             this.handleSetHuman = this.handleSetHuman.bind(this);
             this.handleSetCustomImage = this.handleSetCustomImage.bind(this);
+            this.setRace = this.setRace.bind(this);
         };
         PlayerSetupComponent.prototype.getInitialStateTODO = function () {
             return ({
                 name: this.props.initialName,
                 mainColor: null,
                 subColor: null,
-                flagHasCustomImage: false
+                flagHasCustomImage: false,
+                race: utility_27.getRandomProperty(App_27.default.moduleData.Templates.Races)
             });
         };
         PlayerSetupComponent.prototype.generateMainColor = function (subColor) {
@@ -15702,6 +14659,11 @@ define("src/uicomponents/setupgame/PlayerSetup", ["require", "exports", "src/Pla
         PlayerSetupComponent.prototype.handleSetCustomImage = function (image) {
             this.setState({ flagHasCustomImage: Boolean(image) });
         };
+        PlayerSetupComponent.prototype.setRace = function (race) {
+            this.setState({
+                race: race
+            });
+        };
         PlayerSetupComponent.prototype.randomize = function () {
             if (!this.state.flagHasCustomImage) {
                 this.ref_TODO_flagSetter.state.flag.generateRandom();
@@ -15713,20 +14675,27 @@ define("src/uicomponents/setupgame/PlayerSetup", ["require", "exports", "src/Pla
             });
         };
         PlayerSetupComponent.prototype.makePlayer = function () {
-            var player = new Player_3.default(!this.props.isHuman);
-            player.initTechnologies();
-            player.name = this.state.name;
-            player.color = this.state.mainColor === null ?
-                this.generateMainColor() : this.state.mainColor;
-            player.secondaryColor = this.state.subColor === null ?
-                this.generateSubColor(player.color) : this.state.subColor;
+            var mainColor = this.state.mainColor || this.generateMainColor();
+            var secondaryColor = this.state.subColor || this.generateSubColor(mainColor);
             var flag = this.ref_TODO_flagSetter.state.flag;
-            player.flag = flag;
-            player.flag.setColorScheme(player.color, player.secondaryColor, flag.tetriaryColor);
+            flag.setColorScheme(mainColor, secondaryColor, flag.tetriaryColor);
             if (this.state.mainColor === null && this.state.subColor === null &&
                 !flag.customImage && !flag.foregroundEmblem) {
                 flag.generateRandom();
             }
+            var player = new Player_3.default({
+                isAI: !this.props.isHuman,
+                isIndependent: false,
+                race: this.state.race,
+                money: 1000,
+                name: this.state.name,
+                color: {
+                    main: mainColor,
+                    secondary: secondaryColor,
+                    alpha: 1
+                },
+                flag: flag
+            });
             this.setState({
                 mainColor: player.color,
                 subColor: player.secondaryColor
@@ -15746,17 +14715,19 @@ define("src/uicomponents/setupgame/PlayerSetup", ["require", "exports", "src/Pla
                 className: "player-setup-name",
                 value: this.state.name,
                 onChange: this.handleNameChange
+            }), RacePicker_1.default({
+                availableRaces: App_27.default.moduleData.Templates.Races,
+                selectedRace: this.state.race,
+                changeRace: this.setRace
             }), ColorSetter_1.default({
                 onChange: this.setMainColor,
                 setActiveColorPicker: this.props.setActiveSetterComponent,
                 generateColor: this.generateMainColor,
-                flagHasCustomImage: this.state.flagHasCustomImage,
                 color: this.state.mainColor
             }), ColorSetter_1.default({
                 onChange: this.setSubColor,
                 setActiveColorPicker: this.props.setActiveSetterComponent,
                 generateColor: this.generateSubColor,
-                flagHasCustomImage: this.state.flagHasCustomImage,
                 color: this.state.subColor
             }), FlagSetter_1.default({
                 ref: function (component) {
@@ -15977,7 +14948,7 @@ define("src/uicomponents/galaxymap/OptionsGroup", ["require", "exports"], functi
                 React.DOM.div({
                     className: "option-group-header"
                 }, React.DOM.div({
-                    className: "option-group-header-title collapsible" + (this.state.isCollapsed ? " collapsed" : ""),
+                    className: "option-group-header-title" + (this.state.isCollapsed ? " collapsed" : " collapsible"),
                     onClick: this.toggleCollapse
                 }, this.props.header), resetButton) :
                 null;
@@ -15990,7 +14961,7 @@ define("src/uicomponents/galaxymap/OptionsGroup", ["require", "exports"], functi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_31) {
+define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_28) {
     "use strict";
     var MapGenOptionComponent = (function (_super) {
         __extends(MapGenOptionComponent, _super);
@@ -16002,7 +14973,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
         MapGenOptionComponent.prototype.handleChange = function (e) {
             var target = e.target;
             var option = this.props.option;
-            var newValue = utility_31.clamp(parseFloat(target.value), option.range.min, option.range.max);
+            var newValue = utility_28.clamp(parseFloat(target.value), option.range.min, option.range.max);
             this.props.onChange(this.props.id, newValue);
         };
         MapGenOptionComponent.prototype.shouldComponentUpdate = function (newProps) {
@@ -16053,7 +15024,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_32) {
+define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_29) {
     "use strict";
     var MapGenOptionsComponent = (function (_super) {
         __extends(MapGenOptionsComponent, _super);
@@ -16095,13 +15066,13 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                         var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
                         if (!oldOption)
                             continue;
-                        var oldValuePercentage = utility_32.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
+                        var oldValuePercentage = utility_29.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
                         value = option.min + (option.max - option.min) * oldValuePercentage;
                     }
                     else {
                         value = isFinite(option.defaultValue) ? option.defaultValue : (option.min + option.max) / 2;
                     }
-                    value = utility_32.clamp(utility_32.roundToNearestMultiple(value, option.step), option.min, option.max);
+                    value = utility_29.clamp(utility_29.roundToNearestMultiple(value, option.step), option.min, option.max);
                     defaultValues["optionValue_" + optionName] = value;
                 }
             }.bind(this));
@@ -16125,14 +15096,14 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                 var optionGroup = optionGroups[optionGroupName];
                 for (var optionName in optionGroup) {
                     var option = optionGroup[optionName].range;
-                    var optionValue = utility_32.clamp(utility_32.roundToNearestMultiple(utility_32.randInt(option.min, option.max), option.step), option.min, option.max);
+                    var optionValue = utility_29.clamp(utility_29.roundToNearestMultiple(utility_29.randInt(option.min, option.max), option.step), option.min, option.max);
                     newValues["optionValue_" + optionName] = optionValue;
                 }
             }
             this.setState(newValues);
         };
         MapGenOptionsComponent.prototype.getOptionValuesForTemplate = function () {
-            var optionValues = utility_32.extendObject(this.props.mapGenTemplate.options);
+            var optionValues = utility_29.extendObject(this.props.mapGenTemplate.options);
             for (var groupName in optionValues) {
                 var optionsGroup = optionValues[groupName];
                 for (var optionName in optionsGroup) {
@@ -16762,7 +15733,7 @@ define("src/uicomponents/battle/TurnCounterList", ["require", "exports", "src/ui
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_33) {
+define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_30) {
     "use strict";
     var AbilityUseEffectQueue = (function () {
         function AbilityUseEffectQueue(battleScene, callbacks) {
@@ -16798,13 +15769,13 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
         };
         AbilityUseEffectQueue.squashEffects = function (parent, toSquash, parentIsMostRecent) {
             if (parentIsMostRecent === void 0) { parentIsMostRecent = false; }
-            var squashedChangedUnitDisplayDataByID = utility_33.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
+            var squashedChangedUnitDisplayDataByID = utility_30.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
             if (parentIsMostRecent) {
-                var squashedEffect = utility_33.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
+                var squashedEffect = utility_30.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
                 return squashedEffect;
             }
             else {
-                var squashedEffect = utility_33.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
+                var squashedEffect = utility_30.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
                 return squashedEffect;
             }
         };
@@ -17252,7 +16223,7 @@ define("src/uicomponents/battle/AbilityTooltip", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounterList", "src/uicomponents/battle/BattleBackground", "src/options", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/BattleUIState", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, App_30, TurnOrder_1, TurnCounterList_1, BattleBackground_2, Options_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_34, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, BattleUIState_1, AbilityTooltip_1) {
+define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounterList", "src/uicomponents/battle/BattleBackground", "src/options", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/BattleUIState", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, App_30, TurnOrder_1, TurnCounterList_1, BattleBackground_2, Options_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_31, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, BattleUIState_1, AbilityTooltip_1) {
     "use strict";
     var BattleComponent = (function (_super) {
         __extends(BattleComponent, _super);
@@ -17464,8 +16435,8 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
         };
         BattleComponent.prototype.onBattleEffectTrigger = function (effect) {
             this.setState({
-                previousUnitDisplayDataByID: utility_34.shallowCopy(this.state.unitDisplayDataByID),
-                unitDisplayDataByID: utility_34.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
+                previousUnitDisplayDataByID: utility_31.shallowCopy(this.state.unitDisplayDataByID),
+                unitDisplayDataByID: utility_31.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
                 battleEvaluation: effect.newEvaluation,
                 battleEffectDurationAfterTrigger: this.state.battleEffectDuration -
                     (Date.now() - this.SFXStartTime),
@@ -18220,11 +17191,14 @@ define("modules/defaultnotifications/notifications/uicomponents/BattleFinishNoti
             var defender = p.defender;
             var victor = p.victor;
             var location = p.location;
-            var message = notification.makeMessage();
-            var attackSuccessString = victor === attacker ? " succesfully " : " unsuccesfully ";
             var attackerGainedControl = location.owner === attacker;
-            var controllerString = attackerGainedControl ? " now controls " :
-                " maintains control of ";
+            var message = notification.makeMessage();
+            var attackSuccessString = victor === attacker ?
+                " succesfully " :
+                " unsuccesfully ";
+            var controllerString = attackerGainedControl ?
+                " now " + victor.name.pluralizeVerbWithS("control") + " " :
+                " " + victor.name.pluralizeVerbWithS("maintain") + " control of ";
             return (React.DOM.div({
                 className: "battle-finish-notification draggable-container"
             }, message + ".", React.DOM.br(null), React.DOM.br(null), "" + attacker.name + attackSuccessString + "attacked " + defender.name + " in " +
@@ -18248,7 +17222,7 @@ define("modules/defaultnotifications/notifications/battleFinishNotification", ["
         contentConstructor: BattleFinishNotification_1.default,
         messageConstructor: function (props) {
             var message = "A battle was fought in " + props.location.name + " between " +
-                props.attacker.name + " and " + props.defender.name;
+                props.attacker.name.fullName + " and " + props.defender.name.fullName;
             return message;
         },
         serializeProps: function (props) {
@@ -18895,7 +17869,7 @@ define("src/uicomponents/galaxymap/StarInfo", ["require", "exports", "src/uicomp
                 className: "star-info-name"
             }, star.name), React.DOM.div({
                 className: "star-info-owner"
-            }, star.owner ? star.owner.name : null), React.DOM.div({
+            }, star.owner ? star.owner.name.fullName : null), React.DOM.div({
                 className: "star-info-location"
             }, "x: " + star.x.toFixed() +
                 " y: " + star.y.toFixed()), React.DOM.div({
@@ -18976,7 +17950,7 @@ define("src/uicomponents/galaxymap/fleetinfo", ["require", "exports", "src/uicom
         }
         FleetInfoComponent.prototype.setFleetName = function (e) {
             var target = e.target;
-            this.props.fleet.name = target.value;
+            this.props.fleet.name.setName(target.value);
             this.forceUpdate();
         };
         FleetInfoComponent.prototype.bindMethods = function () {
@@ -19003,7 +17977,7 @@ define("src/uicomponents/galaxymap/fleetinfo", ["require", "exports", "src/uicom
                 className: "fleet-info-header"
             }, React.DOM.input({
                 className: "fleet-info-name",
-                value: isNotDetected ? "Unidentified fleet" : fleet.name,
+                value: isNotDetected ? "Unidentified fleet" : fleet.name.fullName,
                 onChange: isNotDetected ? null : this.setFleetName,
                 readOnly: isNotDetected
             }), React.DOM.div({
@@ -19187,7 +18161,1870 @@ define("src/uicomponents/galaxymap/fleetcontents", ["require", "exports", "src/u
     exports.default = Factory;
     var _a;
 });
-define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/options", "src/eventManager", "src/App"], function (require, exports, options_7, eventManager_30, App_32) {
+define("src/IDDictionary", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var IDDictionary = (function () {
+        function IDDictionary(keys, getValueFN) {
+            var _this = this;
+            this.valuesByID = {};
+            this.keysByID = {};
+            if (keys) {
+                keys.forEach(function (key) {
+                    _this.set(key, getValueFN(key));
+                });
+            }
+        }
+        IDDictionary.prototype.has = function (key) {
+            return Boolean(this.valuesByID[key.id]);
+        };
+        IDDictionary.prototype.get = function (key) {
+            return this.valuesByID[key.id];
+        };
+        IDDictionary.prototype.getByID = function (id) {
+            return this.valuesByID[id];
+        };
+        IDDictionary.prototype.set = function (key, value) {
+            this.valuesByID[key.id] = value;
+            this.keysByID[key.id] = key;
+        };
+        IDDictionary.prototype.setIfDoesntExist = function (key, value) {
+            if (!this.keysByID[key.id]) {
+                this.set(key, value);
+            }
+        };
+        IDDictionary.prototype.delete = function (key) {
+            delete this.valuesByID[key.id];
+            delete this.keysByID[key.id];
+        };
+        IDDictionary.prototype.forEach = function (callback) {
+            for (var ID in this.keysByID) {
+                callback(this.keysByID[ID], this.valuesByID[ID]);
+            }
+        };
+        IDDictionary.prototype.filter = function (filterFN) {
+            var filtered = this.constructor();
+            this.forEach(function (key, value) {
+                if (filterFN(key, value)) {
+                    filtered.set(key, value);
+                }
+            });
+            return filtered;
+        };
+        IDDictionary.prototype.zip = function (keyName, valueName) {
+            var zipped = [];
+            for (var key in this.keysByID) {
+                var zippedPair = (_a = {},
+                    _a[keyName] = this.keysByID[key],
+                    _a[valueName] = this.valuesByID[key],
+                    _a
+                );
+                zipped.push(zippedPair);
+            }
+            return zipped;
+            var _a;
+        };
+        return IDDictionary;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = IDDictionary;
+    var _a;
+});
+define("src/ValuesByUnit", ["require", "exports", "src/IDDictionary"], function (require, exports, IDDictionary_1) {
+    "use strict";
+    var ValuesByUnit = (function (_super) {
+        __extends(ValuesByUnit, _super);
+        function ValuesByUnit(units, getValueFN) {
+            _super.call(this, units, getValueFN);
+        }
+        return ValuesByUnit;
+    }(IDDictionary_1.default));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ValuesByUnit;
+    var _a;
+});
+define("src/ValuesByStar", ["require", "exports", "src/IDDictionary"], function (require, exports, IDDictionary_2) {
+    "use strict";
+    var ValuesByStar = (function (_super) {
+        __extends(ValuesByStar, _super);
+        function ValuesByStar(stars, getValueFN) {
+            _super.call(this, stars, getValueFN);
+        }
+        return ValuesByStar;
+    }(IDDictionary_2.default));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ValuesByStar;
+    var _a;
+});
+define("src/ValuesByPlayer", ["require", "exports", "src/IDDictionary"], function (require, exports, IDDictionary_3) {
+    "use strict";
+    var ValuesByPlayer = (function (_super) {
+        __extends(ValuesByPlayer, _super);
+        function ValuesByPlayer(players, getValueFN) {
+            _super.call(this, players, getValueFN);
+        }
+        return ValuesByPlayer;
+    }(IDDictionary_3.default));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ValuesByPlayer;
+    var _a;
+});
+define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/ValuesByStar", "src/ValuesByPlayer", "src/utility", "src/evaluateUnitStrength"], function (require, exports, ValuesByStar_1, ValuesByPlayer_1, utility_32, evaluateUnitStrength_2) {
+    "use strict";
+    exports.defaultEvaluationParameters = {
+        starDesirability: {
+            neighborRange: 1,
+            neighborWeight: 0.5,
+            defendabilityWeight: 1,
+            totalIncomeWeight: 1,
+            baseIncomeWeight: 0.5,
+            infrastructureWeight: 1,
+            productionWeight: 1,
+        }
+    };
+    var MapEvaluator = (function () {
+        function MapEvaluator(map, player) {
+            this.map = map;
+            this.player = player;
+            this.evaluationParameters = exports.defaultEvaluationParameters;
+        }
+        MapEvaluator.prototype.evaluateStarIncome = function (star) {
+            var evaluation = 0;
+            evaluation += star.baseIncome;
+            evaluation += (star.getIncome() - star.baseIncome) *
+                (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
+            var evaluation = 0;
+            for (var category in star.buildings) {
+                for (var i = 0; i < star.buildings[category].length; i++) {
+                    evaluation += star.buildings[category][i].totalCost / 25;
+                }
+            }
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateStarProduction = function (star) {
+            var evaluation = 0;
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateStarDefendability = function (star) {
+            var evaluation = 0;
+            var nearbyStars = star.getLinkedInRange(2).byRange;
+            for (var rangeString in nearbyStars) {
+                var distanceMultiplier = 1 / parseInt(rangeString);
+                var starsInRange = nearbyStars[rangeString];
+                for (var i = 0; i < starsInRange.length; i++) {
+                    var neighbor = starsInRange[i];
+                    var neighborDefendability;
+                    if (neighbor.owner === this.player) {
+                        neighborDefendability = 3;
+                    }
+                    else if (neighbor.owner.isIndependent) {
+                        neighborDefendability = -0.75;
+                    }
+                    else {
+                        neighborDefendability = -2;
+                    }
+                    evaluation += neighborDefendability * distanceMultiplier;
+                }
+            }
+            if (star.owner === this.player) {
+                evaluation += 3;
+            }
+            return evaluation * 5;
+        };
+        MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
+            var evaluation = 0;
+            var p = this.evaluationParameters.starDesirability;
+            var incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
+            incomeEvaluation *= incomeEvaluation / (this.player.getIncome() / 4);
+            evaluation += incomeEvaluation;
+            var infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
+            evaluation += infrastructureEvaluation;
+            var productionEvaluation = this.evaluateStarProduction(star) * p.productionWeight;
+            evaluation += productionEvaluation;
+            var defendabilityEvaluation = this.evaluateStarDefendability(star) * p.defendabilityWeight;
+            evaluation += defendabilityEvaluation;
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
+            var evaluation = 0;
+            var getDistanceFalloff = function (distance) {
+                return 1 / (distance + 1);
+            };
+            var inRange = star.getLinkedInRange(range).byRange;
+            for (var distanceString in inRange) {
+                var stars = inRange[distanceString];
+                var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
+                for (var i = 0; i < stars.length; i++) {
+                    evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
+                }
+            }
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateStarDesirability = function (star) {
+            var evaluation = 0;
+            var p = this.evaluationParameters.starDesirability;
+            evaluation += this.evaluateIndividualStarDesirability(star);
+            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) *
+                p.neighborWeight;
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateStarTargets = function (targetStars) {
+            var _this = this;
+            var evaluationByStar = new ValuesByStar_1.default(targetStars, function (star) {
+                var desirability = _this.evaluateStarDesirability(star);
+                var hostileStrength = 1;
+                var ownInfluenceMap = _this.getPlayerInfluenceMap(_this.player);
+                var ownInfluenceAtStar = ownInfluenceMap.get(star) || 1;
+                return ({
+                    desirability: desirability,
+                    hostileStrength: hostileStrength,
+                    ownInfluence: ownInfluenceAtStar
+                });
+            });
+            return evaluationByStar;
+        };
+        MapEvaluator.prototype.scoreStarTargets = function (evaluations, getScoreFN) {
+            var scores = new ValuesByStar_1.default();
+            evaluations.forEach(function (star, evaluation) {
+                scores.set(star, getScoreFN(star, evaluation));
+            });
+            return scores;
+        };
+        MapEvaluator.prototype.scoreIndependentTargets = function (evaluations) {
+            var _this = this;
+            return this.scoreStarTargets(evaluations, function (star, evaluation) {
+                var easeOfCapturing = evaluation.ownInfluence / evaluation.hostileStrength;
+                var score = evaluation.desirability * easeOfCapturing;
+                if (star.getSecondaryController() === _this.player) {
+                    score *= 1.5;
+                }
+                return score;
+            });
+        };
+        MapEvaluator.prototype.getIndependentNeighborStars = function () {
+            var _this = this;
+            var independentNeighborStars = this.player.getNeighboringStars().filter(function (star) {
+                var secondaryController = star.getSecondaryController();
+                return star.owner.isIndependent && (!secondaryController || secondaryController === _this.player);
+            });
+            return independentNeighborStars;
+        };
+        MapEvaluator.prototype.getIndependentNeighborStarIslands = function (earlyReturnSize) {
+            var _this = this;
+            var islandQualifierFN = function (a, b) {
+                var secondaryController = b.getSecondaryController();
+                return b.owner.isIndependent && (!secondaryController || secondaryController === _this.player);
+            };
+            return this.player.controlledLocations[0].getIslandForQualifier(islandQualifierFN, earlyReturnSize, this.player.controlledLocations);
+        };
+        MapEvaluator.prototype.getHostileUnitsAtStar = function (star) {
+            var _this = this;
+            return star.getUnits(function (player) {
+                return _this.player.diplomacyStatus.canAttackFleetOfPlayer(player);
+            });
+        };
+        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
+            return evaluateUnitStrength_2.default.apply(void 0, this.getHostileUnitsAtStar(star));
+        };
+        MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
+            var independentUnits = star.getUnits(function (player) { return player.isIndependent; });
+            return evaluateUnitStrength_2.default.apply(void 0, independentUnits);
+        };
+        MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
+            var byPlayer = new ValuesByPlayer_1.default();
+            for (var i = 0; i < star.buildings["defence"].length; i++) {
+                var building = star.buildings["defence"][i];
+                var previousValue = byPlayer.get(building.controller) || 0;
+                byPlayer.set(building.controller, previousValue + building.totalCost);
+            }
+            return byPlayer;
+        };
+        MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
+            var strength = 0;
+            for (var i = 0; i < star.buildings["defence"].length; i++) {
+                var building = star.buildings["defence"][i];
+                if (building.controller.id === this.player.id)
+                    continue;
+                strength += building.totalCost;
+            }
+            return strength;
+        };
+        MapEvaluator.prototype.getVisibleFleetsOfPlayer = function (player) {
+            var _this = this;
+            var visibleFleets = [];
+            this.player.getVisibleStars().forEach(function (star) {
+                var playerFleetsAtStar = star.fleets[player.id];
+                if (playerFleetsAtStar) {
+                    var hasDetectionInStar = _this.player.starIsDetected(star);
+                    var visibleFleetsAtStar = hasDetectionInStar ? playerFleetsAtStar :
+                        playerFleetsAtStar.filter(function (fleet) {
+                            return !fleet.isStealthy;
+                        });
+                    visibleFleets.push.apply(visibleFleets, visibleFleetsAtStar);
+                }
+            });
+            return visibleFleets;
+        };
+        MapEvaluator.prototype.getPlayerInfluenceMap = function (player) {
+            var _this = this;
+            var playerIsImmobile = player.isIndependent;
+            var stars = this.player.getRevealedStars();
+            var influence = new ValuesByStar_1.default(stars, function (star) {
+                var defenceBuildingStrength = _this.getDefenceBuildingStrengthAtStarByPlayer(star);
+                return defenceBuildingStrength.get(player) || 0;
+            });
+            var fleets = this.getVisibleFleetsOfPlayer(player);
+            function getDistanceFalloff(distance) {
+                return 1 / (distance + 1);
+            }
+            for (var i = 0; i < fleets.length; i++) {
+                var fleet = fleets[i];
+                var strength = evaluateUnitStrength_2.default.apply(void 0, fleet.units);
+                var location = fleet.location;
+                var range = fleet.getMinMaxMovePoints();
+                var turnsToCheck = 4;
+                var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
+                inFleetRange[0] = [location];
+                for (var distance in inFleetRange) {
+                    var numericDistance = parseInt(distance);
+                    var turnsToReach = Math.floor((numericDistance - 1) / range);
+                    if (turnsToReach < 0)
+                        turnsToReach = 0;
+                    var distanceFalloff = getDistanceFalloff(turnsToReach);
+                    var adjustedStrength = strength * distanceFalloff;
+                    for (var j = 0; j < inFleetRange[distance].length; j++) {
+                        var star = inFleetRange[distance][j];
+                        var previousInfluence = influence.get(star) || 0;
+                        influence.set(star, previousInfluence + adjustedStrength);
+                    }
+                }
+            }
+            return influence;
+        };
+        MapEvaluator.prototype.getInfluenceMapsForKnownPlayers = function () {
+            var byPlayer = new ValuesByPlayer_1.default();
+            for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                var player = this.player.diplomacyStatus.metPlayers[playerId];
+                byPlayer.set(player, this.getPlayerInfluenceMap(player));
+            }
+            return byPlayer;
+        };
+        MapEvaluator.prototype.getKnownPlayersInfluenceOnStar = function (star) {
+            var influenceMaps = this.getInfluenceMapsForKnownPlayers();
+            var influenceByPlayer = new ValuesByPlayer_1.default();
+            influenceMaps.forEach(function (player, influenceMap) {
+                var influenceOnStar = influenceMap.get(star);
+                if (isFinite(influenceOnStar)) {
+                    influenceByPlayer.set(player, influenceOnStar);
+                }
+            });
+            return influenceByPlayer;
+        };
+        MapEvaluator.prototype.getVisibleStarsOfPlayer = function (player) {
+            return this.player.getVisibleStars().filter(function (star) {
+                return star.owner === player;
+            });
+        };
+        MapEvaluator.prototype.getVisibleStarsOfKnownPlayers = function () {
+            var byPlayer = new ValuesByPlayer_1.default();
+            for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                var player = this.player.diplomacyStatus.metPlayers[playerId];
+                byPlayer.set(player, this.getVisibleStarsOfPlayer(player));
+            }
+            return byPlayer;
+        };
+        MapEvaluator.prototype.estimateGlobalStrength = function (player) {
+            var visibleStrength = 0;
+            var invisibleStrength = 0;
+            var fleets = this.getVisibleFleetsOfPlayer(player);
+            for (var i = 0; i < fleets.length; i++) {
+                visibleStrength += evaluateUnitStrength_2.default.apply(void 0, fleets[i].units);
+            }
+            if (player !== this.player) {
+                invisibleStrength = visibleStrength * 0.5;
+            }
+            return visibleStrength + invisibleStrength;
+        };
+        MapEvaluator.prototype.getPerceivedThreatOfPlayer = function (player) {
+            if (!this.player.diplomacyStatus.metPlayers[player.id]) {
+                throw new Error(this.player.name.fullName +
+                    " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name.fullName);
+            }
+            var otherInfluenceMap = this.getPlayerInfluenceMap(player);
+            var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
+            var totalInfluenceInOwnStars = 0;
+            this.player.controlledLocations.forEach(function (star) {
+                var ownInfluence = ownInfluenceMap.get(star);
+                var otherInfluence = otherInfluenceMap.get(star);
+                totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
+            });
+            var globalStrengthDifference = this.estimateGlobalStrength(player) - this.estimateGlobalStrength(this.player);
+            return totalInfluenceInOwnStars + globalStrengthDifference;
+        };
+        MapEvaluator.prototype.getPerceivedThreatOfAllKnownPlayers = function () {
+            var byPlayer = new ValuesByPlayer_1.default();
+            for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                var player = this.player.diplomacyStatus.metPlayers[playerId];
+                byPlayer.set(player, this.getPerceivedThreatOfPlayer(player));
+            }
+            return byPlayer;
+        };
+        MapEvaluator.prototype.getRelativePerceivedThreatOfAllKnownPlayers = function () {
+            var byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
+            var relative = new ValuesByPlayer_1.default();
+            var min, max;
+            byPlayer.forEach(function (player, threat) {
+                min = isFinite(min) ? Math.min(min, threat) : threat;
+                max = isFinite(max) ? Math.max(max, threat) : threat;
+            });
+            byPlayer.forEach(function (player, threat) {
+                relative.set(player, utility_32.getRelativeValue(threat, min, max));
+            });
+            return relative;
+        };
+        MapEvaluator.prototype.getVisionCoverageAroundStar = function (star, range, useDetection) {
+            if (useDetection === void 0) { useDetection = false; }
+            var toCheck = star.getLinkedInRange(range).all;
+            var scorePerVisibleStar = 1 / toCheck.length;
+            var coverageScore = 0;
+            var visibilityCheckFN = useDetection ? this.player.starIsDetected : this.player.starIsVisible;
+            for (var i = 0; i < toCheck.length; i++) {
+                var neighbor = toCheck[i];
+                if (visibilityCheckFN.call(this.player, neighbor)) {
+                    coverageScore += scorePerVisibleStar;
+                }
+            }
+            return coverageScore;
+        };
+        MapEvaluator.prototype.estimateFleetVisionRange = function (fleet) {
+            var _this = this;
+            var fleetLikelyHasScoutingUnit = fleet.units.length >= 5;
+            var estimatedRange = fleetLikelyHasScoutingUnit ? 2 : 1;
+            fleet.units.forEach(function (unit) {
+                if (_this.player.unitIsIdentified(unit)) {
+                    estimatedRange = Math.max(estimatedRange, unit.getVisionRange());
+                }
+            });
+            return estimatedRange;
+        };
+        MapEvaluator.prototype.estimateFleetDetectionRange = function (fleet) {
+            var _this = this;
+            var fleetLikelyHasScoutingUnit = fleet.units.length >= 5;
+            var estimatedRange = fleetLikelyHasScoutingUnit ? 0 : -1;
+            fleet.units.forEach(function (unit) {
+                if (_this.player.unitIsIdentified(unit)) {
+                    estimatedRange = Math.max(estimatedRange, unit.getDetectionRange());
+                }
+            });
+            return estimatedRange;
+        };
+        MapEvaluator.prototype.getPlayerVisionMap = function (player) {
+            var detectedStars = {};
+            var visibleStars = {};
+            var revealedStarsOfPlayer = this.player.getRevealedStars().filter(function (star) {
+                return star.owner === player;
+            });
+            var visibleFleetsOfPlayer = this.getVisibleFleetsOfPlayer(player);
+            var processDetectionSource = function (source, detectionRange, visionRange) {
+                var detected = source.getLinkedInRange(detectionRange).all;
+                for (var i = 0; i < detected.length; i++) {
+                    var star = detected[i];
+                    if (!detectedStars[star.id]) {
+                        detectedStars[star.id] = star;
+                    }
+                }
+                var visible = source.getLinkedInRange(visionRange).all;
+                for (var i = 0; i < visible.length; i++) {
+                    var star = visible[i];
+                    if (!visibleStars[star.id]) {
+                        visibleStars[star.id] = star;
+                    }
+                }
+            };
+            for (var i = 0; i < revealedStarsOfPlayer.length; i++) {
+                var star = revealedStarsOfPlayer[i];
+                var detectionRange = this.player.starIsDetected(star) ? star.getDetectionRange() : 0;
+                var visionRange = this.player.starIsDetected(star) ? star.getVisionRange() : 1;
+                processDetectionSource(star, detectionRange, visionRange);
+            }
+            for (var i = 0; i < visibleFleetsOfPlayer.length; i++) {
+                var fleet = visibleFleetsOfPlayer[i];
+                var detectionRange = this.estimateFleetDetectionRange(fleet);
+                var visionRange = this.estimateFleetVisionRange(fleet);
+                processDetectionSource(fleet.location, detectionRange, visionRange);
+            }
+            return ({
+                visible: visibleStars,
+                detected: detectedStars
+            });
+        };
+        MapEvaluator.prototype.getScoredPerimeterLocationsAgainstPlayer = function (player, safetyFactor, forScouting) {
+            var ownInfluence = this.getPlayerInfluenceMap(this.player);
+            var enemyInfluence = this.getPlayerInfluenceMap(player);
+            var enemyVision = this.getPlayerVisionMap(player);
+            var scores = [];
+            var revealedStars = this.player.getRevealedStars();
+            var stars = revealedStars.filter(function (star) {
+                return star.owner.isIndependent || star.owner === this.player;
+            }, this);
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+                var nearestOwnedStar = player.getNearestOwnedStarTo(star);
+                var distanceToEnemy = star.getDistanceToStar(nearestOwnedStar);
+                distanceToEnemy = Math.max(distanceToEnemy - 1, 1);
+                var distanceScore = Math.pow(1 / distanceToEnemy, 2);
+                var danger = enemyInfluence.get(star) || 1;
+                if (!enemyVision.visible[star.id]) {
+                    danger *= 0.5;
+                }
+                danger *= safetyFactor;
+                if (forScouting) {
+                    var safety = ownInfluence.get(star) / (danger * safetyFactor);
+                    var score = safety * distanceScore;
+                }
+                else {
+                    var score = (danger / ownInfluence.get(star)) / safetyFactor;
+                }
+                scores.push({
+                    star: star,
+                    score: score
+                });
+            }
+            return scores;
+        };
+        MapEvaluator.prototype.getDesireToGoToWarWith = function (player) {
+            return Math.random();
+        };
+        MapEvaluator.prototype.getAbilityToGoToWarWith = function (player) {
+            return Math.random();
+        };
+        MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
+            var evaluationByPlayer = {};
+            var neighborStarsCountByPlayer = new ValuesByPlayer_1.default();
+            var allNeighbors = this.player.getNeighboringStars();
+            var neighborStarsForPlayer = [];
+            for (var i = 0; i < allNeighbors.length; i++) {
+                var star = allNeighbors[i];
+                if (!star.owner.isIndependent) {
+                    var previousCount = neighborStarsCountByPlayer.get(star.owner) || 0;
+                    neighborStarsCountByPlayer.set(star.owner, previousCount + 1);
+                }
+            }
+            for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                var player = this.player.diplomacyStatus.metPlayers[playerId];
+                evaluationByPlayer[player.id] =
+                    {
+                        currentTurn: currentTurn,
+                        opinion: this.player.diplomacyStatus.getOpinionOf(player),
+                        neighborStars: neighborStarsCountByPlayer.get(player),
+                        currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
+                    };
+            }
+            return evaluationByPlayer;
+        };
+        return MapEvaluator;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = MapEvaluator;
+    var _a;
+});
+define("modules/defaultai/mapai/GrandStrategyAI", ["require", "exports", "src/utility"], function (require, exports, utility_33) {
+    "use strict";
+    var GrandStrategyAI = (function () {
+        function GrandStrategyAI(personality, mapEvaluator, game) {
+            this.personality = personality;
+            this.mapEvaluator = mapEvaluator;
+            this.game = game;
+        }
+        GrandStrategyAI.prototype.setDesiredStars = function () {
+            var totalStarsInMap = this.mapEvaluator.map.stars.length;
+            var playersInGame = this.game.playerOrder.length;
+            var starsPerPlayer = totalStarsInMap / playersInGame;
+            var baseMinStarsDesired = starsPerPlayer * 0.34;
+            var baseMaxStarsDesired = starsPerPlayer;
+            var extraMinStarsDesired = this.personality.expansiveness * (starsPerPlayer * 0.66);
+            var extraMaxStarsDesired = this.personality.expansiveness * (starsPerPlayer * (playersInGame / 4));
+            var minStarsDesired = baseMinStarsDesired + extraMinStarsDesired;
+            var maxStarsDesired = baseMaxStarsDesired + extraMaxStarsDesired;
+            this.desiredStars =
+                {
+                    min: minStarsDesired,
+                    max: maxStarsDesired
+                };
+        };
+        GrandStrategyAI.prototype.setDesires = function () {
+            this.desireForExpansion = this.getDesireForExpansion();
+            this.desireForWar = this.getDesireForWar();
+            this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
+        };
+        GrandStrategyAI.prototype.getDesireForWar = function () {
+            if (!this.desiredStars) {
+                this.setDesiredStars();
+            }
+            var fromAggressiveness = this.personality.aggressiveness;
+            var fromExpansiveness = 0;
+            var minStarsStillDesired = this.mapEvaluator.player.controlledLocations.length - this.desiredStars.min;
+            var availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(minStarsStillDesired);
+            if (availableExpansionTargets.length < minStarsStillDesired) {
+                fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
+            }
+            var desire = fromAggressiveness + fromExpansiveness;
+            return utility_33.clamp(desire, 0, 1);
+        };
+        GrandStrategyAI.prototype.getDesireForExpansion = function () {
+            if (!this.desiredStars)
+                this.setDesiredStars();
+            var starsOwned = this.mapEvaluator.player.controlledLocations.length;
+            var desire = 1 - utility_33.getRelativeValue(starsOwned, this.desiredStars.min, this.desiredStars.max);
+            return utility_33.clamp(desire, 0.1, 1);
+        };
+        return GrandStrategyAI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = GrandStrategyAI;
+    var _a;
+});
+define("modules/defaultai/mapai/DiplomacyAI", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var DiplomacyAI = (function () {
+        function DiplomacyAI(mapEvaluator, objectivesAI, game, personality) {
+            this.game = game;
+            this.player = mapEvaluator.player;
+            this.diplomacyStatus = this.player.diplomacyStatus;
+            this.mapEvaluator = mapEvaluator;
+            this.objectivesAI = objectivesAI;
+            this.personality = personality;
+        }
+        DiplomacyAI.prototype.setAttitudes = function () {
+            var diplomacyEvaluations = this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
+            for (var playerId in diplomacyEvaluations) {
+                this.diplomacyStatus.processAttitudeModifiersForPlayer(this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]);
+            }
+        };
+        DiplomacyAI.prototype.resolveDiplomaticObjectives = function (afterAllDoneCallback) {
+            var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
+            var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
+            this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback);
+        };
+        DiplomacyAI.prototype.resolveNextObjective = function (objectives, adjustments, afterAllDoneCallback) {
+            var objective = objectives.pop();
+            if (!objective) {
+                afterAllDoneCallback();
+                return;
+            }
+            var boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
+            objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN);
+        };
+        return DiplomacyAI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = DiplomacyAI;
+    var _a;
+});
+define("modules/defaultai/aiUtils", ["require", "exports", "modules/defaultai/mapai/Objective", "src/evaluateUnitStrength", "src/DiplomacyState", "src/utility"], function (require, exports, Objective_1, evaluateUnitStrength_3, DiplomacyState_2, utility_34) {
+    "use strict";
+    function defaultUnitDesireFN(front) {
+        var desire = 1;
+        var unitsOverMinimum = front.units.length - front.minUnitsDesired;
+        var unitsOverIdeal = front.units.length - front.idealUnitsDesired;
+        var unitsUnderMinimum = front.minUnitsDesired - front.units.length;
+        if (unitsOverMinimum > 0) {
+            desire *= 0.85 / unitsOverMinimum;
+        }
+        if (unitsOverIdeal > 0) {
+            desire *= 0.6 / unitsOverIdeal;
+        }
+        if (unitsUnderMinimum > 0) {
+            var intertiaPerMissingUnit = 0.5 / front.minUnitsDesired;
+            var newUnitInertia = intertiaPerMissingUnit * (unitsUnderMinimum - 1);
+            desire *= 1 - newUnitInertia;
+        }
+        return desire;
+    }
+    exports.defaultUnitDesireFN = defaultUnitDesireFN;
+    function defaultUnitFitFN(unit, front, lowHealthThreshhold, healthAdjust, distanceAdjust) {
+        if (lowHealthThreshhold === void 0) { lowHealthThreshhold = 0.75; }
+        if (healthAdjust === void 0) { healthAdjust = 1; }
+        if (distanceAdjust === void 0) { distanceAdjust = 1; }
+        var score = 1;
+        var healthPercentage = unit.currentHealth / unit.maxHealth;
+        if (healthPercentage < lowHealthThreshhold) {
+            score *= healthPercentage * healthAdjust;
+        }
+        var turnsToReach = unit.getTurnsToReachStar(front.targetLocation);
+        if (turnsToReach > 0) {
+            turnsToReach *= distanceAdjust;
+            var distanceMultiplier = 1 / (Math.log(turnsToReach + 2.5) / Math.log(2.5));
+            score *= distanceMultiplier;
+        }
+        return score;
+    }
+    exports.defaultUnitFitFN = defaultUnitFitFN;
+    function scoutingUnitDesireFN(front) {
+        if (front.units.length < 1)
+            return 1;
+        else
+            return 0;
+    }
+    exports.scoutingUnitDesireFN = scoutingUnitDesireFN;
+    function scoutingUnitFitFN(unit, front) {
+        var baseScore = 0;
+        var isStealthy = unit.isStealthy();
+        if (isStealthy)
+            baseScore += 0.2;
+        var visionRange = unit.getVisionRange();
+        if (visionRange <= 0) {
+            return -1;
+        }
+        else {
+            baseScore += Math.pow(visionRange, 1.5) / 2;
+        }
+        var strength = evaluateUnitStrength_3.default(unit);
+        baseScore -= strength / 1000;
+        var cost = unit.getTotalCost();
+        baseScore -= cost / 1000;
+        var score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 2);
+        return utility_34.clamp(score, 0, 1);
+    }
+    exports.scoutingUnitFitFN = scoutingUnitFitFN;
+    function mergeScoresByStar(merged, scores) {
+        for (var i = 0; i < scores.length; i++) {
+            var star = scores[i].star;
+            if (!merged[star.id]) {
+                merged[star.id] = scores[i];
+            }
+            else {
+                merged[star.id].score += scores[i].score;
+            }
+        }
+        return merged;
+    }
+    exports.mergeScoresByStar = mergeScoresByStar;
+    function makeObjectivesFromScores(template, evaluationScores, basePriority) {
+        var allObjectives = [];
+        var minScore = 0;
+        var maxScore;
+        for (var i = 0; i < evaluationScores.length; i++) {
+            var score = evaluationScores[i].score;
+            maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
+        }
+        for (var i = 0; i < evaluationScores.length; i++) {
+            var star = evaluationScores[i].star || null;
+            var player = evaluationScores[i].player || null;
+            if (score < 0.04) {
+                continue;
+            }
+            var relativeScore = utility_34.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
+            var priority = relativeScore * basePriority;
+            allObjectives.push(new Objective_1.default(template, priority, star, player));
+        }
+        return allObjectives;
+    }
+    exports.makeObjectivesFromScores = makeObjectivesFromScores;
+    function perimeterObjectiveCreation(template, isForScouting, basePriority, grandStrategyAI, mapEvaluator, objectivesAI) {
+        var playersToEstablishPerimeterAgainst = [];
+        var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
+        var statusByPlayer = diplomacyStatus.statusByPlayer;
+        for (var playerId in statusByPlayer) {
+            if (statusByPlayer[playerId] >= DiplomacyState_2.default.war) {
+                playersToEstablishPerimeterAgainst.push(diplomacyStatus.metPlayers[playerId]);
+            }
+        }
+        var allScoresByStar = {};
+        for (var i = 0; i < playersToEstablishPerimeterAgainst.length; i++) {
+            var player = playersToEstablishPerimeterAgainst[i];
+            var scores = mapEvaluator.getScoredPerimeterLocationsAgainstPlayer(player, 1, isForScouting);
+            mergeScoresByStar(allScoresByStar, scores);
+        }
+        var allScores = [];
+        for (var starId in allScoresByStar) {
+            if (allScoresByStar[starId].score > 0.04) {
+                allScores.push(allScoresByStar[starId]);
+            }
+        }
+        var objectives = makeObjectivesFromScores(template, allScores, basePriority);
+        return objectives;
+    }
+    exports.perimeterObjectiveCreation = perimeterObjectiveCreation;
+    function getUnitsToBeatImmediateTarget(mapEvaluator, objective) {
+        var min;
+        var ideal;
+        var star = objective.target;
+        var hostileUnits = mapEvaluator.getHostileUnitsAtStar(star);
+        if (hostileUnits.length <= 1) {
+            min = hostileUnits.length + 1;
+            ideal = hostileUnits.length + 1;
+        }
+        else {
+            min = Math.min(hostileUnits.length + 2, 6);
+            ideal = 6;
+        }
+        return ({
+            min: min,
+            ideal: ideal
+        });
+    }
+    exports.getUnitsToBeatImmediateTarget = getUnitsToBeatImmediateTarget;
+    var _a;
+});
+define("modules/defaultai/objectives/declareWar", ["require", "exports", "modules/defaultai/aiUtils"], function (require, exports, aiUtils_1) {
+    "use strict";
+    var declareWar = {
+        key: "declareWar",
+        creatorFunction: function (grandStrategyAI, mapEvaluator) {
+            var template = declareWar;
+            var basePriority = grandStrategyAI.desireForWar;
+            var scores = [];
+            var neighborPlayers = mapEvaluator.player.getNeighboringPlayers();
+            var metNeighborPlayers = neighborPlayers.filter(function (player) {
+                return Boolean(mapEvaluator.player.diplomacyStatus.metPlayers[player.id]);
+            });
+            metNeighborPlayers.forEach(function (targetPlayer) {
+                var canDeclareWar = mapEvaluator.player.diplomacyStatus.canDeclareWarOn(targetPlayer);
+                if (canDeclareWar) {
+                    var score = mapEvaluator.getDesireToGoToWarWith(targetPlayer) *
+                        mapEvaluator.getAbilityToGoToWarWith(targetPlayer);
+                    console.log("make declare war objective " + mapEvaluator.player.id + "->" + targetPlayer.id);
+                    scores.push({
+                        player: targetPlayer,
+                        score: score
+                    });
+                }
+            });
+            return aiUtils_1.makeObjectivesFromScores(template, scores, basePriority);
+        },
+        diplomacyRoutineFN: function (objective, diplomacyAI, adjustments, afterDoneCallback) {
+            console.log("declare war " + diplomacyAI.mapEvaluator.player.id + "->" + objective.targetPlayer.id);
+            diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);
+            afterDoneCallback();
+        }
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = declareWar;
+    var _a;
+});
+define("modules/defaultai/objectives/common/movePriority", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var movePriority;
+    (function (movePriority) {
+        movePriority[movePriority["discovery"] = 999] = "discovery";
+        movePriority[movePriority["scoutingPerimeter"] = 8] = "scoutingPerimeter";
+        movePriority[movePriority["fightInvadingEnemy"] = 7] = "fightInvadingEnemy";
+        movePriority[movePriority["conquer"] = 6] = "conquer";
+        movePriority[movePriority["expansion"] = 4] = "expansion";
+        movePriority[movePriority["cleanUpPirates"] = 3] = "cleanUpPirates";
+        movePriority[movePriority["heal"] = -1] = "heal";
+    })(movePriority || (movePriority = {}));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = movePriority;
+    var _a;
+});
+define("modules/defaultai/objectives/common/moveroutines/musterAndAttack", ["require", "exports"], function (require, exports) {
+    "use strict";
+    function independentTargetFilter(target) {
+        return target.enemy.isIndependent;
+    }
+    exports.independentTargetFilter = independentTargetFilter;
+    function buildingControllerFilter(target) {
+        return target.building && target.enemy === target.building.controller;
+    }
+    exports.buildingControllerFilter = buildingControllerFilter;
+    function musterAndAttack(targetFilter, front, afterMoveCallback) {
+        var shouldMoveToTarget;
+        var unitsByLocation = front.getUnitsByLocation();
+        var fleets = front.getAssociatedFleets();
+        var atMuster = unitsByLocation[front.musterLocation.id] ?
+            unitsByLocation[front.musterLocation.id].length : 0;
+        var inRangeOfTarget = 0;
+        for (var i = 0; i < fleets.length; i++) {
+            var distance = fleets[i].location.getDistanceToStar(front.targetLocation);
+            if (fleets[i].getMinCurrentMovePoints() >= distance) {
+                inRangeOfTarget += fleets[i].units.length;
+            }
+        }
+        if (front.hasMustered) {
+            shouldMoveToTarget = true;
+        }
+        else {
+            if (atMuster >= front.minUnitsDesired || inRangeOfTarget >= front.minUnitsDesired) {
+                front.hasMustered = true;
+                shouldMoveToTarget = true;
+            }
+            else {
+                shouldMoveToTarget = false;
+            }
+        }
+        var moveTarget = shouldMoveToTarget ? front.targetLocation : front.musterLocation;
+        var finishAllMoveFN = function () {
+            unitsByLocation = front.getUnitsByLocation();
+            var atTarget = unitsByLocation[front.targetLocation.id] ?
+                unitsByLocation[front.targetLocation.id].length : 0;
+            if (atTarget >= front.minUnitsDesired) {
+                var star = front.targetLocation;
+                var player = front.units[0].fleet.player;
+                var attackTargets = star.getTargetsForPlayer(player);
+                var target = targetFilter ?
+                    attackTargets.filter(targetFilter)[0] :
+                    attackTargets[0];
+                player.attackTarget(star, target, afterMoveCallback);
+            }
+            else {
+                afterMoveCallback();
+            }
+        };
+        var finishedMovingCount = 0;
+        var finishFleetMoveFN = function () {
+            finishedMovingCount++;
+            if (finishedMovingCount >= fleets.length) {
+                finishAllMoveFN();
+            }
+        };
+        for (var i = 0; i < fleets.length; i++) {
+            fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+        }
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = musterAndAttack;
+    var _a;
+});
+define("modules/defaultai/objectives/expansion", ["require", "exports", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/aiUtils", "modules/defaultai/objectives/common/moveroutines/musterAndAttack"], function (require, exports, movePriority_1, aiUtils_2, musterAndAttack_1) {
+    "use strict";
+    var expansion = {
+        key: "expansion",
+        movePriority: movePriority_1.default.expansion,
+        preferredUnitComposition: {
+            combat: 0.65,
+            defence: 0.25,
+            utility: 0.1
+        },
+        moveRoutineFN: musterAndAttack_1.default.bind(null, musterAndAttack_1.independentTargetFilter),
+        unitDesireFN: aiUtils_2.defaultUnitDesireFN,
+        unitFitFN: aiUtils_2.defaultUnitFitFN,
+        creatorFunction: function (grandStrategyAI, mapEvaluator) {
+            var basePriority = grandStrategyAI.desireForExpansion;
+            var independentNeighborStars = mapEvaluator.getIndependentNeighborStars();
+            var evaluations = mapEvaluator.evaluateStarTargets(independentNeighborStars);
+            var scores = mapEvaluator.scoreIndependentTargets(evaluations);
+            var zippedScores = scores.zip("star", "score");
+            var template = expansion;
+            return aiUtils_2.makeObjectivesFromScores(template, zippedScores, basePriority);
+        },
+        unitsToFillObjectiveFN: aiUtils_2.getUnitsToBeatImmediateTarget
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = expansion;
+    var _a;
+});
+define("modules/defaultai/objectives/cleanUpPirates", ["require", "exports", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/aiUtils", "modules/defaultai/objectives/common/moveroutines/musterAndAttack"], function (require, exports, movePriority_2, aiUtils_3, musterAndAttack_2) {
+    "use strict";
+    var cleanUpPirates = {
+        key: "cleanUpPirates",
+        movePriority: movePriority_2.default.cleanUpPirates,
+        preferredUnitComposition: {
+            combat: 0.65,
+            defence: 0.25,
+            utility: 0.1
+        },
+        moveRoutineFN: musterAndAttack_2.default.bind(null, musterAndAttack_2.independentTargetFilter),
+        unitDesireFN: aiUtils_3.defaultUnitDesireFN,
+        unitFitFN: aiUtils_3.defaultUnitFitFN,
+        creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
+            var basePriority = grandStrategyAI.desireForExpansion;
+            var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function (star) {
+                if (star.getSecondaryController) {
+                    return false;
+                }
+                else {
+                    return star.getUnits(function (player) { return player.isIndependent; }).length > 0;
+                }
+            });
+            var evaluations = mapEvaluator.evaluateStarTargets(ownedStarsWithPirates);
+            var scores = mapEvaluator.scoreIndependentTargets(evaluations);
+            var zippedScores = scores.zip("star", "score");
+            var template = cleanUpPirates;
+            return aiUtils_3.makeObjectivesFromScores(template, zippedScores, basePriority);
+        },
+        unitsToFillObjectiveFN: aiUtils_3.getUnitsToBeatImmediateTarget
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = cleanUpPirates;
+    var _a;
+});
+define("modules/defaultai/objectives/common/moveroutines/moveTo", ["require", "exports"], function (require, exports) {
+    "use strict";
+    function moveTo(front, afterMoveCallback, getMoveTargetFN) {
+        var fleets = front.getAssociatedFleets();
+        if (fleets.length <= 0) {
+            afterMoveCallback();
+            return;
+        }
+        var finishedMovingCount = 0;
+        var finishFleetMoveFN = function () {
+            finishedMovingCount++;
+            if (finishedMovingCount >= fleets.length) {
+                afterMoveCallback();
+            }
+        };
+        for (var i = 0; i < fleets.length; i++) {
+            var moveTarget = getMoveTargetFN ? getMoveTargetFN(fleets[i]) : front.objective.target;
+            fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+        }
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = moveTo;
+    var _a;
+});
+define("modules/defaultai/objectives/discovery", ["require", "exports", "src/utility", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/moveTo", "modules/defaultai/aiUtils"], function (require, exports, utility_35, movePriority_3, moveTo_1, aiUtils_4) {
+    "use strict";
+    var discovery = {
+        key: "discovery",
+        movePriority: movePriority_3.default.discovery,
+        preferredUnitComposition: {
+            scouting: 1
+        },
+        moveRoutineFN: moveTo_1.default,
+        unitDesireFN: aiUtils_4.scoutingUnitDesireFN,
+        unitFitFN: aiUtils_4.scoutingUnitFitFN,
+        creatorFunction: function (grandStrategyAI, mapEvaluator) {
+            var scores = [];
+            var starsWithDistance = {};
+            var linksToUnrevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
+            var minDistance;
+            var maxDistance;
+            for (var starId in linksToUnrevealedStars) {
+                var star = mapEvaluator.player.revealedStars[starId];
+                var nearest = mapEvaluator.player.getNearestOwnedStarTo(star);
+                var distance = star.getDistanceToStar(nearest);
+                starsWithDistance[starId] = distance;
+                if (!isFinite(minDistance)) {
+                    minDistance = distance;
+                }
+                else {
+                    minDistance = Math.min(minDistance, distance);
+                }
+                if (!isFinite(maxDistance)) {
+                    maxDistance = distance;
+                }
+                else {
+                    maxDistance = Math.max(maxDistance, distance);
+                }
+            }
+            for (var starId in linksToUnrevealedStars) {
+                var star = mapEvaluator.player.revealedStars[starId];
+                var score = 0;
+                var relativeDistance = utility_35.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
+                var distanceMultiplier = 0.3 + 0.7 * relativeDistance;
+                var linksScore = linksToUnrevealedStars[starId].length * 20;
+                score += linksScore;
+                var desirabilityScore = mapEvaluator.evaluateIndividualStarDesirability(star);
+                desirabilityScore *= distanceMultiplier;
+                score += desirabilityScore;
+                score *= distanceMultiplier;
+                scores.push({
+                    star: star,
+                    score: score
+                });
+            }
+            var template = discovery;
+            return aiUtils_4.makeObjectivesFromScores(template, scores, 0.5);
+        },
+        unitsToFillObjectiveFN: function (mapEvaluator, objective) {
+            return { min: 1, ideal: 1 };
+        }
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = discovery;
+    var _a;
+});
+define("modules/defaultai/objectives/heal", ["require", "exports", "modules/defaultai/mapai/Objective", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/moveTo"], function (require, exports, Objective_2, movePriority_4, moveTo_2) {
+    "use strict";
+    var heal = {
+        key: "heal",
+        movePriority: movePriority_4.default.heal,
+        preferredUnitComposition: {},
+        moveRoutineFN: function (front, afterMoveCallback) {
+            moveTo_2.default(front, afterMoveCallback, function (fleet) {
+                return fleet.player.getNearestOwnedStarTo(fleet.location);
+            });
+        },
+        unitDesireFN: function (front) {
+            return 1;
+        },
+        unitFitFN: function (unit, front) {
+            var healthPercentage = unit.currentHealth / unit.maxHealth;
+            return 1 - healthPercentage;
+        },
+        creatorFunction: function (grandStrategyAI, mapEvaluator) {
+            var template = heal;
+            return [new Objective_2.default(template, 1, null)];
+        },
+        unitsToFillObjectiveFN: function (mapEvaluator, objective) {
+            return { min: 0, ideal: 0 };
+        }
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = heal;
+    var _a;
+});
+define("modules/defaultai/objectives/conquer", ["require", "exports", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/aiUtils", "modules/defaultai/objectives/common/moveroutines/musterAndAttack"], function (require, exports, movePriority_5, aiUtils_5, musterAndAttack_3) {
+    "use strict";
+    var conquer = {
+        key: "conquer",
+        movePriority: movePriority_5.default.conquer,
+        preferredUnitComposition: {
+            combat: 0.65,
+            defence: 0.25,
+            utility: 0.1
+        },
+        moveRoutineFN: musterAndAttack_3.default.bind(null, musterAndAttack_3.buildingControllerFilter),
+        unitDesireFN: aiUtils_5.defaultUnitDesireFN,
+        unitFitFN: aiUtils_5.defaultUnitFitFN,
+        creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
+            var basePriority = grandStrategyAI.desireForExpansion;
+            var relativeThreatOfPlayers = mapEvaluator.getRelativePerceivedThreatOfAllKnownPlayers();
+            var possibleTargets = mapEvaluator.player.getNeighboringStars().filter(function (star) {
+                if (!mapEvaluator.player.starIsRevealed(star)) {
+                    return false;
+                }
+                return star.hasBuildingTargetForPlayer(mapEvaluator.player);
+            });
+            var evaluations = mapEvaluator.evaluateStarTargets(possibleTargets);
+            var scores = mapEvaluator.scoreStarTargets(evaluations, function (star, evaluation) {
+                var strengthRatio = evaluation.ownInfluence / evaluation.hostileStrength;
+                var score = evaluation.desirability * strengthRatio;
+                return score;
+            });
+            var zippedScores = scores.zip("star", "score");
+            var template = conquer;
+            return aiUtils_5.makeObjectivesFromScores(template, zippedScores, basePriority);
+        },
+        unitsToFillObjectiveFN: aiUtils_5.getUnitsToBeatImmediateTarget
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = conquer;
+    var _a;
+});
+define("modules/defaultai/mapai/FrontsAI", ["require", "exports", "modules/defaultai/mapai/Front"], function (require, exports, Front_1) {
+    "use strict";
+    var FrontsAI = (function () {
+        function FrontsAI(mapEvaluator, objectivesAI, personality) {
+            this.fronts = [];
+            this.frontsRequestingUnits = [];
+            this.frontsToMove = [];
+            this.mapEvaluator = mapEvaluator;
+            this.map = mapEvaluator.map;
+            this.player = mapEvaluator.player;
+            this.objectivesAI = objectivesAI;
+            this.personality = personality;
+        }
+        FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
+            var scores = [];
+            for (var i = 0; i < units.length; i++) {
+                scores.push({
+                    unit: units[i],
+                    score: front.scoreUnitFit(units[i]),
+                    front: front
+                });
+            }
+            return scores;
+        };
+        FrontsAI.prototype.assignUnits = function () {
+            var units = this.player.getAllUnits();
+            var allUnitScores = [];
+            var unitScoresByFront = {};
+            var recalculateScoresForFront = function (front) {
+                var frontScores = unitScoresByFront[front.id];
+                for (var i = 0; i < frontScores.length; i++) {
+                    frontScores[i].score = front.scoreUnitFit(frontScores[i].unit);
+                }
+            };
+            var removeUnit = function (unit) {
+                for (var frontId in unitScoresByFront) {
+                    unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
+                        return score.unit !== unit;
+                    });
+                }
+            };
+            var sortByScoreFN = function (a, b) {
+                return a.score - b.score;
+            };
+            for (var i = 0; i < this.fronts.length; i++) {
+                var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
+                unitScoresByFront[this.fronts[i].id] = frontScores;
+                allUnitScores = allUnitScores.concat(frontScores);
+            }
+            var alreadyAdded = {};
+            while (allUnitScores.length > 0) {
+                allUnitScores.sort(sortByScoreFN);
+                var bestScore = allUnitScores.pop();
+                if (alreadyAdded[bestScore.unit.id]) {
+                    continue;
+                }
+                bestScore.front.addUnit(bestScore.unit);
+                removeUnit(bestScore.unit);
+                alreadyAdded[bestScore.unit.id] = true;
+                recalculateScoresForFront(bestScore.front);
+            }
+        };
+        FrontsAI.prototype.getFrontWithId = function (id) {
+            for (var i = 0; i < this.fronts.length; i++) {
+                if (this.fronts[i].id === id) {
+                    return this.fronts[i];
+                }
+            }
+            return null;
+        };
+        FrontsAI.prototype.createFront = function (objective) {
+            var musterLocation = objective.target ?
+                this.player.getNearestOwnedStarTo(objective.target) :
+                null;
+            var unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
+            var front = new Front_1.default({
+                id: objective.id,
+                objective: objective,
+                minUnitsDesired: unitsDesired.min,
+                idealUnitsDesired: unitsDesired.ideal,
+                targetLocation: objective.target,
+                musterLocation: musterLocation
+            });
+            return front;
+        };
+        FrontsAI.prototype.removeInactiveFronts = function () {
+            for (var i = this.fronts.length - 1; i >= 0; i--) {
+                var front = this.fronts[i];
+                var hasActiveObjective = false;
+                for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
+                    var objective = this.objectivesAI.objectives[j];
+                    if (objective.id === front.id) {
+                        hasActiveObjective = true;
+                        break;
+                    }
+                }
+                if (!hasActiveObjective) {
+                    this.fronts.splice(i, 1);
+                }
+            }
+        };
+        FrontsAI.prototype.formFronts = function () {
+            this.removeInactiveFronts();
+            for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
+                var objective = this.objectivesAI.objectives[i];
+                if (!objective.template.moveRoutineFN) {
+                    continue;
+                }
+                if (!this.getFrontWithId(objective.id)) {
+                    var front = this.createFront(objective);
+                    this.fronts.push(front);
+                }
+            }
+        };
+        FrontsAI.prototype.organizeFleets = function () {
+            for (var i = 0; i < this.fronts.length; i++) {
+                this.fronts[i].organizeFleets();
+            }
+        };
+        FrontsAI.prototype.setFrontsToMove = function () {
+            this.frontsToMove = this.fronts.slice(0);
+            this.frontsToMove.sort(function (a, b) {
+                return a.objective.template.movePriority - b.objective.template.movePriority;
+            });
+        };
+        FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
+            var front = this.frontsToMove.pop();
+            if (!front) {
+                afterMovingAllCallback();
+                return;
+            }
+            front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
+        };
+        FrontsAI.prototype.setUnitRequests = function () {
+            this.frontsRequestingUnits = [];
+            for (var i = 0; i < this.fronts.length; i++) {
+                var front = this.fronts[i];
+                if (front.units.length < front.idealUnitsDesired) {
+                    this.frontsRequestingUnits.push(front);
+                }
+            }
+        };
+        return FrontsAI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = FrontsAI;
+    var _a;
+});
+define("modules/defaultai/mapai/EconomyAI", ["require", "exports", "src/utility"], function (require, exports, utility_36) {
+    "use strict";
+    var EconomyAI = (function () {
+        function EconomyAI(props) {
+            this.objectivesAI = props.objectivesAI;
+            this.frontsAI = props.frontsAI;
+            this.mapEvaluator = props.mapEvaluator;
+            this.player = props.mapEvaluator.player;
+            this.personality = props.personality;
+        }
+        EconomyAI.prototype.resolveEconomicObjectives = function () {
+            var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("economyRoutineFN");
+            var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("economyRoutineAdjustments");
+            for (var i = 0; i < objectives.length; i++) {
+                var objective = objectives[i];
+                objective.template.economyRoutineFN(objective, this, adjustments);
+            }
+        };
+        EconomyAI.prototype.satisfyAllRequests = function () {
+            var allRequests = this.frontsAI.frontsRequestingUnits;
+            allRequests.sort(function (a, b) {
+                return b.objective.priority - a.objective.priority;
+            });
+            for (var i = 0; i < allRequests.length; i++) {
+                var request = allRequests[i];
+                if (request.targetLocation) {
+                    this.satisfyFrontRequest(request);
+                }
+                else {
+                }
+            }
+        };
+        EconomyAI.prototype.satisfyFrontRequest = function (front) {
+            var player = this.player;
+            var starQualifierFN = function (star) {
+                return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
+            };
+            var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
+            if (!star) {
+                return;
+            }
+            var manufactory = star.manufactory;
+            var archetypeScores = front.getNewUnitArchetypeScores();
+            var buildableUnitTypesByArchetype = {};
+            var buildableUnitTypes = player.getGloballyBuildableUnits().concat(manufactory.getLocalUnitTypes().manufacturable);
+            for (var i = 0; i < buildableUnitTypes.length; i++) {
+                var archetype = buildableUnitTypes[i].archetype;
+                if (!buildableUnitTypesByArchetype[archetype.type]) {
+                    buildableUnitTypesByArchetype[archetype.type] = [];
+                }
+                if (!archetypeScores[archetype.type]) {
+                    archetypeScores[archetype.type] = 0;
+                }
+                buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
+            }
+            var sortedScores = utility_36.getObjectKeysSortedByValue(archetypeScores, "desc");
+            var unitType;
+            for (var i = 0; i < sortedScores.length; i++) {
+                if (buildableUnitTypesByArchetype[sortedScores[i]]) {
+                    unitType = utility_36.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
+                    if (this.player.money < unitType.buildCost) {
+                        return;
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+            if (!unitType) {
+                throw new Error();
+            }
+            manufactory.addThingToQueue(unitType, "unit");
+        };
+        return EconomyAI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = EconomyAI;
+    var _a;
+});
+define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "exports", "modules/defaultai/mapai/Objective", "src/App"], function (require, exports, Objective_3, App_32) {
+    "use strict";
+    var expandManufactoryCapacity = {
+        key: "expandManufactoryCapacity",
+        creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
+            var template = expandManufactoryCapacity;
+            return [new Objective_3.default(template, 0.5, null)];
+        },
+        economyRoutineFN: function (objective, economyAI) {
+            var starWithCost = [];
+            var player = economyAI.player;
+            var stars = player.controlledLocations;
+            if (player.money < 1200) {
+                return;
+            }
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+                var fullyExpanded = star.manufactory && star.manufactory.capacity >= star.manufactory.maxCapacity;
+                if (fullyExpanded) {
+                    continue;
+                }
+                var expansionCost;
+                if (!star.manufactory) {
+                    expansionCost = App_32.default.moduleData.ruleSet.manufactory.buildCost;
+                }
+                else {
+                    expansionCost = star.manufactory.getCapacityUpgradeCost();
+                }
+                starWithCost.push({
+                    star: star,
+                    cost: expansionCost
+                });
+            }
+            if (starWithCost.length === 0) {
+                return;
+            }
+            starWithCost.sort(function (a, b) {
+                return a.cost - b.cost;
+            });
+            var star = starWithCost[0].star;
+            var cost = starWithCost[0].cost;
+            if (player.money < cost * 1.1) {
+                return;
+            }
+            if (star.manufactory) {
+                star.manufactory.upgradeCapacity(1);
+            }
+            else {
+                star.buildManufactory();
+                player.money -= App_32.default.moduleData.ruleSet.manufactory.buildCost;
+            }
+        }
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = expandManufactoryCapacity;
+    var _a;
+});
+define("modules/defaultai/objectives/scoutingPerimeter", ["require", "exports", "modules/defaultai/objectives/common/moveroutines/moveTo", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/aiUtils"], function (require, exports, moveTo_3, movePriority_6, aiUtils_6) {
+    "use strict";
+    var scoutingPerimeter = {
+        key: "scoutingPerimeter",
+        movePriority: movePriority_6.default.scoutingPerimeter,
+        preferredUnitComposition: {
+            scouting: 1
+        },
+        moveRoutineFN: moveTo_3.default,
+        unitDesireFN: aiUtils_6.scoutingUnitDesireFN,
+        unitFitFN: aiUtils_6.scoutingUnitFitFN,
+        creatorFunction: null,
+        unitsToFillObjectiveFN: function (mapEvaluator, objective) {
+            return { min: 1, ideal: 1 };
+        }
+    };
+    scoutingPerimeter.creatorFunction = aiUtils_6.perimeterObjectiveCreation.bind(null, scoutingPerimeter, true, 0.3);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = scoutingPerimeter;
+    var _a;
+});
+define("modules/defaultai/objectives/fightInvadingEnemy", ["require", "exports", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/aiUtils", "modules/defaultai/objectives/common/moveroutines/musterAndAttack"], function (require, exports, movePriority_7, aiUtils_7, musterAndAttack_4) {
+    "use strict";
+    var fightInvadingEnemy = {
+        key: "fightInvadingEnemy",
+        movePriority: movePriority_7.default.fightInvadingEnemy,
+        preferredUnitComposition: {
+            combat: 0.65,
+            defence: 0.25,
+            utility: 0.1
+        },
+        moveRoutineFN: musterAndAttack_4.default.bind(null, null),
+        unitDesireFN: aiUtils_7.defaultUnitDesireFN,
+        unitFitFN: aiUtils_7.defaultUnitFitFN,
+        creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
+            var basePriority = grandStrategyAI.desireForConsolidation;
+            var ownedStarsWithInvaders = mapEvaluator.player.controlledLocations.filter(function (star) {
+                var hostileUnits = star.getUnits(function (player) {
+                    return (!player.isIndependent &&
+                        mapEvaluator.player.diplomacyStatus.canAttackFleetOfPlayer(player));
+                });
+                return hostileUnits.length > 0;
+            });
+            var evaluations = mapEvaluator.evaluateStarTargets(ownedStarsWithInvaders);
+            var scores = mapEvaluator.scoreStarTargets(evaluations, function (star, evaluation) {
+                var strengthRatio = evaluation.ownInfluence / evaluation.hostileStrength;
+                var score = evaluation.desirability * strengthRatio;
+                return score;
+            });
+            var zippedScores = scores.zip("star", "score");
+            var template = fightInvadingEnemy;
+            return aiUtils_7.makeObjectivesFromScores(template, zippedScores, basePriority);
+        },
+        unitsToFillObjectiveFN: aiUtils_7.getUnitsToBeatImmediateTarget
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = fightInvadingEnemy;
+    var _a;
+});
+define("modules/defaultai/Objectives", ["require", "exports", "modules/defaultai/objectives/declareWar", "modules/defaultai/objectives/expansion", "modules/defaultai/objectives/cleanUpPirates", "modules/defaultai/objectives/discovery", "modules/defaultai/objectives/heal", "modules/defaultai/objectives/conquer", "modules/defaultai/objectives/expandManufactoryCapacity", "modules/defaultai/objectives/scoutingPerimeter", "modules/defaultai/objectives/fightInvadingEnemy"], function (require, exports, declareWar_1, expansion_1, cleanUpPirates_1, discovery_1, heal_1, conquer_1, expandManufactoryCapacity_1, scoutingPerimeter_1, fightInvadingEnemy_1) {
+    "use strict";
+    var Objectives = (_b = {},
+        _b[declareWar_1.default.key] = declareWar_1.default,
+        _b[expansion_1.default.key] = expansion_1.default,
+        _b[cleanUpPirates_1.default.key] = cleanUpPirates_1.default,
+        _b[discovery_1.default.key] = discovery_1.default,
+        _b[heal_1.default.key] = heal_1.default,
+        _b[conquer_1.default.key] = conquer_1.default,
+        _b[expandManufactoryCapacity_1.default.key] = expandManufactoryCapacity_1.default,
+        _b[scoutingPerimeter_1.default.key] = scoutingPerimeter_1.default,
+        _b[fightInvadingEnemy_1.default.key] = fightInvadingEnemy_1.default,
+        _b
+    );
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Objectives;
+    var _a, _b;
+});
+define("modules/defaultai/mapai/ObjectivesAI", ["require", "exports", "modules/defaultai/Objectives"], function (require, exports, Objectives_1) {
+    "use strict";
+    var ObjectivesAI = (function () {
+        function ObjectivesAI(mapEvaluator, grandStrategyAI) {
+            this.objectivesByType = {};
+            this.objectives = [];
+            this.requests = [];
+            this.mapEvaluator = mapEvaluator;
+            this.map = mapEvaluator.map;
+            this.player = mapEvaluator.player;
+            this.grandStrategyAI = grandStrategyAI;
+        }
+        ObjectivesAI.prototype.clearObjectives = function () {
+            this.objectives = [];
+        };
+        ObjectivesAI.prototype.setAllDiplomaticObjectives = function () {
+            this.clearObjectives();
+            this.setAllObjectivesWithTemplateProperty("diplomacyRoutineFN");
+        };
+        ObjectivesAI.prototype.setAllEconomicObjectives = function () {
+            this.clearObjectives();
+            this.setAllObjectivesWithTemplateProperty("economyRoutineFN");
+        };
+        ObjectivesAI.prototype.setAllMoveObjectives = function () {
+            this.clearObjectives();
+            this.setAllObjectivesWithTemplateProperty("moveRoutineFN");
+        };
+        ObjectivesAI.prototype.setAllObjectivesWithTemplateProperty = function (propKey) {
+            for (var key in Objectives_1.default) {
+                var template = Objectives_1.default[key];
+                if (template[propKey]) {
+                    this.setObjectivesOfType(Objectives_1.default[key]);
+                }
+            }
+        };
+        ObjectivesAI.prototype.getNewObjectivesOfType = function (objectiveTemplate) {
+            var objectiveType = objectiveTemplate.key;
+            var byTarget = this.getObjectivesByTarget(objectiveType, true);
+            var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
+            var finalObjectives = [];
+            for (var i = 0; i < newObjectives.length; i++) {
+                var newObjective = newObjectives[i];
+                if (newObjective.priority < 0.04) {
+                    continue;
+                }
+                var keyString = newObjective.target ? newObjective.target.id : "noTarget";
+                var oldObjective = byTarget[keyString];
+                if (oldObjective) {
+                    oldObjective.priority = newObjective.priority;
+                    finalObjectives.push(oldObjective);
+                }
+                else {
+                    finalObjectives.push(newObjective);
+                }
+            }
+            return finalObjectives;
+        };
+        ObjectivesAI.prototype.setObjectivesOfType = function (objectiveTemplate) {
+            var newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
+            this.objectivesByType[objectiveTemplate.key] = newObjectives;
+            this.objectives = this.objectives.concat(newObjectives);
+        };
+        ObjectivesAI.prototype.getObjectivesByTarget = function (objectiveType, markAsOngoing) {
+            var objectivesByTarget = {};
+            if (!this.objectivesByType[objectiveType]) {
+                return objectivesByTarget;
+            }
+            for (var i = 0; i < this.objectivesByType[objectiveType].length; i++) {
+                var objective = this.objectivesByType[objectiveType][i];
+                if (markAsOngoing)
+                    objective.isOngoing = true;
+                var keyString = objective.target ? objective.target.id : "noTarget";
+                objectivesByTarget[keyString] = objective;
+            }
+            return objectivesByTarget;
+        };
+        ObjectivesAI.prototype.getObjectivesWithTemplateProperty = function (propKey) {
+            return this.objectives.filter(function (objective) {
+                return Boolean(objective.template[propKey]);
+            });
+        };
+        ObjectivesAI.prototype.getAdjustmentsForTemplateProperty = function (propKey) {
+            var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
+            var adjustments;
+            for (var i = 0; i < withAdjustment.length; i++) {
+                for (var j = 0; j < withAdjustment[i].template[propKey].length; j++) {
+                    var adjustment = withAdjustment[i].template[propKey][j];
+                    if (!adjustments[adjustment.target.id]) {
+                        adjustments[adjustment.target.id] =
+                            {
+                                target: adjustment.target,
+                                multiplier: 1
+                            };
+                    }
+                    adjustments[adjustment.target.id].multiplier += adjustment.multiplier;
+                }
+            }
+            return adjustments;
+        };
+        return ObjectivesAI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ObjectivesAI;
+    var _a, _b;
+});
+define("modules/defaultai/mapai/Objective", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_8) {
+    "use strict";
+    var Objective = (function () {
+        function Objective(template, priority, target, targetPlayer) {
+            this.isOngoing = false;
+            this.id = idGenerators_8.default.objective++;
+            this.template = template;
+            this.type = this.template.key;
+            this.priority = priority;
+            this.target = target;
+            this.targetPlayer = targetPlayer;
+        }
+        Object.defineProperty(Objective.prototype, "priority", {
+            get: function () {
+                return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
+            },
+            set: function (priority) {
+                this._basePriority = priority;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Objective.prototype.getUnitsDesired = function (mapEvaluator) {
+            return this.template.unitsToFillObjectiveFN(mapEvaluator, this);
+        };
+        return Objective;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Objective;
+    var _a, _b;
+});
+define("modules/defaultai/mapai/Front", ["require", "exports", "src/Fleet", "modules/common/attachedUnitData"], function (require, exports, Fleet_4, attachedUnitData_1) {
+    "use strict";
+    var Front = (function () {
+        function Front(props) {
+            this.hasMustered = false;
+            this.id = props.id;
+            this.objective = props.objective;
+            this.units = props.units || [];
+            this.minUnitsDesired = props.minUnitsDesired;
+            this.idealUnitsDesired = props.idealUnitsDesired;
+            this.targetLocation = props.targetLocation;
+            this.musterLocation = props.musterLocation;
+        }
+        Front.prototype.organizeFleets = function () {
+            var allFleets = this.getAssociatedFleets();
+            var pureFleetsByLocation = {};
+            var impureFleetMembersByLocation = {};
+            var ownUnitFilterFN = function (unit) {
+                return this.getUnitIndex(unit) >= 0;
+            }.bind(this);
+            for (var i = 0; i < allFleets.length; i++) {
+                var fleet = allFleets[i];
+                var star = fleet.location;
+                if (this.isFleetPure(fleet)) {
+                    if (!pureFleetsByLocation[star.id]) {
+                        pureFleetsByLocation[star.id] = [];
+                    }
+                    pureFleetsByLocation[star.id].push(fleet);
+                }
+                else {
+                    var ownUnits = fleet.units.filter(ownUnitFilterFN);
+                    for (var j = 0; j < ownUnits.length; j++) {
+                        if (!impureFleetMembersByLocation[star.id]) {
+                            impureFleetMembersByLocation[star.id] = [];
+                        }
+                        impureFleetMembersByLocation[star.id].push(ownUnits[j]);
+                    }
+                }
+            }
+            var sortFleetsBySizeFN = function (a, b) {
+                return b.units.length - a.units.length;
+            };
+            for (var starId in pureFleetsByLocation) {
+                var fleets = pureFleetsByLocation[starId];
+                if (fleets.length > 1) {
+                    fleets.sort(sortFleetsBySizeFN);
+                    for (var i = fleets.length - 1; i >= 1; i--) {
+                        fleets[i].mergeWith(fleets[0]);
+                        fleets.splice(i, 1);
+                    }
+                }
+                if (impureFleetMembersByLocation[starId]) {
+                    for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--) {
+                        var unit = impureFleetMembersByLocation[starId][i];
+                        unit.fleet.transferUnit(fleets[0], unit);
+                        impureFleetMembersByLocation[starId].splice(i, 1);
+                    }
+                }
+            }
+            for (var starId in impureFleetMembersByLocation) {
+                var units = impureFleetMembersByLocation[starId];
+                if (units.length < 1)
+                    continue;
+                var newFleet = new Fleet_4.default(units[0].fleet.player, [], units[0].fleet.location);
+                for (var i = units.length - 1; i >= 0; i--) {
+                    units[i].fleet.transferUnit(newFleet, units[i]);
+                }
+            }
+        };
+        Front.prototype.isFleetPure = function (fleet) {
+            for (var i = 0; i < fleet.units.length; i++) {
+                if (this.getUnitIndex(fleet.units[i]) === -1) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        Front.prototype.getAssociatedFleets = function () {
+            var fleetsById = {};
+            for (var i = 0; i < this.units.length; i++) {
+                if (!this.units[i].fleet)
+                    continue;
+                if (!fleetsById[this.units[i].fleet.id]) {
+                    fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
+                }
+            }
+            var allFleets = [];
+            for (var fleetId in fleetsById) {
+                allFleets.push(fleetsById[fleetId]);
+            }
+            return allFleets;
+        };
+        Front.prototype.getUnitIndex = function (unit) {
+            return this.units.indexOf(unit);
+        };
+        Front.prototype.addUnit = function (unit) {
+            var unitData = attachedUnitData_1.default.get(unit);
+            if (unitData.front) {
+                unitData.front.removeUnit(unit);
+            }
+            unitData.front = this;
+            this.units.push(unit);
+        };
+        Front.prototype.removeUnit = function (unit) {
+            attachedUnitData_1.default.get(unit).front = null;
+            var unitIndex = this.getUnitIndex(unit);
+            this.units.splice(unitIndex, 1);
+        };
+        Front.prototype.getUnitCountByArchetype = function () {
+            var unitCountByArchetype = {};
+            for (var i = 0; i < this.units.length; i++) {
+                var archetype = this.units[i].template.archetype;
+                if (!unitCountByArchetype[archetype.type]) {
+                    unitCountByArchetype[archetype.type] = 0;
+                }
+                unitCountByArchetype[archetype.type]++;
+            }
+            return unitCountByArchetype;
+        };
+        Front.prototype.getUnitsByLocation = function () {
+            var byLocation = {};
+            for (var i = 0; i < this.units.length; i++) {
+                var star = this.units[i].fleet.location;
+                if (!byLocation[star.id]) {
+                    byLocation[star.id] = [];
+                }
+                byLocation[star.id].push(this.units[i]);
+            }
+            return byLocation;
+        };
+        Front.prototype.moveFleets = function (afterMoveCallback) {
+            if (this.units.length < 1) {
+                afterMoveCallback();
+                return;
+            }
+            else {
+                var moveRoutine = this.objective.template.moveRoutineFN;
+                moveRoutine(this, afterMoveCallback);
+            }
+        };
+        Front.prototype.hasUnit = function (unit) {
+            return this.units.indexOf(unit) !== -1;
+        };
+        Front.prototype.scoreUnitFit = function (unit) {
+            var template = this.objective.template;
+            var score = 1;
+            if (this.hasUnit(unit)) {
+                score += 0.2;
+                if (this.hasMustered) {
+                    score += 0.3;
+                }
+                this.removeUnit(unit);
+            }
+            score *= this.objective.priority;
+            score *= template.unitFitFN(unit, this);
+            score *= template.unitDesireFN(this);
+            return score;
+        };
+        Front.prototype.getNewUnitArchetypeScores = function () {
+            var countByArchetype = this.getUnitCountByArchetype();
+            var totalUnits = this.units.length;
+            var idealWeights = this.objective.template.preferredUnitComposition;
+            var scores = {};
+            for (var unitType in idealWeights) {
+                var archetypeCount = countByArchetype[unitType] || 0;
+                scores[unitType] = totalUnits * idealWeights[unitType] - archetypeCount;
+            }
+            return scores;
+        };
+        return Front;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Front;
+    var _a, _b;
+});
+define("modules/common/attachedUnitData", ["require", "exports", "src/ValuesByUnit", "src/utility"], function (require, exports, ValuesByUnit_1, utility_37) {
+    "use strict";
+    var AttachedUnitData = (function () {
+        function AttachedUnitData() {
+            this.byUnit = new ValuesByUnit_1.default();
+        }
+        AttachedUnitData.prototype.get = function (unit) {
+            if (!this.byUnit.has(unit)) {
+                this.byUnit.set(unit, {});
+            }
+            return this.byUnit.get(unit);
+        };
+        AttachedUnitData.prototype.set = function (unit, data) {
+            if (this.byUnit.has(unit)) {
+                utility_37.shallowExtend(this.byUnit.get(unit), data);
+            }
+            else {
+                this.byUnit.set(unit, data);
+            }
+        };
+        AttachedUnitData.prototype.delete = function (unit) {
+            this.byUnit.delete(unit);
+        };
+        AttachedUnitData.prototype.deleteAll = function () {
+            this.byUnit = new ValuesByUnit_1.default();
+        };
+        return AttachedUnitData;
+    }());
+    var attachedUnitData = new AttachedUnitData();
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = attachedUnitData;
+    exports.attachedUnitDataScripts = {
+        unit: {
+            removeFromPlayer: [
+                function (unit) {
+                    var front = attachedUnitData.get(unit).front;
+                    if (front) {
+                        front.removeUnit(unit);
+                    }
+                    attachedUnitData.delete(unit);
+                }
+            ]
+        }
+    };
+    var _a, _b;
+});
+define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/options", "src/eventManager", "src/App", "modules/common/attachedUnitData"], function (require, exports, options_7, eventManager_30, App_33, attachedUnitData_2) {
     "use strict";
     var fleets = {
         key: "fleets",
@@ -19217,10 +20054,11 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
             };
             var mouseOverFN = function (fleet) {
                 eventManager_30.default.dispatchEvent("hoverStar", fleet.location);
-                if (options_7.default.debug.enabled && fleet.units.length > 0 && fleet.units[0].front) {
-                    var objective = fleet.units[0].front.objective;
-                    var target = objective.target ? objective.target.id : null;
-                    console.log(objective.type, target, objective.priority);
+                if (options_7.default.debug.enabled && fleet.units.length > 0) {
+                    var front = attachedUnitData_2.default.get(fleet.units[0]).front;
+                    if (front) {
+                        console.log(front.objective.type);
+                    }
                 }
             };
             var fleetClickFN = function (fleet, event) {
@@ -19238,21 +20076,6 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
                 var text = new PIXI.Sprite(textTexture);
                 var containerGfx = new PIXI.Graphics();
                 containerGfx.lineStyle(1, 0x00000, 1);
-                var front = fleet.units[0].front;
-                if (front && options_7.default.debug.enabled) {
-                    switch (front.objective.type) {
-                        case "discovery":
-                            {
-                                containerGfx.lineStyle(5, 0xFF0000, 1);
-                                break;
-                            }
-                        case "scoutingPerimeter":
-                            {
-                                containerGfx.lineStyle(5, 0x0000FF, 1);
-                                break;
-                            }
-                    }
-                }
                 containerGfx.beginFill(color, fillAlpha);
                 containerGfx.drawRect(0, 0, text.width + 4, text.height);
                 containerGfx.endFill();
@@ -19274,9 +20097,10 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
             }
             for (var i = 0; i < points.length; i++) {
                 var star = points[i];
-                var fleets = star.getAllFleets();
-                if (!fleets || fleets.length <= 0)
+                var fleets = star.getFleets();
+                if (!fleets || fleets.length < 1) {
                     continue;
+                }
                 var fleetsContainer = new PIXI.Container();
                 fleetsContainer.x = star.x;
                 fleetsContainer.y = star.y - 40;
@@ -19311,14 +20135,14 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
                 strokeThickness: 3
             });
             text.getBounds();
-            fleetTextTextureCache[fleetSize] = text.generateTexture(App_32.default.renderer.renderer);
+            fleetTextTextureCache[fleetSize] = text.generateTexture(App_33.default.renderer.renderer);
             window.setTimeout(function () {
                 text.texture.destroy(true);
             }, 0);
         }
         return fleetTextTextureCache[fleetSize];
     }
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/galaxymap/fleetreorganization", ["require", "exports", "src/uicomponents/galaxymap/fleetcontents", "src/eventManager"], function (require, exports, FleetContents_1, eventManager_31) {
     "use strict";
@@ -19384,12 +20208,12 @@ define("src/uicomponents/galaxymap/fleetreorganization", ["require", "exports", 
             }, React.DOM.div({
                 className: "fleet-reorganization-subheader-fleet-name" +
                     " fleet-reorganization-subheader-fleet-name-left",
-            }, selectedFleets[0].name), React.DOM.div({
+            }, selectedFleets[0].name.fullName), React.DOM.div({
                 className: "fleet-reorganization-subheader-center"
             }, null), React.DOM.div({
                 className: "fleet-reorganization-subheader-fleet-name" +
                     " fleet-reorganization-subheader-fleet-name-right",
-            }, selectedFleets[1].name)), React.DOM.div({
+            }, selectedFleets[1].name.fullName)), React.DOM.div({
                 className: "fleet-reorganization-contents"
             }, FleetContents_1.default({
                 fleet: selectedFleets[0],
@@ -19418,7 +20242,7 @@ define("src/uicomponents/galaxymap/fleetreorganization", ["require", "exports", 
     var Factory = React.createFactory(FleetReorganizationComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/eventManager", "src/uicomponents/galaxymap/fleetinfo", "src/uicomponents/galaxymap/fleetcontents", "src/uicomponents/galaxymap/fleetreorganization"], function (require, exports, eventManager_32, FleetInfo_1, FleetContents_2, FleetReorganization_1) {
     "use strict";
@@ -19570,7 +20394,7 @@ define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/
     var Factory = React.createFactory(FleetSelectionComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/technologies/technologyPrioritySlider", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_33) {
     "use strict";
@@ -19638,7 +20462,7 @@ define("src/uicomponents/technologies/technologyPrioritySlider", ["require", "ex
     var Factory = React.createFactory(TechnologyPrioritySliderComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/technologies/Technology", ["require", "exports", "src/uicomponents/technologies/technologyPrioritySlider"], function (require, exports, technologyPrioritySlider_1) {
     "use strict";
@@ -19668,7 +20492,7 @@ define("src/uicomponents/technologies/Technology", ["require", "exports", "src/u
             var progressForLevel = techData.totalResearch - forCurrentLevel;
             var neededToProgressLevel = forNextLevel - forCurrentLevel;
             var relativeProgress;
-            if (techData.level === technology.maxLevel) {
+            if (techData.level === techData.maxLevel) {
                 relativeProgress = 1;
                 progressForLevel =
                     techData.totalResearch - playerTechnology.getResearchNeededForTechnologyLevel(techData.level - 1);
@@ -19710,7 +20534,7 @@ define("src/uicomponents/technologies/Technology", ["require", "exports", "src/u
     var Factory = React.createFactory(TechnologyComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/Trade", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -19796,7 +20620,7 @@ define("src/Trade", ["require", "exports"], function (require, exports) {
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Trade;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/trade/TradeMoney", ["require", "exports", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, DragPositioner_9, applyMixins_11) {
     "use strict";
@@ -19882,7 +20706,7 @@ define("src/uicomponents/trade/TradeMoney", ["require", "exports", "src/uicompon
     var Factory = React.createFactory(TradeMoneyComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/trade/TradeableItemsList", ["require", "exports", "src/uicomponents/trade/TradeMoney", "src/uicomponents/list/List"], function (require, exports, TradeMoney_1, List_3) {
     "use strict";
@@ -19952,7 +20776,7 @@ define("src/uicomponents/trade/TradeableItemsList", ["require", "exports", "src/
     var Factory = React.createFactory(TradeableItemsListComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/trade/TradeableItems", ["require", "exports", "src/uicomponents/trade/TradeableItemsList"], function (require, exports, TradeableItemsList_1) {
     "use strict";
@@ -19997,7 +20821,7 @@ define("src/uicomponents/trade/TradeableItems", ["require", "exports", "src/uico
     var Factory = React.createFactory(TradeableItemsComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/uicomponents/trade/TradeableItems", "src/Trade"], function (require, exports, TradeableItems_1, Trade_1) {
     "use strict";
@@ -20124,7 +20948,7 @@ define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/uicom
             }, React.DOM.div({
                 className: "tradeable-items-container available-items-container"
             }, TradeableItems_1.default({
-                header: "tradeable items " + this.props.selfPlayer.name,
+                header: "tradeable items " + this.props.selfPlayer.name.fullName,
                 tradeableItems: selfAvailableItems,
                 noListHeader: true,
                 isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
@@ -20133,7 +20957,7 @@ define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/uicom
                 onMouseUp: this.handleAvailableMouseUp,
                 onItemClick: this.handleStageItem.bind(this, "self")
             }), TradeableItems_1.default({
-                header: "tradeable items " + this.props.otherPlayer.name,
+                header: "tradeable items " + this.props.otherPlayer.name.fullName,
                 tradeableItems: otherAvailableItems,
                 noListHeader: true,
                 isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
@@ -20179,7 +21003,7 @@ define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/uicom
     var Factory = React.createFactory(TradeOverviewComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "src/uicomponents/trade/TradeOverview", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/popups/PopupManager"], function (require, exports, TradeOverview_1, TopMenuPopup_4, PopupManager_5) {
     "use strict";
@@ -20296,7 +21120,7 @@ define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "sr
                 className: "diplomacy-actions"
             }, React.DOM.div({
                 className: "diplomacy-actions-header"
-            }, targetPlayer.name), React.DOM.button(declareWarProps, "Declare war"), React.DOM.button(makePeaceProps, "Make peace"), React.DOM.button({
+            }, targetPlayer.name.fullName), React.DOM.button(declareWarProps, "Declare war"), React.DOM.button(makePeaceProps, "Make peace"), React.DOM.button({
                 className: "diplomacy-action-button",
                 onClick: this.togglePopup.bind(this, "trade")
             }, "Trade"))));
@@ -20307,9 +21131,9 @@ define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "sr
     var Factory = React.createFactory(DiplomacyActionsComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_35) {
+define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_38) {
     "use strict";
     var AttitudeModifierInfoComponent = (function (_super) {
         __extends(AttitudeModifierInfoComponent, _super);
@@ -20343,8 +21167,8 @@ define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports",
                     }
                 case "strength":
                     {
-                        var relativeValue = utility_35.getRelativeValue(this.props.strength, -20, 20);
-                        relativeValue = utility_35.clamp(relativeValue, 0, 1);
+                        var relativeValue = utility_38.getRelativeValue(this.props.strength, -20, 20);
+                        relativeValue = utility_38.clamp(relativeValue, 0, 1);
                         var deviation = Math.abs(0.5 - relativeValue) * 2;
                         var hue = 110 * relativeValue;
                         var saturation = 0 + 50 * deviation;
@@ -20382,7 +21206,7 @@ define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports",
     var Factory = React.createFactory(AttitudeModifierInfoComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/diplomacy/AttitudeModifierInfo", "src/uicomponents/mixins/AutoPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, List_4, AttitudeModifierInfo_1, AutoPositioner_3, applyMixins_12) {
     "use strict";
@@ -20467,9 +21291,9 @@ define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports",
     var Factory = React.createFactory(AttitudeModifierListComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_36) {
+define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_39) {
     "use strict";
     var OpinionComponent = (function (_super) {
         __extends(OpinionComponent, _super);
@@ -20501,8 +21325,8 @@ define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicompo
             return firstChild.getBoundingClientRect();
         };
         OpinionComponent.prototype.getColor = function () {
-            var relativeValue = utility_36.getRelativeValue(this.props.opinion, -30, 30);
-            relativeValue = utility_36.clamp(relativeValue, 0, 1);
+            var relativeValue = utility_39.getRelativeValue(this.props.opinion, -30, 30);
+            relativeValue = utility_39.clamp(relativeValue, 0, 1);
             var deviation = Math.abs(0.5 - relativeValue) * 2;
             var hue = 110 * relativeValue;
             var saturation = 0 + 50 * deviation;
@@ -20545,7 +21369,7 @@ define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicompo
     var Factory = React.createFactory(OpinionComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/diplomacy/DiplomaticStatusPlayer", ["require", "exports", "src/uicomponents/diplomacy/Opinion", "src/uicomponents/PlayerFlag"], function (require, exports, Opinion_1, PlayerFlag_6) {
     "use strict";
@@ -20610,9 +21434,9 @@ define("src/uicomponents/diplomacy/DiplomaticStatusPlayer", ["require", "exports
     var Factory = React.createFactory(DiplomaticStatusPlayerComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/diplomacy/DiplomacyActions", "src/uicomponents/diplomacy/DiplomaticStatusPlayer", "src/uicomponents/popups/PopupManager", "src/DiplomacyState"], function (require, exports, List_5, DiplomacyActions_1, DiplomaticStatusPlayer_1, PopupManager_6, DiplomacyState_2) {
+define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/diplomacy/DiplomacyActions", "src/uicomponents/diplomacy/DiplomaticStatusPlayer", "src/uicomponents/popups/PopupManager", "src/DiplomacyState"], function (require, exports, List_5, DiplomacyActions_1, DiplomaticStatusPlayer_1, PopupManager_6, DiplomacyState_3) {
     "use strict";
     var DiplomacyOverviewComponent = (function (_super) {
         __extends(DiplomacyOverviewComponent, _super);
@@ -20655,8 +21479,8 @@ define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "s
                     key: "" + player.id,
                     content: DiplomaticStatusPlayer_1.default({
                         player: player,
-                        name: player.name,
-                        status: DiplomacyState_2.default[status],
+                        name: player.name.fullName,
+                        status: DiplomacyState_3.default[status],
                         opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
                         flag: player.flag,
                         baseOpinion: player.diplomacyStatus.getBaseOpinion(),
@@ -20719,7 +21543,7 @@ define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "s
     var Factory = React.createFactory(DiplomacyOverviewComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/unitlist/ItemEquip", ["require", "exports", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/unitlist/UnitList", "src/uicomponents/unitlist/ItemList"], function (require, exports, MenuUnitInfo_2, UnitList_2, ItemList_2) {
     "use strict";
@@ -20806,7 +21630,7 @@ define("src/uicomponents/unitlist/ItemEquip", ["require", "exports", "src/uicomp
     var Factory = React.createFactory(ItemEquipComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/galaxymap/EconomySummaryItem", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -20864,7 +21688,7 @@ define("src/uicomponents/galaxymap/EconomySummaryItem", ["require", "exports"], 
     var Factory = React.createFactory(EconomySummaryItemComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/galaxymap/EconomySummary", ["require", "exports", "src/uicomponents/galaxymap/EconomySummaryItem", "src/uicomponents/list/List"], function (require, exports, EconomySummaryItem_1, List_6) {
     "use strict";
@@ -20925,7 +21749,7 @@ define("src/uicomponents/galaxymap/EconomySummary", ["require", "exports", "src/
     var Factory = React.createFactory(EconomySummaryComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/technologies/TechnologiesList", ["require", "exports", "src/uicomponents/technologies/Technology", "src/eventManager"], function (require, exports, Technology_1, eventManager_34) {
     "use strict";
@@ -20968,7 +21792,7 @@ define("src/uicomponents/technologies/TechnologiesList", ["require", "exports", 
     var Factory = React.createFactory(TechnologiesListComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/production/ManufactoryUpgradeButton", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -21016,7 +21840,7 @@ define("src/uicomponents/production/ManufactoryUpgradeButton", ["require", "expo
     var Factory = React.createFactory(ManufactoryUpgradeButtonComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/production/ManufacturableThingsListItem", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -21069,7 +21893,7 @@ define("src/uicomponents/production/ManufacturableThingsListItem", ["require", "
     var Factory = React.createFactory(ManufacturableThingsListItemComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/production/ManufacturableThingsList", ["require", "exports", "src/uicomponents/production/ManufacturableThingsListItem"], function (require, exports, ManufacturableThingsListItem_1) {
     "use strict";
@@ -21108,7 +21932,7 @@ define("src/uicomponents/production/ManufacturableThingsList", ["require", "expo
     var Factory = React.createFactory(ManufacturableThingsListComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/production/BuildQueue", ["require", "exports", "src/uicomponents/production/ManufactoryUpgradeButton", "src/uicomponents/production/ManufacturableThingsList"], function (require, exports, ManufactoryUpgradeButton_1, ManufacturableThingsList_1) {
     "use strict";
@@ -21166,7 +21990,7 @@ define("src/uicomponents/production/BuildQueue", ["require", "exports", "src/uic
     var Factory = React.createFactory(BuildQueueComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/production/ManufacturableItems", ["require", "exports", "src/uicomponents/production/ManufacturableThingsList", "src/uicomponents/production/ManufactoryUpgradeButton"], function (require, exports, ManufacturableThingsList_2, ManufactoryUpgradeButton_2) {
     "use strict";
@@ -21231,7 +22055,7 @@ define("src/uicomponents/production/ManufacturableItems", ["require", "exports",
     var Factory = React.createFactory(ManufacturableItemsComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/production/ManufacturableUnits", ["require", "exports", "src/uicomponents/production/ManufacturableThingsList", "src/uicomponents/production/ManufactoryUpgradeButton"], function (require, exports, ManufacturableThingsList_3, ManufactoryUpgradeButton_3) {
     "use strict";
@@ -21326,7 +22150,7 @@ define("src/uicomponents/production/ManufacturableUnits", ["require", "exports",
     var Factory = React.createFactory(ManufacturableUnitsComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/production/ManufacturableThings", ["require", "exports", "src/uicomponents/production/ManufacturableItems", "src/uicomponents/production/ManufacturableUnits"], function (require, exports, ManufacturableItems_1, ManufacturableUnits_1) {
     "use strict";
@@ -21442,9 +22266,9 @@ define("src/uicomponents/production/ManufacturableThings", ["require", "exports"
     var Factory = React.createFactory(ManufacturableThingsComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/production/ConstructManufactory", ["require", "exports", "src/App"], function (require, exports, App_33) {
+define("src/uicomponents/production/ConstructManufactory", ["require", "exports", "src/App"], function (require, exports, App_34) {
     "use strict";
     var ConstructManufactoryComponent = (function (_super) {
         __extends(ConstructManufactoryComponent, _super);
@@ -21460,19 +22284,19 @@ define("src/uicomponents/production/ConstructManufactory", ["require", "exports"
         };
         ConstructManufactoryComponent.prototype.getInitialStateTODO = function () {
             return ({
-                canAfford: this.props.money >= App_33.default.moduleData.ruleSet.manufactory.buildCost
+                canAfford: this.props.money >= App_34.default.moduleData.ruleSet.manufactory.buildCost
             });
         };
         ConstructManufactoryComponent.prototype.componentWillReceiveProps = function (newProps) {
             this.setState({
-                canAfford: newProps.money >= App_33.default.moduleData.ruleSet.manufactory.buildCost
+                canAfford: newProps.money >= App_34.default.moduleData.ruleSet.manufactory.buildCost
             });
         };
         ConstructManufactoryComponent.prototype.handleConstruct = function () {
             var star = this.props.star;
             var player = this.props.player;
             star.buildManufactory();
-            player.money -= App_33.default.moduleData.ruleSet.manufactory.buildCost;
+            player.money -= App_34.default.moduleData.ruleSet.manufactory.buildCost;
             this.props.triggerUpdate();
         };
         ConstructManufactoryComponent.prototype.render = function () {
@@ -21487,7 +22311,7 @@ define("src/uicomponents/production/ConstructManufactory", ["require", "exports"
             }, "Construct manufactory"), React.DOM.span({
                 className: "construct-manufactory-cost money-style" +
                     (this.state.canAfford ? "" : " negative")
-            }, App_33.default.moduleData.ruleSet.manufactory.buildCost))));
+            }, App_34.default.moduleData.ruleSet.manufactory.buildCost))));
         };
         return ConstructManufactoryComponent;
     }(React.Component));
@@ -21495,7 +22319,7 @@ define("src/uicomponents/production/ConstructManufactory", ["require", "exports"
     var Factory = React.createFactory(ConstructManufactoryComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/production/ManufactoryStarsListItem", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -21533,9 +22357,9 @@ define("src/uicomponents/production/ManufactoryStarsListItem", ["require", "expo
     var Factory = React.createFactory(ManufactoryStarsListItemComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_37) {
+define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_40) {
     "use strict";
     var ManufactoryStarsListComponent = (function (_super) {
         __extends(ManufactoryStarsListComponent, _super);
@@ -21545,8 +22369,8 @@ define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports"
         }
         ManufactoryStarsListComponent.prototype.render = function () {
             var rows = [];
-            this.props.starsWithManufactories.sort(utility_37.sortByManufactoryCapacityFN);
-            this.props.starsWithoutManufactories.sort(utility_37.sortByManufactoryCapacityFN);
+            this.props.starsWithManufactories.sort(utility_40.sortByManufactoryCapacityFN);
+            this.props.starsWithoutManufactories.sort(utility_40.sortByManufactoryCapacityFN);
             for (var i = 0; i < this.props.starsWithManufactories.length; i++) {
                 var star = this.props.starsWithManufactories[i];
                 var manufactory = star.manufactory;
@@ -21582,7 +22406,7 @@ define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports"
     var Factory = React.createFactory(ManufactoryStarsListComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_35) {
     "use strict";
@@ -21610,9 +22434,9 @@ define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", 
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = UpdateWhenMoneyChanges;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_36, utility_38, UpdateWhenMoneyChanges_1, applyMixins_13) {
+define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_36, utility_41, UpdateWhenMoneyChanges_1, applyMixins_13) {
     "use strict";
     var ProductionOverviewComponent = (function (_super) {
         __extends(ProductionOverviewComponent, _super);
@@ -21634,11 +22458,11 @@ define("src/uicomponents/production/ProductionOverview", ["require", "exports", 
             var player = this.props.player;
             var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
             if (starsByManufactoryPresence.withManufactories.length > 0) {
-                starsByManufactoryPresence.withManufactories.sort(utility_38.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withManufactories.sort(utility_41.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withManufactories[0];
             }
             else if (starsByManufactoryPresence.withoutManufactories.length > 0) {
-                starsByManufactoryPresence.withoutManufactories.sort(utility_38.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withoutManufactories.sort(utility_41.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withoutManufactories[0];
             }
             return ({
@@ -21735,7 +22559,7 @@ define("src/uicomponents/production/ProductionOverview", ["require", "exports", 
     var Factory = React.createFactory(ProductionOverviewComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/saves/ConfirmDeleteSavesContent", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -21766,7 +22590,7 @@ define("src/uicomponents/saves/ConfirmDeleteSavesContent", ["require", "exports"
     var Factory = React.createFactory(ConfirmDeleteSavesContentComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -21845,9 +22669,9 @@ define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (
     var Factory = React.createFactory(SaveListItemComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/list/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_39) {
+define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/list/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_42) {
     "use strict";
     var SaveListComponent = (function (_super) {
         __extends(SaveListComponent, _super);
@@ -21876,7 +22700,7 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
                     content: SaveListItem_1.default({
                         storageKey: saveKeys[i],
                         name: saveData.name,
-                        date: utility_39.prettifyDate(date),
+                        date: utility_42.prettifyDate(date),
                         accurateDate: saveData.date,
                         isMarkedForDeletion: isMarkedForDeletion,
                         handleDelete: this.props.onDelete ?
@@ -21931,9 +22755,9 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
     var Factory = React.createFactory(SaveListComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src/uicomponents/saves/ConfirmDeleteSavesContent", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_34, ConfirmDeleteSavesContent_1, SaveList_1, PopupManager_7, ConfirmPopup_2) {
+define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src/uicomponents/saves/ConfirmDeleteSavesContent", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_35, ConfirmDeleteSavesContent_1, SaveList_1, PopupManager_7, ConfirmPopup_2) {
     "use strict";
     var LoadGameComponent = (function (_super) {
         __extends(LoadGameComponent, _super);
@@ -21973,7 +22797,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
         LoadGameComponent.prototype.handleLoad = function () {
             var saveKey = this.state.saveKey;
             var afterConfirmFN = function () {
-                App_34.default.load(saveKey);
+                App_35.default.load(saveKey);
             };
             if (this.state.saveKeysToDelete.indexOf(saveKey) !== -1) {
                 var boundClose = this.handleClose.bind(this, true, afterConfirmFN);
@@ -22085,8 +22909,8 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
                 onlyAllowOne: true
             }), SaveList_1.default({
                 onRowChange: this.handleRowChange,
-                autoSelect: !Boolean(App_34.default.game.gameStorageKey),
-                selectedKey: App_34.default.game.gameStorageKey,
+                autoSelect: !Boolean(App_35.default.game.gameStorageKey),
+                selectedKey: App_35.default.game.gameStorageKey,
                 allowDelete: true,
                 onDelete: this.handleDelete,
                 onUndoDelete: this.handleUndoDelete,
@@ -22124,9 +22948,9 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
     var Factory = React.createFactory(LoadGameComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_35, SaveList_2, PopupManager_8, ConfirmPopup_3) {
+define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_36, SaveList_2, PopupManager_8, ConfirmPopup_3) {
     "use strict";
     var SaveGameComponent = (function (_super) {
         __extends(SaveGameComponent, _super);
@@ -22148,7 +22972,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             this.handleSaveNameInput = this.handleSaveNameInput.bind(this);
         };
         SaveGameComponent.prototype.componentDidMount = function () {
-            if (App_35.default.game.gameStorageKey) {
+            if (App_36.default.game.gameStorageKey) {
                 ReactDOM.findDOMNode(this.ref_TODO_okButton).focus();
             }
             else {
@@ -22178,7 +23002,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             }
         };
         SaveGameComponent.prototype.saveGame = function () {
-            App_35.default.game.save(this.state.saveName);
+            App_36.default.game.save(this.state.saveName);
             this.handleClose();
         };
         SaveGameComponent.prototype.handleClose = function () {
@@ -22204,7 +23028,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
                 onlyAllowOne: true
             }), SaveList_2.default({
                 onRowChange: this.handleRowChange,
-                selectedKey: App_35.default.game.gameStorageKey,
+                selectedKey: App_36.default.game.gameStorageKey,
                 autoSelect: false,
                 onDoubleClick: this.saveGame
             }), React.DOM.form({
@@ -22239,7 +23063,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
     var Factory = React.createFactory(SaveGameComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/galaxymap/OptionsCheckbox", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -22268,9 +23092,9 @@ define("src/uicomponents/galaxymap/OptionsCheckbox", ["require", "exports"], fun
     var Factory = React.createFactory(OptionsCheckboxComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_40) {
+define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_43) {
     "use strict";
     var OptionsNumericFieldComponent = (function (_super) {
         __extends(OptionsNumericFieldComponent, _super);
@@ -22303,7 +23127,7 @@ define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", 
             if (!isFinite(value)) {
                 return;
             }
-            value = utility_40.clamp(value, parseFloat(target.min), parseFloat(target.max));
+            value = utility_43.clamp(value, parseFloat(target.min), parseFloat(target.max));
             this.setState({
                 value: value
             }, this.triggerOnChangeFN);
@@ -22333,7 +23157,7 @@ define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", 
     var Factory = React.createFactory(OptionsNumericFieldComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/tutorials/TutorialState", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -22345,7 +23169,7 @@ define("src/tutorials/TutorialState", ["require", "exports"], function (require,
     })(TutorialState || (TutorialState = {}));
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = TutorialState;
-    var _a;
+    var _a, _b;
 });
 define("src/tutorials/TutorialStatus", ["require", "exports", "src/tutorials/TutorialState"], function (require, exports, TutorialState_1) {
     "use strict";
@@ -22394,9 +23218,9 @@ define("src/tutorials/TutorialStatus", ["require", "exports", "src/tutorials/Tut
     var tutorialStatus = new TutorialStatus();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = tutorialStatus;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_37, utility_41, TutorialStatus_1) {
+define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_37, utility_44, TutorialStatus_1) {
     "use strict";
     var OptionsListComponent = (function (_super) {
         __extends(OptionsListComponent, _super);
@@ -22530,7 +23354,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                             if (!isFinite(value)) {
                                 return;
                             }
-                            value = utility_41.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                            value = utility_44.clamp(value, parseFloat(target.min), parseFloat(target.max));
                             Options_3.default.debug.battleSimulationDepth = value;
                             _this.forceUpdate();
                         }
@@ -22625,7 +23449,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
     var Factory = React.createFactory(OptionsListComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/popups/PopupManager", "src/uicomponents/diplomacy/DiplomacyOverview", "src/uicomponents/unitlist/ItemEquip", "src/uicomponents/galaxymap/EconomySummary", "src/uicomponents/technologies/TechnologiesList", "src/uicomponents/production/ProductionOverview", "src/uicomponents/saves/LoadGame", "src/uicomponents/saves/SaveGame", "src/uicomponents/galaxymap/OptionsList", "src/options"], function (require, exports, TopMenuPopup_5, PopupManager_10, DiplomacyOverview_1, ItemEquip_1, EconomySummary_1, TechnologiesList_1, ProductionOverview_1, LoadGame_1, SaveGame_1, OptionsList_1, Options_4) {
     "use strict";
@@ -22795,7 +23619,7 @@ define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/u
     var Factory = React.createFactory(TopMenuPopupsComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options", "src/uicomponents/galaxymap/TopMenuPopups", "src/eventManager"], function (require, exports, Options_5, TopMenuPopups_1, eventManager_38) {
     "use strict";
@@ -23002,7 +23826,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
     var Factory = React.createFactory(TopMenuComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/possibleactions/AttackTarget", ["require", "exports", "src/eventManager", "src/uicomponents/PlayerFlag"], function (require, exports, eventManager_39, PlayerFlag_7) {
     "use strict";
@@ -23039,7 +23863,7 @@ define("src/uicomponents/possibleactions/AttackTarget", ["require", "exports", "
     var Factory = React.createFactory(AttackTargetComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/possibleactions/BuildingUpgradeListItem", ["require", "exports", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, UpdateWhenMoneyChanges_2, applyMixins_14) {
     "use strict";
@@ -23098,7 +23922,7 @@ define("src/uicomponents/possibleactions/BuildingUpgradeListItem", ["require", "
     var Factory = React.createFactory(BuildingUpgradeListItemComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/possibleactions/BuildingUpgradeList", ["require", "exports", "src/uicomponents/possibleactions/BuildingUpgradeListItem", "src/Building"], function (require, exports, BuildingUpgradeListItem_1, Building_2) {
     "use strict";
@@ -23193,7 +24017,7 @@ define("src/uicomponents/possibleactions/BuildingUpgradeList", ["require", "expo
     var Factory = React.createFactory(BuildingUpgradeListComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/possibleactions/BuildableBuilding", ["require", "exports", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, UpdateWhenMoneyChanges_3, applyMixins_15) {
     "use strict";
@@ -23267,7 +24091,7 @@ define("src/uicomponents/possibleactions/BuildableBuilding", ["require", "export
     var Factory = React.createFactory(BuildableBuildingComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/possibleactions/BuildableBuildingList", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/possibleactions/BuildableBuilding", "src/Building"], function (require, exports, List_8, BuildableBuilding_1, Building_3) {
     "use strict";
@@ -23351,7 +24175,7 @@ define("src/uicomponents/possibleactions/BuildableBuildingList", ["require", "ex
     var Factory = React.createFactory(BuildableBuildingListComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/possibleactions/PossibleActions", ["require", "exports", "src/uicomponents/possibleactions/AttackTarget", "src/uicomponents/possibleactions/BuildingUpgradeList", "src/uicomponents/possibleactions/BuildableBuildingList", "src/eventManager"], function (require, exports, AttackTarget_1, BuildingUpgradeList_1, BuildableBuildingList_1, eventManager_40) {
     "use strict";
@@ -23510,7 +24334,7 @@ define("src/uicomponents/possibleactions/PossibleActions", ["require", "exports"
     var Factory = React.createFactory(PossibleActionsComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/tutorials/IntroTutorial", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -23557,7 +24381,7 @@ define("src/tutorials/IntroTutorial", ["require", "exports"], function (require,
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = IntroTutorial;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/tutorials/DontShowAgain", ["require", "exports", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus"], function (require, exports, TutorialState_2, TutorialStatus_2) {
     "use strict";
@@ -23609,9 +24433,9 @@ define("src/uicomponents/tutorials/DontShowAgain", ["require", "exports", "src/t
     var Factory = React.createFactory(DontShowAgainComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_42, TutorialState_3, TutorialStatus_3, utility_43) {
+define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_45, TutorialState_3, TutorialStatus_3, utility_46) {
     "use strict";
     var TutorialComponent = (function (_super) {
         __extends(TutorialComponent, _super);
@@ -23656,7 +24480,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
         TutorialComponent.prototype.flipPage = function (amount) {
             var lastPage = this.props.pages.length - 1;
             var newPage = this.state.currentPageIndex + amount;
-            newPage = utility_42.clamp(newPage, 0, lastPage);
+            newPage = utility_45.clamp(newPage, 0, lastPage);
             this.handleLeavePage(this.props.pages[this.state.currentPageIndex]);
             this.setState({
                 currentPageIndex: newPage
@@ -23700,7 +24524,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
                 className: "tutorial-inner"
             }, backElement, React.DOM.div({
                 className: "tutorial-content"
-            }, utility_43.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
+            }, utility_46.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
                 tutorialId: this.props.tutorialId
             })));
         };
@@ -23710,7 +24534,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
     var Factory = React.createFactory(TutorialComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/tutorials/IntroTutorial", ["require", "exports", "src/tutorials/IntroTutorial", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/uicomponents/tutorials/Tutorial", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/popups/PopupManager"], function (require, exports, IntroTutorial_1, TutorialState_4, TutorialStatus_4, Tutorial_1, TopMenuPopup_6, PopupManager_11) {
     "use strict";
@@ -23784,7 +24608,7 @@ define("src/uicomponents/tutorials/IntroTutorial", ["require", "exports", "src/t
     var Factory = React.createFactory(IntroTutorialComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uicomponents/mapmodes/MapModeSettings", "src/uicomponents/galaxymap/TopBar", "src/uicomponents/notifications/Notifications", "src/uicomponents/galaxymap/StarInfo", "src/uicomponents/galaxymap/FleetSelection", "src/uicomponents/galaxymap/TopMenu", "src/uicomponents/possibleactions/PossibleActions", "src/uicomponents/tutorials/IntroTutorial", "src/eventManager"], function (require, exports, MapModeSettings_1, TopBar_1, Notifications_1, StarInfo_1, FleetSelection_1, TopMenu_1, PossibleActions_1, IntroTutorial_2, eventManager_41) {
     "use strict";
@@ -23961,7 +24785,7 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uic
     var Factory = React.createFactory(GalaxyMapUIComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/uicomponents/galaxymap/GalaxyMapUI"], function (require, exports, GalaxyMapUI_1) {
     "use strict";
@@ -24015,7 +24839,7 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/uicom
     var Factory = React.createFactory(GalaxyMapComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/uicomponents/FlagMaker", ["require", "exports", "src/Flag", "src/colorGeneration", "src/uicomponents/PlayerFlag"], function (require, exports, Flag_4, colorGeneration_3, PlayerFlag_8) {
     "use strict";
@@ -24094,9 +24918,1196 @@ define("src/uicomponents/FlagMaker", ["require", "exports", "src/Flag", "src/col
     var Factory = React.createFactory(FlagMakerComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
-define("src/uicomponents/Stage", ["require", "exports", "src/uicomponents/battleprep/BattlePrep", "src/uicomponents/BattleSceneTester", "src/uicomponents/setupgame/SetupGame", "src/uicomponents/battle/Battle", "src/uicomponents/galaxymap/GalaxyMap", "src/uicomponents/FlagMaker"], function (require, exports, BattlePrep_2, BattleSceneTester_1, SetupGame_1, Battle_3, GalaxyMap_2, FlagMaker_1) {
+define("modules/common/battlesfxfunctions/sfxfragments/SFXFragmentPropTypes", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var _a, _b;
+});
+define("modules/common/battlesfxfunctions/sfxfragments/SFXFragment", ["require", "exports", "src/utility"], function (require, exports, utility_47) {
+    "use strict";
+    var idGenerator = 0;
+    var SFXFragment = (function () {
+        function SFXFragment(propTypes, defaultProps, props) {
+            this.id = idGenerator++;
+            this.propTypes = propTypes;
+            this.defaultProps = defaultProps;
+            this.props = {};
+            this.setDefaultProps();
+            if (props) {
+                this.setProps(props);
+            }
+        }
+        Object.defineProperty(SFXFragment.prototype, "displayObject", {
+            get: function () {
+                return this._displayObject;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        SFXFragment.prototype.setDisplayObject = function (newDisplayObject) {
+            var oldDisplayObject = this.displayObject;
+            if (oldDisplayObject) {
+                newDisplayObject.position = oldDisplayObject.position.clone();
+                var parent_1 = oldDisplayObject.parent;
+                if (parent_1) {
+                    var childIndex = parent_1.getChildIndex(oldDisplayObject);
+                    parent_1.removeChildAt(childIndex);
+                    parent_1.addChildAt(newDisplayObject, childIndex);
+                }
+            }
+            this._displayObject = newDisplayObject;
+        };
+        Object.defineProperty(SFXFragment.prototype, "bounds", {
+            get: function () {
+                return this.displayObject.getBounds();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SFXFragment.prototype, "position", {
+            get: function () {
+                return this.displayObject.position;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SFXFragment.prototype, "scale", {
+            get: function () {
+                return this.displayObject.scale;
+            },
+            set: function (scale) {
+                this.displayObject.scale.set(scale.x, scale.y);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        SFXFragment.prototype.setDefaultProps = function () {
+            this.setProps(this.defaultProps);
+        };
+        SFXFragment.prototype.setProps = function (props) {
+            for (var prop in props) {
+                var propType = this.propTypes[prop];
+                switch (propType) {
+                    case "number":
+                        {
+                            this.props[prop] = props[prop];
+                            break;
+                        }
+                        ;
+                    case "point":
+                        {
+                            this.props[prop] = utility_47.shallowCopy(props[prop]);
+                            break;
+                        }
+                    case "color":
+                        {
+                            this.props[prop] = props[prop].clone();
+                            break;
+                        }
+                }
+            }
+        };
+        return SFXFragment;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = SFXFragment;
+    var _a, _b;
+});
+define("modules/common/battlesfxfunctions/shaders/IntersectingEllipses", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var IntersectingEllipses = (function (_super) {
+        __extends(IntersectingEllipses, _super);
+        function IntersectingEllipses(initialUniformValues) {
+            var uniforms = IntersectingEllipses.makeUniformsObject(initialUniformValues);
+            _super.call(this, null, sourceLines.join("\n"), uniforms);
+        }
+        IntersectingEllipses.makeUniformsObject = function (initialValues) {
+            if (initialValues === void 0) { initialValues = {}; }
+            return ({
+                intersectingEllipseCenter: { type: "2fv", value: initialValues.intersectingEllipseCenter },
+                intersectingEllipseSharpness: { type: "1f", value: initialValues.intersectingEllipseSharpness },
+                intersectingEllipseSize: { type: "2fv", value: initialValues.intersectingEllipseSize },
+                mainAlpha: { type: "1f", value: initialValues.mainAlpha },
+                mainColor: { type: "4fv", value: initialValues.mainColor },
+                mainEllipseSharpness: { type: "1f", value: initialValues.mainEllipseSharpness },
+                mainEllipseSize: { type: "2fv", value: initialValues.mainEllipseSize },
+            });
+        };
+        IntersectingEllipses.prototype.setUniformValues = function (values) {
+            for (var key in values) {
+                this.uniforms[key].value = values[key];
+            }
+        };
+        return IntersectingEllipses;
+    }(PIXI.AbstractFilter));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = IntersectingEllipses;
+    var sourceLines = [
+        "precision mediump float;",
+        "",
+        "#define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com",
+        "",
+        "#if DOMAIN == 0",
+        "  varying vec2 vTextureCoord;",
+        "  uniform sampler2D uSampler;",
+        "",
+        "  uniform vec4 mainColor;",
+        "  uniform float mainAlpha;",
+        "",
+        "  uniform vec2 intersectingEllipseCenter;",
+        "  uniform vec2 intersectingEllipseSize;",
+        "  uniform float intersectingEllipseSharpness;",
+        "",
+        "  uniform vec2 mainEllipseSize;",
+        "  uniform float mainEllipseSharpness;",
+        "",
+        "#elif DOMAIN == 1",
+        "  uniform vec2 resolution;",
+        "  uniform float time;",
+        "",
+        "  const vec4 mainColor = vec4(1.0, 1.0, 1.0, 1.0);",
+        "  const float mainAlpha = 1.0;",
+        "",
+        "  const vec2 intersectingEllipseCenter = vec2(0.4, 0.0);",
+        "  const vec2 intersectingEllipseSize = vec2(0.8, 1.0);",
+        "  const float intersectingEllipseSharpness = 0.6;",
+        "",
+        "  const vec2 mainEllipseSize = vec2(0.5, 0.9);",
+        "  const float mainEllipseSharpness = 0.8;",
+        "",
+        "#endif",
+        "",
+        "",
+        "float ellipseGradient(vec2 p, vec2 ellipseCenter, vec2 ellipseSize)",
+        "{",
+        "  vec2 q = p - ellipseCenter;",
+        "  q /= ellipseSize;",
+        "",
+        "  float dist = length(q);",
+        "",
+        "  return dist;",
+        "}",
+        "",
+        "void main()",
+        "{",
+        "  #if DOMAIN == 0",
+        "    vec2 uv = vTextureCoord;",
+        "    vec4 color = texture2D(uSampler, vTextureCoord);",
+        "  #elif DOMAIN == 1",
+        "    vec2 uv = gl_FragCoord.xy / resolution;",
+        "    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);",
+        "  #endif",
+        "",
+        "  vec2 q = -1.0 + 2.0 * uv;",
+        "",
+        "  float mainDist = 1.0 - ellipseGradient(q, vec2(0.0, 0.0), mainEllipseSize);",
+        "  float mainGradient = smoothstep(0.0, 1.0 - mainEllipseSharpness, mainDist);",
+        "  color += mainColor * mainGradient;",
+        "",
+        "",
+        "  float intersectingDist = ellipseGradient(q, intersectingEllipseCenter, intersectingEllipseSize);",
+        "",
+        "  float intersectingMask = step(intersectingEllipseSharpness, intersectingDist);",
+        "  color *= intersectingMask;",
+        "",
+        "  float intersectingGradient = smoothstep(intersectingEllipseSharpness, 1.0, intersectingDist);",
+        "  color *=  intersectingGradient;",
+        "",
+        "  gl_FragColor = color * mainAlpha;",
+        "}",
+    ];
+    var _a, _b;
+});
+define("modules/common/battlesfxfunctions/sfxfragments/ShockWave", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "src/Color", "src/utility"], function (require, exports, SFXFragment_1, IntersectingEllipses_1, Color_5, utility_48) {
+    "use strict";
+    var defaultShockWaveProps = {
+        size: { x: 200, y: 200 },
+        mainEllipseMaxScale: { x: 0.9, y: 0.9 },
+        mainEllipseSharpness: 1,
+        mainEllipseSharpnessDrift: -0.2,
+        intersectingEllipseSharpness: 0.8,
+        intersectingEllipseSharpnessDrift: -0.4,
+        intersectingEllipseMaxScale: { x: 1.0, y: 1.0 },
+        intersectingEllipseOrigin: { x: 0.0, y: 0.0 },
+        intersectingEllipseDrift: { x: 0.0, y: 0.0 },
+        color: new Color_5.default(1, 1, 1),
+        delay: 0.3,
+    };
+    var shockWavePropTypes = {
+        size: "point",
+        mainEllipseMaxScale: "point",
+        mainEllipseSharpness: "number",
+        mainEllipseSharpnessDrift: "number",
+        intersectingEllipseSharpness: "number",
+        intersectingEllipseSharpnessDrift: "number",
+        intersectingEllipseMaxScale: "point",
+        intersectingEllipseOrigin: "point",
+        intersectingEllipseDrift: "point",
+        color: "color",
+        delay: "number",
+    };
+    var ShockWave = (function (_super) {
+        __extends(ShockWave, _super);
+        function ShockWave(props) {
+            _super.call(this, shockWavePropTypes, defaultShockWaveProps, props);
+        }
+        ShockWave.CreateFromPartialProps = function (props) {
+            return new ShockWave(props);
+        };
+        ShockWave.prototype.animate = function (time) {
+            var p = this.props;
+            var burstX = time < p.delay - 0.02 ?
+                0 :
+                time - (p.delay - 0.02);
+            var shockWaveTime = TWEEN.Easing.Quintic.Out(burstX);
+            this.shockWaveFilter.setUniformValues({
+                mainEllipseSize: [
+                    p.mainEllipseMaxScale.x * shockWaveTime,
+                    p.mainEllipseMaxScale.y * shockWaveTime
+                ],
+                intersectingEllipseSize: [
+                    p.intersectingEllipseMaxScale.x * shockWaveTime,
+                    p.intersectingEllipseMaxScale.y * shockWaveTime
+                ],
+                intersectingEllipseCenter: [
+                    p.intersectingEllipseOrigin.x + p.intersectingEllipseDrift.x * shockWaveTime,
+                    p.intersectingEllipseOrigin.y + p.intersectingEllipseDrift.y * shockWaveTime
+                ],
+                mainEllipseSharpness: p.mainEllipseSharpness + p.mainEllipseSharpnessDrift * shockWaveTime,
+                intersectingEllipseSharpness: p.intersectingEllipseSharpness + p.intersectingEllipseSharpnessDrift * shockWaveTime,
+                mainAlpha: 1.0 - shockWaveTime
+            });
+        };
+        ShockWave.prototype.draw = function () {
+            var shockWaveFilter = this.shockWaveFilter = new IntersectingEllipses_1.default({
+                mainColor: this.props.color.getRGBA(1.0)
+            });
+            var shockWaveSprite = utility_48.createDummySpriteForShader(0, 0, this.props.size.x, this.props.size.y);
+            shockWaveSprite.shader = shockWaveFilter;
+            this.setDisplayObject(shockWaveSprite);
+        };
+        return ShockWave;
+    }(SFXFragment_1.default));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ShockWave;
+    var _a, _b;
+});
+define("modules/common/battlesfxfunctions/shaders/LightBurst", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var LightBurst = (function (_super) {
+        __extends(LightBurst, _super);
+        function LightBurst(initialUniformValues) {
+            var uniforms = LightBurst.makeUniformsObject(initialUniformValues);
+            _super.call(this, null, sourceLines.join("\n"), uniforms);
+        }
+        LightBurst.makeUniformsObject = function (initialValues) {
+            if (initialValues === void 0) { initialValues = {}; }
+            return ({
+                centerBloomStrength: { type: "1f", value: initialValues.centerBloomStrength },
+                centerSize: { type: "1f", value: initialValues.centerSize },
+                rayColor: { type: "4fv", value: initialValues.rayColor },
+                raySharpness: { type: "1f", value: initialValues.raySharpness },
+                rayStrength: { type: "1f", value: initialValues.rayStrength },
+                rotation: { type: "1f", value: initialValues.rotation },
+                seed: { type: "2fv", value: initialValues.seed },
+            });
+        };
+        LightBurst.prototype.setUniformValues = function (values) {
+            for (var key in values) {
+                this.uniforms[key].value = values[key];
+            }
+        };
+        return LightBurst;
+    }(PIXI.AbstractFilter));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = LightBurst;
+    var sourceLines = [
+        "precision mediump float;",
+        "",
+        "",
+        "#define PI 3.14159265359",
+        "#define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com",
+        "",
+        "#if DOMAIN == 0",
+        "  varying vec2 vTextureCoord;",
+        "  uniform sampler2D uSampler;",
+        "",
+        "  uniform vec2 seed;",
+        "  uniform float rotation;",
+        "  uniform float rayStrength;",
+        "  uniform float raySharpness;",
+        "  uniform vec4 rayColor;",
+        "  uniform float centerSize;",
+        "  uniform float centerBloomStrength;",
+        "",
+        "#elif DOMAIN == 1",
+        "  uniform vec2 resolution;",
+        "  uniform float time;",
+        "",
+        "  const vec2 seed = vec2(3.3492333784616219, 0.38182701375708206);",
+        "  const float rotation = 0.0;",
+        "  const float rayStrength = 0.9;",
+        "  const float raySharpness = 2.0;",
+        "  const vec4 rayColor = vec4(1.0, 0.4, 0.4, 1.0);",
+        "  const float centerSize = 1.0;",
+        "  const float centerBloomStrength = 5.0;",
+        "#endif",
+        "",
+        "//--------------------------------------------------------------------",
+        "",
+        "// https://www.shadertoy.com/view/4dlGW2",
+        "// Tileable noise, for creating useful textures. By David Hoskins, Sept. 2013.",
+        "// It can be extrapolated to other types of randomised texture.",
+        "",
+        "// https://www.shadertoy.com/terms says default license is CC BY-NC-SA 3.0 which should be fine",
+        "",
+        "float hash(in vec2 p, in float scale)",
+        "{",
+        "  // This is tiling part, adjusts with the scale...",
+        "  p = mod(p, scale);",
+        "  return fract(sin(dot(p, seed)) * 5151.5473453);",
+        "}",
+        "",
+        "float noise(in vec2 p, in float scale )",
+        "{",
+        "  vec2 f;",
+        "",
+        "  p *= scale;",
+        "",
+        "",
+        "  f = fract(p);   // Separate integer from fractional",
+        "    p = floor(p);",
+        "",
+        "    f = f*f*(3.0-2.0*f);  // Cosine interpolation approximation",
+        "",
+        "    float res = mix(mix(hash(p,          scale),",
+        "            hash(p + vec2(1.0, 0.0), scale), f.x),",
+        "          mix(hash(p + vec2(0.0, 1.0), scale),",
+        "            hash(p + vec2(1.0, 1.0), scale), f.x), f.y);",
+        "    return res;",
+        "}",
+        "",
+        "float fbm(in vec2 p)",
+        "{",
+        "  float f = 0.0;",
+        "  // Change starting scale to any integer value...",
+        "  float scale = 20.0;",
+        "  float amp   = 0.5;",
+        "",
+        "  for (int i = 0; i < 5; i++)",
+        "  {",
+        "    f += noise(p, scale) * amp;",
+        "    amp *= .65;",
+        "    // Scale must be multiplied by an integer value...",
+        "    scale *= 2.0;",
+        "  }",
+        "  // Clamp it just in case....",
+        "  return min(f, 1.0);",
+        "}",
+        "",
+        "//--------------------------------------------------------------------",
+        "",
+        "float ray(vec2 q, float angleAdjust)",
+        "{",
+        "  float angle = (atan(q.y, q.x) + PI + angleAdjust) / (2.0 * PI);",
+        "  return fbm(vec2(angle, seed.y));",
+        "}",
+        "",
+        "void main()",
+        "{",
+        "  #if DOMAIN == 0",
+        "    vec2 uv = vTextureCoord;",
+        "    vec4 color = texture2D(uSampler, vTextureCoord);",
+        "  #elif DOMAIN == 1",
+        "    vec2 uv = gl_FragCoord.xy / resolution;",
+        "    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);",
+        "  #endif",
+        "",
+        "  vec2 q = uv - 0.5;",
+        "  q *= 1.8;",
+        "",
+        "  float dist = length(q);",
+        "",
+        "  float centerIntensity = pow(1.0 - dist, 8.0);",
+        "  centerIntensity = smoothstep(1.0 - centerSize, 1.0, centerIntensity);",
+        "",
+        "  float rayIntensity = ray(q, rotation);",
+        "  rayIntensity = smoothstep(0.4, 1.0, rayIntensity) * rayStrength;",
+        "  rayIntensity -= dist;",
+        "  rayIntensity *= max(1.0, raySharpness + 1.0 - dist);",
+        "  rayIntensity += centerIntensity * centerBloomStrength;",
+        "  rayIntensity = max(0.0, rayIntensity);",
+        "  color += rayColor * rayIntensity;",
+        "",
+        "  gl_FragColor = color;",
+        "}",
+    ];
+    var _a, _b;
+});
+define("modules/common/battlesfxfunctions/sfxfragments/LightBurst", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/shaders/LightBurst", "src/Color", "src/utility"], function (require, exports, SFXFragment_2, LightBurst_1, Color_6, utility_49) {
+    "use strict";
+    var defaultLightBurstProps = {
+        size: { x: 200, y: 200 },
+        delay: 0.3,
+        rotation: 0.0,
+        sharpness: 2.0,
+        color: new Color_6.default(0.75, 0.75, 0.62)
+    };
+    var LightBurstPropTypes = {
+        size: "point",
+        delay: "number",
+        rotation: "number",
+        sharpness: "number",
+        color: "color",
+    };
+    var LightBurst = (function (_super) {
+        __extends(LightBurst, _super);
+        function LightBurst(props) {
+            _super.call(this, LightBurstPropTypes, defaultLightBurstProps, props);
+            this.seed = [Math.random() * 69, Math.random() * 420];
+        }
+        LightBurst.prototype.animate = function (time) {
+            var rampUpValue = Math.min(time / this.props.delay, 1.0);
+            rampUpValue = Math.pow(rampUpValue, 7.0);
+            var timeAfterImpact = Math.max(time - this.props.delay, 0.0);
+            var rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
+            var lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
+            this.lightBurstFilter.setUniformValues({
+                centerSize: Math.pow(lightBurstIntensity, 2.0),
+                centerBloomStrength: Math.pow(lightBurstIntensity, 2.0) * 5.0,
+                rayStrength: Math.pow(lightBurstIntensity, 3.0)
+            });
+        };
+        LightBurst.prototype.draw = function () {
+            this.lightBurstFilter = new LightBurst_1.default({
+                seed: this.seed,
+                rotation: this.props.rotation,
+                raySharpness: this.props.sharpness,
+                rayColor: this.props.color.getRGBA(1.0)
+            });
+            var lightBurstSprite = utility_49.createDummySpriteForShader(0, 0, this.props.size.x, this.props.size.y);
+            lightBurstSprite.shader = this.lightBurstFilter;
+            lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+            this.setDisplayObject(lightBurstSprite);
+        };
+        return LightBurst;
+    }(SFXFragment_2.default));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = LightBurst;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/SFXEditorDisplay", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var SFXEditorDisplayComponent = (function (_super) {
+        __extends(SFXEditorDisplayComponent, _super);
+        function SFXEditorDisplayComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXEditorDisplay";
+            this.fragments = [];
+            this.renderer = PIXI.autoDetectRenderer(0, 0, {
+                autoResize: false
+            });
+            this.stage = new PIXI.Container();
+            this.fragmentContainer = new PIXI.Container();
+            this.stage.addChild(this.fragmentContainer);
+            this.updateRenderer = this.updateRenderer.bind(this);
+            this.handleResize = this.handleResize.bind(this);
+        }
+        SFXEditorDisplayComponent.prototype.componentDidMount = function () {
+            this.bindRendererView();
+            this.updateRenderer();
+            window.addEventListener("resize", this.handleResize, false);
+        };
+        SFXEditorDisplayComponent.prototype.componentWillUnmount = function () {
+            window.removeEventListener("resize", this.handleResize);
+        };
+        SFXEditorDisplayComponent.prototype.handleResize = function () {
+            var containerBounds = this.containerDiv.getBoundingClientRect();
+            this.renderer.resize(containerBounds.width, containerBounds.height);
+        };
+        SFXEditorDisplayComponent.prototype.bindRendererView = function () {
+            this.containerDiv.appendChild(this.renderer.view);
+            this.handleResize();
+        };
+        SFXEditorDisplayComponent.prototype.addFragment = function (fragment) {
+            this.fragmentContainer.addChild(fragment.displayObject);
+            this.fragments.push(fragment);
+            this.updateRenderer();
+        };
+        SFXEditorDisplayComponent.prototype.removeFragment = function (fragment) {
+            this.fragmentContainer.removeChild(fragment.displayObject);
+            this.fragments.splice(this.fragments.indexOf(fragment), 1);
+            this.updateRenderer();
+        };
+        SFXEditorDisplayComponent.prototype.animateFragments = function (relativeTime) {
+            this.fragments.forEach(function (fragment) {
+                fragment.animate(relativeTime);
+            });
+        };
+        SFXEditorDisplayComponent.prototype.updateRenderer = function () {
+            this.renderer.render(this.stage);
+        };
+        SFXEditorDisplayComponent.prototype.render = function () {
+            var _this = this;
+            return (React.DOM.div({
+                className: "sfx-editor-display",
+                ref: function (element) {
+                    _this.containerDiv = element;
+                },
+                onMouseMove: !this.props.hasDraggingFragment ? null :
+                    this.props.moveDraggingFragment
+            }));
+        };
+        return SFXEditorDisplayComponent;
+    }(React.Component));
+    exports.SFXEditorDisplayComponent = SFXEditorDisplayComponent;
+    var Factory = React.createFactory(SFXEditorDisplayComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/SFXFragmentListItem", ["require", "exports", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, DragPositioner_10, applyMixins_16) {
+    "use strict";
+    var SFXFragmentListItemComponent = (function (_super) {
+        __extends(SFXFragmentListItemComponent, _super);
+        function SFXFragmentListItemComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXFragmentListItem";
+            this.onDragStart = this.onDragStart.bind(this);
+            this.onDragEnd = this.onDragEnd.bind(this);
+            this.handleClick = this.handleClick.bind(this);
+            if (this.props.isDraggable) {
+                this.dragPositioner = new DragPositioner_10.default(this, {});
+                this.dragPositioner.onDragStart = this.onDragStart;
+                this.dragPositioner.onDragEnd = this.onDragEnd;
+                applyMixins_16.default(this, this.dragPositioner);
+            }
+        }
+        SFXFragmentListItemComponent.prototype.onDragStart = function () {
+            this.props.onDragStart(this.props.fragment);
+        };
+        SFXFragmentListItemComponent.prototype.onDragEnd = function () {
+            this.props.onDragEnd();
+        };
+        SFXFragmentListItemComponent.prototype.handleClick = function () {
+            this.props.onClick(this.props.fragment);
+        };
+        SFXFragmentListItemComponent.prototype.render = function () {
+            var listItemProps = {
+                className: "sfx-fragment-list-item"
+            };
+            if (this.props.isDraggable) {
+                listItemProps.className += " draggable";
+                listItemProps.onTouchStart = listItemProps.onMouseDown =
+                    this.dragPositioner.handleReactDownEvent;
+            }
+            if (this.props.onClick) {
+                listItemProps.className += " clickable";
+                listItemProps.onClick = this.handleClick;
+            }
+            return (React.DOM.li(listItemProps, this.props.fragment.displayName));
+        };
+        return SFXFragmentListItemComponent;
+    }(React.Component));
+    exports.SFXFragmentListItemComponent = SFXFragmentListItemComponent;
+    var Factory = React.createFactory(SFXFragmentListItemComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/SFXFragmentList", ["require", "exports", "src/uicomponents/sfxeditor/SFXFragmentListItem"], function (require, exports, SFXFragmentListItem_1) {
+    "use strict";
+    var SFXFragmentListComponent = (function (_super) {
+        __extends(SFXFragmentListComponent, _super);
+        function SFXFragmentListComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXFragmentList";
+        }
+        SFXFragmentListComponent.prototype.render = function () {
+            var _this = this;
+            return (React.DOM.ol({
+                className: "sfx-fragment-list"
+            }, this.props.fragments.map(function (fragment) {
+                return SFXFragmentListItem_1.default({
+                    key: fragment.key,
+                    fragment: fragment,
+                    isDraggable: _this.props.isDraggable,
+                    onDragStart: _this.props.onDragStart,
+                    onDragEnd: _this.props.onDragEnd,
+                    onClick: _this.props.onClick
+                });
+            })));
+        };
+        return SFXFragmentListComponent;
+    }(React.Component));
+    exports.SFXFragmentListComponent = SFXFragmentListComponent;
+    var Factory = React.createFactory(SFXFragmentListComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/props/Number", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var SFXFragmentPropNumberComponent = (function (_super) {
+        __extends(SFXFragmentPropNumberComponent, _super);
+        function SFXFragmentPropNumberComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXFragmentPropNumber";
+            this.handleChange = this.handleChange.bind(this);
+        }
+        SFXFragmentPropNumberComponent.prototype.handleChange = function (e) {
+            var target = e.target;
+            var value = parseFloat(target.value);
+            var valueIsValid = isFinite(value);
+            if (!valueIsValid) {
+                return;
+            }
+            this.props.fragment.props[this.props.propName] = value;
+            this.props.onValueChange();
+        };
+        SFXFragmentPropNumberComponent.prototype.render = function () {
+            return (React.DOM.input({
+                className: "sfx-fragment-prop-number-input",
+                type: "number",
+                onChange: this.handleChange,
+                step: 0.1,
+                value: "" + this.props.value
+            }));
+        };
+        return SFXFragmentPropNumberComponent;
+    }(React.Component));
+    exports.SFXFragmentPropNumberComponent = SFXFragmentPropNumberComponent;
+    var Factory = React.createFactory(SFXFragmentPropNumberComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/props/Point", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var SFXFragmentPropPointComponent = (function (_super) {
+        __extends(SFXFragmentPropPointComponent, _super);
+        function SFXFragmentPropPointComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXFragmentPropPoint";
+            this.handleXChange = this.handleValueChange.bind(this, "x");
+            this.handleYChange = this.handleValueChange.bind(this, "y");
+        }
+        SFXFragmentPropPointComponent.prototype.handleValueChange = function (key, e) {
+            var target = e.target;
+            var value = parseFloat(target.value);
+            var valueIsValid = isFinite(value);
+            if (!valueIsValid) {
+                return;
+            }
+            this.props.fragment.props[this.props.propName][key] = value;
+            this.props.onValueChange();
+        };
+        SFXFragmentPropPointComponent.prototype.render = function () {
+            var baseID = "sfx-fragment-prop-point-value-" + this.props.propName;
+            return (React.DOM.div({
+                className: "sfx-fragment-prop-point-wrapper"
+            }, React.DOM.div({
+                className: "sfx-fragment-prop-point-value-wrapper"
+            }, React.DOM.label({
+                className: "sfx-fragment-prop-point-label",
+                htmlFor: baseID + "x"
+            }, "X:"), React.DOM.input({
+                className: "sfx-fragment-prop-point-input",
+                id: baseID + "x",
+                type: "number",
+                onChange: this.handleXChange,
+                step: 0.1,
+                value: "" + this.props.x
+            })), React.DOM.div({
+                className: "sfx-fragment-prop-point-value-wrapper"
+            }, React.DOM.label({
+                className: "sfx-fragment-prop-point-label",
+                htmlFor: baseID + "y"
+            }, "Y:"), React.DOM.input({
+                className: "sfx-fragment-prop-point-input",
+                id: baseID + "y",
+                type: "number",
+                onChange: this.handleYChange,
+                step: 0.1,
+                value: "" + this.props.y
+            }))));
+        };
+        return SFXFragmentPropPointComponent;
+    }(React.Component));
+    exports.SFXFragmentPropPointComponent = SFXFragmentPropPointComponent;
+    var Factory = React.createFactory(SFXFragmentPropPointComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/props/Color", ["require", "exports", "src/uicomponents/setupgame/ColorSetter"], function (require, exports, ColorSetter_2) {
+    "use strict";
+    var SFXFragmentPropColorComponent = (function (_super) {
+        __extends(SFXFragmentPropColorComponent, _super);
+        function SFXFragmentPropColorComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXFragmentPropColor";
+            this.onColorChange = this.onColorChange.bind(this);
+        }
+        SFXFragmentPropColorComponent.prototype.onColorChange = function (color, isNull) {
+            if (isNull) {
+                return;
+            }
+            this.props.fragment.props[this.props.propName] = color;
+            this.props.onValueChange();
+        };
+        SFXFragmentPropColorComponent.prototype.render = function () {
+            return (ColorSetter_2.default({
+                color: this.props.color,
+                onChange: this.onColorChange
+            }));
+        };
+        return SFXFragmentPropColorComponent;
+    }(React.Component));
+    exports.SFXFragmentPropColorComponent = SFXFragmentPropColorComponent;
+    var Factory = React.createFactory(SFXFragmentPropColorComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports", "src/uicomponents/sfxeditor/props/Number", "src/uicomponents/sfxeditor/props/Point", "src/uicomponents/sfxeditor/props/Color"], function (require, exports, Number_1, Point_1, Color_7) {
+    "use strict";
+    var SFXFragmentPropNumberComponent = (function (_super) {
+        __extends(SFXFragmentPropNumberComponent, _super);
+        function SFXFragmentPropNumberComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXFragmentPropNumber";
+            this.state =
+                {
+                    isCollapsed: false
+                };
+            this.toggleCollapsed = this.toggleCollapsed.bind(this);
+        }
+        SFXFragmentPropNumberComponent.prototype.toggleCollapsed = function () {
+            this.setState({
+                isCollapsed: !this.state.isCollapsed
+            });
+        };
+        SFXFragmentPropNumberComponent.prototype.render = function () {
+            var propValuesElement;
+            switch (this.props.propType) {
+                case "number":
+                    {
+                        var propValue = this.props.fragment.props[this.props.propName];
+                        propValuesElement = Number_1.default({
+                            value: propValue,
+                            propName: this.props.propName,
+                            fragment: this.props.fragment,
+                            onValueChange: this.props.onPropValueChange
+                        });
+                        break;
+                    }
+                case "point":
+                    {
+                        var propValue = this.props.fragment.props[this.props.propName];
+                        propValuesElement = Point_1.default({
+                            x: propValue.x,
+                            y: propValue.y,
+                            propName: this.props.propName,
+                            fragment: this.props.fragment,
+                            onValueChange: this.props.onPropValueChange
+                        });
+                        break;
+                    }
+                case "color":
+                    {
+                        var propValue = this.props.fragment.props[this.props.propName];
+                        propValuesElement = Color_7.default({
+                            color: propValue,
+                            propName: this.props.propName,
+                            fragment: this.props.fragment,
+                            onValueChange: this.props.onPropValueChange
+                        });
+                        break;
+                    }
+            }
+            return (React.DOM.div({
+                className: "sfx-fragment-prop sfx-fragment-prop-" + this.props.propType
+            }, React.DOM.div({
+                className: "sfx-fragment-prop-name-container" + (this.state.isCollapsed ? " collapsed" : " collapsible"),
+                onClick: this.toggleCollapsed
+            }, React.DOM.div({
+                className: "sfx-fragment-prop-name"
+            }, this.props.propName)), this.state.isCollapsed ? null : React.DOM.div({
+                className: "sfx-fragment-prop-value"
+            }, propValuesElement)));
+        };
+        return SFXFragmentPropNumberComponent;
+    }(React.Component));
+    exports.SFXFragmentPropNumberComponent = SFXFragmentPropNumberComponent;
+    var Factory = React.createFactory(SFXFragmentPropNumberComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/SFXFragmentPropsList", ["require", "exports", "src/uicomponents/sfxeditor/props/SFXFragmentProp"], function (require, exports, SFXFragmentProp_1) {
+    "use strict";
+    var SFXFragmentPropsListComponent = (function (_super) {
+        __extends(SFXFragmentPropsListComponent, _super);
+        function SFXFragmentPropsListComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXFragmentPropsList";
+        }
+        SFXFragmentPropsListComponent.prototype.render = function () {
+            var _this = this;
+            var fragment = this.props.fragment;
+            return (React.DOM.ul({
+                className: "sfx-fragment-props-list"
+            }, Object.keys(fragment.props).sort().map(function (propName) {
+                var propValue = fragment.props[propName];
+                var propType = fragment.propTypes[propName];
+                return SFXFragmentProp_1.default({
+                    key: propName,
+                    propName: propName,
+                    propType: propType,
+                    fragment: fragment,
+                    onPropValueChange: _this.props.onPropValueChange
+                });
+            })));
+        };
+        return SFXFragmentPropsListComponent;
+    }(React.Component));
+    exports.SFXFragmentPropsListComponent = SFXFragmentPropsListComponent;
+    var Factory = React.createFactory(SFXFragmentPropsListComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/SFXFragmentEditor", ["require", "exports", "src/uicomponents/sfxeditor/SFXFragmentPropsList"], function (require, exports, SFXFragmentPropsList_1) {
+    "use strict";
+    var SFXFragmentEditorComponent = (function (_super) {
+        __extends(SFXFragmentEditorComponent, _super);
+        function SFXFragmentEditorComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXFragmentEditor";
+            this.handleReset = this.handleReset.bind(this);
+        }
+        SFXFragmentEditorComponent.prototype.handleReset = function () {
+            this.props.fragment.setDefaultProps();
+            this.props.onActiveFragmentPropValueChange();
+        };
+        SFXFragmentEditorComponent.prototype.render = function () {
+            return (React.DOM.div({
+                className: "sfx-fragment-editor"
+            }, React.DOM.button({
+                className: "sfx-fragment-reset-props-button",
+                onClick: this.handleReset
+            }, "Reset"), SFXFragmentPropsList_1.default({
+                fragment: this.props.fragment,
+                onPropValueChange: this.props.onActiveFragmentPropValueChange
+            })));
+        };
+        return SFXFragmentEditorComponent;
+    }(React.Component));
+    exports.SFXFragmentEditorComponent = SFXFragmentEditorComponent;
+    var Factory = React.createFactory(SFXFragmentEditorComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/SFXEditorSelectionTab", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var displayString = {
+        fragmentConstructors: "Fragments",
+        placedFragments: "Placed"
+    };
+    var SFXEditorSelectionTabComponent = (function (_super) {
+        __extends(SFXEditorSelectionTabComponent, _super);
+        function SFXEditorSelectionTabComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXEditorSelectionTab";
+            this.handleClick = this.handleClick.bind(this);
+        }
+        SFXEditorSelectionTabComponent.prototype.handleClick = function () {
+            this.props.setTab(this.props.type);
+        };
+        SFXEditorSelectionTabComponent.prototype.render = function () {
+            return (React.DOM.button({
+                className: "sfx-editor-selection-tab" +
+                    " sfx-editor-selection-tab-" + this.props.type,
+                disabled: this.props.isActive,
+                onClick: this.handleClick
+            }, displayString[this.props.type]));
+        };
+        return SFXEditorSelectionTabComponent;
+    }(React.Component));
+    exports.SFXEditorSelectionTabComponent = SFXEditorSelectionTabComponent;
+    var Factory = React.createFactory(SFXEditorSelectionTabComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/SFXEditorSelection", ["require", "exports", "src/uicomponents/sfxeditor/SFXFragmentList", "src/uicomponents/sfxeditor/SFXFragmentEditor", "src/uicomponents/sfxeditor/SFXEditorSelectionTab"], function (require, exports, SFXFragmentList_1, SFXFragmentEditor_1, SFXEditorSelectionTab_1) {
+    "use strict";
+    var SFXEditorSelectionComponent = (function (_super) {
+        __extends(SFXEditorSelectionComponent, _super);
+        function SFXEditorSelectionComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXEditorSelection";
+            this.state =
+                {
+                    activeTab: "fragmentConstructors"
+                };
+            this.setActiveTab = this.setActiveTab.bind(this);
+        }
+        SFXEditorSelectionComponent.prototype.setActiveTab = function (tabType) {
+            this.setState({
+                activeTab: tabType
+            });
+        };
+        SFXEditorSelectionComponent.prototype.render = function () {
+            var _this = this;
+            var activeSelectionElements = [];
+            switch (this.state.activeTab) {
+                case "placedFragments":
+                    if (this.props.selectedFragment) {
+                        activeSelectionElements.push(SFXFragmentEditor_1.default({
+                            key: "fragmentEditor",
+                            fragment: this.props.selectedFragment,
+                            onActiveFragmentPropValueChange: this.props.onSelectedFragmentPropValueChange
+                        }));
+                    }
+                    break;
+                case "fragmentConstructors":
+                    activeSelectionElements.push(SFXFragmentList_1.default({
+                        key: "fragmentConstructors",
+                        fragments: this.props.availableFragmentConstructors,
+                        isDraggable: true,
+                        onDragStart: this.props.onFragmentListDragStart,
+                        onDragEnd: this.props.onFragmentListDragEnd
+                    }));
+                    break;
+            }
+            return (React.DOM.div({
+                className: "sfx-editor-selection"
+            }, React.DOM.div({
+                className: "sfx-editor-selection-tabs-container"
+            }, ["fragmentConstructors", "placedFragments"].map(function (tabType) {
+                return SFXEditorSelectionTab_1.default({
+                    key: tabType,
+                    type: tabType,
+                    setTab: _this.setActiveTab,
+                    isActive: tabType === _this.state.activeTab
+                });
+            })), React.DOM.div({
+                className: "sfx-editor-selection-active-selector-container"
+            }, activeSelectionElements)));
+        };
+        return SFXEditorSelectionComponent;
+    }(React.Component));
+    exports.SFXEditorSelectionComponent = SFXEditorSelectionComponent;
+    var Factory = React.createFactory(SFXEditorSelectionComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/SFXEditor", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/ShockWave", "modules/common/battlesfxfunctions/sfxfragments/LightBurst", "src/utility", "src/uicomponents/sfxeditor/SFXEditorDisplay", "src/uicomponents/sfxeditor/SFXEditorSelection"], function (require, exports, ShockWave_1, LightBurst_2, utility_50, SFXEditorDisplay_1, SFXEditorSelection_1) {
+    "use strict";
+    var availableFragmentConstructors = [
+        {
+            key: "shockWave",
+            displayName: "ShockWave",
+            constructorFN: ShockWave_1.default
+        },
+        {
+            key: "lightBurst",
+            displayName: "LightBurst",
+            constructorFN: LightBurst_2.default
+        }
+    ];
+    function AlphabeticallyByProp(a2, b2, props) {
+        for (var i = 0; i < props.length; i++) {
+            var prop = props[i];
+            var a = a2[prop].toLowerCase();
+            var b = b2[prop].toLowerCase();
+            if (a < b) {
+                return -1;
+            }
+            else if (a > b) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+    availableFragmentConstructors.sort(function (a, b) {
+        return AlphabeticallyByProp(a, b, ["displayName", "key"]);
+    });
+    var SFXEditorComponent = (function (_super) {
+        __extends(SFXEditorComponent, _super);
+        function SFXEditorComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXEditor";
+            this.state =
+                {
+                    isPlaying: false,
+                    currentTime: 0,
+                    SFXDuration: 1000
+                };
+            this.handleChangeTime = this.handleChangeTime.bind(this);
+            this.handleChangeSFXDuration = this.handleChangeSFXDuration.bind(this);
+            this.togglePlay = this.togglePlay.bind(this);
+            this.handleFragmentConstructorDragStart = this.handleFragmentConstructorDragStart.bind(this);
+            this.handleFragmentConstructorDragEnd = this.handleFragmentConstructorDragEnd.bind(this);
+            this.handleFragmentDragMove = this.handleFragmentDragMove.bind(this);
+            this.selectFragment = this.selectFragment.bind(this);
+            this.handleSelectedFragmentPropValueChange = this.handleSelectedFragmentPropValueChange.bind(this);
+            this.advanceTime = this.advanceTime.bind(this);
+        }
+        SFXEditorComponent.prototype.handleChangeTime = function (e) {
+            var target = e.target;
+            var newTime = utility_50.clamp(parseFloat(target.value), 0, 1);
+            if (this.state.isPlaying) {
+                this.togglePlay();
+            }
+            this.updateTime(newTime);
+        };
+        SFXEditorComponent.prototype.handleChangeSFXDuration = function (e) {
+            var target = e.target;
+            var SFXDuration = Math.max(parseInt(target.value), 0);
+            this.setState({
+                SFXDuration: SFXDuration
+            });
+        };
+        SFXEditorComponent.prototype.togglePlay = function () {
+            if (this.state.isPlaying) {
+                this.stopAnimating();
+            }
+            else {
+                this.startAnimating();
+            }
+        };
+        SFXEditorComponent.prototype.startAnimating = function () {
+            var _this = this;
+            this.setState({
+                isPlaying: true
+            }, function () {
+                _this.lastAnimationTickTime = window.performance.now();
+                _this.animationHandle = window.requestAnimationFrame(_this.advanceTime);
+            });
+        };
+        SFXEditorComponent.prototype.stopAnimating = function () {
+            var _this = this;
+            this.setState({
+                isPlaying: false
+            }, function () {
+                if (isFinite(_this.animationHandle)) {
+                    window.cancelAnimationFrame(_this.animationHandle);
+                    _this.animationHandle = undefined;
+                    _this.lastAnimationTickTime = undefined;
+                }
+            });
+        };
+        SFXEditorComponent.prototype.advanceTime = function (timeStamp) {
+            var elapsedTime = timeStamp - this.lastAnimationTickTime;
+            this.lastAnimationTickTime = timeStamp;
+            var elapsedRelativeTime = elapsedTime / this.state.SFXDuration;
+            var newRelativeTime = (this.state.currentTime + elapsedRelativeTime) % 1;
+            this.updateTime(newRelativeTime);
+            this.animationHandle = window.requestAnimationFrame(this.advanceTime);
+        };
+        SFXEditorComponent.prototype.updateTime = function (relativeTime) {
+            this.display.animateFragments(relativeTime);
+            this.display.updateRenderer();
+            this.setState({
+                currentTime: relativeTime
+            });
+        };
+        SFXEditorComponent.prototype.handleFragmentConstructorDragStart = function (fragmentConstructor) {
+            var fragment = new fragmentConstructor.constructorFN();
+            fragment.draw();
+            fragment.animate(this.state.currentTime);
+            this.display.addFragment(fragment);
+            this.setState({
+                selectedFragment: fragment,
+                draggingFragment: fragment
+            });
+        };
+        SFXEditorComponent.prototype.handleFragmentConstructorDragEnd = function () {
+            this.setState({
+                draggingFragment: undefined
+            });
+        };
+        SFXEditorComponent.prototype.handleFragmentDragMove = function (e) {
+            this.state.draggingFragment.position.set(e.clientX, e.clientY);
+            this.display.updateRenderer();
+        };
+        SFXEditorComponent.prototype.selectFragment = function (fragment) {
+            this.setState({
+                selectedFragment: fragment
+            });
+        };
+        SFXEditorComponent.prototype.updateFragment = function (fragment) {
+            fragment.draw();
+            fragment.animate(this.state.currentTime);
+            this.display.updateRenderer();
+        };
+        SFXEditorComponent.prototype.handleSelectedFragmentPropValueChange = function () {
+            this.updateFragment(this.state.selectedFragment);
+            this.forceUpdate();
+        };
+        SFXEditorComponent.prototype.render = function () {
+            var _this = this;
+            return (React.DOM.div({
+                className: "sfx-editor"
+            }, React.DOM.div({
+                className: "sfx-editor-main"
+            }, SFXEditorDisplay_1.default({
+                hasDraggingFragment: Boolean(this.state.draggingFragment),
+                moveDraggingFragment: this.handleFragmentDragMove,
+                ref: function (component) {
+                    _this.display = component;
+                }
+            }), React.DOM.input({
+                className: "sfx-editor-time-control",
+                type: "range",
+                min: 0,
+                max: 1,
+                step: 0.002,
+                value: "" + this.state.currentTime,
+                onChange: this.handleChangeTime,
+                title: "Current time"
+            }), React.DOM.div({
+                className: "sfx-editor-play-wrapper"
+            }, React.DOM.button({
+                className: "sfx-editor-play-button",
+                onClick: this.togglePlay
+            }, this.state.isPlaying ?
+                "Pause" :
+                "Play"), React.DOM.label({
+                className: "sfx-editor-duration-label",
+                htmlFor: "sfx-editor-duration"
+            }, "SFX Duration (ms)"), React.DOM.input({
+                className: "sfx-editor-duration",
+                id: "sfx-editor-duration",
+                type: "number",
+                min: 0,
+                step: 100,
+                value: "" + this.state.SFXDuration,
+                onChange: this.handleChangeSFXDuration
+            }))), SFXEditorSelection_1.default({
+                availableFragmentConstructors: availableFragmentConstructors,
+                selectedFragment: this.state.selectedFragment,
+                onSelectedFragmentPropValueChange: this.handleSelectedFragmentPropValueChange,
+                selectFragment: this.selectFragment,
+                onFragmentListDragStart: this.handleFragmentConstructorDragStart,
+                onFragmentListDragEnd: this.handleFragmentConstructorDragEnd
+            })));
+        };
+        return SFXEditorComponent;
+    }(React.Component));
+    exports.SFXEditorComponent = SFXEditorComponent;
+    var Factory = React.createFactory(SFXEditorComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/Stage", ["require", "exports", "src/uicomponents/battleprep/BattlePrep", "src/uicomponents/BattleSceneTester", "src/uicomponents/setupgame/SetupGame", "src/uicomponents/battle/Battle", "src/uicomponents/galaxymap/GalaxyMap", "src/uicomponents/FlagMaker", "src/uicomponents/sfxeditor/SFXEditor"], function (require, exports, BattlePrep_2, BattleSceneTester_1, SetupGame_1, Battle_3, GalaxyMap_2, FlagMaker_1, SFXEditor_1) {
     "use strict";
     var StageComponent = (function (_super) {
         __extends(StageComponent, _super);
@@ -24157,6 +26168,13 @@ define("src/uicomponents/Stage", ["require", "exports", "src/uicomponents/battle
                         }));
                         break;
                     }
+                case "SFXEditor":
+                    {
+                        elementsToRender.push(SFXEditor_1.default({
+                            key: "SFXEditor"
+                        }));
+                        break;
+                    }
             }
             return (React.DOM.div({ className: "react-stage" }, elementsToRender));
         };
@@ -24166,7 +26184,7 @@ define("src/uicomponents/Stage", ["require", "exports", "src/uicomponents/battle
     var Factory = React.createFactory(StageComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-    var _a;
+    var _a, _b;
 });
 define("src/ReactUI", ["require", "exports", "src/eventManager", "src/ModuleFileLoadingPhase", "src/uicomponents/Stage"], function (require, exports, eventManager_42, ModuleFileLoadingPhase_3, Stage_1) {
     "use strict";
@@ -24221,7 +26239,11 @@ define("src/ReactUI", ["require", "exports", "src/eventManager", "src/ModuleFile
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ReactUI;
-    var _a;
+    var _a, _b;
+});
+define("src/DamageType", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var _a, _b;
 });
 define("modules/common/battlesfxfunctions/shaders/BlackToAlpha", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -24258,9 +26280,9 @@ define("modules/common/battlesfxfunctions/shaders/BlackToAlpha", ["require", "ex
         "  gl_FragColor = color;",
         "}",
     ];
-    var _a;
+    var _a, _b;
 });
-define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_44) {
+define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_51) {
     "use strict";
     function projectileAttack(props, params) {
         var offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSFX(params.targetOffset, params.target);
@@ -24280,7 +26302,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
         var lastTime = startTime;
         var nextSpawnTime = startTime;
         var spawnLocationsCount = params.user.drawingFunctionData.sequentialAttackOriginPoints.length;
-        var amountToSpawn = Math.max(Math.min(utility_44.randInt(props.amountToSpawn.min, props.amountToSpawn.max), spawnLocationsCount), 10);
+        var amountToSpawn = Math.max(Math.min(utility_51.randInt(props.amountToSpawn.min, props.amountToSpawn.max), spawnLocationsCount), 10);
         var spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
         var impactRate = props.impactRate || 0;
         var projectiles = [];
@@ -24291,7 +26313,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
             lastTime = currentTime;
             if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
                 nextSpawnTime += spawnRate;
-                var texture = utility_44.getRandomArrayItem(props.projectileTextures);
+                var texture = utility_51.getRandomArrayItem(props.projectileTextures);
                 var sprite = new PIXI.Sprite(texture);
                 container.addChild(sprite);
                 var spawnPointIndex = projectiles.length % spawnLocationsCount;
@@ -24303,7 +26325,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
                     sprite: sprite,
                     speed: 0,
                     willImpact: willImpact,
-                    impactX: utility_44.randInt(params.width - 200, params.width - 50),
+                    impactX: utility_51.randInt(params.width - 200, params.width - 50),
                     hasImpact: false
                 });
             }
@@ -24322,7 +26344,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
                         params.triggerEffect();
                     }
                     projectile.hasImpact = true;
-                    var impactTextures = utility_44.getRandomArrayItem(props.impactTextures);
+                    var impactTextures = utility_51.getRandomArrayItem(props.impactTextures);
                     var impactClip = new PIXI.extras.MovieClip(impactTextures);
                     impactClip.anchor = new PIXI.Point(0.5, 0.5);
                     impactClip.loop = false;
@@ -24344,7 +26366,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = projectileAttack;
-    var _a;
+    var _a, _b;
 });
 define("modules/common/battlesfxfunctions/rocketAttack", ["require", "exports", "modules/common/battlesfxfunctions/projectileattack"], function (require, exports, projectileAttack_1) {
     "use strict";
@@ -24378,7 +26400,7 @@ define("modules/common/battlesfxfunctions/rocketAttack", ["require", "exports", 
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = preLoadedRocketAttack;
-    var _a;
+    var _a, _b;
 });
 define("modules/common/battlesfxfunctions/shaders/Guard", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -24496,9 +26518,9 @@ define("modules/common/battlesfxfunctions/shaders/Guard", ["require", "exports"]
         "  gl_FragColor = lineColor * lineAlpha + blockColor * blockAlpha;",
         "}",
     ];
-    var _a;
+    var _a, _b;
 });
-define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_45) {
+define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_52) {
     "use strict";
     function guard(props) {
         var offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(props.userOffset, props.user);
@@ -24532,9 +26554,9 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "module
                     hasTriggeredEffect = true;
                     props.triggerEffect();
                 }
-                var relativeTime = utility_45.getRelativeValue(time, travelTime - 0.02, 1);
+                var relativeTime = utility_52.getRelativeValue(time, travelTime - 0.02, 1);
                 var adjustedtime = Math.pow(relativeTime, 4);
-                var relativeDistance = utility_45.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
+                var relativeDistance = utility_52.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
                 guardFilter.setUniformValues({
                     trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
                     blockWidth: adjustedtime * maxBlockWidth,
@@ -24571,7 +26593,7 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "module
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = guard;
-    var _a;
+    var _a, _b;
 });
 define("modules/common/battlesfxfunctions/shaders/Beam", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -24732,7 +26754,7 @@ define("modules/common/battlesfxfunctions/shaders/Beam", ["require", "exports"],
         "  gl_FragColor = color;",
         "}",
     ];
-    var _a;
+    var _a, _b;
 });
 define("modules/common/battlesfxfunctions/shaders/ShinyParticle", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -24830,264 +26852,7 @@ define("modules/common/battlesfxfunctions/shaders/ShinyParticle", ["require", "e
         "  gl_FragColor = color;",
         "}",
     ];
-    var _a;
-});
-define("modules/common/battlesfxfunctions/shaders/IntersectingEllipses", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var IntersectingEllipses = (function (_super) {
-        __extends(IntersectingEllipses, _super);
-        function IntersectingEllipses(initialUniformValues) {
-            var uniforms = IntersectingEllipses.makeUniformsObject(initialUniformValues);
-            _super.call(this, null, sourceLines.join("\n"), uniforms);
-        }
-        IntersectingEllipses.makeUniformsObject = function (initialValues) {
-            if (initialValues === void 0) { initialValues = {}; }
-            return ({
-                intersectingEllipseCenter: { type: "2fv", value: initialValues.intersectingEllipseCenter },
-                intersectingEllipseSharpness: { type: "1f", value: initialValues.intersectingEllipseSharpness },
-                intersectingEllipseSize: { type: "2fv", value: initialValues.intersectingEllipseSize },
-                mainAlpha: { type: "1f", value: initialValues.mainAlpha },
-                mainColor: { type: "4fv", value: initialValues.mainColor },
-                mainEllipseSharpness: { type: "1f", value: initialValues.mainEllipseSharpness },
-                mainEllipseSize: { type: "2fv", value: initialValues.mainEllipseSize },
-            });
-        };
-        IntersectingEllipses.prototype.setUniformValues = function (values) {
-            for (var key in values) {
-                this.uniforms[key].value = values[key];
-            }
-        };
-        return IntersectingEllipses;
-    }(PIXI.AbstractFilter));
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = IntersectingEllipses;
-    var sourceLines = [
-        "precision mediump float;",
-        "",
-        "#define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com",
-        "",
-        "#if DOMAIN == 0",
-        "  varying vec2 vTextureCoord;",
-        "  uniform sampler2D uSampler;",
-        "",
-        "  uniform vec4 mainColor;",
-        "  uniform float mainAlpha;",
-        "",
-        "  uniform vec2 intersectingEllipseCenter;",
-        "  uniform vec2 intersectingEllipseSize;",
-        "  uniform float intersectingEllipseSharpness;",
-        "",
-        "  uniform vec2 mainEllipseSize;",
-        "  uniform float mainEllipseSharpness;",
-        "",
-        "#elif DOMAIN == 1",
-        "  uniform vec2 resolution;",
-        "  uniform float time;",
-        "",
-        "  const vec4 mainColor = vec4(1.0, 1.0, 1.0, 1.0);",
-        "  const float mainAlpha = 1.0;",
-        "",
-        "  const vec2 intersectingEllipseCenter = vec2(0.4, 0.0);",
-        "  const vec2 intersectingEllipseSize = vec2(0.8, 1.0);",
-        "  const float intersectingEllipseSharpness = 0.6;",
-        "",
-        "  const vec2 mainEllipseSize = vec2(0.5, 0.9);",
-        "  const float mainEllipseSharpness = 0.8;",
-        "",
-        "#endif",
-        "",
-        "",
-        "float ellipseGradient(vec2 p, vec2 ellipseCenter, vec2 ellipseSize)",
-        "{",
-        "  vec2 q = p - ellipseCenter;",
-        "  q /= ellipseSize;",
-        "",
-        "  float dist = length(q);",
-        "",
-        "  return dist;",
-        "}",
-        "",
-        "void main()",
-        "{",
-        "  #if DOMAIN == 0",
-        "    vec2 uv = vTextureCoord;",
-        "    vec4 color = texture2D(uSampler, vTextureCoord);",
-        "  #elif DOMAIN == 1",
-        "    vec2 uv = gl_FragCoord.xy / resolution;",
-        "    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);",
-        "  #endif",
-        "",
-        "  vec2 q = -1.0 + 2.0 * uv;",
-        "",
-        "  float mainDist = 1.0 - ellipseGradient(q, vec2(0.0, 0.0), mainEllipseSize);",
-        "  float mainGradient = smoothstep(0.0, 1.0 - mainEllipseSharpness, mainDist);",
-        "  color += mainColor * mainGradient;",
-        "",
-        "",
-        "  float intersectingDist = ellipseGradient(q, intersectingEllipseCenter, intersectingEllipseSize);",
-        "",
-        "  float intersectingMask = step(intersectingEllipseSharpness, intersectingDist);",
-        "  color *= intersectingMask;",
-        "",
-        "  float intersectingGradient = smoothstep(intersectingEllipseSharpness, 1.0, intersectingDist);",
-        "  color *=  intersectingGradient;",
-        "",
-        "  gl_FragColor = color * mainAlpha;",
-        "}",
-    ];
-    var _a;
-});
-define("modules/common/battlesfxfunctions/shaders/LightBurst", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var LightBurst = (function (_super) {
-        __extends(LightBurst, _super);
-        function LightBurst(initialUniformValues) {
-            var uniforms = LightBurst.makeUniformsObject(initialUniformValues);
-            _super.call(this, null, sourceLines.join("\n"), uniforms);
-        }
-        LightBurst.makeUniformsObject = function (initialValues) {
-            if (initialValues === void 0) { initialValues = {}; }
-            return ({
-                centerBloomStrength: { type: "1f", value: initialValues.centerBloomStrength },
-                centerSize: { type: "1f", value: initialValues.centerSize },
-                rayColor: { type: "4fv", value: initialValues.rayColor },
-                raySharpness: { type: "1f", value: initialValues.raySharpness },
-                rayStrength: { type: "1f", value: initialValues.rayStrength },
-                rotation: { type: "1f", value: initialValues.rotation },
-                seed: { type: "2fv", value: initialValues.seed },
-            });
-        };
-        LightBurst.prototype.setUniformValues = function (values) {
-            for (var key in values) {
-                this.uniforms[key].value = values[key];
-            }
-        };
-        return LightBurst;
-    }(PIXI.AbstractFilter));
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = LightBurst;
-    var sourceLines = [
-        "precision mediump float;",
-        "",
-        "",
-        "#define PI 3.14159265359",
-        "#define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com",
-        "",
-        "#if DOMAIN == 0",
-        "  varying vec2 vTextureCoord;",
-        "  uniform sampler2D uSampler;",
-        "",
-        "  uniform vec2 seed;",
-        "  uniform float rotation;",
-        "  uniform float rayStrength;",
-        "  uniform float raySharpness;",
-        "  uniform vec4 rayColor;",
-        "  uniform float centerSize;",
-        "  uniform float centerBloomStrength;",
-        "",
-        "#elif DOMAIN == 1",
-        "  uniform vec2 resolution;",
-        "  uniform float time;",
-        "",
-        "  const vec2 seed = vec2(3.3492333784616219, 0.38182701375708206);",
-        "  const float rotation = 0.0;",
-        "  const float rayStrength = 0.9;",
-        "  const float raySharpness = 2.0;",
-        "  const vec4 rayColor = vec4(1.0, 0.4, 0.4, 1.0);",
-        "  const float centerSize = 1.0;",
-        "  const float centerBloomStrength = 5.0;",
-        "#endif",
-        "",
-        "//--------------------------------------------------------------------",
-        "",
-        "// https://www.shadertoy.com/view/4dlGW2",
-        "// Tileable noise, for creating useful textures. By David Hoskins, Sept. 2013.",
-        "// It can be extrapolated to other types of randomised texture.",
-        "",
-        "// https://www.shadertoy.com/terms says default license is CC BY-NC-SA 3.0 which should be fine",
-        "",
-        "float hash(in vec2 p, in float scale)",
-        "{",
-        "  // This is tiling part, adjusts with the scale...",
-        "  p = mod(p, scale);",
-        "  return fract(sin(dot(p, seed)) * 5151.5473453);",
-        "}",
-        "",
-        "float noise(in vec2 p, in float scale )",
-        "{",
-        "  vec2 f;",
-        "",
-        "  p *= scale;",
-        "",
-        "",
-        "  f = fract(p);   // Separate integer from fractional",
-        "    p = floor(p);",
-        "",
-        "    f = f*f*(3.0-2.0*f);  // Cosine interpolation approximation",
-        "",
-        "    float res = mix(mix(hash(p,          scale),",
-        "            hash(p + vec2(1.0, 0.0), scale), f.x),",
-        "          mix(hash(p + vec2(0.0, 1.0), scale),",
-        "            hash(p + vec2(1.0, 1.0), scale), f.x), f.y);",
-        "    return res;",
-        "}",
-        "",
-        "float fbm(in vec2 p)",
-        "{",
-        "  float f = 0.0;",
-        "  // Change starting scale to any integer value...",
-        "  float scale = 20.0;",
-        "  float amp   = 0.5;",
-        "",
-        "  for (int i = 0; i < 5; i++)",
-        "  {",
-        "    f += noise(p, scale) * amp;",
-        "    amp *= .65;",
-        "    // Scale must be multiplied by an integer value...",
-        "    scale *= 2.0;",
-        "  }",
-        "  // Clamp it just in case....",
-        "  return min(f, 1.0);",
-        "}",
-        "",
-        "//--------------------------------------------------------------------",
-        "",
-        "float ray(vec2 q, float angleAdjust)",
-        "{",
-        "  float angle = (atan(q.y, q.x) + PI + angleAdjust) / (2.0 * PI);",
-        "  return fbm(vec2(angle, seed.y));",
-        "}",
-        "",
-        "void main()",
-        "{",
-        "  #if DOMAIN == 0",
-        "    vec2 uv = vTextureCoord;",
-        "    vec4 color = texture2D(uSampler, vTextureCoord);",
-        "  #elif DOMAIN == 1",
-        "    vec2 uv = gl_FragCoord.xy / resolution;",
-        "    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);",
-        "  #endif",
-        "",
-        "  vec2 q = uv - 0.5;",
-        "  q *= 1.8;",
-        "",
-        "  float dist = length(q);",
-        "",
-        "  float centerIntensity = pow(1.0 - dist, 8.0);",
-        "  centerIntensity = smoothstep(1.0 - centerSize, 1.0, centerIntensity);",
-        "",
-        "  float rayIntensity = ray(q, rotation);",
-        "  rayIntensity = smoothstep(0.4, 1.0, rayIntensity) * rayStrength;",
-        "  rayIntensity -= dist;",
-        "  rayIntensity *= max(1.0, raySharpness + 1.0 - dist);",
-        "  rayIntensity += centerIntensity * centerBloomStrength;",
-        "  rayIntensity = max(0.0, rayIntensity);",
-        "  color += rayColor * rayIntensity;",
-        "",
-        "  gl_FragColor = color;",
-        "}",
-    ];
-    var _a;
+    var _a, _b;
 });
 define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -25183,9 +26948,9 @@ define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"]
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ProtonWrapper;
-    var _a;
+    var _a, _b;
 });
-define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Beam", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "modules/common/battlesfxfunctions/shaders/LightBurst", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, IntersectingEllipses_1, LightBurst_1, utility_46, ProtonWrapper_1) {
+define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Beam", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/sfxfragments/ShockWave", "modules/common/battlesfxfunctions/sfxfragments/LightBurst", "src/Color", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, ShockWave_2, LightBurst_3, color_1, utility_53, ProtonWrapper_1) {
     "use strict";
     function particleTest(props) {
         var width2 = props.width / 2;
@@ -25247,7 +27012,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
             rampUpValue = Math.pow(rampUpValue, 7.0);
             var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
-            var relativeTimeAfterImpact = utility_46.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
+            var relativeTimeAfterImpact = utility_53.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
             var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 1.0);
             var beamIntensity = rampUpValue - rampDownValue;
             beamFilter.setUniformValues({
@@ -25269,7 +27034,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
                 lineYSharpness: 0.99 - beamIntensity * 0.15 + 0.01 * rampDownValue
             });
         };
-        var beamSprite = utility_46.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
+        var beamSprite = utility_53.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
         beamSprite.shader = beamFilter;
         beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
         mainContainer.addChild(beamSprite);
@@ -25317,7 +27082,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         var shinyEmitter = new Proton.BehaviourEmitter();
         shinyEmitter.p.x = beamOrigin.x;
         shinyEmitter.p.y = beamOrigin.y;
-        var shinyParticleTexture = utility_46.getDummyTextureForShader();
+        var shinyParticleTexture = utility_53.getDummyTextureForShader();
         shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
         var shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
         shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
@@ -25342,77 +27107,40 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         };
         shinyEmitter.rate = new Proton.Rate(150 * particlesAmountScale, 0);
         shinyEmitter.emit("once");
-        var shockWaveMainEllipseMaxSize = {
-            x: 0.3,
-            y: 0.9
-        };
-        var shockWaveIntersectingEllipseMaxSize = {
-            x: 0.8,
-            y: 1.0
-        };
-        var shockWaveFilter = new IntersectingEllipses_1.default({
-            mainColor: [1, 1, 1, 1]
-        });
-        var syncShockWaveUniforms = function (time) {
-            var burstX;
-            if (time < (relativeImpactTime - 0.02)) {
-                burstX = 0;
-            }
-            else {
-                burstX = time - (relativeImpactTime - 0.02);
-            }
-            var shockWaveSize = TWEEN.Easing.Quintic.Out(burstX);
-            shockWaveFilter.setUniformValues({
-                mainEllipseSize: [
-                    shockWaveMainEllipseMaxSize.x * shockWaveSize,
-                    shockWaveMainEllipseMaxSize.y * shockWaveSize
-                ],
-                intersectingEllipseSize: [
-                    shockWaveIntersectingEllipseMaxSize.x * shockWaveSize,
-                    shockWaveIntersectingEllipseMaxSize.y * shockWaveSize
-                ],
-                intersectingEllipseCenter: [
-                    0.05 + 0.3 * shockWaveSize,
-                    0.0
-                ],
-                mainEllipseSharpness: 0.8 + 0.18 * (1.0 - shockWaveSize),
-                intersectingEllipseSharpness: 0.4 + 0.4 * (1.0 - shockWaveSize),
-                mainAlpha: 1.0 - shockWaveSize
-            });
-        };
-        var shockWaveSpriteSize = {
-            x: props.height * 3.0,
+        var shockWaveSize = {
+            x: props.width * 3.0,
             y: props.height * 3.0
         };
-        var shockWaveSprite = utility_46.createDummySpriteForShader(beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04), beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
-        shockWaveSprite.shader = shockWaveFilter;
-        mainContainer.addChild(shockWaveSprite);
-        var lightBurstFilter = new LightBurst_1.default({
-            seed: [Math.random() * 69, Math.random() * 420],
-            rotation: 0.0,
-            raySharpness: 2.0,
-            rayColor: [0.75, 0.75, 0.62, 1.0]
+        var shockWaveFragment = new ShockWave_2.default({
+            size: shockWaveSize,
+            mainEllipseMaxScale: { x: 0.3, y: 0.9 },
+            intersectingEllipseMaxScale: { x: 0.8, y: 1.0 },
+            intersectingEllipseOrigin: { x: 0.05, y: 0.0 },
+            intersectingEllipseDrift: { x: 0.3, y: 0.0 },
+            mainEllipseSharpness: 0.95,
+            mainEllipseSharpnessDrift: -0.15,
+            intersectingEllipseSharpness: 0.8,
+            intersectingEllipseSharpnessDrift: -0.4,
+            color: new color_1.default(1.0, 1.0, 1.0),
+            delay: relativeImpactTime
         });
-        var syncLightBurstUniforms = function (time) {
-            var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
-            rampUpValue = Math.pow(rampUpValue, 7.0);
-            var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
-            var rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
-            var lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
-            lightBurstFilter.setUniformValues({
-                centerSize: Math.pow(lightBurstIntensity, 2.0),
-                centerBloomStrength: Math.pow(lightBurstIntensity, 2.0) * 5.0,
-                rayStrength: Math.pow(lightBurstIntensity, 3.0)
-            });
-        };
+        shockWaveFragment.draw();
+        shockWaveFragment.position.set(beamOrigin.x - shockWaveSize.x / 2, beamOrigin.y - shockWaveSize.y / 2);
+        mainContainer.addChild(shockWaveFragment.displayObject);
         var lightBurstSize = {
             x: props.height * 1.5,
             y: props.height * 3
         };
-        var lightBurstSprite = utility_46.createDummySpriteForShader(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2, lightBurstSize.x, lightBurstSize.y);
-        lightBurstSprite.shader = lightBurstFilter;
-        lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-        mainContainer.addChild(lightBurstSprite);
+        var lightBurstFragment = new LightBurst_3.default({
+            size: lightBurstSize,
+            delay: relativeImpactTime,
+            rotation: 0,
+            sharpness: 2.0,
+            color: new color_1.default(0.75, 0.75, 0.62)
+        });
+        lightBurstFragment.draw();
+        lightBurstFragment.position.set(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2);
+        mainContainer.addChild(lightBurstFragment.displayObject);
         function animate() {
             var elapsedTime = Date.now() - startTime;
             protonWrapper.update();
@@ -25424,7 +27152,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             particleShaderColorArray[3] = particleShaderColor.a;
             var timePassed = elapsedTime / props.duration;
             var lifeLeft = 1 - timePassed;
-            var timePassedSinceImpact = utility_46.getRelativeValue(timePassed, relativeImpactTime, 1.0);
+            var timePassedSinceImpact = utility_53.getRelativeValue(timePassed, relativeImpactTime, 1.0);
             if (timePassed >= relativeImpactTime - 0.02) {
                 if (!impactHasOccurred) {
                     impactHasOccurred = true;
@@ -25446,8 +27174,8 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             }
             syncBeamUniforms(timePassed);
             syncShinyParticleUniforms(timePassed);
-            syncShockWaveUniforms(timePassed);
-            syncLightBurstUniforms(timePassed);
+            shockWaveFragment.animate(timePassed);
+            lightBurstFragment.animate(timePassed);
             renderTexture.clear();
             renderTexture.render(mainContainer);
             if (elapsedTime < props.duration) {
@@ -25466,7 +27194,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = particleTest;
-    var _a;
+    var _a, _b;
 });
 define("modules/common/battlesfxfunctions/makeSFXFromVideo", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -25523,7 +27251,7 @@ define("modules/common/battlesfxfunctions/makeSFXFromVideo", ["require", "export
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = makeSFXFromVideo;
-    var _a;
+    var _a, _b;
 });
 define("modules/common/battlesfxtemplates/battleSFX", ["require", "exports", "modules/common/battlesfxfunctions/shaders/BlackToAlpha", "modules/common/battlesfxfunctions/rocketAttack", "modules/common/battlesfxfunctions/guard", "modules/common/battlesfxfunctions/particleTest", "modules/common/battlesfxfunctions/makeSFXFromVideo"], function (require, exports, BlackToAlpha_1, rocketAttack_1, guard_1, particleTest_1, makeSFXFromVideo_1) {
     "use strict";
@@ -25550,7 +27278,77 @@ define("modules/common/battlesfxtemplates/battleSFX", ["require", "exports", "mo
         }),
         SFXWillTriggerEffect: false
     };
-    var _a;
+    var _a, _b;
+});
+define("modules/common/effectactiontemplates/damageAdjustments", ["require", "exports"], function (require, exports) {
+    "use strict";
+    function getAdjustedTroopSize(unit) {
+        var minEffectiveHealth = Math.max(unit.currentHealth, unit.battleStats.lastHealthBeforeReceivingDamage / 3);
+        var effectiveHealth = unit.isSquadron ?
+            minEffectiveHealth :
+            Math.min(unit.maxHealth, minEffectiveHealth + unit.maxHealth * 0.2);
+        if (effectiveHealth <= 500) {
+            return effectiveHealth;
+        }
+        else if (effectiveHealth <= 2000) {
+            return effectiveHealth / 2 + 250;
+        }
+        else {
+            return effectiveHealth / 4 + 750;
+        }
+    }
+    exports.getAdjustedTroopSize = getAdjustedTroopSize;
+    function getAttackDamageIncrease(unit, damageType) {
+        var attackStat;
+        var attackFactor;
+        switch (damageType) {
+            case 0:
+                {
+                    attackStat = unit.attributes.attack;
+                    attackFactor = 0.1;
+                    break;
+                }
+            case 1:
+                {
+                    attackStat = unit.attributes.intelligence;
+                    attackFactor = 0.1;
+                    break;
+                }
+        }
+        var adjustedTroopSize = getAdjustedTroopSize(unit);
+        return (1 + attackStat * attackFactor) * adjustedTroopSize;
+    }
+    exports.getAttackDamageIncrease = getAttackDamageIncrease;
+    function getReducedDamageFactor(unit, damageType) {
+        var defenceStat;
+        var defenceFactor;
+        var finalDamageMultiplier = 1;
+        switch (damageType) {
+            case 0:
+                {
+                    defenceStat = unit.attributes.defence;
+                    defenceFactor = 0.045;
+                    var guardAmount = Math.min(unit.battleStats.guardAmount, 100);
+                    finalDamageMultiplier = 1 - guardAmount / 200;
+                    break;
+                }
+            case 1:
+                {
+                    defenceStat = unit.attributes.intelligence;
+                    defenceFactor = 0.045;
+                    break;
+                }
+        }
+        var damageReduction = defenceStat * defenceFactor;
+        return (1 - damageReduction) * finalDamageMultiplier;
+    }
+    exports.getReducedDamageFactor = getReducedDamageFactor;
+    function getAdjustedDamage(user, target, baseDamage, damageType) {
+        var dealtDamage = baseDamage * getAttackDamageIncrease(user, damageType);
+        return dealtDamage * getReducedDamageFactor(target, damageType);
+    }
+    exports.getAdjustedDamage = getAdjustedDamage;
+    var _a, _b;
 });
 define("modules/common/statuseffecttemplates/poisoned", ["require", "exports", "modules/common/effectactiontemplates/effectActions"], function (require, exports, effectActions_1) {
     "use strict";
@@ -25591,9 +27389,9 @@ define("modules/common/statuseffecttemplates/poisoned", ["require", "exports", "
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = poisoned;
-    var _a;
+    var _a, _b;
 });
-define("modules/common/effectactiontemplates/effectActions", ["require", "exports", "modules/common/statuseffecttemplates/poisoned", "src/StatusEffect", "src/targeting"], function (require, exports, poisoned_1, StatusEffect_1, targeting_3) {
+define("modules/common/effectactiontemplates/effectActions", ["require", "exports", "modules/common/effectactiontemplates/damageAdjustments", "modules/common/statuseffecttemplates/poisoned", "src/StatusEffect", "src/targeting"], function (require, exports, damageAdjustments_1, poisoned_1, StatusEffect_1, targeting_3) {
     "use strict";
     exports.singleTargetDamage = {
         name: "singleTargetDamage",
@@ -25601,11 +27399,8 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
         battleAreaFunction: targeting_3.areaSingle,
         targetRangeFunction: targeting_3.targetAll,
         executeAction: function (user, target, battle, data) {
-            var baseDamage = data.baseDamage;
-            var damageType = data.damageType;
-            var damageIncrease = user.getAttackDamageIncrease(damageType);
-            var damage = baseDamage * damageIncrease;
-            target.receiveDamage(damage, damageType);
+            var adjustedDamage = damageAdjustments_1.getAdjustedDamage(user, target, data.baseDamage, data.damageType);
+            target.receiveDamage(adjustedDamage);
         }
     };
     exports.closeAttack = {
@@ -25614,11 +27409,10 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
         battleAreaFunction: targeting_3.areaRowNeighbors,
         targetRangeFunction: targeting_3.targetNextRow,
         executeAction: function (user, target, battle) {
-            var baseDamage = 0.66;
-            var damageType = 0;
-            var damageIncrease = user.getAttackDamageIncrease(damageType);
-            var damage = baseDamage * damageIncrease;
-            target.receiveDamage(damage, damageType);
+            exports.singleTargetDamage.executeAction(user, target, battle, {
+                baseDamage: 0.66,
+                damageType: 0
+            });
         }
     };
     exports.beamAttack = {
@@ -25629,9 +27423,10 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
         executeAction: function (user, target, battle) {
             var baseDamage = 0.75;
             var damageType = 1;
-            var damageIncrease = user.getAttackDamageIncrease(damageType);
-            var damage = baseDamage * damageIncrease;
-            target.receiveDamage(damage, damageType);
+            exports.singleTargetDamage.executeAction(user, target, battle, {
+                baseDamage: 0.75,
+                damageType: 1
+            });
         }
     };
     exports.bombAttack = {
@@ -25640,11 +27435,10 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
         battleAreaFunction: targeting_3.areaNeighbors,
         targetRangeFunction: targeting_3.targetAll,
         executeAction: function (user, target, battle) {
-            var baseDamage = 0.5;
-            var damageType = 0;
-            var damageIncrease = user.getAttackDamageIncrease(damageType);
-            var damage = baseDamage * damageIncrease;
-            target.receiveDamage(damage, damageType);
+            exports.singleTargetDamage.executeAction(user, target, battle, {
+                baseDamage: 0.5,
+                damageType: 0
+            });
         }
     };
     exports.guardRow = {
@@ -25680,8 +27474,6 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
         battleAreaFunction: targeting_3.areaSingle,
         targetRangeFunction: targeting_3.targetAll,
         executeAction: function (user, target, battle, data) {
-            if (!data)
-                return;
             if (data.flat) {
                 target.battleStats.captureChance += data.flat;
             }
@@ -25713,7 +27505,7 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
                 healAmount += target.maxHealth * data.maxHealthPercentage;
             }
             if (data.perUserUnit) {
-                healAmount += data.perUserUnit * user.getAttackDamageIncrease(1);
+                healAmount += data.perUserUnit * damageAdjustments_1.getAttackDamageIncrease(user, 1);
             }
             target.removeStrength(-healAmount);
         }
@@ -25734,7 +27526,7 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
         targetRangeFunction: targeting_3.targetSelf,
         executeAction: function () { }
     };
-    var _a;
+    var _a, _b;
 });
 define("modules/common/abilitytemplates/abilities", ["require", "exports", "modules/common/battlesfxtemplates/battleSFX", "modules/common/effectactiontemplates/effectActions"], function (require, exports, BattleSFX, EffectActions) {
     "use strict";
@@ -25873,7 +27665,7 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
         AIScoreAdjust: -0.1,
         disableInAIBattles: true,
     };
-    var _a;
+    var _a, _b;
 });
 define("modules/common/resourcetemplates/resources", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -25912,7 +27704,7 @@ define("modules/common/resourcetemplates/resources", ["require", "exports"], fun
         rarity: 1,
         distributionGroups: ["rare"]
     };
-    var _a;
+    var _a, _b;
 });
 define("modules/common/passiveskilltemplates/passiveSkills", ["require", "exports", "modules/common/effectactiontemplates/effectActions"], function (require, exports, EffectActions) {
     "use strict";
@@ -25994,7 +27786,7 @@ define("modules/common/passiveskilltemplates/passiveSkills", ["require", "export
         atTurnStart: [
             function (user) {
                 var star = user.fleet.location;
-                var allFriendlyUnits = star.getAllUnitsOfPlayer(user.fleet.player);
+                var allFriendlyUnits = star.getUnits(function (player) { return player === user.fleet.player; });
                 for (var i = 0; i < allFriendlyUnits.length; i++) {
                     allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth);
                 }
@@ -26014,22 +27806,23 @@ define("modules/common/passiveskilltemplates/passiveSkills", ["require", "export
         ],
         canUpgradeInto: [exports.medic]
     };
-    var _a;
+    var _a, _b;
 });
-define("modules/common/copyCommonTemplates", ["require", "exports", "modules/common/abilitytemplates/abilities", "modules/common/resourcetemplates/resources", "modules/common/effectactiontemplates/effectActions", "modules/common/statuseffecttemplates/poisoned", "modules/common/battlesfxtemplates/battleSFX", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, AbilityTemplates, ResourceTemplates, EffectActionTemplates, poisoned_2, BattleSFXTemplates, PassiveSkillTemplates) {
+define("modules/common/addCommonToModuleData", ["require", "exports", "modules/common/abilitytemplates/abilities", "modules/common/resourcetemplates/resources", "modules/common/effectactiontemplates/effectActions", "modules/common/statuseffecttemplates/poisoned", "modules/common/battlesfxtemplates/battleSFX", "modules/common/passiveskilltemplates/passiveSkills", "modules/common/attachedUnitData"], function (require, exports, AbilityTemplates, ResourceTemplates, EffectActionTemplates, poisoned_2, BattleSFXTemplates, PassiveSkillTemplates, attachedUnitData_3) {
     "use strict";
-    function copyCommonTemplates(moduleData) {
+    function addCommonToModuleData(moduleData) {
         moduleData.copyTemplates(AbilityTemplates, "Abilities");
         moduleData.copyTemplates(ResourceTemplates, "Resources");
         moduleData.copyTemplates(EffectActionTemplates, "EffectActions");
         moduleData.copyTemplates(BattleSFXTemplates, "BattleSFX");
         moduleData.copyTemplates(PassiveSkillTemplates, "PassiveSkills");
         moduleData.copyTemplates((_a = {}, _a[poisoned_2.default.type] = poisoned_2.default, _a), "StatusEffects");
+        moduleData.scripts.add(attachedUnitData_3.attachedUnitDataScripts);
         var _a;
     }
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = copyCommonTemplates;
-    var _a;
+    exports.default = addCommonToModuleData;
+    var _a, _b;
 });
 define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -26160,35 +27953,35 @@ define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], func
         position: [2],
         disallowRandomGeneration: true
     };
-    var SubEmblemTemplates = (_b = {},
-        _b[exports.Aguila_explayada_2.key] = exports.Aguila_explayada_2,
-        _b[exports.Berliner_Baer.key] = exports.Berliner_Baer,
-        _b[exports.Cles_en_sautoir.key] = exports.Cles_en_sautoir,
-        _b[exports.Coa_Illustration_Cross_Bowen_3.key] = exports.Coa_Illustration_Cross_Bowen_3,
-        _b[exports.Coa_Illustration_Cross_Malte_1.key] = exports.Coa_Illustration_Cross_Malte_1,
-        _b[exports.Coa_Illustration_Elements_Planet_Moon.key] = exports.Coa_Illustration_Elements_Planet_Moon,
-        _b[exports.Couronne_heraldique_svg.key] = exports.Couronne_heraldique_svg,
-        _b[exports.Gomaisasa.key] = exports.Gomaisasa,
-        _b[exports.Gryphon_Segreant.key] = exports.Gryphon_Segreant,
-        _b[exports.Heraldic_pentacle.key] = exports.Heraldic_pentacle,
-        _b[exports.Japanese_Crest_Futatsudomoe_1.key] = exports.Japanese_Crest_Futatsudomoe_1,
-        _b[exports.Japanese_Crest_Hana_Hisi.key] = exports.Japanese_Crest_Hana_Hisi,
-        _b[exports.Japanese_Crest_Mitsumori_Janome.key] = exports.Japanese_Crest_Mitsumori_Janome,
-        _b[exports.Japanese_Crest_Oda_ka.key] = exports.Japanese_Crest_Oda_ka,
-        _b[exports.Japanese_crest_Tsuki_ni_Hoshi.key] = exports.Japanese_crest_Tsuki_ni_Hoshi,
-        _b[exports.Japanese_Crest_Ume.key] = exports.Japanese_Crest_Ume,
-        _b[exports.Mitsuuroko.key] = exports.Mitsuuroko,
-        _b[exports.Musubikashiwa.key] = exports.Musubikashiwa,
-        _b[exports.Takeda_mon.key] = exports.Takeda_mon,
-        _b[exports.threeHorns.key] = exports.threeHorns,
-        _b[exports.Flag_of_Edward_England.key] = exports.Flag_of_Edward_England,
-        _b
+    var SubEmblemTemplates = (_c = {},
+        _c[exports.Aguila_explayada_2.key] = exports.Aguila_explayada_2,
+        _c[exports.Berliner_Baer.key] = exports.Berliner_Baer,
+        _c[exports.Cles_en_sautoir.key] = exports.Cles_en_sautoir,
+        _c[exports.Coa_Illustration_Cross_Bowen_3.key] = exports.Coa_Illustration_Cross_Bowen_3,
+        _c[exports.Coa_Illustration_Cross_Malte_1.key] = exports.Coa_Illustration_Cross_Malte_1,
+        _c[exports.Coa_Illustration_Elements_Planet_Moon.key] = exports.Coa_Illustration_Elements_Planet_Moon,
+        _c[exports.Couronne_heraldique_svg.key] = exports.Couronne_heraldique_svg,
+        _c[exports.Gomaisasa.key] = exports.Gomaisasa,
+        _c[exports.Gryphon_Segreant.key] = exports.Gryphon_Segreant,
+        _c[exports.Heraldic_pentacle.key] = exports.Heraldic_pentacle,
+        _c[exports.Japanese_Crest_Futatsudomoe_1.key] = exports.Japanese_Crest_Futatsudomoe_1,
+        _c[exports.Japanese_Crest_Hana_Hisi.key] = exports.Japanese_Crest_Hana_Hisi,
+        _c[exports.Japanese_Crest_Mitsumori_Janome.key] = exports.Japanese_Crest_Mitsumori_Janome,
+        _c[exports.Japanese_Crest_Oda_ka.key] = exports.Japanese_Crest_Oda_ka,
+        _c[exports.Japanese_crest_Tsuki_ni_Hoshi.key] = exports.Japanese_crest_Tsuki_ni_Hoshi,
+        _c[exports.Japanese_Crest_Ume.key] = exports.Japanese_Crest_Ume,
+        _c[exports.Mitsuuroko.key] = exports.Mitsuuroko,
+        _c[exports.Musubikashiwa.key] = exports.Musubikashiwa,
+        _c[exports.Takeda_mon.key] = exports.Takeda_mon,
+        _c[exports.threeHorns.key] = exports.threeHorns,
+        _c[exports.Flag_of_Edward_England.key] = exports.Flag_of_Edward_England,
+        _c
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = SubEmblemTemplates;
-    var _a, _b;
+    var _a, _b, _c;
 });
-define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App", "src/ModuleFileLoadingPhase"], function (require, exports, SubEmblemTemplates_1, App_36, ModuleFileLoadingPhase_4) {
+define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App", "src/ModuleFileLoadingPhase"], function (require, exports, SubEmblemTemplates_1, App_37, ModuleFileLoadingPhase_4) {
     "use strict";
     var defaultEmblems = {
         key: "defaultEmblems",
@@ -26213,7 +28006,7 @@ define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/
                 for (var templateKey in SubEmblemTemplates_1.default) {
                     var template = SubEmblemTemplates_1.default[templateKey];
                     var image = loader.resources[template.src].data;
-                    App_36.default.images[template.src] = image;
+                    App_37.default.images[template.src] = image;
                     if (!image.width) {
                         document.body.appendChild(image);
                         image.width = image.offsetWidth;
@@ -26231,7 +28024,7 @@ define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultEmblems;
-    var _a, _b;
+    var _a, _b, _c;
 });
 define("modules/defaultruleset/defaultRuleset", ["require", "exports", "src/ModuleFileLoadingPhase"], function (require, exports, ModuleFileLoadingPhase_5) {
     "use strict";
@@ -26272,581 +28065,76 @@ define("modules/defaultruleset/defaultRuleset", ["require", "exports", "src/Modu
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultRuleSet;
-    var _a, _b;
-});
-define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility"], function (require, exports, Objective_1, DiplomacyState_3, utility_47) {
-    "use strict";
-    function moveToRoutine(front, afterMoveCallback, getMoveTargetFN) {
-        var fleets = front.getAssociatedFleets();
-        if (fleets.length <= 0) {
-            afterMoveCallback();
-            return;
-        }
-        var finishedMovingCount = 0;
-        var finishFleetMoveFN = function () {
-            finishedMovingCount++;
-            if (finishedMovingCount >= fleets.length) {
-                afterMoveCallback();
-            }
-        };
-        for (var i = 0; i < fleets.length; i++) {
-            var moveTarget = getMoveTargetFN ? getMoveTargetFN(fleets[i]) : front.objective.target;
-            fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
-        }
-    }
-    exports.moveToRoutine = moveToRoutine;
-    function independentTargetFilter(target) {
-        return target.enemy.isIndependent;
-    }
-    exports.independentTargetFilter = independentTargetFilter;
-    function buildingControllerFilter(target) {
-        return target.building && target.enemy === target.building.controller;
-    }
-    exports.buildingControllerFilter = buildingControllerFilter;
-    function musterAndAttackRoutine(targetFilter, front, afterMoveCallback) {
-        var shouldMoveToTarget;
-        var unitsByLocation = front.getUnitsByLocation();
-        var fleets = front.getAssociatedFleets();
-        var atMuster = unitsByLocation[front.musterLocation.id] ?
-            unitsByLocation[front.musterLocation.id].length : 0;
-        var inRangeOfTarget = 0;
-        for (var i = 0; i < fleets.length; i++) {
-            var distance = fleets[i].location.getDistanceToStar(front.targetLocation);
-            if (fleets[i].getMinCurrentMovePoints() >= distance) {
-                inRangeOfTarget += fleets[i].units.length;
-            }
-        }
-        if (front.hasMustered) {
-            shouldMoveToTarget = true;
-        }
-        else {
-            if (atMuster >= front.minUnitsDesired || inRangeOfTarget >= front.minUnitsDesired) {
-                front.hasMustered = true;
-                shouldMoveToTarget = true;
-            }
-            else {
-                shouldMoveToTarget = false;
-            }
-        }
-        var moveTarget = shouldMoveToTarget ? front.targetLocation : front.musterLocation;
-        var finishAllMoveFN = function () {
-            unitsByLocation = front.getUnitsByLocation();
-            var atTarget = unitsByLocation[front.targetLocation.id] ?
-                unitsByLocation[front.targetLocation.id].length : 0;
-            if (atTarget >= front.minUnitsDesired) {
-                var star = front.targetLocation;
-                var player = front.units[0].fleet.player;
-                var attackTargets = star.getTargetsForPlayer(player);
-                var target = attackTargets.filter(targetFilter)[0];
-                player.attackTarget(star, target, afterMoveCallback);
-            }
-            else {
-                afterMoveCallback();
-            }
-        };
-        var finishedMovingCount = 0;
-        var finishFleetMoveFN = function () {
-            finishedMovingCount++;
-            if (finishedMovingCount >= fleets.length) {
-                finishAllMoveFN();
-            }
-        };
-        for (var i = 0; i < fleets.length; i++) {
-            fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
-        }
-    }
-    exports.musterAndAttackRoutine = musterAndAttackRoutine;
-    function defaultUnitDesireFN(front) {
-        var desire = 1;
-        var unitsOverMinimum = front.units.length - front.minUnitsDesired;
-        var unitsOverIdeal = front.units.length - front.idealUnitsDesired;
-        var unitsUnderMinimum = front.minUnitsDesired - front.units.length;
-        if (unitsOverMinimum > 0) {
-            desire *= 0.85 / unitsOverMinimum;
-        }
-        if (unitsOverIdeal > 0) {
-            desire *= 0.6 / unitsOverIdeal;
-        }
-        if (unitsUnderMinimum > 0) {
-            var intertiaPerMissingUnit = 0.5 / front.minUnitsDesired;
-            var newUnitInertia = intertiaPerMissingUnit * (unitsUnderMinimum - 1);
-            desire *= 1 - newUnitInertia;
-        }
-        return desire;
-    }
-    exports.defaultUnitDesireFN = defaultUnitDesireFN;
-    function defaultUnitFitFN(unit, front, lowHealthThreshhold, healthAdjust, distanceAdjust) {
-        if (lowHealthThreshhold === void 0) { lowHealthThreshhold = 0.75; }
-        if (healthAdjust === void 0) { healthAdjust = 1; }
-        if (distanceAdjust === void 0) { distanceAdjust = 1; }
-        var score = 1;
-        var healthPercentage = unit.currentHealth / unit.maxHealth;
-        if (healthPercentage < lowHealthThreshhold) {
-            score *= healthPercentage * healthAdjust;
-        }
-        var turnsToReach = unit.getTurnsToReachStar(front.targetLocation);
-        if (turnsToReach > 0) {
-            turnsToReach *= distanceAdjust;
-            var distanceMultiplier = 1 / (Math.log(turnsToReach + 2.5) / Math.log(2.5));
-            score *= distanceMultiplier;
-        }
-        return score;
-    }
-    exports.defaultUnitFitFN = defaultUnitFitFN;
-    function scoutingUnitDesireFN(front) {
-        if (front.units.length < 1)
-            return 1;
-        else
-            return 0;
-    }
-    exports.scoutingUnitDesireFN = scoutingUnitDesireFN;
-    function scoutingUnitFitFN(unit, front) {
-        var baseScore = 0;
-        var isStealthy = unit.isStealthy();
-        if (isStealthy)
-            baseScore += 0.2;
-        var visionRange = unit.getVisionRange();
-        if (visionRange <= 0) {
-            return -1;
-        }
-        else {
-            baseScore += Math.pow(visionRange, 1.5) / 2;
-        }
-        var strength = unit.getStrengthEvaluation();
-        baseScore -= strength / 1000;
-        var cost = unit.getTotalCost();
-        baseScore -= cost / 1000;
-        var score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 2);
-        return utility_47.clamp(score, 0, 1);
-    }
-    exports.scoutingUnitFitFN = scoutingUnitFitFN;
-    function mergeScoresByStar(merged, scores) {
-        for (var i = 0; i < scores.length; i++) {
-            var star = scores[i].star;
-            if (!merged[star.id]) {
-                merged[star.id] = scores[i];
-            }
-            else {
-                merged[star.id].score += scores[i].score;
-            }
-        }
-        return merged;
-    }
-    exports.mergeScoresByStar = mergeScoresByStar;
-    function makeObjectivesFromScores(template, evaluationScores, basePriority) {
-        var allObjectives = [];
-        var minScore = 0;
-        var maxScore;
-        for (var i = 0; i < evaluationScores.length; i++) {
-            var score = evaluationScores[i].score;
-            maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
-        }
-        for (var i = 0; i < evaluationScores.length; i++) {
-            var star = evaluationScores[i].star || null;
-            var player = evaluationScores[i].player || null;
-            if (score < 0.04)
-                continue;
-            var relativeScore = utility_47.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
-            var priority = relativeScore * basePriority;
-            allObjectives.push(new Objective_1.default(template, priority, star, player));
-        }
-        return allObjectives;
-    }
-    exports.makeObjectivesFromScores = makeObjectivesFromScores;
-    function perimeterObjectiveCreation(template, isForScouting, basePriority, grandStrategyAI, mapEvaluator, objectivesAI) {
-        var playersToEstablishPerimeterAgainst = [];
-        var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
-        var statusByPlayer = diplomacyStatus.statusByPlayer;
-        for (var playerId in statusByPlayer) {
-            if (statusByPlayer[playerId] >= DiplomacyState_3.default.war) {
-                playersToEstablishPerimeterAgainst.push(diplomacyStatus.metPlayers[playerId]);
-            }
-        }
-        var allScoresByStar = {};
-        for (var i = 0; i < playersToEstablishPerimeterAgainst.length; i++) {
-            var player = playersToEstablishPerimeterAgainst[i];
-            var scores = mapEvaluator.getScoredPerimeterLocationsAgainstPlayer(player, 1, isForScouting);
-            mergeScoresByStar(allScoresByStar, scores);
-        }
-        var allScores = [];
-        for (var starId in allScoresByStar) {
-            if (allScoresByStar[starId].score > 0.04) {
-                allScores.push(allScoresByStar[starId]);
-            }
-        }
-        var objectives = makeObjectivesFromScores(template, allScores, basePriority);
-        return objectives;
-    }
-    exports.perimeterObjectiveCreation = perimeterObjectiveCreation;
-    function getUnitsToBeatImmediateTarget(mapEvaluator, objective) {
-        var min;
-        var ideal;
-        var star = objective.target;
-        var hostileUnits = mapEvaluator.getHostileUnitsAtStar(star).all;
-        if (hostileUnits.length <= 1) {
-            min = hostileUnits.length + 1;
-            ideal = hostileUnits.length + 1;
-        }
-        else {
-            min = Math.min(hostileUnits.length + 2, 6);
-            ideal = 6;
-        }
-        return ({
-            min: min,
-            ideal: ideal
-        });
-    }
-    exports.getUnitsToBeatImmediateTarget = getUnitsToBeatImmediateTarget;
-    var _a, _b;
-});
-define("modules/defaultai/objectives/declareWar", ["require", "exports", "modules/defaultai/aiUtils"], function (require, exports, aiUtils_1) {
-    "use strict";
-    var declareWar = {
-        key: "declareWar",
-        creatorFunction: function (grandStrategyAI, mapEvaluator) {
-            var template = declareWar;
-            var basePriority = grandStrategyAI.desireForWar;
-            var scores = [];
-            for (var playerId in mapEvaluator.player.diplomacyStatus.metPlayers) {
-                var player = mapEvaluator.player.diplomacyStatus.metPlayers[playerId];
-                if (!mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player)) {
-                    continue;
-                }
-                var score = mapEvaluator.getDesireToGoToWarWith(player) *
-                    mapEvaluator.getAbilityToGoToWarWith(player);
-                scores.push({
-                    player: player,
-                    score: score
-                });
-            }
-            return aiUtils_1.makeObjectivesFromScores(template, scores, basePriority);
-        },
-        diplomacyRoutineFN: function (objective, diplomacyAI, adjustments, afterDoneCallback) {
-            diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);
-            afterDoneCallback();
-        }
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = declareWar;
-    var _a, _b;
-});
-define("modules/defaultai/objectives/expansion", ["require", "exports", "modules/defaultai/aiUtils"], function (require, exports, aiUtils_2) {
-    "use strict";
-    var expansion = {
-        key: "expansion",
-        movePriority: 4,
-        preferredUnitComposition: {
-            combat: 0.65,
-            defence: 0.25,
-            utility: 0.1
-        },
-        moveRoutineFN: aiUtils_2.musterAndAttackRoutine.bind(null, aiUtils_2.independentTargetFilter),
-        unitDesireFN: aiUtils_2.defaultUnitDesireFN,
-        unitFitFN: aiUtils_2.defaultUnitFitFN,
-        creatorFunction: function (grandStrategyAI, mapEvaluator) {
-            var basePriority = grandStrategyAI.desireForExpansion;
-            var independentNeighborStars = mapEvaluator.getIndependentNeighborStars();
-            var evaluations = mapEvaluator.evaluateIndependentTargets(independentNeighborStars);
-            var scores = mapEvaluator.scoreIndependentTargets(evaluations);
-            var template = expansion;
-            return aiUtils_2.makeObjectivesFromScores(template, scores, basePriority);
-        },
-        unitsToFillObjectiveFN: aiUtils_2.getUnitsToBeatImmediateTarget
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = expansion;
-    var _a, _b;
-});
-define("modules/defaultai/objectives/cleanUpPirates", ["require", "exports", "modules/defaultai/aiUtils"], function (require, exports, aiUtils_3) {
-    "use strict";
-    var cleanUpPirates = {
-        key: "cleanUpPirates",
-        movePriority: 3,
-        preferredUnitComposition: {
-            combat: 0.65,
-            defence: 0.25,
-            utility: 0.1
-        },
-        moveRoutineFN: aiUtils_3.musterAndAttackRoutine.bind(null, aiUtils_3.independentTargetFilter),
-        unitDesireFN: aiUtils_3.defaultUnitDesireFN,
-        unitFitFN: aiUtils_3.defaultUnitFitFN,
-        creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
-            var basePriority = grandStrategyAI.desireForExpansion;
-            var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function (star) {
-                return star.getIndependentUnits().length > 0 && !star.getSecondaryController();
-            });
-            var evaluations = mapEvaluator.evaluateIndependentTargets(ownedStarsWithPirates);
-            var scores = mapEvaluator.scoreIndependentTargets(evaluations);
-            var template = cleanUpPirates;
-            return aiUtils_3.makeObjectivesFromScores(template, scores, basePriority);
-        },
-        unitsToFillObjectiveFN: aiUtils_3.getUnitsToBeatImmediateTarget
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = cleanUpPirates;
-    var _a, _b;
-});
-define("modules/defaultai/objectives/discovery", ["require", "exports", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, utility_48, aiUtils_4) {
-    "use strict";
-    var discovery = {
-        key: "discovery",
-        movePriority: 999,
-        preferredUnitComposition: {
-            scouting: 1
-        },
-        moveRoutineFN: aiUtils_4.moveToRoutine,
-        unitDesireFN: aiUtils_4.scoutingUnitDesireFN,
-        unitFitFN: aiUtils_4.scoutingUnitFitFN,
-        creatorFunction: function (grandStrategyAI, mapEvaluator) {
-            var scores = [];
-            var starsWithDistance = {};
-            var linksToUnrevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
-            var minDistance;
-            var maxDistance;
-            for (var starId in linksToUnrevealedStars) {
-                var star = mapEvaluator.player.revealedStars[starId];
-                var nearest = mapEvaluator.player.getNearestOwnedStarTo(star);
-                var distance = star.getDistanceToStar(nearest);
-                starsWithDistance[starId] = distance;
-                if (!isFinite(minDistance)) {
-                    minDistance = distance;
-                }
-                else {
-                    minDistance = Math.min(minDistance, distance);
-                }
-                if (!isFinite(maxDistance)) {
-                    maxDistance = distance;
-                }
-                else {
-                    maxDistance = Math.max(maxDistance, distance);
-                }
-            }
-            for (var starId in linksToUnrevealedStars) {
-                var star = mapEvaluator.player.revealedStars[starId];
-                var score = 0;
-                var relativeDistance = utility_48.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
-                var distanceMultiplier = 0.3 + 0.7 * relativeDistance;
-                var linksScore = linksToUnrevealedStars[starId].length * 20;
-                score += linksScore;
-                var desirabilityScore = mapEvaluator.evaluateIndividualStarDesirability(star);
-                desirabilityScore *= distanceMultiplier;
-                score += desirabilityScore;
-                score *= distanceMultiplier;
-                scores.push({
-                    star: star,
-                    score: score
-                });
-            }
-            var template = discovery;
-            return aiUtils_4.makeObjectivesFromScores(template, scores, 0.5);
-        },
-        unitsToFillObjectiveFN: function (mapEvaluator, objective) {
-            return { min: 1, ideal: 1 };
-        }
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = discovery;
-    var _a, _b;
-});
-define("modules/defaultai/objectives/heal", ["require", "exports", "src/mapai/Objective", "modules/defaultai/aiUtils"], function (require, exports, Objective_2, aiUtils_5) {
-    "use strict";
-    var heal = {
-        key: "heal",
-        movePriority: -1,
-        preferredUnitComposition: {},
-        moveRoutineFN: function (front, afterMoveCallback) {
-            aiUtils_5.moveToRoutine(front, afterMoveCallback, function (fleet) {
-                return fleet.player.getNearestOwnedStarTo(fleet.location);
-            });
-        },
-        unitDesireFN: function (front) {
-            return 1;
-        },
-        unitFitFN: function (unit, front) {
-            var healthPercentage = unit.currentHealth / unit.maxHealth;
-            return 1 - healthPercentage;
-        },
-        creatorFunction: function (grandStrategyAI, mapEvaluator) {
-            var template = heal;
-            return [new Objective_2.default(template, 1, null)];
-        },
-        unitsToFillObjectiveFN: function (mapEvaluator, objective) {
-            return { min: 0, ideal: 0 };
-        }
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = heal;
-    var _a, _b;
-});
-define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, Objective_3, DiplomacyState_4, utility_49, aiUtils_6) {
-    "use strict";
-    var conquer = {
-        key: "conquer",
-        movePriority: 6,
-        preferredUnitComposition: {
-            combat: 0.65,
-            defence: 0.25,
-            utility: 0.1
-        },
-        moveRoutineFN: aiUtils_6.musterAndAttackRoutine.bind(null, aiUtils_6.buildingControllerFilter),
-        unitDesireFN: aiUtils_6.defaultUnitDesireFN,
-        unitFitFN: aiUtils_6.defaultUnitFitFN,
-        creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
-            var hostilePlayers = [];
-            var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
-            for (var playerId in diplomacyStatus.metPlayers) {
-                if (diplomacyStatus.statusByPlayer[playerId] >= DiplomacyState_4.default.war) {
-                    hostilePlayers.push(diplomacyStatus.metPlayers[playerId]);
-                }
-            }
-            var relativeThreatOfPlayers = mapEvaluator.getRelativePerceivedThreatOfAllKnownPlayers();
-            var possibleTargets = [];
-            for (var i = 0; i < hostilePlayers.length; i++) {
-                var desirabilityByStar = mapEvaluator.evaluateDesirabilityOfPlayersStars(hostilePlayers[i]).byStar;
-                var sortedIds = utility_49.getObjectKeysSortedByValueOfProp(desirabilityByStar, "desirabilityByStar", "desc");
-                if (sortedIds.length === 0) {
-                    continue;
-                }
-                possibleTargets.push(desirabilityByStar[sortedIds[0]].star);
-            }
-            var template = conquer;
-            var objectives = [];
-            for (var i = 0; i < possibleTargets.length; i++) {
-                var star = possibleTargets[i];
-                var player = star.owner;
-                var threat = relativeThreatOfPlayers[player.id];
-                objectives.push(new Objective_3.default(template, threat, star));
-            }
-            return objectives;
-        },
-        unitsToFillObjectiveFN: aiUtils_6.getUnitsToBeatImmediateTarget
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = conquer;
-    var _a, _b;
-});
-define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "exports", "src/mapai/Objective", "src/App"], function (require, exports, Objective_4, App_37) {
-    "use strict";
-    var expandManufactoryCapacity = {
-        key: "expandManufactoryCapacity",
-        creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
-            var template = expandManufactoryCapacity;
-            return [new Objective_4.default(template, 0.5, null)];
-        },
-        economyRoutineFN: function (objective, economyAI) {
-            var costByStar = [];
-            var player = economyAI.player;
-            var stars = player.controlledLocations;
-            if (player.money < 1200)
-                return;
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                var fullyExpanded = star.manufactory && star.manufactory.capacity >= star.manufactory.maxCapacity;
-                if (fullyExpanded)
-                    continue;
-                var expansionCost;
-                if (!star.manufactory) {
-                    expansionCost = App_37.default.moduleData.ruleSet.manufactory.buildCost;
-                }
-                else {
-                    expansionCost = star.manufactory.getCapacityUpgradeCost();
-                }
-                costByStar.push({
-                    star: star,
-                    cost: expansionCost
-                });
-            }
-            if (costByStar.length === 0)
-                return;
-            costByStar.sort(function (a, b) {
-                return a.cost - b.cost;
-            });
-            var star = costByStar[0].star;
-            var cost = costByStar[0].cost;
-            if (player.money < cost * 1.1) {
-                return;
-            }
-            if (star.manufactory) {
-                star.manufactory.upgradeCapacity(1);
-            }
-            else {
-                star.buildManufactory();
-                player.money -= App_37.default.moduleData.ruleSet.manufactory.buildCost;
-            }
-        }
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = expandManufactoryCapacity;
-    var _a, _b;
-});
-define("modules/defaultai/objectives/scoutingPerimeter", ["require", "exports", "modules/defaultai/aiUtils"], function (require, exports, aiUtils_7) {
-    "use strict";
-    var scoutingPerimeter = {
-        key: "scoutingPerimeter",
-        movePriority: 7,
-        preferredUnitComposition: {
-            scouting: 1
-        },
-        moveRoutineFN: aiUtils_7.moveToRoutine,
-        unitDesireFN: aiUtils_7.scoutingUnitDesireFN,
-        unitFitFN: aiUtils_7.scoutingUnitFitFN,
-        creatorFunction: null,
-        unitsToFillObjectiveFN: function (mapEvaluator, objective) {
-            return { min: 1, ideal: 1 };
-        }
-    };
-    scoutingPerimeter.creatorFunction = aiUtils_7.perimeterObjectiveCreation.bind(null, scoutingPerimeter, true, 0.3);
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = scoutingPerimeter;
-    var _a, _b;
-});
-define("modules/defaultai/Objectives", ["require", "exports", "modules/defaultai/objectives/declareWar", "modules/defaultai/objectives/expansion", "modules/defaultai/objectives/cleanUpPirates", "modules/defaultai/objectives/discovery", "modules/defaultai/objectives/heal", "modules/defaultai/objectives/conquer", "modules/defaultai/objectives/expandManufactoryCapacity", "modules/defaultai/objectives/scoutingPerimeter"], function (require, exports, declareWar_1, expansion_1, cleanUpPirates_1, discovery_1, heal_1, conquer_1, expandManufactoryCapacity_1, scoutingPerimeter_1) {
-    "use strict";
-    var Objectives = (_c = {},
-        _c[declareWar_1.default.key] = declareWar_1.default,
-        _c[expansion_1.default.key] = expansion_1.default,
-        _c[cleanUpPirates_1.default.key] = cleanUpPirates_1.default,
-        _c[discovery_1.default.key] = discovery_1.default,
-        _c[heal_1.default.key] = heal_1.default,
-        _c[conquer_1.default.key] = conquer_1.default,
-        _c[expandManufactoryCapacity_1.default.key] = expandManufactoryCapacity_1.default,
-        _c[scoutingPerimeter_1.default.key] = scoutingPerimeter_1.default,
-        _c
-    );
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Objectives;
     var _a, _b, _c;
 });
-define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_38) {
+define("modules/defaultai/mapai/DefaultAI", ["require", "exports", "modules/defaultai/mapai/MapEvaluator", "modules/defaultai/mapai/GrandStrategyAI", "modules/defaultai/mapai/EconomyAI", "modules/defaultai/mapai/FrontsAI", "modules/defaultai/mapai/ObjectivesAI", "modules/defaultai/mapai/DiplomacyAI", "src/utility"], function (require, exports, MapEvaluator_1, GrandStrategyAI_1, EconomyAI_1, FrontsAI_1, ObjectivesAI_1, DiplomacyAI_1, utility_54) {
     "use strict";
-    ;
-    function processSpriteSheet(sheetData, sheetImg, processFrameFN) {
-        for (var spriteName in sheetData.frames) {
-            processFrameFN(sheetImg, sheetData.frames[spriteName].frame, spriteName);
+    var DefaultAI = (function () {
+        function DefaultAI(player, game, personality) {
+            this.type = "DefaultAI";
+            this.personality = personality || utility_54.makeRandomPersonality();
+            this.player = player;
+            this.game = game;
+            this.map = game.galaxyMap;
+            this.mapEvaluator = new MapEvaluator_1.default(this.map, this.player);
+            this.grandStrategyAI = new GrandStrategyAI_1.default(this.personality, this.mapEvaluator, this.game);
+            this.objectivesAI = new ObjectivesAI_1.default(this.mapEvaluator, this.grandStrategyAI);
+            this.frontsAI = new FrontsAI_1.default(this.mapEvaluator, this.objectivesAI, this.personality);
+            this.economyAI = new EconomyAI_1.default({
+                objectivesAI: this.objectivesAI,
+                frontsAI: this.frontsAI,
+                mapEvaluator: this.mapEvaluator,
+                personality: this.personality
+            });
+            this.diplomacyAI = new DiplomacyAI_1.default(this.mapEvaluator, this.objectivesAI, this.game, this.personality);
         }
-    }
-    function addImageToApp(name, image) {
-        App_38.default.images[name] = image;
-    }
-    function cacheSpriteSheetAsImages(sheetData, sheetImg, onImageCreated) {
-        if (onImageCreated === void 0) { onImageCreated = addImageToApp; }
-        var spriteToImageFN = function (sheetImg, frame, spriteName) {
-            var canvas = document.createElement("canvas");
-            canvas.width = frame.w;
-            canvas.height = frame.h;
-            var context = canvas.getContext("2d");
-            context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
-            var image = new Image();
-            image.src = canvas.toDataURL();
-            onImageCreated(spriteName, image);
+        DefaultAI.prototype.processTurn = function (afterFinishedCallback) {
+            this.grandStrategyAI.setDesires();
+            this.diplomacyAI.setAttitudes();
+            this.objectivesAI.setAllDiplomaticObjectives();
+            this.diplomacyAI.resolveDiplomaticObjectives(this.processTurnAfterDiplomaticObjectives.bind(this, afterFinishedCallback));
         };
-        processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
-    }
+        DefaultAI.prototype.processTurnAfterDiplomaticObjectives = function (afterFinishedCallback) {
+            this.objectivesAI.setAllEconomicObjectives();
+            this.economyAI.resolveEconomicObjectives();
+            this.objectivesAI.setAllMoveObjectives();
+            this.frontsAI.formFronts();
+            this.frontsAI.assignUnits();
+            this.frontsAI.setUnitRequests();
+            this.economyAI.satisfyAllRequests();
+            this.frontsAI.organizeFleets();
+            this.frontsAI.setFrontsToMove();
+            this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
+        };
+        DefaultAI.prototype.finishMovingFleets = function (afterFinishedCallback) {
+            this.frontsAI.organizeFleets();
+            if (afterFinishedCallback) {
+                afterFinishedCallback();
+            }
+        };
+        DefaultAI.prototype.serialize = function () {
+            return undefined;
+        };
+        DefaultAI.type = "DefaultAI";
+        return DefaultAI;
+    }());
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = cacheSpriteSheetAsImages;
+    exports.default = DefaultAI;
     var _a, _b, _c;
 });
-define("modules/defaultai/defaultAI", ["require", "exports", "modules/defaultai/Objectives", "src/ModuleFileLoadingPhase"], function (require, exports, Objectives_1, ModuleFileLoadingPhase_6) {
+define("modules/defaultai/mapai/DefaultAIConstructor", ["require", "exports", "modules/defaultai/mapai/DefaultAI"], function (require, exports, DefaultAI_1) {
+    "use strict";
+    var DefaultAIConstructor = {
+        type: DefaultAI_1.default.type,
+        construct: function (props) {
+            return new DefaultAI_1.default(props.player, props.game, props.personality);
+        }
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = DefaultAIConstructor;
+    var _a, _b, _c;
+});
+define("modules/defaultai/defaultAI", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultai/mapai/DefaultAIConstructor"], function (require, exports, ModuleFileLoadingPhase_6, DefaultAIConstructor_1) {
     "use strict";
     var defaultAI = {
         key: "defaultAI",
@@ -26858,7 +28146,9 @@ define("modules/defaultai/defaultAI", ["require", "exports", "modules/defaultai/
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_6.default.game,
         constructModule: function (moduleData) {
-            moduleData.copyTemplates(Objectives_1.default, "Objectives");
+            moduleData.copyTemplates({
+                AIController: DefaultAIConstructor_1.default
+            }, "AITemplateConstructors");
             return moduleData;
         }
     };
@@ -27122,7 +28412,7 @@ define("modules/defaultunits/unitFamilies", ["require", "exports"], function (re
     exports.default = UnitFamilies;
     var _a, _b, _c, _d, _e, _f;
 });
-define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/UnitDrawingFunctionData", "src/utility"], function (require, exports, App_39, UnitDrawingFunctionData_1, utility_50) {
+define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/UnitDrawingFunctionData", "src/utility"], function (require, exports, App_38, UnitDrawingFunctionData_1, utility_55) {
     "use strict";
     var defaultUnitDrawingFunction = function (unit, SFXParams) {
         var spriteTemplate = unit.template.sprite;
@@ -27140,7 +28430,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
         var maxColumns = 3;
         var isConvex = props.degree >= 0;
         var degree = Math.abs(props.degree);
-        var image = App_39.default.images[spriteTemplate.imageSrc];
+        var image = App_38.default.images[spriteTemplate.imageSrc];
         var zDistance = props.zDistance;
         var xDistance = props.xDistance;
         var unitsToDraw;
@@ -27156,7 +28446,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
             unitsToDraw = Math.round(unitsToDraw * heightRatio);
             zDistance *= (1 / heightRatio);
-            unitsToDraw = utility_50.clamp(unitsToDraw, 1, maxUnitsPerColumn * maxColumns);
+            unitsToDraw = utility_55.clamp(unitsToDraw, 1, maxUnitsPerColumn * maxColumns);
         }
         var xMin, xMax, yMin, yMax;
         var rotationAngle = Math.PI / 180 * props.rotationAngle;
@@ -27213,7 +28503,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             var scaledHeight = image.height * scale;
             var x = xOffset * scaledWidth * degree + columnFromRight * (scaledWidth + xDistance * scale);
             var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-            var translated = utility_50.transformMat3({ x: x, y: y }, rotationMatrix);
+            var translated = utility_55.transformMat3({ x: x, y: y }, rotationMatrix);
             x = Math.round(translated.x);
             y = Math.round(translated.y);
             var attackOriginPoint = {
@@ -27310,7 +28600,7 @@ define("modules/defaultunits/templates/stealthShip", ["require", "exports", "mod
 });
 define("modules/defaulttechnologies/TechnologyTemplates", ["require", "exports", "modules/defaultunits/templates/stealthShip"], function (require, exports, stealthShip_1) {
     "use strict";
-    var stealth = {
+    exports.stealth = {
         key: "stealth",
         displayName: "Stealth",
         description: "stealthy stuff",
@@ -27319,28 +28609,28 @@ define("modules/defaulttechnologies/TechnologyTemplates", ["require", "exports",
             1: [stealthShip_1.default]
         }
     };
-    var lasers = {
+    exports.lasers = {
         key: "lasers",
         displayName: "Lasers",
         description: "pew pew",
         maxLevel: 9,
         unlocksPerLevel: {}
     };
-    var missiles = {
+    exports.missiles = {
         key: "missiles",
         displayName: "Missiles",
         description: "boom",
         maxLevel: 9,
         unlocksPerLevel: {}
     };
-    var test1 = {
+    exports.test1 = {
         key: "test1",
         displayName: "test1",
         description: "test1",
         maxLevel: 1,
         unlocksPerLevel: {}
     };
-    var test2 = {
+    exports.test2 = {
         key: "test2",
         displayName: "test2",
         description: "test2",
@@ -27348,11 +28638,11 @@ define("modules/defaulttechnologies/TechnologyTemplates", ["require", "exports",
         unlocksPerLevel: {}
     };
     var TechnologyTemplates = (_h = {},
-        _h[stealth.key] = stealth,
-        _h[lasers.key] = lasers,
-        _h[missiles.key] = missiles,
-        _h[test1.key] = test1,
-        _h[test2.key] = test2,
+        _h[exports.stealth.key] = exports.stealth,
+        _h[exports.lasers.key] = exports.lasers,
+        _h[exports.missiles.key] = exports.missiles,
+        _h[exports.test1.key] = exports.test1,
+        _h[exports.test2.key] = exports.test2,
         _h
     );
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -27389,9 +28679,9 @@ define("src/setDynamicTemplateProperties", ["require", "exports"], function (req
     }
     exports.setUnitFamilyAssociatedTemplates = setUnitFamilyAssociatedTemplates;
     function setTechnologyRequirements(technologyTemplates) {
-        var _loop_1 = function(technologyKey) {
+        var _loop_2 = function(technologyKey) {
             var technology = technologyTemplates[technologyKey];
-            var _loop_2 = function(level) {
+            var _loop_3 = function(level) {
                 var unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
                 unlockedTemplatesForLevel.forEach(function (template) {
                     if (!template.technologyRequirements) {
@@ -27404,11 +28694,11 @@ define("src/setDynamicTemplateProperties", ["require", "exports"], function (req
                 });
             };
             for (var level in technology.unlocksPerLevel) {
-                _loop_2(level);
+                _loop_3(level);
             }
         };
         for (var technologyKey in technologyTemplates) {
-            _loop_1(technologyKey);
+            _loop_2(technologyKey);
         }
     }
     exports.setTechnologyRequirements = setTechnologyRequirements;
@@ -27435,7 +28725,7 @@ define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports",
     exports.default = defaultTechnologies;
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultattitudemodifiers/AttitudeModifierTemplates", ["require", "exports", "src/DiplomacyState"], function (require, exports, DiplomacyState_5) {
+define("modules/defaultattitudemodifiers/AttitudeModifierTemplates", ["require", "exports", "src/DiplomacyState"], function (require, exports, DiplomacyState_4) {
     "use strict";
     var neighborStars = {
         type: "neighborStars",
@@ -27455,7 +28745,7 @@ define("modules/defaultattitudemodifiers/AttitudeModifierTemplates", ["require",
         family: "current",
         duration: -1,
         startCondition: function (evaluation) {
-            return (evaluation.currentStatus >= DiplomacyState_5.default.war);
+            return (evaluation.currentStatus >= DiplomacyState_4.default.war);
         },
         constantEffect: -30
     };
@@ -27655,7 +28945,7 @@ define("src/Region", ["require", "exports"], function (require, exports) {
     exports.default = Region;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_40) {
+define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_39) {
     "use strict";
     var TemplateIndexes = (function () {
         function TemplateIndexes() {
@@ -27692,13 +28982,13 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
         };
         TemplateIndexes.getDistributablesByTypeAndDistributionGroup = function () {
             return ({
-                unitFamilies: TemplateIndexes.getDistributablesByGroup(App_40.default.moduleData.Templates.UnitFamilies),
-                resources: TemplateIndexes.getDistributablesByGroup(App_40.default.moduleData.Templates.Resources)
+                unitFamilies: TemplateIndexes.getDistributablesByGroup(App_39.default.moduleData.Templates.UnitFamilies),
+                resources: TemplateIndexes.getDistributablesByGroup(App_39.default.moduleData.Templates.Resources)
             });
         };
         TemplateIndexes.getDistributablesByGroup = function (allDistributables) {
             var byGroup = {};
-            var _loop_3 = function(key) {
+            var _loop_4 = function(key) {
                 var distributable = allDistributables[key];
                 distributable.distributionGroups.forEach(function (group) {
                     if (!byGroup[group]) {
@@ -27708,14 +28998,14 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
                 });
             };
             for (var key in allDistributables) {
-                _loop_3(key);
+                _loop_4(key);
             }
             return byGroup;
         };
         TemplateIndexes.getItemsByTechLevel = function () {
             var itemsByTechLevel = {};
-            for (var itemName in App_40.default.moduleData.Templates.Items) {
-                var item = App_40.default.moduleData.Templates.Items[itemName];
+            for (var itemName in App_39.default.moduleData.Templates.Items) {
+                var item = App_39.default.moduleData.Templates.Items[itemName];
                 if (!itemsByTechLevel[item.techLevel]) {
                     itemsByTechLevel[item.techLevel] = [];
                 }
@@ -27874,6 +29164,64 @@ define("modules/defaultbuildings/templates/Templates", ["require", "exports"], f
     };
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
+define("modules/defaultraces/common", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates"], function (require, exports, TechnologyTemplates) {
+    "use strict";
+    exports.defaultRaceTechnologyValues = [
+        {
+            tech: TechnologyTemplates.stealth,
+            startingLevel: 0,
+            maxLevel: 9
+        },
+        {
+            tech: TechnologyTemplates.lasers,
+            startingLevel: 0,
+            maxLevel: 9
+        },
+        {
+            tech: TechnologyTemplates.missiles,
+            startingLevel: 0,
+            maxLevel: 9
+        }
+    ];
+    function mergeTechnologyValues() {
+        var valuesToMerge = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            valuesToMerge[_i - 0] = arguments[_i];
+        }
+        var valuesByTechKey = {};
+        valuesToMerge.forEach(function (techValues) {
+            techValues.forEach(function (techValue) {
+                valuesByTechKey[techValue.tech.key] = techValue;
+            });
+        });
+        var mergedValues = [];
+        for (var key in valuesByTechKey) {
+            mergedValues.push(valuesByTechKey[key]);
+        }
+        return mergedValues;
+    }
+    exports.mergeTechnologyValues = mergeTechnologyValues;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+});
+define("modules/defaultraces/templates/federationAlliance", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates", "modules/defaultai/mapai/DefaultAIConstructor", "modules/defaultraces/common"], function (require, exports, TechnologyTemplates, DefaultAIConstructor_2, common_1) {
+    "use strict";
+    var federationAlliance = {
+        key: "federationAlliance",
+        displayName: "Federation Alliance",
+        description: "The good guys",
+        technologies: common_1.mergeTechnologyValues(common_1.defaultRaceTechnologyValues, [
+            {
+                tech: TechnologyTemplates.test1,
+                startingLevel: 1,
+                maxLevel: 5
+            }
+        ]),
+        getAITemplateConstructor: function (player) { return DefaultAIConstructor_2.default; }
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = federationAlliance;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+});
 define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function (require, exports) {
     "use strict";
     var Triangle = (function () {
@@ -27955,7 +29303,7 @@ define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function
     exports.default = Triangle;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_51) {
+define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_56) {
     "use strict";
     function triangulate(vertices) {
         var triangles = [];
@@ -28032,12 +29380,12 @@ define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modul
         return triangle;
     }
     function edgesEqual(e1, e2) {
-        return ((utility_51.pointsEqual(e1[0], e2[0]) && utility_51.pointsEqual(e1[1], e2[1])) ||
-            (utility_51.pointsEqual(e1[0], e2[1]) && utility_51.pointsEqual(e1[1], e2[0])));
+        return ((utility_56.pointsEqual(e1[0], e2[0]) && utility_56.pointsEqual(e1[1], e2[1])) ||
+            (utility_56.pointsEqual(e1[0], e2[1]) && utility_56.pointsEqual(e1[1], e2[0])));
     }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modules/defaultbuildings/templates/Templates", "modules/defaultemblems/SubEmblemTemplates", "modules/defaultmapgen/common/triangulate", "src/Region", "src/Building", "src/Player", "src/Color", "src/Emblem", "src/Flag", "src/pathfinding", "src/utility"], function (require, exports, Templates_1, SubEmblemTemplates_2, triangulate_1, Region_1, Building_4, Player_4, Color_5, Emblem_4, Flag_5, pathfinding_1, utility_52) {
+define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modules/defaultbuildings/templates/Templates", "modules/defaultemblems/SubEmblemTemplates", "modules/defaultraces/templates/federationAlliance", "modules/defaultmapgen/common/triangulate", "src/Region", "src/Name", "src/Building", "src/Player", "src/Color", "src/Emblem", "src/Flag", "src/pathfinding", "src/utility"], function (require, exports, Templates_1, SubEmblemTemplates_2, federationAlliance_1, triangulate_1, Region_1, Name_4, Building_4, Player_4, Color_8, Emblem_4, Flag_5, pathfinding_1, utility_57) {
     "use strict";
     function linkStarsByTriangulation(stars) {
         if (stars.length < 3) {
@@ -28116,7 +29464,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         unassignedStars.sort(function (a, b) {
             return mapGenDataByStarID[b.id].connectedness - mapGenDataByStarID[a.id].connectedness;
         });
-        var _loop_4 = function() {
+        var _loop_5 = function() {
             var seedStar = unassignedStars.pop();
             var islandForSameSector = seedStar.getIslandForQualifier(function (a, b) {
                 return sectorsByStarID[a.id] === sectorsByStarID[b.id];
@@ -28136,7 +29484,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
                         var starHasSector = Boolean(sectorsByStarID[star.id]);
                         return !starHasSector;
                     });
-                    var _loop_5 = function() {
+                    var _loop_6 = function() {
                         var frontierSortScores = {};
                         frontier.forEach(function (star) {
                             var borderLengthWithSector = sector_1.getBorderLengthWithStars([star]);
@@ -28153,7 +29501,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
                         sectorsByStarID[toAdd.id] = sector_1;
                     };
                     while (sector_1.stars.length < minSize && frontier.length > 0) {
-                        _loop_5();
+                        _loop_6();
                     }
                     discoveryStarIndex++;
                 }
@@ -28164,9 +29512,9 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         };
         var toAdd;
         while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
-            _loop_4();
+            _loop_5();
         }
-        var _loop_6 = function() {
+        var _loop_7 = function() {
             star = leftoverStars.pop();
             neighbors = star.getLinkedInRange(1).all;
             alreadyAddedNeighborSectors = {};
@@ -28211,8 +29559,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         };
         var star, neighbors, alreadyAddedNeighborSectors, candidateSectors;
         while (leftoverStars.length > 0) {
-            var state_6 = _loop_6();
-            if (state_6 === "continue") continue;
+            _loop_7();
         }
         return Object.keys(sectorsByID).map(function (sectorID) {
             return sectorsByID[sectorID];
@@ -28231,7 +29578,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
             });
         }
         sectors.forEach(function (sector) {
-            var alreadyAddedByWeight = utility_52.getRelativeWeightsFromObject(probabilityWeights);
+            var alreadyAddedByWeight = utility_57.getRelativeWeightsFromObject(probabilityWeights);
             var distributionFlags = distributionFlagsBySectorID[sector.id];
             var distributablesForSector = distributionFlags.reduce(function (distributables, flag) {
                 return distributables.concat(distributablesByDistributionGroup[flag]);
@@ -28253,7 +29600,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
             candidates.forEach(function (candidate) {
                 candidatesByWeight[candidate.type] = alreadyAddedByWeight[candidate.type];
             });
-            var selectedKey = utility_52.getRandomKeyWithWeights(candidatesByWeight);
+            var selectedKey = utility_57.getRandomKeyWithWeights(candidatesByWeight);
             var selectedType = allDistributablesByType[selectedKey];
             probabilityWeights[selectedKey] /= 2;
             placerFunction(sector, selectedType);
@@ -28290,20 +29637,28 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
     }
     exports.addDefenceBuildings = addDefenceBuildings;
     function makePlayerForPirates() {
-        var player = new Player_4.default(true);
-        player.name = "Pirates";
-        player.color = Color_5.default.fromHex(0x000000);
-        player.colorAlpha = 0;
-        player.secondaryColor = Color_5.default.fromHex(0xFFFFFF);
-        player.isIndependent = true;
-        var foregroundEmblem = new Emblem_4.default(player.secondaryColor);
+        var color = {
+            main: Color_8.default.fromHex(0x000000),
+            alpha: 0,
+            secondary: Color_8.default.fromHex(0xFFFFFF)
+        };
+        var foregroundEmblem = new Emblem_4.default(color.secondary);
         foregroundEmblem.inner = SubEmblemTemplates_2.Flag_of_Edward_England;
-        player.flag = new Flag_5.default({
+        var flag = new Flag_5.default({
             width: 46,
-            mainColor: player.color,
-            secondaryColor: player.secondaryColor
+            mainColor: color.main,
+            secondaryColor: color.secondary
         });
-        player.flag.setForegroundEmblem(foregroundEmblem);
+        flag.setForegroundEmblem(foregroundEmblem);
+        var player = new Player_4.default({
+            isAI: true,
+            isIndependent: true,
+            name: new Name_4.default("Pirates", true),
+            race: federationAlliance_1.default,
+            money: -9999,
+            color: color,
+            flag: flag
+        });
         return player;
     }
     exports.makePlayerForPirates = makePlayerForPirates;
@@ -28319,7 +29674,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
     exports.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", "modules/defaultmapgen/common/mapGenUtils", "src/Unit", "src/Fleet", "src/utility"], function (require, exports, mapGenUtils_1, Unit_6, Fleet_5, utility_53) {
+define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", "modules/defaultmapgen/common/mapGenUtils", "src/Unit", "src/Name", "src/Fleet", "src/utility"], function (require, exports, mapGenUtils_1, Unit_6, Name_5, Fleet_5, utility_58) {
     "use strict";
     function setupIndependents(props) {
         var independentStars = props.region.stars.filter(function (star) {
@@ -28354,16 +29709,16 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
             var inverseMapGenDistance = 1 - mapGenData.mapGenDistance;
             var distanceFromPlayer = mapGenData.distanceFromPlayerOwnedLocation - 1;
             var relativeDistanceFromPlayer = Math.pow(distanceFromPlayer / globalMaxDistanceFromPlayer, 1.6);
-            var unitCountFromVariance = utility_53.randRange(-1, 1) * props.variance;
+            var unitCountFromVariance = utility_58.randRange(-1, 1) * props.variance;
             var unitCount = minUnits + (maxUnits - minUnits) * relativeDistanceFromPlayer;
             unitCount += unitCountFromVariance;
             unitCount *= props.intensity;
-            unitCount = utility_53.clamp(unitCount, minUnits, maxUnits);
+            unitCount = utility_58.clamp(unitCount, minUnits, maxUnits);
             unitCount = Math.round(unitCount);
             var eliteCount = unitCount < 3 ? 0 : unitCount < 5 ? 1 : 2;
             var units = [];
             if (star === commanderStar) {
-                var template = utility_53.getRandomArrayItem(unitTypes);
+                var template = utility_58.getRandomArrayItem(unitTypes);
                 var unit = new Unit_6.default(template);
                 unit.name = "Pirate commander";
                 unit.setAttributes(1.35);
@@ -28375,7 +29730,7 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
                 var isElite = i < eliteCount;
                 var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
                 var unitStatsModifier = (isElite ? 1.2 : 1);
-                var template = utility_53.getRandomArrayItem(unitTypes);
+                var template = utility_58.getRandomArrayItem(unitTypes);
                 var unit = new Unit_6.default(template);
                 unit.name = (isElite ? "Pirate elite" : "Pirate");
                 unit.setAttributes(unitStatsModifier);
@@ -28384,7 +29739,7 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
                 units.push(unit);
             }
             var fleet = new Fleet_5.default(props.player, units, star, undefined, false);
-            fleet.name = "Pirates";
+            fleet.name = new Name_5.default("Pirates", true);
         });
     }
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -28424,12 +29779,12 @@ define("modules/defaultmapgen/spiralGalaxy/SpiralGalaxyOptionValues", ["require"
     "use strict";
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "exports", "modules/defaultmapgen/common/MapGenPoint", "src/utility"], function (require, exports, MapGenPoint_1, utility_54) {
+define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "exports", "modules/defaultmapgen/common/MapGenPoint", "src/utility"], function (require, exports, MapGenPoint_1, utility_59) {
     "use strict";
     function generateSpiralPoints(options) {
         var sg = convertMapGenOptionValues(options);
         var makePoint = function (distanceMin, distanceMax, arm, maxOffset) {
-            var distance = utility_54.randRange(distanceMin, distanceMax);
+            var distance = utility_59.randRange(distanceMin, distanceMax);
             var offset = Math.random() * maxOffset - maxOffset / 2;
             offset *= (1 / distance);
             if (offset < 0) {
@@ -28508,12 +29863,12 @@ define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "e
             armDistance: Math.PI * 2 / totalArms,
             armOffsetMax: 0.5,
             armRotationFactor: actualArms / 3,
-            galaxyRotation: utility_54.randRange(0, Math.PI * 2)
+            galaxyRotation: utility_59.randRange(0, Math.PI * 2)
         });
     }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", "exports", "src/FillerPoint", "src/Star", "src/Region", "src/TemplateIndexes", "src/MapGenResult", "src/utility", "src/voronoi", "modules/defaultmapgen/common/setupIndependents", "modules/defaultmapgen/common/mapGenUtils", "modules/defaultmapgen/spiralGalaxy/generateSpiralPoints"], function (require, exports, FillerPoint_2, Star_2, Region_2, TemplateIndexes_1, MapGenResult_2, utility_55, voronoi_2, setupIndependents_1, mapGenUtils_2, generateSpiralPoints_1) {
+define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", "exports", "src/FillerPoint", "src/Star", "src/Region", "src/TemplateIndexes", "src/MapGenResult", "src/utility", "src/voronoi", "modules/defaultmapgen/common/setupIndependents", "modules/defaultmapgen/common/mapGenUtils", "modules/defaultmapgen/spiralGalaxy/generateSpiralPoints"], function (require, exports, FillerPoint_2, Star_2, Region_2, TemplateIndexes_1, MapGenResult_2, utility_60, voronoi_2, setupIndependents_1, mapGenUtils_2, generateSpiralPoints_1) {
     "use strict";
     var spiralGalaxyGeneration = function (options, players) {
         var seed = "" + Math.random();
@@ -28687,7 +30042,7 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
             });
         });
         stars.forEach(function (star) {
-            star.baseIncome = utility_55.randInt(4, 6) * 10;
+            star.baseIncome = utility_60.randInt(4, 6) * 10;
         });
         Math.random = oldRandom;
         return new MapGenResult_2.default({
@@ -29386,6 +30741,35 @@ define("modules/defaultunits/UnitTemplates", ["require", "exports", "modules/def
     exports.default = UnitTemplates;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
+define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_40) {
+    "use strict";
+    ;
+    function processSpriteSheet(sheetData, sheetImg, processFrameFN) {
+        for (var spriteName in sheetData.frames) {
+            processFrameFN(sheetImg, sheetData.frames[spriteName].frame, spriteName);
+        }
+    }
+    function addImageToApp(name, image) {
+        App_40.default.images[name] = image;
+    }
+    function cacheSpriteSheetAsImages(sheetData, sheetImg, onImageCreated) {
+        if (onImageCreated === void 0) { onImageCreated = addImageToApp; }
+        var spriteToImageFN = function (sheetImg, frame, spriteName) {
+            var canvas = document.createElement("canvas");
+            canvas.width = frame.w;
+            canvas.height = frame.h;
+            var context = canvas.getContext("2d");
+            context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
+            var image = new Image();
+            image.src = canvas.toDataURL();
+            onImageCreated(spriteName, image);
+        };
+        processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = cacheSpriteSheetAsImages;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+});
 define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defaultunits/UnitTemplates", "modules/defaultunits/unitFamilies", "modules/defaultunits/unitArchetypes", "src/ModuleFileLoadingPhase", "src/cacheSpriteSheetAsImages", "src/setDynamicTemplateProperties"], function (require, exports, UnitTemplates_1, UnitFamilies_1, UnitArchetypes_1, ModuleFileLoadingPhase_11, cacheSpriteSheetAsImages_1, setDynamicTemplateProperties_3) {
     "use strict";
     var defaultUnits = {
@@ -29604,7 +30988,7 @@ define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (re
     ];
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
-define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_56) {
+define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_61) {
     "use strict";
     var drawNebula = function (seed, size, renderer) {
         var oldRng = Math.random;
@@ -29614,21 +30998,21 @@ define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/
             baseColor: nebulaColorScheme.main.getRGB(),
             overlayColor: nebulaColorScheme.secondary.getRGB(),
             highlightColor: [1.0, 1.0, 1.0],
-            coverage: utility_56.randRange(0.28, 0.32),
-            scale: utility_56.randRange(4, 8),
-            diffusion: utility_56.randRange(1.5, 3.0),
-            streakiness: utility_56.randRange(1.5, 2.5),
-            streakLightness: utility_56.randRange(1, 1.2),
-            cloudLightness: utility_56.randRange(1, 1.2),
+            coverage: utility_61.randRange(0.28, 0.32),
+            scale: utility_61.randRange(4, 8),
+            diffusion: utility_61.randRange(1.5, 3.0),
+            streakiness: utility_61.randRange(1.5, 2.5),
+            streakLightness: utility_61.randRange(1, 1.2),
+            cloudLightness: utility_61.randRange(1, 1.2),
             highlightA: 0.9,
             highlightB: 2.2,
-            starDensity: utility_56.randRange(0.0014, 0.0018),
-            nebulaStarConcentration: utility_56.randRange(0.000, 0.004),
+            starDensity: utility_61.randRange(0.0014, 0.0018),
+            nebulaStarConcentration: utility_61.randRange(0.000, 0.004),
             starBrightness: 0.6,
             seed: [Math.random() * 100, Math.random() * 100]
         });
         var container = new PIXI.Container();
-        var shaderSprite = utility_56.createDummySpriteForShader(0, 0, size.width, size.height);
+        var shaderSprite = utility_61.createDummySpriteForShader(0, 0, size.width, size.height);
         shaderSprite.shader = filter;
         container.addChild(shaderSprite);
         var texture = container.generateTexture(renderer, PIXI.SCALE_MODES.DEFAULT, 1, size);
@@ -29754,7 +31138,7 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
     exports.default = nonFillerStars;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
-define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", "exports", "src/Color", "src/mapai/MapEvaluator"], function (require, exports, Color_6, MapEvaluator_2) {
+define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", "exports", "modules/defaultai/mapai/MapEvaluator", "src/Color"], function (require, exports, MapEvaluator_2, Color_9) {
     "use strict";
     var playerInfluence = {
         key: "playerInfluence",
@@ -29770,10 +31154,10 @@ define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", 
                 points = perspectivePlayer.getRevealedStars();
             }
             var mapEvaluator = new MapEvaluator_2.default(map, perspectivePlayer);
-            var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(perspectivePlayer);
+            var influenceByStar = mapEvaluator.getPlayerInfluenceMap(perspectivePlayer);
             var minInfluence, maxInfluence;
             for (var starId in influenceByStar) {
-                var influence = influenceByStar[starId];
+                var influence = influenceByStar.get(star);
                 if (!isFinite(minInfluence) || influence < minInfluence) {
                     minInfluence = influence;
                 }
@@ -29802,15 +31186,16 @@ define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", 
                     var hue = 110 * value;
                     var saturation = 0.5 + 0.2 * deviation;
                     var lightness = 0.6 + 0.25 * deviation;
-                    colorIndexes[value] = Color_6.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
+                    colorIndexes[value] = Color_9.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
                 }
                 return colorIndexes[value];
             }
             for (var i = 0; i < points.length; i++) {
                 var star = points[i];
-                var influence = influenceByStar[star.id];
-                if (!influence)
+                var influence = influenceByStar.get(star);
+                if (!influence) {
                     continue;
+                }
                 var relativeInfluence = getRelativeValue(minInfluence, maxInfluence, influence);
                 var color = getRelativeColor(minInfluence, maxInfluence, relativeInfluence);
                 var poly = new PIXI.Polygon(star.voronoiCell.vertices);
@@ -30096,7 +31481,7 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
     }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
-define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_6, utility_57) {
+define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_6, utility_62) {
     "use strict";
     function starsOnlyShareNarrowBorder(a, b) {
         var minBorderWidth = Options_6.default.display.borderWidth * 2;
@@ -30257,8 +31642,8 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
                     var point = offsetted[j_1];
                     var nextPoint = offsetted[(j_1 + 1) % offsetted.length];
                     var edgeCenter = {
-                        x: utility_57.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
-                        y: utility_57.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
+                        x: utility_62.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
+                        y: utility_62.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
                     if (!pointStar) {
@@ -30300,7 +31685,7 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
         var polyLinesData = [];
         for (var i = 0; i < polyLines.length; i++) {
             var polyLine = polyLines[i];
-            var isClosed = utility_57.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+            var isClosed = utility_62.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
             if (isClosed)
                 polyLine.pop();
             for (var j_3 = 0; j_3 < polyLine.length; j_3++) {
@@ -30348,7 +31733,7 @@ define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "ex
     exports.default = ownerBorders;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
-define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "exports", "src/Color"], function (require, exports, Color_7) {
+define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "exports", "src/Color"], function (require, exports, Color_10) {
     "use strict";
     var starIncome = {
         key: "starIncome",
@@ -30385,7 +31770,7 @@ define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "expo
                     var hue = 110 * value;
                     var saturation = 0.5 + 0.2 * deviation;
                     var lightness = 0.6 + 0.25 * deviation;
-                    colorIndexes[value] = Color_7.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
+                    colorIndexes[value] = Color_10.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
                 }
                 return colorIndexes[value];
             }
@@ -31385,7 +32770,57 @@ define("modules/defaultnotifications/defaultNotifications", ["require", "exports
     exports.default = defaultNotifications;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
 });
-define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/ModuleFileLoadingPhase", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, ModuleFileLoadingPhase_17, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, options_9, TutorialStatus_5, utility_58, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
+define("modules/defaultraces/templates/wormThings", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates", "modules/defaultai/mapai/DefaultAIConstructor", "modules/defaultraces/common"], function (require, exports, TechnologyTemplates, DefaultAIConstructor_3, common_2) {
+    "use strict";
+    var wormThings = {
+        key: "wormThings",
+        displayName: "Worm Things",
+        description: "The gross guys",
+        technologies: common_2.mergeTechnologyValues(common_2.defaultRaceTechnologyValues, [
+            {
+                tech: TechnologyTemplates.test2,
+                startingLevel: 1,
+                maxLevel: 5
+            }
+        ]),
+        getAITemplateConstructor: function (player) { return DefaultAIConstructor_3.default; }
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = wormThings;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+});
+define("modules/defaultraces/RaceTemplates", ["require", "exports", "modules/defaultraces/templates/federationAlliance", "modules/defaultraces/templates/wormThings"], function (require, exports, federationAlliance_2, wormThings_1) {
+    "use strict";
+    var RaceTemplates = (_z = {},
+        _z[federationAlliance_2.default.key] = federationAlliance_2.default,
+        _z[wormThings_1.default.key] = wormThings_1.default,
+        _z
+    );
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = RaceTemplates;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
+});
+define("modules/defaultraces/defaultRaces", ["require", "exports", "modules/defaultraces/RaceTemplates", "src/ModuleFileLoadingPhase"], function (require, exports, RaceTemplates_1, ModuleFileLoadingPhase_17) {
+    "use strict";
+    var defaultRaces = {
+        key: "defaultRaces",
+        metaData: {
+            name: "Default Buildings",
+            version: "0.1.0",
+            author: "giraluna",
+            description: ""
+        },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_17.default.setup,
+        constructModule: function (moduleData) {
+            moduleData.copyTemplates(RaceTemplates_1.default, "Races");
+            return moduleData;
+        }
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = defaultRaces;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
+});
+define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/ModuleFileLoadingPhase", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/addCommonToModuleData", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications", "modules/defaultraces/defaultRaces"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, ModuleFileLoadingPhase_18, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, options_9, TutorialStatus_5, utility_63, addCommonToModuleData_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1, defaultRaces_1) {
     "use strict";
     var App = (function () {
         function App() {
@@ -31396,7 +32831,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var moduleLoader = this.moduleLoader = new ModuleLoader_1.default();
             this.initUI();
-            utility_58.onDOMLoaded(function () {
+            utility_63.onDOMLoaded(function () {
                 _this.moduleData = moduleLoader.moduleData;
                 moduleLoader.addModuleFile(defaultEmblems_1.default);
                 moduleLoader.addModuleFile(defaultRuleset_1.default);
@@ -31411,7 +32846,8 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
                 moduleLoader.addModuleFile(paintingPortraits_1.default);
                 moduleLoader.addModuleFile(defaultBuildings_1.default);
                 moduleLoader.addModuleFile(defaultNotifications_1.default);
-                copyCommonTemplates_1.default(moduleLoader.moduleData);
+                moduleLoader.addModuleFile(defaultRaces_1.default);
+                addCommonToModuleData_1.default(moduleLoader.moduleData);
                 window.setTimeout(function () {
                     _this.makeApp();
                 }, 0);
@@ -31421,7 +32857,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             var _this = this;
             this.destroy();
             this.initUI();
-            this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_17.default.game, function () {
+            this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_18.default.game, function () {
                 _this.game = new Game_2.default(map, players, players[0]);
                 _this.initGame();
                 _this.initDisplay();
@@ -31432,13 +32868,14 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
         App.prototype.load = function (saveKey) {
             var _this = this;
             var data = localStorage.getItem(saveKey);
-            if (!data)
+            if (!data) {
                 return;
+            }
             var parsed = JSON.parse(data);
             idGenerators_9.default.setValues(parsed.idGenerators);
             this.destroy();
             this.initUI();
-            this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_17.default.game, function () {
+            this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_18.default.game, function () {
                 _this.game = new GameLoader_1.default().deserializeGame(parsed.gameData);
                 _this.game.gameStorageKey = saveKey;
                 _this.initGame();
@@ -31455,13 +32892,16 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             var startTime = Date.now();
             options_9.default.load();
             TutorialStatus_5.default.load();
+            if (!options_9.default.debug.enabled) {
+                this.moduleLoader.progressivelyLoadModulesByPhase(0);
+            }
             var initialScene = this.getInitialScene();
             var switchSceneFN = function () {
                 _this.reactUI.switchScene(initialScene);
                 console.log("Init in " + (Date.now() - startTime) + " ms");
             };
             if (initialScene === "galaxyMap") {
-                this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_17.default.game, function () {
+                this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_18.default.game, function () {
                     _this.game = _this.makeGame();
                     _this.initGame();
                     _this.initDisplay();
@@ -31505,10 +32945,12 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
         App.prototype.makePlayers = function () {
             var players = [];
             for (var i = 0; i < 5; i++) {
-                var player = new Player_5.default(i >= 1);
-                player.makeRandomFlag();
-                player.initTechnologies();
-                players.push(player);
+                players.push(new Player_5.default({
+                    isAI: i > 0,
+                    isIndependent: false,
+                    race: utility_63.getRandomProperty(this.moduleData.Templates.Races),
+                    money: 1000
+                }));
             }
             return ({
                 players: players
@@ -31532,24 +32974,28 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             return galaxyMap;
         };
         App.prototype.initGame = function () {
-            if (!this.game)
-                throw new Error("App tried to init game without " +
-                    "having one specified");
+            var _this = this;
+            if (!this.game) {
+                throw new Error("App tried to init game without having one specified");
+            }
             this.humanPlayer = this.game.humanPlayer;
             this.humanPlayer.isAI = false;
-            if (this.playerControl)
+            if (this.playerControl) {
                 this.playerControl.removeEventListeners();
-            this.playerControl = new PlayerControl_1.default(this.humanPlayer);
-            for (var i = 0; i < this.game.playerOrder.length; i++) {
-                var player = this.game.playerOrder[i];
-                if (player.isAI) {
-                    player.setupAI(this.game);
-                }
             }
+            this.playerControl = new PlayerControl_1.default(this.humanPlayer);
             if (!this.game.notificationLog) {
                 this.game.notificationLog = new NotificationLog_3.default(this.humanPlayer);
                 this.game.notificationLog.setTurn(this.game.turnNumber, true);
             }
+            app.moduleData.scripts.game.afterInit.forEach(function (scriptFN) {
+                scriptFN(_this.game);
+            });
+            this.game.playerOrder.forEach(function (player) {
+                if (player.isAI && !player.AIController) {
+                    player.AIController = player.makeRandomAIController(_this.game);
+                }
+            });
         };
         App.prototype.initDisplay = function () {
             this.renderer = new Renderer_1.default(this.game.galaxyMap.seed, this.moduleData.mapBackgroundDrawingFunction);
@@ -31584,6 +33030,6 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
     var app = new App();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = app;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
 });
 //# sourceMappingURL=main.js.map
