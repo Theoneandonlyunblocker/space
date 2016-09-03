@@ -28,15 +28,15 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     zDistance: 8,
     xDistance: 5,
     maxUnitsPerColumn: 7,
-    degree: -0.5,
+    curvature: -0.5,
     rotationAngle: 70,
     scalingFactor: 0.04
   };
 
   var maxUnitsPerColumn = props.maxUnitsPerColumn;
   const maxColumns = 3;
-  const isConvex = props.degree >= 0;
-  const degree = Math.abs(props.degree);
+  const isConvex = props.curvature >= 0;
+  const curvature = Math.abs(props.curvature);
 
   var image = app.images[spriteTemplate.imageSrc];
 
@@ -142,7 +142,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     const scaledHeight = image.height * scale;
     
 
-    let x = xOffset * scaledWidth * degree + columnFromRight * (scaledWidth + xDistance * scale);
+    let x = xOffset * scaledWidth * curvature + columnFromRight * (scaledWidth + xDistance * scale);
     let y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
 
     const translated = transformMat3({x: x, y: y}, rotationMatrix);
