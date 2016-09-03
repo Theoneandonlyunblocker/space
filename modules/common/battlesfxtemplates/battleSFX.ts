@@ -4,7 +4,7 @@ import BlackToAlphaFilter from "../battlesfxfunctions/shaders/BlackToAlpha";
 
 import rocketAttackDrawingFunction from "../battlesfxfunctions/rocketAttack";
 import guardDrawingFunction from "../battlesfxfunctions/guard";
-import particleTestDrawingFunction from "../battlesfxfunctions/particleTest";
+import beamDrawingFunction from "../battlesfxfunctions/beam";
 import makeSFXFromVideo from "../battlesfxfunctions/makeSFXFromVideo";
 
 
@@ -20,10 +20,10 @@ export var guard: BattleSFXTemplate =
   battleOverlay: guardDrawingFunction,
   SFXWillTriggerEffect: true
 }
-export var particleTest: BattleSFXTemplate =
+export var beam: BattleSFXTemplate =
 {
   duration: 3500,
-  battleOverlay: particleTestDrawingFunction,
+  battleOverlay: beamDrawingFunction,
   SFXWillTriggerEffect: true
 }
 export var videoTest: BattleSFXTemplate =

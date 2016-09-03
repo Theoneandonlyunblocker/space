@@ -21,7 +21,7 @@ import
 import ProtonWrapper from "./ProtonWrapper";
 
 
-export default function particleTest(props: SFXParams)
+export default function beam(props: SFXParams)
 {
   //----------INIT GENERAL
   var width2 = props.width / 2;
@@ -320,9 +320,10 @@ export default function particleTest(props: SFXParams)
   {
     size: lightBurstSize,
     delay: relativeImpactTime,
-    rotation: 0,
     sharpness: 2.0,
-    color: new Color(0.75, 0.75, 0.62)
+    color: new Color(0.75, 0.75, 0.62),
+    centerSize: 1.0,
+    rayStrength: 1.0
   });
 
   lightBurstFragment.draw();

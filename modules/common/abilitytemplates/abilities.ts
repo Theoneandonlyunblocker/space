@@ -28,7 +28,7 @@ export var beamAttack: AbilityTemplate =
   mainEffect:
   {
     action: EffectActions.beamAttack,
-    sfx: BattleSFX.particleTest
+    sfx: BattleSFX.beam
   },
   
   bypassesGuard: true,
