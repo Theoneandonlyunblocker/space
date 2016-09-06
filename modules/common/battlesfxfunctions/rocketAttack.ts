@@ -2,37 +2,84 @@
 
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
-import projectileAttack from "./projectileAttack";
+import ProjectileAttack from "./sfxfragments/ProjectileAttack";
 
 const rocketUrl = "modules/common/battlesfxfunctions/img/rocket.png";
 
 function rocketAttack(params: SFXParams)
 {
-  var explosionTextures: PIXI.Texture[] = [];
+  const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSFX(
+    params.targetOffset, params.target);
+  const offsetUserData = params.user.drawingFunctionData.normalizeForBattleSFX(
+    params.userOffset, params.user);
+  
+  const startTime = Date.now();
 
-  for (let i = 0; i < 26; i++)
-  {
-     var explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + '.png');
-     explosionTextures.push(explosionTexture);
-  }
+  let impactHasOccurred = false;
 
-  var props =
+
+
+  const projectileAttackFragment = new ProjectileAttack(
   {
     projectileTextures: [PIXI.Texture.fromFrame(rocketUrl)],
-    impactTextures: [explosionTextures],
 
     maxSpeed: 3,
     acceleration: 0.05,
-
+    
     amountToSpawn:
     {
       min: 20,
       max: 20
     },
-    impactRate: 0.75
-  };
 
-  projectileAttack(props, params);
+    spawnTimeStart: 0,
+    spawnTimeEnd: 0.4,
+
+    removeAfterImpact: true,
+    impactRate: 0.8,
+    onImpact: (projectile, container, time) =>
+    {
+      if (!impactHasOccurred)
+      {
+        params.triggerEffect();
+        impactHasOccurred = true;
+      }
+    }
+  });
+
+  projectileAttackFragment.draw(offsetUserData, offsetTargetData);
+
+
+  
+  function animate()
+  {
+    const elapsedTime = Date.now() - startTime;
+    const relativeTime = elapsedTime / params.duration;
+
+    console.log(relativeTime);
+
+    projectileAttackFragment.animate(relativeTime);
+
+    if (elapsedTime < params.duration)
+    {
+      requestAnimationFrame(animate);
+    }
+    else
+    {
+      params.triggerEnd();
+    }
+  }
+
+  params.triggerStart(projectileAttackFragment.displayObject);
+
+  animate();
+
+  // var explosionTextures: PIXI.Texture[] = [];
+  // for (let i = 0; i < 26; i++)
+  // {
+  //    var explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + '.png');
+  //    explosionTextures.push(explosionTexture);
+  // }
 }
 
 export default function preLoadedRocketAttack(params: SFXParams)
