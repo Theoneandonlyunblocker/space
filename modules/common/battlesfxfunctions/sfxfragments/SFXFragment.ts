@@ -75,7 +75,7 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
   }
 
   public abstract animate(relativeTime: number): void;
-  public abstract draw(): void;
+  public abstract draw(...args: any[]): void;
 
   public setDefaultProps(): void
   {
@@ -90,11 +90,13 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
       switch (propType)
       {
         case "number":
+        case "boolean":
         {
           this.props[prop] = props[prop];
           break;
         };
         case "point":
+        case "range":
         {
           this.props[prop] = shallowCopy(props[prop]);
           break;
@@ -102,6 +104,12 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
         case "color":
         {
           this.props[prop] = props[prop].clone();
+          break;
+        }
+        default:
+        {
+          this.props[prop] = props[prop];
+          console.warn(`Unrecognized sfx fragment prop type ${this.key}.${prop}: ${propType}`);
           break;
         }
       }

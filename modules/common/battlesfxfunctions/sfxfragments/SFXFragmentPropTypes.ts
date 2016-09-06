@@ -4,7 +4,9 @@ import Point from "../../../../src/Point";
 export type SFXFragmentPropType =
   "number" |
   "point" |
-  "color";
+  "color" |
+  "boolean" |
+  "range";
 
 interface SFXFragmentPropTypes
 {
