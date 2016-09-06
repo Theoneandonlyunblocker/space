@@ -6,9 +6,9 @@ import Unit from "./Unit";
 function mirrorRectangle(rect: PIXI.Rectangle, midX: number): PIXI.Rectangle
 {
   return new PIXI.Rectangle(
-    getMirroredPosition(rect.x, midX),
+    getMirroredPosition(rect.x, midX) - rect.width,
     rect.y,
-    rect.width * -1,
+    rect.width,
     rect.height
   );
 }
@@ -59,10 +59,16 @@ export default class UnitDrawingFunctionData
     this.sequentialAttackOriginPoints = props.sequentialAttackOriginPoints;
   }
   
-  public normalizeForBattleSFX(offset: Point, unit: Unit): UnitDrawingFunctionData
+  public normalizeForBattleSFX(offset: Point, sceneWidth: number, side: "user" | "target"): UnitDrawingFunctionData
   {
     const cloned = this.clone();
-    cloned.offset({x: 25, y: offset.y}); // TODO || x is padding as defined in src/battlescenunit
+    const padding = 25;  // TODO || as defined in src/battlescenunit
+    cloned.offset({x: padding, y: offset.y});
+    
+    if (side === "target")
+    {
+      cloned.mirror(sceneWidth / 2);
+    }
     
     return cloned;
   }
@@ -97,10 +103,8 @@ export default class UnitDrawingFunctionData
     
     return this;
   }
-  public mirror(): UnitDrawingFunctionData
+  public mirror(midX: number): UnitDrawingFunctionData
   {
-    const midX = this.boundingBox.width / 2;
-
     this.boundingBox = mirrorRectangle(this.boundingBox, midX);
     this.individualUnitBoundingBoxes = this.individualUnitBoundingBoxes.map(bbox =>
     {

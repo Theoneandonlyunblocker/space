@@ -9,7 +9,7 @@ import
 export default function guard(props: SFXParams)
 {
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(
-    props.userOffset, props.user);
+    props.userOffset, props.width, "user");
   const userX2 = offsetUserData.boundingBox.x + offsetUserData.boundingBox.width;
   const maxFrontier = Math.min(userX2 + 20, props.width / 2);
   const baseTrailDistance = 80;

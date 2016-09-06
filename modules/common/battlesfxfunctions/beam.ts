@@ -27,7 +27,7 @@ export default function beam(props: SFXParams)
   var height2 = props.height / 2;
 
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(
-    props.userOffset, props.user);
+    props.userOffset, props.width, "user");
 
   var mainContainer = new PIXI.Container();
 
