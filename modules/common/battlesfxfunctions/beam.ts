@@ -5,7 +5,6 @@ import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
 import BeamFilter from "./shaders/Beam";
 import ShinyParticleFilter from "./shaders/ShinyParticle";
-import LightBurstFilter from "./shaders/LightBurst";
 
 import ShockWave from "./sfxfragments/ShockWave";
 import LightBurst from "./sfxfragments/LightBurst";
