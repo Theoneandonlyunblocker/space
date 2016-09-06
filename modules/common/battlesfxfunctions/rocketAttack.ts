@@ -1,4 +1,4 @@
-/// <reference path="projectileattack.ts" />
+/// <reference path="../../../lib/pixi.d.ts" />
 
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
@@ -9,31 +9,30 @@ const rocketUrl = "modules/common/battlesfxfunctions/img/rocket.png";
 function rocketAttack(params: SFXParams)
 {
   const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSFX(
-    params.targetOffset, params.target);
+    params.targetOffset, params.width, "target");
   const offsetUserData = params.user.drawingFunctionData.normalizeForBattleSFX(
-    params.userOffset, params.user);
+    params.userOffset, params.width, "user");
   
   const startTime = Date.now();
 
   let impactHasOccurred = false;
-
+  const maxSpeed = params.width * 50;
+  const acceleration = params.width / 5 * 50;
 
 
   const projectileAttackFragment = new ProjectileAttack(
   {
     projectileTextures: [PIXI.Texture.fromFrame(rocketUrl)],
 
-    maxSpeed: 3,
-    acceleration: 0.05,
+    maxSpeed: maxSpeed,
+    acceleration: acceleration,
     
-    amountToSpawn:
-    {
-      min: 20,
-      max: 20
-    },
+    amountToSpawn: offsetUserData.sequentialAttackOriginPoints.length > 1 ?
+      offsetUserData.sequentialAttackOriginPoints.length :
+      8,
 
     spawnTimeStart: 0,
-    spawnTimeEnd: 0.4,
+    spawnTimeEnd: 0.5,
 
     removeAfterImpact: true,
     impactRate: 0.8,
@@ -44,6 +43,11 @@ function rocketAttack(params: SFXParams)
         params.triggerEffect();
         impactHasOccurred = true;
       }
+    },
+    impactPosition:
+    {
+      min: offsetTargetData.boundingBox.x,
+      max: offsetTargetData.boundingBox.x + offsetTargetData.boundingBox.width
     }
   });
 
@@ -55,8 +59,6 @@ function rocketAttack(params: SFXParams)
   {
     const elapsedTime = Date.now() - startTime;
     const relativeTime = elapsedTime / params.duration;
-
-    console.log(relativeTime);
 
     projectileAttackFragment.animate(relativeTime);
 
@@ -70,7 +72,23 @@ function rocketAttack(params: SFXParams)
     }
   }
 
-  params.triggerStart(projectileAttackFragment.displayObject);
+  const container = new PIXI.Container();
+  container.addChild(projectileAttackFragment.displayObject);
+
+  const gfx = new PIXI.Graphics();
+  gfx.lineStyle(3, 0xFF0000);
+  gfx.drawShape(offsetUserData.boundingBox);
+  gfx.lineStyle(3, 0x0000FF);
+  gfx.drawShape(offsetTargetData.boundingBox);
+  container.addChild(gfx);
+
+  if (!params.facingRight)
+  {
+    container.x = params.width;
+    container.scale.x = -1;
+  }
+  
+  params.triggerStart(container);
 
   animate();
 

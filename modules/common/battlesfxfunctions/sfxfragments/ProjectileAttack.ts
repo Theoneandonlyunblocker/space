@@ -19,15 +19,16 @@ interface PartialProjectileAttackProps
   onImpact?: impactFN;
   removeAfterImpact?: boolean;
   impactRate?: number;
+  impactPosition?:
+  {
+    min: number;
+    max: number;
+  };
 
   maxSpeed?: number;
   acceleration?: number;
 
-  amountToSpawn?:
-  {
-    min: number;
-    max: number;
-  }
+  amountToSpawn?: number;
 
   spawnTimeStart?: number;
   spawnTimeEnd?: number;
@@ -39,15 +40,16 @@ interface ProjectileAttackProps extends PartialProjectileAttackProps
   onImpact?: impactFN;
   removeAfterImpact?: boolean;
   impactRate?: number;
+  impactPosition?:
+  {
+    min: number;
+    max: number;
+  };
 
   maxSpeed: number;
   acceleration: number;
 
-  amountToSpawn:
-  {
-    min: number;
-    max: number;
-  }
+  amountToSpawn: number;
 
   spawnTimeStart: number;
   spawnTimeEnd: number;
@@ -63,11 +65,7 @@ const defaultProjectileAttackProps: ProjectileAttackProps =
   maxSpeed: 3,
   acceleration: 0.05,
 
-  amountToSpawn:
-  {
-    min: 20,
-    max: 20,
-  },
+  amountToSpawn: 20,
 
   spawnTimeStart: 0,
   spawnTimeEnd: 500,
@@ -79,11 +77,12 @@ const ProjectileAttackPropTypes: SFXFragmentPropTypes =
   // onImpact: impactFN,
   removeAfterImpact: "boolean",
   impactRate: "number",
+  impactPosition: "range",
 
   maxSpeed: "number",
   acceleration: "number",
 
-  amountToSpawn: "range",
+  amountToSpawn: "number",
 
   spawnTimeStart: "number",
   spawnTimeEnd: "number",
@@ -103,6 +102,11 @@ class Projectile
   private impactPosition: number | undefined;
   private willImpact: boolean;
   private removeAfterImpact: boolean;
+
+  public get position(): Point
+  {
+    return this.sprite.position;
+  }
 
   constructor(props:
   {
@@ -148,13 +152,11 @@ class Projectile
     }
 
     const shouldDraw = time >= this.spawnTime &&
-      !hasImpacted ||
-      !this.removeAfterImpact;
+      (!hasImpacted || !this.removeAfterImpact);
     
     if (!shouldDraw)
     {
       this.sprite.visible = false;
-      return;
     }
     else
     {
@@ -217,10 +219,9 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
     this.container.removeChildren()
     this.projectiles = [];
     
-    const amountToSpawn = randInt(this.props.amountToSpawn.min, this.props.amountToSpawn.max);
     const spawningDuration = this.props.spawnTimeEnd - this.props.spawnTimeStart;
 
-    for (let i = 0; i < amountToSpawn; i++)
+    for (let i = 0; i < this.props.amountToSpawn; i++)
     {
       const texture = this.props.projectileTextures[i % this.props.projectileTextures.length];
       const sprite = new PIXI.Sprite(texture);
@@ -236,13 +237,13 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
         container: this.container,
         sprite: sprite,
 
-        spawnTime: this.props.spawnTimeStart + i * (spawningDuration / amountToSpawn),
+        spawnTime: this.props.spawnTimeStart + i * (spawningDuration / this.props.amountToSpawn),
         spawnPositionX: spawnPosition.x,
         maxSpeed: this.props.maxSpeed,
         acceleration: this.props.acceleration,
 
         onImpact: this.props.onImpact,
-        impactPosition: randInt(targetBBox.x, targetBBox.width),
+        impactPosition: randInt(this.props.impactPosition.min, this.props.impactPosition.max),
         removeAfterImpact: this.props.removeAfterImpact,
       }));
     }
