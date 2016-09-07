@@ -20,10 +20,11 @@ function rocketAttack(params: SFXParams)
     params.userOffset, params.width, "user");
   
   const startTime = Date.now();
-
   let impactHasOccurred = false;
-  const maxSpeed = params.width * (params.duration / 40);
-  const acceleration = params.width / 5 * (params.duration / 40);
+
+  const maxSpeedAt1000Duration = params.width * params.duration / 30;
+  const maxSpeed = maxSpeedAt1000Duration * (1000 / params.duration);
+  const acceleration = maxSpeed / 6;
 
   const explosionTextures: PIXI.Texture[] = [];
   for (let i = 0; i < 26; i++)
@@ -37,20 +38,9 @@ function rocketAttack(params: SFXParams)
     {
       clip: PIXI.extras.MovieClip;
       startTime: number;
+      relativeTimePerFrame: number;
     } 
   } = {};
-
-  const playRemainingExplosionClips = function(): void
-  {
-    for (let id in explosionsByID)
-    {
-      const clip = explosionsByID[id].clip;
-      if (clip.currentFrame < clip.totalFrames)
-      {
-        clip.play();
-      }
-    }
-  }
 
   const relativeTimePerSecond = 1000 / params.duration;
   const relativeTimePerExplosionFrame = relativeTimePerSecond / 60;
@@ -79,10 +69,14 @@ function rocketAttack(params: SFXParams)
         impactHasOccurred = true;
       }
 
+      const remainingTime = 1 - time;
+      const remainingTimePerFrame = remainingTime / explosionTextures.length;
+
       explosionsByID[projectile.id] =
       {
         clip: new PIXI.extras.MovieClip(explosionTextures),
-        startTime: time
+        startTime: time,
+        relativeTimePerFrame: Math.min(relativeTimePerExplosionFrame, remainingTimePerFrame)
       }
 
       const explosionClip = explosionsByID[projectile.id].clip;
@@ -95,7 +89,7 @@ function rocketAttack(params: SFXParams)
     {
       const explosion = explosionsByID[projectile.id];
       const relativeTimePlayed = time - explosion.startTime;
-      const targetFrame = Math.round(relativeTimePlayed / relativeTimePerExplosionFrame);
+      const targetFrame = Math.round(relativeTimePlayed / explosion.relativeTimePerFrame);
 
       if (targetFrame >= 0 &&
         targetFrame < explosion.clip.totalFrames)
@@ -132,7 +126,6 @@ function rocketAttack(params: SFXParams)
     }
     else
     {
-      playRemainingExplosionClips();
       params.triggerEnd();
     }
   }
