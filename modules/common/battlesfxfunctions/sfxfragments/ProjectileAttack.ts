@@ -100,7 +100,7 @@ class Projectile
   private acceleration: number;
 
   private container: PIXI.Container;
-  private sprite: PIXI.Sprite;
+  public sprite: PIXI.Sprite;
 
   private onImpact: impactFN | undefined;
   private animateImpact: impactFN | undefined;
@@ -110,10 +110,6 @@ class Projectile
   private removeAfterImpact: boolean;
 
   public id: number;
-  public get position(): PIXI.Point
-  {
-    return this.sprite.position;
-  }
 
   constructor(props:
   {
@@ -155,9 +151,10 @@ class Projectile
   public draw(time: number): void
   {
     const position = this.getPosition(time);
+    const tipPosition = position + this.sprite.width;
 
     const hasReachedImpactPosition = this.willImpact &&
-      position >= this.impactPosition;
+      tipPosition >= this.impactPosition;
 
     if (hasReachedImpactPosition)
     {
