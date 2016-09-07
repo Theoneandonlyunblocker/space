@@ -3,6 +3,7 @@ import
 {
   getMatchingLocalstorageItemsByDate,
   deepMerge,
+  shallowCopy
 } from "./utility";
 
 type OptionsCategory = "battleAnimationTiming" | "debug" | "ui" | "display";
@@ -100,32 +101,30 @@ class Options implements OptionsValues
     switch (category)
     {
       case "battleAnimationTiming":
-        this.battleAnimationTiming = defaultOptionsValues.battleAnimationTiming;
+        this.battleAnimationTiming = shallowCopy(defaultOptionsValues.battleAnimationTiming);
         break;
         
       case "debug":
-        this.debug = defaultOptionsValues.debug;
+        this.debug = shallowCopy(defaultOptionsValues.debug);
         
         if (this.debug.enabled !== defaultOptionsValues.debug.enabled)
         {
           shouldReRenderUI = true;
           shouldReRenderMap = true;
         }
-        
         break;
         
       case "ui":
-        this.ui = defaultOptionsValues.ui;
+        this.ui = shallowCopy(defaultOptionsValues.ui);
         break;
         
       case "display":
-        this.display = defaultOptionsValues.display;
+        this.display = shallowCopy(defaultOptionsValues.display);
         
         if (this.display.borderWidth !== defaultOptionsValues.display.borderWidth)
         {
           shouldReRenderMap = true;
         }
-        
         break;
     }
     
