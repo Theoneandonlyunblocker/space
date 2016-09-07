@@ -17,6 +17,7 @@ interface PartialProjectileAttackProps
   projectileTextures?: PIXI.Texture[];
 
   onImpact?: impactFN;
+  animateImpact?: impactFN;
   removeAfterImpact?: boolean;
   impactRate?: number;
   impactPosition?:
@@ -38,6 +39,7 @@ interface ProjectileAttackProps extends PartialProjectileAttackProps
   projectileTextures: PIXI.Texture[];
 
   onImpact?: impactFN;
+  animateImpact?: impactFN;
   removeAfterImpact?: boolean;
   impactRate?: number;
   impactPosition?:
@@ -59,6 +61,7 @@ const defaultProjectileAttackProps: ProjectileAttackProps =
   projectileTextures: [],
 
   onImpact: undefined,
+  animateImpact: undefined,
   removeAfterImpact: true,
   impactRate: 0.75,
 
@@ -75,6 +78,7 @@ const ProjectileAttackPropTypes: SFXFragmentPropTypes =
   // projectileTextures: PIXI.Texture[],
 
   // onImpact: impactFN,
+  // animateImpact?: impactFN,
   removeAfterImpact: "boolean",
   impactRate: "number",
   impactPosition: "range",
@@ -99,28 +103,36 @@ class Projectile
   private sprite: PIXI.Sprite;
 
   private onImpact: impactFN | undefined;
+  private animateImpact: impactFN | undefined;
   private impactPosition: number | undefined;
+  private hasImpacted: boolean = false;
   private willImpact: boolean;
   private removeAfterImpact: boolean;
 
-  public get position(): Point
+  public id: number;
+  public get position(): PIXI.Point
   {
     return this.sprite.position;
   }
 
   constructor(props:
   {
-    container: PIXI.Container,
-    sprite: PIXI.Sprite,
-    spawnTime: number,
-    maxSpeed: number,
-    acceleration: number,
-    spawnPositionX: number,
-    onImpact?: impactFN,
-    impactPosition?: number,
-    removeAfterImpact?: boolean
+    id: number;
+
+    container: PIXI.Container;
+    sprite: PIXI.Sprite;
+    spawnTime: number;
+    maxSpeed: number;
+    acceleration: number;
+    spawnPositionX: number;
+    onImpact?: impactFN;
+    animateImpact?: impactFN;
+    impactPosition?: number;
+    removeAfterImpact?: boolean;
   })
   {
+    this. id = props.id;
+
     this.container = props.container;
     this.sprite = props.sprite;
 
@@ -130,6 +142,7 @@ class Projectile
     this.spawnPositionX = props.spawnPositionX;
 
     this.onImpact = props.onImpact;
+    this.animateImpact = props.animateImpact;
     this.impactPosition = props.impactPosition;
     this.removeAfterImpact = props.removeAfterImpact;
     
@@ -143,16 +156,28 @@ class Projectile
   {
     const position = this.getPosition(time);
 
-    const hasImpacted = this.willImpact &&
+    const hasReachedImpactPosition = this.willImpact &&
       position >= this.impactPosition;
 
-    if (hasImpacted && this.onImpact)
+    if (hasReachedImpactPosition)
     {
-      this.onImpact(this, this.container, time);
+      if (!this.hasImpacted)
+      {
+        this.hasImpacted = true;
+        if (this.onImpact)
+        {
+          this.onImpact(this, this.container, time);
+        }
+      }
+
+      if (this.animateImpact)
+      {
+        this.animateImpact(this, this.container, time);
+      }
     }
 
     const shouldDraw = time >= this.spawnTime &&
-      (!hasImpacted || !this.removeAfterImpact);
+      (!this.hasImpacted || !this.removeAfterImpact);
     
     if (!shouldDraw)
     {
@@ -234,6 +259,8 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
 
       this.projectiles.push(new Projectile(
       {
+        id: i,
+
         container: this.container,
         sprite: sprite,
 
@@ -243,6 +270,7 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
         acceleration: this.props.acceleration,
 
         onImpact: this.props.onImpact,
+        animateImpact: this.props.animateImpact,
         impactPosition: randInt(this.props.impactPosition.min, this.props.impactPosition.max),
         removeAfterImpact: this.props.removeAfterImpact,
       }));

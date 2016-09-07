@@ -1,8 +1,14 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
+import ProjectileAttack from "./sfxfragments/ProjectileAttack";
+
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
-import ProjectileAttack from "./sfxfragments/ProjectileAttack";
+import
+{
+  getRandomArrayItem
+} from "../../../src/utility";
+
 
 const rocketUrl = "modules/common/battlesfxfunctions/img/rocket.png";
 
@@ -16,9 +22,38 @@ function rocketAttack(params: SFXParams)
   const startTime = Date.now();
 
   let impactHasOccurred = false;
-  const maxSpeed = params.width * 50;
-  const acceleration = params.width / 5 * 50;
+  const maxSpeed = params.width * (params.duration / 40);
+  const acceleration = params.width / 5 * (params.duration / 40);
 
+  const explosionTextures: PIXI.Texture[] = [];
+  for (let i = 0; i < 26; i++)
+  {
+     const explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + '.png');
+     explosionTextures.push(explosionTexture);
+  }
+  const explosionsByID:
+  {
+    [id: number]:
+    {
+      clip: PIXI.extras.MovieClip;
+      startTime: number;
+    } 
+  } = {};
+
+  const playRemainingExplosionClips = function(): void
+  {
+    for (let id in explosionsByID)
+    {
+      const clip = explosionsByID[id].clip;
+      if (clip.currentFrame < clip.totalFrames)
+      {
+        clip.play();
+      }
+    }
+  }
+
+  const relativeTimePerSecond = 1000 / params.duration;
+  const relativeTimePerExplosionFrame = relativeTimePerSecond / 60;
 
   const projectileAttackFragment = new ProjectileAttack(
   {
@@ -32,7 +67,7 @@ function rocketAttack(params: SFXParams)
       8,
 
     spawnTimeStart: 0,
-    spawnTimeEnd: 0.5,
+    spawnTimeEnd: 0.4,
 
     removeAfterImpact: true,
     impactRate: 0.8,
@@ -42,6 +77,35 @@ function rocketAttack(params: SFXParams)
       {
         params.triggerEffect();
         impactHasOccurred = true;
+      }
+
+      explosionsByID[projectile.id] =
+      {
+        clip: new PIXI.extras.MovieClip(explosionTextures),
+        startTime: time
+      }
+
+      const explosionClip = explosionsByID[projectile.id].clip;
+      explosionClip.anchor = new PIXI.Point(0.5, 0.5);
+      explosionClip.loop = false;
+      explosionClip.position = projectile.position.clone();
+      container.addChild(explosionClip);
+    },
+    animateImpact: (projectile, container, time) =>
+    {
+      const explosion = explosionsByID[projectile.id];
+      const relativeTimePlayed = time - explosion.startTime;
+      const targetFrame = Math.round(relativeTimePlayed / relativeTimePerExplosionFrame);
+
+      if (targetFrame >= 0 &&
+        targetFrame < explosion.clip.totalFrames)
+      {
+        explosion.clip.gotoAndStop(targetFrame);
+        explosion.clip.visible = true;
+      }
+      else
+      {
+        explosion.clip.visible = false;
       }
     },
     impactPosition:
@@ -68,6 +132,7 @@ function rocketAttack(params: SFXParams)
     }
     else
     {
+      playRemainingExplosionClips();
       params.triggerEnd();
     }
   }
@@ -91,13 +156,6 @@ function rocketAttack(params: SFXParams)
   params.triggerStart(container);
 
   animate();
-
-  // var explosionTextures: PIXI.Texture[] = [];
-  // for (let i = 0; i < 26; i++)
-  // {
-  //    var explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + '.png');
-  //    explosionTextures.push(explosionTexture);
-  // }
 }
 
 export default function preLoadedRocketAttack(params: SFXParams)
