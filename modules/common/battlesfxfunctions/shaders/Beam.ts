@@ -6,6 +6,7 @@ interface Uniforms
 {
   aspectRatio: {type: "1f"; value: number;};
   beamColor: {type: "4fv"; value: number[];};
+  beamYPosition: {type: "1f"; value: number;};
   bulgeIntensity: {type: "1f"; value: number;};
   bulgeSharpness: {type: "1f"; value: number;};
   bulgeSize: {type: "2fv"; value: number[];};
@@ -24,6 +25,7 @@ interface PartialUniformValues
 {
   aspectRatio?: number;
   beamColor?: number[];
+  beamYPosition?: number;
   bulgeIntensity?: number;
   bulgeSharpness?: number;
   bulgeSize?: number[];
@@ -53,6 +55,7 @@ export default class Beam extends PIXI.AbstractFilter
     {
       aspectRatio: {type: "1f", value: initialValues.aspectRatio},
       beamColor: {type: "4fv", value: initialValues.beamColor},
+      beamYPosition: {type: "1f", value: initialValues.beamYPosition},
       bulgeIntensity: {type: "1f", value: initialValues.bulgeIntensity},
       bulgeSharpness: {type: "1f", value: initialValues.bulgeSharpness},
       bulgeSize: {type: "2fv", value: initialValues.bulgeSize},
@@ -93,6 +96,7 @@ const sourceLines =
   "  uniform float aspectRatio;",
   "",
   "  uniform vec4 beamColor;",
+  "  uniform float beamYPosition;",
   "",
   "  uniform float lineIntensity;",
   "  uniform float bulgeIntensity;",
@@ -117,6 +121,7 @@ const sourceLines =
   "  float aspectRatio = resolution.x / resolution.y;",
   "",
   "  const vec4 beamColor = vec4(1.0, 0.5, 0.5, 1.0);",
+  "  const float beamYPosition = 0.5;",
   "",
   "  const float bulgeXPosition = 0.4;",
   "  const vec2 bulgeSize = vec2(0.8, 0.4);",
@@ -172,7 +177,7 @@ const sourceLines =
   "    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);",
   "  #endif",
   "",
-  "  vec2 q = vec2(uv.x, -1.0 + 2.0 * uv.y); // (0, -1) -> (1, 1)",
+  "  vec2 q = vec2(uv.x, (uv.y - beamYPosition) * 2.0);",
   "  float noiseValue = -1.0 + 2.0 * noise(vec2(q.x - time, seed));",
   "  noiseValue *= noiseAmplitude;",
   "",

@@ -13,6 +13,7 @@ precision mediump float;
   uniform float aspectRatio;
 
   uniform vec4 beamColor;
+  uniform float beamYPosition;
 
   uniform float lineIntensity;
   uniform float bulgeIntensity;
@@ -37,6 +38,7 @@ precision mediump float;
   float aspectRatio = resolution.x / resolution.y;
 
   const vec4 beamColor = vec4(1.0, 0.5, 0.5, 1.0);
+  const float beamYPosition = 0.5;
   
   const float bulgeXPosition = 0.4;
   const vec2 bulgeSize = vec2(0.8, 0.4);
@@ -92,7 +94,7 @@ void main()
     vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
   #endif
 
-  vec2 q = vec2(uv.x, -1.0 + 2.0 * uv.y); // (0, -1) -> (1, 1)
+  vec2 q = vec2(uv.x, (uv.y - beamYPosition) * 2.0);
   float noiseValue = -1.0 + 2.0 * noise(vec2(q.x - time, seed));
   noiseValue *= noiseAmplitude;
   
