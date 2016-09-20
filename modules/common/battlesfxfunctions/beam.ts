@@ -3,11 +3,11 @@
 
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
-import BeamFilter from "./shaders/Beam";
 import ShinyParticleFilter from "./shaders/ShinyParticle";
 
 import ShockWave from "./sfxfragments/ShockWave";
 import LightBurst from "./sfxfragments/LightBurst";
+import Beam from "./sfxfragments/Beam";
 
 import Color from "../../../src/color";
 import
@@ -94,61 +94,17 @@ export default function beam(props: SFXParams)
     x: props.width,
     y: props.height
   }
-  
-  const beamFilter = new BeamFilter(
+
+  const beamFragment = new Beam(
   {
-    seed: Math.random() * 100,
-    beamColor: finalColor,
-    aspectRatio: beamSpriteSize.x / beamSpriteSize.y,
-    bulgeXPosition: relativeBeamOrigin.x + 0.1
+    color: new Color(finalColor[0], finalColor[1], finalColor[2]),
+    relativeImpactTime: relativeImpactTime,
+    relativeBeamOrigin: relativeBeamOrigin,
+    size: beamSpriteSize
   });
-  const syncBeamUniforms = function(time: number)
-  {
-    var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
-    rampUpValue = Math.pow(rampUpValue, 7.0);
 
-    var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
-    var relativeTimeAfterImpact = getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
-
-    var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 1.0);
-    var beamIntensity = rampUpValue - rampDownValue;
-
-    beamFilter.setUniformValues(
-    {
-      time: time * 100,
-      noiseAmplitude: 0.4 * beamIntensity,
-      lineIntensity: 2.0 + 3.0 * beamIntensity,
-      bulgeIntensity: 6.0 * beamIntensity,
-
-      bulgeSize:
-      [
-        0.7 * Math.pow(beamIntensity, 1.5),
-        0.4 * Math.pow(beamIntensity, 1.5)
-      ],
-      bulgeSharpness: 0.3 + 0.35 * beamIntensity,
-
-      lineXSize:
-      [
-        relativeBeamOrigin.x * rampUpValue,
-        1.0
-      ],
-      lineXSharpness: 0.99 - beamIntensity * 0.99,
-
-      lineYSize: 0.001 + beamIntensity * 0.03,
-      lineYSharpness: 0.99 - beamIntensity * 0.15 + 0.01 * rampDownValue
-    });
-  };
-
-  var beamSprite = createDummySpriteForShader(
-    0,
-    beamOrigin.y - beamSpriteSize.y / 2,
-    beamSpriteSize.x,
-    beamSpriteSize.y
-  );
-  beamSprite.shader = beamFilter;
-  beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-
-  mainContainer.addChild(beamSprite);
+  beamFragment.draw();
+  mainContainer.addChild(beamFragment.displayObject);
 
   //----------EMITTERS COMMON
   const onParticleUpdateFN = function(particle: Proton.Particle)
@@ -383,7 +339,7 @@ export default function beam(props: SFXParams)
       syncSmallParticleUniforms(timePassed);
     }
 
-    syncBeamUniforms(timePassed);
+    beamFragment.animate(timePassed);
     syncShinyParticleUniforms(timePassed);
     shockWaveFragment.animate(timePassed);
     lightBurstFragment.animate(timePassed);
