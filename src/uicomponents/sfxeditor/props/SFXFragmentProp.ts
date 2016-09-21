@@ -8,10 +8,12 @@ import
 
 import Point from "../../../Point";
 import Color from "../../../Color";
+import Range from "../../../Range";
 
 import SFXFragmentPropNumber from "./Number";
 import SFXFragmentPropPoint from "./Point";
 import SFXFragmentPropColor from "./Color";
+import SFXFragmentPropRange from "./Range";
 
 interface PropTypes extends React.Props<any>
 {
@@ -93,6 +95,21 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
         propValuesElement = SFXFragmentPropColor(
         {
           color: propValue,
+
+          propName: this.props.propName,
+          fragment: this.props.fragment,
+          onValueChange: this.props.onPropValueChange
+        });
+        break;
+      }
+      case "range":
+      {
+        const propValue: Range = this.props.fragment.props[this.props.propName];
+
+        propValuesElement = SFXFragmentPropRange(
+        {
+          min: propValue.min,
+          max: propValue.max,
 
           propName: this.props.propName,
           fragment: this.props.fragment,
