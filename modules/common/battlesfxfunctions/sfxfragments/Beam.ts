@@ -2,6 +2,7 @@
 
 import SFXFragment from "./SFXFragment";
 import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
+import RampingValue from "./RampingValue";
 
 import BeamFilter from "../shaders/Beam";
 
@@ -19,6 +20,14 @@ interface PartialBeamProps
   relativeImpactTime?: number;
   relativeBeamOrigin?: Point;
   color?: Color;
+  timeScale?: number,
+  noiseAmplitude?: RampingValue;
+  lineIntensity?: RampingValue;
+  bulgeIntensity?: RampingValue;
+  lineYSize?: RampingValue;
+  bulgeSharpness?: RampingValue;
+  lineXSharpness?: RampingValue;
+  lineYSharpness?: RampingValue;
 }
 interface BeamProps extends PartialBeamProps
 {
@@ -26,6 +35,14 @@ interface BeamProps extends PartialBeamProps
   relativeImpactTime: number;
   relativeBeamOrigin: Point;
   color: Color;
+  timeScale: number,
+  noiseAmplitude: RampingValue;
+  lineIntensity: RampingValue;
+  bulgeIntensity: RampingValue;
+  lineYSize: RampingValue;
+  bulgeSharpness: RampingValue;
+  lineXSharpness: RampingValue;
+  lineYSharpness: RampingValue;
 }
 const defaultBeamProps: BeamProps =
 {
@@ -40,7 +57,15 @@ const defaultBeamProps: BeamProps =
     x: 0,
     y: 0.5
   },
-  color: new Color(1, 0.9, 0.9)
+  color: new Color(1, 0.9, 0.9),
+  timeScale: 100,
+  noiseAmplitude: new RampingValue(0.0, 0.4, 0.0),
+  lineIntensity: new RampingValue(2.0, 5.0, 0.0),
+  bulgeIntensity: new RampingValue(0.0, 6.0, 0.0),
+  lineYSize: new RampingValue(0.001, 0.03, 0.0),
+  bulgeSharpness: new RampingValue(0.3, 0.35, 0.0),
+  lineXSharpness: new RampingValue(0.99, -0.99, 0.00),
+  lineYSharpness: new RampingValue(0.99, -0.15, 0.01),
 }
 const BeamPropTypes: SFXFragmentPropTypes =
 {
@@ -48,6 +73,14 @@ const BeamPropTypes: SFXFragmentPropTypes =
   relativeImpactTime: "number",
   relativeBeamOrigin: "point",
   color: "color",
+  timeScale: "number",
+  noiseAmplitude: "rampingValue",
+  lineIntensity: "rampingValue",
+  bulgeIntensity: "rampingValue",
+  lineYSize: "rampingValue",
+  bulgeSharpness: "rampingValue",
+  lineXSharpness: "rampingValue",
+  lineYSharpness: "rampingValue",
 }
 
 
@@ -76,27 +109,27 @@ export default class Beam extends SFXFragment<BeamProps, PartialBeamProps>
 
     this.beamFilter.setUniformValues(
     {
-      time: time * 100,
-      noiseAmplitude: 0.4 * beamIntensity,
-      lineIntensity: 2.0 + 3.0 * beamIntensity,
-      bulgeIntensity: 6.0 * beamIntensity,
+      time: time * this.props.timeScale,
+      noiseAmplitude: this.props.noiseAmplitude.getValue(beamIntensity, rampDownValue),
+      lineIntensity: this.props.lineIntensity.getValue(beamIntensity, rampDownValue),
+      bulgeIntensity: this.props.bulgeIntensity.getValue(beamIntensity, rampDownValue),
 
       bulgeSize:
       [
         0.7 * Math.pow(beamIntensity, 1.5),
         0.4 * Math.pow(beamIntensity, 1.5)
       ],
-      bulgeSharpness: 0.3 + 0.35 * beamIntensity,
+      bulgeSharpness: this.props.bulgeSharpness.getValue(beamIntensity, rampDownValue),
 
       lineXSize:
       [
         this.props.relativeBeamOrigin.x * rampUpValue,
         1.0
       ],
-      lineXSharpness: 0.99 - beamIntensity * 0.99,
+      lineYSize: this.props.lineYSize.getValue(beamIntensity, rampDownValue),
 
-      lineYSize: 0.001 + beamIntensity * 0.03,
-      lineYSharpness: 0.99 - beamIntensity * 0.15 + 0.01 * rampDownValue
+      lineXSharpness: this.props.lineXSharpness.getValue(beamIntensity, rampDownValue),
+      lineYSharpness: this.props.lineYSharpness.getValue(beamIntensity, rampDownValue),
     });
   }
   public draw(): void

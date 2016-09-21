@@ -8,6 +8,7 @@ import ShinyParticleFilter from "./shaders/ShinyParticle";
 import ShockWave from "./sfxfragments/ShockWave";
 import LightBurst from "./sfxfragments/LightBurst";
 import Beam from "./sfxfragments/Beam";
+import RampingValue from "./sfxfragments/RampingValue";
 
 import Color from "../../../src/color";
 import
@@ -100,7 +101,16 @@ export default function beam(props: SFXParams)
     color: new Color(finalColor[0], finalColor[1], finalColor[2]),
     relativeImpactTime: relativeImpactTime,
     relativeBeamOrigin: relativeBeamOrigin,
-    size: beamSpriteSize
+    size: beamSpriteSize,
+
+    timeScale: 100,
+    noiseAmplitude: new RampingValue(0.0, 0.4, 0.0),
+    lineIntensity: new RampingValue(2.0, 5.0, 0.0),
+    bulgeIntensity: new RampingValue(0.0, 6.0, 0.0),
+    lineYSize: new RampingValue(0.001, 0.03, 0.0),
+    bulgeSharpness: new RampingValue(0.3, 0.35, 0.0),
+    lineXSharpness: new RampingValue(0.99, -0.99, 0.00),
+    lineYSharpness: new RampingValue(0.99, -0.15, 0.01),
   });
 
   beamFragment.draw();
