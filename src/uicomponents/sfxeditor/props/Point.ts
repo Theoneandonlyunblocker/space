@@ -2,7 +2,7 @@
 
 import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 
-import Vec2Base from "./Vec2Base";
+import SFXFragmentPropVecBase from "./VecBase";
 
 interface PropTypes extends React.Props<any>
 {
@@ -14,21 +14,52 @@ interface PropTypes extends React.Props<any>
   y: number;
 }
 
-export class SFXFragmentPropPointComponent extends Vec2Base<PropTypes>
+interface StateType
+{
+}
+
+export class SFXFragmentPropPointComponent extends React.Component<PropTypes, StateType>
 {
   displayName = "SFXFragmentPropPoint";
+  state: StateType;
   
-  value1Key = "x";
-  value2Key = "y";
-
-  value1Label = "X";
-  value2Label = "Y";
-
   constructor(props: PropTypes)
   {
     super(props);
+  }
+  
+  render()
+  {
+    return(
+      React.DOM.div(
+      {
+        className: "sfx-fragment-prop-point"
+      },
+        SFXFragmentPropVecBase(
+        {
+          propName: this.props.propName,
+          fragment: this.props.fragment,
+          onValueChange: this.props.onValueChange,
+
+          propProps:
+          [
+            {
+              key: "x",
+              label: "X",
+              value: this.props.x
+            },
+            {
+              key: "y",
+              label: "Y",
+              value: this.props.y
+            },
+          ]
+        })
+      )
+    );
   }
 }
 
 const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentPropPointComponent);
 export default Factory;
+

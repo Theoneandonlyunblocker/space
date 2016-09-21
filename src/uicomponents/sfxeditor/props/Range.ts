@@ -2,7 +2,7 @@
 
 import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 
-import Vec2Base from "./Vec2Base";
+import SFXFragmentPropVecBase from "./VecBase";
 
 interface PropTypes extends React.Props<any>
 {
@@ -14,21 +14,52 @@ interface PropTypes extends React.Props<any>
   max: number;
 }
 
-export class SFXFragmentPropRangeComponent extends Vec2Base<PropTypes>
+interface StateType
+{
+}
+
+export class SFXFragmentPropRangeComponent extends React.Component<PropTypes, StateType>
 {
   displayName = "SFXFragmentPropRange";
-
-  value1Key = "min";
-  value2Key = "max";
-
-  value1Label = "Min";
-  value2Label = "Max";
-
+  state: StateType;
+  
   constructor(props: PropTypes)
   {
     super(props);
+  }
+  
+  render()
+  {
+    return(
+      React.DOM.div(
+      {
+        className: "sfx-fragment-prop-range"
+      },
+        SFXFragmentPropVecBase(
+        {
+          propName: this.props.propName,
+          fragment: this.props.fragment,
+          onValueChange: this.props.onValueChange,
+
+          propProps:
+          [
+            {
+              key: "min",
+              label: "Min",
+              value: this.props.min
+            },
+            {
+              key: "max",
+              label: "Max",
+              value: this.props.max
+            },
+          ]
+        })
+      )
+    );
   }
 }
 
 const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentPropRangeComponent);
 export default Factory;
+
