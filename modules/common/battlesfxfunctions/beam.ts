@@ -254,16 +254,20 @@ export default function beam(props: SFXParams)
   const shockWaveFragment = new ShockWave(
   {
     size: shockWaveSize,
-    mainEllipseMaxScale: {x: 0.3, y: 0.9},
-    intersectingEllipseMaxScale: {x: 0.8, y: 1.0},
     intersectingEllipseOrigin: {x: 0.05, y: 0.0},
     intersectingEllipseDrift: {x: 0.3, y: 0.0},
-    mainEllipseSharpness: 0.95,
-    mainEllipseSharpnessDrift: -0.15,
-    intersectingEllipseSharpness: 0.8,
-    intersectingEllipseSharpnessDrift: -0.4,
+
+    alpha: new RampingValue(1.0, -1.0, 0.0),
+    mainEllipseScaleX: new RampingValue(0.0, 0.3, 0.0),
+    mainEllipseScaleY: new RampingValue(0.0, 0.9, 0.0),
+    mainEllipseSharpness: new RampingValue(0.95, -0.15, 0.0),
+    intersectingEllipseScaleX: new RampingValue(0.0, 0.8, 0.0),
+    intersectingEllipseScaleY: new RampingValue(0.0, 1.0, 0.0),
+    intersectingEllipseSharpness: new RampingValue(0.8, -0.4, 0.0),
+
     color: new Color(1.0, 1.0, 1.0),
-    delay: relativeImpactTime
+
+    delay: relativeImpactTime,
   });
 
   shockWaveFragment.draw();
