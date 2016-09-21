@@ -52,8 +52,8 @@ const LightBurstPropTypes: SFXFragmentPropTypes =
 
 export default class LightBurst extends SFXFragment<LightBurstProps, PartialLightBurstProps>
 {
-  public displayName: "LightBurst";
-  public key: "lightBurst";
+  public displayName = "LightBurst";
+  public key = "lightBurst";
   
   private lightBurstFilter: LightBurstFilter;
   private seed: number[] = [Math.random() * 69, Math.random() * 420];

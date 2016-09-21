@@ -53,8 +53,8 @@ const BeamPropTypes: SFXFragmentPropTypes =
 
 export default class Beam extends SFXFragment<BeamProps, PartialBeamProps>
 {
-  public displayName: "Beam";
-  public key: "beam";
+  public displayName = "Beam";
+  public key = "beam";
 
   private beamFilter: BeamFilter;
   private seed: number = Math.random() * 100;
