@@ -11,7 +11,8 @@ import Point from "../../../../src/Point";
 import
 {
   createDummySpriteForShader,
-  getRelativeValue
+  getRelativeValue,
+  clamp
 } from "../../../../src/utility";
 
 interface PartialBeamProps
@@ -63,13 +64,15 @@ const defaultBeamProps: BeamProps =
   },
   color: new Color(1, 0.9, 0.9),
   timeScale: 100,
-  noiseAmplitude: new RampingValue(0.0, 0.4, 0.0),
-  lineIntensity: new RampingValue(2.0, 5.0, 0.0),
-  bulgeIntensity: new RampingValue(0.0, 6.0, 0.0),
-  lineYSize: new RampingValue(0.001, 0.03, 0.0),
-  bulgeSharpness: new RampingValue(0.3, 0.35, 0.0),
-  lineXSharpness: new RampingValue(0.99, -0.99, 0.00),
-  lineYSharpness: new RampingValue(0.99, -0.15, 0.01),
+  noiseAmplitude: new RampingValue(0.0, 0.4, -0.4),
+  lineIntensity: new RampingValue(2.0, 5.0, -5.0),
+  bulgeIntensity: new RampingValue(0.0, 6.0, -6.0),
+  lineYSize: new RampingValue(0.001, 0.03, -0.03),
+  bulgeSizeX: new RampingValue(0.0, 0.7, -0.7),
+  bulgeSizeY: new RampingValue(0.0, 0.4, -0.4),
+  bulgeSharpness: new RampingValue(0.3, 0.35, -0.35),
+  lineXSharpness: new RampingValue(0.99, -0.99, 0.99),
+  lineYSharpness: new RampingValue(0.99, -0.15, 0.16),
 }
 const BeamPropTypes: SFXFragmentPropTypes =
 {
@@ -110,32 +113,31 @@ export default class Beam extends SFXFragment<BeamProps, PartialBeamProps>
     const timeAfterImpact = Math.max(time - this.props.relativeImpactTime, 0.0);
     const relativeTimeAfterImpact = getRelativeValue(timeAfterImpact, 0.0, 1.0 - this.props.relativeImpactTime);
 
-    const rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 1.0);
-    const beamIntensity = rampUpValue - rampDownValue;
+    const rampDownValue = clamp(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 0.0, 1.0);
 
     this.beamFilter.setUniformValues(
     {
       time: time * this.props.timeScale,
-      noiseAmplitude: this.props.noiseAmplitude.getValue(beamIntensity, rampDownValue),
-      lineIntensity: this.props.lineIntensity.getValue(beamIntensity, rampDownValue),
-      bulgeIntensity: this.props.bulgeIntensity.getValue(beamIntensity, rampDownValue),
+      noiseAmplitude: this.props.noiseAmplitude.getValue(rampUpValue, rampDownValue),
+      lineIntensity: this.props.lineIntensity.getValue(rampUpValue, rampDownValue),
+      bulgeIntensity: this.props.bulgeIntensity.getValue(rampUpValue, rampDownValue),
 
       bulgeSize:
       [
-        0.7 * Math.pow(beamIntensity, 1.5),
-        0.4 * Math.pow(beamIntensity, 1.5)
+        this.props.bulgeSizeX.getValue(Math.pow(rampUpValue, 1.5), rampDownValue),
+        this.props.bulgeSizeY.getValue(Math.pow(rampUpValue, 1.5), rampDownValue),
       ],
-      bulgeSharpness: this.props.bulgeSharpness.getValue(beamIntensity, rampDownValue),
+      bulgeSharpness: this.props.bulgeSharpness.getValue(rampUpValue, rampDownValue),
 
       lineXSize:
       [
         this.props.relativeBeamOrigin.x * rampUpValue,
         1.0
       ],
-      lineYSize: this.props.lineYSize.getValue(beamIntensity, rampDownValue),
+      lineYSize: this.props.lineYSize.getValue(rampUpValue, rampDownValue),
 
-      lineXSharpness: this.props.lineXSharpness.getValue(beamIntensity, rampDownValue),
-      lineYSharpness: this.props.lineYSharpness.getValue(beamIntensity, rampDownValue),
+      lineXSharpness: this.props.lineXSharpness.getValue(rampUpValue, rampDownValue),
+      lineYSharpness: this.props.lineYSharpness.getValue(rampUpValue, rampDownValue),
     });
   }
   public draw(): void

@@ -13,7 +13,6 @@ import RampingValue from "./sfxfragments/RampingValue";
 import Color from "../../../src/color";
 import
 {
-  createDummySpriteForShader,
   getDummyTextureForShader,
   getRelativeValue
 } from "../../../src/utility";
@@ -104,13 +103,15 @@ export default function beam(props: SFXParams)
     size: beamSpriteSize,
 
     timeScale: 100,
-    noiseAmplitude: new RampingValue(0.0, 0.4, 0.0),
-    lineIntensity: new RampingValue(2.0, 5.0, 0.0),
-    bulgeIntensity: new RampingValue(0.0, 6.0, 0.0),
-    lineYSize: new RampingValue(0.001, 0.03, 0.0),
-    bulgeSharpness: new RampingValue(0.3, 0.35, 0.0),
-    lineXSharpness: new RampingValue(0.99, -0.99, 0.00),
-    lineYSharpness: new RampingValue(0.99, -0.15, 0.01),
+    noiseAmplitude: new RampingValue(0.0, 0.4, -0.4),
+    lineIntensity: new RampingValue(2.0, 5.0, -5.0),
+    bulgeIntensity: new RampingValue(0.0, 6.0, -6.0),
+    bulgeSizeX: new RampingValue(0.0, 0.7, -0.7),
+    bulgeSizeY: new RampingValue(0.0, 0.4, -0.4),
+    lineYSize: new RampingValue(0.001, 0.03, -0.03),
+    bulgeSharpness: new RampingValue(0.3, 0.35, -0.35),
+    lineXSharpness: new RampingValue(0.99, -0.99, 0.99),
+    lineYSharpness: new RampingValue(0.99, -0.15, 0.16),
   });
 
   beamFragment.draw();
