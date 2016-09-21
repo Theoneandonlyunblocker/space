@@ -134,13 +134,6 @@ function rocketAttack(params: SFXParams)
   const container = new PIXI.Container();
   container.addChild(projectileAttackFragment.displayObject);
 
-  const gfx = new PIXI.Graphics();
-  gfx.lineStyle(3, 0xFF0000);
-  gfx.drawShape(offsetUserData.boundingBox);
-  gfx.lineStyle(3, 0x0000FF);
-  gfx.drawShape(offsetTargetData.boundingBox);
-  container.addChild(gfx);
-
   if (!params.facingRight)
   {
     container.x = params.width;
