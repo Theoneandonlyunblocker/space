@@ -25,6 +25,8 @@ interface PartialBeamProps
   lineIntensity?: RampingValue;
   bulgeIntensity?: RampingValue;
   lineYSize?: RampingValue;
+  bulgeSizeX?: RampingValue;
+  bulgeSizeY?: RampingValue;
   bulgeSharpness?: RampingValue;
   lineXSharpness?: RampingValue;
   lineYSharpness?: RampingValue;
@@ -40,6 +42,8 @@ interface BeamProps extends PartialBeamProps
   lineIntensity: RampingValue;
   bulgeIntensity: RampingValue;
   lineYSize: RampingValue;
+  bulgeSizeX: RampingValue;
+  bulgeSizeY: RampingValue;
   bulgeSharpness: RampingValue;
   lineXSharpness: RampingValue;
   lineYSharpness: RampingValue;
@@ -78,6 +82,8 @@ const BeamPropTypes: SFXFragmentPropTypes =
   lineIntensity: "rampingValue",
   bulgeIntensity: "rampingValue",
   lineYSize: "rampingValue",
+  bulgeSizeX: "rampingValue",
+  bulgeSizeY: "rampingValue",
   bulgeSharpness: "rampingValue",
   lineXSharpness: "rampingValue",
   lineYSharpness: "rampingValue",
