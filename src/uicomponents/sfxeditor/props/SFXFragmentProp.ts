@@ -1,6 +1,7 @@
 /// <reference path="../../../../lib/react-global.d.ts" />
 
 import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import RampingValue from "../../../../modules/common/battlesfxfunctions/sfxfragments/RampingValue";
 import
 {
   SFXFragmentPropType
@@ -14,6 +15,7 @@ import SFXFragmentPropNumber from "./Number";
 import SFXFragmentPropPoint from "./Point";
 import SFXFragmentPropColor from "./Color";
 import SFXFragmentPropRange from "./Range";
+import SFXFragmentPropRampingValue from "./RampingValue";
 
 interface PropTypes extends React.Props<any>
 {
@@ -28,9 +30,9 @@ interface StateType
   isCollapsed?: boolean;
 }
 
-export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, StateType>
+export class SFXFragmentPropComponent extends React.Component<PropTypes, StateType>
 {
-  displayName = "SFXFragmentPropNumber";
+  displayName = "SFXFragmentProp";
   state: StateType;
   
   constructor(props: PropTypes)
@@ -117,6 +119,22 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
         });
         break;
       }
+      case "rampingValue":
+      {
+        const propValue: RampingValue = this.props.fragment.props[this.props.propName];
+
+        propValuesElement = SFXFragmentPropRampingValue(
+        {
+          base: propValue.base,
+          up: propValue.up,
+          down: propValue.down,
+
+          propName: this.props.propName,
+          fragment: this.props.fragment,
+          onValueChange: this.props.onPropValueChange
+        });
+        break;
+      }
     }
     
     return(
@@ -147,5 +165,5 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentPropNumberComponent);
+const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentPropComponent);
 export default Factory;

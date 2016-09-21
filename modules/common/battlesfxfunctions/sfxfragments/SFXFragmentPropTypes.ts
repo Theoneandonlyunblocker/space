@@ -6,7 +6,8 @@ export type SFXFragmentPropType =
   "point" |
   "color" |
   "boolean" |
-  "range";
+  "range" |
+  "rampingValue";
 
 interface SFXFragmentPropTypes
 {

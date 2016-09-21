@@ -102,6 +102,7 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
           break;
         }
         case "color":
+        case "rampingValue":
         {
           this.props[prop] = props[prop].clone();
           break;
