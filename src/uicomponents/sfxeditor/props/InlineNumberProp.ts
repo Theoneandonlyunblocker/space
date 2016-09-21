@@ -55,8 +55,8 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
           id: baseID,
           type: "number",
           onChange: this.handleValueChange,
-          step: 0.1,
-          value: "" + this.props.value
+          step: "any",
+          value: "" + this.props.value,
         },
           
         )

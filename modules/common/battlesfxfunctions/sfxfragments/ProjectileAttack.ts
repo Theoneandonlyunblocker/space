@@ -127,7 +127,7 @@ class Projectile
     removeAfterImpact?: boolean;
   })
   {
-    this. id = props.id;
+    this.id = props.id;
 
     this.container = props.container;
     this.sprite = props.sprite;
