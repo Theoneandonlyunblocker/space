@@ -318,11 +318,11 @@ export default function beam(props: SFXParams)
     particleShaderColorArray[2] = particleShaderColor.b;
     particleShaderColorArray[3] = particleShaderColor.a;
 
-    var timePassed = elapsedTime / props.duration
-    var lifeLeft = 1 - timePassed;
-    var timePassedSinceImpact = getRelativeValue(timePassed, relativeImpactTime, 1.0);
+    var relativeElapsedTime = elapsedTime / props.duration
+    var lifeLeft = 1 - relativeElapsedTime;
+    var relativeTimeSinceImpact = getRelativeValue(relativeElapsedTime, relativeImpactTime, 1.0);
 
-    if (timePassed >= relativeImpactTime - 0.02)
+    if (relativeElapsedTime >= relativeImpactTime - 0.02)
     {
       if (!impactHasOccurred)
       {
@@ -349,13 +349,13 @@ export default function beam(props: SFXParams)
         props.triggerEffect();
       }
 
-      syncSmallParticleUniforms(timePassed);
+      syncSmallParticleUniforms(relativeElapsedTime);
     }
 
-    beamFragment.animate(timePassed);
-    syncShinyParticleUniforms(timePassed);
-    shockWaveFragment.animate(timePassed);
-    lightBurstFragment.animate(timePassed);
+    beamFragment.animate(relativeElapsedTime);
+    syncShinyParticleUniforms(relativeElapsedTime);
+    shockWaveFragment.animate(relativeElapsedTime);
+    lightBurstFragment.animate(relativeElapsedTime);
 
     renderTexture.clear();
     renderTexture.render(mainContainer);
