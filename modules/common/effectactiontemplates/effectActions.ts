@@ -14,6 +14,7 @@ import DamageType from "../../../src/DamageType";
 import GuardCoverage from "../../../src/GuardCoverage";
 import StatusEffect from "../../../src/StatusEffect";
 import Unit from "../../../src/Unit";
+import {UnitAttributeAdjustments} from "../../../src/UnitAttributes";
 import
 {
   TargetFormation,
@@ -143,6 +144,24 @@ export const increaseCaptureChance: EffectActionTemplate =
       target.battleStats.captureChance *= data.multiplier;
     }
 
+  }
+}
+export const addAttributeStatusEffect: EffectActionTemplate =
+{
+  name: "addAttributeStatusEffect",
+  targetFormations: TargetFormation.either,
+  battleAreaFunction: areaSingle,
+  targetRangeFunction: targetAll,
+  executeAction: function(user: Unit, target: Unit, battle: Battle,
+    data: {adjustments: UnitAttributeAdjustments, sourceName: string, duration: number})
+  {
+    target.addStatusEffect(new StatusEffect(
+    {
+      type: data.sourceName,
+      displayName: data.sourceName,
+
+      attributes: data.adjustments
+    }, data.duration));
   }
 }
 export const buffTest: EffectActionTemplate =

@@ -6,6 +6,14 @@ import
   clamp
 } from "./utility";
 
+export enum UnitAttribute
+{
+  attack,
+  defence,
+  intelligence,
+  speed,
+}
+
 export interface PartialUnitAttributes
 {
   maxActionPoints?: number;

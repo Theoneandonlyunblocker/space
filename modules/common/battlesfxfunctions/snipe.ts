@@ -3,6 +3,7 @@
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
 import Color from "../../../src/color";
+import {UnitAttribute} from "../../../src/UnitAttributes";
 
 import FocusingBeam from "./sfxfragments/FocusingBeam";
 import ProjectileAttack from "./sfxfragments/ProjectileAttack";
@@ -11,18 +12,17 @@ import RampingValue from "./sfxfragments/RampingValue";
 import ProtonWrapper from "./ProtonWrapper";
 
 
-type SnipeType = "attack" | "defence" | "intelligence" | "speed";
-const colors: {[type: string]: Color} =
+const colors =
 {
-  attack: Color.fromHexString("FF4D77"),
-  defence: Color.fromHexString("0BB1FF"),
-  intelligence: Color.fromHexString("EB12FE"),
-  speed: Color.fromHexString("12FE9E"),
+  [UnitAttribute.attack]: Color.fromHexString("FF4D77"),
+  [UnitAttribute.defence]: Color.fromHexString("0BB1FF"),
+  [UnitAttribute.intelligence]: Color.fromHexString("EB12FE"),
+  [UnitAttribute.speed]: Color.fromHexString("12FE9E"),
 }
 
 const projectileURL = "modules/common/battlesfxfunctions/img/rocket.png"; // TODO
 
-function snipe(type: SnipeType, params: SFXParams)
+function snipe(type: UnitAttribute, params: SFXParams)
 {
   //----------INIT
   const mainContainer = new PIXI.Container();
@@ -237,7 +237,7 @@ function snipe(type: SnipeType, params: SFXParams)
   animate();
 }
 
-export default function preLoadedSnipe(type: SnipeType, params: SFXParams)
+export default function preLoadedSnipe(type: UnitAttribute, params: SFXParams)
 {
   const loader = new PIXI.loaders.Loader();
   

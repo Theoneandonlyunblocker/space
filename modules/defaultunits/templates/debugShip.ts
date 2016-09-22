@@ -13,7 +13,11 @@ import
   bombAttack,
   guardRow,
   boardingHook,
-  closeAttack
+  closeAttack,
+  snipeAttack,
+  snipeDefence,
+  snipeIntelligence,
+  snipeSpeed,
 } from "../../common/abilitytemplates/abilities";
 
 import
@@ -78,6 +82,16 @@ const debugShip: UnitTemplate =
           weight: 0.33,
           probabilityItems: [guardRow]
         }
+      ]
+    },
+    {
+      flatProbability: 1,
+      probabilityItems:
+      [
+        {weight: 0.25, probabilityItems: [snipeAttack]},
+        {weight: 0.25, probabilityItems: [snipeDefence]},
+        {weight: 0.25, probabilityItems: [snipeIntelligence]},
+        {weight: 0.25, probabilityItems: [snipeSpeed]},
       ]
     }
   ],

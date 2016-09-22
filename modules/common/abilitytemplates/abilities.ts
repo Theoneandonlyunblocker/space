@@ -1,6 +1,7 @@
 import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate";
 
 import DamageType from "../../../src/DamageType";
+import {UnitAttribute} from "../../../src/UnitAttributes";
 
 import * as BattleSFX from "../battlesfxtemplates/battleSFX";
 import * as EffectActions from "../effectactiontemplates/effectActions";
@@ -153,6 +154,56 @@ export var rangedAttack: AbilityTemplate =
     boardingHook,
   ]
 }
+function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
+{
+  const attributeName = UnitAttribute[attribute];
+  const capitalizedAttributeName = attributeName[0].toUpperCase() + attributeName.slice(1);
+
+  const key = `snipe${capitalizedAttributeName}`;
+  const displayName = `Snipe ${capitalizedAttributeName}`;
+  const description = `Deals damage and lowers target ${attributeName}`;
+  
+  return(
+  {
+    type: key,
+    displayName: displayName,
+    description: description,
+    moveDelay: 100,
+    actionsUse: 1,
+    mainEffect:
+    {
+      action: EffectActions.singleTargetDamage,
+      sfx: BattleSFX[key],
+      data:
+      {
+        baseDamage: 0.6,
+        damageType: DamageType.physical
+      },
+      attachedEffects:
+      [
+        {
+          action: EffectActions.addAttributeStatusEffect,
+          data:
+          {
+            sourceName: displayName,
+            duration: -1,
+            adjustments:
+            {
+              [attributeName]:
+              {
+                multiplier: -0.5
+              }
+            }
+          }
+        }
+      ]
+    },
+  });
+}
+export const snipeAttack = makeSnipeTemplate(UnitAttribute.attack);
+export const snipeDefence = makeSnipeTemplate(UnitAttribute.defence);
+export const snipeIntelligence = makeSnipeTemplate(UnitAttribute.intelligence);
+export const snipeSpeed = makeSnipeTemplate(UnitAttribute.speed);
 
 export var standBy: AbilityTemplate =
 {

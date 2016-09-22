@@ -1,4 +1,5 @@
 import BattleSFXTemplate from "../../../src/templateinterfaces/BattleSFXTemplate";
+import {UnitAttribute} from "../../../src/UnitAttributes";
 
 import BlackToAlphaFilter from "../battlesfxfunctions/shaders/BlackToAlpha";
 
@@ -8,15 +9,6 @@ import beamDrawingFunction from "../battlesfxfunctions/beam";
 import snipeDrawingFunction from "../battlesfxfunctions/snipe";
 import makeSFXFromVideo from "../battlesfxfunctions/makeSFXFromVideo";
 
-function makeSnipeTemplate(type: string): BattleSFXTemplate
-{
-  return(
-  {
-    duration: 3000,
-    battleOverlay: snipeDrawingFunction.bind(null, type),
-    SFXWillTriggerEffect: true,
-  });
-}
 
 export const rocketAttack: BattleSFXTemplate =
 {
@@ -36,10 +28,21 @@ export const beam: BattleSFXTemplate =
   battleOverlay: beamDrawingFunction,
   SFXWillTriggerEffect: true,
 }
-export const snipeAttack = makeSnipeTemplate("attack");
-export const snipeDefence = makeSnipeTemplate("defence");
-export const snipeIntelligence = makeSnipeTemplate("intelligence");
-export const snipeSpeed = makeSnipeTemplate("speed");
+
+function makeSnipeTemplate(attribute: UnitAttribute): BattleSFXTemplate
+{
+  return(
+  {
+    duration: 3000,
+    battleOverlay: snipeDrawingFunction.bind(null, attribute),
+    SFXWillTriggerEffect: true,
+  });
+}
+export const snipeAttack = makeSnipeTemplate(UnitAttribute.attack);
+export const snipeDefence = makeSnipeTemplate(UnitAttribute.defence);
+export const snipeIntelligence = makeSnipeTemplate(UnitAttribute.intelligence);
+export const snipeSpeed = makeSnipeTemplate(UnitAttribute.speed);
+
 export const videoTest: BattleSFXTemplate =
 {
   duration: 1000,
