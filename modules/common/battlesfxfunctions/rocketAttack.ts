@@ -18,6 +18,13 @@ function rocketAttack(params: SFXParams)
     params.targetOffset, params.width, "target");
   const offsetUserData = params.user.drawingFunctionData.normalizeForBattleSFX(
     params.userOffset, params.width, "user");
+
+  const container = new PIXI.Container();
+  if (!params.facingRight)
+  {
+    container.x = params.width;
+    container.scale.x = -1;
+  }
   
   const startTime = Date.now();
   let impactHasOccurred = false;
@@ -111,8 +118,7 @@ function rocketAttack(params: SFXParams)
   });
 
   projectileAttackFragment.draw(offsetUserData, offsetTargetData);
-
-
+  container.addChild(projectileAttackFragment.displayObject);
   
   function animate()
   {
@@ -131,14 +137,6 @@ function rocketAttack(params: SFXParams)
     }
   }
 
-  const container = new PIXI.Container();
-  container.addChild(projectileAttackFragment.displayObject);
-
-  if (!params.facingRight)
-  {
-    container.x = params.width;
-    container.scale.x = -1;
-  }
   
   params.triggerStart(container);
 
