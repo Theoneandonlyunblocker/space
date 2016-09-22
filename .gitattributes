@@ -2,3 +2,4 @@ built/* -diff
 *.png -diff
 
 lib/* linguist-vendored
+built/* linguist-vendored
