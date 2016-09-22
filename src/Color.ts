@@ -31,6 +31,10 @@ export default class Color
     {
       hexDigits = hexString.substring(1, 7);
     }
+    else
+    {
+      hexDigits = hexString;
+    }
 
     return Color.fromHex(parseInt(hexDigits, 16));
   }
