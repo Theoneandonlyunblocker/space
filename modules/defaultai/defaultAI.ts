@@ -21,7 +21,7 @@ const defaultAI: ModuleFile =
   {
     moduleData.copyTemplates<AITemplateConstructor<any>>(
     {
-      AIController: DefaultAIConstructor
+      [DefaultAIConstructor.type]: DefaultAIConstructor
     }, "AITemplateConstructors");
     
     return moduleData;
