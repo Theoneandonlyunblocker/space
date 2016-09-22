@@ -166,6 +166,10 @@ declare module Proton
     width: number;
     height: number;
   }
+  export class CircleZone extends Zone
+  {
+    constructor(x: number, y: number, radius: number);
+  }
   export class Renderer
   {
     constructor(
