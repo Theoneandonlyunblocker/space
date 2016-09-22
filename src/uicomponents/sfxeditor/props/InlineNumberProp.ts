@@ -2,6 +2,8 @@
 
 import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 
+import ControlledNumberInput from "../../generic/ControlledNumberInput";
+
 interface PropTypes extends React.Props<any>
 {
   propName: string;
@@ -23,14 +25,6 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
   constructor(props: PropTypes)
   {
     super(props);
-
-    this.handleValueChange = this.handleValueChange.bind(this);
-  }
-
-  private handleValueChange(e: React.FormEvent): void
-  {
-    const target = <HTMLInputElement> e.target;
-    this.props.onValueChange(parseFloat(target.value));
   }
   
   render()
@@ -49,17 +43,13 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
         },
           this.props.label + ":",
         ),
-        React.DOM.input(
+        ControlledNumberInput(
         {
-          className: "sfx-fragment-prop-inline-number-input",
-          id: baseID,
-          type: "number",
-          onChange: this.handleValueChange,
-          step: "any",
-          value: "" + this.props.value,
-        },
-          
-        )
+          value: this.props.value,
+          valueStringIsValid: (valueString) => isFinite(Number(valueString)),
+          getValueFromValueString: parseFloat,
+          onValueChange: this.props.onValueChange
+        })
       )
     );
   }

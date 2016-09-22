@@ -2,6 +2,7 @@
 
 import Color from "../../Color";
 
+import ControlledNumberInput from "../generic/ControlledNumberInput";
 import
 {
   default as AutoPositioner,
@@ -21,8 +22,6 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  lastValidHexString?: string;
-  hexString?: string;
   hexColor?: number;
   hue?: number;
   val?: number;
@@ -61,7 +60,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     this.updateFromHsv = this.updateFromHsv.bind(this);
     this.makeGradientStyle = this.makeGradientStyle.bind(this);
     this.triggerParentOnChange = this.triggerParentOnChange.bind(this);
-    this.setHex = this.setHex.bind(this);
     this.setVal = this.setVal.bind(this);
     this.makeGradientString = this.makeGradientString.bind(this);
     this.nullifyColor = this.nullifyColor.bind(this);    
@@ -77,8 +75,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     return(
     {
       hexColor: color.getHex(),
-      hexString: hexString,
-      lastValidHexString: hexString,
       hue: hsvColor[0],
       sat: hsvColor[1],
       val: hsvColor[2]
@@ -112,8 +108,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       hexColor: color.getHex(),
-      hexString: hexString,
-      lastValidHexString: hexString
     });
 
     if (this.props.onChange)
@@ -139,46 +133,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     {
       this.triggerParentOnChange(color, false);
     }
-  }
-  setHex(e: React.FormEvent | ClipboardEvent)
-  {
-    e.stopPropagation();
-    e.preventDefault();
-
-    var target = <HTMLInputElement> e.target;
-
-    var hexString: string;
-    if (e.type === "paste")
-    {
-      var e2 = <ClipboardEvent> e;
-      hexString = e2.clipboardData.getData("text");
-    }
-    else
-    {
-      hexString = target.value;
-    }
-
-    if (hexString[0] !== "#")
-    {
-      hexString = "#" + hexString;
-    }
-    var isValid = /^#[0-9A-F]{6}$/i.test(hexString);
-
-    var hexColor = Color.fromHexString(hexString).getHex();
-
-
-    this.setState(
-    {
-      hexString: hexString,
-      lastValidHexString: isValid ? hexString : this.state.lastValidHexString,
-      hexColor: isValid ? hexColor : this.state.hexColor
-    });
-
-    if (isValid)
-    {
-      this.updateFromHex(hexColor);
-    }
-
   }
   setHue(e: Event)
   {
@@ -213,8 +167,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      hexString: hexString,
-      lastValidHexString: hexString,
       hexColor: hexColor
     });
 
@@ -343,19 +295,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
         ),
         React.DOM.div({className: "color-picker-input-container", key: "hex"},
           React.DOM.label({className: "color-picker-label", htmlFor: "" + this.baseElementID + "-hex"}, "Hex:"),
-          /*React.DOM.input(
-          {
-            className: "color-picker-slider",
-            id: "" + rootId + "hex",
-            ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_hex = component;
-},
-            type: "color",
-            step: 1,
-            value: this.state.lastValidHexString,
-            onChange: this.setHex
-          }),*/
           !this.props.generateColor ? null :
           React.DOM.button(
           {
@@ -367,15 +306,32 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
             className: "color-picker-button",
             onClick: this.nullifyColor
           }, "Clear"),
-          React.DOM.input(
+          ControlledNumberInput(
           {
             className: "color-picker-input color-picker-input-hex",
-            type: "string",
-            step: 1,
-            value: this.state.hexString,
-            onChange: this.setHex,
-            onPaste: this.setHex
-          })
+            value: this.state.hexColor,
+            valueStringIsValid: (valueString) =>
+            {
+              return /^#*[0-9A-F]{6}$/i.test(valueString);
+            },
+            stylizeValue: (value) =>
+            {
+              return "#" + Color.fromHex(value).getHexString();
+            },
+            getValueFromValueString: (valueString) =>
+            {
+              return Color.fromHexString(valueString).getHex();
+            },
+            onValueChange: (value) =>
+            {
+              this.setState(
+              {
+                hexColor: value
+              });
+
+              this.updateFromHex(value);
+            }
+          }),
         )
       )
     );

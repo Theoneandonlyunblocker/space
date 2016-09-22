@@ -2,6 +2,8 @@
 
 import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 
+import ControlledNumberInput from "../../generic/ControlledNumberInput";
+
 interface PropTypes extends React.Props<any>
 {
   propName: string;
@@ -47,15 +49,22 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
   render()
   {
     return(
-      React.DOM.input(
+      React.DOM.div(
       {
         className: "sfx-fragment-prop-number-input",
-        type: "number",
-        onChange: this.handleChange,
-        step: 0.1,
-        value: "" + this.props.value
       },
-        
+        ControlledNumberInput(
+        {
+          value: this.props.value,
+          valueStringIsValid: (valueString) => isFinite(Number(valueString)),
+          getValueFromValueString: parseFloat,
+          onValueChange: (newValue) =>
+          {
+            this.props.fragment.props[this.props.propName] = newValue;
+            
+            this.props.onValueChange();
+          }
+        })
       )
     );
   }
