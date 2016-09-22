@@ -89,18 +89,16 @@ export default function beam(props: SFXParams)
   var particlesAmountScale = props.width / 700;
 
   //----------INIT BEAM
-  var beamSpriteSize =
-  {
-    x: props.width,
-    y: props.height
-  }
-
   const beamFragment = new Beam(
   {
     color: new Color(finalColor[0], finalColor[1], finalColor[2]),
     relativeImpactTime: relativeImpactTime,
     relativeBeamOrigin: relativeBeamOrigin,
-    size: beamSpriteSize,
+    size:
+    {
+      x: props.width,
+      y: props.height
+    },
 
     timeScale: 100,
     noiseAmplitude: new RampingValue(0.0, 0.4, -0.4),
