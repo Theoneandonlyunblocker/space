@@ -20,6 +20,8 @@ interface PartialFocusingBeamProps
   
   focusStartTime?: number;
   focusEndTime?: number;
+  decayStartTime?: number;
+  decayEndtime?: number;
   focusTimeExponent?: number;
   relativeYPosition?: number;
 
@@ -34,6 +36,8 @@ interface FocusingBeamProps extends PartialFocusingBeamProps
   
   focusStartTime: number;
   focusEndTime: number;
+  decayStartTime: number;
+  decayEndtime: number;
   focusTimeExponent: number;
   relativeYPosition: number;
 
@@ -48,12 +52,14 @@ const defaultFocusingBeamProps: FocusingBeamProps =
   
   focusStartTime: 0.0,
   focusEndTime: 0.3,
+  decayStartTime: 1.0,
+  decayEndtime: 1.0,
   focusTimeExponent: 0.75,
   relativeYPosition: 0.5,
 
-  beamIntensity: new RampingValue(5.0, 20.0, 0.0),
+  beamIntensity: new RampingValue(5.0, 20.0, -25.0),
   beamSharpness: new RampingValue(0.75, 0.24, 0.0),
-  beamSize: new RampingValue(0.12, -0.115, 0.0),
+  beamSize: new RampingValue(0.12, -0.115, -0.005),
 }
 const FocusingBeamPropTypes: SFXFragmentPropTypes =
 {
@@ -62,6 +68,8 @@ const FocusingBeamPropTypes: SFXFragmentPropTypes =
   
   focusStartTime: "number",
   focusEndTime: "number",
+  decayStartTime: "number",
+  decayEndtime: "number",
   focusTimeExponent: "number",
   relativeYPosition: "number",
 
@@ -87,7 +95,11 @@ export default class FocusingBeam extends SFXFragment<FocusingBeamProps, Partial
   {
     const relativeFocusTime = Math.pow(getRelativeValue(time, this.props.focusStartTime, this.props.focusEndTime), this.props.focusTimeExponent);
     const rampUpValue = clamp(relativeFocusTime, 0.0, 1.0);
-    this.beamFragment.animateFromRampValues(time, rampUpValue, 0.0);
+
+    const relativeDecayTime = getRelativeValue(time, this.props.decayStartTime, this.props.decayEndtime);
+    const rampDownValue = clamp(relativeDecayTime, 0.0, 1.0);
+    
+    this.beamFragment.animateFromRampValues(time, rampUpValue, rampDownValue);
   }
   public draw(): void
   {
