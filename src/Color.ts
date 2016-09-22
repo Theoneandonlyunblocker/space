@@ -171,6 +171,13 @@ export default class Color
 
     return [h, s, v];
   }
+
+  public saturate(amount: number): Color
+  {
+    const husl = this.getHUSL();
+    husl[1] += amount;
+    return Color.fromHUSL.apply(null, husl);
+  }
   
   public serialize(): ColorSaveData
   {
