@@ -48,12 +48,12 @@ const defaultFocusingBeamProps: FocusingBeamProps =
   
   focusStartTime: 0.0,
   focusEndTime: 0.3,
-  focusTimeExponent: 0.5,
+  focusTimeExponent: 0.75,
   relativeYPosition: 0.5,
 
-  beamIntensity: new RampingValue(1.5, 0.5, 0.0),
-  beamSharpness: new RampingValue(0.9, 0.095, 0.0),
-  beamSize: new RampingValue(0.02, -0.019, 0.0),
+  beamIntensity: new RampingValue(5.5, 0.0, 0.0),
+  beamSharpness: new RampingValue(0.75, 0.24, 0.0),
+  beamSize: new RampingValue(0.12, -0.115, 0.0),
 }
 const FocusingBeamPropTypes: SFXFragmentPropTypes =
 {
