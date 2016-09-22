@@ -444,7 +444,8 @@ export default class Battle
       var currentHealth = this.getTotalHealthForSide(side).current;
       if (currentHealth <= 0)
       {
-        return -999 * sign;
+        evaluation -= 999 * sign;
+        return;
       }
       // how much health remains from strating health 0.0-1.0
       var currentHealthFactor = currentHealth / this.startHealth[side];
