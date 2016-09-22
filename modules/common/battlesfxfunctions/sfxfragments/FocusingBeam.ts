@@ -51,7 +51,7 @@ const defaultFocusingBeamProps: FocusingBeamProps =
   focusTimeExponent: 0.75,
   relativeYPosition: 0.5,
 
-  beamIntensity: new RampingValue(5.5, 0.0, 0.0),
+  beamIntensity: new RampingValue(5.0, 20.0, 0.0),
   beamSharpness: new RampingValue(0.75, 0.24, 0.0),
   beamSize: new RampingValue(0.12, -0.115, 0.0),
 }
