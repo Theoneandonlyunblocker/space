@@ -18,6 +18,7 @@ interface PartialProjectileAttackProps
 
   onImpact?: impactFN;
   animateImpact?: impactFN;
+  useSequentialAttackOriginPoints?: boolean;
   removeAfterImpact?: boolean;
   impactRate?: number;
   impactPosition?:
@@ -40,6 +41,7 @@ interface ProjectileAttackProps extends PartialProjectileAttackProps
 
   onImpact?: impactFN;
   animateImpact?: impactFN;
+  useSequentialAttackOriginPoints?: boolean;
   removeAfterImpact?: boolean;
   impactRate?: number;
   impactPosition?:
@@ -62,6 +64,7 @@ const defaultProjectileAttackProps: ProjectileAttackProps =
 
   onImpact: undefined,
   animateImpact: undefined,
+  useSequentialAttackOriginPoints: true,
   removeAfterImpact: true,
   impactRate: 0.75,
 
@@ -79,6 +82,7 @@ const ProjectileAttackPropTypes: SFXFragmentPropTypes =
 
   // onImpact: impactFN,
   // animateImpact?: impactFN,
+  useSequentialAttackOriginPoints: "boolean",
   removeAfterImpact: "boolean",
   impactRate: "number",
   impactPosition: "range",
@@ -248,8 +252,9 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
       const texture = this.props.projectileTextures[i % this.props.projectileTextures.length];
       const sprite = new PIXI.Sprite(texture);
 
-      const spawnPosition =
-        userData.sequentialAttackOriginPoints[i % userData.sequentialAttackOriginPoints.length];
+      const spawnPosition = this.props.useSequentialAttackOriginPoints ?
+        userData.sequentialAttackOriginPoints[i % userData.sequentialAttackOriginPoints.length] :
+        userData.singleAttackOriginPoint;
       sprite.position.y = spawnPosition.y;
 
       const targetBBox = targetData.boundingBox;
