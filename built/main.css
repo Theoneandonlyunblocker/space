@@ -4589,15 +4589,17 @@ button.player-setup-remove-player.disabled {
   text-overflow: ellipsis;
   flex: 1 1 auto;
 }
-.sfx-fragment-prop-point-wrapper {
+.controlled-number-input.invalid-value {
+  text-decoration: line-through;
+}
+.sfx-fragment-prop-inline-number-wrapper {
   display: flex;
   flex-flow: row;
+  flex: 1 1 auto;
 }
-.sfx-fragment-prop-point-value-wrapper {
-  display: flex;
-  flex-flow: row;
-  flex: 1 1 50%;
-}
-.sfx-fragment-prop-point-label {
+.sfx-fragment-prop-inline-number-label {
   flex: 0 0 auto;
+}
+.sfx-fragment-prop-inline-number-input {
+  flex: 1 1 auto;
 }

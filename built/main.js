@@ -865,6 +865,13 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
 });
 define("src/UnitAttributes", ["require", "exports", "src/utility"], function (require, exports, utility_1) {
     "use strict";
+    (function (UnitAttribute) {
+        UnitAttribute[UnitAttribute["attack"] = 0] = "attack";
+        UnitAttribute[UnitAttribute["defence"] = 1] = "defence";
+        UnitAttribute[UnitAttribute["intelligence"] = 2] = "intelligence";
+        UnitAttribute[UnitAttribute["speed"] = 3] = "speed";
+    })(exports.UnitAttribute || (exports.UnitAttribute = {}));
+    var UnitAttribute = exports.UnitAttribute;
     var UnitAttributes = (function () {
         function UnitAttributes(initialAttributes) {
             for (var key in initialAttributes) {
@@ -1351,6 +1358,9 @@ define("src/Color", ["require", "exports"], function (require, exports) {
             if (hexString.charAt(0) === "#") {
                 hexDigits = hexString.substring(1, 7);
             }
+            else {
+                hexDigits = hexString;
+            }
             return Color.fromHex(parseInt(hexDigits, 16));
         };
         Color.fromHSV = function (h, s, v) {
@@ -1466,6 +1476,11 @@ define("src/Color", ["require", "exports"], function (require, exports) {
                 h /= 6;
             }
             return [h, s, v];
+        };
+        Color.prototype.saturate = function (amount) {
+            var husl = this.getHUSL();
+            husl[1] += amount;
+            return Color.fromHUSL.apply(null, husl);
         };
         Color.prototype.serialize = function () {
             return this.getRGB();
@@ -2123,7 +2138,8 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
                 var sign = side === "side1" ? 1 : -1;
                 var currentHealth = _this.getTotalHealthForSide(side).current;
                 if (currentHealth <= 0) {
-                    return -999 * sign;
+                    evaluation -= 999 * sign;
+                    return;
                 }
                 var currentHealthFactor = currentHealth / _this.startHealth[side];
                 for (var i = 0; i < _this.unitsBySide[side].length; i++) {
@@ -2966,20 +2982,20 @@ define("src/options", ["require", "exports", "src/eventManager", "src/utility"],
             var shouldReRenderMap = false;
             switch (category) {
                 case "battleAnimationTiming":
-                    this.battleAnimationTiming = defaultOptionsValues.battleAnimationTiming;
+                    this.battleAnimationTiming = utility_7.shallowCopy(defaultOptionsValues.battleAnimationTiming);
                     break;
                 case "debug":
-                    this.debug = defaultOptionsValues.debug;
+                    this.debug = utility_7.shallowCopy(defaultOptionsValues.debug);
                     if (this.debug.enabled !== defaultOptionsValues.debug.enabled) {
                         shouldReRenderUI = true;
                         shouldReRenderMap = true;
                     }
                     break;
                 case "ui":
-                    this.ui = defaultOptionsValues.ui;
+                    this.ui = utility_7.shallowCopy(defaultOptionsValues.ui);
                     break;
                 case "display":
-                    this.display = defaultOptionsValues.display;
+                    this.display = utility_7.shallowCopy(defaultOptionsValues.display);
                     if (this.display.borderWidth !== defaultOptionsValues.display.borderWidth) {
                         shouldReRenderMap = true;
                     }
@@ -5711,7 +5727,7 @@ define("src/BattlePrep", ["require", "exports", "src/Battle", "src/BattlePrepFor
 define("src/UnitDrawingFunctionData", ["require", "exports"], function (require, exports) {
     "use strict";
     function mirrorRectangle(rect, midX) {
-        return new PIXI.Rectangle(getMirroredPosition(rect.x, midX), rect.y, rect.width * -1, rect.height);
+        return new PIXI.Rectangle(getMirroredPosition(rect.x, midX) - rect.width, rect.y, rect.width, rect.height);
     }
     function mirrorPoint(point, midX) {
         return { x: getMirroredPosition(point.x, midX), y: point.y };
@@ -5735,9 +5751,13 @@ define("src/UnitDrawingFunctionData", ["require", "exports"], function (require,
             this.singleAttackOriginPoint = props.singleAttackOriginPoint;
             this.sequentialAttackOriginPoints = props.sequentialAttackOriginPoints;
         }
-        UnitDrawingFunctionData.prototype.normalizeForBattleSFX = function (offset, unit) {
+        UnitDrawingFunctionData.prototype.normalizeForBattleSFX = function (offset, sceneWidth, side) {
             var cloned = this.clone();
-            cloned.offset({ x: 25, y: offset.y });
+            var padding = 25;
+            cloned.offset({ x: padding, y: offset.y });
+            if (side === "target") {
+                cloned.mirror(sceneWidth / 2);
+            }
             return cloned;
         };
         UnitDrawingFunctionData.prototype.clone = function () {
@@ -5763,8 +5783,7 @@ define("src/UnitDrawingFunctionData", ["require", "exports"], function (require,
             });
             return this;
         };
-        UnitDrawingFunctionData.prototype.mirror = function () {
-            var midX = this.boundingBox.width / 2;
+        UnitDrawingFunctionData.prototype.mirror = function (midX) {
             this.boundingBox = mirrorRectangle(this.boundingBox, midX);
             this.individualUnitBoundingBoxes = this.individualUnitBoundingBoxes.map(function (bbox) {
                 return mirrorRectangle(bbox, midX);
@@ -14210,7 +14229,78 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Color", "src/uicomponents/mixins/AutoPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, Color_4, AutoPositioner_2, applyMixins_8) {
+define("src/uicomponents/generic/ControlledNumberInput", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var ControlledNumberInputComponent = (function (_super) {
+        __extends(ControlledNumberInputComponent, _super);
+        function ControlledNumberInputComponent(props) {
+            _super.call(this, props);
+            this.displayName = "ControlledNumberInput";
+            this.state =
+                {
+                    valueString: this.getValueString(this.props.value),
+                };
+            this.handleValueChange = this.handleValueChange.bind(this);
+            this.getValueString = this.getValueString.bind(this);
+        }
+        ControlledNumberInputComponent.prototype.componentWillReceiveProps = function (newProps) {
+            var didChange = newProps.value !== this.props.getValueFromValueString(this.state.valueString);
+            if (didChange) {
+                this.setState({
+                    valueString: this.getValueString(newProps.value)
+                });
+            }
+        };
+        ControlledNumberInputComponent.prototype.getValueString = function (value) {
+            if (this.props.stylizeValue) {
+                return this.props.stylizeValue(value);
+            }
+            else {
+                return "" + value;
+            }
+        };
+        ControlledNumberInputComponent.prototype.handleValueChange = function (e) {
+            var _this = this;
+            e.stopPropagation();
+            e.preventDefault();
+            var target = e.target;
+            var valueString;
+            if (e.type === "paste") {
+                var e2 = e;
+                valueString = e2.clipboardData.getData("text");
+            }
+            else {
+                valueString = target.value;
+            }
+            this.setState({
+                valueString: valueString
+            }, function () {
+                var isValid = _this.props.valueStringIsValid(valueString);
+                if (isValid) {
+                    var value = _this.props.getValueFromValueString(valueString);
+                    _this.props.onValueChange(value);
+                }
+            });
+        };
+        ControlledNumberInputComponent.prototype.render = function () {
+            var valueStringIsValid = this.props.valueStringIsValid(this.state.valueString);
+            return (React.DOM.input({
+                className: "controlled-number-input" +
+                    (valueStringIsValid ? "" : " invalid-value") +
+                    (this.props.className ? " " + this.props.className : ""),
+                onChange: this.handleValueChange,
+                value: this.state.valueString,
+                spellCheck: false,
+            }, null));
+        };
+        return ControlledNumberInputComponent;
+    }(React.Component));
+    exports.ControlledNumberInputComponent = ControlledNumberInputComponent;
+    var Factory = React.createFactory(ControlledNumberInputComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+});
+define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Color", "src/uicomponents/generic/ControlledNumberInput", "src/uicomponents/mixins/AutoPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, Color_4, ControlledNumberInput_1, AutoPositioner_2, applyMixins_8) {
     "use strict";
     var ColorPickerComponent = (function (_super) {
         __extends(ColorPickerComponent, _super);
@@ -14234,7 +14324,6 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
             this.updateFromHsv = this.updateFromHsv.bind(this);
             this.makeGradientStyle = this.makeGradientStyle.bind(this);
             this.triggerParentOnChange = this.triggerParentOnChange.bind(this);
-            this.setHex = this.setHex.bind(this);
             this.setVal = this.setVal.bind(this);
             this.makeGradientString = this.makeGradientString.bind(this);
             this.nullifyColor = this.nullifyColor.bind(this);
@@ -14246,8 +14335,6 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
             var hsvColor = Color_4.default.convertScalarsToDegrees(color.getHSV());
             return ({
                 hexColor: color.getHex(),
-                hexString: hexString,
-                lastValidHexString: hexString,
                 hue: hsvColor[0],
                 sat: hsvColor[1],
                 val: hsvColor[2]
@@ -14271,8 +14358,6 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
             var hexString = "#" + color.getHexString();
             this.setState({
                 hexColor: color.getHex(),
-                hexString: hexString,
-                lastValidHexString: hexString
             });
             if (this.props.onChange) {
                 var target = e.target;
@@ -14289,32 +14374,6 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
             });
             if (this.props.onChange) {
                 this.triggerParentOnChange(color, false);
-            }
-        };
-        ColorPickerComponent.prototype.setHex = function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var target = e.target;
-            var hexString;
-            if (e.type === "paste") {
-                var e2 = e;
-                hexString = e2.clipboardData.getData("text");
-            }
-            else {
-                hexString = target.value;
-            }
-            if (hexString[0] !== "#") {
-                hexString = "#" + hexString;
-            }
-            var isValid = /^#[0-9A-F]{6}$/i.test(hexString);
-            var hexColor = Color_4.default.fromHexString(hexString).getHex();
-            this.setState({
-                hexString: hexString,
-                lastValidHexString: isValid ? hexString : this.state.lastValidHexString,
-                hexColor: isValid ? hexColor : this.state.hexColor
-            });
-            if (isValid) {
-                this.updateFromHex(hexColor);
             }
         };
         ColorPickerComponent.prototype.setHue = function (e) {
@@ -14346,8 +14405,6 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
             var hexColor = color.getHex();
             var hexString = "#" + color.getHexString();
             this.setState({
-                hexString: hexString,
-                lastValidHexString: hexString,
                 hexColor: hexColor
             });
             this.updateFromHex(hexColor);
@@ -14430,6 +14487,7 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
             })));
         };
         ColorPickerComponent.prototype.render = function () {
+            var _this = this;
             return (React.DOM.div({ className: "color-picker" }, React.DOM.div({ className: "color-picker-hsv" }, this.makeHsvInputs("hue"), this.makeHsvInputs("sat"), this.makeHsvInputs("val")), React.DOM.div({ className: "color-picker-input-container", key: "hex" }, React.DOM.label({ className: "color-picker-label", htmlFor: "" + this.baseElementID + "-hex" }, "Hex:"), !this.props.generateColor ? null :
                 React.DOM.button({
                     className: "color-picker-button",
@@ -14437,13 +14495,24 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
                 }, "Auto"), React.DOM.button({
                 className: "color-picker-button",
                 onClick: this.nullifyColor
-            }, "Clear"), React.DOM.input({
+            }, "Clear"), ControlledNumberInput_1.default({
                 className: "color-picker-input color-picker-input-hex",
-                type: "string",
-                step: 1,
-                value: this.state.hexString,
-                onChange: this.setHex,
-                onPaste: this.setHex
+                value: this.state.hexColor,
+                valueStringIsValid: function (valueString) {
+                    return /^#*[0-9A-F]{6}$/i.test(valueString);
+                },
+                stylizeValue: function (value) {
+                    return "#" + Color_4.default.fromHex(value).getHexString();
+                },
+                getValueFromValueString: function (valueString) {
+                    return Color_4.default.fromHexString(valueString).getHex();
+                },
+                onValueChange: function (value) {
+                    _this.setState({
+                        hexColor: value
+                    });
+                    _this.updateFromHex(value);
+                }
             }))));
         };
         return ColorPickerComponent;
@@ -24990,19 +25059,28 @@ define("modules/common/battlesfxfunctions/sfxfragments/SFXFragment", ["require",
                 var propType = this.propTypes[prop];
                 switch (propType) {
                     case "number":
+                    case "boolean":
                         {
                             this.props[prop] = props[prop];
                             break;
                         }
                         ;
                     case "point":
+                    case "range":
                         {
                             this.props[prop] = utility_47.shallowCopy(props[prop]);
                             break;
                         }
                     case "color":
+                    case "rampingValue":
                         {
                             this.props[prop] = props[prop].clone();
+                            break;
+                        }
+                    default:
+                        {
+                            this.props[prop] = props[prop];
+                            console.warn("Unrecognized sfx fragment prop type " + this.key + "." + prop + ": " + propType);
                             break;
                         }
                 }
@@ -25012,6 +25090,30 @@ define("modules/common/battlesfxfunctions/sfxfragments/SFXFragment", ["require",
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = SFXFragment;
+    var _a, _b;
+});
+define("modules/common/battlesfxfunctions/sfxfragments/RampingValue", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var RampingValue = (function () {
+        function RampingValue(base, up, down) {
+            if (up === void 0) { up = 0; }
+            if (down === void 0) { down = 0; }
+            this.base = base;
+            this.up = up;
+            this.down = down;
+        }
+        RampingValue.prototype.getValue = function (up, down) {
+            if (up === void 0) { up = 0; }
+            if (down === void 0) { down = 0; }
+            return this.base + this.up * up + this.down * down;
+        };
+        RampingValue.prototype.clone = function () {
+            return new RampingValue(this.base, this.up, this.down);
+        };
+        return RampingValue;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = RampingValue;
     var _a, _b;
 });
 define("modules/common/battlesfxfunctions/shaders/IntersectingEllipses", ["require", "exports"], function (require, exports) {
@@ -25119,31 +25221,33 @@ define("modules/common/battlesfxfunctions/shaders/IntersectingEllipses", ["requi
     ];
     var _a, _b;
 });
-define("modules/common/battlesfxfunctions/sfxfragments/ShockWave", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "src/Color", "src/utility"], function (require, exports, SFXFragment_1, IntersectingEllipses_1, Color_5, utility_48) {
+define("modules/common/battlesfxfunctions/sfxfragments/ShockWave", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "src/Color", "src/utility"], function (require, exports, SFXFragment_1, RampingValue_1, IntersectingEllipses_1, Color_5, utility_48) {
     "use strict";
     var defaultShockWaveProps = {
         size: { x: 200, y: 200 },
-        mainEllipseMaxScale: { x: 0.9, y: 0.9 },
-        mainEllipseSharpness: 1,
-        mainEllipseSharpnessDrift: -0.2,
-        intersectingEllipseSharpness: 0.8,
-        intersectingEllipseSharpnessDrift: -0.4,
-        intersectingEllipseMaxScale: { x: 1.0, y: 1.0 },
         intersectingEllipseOrigin: { x: 0.0, y: 0.0 },
         intersectingEllipseDrift: { x: 0.0, y: 0.0 },
+        alpha: new RampingValue_1.default(1.0, -1.0, 0.0),
+        mainEllipseScaleX: new RampingValue_1.default(0.0, 0.9, 0.0),
+        mainEllipseScaleY: new RampingValue_1.default(0.0, 0.9, 0.0),
+        mainEllipseSharpness: new RampingValue_1.default(1.0, -0.2, 0.0),
+        intersectingEllipseScaleX: new RampingValue_1.default(0.0, 1.0, 0.0),
+        intersectingEllipseScaleY: new RampingValue_1.default(0.0, 1.0, 0.0),
+        intersectingEllipseSharpness: new RampingValue_1.default(0.8, -0.4, 0.0),
         color: new Color_5.default(1, 1, 1),
         delay: 0.3,
     };
     var shockWavePropTypes = {
         size: "point",
-        mainEllipseMaxScale: "point",
-        mainEllipseSharpness: "number",
-        mainEllipseSharpnessDrift: "number",
-        intersectingEllipseSharpness: "number",
-        intersectingEllipseSharpnessDrift: "number",
-        intersectingEllipseMaxScale: "point",
         intersectingEllipseOrigin: "point",
         intersectingEllipseDrift: "point",
+        alpha: "rampingValue",
+        mainEllipseScaleX: "rampingValue",
+        mainEllipseScaleY: "rampingValue",
+        mainEllipseSharpness: "rampingValue",
+        intersectingEllipseScaleX: "rampingValue",
+        intersectingEllipseScaleY: "rampingValue",
+        intersectingEllipseSharpness: "rampingValue",
         color: "color",
         delay: "number",
     };
@@ -25151,6 +25255,8 @@ define("modules/common/battlesfxfunctions/sfxfragments/ShockWave", ["require", "
         __extends(ShockWave, _super);
         function ShockWave(props) {
             _super.call(this, shockWavePropTypes, defaultShockWaveProps, props);
+            this.displayName = "ShockWave";
+            this.key = "shockWave";
         }
         ShockWave.CreateFromPartialProps = function (props) {
             return new ShockWave(props);
@@ -25163,20 +25269,20 @@ define("modules/common/battlesfxfunctions/sfxfragments/ShockWave", ["require", "
             var shockWaveTime = TWEEN.Easing.Quintic.Out(burstX);
             this.shockWaveFilter.setUniformValues({
                 mainEllipseSize: [
-                    p.mainEllipseMaxScale.x * shockWaveTime,
-                    p.mainEllipseMaxScale.y * shockWaveTime
+                    p.mainEllipseScaleX.getValue(shockWaveTime),
+                    p.mainEllipseScaleY.getValue(shockWaveTime),
                 ],
                 intersectingEllipseSize: [
-                    p.intersectingEllipseMaxScale.x * shockWaveTime,
-                    p.intersectingEllipseMaxScale.y * shockWaveTime
+                    p.intersectingEllipseScaleX.getValue(shockWaveTime),
+                    p.intersectingEllipseScaleY.getValue(shockWaveTime),
                 ],
                 intersectingEllipseCenter: [
                     p.intersectingEllipseOrigin.x + p.intersectingEllipseDrift.x * shockWaveTime,
                     p.intersectingEllipseOrigin.y + p.intersectingEllipseDrift.y * shockWaveTime
                 ],
-                mainEllipseSharpness: p.mainEllipseSharpness + p.mainEllipseSharpnessDrift * shockWaveTime,
-                intersectingEllipseSharpness: p.intersectingEllipseSharpness + p.intersectingEllipseSharpnessDrift * shockWaveTime,
-                mainAlpha: 1.0 - shockWaveTime
+                mainEllipseSharpness: p.mainEllipseSharpness.getValue(shockWaveTime),
+                intersectingEllipseSharpness: p.intersectingEllipseSharpness.getValue(shockWaveTime),
+                mainAlpha: p.alpha.getValue(shockWaveTime),
             });
         };
         ShockWave.prototype.draw = function () {
@@ -25350,21 +25456,25 @@ define("modules/common/battlesfxfunctions/sfxfragments/LightBurst", ["require", 
     var defaultLightBurstProps = {
         size: { x: 200, y: 200 },
         delay: 0.3,
-        rotation: 0.0,
         sharpness: 2.0,
-        color: new Color_6.default(0.75, 0.75, 0.62)
+        color: new Color_6.default(0.75, 0.75, 0.62),
+        centerSize: 1.0,
+        rayStrength: 1.0,
     };
     var LightBurstPropTypes = {
         size: "point",
         delay: "number",
-        rotation: "number",
         sharpness: "number",
         color: "color",
+        centerSize: "number",
+        rayStrength: "number",
     };
     var LightBurst = (function (_super) {
         __extends(LightBurst, _super);
         function LightBurst(props) {
             _super.call(this, LightBurstPropTypes, defaultLightBurstProps, props);
+            this.displayName = "LightBurst";
+            this.key = "lightBurst";
             this.seed = [Math.random() * 69, Math.random() * 420];
         }
         LightBurst.prototype.animate = function (time) {
@@ -25374,15 +25484,15 @@ define("modules/common/battlesfxfunctions/sfxfragments/LightBurst", ["require", 
             var rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
             var lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
             this.lightBurstFilter.setUniformValues({
-                centerSize: Math.pow(lightBurstIntensity, 2.0),
+                centerSize: Math.pow(lightBurstIntensity, 2.0) * this.props.centerSize,
                 centerBloomStrength: Math.pow(lightBurstIntensity, 2.0) * 5.0,
-                rayStrength: Math.pow(lightBurstIntensity, 3.0)
+                rayStrength: Math.pow(lightBurstIntensity, 3.0) * this.props.rayStrength
             });
         };
         LightBurst.prototype.draw = function () {
             this.lightBurstFilter = new LightBurst_1.default({
                 seed: this.seed,
-                rotation: this.props.rotation,
+                rotation: 0,
                 raySharpness: this.props.sharpness,
                 rayColor: this.props.color.getRGBA(1.0)
             });
@@ -25395,6 +25505,335 @@ define("modules/common/battlesfxfunctions/sfxfragments/LightBurst", ["require", 
     }(SFXFragment_2.default));
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = LightBurst;
+    var _a, _b;
+});
+define("modules/common/battlesfxfunctions/shaders/Beam", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var Beam = (function (_super) {
+        __extends(Beam, _super);
+        function Beam(initialUniformValues) {
+            var uniforms = Beam.makeUniformsObject(initialUniformValues);
+            _super.call(this, null, sourceLines.join("\n"), uniforms);
+        }
+        Beam.makeUniformsObject = function (initialValues) {
+            if (initialValues === void 0) { initialValues = {}; }
+            return ({
+                aspectRatio: { type: "1f", value: initialValues.aspectRatio },
+                beamColor: { type: "4fv", value: initialValues.beamColor },
+                beamYPosition: { type: "1f", value: initialValues.beamYPosition },
+                bulgeIntensity: { type: "1f", value: initialValues.bulgeIntensity },
+                bulgeSharpness: { type: "1f", value: initialValues.bulgeSharpness },
+                bulgeSize: { type: "2fv", value: initialValues.bulgeSize },
+                bulgeXPosition: { type: "1f", value: initialValues.bulgeXPosition },
+                lineIntensity: { type: "1f", value: initialValues.lineIntensity },
+                lineXSharpness: { type: "1f", value: initialValues.lineXSharpness },
+                lineXSize: { type: "2fv", value: initialValues.lineXSize },
+                lineYSharpness: { type: "1f", value: initialValues.lineYSharpness },
+                lineYSize: { type: "1f", value: initialValues.lineYSize },
+                noiseAmplitude: { type: "1f", value: initialValues.noiseAmplitude },
+                seed: { type: "1f", value: initialValues.seed },
+                time: { type: "1f", value: initialValues.time },
+            });
+        };
+        Beam.prototype.setUniformValues = function (values) {
+            for (var key in values) {
+                this.uniforms[key].value = values[key];
+            }
+        };
+        return Beam;
+    }(PIXI.AbstractFilter));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Beam;
+    var sourceLines = [
+        "precision mediump float;",
+        "",
+        "#define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com",
+        "",
+        "#if DOMAIN == 0",
+        "  varying vec2 vTextureCoord;",
+        "  uniform sampler2D uSampler;",
+        "",
+        "  uniform float time;",
+        "  uniform float seed;",
+        "  uniform float noiseAmplitude;",
+        "",
+        "  uniform float aspectRatio;",
+        "",
+        "  uniform vec4 beamColor;",
+        "  uniform float beamYPosition;",
+        "",
+        "  uniform float lineIntensity;",
+        "  uniform float bulgeIntensity;",
+        "",
+        "  uniform float bulgeXPosition;",
+        "  uniform vec2 bulgeSize;",
+        "  uniform float bulgeSharpness;",
+        "",
+        "  uniform vec2 lineXSize;",
+        "  uniform float lineXSharpness;",
+        "",
+        "  uniform float lineYSize;",
+        "  uniform float lineYSharpness;",
+        "",
+        "",
+        "#elif DOMAIN == 1",
+        "  uniform vec2 resolution;",
+        "  uniform float time;",
+        "",
+        "  const float seed = 420.69;",
+        "  const float noiseAmplitude = 0.5;",
+        "  float aspectRatio = resolution.x / resolution.y;",
+        "",
+        "  const vec4 beamColor = vec4(1.0, 0.5, 0.5, 1.0);",
+        "  const float beamYPosition = 0.5;",
+        "",
+        "  const float bulgeXPosition = 0.4;",
+        "  const vec2 bulgeSize = vec2(0.8, 0.4);",
+        "  const float bulgeSharpness = 0.4;",
+        "  const float bulgeIntensity = 3.0;",
+        "",
+        "  const vec2 lineXSize = vec2(0.4, 1.0);",
+        "  const float lineXSharpness = 0.3;",
+        "",
+        "  const float lineYSize = 0.02;",
+        "  const float lineYSharpness = 0.8;",
+        "  const float lineIntensity = 5.0;",
+        "",
+        "",
+        "#endif",
+        "",
+        "float hash(vec2 p)",
+        "{",
+        "  return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));",
+        "}",
+        "",
+        "float noise(vec2 x)",
+        "{",
+        "  vec2 i = floor(x);",
+        "  vec2 f = fract(x);",
+        "  float a = hash(i);",
+        "  float b = hash(i + vec2(1.0, 0.0));",
+        "  float c = hash(i + vec2(0.0, 1.0));",
+        "  float d = hash(i + vec2(1.0, 1.0));",
+        "  vec2 u = f * f * (3.0 - 2.0 * f);",
+        "  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;",
+        "}",
+        "",
+        "float ellipseGradient(vec2 p, float ellipseXPosition, vec2 ellipseSize)",
+        "{",
+        "  vec2 q = vec2(-1.0 + 2.0 * p.x, p.y); // (-1, -1) -> (1, 1)",
+        "  q.x -= -1.0 + 2.0 * ellipseXPosition;",
+        "  q.x *= aspectRatio;",
+        "  q /= ellipseSize;",
+        "",
+        "  float dist = length(q);",
+        "",
+        "  return dist;",
+        "}",
+        "",
+        "void main()",
+        "{",
+        "  #if DOMAIN == 0",
+        "    vec2 uv = vTextureCoord;",
+        "    vec4 color = texture2D(uSampler, vTextureCoord);",
+        "  #elif DOMAIN == 1",
+        "    vec2 uv = gl_FragCoord.xy / resolution;",
+        "    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);",
+        "  #endif",
+        "",
+        "  vec2 q = vec2(uv.x, (uv.y - beamYPosition) * 2.0);",
+        "  float noiseValue = -1.0 + 2.0 * noise(vec2(q.x - time, seed));",
+        "  noiseValue *= noiseAmplitude;",
+        "",
+        "  float yDistFromCenter = abs(q.y);",
+        "  float insideLineY = step(yDistFromCenter, lineYSize);",
+        "  float lineYDistanceFromEdge = distance(yDistFromCenter, lineYSize);",
+        "  float lineYGradient = smoothstep(0.0, 1.0 - lineYSharpness, lineYDistanceFromEdge) * insideLineY;",
+        "",
+        "  float insideLineX = step(lineXSize.x, q.x) * step(q.x, lineXSize.y);",
+        "  float lineXDist = 1.0 - min(distance(q.x, lineXSize.x), distance(q.x, lineXSize.y));",
+        "  lineXDist = max(insideLineX, lineXDist);",
+        "",
+        "  float lineXGradient = smoothstep(lineXSharpness, 1.0, lineXDist);",
+        "",
+        "  float lineGradient = (lineYGradient * lineXGradient) * lineIntensity;",
+        "  lineGradient *= 1.0 + noiseValue;",
+        "",
+        "  float bulgeGradient = 1.0 - ellipseGradient(q, bulgeXPosition, bulgeSize);",
+        "  bulgeGradient = smoothstep(0.0, 1.0 - bulgeSharpness, bulgeGradient) * bulgeIntensity;",
+        "  bulgeGradient *= 1.0 + noiseValue * 0.5;",
+        "",
+        "  float beamGradient = lineGradient + bulgeGradient;",
+        "  color += beamGradient * beamColor;",
+        "",
+        "  gl_FragColor = color;",
+        "}",
+    ];
+    var _a, _b;
+});
+define("modules/common/battlesfxfunctions/sfxfragments/Beam", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/shaders/Beam", "src/Color", "src/utility"], function (require, exports, SFXFragment_3, RampingValue_2, Beam_1, Color_7, utility_50) {
+    "use strict";
+    var defaultBeamProps = {
+        size: {
+            x: 500,
+            y: 500
+        },
+        relativeImpactTime: 0.2,
+        relativeBeamOrigin: {
+            x: 0,
+            y: 0.5
+        },
+        color: new Color_7.default(1, 0.9, 0.9),
+        timeScale: 100,
+        noiseAmplitude: new RampingValue_2.default(0.0, 0.4, -0.4),
+        lineIntensity: new RampingValue_2.default(2.0, 5.0, -5.0),
+        bulgeIntensity: new RampingValue_2.default(0.0, 6.0, -6.0),
+        lineYSize: new RampingValue_2.default(0.01, 0.2, -0.21),
+        bulgeSizeX: new RampingValue_2.default(0.0, 0.7, -0.7),
+        bulgeSizeY: new RampingValue_2.default(0.0, 0.4, -0.4),
+        bulgeSharpness: new RampingValue_2.default(0.3, 0.35, -0.35),
+        lineXSharpness: new RampingValue_2.default(0.99, -0.99, 0.99),
+        lineYSharpness: new RampingValue_2.default(0.99, -0.15, 0.16),
+    };
+    var BeamPropTypes = {
+        size: "point",
+        relativeImpactTime: "number",
+        relativeBeamOrigin: "point",
+        color: "color",
+        timeScale: "number",
+        noiseAmplitude: "rampingValue",
+        lineIntensity: "rampingValue",
+        bulgeIntensity: "rampingValue",
+        lineYSize: "rampingValue",
+        bulgeSizeX: "rampingValue",
+        bulgeSizeY: "rampingValue",
+        bulgeSharpness: "rampingValue",
+        lineXSharpness: "rampingValue",
+        lineYSharpness: "rampingValue",
+    };
+    var Beam = (function (_super) {
+        __extends(Beam, _super);
+        function Beam(props) {
+            _super.call(this, BeamPropTypes, defaultBeamProps, props);
+            this.displayName = "Beam";
+            this.key = "beam";
+            this.seed = Math.random() * 100;
+        }
+        Beam.prototype.animate = function (time) {
+            var rampUpValue = Math.pow(Math.min(time / this.props.relativeImpactTime, 1.0), 7.0);
+            var timeAfterImpact = Math.max(time - this.props.relativeImpactTime, 0.0);
+            var relativeTimeAfterImpact = utility_50.getRelativeValue(timeAfterImpact, 0.0, 1.0 - this.props.relativeImpactTime);
+            var rampDownValue = utility_50.clamp(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 0.0, 1.0);
+            this.animateFromRampValues(time, rampUpValue, rampDownValue);
+        };
+        Beam.prototype.animateFromRampValues = function (time, rampUpValue, rampDownValue) {
+            this.beamFilter.setUniformValues({
+                time: time * this.props.timeScale,
+                noiseAmplitude: this.props.noiseAmplitude.getValue(rampUpValue, rampDownValue),
+                lineIntensity: this.props.lineIntensity.getValue(rampUpValue, rampDownValue),
+                bulgeIntensity: this.props.bulgeIntensity.getValue(rampUpValue, rampDownValue),
+                bulgeSize: [
+                    this.props.bulgeSizeX.getValue(Math.pow(rampUpValue, 1.5), rampDownValue),
+                    this.props.bulgeSizeY.getValue(Math.pow(rampUpValue, 1.5), rampDownValue),
+                ],
+                bulgeSharpness: this.props.bulgeSharpness.getValue(rampUpValue, rampDownValue),
+                lineXSize: [
+                    this.props.relativeBeamOrigin.x * rampUpValue,
+                    1.0
+                ],
+                lineYSize: this.props.lineYSize.getValue(rampUpValue, rampDownValue),
+                lineXSharpness: this.props.lineXSharpness.getValue(rampUpValue, rampDownValue),
+                lineYSharpness: this.props.lineYSharpness.getValue(rampUpValue, rampDownValue),
+            });
+        };
+        Beam.prototype.draw = function () {
+            this.beamFilter = new Beam_1.default({
+                seed: this.seed,
+                beamColor: this.props.color.getRGBA(1.0),
+                aspectRatio: this.props.size.x / this.props.size.y,
+                bulgeXPosition: this.props.relativeBeamOrigin.x + 0.1,
+                beamYPosition: this.props.relativeBeamOrigin.y
+            });
+            var beamSprite = utility_50.createDummySpriteForShader(0, 0, this.props.size.x, this.props.size.y);
+            beamSprite.shader = this.beamFilter;
+            beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+            this.setDisplayObject(beamSprite);
+        };
+        return Beam;
+    }(SFXFragment_3.default));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Beam;
+    var _a, _b;
+});
+define("modules/common/battlesfxfunctions/sfxfragments/FocusingBeam", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/sfxfragments/Beam", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "src/Color", "src/utility"], function (require, exports, SFXFragment_4, Beam_2, RampingValue_3, Color_8, utility_51) {
+    "use strict";
+    var defaultFocusingBeamProps = {
+        color: new Color_8.default(1.0, 1.0, 1.0),
+        size: { x: 500, y: 500 },
+        focusStartTime: 0.0,
+        focusEndTime: 0.3,
+        decayStartTime: 1.0,
+        decayEndtime: 1.0,
+        focusTimeExponent: 0.75,
+        relativeYPosition: 0.5,
+        beamIntensity: new RampingValue_3.default(5.0, 20.0, -25.0),
+        beamSharpness: new RampingValue_3.default(0.75, 0.24, 0.0),
+        beamSize: new RampingValue_3.default(0.12, -0.115, -0.005),
+    };
+    var FocusingBeamPropTypes = {
+        color: "color",
+        size: "point",
+        focusStartTime: "number",
+        focusEndTime: "number",
+        decayStartTime: "number",
+        decayEndtime: "number",
+        focusTimeExponent: "number",
+        relativeYPosition: "number",
+        beamIntensity: "rampingValue",
+        beamSharpness: "rampingValue",
+        beamSize: "rampingValue",
+    };
+    var FocusingBeam = (function (_super) {
+        __extends(FocusingBeam, _super);
+        function FocusingBeam(props) {
+            _super.call(this, FocusingBeamPropTypes, defaultFocusingBeamProps, props);
+            this.displayName = "FocusingBeam";
+            this.key = "focusingBeam";
+        }
+        FocusingBeam.prototype.animate = function (time) {
+            var relativeFocusTime = Math.pow(utility_51.getRelativeValue(time, this.props.focusStartTime, this.props.focusEndTime), this.props.focusTimeExponent);
+            var rampUpValue = utility_51.clamp(relativeFocusTime, 0.0, 1.0);
+            var relativeDecayTime = utility_51.getRelativeValue(time, this.props.decayStartTime, this.props.decayEndtime);
+            var rampDownValue = utility_51.clamp(relativeDecayTime, 0.0, 1.0);
+            this.beamFragment.animateFromRampValues(time, rampUpValue, rampDownValue);
+        };
+        FocusingBeam.prototype.draw = function () {
+            this.beamFragment = new Beam_2.default({
+                color: this.props.color,
+                size: this.props.size,
+                relativeImpactTime: this.props.focusStartTime,
+                relativeBeamOrigin: {
+                    x: 0.0,
+                    y: this.props.relativeYPosition,
+                },
+                timeScale: 0,
+                noiseAmplitude: new RampingValue_3.default(0.0),
+                lineIntensity: this.props.beamIntensity,
+                bulgeIntensity: new RampingValue_3.default(0.0),
+                bulgeSharpness: new RampingValue_3.default(0.0),
+                lineYSize: this.props.beamSize,
+                bulgeSizeX: new RampingValue_3.default(0.0),
+                bulgeSizeY: new RampingValue_3.default(0.0),
+                lineXSharpness: new RampingValue_3.default(0.99),
+                lineYSharpness: this.props.beamSharpness
+            });
+            this.beamFragment.draw();
+            this.setDisplayObject(this.beamFragment.displayObject);
+        };
+        return FocusingBeam;
+    }(SFXFragment_4.default));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = FocusingBeam;
     var _a, _b;
 });
 define("src/uicomponents/sfxeditor/SFXEditorDisplay", ["require", "exports"], function (require, exports) {
@@ -25547,7 +25986,7 @@ define("src/uicomponents/sfxeditor/SFXFragmentList", ["require", "exports", "src
     exports.default = Factory;
     var _a, _b;
 });
-define("src/uicomponents/sfxeditor/props/Number", ["require", "exports"], function (require, exports) {
+define("src/uicomponents/sfxeditor/props/Number", ["require", "exports", "src/uicomponents/generic/ControlledNumberInput"], function (require, exports, ControlledNumberInput_2) {
     "use strict";
     var SFXFragmentPropNumberComponent = (function (_super) {
         __extends(SFXFragmentPropNumberComponent, _super);
@@ -25567,13 +26006,18 @@ define("src/uicomponents/sfxeditor/props/Number", ["require", "exports"], functi
             this.props.onValueChange();
         };
         SFXFragmentPropNumberComponent.prototype.render = function () {
-            return (React.DOM.input({
+            var _this = this;
+            return (React.DOM.div({
                 className: "sfx-fragment-prop-number-input",
-                type: "number",
-                onChange: this.handleChange,
-                step: 0.1,
-                value: "" + this.props.value
-            }));
+            }, ControlledNumberInput_2.default({
+                value: this.props.value,
+                valueStringIsValid: function (valueString) { return isFinite(Number(valueString)); },
+                getValueFromValueString: parseFloat,
+                onValueChange: function (newValue) {
+                    _this.props.fragment.props[_this.props.propName] = newValue;
+                    _this.props.onValueChange();
+                }
+            })));
         };
         return SFXFragmentPropNumberComponent;
     }(React.Component));
@@ -25583,55 +26027,102 @@ define("src/uicomponents/sfxeditor/props/Number", ["require", "exports"], functi
     exports.default = Factory;
     var _a, _b;
 });
-define("src/uicomponents/sfxeditor/props/Point", ["require", "exports"], function (require, exports) {
+define("src/uicomponents/sfxeditor/props/InlineNumberProp", ["require", "exports", "src/uicomponents/generic/ControlledNumberInput"], function (require, exports, ControlledNumberInput_3) {
+    "use strict";
+    var InlineNumberPropComponent = (function (_super) {
+        __extends(InlineNumberPropComponent, _super);
+        function InlineNumberPropComponent(props) {
+            _super.call(this, props);
+            this.displayName = "InlineNumberProp";
+        }
+        InlineNumberPropComponent.prototype.render = function () {
+            var baseID = "sfx-fragment-prop-inline-number-" + this.props.propName + "-" + this.props.label;
+            return (React.DOM.div({
+                className: "sfx-fragment-prop-inline-number-wrapper"
+            }, React.DOM.label({
+                className: "sfx-fragment-prop-inline-number-label",
+                htmlFor: baseID
+            }, this.props.label + ":"), ControlledNumberInput_3.default({
+                value: this.props.value,
+                valueStringIsValid: function (valueString) { return isFinite(Number(valueString)); },
+                getValueFromValueString: parseFloat,
+                onValueChange: this.props.onValueChange
+            })));
+        };
+        return InlineNumberPropComponent;
+    }(React.Component));
+    exports.InlineNumberPropComponent = InlineNumberPropComponent;
+    var Factory = React.createFactory(InlineNumberPropComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/props/VecBase", ["require", "exports", "src/uicomponents/sfxeditor/props/InlineNumberProp"], function (require, exports, InlineNumberProp_1) {
+    "use strict";
+    var SFXFragmentPropVecBaseComponent = (function (_super) {
+        __extends(SFXFragmentPropVecBaseComponent, _super);
+        function SFXFragmentPropVecBaseComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXFragmentPropVecBase";
+        }
+        SFXFragmentPropVecBaseComponent.prototype.handleValueChange = function (prop, newValue) {
+            var valueIsValid = isFinite(newValue);
+            if (!valueIsValid) {
+                return;
+            }
+            this.props.fragment.props[this.props.propName][prop.key] = newValue;
+            this.props.onValueChange();
+        };
+        SFXFragmentPropVecBaseComponent.prototype.render = function () {
+            var _this = this;
+            return (React.DOM.div({
+                className: "sfx-fragment-prop-vec-wrapper"
+            }, this.props.propProps.map(function (prop) {
+                return InlineNumberProp_1.default({
+                    key: prop.key,
+                    propName: _this.props.propName,
+                    label: prop.label,
+                    value: prop.value,
+                    onValueChange: _this.handleValueChange.bind(_this, prop),
+                });
+            })));
+        };
+        return SFXFragmentPropVecBaseComponent;
+    }(React.Component));
+    exports.SFXFragmentPropVecBaseComponent = SFXFragmentPropVecBaseComponent;
+    var Factory = React.createFactory(SFXFragmentPropVecBaseComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/props/Point", ["require", "exports", "src/uicomponents/sfxeditor/props/VecBase"], function (require, exports, VecBase_1) {
     "use strict";
     var SFXFragmentPropPointComponent = (function (_super) {
         __extends(SFXFragmentPropPointComponent, _super);
         function SFXFragmentPropPointComponent(props) {
             _super.call(this, props);
             this.displayName = "SFXFragmentPropPoint";
-            this.handleXChange = this.handleValueChange.bind(this, "x");
-            this.handleYChange = this.handleValueChange.bind(this, "y");
         }
-        SFXFragmentPropPointComponent.prototype.handleValueChange = function (key, e) {
-            var target = e.target;
-            var value = parseFloat(target.value);
-            var valueIsValid = isFinite(value);
-            if (!valueIsValid) {
-                return;
-            }
-            this.props.fragment.props[this.props.propName][key] = value;
-            this.props.onValueChange();
-        };
         SFXFragmentPropPointComponent.prototype.render = function () {
-            var baseID = "sfx-fragment-prop-point-value-" + this.props.propName;
             return (React.DOM.div({
-                className: "sfx-fragment-prop-point-wrapper"
-            }, React.DOM.div({
-                className: "sfx-fragment-prop-point-value-wrapper"
-            }, React.DOM.label({
-                className: "sfx-fragment-prop-point-label",
-                htmlFor: baseID + "x"
-            }, "X:"), React.DOM.input({
-                className: "sfx-fragment-prop-point-input",
-                id: baseID + "x",
-                type: "number",
-                onChange: this.handleXChange,
-                step: 0.1,
-                value: "" + this.props.x
-            })), React.DOM.div({
-                className: "sfx-fragment-prop-point-value-wrapper"
-            }, React.DOM.label({
-                className: "sfx-fragment-prop-point-label",
-                htmlFor: baseID + "y"
-            }, "Y:"), React.DOM.input({
-                className: "sfx-fragment-prop-point-input",
-                id: baseID + "y",
-                type: "number",
-                onChange: this.handleYChange,
-                step: 0.1,
-                value: "" + this.props.y
-            }))));
+                className: "sfx-fragment-prop-point"
+            }, VecBase_1.default({
+                propName: this.props.propName,
+                fragment: this.props.fragment,
+                onValueChange: this.props.onValueChange,
+                propProps: [
+                    {
+                        key: "x",
+                        label: "X",
+                        value: this.props.x
+                    },
+                    {
+                        key: "y",
+                        label: "Y",
+                        value: this.props.y
+                    },
+                ]
+            })));
         };
         return SFXFragmentPropPointComponent;
     }(React.Component));
@@ -25671,25 +26162,104 @@ define("src/uicomponents/sfxeditor/props/Color", ["require", "exports", "src/uic
     exports.default = Factory;
     var _a, _b;
 });
-define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports", "src/uicomponents/sfxeditor/props/Number", "src/uicomponents/sfxeditor/props/Point", "src/uicomponents/sfxeditor/props/Color"], function (require, exports, Number_1, Point_1, Color_7) {
+define("src/uicomponents/sfxeditor/props/Range", ["require", "exports", "src/uicomponents/sfxeditor/props/VecBase"], function (require, exports, VecBase_2) {
     "use strict";
-    var SFXFragmentPropNumberComponent = (function (_super) {
-        __extends(SFXFragmentPropNumberComponent, _super);
-        function SFXFragmentPropNumberComponent(props) {
+    var SFXFragmentPropRangeComponent = (function (_super) {
+        __extends(SFXFragmentPropRangeComponent, _super);
+        function SFXFragmentPropRangeComponent(props) {
             _super.call(this, props);
-            this.displayName = "SFXFragmentPropNumber";
+            this.displayName = "SFXFragmentPropRange";
+        }
+        SFXFragmentPropRangeComponent.prototype.render = function () {
+            return (React.DOM.div({
+                className: "sfx-fragment-prop-range"
+            }, VecBase_2.default({
+                propName: this.props.propName,
+                fragment: this.props.fragment,
+                onValueChange: this.props.onValueChange,
+                propProps: [
+                    {
+                        key: "min",
+                        label: "Min",
+                        value: this.props.min
+                    },
+                    {
+                        key: "max",
+                        label: "Max",
+                        value: this.props.max
+                    },
+                ]
+            })));
+        };
+        return SFXFragmentPropRangeComponent;
+    }(React.Component));
+    exports.SFXFragmentPropRangeComponent = SFXFragmentPropRangeComponent;
+    var Factory = React.createFactory(SFXFragmentPropRangeComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/props/RampingValue", ["require", "exports", "src/uicomponents/sfxeditor/props/VecBase"], function (require, exports, VecBase_3) {
+    "use strict";
+    var SFXFragmentPropRampingValueComponent = (function (_super) {
+        __extends(SFXFragmentPropRampingValueComponent, _super);
+        function SFXFragmentPropRampingValueComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXFragmentPropRampingValue";
+        }
+        SFXFragmentPropRampingValueComponent.prototype.render = function () {
+            return (React.DOM.div({
+                className: "sfx-fragment-prop-ramping-value"
+            }, VecBase_3.default({
+                propName: this.props.propName,
+                fragment: this.props.fragment,
+                onValueChange: this.props.onValueChange,
+                propProps: [
+                    {
+                        key: "base",
+                        label: "base",
+                        value: this.props.base
+                    },
+                    {
+                        key: "up",
+                        label: "up",
+                        value: this.props.up
+                    },
+                    {
+                        key: "down",
+                        label: "down",
+                        value: this.props.down
+                    },
+                ]
+            })));
+        };
+        return SFXFragmentPropRampingValueComponent;
+    }(React.Component));
+    exports.SFXFragmentPropRampingValueComponent = SFXFragmentPropRampingValueComponent;
+    var Factory = React.createFactory(SFXFragmentPropRampingValueComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a, _b;
+});
+define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports", "src/uicomponents/sfxeditor/props/Number", "src/uicomponents/sfxeditor/props/Point", "src/uicomponents/sfxeditor/props/Color", "src/uicomponents/sfxeditor/props/Range", "src/uicomponents/sfxeditor/props/RampingValue"], function (require, exports, Number_1, Point_1, Color_9, Range_1, RampingValue_4) {
+    "use strict";
+    var SFXFragmentPropComponent = (function (_super) {
+        __extends(SFXFragmentPropComponent, _super);
+        function SFXFragmentPropComponent(props) {
+            _super.call(this, props);
+            this.displayName = "SFXFragmentProp";
             this.state =
                 {
                     isCollapsed: false
                 };
             this.toggleCollapsed = this.toggleCollapsed.bind(this);
         }
-        SFXFragmentPropNumberComponent.prototype.toggleCollapsed = function () {
+        SFXFragmentPropComponent.prototype.toggleCollapsed = function () {
             this.setState({
                 isCollapsed: !this.state.isCollapsed
             });
         };
-        SFXFragmentPropNumberComponent.prototype.render = function () {
+        SFXFragmentPropComponent.prototype.render = function () {
             var propValuesElement;
             switch (this.props.propType) {
                 case "number":
@@ -25718,8 +26288,33 @@ define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports"
                 case "color":
                     {
                         var propValue = this.props.fragment.props[this.props.propName];
-                        propValuesElement = Color_7.default({
+                        propValuesElement = Color_9.default({
                             color: propValue,
+                            propName: this.props.propName,
+                            fragment: this.props.fragment,
+                            onValueChange: this.props.onPropValueChange
+                        });
+                        break;
+                    }
+                case "range":
+                    {
+                        var propValue = this.props.fragment.props[this.props.propName];
+                        propValuesElement = Range_1.default({
+                            min: propValue.min,
+                            max: propValue.max,
+                            propName: this.props.propName,
+                            fragment: this.props.fragment,
+                            onValueChange: this.props.onPropValueChange
+                        });
+                        break;
+                    }
+                case "rampingValue":
+                    {
+                        var propValue = this.props.fragment.props[this.props.propName];
+                        propValuesElement = RampingValue_4.default({
+                            base: propValue.base,
+                            up: propValue.up,
+                            down: propValue.down,
                             propName: this.props.propName,
                             fragment: this.props.fragment,
                             onValueChange: this.props.onPropValueChange
@@ -25738,10 +26333,10 @@ define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports"
                 className: "sfx-fragment-prop-value"
             }, propValuesElement)));
         };
-        return SFXFragmentPropNumberComponent;
+        return SFXFragmentPropComponent;
     }(React.Component));
-    exports.SFXFragmentPropNumberComponent = SFXFragmentPropNumberComponent;
-    var Factory = React.createFactory(SFXFragmentPropNumberComponent);
+    exports.SFXFragmentPropComponent = SFXFragmentPropComponent;
+    var Factory = React.createFactory(SFXFragmentPropComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
     var _a, _b;
@@ -25907,7 +26502,7 @@ define("src/uicomponents/sfxeditor/SFXEditorSelection", ["require", "exports", "
     exports.default = Factory;
     var _a, _b;
 });
-define("src/uicomponents/sfxeditor/SFXEditor", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/ShockWave", "modules/common/battlesfxfunctions/sfxfragments/LightBurst", "src/utility", "src/uicomponents/sfxeditor/SFXEditorDisplay", "src/uicomponents/sfxeditor/SFXEditorSelection"], function (require, exports, ShockWave_1, LightBurst_2, utility_50, SFXEditorDisplay_1, SFXEditorSelection_1) {
+define("src/uicomponents/sfxeditor/SFXEditor", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/ShockWave", "modules/common/battlesfxfunctions/sfxfragments/LightBurst", "modules/common/battlesfxfunctions/sfxfragments/Beam", "modules/common/battlesfxfunctions/sfxfragments/FocusingBeam", "src/utility", "src/uicomponents/sfxeditor/SFXEditorDisplay", "src/uicomponents/sfxeditor/SFXEditorSelection"], function (require, exports, ShockWave_1, LightBurst_2, Beam_3, FocusingBeam_1, utility_52, SFXEditorDisplay_1, SFXEditorSelection_1) {
     "use strict";
     var availableFragmentConstructors = [
         {
@@ -25919,6 +26514,16 @@ define("src/uicomponents/sfxeditor/SFXEditor", ["require", "exports", "modules/c
             key: "lightBurst",
             displayName: "LightBurst",
             constructorFN: LightBurst_2.default
+        },
+        {
+            key: "beam",
+            displayName: "Beam",
+            constructorFN: Beam_3.default
+        },
+        {
+            key: "foucsingBeam",
+            displayName: "FocusingBeam",
+            constructorFN: FocusingBeam_1.default
         }
     ];
     function AlphabeticallyByProp(a2, b2, props) {
@@ -25961,7 +26566,7 @@ define("src/uicomponents/sfxeditor/SFXEditor", ["require", "exports", "modules/c
         }
         SFXEditorComponent.prototype.handleChangeTime = function (e) {
             var target = e.target;
-            var newTime = utility_50.clamp(parseFloat(target.value), 0, 1);
+            var newTime = utility_52.clamp(parseFloat(target.value), 0, 1);
             if (this.state.isPlaying) {
                 this.togglePlay();
             }
@@ -26282,79 +26887,222 @@ define("modules/common/battlesfxfunctions/shaders/BlackToAlpha", ["require", "ex
     ];
     var _a, _b;
 });
-define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_51) {
+define("modules/common/battlesfxfunctions/sfxfragments/ProjectileAttack", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "src/utility"], function (require, exports, SFXFragment_5, utility_53) {
     "use strict";
-    function projectileAttack(props, params) {
-        var offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSFX(params.targetOffset, params.target);
-        var offsetUserData = params.user.drawingFunctionData.normalizeForBattleSFX(params.userOffset, params.user);
-        var minY = offsetTargetData.boundingBox.y;
-        var maxY = minY + offsetTargetData.boundingBox.height;
-        var maxSpeed = (params.width / params.duration) * props.maxSpeed;
-        var acceleration = maxSpeed * props.acceleration;
+    var defaultProjectileAttackProps = {
+        projectileTextures: [],
+        onImpact: undefined,
+        animateImpact: undefined,
+        useSequentialAttackOriginPoints: true,
+        removeAfterImpact: true,
+        impactRate: 0.75,
+        maxSpeed: 3,
+        acceleration: 0.05,
+        amountToSpawn: 20,
+        spawnTimeStart: 0,
+        spawnTimeEnd: 500,
+    };
+    var ProjectileAttackPropTypes = {
+        useSequentialAttackOriginPoints: "boolean",
+        removeAfterImpact: "boolean",
+        impactRate: "number",
+        impactPosition: "range",
+        maxSpeed: "number",
+        acceleration: "number",
+        amountToSpawn: "number",
+        spawnTimeStart: "number",
+        spawnTimeEnd: "number",
+    };
+    var Projectile = (function () {
+        function Projectile(props) {
+            this.hasImpacted = false;
+            this.id = props.id;
+            this.container = props.container;
+            this.sprite = props.sprite;
+            this.spawnTime = props.spawnTime;
+            this.maxSpeed = props.maxSpeed;
+            this.acceleration = props.acceleration;
+            this.spawnPositionX = props.spawnPositionX;
+            this.onImpact = props.onImpact;
+            this.animateImpact = props.animateImpact;
+            this.impactPosition = props.impactPosition;
+            this.removeAfterImpact = props.removeAfterImpact;
+            this.willImpact = isFinite(this.impactPosition);
+            this.container.addChild(this.sprite);
+            this.sprite.visible = false;
+        }
+        Projectile.prototype.draw = function (time) {
+            var position = this.getPosition(time);
+            var tipPosition = position + this.sprite.width;
+            var hasReachedImpactPosition = this.willImpact &&
+                tipPosition >= this.impactPosition;
+            if (hasReachedImpactPosition) {
+                if (!this.hasImpacted) {
+                    this.hasImpacted = true;
+                    if (this.onImpact) {
+                        this.onImpact(this, this.container, time);
+                    }
+                }
+                if (this.animateImpact) {
+                    this.animateImpact(this, this.container, time);
+                }
+            }
+            var shouldDraw = time >= this.spawnTime &&
+                (!this.hasImpacted || !this.removeAfterImpact);
+            if (!shouldDraw) {
+                this.sprite.visible = false;
+            }
+            else {
+                this.sprite.visible = true;
+                this.sprite.position.x = position;
+            }
+        };
+        Projectile.prototype.getPosition = function (relativeTime) {
+            var time = relativeTime - this.spawnTime;
+            if (time < 0) {
+                return undefined;
+            }
+            var timeForMaxSpeed = this.spawnTime + this.maxSpeed / this.acceleration;
+            var timeAccelerated = Math.min(time, timeForMaxSpeed);
+            var positionBeforeMaxSpeed = this.spawnPositionX +
+                0.5 * this.acceleration * Math.pow(timeAccelerated, 2.0);
+            if (time <= timeForMaxSpeed) {
+                return positionBeforeMaxSpeed;
+            }
+            else {
+                var timeAfterReachingMaxSpeed = time - timeForMaxSpeed;
+                return positionBeforeMaxSpeed + timeAfterReachingMaxSpeed * this.maxSpeed;
+            }
+        };
+        return Projectile;
+    }());
+    var ProjectileAttack = (function (_super) {
+        __extends(ProjectileAttack, _super);
+        function ProjectileAttack(props) {
+            _super.call(this, ProjectileAttackPropTypes, defaultProjectileAttackProps, props);
+            this.displayName = "ProjectileAttack";
+            this.key = "projectileAttack";
+            this.container = new PIXI.Container();
+        }
+        ProjectileAttack.prototype.animate = function (time) {
+            this.projectiles.forEach(function (projectile) {
+                projectile.draw(time);
+            });
+        };
+        ProjectileAttack.prototype.draw = function (userData, targetData) {
+            this.container.removeChildren();
+            this.projectiles = [];
+            var spawningDuration = this.props.spawnTimeEnd - this.props.spawnTimeStart;
+            for (var i = 0; i < this.props.amountToSpawn; i++) {
+                var texture = this.props.projectileTextures[i % this.props.projectileTextures.length];
+                var sprite = new PIXI.Sprite(texture);
+                var spawnPosition = this.props.useSequentialAttackOriginPoints ?
+                    userData.sequentialAttackOriginPoints[i % userData.sequentialAttackOriginPoints.length] :
+                    userData.singleAttackOriginPoint;
+                sprite.position.y = spawnPosition.y;
+                var targetBBox = targetData.boundingBox;
+                this.projectiles.push(new Projectile({
+                    id: i,
+                    container: this.container,
+                    sprite: sprite,
+                    spawnTime: this.props.spawnTimeStart + i * (spawningDuration / this.props.amountToSpawn),
+                    spawnPositionX: spawnPosition.x,
+                    maxSpeed: this.props.maxSpeed,
+                    acceleration: this.props.acceleration,
+                    onImpact: this.props.onImpact,
+                    animateImpact: this.props.animateImpact,
+                    impactPosition: utility_53.randInt(this.props.impactPosition.min, this.props.impactPosition.max),
+                    removeAfterImpact: this.props.removeAfterImpact,
+                }));
+            }
+            this.setDisplayObject(this.container);
+        };
+        return ProjectileAttack;
+    }(SFXFragment_5.default));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ProjectileAttack;
+    var _a, _b;
+});
+define("modules/common/battlesfxfunctions/rocketAttack", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/ProjectileAttack"], function (require, exports, ProjectileAttack_1) {
+    "use strict";
+    var rocketUrl = "modules/common/battlesfxfunctions/img/rocket.png";
+    function rocketAttack(params) {
+        var offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSFX(params.targetOffset, params.width, "target");
+        var offsetUserData = params.user.drawingFunctionData.normalizeForBattleSFX(params.userOffset, params.width, "user");
         var container = new PIXI.Container();
         if (!params.facingRight) {
-            container.scale.x = -1;
             container.x = params.width;
+            container.scale.x = -1;
         }
         var startTime = Date.now();
-        var endTime = startTime + params.duration;
-        var stopSpawningTime = startTime + params.duration / 2;
-        var lastTime = startTime;
-        var nextSpawnTime = startTime;
-        var spawnLocationsCount = params.user.drawingFunctionData.sequentialAttackOriginPoints.length;
-        var amountToSpawn = Math.max(Math.min(utility_51.randInt(props.amountToSpawn.min, props.amountToSpawn.max), spawnLocationsCount), 10);
-        var spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
-        var impactRate = props.impactRate || 0;
-        var projectiles = [];
-        var hasTriggeredEffect = false;
+        var impactHasOccurred = false;
+        var maxSpeedAt1000Duration = params.width * params.duration / 30;
+        var maxSpeed = maxSpeedAt1000Duration * (1000 / params.duration);
+        var acceleration = maxSpeed / 6;
+        var explosionTextures = [];
+        for (var i = 0; i < 26; i++) {
+            var explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i + 1) + '.png');
+            explosionTextures.push(explosionTexture);
+        }
+        var explosionsByID = {};
+        var relativeTimePerSecond = 1000 / params.duration;
+        var relativeTimePerExplosionFrame = relativeTimePerSecond / 60;
+        var projectileAttackFragment = new ProjectileAttack_1.default({
+            projectileTextures: [PIXI.Texture.fromFrame(rocketUrl)],
+            maxSpeed: maxSpeed,
+            acceleration: acceleration,
+            amountToSpawn: offsetUserData.sequentialAttackOriginPoints.length > 1 ?
+                offsetUserData.sequentialAttackOriginPoints.length :
+                8,
+            spawnTimeStart: 0,
+            spawnTimeEnd: 0.4,
+            removeAfterImpact: true,
+            impactRate: 0.8,
+            onImpact: function (projectile, container, time) {
+                if (!impactHasOccurred) {
+                    params.triggerEffect();
+                    impactHasOccurred = true;
+                }
+                var remainingTime = 1 - time;
+                var remainingTimePerFrame = remainingTime / explosionTextures.length;
+                explosionsByID[projectile.id] =
+                    {
+                        clip: new PIXI.extras.MovieClip(explosionTextures),
+                        startTime: time,
+                        relativeTimePerFrame: Math.min(relativeTimePerExplosionFrame, remainingTimePerFrame)
+                    };
+                var explosionClip = explosionsByID[projectile.id].clip;
+                explosionClip.anchor = new PIXI.Point(0.5, 0.5);
+                explosionClip.loop = false;
+                explosionClip.position = projectile.sprite.position.clone();
+                explosionClip.position.x += projectile.sprite.width;
+                container.addChild(explosionClip);
+            },
+            animateImpact: function (projectile, container, time) {
+                var explosion = explosionsByID[projectile.id];
+                var relativeTimePlayed = time - explosion.startTime;
+                var targetFrame = Math.round(relativeTimePlayed / explosion.relativeTimePerFrame);
+                if (targetFrame >= 0 &&
+                    targetFrame < explosion.clip.totalFrames) {
+                    explosion.clip.gotoAndStop(targetFrame);
+                    explosion.clip.visible = true;
+                }
+                else {
+                    explosion.clip.visible = false;
+                }
+            },
+            impactPosition: {
+                min: offsetTargetData.boundingBox.x,
+                max: offsetTargetData.boundingBox.x + offsetTargetData.boundingBox.width
+            }
+        });
+        projectileAttackFragment.draw(offsetUserData, offsetTargetData);
+        container.addChild(projectileAttackFragment.displayObject);
         function animate() {
-            var currentTime = Date.now();
-            var elapsedTime = currentTime - lastTime;
-            lastTime = currentTime;
-            if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
-                nextSpawnTime += spawnRate;
-                var texture = utility_51.getRandomArrayItem(props.projectileTextures);
-                var sprite = new PIXI.Sprite(texture);
-                container.addChild(sprite);
-                var spawnPointIndex = projectiles.length % spawnLocationsCount;
-                var spawnPoint = offsetUserData.sequentialAttackOriginPoints[spawnPointIndex];
-                sprite.x = spawnPoint.x;
-                sprite.y = spawnPoint.y;
-                var willImpact = Math.random() < impactRate;
-                projectiles.push({
-                    sprite: sprite,
-                    speed: 0,
-                    willImpact: willImpact,
-                    impactX: utility_51.randInt(params.width - 200, params.width - 50),
-                    hasImpact: false
-                });
-            }
-            for (var i = 0; i < projectiles.length; i++) {
-                var projectile = projectiles[i];
-                if (!projectile.hasImpact) {
-                    if (projectile.speed < maxSpeed) {
-                        projectile.speed += acceleration;
-                    }
-                    projectile.sprite.x += projectile.speed * elapsedTime;
-                }
-                if (!projectile.hasImpact && projectile.willImpact &&
-                    projectile.sprite.x >= projectile.impactX) {
-                    if (params.triggerEffect && !hasTriggeredEffect) {
-                        hasTriggeredEffect = true;
-                        params.triggerEffect();
-                    }
-                    projectile.hasImpact = true;
-                    var impactTextures = utility_51.getRandomArrayItem(props.impactTextures);
-                    var impactClip = new PIXI.extras.MovieClip(impactTextures);
-                    impactClip.anchor = new PIXI.Point(0.5, 0.5);
-                    impactClip.loop = false;
-                    impactClip.position = projectile.sprite.position;
-                    container.removeChild(projectile.sprite);
-                    container.addChild(impactClip);
-                    impactClip.play();
-                }
-            }
-            if (currentTime < endTime) {
+            var elapsedTime = Date.now() - startTime;
+            var relativeTime = elapsedTime / params.duration;
+            projectileAttackFragment.animate(relativeTime);
+            if (elapsedTime < params.duration) {
                 requestAnimationFrame(animate);
             }
             else {
@@ -26363,32 +27111,6 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
         }
         params.triggerStart(container);
         animate();
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = projectileAttack;
-    var _a, _b;
-});
-define("modules/common/battlesfxfunctions/rocketAttack", ["require", "exports", "modules/common/battlesfxfunctions/projectileattack"], function (require, exports, projectileAttack_1) {
-    "use strict";
-    var rocketUrl = "modules/common/battlesfxfunctions/img/rocket.png";
-    function rocketAttack(params) {
-        var explosionTextures = [];
-        for (var i = 0; i < 26; i++) {
-            var explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i + 1) + '.png');
-            explosionTextures.push(explosionTexture);
-        }
-        var props = {
-            projectileTextures: [PIXI.Texture.fromFrame(rocketUrl)],
-            impactTextures: [explosionTextures],
-            maxSpeed: 3,
-            acceleration: 0.05,
-            amountToSpawn: {
-                min: 20,
-                max: 20
-            },
-            impactRate: 0.75
-        };
-        projectileAttack_1.default(props, params);
     }
     function preLoadedRocketAttack(params) {
         var loader = new PIXI.loaders.Loader();
@@ -26520,10 +27242,10 @@ define("modules/common/battlesfxfunctions/shaders/Guard", ["require", "exports"]
     ];
     var _a, _b;
 });
-define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_52) {
+define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_54) {
     "use strict";
     function guard(props) {
-        var offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(props.userOffset, props.user);
+        var offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(props.userOffset, props.width, "user");
         var userX2 = offsetUserData.boundingBox.x + offsetUserData.boundingBox.width;
         var maxFrontier = Math.min(userX2 + 20, props.width / 2);
         var baseTrailDistance = 80;
@@ -26554,9 +27276,9 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "module
                     hasTriggeredEffect = true;
                     props.triggerEffect();
                 }
-                var relativeTime = utility_52.getRelativeValue(time, travelTime - 0.02, 1);
+                var relativeTime = utility_54.getRelativeValue(time, travelTime - 0.02, 1);
                 var adjustedtime = Math.pow(relativeTime, 4);
-                var relativeDistance = utility_52.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
+                var relativeDistance = utility_54.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
                 guardFilter.setUniformValues({
                     trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
                     blockWidth: adjustedtime * maxBlockWidth,
@@ -26593,167 +27315,6 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "module
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = guard;
-    var _a, _b;
-});
-define("modules/common/battlesfxfunctions/shaders/Beam", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var Beam = (function (_super) {
-        __extends(Beam, _super);
-        function Beam(initialUniformValues) {
-            var uniforms = Beam.makeUniformsObject(initialUniformValues);
-            _super.call(this, null, sourceLines.join("\n"), uniforms);
-        }
-        Beam.makeUniformsObject = function (initialValues) {
-            if (initialValues === void 0) { initialValues = {}; }
-            return ({
-                aspectRatio: { type: "1f", value: initialValues.aspectRatio },
-                beamColor: { type: "4fv", value: initialValues.beamColor },
-                bulgeIntensity: { type: "1f", value: initialValues.bulgeIntensity },
-                bulgeSharpness: { type: "1f", value: initialValues.bulgeSharpness },
-                bulgeSize: { type: "2fv", value: initialValues.bulgeSize },
-                bulgeXPosition: { type: "1f", value: initialValues.bulgeXPosition },
-                lineIntensity: { type: "1f", value: initialValues.lineIntensity },
-                lineXSharpness: { type: "1f", value: initialValues.lineXSharpness },
-                lineXSize: { type: "2fv", value: initialValues.lineXSize },
-                lineYSharpness: { type: "1f", value: initialValues.lineYSharpness },
-                lineYSize: { type: "1f", value: initialValues.lineYSize },
-                noiseAmplitude: { type: "1f", value: initialValues.noiseAmplitude },
-                seed: { type: "1f", value: initialValues.seed },
-                time: { type: "1f", value: initialValues.time },
-            });
-        };
-        Beam.prototype.setUniformValues = function (values) {
-            for (var key in values) {
-                this.uniforms[key].value = values[key];
-            }
-        };
-        return Beam;
-    }(PIXI.AbstractFilter));
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Beam;
-    var sourceLines = [
-        "precision mediump float;",
-        "",
-        "#define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com",
-        "",
-        "#if DOMAIN == 0",
-        "  varying vec2 vTextureCoord;",
-        "  uniform sampler2D uSampler;",
-        "",
-        "  uniform float time;",
-        "  uniform float seed;",
-        "  uniform float noiseAmplitude;",
-        "",
-        "  uniform float aspectRatio;",
-        "",
-        "  uniform vec4 beamColor;",
-        "",
-        "  uniform float lineIntensity;",
-        "  uniform float bulgeIntensity;",
-        "",
-        "  uniform float bulgeXPosition;",
-        "  uniform vec2 bulgeSize;",
-        "  uniform float bulgeSharpness;",
-        "",
-        "  uniform vec2 lineXSize;",
-        "  uniform float lineXSharpness;",
-        "",
-        "  uniform float lineYSize;",
-        "  uniform float lineYSharpness;",
-        "",
-        "",
-        "#elif DOMAIN == 1",
-        "  uniform vec2 resolution;",
-        "  uniform float time;",
-        "",
-        "  const float seed = 420.69;",
-        "  const float noiseAmplitude = 0.5;",
-        "  float aspectRatio = resolution.x / resolution.y;",
-        "",
-        "  const vec4 beamColor = vec4(1.0, 0.5, 0.5, 1.0);",
-        "",
-        "  const float bulgeXPosition = 0.4;",
-        "  const vec2 bulgeSize = vec2(0.8, 0.4);",
-        "  const float bulgeSharpness = 0.4;",
-        "  const float bulgeIntensity = 3.0;",
-        "",
-        "  const vec2 lineXSize = vec2(0.4, 1.0);",
-        "  const float lineXSharpness = 0.3;",
-        "",
-        "  const float lineYSize = 0.02;",
-        "  const float lineYSharpness = 0.8;",
-        "  const float lineIntensity = 5.0;",
-        "",
-        "",
-        "#endif",
-        "",
-        "float hash(vec2 p)",
-        "{",
-        "  return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));",
-        "}",
-        "",
-        "float noise(vec2 x)",
-        "{",
-        "  vec2 i = floor(x);",
-        "  vec2 f = fract(x);",
-        "  float a = hash(i);",
-        "  float b = hash(i + vec2(1.0, 0.0));",
-        "  float c = hash(i + vec2(0.0, 1.0));",
-        "  float d = hash(i + vec2(1.0, 1.0));",
-        "  vec2 u = f * f * (3.0 - 2.0 * f);",
-        "  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;",
-        "}",
-        "",
-        "float ellipseGradient(vec2 p, float ellipseXPosition, vec2 ellipseSize)",
-        "{",
-        "  vec2 q = vec2(-1.0 + 2.0 * p.x, p.y); // (-1, -1) -> (1, 1)",
-        "  q.x -= -1.0 + 2.0 * ellipseXPosition;",
-        "  q.x *= aspectRatio;",
-        "  q /= ellipseSize;",
-        "",
-        "  float dist = length(q);",
-        "",
-        "  return dist;",
-        "}",
-        "",
-        "void main()",
-        "{",
-        "  #if DOMAIN == 0",
-        "    vec2 uv = vTextureCoord;",
-        "    vec4 color = texture2D(uSampler, vTextureCoord);",
-        "  #elif DOMAIN == 1",
-        "    vec2 uv = gl_FragCoord.xy / resolution;",
-        "    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);",
-        "  #endif",
-        "",
-        "  vec2 q = vec2(uv.x, -1.0 + 2.0 * uv.y); // (0, -1) -> (1, 1)",
-        "  float noiseValue = -1.0 + 2.0 * noise(vec2(q.x - time, seed));",
-        "  noiseValue *= noiseAmplitude;",
-        "",
-        "  float yDistFromCenter = abs(q.y);",
-        "  float insideLineY = step(yDistFromCenter, lineYSize);",
-        "  float lineYDist = max(1.0 - distance(yDistFromCenter, lineYSize), insideLineY);",
-        "  float lineYGradient = smoothstep(lineYSharpness, 1.0, lineYDist);",
-        "",
-        "  float insideLineX = step(lineXSize.x, q.x) * step(q.x, lineXSize.y);",
-        "  float lineXDist = 1.0 - min(distance(q.x, lineXSize.x), distance(q.x, lineXSize.y));",
-        "  lineXDist = max(insideLineX, lineXDist);",
-        "",
-        "  float lineXGradient = smoothstep(lineXSharpness, 1.0, lineXDist);",
-        "",
-        "  float lineGradient = (lineYGradient * lineXGradient) * lineIntensity;",
-        "  lineGradient *= 1.0 + noiseValue;",
-        "",
-        "  float bulgeGradient = 1.0 - ellipseGradient(q, bulgeXPosition, bulgeSize);",
-        "  bulgeGradient = smoothstep(0.0, 1.0 - bulgeSharpness, bulgeGradient) * bulgeIntensity;",
-        "  bulgeGradient *= 1.0 + noiseValue * 0.5;",
-        "",
-        "  float beamGradient = lineGradient + bulgeGradient;",
-        "  color += beamGradient * beamColor;",
-        "",
-        "  gl_FragColor = color;",
-        "}",
-    ];
     var _a, _b;
 });
 define("modules/common/battlesfxfunctions/shaders/ShinyParticle", ["require", "exports"], function (require, exports) {
@@ -26950,12 +27511,12 @@ define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"]
     exports.default = ProtonWrapper;
     var _a, _b;
 });
-define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Beam", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/sfxfragments/ShockWave", "modules/common/battlesfxfunctions/sfxfragments/LightBurst", "src/Color", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, ShockWave_2, LightBurst_3, color_1, utility_53, ProtonWrapper_1) {
+define("modules/common/battlesfxfunctions/beam", ["require", "exports", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/sfxfragments/ShockWave", "modules/common/battlesfxfunctions/sfxfragments/LightBurst", "modules/common/battlesfxfunctions/sfxfragments/Beam", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "src/Color", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, ShinyParticle_1, ShockWave_2, LightBurst_3, Beam_4, RampingValue_5, color_1, utility_55, ProtonWrapper_1) {
     "use strict";
-    function particleTest(props) {
+    function beam(props) {
         var width2 = props.width / 2;
         var height2 = props.height / 2;
-        var offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(props.userOffset, props.user);
+        var offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(props.userOffset, props.width, "user");
         var mainContainer = new PIXI.Container();
         var impactHasOccurred = false;
         var relativeImpactTime = 0.18;
@@ -26998,46 +27559,27 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             a: 1.0
         }, props.duration / 2);
         var particlesAmountScale = props.width / 700;
-        var beamSpriteSize = {
-            x: props.width,
-            y: props.height
-        };
-        var beamFilter = new Beam_1.default({
-            seed: Math.random() * 100,
-            beamColor: finalColor,
-            aspectRatio: beamSpriteSize.x / beamSpriteSize.y,
-            bulgeXPosition: relativeBeamOrigin.x + 0.1
+        var beamFragment = new Beam_4.default({
+            color: new color_1.default(finalColor[0], finalColor[1], finalColor[2]),
+            relativeImpactTime: relativeImpactTime,
+            relativeBeamOrigin: relativeBeamOrigin,
+            size: {
+                x: props.width,
+                y: props.height
+            },
+            timeScale: 100,
+            noiseAmplitude: new RampingValue_5.default(0.0, 0.4, -0.4),
+            lineIntensity: new RampingValue_5.default(2.0, 5.0, -5.0),
+            bulgeIntensity: new RampingValue_5.default(0.0, 6.0, -6.0),
+            bulgeSizeX: new RampingValue_5.default(0.0, 0.7, -0.7),
+            bulgeSizeY: new RampingValue_5.default(0.0, 0.4, -0.4),
+            lineYSize: new RampingValue_5.default(0.01, 0.2, -0.21),
+            bulgeSharpness: new RampingValue_5.default(0.3, 0.35, -0.35),
+            lineXSharpness: new RampingValue_5.default(0.99, -0.99, 0.99),
+            lineYSharpness: new RampingValue_5.default(0.99, -0.15, 0.16),
         });
-        var syncBeamUniforms = function (time) {
-            var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
-            rampUpValue = Math.pow(rampUpValue, 7.0);
-            var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
-            var relativeTimeAfterImpact = utility_53.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
-            var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 1.0);
-            var beamIntensity = rampUpValue - rampDownValue;
-            beamFilter.setUniformValues({
-                time: time * 100,
-                noiseAmplitude: 0.4 * beamIntensity,
-                lineIntensity: 2.0 + 3.0 * beamIntensity,
-                bulgeIntensity: 6.0 * beamIntensity,
-                bulgeSize: [
-                    0.7 * Math.pow(beamIntensity, 1.5),
-                    0.4 * Math.pow(beamIntensity, 1.5)
-                ],
-                bulgeSharpness: 0.3 + 0.35 * beamIntensity,
-                lineXSize: [
-                    relativeBeamOrigin.x * rampUpValue,
-                    1.0
-                ],
-                lineXSharpness: 0.99 - beamIntensity * 0.99,
-                lineYSize: 0.001 + beamIntensity * 0.03,
-                lineYSharpness: 0.99 - beamIntensity * 0.15 + 0.01 * rampDownValue
-            });
-        };
-        var beamSprite = utility_53.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
-        beamSprite.shader = beamFilter;
-        beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-        mainContainer.addChild(beamSprite);
+        beamFragment.draw();
+        mainContainer.addChild(beamFragment.displayObject);
         var onParticleUpdateFN = function (particle) {
             var sprite = particle.sprite;
             sprite.position.x = particle.p.x;
@@ -27082,7 +27624,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         var shinyEmitter = new Proton.BehaviourEmitter();
         shinyEmitter.p.x = beamOrigin.x;
         shinyEmitter.p.y = beamOrigin.y;
-        var shinyParticleTexture = utility_53.getDummyTextureForShader();
+        var shinyParticleTexture = utility_55.getDummyTextureForShader();
         shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
         var shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
         shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
@@ -27113,16 +27655,17 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         };
         var shockWaveFragment = new ShockWave_2.default({
             size: shockWaveSize,
-            mainEllipseMaxScale: { x: 0.3, y: 0.9 },
-            intersectingEllipseMaxScale: { x: 0.8, y: 1.0 },
             intersectingEllipseOrigin: { x: 0.05, y: 0.0 },
             intersectingEllipseDrift: { x: 0.3, y: 0.0 },
-            mainEllipseSharpness: 0.95,
-            mainEllipseSharpnessDrift: -0.15,
-            intersectingEllipseSharpness: 0.8,
-            intersectingEllipseSharpnessDrift: -0.4,
+            alpha: new RampingValue_5.default(1.0, -1.0, 0.0),
+            mainEllipseScaleX: new RampingValue_5.default(0.0, 0.3, 0.0),
+            mainEllipseScaleY: new RampingValue_5.default(0.0, 0.9, 0.0),
+            mainEllipseSharpness: new RampingValue_5.default(0.95, -0.15, 0.0),
+            intersectingEllipseScaleX: new RampingValue_5.default(0.0, 0.8, 0.0),
+            intersectingEllipseScaleY: new RampingValue_5.default(0.0, 1.0, 0.0),
+            intersectingEllipseSharpness: new RampingValue_5.default(0.8, -0.4, 0.0),
             color: new color_1.default(1.0, 1.0, 1.0),
-            delay: relativeImpactTime
+            delay: relativeImpactTime,
         });
         shockWaveFragment.draw();
         shockWaveFragment.position.set(beamOrigin.x - shockWaveSize.x / 2, beamOrigin.y - shockWaveSize.y / 2);
@@ -27134,9 +27677,10 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         var lightBurstFragment = new LightBurst_3.default({
             size: lightBurstSize,
             delay: relativeImpactTime,
-            rotation: 0,
             sharpness: 2.0,
-            color: new color_1.default(0.75, 0.75, 0.62)
+            color: new color_1.default(0.75, 0.75, 0.62),
+            centerSize: 1.0,
+            rayStrength: 1.0
         });
         lightBurstFragment.draw();
         lightBurstFragment.position.set(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2);
@@ -27150,10 +27694,10 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             particleShaderColorArray[1] = particleShaderColor.g;
             particleShaderColorArray[2] = particleShaderColor.b;
             particleShaderColorArray[3] = particleShaderColor.a;
-            var timePassed = elapsedTime / props.duration;
-            var lifeLeft = 1 - timePassed;
-            var timePassedSinceImpact = utility_53.getRelativeValue(timePassed, relativeImpactTime, 1.0);
-            if (timePassed >= relativeImpactTime - 0.02) {
+            var relativeElapsedTime = elapsedTime / props.duration;
+            var lifeLeft = 1 - relativeElapsedTime;
+            var relativeTimeSinceImpact = utility_55.getRelativeValue(relativeElapsedTime, relativeImpactTime, 1.0);
+            if (relativeElapsedTime >= relativeImpactTime - 0.02) {
                 if (!impactHasOccurred) {
                     impactHasOccurred = true;
                     var lifeLeftInSeconds = props.duration * lifeLeft / 1000;
@@ -27170,12 +27714,12 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
                     smallEmitter.emit();
                     props.triggerEffect();
                 }
-                syncSmallParticleUniforms(timePassed);
+                syncSmallParticleUniforms(relativeElapsedTime);
             }
-            syncBeamUniforms(timePassed);
-            syncShinyParticleUniforms(timePassed);
-            shockWaveFragment.animate(timePassed);
-            lightBurstFragment.animate(timePassed);
+            beamFragment.animate(relativeElapsedTime);
+            syncShinyParticleUniforms(relativeElapsedTime);
+            shockWaveFragment.animate(relativeElapsedTime);
+            lightBurstFragment.animate(relativeElapsedTime);
             renderTexture.clear();
             renderTexture.render(mainContainer);
             if (elapsedTime < props.duration) {
@@ -27193,8 +27737,166 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         animate();
     }
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = particleTest;
+    exports.default = beam;
     var _a, _b;
+});
+define("modules/common/battlesfxfunctions/snipe", ["require", "exports", "src/Color", "src/UnitAttributes", "modules/common/battlesfxfunctions/sfxfragments/FocusingBeam", "modules/common/battlesfxfunctions/sfxfragments/ProjectileAttack", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, color_2, UnitAttributes_2, FocusingBeam_2, ProjectileAttack_2, RampingValue_6, ProtonWrapper_2) {
+    "use strict";
+    var colors = (_c = {},
+        _c[UnitAttributes_2.UnitAttribute.attack] = color_2.default.fromHexString("FF4D77"),
+        _c[UnitAttributes_2.UnitAttribute.defence] = color_2.default.fromHexString("0BB1FF"),
+        _c[UnitAttributes_2.UnitAttribute.intelligence] = color_2.default.fromHexString("EB12FE"),
+        _c[UnitAttributes_2.UnitAttribute.speed] = color_2.default.fromHexString("12FE9E"),
+        _c
+    );
+    var projectileURL = "modules/common/battlesfxfunctions/img/rocket.png";
+    function snipe(type, params) {
+        var mainContainer = new PIXI.Container();
+        var offsetUserData = params.user.drawingFunctionData.normalizeForBattleSFX(params.userOffset, params.width, "user");
+        var offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSFX(params.targetOffset, params.width, "target");
+        var renderTexture = new PIXI.RenderTexture(params.renderer, params.width, params.height);
+        var renderedSprite = new PIXI.Sprite(renderTexture);
+        if (!params.facingRight) {
+            renderedSprite.x = params.width;
+            renderedSprite.scale.x = -1;
+        }
+        var beamOrigin = offsetUserData.singleAttackOriginPoint;
+        var relativeBeamOrigin = {
+            x: beamOrigin.x / params.width,
+            y: beamOrigin.y / params.height
+        };
+        var focusDuration = 0.15;
+        var projectileLaunchTime = 0.35;
+        var impactTime = 0.5;
+        var projectileFlightDuration = impactTime - projectileLaunchTime;
+        var impactHasOccurred = false;
+        var beamFragment = new FocusingBeam_2.default({
+            color: colors[type].saturate(-0.1),
+            size: {
+                x: params.width,
+                y: params.height
+            },
+            focusStartTime: 0,
+            focusEndTime: focusDuration,
+            decayStartTime: projectileLaunchTime,
+            decayEndtime: projectileLaunchTime + projectileFlightDuration / 5,
+            focusTimeExponent: 0.33,
+            relativeYPosition: relativeBeamOrigin.y,
+            beamIntensity: new RampingValue_6.default(5.0, 20.0, -25.0),
+            beamSharpness: new RampingValue_6.default(0.75, 0.24, 0.0),
+            beamSize: new RampingValue_6.default(0.12, -0.115, -0.005),
+        });
+        beamFragment.draw();
+        mainContainer.addChild(beamFragment.displayObject);
+        var maxSpeedAt1000Duration = params.width * params.duration / 2;
+        var maxSpeed = maxSpeedAt1000Duration * (1000 / params.duration);
+        var acceleration = maxSpeed / 0.5;
+        var projectileFragment = new ProjectileAttack_2.default({
+            projectileTextures: [PIXI.Texture.fromFrame(projectileURL)],
+            maxSpeed: maxSpeed,
+            acceleration: acceleration,
+            amountToSpawn: 1,
+            useSequentialAttackOriginPoints: false,
+            spawnTimeStart: projectileLaunchTime,
+            spawnTimeEnd: 1,
+            removeAfterImpact: true,
+            impactRate: 1,
+            onImpact: function (projectile, container, time) {
+                if (!impactHasOccurred) {
+                    impactHasOccurred = true;
+                    params.triggerEffect();
+                    emitters.forEach(function (emitter) {
+                        emitter.p.x = projectile.sprite.position.x + projectile.sprite.width;
+                        emitter.p.y = projectile.sprite.position.y;
+                        emitter.emit("once");
+                    });
+                }
+            },
+            animateImpact: function (projectile, container, time) {
+                protonWrapper.update();
+            },
+            impactPosition: {
+                min: offsetTargetData.boundingBox.x + offsetTargetData.boundingBox.width / 2,
+                max: offsetTargetData.boundingBox.x + offsetTargetData.boundingBox.width / 2,
+            },
+        });
+        projectileFragment.draw(offsetUserData, offsetTargetData);
+        mainContainer.addChild(projectileFragment.displayObject);
+        var particleContainer = new PIXI.Container();
+        mainContainer.addChild(particleContainer);
+        var protonWrapper = new ProtonWrapper_2.default(params.renderer, particleContainer);
+        var particlesAmountScale = params.height / 600;
+        var emitters = [
+            {
+                name: "white",
+                color: 0xBBBBBB,
+                amount: 460,
+                size: 6,
+            },
+            {
+                name: "colored",
+                color: colors[type].getHex(),
+                amount: 40,
+                size: 4,
+            }
+        ].map(function (emitterData) {
+            var emitter = new Proton.BehaviourEmitter();
+            emitter.rate = new Proton.Rate(emitterData.amount * particlesAmountScale, 0.02);
+            var particleTexture = (function () {
+                var particleSize = emitterData.size;
+                var gfx = new PIXI.Graphics();
+                gfx.beginFill(emitterData.color);
+                gfx.drawRect(particleSize / 2, particleSize / 2, particleSize, particleSize);
+                gfx.endFill();
+                return gfx.generateTexture(params.renderer, 1, PIXI.SCALE_MODES.DEFAULT, new PIXI.Rectangle(0, 0, particleSize, particleSize));
+            })();
+            emitter.addInitialize(new Proton.ImageTarget(particleTexture));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 6.5), new Proton.Span(270, 35, true), "polar"));
+            var emitterArea = {
+                x: Math.min(params.target.drawingFunctionData.boundingBox.width, 70),
+                y: Math.min(params.target.drawingFunctionData.boundingBox.height, 70)
+            };
+            emitter.addInitialize(new Proton.Position(new Proton.RectZone(-emitterArea.x / 2, -emitterArea.y / 2, emitterArea.x, emitterArea.y)));
+            emitter.addInitialize(new Proton.Life(new Proton.Span(params.duration * (1.0 - impactTime) / 3000, params.duration * (1.0 - impactTime) / 1500)));
+            emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.8, 1), 0));
+            protonWrapper.addEmitter(emitter, emitterData.name);
+            protonWrapper.onParticleUpdated[emitterData.name] = function (particle) {
+                var sprite = particle.sprite;
+                sprite.position.x = particle.p.x;
+                sprite.position.y = particle.p.y;
+                sprite.scale.x = particle.scale;
+                sprite.scale.y = particle.scale;
+            };
+            return emitter;
+        });
+        function animate() {
+            var elapsedTime = Date.now() - startTime;
+            var relativeElapsedTime = elapsedTime / params.duration;
+            beamFragment.animate(relativeElapsedTime);
+            projectileFragment.animate(relativeElapsedTime);
+            renderTexture.clear();
+            renderTexture.render(mainContainer);
+            if (elapsedTime < params.duration) {
+                requestAnimationFrame(animate);
+            }
+            else {
+                params.triggerEnd();
+            }
+        }
+        params.triggerStart(renderedSprite);
+        var startTime = Date.now();
+        animate();
+    }
+    function preLoadedSnipe(type, params) {
+        var loader = new PIXI.loaders.Loader();
+        loader.add(projectileURL);
+        loader.load(function (loader) {
+            snipe(type, params);
+        });
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = preLoadedSnipe;
+    var _a, _b, _c;
 });
 define("modules/common/battlesfxfunctions/makeSFXFromVideo", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -27251,34 +27953,45 @@ define("modules/common/battlesfxfunctions/makeSFXFromVideo", ["require", "export
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = makeSFXFromVideo;
-    var _a, _b;
+    var _a, _b, _c;
 });
-define("modules/common/battlesfxtemplates/battleSFX", ["require", "exports", "modules/common/battlesfxfunctions/shaders/BlackToAlpha", "modules/common/battlesfxfunctions/rocketAttack", "modules/common/battlesfxfunctions/guard", "modules/common/battlesfxfunctions/particleTest", "modules/common/battlesfxfunctions/makeSFXFromVideo"], function (require, exports, BlackToAlpha_1, rocketAttack_1, guard_1, particleTest_1, makeSFXFromVideo_1) {
+define("modules/common/battlesfxtemplates/battleSFX", ["require", "exports", "src/UnitAttributes", "modules/common/battlesfxfunctions/shaders/BlackToAlpha", "modules/common/battlesfxfunctions/rocketAttack", "modules/common/battlesfxfunctions/guard", "modules/common/battlesfxfunctions/beam", "modules/common/battlesfxfunctions/snipe", "modules/common/battlesfxfunctions/makeSFXFromVideo"], function (require, exports, UnitAttributes_3, BlackToAlpha_1, rocketAttack_1, guard_1, beam_1, snipe_1, makeSFXFromVideo_1) {
     "use strict";
     exports.rocketAttack = {
         duration: 1500,
         battleOverlay: rocketAttack_1.default,
-        SFXWillTriggerEffect: true
+        SFXWillTriggerEffect: true,
     };
     exports.guard = {
         duration: 1000,
         battleOverlay: guard_1.default,
-        SFXWillTriggerEffect: true
+        SFXWillTriggerEffect: true,
     };
-    exports.particleTest = {
+    exports.beam = {
         duration: 3500,
-        battleOverlay: particleTest_1.default,
-        SFXWillTriggerEffect: true
+        battleOverlay: beam_1.default,
+        SFXWillTriggerEffect: true,
     };
+    function makeSnipeTemplate(attribute) {
+        return ({
+            duration: 3000,
+            battleOverlay: snipe_1.default.bind(null, attribute),
+            SFXWillTriggerEffect: true,
+        });
+    }
+    exports.snipeAttack = makeSnipeTemplate(UnitAttributes_3.UnitAttribute.attack);
+    exports.snipeDefence = makeSnipeTemplate(UnitAttributes_3.UnitAttribute.defence);
+    exports.snipeIntelligence = makeSnipeTemplate(UnitAttributes_3.UnitAttribute.intelligence);
+    exports.snipeSpeed = makeSnipeTemplate(UnitAttributes_3.UnitAttribute.speed);
     exports.videoTest = {
         duration: 1000,
         battleOverlay: makeSFXFromVideo_1.default.bind(null, "img/bushiAttack.webm", function (sprite) {
             sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
             sprite.shader = new BlackToAlpha_1.default();
         }),
-        SFXWillTriggerEffect: false
+        SFXWillTriggerEffect: false,
     };
-    var _a, _b;
+    var _a, _b, _c;
 });
 define("modules/common/effectactiontemplates/damageAdjustments", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -27348,7 +28061,7 @@ define("modules/common/effectactiontemplates/damageAdjustments", ["require", "ex
         return dealtDamage * getReducedDamageFactor(target, damageType);
     }
     exports.getAdjustedDamage = getAdjustedDamage;
-    var _a, _b;
+    var _a, _b, _c;
 });
 define("modules/common/statuseffecttemplates/poisoned", ["require", "exports", "modules/common/effectactiontemplates/effectActions"], function (require, exports, effectActions_1) {
     "use strict";
@@ -27389,7 +28102,7 @@ define("modules/common/statuseffecttemplates/poisoned", ["require", "exports", "
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = poisoned;
-    var _a, _b;
+    var _a, _b, _c;
 });
 define("modules/common/effectactiontemplates/effectActions", ["require", "exports", "modules/common/effectactiontemplates/damageAdjustments", "modules/common/statuseffecttemplates/poisoned", "src/StatusEffect", "src/targeting"], function (require, exports, damageAdjustments_1, poisoned_1, StatusEffect_1, targeting_3) {
     "use strict";
@@ -27482,6 +28195,19 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
             }
         }
     };
+    exports.addAttributeStatusEffect = {
+        name: "addAttributeStatusEffect",
+        targetFormations: targeting_3.TargetFormation.either,
+        battleAreaFunction: targeting_3.areaSingle,
+        targetRangeFunction: targeting_3.targetAll,
+        executeAction: function (user, target, battle, data) {
+            target.addStatusEffect(new StatusEffect_1.default({
+                type: data.sourceName,
+                displayName: data.sourceName,
+                attributes: data.adjustments
+            }, data.duration));
+        }
+    };
     exports.buffTest = {
         name: "buffTest",
         targetFormations: targeting_3.TargetFormation.either,
@@ -27526,9 +28252,9 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
         targetRangeFunction: targeting_3.targetSelf,
         executeAction: function () { }
     };
-    var _a, _b;
+    var _a, _b, _c;
 });
-define("modules/common/abilitytemplates/abilities", ["require", "exports", "modules/common/battlesfxtemplates/battleSFX", "modules/common/effectactiontemplates/effectActions"], function (require, exports, BattleSFX, EffectActions) {
+define("modules/common/abilitytemplates/abilities", ["require", "exports", "src/UnitAttributes", "modules/common/battlesfxtemplates/battleSFX", "modules/common/effectactiontemplates/effectActions"], function (require, exports, UnitAttributes_4, BattleSFX, EffectActions) {
     "use strict";
     exports.closeAttack = {
         type: "closeAttack",
@@ -27549,7 +28275,7 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
         actionsUse: 1,
         mainEffect: {
             action: EffectActions.beamAttack,
-            sfx: BattleSFX.particleTest
+            sfx: BattleSFX.beam
         },
         bypassesGuard: true,
     };
@@ -27648,6 +28374,48 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
             exports.boardingHook,
         ]
     };
+    function makeSnipeTemplate(attribute) {
+        var attributeName = UnitAttributes_4.UnitAttribute[attribute];
+        var capitalizedAttributeName = attributeName[0].toUpperCase() + attributeName.slice(1);
+        var key = "snipe" + capitalizedAttributeName;
+        var displayName = "Snipe " + capitalizedAttributeName;
+        var description = "Deals damage and lowers target " + attributeName;
+        return ({
+            type: key,
+            displayName: displayName,
+            description: description,
+            moveDelay: 100,
+            actionsUse: 1,
+            mainEffect: {
+                action: EffectActions.singleTargetDamage,
+                sfx: BattleSFX[key],
+                data: {
+                    baseDamage: 0.6,
+                    damageType: 0
+                },
+                attachedEffects: [
+                    {
+                        action: EffectActions.addAttributeStatusEffect,
+                        data: {
+                            sourceName: displayName,
+                            duration: -1,
+                            adjustments: (_a = {},
+                                _a[attributeName] = {
+                                    multiplier: -0.5
+                                },
+                                _a
+                            )
+                        }
+                    }
+                ]
+            },
+        });
+        var _a;
+    }
+    exports.snipeAttack = makeSnipeTemplate(UnitAttributes_4.UnitAttribute.attack);
+    exports.snipeDefence = makeSnipeTemplate(UnitAttributes_4.UnitAttribute.defence);
+    exports.snipeIntelligence = makeSnipeTemplate(UnitAttributes_4.UnitAttribute.intelligence);
+    exports.snipeSpeed = makeSnipeTemplate(UnitAttributes_4.UnitAttribute.speed);
     exports.standBy = {
         type: "standBy",
         displayName: "Standby",
@@ -27665,7 +28433,7 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
         AIScoreAdjust: -0.1,
         disableInAIBattles: true,
     };
-    var _a, _b;
+    var _a, _b, _c;
 });
 define("modules/common/resourcetemplates/resources", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -27704,7 +28472,7 @@ define("modules/common/resourcetemplates/resources", ["require", "exports"], fun
         rarity: 1,
         distributionGroups: ["rare"]
     };
-    var _a, _b;
+    var _a, _b, _c;
 });
 define("modules/common/passiveskilltemplates/passiveSkills", ["require", "exports", "modules/common/effectactiontemplates/effectActions"], function (require, exports, EffectActions) {
     "use strict";
@@ -27806,7 +28574,7 @@ define("modules/common/passiveskilltemplates/passiveSkills", ["require", "export
         ],
         canUpgradeInto: [exports.medic]
     };
-    var _a, _b;
+    var _a, _b, _c;
 });
 define("modules/common/addCommonToModuleData", ["require", "exports", "modules/common/abilitytemplates/abilities", "modules/common/resourcetemplates/resources", "modules/common/effectactiontemplates/effectActions", "modules/common/statuseffecttemplates/poisoned", "modules/common/battlesfxtemplates/battleSFX", "modules/common/passiveskilltemplates/passiveSkills", "modules/common/attachedUnitData"], function (require, exports, AbilityTemplates, ResourceTemplates, EffectActionTemplates, poisoned_2, BattleSFXTemplates, PassiveSkillTemplates, attachedUnitData_3) {
     "use strict";
@@ -27822,7 +28590,7 @@ define("modules/common/addCommonToModuleData", ["require", "exports", "modules/c
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = addCommonToModuleData;
-    var _a, _b;
+    var _a, _b, _c;
 });
 define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -27953,33 +28721,33 @@ define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], func
         position: [2],
         disallowRandomGeneration: true
     };
-    var SubEmblemTemplates = (_c = {},
-        _c[exports.Aguila_explayada_2.key] = exports.Aguila_explayada_2,
-        _c[exports.Berliner_Baer.key] = exports.Berliner_Baer,
-        _c[exports.Cles_en_sautoir.key] = exports.Cles_en_sautoir,
-        _c[exports.Coa_Illustration_Cross_Bowen_3.key] = exports.Coa_Illustration_Cross_Bowen_3,
-        _c[exports.Coa_Illustration_Cross_Malte_1.key] = exports.Coa_Illustration_Cross_Malte_1,
-        _c[exports.Coa_Illustration_Elements_Planet_Moon.key] = exports.Coa_Illustration_Elements_Planet_Moon,
-        _c[exports.Couronne_heraldique_svg.key] = exports.Couronne_heraldique_svg,
-        _c[exports.Gomaisasa.key] = exports.Gomaisasa,
-        _c[exports.Gryphon_Segreant.key] = exports.Gryphon_Segreant,
-        _c[exports.Heraldic_pentacle.key] = exports.Heraldic_pentacle,
-        _c[exports.Japanese_Crest_Futatsudomoe_1.key] = exports.Japanese_Crest_Futatsudomoe_1,
-        _c[exports.Japanese_Crest_Hana_Hisi.key] = exports.Japanese_Crest_Hana_Hisi,
-        _c[exports.Japanese_Crest_Mitsumori_Janome.key] = exports.Japanese_Crest_Mitsumori_Janome,
-        _c[exports.Japanese_Crest_Oda_ka.key] = exports.Japanese_Crest_Oda_ka,
-        _c[exports.Japanese_crest_Tsuki_ni_Hoshi.key] = exports.Japanese_crest_Tsuki_ni_Hoshi,
-        _c[exports.Japanese_Crest_Ume.key] = exports.Japanese_Crest_Ume,
-        _c[exports.Mitsuuroko.key] = exports.Mitsuuroko,
-        _c[exports.Musubikashiwa.key] = exports.Musubikashiwa,
-        _c[exports.Takeda_mon.key] = exports.Takeda_mon,
-        _c[exports.threeHorns.key] = exports.threeHorns,
-        _c[exports.Flag_of_Edward_England.key] = exports.Flag_of_Edward_England,
-        _c
+    var SubEmblemTemplates = (_d = {},
+        _d[exports.Aguila_explayada_2.key] = exports.Aguila_explayada_2,
+        _d[exports.Berliner_Baer.key] = exports.Berliner_Baer,
+        _d[exports.Cles_en_sautoir.key] = exports.Cles_en_sautoir,
+        _d[exports.Coa_Illustration_Cross_Bowen_3.key] = exports.Coa_Illustration_Cross_Bowen_3,
+        _d[exports.Coa_Illustration_Cross_Malte_1.key] = exports.Coa_Illustration_Cross_Malte_1,
+        _d[exports.Coa_Illustration_Elements_Planet_Moon.key] = exports.Coa_Illustration_Elements_Planet_Moon,
+        _d[exports.Couronne_heraldique_svg.key] = exports.Couronne_heraldique_svg,
+        _d[exports.Gomaisasa.key] = exports.Gomaisasa,
+        _d[exports.Gryphon_Segreant.key] = exports.Gryphon_Segreant,
+        _d[exports.Heraldic_pentacle.key] = exports.Heraldic_pentacle,
+        _d[exports.Japanese_Crest_Futatsudomoe_1.key] = exports.Japanese_Crest_Futatsudomoe_1,
+        _d[exports.Japanese_Crest_Hana_Hisi.key] = exports.Japanese_Crest_Hana_Hisi,
+        _d[exports.Japanese_Crest_Mitsumori_Janome.key] = exports.Japanese_Crest_Mitsumori_Janome,
+        _d[exports.Japanese_Crest_Oda_ka.key] = exports.Japanese_Crest_Oda_ka,
+        _d[exports.Japanese_crest_Tsuki_ni_Hoshi.key] = exports.Japanese_crest_Tsuki_ni_Hoshi,
+        _d[exports.Japanese_Crest_Ume.key] = exports.Japanese_Crest_Ume,
+        _d[exports.Mitsuuroko.key] = exports.Mitsuuroko,
+        _d[exports.Musubikashiwa.key] = exports.Musubikashiwa,
+        _d[exports.Takeda_mon.key] = exports.Takeda_mon,
+        _d[exports.threeHorns.key] = exports.threeHorns,
+        _d[exports.Flag_of_Edward_England.key] = exports.Flag_of_Edward_England,
+        _d
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = SubEmblemTemplates;
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
 });
 define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App", "src/ModuleFileLoadingPhase"], function (require, exports, SubEmblemTemplates_1, App_37, ModuleFileLoadingPhase_4) {
     "use strict";
@@ -28024,7 +28792,7 @@ define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultEmblems;
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
 });
 define("modules/defaultruleset/defaultRuleset", ["require", "exports", "src/ModuleFileLoadingPhase"], function (require, exports, ModuleFileLoadingPhase_5) {
     "use strict";
@@ -28065,14 +28833,14 @@ define("modules/defaultruleset/defaultRuleset", ["require", "exports", "src/Modu
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultRuleSet;
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
 });
-define("modules/defaultai/mapai/DefaultAI", ["require", "exports", "modules/defaultai/mapai/MapEvaluator", "modules/defaultai/mapai/GrandStrategyAI", "modules/defaultai/mapai/EconomyAI", "modules/defaultai/mapai/FrontsAI", "modules/defaultai/mapai/ObjectivesAI", "modules/defaultai/mapai/DiplomacyAI", "src/utility"], function (require, exports, MapEvaluator_1, GrandStrategyAI_1, EconomyAI_1, FrontsAI_1, ObjectivesAI_1, DiplomacyAI_1, utility_54) {
+define("modules/defaultai/mapai/DefaultAI", ["require", "exports", "modules/defaultai/mapai/MapEvaluator", "modules/defaultai/mapai/GrandStrategyAI", "modules/defaultai/mapai/EconomyAI", "modules/defaultai/mapai/FrontsAI", "modules/defaultai/mapai/ObjectivesAI", "modules/defaultai/mapai/DiplomacyAI", "src/utility"], function (require, exports, MapEvaluator_1, GrandStrategyAI_1, EconomyAI_1, FrontsAI_1, ObjectivesAI_1, DiplomacyAI_1, utility_56) {
     "use strict";
     var DefaultAI = (function () {
         function DefaultAI(player, game, personality) {
             this.type = "DefaultAI";
-            this.personality = personality || utility_54.makeRandomPersonality();
+            this.personality = personality || utility_56.makeRandomPersonality();
             this.player = player;
             this.game = game;
             this.map = game.galaxyMap;
@@ -28120,7 +28888,7 @@ define("modules/defaultai/mapai/DefaultAI", ["require", "exports", "modules/defa
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = DefaultAI;
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
 });
 define("modules/defaultai/mapai/DefaultAIConstructor", ["require", "exports", "modules/defaultai/mapai/DefaultAI"], function (require, exports, DefaultAI_1) {
     "use strict";
@@ -28132,7 +28900,7 @@ define("modules/defaultai/mapai/DefaultAIConstructor", ["require", "exports", "m
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = DefaultAIConstructor;
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
 });
 define("modules/defaultai/defaultAI", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultai/mapai/DefaultAIConstructor"], function (require, exports, ModuleFileLoadingPhase_6, DefaultAIConstructor_1) {
     "use strict";
@@ -28146,15 +28914,17 @@ define("modules/defaultai/defaultAI", ["require", "exports", "src/ModuleFileLoad
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_6.default.game,
         constructModule: function (moduleData) {
-            moduleData.copyTemplates({
-                AIController: DefaultAIConstructor_1.default
-            }, "AITemplateConstructors");
+            moduleData.copyTemplates((_a = {},
+                _a[DefaultAIConstructor_1.default.type] = DefaultAIConstructor_1.default,
+                _a
+            ), "AITemplateConstructors");
             return moduleData;
+            var _a;
         }
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultAI;
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
 });
 define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, abilities_1, passiveSkills_1) {
     "use strict";
@@ -28270,21 +29040,21 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         slot: "low",
         ability: abilities_1.guardRow
     };
-    var ItemTemplates = (_d = {},
-        _d[bombLauncher1.type] = bombLauncher1,
-        _d[bombLauncher2.type] = bombLauncher2,
-        _d[bombLauncher3.type] = bombLauncher3,
-        _d[afterBurner1.type] = afterBurner1,
-        _d[afterBurner2.type] = afterBurner2,
-        _d[afterBurner3.type] = afterBurner3,
-        _d[shieldPlating1.type] = shieldPlating1,
-        _d[shieldPlating2.type] = shieldPlating2,
-        _d[shieldPlating3.type] = shieldPlating3,
-        _d
+    var ItemTemplates = (_e = {},
+        _e[bombLauncher1.type] = bombLauncher1,
+        _e[bombLauncher2.type] = bombLauncher2,
+        _e[bombLauncher3.type] = bombLauncher3,
+        _e[afterBurner1.type] = afterBurner1,
+        _e[afterBurner2.type] = afterBurner2,
+        _e[afterBurner3.type] = afterBurner3,
+        _e[shieldPlating1.type] = shieldPlating1,
+        _e[shieldPlating2.type] = shieldPlating2,
+        _e[shieldPlating3.type] = shieldPlating3,
+        _e
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ItemTemplates;
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
 });
 define("modules/defaultitems/defaultItems", ["require", "exports", "modules/defaultitems/ItemTemplates", "src/ModuleFileLoadingPhase"], function (require, exports, ItemTemplates_1, ModuleFileLoadingPhase_7) {
     "use strict";
@@ -28304,7 +29074,7 @@ define("modules/defaultitems/defaultItems", ["require", "exports", "modules/defa
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultItems;
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
 });
 define("modules/defaultunits/unitArchetypes", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -28360,16 +29130,16 @@ define("modules/defaultunits/unitArchetypes", ["require", "exports"], function (
             return multiplier + totalDefenceUnderThreshhold * 0.2;
         }
     };
-    var UnitArchetypes = (_e = {},
-        _e[exports.combat.type] = exports.combat,
-        _e[exports.utility.type] = exports.utility,
-        _e[exports.scouting.type] = exports.scouting,
-        _e[exports.defence.type] = exports.defence,
-        _e
+    var UnitArchetypes = (_f = {},
+        _f[exports.combat.type] = exports.combat,
+        _f[exports.utility.type] = exports.utility,
+        _f[exports.scouting.type] = exports.scouting,
+        _f[exports.defence.type] = exports.defence,
+        _f
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = UnitArchetypes;
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
 });
 define("modules/defaultunits/unitFamilies", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -28401,18 +29171,18 @@ define("modules/defaultunits/unitFamilies", ["require", "exports"], function (re
         rarity: 1,
         distributionGroups: ["common", "rare"]
     };
-    var UnitFamilies = (_f = {},
-        _f[exports.debug.type] = exports.debug,
-        _f[exports.basic.type] = exports.basic,
-        _f[exports.red.type] = exports.red,
-        _f[exports.blue.type] = exports.blue,
-        _f
+    var UnitFamilies = (_g = {},
+        _g[exports.debug.type] = exports.debug,
+        _g[exports.basic.type] = exports.basic,
+        _g[exports.red.type] = exports.red,
+        _g[exports.blue.type] = exports.blue,
+        _g
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = UnitFamilies;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g;
 });
-define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/UnitDrawingFunctionData", "src/utility"], function (require, exports, App_38, UnitDrawingFunctionData_1, utility_55) {
+define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/UnitDrawingFunctionData", "src/utility"], function (require, exports, App_38, UnitDrawingFunctionData_1, utility_57) {
     "use strict";
     var defaultUnitDrawingFunction = function (unit, SFXParams) {
         var spriteTemplate = unit.template.sprite;
@@ -28422,14 +29192,14 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             zDistance: 8,
             xDistance: 5,
             maxUnitsPerColumn: 7,
-            degree: -0.5,
+            curvature: -0.5,
             rotationAngle: 70,
             scalingFactor: 0.04
         };
         var maxUnitsPerColumn = props.maxUnitsPerColumn;
         var maxColumns = 3;
-        var isConvex = props.degree >= 0;
-        var degree = Math.abs(props.degree);
+        var isConvex = props.curvature >= 0;
+        var curvature = Math.abs(props.curvature);
         var image = App_38.default.images[spriteTemplate.imageSrc];
         var zDistance = props.zDistance;
         var xDistance = props.xDistance;
@@ -28446,7 +29216,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
             unitsToDraw = Math.round(unitsToDraw * heightRatio);
             zDistance *= (1 / heightRatio);
-            unitsToDraw = utility_55.clamp(unitsToDraw, 1, maxUnitsPerColumn * maxColumns);
+            unitsToDraw = utility_57.clamp(unitsToDraw, 1, maxUnitsPerColumn * maxColumns);
         }
         var xMin, xMax, yMin, yMax;
         var rotationAngle = Math.PI / 180 * props.rotationAngle;
@@ -28501,9 +29271,9 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             var scale = 1 - zPos * props.scalingFactor;
             var scaledWidth = image.width * scale;
             var scaledHeight = image.height * scale;
-            var x = xOffset * scaledWidth * degree + columnFromRight * (scaledWidth + xDistance * scale);
+            var x = xOffset * scaledWidth * curvature + columnFromRight * (scaledWidth + xDistance * scale);
             var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-            var translated = utility_55.transformMat3({ x: x, y: y }, rotationMatrix);
+            var translated = utility_57.transformMat3({ x: x, y: y }, rotationMatrix);
             x = Math.round(translated.x);
             y = Math.round(translated.y);
             var attackOriginPoint = {
@@ -28536,7 +29306,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultUnitDrawingFunction;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g;
 });
 define("modules/common/itemSlot", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -28547,7 +29317,7 @@ define("modules/common/itemSlot", ["require", "exports"], function (require, exp
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = itemSlot;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g;
 });
 define("modules/defaultunits/templates/stealthShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_1, itemSlot_1, abilities_2) {
     "use strict";
@@ -28586,17 +29356,17 @@ define("modules/defaultunits/templates/stealthShip", ["require", "exports", "mod
                 ]
             }
         ],
-        itemSlots: (_g = {},
-            _g[itemSlot_1.default.low] = 1,
-            _g[itemSlot_1.default.mid] = 1,
-            _g[itemSlot_1.default.high] = 1,
-            _g
+        itemSlots: (_h = {},
+            _h[itemSlot_1.default.low] = 1,
+            _h[itemSlot_1.default.mid] = 1,
+            _h[itemSlot_1.default.high] = 1,
+            _h
         ),
         unitDrawingFN: defaultUnitDrawingFunction_1.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = stealthShip;
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
 define("modules/defaulttechnologies/TechnologyTemplates", ["require", "exports", "modules/defaultunits/templates/stealthShip"], function (require, exports, stealthShip_1) {
     "use strict";
@@ -28637,17 +29407,17 @@ define("modules/defaulttechnologies/TechnologyTemplates", ["require", "exports",
         maxLevel: 2,
         unlocksPerLevel: {}
     };
-    var TechnologyTemplates = (_h = {},
-        _h[exports.stealth.key] = exports.stealth,
-        _h[exports.lasers.key] = exports.lasers,
-        _h[exports.missiles.key] = exports.missiles,
-        _h[exports.test1.key] = exports.test1,
-        _h[exports.test2.key] = exports.test2,
-        _h
+    var TechnologyTemplates = (_j = {},
+        _j[exports.stealth.key] = exports.stealth,
+        _j[exports.lasers.key] = exports.lasers,
+        _j[exports.missiles.key] = exports.missiles,
+        _j[exports.test1.key] = exports.test1,
+        _j[exports.test2.key] = exports.test2,
+        _j
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = TechnologyTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("src/setDynamicTemplateProperties", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -28702,7 +29472,7 @@ define("src/setDynamicTemplateProperties", ["require", "exports"], function (req
         }
     }
     exports.setTechnologyRequirements = setTechnologyRequirements;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates", "src/ModuleFileLoadingPhase", "src/setDynamicTemplateProperties"], function (require, exports, TechnologyTemplates_1, ModuleFileLoadingPhase_8, setDynamicTemplateProperties_1) {
     "use strict";
@@ -28723,7 +29493,7 @@ define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports",
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultTechnologies;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultattitudemodifiers/AttitudeModifierTemplates", ["require", "exports", "src/DiplomacyState"], function (require, exports, DiplomacyState_4) {
     "use strict";
@@ -28757,15 +29527,15 @@ define("modules/defaultattitudemodifiers/AttitudeModifierTemplates", ["require",
         triggers: ["addDeclaredWarAttitudeModifier"],
         constantEffect: -35
     };
-    var AttitudeModifierTemplates = (_j = {},
-        _j[neighborStars.type] = neighborStars,
-        _j[atWar.type] = atWar,
-        _j[declaredWar.type] = declaredWar,
-        _j
+    var AttitudeModifierTemplates = (_k = {},
+        _k[neighborStars.type] = neighborStars,
+        _k[atWar.type] = atWar,
+        _k[declaredWar.type] = declaredWar,
+        _k
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = AttitudeModifierTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", "exports", "modules/defaultattitudemodifiers/AttitudeModifierTemplates", "src/ModuleFileLoadingPhase", "src/setDynamicTemplateProperties"], function (require, exports, AttitudeModifierTemplates_1, ModuleFileLoadingPhase_9, setDynamicTemplateProperties_2) {
     "use strict";
@@ -28786,7 +29556,7 @@ define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", 
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultAttitudeModifiers;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("src/Region", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -28943,7 +29713,7 @@ define("src/Region", ["require", "exports"], function (require, exports) {
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Region;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_39) {
     "use strict";
@@ -29018,7 +29788,7 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
     var indexes = new TemplateIndexes();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = indexes;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("modules/defaultmapgen/common/MapGenPoint", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -29032,7 +29802,7 @@ define("modules/defaultmapgen/common/MapGenPoint", ["require", "exports"], funct
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapGenPoint;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("modules/defaultbuildings/templates/Templates", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -29162,7 +29932,7 @@ define("modules/defaultbuildings/templates/Templates", ["require", "exports"], f
         },
         maxUpgradeLevel: 3
     };
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("modules/defaultraces/common", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates"], function (require, exports, TechnologyTemplates) {
     "use strict";
@@ -29201,7 +29971,7 @@ define("modules/defaultraces/common", ["require", "exports", "modules/defaulttec
         return mergedValues;
     }
     exports.mergeTechnologyValues = mergeTechnologyValues;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("modules/defaultraces/templates/federationAlliance", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates", "modules/defaultai/mapai/DefaultAIConstructor", "modules/defaultraces/common"], function (require, exports, TechnologyTemplates, DefaultAIConstructor_2, common_1) {
     "use strict";
@@ -29220,7 +29990,7 @@ define("modules/defaultraces/templates/federationAlliance", ["require", "exports
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = federationAlliance;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -29301,9 +30071,9 @@ define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Triangle;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_56) {
+define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_58) {
     "use strict";
     function triangulate(vertices) {
         var triangles = [];
@@ -29380,12 +30150,12 @@ define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modul
         return triangle;
     }
     function edgesEqual(e1, e2) {
-        return ((utility_56.pointsEqual(e1[0], e2[0]) && utility_56.pointsEqual(e1[1], e2[1])) ||
-            (utility_56.pointsEqual(e1[0], e2[1]) && utility_56.pointsEqual(e1[1], e2[0])));
+        return ((utility_58.pointsEqual(e1[0], e2[0]) && utility_58.pointsEqual(e1[1], e2[1])) ||
+            (utility_58.pointsEqual(e1[0], e2[1]) && utility_58.pointsEqual(e1[1], e2[0])));
     }
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modules/defaultbuildings/templates/Templates", "modules/defaultemblems/SubEmblemTemplates", "modules/defaultraces/templates/federationAlliance", "modules/defaultmapgen/common/triangulate", "src/Region", "src/Name", "src/Building", "src/Player", "src/Color", "src/Emblem", "src/Flag", "src/pathfinding", "src/utility"], function (require, exports, Templates_1, SubEmblemTemplates_2, federationAlliance_1, triangulate_1, Region_1, Name_4, Building_4, Player_4, Color_8, Emblem_4, Flag_5, pathfinding_1, utility_57) {
+define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modules/defaultbuildings/templates/Templates", "modules/defaultemblems/SubEmblemTemplates", "modules/defaultraces/templates/federationAlliance", "modules/defaultmapgen/common/triangulate", "src/Region", "src/Name", "src/Building", "src/Player", "src/Color", "src/Emblem", "src/Flag", "src/pathfinding", "src/utility"], function (require, exports, Templates_1, SubEmblemTemplates_2, federationAlliance_1, triangulate_1, Region_1, Name_4, Building_4, Player_4, Color_10, Emblem_4, Flag_5, pathfinding_1, utility_59) {
     "use strict";
     function linkStarsByTriangulation(stars) {
         if (stars.length < 3) {
@@ -29578,7 +30348,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
             });
         }
         sectors.forEach(function (sector) {
-            var alreadyAddedByWeight = utility_57.getRelativeWeightsFromObject(probabilityWeights);
+            var alreadyAddedByWeight = utility_59.getRelativeWeightsFromObject(probabilityWeights);
             var distributionFlags = distributionFlagsBySectorID[sector.id];
             var distributablesForSector = distributionFlags.reduce(function (distributables, flag) {
                 return distributables.concat(distributablesByDistributionGroup[flag]);
@@ -29600,7 +30370,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
             candidates.forEach(function (candidate) {
                 candidatesByWeight[candidate.type] = alreadyAddedByWeight[candidate.type];
             });
-            var selectedKey = utility_57.getRandomKeyWithWeights(candidatesByWeight);
+            var selectedKey = utility_59.getRandomKeyWithWeights(candidatesByWeight);
             var selectedType = allDistributablesByType[selectedKey];
             probabilityWeights[selectedKey] /= 2;
             placerFunction(sector, selectedType);
@@ -29638,9 +30408,9 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
     exports.addDefenceBuildings = addDefenceBuildings;
     function makePlayerForPirates() {
         var color = {
-            main: Color_8.default.fromHex(0x000000),
+            main: Color_10.default.fromHex(0x000000),
             alpha: 0,
-            secondary: Color_8.default.fromHex(0xFFFFFF)
+            secondary: Color_10.default.fromHex(0xFFFFFF)
         };
         var foregroundEmblem = new Emblem_4.default(color.secondary);
         foregroundEmblem.inner = SubEmblemTemplates_2.Flag_of_Edward_England;
@@ -29672,9 +30442,9 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         });
     }
     exports.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", "modules/defaultmapgen/common/mapGenUtils", "src/Unit", "src/Name", "src/Fleet", "src/utility"], function (require, exports, mapGenUtils_1, Unit_6, Name_5, Fleet_5, utility_58) {
+define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", "modules/defaultmapgen/common/mapGenUtils", "src/Unit", "src/Name", "src/Fleet", "src/utility"], function (require, exports, mapGenUtils_1, Unit_6, Name_5, Fleet_5, utility_60) {
     "use strict";
     function setupIndependents(props) {
         var independentStars = props.region.stars.filter(function (star) {
@@ -29709,16 +30479,16 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
             var inverseMapGenDistance = 1 - mapGenData.mapGenDistance;
             var distanceFromPlayer = mapGenData.distanceFromPlayerOwnedLocation - 1;
             var relativeDistanceFromPlayer = Math.pow(distanceFromPlayer / globalMaxDistanceFromPlayer, 1.6);
-            var unitCountFromVariance = utility_58.randRange(-1, 1) * props.variance;
+            var unitCountFromVariance = utility_60.randRange(-1, 1) * props.variance;
             var unitCount = minUnits + (maxUnits - minUnits) * relativeDistanceFromPlayer;
             unitCount += unitCountFromVariance;
             unitCount *= props.intensity;
-            unitCount = utility_58.clamp(unitCount, minUnits, maxUnits);
+            unitCount = utility_60.clamp(unitCount, minUnits, maxUnits);
             unitCount = Math.round(unitCount);
             var eliteCount = unitCount < 3 ? 0 : unitCount < 5 ? 1 : 2;
             var units = [];
             if (star === commanderStar) {
-                var template = utility_58.getRandomArrayItem(unitTypes);
+                var template = utility_60.getRandomArrayItem(unitTypes);
                 var unit = new Unit_6.default(template);
                 unit.name = "Pirate commander";
                 unit.setAttributes(1.35);
@@ -29730,7 +30500,7 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
                 var isElite = i < eliteCount;
                 var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
                 var unitStatsModifier = (isElite ? 1.2 : 1);
-                var template = utility_58.getRandomArrayItem(unitTypes);
+                var template = utility_60.getRandomArrayItem(unitTypes);
                 var unit = new Unit_6.default(template);
                 unit.name = (isElite ? "Pirate elite" : "Pirate");
                 unit.setAttributes(unitStatsModifier);
@@ -29773,18 +30543,18 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
             }
         })[0];
     }
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("modules/defaultmapgen/spiralGalaxy/SpiralGalaxyOptionValues", ["require", "exports"], function (require, exports) {
     "use strict";
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "exports", "modules/defaultmapgen/common/MapGenPoint", "src/utility"], function (require, exports, MapGenPoint_1, utility_59) {
+define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "exports", "modules/defaultmapgen/common/MapGenPoint", "src/utility"], function (require, exports, MapGenPoint_1, utility_61) {
     "use strict";
     function generateSpiralPoints(options) {
         var sg = convertMapGenOptionValues(options);
         var makePoint = function (distanceMin, distanceMax, arm, maxOffset) {
-            var distance = utility_59.randRange(distanceMin, distanceMax);
+            var distance = utility_61.randRange(distanceMin, distanceMax);
             var offset = Math.random() * maxOffset - maxOffset / 2;
             offset *= (1 / distance);
             if (offset < 0) {
@@ -29863,12 +30633,12 @@ define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "e
             armDistance: Math.PI * 2 / totalArms,
             armOffsetMax: 0.5,
             armRotationFactor: actualArms / 3,
-            galaxyRotation: utility_59.randRange(0, Math.PI * 2)
+            galaxyRotation: utility_61.randRange(0, Math.PI * 2)
         });
     }
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", "exports", "src/FillerPoint", "src/Star", "src/Region", "src/TemplateIndexes", "src/MapGenResult", "src/utility", "src/voronoi", "modules/defaultmapgen/common/setupIndependents", "modules/defaultmapgen/common/mapGenUtils", "modules/defaultmapgen/spiralGalaxy/generateSpiralPoints"], function (require, exports, FillerPoint_2, Star_2, Region_2, TemplateIndexes_1, MapGenResult_2, utility_60, voronoi_2, setupIndependents_1, mapGenUtils_2, generateSpiralPoints_1) {
+define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", "exports", "src/FillerPoint", "src/Star", "src/Region", "src/TemplateIndexes", "src/MapGenResult", "src/utility", "src/voronoi", "modules/defaultmapgen/common/setupIndependents", "modules/defaultmapgen/common/mapGenUtils", "modules/defaultmapgen/spiralGalaxy/generateSpiralPoints"], function (require, exports, FillerPoint_2, Star_2, Region_2, TemplateIndexes_1, MapGenResult_2, utility_62, voronoi_2, setupIndependents_1, mapGenUtils_2, generateSpiralPoints_1) {
     "use strict";
     var spiralGalaxyGeneration = function (options, players) {
         var seed = "" + Math.random();
@@ -30042,7 +30812,7 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
             });
         });
         stars.forEach(function (star) {
-            star.baseIncome = utility_60.randInt(4, 6) * 10;
+            star.baseIncome = utility_62.randInt(4, 6) * 10;
         });
         Math.random = oldRandom;
         return new MapGenResult_2.default({
@@ -30056,7 +30826,7 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = spiralGalaxyGeneration;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("modules/defaultmapgen/templates/spiralGalaxy", ["require", "exports", "modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration"], function (require, exports, spiralGalaxyGeneration_1) {
     "use strict";
@@ -30127,7 +30897,7 @@ define("modules/defaultmapgen/templates/spiralGalaxy", ["require", "exports", "m
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = spiralGalaxy;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("modules/defaultmapgen/templates/tinierSpiralGalaxy", ["require", "exports", "modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration"], function (require, exports, spiralGalaxyGeneration_2) {
     "use strict";
@@ -30199,14 +30969,14 @@ define("modules/defaultmapgen/templates/tinierSpiralGalaxy", ["require", "export
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = tinierSpiralGalaxy;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultmapgen/templates/spiralGalaxy", "modules/defaultmapgen/templates/tinierSpiralGalaxy"], function (require, exports, ModuleFileLoadingPhase_10, spiralGalaxy_1, tinierSpiralGalaxy_1) {
     "use strict";
-    var Templates = (_k = {},
-        _k[spiralGalaxy_1.default.key] = spiralGalaxy_1.default,
-        _k[tinierSpiralGalaxy_1.default.key] = tinierSpiralGalaxy_1.default,
-        _k
+    var Templates = (_l = {},
+        _l[spiralGalaxy_1.default.key] = spiralGalaxy_1.default,
+        _l[tinierSpiralGalaxy_1.default.key] = tinierSpiralGalaxy_1.default,
+        _l
     );
     var defaultMapGen = {
         key: "defaultMapGen",
@@ -30227,7 +30997,7 @@ define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "src/Module
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultMapGen;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
 });
 define("modules/defaultunits/templates/battleCruiser", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_2, itemSlot_2, abilities_3) {
     "use strict";
@@ -30266,17 +31036,17 @@ define("modules/defaultunits/templates/battleCruiser", ["require", "exports", "m
                 ]
             }
         ],
-        itemSlots: (_l = {},
-            _l[itemSlot_2.default.low] = 1,
-            _l[itemSlot_2.default.mid] = 1,
-            _l[itemSlot_2.default.high] = 2,
-            _l
+        itemSlots: (_m = {},
+            _m[itemSlot_2.default.low] = 1,
+            _m[itemSlot_2.default.mid] = 1,
+            _m[itemSlot_2.default.high] = 2,
+            _m
         ),
         unitDrawingFN: defaultUnitDrawingFunction_2.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = battleCruiser;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
 });
 define("modules/defaultunits/templates/commandShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_3, itemSlot_3, abilities_4, passiveSkills_2) {
     "use strict";
@@ -30322,17 +31092,17 @@ define("modules/defaultunits/templates/commandShip", ["require", "exports", "mod
                 ]
             }
         ],
-        itemSlots: (_m = {},
-            _m[itemSlot_3.default.low] = 1,
-            _m[itemSlot_3.default.mid] = 1,
-            _m[itemSlot_3.default.high] = 1,
-            _m
+        itemSlots: (_o = {},
+            _o[itemSlot_3.default.low] = 1,
+            _o[itemSlot_3.default.mid] = 1,
+            _o[itemSlot_3.default.high] = 1,
+            _o
         ),
         unitDrawingFN: defaultUnitDrawingFunction_3.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = commandShip;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
 });
 define("modules/defaultunits/templates/redShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_4, itemSlot_4, abilities_5) {
     "use strict";
@@ -30370,17 +31140,17 @@ define("modules/defaultunits/templates/redShip", ["require", "exports", "modules
                 ]
             }
         ],
-        itemSlots: (_o = {},
-            _o[itemSlot_4.default.low] = 1,
-            _o[itemSlot_4.default.mid] = 1,
-            _o[itemSlot_4.default.high] = 1,
-            _o
+        itemSlots: (_p = {},
+            _p[itemSlot_4.default.low] = 1,
+            _p[itemSlot_4.default.mid] = 1,
+            _p[itemSlot_4.default.high] = 1,
+            _p
         ),
         unitDrawingFN: defaultUnitDrawingFunction_4.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = redShip;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
 });
 define("modules/defaultunits/templates/blueShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_5, itemSlot_5, abilities_6) {
     "use strict";
@@ -30418,17 +31188,17 @@ define("modules/defaultunits/templates/blueShip", ["require", "exports", "module
                 ]
             }
         ],
-        itemSlots: (_p = {},
-            _p[itemSlot_5.default.low] = 1,
-            _p[itemSlot_5.default.mid] = 1,
-            _p[itemSlot_5.default.high] = 1,
-            _p
+        itemSlots: (_q = {},
+            _q[itemSlot_5.default.low] = 1,
+            _q[itemSlot_5.default.mid] = 1,
+            _q[itemSlot_5.default.high] = 1,
+            _q
         ),
         unitDrawingFN: defaultUnitDrawingFunction_5.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = blueShip;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
 });
 define("modules/defaultunits/templates/debugShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_6, itemSlot_6, abilities_7, passiveSkills_3) {
     "use strict";
@@ -30482,6 +31252,15 @@ define("modules/defaultunits/templates/debugShip", ["require", "exports", "modul
                         probabilityItems: [abilities_7.guardRow]
                     }
                 ]
+            },
+            {
+                flatProbability: 1,
+                probabilityItems: [
+                    { weight: 0.25, probabilityItems: [abilities_7.snipeAttack] },
+                    { weight: 0.25, probabilityItems: [abilities_7.snipeDefence] },
+                    { weight: 0.25, probabilityItems: [abilities_7.snipeIntelligence] },
+                    { weight: 0.25, probabilityItems: [abilities_7.snipeSpeed] },
+                ]
             }
         ],
         possiblePassiveSkills: [
@@ -30507,17 +31286,17 @@ define("modules/defaultunits/templates/debugShip", ["require", "exports", "modul
             abilities_7.guardRow,
             abilities_7.closeAttack
         ],
-        itemSlots: (_q = {},
-            _q[itemSlot_6.default.low] = 1,
-            _q[itemSlot_6.default.mid] = 1,
-            _q[itemSlot_6.default.high] = 1,
-            _q
+        itemSlots: (_r = {},
+            _r[itemSlot_6.default.low] = 1,
+            _r[itemSlot_6.default.mid] = 1,
+            _r[itemSlot_6.default.high] = 1,
+            _r
         ),
         unitDrawingFN: defaultUnitDrawingFunction_6.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = debugShip;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
 });
 define("modules/defaultunits/templates/scout", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_7, itemSlot_7, abilities_8) {
     "use strict";
@@ -30555,17 +31334,17 @@ define("modules/defaultunits/templates/scout", ["require", "exports", "modules/d
                 ]
             }
         ],
-        itemSlots: (_r = {},
-            _r[itemSlot_7.default.low] = 1,
-            _r[itemSlot_7.default.mid] = 1,
-            _r[itemSlot_7.default.high] = 1,
-            _r
+        itemSlots: (_s = {},
+            _s[itemSlot_7.default.low] = 1,
+            _s[itemSlot_7.default.mid] = 1,
+            _s[itemSlot_7.default.high] = 1,
+            _s
         ),
         unitDrawingFN: defaultUnitDrawingFunction_7.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = scout;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
 });
 define("modules/defaultunits/templates/bomberSquadron", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_8, itemSlot_8, abilities_9) {
     "use strict";
@@ -30604,17 +31383,17 @@ define("modules/defaultunits/templates/bomberSquadron", ["require", "exports", "
                 ]
             }
         ],
-        itemSlots: (_s = {},
-            _s[itemSlot_8.default.low] = 1,
-            _s[itemSlot_8.default.mid] = 1,
-            _s[itemSlot_8.default.high] = 1,
-            _s
+        itemSlots: (_t = {},
+            _t[itemSlot_8.default.low] = 1,
+            _t[itemSlot_8.default.mid] = 1,
+            _t[itemSlot_8.default.high] = 1,
+            _t
         ),
         unitDrawingFN: defaultUnitDrawingFunction_8.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = bomberSquadron;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
 });
 define("modules/defaultunits/templates/fighterSquadron", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_9, itemSlot_9, abilities_10) {
     "use strict";
@@ -30653,17 +31432,17 @@ define("modules/defaultunits/templates/fighterSquadron", ["require", "exports", 
                 ]
             }
         ],
-        itemSlots: (_t = {},
-            _t[itemSlot_9.default.low] = 1,
-            _t[itemSlot_9.default.mid] = 3,
-            _t[itemSlot_9.default.high] = 2,
-            _t
+        itemSlots: (_u = {},
+            _u[itemSlot_9.default.low] = 1,
+            _u[itemSlot_9.default.mid] = 3,
+            _u[itemSlot_9.default.high] = 2,
+            _u
         ),
         unitDrawingFN: defaultUnitDrawingFunction_9.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = fighterSquadron;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
 });
 define("modules/defaultunits/templates/shieldBoat", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/itemSlot", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_10, itemSlot_10, abilities_11, passiveSkills_4) {
     "use strict";
@@ -30710,36 +31489,36 @@ define("modules/defaultunits/templates/shieldBoat", ["require", "exports", "modu
                 ]
             }
         ],
-        itemSlots: (_u = {},
-            _u[itemSlot_10.default.low] = 1,
-            _u[itemSlot_10.default.mid] = 1,
-            _u[itemSlot_10.default.high] = 1,
-            _u
+        itemSlots: (_v = {},
+            _v[itemSlot_10.default.low] = 1,
+            _v[itemSlot_10.default.mid] = 1,
+            _v[itemSlot_10.default.high] = 1,
+            _v
         ),
         unitDrawingFN: defaultUnitDrawingFunction_10.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = shieldBoat;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 });
 define("modules/defaultunits/UnitTemplates", ["require", "exports", "modules/defaultunits/templates/battleCruiser", "modules/defaultunits/templates/commandShip", "modules/defaultunits/templates/redShip", "modules/defaultunits/templates/stealthShip", "modules/defaultunits/templates/blueShip", "modules/defaultunits/templates/debugShip", "modules/defaultunits/templates/scout", "modules/defaultunits/templates/bomberSquadron", "modules/defaultunits/templates/fighterSquadron", "modules/defaultunits/templates/shieldBoat"], function (require, exports, battleCruiser_1, commandShip_1, redShip_1, stealthShip_2, blueShip_1, debugShip_1, scout_1, bomberSquadron_1, fighterSquadron_1, shieldBoat_1) {
     "use strict";
-    var UnitTemplates = (_v = {},
-        _v[battleCruiser_1.default.type] = battleCruiser_1.default,
-        _v[commandShip_1.default.type] = commandShip_1.default,
-        _v[redShip_1.default.type] = redShip_1.default,
-        _v[stealthShip_2.default.type] = stealthShip_2.default,
-        _v[blueShip_1.default.type] = blueShip_1.default,
-        _v[debugShip_1.default.type] = debugShip_1.default,
-        _v[scout_1.default.type] = scout_1.default,
-        _v[bomberSquadron_1.default.type] = bomberSquadron_1.default,
-        _v[fighterSquadron_1.default.type] = fighterSquadron_1.default,
-        _v[shieldBoat_1.default.type] = shieldBoat_1.default,
-        _v
+    var UnitTemplates = (_w = {},
+        _w[battleCruiser_1.default.type] = battleCruiser_1.default,
+        _w[commandShip_1.default.type] = commandShip_1.default,
+        _w[redShip_1.default.type] = redShip_1.default,
+        _w[stealthShip_2.default.type] = stealthShip_2.default,
+        _w[blueShip_1.default.type] = blueShip_1.default,
+        _w[debugShip_1.default.type] = debugShip_1.default,
+        _w[scout_1.default.type] = scout_1.default,
+        _w[bomberSquadron_1.default.type] = bomberSquadron_1.default,
+        _w[fighterSquadron_1.default.type] = fighterSquadron_1.default,
+        _w[shieldBoat_1.default.type] = shieldBoat_1.default,
+        _w
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = UnitTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_40) {
     "use strict";
@@ -30768,7 +31547,7 @@ define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], functi
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = cacheSpriteSheetAsImages;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defaultunits/UnitTemplates", "modules/defaultunits/unitFamilies", "modules/defaultunits/unitArchetypes", "src/ModuleFileLoadingPhase", "src/cacheSpriteSheetAsImages", "src/setDynamicTemplateProperties"], function (require, exports, UnitTemplates_1, UnitFamilies_1, UnitArchetypes_1, ModuleFileLoadingPhase_11, cacheSpriteSheetAsImages_1, setDynamicTemplateProperties_3) {
     "use strict";
@@ -30802,7 +31581,7 @@ define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defa
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultUnits;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -30986,9 +31765,9 @@ define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (re
         "  gl_FragColor = vec4(c, 1.0);",
         "}",
     ];
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
-define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_61) {
+define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_63) {
     "use strict";
     var drawNebula = function (seed, size, renderer) {
         var oldRng = Math.random;
@@ -30998,21 +31777,21 @@ define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/
             baseColor: nebulaColorScheme.main.getRGB(),
             overlayColor: nebulaColorScheme.secondary.getRGB(),
             highlightColor: [1.0, 1.0, 1.0],
-            coverage: utility_61.randRange(0.28, 0.32),
-            scale: utility_61.randRange(4, 8),
-            diffusion: utility_61.randRange(1.5, 3.0),
-            streakiness: utility_61.randRange(1.5, 2.5),
-            streakLightness: utility_61.randRange(1, 1.2),
-            cloudLightness: utility_61.randRange(1, 1.2),
+            coverage: utility_63.randRange(0.28, 0.32),
+            scale: utility_63.randRange(4, 8),
+            diffusion: utility_63.randRange(1.5, 3.0),
+            streakiness: utility_63.randRange(1.5, 2.5),
+            streakLightness: utility_63.randRange(1, 1.2),
+            cloudLightness: utility_63.randRange(1, 1.2),
             highlightA: 0.9,
             highlightB: 2.2,
-            starDensity: utility_61.randRange(0.0014, 0.0018),
-            nebulaStarConcentration: utility_61.randRange(0.000, 0.004),
+            starDensity: utility_63.randRange(0.0014, 0.0018),
+            nebulaStarConcentration: utility_63.randRange(0.000, 0.004),
             starBrightness: 0.6,
             seed: [Math.random() * 100, Math.random() * 100]
         });
         var container = new PIXI.Container();
-        var shaderSprite = utility_61.createDummySpriteForShader(0, 0, size.width, size.height);
+        var shaderSprite = utility_63.createDummySpriteForShader(0, 0, size.width, size.height);
         shaderSprite.shader = filter;
         container.addChild(shaderSprite);
         var texture = container.generateTexture(renderer, PIXI.SCALE_MODES.DEFAULT, 1, size);
@@ -31026,7 +31805,7 @@ define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = drawNebula;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultbackgrounds/defaultBackgrounds", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultbackgrounds/drawNebula"], function (require, exports, ModuleFileLoadingPhase_12, drawNebula_1) {
     "use strict";
@@ -31051,7 +31830,7 @@ define("modules/defaultbackgrounds/defaultBackgrounds", ["require", "exports", "
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultBackgrounds;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_43) {
     "use strict";
@@ -31136,9 +31915,9 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = nonFillerStars;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
-define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", "exports", "modules/defaultai/mapai/MapEvaluator", "src/Color"], function (require, exports, MapEvaluator_2, Color_9) {
+define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", "exports", "modules/defaultai/mapai/MapEvaluator", "src/Color"], function (require, exports, MapEvaluator_2, Color_11) {
     "use strict";
     var playerInfluence = {
         key: "playerInfluence",
@@ -31186,7 +31965,7 @@ define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", 
                     var hue = 110 * value;
                     var saturation = 0.5 + 0.2 * deviation;
                     var lightness = 0.6 + 0.25 * deviation;
-                    colorIndexes[value] = Color_9.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
+                    colorIndexes[value] = Color_11.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
                 }
                 return colorIndexes[value];
             }
@@ -31210,7 +31989,7 @@ define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", 
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = playerInfluence;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultmapmodes/maplayertemplates/starLinks", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -31250,7 +32029,7 @@ define("modules/defaultmapmodes/maplayertemplates/starLinks", ["require", "expor
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = starLinks;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -31275,7 +32054,7 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", ["requ
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = nonFillerVoronoiLines;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultmapmodes/maplayertemplates/shaders/Occupation", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -31334,7 +32113,7 @@ define("modules/defaultmapmodes/maplayertemplates/shaders/Occupation", ["require
         "  gl_FragColor = mix(color, stripeColor * color.a, stripeIntensity);",
         "}",
     ];
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "exports", "src/eventManager", "modules/defaultmapmodes/maplayertemplates/shaders/Occupation"], function (require, exports, eventManager_44, Occupation_1) {
     "use strict";
@@ -31418,7 +32197,7 @@ define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "expo
             shader.uniforms.scale.value = zoom * 8.0;
         });
     }
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App"], function (require, exports, App_41) {
     "use strict";
@@ -31479,9 +32258,9 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
         }
         return fogOfWarSpriteByStarID[star.id];
     }
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
-define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_6, utility_62) {
+define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_6, utility_64) {
     "use strict";
     function starsOnlyShareNarrowBorder(a, b) {
         var minBorderWidth = Options_6.default.display.borderWidth * 2;
@@ -31642,8 +32421,8 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
                     var point = offsetted[j_1];
                     var nextPoint = offsetted[(j_1 + 1) % offsetted.length];
                     var edgeCenter = {
-                        x: utility_62.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
-                        y: utility_62.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
+                        x: utility_64.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
+                        y: utility_64.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
                     if (!pointStar) {
@@ -31685,7 +32464,7 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
         var polyLinesData = [];
         for (var i = 0; i < polyLines.length; i++) {
             var polyLine = polyLines[i];
-            var isClosed = utility_62.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+            var isClosed = utility_64.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
             if (isClosed)
                 polyLine.pop();
             for (var j_3 = 0; j_3 < polyLine.length; j_3++) {
@@ -31700,7 +32479,7 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
         return polyLinesData;
     }
     exports.getRevealedBorderEdges = getRevealedBorderEdges;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "exports", "src/options", "src/borderPolygon"], function (require, exports, options_8, borderPolygon_1) {
     "use strict";
@@ -31731,9 +32510,9 @@ define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "ex
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ownerBorders;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
-define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "exports", "src/Color"], function (require, exports, Color_10) {
+define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "exports", "src/Color"], function (require, exports, Color_12) {
     "use strict";
     var starIncome = {
         key: "starIncome",
@@ -31770,7 +32549,7 @@ define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "expo
                     var hue = 110 * value;
                     var saturation = 0.5 + 0.2 * deviation;
                     var lightness = 0.6 + 0.25 * deviation;
-                    colorIndexes[value] = Color_10.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
+                    colorIndexes[value] = Color_12.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
                 }
                 return colorIndexes[value];
             }
@@ -31791,7 +32570,7 @@ define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "expo
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = starIncome;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultmapmodes/allMapLayerTemplates", ["require", "exports", "modules/defaultmapmodes/maplayertemplates/nonFillerStars", "modules/defaultmapmodes/maplayertemplates/playerInfluence", "modules/defaultmapmodes/maplayertemplates/starLinks", "modules/defaultmapmodes/maplayertemplates/fleets", "modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", "modules/defaultmapmodes/maplayertemplates/resources", "modules/defaultmapmodes/maplayertemplates/starOwners", "modules/defaultmapmodes/maplayertemplates/fogOfWar", "modules/defaultmapmodes/maplayertemplates/ownerBorders", "modules/defaultmapmodes/maplayertemplates/starIncome"], function (require, exports, nonFillerStars_1, playerInfluence_1, starLinks_1, fleets_1, nonFillerVoronoiLines_1, resources_1, starOwners_1, fogOfWar_1, ownerBorders_1, starIncome_1) {
     "use strict";
@@ -31805,26 +32584,26 @@ define("modules/defaultmapmodes/allMapLayerTemplates", ["require", "exports", "m
     exports.fogOfWar = fogOfWar_1.default;
     exports.ownerBorders = ownerBorders_1.default;
     exports.starIncome = starIncome_1.default;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 });
 define("modules/defaultmapmodes/MapLayerTemplates", ["require", "exports", "modules/defaultmapmodes/allMapLayerTemplates"], function (require, exports, MapLayers) {
     "use strict";
-    var MapLayerTemplates = (_w = {},
-        _w[MapLayers.nonFillerStars.key] = MapLayers.nonFillerStars,
-        _w[MapLayers.playerInfluence.key] = MapLayers.playerInfluence,
-        _w[MapLayers.starLinks.key] = MapLayers.starLinks,
-        _w[MapLayers.fleets.key] = MapLayers.fleets,
-        _w[MapLayers.nonFillerVoronoiLines.key] = MapLayers.nonFillerVoronoiLines,
-        _w[MapLayers.resources.key] = MapLayers.resources,
-        _w[MapLayers.starOwners.key] = MapLayers.starOwners,
-        _w[MapLayers.fogOfWar.key] = MapLayers.fogOfWar,
-        _w[MapLayers.ownerBorders.key] = MapLayers.ownerBorders,
-        _w[MapLayers.starIncome.key] = MapLayers.starIncome,
-        _w
+    var MapLayerTemplates = (_x = {},
+        _x[MapLayers.nonFillerStars.key] = MapLayers.nonFillerStars,
+        _x[MapLayers.playerInfluence.key] = MapLayers.playerInfluence,
+        _x[MapLayers.starLinks.key] = MapLayers.starLinks,
+        _x[MapLayers.fleets.key] = MapLayers.fleets,
+        _x[MapLayers.nonFillerVoronoiLines.key] = MapLayers.nonFillerVoronoiLines,
+        _x[MapLayers.resources.key] = MapLayers.resources,
+        _x[MapLayers.starOwners.key] = MapLayers.starOwners,
+        _x[MapLayers.fogOfWar.key] = MapLayers.fogOfWar,
+        _x[MapLayers.ownerBorders.key] = MapLayers.ownerBorders,
+        _x[MapLayers.starIncome.key] = MapLayers.starIncome,
+        _x
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapLayerTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
 });
 define("modules/defaultmapmodes/mapmodetemplates/mapModes", ["require", "exports", "modules/defaultmapmodes/allMapLayerTemplates"], function (require, exports, MapLayers) {
     "use strict";
@@ -31886,21 +32665,21 @@ define("modules/defaultmapmodes/mapmodetemplates/mapModes", ["require", "exports
             MapLayers.resources
         ]
     };
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
 });
 define("modules/defaultmapmodes/MapModeTemplates", ["require", "exports", "modules/defaultmapmodes/mapmodetemplates/mapModes"], function (require, exports, MapModes) {
     "use strict";
-    var MapModeTemplates = (_x = {},
-        _x[MapModes.defaultMapMode.key] = MapModes.defaultMapMode,
-        _x[MapModes.noStatic.key] = MapModes.noStatic,
-        _x[MapModes.income.key] = MapModes.income,
-        _x[MapModes.influence.key] = MapModes.influence,
-        _x[MapModes.resources.key] = MapModes.resources,
-        _x
+    var MapModeTemplates = (_y = {},
+        _y[MapModes.defaultMapMode.key] = MapModes.defaultMapMode,
+        _y[MapModes.noStatic.key] = MapModes.noStatic,
+        _y[MapModes.income.key] = MapModes.income,
+        _y[MapModes.influence.key] = MapModes.influence,
+        _y[MapModes.resources.key] = MapModes.resources,
+        _y
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapModeTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
 });
 define("modules/defaultmapmodes/defaultMapmodes", ["require", "exports", "modules/defaultmapmodes/MapLayerTemplates", "modules/defaultmapmodes/MapModeTemplates", "src/ModuleFileLoadingPhase"], function (require, exports, MapLayerTemplates_1, MapModeTemplates_1, ModuleFileLoadingPhase_13) {
     "use strict";
@@ -31928,7 +32707,7 @@ define("modules/defaultmapmodes/defaultMapmodes", ["require", "exports", "module
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultMapModes;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
 });
 define("modules/paintingportraits/paintingPortraitsCulture", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -32677,7 +33456,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = paintingPortraitsCulture;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
 });
 define("modules/paintingportraits/paintingPortraits", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/paintingportraits/paintingPortraitsCulture"], function (require, exports, ModuleFileLoadingPhase_14, paintingPortraitsCulture_1) {
     "use strict";
@@ -32700,24 +33479,24 @@ define("modules/paintingportraits/paintingPortraits", ["require", "exports", "sr
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = paintingPortraits;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
 });
 define("modules/defaultbuildings/BuildingTemplates", ["require", "exports", "modules/defaultbuildings/templates/Templates"], function (require, exports, Templates) {
     "use strict";
-    var BuildingTemplates = (_y = {},
-        _y[Templates.sectorCommand.type] = Templates.sectorCommand,
-        _y[Templates.sectorCommand1.type] = Templates.sectorCommand1,
-        _y[Templates.sectorCommand2.type] = Templates.sectorCommand2,
-        _y[Templates.starBase.type] = Templates.starBase,
-        _y[Templates.commercialPort.type] = Templates.commercialPort,
-        _y[Templates.deepSpaceRadar.type] = Templates.deepSpaceRadar,
-        _y[Templates.resourceMine.type] = Templates.resourceMine,
-        _y[Templates.reserachLab.type] = Templates.reserachLab,
-        _y
+    var BuildingTemplates = (_z = {},
+        _z[Templates.sectorCommand.type] = Templates.sectorCommand,
+        _z[Templates.sectorCommand1.type] = Templates.sectorCommand1,
+        _z[Templates.sectorCommand2.type] = Templates.sectorCommand2,
+        _z[Templates.starBase.type] = Templates.starBase,
+        _z[Templates.commercialPort.type] = Templates.commercialPort,
+        _z[Templates.deepSpaceRadar.type] = Templates.deepSpaceRadar,
+        _z[Templates.resourceMine.type] = Templates.resourceMine,
+        _z[Templates.reserachLab.type] = Templates.reserachLab,
+        _z
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BuildingTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
 });
 define("modules/defaultbuildings/defaultBuildings", ["require", "exports", "modules/defaultbuildings/BuildingTemplates", "src/ModuleFileLoadingPhase", "src/cacheSpriteSheetAsImages"], function (require, exports, BuildingTemplates_1, ModuleFileLoadingPhase_15, cacheSpriteSheetAsImages_2) {
     "use strict";
@@ -32748,7 +33527,7 @@ define("modules/defaultbuildings/defaultBuildings", ["require", "exports", "modu
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultBuildings;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
 });
 define("modules/defaultnotifications/defaultNotifications", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultnotifications/NotificationTemplates"], function (require, exports, ModuleFileLoadingPhase_16, NotificationTemplates_1) {
     "use strict";
@@ -32768,7 +33547,7 @@ define("modules/defaultnotifications/defaultNotifications", ["require", "exports
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultNotifications;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
 });
 define("modules/defaultraces/templates/wormThings", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates", "modules/defaultai/mapai/DefaultAIConstructor", "modules/defaultraces/common"], function (require, exports, TechnologyTemplates, DefaultAIConstructor_3, common_2) {
     "use strict";
@@ -32787,18 +33566,18 @@ define("modules/defaultraces/templates/wormThings", ["require", "exports", "modu
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = wormThings;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
 });
 define("modules/defaultraces/RaceTemplates", ["require", "exports", "modules/defaultraces/templates/federationAlliance", "modules/defaultraces/templates/wormThings"], function (require, exports, federationAlliance_2, wormThings_1) {
     "use strict";
-    var RaceTemplates = (_z = {},
-        _z[federationAlliance_2.default.key] = federationAlliance_2.default,
-        _z[wormThings_1.default.key] = wormThings_1.default,
-        _z
+    var RaceTemplates = (_0 = {},
+        _0[federationAlliance_2.default.key] = federationAlliance_2.default,
+        _0[wormThings_1.default.key] = wormThings_1.default,
+        _0
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = RaceTemplates;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0;
 });
 define("modules/defaultraces/defaultRaces", ["require", "exports", "modules/defaultraces/RaceTemplates", "src/ModuleFileLoadingPhase"], function (require, exports, RaceTemplates_1, ModuleFileLoadingPhase_17) {
     "use strict";
@@ -32818,9 +33597,9 @@ define("modules/defaultraces/defaultRaces", ["require", "exports", "modules/defa
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultRaces;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0;
 });
-define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/ModuleFileLoadingPhase", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/addCommonToModuleData", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications", "modules/defaultraces/defaultRaces"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, ModuleFileLoadingPhase_18, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, options_9, TutorialStatus_5, utility_63, addCommonToModuleData_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1, defaultRaces_1) {
+define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/ModuleFileLoadingPhase", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/addCommonToModuleData", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications", "modules/defaultraces/defaultRaces"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, ModuleFileLoadingPhase_18, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, options_9, TutorialStatus_5, utility_65, addCommonToModuleData_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1, defaultRaces_1) {
     "use strict";
     var App = (function () {
         function App() {
@@ -32831,7 +33610,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var moduleLoader = this.moduleLoader = new ModuleLoader_1.default();
             this.initUI();
-            utility_63.onDOMLoaded(function () {
+            utility_65.onDOMLoaded(function () {
                 _this.moduleData = moduleLoader.moduleData;
                 moduleLoader.addModuleFile(defaultEmblems_1.default);
                 moduleLoader.addModuleFile(defaultRuleset_1.default);
@@ -32948,7 +33727,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
                 players.push(new Player_5.default({
                     isAI: i > 0,
                     isIndependent: false,
-                    race: utility_63.getRandomProperty(this.moduleData.Templates.Races),
+                    race: utility_65.getRandomProperty(this.moduleData.Templates.Races),
                     money: 1000
                 }));
             }
@@ -33030,6 +33809,6 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
     var app = new App();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = app;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0;
 });
 //# sourceMappingURL=main.js.map
