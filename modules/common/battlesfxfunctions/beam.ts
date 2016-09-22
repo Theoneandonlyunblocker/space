@@ -108,7 +108,7 @@ export default function beam(props: SFXParams)
     bulgeIntensity: new RampingValue(0.0, 6.0, -6.0),
     bulgeSizeX: new RampingValue(0.0, 0.7, -0.7),
     bulgeSizeY: new RampingValue(0.0, 0.4, -0.4),
-    lineYSize: new RampingValue(0.001, 0.03, -0.03),
+    lineYSize: new RampingValue(0.01, 0.2, -0.21),
     bulgeSharpness: new RampingValue(0.3, 0.35, -0.35),
     lineXSharpness: new RampingValue(0.99, -0.99, 0.99),
     lineYSharpness: new RampingValue(0.99, -0.15, 0.16),
