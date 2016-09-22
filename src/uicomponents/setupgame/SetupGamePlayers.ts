@@ -213,6 +213,10 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
           }, "Name"),
           React.DOM.div(
           {
+            className: "player-setup-race-picker"
+          }, "Race"),
+          React.DOM.div(
+          {
             className: "color-setter"
           }, "Color 1"),
           React.DOM.div(

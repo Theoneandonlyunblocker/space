@@ -3716,10 +3716,24 @@ ol {
 }
 .player-setup-name {
   width: 8em;
+  height: 1.5em;
+  margin: 0.5em;
+  text-overflow: ellipsis;
 }
 @media (max-width: 650px) {
   .player-setup-name {
     width: 5em;
+  }
+}
+.player-setup-race-picker,
+.player-setup .race-picker {
+  width: 6em;
+  height: 1.5em;
+}
+@media (max-width: 650px) {
+  .player-setup-race-picker,
+  .player-setup .race-picker {
+    width: 4em;
   }
 }
 .color-setter {
