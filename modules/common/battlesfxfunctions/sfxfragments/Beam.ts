@@ -115,6 +115,10 @@ export default class Beam extends SFXFragment<BeamProps, PartialBeamProps>
 
     const rampDownValue = clamp(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 0.0, 1.0);
 
+    this.animateFromRampValues(time, rampUpValue, rampDownValue);
+  }
+  public animateFromRampValues(time: number, rampUpValue: number, rampDownValue: number): void
+  {
     this.beamFilter.setUniformValues(
     {
       time: time * this.props.timeScale,
