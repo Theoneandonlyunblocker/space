@@ -56,7 +56,7 @@ function snipe(type: SnipeType, params: SFXParams)
   //----------FOCUSING BEAM
   const beamFragment = new FocusingBeam(
   {
-    color: colors[type].saturate(-0.3),
+    color: colors[type].saturate(-0.1),
     size:
     {
       x: params.width,
