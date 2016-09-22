@@ -148,7 +148,8 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       mainColor: mainColor,
-      subColor: generateSecondaryColor(mainColor)
+      subColor: generateSecondaryColor(mainColor),
+      race: getRandomProperty(app.moduleData.Templates.Races),
     });
   }
   makePlayer()

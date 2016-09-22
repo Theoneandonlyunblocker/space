@@ -14740,7 +14740,8 @@ define("src/uicomponents/setupgame/PlayerSetup", ["require", "exports", "src/App
             var mainColor = colorGeneration_2.generateMainColor();
             this.setState({
                 mainColor: mainColor,
-                subColor: colorGeneration_2.generateSecondaryColor(mainColor)
+                subColor: colorGeneration_2.generateSecondaryColor(mainColor),
+                race: utility_27.getRandomProperty(App_27.default.moduleData.Templates.Races),
             });
         };
         PlayerSetupComponent.prototype.makePlayer = function () {
@@ -14945,6 +14946,8 @@ define("src/uicomponents/setupgame/SetupGamePlayers", ["require", "exports", "sr
             }), React.DOM.div({
                 className: "player-setup-name"
             }, "Name"), React.DOM.div({
+                className: "player-setup-race-picker"
+            }, "Race"), React.DOM.div({
                 className: "color-setter"
             }, "Color 1"), React.DOM.div({
                 className: "color-setter"
