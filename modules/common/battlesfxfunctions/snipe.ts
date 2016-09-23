@@ -115,6 +115,14 @@ function snipe(type: UnitAttribute, params: SFXParams)
     },
     animateImpact: (projectile, container, time) =>
     {
+      particleRenderTexture.clear();
+      particleRenderTexture.render(particleBufferSprite);
+      particleRenderTexture.render(particleContainer);
+
+      particleBufferTexture.clear();
+      particleBufferTexture.render(particleRenderSprite);
+      
+
       protonWrapper.update();
     },
     impactPosition:
@@ -129,24 +137,30 @@ function snipe(type: UnitAttribute, params: SFXParams)
 
   //----------PARTICLES
   const particleContainer = new PIXI.Container();
-  mainContainer.addChild(particleContainer);
 
   const protonWrapper = new ProtonWrapper(params.renderer, particleContainer);
   const particlesAmountScale = params.height / 600;
 
+  const particleRenderTexture = new PIXI.RenderTexture(params.renderer, params.width, params.height);
+  const particleRenderSprite = new PIXI.Sprite(particleRenderTexture);
+  mainContainer.addChild(particleRenderSprite);
+
+  const particleBufferTexture = new PIXI.RenderTexture(params.renderer, params.width, params.height);
+  const particleBufferSprite = new PIXI.Sprite(particleBufferTexture);
+  particleBufferSprite.alpha *= 0.9;
 
   const emitters =
   [
     {
       name: "white",
-      color: 0xBBBBBB,
-      amount: 460,
+      color: 0xFFFFFF,
+      amount: 275,
       size: 6,
     },
     {
       name: "colored",
       color: colors[type].getHex(),
-      amount: 40,
+      amount: 25,
       size: 4,
     }
   ].map(emitterData =>
@@ -173,7 +187,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
     })();
 
     emitter.addInitialize(new Proton.ImageTarget(particleTexture));
-    emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 6.5),
+    emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 5.0),
       new Proton.Span(270, 35, true), "polar"));
     const emitterArea =
     {

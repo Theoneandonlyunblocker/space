@@ -52,7 +52,7 @@ const defaultFocusingBeamProps: FocusingBeamProps =
   
   focusStartTime: 0.0,
   focusEndTime: 0.3,
-  decayStartTime: 1.0,
+  decayStartTime: 0.8,
   decayEndtime: 1.0,
   focusTimeExponent: 0.75,
   relativeYPosition: 0.5,
