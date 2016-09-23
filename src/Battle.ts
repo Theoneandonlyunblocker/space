@@ -211,6 +211,10 @@ export default class Battle
 
     return this[side][relativePosition];
   }
+  public getUnitsForSide(side: UnitBattleSide): Unit[]
+  {
+    return <Unit[]> this.unitsBySide[side].slice(0);
+  }
   // Battle End
   public finishBattle(forcedVictor?: Player): void
   {
