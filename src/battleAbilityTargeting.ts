@@ -9,46 +9,7 @@ import
 {
   reverseSide
 } from "./utility";
-import
-{
-  TargetFormation
-} from "./targeting";
 
-export function getFormationsToTarget(battle: Battle, user: Unit, effect: EffectActionTemplate): Unit[][]
-{
-  if (effect.targetFormations === TargetFormation.either)
-  {
-    return battle.side1.concat(battle.side2);
-  }
-  else
-  {
-    var userSide = user.battleStats.side;
-    var insertNullBefore = (userSide === "side1") ? true : false;
-    var toConcat: Unit[][];
-  }
-
-  if (effect.targetFormations === TargetFormation.ally)
-  {
-    toConcat = battle[userSide];
-  }
-  else if (effect.targetFormations === TargetFormation.enemy)
-  {
-    toConcat = battle[reverseSide(userSide)];
-  }
-  else
-  {
-    throw new Error("Invalid target formation for effect: " + effect.name);
-  }
-
-  if (insertNullBefore)
-  {
-    return getNullFormation().concat(toConcat);
-  }
-  else
-  {
-    return toConcat.concat(getNullFormation());
-  }
-}
 export function getTargetsForAllAbilities(battle: Battle, user: Unit)
 {
   // does this ever happen?

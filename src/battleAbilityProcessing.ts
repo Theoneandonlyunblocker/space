@@ -7,14 +7,8 @@ import GuardCoverage from "./GuardCoverage";
 import Battle from "./Battle";
 import
 {
-  TargetFormation,
   areaSingle,
 } from "./targeting";
-
-import
-{
-  getFormationsToTarget
-} from "./battleAbilityTargeting";
 
 export interface AbilityUseData
 {
@@ -70,9 +64,7 @@ export function getAbilityEffectDataByPhase(battle: Battle, abilityUseData: Abil
 export function getUnitsInEffectArea(battle: Battle, effect: EffectActionTemplate,
   user: Unit, target: Unit): Unit[]
 {
-  var targetFormations = getFormationsToTarget(battle, user, effect);
-
-  var inArea = effect.battleAreaFunction(targetFormations, target.battleStats.position);
+  const inArea = effect.getUnitsInArea(user, target, battle);
 
   return inArea.filter(activeUnitsFilterFN);
 }
@@ -251,8 +243,7 @@ function makeSelfAbilityEffectData(
       {
         name: name,
         
-        targetFormations: TargetFormation.either,
-        battleAreaFunction: areaSingle,
+        getUnitsInArea: areaSingle,
         executeAction: actionFN
       }
     },

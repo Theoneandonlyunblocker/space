@@ -17,9 +17,8 @@ import Unit from "../../../src/Unit";
 import {UnitAttributeAdjustments} from "../../../src/UnitAttributes";
 import
 {
-  TargetFormation,
   areaColumn,
-  areaNeighbors,
+  areaOrthogonalNeighbors,
   areaRowNeighbors,
   areaSingle,
 } from "../../../src/targeting";
@@ -27,8 +26,7 @@ import
 export const singleTargetDamage: EffectActionTemplate =
 {
   name: "singleTargetDamage",
-  targetFormations: TargetFormation.enemy,
-  battleAreaFunction: areaSingle,
+  getUnitsInArea: areaSingle,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {baseDamage: number; damageType: number;})
   {
@@ -40,8 +38,7 @@ export const singleTargetDamage: EffectActionTemplate =
 export const closeAttack: EffectActionTemplate =
 {
   name: "closeAttack",
-  targetFormations: TargetFormation.enemy,
-  battleAreaFunction: areaRowNeighbors,
+  getUnitsInArea: areaRowNeighbors,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
     singleTargetDamage.executeAction(user, target, battle,
@@ -54,8 +51,7 @@ export const closeAttack: EffectActionTemplate =
 export const beamAttack: EffectActionTemplate =
 {
   name: "beamAttack",
-  targetFormations: TargetFormation.either,
-  battleAreaFunction: areaColumn,
+  getUnitsInArea: areaColumn,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
     const baseDamage = 0.75;
@@ -72,8 +68,13 @@ export const beamAttack: EffectActionTemplate =
 export const bombAttack: EffectActionTemplate =
 {
   name: "bombAttack",
-  targetFormations: TargetFormation.enemy,
-  battleAreaFunction: areaNeighbors,
+  getUnitsInArea: (user, target, battle) =>
+  {
+    return areaOrthogonalNeighbors(user, target, battle).filter(unit =>
+    {
+      return !unit || unit.battleStats.side !== user.battleStats.side;
+    });
+  },
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
     singleTargetDamage.executeAction(user, target, battle,
@@ -86,8 +87,7 @@ export const bombAttack: EffectActionTemplate =
 export const guardRow: EffectActionTemplate =
 {
   name: "guardRow",
-  targetFormations: TargetFormation.either,
-  battleAreaFunction: areaSingle,
+  getUnitsInArea: areaSingle,
   executeAction: function(user: Unit, target: Unit, battle: Battle, data: {perInt?: number, flat?: number})
   {
     const guardPerInt = data.perInt || 0;
@@ -100,8 +100,7 @@ export const guardRow: EffectActionTemplate =
 export const receiveCounterAttack: EffectActionTemplate =
 {
   name: "receiveCounterAttack",
-  targetFormations: TargetFormation.either,
-  battleAreaFunction: areaSingle,
+  getUnitsInArea: areaSingle,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {baseDamage: number; damageType: number;})
   {
@@ -120,8 +119,7 @@ export const receiveCounterAttack: EffectActionTemplate =
 export const increaseCaptureChance: EffectActionTemplate =
 {
   name: "increaseCaptureChance",
-  targetFormations: TargetFormation.enemy,
-  battleAreaFunction: areaSingle,
+  getUnitsInArea: areaSingle,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {flat?: number; multiplier?: number;})
   {
@@ -139,8 +137,7 @@ export const increaseCaptureChance: EffectActionTemplate =
 export const addAttributeStatusEffect: EffectActionTemplate =
 {
   name: "addAttributeStatusEffect",
-  targetFormations: TargetFormation.either,
-  battleAreaFunction: areaSingle,
+  getUnitsInArea: areaSingle,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {adjustments: UnitAttributeAdjustments, sourceName: string, duration: number})
   {
@@ -156,8 +153,7 @@ export const addAttributeStatusEffect: EffectActionTemplate =
 export const buffTest: EffectActionTemplate =
 {
   name: "buffTest",
-  targetFormations: TargetFormation.either,
-  battleAreaFunction: areaSingle,
+  getUnitsInArea: areaSingle,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
     target.addStatusEffect(new StatusEffect(poisonedStatusEffect, 2));
@@ -166,8 +162,7 @@ export const buffTest: EffectActionTemplate =
 export const healTarget: EffectActionTemplate =
 {
   name: "healTarget",
-  targetFormations: TargetFormation.ally,
-  battleAreaFunction: areaSingle,
+  getUnitsInArea: areaSingle,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
   {
@@ -192,8 +187,7 @@ export const healTarget: EffectActionTemplate =
 export const healSelf: EffectActionTemplate =
 {
   name: "healSelf",
-  targetFormations: TargetFormation.ally,
-  battleAreaFunction: areaSingle,
+  getUnitsInArea: areaSingle,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
   {
@@ -204,7 +198,6 @@ export const healSelf: EffectActionTemplate =
 export const standBy: EffectActionTemplate =
 {
   name: "standBy",
-  targetFormations: TargetFormation.either,
-  battleAreaFunction: areaSingle,
+  getUnitsInArea: areaSingle,
   executeAction: function(){}
 }

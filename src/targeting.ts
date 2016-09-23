@@ -7,13 +7,7 @@ import
   reverseSide,
 } from "./utility";
 
-export enum TargetFormation
-{
-  ally = 0,
-  enemy = 1,
-  either = 2
-}
-
+//------TARGETING
 export interface GetBattleTargetsFN
 {
   (user: Unit, battle: Battle): Unit[];
@@ -44,88 +38,79 @@ export const targetAll: GetBattleTargetsFN = function(user: Unit, battle: Battle
   return flatten2dArray(battle.side1.concat(battle.side2));
 }
 
-export interface BattleAreaFunction
+//------AREAS
+export interface GetUnitsInAreaFN
 {
-  (units: Unit[][], target: number[]): Unit[];
+  (user: Unit, target: Unit, battle: Battle): (Unit | null)[];
 }
 //**
 //**
 //X*
 //**
-export var areaSingle: BattleAreaFunction = function(units: Unit[][], target: number[])
+export const areaSingle: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
 {
-  return getFrom2dArray(units, [target]);
+  return [target];
 };
 
 //XX
 //XX
 //XX
 //XX
-export var areaAll: BattleAreaFunction = function(units: Unit[][], target: number[])
+export const areaAll: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
 {
-  return flatten2dArray(units);
+  return flatten2dArray(battle.side1.concat(battle.side2));
 };
 
 //**
 //**
 //XX
 //**
-export var areaColumn: BattleAreaFunction = function(units: Unit[][], target: number[])
+export const areaColumn: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
 {
-  var y = target[1];
-  var targetLocations: number[][] = [];
+  const allRows = battle.side1.concat(battle.side2);
+  const y = target.battleStats.position[1];
 
-  for (let i = 0; i < units.length; i++)
-  {
-    targetLocations.push([i,y]);
-  }
-
-  return getFrom2dArray(units, targetLocations);
+  return allRows.map(row => row[y]);
 };
 
 //X*
 //X*
 //X*
 //X*
-export var areaRow: BattleAreaFunction = function(units: Unit[][], target: number[])
+export const areaRow: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
 {
-  var x = target[0];
-  var targetLocations: number[][] = [];
+  const allRows = battle.side1.concat(battle.side2);
+  const x = target.battleStats.position[0];
 
-  for (let i = 0; i < units[x].length; i++)
-  {
-    targetLocations.push([x,i]);
-  }
-
-  return getFrom2dArray(units, targetLocations);
+  return allRows[x];
 };
 
 //**
 //X*
 //X*
 //X*
-export var areaRowNeighbors: BattleAreaFunction = function(units: Unit[][], target: number[])
+export const areaRowNeighbors: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
 {
-  var x = target[0];
-  var y = target[1];
-  var targetLocations: number[][] = [];
+  const row = areaRow(user, target, battle);
+  
+  const y = target.battleStats.position[1];
+  const y1 = Math.max(y - 1, 0);
+  const y2 = Math.min(y + 1, row.length - 1);
 
-  targetLocations.push([x, y]);
-  targetLocations.push([x, y-1]);
-  targetLocations.push([x, y+1]);
-
-  return getFrom2dArray(units, targetLocations);
+  return row.slice(y1, y2);
 };
 
 //**
 //X*
 //XX
 //X*
-export var areaNeighbors: BattleAreaFunction = function(units: Unit[][], target: number[])
+export const areaOrthogonalNeighbors: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
 {
-  var x = target[0];
-  var y = target[1];
-  var targetLocations: number[][] = [];
+  const allRows = battle.side1.concat(battle.side2);
+  const x = target.battleStats.position[0];
+  const y = target.battleStats.position[1];
+
+  const targetLocations: number[][] = [];
 
   targetLocations.push([x, y]);
   targetLocations.push([x-1, y]);
@@ -133,5 +118,5 @@ export var areaNeighbors: BattleAreaFunction = function(units: Unit[][], target:
   targetLocations.push([x, y-1]);
   targetLocations.push([x, y+1]);
 
-  return getFrom2dArray(units, targetLocations);
+  return getFrom2dArray(allRows, targetLocations);
 };
