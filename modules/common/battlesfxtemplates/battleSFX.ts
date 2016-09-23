@@ -18,7 +18,7 @@ export const rocketAttack: BattleSFXTemplate =
 }
 export const guard: BattleSFXTemplate =
 {
-  duration: 1000,
+  duration: 750,
   battleOverlay: guardDrawingFunction,
   SFXWillTriggerEffect: true,
 }
