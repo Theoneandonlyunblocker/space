@@ -300,7 +300,7 @@ export default class Battle
     var winningSide = this.getSideForPlayer(victor);
     var losingSide = reverseSide(winningSide);
 
-    var losingUnits = this.unitsBySide[losingSide].slice(0);
+    const losingUnits = this.getUnitsForSide(losingSide);
     losingUnits.sort(function(a: Unit, b: Unit)
     {
       var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
@@ -449,7 +449,7 @@ export default class Battle
     {
       // positive * sign === good, negative * sign === bad
       var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
-      var currentHealth = this.getTotalHealthForSide(side).current;
+      var currentHealth = this.getTotalCurrentHealthForSide(side);
       if (currentHealth <= 0)
       {
         evaluation -= 999 * sign;
@@ -458,13 +458,13 @@ export default class Battle
       // how much health remains from strating health 0.0-1.0
       var currentHealthFactor = currentHealth / this.startHealth[side];
 
-      for (let i = 0; i < this.unitsBySide[side].length; i++)
+      this.getUnitsForSide(side).forEach(unit =>
       {
-        if (this.unitsBySide[side][i].currentHealth <= 0)
+        if (unit.currentHealth <= 0)
         {
           evaluation -= 0.2 * sign;
         }
-      }
+      });
 
       var defenderMultiplier = 1;
       if (this.battleData.building)

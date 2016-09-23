@@ -130,7 +130,7 @@ function getGuarders(battle: Battle, abilityUseData: AbilityUseData): Unit[]
 
   if (userSide === targetSide) return [];
 
-  var allEnemies = battle.unitsBySide[targetSide];
+  const allEnemies = battle.getUnitsForSide(targetSide);
 
   var guarders = allEnemies.filter(canGuardFN.bind(null, abilityUseData.intendedTarget));
 

@@ -365,8 +365,8 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   {
     var battle: Battle = this.battle;
 
-    var side1UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.unitsBySide["side1"]);
-    var side2UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.unitsBySide["side2"]);
+    var side1UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.getUnitsForSide("side1"));
+    var side2UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.getUnitsForSide("side2"));
 
     var SFXTemplateSelectOptions: React.ReactHTMLElement<any>[] = [];
 
