@@ -1,3 +1,4 @@
+import Battle from "./Battle";
 import Unit from "./Unit";
 import
 {
@@ -12,23 +13,26 @@ export enum TargetFormation
   either = 2
 }
 
-export interface TargetRangeFunction
+export interface GetBattleTargetsFN
 {
-  (units: Unit[][], user: Unit): Unit[];
+  (user: Unit, battle: Battle): Unit[];
 }
-export var targetSelf: TargetRangeFunction = function(units: Unit[][], user: Unit)
+export const targetSelf: GetBattleTargetsFN = function(user: Unit, battle: Battle)
 {
   return [user];
 }
-export var targetNextRow: TargetRangeFunction = function(units: Unit[][], user: Unit)
+export const targetNextRow: GetBattleTargetsFN = function(user: Unit, battle: Battle)
 {
-  var ownPosition = user.battleStats.position;
-  var increment = user.battleStats.side === "side1" ? 1 : -1;
-  return units[ownPosition[0] + increment];
+  const ownPosition = user.battleStats.position;
+  const increment = user.battleStats.side === "side1" ? 1 : -1;
+
+  const fullFormation = battle.side1.concat(battle.side2);
+
+  return fullFormation[ownPosition[0] + increment];
 }
-export var targetAll: TargetRangeFunction = function(units: Unit[][], user: Unit)
+export const targetAll: GetBattleTargetsFN = function(user: Unit, battle: Battle)
 {
-  return flatten2dArray(units);
+  return flatten2dArray(battle.side1.concat(battle.side2));
 }
 
 export interface BattleAreaFunction

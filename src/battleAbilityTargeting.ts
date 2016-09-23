@@ -93,7 +93,7 @@ function getPotentialTargets(battle: Battle, user: Unit, ability: AbilityTemplat
 {
   var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.action);
 
-  var targetsInRange = ability.mainEffect.action.targetRangeFunction(targetFormations, user);
+  var targetsInRange = ability.mainEffect.action.targetRangeFunction(user, battle);
 
   var targets = targetsInRange.filter(isTargetableFilterFN);
 

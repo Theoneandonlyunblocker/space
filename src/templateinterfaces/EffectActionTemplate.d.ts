@@ -4,7 +4,7 @@ import
 {
   TargetFormation,
   BattleAreaFunction,
-  TargetRangeFunction
+  GetBattleTargetsFN
 } from "../targeting";
 
 declare interface EffectActionTemplate
@@ -13,7 +13,7 @@ declare interface EffectActionTemplate
   
   targetFormations: TargetFormation;
   battleAreaFunction: BattleAreaFunction;
-  targetRangeFunction: TargetRangeFunction;
+  targetRangeFunction: GetBattleTargetsFN;
   // TODO ability | handle changes to battle done by actions
   // shouldn't modify any other units than the provided user and target
   executeAction: (user: Unit, target: Unit, battle: Battle, data?: any) => void;
