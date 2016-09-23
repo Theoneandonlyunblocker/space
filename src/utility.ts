@@ -192,9 +192,9 @@ export function findItemWithKey<T>(source: {[key: string]: any},
 
   return null;
 }
-export function getFrom2dArray(target: any[][], arr: number[][]): any[]
+export function getFrom2dArray<T>(target: T[][], arr: number[][]): (T | null)[]
 {
-  var result: any[] = [];
+  var result: (T | null)[] = [];
   for (let i = 0; i < arr.length; i++)
   {
     if 
@@ -204,19 +204,19 @@ export function getFrom2dArray(target: any[][], arr: number[][]): any[]
       (arr[i][1] >= 0 && arr[i][1] < target[0].length)
     )
     {
-      result.push( target[arr[i][0]][arr[i][1]] );
+      result.push(target[arr[i][0]][arr[i][1]]);
     }
     else
     {
       result.push(null);
     }
-
   };
+
   return result;
 }
-export function flatten2dArray(toFlatten: any[][]): any[]
+export function flatten2dArray<T>(toFlatten: T[][]): T[]
 {
-  var flattened: any[] = [];
+  var flattened: T[] = [];
   for (let i = 0; i < toFlatten.length; i++)
   {
     for (let j = 0; j < toFlatten[i].length; j++)
