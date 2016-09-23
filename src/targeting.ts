@@ -3,7 +3,8 @@ import Unit from "./Unit";
 import
 {
   flatten2dArray,
-  getFrom2dArray
+  getFrom2dArray,
+  reverseSide,
 } from "./utility";
 
 export enum TargetFormation
@@ -29,6 +30,14 @@ export const targetNextRow: GetBattleTargetsFN = function(user: Unit, battle: Ba
   const fullFormation = battle.side1.concat(battle.side2);
 
   return fullFormation[ownPosition[0] + increment];
+}
+export const targetAllies: GetBattleTargetsFN = function(user: Unit, battle: Battle)
+{
+  return battle.getUnitsForSide(user.battleStats.side);
+}
+export const targetEnemies: GetBattleTargetsFN = function(user: Unit, battle: Battle)
+{
+  return battle.getUnitsForSide(reverseSide(user.battleStats.side));
 }
 export const targetAll: GetBattleTargetsFN = function(user: Unit, battle: Battle)
 {
