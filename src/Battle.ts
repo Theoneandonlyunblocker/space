@@ -118,8 +118,8 @@ export default class Battle
 
     this.startHealth =
     {
-      side1: this.getTotalHealthForSide("side1").current,
-      side2: this.getTotalHealthForSide("side2").current
+      side1: this.getTotalCurrentHealthForSide("side1"),
+      side2: this.getTotalCurrentHealthForSide("side2")
     }
 
     if (this.shouldBattleEnd())
@@ -411,8 +411,8 @@ export default class Battle
 
     if (this.turnsLeft <= 0) return true;
 
-    if (this.getTotalHealthForSide("side1").current <= 0 ||
-      this.getTotalHealthForSide("side2").current <= 0)
+    if (this.getTotalCurrentHealthForSide("side1") <= 0 ||
+      this.getTotalCurrentHealthForSide("side2") <= 0)
     {
       return true;
     }
@@ -501,25 +501,19 @@ export default class Battle
 
     return total;
   }
-  // TODO | split into two functions
-  private getTotalHealthForSide(side: UnitBattleSide)
+  private getTotalCurrentHealthForSide(side: UnitBattleSide): number
   {
-    var health =
+    return this.getUnitsForSide(side).map(unit => unit.currentHealth).reduce((total, value) =>
     {
-      current: 0,
-      max: 0
-    };
-
-    var units = this.unitsBySide[side];
-
-    for (let i = 0; i < units.length; i++)
+      return total + value;
+    }, 0);
+  }
+  private getTotalMaxHealthForSide(side: UnitBattleSide): number
+  {
+    return this.getUnitsForSide(side).map(unit => unit.maxHealth).reduce((total, value) =>
     {
-      var unit = units[i];
-      health.current += unit.currentHealth;
-      health.max += unit.maxHealth;
-    }
-
-    return health;
+      return total + value;
+    }, 0);
   }
   // End Evaluation
   private static getAbsolutePositionFromSidePosition(
