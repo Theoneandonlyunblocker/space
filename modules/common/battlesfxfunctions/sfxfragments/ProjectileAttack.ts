@@ -256,6 +256,7 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
         userData.sequentialAttackOriginPoints[i % userData.sequentialAttackOriginPoints.length] :
         userData.singleAttackOriginPoint;
       sprite.position.y = spawnPosition.y;
+      sprite.anchor = new PIXI.Point(0, 0.5);
 
       const targetBBox = targetData.boundingBox;
 
