@@ -203,7 +203,7 @@ export default class Battle
     else if (this.side2Player === player) return "side2";
     else throw new Error("invalid player");
   }
-  private getRowByPosition(position: number): Unit[]
+  private getRowByPosition(position: number): (Unit | null)[]
   {
     var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
     var side: UnitBattleSide = position < rowsPerSide ? "side1" : "side2";
@@ -488,7 +488,10 @@ export default class Battle
   }
   private getTotalCurrentHealthForRow(position: number): number
   {
-    return this.getRowByPosition(position).map(unit => unit.currentHealth).reduce((total, value) =>
+    return this.getRowByPosition(position).map(unit =>
+    {
+      return unit ? unit.currentHealth : 0;
+    }).reduce((total, value) =>
     {
       return total + value;
     }, 0);
