@@ -486,20 +486,12 @@ export default class Battle
 
     return this.evaluation[this.currentTurn];
   }
-  private getTotalHealthForRow(position: number): number
+  private getTotalCurrentHealthForRow(position: number): number
   {
-    var row = this.getRowByPosition(position);
-    var total = 0;
-
-    for (let i = 0; i < row.length; i++)
+    return this.getRowByPosition(position).map(unit => unit.currentHealth).reduce((total, value) =>
     {
-      if (row[i])
-      {
-        total += row[i].currentHealth;
-      }
-    }
-
-    return total;
+      return total + value;
+    }, 0);
   }
   private getTotalCurrentHealthForSide(side: UnitBattleSide): number
   {
@@ -561,7 +553,7 @@ export default class Battle
     for (let i = 1; i < formation.length; i++)
     {
       var absoluteRow = side === "side1" ? i : i + app.moduleData.ruleSet.battle.rowsPerFormation;
-      if (this.getTotalHealthForRow(absoluteRow) > 0)
+      if (this.getTotalCurrentHealthForRow(absoluteRow) > 0)
       {
         nextHealthyRowIndex = i;
         break;
@@ -588,12 +580,12 @@ export default class Battle
   private shiftRowsIfNeeded(): void
   {
     var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
-    var side1FrontRowHealth = this.getTotalHealthForRow(rowsPerSide - 1);
+    var side1FrontRowHealth = this.getTotalCurrentHealthForRow(rowsPerSide - 1);
     if (side1FrontRowHealth <= 0)
     {
       this.shiftRowsForSide("side1");
     }
-    var side2FrontRowHealth = this.getTotalHealthForRow(rowsPerSide);
+    var side2FrontRowHealth = this.getTotalCurrentHealthForRow(rowsPerSide);
     if (side2FrontRowHealth <= 0)
     {
       this.shiftRowsForSide("side2");
