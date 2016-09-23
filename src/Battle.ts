@@ -133,11 +133,11 @@ export default class Battle
 
     this.triggerBattleStartAbilities();
   }
-  public forEachUnit(operator: (unit: Unit) => any): void
+  public forEachUnit(callBack: (unit: Unit) => any): void
   {
     for (let id in this.unitsById)
     {
-       operator.call(this, this.unitsById[id]);
+       callBack(this.unitsById[id]);
     }
   }
   public endTurn(): void
@@ -174,7 +174,7 @@ export default class Battle
   }
   private triggerBattleStartAbilities(): void
   {
-    this.forEachUnit(function(unit: Unit)
+    this.forEachUnit(unit =>
     {
       var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
       if (passiveSkillsByPhase["atBattleStart"])
@@ -231,7 +231,7 @@ export default class Battle
       side2: this.getExperienceGainedForSide("side2"),
     }
     
-    this.forEachUnit(function(unit: Unit)
+    this.forEachUnit(unit =>
     {
       unit.addExperience(experienceGainedPerSide[unit.battleStats.side]);
       unit.resetBattleStats();
@@ -366,7 +366,7 @@ export default class Battle
     var deadUnits: Unit[] = [];
 
 
-    this.forEachUnit(function(unit)
+    this.forEachUnit(unit =>
     {
       if (unit.currentHealth <= 0)
       {
