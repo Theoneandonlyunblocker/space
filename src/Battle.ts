@@ -225,11 +225,15 @@ export default class Battle
       this.deadUnits[i].removeFromPlayer();
     }
 
-    var experiencePerSide = this.getGainedExperiencePerSide();
+    const experienceGainedPerSide =
+    {
+      side1: this.getExperienceGainedForSide("side1"),
+      side2: this.getExperienceGainedForSide("side2"),
+    }
     
     this.forEachUnit(function(unit: Unit)
     {
-      unit.addExperience(experiencePerSide[unit.battleStats.side]);
+      unit.addExperience(experienceGainedPerSide[unit.battleStats.side]);
       unit.resetBattleStats();
 
       if (unit.currentHealth < Math.round(unit.maxHealth * 0.1))
@@ -380,30 +384,26 @@ export default class Battle
 
     return deadUnits;
   }
-  // TODO | don't need to do both in same method
-  private getGainedExperiencePerSide()
+  private getUnitValueForExperienceGainedCalculation(unit: Unit): number
   {
-    var totalValuePerSide =
+    return unit.level + 1;
+  }
+  private getSideValueForExperienceGainedCalculation(side: UnitBattleSide): number
+  {
+    return this.getUnitsForSide(side).map(unit =>
     {
-      side1: 0,
-      side2: 0
-    };
+      return this.getUnitValueForExperienceGainedCalculation(unit);
+    }).reduce((total, value) =>
+    {
+      return total + value;
+    }, 0);
+  }
+  private getExperienceGainedForSide(side: UnitBattleSide): number
+  {
+    const ownSideValue = this.getSideValueForExperienceGainedCalculation(side);
+    const enemySideValue = this.getSideValueForExperienceGainedCalculation(reverseSide(side));
 
-    for (let side in this.unitsBySide)
-    {
-      var totalValue = 0;
-      var units = this.unitsBySide[side];
-      for (let i = 0; i < units.length; i++)
-      {
-        totalValuePerSide[side] += units[i].level + 1;
-      }
-    }
-
-    return(
-    {
-      side1: totalValuePerSide.side2 / totalValuePerSide.side1 * 10,
-      side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
-    });
+    return (enemySideValue / ownSideValue) * 10;
   }
   private shouldBattleEnd(): boolean
   {
