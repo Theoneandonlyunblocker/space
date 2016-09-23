@@ -22,9 +22,6 @@ import
   areaNeighbors,
   areaRowNeighbors,
   areaSingle,
-  targetAll,
-  targetNextRow,
-  targetSelf
 } from "../../../src/targeting";
 
 export const singleTargetDamage: EffectActionTemplate =
@@ -32,7 +29,6 @@ export const singleTargetDamage: EffectActionTemplate =
   name: "singleTargetDamage",
   targetFormations: TargetFormation.enemy,
   battleAreaFunction: areaSingle,
-  targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {baseDamage: number; damageType: number;})
   {
@@ -46,7 +42,6 @@ export const closeAttack: EffectActionTemplate =
   name: "closeAttack",
   targetFormations: TargetFormation.enemy,
   battleAreaFunction: areaRowNeighbors,
-  targetRangeFunction: targetNextRow,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
     singleTargetDamage.executeAction(user, target, battle,
@@ -61,7 +56,6 @@ export const beamAttack: EffectActionTemplate =
   name: "beamAttack",
   targetFormations: TargetFormation.either,
   battleAreaFunction: areaColumn,
-  targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
     const baseDamage = 0.75;
@@ -80,7 +74,6 @@ export const bombAttack: EffectActionTemplate =
   name: "bombAttack",
   targetFormations: TargetFormation.enemy,
   battleAreaFunction: areaNeighbors,
-  targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
     singleTargetDamage.executeAction(user, target, battle,
@@ -95,7 +88,6 @@ export const guardRow: EffectActionTemplate =
   name: "guardRow",
   targetFormations: TargetFormation.either,
   battleAreaFunction: areaSingle,
-  targetRangeFunction: targetSelf,
   executeAction: function(user: Unit, target: Unit, battle: Battle, data: {perInt?: number, flat?: number})
   {
     const guardPerInt = data.perInt || 0;
@@ -110,7 +102,6 @@ export const receiveCounterAttack: EffectActionTemplate =
   name: "receiveCounterAttack",
   targetFormations: TargetFormation.either,
   battleAreaFunction: areaSingle,
-  targetRangeFunction: targetSelf,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {baseDamage: number; damageType: number;})
   {
@@ -131,7 +122,6 @@ export const increaseCaptureChance: EffectActionTemplate =
   name: "increaseCaptureChance",
   targetFormations: TargetFormation.enemy,
   battleAreaFunction: areaSingle,
-  targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {flat?: number; multiplier?: number;})
   {
@@ -151,7 +141,6 @@ export const addAttributeStatusEffect: EffectActionTemplate =
   name: "addAttributeStatusEffect",
   targetFormations: TargetFormation.either,
   battleAreaFunction: areaSingle,
-  targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {adjustments: UnitAttributeAdjustments, sourceName: string, duration: number})
   {
@@ -169,7 +158,6 @@ export const buffTest: EffectActionTemplate =
   name: "buffTest",
   targetFormations: TargetFormation.either,
   battleAreaFunction: areaSingle,
-  targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
     target.addStatusEffect(new StatusEffect(poisonedStatusEffect, 2));
@@ -180,7 +168,6 @@ export const healTarget: EffectActionTemplate =
   name: "healTarget",
   targetFormations: TargetFormation.ally,
   battleAreaFunction: areaSingle,
-  targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
   {
@@ -207,7 +194,6 @@ export const healSelf: EffectActionTemplate =
   name: "healSelf",
   targetFormations: TargetFormation.ally,
   battleAreaFunction: areaSingle,
-  targetRangeFunction: targetSelf,
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
   {
@@ -220,6 +206,5 @@ export const standBy: EffectActionTemplate =
   name: "standBy",
   targetFormations: TargetFormation.either,
   battleAreaFunction: areaSingle,
-  targetRangeFunction: targetSelf,
   executeAction: function(){}
 }

@@ -9,7 +9,6 @@ import
 {
   TargetFormation,
   areaSingle,
-  targetAll
 } from "./targeting";
 
 import
@@ -248,7 +247,6 @@ function makeSelfAbilityEffectData(
         
         targetFormations: TargetFormation.either,
         battleAreaFunction: areaSingle,
-        targetRangeFunction: targetAll,
         executeAction: actionFN
       }
     },

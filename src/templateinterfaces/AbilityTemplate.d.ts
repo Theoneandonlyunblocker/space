@@ -1,6 +1,11 @@
 import AbilityBase from "./AbilityBase";
 import AbilityEffectTemplate from "./AbilityEffectTemplate";
 
+import
+{
+  GetBattleTargetsFN
+} from "../targeting";
+
 declare interface AbilityTemplate extends AbilityBase
 {
   type: string;
@@ -20,7 +25,9 @@ declare interface AbilityTemplate extends AbilityBase
   // if true, ability will always hit intended target. guard can still provide defensive benefits
   bypassesGuard?: boolean;
   
-  // determines targeting range of function, called first
+  getPossibleTargets: GetBattleTargetsFN;
+  
+  // called first
   mainEffect: AbilityEffectTemplate;
   // uses same user and target as mainEffect, called after mainEffect
   secondaryEffects?: AbilityEffectTemplate[];

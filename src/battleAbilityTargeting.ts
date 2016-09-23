@@ -91,11 +91,9 @@ function isTargetableFilterFN(unit: Unit)
 }
 function getPotentialTargets(battle: Battle, user: Unit, ability: AbilityTemplate): Unit[]
 {
-  var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.action);
+  const targetsInRange = ability.getPossibleTargets(user, battle);
 
-  var targetsInRange = ability.mainEffect.action.targetRangeFunction(user, battle);
-
-  var targets = targetsInRange.filter(isTargetableFilterFN);
+  const targets = targetsInRange.filter(isTargetableFilterFN);
 
   return targets;
 }

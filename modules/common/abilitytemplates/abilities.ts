@@ -2,6 +2,13 @@ import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate";
 
 import DamageType from "../../../src/DamageType";
 import {UnitAttribute} from "../../../src/UnitAttributes";
+import
+{
+  targetEnemies,
+  targetNextRow,
+  targetSelf,
+  targetAll,
+} from "../../../src/targeting";
 
 import * as BattleSFX from "../battlesfxtemplates/battleSFX";
 import * as EffectActions from "../effectactiontemplates/effectActions";
@@ -13,6 +20,13 @@ export var closeAttack: AbilityTemplate =
   description: "Close range attack that hits adjacent targets in the same row",
   moveDelay: 90,
   actionsUse: 2,
+  getPossibleTargets: (user, battle) =>
+  {
+    return targetNextRow(user, battle).filter(unit =>
+    {
+      unit.battleStats.side !== user.battleStats.side
+    });
+  },
   mainEffect:
   {
     action: EffectActions.closeAttack,
@@ -26,6 +40,7 @@ export var beamAttack: AbilityTemplate =
   description: "Attack units in a line",
   moveDelay: 300,
   actionsUse: 1,
+  getPossibleTargets: targetEnemies,
   mainEffect:
   {
     action: EffectActions.beamAttack,
@@ -44,6 +59,7 @@ export var bombAttack: AbilityTemplate =
   description: "Ranged attack that hits all adjacent enemy units",
   moveDelay: 120,
   actionsUse: 1,
+  getPossibleTargets: targetEnemies,
   mainEffect:
   {
     action: EffectActions.bombAttack,
@@ -57,6 +73,7 @@ export var guardRow: AbilityTemplate =
   description: "Protect allies in the same row and boost defence against physical attacks",
   moveDelay: 100,
   actionsUse: 1,
+  getPossibleTargets: targetSelf,
   mainEffect:
   {
     action: EffectActions.guardRow,
@@ -76,6 +93,7 @@ export var boardingHook: AbilityTemplate =
   description: "0.8x damage but increases target capture chance",
   moveDelay: 100,
   actionsUse: 1,
+  getPossibleTargets: targetEnemies,
   mainEffect:
   {
     action: EffectActions.singleTargetDamage,
@@ -112,6 +130,7 @@ export var debugAbility: AbilityTemplate =
   description: "who knows what its going to do today",
   moveDelay: 0,
   actionsUse: 1,
+  getPossibleTargets: targetAll,
   mainEffect:
   {
     action: EffectActions.buffTest,
@@ -127,6 +146,7 @@ export var rangedAttack: AbilityTemplate =
   description: "Standard ranged attack",
   moveDelay: 100,
   actionsUse: 1,
+  getPossibleTargets: targetEnemies,
   mainEffect:
   {
     action: EffectActions.singleTargetDamage,
@@ -170,6 +190,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
     description: description,
     moveDelay: 100,
     actionsUse: 1,
+    getPossibleTargets: targetEnemies,
     mainEffect:
     {
       action: EffectActions.singleTargetDamage,
@@ -212,6 +233,7 @@ export var standBy: AbilityTemplate =
   description: "Skip a turn but next one comes faster",
   moveDelay: 50,
   actionsUse: 1,
+  getPossibleTargets: targetSelf,
   mainEffect:
   {
     action: EffectActions.standBy,
