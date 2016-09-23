@@ -87,7 +87,7 @@ export default class Battle
     this.turnOrder = new BattleTurnOrder();
   }
   // Separate because cloned battles (for ai simulation) don't need to call this.
-  public init()
+  public init(): void
   {
     var self = this;
 
@@ -140,7 +140,7 @@ export default class Battle
        operator.call(this, this.unitsById[id]);
     }
   }
-  public endTurn()
+  public endTurn(): void
   {
     this.currentTurn++;
     this.turnsLeft--;
@@ -156,7 +156,7 @@ export default class Battle
       this.shiftRowsIfNeeded();
     }
   }
-  public getActivePlayer()
+  public getActivePlayer(): Player
   {
     if (!this.activeUnit) return null;
 
@@ -165,14 +165,14 @@ export default class Battle
     return this.getPlayerForSide(side);
   }
   
-  private initUnit(unit: Unit, side: UnitBattleSide, position: number[])
+  private initUnit(unit: Unit, side: UnitBattleSide, position: number[]): void
   {
     unit.resetBattleStats();
     unit.setBattlePosition(this, side, position);
     this.turnOrder.addUnit(unit);
     unit.timesActedThisTurn++;
   }
-  private triggerBattleStartAbilities()
+  private triggerBattleStartAbilities(): void
   {
     this.forEachUnit(function(unit: Unit)
     {
@@ -191,7 +191,7 @@ export default class Battle
       }
     });
   }
-  private getPlayerForSide(side: UnitBattleSide)
+  private getPlayerForSide(side: UnitBattleSide): Player
   {
     if (side === "side1") return this.side1Player;
     else if (side === "side2") return this.side2Player;
@@ -203,7 +203,7 @@ export default class Battle
     else if (this.side2Player === player) return "side2";
     else throw new Error("invalid player");
   }
-  private getRowByPosition(position: number)
+  private getRowByPosition(position: number): Unit[]
   {
     var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
     var side: UnitBattleSide = position < rowsPerSide ? "side1" : "side2";
@@ -212,7 +212,7 @@ export default class Battle
     return this[side][relativePosition];
   }
   // Battle End
-  public finishBattle(forcedVictor?: Player)
+  public finishBattle(forcedVictor?: Player): void
   {
     var victor = forcedVictor || this.getVictor();
 
@@ -281,7 +281,7 @@ export default class Battle
       this.afterFinishCallbacks[i]();
     }
   }
-  public getVictor()
+  public getVictor(): Player
   {
     var evaluation = this.getEvaluation();
 
@@ -289,7 +289,7 @@ export default class Battle
     else if (evaluation < 0) return this.side2Player;
     else return null;
   }
-  private getCapturedUnits(victor: Player, maxCapturedUnits: number)
+  private getCapturedUnits(victor: Player, maxCapturedUnits: number): Unit[]
   {
     if (!victor || victor.isIndependent) return [];
 
@@ -326,7 +326,7 @@ export default class Battle
 
     return capturedUnits;
   }
-  private getUnitDeathChance(unit: Unit, victor: Player)
+  private getUnitDeathChance(unit: Unit, victor: Player): number
   {
     var player: Player = unit.fleet.player;
 
@@ -353,7 +353,7 @@ export default class Battle
 
     return deathChance;
   }
-  private getDeadUnits(capturedUnits: Unit[], victor: Player)
+  private getDeadUnits(capturedUnits: Unit[], victor: Player): Unit[]
   {
     var deadUnits: Unit[] = [];
 
@@ -376,6 +376,7 @@ export default class Battle
 
     return deadUnits;
   }
+  // TODO | don't need to do both in same method
   private getGainedExperiencePerSide()
   {
     var totalValuePerSide =
@@ -400,7 +401,7 @@ export default class Battle
       side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
     });
   }
-  private shouldBattleEnd()
+  private shouldBattleEnd(): boolean
   {
     if (!this.activeUnit) return true;
 
@@ -414,11 +415,14 @@ export default class Battle
 
     return false;
   }
-  private endBattle()
+  private endBattle(): void
   {
     this.ended = true;
 
-    if (this.isVirtual) return;
+    if (this.isVirtual)
+    {
+      return;
+    }
 
     this.activeUnit = null;
     var victor = this.getVictor();
@@ -478,7 +482,7 @@ export default class Battle
 
     return this.evaluation[this.currentTurn];
   }
-  private getTotalHealthForRow(position: number)
+  private getTotalHealthForRow(position: number): number
   {
     var row = this.getRowByPosition(position);
     var total = 0;
@@ -493,6 +497,7 @@ export default class Battle
 
     return total;
   }
+  // TODO | split into two functions
   private getTotalHealthForSide(side: UnitBattleSide)
   {
     var health =
@@ -513,7 +518,8 @@ export default class Battle
     return health;
   }
   // End Evaluation
-  private static getAbsolutePositionFromSidePosition(relativePosition: number[], side: UnitBattleSide)
+  private static getAbsolutePositionFromSidePosition(
+    relativePosition: number[], side: UnitBattleSide): number[]
   {
     if (side === "side1")
     {
@@ -525,7 +531,7 @@ export default class Battle
       return [relativePosition[0] + rowsPerSide, relativePosition[1]];
     }
   }
-  private updateBattlePositions(side: UnitBattleSide)
+  private updateBattlePositions(side: UnitBattleSide): void
   {
     var units = this[side];
     for (let i = 0; i < units.length; i++)
@@ -543,7 +549,7 @@ export default class Battle
       }
     }
   }
-  private shiftRowsForSide(side: UnitBattleSide)
+  private shiftRowsForSide(side: UnitBattleSide): void
   {
     var formation = this[side];
     if (side === "side1")
@@ -581,7 +587,7 @@ export default class Battle
 
     this.updateBattlePositions(side);
   }
-  private shiftRowsIfNeeded()
+  private shiftRowsIfNeeded(): void
   {
     var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
     var side1FrontRowHealth = this.getTotalHealthForRow(rowsPerSide - 1);
