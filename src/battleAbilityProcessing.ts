@@ -102,36 +102,42 @@ function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData): Unit
 
   return abilityUseData.intendedTarget;
 }
-function canGuardFN(intendedTarget: Unit, unit: Unit)
+function canUnitGuardTarget(unit: Unit, intendedTarget: Unit)
 {
-  if (!unit.isTargetable())
+  if (unit.battleStats.guardAmount > 0 && unit.isTargetable())
   {
-    return false;
-  }
-  
-  if (unit.battleStats.guardCoverage === GuardCoverage.all)
-  {
-    return unit.battleStats.guardAmount > 0;
-  }
-  else if (unit.battleStats.guardCoverage === GuardCoverage.row)
-  {
-    // same row
-    if (unit.battleStats.position[0] === intendedTarget.battleStats.position[0])
+    if (unit.battleStats.guardCoverage === GuardCoverage.all)
     {
-      return unit.battleStats.guardAmount > 0;
+      return true
+    }
+    else if (unit.battleStats.guardCoverage === GuardCoverage.row)
+    {
+      // same row
+      if (unit.battleStats.position[0] === intendedTarget.battleStats.position[0])
+      {
+        return true
+      }
     }
   }
+
+  return false;
 }
 function getGuarders(battle: Battle, abilityUseData: AbilityUseData): Unit[]
 {
-  var userSide = abilityUseData.user.battleStats.side;
-  var targetSide = abilityUseData.intendedTarget.battleStats.side;
+  const userSide = abilityUseData.user.battleStats.side;
+  const targetSide = abilityUseData.intendedTarget.battleStats.side;
 
-  if (userSide === targetSide) return [];
+  if (userSide === targetSide)
+  {
+    return [];
+  }
 
   const allEnemies = battle.getUnitsForSide(targetSide);
 
-  var guarders = allEnemies.filter(canGuardFN.bind(null, abilityUseData.intendedTarget));
+  const guarders = allEnemies.filter(unit =>
+  {
+    return canUnitGuardTarget(unit, abilityUseData.intendedTarget);
+  });
 
   return guarders;
 }
