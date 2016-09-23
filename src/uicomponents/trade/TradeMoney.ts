@@ -60,7 +60,6 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
   handleClick()
   {
-    debugger;
     this.props.onClick(this.props.keyTODO/*TODO react*/);
   }
 
