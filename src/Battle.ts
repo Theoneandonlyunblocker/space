@@ -211,6 +211,14 @@ export default class Battle
 
     return this[side][relativePosition];
   }
+  public getAllUnits(): Unit[]
+  {
+    const allUnits: Unit[] = [];
+
+    this.forEachUnit(unit => allUnits.push(unit));
+
+    return allUnits;
+  }
   public getUnitsForSide(side: UnitBattleSide): Unit[]
   {
     return <Unit[]> this.unitsBySide[side].slice(0);
