@@ -31,7 +31,7 @@ import
   generateColorScheme,
   generateSecondaryColor
 } from "./colorGeneration";
-import Options from "./options";
+import Options from "./Options";
 
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";

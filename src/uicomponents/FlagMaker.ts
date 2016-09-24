@@ -1,8 +1,5 @@
 /// <reference path="../../lib/react-global.d.ts" />
 
-/// <reference path="playerflag.ts" />
-
-
 import Flag from "../Flag";
 import {generateColorScheme} from "../colorGeneration";
 

@@ -6,7 +6,7 @@ import SFXParams from "./templateinterfaces/SFXParams";
 import Unit from "./Unit";
 import BattleSceneUnit from "./BattleSceneUnit";
 import BattleSceneUnitOverlay from "./BattleSceneUnitOverlay";
-import Options from "./options";
+import Options from "./Options";
 import UnitBattleSide from "./UnitBattleSide";
 
 // TODO performance

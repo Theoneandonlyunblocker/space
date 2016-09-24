@@ -1,7 +1,7 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import * as UnitArchetypes from "../unitArchetypes";
-import * as UnitFamilies from "../unitFamilies";
+import * as UnitArchetypes from "../UnitArchetypes";
+import * as UnitFamilies from "../UnitFamilies";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import itemSlot from "../../common/itemSlot";

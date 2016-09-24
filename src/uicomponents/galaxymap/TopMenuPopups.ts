@@ -13,7 +13,7 @@ import LoadGame from "../saves/LoadGame";
 import SaveGame from "../saves/SaveGame";
 import OptionsList from "./OptionsList";
 import Options from "../../Options";
-import {CustomPopupProps} from "../popups/popup";
+import {CustomPopupProps} from "../popups/Popup";
 
 export interface PropTypes extends React.Props<any>
 {

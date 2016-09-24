@@ -1,7 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="unitstrength.ts"/>
-
 export interface PropTypes extends React.Props<any>
 {
   currentActionPoints: number;

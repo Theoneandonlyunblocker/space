@@ -249,8 +249,6 @@ export default class Battle
         unit.currentHealth = Math.round(unit.maxHealth * 0.1);
       }
 
-
-
       this.side1Player.identifyUnit(unit);
       this.side2Player.identifyUnit(unit);
     });

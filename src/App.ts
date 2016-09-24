@@ -14,7 +14,7 @@ import PlayerControl from "./PlayerControl";
 import ReactUI from "./ReactUI";
 import ReactUIScene from "./ReactUIScene";
 import Renderer from "./Renderer";
-import Options from "./options";
+import Options from "./Options";
 import TutorialStatus from "./tutorials/TutorialStatus";
 import
 {

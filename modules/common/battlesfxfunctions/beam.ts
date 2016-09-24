@@ -10,7 +10,7 @@ import LightBurst from "./sfxfragments/LightBurst";
 import Beam from "./sfxfragments/Beam";
 import RampingValue from "./sfxfragments/RampingValue";
 
-import Color from "../../../src/color";
+import Color from "../../../src/Color";
 import
 {
   getDummyTextureForShader,

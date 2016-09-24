@@ -25,7 +25,7 @@ import TemplateIndexes from "../../../src/TemplateIndexes";
 import
 {
   aStar
-} from "../../../src/pathfinding";
+} from "../../../src/pathFinding";
 import
 {
   getRelativeWeightsFromObject,

@@ -2,7 +2,7 @@
 
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
-import Color from "../../../src/color";
+import Color from "../../../src/Color";
 import {UnitAttribute} from "../../../src/UnitAttributes";
 
 import FocusingBeam from "./sfxfragments/FocusingBeam";

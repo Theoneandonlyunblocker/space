@@ -1,6 +1,3 @@
-/// <reference path="pathfinding.ts"/>
-
-
 import app from "./App"; // TODO global
 
 import idGenerators from "./idGenerators";

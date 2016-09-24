@@ -1,8 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="fleetcontrols.ts"/>
-
-
 import FleetControls from "./FleetControls";
 import Fleet from "../../Fleet";
 

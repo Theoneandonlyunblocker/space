@@ -1,8 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="upgradeunit.ts" />
-
-
 import UpgradeUnit from "./UpgradeUnit";
 import TopMenuPopup from "../popups/TopMenuPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";

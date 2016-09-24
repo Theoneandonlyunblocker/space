@@ -1,4 +1,4 @@
-import MapRendererMapModeTemplate from "../../../src/templateinterfaces/maprenderermapmodetemplate";
+import MapRendererMapModeTemplate from "../../../src/templateinterfaces/MapRendererMapModeTemplate";
 
 import * as MapLayers from "../allMapLayerTemplates";
 

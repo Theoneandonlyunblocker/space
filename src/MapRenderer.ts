@@ -10,7 +10,7 @@ import Player from "./Player";
 import MapRendererLayer from "./MapRendererLayer";
 import MapRendererMapMode from "./MapRendererMapMode";
 import eventManager from "./eventManager";
-import Options from "./options";
+import Options from "./Options";
 
 
 export default class MapRenderer

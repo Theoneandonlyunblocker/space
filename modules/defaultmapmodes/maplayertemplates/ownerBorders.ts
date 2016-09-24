@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import Options from "../../../src/options";
+import Options from "../../../src/Options";
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";

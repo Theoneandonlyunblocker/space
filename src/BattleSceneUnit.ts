@@ -5,7 +5,7 @@ import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 import SFXParams from "./templateinterfaces/SFXParams";
 
 import Unit from "./Unit";
-import Options from "./options";
+import Options from "./Options";
 
 const enum BattleSceneUnitState
 {

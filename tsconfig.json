@@ -4,7 +4,6 @@
         "module": "amd",
         "moduleResolution": "classic",
         "outFile": "built/main.js",
-        // "rootDir": "built",
         "sourceMap": true,
         
         "noImplicitAny": true,
@@ -13,22 +12,13 @@
         "declaration": false,
         "experimentalDecorators": false,
         "emitDecoratorMetadata": false,
+        "forceConsistentCasingInFileNames": true,
         
-        // "isolatedModules": false,
-        // "noImplicitUseStrict": false,
-        // "noLib": false,
-        // "preserveConstEnums": true,
         "removeComments": true
     },
     "files": [
       "src/App.ts"
     ],
-    // "exclude": [
-    //     "node_modules",
-    //     "typings/browser",
-    //     "typings/browser.d.ts",
-    //     "lib"
-    // ],
     "compileOnSave": false,
     "buildOnSave": false
 }

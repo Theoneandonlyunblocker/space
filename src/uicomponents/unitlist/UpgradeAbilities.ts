@@ -1,8 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="abilitylist.ts" />
-
-
 import AbilityList from "./AbilityList";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 

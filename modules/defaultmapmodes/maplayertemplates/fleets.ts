@@ -2,7 +2,7 @@
 
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 
-import Options from "../../../src/options";
+import Options from "../../../src/Options";
 import eventManager from "../../../src/eventManager";
 import Fleet from "../../../src/Fleet";
 import Star from "../../../src/Star";

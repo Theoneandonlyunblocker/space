@@ -1,8 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="../../fleet.ts" />
-
-
 import Fleet from "../../Fleet";
 import eventManager from "../../eventManager";
 

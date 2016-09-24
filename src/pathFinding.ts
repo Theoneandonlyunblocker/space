@@ -1,6 +1,3 @@
-/// <reference path="star.ts" />
-/// <reference path="priorityqueue.ts" />
-
 import PriorityQueue from "./PriorityQueue";
 import Star from "./Star";
 

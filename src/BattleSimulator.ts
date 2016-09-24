@@ -2,7 +2,7 @@ import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 
 import Battle from "./Battle";
 import MCTree from "./MCTree";
-import Options from "./options";
+import Options from "./Options";
 import Unit from "./Unit";
 import
 {

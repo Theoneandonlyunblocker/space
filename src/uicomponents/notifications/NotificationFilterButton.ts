@@ -1,9 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="../../notificationfilter.ts" />
-/// <reference path="notificationfilterlist.ts" />
-
-
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import NotificationFilterList from "./NotificationFilterList";
 import NotificationFilter from "../../NotificationFilter";

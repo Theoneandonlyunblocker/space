@@ -1,8 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="../../flag.ts" />
-
-
 import Flag from "../../Flag";
 
 

@@ -1,10 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="fleetinfo.ts"/>
-/// <reference path="fleetcontents.ts"/>
-/// <reference path="fleetreorganization.ts"/>
-
-
 import eventManager from "../../eventManager";
 import FleetInfo from "./FleetInfo";
 import FleetContents from "./FleetContents";

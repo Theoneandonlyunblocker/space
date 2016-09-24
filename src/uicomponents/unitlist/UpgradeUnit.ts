@@ -1,9 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="upgradeabilities.ts" />
-/// <reference path="upgradeattributes.ts" />
-
-
 import Unit from "../../Unit";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 import UpgradeAttributes from "./UpgradeAttributes";

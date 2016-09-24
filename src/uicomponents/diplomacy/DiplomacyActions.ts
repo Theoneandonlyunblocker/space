@@ -5,7 +5,7 @@ import Trade from "../../Trade";
 import TradeOverview from "../trade/TradeOverview";
 import TopMenuPopup from "../popups/TopMenuPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-import {CustomPopupProps} from "../popups/popup";
+import {CustomPopupProps} from "../popups/Popup";
 
 export interface PropTypes extends React.Props<any>
 {

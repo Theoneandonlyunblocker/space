@@ -1,8 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="manufactoryupgradebutton.ts" />
-
-
 import ItemTemplate from "../../templateinterfaces/ItemTemplate";
 import Star from "../../Star";
 import ManufacturableThingsList from "./ManufacturableThingsList";

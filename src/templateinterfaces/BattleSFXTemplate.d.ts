@@ -1,6 +1,5 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-/// <reference path="sfxparams.d.ts" />
 import SFXParams from "./SFXParams";
 
 declare interface BattleSFXTemplate
