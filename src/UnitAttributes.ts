@@ -66,7 +66,7 @@ export default class UnitAttributes implements UnitAttributesObject
       speed: 0
     });
   }
-  private static squashAdjustments(toSquash: UnitAttributeAdjustments[]): UnitAttributeAdjustments
+  public static squashAdjustments(toSquash: UnitAttributeAdjustments[]): UnitAttributeAdjustments
   {
     const squashed: UnitAttributeAdjustments = {};
 
