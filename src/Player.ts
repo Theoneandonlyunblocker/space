@@ -930,11 +930,13 @@ export default class Player
       {
         var globallyBuildableItems = <ManufacturableThing[]> this.getGloballyBuildableItems();
         isGloballyBuildable = globallyBuildableItems.indexOf(template) !== -1;
+        break;
       }
       case "unit":
       {
         var globallyBuildableUnits = <ManufacturableThing[]> this.getGloballyBuildableUnits();
         isGloballyBuildable = globallyBuildableUnits.indexOf(template) !== -1;
+        break;
       }
     }
     var manufactories = this.getAllManufactories();

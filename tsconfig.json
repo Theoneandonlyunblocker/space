@@ -13,6 +13,7 @@
         "experimentalDecorators": false,
         "emitDecoratorMetadata": false,
         "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
         
         "removeComments": true
     },
