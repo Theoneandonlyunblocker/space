@@ -2,8 +2,8 @@
   "name": "spacegame",
   "version": "0.1.0",
   "devDependencies": {
-    "typescript": "^2.0.0",
-    "less": "^2.6.0"
+    "typescript": "2.0.x",
+    "less": "2.6.x"
   },
   "scripts": {
     "build": "tsc && lessc ./css/main.less ./built/main.css"
