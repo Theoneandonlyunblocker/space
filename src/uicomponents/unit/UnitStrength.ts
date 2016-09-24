@@ -80,36 +80,39 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
   }
   animateDisplayedStrength(newAmount: number, time: number)
   {
-    var self = this;
-    var stopped = false;
+    let stopped = false;
 
-    var animateTween = function()
+    const animateTween = () =>
     {
       if (stopped)
       {
-        cancelAnimationFrame(self.animationFrameHandle);
+        cancelAnimationFrame(this.animationFrameHandle);
         return;
       }
 
       TWEEN.update();
-      self.animationFrameHandle = window.requestAnimationFrame(animateTween);
+      this.animationFrameHandle = window.requestAnimationFrame(animateTween);
     }
 
-    var tween = new TWEEN.Tween(
+    const tweeningHealthObject =
     {
-      health: self.state.displayedStrength
-    }).to(
+      health: this.state.displayedStrength
+    }
+
+    var tween = new TWEEN.Tween(tweeningHealthObject).to(
     {
       health: newAmount
-    }, time).onUpdate(function()
+    }, time);
+
+    tween.onUpdate(() =>
     {
-      self.setState(
+      this.setState(
       {
-        displayedStrength: this.health
+        displayedStrength: tweeningHealthObject.health
       });
     }).easing(TWEEN.Easing.Sinusoidal.Out);
 
-    tween.onStop(function()
+    tween.onStop(() =>
     {
       stopped = true;
       TWEEN.remove(tween);

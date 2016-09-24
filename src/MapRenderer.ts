@@ -122,7 +122,7 @@ export default class MapRenderer
   }
   initMapModes()
   {
-    var buildMapMode = function(mapModeKey: string, template: MapRendererMapModeTemplate)
+    var buildMapMode = (mapModeKey: string, template: MapRendererMapModeTemplate) =>
     {
       var alreadyAdded :
       {
@@ -145,7 +145,7 @@ export default class MapRenderer
         }
       }
       this.mapModes[mapModeKey] = mapMode;
-    }.bind(this);
+    };
 
     for (let mapModeKey in app.moduleData.Templates.MapRendererMapModes)
     {

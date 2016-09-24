@@ -72,9 +72,8 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
       displayedStrength: newAmount
     });
   }
-  private animateDisplayedStrength(from: number, to: number, duration: number)
+  private animateDisplayedStrength(strengthBefore: number, strengthAfter: number, duration: number)
   {
-    var self = this;
     var stopped = false;
 
     if (this.activeTween)
@@ -82,37 +81,44 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
       this.activeTween.stop();
     }
     
-    if (from === to) return;
+    if (strengthBefore === strengthAfter)
+    {
+      return;
+    }
 
-    var animateTween = function()
+    var animateTween = () =>
     {
       if (stopped)
       {
-        cancelAnimationFrame(self.animationFrameHandle);
+        cancelAnimationFrame(this.animationFrameHandle);
         return;
       }
 
       TWEEN.update();
-      self.animationFrameHandle = window.requestAnimationFrame(animateTween);
+      this.animationFrameHandle = window.requestAnimationFrame(animateTween);
     }
 
-    var tween = new TWEEN.Tween(
+    const tweeningHealthObject =
     {
-      health: from
-    }).to(
+      health: strengthBefore
+    }
+
+    var tween = new TWEEN.Tween(tweeningHealthObject).to(
     {
-      health: to
-    }, duration).onUpdate(function()
+      health: strengthAfter
+    }, duration);
+
+    tween.onUpdate(() =>
     {
-      self.setState(
+      this.setState(
       {
-        displayedStrength: this.health
+        displayedStrength: tweeningHealthObject.health
       });
     }).easing(TWEEN.Easing.Sinusoidal.Out);
 
-    tween.onStop(function()
+    tween.onStop(() =>
     {
-      cancelAnimationFrame(self.animationFrameHandle);
+      cancelAnimationFrame(this.animationFrameHandle);
       stopped = true;
       TWEEN.remove(tween);
     });

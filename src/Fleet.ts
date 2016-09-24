@@ -268,7 +268,7 @@ export default class Fleet
   {
     var path = this.getPathTo(newLocation);
 
-    var interval = window.setInterval(function()
+    var interval = window.setInterval(() =>
     {
       if (!path || path.length <= 0)
       {
@@ -282,7 +282,7 @@ export default class Fleet
       this.move(move.star);
       if (onMove) onMove();
 
-    }.bind(this), 10);
+    }, 10);
   }
   getFriendlyFleetsAtOwnLocation(): Fleet[]
   {

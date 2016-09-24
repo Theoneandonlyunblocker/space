@@ -70,7 +70,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
   {
     var defaultValues = {};
 
-    ["defaultOptions", "basicOptions", "advancedOptions"].forEach(function(optionGroup: string)
+    ["defaultOptions", "basicOptions", "advancedOptions"].forEach(optionGroup =>
     {
       var options: MapGenOptions = mapGenTemplate.options[optionGroup];
       if (!options) return;
@@ -100,7 +100,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
         value = clamp(roundToNearestMultiple(value, option.step), option.min, option.max);
         defaultValues["optionValue_" + optionName] = value; 
       }
-    }.bind(this));
+    });
 
     return defaultValues;
   }

@@ -76,11 +76,11 @@ export default class DiplomacyStatus
   }
   removePlayer(player: Player)
   {
-    ["metPlayers", "statusByPlayer", "attitudeModifiersByPlayer"].forEach(function(prop: string)
+    ["metPlayers", "statusByPlayer", "attitudeModifiersByPlayer"].forEach(prop =>
     {
       this[prop][player.id] = null;
       delete this[prop][player.id];
-    }.bind(this));
+    });
   }
   getBaseOpinion()
   {

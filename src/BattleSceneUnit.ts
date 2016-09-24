@@ -337,18 +337,16 @@ export default class BattleSceneUnit
 
     container.x = startX;
 
-    var tween = new TWEEN.Tween(
-    {
-      x: startX
-    }).to(
+    const tweeningObject = {x: startX};
+    var tween = new TWEEN.Tween(tweeningObject).to(
     {
       x: finishX
-    }, duration).onStart(function()
+    }, duration).onStart(() =>
     {
       container.x = startX;
-    }).onUpdate(function()
+    }).onUpdate(() =>
     {
-      container.x = this.x;
+      container.x = tweeningObject.x;
     }).onComplete(onComplete);
 
     tween.start();

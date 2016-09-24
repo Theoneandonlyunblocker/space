@@ -3,7 +3,7 @@
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import NotificationFilterList from "./NotificationFilterList";
 import NotificationFilter from "../../NotificationFilter";
-import TopMenuPopup from "../popups/TopMenuPopup";
+import {default as TopMenuPopup, TopMenuPopupComponent} from "../popups/TopMenuPopup";
 
 
 export interface PropTypes extends React.Props<any>
@@ -50,11 +50,14 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
   
   makePopup()
   {
-    var scrollToHighlightedFN = function()
+    // TODO | really ugly
+    const scrollToHighlightedFN = function(this: PopupManagerComponent)
     {
       const popup = this.popupComponentsByID[this.popupId - 1];
-      var content = popup.ref_TODO_content.ref_TODO_content;
-      content.scrollToHighlighted();
+      const outerContent = <any> popup.ref_TODO_content;
+      const innerContent = <any> outerContent.ref_TODO_content;
+
+      innerContent.scrollToHighlighted();
     }.bind(this.ref_TODO_popupManager);
 
     var popupId = this.ref_TODO_popupManager.makePopup(

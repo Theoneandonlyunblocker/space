@@ -651,10 +651,10 @@ export default class MapEvaluator
 
     var revealedStars = this.player.getRevealedStars();
 
-    var stars = revealedStars.filter(function(star: Star)
+    var stars = revealedStars.filter(star =>
     {
       return star.owner.isIndependent || star.owner === this.player;
-    }, this);
+    });
 
     for (let i = 0; i < stars.length; i++)
     {

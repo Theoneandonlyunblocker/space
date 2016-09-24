@@ -54,13 +54,13 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
     var range = option.range;
     var id = "mapGenOption_" + this.props.id;
 
-    ["min", "max", "step"].forEach(function(prop: string)
+    ["min", "max", "step"].forEach(prop =>
     {
       if (!range[prop])
       {
         throw new Error("No property " + prop +" specified on map gen option " + this.props.id);
       }
-    }.bind(this));
+    });
 
     // console.log(this.props.id, this.props.value);
 

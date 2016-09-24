@@ -15,6 +15,7 @@
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
+        "noImplicitThis": true,
         
         "removeComments": true
     },

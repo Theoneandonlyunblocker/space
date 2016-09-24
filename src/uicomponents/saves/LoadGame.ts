@@ -111,7 +111,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   getClosePopupContent(afterCloseCallback?: Function, shouldCloseParent: boolean = true,
     shouldUndoAll: boolean = false): ConfirmPopupProps
   {
-    var deleteFN = function()
+    var deleteFN = () =>
     {
       for (let i = 0; i < this.state.saveKeysToDelete.length; i++)
       {
@@ -122,8 +122,8 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       {
         saveKeysToDelete: []
       });
-    }.bind(this);
-    var closeFN = function()
+    };
+    var closeFN = () =>
     {
       this.popupID = undefined;
       if (shouldCloseParent)
@@ -138,7 +138,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
         });
       }
       if (afterCloseCallback) afterCloseCallback();
-    }.bind(this);
+    };
 
     return(
     {
@@ -192,12 +192,15 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       saveKeysToDelete: this.state.saveKeysToDelete.concat(saveKey)
     }, this.updateClosePopup);
   }
-  handleUndoDelete(saveKey: string, callback?: Function)
+  handleUndoDelete(saveKey: string, callback?: () => void)
   {
-    var afterDeleteFN = function()
+    var afterDeleteFN = () =>
     {
       this.updateClosePopup();
-      if (callback) callback();
+      if (callback)
+      {
+        callback();
+      }
     }
     var i = this.state.saveKeysToDelete.indexOf(saveKey)
     if (i !== -1)

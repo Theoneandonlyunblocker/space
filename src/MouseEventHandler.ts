@@ -305,7 +305,7 @@ export default class MouseEventHandler
   }
   clearHoveredStar()
   {
-    var timeout = window.setTimeout(function()
+    var timeout = window.setTimeout(() =>
     {
       if (!this.preventingGhost["hover"])
       {
@@ -313,7 +313,7 @@ export default class MouseEventHandler
         this.clearFleetMoveTarget();
       }
       window.clearTimeout(timeout);
-    }.bind(this), 15);
+    }, 15);
   }
   startFleetMove(event: PIXI.interaction.InteractionEvent, star: Star)
   {

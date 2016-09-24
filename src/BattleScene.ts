@@ -375,7 +375,7 @@ export default class BattleScene
   {
     var beforeUseDelay = Options.battleAnimationTiming.before;
 
-    var afterUnitsHaveFinishedUpdatingCallback = function()
+    var afterUnitsHaveFinishedUpdatingCallback = () =>
     {
       if (beforeUseDelay >= 0)
       {
@@ -386,7 +386,7 @@ export default class BattleScene
       {
         this.executeBeforeUseDelayHasFinishedCallback();
       }
-    }.bind(this);
+    };
 
     this.updateUnits(afterUnitsHaveFinishedUpdatingCallback);
   }
@@ -426,11 +426,11 @@ export default class BattleScene
   {
     const afterUseDelay = Options.battleAnimationTiming.after;
     
-    this.afterUseDelayHasFinishedCallback = function()
+    this.afterUseDelayHasFinishedCallback = () =>
     {
       this.clearActiveSFX();
       this.updateUnits(this.executeAbilityUseHasFinishedCallback.bind(this));
-    }.bind(this);
+    };
     
     if (afterUseDelay >= 0)
     {
