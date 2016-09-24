@@ -15,7 +15,7 @@ import UnitDrawingFunctionData from "./UnitDrawingFunctionData";
 import
 {
   default as UnitAttributes,
-  UnitAttributeAdjustments
+  UnitAttributeAdjustments,
 } from "./UnitAttributes";
 import
 {
@@ -570,10 +570,6 @@ export default class Unit
       return statusEffect.template.attributes;
     });
   }
-  /*
-  sort by attribute, positive/negative, additive vs multiplicative
-  apply additive, multiplicative
-   */
   private getTotalStatusEffectAttributeAdjustments(): UnitAttributeAdjustments
   {
     if (!this.battleStats || !this.battleStats.statusEffects)
@@ -581,31 +577,8 @@ export default class Unit
       return null;
     }
 
-    var adjustments: UnitAttributeAdjustments = {};
-    for (let i = 0; i < this.battleStats.statusEffects.length; i++)
-    {
-      var statusEffect = this.battleStats.statusEffects[i];
-      if (!statusEffect.template.attributes)
-      {
-        continue;
-      }
-
-      for (let attribute in statusEffect.template.attributes)
-      {
-        adjustments[attribute] = {};
-        for (let type in statusEffect.template.attributes[attribute])
-        {
-          if (!adjustments[attribute][type])
-          {
-            adjustments[attribute][type] = 0;
-          }
-
-          adjustments[attribute][type] += statusEffect.template.attributes[attribute][type];
-        }
-      }
-    }
-
-    return adjustments;
+    const attributeAdjustments = this.getStatusEffectAttributeAdjustments();
+    return UnitAttributes.squashAdjustments(attributeAdjustments);
   }
   private getAttributesWithEffects()
   {
