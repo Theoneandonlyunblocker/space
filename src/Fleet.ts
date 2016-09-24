@@ -211,12 +211,11 @@ export default class Fleet
 
     return false;
   }
-  // TODO 24.9.2016 | add amount parameter
-  subtractMovePoints(): void
+  subtractMovePoints(amount: number): void
   {
     for (let i = 0; i < this.units.length; i++)
     {
-      this.units[i].currentMovePoints--;
+      this.units[i].currentMovePoints -= amount;
     }
   }
   move(newLocation: Star): void
@@ -230,7 +229,7 @@ export default class Fleet
     this.location = newLocation;
     newLocation.addFleet(this);
 
-    this.subtractMovePoints();
+    this.subtractMovePoints(1);
 
     this.visionIsDirty = true;
     this.player.visionIsDirty = true;
