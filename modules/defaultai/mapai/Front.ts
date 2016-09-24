@@ -64,11 +64,6 @@ export default class Front
       [starId: number]: Unit[];
     } = {};
 
-    var ownUnitFilterFN = function(unit: Unit)
-    {
-      return this.getUnitIndex(unit) >= 0;
-    }.bind(this);
-
     // build indexes of pure fleets and impure units
     for (let i = 0; i < allFleets.length; i++)
     {
@@ -86,7 +81,7 @@ export default class Front
       }
       else
       {
-        var ownUnits = fleet.units.filter(ownUnitFilterFN);
+        var ownUnits = fleet.units.filter(unit => this.hasUnit(unit));
 
         for (let j = 0; j < ownUnits.length; j++)
         {
@@ -149,15 +144,7 @@ export default class Front
   }
   isFleetPure(fleet: Fleet): boolean
   {
-    for (let i = 0; i < fleet.units.length; i++)
-    {
-      if (this.getUnitIndex(fleet.units[i]) === -1)
-      {
-        return false;
-      }
-    }
-
-    return true;
+    return fleet.units.every(unit => this.hasUnit(unit));
   }
   getAssociatedFleets(): Fleet[]
   {
@@ -188,6 +175,10 @@ export default class Front
   getUnitIndex(unit: Unit)
   {
     return this.units.indexOf(unit);
+  }
+  hasUnit(unit: Unit)
+  {
+    return this.getUnitIndex(unit) !== -1;
   }
   addUnit(unit: Unit)
   {
@@ -259,10 +250,6 @@ export default class Front
       var moveRoutine = this.objective.template.moveRoutineFN;
       moveRoutine(this, afterMoveCallback);
     }
-  }
-  hasUnit(unit: Unit)
-  {
-    return this.units.indexOf(unit) !== -1;
   }
   scoreUnitFit(unit: Unit)
   {
