@@ -301,7 +301,10 @@ export default class Battle
 
     if (evaluation > 0) return this.side1Player;
     else if (evaluation < 0) return this.side2Player;
-    else return null;
+    else
+    {
+      return this.battleData.defender.player;
+    }
   }
   private getCapturedUnits(victor: Player, maxCapturedUnits: number): Unit[]
   {
