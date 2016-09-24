@@ -46,15 +46,15 @@ export default class Fleet
       eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     }
   }
-  getUnitIndex(unit: Unit)
+  getUnitIndex(unit: Unit): number
   {
     return this.units.indexOf(unit);
   }
-  hasUnit(unit: Unit)
+  hasUnit(unit: Unit): boolean
   {
     return this.getUnitIndex(unit) >= 0;
   }
-  deleteFleet(shouldRender: boolean = true)
+  deleteFleet(shouldRender: boolean = true): void
   {
     this.location.removeFleet(this);
     this.player.removeFleet(this);
@@ -64,7 +64,7 @@ export default class Fleet
       eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     }
   }
-  mergeWith(fleet: Fleet, shouldRender: boolean = true)
+  mergeWith(fleet: Fleet, shouldRender: boolean = true): void
   {
     if (fleet.isStealthy !== this.isStealthy)
     {
@@ -74,7 +74,7 @@ export default class Fleet
     fleet.addUnits(this.units);
     this.deleteFleet(shouldRender);
   }
-  addUnit(unit: Unit)
+  addUnit(unit: Unit): void
   {
     if (this.hasUnit(unit))
     {
@@ -95,14 +95,14 @@ export default class Fleet
 
     this.visionIsDirty = true;
   }
-  addUnits(units: Unit[])
+  addUnits(units: Unit[]): void
   {
     for (let i = 0; i < units.length; i++)
     {
       this.addUnit(units[i]);
     }
   }
-  removeUnit(unit: Unit)
+  removeUnit(unit: Unit): void
   {
     var index = this.getUnitIndex(unit);
 
@@ -118,14 +118,14 @@ export default class Fleet
       this.deleteFleet();
     }
   }
-  removeUnits(units: Unit[])
+  removeUnits(units: Unit[]): void
   {
     for (let i = 0; i < units.length; i++)
     {
       this.removeUnit(units[i]);
     }
   }
-  transferUnit(fleet: Fleet, unit: Unit)
+  transferUnit(fleet: Fleet, unit: Unit): void
   {
     if (fleet === this)
     {
@@ -147,7 +147,7 @@ export default class Fleet
     this.units.splice(index, 1);
     eventManager.dispatchEvent("renderLayer", "fleets", this.location);
   }
-  split()
+  split(): Fleet
   {
     var newFleet = new Fleet(this.player, [], this.location);
     this.location.addFleet(newFleet);
@@ -155,7 +155,7 @@ export default class Fleet
 
     return newFleet;
   }
-  splitStealthyUnits()
+  splitStealthyUnits(): Fleet
   {
     var stealthyUnits = this.units.filter(function(unit: Unit)
     {
@@ -168,7 +168,7 @@ export default class Fleet
 
     return newFleet;
   }
-  getMinCurrentMovePoints()
+  getMinCurrentMovePoints(): number
   {
     if (!this.units[0]) return 0;
 
@@ -180,7 +180,7 @@ export default class Fleet
     }
     return min;
   }
-  getMinMaxMovePoints()
+  getMinMaxMovePoints(): number
   {
     if (!this.units[0]) return 0;
 
@@ -192,7 +192,7 @@ export default class Fleet
     }
     return min;
   }
-  canMove()
+  canMove(): boolean
   {
     for (let i = 0; i < this.units.length; i++)
     {
@@ -209,14 +209,15 @@ export default class Fleet
 
     return false;
   }
-  subtractMovePoints()
+  // TODO 24.9.2016 | add amount parameter
+  subtractMovePoints(): void
   {
     for (let i = 0; i < this.units.length; i++)
     {
       this.units[i].currentMovePoints--;
     }
   }
-  move(newLocation: Star)
+  move(newLocation: Star): void
   {
     if (newLocation === this.location) return;
     if (!this.canMove()) return;
@@ -257,7 +258,7 @@ export default class Fleet
 
     return path;
   }
-  pathFind(newLocation: Star, onMove?: any, afterMove?: any)
+  pathFind(newLocation: Star, onMove?: () => void, afterMove?: () => void): void
   {
     var path = this.getPathTo(newLocation);
 
@@ -277,10 +278,11 @@ export default class Fleet
 
     }.bind(this), 10);
   }
-  getFriendlyFleetsAtOwnLocation()
+  getFriendlyFleetsAtOwnLocation(): Fleet[]
   {
     return this.location.fleets[this.player.id];
   }
+  // TODO 24.9.2016 | split function
   getTotalHealth()
   {
     var total =
@@ -297,7 +299,7 @@ export default class Fleet
 
     return total;
   }
-  updateVisibleStars()
+  updateVisibleStars(): void
   {
     var highestVisionRange = 0;
     var highestDetectionRange = -1;
@@ -316,7 +318,7 @@ export default class Fleet
 
     this.visionIsDirty = false;
   }
-  getVision()
+  getVision(): Star[]
   {
     if (this.visionIsDirty)
     {
@@ -325,7 +327,7 @@ export default class Fleet
 
     return this.visibleStars;
   }
-  getDetection()
+  getDetection(): Star[]
   {
     if (this.visionIsDirty)
     {
