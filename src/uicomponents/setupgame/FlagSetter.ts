@@ -1,14 +1,11 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-
 import {default as FlagPicker, FlagPickerComponent} from "./FlagPicker";
 import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
 import Flag from "../../Flag";
 import Color from "../../Color";
 import Emblem from "../../Emblem";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
-
-import applyMixins from "../mixins/applyMixins";
 
 
 interface FailMessage

@@ -1,7 +1,5 @@
 /// <reference path="../../../../lib/react-global.d.ts" />
 
-import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
-
 import ControlledNumberInput from "../../generic/ControlledNumberInput";
 
 interface PropTypes extends React.Props<any>

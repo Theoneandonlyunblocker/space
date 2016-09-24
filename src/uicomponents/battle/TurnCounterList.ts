@@ -32,7 +32,6 @@ export class TurnCounterListComponent extends React.Component<PropTypes, StateTy
 
     for (let i = 0; i < this.props.maxTurns; i++)
     {
-      const isEmpty = i < usedTurns;
       turnElements.push(
         TurnCounter(
         {

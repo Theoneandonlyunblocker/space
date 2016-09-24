@@ -1,12 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-
-import Unit from "../../Unit";
 import OptionsCheckbox from "./OptionsCheckbox";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import Options from "../../Options";
 import OptionsNumericField from "./OptionsNumericField";
-import Battle from "../battle/Battle";
 import OptionsGroup from "./OptionsGroup";
 import ConfirmPopup from "../popups/ConfirmPopup";
 import NotificationFilterButton from "../notifications/NotificationFilterButton";

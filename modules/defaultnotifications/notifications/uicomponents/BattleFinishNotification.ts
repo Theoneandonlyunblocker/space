@@ -12,7 +12,7 @@ interface PropTypes
 
 class BattleFinishNotification extends React.Component<PropTypes, {}>
 {
-  private displayName: string = "BattleFinishNotification";
+  displayName = "BattleFinishNotification";
 
   constructor(props: PropTypes)
   {

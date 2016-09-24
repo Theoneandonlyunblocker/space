@@ -1,7 +1,6 @@
 /// <reference path="../../../../lib/react-global.d.ts" />
 
 import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
-import RampingValue from "../../../../modules/common/battlesfxfunctions/sfxfragments/RampingValue";
 
 import SFXFragmentPropVecBase from "./VecBase";
 

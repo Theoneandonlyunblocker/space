@@ -6,10 +6,6 @@ import BattleSceneFlag from "./BattleSceneFlag";
 import Flag from "../../Flag";
 import BattleScene from "../../BattleScene";
 
-import Unit from "../../Unit";
-import BattleSFXTemplate from "../../templateinterfaces/BattleSFXTemplate";
-import Player from "../../Player";
-
 
 export interface PropTypes extends React.Props<any>
 {

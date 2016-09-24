@@ -15,7 +15,6 @@ import PlayerControl from "../PlayerControl";
 import Battle from "../Battle";
 import Game from "../Game";
 import Renderer from "../Renderer";
-import UnitDisplayData from "../UnitDisplayData";
 import ReactUIScene from "../ReactUIScene";
 
 

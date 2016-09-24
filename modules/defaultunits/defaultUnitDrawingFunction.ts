@@ -61,8 +61,6 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     unitsToDraw = clamp(unitsToDraw, 1, maxUnitsPerColumn * maxColumns);
   }
 
-  var xMin: number, xMax: number, yMin: number, yMax: number;
-
   var rotationAngle = Math.PI / 180 * props.rotationAngle;
   var sA = Math.sin(rotationAngle);
   var cA = Math.cos(rotationAngle);

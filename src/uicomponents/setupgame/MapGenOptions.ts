@@ -3,7 +3,6 @@
 
 import MapGenOptions from "../../templateinterfaces/MapGenOptions";
 import MapGenOptionValues from "../../templateinterfaces/MapGenOptionValues";
-import Options from "../../Options";
 import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
 import OptionsGroup from "../galaxymap/OptionsGroup";
 import MapGenOption from "./MapGenOption";

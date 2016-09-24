@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
 export interface PropTypes extends React.Props<any>

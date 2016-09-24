@@ -5,8 +5,6 @@ import Unit from "../Unit";
 import Player from "../Player";
 import Battle from "../Battle";
 import BattleScene from "../BattleScene";
-import SFXParams from "../templateinterfaces/SFXParams";
-import BattleSFXTemplate from "../templateinterfaces/BattleSFXTemplate";
 import
 {
   getRandomProperty,
@@ -54,7 +52,6 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     this.selectUnit = this.selectUnit.bind(this);
     this.makeUnitElements = this.makeUnitElements.bind(this);
     this.makeFormation = this.makeFormation.bind(this);
-    this.handleTestAbility1 = this.handleTestAbility1.bind(this);
     this.makeUnit = this.makeUnit.bind(this);
     this.handleUnitHover = this.handleUnitHover.bind(this);
     this.handleClearHover = this.handleClearHover.bind(this);
@@ -218,91 +215,6 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     });
   }
 
-  handleTestAbility1()
-  {
-    var overlayTestFN = function(color: number, params: SFXParams)
-    {
-      var renderTexture = new PIXI.RenderTexture(params.renderer, params.width, params.height);
-      var sprite = new PIXI.Sprite(renderTexture);
-      var container = new PIXI.Container();
-
-      var text = new PIXI.Text("" + params.duration, {fill: color});
-      text.y -= 50;
-      container.addChild(text);
-
-      var alphaPerMillisecond = 1 / params.duration;
-
-      var currentTime = Date.now();
-      var startTime = currentTime;
-      var endTime = currentTime + params.duration;
-      var lastTime = currentTime;
-
-      function animate()
-      {
-        currentTime = Date.now();
-        var elapsedTime = currentTime - lastTime;
-        lastTime = currentTime;
-
-        renderTexture.clear();
-        renderTexture.render(container);
-
-        if (currentTime < endTime)
-        {
-          if (currentTime > startTime)
-          {
-            text.text = "" + (endTime - currentTime);
-          }
-          window.requestAnimationFrame(animate);
-        }
-        else
-        {
-          params.triggerEnd();
-        }
-      }
-
-      params.triggerStart(container);
-      animate();
-    }
-
-    var spriteTestFN = function(params: SFXParams)
-    {
-      var container = new PIXI.Container;
-
-      var gfx = new PIXI.Graphics();
-      gfx.beginFill(0x0000FF);
-      gfx.drawRect(0, 0, 200, 200);
-      gfx.endFill();
-      container.addChild(gfx);
-
-      params.triggerStart(container);
-    }
-
-    var testSFX: BattleSFXTemplate =
-    {
-      duration: 1000,
-      battleOverlay: app.moduleData.Templates.BattleSFX["guard"].battleOverlay,
-      userOverlay: overlayTestFN.bind(null, 0xFF0000),
-      enemyOverlay: overlayTestFN.bind(null, 0x00FF00),
-      userSprite: spriteTestFN
-    }
-
-    var user = this.state.activeUnit;
-    var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
-
-    var bs: BattleScene = this.battleScene;
-    var SFXTemplate = testSFX;
-
-    bs.handleAbilityUse(
-    {
-      user: user,
-      target: target,
-      SFXTemplate: SFXTemplate,
-      triggerEffectCallback: function(){console.log("triggerEffect")},
-      onSFXStartCallback: function(){console.log("onSFXStart")},
-      afterFinishedCallback: function(){console.log("afterFinishedCallback")}
-    });
-  }
-
   useSelectedAbility()
   {
     var user = this.state.activeUnit;
@@ -372,8 +284,6 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
     for (let key in app.moduleData.Templates.BattleSFX)
     {
-      var template = app.moduleData.Templates.BattleSFX[key];
-
       SFXTemplateSelectOptions.push(React.DOM.option(
       {
         value: key,

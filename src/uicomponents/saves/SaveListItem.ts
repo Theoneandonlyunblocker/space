@@ -1,6 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import ListColumn from "../list/ListColumn";
 import ListItemProps from "../list/ListItemProps";
 
 export interface PropTypes extends ListItemProps, React.Props<any>

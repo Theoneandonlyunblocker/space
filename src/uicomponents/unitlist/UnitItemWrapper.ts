@@ -43,8 +43,6 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
 
   render()
   {
-    var item = this.props.item;
-
     var wrapperProps: React.HTMLAttributes =
     {
       className: "unit-item-wrapper"

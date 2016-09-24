@@ -3,7 +3,6 @@
 
 import Unit from "../../Unit";
 import FleetContents from "./FleetContents";
-import fleets from "../../../modules/defaultmapmodes/maplayertemplates/fleets";
 import Fleet from "../../Fleet";
 import eventManager from "../../eventManager";
 

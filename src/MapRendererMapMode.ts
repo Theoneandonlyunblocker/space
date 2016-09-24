@@ -96,9 +96,6 @@ export default class MapRendererMapMode
       [layerName: string]: boolean;
     } = {};
 
-    var layersInTemplate: MapRendererLayer[] = [];
-    var layersNotInTemplate: MapRendererLayer[] = [];
-
     for (let i = 0; i < this.layers.length; i++)
     {
       var layer = this.layers[i];

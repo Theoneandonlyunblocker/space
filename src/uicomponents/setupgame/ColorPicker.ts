@@ -34,7 +34,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   state: StateType;
 
   private onChangeTimeoutHandle: number = null;
-  private hueGradientString: string;
   private baseElementID: string = "color-picker"; 
 
   constructor(props: PropTypes)
@@ -68,8 +67,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   private getInitialStateTODO(): StateType
   {
     const color = isFinite(this.props.hexColor) ? Color.fromHex(this.props.hexColor) : new Color(1, 1, 1);
-    const hexColor = this.props.hexColor || 0xFFFFFF;
-    const hexString = "#" + color.getHexString();
     const hsvColor = Color.convertScalarsToDegrees(color.getHSV());
 
     return(
@@ -103,7 +100,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     }
     
     const color: Color = Color.fromHSV.apply(null, Color.convertDegreesToScalars([hue, sat, val]));
-    const hexString = "#" + color.getHexString();
 
     this.setState(
     {
@@ -112,8 +108,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.onChange)
     {
-      var target = <HTMLInputElement> e.target;
-
       this.triggerParentOnChange(color, false);
     }
   }
@@ -163,7 +157,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   {
     const color = this.props.generateColor();
     const hexColor = color.getHex();
-    const hexString = "#" + color.getHexString();
 
     this.setState(
     {

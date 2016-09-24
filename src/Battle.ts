@@ -512,13 +512,6 @@ export default class Battle
       return total + value;
     }, 0);
   }
-  private getTotalMaxHealthForSide(side: UnitBattleSide): number
-  {
-    return this.getUnitsForSide(side).map(unit => unit.maxHealth).reduce((total, value) =>
-    {
-      return total + value;
-    }, 0);
-  }
   // End Evaluation
   private static getAbsolutePositionFromSidePosition(
     relativePosition: number[], side: UnitBattleSide): number[]

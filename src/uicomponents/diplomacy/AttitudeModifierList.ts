@@ -1,6 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import Personality from "../../Personality";
 import AttitudeModifier from "../../AttitudeModifier";
 
 import List from "../list/List";

@@ -13,8 +13,7 @@ import RampingValue from "./sfxfragments/RampingValue";
 import Color from "../../../src/Color";
 import
 {
-  getDummyTextureForShader,
-  getRelativeValue
+  getDummyTextureForShader
 } from "../../../src/utility";
 
 import ProtonWrapper from "./ProtonWrapper";
@@ -23,9 +22,6 @@ import ProtonWrapper from "./ProtonWrapper";
 export default function beam(props: SFXParams)
 {
   //----------INIT GENERAL
-  var width2 = props.width / 2;
-  var height2 = props.height / 2;
-
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(
     props.userOffset, props.width, "user");
 
@@ -320,7 +316,6 @@ export default function beam(props: SFXParams)
 
     var relativeElapsedTime = elapsedTime / props.duration
     var lifeLeft = 1 - relativeElapsedTime;
-    var relativeTimeSinceImpact = getRelativeValue(relativeElapsedTime, relativeImpactTime, 1.0);
 
     if (relativeElapsedTime >= relativeImpactTime - 0.02)
     {

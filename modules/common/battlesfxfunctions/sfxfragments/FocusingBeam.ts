@@ -6,7 +6,6 @@ import RampingValue from "./RampingValue";
 
 import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
-import Range from "../../../../src/Range";
 import
 {
   getRelativeValue,

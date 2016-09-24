@@ -9,7 +9,6 @@ import
   makeRandomPersonality
 } from "./utility";
 import AIController from "./AIController";
-import Building from "./Building";
 import Star from "./Star";
 import Flag from "./Flag";
 import Item from "./Item";

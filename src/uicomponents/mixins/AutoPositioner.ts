@@ -56,70 +56,71 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
     }
   }
   
-  private static flipSide(side: side): side
-  {
-    switch (side)
-    {
-      case "top":
-      {
-        return "bottom";
-      }
-      case "bottom":
-      {
-        return "top";
-      }
-      case "left":
-      {
-        return "right";
-      }
-      case "right":
-      {
-        return "left";
-      }
-      default:
-      {
-        throw new Error("Invalid side");
-      }
-    }
-  }
   // not currently used
-  private static elementFitsYSide(side: side, ownRect: ClientRect, parentRect: ClientRect)
-  {
-    switch (side)
-    {
-      case "top":
-      {
-        return parentRect.top - ownRect.height >= 0;
-      }
-      case "bottom":
-      {
-        return parentRect.bottom + ownRect.height < window.innerHeight;
-      }
-      default:
-      {
-        throw new Error("Invalid side");
-      }
-    }
-  }
+  // private static flipSide(side: side): side
+  // {
+  //   switch (side)
+  //   {
+  //     case "top":
+  //     {
+  //       return "bottom";
+  //     }
+  //     case "bottom":
+  //     {
+  //       return "top";
+  //     }
+  //     case "left":
+  //     {
+  //       return "right";
+  //     }
+  //     case "right":
+  //     {
+  //       return "left";
+  //     }
+  //     default:
+  //     {
+  //       throw new Error("Invalid side");
+  //     }
+  //   }
+  // }
   // not currently used
-  private static elementFitsXSide(side: side, ownRect: ClientRect, parentRect: ClientRect)
-  {
-    switch (side)
-    {
-      case "left":
-      {
-        return parentRect.left + ownRect.width < window.innerWidth;
-      }
-      case "right":
-      {
-        return parentRect.right - ownRect.width >= 0;
-      }
-      default:
-      {
-        throw new Error("Invalid side");
-      }
-    }
-  }
+  // private static elementFitsYSide(side: side, ownRect: ClientRect, parentRect: ClientRect)
+  // {
+  //   switch (side)
+  //   {
+  //     case "top":
+  //     {
+  //       return parentRect.top - ownRect.height >= 0;
+  //     }
+  //     case "bottom":
+  //     {
+  //       return parentRect.bottom + ownRect.height < window.innerHeight;
+  //     }
+  //     default:
+  //     {
+  //       throw new Error("Invalid side");
+  //     }
+  //   }
+  // }
+  // not currently used
+  // private static elementFitsXSide(side: side, ownRect: ClientRect, parentRect: ClientRect)
+  // {
+  //   switch (side)
+  //   {
+  //     case "left":
+  //     {
+  //       return parentRect.left + ownRect.width < window.innerWidth;
+  //     }
+  //     case "right":
+  //     {
+  //       return parentRect.right - ownRect.width >= 0;
+  //     }
+  //     default:
+  //     {
+  //       throw new Error("Invalid side");
+  //     }
+  //   }
+  // }
   private setAutoPosition()
   {
     const parentRect = this.props.getParentClientRect();

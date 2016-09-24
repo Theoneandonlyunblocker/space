@@ -130,7 +130,6 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var item = this.props.item;
     var columns = this.props.activeColumns;
 
     var cells: React.ReactElement<any>[] = [];

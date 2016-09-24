@@ -1,7 +1,6 @@
 import
 {
   AITemplateConstructor,
-  AITemplateConstructorProps
 } from "../../../src/templateinterfaces/AITemplateConstructor";
 
 import DefaultAI from "./DefaultAI";

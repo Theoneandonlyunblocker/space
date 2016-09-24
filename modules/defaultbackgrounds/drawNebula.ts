@@ -14,7 +14,7 @@ import
 const drawNebula: BackgroundDrawingFunction = function(
   seed: string, size: PIXI.Rectangle, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
 {
-  var oldRng = Math.random;
+  const oldRng = Math.random;
   Math.random = RNG.prototype.uniform.bind(new RNG(seed));
 
   var nebulaColorScheme = generateColorScheme();
@@ -64,6 +64,8 @@ const drawNebula: BackgroundDrawingFunction = function(
 
   container.removeChildren();
   shaderSprite.destroy(true, true);
+
+  Math.random = oldRng;
 
   return(
   {

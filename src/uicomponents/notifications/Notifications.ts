@@ -2,7 +2,6 @@
 
 
 import NotificationLog from "../../NotificationLog";
-import Notifications from "../../../modules/defaultnotifications/NotificationTemplates";
 import NotificationLogComponentFactory from "./NotificationLog";
 
 

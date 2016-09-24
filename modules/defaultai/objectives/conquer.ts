@@ -1,18 +1,10 @@
 import GrandStrategyAI from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
-import Objective from "../mapai/Objective";
 import ObjectivesAI from "../mapai/ObjectivesAI";
 
 import ObjectiveTemplate from "./common/ObjectiveTemplate";
 
-import DiplomacyState from "../../../src/DiplomacyState";
-import Player from "../../../src/Player";
 import Star from "../../../src/Star";
-import Unit from "../../../src/Unit";
-import
-{
-  getObjectKeysSortedByValueOfProp
-} from "../../../src/utility";
 
 import movePriority from "./common/movePriority";
 import
@@ -46,9 +38,6 @@ const conquer: ObjectiveTemplate =
     mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI)
   {
     const basePriority = grandStrategyAI.desireForExpansion;
-    
-    var relativeThreatOfPlayers = mapEvaluator.getRelativePerceivedThreatOfAllKnownPlayers();
-
     var possibleTargets: Star[] = mapEvaluator.player.getNeighboringStars().filter(star =>
     {
       if (!mapEvaluator.player.starIsRevealed(star))

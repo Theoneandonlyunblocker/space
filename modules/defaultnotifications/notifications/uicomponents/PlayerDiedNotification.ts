@@ -12,7 +12,7 @@ interface PropTypes
 
 class PlayerDiedNotification extends React.Component<PropTypes, {}>
 {
-  private displayName: string = "PlayerDiedNotification";
+  displayName = "PlayerDiedNotification";
   
   constructor(props: PropTypes)
   {

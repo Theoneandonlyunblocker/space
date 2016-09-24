@@ -1,7 +1,6 @@
 /// <reference path="../lib/pixi.d.ts" />
 
 import Point from "./Point";
-import Unit from "./Unit";
 
 function mirrorRectangle(rect: PIXI.Rectangle, midX: number): PIXI.Rectangle
 {

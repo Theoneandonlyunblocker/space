@@ -1,11 +1,9 @@
 import GrandStrategyAI from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
-import Objective from "../mapai/Objective";
 
 import ObjectiveTemplate from "./common/ObjectiveTemplate";
 
 import Star from "../../../src/Star";
-import Unit from "../../../src/Unit";
 
 import movePriority from "./common/movePriority";
 import

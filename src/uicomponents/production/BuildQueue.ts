@@ -61,8 +61,6 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
       convertedBuildQueue.push(manufactory.buildQueue[i].template);
     }
 
-    var canUpgradeCapacity = manufactory.capacity < manufactory.maxCapacity;
-
     return(
       React.DOM.div(
       {

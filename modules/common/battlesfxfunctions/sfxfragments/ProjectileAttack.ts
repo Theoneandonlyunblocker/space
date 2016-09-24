@@ -4,7 +4,6 @@ import SFXFragment from "./SFXFragment";
 import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
 
 import UnitDrawingFunctionData from "../../../../src/UnitDrawingFunctionData";
-import Point from "../../../../src/Point";
 import
 {
   randInt
@@ -257,8 +256,6 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
         userData.singleAttackOriginPoint;
       sprite.position.y = spawnPosition.y;
       sprite.anchor = new PIXI.Point(0, 0.5);
-
-      const targetBBox = targetData.boundingBox;
 
       this.projectiles.push(new Projectile(
       {

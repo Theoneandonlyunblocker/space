@@ -109,11 +109,12 @@ export class MapRendererLayersListComponent extends React.Component<PropTypes, S
 
   render()
   {
-    var mapRenderer = this.props.mapRenderer;
     var mapMode = this.props.currentMapMode;
-    if (!mapMode) return null;
+    if (!mapMode)
+    {
+      return null;
+    }
     var layersData = mapMode.layers;
-    var activeLayers = mapMode.getActiveLayers();
 
     var listItems: React.ReactElement<any>[] = [];
 

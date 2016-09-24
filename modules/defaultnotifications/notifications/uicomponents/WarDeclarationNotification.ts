@@ -12,7 +12,7 @@ interface PropTypes
 
 class WarDeclarationNotification extends React.Component<PropTypes, {}>
 {
-  private displayName: string = "WarDeclarationNotification";
+  displayName = "WarDeclarationNotification";
   
   constructor(props: PropTypes)
   {
@@ -29,7 +29,7 @@ class WarDeclarationNotification extends React.Component<PropTypes, {}>
       {
         className: "war-declaration-notification draggable-container"
       },
-        null
+        `${p.player1.name} declared war on ${p.player2.name}.`
       )
     );
   }

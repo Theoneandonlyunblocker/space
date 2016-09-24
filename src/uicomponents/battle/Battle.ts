@@ -91,8 +91,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   // and needs to be changed synchronously
   private tempHoveredUnit: Unit = null;
   
-  private idGenerator: number = 0;
-  
   private MCTree: MCTree = null;
   
   private SFXStartTime: number;

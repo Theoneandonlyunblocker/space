@@ -1,8 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-
 import DefenceBuildingList from "./DefenceBuildingList";
-import Options from "../../Options";
 import Star from "../../Star";
 
 

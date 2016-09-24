@@ -3,15 +3,12 @@ import Range from "./Range";
 import
 {
   excludeFromRange,
-  excludeFromRanges,
-  getIntersectingRanges,
   randomSelectFromRanges
 } from "./rangeOperations";
 import
 {
   clamp,
-  getAngleBetweenDegrees,
-  randRange
+  randRange,
 } from "./utility";
 
 
@@ -173,8 +170,6 @@ colorGenProps?:
   const hRangeWithMinExclusion = excludeFromRange(hRange, hExclusionRange);
   const candidateHValue = randomSelectFromRanges(hRangeWithMinExclusion);
   const h = clamp(candidateHValue, toContrastWithHUSL[0] - hMaxDifference, toContrastWithHUSL[0] + hMaxDifference);
-  const hDistance = getAngleBetweenDegrees(h * 360, toContrastWithHUSL[0]);
-  const relativeHDistance = 1 / (180 / hDistance);
   
   const sExclusionRangeMin = clamp(toContrastWithHUSL[1] - sMinDifference, sRange.min, 1.0);
   const sExclusionRange: Range =
@@ -196,14 +191,6 @@ colorGenProps?:
     s: excludeFromRange(sRange, sExclusionRange),
     l: excludeFromRange(lRange, lExclusionRange)
   });
-}
-
-function colorsContrast(aColor: Color, bColor: Color): boolean
-{
-  const a = aColor.getHUSL();
-  const b = bColor.getHUSL();
-  
-  return Math.abs(a[2] - b[2]) > 0.2;
 }
 
 export function generateSecondaryColor(mainColor: Color): Color

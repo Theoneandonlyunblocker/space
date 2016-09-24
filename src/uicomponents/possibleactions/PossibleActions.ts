@@ -81,7 +81,6 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
 
   componentDidMount()
   {
-    var self = this;
     eventManager.addEventListener("clearPossibleActions", this.clearExpandedAction);
     eventManager.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
   }

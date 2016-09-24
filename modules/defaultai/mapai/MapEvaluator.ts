@@ -352,9 +352,6 @@ export default class MapEvaluator
   }
   getPlayerInfluenceMap(player: Player): InfluenceMap
   {
-    var playerIsImmobile = player.isIndependent;
-
-
     const stars = this.player.getRevealedStars();
     const influence = new ValuesByStar<number>(stars, (star) =>
     {
@@ -736,8 +733,6 @@ export default class MapEvaluator
     var neighborStarsCountByPlayer = new ValuesByPlayer<number>();
 
     var allNeighbors = this.player.getNeighboringStars();
-    var neighborStarsForPlayer: Star[] = [];
-
     for (let i = 0; i < allNeighbors.length; i++)
     {
       var star: Star = allNeighbors[i];

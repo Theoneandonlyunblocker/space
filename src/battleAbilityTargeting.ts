@@ -1,14 +1,8 @@
 
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
-import EffectActionTemplate from "./templateinterfaces/EffectActionTemplate";
 
-import getNullFormation from "./getNullFormation";
 import Unit from "./Unit";
 import Battle from "./Battle";
-import
-{
-  reverseSide
-} from "./utility";
 
 export function getTargetsForAllAbilities(battle: Battle, user: Unit)
 {

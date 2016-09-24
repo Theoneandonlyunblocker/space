@@ -2,9 +2,7 @@
 
 
 import Player from "../../Player";
-import Flag from "../../Flag";
 import {default as PlayerSetup, PlayerSetupComponent} from "./PlayerSetup";
-import Color from "../../Color";
 import {ColorSetterComponent} from "./ColorSetter";
 
 

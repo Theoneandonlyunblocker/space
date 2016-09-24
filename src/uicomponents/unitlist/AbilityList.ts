@@ -27,9 +27,11 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
   render()
   {
     var abilities: AbilityBase[] = this.props.abilities;
-    var baseClassName = "unit-info-ability";
 
-    if (abilities.length < 1) return null;
+    if (abilities.length < 1)
+    {
+      return null;
+    }
 
 
     var abilityElements: React.ReactHTMLElement<any>[] = [];

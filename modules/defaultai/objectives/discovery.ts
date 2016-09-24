@@ -5,7 +5,6 @@ import Objective from "../mapai/Objective";
 import ObjectiveTemplate from "./common/ObjectiveTemplate";
 
 import Star from "../../../src/Star";
-import Unit from "../../../src/Unit";
 import
 {
   getRelativeValue

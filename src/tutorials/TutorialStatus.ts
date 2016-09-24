@@ -1,8 +1,3 @@
-import
-{
-  extendObject
-} from "../utility";
-
 import TutorialState from "./TutorialState";
 
 interface TutorialStatusValues

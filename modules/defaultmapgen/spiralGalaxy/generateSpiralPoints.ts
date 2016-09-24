@@ -86,7 +86,6 @@ export default function generateSpiralPoints(options: SpiralGalaxyOptionValues):
 
 function convertMapGenOptionValues(options: SpiralGalaxyOptionValues)
 {
-  const totalSize = options.defaultOptions.width * options.defaultOptions.height;
   const totalStars = options.defaultOptions.starCount;
   
   const actualArms = options.basicOptions.arms;

@@ -202,8 +202,6 @@ export default class PlayerControl
       }
     }
 
-    var oldFleets = this.selectedFleets.slice(0);
-
     this.selectedFleets = fleets;
   }
   selectOtherFleets(fleets: Fleet[]): void

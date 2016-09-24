@@ -4,11 +4,6 @@ import ProjectileAttack from "./sfxfragments/ProjectileAttack";
 
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
-import
-{
-  getRandomArrayItem
-} from "../../../src/utility";
-
 
 const rocketUrl = "modules/common/battlesfxfunctions/img/rocket.png";
 

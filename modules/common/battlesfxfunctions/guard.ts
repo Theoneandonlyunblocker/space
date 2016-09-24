@@ -28,7 +28,6 @@ export default function guard(props: SFXParams)
     blockAlpha: 0
   });
 
-  const maxFrontierRatioOfScreen = props.width / maxFrontier;
   const travelTime = 0.3;
   let hasTriggeredEffect = false;
 

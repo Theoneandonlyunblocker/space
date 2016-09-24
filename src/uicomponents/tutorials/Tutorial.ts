@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-import {default as Tutorial, TutorialPage} from "../../tutorials/Tutorial";
+import {TutorialPage} from "../../tutorials/Tutorial";
 import DontShowAgain from "./DontShowAgain";
 import {clamp} from "../../utility";
 import TutorialState from "../../tutorials/TutorialState";

@@ -8,7 +8,6 @@ import NotificationLogSaveData from "./savedata/NotificationLogSaveData";
 import Notification from "./Notification";
 import NotificationFilter from "./NotificationFilter";
 import eventManager from "./eventManager";
-import Star from "./Star";
 import Player from "./Player";
 
 

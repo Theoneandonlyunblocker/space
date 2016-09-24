@@ -1,7 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Player from "../../Player";
-import Trade from "../../Trade";
 import TradeOverview from "../trade/TradeOverview";
 import TopMenuPopup from "../popups/TopMenuPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";

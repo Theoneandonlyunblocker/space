@@ -7,7 +7,6 @@ import FillerPoint from "./FillerPoint";
 import Player from "./Player";
 import Point from "./Point";
 import GalaxyMap from "./GalaxyMap";
-import Options from "./Options";
 
 import
 {

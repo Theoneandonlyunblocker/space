@@ -33,7 +33,6 @@ import
   makeSectors,
   makePlayerForPirates,
   partiallySeverLinks,
-  severLinksToNonAdjacentStars
 } from "../common/mapGenUtils";
 
 import SpiralGalaxyOptionValues from "./SpiralGalaxyOptionValues";

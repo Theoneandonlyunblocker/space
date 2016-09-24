@@ -5,7 +5,6 @@ import ListColumn from "../list/ListColumn";
 import List from "../list/List";
 
 import DiplomacyActions from "./DiplomacyActions";
-import Opinion from "./Opinion";
 import {default as DiplomaticStatusPlayer, PropTypes as DiplomaticStatusPlayerProps} from "./DiplomaticStatusPlayer";
 
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";

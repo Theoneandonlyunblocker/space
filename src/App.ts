@@ -18,9 +18,8 @@ import Options from "./Options";
 import TutorialStatus from "./tutorials/TutorialStatus";
 import
 {
-  extendObject,
   onDOMLoaded,
-  getRandomProperty
+  getRandomProperty,
 } from "./utility";
 
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";

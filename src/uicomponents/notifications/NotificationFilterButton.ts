@@ -3,7 +3,7 @@
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import NotificationFilterList from "./NotificationFilterList";
 import NotificationFilter from "../../NotificationFilter";
-import {default as TopMenuPopup, TopMenuPopupComponent} from "../popups/TopMenuPopup";
+import TopMenuPopup from "../popups/TopMenuPopup";
 
 
 export interface PropTypes extends React.Props<any>

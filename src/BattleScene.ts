@@ -335,19 +335,19 @@ export default class BattleScene
       this.triggerEffectCallback = null;
       temp();
     }
-
   }
-  private executeActiveSFXHasFinishedCallback()
-  {
-    if (!this.activeSFXHasFinishedCallback)
-    {
-      throw new Error("No callback set for active SFX finish.");
-    }
+  // unused
+  // private executeActiveSFXHasFinishedCallback()
+  // {
+  //   if (!this.activeSFXHasFinishedCallback)
+  //   {
+  //     throw new Error("No callback set for active SFX finish.");
+  //   }
 
-    var temp = this.activeSFXHasFinishedCallback;
-    this.activeSFXHasFinishedCallback = null;
-    temp();
-  }
+  //   var temp = this.activeSFXHasFinishedCallback;
+  //   this.activeSFXHasFinishedCallback = null;
+  //   temp();
+  // }
   private executeAfterUseDelayHasFinishedCallback()
   {
     if (!this.afterUseDelayHasFinishedCallback)
@@ -495,20 +495,21 @@ export default class BattleScene
       }
     }
   }
-  private getBattleSceneUnitOverlay(unit: Unit): BattleSceneUnitOverlay
-  {
-    switch (unit.battleStats.side)
-    {
-      case "side1":
-      {
-        return this.side1Overlay;
-      }
-      case "side2":
-      {
-        return this.side2Overlay;
-      }
-    }
-  }
+  // unused
+  // private getBattleSceneUnitOverlay(unit: Unit): BattleSceneUnitOverlay
+  // {
+  //   switch (unit.battleStats.side)
+  //   {
+  //     case "side1":
+  //     {
+  //       return this.side1Overlay;
+  //     }
+  //     case "side2":
+  //     {
+  //       return this.side2Overlay;
+  //     }
+  //   }
+  // }
   private render(timeStamp?: number)
   {
     if (this.isPaused)

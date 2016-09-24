@@ -3,8 +3,6 @@
 import Color from "../../Color";
 import ColorPicker from "./ColorPicker";
 
-import applyMixins from "../mixins/applyMixins";
-
 export interface PropTypes extends React.Props<any>
 {
   setActiveColorPicker?: (colorSetter: ColorSetterComponent) => void;

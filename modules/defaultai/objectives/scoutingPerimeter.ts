@@ -3,8 +3,6 @@ import Objective from "../mapai/Objective";
 
 import ObjectiveTemplate from "./common/ObjectiveTemplate";
 
-import Unit from "../../../src/Unit";
-
 import moveTo from "./common/moveroutines/moveTo";
 import movePriority from "./common/movePriority";
 import

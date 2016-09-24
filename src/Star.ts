@@ -912,7 +912,6 @@ export default class Star implements Point
       all: {}
     }
 
-    var allPlayers: Player[] = [];
     byVisibilityAndId.visible[this.owner.id] = this.owner;
     var secondaryController = this.getSecondaryController();
     if (secondaryController)

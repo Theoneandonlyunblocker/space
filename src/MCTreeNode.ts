@@ -3,7 +3,6 @@ import app from "./App"; // TODO global
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 
 import Battle from "./Battle";
-import Unit from "./Unit";
 import
 {
   getRandomKeyWithWeights

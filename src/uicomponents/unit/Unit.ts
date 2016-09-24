@@ -1,13 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import Unit from "../../Unit";
 import UnitPortrait from "./UnitPortrait";
 import UnitPassiveEffects from "./UnitPassiveEffects";
 import UnitAttributeChanges from "./UnitAttributeChanges";
 import UnitInfo from "./UnitInfo";
 import UnitIconContainer from "./UnitIconContainer";
-import Battle from "../../Battle";
-import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 import UnitDisplayData from "../../UnitDisplayData";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";

@@ -38,17 +38,6 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
     {
       var star = player.controlledLocations[i];
 
-      var data =
-      {
-        star: star,
-
-        id: star.id,
-        name: star.name,
-        income: star.getIncome(),
-
-        rowConstructor: EconomySummaryItem
-      };
-
       rows.push(
       {
         key: "" + star.id,

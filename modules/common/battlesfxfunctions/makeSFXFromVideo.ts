@@ -61,8 +61,6 @@ export default function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: P
 
   function animate()
   {
-    var elapsedTime = Date.now() - startTime;
-
     baseTexture.update();
     if (!baseTexture.source.paused && !baseTexture.source.ended)
     {

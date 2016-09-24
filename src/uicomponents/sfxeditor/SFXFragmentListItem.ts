@@ -4,7 +4,7 @@ import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments
 
 import SFXFragmentConstructor from "./SFXFragmentConstructor";
 
-import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
 type Fragment = SFXFragment<any, any> | SFXFragmentConstructor;

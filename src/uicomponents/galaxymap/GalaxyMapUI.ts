@@ -13,7 +13,6 @@ import eventManager from "../../eventManager";
 import PlayerControl from "../../PlayerControl";
 import Game from "../../Game";
 import MapRenderer from "../../MapRenderer";
-import Renderer from "../../Renderer";
 import Player from "../../Player";
 import Fleet from "../../Fleet";
 import FleetAttackTarget from "../../FleetAttackTarget";

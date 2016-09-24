@@ -3,7 +3,6 @@ import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 
 import Unit from "./Unit";
 import Battle from "./Battle";
-import GuardCoverage from "./GuardCoverage";
 import UnitDisplayData from "./UnitDisplayData";
 import
 {

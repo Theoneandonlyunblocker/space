@@ -15,7 +15,6 @@ export default class Flag
   tetriaryColor: Color;
   backgroundEmblem: Emblem;
   foregroundEmblem: Emblem;
-  private _renderedSvg: HTMLElement;
 
   customImage: string;
   private _customImageToRender: HTMLCanvasElement;

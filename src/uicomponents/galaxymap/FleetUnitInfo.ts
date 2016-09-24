@@ -4,7 +4,7 @@ import Unit from "../../Unit";
 import FleetUnitInfoName from "./FleetUnitInfoName";
 import UnitStrength from "../unit/UnitStrength";
 
-import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
 export interface PropTypes extends React.Props<any>

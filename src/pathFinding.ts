@@ -65,8 +65,6 @@ export function aStar(start: Star, target: Star)
       {
         costSoFar[neigh.id] = newCost;
         // ^ done
-        var dx = Math.abs(neigh.id[1] - target.id[1]);
-        var dy = Math.abs(neigh.id[2] - target.id[2]);
         var priority = newCost;
         frontier.push(priority, neigh);
         //frontier.insert({p: priority, tile: neigh});

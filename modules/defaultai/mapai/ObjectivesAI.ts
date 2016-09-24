@@ -1,6 +1,3 @@
-
-import app from "../../../src/App"; // TODO global
-
 import MapEvaluator from "./MapEvaluator";
 import GrandStrategyAI from "./GrandStrategyAI";
 import Objective from "./Objective";

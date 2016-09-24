@@ -2,7 +2,6 @@
 
 import app from "../../App"; // TODO global
 import Player from "../../Player";
-import Name from "../../Name";
 import Color from "../../Color";
 import
 {

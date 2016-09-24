@@ -44,11 +44,11 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
       priority: this.getPlayerPriority()
     });
   }
-  private componentDidMount()
+  componentDidMount()
   {
     eventManager.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
   }
-  private componentWillUnmount()
+  componentWillUnmount()
   {
     eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
   }

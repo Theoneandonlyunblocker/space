@@ -1,7 +1,6 @@
 import
 {
   getAttackDamageIncrease,
-  getReducedDamageFactor,
   getAdjustedDamage
 } from "./damageAdjustments";
 
@@ -54,9 +53,6 @@ export const beamAttack: EffectActionTemplate =
   getUnitsInArea: areaColumn,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
-    const baseDamage = 0.75;
-    const damageType = DamageType.magical;
-
     singleTargetDamage.executeAction(user, target, battle,
     {
       baseDamage: 0.75,

@@ -3,7 +3,6 @@
 import app from "../../App"; // TODO global
 
 import Player from "../../Player";
-import resources from "../../../modules/defaultmapmodes/maplayertemplates/resources";
 import Resource from "./Resource";
 import eventManager from "../../eventManager";
 

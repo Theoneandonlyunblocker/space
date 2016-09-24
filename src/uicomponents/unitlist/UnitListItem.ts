@@ -7,7 +7,6 @@ import ListItemProps from "../list/ListItemProps";
 import
 {
   default as UnitComponentFactory,
-  UnitComponent,
   PropTypes as UnitComponentPropTypes
 } from "../unit/Unit";
 
@@ -118,7 +117,6 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   makeDragClone()
   {
     const container = document.createElement("div");
-    const unitComponentProps = 
     
     ReactDOM.render(
       UnitComponentFactory(shallowExtend<UnitComponentPropTypes>(

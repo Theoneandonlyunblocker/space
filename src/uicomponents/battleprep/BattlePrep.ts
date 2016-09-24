@@ -234,7 +234,6 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   {
     var battlePrep = this.props.battlePrep;
     var player = battlePrep.humanPlayer;
-    var location = battlePrep.battleData.location;
 
     // priority: hovered unit > selected unit > battle info
     var leftUpperElement: React.ReactElement<any>;

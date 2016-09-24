@@ -125,7 +125,7 @@ export default class Manufactory
 
     if (units.length > 0)
     {
-      var fleet = new Fleet(this.player, units, this.star);
+      new Fleet(this.player, units, this.star);
     }
 
     if (!this.player.isAI)

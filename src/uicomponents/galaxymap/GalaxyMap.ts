@@ -1,11 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import app from "../../App"; // TODO global
-
-
-import GalaxyMap from "../../GalaxyMap";
 import GalaxyMapUI from "./GalaxyMapUI";
-import Options from "../../Options";
 import Player from "../../Player";
 import PlayerControl from "../../PlayerControl";
 import Game from "../../Game";

@@ -49,22 +49,17 @@ export const defence: UnitArchetype =
   scoreMultiplierForRowFN: function(row: string, rowUnits: Unit[], enemyUnits: Unit[])
   {
     var multiplier = (row === "ROW_BACK" ? 0.7 : 1);
-    var totalDefenceUnderThreshhold = 0;
-    var threshhold = 6;
-    var alreadyHasDefender = false;
 
-    for (let i = 0; i < rowUnits.length; i++)
+    const unitDefenceThreshhold = 6;
+    const totalDefenceUnderThreshhold = rowUnits.map(unit =>
     {
-      var unit = rowUnits[i];
-      if (!unit) continue
+      const defenceUnderThreshhold = Math.max(unit.attributes.defence - unitDefenceThreshhold);
       
-      if (unit.template.archetype.type === "defence")
-      {
-        return multiplier;
-      }
-
-      totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
-    }
+      return defenceUnderThreshhold;
+    }).reduce((total, current) =>
+    {
+      return total + current;
+    }, 0);
 
     return multiplier + totalDefenceUnderThreshhold * 0.2;
   }

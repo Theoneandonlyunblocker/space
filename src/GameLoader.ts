@@ -16,15 +16,12 @@ import Emblem from "./Emblem";
 import Flag from "./Flag";
 import Fleet from "./Fleet";
 import Item from "./Item";
-import Personality from "./Personality";
 import MapGenResult from "./MapGenResult";
 import Name from "./Name";
 import AIController from "./AIController";
 import
 {
-  extendObject,
-  makeRandomPersonality,
-  getRandomProperty
+  getRandomProperty,
 } from "./utility";
 
 import AIControllerSaveData from "./savedata/AIControllerSaveData";

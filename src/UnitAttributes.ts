@@ -1,6 +1,4 @@
 import FlatAndMultiplierAdjustment from "./FlatAndMultiplierAdjustment";
-import Item from "./Item";
-import StatusEffect from "./StatusEffect";
 import
 {
   clamp

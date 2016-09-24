@@ -1,6 +1,3 @@
-import Color from "../../../../src/Color";
-import Point from "../../../../src/Point";
-
 export type SFXFragmentPropType =
   "number" |
   "point" |

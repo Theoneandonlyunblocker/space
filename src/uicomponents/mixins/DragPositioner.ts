@@ -369,7 +369,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
     if (this.onDragEnd)
     {
-      const endSuccesful = this.onDragEnd();
+      this.onDragEnd();
     }
     
     if (this.ownerIsMounted)

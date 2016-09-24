@@ -268,8 +268,6 @@ export default class DiplomacyStatus
     var modifiersByPlayer = this.attitudeModifiersByPlayer;
     var allModifiers = app.moduleData.Templates.AttitudeModifiers;
 
-    for (let playerId in modifiersByPlayer)
-
     var playerModifiers = modifiersByPlayer[player.id];
 
     var activeModifiers:

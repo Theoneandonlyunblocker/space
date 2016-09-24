@@ -1,4 +1,3 @@
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import TemplateCollection from "./templateinterfaces/TemplateCollection";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";

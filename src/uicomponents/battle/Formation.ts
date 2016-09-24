@@ -12,7 +12,6 @@ import
   ComponentPropTypes as UnitComponentPropTypes,
   DisplayStatus as UnitDisplayStatus
 } from "../unit/Unit";
-import Battle from "../../Battle";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 import {shallowExtend} from "../../utility";
 

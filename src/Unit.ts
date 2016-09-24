@@ -36,7 +36,6 @@ import Fleet from "./Fleet";
 import Player from "./Player";
 import Star from "./Star";
 import GuardCoverage from "./GuardCoverage";
-import QueuedActionData from "./QueuedActionData";
 import UnitBattleStats from "./UnitBattleStats";
 import UnitBattleSide from "./UnitBattleSide";
 import AbilityUpgradeData from "./AbilityUpgradeData";
@@ -44,7 +43,6 @@ import UnitDisplayData from "./UnitDisplayData";
 import UnitItems from "./UnitItems";
 
 import UnitSaveData from "./savedata/UnitSaveData";
-import UnitItemsSaveData from "./savedata/UnitItemsSaveData";
 import UnitBattleStatsSaveData from "./savedata/UnitBattleStatsSaveData";
 
 
@@ -390,7 +388,8 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  private setQueuedAction(ability: AbilityTemplate, target: Unit)
+  
+  public setQueuedAction(ability: AbilityTemplate, target: Unit)
   {
     this.battleStats.queuedAction =
     {
@@ -402,7 +401,7 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  private interruptQueuedAction(interruptStrength: number)
+  public interruptQueuedAction(interruptStrength: number)
   {
     var action = this.battleStats.queuedAction;
     if (!action)
@@ -418,7 +417,7 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  private updateQueuedAction()
+  public updateQueuedAction()
   {
     var action = this.battleStats.queuedAction;
     if (!action)
@@ -430,13 +429,13 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  private isReadyToUseQueuedAction()
+  public isReadyToUseQueuedAction()
   {
     var action = this.battleStats.queuedAction;
 
     return (action && action.turnsPrepared >= action.ability.preparation.turnsToPrep);
   }
-  private clearQueuedAction()
+  public clearQueuedAction()
   {
     this.battleStats.queuedAction = null;
     this.uiDisplayIsDirty = true;
@@ -783,13 +782,12 @@ export default class Unit
   }
   public transferToPlayer(newPlayer: Player)
   {
-    var oldPlayer = this.fleet.player;
     var location = this.fleet.location;
 
     this.removeFromPlayer();
 
     newPlayer.addUnit(this);
-    var newFleet = new Fleet(newPlayer, [this], location);
+    new Fleet(newPlayer, [this], location);
   }
   public removeGuard(amount: number)
   {

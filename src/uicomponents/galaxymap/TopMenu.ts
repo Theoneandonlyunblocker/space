@@ -3,7 +3,6 @@
 import Player from "../../Player";
 import Game from "../../Game";
 import Options from "../../Options";
-import Technology from "../technologies/Technology";
 import {default as TopMenuPopups, TopMenuPopupsComponent} from "./TopMenuPopups";
 import eventManager from "../../eventManager";
 

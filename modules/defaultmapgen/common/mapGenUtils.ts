@@ -11,7 +11,6 @@ import federationAlliance from "../../defaultraces/templates/federationAlliance"
 
 import triangulate from "./triangulate";
 import MapGenDataByStarID from "./MapGenDataByStarID";
-import MapGenPoint from "./MapGenPoint";
 
 import Region from "../../../src/Region";
 import Star from "../../../src/Star";
@@ -21,7 +20,6 @@ import Player from "../../../src/Player";
 import Color from "../../../src/Color";
 import Emblem from "../../../src/Emblem";
 import Flag from "../../../src/Flag";
-import TemplateIndexes from "../../../src/TemplateIndexes";
 import
 {
   aStar
@@ -172,7 +170,6 @@ export function makeSectors(
     [starID: number]: Region;
   } = {};
 
-  const sectorsOverMaxSize: Region[] = [];
   const unassignedStars: Star[] = stars.slice(0);
   const leftoverStars: Star[] = [];
 

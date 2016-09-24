@@ -32,8 +32,6 @@ export default class RectangleSelect
   }
   addEventListeners()
   {
-    var self = this;
-
     eventManager.dispatchEvent("setRectangleSelectTargetFN", this);
   }
 
