@@ -13,7 +13,6 @@ import
   backTrace
 } from "./pathFinding";
 
-
 export default class Fleet
 {
   player: Player;
@@ -106,7 +105,10 @@ export default class Fleet
   {
     var index = this.getUnitIndex(unit);
 
-    if (index < 0) return false;
+    if (index < 0)
+    {
+      throw this.makeNoUnitError(unit);
+    }
 
     this.units.splice(index, 1);
     unit.removeFromFleet();
@@ -129,7 +131,7 @@ export default class Fleet
   {
     if (fleet === this)
     {
-      return;
+      throw new Error("Tried to transfer unit into unit's current fleet");
     }
     if (unit.isStealthy() !== this.isStealthy)
     {
@@ -139,7 +141,7 @@ export default class Fleet
 
     if (index < 0)
     {
-      return false;
+      throw this.makeNoUnitError(unit);
     }
 
     fleet.addUnit(unit);
@@ -248,11 +250,15 @@ export default class Fleet
     eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     eventManager.dispatchEvent("updateSelection", null);
   }
+  // TODO 24.9.2016 | add interface for path type
   getPathTo(newLocation: Star)
   {
     var a = aStar(this.location, newLocation);
 
-    if (!a) return;
+    if (!a)
+    {
+      throw new Error(`Couldn't find path between ${this.location.name} and ${newLocation.name}`);
+    }
 
     var path = backTrace(a.came, newLocation);
 
@@ -335,6 +341,10 @@ export default class Fleet
     }
 
     return this.detectedStars;
+  }
+  private makeNoUnitError(unit: Unit): Error
+  {
+    return new Error(`Unit ${unit.name} is not part of fleet ${this.name}`);
   }
   serialize(): FleetSaveData
   {
