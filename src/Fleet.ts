@@ -10,7 +10,8 @@ import eventManager from "./eventManager";
 import
 {
   aStar,
-  backTrace
+  backTrace,
+  PathNode,
 } from "./pathFinding";
 
 export default class Fleet
@@ -249,8 +250,7 @@ export default class Fleet
     eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     eventManager.dispatchEvent("updateSelection", null);
   }
-  // TODO 24.9.2016 | add interface for path type
-  getPathTo(newLocation: Star)
+  getPathTo(newLocation: Star): PathNode[]
   {
     var a = aStar(this.location, newLocation);
 

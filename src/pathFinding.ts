@@ -1,7 +1,25 @@
 import PriorityQueue from "./PriorityQueue";
 import Star from "./Star";
 
-export function backTrace(graph: any, target: Star)
+export interface AStarGraph
+{
+  came:
+  {
+    [starID: number]: PathNode;
+  },
+  cost:
+  {
+    [starID: number]: number;
+  },
+}
+
+export interface PathNode
+{
+  star: Star;
+  cost: number;
+}
+
+export function backTrace(graph: {[starID: number]: PathNode}, target: Star): PathNode[]
 {
   var parent = graph[target.id];
 
@@ -30,25 +48,34 @@ export function backTrace(graph: any, target: Star)
   return path;
 }
 
-export function aStar(start: Star, target: Star)
+export function aStar(start: Star, target: Star): AStarGraph | null
 {
   var frontier = new PriorityQueue();
   frontier.push(0, start);
-  //var frontier = new EasyStar.PriorityQueue("p", 1);
-  //frontier.insert({p: 0, tile: start})
 
-  var cameFrom:any = {};
-  var costSoFar:any = {};
+  const cameFrom:
+  {
+    [starID: number]:
+    {
+      star: Star,
+      cost: number,
+    }
+  } = {};
+  const costSoFar:
+  {
+    [starID: number]: number;
+  } = {};
   cameFrom[start.id] = null;
   costSoFar[start.id] = 0;
 
 
   while (!frontier.isEmpty())
-  //while (frontier.length > 0)
   {
     var current = frontier.pop();
-    //var current = frontier.shiftHighestPriorityElement().tile;
-    if (current === target) return {came: cameFrom, cost: costSoFar, queue: frontier};
+    if (current === target)
+    {
+      return {came: cameFrom, cost: costSoFar};
+    }
 
     var neighbors = current.getAllLinks();
 
@@ -67,7 +94,6 @@ export function aStar(start: Star, target: Star)
         // ^ done
         var priority = newCost;
         frontier.push(priority, neigh);
-        //frontier.insert({p: priority, tile: neigh});
         cameFrom[neigh.id] =
         {
           star: current,

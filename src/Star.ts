@@ -844,7 +844,8 @@ export default class Star implements Point
       var a = aStar(this, target);
       return a.cost[target.id];
     }
-    else if (!this.indexedDistanceToStar[target.id])
+    
+    if (!this.indexedDistanceToStar[target.id])
     {
       var a = aStar(this, target);
       if (!a)
