@@ -214,7 +214,7 @@ export default class Player
       money: 0
     });
   }
-  destroy()
+  destroy(): void
   {
     this.diplomacyStatus.destroy();
     this.diplomacyStatus = null;
@@ -225,7 +225,7 @@ export default class Player
       eventManager.removeEventListener(key, this.listeners[key]);
     }
   }
-  die()
+  die(): void
   {
     for (var i = this.fleets.length - 1; i >= 0; i--)
     {
@@ -237,7 +237,7 @@ export default class Player
     });
     console.log(this.name + " died");
   }
-  initTechnologies(savedData?: PlayerTechnologySaveData)
+  initTechnologies(savedData?: PlayerTechnologySaveData): void
   {
     this.playerTechnology = new PlayerTechnology(this.getResearchSpeed.bind(this),
       this.race.technologies, savedData);
@@ -247,7 +247,7 @@ export default class Player
       this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology)
     );
   }
-  makeRandomFlag(seed?: any)
+  makeRandomFlag(seed?: any): Flag
   {
     if (!this.color || !this.secondaryColor)
     {
@@ -277,16 +277,16 @@ export default class Player
 
     return new AIController(template);
   }
-  addUnit(unit: Unit)
+  addUnit(unit: Unit): void
   {
     this.units[unit.id] = unit;
   }
-  removeUnit(unit: Unit)
+  removeUnit(unit: Unit): void
   {
     this.units[unit.id] = null;
     delete this.units[unit.id];
   }
-  getAllUnits()
+  getAllUnits(): Unit[]
   {
     var allUnits: Unit[] = [];
     for (let unitId in this.units)
@@ -295,18 +295,18 @@ export default class Player
     }
     return allUnits;
   }
-  forEachUnit(operator: (unit: Unit) => void)
+  forEachUnit(operator: (unit: Unit) => void): void
   {
     for (let unitId in this.units)
     {
       operator(this.units[unitId]);
     }
   }
-  getFleetIndex(fleet: Fleet)
+  getFleetIndex(fleet: Fleet): number
   {
     return this.fleets.indexOf(fleet);
   }
-  addFleet(fleet: Fleet)
+  addFleet(fleet: Fleet): void
   {
     if (this.getFleetIndex(fleet) >= 0)
     {
@@ -316,7 +316,7 @@ export default class Player
     this.fleets.push(fleet);
     this.visionIsDirty = true;
   }
-  removeFleet(fleet: Fleet)
+  removeFleet(fleet: Fleet): void
   {
     var fleetIndex = this.getFleetIndex(fleet);
 
@@ -328,7 +328,7 @@ export default class Player
     this.fleets.splice(fleetIndex, 1);
     this.visionIsDirty = true;
   }
-  getFleetsWithPositions()
+  getFleetsWithPositions(): {position: Point, data: Fleet}[]
   {
     var positions:
     {
@@ -350,23 +350,29 @@ export default class Player
     return positions;
   }
 
-  hasStar(star: Star)
+  hasStar(star: Star): boolean
   {
     return (this.controlledLocations.indexOf(star) >= 0);
   }
-  addStar(star: Star)
+  addStar(star: Star): void
   {
-    if (this.hasStar(star)) return false;
+    if (this.hasStar(star))
+    {
+      throw new Error(`Player ${this.name} already has star ${star.name}`);
+    }
 
     star.owner = this;
     this.controlledLocations.push(star);
     this.visionIsDirty = true;
   }
-  removeStar(star: Star)
+  removeStar(star: Star): void
   {
     var index = this.controlledLocations.indexOf(star);
 
-    if (index < 0) return false;
+    if (index < 0)
+    {
+      throw new Error(`Player ${this.name} doesn't have star ${star.name}`);
+    }
 
     star.owner = null;
     this.controlledLocations.splice(index, 1);
@@ -376,7 +382,7 @@ export default class Player
       app.game.killPlayer(this);
     }
   }
-  getIncome()
+  getIncome(): number
   {
     var income = 0;
 
@@ -387,7 +393,7 @@ export default class Player
 
     return income;
   }
-  addResource(resource: ResourceTemplate, amount: number)
+  addResource(resource: ResourceTemplate, amount: number): void
   {
     if (!this.resources[resource.type])
     {
@@ -396,7 +402,7 @@ export default class Player
 
     this.resources[resource.type] += amount;
   }
-  getResourceIncome()
+  getResourceIncome(): {[resourceType: string]: {resource: ResourceTemplate; amount: number;}}
   {
     var incomeByResource:
     {
@@ -487,7 +493,7 @@ export default class Player
       return alreadyAddedPlayersByID[playerID];
     })
   }
-  updateVisionInStar(star: Star)
+  updateVisionInStar(star: Star): void
   {
     // meet players
     if (this.diplomacyStatus.getUnMetPlayerCount() > 0)
@@ -495,7 +501,7 @@ export default class Player
       this.meetPlayersInStarByVisibility(star, "visible");
     }
   }
-  updateDetectionInStar(star: Star)
+  updateDetectionInStar(star: Star): void
   {
     // meet players
     if (this.diplomacyStatus.getUnMetPlayerCount() > 0)
@@ -509,7 +515,7 @@ export default class Player
       this.identifyUnit(unitsToIdentify[i]);
     }
   }
-  updateAllVisibilityInStar(star: Star)
+  updateAllVisibilityInStar(star: Star): void
   {
     if (this.starIsVisible(star))
     {
@@ -520,7 +526,7 @@ export default class Player
       this.updateDetectionInStar(star);
     }
   }
-  meetPlayersInStarByVisibility(star: Star, visibility: string)
+  meetPlayersInStarByVisibility(star: Star, visibility: string): void
   {
     var presentPlayersByVisibility = star.getPresentPlayersByVisibility();
 
@@ -533,7 +539,7 @@ export default class Player
       }
     }
   }
-  updateVisibleStars()
+  updateVisibleStars(): void
   {
     var previousVisibleStars = extendObject(this.visibleStars);
     var previousDetectedStars = extendObject(this.detectedStars);
@@ -706,7 +712,7 @@ export default class Player
     if (this.visionIsDirty) this.updateVisibleStars();
     return Boolean(this.detectedStars[star.id]);
   }
-  getLinksToUnRevealedStars()
+  getLinksToUnRevealedStars(): {[starID: number]: Star[]}
   {
     if (this.visionIsDirty) this.updateVisibleStars();
     
@@ -738,14 +744,14 @@ export default class Player
 
     return linksBySourceStarId;
   }
-  identifyUnit(unit: Unit)
+  identifyUnit(unit: Unit): void
   {
     if (!this.identifiedUnits[unit.id])
     {
       this.identifiedUnits[unit.id] = unit;
     }
   }
-  unitIsIdentified(unit: Unit)
+  unitIsIdentified(unit: Unit): boolean
   {
     if (Options.debug.enabled && !this.isAI)
     {
@@ -753,7 +759,7 @@ export default class Player
     }
     else return Boolean(this.identifiedUnits[unit.id]) || Boolean(this.units[unit.id]);
   }
-  fleetIsFullyIdentified(fleet: Fleet)
+  fleetIsFullyIdentified(fleet: Fleet): boolean
   {
     if (Options.debug.enabled && !this.isAI)
     {
@@ -769,11 +775,11 @@ export default class Player
 
     return true;
   }
-  addItem(item: Item)
+  addItem(item: Item): void
   {
     this.items.push(item);
   }
-  removeItem(item: Item)
+  removeItem(item: Item): void
   {
     var index = this.items.indexOf(item);
     if (index === -1)
@@ -783,7 +789,7 @@ export default class Player
 
     this.items.splice(index, 1);
   }
-  getNearestOwnedStarTo(star: Star)
+  getNearestOwnedStarTo(star: Star): Star
   {
     var self = this;
     var isOwnedByThisFN = function(star: Star)
@@ -793,7 +799,7 @@ export default class Player
 
     return star.getNearestStarForQualifier(isOwnedByThisFN);
   }
-  attackTarget(location: Star, target: FleetAttackTarget, battleFinishCallback?: () => void)
+  attackTarget(location: Star, target: FleetAttackTarget, battleFinishCallback?: () => void): void
   {
     var battleData: BattleData =
     {
@@ -858,7 +864,7 @@ export default class Player
 
     return manufactories;
   }
-  meetsTechnologyRequirements(requirements: TechnologyRequirement[])
+  meetsTechnologyRequirements(requirements: TechnologyRequirement[]): boolean
   {
     for (let i = 0; i < requirements.length; i++)
     {
@@ -871,7 +877,7 @@ export default class Player
 
     return true;
   }
-  getGloballyBuildableUnits()
+  getGloballyBuildableUnits(): UnitTemplate[]
   {
     var templates: UnitTemplate[] = [];
     var typesAlreadyAddedChecked:
@@ -903,7 +909,7 @@ export default class Player
 
     return templates;
   }
-  getGloballyBuildableItems()
+  getGloballyBuildableItems(): ItemTemplate[]
   {
     // TODO manufactory
     var itemTypes: ItemTemplate[] = [];
@@ -915,7 +921,7 @@ export default class Player
 
     return itemTypes;
   }
-  getManufacturingCapacityFor(template: ManufacturableThing, type: string)
+  getManufacturingCapacityFor(template: ManufacturableThing, type: "item" | "unit"): number
   {
     var totalCapacity = 0;
     var capacityByStar:
