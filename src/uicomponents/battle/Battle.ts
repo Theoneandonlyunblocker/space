@@ -15,7 +15,7 @@ import AbilityUseEffectQueue from "../../AbilityUseEffectQueue";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 import
 {
-  useAbility,
+  useAbilityAndGetUseEffects,
   AbilityUseEffect
 } from "../../battleAbilityUsage";
 import
@@ -348,12 +348,11 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private handleAbilityUse(ability: AbilityTemplate, target: Unit, wasByPlayer: boolean)
   {
-    const abilityUseEffects = useAbility(
+    const abilityUseEffects = useAbilityAndGetUseEffects(
       this.props.battle,
       ability,
       this.props.battle.activeUnit,
-      target,
-      true
+      target
     );
     
     this.abilityUseEffectQueue.addEffects(abilityUseEffects);

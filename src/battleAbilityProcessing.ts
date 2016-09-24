@@ -24,6 +24,7 @@ export interface AbilityEffectData
   target: Unit;
   trigger: (user: Unit, target: Unit) => boolean;
 }
+// TODO 24.9.2016 | is this really needed?
 export interface AbilityEffectDataByPhase
 {
   beforeUse: AbilityEffectData[];

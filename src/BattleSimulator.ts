@@ -49,7 +49,7 @@ export default class BattleSimulator
   }
   simulateAbility(ability: AbilityTemplate, target: Unit)
   {
-    useAbility(this.battle, ability, this.battle.activeUnit, target, false);
+    useAbility(this.battle, ability, this.battle.activeUnit, target);
   }
   // getBattleEndData()
   // {

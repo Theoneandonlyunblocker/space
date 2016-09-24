@@ -22,65 +22,70 @@ export interface AbilityUseEffect
   newEvaluation: number;
 }
 
-export function useAbility(battle: Battle, ability: AbilityTemplate,
-  user: Unit, target: Unit, getEffects: boolean): AbilityUseEffect[]
+export function useAbility(battle: Battle, ability: AbilityTemplate, user: Unit, target: Unit): void
 {
-  var effectDataByPhase = getAbilityEffectDataByPhase(battle,
+  const effectDataByPhase = getAbilityEffectDataByPhase(battle,
   {
     ability: ability,
     user: user,
     intendedTarget: target
   });
 
-  var useData = executeFullAbilityEffects(battle, effectDataByPhase, getEffects);
+  executeFullAbilityEffects(battle, effectDataByPhase);
+}
+export function useAbilityAndGetUseEffects(battle: Battle, ability: AbilityTemplate,
+  user: Unit, target: Unit): AbilityUseEffect[]
+{
+  const effectDataByPhase = getAbilityEffectDataByPhase(battle,
+  {
+    ability: ability,
+    user: user,
+    intendedTarget: target
+  });
+
+  const useData = executeFullAbilityEffectsAndGetUseEffects(battle, effectDataByPhase);
 
   return useData;
 }
-function executeFullAbilityEffects(battle: Battle, abilityEffectData: AbilityEffectDataByPhase,
-  getUseEffects: boolean): AbilityUseEffect[]
+function executeFullAbilityEffects(battle: Battle, abilityEffectDataByPhase: AbilityEffectDataByPhase): void
 {
-  var beforeUse = executeMultipleEffects(battle, abilityEffectData.beforeUse, getUseEffects);
-  var abilityEffects = executeMultipleEffects(battle, abilityEffectData.abilityEffects, getUseEffects);
-  var afterUse = executeMultipleEffects(battle, abilityEffectData.afterUse, getUseEffects);
-
-  if (getUseEffects)
+  [
+    abilityEffectDataByPhase.beforeUse,
+    abilityEffectDataByPhase.abilityEffects,
+    abilityEffectDataByPhase.afterUse,
+  ].forEach(effectDataForPhase =>
   {
-    return beforeUse.concat(abilityEffects, afterUse);
-  }
-  else
-  {
-    return null;
-  }
-}
-
-function executeMultipleEffects(battle: Battle, abilityEffectData: AbilityEffectData[],
-  getUseEffects: boolean): AbilityUseEffect[]
-{
-  if (getUseEffects)
-  {
-    var useEffects: AbilityUseEffect[] = [];
-
-    for (let i = 0; i < abilityEffectData.length; i++)
+    effectDataForPhase.forEach(effectData =>
     {
-      var useEffect = executeAbilityEffectDataAndGetUseEffect(battle, abilityEffectData[i]);
+      executeAbilityEffectData(battle, effectData);
+    });
+  });
+}
+function executeFullAbilityEffectsAndGetUseEffects(battle: Battle,
+  abilityEffectDataByPhase: AbilityEffectDataByPhase): AbilityUseEffect[]
+{
+  const useEffects: AbilityUseEffect[] = [];
+
+  [
+    abilityEffectDataByPhase.beforeUse,
+    abilityEffectDataByPhase.abilityEffects,
+    abilityEffectDataByPhase.afterUse,
+  ].forEach(effectDataForPhase =>
+  {
+    effectDataForPhase.forEach(effectData =>
+    {
+      const useEffect = executeAbilityEffectDataAndGetUseEffect(battle, effectData);
       if (useEffect)
       {
         useEffects.push(useEffect);
       }
-    }
+    });
+  });
 
-    return useEffects;
-  }
-  else
-  {
-    for (let i = 0; i < abilityEffectData.length; i++)
-    {
-      executeAbilityEffectData(battle, abilityEffectData[i]);
-    }
-  }
+  return useEffects;
 }
 
-function shouldEffectActionTrigger(abilityEffectData: AbilityEffectData)
+function shouldEffectActionTrigger(abilityEffectData: AbilityEffectData): boolean
 {
   if (!abilityEffectData.trigger)
   {

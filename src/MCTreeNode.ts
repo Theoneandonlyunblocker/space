@@ -106,8 +106,7 @@ export default class MCTreeNode
     child.depth = this.depth + 1;
     this.children.push(child);
 
-    useAbility(battle, move.ability, battle.activeUnit,
-      battle.unitsById[move.targetId], false);
+    useAbility(battle, move.ability, battle.activeUnit, battle.unitsById[move.targetId]);
 
     child.currentScore = battle.getEvaluation();
 
@@ -201,7 +200,7 @@ export default class MCTreeNode
     var ability = app.moduleData.Templates.Abilities[targetData.abilityType];
     var target = battle.unitsById[targetData.targetId];
 
-    useAbility(battle, ability, battle.activeUnit, target, false);
+    useAbility(battle, ability, battle.activeUnit, target);
     battle.endTurn();
   }
   simulateToEnd(): void
