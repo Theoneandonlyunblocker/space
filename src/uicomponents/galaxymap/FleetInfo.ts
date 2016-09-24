@@ -41,21 +41,26 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var fleet = this.props.fleet;
-    if (!fleet) return null;
-    var totalHealth = fleet.getTotalHealth();
-    var isNotDetected = this.props.isNotDetected;
+    const fleet = this.props.fleet;
+    const isNotDetected = this.props.isNotDetected;
+    if (!fleet)
+    {
+      return null;
+    }
 
-    var healthRatio = totalHealth.current / totalHealth.max;
-    var critThreshhold = 0.3;
+    const totalCurrentHealth = fleet.getTotalCurrentHealth();
+    const totalMaxHealth = fleet.getTotalMaxHealth();
 
-    var healthStatus = "";
+    const healthRatio = totalCurrentHealth / totalMaxHealth;
+    const critThreshhold = 0.3;
+
+    let healthStatus = "";
 
     if (!isNotDetected && healthRatio <= critThreshhold)
     {
       healthStatus += " critical";
     }
-    else if (!isNotDetected && totalHealth.current < totalHealth.max)
+    else if (!isNotDetected && totalCurrentHealth < totalMaxHealth)
     {
       healthStatus += " wounded";
     }
@@ -84,13 +89,13 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
             {
               className: "fleet-info-strength-current" + healthStatus
             },
-              isNotDetected ? "???" : totalHealth.current
+              isNotDetected ? "???" : totalCurrentHealth
             ),
             React.DOM.span(
             {
               className: "fleet-info-strength-max"
             },
-              isNotDetected ? "/???" : "/" + totalHealth.max
+              isNotDetected ? "/???" : "/" + totalMaxHealth
             )
           ),
           FleetControls(

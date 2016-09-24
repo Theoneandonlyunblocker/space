@@ -287,20 +287,25 @@ export default class Fleet
   {
     return this.location.fleets[this.player.id];
   }
-  // TODO 24.9.2016 | split function
-  getTotalHealth()
+  public getTotalCurrentHealth(): number
   {
-    var total =
-    {
-      current: 0,
-      max: 0
-    }
+    let total = 0;
 
-    for (let i = 0; i < this.units.length; i++)
+    this.units.forEach(unit =>
     {
-      total.current += this.units[i].currentHealth;
-      total.max += this.units[i].maxHealth;
-    }
+      total += unit.currentHealth;
+    });
+
+    return total;
+  }
+  public getTotalMaxHealth(): number
+  {
+    let total = 0;
+
+    this.units.forEach(unit =>
+    {
+      total += unit.maxHealth;
+    });
 
     return total;
   }
