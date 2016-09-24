@@ -296,5 +296,9 @@ export default class MCTreeNode
     {
       return this.getHighestUctChild().getRecursiveBestUctChild();
     }
+    else
+    {
+      throw new Error("MCTreeNode has no children despite battle not having ended");
+    }
   }
 }

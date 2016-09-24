@@ -140,6 +140,8 @@ export function getRandomKeyWithWeights(target: {[prop: string]: number})
       return prop;
     }
   }
+
+  throw new Error();
 }
 export function getRandomArrayItemWithWeights<T extends {weight?: number}>(arr: T[]): T
 {
@@ -158,6 +160,8 @@ export function getRandomArrayItemWithWeights<T extends {weight?: number}>(arr: 
       return arr[i];
     }
   }
+
+  throw new Error();
 }
 export function findItemWithKey<T>(source: {[key: string]: any},
   keyToFind: string, parentKey?: string, hasParentKey: boolean = false): T

@@ -312,6 +312,8 @@ export function makeSectors(
 
         const perimeterSort = b.getBorderLengthWithStars([star]) - a.getBorderLengthWithStars([star]);
         if (perimeterSort) return perimeterSort;
+
+        return a.id.localeCompare(b.id);
       });
 
       candidateSectors[0].addStar(star);

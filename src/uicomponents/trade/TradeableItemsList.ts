@@ -66,6 +66,10 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
           })
         });
       }
+      default:
+      {
+        throw new Error(`Unrecognized tradeable item key ${item.key}`);
+      }
     }
   }
   private static listItemSortOrder =

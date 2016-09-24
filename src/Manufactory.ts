@@ -170,7 +170,7 @@ export default class Manufactory
       potential: potential
     })
   }
-  getManufacturableThingsForType(type: string): ManufacturableThing[]
+  getManufacturableThingsForType(type: "item" | "unit"): ManufacturableThing[]
   {
     switch (type)
     {
@@ -184,7 +184,7 @@ export default class Manufactory
       }
     }
   }
-  canManufactureThing(template: ManufacturableThing, type: string)
+  canManufactureThing(template: ManufacturableThing, type: "item" | "unit")
   {
     var manufacturableThings = this.getManufacturableThingsForType(type);
     return manufacturableThings.indexOf(template) !== -1;

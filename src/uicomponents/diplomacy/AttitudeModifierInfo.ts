@@ -67,7 +67,6 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
         if (this.props.endTurn < 0)
         {
           cellContent = null;
-          return;
         }
         break;
       }

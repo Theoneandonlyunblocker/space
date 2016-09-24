@@ -66,6 +66,10 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
       {
         return "img/icons/t3icon.png"
       }
+      default:
+      {
+        throw new Error("Couldn't find icon for item tech level " + techLevel);
+      }
     }
   }
 

@@ -339,15 +339,16 @@ export class ListComponent extends React.Component<PropTypes, StateType>
           }
         }
       }
-      // const keySortingResult = a.key > b.key ? 1 : -1;
-      // if (this.state.sortingOrderForColumnKey[this.state.selectedColumn.key] === "desc")
-      // {
-      //   return -1 * keySortingResult;
-      // }
-      // else
-      // {
-      //   return keySortingResult;
-      // }
+      
+      const keySortingResult = a.key > b.key ? 1 : -1;
+      if (this.state.sortingOrderForColumnKey[this.state.selectedColumn.key] === "desc")
+      {
+        return -1 * keySortingResult;
+      }
+      else
+      {
+        return keySortingResult;
+      }
     });
     
     return sortedItems;
