@@ -93,7 +93,7 @@ export default class Star implements Point
     this.y = y;
   }
   // BUILDINGS
-  addBuilding(building: Building)
+  addBuilding(building: Building): void
   {
     if (!this.buildings[building.template.category])
     {
@@ -129,7 +129,7 @@ export default class Star implements Point
       eventManager.dispatchEvent("humanPlayerBuiltBuilding");
     }
   }
-  removeBuilding(building: Building)
+  removeBuilding(building: Building): void
   {
     if (
       !this.buildings[building.template.category] ||
@@ -145,7 +145,7 @@ export default class Star implements Point
       buildings.indexOf(building), 1);
     this.buildingsEffectIsDirty = true;
   }
-  sortDefenceBuildings()
+  sortDefenceBuildings(): void
   {
     this.buildings["defence"].sort(function(a, b)
     {
@@ -167,9 +167,12 @@ export default class Star implements Point
     });
   }
 
-  getSecondaryController()
+  getSecondaryController(): Player | null
   {
-    if (!this.buildings["defence"]) return null;
+    if (!this.buildings["defence"])
+    {
+      return null;
+    }
 
     var defenceBuildings = this.buildings["defence"];
     for (let i = 0; i < defenceBuildings.length; i++)
@@ -182,7 +185,7 @@ export default class Star implements Point
 
     return null;
   }
-  updateController()
+  updateController(): void
   {
     if (!this.buildings["defence"]) return;
 
@@ -207,7 +210,7 @@ export default class Star implements Point
     eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
     // TODO display | update starOwners if secondary controller changes
   }
-  updateBuildingsEffect()
+  updateBuildingsEffect(): void
   {
     var effect: BuildingEffect = {};
 
@@ -223,7 +226,7 @@ export default class Star implements Point
     this.buildingsEffect = effect;
     this.buildingsEffectIsDirty = false;
   }
-  getBuildingsEffect()
+  getBuildingsEffect(): BuildingEffect
   {
     if (this.buildingsEffectIsDirty)
     {
@@ -232,7 +235,7 @@ export default class Star implements Point
 
     return this.buildingsEffect;
   }
-  getEffectWithBuildingsEffect(base: number, effectType: string)
+  getEffectWithBuildingsEffect(base: number, effectType: string): number
   {
     var effect = base;
     var buildingsEffect = this.getBuildingsEffect()[effectType];
@@ -249,11 +252,11 @@ export default class Star implements Point
 
     return effect;
   }
-  getIncome()
+  getIncome(): number
   {
     return this.getEffectWithBuildingsEffect(this.baseIncome, "income");
   }
-  getResourceIncome()
+  getResourceIncome(): {resource: ResourceTemplate; amount: number;}
   {
     if (!this.resource) return null;
     
@@ -263,11 +266,11 @@ export default class Star implements Point
       amount: this.getEffectWithBuildingsEffect(0, "resourceIncome")
     });
   }
-  getResearchPoints()
+  getResearchPoints(): number
   {
     return this.getEffectWithBuildingsEffect(0, "research");
   }
-  getAllBuildings()
+  getAllBuildings(): Building[]
   {
     var buildings: Building[] = [];
 
@@ -278,7 +281,7 @@ export default class Star implements Point
 
     return buildings;
   }
-  getBuildingsForPlayer(player: Player)
+  getBuildingsForPlayer(player: Player): Building[]
   {
     var allBuildings = this.getAllBuildings();
 
@@ -307,7 +310,7 @@ export default class Star implements Point
 
     return buildings;
   }
-  getBuildableBuildings()
+  getBuildableBuildings(): BuildingTemplate[]
   {
     var canBuild: BuildingTemplate[] = [];
     for (let buildingType in app.moduleData.Templates.Buildings)
@@ -330,7 +333,7 @@ export default class Star implements Point
 
     return canBuild;
   }
-  getBuildingUpgrades()
+  getBuildingUpgrades(): {[buildingId: number]: BuildingUpgradeData[]}
   {
     var allUpgrades:
     {
@@ -422,41 +425,44 @@ export default class Star implements Point
 
     return fleetOwners;
   }
-  getFleetIndex(fleet: Fleet)
+  getFleetIndex(fleet: Fleet): number
   {
     if (!this.fleets[fleet.player.id]) return -1;
 
     return this.fleets[fleet.player.id].indexOf(fleet);
   }
-  hasFleet(fleet: Fleet)
+  hasFleet(fleet: Fleet): boolean
   {
     return this.getFleetIndex(fleet) >= 0;
   }
-  addFleet(fleet: Fleet)
+  addFleet(fleet: Fleet): void
   {
     if (!this.fleets[fleet.player.id])
     {
       this.fleets[fleet.player.id] = [];
     }
 
-    if (this.hasFleet(fleet)) return false;
+    if (this.hasFleet(fleet))
+    {
+      throw new Error(`Star ${this.name} already has fleet ${fleet.name}`);
+    }
 
     this.fleets[fleet.player.id].push(fleet);
   }
-  addFleets(fleets: Fleet[])
+  addFleets(fleets: Fleet[]): void
   {
     for (let i = 0; i < fleets.length; i++)
     {
       this.addFleet(fleets[i]);
     }
   }
-  removeFleet(fleet: Fleet)
+  removeFleet(fleet: Fleet): void
   {
     var fleetIndex = this.getFleetIndex(fleet);
 
     if (fleetIndex < 0)
     {
-      return false;
+      throw new Error(`Star ${this.name} doesn't have fleet ${fleet.name}`);
     }
 
     this.fleets[fleet.player.id].splice(fleetIndex, 1);
@@ -466,7 +472,7 @@ export default class Star implements Point
       delete this.fleets[fleet.player.id];
     }
   }
-  removeFleets(fleets: Fleet[])
+  removeFleets(fleets: Fleet[]): void
   {
     for (let i = 0; i < fleets.length; i++)
     {
@@ -558,23 +564,23 @@ export default class Star implements Point
   }
 
   // MAP GEN
-  setResource(resource: ResourceTemplate)
+  setResource(resource: ResourceTemplate): void
   {
     this.resource = resource;
   }
-  hasLink(linkTo: Star)
+  hasLink(linkTo: Star): boolean
   {
     return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;
   }
   // could maybe use adding / removing links as a gameplay mechanic
-  addLink(linkTo: Star)
+  addLink(linkTo: Star): void
   {
     if (this.hasLink(linkTo)) return;
 
     this.linksTo.push(linkTo);
     linkTo.linksFrom.push(this);
   }
-  removeLink(linkTo: Star, removeOpposite: boolean = true)
+  removeLink(linkTo: Star, removeOpposite: boolean = true): void
   {
     if (!this.hasLink(linkTo))
     {
@@ -596,11 +602,11 @@ export default class Star implements Point
       linkTo.removeLink(this, false);
     }
   }
-  getAllLinks()
+  getAllLinks(): Star[]
   {
     return this.linksTo.concat(this.linksFrom);
   }
-  getEdgeWith(neighbor: Star)
+  getEdgeWith(neighbor: Star): Voronoi.Edge<Star>
   {
     for (let i = 0; i < this.voronoiCell.halfedges.length; i++)
     {
@@ -656,7 +662,7 @@ export default class Star implements Point
 
     return neighbors;
   }
-  public getAllLinkedStars()
+  public getAllLinkedStars(): Star[]
   {
     return this.getLinkedInRange(99999).all;
   }
@@ -791,7 +797,7 @@ export default class Star implements Point
 
     return island;
   }
-  getNearestStarForQualifier(qualifier: (star: Star) => boolean)
+  getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star
   {
     if (qualifier(this)) return this;
 
@@ -938,7 +944,7 @@ export default class Star implements Point
 
     return byVisibilityAndId;
   }
-  getSeed()
+  getSeed(): string
   {
     if (!this.seed)
     {
@@ -951,7 +957,7 @@ export default class Star implements Point
 
     return this.seed;
   }
-  buildManufactory()
+  buildManufactory(): void
   {
     this.manufactory = new Manufactory(this);
   }
