@@ -180,7 +180,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
   const capitalizedAttributeName = attributeName[0].toUpperCase() + attributeName.slice(1);
 
   const key = `snipe${capitalizedAttributeName}`;
-  const displayName = `Snipe ${capitalizedAttributeName}`;
+  const displayName = `Snipe: ${capitalizedAttributeName}`;
   const description = `Deals damage and lowers target ${attributeName}`;
   
   return(
