@@ -10,10 +10,13 @@ import
 } from "../../../../src/utility";
 
 type impactFN = (projectile: Projectile, container: PIXI.Container, time: number) => void;
+type makeProjectileSpriteFN = (projectileNumber: number) => PIXI.Sprite;
+type animateProjectileFN = (projectile: Projectile, time: number) => void;
 
 interface PartialProjectileAttackProps
 {
-  projectileTextures?: PIXI.Texture[];
+  makeProjectileSprite?: makeProjectileSpriteFN;
+  animateProjectile?: animateProjectileFN;
 
   onImpact?: impactFN;
   animateImpact?: impactFN;
@@ -36,7 +39,8 @@ interface PartialProjectileAttackProps
 }
 interface ProjectileAttackProps extends PartialProjectileAttackProps
 {
-  projectileTextures: PIXI.Texture[];
+  makeProjectileSprite: makeProjectileSpriteFN;
+  animateProjectile?: animateProjectileFN;
 
   onImpact?: impactFN;
   animateImpact?: impactFN;
@@ -59,8 +63,9 @@ interface ProjectileAttackProps extends PartialProjectileAttackProps
 }
 const defaultProjectileAttackProps: ProjectileAttackProps =
 {
-  projectileTextures: [],
-
+  makeProjectileSprite: undefined,
+  animateProjectile: undefined,
+  
   onImpact: undefined,
   animateImpact: undefined,
   useSequentialAttackOriginPoints: true,
@@ -77,7 +82,7 @@ const defaultProjectileAttackProps: ProjectileAttackProps =
 }
 const ProjectileAttackPropTypes: SFXFragmentPropTypes =
 {
-  // projectileTextures: PIXI.Texture[],
+  // makeProjectileSprite,
 
   // onImpact: impactFN,
   // animateImpact?: impactFN,
@@ -105,6 +110,7 @@ class Projectile
   private container: PIXI.Container;
   public sprite: PIXI.Sprite;
 
+  private animateProjectile: animateProjectileFN | undefined;
   private onImpact: impactFN | undefined;
   private animateImpact: impactFN | undefined;
   private impactPosition: number | undefined;
@@ -124,6 +130,7 @@ class Projectile
     maxSpeed: number;
     acceleration: number;
     spawnPositionX: number;
+    animateProjectile?: animateProjectileFN;
     onImpact?: impactFN;
     animateImpact?: impactFN;
     impactPosition?: number;
@@ -140,6 +147,7 @@ class Projectile
     this.acceleration = props.acceleration;
     this.spawnPositionX = props.spawnPositionX;
 
+    this.animateProjectile = props.animateProjectile;
     this.onImpact = props.onImpact;
     this.animateImpact = props.animateImpact;
     this.impactPosition = props.impactPosition;
@@ -187,6 +195,10 @@ class Projectile
     {
       this.sprite.visible = true;
       this.sprite.position.x = position;
+      if (this.animateProjectile)
+      {
+        this.animateProjectile(this, time);
+      }
     }
   }
   private getPosition(relativeTime: number): number
@@ -248,8 +260,7 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
 
     for (let i = 0; i < this.props.amountToSpawn; i++)
     {
-      const texture = this.props.projectileTextures[i % this.props.projectileTextures.length];
-      const sprite = new PIXI.Sprite(texture);
+      const sprite = this.props.makeProjectileSprite(i);
 
       const spawnPosition = this.props.useSequentialAttackOriginPoints ?
         userData.sequentialAttackOriginPoints[i % userData.sequentialAttackOriginPoints.length] :
@@ -269,6 +280,7 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
         maxSpeed: this.props.maxSpeed,
         acceleration: this.props.acceleration,
 
+        animateProjectile: this.props.animateProjectile,
         onImpact: this.props.onImpact,
         animateImpact: this.props.animateImpact,
         impactPosition: randInt(this.props.impactPosition.min, this.props.impactPosition.max),
