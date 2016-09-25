@@ -10,6 +10,7 @@ import ProjectileAttack from "./sfxfragments/ProjectileAttack";
 import RampingValue from "./sfxfragments/RampingValue";
 
 import ProtonWrapper from "./ProtonWrapper";
+import ColorMatrixFilter from "./ColorMatrixFilter";
 
 
 const colors =
@@ -20,7 +21,17 @@ const colors =
   [UnitAttribute.speed]: Color.fromHexString("12FE9E"),
 }
 
-const projectileURL = "modules/common/battlesfxfunctions/img/rocket.png"; // TODO
+for (let attribute in colors)
+{
+  const color = colors[attribute];
+
+  const hsv = color.getHSV();
+  hsv[1] = 0.6;
+
+  colors[attribute] = Color.fromHSV.apply(null, hsv);
+}
+
+const projectileURL = "modules/common/battlesfxfunctions/img/ellipse.png";
 
 function snipe(type: UnitAttribute, params: SFXParams)
 {
@@ -82,9 +93,21 @@ function snipe(type: UnitAttribute, params: SFXParams)
   const maxSpeed = maxSpeedAt1000Duration * (1000 / params.duration);
   const acceleration = maxSpeed / 0.5;
   
+  const projectileColorMatrixFilter = new ColorMatrixFilter();
+  projectileColorMatrixFilter.multiplyByColor(colors[type]);
+  projectileColorMatrixFilter.multiplyRGB(3.0);
+  
   const projectileFragment = new ProjectileAttack(
   {
-    projectileTextures: [PIXI.Texture.fromFrame(projectileURL)],
+    makeProjectileSprite: (i) =>
+    {
+      const sprite = new PIXI.Sprite(PIXI.Texture.fromFrame(projectileURL));
+      sprite.height = 6;
+      sprite.width = 32;
+      sprite.shader = projectileColorMatrixFilter;
+
+      return sprite;
+    },
     
     maxSpeed: maxSpeed,
     acceleration: acceleration,
