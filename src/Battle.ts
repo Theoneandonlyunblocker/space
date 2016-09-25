@@ -185,7 +185,7 @@ export default class Battle
           for (let j = 0; j < skills[i].atBattleStart.length; j++)
           {
             var effect = skills[i].atBattleStart[j];
-            effect.action.executeAction(unit, unit, this, effect.data);
+            effect.executeAction(unit, unit, this);
           }
         }
       }

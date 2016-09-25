@@ -16,7 +16,6 @@ import AITemplateConstructor from "./templateinterfaces/AITemplateConstructor";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
-import EffectActionTemplate from "./templateinterfaces/EffectActionTemplate";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import MapGenTemplate from "./templateinterfaces/MapGenTemplate";
 import CultureTemplate from "./templateinterfaces/CultureTemplate";
@@ -41,7 +40,6 @@ type TemplateKey =
   "BattleSFX" |
   "Buildings" |
   "Cultures" |
-  "EffectActions" |
   "Items" |
   "MapGen" |
   "MapRendererLayers" |
@@ -68,7 +66,6 @@ interface Templates
   BattleSFX: TemplateIndex<BattleSFXTemplate>;
   Buildings: TemplateIndex<BuildingTemplate>;
   Cultures: TemplateIndex<CultureTemplate>;
-  EffectActions: TemplateIndex<EffectActionTemplate>;
   Items: TemplateIndex<ItemTemplate>;
   MapGen: TemplateIndex<MapGenTemplate>;
   MapRendererLayers: TemplateIndex<MapRendererLayerTemplate>;
@@ -101,7 +98,6 @@ export default class ModuleData
     BattleSFX: {},
     Buildings: {},
     Cultures: {},
-    EffectActions: {},
     Items: {},
     MapGen: {},
     MapRendererLayers: {},

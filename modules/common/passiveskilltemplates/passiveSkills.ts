@@ -1,75 +1,33 @@
 import PassiveSkillTemplate from "../../../src/templateinterfaces/PassiveSkillTemplate";
-import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
 import Unit from "../../../src/Unit";
+import GuardCoverage from "../../../src/GuardCoverage";
 import BattlePrep from "../../../src/BattlePrep";
 
+import autoHealStatusEffect from "../statuseffecttemplates/autoHeal";
+import poisonedStatusEffect from "../statuseffecttemplates/poisoned";
+
 import * as EffectActions from "../effectactiontemplates/effectActions";
+import {bindEffectActionData} from "../effectactiontemplates/effectActions";
 
 export var autoHeal: PassiveSkillTemplate =
 {
   type: "autoHeal",
   displayName: "Auto heal",
-  description: "Heal 50 health after every turn",
+  description: "Restore 50 health after every action",
 
   // TODO passive skills TODO status effects
   atBattleStart:
   [
     {
-      action: EffectActions.healSelf,
-      data:
+      getUnitsInArea: (user) => [user],
+      executeAction: bindEffectActionData(EffectActions.addStatusEffect,
       {
-        flat: 50
-      },
-      sfx:
-      {
-        duration: 1200
-        // battleOverlay: function(props: Templates.SFXParams)
-        // {
-        //   // cg40400.bmp - cg40429.bmp converted to webm
-        //   return BattleSFXFunctions.makeVideo("img/battleEffects/heal.webm", props);
-        // }
-      },
-      trigger: function(user: Unit, target: Unit)
-      {
-        return user.currentHealth < user.maxHealth;
-      }
+        duration: -1,
+        template: autoHealStatusEffect
+      })
     }
   ]
-}
-export var poisoned: PassiveSkillTemplate =
-{
-  type: "poisoned",
-  displayName: "Poisoned",
-  description: "-10% max health per turn",
-  
-  // TODO passive skills TODO status effects
-  atBattleStart:
-  [
-    {
-      action: EffectActions.healSelf,
-      data:
-      {
-        maxHealthPercentage: -0.1
-      },
-      sfx:
-      {
-        duration: 1200,
-        userOverlay: function(props: SFXParams)
-        {
-          var canvas = <HTMLCanvasElement> document.createElement("canvas");
-          canvas.width = props.width;
-          canvas.height = props.height;
-          var ctx = canvas.getContext("2d");
-          ctx.fillStyle = "rgba(30, 150, 30, 0.5)"
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-          return canvas;
-        }
-      }
-    }
-  ]
-
 }
 export var overdrive: PassiveSkillTemplate =
 {
@@ -80,7 +38,12 @@ export var overdrive: PassiveSkillTemplate =
   atBattleStart:
   [
     {
-      action: EffectActions.buffTest
+      getUnitsInArea: (user) => [user],
+      executeAction: bindEffectActionData(EffectActions.addStatusEffect,
+      {
+        duration: 2,
+        template: poisonedStatusEffect
+      })
     }
   ]
 }
@@ -94,15 +57,24 @@ export var initialGuard: PassiveSkillTemplate =
   atBattleStart:
   [
     {
-      action: EffectActions.guardRow,
-      data: {perInt: 0, flat: 50}
+      getUnitsInArea: (user) => [user],
+      executeAction: bindEffectActionData(EffectActions.addGuard,
+      {
+        coverage: GuardCoverage.row,
+        flat: 50
+      })
     }
   ],
   inBattlePrep:
   [
     function(user: Unit, battlePrep: BattlePrep)
     {
-      EffectActions.guardRow.executeAction(user, user, null, {perInt: 0, flat: 50});
+      EffectActions.addGuard(
+      {
+        coverage: GuardCoverage.row,
+        flat: 50
+      },
+      user, user, null);
     }
   ]
 }

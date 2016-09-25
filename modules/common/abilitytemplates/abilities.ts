@@ -1,6 +1,7 @@
 import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate";
 
 import DamageType from "../../../src/DamageType";
+import GuardCoverage from "../../../src/GuardCoverage";
 import {UnitAttribute} from "../../../src/UnitAttributes";
 import
 {
@@ -8,10 +9,16 @@ import
   targetNextRow,
   targetSelf,
   targetAll,
+
+  areaColumn,
+  areaOrthogonalNeighbors,
+  areaRowNeighbors,
+  areaSingle,
 } from "../../../src/targeting";
 
 import * as BattleSFX from "../battlesfxtemplates/battleSFX";
 import * as EffectActions from "../effectactiontemplates/effectActions";
+import {bindEffectActionData} from "../effectactiontemplates/effectActions";
 
 export var closeAttack: AbilityTemplate =
 {
@@ -29,7 +36,12 @@ export var closeAttack: AbilityTemplate =
   },
   mainEffect:
   {
-    action: EffectActions.closeAttack,
+    executeAction: bindEffectActionData(EffectActions.inflictDamage,
+    {
+      baseDamage: 0.66,
+      damageType: DamageType.physical
+    }),
+    getUnitsInArea: areaRowNeighbors,
     sfx: BattleSFX.rocketAttack
   }
 }
@@ -43,7 +55,12 @@ export var beamAttack: AbilityTemplate =
   getPossibleTargets: targetEnemies,
   mainEffect:
   {
-    action: EffectActions.beamAttack,
+    executeAction: bindEffectActionData(EffectActions.inflictDamage,
+    {
+      baseDamage: 0.75,
+      damageType: DamageType.magical
+    }),
+    getUnitsInArea: areaColumn,
     sfx: BattleSFX.beam
   },
   
@@ -62,7 +79,18 @@ export var bombAttack: AbilityTemplate =
   getPossibleTargets: targetEnemies,
   mainEffect:
   {
-    action: EffectActions.bombAttack,
+    executeAction: bindEffectActionData(EffectActions.inflictDamage,
+    {
+      baseDamage: 0.5,
+      damageType: DamageType.physical
+    }),
+    getUnitsInArea: (user, target, battle) =>
+    {
+      return areaOrthogonalNeighbors(user, target, battle).filter(unit =>
+      {
+        return !unit || unit.battleStats.side !== user.battleStats.side;
+      });
+    },
     sfx: BattleSFX.rocketAttack
   }
 }
@@ -76,12 +104,16 @@ export var guardRow: AbilityTemplate =
   getPossibleTargets: targetSelf,
   mainEffect:
   {
-    action: EffectActions.guardRow,
-    sfx: BattleSFX.guard,
-    data:
+    executeAction: bindEffectActionData(EffectActions.addGuard,
     {
-      perInt: 20
-    }
+      perAttribute:
+      {
+        intelligence: {flat: 20}
+      },
+      coverage: GuardCoverage.row
+    }),
+    getUnitsInArea: areaSingle,
+    sfx: BattleSFX.guard,
   },
   
   preservesUserGuard: true,
@@ -96,28 +128,28 @@ export var boardingHook: AbilityTemplate =
   getPossibleTargets: targetEnemies,
   mainEffect:
   {
-    action: EffectActions.singleTargetDamage,
-    sfx: BattleSFX.rocketAttack,
-    data:
+    executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.8,
       damageType: DamageType.physical
-    },
+    }),
+    getUnitsInArea: areaSingle,
+    sfx: BattleSFX.rocketAttack,
     attachedEffects:
     [
       {
-        action: EffectActions.increaseCaptureChance,
-        data:
+        getUnitsInArea: areaSingle,
+        executeAction: bindEffectActionData(EffectActions.increaseCaptureChance,
         {
           flat: 0.5
-        }
+        })
       },
       {
-        action: EffectActions.receiveCounterAttack,
-        data:
+        getUnitsInArea: areaSingle,
+        executeAction: bindEffectActionData(EffectActions.receiveCounterAttack,
         {
-          baseDamage: 0.5
-        }
+          baseDamage: 0.5,
+        })
       }
     ]
   }
@@ -133,9 +165,9 @@ export var debugAbility: AbilityTemplate =
   getPossibleTargets: targetAll,
   mainEffect:
   {
-    action: EffectActions.buffTest,
+    getUnitsInArea: areaSingle,
+    executeAction: () => {},
     sfx: BattleSFX.guard,
-    data: {}
   }
 }
 
@@ -149,21 +181,21 @@ export var rangedAttack: AbilityTemplate =
   getPossibleTargets: targetEnemies,
   mainEffect:
   {
-    action: EffectActions.singleTargetDamage,
-    sfx: BattleSFX.rocketAttack,
-    data:
+    executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 1,
       damageType: DamageType.physical
-    },
+    }),
+    getUnitsInArea: areaSingle,
+    sfx: BattleSFX.rocketAttack,
     attachedEffects:
     [
       {
-        action: EffectActions.receiveCounterAttack,
-        data:
+        executeAction: bindEffectActionData(EffectActions.receiveCounterAttack,
         {
           baseDamage: 0.5
-        }
+        }),
+        getUnitsInArea: areaSingle,
       }
     ]
   },
@@ -193,29 +225,34 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
     getPossibleTargets: targetEnemies,
     mainEffect:
     {
-      action: EffectActions.singleTargetDamage,
-      sfx: BattleSFX[key],
-      data:
+      executeAction: bindEffectActionData(EffectActions.inflictDamage,
       {
         baseDamage: 0.6,
         damageType: DamageType.physical
-      },
+      }),
+      getUnitsInArea: areaSingle,
+      sfx: BattleSFX[key],
       attachedEffects:
       [
         {
-          action: EffectActions.addAttributeStatusEffect,
-          data:
+          executeAction: bindEffectActionData(EffectActions.addStatusEffect,
           {
-            sourceName: displayName,
             duration: -1,
-            adjustments:
+            template:
             {
-              [attributeName]:
+              type: key,
+              displayName: displayName,
+              attributes:
               {
-                multiplier: -0.5
+                [attributeName]:
+                {
+                  multiplier: -0.5
+                }
               }
             }
-          }
+
+          }),
+          getUnitsInArea: areaSingle,
         }
       ]
     },
@@ -236,7 +273,8 @@ export var standBy: AbilityTemplate =
   getPossibleTargets: targetSelf,
   mainEffect:
   {
-    action: EffectActions.standBy,
+    getUnitsInArea: areaSingle,
+    executeAction: () => {},
     sfx:
     {
       duration: 750

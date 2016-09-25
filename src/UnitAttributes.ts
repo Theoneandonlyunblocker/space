@@ -178,6 +178,22 @@ export default class UnitAttributes implements UnitAttributesObject
 
     return sorted;
   }
+  public modifyValueByAttributes(base: number = 0, modifierPerStat: UnitAttributeAdjustments = {}): number
+  {
+    let totalFlat = base;
+    let totalMultiplier = 1;
+
+    for (let attribute in modifierPerStat)
+    {
+      const flatAdjustment = modifierPerStat[attribute] || 0;
+      totalFlat += flatAdjustment * this[attribute];
+      
+      const multiplier = modifierPerStat[attribute] || 0;
+      totalMultiplier += multiplier * this[attribute];
+    }
+
+    return totalFlat * totalMultiplier;
+  }
   public serialize(): UnitAttributesObject
   {
     return JSON.parse(JSON.stringify(this));

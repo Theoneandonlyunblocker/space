@@ -1,6 +1,5 @@
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import AbilityEffectTemplate from "./templateinterfaces/AbilityEffectTemplate";
-import EffectActionTemplate from "./templateinterfaces/EffectActionTemplate";
 
 import Unit from "./Unit";
 import GuardCoverage from "./GuardCoverage";
@@ -19,7 +18,7 @@ export interface AbilityUseData
 }
 export interface AbilityEffectData
 {
-  templateEffect: AbilityEffectTemplate;
+  effectTemplate: AbilityEffectTemplate;
   user: Unit;
   target: Unit;
   trigger: (user: Unit, target: Unit) => boolean;
@@ -61,7 +60,7 @@ export function getAbilityEffectDataByPhase(battle: Battle, abilityUseData: Abil
     afterUse: afterUse
   });
 }
-export function getUnitsInEffectArea(battle: Battle, effect: EffectActionTemplate,
+export function getUnitsInEffectArea(effect: AbilityEffectTemplate, battle: Battle,
   user: Unit, target: Unit): Unit[]
 {
   const inArea = effect.getUnitsInArea(user, target, battle);
@@ -155,14 +154,14 @@ function recursivelyGetAttachedEffects(effectTemplate: AbilityEffectTemplate): A
 function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData: AbilityUseData,
   effectTemplates: AbilityEffectTemplate[]): AbilityEffectData[]
 {
-  var effectData: AbilityEffectData[] = [];
+  const effectData: AbilityEffectData[] = [];
 
   for (let i = 0; i < effectTemplates.length; i++)
   {
-    var templateEffect = effectTemplates[i];
-    var targetsForEffect = getUnitsInEffectArea(battle, templateEffect.action,
+    const effectTemplate = effectTemplates[i];
+    const targetsForEffect = getUnitsInEffectArea(effectTemplate, battle,
       abilityUseData.user, abilityUseData.actualTarget);
-    const withAttached = [templateEffect].concat(recursivelyGetAttachedEffects(templateEffect));
+    const withAttached = [effectTemplate].concat(recursivelyGetAttachedEffects(effectTemplate));
 
     for (let j = 0; j < targetsForEffect.length; j++)
     {
@@ -170,10 +169,10 @@ function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData:
       {
         effectData.push(
         {
-          templateEffect: withAttached[k],
+          effectTemplate: withAttached[k],
           user: abilityUseData.user,
           target: targetsForEffect[j],
-          trigger: templateEffect.trigger
+          trigger: effectTemplate.trigger
         });
       }
     }
@@ -237,15 +236,11 @@ function makeSelfAbilityEffectData(
 {
   return(
   {
-    templateEffect:
+    effectTemplate:
     {
-      action:
-      {
-        name: name,
-        
-        getUnitsInArea: areaSingle,
-        executeAction: actionFN
-      }
+      name: name,
+      getUnitsInArea: areaSingle,
+      executeAction: actionFN,
     },
     user: user,
     target: user,

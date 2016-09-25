@@ -4,196 +4,123 @@ import
   getAdjustedDamage
 } from "./damageAdjustments";
 
-import poisonedStatusEffect from "../statuseffecttemplates/poisoned";
 
-import EffectActionTemplate from "../../../src/templateinterfaces/EffectActionTemplate";
 
+import AbilityEffectAction from "../../../src/templateinterfaces/AbilityEffectAction";
+import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate";
 import Battle from "../../../src/Battle";
 import DamageType from "../../../src/DamageType";
+import FlatAndMultiplierAdjustment from "../../../src/FlatAndMultiplierAdjustment";
 import GuardCoverage from "../../../src/GuardCoverage";
 import StatusEffect from "../../../src/StatusEffect";
 import Unit from "../../../src/Unit";
 import {UnitAttributeAdjustments} from "../../../src/UnitAttributes";
-import
-{
-  areaColumn,
-  areaOrthogonalNeighbors,
-  areaRowNeighbors,
-  areaSingle,
-} from "../../../src/targeting";
 
-export const singleTargetDamage: EffectActionTemplate =
-{
-  name: "singleTargetDamage",
-  getUnitsInArea: areaSingle,
-  executeAction: function(user: Unit, target: Unit, battle: Battle,
-    data: {baseDamage: number; damageType: number;})
-  {
-    const adjustedDamage = getAdjustedDamage(user, target, data.baseDamage, data.damageType);
 
-    target.receiveDamage(adjustedDamage);
-  }
-}
-export const closeAttack: EffectActionTemplate =
+interface UnboundEffectAction<T>
 {
-  name: "closeAttack",
-  getUnitsInArea: areaRowNeighbors,
-  executeAction: function(user: Unit, target: Unit, battle: Battle)
-  {
-    singleTargetDamage.executeAction(user, target, battle,
-    {
-      baseDamage: 0.66,
-      damageType: DamageType.physical
-    });
-  }
-}
-export const beamAttack: EffectActionTemplate =
-{
-  name: "beamAttack",
-  getUnitsInArea: areaColumn,
-  executeAction: function(user: Unit, target: Unit, battle: Battle)
-  {
-    singleTargetDamage.executeAction(user, target, battle,
-    {
-      baseDamage: 0.75,
-      damageType: DamageType.magical
-    });
-  }
+  (data: T, user: Unit, target: Unit, battle: Battle): void;
 }
 
-export const bombAttack: EffectActionTemplate =
+// so we preserve typing for bound data
+// https://github.com/Microsoft/TypeScript/issues/212
+export function bindEffectActionData<T>(toBind: UnboundEffectAction<T>, data: T): AbilityEffectAction
 {
-  name: "bombAttack",
-  getUnitsInArea: (user, target, battle) =>
-  {
-    return areaOrthogonalNeighbors(user, target, battle).filter(unit =>
-    {
-      return !unit || unit.battleStats.side !== user.battleStats.side;
-    });
-  },
-  executeAction: function(user: Unit, target: Unit, battle: Battle)
-  {
-    singleTargetDamage.executeAction(user, target, battle,
-    {
-      baseDamage: 0.5,
-      damageType: DamageType.physical
-    });
-  }
+  return toBind.bind(null, data);
 }
-export const guardRow: EffectActionTemplate =
-{
-  name: "guardRow",
-  getUnitsInArea: areaSingle,
-  executeAction: function(user: Unit, target: Unit, battle: Battle, data: {perInt?: number, flat?: number})
-  {
-    const guardPerInt = data.perInt || 0;
-    const flat = data.flat || 0;
 
-    const guardAmount = guardPerInt * user.attributes.intelligence + flat;
-    user.addGuard(guardAmount, GuardCoverage.row);
-  }
+
+interface DamageWithType
+{
+  baseDamage: number;
+  damageType: DamageType;
 }
-export const receiveCounterAttack: EffectActionTemplate =
-{
-  name: "receiveCounterAttack",
-  getUnitsInArea: areaSingle,
-  executeAction: function(user: Unit, target: Unit, battle: Battle,
-    data: {baseDamage: number; damageType: number;})
-  {
-    const counterStrength = target.getCounterAttackStrength();
 
-    if (counterStrength)
-    {
-      singleTargetDamage.executeAction(target, user, battle,
+interface Adjustment 
+{
+  flat?: number;
+  perAttribute?: UnitAttributeAdjustments;
+}
+
+interface GuardCoverageObj
+{
+  coverage: GuardCoverage;
+}
+
+
+
+export const inflictDamage: UnboundEffectAction<DamageWithType> = function(
+  data: DamageWithType,
+  user: Unit, target: Unit, battle: Battle)
+{
+  const adjustedDamage = getAdjustedDamage(user, target, data.baseDamage, data.damageType);
+
+  target.receiveDamage(adjustedDamage);
+}
+
+export const addGuard: UnboundEffectAction<Adjustment & GuardCoverageObj> = function(
+  data: Adjustment & GuardCoverageObj,
+  user: Unit, target: Unit, battle: Battle)
+{
+  const guardAmount = user.attributes.modifyValueByAttributes(data.flat, data.perAttribute);
+  target.addGuard(guardAmount, data.coverage);
+}
+
+export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = function(
+  data: {baseDamage: number},
+  user: Unit, target: Unit, battle: Battle)
+{
+  const counterStrength = target.getCounterAttackStrength();
+
+  if (counterStrength)
+  {
+    inflictDamage(
       {
         baseDamage: data.baseDamage * counterStrength,
         damageType: DamageType.physical
-      });
-    }
-  }
-}
-export const increaseCaptureChance: EffectActionTemplate =
-{
-  name: "increaseCaptureChance",
-  getUnitsInArea: areaSingle,
-  executeAction: function(user: Unit, target: Unit, battle: Battle,
-    data: {flat?: number; multiplier?: number;})
-  {
-    if (data.flat)
-    {
-      target.battleStats.captureChance += data.flat;
-    }
-    if (isFinite(data.multiplier))
-    {
-      target.battleStats.captureChance *= data.multiplier;
-    }
-
-  }
-}
-export const addAttributeStatusEffect: EffectActionTemplate =
-{
-  name: "addAttributeStatusEffect",
-  getUnitsInArea: areaSingle,
-  executeAction: function(user: Unit, target: Unit, battle: Battle,
-    data: {adjustments: UnitAttributeAdjustments, sourceName: string, duration: number})
-  {
-    target.addStatusEffect(new StatusEffect(
-    {
-      type: data.sourceName,
-      displayName: data.sourceName,
-
-      attributes: data.adjustments
-    }, data.duration));
-  }
-}
-export const buffTest: EffectActionTemplate =
-{
-  name: "buffTest",
-  getUnitsInArea: areaSingle,
-  executeAction: function(user: Unit, target: Unit, battle: Battle)
-  {
-    target.addStatusEffect(new StatusEffect(poisonedStatusEffect, 2));
-  }
-}
-export const healTarget: EffectActionTemplate =
-{
-  name: "healTarget",
-  getUnitsInArea: areaSingle,
-  executeAction: function(user: Unit, target: Unit, battle: Battle,
-    data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
-  {
-    let healAmount = 0;
-    if (data.flat)
-    {
-      healAmount += data.flat;
-    }
-    if (data.maxHealthPercentage)
-    {
-      healAmount += target.maxHealth * data.maxHealthPercentage;
-    }
-    if (data.perUserUnit)
-    {
-      healAmount += data.perUserUnit * getAttackDamageIncrease(user, DamageType.magical);
-    }
-
-    target.removeStrength(-healAmount);
+      },
+      target, user, battle
+    );
   }
 }
 
-export const healSelf: EffectActionTemplate =
+
+export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustment> = function(
+  data: FlatAndMultiplierAdjustment,
+  user: Unit, target: Unit, battle: Battle)
 {
-  name: "healSelf",
-  getUnitsInArea: areaSingle,
-  executeAction: function(user: Unit, target: Unit, battle: Battle,
-    data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
+  if (data.flat)
   {
-    healTarget.executeAction(user, user, battle, data);
+    target.battleStats.captureChance += data.flat;
+  }
+  if (isFinite(data.multiplier))
+  {
+    target.battleStats.captureChance *= data.multiplier;
   }
 }
-
-export const standBy: EffectActionTemplate =
+export const addStatusEffect: UnboundEffectAction<{template: StatusEffectTemplate, duration: number}> = function(
+  data: {template: StatusEffectTemplate, duration: number},
+  user: Unit, target: Unit, battle: Battle)
 {
-  name: "standBy",
-  getUnitsInArea: areaSingle,
-  executeAction: function(){}
+  target.addStatusEffect(new StatusEffect(data.template, data.duration));
+}
+export const adjustHealth: UnboundEffectAction<{flat?: number; maxHealthPercentage?: number; perUserUnit?: number}> = function(
+  data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number},
+  user: Unit, target: Unit, battle: Battle)
+{
+  let healAmount = 0;
+  if (data.flat)
+  {
+    healAmount += data.flat;
+  }
+  if (data.maxHealthPercentage)
+  {
+    healAmount += target.maxHealth * data.maxHealthPercentage;
+  }
+  if (data.perUserUnit)
+  {
+    healAmount += data.perUserUnit * getAttackDamageIncrease(user, DamageType.magical);
+  }
+
+  target.removeStrength(-healAmount);
 }

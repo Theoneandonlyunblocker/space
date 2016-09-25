@@ -1,11 +1,13 @@
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate";
-import {healSelf} from "../effectactiontemplates/effectActions";
+import {adjustHealth} from "../effectactiontemplates/effectActions";
+import {bindEffectActionData} from "../effectactiontemplates/effectActions";
 
 const poisoned: StatusEffectTemplate =
 {
   type: "poisoned",
   displayName: "Poisoned",
+  description: "-10% max health per turn",
   attributes:
   {
     attack:
@@ -24,11 +26,12 @@ const poisoned: StatusEffectTemplate =
   afterAbilityUse:
   [
     {
-      action: healSelf,
-      data:
+      name: "poisoned",
+      getUnitsInArea: (user, target, battle) => [user],
+      executeAction: bindEffectActionData(adjustHealth,
       {
         maxHealthPercentage: -0.1
-      },
+      }),
       sfx:
       {
         duration: 1200,

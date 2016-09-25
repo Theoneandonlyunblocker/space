@@ -13,7 +13,7 @@ import
 
 export interface AbilityUseEffect
 {
-  actionName: string;
+  effectName: string;
   changedUnitDisplayDataByID: {[unitId: number]: UnitDisplayData};
   sfx: BattleSFXTemplate;
   sfxUser: Unit;
@@ -100,11 +100,10 @@ function executeAbilityEffectData(battle: Battle, abilityEffectData: AbilityEffe
     return false;
   }
 
-  abilityEffectData.templateEffect.action.executeAction(
+  abilityEffectData.effectTemplate.executeAction(
     abilityEffectData.user,
     abilityEffectData.target,
     battle,
-    abilityEffectData.templateEffect.data
   );
 
   return true;
@@ -124,9 +123,9 @@ function executeAbilityEffectDataAndGetUseEffect(battle: Battle,
 
   return(
   {
-    actionName: abilityEffectData.templateEffect.action.name,
+    effectName: abilityEffectData.effectTemplate.name,
     changedUnitDisplayDataByID: unitDisplayData,
-    sfx: abilityEffectData.templateEffect.sfx,
+    sfx: abilityEffectData.effectTemplate.sfx,
     sfxUser: abilityEffectData.user,
     sfxTarget: abilityEffectData.target,
     newEvaluation: battle.getEvaluation()
