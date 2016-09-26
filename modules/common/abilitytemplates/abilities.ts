@@ -116,7 +116,7 @@ export var guardRow: AbilityTemplate =
     sfx: BattleSFX.guard,
   },
   
-  preservesUserGuard: true,
+  doesNotRemoveUserGuard: true,
 }
 export var boardingHook: AbilityTemplate =
 {
@@ -281,7 +281,7 @@ export var standBy: AbilityTemplate =
     }
   },
   
-  preservesUserGuard: true,
+  doesNotRemoveUserGuard: true,
   AIEvaluationPriority: 0.6,
   AIScoreAdjust: -0.1,
   disableInAIBattles: true,

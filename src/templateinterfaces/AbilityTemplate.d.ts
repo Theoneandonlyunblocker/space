@@ -23,12 +23,10 @@ declare interface AbilityTemplate extends AbilityBase
     prepDelay: number;
   };
   actionsUse: number;
-  // if not true, user will lose all guard before using ability
-  // TODO 26.9.2016 | rename
-  preservesUserGuard?: boolean;
   // if true, ability will always hit intended target. guard can still provide defensive benefits
   // TODO 26.9.2016 | rename
   bypassesGuard?: boolean;
+  doesNotRemoveUserGuard?: boolean;
   
   getPossibleTargets: GetBattleTargetsFN;
   
