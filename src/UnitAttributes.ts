@@ -185,10 +185,10 @@ export default class UnitAttributes implements UnitAttributesObject
 
     for (let attribute in modifierPerStat)
     {
-      const flatAdjustment = modifierPerStat[attribute] || 0;
+      const flatAdjustment = modifierPerStat[attribute].flat || 0;
       totalFlat += flatAdjustment * this[attribute];
       
-      const multiplier = modifierPerStat[attribute] || 0;
+      const multiplier = modifierPerStat[attribute].multiplier || 0;
       totalMultiplier += multiplier * this[attribute];
     }
 
