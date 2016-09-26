@@ -334,6 +334,7 @@ export default class Unit
     this.battleStats.side = side;
     this.battleStats.position = position;
   }
+  // TODO 26.9.2016 | two separate functions seems a bit dumb
   public addStrength(amount: number)
   {
     this.currentHealth += Math.round(amount);
