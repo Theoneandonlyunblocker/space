@@ -70,7 +70,7 @@ export function getUnitsInEffectArea(effect: AbilityEffectTemplate, battle: Batt
 
 function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData): Unit
 {
-  if (abilityUseData.ability.bypassesGuard)
+  if (abilityUseData.ability.targetCannotBeDiverted)
   {
     return abilityUseData.intendedTarget;
   }

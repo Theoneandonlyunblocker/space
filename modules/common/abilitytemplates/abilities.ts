@@ -64,7 +64,7 @@ export var beamAttack: AbilityTemplate =
     sfx: BattleSFX.beam
   },
   
-  bypassesGuard: true,
+  targetCannotBeDiverted: true,
 }
 // legacy alias 17.05.2016
 export var wholeRowAttack = beamAttack;
