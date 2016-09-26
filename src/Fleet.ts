@@ -153,8 +153,6 @@ export default class Fleet
   split(): Fleet
   {
     var newFleet = new Fleet(this.player, [], this.location);
-    this.location.addFleet(newFleet);
-
 
     return newFleet;
   }
