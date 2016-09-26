@@ -46,8 +46,10 @@ export function getAttackDamageIncrease(unit: Unit, damageType: DamageType): num
   }
 
   const adjustedTroopSize = getAdjustedTroopSize(unit);
+  const increaseFromStats = attackStat * attackFactor;
+  const damageIncrease = (1 + increaseFromStats) * adjustedTroopSize;
 
-  return (1 + attackStat * attackFactor) * adjustedTroopSize;
+  return damageIncrease;
 }
 
 export function getReducedDamageFactor(unit: Unit, damageType: DamageType): number
@@ -75,13 +77,17 @@ export function getReducedDamageFactor(unit: Unit, damageType: DamageType): numb
     }
   }
 
-  const damageReduction = defenceStat * defenceFactor;
-  return (1 - damageReduction) * finalDamageMultiplier;
+  const reductionFromStats = defenceStat * defenceFactor;
+  const damageReduction = (1 - reductionFromStats) * finalDamageMultiplier;
+
+  return damageReduction;
 }
 
 export function getAdjustedDamage(user: Unit, target: Unit,
   baseDamage: number, damageType: DamageType): number
 {
   const dealtDamage = baseDamage * getAttackDamageIncrease(user, damageType);
-  return dealtDamage * getReducedDamageFactor(target, damageType);
+  const reducedDamage = dealtDamage * getReducedDamageFactor(target, damageType);
+
+  return reducedDamage;
 }
