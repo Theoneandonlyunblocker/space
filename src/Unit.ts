@@ -562,6 +562,11 @@ export default class Unit
   }
   private getStatusEffectAttributeAdjustments(): UnitAttributeAdjustments[]
   {
+    if (!this.battleStats || !this.battleStats.statusEffects)
+    {
+      return [];
+    }
+
     return this.battleStats.statusEffects.filter(statusEffect =>
     {
       return Boolean(statusEffect.template.attributes);
@@ -570,47 +575,23 @@ export default class Unit
       return statusEffect.template.attributes;
     });
   }
-  private getTotalStatusEffectAttributeAdjustments(): UnitAttributeAdjustments
+  private getAttributesWithItemsAndEffects()
   {
-    if (!this.battleStats || !this.battleStats.statusEffects)
-    {
-      return null;
-    }
-
-    const attributeAdjustments = this.getStatusEffectAttributeAdjustments();
-    return UnitAttributes.squashAdjustments(attributeAdjustments);
-  }
-  private getAttributesWithEffects()
-  {
-    var withItems = this.getAttributesWithItems();
-
-    var adjustments = this.getTotalStatusEffectAttributeAdjustments();
-    for (let attribute in adjustments)
-    {
-      if (adjustments[attribute].flat)
-      {
-        withItems[attribute] += adjustments[attribute].flat;
-      }
-      if (adjustments[attribute].multiplier)
-      {
-        withItems[attribute] *= 1 + adjustments[attribute].multiplier;
-      }
-
-      withItems[attribute] = clamp(withItems[attribute], -5, 20);
-    }
-
-    return withItems;
+    const itemAdjustments = this.items.getAttributeAdjustments();
+    const effectAdjustments = this.getStatusEffectAttributeAdjustments();
+    
+    return this.baseAttributes.getAdjustedAttributes(...itemAdjustments, ...effectAdjustments);
   }
   private getAttributesWithEffectsDifference(): UnitAttributes
   {
     const withItems = this.getAttributesWithItems();
-    const withEffects = this.getAttributesWithEffects();
+    const withEffects = this.getAttributesWithItemsAndEffects();
 
     return withEffects.getDifferenceBetween(withItems);
   }
   private updateCachedAttributes()
   {
-    this.cachedAttributes = this.getAttributesWithEffects();
+    this.cachedAttributes = this.getAttributesWithItemsAndEffects();
     this.attributesAreDirty = false;
   }
   // public removeItemAtSlot(slot: string)

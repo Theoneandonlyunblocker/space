@@ -66,7 +66,7 @@ export default class UnitAttributes implements UnitAttributesObject
       speed: 0
     });
   }
-  public static squashAdjustments(toSquash: UnitAttributeAdjustments[]): UnitAttributeAdjustments
+  public static squashAdjustments(...toSquash: UnitAttributeAdjustments[]): UnitAttributeAdjustments
   {
     const squashed: UnitAttributeAdjustments = {};
 
@@ -92,7 +92,7 @@ export default class UnitAttributes implements UnitAttributesObject
         {
           if (!isFinite(squashed[attribute].multiplier))
           {
-            squashed[attribute].multiplier = 1;
+            squashed[attribute].multiplier = 0;
           }
 
           squashed[attribute].multiplier += adjustment[attribute].multiplier;
@@ -117,7 +117,7 @@ export default class UnitAttributes implements UnitAttributesObject
       }
       if (isFinite(adjustment[attribute].multiplier))
       {
-        this[attribute] *= adjustment[attribute].multiplier;
+        this[attribute] *= 1 + adjustment[attribute].multiplier;
       }
     }
 
@@ -132,9 +132,9 @@ export default class UnitAttributes implements UnitAttributesObject
 
     return this;
   }
-  public getAdjustedAttributes(adjustments: UnitAttributeAdjustments[]): UnitAttributes
+  public getAdjustedAttributes(...adjustments: UnitAttributeAdjustments[]): UnitAttributes
   {
-    const squashedAdjustments = UnitAttributes.squashAdjustments(adjustments);
+    const squashedAdjustments = UnitAttributes.squashAdjustments(...adjustments);
 
     const cloned = this.clone();
     cloned.applyAdjustment(squashedAdjustments);
