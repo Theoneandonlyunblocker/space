@@ -13,7 +13,7 @@ import
 
 export interface AbilityUseEffect
 {
-  effectName: string;
+  effectID: string;
   changedUnitDisplayDataByID: {[unitId: number]: UnitDisplayData};
   sfx: BattleSFXTemplate;
   sfxUser: Unit;
@@ -108,6 +108,12 @@ function executeAbilityEffectData(battle: Battle, abilityEffectData: AbilityEffe
 
   return true;
 }
+function getIDForAbilityUseEffect(abilityEffectData: AbilityEffectData): string
+{
+  const sourceString = abilityEffectData.sourceAbility ? abilityEffectData.sourceAbility.type + "." : "";
+
+  return `${sourceString}${abilityEffectData.effectTemplate.id}`;
+}
 function executeAbilityEffectDataAndGetUseEffect(battle: Battle,
   abilityEffectData: AbilityEffectData): AbilityUseEffect
 {
@@ -123,7 +129,7 @@ function executeAbilityEffectDataAndGetUseEffect(battle: Battle,
 
   return(
   {
-    effectName: abilityEffectData.effectTemplate.name,
+    effectID: getIDForAbilityUseEffect(abilityEffectData),
     changedUnitDisplayDataByID: unitDisplayData,
     sfx: abilityEffectData.effectTemplate.sfx,
     sfxUser: abilityEffectData.user,

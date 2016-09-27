@@ -18,6 +18,7 @@ export interface AbilityUseData
 }
 export interface AbilityEffectData
 {
+  sourceAbility: AbilityTemplate | null;
   effectTemplate: AbilityEffectTemplate;
   user: Unit;
   target: Unit;
@@ -169,6 +170,7 @@ function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData:
       {
         effectData.push(
         {
+          sourceAbility: abilityUseData.ability,
           effectTemplate: withAttached[k],
           user: abilityUseData.user,
           target: targetsForEffect[j],
@@ -236,6 +238,7 @@ function makeSelfAbilityEffectData(
 {
   return(
   {
+    sourceAbility: null,
     effectTemplate:
     {
       id: name,
