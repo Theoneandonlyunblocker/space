@@ -6,7 +6,6 @@ import GalaxyMap from "./GalaxyMap";
 import eventManager from "./eventManager";
 import NotificationLog from "./NotificationLog";
 import Manufactory from "./Manufactory";
-import Unit from "./Unit";
 
 import GameSaveData from "./savedata/GameSaveData";
 import FullSaveData from "./savedata/FullSaveData";
@@ -92,10 +91,9 @@ export default class Game
   }
   processPlayerStartTurn(player: Player)
   {
-    var unitStartTurnFN = function(unit: Unit)
+    player.forEachUnit(unit =>
     {
-      unit.resetMovePoints();
-      unit.heal();
+      unit.addHealth(unit.getHealingForGameTurnStart());
 
       var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
       if (passiveSkillsByPhase.atTurnStart)
@@ -110,10 +108,9 @@ export default class Game
         }
       }
 
+      unit.resetMovePoints();
       unit.timesActedThisTurn = 0;
-    }
-
-    player.forEachUnit(unitStartTurnFN);
+    });
 
     if (!player.isIndependent)
     {

@@ -776,18 +776,16 @@ export default class Unit
     // TODO unit
     return this.template.detectionRange;
   }
-  // TODO 27.9.2016 | rename. kinda confusing
-  public heal()
+  public getHealingForGameTurnStart(): number
   {
     var location = this.fleet.location;
 
     var baseHealFactor = 0.05;
-    var healingFactor =
-      baseHealFactor + location.getHealingFactor(this.fleet.player);
+    var healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
 
     var healAmount = this.maxHealth * healingFactor;
 
-    this.addHealth(healAmount);
+    return healAmount;
   }
   public getTotalCost()
   {
