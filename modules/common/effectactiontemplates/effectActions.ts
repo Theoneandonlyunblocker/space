@@ -122,5 +122,5 @@ export const adjustHealth: UnboundEffectAction<{flat?: number; maxHealthPercenta
     healAmount += data.perUserUnit * getAttackDamageIncrease(user, DamageType.magical);
   }
 
-  target.removeStrength(-healAmount);
+  target.addHealth(healAmount);
 }

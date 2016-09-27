@@ -92,7 +92,7 @@ export var medic: PassiveSkillTemplate =
       var allFriendlyUnits = star.getUnits(player => player === user.fleet.player);
       for (let i = 0; i < allFriendlyUnits.length; i++)
       {
-        allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth)
+        allFriendlyUnits[i].addHealth(allFriendlyUnits[i].maxHealth)
       }
     }
   ]

@@ -334,33 +334,21 @@ export default class Unit
     this.battleStats.side = side;
     this.battleStats.position = position;
   }
-  // TODO 26.9.2016 | two separate functions seems a bit dumb
-  public addStrength(amount: number)
+  public addHealth(amountToAdd: number): void
   {
-    this.currentHealth += Math.round(amount);
-    if (this.currentHealth > this.maxHealth)
-    {
-      this.currentHealth = this.maxHealth;
-    }
+    const newHealth = this.currentHealth + Math.round(amountToAdd);
+    this.currentHealth = clamp(newHealth, 0, this.maxHealth);
 
-    this.uiDisplayIsDirty = true;
-  }
-  public removeStrength(amount: number)
-  {
-    this.currentHealth -= Math.round(amount);
-    this.currentHealth = clamp(this.currentHealth, 0, this.maxHealth);
-
-    if (amount > 0)
-    {
-      this.removeGuard(40);
-    }
-
-    if (this.currentHealth === 0)
+    if (this.currentHealth <= 0)
     {
       this.battleStats.isAnnihilated = true;
     }
 
     this.uiDisplayIsDirty = true;
+  }
+  public removeHealth(amountToRemove: number): void
+  {
+    this.addHealth(-amountToRemove);
   }
   public removeActionPoints(amount: number)
   {
@@ -710,7 +698,7 @@ export default class Unit
   public receiveDamage(amount: number)
   {
     this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-    this.removeStrength(amount);
+    this.addHealth(-amount);
   }
   public addToFleet(fleet: Fleet)
   {
@@ -788,6 +776,7 @@ export default class Unit
     // TODO unit
     return this.template.detectionRange;
   }
+  // TODO 27.9.2016 | rename. kinda confusing
   public heal()
   {
     var location = this.fleet.location;
@@ -798,7 +787,7 @@ export default class Unit
 
     var healAmount = this.maxHealth * healingFactor;
 
-    this.addStrength(healAmount);
+    this.addHealth(healAmount);
   }
   public getTotalCost()
   {
