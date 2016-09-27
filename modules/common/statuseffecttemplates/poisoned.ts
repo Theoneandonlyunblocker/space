@@ -26,7 +26,7 @@ const poisoned: StatusEffectTemplate =
   afterAbilityUse:
   [
     {
-      name: "poisoned",
+      id: "removeHealth",
       getUnitsInArea: (user, target, battle) => [user],
       executeAction: bindEffectActionData(adjustHealth,
       {

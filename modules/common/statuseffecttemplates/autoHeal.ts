@@ -11,6 +11,7 @@ const autoHeal: StatusEffectTemplate =
   afterAbilityUse:
   [
     {
+      id: "heal",
       getUnitsInArea: (user) => [user],
       executeAction: bindEffectActionData(adjustHealth,
       {

@@ -238,7 +238,7 @@ function makeSelfAbilityEffectData(
   {
     effectTemplate:
     {
-      name: name,
+      id: name,
       getUnitsInArea: areaSingle,
       executeAction: actionFN,
     },

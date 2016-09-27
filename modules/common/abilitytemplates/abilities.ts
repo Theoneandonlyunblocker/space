@@ -36,6 +36,7 @@ export var closeAttack: AbilityTemplate =
   },
   mainEffect:
   {
+    id: "damage",
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.66,
@@ -55,6 +56,7 @@ export var beamAttack: AbilityTemplate =
   getPossibleTargets: targetEnemies,
   mainEffect:
   {
+    id: "damage",
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.75,
@@ -79,6 +81,7 @@ export var bombAttack: AbilityTemplate =
   getPossibleTargets: targetEnemies,
   mainEffect:
   {
+    id: "damage",
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.5,
@@ -104,6 +107,7 @@ export var guardRow: AbilityTemplate =
   getPossibleTargets: targetSelf,
   mainEffect:
   {
+    id: "addGuard",
     executeAction: bindEffectActionData(EffectActions.addGuard,
     {
       perAttribute:
@@ -128,6 +132,7 @@ export var boardingHook: AbilityTemplate =
   getPossibleTargets: targetEnemies,
   mainEffect:
   {
+    id: "damage",
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.8,
@@ -138,6 +143,7 @@ export var boardingHook: AbilityTemplate =
     attachedEffects:
     [
       {
+        id: "captureChance",
         getUnitsInArea: areaSingle,
         executeAction: bindEffectActionData(EffectActions.increaseCaptureChance,
         {
@@ -145,6 +151,7 @@ export var boardingHook: AbilityTemplate =
         })
       },
       {
+        id: "counter",
         getUnitsInArea: areaSingle,
         executeAction: bindEffectActionData(EffectActions.receiveCounterAttack,
         {
@@ -165,6 +172,7 @@ export var debugAbility: AbilityTemplate =
   getPossibleTargets: targetAll,
   mainEffect:
   {
+    id: "debugAbility",
     getUnitsInArea: areaSingle,
     executeAction: () => {},
     sfx: BattleSFX.guard,
@@ -181,6 +189,7 @@ export var rangedAttack: AbilityTemplate =
   getPossibleTargets: targetEnemies,
   mainEffect:
   {
+    id: "damage",
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 1,
@@ -191,6 +200,7 @@ export var rangedAttack: AbilityTemplate =
     attachedEffects:
     [
       {
+        id: "counter",
         executeAction: bindEffectActionData(EffectActions.receiveCounterAttack,
         {
           baseDamage: 0.5
@@ -225,6 +235,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
     getPossibleTargets: targetEnemies,
     mainEffect:
     {
+      id: "damage",
       executeAction: bindEffectActionData(EffectActions.inflictDamage,
       {
         baseDamage: 0.6,
@@ -235,6 +246,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
       attachedEffects:
       [
         {
+          id: "statusEffect",
           executeAction: bindEffectActionData(EffectActions.addStatusEffect,
           {
             duration: -1,
@@ -273,6 +285,7 @@ export var standBy: AbilityTemplate =
   getPossibleTargets: targetSelf,
   mainEffect:
   {
+    id: "standBy",
     getUnitsInArea: areaSingle,
     executeAction: () => {},
     sfx:

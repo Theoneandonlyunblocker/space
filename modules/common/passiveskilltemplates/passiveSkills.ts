@@ -16,10 +16,10 @@ export var autoHeal: PassiveSkillTemplate =
   displayName: "Auto heal",
   description: "Restore 50 health after every action",
 
-  // TODO passive skills TODO status effects
   atBattleStart:
   [
     {
+      id: "addStatusEffect",
       getUnitsInArea: (user) => [user],
       executeAction: bindEffectActionData(EffectActions.addStatusEffect,
       {
@@ -38,6 +38,7 @@ export var overdrive: PassiveSkillTemplate =
   atBattleStart:
   [
     {
+      id: "addStatusEffect",
       getUnitsInArea: (user) => [user],
       executeAction: bindEffectActionData(EffectActions.addStatusEffect,
       {
@@ -57,6 +58,7 @@ export var initialGuard: PassiveSkillTemplate =
   atBattleStart:
   [
     {
+      id: "addStatusEffect",
       getUnitsInArea: (user) => [user],
       executeAction: bindEffectActionData(EffectActions.addGuard,
       {

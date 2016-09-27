@@ -10,8 +10,7 @@ import
 
 declare interface AbilityEffectTemplate
 {
-  // TODO 25.9.2016 | should this be optional / exist at all?
-  name?: string;
+  id: string;
 
   getUnitsInArea: GetUnitsInAreaFN;
   executeAction: AbilityEffectAction;
