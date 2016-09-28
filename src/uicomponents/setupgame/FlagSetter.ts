@@ -5,6 +5,11 @@ import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
 import Flag from "../../Flag";
 import Color from "../../Color";
 import Emblem from "../../Emblem";
+import
+{
+  getFirstValidImageFromFiles,
+  getHTMLImageElementFromDataTransfer
+} from "../../ImageFileProcessing";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 
@@ -63,7 +68,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   }
   private bindMethods(): void
   {
-    this.getFirstValidImageFromFiles = this.getFirstValidImageFromFiles.bind(this);
     this.setAsInactive = this.setAsInactive.bind(this);
     this.setForegroundEmblem = this.setForegroundEmblem.bind(this);
     this.setFailMessage = this.setFailMessage.bind(this);
@@ -205,75 +209,62 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
   handleDrop(e: React.DragEvent): void
   {
-    if (e.dataTransfer)
+    if (!e.dataTransfer)
     {
-      this.stopEvent(e);
+      return;
+    }
 
-      var files: FileList = e.dataTransfer.files;
+    this.stopEvent(e);
 
-      var image = this.getFirstValidImageFromFiles(files);
+    const files: FileList = e.dataTransfer.files;
 
-      if (!image)
+    const imageFile = getFirstValidImageFromFiles(files);
+
+    if (imageFile)
+    {
+      this.setCustomImageFromFile(imageFile);
+    }
+    else
+    {
+      getHTMLImageElementFromDataTransfer(e.dataTransfer,
+      (image) =>
       {
-        // try to get image from any html img element dropped
-        var htmlContent = e.dataTransfer.getData("text/html");
-        const imageSourceMatches = htmlContent ? htmlContent.match(/src\s*=\s*"(.+?)"/) : null;
-        const imageSource = imageSourceMatches ? imageSourceMatches[1] : null;
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
 
-        if (!imageSource)
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        ctx.drawImage(image, 0, 0);
+
+        const dataURL = canvas.toDataURL();
+
+        this.state.flag.setCustomImageDataURL(dataURL);
+        this.handleUpdate();
+      },
+      (errorType) =>
+      {
+        switch (errorType)
         {
-          this.setFailMessage(failMessages.noValidImageFile, 10000);
-          return;
-        }
-        else
-        {
-          var getImageDataUrl = function(image: HTMLImageElement)
+          case "noImage":
           {
-            var canvas = document.createElement("canvas");
-            var ctx = canvas.getContext("2d");
-
-            canvas.width = image.width;
-            canvas.height = image.height;
-
-            ctx.drawImage(image, 0, 0);
-
-            return canvas.toDataURL();
-          };
-
-          var img = new Image();
-          img.crossOrigin = "Anonymous";
-          img.onload = (e) =>
-          {
-            this.state.flag.setCustomImage(getImageDataUrl(img));
-            this.handleUpdate();
+            this.setFailMessage(failMessages.noValidImageFile, 10000);
+            break;
           }
-          img.onerror = (e) =>
+          case "couldntLoad":
           {
             this.setFailMessage(failMessages.hotlinkedImageLoadingFailed, 10000);
+            break;
           }
-
-          img.src = imageSource;
-
-          // image was cached
-          if (img.complete || img.complete === undefined)
-          {
-            this.state.flag.setCustomImage(getImageDataUrl(img));
-            this.handleUpdate();
-          }
-          
         }
-      }
-      else
-      {
-        this.setCustomImageFromFile(image);
-      }
+      });
     }
   }
 
   handleUpload(files: FileList): void
   {
-    var image = this.getFirstValidImageFromFiles(files);
-    
+    var image = getFirstValidImageFromFiles(files);
+
     if (image)
     {
       this.setCustomImageFromFile(image);
@@ -282,21 +273,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     {
       this.setFailMessage(failMessages.noValidImageFile, 10000);
     }
-
-  }
-
-  getFirstValidImageFromFiles(files: FileList): File | null
-  {
-    for (let i = 0; i < files.length; i++)
-    {
-      var file = files[i];
-      if (file.type.indexOf("image") !== -1)
-      {
-        return file;
-      }
-    }
-
-    return null;
   }
 
   setCustomImageFromFile(file: File): void
