@@ -25,7 +25,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UpgradeUnit";
   state: StateType;
-  ref_TODO_popupManager: PopupManagerComponent;
+  popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -76,7 +76,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   makeAbilityLearnPopup(ability: AbilityBase)
   {
     var upgradeData = this.state.upgradeData[ability.type];
-    var popupId = this.ref_TODO_popupManager.makePopup(
+    var popupId = this.popupManager.makePopup(
     {
       content: TopMenuPopup(
       {
@@ -106,7 +106,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   }
   closePopup()
   {
-    this.ref_TODO_popupManager.closePopup(this.state.popupId);
+    this.popupManager.closePopup(this.state.popupId);
     this.setState(
     {
       popupId: undefined
@@ -143,7 +143,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
         {
           ref: (component: PopupManagerComponent) =>
           {
-            this.ref_TODO_popupManager = component;
+            this.popupManager = component;
           },
           onlyAllowOne: true
         }),

@@ -28,7 +28,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
 
   state: StateType;
   
-  ref_TODO_popupManager: PopupManagerComponent;
+  popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -43,7 +43,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
   
   handleResetAllOptions()
   {
-    this.ref_TODO_popupManager.makePopup(
+    this.popupManager.makePopup(
     {
       content: ConfirmPopup(
       {
@@ -318,7 +318,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         {
           ref: (component: PopupManagerComponent) =>
           {
-            this.ref_TODO_popupManager = component;
+            this.popupManager = component;
           },
           onlyAllowOne: true
         }),

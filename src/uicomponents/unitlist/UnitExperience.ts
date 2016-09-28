@@ -23,7 +23,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   displayName: string = "UnitExperience";
 
   state: StateType;
-  ref_TODO_popupManager: PopupManagerComponent;
+  popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -49,7 +49,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   }
   makePopup()
   {
-    var popupId = this.ref_TODO_popupManager.makePopup(
+    var popupId = this.popupManager.makePopup(
     {
       content: TopMenuPopup(
       {
@@ -77,7 +77,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   }
   closePopup()
   {
-    this.ref_TODO_popupManager.closePopup(this.state.upgradePopupId);
+    this.popupManager.closePopup(this.state.upgradePopupId);
     this.setState(
     {
       upgradePopupId: undefined
@@ -91,7 +91,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     }
     else
     {
-      this.ref_TODO_popupManager.forceUpdate();
+      this.popupManager.forceUpdate();
     }
     this.props.onUnitUpgrade();
   }
@@ -163,7 +163,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
         {
           ref: (component: PopupManagerComponent) =>
           {
-            this.ref_TODO_popupManager = component;
+            this.popupManager = component;
           },
           onlyAllowOne: true
         }),

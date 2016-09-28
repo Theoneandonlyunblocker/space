@@ -26,7 +26,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   updateListener: Function = undefined;
   
   state: StateType;
-  ref_TODO_popupManager: PopupManagerComponent;
+  popupManager: PopupManagerComponent;
   
   scrollTop: number; // TODO refactor | unused?
 
@@ -107,7 +107,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   {
     var log = this.props.log;
 
-    var popupId = this.ref_TODO_popupManager.makePopup(
+    var popupId = this.popupManager.makePopup(
     {
       content: ConfirmPopup(
       {
@@ -147,7 +147,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
 
   closePopup(key: string)
   {
-    this.ref_TODO_popupManager.closePopup(this.state[key]);
+    this.popupManager.closePopup(this.state[key]);
 
     var stateObj: StateType = {};
     stateObj[key] = undefined;
@@ -200,7 +200,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
         {
           ref: (component: PopupManagerComponent) =>
           {
-            this.ref_TODO_popupManager = component;
+            this.popupManager = component;
           }
         })
       )

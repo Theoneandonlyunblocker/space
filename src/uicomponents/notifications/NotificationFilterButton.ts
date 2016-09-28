@@ -23,7 +23,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
   displayName: string = "NotificationFilterButton";
 
   state: StateType;
-  ref_TODO_popupManager: PopupManagerComponent;
+  popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -61,6 +61,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
     }.bind(this.ref_TODO_popupManager);
 
     var popupId = this.ref_TODO_popupManager.makePopup(
+    var popupId = this.popupManager.makePopup(
     {
       content: TopMenuPopup(
       {
@@ -93,7 +94,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
 
   closePopup()
   {
-    this.ref_TODO_popupManager.closePopup(this.state.notificationFilterPopup);
+    this.popupManager.closePopup(this.state.notificationFilterPopup);
     this.setState(
     {
       notificationFilterPopup: undefined
@@ -130,7 +131,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
         {
           ref: (component: PopupManagerComponent) =>
           {
-            this.ref_TODO_popupManager = component;
+            this.popupManager = component;
           },
           onlyAllowOne: true
         })

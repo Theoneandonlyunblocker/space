@@ -24,7 +24,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   displayName: string = "DiplomacyActions";
 
   state: StateType;
-  ref_TODO_popupManager: PopupManagerComponent;
+  popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -53,7 +53,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   
   closePopup(popupType: string)
   {
-    this.ref_TODO_popupManager.closePopup(this.state[popupType]);
+    this.popupManager.closePopup(this.state[popupType]);
     var stateObj: StateType = {};
     stateObj[popupType] = undefined;
     this.setState(stateObj);
@@ -89,7 +89,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       }
     }
 
-    var id = this.ref_TODO_popupManager.makePopup(
+    var id = this.popupManager.makePopup(
     {
       content: TopMenuPopup(
       {
@@ -172,7 +172,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
         {
           ref: (component: PopupManagerComponent) =>
           {
-            this.ref_TODO_popupManager = component;
+            this.popupManager = component;
           },
           onlyAllowOne: true
         }),

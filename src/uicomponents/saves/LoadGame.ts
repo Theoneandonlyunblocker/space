@@ -30,7 +30,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
 
   state: StateType;
   ref_TODO_okButton: HTMLElement;
-  ref_TODO_popupManager: PopupManagerComponent;
+  popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -96,7 +96,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   }
   deleteSelectedKeys()
   {
-    this.popupID = this.ref_TODO_popupManager.makePopup(
+    this.popupID = this.popupManager.makePopup(
     {
       content: ConfirmPopup(this.getClosePopupContent(null, false, false)),
       popupProps:
@@ -155,12 +155,12 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
     // TODO refactor
     if (isFinite(this.popupID))
     {
-      // this.ref_TODO_popupManager.setPopupContent(this.popupID,
+      // this.popupManager.setPopupContent(this.popupID,
       //   {contentText: this.getClosePopupContent().content});
     }
     else if (this.state.saveKeysToDelete.length < 1)
     {
-      if (isFinite(this.popupID)) this.ref_TODO_popupManager.closePopup(this.popupID);
+      if (isFinite(this.popupID)) this.popupManager.closePopup(this.popupID);
       this.popupID = undefined;
     }
   }
@@ -173,7 +173,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    this.popupID = this.ref_TODO_popupManager.makePopup(
+    this.popupID = this.popupManager.makePopup(
     {
       content: ConfirmPopup(this.getClosePopupContent(afterCloseCallback, true, true)),
       popupProps:
@@ -229,7 +229,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
         {
           ref: (component: PopupManagerComponent) =>
           {
-            this.ref_TODO_popupManager = component;
+            this.popupManager = component;
           },
           onlyAllowOne: true
         }),

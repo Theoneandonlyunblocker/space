@@ -30,7 +30,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
   displayName: string = "DiplomacyOverview";
   state: StateType;
   
-  ref_TODO_popupManager: PopupManagerComponent;
+  popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -51,7 +51,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
       return;
     }
 
-    this.ref_TODO_popupManager.makePopup(
+    this.popupManager.makePopup(
     {
       content: DiplomacyActions(
       {
@@ -149,7 +149,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         {
           ref: (component: PopupManagerComponent) =>
           {
-            this.ref_TODO_popupManager = component;
+            this.popupManager = component;
           },
           onlyAllowOne: true
         }),

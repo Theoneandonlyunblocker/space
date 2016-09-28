@@ -30,7 +30,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
     saveName: ""
   };
   ref_TODO_okButton: HTMLElement;
-  ref_TODO_popupManager: PopupManagerComponent;
+  popupManager: PopupManagerComponent;
   ref_TODO_saveName: HTMLElement;
 
   constructor(props: PropTypes)
@@ -105,7 +105,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   }
   makeConfirmOverWritePopup(saveName: string)
   {
-    this.ref_TODO_popupManager.makePopup(
+    this.popupManager.makePopup(
     {
       content: ConfirmPopup(
       {
@@ -127,7 +127,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
         {
           ref: (component: PopupManagerComponent) =>
           {
-            this.ref_TODO_popupManager = component;
+            this.popupManager = component;
           },
           onlyAllowOne: true
         }),
