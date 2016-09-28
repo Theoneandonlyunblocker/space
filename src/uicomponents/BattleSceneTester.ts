@@ -35,7 +35,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   state: StateType;
   
-  ref_TODO_main: HTMLElement;
+  battleSceneContainer: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -98,7 +98,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   componentDidMount()
   {
-    var battleScene = this.battleScene = new BattleScene(ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_main));
+    var battleScene = this.battleScene = new BattleScene(ReactDOM.findDOMNode<HTMLElement>(this.battleSceneContainer));
     battleScene.resume();
     battleScene.activeUnit = this.state.selectedSide1Unit;
     battleScene.updateUnits()
@@ -303,7 +303,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
           className: "battle-scene-test-pixi-container",
           ref: (component: HTMLElement) =>
           {
-            this.ref_TODO_main = component;
+            this.battleSceneContainer = component;
           }
         },
           null

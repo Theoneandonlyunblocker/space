@@ -20,7 +20,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   displayName: string = "BattleBackground";
   state: StateType;
   
-  ref_TODO_pixiContainer: HTMLElement;
+  pixiContainer: HTMLElement;
   backgroundDrawer: BackgroundDrawer;
 
   constructor(props: PropTypes)
@@ -60,7 +60,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   }
   public componentDidMount()
   {
-    const containerElement = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_pixiContainer);
+    const containerElement = ReactDOM.findDOMNode<HTMLElement>(this.pixiContainer);
 
     this.backgroundDrawer.bindRendererView(containerElement);
 
@@ -81,7 +81,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
         className: "battle-pixi-container",
         ref: (component: HTMLElement) =>
         {
-          this.ref_TODO_pixiContainer = component;
+          this.pixiContainer = component;
         }
       },
         this.props.children
