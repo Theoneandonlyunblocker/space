@@ -226,10 +226,6 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         }),
         ColorSetter(
         {
-          // ref: (component: ColorSetterComponent) =>
-          // {
-          //   this.ref_TODO_mainColor = component;
-          // },
           onChange: this.setMainColor,
           setActiveColorPicker: this.props.setActiveSetterComponent,
           generateColor: this.generateMainColor,
@@ -237,10 +233,6 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         }),
         ColorSetter(
         {
-          // ref: (component: ColorSetterComponent) =>
-          // {
-          //   this.ref_TODO_subColor = component;
-          // },
           onChange: this.setSubColor,
           setActiveColorPicker: this.props.setActiveSetterComponent,
           generateColor: this.generateSubColor,
