@@ -112,7 +112,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       className: "image-info-message image-loading-fail-message",
       style:
       {
-        // animationDuration: "" + timeout + "ms"
+        animationDuration: "" + timeout + "ms"
       }
     },
       message.text
@@ -248,12 +248,12 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         {
           case "noImage":
           {
-            this.setFailMessage(failMessages.noValidImageFile, 10000);
+            this.setFailMessage(failMessages.noValidImageFile, 2000);
             break;
           }
           case "couldntLoad":
           {
-            this.setFailMessage(failMessages.hotlinkedImageLoadingFailed, 10000);
+            this.setFailMessage(failMessages.hotlinkedImageLoadingFailed, 2000);
             break;
           }
         }
@@ -271,7 +271,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      this.setFailMessage(failMessages.noValidImageFile, 10000);
+      this.setFailMessage(failMessages.noValidImageFile, 2000);
     }
   }
 
