@@ -35,7 +35,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
     this.handleResetCategory = this.handleResetCategory.bind(this);    
   }
   
-  handleResetCategory(category: string)
+  private handleResetCategory(category: string): void
   {
     var filter = this.props.filter;
     filter.setDefaultFilterStatesForCategory(category);
@@ -43,15 +43,20 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
     this.forceUpdate();
     eventManager.dispatchEvent("updateNotificationLog");
   }
-  scrollToHighlighted()
+  public scrollToHighlighted(): void
   {
     if (this.props.highlightedOptionKey)
     {
-      var domNode = ReactDOM.findDOMNode(this.ref_TODO_body);
-      var highlightedNode = <HTMLElement> domNode.getElementsByClassName("highlighted")[0];
-      domNode.scrollTop = highlightedNode.offsetTop + domNode.scrollHeight / 3;
+      var bodyNode = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_body);
+      var highlightedNode = <HTMLElement> bodyNode.getElementsByClassName("highlighted")[0];
+      bodyNode.scrollTop = highlightedNode.offsetTop - bodyNode.offsetHeight / 3;
     }
   }
+  public parentPopupDidMount(): void
+  {
+    this.scrollToHighlighted();
+  }
+
   render()
   {
     var filter = this.props.filter;
