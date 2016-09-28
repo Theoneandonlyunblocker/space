@@ -53,7 +53,7 @@ interface StateType
 {
 }
 
-export class UnitComponent extends React.Component<PropTypes, StateType>
+export class UnitComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "Unit";
   state: StateType;
@@ -92,8 +92,6 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     });
   }
   
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
-
   onDragStart()
   {
     this.props.onDragStart();

@@ -13,10 +13,9 @@ interface StateType
 {
 }
 
-export class TurnCounterListComponent extends React.Component<PropTypes, StateType>
+export class TurnCounterListComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "TurnCounterList";
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   state: StateType;
 
   constructor(props: PropTypes)

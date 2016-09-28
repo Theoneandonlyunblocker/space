@@ -15,12 +15,9 @@ interface StateType
 {
 }
 
-export class ManufacturableThingsListComponent extends React.Component<PropTypes, StateType>
+export class ManufacturableThingsListComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "ManufacturableThingsList";
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
-
-
   state: StateType;
 
   constructor(props: PropTypes)

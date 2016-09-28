@@ -9,7 +9,7 @@ interface StateType
 {
 }
 
-export class BattleFinishComponent extends React.Component<PropTypes, StateType>
+export class BattleFinishComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName = "BattleFinish";
   state: StateType;
@@ -18,8 +18,6 @@ export class BattleFinishComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   
   render()
   {

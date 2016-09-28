@@ -29,12 +29,9 @@ interface StateType
 {
 }
 
-export class UnitInfoComponent extends React.Component<PropTypes, StateType>
+export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "UnitInfo";
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
-
-
   state: StateType;
 
   constructor(props: PropTypes)

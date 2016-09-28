@@ -9,7 +9,7 @@ interface StateType
 {
 }
 
-export class ConfirmDeleteSavesContentComponent extends React.Component<PropTypes, StateType>
+export class ConfirmDeleteSavesContentComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName = "ConfirmDeleteSavesContent";
   state: StateType;
@@ -18,8 +18,6 @@ export class ConfirmDeleteSavesContentComponent extends React.Component<PropType
   {
     super(props);
   }
-  
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   
   render()
   {

@@ -19,12 +19,9 @@ interface StateType
   currentDraggingLayer?: MapRendererLayer;
 }
 
-export class MapRendererLayersListComponent extends React.Component<PropTypes, StateType>
+export class MapRendererLayersListComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersList";
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
-
-
   state: StateType;
 
   constructor(props: PropTypes)

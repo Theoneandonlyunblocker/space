@@ -11,7 +11,7 @@ interface StateType
 {
 }
 
-export class UnitActionsComponent extends React.Component<PropTypes, StateType>
+export class UnitActionsComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "UnitActions";
   state: StateType;
@@ -20,8 +20,6 @@ export class UnitActionsComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   
   render()
   {

@@ -10,7 +10,7 @@ interface StateType
 {
 }
 
-export class UnitIconContainerComponent extends React.Component<PropTypes, StateType>
+export class UnitIconContainerComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "UnitIconContainer";
   state: StateType;
@@ -19,8 +19,6 @@ export class UnitIconContainerComponent extends React.Component<PropTypes, State
   {
     super(props);
   }
-  
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   
   render()
   {

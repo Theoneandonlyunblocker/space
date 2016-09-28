@@ -29,11 +29,10 @@ interface StateType
 {
 }
 
-export class TurnOrderUnitComponent extends React.Component<PropTypes, StateType>
+export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName = "TurnOrderUnit";
   state: StateType;
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   containerClassForAnimationState =
   {
     [AnimationState.removeDeadUnit]: "remove-dead-unit",

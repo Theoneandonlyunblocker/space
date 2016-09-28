@@ -14,7 +14,7 @@ interface StateType
 {
 }
 
-export class EmptyUnitComponent extends React.Component<PropTypes, StateType>
+export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "EmptyUnit";
   state: StateType;
@@ -23,8 +23,6 @@ export class EmptyUnitComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   
   render()
   {

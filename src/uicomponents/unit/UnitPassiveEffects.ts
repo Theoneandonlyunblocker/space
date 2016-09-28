@@ -12,7 +12,7 @@ interface StateType
 {
 }
 
-export class UnitPassiveEffectsComponent extends React.Component<PropTypes, StateType>
+export class UnitPassiveEffectsComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "UnitPassiveEffects";
   state: StateType;
@@ -21,8 +21,6 @@ export class UnitPassiveEffectsComponent extends React.Component<PropTypes, Stat
   {
     super(props);
   }
-  
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   
   render()
   {

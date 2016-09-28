@@ -25,7 +25,7 @@ interface StateType
   hoverSide?: "top" | "bottom";
 }
 
-export class MapRendererLayersListItemComponent extends React.Component<PropTypes, StateType>
+export class MapRendererLayersListItemComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersListItem";
   cachedMidPoint: number; // Y mid point for list item
@@ -64,8 +64,6 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
     });
   }
   
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
-
   componentWillReceiveProps(newProps: PropTypes)
   {
     if (newProps.listItemIsDragging !== this.props.listItemIsDragging)

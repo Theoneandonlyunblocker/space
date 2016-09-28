@@ -18,10 +18,9 @@ interface StateType
 {
 }
 
-export class PlayerFlagComponent extends React.Component<PropTypes, StateType>
+export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "PlayerFlag";
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   state: StateType;
   
   ref_TODO_container: HTMLElement;

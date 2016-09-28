@@ -18,12 +18,9 @@ interface StateType
   canAfford?: boolean;
 }
 
-export class ConstructManufactoryComponent extends React.Component<PropTypes, StateType>
+export class ConstructManufactoryComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "ConstructManufactory";
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
-
-
   state: StateType;
 
   constructor(props: PropTypes)

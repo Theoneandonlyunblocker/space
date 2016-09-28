@@ -16,14 +16,12 @@ interface StateType
 {
 }
 
-export class BattleScoreComponent extends React.Component<PropTypes, StateType>
+export class BattleScoreComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "BattleScore";
   lastEvaluation: number;
   state: StateType;
   
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
-
   constructor(props: PropTypes)
   {
     super(props);
