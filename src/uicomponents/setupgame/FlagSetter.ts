@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import {default as FlagPicker, FlagPickerComponent} from "./FlagPicker";
+import FlagPicker from "./FlagPicker";
 import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
 import Flag from "../../Flag";
 import Color from "../../Color";
@@ -39,7 +39,8 @@ interface StateType
 {
   flag?: Flag;
   isActive?: boolean;
-  failMessageElement?: React.ReactElement<any>;
+  failMessageElement?: React.ReactElement<any> | null;
+  customImageFile?: File | null;
 }
 
 export class FlagSetterComponent extends React.Component<PropTypes, StateType>
@@ -47,9 +48,8 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   displayName: string = "FlagSetter";
   state: StateType;
   
-  ref_TODO_flagPicker: FlagPickerComponent;
-  ref_TODO_main: HTMLElement;
-  ref_TODO_playerFlag: PlayerFlagComponent;
+  flagSetterContainer: HTMLElement;
+  playerFlagContainer: PlayerFlagComponent;
   
   failMessageTimeoutHandle: number;
   
@@ -61,7 +61,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     
     this.bindMethods();
   }
-  private bindMethods()
+  private bindMethods(): void
   {
     this.getFirstValidImageFromFiles = this.getFirstValidImageFromFiles.bind(this);
     this.setAsInactive = this.setAsInactive.bind(this);
@@ -85,16 +85,18 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       width: 46, // global FLAG_SIZE
       mainColor: this.props.mainColor,
       secondaryColor: this.props.subColor,
-      tetriaryColor: this.props.tetriaryColor
+      tetriaryColor: this.props.tetriaryColor,
     });
 
     return(
     {
       flag: flag,
-      failMessageElement: null
+      isActive: false,
+      failMessageElement: null,
+      customImageFile: null,
     });
   }
-  componentWillUnmount()
+  componentWillUnmount(): void
   {
     this.clearFailMessageTimeout();
     document.removeEventListener("click", this.handleClick);
@@ -112,24 +114,25 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       message.text
     )
   }
-  clearFailMessageTimeout()
+  clearFailMessageTimeout(): void
   {
     if (this.failMessageTimeoutHandle)
     {
       window.clearTimeout(this.failMessageTimeoutHandle);
     }
   }
-  clearFailMessage()
+  clearFailMessage(): void
   {
     this.clearFailMessageTimeout();
 
     this.setState({failMessageElement: null});
   }
-  setFailMessage(message: FailMessage, timeout: number)
+  setFailMessage(message: FailMessage, timeout: number): void
   {
     this.setState(
     {
-      failMessageElement: this.makeFailMessage(message, timeout)
+      failMessageElement: this.makeFailMessage(message, timeout),
+      customImageFile: null
     });
 
     this.failMessageTimeoutHandle = window.setTimeout(() =>
@@ -137,9 +140,9 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       this.clearFailMessage();
     }, timeout);
   }
-  handleClick(e: MouseEvent)
+  handleClick(e: MouseEvent): void
   {
-    var node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_main);
+    var node = ReactDOM.findDOMNode<HTMLElement>(this.flagSetterContainer);
     const target = <HTMLElement> e.target;
     if (target === node || node.contains(target))
     {
@@ -151,7 +154,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  toggleActive()
+  toggleActive(): void
   {
     if (this.state.isActive)
     {
@@ -167,7 +170,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       document.addEventListener("click", this.handleClick, false);
     }
   }
-  setAsInactive()
+  setAsInactive(): void
   {
     if (this.state.isActive)
     {
@@ -176,7 +179,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  setForegroundEmblem(emblemTemplate: SubEmblemTemplate)
+  setForegroundEmblem(emblemTemplate: SubEmblemTemplate | null): void
   {
     var shouldUpdate = emblemTemplate || this.state.flag.foregroundEmblem;
 
@@ -194,13 +197,13 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  stopEvent(e: React.DragEvent)
+  stopEvent(e: React.DragEvent): void
   {
     e.stopPropagation();
     e.preventDefault();
   }
 
-  handleDrop(e: React.DragEvent)
+  handleDrop(e: React.DragEvent): void
   {
     if (e.dataTransfer)
     {
@@ -267,20 +270,22 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  handleUpload(files: FileList)
+  handleUpload(files: FileList): void
   {
     var image = this.getFirstValidImageFromFiles(files);
-    if (!image)
+    
+    if (image)
+    {
+      this.setCustomImageFromFile(image);
+    }
+    else
     {
       this.setFailMessage(failMessages.noValidImageFile, 10000);
-      return false;
     }
 
-    this.setCustomImageFromFile(image);
-    return true;
   }
 
-  getFirstValidImageFromFiles(files: FileList)
+  getFirstValidImageFromFiles(files: FileList): File | null
   {
     for (let i = 0; i < files.length; i++)
     {
@@ -294,7 +299,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     return null;
   }
 
-  setCustomImageFromFile(file: File)
+  setCustomImageFromFile(file: File): void
   {
     var setImageFN = () =>
     {
@@ -303,7 +308,13 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       reader.onloadend = () =>
       {
         this.state.flag.setCustomImage(reader.result);
-        this.handleUpdate();
+        this.setState(
+        {
+          customImageFile: file 
+        }, () =>
+        {
+          this.handleUpdate();
+        });
       };
 
       reader.readAsDataURL(file);
@@ -328,7 +339,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  componentWillReceiveProps(newProps: PropTypes)
+  componentWillReceiveProps(newProps: PropTypes): void
   {
     var oldProps = this.props;
 
@@ -359,17 +370,8 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  handleUpdate(dontTriggerParentUpdates?: boolean)
+  handleUpdate(dontTriggerParentUpdates?: boolean): void
   {
-
-    if (this.state.flag.customImage)
-    {
-      if (this.ref_TODO_flagPicker)
-      {
-        this.ref_TODO_flagPicker.clearSelectedEmblem();
-      }
-    }
-
     if (!dontTriggerParentUpdates)
     {
       this.props.toggleCustomImage(this.state.flag.customImage);
@@ -387,7 +389,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
   getClientRect(): ClientRect
   {
-    const ownNode = <HTMLElement> ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_playerFlag);
+    const ownNode = <HTMLElement> ReactDOM.findDOMNode<HTMLElement>(this.playerFlagContainer);
     return ownNode.getBoundingClientRect();
   }
 
@@ -399,7 +401,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         className: "flag-setter",
         ref: (component: HTMLElement) =>
         {
-          this.ref_TODO_main = component;
+          this.flagSetterContainer = component;
         },
         onDragEnter: this.stopEvent,
         onDragOver: this.stopEvent,
@@ -416,21 +418,17 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
           },
           ref: (component: PlayerFlagComponent) =>
           {
-            this.ref_TODO_playerFlag = component;
+            this.playerFlagContainer = component;
           },
         }),
         this.state.isActive ?
           FlagPicker(
           {
-            ref: (component: FlagPickerComponent) =>
-            {
-              this.ref_TODO_flagPicker = component;
-            },
             flag: this.state.flag,
             handleSelectEmblem: this.setForegroundEmblem,
             failMessage: this.state.failMessageElement,
-            // onChange: this.handleUpdate,
             uploadFiles: this.handleUpload,
+            customImageFileName: this.state.customImageFile ? this.state.customImageFile.name : null,
             autoPositionerProps:
             {
               getParentClientRect: this.getClientRect,

@@ -14,10 +14,11 @@ import app from "../../App"; // TODO global
 
 export interface PropTypes extends React.Props<any>
 {
-  handleSelectEmblem: (selectedEmblemTemplate: SubEmblemTemplate) => void;
+  handleSelectEmblem: (selectedEmblemTemplate: SubEmblemTemplate | null) => void;
   uploadFiles: (files: FileList) => void;
   flag: Flag;
   failMessage: React.ReactElement<any>;
+  customImageFileName: string | null;
 
   autoPositionerProps?: AutoPositionerProps;
 }
@@ -31,7 +32,7 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagPicker";
   state: StateType;
-  ref_TODO_imageUploader: HTMLInputElement;
+  imageUploader: HTMLInputElement;
 
   constructor(props: PropTypes)
   {
@@ -67,14 +68,27 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  handleSelectEmblem(emblemTemplate: SubEmblemTemplate)
+  componentWillReceiveProps(newProps: PropTypes): void
   {
+    if (this.props.customImageFileName && !newProps.customImageFileName)
+    {
+      this.clearImageUploader();
+    }
+  }
+
+  handleSelectEmblem(emblemTemplate: SubEmblemTemplate | null)
+  {
+    if (emblemTemplate)
+    {
+      this.clearImageUploader();
+    }
+    
     if (this.state.selectedEmblem === emblemTemplate && emblemTemplate !== null)
     {
       this.clearSelectedEmblem();
       return;
     }
-    ReactDOM.findDOMNode<HTMLInputElement>(this.ref_TODO_imageUploader).value = null;
+
     this.props.handleSelectEmblem(emblemTemplate);
     this.setState({selectedEmblem: emblemTemplate});
   }
@@ -84,15 +98,15 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
     this.handleSelectEmblem(null);
   }
 
-  handleUpload()
+  handleUpload(e: React.FormEvent)
   {
-    var files = ReactDOM.findDOMNode<HTMLInputElement>(this.ref_TODO_imageUploader).files;
+    const imageUploader = <HTMLInputElement> e.target;
 
-    const uploadSuccessful = this.props.uploadFiles(files);
-    if (!uploadSuccessful)
-    {
-      this.ref_TODO_imageUploader.value = "";
-    }
+    this.props.uploadFiles(imageUploader.files);
+  }
+  private clearImageUploader(): void
+  {
+    this.imageUploader.value = "";
   }
   makeEmblemElement(template: SubEmblemTemplate)
   {
@@ -136,12 +150,10 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      imageInfoMessage =
-      React.DOM.div({className: "image-info-message"},
+      imageInfoMessage = React.DOM.div({className: "image-info-message"},
         "Upload or drag image here to set it as your flag"
       );
-    }
-    
+    }    
 
     return(
       React.DOM.div(
@@ -164,11 +176,11 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
               className: "flag-image-upload-button",
               type: "file",
               accept: "image/*",
-              ref: (component: HTMLInputElement) =>
+              onChange: this.handleUpload,
+              ref: (element: HTMLInputElement) =>
               {
-                this.ref_TODO_imageUploader = component;
-              },
-              onChange: this.handleUpload
+                this.imageUploader = element;
+              }
             }),
             imageInfoMessage
           )
