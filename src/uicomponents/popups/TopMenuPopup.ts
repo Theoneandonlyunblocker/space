@@ -10,22 +10,35 @@ interface StateType
 {
 }
 
+interface ContentComponent extends React.Component<any, any>
+{
+  parentPopupDidMount?: () => void;
+}
+
 export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenuPopup";
   state: StateType;
-  ref_TODO_content: React.ReactElement<any>;
+  ref_TODO_content: ContentComponent;
 
   constructor(props: PropTypes)
   {
     super(props);
+  }
+
+  public parentPopupDidMount(): void
+  {
+    if (this.ref_TODO_content.parentPopupDidMount)
+    {
+      this.ref_TODO_content.parentPopupDidMount();
+    }
   }
   
   render()
   {
     const contentProps =
     {
-      ref: (component: React.ReactElement<any>) =>
+      ref: (component: ContentComponent) =>
       {
         this.ref_TODO_content = component;
       }

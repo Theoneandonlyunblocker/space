@@ -53,6 +53,11 @@ interface StateType
   zIndex?: number;
 }
 
+interface ContentComponent extends React.Component<any, any>
+{
+  parentPopupDidMount?: () => void;
+}
+
 export class PopupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Popup";
@@ -60,7 +65,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
   
   dragPositioner: DragPositioner<PopupComponent>;
 
-  ref_TODO_content: React.ReactElement<any>;
+  ref_TODO_content: ContentComponent;
 
   constructor(props: PropTypes)
   {
@@ -158,6 +163,12 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       zIndex: this.props.incrementZIndex(this.state.zIndex)
+    }, () =>
+    {
+      if (this.ref_TODO_content.parentPopupDidMount)
+      {
+        this.ref_TODO_content.parentPopupDidMount();
+      }
     });
   }
 
@@ -201,7 +212,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     var contentProps =
     {
       closePopup: this.props.closePopup,
-      ref: (content: React.ReactElement<any>) =>
+      ref: (content: ContentComponent) =>
       {
         this.ref_TODO_content = content;
       }
