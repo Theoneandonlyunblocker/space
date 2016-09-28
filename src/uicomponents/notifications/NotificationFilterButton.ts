@@ -50,17 +50,6 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
   
   makePopup()
   {
-    // TODO | really ugly
-    const scrollToHighlightedFN = function(this: PopupManagerComponent)
-    {
-      const popup = this.popupComponentsByID[this.popupId - 1];
-      const outerContent = <any> popup.ref_TODO_content;
-      const innerContent = <any> outerContent.ref_TODO_content;
-
-      innerContent.scrollToHighlighted();
-    }.bind(this.ref_TODO_popupManager);
-
-    var popupId = this.ref_TODO_popupManager.makePopup(
     var popupId = this.popupManager.makePopup(
     {
       content: TopMenuPopup(
@@ -82,7 +71,6 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
         resizable: true,
         minWidth: 440,
         minHeight: 150,
-        finishedMountingCallback: scrollToHighlightedFN
       }
     });
 

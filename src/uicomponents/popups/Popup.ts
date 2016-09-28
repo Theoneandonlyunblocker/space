@@ -30,7 +30,6 @@ export interface CustomPopupProps
     width?: number;
     height?: number;
   }
-  finishedMountingCallback?: () => void;
   
   dragPositionerProps: DragPositionerProps;
 }
@@ -159,7 +158,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       zIndex: this.props.incrementZIndex(this.state.zIndex)
-    }, this.props.finishedMountingCallback);
+    });
   }
 
   handleResizeMove(x: number, y: number)
