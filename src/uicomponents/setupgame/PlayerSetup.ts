@@ -3,6 +3,7 @@
 import app from "../../App"; // TODO global
 import Player from "../../Player";
 import Color from "../../Color";
+import Flag from "../../Flag";
 import
 {
   generateMainColor,
@@ -31,7 +32,6 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  flagHasCustomImage?: boolean;
   name?: string;
   subColor?: Color;
   mainColor?: Color;
@@ -43,7 +43,8 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   displayName: string = "PlayerSetup";
 
   state: StateType;
-  ref_TODO_flagSetter: FlagSetterComponent;
+
+  flag: Flag;
 
   constructor(props: PropTypes)
   {
@@ -52,6 +53,14 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     this.state = this.getInitialStateTODO();
     
     this.bindMethods();
+
+    this.flag = new Flag(
+    {
+      width: 46, // global FLAG_SIZE
+      mainColor: null,
+      secondaryColor: null,
+      tetriaryColor: null,
+    });
   }
   private bindMethods()
   {
@@ -75,7 +84,6 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
       name: this.props.initialName,
       mainColor: null,
       subColor: null,
-      flagHasCustomImage: false,
       race: getRandomProperty(app.moduleData.Templates.Races)
     });
   }
@@ -126,7 +134,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   }
   handleSetCustomImage(image?: string)
   {
-    this.setState({flagHasCustomImage: Boolean(image)});
+    // this.setState({flagHasCustomImage: Boolean(image)});
   }
   setRace(race: RaceTemplate)
   {
@@ -137,9 +145,9 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   }
   randomize()
   {
-    if (!this.state.flagHasCustomImage)
+    if (!this.flag.hasCustomImage())
     {
-      this.ref_TODO_flagSetter.state.flag.generateRandom();
+      this.flag.generateRandom();
     }
 
     var mainColor = generateMainColor();
@@ -156,18 +164,16 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     const mainColor = this.state.mainColor || this.generateMainColor();
     const secondaryColor = this.state.subColor || this.generateSubColor(mainColor);
 
-    const flag = this.ref_TODO_flagSetter.state.flag;
-
-    flag.setColorScheme(
+    this.flag.setColorScheme(
       mainColor,
       secondaryColor,
-      flag.tetriaryColor
+      this.flag.tetriaryColor
     );
 
     if (this.state.mainColor === null && this.state.subColor === null &&
-      !flag.customImage && !flag.foregroundEmblem)
+      !this.flag.hasCustomImage() && !this.flag.foregroundEmblem)
     {
-      flag.generateRandom();
+      this.flag.generateRandom();
     }
     
     const player = new Player(
@@ -187,7 +193,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         alpha: 1
       },
 
-      flag: flag
+      flag: this.flag
     });
 
     this.setState(
@@ -240,14 +246,10 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         }),
         FlagSetter(
         {
-          ref: (component: FlagSetterComponent) =>
-          {
-            this.ref_TODO_flagSetter = component;
-          },
+          flag: this.flag,
           mainColor: this.state.mainColor,
           subColor: this.state.subColor,
           setActiveColorPicker: this.props.setActiveSetterComponent,
-          toggleCustomImage: this.handleSetCustomImage
         }),
         React.DOM.button(
         {

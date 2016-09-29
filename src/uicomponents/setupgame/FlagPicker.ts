@@ -1,5 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import EmblemPicker from "./EmblemPicker";
 import
 {
   default as AutoPositioner,
@@ -9,23 +10,26 @@ import applyMixins from "../mixins/applyMixins";
 
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
-import Flag from "../../Flag";
-import app from "../../App"; // TODO global
+import Color from "../../Color";
+import Emblem from "../../Emblem";
 
 export interface PropTypes extends React.Props<any>
 {
   handleSelectEmblem: (selectedEmblemTemplate: SubEmblemTemplate | null) => void;
   uploadFiles: (files: FileList) => void;
-  flag: Flag;
   failMessage: React.ReactElement<any>;
   customImageFileName: string | null;
+
+  foregroundEmblem: Emblem | null;
+  mainColor: Color | null;
+  secondaryColor: Color | null;
+  
 
   autoPositionerProps?: AutoPositionerProps;
 }
 
 interface StateType
 {
-  selectedEmblem?: SubEmblemTemplate;
 }
 
 export class FlagPickerComponent extends React.Component<PropTypes, StateType>
@@ -43,29 +47,11 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
       applyMixins(this, new AutoPositioner(this));
     }
     
-    this.state = this.getInitialStateTODO();
-    
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.clearSelectedEmblem = this.clearSelectedEmblem.bind(this);
-    this.handleSelectEmblem = this.handleSelectEmblem.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
-    this.makeEmblemElement = this.makeEmblemElement.bind(this);    
-  }
-  
-  private getInitialStateTODO(): StateType
-  {
-    var initialEmblem: SubEmblemTemplate = null;
-    if (this.props.flag.foregroundEmblem)
-    {
-      initialEmblem = this.props.flag.foregroundEmblem.inner;
-    }
-    return(
-    {
-      selectedEmblem: initialEmblem
-    });
   }
 
   componentWillReceiveProps(newProps: PropTypes): void
@@ -74,28 +60,6 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
     {
       this.clearImageUploader();
     }
-  }
-
-  handleSelectEmblem(emblemTemplate: SubEmblemTemplate | null)
-  {
-    if (emblemTemplate)
-    {
-      this.clearImageUploader();
-    }
-    
-    if (this.state.selectedEmblem === emblemTemplate && emblemTemplate !== null)
-    {
-      this.clearSelectedEmblem();
-      return;
-    }
-
-    this.props.handleSelectEmblem(emblemTemplate);
-    this.setState({selectedEmblem: emblemTemplate});
-  }
-
-  clearSelectedEmblem()
-  {
-    this.handleSelectEmblem(null);
   }
 
   handleUpload(e: React.FormEvent)
@@ -108,41 +72,9 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
   {
     this.imageUploader.value = "";
   }
-  makeEmblemElement(template: SubEmblemTemplate)
-  {
-    var className = "emblem-picker-image";
-    if (this.state.selectedEmblem &&
-      this.state.selectedEmblem.key === template.key)
-    {
-      className += " selected-emblem";
-    }
-
-    return(
-      React.DOM.div(
-      {
-        className: "emblem-picker-container",
-        key: template.key,
-        onClick: this.handleSelectEmblem.bind(this, template)
-      },
-        React.DOM.img(
-        {
-          className: className,
-          src: app.images[template.src].src
-        })
-      )
-    );
-  }
 
   render()
   {
-    var emblemElements: React.ReactHTMLElement<any>[] = [];
-
-    for (let emblemType in app.moduleData.Templates.SubEmblems)
-    {
-      var template = app.moduleData.Templates.SubEmblems[emblemType];
-      emblemElements.push(this.makeEmblemElement(template));
-    }
-
     var imageInfoMessage: React.ReactElement<any>;
     if (this.props.failMessage)
     {
@@ -185,17 +117,16 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
             imageInfoMessage
           )
         ),
-        React.DOM.div(
+        EmblemPicker(
         {
-          className: "emblem-picker"
-        },
-          React.DOM.div({className: "flag-picker-title"},
-            "Emblems"
-          ),
-          React.DOM.div({className: "emblem-picker-emblem-list"},
-            emblemElements
-          )
-        )
+          backgroundColor: this.props.mainColor,
+          color: this.props.secondaryColor,
+          emblem: this.props.foregroundEmblem ?
+            this.props.foregroundEmblem.inner :
+            null,
+
+          setEmblem: this.props.handleSelectEmblem
+        })
       )
     );
   }

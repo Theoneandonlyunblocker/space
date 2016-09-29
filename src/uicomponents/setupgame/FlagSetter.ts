@@ -33,16 +33,15 @@ const failMessages =
 
 export interface PropTypes extends React.Props<any>
 {
+  flag: Flag;
   mainColor: Color;
   subColor: Color;
   tetriaryColor?: Color;
   setActiveColorPicker: (setterComponent: FlagSetterComponent) => void;
-  toggleCustomImage: (image?: string) => void;
 }
 
 interface StateType
 {
-  flag?: Flag;
   isActive?: boolean;
   failMessageElement?: React.ReactElement<any> | null;
   customImageFile?: File | null;
@@ -84,17 +83,8 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   
   private getInitialStateTODO(): StateType
   {
-    var flag = new Flag(
-    {
-      width: 46, // global FLAG_SIZE
-      mainColor: this.props.mainColor,
-      secondaryColor: this.props.subColor,
-      tetriaryColor: this.props.tetriaryColor,
-    });
-
     return(
     {
-      flag: flag,
       isActive: false,
       failMessageElement: null,
       customImageFile: null,
@@ -185,7 +175,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
   setForegroundEmblem(emblemTemplate: SubEmblemTemplate | null): void
   {
-    var shouldUpdate = emblemTemplate || this.state.flag.foregroundEmblem;
+    var shouldUpdate = emblemTemplate || this.props.flag.foregroundEmblem;
 
     var emblem: Emblem = null;
     if (emblemTemplate)
@@ -193,7 +183,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       emblem = new Emblem(undefined, 1, emblemTemplate);
     }
 
-    this.state.flag.setForegroundEmblem(emblem);
+    this.props.flag.setForegroundEmblem(emblem);
 
     if (shouldUpdate)
     {
@@ -239,7 +229,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
         const dataURL = canvas.toDataURL();
 
-        this.state.flag.setCustomImageDataURL(dataURL);
+        this.props.flag.setCustomImage(dataURL);
         this.handleUpdate();
       },
       (errorType) =>
@@ -283,7 +273,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
       reader.onloadend = () =>
       {
-        this.state.flag.setCustomImage(reader.result);
+        this.props.flag.setCustomImage(reader.result);
         this.setState(
         {
           customImageFile: file 
@@ -315,51 +305,11 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  componentWillReceiveProps(newProps: PropTypes): void
+  handleUpdate(): void
   {
-    var oldProps = this.props;
-
-    this.state.flag.setColorScheme(
-      newProps.mainColor,
-      newProps.subColor,
-      newProps.tetriaryColor
-    );
-
-    // if (!this.state.flag.customImage)
-    // {
-    //   this.handleUpdate();
-    // }
-    var colorHasUpdated: boolean;
-    ["mainColor", "subColor", "tetriaryColor"].forEach(function(prop)
-    {
-      if (oldProps[prop] !== newProps[prop])
-      {
-        colorHasUpdated = true;
-        return;
-      }
-    });
-
-    if (colorHasUpdated)
-    {
-      this.handleUpdate(true);
-      return;
-    }
-  }
-
-  handleUpdate(dontTriggerParentUpdates?: boolean): void
-  {
-    if (!dontTriggerParentUpdates)
-    {
-      this.props.toggleCustomImage(this.state.flag.customImage);
-    }
-
     if (this.state.failMessageElement)
     {
       this.clearFailMessage();
-    }
-    else
-    {
-      this.forceUpdate();
     }
   }
 
@@ -385,7 +335,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       },
         PlayerFlag(
         {
-          flag: this.state.flag,
+          flag: this.props.flag,
           isMutable: true,
           props:
           {
@@ -400,11 +350,15 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         this.state.isActive ?
           FlagPicker(
           {
-            flag: this.state.flag,
             handleSelectEmblem: this.setForegroundEmblem,
-            failMessage: this.state.failMessageElement,
             uploadFiles: this.handleUpload,
+            failMessage: this.state.failMessageElement,
             customImageFileName: this.state.customImageFile ? this.state.customImageFile.name : null,
+
+            foregroundEmblem: this.props.flag.foregroundEmblem,
+            mainColor: this.props.flag.mainColor,
+            secondaryColor: this.props.flag.secondaryColor,
+            
             autoPositionerProps:
             {
               getParentClientRect: this.getClientRect,
