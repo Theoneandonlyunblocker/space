@@ -1,17 +1,19 @@
 /// <reference path="../../lib/react-global.d.ts" />
 
-
 import Flag from "../../src/Flag";
+import
+{
+  shallowExtend
+} from "../../src/utility";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  width?: number;
+  flag: Flag;
+
   props: React.HTMLProps<any>;
   isMutable?: boolean;
-  height?: number;
   stretch?: boolean;
-  flag: Flag;
 }
 
 interface StateType
@@ -28,72 +30,48 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.canUseDataURL = this.canUseDataURL.bind(this);    
   }
   
-  canUseDataURL()
+  private renderFlagCanvas(): void
   {
-    var uaString = navigator.userAgent.toLowerCase();
-    var isIE = uaString.indexOf("msie") !== -1 || uaString.indexOf("trident/") !== -1;
-    return !isIE;
+    const containerNode = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_container);
+    if (containerNode.firstChild)
+    {
+      containerNode.removeChild(containerNode.firstChild);
+    }
+
+    const containerRect = containerNode.getBoundingClientRect();
+
+    const canvas = this.props.flag.getCanvas(containerRect.width, containerRect.height, this.props.stretch, !this.props.isMutable);
+    canvas.style.maxWidth = "100%";
+    canvas.style.maxHeight = "100%";
+    containerNode.appendChild(canvas);
   }
+
   componentDidMount()
   {
-    if (this.ref_TODO_container && !this.props.isMutable)
-    {
-      var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
-      canvas.style.maxWidth = "100%";
-      canvas.style.maxHeight = "100%";
-      ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_container).appendChild(canvas);
-    }
+    this.renderFlagCanvas();
   }
   componentDidUpdate()
   {
-    if (this.ref_TODO_container && this.props.isMutable)
-    {
-      var containerNode = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_container);
-      if (containerNode.firstChild)
-      {
-        containerNode.removeChild(containerNode.firstChild);
-      }
-
-      var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
-      canvas.style.maxWidth = "100%";
-      canvas.style.maxHeight = "100%";
-      containerNode.appendChild(canvas);
-    }
+    this.renderFlagCanvas();
   }
+
   render(): React.ReactHTMLElement<any>
   {
-    var props = this.props.props;
-    if (this.canUseDataURL())
+    const props = shallowExtend(this.props.props,
     {
-      var flag = this.props.flag;
-      props.src = flag.getCanvas(
-        this.props.width, this.props.height, this.props.stretch, !this.props.isMutable).toDataURL();
-      return(
-        React.DOM.img(props,
-          null
-        )
-      );
-    }
-    else
-    {
-      props.ref = (component: HTMLElement) =>
+      ref: (component: HTMLElement) =>
       {
         this.ref_TODO_container = component;
-      };
-      return(
-        React.DOM.div(props,
-          null
-        )
-      );
-    }
+      }
+    });
+
+    return(
+      React.DOM.div(props,
+        null
+      )
+    );
   }
 }
 

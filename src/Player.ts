@@ -253,14 +253,9 @@ export default class Player
       throw new Error("Player has no color specified");
     }
 
-    const flag = new Flag(
-    {
-      width: 46, // global FLAG_SIZE
-      mainColor: this.color,
-      secondaryColor: this.secondaryColor
-    });
+    const flag = new Flag(this.color);
 
-    flag.generateRandom(seed);
+    flag.addRandomEmblem(this.secondaryColor, seed);
 
     return flag;
   }

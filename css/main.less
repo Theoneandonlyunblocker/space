@@ -4040,6 +4040,14 @@ ul, ol
 .color-setter
 {
   width: 4em;
+
+  >.color-picker
+  {
+    .full-border(5px);
+    position: fixed;
+    z-index: 201;
+    background-color: @bg-color;
+  }
 }
 .flag-setter
 {
@@ -4078,10 +4086,7 @@ button.player-setup-remove-player
 
 .color-picker
 {
-  .full-border(5px);
-  position: fixed;
-  z-index: 201;
-  background-color: @bg-color;
+  display: inline-block;
 }
 
 .color-picker-hsv
@@ -4241,12 +4246,12 @@ button.player-setup-remove-player
 
 .emblem-picker
 {
-  background: magenta;
   display: inline-block;
 }
 
 .emblem-picker-container
 {
+  background: magenta;
   cursor: pointer;
   display: flex;
   float: left;

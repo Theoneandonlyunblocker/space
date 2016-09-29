@@ -1,193 +1,132 @@
 /// <reference path="../lib/rng.d.ts" />
 
 import Color from "./Color";
+import {generateMainColor, generateSecondaryColor} from "./colorGeneration";
 import Emblem from "./Emblem";
+import
+{
+  drawElementToCanvas
+} from "./utility";
 
 import FlagSaveData from "./savedata/FlagSaveData";
 
 export default class Flag
 {
   seed: any;
-  width: number;
-  height: number;
-  mainColor: Color;
-  secondaryColor: Color;
-  tetriaryColor: Color;
-  backgroundEmblem: Emblem;
-  foregroundEmblem: Emblem;
+  backgroundColor: Color | null;
+  emblems: Emblem[] = [];
 
-  customImage: string;
-  private _customImageToRender: HTMLCanvasElement;
-
-  cachedCanvases:
+  private cachedCanvases:
   {
     [sizeString: string]: HTMLCanvasElement;
   } = {};
 
-  constructor(props:
+  constructor(backgroundColor: Color | null)
   {
-    width: number;
-    height?: number;
-    mainColor?: Color;
-    secondaryColor?: Color;
-    tetriaryColor?: Color;
-  })
-  {
-    this.width = props.width;
-    this.height = props.height || props.width;
-
-    this.mainColor = props.mainColor;
-    this.secondaryColor = props.secondaryColor;
-    this.tetriaryColor = props.tetriaryColor; // TODO flag | currently never set
+    this.backgroundColor = backgroundColor;
   }
-  setColorScheme(main: Color, secondary?: Color, tetriary?: Color)
+  public static generateRandom(
+    backgroundColor?: Color,
+    secondaryColor?: Color,
+    seed?: string
+  ): Flag
   {
-    this.mainColor = main;
-
+    const _backgroundColor = backgroundColor || generateMainColor();
+    const _secondaryColor = secondaryColor || generateSecondaryColor(_backgroundColor); 
     
-    this.secondaryColor = secondary;
-    if (this.foregroundEmblem && secondary)
-    {
-      this.foregroundEmblem.color = this.secondaryColor;
-    }
+    const flag = new Flag(_backgroundColor);
+    flag.seed = seed;
+    flag.addEmblem(flag.generateRandomEmblem(_secondaryColor, seed));
 
-    
-    this.tetriaryColor = tetriary;
-    if (this.backgroundEmblem && tetriary)
-    {
-      this.backgroundEmblem.color = this.tetriaryColor;
-    }
+    return flag;
   }
-  generateRandom(seed?: any)
+  public generateRandomEmblem(secondaryColor?: Color, seed?: string): Emblem
   {
-    this.seed = seed || Math.random();
-
-    var rng = new RNG(this.seed);
-
-    this.foregroundEmblem = new Emblem(this.secondaryColor);
-    this.foregroundEmblem.generateRandom(1, rng);
-
-
-    if (this.foregroundEmblem.canAddBackground() && rng.uniform() > 0.5)
-    {
-      this.backgroundEmblem = new Emblem(this.tetriaryColor);
-      this.backgroundEmblem.generateRandom(0.4, rng);
-    }
+    return Emblem.generateRandom(this.backgroundColor, [secondaryColor], 1, seed);
   }
-  clearContent()
+  public addRandomEmblem(secondaryColor?: Color, seed?: string): void
   {
-    this.customImage = null;
-    this._customImageToRender = null;
-    this.foregroundEmblem = null;
-    this.backgroundEmblem = null;
-    this.seed = null;
+    this.addEmblem(this.generateRandomEmblem(secondaryColor, seed));
   }
-  setForegroundEmblem(emblem: Emblem)
+  public addEmblem(emblem: Emblem): void
   {
-    if (!emblem)
-    {
-      this.foregroundEmblem = null;
-      return;
-    }
-
-    this.clearContent();
-    this.foregroundEmblem = emblem;
-
-    if (emblem.color)
-    {
-      this.secondaryColor = emblem.color;
-    }
-    else
-    {
-      emblem.color = this.secondaryColor
-    }
+    this.emblems.push(emblem);
   }
-  setBackgroundEmblem(emblem: Emblem)
+  public setCustomImage(...args: any[]): void
   {
-    if (!emblem)
-    {
-      this.backgroundEmblem = null;
-      return;
-    }
 
-    this.clearContent();
-    this.backgroundEmblem = emblem;
-
-    if (emblem.color)
-    {
-      this.tetriaryColor = emblem.color;
-    }
-    else
-    {
-      emblem.color = this.tetriaryColor
-    }
   }
-  // TODO flag | custom images
-  setCustomImage(imageSrc: string)
-  {
-    this.clearContent();
-    this.customImage = imageSrc;
-
-    var canvas = document.createElement("canvas");
-    canvas.width = this.width;
-    canvas.height = this.height;
-
-    var ctx = canvas.getContext("2d");
-
-    var image = new Image();
-    image.src = imageSrc
-    var xPos: number, xWidth: number, yPos: number, yHeight: number;
-
-    // center image if smaller than canvas we're drawing on
-    if (image.width < this.width)
-    {
-      xPos = (this.width - image.width) / 2
-      xWidth = image.width;
-    }
-    else
-    {
-      xPos = 0;
-      xWidth = this.width;
-    }
-
-    if (image.height < this.height)
-    {
-      yPos = (this.height - image.height) / 2
-      yHeight = image.height;
-    }
-    else
-    {
-      yPos = 0;
-      yHeight = this.height;
-    }
-
-    ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
-
-    this._customImageToRender = canvas;
-  }
-  getCanvas(
-    width: number = this.width,
-    height: number = this.height,
+  public getCanvas(
+    width: number,
+    height: number,
     stretch: boolean = true,
     useCache: boolean = true
-  )
+  ): HTMLCanvasElement
   {
     if (useCache)
     {
-      var sizeString = "" + width + "," + height + stretch;
+      const sizeString = "" + width + "," + height + stretch;
       if (!this.cachedCanvases[sizeString])
       {
-        var canvas = this.draw(width, height, stretch);
+        const canvas = this.draw(width, height, stretch);
         this.cachedCanvases[sizeString] = canvas;
       }
 
-      return this.cachedCanvases[sizeString];
+      const cachedCanvas = this.cachedCanvases[sizeString];
+      const canvas = drawElementToCanvas(cachedCanvas);
+
+      return canvas;
     }
     else
     {
-      var canvas = this.draw(width, height, stretch);
-      return(canvas);
+      const canvas = this.draw(width, height, stretch);
+      return canvas;
     }
+  }
+  public isDrawable(): boolean
+  {
+    return true; // TODO 29.9.2016 | ?
+  }
+  public serialize(): FlagSaveData
+  {
+    var data: FlagSaveData =
+    {
+      mainColor: this.backgroundColor.serialize(),
+      emblems: this.emblems.map(emblem => emblem.serialize())
+    };
+
+    return data;
+  }
+
+
+  private draw(width: number, height: number, stretch: boolean = true): HTMLCanvasElement
+  {
+    var canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+
+    
+    var ctx = canvas.getContext("2d");
+
+    ctx.globalCompositeOperation = "source-over";
+    if (this.backgroundColor)
+    {
+      ctx.fillStyle = "#" + this.backgroundColor.getHexString();
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    this.emblems.forEach(emblem =>
+    {
+      if (emblem.isDrawable())
+      {
+        var foreground = emblem.draw(width, height, stretch);
+        var x = (width - foreground.width) / 2;
+        var y = (height - foreground.height) / 2;
+        ctx.drawImage(foreground, x, y);
+      }
+    });
+    
+    return canvas;
   }
   // getReactMarkup()
   // {
@@ -225,84 +164,5 @@ export default class Flag
   //   }
     
   //   return this._renderedSvg;
-
   // }
-  draw(width: number = this.width, height: number = this.height, stretch: boolean = true)
-  {
-    var canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-
-    if (!this.mainColor && !this.customImage)
-    {
-      return canvas;
-    }
-    
-    var ctx = canvas.getContext("2d");
-
-    ctx.globalCompositeOperation = "source-over";
-
-
-    if (this._customImageToRender)
-    {
-      ctx.drawImage(this._customImageToRender, 0, 0);
-    }
-    else
-    {
-      ctx.fillStyle = "#" + this.mainColor.getHexString();
-      ctx.fillRect(0, 0, width, height);
-      
-      if (this.backgroundEmblem && this.tetriaryColor)
-      {
-        var background = this.backgroundEmblem.draw(width, height, stretch);
-        var x = (width - background.width) / 2;
-        var y = (height - background.height) / 2;
-        ctx.drawImage(background, x, y);
-      }
-
-      if (this.foregroundEmblem && this.secondaryColor)
-      {
-        var foreground = this.foregroundEmblem.draw(width, height, stretch);
-        var x = (width - foreground.width) / 2;
-        var y = (height - foreground.height) / 2;
-        ctx.drawImage(foreground, x, y);
-      }
-    }
-    
-    return canvas;
-  }
-  serialize(): FlagSaveData
-  {
-    var data: FlagSaveData =
-    {
-      mainColor: this.mainColor.serialize()
-    };
-
-    if (this.secondaryColor)
-    {
-      data.secondaryColor = this.secondaryColor.serialize();
-    }
-    if (this.tetriaryColor)
-    {
-      data.tetriaryColor = this.tetriaryColor.serialize();
-    }
-
-
-
-    if (this.customImage)
-    {
-      data.customImage = this.customImage;
-    }
-    else if (this.seed)
-    {
-      data.seed = this.seed;
-    }
-    else
-    {
-      if (this.foregroundEmblem) data.foregroundEmblem = this.foregroundEmblem.serialize();
-      if (this.backgroundEmblem) data.backgroundEmblem = this.backgroundEmblem.serialize();
-    }
-
-    return data;
-  }
 }

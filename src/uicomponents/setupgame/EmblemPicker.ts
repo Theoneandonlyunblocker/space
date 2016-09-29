@@ -2,15 +2,22 @@
 
 import app from "../../App"; // TODO global
 import Color from "../../Color";
+import {generateSecondaryColor} from "../../colorGeneration";
+import Emblem from "../../Emblem";
+import Flag from "../../Flag";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
+
+import ColorPicker from "./ColorPicker";
+import PlayerFlag from "../PlayerFlag";
 
 interface PropTypes extends React.Props<any>
 {
   color: Color | null;
   backgroundColor: Color | null;
-  emblem: SubEmblemTemplate | null;
+  selectedEmblemTemplate: SubEmblemTemplate | null;
 
-  setEmblem(emblem: SubEmblemTemplate | null): void;
+  setEmblemTemplate(emblem: SubEmblemTemplate | null, color: Color): void;
+  setEmblemColor(color: Color | null): void;
 }
 
 interface StateType
@@ -25,18 +32,24 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
   constructor(props: PropTypes)
   {
     super(props);
+
+    this.handleEmblemColorChange = this.handleEmblemColorChange.bind(this);
   }
 
   private handleSelectEmblem(emblem: SubEmblemTemplate | null): void
   {
-    if (this.props.emblem === emblem)
+    if (this.props.selectedEmblemTemplate === emblem)
     {
-      this.props.setEmblem(null);
+      this.props.setEmblemTemplate(null, this.props.color);
     }
     else
     {
-      this.props.setEmblem(emblem);
+      this.props.setEmblemTemplate(emblem, this.props.color);
     }
+  }
+  private handleEmblemColorChange(color: Color, isNull: boolean): void
+  {
+    this.props.setEmblemColor(isNull ? null : color);
   }
 
   render()
@@ -49,11 +62,16 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
 
       let className = "emblem-picker-image";
 
-      const templateIsSelected = this.props.emblem && this.props.emblem.key === template.key;
+      const templateIsSelected = this.props.selectedEmblemTemplate && this.props.selectedEmblemTemplate.key === template.key;
       if (templateIsSelected)
       {
         className += " selected-emblem";
       }
+
+      const flag = new Flag(this.props.backgroundColor);
+
+      const emblem = new Emblem([this.props.color], template, 1);
+      flag.addEmblem(emblem);
 
       emblemElements.push(
         React.DOM.div(
@@ -62,10 +80,14 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
           key: template.key,
           onClick: this.handleSelectEmblem.bind(this, template)
         },
-          React.DOM.img(
+          PlayerFlag(
           {
-            className: className,
-            src: app.images[template.src].src
+            flag: flag,
+            isMutable: true,
+            props:
+            {
+              className: className,
+            }
           })
         )
       );
@@ -75,13 +97,19 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
       React.DOM.div(
       {
         className: "emblem-picker",
-        style:
-        {
-          backgroundColor: this.props.backgroundColor ?
-            `#${this.props.backgroundColor.getHexString()}` :
-            "magenta"
-        }
       },
+        React.DOM.div({className: "flag-picker-title"},
+          "Emblem color"
+        ),
+        ColorPicker(
+        {
+          initialColor: this.props.color,
+          onChange: this.handleEmblemColorChange,
+          generateColor: () =>
+          {
+            return generateSecondaryColor(this.props.backgroundColor);
+          }
+        }),
         React.DOM.div({className: "flag-picker-title"},
           "Emblems"
         ),

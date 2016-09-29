@@ -33,7 +33,7 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   name?: string;
-  subColor?: Color;
+  secondaryColor?: Color;
   mainColor?: Color;
   race?: RaceTemplate;
 }
@@ -54,13 +54,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     
     this.bindMethods();
 
-    this.flag = new Flag(
-    {
-      width: 46, // global FLAG_SIZE
-      mainColor: null,
-      secondaryColor: null,
-      tetriaryColor: null,
-    });
+    this.flag = new Flag(null);
   }
   private bindMethods()
   {
@@ -83,11 +77,15 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     {
       name: this.props.initialName,
       mainColor: null,
-      subColor: null,
+      secondaryColor: null,
       race: getRandomProperty(app.moduleData.Templates.Races)
     });
   }
-  generateMainColor(subColor = this.state.subColor)
+  componentWillUpdate(nextProps: PropTypes, nextState: StateType): void
+  {
+    this.flag.backgroundColor = nextState.mainColor;
+  }
+  generateMainColor(subColor = this.state.secondaryColor)
   {
     if (subColor === null)
     {
@@ -126,7 +124,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   }
   setSubColor(color: Color, isNull: boolean)
   {
-    this.setState({subColor: isNull ? null : color});
+    this.setState({secondaryColor: isNull ? null : color});
   }
   handleRemove()
   {
@@ -136,44 +134,35 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   {
     // this.setState({flagHasCustomImage: Boolean(image)});
   }
-  setRace(race: RaceTemplate)
+  private setRace(race: RaceTemplate): void
   {
     this.setState(
     {
       race: race
     });
   }
-  randomize()
+  public randomize(): void
   {
-    if (!this.flag.hasCustomImage())
-    {
-      this.flag.generateRandom();
-    }
+    const mainColor = generateMainColor();
+    const secondaryColor = generateSecondaryColor(mainColor);
 
-    var mainColor = generateMainColor();
+    this.flag = Flag.generateRandom(mainColor, secondaryColor);
 
     this.setState(
     {
       mainColor: mainColor,
-      subColor: generateSecondaryColor(mainColor),
+      secondaryColor: secondaryColor,
       race: getRandomProperty(app.moduleData.Templates.Races),
     });
   }
   makePlayer()
   {
     const mainColor = this.state.mainColor || this.generateMainColor();
-    const secondaryColor = this.state.subColor || this.generateSubColor(mainColor);
+    const secondaryColor = this.state.secondaryColor || this.generateSubColor(mainColor);
 
-    this.flag.setColorScheme(
-      mainColor,
-      secondaryColor,
-      this.flag.tetriaryColor
-    );
-
-    if (this.state.mainColor === null && this.state.subColor === null &&
-      !this.flag.hasCustomImage() && !this.flag.foregroundEmblem)
+    if (!this.flag.backgroundColor)
     {
-      this.flag.generateRandom();
+      this.flag = Flag.generateRandom(mainColor, secondaryColor);
     }
     
     const player = new Player(
@@ -199,7 +188,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       mainColor: player.color,
-      subColor: player.secondaryColor
+      secondaryColor: player.secondaryColor
     });
 
     return player;
@@ -233,23 +222,23 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         ColorSetter(
         {
           onChange: this.setMainColor,
-          setActiveColorPicker: this.props.setActiveSetterComponent,
+          setAsActive: this.props.setActiveSetterComponent,
           generateColor: this.generateMainColor,
           color: this.state.mainColor
         }),
         ColorSetter(
         {
           onChange: this.setSubColor,
-          setActiveColorPicker: this.props.setActiveSetterComponent,
+          setAsActive: this.props.setActiveSetterComponent,
           generateColor: this.generateSubColor,
-          color: this.state.subColor
+          color: this.state.secondaryColor
         }),
         FlagSetter(
         {
           flag: this.flag,
           mainColor: this.state.mainColor,
-          subColor: this.state.subColor,
-          setActiveColorPicker: this.props.setActiveSetterComponent,
+          secondaryColor: this.state.secondaryColor,
+          setAsActive: this.props.setActiveSetterComponent,
         }),
         React.DOM.button(
         {

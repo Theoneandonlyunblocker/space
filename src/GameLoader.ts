@@ -19,15 +19,10 @@ import Item from "./Item";
 import MapGenResult from "./MapGenResult";
 import Name from "./Name";
 import AIController from "./AIController";
-import
-{
-  getRandomProperty,
-} from "./utility";
 
 import AIControllerSaveData from "./savedata/AIControllerSaveData";
 import GameSaveData from "./savedata/GameSaveData";
 import NotificationLogSaveData from "./savedata/NotificationLogSaveData";
-import NotificationSaveData from "./savedata/NotificationSaveData";
 import GalaxyMapSaveData from "./savedata/GalaxyMapSaveData";
 import StarSaveData from "./savedata/StarSaveData";
 import BuildingSaveData from "./savedata/BuildingSaveData";
@@ -35,7 +30,6 @@ import PlayerSaveData from "./savedata/PlayerSaveData";
 import DiplomacyStatusSaveData from "./savedata/DiplomacyStatusSaveData";
 import EmblemSaveData from "./savedata/EmblemSaveData";
 import FlagSaveData from "./savedata/FlagSaveData";
-import ColorSaveData from "./savedata/ColorSaveData";
 import FleetSaveData from "./savedata/FleetSaveData";
 import UnitSaveData from "./savedata/UnitSaveData";
 import ItemSaveData from "./savedata/ItemSaveData";
@@ -126,10 +120,9 @@ export default class GameLoader
 
     return game;
   }
-  // legacy savedata 10.3.2016
-  deserializeNotificationLog(data: NotificationLogSaveData | NotificationSaveData[]): NotificationLog
+  deserializeNotificationLog(data: NotificationLogSaveData): NotificationLog
   {
-    var notificationsData: NotificationSaveData[] = Array.isArray(data) ? data : data.notifications;
+    var notificationsData = data.notifications;
 
     var notificationLog = new NotificationLog(this.humanPlayer);
     for (let i = 0; i < notificationsData.length; i++)
@@ -252,19 +245,9 @@ export default class GameLoader
 
     return building;
   }
-  deserializeName(data: NameSaveData | string): Name
+  deserializeName(data: NameSaveData): Name
   {
-    // legacy savedata 13.8.2016
-    if (typeof data === "string")
-    {
-      const castedStringData = <string> data;
-      return new Name(castedStringData);
-    }
-    else
-    {
-      const castedData = <NameSaveData> data;
-      return Name.fromData(castedData);
-    }
+    return Name.fromData(data);
   }
   deserializePlayer(data: PlayerSaveData): Player
   {
@@ -273,9 +256,7 @@ export default class GameLoader
       isAI: data.isAI,
       isIndependent: data.isIndependent,
 
-      // legacy savedata 16.8.2016
-      race: data.raceKey ? app.moduleData.Templates.Races[data.raceKey] :
-        getRandomProperty(app.moduleData.Templates.Races),
+      race: app.moduleData.Templates.Races[data.raceKey],
       money: data.money,
       
       id: data.id,
@@ -287,8 +268,7 @@ export default class GameLoader
         alpha: data.colorAlpha
       },
 
-      // when is this not true?
-      flag: data.flag ? this.deserializeFlag(data.flag) : null,
+      flag: this.deserializeFlag(data.flag),
 
       resources: data.resources
     });
@@ -368,45 +348,23 @@ export default class GameLoader
       }
     }
   }
-  deserializeEmblem(emblemData: EmblemSaveData, colorData: ColorSaveData): Emblem
+  deserializeEmblem(emblemData: EmblemSaveData): Emblem
   {
-    var inner = app.moduleData.Templates.SubEmblems[emblemData.innerKey];
-    var outer = emblemData.outerKey ?
-      app.moduleData.Templates.SubEmblems[emblemData.outerKey] : null;
-
-    return new Emblem(Color.deSerialize(colorData), emblemData.alpha, inner, outer);
+    return new Emblem(
+      emblemData.colors.map(colorData => Color.deSerialize(colorData)),
+      app.moduleData.Templates.SubEmblems[emblemData.templateKey],
+      emblemData.alpha
+    );
   }
   deserializeFlag(data: FlagSaveData): Flag
   {
-    var flag = new Flag(
-    {
-      width: 46, // global FLAG_SIZE
-      mainColor: Color.deSerialize(data.mainColor),
-      secondaryColor: Color.deSerialize(data.secondaryColor),
-      tetriaryColor: Color.deSerialize(data.tetriaryColor)
-    });
+    const flag = new Flag(Color.deSerialize(data.mainColor));
 
-    if (data.customImage)
+    data.emblems.forEach(emblemSaveData =>
     {
-      flag.setCustomImage(data.customImage);
-    }
-    else if (data.seed)
-    {
-      flag.generateRandom(data.seed);
-    }
-    else
-    {
-      if (data.foregroundEmblem)
-      {
-        var fgEmblem = this.deserializeEmblem(data.foregroundEmblem, data.secondaryColor);
-        flag.setForegroundEmblem(fgEmblem);
-      }
-      if (data.backgroundEmblem)
-      {
-        var bgEmblem = this.deserializeEmblem(data.backgroundEmblem, data.tetriaryColor);
-        flag.setBackgroundEmblem(bgEmblem);
-      }
-    }
+      const emblem = this.deserializeEmblem(emblemSaveData);
+      flag.addEmblem(emblem);
+    });
 
     return flag;
   }
@@ -414,28 +372,16 @@ export default class GameLoader
   {
     var units: Unit[] = [];
 
-    // legacy savedata 10.3.2016
-    var castedData = <any> data;
-    var unitsToDeserialize: UnitSaveData[] = castedData.units || castedData.ships;
-
-    for (let i = 0; i < unitsToDeserialize.length; i++)
+    for (let i = 0; i < data.units.length; i++)
     {
-      var unit = this.deserializeUnit(unitsToDeserialize[i]);
+      var unit = this.deserializeUnit(data.units[i]);
       player.addUnit(unit);
       units.push(unit);
     }
 
     var fleet = new Fleet(player, units, this.starsById[data.locationId], data.id, false);
-    // legacy savedata 13.8.2016
-    if (typeof data.name === "string")
-    {
-      const castedDataName: string = <any> data.name;
-      fleet.name = new Name(castedDataName);
-    }
-    else
-    {
-      fleet.name = Name.fromData(data.name);
-    }
+    fleet.name = Name.fromData(data.name);
+
     return fleet;
   }
   deserializeUnit(data: UnitSaveData): Unit

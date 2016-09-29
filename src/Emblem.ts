@@ -5,160 +5,121 @@ import app from "./App"; // TODO global
 import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
 import EmblemSaveData from "./savedata/EmblemSaveData";
 import Color from "./Color";
-import SubEmblemCoverage from "./SubEmblemCoverage";
-import SubEmblemPosition from "./SubEmblemPosition";
 import
 {
-  clamp,
-  getSeededRandomArrayItem
+  generateSecondaryColor
+} from "./colorGeneration";
+import
+{
+  getSeededRandomArrayItem,
+  randRange,
 } from "./utility";
 
 export default class Emblem
 {
   alpha: number;
-  color: Color;
-  inner: SubEmblemTemplate;
-  outer: SubEmblemTemplate;
-  constructor(color: Color, alpha?: number,
-    inner?: SubEmblemTemplate, outer?: SubEmblemTemplate)
-  {
-    this.color = color;
-    this.alpha = isFinite(alpha) ? alpha : 1;
-    this.inner = inner;
-    this.outer = outer;
-  }
-  generateRandom(minAlpha: number, rng?: any): void
-  {
-    var rng: any = rng || new RNG(Math.random);
-    this.alpha = rng.uniform();
-    this.alpha = clamp(this.alpha, minAlpha, 1);
+  colors: Color[];
+  template: SubEmblemTemplate;
 
-    this.generateSubEmblems(rng);
-  }
-  canAddOuterTemplate(): boolean
+  constructor(colors: Color[], template: SubEmblemTemplate, alpha: number = 1)
   {
-    return (this.inner && this.inner.coverage.indexOf(SubEmblemCoverage.inner) !== -1);
+    this.colors = colors;
+    this.alpha = alpha;
+    this.template = template;
   }
-  getPossibleSubEmblemsToAdd(): SubEmblemTemplate[]
+  public static generateRandom(backgroundColor: Color, colors: Color[] = [], minAlpha: number = 1, seed?: string): Emblem
   {
-    var possibleTemplates: SubEmblemTemplate[] = [];
+    const _rng = new RNG(seed);
 
-    if (this.inner && this.outer)
+    const templates = Emblem.getAvailableTemplatesForRandomGeneration();
+    const template = getSeededRandomArrayItem(templates, _rng);
+    
+    let _colors: Color[];
+    if (template.generateColors)
     {
-      throw new Error("Tried to get available sub emblems for emblem that already has both inner and outer");
-    }
-
-    if (!this.inner)
-    {
-      for (let key in app.moduleData.Templates.SubEmblems)
-      {
-        if (!app.moduleData.Templates.SubEmblems[key].disallowRandomGeneration)
-        {
-          possibleTemplates.push(app.moduleData.Templates.SubEmblems[key]);
-        }
-      }
+      _colors = template.generateColors(backgroundColor, colors);
     }
     else
     {
-      if (this.canAddOuterTemplate())
+      if (colors.length > 0)
       {
-        for (let key in app.moduleData.Templates.SubEmblems)
-        {
-          var template = app.moduleData.Templates.SubEmblems[key];
-          if (!template.disallowRandomGeneration && template.coverage.indexOf(SubEmblemCoverage.outer) !== -1)
-          {
-            possibleTemplates.push(template);
-          }
-        }
+        _colors = colors.slice(0);
+      }
+      else
+      {
+        _colors = [generateSecondaryColor(backgroundColor)];
       }
     }
 
-    return possibleTemplates;
-  }
-  generateSubEmblems(rng: any): void
-  {
-    var candidates = this.getPossibleSubEmblemsToAdd();
-    this.inner = getSeededRandomArrayItem(candidates, rng);
+    const alpha = randRange(minAlpha, 1);
 
-    candidates = this.getPossibleSubEmblemsToAdd();
-    if (candidates.length > 0 && rng.uniform() > 0.4)
+    return new Emblem(
+      _colors,
+      template,
+      alpha
+    );
+  }
+  private static getAvailableTemplatesForRandomGeneration(): SubEmblemTemplate[]
+  {
+    return Object.keys(app.moduleData.Templates.SubEmblems).map(key =>
     {
-      this.outer = getSeededRandomArrayItem(candidates, rng);
-    }
-  }
-  canAddBackground(): boolean
-  {
-    if (this.inner.position.indexOf(SubEmblemPosition.foreground) !== -1)
+      return app.moduleData.Templates.SubEmblems[key];
+    }).filter(template =>
     {
-      return (!this.outer || this.outer.position.indexOf(SubEmblemPosition.foreground) !== -1);
-    }
-
-    return false;
+      return !template.disallowRandomGeneration;
+    })
   }
-  drawSubEmblem(toDraw: SubEmblemTemplate,
-    maxWidth: number, maxHeight: number, stretch: boolean)
+  public isDrawable(): boolean
   {
-    var image = app.images[toDraw.src];
+    const amountOfColorsIsWithinRange = this.colors.length > 0;
 
-    var width = image.width;
-    var height = image.height;
+    return this.alpha > 0 && amountOfColorsIsWithinRange;
+  }
+  // TODO 29.9.2016 | actually use svg attributes
+  public draw(maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement
+  {
+    const image = app.images[this.template.src];
+
+    let width = image.width;
+    let height = image.height;
 
     if (stretch)
     {
-      var widthRatio = width / maxWidth;
-      var heightRatio = height / maxHeight;
+      const widthRatio = width / maxWidth;
+      const heightRatio = height / maxHeight;
 
-      var largestRatio = Math.max(widthRatio, heightRatio);
+      const largestRatio = Math.max(widthRatio, heightRatio);
       width /= largestRatio;
       height /= largestRatio;
     }
+    else
+    {
+      width = Math.min(width, maxWidth);
+      height = Math.max(height, maxHeight);
+    }
 
-    var canvas = document.createElement("canvas");
+    const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-    var ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
 
     ctx.drawImage(image, 0, 0, width, height);
 
     ctx.globalCompositeOperation = "source-in";
 
-    ctx.fillStyle = "#" + this.color.getHexString();
+    ctx.fillStyle = "#" + this.colors[0].getHexString();
     ctx.fillRect(0, 0, width, height);
 
     return canvas;
   }
-  draw(maxWidth: number, maxHeight: number, stretch: boolean)
-  {
-    var canvas = document.createElement("canvas");
-    var ctx = canvas.getContext("2d");
-
-    ctx.globalAlpha = this.alpha;
-
-    var inner = this.drawSubEmblem(this.inner, maxWidth, maxHeight, stretch);
-    canvas.width = inner.width;
-    canvas.height = inner.height;
-    ctx.drawImage(inner, 0, 0);
-
-    if (this.outer)
-    {
-      var outer = this.drawSubEmblem(this.outer, maxWidth, maxHeight, stretch);
-      ctx.drawImage(outer, 0, 0);
-    }
-
-    return canvas;
-  }
-  serialize(): EmblemSaveData
+  public serialize(): EmblemSaveData
   {
     var data: EmblemSaveData =
     {
       alpha: this.alpha,
-      innerKey: this.inner.key
+      colors: this.colors.map(color => color.serialize()),
+      templateKey: this.template.key,
     };
-
-    if (this.outer)
-    {
-      data.outerKey = this.outer.key;
-    }
 
     return data;
   }

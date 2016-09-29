@@ -35,9 +35,8 @@ export interface PropTypes extends React.Props<any>
 {
   flag: Flag;
   mainColor: Color;
-  subColor: Color;
-  tetriaryColor?: Color;
-  setActiveColorPicker: (setterComponent: FlagSetterComponent) => void;
+  secondaryColor: Color;
+  setAsActive: (setterComponent: FlagSetterComponent) => void;
 }
 
 interface StateType
@@ -73,7 +72,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     this.clearFailMessage = this.clearFailMessage.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.setCustomImageFromFile = this.setCustomImageFromFile.bind(this);
-    this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleSuccessfulUpdate = this.handleSuccessfulUpdate.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.toggleActive = this.toggleActive.bind(this);
@@ -156,9 +155,9 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      if (this.props.setActiveColorPicker)
+      if (this.props.setAsActive)
       {
-        this.props.setActiveColorPicker(this);
+        this.props.setAsActive(this);
       }
       this.setState({isActive: true});
       document.addEventListener("click", this.handleClick, false);
@@ -173,22 +172,16 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  setForegroundEmblem(emblemTemplate: SubEmblemTemplate | null): void
+  setForegroundEmblem(emblemTemplate: SubEmblemTemplate | null, color: Color): void
   {
-    var shouldUpdate = emblemTemplate || this.props.flag.foregroundEmblem;
-
     var emblem: Emblem = null;
     if (emblemTemplate)
     {
-      emblem = new Emblem(undefined, 1, emblemTemplate);
+      emblem = new Emblem([color], emblemTemplate, 1);
     }
 
-    this.props.flag.setForegroundEmblem(emblem);
-
-    if (shouldUpdate)
-    {
-      this.handleUpdate();
-    }
+    this.props.flag.addEmblem(emblem);
+    this.handleSuccessfulUpdate();
   }
 
   stopEvent(e: React.DragEvent): void
@@ -230,7 +223,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         const dataURL = canvas.toDataURL();
 
         this.props.flag.setCustomImage(dataURL);
-        this.handleUpdate();
+        this.handleSuccessfulUpdate();
       },
       (errorType) =>
       {
@@ -279,7 +272,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
           customImageFile: file 
         }, () =>
         {
-          this.handleUpdate();
+          this.handleSuccessfulUpdate();
         });
       };
 
@@ -305,11 +298,15 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  handleUpdate(): void
+  handleSuccessfulUpdate(): void
   {
     if (this.state.failMessageElement)
     {
       this.clearFailMessage();
+    }
+    else
+    {
+      this.forceUpdate();
     }
   }
 
@@ -354,10 +351,19 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
             uploadFiles: this.handleUpload,
             failMessage: this.state.failMessageElement,
             customImageFileName: this.state.customImageFile ? this.state.customImageFile.name : null,
+            mainColor: this.props.mainColor,
+            triggerParentUpdate: this.handleSuccessfulUpdate,
 
-            foregroundEmblem: this.props.flag.foregroundEmblem,
-            mainColor: this.props.flag.mainColor,
-            secondaryColor: this.props.flag.secondaryColor,
+            emblemData: this.props.flag.emblems.map((emblem, i) =>
+            {
+              return(
+              {
+                key: i,
+                emblem: emblem,
+                template: emblem ? emblem.template : null,
+                color: emblem && emblem.colors[0] ? emblem.colors[0] : this.props.secondaryColor,
+              });
+            }),
             
             autoPositionerProps:
             {

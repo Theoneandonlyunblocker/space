@@ -12,8 +12,8 @@ import applyMixins from "../mixins/applyMixins";
 
 export interface PropTypes extends React.Props<any>
 {
-  generateColor?: (toContrastWith?: Color) => Color;
-  hexColor?: number;
+  generateColor?: () => Color;
+  initialColor: Color | null;
   onChange: (color: Color, isNull: boolean) => void;
   minUpdateBuffer?: number;
 
@@ -66,7 +66,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   
   private getInitialStateTODO(): StateType
   {
-    const color = isFinite(this.props.hexColor) ? Color.fromHex(this.props.hexColor) : new Color(1, 1, 1);
+    const color = this.props.initialColor || new Color(1, 1, 1);
     const hsvColor = Color.convertScalarsToDegrees(color.getHSV());
 
     return(
@@ -86,10 +86,16 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       this.onChangeTimeoutHandle = null;
     }
 
-    this.onChangeTimeoutHandle = window.setTimeout(() =>
+    if (this.props.minUpdateBuffer)
+    {
+      this.onChangeTimeoutHandle = window.setTimeout(() =>
+      {
+      }, this.props.minUpdateBuffer || 0);
+    }
+    else
     {
       this.props.onChange(color, isNull);
-    }, this.props.minUpdateBuffer || 0);
+    }
   }
 
   updateFromHsv(hue: number, sat: number, val: number, e?: Event)

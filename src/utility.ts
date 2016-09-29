@@ -31,7 +31,7 @@ export function getRandomArrayItem(target: any[])
   var _rnd = Math.floor(Math.random() * (target.length));
   return target[_rnd];
 }
-export function getSeededRandomArrayItem(array: any[], rng: any)
+export function getSeededRandomArrayItem<T>(array: T[], rng: any): T
 {
   var _rnd = Math.floor(rng.uniform() * array.length);
   return array[_rnd];
@@ -296,6 +296,17 @@ export function stringToHex(text: string)
   }
 
   return parseInt(text, 16);
+}
+export function drawElementToCanvas(toClone: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): HTMLCanvasElement
+{
+  const canvas = document.createElement("canvas");
+  canvas.width = toClone.width;
+  canvas.height = toClone.height;
+
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(toClone, 0, 0);
+
+  return canvas;
 }
 export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
 {

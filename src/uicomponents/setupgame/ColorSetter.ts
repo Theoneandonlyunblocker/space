@@ -5,7 +5,7 @@ import ColorPicker from "./ColorPicker";
 
 export interface PropTypes extends React.Props<any>
 {
-  setActiveColorPicker?: (colorSetter: ColorSetterComponent) => void;
+  setAsActive?: (colorSetter: ColorSetterComponent) => void;
   generateColor?: (toContrastWith?: Color) => Color;
   color: Color;
   onChange: (color: Color, isNull: boolean) => void;
@@ -74,9 +74,9 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      if (this.props.setActiveColorPicker)
+      if (this.props.setAsActive)
       {
-        this.props.setActiveColorPicker(this);
+        this.props.setAsActive(this);
       }
       this.setState({isActive: true});
       document.addEventListener("click", this.handleClick, false);
@@ -130,7 +130,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
         this.state.isActive ?
           ColorPicker(
           {
-            hexColor: this.props.color ? this.props.color.getHex() : null,
+            initialColor: this.props.color,
             generateColor: this.props.generateColor,
             onChange: this.props.onChange,
             minUpdateBuffer: this.props.minUpdateBuffer,

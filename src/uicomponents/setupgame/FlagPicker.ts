@@ -15,15 +15,19 @@ import Emblem from "../../Emblem";
 
 export interface PropTypes extends React.Props<any>
 {
-  handleSelectEmblem: (selectedEmblemTemplate: SubEmblemTemplate | null) => void;
+  handleSelectEmblem: (selectedEmblemTemplate: SubEmblemTemplate | null, color: Color) => void;
+  triggerParentUpdate: () => void;
   uploadFiles: (files: FileList) => void;
   failMessage: React.ReactElement<any>;
   customImageFileName: string | null;
 
-  foregroundEmblem: Emblem | null;
+  emblemData:
+  {
+    emblem: Emblem | null;
+    template: SubEmblemTemplate | null;
+    color: Color | null;
+  }[];
   mainColor: Color | null;
-  secondaryColor: Color | null;
-  
 
   autoPositionerProps?: AutoPositionerProps;
 }
@@ -32,7 +36,7 @@ interface StateType
 {
 }
 
-export class FlagPickerComponent extends React.Component<PropTypes, StateType>
+export class FlagPickerComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "FlagPicker";
   state: StateType;
@@ -117,15 +121,22 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
             imageInfoMessage
           )
         ),
-        EmblemPicker(
+        this.props.emblemData.map((emblemData, i) =>
         {
-          backgroundColor: this.props.mainColor,
-          color: this.props.secondaryColor,
-          emblem: this.props.foregroundEmblem ?
-            this.props.foregroundEmblem.inner :
-            null,
+          return EmblemPicker(
+          {
+            key: i,
+            backgroundColor: this.props.mainColor,
+            color: emblemData.color,
+            selectedEmblemTemplate: emblemData.template,
 
-          setEmblem: this.props.handleSelectEmblem
+            setEmblemTemplate: this.props.handleSelectEmblem,
+            setEmblemColor: (color) =>
+            {
+              emblemData.emblem.colors = [color];
+              this.props.triggerParentUpdate();
+            }
+          });
         })
       )
     );

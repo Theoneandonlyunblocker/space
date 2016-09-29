@@ -1,8 +1,10 @@
+import ColorSaveData from "./ColorSaveData";
+
 declare interface EmblemSaveData
 {
   alpha: number;
-  innerKey: string;
-  outerKey?: string;
+  colors: ColorSaveData[];
+  templateKey: string;
 }
 
 export default EmblemSaveData;

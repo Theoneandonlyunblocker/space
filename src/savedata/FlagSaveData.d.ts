@@ -4,15 +4,7 @@ import EmblemSaveData from "./EmblemSaveData";
 declare interface FlagSaveData
 {
   mainColor: ColorSaveData;
-  secondaryColor?: ColorSaveData;
-  tetriaryColor?: ColorSaveData;
-
-  customImage?: string;
-
-  seed?: any;
-
-  foregroundEmblem?: EmblemSaveData;
-  backgroundEmblem?: EmblemSaveData;
+  emblems: EmblemSaveData[];
 }
 
 export default FlagSaveData;

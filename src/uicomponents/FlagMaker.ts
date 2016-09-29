@@ -69,18 +69,13 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
     {
       var colorScheme = generateColorScheme();
 
-      var flag = new Flag(
-      {
-        width: this.state.size,
-        mainColor: colorScheme.main,
-        secondaryColor: colorScheme.secondary
-      });
-
-      flag.generateRandom();
+      var flag = new Flag(colorScheme.main);
+      flag.addRandomEmblem(colorScheme.secondary);
 
       flagElements.push(PlayerFlag(
       {
         key: i,
+        flag: flag,
         props:
         {
           width: this.state.size,
@@ -91,7 +86,6 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
             height: this.state.size
           }
         },
-        flag: flag
       }));
     }
     return(
