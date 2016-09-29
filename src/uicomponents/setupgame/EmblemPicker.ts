@@ -3,12 +3,10 @@
 import app from "../../App"; // TODO global
 import Color from "../../Color";
 import {generateSecondaryColor} from "../../colorGeneration";
-import Emblem from "../../Emblem";
-import Flag from "../../Flag";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 import ColorPicker from "./ColorPicker";
-import PlayerFlag from "../PlayerFlag";
+import EmblemComponent from "../Emblem";
 
 interface PropTypes extends React.Props<any>
 {
@@ -68,23 +66,22 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
         className += " selected-emblem";
       }
 
-      const flag = new Flag(this.props.backgroundColor);
-
-      const emblem = new Emblem([this.props.color], template, 1);
-      flag.addEmblem(emblem);
-
       emblemElements.push(
         React.DOM.div(
         {
           className: "emblem-picker-container",
           key: template.key,
-          onClick: this.handleSelectEmblem.bind(this, template)
-        },
-          PlayerFlag(
+          onClick: this.handleSelectEmblem.bind(this, template),
+          style:
           {
-            flag: flag,
-            isMutable: true,
-            props:
+            backgroundColor: "#" + this.props.backgroundColor.getHexString()
+          }
+        },
+          EmblemComponent(
+          {
+            template: template,
+            colors: [this.props.color],
+            containerProps:
             {
               className: className,
             }

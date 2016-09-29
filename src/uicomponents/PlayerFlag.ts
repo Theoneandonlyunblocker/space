@@ -1,10 +1,10 @@
 /// <reference path="../../lib/react-global.d.ts" />
 
-import Flag from "../../src/Flag";
+import Flag from "../Flag";
 import
 {
   shallowExtend
-} from "../../src/utility";
+} from "../utility";
 
 
 export interface PropTypes extends React.Props<any>
