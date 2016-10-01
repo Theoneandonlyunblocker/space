@@ -9,11 +9,14 @@ import
   shallowExtend
 } from "../utility";
 
-interface PropTypes extends React.Props<any>
+export interface EmblemProps
 {
-  template: SubEmblemTemplate | null;
   colors: Color[];
+  template: SubEmblemTemplate | null;
+}
 
+interface PropTypes extends React.Props<any>, EmblemProps
+{
   containerProps?: React.HTMLProps<any>;
 }
 

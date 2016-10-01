@@ -14,8 +14,8 @@ interface PropTypes extends React.Props<any>
   backgroundColor: Color | null;
   selectedEmblemTemplate: SubEmblemTemplate | null;
 
-  setEmblemTemplate(emblem: SubEmblemTemplate | null, color: Color): void;
-  setEmblemColor(color: Color | null): void;
+  setEmblemTemplate: (emblem: SubEmblemTemplate | null, color: Color) => void;
+  setEmblemColor: (color: Color | null) => void;
 }
 
 interface StateType
