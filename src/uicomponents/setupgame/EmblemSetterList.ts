@@ -9,13 +9,12 @@ import {default as EmblemComponent, EmblemProps} from "../Emblem";
 
 interface PropTypes extends React.Props<any>
 {
-  emblems: EmblemProps[];
-  emblemIDs: number[];
+  emblems: (EmblemProps & {id: number})[];
   maxEmblems: number;
 
   addEmblem: () => void;
   removeEmblem: (id: number) => void;
-  setEmblemTemplate: (id: number, emblem: SubEmblemTemplate | null, color: Color) => void;
+  setEmblemTemplate: (id: number, emblem: SubEmblemTemplate | null) => void;
   setEmblemColor: (id: number, color: Color | null) => void;
 }
 
@@ -61,9 +60,9 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
       {
         className: "emblem-setter-list"
       },
-        this.props.emblems.map((emblemProps, i) =>
+        this.props.emblems.map(emblemProps =>
         {
-          const id = this.props.emblemIDs[i];
+          const id = emblemProps.id;
           EmblemSetter(
           {
             key: id,
