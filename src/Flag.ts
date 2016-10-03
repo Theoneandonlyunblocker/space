@@ -40,7 +40,7 @@ export default class Flag
     
     const flag = new Flag(_backgroundColor);
     flag.seed = seed;
-    flag.addEmblem(flag.generateRandomEmblem(_secondaryColor, seed));
+    flag.addRandomEmblem(_secondaryColor, seed);
 
     return flag;
   }

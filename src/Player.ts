@@ -254,7 +254,6 @@ export default class Player
     }
 
     const flag = new Flag(this.color);
-
     flag.addRandomEmblem(this.secondaryColor, seed);
 
     return flag;

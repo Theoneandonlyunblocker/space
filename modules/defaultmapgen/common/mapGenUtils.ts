@@ -469,10 +469,8 @@ export function makePlayerForPirates(): Player
     secondary: Color.fromHex(0xFFFFFF)
   };
 
-  const flag = new Flag(color.main);
-
-  const foregroundEmblem = new Emblem([color.secondary], Flag_of_Edward_England);
-  flag.addEmblem(foregroundEmblem);
+  const emblem = new Emblem([color.secondary], Flag_of_Edward_England);
+  const flag = new Flag(color.main, [emblem]);
 
   const player = new Player(
   {

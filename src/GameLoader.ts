@@ -358,13 +358,12 @@ export default class GameLoader
   }
   deserializeFlag(data: FlagSaveData): Flag
   {
-    const flag = new Flag(Color.deSerialize(data.mainColor));
-
-    data.emblems.forEach(emblemSaveData =>
+    const emblems = data.emblems.map(emblemSaveData =>
     {
-      const emblem = this.deserializeEmblem(emblemSaveData);
-      flag.addEmblem(emblem);
+      return this.deserializeEmblem(emblemSaveData);
     });
+    
+    const flag = new Flag(Color.deSerialize(data.mainColor), emblems);
 
     return flag;
   }
