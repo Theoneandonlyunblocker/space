@@ -7,6 +7,7 @@ import EmblemSaveData from "./savedata/EmblemSaveData";
 import Color from "./Color";
 import
 {
+  generateMainColor,
   generateSecondaryColor
 } from "./colorGeneration";
 import
@@ -27,7 +28,7 @@ export default class Emblem
     this.alpha = alpha;
     this.template = template;
   }
-  public static generateRandom(backgroundColor: Color, colors: Color[] = [], minAlpha: number = 1, seed?: string): Emblem
+  public static generateRandom(backgroundColor?: Color, colors: Color[] = [], minAlpha: number = 1, seed?: string): Emblem
   {
     const _rng = new RNG(seed);
 
@@ -47,7 +48,14 @@ export default class Emblem
       }
       else
       {
-        _colors = [generateSecondaryColor(backgroundColor)];
+        if (backgroundColor)
+        {
+          _colors = [generateSecondaryColor(backgroundColor)];
+        }
+        else
+        {
+          _colors = [generateMainColor()];
+        }
       }
     }
 

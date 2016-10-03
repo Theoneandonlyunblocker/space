@@ -195,7 +195,7 @@ colorGenProps?:
 
 export function generateSecondaryColor(mainColor: Color): Color
 {
-  // TODO color | used to have secondary system. maybe for more interesting colors?
+  // TODO color | used to have additional system. maybe for more interesting colors?
   return makeContrastingColor(mainColor,
   {
     minDifference:
