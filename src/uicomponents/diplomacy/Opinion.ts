@@ -100,8 +100,8 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
         {
           getParentClientRect: this.getOpinionTextNodeRect,
           positionOnUpdate: true,
-          ySide: "top",
-          xSide: "right",
+          ySide: "outerTop",
+          xSide: "outerRight",
           yMargin: 10
         }
       });

@@ -2,13 +2,11 @@
 
 import MixinBase from "./MixinBase";
 
-type side = "top" | "right" | "bottom" | "left";
-
 export interface AutoPositionerProps
 {
   getParentClientRect: () => ClientRect;
-  xSide?: side;
-  ySide?: side;
+  xSide?: "innerRight" | "outerRight" | "innerLeft" | "outerLeft";
+  ySide?: "innerTop" | "outerTop" | "innerBottom" | "outerBottom";
   
   xMargin?: number;
   yMargin?: number;
@@ -127,8 +125,8 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
     const ownNode = ReactDOM.findDOMNode<HTMLElement>(this.owner);
     const ownRect = ownNode.getBoundingClientRect();
 
-    let ySide = this.props.ySide || "top";
-    let xSide = this.props.xSide || "right";
+    const ySide = this.props.ySide;
+    const xSide = this.props.xSide;
 
     const yMargin = this.props.yMargin || 0;
     const xMargin = this.props.xMargin || 0;
@@ -136,22 +134,51 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
     let top: number = null;
     let left: number = null;
 
-    if (ySide === "top")
+    switch (ySide)
     {
-      top = parentRect.top - ownRect.height - yMargin;
+      case "outerTop":
+      {
+        top = parentRect.top - ownRect.height - yMargin;
+        break;
+      }
+      case "outerBottom":
+      {
+        top = parentRect.bottom + yMargin;
+        break;
+      }
+      case "innerTop":
+      {
+        top = parentRect.top + yMargin;
+        break;
+      }
+      case "innerBottom":
+      {
+        top = parentRect.bottom - ownRect.height - yMargin;
+        break;
+      }
     }
-    else
+    switch (xSide)
     {
-      top = parentRect.bottom + yMargin;
-    }
-
-    if (xSide === "left")
-    {
-      left = parentRect.left - xMargin;
-    }
-    else
-    {
-      left = parentRect.right - ownRect.width + xMargin;
+      case "outerLeft":
+      {
+        left = parentRect.left - ownRect.width - xMargin;
+        break;
+      }
+      case "outerRight":
+      {
+        left = parentRect.right + xMargin;
+        break;
+      }
+      case "innerLeft":
+      {
+        left = parentRect.left + xMargin;
+        break;
+      }
+      case "innerRight":
+      {
+        left = parentRect.right - ownRect.width - xMargin;
+        break;
+      }
     }
 
     if (left < 0)
