@@ -21,9 +21,13 @@ export default class Flag
     [sizeString: string]: HTMLCanvasElement;
   } = {};
 
-  constructor(backgroundColor: Color | null)
+  constructor(backgroundColor: Color | null, emblems?: Emblem[])
   {
     this.backgroundColor = backgroundColor;
+    if (emblems)
+    {
+      emblems.forEach(emblem => this.addEmblem(emblem));
+    }
   }
   public static generateRandom(
     backgroundColor?: Color,
