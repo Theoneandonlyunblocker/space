@@ -38,7 +38,9 @@ export default class Color
 
     return Color.fromHex(parseInt(hexDigits, 16));
   }
-  // 0-1
+  /**
+   * 0-1
+   */
   public static fromHSV(h: number, s: number, v: number): Color
   {
     var r: number, g: number, b: number, i: number, f: number, p: number, q: number, t: number;
@@ -59,7 +61,9 @@ export default class Color
     }
     return new Color(r, g, b);
   }
-  // 0-1
+  /**
+   * 0-1
+   */
   public static fromHSL(h: number, s: number, l: number): Color
   {
     let r: number, g: number, b: number;
@@ -88,45 +92,62 @@ export default class Color
     
     return new Color(r, g, b);
   }
-  // 0-1
+  /**
+   * 0-1
+   */
   public static fromHUSL(h: number, s: number, l: number): Color
   {
     const RGB = HUSL.toRGB(h * 360, s * 100, l * 100);
     return new Color(RGB[0], RGB[1], RGB[2]);
   }
   
-  // 0-1 -> 0-360, 0-100, 0-100
+  /**
+   * 0-1 -> 0-360, 0-100, 0-100
+   */
   public static convertScalarsToDegrees(s: number[])
   {
     return [s[0] * 360, s[1] * 100, s[2] * 100];
   }
+  /**
+   * 0-360, 0-100, 0-100 -> 0-1
+   */
   public static convertDegreesToScalars(d: number[])
   {
     return [d[0] / 360, d[1] / 100, d[2] / 100];
   }
   
-  // 0-1
+  /**
+   * 0-1
+   */
   public getRGB(): number[]
   {
     return [this.r, this.g, this.b];
   }
-  // 0-1
+  /**
+   * 0-1
+   */
   public getRGBA(alpha: number): number[]
   {
     return [this.r, this.g, this.b, alpha];
   }
-  // 0-255
+  /**
+   * 0-255
+   */
   public get8BitRGB(): number[]
   {
     return this.getRGB().map(x => x * 255);
   }
   
-  // 0x000000-0xFFFFFF
+  /**
+   * 0x000000-0xFFFFFF
+   */
   public getHex(): number
   {
     return (this.r * 255 << 16) + (this.g * 255 << 8) + this.b * 255;
   }
-  // "000000"-"FFFFFF"
+  /**
+   * "000000"-"FFFFFF"
+   */
   public getHexString(): string
   {
     const hex = Math.round(this.getHex());
@@ -134,14 +155,18 @@ export default class Color
     return '000000'.substr(0, 6 - converted.length) + converted;
   }
   
-  // 0-1
+  /**
+   * 0-1
+   */
   public getHUSL(): number[]
   {
     const husl = HUSL.fromRGB(this.r, this.g, this.b);
     return [husl[0] / 360, husl[1] / 100, husl[2] / 100];
   }
   
-  // ??
+  /**
+   * 0-1
+   */
   public getHSV(): number[]
   {
     const r = this.r;
