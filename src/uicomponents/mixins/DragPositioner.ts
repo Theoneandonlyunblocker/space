@@ -340,6 +340,8 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     //   }
     // }
 
+    e.stopPropagation();
+    e.preventDefault();
 
     this.mouseIsDown = false;
     this.mouseDownPosition =
