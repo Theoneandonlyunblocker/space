@@ -1,22 +1,16 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Color from "../../Color";
-import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
-import EmblemPicker from "./EmblemPicker";
 import {default as EmblemComponent, EmblemProps} from "../Emblem";
 
 interface PropTypes extends React.Props<any>
 {
-  isActive: boolean;
   toggleActive: () => void;
   remove: () => void;
 
   backgroundColor: Color | null;
   emblem: EmblemProps;
-
-  setEmblemTemplate: (emblem: SubEmblemTemplate | null, color: Color) => void;
-  setEmblemColor: (color: Color | null) => void;
 }
 
 interface StateType
@@ -58,18 +52,7 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
               this.props.remove();
             },
           }
-        }),
-        !this.props.isActive ? null :
-          EmblemPicker(
-          {
-            key: "emblemPicker",
-            color: this.props.emblem.colors[0],
-            backgroundColor: this.props.backgroundColor,
-            selectedEmblemTemplate: this.props.emblem.template,
-
-            setEmblemTemplate: this.props.setEmblemTemplate,
-            setEmblemColor: this.props.setEmblemColor,
-          })
+        })
       )
     );
   }

@@ -7,6 +7,7 @@ import Flag from "../../Flag";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 import EmblemSetterList from "./EmblemSetterList";
+import EmblemPicker from "./EmblemPicker";
 import {EmblemProps} from "../Emblem";
 
 import
@@ -39,7 +40,8 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  emblems: EmblemPropsWithID[];
+  emblems?: EmblemPropsWithID[];
+  activeEmblemSetterID?: number | null;
 }
 
 export class FlagEditorComponent extends React.PureComponent<PropTypes, StateType>
@@ -55,7 +57,8 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
 
     this.state =
     {
-      emblems: this.getEmblemDataFromFlag(props.parentFlag)
+      emblems: this.getEmblemDataFromFlag(props.parentFlag),
+      activeEmblemSetterID: null,
     }
 
     if (this.props.autoPositionerProps)
@@ -71,6 +74,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
     this.removeEmblem = this.removeEmblem.bind(this);
     this.setEmblemTemplate = this.setEmblemTemplate.bind(this);
     this.setEmblemColor = this.setEmblemColor.bind(this);
+    this.toggleActiveEmblemSetter = this.toggleActiveEmblemSetter.bind(this);
   }
   public randomize(): void
   {
@@ -123,6 +127,17 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
     else
     {
       return flag.emblems.map(emblem => FlagEditorComponent.emblemToEmblemData(emblem, this.idGenerator++));
+    }
+  }
+  private toggleActiveEmblemSetter(id: number): void
+  {
+    if (this.state.activeEmblemSetterID === id)
+    {
+      this.setState({activeEmblemSetterID: null});
+    }
+    else
+    {
+      this.setState({activeEmblemSetterID: id});
     }
   }
   private addEmblem(): void
@@ -178,9 +193,28 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
 
     this.triggerParentFlagUpdate();
   }
+  private getActiveEmblemData(): EmblemPropsWithID | null
+  {
+    const id = this.state.activeEmblemSetterID;
+
+    if (isFinite(id) && !isNaN(id))
+    {
+      for (let i = 0; i < this.state.emblems.length; i++)
+      {
+        if (this.state.emblems[i].id === id)
+        {
+          return this.state.emblems[i];
+        }
+      }
+    }
+
+    return null;
+  }
   
   render()
   {
+    const activeEmblemData = this.getActiveEmblemData();
+
     return(
       React.DOM.div(
       {
@@ -192,11 +226,21 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
           emblems: this.state.emblems,
           maxEmblems: maxEmblems,
 
+          toggleActiveEmblem: this.toggleActiveEmblemSetter,
+
           addEmblem: this.addEmblem,
           removeEmblem: this.removeEmblem,
+        }),
+        !activeEmblemData ? null :
+        EmblemPicker(
+        {
+          key: "emblemPicker",
+          color: activeEmblemData.colors[0],
+          backgroundColor: this.props.backgroundColor,
+          selectedEmblemTemplate: activeEmblemData.template,
 
-          setEmblemTemplate: this.setEmblemTemplate,
-          setEmblemColor: this.setEmblemColor,
+          setEmblemTemplate: this.setEmblemTemplate.bind(this, this.state.activeEmblemSetterID),
+          setEmblemColor: this.setEmblemColor.bind(this, this.state.activeEmblemSetterID),
         })
       )
     );
