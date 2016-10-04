@@ -358,6 +358,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
             dragPositionerProps:
             {
               preventAutoResize: true,
+              containerDragOnly: true,
             },
             id: 0,
             incrementZIndex: () => 0,
