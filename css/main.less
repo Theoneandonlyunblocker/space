@@ -4052,6 +4052,12 @@ ul, ol
 .flag-setter
 {
   width: 4em;
+
+  .popup
+  {
+    width: auto !important;
+    height: auto !important;
+  }
 }
 .player-setup-remove-player
 {
@@ -4205,13 +4211,10 @@ button.player-setup-remove-player
   border: 1px solid @ui-border-color1;
 }
 
-.flag-picker
+.flag-editor
 {
-  .full-border(5px);
-  position: fixed;
-  z-index: 201;
-  background-color: @bg-color;
-  max-width: 46px * 8;
+  // .full-border(5px);
+  // background-color: @bg-color;
 }
 
 .flag-picker-title
@@ -4244,6 +4247,44 @@ button.player-setup-remove-player
   // animation-duration: 2000ms; // set dynamically
 }
 
+
+.emblem-setter-list
+{
+  display: flex;
+  flex-flow: row;
+
+}
+
+.add-new-emblem-button
+{
+  .button-style;
+
+  flex: 0 0 46px;
+  height: 46px;
+
+  &::after
+  {
+    .fa("\f067");
+  }
+}
+
+.emblem
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emblem-setter
+{
+  .emblem
+  {
+    cursor: pointer;
+    height: 46px;
+    width: 46px;
+  }
+}
+
 .emblem-picker
 {
   display: inline-block;
@@ -4251,7 +4292,6 @@ button.player-setup-remove-player
 
 .emblem-picker-container
 {
-  background: magenta;
   cursor: pointer;
   display: flex;
   float: left;

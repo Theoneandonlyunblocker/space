@@ -239,6 +239,11 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
           mainColor: this.state.mainColor,
           secondaryColor: this.state.secondaryColor,
           setAsActive: this.props.setActiveSetterComponent,
+          updateParentFlag: (flag) =>
+          {
+            this.flag = flag;
+            this.forceUpdate();
+          }
         }),
         React.DOM.button(
         {

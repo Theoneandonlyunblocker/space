@@ -10,6 +10,7 @@ interface PropTypes extends React.Props<any>
 {
   isActive: boolean;
   toggleActive: () => void;
+  remove: () => void;
 
   backgroundColor: Color | null;
   emblem: EmblemProps;
@@ -26,54 +27,9 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
 {
   displayName = "EmblemSetter";
   state: StateType;
-
-  mainElement: HTMLDivElement;
-  
   constructor(props: PropTypes)
   {
     super(props);
-
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  private handleClick(e: MouseEvent): void
-  {
-    const target = <HTMLElement> e.target;
-    if (target === this.mainElement || this.mainElement.contains(target))
-    {
-      return;
-    }
-    else
-    {
-      this.setAsInactive();
-    }
-  }
-
-  protected componentWillReceiveProps(newProps: PropTypes): void
-  {
-    if (!this.props.isActive && newProps.isActive)
-    {
-      document.addEventListener("click", this.handleClick, false);
-    }
-    else if (this.props.isActive && !newProps.isActive)
-    {
-      document.removeEventListener("click", this.handleClick);
-    }
-  }
-
-  private setAsActive(): void
-  {
-    if (!this.props.isActive)
-    {
-      this.props.toggleActive();
-    }
-  }
-  private setAsInactive(): void
-  {
-    if (this.props.isActive)
-    {
-      this.props.toggleActive();
-    }
   }
   
   render()
@@ -82,27 +38,31 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
       React.DOM.div(
       {
         className: "emblem-setter",
-        ref: (element: HTMLDivElement) =>
-        {
-          this.mainElement = element;
-        }
       },
         EmblemComponent(
         {
+          key: "emblem",
           template: this.props.emblem.template,
           colors: this.props.emblem.colors,
           containerProps:
           {
-            onClick: this.props.toggleActive,
-            style:
+            style: !this.props.backgroundColor ? null :
             {
-              backgroundColor: this.props.backgroundColor
-            }
+              backgroundColor: "#" + this.props.backgroundColor.getHexString()
+            },
+            onClick: this.props.toggleActive,
+            onContextMenu: (e) =>
+            {
+              e.stopPropagation();
+              e.preventDefault();
+              this.props.remove();
+            },
           }
         }),
         !this.props.isActive ? null :
           EmblemPicker(
           {
+            key: "emblemPicker",
             color: this.props.emblem.colors[0],
             backgroundColor: this.props.backgroundColor,
             selectedEmblemTemplate: this.props.emblem.template,

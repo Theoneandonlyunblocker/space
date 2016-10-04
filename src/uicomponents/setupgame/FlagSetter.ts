@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import FlagPicker from "./FlagPicker";
+import FlagEditor from "./FlagEditor";
 import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
 import Flag from "../../Flag";
 import Color from "../../Color";
@@ -11,6 +11,9 @@ import
   getHTMLImageElementFromDataTransfer
 } from "../../ImageFileProcessing";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
+
+import Popup from "../popups/Popup";
+import TopMenuPopup from "../popups/TopMenuPopup";
 
 
 interface FailMessage
@@ -37,6 +40,7 @@ export interface PropTypes extends React.Props<any>
   mainColor: Color;
   secondaryColor: Color;
   setAsActive: (setterComponent: FlagSetterComponent) => void;
+  updateParentFlag: (flag: Flag) => void;
 }
 
 interface StateType
@@ -70,7 +74,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     this.setForegroundEmblem = this.setForegroundEmblem.bind(this);
     this.setFailMessage = this.setFailMessage.bind(this);
     this.clearFailMessage = this.clearFailMessage.bind(this);
-    this.handleClick = this.handleClick.bind(this);
     this.setCustomImageFromFile = this.setCustomImageFromFile.bind(this);
     this.handleSuccessfulUpdate = this.handleSuccessfulUpdate.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
@@ -92,7 +95,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   componentWillUnmount(): void
   {
     this.clearFailMessageTimeout();
-    document.removeEventListener("click", this.handleClick);
+    // document.removeEventListener("click", this.handleClick);
   }
   makeFailMessage(message: FailMessage, timeout: number): React.ReactElement<any>
   {
@@ -133,20 +136,21 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       this.clearFailMessage();
     }, timeout);
   }
-  handleClick(e: MouseEvent): void
-  {
-    var node = ReactDOM.findDOMNode<HTMLElement>(this.flagSetterContainer);
-    const target = <HTMLElement> e.target;
-    if (target === node || node.contains(target))
-    {
-      return;
-    }
-    else
-    {
-      this.setAsInactive();
-    }
-  }
-
+  // handleClick(e: MouseEvent): void
+  // {
+  //   var node = ReactDOM.findDOMNode<HTMLElement>(this.flagSetterContainer);
+  //   const target = <HTMLElement> e.target;
+  //   if (target === node || node.contains(target))
+  //   {
+  //     return;
+  //   }
+  //   else
+  //   {
+  //     e.stopPropagation();
+  //     e.preventDefault();
+  //     this.setAsInactive();
+  //   }
+  // }
   toggleActive(): void
   {
     if (this.state.isActive)
@@ -160,7 +164,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         this.props.setAsActive(this);
       }
       this.setState({isActive: true});
-      document.addEventListener("click", this.handleClick, false);
+      // document.addEventListener("click", this.handleClick, false);
     }
   }
   setAsInactive(): void
@@ -168,7 +172,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     if (this.state.isActive)
     {
       this.setState({isActive: false});
-      document.removeEventListener("click", this.handleClick);
+      // document.removeEventListener("click", this.handleClick);
     }
   }
 
@@ -344,36 +348,56 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
             this.playerFlagContainer = component;
           },
         }),
-        this.state.isActive ?
-          FlagPicker(
+        !this.state.isActive ? null :
+        React.DOM.div(
+        {
+          className: "popup-container"
+        },
+          Popup(
           {
-            handleSelectEmblem: this.setForegroundEmblem,
-            uploadFiles: this.handleUpload,
-            failMessage: this.state.failMessageElement,
-            customImageFileName: this.state.customImageFile ? this.state.customImageFile.name : null,
-            mainColor: this.props.mainColor,
-            triggerParentUpdate: this.handleSuccessfulUpdate,
+            dragPositionerProps:
+            {
+              preventAutoResize: true,
+            },
+            id: 0,
+            incrementZIndex: () => 0,
+            closePopup: this.setAsInactive,
+            getInitialPosition: () =>
+            {
+              return {left: 0, top: 0};
+            },
 
-            emblemData: this.props.flag.emblems.map((emblem, i) =>
+            content: TopMenuPopup(
             {
-              return(
+              handleClose: this.setAsInactive,
+
+              content: FlagEditor(
               {
-                key: i,
-                emblem: emblem,
-                template: emblem ? emblem.template : null,
-                color: emblem && emblem.colors[0] ? emblem.colors[0] : this.props.secondaryColor,
-              });
+                parentFlag: this.props.flag,
+                backgroundColor: this.props.mainColor,
+                playerSecondaryColor: this.props.secondaryColor,
+
+                updateParentFlag: this.props.updateParentFlag,
+
+                // handleSelectEmblem: this.setForegroundEmblem,
+                // uploadFiles: this.handleUpload,
+                // failMessage: this.state.failMessageElement,
+                // customImageFileName: this.state.customImageFile ? this.state.customImageFile.name : null,
+                // triggerParentUpdate: this.handleSuccessfulUpdate,
+
+                
+                // autoPositionerProps:
+                // {
+                //   getParentClientRect: this.getClientRect,
+                //   positionOnUpdate: true,
+                //   xSide: "outerRight",
+                //   ySide: "innerTop",
+                //   positionOnResize: true
+                // }
+              })
             }),
-            
-            autoPositionerProps:
-            {
-              getParentClientRect: this.getClientRect,
-              positionOnUpdate: true,
-              ySide: "bottom",
-              xSide: "left",
-              positionOnResize: true
-            }
-          }) : null
+          })
+        )
       )
     );
   }

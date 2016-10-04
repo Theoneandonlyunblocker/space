@@ -17,14 +17,14 @@ export interface EmblemProps
 
 interface PropTypes extends React.Props<any>, EmblemProps
 {
-  containerProps?: React.HTMLProps<any>;
+  containerProps?: React.HTMLAttributes;
 }
 
 interface StateType
 {
 }
 
-export class EmblemComponent extends React.Component<PropTypes, StateType>
+export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName = "Emblem";
   state: StateType;
@@ -38,11 +38,6 @@ export class EmblemComponent extends React.Component<PropTypes, StateType>
 
   private renderEmblemCanvas(): void
   {
-    if (this.container.firstChild)
-    {
-      this.container.removeChild(this.container.firstChild);
-    }
-
     const containerRect = this.container.getBoundingClientRect();
     
     const emblem = new Emblem(
@@ -51,9 +46,23 @@ export class EmblemComponent extends React.Component<PropTypes, StateType>
       1,
     );
 
-    const canvas = emblem.draw(containerRect.width, containerRect.height, true);
+    const drawn = emblem.draw(containerRect.width, containerRect.height, true);
 
-    this.container.appendChild(canvas);
+    if (this.container.firstChild)
+    {
+      const canvas = <HTMLCanvasElement> this.container.firstChild;
+      canvas.width = drawn.width;
+      canvas.height = drawn.height;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(drawn, 0, 0);
+    }
+    else
+    {
+      drawn.style.maxWidth = "100%";
+      drawn.style.maxHeight = "100%";
+      this.container.appendChild(drawn);
+    }
   }
 
   componentDidMount()
@@ -67,13 +76,13 @@ export class EmblemComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    const className = "emblem";
+    const baseClassName = "emblem";
 
     const containerProps = shallowExtend(this.props.containerProps,
     {
-      className: className + this.props.containerProps && this.props.containerProps.className ?
+      className: baseClassName + (this.props.containerProps && this.props.containerProps.className ?
         " " + this.props.containerProps.className :
-        "",
+        ""),
       ref: (component: HTMLDivElement) =>
       {
         this.container = component;

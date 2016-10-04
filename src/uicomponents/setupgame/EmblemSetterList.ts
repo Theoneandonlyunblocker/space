@@ -2,13 +2,13 @@
 
 import Color from "../../Color";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
-// import Emblem from "../../Emblem";
 
-import {default as EmblemSetter, EmblemSetterComponent} from "./EmblemSetter";
-import {default as EmblemComponent, EmblemProps} from "../Emblem";
+import EmblemSetter from "./EmblemSetter";
+import {EmblemProps} from "../Emblem";
 
 interface PropTypes extends React.Props<any>
 {
+  backgroundColor: Color;
   emblems: (EmblemProps & {id: number})[];
   maxEmblems: number;
 
@@ -56,36 +56,35 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
     const canAddNewEmblem = this.props.emblems.length < this.props.maxEmblems;
     
     return(
-      React.DOM.div(
+      React.DOM.ol(
       {
         className: "emblem-setter-list"
       },
         this.props.emblems.map(emblemProps =>
         {
           const id = emblemProps.id;
-          EmblemSetter(
+          return EmblemSetter(
           {
             key: id,
 
             isActive: this.state.activeEmblemSetterID === id,
             toggleActive: this.toggleActiveEmblemSetter.bind(this, id),
+            remove: this.props.removeEmblem.bind(null, id),
             
             emblem: emblemProps,
-            backgroundColor: null,
+            backgroundColor: this.props.backgroundColor,
 
             setEmblemTemplate: this.props.setEmblemTemplate.bind(null, id),
             setEmblemColor: this.props.setEmblemColor.bind(null, id),
           });
         }),
-         canAddNewEmblem ?
-          React.DOM.button(
-          {
-            className: "emblem-setter-list-item add-new-emblem-button",
-            onClick: this.props.addEmblem
-          },
-            "Add"
-          ) :
-          null
+        React.DOM.button(
+        {
+          className: "add-new-emblem-button",
+          onClick: this.props.addEmblem,
+          title: "Add new emblem",
+          disabled: !canAddNewEmblem
+        })
 
       )
     );

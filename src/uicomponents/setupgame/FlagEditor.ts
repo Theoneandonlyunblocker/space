@@ -1,14 +1,20 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Color from "../../Color";
-import {generateMainColor, generateSecondaryColor} from "../../colorGeneration";
 import Emblem from "../../Emblem";
 import Flag from "../../Flag";
 
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 import EmblemSetterList from "./EmblemSetterList";
-import {default as EmblemComponent, EmblemProps} from "../Emblem";
+import {EmblemProps} from "../Emblem";
+
+import
+{
+  default as AutoPositioner,
+  AutoPositionerProps
+} from "../mixins/AutoPositioner";
+import applyMixins from "../mixins/applyMixins";
 
 type EmblemPropsWithID = (EmblemProps & {id: number});
 
@@ -16,9 +22,19 @@ const maxEmblems = 4;
 
 interface PropTypes extends React.Props<any>
 {
-  initialFlag: Flag | null;
+  parentFlag: Flag | null;
   backgroundColor: Color | null;
   playerSecondaryColor: Color | null;
+
+  updateParentFlag: (newFlag: Flag) => void;
+
+  // handleSelectEmblem: (selectedEmblemTemplate: SubEmblemTemplate | null, color: Color) => void;
+  // triggerParentUpdate: () => void;
+  // uploadFiles: (files: FileList) => void;
+  // failMessage: React.ReactElement<any>;
+  // customImageFileName: string | null;
+
+  autoPositionerProps?: AutoPositionerProps;
 }
 
 interface StateType
@@ -26,7 +42,7 @@ interface StateType
   emblems: EmblemPropsWithID[];
 }
 
-export class FlagEditorComponent extends React.Component<PropTypes, StateType>
+export class FlagEditorComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName = "FlagEditor";
   state: StateType;
@@ -39,21 +55,23 @@ export class FlagEditorComponent extends React.Component<PropTypes, StateType>
 
     this.state =
     {
-      emblems: this.getEmblemDataFromFlag(props.initialFlag)
+      emblems: this.getEmblemDataFromFlag(props.parentFlag)
     }
-  }
-  private getEmblemDataFromFlag(flag: Flag | null): EmblemPropsWithID[]
-  {
-    if (!flag)
-    {
-      return [];
-    }
-    else
-    {
-      return flag.emblems.map(emblem => FlagEditorComponent.emblemToEmblemData(emblem, this.idGenerator++));
-    }
-  }
 
+    if (this.props.autoPositionerProps)
+    {
+      applyMixins(this, new AutoPositioner(this));
+    }
+
+    this.randomize = this.randomize.bind(this);
+    this.generateFlag = this.generateFlag.bind(this);
+    this.getEmblemDataFromFlag = this.getEmblemDataFromFlag.bind(this);
+    this.addEmblem = this.addEmblem.bind(this);
+    this.getEmblemProps = this.getEmblemProps.bind(this);
+    this.removeEmblem = this.removeEmblem.bind(this);
+    this.setEmblemTemplate = this.setEmblemTemplate.bind(this);
+    this.setEmblemColor = this.setEmblemColor.bind(this);
+  }
   public randomize(): void
   {
     const flag = Flag.generateRandom(
@@ -74,7 +92,6 @@ export class FlagEditorComponent extends React.Component<PropTypes, StateType>
 
     return flag;
   }
-
   private static emblemDataToEmblem(emblemData: EmblemProps): Emblem
   {
     return new Emblem(
@@ -93,15 +110,19 @@ export class FlagEditorComponent extends React.Component<PropTypes, StateType>
       id: id,
     });
   }
-  private getRandomColorForEmblem(): Color
+  private triggerParentFlagUpdate(): void
   {
-    if (!this.props.backgroundColor)
+    this.props.updateParentFlag(this.generateFlag());
+  }
+  private getEmblemDataFromFlag(flag: Flag | null): EmblemPropsWithID[]
+  {
+    if (!flag)
     {
-      return generateMainColor();
+      return [];
     }
     else
     {
-      return generateSecondaryColor(this.props.backgroundColor);
+      return flag.emblems.map(emblem => FlagEditorComponent.emblemToEmblemData(emblem, this.idGenerator++));
     }
   }
   private addEmblem(): void
@@ -112,6 +133,9 @@ export class FlagEditorComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       emblems: this.state.emblems.concat([emblemData])
+    }, () =>
+    {
+      this.triggerParentFlagUpdate();
     });
   }
 
@@ -135,6 +159,9 @@ export class FlagEditorComponent extends React.Component<PropTypes, StateType>
       {
         return emblemProps.id !== idToFilter;
       })
+    }, () =>
+    {
+      this.triggerParentFlagUpdate();
     });
   }
   private setEmblemTemplate(id: number, template: SubEmblemTemplate | null): void
@@ -142,14 +169,14 @@ export class FlagEditorComponent extends React.Component<PropTypes, StateType>
     const emblem = this.getEmblemProps(id);
     emblem.template = template;
 
-    this.forceUpdate();
+    this.triggerParentFlagUpdate();
   }
   private setEmblemColor(id: number, color: Color | null): void
   {
     const emblem = this.getEmblemProps(id);
     emblem.colors = [color];
 
-    this.forceUpdate();
+    this.triggerParentFlagUpdate();
   }
   
   render()
@@ -161,6 +188,7 @@ export class FlagEditorComponent extends React.Component<PropTypes, StateType>
       },
         EmblemSetterList(
         {
+          backgroundColor: this.props.backgroundColor,
           emblems: this.state.emblems,
           maxEmblems: maxEmblems,
 
@@ -169,7 +197,6 @@ export class FlagEditorComponent extends React.Component<PropTypes, StateType>
 
           setEmblemTemplate: this.setEmblemTemplate,
           setEmblemColor: this.setEmblemColor,
-          
         })
       )
     );

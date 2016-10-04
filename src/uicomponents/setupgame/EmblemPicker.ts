@@ -2,7 +2,7 @@
 
 import app from "../../App"; // TODO global
 import Color from "../../Color";
-import {generateSecondaryColor} from "../../colorGeneration";
+import {generateMainColor, generateSecondaryColor} from "../../colorGeneration";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 import ColorPicker from "./ColorPicker";
@@ -72,7 +72,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
           className: "emblem-picker-container",
           key: template.key,
           onClick: this.handleSelectEmblem.bind(this, template),
-          style:
+          style: !this.props.backgroundColor ? null :
           {
             backgroundColor: "#" + this.props.backgroundColor.getHexString()
           }
@@ -104,7 +104,14 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
           onChange: this.handleEmblemColorChange,
           generateColor: () =>
           {
-            return generateSecondaryColor(this.props.backgroundColor);
+            if (this.props.backgroundColor)
+            {
+              return generateSecondaryColor(this.props.backgroundColor);
+            }
+            else
+            {
+              return generateMainColor();
+            }
           }
         }),
         React.DOM.div({className: "flag-picker-title"},
