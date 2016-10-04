@@ -46,7 +46,8 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       applyMixins(this, new AutoPositioner(this));
     }
     
-    this.state = this.getInitialStateTODO();
+    const initialColor = this.props.initialColor || new Color(1, 1, 1);
+    this.state = this.getStateFromColor(initialColor);
     
     this.bindMethods();
   }
@@ -64,10 +65,9 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     this.makeGradientString = this.makeGradientString.bind(this);
     this.nullifyColor = this.nullifyColor.bind(this);    
   }
-  
-  private getInitialStateTODO(): StateType
+
+  private getStateFromColor(color: Color): StateType
   {
-    const color = this.props.initialColor || new Color(1, 1, 1);
     const hsvColor = Color.convertScalarsToDegrees(color.getHSV());
 
     return(

@@ -140,7 +140,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
               getParentClientRect: this.getClientRect,
               positionOnUpdate: true,
               ySide: "outerBottom",
-              xSide: "outerLeft",
+              xSide: "innerLeft",
               positionOnResize: true
             }
           }) : null
