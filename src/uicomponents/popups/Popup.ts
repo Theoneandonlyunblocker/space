@@ -31,7 +31,7 @@ export interface CustomPopupProps
     height?: number;
   }
   
-  dragPositionerProps: DragPositionerProps;
+  dragPositionerProps?: DragPositionerProps;
 }
 
 export interface PropTypes extends CustomPopupProps, React.Props<any>
