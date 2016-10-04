@@ -4247,20 +4247,20 @@ button.player-setup-remove-player
   // animation-duration: 2000ms; // set dynamically
 }
 
+@emblem-size: 46px;
 
 .emblem-setter-list
 {
   display: flex;
   flex-flow: row;
-
 }
 
 .add-new-emblem-button
 {
   .button-style;
 
-  flex: 0 0 46px;
-  height: 46px;
+  flex: 0 0 @emblem-size;
+  height: @emblem-size;
 
   &::after
   {
@@ -4280,14 +4280,15 @@ button.player-setup-remove-player
   .emblem
   {
     cursor: pointer;
-    height: 46px;
-    width: 46px;
+    height: @emblem-size;
+    width: @emblem-size;
   }
 }
 
 .emblem-picker
 {
   display: inline-block;
+  max-width: @emblem-size * 8;
 }
 
 .emblem-picker-container
@@ -4297,8 +4298,8 @@ button.player-setup-remove-player
   float: left;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
+  width: @emblem-size;
+  height: @emblem-size;
 }
 
 .emblem-picker-image
