@@ -16,6 +16,7 @@ export interface PropTypes extends React.Props<any>
   initialColor: Color | null;
   onChange: (color: Color, isNull: boolean) => void;
   minUpdateBuffer?: number;
+  isNullable?: boolean;
 
   autoPositionerProps?: AutoPositionerProps;
 }
@@ -295,16 +296,17 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
         React.DOM.div({className: "color-picker-input-container", key: "hex"},
           React.DOM.label({className: "color-picker-label", htmlFor: "" + this.baseElementID + "-hex"}, "Hex:"),
           !this.props.generateColor ? null :
-          React.DOM.button(
-          {
-            className: "color-picker-button",
-            onClick: this.autoGenerateColor
-          }, "Auto"),
-          React.DOM.button(
-          {
-            className: "color-picker-button",
-            onClick: this.nullifyColor
-          }, "Clear"),
+            React.DOM.button(
+            {
+              className: "color-picker-button",
+              onClick: this.autoGenerateColor
+            }, "Auto"),
+          !this.props.isNullable ? null :
+            React.DOM.button(
+            {
+              className: "color-picker-button",
+              onClick: this.nullifyColor
+            }, "Clear"),
           ControlledNumberInput(
           {
             className: "color-picker-input color-picker-input-hex",

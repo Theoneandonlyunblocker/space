@@ -134,6 +134,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
             generateColor: this.props.generateColor,
             onChange: this.props.onChange,
             minUpdateBuffer: this.props.minUpdateBuffer,
+            isNullable: true,
             autoPositionerProps:
             {
               getParentClientRect: this.getClientRect,
