@@ -363,9 +363,15 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
             id: 0,
             incrementZIndex: () => 0,
             closePopup: this.setAsInactive,
-            getInitialPosition: () =>
+            getInitialPosition: (popupRect) =>
             {
-              return {left: 0, top: 0};
+              const parentRect = this.getClientRect();
+
+              return(
+              {
+                left: parentRect.right,
+                top: parentRect.top - popupRect.height / 3,
+              });
             },
 
             content: TopMenuPopup(
