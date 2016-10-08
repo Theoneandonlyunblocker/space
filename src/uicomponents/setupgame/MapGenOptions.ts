@@ -242,14 +242,14 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
             className: "map-gen-options-button",
             onClick: this.randomizeOptions
           },
-            "randomize"
+            "Randomize"
           ),
           React.DOM.button(
           {
             className: "map-gen-options-button",
             onClick: this.resetValuesToDefault
           },
-            "reset"
+            "Reset"
           )
         )
       )
