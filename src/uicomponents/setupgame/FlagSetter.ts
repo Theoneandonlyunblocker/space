@@ -366,7 +366,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
             getInitialPosition: (popupRect) =>
             {
               const parentRect = this.getClientRect();
-
               return(
               {
                 left: parentRect.right,

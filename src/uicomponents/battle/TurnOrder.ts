@@ -9,8 +9,6 @@ import
   AnimationState
 } from "./TurnOrderUnit";
 
-// TODO | animate units being removed from turn order
-
 export interface PropTypes extends React.Props<any>
 {
   unitsBySide:
@@ -353,7 +351,6 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         }
       }
       
-      // todo pass animation state
       toRender.push(
         TurnOrderUnit(
         {
@@ -380,15 +377,6 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         key: "ghost"
       }));
     }
-
-    // if (this.props.turnOrderDisplayData.length > maxUnits)
-    // {
-    //   toRender.push(React.DOM.div(
-    //   {
-    //     className: "turn-order-more",
-    //     key: "more"
-    //   }, "..."));
-    // }
 
     return(
       React.DOM.div({className: "turn-order-container"},
