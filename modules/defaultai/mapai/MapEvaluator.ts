@@ -212,8 +212,7 @@ export default class MapEvaluator
       {
         const desirability = this.evaluateStarDesirability(star);
 
-        // TODO
-        const hostileStrength = 1;
+        const hostileStrength = this.getHostileStrengthAtStar(star);
 
         const ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
         const ownInfluenceAtStar = ownInfluenceMap.get(star) || 1;
