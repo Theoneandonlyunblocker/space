@@ -19,6 +19,7 @@ declare interface RaceTemplate
 
   technologies: RaceTechnologyValue[];
 
+  // TODO 11.10.2016 | implement this stuff
   // getBuildableShipTypes(player: Player): UnitTemplate[];
   // getBuildableItemTypes(player: Player): ItemTemplate[];
 

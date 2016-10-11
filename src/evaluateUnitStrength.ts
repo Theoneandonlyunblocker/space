@@ -1,5 +1,6 @@
 import Unit from "./Unit";
 
+// TODO 11.10.2016 | should be moved to modules
 export default function evaluateUnitStrength(...units: Unit[]): number
 {
   let totalStrength = 0;

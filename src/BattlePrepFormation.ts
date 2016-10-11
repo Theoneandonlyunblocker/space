@@ -179,6 +179,7 @@ export default class BattlePrepFormation
     return displayDataByID;
   }
   // TODO ruleset | handle variable amount of rows
+  // TODO 11.10.2016 | shouldn't this be in a module?
   private getAutoFormation(enemyUnits?: Unit[], enemyFormation?: Unit[][]): Unit[][]
   {
     const scoutedUnits = this.hasScouted ? enemyUnits : null;
