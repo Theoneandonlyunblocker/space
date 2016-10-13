@@ -66,6 +66,7 @@ export default class Player
   public isAI: boolean = false;
   public AIController: AIController;
   public isIndependent: boolean = false;
+  public isDead: boolean = false;
 
   diplomacyStatus: DiplomacyStatus;
 
@@ -132,6 +133,7 @@ export default class Player
 
     resources?: {[resourceType: string]: number};
     technologyData?: PlayerTechnologySaveData;
+
   })
   {
     this.isAI = props.isAI;
@@ -224,12 +226,15 @@ export default class Player
       eventManager.removeEventListener(key, this.listeners[key]);
     }
   }
-  die(): void
+  public die(): void
   {
     for (var i = this.fleets.length - 1; i >= 0; i--)
     {
       this.fleets[i].deleteFleet(false);
     }
+
+    this.isDead = true;
+    
     eventManager.dispatchEvent("makePlayerDiedNotification",
     {
       deadPlayerName: this.name.fullName

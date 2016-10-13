@@ -1,6 +1,8 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import GameOverScreen from "./GameOverScreen";
 import GalaxyMapUI from "./GalaxyMapUI";
+
 import Player from "../../Player";
 import PlayerControl from "../../PlayerControl";
 import Game from "../../Game";
@@ -37,24 +39,11 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var mapModeOptions: React.ReactHTMLElement<any>[] = [];
-
-    for (let mapModeName in this.props.mapRenderer.mapModes)
-    {
-      mapModeOptions.push(React.DOM.option(
-      {
-        value: mapModeName,
-        key: mapModeName
-      },
-        this.props.mapRenderer.mapModes[mapModeName].template.displayName
-      ));
-    }
-
     return(
       React.DOM.div(
-        {
-          className: "galaxy-map"
-        },
+      {
+        className: "galaxy-map"
+      },
         React.DOM.div(
         {
           ref: (component: HTMLElement) =>
@@ -62,7 +51,9 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
             this.ref_TODO_pixiContainer = component;
           },
           id: "pixi-container"
-        },
+        }),
+        this.props.player.isDead ?
+          GameOverScreen() :
           GalaxyMapUI(
           {
             playerControl: this.props.playerControl,
@@ -71,7 +62,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
             mapRenderer: this.props.mapRenderer,
             key: "galaxyMapUI"
           })
-        )//,
+        //,
         // !Options.debug.enabled ? null : React.DOM.div(
         // {
         //   className: "galaxy-map-debug debug"
