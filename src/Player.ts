@@ -619,13 +619,32 @@ export default class Player
       eventManager.dispatchEvent("renderLayer", "fleets");
     }
   }
+  private getDebugVisibleStars(): Star[]
+  {
+    if (this.controlledLocations.length > 0)
+    {
+      return this.controlledLocations[0].getAllLinkedStars();
+    }
+    else if (Object.keys(this.revealedStars).length > 0)
+    {
+      const initialStar: Star = this.revealedStars[Object.keys(this.revealedStars)[0]];
+      return initialStar.getAllLinkedStars();
+    }
+    else
+    {
+      return [];
+    }
+  }
   getVisibleStars(): Star[]
   {
     if (!this.isAI && Options.debug.enabled)
     {
-      return this.controlledLocations[0].getAllLinkedStars();
+      return this.getDebugVisibleStars();
     }
-    if (this.visionIsDirty) this.updateVisibleStars();
+    if (this.visionIsDirty)
+    {
+      this.updateVisibleStars();
+    }
 
     var visible: Star[] = [];
 
@@ -641,9 +660,12 @@ export default class Player
   {
     if (!this.isAI && Options.debug.enabled)
     {
-      return this.controlledLocations[0].getAllLinkedStars();
+      return this.getDebugVisibleStars();
     }
-    if (this.visionIsDirty) this.updateVisibleStars();
+    if (this.visionIsDirty)
+    {
+      this.updateVisibleStars();
+    }
 
     var toReturn: Star[] = [];
 
@@ -656,7 +678,10 @@ export default class Player
   }
   getRevealedButNotVisibleStars(): Star[]
   {
-    if (this.visionIsDirty) this.updateVisibleStars();
+    if (this.visionIsDirty)
+    {
+      this.updateVisibleStars();
+    }
 
     var toReturn: Star[] = [];
 
@@ -674,9 +699,12 @@ export default class Player
   {
     if (!this.isAI && Options.debug.enabled)
     {
-      return this.controlledLocations[0].getAllLinkedStars();
+      return this.getDebugVisibleStars();
     }
-    if (this.visionIsDirty) this.updateVisibleStars();
+    if (this.visionIsDirty)
+    {
+      this.updateVisibleStars();
+    }
 
     var toReturn: Star[] = [];
 
@@ -690,24 +718,36 @@ export default class Player
   starIsVisible(star: Star): boolean
   {
     if (!this.isAI && Options.debug.enabled) return true;
-    if (this.visionIsDirty) this.updateVisibleStars();
+    if (this.visionIsDirty)
+    {
+      this.updateVisibleStars();
+    }
     return Boolean(this.visibleStars[star.id]);
   }
   starIsRevealed(star: Star): boolean
   {
     if (!this.isAI && Options.debug.enabled) return true;
-    if (this.visionIsDirty) this.updateVisibleStars();
+    if (this.visionIsDirty)
+    {
+      this.updateVisibleStars();
+    }
     return Boolean(this.revealedStars[star.id]);
   }
   starIsDetected(star: Star): boolean
   {
     if (!this.isAI && Options.debug.enabled) return true;
-    if (this.visionIsDirty) this.updateVisibleStars();
+    if (this.visionIsDirty)
+    {
+      this.updateVisibleStars();
+    }
     return Boolean(this.detectedStars[star.id]);
   }
   getLinksToUnRevealedStars(): {[starID: number]: Star[]}
   {
-    if (this.visionIsDirty) this.updateVisibleStars();
+    if (this.visionIsDirty)
+    {
+      this.updateVisibleStars();
+    }
     
     var linksBySourceStarId:
     {
