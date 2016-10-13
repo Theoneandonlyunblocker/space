@@ -444,9 +444,6 @@ export default class Battle
     var maxCapturedUnits = app.moduleData.ruleSet.battle.baseMaxCapturedUnits;
     this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
     this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
-
-
-    eventManager.dispatchEvent("battleEnd", null);
   }
   // End Battle End
   // Evaluation
