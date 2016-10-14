@@ -52,7 +52,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
           },
           id: "pixi-container"
         }),
-        this.props.player.isDead ?
+        this.props.game.hasEnded ?
           GameOverScreen() :
           GalaxyMapUI(
           {

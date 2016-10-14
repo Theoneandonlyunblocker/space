@@ -66,7 +66,6 @@ export default class Player
   public isAI: boolean = false;
   public AIController: AIController;
   public isIndependent: boolean = false;
-  public isDead: boolean = false;
 
   diplomacyStatus: DiplomacyStatus;
 
@@ -233,8 +232,6 @@ export default class Player
       this.fleets[i].deleteFleet(false);
     }
 
-    this.isDead = true;
-    
     eventManager.dispatchEvent("makePlayerDiedNotification",
     {
       deadPlayerName: this.name.fullName
