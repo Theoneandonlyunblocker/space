@@ -3,6 +3,7 @@
 import TopMenuPopup from "../popups/TopMenuPopup";
 import ConfirmPopup from "../popups/ConfirmPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import {CustomPopupProps} from "../popups/Popup";
 
 import LoadGame from "../saves/LoadGame";
 
@@ -19,9 +20,9 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
 {
   displayName = "GameOverScreen";
   state: StateType;
-  popupManager: PopupManagerComponent;
+  private popupManager: PopupManagerComponent;
 
-  popupIDs:
+  private popupIDs:
   {
     load: number | undefined;
     newGame: number | undefined;
@@ -29,6 +30,14 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
   {
     load: undefined,
     newGame: undefined
+  }
+
+  private popupProps: CustomPopupProps =
+  {
+    dragPositionerProps:
+    {
+      preventAutoResize: true,
+    }
   }
   
   constructor(props: PropTypes)
@@ -49,10 +58,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
     {
       this.popupIDs.load = this.popupManager.makePopup(
       {
-        popupProps:
-        {
-
-        },
+        popupProps: this.popupProps,
         content: TopMenuPopup(
         {
           content: LoadGame(
@@ -80,6 +86,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
     {
       this.popupIDs.newGame = this.popupManager.makePopup(
       {
+        popupProps: this.popupProps,
         content: ConfirmPopup(
         {
           handleOk: () =>
