@@ -4,6 +4,7 @@ import ObjectivesAI from "./ObjectivesAI";
 import Objective from "./Objective";
 
 import Unit from "../../../src/Unit";
+import Game from "../../../src/Game";
 import Player from "../../../src/Player";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Personality from "../../../src/Personality";
@@ -18,6 +19,7 @@ export default class FrontsAI
 {
   player: Player;
   map: GalaxyMap;
+  game: Game;
   mapEvaluator: MapEvaluator;
   objectivesAI: ObjectivesAI;
   personality: Personality;
@@ -27,13 +29,14 @@ export default class FrontsAI
   frontsToMove: Front[] = [];
 
   constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI,
-    personality: Personality)
+    personality: Personality, game: Game)
   {
     this.mapEvaluator = mapEvaluator;
     this.map = mapEvaluator.map;
     this.player = mapEvaluator.player;
     this.objectivesAI = objectivesAI;
     this.personality = personality;
+    this.game = game;
   }
 
   private getUnitScoresForFront(units: Unit[], front: Front)
@@ -226,6 +229,10 @@ export default class FrontsAI
 
   moveFleets(afterMovingAllCallback: Function)
   {
+    if (this.game.hasEnded)
+    {
+      return;
+    }
     var front = this.frontsToMove.pop();
 
     if (!front)

@@ -24,6 +24,7 @@ export default class Game
   galaxyMap: GalaxyMap;
   humanPlayer: Player;
   activePlayer: Player;
+  public hasEnded: boolean = false;
 
   notificationLog: NotificationLog;
 
@@ -154,6 +155,14 @@ export default class Game
     playerToKill.destroy();
 
     this.playerOrder.splice(playerOrderIndex, 1);
+    if (playerToKill === this.humanPlayer)
+    {
+      this.endGame();
+    }
+  }
+  private endGame(): void
+  {
+    this.hasEnded = true;
   }
   serialize(): GameSaveData
   {
