@@ -27,18 +27,9 @@ export default class MapRendererMapMode
 
     this.activeLayers[layer.template.key] = isActive;
   }
-  getLayerIndex(layer: MapRendererLayer)
-  {
-    for (let i = 0; i < this.layers.length; i++)
-    {
-      if (this.layers[i] === layer) return i;
-    }
-
-    return -1;
-  }
   hasLayer(layer: MapRendererLayer)
   {
-    return this.getLayerIndex(layer) !== -1;
+    return this.layers.indexOf(layer) !== -1;
   }
   getLayerIndexInContainer(layer: MapRendererLayer)
   {
@@ -62,19 +53,15 @@ export default class MapRendererMapMode
       this.addLayer(layer);
     }
   }
-  setLayerIndex(layer: MapRendererLayer, newIndex: number)
+  public moveLayer(toInsert: MapRendererLayer, target: MapRendererLayer, position: "top" | "bottom"): void
   {
-    const prevIndex = this.getLayerIndex(layer);
+    const indexAdjust = (position === "top" ? 0 : 1);
 
+    const prevIndex = this.layers.indexOf(toInsert);
     this.layers.splice(prevIndex, 1);
-    this.layers.splice(newIndex, 0, layer);
-  }
-  insertLayerNextToLayer(toInsert: MapRendererLayer, target: MapRendererLayer, position: string)
-  {
-    var indexAdjust = (position === "top" ? 0 : 1);
 
-    var newIndex = this.getLayerIndex(target) + indexAdjust;
-    this.setLayerIndex(toInsert, newIndex);
+    const newIndex = this.layers.indexOf(target) + indexAdjust;
+    this.layers.splice(newIndex, 0, toInsert);
   }
   getActiveLayers(): MapRendererLayer[]
   {

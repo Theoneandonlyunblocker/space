@@ -1,9 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import MapRendererMapMode from "../../MapRendererMapMode";
-import MapRendererLayer from "../../MapRendererLayer";
-import MapRendererLayersListItem from "./MapRendererLayersListItem";
 import MapRenderer from "../../MapRenderer";
+import MapRendererLayer from "../../MapRendererLayer";
+import MapRendererMapMode from "../../MapRendererMapMode";
+
+import MapRendererLayersListItem from "./MapRendererLayersListItem";
 
 
 export interface PropTypes extends React.Props<any>
@@ -14,111 +15,73 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  layerKeyToInsertNextTo?: string;
-  insertPosition?: string;
-  currentDraggingLayer?: MapRendererLayer;
+  layerToInsertNextTo?: MapRendererLayer | null;
+  insertPosition?: "top" | "bottom" | null;
+  currentDraggingLayer?: MapRendererLayer | null;
 }
 
 export class MapRendererLayersListComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName: string = "MapRendererLayersList";
-  state: StateType;
+  public displayName: string = "MapRendererLayersList";
+  public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.state = this.getInitialStateTODO();
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
+
+    this.state =
+    {
+      currentDraggingLayer: null,
+      layerToInsertNextTo: null,
+      insertPosition: null,
+    };
+
     this.handleDragEnd = this.handleDragEnd.bind(this);
     this.handleToggleActive = this.handleToggleActive.bind(this);
     this.updateLayer = this.updateLayer.bind(this);
     this.handleSetHoverPosition = this.handleSetHoverPosition.bind(this);
-    this.handleDragStart = this.handleDragStart.bind(this);    
-  }
-  
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      currentDraggingLayer: null,
-      layerKeyToInsertNextTo: null,
-      insertPosition: null
-    });
+    this.handleDragStart = this.handleDragStart.bind(this);
   }
 
-  handleDragStart(layer: MapRendererLayer)
+  public handleDragStart(layer: MapRendererLayer): void
   {
     this.setState(
     {
-      currentDraggingLayer: layer
+      currentDraggingLayer: layer,
     });
   }
-
-  handleDragEnd()
+  public handleDragEnd(): void
   {
-    var mapRenderer = this.props.mapRenderer;
-    var toInsert = this.state.currentDraggingLayer;
-    var insertTarget = mapRenderer.layers[this.state.layerKeyToInsertNextTo];
-    mapRenderer.currentMapMode.insertLayerNextToLayer(
-      toInsert,
-      insertTarget,
+    this.props.mapRenderer.currentMapMode.moveLayer(
+      this.state.currentDraggingLayer,
+      this.state.layerToInsertNextTo,
       this.state.insertPosition
     );
 
-    mapRenderer.resetMapModeLayersPosition();
+    this.props.mapRenderer.resetMapModeLayersPosition();
 
     this.setState(
     {
       currentDraggingLayer: null,
-      layerKeyToInsertNextTo: null,
-      insertPosition: null
+      layerToInsertNextTo: null,
+      insertPosition: null,
     });
   }
-
-  handleToggleActive(layer: MapRendererLayer)
+  public render(): React.ReactHTMLElement<HTMLOListElement> | null
   {
-    var mapRenderer = this.props.mapRenderer;
-
-    mapRenderer.currentMapMode.toggleLayer(layer);
-    mapRenderer.updateMapModeLayers([layer]);
-    this.forceUpdate();
-  }
-
-  handleSetHoverPosition(layer: MapRendererLayer, position: string)
-  {
-    this.setState(
-    {
-      layerKeyToInsertNextTo: layer.template.key,
-      insertPosition: position
-    });
-  }
-
-  updateLayer(layer: MapRendererLayer)
-  {
-    var mapRenderer = this.props.mapRenderer;
-    mapRenderer.setLayerAsDirty(layer.template.key);
-  }
-
-  render()
-  {
-    var mapMode = this.props.currentMapMode;
+    const mapMode = this.props.currentMapMode;
     if (!mapMode)
     {
       return null;
     }
-    var layersData = mapMode.layers;
+    const layersData = mapMode.layers;
 
-    var listItems: React.ReactElement<any>[] = [];
+    const listItems: React.ReactElement<any>[] = [];
 
     for (let i = 0; i < layersData.length; i++)
     {
-      var layer = layersData[i];
-      var layerKey = layer.template.key;
+      const layer = layersData[i];
+      const layerKey = layer.template.key;
 
       listItems.push(MapRendererLayersListItem(
       {
@@ -136,18 +99,39 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
         {
           containerElement: this,
           containerDragOnly: true,
-        }
+        },
       }));
     }
-    
+
     return(
       React.DOM.ol(
       {
-        className: "map-renderer-layers-list"
+        className: "map-renderer-layers-list",
       },
         listItems
       )
     );
+  }
+  private handleToggleActive(layer: MapRendererLayer): void
+  {
+    var mapRenderer = this.props.mapRenderer;
+
+    mapRenderer.currentMapMode.toggleLayer(layer);
+    mapRenderer.updateMapModeLayers([layer]);
+    this.forceUpdate();
+  }
+  private handleSetHoverPosition(layer: MapRendererLayer, position: "top" | "bottom"): void
+  {
+    this.setState(
+    {
+      layerToInsertNextTo: layer,
+      insertPosition: position,
+    });
+  }
+  private updateLayer(layer: MapRendererLayer): void
+  {
+    var mapRenderer = this.props.mapRenderer;
+    mapRenderer.setLayerAsDirty(layer.template.key);
   }
 }
 
