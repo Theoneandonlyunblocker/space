@@ -1,0 +1,76 @@
+{
+  "rules":
+  {
+    "member-access": true,
+    "member-ordering": [true, { "order": "fields-first" }],
+    "no-any": true,
+    "no-internal-module": true,
+    "no-namespace": [true, "allow-declarations"],
+    // currently using references for libraries. might be dumb?
+    // "no-reference": true,
+    "no-var-requires": true,
+    "only-arrow-functions": [true, "allow-declarations"],
+    "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
+    // tslint doesn't currently recognize newlines which we use after declaration
+    // https://github.com/palantir/tslint/pull/1531
+    // "typedef-whitespace":
+    // [
+    //   true,
+    //   {
+    //     "call-signature": "nospace",
+    //     "index-signature": "nospace",
+    //     "parameter": "nospace",
+    //     "property-declaration": "nospace",
+    //     "variable-declaration": "nospace"
+    //   },
+    //   {
+    //     "call-signature": "onespace",
+    //     "index-signature": "onespace",
+    //     "parameter": "onespace",
+    //     "property-declaration": "onespace",
+    //     "variable-declaration": "onespace"
+    //   }
+    // ]
+
+    "curly": true,
+    "label-position": true,
+    "no-arg": true,
+    "no-bitwise": true,
+    "no-conditional-assignment": true,
+    "no-construct": true,
+    "no-duplicate-key": true,
+    "no-eval": true,
+    // https://github.com/palantir/tslint/issues/1445
+    // "no-for-in-array": true,
+    "no-invalid-this": true,
+    "no-shadowed-variable": true,
+    "no-string-literal": true,
+    "no-unsafe-finally": true,
+    "no-unused-new": true,
+    "no-use-before-declare": true,
+    "no-var-keyword": true,
+    "triple-equals": true,
+    "use-isnan": true,
+
+    "eofline": true,
+    "no-default-export": true,
+    "no-mergeable-namespace": true,
+    "no-require-imports": true,
+    "no-trailing-whitespace": true,
+    "trailing-comma": [true, {"multiline": "always", "singleline": "never"}],
+
+    "align": [true, "parameters", "statements"],
+    "arrow-parens": true,
+    "class-name": true,
+    "comment-format": [true, "check-space"],
+    "interface-name": [true, "never-prefix"],
+    "jsdoc-format": true,
+    "new-parens": true,
+    "object-literal-key-quotes": [true, "as-needed"],
+    "one-variable-per-declaration": true,
+    "ordered-imports": true,
+    "quotemark": [true, "double"],
+    "semicolon": [true, "always"],
+    "variable-name": [true, "ban-keywords", "check-format"]
+  }
+}
