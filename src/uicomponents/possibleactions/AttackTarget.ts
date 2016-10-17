@@ -42,19 +42,22 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "attack-target",
-        onClick: this.handleAttack
+        className: "attack-target-button possible-action",
+        onClick: this.handleAttack,
+        title: `Attack ${target.enemy.name.getPossessive()} ${target.type}`
       },
-        React.DOM.div(
+        React.DOM.span(
         {
-          className: "attack-target-type"
-        }, target.type),
+          className: "possible-action-title"
+        },
+          "attack"
+        ),
         PlayerFlag(
         {
           flag: target.enemy.flag,
           props:
           {
-            className: "attack-target-player-icon"
+            className: "attack-target-player-flag"
           }
         })
       )

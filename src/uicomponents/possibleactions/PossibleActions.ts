@@ -179,30 +179,18 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
 
   render()
   {
-    var allActions: React.ReactHTMLElement<any>[] = [];
+    const allActions: React.ReactElement<any>[] = [];
 
-    var attackTargets = this.props.attackTargets;
-    if (attackTargets && attackTargets.length > 0)
+    if (this.props.attackTargets)
     {
-      var attackTargetComponents: React.ReactElement<any>[] = [];
-      for (let i = 0; i < attackTargets.length; i++)
+      allActions.push(...this.props.attackTargets.map(attackTarget =>
       {
-        attackTargetComponents.push(AttackTarget(
+        return AttackTarget(
         {
-          key: i,
-          attackTarget: attackTargets[i]
-        }));
-      }
-      allActions.push(
-        React.DOM.div(
-        {
-          className: "possible-action",
-          key: "attackActions"
-        },
-          React.DOM.div({className: "possible-action-title"}, "attack"),
-          attackTargetComponents
-        )
-      );
+          key: attackTarget.enemy.id,
+          attackTarget: attackTarget
+        })
+      }));
     }
 
     var star = this.props.selectedStar;
