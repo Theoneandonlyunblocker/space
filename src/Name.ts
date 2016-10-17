@@ -23,6 +23,19 @@ export default class Name
   {
     return this.fullName;
   }
+  public getPossessive(): string
+  {
+    const standard = this.toString();
+    const lastChar = standard[standard.length - 1];
+    if (lastChar.toLocaleLowerCase() === "s")
+    {
+      return standard + "'";
+    }
+    else
+    {
+      return standard + "'s";
+    }
+  }
   public pluralizeVerb(singularVerb: string, pluralVerb: string): string
   {
     if (this.isPlural)
