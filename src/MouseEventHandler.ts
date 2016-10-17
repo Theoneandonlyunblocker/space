@@ -6,6 +6,12 @@ import Star from "./Star";
 import RectangleSelect from "./RectangleSelect";
 import eventManager from "./eventManager";
 
+type Action =
+  "select" |
+  "fleetMove" |
+  "scroll" |
+  "zoom";
+
 export default class MouseEventHandler
 {
   renderer: Renderer;
@@ -15,19 +21,19 @@ export default class MouseEventHandler
   startPoint: number[];
   currPoint: number[];
 
-  currentAction: string;
-  stashedAction: string;
+  currentAction: Action;
+  stashedAction: Action;
 
   hoveredStar: Star;
 
   preventingGhost:
   {
-    [type: string]: any;
+    [type: string]: number; // number = timeout handle
   } = {};
 
   listeners:
   {
-    [name: string]: any;
+    [name: string]: Function;
   } = {};
 
   constructor(renderer: Renderer, camera: Camera)
@@ -37,17 +43,9 @@ export default class MouseEventHandler
     this.rectangleSelect = new RectangleSelect(renderer.layers.select);
     this.currentAction = undefined;
 
-    window.oncontextmenu = function(event)
-    {
-      var eventTarget = <HTMLElement> event.target;
-      if (eventTarget.localName !== "canvas") return;
-      event.preventDefault();
-      event.stopPropagation();
-    };
-
     this.addEventListeners();
   }
-  destroy()
+  public destroy(): void
   {
     for (let name in this.listeners)
     {
@@ -62,106 +60,67 @@ export default class MouseEventHandler
     this.renderer = null;
     this.camera = null;
   }
-  addEventListeners()
+
+  public mouseMove(event: PIXI.interaction.InteractionEvent): void
   {
-    var self = this;
-
-    var _canvas = document.getElementById("pixi-container");
-    _canvas.addEventListener("DOMMouseScroll", function(e: any)
+    if (this.currentAction === "scroll")
     {
-      if (e.target.localName !== "canvas") return;
-      self.camera.deltaZoom(-e.detail, 0.05);
-    });
-    _canvas.addEventListener("mousewheel", function(e: any)
-    {
-      if (e.target.localName !== "canvas") return;
-      self.camera.deltaZoom(e.wheelDelta / 40, 0.05);
-    });
-    _canvas.addEventListener("mouseout", function(e: any)
-    {
-      if (e.target.localName !== "canvas") return;
-    });
-
-    this.listeners["mouseDown"] = eventManager.addEventListener("mouseDown",
-      function(e: PIXI.interaction.InteractionEvent, star?: Star)
-      {
-        self.mouseDown(e, star);
-      });
-    this.listeners["mouseUp"] = eventManager.addEventListener("mouseUp",
-      function(e: PIXI.interaction.InteractionEvent)
-      {
-        self.mouseUp(e);
-      });
-
-    this.listeners["touchStart"] = eventManager.addEventListener("touchStart",
-      function(e: PIXI.interaction.InteractionEvent)
-      {
-        self.touchStart(e);
-      });
-    this.listeners["touchEnd"] = eventManager.addEventListener("touchEnd",
-      function(e: PIXI.interaction.InteractionEvent)
-      {
-        self.touchEnd(e);
-      });
-
-    this.listeners["hoverStar"] = eventManager.addEventListener("hoverStar",
-      function(star: Star)
-      {
-        self.setHoveredStar(star);
-      });
-    this.listeners["clearHover"] = eventManager.addEventListener("clearHover",
-      function()
-      {
-        self.clearHoveredStar();
-      });
-  }
-  preventGhost(delay: number, type: string)
-  {
-    if (this.preventingGhost[type])
-    {
-      window.clearTimeout(this.preventingGhost[type]);
+      this.scrollMove(event);
     }
-
-    var self = this;
-
-    this.preventingGhost[type] = window.setTimeout(function()
+    else if (this.currentAction === "zoom")
     {
-      self.preventingGhost[type] = null
-    }, delay);
-  }
-  makeUITransparent()
-  {
-    if (!this.currentAction) return;
-    var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-    if (ui) 
+      this.zoomMove(event);
+    }
+    else if (this.currentAction === "select")
     {
-      ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
+      this.dragSelect(event);
     }
   }
-  makeUIOpaque()
-  {
-    if (this.currentAction) return;
-    var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-    if (ui) 
-    {
-      ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
-    }
-  }
-  cancelCurrentAction()
+  public mouseUp(event: PIXI.interaction.InteractionEvent): void
   {
     switch (this.currentAction)
     {
-      case "select": // other events handle fine without explicitly canceling
+      case undefined:
       {
-        this.rectangleSelect.clearSelection();
-        this.currentAction = undefined;
-        this.makeUIOpaque();
+        break;
       }
+      case "scroll":
+      {
+        this.endScroll(event);
+        this.preventGhost(15, "mouseUp");
+        break;
+      }
+      case "select":
+      {
+        if (!this.preventingGhost["mouseUp"])
+        {
+          this.endSelect(event);
+        }
+        break;
+      }
+      case "fleetMove":
+      {
+        if (!this.preventingGhost["mouseUp"])
+        {
+          this.completeFleetMove();
+        }
+        break;
+
+      }
+      // case "zoom":
+      // {
+      //   this.endZoom(event);
+      //   this.preventGhost(15, "mouseUp");
+      //   break;
+      // }
     }
   }
-  mouseDown(event: PIXI.interaction.InteractionEvent, star?: Star)
+  public mouseDown(event: PIXI.interaction.InteractionEvent, star?: Star): void
   {
-    if (this.preventingGhost["mouseDown"]) return;
+    if (this.preventingGhost["mouseDown"])
+    {
+      return;
+    }
 
     var originalEvent = <MouseEvent> event.data.originalEvent;
     if (
@@ -187,7 +146,100 @@ export default class MouseEventHandler
     this.preventGhost(15, "mouseDown");
   }
 
-  touchStart(event: PIXI.interaction.InteractionEvent, star?: Star)
+  private addEventListeners(): void
+  {
+    const pixiCanvas = document.getElementById("pixi-canvas");
+
+    pixiCanvas.addEventListener("contextmenu", e =>
+    {
+      e.stopPropagation();
+      if (e.target === pixiCanvas)
+      {
+        e.preventDefault();
+      }
+    })
+    pixiCanvas.addEventListener("mousewheel", e =>
+    {
+      if (e.target === pixiCanvas)
+      {
+        this.camera.deltaZoom(e.wheelDelta / 40, 0.05);
+      }
+    });
+
+    this.listeners["mouseDown"] = eventManager.addEventListener("mouseDown",
+      (e: PIXI.interaction.InteractionEvent, star?: Star) =>
+    {
+      this.mouseDown(e, star);
+    });
+    this.listeners["mouseUp"] = eventManager.addEventListener("mouseUp",
+      (e: PIXI.interaction.InteractionEvent) =>
+    {
+      this.mouseUp(e);
+    });
+    this.listeners["touchStart"] = eventManager.addEventListener("touchStart",
+      (e: PIXI.interaction.InteractionEvent) =>
+    {
+      this.touchStart(e);
+    });
+    this.listeners["touchEnd"] = eventManager.addEventListener("touchEnd",
+      (e: PIXI.interaction.InteractionEvent) =>
+    {
+      this.touchEnd(e);
+    });
+    this.listeners["hoverStar"] = eventManager.addEventListener("hoverStar",
+      (star: Star) =>
+    {
+      this.setHoveredStar(star);
+    });
+    this.listeners["clearHover"] = eventManager.addEventListener("clearHover",
+      () =>
+    {
+      this.clearHoveredStar();
+    });
+  }
+  private preventGhost(delay: number, type: string): void
+  {
+    if (this.preventingGhost[type])
+    {
+      window.clearTimeout(this.preventingGhost[type]);
+    }
+    this.preventingGhost[type] = window.setTimeout(() =>
+    {
+      this.preventingGhost[type] = null
+    }, delay);
+  }
+  private makeUITransparent(): void
+  {
+    if (!this.currentAction) return;
+    var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
+    if (ui) 
+    {
+      ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
+    }
+  }
+  private makeUIOpaque(): void
+  {
+    if (this.currentAction) return;
+    var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
+    if (ui) 
+    {
+      ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
+    }
+  }
+  private cancelCurrentAction(): void
+  {
+    switch (this.currentAction)
+    {
+      case "select": // other events handle fine without explicitly canceling
+      {
+        this.rectangleSelect.clearSelection();
+        this.currentAction = undefined;
+        this.makeUIOpaque();
+      }
+    }
+  }
+
+  private touchStart(event: PIXI.interaction.InteractionEvent, star?: Star): void
   {
     if (app.playerControl.selectedFleets.length === 0)
     {
@@ -198,7 +250,7 @@ export default class MouseEventHandler
       this.startFleetMove(event, star);
     }
   }
-  touchEnd(event: PIXI.interaction.InteractionEvent)
+  private touchEnd(event: PIXI.interaction.InteractionEvent): void
   {
     if (this.currentAction === "select")
     {
@@ -210,46 +262,7 @@ export default class MouseEventHandler
     }
   }
 
-  mouseMove(event: PIXI.interaction.InteractionEvent)
-  {
-    if (this.currentAction === "scroll")
-    {
-      this.scrollMove(event);
-    }
-    else if (this.currentAction === "zoom")
-    {
-      this.zoomMove(event);
-    }
-    else if (this.currentAction === "select")
-    {
-      this.dragSelect(event);
-    }
-  }
-  mouseUp(event: PIXI.interaction.InteractionEvent)
-  {
-    if (this.currentAction === undefined) return;
-
-    if (this.currentAction === "scroll")
-    {
-      this.endScroll(event);
-      this.preventGhost(15, "mouseUp");
-    }
-    else if (this.currentAction === "zoom")
-    {
-      this.endZoom(event);
-      this.preventGhost(15, "mouseUp");
-    }
-    else if (this.currentAction === "select")
-    {
-      if (!this.preventingGhost["mouseUp"]) this.endSelect(event);
-    }
-    else if (this.currentAction === "fleetMove")
-    {
-      if (!this.preventingGhost["mouseUp"]) this.completeFleetMove();
-    }
-  }
-
-  startScroll(event: PIXI.interaction.InteractionEvent)
+  private startScroll(event: PIXI.interaction.InteractionEvent): void
   {
     if (this.currentAction !== "scroll")
     {
@@ -260,11 +273,11 @@ export default class MouseEventHandler
     this.camera.startScroll(this.startPoint);
     this.makeUITransparent();
   }
-  scrollMove(event: PIXI.interaction.InteractionEvent)
+  private scrollMove(event: PIXI.interaction.InteractionEvent): void
   {
     this.camera.move([event.data.global.x, event.data.global.y]);
   }
-  endScroll(event: PIXI.interaction.InteractionEvent)
+  private endScroll(event: PIXI.interaction.InteractionEvent): void
   {
     this.camera.end();
     this.startPoint = undefined;
@@ -272,29 +285,30 @@ export default class MouseEventHandler
     this.stashedAction = undefined;
     this.makeUIOpaque();
   }
-  zoomMove(event: PIXI.interaction.InteractionEvent)
+  private zoomMove(event: PIXI.interaction.InteractionEvent): void
   {
     var delta = event.data.global.x + this.currPoint[1] -
       this.currPoint[0] - event.data.global.y;
     this.camera.deltaZoom(delta, 0.005);
     this.currPoint = [event.data.global.x, event.data.global.y];
   }
-  endZoom(event: PIXI.interaction.InteractionEvent)
-  {
-    this.startPoint = undefined;
-    this.currentAction = this.stashedAction;
-    this.stashedAction = undefined;
-  }
-  startZoom(event: PIXI.interaction.InteractionEvent)
-  {
-    if (this.currentAction !== "zoom")
-    {
-      this.stashedAction = this.currentAction;
-    }
-    this.currentAction = "zoom";
-    this.startPoint = this.currPoint = [event.data.global.x, event.data.global.y];
-  }
-  setHoveredStar(star: Star)
+  // Can be used for touch controls I think
+  // private endZoom(event: PIXI.interaction.InteractionEvent): void
+  // {
+  //   this.startPoint = undefined;
+  //   this.currentAction = this.stashedAction;
+  //   this.stashedAction = undefined;
+  // }
+  // private startZoom(event: PIXI.interaction.InteractionEvent): void
+  // {
+  //   if (this.currentAction !== "zoom")
+  //   {
+  //     this.stashedAction = this.currentAction;
+  //   }
+  //   this.currentAction = "zoom";
+  //   this.startPoint = this.currPoint = [event.data.global.x, event.data.global.y];
+  // }
+  private setHoveredStar(star: Star): void
   {
     this.preventGhost(30, "hover");
     if (star !== this.hoveredStar)
@@ -303,7 +317,7 @@ export default class MouseEventHandler
       this.setFleetMoveTarget(star);
     }
   }
-  clearHoveredStar()
+  private clearHoveredStar(): void
   {
     var timeout = window.setTimeout(() =>
     {
@@ -315,18 +329,18 @@ export default class MouseEventHandler
       window.clearTimeout(timeout);
     }, 15);
   }
-  startFleetMove(event: PIXI.interaction.InteractionEvent, star: Star)
+  private startFleetMove(event: PIXI.interaction.InteractionEvent, star: Star): void
   {
     eventManager.dispatchEvent("startPotentialMove", star);
     this.currentAction = "fleetMove";
     this.makeUITransparent();
   }
-  setFleetMoveTarget(star: Star)
+  private setFleetMoveTarget(star: Star): void
   {
     if (this.currentAction !== "fleetMove") return;
     eventManager.dispatchEvent("setPotentialMoveTarget", star);
   }
-  completeFleetMove()
+  private completeFleetMove(): void
   {
     if (this.hoveredStar)
     {
@@ -336,26 +350,25 @@ export default class MouseEventHandler
     this.currentAction = undefined;
     this.makeUIOpaque();
   }
-  clearFleetMoveTarget()
+  private clearFleetMoveTarget(): void
   {
     if (this.currentAction !== "fleetMove") return;
     eventManager.dispatchEvent("clearPotentialMoveTarget");
   }
-  startSelect(event: PIXI.interaction.InteractionEvent)
+  private startSelect(event: PIXI.interaction.InteractionEvent): void
   {
     this.currentAction = "select";
     this.rectangleSelect.startSelection(event.data.getLocalPosition(this.renderer.layers.main));
     this.makeUITransparent();
   }
-  dragSelect(event: PIXI.interaction.InteractionEvent)
+  private dragSelect(event: PIXI.interaction.InteractionEvent): void
   {
     this.rectangleSelect.moveSelection(event.data.getLocalPosition(this.renderer.layers.main));
   }
-  endSelect(event: PIXI.interaction.InteractionEvent)
+  private endSelect(event: PIXI.interaction.InteractionEvent): void
   {
     this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers.main));
     this.currentAction = undefined;
     this.makeUIOpaque();
   }
-
 }
