@@ -64,13 +64,14 @@ export default class MapRendererMapMode
   }
   setLayerIndex(layer: MapRendererLayer, newIndex: number)
   {
-    var prevIndex = this.getLayerIndex(layer);
-    var spliced = this.layers.splice(prevIndex, 1)[0];
-    this.layers.splice(newIndex, 0, spliced);
+    const prevIndex = this.getLayerIndex(layer);
+
+    this.layers.splice(prevIndex, 1);
+    this.layers.splice(newIndex, 0, layer);
   }
   insertLayerNextToLayer(toInsert: MapRendererLayer, target: MapRendererLayer, position: string)
   {
-    var indexAdjust = (position === "top" ? -1 : 0);
+    var indexAdjust = (position === "top" ? 0 : 1);
 
     var newIndex = this.getLayerIndex(target) + indexAdjust;
     this.setLayerIndex(toInsert, newIndex);
