@@ -51,17 +51,18 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
             this.ref_TODO_pixiContainer = component;
           },
           id: "pixi-container"
-        }),
-        this.props.game.hasEnded ?
-          GameOverScreen() :
-          GalaxyMapUI(
-          {
-            playerControl: this.props.playerControl,
-            player: this.props.player,
-            game: this.props.game,
-            mapRenderer: this.props.mapRenderer,
-            key: "galaxyMapUI"
-          })
+        },
+          this.props.game.hasEnded ?
+            GameOverScreen() :
+            GalaxyMapUI(
+            {
+              playerControl: this.props.playerControl,
+              player: this.props.player,
+              game: this.props.game,
+              mapRenderer: this.props.mapRenderer,
+              key: "galaxyMapUI"
+            })
+        ),
         //,
         // !Options.debug.enabled ? null : React.DOM.div(
         // {
