@@ -302,7 +302,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     }
     else if (x2 > maxX)
     {
-      x = this.containerRect.width - domWidth;
+      x = maxX- domWidth;
     };
 
     if (y < minY)
@@ -311,7 +311,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     }
     else if (y2 > maxY)
     {
-      y = this.containerRect.height - domHeight;
+      y = maxY - domHeight;
     };
 
     if (this.onDragMove)
