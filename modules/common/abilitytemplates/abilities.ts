@@ -68,8 +68,6 @@ export var beamAttack: AbilityTemplate =
   
   targetCannotBeDiverted: true,
 }
-// legacy alias 17.05.2016
-export var wholeRowAttack = beamAttack;
 
 export var bombAttack: AbilityTemplate =
 {

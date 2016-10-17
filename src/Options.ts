@@ -167,9 +167,7 @@ class Options implements OptionsValues
       // month goes 0-11
       const optionsToResetIfSetEarlierThan =
       {
-        "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 50),
-        "debugMode": Date.UTC(2016, 4, 9, 10, 10),
-        "debugOptions": Date.UTC(2016, 4, 9, 10, 10),
+        
       };
 
       const dateOptionsWereSaved = Date.parse(parsedData.date);

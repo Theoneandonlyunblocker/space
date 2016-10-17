@@ -8,7 +8,7 @@ import itemSlot from "../../common/itemSlot";
 import
 {
   rangedAttack,
-  wholeRowAttack,
+  beamAttack,
   standBy
 } from "../../common/abilitytemplates/abilities";
 
@@ -47,7 +47,7 @@ const battleCruiser: UnitTemplate =
       probabilityItems:
       [
         rangedAttack,
-        wholeRowAttack,
+        beamAttack,
         standBy
       ]
     }
