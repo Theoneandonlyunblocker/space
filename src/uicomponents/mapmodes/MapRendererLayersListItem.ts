@@ -11,6 +11,7 @@ export interface PropTypes extends React.Props<any>
   isActive: boolean;
   layer: MapRendererLayer;
   setHoverPosition: (layer: MapRendererLayer, position: string) => void;
+  hoverSide: "top" | "bottom" | null;
   toggleActive: () => void;
   updateLayer: (layer: MapRendererLayer) => void;
   layerName: string;
@@ -22,7 +23,6 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hoverSide?: "top" | "bottom";
 }
 
 export class MapRendererLayersListItemComponent extends React.PureComponent<PropTypes, StateType>
@@ -35,11 +35,6 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
   constructor(props: PropTypes)
   {
     super(props);
-
-    this.state =
-    {
-      hoverSide: null,
-    };
 
     this.onDragEnd = this.onDragEnd.bind(this);
     this.handleHover = this.handleHover.bind(this);
@@ -80,9 +75,9 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
     {
       divProps.onMouseMove = this.handleHover;
       divProps.onMouseLeave = this.clearHover;
-      if (this.state.hoverSide)
+      if (this.props.hoverSide)
       {
-        divProps.className += " insert-" + this.state.hoverSide;
+        divProps.className += " insert-" + this.props.hoverSide;
       }
     }
 

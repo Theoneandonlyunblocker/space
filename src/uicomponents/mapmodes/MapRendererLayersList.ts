@@ -94,6 +94,7 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
         onDragStart: this.handleDragStart,
         onDragEnd: this.handleDragEnd,
         setHoverPosition: this.handleSetHoverPosition,
+        hoverSide: (layer === this.state.layerToInsertNextTo ? this.state.insertPosition : null),
         updateLayer: this.updateLayer,
         dragPositionerProps:
         {
