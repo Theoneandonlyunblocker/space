@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "devDependencies": {
     "typescript": "2.0.x",
-    "less": "2.6.x"
+    "less": "2.6.x",
+    "tslint": "^3.15.1"
   },
   "scripts": {
-    "build": "tsc && lessc ./css/main.less ./built/main.css"
+    "build": "tsc && lessc ./css/main.less ./built/main.css",
+    "lint": "tslint \"src/**/*.ts\""
   },
-  
   "repository": {
     "type": "git",
     "url": "https://github.com/giraluna/spacegame.git"
