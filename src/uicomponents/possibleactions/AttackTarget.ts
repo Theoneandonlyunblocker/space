@@ -40,7 +40,7 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
     var target = this.props.attackTarget;
 
     return(
-      React.DOM.div(
+      React.DOM.button(
       {
         className: "attack-target-button possible-action",
         onClick: this.handleAttack,

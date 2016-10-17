@@ -201,7 +201,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
         if (star.getBuildableBuildings().length > 0)
         {
           allActions.push(
-            React.DOM.div(
+            React.DOM.button(
             {
               className: "possible-action",
               onClick: this.buildBuildings,
@@ -215,7 +215,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
         if (this.state.canUpgradeBuildings)
         {
           allActions.push(
-            React.DOM.div(
+            React.DOM.button(
             {
               className: "possible-action",
               onClick: this.upgradeBuildings,
