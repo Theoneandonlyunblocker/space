@@ -5,6 +5,7 @@ import BuildingTemplate from "./BuildingTemplate";
 import CultureTemplate from "./CultureTemplate";
 import PortraitTemplate from "./PortraitTemplate";
 import ItemTemplate from "./ItemTemplate";
+import {DistributionData} from "./DistributionData";
 
 import Player from "../Player";
 import Star from "../Star";
@@ -13,10 +14,12 @@ import BuildingUpgradeData from "../BuildingUpgradeData";
 
 export declare interface RaceTemplate
 {
+  // TODO 18.10.2016 rename 'type'
   key: string;
   displayName: string;
   description: string;
   isNotPlayable?: boolean;
+  distributionData: DistributionData;
 
   // TODO 11.10.2016 | implement this stuff
   getBuildableUnitTypes(player: Player): UnitTemplate[];
