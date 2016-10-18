@@ -8,6 +8,7 @@ import guardDrawingFunction from "../battlesfxfunctions/guard";
 import beamDrawingFunction from "../battlesfxfunctions/beam";
 import snipeDrawingFunction from "../battlesfxfunctions/snipe";
 import makeSFXFromVideo from "../battlesfxfunctions/makeSFXFromVideo";
+import {placeholder as placeholderFunction} from "../battlesfxfunctions/placeholder";
 
 
 export const rocketAttack: BattleSFXTemplate =
@@ -52,5 +53,12 @@ export const videoTest: BattleSFXTemplate =
       sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
       sprite.shader = new BlackToAlphaFilter();
     }),
+  SFXWillTriggerEffect: false,
+}
+
+export const placeholder: BattleSFXTemplate =
+{
+  duration: 1000,
+  battleOverlay: placeholderFunction,
   SFXWillTriggerEffect: false,
 }

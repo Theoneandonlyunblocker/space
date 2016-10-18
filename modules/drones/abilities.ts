@@ -12,6 +12,7 @@ import
   targetEnemies,
 } from "../../src/targeting";
 
+import {placeholder as placeholderSFX} from "../common/battlesfxtemplates/battleSFX";
 import * as EffectActions from "../common/effectactiontemplates/effectActions";
 import
 {
@@ -38,6 +39,7 @@ export const assimilate: AbilityTemplate =
       damageType: DamageType.physical,
     }),
     getUnitsInArea: areaSingle,
+    sfx: placeholderSFX,
     attachedEffects:
     [
       {
@@ -70,6 +72,7 @@ export const merge: AbilityTemplate =
       maxHealthPercentage: 0.25,
     }),
     getUnitsInArea: (user) => [user],
+    sfx: placeholderSFX,
     attachedEffects:
     [
       {
@@ -131,6 +134,7 @@ export const infest: AbilityTemplate =
       duration: 3,
       template: StatusEffects.infest,
     }),
+    sfx: placeholderSFX,
     attachedEffects:
     [
       {
@@ -160,6 +164,7 @@ export const repair: AbilityTemplate =
     {
       perUserUnit: 0.5,
     }),
+    sfx: placeholderSFX,
   },
 };
 export const massRepair: AbilityTemplate =
@@ -178,6 +183,7 @@ export const massRepair: AbilityTemplate =
     {
       perUserUnit: 0.33,
     }),
+    sfx: placeholderSFX,
   },
 };
 

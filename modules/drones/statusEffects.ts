@@ -5,6 +5,8 @@ import
   adjustHealth,
 } from "../common/effectactiontemplates/effectActions";
 
+import {placeholder as placeholderSFX} from "../common/battlesfxtemplates/battleSFX";
+
 // TODO 18.10.2016 | pretty sure this is bugged with multiple status effects of the same type
 export const infest: StatusEffectTemplate =
 {
@@ -28,6 +30,7 @@ export const infest: StatusEffectTemplate =
         adjustHealth({maxHealthPercentage: damageDealtThisTurn},
           user, target, battle, executedEffectsResult);
       },
+      sfx: placeholderSFX,
     },
   ],
 };
