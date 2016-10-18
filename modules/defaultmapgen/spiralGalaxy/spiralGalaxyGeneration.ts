@@ -13,6 +13,7 @@ import
 
 import MapGenFunction from "../../../src/templateinterfaces/MapGenFunction";
 import ResourceTemplate from "../../../src/templateinterfaces/ResourceTemplate";
+import {RaceTemplate} from "../../../src/templateinterfaces/RaceTemplate";
 
 import
 {
@@ -217,6 +218,22 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
       distributionFlagsBySectorID[sector.id] = distributionFlags;
     });
   });
+
+  // set races
+  const racePlacerFN = function(sector: Region, race: RaceTemplate)
+  {
+    sector.stars.forEach(star =>
+    {
+      star.race = race;
+    })
+  }
+
+  distributeDistributablesPerSector(
+    sectors,
+    distributionFlagsBySectorID,
+    TemplateIndexes.distributablesByDistributionGroup.races,
+    racePlacerFN,
+  )
 
   // set resources
   const resourcePlacerFN = function(sector: Region, resource: ResourceTemplate)

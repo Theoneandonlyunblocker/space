@@ -1,5 +1,6 @@
 
 import app from "./App"; // TODO global
+import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import {Distributable} from "./templateinterfaces/Distributable";
@@ -16,6 +17,7 @@ interface DistributablesByDistributionGroup<T extends Distributable>
 interface DistributablesByTypeAndDistributionGroup
 {
   resources: DistributablesByDistributionGroup<ResourceTemplate>;
+  races: DistributablesByDistributionGroup<RaceTemplate>;
 }
 interface ItemsByTechLevel
 {
@@ -69,7 +71,8 @@ class TemplateIndexes
   {
     return(
     {
-      resources: TemplateIndexes.getDistributablesByGroup(app.moduleData.Templates.Resources)
+      resources: TemplateIndexes.getDistributablesByGroup(app.moduleData.Templates.Resources),
+      races: TemplateIndexes.getDistributablesByGroup(app.moduleData.Templates.Races),
     });
   }
   private static getDistributablesByGroup<T extends Distributable>(
