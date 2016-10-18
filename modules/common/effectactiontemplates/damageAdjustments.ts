@@ -89,5 +89,7 @@ export function getAdjustedDamage(user: Unit, target: Unit,
   const dealtDamage = baseDamage * getAttackDamageIncrease(user, damageType);
   const reducedDamage = dealtDamage * getReducedDamageFactor(target, damageType);
 
-  return reducedDamage;
+  const clampedDamage = Math.min(reducedDamage, target.currentHealth);
+
+  return clampedDamage;
 }
