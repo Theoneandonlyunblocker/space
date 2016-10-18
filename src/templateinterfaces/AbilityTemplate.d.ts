@@ -35,7 +35,7 @@ declare interface AbilityTemplate extends AbilityBase
   
   // called first
   mainEffect: AbilityMainEffectTemplate;
-  // uses same user and target as mainEffect, called after mainEffect
+  // called after mainEffect with same user & target
   secondaryEffects?: AbilityMainEffectTemplate[];
   
   beforeUse?: AbilityEffectTemplate[];

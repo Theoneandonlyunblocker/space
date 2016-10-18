@@ -29,7 +29,8 @@ export declare interface AbilityEffectTemplate
   trigger?: AbilityEffectTrigger;
   sfx?: BattleSFXTemplate;
 
-  // called after parent effect with same user and effect target
+  // called for each unit affected by parent effect
+  // user: parent user, target: unit in parent area
   attachedEffects?: AbilityEffectTemplate[];
 }
 

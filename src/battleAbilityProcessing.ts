@@ -41,20 +41,23 @@ export function getAbilityEffectDataByPhase(battle: Battle, abilityUseData: Abil
   const beforeUse = getAbilityEffectDataFromEffectTemplates(
     battle,
     abilityUseData,
-    getBeforeAbilityUseEffectTemplates(abilityUseData)
+    getBeforeAbilityUseEffectTemplates(abilityUseData),
+    abilityUseData.actualTarget,
   );
   beforeUse.push(...getDefaultBeforeUseEffects(abilityUseData));
 
   const abilityEffects = getAbilityEffectDataFromEffectTemplates(
     battle,
     abilityUseData,
-    getAbilityUseEffectTemplates(abilityUseData)
+    getAbilityUseEffectTemplates(abilityUseData),
+    abilityUseData.actualTarget,
   );
 
   const afterUse = getAbilityEffectDataFromEffectTemplates(
     battle,
     abilityUseData,
-    getAfterAbilityUseEffectTemplates(abilityUseData)
+    getAfterAbilityUseEffectTemplates(abilityUseData),
+    abilityUseData.actualTarget,
   );
   afterUse.push(...getDefaultAfterUseEffects(abilityUseData));
 
@@ -142,47 +145,54 @@ function activeUnitsFilterFN(unit: Unit)
 {
   return unit && unit.isActiveInBattle();
 }
-function recursivelyGetAttachedEffects(effectTemplate: AbilityEffectTemplate): AbilityEffectTemplate[]
-{
-  const attachedEffects: AbilityEffectTemplate[] = [];
-  const frontier: AbilityEffectTemplate[] = [effectTemplate];
-  
-  while (frontier.length > 0)
-  {
-    const currentEffect = frontier.pop();
-    attachedEffects.push(...currentEffect.attachedEffects);
-    frontier.push(...currentEffect.attachedEffects);
-  }
-  
-  return attachedEffects;
-}
-function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData: AbilityUseData,
-  effectTemplates: AbilityEffectTemplate[]): AbilityEffectData[]
+function getAbilityEffectDataFromEffectTemplate(battle: Battle, abilityUseData: AbilityUseData,
+  effectTemplate: AbilityEffectTemplate, target: Unit): AbilityEffectData[]
 {
   const effectData: AbilityEffectData[] = [];
 
-  for (let i = 0; i < effectTemplates.length; i++)
+  const unitsInEffectArea = getUnitsInEffectArea(effectTemplate, battle,
+    abilityUseData.user, target);
+  
+  unitsInEffectArea.forEach(unitInEffectArea =>
   {
-    const effectTemplate = effectTemplates[i];
-    const targetsForEffect = getUnitsInEffectArea(effectTemplate, battle,
-      abilityUseData.user, abilityUseData.actualTarget);
-    const withAttached = [effectTemplate].concat(recursivelyGetAttachedEffects(effectTemplate));
-
-    for (let j = 0; j < targetsForEffect.length; j++)
+    effectData.push(
     {
-      for (let k = 0; k < withAttached.length; k++)
-      {
-        effectData.push(
-        {
-          sourceAbility: abilityUseData.ability,
-          effectTemplate: withAttached[k],
-          user: abilityUseData.user,
-          target: targetsForEffect[j],
-          trigger: effectTemplate.trigger
-        });
-      }
-    }
-  }
+      sourceAbility: abilityUseData.ability,
+      effectTemplate: effectTemplate,
+      user: abilityUseData.user,
+      target: unitInEffectArea,
+      trigger: effectTemplate.trigger
+    });
+
+    const attachedEffects = effectTemplate.attachedEffects || [];
+
+    attachedEffects.forEach(attachedEffectTemplate =>
+    {
+      effectData.push(...getAbilityEffectDataFromEffectTemplate(
+        battle,
+        abilityUseData,
+        attachedEffectTemplate,
+        unitInEffectArea
+      ));
+    });
+  });
+
+  return effectData;
+}
+function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData: AbilityUseData,
+  effectTemplates: AbilityEffectTemplate[], target: Unit): AbilityEffectData[]
+{
+  const effectData: AbilityEffectData[] = [];
+
+  effectTemplates.forEach(effectTemplate =>
+  {
+    effectData.push(...getAbilityEffectDataFromEffectTemplate(
+      battle,
+      abilityUseData,
+      effectTemplate,
+      target,
+    ));
+  });
 
   return effectData;
 }
