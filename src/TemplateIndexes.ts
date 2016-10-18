@@ -3,7 +3,7 @@ import app from "./App"; // TODO global
 import UnitFamily from "./templateinterfaces/UnitFamily";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
-import Distributable from "./templateinterfaces/Distributable";
+import {Distributable} from "./templateinterfaces/Distributable";
 
 interface DistributablesByKey<T extends Distributable>
 {
@@ -84,7 +84,7 @@ class TemplateIndexes
     for (let key in allDistributables)
     {
       const distributable = allDistributables[key];
-      distributable.distributionGroups.forEach(group =>
+      distributable.distributionData.distributionGroups.forEach(group =>
       {
         if (!byGroup[group])
         {

@@ -30,7 +30,7 @@ import
   getRandomKeyWithWeights
 } from "../../../src/utility";
 
-import Distributable from "../../../src/templateinterfaces/Distributable";
+import {Distributable} from "../../../src/templateinterfaces/Distributable";
 
 
 export function linkStarsByTriangulation(stars: Star[]): void
@@ -372,7 +372,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
     const distributables = distributablesByDistributionGroup[distributionGroup];
     distributables.forEach(distributable =>
     {
-      probabilityWeights[distributable.type] = distributable.rarity;
+      probabilityWeights[distributable.type] = distributable.distributionData.rarity;
       allDistributablesByType[distributable.type] = distributable;
     });
   }
