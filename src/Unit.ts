@@ -334,6 +334,17 @@ export default class Unit
     this.battleStats.side = side;
     this.battleStats.position = position;
   }
+  public addMaxHealth(amountToAdd: number): void
+  {
+    this.maxHealth += Math.max(0, Math.round(amountToAdd));
+
+    if (this.currentHealth > this.maxHealth)
+    {
+      this.currentHealth = this.maxHealth;
+    }
+
+    this.uiDisplayIsDirty = true;
+  }
   public addHealth(amountToAdd: number): void
   {
     const newHealth = this.currentHealth + Math.round(amountToAdd);
