@@ -93,8 +93,6 @@ export default class Unit
   private passiveSkillsByPhase:
   {
     atBattleStart?: PassiveSkillTemplate[];
-    // beforeAbilityUse?: PassiveSkillTemplate[];
-    // afterAbilityUse?: PassiveSkillTemplate[];
     atTurnStart?: PassiveSkillTemplate[];
     inBattlePrep?: PassiveSkillTemplate[];
   } = {};

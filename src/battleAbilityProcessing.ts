@@ -203,15 +203,14 @@ function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abi
   {
     beforeUseEffects.push(...abilityUseData.ability.beforeUse);
   }
-  // TODO get these from status effects
-  // var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().beforeAbilityUse;
-  // if (passiveSkills)
-  // {
-  //   for (let i = 0; i < passiveSkills.length; i++)
-  //   {
-  //     beforeUseEffects = beforeUseEffects.concat(passiveSkills[i].beforeAbilityUse);
-  //   }
-  // }
+
+  abilityUseData.user.battleStats.statusEffects.forEach(statusEffect =>
+  {
+    if (statusEffect.template.beforeAbilityUse)
+    {
+      beforeUseEffects.push(...statusEffect.template.beforeAbilityUse);
+    }
+  });
 
   return beforeUseEffects;
 }
@@ -235,15 +234,14 @@ function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abil
     afterUseEffects.push(...abilityUseData.ability.afterUse);
   }
 
-  // TODO get these from status effects
-  // var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().afterAbilityUse;
-  // if (passiveSkills)
-  // {
-  //   for (let i = 0; i < passiveSkills.length; i++)
-  //   {
-  //     afterUseEffects = afterUseEffects.concat(passiveSkills[i].afterAbilityUse);
-  //   }
-  // }
+  abilityUseData.user.battleStats.statusEffects.forEach(statusEffect =>
+  {
+    if (statusEffect.template.afterAbilityUse)
+    {
+      afterUseEffects.push(...statusEffect.template.afterAbilityUse);
+    }
+  });
+  
   
   return afterUseEffects;
 }
