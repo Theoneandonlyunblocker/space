@@ -181,7 +181,7 @@ export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResul
     healAmount += data.executedEffectsResultAdjustment(executedEffectsResult);
   }
 
-  target.maxHealth += healAmount;
+  target.addMaxHealth(healAmount);
   target.addHealth(healAmount);
 }
 

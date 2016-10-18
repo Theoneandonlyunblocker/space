@@ -26,7 +26,7 @@ export const assimilate: AbilityTemplate =
 {
   type: "assimilate",
   displayName: "Assimilate",
-  description: "Deal damage and increase own troop size by percentage of damage dealt",
+  description: "Deal damage and increase own troop size by 10% of damage dealt",
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetEnemies,
@@ -49,7 +49,8 @@ export const assimilate: AbilityTemplate =
         {
           executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
           {
-            return executedEffectsResult[resultType.healthChanged] || 0;
+            const damageDealt = executedEffectsResult[resultType.healthChanged] || 0;
+            return damageDealt * -0.1;
           },
         }),
       },
