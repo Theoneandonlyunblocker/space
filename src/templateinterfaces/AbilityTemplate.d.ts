@@ -1,5 +1,9 @@
 import AbilityBase from "./AbilityBase";
-import {AbilityEffectTemplate} from "./AbilityEffectTemplate";
+import
+{
+  AbilityEffectTemplate,
+  AbilityMainEffectTemplate,
+} from "./AbilityEffectTemplate";
 
 import
 {
@@ -30,9 +34,9 @@ declare interface AbilityTemplate extends AbilityBase
   getPossibleTargets: GetBattleTargetsFN;
   
   // called first
-  mainEffect: AbilityEffectTemplate;
+  mainEffect: AbilityMainEffectTemplate;
   // uses same user and target as mainEffect, called after mainEffect
-  secondaryEffects?: AbilityEffectTemplate[];
+  secondaryEffects?: AbilityMainEffectTemplate[];
   
   beforeUse?: AbilityEffectTemplate[];
   afterUse?: AbilityEffectTemplate[];

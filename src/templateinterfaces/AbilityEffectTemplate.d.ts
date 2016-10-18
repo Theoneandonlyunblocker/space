@@ -27,8 +27,13 @@ export declare interface AbilityEffectTemplate
   executeAction: AbilityEffectAction;
 
   trigger?: AbilityEffectTrigger;
-  // called after parent effect with same user and effect target
-  // nesting these wont work and wouldnt do anything anyway
-  attachedEffects?: AbilityEffectTemplate[];
   sfx?: BattleSFXTemplate;
+
+  // called after parent effect with same user and effect target
+  attachedEffects?: AbilityEffectTemplate[];
+}
+
+export declare interface AbilityMainEffectTemplate extends AbilityEffectTemplate
+{
+  sfx: BattleSFXTemplate;
 }
