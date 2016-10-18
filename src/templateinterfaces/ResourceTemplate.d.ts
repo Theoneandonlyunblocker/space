@@ -1,7 +1,6 @@
-import {Distributable} from "./Distributable";
 import {DistributionData} from "./DistributionData";
 
-declare interface ResourceTemplate extends Distributable
+declare interface ResourceTemplate
 {
   type: string;
   displayName: string;
