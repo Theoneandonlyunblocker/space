@@ -27,7 +27,7 @@ export const infest: StatusEffectTemplate =
 
         const damageDealtThisTurn = 0.5 / infestEffect.duration;
 
-        adjustHealth({maxHealthPercentage: damageDealtThisTurn},
+        adjustHealth({maxHealthPercentage: -damageDealtThisTurn},
           user, target, battle, executedEffectsResult);
       },
       sfx: placeholderSFX,
