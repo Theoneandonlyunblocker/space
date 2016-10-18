@@ -2,13 +2,12 @@ import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
 import defaultUnitDrawingFunction from "../../defaultunits/defaultUnitDrawingFunction";
 import * as UnitArchetypes from "../../defaultunits/UnitArchetypes";
-import * as UnitFamilies from "../../defaultunits/UnitFamilies";
 
 import * as CommonAbility from "../../common/abilitytemplates/abilities";
-import itemSlot from "../../common/itemSlot";
 
 
 import * as DroneAbility from "../abilities";
+import {drone as droneFamily} from "../unitFamily";
 
 export const droneBase: UnitTemplate =
 {
@@ -16,20 +15,20 @@ export const droneBase: UnitTemplate =
   displayName: "Drone Base",
   description: "Base o drones",
 
-  archetype: undefined,
-  families: undefined,
+  archetype: UnitArchetypes.utility,
+  families: [droneFamily],
   cultures: [],
   sprite:
   {
-    imageSrc: "",
+    imageSrc: "img/placeholder.png",
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
-  icon: "",
+  icon: "img/placeholder.png",
   unitDrawingFN: defaultUnitDrawingFunction,
 
-  isSquadron: true,
-  buildCost: 200,
+  isSquadron: false,
+  buildCost: 500,
 
   maxHealth: 1.0,
   maxMovePoints: 1,

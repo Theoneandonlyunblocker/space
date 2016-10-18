@@ -1,3 +1,4 @@
+import {ExecutedEffectsResult} from "../../src/templateinterfaces/AbilityEffectAction";
 import AbilityTemplate from "../../src/templateinterfaces/AbilityTemplate";
 
 import DamageType from "../../src/DamageType";
@@ -43,7 +44,7 @@ export const assimilate: AbilityTemplate =
         getUnitsInArea: (user) => [user],
         executeAction: bindEffectActionData(EffectActions.adjustCurrentAndMaxHealth,
         {
-          executedEffectsResultAdjustment: (executedEffectsResult) =>
+          executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
           {
             return executedEffectsResult[resultType.healthChanged] || 0;
           },
@@ -79,7 +80,7 @@ export const merge: AbilityTemplate =
         },
         executeAction: bindEffectActionData(EffectActions.adjustCurrentAndMaxHealth,
         {
-          executedEffectsResultAdjustment: (executedEffectsResult) =>
+          executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
           {
             return executedEffectsResult[-resultType.healthChanged];
           },

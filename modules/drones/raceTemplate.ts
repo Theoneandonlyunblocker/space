@@ -6,5 +6,5 @@ export const drones: RaceTemplate =
   displayName: "Drones",
   description: "",
 
-  isPlayable: false,
+  isNotPlayable: false,
 };

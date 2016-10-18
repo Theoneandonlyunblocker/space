@@ -25,6 +25,7 @@ import
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
 
 import addCommonToModuleData from "../modules/common/addCommonToModuleData";
+
 import defaultEmblems from "../modules/defaultemblems/defaultEmblems";
 import defaultRuleset from "../modules/defaultruleset/defaultRuleset";
 import defaultAI from "../modules/defaultai/defaultAI";
@@ -35,10 +36,13 @@ import defaultMapgen from "../modules/defaultmapgen/defaultMapgen";
 import defaultUnits from "../modules/defaultunits/defaultUnits";
 import defaultBackgrounds from "../modules/defaultbackgrounds/defaultBackgrounds";
 import defaultMapmodes from "../modules/defaultmapmodes/defaultMapmodes";
-import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
 import defaultBuildings from "../modules/defaultbuildings/defaultBuildings";
 import defaultNotifications from "../modules/defaultnotifications/defaultNotifications";
 import defaultRaces from "../modules/defaultraces/defaultRaces";
+
+import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
+
+import {drones} from "../modules/drones/moduleFile";
 
 class App
 {
@@ -86,6 +90,7 @@ class App
       moduleLoader.addModuleFile(defaultBuildings);
       moduleLoader.addModuleFile(defaultNotifications);
       moduleLoader.addModuleFile(defaultRaces);
+      moduleLoader.addModuleFile(drones);
       
       addCommonToModuleData(moduleLoader.moduleData);
       
