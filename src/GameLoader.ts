@@ -203,14 +203,6 @@ export default class GameLoader
       star.setResource(app.moduleData.Templates.Resources[data.resourceType]);
     }
 
-    if (data.buildableUnitTypes)
-    {
-      for (let i = 0; i < data.buildableUnitTypes.length; i++)
-      {
-        star.buildableUnitTypes.push(app.moduleData.Templates.Units[data.buildableUnitTypes[i]]);
-      }
-    }
-
     return star;
   }
   deserializeBuildings(data: GalaxyMapSaveData): void

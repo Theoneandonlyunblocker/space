@@ -13,7 +13,6 @@ declare interface StarSaveData
   linksToIds: number[];
   linksFromIds: number[];
   seed: string;
-  buildableUnitTypes: string[];
 
   resourceType?: string;
   manufactory?: ManufactorySaveData;

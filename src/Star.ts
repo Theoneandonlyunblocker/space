@@ -2,7 +2,6 @@ import app from "./App"; // TODO global
 import BuildingEffect from "./templateinterfaces/BuildingEffect";
 import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
-import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
 import eventManager from "./eventManager";
 import Point from "./Point";
@@ -81,7 +80,6 @@ export default class Star implements Point
     [id: number]: number;
   } = {};
 
-  buildableUnitTypes: UnitTemplate[] = [];
   manufactory: Manufactory;
 
   constructor(props:
@@ -1001,11 +999,6 @@ export default class Star implements Point
       linksFromIds: this.linksFrom.map(function(star){return star.id}),
 
       seed: this.seed,
-
-      buildableUnitTypes: this.buildableUnitTypes.map(function(template)
-      {
-        return template.type;
-      }),
 
       buildings: buildings,
     };

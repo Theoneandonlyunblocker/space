@@ -48,7 +48,8 @@ export default function setupIndependents(props:
   const minUnits = 2;
   const maxUnits = 5;
   
-  const globalBuildableUnitTypes = props.player.getGloballyBuildableUnits();
+  const buildableUnitTypes = props.player.getGloballyBuildableUnits();
+  
   const globalMaxDistanceFromPlayer: number = (function()
   {
     let maxDistance = 0;
@@ -64,13 +65,6 @@ export default function setupIndependents(props:
   
   independentStars.forEach(star =>
   {
-    const localBuildableUnitTypes = star.buildableUnitTypes.filter(unitTemplate =>
-    {
-      const techRequirements = unitTemplate.technologyRequirements;
-      return !techRequirements || props.player.meetsTechnologyRequirements(techRequirements);
-    });
-    
-    const unitTypes = globalBuildableUnitTypes.concat(localBuildableUnitTypes);
     
     const mapGenData = props.mapGenDataByStarID[star.id];
     const inverseMapGenDistance = 1 - mapGenData.mapGenDistance;
@@ -90,7 +84,7 @@ export default function setupIndependents(props:
     
     if (star === commanderStar)
     {
-      const template = getRandomArrayItem(unitTypes);
+      const template = getRandomArrayItem(buildableUnitTypes);
       const unit = new Unit(template);
       unit.name = "Pirate commander";
       
@@ -108,7 +102,7 @@ export default function setupIndependents(props:
       const unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
       const unitStatsModifier = (isElite ? 1.2 : 1);
       
-      const template = getRandomArrayItem(unitTypes);
+      const template = getRandomArrayItem(buildableUnitTypes);
       
       const unit = new Unit(template);
       unit.name = (isElite ? "Pirate elite" : "Pirate");
