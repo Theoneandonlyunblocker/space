@@ -84,13 +84,24 @@ export default class Star implements Point
   buildableUnitTypes: UnitTemplate[] = [];
   manufactory: Manufactory;
 
-  constructor(x: number, y: number, id?: number)
+  constructor(props:
   {
-    this.id = isFinite(id) ? id : idGenerators.star++;
-    this.name = "Star " + this.id;
+    x: number;
+    y: number;
+    
+    id?: number;
+    name?: string;
 
-    this.x = x;
-    this.y = y;
+    race?: RaceTemplate;
+  })
+  {
+    this.x = props.x;
+    this.y = props.y;
+
+    this.id = isFinite(props.id) ? props.id : idGenerators.star++;
+    this.name = props.name || "Star " + this.id;
+
+    this.race = props.race;
   }
   // BUILDINGS
   addBuilding(building: Building): void

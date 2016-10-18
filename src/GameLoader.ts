@@ -187,8 +187,14 @@ export default class GameLoader
   }
   deserializeStar(data: StarSaveData): Star
   {
-    var star = new Star(data.x, data.y, data.id);
-    star.name = data.name;
+    var star = new Star(
+    {
+      x: data.x,
+      y: data.y,
+      id: data.id,
+      name: data.name,
+      race: app.moduleData.Templates.Races[data.raceKey]
+    });
     star.baseIncome = data.baseIncome;
     star.seed = data.seed;
 

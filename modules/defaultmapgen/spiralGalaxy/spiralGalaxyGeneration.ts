@@ -85,7 +85,11 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     }
     else
     {
-      const star = new Star(point.x, point.y);
+      const star = new Star(
+      {
+        x: point.x,
+        y: point.y,
+      });
       stars.push(star);
       starsWithMapGenPoints.push(
       {
