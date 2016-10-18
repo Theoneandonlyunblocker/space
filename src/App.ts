@@ -19,7 +19,7 @@ import TutorialStatus from "./tutorials/TutorialStatus";
 import
 {
   onDOMLoaded,
-  getRandomProperty,
+  getRandomArrayItem,
 } from "./utility";
 
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
@@ -239,6 +239,13 @@ class App
   private makePlayers()
   {
     var players: Player[] = [];
+    const candidateRaces = Object.keys(this.moduleData.Templates.Races).map(raceKey =>
+    {
+      return this.moduleData.Templates.Races[raceKey];
+    }).filter(raceTemplate =>
+    {
+      return !raceTemplate.isNotPlayable;
+    });
 
     for (let i = 0; i < 5; i++)
     {
@@ -247,7 +254,7 @@ class App
         isAI: i > 0,
         isIndependent: false,
 
-        race: getRandomProperty(this.moduleData.Templates.Races),
+        race: getRandomArrayItem(candidateRaces),
         money: 1000
       }));
     }
