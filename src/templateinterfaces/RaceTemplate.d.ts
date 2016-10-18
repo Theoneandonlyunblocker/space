@@ -16,10 +16,10 @@ export declare interface RaceTemplate
   key: string;
   displayName: string;
   description: string;
-  isPlayable?: boolean;
+  isNotPlayable?: boolean;
 
   // TODO 11.10.2016 | implement this stuff
-  // getBuildableShipTypes(player: Player): UnitTemplate[];
+  // getBuildableUnitTypes(player: Player): UnitTemplate[];
   // getBuildableItemTypes(player: Player): ItemTemplate[];
 
   // getBuildableBuildings(star: Star): BuildingTemplate[];

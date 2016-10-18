@@ -220,7 +220,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
             return app.moduleData.Templates.Races[raceKey];
           }).filter(race =>
           {
-            return race.isPlayable;
+            return !race.isNotPlayable;
           }),
           selectedRace: this.state.race,
           changeRace: this.setRace

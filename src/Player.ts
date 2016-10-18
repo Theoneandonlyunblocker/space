@@ -189,10 +189,9 @@ export default class Player
       this.resources = extendObject(props.resources);
     }
 
-    if (!this.race.isPlayable)
+    if (this.race.isNotPlayable)
     {
-      console.warn(`Race ${this.race.displayName} is marked as unplayable, but was assigned
-        to player ${this.name}`);
+      console.warn(`Race ${this.race.displayName} is marked as unplayable, but was assigned to player ${this.name}`);
     }
 
     this.diplomacyStatus = new DiplomacyStatus(this);
