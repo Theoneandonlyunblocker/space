@@ -1,4 +1,4 @@
-import AbilityEffectTemplate from "./AbilityEffectTemplate";
+import {AbilityEffectTemplate} from "./AbilityEffectTemplate";
 
 /**
  * base interface for abilities and passive skills

@@ -32,5 +32,3 @@ declare interface AbilityEffectTemplate
   attachedEffects?: AbilityEffectTemplate[];
   sfx?: BattleSFXTemplate;
 }
-
-export default AbilityEffectTemplate;

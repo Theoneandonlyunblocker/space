@@ -1,4 +1,4 @@
-import AbilityEffectTemplate from "./AbilityEffectTemplate";
+import {AbilityEffectTemplate} from "./AbilityEffectTemplate";
 import {UnitAttributeAdjustments} from "../UnitAttributes";
 import UnitPassiveEffect from "./UnitPassiveEffect";
 

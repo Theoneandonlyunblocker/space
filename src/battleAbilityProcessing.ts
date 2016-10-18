@@ -1,7 +1,7 @@
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import
 {
-  default as AbilityEffectTemplate,
+  AbilityEffectTemplate,
   AbilityEffectTrigger,
 } from "./templateinterfaces/AbilityEffectTemplate";
 

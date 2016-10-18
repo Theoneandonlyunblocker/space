@@ -1,5 +1,5 @@
 import AbilityBase from "./AbilityBase";
-import AbilityEffectTemplate from "./AbilityEffectTemplate";
+import {AbilityEffectTemplate} from "./AbilityEffectTemplate";
 
 import
 {

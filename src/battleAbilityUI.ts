@@ -1,7 +1,7 @@
 import Battle from "./Battle";
 import Unit from "./Unit";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
-import AbilityEffectTemplate from "./templateinterfaces/AbilityEffectTemplate";
+import {AbilityEffectTemplate} from "./templateinterfaces/AbilityEffectTemplate";
 import
 {
   getUnitsInEffectArea
