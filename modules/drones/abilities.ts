@@ -1,5 +1,6 @@
 import {ExecutedEffectsResult} from "../../src/templateinterfaces/AbilityEffectAction";
 import AbilityTemplate from "../../src/templateinterfaces/AbilityTemplate";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
 import DamageType from "../../src/DamageType";
 import
@@ -178,4 +179,13 @@ export const massRepair: AbilityTemplate =
       perUserUnit: 0.33,
     }),
   },
+};
+
+export const abilityTemplates: TemplateCollection<AbilityTemplate> =
+{
+  [assimilate.type]: assimilate,
+  [merge.type]: merge,
+  [infest.type]: infest,
+  [repair.type]: repair,
+  [massRepair.type]: massRepair,
 };

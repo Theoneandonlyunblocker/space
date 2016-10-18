@@ -1,6 +1,6 @@
 import * as TechnologyTemplates from "../defaulttechnologies/TechnologyTemplates";
 
-import defaultUnits from "../defaultunits/defaultUnits";
+import defaultUnits from "../defaultunits/UnitTemplates";
 
 import RaceTechnologyValue from "../../src/templateinterfaces/RaceTechnologyValue";
 
