@@ -19,7 +19,7 @@ export declare interface RaceTemplate
   isNotPlayable?: boolean;
 
   // TODO 11.10.2016 | implement this stuff
-  // getBuildableUnitTypes(player: Player): UnitTemplate[];
+  getBuildableUnitTypes(player: Player): UnitTemplate[];
   // getBuildableItemTypes(player: Player): ItemTemplate[];
 
   // getBuildableBuildings(star: Star): BuildingTemplate[];

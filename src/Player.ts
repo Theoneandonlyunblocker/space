@@ -213,6 +213,8 @@ export default class Player
         description: "",
 
         technologies: [],
+        
+        getBuildableUnitTypes: () => [],
 
         getAITemplateConstructor: (player) => null
       },

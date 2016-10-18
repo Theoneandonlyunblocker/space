@@ -6,7 +6,8 @@ import DefaultAIConstructor from "../../defaultai/mapai/DefaultAIConstructor";
 import
 {
   defaultRaceTechnologyValues,
-  mergeTechnologyValues
+  mergeTechnologyValues,
+  getDefaultUnits,
 } from "../common";
 
 const wormThings: PlayerRaceTemplate =
@@ -23,7 +24,7 @@ const wormThings: PlayerRaceTemplate =
       maxLevel: 5
     }
   ]),
-
+  getBuildableUnitTypes: getDefaultUnits,
   getAITemplateConstructor: (player) => DefaultAIConstructor
 }
 

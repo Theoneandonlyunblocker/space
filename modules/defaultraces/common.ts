@@ -1,5 +1,7 @@
 import * as TechnologyTemplates from "../defaulttechnologies/TechnologyTemplates";
 
+import defaultUnits from "../defaultunits/defaultUnits";
+
 import RaceTechnologyValue from "../../src/templateinterfaces/RaceTechnologyValue";
 
 export const defaultRaceTechnologyValues: RaceTechnologyValue[] =
@@ -44,4 +46,13 @@ export function mergeTechnologyValues(...valuesToMerge: RaceTechnologyValue[][])
   }
 
   return mergedValues;
+}
+
+const defaultUnitsArray = Object.keys(defaultUnits).map(templateType =>
+{
+  return defaultUnits[templateType];
+});
+export function getDefaultUnits()
+{
+  return defaultUnitsArray;
 }

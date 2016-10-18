@@ -6,7 +6,8 @@ import DefaultAIConstructor from "../../defaultai/mapai/DefaultAIConstructor";
 import
 {
   defaultRaceTechnologyValues,
-  mergeTechnologyValues
+  mergeTechnologyValues,
+  getDefaultUnits,
 } from "../common";
 
 const federationAlliance: PlayerRaceTemplate =
@@ -24,6 +25,7 @@ const federationAlliance: PlayerRaceTemplate =
     }
   ]),
 
+  getBuildableUnitTypes: getDefaultUnits,
   getAITemplateConstructor: (player) => DefaultAIConstructor
 }
 
