@@ -22,18 +22,30 @@ declare interface UnitTemplate extends ManufacturableThing
   maxHealth: number;
   maxMovePoints: number;
   
-  // archetype is used by the ai to balance unit composition
+  /**
+   * used by the ai to balance unit composition 
+   */
   archetype: UnitArchetype;
   // family is used to group units for local specialties and AI favorites
   // f.ex. sector specializes in producing units with beam weapons
+  // TODO 18.10.2016 | remove in favor of using race templates
   families : UnitFamily[];
   // culture is used for portrait and name
+  // TODO 18.10.2016 | remove in favor of using race templates
   cultures: CultureTemplate[];
   
-  // how many stars away unit can see
-  // -1: no vision, 0: current star only, 1: current & 1 away etc.
+  /**
+   * how many stars away unit can see
+   * -1: no vision, 0: current star only, 1: current & neighbors, etc.
+   */
   visionRange: number;
-  // like vision but for stealthy units. also reveals unit type & health etc.
+  /**
+   * 
+   */
+  /**
+   * used for vision on stealthy units. detected units have their type & stats revealed
+   * -1: no vision, 0: current star only, 1: current & neighbors, etc.
+   */
   detectionRange: number;
   isStealthy?: boolean;
   
@@ -47,9 +59,14 @@ declare interface UnitTemplate extends ManufacturableThing
 
   possibleAbilities: WeightedProbability<AbilityTemplate>[];
   possiblePassiveSkills?: WeightedProbability<PassiveSkillTemplate>[];
+  /**
+   * List of abilities that can be upgraded into despite 'onlyAllowExplicitUpgrade' flag
+   */
   specialAbilityUpgrades?: AbilityBase[];
-  // only one of the abilities in a nested array can be learned f.ex.
-  // [canAlwaysLearn, canAlwaysLearn, [#1cantLearnIfHas#2, #2cantLearnIfHas#1]]
+  /**
+   * only one of the abilities in a nested array can be learned f.ex.
+   * [canAlwaysLearn, canAlwaysLearn, [#1cantLearnIfHas#2, #2cantLearnIfHas#1]]
+   */
   learnableAbilities?: Array<AbilityBase | AbilityBase[]>;
 
   itemSlots:
