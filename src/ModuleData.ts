@@ -29,7 +29,6 @@ import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
 import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
 import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
 import UnitArchetype from "./templateinterfaces/UnitArchetype";
-import UnitFamily from "./templateinterfaces/UnitFamily";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
 
@@ -53,7 +52,6 @@ type TemplateKey =
   "SubEmblems" |
   "Technologies" |
   "UnitArchetypes" |
-  "UnitFamilies" |
   "Units";
 
 type TemplateIndex<T> = {[type: string]: T}
@@ -79,7 +77,6 @@ interface Templates
   SubEmblems: TemplateIndex<SubEmblemTemplate>;
   Technologies: TemplateIndex<TechnologyTemplate>;
   UnitArchetypes: TemplateIndex<UnitArchetype>;
-  UnitFamilies: TemplateIndex<UnitFamily>;
   Units: TemplateIndex<UnitTemplate>;
 }
 
@@ -111,7 +108,6 @@ export default class ModuleData
     SubEmblems: {},
     Technologies: {},
     UnitArchetypes: {},
-    UnitFamilies: {},
     Units: {}
   };
   

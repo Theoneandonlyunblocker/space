@@ -1,7 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
 import * as UnitArchetypes from "../UnitArchetypes";
-import * as UnitFamilies from "../UnitFamilies";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import itemSlot from "../../common/itemSlot";
@@ -22,7 +21,6 @@ const commandShip: UnitTemplate =
   displayName: "Command Ship",
   description: "todo",
   archetype: UnitArchetypes.utility,
-  families: [UnitFamilies.basic],
   cultures: [],
   sprite:
   {

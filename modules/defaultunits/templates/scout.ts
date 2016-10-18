@@ -1,7 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
 import * as UnitArchetypes from "../UnitArchetypes";
-import * as UnitFamilies from "../UnitFamilies";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import itemSlot from "../../common/itemSlot";
@@ -17,7 +16,6 @@ const scout: UnitTemplate =
   displayName: "Scout",
   description: "Weak in combat, but has high vision and can reveal stealthy units and details of units in same star",
   archetype: UnitArchetypes.scouting,
-  families: [UnitFamilies.basic],
   cultures: [],
   sprite:
   {

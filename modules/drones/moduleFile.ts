@@ -3,10 +3,8 @@
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
-import {setUnitFamilyAssociatedTemplates} from "../../src/setDynamicTemplateProperties";
 
 import {raceTemplates} from "./raceTemplate";
-import {unitFamilies} from "./unitFamily";
 import {unitTemplates} from "./unitTemplates";
 
 export const drones: ModuleFile =
@@ -31,10 +29,7 @@ export const drones: ModuleFile =
   },
   constructModule: (moduleData: ModuleData) =>
   {
-    setUnitFamilyAssociatedTemplates(unitTemplates);
-
     moduleData.copyTemplates(unitTemplates, "Units");
-    moduleData.copyTemplates(unitFamilies, "UnitFamilies");
     moduleData.copyTemplates(raceTemplates, "Races");
 
     return moduleData;

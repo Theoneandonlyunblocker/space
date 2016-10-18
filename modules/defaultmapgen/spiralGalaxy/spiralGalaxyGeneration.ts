@@ -13,7 +13,6 @@ import
 
 import MapGenFunction from "../../../src/templateinterfaces/MapGenFunction";
 import ResourceTemplate from "../../../src/templateinterfaces/ResourceTemplate";
-import UnitFamily from "../../../src/templateinterfaces/UnitFamily";
 
 import
 {
@@ -229,22 +228,6 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     distributionFlagsBySectorID,
     TemplateIndexes.distributablesByDistributionGroup.resources,
     resourcePlacerFN
-  );
-
-  // set local units
-  const localUnitPlacerFN = function(sector: Region, unitFamily: UnitFamily)
-  {
-    for (let i = 0; i < sector.stars.length; i++)
-    {
-      const star = sector.stars[i];
-      star.buildableUnitTypes = star.buildableUnitTypes.concat(unitFamily.associatedTemplates);
-    }
-  }
-  distributeDistributablesPerSector(
-    sectors,
-    distributionFlagsBySectorID,
-    TemplateIndexes.distributablesByDistributionGroup.unitFamilies,
-    localUnitPlacerFN
   );
 
   // set players

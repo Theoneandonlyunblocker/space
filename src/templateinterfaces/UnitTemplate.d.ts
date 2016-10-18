@@ -6,7 +6,6 @@ import PassiveSkillTemplate from "./PassiveSkillTemplate";
 import SpriteTemplate from "./SpriteTemplate";
 import UnitArchetype from "./UnitArchetype";
 import UnitDrawingFunction from "./UnitDrawingFunction";
-import UnitFamily from "./UnitFamily";
 import WeightedProbability from "./WeightedProbability";
 
 
@@ -26,10 +25,6 @@ declare interface UnitTemplate extends ManufacturableThing
    * used by the ai to balance unit composition 
    */
   archetype: UnitArchetype;
-  // family is used to group units for local specialties and AI favorites
-  // f.ex. sector specializes in producing units with beam weapons
-  // TODO 18.10.2016 | remove in favor of using race templates
-  families : UnitFamily[];
   // culture is used for portrait and name
   // TODO 18.10.2016 | remove in favor of using race templates
   cultures: CultureTemplate[];

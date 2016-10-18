@@ -1,7 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
 import * as UnitArchetypes from "../UnitArchetypes";
-import * as UnitFamilies from "../UnitFamilies";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import itemSlot from "../../common/itemSlot";
@@ -17,7 +16,6 @@ const stealthShip: UnitTemplate =
   displayName: "Stealth Ship",
   description: "Weak ship that is undetectable by regular vision",
   archetype: UnitArchetypes.scouting,
-  families: [UnitFamilies.debug],
   cultures: [],
   sprite:
   {

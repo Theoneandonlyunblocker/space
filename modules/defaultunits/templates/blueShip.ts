@@ -1,7 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
 import * as UnitArchetypes from "../UnitArchetypes";
-import * as UnitFamilies from "../UnitFamilies";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import itemSlot from "../../common/itemSlot";
@@ -17,7 +16,6 @@ const blueShip: UnitTemplate =
   displayName: "Blue ship",
   description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
   archetype: UnitArchetypes.utility,
-  families: [UnitFamilies.blue],
   cultures: [],
   sprite:
   {

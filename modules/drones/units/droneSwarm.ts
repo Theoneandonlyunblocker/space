@@ -7,7 +7,6 @@ import * as CommonAbility from "../../common/abilitytemplates/abilities";
 
 
 import * as DroneAbility from "../abilities";
-import {drone as droneFamily} from "../unitFamily";
 
 export const droneSwarm: UnitTemplate =
 {
@@ -16,7 +15,6 @@ export const droneSwarm: UnitTemplate =
   description: "Swarm o drones",
 
   archetype: UnitArchetypes.combat,
-  families: [droneFamily],
   cultures: [],
   sprite:
   {

@@ -1,7 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
 import * as UnitArchetypes from "../UnitArchetypes";
-import * as UnitFamilies from "../UnitFamilies";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import itemSlot from "../../common/itemSlot";
@@ -33,7 +32,6 @@ const debugShip: UnitTemplate =
   displayName: "Debug Ship",
   description: "debug",
   archetype: UnitArchetypes.combat,
-  families: [UnitFamilies.debug],
   cultures: [],
   sprite:
   {
