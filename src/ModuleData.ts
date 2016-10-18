@@ -23,7 +23,7 @@ import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTempl
 import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate";
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
-import RaceTemplate from "./templateinterfaces/RaceTemplate";
+import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
 import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";

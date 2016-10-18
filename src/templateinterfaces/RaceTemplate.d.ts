@@ -1,23 +1,22 @@
-import RaceTechnologyValue from "./RaceTechnologyValue";
+// used as-is for independent races. extended by PlayerRaceTemplate for player races
+
 import UnitTemplate from "./UnitTemplate";
 import BuildingTemplate from "./BuildingTemplate";
 import CultureTemplate from "./CultureTemplate";
 import PortraitTemplate from "./PortraitTemplate";
 import ItemTemplate from "./ItemTemplate";
-import AITemplateConstructor from "./AITemplateConstructor";
 
 import Player from "../Player";
 import Star from "../Star";
 import Unit from "../Unit";
 import BuildingUpgradeData from "../BuildingUpgradeData";
 
-declare interface RaceTemplate
+export declare interface RaceTemplate
 {
   key: string;
   displayName: string;
   description: string;
-
-  technologies: RaceTechnologyValue[];
+  isPlayable?: boolean;
 
   // TODO 11.10.2016 | implement this stuff
   // getBuildableShipTypes(player: Player): UnitTemplate[];
@@ -28,7 +27,4 @@ declare interface RaceTemplate
 
   // getUnitCulture(unit: Unit): CultureTemplate;
   // getUnitPortrait(unit: Unit): PortraitTemplate;
-  getAITemplateConstructor(player: Player): AITemplateConstructor<any>;
 }
-
-export default RaceTemplate;

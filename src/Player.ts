@@ -34,7 +34,7 @@ import Options from "./Options";
 
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
-import RaceTemplate from "./templateinterfaces/RaceTemplate";
+import {PlayerRaceTemplate} from "./templateinterfaces/PlayerRaceTemplate";
 import TechnologyRequirement from "./templateinterfaces/TechnologyRequirement";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
@@ -51,7 +51,7 @@ export default class Player
   colorAlpha: number;
   secondaryColor: Color;
   flag: Flag;
-  race: RaceTemplate;
+  race: PlayerRaceTemplate;
   units:
   {
     [id: number]: Unit;
@@ -115,7 +115,7 @@ export default class Player
     isAI: boolean;
     isIndependent: boolean;
 
-    race: RaceTemplate;
+    race: PlayerRaceTemplate;
     money: number;
     
     id?: number;
@@ -187,6 +187,12 @@ export default class Player
     if (props.resources)
     {
       this.resources = extendObject(props.resources);
+    }
+
+    if (!this.race.isPlayable)
+    {
+      console.warn(`Race ${this.race.displayName} is marked as unplayable, but was assigned
+        to player ${this.name}`);
     }
 
     this.diplomacyStatus = new DiplomacyStatus(this);

@@ -1,11 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import RaceTemplate from "../../templateinterfaces/RaceTemplate";
-import TemplateCollection from "../../templateinterfaces/TemplateCollection";
+import {RaceTemplate} from "../../templateinterfaces/RaceTemplate";
 
 interface PropTypes extends React.Props<any>
 {
-  availableRaces: TemplateCollection<RaceTemplate>;
+  availableRaces: RaceTemplate[];
   selectedRace: RaceTemplate;
   changeRace: (race: RaceTemplate) => void;
 }
@@ -14,7 +13,7 @@ interface StateType
 {
 }
 
-export class RacePickerComponent extends React.Component<PropTypes, StateType>
+export class RacePickerComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName = "RacePicker";
   state: StateType;
@@ -35,23 +34,7 @@ export class RacePickerComponent extends React.Component<PropTypes, StateType>
   }
   
   render()
-  {
-    const raceTemplateOptions: React.ReactHTMLElement<any>[] = [];
-
-    for (let key in this.props.availableRaces)
-    {
-      const race = this.props.availableRaces[key];
-
-      raceTemplateOptions.push(React.DOM.option(
-      {
-        value: race.key,
-        key: race.key,
-        title: race.description
-      },
-        race.displayName
-      ))
-    }
-    
+  { 
     return(
       React.DOM.select(
       {
@@ -60,7 +43,17 @@ export class RacePickerComponent extends React.Component<PropTypes, StateType>
         onChange: this.handleChangeRace,
         title: this.props.selectedRace.description
       },
-        raceTemplateOptions
+        this.props.availableRaces.map(race =>
+        {
+          return React.DOM.option(
+          {
+            key: race.key,
+            value: race.key,
+            title: race.description,
+          },
+            race.displayName
+          )
+        })
       )
     );
   }

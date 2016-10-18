@@ -1,4 +1,4 @@
-import RaceTemplate from "../../../src/templateinterfaces/RaceTemplate";
+import {PlayerRaceTemplate} from "../../../src/templateinterfaces/PlayerRaceTemplate";
 
 import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
 import DefaultAIConstructor from "../../defaultai/mapai/DefaultAIConstructor";
@@ -9,7 +9,7 @@ import
   mergeTechnologyValues
 } from "../common";
 
-const federationAlliance: RaceTemplate =
+const federationAlliance: PlayerRaceTemplate =
 {
   key: "federationAlliance",
   displayName: "Federation Alliance",
