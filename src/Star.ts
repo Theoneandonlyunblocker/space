@@ -1,6 +1,7 @@
 import app from "./App"; // TODO global
 import BuildingEffect from "./templateinterfaces/BuildingEffect";
 import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
+import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 
 import eventManager from "./eventManager";
@@ -81,6 +82,7 @@ export default class Star implements Point
   } = {};
 
   manufactory: Manufactory;
+  public race: RaceTemplate;
 
   constructor(props:
   {
@@ -1001,6 +1003,8 @@ export default class Star implements Point
       seed: this.seed,
 
       buildings: buildings,
+
+      raceKey: this.race.key,
     };
 
     if (this.resource)

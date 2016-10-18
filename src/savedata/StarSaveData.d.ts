@@ -18,6 +18,8 @@ declare interface StarSaveData
   manufactory?: ManufactorySaveData;
 
   buildings: StarBuildingsSaveData;
+
+  raceKey: string;
 }
 
 export default StarSaveData;
