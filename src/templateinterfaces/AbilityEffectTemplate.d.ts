@@ -12,6 +12,13 @@ import
   GetUnitsInAreaFN
 } from "../targeting";
 
+export type AbilityEffectTrigger = (
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult
+) => boolean;
+
 declare interface AbilityEffectTemplate
 {
   id: string;
@@ -19,14 +26,7 @@ declare interface AbilityEffectTemplate
   getUnitsInArea: GetUnitsInAreaFN;
   executeAction: AbilityEffectAction;
 
-  // TODO | pass the active battle as a parameter
-  // checked per target
-  trigger?: (
-    user: Unit,
-    target: Unit,
-    battle: Battle,
-    executedEffectsResult: ExecutedEffectsResult
-  ) => boolean;
+  trigger?: AbilityEffectTrigger;
   // called after parent effect with same user and effect target
   // nesting these wont work and wouldnt do anything anyway
   attachedEffects?: AbilityEffectTemplate[];

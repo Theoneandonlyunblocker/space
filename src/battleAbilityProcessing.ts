@@ -1,5 +1,9 @@
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
-import AbilityEffectTemplate from "./templateinterfaces/AbilityEffectTemplate";
+import
+{
+  default as AbilityEffectTemplate,
+  AbilityEffectTrigger,
+} from "./templateinterfaces/AbilityEffectTemplate";
 
 import Unit from "./Unit";
 import GuardCoverage from "./GuardCoverage";
@@ -22,7 +26,7 @@ export interface AbilityEffectData
   effectTemplate: AbilityEffectTemplate;
   user: Unit;
   target: Unit;
-  trigger: (user: Unit, target: Unit) => boolean;
+  trigger: AbilityEffectTrigger;
 }
 export interface AbilityEffectDataByPhase
 {

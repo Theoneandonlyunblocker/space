@@ -87,14 +87,18 @@ function executeFullAbilityEffectsAndGetUseEffects(battle: Battle,
   return useEffects;
 }
 
-function shouldEffectActionTrigger(abilityEffectData: AbilityEffectData): boolean
+function shouldEffectActionTrigger(
+  abilityEffectData: AbilityEffectData,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult
+): boolean
 {
   if (!abilityEffectData.trigger)
   {
     return true;
   }
 
-  return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target);
+  return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target, battle, executedEffectsResult);
 }
 function executeAbilityEffectData(
   battle: Battle,
@@ -102,7 +106,7 @@ function executeAbilityEffectData(
   executedEffectsResult: ExecutedEffectsResult
 ): boolean
 {
-  if (!shouldEffectActionTrigger(abilityEffectData))
+  if (!shouldEffectActionTrigger(abilityEffectData, battle, executedEffectsResult))
   {
     return false;
   }
