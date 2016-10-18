@@ -921,35 +921,13 @@ export default class Player
   }
   getGloballyBuildableUnits(): UnitTemplate[]
   {
-    var templates: UnitTemplate[] = [];
-    var typesAlreadyAddedChecked:
-    {
-      [unitType: string]: boolean;
-    } = {};
+    const racial = this.race.getBuildableUnitTypes(this);
 
-    var unitsToAdd: UnitTemplate[] = app.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
-    if (!this.isAI && Options.debug.enabled)
+    return racial.filter(unitTemplate =>
     {
-      unitsToAdd = unitsToAdd.concat(app.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
-    }
-
-    for (let i = 0; i < unitsToAdd.length; i++)
-    {
-      var template = unitsToAdd[i];
-      if (typesAlreadyAddedChecked[template.type]) continue;
-      else if (template.technologyRequirements && !this.meetsTechnologyRequirements(template.technologyRequirements))
-      {
-        typesAlreadyAddedChecked[template.type] = true;
-        continue;
-      }
-      else
-      {
-        typesAlreadyAddedChecked[template.type] = true;
-        templates.push(template);
-      }
-    }
-
-    return templates;
+      return !unitTemplate.technologyRequirements ||
+        this.meetsTechnologyRequirements(unitTemplate.technologyRequirements);
+    });
   }
   getGloballyBuildableItems(): ItemTemplate[]
   {

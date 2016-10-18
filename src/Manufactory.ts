@@ -138,18 +138,18 @@ export default class Manufactory
     var manufacturable: UnitTemplate[] = [];
     var potential: UnitTemplate[] = [];
 
-    for (let i = 0; i < this.star.buildableUnitTypes.length; i++)
+    this.star.race.getBuildableUnitTypes(this.player).forEach(unitTemplate =>
     {
-      var type = this.star.buildableUnitTypes[i];
-      if (!type.technologyRequirements || this.player.meetsTechnologyRequirements(type.technologyRequirements))
+      if (!unitTemplate.technologyRequirements ||
+        this.player.meetsTechnologyRequirements(unitTemplate.technologyRequirements))
       {
-        manufacturable.push(type);
+        manufacturable.push(unitTemplate);
       }
       else
       {
-        potential.push(type);
+        potential.push(unitTemplate);
       }
-    }
+    })
 
     return(
     {
