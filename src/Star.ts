@@ -1004,7 +1004,7 @@ export default class Star implements Point
 
       buildings: buildings,
 
-      raceKey: this.race.key,
+      raceType: this.race.type,
     };
 
     if (this.resource)

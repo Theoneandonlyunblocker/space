@@ -7,7 +7,7 @@ import {droneSwarm} from  "./units/droneSwarm";
 
 export const drones: RaceTemplate =
 {
-  key: "drones",
+  type: "drones",
   displayName: "Drones",
   description: "",
 
@@ -25,5 +25,5 @@ export const drones: RaceTemplate =
 
 export const raceTemplates: TemplateCollection<RaceTemplate> =
 {
-  [drones.key]: drones,
+  [drones.type]: drones,
 };

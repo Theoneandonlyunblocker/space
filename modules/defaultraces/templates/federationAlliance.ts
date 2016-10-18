@@ -12,7 +12,7 @@ import
 
 const federationAlliance: PlayerRaceTemplate =
 {
-  key: "federationAlliance",
+  type: "federationAlliance",
   displayName: "Federation Alliance",
   description: "The good guys",
 

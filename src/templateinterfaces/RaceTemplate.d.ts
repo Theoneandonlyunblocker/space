@@ -15,7 +15,7 @@ import BuildingUpgradeData from "../BuildingUpgradeData";
 export declare interface RaceTemplate
 {
   // TODO 18.10.2016 rename 'type'
-  key: string;
+  type: string;
   displayName: string;
   description: string;
   isNotPlayable?: boolean;

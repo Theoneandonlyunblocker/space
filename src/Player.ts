@@ -208,7 +208,7 @@ export default class Player
 
       race:
       {
-        key: "dummy",
+        type: "dummy",
         displayName: "",
         description: "",
 
@@ -1029,7 +1029,7 @@ export default class Player
       revealedStarIds: revealedStarIds,
       identifiedUnitIds: identifiedUnitIds,
 
-      raceKey: this.race.key
+      raceKey: this.race.type
     };
 
     if (this.playerTechnology)

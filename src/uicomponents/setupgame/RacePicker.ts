@@ -39,7 +39,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
       React.DOM.select(
       {
         className: "race-picker",
-        value: this.props.selectedRace.key,
+        value: this.props.selectedRace.type,
         onChange: this.handleChangeRace,
         title: this.props.selectedRace.description
       },
@@ -47,8 +47,8 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
         {
           return React.DOM.option(
           {
-            key: race.key,
-            value: race.key,
+            key: race.type,
+            value: race.type,
             title: race.description,
           },
             race.displayName

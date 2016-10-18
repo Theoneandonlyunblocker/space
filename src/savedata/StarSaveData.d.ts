@@ -19,7 +19,7 @@ declare interface StarSaveData
 
   buildings: StarBuildingsSaveData;
 
-  raceKey: string;
+  raceType: string;
 }
 
 export default StarSaveData;

@@ -6,8 +6,8 @@ import wormThings from "./templates/wormThings";
 
 const RaceTemplates: TemplateCollection<RaceTemplate> =
 {
-  [federationAlliance.key]: federationAlliance,
-  [wormThings.key]: wormThings,
+  [federationAlliance.type]: federationAlliance,
+  [wormThings.type]: wormThings,
 }
 
 export default RaceTemplates;

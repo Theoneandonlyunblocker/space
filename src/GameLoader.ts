@@ -193,7 +193,7 @@ export default class GameLoader
       y: data.y,
       id: data.id,
       name: data.name,
-      race: app.moduleData.Templates.Races[data.raceKey]
+      race: app.moduleData.Templates.Races[data.raceType]
     });
     star.baseIncome = data.baseIncome;
     star.seed = data.seed;

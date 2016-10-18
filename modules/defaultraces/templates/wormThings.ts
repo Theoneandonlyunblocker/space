@@ -12,7 +12,7 @@ import
 
 const wormThings: PlayerRaceTemplate =
 {
-  key: "wormThings",
+  type: "wormThings",
   displayName: "Worm Things",
   description: "The gross guys",
 
