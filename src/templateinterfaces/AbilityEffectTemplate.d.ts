@@ -19,7 +19,7 @@ export type AbilityEffectTrigger = (
   executedEffectsResult: ExecutedEffectsResult
 ) => boolean;
 
-declare interface AbilityEffectTemplate
+export declare interface AbilityEffectTemplate
 {
   id: string;
 
