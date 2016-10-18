@@ -17,6 +17,10 @@ import GuardCoverage from "../../../src/GuardCoverage";
 import StatusEffect from "../../../src/StatusEffect";
 import Unit from "../../../src/Unit";
 import {UnitAttributeAdjustments} from "../../../src/UnitAttributes";
+import
+{
+  clamp,
+} from "../../../src/utility";
 
 
 interface UnboundEffectAction<T>
@@ -49,9 +53,38 @@ interface GuardCoverageObj
   coverage: GuardCoverage;
 }
 
+interface HealthAdjustment
+{
+  flat?: number;
+  maxHealthPercentage?: number;
+  perUserUnit?: number;
+}
+const calculateHealthAdjustment = (user: Unit, target: Unit, data: HealthAdjustment) =>
+{
+  let healAmount = 0;
+  if (data.flat)
+  {
+    healAmount += data.flat;
+  }
+  if (data.maxHealthPercentage)
+  {
+    healAmount += target.maxHealth * data.maxHealthPercentage;
+  }
+  if (data.perUserUnit)
+  {
+    healAmount += data.perUserUnit * getAttackDamageIncrease(user, DamageType.magical);
+  }
+
+  return healAmount;
+}
+
 interface ExecutedEffectsResultAdjustment
 {
   executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) => number;
+}
+export enum resultType
+{
+  healthChanged
 }
 
 
@@ -120,19 +153,35 @@ export const adjustHealth: UnboundEffectAction<HealthAdjustment> = function(
   data: HealthAdjustment,
   user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
 {
-  let healAmount = 0;
-  if (data.flat)
+  const healAmount = calculateHealthAdjustment(user, target, data);
+
+  const minAdjustment = -target.currentHealth;
+  const maxAdjustment = target.maxHealth - target.currentHealth;
+  const clamped = clamp(healAmount, minAdjustment, maxAdjustment);
+
+  if (!executedEffectsResult[resultType.healthChanged])
   {
-    healAmount += data.flat;
+    executedEffectsResult[resultType.healthChanged] = 0;
   }
-  if (data.maxHealthPercentage)
+  executedEffectsResult[resultType.healthChanged] += clamped;
+
+  target.addHealth(clamped);
+}
+export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> =
+  function(
+    data: ExecutedEffectsResultAdjustment & HealthAdjustment,
+    user: Unit, target: Unit, battle: Battle,
+    executedEffectsResult: ExecutedEffectsResult
+  )
+{
+  let healAmount = calculateHealthAdjustment(user, target, data);
+  
+  if (data.executedEffectsResultAdjustment)
   {
-    healAmount += target.maxHealth * data.maxHealthPercentage;
-  }
-  if (data.perUserUnit)
-  {
-    healAmount += data.perUserUnit * getAttackDamageIncrease(user, DamageType.magical);
+    healAmount += data.executedEffectsResultAdjustment(executedEffectsResult);
   }
 
+  target.maxHealth += healAmount;
   target.addHealth(healAmount);
 }
+
