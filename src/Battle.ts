@@ -2,6 +2,7 @@
 
 import app from "./App"; // TODO global
 import DefenceBuildingTemplate from "./templateinterfaces/DefenceBuildingTemplate";
+import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
 
 import BattleData from "./BattleData";
 import Unit from "./Unit";
@@ -179,13 +180,14 @@ export default class Battle
       var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
       if (passiveSkillsByPhase["atBattleStart"])
       {
+        const executedEffectsResult: ExecutedEffectsResult = {};
         var skills = passiveSkillsByPhase["atBattleStart"];
         for (let i = 0; i < skills.length; i++)
         {
           for (let j = 0; j < skills[i].atBattleStart.length; j++)
           {
             var effect = skills[i].atBattleStart[j];
-            effect.executeAction(unit, unit, this);
+            effect.executeAction(unit, unit, this, executedEffectsResult);
           }
         }
       }

@@ -1,3 +1,4 @@
+import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 
@@ -48,6 +49,7 @@ export function useAbilityAndGetUseEffects(battle: Battle, ability: AbilityTempl
 }
 function executeFullAbilityEffects(battle: Battle, abilityEffectDataByPhase: AbilityEffectDataByPhase): void
 {
+  const executedEffectsResult: ExecutedEffectsResult = {};
   [
     abilityEffectDataByPhase.beforeUse,
     abilityEffectDataByPhase.abilityEffects,
@@ -56,7 +58,7 @@ function executeFullAbilityEffects(battle: Battle, abilityEffectDataByPhase: Abi
   {
     effectDataForPhase.forEach(effectData =>
     {
-      executeAbilityEffectData(battle, effectData);
+      executeAbilityEffectData(battle, effectData, executedEffectsResult);
     });
   });
 }
@@ -64,6 +66,7 @@ function executeFullAbilityEffectsAndGetUseEffects(battle: Battle,
   abilityEffectDataByPhase: AbilityEffectDataByPhase): AbilityUseEffect[]
 {
   const useEffects: AbilityUseEffect[] = [];
+  const executedEffectsResult: ExecutedEffectsResult = {};
 
   [
     abilityEffectDataByPhase.beforeUse,
@@ -73,7 +76,7 @@ function executeFullAbilityEffectsAndGetUseEffects(battle: Battle,
   {
     effectDataForPhase.forEach(effectData =>
     {
-      const useEffect = executeAbilityEffectDataAndGetUseEffect(battle, effectData);
+      const useEffect = executeAbilityEffectDataAndGetUseEffect(battle, effectData, executedEffectsResult);
       if (useEffect)
       {
         useEffects.push(useEffect);
@@ -93,7 +96,11 @@ function shouldEffectActionTrigger(abilityEffectData: AbilityEffectData): boolea
 
   return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target);
 }
-function executeAbilityEffectData(battle: Battle, abilityEffectData: AbilityEffectData): boolean
+function executeAbilityEffectData(
+  battle: Battle,
+  abilityEffectData: AbilityEffectData,
+  executedEffectsResult: ExecutedEffectsResult
+): boolean
 {
   if (!shouldEffectActionTrigger(abilityEffectData))
   {
@@ -104,6 +111,7 @@ function executeAbilityEffectData(battle: Battle, abilityEffectData: AbilityEffe
     abilityEffectData.user,
     abilityEffectData.target,
     battle,
+    executedEffectsResult
   );
 
   return true;
@@ -114,10 +122,13 @@ function getIDForAbilityUseEffect(abilityEffectData: AbilityEffectData): string
 
   return `${sourceString}${abilityEffectData.effectTemplate.id}`;
 }
-function executeAbilityEffectDataAndGetUseEffect(battle: Battle,
-  abilityEffectData: AbilityEffectData): AbilityUseEffect
+function executeAbilityEffectDataAndGetUseEffect(
+  battle: Battle,
+  abilityEffectData: AbilityEffectData,
+  executedEffectsResult: ExecutedEffectsResult
+): AbilityUseEffect
 {
-  var didTriggerAction = executeAbilityEffectData(battle, abilityEffectData);
+  var didTriggerAction = executeAbilityEffectData(battle, abilityEffectData, executedEffectsResult);
   if (!didTriggerAction)
   {
     return null;

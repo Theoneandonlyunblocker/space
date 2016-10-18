@@ -4,9 +4,11 @@ import
   getAdjustedDamage
 } from "./damageAdjustments";
 
-
-
-import AbilityEffectAction from "../../../src/templateinterfaces/AbilityEffectAction";
+import
+{
+  AbilityEffectAction,
+  ExecutedEffectsResult,
+} from "../../../src/templateinterfaces/AbilityEffectAction";
 import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate";
 import Battle from "../../../src/Battle";
 import DamageType from "../../../src/DamageType";
@@ -19,7 +21,7 @@ import {UnitAttributeAdjustments} from "../../../src/UnitAttributes";
 
 interface UnboundEffectAction<T>
 {
-  (data: T, user: Unit, target: Unit, battle: Battle): void;
+  (data: T, user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult): void;
 }
 
 // so we preserve typing for bound data
@@ -47,20 +49,30 @@ interface GuardCoverageObj
   coverage: GuardCoverage;
 }
 
+interface ExecutedEffectsResultAdjustment
+{
+  executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) => number;
+}
 
 
 export const inflictDamage: UnboundEffectAction<DamageWithType> = function(
   data: DamageWithType,
-  user: Unit, target: Unit, battle: Battle)
+  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
 {
   const adjustedDamage = getAdjustedDamage(user, target, data.baseDamage, data.damageType);
+
+  if (!executedEffectsResult[resultType.healthChanged])
+  {
+    executedEffectsResult[resultType.healthChanged] = 0;
+  }
+  executedEffectsResult[resultType.healthChanged] -= adjustedDamage;
 
   target.receiveDamage(adjustedDamage);
 }
 
 export const addGuard: UnboundEffectAction<Adjustment & GuardCoverageObj> = function(
   data: Adjustment & GuardCoverageObj,
-  user: Unit, target: Unit, battle: Battle)
+  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
 {
   const guardAmount = user.attributes.modifyValueByAttributes(data.flat, data.perAttribute);
   target.addGuard(guardAmount, data.coverage);
@@ -68,7 +80,7 @@ export const addGuard: UnboundEffectAction<Adjustment & GuardCoverageObj> = func
 
 export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = function(
   data: {baseDamage: number},
-  user: Unit, target: Unit, battle: Battle)
+  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
 {
   const counterStrength = target.getCounterAttackStrength();
 
@@ -79,7 +91,7 @@ export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = f
         baseDamage: data.baseDamage * counterStrength,
         damageType: DamageType.physical
       },
-      target, user, battle
+      target, user, battle, executedEffectsResult
     );
   }
 }
@@ -87,7 +99,7 @@ export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = f
 
 export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustment> = function(
   data: FlatAndMultiplierAdjustment,
-  user: Unit, target: Unit, battle: Battle)
+  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
 {
   if (data.flat)
   {
@@ -100,13 +112,13 @@ export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustm
 }
 export const addStatusEffect: UnboundEffectAction<{template: StatusEffectTemplate, duration: number}> = function(
   data: {template: StatusEffectTemplate, duration: number},
-  user: Unit, target: Unit, battle: Battle)
+  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
 {
   target.addStatusEffect(new StatusEffect(data.template, data.duration));
 }
-export const adjustHealth: UnboundEffectAction<{flat?: number; maxHealthPercentage?: number; perUserUnit?: number}> = function(
-  data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number},
-  user: Unit, target: Unit, battle: Battle)
+export const adjustHealth: UnboundEffectAction<HealthAdjustment> = function(
+  data: HealthAdjustment,
+  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
 {
   let healAmount = 0;
   if (data.flat)

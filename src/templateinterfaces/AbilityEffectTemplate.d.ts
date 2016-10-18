@@ -1,5 +1,9 @@
 import BattleSFXTemplate from "./BattleSFXTemplate";
-import AbilityEffectAction from "./AbilityEffectAction";
+import
+{
+  AbilityEffectAction,
+  ExecutedEffectsResult
+} from "./AbilityEffectAction";
 
 import Unit from "../Unit";
 import Battle from "../Battle";
@@ -17,7 +21,12 @@ declare interface AbilityEffectTemplate
 
   // TODO | pass the active battle as a parameter
   // checked per target
-  trigger?: (user: Unit, target: Unit) => boolean;
+  trigger?: (
+    user: Unit,
+    target: Unit,
+    battle: Battle,
+    executedEffectsResult: ExecutedEffectsResult
+  ) => boolean;
   // called after parent effect with same user and effect target
   // nesting these wont work and wouldnt do anything anyway
   attachedEffects?: AbilityEffectTemplate[];

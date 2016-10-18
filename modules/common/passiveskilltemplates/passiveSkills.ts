@@ -76,7 +76,7 @@ export var initialGuard: PassiveSkillTemplate =
         coverage: GuardCoverage.row,
         flat: 50
       },
-      user, user, null);
+      user, user, null, {});
     }
   ]
 }

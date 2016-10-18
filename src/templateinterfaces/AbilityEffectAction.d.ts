@@ -1,11 +1,12 @@
 import Unit from "../Unit";
 import Battle from "../Battle";
 
-declare interface AbilityEffectAction
+export declare interface ExecutedEffectsResult
 {
-  (user: Unit, target: Unit, battle: Battle): void;
+  [id: string]: any;
 }
 
-// declare type AbilityEffectAction = (user: Unit, target: Unit, battle: Battle) => void;
-
-export default AbilityEffectAction
+export declare interface AbilityEffectAction
+{
+  (user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult): void;
+}
