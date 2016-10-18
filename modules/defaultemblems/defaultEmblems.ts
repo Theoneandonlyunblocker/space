@@ -1,6 +1,6 @@
 import SubEmblemTemplates from "./SubEmblemTemplates";
 
-import app from "../../src/App";
+import app from "../../src/App"; // TODO global
 import ModuleFile from "../../src/ModuleFile";
 import ModuleData from "../../src/ModuleData";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";

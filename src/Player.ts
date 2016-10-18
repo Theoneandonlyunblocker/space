@@ -924,7 +924,7 @@ export default class Player
 
     return true;
   }
-  getGloballyBuildableUnits(): UnitTemplate[]
+  public getGloballyBuildableUnits(): UnitTemplate[]
   {
     const racial = this.race.getBuildableUnitTypes(this);
 
