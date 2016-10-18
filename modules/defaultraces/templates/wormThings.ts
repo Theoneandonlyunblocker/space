@@ -15,6 +15,11 @@ const wormThings: PlayerRaceTemplate =
   type: "wormThings",
   displayName: "Worm Things",
   description: "The gross guys",
+  distributionData:
+  {
+    rarity: 0,
+    distributionGroups: [],
+  },
 
   technologies: mergeTechnologyValues(defaultRaceTechnologyValues,
   [

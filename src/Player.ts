@@ -213,6 +213,11 @@ export default class Player
         description: "",
 
         technologies: [],
+        distributionData:
+        {
+          rarity: 0,
+          distributionGroups: [],
+        },
         
         getBuildableUnitTypes: () => [],
 

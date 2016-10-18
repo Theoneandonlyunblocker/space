@@ -15,6 +15,11 @@ const federationAlliance: PlayerRaceTemplate =
   type: "federationAlliance",
   displayName: "Federation Alliance",
   description: "The good guys",
+  distributionData:
+  {
+    rarity: 0,
+    distributionGroups: [],
+  },
 
   technologies: mergeTechnologyValues(defaultRaceTechnologyValues,
   [
