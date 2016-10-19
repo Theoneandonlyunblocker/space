@@ -5,7 +5,6 @@ import app from "./App"; // TODO global
 import WeightedProbability from "./templateinterfaces/WeightedProbability";
 
 import Point from "./Point";
-import Unit from "./Unit";
 import Player from "./Player";
 import Star from "./Star";
 import UnitBattleSide from "./UnitBattleSide";
@@ -699,10 +698,6 @@ export function getItemsFromWeightedProbabilities<T>(probabilities: WeightedProb
     }
   }
   return allItems;
-}
-export function defaultNameGenerator(unit: Unit)
-{
-  return "" + unit.id + " " + unit.template.displayName;
 }
 export function transformMat3(a: Point, m: number[])
 {

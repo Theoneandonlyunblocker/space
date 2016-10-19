@@ -2,7 +2,7 @@
 
 import UnitTemplate from "./UnitTemplate";
 import BuildingTemplate from "./BuildingTemplate";
-import CultureTemplate from "./CultureTemplate";
+import NameTemplate from "./NameTemplate";
 import PortraitTemplate from "./PortraitTemplate";
 import ItemTemplate from "./ItemTemplate";
 import {DistributionData} from "./DistributionData";
@@ -14,7 +14,6 @@ import BuildingUpgradeData from "../BuildingUpgradeData";
 
 export declare interface RaceTemplate
 {
-  // TODO 18.10.2016 rename 'type'
   type: string;
   displayName: string;
   description: string;
@@ -28,6 +27,6 @@ export declare interface RaceTemplate
   // getBuildableBuildings(star: Star): BuildingTemplate[];
   // getBuildingUpgrades(star: Star): BuildingUpgradeData[];
 
-  // getUnitCulture(unit: Unit): CultureTemplate;
+  // getUnitName(unit: Unit): NameTemplate;
   // getUnitPortrait(unit: Unit): PortraitTemplate;
 }

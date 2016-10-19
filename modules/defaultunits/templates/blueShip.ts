@@ -16,7 +16,6 @@ const blueShip: UnitTemplate =
   displayName: "Blue ship",
   description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
   archetype: UnitArchetypes.utility,
-  cultures: [],
   sprite:
   {
     imageSrc: "scout.png",

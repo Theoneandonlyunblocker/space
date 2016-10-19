@@ -17,7 +17,6 @@ const fighterSquadron: UnitTemplate =
   displayName: "Fighter Squadron",
   description: "Fast and cheap unit with good attack and speed but low defence",
   archetype: UnitArchetypes.combat,
-  cultures: [],
   sprite:
   {
     imageSrc: "fighter.png",

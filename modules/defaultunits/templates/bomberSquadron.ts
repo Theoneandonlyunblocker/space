@@ -17,7 +17,6 @@ const bomberSquadron: UnitTemplate =
   displayName: "Bomber Squadron",
   description: "Can damage multiple targets with special bomb attack",
   archetype: UnitArchetypes.combat,
-  cultures: [],
   sprite:
   {
     imageSrc: "bomber.png",

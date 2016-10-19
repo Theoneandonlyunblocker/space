@@ -16,7 +16,6 @@ const stealthShip: UnitTemplate =
   displayName: "Stealth Ship",
   description: "Weak ship that is undetectable by regular vision",
   archetype: UnitArchetypes.scouting,
-  cultures: [],
   sprite:
   {
     imageSrc: "scout.png",

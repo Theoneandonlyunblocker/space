@@ -1,3 +1,4 @@
+// TODO 19.10.2016 | remove this
 declare interface NameTemplate
 {
   ranceKey: string;

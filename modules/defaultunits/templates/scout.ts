@@ -16,7 +16,6 @@ const scout: UnitTemplate =
   displayName: "Scout",
   description: "Weak in combat, but has high vision and can reveal stealthy units and details of units in same star",
   archetype: UnitArchetypes.scouting,
-  cultures: [],
   sprite:
   {
     imageSrc: "scout.png",

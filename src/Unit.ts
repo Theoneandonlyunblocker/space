@@ -6,7 +6,6 @@ import UnitTemplate from "./templateinterfaces/UnitTemplate";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import PortraitTemplate from "./templateinterfaces/PortraitTemplate";
 import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
-import CultureTemplate from "./templateinterfaces/CultureTemplate";
 import AbilityBase from "./templateinterfaces/AbilityBase";
 import SFXParams from "./templateinterfaces/SFXParams";
 import UnitPassiveEffect from "./templateinterfaces/UnitPassiveEffect";
@@ -19,15 +18,9 @@ import
 } from "./UnitAttributes";
 import
 {
-  findItemWithKey,
   randInt,
-  getRandomArrayItem,
-  getAllPropertiesWithKey,
-  getRandomArrayItemWithWeights,
-  getRandomProperty,
   clamp,
   getItemsFromWeightedProbabilities,
-  defaultNameGenerator
 } from "./utility";
 import Battle from "./Battle";
 import Item from "./Item";
@@ -114,7 +107,6 @@ export default class Unit
     else
     {
       this.items = this.makeUnitItems(template.itemSlots);
-      this.setCulture();
       this.setInitialValues();
     }
   }
@@ -191,11 +183,12 @@ export default class Unit
       })
     }
 
-    if (data.portraitKey)
-    {
-      this.portrait = findItemWithKey<PortraitTemplate>(
-        app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
-    }
+    // TODO 10.19.2016 | deserialize portrait
+    // if (data.portraitKey)
+    // {
+    //   this.portrait = findItemWithKey<PortraitTemplate>(
+    //     app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
+    // }
   }
   private setInitialValues()
   {
@@ -249,59 +242,60 @@ export default class Unit
     this.cachedAttributes = this.baseAttributes.clone();
     this.attributesAreDirty = false;
   }
-  private setCulture()
-  {
-    var templateCultures = this.template.cultures;
+  // TODO 10.19.2016 | re-add this stuff
+  // private setCulture()
+  // {
+  //   var templateCultures = this.template.cultures;
 
-    var nameGeneratorFN: (unit: Unit) => string;
-    var nameGeneratorCandidateCultures: CultureTemplate[] = templateCultures.filter(
-      function(cultureTemplate: CultureTemplate)
-    {
-      return Boolean(cultureTemplate.nameGenerator);
-    });
+  //   var nameGeneratorFN: (unit: Unit) => string;
+  //   var nameGeneratorCandidateCultures: CultureTemplate[] = templateCultures.filter(
+  //     function(cultureTemplate: CultureTemplate)
+  //   {
+  //     return Boolean(cultureTemplate.nameGenerator);
+  //   });
 
-    if (nameGeneratorCandidateCultures.length > 0)
-    {
-      nameGeneratorFN = getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
-    }
-    else
-    {
-      nameGeneratorFN = defaultNameGenerator;
-    }
+  //   if (nameGeneratorCandidateCultures.length > 0)
+  //   {
+  //     nameGeneratorFN = getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
+  //   }
+  //   else
+  //   {
+  //     nameGeneratorFN = defaultNameGenerator;
+  //   }
 
-    this.name = nameGeneratorFN(this);
-
-
-    var portraitCandidateCultures: CultureTemplate[] = templateCultures.filter(
-      function(cultureTemplate: CultureTemplate)
-    {
-      return Boolean(cultureTemplate.portraits);
-    });
-
-    if (portraitCandidateCultures.length === 0)
-    {
-      portraitCandidateCultures = getAllPropertiesWithKey(app.moduleData.Templates.Cultures, "portraits");
-      if (portraitCandidateCultures.length === 0)
-      {
-        console.warn("No culture has portraits specified"); //TODO culture
-        return;
-      }
-    }
+  //   this.name = nameGeneratorFN(this);
 
 
-    var portraitCandidateCulturesWithWeights: any =
-      portraitCandidateCultures.map(function(culture: CultureTemplate)
-    {
-      return(
-      {
-        weight: Object.keys(culture.portraits).length,
-        culture: culture
-      });
-    });
+  //   var portraitCandidateCultures: CultureTemplate[] = templateCultures.filter(
+  //     function(cultureTemplate: CultureTemplate)
+  //   {
+  //     return Boolean(cultureTemplate.portraits);
+  //   });
 
-    var portraitCulture = getRandomArrayItemWithWeights<any>(portraitCandidateCulturesWithWeights).culture;
-    this.portrait = getRandomProperty(portraitCulture.portraits);
-  }
+  //   if (portraitCandidateCultures.length === 0)
+  //   {
+  //     portraitCandidateCultures = getAllPropertiesWithKey(app.moduleData.Templates.Cultures, "portraits");
+  //     if (portraitCandidateCultures.length === 0)
+  //     {
+  //       console.warn("No culture has portraits specified"); //TODO culture
+  //       return;
+  //     }
+  //   }
+
+
+  //   var portraitCandidateCulturesWithWeights: any =
+  //     portraitCandidateCultures.map(function(culture: CultureTemplate)
+  //   {
+  //     return(
+  //     {
+  //       weight: Object.keys(culture.portraits).length,
+  //       culture: culture
+  //     });
+  //   });
+
+  //   var portraitCulture = getRandomArrayItemWithWeights<any>(portraitCandidateCulturesWithWeights).culture;
+  //   this.portrait = getRandomProperty(portraitCulture.portraits);
+  // }
   private getBaseMoveDelay()
   {
     return 30 - this.attributes.speed;

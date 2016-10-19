@@ -1,6 +1,5 @@
 import AbilityBase from "./AbilityBase";
 import AbilityTemplate from "./AbilityTemplate";
-import CultureTemplate from "./CultureTemplate";
 import ManufacturableThing from "./ManufacturableThing";
 import PassiveSkillTemplate from "./PassiveSkillTemplate";
 import SpriteTemplate from "./SpriteTemplate";
@@ -25,9 +24,6 @@ declare interface UnitTemplate extends ManufacturableThing
    * used by the ai to balance unit composition 
    */
   archetype: UnitArchetype;
-  // culture is used for portrait and name
-  // TODO 18.10.2016 | remove in favor of using race templates
-  cultures: CultureTemplate[];
   
   /**
    * how many stars away unit can see

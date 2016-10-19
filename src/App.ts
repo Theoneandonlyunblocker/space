@@ -40,8 +40,6 @@ import defaultBuildings from "../modules/defaultbuildings/defaultBuildings";
 import defaultNotifications from "../modules/defaultnotifications/defaultNotifications";
 import defaultRaces from "../modules/defaultraces/defaultRaces";
 
-import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
-
 import {drones} from "../modules/drones/moduleFile";
 
 class App
@@ -86,7 +84,6 @@ class App
       moduleLoader.addModuleFile(defaultUnits);
       moduleLoader.addModuleFile(defaultBackgrounds);
       moduleLoader.addModuleFile(defaultMapmodes);
-      moduleLoader.addModuleFile(paintingPortraits);
       moduleLoader.addModuleFile(defaultBuildings);
       moduleLoader.addModuleFile(defaultNotifications);
       moduleLoader.addModuleFile(defaultRaces);

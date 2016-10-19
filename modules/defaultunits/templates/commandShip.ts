@@ -21,7 +21,6 @@ const commandShip: UnitTemplate =
   displayName: "Command Ship",
   description: "todo",
   archetype: UnitArchetypes.utility,
-  cultures: [],
   sprite:
   {
     imageSrc: "shieldBoat.png",

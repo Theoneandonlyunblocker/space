@@ -17,7 +17,6 @@ const battleCruiser: UnitTemplate =
   displayName: "Battlecruiser",
   description: "Strong combat ship with low speed",
   archetype: UnitArchetypes.combat,
-  cultures: [],
   sprite:
   {
     imageSrc: "battleCruiser.png",

@@ -15,7 +15,6 @@ export const droneCommander: UnitTemplate =
   description: "Commander o drones",
 
   archetype: UnitArchetypes.utility,
-  cultures: [],
   sprite:
   {
     imageSrc: "img/placeholder.png",

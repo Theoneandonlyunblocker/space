@@ -22,7 +22,6 @@ const shieldBoat: UnitTemplate =
   displayName: "Shield Boat",
   description: "Great defence and ability to protect allies in same row",
   archetype: UnitArchetypes.defence,
-  cultures: [],
   sprite:
   {
     imageSrc: "shieldBoat.png",

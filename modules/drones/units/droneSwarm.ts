@@ -15,7 +15,6 @@ export const droneSwarm: UnitTemplate =
   description: "Swarm o drones",
 
   archetype: UnitArchetypes.combat,
-  cultures: [],
   sprite:
   {
     imageSrc: "img/placeholder.png",

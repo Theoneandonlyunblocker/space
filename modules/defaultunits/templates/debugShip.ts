@@ -32,7 +32,6 @@ const debugShip: UnitTemplate =
   displayName: "Debug Ship",
   description: "debug",
   archetype: UnitArchetypes.combat,
-  cultures: [],
   sprite:
   {
     imageSrc: "debugShip.png",
