@@ -15,7 +15,7 @@ export function generateIndependentPlayer(
   race: RaceTemplate,
 ): Player
 {
-  return new Player(
+  const player = new Player(
   {
     isAI: true,
     isIndependent: true,
@@ -25,4 +25,8 @@ export function generateIndependentPlayer(
 
     name: new Name(`Independent ${race.displayName}`, race.displayName.isPlural),
   });
+
+  player.colorAlpha = 0.66;
+
+  return player;
 }
