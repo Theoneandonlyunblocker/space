@@ -193,6 +193,8 @@ export default class Unit
     template: UnitTemplate;
     race: RaceTemplate;
 
+    name?: string;
+    
     attributeMultiplier?: number;
     healthMultiplier?: number;
   }): Unit
@@ -217,7 +219,7 @@ export default class Unit
       template: template,
       
       id: idGenerators.unit++,
-      name: race.getUnitName(template),
+      name: props.name || race.getUnitName(template),
 
       maxHealth: health,
       currentHealth: health,
