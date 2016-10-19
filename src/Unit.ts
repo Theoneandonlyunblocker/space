@@ -319,60 +319,6 @@ export default class Unit
       maxActionPoints: randInt(3, 5)
     });
   }
-  // TODO 10.19.2016 | re-add this stuff
-  // private setCulture()
-  // {
-  //   var templateCultures = this.template.cultures;
-
-  //   var nameGeneratorFN: (unit: Unit) => string;
-  //   var nameGeneratorCandidateCultures: CultureTemplate[] = templateCultures.filter(
-  //     function(cultureTemplate: CultureTemplate)
-  //   {
-  //     return Boolean(cultureTemplate.nameGenerator);
-  //   });
-
-  //   if (nameGeneratorCandidateCultures.length > 0)
-  //   {
-  //     nameGeneratorFN = getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
-  //   }
-  //   else
-  //   {
-  //     nameGeneratorFN = defaultNameGenerator;
-  //   }
-
-  //   this.name = nameGeneratorFN(this);
-
-
-  //   var portraitCandidateCultures: CultureTemplate[] = templateCultures.filter(
-  //     function(cultureTemplate: CultureTemplate)
-  //   {
-  //     return Boolean(cultureTemplate.portraits);
-  //   });
-
-  //   if (portraitCandidateCultures.length === 0)
-  //   {
-  //     portraitCandidateCultures = getAllPropertiesWithKey(app.moduleData.Templates.Cultures, "portraits");
-  //     if (portraitCandidateCultures.length === 0)
-  //     {
-  //       console.warn("No culture has portraits specified"); //TODO culture
-  //       return;
-  //     }
-  //   }
-
-
-  //   var portraitCandidateCulturesWithWeights: any =
-  //     portraitCandidateCultures.map(function(culture: CultureTemplate)
-  //   {
-  //     return(
-  //     {
-  //       weight: Object.keys(culture.portraits).length,
-  //       culture: culture
-  //     });
-  //   });
-
-  //   var portraitCulture = getRandomArrayItemWithWeights<any>(portraitCandidateCulturesWithWeights).culture;
-  //   this.portrait = getRandomProperty(portraitCulture.portraits);
-  // }
   private getBaseMoveDelay()
   {
     return 30 - this.attributes.speed;
