@@ -1,9 +1,11 @@
 import {PlayerRaceTemplate} from "../../../src/templateinterfaces/PlayerRaceTemplate";
+
 import
 {
   getRandomProperty,
 } from "../../../src/utility";
 
+import {generateIndependentPlayer} from "../../common/generateIndependentPlayer";
 import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
 import DefaultAIConstructor from "../../defaultai/mapai/DefaultAIConstructor";
 
@@ -42,6 +44,11 @@ const federationAlliance: PlayerRaceTemplate =
   getUnitPortrait: (unitTemplate, allTemplates) =>
   {
     return getRandomProperty(allTemplates);
+  },
+
+  generateIndependentPlayer: (emblemTemplates) =>
+  {
+    return generateIndependentPlayer(federationAlliance);
   },
 
   technologies: mergeTechnologyValues(defaultRaceTechnologyValues,
