@@ -8,6 +8,7 @@ import ItemTemplate from "./ItemTemplate";
 import {DistributionData} from "./DistributionData";
 import TemplateCollection from "./TemplateCollection";
 
+import Fleet from "../Fleet";
 import Player from "../Player";
 import Star from "../Star";
 import Unit from "../Unit";
@@ -50,5 +51,5 @@ export declare interface RaceTemplate
      */
     localStrength: number,
     maxUnitsPerSideInBattle: number,
-  ): Unit[];
+  ): Fleet;
 }
