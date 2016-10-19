@@ -28,6 +28,7 @@ declare interface UnitSaveData
   
   fleetId?: number;
   portraitKey?: string;
+  raceKey?: string;
 }
 
 export default UnitSaveData;

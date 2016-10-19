@@ -6,6 +6,7 @@ import UnitTemplate from "./templateinterfaces/UnitTemplate";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import PortraitTemplate from "./templateinterfaces/PortraitTemplate";
 import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
+import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import AbilityBase from "./templateinterfaces/AbilityBase";
 import SFXParams from "./templateinterfaces/SFXParams";
 import UnitPassiveEffect from "./templateinterfaces/UnitPassiveEffect";
@@ -47,6 +48,7 @@ export default class Unit
 
   public name: string;
   public portrait: PortraitTemplate;
+  private race: RaceTemplate;
 
   public maxHealth: number;
   public currentHealth: number;
@@ -186,6 +188,10 @@ export default class Unit
     if (data.portraitKey)
     {
       this.portrait = app.moduleData.Templates.Portraits[data.portraitKey];
+    }
+    if (data.raceKey)
+    {
+      this.race = app.moduleData.Templates.Races[data.raceKey];
     }
   }
   private setInitialValues()
@@ -1076,6 +1082,7 @@ export default class Unit
     if (includeFluff)
     {
       data.portraitKey = this.portrait.key;
+      data.raceKey = this.race.type;
     }
 
     return data;
