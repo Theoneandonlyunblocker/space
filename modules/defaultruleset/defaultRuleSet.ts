@@ -17,6 +17,13 @@ const defaultRuleSet: ModuleFile =
   {
     moduleData.applyRuleSet(
     {
+      units:
+      {
+        baseAttributeValue: 5,
+        attributeVariance: 1.2,
+        baseHealthValue: 250,
+        healthVariance: 50,
+      },
       manufactory:
       {
         startingCapacity: 1,

@@ -1,5 +1,12 @@
 declare interface RuleSetValues
 {
+  units?:
+  {
+    baseAttributeValue?: number;
+    attributeVariance?: number;
+    baseHealthValue?: number;
+    healthVariance?: number;
+  }
   manufactory?:
   {
     startingCapacity?: number;
