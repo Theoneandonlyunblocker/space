@@ -24,7 +24,7 @@ export function generateIndependentFleet(
   // eliteOnly, commanderOnly, etc.
   const allUnitTypes = race.getBuildableUnitTypes(player);
 
-  const unitCountFromGlobalStrength = globalStrength + 0.2 * maxUnitsPerSideInBattle;
+  const unitCountFromGlobalStrength = maxUnitsPerSideInBattle * 0.34 + maxUnitsPerSideInBattle * 0.66 * globalStrength;
   const unitCountFromLocalStrength = localStrength > 0.8 ? 1 : 0;
 
   const unitCount = Math.min(
@@ -32,7 +32,7 @@ export function generateIndependentFleet(
     maxUnitsPerSideInBattle
   );
 
-  const eliteCount = Math.ceil((unitCount / maxUnitsPerSideInBattle - 0.5) * 2);
+  const eliteCount = Math.ceil((unitCount / maxUnitsPerSideInBattle - 0.499) * 2);
 
   const units: Unit[] = [];
   for (let i = 0; i < unitCount; i++)
@@ -43,7 +43,7 @@ export function generateIndependentFleet(
     const statsModifier = isElite ? 1.2 : 1;
 
     const unitTemplate = getRandomArrayItem(allUnitTypes);
-    const unitName = `${isElite ? "Elite" : ""} race.getUnitName(unitTemplate)`;
+    const unitName = `${isElite ? "Elite " : ""}${race.getUnitName(unitTemplate)}`;
 
     const unit = Unit.fromTemplate(
     {
@@ -53,7 +53,7 @@ export function generateIndependentFleet(
       name: unitName,
 
       attributeMultiplier: (1 + globalStrength * 0.2) * statsModifier,
-      healthMultiplier: globalStrength * healthModifier,
+      healthMultiplier: (1 + globalStrength) * healthModifier,
     });
 
     units.push(unit);
