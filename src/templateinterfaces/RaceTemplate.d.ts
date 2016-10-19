@@ -38,4 +38,15 @@ export declare interface RaceTemplate
   generateIndependentPlayer(
     allEmblemTemplates: TemplateCollection<SubEmblemTemplate>
   ): Player;
+  generateUnitsForIndependentFleet(
+    player: Player,
+    /**
+     * strength of units compared to all other units
+     */
+    globalStrength: number,
+    /**
+     * strength of units compared to nearby units (same region etc.)
+     */
+    localStrength: number,
+  ): Unit[];
 }
