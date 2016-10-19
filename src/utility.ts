@@ -85,7 +85,7 @@ export function sortObjectsByProperty(objects:
   });
 }
 
-export function getRandomProperty(target: {[props: string]: any;})
+export function getRandomProperty<T>(target: {[props: string]: T;}): T
 {
   var _rndProp = target[getRandomKey(target)];
   return _rndProp;
