@@ -26,7 +26,15 @@ const federationAlliance: PlayerRaceTemplate =
     distributionGroups: [],
   },
 
-  getBuildableUnitTypes: getDefaultUnits,
+  getBuildableUnitTypes: (player) =>
+  {
+    return getDefaultUnits().filter(unitTemplate =>
+    {
+      return !unitTemplate.technologyRequirements ||
+        player.meetsTechnologyRequirements(unitTemplate.technologyRequirements);
+    });
+  },
+
   getUnitName: (unitTemplate) =>
   {
     return `Federation ${unitTemplate.displayName}`;

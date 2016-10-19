@@ -929,13 +929,7 @@ export default class Player
   }
   public getGloballyBuildableUnits(): UnitTemplate[]
   {
-    const racial = this.race.getBuildableUnitTypes(this);
-
-    return racial.filter(unitTemplate =>
-    {
-      return !unitTemplate.technologyRequirements ||
-        this.meetsTechnologyRequirements(unitTemplate.technologyRequirements);
-    });
+    return this.race.getBuildableUnitTypes(this);
   }
   getGloballyBuildableItems(): ItemTemplate[]
   {
