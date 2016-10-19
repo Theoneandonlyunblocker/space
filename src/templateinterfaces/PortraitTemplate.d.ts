@@ -1,10 +1,9 @@
-import RandomGenUnitRarity from "../RandomGenUnitRarity";
 
 declare interface PortraitTemplate
 {
   key: string;
   imageSrc: string;
-  generatedFor: RandomGenUnitRarity[];
+  randomGenerationTags?: string[];
 }
 
 export default PortraitTemplate;
