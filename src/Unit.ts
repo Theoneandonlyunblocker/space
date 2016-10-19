@@ -53,7 +53,7 @@ export default class Unit
 
   public maxHealth: number;
   public currentHealth: number;
-  public isSquadron: boolean; // TODO 10.19.2016 | can't we just get this from template?
+  public isSquadron: boolean; // TODO 19.10.2016 | can't we just get this from template?
 
   public currentMovePoints: number;
   public maxMovePoints: number;

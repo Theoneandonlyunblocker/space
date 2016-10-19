@@ -27,7 +27,7 @@ export declare interface RaceTemplate
   // getBuildableBuildings(star: Star): BuildingTemplate[];
   // getBuildingUpgrades(star: Star): BuildingUpgradeData[];
 
-  // TODO 10.19.2016 | return Name instead
+  // TODO 19.10.2016 | return Name instead
   getUnitName(unitTemplate: UnitTemplate): string;
   getUnitPortrait(
     unitTemplate: UnitTemplate,
