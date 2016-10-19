@@ -5,6 +5,7 @@ import
   getRandomProperty,
 } from "../../../src/utility";
 
+import {generateIndependentFleet} from "../../common/generateIndependentFleet";
 import {generateIndependentPlayer} from "../../common/generateIndependentPlayer";
 import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
 import DefaultAIConstructor from "../../defaultai/mapai/DefaultAIConstructor";
@@ -49,6 +50,12 @@ const federationAlliance: PlayerRaceTemplate =
   generateIndependentPlayer: (emblemTemplates) =>
   {
     return generateIndependentPlayer(federationAlliance);
+  },
+  generateIndependentFleet: (player, location, globalStrength, localStrength,
+    maxUnitsPerSideInBattle) =>
+  {
+    return generateIndependentFleet(federationAlliance, player, location,
+      globalStrength, localStrength, maxUnitsPerSideInBattle);
   },
 
   technologies: mergeTechnologyValues(defaultRaceTechnologyValues,
