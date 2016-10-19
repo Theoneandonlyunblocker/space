@@ -229,6 +229,7 @@ export default class Player
         getUnitName: () => "",
         getUnitPortrait: () => null,
         generateIndependentPlayer: () => null,
+        generateIndependentFleet: () => null,
 
         getAITemplateConstructor: (player) => null
       },

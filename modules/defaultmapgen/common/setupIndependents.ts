@@ -7,14 +7,9 @@ import
 import Region from "../../../src/Region";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
-import Unit from "../../../src/Unit";
-import Name from "../../../src/Name";
-import Fleet from "../../../src/Fleet";
 import
 {
   randRange,
-  clamp,
-  getRandomArrayItem,
 } from "../../../src/utility";
 
 export default function setupIndependents(props:
@@ -45,11 +40,6 @@ export default function setupIndependents(props:
   const starsAtMaxDistance = starsByDistance[maxDistanceFromPlayer];
   const commanderStar = getMostSuitableCommanderStarFromStars(starsAtMaxDistance, props.mapGenDataByStarID);
 
-  const minUnits = 2;
-  const maxUnits = 5;
-  
-  const buildableUnitTypes = props.player.getGloballyBuildableUnits();
-  
   const globalMaxDistanceFromPlayer: number = (function()
   {
     let maxDistance = 0;
@@ -66,62 +56,18 @@ export default function setupIndependents(props:
   independentStars.forEach(star =>
   {
     const mapGenData = props.mapGenDataByStarID[star.id];
-    const inverseMapGenDistance = 1 - mapGenData.mapGenDistance;
     const distanceFromPlayer = mapGenData.distanceFromPlayerOwnedLocation - 1;
-    const relativeDistanceFromPlayer = Math.pow(distanceFromPlayer / globalMaxDistanceFromPlayer, 1.6);
-    const unitCountFromVariance = randRange(-1, 1) * props.variance;
+    const relativeDistanceFromPlayer = distanceFromPlayer / globalMaxDistanceFromPlayer;
     
-    let unitCount = minUnits + (maxUnits - minUnits) * relativeDistanceFromPlayer;
-    unitCount += unitCountFromVariance;
-    unitCount *= props.intensity;
-    unitCount = clamp(unitCount, minUnits, maxUnits);
-    unitCount = Math.round(unitCount);
-    
-    const eliteCount = unitCount < 3 ? 0 : unitCount < 5 ? 1 : 2;
-    
-    const units: Unit[] = [];
-    
-    if (star === commanderStar)
-    {
-      const template = getRandomArrayItem(buildableUnitTypes);
-      const unit = Unit.fromTemplate(
-        template,
-        star.race,
-        1.35,
-        1.35 + inverseMapGenDistance
-      );
-      unit.name = "Pirate commander";
-      
-      props.player.addUnit(unit);
-      
-      units.push(unit);
-    }
-    
-    for (let i = 0; i < unitCount; i++)
-    {
-      const isElite = i < eliteCount;
-      
-      const unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
-      const unitStatsModifier = (isElite ? 1.2 : 1);
-      
-      const template = getRandomArrayItem(buildableUnitTypes);
-      
-      const unit = Unit.fromTemplate(
-        template,
-        star.race,
-        unitStatsModifier,
-        unitHealthModifier
-      );
+    const globalStrength = relativeDistanceFromPlayer * props.intensity + randRange(-props.variance, props.variance);
+    const localStrength = star === commanderStar ? 1 : 0.5;
 
-      unit.name = (isElite ? "Pirate elite" : "Pirate");
-      
-      props.player.addUnit(unit);
-      
-      units.push(unit);
-    }
-    
-    const fleet = new Fleet(props.player, units, star, undefined, false);
-    fleet.name = new Name("Pirates", true);
+    star.race.generateIndependentFleet(
+      props.player,
+      star,
+      globalStrength,
+      localStrength
+    );
   });
 }
 
