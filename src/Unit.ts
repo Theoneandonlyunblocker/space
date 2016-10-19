@@ -186,6 +186,51 @@ export default class Unit
 
     return unit;
   }
+  public static createFromSaveData(data: UnitSaveData): Unit
+  {
+    const unit = new Unit(
+    {
+      template: app.moduleData.Templates.Units[data.templateType],
+      
+      id: data.id,
+      name: data.name,
+
+      maxHealth: data.maxHealth,
+      currentHealth: data.currentHealth,
+
+      attributes: data.baseAttributes,
+
+      currentMovePoints: data.currentMovePoints,
+      maxMovePoints: data.maxMovePoints,
+      timesActedThisTurn: data.timesActedThisTurn,
+
+      abilities: data.abilityTemplateTypes.map(templateType =>
+      {
+        return app.moduleData.Templates.Abilities[templateType];
+      }),
+      passiveSkills: data.passiveSkillTemplateTypes.map(templateType =>
+      {
+        return app.moduleData.Templates.PassiveSkills[templateType];
+      }),
+
+      level: data.level,
+      experienceForCurrentLevel: data.experienceForCurrentLevel,
+
+      battleStats: data.battleStats,
+
+      maxItemSlots: data.items.maxItemSlots,
+      items: !data.serializedItems ? [] : data.serializedItems.map(itemSaveData =>
+      {
+        const itemTemplate = app.moduleData.Templates.Items[itemSaveData.templateType]; 
+        return new Item(itemTemplate, itemSaveData.id);
+      }),
+
+      portrait: !data.portraitKey ? null : app.moduleData.Templates.Portraits[data.portraitKey],
+      race: !data.raceKey ? null : app.moduleData.Templates.Races[data.raceKey],
+    });
+
+    return unit;
+  }
   // constructor(template: UnitTemplate, id?: number, data?: UnitSaveData)
   // {
   //   this.id = isFinite(id) ? id : idGenerators.unit++;
@@ -203,88 +248,6 @@ export default class Unit
   //     this.portrait = this.race.getUnitPortrait(this);
   //   }
   // }
-  private makeFromData(data: UnitSaveData)
-  {
-    this.name = data.name;
-
-    this.maxHealth = data.maxHealth;
-    this.currentHealth = data.currentHealth;
-
-    this.currentMovePoints = data.currentMovePoints;
-    this.maxMovePoints = data.maxMovePoints;
-
-    this.timesActedThisTurn = data.timesActedThisTurn;
-
-    this.baseAttributes = new UnitAttributes(data.baseAttributes);
-    this.cachedAttributes = this.baseAttributes.clone();
-
-    this.abilities = data.abilityTemplateTypes.map(function(key: string)
-    {
-      var template = app.moduleData.Templates.Abilities[key];
-
-      if (!template)
-      {
-        throw new Error("Couldn't find ability " + key);
-      }
-
-      return template;
-    });
-    
-    this.passiveSkills = data.passiveSkillTemplateTypes.map(function(key: string)
-    {
-      var template = app.moduleData.Templates.PassiveSkills[key];
-
-      if (!template)
-      {
-        throw new Error("Couldn't find passive skill " + key);
-      }
-
-      return template;
-    });
-
-    this.experienceForCurrentLevel = data.experienceForCurrentLevel;
-    this.level = data.level;
-
-    this.battleStats =
-    {
-      moveDelay: data.battleStats.moveDelay,
-      side: data.battleStats.side,
-      position: data.battleStats.position,
-      currentActionPoints: data.battleStats.currentActionPoints,
-      guardAmount: data.battleStats.guardAmount,
-      guardCoverage: data.battleStats.guardCoverage,
-      captureChance: data.battleStats.captureChance,
-      statusEffects: data.battleStats.statusEffects,
-      lastHealthBeforeReceivingDamage: this.currentHealth,
-      queuedAction: !data.battleStats.queuedAction ? null :
-      {
-        ability: app.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
-        targetId: data.battleStats.queuedAction.targetId,
-        turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
-        timesInterrupted: data.battleStats.queuedAction.timesInterrupted
-      },
-      isAnnihilated: data.battleStats.isAnnihilated
-    };
-
-    this.items = this.makeUnitItems(data.items.maxItemSlots);
-    if (data.serializedItems)
-    {
-      data.serializedItems.forEach(itemSaveData =>
-      {
-        const item = new Item(app.moduleData.Templates.Items[itemSaveData.templateType], itemSaveData.id);
-        this.items.addItem(item, -999);
-      })
-    }
-
-    if (data.portraitKey)
-    {
-      this.portrait = app.moduleData.Templates.Portraits[data.portraitKey];
-    }
-    if (data.raceKey)
-    {
-      this.race = app.moduleData.Templates.Races[data.raceKey];
-    }
-  }
   private setInitialValues()
   {
     this.resetBattleStats();
