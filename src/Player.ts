@@ -191,6 +191,7 @@ export default class Player
     }
 
 
+    this.diplomacyStatus = new DiplomacyStatus(this);
     if (!this.isIndependent)
     {
       if (this.race.isNotPlayable)
@@ -198,7 +199,6 @@ export default class Player
         console.warn(`Race ${this.race.displayName} is marked as unplayable, but was assigned to player ${this.name}`);
       }
       
-      this.diplomacyStatus = new DiplomacyStatus(this);
       this.initTechnologies(props.technologyData);
     }
 
