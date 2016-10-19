@@ -28,5 +28,5 @@ export declare interface RaceTemplate
   // getBuildingUpgrades(star: Star): BuildingUpgradeData[];
 
   // getUnitName(unit: Unit): NameTemplate;
-  // getUnitPortrait(unit: Unit): PortraitTemplate;
+  getUnitPortrait(unit: Unit): PortraitTemplate;
 }

@@ -110,6 +110,7 @@ export default class Unit
     {
       this.items = this.makeUnitItems(template.itemSlots);
       this.setInitialValues();
+      this.portrait = this.race.getUnitPortrait(this);
     }
   }
   private makeFromData(data: UnitSaveData)
