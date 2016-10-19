@@ -208,7 +208,7 @@ export default class Unit
       template: template,
       
       id: idGenerators.unit++,
-      name: race.getUnitName(),
+      name: race.getUnitName(template),
 
       maxHealth: health,
       currentHealth: health,
@@ -230,7 +230,7 @@ export default class Unit
       maxItemSlots: template.itemSlots,
       items: [],
 
-      portrait: race.getUnitPortrait(),
+      portrait: race.getUnitPortrait(template, app.moduleData.Templates.Portraits),
       race: race,
     });
 

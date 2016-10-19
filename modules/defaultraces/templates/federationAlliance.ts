@@ -1,7 +1,12 @@
 import {PlayerRaceTemplate} from "../../../src/templateinterfaces/PlayerRaceTemplate";
+import
+{
+  getRandomProperty,
+} from "../../../src/utility";
 
 import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
 import DefaultAIConstructor from "../../defaultai/mapai/DefaultAIConstructor";
+
 
 import
 {
@@ -21,6 +26,16 @@ const federationAlliance: PlayerRaceTemplate =
     distributionGroups: [],
   },
 
+  getBuildableUnitTypes: getDefaultUnits,
+  getUnitName: (unitTemplate) =>
+  {
+    return `Federation ${unitTemplate.displayName}`;
+  },
+  getUnitPortrait: (unitTemplate, allTemplates) =>
+  {
+    return getRandomProperty(allTemplates);
+  },
+
   technologies: mergeTechnologyValues(defaultRaceTechnologyValues,
   [
     {
@@ -30,7 +45,6 @@ const federationAlliance: PlayerRaceTemplate =
     }
   ]),
 
-  getBuildableUnitTypes: getDefaultUnits,
   getAITemplateConstructor: (player) => DefaultAIConstructor
 }
 

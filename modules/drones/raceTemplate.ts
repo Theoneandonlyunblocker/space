@@ -1,5 +1,10 @@
 import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
+import
+{
+  getRandomProperty,
+  randInt,
+} from "../../src/utility";
 
 import {distributionGroups} from "../common/distributionGroups";
 
@@ -27,6 +32,14 @@ export const drones: RaceTemplate =
       droneCommander,
       droneBase,
     ]);
+  },
+  getUnitName: (unitTemplate) =>
+  {
+    return `${unitTemplate.displayName} #${randInt(0, 20000)}`;
+  },
+  getUnitPortrait: (unitTemplate, allTemplates) =>
+  {
+    return getRandomProperty(allTemplates);
   },
 };
 

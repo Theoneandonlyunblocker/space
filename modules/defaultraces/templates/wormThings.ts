@@ -1,7 +1,12 @@
 import {PlayerRaceTemplate} from "../../../src/templateinterfaces/PlayerRaceTemplate";
+import
+{
+  getRandomProperty,
+} from "../../../src/utility";
 
 import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
 import DefaultAIConstructor from "../../defaultai/mapai/DefaultAIConstructor";
+
 
 import
 {
@@ -21,6 +26,17 @@ const wormThings: PlayerRaceTemplate =
     distributionGroups: [],
   },
 
+  getBuildableUnitTypes: getDefaultUnits,
+  getUnitName: (unitTemplate) =>
+  {
+    return `Infested ${unitTemplate.displayName}`;
+  },
+  getUnitPortrait: (unitTemplate, allTemplates) =>
+  {
+    return getRandomProperty(allTemplates);
+  },
+
+
   technologies: mergeTechnologyValues(defaultRaceTechnologyValues,
   [
     {
@@ -29,7 +45,7 @@ const wormThings: PlayerRaceTemplate =
       maxLevel: 5
     }
   ]),
-  getBuildableUnitTypes: getDefaultUnits,
+
   getAITemplateConstructor: (player) => DefaultAIConstructor
 }
 

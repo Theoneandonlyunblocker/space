@@ -5,6 +5,7 @@ import BuildingTemplate from "./BuildingTemplate";
 import PortraitTemplate from "./PortraitTemplate";
 import ItemTemplate from "./ItemTemplate";
 import {DistributionData} from "./DistributionData";
+import TemplateCollection from "./TemplateCollection";
 
 import Player from "../Player";
 import Star from "../Star";
@@ -27,6 +28,9 @@ export declare interface RaceTemplate
   // getBuildingUpgrades(star: Star): BuildingUpgradeData[];
 
   // TODO 10.19.2016 | return Name instead
-  getUnitName(): string;
-  getUnitPortrait(): PortraitTemplate;
+  getUnitName(unitTemplate: UnitTemplate): string;
+  getUnitPortrait(
+    unitTemplate: UnitTemplate,
+    allPortraitTemplates: TemplateCollection<PortraitTemplate>
+  ): PortraitTemplate;
 }
