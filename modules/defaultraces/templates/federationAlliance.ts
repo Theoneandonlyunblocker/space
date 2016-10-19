@@ -1,5 +1,7 @@
 import {PlayerRaceTemplate} from "../../../src/templateinterfaces/PlayerRaceTemplate";
 
+import Name from "../../../src/Name";
+
 import
 {
   getRandomProperty,
@@ -21,7 +23,7 @@ import
 const federationAlliance: PlayerRaceTemplate =
 {
   type: "federationAlliance",
-  displayName: "Federation Alliance",
+  displayName: new Name("Federation Alliance", false),
   description: "The good guys",
   distributionData:
   {

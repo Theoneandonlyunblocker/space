@@ -1,5 +1,7 @@
 import {PlayerRaceTemplate} from "../../../src/templateinterfaces/PlayerRaceTemplate";
 
+import Name from "../../../src/Name";
+
 import
 {
   getRandomProperty,
@@ -21,7 +23,7 @@ import
 const wormThings: PlayerRaceTemplate =
 {
   type: "wormThings",
-  displayName: "Worm Things",
+  displayName: new Name("Worm Things", true),
   description: "The gross guys",
   distributionData:
   {

@@ -1,6 +1,8 @@
 import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
+import Name from "../../src/Name";
+
 import
 {
   getRandomProperty,
@@ -19,7 +21,7 @@ import {droneSwarm} from  "./units/droneSwarm";
 export const drones: RaceTemplate =
 {
   type: "drones",
-  displayName: "Drones",
+  displayName: new Name("Drones", true),
   description: "",
   distributionData:
   {
