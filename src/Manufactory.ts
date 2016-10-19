@@ -138,42 +138,15 @@ export default class Manufactory
       eventManager.dispatchEvent("playerManufactoryBuiltThings");
     }
   }
-  getLocalUnitTypes()
+  getLocalUnitTypes(): UnitTemplate[]
   {
-    var manufacturable: UnitTemplate[] = [];
-    var potential: UnitTemplate[] = [];
-
-    this.star.race.getBuildableUnitTypes(this.player).forEach(unitTemplate =>
-    {
-      if (!unitTemplate.technologyRequirements ||
-        this.player.meetsTechnologyRequirements(unitTemplate.technologyRequirements))
-      {
-        manufacturable.push(unitTemplate);
-      }
-      else
-      {
-        potential.push(unitTemplate);
-      }
-    })
-
-    return(
-    {
-      manufacturable: manufacturable,
-      potential: potential
-    });
+    return this.star.race.getBuildableUnitTypes(this.player);
   }
-  getLocalItemTypes()
+  getLocalItemTypes(): ItemTemplate[]
   {
-    var manufacturable: ItemTemplate[] = [];
-    var potential: ItemTemplate[] = [];
-
     // TODO manufactory | currently no local item types exist
 
-    return(
-    {
-      manufacturable: manufacturable,
-      potential: potential
-    })
+    return [];
   }
   getManufacturableThingsForType(type: "item" | "unit"): ManufacturableThing[]
   {
@@ -181,11 +154,11 @@ export default class Manufactory
     {
       case "item":
       {
-        return this.getLocalItemTypes().manufacturable;
+        return this.getLocalItemTypes();
       }
       case "unit":
       {
-        return this.getLocalUnitTypes().manufacturable;
+        return this.getLocalUnitTypes();
       }
     }
   }

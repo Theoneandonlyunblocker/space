@@ -101,7 +101,7 @@ export default class EconomyAI
     } = {};
 
     var buildableUnitTypes = player.getGloballyBuildableUnits().concat(
-      manufactory.getLocalUnitTypes().manufacturable);
+      manufactory.getLocalUnitTypes());
 
     for (let i = 0; i < buildableUnitTypes.length; i++)
     {

@@ -107,7 +107,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
           if (selectedStar.manufactory)
           {
             manufacturableThings = manufacturableThings.concat(
-              selectedStar.manufactory.getLocalUnitTypes().manufacturable);
+              selectedStar.manufactory.getLocalUnitTypes());
           }
         }
         break;
@@ -120,7 +120,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
           if (selectedStar.manufactory)
           {
             manufacturableThings = manufacturableThings.concat(
-              selectedStar.manufactory.getLocalItemTypes().manufacturable);
+              selectedStar.manufactory.getLocalItemTypes());
           }
         }
         break;
