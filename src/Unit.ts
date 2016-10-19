@@ -16,6 +16,7 @@ import
 {
   default as UnitAttributes,
   UnitAttributeAdjustments,
+  UnitAttributesObject,
 } from "./UnitAttributes";
 import
 {
@@ -52,7 +53,7 @@ export default class Unit
 
   public maxHealth: number;
   public currentHealth: number;
-  public isSquadron: boolean;
+  public isSquadron: boolean; // TODO 10.19.2016 | can't we just get this from template?
 
   public currentMovePoints: number;
   public maxMovePoints: number;
@@ -60,7 +61,7 @@ export default class Unit
   public timesActedThisTurn: number;
 
   public baseAttributes: UnitAttributes;
-  public attributesAreDirty: boolean;
+  public attributesAreDirty: boolean = false;
   private cachedAttributes: UnitAttributes;
   public get attributes(): UnitAttributes
   {
@@ -96,23 +97,112 @@ export default class Unit
   public uiDisplayIsDirty: boolean = true;
   public lastHealthDrawnAt: number;
 
-  constructor(template: UnitTemplate, id?: number, data?: UnitSaveData)
+  constructor(props:
   {
-    this.id = isFinite(id) ? id : idGenerators.unit++;
+    template: UnitTemplate;
 
-    this.template = template;
-    this.isSquadron = template.isSquadron;
-    if (data)
+    id: number;
+    name: string;
+
+    maxHealth: number;
+    currentHealth: number;
+    
+    attributes: UnitAttributesObject;
+
+    currentMovePoints: number;
+    maxMovePoints: number;
+    timesActedThisTurn: number;
+
+    abilities: AbilityTemplate[];
+    passiveSkills: PassiveSkillTemplate[];
+
+    level: number;
+    experienceForCurrentLevel: number;
+
+    battleStats: UnitBattleStatsSaveData;
+
+    maxItemSlots: {[slot: string]: number;};
+    items: Item[];
+
+    portrait: PortraitTemplate;
+    race: RaceTemplate;
+  })
+  {
+    this.template = props.template;
+    this.isSquadron = this.template.isSquadron;
+
+    this.id = props.id;
+    this.name = props.name;
+
+    this.maxHealth = props.maxHealth;
+    this.currentHealth = props.currentHealth;
+
+    this.baseAttributes = new UnitAttributes(props.attributes);
+    this.cachedAttributes = this.baseAttributes.clone();
+
+    this.currentMovePoints = props.currentMovePoints;
+    this.maxMovePoints = props.maxMovePoints;
+    this.timesActedThisTurn = props.timesActedThisTurn;
+
+    this.abilities = props.abilities.slice(0);
+    this.passiveSkills = props.passiveSkills.slice(0);
+
+    this.level = props.level;
+    this.experienceForCurrentLevel = props.experienceForCurrentLevel;
+
+    this.battleStats =
     {
-      this.makeFromData(data);
-    }
-    else
+      moveDelay: props.battleStats.moveDelay,
+      side: props.battleStats.side,
+      position: props.battleStats.position,
+      currentActionPoints: props.battleStats.currentActionPoints,
+      guardAmount: props.battleStats.guardAmount,
+      guardCoverage: props.battleStats.guardCoverage,
+      captureChance: props.battleStats.captureChance,
+      statusEffects: props.battleStats.statusEffects,
+      lastHealthBeforeReceivingDamage: this.currentHealth,
+      queuedAction: !props.battleStats.queuedAction ? null :
+      {
+        ability: app.moduleData.Templates.Abilities[props.battleStats.queuedAction.abilityTemplateKey],
+        targetId: props.battleStats.queuedAction.targetId,
+        turnsPrepared: props.battleStats.queuedAction.turnsPrepared,
+        timesInterrupted: props.battleStats.queuedAction.timesInterrupted
+      },
+      isAnnihilated: props.battleStats.isAnnihilated
+    };
+
+    this.items = this.makeUnitItems(props.maxItemSlots);
+    props.items.forEach(item =>
     {
-      this.items = this.makeUnitItems(template.itemSlots);
-      this.setInitialValues();
-      this.portrait = this.race.getUnitPortrait(this);
-    }
+      this.items.addItem(item, -999);
+    });
+
+    this.race = props.race;
+    this.portrait = props.portrait;
   }
+  public static createFromTemplate(template: UnitTemplate): Unit
+  {
+    const unit: Unit = undefined;
+
+    return unit;
+  }
+  // constructor(template: UnitTemplate, id?: number, data?: UnitSaveData)
+  // {
+  //   this.id = isFinite(id) ? id : idGenerators.unit++;
+
+  //   this.template = template;
+  //   this.isSquadron = template.isSquadron;
+  //   if (data)
+  //   {
+  //     this.makeFromData(data);
+  //   }
+  //   else
+  //   {
+  //     this.items = this.makeUnitItems(template.itemSlots);
+  //     this.setInitialValues();
+  //     this.portrait = this.race.getUnitPortrait(this);
+  //   }
+  // }
   private makeFromData(data: UnitSaveData)
   {
     this.name = data.name;
@@ -197,8 +287,6 @@ export default class Unit
   }
   private setInitialValues()
   {
-    this.setBaseHealth();
-    this.setAttributes();
     this.resetBattleStats();
 
     this.maxMovePoints = this.template.maxMovePoints;
@@ -211,7 +299,7 @@ export default class Unit
 
     this.timesActedThisTurn = 0;
   }
-  public setBaseHealth(multiplier: number = 1)
+  private setRandomBaseHealth(multiplier: number = 1)
   {
     var min = 200 * this.template.maxHealth * multiplier;
     var max = 300 * this.template.maxHealth * multiplier;
