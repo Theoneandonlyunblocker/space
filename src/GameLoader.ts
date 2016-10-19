@@ -385,7 +385,7 @@ export default class GameLoader
   }
   deserializeUnit(data: UnitSaveData): Unit
   {
-    const unit = Unit.createFromSaveData(data);
+    const unit = Unit.fromSaveData(data);
 
     this.unitsById[unit.id] = unit;
 

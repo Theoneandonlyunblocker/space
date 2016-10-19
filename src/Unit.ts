@@ -188,7 +188,7 @@ export default class Unit
     this.race = props.race;
     this.portrait = props.portrait;
   }
-  public static createFromTemplate(
+  public static fromTemplate(
     template: UnitTemplate,
     race: RaceTemplate,
     baseAttributeValue: number,
@@ -233,7 +233,7 @@ export default class Unit
 
     return unit;
   }
-  public static createFromSaveData(data: UnitSaveData): Unit
+  public static fromSaveData(data: UnitSaveData): Unit
   {
     const unit = new Unit(
     {
@@ -1105,7 +1105,7 @@ export default class Unit
   public makeVirtualClone(): Unit
   {
     const data = this.serialize(true, false);
-    const clone = Unit.createFromSaveData(data);
+    const clone = Unit.fromSaveData(data);
 
     return clone;
   }
