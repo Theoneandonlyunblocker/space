@@ -218,35 +218,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     });
   });
 
-  // set races
-  const racePlacerFN = function(sector: Region, race: RaceTemplate)
-  {
-    sector.stars.forEach(star =>
-    {
-      star.race = race;
-    })
-  }
-
-  distributeDistributablesPerSector(
-    sectors,
-    distributionFlagsBySectorID,
-    TemplateIndexes.distributablesByDistributionGroup.races,
-    racePlacerFN,
-  )
-
-  // set resources
-  const resourcePlacerFN = function(sector: Region, resource: ResourceTemplate)
-  {
-    sector.stars[0].setResource(resource);
-  }
-  distributeDistributablesPerSector(
-    sectors,
-    distributionFlagsBySectorID,
-    TemplateIndexes.distributablesByDistributionGroup.resources,
-    resourcePlacerFN
-  );
-
-  // set players
+    // set players
   //   get start regions
   const startRegions: Region[] = (function setStartingRegions()
   {
@@ -307,13 +279,11 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     const player = players[i];
 
     player.addStar(star);
+    star.race = player.race;
 
     addDefenceBuildings(star, 2);
     star.buildManufactory();
   }
-
-  // setup pirates
-  const pirates = makePlayerForPirates();
 
   // set star distance from player
   (function setDistanceFromPlayer()
@@ -330,14 +300,46 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
       mapGenDataByStarID[star.id].distanceFromPlayerOwnedLocation = distanceToPlayer;
     });
   })();
+
+  // set races
+  const racePlacerFN = function(sector: Region, race: RaceTemplate)
+  {
+    const existingStarsWithRace = sector.stars.filter(star => Boolean(star.race));
+    const existingRaceInSector = existingStarsWithRace.length > 0 ? existingStarsWithRace[0].race : null;
+    
+    sector.stars.forEach(star =>
+    {
+      star.race = existingRaceInSector || race;
+    })
+  }
+
+  distributeDistributablesPerSector(
+    sectors,
+    distributionFlagsBySectorID,
+    TemplateIndexes.distributablesByDistributionGroup.races,
+    racePlacerFN,
+  )
+
+  // set resources
+  const resourcePlacerFN = function(sector: Region, resource: ResourceTemplate)
+  {
+    sector.stars[0].setResource(resource);
+  }
+  distributeDistributablesPerSector(
+    sectors,
+    distributionFlagsBySectorID,
+    TemplateIndexes.distributablesByDistributionGroup.resources,
+    resourcePlacerFN
+  );
+  
   // add unowned locations to independents
   const independents: Player[] = [];
   
   sectors.forEach(sector =>
   {
     const sectorRace = sector.stars[0].race;
-    
-    const sectorIndependents = sectorRace.generateRandomPlayer();
+
+    const sectorIndependents = sectorRace.generateIndependentPlayer();
     independents.push(sectorIndependents);
 
     setupIndependents(

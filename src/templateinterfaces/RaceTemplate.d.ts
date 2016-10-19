@@ -33,4 +33,6 @@ export declare interface RaceTemplate
     unitTemplate: UnitTemplate,
     allPortraitTemplates: TemplateCollection<PortraitTemplate>
   ): PortraitTemplate;
+
+  generateIndependentPlayer(): Player;
 }
