@@ -1,5 +1,6 @@
 /// <reference path="../../../lib/rng.d.ts" />
 
+import app from "../../../src/App"; // TODO global
 import FillerPoint from "../../../src/FillerPoint";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
@@ -339,7 +340,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   {
     const sectorRace = sector.stars[0].race;
 
-    const sectorIndependents = sectorRace.generateIndependentPlayer();
+    const sectorIndependents = sectorRace.generateIndependentPlayer(app.moduleData.Templates.SubEmblems);
     independents.push(sectorIndependents);
 
     setupIndependents(

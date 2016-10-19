@@ -2,6 +2,7 @@
 
 import UnitTemplate from "./UnitTemplate";
 import BuildingTemplate from "./BuildingTemplate";
+import SubEmblemTemplate from "./SubEmblemTemplate";
 import PortraitTemplate from "./PortraitTemplate";
 import ItemTemplate from "./ItemTemplate";
 import {DistributionData} from "./DistributionData";
@@ -34,5 +35,7 @@ export declare interface RaceTemplate
     allPortraitTemplates: TemplateCollection<PortraitTemplate>
   ): PortraitTemplate;
 
-  generateIndependentPlayer(): Player;
+  generateIndependentPlayer(
+    allEmblemTemplates: TemplateCollection<SubEmblemTemplate>
+  ): Player;
 }
