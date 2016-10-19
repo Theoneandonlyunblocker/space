@@ -9,6 +9,7 @@ import {DistributionData} from "./DistributionData";
 import TemplateCollection from "./TemplateCollection";
 
 import Fleet from "../Fleet";
+import Name from "../Name";
 import Player from "../Player";
 import Star from "../Star";
 import Unit from "../Unit";
@@ -17,7 +18,7 @@ import BuildingUpgradeData from "../BuildingUpgradeData";
 export declare interface RaceTemplate
 {
   type: string;
-  displayName: string;
+  displayName: Name;
   description: string;
   isNotPlayable?: boolean;
   distributionData: DistributionData;

@@ -214,9 +214,9 @@ export default class Player
 
       race:
       {
-        type: "dummy",
-        displayName: "",
-        description: "",
+        type: null,
+        displayName: null,
+        description: null,
 
         technologies: [],
         distributionData:
