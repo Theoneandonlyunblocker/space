@@ -1,11 +1,11 @@
 export declare interface DistributionData
 {
   /**
-   * relative probability resource is picked from pool of available resources
+   * relative probability distributable is picked from pool of available distributables
    */
   rarity: number;
   /**
-   * sector needs to have any of these flags to possibly spawn resource there
+   * distributor function will check these when choosing distributables
    */
   distributionGroups: string[];
 }
