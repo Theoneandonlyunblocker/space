@@ -183,12 +183,10 @@ export default class Unit
       })
     }
 
-    // TODO 10.19.2016 | deserialize portrait
-    // if (data.portraitKey)
-    // {
-    //   this.portrait = findItemWithKey<PortraitTemplate>(
-    //     app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
-    // }
+    if (data.portraitKey)
+    {
+      this.portrait = app.moduleData.Templates.Portraits[data.portraitKey];
+    }
   }
   private setInitialValues()
   {
