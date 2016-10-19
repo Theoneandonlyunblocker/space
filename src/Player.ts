@@ -34,6 +34,7 @@ import Options from "./Options";
 
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
+import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import {PlayerRaceTemplate} from "./templateinterfaces/PlayerRaceTemplate";
 import TechnologyRequirement from "./templateinterfaces/TechnologyRequirement";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
@@ -51,7 +52,7 @@ export default class Player
   colorAlpha: number;
   secondaryColor: Color;
   flag: Flag;
-  race: PlayerRaceTemplate;
+  race: RaceTemplate | PlayerRaceTemplate;
   units:
   {
     [id: number]: Unit;
@@ -115,7 +116,7 @@ export default class Player
     isAI: boolean;
     isIndependent: boolean;
 
-    race: PlayerRaceTemplate;
+    race: RaceTemplate | PlayerRaceTemplate;
     money: number;
     
     id?: number;
@@ -189,13 +190,18 @@ export default class Player
       this.resources = extendObject(props.resources);
     }
 
-    if (this.race.isNotPlayable)
+
+    if (!this.isIndependent)
     {
-      console.warn(`Race ${this.race.displayName} is marked as unplayable, but was assigned to player ${this.name}`);
+      if (this.race.isNotPlayable)
+      {
+        console.warn(`Race ${this.race.displayName} is marked as unplayable, but was assigned to player ${this.name}`);
+      }
+      
+      this.diplomacyStatus = new DiplomacyStatus(this);
+      this.initTechnologies(props.technologyData);
     }
 
-    this.diplomacyStatus = new DiplomacyStatus(this);
-    this.initTechnologies(props.technologyData);
   }
   public static createDummyPlayer(): Player
   {
@@ -255,8 +261,9 @@ export default class Player
   }
   initTechnologies(savedData?: PlayerTechnologySaveData): void
   {
+    const race = <PlayerRaceTemplate> this.race;
     this.playerTechnology = new PlayerTechnology(this.getResearchSpeed.bind(this),
-      this.race.technologies, savedData);
+      race.technologies, savedData);
 
     this.listeners["builtBuildingWithEffect_research"] = eventManager.addEventListener(
       "builtBuildingWithEffect_research",
@@ -277,7 +284,8 @@ export default class Player
   }
   public makeRandomAIController(game: Game): AIController
   {
-    const templateConstructor = this.race.getAITemplateConstructor(this);
+    const race = <PlayerRaceTemplate> this.race;
+    const templateConstructor = race.getAITemplateConstructor(this);
     const template = templateConstructor.construct(
     {
       player: this,
@@ -916,6 +924,11 @@ export default class Player
   }
   meetsTechnologyRequirements(requirements: TechnologyRequirement[]): boolean
   {
+    if (!this.playerTechnology)
+    {
+      return false;
+    }
+
     for (let i = 0; i < requirements.length; i++)
     {
       var requirement = requirements[i];
