@@ -65,7 +65,6 @@ export default function setupIndependents(props:
   
   independentStars.forEach(star =>
   {
-    
     const mapGenData = props.mapGenDataByStarID[star.id];
     const inverseMapGenDistance = 1 - mapGenData.mapGenDistance;
     const distanceFromPlayer = mapGenData.distanceFromPlayerOwnedLocation - 1;
@@ -85,11 +84,14 @@ export default function setupIndependents(props:
     if (star === commanderStar)
     {
       const template = getRandomArrayItem(buildableUnitTypes);
-      const unit = new Unit(template);
+      const unit = Unit.fromTemplate(
+        template,
+        star.race,
+        1.35,
+        1.35 + inverseMapGenDistance
+      );
       unit.name = "Pirate commander";
       
-      unit.setAttributes(1.35);
-      unit.setBaseHealth(1.35 + inverseMapGenDistance);
       props.player.addUnit(unit);
       
       units.push(unit);
@@ -104,11 +106,15 @@ export default function setupIndependents(props:
       
       const template = getRandomArrayItem(buildableUnitTypes);
       
-      const unit = new Unit(template);
+      const unit = Unit.fromTemplate(
+        template,
+        star.race,
+        unitStatsModifier,
+        unitHealthModifier
+      );
+
       unit.name = (isElite ? "Pirate elite" : "Pirate");
       
-      unit.setAttributes(unitStatsModifier);
-      unit.setBaseHealth(unitHealthModifier);
       props.player.addUnit(unit);
       
       units.push(unit);

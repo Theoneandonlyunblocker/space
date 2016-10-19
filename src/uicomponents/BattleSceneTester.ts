@@ -107,7 +107,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   makeUnit()
   {
     var template = getRandomProperty(app.moduleData.Templates.Units);
-    return new Unit(template);
+    return Unit.fromTemplate(template, getRandomProperty(app.moduleData.Templates.Races));
   }
 
   makeFormation(units: Unit[])

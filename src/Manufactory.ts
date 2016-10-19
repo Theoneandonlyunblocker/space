@@ -106,9 +106,14 @@ export default class Manufactory
         case "unit":
         {
           var unitTemplate = <UnitTemplate> thingData.template;
-          var unit = new Unit(unitTemplate);
-          unit.setAttributes(this.unitStatsModifier);
-          unit.setBaseHealth(this.unitHealthModifier);
+          
+          const unit = Unit.fromTemplate(
+            unitTemplate,
+            this.star.race,
+            this.unitStatsModifier,
+            this.unitHealthModifier,
+          );
+
           units.push(unit);
           this.player.addUnit(unit);
           break;
