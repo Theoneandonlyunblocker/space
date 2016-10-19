@@ -1,4 +1,5 @@
 import Fleet from "../../src/Fleet";
+import Name from "../../src/Name";
 import Player from "../../src/Player";
 import Star from "../../src/Star";
 import Unit from "../../src/Unit";
@@ -60,6 +61,7 @@ export function generateIndependentFleet(
   }
 
   const fleet = new Fleet(player, units, location, undefined, false);
+  fleet.name = new Name(`Independent ${race.displayName} Fleet`, false);
 
   return fleet;
 }
