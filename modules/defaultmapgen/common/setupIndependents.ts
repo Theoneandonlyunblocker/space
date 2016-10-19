@@ -4,6 +4,7 @@ import
   addDefenceBuildings
 } from "./mapGenUtils";
 
+import app from "../../../src/App"; // TODO global
 import Region from "../../../src/Region";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
@@ -62,11 +63,13 @@ export default function setupIndependents(props:
     const globalStrength = relativeDistanceFromPlayer * props.intensity + randRange(-props.variance, props.variance);
     const localStrength = star === commanderStar ? 1 : 0.5;
 
+
     star.race.generateIndependentFleet(
       props.player,
       star,
       globalStrength,
-      localStrength
+      localStrength,
+      app.moduleData.ruleSet.battle.maxUnitsPerSide,
     );
   });
 }

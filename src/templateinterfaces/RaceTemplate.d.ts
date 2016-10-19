@@ -49,5 +49,6 @@ export declare interface RaceTemplate
      * strength of units compared to nearby units (same region etc.)
      */
     localStrength: number,
+    maxUnitsPerSideInBattle: number,
   ): Unit[];
 }
