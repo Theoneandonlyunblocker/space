@@ -119,7 +119,7 @@ export default class Unit
     level: number;
     experienceForCurrentLevel: number;
 
-    battleStats: UnitBattleStatsSaveData;
+    battleStats?: UnitBattleStatsSaveData;
 
     maxItemSlots: {[slot: string]: number;};
     items: Item[];
@@ -150,26 +150,34 @@ export default class Unit
     this.level = props.level;
     this.experienceForCurrentLevel = props.experienceForCurrentLevel;
 
-    this.battleStats =
+    if (props.battleStats)
     {
-      moveDelay: props.battleStats.moveDelay,
-      side: props.battleStats.side,
-      position: props.battleStats.position,
-      currentActionPoints: props.battleStats.currentActionPoints,
-      guardAmount: props.battleStats.guardAmount,
-      guardCoverage: props.battleStats.guardCoverage,
-      captureChance: props.battleStats.captureChance,
-      statusEffects: props.battleStats.statusEffects,
-      lastHealthBeforeReceivingDamage: this.currentHealth,
-      queuedAction: !props.battleStats.queuedAction ? null :
+      this.battleStats =
       {
-        ability: app.moduleData.Templates.Abilities[props.battleStats.queuedAction.abilityTemplateKey],
-        targetId: props.battleStats.queuedAction.targetId,
-        turnsPrepared: props.battleStats.queuedAction.turnsPrepared,
-        timesInterrupted: props.battleStats.queuedAction.timesInterrupted
-      },
-      isAnnihilated: props.battleStats.isAnnihilated
-    };
+        moveDelay: props.battleStats.moveDelay,
+        side: props.battleStats.side,
+        position: props.battleStats.position,
+        currentActionPoints: props.battleStats.currentActionPoints,
+        guardAmount: props.battleStats.guardAmount,
+        guardCoverage: props.battleStats.guardCoverage,
+        captureChance: props.battleStats.captureChance,
+        statusEffects: props.battleStats.statusEffects,
+        lastHealthBeforeReceivingDamage: this.currentHealth,
+        queuedAction: props.battleStats.queuedAction ?
+          {
+            ability: app.moduleData.Templates.Abilities[props.battleStats.queuedAction.abilityTemplateKey],
+            targetId: props.battleStats.queuedAction.targetId,
+            turnsPrepared: props.battleStats.queuedAction.turnsPrepared,
+            timesInterrupted: props.battleStats.queuedAction.timesInterrupted
+          } :
+          null,
+        isAnnihilated: props.battleStats.isAnnihilated
+      };
+    }
+    else
+    {
+      this.resetBattleStats();
+    }
 
     this.items = this.makeUnitItems(props.maxItemSlots);
     props.items.forEach(item =>
@@ -360,7 +368,7 @@ export default class Unit
   {
     this.currentMovePoints = this.maxMovePoints;
   }
-  public resetBattleStats()
+  private resetBattleStats(): void
   {
     this.battleStats =
     {
