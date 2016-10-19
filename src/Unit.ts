@@ -334,7 +334,7 @@ export default class Unit
   {
     this.currentMovePoints = this.maxMovePoints;
   }
-  private resetBattleStats(): void
+  public resetBattleStats(): void
   {
     this.battleStats =
     {
