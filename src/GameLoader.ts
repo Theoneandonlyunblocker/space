@@ -385,9 +385,7 @@ export default class GameLoader
   }
   deserializeUnit(data: UnitSaveData): Unit
   {
-    var template = app.moduleData.Templates.Units[data.templateType];
-
-    var unit = new Unit(template, data.id, data);
+    const unit = Unit.createFromSaveData(data);
 
     this.unitsById[unit.id] = unit;
 

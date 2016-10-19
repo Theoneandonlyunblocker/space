@@ -1102,10 +1102,10 @@ export default class Unit
 
     return data;
   }
-  public makeVirtualClone()
+  public makeVirtualClone(): Unit
   {
-    var data = this.serialize(true, false);
-    var clone = new Unit(this.template, this.id, data);
+    const data = this.serialize(true, false);
+    const clone = Unit.createFromSaveData(data);
 
     return clone;
   }
