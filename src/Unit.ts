@@ -188,13 +188,22 @@ export default class Unit
     this.race = props.race;
     this.portrait = props.portrait;
   }
-  public static fromTemplate(
-    template: UnitTemplate,
-    race: RaceTemplate,
-    attributeMultiplier: number = 1,
-    healthMultiplier: number = 1,
-  ): Unit
+  public static fromTemplate(props:
   {
+    template: UnitTemplate;
+    race: RaceTemplate;
+
+    attributeMultiplier?: number;
+    healthMultiplier?: number;
+  }): Unit
+  {
+    const template = props.template;
+    const race = props.race;
+
+    const attributeMultiplier = isFinite(props.attributeMultiplier) ? props.attributeMultiplier : 1;
+    const healthMultiplier = isFinite(props.healthMultiplier) ? props.healthMultiplier : 1;
+
+
     const baseAttributeValue = app.moduleData.ruleSet.units.baseAttributeValue * attributeMultiplier;
     const attributeVariance = app.moduleData.ruleSet.units.attributeVariance;
     const baseHealthValue = app.moduleData.ruleSet.units.baseHealthValue * healthMultiplier;

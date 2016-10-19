@@ -108,11 +108,12 @@ export default class Manufactory
           var unitTemplate = <UnitTemplate> thingData.template;
           
           const unit = Unit.fromTemplate(
-            unitTemplate,
-            this.star.race,
-            this.unitStatsModifier,
-            this.unitHealthModifier,
-          );
+          {
+            template: unitTemplate,
+            race: this.star.race,
+            attributeMultiplier: this.unitStatsModifier,
+            healthMultiplier: this.unitHealthModifier,
+          });
 
           units.push(unit);
           this.player.addUnit(unit);
