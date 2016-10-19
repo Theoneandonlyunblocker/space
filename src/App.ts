@@ -23,6 +23,7 @@ import
 } from "./utility";
 
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
+import {PlayerRaceTemplate} from "./templateinterfaces/PlayerRaceTemplate";
 
 import addCommonToModuleData from "../modules/common/addCommonToModuleData";
 
@@ -239,7 +240,7 @@ class App
   private makePlayers()
   {
     var players: Player[] = [];
-    const candidateRaces = Object.keys(this.moduleData.Templates.Races).map(raceKey =>
+    const candidateRaces = <PlayerRaceTemplate[]> Object.keys(this.moduleData.Templates.Races).map(raceKey =>
     {
       return this.moduleData.Templates.Races[raceKey];
     }).filter(raceTemplate =>

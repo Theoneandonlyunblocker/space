@@ -11,7 +11,7 @@ import
 } from "../../colorGeneration";
 import
 {
-  getRandomProperty
+  getRandomArrayItem,
 } from "../../utility";
 
 import {PlayerRaceTemplate} from "../../templateinterfaces/PlayerRaceTemplate";
@@ -36,6 +36,19 @@ interface StateType
   secondaryColor?: Color;
   mainColor?: Color;
   race?: PlayerRaceTemplate;
+}
+
+function getRandomPlayerRaceTemplate(): PlayerRaceTemplate
+{
+  const candidateRaces = <PlayerRaceTemplate[]> Object.keys(app.moduleData.Templates.Races).map(raceKey =>
+  {
+    return app.moduleData.Templates.Races[raceKey];
+  }).filter(raceTemplate =>
+  {
+    return !raceTemplate.isNotPlayable;
+  });
+
+  return getRandomArrayItem(candidateRaces);
 }
 
 export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
@@ -78,7 +91,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
       name: this.props.initialName,
       mainColor: null,
       secondaryColor: null,
-      race: getRandomProperty(app.moduleData.Templates.Races)
+      race: getRandomPlayerRaceTemplate(),
     });
   }
   componentWillUpdate(nextProps: PropTypes, nextState: StateType): void
@@ -152,7 +165,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     {
       mainColor: mainColor,
       secondaryColor: secondaryColor,
-      race: getRandomProperty(app.moduleData.Templates.Races),
+      race: getRandomPlayerRaceTemplate(),
     });
   }
   makePlayer()
