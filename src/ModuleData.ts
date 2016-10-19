@@ -22,6 +22,7 @@ import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTempl
 import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate";
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
+import PortraitTemplate from "./templateinterfaces/PortraitTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
@@ -44,6 +45,7 @@ type TemplateKey =
   "Notifications" |
   "PassiveSkills" |
   "Personalities" |
+  "Portraits" |
   "Races" |
   "Resources" |
   "StatusEffects" |
@@ -68,6 +70,7 @@ interface Templates
   Notifications: TemplateIndex<NotificationTemplate>;
   PassiveSkills: TemplateIndex<PassiveSkillTemplate>;
   Personalities: TemplateIndex<Personality>;
+  Portraits: TemplateIndex<PortraitTemplate>;
   Races: TemplateIndex<RaceTemplate>;
   Resources: TemplateIndex<ResourceTemplate>;
   StatusEffects: TemplateIndex<StatusEffectTemplate>;
@@ -98,6 +101,7 @@ export default class ModuleData
     Notifications: {},
     PassiveSkills: {},
     Personalities: {},
+    Portraits: {},
     Races: {},
     Resources: {},
     StatusEffects: {},
