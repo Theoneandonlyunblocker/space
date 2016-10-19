@@ -188,10 +188,17 @@ export default class Unit
     this.race = props.race;
     this.portrait = props.portrait;
   }
-  public static createFromTemplate(template: UnitTemplate, race: RaceTemplate): Unit
+  public static createFromTemplate(
+    template: UnitTemplate,
+    race: RaceTemplate,
+    baseAttributeValue: number,
+    attributeVariance: number,
+    baseHealthValue: number,
+    healthVariance: number,
+  ): Unit
   {
-    const baseHealth = randInt(template.maxHealth * 200, template.maxHealth * 300);
-
+    const baseHealth = baseHealthValue * template.maxHealth;
+    const health = randInt(baseHealth - healthVariance, baseHealth + healthVariance);
     
     const unit = new Unit(
     {
@@ -200,10 +207,10 @@ export default class Unit
       id: idGenerators.unit++,
       name: race.getUnitName(),
 
-      maxHealth: baseHealth,
-      currentHealth: baseHealth,
+      maxHealth: health,
+      currentHealth: health,
 
-      attributes: Unit.getRandomAttributesFromTemplate(template),
+      attributes: Unit.getRandomAttributesFromTemplate(template, baseAttributeValue, attributeVariance),
 
       currentMovePoints: template.maxMovePoints,
       maxMovePoints: template.maxMovePoints,
@@ -296,8 +303,8 @@ export default class Unit
   // }
   private static getRandomValueFromAttributeLevel(
     level: number,
-    baseValue: number = 4,
-    variance: number = 1,
+    baseValue: number,
+    variance: number,
   ): number
   {
     const baseValueForLevel = baseValue * level;
@@ -306,8 +313,8 @@ export default class Unit
   }
   private static getRandomAttributesFromTemplate(
     template: UnitTemplate,
-    baseValue: number = 4,
-    variance: number = 1,
+    baseValue: number,
+    variance: number,
   ): UnitAttributesObject
   {
     return(
