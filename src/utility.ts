@@ -21,11 +21,11 @@ export function randRange(min: number, max: number)
 {
   return Math.random() * (max - min) + min;
 }
-export function getRandomArrayKey(target: any[])
+export function getRandomArrayKey<T>(target: T[]): number
 {
   return Math.floor(Math.random() * (target.length));
 }
-export function getRandomArrayItem(target: any[])
+export function getRandomArrayItem<T>(target: T[]): T
 {
   var _rnd = Math.floor(Math.random() * (target.length));
   return target[_rnd];
@@ -35,7 +35,7 @@ export function getSeededRandomArrayItem<T>(array: T[], rng: any): T
   var _rnd = Math.floor(rng.uniform() * array.length);
   return array[_rnd];
 }
-export function getRandomKey(target: {[props: string]: any;})
+export function getRandomKey<T>(target: {[props: string]: T;}): string
 {
   var _targetKeys = Object.keys(target);
   var _rnd = Math.floor(Math.random() * (_targetKeys.length));
@@ -90,9 +90,9 @@ export function getRandomProperty<T>(target: {[props: string]: T;}): T
   var _rndProp = target[getRandomKey(target)];
   return _rndProp;
 }
-export function getAllPropertiesWithKey(target: {[props: string]: any}, keyToFind: string)
+export function getAllPropertiesWithKey<T>(target: {[props: string]: T}, keyToFind: string): T[]
 {
-  var matchingProperties: any[] = [];
+  var matchingProperties: T[] = [];
   for (let key in target)
   {
     if (target[key][keyToFind])
@@ -103,7 +103,7 @@ export function getAllPropertiesWithKey(target: {[props: string]: any}, keyToFin
 
   return matchingProperties;
 }
-export function getRandomPropertyWithKey(target: {[props: string]: any}, keyToFind: string)
+export function getRandomPropertyWithKey<T>(target: {[props: string]: T}, keyToFind: string): T | null
 {
   var keys = Object.keys(target);
   while (keys.length > 0)
@@ -122,7 +122,7 @@ export function getRandomPropertyWithKey(target: {[props: string]: any}, keyToFi
 
   return null;
 }
-export function getRandomKeyWithWeights(target: {[prop: string]: number})
+export function getRandomKeyWithWeights(target: {[prop: string]: number}): string
 {
   var totalWeight: number = 0;
   for (let prop in target)
