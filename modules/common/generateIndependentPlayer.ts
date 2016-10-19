@@ -16,7 +16,7 @@ export function generateIndependentPlayer(
 {
   return new Player(
   {
-    isAI: false,
+    isAI: true,
     isIndependent: true,
 
     race: race,
