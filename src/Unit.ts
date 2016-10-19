@@ -188,9 +188,41 @@ export default class Unit
     this.race = props.race;
     this.portrait = props.portrait;
   }
-  public static createFromTemplate(template: UnitTemplate): Unit
+  public static createFromTemplate(template: UnitTemplate, race: RaceTemplate): Unit
   {
-    const unit: Unit = undefined;
+    const baseHealth = randInt(template.maxHealth * 200, template.maxHealth * 300);
+
+    
+    const unit = new Unit(
+    {
+      template: template,
+      
+      id: idGenerators.unit++,
+      name: race.getUnitName(),
+
+      maxHealth: baseHealth,
+      currentHealth: baseHealth,
+
+      attributes: Unit.getRandomAttributesFromTemplate(template),
+
+      currentMovePoints: template.maxMovePoints,
+      maxMovePoints: template.maxMovePoints,
+      timesActedThisTurn: 0,
+
+      abilities: getItemsFromWeightedProbabilities(template.possibleAbilities),
+      passiveSkills: template.possiblePassiveSkills ?
+        getItemsFromWeightedProbabilities(template.possiblePassiveSkills) :
+        [],
+
+      level: 1,
+      experienceForCurrentLevel: 0,
+
+      maxItemSlots: template.itemSlots,
+      items: [],
+
+      portrait: race.getUnitPortrait(),
+      race: race,
+    });
 
     return unit;
   }
@@ -227,14 +259,20 @@ export default class Unit
       battleStats: data.battleStats,
 
       maxItemSlots: data.items.maxItemSlots,
-      items: !data.serializedItems ? [] : data.serializedItems.map(itemSaveData =>
-      {
-        const itemTemplate = app.moduleData.Templates.Items[itemSaveData.templateType]; 
-        return new Item(itemTemplate, itemSaveData.id);
-      }),
+      items: data.serializedItems ?
+        data.serializedItems.map(itemSaveData =>
+        {
+          const itemTemplate = app.moduleData.Templates.Items[itemSaveData.templateType]; 
+          return new Item(itemTemplate, itemSaveData.id);
+        }) :
+        [],
 
-      portrait: !data.portraitKey ? null : app.moduleData.Templates.Portraits[data.portraitKey],
-      race: !data.raceKey ? null : app.moduleData.Templates.Races[data.raceKey],
+      portrait: data.portraitKey ?
+        app.moduleData.Templates.Portraits[data.portraitKey] :
+        null,
+      race: data.raceKey ?
+        app.moduleData.Templates.Races[data.raceKey] :
+        null,
     });
 
     return unit;
@@ -256,55 +294,30 @@ export default class Unit
   //     this.portrait = this.race.getUnitPortrait(this);
   //   }
   // }
-  private setInitialValues()
+  private static getRandomValueFromAttributeLevel(
+    level: number,
+    baseValue: number = 4,
+    variance: number = 1,
+  ): number
   {
-    this.resetBattleStats();
+    const baseValueForLevel = baseValue * level;
 
-    this.maxMovePoints = this.template.maxMovePoints;
-    this.resetMovePoints();
-    this.setInitialAbilities();
-    this.setInitialPassiveSkills();
-
-    this.level = 1;
-    this.experienceForCurrentLevel = 0;
-
-    this.timesActedThisTurn = 0;
+    return randInt(baseValueForLevel - variance, baseValueForLevel + variance);
   }
-  private setRandomBaseHealth(multiplier: number = 1)
+  private static getRandomAttributesFromTemplate(
+    template: UnitTemplate,
+    baseValue: number = 4,
+    variance: number = 1,
+  ): UnitAttributesObject
   {
-    var min = 200 * this.template.maxHealth * multiplier;
-    var max = 300 * this.template.maxHealth * multiplier;
-    this.maxHealth = randInt(min, max);
-    
-    this.currentHealth = this.maxHealth;
-  }
-  public setAttributes(baseSkill: number = 1, variance: number = 1)
-  {
-    var template = this.template;
-
-    var attributes =
+    return(
     {
-      attack: 1,
-      defence: 1,
-      intelligence: 1,
-      speed: 1,
+      attack: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.attack, baseValue, variance),
+      defence: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.defence, baseValue, variance),
+      intelligence: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.intelligence, baseValue, variance),
+      speed: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.speed, baseValue, variance),
       maxActionPoints: randInt(3, 5)
-    }
-
-    for (let attribute in template.attributeLevels)
-    {
-      var attributeLevel = template.attributeLevels[attribute];
-
-      var min = Math.max(3 * baseSkill * attributeLevel, 1);
-      var max = Math.max(5 * baseSkill * attributeLevel + variance, 1);
-
-      attributes[attribute] = randInt(min, max);
-      if (attributes[attribute] > 9) attributes[attribute] = 9;
-    }
-
-    this.baseAttributes = new UnitAttributes(attributes);
-    this.cachedAttributes = this.baseAttributes.clone();
-    this.attributesAreDirty = false;
+    });
   }
   // TODO 10.19.2016 | re-add this stuff
   // private setCulture()
@@ -660,17 +673,6 @@ export default class Unit
 
   //   return false;
   // }
-  private setInitialAbilities()
-  {
-    this.abilities = getItemsFromWeightedProbabilities<AbilityTemplate>(this.template.possibleAbilities);
-  }
-  private setInitialPassiveSkills()
-  {
-    if (this.template.possiblePassiveSkills)
-    {
-      this.passiveSkills = getItemsFromWeightedProbabilities<PassiveSkillTemplate>(this.template.possiblePassiveSkills);
-    }
-  }
   public getAllAbilities(): AbilityTemplate[]
   {
     return this.abilities.concat(this.items.getAbilities());
