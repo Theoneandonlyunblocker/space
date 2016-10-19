@@ -51,7 +51,11 @@ const federationAlliance: PlayerRaceTemplate =
 
   generateIndependentPlayer: (emblemTemplates) =>
   {
-    return generateIndependentPlayer(federationAlliance);
+    const player = generateIndependentPlayer(federationAlliance);
+
+    player.name = new Name(`${federationAlliance.displayName} Independents`, true);
+
+    return player;
   },
   generateIndependentFleet: (player, location, globalStrength, localStrength,
     maxUnitsPerSideInBattle) =>

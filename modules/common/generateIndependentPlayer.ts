@@ -1,4 +1,5 @@
 // import idGenerators from "../../src/idGenerators";
+import Name from "../../src/Name";
 import Player from "../../src/Player";
 // import
 // {
@@ -21,5 +22,7 @@ export function generateIndependentPlayer(
 
     race: race,
     money: -1,
+
+    name: new Name(`Independent ${race.displayName}`, race.displayName.isPlural),
   });
 }
