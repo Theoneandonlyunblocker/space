@@ -3,23 +3,13 @@ import
   sectorCommand,
   starBase
 } from "../../defaultbuildings/templates/Templates";
-import
-{
-  Flag_of_Edward_England
-} from "../../defaultemblems/SubEmblemTemplates";
-import federationAlliance from "../../defaultraces/templates/federationAlliance";
 
 import triangulate from "./triangulate";
 import MapGenDataByStarID from "./MapGenDataByStarID";
 
 import Region from "../../../src/Region";
 import Star from "../../../src/Star";
-import Name from "../../../src/Name";
 import Building from "../../../src/Building";
-import Player from "../../../src/Player";
-import Color from "../../../src/Color";
-import Emblem from "../../../src/Emblem";
-import Flag from "../../../src/Flag";
 import
 {
   aStar
@@ -459,34 +449,6 @@ export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCom
       location: star
     }));
   }
-}
-export function makePlayerForPirates(): Player
-{
-  const color =
-  {
-    main: Color.fromHex(0x000000),
-    alpha: 0,
-    secondary: Color.fromHex(0xFFFFFF)
-  };
-
-  const emblem = new Emblem([color.secondary], Flag_of_Edward_England);
-  const flag = new Flag(color.main, [emblem]);
-
-  const player = new Player(
-  {
-    isAI: true,
-    isIndependent: true,
-    name: new Name("Pirates", true),
-    
-    race: federationAlliance,
-    money: -9999,
-
-    color: color,
-
-    flag: flag
-  });
-
-  return player;
 }
 export function severLinksToNonAdjacentStars(star: Star)
 {

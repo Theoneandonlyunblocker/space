@@ -31,7 +31,6 @@ import
   getStarConnectedness,
   distributeDistributablesPerSector,
   makeSectors,
-  makePlayerForPirates,
   partiallySeverLinks,
 } from "../common/mapGenUtils";
 
@@ -331,13 +330,19 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
       mapGenDataByStarID[star.id].distanceFromPlayerOwnedLocation = distanceToPlayer;
     });
   })();
+  // add unowned locations to independents
+  const independents: Player[] = [];
   
-  // add unowned locations to pirates 
   sectors.forEach(sector =>
   {
+    const sectorRace = sector.stars[0].race;
+    
+    const sectorIndependents = sectorRace.generateRandomPlayer();
+    independents.push(sectorIndependents);
+
     setupIndependents(
     {
-      player: pirates,
+      player: sectorIndependents,
       region: sector,
       intensity: 1,
       variance: 0,
@@ -361,7 +366,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     width: options.defaultOptions.width,
     height: options.defaultOptions.height,
     seed: seed,
-    independents: [pirates]
+    independents: independents
   });
 }
 
