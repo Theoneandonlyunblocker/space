@@ -191,12 +191,15 @@ export default class Unit
   public static fromTemplate(
     template: UnitTemplate,
     race: RaceTemplate,
-    baseAttributeValue: number,
-    attributeVariance: number,
-    baseHealthValue: number,
-    healthVariance: number,
+    attributeMultiplier: number = 1,
+    healthMultiplier: number = 1,
   ): Unit
   {
+    const baseAttributeValue = app.moduleData.ruleSet.units.baseAttributeValue * attributeMultiplier;
+    const attributeVariance = app.moduleData.ruleSet.units.attributeVariance;
+    const baseHealthValue = app.moduleData.ruleSet.units.baseHealthValue * healthMultiplier;
+    const healthVariance = app.moduleData.ruleSet.units.healthVariance;
+
     const baseHealth = baseHealthValue * template.maxHealth;
     const health = randInt(baseHealth - healthVariance, baseHealth + healthVariance);
     
