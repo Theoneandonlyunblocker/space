@@ -100,8 +100,10 @@ export default class EconomyAI
       [archetypeType: string]: UnitTemplate[];
     } = {};
 
-    var buildableUnitTypes = player.getGloballyBuildableUnits().concat(
-      manufactory.getLocalUnitTypes());
+    const globalBuildableUnitTypes = player.getGloballyBuildableUnits();
+    const buildableUnitTypes = globalBuildableUnitTypes.concat(
+      manufactory.getUniqueLocalUnitTypes(globalBuildableUnitTypes)
+    )
 
     for (let i = 0; i < buildableUnitTypes.length; i++)
     {

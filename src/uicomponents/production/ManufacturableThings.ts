@@ -93,7 +93,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
 
   getManufacturableThings(key: TabKey)
   {
-    var manufacturableThings: ManufacturableThing[] = [];
+    let manufacturableThings: ManufacturableThing[];
     var selectedStar = this.props.selectedStar;
     var player = this.props.player;
 
@@ -101,28 +101,30 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     {
       case "units":
       {
-        manufacturableThings = manufacturableThings.concat(player.getGloballyBuildableUnits());
+        const buildableUnits = player.getGloballyBuildableUnits();
         if (selectedStar)
         {
           if (selectedStar.manufactory)
           {
-            manufacturableThings = manufacturableThings.concat(
-              selectedStar.manufactory.getLocalUnitTypes());
+            buildableUnits.push(...selectedStar.manufactory.getUniqueLocalUnitTypes(buildableUnits));
           }
         }
+
+        manufacturableThings = buildableUnits;
         break;
       }
       case "items":
       {
-        manufacturableThings = manufacturableThings.concat(player.getGloballyBuildableItems());
+        const buildableItems = player.getGloballyBuildableItems();
         if (selectedStar)
         {
           if (selectedStar.manufactory)
           {
-            manufacturableThings = manufacturableThings.concat(
-              selectedStar.manufactory.getLocalItemTypes());
+            buildableItems.push(...selectedStar.manufactory.getUniqueLocalItemTypes(buildableItems));
           }
         }
+
+        manufacturableThings = buildableItems;
         break;
       }
     }

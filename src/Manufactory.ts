@@ -149,6 +149,36 @@ export default class Manufactory
 
     return [];
   }
+  public getUniqueLocalUnitTypes(alreadyAdded: UnitTemplate[]): UnitTemplate[]
+  {
+    return this.getUniqueLocalManufacturableThings(alreadyAdded, "unit");
+  }
+  public getUniqueLocalItemTypes(alreadyAdded: ItemTemplate[]): ItemTemplate[]
+  {
+    return this.getUniqueLocalManufacturableThings(alreadyAdded, "item");
+  }
+  private getUniqueLocalManufacturableThings<T extends ManufacturableThing>(
+    alreadyAdded: T[],
+    type: "item" | "unit",
+    ): T[]
+  {
+    const alreadyAddedTypes:
+    {
+      [type: string]: boolean;
+    } = {};
+
+    alreadyAdded.forEach(manufacturableThing =>
+    {
+      alreadyAddedTypes[manufacturableThing.type] = true;
+    });
+
+    const localManufacturableThings = <T[]> this.getManufacturableThingsForType(type);
+    
+    return localManufacturableThings.filter(manufacturableThing =>
+    {
+      return !alreadyAddedTypes[manufacturableThing.type];
+    });
+  }
   getManufacturableThingsForType(type: "item" | "unit"): ManufacturableThing[]
   {
     switch (type)
