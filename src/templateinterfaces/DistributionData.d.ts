@@ -5,7 +5,7 @@ export declare interface DistributionData
    */
   rarity: number;
   /**
-   * distributor function will check these when choosing distributables
+   * distributor function can filter available distributables based on these
    */
   distributionGroups: string[];
 }

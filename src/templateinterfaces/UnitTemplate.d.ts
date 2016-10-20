@@ -1,5 +1,6 @@
 import AbilityBase from "./AbilityBase";
 import AbilityTemplate from "./AbilityTemplate";
+import {DistributionData} from "./DistributionData";
 import ManufacturableThing from "./ManufacturableThing";
 import PassiveSkillTemplate from "./PassiveSkillTemplate";
 import SpriteTemplate from "./SpriteTemplate";
@@ -66,6 +67,7 @@ declare interface UnitTemplate extends ManufacturableThing
   };
 
   unitDrawingFN: UnitDrawingFunction;
+  distributionData: DistributionData;
 }
 
 export default UnitTemplate;
