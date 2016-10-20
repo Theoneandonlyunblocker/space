@@ -362,7 +362,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
     const distributables = distributablesByDistributionGroup[distributionGroup];
     distributables.forEach(distributable =>
     {
-      probabilityWeights[distributable.type] = distributable.distributionData.rarity;
+      probabilityWeights[distributable.type] = distributable.distributionData.weight;
       allDistributablesByType[distributable.type] = distributable;
     });
   }

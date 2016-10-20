@@ -25,7 +25,7 @@ export const drones: RaceTemplate =
   description: "",
   distributionData:
   {
-    rarity: 1,
+    weight: 1,
     distributionGroups: [distributionGroups.common, distributionGroups.rare],
   },
 

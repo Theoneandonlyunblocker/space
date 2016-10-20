@@ -3,7 +3,7 @@ export declare interface DistributionData
   /**
    * relative probability distributable is picked from pool of available distributables
    */
-  rarity: number;
+  weight: number;
   /**
    * distributor function can filter available distributables based on these
    */

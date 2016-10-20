@@ -7,7 +7,7 @@ export const testResource1: ResourceTemplate =
   icon: "modules/common/resourcetemplates/img/test1.png",
   distributionData:
   {
-    rarity: 1,
+    weight: 1,
     distributionGroups: ["common"],
   }
 }
@@ -18,7 +18,7 @@ export const testResource2: ResourceTemplate =
   icon: "modules/common/resourcetemplates/img/test2.png",
   distributionData:
   {
-    rarity: 1,
+    weight: 1,
     distributionGroups: ["common"],
   }
 }
@@ -29,7 +29,7 @@ export const testResource3: ResourceTemplate =
   icon: "modules/common/resourcetemplates/img/test3.png",
   distributionData:
   {
-    rarity: 1,
+    weight: 1,
     distributionGroups: ["common"],
   }
 }
@@ -40,7 +40,7 @@ export const testResource4: ResourceTemplate =
   icon: "modules/common/resourcetemplates/img/test4.png",
   distributionData:
   {
-    rarity: 1,
+    weight: 1,
     distributionGroups: ["rare"],
   }
 }
@@ -51,7 +51,7 @@ export const testResource5: ResourceTemplate =
   icon: "modules/common/resourcetemplates/img/test5.png",
   distributionData:
   {
-    rarity: 1,
+    weight: 1,
     distributionGroups: ["rare"],
   }
 }

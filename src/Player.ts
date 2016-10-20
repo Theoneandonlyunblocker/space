@@ -221,7 +221,7 @@ export default class Player
         technologies: [],
         distributionData:
         {
-          rarity: 0,
+          weight: 0,
           distributionGroups: [],
         },
         

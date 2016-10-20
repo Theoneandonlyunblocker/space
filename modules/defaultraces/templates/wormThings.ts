@@ -27,7 +27,7 @@ const wormThings: PlayerRaceTemplate =
   description: "The gross guys",
   distributionData:
   {
-    rarity: 0,
+    weight: 0,
     distributionGroups: [],
   },
 

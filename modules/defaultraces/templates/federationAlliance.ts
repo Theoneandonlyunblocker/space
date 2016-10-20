@@ -27,7 +27,7 @@ const federationAlliance: PlayerRaceTemplate =
   description: "The good guys",
   distributionData:
   {
-    rarity: 0,
+    weight: 0,
     distributionGroups: [],
   },
 
