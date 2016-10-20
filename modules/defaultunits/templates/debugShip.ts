@@ -4,7 +4,6 @@ import * as UnitArchetypes from "../UnitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import {distributionGroups} from "../../common/distributionGroups";
-import {distributionGroups} from "../../common/distributionGroups";
 import itemSlot from "../../common/itemSlot";
 import
 {
