@@ -43,7 +43,7 @@ const unitRoleData:
   },
   elite:
   {
-    namePrefix: "Elite ",
+    namePrefix: "",
     health: 1.2,
     attributes: 1.2,
     filterCandidates: (candidates) =>
@@ -56,7 +56,7 @@ const unitRoleData:
   },
   leader:
   {
-    namePrefix: "Leader ",
+    namePrefix: "",
     health: 1.35,
     attributes: 1.35,
     filterCandidates: (candidates) =>
