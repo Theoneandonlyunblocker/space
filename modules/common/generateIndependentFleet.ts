@@ -6,10 +6,68 @@ import Unit from "../../src/Unit";
 
 import
 {
-  getRandomArrayItem,
-} from "../../src/utility";
-
+  getDistributablesWithGroups,
+  getRandomWeightedDistributable,
+} from "../../src/templateinterfaces/Distributable";
 import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
+import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
+
+import {distributionGroups} from "./distributionGroups";
+
+type UnitRole = "normal" |
+  "elite" |
+  "leader";
+const unitRoleData:
+{
+  [role: string]:
+  {
+    namePrefix: string;
+    health: number;
+    attributes: number;
+    filterCandidates: (candidates: UnitTemplate[]) => UnitTemplate[];
+  }
+} =
+{
+  normal:
+  {
+    namePrefix: "",
+    health: 1,
+    attributes: 1,
+    filterCandidates: (candidates) =>
+    {
+      return getDistributablesWithGroups(
+        candidates,
+        [distributionGroups.common],
+      );
+    },
+  },
+  elite:
+  {
+    namePrefix: "Elite ",
+    health: 1.2,
+    attributes: 1.2,
+    filterCandidates: (candidates) =>
+    {
+      return getDistributablesWithGroups(
+        candidates,
+        [distributionGroups.rare],
+      );
+    },
+  },
+  leader:
+  {
+    namePrefix: "Leader ",
+    health: 1.35,
+    attributes: 1.35,
+    filterCandidates: (candidates) =>
+    {
+      return getDistributablesWithGroups(
+        candidates,
+        [distributionGroups.unique],
+      );
+    },
+  },
+};
 
 export function generateIndependentFleet(
   race: RaceTemplate,
@@ -20,12 +78,12 @@ export function generateIndependentFleet(
   maxUnitsPerSideInBattle: number,
 ): Fleet
 {
-  // TODO 19.10.2016 | set distribution flags for unit templates
-  // eliteOnly, commanderOnly, etc.
-  const allUnitTypes = race.getBuildableUnitTypes(player);
+  const locationHasLeader = localStrength > 0.8;
+
+  const allBuildableUnitTypes = race.getBuildableUnitTypes(player);
 
   const unitCountFromGlobalStrength = maxUnitsPerSideInBattle * 0.34 + maxUnitsPerSideInBattle * 0.66 * globalStrength;
-  const unitCountFromLocalStrength = localStrength > 0.8 ? 1 : 0;
+  const unitCountFromLocalStrength = locationHasLeader ? 1 : 0;
 
   const unitCount = Math.min(
     Math.round(unitCountFromGlobalStrength + unitCountFromLocalStrength),
@@ -37,13 +95,28 @@ export function generateIndependentFleet(
   const units: Unit[] = [];
   for (let i = 0; i < unitCount; i++)
   {
-    const isElite = i < eliteCount;
+    let unitRole: UnitRole;
+    if (locationHasLeader && i === 0)
+    {
+      unitRole = "leader";
+    }
+    else if (i < eliteCount)
+    {
+      unitRole = "elite";
+    }
+    else
+    {
+      unitRole = "normal";
+    }
 
-    const healthModifier = isElite ? 1.2 : 1;
-    const statsModifier = isElite ? 1.2 : 1;
+    const candidateUnitTemplates = unitRoleData[unitRole].filterCandidates(allBuildableUnitTypes);
 
-    const unitTemplate = getRandomArrayItem(allUnitTypes);
-    const unitName = `${isElite ? "Elite " : ""}${race.getUnitName(unitTemplate)}`;
+    const unitTemplate = getRandomWeightedDistributable(candidateUnitTemplates);
+
+    const healthModifier = unitRoleData[unitRole].health;
+    const attributesModifier = unitRoleData[unitRole].attributes;
+
+    const unitName = `${unitRoleData[unitRole].namePrefix}${race.getUnitName(unitTemplate)}`;
 
     const unit = Unit.fromTemplate(
     {
@@ -52,7 +125,7 @@ export function generateIndependentFleet(
 
       name: unitName,
 
-      attributeMultiplier: (1 + globalStrength * 0.2) * statsModifier,
+      attributeMultiplier: (1 + globalStrength * 0.2) * attributesModifier,
       healthMultiplier: (1 + globalStrength) * healthModifier,
     });
 
