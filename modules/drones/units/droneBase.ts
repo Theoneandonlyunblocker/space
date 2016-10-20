@@ -67,6 +67,6 @@ export const droneBase: UnitTemplate =
   distributionData:
   {
     weight: 1,
-    distributionGroups: [distributionGroups.common],
+    distributionGroups: [distributionGroups.unique],
   },
 };

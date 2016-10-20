@@ -61,6 +61,6 @@ export const droneSwarm: UnitTemplate =
   distributionData:
   {
     weight: 1,
-    distributionGroups: [distributionGroups.unique],
+    distributionGroups: [distributionGroups.common],
   },
 };
