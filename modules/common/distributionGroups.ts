@@ -2,7 +2,7 @@ export const distributionGroups =
 {
   common: "common",
   rare: "rare",
+  unique: "unique",
 
-  eliteOnly: "eliteOnly",
-  commanderOnly: "commanderOnly",
+  debugModeOnly: "debugModeOnly",
 };

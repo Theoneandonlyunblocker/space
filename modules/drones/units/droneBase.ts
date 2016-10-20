@@ -4,7 +4,7 @@ import defaultUnitDrawingFunction from "../../defaultunits/defaultUnitDrawingFun
 import * as UnitArchetypes from "../../defaultunits/UnitArchetypes";
 
 import * as CommonAbility from "../../common/abilitytemplates/abilities";
-
+import {distributionGroups} from "../../common/distributionGroups";
 
 import * as DroneAbility from "../abilities";
 
@@ -64,4 +64,9 @@ export const droneBase: UnitTemplate =
     },
   ],
   itemSlots: {},
+  distributionData:
+  {
+    weight: 1,
+    distributionGroups: [distributionGroups.common],
+  },
 };
