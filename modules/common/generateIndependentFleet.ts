@@ -90,7 +90,7 @@ export function generateIndependentFleet(
     maxUnitsPerSideInBattle
   );
 
-  const eliteCount = Math.ceil((unitCount / maxUnitsPerSideInBattle - 0.499) * 2);
+  const eliteCount = Math.ceil((unitCount / maxUnitsPerSideInBattle - 0.499) * 3);
 
   const units: Unit[] = [];
   for (let i = 0; i < unitCount; i++)
