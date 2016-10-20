@@ -3,6 +3,7 @@ import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 import * as UnitArchetypes from "../UnitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
+import {distributionGroups} from "../../common/distributionGroups";
 import itemSlot from "../../common/itemSlot";
 import
 {
@@ -70,7 +71,17 @@ const shieldBoat: UnitTemplate =
     [itemSlot.mid]: 1,
     [itemSlot.high]: 1,
   },
-  unitDrawingFN: defaultUnitDrawingFunction
+  unitDrawingFN: defaultUnitDrawingFunction,
+  distributionData:
+  {
+    weight: 1,
+    distributionGroups:
+    [
+      distributionGroups.common,
+      distributionGroups.rare,
+      distributionGroups.unique
+    ],
+  }
 }
 
 export default shieldBoat;

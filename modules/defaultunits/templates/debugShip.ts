@@ -3,6 +3,8 @@ import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 import * as UnitArchetypes from "../UnitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
+import {distributionGroups} from "../../common/distributionGroups";
+import {distributionGroups} from "../../common/distributionGroups";
 import itemSlot from "../../common/itemSlot";
 import
 {
@@ -124,7 +126,12 @@ const debugShip: UnitTemplate =
     [itemSlot.mid]: 1,
     [itemSlot.high]: 1,
   },
-  unitDrawingFN: defaultUnitDrawingFunction
+  unitDrawingFN: defaultUnitDrawingFunction,
+  distributionData:
+  {
+    weight: 0,
+    distributionGroups: [distributionGroups.debugModeOnly],
+  }
 }
 
 export default debugShip;

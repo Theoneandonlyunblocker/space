@@ -3,6 +3,7 @@ import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 import * as UnitArchetypes from "../UnitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
+import {distributionGroups} from "../../common/distributionGroups";
 import itemSlot from "../../common/itemSlot";
 import
 {
@@ -55,7 +56,16 @@ const fighterSquadron: UnitTemplate =
     [itemSlot.mid]: 3,
     [itemSlot.high]: 2,
   },
-  unitDrawingFN: defaultUnitDrawingFunction
+  unitDrawingFN: defaultUnitDrawingFunction,
+  distributionData:
+  {
+    weight: 1,
+    distributionGroups:
+    [
+      distributionGroups.common,
+      distributionGroups.rare,
+    ],
+  }
 }
 
 export default fighterSquadron;
