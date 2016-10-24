@@ -8,10 +8,17 @@ import
 import Unit from "./Unit";
 import GuardCoverage from "./GuardCoverage";
 import Battle from "./Battle";
+import StatusEffect from "./StatusEffect";
 import
 {
   areaSingle,
 } from "./targeting";
+
+interface AbilityEffectTemplateWithSource
+{
+  template: AbilityEffectTemplate;
+  sourceStatusEffect: StatusEffect | null;
+}
 
 export interface AbilityUseData
 {
@@ -23,6 +30,7 @@ export interface AbilityUseData
 export interface AbilityEffectData
 {
   sourceAbility: AbilityTemplate | null;
+  sourceStatusEffect: StatusEffect | null;
   effectTemplate: AbilityEffectTemplate;
   user: Unit;
   target: Unit;
@@ -34,7 +42,10 @@ export interface AbilityEffectDataByPhase
   abilityEffects: AbilityEffectData[];
   afterUse: AbilityEffectData[];
 }
-export function getAbilityEffectDataByPhase(battle: Battle, abilityUseData: AbilityUseData): AbilityEffectDataByPhase
+export function getAbilityEffectDataByPhase(
+  battle: Battle,
+  abilityUseData: AbilityUseData
+): AbilityEffectDataByPhase
 {
   abilityUseData.actualTarget = getTargetOrGuard(battle, abilityUseData);
 
@@ -145,8 +156,12 @@ function activeUnitsFilterFN(unit: Unit)
 {
   return unit && unit.isActiveInBattle();
 }
-function getAbilityEffectDataFromEffectTemplate(battle: Battle, abilityUseData: AbilityUseData,
-  effectTemplate: AbilityEffectTemplate, target: Unit): AbilityEffectData[]
+function getAbilityEffectDataFromEffectTemplate(battle: Battle,
+  abilityUseData: AbilityUseData,
+  effectTemplate: AbilityEffectTemplate,
+  target: Unit,
+  sourceStatusEffect: StatusEffect | null,
+): AbilityEffectData[]
 {
   const effectData: AbilityEffectData[] = [];
 
@@ -161,7 +176,8 @@ function getAbilityEffectDataFromEffectTemplate(battle: Battle, abilityUseData: 
       effectTemplate: effectTemplate,
       user: abilityUseData.user,
       target: unitInEffectArea,
-      trigger: effectTemplate.trigger
+      trigger: effectTemplate.trigger,
+      sourceStatusEffect: sourceStatusEffect,
     });
 
     const attachedEffects = effectTemplate.attachedEffects || [];
@@ -172,49 +188,69 @@ function getAbilityEffectDataFromEffectTemplate(battle: Battle, abilityUseData: 
         battle,
         abilityUseData,
         attachedEffectTemplate,
-        unitInEffectArea
+        unitInEffectArea,
+        sourceStatusEffect,
       ));
     });
   });
 
   return effectData;
 }
-function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData: AbilityUseData,
-  effectTemplates: AbilityEffectTemplate[], target: Unit): AbilityEffectData[]
+function getAbilityEffectDataFromEffectTemplates(
+  battle: Battle,
+  abilityUseData: AbilityUseData,
+  effectTemplatesWithSource: AbilityEffectTemplateWithSource[],
+  target: Unit,
+): AbilityEffectData[]
 {
   const effectData: AbilityEffectData[] = [];
 
-  effectTemplates.forEach(effectTemplate =>
+  effectTemplatesWithSource.forEach(effectTemplateWithSource =>
   {
     effectData.push(...getAbilityEffectDataFromEffectTemplate(
       battle,
       abilityUseData,
-      effectTemplate,
+      effectTemplateWithSource.template,
       target,
+      effectTemplateWithSource.sourceStatusEffect,
     ));
   });
 
   return effectData;
 }
-function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
+function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplateWithSource[]
 {
-  const beforeUseEffects: AbilityEffectTemplate[] = [];
+  const beforeUseEffects: AbilityEffectTemplateWithSource[] = [];
   if (abilityUseData.ability.beforeUse)
   {
-    beforeUseEffects.push(...abilityUseData.ability.beforeUse);
+    beforeUseEffects.push(...abilityUseData.ability.beforeUse.map((effectTemplate) =>
+    {
+      return(
+      {
+        template: effectTemplate,
+        sourceStatusEffect: null,
+      });
+    }));
   }
 
   abilityUseData.user.battleStats.statusEffects.forEach(statusEffect =>
   {
     if (statusEffect.template.beforeAbilityUse)
     {
-      beforeUseEffects.push(...statusEffect.template.beforeAbilityUse);
+      beforeUseEffects.push(...statusEffect.template.beforeAbilityUse.map((effectTemplate) =>
+      {
+        return(
+        {
+          template: effectTemplate,
+          sourceStatusEffect: statusEffect,
+        });
+      }));
     }
   });
 
   return beforeUseEffects;
 }
-function getAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
+function getAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplateWithSource[]
 {
   var abilityUseEffects: AbilityEffectTemplate[] = [];
   abilityUseEffects.push(abilityUseData.ability.mainEffect);
@@ -224,21 +260,42 @@ function getAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEf
     abilityUseEffects = abilityUseEffects.concat(abilityUseData.ability.secondaryEffects);
   }
 
-  return abilityUseEffects;
+  return abilityUseEffects.map((effectTemplate) =>
+  {
+    return(
+    {
+      template: effectTemplate,
+      sourceStatusEffect: null,
+    });
+  });
 }
-function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
+function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplateWithSource[]
 {
-  const afterUseEffects: AbilityEffectTemplate[] = [];
+  const afterUseEffects: AbilityEffectTemplateWithSource[] = [];
   if (abilityUseData.ability.afterUse)
   {
-    afterUseEffects.push(...abilityUseData.ability.afterUse);
+    afterUseEffects.push(...abilityUseData.ability.afterUse.map((effectTemplate) =>
+    {
+      return(
+      {
+        template: effectTemplate,
+        sourceStatusEffect: null,
+      });
+    }));
   }
 
   abilityUseData.user.battleStats.statusEffects.forEach(statusEffect =>
   {
     if (statusEffect.template.afterAbilityUse)
     {
-      afterUseEffects.push(...statusEffect.template.afterAbilityUse);
+      afterUseEffects.push(...statusEffect.template.afterAbilityUse.map((effectTemplate) =>
+      {
+        return(
+        {
+          template: effectTemplate,
+          sourceStatusEffect: statusEffect,
+        });
+      }));
     }
   });
   
@@ -251,6 +308,7 @@ function makeSelfAbilityEffectData(
   return(
   {
     sourceAbility: null,
+    sourceStatusEffect: null,
     effectTemplate:
     {
       id: name,
@@ -259,7 +317,7 @@ function makeSelfAbilityEffectData(
     },
     user: user,
     target: user,
-    trigger: null
+    trigger: null,
   });
 }
 function getDefaultBeforeUseEffects(abilityUseData: AbilityUseData): AbilityEffectData[]

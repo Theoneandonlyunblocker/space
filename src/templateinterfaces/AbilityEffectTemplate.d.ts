@@ -7,6 +7,7 @@ import
 
 import Unit from "../Unit";
 import Battle from "../Battle";
+import StatusEffect from "../StatusEffect";
 import
 {
   GetUnitsInAreaFN
@@ -16,7 +17,8 @@ export type AbilityEffectTrigger = (
   user: Unit,
   target: Unit,
   battle: Battle,
-  executedEffectsResult: ExecutedEffectsResult
+  executedEffectsResult: ExecutedEffectsResult,
+  sourceStatusEffect: StatusEffect | null,
 ) => boolean;
 
 export declare interface AbilityEffectTemplate

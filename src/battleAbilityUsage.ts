@@ -22,7 +22,12 @@ export interface AbilityUseEffect
   newEvaluation: number;
 }
 
-export function useAbility(battle: Battle, ability: AbilityTemplate, user: Unit, target: Unit): void
+export function useAbility(
+  battle: Battle,
+  ability: AbilityTemplate,
+  user: Unit,
+  target: Unit,
+): void
 {
   const effectDataByPhase = getAbilityEffectDataByPhase(battle,
   {
@@ -33,8 +38,12 @@ export function useAbility(battle: Battle, ability: AbilityTemplate, user: Unit,
 
   executeFullAbilityEffects(battle, effectDataByPhase);
 }
-export function useAbilityAndGetUseEffects(battle: Battle, ability: AbilityTemplate,
-  user: Unit, target: Unit): AbilityUseEffect[]
+export function useAbilityAndGetUseEffects(
+  battle: Battle,
+  ability: AbilityTemplate,
+  user: Unit,
+  target: Unit,
+): AbilityUseEffect[]
 {
   const effectDataByPhase = getAbilityEffectDataByPhase(battle,
   {
@@ -98,7 +107,13 @@ function shouldEffectActionTrigger(
     return true;
   }
 
-  return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target, battle, executedEffectsResult);
+  return abilityEffectData.trigger(
+    abilityEffectData.user,
+    abilityEffectData.target,
+    battle,
+    executedEffectsResult,
+    abilityEffectData.sourceStatusEffect,
+  );
 }
 function executeAbilityEffectData(
   battle: Battle,
@@ -115,14 +130,23 @@ function executeAbilityEffectData(
     abilityEffectData.user,
     abilityEffectData.target,
     battle,
-    executedEffectsResult
+    executedEffectsResult,
+    abilityEffectData.sourceStatusEffect,
   );
 
   return true;
 }
 function getIDForAbilityUseEffect(abilityEffectData: AbilityEffectData): string
 {
-  const sourceString = abilityEffectData.sourceAbility ? abilityEffectData.sourceAbility.type + "." : "";
+  let sourceString = "";
+  if (abilityEffectData.sourceStatusEffect)
+  {
+    sourceString = abilityEffectData.sourceStatusEffect.template.type + ".";
+  }
+  else if (abilityEffectData.sourceAbility)
+  {
+    sourceString = abilityEffectData.sourceAbility.type + ".";
+  }
 
   return `${sourceString}${abilityEffectData.effectTemplate.id}`;
 }

@@ -1,5 +1,6 @@
 import Unit from "../Unit";
 import Battle from "../Battle";
+import StatusEffect from "../StatusEffect";
 
 export declare interface ExecutedEffectsResult
 {
@@ -8,5 +9,11 @@ export declare interface ExecutedEffectsResult
 
 export declare interface AbilityEffectAction
 {
-  (user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult): void;
+  (
+    user: Unit,
+    target: Unit,
+    battle: Battle,
+    executedEffectsResult: ExecutedEffectsResult,
+    sourceStatusEffect: StatusEffect | null,
+  ): void;
 }
