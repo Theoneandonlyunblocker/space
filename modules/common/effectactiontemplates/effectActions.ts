@@ -86,7 +86,7 @@ const calculateHealthAdjustment = (user: Unit, target: Unit, data: HealthAdjustm
 
 interface ExecutedEffectsResultAdjustment
 {
-  executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) => number;
+  executedEffectsResultAdjustment?: (executedEffectsResult: ExecutedEffectsResult) => number;
 }
 export enum resultType
 {
