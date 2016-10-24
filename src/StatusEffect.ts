@@ -9,6 +9,8 @@ export default class StatusEffect
   public id: number;
   public template: StatusEffectTemplate;
   public duration: number; // -1 === infinite
+  // incremented after status effect actions are called
+  public turnsHasBeenActiveFor: number = 0;
 
   constructor(template: StatusEffectTemplate, duration: number, id?: number)
   {
@@ -18,15 +20,20 @@ export default class StatusEffect
   }
   public static fromData(data: StatusEffectSaveData): StatusEffect
   {
-    return new StatusEffect(
+    const effect = new StatusEffect(
       app.moduleData.Templates.StatusEffects[data.templateType],
       data.duration,
       data.id,
     );
+
+    effect.turnsHasBeenActiveFor = data.turnsHasBeenActiveFor;
+
+    return effect;
   }
 
   public processTurnEnd(): void
   {
+    this.turnsHasBeenActiveFor++;
     if (this.duration > 0)
     {
       this.duration--;
@@ -39,6 +46,7 @@ export default class StatusEffect
       id: this.id,
       templateType: this.template.type,
       duration: this.duration,
+      turnsHasBeenActiveFor: this.turnsHasBeenActiveFor,
     });
   }
 }
