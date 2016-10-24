@@ -28,13 +28,16 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
   handleChangeRace(e: React.FormEvent)
   {
     const target = <HTMLInputElement> e.target;
-    const newRace = this.props.availableRaces[target.value];
+    const newRace = this.props.availableRaces.filter((raceTemplate) =>
+    {
+      return raceTemplate.type === target.value;
+    })[0];
 
     this.props.changeRace(newRace);
   }
   
   render()
-  { 
+  {
     return(
       React.DOM.select(
       {
@@ -51,7 +54,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
             value: race.type,
             title: race.description,
           },
-            race.displayName
+            race.displayName.toString()
           )
         })
       )
