@@ -1,12 +1,15 @@
 import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
+import idGenerators from "./idGenerators";
 
 export default class StatusEffect
 {
-  template: StatusEffectTemplate;
-  duration: number; // -1 === infinite
+  public id: number;
+  public template: StatusEffectTemplate;
+  public duration: number; // -1 === infinite
 
-  constructor(template: StatusEffectTemplate, duration: number)
+  constructor(template: StatusEffectTemplate, duration: number, id?: number)
   {
+    this.id = isFinite(id) ? id : idGenerators.statusEffect++;
     this.template = template;
     this.duration = duration;
   }

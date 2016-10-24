@@ -7,6 +7,7 @@ export interface IDGeneratorValues
   unit: number;
   building: number;
   objective: number;
+  statusEffect: number;
 }
 
 class IDGenerator implements IDGeneratorValues
@@ -18,6 +19,7 @@ class IDGenerator implements IDGeneratorValues
   public unit: number = 0;
   public building: number = 0;
   public objective: number = 0;
+  public statusEffect: number = 0;
   
   constructor()
   {
