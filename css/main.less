@@ -356,6 +356,13 @@ ul, ol
   box-shadow: 0px 0px 12px #fff inset, 0px 0px 10px #ff0;
 }
 
+.prevent-text-overflow
+{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 #react-container
 {
   height: 100%;
@@ -651,8 +658,7 @@ ul, ol
   position: relative;
   height: 100%;
   width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
+  .prevent-text-overflow;
   text-overflow: clip;
   
   transition: background-color 100ms;
@@ -1804,8 +1810,7 @@ ul, ol
     text-align: left;
     overflow: hidden;
     max-width: 90px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    .prevent-text-overflow;
   }
   .unit-list-strength
   {
@@ -2181,7 +2186,7 @@ ul, ol
 {
   max-width: 300px;
   overflow: hidden;
-  text-overflow: ellipsis;
+  .prevent-text-overflow;
 }
 
 @top-bar-height: 2em;
@@ -2622,8 +2627,8 @@ ul, ol
   padding: 0;
   color: @text-color;
   max-width: 7em;
-  text-overflow: ellipsis;
   cursor: text;
+  .prevent-text-overflow;
 }
 
 .fleet-info-strength
@@ -2682,7 +2687,7 @@ ul, ol
   padding: 0;
   color: @text-color;
   width: 100%;
-  text-overflow: ellipsis;
+  .prevent-text-overflow;
 }
 
 .fleet-unit-info-icon-container
@@ -3123,7 +3128,8 @@ ul, ol
 
 .item-list td
 {
-  white-space: nowrap;
+  max-width: 10em;
+  .prevent-text-overflow;
 }
 
 .reserved-item
@@ -3173,10 +3179,8 @@ ul, ol
 
 .item-list-unitName
 {
-  overflow: hidden;
   max-width: 110px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  .prevent-text-overflow;
 }
 
 .menu-unit-info
@@ -3666,8 +3670,7 @@ ul, ol
 .save-list-name
 {
   max-width: 400px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  .prevent-text-overflow;
 }
 
 .save-list-delete
@@ -4050,7 +4053,7 @@ ul, ol
   width: 8em;
   height: 1.5em;
   margin: 0.5em;
-  text-overflow: ellipsis;
+  .prevent-text-overflow;
   @media(max-width: 650px)
   {
     width: 5em;
@@ -4373,8 +4376,7 @@ button.player-setup-remove-player
 .map-gen-option-label
 {
   flex: 1 1 40%;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
+  .prevent-text-overflow;
 }
 
 .map-gen-slider-thumb-mixin
@@ -4586,9 +4588,7 @@ button.player-setup-remove-player
   .manufacturable-things-list-item-name
   {
     max-width: 10em;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    .prevent-text-overflow;
   }
 }
 
@@ -4957,8 +4957,7 @@ button.player-setup-remove-player
 .sfx-fragment-prop-name
 {
   font-size: 0.8em;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  .prevent-text-overflow;
   flex: 1 1 auto;
 }
 
