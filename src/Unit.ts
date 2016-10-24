@@ -414,14 +414,16 @@ export default class Unit
   {
     this.battleStats.moveDelay += amount;
   }
-  public updateStatusEffects()
+  public updateStatusEffects(): void
   {
-    for (let i = 0; i < this.battleStats.statusEffects.length; i++)
+    for (var i = this.battleStats.statusEffects.length - 1; i >= 0; i--)
     {
-      this.battleStats.statusEffects[i].processTurnEnd();
-      if (this.battleStats.statusEffects[i].duration === 0)
+      const statusEffect = this.battleStats.statusEffects[i];
+
+      statusEffect.processTurnEnd();
+      if (statusEffect.turnsHasBeenActiveFor >= statusEffect.turnsToStayActiveFor)
       {
-        this.removeStatusEffect(this.battleStats.statusEffects[i]);
+        this.removeStatusEffect(statusEffect);
       }
     }
 
@@ -569,7 +571,7 @@ export default class Unit
     {
       throw new Error("Tried to add duplicate status effect to unit " + this.name);
     }
-    else if (statusEffect.duration === 0)
+    else if (statusEffect.turnsToStayActiveFor === 0)
     {
       console.warn("Tried to add status effect", statusEffect, "with 0 duration");
       return;

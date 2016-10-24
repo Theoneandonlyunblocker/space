@@ -8,21 +8,22 @@ export default class StatusEffect
 {
   public id: number;
   public template: StatusEffectTemplate;
-  public duration: number; // -1 === infinite
+  // public duration: number; // -1 === infinite
   // incremented after status effect actions are called
   public turnsHasBeenActiveFor: number = 0;
+  public turnsToStayActiveFor: number;
 
-  constructor(template: StatusEffectTemplate, duration: number, id?: number)
+  constructor(template: StatusEffectTemplate, turnsToStayActiveFor: number, id?: number)
   {
     this.id = isFinite(id) ? id : idGenerators.statusEffect++;
     this.template = template;
-    this.duration = duration;
+    this.turnsToStayActiveFor = turnsToStayActiveFor;
   }
   public static fromData(data: StatusEffectSaveData): StatusEffect
   {
     const effect = new StatusEffect(
       app.moduleData.Templates.StatusEffects[data.templateType],
-      data.duration,
+      data.turnsToStayActiveFor,
       data.id,
     );
 
@@ -34,10 +35,6 @@ export default class StatusEffect
   public processTurnEnd(): void
   {
     this.turnsHasBeenActiveFor++;
-    if (this.duration > 0)
-    {
-      this.duration--;
-    }
   }
   public serialize(): StatusEffectSaveData
   {
@@ -45,7 +42,7 @@ export default class StatusEffect
     {
       id: this.id,
       templateType: this.template.type,
-      duration: this.duration,
+      turnsToStayActiveFor: this.turnsToStayActiveFor,
       turnsHasBeenActiveFor: this.turnsHasBeenActiveFor,
     });
   }
