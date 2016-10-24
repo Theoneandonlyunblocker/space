@@ -67,56 +67,59 @@ export const merge: AbilityTemplate =
   getPossibleTargets: targetAllies,
   mainEffect:
   {
-    id: "removeOwnTroops",
+    id: "removeOwnHealth",
     executeAction: bindEffectActionData(EffectActions.adjustHealth,
     {
-      maxHealthPercentage: 0.25,
+      maxHealthPercentage: -0.25,
     }),
     getUnitsInArea: (user) => [user],
     sfx: placeholderSFX,
-    attachedEffects:
-    [
-      {
-        id: "increaseAllyTroops",
-        getUnitsInArea: areaSingle,
-        trigger: (user, target, battle, executedEffectsResult) =>
-        {
-          return Boolean(executedEffectsResult[resultType.healthChanged]);
-        },
-        executeAction: bindEffectActionData(EffectActions.adjustCurrentAndMaxHealth,
-        {
-          executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
-          {
-            return executedEffectsResult[-resultType.healthChanged];
-          },
-        }),
-      },
-      {
-        id: "addStatusEffect",
-        getUnitsInArea: areaSingle,
-        trigger: (user, target, battle, executedEffectsResult) =>
-        {
-          return Boolean(executedEffectsResult[resultType.healthChanged]);
-        },
-        executeAction: bindEffectActionData(EffectActions.addStatusEffect,
-        {
-          duration: -1,
-          template:
-          {
-            type: "merge",
-            displayName: "Merge",
-            attributes:
-            {
-              attack: {flat: 1},
-              defence: {flat: 1},
-              intelligence: {flat: 1},
-              speed: {flat: 1},
-            },
-          },
-        }),
-      },
-    ],
   },
+  secondaryEffects:
+  [
+    {
+      id: "addStatusEffect",
+      getUnitsInArea: areaSingle,
+      trigger: (user, target, battle, executedEffectsResult) =>
+      {
+        return Boolean(executedEffectsResult[resultType.healthChanged]);
+      },
+      executeAction: bindEffectActionData(EffectActions.addStatusEffect,
+      {
+        duration: -1,
+        template:
+        {
+          type: "merge",
+          displayName: "Merge",
+          attributes:
+          {
+            attack: {flat: 1},
+            defence: {flat: 1},
+            intelligence: {flat: 1},
+            speed: {flat: 1},
+          },
+        },
+      }),
+      attachedEffects:
+      [
+        {
+          id: "addTargetHealth",
+          getUnitsInArea: areaSingle,
+          trigger: (user, target, battle, executedEffectsResult) =>
+          {
+            return Boolean(executedEffectsResult[resultType.healthChanged]);
+          },
+          executeAction: bindEffectActionData(EffectActions.adjustHealth,
+          {
+            executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
+            {
+              return -executedEffectsResult[resultType.healthChanged];
+            },
+          }),
+        },
+      ],
+    },
+  ],
 };
 export const infest: AbilityTemplate =
 {
