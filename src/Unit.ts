@@ -137,7 +137,7 @@ export default class Unit
     this.maxHealth = props.maxHealth;
     this.currentHealth = props.currentHealth;
 
-    this.baseAttributes = new UnitAttributes(props.attributes);
+    this.baseAttributes = new UnitAttributes(props.attributes).clamp(1, 9);
     this.cachedAttributes = this.baseAttributes.clone();
 
     this.currentMovePoints = props.currentMovePoints;
