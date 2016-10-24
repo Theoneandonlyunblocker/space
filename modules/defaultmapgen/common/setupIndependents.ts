@@ -60,7 +60,7 @@ export default function setupIndependents(props:
     const distanceFromPlayer = mapGenData.distanceFromPlayerOwnedLocation - 1;
     const relativeDistanceFromPlayer = distanceFromPlayer / globalMaxDistanceFromPlayer;
     
-    const globalStrength = relativeDistanceFromPlayer * props.intensity + randRange(-props.variance, props.variance);
+    const globalStrength = Math.pow(relativeDistanceFromPlayer, 1.8) * props.intensity + randRange(-props.variance, props.variance);
     const localStrength = star === commanderStar ? 1 : 0.5;
 
 
