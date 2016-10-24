@@ -11,10 +11,6 @@ import GameSaveData from "./savedata/GameSaveData";
 import FullSaveData from "./savedata/FullSaveData";
 import PlayerSaveData from "./savedata/PlayerSaveData";
 
-import
-{
-  extendObject
-} from "./utility";
 
 export default class Game
 {
@@ -200,7 +196,7 @@ export default class Game
       name: name,
       date: date,
       gameData: gameData,
-      idGenerators: extendObject(idGenerators),
+      idGenerators: idGenerators.serialize(),
       cameraLocation: app.renderer.camera.getCenterPosition()
     };
     

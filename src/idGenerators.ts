@@ -6,7 +6,7 @@ export interface IDGeneratorValues
   star: number;
   unit: number;
   building: number;
-  objective: number;  
+  objective: number;
 }
 
 class IDGenerator implements IDGeneratorValues
@@ -29,6 +29,20 @@ class IDGenerator implements IDGeneratorValues
     {
       this[key] = newValues[key];
     }
+  }
+  public serialize(): IDGeneratorValues
+  {
+    return(
+    {
+      fleet: this.fleet,
+      item: this.item,
+      player: this.player,
+      star: this.star,
+      unit: this.unit,
+      building: this.building,
+      objective: this.objective,
+      statusEffect: this.statusEffect,
+    });
   }
 }
 
