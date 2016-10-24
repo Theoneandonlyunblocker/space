@@ -985,7 +985,7 @@ ul, ol
   flex: none;
   flex-basis: 0px;
   flex-flow: column;
-  width: 128px;
+  min-width: 128px;
   height: 64px;
   pointer-events: none;
 }
@@ -998,6 +998,9 @@ ul, ol
   flex: 1;
   max-height: 50%;
   pointer-events: auto;
+
+  max-width: 20em;
+  .prevent-text-overflow;
 }
 
 @ability-color: fadeout(saturate(darken(
@@ -3306,6 +3309,9 @@ ul, ol
   display: block;
   float: left;
   clear: both;
+
+  max-width: 20em;
+  .prevent-text-overflow;
 }
 
 .skill-style(@color)
