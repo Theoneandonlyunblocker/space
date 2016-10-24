@@ -61,8 +61,8 @@ export default class Battle
     [turnNumber: number]: number;
   } = {};
 
+  public isVirtual: boolean = false; // true when a clone made by battle ai
   public isSimulated: boolean = false; // true when battle is between two ai players
-  private isVirtual: boolean = false; // true when a clone made by battle ai
   public ended: boolean = false;
 
   public capturedUnits: Unit[];
