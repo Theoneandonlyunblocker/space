@@ -1,4 +1,7 @@
 import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
+import {StatusEffectSaveData} from "./savedata/StatusEffectSaveData";
+
+import app from "./App"; // TODO global
 import idGenerators from "./idGenerators";
 
 export default class StatusEffect
@@ -13,15 +16,29 @@ export default class StatusEffect
     this.template = template;
     this.duration = duration;
   }
-  processTurnEnd()
+  public static fromData(data: StatusEffectSaveData): StatusEffect
+  {
+    return new StatusEffect(
+      app.moduleData.Templates.StatusEffects[data.templateType],
+      data.duration,
+      data.id,
+    );
+  }
+
+  public processTurnEnd(): void
   {
     if (this.duration > 0)
     {
       this.duration--;
     }
   }
-  clone()
+  public serialize(): StatusEffectSaveData
   {
-    return new StatusEffect(this.template, this.duration);
+    return(
+    {
+      id: this.id,
+      templateType: this.template.type,
+      duration: this.duration,
+    });
   }
 }

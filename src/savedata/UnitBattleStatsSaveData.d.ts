@@ -1,7 +1,7 @@
 import UnitBattleSide from "../UnitBattleSide";
 import GuardCoverage from "../GuardCoverage";
-import StatusEffect from "../StatusEffect";
 
+import {StatusEffectSaveData} from "./StatusEffectSaveData";
 import QueuedActionSaveData from "./QueuedActionSaveData";
 
 declare interface UnitBattleStatsSaveData
@@ -13,7 +13,7 @@ declare interface UnitBattleStatsSaveData
   guardAmount: number;
   guardCoverage: GuardCoverage;
   captureChance: number;
-  statusEffects: StatusEffect[];
+  statusEffects: StatusEffectSaveData[];
   queuedAction: QueuedActionSaveData;
   isAnnihilated: boolean;
 }

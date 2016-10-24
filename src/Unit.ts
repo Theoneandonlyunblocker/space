@@ -161,7 +161,10 @@ export default class Unit
         guardAmount: props.battleStats.guardAmount,
         guardCoverage: props.battleStats.guardCoverage,
         captureChance: props.battleStats.captureChance,
-        statusEffects: props.battleStats.statusEffects,
+        statusEffects: props.battleStats.statusEffects.map((statusEffectSaveData) =>
+        {
+          return StatusEffect.fromData(statusEffectSaveData);
+        }),
         lastHealthBeforeReceivingDamage: this.currentHealth,
         queuedAction: props.battleStats.queuedAction ?
           {
@@ -1053,7 +1056,7 @@ export default class Unit
       captureChance: this.battleStats.captureChance,
       statusEffects: this.battleStats.statusEffects.map(function(statusEffect)
       {
-        return statusEffect.clone();
+        return statusEffect.serialize();
       }),
       queuedAction: !this.battleStats.queuedAction ? null :
       {
