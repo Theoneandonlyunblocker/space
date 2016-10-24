@@ -25,7 +25,13 @@ import
 
 interface UnboundEffectAction<T>
 {
-  (data: T, user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult): void;
+  (
+    data: T,
+    user: Unit,
+    target: Unit,
+    battle: Battle,
+    executedEffectsResult: ExecutedEffectsResult
+  ): void;
 }
 
 // so we preserve typing for bound data
@@ -90,7 +96,11 @@ export enum resultType
 
 export const inflictDamage: UnboundEffectAction<DamageWithType> = function(
   data: DamageWithType,
-  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult
+)
 {
   const adjustedDamage = getAdjustedDamage(user, target, data.baseDamage, data.damageType);
 
@@ -105,7 +115,11 @@ export const inflictDamage: UnboundEffectAction<DamageWithType> = function(
 
 export const addGuard: UnboundEffectAction<Adjustment & GuardCoverageObj> = function(
   data: Adjustment & GuardCoverageObj,
-  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult
+)
 {
   const guardAmount = user.attributes.modifyValueByAttributes(data.flat, data.perAttribute);
   target.addGuard(guardAmount, data.coverage);
@@ -113,7 +127,11 @@ export const addGuard: UnboundEffectAction<Adjustment & GuardCoverageObj> = func
 
 export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = function(
   data: {baseDamage: number},
-  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult
+)
 {
   const counterStrength = target.getCounterAttackStrength();
 
@@ -124,7 +142,10 @@ export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = f
         baseDamage: data.baseDamage * counterStrength,
         damageType: DamageType.physical
       },
-      target, user, battle, executedEffectsResult
+      target,
+      user,
+      battle,
+      executedEffectsResult
     );
   }
 }
@@ -132,7 +153,11 @@ export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = f
 
 export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustment> = function(
   data: FlatAndMultiplierAdjustment,
-  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult
+)
 {
   if (data.flat)
   {
@@ -145,15 +170,27 @@ export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustm
 }
 export const addStatusEffect: UnboundEffectAction<{template: StatusEffectTemplate, duration: number}> = function(
   data: {template: StatusEffectTemplate, duration: number},
-  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult
+)
 {
   target.addStatusEffect(new StatusEffect(data.template, data.duration));
 }
-export const adjustHealth: UnboundEffectAction<HealthAdjustment> = function(
-  data: HealthAdjustment,
-  user: Unit, target: Unit, battle: Battle, executedEffectsResult: ExecutedEffectsResult)
+export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> = function(
+  data: ExecutedEffectsResultAdjustment & HealthAdjustment,
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult
+)
 {
-  const healAmount = calculateHealthAdjustment(user, target, data);
+  let healAmount = calculateHealthAdjustment(user, target, data);
+  if (data.executedEffectsResultAdjustment)
+  {
+    healAmount += data.executedEffectsResultAdjustment(executedEffectsResult);
+  }
 
   const minAdjustment = -target.currentHealth;
   const maxAdjustment = target.maxHealth - target.currentHealth;
@@ -167,12 +204,13 @@ export const adjustHealth: UnboundEffectAction<HealthAdjustment> = function(
 
   target.addHealth(clamped);
 }
-export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> =
-  function(
-    data: ExecutedEffectsResultAdjustment & HealthAdjustment,
-    user: Unit, target: Unit, battle: Battle,
-    executedEffectsResult: ExecutedEffectsResult
-  )
+export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> = function(
+  data: ExecutedEffectsResultAdjustment & HealthAdjustment,
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult
+)
 {
   let healAmount = calculateHealthAdjustment(user, target, data);
   
