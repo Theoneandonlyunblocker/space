@@ -2,7 +2,7 @@ import ModuleData from "../../src/ModuleData";
 
 import * as AbilityTemplates from  "./abilitytemplates/abilities";
 import * as ResourceTemplates from  "./resourcetemplates/resources";
-import poisoned from  "./statuseffecttemplates/poisoned";
+import {statusEffectTemplates} from  "./statuseffecttemplates/statusEffectTemplates";
 import * as BattleSFXTemplates from  "./battlesfxtemplates/battleSFX";
 import * as PassiveSkillTemplates from  "./passiveskilltemplates/passiveSkills";
 
@@ -15,7 +15,7 @@ export default function addCommonToModuleData(moduleData: ModuleData)
   moduleData.copyTemplates<any>(BattleSFXTemplates, "BattleSFX");
   moduleData.copyTemplates<any>(PassiveSkillTemplates, "PassiveSkills");
   
-  moduleData.copyTemplates<any>({[poisoned.type]: poisoned}, "StatusEffects");
+  moduleData.copyTemplates<any>(statusEffectTemplates, "StatusEffects");
   
   moduleData.scripts.add(attachedUnitDataScripts);
 }

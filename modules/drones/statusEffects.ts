@@ -1,4 +1,5 @@
 import StatusEffectTemplate from "../../src/templateinterfaces/StatusEffectTemplate";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
 import
 {
@@ -35,3 +36,21 @@ export const infest: StatusEffectTemplate =
   ],
 };
 
+export const merge: StatusEffectTemplate =
+{
+  type: "merge",
+  displayName: "Merge",
+  attributes:
+  {
+    attack: {flat: 1},
+    defence: {flat: 1},
+    intelligence: {flat: 1},
+    speed: {flat: 1},
+  },
+};
+
+export const statusEffectTemplates: TemplateCollection<StatusEffectTemplate> =
+{
+  [infest.type]: infest,
+  [merge.type]: merge,
+};

@@ -20,7 +20,7 @@ import
   resultType,
 } from "../common/effectactiontemplates/effectActions";
 
-import * as StatusEffects from "./statusEffects";
+import * as DroneStatusEffects from "./statusEffects";
 
 export const assimilate: AbilityTemplate =
 {
@@ -87,18 +87,7 @@ export const merge: AbilityTemplate =
       executeAction: bindEffectActionData(EffectActions.addStatusEffect,
       {
         duration: -1,
-        template:
-        {
-          type: "merge",
-          displayName: "Merge",
-          attributes:
-          {
-            attack: {flat: 1},
-            defence: {flat: 1},
-            intelligence: {flat: 1},
-            speed: {flat: 1},
-          },
-        },
+        template: DroneStatusEffects.merge,
       }),
       attachedEffects:
       [
@@ -136,7 +125,7 @@ export const infest: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.addStatusEffect,
     {
       duration: 3,
-      template: StatusEffects.infest,
+      template: DroneStatusEffects.infest,
     }),
     sfx: placeholderSFX,
     attachedEffects:

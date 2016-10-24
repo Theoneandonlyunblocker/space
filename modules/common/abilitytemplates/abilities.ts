@@ -17,8 +17,11 @@ import
 } from "../../../src/targeting";
 
 import * as BattleSFX from "../battlesfxtemplates/battleSFX";
+
 import * as EffectActions from "../effectactiontemplates/effectActions";
 import {bindEffectActionData} from "../effectactiontemplates/effectActions";
+
+import * as SnipeStatusEffects from "../statuseffecttemplates/snipe";
 
 export var closeAttack: AbilityTemplate =
 {
@@ -222,6 +225,14 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
   const key = `snipe${capitalizedAttributeName}`;
   const displayName = `Snipe: ${capitalizedAttributeName}`;
   const description = `Deals damage and lowers target ${attributeName}`;
+
+  const statusEffectTemplateByAttribute =
+  {
+    [UnitAttribute.attack]: SnipeStatusEffects.snipeAttack,
+    [UnitAttribute.defence]: SnipeStatusEffects.snipeDefence,
+    [UnitAttribute.intelligence]: SnipeStatusEffects.snipeIntelligence,
+    [UnitAttribute.speed]: SnipeStatusEffects.snipeSpeed,
+  };
   
   return(
   {
@@ -247,20 +258,8 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
           id: "statusEffect",
           executeAction: bindEffectActionData(EffectActions.addStatusEffect,
           {
+            template: statusEffectTemplateByAttribute[attribute],
             duration: -1,
-            template:
-            {
-              type: key,
-              displayName: displayName,
-              attributes:
-              {
-                [attributeName]:
-                {
-                  multiplier: -0.5
-                }
-              }
-            }
-
           }),
           getUnitsInArea: areaSingle,
         }
