@@ -1106,8 +1106,30 @@ export default class Unit
   }
   public makeVirtualClone(): Unit
   {
-    const data = this.serialize(true, false);
-    const clone = Unit.fromSaveData(data);
+    const clone = new Unit(
+    {
+      template: this.template,
+      id: this.id,
+      name: this.name,
+      maxHealth: this.maxHealth,
+      currentHealth: this.currentHealth,
+      attributes: this.baseAttributes.clone(),
+      currentMovePoints: this.currentMovePoints,
+      maxMovePoints: this.maxMovePoints,
+      timesActedThisTurn: this.timesActedThisTurn,
+      abilities: this.abilities,
+      passiveSkills: this.passiveSkills,
+      level: this.level,
+      experienceForCurrentLevel: this.experienceForCurrentLevel,
+      
+      battleStats: this.battleStats,
+
+      maxItemSlots: this.items.itemSlots,
+      items: this.items.items,
+      
+      portrait: this.portrait,
+      race: this.race,
+    });
 
     return clone;
   }
