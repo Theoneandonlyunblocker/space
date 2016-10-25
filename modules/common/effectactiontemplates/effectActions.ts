@@ -176,7 +176,11 @@ export const addStatusEffect: UnboundEffectAction<{template: StatusEffectTemplat
   executedEffectsResult: ExecutedEffectsResult
 )
 {
-  target.addStatusEffect(new StatusEffect(data.template, data.duration));
+  target.addStatusEffect(new StatusEffect(
+  {
+    template: data.template,
+    turnsToStayActiveFor: data.duration,
+  }));
 }
 export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> = function(
   data: ExecutedEffectsResultAdjustment & HealthAdjustment,
