@@ -134,22 +134,16 @@ export default class Game
   }
   killPlayer(playerToKill: Player)
   {
-    var playerOrderIndex: number;
-    for (let i = 0; i < this.playerOrder.length; i++)
+    const playerOrderIndex = this.playerOrder.indexOf(playerToKill);
+
+    if (playerOrderIndex !== -1)
     {
-      var player = this.playerOrder[i];
-      if (player === playerToKill)
-      {
-        playerOrderIndex = i;
-        continue;
-      }
-      player.diplomacyStatus.removePlayer(playerToKill);
+      this.playerOrder.splice(playerOrderIndex, 1);
     }
 
     playerToKill.die();
     playerToKill.destroy();
 
-    this.playerOrder.splice(playerOrderIndex, 1);
     if (playerToKill === this.humanPlayer)
     {
       this.endGame();
