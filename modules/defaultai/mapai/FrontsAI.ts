@@ -58,7 +58,7 @@ export default class FrontsAI
 
   assignUnits()
   {
-    var units = this.player.getAllUnits();
+    var units = this.player.units;
 
     var allUnitScores: IFrontUnitScore[] = [];
     var unitScoresByFront:

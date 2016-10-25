@@ -9,7 +9,7 @@ import {default as UnitListItem, PropTypes as UnitListItemProps} from "./UnitLis
 
 export interface PropTypes extends React.Props<any>
 {
-  units: {[unitId: number]: Unit};
+  units: Unit[];
   selectedUnit: Unit;
   onRowChange: (row: ListItem<UnitListItemProps>) => void;
   isDraggable: boolean;
@@ -40,13 +40,9 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var rows: ListItem<UnitListItemProps>[] = [];
-
-    for (let id in this.props.units)
+    var rows: ListItem<UnitListItemProps>[] = this.props.units.map((unit) =>
     {
-      var unit = this.props.units[id];
-
-      rows.push(
+      return(
       {
         key: "" + unit.id,
         content: UnitListItem(
@@ -85,7 +81,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
           }
         })
       });
-    }
+    });
 
     var columns: ListColumn<UnitListItemProps>[] =
     [

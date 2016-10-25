@@ -53,10 +53,7 @@ export default class Player
   secondaryColor: Color;
   flag: Flag;
   race: RaceTemplate | PlayerRaceTemplate;
-  units:
-  {
-    [id: number]: Unit;
-  } = {};
+  units: Unit[];
   resources:
   {
     [resourceType: string]: number;
@@ -298,28 +295,13 @@ export default class Player
   }
   addUnit(unit: Unit): void
   {
-    this.units[unit.id] = unit;
+    this.units.push(unit);
+    this.identifyUnit(unit);
   }
-  removeUnit(unit: Unit): void
+  removeUnit(toRemove: Unit): void
   {
-    this.units[unit.id] = null;
-    delete this.units[unit.id];
-  }
-  getAllUnits(): Unit[]
-  {
-    var allUnits: Unit[] = [];
-    for (let unitId in this.units)
-    {
-      allUnits.push(this.units[unitId]);
-    }
-    return allUnits;
-  }
-  forEachUnit(operator: (unit: Unit) => void): void
-  {
-    for (let unitId in this.units)
-    {
-      operator(this.units[unitId]);
-    }
+    const index = this.units.indexOf(toRemove);
+    this.units.splice(index, 1);
   }
   getFleetIndex(fleet: Fleet): number
   {
@@ -816,7 +798,10 @@ export default class Player
     {
       return true;
     }
-    else return Boolean(this.identifiedUnits[unit.id]) || Boolean(this.units[unit.id]);
+    else
+    {
+      return Boolean(this.identifiedUnits[unit.id]);
+    }
   }
   fleetIsFullyIdentified(fleet: Fleet): boolean
   {
@@ -1004,11 +989,6 @@ export default class Player
   }
   serialize(): PlayerSaveData
   {
-    var unitIds: number[] = [];
-    for (let id in this.units)
-    {
-      unitIds.push(this.units[id].id);
-    }
     
     var revealedStarIds: number[] = [];
     for (let id in this.revealedStars)
@@ -1041,7 +1021,7 @@ export default class Player
 
       items: this.items.map(function(item){return item.serialize()}),
 
-      unitIds: unitIds,
+      unitIds: this.units.map((unit) => unit.id),
       revealedStarIds: revealedStarIds,
       identifiedUnitIds: identifiedUnitIds,
 
