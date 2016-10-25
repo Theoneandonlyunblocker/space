@@ -119,7 +119,7 @@ export default class Unit
     level: number;
     experienceForCurrentLevel: number;
 
-    battleStats?: UnitBattleStatsSaveData;
+    battleStats?: UnitBattleStats;
 
     maxItemSlots: {[slot: string]: number;};
     items: Item[];
@@ -161,14 +161,14 @@ export default class Unit
         guardAmount: props.battleStats.guardAmount,
         guardCoverage: props.battleStats.guardCoverage,
         captureChance: props.battleStats.captureChance,
-        statusEffects: props.battleStats.statusEffects.map((statusEffectSaveData) =>
+        statusEffects: props.battleStats.statusEffects.map((statusEffect) =>
         {
-          return StatusEffect.fromData(statusEffectSaveData);
+          return statusEffect.clone();
         }),
         lastHealthBeforeReceivingDamage: this.currentHealth,
         queuedAction: props.battleStats.queuedAction ?
           {
-            ability: app.moduleData.Templates.Abilities[props.battleStats.queuedAction.abilityTemplateKey],
+            ability: props.battleStats.queuedAction.ability,
             targetId: props.battleStats.queuedAction.targetId,
             turnsPrepared: props.battleStats.queuedAction.turnsPrepared,
             timesInterrupted: props.battleStats.queuedAction.timesInterrupted
