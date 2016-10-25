@@ -1019,8 +1019,7 @@ export default class Player
       money: this.money,
       controlledLocationIds: this.controlledLocations.map(function(star){return star.id}),
 
-      items: this.items.map(function(item){return item.serialize()}),
-
+      itemIds: this.items.map((item) => item.id),
       unitIds: this.units.map((unit) => unit.id),
       revealedStarIds: revealedStarIds,
       identifiedUnitIds: identifiedUnitIds,
