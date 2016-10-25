@@ -18,6 +18,7 @@ export default class StatusEffect
   {
     template: StatusEffectTemplate;
     id?: number;
+    turnsHasBeenActiveFor?: number;
     turnsToStayActiveFor: number;
     sourceUnit: Unit;
   })
@@ -25,6 +26,7 @@ export default class StatusEffect
     this.id = isFinite(props.id) ? props.id : idGenerators.statusEffect++;
     this.template = props.template;
     this.turnsToStayActiveFor = props.turnsToStayActiveFor;
+    this.turnsHasBeenActiveFor = props.turnsHasBeenActiveFor || 0;
     this.sourceUnit = props.sourceUnit;
   }
 
@@ -34,11 +36,10 @@ export default class StatusEffect
     {
       template: this.template,
       turnsToStayActiveFor: this.turnsToStayActiveFor,
+      turnsHasBeenActiveFor: this.turnsHasBeenActiveFor,
       id: this.id,
       sourceUnit: this.sourceUnit,
     });
-
-    effect.turnsHasBeenActiveFor = this.turnsHasBeenActiveFor;
 
     return effect;
   }
