@@ -122,7 +122,7 @@ export default class UnitItems
   {
     return this.indexOf(item) !== -1;
   }
-  public addItem(toAdd: Item, position: number): void
+  public addItemAtPosition(toAdd: Item, position: number): void
   {
     const oldItemAtTargetPosition = this.getItemAtPosition(
       toAdd.template.slot, position);

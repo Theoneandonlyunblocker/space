@@ -219,7 +219,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     var unit = this.state.selectedUnit;
     if (unit && item)
     {
-      unit.items.addItem(item, index);
+      unit.items.addItemAtPosition(item, index);
     }
 
     this.handleItemDragEnd(true);

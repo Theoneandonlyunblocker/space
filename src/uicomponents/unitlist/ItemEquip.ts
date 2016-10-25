@@ -94,7 +94,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
     var unit = this.state.selectedUnit;
     if (unit && item)
     {
-      unit.items.addItem(item, index);
+      unit.items.addItemAtPosition(item, index);
     }
 
     this.handleDragEnd(true);
