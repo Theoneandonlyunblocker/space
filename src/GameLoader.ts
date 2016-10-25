@@ -34,8 +34,6 @@ import FleetSaveData from "./savedata/FleetSaveData";
 import UnitSaveData from "./savedata/UnitSaveData";
 import ItemSaveData from "./savedata/ItemSaveData";
 
-import {PlayerRaceTemplate} from "./templateinterfaces/PlayerRaceTemplate";
-
 
 export default class GameLoader
 {
@@ -256,7 +254,7 @@ export default class GameLoader
       isAI: data.isAI,
       isIndependent: data.isIndependent,
 
-      race: <PlayerRaceTemplate> app.moduleData.Templates.Races[data.raceKey],
+      race: app.moduleData.Templates.Races[data.raceKey],
       money: data.money,
       
       id: data.id,
