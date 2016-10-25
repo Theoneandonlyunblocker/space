@@ -23,15 +23,14 @@ export default class Item
 
   serialize(): ItemSaveData
   {
-    var data: ItemSaveData =
+    const data: ItemSaveData =
     {
       id: this.id,
-      templateType: this.template.type
+      templateType: this.template.type,
     };
 
     if (this.unit)
     {
-      data.unitId = this.unit.id;
       data.positionInUnit = this.positionInUnit;
     }
 
