@@ -39,25 +39,30 @@ import {PlayerRaceTemplate} from "./templateinterfaces/PlayerRaceTemplate";
 
 export default class GameLoader
 {
-  map: GalaxyMap;
-  humanPlayer: Player;
-  players: Player[] = [];
-  independents: Player[] = [];
-  playersById:
+  public map: GalaxyMap;
+  public humanPlayer: Player;
+  public players: Player[] = [];
+  public independents: Player[] = [];
+
+  public playersById:
   {
     [id: number]: Player;
   } = {};
-  starsById:
+  public starsById:
   {
     [id: number]: Star;
   } = {};
-  unitsById:
+  public unitsById:
   {
     [id: number]: Unit;
   } = {};
-  buildingsByControllerId:
+  public buildingsByControllerId:
   {
     [id: number]: Building;
+  } = {};
+  public itemsById:
+  {
+    [id: number]: Item;
   } = {};
 
   constructor()
