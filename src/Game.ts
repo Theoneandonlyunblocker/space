@@ -185,6 +185,13 @@ export default class Game
       {
         return allUnits.concat(playerUnits);
       }, []),
+      items: this.getAllPlayers().map((player) =>
+      {
+        return player.items.map((item) => item.serialize());
+      }).reduce((allItems, playerItems) =>
+      {
+        return allItems.concat(playerItems);
+      }, []),
     };
 
     return data;
