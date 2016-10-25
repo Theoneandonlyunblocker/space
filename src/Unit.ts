@@ -1028,7 +1028,7 @@ export default class Unit
       passiveEffects: this.getPassiveEffectsForScene(scene),
     });
   }
-  public serialize(includeItems: boolean = true, includeFluff: boolean = true): UnitSaveData
+  public serialize(): UnitSaveData
   {
     var battleStatsSavedData: UnitBattleStatsSaveData =
     {
@@ -1082,24 +1082,15 @@ export default class Unit
       level: this.level,
 
       items: this.items.serialize(),
-      battleStats: battleStatsSavedData
-    };
+      battleStats: battleStatsSavedData,
 
+      portraitKey: this.portrait.key,
+      raceKey: this.race.type,
+    };
 
     if (this.fleet)
     {
       data.fleetId = this.fleet.id;
-    }
-
-    if (includeItems)
-    {
-      data.serializedItems = this.items.serializeItems();
-    }
-
-    if (includeFluff)
-    {
-      data.portraitKey = this.portrait.key;
-      data.raceKey = this.race.type;
     }
 
     return data;

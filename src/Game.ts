@@ -179,7 +179,7 @@ export default class Game
       {
         return player.units.map((unit) =>
         {
-          return unit.serialize(false);
+          return unit.serialize();
         });
       }).reduce((allUnits, playerUnits) =>
       {
