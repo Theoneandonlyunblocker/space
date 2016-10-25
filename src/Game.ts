@@ -183,7 +183,7 @@ export default class Game
         });
       }).reduce((allUnits, playerUnits) =>
       {
-        return allUnits.concat(...playerUnits);
+        return allUnits.concat(playerUnits);
       }, []),
     };
 
