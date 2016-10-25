@@ -62,17 +62,13 @@ export default class UnitItems
 
     return itemsBySlotWithEmptySlots;
   }
-  public getAvailableItemSlots(): CountBySlot
+  public getItemsForSlot(slot: string): Item[]
   {
-    const availableSlots: CountBySlot = {};
-    const itemsBySlot = this.getItemsBySlot();
-
-    for (let slot in this.itemSlots)
-    {
-      availableSlots[slot] = this.itemSlots[slot] - itemsBySlot[slot].length;
-    }
-
-    return availableSlots;
+    return this.getItemsBySlot()[slot];
+  }
+  public getAmountOfAvailableItemSlots(slot: string): number
+  {
+    return this.itemSlots[slot] - this.getItemsForSlot(slot).length;
   }
   public getAttributeAdjustments(): UnitAttributeAdjustments[]
   {
@@ -107,7 +103,7 @@ export default class UnitItems
 
   public hasSlotForItem(item: Item): boolean
   {
-    return this.getAvailableItemSlots()[item.template.slot] > 0;
+    return this.getAmountOfAvailableItemSlots(item.template.slot) > 0;
   }
   public getItemAtPosition(slot: string, position: number): Item
   {
@@ -206,5 +202,30 @@ export default class UnitItems
   private indexOf(item: Item): number
   {
     return this.items.indexOf(item);
+  }
+  private getFirstAvailablePositionForItem(item: Item): number | null
+  {
+    if (!this.hasSlotForItem(item))
+    {
+      return null;
+    }
+    else
+    {
+      const itemsForSlot = this.getItemsForSlot(item.template.slot).sort((a, b) =>
+      {
+        return a.positionInUnit - b.positionInUnit;
+      });
+
+      const maxPosition = this.itemSlots[item.template.slot] - 1;
+      for (let i = 0; i < maxPosition; i++)
+      {
+        if (itemsForSlot[i].positionInUnit !== i)
+        {
+          return i;
+        }
+      }
+    }
+
+    throw new Error("Couldn't find available slot for item");
   }
 }
