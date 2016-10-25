@@ -280,7 +280,29 @@ export default class Unit
       level: data.level,
       experienceForCurrentLevel: data.experienceForCurrentLevel,
 
-      battleStats: data.battleStats,
+      battleStats:
+      {
+         moveDelay: data.battleStats.moveDelay,
+         side: data.battleStats.side,
+         position: data.battleStats.position,
+         currentActionPoints: data.battleStats.currentActionPoints,
+         guardAmount: data.battleStats.guardAmount,
+         guardCoverage: data.battleStats.guardCoverage,
+         captureChance: data.battleStats.captureChance,
+         isAnnihilated: data.battleStats.isAnnihilated,
+
+         lastHealthBeforeReceivingDamage: data.currentHealth,
+
+         statusEffects: [],
+         queuedAction:  data.battleStats.queuedAction ?
+          {
+            ability: app.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
+            targetId: data.battleStats.queuedAction.targetId,
+            turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
+            timesInterrupted: data.battleStats.queuedAction.timesInterrupted,
+          } :
+          null,
+      },
 
       maxItemSlots: data.items.maxItemSlots,
       items: data.serializedItems ?
