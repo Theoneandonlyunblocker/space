@@ -185,7 +185,14 @@ export default class Unit
     this.items = this.makeUnitItems(props.maxItemSlots);
     props.items.forEach(item =>
     {
-      this.items.addItem(item, -999);
+      if (isFinite(item.positionInUnit))
+      {
+        this.items.addItemAtPosition(item, item.positionInUnit);
+      }
+      else
+      {
+        this.items.addItem(item);
+      }
     });
 
     this.race = props.race;
