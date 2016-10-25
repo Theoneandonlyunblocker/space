@@ -161,8 +161,10 @@ export default class UnitItems
       this.addItemToUnit(toAdd);
       this.updateUnit(toAdd);
     }
-
-
+  }
+  public addItem(toAdd: Item): void
+  {
+    this.addItemAtPosition(toAdd, this.getFirstAvailablePositionForItem(toAdd));
   }
   public moveItem(toMove: Item, newPosition: number): void
   {
