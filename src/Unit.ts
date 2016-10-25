@@ -301,23 +301,6 @@ export default class Unit
 
     return unit;
   }
-  // constructor(template: UnitTemplate, id?: number, data?: UnitSaveData)
-  // {
-  //   this.id = isFinite(id) ? id : idGenerators.unit++;
-
-  //   this.template = template;
-  //   this.isSquadron = template.isSquadron;
-  //   if (data)
-  //   {
-  //     this.makeFromData(data);
-  //   }
-  //   else
-  //   {
-  //     this.items = this.makeUnitItems(template.itemSlots);
-  //     this.setInitialValues();
-  //     this.portrait = this.race.getUnitPortrait(this);
-  //   }
-  // }
   private static getRandomValueFromAttributeLevel(
     level: number,
     baseValue: number,
