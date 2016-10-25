@@ -141,6 +141,11 @@ export default class Game
       this.playerOrder.splice(playerOrderIndex, 1);
     }
 
+    this.playerOrder.forEach((player) =>
+    {
+      player.diplomacyStatus.removePlayer(playerToKill);
+    });
+
     playerToKill.die();
     playerToKill.destroy();
 
