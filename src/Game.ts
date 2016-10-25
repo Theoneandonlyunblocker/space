@@ -165,8 +165,7 @@ export default class Game
   }
   serialize(): GameSaveData
   {
-    // TODO 25.10.2016 | add units
-    var data: GameSaveData =
+    const data: GameSaveData =
     {
       turnNumber: this.turnNumber,
       galaxyMap: this.galaxyMap.serialize(),
@@ -175,7 +174,17 @@ export default class Game
         return player.serialize();
       }),
       humanPlayerId: this.humanPlayer.id,
-      notificationLog: this.notificationLog.serialize()
+      notificationLog: this.notificationLog.serialize(),
+      units: this.getAllPlayers().map((player) =>
+      {
+        return player.units.map((unit) =>
+        {
+          return unit.serialize(false);
+        });
+      }).reduce((allUnits, playerUnits) =>
+      {
+        return allUnits.concat(...playerUnits);
+      }, []),
     };
 
     return data;
