@@ -8,7 +8,6 @@ import
 
 import {placeholder as placeholderSFX} from "../common/battlesfxtemplates/battleSFX";
 
-// TODO 18.10.2016 | pretty sure this is bugged with multiple status effects of the same type
 export const infest: StatusEffectTemplate =
 {
   type: "infest",
@@ -19,14 +18,11 @@ export const infest: StatusEffectTemplate =
     {
       id: "damage",
       getUnitsInArea: (user) => [user],
-      executeAction: (user, target, battle, executedEffectsResult) =>
+      executeAction: (user, target, battle, executedEffectsResult, sourceStatusEffect) =>
       {
-        const infestEffect = user.battleStats.statusEffects.filter((statusEffect) =>
-        {
-          return statusEffect.template.type === "infest";
-        })[0];
-
-        const damageDealtThisTurn = 0.5 / infestEffect.duration;
+        const tick = sourceStatusEffect.turnsHasBeenActiveFor + 1;
+        const relativeTick = tick / sourceStatusEffect.turnsToStayActiveFor;
+        const damageDealtThisTurn = 0.5 / relativeTick;
 
         adjustHealth({maxHealthPercentage: -damageDealtThisTurn},
           user, target, battle, executedEffectsResult);
