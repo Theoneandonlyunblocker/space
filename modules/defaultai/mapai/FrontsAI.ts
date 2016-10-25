@@ -1,4 +1,4 @@
-import Front from "./Front";
+import {Front} from "./Front";
 import MapEvaluator from "./MapEvaluator";
 import ObjectivesAI from "./ObjectivesAI";
 import Objective from "./Objective";

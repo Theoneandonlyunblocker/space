@@ -9,7 +9,7 @@ import
 
 import PartialAllScripts from "../../src/modulescriptinterfaces/PartialAllScripts";
 
-import Front from "../defaultai/mapai/Front";
+import {Front} from "../defaultai/mapai/Front";
 
 interface PartialAttachedUnitData
 {

@@ -6,7 +6,7 @@ import Star from "../../../../src/Star";
 import Player from "../../../../src/Player";
 import Unit from "../../../../src/Unit";
 
-import Front from "../../mapai/Front";
+import {Front} from "../../mapai/Front";
 import GrandStrategyAI from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
 import Objective from "../../mapai/Objective";

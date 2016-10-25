@@ -1,4 +1,4 @@
-import Front from "../mapai/Front";
+import {Front} from "../mapai/Front";
 import GrandStrategyAI from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 import Objective from "../mapai/Objective";

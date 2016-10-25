@@ -4,7 +4,7 @@ import MapEvaluator from "./mapai/MapEvaluator";
 import Player from "../../src/Player";
 import ObjectiveTemplate from "./objectives/common/ObjectiveTemplate";
 import Objective from "./mapai/Objective";
-import Front from "./mapai/Front";
+import {Front} from "./mapai/Front";
 import Star from "../../src/Star";
 import Unit from "../../src/Unit";
 import evaluateUnitStrength from "../../src/evaluateUnitStrength";

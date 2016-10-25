@@ -1,6 +1,6 @@
 import FleetAttackTarget from "../../../../../src/FleetAttackTarget";
 
-import Front from "../../../mapai/Front";
+import {Front} from "../../../mapai/Front";
 
 export function independentTargetFilter(target: FleetAttackTarget)
 {
