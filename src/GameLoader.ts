@@ -33,7 +33,6 @@ import FlagSaveData from "./savedata/FlagSaveData";
 import FleetSaveData from "./savedata/FleetSaveData";
 import UnitSaveData from "./savedata/UnitSaveData";
 import ItemSaveData from "./savedata/ItemSaveData";
-import NameSaveData from "./savedata/NameSaveData";
 
 import {PlayerRaceTemplate} from "./templateinterfaces/PlayerRaceTemplate";
 
@@ -245,10 +244,6 @@ export default class GameLoader
 
     return building;
   }
-  deserializeName(data: NameSaveData): Name
-  {
-    return Name.fromData(data);
-  }
   deserializePlayer(data: PlayerSaveData): Player
   {
     const player = new Player(
@@ -260,7 +255,7 @@ export default class GameLoader
       money: data.money,
       
       id: data.id,
-      name: this.deserializeName(data.name),
+      name: Name.fromData(data.name),
       color:
       {
         main: Color.deSerialize(data.color),
