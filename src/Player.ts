@@ -53,7 +53,7 @@ export default class Player
   secondaryColor: Color;
   flag: Flag;
   race: RaceTemplate | PlayerRaceTemplate;
-  units: Unit[];
+  units: Unit[] = [];
   resources:
   {
     [resourceType: string]: number;
