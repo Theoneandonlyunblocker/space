@@ -5,7 +5,6 @@ import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
 
 import UnitItemsSaveData from "./savedata/UnitItemsSaveData";
-import ItemSaveData from "./savedata/ItemSaveData";
 
 interface ItemsBySlot
 {
@@ -18,7 +17,6 @@ interface CountBySlot
 
 export default class UnitItems
 {
-  // public itemsBySlot: ItemsBySlot = {};
   public items: Item[] = [];
   public itemSlots: CountBySlot;
 
@@ -200,14 +198,8 @@ export default class UnitItems
   {
     return(
     {
-      maxItemSlots: this.itemSlots
-    });
-  }
-  public serializeItems(): ItemSaveData[]
-  {
-    return this.items.map(item =>
-    {
-      return item.serialize();
+      maxItemSlots: this.itemSlots,
+      itemIDs: this.items.map((item) => item.id),
     });
   }
 
