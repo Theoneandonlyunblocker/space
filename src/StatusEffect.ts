@@ -1,7 +1,6 @@
 import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
 import {StatusEffectSaveData} from "./savedata/StatusEffectSaveData";
 
-import app from "./App"; // TODO global
 import idGenerators from "./idGenerators";
 
 export default class StatusEffect
@@ -23,15 +22,18 @@ export default class StatusEffect
     this.template = props.template;
     this.turnsToStayActiveFor = props.turnsToStayActiveFor;
   }
-  public static fromData(data: StatusEffectSaveData): StatusEffect
+
+  public clone(): StatusEffect
   {
     const effect = new StatusEffect(
-      app.moduleData.Templates.StatusEffects[data.templateType],
-      data.turnsToStayActiveFor,
-      data.id,
-    );
+    {
+      template: this.template,
+      turnsToStayActiveFor: this.turnsToStayActiveFor,
+      id: this.id,
+      sourceUnit: this.sourceUnit,
+    });
 
-    effect.turnsHasBeenActiveFor = data.turnsHasBeenActiveFor;
+    effect.turnsHasBeenActiveFor = this.turnsHasBeenActiveFor;
 
     return effect;
   }
