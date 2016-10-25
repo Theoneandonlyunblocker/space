@@ -15,7 +15,8 @@ export default class Item
 
   constructor(
     template: ItemTemplate,
-    id?: number)
+    id?: number
+  )
   {
     this.id = isFinite(id) ? id : idGenerators.item++;
     this.template = template;

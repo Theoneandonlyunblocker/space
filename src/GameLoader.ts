@@ -19,6 +19,7 @@ import Item from "./Item";
 import MapGenResult from "./MapGenResult";
 import Name from "./Name";
 import AIController from "./AIController";
+import StatusEffect from "./StatusEffect";
 
 import AIControllerSaveData from "./savedata/AIControllerSaveData";
 import GameSaveData from "./savedata/GameSaveData";
@@ -33,6 +34,7 @@ import FlagSaveData from "./savedata/FlagSaveData";
 import FleetSaveData from "./savedata/FleetSaveData";
 import UnitSaveData from "./savedata/UnitSaveData";
 import ItemSaveData from "./savedata/ItemSaveData";
+import {StatusEffectSaveData} from "./savedata/StatusEffectSaveData";
 
 
 export default class GameLoader
@@ -70,8 +72,31 @@ export default class GameLoader
 
   public deserializeGame(data: GameSaveData): Game
   {
+    // map
     this.map = this.deserializeMap(data.galaxyMap);
 
+    // items
+    data.items.forEach((itemSaveData) =>
+    {
+      this.itemsById[itemSaveData.id] = this.deserializeItem(itemSaveData);
+    });
+    // units
+    data.units.forEach((unitSaveData) =>
+    {
+      this.unitsById[unitSaveData.id] = this.deserializeUnit(unitSaveData);
+    });
+    // unit status effects. dependant on other units so have to do these after
+    data.units.forEach((unitSaveData) =>
+    {
+      const unit = this.unitsById[unitSaveData.id];
+
+      unitSaveData.battleStats.statusEffects.forEach((statusEffectSaveData) =>
+      {
+        unit.addStatusEffect(this.deserializeStatusEffect(statusEffectSaveData));
+      });
+    });
+    
+    // players
     for (let i = 0; i < data.players.length; i++)
     {
       var playerData = data.players[i];
@@ -86,28 +111,35 @@ export default class GameLoader
         this.players.push(player);
       }
     }
+
+    // player diplomacy status. dependant on other players
     for (let i = 0; i < data.players.length; i++)
     {
       var playerData = data.players[i];
-      this.deserializeDiplomacyStatus(this.playersById[playerData.id], 
-        playerData.diplomacyStatus);
-      this.deserializeIdentifiedUnits(this.playersById[playerData.id],
-        playerData.identifiedUnitIds);
+      this.deserializeDiplomacyStatus(
+        this.playersById[playerData.id], 
+        playerData.diplomacyStatus
+      );
     }
 
     this.humanPlayer = this.playersById[data.humanPlayerId];
 
+    // buildings
     this.deserializeBuildings(data.galaxyMap);
 
+    // create game
     var game = new Game(this.map, this.players, this.humanPlayer);
     game.independents = game.independents.concat(this.independents);
     game.turnNumber = data.turnNumber;
+
+    // notification log
     if (data.notificationLog)
     {
       game.notificationLog = this.deserializeNotificationLog(data.notificationLog);
       game.notificationLog.setTurn(game.turnNumber, true);
     }
 
+    // ai controllers
     data.players.forEach(playerData =>
     {
       const player = this.playersById[playerData.id]; 
@@ -271,6 +303,12 @@ export default class GameLoader
       resources: data.resources
     });
 
+    // units
+    data.unitIds.forEach((unitID) =>
+    {
+      player.addUnit(this.unitsById[unitID]);
+    });
+
     // fleets
     for (let i = 0; i < data.fleets.length; i++)
     {
@@ -284,17 +322,28 @@ export default class GameLoader
       player.addStar(this.starsById[data.controlledLocationIds[i]]);
     }
 
-    // TODO 25.10.2016 | re-add these
-    // for (let i = 0; i < data.items.length; i++)
-    // {
-    //   this.deserializeItem(data.items[i], player);
-    // }
+    // items
+    data.itemIds.forEach((itemID) =>
+    {
+      player.addItem(this.itemsById[itemID]);
+    });
 
+    // revealed stars
     for (let i = 0; i < data.revealedStarIds.length; i++)
     {
       var id = data.revealedStarIds[i];
       player.revealedStars[id] = this.starsById[id];
     }
+
+    // identified units
+    data.identifiedUnitIds.forEach((unitID) =>
+    {
+      // unit might have been identified but was removed from game before serialization
+      if (this.unitsById[unitID])
+      {
+        player.identifyUnit(this.unitsById[unitID]);
+      }
+    });
 
     return player;
   }
@@ -336,17 +385,6 @@ export default class GameLoader
       }
     }
   }
-  private deserializeIdentifiedUnits(player: Player, data: number[]): void
-  {
-    for (let i = 0; i < data.length; i++)
-    {
-      var unit = this.unitsById[data[i]];
-      if (unit)
-      {
-        player.identifyUnit(unit);
-      }
-    }
-  }
   private deserializeEmblem(emblemData: EmblemSaveData): Emblem
   {
     return new Emblem(
@@ -370,14 +408,6 @@ export default class GameLoader
   {
     const units = data.unitIds.map((unitID) => this.unitsById[unitID]);
 
-    // TODO 25.10.2016 | add this elsewhere
-    // for (let i = 0; i < data.units.length; i++)
-    // {
-    //   // var unit = this.deserializeUnit(data.units[i]);
-    //   // player.addUnit(unit);
-    //   units.push(unit);
-    // }
-
     var fleet = new Fleet(player, units, this.starsById[data.locationId], data.id, false);
     fleet.name = Name.fromData(data.name);
 
@@ -387,23 +417,22 @@ export default class GameLoader
   {
     const unit = Unit.fromSaveData(data);
 
-    this.unitsById[unit.id] = unit;
+    data.items.itemIDs.forEach((itemID) =>
+    {
+      const item = this.itemsById[itemID];
+      unit.items.addItemAtPosition(item, item.positionInUnit);
+    });
 
     return unit;
   }
-  private deserializeItem(data: ItemSaveData): void
+  private deserializeItem(data: ItemSaveData): Item
   {
     const template = app.moduleData.Templates.Items[data.templateType];
+
     const item = new Item(template, data.id);
+    item.positionInUnit = data.positionInUnit;
 
-    this.itemsById[item.id] = item;
-
-    // TODO 25.10.2016 | re-add these
-    // player.addItem(item);
-    // if (isFinite(data.unitId))
-    // {
-    //   this.unitsById[data.unitId].items.addItem(item, data.positionInUnit);
-    // }
+    return item;
   }
   private deserializeAIController<S>(
     data: AIControllerSaveData<S>,
@@ -424,6 +453,17 @@ export default class GameLoader
     const controller = new AIController(template);
 
     return controller;
+  }
+  private deserializeStatusEffect(data: StatusEffectSaveData): StatusEffect
+  {
+    return new StatusEffect(
+    {
+      id: data.id,
+      template: app.moduleData.Templates.StatusEffects[data.templateType],
+      turnsToStayActiveFor: data.turnsToStayActiveFor,
+      turnsHasBeenActiveFor: data.turnsHasBeenActiveFor,
+      sourceUnit: this.unitsById[data.sourceUnitID],
+    });
   }
 }
 
