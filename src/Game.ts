@@ -172,6 +172,7 @@ export default class Game
       return player.serialize()
     });
 
+    // TODO 25.10.2016 | add units
     var data: GameSaveData =
     {
       turnNumber: this.turnNumber,

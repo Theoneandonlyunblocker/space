@@ -369,14 +369,15 @@ export default class GameLoader
   }
   deserializeFleet(player: Player, data: FleetSaveData): Fleet
   {
-    var units: Unit[] = [];
+    const units = data.unitIds.map((unitID) => this.unitsById[unitID]);
 
-    for (let i = 0; i < data.units.length; i++)
-    {
-      var unit = this.deserializeUnit(data.units[i]);
-      player.addUnit(unit);
-      units.push(unit);
-    }
+    // TODO 25.10.2016 | add this elsewhere
+    // for (let i = 0; i < data.units.length; i++)
+    // {
+    //   // var unit = this.deserializeUnit(data.units[i]);
+    //   // player.addUnit(unit);
+    //   units.push(unit);
+    // }
 
     var fleet = new Fleet(player, units, this.starsById[data.locationId], data.id, false);
     fleet.name = Name.fromData(data.name);

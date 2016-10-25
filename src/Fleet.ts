@@ -357,10 +357,7 @@ export default class Fleet
 
       locationId: this.location.id,
       playerId: this.player.id,
-      units: this.units.map(function(unit: Unit)
-      {
-        return unit.serialize(false);
-      })
+      unitIds: this.units.map((unit) => unit.id),
     };
 
     return data;
