@@ -305,13 +305,7 @@ export default class Unit
       },
 
       maxItemSlots: data.items.maxItemSlots,
-      items: data.serializedItems ?
-        data.serializedItems.map(itemSaveData =>
-        {
-          const itemTemplate = app.moduleData.Templates.Items[itemSaveData.templateType]; 
-          return new Item(itemTemplate, itemSaveData.id);
-        }) :
-        [],
+      items: [],
 
       portrait: data.portraitKey ?
         app.moduleData.Templates.Portraits[data.portraitKey] :
