@@ -4,4 +4,5 @@ export interface StatusEffectSaveData
   templateType: string;
   turnsToStayActiveFor: number;
   turnsHasBeenActiveFor: number;
+  sourceUnitID: number;
 }

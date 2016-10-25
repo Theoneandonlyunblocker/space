@@ -2,6 +2,7 @@ import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
 import {StatusEffectSaveData} from "./savedata/StatusEffectSaveData";
 
 import idGenerators from "./idGenerators";
+import Unit from "./Unit";
 
 export default class StatusEffect
 {
@@ -11,16 +12,20 @@ export default class StatusEffect
   public turnsHasBeenActiveFor: number = 0;
   public turnsToStayActiveFor: number;
 
+  public sourceUnit: Unit;
+
   constructor(props:
   {
     template: StatusEffectTemplate;
     id?: number;
     turnsToStayActiveFor: number;
+    sourceUnit: Unit;
   })
   {
     this.id = isFinite(props.id) ? props.id : idGenerators.statusEffect++;
     this.template = props.template;
     this.turnsToStayActiveFor = props.turnsToStayActiveFor;
+    this.sourceUnit = props.sourceUnit;
   }
 
   public clone(): StatusEffect
@@ -50,6 +55,7 @@ export default class StatusEffect
       templateType: this.template.type,
       turnsToStayActiveFor: this.turnsToStayActiveFor,
       turnsHasBeenActiveFor: this.turnsHasBeenActiveFor,
+      sourceUnitID: this.sourceUnit.id
     });
   }
 }

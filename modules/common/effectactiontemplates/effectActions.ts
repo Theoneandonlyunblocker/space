@@ -180,6 +180,7 @@ export const addStatusEffect: UnboundEffectAction<{template: StatusEffectTemplat
   {
     template: data.template,
     turnsToStayActiveFor: data.duration,
+    sourceUnit: user,
   }));
 }
 export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> = function(
