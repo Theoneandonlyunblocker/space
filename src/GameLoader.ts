@@ -273,7 +273,7 @@ export default class GameLoader
       resources: data.resources
     });
 
-    // fleets & units
+    // fleets
     for (let i = 0; i < data.fleets.length; i++)
     {
       var fleet = data.fleets[i];
@@ -286,10 +286,11 @@ export default class GameLoader
       player.addStar(this.starsById[data.controlledLocationIds[i]]);
     }
 
-    for (let i = 0; i < data.items.length; i++)
-    {
-      this.deserializeItem(data.items[i], player);
-    }
+    // TODO 25.10.2016 | re-add these
+    // for (let i = 0; i < data.items.length; i++)
+    // {
+    //   this.deserializeItem(data.items[i], player);
+    // }
 
     for (let i = 0; i < data.revealedStarIds.length; i++)
     {
@@ -392,17 +393,19 @@ export default class GameLoader
 
     return unit;
   }
-  private deserializeItem(data: ItemSaveData, player: Player): void
+  private deserializeItem(data: ItemSaveData): void
   {
-    var template = app.moduleData.Templates.Items[data.templateType];
+    const template = app.moduleData.Templates.Items[data.templateType];
+    const item = new Item(template, data.id);
 
-    var item = new Item(template, data.id);
+    this.itemsById[item.id] = item;
 
-    player.addItem(item);
-    if (isFinite(data.unitId))
-    {
-      this.unitsById[data.unitId].items.addItem(item, data.positionInUnit);
-    }
+    // TODO 25.10.2016 | re-add these
+    // player.addItem(item);
+    // if (isFinite(data.unitId))
+    // {
+    //   this.unitsById[data.unitId].items.addItem(item, data.positionInUnit);
+    // }
   }
   private deserializeAIController<S>(
     data: AIControllerSaveData<S>,
