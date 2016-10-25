@@ -9,7 +9,6 @@ import Manufactory from "./Manufactory";
 
 import GameSaveData from "./savedata/GameSaveData";
 import FullSaveData from "./savedata/FullSaveData";
-import PlayerSaveData from "./savedata/PlayerSaveData";
 
 
 export default class Game
@@ -156,28 +155,25 @@ export default class Game
       this.endGame();
     }
   }
+  public getAllPlayers(): Player[]
+  {
+    return this.playerOrder.concat(this.independents);
+  }
   private endGame(): void
   {
     this.hasEnded = true;
   }
   serialize(): GameSaveData
   {
-    var playersSaveData: PlayerSaveData[] = this.playerOrder.map(function(player: Player)
-    {
-      return player.serialize()
-    });
-
-    var independentsSaveData: PlayerSaveData[] = this.independents.map(function(player: Player)
-    {
-      return player.serialize()
-    });
-
     // TODO 25.10.2016 | add units
     var data: GameSaveData =
     {
       turnNumber: this.turnNumber,
       galaxyMap: this.galaxyMap.serialize(),
-      players: playersSaveData.concat(independentsSaveData),
+      players: this.getAllPlayers().map((player) =>
+      {
+        return player.serialize();
+      }),
       humanPlayerId: this.humanPlayer.id,
       notificationLog: this.notificationLog.serialize()
     };
