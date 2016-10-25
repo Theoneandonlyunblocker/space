@@ -65,7 +65,7 @@ export default class GameLoader
 
   }
 
-  deserializeGame(data: GameSaveData): Game
+  public deserializeGame(data: GameSaveData): Game
   {
     this.map = this.deserializeMap(data.galaxyMap);
 
@@ -121,7 +121,7 @@ export default class GameLoader
 
     return game;
   }
-  deserializeNotificationLog(data: NotificationLogSaveData): NotificationLog
+  private deserializeNotificationLog(data: NotificationLogSaveData): NotificationLog
   {
     var notificationsData = data.notifications;
 
@@ -138,7 +138,7 @@ export default class GameLoader
 
     return notificationLog;
   }
-  deserializeMap(data: GalaxyMapSaveData): GalaxyMap
+  private deserializeMap(data: GalaxyMapSaveData): GalaxyMap
   {
     var stars: Star[] = [];
 
@@ -184,7 +184,7 @@ export default class GameLoader
 
     return galaxyMap;
   }
-  deserializeStar(data: StarSaveData): Star
+  private deserializeStar(data: StarSaveData): Star
   {
     var star = new Star(
     {
@@ -204,7 +204,7 @@ export default class GameLoader
 
     return star;
   }
-  deserializeBuildings(data: GalaxyMapSaveData): void
+  private deserializeBuildings(data: GalaxyMapSaveData): void
   {
     for (let i = 0; i < data.stars.length; i++)
     {
@@ -228,7 +228,7 @@ export default class GameLoader
       }
     }
   }
-  deserializeBuilding(data: BuildingSaveData): Building
+  private deserializeBuilding(data: BuildingSaveData): Building
   {
     var template = app.moduleData.Templates.Buildings[data.templateType];
     var building = new Building(
@@ -244,7 +244,7 @@ export default class GameLoader
 
     return building;
   }
-  deserializePlayer(data: PlayerSaveData): Player
+  private deserializePlayer(data: PlayerSaveData): Player
   {
     const player = new Player(
     {
@@ -294,7 +294,7 @@ export default class GameLoader
 
     return player;
   }
-  deserializeDiplomacyStatus(player: Player, data: DiplomacyStatusSaveData): void
+  private deserializeDiplomacyStatus(player: Player, data: DiplomacyStatusSaveData): void
   {
     if (data)
     {
@@ -332,7 +332,7 @@ export default class GameLoader
       }
     }
   }
-  deserializeIdentifiedUnits(player: Player, data: number[]): void
+  private deserializeIdentifiedUnits(player: Player, data: number[]): void
   {
     for (let i = 0; i < data.length; i++)
     {
@@ -343,7 +343,7 @@ export default class GameLoader
       }
     }
   }
-  deserializeEmblem(emblemData: EmblemSaveData): Emblem
+  private deserializeEmblem(emblemData: EmblemSaveData): Emblem
   {
     return new Emblem(
       emblemData.colors.map(colorData => Color.deSerialize(colorData)),
@@ -351,7 +351,7 @@ export default class GameLoader
       emblemData.alpha
     );
   }
-  deserializeFlag(data: FlagSaveData): Flag
+  private deserializeFlag(data: FlagSaveData): Flag
   {
     const emblems = data.emblems.map(emblemSaveData =>
     {
@@ -362,7 +362,7 @@ export default class GameLoader
 
     return flag;
   }
-  deserializeFleet(player: Player, data: FleetSaveData): Fleet
+  private deserializeFleet(player: Player, data: FleetSaveData): Fleet
   {
     const units = data.unitIds.map((unitID) => this.unitsById[unitID]);
 
@@ -379,7 +379,7 @@ export default class GameLoader
 
     return fleet;
   }
-  deserializeUnit(data: UnitSaveData): Unit
+  private deserializeUnit(data: UnitSaveData): Unit
   {
     const unit = Unit.fromSaveData(data);
 
@@ -387,7 +387,7 @@ export default class GameLoader
 
     return unit;
   }
-  deserializeItem(data: ItemSaveData, player: Player): void
+  private deserializeItem(data: ItemSaveData, player: Player): void
   {
     var template = app.moduleData.Templates.Items[data.templateType];
 
