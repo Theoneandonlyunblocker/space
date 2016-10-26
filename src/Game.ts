@@ -140,6 +140,14 @@ export default class Game
     {
       this.playerOrder.splice(playerOrderIndex, 1);
     }
+    else
+    {
+      const independentsIndex = this.independents.indexOf(playerToKill);
+      if (independentsIndex !== -1)
+      {
+        this.independents.splice(independentsIndex, 1);
+      }
+    }
 
     this.playerOrder.forEach((player) =>
     {
