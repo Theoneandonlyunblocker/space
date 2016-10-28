@@ -118,42 +118,6 @@ export class Front
       moveRoutine(this, afterMoveCallback);
     }
   }
-  public organizeFleets(): void
-  {
-    // pure fleet only has units belonging to this front in it
-
-    const pureFleetsBeforeMerge = this.getAssociatedFleets().filter((fleet) => this.isFleetPure(fleet));
-
-    // merge pure fleets at same location
-    this.mergeFleetsWithSharedLocation(pureFleetsBeforeMerge);
-    const pureFleets = this.getAssociatedFleets().filter((fleet) => this.isFleetPure(fleet));
-
-    // move impure units to pure fleets at location if possible
-    const unitsInImpureFleets = this.getUnitsInImpureFleets();
-
-    const pureFleetsByLocation = this.getFleetsByLocation(pureFleets);
-    const impureUnitsByLocation = this.getUnitsByLocation(unitsInImpureFleets);
-
-    for (let locationID in impureUnitsByLocation)
-    {
-      if (pureFleetsByLocation[locationID])
-      {
-        const fleet = pureFleetsByLocation[locationID][0];
-        fleet.addUnits(impureUnitsByLocation[locationID]);
-
-        delete impureUnitsByLocation[locationID];
-      }
-    }
-
-    // create new pure fleets from impure units
-    for (let locationID in impureUnitsByLocation)
-    {
-      const units = impureUnitsByLocation[locationID];
-      const player = units[0].fleet.player;
-      const location = units[0].fleet.location;
-      new Fleet(player, units, location);
-    }
-  }
   public getAssociatedFleets(): Fleet[]
   {
     const fleetsById:
@@ -217,6 +181,55 @@ export class Front
 
     return scores;
   }
+  public organizeAllFleets(): void
+  {
+    this.organizeFleets(
+      this.getAssociatedFleets().filter((fleet) => !fleet.isStealthy),
+      this.units.filter((unit) => !unit.isStealthy()),
+    );
+
+    this.organizeFleets(
+      this.getAssociatedFleets().filter((fleet) => fleet.isStealthy),
+      this.units.filter((unit) => unit.isStealthy()),
+    );
+  }
+
+  private organizeFleets(fleetsToOrganize: Fleet[], unitsToOrganize: Unit[]): void
+  {
+    // pure fleet only has units belonging to this front in it
+
+    const pureFleetsBeforeMerge = fleetsToOrganize.filter((fleet) => this.isFleetPure(fleet));
+
+    // merge pure fleets at same location
+    this.mergeFleetsWithSharedLocation(pureFleetsBeforeMerge);
+    const pureFleets = fleetsToOrganize.filter((fleet) => this.isFleetPure(fleet));
+
+    // move impure units to pure fleets at location if possible
+    const unitsInImpureFleets = this.getUnitsInImpureFleets(unitsToOrganize);
+
+    const pureFleetsByLocation = this.getFleetsByLocation(pureFleets);
+    const impureUnitsByLocation = this.getUnitsByLocation(unitsInImpureFleets);
+
+    for (let locationID in impureUnitsByLocation)
+    {
+      if (pureFleetsByLocation[locationID])
+      {
+        const fleet = pureFleetsByLocation[locationID][0];
+        fleet.addUnits(impureUnitsByLocation[locationID]);
+
+        delete impureUnitsByLocation[locationID];
+      }
+    }
+
+    // create new pure fleets from impure units
+    for (let locationID in impureUnitsByLocation)
+    {
+      const units = impureUnitsByLocation[locationID];
+      const player = units[0].fleet.player;
+      const location = units[0].fleet.location;
+      new Fleet(player, units, location);
+    }
+  }
   private isFleetPure(fleet: Fleet): boolean
   {
     return fleet.units.every((unit) => this.hasUnit(unit));
@@ -262,14 +275,14 @@ export class Front
       }
     }
   }
-  private getUnitsInImpureFleets(): Unit[]
+  private getUnitsInImpureFleets(units: Unit[]): Unit[]
   {
     const fleetPurityByID:
     {
       [fleetID: number]: boolean;
     } = {};
 
-    return this.units.filter((unit) =>
+    return units.filter((unit) =>
     {
       if (fleetPurityByID.hasOwnProperty("" + unit.fleet.id))
       {
@@ -280,7 +293,7 @@ export class Front
         const fleetIsPure = this.isFleetPure(unit.fleet);
         fleetPurityByID[unit.fleet.id] = fleetIsPure;
 
-        return fleetIsPure;
+        return !fleetIsPure;
       }
     });
   }

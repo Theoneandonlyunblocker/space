@@ -213,7 +213,7 @@ export default class FrontsAI
   {
     for (let i = 0; i < this.fronts.length; i++)
     {
-      this.fronts[i].organizeFleets();
+      this.fronts[i].organizeAllFleets();
     }
   }
 
