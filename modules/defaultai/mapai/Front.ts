@@ -63,23 +63,45 @@ export class Front
     const unitIndex = this.getUnitIndex(unit);
     this.units.splice(unitIndex, 1);
   }
-  public getUnitsByLocation(): {[starId: number]: Unit[]}
+  public getUnitsByLocation(units: Unit[] = this.units): {[starId: number]: Unit[]}
   {
     const byLocation:
     {
       [starId: number]: Unit[];
     } = {};
 
-    for (let i = 0; i < this.units.length; i++)
+    units.forEach((unit) =>
     {
-      const star = this.units[i].fleet.location;
+      const star = unit.fleet.location;
       if (!byLocation[star.id])
       {
         byLocation[star.id] = [];
       }
 
-      byLocation[star.id].push(this.units[i]);
-    }
+      byLocation[star.id].push(unit);
+    });
+
+    return byLocation;
+  }
+  public getFleetsByLocation(
+    fleets: Fleet[] = this.getAssociatedFleets()
+  ): {[starId: number]: Fleet[]}
+  {
+    const byLocation:
+    {
+      [starId: number]: Fleet[];
+    } = {};
+
+    fleets.forEach((fleet) =>
+    {
+      const star = fleet.location;
+      if (!byLocation[star.id])
+      {
+        byLocation[star.id] = [];
+      }
+
+      byLocation[star.id].push(fleet);
+    });
 
     return byLocation;
   }
@@ -99,104 +121,38 @@ export class Front
   public organizeFleets(): void
   {
     // pure fleet only has units belonging to this front in it
-    /*
-    get all pure fleets + location
-    get all units in impure fleets + location
-    merge pure fleets at same location
-    move impure units to pure fleets at location if possible
-    create new pure fleets with remaining impure units
-     */
-    const allFleets = this.getAssociatedFleets();
 
-    const pureFleetsByLocation:
-    {
-      [starId: number]: Fleet[];
-    } = {};
-    const impureFleetMembersByLocation:
-    {
-      [starId: number]: Unit[];
-    } = {};
+    const pureFleetsBeforeMerge = this.getAssociatedFleets().filter((fleet) => this.isFleetPure(fleet));
 
-    // build indexes of pure fleets and impure units
-    for (let i = 0; i < allFleets.length; i++)
-    {
-      const fleet = allFleets[i];
-      const star = fleet.location;
+    // merge pure fleets at same location
+    this.mergeFleetsWithSharedLocation(pureFleetsBeforeMerge);
+    const pureFleets = this.getAssociatedFleets().filter((fleet) => this.isFleetPure(fleet));
 
-      if (this.isFleetPure(fleet))
+    // move impure units to pure fleets at location if possible
+    const unitsInImpureFleets = this.getUnitsInImpureFleets();
+
+    const pureFleetsByLocation = this.getFleetsByLocation(pureFleets);
+    const impureUnitsByLocation = this.getUnitsByLocation(unitsInImpureFleets);
+
+    for (let locationID in impureUnitsByLocation)
+    {
+      if (pureFleetsByLocation[locationID])
       {
-        if (!pureFleetsByLocation[star.id])
-        {
-          pureFleetsByLocation[star.id] = [];
-        }
+        const fleet = pureFleetsByLocation[locationID][0];
+        fleet.addUnits(impureUnitsByLocation[locationID]);
 
-        pureFleetsByLocation[star.id].push(fleet);
-      }
-      else
-      {
-        const ownUnits = fleet.units.filter((unit) => this.hasUnit(unit));
-
-        for (let j = 0; j < ownUnits.length; j++)
-        {
-          if (!impureFleetMembersByLocation[star.id])
-          {
-            impureFleetMembersByLocation[star.id] = [];
-          }
-
-          impureFleetMembersByLocation[star.id].push(ownUnits[j]);
-        }
+        delete impureUnitsByLocation[locationID];
       }
     }
 
-    const sortFleetsBySizeFN = (a: Fleet, b: Fleet) =>
+    // create new pure fleets from impure units
+    for (let locationID in impureUnitsByLocation)
     {
-      return b.units.length - a.units.length;
-    };
-
-    for (let starId in pureFleetsByLocation)
-    {
-      // combine pure fleets at same location
-      const fleets = pureFleetsByLocation[starId];
-      if (fleets.length > 1)
-      {
-        fleets.sort(sortFleetsBySizeFN);
-
-        // only goes down to i = 1 !!
-        for (let i = fleets.length - 1; i >= 1; i--)
-        {
-          fleets[i].mergeWith(fleets[0]);
-          fleets.splice(i, 1);
-        }
-      }
-
-      // move impure units to pure fleets at same location
-      if (impureFleetMembersByLocation[starId])
-      {
-        for (let i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--)
-        {
-          const unit = impureFleetMembersByLocation[starId][i];
-          unit.fleet.transferUnit(fleets[0], unit);
-          impureFleetMembersByLocation[starId].splice(i, 1);
-        }
-      }
+      const units = impureUnitsByLocation[locationID];
+      const player = units[0].fleet.player;
+      const location = units[0].fleet.location;
+      new Fleet(player, units, location);
     }
-
-    // create new pure fleets from leftover impure units
-    for (let starId in impureFleetMembersByLocation)
-    {
-      const units = impureFleetMembersByLocation[starId];
-      if (units.length < 1)
-      {
-        continue;
-      }
-      const newFleet = new Fleet(units[0].fleet.player, [], units[0].fleet.location);
-
-      for (let i = units.length - 1; i >= 0; i--)
-      {
-        units[i].fleet.transferUnit(newFleet, units[i]);
-      }
-    }
-
   }
   public getAssociatedFleets(): Fleet[]
   {
@@ -273,7 +229,6 @@ export class Front
   {
     return this.getUnitIndex(unit) !== -1;
   }
-
   private getUnitCountByArchetype(): ArchetypeValues
   {
     const unitCountByArchetype: ArchetypeValues = {};
@@ -291,5 +246,42 @@ export class Front
     }
 
     return unitCountByArchetype;
+  }
+  private mergeFleetsWithSharedLocation(fleetsToMerge: Fleet[]): void
+  {
+    const fleetsByLocationID = this.getFleetsByLocation(fleetsToMerge);
+
+    for (let locationID in fleetsByLocationID)
+    {
+      const fleetsAtLocation = fleetsByLocationID[locationID].sort(Fleet.sortByImportance);
+
+      // only goes down to i = 1
+      for (let i = fleetsAtLocation.length - 1; i >= 1; i--)
+      {
+        fleetsAtLocation[i].mergeWith(fleetsAtLocation[0]);
+      }
+    }
+  }
+  private getUnitsInImpureFleets(): Unit[]
+  {
+    const fleetPurityByID:
+    {
+      [fleetID: number]: boolean;
+    } = {};
+
+    return this.units.filter((unit) =>
+    {
+      if (fleetPurityByID.hasOwnProperty("" + unit.fleet.id))
+      {
+        return !fleetPurityByID[unit.fleet.id];
+      }
+      else
+      {
+        const fleetIsPure = this.isFleetPure(unit.fleet);
+        fleetPurityByID[unit.fleet.id] = fleetIsPure;
+
+        return fleetIsPure;
+      }
+    });
   }
 }

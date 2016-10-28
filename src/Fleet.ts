@@ -28,6 +28,7 @@ export default class Fleet
   id: number;
   name: Name;
 
+  // TODO 28.10.2016 | don't add fleet to location or player in constructor
   constructor(player: Player, units: Unit[], location: Star,
     id?: number, shouldRender: boolean = true)
   {
@@ -44,6 +45,19 @@ export default class Fleet
     if (shouldRender)
     {
       eventManager.dispatchEvent("renderLayer", "fleets", this.location);
+    }
+  }
+  public static sortByImportance(a: Fleet, b: Fleet): number
+  {
+    // TODO 26.10.2016 | should keep track of fleets with custom names
+    const unitCountSort = b.units.length - a.units.length;
+    if (unitCountSort)
+    {
+      return unitCountSort;
+    }
+    else
+    {
+      return a.id - b.id;
     }
   }
   getUnitIndex(unit: Unit): number
