@@ -170,7 +170,7 @@ export class Fleet
     }).reduce((minMovePoints, currentUnitMovePoints) =>
     {
       return Math.min(minMovePoints, currentUnitMovePoints);
-    }, 0);
+    }, Infinity);
   }
   public getMinMaxMovePoints(): number
   {
@@ -180,7 +180,7 @@ export class Fleet
     }).reduce((minMovePoints, currentUnitMovePoints) =>
     {
       return Math.min(minMovePoints, currentUnitMovePoints);
-    }, 0);
+    }, Infinity);
   }
   public getPathTo(newLocation: Star): PathNode[]
   {
