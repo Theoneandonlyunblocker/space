@@ -49,7 +49,10 @@ export class Fleet
     this.location.addFleet(this);
     this.player.addFleet(this);
 
-    this.addUnits(units);
+    units.forEach((unitToAdd) =>
+    {
+      this.addUnit(unitToAdd);
+    });
 
     if (shouldRender)
     {
@@ -70,6 +73,14 @@ export class Fleet
       return a.id - b.id;
     }
   }
+  private static makeAlreadyInFleetError(unit: Unit): Error
+  {
+    return new Error(`Unit ${unit.name} is already part of fleet ${unit.fleet.name.toString()}`);
+  }
+  private static makeNotInFleetError(unit: Unit, fleet: Fleet): Error
+  {
+    return new Error(`Unit ${unit.name} is not part of fleet ${fleet.name.toString()}`);
+  }
 
   public deleteFleet(shouldRender: boolean = true): void
   {
@@ -81,21 +92,23 @@ export class Fleet
       eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     }
   }
-  public mergeWith(fleet: Fleet, shouldRender: boolean = true): void
+  public mergeWith(fleetToMergeWith: Fleet, shouldRender: boolean = true): void
   {
-    if (fleet.isStealthy !== this.isStealthy)
+    if (fleetToMergeWith.isStealthy !== this.isStealthy)
     {
       throw new Error("Tried to merge stealthy fleet with non stealthy or other way around");
     }
 
-    fleet.addUnits(this.units);
-    this.deleteFleet(shouldRender);
+    this.units.forEach((unit) =>
+    {
+      this.transferUnit(fleetToMergeWith, unit);
+    });
   }
   public addUnit(unit: Unit): void
   {
-    if (this.hasUnit(unit))
+    if (unit.fleet)
     {
-      throw new Error("Tried to add unit to fleet which the unit was already part of");
+      throw Fleet.makeAlreadyInFleetError(unit);
     }
 
     if (this.units.length === 0)
@@ -118,7 +131,7 @@ export class Fleet
 
     if (index < 0)
     {
-      throw this.makeNoUnitError(unit);
+      throw Fleet.makeNotInFleetError(unit, this);
     }
 
     this.units.splice(index, 1);
@@ -154,33 +167,23 @@ export class Fleet
   }
   public getMinCurrentMovePoints(): number
   {
-    if (!this.units[0])
+    return this.units.map((unit) =>
     {
-      return 0;
-    }
-
-    let min = this.units[0].currentMovePoints;
-
-    for (let i = 0; i < this.units.length; i++)
+      return unit.currentMovePoints;
+    }).reduce((minMovePoints, currentUnitMovePoints) =>
     {
-      min = Math.min(this.units[i].currentMovePoints, min);
-    }
-    return min;
+      return Math.min(minMovePoints, currentUnitMovePoints);
+    }, 0);
   }
   public getMinMaxMovePoints(): number
   {
-    if (!this.units[0])
+    return this.units.map((unit) =>
     {
-      return 0;
-    }
-
-    let min = this.units[0].maxMovePoints;
-
-    for (let i = 0; i < this.units.length; i++)
+      return unit.maxMovePoints;
+    }).reduce((minMovePoints, currentUnitMovePoints) =>
     {
-      min = Math.min(this.units[i].maxMovePoints, min);
-    }
-    return min;
+      return Math.min(minMovePoints, currentUnitMovePoints);
+    }, 0);
   }
   public getPathTo(newLocation: Star): PathNode[]
   {
@@ -223,25 +226,23 @@ export class Fleet
   }
   public getTotalCurrentHealth(): number
   {
-    let total = 0;
-
-    this.units.forEach((unit) =>
+    return this.units.map((unit) =>
     {
-      total += unit.currentHealth;
-    });
-
-    return total;
+      return unit.currentHealth;
+    }).reduce((total, current) =>
+    {
+      return total + current;
+    }, 0);
   }
   public getTotalMaxHealth(): number
   {
-    let total = 0;
-
-    this.units.forEach((unit) =>
+    return this.units.map((unit) =>
     {
-      total += unit.maxHealth;
-    });
-
-    return total;
+      return unit.maxHealth;
+    }).reduce((total, current) =>
+    {
+      return total + current;
+    }, 0);
   }
   public getVisibleStars(): Star[]
   {
@@ -278,27 +279,7 @@ export class Fleet
 
   private canMove(): boolean
   {
-    for (let i = 0; i < this.units.length; i++)
-    {
-      if (this.units[i].currentMovePoints <= 0)
-      {
-        return false;
-      }
-    }
-
-    if (this.getMinCurrentMovePoints() > 0)
-    {
-      return true;
-    }
-
-    return false;
-  }
-  private subtractMovePoints(amount: number): void
-  {
-    for (let i = 0; i < this.units.length; i++)
-    {
-      this.units[i].currentMovePoints -= amount;
-    }
+    return this.units.every((unit) => unit.currentMovePoints > 0);
   }
   private move(newLocation: Star): void
   {
@@ -317,7 +298,7 @@ export class Fleet
     this.location = newLocation;
     newLocation.addFleet(this);
 
-    this.subtractMovePoints(1);
+    this.units.forEach((unit) => unit.currentMovePoints -= 1);
 
     this.visionIsDirty = true;
     this.player.visionIsDirty = true;
@@ -356,16 +337,8 @@ export class Fleet
 
     this.visionIsDirty = false;
   }
-  private makeNoUnitError(unit: Unit): Error
-  {
-    return new Error(`Unit ${unit.name} is not part of fleet ${this.name}`);
-  }
   private getUnitIndex(unit: Unit): number
   {
     return this.units.indexOf(unit);
-  }
-  private hasUnit(unit: Unit): boolean
-  {
-    return this.getUnitIndex(unit) >= 0;
   }
 }
