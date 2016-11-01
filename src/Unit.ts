@@ -747,14 +747,6 @@ export default class Unit
     this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
     this.addHealth(-amount);
   }
-  public addToFleet(fleet: Fleet)
-  {
-    this.fleet = fleet;
-  }
-  public removeFromFleet()
-  {
-    this.fleet = null;
-  }
   public removeFromPlayer()
   {
     var player = this.fleet.player;

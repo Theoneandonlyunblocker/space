@@ -105,7 +105,7 @@ export default class Fleet
     }
 
     this.units.push(unit);
-    unit.addToFleet(this);
+    unit.fleet = this;
 
     this.visionIsDirty = true;
   }
@@ -126,7 +126,7 @@ export default class Fleet
     }
 
     this.units.splice(index, 1);
-    unit.removeFromFleet();
+    unit.fleet = null;
 
     this.visionIsDirty = true;
 
