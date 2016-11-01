@@ -131,27 +131,20 @@ export class Fleet
       this.deleteFleet();
     }
   }
-  public transferUnit(fleet: Fleet, unit: Unit, shouldRender: boolean = true): void
+  public transferUnit(receivingFleet: Fleet, unitToTransfer: Unit, shouldRender: boolean = true): void
   {
-    if (fleet === this)
+    if (receivingFleet === this)
     {
       throw new Error("Tried to transfer unit into unit's current fleet");
     }
-    if (unit.isStealthy() !== this.isStealthy)
+
+    this.removeUnit(unitToTransfer);
+    receivingFleet.addUnit(unitToTransfer);
+
+    if (shouldRender)
     {
-      throw new Error("Tried to transfer stealthy unit to non stealthy fleet");
+      eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     }
-    const index = this.getUnitIndex(unit);
-
-    if (index < 0)
-    {
-      throw this.makeNoUnitError(unit);
-    }
-
-    fleet.addUnit(unit);
-
-    this.units.splice(index, 1);
-    eventManager.dispatchEvent("renderLayer", "fleets", this.location);
   }
   public split(): Fleet
   {
