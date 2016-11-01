@@ -461,13 +461,6 @@ export default class Star implements Point
     fleet.location = this;
     this.fleets[fleet.player.id].push(fleet);
   }
-  addFleets(fleets: Fleet[]): void
-  {
-    for (let i = 0; i < fleets.length; i++)
-    {
-      this.addFleet(fleets[i]);
-    }
-  }
   removeFleet(fleet: Fleet): void
   {
     var fleetIndex = this.getFleetIndex(fleet);
@@ -482,13 +475,6 @@ export default class Star implements Point
     if (this.fleets[fleet.player.id].length === 0)
     {
       delete this.fleets[fleet.player.id];
-    }
-  }
-  removeFleets(fleets: Fleet[]): void
-  {
-    for (let i = 0; i < fleets.length; i++)
-    {
-      this.removeFleet(fleets[i]);
     }
   }
   getTargetsForPlayer(player: Player): FleetAttackTarget[]
