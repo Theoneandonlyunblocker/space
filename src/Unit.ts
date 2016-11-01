@@ -749,11 +749,18 @@ export default class Unit
   }
   public removeFromPlayer()
   {
-    var player = this.fleet.player;
+    const fleet = this.fleet;
+    var player = fleet.player;
 
     this.items.destroyAllItems();
     player.removeUnit(this);
-    this.fleet.removeUnit(this);
+
+    fleet.removeUnit(this);
+    if (fleet.units.length <= 0)
+    {
+      fleet.deleteFleet();
+    }
+    
 
     app.moduleData.scripts.unit.removeFromPlayer.forEach(scriptFN =>
     {

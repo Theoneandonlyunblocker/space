@@ -103,6 +103,8 @@ export class Fleet
     {
       this.transferUnit(fleetToMergeWith, unit);
     });
+
+    this.deleteFleet();
   }
   public addUnit(unit: Unit): void
   {
@@ -138,11 +140,6 @@ export class Fleet
     unit.fleet = null;
 
     this.visionIsDirty = true;
-
-    if (this.units.length <= 0)
-    {
-      this.deleteFleet();
-    }
   }
   public transferUnit(receivingFleet: Fleet, unitToTransfer: Unit, shouldRender: boolean = true): void
   {

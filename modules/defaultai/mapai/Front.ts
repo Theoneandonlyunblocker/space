@@ -217,7 +217,13 @@ export class Front
         const fleet = pureFleetsByLocation[locationID][0];
         impureUnitsByLocation[locationID].forEach((unitToTransfer) =>
         {
-          unitToTransfer.fleet.transferUnit(fleet, unitToTransfer);
+          const fleetToTransferFrom = unitToTransfer.fleet;
+          fleetToTransferFrom.transferUnit(fleet, unitToTransfer);
+
+          if (fleetToTransferFrom.units.length <= 0)
+          {
+            fleetToTransferFrom.deleteFleet();
+          }
         });
 
         delete impureUnitsByLocation[locationID];
