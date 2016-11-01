@@ -56,10 +56,7 @@ const fleets: MapRendererLayerTemplate =
       if (Options.debug.enabled && fleet.units.length > 0)
       {
         const front = attachedUnitData.get(fleet.units[0]).front;
-        if (front)
-        {
-          console.log(front.objective.type);
-        }
+        console.log(`${fleet.id}${front ? ", " + front.objective.type : ""}`);
       }
     }
     const fleetClickFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
