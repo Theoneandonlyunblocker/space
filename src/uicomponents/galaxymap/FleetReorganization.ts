@@ -71,9 +71,11 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
     if (draggingUnit)
     {
       var oldFleet: Fleet = draggingUnit.fleet;
-      
-      oldFleet.transferUnit(fleet, draggingUnit);
-      eventManager.dispatchEvent("playerControlUpdated", null);
+      if (oldFleet !== fleet)
+      {
+        oldFleet.transferUnit(fleet, draggingUnit);
+        eventManager.dispatchEvent("playerControlUpdated", null);
+      }
     }
 
     this.handleDragEnd();
