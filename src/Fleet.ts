@@ -290,26 +290,6 @@ export class Fleet
 
     this.visionIsDirty = true;
   }
-  private removeUnits(units: Unit[]): void
-  {
-    for (let i = 0; i < units.length; i++)
-    {
-      this.removeUnit(units[i]);
-    }
-  }
-  private splitStealthyUnits(): Fleet
-  {
-    const stealthyUnits = this.units.filter((unit) =>
-    {
-      return unit.isStealthy();
-    });
-
-    const newFleet = new Fleet(this.player, stealthyUnits, this.location);
-    this.location.addFleet(newFleet);
-    this.removeUnits(stealthyUnits);
-
-    return newFleet;
-  }
   private canMove(): boolean
   {
     for (let i = 0; i < this.units.length; i++)
@@ -370,10 +350,6 @@ export class Fleet
 
     eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     eventManager.dispatchEvent("updateSelection", null);
-  }
-  private getFriendlyFleetsAtOwnLocation(): Fleet[]
-  {
-    return this.location.fleets[this.player.id];
   }
   private updateVisibleStars(): void
   {
