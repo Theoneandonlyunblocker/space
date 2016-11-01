@@ -215,9 +215,9 @@ export class Front
       if (pureFleetsByLocation[locationID])
       {
         const fleet = pureFleetsByLocation[locationID][0];
-        impureUnitsByLocation[locationID].forEach((unitToAdd) =>
+        impureUnitsByLocation[locationID].forEach((unitToTransfer) =>
         {
-          fleet.addUnit(unitToAdd);
+          unitToTransfer.fleet.transferUnit(fleet, unitToTransfer);
         });
 
         delete impureUnitsByLocation[locationID];
@@ -230,6 +230,12 @@ export class Front
       const units = impureUnitsByLocation[locationID];
       const player = units[0].fleet.player;
       const location = units[0].fleet.location;
+
+      units.forEach((unitToRemove) =>
+      {
+        unitToRemove.fleet.removeUnit(unitToRemove);
+      });
+
       new Fleet(player, units, location);
     }
   }
