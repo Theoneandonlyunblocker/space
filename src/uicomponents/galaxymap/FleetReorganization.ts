@@ -3,7 +3,7 @@
 
 import Unit from "../../Unit";
 import FleetContents from "./FleetContents";
-import Fleet from "../../Fleet";
+import {Fleet} from "../../Fleet";
 import eventManager from "../../eventManager";
 
 

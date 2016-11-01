@@ -8,7 +8,7 @@ import ItemTemplate from "./ItemTemplate";
 import {DistributionData} from "./DistributionData";
 import TemplateCollection from "./TemplateCollection";
 
-import Fleet from "../Fleet";
+import {Fleet} from "../Fleet";
 import Name from "../Name";
 import Player from "../Player";
 import Star from "../Star";

@@ -1,5 +1,5 @@
 import Player from "./Player";
-import Fleet from "./Fleet";
+import {Fleet} from "./Fleet";
 import eventManager from "./eventManager";
 import Star from "./Star";
 import FleetAttackTarget from "./FleetAttackTarget";

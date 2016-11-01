@@ -14,7 +14,7 @@ import PlayerControl from "../../PlayerControl";
 import Game from "../../Game";
 import MapRenderer from "../../MapRenderer";
 import Player from "../../Player";
-import Fleet from "../../Fleet";
+import {Fleet} from "../../Fleet";
 import FleetAttackTarget from "../../FleetAttackTarget";
 
 

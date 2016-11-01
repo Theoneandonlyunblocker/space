@@ -1,7 +1,7 @@
 import Objective from "./Objective";
 
 import ArchetypeValues from "../../../src/ArchetypeValues";
-import Fleet from "../../../src/Fleet";
+import {Fleet} from "../../../src/Fleet";
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
 

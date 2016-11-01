@@ -4,7 +4,7 @@ import eventManager from "../../eventManager";
 import FleetInfo from "./FleetInfo";
 import FleetContents from "./FleetContents";
 import FleetReorganization from "./FleetReorganization";
-import Fleet from "../../Fleet";
+import {Fleet} from "../../Fleet";
 import Player from "../../Player";
 import Star from "../../Star";
 

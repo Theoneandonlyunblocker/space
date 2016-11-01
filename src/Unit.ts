@@ -27,7 +27,7 @@ import
 import Battle from "./Battle";
 import Item from "./Item";
 import StatusEffect from "./StatusEffect";
-import Fleet from "./Fleet";
+import {Fleet} from "./Fleet";
 import Player from "./Player";
 import Star from "./Star";
 import GuardCoverage from "./GuardCoverage";

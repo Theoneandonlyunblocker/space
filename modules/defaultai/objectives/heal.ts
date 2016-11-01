@@ -5,7 +5,7 @@ import Objective from "../mapai/Objective";
 
 import ObjectiveTemplate from "./common/ObjectiveTemplate";
 
-import Fleet from "../../../src/Fleet";
+import {Fleet} from "../../../src/Fleet";
 import Unit from "../../../src/Unit";
 
 import movePriority from "./common/movePriority";

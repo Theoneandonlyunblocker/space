@@ -1,4 +1,4 @@
-import Fleet from "../../src/Fleet";
+import {Fleet} from "../../src/Fleet";
 import Name from "../../src/Name";
 import Player from "../../src/Player";
 import Star from "../../src/Star";

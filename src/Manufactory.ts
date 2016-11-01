@@ -10,7 +10,7 @@ import Star from "./Star";
 import Player from "./Player";
 import Unit from "./Unit";
 import Item from "./Item";
-import Fleet from "./Fleet";
+import {Fleet} from "./Fleet";
 import eventManager from "./eventManager";
 
 interface ManufacturableThingWithType

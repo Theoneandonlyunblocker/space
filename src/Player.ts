@@ -2,7 +2,7 @@
 
 import app from "./App"; // TODO global
 import Unit from "./Unit";
-import Fleet from "./Fleet";
+import {Fleet} from "./Fleet";
 import
 {
   extendObject,

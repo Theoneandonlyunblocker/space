@@ -3,7 +3,7 @@
 import app from "./App"; // TODO global
 
 import Star from "./Star";
-import Fleet from "./Fleet";
+import {Fleet} from "./Fleet";
 import Color from "./Color";
 import eventManager from "./eventManager";
 import Point from "./Point";

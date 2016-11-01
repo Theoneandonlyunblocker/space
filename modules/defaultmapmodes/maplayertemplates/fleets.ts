@@ -4,7 +4,7 @@ import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendere
 
 import Options from "../../../src/Options";
 import eventManager from "../../../src/eventManager";
-import Fleet from "../../../src/Fleet";
+import {Fleet} from "../../../src/Fleet";
 import Star from "../../../src/Star";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";

@@ -2,7 +2,7 @@
 
 import Player from "../../Player";
 import FleetUnitInfo from "./FleetUnitInfo";
-import Fleet from "../../Fleet";
+import {Fleet} from "../../Fleet";
 import Unit from "../../Unit";
 
 

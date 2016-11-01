@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import FleetControls from "./FleetControls";
-import Fleet from "../../Fleet";
+import {Fleet} from "../../Fleet";
 
 
 export interface PropTypes extends React.Props<any>

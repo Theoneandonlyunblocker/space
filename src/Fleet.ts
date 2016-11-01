@@ -16,7 +16,7 @@ import
 
 import FleetSaveData from "./savedata/FleetSaveData";
 
-export default class Fleet
+export class Fleet
 {
   public id: number;
   public name: Name;

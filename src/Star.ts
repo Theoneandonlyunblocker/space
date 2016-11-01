@@ -8,7 +8,7 @@ import eventManager from "./eventManager";
 import Point from "./Point";
 import FillerPoint from "./FillerPoint";
 import Player from "./Player";
-import Fleet from "./Fleet";
+import {Fleet} from "./Fleet";
 import Building from "./Building";
 import BuildingUpgradeData from "./BuildingUpgradeData";
 import Manufactory from "./Manufactory";
