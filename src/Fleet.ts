@@ -243,7 +243,7 @@ export class Fleet
 
     return total;
   }
-  public getVision(): Star[]
+  public getVisibleStars(): Star[]
   {
     if (this.visionIsDirty)
     {
@@ -252,7 +252,7 @@ export class Fleet
 
     return this.visibleStars;
   }
-  public getDetection(): Star[]
+  public getDetectedStars(): Star[]
   {
     if (this.visionIsDirty)
     {

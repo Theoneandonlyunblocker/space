@@ -560,8 +560,8 @@ export default class Player
     }
     for (let i = 0; i < this.fleets.length; i++)
     {
-      allVisible = allVisible.concat(this.fleets[i].getVision());
-      allDetected = allDetected.concat(this.fleets[i].getDetection());
+      allVisible = allVisible.concat(this.fleets[i].getVisibleStars());
+      allDetected = allDetected.concat(this.fleets[i].getDetectedStars());
     }
 
     for (let i = 0; i < allVisible.length; i++)
