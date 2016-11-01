@@ -32,34 +32,32 @@ export class Fleet
   private detectedStars: Star[] = [];
 
 
-  // TODO 28.10.2016 | don't add fleet to location or player in constructor
   constructor(
-    player: Player,
     units: Unit[],
-    location: Star,
     id?: number,
-    shouldRender: boolean = true
   )
   {
-    this.player = player;
-    this.location = location;
     this.id = isFinite(id) ? id : idGenerators.fleet++;
     this.name = new Name("Fleet " + this.id);
-
-    this.location.addFleet(this);
-    this.player.addFleet(this);
 
     units.forEach((unitToAdd) =>
     {
       this.addUnit(unitToAdd);
     });
-
-    if (shouldRender)
-    {
-      eventManager.dispatchEvent("renderLayer", "fleets", this.location);
-    }
   }
 
+  public static createFleetsFromUnits(units: Unit[]): Fleet[]
+  {
+    const stealthyUnits = units.filter((unit) => unit.isStealthy());
+    const nonStealthyUnits = units.filter((unit) => !unit.isStealthy);
+
+    const fleets = [stealthyUnits, nonStealthyUnits].map((unitsInGroup) =>
+    {
+      return new Fleet(unitsInGroup);
+    });
+
+    return fleets;
+  }
   public static sortByImportance(a: Fleet, b: Fleet): number
   {
     // TODO 26.10.2016 | should keep track of fleets with custom names
@@ -158,7 +156,9 @@ export class Fleet
   }
   public split(): Fleet
   {
-    const newFleet = new Fleet(this.player, [], this.location);
+    const newFleet = new Fleet([]);
+    this.player.addFleet(newFleet);
+    this.location.addFleet(newFleet);
 
     return newFleet;
   }

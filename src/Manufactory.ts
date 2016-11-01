@@ -131,7 +131,12 @@ export default class Manufactory
 
     if (units.length > 0)
     {
-      new Fleet(this.player, units, this.star);
+      const fleets = Fleet.createFleetsFromUnits(units);
+      fleets.forEach((fleet) =>
+      {
+        this.player.addFleet(fleet);
+        this.star.addFleet(fleet);
+      });
     }
 
     if (!this.player.isAI)

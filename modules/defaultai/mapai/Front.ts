@@ -242,7 +242,9 @@ export class Front
         unitToRemove.fleet.removeUnit(unitToRemove);
       });
 
-      new Fleet(player, units, location);
+      const fleet = new Fleet(units);
+      player.addFleet(fleet);
+      location.addFleet(fleet);
     }
   }
   private isFleetPure(fleet: Fleet): boolean

@@ -314,6 +314,7 @@ export default class Player
       return;
     }
 
+    fleet.player = this;
     this.fleets.push(fleet);
     this.visionIsDirty = true;
   }

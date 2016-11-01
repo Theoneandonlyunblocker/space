@@ -458,6 +458,7 @@ export default class Star implements Point
       throw new Error(`Star ${this.name} already has fleet ${fleet.name}`);
     }
 
+    fleet.location = this;
     this.fleets[fleet.player.id].push(fleet);
   }
   addFleets(fleets: Fleet[]): void

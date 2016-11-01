@@ -776,7 +776,10 @@ export default class Unit
     this.removeFromPlayer();
 
     newPlayer.addUnit(this);
-    new Fleet(newPlayer, [this], location);
+    
+    const fleet = new Fleet([this]);
+    newPlayer.addFleet(fleet);
+    location.addFleet(fleet);
   }
   public removeGuard(amount: number)
   {

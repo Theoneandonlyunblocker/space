@@ -407,8 +407,13 @@ export default class GameLoader
   private deserializeFleet(player: Player, data: FleetSaveData): Fleet
   {
     const units = data.unitIds.map((unitID) => this.unitsById[unitID]);
+    const location = this.starsById[data.locationId];
 
-    var fleet = new Fleet(player, units, this.starsById[data.locationId], data.id, false);
+    const fleet = new Fleet(units, data.id);
+
+    player.addFleet(fleet);
+    location.addFleet(fleet);
+
     fleet.name = Name.fromData(data.name);
 
     return fleet;

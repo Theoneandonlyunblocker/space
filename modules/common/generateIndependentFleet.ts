@@ -133,7 +133,9 @@ export function generateIndependentFleet(
     player.addUnit(unit);
   }
 
-  const fleet = new Fleet(player, units, location, undefined, false);
+  const fleet = new Fleet(units);
+  player.addFleet(fleet);
+  location.addFleet(fleet);
   fleet.name = new Name(`Independent ${race.displayName} Fleet`, false);
 
   return fleet;
