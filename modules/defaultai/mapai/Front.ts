@@ -215,7 +215,10 @@ export class Front
       if (pureFleetsByLocation[locationID])
       {
         const fleet = pureFleetsByLocation[locationID][0];
-        fleet.addUnits(impureUnitsByLocation[locationID]);
+        impureUnitsByLocation[locationID].forEach((unitToAdd) =>
+        {
+          fleet.addUnit(unitToAdd);
+        });
 
         delete impureUnitsByLocation[locationID];
       }

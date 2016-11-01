@@ -91,12 +91,26 @@ export class Fleet
     fleet.addUnits(this.units);
     this.deleteFleet(shouldRender);
   }
-  public addUnits(units: Unit[]): void
+  public addUnit(unit: Unit): void
   {
-    for (let i = 0; i < units.length; i++)
+    if (this.hasUnit(unit))
     {
-      this.addUnit(units[i]);
+      throw new Error("Tried to add unit to fleet which the unit was already part of");
     }
+
+    if (this.units.length === 0)
+    {
+      this.isStealthy = unit.isStealthy();
+    }
+    else if (unit.isStealthy() !== this.isStealthy)
+    {
+      throw new Error("Tried to add stealthy unit to non stealthy fleet or other way around");
+    }
+
+    this.units.push(unit);
+    unit.fleet = this;
+
+    this.visionIsDirty = true;
   }
   public removeUnit(unit: Unit): void
   {
@@ -269,27 +283,6 @@ export class Fleet
     return data;
   }
 
-  private addUnit(unit: Unit): void
-  {
-    if (this.hasUnit(unit))
-    {
-      throw new Error("Tried to add unit to fleet which the unit was already part of");
-    }
-
-    if (this.units.length === 0)
-    {
-      this.isStealthy = unit.isStealthy();
-    }
-    else if (unit.isStealthy() !== this.isStealthy)
-    {
-      throw new Error("Tried to add stealthy unit to non stealthy fleet or other way around");
-    }
-
-    this.units.push(unit);
-    unit.fleet = this;
-
-    this.visionIsDirty = true;
-  }
   private canMove(): boolean
   {
     for (let i = 0; i < this.units.length; i++)
