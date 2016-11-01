@@ -1,12 +1,12 @@
 import app from "./App"; // TODO global
 
+import eventManager from "./eventManager";
 import idGenerators from "./idGenerators";
-import Star from "./Star";
-import Unit from "./Unit";
 import Name from "./Name";
 import Player from "./Player";
-import FleetSaveData from "./savedata/FleetSaveData";
-import eventManager from "./eventManager";
+import Star from "./Star";
+import Unit from "./Unit";
+
 import
 {
   aStar,
@@ -14,23 +14,32 @@ import
   PathNode,
 } from "./pathFinding";
 
+import FleetSaveData from "./savedata/FleetSaveData";
+
 export default class Fleet
 {
-  player: Player;
-  units: Unit[] = [];
-  location: Star;
+  public id: number;
+  public name: Name;
 
-  visionIsDirty: boolean = true;
-  visibleStars: Star[] = [];
-  detectedStars: Star[] = [];
-  isStealthy: boolean;
+  public player: Player;
+  public units: Unit[] = [];
+  public location: Star;
 
-  id: number;
-  name: Name;
+  public isStealthy: boolean;
+
+  private visionIsDirty: boolean = true;
+  private visibleStars: Star[] = [];
+  private detectedStars: Star[] = [];
+
 
   // TODO 28.10.2016 | don't add fleet to location or player in constructor
-  constructor(player: Player, units: Unit[], location: Star,
-    id?: number, shouldRender: boolean = true)
+  constructor(
+    player: Player,
+    units: Unit[],
+    location: Star,
+    id?: number,
+    shouldRender: boolean = true
+  )
   {
     this.player = player;
     this.location = location;
@@ -47,6 +56,7 @@ export default class Fleet
       eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     }
   }
+
   public static sortByImportance(a: Fleet, b: Fleet): number
   {
     // TODO 26.10.2016 | should keep track of fleets with custom names
@@ -60,15 +70,8 @@ export default class Fleet
       return a.id - b.id;
     }
   }
-  getUnitIndex(unit: Unit): number
-  {
-    return this.units.indexOf(unit);
-  }
-  hasUnit(unit: Unit): boolean
-  {
-    return this.getUnitIndex(unit) >= 0;
-  }
-  deleteFleet(shouldRender: boolean = true): void
+
+  public deleteFleet(shouldRender: boolean = true): void
   {
     this.location.removeFleet(this);
     this.player.removeFleet(this);
@@ -78,7 +81,7 @@ export default class Fleet
       eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     }
   }
-  mergeWith(fleet: Fleet, shouldRender: boolean = true): void
+  public mergeWith(fleet: Fleet, shouldRender: boolean = true): void
   {
     if (fleet.isStealthy !== this.isStealthy)
     {
@@ -88,7 +91,185 @@ export default class Fleet
     fleet.addUnits(this.units);
     this.deleteFleet(shouldRender);
   }
-  addUnit(unit: Unit): void
+  public addUnits(units: Unit[]): void
+  {
+    for (let i = 0; i < units.length; i++)
+    {
+      this.addUnit(units[i]);
+    }
+  }
+  public removeUnit(unit: Unit): void
+  {
+    const index = this.getUnitIndex(unit);
+
+    if (index < 0)
+    {
+      throw this.makeNoUnitError(unit);
+    }
+
+    this.units.splice(index, 1);
+    unit.fleet = null;
+
+    this.visionIsDirty = true;
+
+    if (this.units.length <= 0)
+    {
+      this.deleteFleet();
+    }
+  }
+  public transferUnit(fleet: Fleet, unit: Unit, shouldRender: boolean = true): void
+  {
+    if (fleet === this)
+    {
+      throw new Error("Tried to transfer unit into unit's current fleet");
+    }
+    if (unit.isStealthy() !== this.isStealthy)
+    {
+      throw new Error("Tried to transfer stealthy unit to non stealthy fleet");
+    }
+    const index = this.getUnitIndex(unit);
+
+    if (index < 0)
+    {
+      throw this.makeNoUnitError(unit);
+    }
+
+    fleet.addUnit(unit);
+
+    this.units.splice(index, 1);
+    eventManager.dispatchEvent("renderLayer", "fleets", this.location);
+  }
+  public split(): Fleet
+  {
+    const newFleet = new Fleet(this.player, [], this.location);
+
+    return newFleet;
+  }
+  public getMinCurrentMovePoints(): number
+  {
+    if (!this.units[0])
+    {
+      return 0;
+    }
+
+    let min = this.units[0].currentMovePoints;
+
+    for (let i = 0; i < this.units.length; i++)
+    {
+      min = Math.min(this.units[i].currentMovePoints, min);
+    }
+    return min;
+  }
+  public getMinMaxMovePoints(): number
+  {
+    if (!this.units[0])
+    {
+      return 0;
+    }
+
+    let min = this.units[0].maxMovePoints;
+
+    for (let i = 0; i < this.units.length; i++)
+    {
+      min = Math.min(this.units[i].maxMovePoints, min);
+    }
+    return min;
+  }
+  public getPathTo(newLocation: Star): PathNode[]
+  {
+    const a = aStar(this.location, newLocation);
+
+    if (!a)
+    {
+      throw new Error(`Couldn't find path between ${this.location.name} and ${newLocation.name}`);
+    }
+
+    const path = backTrace(a.came, newLocation);
+
+    return path;
+  }
+  public pathFind(newLocation: Star, onMove?: () => void, afterMove?: () => void): void
+  {
+    const path = this.getPathTo(newLocation);
+
+    const interval = window.setInterval(() =>
+    {
+      if (!path || path.length <= 0)
+      {
+        window.clearInterval(interval);
+        if (afterMove)
+        {
+          afterMove();
+        }
+        return;
+
+      }
+
+      const move = path.shift();
+      this.move(move.star);
+      if (onMove)
+      {
+        onMove();
+      }
+
+    }, 10);
+  }
+  public getTotalCurrentHealth(): number
+  {
+    let total = 0;
+
+    this.units.forEach((unit) =>
+    {
+      total += unit.currentHealth;
+    });
+
+    return total;
+  }
+  public getTotalMaxHealth(): number
+  {
+    let total = 0;
+
+    this.units.forEach((unit) =>
+    {
+      total += unit.maxHealth;
+    });
+
+    return total;
+  }
+  public getVision(): Star[]
+  {
+    if (this.visionIsDirty)
+    {
+      this.updateVisibleStars();
+    }
+
+    return this.visibleStars;
+  }
+  public getDetection(): Star[]
+  {
+    if (this.visionIsDirty)
+    {
+      this.updateVisibleStars();
+    }
+
+    return this.detectedStars;
+  }
+  public serialize(): FleetSaveData
+  {
+    const data: FleetSaveData =
+    {
+      id: this.id,
+      name: this.name.serialize(),
+
+      locationId: this.location.id,
+      playerId: this.player.id,
+      unitIds: this.units.map((unit) => unit.id),
+    };
+
+    return data;
+  }
+
+  private addUnit(unit: Unit): void
   {
     if (this.hasUnit(unit))
     {
@@ -109,105 +290,27 @@ export default class Fleet
 
     this.visionIsDirty = true;
   }
-  addUnits(units: Unit[]): void
-  {
-    for (let i = 0; i < units.length; i++)
-    {
-      this.addUnit(units[i]);
-    }
-  }
-  removeUnit(unit: Unit): void
-  {
-    var index = this.getUnitIndex(unit);
-
-    if (index < 0)
-    {
-      throw this.makeNoUnitError(unit);
-    }
-
-    this.units.splice(index, 1);
-    unit.fleet = null;
-
-    this.visionIsDirty = true;
-
-    if (this.units.length <= 0)
-    {
-      this.deleteFleet();
-    }
-  }
-  removeUnits(units: Unit[]): void
+  private removeUnits(units: Unit[]): void
   {
     for (let i = 0; i < units.length; i++)
     {
       this.removeUnit(units[i]);
     }
   }
-  transferUnit(fleet: Fleet, unit: Unit): void
+  private splitStealthyUnits(): Fleet
   {
-    if (fleet === this)
-    {
-      throw new Error("Tried to transfer unit into unit's current fleet");
-    }
-    if (unit.isStealthy() !== this.isStealthy)
-    {
-      throw new Error("Tried to transfer stealthy unit to non stealthy fleet");
-    }
-    var index = this.getUnitIndex(unit);
-
-    if (index < 0)
-    {
-      throw this.makeNoUnitError(unit);
-    }
-
-    fleet.addUnit(unit);
-
-    this.units.splice(index, 1);
-    eventManager.dispatchEvent("renderLayer", "fleets", this.location);
-  }
-  split(): Fleet
-  {
-    var newFleet = new Fleet(this.player, [], this.location);
-
-    return newFleet;
-  }
-  splitStealthyUnits(): Fleet
-  {
-    var stealthyUnits = this.units.filter(function(unit: Unit)
+    const stealthyUnits = this.units.filter((unit) =>
     {
       return unit.isStealthy();
     });
 
-    var newFleet = new Fleet(this.player, stealthyUnits, this.location);
+    const newFleet = new Fleet(this.player, stealthyUnits, this.location);
     this.location.addFleet(newFleet);
     this.removeUnits(stealthyUnits);
 
     return newFleet;
   }
-  getMinCurrentMovePoints(): number
-  {
-    if (!this.units[0]) return 0;
-
-    var min = this.units[0].currentMovePoints;
-
-    for (let i = 0; i < this.units.length; i++)
-    {
-      min = Math.min(this.units[i].currentMovePoints, min);
-    }
-    return min;
-  }
-  getMinMaxMovePoints(): number
-  {
-    if (!this.units[0]) return 0;
-
-    var min = this.units[0].maxMovePoints;
-
-    for (let i = 0; i < this.units.length; i++)
-    {
-      min = Math.min(this.units[i].maxMovePoints, min);
-    }
-    return min;
-  }
-  canMove(): boolean
+  private canMove(): boolean
   {
     for (let i = 0; i < this.units.length; i++)
     {
@@ -224,19 +327,25 @@ export default class Fleet
 
     return false;
   }
-  subtractMovePoints(amount: number): void
+  private subtractMovePoints(amount: number): void
   {
     for (let i = 0; i < this.units.length; i++)
     {
       this.units[i].currentMovePoints -= amount;
     }
   }
-  move(newLocation: Star): void
+  private move(newLocation: Star): void
   {
-    if (newLocation === this.location) return;
-    if (!this.canMove()) return;
-    
-    var oldLocation = this.location;
+    if (newLocation === this.location)
+    {
+      return;
+    }
+    if (!this.canMove())
+    {
+      return;
+    }
+
+    const oldLocation = this.location;
     oldLocation.removeFleet(this);
 
     this.location = newLocation;
@@ -250,7 +359,7 @@ export default class Fleet
     // maybe send an event instead?
     for (let i = 0; i < app.game.playerOrder.length; i++)
     {
-      var player = app.game.playerOrder[i];
+      const player = app.game.playerOrder[i];
       if (player.isIndependent || player === this.player)
       {
         continue;
@@ -262,69 +371,14 @@ export default class Fleet
     eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     eventManager.dispatchEvent("updateSelection", null);
   }
-  getPathTo(newLocation: Star): PathNode[]
-  {
-    var a = aStar(this.location, newLocation);
-
-    if (!a)
-    {
-      throw new Error(`Couldn't find path between ${this.location.name} and ${newLocation.name}`);
-    }
-
-    var path = backTrace(a.came, newLocation);
-
-    return path;
-  }
-  pathFind(newLocation: Star, onMove?: () => void, afterMove?: () => void): void
-  {
-    var path = this.getPathTo(newLocation);
-
-    var interval = window.setInterval(() =>
-    {
-      if (!path || path.length <= 0)
-      {
-        window.clearInterval(interval);
-        if (afterMove) afterMove();
-        return;
-
-      }
-
-      var move = path.shift();
-      this.move(move.star);
-      if (onMove) onMove();
-
-    }, 10);
-  }
-  getFriendlyFleetsAtOwnLocation(): Fleet[]
+  private getFriendlyFleetsAtOwnLocation(): Fleet[]
   {
     return this.location.fleets[this.player.id];
   }
-  public getTotalCurrentHealth(): number
+  private updateVisibleStars(): void
   {
-    let total = 0;
-
-    this.units.forEach(unit =>
-    {
-      total += unit.currentHealth;
-    });
-
-    return total;
-  }
-  public getTotalMaxHealth(): number
-  {
-    let total = 0;
-
-    this.units.forEach(unit =>
-    {
-      total += unit.maxHealth;
-    });
-
-    return total;
-  }
-  updateVisibleStars(): void
-  {
-    var highestVisionRange = 0;
-    var highestDetectionRange = -1;
+    let highestVisionRange = 0;
+    let highestDetectionRange = -1;
 
     for (let i = 0; i < this.units.length; i++)
     {
@@ -332,48 +386,24 @@ export default class Fleet
       highestDetectionRange = Math.max(this.units[i].getDetectionRange(), highestDetectionRange);
     }
 
-    var inVision = this.location.getLinkedInRange(highestVisionRange);
-    var inDetection = this.location.getLinkedInRange(highestDetectionRange);
+    const inVision = this.location.getLinkedInRange(highestVisionRange);
+    const inDetection = this.location.getLinkedInRange(highestDetectionRange);
 
     this.visibleStars = inVision.all;
     this.detectedStars = inDetection.all;
 
     this.visionIsDirty = false;
   }
-  getVision(): Star[]
-  {
-    if (this.visionIsDirty)
-    {
-      this.updateVisibleStars();
-    }
-
-    return this.visibleStars;
-  }
-  getDetection(): Star[]
-  {
-    if (this.visionIsDirty)
-    {
-      this.updateVisibleStars();
-    }
-
-    return this.detectedStars;
-  }
   private makeNoUnitError(unit: Unit): Error
   {
     return new Error(`Unit ${unit.name} is not part of fleet ${this.name}`);
   }
-  serialize(): FleetSaveData
+  private getUnitIndex(unit: Unit): number
   {
-    var data: FleetSaveData =
-    {
-      id: this.id,
-      name: this.name.serialize(),
-
-      locationId: this.location.id,
-      playerId: this.player.id,
-      unitIds: this.units.map((unit) => unit.id),
-    };
-
-    return data;
+    return this.units.indexOf(unit);
+  }
+  private hasUnit(unit: Unit): boolean
+  {
+    return this.getUnitIndex(unit) >= 0;
   }
 }
