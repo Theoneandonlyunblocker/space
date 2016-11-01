@@ -31,7 +31,9 @@ export class Fleet
   private visibleStars: Star[] = [];
   private detectedStars: Star[] = [];
 
-
+  /**
+   * use Fleet.createFleetsFromUnits instead if the units might have stealthy and non-stealthy units mixed
+   */
   constructor(
     units: Unit[],
     id?: number,
@@ -49,9 +51,12 @@ export class Fleet
   public static createFleetsFromUnits(units: Unit[]): Fleet[]
   {
     const stealthyUnits = units.filter((unit) => unit.isStealthy());
-    const nonStealthyUnits = units.filter((unit) => !unit.isStealthy);
+    const nonStealthyUnits = units.filter((unit) => !unit.isStealthy());
 
-    const fleets = [stealthyUnits, nonStealthyUnits].map((unitsInGroup) =>
+    const fleets = [stealthyUnits, nonStealthyUnits].filter((unitsInGroup) =>
+    {
+      return unitsInGroup.length > 0;
+    }).map((unitsInGroup) =>
     {
       return new Fleet(unitsInGroup);
     });
