@@ -4,6 +4,10 @@ import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
 import Color from "../../../src/Color";
 import {UnitAttribute} from "../../../src/UnitAttributes";
+import
+{
+  generateTextureWithBounds,
+} from "../../../src/utility";
 
 import FocusingBeam from "./sfxfragments/FocusingBeam";
 import ProjectileAttack from "./sfxfragments/ProjectileAttack";
@@ -205,8 +209,13 @@ function snipe(type: UnitAttribute, params: SFXParams)
       );
       gfx.endFill();
 
-      return gfx.generateTexture(params.renderer, 1, PIXI.SCALE_MODES.DEFAULT,
-        new PIXI.Rectangle(0, 0, particleSize, particleSize));
+      return generateTextureWithBounds(
+        params.renderer,
+        gfx,
+        PIXI.SCALE_MODES.DEFAULT,
+        1,
+        new PIXI.Rectangle(0, 0, particleSize, particleSize),
+      );
     })();
 
     emitter.addInitialize(new Proton.ImageTarget(particleTexture));

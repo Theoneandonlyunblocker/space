@@ -5,6 +5,10 @@ import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendere
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
 import app from "../../../src/App";
+import
+{
+  generateTextureWithBounds,
+} from "../../../src/utility";
 
 const fogOfWar: MapRendererLayerTemplate =
 {
@@ -79,9 +83,10 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number)
     tiled.addChild(gfx);
 
     // triggers bounds update that gets skipped if we just call generateTexture()
+    // TODO 02.11.2016 | PIXI4 | still relevant?
     var bounds = tiled.getBounds();
 
-    var rendered = tiled.generateTexture(app.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
+    const rendered = generateTextureWithBounds(app.renderer.renderer, tiled, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
 
     var sprite = new PIXI.Sprite(rendered);
 

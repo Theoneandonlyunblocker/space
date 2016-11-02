@@ -822,3 +822,29 @@ export function convertClientRectToPixiRect(rect: ClientRect): PIXI.Rectangle
     rect.height
   );
 }
+export function generateTextureWithBounds(
+  renderer: PIXI.SystemRenderer,
+  displayObject: PIXI.DisplayObject,
+  scaleMode: number,
+  resolution: number,
+  customBounds: PIXI.Rectangle,
+): PIXI.Texture
+{
+  const bounds = customBounds;
+
+  const renderTexture = PIXI.RenderTexture.create(
+    bounds.width || 0,
+    bounds.height || 0,
+    scaleMode,
+    resolution,
+  );
+
+  const tempMatrix = new PIXI.Matrix();
+  tempMatrix.tx = -bounds.x;
+  tempMatrix.ty = -bounds.y;
+
+  renderer.render(displayObject, renderTexture, false, tempMatrix, true);
+
+  return renderTexture;
+
+}

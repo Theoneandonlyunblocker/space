@@ -13,7 +13,8 @@ import RampingValue from "./sfxfragments/RampingValue";
 import Color from "../../../src/Color";
 import
 {
-  getDummyTextureForShader
+  getDummyTextureForShader,
+  generateTextureWithBounds,
 } from "../../../src/utility";
 
 import ProtonWrapper from "./ProtonWrapper";
@@ -143,8 +144,12 @@ export default function beam(props: SFXParams)
     );
   smallParticleGraphics.endFill();
 
-  var smallParticleTexture = smallParticleGraphics.generateTexture(props.renderer, 1, PIXI.SCALE_MODES.DEFAULT,
-    new PIXI.Rectangle(0, 0, smallParticleGraphicsSize.x * 1.5, smallParticleGraphicsSize.y * 1.5)
+  const smallParticleTexture = generateTextureWithBounds(
+    props.renderer,
+    smallParticleGraphics,
+    PIXI.SCALE_MODES.DEFAULT,
+    1,
+    new PIXI.Rectangle(0, 0, smallParticleGraphicsSize.x * 1.5, smallParticleGraphicsSize.y * 1.5),
   );
 
   smallEmitter.addInitialize(new Proton.ImageTarget(smallParticleTexture));

@@ -1,6 +1,10 @@
 /// <reference path="../lib/pixi.d.ts" />
 
 import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
+import
+{
+  generateTextureWithBounds,
+} from "./utility";
 
 export default class BackgroundDrawer
 {
@@ -134,8 +138,8 @@ export default class BackgroundDrawer
     background.filters = [this.blurFilter];
     const blurTextureSize = this.getDesiredBlurSize();
     
-    const blurTexture = background.generateTexture(
-      this.renderer, PIXI.SCALE_MODES.DEFAULT, this.renderer.resolution, blurTextureSize
+    const blurTexture = generateTextureWithBounds(
+      this.renderer, background, PIXI.SCALE_MODES.DEFAULT, this.renderer.resolution, blurTextureSize
     );
     
     background.filters = null;

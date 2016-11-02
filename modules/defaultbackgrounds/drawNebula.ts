@@ -8,7 +8,8 @@ import BackgroundDrawingFunction from "../../src/BackgroundDrawingFunction";
 import
 {
   randRange,
-  createDummySpriteForShader
+  createDummySpriteForShader,
+  generateTextureWithBounds,
 } from "../../src/utility";
 
 const drawNebula: BackgroundDrawingFunction = function(
@@ -56,8 +57,12 @@ const drawNebula: BackgroundDrawingFunction = function(
   // creates a new PIXI.FilterManager() every time that doesn't get cleaned up anywhere
   // balloons up gpu memory
   
-  const texture = container.generateTexture(
-    renderer, PIXI.SCALE_MODES.DEFAULT, 1, size
+  const texture = generateTextureWithBounds(
+    renderer,
+    container,
+    PIXI.SCALE_MODES.DEFAULT,
+    1,
+    size,
   );
 
   var sprite = new PIXI.Sprite(texture);
