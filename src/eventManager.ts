@@ -1,6 +1,6 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-declare class EventEmitter3 extends PIXI.EventEmitter
+declare class EventEmitter3 extends PIXI.utils.EventEmitter
 {
   
 }
