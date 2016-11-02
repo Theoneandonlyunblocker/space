@@ -202,7 +202,7 @@ export class Front
 
     // merge pure fleets at same location
     this.mergeFleetsWithSharedLocation(pureFleetsBeforeMerge);
-    const pureFleets = fleetsToOrganize.filter((fleet) => this.isFleetPure(fleet));
+    const pureFleets = pureFleetsBeforeMerge.filter((fleet) => fleet.units.length > 0);
 
     // move impure units to pure fleets at location if possible
     const unitsInImpureFleets = this.getUnitsInImpureFleets(unitsToOrganize);
