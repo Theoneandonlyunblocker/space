@@ -65,7 +65,7 @@ class App
 
   constructor()
   {
-    PIXI.utils._saidHello = true;
+    PIXI.utils.skipHello();
 
     this.seed = "" + Math.random();
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
