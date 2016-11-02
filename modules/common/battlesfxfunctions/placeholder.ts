@@ -6,7 +6,7 @@ export function placeholder(params: SFXParams): void
 {
   const container = new PIXI.Container();
   const sprite = PIXI.Sprite.fromImage("img/placeholder.png");
-  sprite.anchor = new PIXI.Point(0.5, 0.5);
+  sprite.anchor.set(0.5, 0.5);
   sprite.x = params.width / 2;
   sprite.y = params.height / 2;
   container.addChild(sprite);

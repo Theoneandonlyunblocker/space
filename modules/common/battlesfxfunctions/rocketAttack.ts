@@ -85,7 +85,7 @@ function rocketAttack(params: SFXParams)
       }
 
       const explosionClip = explosionsByID[projectile.id].clip;
-      explosionClip.anchor = new PIXI.Point(0.5, 0.5);
+      explosionClip.anchor.set(0.5, 0.5);
       explosionClip.loop = false;
       explosionClip.position = projectile.sprite.position.clone();
       explosionClip.position.x += projectile.sprite.width;
