@@ -1378,7 +1378,7 @@ declare module PIXI {
         hasLoaded: boolean;
         isLoading: boolean;
         wrapMode: number;
-        source: HTMLImageElement | HTMLCanvasElement;
+        source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement;
         origSource: HTMLImageElement;
         imageType: string;
         sourceScale: number;
@@ -1500,6 +1500,7 @@ declare module PIXI {
         autoUpdate: boolean;
         autoPlay: boolean;
         protected _isAutoUpdating: boolean;
+        source: HTMLVideoElement;
 
         update(): void;
         protected _onCanPlay(): void;
