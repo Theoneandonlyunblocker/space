@@ -163,9 +163,10 @@ function getFleetTextTexture(fleet: Fleet)
     });
 
     // TODO PIXI4 | triggers bounds update that gets skipped if we just call generateTexture()
+    // TODO 02.11.2016 | still relevant?
     text.getBounds();
 
-    fleetTextTextureCache[fleetSize] = text.generateTexture(app.renderer.renderer);
+    fleetTextTextureCache[fleetSize] = app.renderer.renderer.generateTexture(text);
     window.setTimeout(function()
     {
       text.texture.destroy(true);
