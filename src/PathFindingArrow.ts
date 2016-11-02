@@ -398,6 +398,7 @@ export default class PathfindingArrow
   }
   drawArrowHead(gfx: PIXI.Graphics, color: number)
   {
+    // TODO 02.11.2016 | PIXI4 | can we use gfx.currentPath here?
     var curveShape = <PIXI.Polygon> gfx.graphicsData[0].shape;
     var points = curveShape.points;
 
