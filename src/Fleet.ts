@@ -133,7 +133,7 @@ export class Fleet
   }
   public removeUnit(unit: Unit): void
   {
-    const index = this.getUnitIndex(unit);
+    const index = this.units.indexOf(unit);
 
     if (index < 0)
     {
@@ -339,9 +339,5 @@ export class Fleet
     this.detectedStars = inDetection.all;
 
     this.visionIsDirty = false;
-  }
-  private getUnitIndex(unit: Unit): number
-  {
-    return this.units.indexOf(unit);
   }
 }
