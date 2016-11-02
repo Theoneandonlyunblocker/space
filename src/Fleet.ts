@@ -102,10 +102,11 @@ export class Fleet
       throw new Error("Tried to merge stealthy fleet with non stealthy or other way around");
     }
 
-    this.units.forEach((unit) =>
+    for (let i = this.units.length - 1; i >= 0; i--)
     {
+      const unit = this.units[i];
       this.transferUnit(fleetToMergeWith, unit);
-    });
+    }
 
     this.deleteFleet();
   }
