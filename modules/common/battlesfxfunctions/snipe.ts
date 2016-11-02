@@ -142,12 +142,10 @@ function snipe(type: UnitAttribute, params: SFXParams)
     },
     animateImpact: (projectile, container, time) =>
     {
-      particleRenderTexture.clear();
-      particleRenderTexture.render(particleBufferSprite);
-      particleRenderTexture.render(particleContainer);
+      params.renderer.render(particleBufferSprite, particleRenderTexture, true);
+      params.renderer.render(particleContainer, particleRenderTexture, false);
 
-      particleBufferTexture.clear();
-      particleBufferTexture.render(particleRenderSprite);
+      params.renderer.render(particleRenderSprite, particleBufferTexture, true);
       
 
       protonWrapper.update();
@@ -265,8 +263,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
     beamFragment.animate(relativeElapsedTime);
     projectileFragment.animate(relativeElapsedTime);
 
-    renderTexture.clear();
-    renderTexture.render(mainContainer);
+    params.renderer.render(mainContainer, renderTexture, true);
 
     if (elapsedTime < params.duration)
     {

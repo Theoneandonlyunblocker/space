@@ -357,8 +357,7 @@ export default function beam(props: SFXParams)
     shockWaveFragment.animate(relativeElapsedTime);
     lightBurstFragment.animate(relativeElapsedTime);
 
-    renderTexture.clear();
-    renderTexture.render(mainContainer);
+    props.renderer.render(mainContainer, renderTexture, true);
 
     if (elapsedTime < props.duration)
     {

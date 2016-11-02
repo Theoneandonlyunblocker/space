@@ -81,8 +81,7 @@ export default function guard(props: SFXParams)
     const relativeTime = elapsedTime / props.duration;
     syncUniformsFN(relativeTime);
 
-    renderTexture.clear();
-    renderTexture.render(container);
+    props.renderer.render(container, renderTexture, true);
 
     if (elapsedTime < props.duration)
     {
