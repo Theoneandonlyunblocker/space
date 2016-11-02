@@ -67,7 +67,7 @@ export default function guard(props: SFXParams)
   container.filters = [guardFilter];
   container.filterArea = new PIXI.Rectangle(0, 0, maxFrontier + 20, props.height);
 
-  const renderTexture = new PIXI.RenderTexture(props.renderer, props.width, props.height);
+  const renderTexture = PIXI.RenderTexture.create(props.width, props.height);
   const sprite = new PIXI.Sprite(renderTexture);
   if (!props.facingRight)
   {

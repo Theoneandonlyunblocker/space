@@ -38,7 +38,7 @@ export default function beam(props: SFXParams)
     y: beamOrigin.y / props.height
   }
 
-  var renderTexture = new PIXI.RenderTexture(props.renderer, props.width, props.height);
+  const renderTexture = PIXI.RenderTexture.create(props.width, props.height);
   var renderedSprite = new PIXI.Sprite(renderTexture);
   if (!props.facingRight)
   {
