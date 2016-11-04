@@ -142,7 +142,7 @@ def getSetUniformValuesLines(indentationLevel):
     '{\n',
     '  for (let key in values)\n',
     '  {\n',
-    '    this.uniforms[key].value = values[key];\n',
+    '    this.uniforms[key] = values[key];\n',
     '  }\n',
     '}\n'
   ]
