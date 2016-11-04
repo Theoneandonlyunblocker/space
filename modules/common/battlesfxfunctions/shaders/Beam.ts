@@ -40,7 +40,7 @@ interface PartialUniformValues
   time?: number;
 }
 
-export default class Beam extends PIXI.AbstractFilter
+export default class Beam extends PIXI.Filter
 {
   public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 

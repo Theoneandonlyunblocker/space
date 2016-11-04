@@ -10,7 +10,7 @@ interface PartialUniformValues
 {
 }
 
-export default class BlackToAlpha extends PIXI.AbstractFilter
+export default class BlackToAlpha extends PIXI.Filter
 {
   public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 

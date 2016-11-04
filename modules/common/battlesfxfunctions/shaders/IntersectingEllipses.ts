@@ -24,7 +24,7 @@ interface PartialUniformValues
   mainEllipseSize?: number[];
 }
 
-export default class IntersectingEllipses extends PIXI.AbstractFilter
+export default class IntersectingEllipses extends PIXI.Filter
 {
   public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 

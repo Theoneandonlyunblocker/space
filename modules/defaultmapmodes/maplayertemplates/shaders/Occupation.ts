@@ -20,7 +20,7 @@ interface PartialUniformValues
   stripeSize?: number;
 }
 
-export default class Occupation extends PIXI.AbstractFilter
+export default class Occupation extends PIXI.Filter
 {
   public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 

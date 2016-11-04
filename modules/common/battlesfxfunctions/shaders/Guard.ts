@@ -24,7 +24,7 @@ interface PartialUniformValues
   trailDistance?: number;
 }
 
-export default class Guard extends PIXI.AbstractFilter
+export default class Guard extends PIXI.Filter
 {
   public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 

@@ -40,7 +40,7 @@ interface PartialUniformValues
   streakiness?: number;
 }
 
-export default class Nebula extends PIXI.AbstractFilter
+export default class Nebula extends PIXI.Filter
 {
   public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 

@@ -162,8 +162,9 @@ def writeConvertedShader(outFile, sourceLines, shaderName, fileName, rootDir):
     outFile.write(line)
 
   outFile.writelines([
-    'export default class {0} extends PIXI.AbstractFilter\n'.format(shaderName),
+    'export default class {0} extends PIXI.Filter\n'.format(shaderName),
     '{\n',
+    # TODO 02.11.2016 | can't we make this protected?
     '  public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed\n\n',
     '  constructor(initialUniformValues?: PartialUniformValues)\n',
     '  {\n',
