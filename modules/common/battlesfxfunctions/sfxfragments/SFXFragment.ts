@@ -34,7 +34,7 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
       const parent = oldDisplayObject.parent;
       if (parent)
       {
-        const childIndex = parent.getChildIndex(oldDisplayObject);
+        const childIndex = parent.children.indexOf(oldDisplayObject);
         parent.removeChildAt(childIndex);
         parent.addChildAt(newDisplayObject, childIndex);
       }

@@ -203,7 +203,7 @@ export default class MapRenderer
     for (let i = 0; i < updatedLayers.length; i++)
     {
       var layer = updatedLayers[i];
-      var childIndex = this.container.getChildIndex(layer.container);
+      var childIndex = this.container.children.indexOf(layer.container);
       var mapModeLayerIndex = this.currentMapMode.getLayerIndexInContainer(layer);
       if (childIndex === -1)
       {
