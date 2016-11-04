@@ -1,12 +1,6 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-declare class EventEmitter3 extends PIXI.utils.EventEmitter
-{
-  
-}
-
-
-let eventEmitter = new EventEmitter3();
+let eventEmitter = new PIXI.utils.EventEmitter();
 // TODO refactor | rename EventManager
 const eventManager =
 {
