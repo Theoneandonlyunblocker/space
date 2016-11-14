@@ -9,6 +9,11 @@ import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendere
 import GalaxyMap from "../../../src/GalaxyMap";
 import eventManager from "../../../src/eventManager";
 
+import
+{
+  makePolygonFromPoints,
+} from "../../../src/utility";
+
 import OccupationShader from "./shaders/Occupation";
 
 const starOwners: MapRendererLayerTemplate =
@@ -41,12 +46,18 @@ const starOwners: MapRendererLayerTemplate =
     {
       var star = points[i];
       var occupier = star.getSecondaryController();
-      if (!star.owner || (!occupier && star.owner.colorAlpha === 0)) continue;
+      if (!star.owner || (!occupier && star.owner.colorAlpha === 0))
+      {
+        continue;
+      }
 
-      var poly = new PIXI.Polygon(<PIXI.Point[]> star.voronoiCell.vertices);
+      var poly = makePolygonFromPoints(star.voronoiCell.vertices);
       var gfx = new PIXI.Graphics();
       var alpha = 1;
-      if (isFinite(star.owner.colorAlpha)) alpha *= star.owner.colorAlpha;
+      if (isFinite(star.owner.colorAlpha))
+      {
+        alpha *= star.owner.colorAlpha;
+      }
       gfx.beginFill(star.owner.color.getHex(), alpha);
       gfx.drawShape(poly);
       gfx.endFill();

@@ -4,6 +4,7 @@
 
 interface Uniforms
 {
+  [name: string]: PIXI.IUniformData;
   aspectRatio: {type: "1f"; value: number;};
   beamColor: {type: "4fv"; value: number[];};
   beamYPosition: {type: "1f"; value: number;};
@@ -40,7 +41,7 @@ interface PartialUniformValues
   time?: number;
 }
 
-export default class Beam extends PIXI.Filter
+export default class Beam extends PIXI.Filter<PartialUniformValues, Uniforms>
 {
   public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 

@@ -848,3 +848,15 @@ export function generateTextureWithBounds(
   return renderTexture;
 
 }
+export function makePolygonFromPoints(
+  points: Point[],
+): PIXI.Polygon
+{
+  const pointPositions: number[] = [];
+  points.forEach((point) =>
+  {
+    pointPositions.push(point.x, point.y);
+  });
+
+  return new PIXI.Polygon(pointPositions);
+}

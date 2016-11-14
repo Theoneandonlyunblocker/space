@@ -9,6 +9,11 @@ import Star from "../../../src/Star";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
 
+import
+{
+  makePolygonFromPoints,
+} from "../../../src/utility";
+
 const playerInfluence: MapRendererLayerTemplate =
 {
   key: "playerInfluence",
@@ -90,7 +95,7 @@ const playerInfluence: MapRendererLayerTemplate =
       var relativeInfluence = getRelativeValue(minInfluence, maxInfluence, influence);
       var color = getRelativeColor(minInfluence, maxInfluence, relativeInfluence);
 
-      var poly = new PIXI.Polygon(<PIXI.Point[]> star.voronoiCell.vertices);
+      var poly = makePolygonFromPoints(star.voronoiCell.vertices);
       var gfx = new PIXI.Graphics();
       gfx.beginFill(color, 0.6);
       gfx.drawShape(poly);

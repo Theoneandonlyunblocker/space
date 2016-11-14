@@ -6,6 +6,10 @@ import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
 import {getRevealedBorderEdges} from "../../../src/borderPolygon";
 
+import
+{
+  makePolygonFromPoints,
+} from "../../../src/utility";
 
 const ownerBorders: MapRendererLayerTemplate =
 {
@@ -32,7 +36,12 @@ const ownerBorders: MapRendererLayerTemplate =
       var player: Player = polyLineData.points[0].star.owner;
       gfx.lineStyle(Options.display.borderWidth, player.secondaryColor.getHex(), 1);
 
-      var polygon = new PIXI.Polygon(polyLineData.points);
+      if (polyLineData.isClosed)
+      {
+        polyLineData.points.push(polyLineData.points[0]);
+      }
+
+      var polygon = makePolygonFromPoints(polyLineData.points);
       polygon.closed = polyLineData.isClosed;
       gfx.drawShape(polygon);
     }

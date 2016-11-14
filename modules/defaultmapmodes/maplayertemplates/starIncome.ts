@@ -6,6 +6,11 @@ import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendere
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
 
+import
+{
+  makePolygonFromPoints,
+} from "../../../src/utility";
+
 const starIncome: MapRendererLayerTemplate =
 {
   key: "starIncome",
@@ -66,7 +71,7 @@ const starIncome: MapRendererLayerTemplate =
       var relativeIncome = getRelativeValue(incomeBounds.min, incomeBounds.max, income);
       var color = getRelativeColor(incomeBounds.min, incomeBounds.max, relativeIncome);
 
-      var poly = new PIXI.Polygon(<PIXI.Point[]> star.voronoiCell.vertices);
+      var poly = makePolygonFromPoints(star.voronoiCell.vertices);
       var gfx = new PIXI.Graphics();
       gfx.beginFill(color, 0.6);
       gfx.drawShape(poly);

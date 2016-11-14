@@ -8,6 +8,7 @@ import app from "../../../src/App";
 import
 {
   generateTextureWithBounds,
+  makePolygonFromPoints,
 } from "../../../src/utility";
 
 const fogOfWar: MapRendererLayerTemplate =
@@ -70,7 +71,7 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number)
   // silly hack to make sure first texture gets created properly
   if (!fogOfWarSpriteByStarID[star.id] || Object.keys(fogOfWarSpriteByStarID).length < 4)
   {
-    var poly = new PIXI.Polygon(<PIXI.Point[]> star.voronoiCell.vertices);
+    var poly = makePolygonFromPoints(star.voronoiCell.vertices);
     var gfx = new PIXI.Graphics();
     gfx.isMask = true;
     gfx.beginFill(0);

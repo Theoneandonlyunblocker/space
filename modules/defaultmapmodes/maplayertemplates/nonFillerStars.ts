@@ -6,6 +6,11 @@ import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendere
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
 
+import
+{
+  makePolygonFromPoints,
+} from "../../../src/utility";
+
 const nonFillerStars: MapRendererLayerTemplate =
 {
   key: "nonFillerStars",
@@ -72,7 +77,7 @@ const nonFillerStars: MapRendererLayerTemplate =
 
 
       gfx.interactive = true;
-      gfx.hitArea = new PIXI.Polygon(<PIXI.Point[]> star.voronoiCell.vertices);
+      gfx.hitArea = makePolygonFromPoints(star.voronoiCell.vertices);
 
       var boundMouseDown = mouseDownFN.bind(null, star);
       var gfxClickFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
