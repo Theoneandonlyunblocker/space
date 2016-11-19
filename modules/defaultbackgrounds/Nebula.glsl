@@ -115,7 +115,7 @@ vec3 nebula(vec2 pos, out float volume)
   vec3 c = colorLayer(pos + vec2(42.0, 6.9), baseColor);
   c = mix(c, overlayColor, dot(on.x, on.y));
   c = mix(c, highlightColor, volume *
-    smoothstep(highlightA, highlightB, abs(on.x)+abs(on.y)) );
+    smoothstep(highlightA, highlightB, abs(on.x)+abs(on.y)));
 
 
   return c * volume;

@@ -40,9 +40,9 @@ export default class Camera
     this.tempCameraId = tempCameraId++;
     this.container = container;
     this.bounds.min = bound;
-    this.bounds.max = Number( (1 - bound).toFixed(1) );
+    this.bounds.max = Number((1 - bound).toFixed(1));
     var screenElement = window.getComputedStyle(
-      document.getElementById("pixi-container"), null );
+      document.getElementById("pixi-container"), null);
     this.screenWidth = parseInt(screenElement.width);
     this.screenHeight = parseInt(screenElement.height);
 
@@ -97,7 +97,7 @@ export default class Camera
     }
   }
 
-  startScroll( mousePos: number[] )
+  startScroll(mousePos: number[])
   {
     this.setBounds();
     this.startClick = mousePos;
@@ -107,13 +107,13 @@ export default class Camera
   {
     this.startPos = undefined;
   }
-  private getDelta( currPos: number[] )
+  private getDelta(currPos: number[])
   {
     var x = this.startClick[0] - currPos[0];
     var y = this.startClick[1] - currPos[1];
     return [-x, -y];
   }
-  move( currPos: number[] ) // used for mouse scrolling
+  move(currPos: number[]) // used for mouse scrolling
   {
     var delta = this.getDelta(currPos);
     this.container.position.x = this.startPos[0] + delta[0];
@@ -171,7 +171,7 @@ export default class Camera
     this.onMove();
   }
 
-  zoom( zoomAmount: number)
+  zoom(zoomAmount: number)
   {
     if (zoomAmount > 1)
     {
@@ -203,7 +203,7 @@ export default class Camera
   {
     eventManager.dispatchEvent("cameraZoomed", this.currZoom);
   }
-  deltaZoom( delta: number, scale: number )
+  deltaZoom(delta: number, scale: number)
   {
     if (delta === 0)
     {
@@ -229,24 +229,24 @@ export default class Camera
 
     //horizontal
     //left edge
-    if ( x < this.bounds.xMin)
+    if (x < this.bounds.xMin)
     {
       x = this.bounds.xMin;
     }
     //right edge
-    else if ( x > this.bounds.xMax)
+    else if (x > this.bounds.xMax)
     {
       x = this.bounds.xMax;
     }
 
     //vertical
     //top
-    if ( y < this.bounds.yMin )
+    if (y < this.bounds.yMin)
     {
       y = this.bounds.yMin;
     }
     //bottom
-    else if ( y > this.bounds.yMax )
+    else if (y > this.bounds.yMax)
     {
       y = this.bounds.yMax;
     }

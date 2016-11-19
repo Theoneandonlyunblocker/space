@@ -273,7 +273,7 @@ export default class Renderer
 
     if (this.activeRenderLoopId === renderLoopId)
     {
-      window.requestAnimationFrame( this.render.bind(this, renderLoopId) );
+      window.requestAnimationFrame(this.render.bind(this, renderLoopId));
     }
   }
 }

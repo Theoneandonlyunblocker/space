@@ -44,7 +44,7 @@ float hash(in vec2 p, in float scale)
   return fract(sin(dot(p, seed)) * 5151.5473453);
 }
 
-float noise(in vec2 p, in float scale )
+float noise(in vec2 p, in float scale)
 {
   vec2 f;
   
