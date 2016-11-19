@@ -4,9 +4,9 @@
 
 interface Uniforms
 {
-  highlightIntensity: {type: "1f"; value: number;};
-  spikeColor: {type: "4fv"; value: number[];};
-  spikeIntensity: {type: "1f"; value: number;};
+  highlightIntensity: {type: "float"; value: number;};
+  spikeColor: {type: "vec4"; value: number[];};
+  spikeIntensity: {type: "float"; value: number;};
 }
 
 interface PartialUniformValues
@@ -29,16 +29,16 @@ export default class ShinyParticle extends PIXI.Filter
   {
     return(
     {
-      highlightIntensity: {type: "1f", value: initialValues.highlightIntensity},
-      spikeColor: {type: "4fv", value: initialValues.spikeColor},
-      spikeIntensity: {type: "1f", value: initialValues.spikeIntensity},
+      highlightIntensity: {type: "float", value: initialValues.highlightIntensity},
+      spikeColor: {type: "vec4", value: initialValues.spikeColor},
+      spikeIntensity: {type: "float", value: initialValues.spikeIntensity},
     });
   }
   public setUniformValues(values: PartialUniformValues)
   {
     for (let key in values)
     {
-      this.uniforms[key].value = values[key];
+      this.uniforms[key] = values[key];
     }
   }
 }

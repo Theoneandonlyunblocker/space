@@ -4,22 +4,21 @@
 
 interface Uniforms
 {
-  [name: string]: PIXI.IUniformData;
-  aspectRatio: {type: "1f"; value: number;};
-  beamColor: {type: "4fv"; value: number[];};
-  beamYPosition: {type: "1f"; value: number;};
-  bulgeIntensity: {type: "1f"; value: number;};
-  bulgeSharpness: {type: "1f"; value: number;};
-  bulgeSize: {type: "2fv"; value: number[];};
-  bulgeXPosition: {type: "1f"; value: number;};
-  lineIntensity: {type: "1f"; value: number;};
-  lineXSharpness: {type: "1f"; value: number;};
-  lineXSize: {type: "2fv"; value: number[];};
-  lineYSharpness: {type: "1f"; value: number;};
-  lineYSize: {type: "1f"; value: number;};
-  noiseAmplitude: {type: "1f"; value: number;};
-  seed: {type: "1f"; value: number;};
-  time: {type: "1f"; value: number;};
+  aspectRatio: {type: "float"; value: number;};
+  beamColor: {type: "vec4"; value: number[];};
+  beamYPosition: {type: "float"; value: number;};
+  bulgeIntensity: {type: "float"; value: number;};
+  bulgeSharpness: {type: "float"; value: number;};
+  bulgeSize: {type: "vec2"; value: number[];};
+  bulgeXPosition: {type: "float"; value: number;};
+  lineIntensity: {type: "float"; value: number;};
+  lineXSharpness: {type: "float"; value: number;};
+  lineXSize: {type: "vec2"; value: number[];};
+  lineYSharpness: {type: "float"; value: number;};
+  lineYSize: {type: "float"; value: number;};
+  noiseAmplitude: {type: "float"; value: number;};
+  seed: {type: "float"; value: number;};
+  time: {type: "float"; value: number;};
 }
 
 interface PartialUniformValues
@@ -41,7 +40,7 @@ interface PartialUniformValues
   time?: number;
 }
 
-export default class Beam extends PIXI.Filter<PartialUniformValues, Uniforms>
+export default class Beam extends PIXI.Filter
 {
   public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 
@@ -54,28 +53,28 @@ export default class Beam extends PIXI.Filter<PartialUniformValues, Uniforms>
   {
     return(
     {
-      aspectRatio: {type: "1f", value: initialValues.aspectRatio},
-      beamColor: {type: "4fv", value: initialValues.beamColor},
-      beamYPosition: {type: "1f", value: initialValues.beamYPosition},
-      bulgeIntensity: {type: "1f", value: initialValues.bulgeIntensity},
-      bulgeSharpness: {type: "1f", value: initialValues.bulgeSharpness},
-      bulgeSize: {type: "2fv", value: initialValues.bulgeSize},
-      bulgeXPosition: {type: "1f", value: initialValues.bulgeXPosition},
-      lineIntensity: {type: "1f", value: initialValues.lineIntensity},
-      lineXSharpness: {type: "1f", value: initialValues.lineXSharpness},
-      lineXSize: {type: "2fv", value: initialValues.lineXSize},
-      lineYSharpness: {type: "1f", value: initialValues.lineYSharpness},
-      lineYSize: {type: "1f", value: initialValues.lineYSize},
-      noiseAmplitude: {type: "1f", value: initialValues.noiseAmplitude},
-      seed: {type: "1f", value: initialValues.seed},
-      time: {type: "1f", value: initialValues.time},
+      aspectRatio: {type: "float", value: initialValues.aspectRatio},
+      beamColor: {type: "vec4", value: initialValues.beamColor},
+      beamYPosition: {type: "float", value: initialValues.beamYPosition},
+      bulgeIntensity: {type: "float", value: initialValues.bulgeIntensity},
+      bulgeSharpness: {type: "float", value: initialValues.bulgeSharpness},
+      bulgeSize: {type: "vec2", value: initialValues.bulgeSize},
+      bulgeXPosition: {type: "float", value: initialValues.bulgeXPosition},
+      lineIntensity: {type: "float", value: initialValues.lineIntensity},
+      lineXSharpness: {type: "float", value: initialValues.lineXSharpness},
+      lineXSize: {type: "vec2", value: initialValues.lineXSize},
+      lineYSharpness: {type: "float", value: initialValues.lineYSharpness},
+      lineYSize: {type: "float", value: initialValues.lineYSize},
+      noiseAmplitude: {type: "float", value: initialValues.noiseAmplitude},
+      seed: {type: "float", value: initialValues.seed},
+      time: {type: "float", value: initialValues.time},
     });
   }
   public setUniformValues(values: PartialUniformValues)
   {
     for (let key in values)
     {
-      this.uniforms[key].value = values[key];
+      this.uniforms[key] = values[key];
     }
   }
 }

@@ -4,13 +4,13 @@
 
 interface Uniforms
 {
-  centerBloomStrength: {type: "1f"; value: number;};
-  centerSize: {type: "1f"; value: number;};
-  rayColor: {type: "4fv"; value: number[];};
-  raySharpness: {type: "1f"; value: number;};
-  rayStrength: {type: "1f"; value: number;};
-  rotation: {type: "1f"; value: number;};
-  seed: {type: "2fv"; value: number[];};
+  centerBloomStrength: {type: "float"; value: number;};
+  centerSize: {type: "float"; value: number;};
+  rayColor: {type: "vec4"; value: number[];};
+  raySharpness: {type: "float"; value: number;};
+  rayStrength: {type: "float"; value: number;};
+  rotation: {type: "float"; value: number;};
+  seed: {type: "vec2"; value: number[];};
 }
 
 interface PartialUniformValues
@@ -37,20 +37,20 @@ export default class LightBurst extends PIXI.Filter
   {
     return(
     {
-      centerBloomStrength: {type: "1f", value: initialValues.centerBloomStrength},
-      centerSize: {type: "1f", value: initialValues.centerSize},
-      rayColor: {type: "4fv", value: initialValues.rayColor},
-      raySharpness: {type: "1f", value: initialValues.raySharpness},
-      rayStrength: {type: "1f", value: initialValues.rayStrength},
-      rotation: {type: "1f", value: initialValues.rotation},
-      seed: {type: "2fv", value: initialValues.seed},
+      centerBloomStrength: {type: "float", value: initialValues.centerBloomStrength},
+      centerSize: {type: "float", value: initialValues.centerSize},
+      rayColor: {type: "vec4", value: initialValues.rayColor},
+      raySharpness: {type: "float", value: initialValues.raySharpness},
+      rayStrength: {type: "float", value: initialValues.rayStrength},
+      rotation: {type: "float", value: initialValues.rotation},
+      seed: {type: "vec2", value: initialValues.seed},
     });
   }
   public setUniformValues(values: PartialUniformValues)
   {
     for (let key in values)
     {
-      this.uniforms[key].value = values[key];
+      this.uniforms[key] = values[key];
     }
   }
 }

@@ -4,13 +4,13 @@
 
 interface Uniforms
 {
-  intersectingEllipseCenter: {type: "2fv"; value: number[];};
-  intersectingEllipseSharpness: {type: "1f"; value: number;};
-  intersectingEllipseSize: {type: "2fv"; value: number[];};
-  mainAlpha: {type: "1f"; value: number;};
-  mainColor: {type: "4fv"; value: number[];};
-  mainEllipseSharpness: {type: "1f"; value: number;};
-  mainEllipseSize: {type: "2fv"; value: number[];};
+  intersectingEllipseCenter: {type: "vec2"; value: number[];};
+  intersectingEllipseSharpness: {type: "float"; value: number;};
+  intersectingEllipseSize: {type: "vec2"; value: number[];};
+  mainAlpha: {type: "float"; value: number;};
+  mainColor: {type: "vec4"; value: number[];};
+  mainEllipseSharpness: {type: "float"; value: number;};
+  mainEllipseSize: {type: "vec2"; value: number[];};
 }
 
 interface PartialUniformValues
@@ -37,20 +37,20 @@ export default class IntersectingEllipses extends PIXI.Filter
   {
     return(
     {
-      intersectingEllipseCenter: {type: "2fv", value: initialValues.intersectingEllipseCenter},
-      intersectingEllipseSharpness: {type: "1f", value: initialValues.intersectingEllipseSharpness},
-      intersectingEllipseSize: {type: "2fv", value: initialValues.intersectingEllipseSize},
-      mainAlpha: {type: "1f", value: initialValues.mainAlpha},
-      mainColor: {type: "4fv", value: initialValues.mainColor},
-      mainEllipseSharpness: {type: "1f", value: initialValues.mainEllipseSharpness},
-      mainEllipseSize: {type: "2fv", value: initialValues.mainEllipseSize},
+      intersectingEllipseCenter: {type: "vec2", value: initialValues.intersectingEllipseCenter},
+      intersectingEllipseSharpness: {type: "float", value: initialValues.intersectingEllipseSharpness},
+      intersectingEllipseSize: {type: "vec2", value: initialValues.intersectingEllipseSize},
+      mainAlpha: {type: "float", value: initialValues.mainAlpha},
+      mainColor: {type: "vec4", value: initialValues.mainColor},
+      mainEllipseSharpness: {type: "float", value: initialValues.mainEllipseSharpness},
+      mainEllipseSize: {type: "vec2", value: initialValues.mainEllipseSize},
     });
   }
   public setUniformValues(values: PartialUniformValues)
   {
     for (let key in values)
     {
-      this.uniforms[key].value = values[key];
+      this.uniforms[key] = values[key];
     }
   }
 }

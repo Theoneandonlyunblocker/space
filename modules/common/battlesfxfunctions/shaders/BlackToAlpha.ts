@@ -29,7 +29,7 @@ export default class BlackToAlpha extends PIXI.Filter
   {
     for (let key in values)
     {
-      this.uniforms[key].value = values[key];
+      this.uniforms[key] = values[key];
     }
   }
 }

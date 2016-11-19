@@ -4,13 +4,13 @@
 
 interface Uniforms
 {
-  blockAlpha: {type: "1f"; value: number;};
-  blockSize: {type: "1f"; value: number;};
-  blockWidth: {type: "1f"; value: number;};
-  frontier: {type: "1f"; value: number;};
-  lineAlpha: {type: "1f"; value: number;};
-  seed: {type: "1f"; value: number;};
-  trailDistance: {type: "1f"; value: number;};
+  blockAlpha: {type: "float"; value: number;};
+  blockSize: {type: "float"; value: number;};
+  blockWidth: {type: "float"; value: number;};
+  frontier: {type: "float"; value: number;};
+  lineAlpha: {type: "float"; value: number;};
+  seed: {type: "float"; value: number;};
+  trailDistance: {type: "float"; value: number;};
 }
 
 interface PartialUniformValues
@@ -37,20 +37,20 @@ export default class Guard extends PIXI.Filter
   {
     return(
     {
-      blockAlpha: {type: "1f", value: initialValues.blockAlpha},
-      blockSize: {type: "1f", value: initialValues.blockSize},
-      blockWidth: {type: "1f", value: initialValues.blockWidth},
-      frontier: {type: "1f", value: initialValues.frontier},
-      lineAlpha: {type: "1f", value: initialValues.lineAlpha},
-      seed: {type: "1f", value: initialValues.seed},
-      trailDistance: {type: "1f", value: initialValues.trailDistance},
+      blockAlpha: {type: "float", value: initialValues.blockAlpha},
+      blockSize: {type: "float", value: initialValues.blockSize},
+      blockWidth: {type: "float", value: initialValues.blockWidth},
+      frontier: {type: "float", value: initialValues.frontier},
+      lineAlpha: {type: "float", value: initialValues.lineAlpha},
+      seed: {type: "float", value: initialValues.seed},
+      trailDistance: {type: "float", value: initialValues.trailDistance},
     });
   }
   public setUniformValues(values: PartialUniformValues)
   {
     for (let key in values)
     {
-      this.uniforms[key].value = values[key];
+      this.uniforms[key] = values[key];
     }
   }
 }

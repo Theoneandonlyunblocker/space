@@ -4,11 +4,11 @@
 
 interface Uniforms
 {
-  angle: {type: "1f"; value: number;};
-  offset: {type: "2fv"; value: number[];};
-  scale: {type: "1f"; value: number;};
-  stripeColor: {type: "4fv"; value: number[];};
-  stripeSize: {type: "1f"; value: number;};
+  angle: {type: "float"; value: number;};
+  offset: {type: "vec2"; value: number[];};
+  scale: {type: "float"; value: number;};
+  stripeColor: {type: "vec4"; value: number[];};
+  stripeSize: {type: "float"; value: number;};
 }
 
 interface PartialUniformValues
@@ -33,18 +33,18 @@ export default class Occupation extends PIXI.Filter
   {
     return(
     {
-      angle: {type: "1f", value: initialValues.angle},
-      offset: {type: "2fv", value: initialValues.offset},
-      scale: {type: "1f", value: initialValues.scale},
-      stripeColor: {type: "4fv", value: initialValues.stripeColor},
-      stripeSize: {type: "1f", value: initialValues.stripeSize},
+      angle: {type: "float", value: initialValues.angle},
+      offset: {type: "vec2", value: initialValues.offset},
+      scale: {type: "float", value: initialValues.scale},
+      stripeColor: {type: "vec4", value: initialValues.stripeColor},
+      stripeSize: {type: "float", value: initialValues.stripeSize},
     });
   }
   public setUniformValues(values: PartialUniformValues)
   {
     for (let key in values)
     {
-      this.uniforms[key].value = values[key];
+      this.uniforms[key] = values[key];
     }
   }
 }

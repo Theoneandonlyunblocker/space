@@ -4,21 +4,21 @@
 
 interface Uniforms
 {
-  baseColor: {type: "3fv"; value: number[];};
-  cloudLightness: {type: "1f"; value: number;};
-  coverage: {type: "1f"; value: number;};
-  diffusion: {type: "1f"; value: number;};
-  highlightA: {type: "1f"; value: number;};
-  highlightB: {type: "1f"; value: number;};
-  highlightColor: {type: "3fv"; value: number[];};
-  nebulaStarConcentration: {type: "1f"; value: number;};
-  overlayColor: {type: "3fv"; value: number[];};
-  scale: {type: "1f"; value: number;};
-  seed: {type: "2fv"; value: number[];};
-  starBrightness: {type: "1f"; value: number;};
-  starDensity: {type: "1f"; value: number;};
-  streakLightness: {type: "1f"; value: number;};
-  streakiness: {type: "1f"; value: number;};
+  baseColor: {type: "vec3"; value: number[];};
+  cloudLightness: {type: "float"; value: number;};
+  coverage: {type: "float"; value: number;};
+  diffusion: {type: "float"; value: number;};
+  highlightA: {type: "float"; value: number;};
+  highlightB: {type: "float"; value: number;};
+  highlightColor: {type: "vec3"; value: number[];};
+  nebulaStarConcentration: {type: "float"; value: number;};
+  overlayColor: {type: "vec3"; value: number[];};
+  scale: {type: "float"; value: number;};
+  seed: {type: "vec2"; value: number[];};
+  starBrightness: {type: "float"; value: number;};
+  starDensity: {type: "float"; value: number;};
+  streakLightness: {type: "float"; value: number;};
+  streakiness: {type: "float"; value: number;};
 }
 
 interface PartialUniformValues
@@ -53,28 +53,28 @@ export default class Nebula extends PIXI.Filter
   {
     return(
     {
-      baseColor: {type: "3fv", value: initialValues.baseColor},
-      cloudLightness: {type: "1f", value: initialValues.cloudLightness},
-      coverage: {type: "1f", value: initialValues.coverage},
-      diffusion: {type: "1f", value: initialValues.diffusion},
-      highlightA: {type: "1f", value: initialValues.highlightA},
-      highlightB: {type: "1f", value: initialValues.highlightB},
-      highlightColor: {type: "3fv", value: initialValues.highlightColor},
-      nebulaStarConcentration: {type: "1f", value: initialValues.nebulaStarConcentration},
-      overlayColor: {type: "3fv", value: initialValues.overlayColor},
-      scale: {type: "1f", value: initialValues.scale},
-      seed: {type: "2fv", value: initialValues.seed},
-      starBrightness: {type: "1f", value: initialValues.starBrightness},
-      starDensity: {type: "1f", value: initialValues.starDensity},
-      streakLightness: {type: "1f", value: initialValues.streakLightness},
-      streakiness: {type: "1f", value: initialValues.streakiness},
+      baseColor: {type: "vec3", value: initialValues.baseColor},
+      cloudLightness: {type: "float", value: initialValues.cloudLightness},
+      coverage: {type: "float", value: initialValues.coverage},
+      diffusion: {type: "float", value: initialValues.diffusion},
+      highlightA: {type: "float", value: initialValues.highlightA},
+      highlightB: {type: "float", value: initialValues.highlightB},
+      highlightColor: {type: "vec3", value: initialValues.highlightColor},
+      nebulaStarConcentration: {type: "float", value: initialValues.nebulaStarConcentration},
+      overlayColor: {type: "vec3", value: initialValues.overlayColor},
+      scale: {type: "float", value: initialValues.scale},
+      seed: {type: "vec2", value: initialValues.seed},
+      starBrightness: {type: "float", value: initialValues.starBrightness},
+      starDensity: {type: "float", value: initialValues.starDensity},
+      streakLightness: {type: "float", value: initialValues.streakLightness},
+      streakiness: {type: "float", value: initialValues.streakiness},
     });
   }
   public setUniformValues(values: PartialUniformValues)
   {
     for (let key in values)
     {
-      this.uniforms[key].value = values[key];
+      this.uniforms[key] = values[key];
     }
   }
 }
