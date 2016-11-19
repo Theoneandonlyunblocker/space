@@ -60,7 +60,7 @@ const drawNebula: BackgroundDrawingFunction = function(
   const texture = generateTextureWithBounds(
     renderer,
     container,
-    PIXI.SCALE_MODES.DEFAULT,
+    PIXI.settings.SCALE_MODE,
     1,
     size,
   );

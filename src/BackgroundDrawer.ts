@@ -139,7 +139,7 @@ export default class BackgroundDrawer
     const blurTextureSize = this.getDesiredBlurSize();
     
     const blurTexture = generateTextureWithBounds(
-      this.renderer, background, PIXI.SCALE_MODES.DEFAULT, this.renderer.resolution, blurTextureSize
+      this.renderer, background, PIXI.settings.SCALE_MODE, this.renderer.resolution, blurTextureSize
     );
     
     background.filters = null;

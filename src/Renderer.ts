@@ -34,7 +34,7 @@ export default class Renderer
 
   constructor(backgroundSeed: string, backgroundDrawingFunction: BackgroundDrawingFunction)
   {
-    PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
+    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
     
     this.stage = new PIXI.Container();
     this.backgroundDrawer = new BackgroundDrawer(

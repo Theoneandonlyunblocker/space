@@ -147,7 +147,7 @@ export default function beam(props: SFXParams)
   const smallParticleTexture = generateTextureWithBounds(
     props.renderer,
     smallParticleGraphics,
-    PIXI.SCALE_MODES.DEFAULT,
+    PIXI.settings.SCALE_MODE,
     1,
     new PIXI.Rectangle(0, 0, smallParticleGraphicsSize.x * 1.5, smallParticleGraphicsSize.y * 1.5),
   );

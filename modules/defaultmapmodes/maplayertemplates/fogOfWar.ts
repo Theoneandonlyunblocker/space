@@ -87,7 +87,7 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number)
     // TODO 02.11.2016 | PIXI4 | still relevant?
     var bounds = tiled.getBounds();
 
-    const rendered = generateTextureWithBounds(app.renderer.renderer, tiled, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
+    const rendered = generateTextureWithBounds(app.renderer.renderer, tiled, PIXI.settings.SCALE_MODE, 1, bounds);
 
     var sprite = new PIXI.Sprite(rendered);
 

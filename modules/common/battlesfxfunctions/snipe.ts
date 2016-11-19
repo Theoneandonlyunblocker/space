@@ -210,7 +210,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
       return generateTextureWithBounds(
         params.renderer,
         gfx,
-        PIXI.SCALE_MODES.DEFAULT,
+        PIXI.settings.SCALE_MODE,
         1,
         new PIXI.Rectangle(0, 0, particleSize, particleSize),
       );
