@@ -38,7 +38,7 @@ function rocketAttack(params: SFXParams)
   {
     [id: number]:
     {
-      clip: PIXI.extras.MovieClip;
+      clip: PIXI.extras.AnimatedSprite;
       startTime: number;
       relativeTimePerFrame: number;
     } 
@@ -79,7 +79,7 @@ function rocketAttack(params: SFXParams)
 
       explosionsByID[projectile.id] =
       {
-        clip: new PIXI.extras.MovieClip(explosionTextures),
+        clip: new PIXI.extras.AnimatedSprite(explosionTextures),
         startTime: time,
         relativeTimePerFrame: Math.min(relativeTimePerExplosionFrame, remainingTimePerFrame)
       }
