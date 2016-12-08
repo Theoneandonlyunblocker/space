@@ -8,7 +8,7 @@ import BackgroundDrawingFunction from "../../src/BackgroundDrawingFunction";
 import
 {
   randRange,
-  createDummySpriteForShader,
+  makeShaderSprite,
   generateTextureWithBounds,
 } from "../../src/utility";
 
@@ -48,8 +48,7 @@ const drawNebula: BackgroundDrawingFunction = function(
   
   // TODO PIXI4 | directly calling sprite.generateTexture() doesn't seem to work properly
   const container = new PIXI.Container();
-  const shaderSprite = createDummySpriteForShader(0, 0, size.width, size.height);
-  shaderSprite.shader = filter;
+  const shaderSprite = makeShaderSprite(filter, 0, 0, size.width, size.height);
   container.addChild(shaderSprite);
 
   // still relevant?

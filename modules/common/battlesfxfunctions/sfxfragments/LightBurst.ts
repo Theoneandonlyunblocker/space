@@ -9,7 +9,7 @@ import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
 {
-  createDummySpriteForShader
+  makeShaderSprite
 } from "../../../../src/utility";
 
 interface PartialLightBurstProps
@@ -90,14 +90,14 @@ export default class LightBurst extends SFXFragment<LightBurstProps, PartialLigh
       rayColor: this.props.color.getRGBA(1.0)
     });
 
-    const lightBurstSprite = createDummySpriteForShader(
+    const lightBurstSprite = makeShaderSprite(
+      this.lightBurstFilter,
       0,
       0,
       this.props.size.x,
       this.props.size.y
     );
 
-    lightBurstSprite.shader = this.lightBurstFilter;
     lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
 
     this.setDisplayObject(lightBurstSprite);

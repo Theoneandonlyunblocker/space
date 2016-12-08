@@ -10,9 +10,9 @@ import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
 {
-  createDummySpriteForShader,
   getRelativeValue,
-  clamp
+  clamp,
+  makeShaderSprite,
 } from "../../../../src/utility";
 
 interface PartialBeamProps
@@ -155,13 +155,13 @@ export default class Beam extends SFXFragment<BeamProps, PartialBeamProps>
       beamYPosition: this.props.relativeBeamOrigin.y
     });
 
-    const beamSprite = createDummySpriteForShader(
+    const beamSprite = makeShaderSprite(
+      this.beamFilter,
       0,
       0,
       this.props.size.x,
       this.props.size.y
     );
-    beamSprite.shader = this.beamFilter;
     beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
 
     this.setDisplayObject(beamSprite);

@@ -737,6 +737,21 @@ export function getDummyTextureForShader()
   canvas.height = 1;
   return PIXI.Texture.fromCanvas(canvas);
 }
+export function makeShaderSprite(
+  shader: PIXI.Filter,
+  x?: number,
+  y?: number,
+  width?: number,
+  height?: number,
+): PIXI.Sprite
+{
+  const sprite = createDummySpriteForShader(x, y, width, height);
+
+  // TODO 08.12.2016 | 
+  sprite.shader = shader;
+
+  return sprite;
+}
 export function findEasingFunctionHighPoint(easingFunction: (x: number) => number,
   resolution: number = 10, maxIterations: number = 4,
   startIndex: number = 0, endIndex: number = 1, iteration: number = 0): number

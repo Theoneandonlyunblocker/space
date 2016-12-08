@@ -1,8 +1,8 @@
 /// <reference path="../../../../lib/tween.js.d.ts" />
 
+import RampingValue from "./RampingValue";
 import SFXFragment from "./SFXFragment";
 import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
-import RampingValue from "./RampingValue";
 
 import IntersectingEllipsesFilter from "../shaders/IntersectingEllipses";
 
@@ -10,7 +10,7 @@ import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
 {
-  createDummySpriteForShader
+  makeShaderSprite
 } from "../../../../src/utility";
 
 interface PartialShockWaveProps
@@ -141,14 +141,13 @@ export default class ShockWave extends SFXFragment<ShockWaveProps, PartialShockW
       mainColor: this.props.color.getRGBA(1.0)
     });
 
-    const shockWaveSprite = createDummySpriteForShader(
+    const shockWaveSprite = makeShaderSprite(
+      shockWaveFilter,
       0,
       0,
       this.props.size.x,
       this.props.size.y
     );
-
-    shockWaveSprite.shader = shockWaveFilter;
 
     this.setDisplayObject(shockWaveSprite);
   }
