@@ -1,4 +1,4 @@
-﻿// Type definitions for Pixi.js 4.1
+// Type definitions for Pixi.js 4.3.0
 // Project: https://github.com/pixijs/pixi.js/tree/dev
 // Definitions by: clark-stevenson <https://github.com/pixijs/pixi-typescript>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -1195,6 +1195,7 @@ declare module PIXI {
         protected _tint: number;
         protected _tintRGB: number;
         blendMode: number;
+        pluginName: string;
         protected cachedTint: number;
         texture: Texture;
         protected textureDirty: boolean;
@@ -1282,9 +1283,7 @@ declare module PIXI {
     }
 
     // text
-
-    export class TextStyle {
-
+    export interface ITextStyleStyle {
         align?: string;
         breakWords?: boolean;
         dropShadow?: boolean;
@@ -1310,14 +1309,45 @@ declare module PIXI {
         textBaseline?: string;
         wordWrap?: boolean;
         wordWrapWidth?: number;
-
     }
+
+    export class TextStyle implements ITextStyleStyle {
+        align: string;
+        breakWords: boolean;
+        dropShadow: boolean;
+        dropShadowAngle: number;
+        dropShadowBlur: number;
+        dropShadowColor: string | number;
+        dropShadowDistance: number;
+        fill: string | string[] | number | number[] | CanvasGradient | CanvasPattern;
+        fillGradientType: number;
+        fontFamily: string;
+        fontSize: number | string;
+        fontStyle: string;
+        fontVariant: string;
+        fontWeight: string;
+        letterSpacing: number;
+        lineHeight: number;
+        lineJoin: string;
+        miterLimit: number;
+        padding: number;
+        stroke: string | number;
+        strokeThickness: number;
+        styleID: number;
+        textBaseline: string;
+        wordWrap: boolean;
+        wordWrapWidth: number;
+        constructor(style?: ITextStyleStyle);
+        public clone(): TextStyle;
+        public reset(): void;
+    }
+
     export class Text extends Sprite {
 
-        static getFontStyle(style: TextStyle): string;
+        static getFontStyle(style: ITextStyleStyle): string;
         static calculateFontProperties(style: string): any;
 
-        constructor(text?: string, style?: TextStyle);
+        constructor(text?: string, style?: ITextStyleStyle);
 
         canvas: HTMLCanvasElement;
         context: CanvasRenderingContext2D;
@@ -1345,7 +1375,7 @@ declare module PIXI {
         protected wordWrap(text: string): string;
         protected _calculateBounds(): void;
         protected _onStyleChange: () => void;
-        protected _generateFillStyle(style: string | number | CanvasGradient, lines: string[]): string | number | CanvasGradient;
+        protected _generateFillStyle(style: TextStyle, lines: string[]): string | number | CanvasGradient;
         destroy(options?: IDestroyOptions | boolean): void;
         dirty: boolean;
 
@@ -1412,7 +1442,7 @@ declare module PIXI {
         protected _loadSvgSourceUsingDataUri(dataUri: string): void;
         protected _loadSvgSourceUsingXhr(): void;
         protected _loadSvgSourceUsingString(svgString: string): void;
-        loadSource(source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): void;
+        protected loadSource(source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): void;
         protected _sourceLoaded(): void;
         destroy(): void;
         dispose(): void;
@@ -1528,6 +1558,8 @@ declare module PIXI {
         static fromUrl(videoSrc: string | any | string[] | any[]): VideoBaseTexture;
         static fromUrls(videoSrc: string | any | string[] | any[]): VideoBaseTexture;
 
+        source: HTMLVideoElement;
+        protected loadSource(source: HTMLVideoElement): void;
     }
 
     // ticker
@@ -1752,7 +1784,7 @@ declare module PIXI {
         export class FXAAFilter extends Filter { }
         export class BlurFilter extends Filter {
 
-            constructor(strength?: number, quality?: number, resolution?: number);
+            constructor(strength?: number, quality?: number, resolution?: number, kernelSize?: number);
 
             blurXFilter: BlurXFilter;
             blurYFilter: BlurYFilter;
@@ -1767,7 +1799,7 @@ declare module PIXI {
         }
         export class BlurXFilter extends Filter {
 
-            constructor(strength?: number, quality?: number, resolution?: number);
+            constructor(strength?: number, quality?: number, resolution?: number, kernelSize?: number);
 
             protected _quality: number;
 
@@ -1781,7 +1813,7 @@ declare module PIXI {
         }
         export class BlurYFilter extends Filter {
 
-            constructor(strength?: number, quality?: number, resolution?: number);
+            constructor(strength?: number, quality?: number, resolution?: number, kernelSize?: number);
 
             protected _quality: number;
 
@@ -2110,6 +2142,7 @@ declare module PIXI {
             dirtyVertex: boolean;
             protected _geometryVersion: number;
             blendMode: number;
+            pluginName: string;
             canvasPadding: number;
             drawMode: number;
             texture: Texture;
@@ -2565,7 +2598,7 @@ declare module PIXI {
         export function hex2string(hex: number): string;
         export function rgb2hex(rgb: Number[]): number;
         export function canUseNewCanvasBlendModes(): boolean;
-        export function getResolutionOfUrl(url: string): number;
+        export function getResolutionOfUrl(url: string, defaultValue?: number): number;
         export function getSvgSize(svgString: string): any;
         export function decomposeDataUri(dataUri: string): IDecomposedDataUri;
         export function getUrlFileExtension(url: string): string;
@@ -2629,6 +2662,229 @@ declare module PIXI {
             addListener(event: string, fn: Function, context?: any): EventEmitter;
 
         }
+
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////depreciation/////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // not sure how to handle blendmodes scalemodes basetexturecache
+    module core {
+
+        /**
+         * @class
+         * @private
+         * @name SpriteBatch
+         * @memberof PIXI
+         * @see PIXI.ParticleContainer
+         * @throws {ReferenceError} SpriteBatch does not exist any more, please use the new ParticleContainer instead.
+         * @deprecated since version 3.0.0
+         */
+        type SpriteBatch = ParticleContainer;
+
+        /**
+         * @class
+         * @private
+         * @name AssetLoader
+         * @memberof PIXI
+         * @see PIXI.loaders.Loader
+         * @throws {ReferenceError} The loader system was overhauled in pixi v3, please see the new PIXI.loaders.Loader class.
+         * @deprecated since version 3.0.0
+         */
+        type AssetLoader = loaders.Loader;
+
+        /**
+         * @class
+         * @private
+         * @name Stage
+         * @memberof PIXI
+         * @see PIXI.Container
+         * @deprecated since version 3.0.0
+         */
+        type Stage = Container;
+
+        /**
+         * @class
+         * @private
+         * @name DisplayObjectContainer
+         * @memberof PIXI
+         * @see PIXI.Container
+         * @deprecated since version 3.0.0
+         */
+        type DisplayObjectContainer = Container;
+
+        /**
+         * @class
+         * @private
+         * @name Strip
+         * @memberof PIXI
+         * @see PIXI.mesh.Mesh
+         * @deprecated since version 3.0.0
+         */
+        type Strip = mesh.Mesh;
+
+        /**
+         * @class
+         * @private
+         * @name Rope
+         * @memberof PIXI
+         * @see PIXI.mesh.Rope
+         * @deprecated since version 3.0.0
+         */
+        type Rope = mesh.Rope;
+
+        /**
+         * @class
+         * @private
+         * @name ParticleContainer
+         * @memberof PIXI
+         * @see PIXI.particles.ParticleContainer
+         * @deprecated since version 4.0.0
+         */
+        type ParticleContainer = particles.ParticleContainer;
+
+        /**
+         * @class
+         * @private
+         * @name MovieClip
+         * @memberof PIXI
+         * @see PIXI.extras.MovieClip
+         * @deprecated since version 3.0.0
+         */
+        type MovieClip = extras.AnimatedSprite
+
+        /**
+         * @class
+         * @private
+         * @name TilingSprite
+         * @memberof PIXI
+         * @see PIXI.extras.TilingSprite
+         * @deprecated since version 3.0.0
+         */
+        type TilingSprite = extras.TilingSprite;
+
+        /**
+         * @class
+         * @private
+         * @name BitmapText
+         * @memberof PIXI
+         * @see PIXI.extras.BitmapText
+         * @deprecated since version 3.0.0
+         */
+        type BitmapText = extras.BitmapText;
+
+        /**
+         * @namespace
+         * @private
+         * @name math
+         * @memberof PIXI
+         * @see PIXI
+         * @deprecated since version 3.0.6
+         */
+        type math = any;
+
+        /**
+         * @class
+         * @private
+         * @name PIXI.AbstractFilter
+         * @see PIXI.Filter
+         * @deprecated since version 3.0.6
+         */
+        type AbstractFilter = Filter;
+
+        /**
+         * @class
+         * @private
+         * @name PIXI.TransformManual
+         * @see PIXI.TransformBase
+         * @deprecated since version 4.0.0
+         */
+        type TransformManual = TransformBase;
+
+        /**
+         * @static
+         * @constant
+         * @name PIXI.TARGET_FPMS
+         * @see PIXI.settings.TARGET_FPMS
+         * @deprecated since version 4.2.0
+         */
+        type TARGET_FPMS = number;
+
+        /**
+         * @static
+         * @constant
+         * @name PIXI.FILTER_RESOLUTION
+         * @see PIXI.settings.FILTER_RESOLUTION
+         * @deprecated since version 4.2.0
+         */
+        type FILTER_RESOLUTION = number;
+
+        /**
+         * @static
+         * @constant
+         * @name PIXI.RESOLUTION
+         * @see PIXI.settings.RESOLUTION
+         * @deprecated since version 4.2.0
+         */
+        type RESOLUTION = number;
+
+        /**
+         * @static
+         * @constant
+         * @name PIXI.MIPMAP_TEXTURES
+         * @see PIXI.settings.MIPMAP_TEXTURES
+         * @deprecated since version 4.2.0
+         */
+        type MIPMAP_TEXTURES = any;
+
+        /**
+         * @static
+         * @constant
+         * @name PIXI.SPRITE_BATCH_SIZE
+         * @see PIXI.settings.SPRITE_BATCH_SIZE
+         * @deprecated since version 4.2.0
+         */
+        type SPRITE_BATCH_SIZE = number;
+
+        /**
+         * @static
+         * @constant
+         * @name PIXI.SPRITE_MAX_TEXTURES
+         * @see PIXI.settings.SPRITE_MAX_TEXTURES
+         * @deprecated since version 4.2.0
+         */
+        type SPRITE_MAX_TEXTURES = number;
+
+        /**
+         * @static
+         * @constant
+         * @name PIXI.RETINA_PREFIX
+         * @see PIXI.settings.RETINA_PREFIX
+         * @deprecated since version 4.2.0
+         */
+        type RETINA_PREFIX = RegExp | string;
+
+        /**
+         * @static
+         * @constant
+         * @name PIXI.DEFAULT_RENDER_OPTIONS
+         * @see PIXI.settings.RENDER_OPTIONS
+         * @deprecated since version 4.2.0
+         */
+        type DEFAULT_RENDER_OPTIONS = number;
+
+    }
+
+    export module extras {
+
+        /**
+         * @class
+         * @name MovieClip
+         * @memberof PIXI.extras
+         * @see PIXI.extras.AnimatedSprite
+         * @deprecated since version 4.2.0
+         */
+        type MovieClip = extras.AnimatedSprite;
 
     }
 
