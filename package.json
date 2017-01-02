@@ -2,7 +2,7 @@
   "name": "spacegame",
   "version": "0.1.0",
   "devDependencies": {
-    "typescript": "2.0.x",
+    "typescript": "2.1.x",
     "less": "2.6.x",
     "tslint": "^3.15.1"
   },
