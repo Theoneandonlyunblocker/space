@@ -2,7 +2,7 @@
 
 import FlagEditor from "./FlagEditor";
 import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
-import Flag from "../../Flag";
+import {Flag} from "../../Flag";
 import Color from "../../Color";
 import Emblem from "../../Emblem";
 import

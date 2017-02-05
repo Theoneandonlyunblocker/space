@@ -10,7 +10,7 @@ import
 } from "./utility";
 import AIController from "./AIController";
 import Star from "./Star";
-import Flag from "./Flag";
+import {Flag} from "./Flag";
 import Item from "./Item";
 import BattleSimulator from "./BattleSimulator";
 import BattlePrep from "./BattlePrep";

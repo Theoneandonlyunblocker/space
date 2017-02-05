@@ -2,7 +2,7 @@
 
 import Color from "../../Color";
 import Emblem from "../../Emblem";
-import Flag from "../../Flag";
+import {Flag} from "../../Flag";
 
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 

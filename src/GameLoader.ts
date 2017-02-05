@@ -13,7 +13,7 @@ import Manufactory from "./Manufactory";
 import Color from "./Color";
 import AttitudeModifier from "./AttitudeModifier";
 import Emblem from "./Emblem";
-import Flag from "./Flag";
+import {Flag} from "./Flag";
 import {Fleet} from "./Fleet";
 import Item from "./Item";
 import MapGenResult from "./MapGenResult";

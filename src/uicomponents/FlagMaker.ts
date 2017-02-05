@@ -1,6 +1,6 @@
 /// <reference path="../../lib/react-global.d.ts" />
 
-import Flag from "../Flag";
+import {Flag} from "../Flag";
 import {generateColorScheme} from "../colorGeneration";
 
 import PlayerFlag from "./PlayerFlag";

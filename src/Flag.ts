@@ -5,16 +5,16 @@ import {generateMainColor, generateSecondaryColor} from "./colorGeneration";
 import Emblem from "./Emblem";
 import
 {
-  drawElementToCanvas
+  drawElementToCanvas,
 } from "./utility";
 
 import FlagSaveData from "./savedata/FlagSaveData";
 
-export default class Flag
+export class Flag
 {
-  seed: any;
-  backgroundColor: Color | null;
-  emblems: Emblem[] = [];
+  private seed: string;
+  private backgroundColor: Color | null;
+  private emblems: Emblem[] = [];
 
   private cachedCanvases:
   {
@@ -26,21 +26,19 @@ export default class Flag
     this.backgroundColor = backgroundColor;
     if (emblems)
     {
-      emblems.forEach(emblem => this.addEmblem(emblem));
+      emblems.forEach((emblem) => this.addEmblem(emblem));
     }
   }
   public static generateRandom(
-    backgroundColor?: Color,
-    secondaryColor?: Color,
+    backgroundColor: Color = generateMainColor(),
+    secondaryColor: Color = generateSecondaryColor(backgroundColor),
     seed?: string
   ): Flag
   {
-    const _backgroundColor = backgroundColor || generateMainColor();
-    const _secondaryColor = secondaryColor || generateSecondaryColor(_backgroundColor); 
-    
-    const flag = new Flag(_backgroundColor);
+
+    const flag = new Flag(backgroundColor);
     flag.seed = seed;
-    flag.addRandomEmblem(_secondaryColor, seed);
+    flag.addRandomEmblem(secondaryColor, seed);
 
     return flag;
   }
@@ -56,10 +54,10 @@ export default class Flag
   {
     this.emblems.push(emblem);
   }
-  public setCustomImage(...args: any[]): void
-  {
+  // public setCustomImage(...args: any[]): void
+  // {
 
-  }
+  // }
   public getCanvas(
     width: number,
     height: number,
@@ -93,10 +91,10 @@ export default class Flag
   }
   public serialize(): FlagSaveData
   {
-    var data: FlagSaveData =
+    const data: FlagSaveData =
     {
       mainColor: this.backgroundColor.serialize(),
-      emblems: this.emblems.map(emblem => emblem.serialize())
+      emblems: this.emblems.map((emblem) => emblem.serialize()),
     };
 
     return data;
@@ -105,12 +103,11 @@ export default class Flag
 
   private draw(width: number, height: number, stretch: boolean = true): HTMLCanvasElement
   {
-    var canvas = document.createElement("canvas");
+    const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
 
-    
-    var ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
 
     ctx.globalCompositeOperation = "source-over";
     if (this.backgroundColor)
@@ -119,17 +116,17 @@ export default class Flag
       ctx.fillRect(0, 0, width, height);
     }
 
-    this.emblems.forEach(emblem =>
+    this.emblems.forEach((emblem) =>
     {
       if (emblem.isDrawable())
       {
-        var foreground = emblem.draw(width, height, stretch);
-        var x = (width - foreground.width) / 2;
-        var y = (height - foreground.height) / 2;
+        const foreground = emblem.draw(width, height, stretch);
+        const x = (width - foreground.width) / 2;
+        const y = (height - foreground.height) / 2;
         ctx.drawImage(foreground, x, y);
       }
     });
-    
+
     return canvas;
   }
   // getReactMarkup()
@@ -166,7 +163,7 @@ export default class Flag
 
   //     this._renderedSvg = container;
   //   }
-    
+
   //   return this._renderedSvg;
   // }
 }

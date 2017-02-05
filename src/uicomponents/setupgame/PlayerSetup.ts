@@ -3,7 +3,7 @@
 import app from "../../App"; // TODO global
 import Player from "../../Player";
 import Color from "../../Color";
-import Flag from "../../Flag";
+import {Flag} from "../../Flag";
 import
 {
   generateMainColor,
