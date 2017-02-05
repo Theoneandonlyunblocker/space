@@ -183,7 +183,7 @@ export default class PathfindingArrow
 
   makeLabel(style: string, distance: number)
   {
-    var textStyle: PIXI.TextStyle;
+    var textStyle: PIXI.ITextStyleStyle;
 
     switch (style)
     {
