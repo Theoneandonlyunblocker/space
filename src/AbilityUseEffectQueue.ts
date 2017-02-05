@@ -6,7 +6,7 @@ import
   shallowExtend,
 } from "./utility";
 
-export default class AbilityUseEffectQueue
+export class AbilityUseEffectQueue
 {
   private onEffectStart: (effect: AbilityUseEffect) => void;
   private onSFXStart: () => void;
@@ -45,7 +45,7 @@ export default class AbilityUseEffectQueue
     const squashedChangedUnitDisplayDataByID = shallowExtend<{[unitID: number]: UnitDisplayData}>(
       {},
       parent.changedUnitDisplayDataByID,
-      ...toSquash.map(effect => effect.changedUnitDisplayDataByID)
+      ...toSquash.map(effect => effect.changedUnitDisplayDataByID),
     );
 
     if (parentIsMostRecent)
@@ -53,7 +53,7 @@ export default class AbilityUseEffectQueue
       const squashedEffect = shallowExtend<AbilityUseEffect>(
         {},
         {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID},
-        parent
+        parent,
       );
 
       return squashedEffect;
@@ -63,7 +63,7 @@ export default class AbilityUseEffectQueue
       const squashedEffect = shallowExtend<AbilityUseEffect>(
         {},
         parent,
-        {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID}
+        {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID},
       );
 
       return squashedEffect;
@@ -73,7 +73,7 @@ export default class AbilityUseEffectQueue
   {
     const squashed: AbilityUseEffect[] = [];
     let effectsToSquash: AbilityUseEffect[] = [];
-    for (var i = sourceEffects.length - 1; i >= 0; i--)
+    for (let i = sourceEffects.length - 1; i >= 0; i--)
     {
       const effect = sourceEffects[i];
       if (effect.sfx)
@@ -133,7 +133,7 @@ export default class AbilityUseEffectQueue
       target: this.currentEffect.sfxTarget,
       triggerEffectCallback: this.triggerEffect,
       onSFXStartCallback: this.onSFXStart,
-      afterFinishedCallback: this.finishEffect
+      afterFinishedCallback: this.finishEffect,
     });
   }
 
@@ -141,7 +141,7 @@ export default class AbilityUseEffectQueue
   {
     if (this.onEffectTrigger)
     {
-      this.onEffectTrigger(this.currentEffect)
+      this.onEffectTrigger(this.currentEffect);
     }
   }
   private finishEffect(): void
