@@ -21,7 +21,7 @@ export default class Region
     
     if (initialStars)
     {
-      initialStars.forEach(star => this.addStar(star));
+      initialStars.forEach((star) => this.addStar(star));
     }
   }
   public addStar(star: Star): void
@@ -37,7 +37,7 @@ export default class Region
   {
     this.severLinksForQualifier((a, b) =>
     {
-      const isPartOfExemptRegion = exemptRegions.some(region =>
+      const isPartOfExemptRegion = exemptRegions.some((region) =>
       {
         return region.hasStar(b);
       });
@@ -65,7 +65,7 @@ export default class Region
       [distance: number]: Star[];
     } = {};
     
-    this.stars.forEach(star =>
+    this.stars.forEach((star) =>
     {
       const nearestStar = star.getNearestStarForQualifier(qualifierFN);
       const distanceToNearestStar = star.getDistanceToStar(nearestStar);
@@ -82,11 +82,11 @@ export default class Region
   }
   public getLinkedStars(): Star[]
   {
-    return this.getUniqueStarsFromCallback(star =>
+    return this.getUniqueStarsFromCallback((star) =>
     {
       const linkedStars = star.getLinkedInRange(1).all;
       
-      return linkedStars.filter(linkedStar =>
+      return linkedStars.filter((linkedStar) =>
       {
         return !this.hasStar(linkedStar);
       });
@@ -102,7 +102,7 @@ export default class Region
       [overlappingStarCount: number]: Region[];
     } = {};
     
-    overlappingStarsWithRegions.forEach(regionWithStars =>
+    overlappingStarsWithRegions.forEach((regionWithStars) =>
     {
       const starCount = regionWithStars.stars.length;
       if (!regionsByOverlappingStarCount[starCount])
@@ -118,7 +118,7 @@ export default class Region
   }
   public getLinkedRegions(regionsToCheck: Region[]): Region[]
   {
-    return this.getLinkedStarsWithRegions(regionsToCheck).map(rs =>
+    return this.getLinkedStarsWithRegions(regionsToCheck).map((rs) =>
     {
       return rs.region;
     });
@@ -132,7 +132,7 @@ export default class Region
 
     const sharedHalfEdges: Voronoi.HalfEdge<Star>[] = [];
 
-    neighboringStars.forEach(star =>
+    neighboringStars.forEach((star) =>
     {
       star.voronoiCell.halfedges.forEach((halfEdge: Voronoi.HalfEdge<Star>) =>
       {
@@ -183,9 +183,9 @@ export default class Region
     qualifierFN: (region: Region, star: Star) => boolean
   ): regionWithStars[]
   {
-    const regionsWithStarsForQualifier: regionWithStars[] = regionsToCheck.map(region =>
+    const regionsWithStarsForQualifier: regionWithStars[] = regionsToCheck.map((region) =>
     {
-      const starsThatPassQualifier = starsToCheck.filter(star =>
+      const starsThatPassQualifier = starsToCheck.filter((star) =>
       {
         return qualifierFN(region, star);
       });
@@ -197,16 +197,16 @@ export default class Region
       });
     });
     
-    return regionsWithStarsForQualifier.filter(regionWithStars =>
+    return regionsWithStarsForQualifier.filter((regionWithStars) =>
     {
       return regionWithStars.stars.length > 0;
     });
   }
   private severLinksForQualifier(qualifierFN: (a: Star, b: Star) => boolean): void
   {
-    this.stars.forEach(star =>
+    this.stars.forEach((star) =>
     {
-      star.getAllLinks().forEach(linkedStar =>
+      star.getAllLinks().forEach((linkedStar) =>
       {
         if (qualifierFN(star, linkedStar))
         {
@@ -217,7 +217,7 @@ export default class Region
   }
   private getNeighboringStars(): Star[]
   {
-    return this.getUniqueStarsFromCallback(star =>
+    return this.getUniqueStarsFromCallback((star) =>
     {
       const neighborPoints = star.getNeighbors();
       
@@ -236,15 +236,15 @@ export default class Region
       [starId: number]: boolean;
     } = {};
     
-    this.stars.forEach(star =>
+    this.stars.forEach((star) =>
     {
       const starsFromCallback = callbackFN(star);
-      const newStarsFromCallback = starsFromCallback.filter(star =>
+      const newStarsFromCallback = starsFromCallback.filter((star) =>
       {
         return !alreadyAdded[star.id];
       });
       
-      newStarsFromCallback.forEach(star =>
+      newStarsFromCallback.forEach((star) =>
       {
         alreadyAdded[star.id] = true;
         resultStars.push(star);

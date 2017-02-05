@@ -32,7 +32,7 @@ export var closeAttack: AbilityTemplate =
   actionsUse: 2,
   getPossibleTargets: (user, battle) =>
   {
-    return targetNextRow(user, battle).filter(unit =>
+    return targetNextRow(user, battle).filter((unit) =>
     {
       unit.battleStats.side !== user.battleStats.side
     });
@@ -90,7 +90,7 @@ export var bombAttack: AbilityTemplate =
     }),
     getUnitsInArea: (user, target, battle) =>
     {
-      return areaOrthogonalNeighbors(user, target, battle).filter(unit =>
+      return areaOrthogonalNeighbors(user, target, battle).filter((unit) =>
       {
         return !unit || unit.battleStats.side !== user.battleStats.side;
       });

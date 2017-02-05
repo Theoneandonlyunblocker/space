@@ -70,7 +70,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       this.props.initialColumns[0];
     
     const sortingOrderForColumnKey: {[columnKey: string]: ListOrder} = {};
-    this.props.initialColumns.forEach(column =>
+    this.props.initialColumns.forEach((column) =>
     {
       sortingOrderForColumnKey[column.key] = column.defaultOrder;
     });
@@ -375,7 +375,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     var columns: React.ReactHTMLElement<any>[] = [];
     var headerLabels: React.ReactHTMLElement<any>[] = [];
 
-    this.state.columns.forEach(column =>
+    this.state.columns.forEach((column) =>
     {
       var colProps: React.HTMLAttributes =
       {

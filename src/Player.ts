@@ -485,12 +485,12 @@ export default class Player
     
     const neighboringStars = this.getNeighboringStars();
 
-    neighboringStars.forEach(star =>
+    neighboringStars.forEach((star) =>
     {
       alreadyAddedPlayersByID[star.owner.id] = star.owner;
     })
 
-    return Object.keys(alreadyAddedPlayersByID).map(playerID =>
+    return Object.keys(alreadyAddedPlayersByID).map((playerID) =>
     {
       return alreadyAddedPlayersByID[playerID];
     })
@@ -853,7 +853,7 @@ export default class Player
       attacker:
       {
         player: this,
-        units: location.getUnits(player => player === this)
+        units: location.getUnits((player) => player === this)
       },
       defender:
       {

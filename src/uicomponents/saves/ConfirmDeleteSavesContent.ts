@@ -36,7 +36,7 @@ export class ConfirmDeleteSavesContentComponent extends React.PureComponent<Prop
         {
           className: "confirm-delete-saves-content-saves-list"
         },
-          this.props.saveNames.map(saveName =>
+          this.props.saveNames.map((saveName) =>
           {
             return(
               React.DOM.li(

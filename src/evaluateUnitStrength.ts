@@ -5,7 +5,7 @@ export default function evaluateUnitStrength(...units: Unit[]): number
 {
   let totalStrength = 0;
 
-  units.forEach(unit =>
+  units.forEach((unit) =>
   {
     let unitStrength = 0;
 

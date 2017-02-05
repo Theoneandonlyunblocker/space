@@ -87,7 +87,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      return arr.some(unit => unit === unitToCheck);
+      return arr.some((unit) => unit === unitToCheck);
     }
   }
   

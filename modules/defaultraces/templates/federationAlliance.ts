@@ -33,7 +33,7 @@ const federationAlliance: PlayerRaceTemplate =
 
   getBuildableUnitTypes: (player) =>
   {
-    return getDefaultUnits().filter(unitTemplate =>
+    return getDefaultUnits().filter((unitTemplate) =>
     {
       return !unitTemplate.technologyRequirements ||
         player.meetsTechnologyRequirements(unitTemplate.technologyRequirements);

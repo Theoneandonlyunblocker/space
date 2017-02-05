@@ -131,7 +131,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
 
         params.triggerEffect();
 
-        emitters.forEach(emitter =>
+        emitters.forEach((emitter) =>
         {
           emitter.p.x = projectile.sprite.position.x + projectile.sprite.width;
           emitter.p.y = projectile.sprite.position.y;
@@ -188,7 +188,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
       amount: 25,
       size: 4,
     }
-  ].map(emitterData =>
+  ].map((emitterData) =>
   {
     const emitter = new Proton.BehaviourEmitter();
     emitter.rate = new Proton.Rate(emitterData.amount * particlesAmountScale, 0.02);
@@ -286,7 +286,7 @@ export default function preLoadedSnipe(type: UnitAttribute, params: SFXParams)
   
   loader.add(projectileURL);
   
-  loader.load(loader =>
+  loader.load((loader) =>
   {
     snipe(type, params);
   });

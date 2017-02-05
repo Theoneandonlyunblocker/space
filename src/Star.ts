@@ -415,7 +415,7 @@ export default class Star implements Point
     const fleets = this.getFleets(playerFilter);
     const units: Unit[] = [];
 
-    fleets.forEach(fleet =>
+    fleets.forEach((fleet) =>
     {
       units.push(...fleet.units);
     });
@@ -498,11 +498,11 @@ export default class Star implements Point
         type: "building",
         enemy: buildingTarget.controller,
         building: buildingTarget,
-        units: this.getUnits(player => player === buildingTarget.controller)
+        units: this.getUnits((player) => player === buildingTarget.controller)
       });
     }
 
-    const hostileFleetOwners = this.getFleetOwners().filter(fleetOwner =>
+    const hostileFleetOwners = this.getFleetOwners().filter((fleetOwner) =>
     {
       if (fleetOwner === buildingController)
       {
@@ -523,7 +523,7 @@ export default class Star implements Point
           type: "fleet",
           enemy: hostileFleetOwners[i],
           building: null,
-          units: this.getUnits(player => player === hostileFleetOwners[i])
+          units: this.getUnits((player) => player === hostileFleetOwners[i])
         });
       }
     }
@@ -532,7 +532,7 @@ export default class Star implements Point
   }
   public hasBuildingTargetForPlayer(player: Player): boolean
   {
-    return this.getTargetsForPlayer(player).some(target =>
+    return this.getTargetsForPlayer(player).some((target) =>
     {
       return target.type === "building";
     });
@@ -749,7 +749,7 @@ export default class Star implements Point
     var sizeFound = 1;
 
     var frontier: Star[] = initialStars.slice(0);
-    initialStars.forEach(star =>
+    initialStars.forEach((star) =>
     {
       visited[star.id] = true;
     });

@@ -38,7 +38,7 @@ const conquer: ObjectiveTemplate =
     mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI)
   {
     const basePriority = grandStrategyAI.desireForExpansion;
-    var possibleTargets: Star[] = mapEvaluator.player.getNeighboringStars().filter(star =>
+    var possibleTargets: Star[] = mapEvaluator.player.getNeighboringStars().filter((star) =>
     {
       if (!mapEvaluator.player.starIsRevealed(star))
       {

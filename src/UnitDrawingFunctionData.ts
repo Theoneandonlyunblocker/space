@@ -76,12 +76,12 @@ export default class UnitDrawingFunctionData
     return new UnitDrawingFunctionData(
     {
       boundingBox: this.boundingBox.clone(),
-      individualUnitBoundingBoxes: this.individualUnitBoundingBoxes.map(bbox =>
+      individualUnitBoundingBoxes: this.individualUnitBoundingBoxes.map((bbox) =>
       {
         return bbox.clone();
       }),
       singleAttackOriginPoint: {x: this.singleAttackOriginPoint.x, y: this.singleAttackOriginPoint.y},
-      sequentialAttackOriginPoints: this.sequentialAttackOriginPoints.map(point =>
+      sequentialAttackOriginPoints: this.sequentialAttackOriginPoints.map((point) =>
       {
         return {x: point.x, y: point.y};
       })
@@ -90,12 +90,12 @@ export default class UnitDrawingFunctionData
   public offset(offset: Point): UnitDrawingFunctionData
   {
     this.boundingBox = offsetRectangle(this.boundingBox, offset);
-    this.individualUnitBoundingBoxes = this.individualUnitBoundingBoxes.map(bbox =>
+    this.individualUnitBoundingBoxes = this.individualUnitBoundingBoxes.map((bbox) =>
     {
       return offsetRectangle(bbox, offset);
     });
     this.singleAttackOriginPoint = offsetPoint(this.singleAttackOriginPoint, offset);
-    this.sequentialAttackOriginPoints = this.sequentialAttackOriginPoints.map(point =>
+    this.sequentialAttackOriginPoints = this.sequentialAttackOriginPoints.map((point) =>
     {
       return offsetPoint(point, offset);
     });
@@ -105,12 +105,12 @@ export default class UnitDrawingFunctionData
   public mirror(midX: number): UnitDrawingFunctionData
   {
     this.boundingBox = mirrorRectangle(this.boundingBox, midX);
-    this.individualUnitBoundingBoxes = this.individualUnitBoundingBoxes.map(bbox =>
+    this.individualUnitBoundingBoxes = this.individualUnitBoundingBoxes.map((bbox) =>
     {
       return mirrorRectangle(bbox, midX);
     });
     this.singleAttackOriginPoint = mirrorPoint(this.singleAttackOriginPoint, midX);
-    this.sequentialAttackOriginPoints = this.sequentialAttackOriginPoints.map(point =>
+    this.sequentialAttackOriginPoints = this.sequentialAttackOriginPoints.map((point) =>
     {
       return mirrorPoint(point, midX);
     });

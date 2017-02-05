@@ -140,7 +140,7 @@ export default class GameLoader
     }
 
     // ai controllers
-    data.players.forEach(playerData =>
+    data.players.forEach((playerData) =>
     {
       const player = this.playersById[playerData.id]; 
 
@@ -388,14 +388,14 @@ export default class GameLoader
   private deserializeEmblem(emblemData: EmblemSaveData): Emblem
   {
     return new Emblem(
-      emblemData.colors.map(colorData => Color.deSerialize(colorData)),
+      emblemData.colors.map((colorData) => Color.deSerialize(colorData)),
       app.moduleData.Templates.SubEmblems[emblemData.templateKey],
       emblemData.alpha
     );
   }
   private deserializeFlag(data: FlagSaveData): Flag
   {
-    const emblems = data.emblems.map(emblemSaveData =>
+    const emblems = data.emblems.map((emblemSaveData) =>
     {
       return this.deserializeEmblem(emblemSaveData);
     });

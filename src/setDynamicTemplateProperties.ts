@@ -29,7 +29,7 @@ export function setTechnologyRequirements(technologyTemplates: TemplateCollectio
     for (let level in technology.unlocksPerLevel)
     {
       const unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
-      unlockedTemplatesForLevel.forEach(template =>
+      unlockedTemplatesForLevel.forEach((template) =>
       {
         if (!template.technologyRequirements)
         {

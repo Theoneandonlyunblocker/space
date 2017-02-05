@@ -84,7 +84,7 @@ class TemplateIndexes
     for (let key in allDistributables)
     {
       const distributable = allDistributables[key];
-      distributable.distributionData.distributionGroups.forEach(group =>
+      distributable.distributionData.distributionGroups.forEach((group) =>
       {
         if (!byGroup[group])
         {

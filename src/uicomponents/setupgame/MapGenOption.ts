@@ -54,7 +54,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
     var range = option.range;
     var id = "mapGenOption_" + this.props.id;
 
-    ["min", "max", "step"].forEach(prop =>
+    ["min", "max", "step"].forEach((prop) =>
     {
       if (!range[prop])
       {

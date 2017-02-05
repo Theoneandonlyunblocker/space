@@ -183,7 +183,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
 
     if (this.props.attackTargets)
     {
-      allActions.push(...this.props.attackTargets.map(attackTarget =>
+      allActions.push(...this.props.attackTargets.map((attackTarget) =>
       {
         return AttackTarget(
         {

@@ -87,7 +87,7 @@ export default class Game
   }
   processPlayerStartTurn(player: Player)
   {
-    player.units.forEach(unit =>
+    player.units.forEach((unit) =>
     {
       unit.addHealth(unit.getHealingForGameTurnStart());
 

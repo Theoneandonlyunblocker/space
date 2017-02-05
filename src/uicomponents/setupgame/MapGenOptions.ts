@@ -69,7 +69,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
   {
     var defaultValues = {};
 
-    ["defaultOptions", "basicOptions", "advancedOptions"].forEach(optionGroup =>
+    ["defaultOptions", "basicOptions", "advancedOptions"].forEach((optionGroup) =>
     {
       var options: MapGenOptions = mapGenTemplate.options[optionGroup];
       if (!options) return;

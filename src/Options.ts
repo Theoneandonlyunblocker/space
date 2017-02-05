@@ -139,7 +139,7 @@ class Options implements OptionsValues
   }
   public setDefaults()
   {
-    OptionsCategories.forEach(category =>
+    OptionsCategories.forEach((category) =>
     {
       this.setDefaultForCategory(category);
     });

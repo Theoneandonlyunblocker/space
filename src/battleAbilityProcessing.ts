@@ -144,7 +144,7 @@ function getGuarders(battle: Battle, abilityUseData: AbilityUseData): Unit[]
 
   const allEnemies = battle.getUnitsForSide(targetSide);
 
-  const guarders = allEnemies.filter(unit =>
+  const guarders = allEnemies.filter((unit) =>
   {
     return canUnitGuardTarget(unit, abilityUseData.intendedTarget);
   });
@@ -168,7 +168,7 @@ function getAbilityEffectDataFromEffectTemplate(battle: Battle,
   const unitsInEffectArea = getUnitsInEffectArea(effectTemplate, battle,
     abilityUseData.user, target);
   
-  unitsInEffectArea.forEach(unitInEffectArea =>
+  unitsInEffectArea.forEach((unitInEffectArea) =>
   {
     effectData.push(
     {
@@ -182,7 +182,7 @@ function getAbilityEffectDataFromEffectTemplate(battle: Battle,
 
     const attachedEffects = effectTemplate.attachedEffects || [];
 
-    attachedEffects.forEach(attachedEffectTemplate =>
+    attachedEffects.forEach((attachedEffectTemplate) =>
     {
       effectData.push(...getAbilityEffectDataFromEffectTemplate(
         battle,
@@ -205,7 +205,7 @@ function getAbilityEffectDataFromEffectTemplates(
 {
   const effectData: AbilityEffectData[] = [];
 
-  effectTemplatesWithSource.forEach(effectTemplateWithSource =>
+  effectTemplatesWithSource.forEach((effectTemplateWithSource) =>
   {
     effectData.push(...getAbilityEffectDataFromEffectTemplate(
       battle,
@@ -233,7 +233,7 @@ function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abi
     }));
   }
 
-  abilityUseData.user.battleStats.statusEffects.forEach(statusEffect =>
+  abilityUseData.user.battleStats.statusEffects.forEach((statusEffect) =>
   {
     if (statusEffect.template.beforeAbilityUse)
     {
@@ -284,7 +284,7 @@ function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abil
     }));
   }
 
-  abilityUseData.user.battleStats.statusEffects.forEach(statusEffect =>
+  abilityUseData.user.battleStats.statusEffects.forEach((statusEffect) =>
   {
     if (statusEffect.template.afterAbilityUse)
     {

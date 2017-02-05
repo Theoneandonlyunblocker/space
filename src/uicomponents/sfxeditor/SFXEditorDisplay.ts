@@ -81,7 +81,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
   }
   public animateFragments(relativeTime: number): void
   {
-    this.fragments.forEach(fragment =>
+    this.fragments.forEach((fragment) =>
     {
       fragment.animate(relativeTime);
     });

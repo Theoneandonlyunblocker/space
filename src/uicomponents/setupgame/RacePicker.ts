@@ -46,7 +46,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
         onChange: this.handleChangeRace,
         title: this.props.selectedRace.description
       },
-        this.props.availableRaces.map(race =>
+        this.props.availableRaces.map((race) =>
         {
           return React.DOM.option(
           {

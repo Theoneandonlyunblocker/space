@@ -111,7 +111,7 @@ export default class ModuleLoader
       }
     }
     
-    moduleFilesToLoad.forEach(moduleFile =>
+    moduleFilesToLoad.forEach((moduleFile) =>
     {
       this.loadModuleFile(moduleFile, () =>
       {

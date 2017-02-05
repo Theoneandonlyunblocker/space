@@ -29,12 +29,12 @@ const declareWar: ObjectiveTemplate =
     }[] = [];
 
     const neighborPlayers = mapEvaluator.player.getNeighboringPlayers();
-    const metNeighborPlayers = neighborPlayers.filter(player =>
+    const metNeighborPlayers = neighborPlayers.filter((player) =>
     {
       return Boolean(mapEvaluator.player.diplomacyStatus.metPlayers[player.id]);
     });
 
-    metNeighborPlayers.forEach(targetPlayer =>
+    metNeighborPlayers.forEach((targetPlayer) =>
     {
       const canDeclareWar = mapEvaluator.player.diplomacyStatus.canDeclareWarOn(targetPlayer);
       if (canDeclareWar)

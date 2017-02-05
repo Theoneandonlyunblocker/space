@@ -108,10 +108,10 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       }
       
       const pendingDeadUnitsByID: {[id: number]: boolean} = {};
-      this.props.turnOrderDisplayData.forEach(currentDisplayData =>
+      this.props.turnOrderDisplayData.forEach((currentDisplayData) =>
       {
         const unit = currentDisplayData.unit;
-        if (!newProps.turnOrderDisplayData.some(newDisplayData =>
+        if (!newProps.turnOrderDisplayData.some((newDisplayData) =>
         {
           return newDisplayData.unit === unit;
         }))
@@ -193,7 +193,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       {
         this.setState(
         {
-          currentDisplayData: this.state.currentDisplayData.filter(d =>
+          currentDisplayData: this.state.currentDisplayData.filter((d) =>
           {
             return !this.state.pendingDeadUnitsByID[d.unit.id];
           })

@@ -33,7 +33,7 @@ export class SFXFragmentPropsListComponent extends React.Component<PropTypes, St
       {
         className: "sfx-fragment-props-list"
       },
-        Object.keys(fragment.props).sort().map(propName =>
+        Object.keys(fragment.props).sort().map((propName) =>
         {
           const propType = fragment.propTypes[propName];
 

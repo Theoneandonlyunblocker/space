@@ -25,7 +25,7 @@ export default class VoronoiCell<T extends Point> extends Voronoi.prototype.Cell
     this.width = bbox.width;
     this.height = bbox.height;
     
-    this.vertices = cell.halfedges.map(halfEdge =>
+    this.vertices = cell.halfedges.map((halfEdge) =>
     {
       return halfEdge.getStartpoint();
     });

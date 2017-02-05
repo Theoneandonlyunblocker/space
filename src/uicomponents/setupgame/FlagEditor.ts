@@ -91,7 +91,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
 
   public generateFlag(): Flag
   {
-    const emblems = this.state.emblems.map(emblemData => FlagEditorComponent.emblemDataToEmblem(emblemData));
+    const emblems = this.state.emblems.map((emblemData) => FlagEditorComponent.emblemDataToEmblem(emblemData));
     const flag = new Flag(this.props.backgroundColor, emblems);
 
     return flag;
@@ -126,7 +126,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
     }
     else
     {
-      return flag.emblems.map(emblem => FlagEditorComponent.emblemToEmblemData(emblem, this.idGenerator++));
+      return flag.emblems.map((emblem) => FlagEditorComponent.emblemToEmblemData(emblem, this.idGenerator++));
     }
   }
   private toggleActiveEmblemSetter(id: number): void
@@ -170,7 +170,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
   {
     this.setState(
     {
-      emblems: this.state.emblems.filter(emblemProps =>
+      emblems: this.state.emblems.filter((emblemProps) =>
       {
         return emblemProps.id !== idToFilter;
       })

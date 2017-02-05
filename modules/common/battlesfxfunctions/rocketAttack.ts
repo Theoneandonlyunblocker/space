@@ -148,7 +148,7 @@ export default function preLoadedRocketAttack(params: SFXParams)
   loader.add("explosion", "modules/common/battlesfxfunctions/img/explosion.json");
   loader.add(rocketUrl);
   
-  loader.load(loader =>
+  loader.load((loader) =>
   {
     rocketAttack(params);
   });

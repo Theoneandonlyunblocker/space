@@ -40,7 +40,7 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
       {
         className: "emblem-setter-list"
       },
-        this.props.emblems.map(emblemProps =>
+        this.props.emblems.map((emblemProps) =>
         {
           const id = emblemProps.id;
           return EmblemSetter(
