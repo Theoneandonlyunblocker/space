@@ -3,7 +3,7 @@ import BattleScene from "./BattleScene";
 import UnitDisplayData from "./UnitDisplayData";
 import
 {
-  shallowExtend
+  shallowExtend,
 } from "./utility";
 
 export default class AbilityUseEffectQueue
@@ -13,12 +13,12 @@ export default class AbilityUseEffectQueue
   private onCurrentFinished: () => void;
   private onAllFinished: () => void;
   private onEffectTrigger: (abilityUseEffect: AbilityUseEffect) => void;
-  
+
   private queue: AbilityUseEffect[] = [];
   private currentEffect: AbilityUseEffect;
   private battleScene: BattleScene;
-  
-  
+
+
   constructor(battleScene: BattleScene, callbacks:
   {
     onEffectStart?: (effect: AbilityUseEffect) => void;
@@ -29,47 +29,17 @@ export default class AbilityUseEffectQueue
   })
   {
     this.battleScene = battleScene;
-    
+
     for (let key in callbacks)
     {
       this[key] = callbacks[key];
     }
-    
+
     this.triggerEffect = this.triggerEffect.bind(this);
     this.finishEffect = this.finishEffect.bind(this);
   }
-  
-  public addEffects(effects: AbilityUseEffect[])
-  {
-    this.queue.push(...AbilityUseEffectQueue.squashEffectsWithoutSFX(effects));
-  }
-  public playOnce()
-  {
-    this.currentEffect = this.queue.shift();
-    
-    if (!this.currentEffect)
-    {
-      this.handleEndOfQueue();
-      return;
-    }
-    
-    if (this.onEffectStart)
-    {
-      this.onEffectStart(this.currentEffect);
-    }
-    
-    this.battleScene.handleAbilityUse(
-    {
-      SFXTemplate: this.currentEffect.sfx,
-      user: this.currentEffect.sfxUser,
-      target: this.currentEffect.sfxTarget,
-      triggerEffectCallback: this.triggerEffect,
-      onSFXStartCallback: this.onSFXStart,
-      afterFinishedCallback: this.finishEffect
-    });
-  }
-  
-  private static squashEffects(
+
+    private static squashEffects(
     parent: AbilityUseEffect, toSquash: AbilityUseEffect[], parentIsMostRecent: boolean = false): AbilityUseEffect
   {
     const squashedChangedUnitDisplayDataByID = shallowExtend<{[unitID: number]: UnitDisplayData}>(
@@ -77,7 +47,7 @@ export default class AbilityUseEffectQueue
       parent.changedUnitDisplayDataByID,
       ...toSquash.map(effect => effect.changedUnitDisplayDataByID)
     );
-    
+
     if (parentIsMostRecent)
     {
       const squashedEffect = shallowExtend<AbilityUseEffect>(
@@ -85,7 +55,7 @@ export default class AbilityUseEffectQueue
         {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID},
         parent
       );
-      
+
       return squashedEffect;
     }
     else
@@ -95,7 +65,7 @@ export default class AbilityUseEffectQueue
         parent,
         {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID}
       );
-      
+
       return squashedEffect;
     }
   }
@@ -112,7 +82,7 @@ export default class AbilityUseEffectQueue
         {
           const squashedEffect = AbilityUseEffectQueue.squashEffects(effect, effectsToSquash);
           effectsToSquash = [];
-          
+
           squashed.push(squashedEffect);
         }
         else
@@ -125,25 +95,56 @@ export default class AbilityUseEffectQueue
         effectsToSquash.unshift(effect);
       }
     }
-    
+
     if (effectsToSquash.length > 0)
     {
       const lastEffectWithSFX = squashed.pop();
       squashed.push(AbilityUseEffectQueue.squashEffects(lastEffectWithSFX, effectsToSquash, true));
     }
-    
+
     squashed.reverse();
-    
+
     return squashed;
   }
-  private triggerEffect()
+
+  public addEffects(effects: AbilityUseEffect[]): void
+  {
+    this.queue.push(...AbilityUseEffectQueue.squashEffectsWithoutSFX(effects));
+  }
+  public playOnce(): void
+  {
+    this.currentEffect = this.queue.shift();
+
+    if (!this.currentEffect)
+    {
+      this.handleEndOfQueue();
+      return;
+    }
+
+    if (this.onEffectStart)
+    {
+      this.onEffectStart(this.currentEffect);
+    }
+
+    this.battleScene.handleAbilityUse(
+    {
+      SFXTemplate: this.currentEffect.sfx,
+      user: this.currentEffect.sfxUser,
+      target: this.currentEffect.sfxTarget,
+      triggerEffectCallback: this.triggerEffect,
+      onSFXStartCallback: this.onSFXStart,
+      afterFinishedCallback: this.finishEffect
+    });
+  }
+
+  private triggerEffect(): void
   {
     if (this.onEffectTrigger)
     {
       this.onEffectTrigger(this.currentEffect)
     }
   }
-  private finishEffect()
+  private finishEffect(): void
   {
     this.currentEffect = null;
     if (this.onCurrentFinished)
@@ -151,7 +152,7 @@ export default class AbilityUseEffectQueue
       this.onCurrentFinished();
     }
   }
-  private handleEndOfQueue()
+  private handleEndOfQueue(): void
   {
     if (this.onAllFinished)
     {
