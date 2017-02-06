@@ -38,7 +38,7 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   {
     return(
     {
-      isChecked: this.getTutorialState() === TutorialStateTODO.neverShow
+      isChecked: this.getTutorialState() === TutorialStateTODO.neverShow,
     });
   }
 
@@ -62,7 +62,7 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
 
     this.setState(
     {
-      isChecked: !this.state.isChecked
+      isChecked: !this.state.isChecked,
     });
   }
 
@@ -71,7 +71,7 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
     return(
       React.DOM.div(
       {
-        className: "dont-show-again-wrapper"
+        className: "dont-show-again-wrapper",
       },
         React.DOM.label(null,
           React.DOM.input(
@@ -79,10 +79,10 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
             type: "checkBox",
             className: "dont-show-again",
             checked: this.state.isChecked,
-            onChange: this.toggleState
+            onChange: this.toggleState,
           }),
-          "Don't show again"
-        )
+          "Don't show again",
+        ),
       )
     );
   }

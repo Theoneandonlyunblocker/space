@@ -40,7 +40,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
     return(
     {
       canAfford: this.props.money >= this.props.template.buildCost,
-      isDisabled: !this.props.onClick
+      isDisabled: !this.props.onClick,
     });
   }
 
@@ -49,7 +49,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
     this.setState(
     {
       canAfford: newProps.money >= newProps.template.buildCost,
-      isDisabled: !newProps.onClick
+      isDisabled: !newProps.onClick,
     });
   }
 
@@ -73,21 +73,21 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
         className: "manufacturable-things-list-item" + (isDisabled ? " disabled" : ""),
         onClick: (isDisabled ? null : this.handleClick),
         disabled: isDisabled,
-        title: this.props.template.description
+        title: this.props.template.description,
       },
         React.DOM.div(
         {
-          className: "manufacturable-things-list-item-name"
+          className: "manufacturable-things-list-item-name",
         },
-          this.props.template.displayName
+          this.props.template.displayName,
         ),
         !this.props.showCost ? null : React.DOM.div(
         {
           className: "manufacturable-things-list-item-cost money-style" +
-            (canAfford ? "" : " negative")
+            (canAfford ? "" : " negative"),
         },
-          this.props.template.buildCost
-        )
+          this.props.template.buildCost,
+        ),
       )
     );
   }

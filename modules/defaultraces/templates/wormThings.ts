@@ -66,11 +66,11 @@ const wormThings: PlayerRaceTemplate =
     {
       tech: TechnologyTemplates.test2,
       startingLevel: 1,
-      maxLevel: 5
-    }
+      maxLevel: 5,
+    },
   ]),
 
-  getAITemplateConstructor: player => DefaultAIConstructor
+  getAITemplateConstructor: player => DefaultAIConstructor,
 }
 
 export default wormThings;

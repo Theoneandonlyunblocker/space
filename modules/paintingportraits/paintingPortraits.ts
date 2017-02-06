@@ -12,7 +12,7 @@ const paintingPortraits: ModuleFile =
     name: "Painting portraits",
     version: "0.1.0",
     author: "various artists",
-    description: "old ppl"
+    description: "old ppl",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   constructModule: function(moduleData: ModuleData)
@@ -20,7 +20,7 @@ const paintingPortraits: ModuleFile =
     moduleData.copyTemplates(paintingPortraitTemplates, "Portraits");
 
     return moduleData;
-  }
+  },
 }
 
 export default paintingPortraits;

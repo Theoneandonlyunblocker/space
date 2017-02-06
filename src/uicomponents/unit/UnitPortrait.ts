@@ -28,13 +28,13 @@ export class UnitPortraitComponent extends React.Component<PropTypes, StateType>
     {
       props.style =
       {
-        backgroundImage: 'url("' + this.props.imageSrc + '")'
+        backgroundImage: 'url("' + this.props.imageSrc + '")',
       }
     }
 
     return(
       React.DOM.div(props,
-        null
+        null,
       )
     );
   }

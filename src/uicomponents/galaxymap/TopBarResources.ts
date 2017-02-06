@@ -66,7 +66,7 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
         resource: app.moduleData.Templates.Resources[resourceType],
         amount: amount,
         income: income,
-        key: resourceType
+        key: resourceType,
       }
       resourceElements.push(Resource(resourceData));
     }
@@ -74,9 +74,9 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
     return(
       React.DOM.div(
       {
-        className: "top-bar-resources"
+        className: "top-bar-resources",
       },
-        resourceElements
+        resourceElements,
       )
     );
   }

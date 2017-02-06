@@ -59,7 +59,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
   const relativeBeamOrigin =
   {
     x: beamOrigin.x / params.width,
-    y: beamOrigin.y / params.height
+    y: beamOrigin.y / params.height,
   }
   const focusDuration = 0.15;
   const projectileLaunchTime = 0.35;
@@ -75,7 +75,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
     size:
     {
       x: params.width,
-      y: params.height
+      y: params.height,
     },
     focusStartTime: 0,
     focusEndTime: focusDuration,
@@ -187,7 +187,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
       color: colors[type].getHex(),
       amount: 25,
       size: 4,
-    }
+    },
   ].map(emitterData =>
   {
     const emitter = new Proton.BehaviourEmitter();
@@ -203,7 +203,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
         particleSize / 2,
         particleSize / 2,
         particleSize,
-        particleSize
+        particleSize,
       );
       gfx.endFill();
 
@@ -222,17 +222,17 @@ function snipe(type: UnitAttribute, params: SFXParams)
     const emitterArea =
     {
       x: Math.min(params.target.drawingFunctionData.boundingBox.width, 70),
-      y: Math.min(params.target.drawingFunctionData.boundingBox.height, 70)
+      y: Math.min(params.target.drawingFunctionData.boundingBox.height, 70),
     }
     emitter.addInitialize(new Proton.Position(new Proton.RectZone(
       -emitterArea.x / 2,
       -emitterArea.y / 2,
       emitterArea.x,
-      emitterArea.y
+      emitterArea.y,
     )));
     emitter.addInitialize(new Proton.Life(new Proton.Span(
       params.duration * (1.0 - impactTime) / 3000,
-      params.duration * (1.0 - impactTime) / 1500
+      params.duration * (1.0 - impactTime) / 1500,
     )));
 
     emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.8, 1), 0));

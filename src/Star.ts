@@ -18,7 +18,7 @@ import eventManager from "./eventManager";
 import idGenerators from "./idGenerators";
 import
 {
-  aStar
+  aStar,
 } from "./pathFinding";
 
 import StarBuildingsSaveData from "./savedata/StarBuildingsSaveData";
@@ -274,7 +274,7 @@ export default class Star implements Point
     return(
     {
       resource: this.resource,
-      amount: this.getEffectWithBuildingsEffect(0, "resourceIncome")
+      amount: this.getEffectWithBuildingsEffect(0, "resourceIncome"),
     });
   }
   getResearchPoints(): number
@@ -498,7 +498,7 @@ export default class Star implements Point
         type: "building",
         enemy: buildingTarget.controller,
         building: buildingTarget,
-        units: this.getUnits(player => player === buildingTarget.controller)
+        units: this.getUnits(player => player === buildingTarget.controller),
       });
     }
 
@@ -523,7 +523,7 @@ export default class Star implements Point
           type: "fleet",
           enemy: hostileFleetOwners[i],
           building: null,
-          units: this.getUnits(player => player === hostileFleetOwners[i])
+          units: this.getUnits(player => player === hostileFleetOwners[i]),
         });
       }
     }
@@ -720,13 +720,13 @@ export default class Star implements Point
     this.indexedNeighborsInRange[range] =
     {
       all: allVisited,
-      byRange: visitedByRange
+      byRange: visitedByRange,
     }
 
     return(
     {
       all: allVisited,
-      byRange: visitedByRange
+      byRange: visitedByRange,
     });
   }
   // Recursively gets all neighbors that fulfill the callback condition with this star
@@ -903,12 +903,12 @@ export default class Star implements Point
       all:
       {
         [playerId: number]: Player;
-      }
+      },
     } =
     {
       visible: {},
       stealthy: {},
-      all: {}
+      all: {},
     }
 
     byVisibilityAndId.visible[this.owner.id] = this.owner;

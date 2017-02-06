@@ -74,8 +74,8 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
           onClick: this.handleSelectEmblem.bind(this, template),
           style: !this.props.backgroundColor ? null :
           {
-            backgroundColor: "#" + this.props.backgroundColor.getHexString()
-          }
+            backgroundColor: "#" + this.props.backgroundColor.getHexString(),
+          },
         },
           EmblemComponent(
           {
@@ -84,9 +84,9 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
             containerProps:
             {
               className: className,
-            }
-          })
-        )
+            },
+          }),
+        ),
       );
     }
 
@@ -96,7 +96,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
         className: "emblem-picker",
       },
         React.DOM.div({className: "flag-picker-title"},
-          "Emblem color"
+          "Emblem color",
         ),
         ColorPicker(
         {
@@ -112,14 +112,14 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
             {
               return generateMainColor();
             }
-          }
+          },
         }),
         React.DOM.div({className: "flag-picker-title"},
-          "Emblems"
+          "Emblems",
         ),
         React.DOM.div({className: "emblem-picker-emblem-list"},
-          emblemElements
-        )
+          emblemElements,
+        ),
       )
     );
   }

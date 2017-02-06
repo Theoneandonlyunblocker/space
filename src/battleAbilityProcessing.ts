@@ -44,7 +44,7 @@ export interface AbilityEffectDataByPhase
 }
 export function getAbilityEffectDataByPhase(
   battle: Battle,
-  abilityUseData: AbilityUseData
+  abilityUseData: AbilityUseData,
 ): AbilityEffectDataByPhase
 {
   abilityUseData.actualTarget = getTargetOrGuard(battle, abilityUseData);
@@ -76,7 +76,7 @@ export function getAbilityEffectDataByPhase(
   {
     beforeUse: beforeUse,
     abilityEffects: abilityEffects,
-    afterUse: afterUse
+    afterUse: afterUse,
   });
 }
 export function getUnitsInEffectArea(effect: AbilityEffectTemplate, battle: Battle,
@@ -329,14 +329,14 @@ function getDefaultBeforeUseEffects(abilityUseData: AbilityUseData): AbilityEffe
     effects.push(makeSelfAbilityEffectData(
       abilityUseData.user,
       "removeGuard",
-      user => user.removeAllGuard()
+      user => user.removeAllGuard(),
     ));
   }
 
   effects.push(makeSelfAbilityEffectData(
     abilityUseData.user,
     "removeActionPoints",
-    user => user.removeActionPoints(abilityUseData.ability.actionsUse)
+    user => user.removeActionPoints(abilityUseData.ability.actionsUse),
   ));
 
   return effects;
@@ -348,13 +348,13 @@ function getDefaultAfterUseEffects(abilityUseData: AbilityUseData): AbilityEffec
   effects.push(makeSelfAbilityEffectData(
     abilityUseData.user,
     "addMoveDelay",
-    user => user.addMoveDelay(abilityUseData.ability.moveDelay)
+    user => user.addMoveDelay(abilityUseData.ability.moveDelay),
   ));
 
   effects.push(makeSelfAbilityEffectData(
     abilityUseData.user,
     "updateStatusEffects",
-    user => user.updateStatusEffects()
+    user => user.updateStatusEffects(),
   ));
 
   return effects;

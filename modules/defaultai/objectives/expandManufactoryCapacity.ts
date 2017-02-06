@@ -61,7 +61,7 @@ const expandManufactoryCapacity: ObjectiveTemplate =
       starWithCost.push(
       {
         star: star,
-        cost: expansionCost
+        cost: expansionCost,
       });
     }
 
@@ -90,7 +90,7 @@ const expandManufactoryCapacity: ObjectiveTemplate =
       star.buildManufactory();
       player.money -= app.moduleData.ruleSet.manufactory.buildCost;
     }
-  }
+  },
 }
 
 export default expandManufactoryCapacity;

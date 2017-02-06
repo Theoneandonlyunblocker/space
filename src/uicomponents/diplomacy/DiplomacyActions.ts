@@ -47,7 +47,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   {
     return(
     {
-      trade: undefined
+      trade: undefined,
     });
   }
 
@@ -71,8 +71,8 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       dragPositionerProps:
       {
         containerDragOnly: true,
-        preventAutoResize: true
-      }
+        preventAutoResize: true,
+      },
     };
 
     switch (popupType)
@@ -83,7 +83,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
         {
           selfPlayer: this.props.player,
           otherPlayer: this.props.targetPlayer,
-          handleClose: this.closePopup.bind(this, popupType)
+          handleClose: this.closePopup.bind(this, popupType),
         });
         break;
       }
@@ -94,9 +94,9 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       content: TopMenuPopup(
       {
         content: content,
-        handleClose: this.closePopup.bind(this, popupType)
+        handleClose: this.closePopup.bind(this, popupType),
       }),
-      popupProps: popupProps
+      popupProps: popupProps,
     });
 
     var stateObj: any = {};
@@ -135,7 +135,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
 
     var declareWarProps: any =
     {
-      className: "diplomacy-action-button"
+      className: "diplomacy-action-button",
     };
 
     if (player.diplomacyStatus.canDeclareWarOn(targetPlayer))
@@ -150,7 +150,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
 
     var makePeaceProps: any =
     {
-      className: "diplomacy-action-button"
+      className: "diplomacy-action-button",
     };
 
     if (player.diplomacyStatus.canMakePeaceWith(targetPlayer))
@@ -166,7 +166,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
     return(
       React.DOM.div(
       {
-        className: "diplomacy-actions-container draggable-container"
+        className: "diplomacy-actions-container draggable-container",
       },
         PopupManager(
         {
@@ -174,37 +174,37 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
           {
             this.popupManager = component;
           },
-          onlyAllowOne: true
+          onlyAllowOne: true,
         }),
         React.DOM.button(
         {
           className: "light-box-close",
-          onClick: this.props.closePopup
+          onClick: this.props.closePopup,
         }, "X"),
         React.DOM.div(
         {
-          className: "diplomacy-actions"
+          className: "diplomacy-actions",
         },
           React.DOM.div(
           {
-            className: "diplomacy-actions-header"
+            className: "diplomacy-actions-header",
           },
-            targetPlayer.name.fullName
+            targetPlayer.name.fullName,
           ),
           React.DOM.button(declareWarProps,
-            "Declare war"
+            "Declare war",
           ),
           React.DOM.button(makePeaceProps,
-            "Make peace"
+            "Make peace",
           ),
           React.DOM.button(
           {
             className: "diplomacy-action-button",
-            onClick: this.togglePopup.bind(this, "trade")
+            onClick: this.togglePopup.bind(this, "trade"),
           },
-            "Trade"
-          )
-        )
+            "Trade",
+          ),
+        ),
       )
     );
   }

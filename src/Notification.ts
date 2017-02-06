@@ -27,7 +27,7 @@ export default class Notification<P>
       hasBeenRead: this.hasBeenRead,
       turn: this.turn,
 
-      props: this.template.serializeProps(this.props)
+      props: this.template.serializeProps(this.props),
     };
 
 

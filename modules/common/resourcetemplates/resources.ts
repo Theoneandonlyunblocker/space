@@ -9,7 +9,7 @@ export const testResource1: ResourceTemplate =
   {
     weight: 1,
     distributionGroups: ["common"],
-  }
+  },
 }
 export const testResource2: ResourceTemplate =
 {
@@ -20,7 +20,7 @@ export const testResource2: ResourceTemplate =
   {
     weight: 1,
     distributionGroups: ["common"],
-  }
+  },
 }
 export const testResource3: ResourceTemplate =
 {
@@ -31,7 +31,7 @@ export const testResource3: ResourceTemplate =
   {
     weight: 1,
     distributionGroups: ["common"],
-  }
+  },
 }
 export const testResource4: ResourceTemplate =
 {
@@ -42,7 +42,7 @@ export const testResource4: ResourceTemplate =
   {
     weight: 1,
     distributionGroups: ["rare"],
-  }
+  },
 }
 export const testResource5: ResourceTemplate =
 {
@@ -53,5 +53,5 @@ export const testResource5: ResourceTemplate =
   {
     weight: 1,
     distributionGroups: ["rare"],
-  }
+  },
 }

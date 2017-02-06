@@ -10,7 +10,7 @@ import Player from "../../../src/Player";
 
 import
 {
-  makeObjectivesFromScores
+  makeObjectivesFromScores,
 } from "../aiUtils";
 
 const declareWar: ObjectiveTemplate =
@@ -47,7 +47,7 @@ const declareWar: ObjectiveTemplate =
         scores.push(
         {
           player: targetPlayer,
-          score: score
+          score: score,
         });
       }
     })
@@ -60,7 +60,7 @@ const declareWar: ObjectiveTemplate =
     console.log("declare war " + diplomacyAI.mapEvaluator.player.id + "->" + objective.targetPlayer.id);
     diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);
     afterDoneCallback();
-  }
+  },
 }
 
 export default declareWar;

@@ -14,8 +14,8 @@ export const defaultMapMode: MapRendererMapModeTemplate =
     MapLayers.starLinks,
     MapLayers.nonFillerStars,
     MapLayers.fogOfWar,
-    MapLayers.fleets
-  ]
+    MapLayers.fleets,
+  ],
 }
 export const noStatic: MapRendererMapModeTemplate =
 {
@@ -27,8 +27,8 @@ export const noStatic: MapRendererMapModeTemplate =
     MapLayers.ownerBorders,
     MapLayers.nonFillerStars,
     MapLayers.fogOfWar,
-    MapLayers.fleets
-  ]
+    MapLayers.fleets,
+  ],
 }
 export const income: MapRendererMapModeTemplate =
 {
@@ -40,8 +40,8 @@ export const income: MapRendererMapModeTemplate =
     MapLayers.nonFillerVoronoiLines,
     MapLayers.starLinks,
     MapLayers.nonFillerStars,
-    MapLayers.fleets
-  ]
+    MapLayers.fleets,
+  ],
 }
 export const influence: MapRendererMapModeTemplate =
 {
@@ -53,8 +53,8 @@ export const influence: MapRendererMapModeTemplate =
     MapLayers.nonFillerVoronoiLines,
     MapLayers.starLinks,
     MapLayers.nonFillerStars,
-    MapLayers.fleets
-  ]
+    MapLayers.fleets,
+  ],
 }
 export const resources: MapRendererMapModeTemplate =
 {
@@ -67,6 +67,6 @@ export const resources: MapRendererMapModeTemplate =
     MapLayers.nonFillerStars,
     MapLayers.fogOfWar,
     MapLayers.fleets,
-    MapLayers.resources
-  ]
+    MapLayers.resources,
+  ],
 }

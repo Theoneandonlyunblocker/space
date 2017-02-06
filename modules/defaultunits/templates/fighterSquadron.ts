@@ -7,7 +7,7 @@ import
 {
   closeAttack,
   rangedAttack,
-  standBy
+  standBy,
 } from "../../common/abilitytemplates/abilities";
 import {distributionGroups} from "../../common/distributionGroups";
 import itemSlot from "../../common/itemSlot";
@@ -22,7 +22,7 @@ const fighterSquadron: UnitTemplate =
   {
     imageSrc: "fighter.png",
     anchor: {x: 0.5, y: 0.5},
-    attackOriginPoint: {x: 0.75, y: 0.5}
+    attackOriginPoint: {x: 0.75, y: 0.5},
   },
   isSquadron: true,
   buildCost: 100,
@@ -36,7 +36,7 @@ const fighterSquadron: UnitTemplate =
     attack: 0.8,
     defence: 0.6,
     intelligence: 0.4,
-    speed: 1
+    speed: 1,
   },
   possibleAbilities:
   [
@@ -46,9 +46,9 @@ const fighterSquadron: UnitTemplate =
       [
         rangedAttack,
         closeAttack,
-        standBy
-      ]
-    }
+        standBy,
+      ],
+    },
   ],
   itemSlots:
   {
@@ -65,7 +65,7 @@ const fighterSquadron: UnitTemplate =
       distributionGroups.common,
       distributionGroups.rare,
     ],
-  }
+  },
 }
 
 export default fighterSquadron;

@@ -76,7 +76,7 @@ class TemplateIndexes
     });
   }
   private static getDistributablesByGroup<T extends Distributable>(
-    allDistributables: DistributablesByKey<T>
+    allDistributables: DistributablesByKey<T>,
   ): DistributablesByDistributionGroup<T>
   {
     const byGroup: DistributablesByDistributionGroup<T> = {};

@@ -11,7 +11,7 @@ import
   extendObject,
   getRelativeValue,
   randInt,
-  roundToNearestMultiple
+  roundToNearestMultiple,
 } from "../../utility";
 import OptionsGroup from "../galaxymap/OptionsGroup";
 import MapGenOption from "./MapGenOption";
@@ -174,18 +174,18 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
       defaultOptions:
       {
         title: "Default Options",
-        isCollapsedInitially: false
+        isCollapsedInitially: false,
       },
       basicOptions:
       {
         title: "Basic Options",
-        isCollapsedInitially: false
+        isCollapsedInitially: false,
       },
       advancedOptions:
       {
         title: "Advanced Options",
-        isCollapsedInitially: true
-      }
+        isCollapsedInitially: true,
+      },
     };
 
     for (let groupName in optionGroupsInfo)
@@ -208,8 +208,8 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
             id: optionName,
             option: option,
             value: this.getOptionValue(optionName),
-            onChange: this.handleOptionChange
-          })
+            onChange: this.handleOptionChange,
+          }),
         });
       }
 
@@ -218,40 +218,40 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
         key: groupName,
         header: optionGroupsInfo[groupName].title,
         options: options,
-        isCollapsedInitially: optionGroupsInfo[groupName].isCollapsedInitially
+        isCollapsedInitially: optionGroupsInfo[groupName].isCollapsedInitially,
       }));
     }
 
     return(
       React.DOM.div(
       {
-        className: "map-gen-options"
+        className: "map-gen-options",
       },
         React.DOM.div(
         {
-          className: "map-gen-options-option-groups"
+          className: "map-gen-options-option-groups",
         },
-          optionGroups
+          optionGroups,
         ),
         React.DOM.div(
         {
-          className: "map-gen-options-buttons"
+          className: "map-gen-options-buttons",
         },
           React.DOM.button(
           {
             className: "map-gen-options-button",
-            onClick: this.randomizeOptions
+            onClick: this.randomizeOptions,
           },
-            "Randomize"
+            "Randomize",
           ),
           React.DOM.button(
           {
             className: "map-gen-options-button",
-            onClick: this.resetValuesToDefault
+            onClick: this.resetValuesToDefault,
           },
-            "Reset"
-          )
-        )
+            "Reset",
+          ),
+        ),
       )
     );
   }

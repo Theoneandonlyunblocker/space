@@ -1,7 +1,7 @@
 import FlatAndMultiplierAdjustment from "./FlatAndMultiplierAdjustment";
 import
 {
-  clamp
+  clamp,
 } from "./utility";
 
 export enum UnitAttribute
@@ -63,7 +63,7 @@ export default class UnitAttributes implements UnitAttributesObject
       attack: 0,
       defence: 0,
       intelligence: 0,
-      speed: 0
+      speed: 0,
     });
   }
   public static squashAdjustments(...toSquash: UnitAttributeAdjustments[]): UnitAttributeAdjustments
@@ -149,7 +149,7 @@ export default class UnitAttributes implements UnitAttributesObject
       attack: this.attack - toCompare.attack,
       defence: this.defence - toCompare.defence,
       intelligence: this.intelligence - toCompare.intelligence,
-      speed: this.speed - toCompare.speed
+      speed: this.speed - toCompare.speed,
     });
   }
   public getAttributesTypesSortedForDisplay(): string[]
@@ -168,7 +168,7 @@ export default class UnitAttributes implements UnitAttributesObject
       attack: 1,
       defence: 2,
       intelligence: 3,
-      speed: 4
+      speed: 4,
     }
 
     const sorted = attributeTypes.sort((a, b) =>

@@ -88,7 +88,7 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
     var divProps: React.HTMLAttributes =
     {
       className: "unit-item",
-      title: item.template.displayName
+      title: item.template.displayName,
     };
 
     if (this.props.isDraggable)
@@ -109,19 +109,19 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
       React.DOM.div(divProps,
         React.DOM.div(
         {
-          className: "item-icon-container"
+          className: "item-icon-container",
         },
           React.DOM.img(
           {
             className: "item-icon-base",
-            src: item.template.icon
+            src: item.template.icon,
           }),
           item.template.techLevel > 1 ? React.DOM.img(
           {
             className: "item-icon-tech-level",
-            src: this.getTechIcon(item.template.techLevel)
-          }) : null
-        )
+            src: this.getTechIcon(item.template.techLevel),
+          }) : null,
+        ),
       )
     );
   }

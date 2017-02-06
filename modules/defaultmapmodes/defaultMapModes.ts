@@ -18,7 +18,7 @@ const defaultMapModes: ModuleFile =
     name: "Default map modes",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
   loadAssets: function(onLoaded: () => void)
@@ -37,7 +37,7 @@ const defaultMapModes: ModuleFile =
     moduleData.copyTemplates<MapRendererMapModeTemplate>(MapModeTemplates, "MapRendererMapModes");
 
     return moduleData;
-  }
+  },
 }
 
 export default defaultMapModes;

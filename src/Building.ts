@@ -92,7 +92,7 @@ export default class Building
         template: this.template,
         level: this.upgradeLevel + 1,
         cost: this.template.buildCost * (this.upgradeLevel + 1),
-        parentBuilding: this
+        parentBuilding: this,
       });
     }
     else if (this.template.upgradeInto && this.template.upgradeInto.length > 0)
@@ -105,7 +105,7 @@ export default class Building
           level: upgradeData.level,
           template: template,
           cost: template.buildCost,
-          parentBuilding: self
+          parentBuilding: self,
         });
       });
 
@@ -138,7 +138,7 @@ export default class Building
       controllerId: this.controller.id,
 
       upgradeLevel: this.upgradeLevel,
-      totalCost: this.totalCost
+      totalCost: this.totalCost,
     };
 
     return data;

@@ -1,7 +1,7 @@
 import MapGenDataByStarID from "./MapGenDataByStarID";
 import
 {
-  addDefenceBuildings
+  addDefenceBuildings,
 } from "./mapGenUtils";
 
 import app from "../../../src/App"; // TODO global
@@ -76,7 +76,7 @@ export default function setupIndependents(props:
 
 function getStarsByDistanceToPlayer(
   stars: Star[],
-  mapGenDataByStarID: MapGenDataByStarID
+  mapGenDataByStarID: MapGenDataByStarID,
 ): {[distance: number]: Star[]}
 {
   const starsByDistance:
@@ -99,7 +99,7 @@ function getStarsByDistanceToPlayer(
   return starsByDistance;
 }
 function getMaxDistanceFromStarsByDistance(
-  starsByDistance: {[distance: number]: Star[]}
+  starsByDistance: {[distance: number]: Star[]},
 ): number
 {
   const numericDistances = Object.keys(starsByDistance).map(distanceString =>
@@ -113,7 +113,7 @@ function getMaxDistanceFromStarsByDistance(
 }
 function getMostSuitableCommanderStarFromStars(
   stars: Star[],
-  mapGenDataByStarID: MapGenDataByStarID
+  mapGenDataByStarID: MapGenDataByStarID,
 ): Star
 {
   return stars.sort((a, b) =>

@@ -42,7 +42,7 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
           {
             style: !this.props.backgroundColor ? null :
             {
-              backgroundColor: "#" + this.props.backgroundColor.getHexString()
+              backgroundColor: "#" + this.props.backgroundColor.getHexString(),
             },
             title: "" + this.props.emblem.template.key + "\n\nLeft click to edit\nRight click to remove",
             onClick: this.props.toggleActive,
@@ -52,8 +52,8 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
               e.preventDefault();
               this.props.remove();
             },
-          }
-        })
+          },
+        }),
       )
     );
   }

@@ -31,14 +31,14 @@ export class NotificationsComponent extends React.Component<PropTypes, StateType
     return(
       React.DOM.div(
       {
-        className: "notifications-container"
+        className: "notifications-container",
       },
         NotificationLogComponentFactory(
         {
           log: this.props.log,
           currentTurn: this.props.currentTurn,
-          key: "log"
-        })
+          key: "log",
+        }),
       )
     );
   }

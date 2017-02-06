@@ -42,7 +42,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
   {
     return(
     {
-      shouldShow: TutorialStatus.introTutorial === TutorialState.show
+      shouldShow: TutorialStatus.introTutorial === TutorialState.show,
     });
   }
 
@@ -62,8 +62,8 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
         content: Tutorial(
         {
           pages: IntroTutorial.pages,
-          tutorialId: "introTutorial"
-        })
+          tutorialId: "introTutorial",
+        }),
       }),
       popupProps:
       {
@@ -71,15 +71,15 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
         initialPosition:
         {
           width: 600,
-          height: 350
+          height: 350,
         },
         minWidth: 300,
         minHeight: 250,
         dragPositionerProps:
         {
-          containerDragOnly: true
-        }
-      }
+          containerDragOnly: true,
+        },
+      },
     });
   }
 
@@ -111,7 +111,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
         {
           this.popupManager = component;
         },
-        onlyAllowOne: true
+        onlyAllowOne: true,
       })
     );
   }

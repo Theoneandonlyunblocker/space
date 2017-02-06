@@ -40,7 +40,7 @@ export default class Renderer
     this.backgroundDrawer = new BackgroundDrawer(
     {
       seed: backgroundSeed,
-      drawBackgroundFN: backgroundDrawingFunction
+      drawBackgroundFN: backgroundDrawingFunction,
     });
   }
   init()
@@ -111,8 +111,8 @@ export default class Renderer
         parseInt(containerStyle.height),
         {
           autoResize: false,
-          antialias: true
-        }
+          antialias: true,
+        },
       );
 
       this.backgroundDrawer.setExternalRenderer(this.renderer);

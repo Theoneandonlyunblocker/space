@@ -46,41 +46,41 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
     {
       battleEndStatus = React.DOM.div(
       {
-        className: "unit-battle-end-status-container"
+        className: "unit-battle-end-status-container",
       },
         React.DOM.div(
         {
-          className: "unit-battle-end-status unit-battle-end-status-dead"
+          className: "unit-battle-end-status unit-battle-end-status-dead",
         },
-          "Destroyed"
-        )
+          "Destroyed",
+        ),
       )
     }
     else if (this.props.wasCaptured)
     {
       battleEndStatus = React.DOM.div(
       {
-        className: "unit-battle-end-status-container"
+        className: "unit-battle-end-status-container",
       },
         React.DOM.div(
         {
-          className: "unit-battle-end-status unit-battle-end-status-captured"
+          className: "unit-battle-end-status unit-battle-end-status-captured",
         },
-          "Captured"
-        )
+          "Captured",
+        ),
       )
     }
 
     return(
       React.DOM.div({className: "unit-info"},
         React.DOM.div({className: "unit-info-name"},
-          this.props.name
+          this.props.name,
         ),
         React.DOM.div({className: "unit-info-inner"},
           UnitStatus(
           {
             guardAmount: this.props.guardAmount,
-            isPreparing: this.props.isPreparing
+            isPreparing: this.props.isPreparing,
           }),
           UnitStrength(
           {
@@ -88,16 +88,16 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
             currentHealth: this.props.currentHealth,
             isSquadron: this.props.isSquadron,
             animateStrength: true,
-            animateDuration: this.props.animateDuration
+            animateDuration: this.props.animateDuration,
           }),
           UnitActions(
           {
             maxActionPoints: this.props.maxActionPoints,
             currentActionPoints: this.props.currentActionPoints,
-            hoveredActionPointExpenditure: this.props.hoveredActionPointExpenditure
+            hoveredActionPointExpenditure: this.props.hoveredActionPointExpenditure,
           }),
-          battleEndStatus
-        )
+          battleEndStatus,
+        ),
 
       )
     );

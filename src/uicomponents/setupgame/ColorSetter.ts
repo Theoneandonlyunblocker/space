@@ -43,7 +43,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      isActive: false
+      isActive: false,
     });
   }
 
@@ -109,16 +109,16 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
       {
         className: "color-setter-display",
         src: "img/icons/nullcolor.png",
-        onClick: this.toggleActive
+        onClick: this.toggleActive,
       }) :
       React.DOM.div(
       {
         className: "color-setter-display",
         style:
         {
-          backgroundColor: "#" + this.props.color.getHexString()
+          backgroundColor: "#" + this.props.color.getHexString(),
         },
-        onClick: this.toggleActive
+        onClick: this.toggleActive,
       });
 
     return(
@@ -141,9 +141,9 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
               positionOnUpdate: true,
               ySide: "outerBottom",
               xSide: "innerLeft",
-              positionOnResize: true
-            }
-          }) : null
+              positionOnResize: true,
+            },
+          }) : null,
       )
     );
   }

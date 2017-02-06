@@ -78,7 +78,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
       attackTargets: pc.currentAttackTargets,
       isPlayerTurn: !this.props.game.playerOrder[0].isAI,
       expandedActionElement: null,
-      hasMapModeSettingsExpanded: false
+      hasMapModeSettingsExpanded: false,
     });
   }
 
@@ -122,7 +122,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      isPlayerTurn: !this.props.game.activePlayer.isAI
+      isPlayerTurn: !this.props.game.activePlayer.isAI,
     });
   }
 
@@ -130,7 +130,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      expandedActionElement: element
+      expandedActionElement: element,
     });
   }
 
@@ -156,7 +156,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
       inspectedFleets: pc.inspectedFleets,
       currentlyReorganizing: pc.currentlyReorganizing,
       selectedStar: star,
-      attackTargets: pc.currentAttackTargets
+      attackTargets: pc.currentAttackTargets,
     });
   }
 
@@ -172,7 +172,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     {
       className: "end-turn-button",
       onClick: this.endTurn,
-      tabIndex: -1
+      tabIndex: -1,
     }
     if (!this.state.isPlayerTurn)
     {
@@ -197,26 +197,26 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
         ref: (component: HTMLElement) =>
         {
           this.ref_TODO_expandedActionElementContainer = component;
-        }
+        },
       },
-        this.state.expandedActionElement
+        this.state.expandedActionElement,
       );
     }
 
     return(
       React.DOM.div(
       {
-        className: "galaxy-map-ui"
+        className: "galaxy-map-ui",
       },
         IntroTutorial(),
         React.DOM.div(
         {
-          className: "galaxy-map-ui-top"
+          className: "galaxy-map-ui-top",
         },
           TopBar(
           {
             player: this.props.player,
-            game: this.props.game
+            game: this.props.game,
           }),
           TopMenu(
           {
@@ -227,7 +227,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
           }),
           React.DOM.div(
           {
-            className: selectionContainerClassName
+            className: selectionContainerClassName,
           },
             FleetSelection(
             {
@@ -237,20 +237,20 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
               selectedStar: this.state.selectedStar,
               currentlyReorganizing: this.state.currentlyReorganizing,
               closeReorganization: this.closeReorganization,
-              player: this.props.player
-            })
-          )
+              player: this.props.player,
+            }),
+          ),
         ),
 
         React.DOM.div(
         {
           className: "galaxy-map-ui-bottom-left",
-          key: "bottomLeft"
+          key: "bottomLeft",
         },
           React.DOM.div(
           {
             className: "galaxy-map-ui-bottom-left-column align-bottom",
-            key: "bottomLeftColumn"
+            key: "bottomLeftColumn",
           },
             React.DOM.div(
             {
@@ -259,7 +259,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
               {
                 this.ref_TODO_leftColumnContent = component;
               },
-              key: "leftColumnContent"
+              key: "leftColumnContent",
             },
               PossibleActions(
               {
@@ -267,43 +267,43 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
                 selectedStar: this.state.selectedStar,
                 player: this.props.player,
                 setExpandedActionElementOnParent: this.setExpandedActionElement,
-                key: "possibleActions"
+                key: "possibleActions",
               }),
               StarInfo(
               {
                 selectedStar: this.state.selectedStar,
-                key: "starInfo"
-              })
-            )
+                key: "starInfo",
+              }),
+            ),
           ),
-          expandedActionElement
+          expandedActionElement,
         ),
         React.DOM.div(
         {
           className: "galaxy-map-ui-bottom-right",
-          key: "bottomRight"
+          key: "bottomRight",
         },
           !this.state.hasMapModeSettingsExpanded ? null : MapModeSettings(
           {
             mapRenderer: this.props.mapRenderer,
-            key: "mapRendererLayersList"
+            key: "mapRendererLayersList",
           }),
           React.DOM.button(
           {
             className: "toggle-map-mode-settings-button",
             tabIndex: -1,
-            onClick: this.toggleMapModeSettingsExpanded
+            onClick: this.toggleMapModeSettingsExpanded,
           },
-            "Map mode"
+            "Map mode",
           ),
           Notifications(
           {
             log: this.props.game.notificationLog,
             currentTurn: this.props.game.turnNumber,
-            key: "notifications"
+            key: "notifications",
           }),
-          React.DOM.button(endTurnButtonProps, "End turn")
-        )
+          React.DOM.button(endTurnButtonProps, "End turn"),
+        ),
       )
     );
   }

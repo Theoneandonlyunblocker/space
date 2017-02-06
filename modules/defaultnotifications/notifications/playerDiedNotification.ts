@@ -34,16 +34,16 @@ const playerDiedNotification: NotificationTemplate =
   {
     return(
     {
-      deadPlayerName: props.deadPlayerName
+      deadPlayerName: props.deadPlayerName,
     });
   },
   deserializeProps: function(props: SerializedPropTypes, gameLoader: GameLoader): PropTypes
   {
     return(
     {
-      deadPlayerName: props.deadPlayerName
+      deadPlayerName: props.deadPlayerName,
     });
-  }
+  },
 }
 
 export default playerDiedNotification;

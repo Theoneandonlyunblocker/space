@@ -39,12 +39,12 @@ export default class PathfindingArrow
   {
     reachable: <PathFindingArrowCurveStyle>
     {
-      color: Color.fromHex(0xFFFFF0)
+      color: Color.fromHex(0xFFFFF0),
     },
     unreachable: <PathFindingArrowCurveStyle>
     {
-      color: Color.fromHex(0xFF0000)
-    }
+      color: Color.fromHex(0xFF0000),
+    },
   };
 
   constructor(parentContainer: PIXI.Container)
@@ -191,7 +191,7 @@ export default class PathfindingArrow
       {
         textStyle =
         {
-          fill: 0xFFFFF0
+          fill: 0xFFFFF0,
         }
         break;
       }
@@ -199,7 +199,7 @@ export default class PathfindingArrow
       {
         textStyle =
         {
-          fill: 0xFF0000
+          fill: 0xFF0000,
         }
         break;
       }
@@ -242,7 +242,7 @@ export default class PathfindingArrow
       paths.push(
       {
         fleet: fleet,
-        path: path
+        path: path,
       });
     }
 
@@ -323,7 +323,7 @@ export default class PathfindingArrow
       curves.push(
       {
         style: style,
-        curveData: curveData
+        curveData: curveData,
       });
     }
 
@@ -367,7 +367,7 @@ export default class PathfindingArrow
         p3.x * -i6 + p2.x + p1.x * i6,
         p3.y * -i6 + p2.y + p1.y * i6,
         p2.x,
-        p2.y
+        p2.y,
       ]);
     }
 
@@ -484,7 +484,7 @@ export default class PathfindingArrow
     return(
     {
       x: target.x + x,
-      y: target.y - y
+      y: target.y - y,
     });
   }
 }

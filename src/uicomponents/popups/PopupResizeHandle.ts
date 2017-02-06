@@ -57,7 +57,7 @@ export class PopupResizeHandleComponent extends React.Component<PropTypes, State
         className: "popup-resize-handle",
         src: "img/icons/resizeHandle.png",
         onTouchStart: this.dragPositioner.handleReactDownEvent,
-        onMouseDown: this.dragPositioner.handleReactDownEvent
+        onMouseDown: this.dragPositioner.handleReactDownEvent,
       })
     );
   }

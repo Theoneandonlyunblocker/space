@@ -14,18 +14,18 @@ const defaultAI: ModuleFile =
     name: "Default AI",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<AITemplateConstructor<any>>(
     {
-      [DefaultAIConstructor.type]: DefaultAIConstructor
+      [DefaultAIConstructor.type]: DefaultAIConstructor,
     }, "AITemplateConstructors");
 
     return moduleData;
-  }
+  },
 }
 
 export default defaultAI;

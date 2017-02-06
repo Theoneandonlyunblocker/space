@@ -29,8 +29,8 @@ export function backTrace(graph: {[starID: number]: PathNode}, target: Star): Pa
   [
     {
       star: target,
-      cost: parent.cost
-    }
+      cost: parent.cost,
+    },
   ];
 
   while (parent)
@@ -38,7 +38,7 @@ export function backTrace(graph: {[starID: number]: PathNode}, target: Star): Pa
     path.push(
       {
         star: parent.star,
-        cost: parent.cost
+        cost: parent.cost,
       });
     parent = graph[parent.star.id];
   }
@@ -59,7 +59,7 @@ export function aStar(start: Star, target: Star): AStarGraph | null
     {
       star: Star,
       cost: number,
-    }
+    },
   } = {};
   const costSoFar:
   {
@@ -97,7 +97,7 @@ export function aStar(start: Star, target: Star): AStarGraph | null
         cameFrom[neigh.id] =
         {
           star: current,
-          cost: moveCost
+          cost: moveCost,
         };
       }
     }

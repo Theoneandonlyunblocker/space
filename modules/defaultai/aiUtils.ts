@@ -6,7 +6,7 @@ import evaluateUnitStrength from "../../src/evaluateUnitStrength";
 import
 {
   clamp,
-  getRelativeValue
+  getRelativeValue,
 } from "../../src/utility";
 import {Front} from "./mapai/Front";
 import GrandStrategyAI from "./mapai/GrandStrategyAI";
@@ -220,6 +220,6 @@ export function getUnitsToBeatImmediateTarget(mapEvaluator: MapEvaluator,
   return(
   {
     min: min,
-    ideal: ideal
+    ideal: ideal,
   });
 }

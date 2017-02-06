@@ -7,7 +7,7 @@ import TutorialStatus from "../../tutorials/TutorialStatus";
 import {clamp} from "../../utility";
 import
 {
-  splitMultilineText
+  splitMultilineText,
 } from "../../utility";
 import DontShowAgain from "./DontShowAgain";
 
@@ -50,7 +50,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      currentPageIndex: 0
+      currentPageIndex: 0,
     });
   }
 
@@ -101,7 +101,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      currentPageIndex: newPage
+      currentPageIndex: newPage,
     }, this.handleEnterPage.bind(this, this.props.pages[newPage]));
   }
 
@@ -122,14 +122,14 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
       backElement = React.DOM.div(
       {
         className: "tutorial-flip-page tutorial-flip-page-back",
-        onClick: this.flipPage.bind(this, -1)
+        onClick: this.flipPage.bind(this, -1),
       }, "<")
     }
     else
     {
       backElement = React.DOM.div(
       {
-        className: "tutorial-flip-page disabled"
+        className: "tutorial-flip-page disabled",
       })
     }
 
@@ -140,39 +140,39 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
       forwardElement = React.DOM.div(
       {
         className: "tutorial-flip-page tutorial-flip-page-forward",
-        onClick: this.flipPage.bind(this, 1)
+        onClick: this.flipPage.bind(this, 1),
       }, ">")
     }
     else
     {
       forwardElement = React.DOM.div(
       {
-        className: "tutorial-flip-page disabled"
+        className: "tutorial-flip-page disabled",
       })
     }
 
     return(
       React.DOM.div(
       {
-        className: "tutorial"
+        className: "tutorial",
       },
         React.DOM.div(
         {
-          className: "tutorial-inner"
+          className: "tutorial-inner",
         },
           backElement,
 
           React.DOM.div(
           {
-            className: "tutorial-content"
+            className: "tutorial-content",
           }, splitMultilineText(this.props.pages[this.state.currentPageIndex].content)),
 
-          forwardElement
+          forwardElement,
         ),
         DontShowAgain(
         {
-          tutorialId: this.props.tutorialId
-        })
+          tutorialId: this.props.tutorialId,
+        }),
       )
     );
   }

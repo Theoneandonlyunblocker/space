@@ -4,7 +4,7 @@ import RampingValue from "../../../../modules/common/battlesfxfunctions/sfxfragm
 import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 import
 {
-  SFXFragmentPropType
+  SFXFragmentPropType,
 } from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragmentPropTypes";
 
 import Color from "../../../Color";
@@ -41,7 +41,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
 
     this.state =
     {
-      isCollapsed: false
+      isCollapsed: false,
     }
 
     this.toggleCollapsed = this.toggleCollapsed.bind(this);
@@ -51,7 +51,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
   {
     this.setState(
     {
-      isCollapsed: !this.state.isCollapsed
+      isCollapsed: !this.state.isCollapsed,
     });
   }
 
@@ -71,7 +71,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
           value: propValue,
           propName: this.props.propName,
           fragment: this.props.fragment,
-          onValueChange: this.props.onPropValueChange
+          onValueChange: this.props.onPropValueChange,
         });
         break;
       }
@@ -86,7 +86,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
 
           propName: this.props.propName,
           fragment: this.props.fragment,
-          onValueChange: this.props.onPropValueChange
+          onValueChange: this.props.onPropValueChange,
         });
         break;
       }
@@ -100,7 +100,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
 
           propName: this.props.propName,
           fragment: this.props.fragment,
-          onValueChange: this.props.onPropValueChange
+          onValueChange: this.props.onPropValueChange,
         });
         break;
       }
@@ -115,7 +115,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
 
           propName: this.props.propName,
           fragment: this.props.fragment,
-          onValueChange: this.props.onPropValueChange
+          onValueChange: this.props.onPropValueChange,
         });
         break;
       }
@@ -131,7 +131,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
 
           propName: this.props.propName,
           fragment: this.props.fragment,
-          onValueChange: this.props.onPropValueChange
+          onValueChange: this.props.onPropValueChange,
         });
         break;
       }
@@ -140,26 +140,26 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
     return(
       React.DOM.div(
       {
-        className: `sfx-fragment-prop sfx-fragment-prop-${this.props.propType}`
+        className: `sfx-fragment-prop sfx-fragment-prop-${this.props.propType}`,
       },
         React.DOM.div(
         {
           className: "sfx-fragment-prop-name-container" + (this.state.isCollapsed ? " collapsed" : " collapsible"),
-          onClick: this.toggleCollapsed
+          onClick: this.toggleCollapsed,
         },
           React.DOM.div(
           {
-            className: "sfx-fragment-prop-name"
+            className: "sfx-fragment-prop-name",
           },
-            this.props.propName
-          )
+            this.props.propName,
+          ),
         ),
         this.state.isCollapsed ? null : React.DOM.div(
         {
-          className: "sfx-fragment-prop-value"
+          className: "sfx-fragment-prop-value",
         },
-          propValuesElement
-        )
+          propValuesElement,
+        ),
       )
     );
   }

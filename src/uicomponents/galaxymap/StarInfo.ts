@@ -35,37 +35,37 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "star-info"
+        className: "star-info",
       },
         React.DOM.div(
         {
-          className: "star-info-name"
+          className: "star-info-name",
         },
-          star.name
+          star.name,
         ),
         React.DOM.div(
         {
-          className: "star-info-owner"
+          className: "star-info-owner",
         },
-          star.owner ? star.owner.name.fullName : null
+          star.owner ? star.owner.name.fullName : null,
         ),
         React.DOM.div(
         {
-          className: "star-info-location"
+          className: "star-info-location",
         },
           "x: " + star.x.toFixed() +
-          " y: " + star.y.toFixed()
+          " y: " + star.y.toFixed(),
         ),
         React.DOM.div(
         {
-          className: "star-info-income"
+          className: "star-info-income",
         },
-          "Income: " + star.getIncome()
+          "Income: " + star.getIncome(),
         ),
         DefenceBuildingList(
         {
-          buildings: star.buildings["defence"]
-        })
+          buildings: star.buildings["defence"],
+        }),
 
       )
     );

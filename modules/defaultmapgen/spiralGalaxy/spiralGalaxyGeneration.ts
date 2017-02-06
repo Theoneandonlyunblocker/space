@@ -20,7 +20,7 @@ import
 {
   makeVoronoi,
   relaxVoronoi,
-  setVoronoiCells
+  setVoronoiCells,
 } from "../../../src/voronoi";
 
 import MapGenDataByStarID from "../common/MapGenDataByStarID";
@@ -94,7 +94,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
       starsWithMapGenPoints.push(
       {
         star: star,
-        mapGenpoint: point
+        mapGenpoint: point,
       });
     }
   });
@@ -190,12 +190,12 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     const distributionFlagsByKeyWord =
     {
       arm: "common",
-      center: "rare"
+      center: "rare",
     }
     const foundDistributionFlags =
     {
       common: false,
-      rare: false
+      rare: false,
     };
     const distributionFlags: string[] = [];
 
@@ -330,7 +330,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     sectors,
     distributionFlagsBySectorID,
     TemplateIndexes.distributablesByDistributionGroup.resources,
-    resourcePlacerFN
+    resourcePlacerFN,
   );
 
   // add unowned locations to independents
@@ -349,7 +349,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
       region: sector,
       intensity: 1,
       variance: 0,
-      mapGenDataByStarID: mapGenDataByStarID
+      mapGenDataByStarID: mapGenDataByStarID,
     });
   });
 
@@ -369,7 +369,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     width: options.defaultOptions.width,
     height: options.defaultOptions.height,
     seed: seed,
-    independents: independents
+    independents: independents,
   });
 }
 

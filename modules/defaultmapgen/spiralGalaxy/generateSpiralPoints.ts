@@ -4,7 +4,7 @@ import SpiralGalaxyOptionValues from "./SpiralGalaxyOptionValues";
 
 import
 {
-  randRange
+  randRange,
 } from "../../../src/utility";
 
 
@@ -16,7 +16,7 @@ export default function generateSpiralPoints(options: SpiralGalaxyOptionValues):
     distanceMin: number,
     distanceMax: number,
     arm: number,
-    maxOffset: number
+    maxOffset: number,
   ): MapGenPoint
   {
     const distance = randRange(distanceMin, distanceMax);
@@ -132,6 +132,6 @@ function convertMapGenOptionValues(options: SpiralGalaxyOptionValues)
     armDistance: Math.PI * 2 / totalArms, // distance between arms
     armOffsetMax: 0.5, // how far stars are allowed to move from arm center
     armRotationFactor: actualArms / 3, // how twisty the arms are. bigger number = twistier
-    galaxyRotation: randRange(0, Math.PI * 2) // rotation of entire galaxy
+    galaxyRotation: randRange(0, Math.PI * 2), // rotation of entire galaxy
   });
 }

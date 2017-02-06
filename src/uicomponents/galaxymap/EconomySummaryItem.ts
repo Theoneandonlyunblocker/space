@@ -83,7 +83,7 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
     var rowProps =
     {
       className: "economy-summary-item",
-      onClick : this.props.handleClick
+      onClick : this.props.handleClick,
     };
 
     // if (this.props.isSelected)
@@ -93,7 +93,7 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
 
     return(
       React.DOM.tr(rowProps,
-        cells
+        cells,
       )
     );
   }

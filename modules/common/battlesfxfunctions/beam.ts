@@ -35,7 +35,7 @@ export default function beam(props: SFXParams)
   var relativeBeamOrigin =
   {
     x: beamOrigin.x / props.width,
-    y: beamOrigin.y / props.height
+    y: beamOrigin.y / props.height,
   }
 
   const renderTexture = PIXI.RenderTexture.create(props.width, props.height);
@@ -51,7 +51,7 @@ export default function beam(props: SFXParams)
     0.368627450980392,
     0.792156862745098,
     0.694117647058823,
-    1.0
+    1.0,
   ];
 
   //----------INIT PARTICLES
@@ -65,22 +65,22 @@ export default function beam(props: SFXParams)
     r: 1.0,
     g: 1.0,
     b: 1.0,
-    a: 1.0
+    a: 1.0,
   };
   var particleShaderColorArray =
   [
     particleShaderColor.r,
     particleShaderColor.g,
     particleShaderColor.b,
-    particleShaderColor.a
+    particleShaderColor.a,
   ];
   var particleShaderColorTween = new TWEEN.Tween(particleShaderColor).to(
     {
       r: finalColor[0],
       g: finalColor[1],
       b: finalColor[2],
-      a: 1.0
-    }, props.duration / 2
+      a: 1.0,
+    }, props.duration / 2,
   );
 
   var particlesAmountScale = props.width / 700;
@@ -94,7 +94,7 @@ export default function beam(props: SFXParams)
     size:
     {
       x: props.width,
-      y: props.height
+      y: props.height,
     },
 
     timeScale: 100,
@@ -132,7 +132,7 @@ export default function beam(props: SFXParams)
   var smallParticleGraphicsSize =
   {
     x: 4,
-    y: 4
+    y: 4,
   };
   var smallParticleGraphics = new PIXI.Graphics();
   smallParticleGraphics.beginFill(0x5ECAB1, 1.0);
@@ -140,7 +140,7 @@ export default function beam(props: SFXParams)
     smallParticleGraphicsSize.x / 2,
     smallParticleGraphicsSize.y / 2,
     smallParticleGraphicsSize.x,
-    smallParticleGraphicsSize.y
+    smallParticleGraphicsSize.y,
     );
   smallParticleGraphics.endFill();
 
@@ -159,11 +159,11 @@ export default function beam(props: SFXParams)
     0,
     -30,
     props.width + 100 - smallEmitter.p.x,
-    30
+    30,
   )));
   smallEmitter.addInitialize(new Proton.Life(new Proton.Span(
     props.duration * (1.0 - relativeImpactTime) / 6000,
-    props.duration * (1.0 - relativeImpactTime) / 3000
+    props.duration * (1.0 - relativeImpactTime) / 3000,
   )));
 
   smallEmitter.addBehaviour(new Proton.Scale(new Proton.Span(0.8, 1), 0));
@@ -181,7 +181,7 @@ export default function beam(props: SFXParams)
     {
       spikeColor: particleShaderColorArray,
       spikeIntensity: Math.pow(lifeLeft, 1.5) * 0.4,
-      highlightIntensity: Math.pow(lifeLeft, 1.5)
+      highlightIntensity: Math.pow(lifeLeft, 1.5),
     });
   }
 
@@ -208,7 +208,7 @@ export default function beam(props: SFXParams)
     0,
     -5,
     props.width + 100 - shinyEmitter.p.x,
-    5
+    5,
   );
   shinyEmitter.addInitialize(new Proton.Position(emitterZone));
 
@@ -226,7 +226,7 @@ export default function beam(props: SFXParams)
     {
       spikeColor: particleShaderColorArray,
       spikeIntensity: 1 - time * 0.1,
-      highlightIntensity: Math.pow(lifeLeft, 2.0)
+      highlightIntensity: Math.pow(lifeLeft, 2.0),
     });
   }
 
@@ -239,7 +239,7 @@ export default function beam(props: SFXParams)
 
   shinyEmitter.rate = new Proton.Rate(
     150 * particlesAmountScale, // particles per emit
-    0 // time between emits in seconds
+    0, // time between emits in seconds
   );
   shinyEmitter.emit("once");
 
@@ -248,7 +248,7 @@ export default function beam(props: SFXParams)
   const shockWaveSize =
   {
     x: props.width * 3.0,
-    y: props.height * 3.0
+    y: props.height * 3.0,
   };
 
   const shockWaveFragment = new ShockWave(
@@ -273,7 +273,7 @@ export default function beam(props: SFXParams)
   shockWaveFragment.draw();
   shockWaveFragment.position.set(
     beamOrigin.x - shockWaveSize.x / 2,
-    beamOrigin.y - shockWaveSize.y / 2
+    beamOrigin.y - shockWaveSize.y / 2,
   );
 
   mainContainer.addChild(shockWaveFragment.displayObject);
@@ -282,7 +282,7 @@ export default function beam(props: SFXParams)
   var lightBurstSize =
   {
     x: props.height * 1.5,
-    y: props.height * 3
+    y: props.height * 3,
   }
 
   const lightBurstFragment = new LightBurst(
@@ -292,13 +292,13 @@ export default function beam(props: SFXParams)
     sharpness: 2.0,
     color: new Color(0.75, 0.75, 0.62),
     centerSize: 1.0,
-    rayStrength: 1.0
+    rayStrength: 1.0,
   });
 
   lightBurstFragment.draw();
   lightBurstFragment.position.set(
     beamOrigin.x - lightBurstSize.x / 2,
-    beamOrigin.y - lightBurstSize.y / 2
+    beamOrigin.y - lightBurstSize.y / 2,
   );
 
   mainContainer.addChild(lightBurstFragment.displayObject);

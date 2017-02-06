@@ -63,7 +63,7 @@ export default class Name
     return(
     {
       fullName: this.fullName,
-      isPlural: this.isPlural
+      isPlural: this.isPlural,
     });
   }
 }

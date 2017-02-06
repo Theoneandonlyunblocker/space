@@ -88,7 +88,7 @@ export default class Triangle<T extends Point>
     [
       [this.a, this.b],
       [this.b, this.c],
-      [this.c, this.a]
+      [this.c, this.a],
     ];
 
     return edges;

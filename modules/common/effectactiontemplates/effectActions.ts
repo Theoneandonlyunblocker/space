@@ -1,7 +1,7 @@
 import
 {
   getAdjustedDamage,
-  getAttackDamageIncrease
+  getAttackDamageIncrease,
 } from "./damageAdjustments";
 
 import Battle from "../../../src/Battle";
@@ -90,7 +90,7 @@ interface ExecutedEffectsResultAdjustment
 }
 export enum resultType
 {
-  healthChanged
+  healthChanged,
 }
 
 
@@ -99,7 +99,7 @@ export const inflictDamage: UnboundEffectAction<DamageWithType> = function(
   user: Unit,
   target: Unit,
   battle: Battle,
-  executedEffectsResult: ExecutedEffectsResult
+  executedEffectsResult: ExecutedEffectsResult,
 )
 {
   const adjustedDamage = getAdjustedDamage(user, target, data.baseDamage, data.damageType);
@@ -118,7 +118,7 @@ export const addGuard: UnboundEffectAction<Adjustment & GuardCoverageObj> = func
   user: Unit,
   target: Unit,
   battle: Battle,
-  executedEffectsResult: ExecutedEffectsResult
+  executedEffectsResult: ExecutedEffectsResult,
 )
 {
   const guardAmount = user.attributes.modifyValueByAttributes(data.flat, data.perAttribute);
@@ -130,7 +130,7 @@ export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = f
   user: Unit,
   target: Unit,
   battle: Battle,
-  executedEffectsResult: ExecutedEffectsResult
+  executedEffectsResult: ExecutedEffectsResult,
 )
 {
   const counterStrength = target.getCounterAttackStrength();
@@ -140,12 +140,12 @@ export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = f
     inflictDamage(
       {
         baseDamage: data.baseDamage * counterStrength,
-        damageType: DamageType.physical
+        damageType: DamageType.physical,
       },
       target,
       user,
       battle,
-      executedEffectsResult
+      executedEffectsResult,
     );
   }
 }
@@ -156,7 +156,7 @@ export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustm
   user: Unit,
   target: Unit,
   battle: Battle,
-  executedEffectsResult: ExecutedEffectsResult
+  executedEffectsResult: ExecutedEffectsResult,
 )
 {
   if (data.flat)
@@ -173,7 +173,7 @@ export const addStatusEffect: UnboundEffectAction<{template: StatusEffectTemplat
   user: Unit,
   target: Unit,
   battle: Battle,
-  executedEffectsResult: ExecutedEffectsResult
+  executedEffectsResult: ExecutedEffectsResult,
 )
 {
   target.addStatusEffect(new StatusEffect(
@@ -188,7 +188,7 @@ export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment &
   user: Unit,
   target: Unit,
   battle: Battle,
-  executedEffectsResult: ExecutedEffectsResult
+  executedEffectsResult: ExecutedEffectsResult,
 )
 {
   let healAmount = calculateHealthAdjustment(user, target, data);
@@ -214,7 +214,7 @@ export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResul
   user: Unit,
   target: Unit,
   battle: Battle,
-  executedEffectsResult: ExecutedEffectsResult
+  executedEffectsResult: ExecutedEffectsResult,
 )
 {
   let healAmount = calculateHealthAdjustment(user, target, data);

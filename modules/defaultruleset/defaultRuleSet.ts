@@ -10,7 +10,7 @@ const defaultRuleSet: ModuleFile =
     name: "Default Ruleset",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   constructModule: function(moduleData: ModuleData)
@@ -28,11 +28,11 @@ const defaultRuleSet: ModuleFile =
       {
         startingCapacity: 1,
         maxCapacity: 3,
-        buildCost: 1000
+        buildCost: 1000,
       },
       research:
       {
-        baseResearchSpeed: 3000
+        baseResearchSpeed: 3000,
       },
       battle:
       {
@@ -49,10 +49,10 @@ const defaultRuleSet: ModuleFile =
         humanUnitDeathChance: 0.65,
         aiUnitDeathChance: 0.65,
         independentUnitDeathChance: 1.0,
-        loserUnitExtraDeathChance: 0.35
-      }
+        loserUnitExtraDeathChance: 0.35,
+      },
     });
-  }
+  },
 }
 
 export default defaultRuleSet;

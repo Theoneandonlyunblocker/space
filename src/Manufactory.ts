@@ -72,7 +72,7 @@ export default class Manufactory
       return(
       {
         type: savedThing.type,
-        template: app.moduleData.Templates[templatesString][savedThing.templateType]
+        template: app.moduleData.Templates[templatesString][savedThing.templateType],
       });
     });
   }
@@ -243,7 +243,7 @@ export default class Manufactory
       return(
       {
         type: thingData.type,
-        templateType: thingData.template.type
+        templateType: thingData.template.type,
       });
     });
 
@@ -253,7 +253,7 @@ export default class Manufactory
       maxCapacity: this.maxCapacity,
       unitStatsModifier: this.unitStatsModifier,
       unitHealthModifier: this.unitHealthModifier,
-      buildQueue: buildQueue
+      buildQueue: buildQueue,
     });
   }
 }

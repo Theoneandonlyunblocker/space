@@ -55,7 +55,7 @@ export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes
           className: "attribute-change-icon" + " attribute-change-icon-" + attributeType,
           src: imageSrc,
           key: attributeType,
-          title: titleString
+          title: titleString,
         }))
       }
     }
@@ -63,9 +63,9 @@ export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes
     return(
       React.DOM.div(
       {
-        className: "unit-attribute-changes"
+        className: "unit-attribute-changes",
       },
-        attributeElements
+        attributeElements,
       )
     );
   }

@@ -40,7 +40,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      isCollapsed: this.props.isCollapsedInitially || false
+      isCollapsed: this.props.isCollapsedInitially || false,
     });
   }
 
@@ -48,7 +48,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      isCollapsed: !this.state.isCollapsed
+      isCollapsed: !this.state.isCollapsed,
     });
   }
 
@@ -65,9 +65,9 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
         rows.push(React.DOM.div(
         {
           className: "option-container",
-          key: option.key
+          key: option.key,
         },
-          option.content
+          option.content,
         ));
       }
     }
@@ -78,30 +78,30 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
       resetButton = React.DOM.button(
       {
         className: "reset-options-button",
-        onClick: this.props.resetFN
+        onClick: this.props.resetFN,
       }, "reset")
     }
 
     var header = this.props.header || resetButton ?
       React.DOM.div(
       {
-        className: "option-group-header"
+        className: "option-group-header",
       },
         React.DOM.div(
         {
           className: "option-group-header-title" + (this.state.isCollapsed ? " collapsed" : " collapsible"),
-          onClick: this.toggleCollapse
+          onClick: this.toggleCollapse,
         },
-          this.props.header
+          this.props.header,
         ),
-        resetButton
+        resetButton,
       ) :
       null
 
     return(
       React.DOM.div({className: "option-group"},
         header,
-        rows
+        rows,
       )
     );
   }

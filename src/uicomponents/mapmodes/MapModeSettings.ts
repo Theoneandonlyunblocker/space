@@ -47,19 +47,19 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
     return(
       React.DOM.div(
       {
-        className: "map-mode-settings"
+        className: "map-mode-settings",
       },
         MapModeSelector(
         {
           mapRenderer: this.props.mapRenderer,
-          onUpdate: this.forceUpdate.bind(this)
+          onUpdate: this.forceUpdate.bind(this),
         }),
         React.DOM.button(
         {
           className: "reset-map-mode-button",
-          onClick: this.handleReset
+          onClick: this.handleReset,
         },
-          "Reset"
+          "Reset",
         ),
         MapRendererLayersList(
         {
@@ -68,8 +68,8 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
           ref: (component: MapRendererLayersListComponent) =>
           {
             this.ref_TODO_layersList = component;
-          }
-        })
+          },
+        }),
       )
     );
   }

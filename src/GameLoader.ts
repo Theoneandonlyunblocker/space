@@ -118,7 +118,7 @@ export default class GameLoader
       var playerData = data.players[i];
       this.deserializeDiplomacyStatus(
         this.playersById[playerData.id],
-        playerData.diplomacyStatus
+        playerData.diplomacyStatus,
       );
     }
 
@@ -149,7 +149,7 @@ export default class GameLoader
         player.AIController = this.deserializeAIController(
           playerData.AIController,
           player,
-          game
+          game,
         )
       }
     });
@@ -212,7 +212,7 @@ export default class GameLoader
       width: data.width,
       height: data.height,
       seed: data.seed,
-      independents: null
+      independents: null,
     });
 
     var galaxyMap = mapGenResult.makeMap();
@@ -227,7 +227,7 @@ export default class GameLoader
       y: data.y,
       id: data.id,
       name: data.name,
-      race: app.moduleData.Templates.Races[data.raceType]
+      race: app.moduleData.Templates.Races[data.raceType],
     });
     star.baseIncome = data.baseIncome;
     star.seed = data.seed;
@@ -274,7 +274,7 @@ export default class GameLoader
 
       upgradeLevel: data.upgradeLevel,
       totalCost: data.totalCost,
-      id: data.id
+      id: data.id,
     });
 
     return building;
@@ -295,12 +295,12 @@ export default class GameLoader
       {
         main: Color.deSerialize(data.color),
         secondary: Color.deSerialize(data.secondaryColor),
-        alpha: data.colorAlpha
+        alpha: data.colorAlpha,
       },
 
       flag: this.deserializeFlag(data.flag),
 
-      resources: data.resources
+      resources: data.resources,
     });
 
     // units
@@ -377,7 +377,7 @@ export default class GameLoader
             template: template,
             startTurn: modifiers[i].startTurn,
             endTurn: modifiers[i].endTurn,
-            strength: modifiers[i].strength
+            strength: modifiers[i].strength,
           });
 
           player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
@@ -390,7 +390,7 @@ export default class GameLoader
     return new Emblem(
       emblemData.colors.map(colorData => Color.deSerialize(colorData)),
       app.moduleData.Templates.SubEmblems[emblemData.templateKey],
-      emblemData.alpha
+      emblemData.alpha,
     );
   }
   private deserializeFlag(data: FlagSaveData): Flag
@@ -442,7 +442,7 @@ export default class GameLoader
   private deserializeAIController<S>(
     data: AIControllerSaveData<S>,
     player: Player,
-    game: Game
+    game: Game,
   ): AIController
   {
     const templateConstructor = app.moduleData.Templates.AITemplateConstructors[data.templateType];
@@ -452,7 +452,7 @@ export default class GameLoader
       game: game,
       player: player,
       saveData: data.templateData,
-      personality: data.personality
+      personality: data.personality,
     });
 
     const controller = new AIController(template);

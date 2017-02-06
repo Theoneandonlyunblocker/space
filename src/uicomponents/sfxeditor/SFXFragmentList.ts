@@ -38,7 +38,7 @@ export class SFXFragmentListComponent<P extends Fragment> extends React.Componen
     return(
       React.DOM.ol(
       {
-        className: "sfx-fragment-list"
+        className: "sfx-fragment-list",
       },
         this.props.fragments.map(fragment =>
         {
@@ -49,9 +49,9 @@ export class SFXFragmentListComponent<P extends Fragment> extends React.Componen
             isDraggable: this.props.isDraggable,
             onDragStart: this.props.onDragStart,
             onDragEnd: this.props.onDragEnd,
-            onClick: this.props.onClick
+            onClick: this.props.onClick,
           });
-        })
+        }),
       )
     );
   }

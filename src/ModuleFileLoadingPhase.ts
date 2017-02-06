@@ -4,7 +4,7 @@ enum ModuleFileLoadingPhase
   mapGen,
   game,
   battlePrep,
-  battle
+  battle,
 }
 
 export default ModuleFileLoadingPhase;

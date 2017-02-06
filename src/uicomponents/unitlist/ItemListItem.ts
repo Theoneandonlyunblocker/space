@@ -145,7 +145,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
     {
       className: "item-list-item",
       onClick : this.props.handleClick,
-      key: this.props.keyTODO/*TODO react*/
+      key: this.props.keyTODO,/*TODO react*/
     };
 
     if (this.dragPositioner)
@@ -169,7 +169,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.tr(rowProps,
-        cells
+        cells,
       )
     );
   }

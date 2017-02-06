@@ -11,7 +11,7 @@ import tinierSpiralGalaxy from "./templates/tinierSpiralGalaxy";
 const Templates: TemplateCollection<MapGenTemplate> =
 {
   [spiralGalaxy.key]: spiralGalaxy,
-  [tinierSpiralGalaxy.key]: tinierSpiralGalaxy
+  [tinierSpiralGalaxy.key]: tinierSpiralGalaxy,
 }
 
 const defaultMapGen: ModuleFile =
@@ -22,7 +22,7 @@ const defaultMapGen: ModuleFile =
     name: "Default map gen",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
   constructModule: function(moduleData: ModuleData)
@@ -35,7 +35,7 @@ const defaultMapGen: ModuleFile =
     }
 
     return moduleData;
-  }
+  },
 }
 
 export default defaultMapGen;

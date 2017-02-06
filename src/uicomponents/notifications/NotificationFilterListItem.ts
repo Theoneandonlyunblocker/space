@@ -43,7 +43,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
   {
     return(
     {
-      filterState: this.props.filterState
+      filterState: this.props.filterState,
     });
   }
 
@@ -51,7 +51,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
   {
     this.setState(
     {
-      filterState: newProps.filterState
+      filterState: newProps.filterState,
     });
   }
 
@@ -62,7 +62,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
     filter.save();
     this.setState(
     {
-      filterState: filter.filters[this.props.keyTODO/*TODO react*/]
+      filterState: filter.filters[this.props.keyTODO/*TODO react*/],
     });
     eventManager.dispatchEvent("updateNotificationLog");
   }
@@ -86,28 +86,28 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
         key: state,
         checked: stateIsActive,
         onChange: this.handleChangeState.bind(this, numericState),
-        title: NotificationFilterState[numericState]
+        title: NotificationFilterState[numericState],
       }));
     }
 
     return(
       React.DOM.div(
       {
-        className: "notification-filter-list-item" + (this.props.isHighlighted ? " highlighted" : "")
+        className: "notification-filter-list-item" + (this.props.isHighlighted ? " highlighted" : ""),
       },
         React.DOM.label(
         {
           className: "notification-filter-list-item-label",
-          htmlFor: this.props.keyTODO/*TODO react*/
+          htmlFor: this.props.keyTODO,/*TODO react*/
         },
-          this.props.displayName
+          this.props.displayName,
         ),
         React.DOM.div(
         {
-          className: "notification-filter-list-item-filters"
+          className: "notification-filter-list-item-filters",
         },
-          inputElements
-        )
+          inputElements,
+        ),
       )
     );
   }

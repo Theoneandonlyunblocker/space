@@ -2,7 +2,7 @@ import Battle from "./Battle";
 import
 {
   default as MCTreeNode,
-  Move
+  Move,
 } from "./MCTreeNode";
 
 export default class MCTree
@@ -135,7 +135,7 @@ export default class MCTree
         averageScore: node.averageScore,
         finalScore: node.getCombinedScore(),
         abilityName: node.move.ability.displayName,
-        targetId: node.move.targetId
+        targetId: node.move.targetId,
       }
       consoleRows.push(row);
     }

@@ -75,23 +75,23 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "technology-listing"
+        className: "technology-listing",
       },
         React.DOM.div(
         {
-          className: "technology-name"
+          className: "technology-name",
         },
-          technology.displayName
+          technology.displayName,
         ),
         React.DOM.div(
         {
-          className: "technology-level"
+          className: "technology-level",
         },
-          "Level " + techData.level
+          "Level " + techData.level,
         ),
         React.DOM.div(
         {
-          className: "technology-progress-bar-container"
+          className: "technology-progress-bar-container",
         },
           React.DOM.div(
           {
@@ -99,30 +99,30 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
               (isAtMaxLevel ? " technology-progress-bar-max-level" : ""),
             style:
             {
-              width: "" + (relativeProgress * 100) + "%"
-            }
+              width: "" + (relativeProgress * 100) + "%",
+            },
           }),
           React.DOM.div(
           {
-            className: "technology-progress-bar-value"
+            className: "technology-progress-bar-value",
           },
-            "" + progressForLevel.toFixed(1) + " / " + Math.ceil(neededToProgressLevel)
+            "" + progressForLevel.toFixed(1) + " / " + Math.ceil(neededToProgressLevel),
           ),
           TechnologyPrioritySlider(
           {
             playerTechnology: this.props.playerTechnology,
             technology: this.props.technology,
-            researchPoints: this.props.researchPoints
-          })
+            researchPoints: this.props.researchPoints,
+          }),
         ),
         React.DOM.button(
         {
           className: "technology-toggle-priority-lock" + (techData.priorityIsLocked ? " locked" : " unlocked"),
           onClick: this.togglePriorityLock,
-          disabled: isAtMaxLevel
+          disabled: isAtMaxLevel,
         },
-          null
-        )
+          null,
+        ),
       )
     );
   }

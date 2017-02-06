@@ -15,7 +15,7 @@ const defaultTechnologies: ModuleFile =
     name: "Default technologies",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   constructModule: function(moduleData: ModuleData)
@@ -25,7 +25,7 @@ const defaultTechnologies: ModuleFile =
     moduleData.copyTemplates<TechnologyTemplate>(TechnologyTemplates, "Technologies");
 
     return moduleData;
-  }
+  },
 }
 
 export default defaultTechnologies;

@@ -57,9 +57,9 @@ export class PlayerMoneyComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "player-money"
+        className: "player-money",
       },
-        "Money: " + this.props.player.money
+        "Money: " + this.props.player.money,
       )
     );
   }

@@ -56,7 +56,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     return(
     {
       templates: mapGenTemplates,
-      selectedTemplate: mapGenTemplates[0]
+      selectedTemplate: mapGenTemplates[0],
     });
   }
 
@@ -70,7 +70,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     this.props.setPlayerLimits(
     {
       min: this.state.selectedTemplate.minPlayers,
-      max: this.state.selectedTemplate.maxPlayers
+      max: this.state.selectedTemplate.maxPlayers,
     });
   }
 
@@ -79,7 +79,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     var target = <HTMLInputElement> e.target;
     this.setState(
     {
-      selectedTemplate: app.moduleData.Templates.MapGen[target.value]
+      selectedTemplate: app.moduleData.Templates.MapGen[target.value],
     }, this.updatePlayerLimits);
   }
 
@@ -88,7 +88,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     return(
     {
       template: this.state.selectedTemplate,
-      optionValues: this.ref_TODO_mapGenOptions.getOptionValuesForTemplate()
+      optionValues: this.ref_TODO_mapGenOptions.getOptionValuesForTemplate(),
     });
   }
 
@@ -104,38 +104,38 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
           {
             value: template.key,
             key: template.key,
-            title: template.description
+            title: template.description,
           },
-          template.displayName
-        )
+          template.displayName,
+        ),
       );
     }
 
     return(
       React.DOM.div(
       {
-        className: "map-setup"
+        className: "map-setup",
       },
         React.DOM.select(
         {
           className: "map-setup-template-selector",
           value: this.state.selectedTemplate.key,
-          onChange: this.setTemplate
+          onChange: this.setTemplate,
         },
-          mapGenTemplateOptions
+          mapGenTemplateOptions,
         ),
         React.DOM.div(
         {
-          className: "map-setup-player-limit"
+          className: "map-setup-player-limit",
         },
           "Players: " + this.state.selectedTemplate.minPlayers + "-" +
-            this.state.selectedTemplate.maxPlayers
+            this.state.selectedTemplate.maxPlayers,
         ),
         React.DOM.div(
         {
-          className: "map-setup-description"
+          className: "map-setup-description",
         },
-          this.state.selectedTemplate.description
+          this.state.selectedTemplate.description,
         ),
         MapGenOptions(
         {
@@ -143,8 +143,8 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
           ref: (component: MapGenOptionsComponent) =>
           {
             this.ref_TODO_mapGenOptions = component;
-          }
-        })
+          },
+        }),
       )
     );
   }

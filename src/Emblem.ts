@@ -6,7 +6,7 @@ import Color from "./Color";
 import
 {
   generateMainColor,
-  generateSecondaryColor
+  generateSecondaryColor,
 } from "./colorGeneration";
 import EmblemSaveData from "./savedata/EmblemSaveData";
 import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
@@ -64,7 +64,7 @@ export default class Emblem
     return new Emblem(
       _colors,
       template,
-      alpha
+      alpha,
     );
   }
   private static getAvailableTemplatesForRandomGeneration(): SubEmblemTemplate[]

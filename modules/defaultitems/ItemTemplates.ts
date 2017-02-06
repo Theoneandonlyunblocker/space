@@ -4,11 +4,11 @@ import TemplateCollection from "../../src/templateinterfaces/TemplateCollection"
 import
 {
   bombAttack,
-  guardRow
+  guardRow,
 } from "../common/abilitytemplates/abilities";
 import
 {
-  overdrive
+  overdrive,
 } from "../common/passiveskilltemplates/passiveSkills";
 
 const bombLauncher1: ItemTemplate =
@@ -22,7 +22,7 @@ const bombLauncher1: ItemTemplate =
   buildCost: 100,
 
   slot: "high",
-  ability: bombAttack
+  ability: bombAttack,
 }
 const bombLauncher2: ItemTemplate =
 {
@@ -36,11 +36,11 @@ const bombLauncher2: ItemTemplate =
 
   attributeAdjustments:
   {
-    attack: {flat: 1}
+    attack: {flat: 1},
   },
 
   slot: "high",
-  ability: bombAttack
+  ability: bombAttack,
 }
 const bombLauncher3: ItemTemplate =
 {
@@ -54,11 +54,11 @@ const bombLauncher3: ItemTemplate =
 
   attributeAdjustments:
   {
-    attack: {flat: 3}
+    attack: {flat: 3},
   },
 
   slot: "high",
-  ability: bombAttack
+  ability: bombAttack,
 }
 
 const afterBurner1: ItemTemplate =
@@ -73,11 +73,11 @@ const afterBurner1: ItemTemplate =
 
   attributeAdjustments:
   {
-    speed: {flat: 1}
+    speed: {flat: 1},
   },
 
   slot: "mid",
-  passiveSkill: overdrive
+  passiveSkill: overdrive,
 }
 const afterBurner2: ItemTemplate =
 {
@@ -91,10 +91,10 @@ const afterBurner2: ItemTemplate =
 
   attributeAdjustments:
   {
-    speed: {flat: 2}
+    speed: {flat: 2},
   },
 
-  slot: "mid"
+  slot: "mid",
 }
 const afterBurner3: ItemTemplate =
 {
@@ -109,10 +109,10 @@ const afterBurner3: ItemTemplate =
   attributeAdjustments:
   {
     maxActionPoints: {flat: 1},
-    speed: {flat: 3}
+    speed: {flat: 3},
   },
 
-  slot: "mid"
+  slot: "mid",
 }
 const shieldPlating1: ItemTemplate =
 {
@@ -126,10 +126,10 @@ const shieldPlating1: ItemTemplate =
 
   attributeAdjustments:
   {
-    defence: {flat: 1}
+    defence: {flat: 1},
   },
 
-  slot: "low"
+  slot: "low",
 }
 const shieldPlating2: ItemTemplate =
 {
@@ -143,10 +143,10 @@ const shieldPlating2: ItemTemplate =
 
   attributeAdjustments:
   {
-    defence: {flat: 2}
+    defence: {flat: 2},
   },
 
-  slot: "low"
+  slot: "low",
 }
 const shieldPlating3: ItemTemplate =
 {
@@ -161,11 +161,11 @@ const shieldPlating3: ItemTemplate =
   attributeAdjustments:
   {
     defence: {flat: 3},
-    speed: {flat: -1}
+    speed: {flat: -1},
   },
 
   slot: "low",
-  ability: guardRow
+  ability: guardRow,
 }
 
 const ItemTemplates: TemplateCollection<ItemTemplate> =
@@ -179,7 +179,7 @@ const ItemTemplates: TemplateCollection<ItemTemplate> =
   [afterBurner3.type]: afterBurner3,
   [shieldPlating1.type]: shieldPlating1,
   [shieldPlating2.type]: shieldPlating2,
-  [shieldPlating3.type]: shieldPlating3
+  [shieldPlating3.type]: shieldPlating3,
 }
 
 export default ItemTemplates;

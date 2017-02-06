@@ -7,7 +7,7 @@ import ObjectiveTemplate from "./common/ObjectiveTemplate";
 import Star from "../../../src/Star";
 import
 {
-  getRelativeValue
+  getRelativeValue,
 } from "../../../src/utility";
 
 
@@ -18,7 +18,7 @@ import
 {
   makeObjectivesFromScores,
   scoutingUnitDesireFN,
-  scoutingUnitFitFN
+  scoutingUnitFitFN,
 } from "../aiUtils";
 
 
@@ -28,7 +28,7 @@ const discovery: ObjectiveTemplate =
   movePriority: movePriority.discovery,
   preferredUnitComposition:
   {
-    scouting: 1
+    scouting: 1,
   },
   moveRoutineFN: moveTo,
   unitDesireFN: scoutingUnitDesireFN,
@@ -96,7 +96,7 @@ const discovery: ObjectiveTemplate =
       scores.push(
       {
         star: star,
-        score: score
+        score: score,
       });
     }
 
@@ -107,7 +107,7 @@ const discovery: ObjectiveTemplate =
   unitsToFillObjectiveFN: function(mapEvaluator: MapEvaluator, objective: Objective)
   {
     return {min: 1, ideal: 1};
-  }
+  },
 }
 
 export default discovery;

@@ -49,7 +49,7 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
       buildings.push(DefenceBuilding(
       {
         key: this.props.buildings[i].id,
-        building: this.props.buildings[i]
+        building: this.props.buildings[i],
       }));
     }
 
@@ -61,9 +61,9 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
     return(
       React.DOM.div(
       {
-        className: "defence-building-list"
+        className: "defence-building-list",
       },
-        buildings
+        buildings,
       )
     );
   }

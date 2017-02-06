@@ -141,7 +141,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         fleet: fleet,
         hasMultipleSelected: hasMultipleSelected,
         isInspecting: this.props.isInspecting,
-        isNotDetected: this.props.isInspecting && !this.props.player.fleetIsFullyIdentified(fleet)
+        isNotDetected: this.props.isInspecting && !this.props.player.fleetIsFullyIdentified(fleet),
       }));
     }
 
@@ -154,7 +154,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
 
       var mergeProps: React.HTMLAttributes =
       {
-        className: "fleet-selection-controls-merge"
+        className: "fleet-selection-controls-merge",
       }
       if (allFleetsInSameLocation && !this.props.isInspecting && !fleetStealthsAreClashing)
       {
@@ -168,7 +168,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
 
       var reorganizeProps: React.HTMLAttributes =
       {
-        className: "fleet-selection-controls-reorganize"
+        className: "fleet-selection-controls-reorganize",
       }
       if (allFleetsInSameLocation && selectedFleets.length === 2 && !this.props.isInspecting &&
         !fleetStealthsAreClashing)
@@ -183,14 +183,14 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
 
       fleetSelectionControls = React.DOM.div(
       {
-        className: "fleet-selection-controls"
+        className: "fleet-selection-controls",
       },
         React.DOM.button(reorganizeProps,
-          "reorganize"
+          "reorganize",
         ),
         React.DOM.button(mergeProps,
-          "merge"
-        )
+          "merge",
+        ),
       )
     }
 
@@ -201,7 +201,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       fleetContents = FleetContents(
       {
         fleet: selectedFleets[0],
-        player: this.props.player
+        player: this.props.player,
       });
     }
 
@@ -212,7 +212,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       reorganizeElement = FleetReorganization(
       {
         fleets: this.props.currentlyReorganizing,
-        closeReorganization: this.props.closeReorganization
+        closeReorganization: this.props.closeReorganization,
       });
     }
 
@@ -223,13 +223,13 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         ref: (component: HTMLElement) =>
         {
           this.ref_TODO_main = component;
-        }
+        },
       },
         fleetSelectionControls,
         hasMultipleSelected ? null : fleetInfos,
         React.DOM.div(
         {
-          className: "fleet-selection-selected-wrapper"
+          className: "fleet-selection-selected-wrapper",
         },
           React.DOM.div(
           {
@@ -237,13 +237,13 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
             ref: (component: HTMLElement) =>
             {
               this.ref_TODO_selected = component;
-            }
+            },
           },
             hasMultipleSelected ? fleetInfos : null,
-            fleetContents
+            fleetContents,
           ),
-          reorganizeElement
-        )
+          reorganizeElement,
+        ),
       )
     );
   }

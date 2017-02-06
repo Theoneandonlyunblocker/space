@@ -22,7 +22,7 @@ const Objectives: TemplateCollection<ObjectiveTemplate> =
   [conquer.key]: conquer,
   [expandManufactoryCapacity.key]: expandManufactoryCapacity,
   [scoutingPerimeter.key]: scoutingPerimeter,
-  [fightInvadingEnemy.key]: fightInvadingEnemy
+  [fightInvadingEnemy.key]: fightInvadingEnemy,
 }
 
 export default Objectives;

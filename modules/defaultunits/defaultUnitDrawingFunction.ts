@@ -10,12 +10,12 @@ import UnitDrawingFunctionData from "../../src/UnitDrawingFunctionData";
 import
 {
   clamp,
-  transformMat3
+  transformMat3,
 } from "../../src/utility";
 
 const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   unit: Unit,
-  SFXParams: SFXParams
+  SFXParams: SFXParams,
 )
 {
   var spriteTemplate = unit.template.sprite;
@@ -30,7 +30,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     maxUnitsPerColumn: 7,
     curvature: -0.5,
     rotationAngle: 70,
-    scalingFactor: 0.04
+    scalingFactor: 0.04,
   };
 
   var maxUnitsPerColumn = props.maxUnitsPerColumn;
@@ -69,7 +69,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   [
     1, 0, 0,
     0, cA, -sA,
-    0, sA, cA
+    0, sA, cA,
   ];
 
   var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
@@ -92,7 +92,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     x1: undefined,
     x2: undefined,
     y1: undefined,
-    y2: undefined
+    y2: undefined,
   }
   const allUnitBoundingBoxes: PIXI.Rectangle[] = [];
   let primaryAttackOriginPoint: Point;
@@ -152,7 +152,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     const attackOriginPoint =
     {
       x: x + scaledWidth * spriteTemplate.attackOriginPoint.x,
-      y: y + scaledHeight * spriteTemplate.attackOriginPoint.y
+      y: y + scaledHeight * spriteTemplate.attackOriginPoint.y,
     };
 
     sequentialAttackOriginPoints.push(attackOriginPoint);
@@ -174,7 +174,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
       x,
       y,
       scaledWidth,
-      scaledHeight
+      scaledHeight,
     );
 
     allUnitBoundingBoxes.push(unitBounds);
@@ -191,7 +191,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
       boundingBox.x1,
       boundingBox.y1,
       boundingBox.x2 - boundingBox.x1,
-      boundingBox.y2 - boundingBox.y1
+      boundingBox.y2 - boundingBox.y1,
     ),
     individualUnitBoundingBoxes: allUnitBoundingBoxes,
     singleAttackOriginPoint: primaryAttackOriginPoint,

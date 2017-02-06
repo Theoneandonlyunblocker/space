@@ -50,16 +50,16 @@ export class ManufacturableThingsListComponent extends React.PureComponent<PropT
         parentIndex: i,
         onClick: this.props.onClick,
         money: this.props.money,
-        showCost: this.props.showCost
+        showCost: this.props.showCost,
       }));
     }
 
     return(
       React.DOM.ol(
       {
-        className: "manufacturable-things-list"
+        className: "manufacturable-things-list",
       },
-        items
+        items,
       )
     );
   }

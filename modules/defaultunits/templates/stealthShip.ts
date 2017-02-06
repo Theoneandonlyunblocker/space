@@ -6,7 +6,7 @@ import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 import
 {
   rangedAttack,
-  standBy
+  standBy,
 } from "../../common/abilitytemplates/abilities";
 import {distributionGroups} from "../../common/distributionGroups";
 import itemSlot from "../../common/itemSlot";
@@ -21,7 +21,7 @@ const stealthShip: UnitTemplate =
   {
     imageSrc: "scout.png",
     anchor: {x: 0.5, y: 0.5},
-    attackOriginPoint: {x: 0.75, y: 0.5}
+    attackOriginPoint: {x: 0.75, y: 0.5},
   },
   isSquadron: true,
   buildCost: 500,
@@ -36,7 +36,7 @@ const stealthShip: UnitTemplate =
     attack: 0.5,
     defence: 0.5,
     intelligence: 0.8,
-    speed: 0.7
+    speed: 0.7,
   },
   possibleAbilities:
   [
@@ -45,9 +45,9 @@ const stealthShip: UnitTemplate =
       probabilityItems:
       [
         rangedAttack,
-        standBy
-      ]
-    }
+        standBy,
+      ],
+    },
   ],
 
   itemSlots:
@@ -65,7 +65,7 @@ const stealthShip: UnitTemplate =
       distributionGroups.rare,
       distributionGroups.unique,
     ],
-  }
+  },
 }
 
 export default stealthShip;

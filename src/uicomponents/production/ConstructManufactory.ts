@@ -40,7 +40,7 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
   {
     return(
     {
-      canAfford: this.props.money >= app.moduleData.ruleSet.manufactory.buildCost
+      canAfford: this.props.money >= app.moduleData.ruleSet.manufactory.buildCost,
     });
   }
 
@@ -48,7 +48,7 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
   {
     this.setState(
     {
-      canAfford: newProps.money >= app.moduleData.ruleSet.manufactory.buildCost
+      canAfford: newProps.money >= app.moduleData.ruleSet.manufactory.buildCost,
     });
   }
 
@@ -66,28 +66,28 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
     return(
       React.DOM.div(
       {
-        className: "construct-manufactory-container"
+        className: "construct-manufactory-container",
       },
         React.DOM.button(
         {
           className: "construct-manufactory-button" + (this.state.canAfford ? "" : " disabled"),
           onClick: this.state.canAfford ? this.handleConstruct : null,
-          disabled: !this.state.canAfford
+          disabled: !this.state.canAfford,
         },
           React.DOM.span(
           {
-            className: "construct-manufactory-action"
+            className: "construct-manufactory-action",
           },
-            "Construct manufactory"
+            "Construct manufactory",
           ),
           React.DOM.span(
           {
             className: "construct-manufactory-cost money-style" +
-              (this.state.canAfford ? "" : " negative")
+              (this.state.canAfford ? "" : " negative"),
           },
-            app.moduleData.ruleSet.manufactory.buildCost
-          )
-        )
+            app.moduleData.ruleSet.manufactory.buildCost,
+          ),
+        ),
       )
     );
   }

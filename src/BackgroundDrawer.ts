@@ -21,7 +21,7 @@ export default class BackgroundDrawer
   } =
   {
     width: 15,
-    height: 15
+    height: 15,
   };
   private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer;
   private hasExternalRenderer: boolean;
@@ -35,7 +35,7 @@ export default class BackgroundDrawer
   } =
   {
     bg: null,
-    blur: null
+    blur: null,
   };
 
   constructor(props:
@@ -139,7 +139,7 @@ export default class BackgroundDrawer
     const blurTextureSize = this.getDesiredBlurSize();
 
     const blurTexture = generateTextureWithBounds(
-      this.renderer, background, PIXI.settings.SCALE_MODE, this.renderer.resolution, blurTextureSize
+      this.renderer, background, PIXI.settings.SCALE_MODE, this.renderer.resolution, blurTextureSize,
     );
 
     background.filters = null;
@@ -189,8 +189,8 @@ export default class BackgroundDrawer
       this.containerElement.clientHeight,
       {
         autoResize: false,
-        resolution: window.devicePixelRatio
-      }
+        resolution: window.devicePixelRatio,
+      },
     );
 
     renderer.view.setAttribute("id", "pixi-canvas");

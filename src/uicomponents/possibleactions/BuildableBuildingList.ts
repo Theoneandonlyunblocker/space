@@ -46,7 +46,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
   {
     return(
     {
-      buildingTemplates: this.props.star.getBuildableBuildings()
+      buildingTemplates: this.props.star.getBuildableBuildings(),
     });
   }
 
@@ -55,7 +55,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
     var buildingTemplates = this.props.star.getBuildableBuildings();
     this.setState(
     {
-      buildingTemplates: buildingTemplates
+      buildingTemplates: buildingTemplates,
     });
 
     if (buildingTemplates.length < 1)
@@ -71,7 +71,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
     var building = new Building(
     {
       template: template,
-      location: this.props.star
+      location: this.props.star,
     });
 
     if (!building.controller)
@@ -103,7 +103,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
           typeName: template.displayName,
           buildCost: template.buildCost,
           player: this.props.player,
-        })
+        }),
       });
     }
 
@@ -112,13 +112,13 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
       {
         label: "Name",
         key: "typeName",
-        defaultOrder: "asc"
+        defaultOrder: "asc",
       },
       {
         label: "Cost",
         key: "buildCost",
-        defaultOrder: "desc"
-      }
+        defaultOrder: "desc",
+      },
 
     ];
 
@@ -129,8 +129,8 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
           listItems: rows,
           initialColumns: columns,
           onRowChange: this.buildBuilding,
-          addSpacer: true
-        })
+          addSpacer: true,
+        }),
       )
     );
   }

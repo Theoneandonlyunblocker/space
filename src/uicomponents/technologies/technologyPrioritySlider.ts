@@ -41,7 +41,7 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
   {
     return(
     {
-      priority: this.getPlayerPriority()
+      priority: this.getPlayerPriority(),
     });
   }
   componentDidMount()
@@ -64,7 +64,7 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
   {
     this.setState(
     {
-      priority: this.getPlayerPriority()
+      priority: this.getPlayerPriority(),
     });
   }
   private handlePriorityChange(e: React.FormEvent)
@@ -82,13 +82,13 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
     return(
       React.DOM.div(
       {
-        className: "technology-progress-bar-priority-container"
+        className: "technology-progress-bar-priority-container",
       },
         React.DOM.span(
         {
-          className: "technology-progress-bar-predicted-research"
+          className: "technology-progress-bar-predicted-research",
         },
-          "+" + (this.props.researchPoints * this.state.priority).toFixed(1)
+          "+" + (this.props.researchPoints * this.state.priority).toFixed(1),
         ),
         React.DOM.input(
         {
@@ -99,8 +99,8 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
           step: 0.01,
           value: "" + this.state.priority,
           onChange: this.handlePriorityChange,
-          disabled: this.isTechnologyLocked()
-        })
+          disabled: this.isTechnologyLocked(),
+        }),
       )
     );
   }

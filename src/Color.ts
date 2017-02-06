@@ -21,7 +21,7 @@ export default class Color
     return new Color(
       (hex >> 16 & 0xFF) / 255,
       (hex >> 8 & 0xFF) / 255,
-      (hex & 0xFF) / 255
+      (hex & 0xFF) / 255,
     );
   }
   public static fromHexString(hexString: string): Color

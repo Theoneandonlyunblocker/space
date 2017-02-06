@@ -6,7 +6,7 @@ import Options from "./Options";
 import Unit from "./Unit";
 import
 {
-  useAbility
+  useAbility,
 } from "./battleAbilityUsage";
 
 export default class BattleSimulator

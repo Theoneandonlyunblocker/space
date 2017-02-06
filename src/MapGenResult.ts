@@ -12,7 +12,7 @@ import
 {
   makeVoronoi,
   relaxVoronoi,
-  setVoronoiCells
+  setVoronoiCells,
 } from "./voronoi";
 
 export default class MapGenResult
@@ -75,7 +75,7 @@ export default class MapGenResult
       x1: 0,
       x2: this.width,
       y1: 0,
-      y2: this.height
+      y2: this.height,
     };
 
     // move all stars to centroid of their voronoi cell. store original position for serialization
@@ -103,7 +103,7 @@ export default class MapGenResult
       x: 0,
       y: 0,
       width: this.width,
-      height: this.height
+      height: this.height,
     });
 
     this.stars.forEach(star =>

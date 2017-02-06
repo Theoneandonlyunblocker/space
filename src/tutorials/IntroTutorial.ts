@@ -9,8 +9,8 @@ const IntroTutorial: Tutorial =
       [
         "Thanks for checking out spacegame!",
         "",
-        "This game is still heavily in development. Many things are unfinished or unimplemented, including a proper tutorial."
-      ]
+        "This game is still heavily in development. Many things are unfinished or unimplemented, including a proper tutorial.",
+      ],
     },
     {
       content:
@@ -20,8 +20,8 @@ const IntroTutorial: Tutorial =
         "Click on a ship type on the right of the production window to add it to your build queue. ",
         "Units in the queue are built at the end of each turn. ",
         "",
-        "You can end your turn by clicking the \"End turn\" button at the bottom right of the main window."
-      ]
+        "You can end your turn by clicking the \"End turn\" button at the bottom right of the main window.",
+      ],
     },
     {
       content:
@@ -32,8 +32,8 @@ const IntroTutorial: Tutorial =
         "Selected fleets can be moved by right-clicking.",
         "",
         "To move the camera, drag the map while holding down middle mouse button or while holding down ctrl/cmd + right click.",
-        "Touchscreen devices aren't supported yet, sorry."
-      ]
+        "Touchscreen devices aren't supported yet, sorry.",
+      ],
     },
     {
       content:
@@ -42,9 +42,9 @@ const IntroTutorial: Tutorial =
         "",
         "In the battle setup screen, drag units from the unit list on the right into the formation on the bottom left or click the \"Auto formation\" button.",
         "",
-        "To use abilities in battle, hover over the unit you want to target and select the ability to use."
-      ]
-    }
+        "To use abilities in battle, hover over the unit you want to target and select the ability to use.",
+      ],
+    },
     // {
     //   content: "This is a tutorial",
     //   onOpen: function(){console.log("tutorial page open")},
@@ -64,7 +64,7 @@ const IntroTutorial: Tutorial =
     //     React.DOM.button(null, "react elements too")
     //   )
     // }
-  ]
+  ],
 }
 
 export default IntroTutorial;

@@ -24,17 +24,17 @@ export class ConfirmDeleteSavesContentComponent extends React.PureComponent<Prop
     return(
       React.DOM.div(
       {
-        className: "confirm-delete-saves-content"
+        className: "confirm-delete-saves-content",
       },
         React.DOM.span(
         {
-          className: "confirm-delete-saves-content-title"
+          className: "confirm-delete-saves-content-title",
         },
-          "Are you sure you want to delete the following saves?"
+          "Are you sure you want to delete the following saves?",
         ),
         React.DOM.ol(
         {
-          className: "confirm-delete-saves-content-saves-list"
+          className: "confirm-delete-saves-content-saves-list",
         },
           this.props.saveNames.map(saveName =>
           {
@@ -42,13 +42,13 @@ export class ConfirmDeleteSavesContentComponent extends React.PureComponent<Prop
               React.DOM.li(
               {
                 className: "confirm-delete-saves-content-save-name",
-                key: saveName
+                key: saveName,
               },
-                saveName
+                saveName,
               )
             );
-          })
-        )
+          }),
+        ),
       )
     );
   }

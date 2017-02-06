@@ -51,20 +51,20 @@ export class ManufactoryStarsListItemComponent extends React.Component<PropTypes
         className: "manufactory-stars-list-item" +
           (!hasManufactory ? " no-manufactory" : "") +
           (this.props.isHighlighted ? " highlighted" : ""),
-        onClick: this.handleClick
+        onClick: this.handleClick,
       },
         React.DOM.div(
         {
-          className: "manufactory-stars-list-item-star-name"
+          className: "manufactory-stars-list-item-star-name",
         },
-          this.props.star.name
+          this.props.star.name,
         ),
         !hasManufactory ? null : React.DOM.div(
         {
-          className: "manufactory-stars-list-item-capacity" + (!hasCapacity ? " no-capacity" : "")
+          className: "manufactory-stars-list-item-capacity" + (!hasCapacity ? " no-capacity" : ""),
         },
-          "" + this.props.usedCapacity + "/" + this.props.totalCapacity
-        )
+          "" + this.props.usedCapacity + "/" + this.props.totalCapacity,
+        ),
       )
     );
   }

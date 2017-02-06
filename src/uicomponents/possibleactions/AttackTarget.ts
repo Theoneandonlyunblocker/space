@@ -44,22 +44,22 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
       {
         className: "attack-target-button possible-action",
         onClick: this.handleAttack,
-        title: `Attack ${target.enemy.name.getPossessive()} ${target.type}`
+        title: `Attack ${target.enemy.name.getPossessive()} ${target.type}`,
       },
         React.DOM.span(
         {
-          className: "possible-action-title"
+          className: "possible-action-title",
         },
-          "attack"
+          "attack",
         ),
         PlayerFlag(
         {
           flag: target.enemy.flag,
           props:
           {
-            className: "attack-target-player-flag"
-          }
-        })
+            className: "attack-target-player-flag",
+          },
+        }),
       )
     );
   }

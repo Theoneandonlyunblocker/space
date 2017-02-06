@@ -24,7 +24,7 @@ export default class DiplomacyStatus
 
   statusByPlayer:
   {
-    [playerId: number]: DiplomacyState
+    [playerId: number]: DiplomacyState,
   } = {};
 
   attitudeModifiersByPlayer:
@@ -173,7 +173,7 @@ export default class DiplomacyStatus
       eventManager.dispatchEvent("makeWarDeclarationNotification",
       {
         player1: this.player,
-        player2: player
+        player2: player,
       });
     }
   }
@@ -253,7 +253,7 @@ export default class DiplomacyStatus
     var modifier = new AttitudeModifier(
     {
       template: template,
-      startTurn: app.game.turnNumber
+      startTurn: app.game.turnNumber,
     });
     this.addAttitudeModifier(source, modifier);
   }
@@ -272,17 +272,17 @@ export default class DiplomacyStatus
 
     var activeModifiers:
     {
-      [modifierType: string]: AttitudeModifier
+      [modifierType: string]: AttitudeModifier,
     } = {};
 
     // debugging
     var modifiersAdded:
     {
-      [modifierType: string]: AttitudeModifier
+      [modifierType: string]: AttitudeModifier,
     } = {};
     var modifiersRemoved:
     {
-      [modifierType: string]: AttitudeModifier
+      [modifierType: string]: AttitudeModifier,
     } = {};
 
     // remove modifiers & build active modifiers index
@@ -328,7 +328,7 @@ export default class DiplomacyStatus
             modifier = new AttitudeModifier(
             {
               template: template,
-              startTurn: evaluation.currentTurn
+              startTurn: evaluation.currentTurn,
             });
 
             playerModifiers.push(modifier);
@@ -373,7 +373,7 @@ export default class DiplomacyStatus
     {
       metPlayerIds: metPlayerIds,
       statusByPlayer: this.statusByPlayer,
-      attitudeModifiersByPlayer: attitudeModifiersByPlayer
+      attitudeModifiersByPlayer: attitudeModifiersByPlayer,
     };
 
     return data;

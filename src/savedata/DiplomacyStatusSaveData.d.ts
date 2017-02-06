@@ -6,7 +6,7 @@ declare interface DiplomacyStatusSaveData
   metPlayerIds: number[];
   statusByPlayer:
   {
-    [playerId: number]: DiplomacyState
+    [playerId: number]: DiplomacyState,
   };
 
   attitudeModifiersByPlayer:

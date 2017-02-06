@@ -82,7 +82,7 @@ const starOwners: MapRendererLayerTemplate =
       doc.addChild(gfx);
     }
     return doc;
-  }
+  },
 }
 
 export default starOwners;
@@ -116,7 +116,7 @@ function getOccupationShader(owner: Player, occupier: Player)
       stripeSize: 0.33,
       offset: [0.0, 0.0],
       angle: 0.25 * Math.PI,
-      scale: 8.0
+      scale: 8.0,
     });
   }
 

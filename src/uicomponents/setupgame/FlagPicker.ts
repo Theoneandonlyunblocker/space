@@ -3,7 +3,7 @@
 import
 {
   AutoPositionerProps,
-  default as AutoPositioner
+  default as AutoPositioner,
 } from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 import EmblemPicker from "./EmblemPicker";
@@ -87,25 +87,25 @@ export class FlagPickerComponent extends React.PureComponent<PropTypes, StateTyp
     else
     {
       imageInfoMessage = React.DOM.div({className: "image-info-message"},
-        "Upload or drag image here to set it as your flag"
+        "Upload or drag image here to set it as your flag",
       );
     }
 
     return(
       React.DOM.div(
       {
-        className: "flag-picker"
+        className: "flag-picker",
       },
         React.DOM.div(
         {
-          className: "flag-image-uploader"
+          className: "flag-image-uploader",
         },
           React.DOM.div({className: "flag-picker-title"},
-            "Upload image"
+            "Upload image",
           ),
           React.DOM.div(
           {
-            className: "flag-image-uploader-content"
+            className: "flag-image-uploader-content",
           },
             React.DOM.input(
             {
@@ -116,10 +116,10 @@ export class FlagPickerComponent extends React.PureComponent<PropTypes, StateTyp
               ref: (element: HTMLInputElement) =>
               {
                 this.imageUploader = element;
-              }
+              },
             }),
-            imageInfoMessage
-          )
+            imageInfoMessage,
+          ),
         ),
         this.props.emblemData.map((emblemData, i) =>
         {
@@ -135,9 +135,9 @@ export class FlagPickerComponent extends React.PureComponent<PropTypes, StateTyp
             {
               emblemData.emblem.colors = [color];
               this.props.triggerParentUpdate();
-            }
+            },
           });
-        })
+        }),
       )
     );
   }

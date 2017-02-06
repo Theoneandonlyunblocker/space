@@ -3,13 +3,13 @@ import
 {
   deepMerge,
   getMatchingLocalstorageItemsByDate,
-  shallowCopy
+  shallowCopy,
 } from "./utility";
 
 type OptionsCategory = "battleAnimationTiming" | "debug" | "ui" | "display";
 const OptionsCategories: OptionsCategory[] =
 [
-  "battleAnimationTiming", "debug", "ui", "display"
+  "battleAnimationTiming", "debug", "ui", "display",
 ];
 
 interface OptionsValues
@@ -47,20 +47,20 @@ const defaultOptionsValues =
     after: 1500,
     unitEnter: 200,
     unitExit: 100,
-    turnTransition: 1000
+    turnTransition: 1000,
   },
   debug:
   {
     enabled: false,
-    battleSimulationDepth: 20
+    battleSimulationDepth: 20,
   },
   ui:
   {
-    noHamburger: false
+    noHamburger: false,
   },
   display:
   {
-    borderWidth: 8
+    borderWidth: 8,
   },
 }
 
@@ -149,7 +149,7 @@ class Options implements OptionsValues
     var data = JSON.stringify(
     {
       options: this.serialize(),
-      date: new Date()
+      date: new Date(),
     });
 
     var saveName = "Rance.Options." + slot;
@@ -223,7 +223,7 @@ class Options implements OptionsValues
       battleAnimationTiming: this.battleAnimationTiming,
       debug: this.debug,
       ui: this.ui,
-      display: this.display
+      display: this.display,
     });
   }
   private deSerialize(data: OptionsValues)

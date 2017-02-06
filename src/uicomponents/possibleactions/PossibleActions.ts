@@ -55,7 +55,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
     {
       expandedAction: null,
       expandedActionElement: null,
-      canUpgradeBuildings: this.canUpgradeBuildings(this.props.selectedStar)
+      canUpgradeBuildings: this.canUpgradeBuildings(this.props.selectedStar),
     });
   }
 
@@ -100,7 +100,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
   {
     this.setState(
     {
-      canUpgradeBuildings: this.canUpgradeBuildings(this.props.selectedStar)
+      canUpgradeBuildings: this.canUpgradeBuildings(this.props.selectedStar),
     });
   }
 
@@ -115,7 +115,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
     this.setState(
     {
       expandedAction: null,
-      expandedActionElement: null
+      expandedActionElement: null,
     }, this.updateActions);
   }
 
@@ -130,20 +130,20 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
     {
       var element = React.DOM.div(
       {
-        className: "expanded-action"
+        className: "expanded-action",
       },
         BuildableBuildingList(
         {
           player: this.props.player,
           star: this.props.selectedStar,
-          clearExpandedAction: this.clearExpandedAction
-        })
+          clearExpandedAction: this.clearExpandedAction,
+        }),
       );
 
       this.setState(
       {
         expandedAction: "buildBuildings",
-        expandedActionElement: element
+        expandedActionElement: element,
       }, this.updateActions);
     }
   }
@@ -159,20 +159,20 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
     {
       var element = React.DOM.div(
       {
-        className: "expanded-action"
+        className: "expanded-action",
       },
         BuildingUpgradeList(
         {
           player: this.props.player,
           star: this.props.selectedStar,
-          clearExpandedAction: this.clearExpandedAction
-        })
+          clearExpandedAction: this.clearExpandedAction,
+        }),
       );
 
       this.setState(
       {
         expandedAction: "upgradeBuildings",
-        expandedActionElement: element
+        expandedActionElement: element,
       }, this.updateActions);
     }
   }
@@ -188,7 +188,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
         return AttackTarget(
         {
           key: attackTarget.enemy.id,
-          attackTarget: attackTarget
+          attackTarget: attackTarget,
         })
       }));
     }
@@ -205,10 +205,10 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
             {
               className: "possible-action",
               onClick: this.buildBuildings,
-              key: "buildActions"
+              key: "buildActions",
             },
-              "construct"
-            )
+              "construct",
+            ),
           );
         }
 
@@ -219,10 +219,10 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
             {
               className: "possible-action",
               onClick: this.upgradeBuildings,
-              key: "upgradeActions"
+              key: "upgradeActions",
             },
-              "upgrade"
-            )
+              "upgrade",
+            ),
           );
         }
       }
@@ -235,23 +235,23 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
 
     var possibleActions = React.DOM.div(
     {
-      className: "possible-actions"
+      className: "possible-actions",
     },
-      allActions
+      allActions,
     );
 
     return(
       React.DOM.div(
       {
-        className: "possible-actions-wrapper"
+        className: "possible-actions-wrapper",
       },
         React.DOM.div(
         {
           className: "possible-actions-container" +
-            (this.state.expandedAction ? " has-expanded-action" : "")
+            (this.state.expandedAction ? " has-expanded-action" : ""),
         },
-          possibleActions
-        )
+          possibleActions,
+        ),
       )
     );
   }

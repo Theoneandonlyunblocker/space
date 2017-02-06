@@ -12,7 +12,7 @@ const defaultNotifications: ModuleFile =
     name: "Default Notifications",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
   constructModule: function(moduleData: ModuleData)
@@ -20,7 +20,7 @@ const defaultNotifications: ModuleFile =
     moduleData.copyTemplates(NotificationTemplates, "Notifications");
 
     return moduleData;
-  }
+  },
 }
 
 export default defaultNotifications;

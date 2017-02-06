@@ -52,16 +52,16 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
           Options.setDefaults();
           this.forceUpdate();
         },
-        content: "Are you sure you want to reset all options?"
+        content: "Are you sure you want to reset all options?",
       }),
       popupProps:
       {
         dragPositionerProps:
         {
           containerDragOnly: true,
-          preventAutoResize: true
-        }
-      }
+          preventAutoResize: true,
+        },
+      },
     });
   }
 
@@ -79,43 +79,43 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         displayName: "Before ability (ms)",
         min: 0,
         max: 5000,
-        step: 100
+        step: 100,
       },
       {
         stage: "effectDuration",
         displayName: "Ability effect duration (*)",
         min: 0,
         max: 10,
-        step: 0.1
+        step: 0.1,
       },
       {
         stage: "after",
         displayName: "After ability (ms)",
         min: 0,
         max: 5000,
-        step: 100
+        step: 100,
       },
       {
         stage: "unitEnter",
         displayName: "Unit enter (ms)",
         min: 0,
         max: 1000,
-        step: 50
+        step: 50,
       },
       {
         stage: "unitExit",
         displayName: "Unit exit (ms)",
         min: 0,
         max: 1000,
-        step: 50
+        step: 50,
       },
       {
         stage: "turnTransition",
         displayName: "Turn transition (ms)",
         min: 0,
         max: 2000,
-        step: 100
-      }
+        step: 100,
+      },
     ];
     for (let i = 0; i < battleAnimationStages.length; i++)
     {
@@ -136,9 +136,9 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
             onChangeFN: function(stage: string, value: number)
             {
               Options.battleAnimationTiming[stage] = value;
-            }.bind(null, stage)
-          })
-        }
+            }.bind(null, stage),
+          }),
+        },
       );
     }
 
@@ -152,7 +152,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       {
         Options.setDefaultForCategory("battleAnimationTiming");
         this.forceUpdate();
-      }
+      },
     }));
 
     var debugOptions: any[] = [];
@@ -169,8 +169,8 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
             Options.debug.enabled = !Options.debug.enabled;
             this.forceUpdate();
             eventManager.dispatchEvent("renderUI");
-          }
-        })
+          },
+        }),
     });
 
     if (Options.debug.enabled)
@@ -201,15 +201,15 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
               value = clamp(value, parseFloat(target.min), parseFloat(target.max));
               Options.debug.battleSimulationDepth = value;
               this.forceUpdate();
-            }
+            },
           }),
           React.DOM.label(
           {
-            htmlFor: "battle-simulation-depth-input"
+            htmlFor: "battle-simulation-depth-input",
           },
-            "AI vs. AI Battle simulation depth"
-          )
-        )
+            "AI vs. AI Battle simulation depth",
+          ),
+        ),
       });
     }
 
@@ -223,7 +223,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       {
         Options.setDefaultForCategory("debug");
         this.forceUpdate();
-      }
+      },
     }));
 
     var uiOptions: any[] = [];
@@ -240,8 +240,8 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
             Options.ui.noHamburger = !Options.ui.noHamburger;
             eventManager.dispatchEvent("updateHamburgerMenu");
             this.forceUpdate();
-          }
-        })
+          },
+        }),
     });
 
     uiOptions.push(
@@ -251,8 +251,8 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       {
         filter: this.props.log.notificationFilter,
         text: "Message settings",
-        highlightedOptionKey: null
-      })
+        highlightedOptionKey: null,
+      }),
     });
 
     uiOptions.push(
@@ -261,10 +261,10 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       content: React.DOM.button(
       {
         className: "reset-tutorials-button",
-        onClick: TutorialStatus.reset
+        onClick: TutorialStatus.reset,
       },
-        "Reset tutorials"
-      )
+        "Reset tutorials",
+      ),
     });
 
     allOptions.push(OptionsGroup(
@@ -275,7 +275,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       resetFN: () =>
       {
         Options.setDefaultForCategory("ui");
-      }
+      },
     }));
 
 
@@ -295,8 +295,8 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         {
           Options.display.borderWidth = value;
           eventManager.dispatchEvent("renderMap");
-        }
-      })
+        },
+      }),
     });
 
     allOptions.push(OptionsGroup(
@@ -308,7 +308,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       {
         Options.setDefaultForCategory("display");
         this.forceUpdate();
-      }
+      },
     }));
 
     return(
@@ -320,7 +320,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
           {
             this.popupManager = component;
           },
-          onlyAllowOne: true
+          onlyAllowOne: true,
         }),
 
         React.DOM.div({className: "options-header"},
@@ -328,12 +328,12 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
           React.DOM.button(
           {
             className: "reset-options-button reset-all-options-button",
-            onClick: this.handleResetAllOptions
+            onClick: this.handleResetAllOptions,
           },
-            "Reset all options"
-          )
+            "Reset all options",
+          ),
         ),
-        allOptions
+        allOptions,
       )
     );
   }

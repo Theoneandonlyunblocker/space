@@ -106,13 +106,13 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
         },
         isDraggable: this.props.isDraggable,
         onDragStart: this.props.onDragStart,
-        onDragEnd: this.props.onDragEnd
+        onDragEnd: this.props.onDragEnd,
       };
 
       rows.push(
       {
         key: "" + item.id,
-        content: ItemListItem(props)
+        content: ItemListItem(props),
       });
     }
 
@@ -121,24 +121,24 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
       {
         label: "Type",
         key: "typeName",
-        defaultOrder: "asc"
+        defaultOrder: "asc",
       },
       {
         label: "Slot",
         key: "slot",
         propToSortBy: "slotIndex",
-        defaultOrder: "desc"
+        defaultOrder: "desc",
       },
       {
         label: "Unit",
         key: "unitName",
-        defaultOrder: "desc"
+        defaultOrder: "desc",
       },
       {
         label: "Ability",
         key: "ability",
-        defaultOrder: "desc"
-      }
+        defaultOrder: "desc",
+      },
     ];
 
 
@@ -152,8 +152,8 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
           initialSortOrder: [columns[1], columns[2]], // slot, unit
           onRowChange: this.props.onRowChange,
           tabIndex: 2,
-          keyboardSelect: true
-        })
+          keyboardSelect: true,
+        }),
       )
     );
   }

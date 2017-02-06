@@ -6,7 +6,7 @@ import ControlledNumberInput from "../generic/ControlledNumberInput";
 import
 {
   AutoPositionerProps,
-  default as AutoPositioner
+  default as AutoPositioner,
 } from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 
@@ -75,7 +75,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       hexColor: color.getHex(),
       hue: hsvColor[0],
       sat: hsvColor[1],
-      val: hsvColor[2]
+      val: hsvColor[2],
     });
   }
 
@@ -127,7 +127,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     {
       hue: Math.round(hsvColor[0]),
       sat: Math.round(hsvColor[1]),
-      val: Math.round(hsvColor[2])
+      val: Math.round(hsvColor[2]),
     });
 
     if (this.props.onChange)
@@ -167,7 +167,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      hexColor: hexColor
+      hexColor: hexColor,
     });
 
     this.updateFromHex(hexColor);
@@ -217,7 +217,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
         var max = "#" + this.makeHexStringFromHSVDegreeArray([hue, 100, val]);
         return(
         {
-          background: this.makeGradientString(min, max)
+          background: this.makeGradientString(min, max),
         });
       }
       case "val":
@@ -226,7 +226,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
         var max = "#" + this.makeHexStringFromHSVDegreeArray([hue, sat, 100]);
         return(
         {
-          background: this.makeGradientString(min, max)
+          background: this.makeGradientString(min, max),
         });
       }
       default:
@@ -245,7 +245,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     {
       hue: this.setHue,
       sat: this.setSat,
-      val: this.setVal
+      val: this.setVal,
     };
 
     const idForType = "" + this.baseElementID + "-" + type;
@@ -256,7 +256,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
         React.DOM.div(
         {
           className: "color-picker-slider-background" + " color-picker-slider-background-" + type,
-          style: this.makeGradientStyle(type)
+          style: this.makeGradientStyle(type),
         },
           React.DOM.input(
           {
@@ -270,8 +270,8 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
             value: this.state[type],
             onChange: updateFunctions[type],
             onMouseUp: updateFunctions[type],
-            onTouchEnd: updateFunctions[type]
-          })
+            onTouchEnd: updateFunctions[type],
+          }),
         ),
         React.DOM.input(
         {
@@ -279,8 +279,8 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
           type: "number",
           step: 1,
           value: "" + Math.round(this.state[type]),
-          onChange: updateFunctions[type]
-        })
+          onChange: updateFunctions[type],
+        }),
       )
     );
   }
@@ -291,7 +291,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
         React.DOM.div({className: "color-picker-hsv"},
           this.makeHsvInputs("hue"),
           this.makeHsvInputs("sat"),
-          this.makeHsvInputs("val")
+          this.makeHsvInputs("val"),
         ),
         React.DOM.div({className: "color-picker-input-container", key: "hex"},
           React.DOM.label({className: "color-picker-label", htmlFor: "" + this.baseElementID + "-hex"}, "Hex:"),
@@ -299,13 +299,13 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
             React.DOM.button(
             {
               className: "color-picker-button",
-              onClick: this.autoGenerateColor
+              onClick: this.autoGenerateColor,
             }, "Auto"),
           !this.props.isNullable ? null :
             React.DOM.button(
             {
               className: "color-picker-button",
-              onClick: this.nullifyColor
+              onClick: this.nullifyColor,
             }, "Clear"),
           ControlledNumberInput(
           {
@@ -327,13 +327,13 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
             {
               this.setState(
               {
-                hexColor: value
+                hexColor: value,
               });
 
               this.updateFromHex(value);
-            }
+            },
           }),
-        )
+        ),
       )
     );
   }

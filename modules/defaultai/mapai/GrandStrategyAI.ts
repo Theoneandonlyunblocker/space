@@ -5,7 +5,7 @@ import Personality from "../../../src/Personality";
 import
 {
   clamp,
-  getRelativeValue
+  getRelativeValue,
 } from "../../../src/utility";
 
 export default class GrandStrategyAI
@@ -50,7 +50,7 @@ export default class GrandStrategyAI
     this.desiredStars =
     {
       min: minStarsDesired,
-      max: maxStarsDesired
+      max: maxStarsDesired,
     }
   }
 

@@ -89,7 +89,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      zIndex: -1
+      zIndex: -1,
     });
   }
 
@@ -106,7 +106,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     {
       this.setState(
       {
-        zIndex: this.props.incrementZIndex(this.state.zIndex)
+        zIndex: this.props.incrementZIndex(this.state.zIndex),
       });
     }
   }
@@ -119,7 +119,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
       top: domRect.top,
       left: domRect.left,
       width: domRect.width,
-      height: domRect.height
+      height: domRect.height,
     };
     var left: number;
     var top: number;
@@ -162,7 +162,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     this.dragPositioner.dragSize.y = Math.min(window.innerHeight, rect.height);
     this.setState(
     {
-      zIndex: this.props.incrementZIndex(this.state.zIndex)
+      zIndex: this.props.incrementZIndex(this.state.zIndex),
     }, () =>
     {
       if (this.ref_TODO_content.parentPopupDidMount)
@@ -200,8 +200,8 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
         height: this.dragPositioner.dragSize.y,
         zIndex: this.state.zIndex,
         minWidth: this.props.minWidth,
-        minHeight: this.props.minHeight
-      }
+        minHeight: this.props.minHeight,
+      },
     };
 
     if (this.dragPositioner.isDragging)
@@ -215,18 +215,18 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
       ref: (content: ContentComponent) =>
       {
         this.ref_TODO_content = content;
-      }
+      },
     }
 
     var resizeHandle = !this.props.resizable ? null : PopupResizeHandle(
     {
-      handleResize: this.handleResizeMove
+      handleResize: this.handleResizeMove,
     });
 
     return(
       React.DOM.div(divProps,
         React.cloneElement(this.props.content, contentProps),
-        resizeHandle
+        resizeHandle,
       )
     );
   }

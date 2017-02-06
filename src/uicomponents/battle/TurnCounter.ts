@@ -10,7 +10,7 @@ const FirstChild = React.createClass(
   {
     const child = <React.ReactElement<any>> React.Children.toArray(this.props.children)[0];
     return child || null;
-  }
+  },
 });
 
 export interface PropTypes extends React.Props<any>
@@ -48,7 +48,7 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
       React.DOM.div(
       {
         className: "turn-counter" +
-          (!this.props.isEmpty ? " turn-counter-available-border" : "")
+          (!this.props.isEmpty ? " turn-counter-available-border" : ""),
       },
         ReactCSSTransitionGroup(
         {
@@ -57,7 +57,7 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
           transitionEnter: false,
           transitionLeave: true,
           transitionLeaveTimeout: this.props.animationDuration,
-          component: FirstChild
+          component: FirstChild,
         },
           this.props.isEmpty ? null : React.DOM.div(
           {
@@ -66,9 +66,9 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
             ref: element =>
             {
               this.inner = element;
-            }
-          })
-        )
+            },
+          }),
+        ),
       )
     );
   }

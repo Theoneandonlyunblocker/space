@@ -58,7 +58,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
     return(
     {
       saveKeysToDelete: [],
-      saveKey: null
+      saveKey: null,
     });
   }
 
@@ -71,7 +71,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      saveKey: row.content.props.storageKey
+      saveKey: row.content.props.storageKey,
     });
     this.handleUndoDelete(row.content.props.storageKey);
   }
@@ -103,9 +103,9 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       {
         dragPositionerProps:
         {
-          preventAutoResize: true
-        }
-      }
+          preventAutoResize: true,
+        },
+      },
     });
   }
   getClosePopupContent(afterCloseCallback?: Function, shouldCloseParent: boolean = true,
@@ -120,7 +120,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
 
       this.setState(
       {
-        saveKeysToDelete: []
+        saveKeysToDelete: [],
       });
     };
     var closeFN = () =>
@@ -134,7 +134,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       {
         this.setState(
         {
-          saveKeysToDelete: []
+          saveKeysToDelete: [],
         });
       }
       if (afterCloseCallback) afterCloseCallback();
@@ -146,8 +146,8 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       handleClose: closeFN,
       content: ConfirmDeleteSavesContent(
       {
-        saveNames: this.state.saveKeysToDelete
-      })
+        saveNames: this.state.saveKeysToDelete,
+      }),
     });
   }
   updateClosePopup()
@@ -180,16 +180,16 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       {
         dragPositionerProps:
         {
-          preventAutoResize: true
-        }
-      }
+          preventAutoResize: true,
+        },
+      },
     });
   }
   handleDelete(saveKey: string)
   {
     this.setState(
     {
-      saveKeysToDelete: this.state.saveKeysToDelete.concat(saveKey)
+      saveKeysToDelete: this.state.saveKeysToDelete.concat(saveKey),
     }, this.updateClosePopup);
   }
   handleUndoDelete(saveKey: string, callback?: () => void)
@@ -209,7 +209,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       newsaveKeysToDelete.splice(i, 1);
       this.setState(
       {
-        saveKeysToDelete: newsaveKeysToDelete
+        saveKeysToDelete: newsaveKeysToDelete,
       }, afterDeleteFN);
     }
   }
@@ -223,7 +223,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "save-game"
+        className: "save-game",
       },
         PopupManager(
         {
@@ -231,7 +231,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           {
             this.popupManager = component;
           },
-          onlyAllowOne: true
+          onlyAllowOne: true,
         }),
         SaveList(
         {
@@ -242,25 +242,25 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           onDelete: this.handleDelete,
           onUndoDelete: this.handleUndoDelete,
           saveKeysToDelete: this.state.saveKeysToDelete,
-          onDoubleClick: this.handleLoad
+          onDoubleClick: this.handleLoad,
         }),
         React.DOM.form(
         {
           className: "save-game-form",
           onSubmit: this.handleLoad,
-          action: "javascript:void(0);"
+          action: "javascript:void(0);",
         },
           React.DOM.input(
           {
             className: "save-game-name",
             type: "text",
             value: this.state.saveKey ? this.state.saveKey.replace("Rance.Save.", "") : "",
-            readOnly: true
-          })
+            readOnly: true,
+          }),
         ),
         React.DOM.div(
         {
-          className: "save-game-buttons-container"
+          className: "save-game-buttons-container",
         },
           React.DOM.button(
           {
@@ -269,22 +269,22 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
             ref: (component: HTMLElement) =>
             {
               this.ref_TODO_okButton = component;
-            }
+            },
           }, "Load"),
           React.DOM.button(
           {
             className: "save-game-button",
-            onClick: this.handleClose.bind(this, true, null)
+            onClick: this.handleClose.bind(this, true, null),
           }, "Cancel"),
           React.DOM.button(
           {
             className: "save-game-button",
             onClick: this.deleteSelectedKeys,
-            disabled: this.state.saveKeysToDelete.length < 1
+            disabled: this.state.saveKeysToDelete.length < 1,
           },
-            "Delete"
-          )
-        )
+            "Delete",
+          ),
+        ),
       )
     );
   }

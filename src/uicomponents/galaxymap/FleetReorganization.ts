@@ -45,7 +45,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
   {
     return(
     {
-      currentDragUnit: null
+      currentDragUnit: null,
     });
   }
 
@@ -53,7 +53,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
   {
     this.setState(
     {
-      currentDragUnit: unit
+      currentDragUnit: unit,
     });
   }
 
@@ -61,7 +61,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
   {
     this.setState(
     {
-      currentDragUnit: null
+      currentDragUnit: null,
     });
   }
 
@@ -105,15 +105,15 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
     return(
       React.DOM.div(
       {
-        className: "fleet-reorganization"
+        className: "fleet-reorganization",
       },
         React.DOM.div(
         {
-          className: "fleet-reorganization-header"
+          className: "fleet-reorganization-header",
         }, "Reorganize fleets"),
         React.DOM.div(
         {
-          className: "fleet-reorganization-subheader"
+          className: "fleet-reorganization-subheader",
         },
           React.DOM.div(
           {
@@ -122,17 +122,17 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
           }, selectedFleets[0].name.fullName),
           React.DOM.div(
           {
-            className: "fleet-reorganization-subheader-center"
+            className: "fleet-reorganization-subheader-center",
           }, null),
           React.DOM.div(
           {
             className: "fleet-reorganization-subheader-fleet-name" +
               " fleet-reorganization-subheader-fleet-name-right",
-          }, selectedFleets[1].name.fullName)
+          }, selectedFleets[1].name.fullName),
         ),
         React.DOM.div(
         {
-          className: "fleet-reorganization-contents"
+          className: "fleet-reorganization-contents",
         },
           FleetContents(
           {
@@ -141,11 +141,11 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
             onMouseUp: this.handleDrop,
             onDragStart: this.handleDragStart,
             onDragEnd: this.handleDragEnd,
-            player: selectedFleets[0].player
+            player: selectedFleets[0].player,
           }),
           React.DOM.div(
           {
-            className: "fleet-reorganization-contents-divider"
+            className: "fleet-reorganization-contents-divider",
           }, null),
           FleetContents(
           {
@@ -154,19 +154,19 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
             onMouseUp: this.handleDrop,
             onDragStart: this.handleDragStart,
             onDragEnd: this.handleDragEnd,
-            player: selectedFleets[0].player
-          })
+            player: selectedFleets[0].player,
+          }),
         ),
         React.DOM.div(
         {
-          className: "fleet-reorganization-footer"
+          className: "fleet-reorganization-footer",
         },
           React.DOM.button(
           {
             className: "close-reorganization",
-            onClick: this.handleClose
-          }, "Close")
-        )
+            onClick: this.handleClose,
+          }, "Close"),
+        ),
       )
     );
   }

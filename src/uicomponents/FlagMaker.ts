@@ -40,7 +40,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      size: 46
+      size: 46,
     });
   }
 
@@ -83,8 +83,8 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
           style:
           {
             width: this.state.size,
-            height: this.state.size
-          }
+            height: this.state.size,
+          },
         },
       }));
     }
@@ -96,20 +96,20 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
           ref: (component: HTMLElement) =>
           {
             this.ref_TODO_flags = component;
-          }
+          },
         },
-          flagElements
+          flagElements,
         ),
         React.DOM.button(
         {
-          onClick: this.makeFlags
+          onClick: this.makeFlags,
         }, "make flags"),
         React.DOM.input(
         {
           onChange: this.handleSizeChange,
           defaultValue: "" + this.sizeValue,
-          type: "number"
-        })
+          type: "number",
+        }),
       )
     );
   }

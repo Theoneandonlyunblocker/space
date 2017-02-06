@@ -33,7 +33,7 @@ export class SFXFragmentPropRangeComponent extends React.Component<PropTypes, St
     return(
       React.DOM.div(
       {
-        className: "sfx-fragment-prop-range"
+        className: "sfx-fragment-prop-range",
       },
         SFXFragmentPropVecBase(
         {
@@ -46,15 +46,15 @@ export class SFXFragmentPropRangeComponent extends React.Component<PropTypes, St
             {
               key: "min",
               label: "Min",
-              value: this.props.min
+              value: this.props.min,
             },
             {
               key: "max",
               label: "Max",
-              value: this.props.max
+              value: this.props.max,
             },
-          ]
-        })
+          ],
+        }),
       )
     );
   }

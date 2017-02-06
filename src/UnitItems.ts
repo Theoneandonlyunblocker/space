@@ -26,7 +26,7 @@ export default class UnitItems
   constructor(
     itemSlots: CountBySlot,
     addItemToUnit: (item: Item) => void,
-    updateUnit: (changedItem: Item) => void
+    updateUnit: (changedItem: Item) => void,
   )
   {
     this.itemSlots = itemSlots;

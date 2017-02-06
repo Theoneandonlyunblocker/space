@@ -12,7 +12,7 @@ const BuildingTemplates: TemplateCollection<BuildingTemplate> =
   [Templates.commercialPort.type]: Templates.commercialPort,
   [Templates.deepSpaceRadar.type]: Templates.deepSpaceRadar,
   [Templates.resourceMine.type]: Templates.resourceMine,
-  [Templates.reserachLab.type]: Templates.reserachLab
+  [Templates.reserachLab.type]: Templates.reserachLab,
 }
 
 export default BuildingTemplates;

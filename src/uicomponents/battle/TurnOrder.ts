@@ -6,7 +6,7 @@ import Unit from "../../Unit";
 import
 {
   AnimationState,
-  default as TurnOrderUnit
+  default as TurnOrderUnit,
 } from "./TurnOrderUnit";
 
 export interface PropTypes extends React.Props<any>
@@ -74,7 +74,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
       insertIndex: undefined,
 
-      animationState: AnimationState.idle
+      animationState: AnimationState.idle,
     });
   }
   componentDidMount()
@@ -168,7 +168,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       this.setState(
       {
         animationState: AnimationState.removeDeadUnit,
-        pendingDeadUnitIndices: deadUnitIndices
+        pendingDeadUnitIndices: deadUnitIndices,
       }, () =>
       {
         this.timeoutHandle = window.setTimeout(() =>
@@ -186,7 +186,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      animationState: AnimationState.fillSpaceLeftByDeadUnits
+      animationState: AnimationState.fillSpaceLeftByDeadUnits,
     }, () =>
     {
       this.timeoutHandle = window.setTimeout(() =>
@@ -196,7 +196,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
           currentDisplayData: this.state.currentDisplayData.filter(d =>
           {
             return !this.state.pendingDeadUnitsByID[d.unit.id];
-          })
+          }),
         }, () =>
         {
           this.removeUnit();
@@ -208,7 +208,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      animationState: AnimationState.removeUnit
+      animationState: AnimationState.removeUnit,
     }, () =>
     {
       this.timeoutHandle = window.setTimeout(() =>
@@ -249,7 +249,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       currentDisplayData: this.state.pendingDisplayData,
       pendingDisplayData: undefined,
 
-      animationState: AnimationState.insertUnit
+      animationState: AnimationState.insertUnit,
     }, () =>
     {
       this.setFinishAnimatingTimeout();
@@ -262,7 +262,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       currentDisplayData: this.state.pendingDisplayData,
       pendingDisplayData: undefined,
 
-      animationState: AnimationState.pushUnit
+      animationState: AnimationState.pushUnit,
     }, () =>
     {
       this.setFinishAnimatingTimeout();
@@ -282,7 +282,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      maxUnits: Math.max(ceil, minUnits)
+      maxUnits: Math.max(ceil, minUnits),
     });
   }
 
@@ -365,7 +365,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
           onMouseEnter: this.props.onMouseEnterUnit.bind(null, displayData.unit),
           onMouseLeave: this.props.onMouseLeaveUnit,
-        })
+        }),
       );
     }
 
@@ -374,13 +374,13 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       toRender.splice(this.props.hoveredGhostIndex, 0, React.DOM.div(
       {
         className: "turn-order-arrow",
-        key: "ghost"
+        key: "ghost",
       }));
     }
 
     return(
       React.DOM.div({className: "turn-order-container"},
-        toRender
+        toRender,
       )
     );
   }

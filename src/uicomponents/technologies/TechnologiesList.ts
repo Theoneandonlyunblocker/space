@@ -52,27 +52,27 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
         playerTechnology: playerTechnology,
         technology: playerTechnology.technologies[key].technology,
         researchPoints: researchSpeed,
-        key: key
+        key: key,
       }));
     }
 
     return(
       React.DOM.div(
       {
-        className: "technologies-list-container"
+        className: "technologies-list-container",
       },
         React.DOM.div(
         {
-          className: "technologies-list"
+          className: "technologies-list",
         },
-          rows
+          rows,
         ),
         React.DOM.div(
         {
-          className: "technologies-list-research-speed"
+          className: "technologies-list-research-speed",
         },
-          "Research speed: " + researchSpeed + " per turn"
-        )
+          "Research speed: " + researchSpeed + " per turn",
+        ),
       )
     );
   }

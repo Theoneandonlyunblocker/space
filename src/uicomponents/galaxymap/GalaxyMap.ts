@@ -42,7 +42,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "galaxy-map"
+        className: "galaxy-map",
       },
         React.DOM.div(
         {
@@ -50,7 +50,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
           {
             this.ref_TODO_pixiContainer = component;
           },
-          id: "pixi-container"
+          id: "pixi-container",
         },
           this.props.game.hasEnded ?
             GameOverScreen() :
@@ -60,8 +60,8 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
               player: this.props.player,
               game: this.props.game,
               mapRenderer: this.props.mapRenderer,
-              key: "galaxyMapUI"
-            })
+              key: "galaxyMapUI",
+            }),
         ),
         //,
         // !Options.debug.enabled ? null : React.DOM.div(

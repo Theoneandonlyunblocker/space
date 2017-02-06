@@ -32,12 +32,12 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
     return(
       React.DOM.div(
       {
-        className: "sfx-fragment-prop-inline-number-wrapper"
+        className: "sfx-fragment-prop-inline-number-wrapper",
       },
         React.DOM.label(
         {
           className: "sfx-fragment-prop-inline-number-label",
-          htmlFor: baseID
+          htmlFor: baseID,
         },
           this.props.label + ":",
         ),
@@ -46,8 +46,8 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
           value: this.props.value,
           valueStringIsValid: valueString => isFinite(Number(valueString)),
           getValueFromValueString: parseFloat,
-          onValueChange: this.props.onValueChange
-        })
+          onValueChange: this.props.onValueChange,
+        }),
       )
     );
   }

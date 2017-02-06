@@ -62,8 +62,8 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
             onClick: this.props.onItemClick,
             adjustItemAmount: this.props.adjustItemAmount,
             maxMoneyAvailable: (this.props.availableItems && this.props.availableItems["money"]) ?
-              this.props.availableItems["money"].amount : undefined
-          })
+              this.props.availableItems["money"].amount : undefined,
+          }),
         });
       }
       default:
@@ -74,7 +74,7 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
   }
   private static listItemSortOrder =
   {
-    money: 0
+    money: 0,
   }
 
   render()
@@ -99,22 +99,22 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
             TradeableItemsListComponent.listItemSortOrder[a.content.props.keyTODO] -
               TradeableItemsListComponent.listItemSortOrder[b.content.props.keyTODO]
           );
-        }
-      }
+        },
+      },
     ];
 
     return(
       React.DOM.div(
       {
-        className: "tradeable-items-list fixed-table-parent"
+        className: "tradeable-items-list fixed-table-parent",
       },
         List(
         {
           listItems: rows,
           initialColumns: columns,
           initialSortOrder: [columns[0]], // item
-          noHeader: this.props.noListHeader
-        })
+          noHeader: this.props.noListHeader,
+        }),
       )
     );
   }

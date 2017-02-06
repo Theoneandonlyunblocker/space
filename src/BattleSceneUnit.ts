@@ -12,7 +12,7 @@ const enum BattleSceneUnitState
   entering,
   stationary,
   exiting,
-  removed
+  removed,
 }
 
 export default class BattleSceneUnit
@@ -246,7 +246,7 @@ export default class BattleSceneUnit
       facingRight: props.unit.battleStats.side === "side1",
       renderer: this.renderer,
       triggerStart: props.triggerStart,
-      triggerEnd: props.triggerEnd
+      triggerEnd: props.triggerEnd,
     });
   }
   private setContainerPosition()
@@ -303,7 +303,7 @@ export default class BattleSceneUnit
     var SFXParams = this.getSFXParams(
     {
       unit: unit,
-      triggerStart: this.addUnitSprite.bind(this)
+      triggerStart: this.addUnitSprite.bind(this),
     });
 
     this.makeUnitSprite(unit, SFXParams);
@@ -340,7 +340,7 @@ export default class BattleSceneUnit
     const tweeningObject = {x: startX};
     var tween = new TWEEN.Tween(tweeningObject).to(
     {
-      x: finishX
+      x: finishX,
     }, duration).onStart(() =>
     {
       container.x = startX;
@@ -359,7 +359,7 @@ export default class BattleSceneUnit
     {
       unit: this.activeUnit,
       duration: duration,
-      triggerStart: this.addUnitSprite.bind(this)
+      triggerStart: this.addUnitSprite.bind(this),
     });
 
     this.hasSFXSprite = true;

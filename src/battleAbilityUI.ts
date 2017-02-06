@@ -2,7 +2,7 @@ import Battle from "./Battle";
 import Unit from "./Unit";
 import
 {
-  getUnitsInEffectArea
+  getUnitsInEffectArea,
 } from "./battleAbilityProcessing";
 import {AbilityEffectTemplate} from "./templateinterfaces/AbilityEffectTemplate";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";

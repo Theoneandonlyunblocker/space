@@ -32,7 +32,7 @@ export class Flag
   public static generateRandom(
     backgroundColor: Color = generateMainColor(),
     secondaryColor: Color = generateSecondaryColor(backgroundColor),
-    seed?: string
+    seed?: string,
   ): Flag
   {
 
@@ -62,7 +62,7 @@ export class Flag
     width: number,
     height: number,
     stretch: boolean = true,
-    useCache: boolean = true
+    useCache: boolean = true,
   ): HTMLCanvasElement
   {
     if (useCache)

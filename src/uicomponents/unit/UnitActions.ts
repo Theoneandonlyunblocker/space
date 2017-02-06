@@ -36,8 +36,8 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
         {
           src: availableSrc,
           className: "unit-action-point available-action-point",
-          key: "available" + i
-        }
+          key: "available" + i,
+        },
       ));
     }
 
@@ -49,8 +49,8 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
         {
           src: hoveredSrc,
           className: "unit-action-point hovered-action-point",
-          key: "hovered" + i
-        }
+          key: "hovered" + i,
+        },
       ));
     }
 
@@ -61,14 +61,14 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
         {
           src: spentSrc,
           className: "unit-action-point spent-action-point",
-          key: "spent" + i
-        }
+          key: "spent" + i,
+        },
       ));
     }
 
     return(
       React.DOM.div({className: "unit-action-points"},
-        icons
+        icons,
       )
     );
   }

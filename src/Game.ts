@@ -217,7 +217,7 @@ export default class Game
       date: date,
       gameData: gameData,
       idGenerators: idGenerators.serialize(),
-      cameraLocation: app.renderer.camera.getCenterPosition()
+      cameraLocation: app.renderer.camera.getCenterPosition(),
     };
 
     const stringified = JSON.stringify(fullSaveData);

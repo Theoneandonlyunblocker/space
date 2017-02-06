@@ -45,7 +45,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
   {
     return(
     {
-      canAfford: this.props.player.money >= this.props.buildCost
+      canAfford: this.props.player.money >= this.props.buildCost,
     });
   }
 
@@ -53,7 +53,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
   {
     this.setState(
     {
-      canAfford: this.props.player.money >= this.props.buildCost
+      canAfford: this.props.player.money >= this.props.buildCost,
     });
   }
 
@@ -97,7 +97,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     for (let i = 0; i < columns.length; i++)
     {
       cells.push(
-        this.makeCell(columns[i].key)
+        this.makeCell(columns[i].key),
       );
     }
 
@@ -105,7 +105,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     {
       className: "buildable-item buildable-building",
       onClick: this.props.handleClick,
-      title: template.description
+      title: template.description,
     }
     if (!this.state.canAfford)
     {
@@ -116,7 +116,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
 
     return(
       React.DOM.tr(props,
-      cells
+      cells,
       )
     );
   }

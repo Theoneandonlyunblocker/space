@@ -27,7 +27,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
 
   state: StateType =
   {
-    saveName: ""
+    saveName: "",
   };
   ref_TODO_okButton: HTMLElement;
   popupManager: PopupManagerComponent;
@@ -66,7 +66,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      saveName: newText
+      saveName: newText,
     });
   }
 
@@ -111,8 +111,8 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
       {
         handleOk: this.saveGame,
         content: "Are you sure you want to overwrite " +
-          saveName.replace("Rance.Save.", "") + "?"
-      })
+          saveName.replace("Rance.Save.", "") + "?",
+      }),
     });
   }
 
@@ -121,7 +121,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "save-game"
+        className: "save-game",
       },
         PopupManager(
         {
@@ -129,20 +129,20 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           {
             this.popupManager = component;
           },
-          onlyAllowOne: true
+          onlyAllowOne: true,
         }),
         SaveList(
         {
           onRowChange: this.handleRowChange,
           selectedKey: app.game.gameStorageKey,
           autoSelect: false,
-          onDoubleClick: this.saveGame
+          onDoubleClick: this.saveGame,
         }),
         React.DOM.form(
         {
           className: "save-game-form",
           onSubmit: this.handleSave,
-          action: "javascript:void(0);"
+          action: "javascript:void(0);",
         },
           React.DOM.input(
           {
@@ -154,12 +154,12 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
             type: "text",
             value: this.state.saveName,
             onChange: this.handleSaveNameInput,
-            maxLength: 64
-          })
+            maxLength: 64,
+          }),
         ),
         React.DOM.div(
         {
-          className: "save-game-buttons-container"
+          className: "save-game-buttons-container",
         },
           React.DOM.button(
           {
@@ -168,14 +168,14 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
             ref: (component: HTMLElement) =>
             {
               this.ref_TODO_okButton = component;
-            }
+            },
           }, "Save"),
           React.DOM.button(
           {
             className: "save-game-button",
-            onClick: this.handleClose
-          }, "Cancel")
-        )
+            onClick: this.handleClose,
+          }, "Cancel"),
+        ),
       )
     );
   }

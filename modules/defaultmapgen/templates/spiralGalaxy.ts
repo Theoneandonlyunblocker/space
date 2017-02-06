@@ -24,8 +24,8 @@ const spiralGalaxy: MapGenTemplate =
         {
           min: 800,
           max: 1600,
-          step: 1
-        }
+          step: 1,
+        },
       },
       width:
       {
@@ -34,8 +34,8 @@ const spiralGalaxy: MapGenTemplate =
         {
           min: 800,
           max: 1600,
-          step: 1
-        }
+          step: 1,
+        },
       },
       starCount:
       {
@@ -44,9 +44,9 @@ const spiralGalaxy: MapGenTemplate =
         {
           min: 20,
           max: 40,
-          step: 1
-        }
-      }
+          step: 1,
+        },
+      },
     },
     basicOptions:
     {
@@ -58,8 +58,8 @@ const spiralGalaxy: MapGenTemplate =
           min: 3,
           max: 6,
           step: 1,
-          defaultValue: 5
-        }
+          defaultValue: 5,
+        },
       },
       starSizeRegularity:
       {
@@ -69,8 +69,8 @@ const spiralGalaxy: MapGenTemplate =
           min: 1,
           max: 100,
           step: 1,
-          defaultValue: 100
-        }
+          defaultValue: 100,
+        },
       },
       centerDensity:
       {
@@ -80,11 +80,11 @@ const spiralGalaxy: MapGenTemplate =
           min: 1,
           max: 90,
           step: 1,
-          defaultValue: 50
-        }
-      }
-    }
-  }
+          defaultValue: 50,
+        },
+      },
+    },
+  },
 }
 
 export default spiralGalaxy;

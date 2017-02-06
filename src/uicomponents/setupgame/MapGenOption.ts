@@ -3,7 +3,7 @@
 import MapGenOption from "../../templateinterfaces/MapGenOption";
 import
 {
-  clamp
+  clamp,
 } from "../../utility";
 
 export interface PropTypes extends React.Props<any>
@@ -67,15 +67,15 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "map-gen-option"
+        className: "map-gen-option",
       },
         React.DOM.label(
         {
           className: "map-gen-option-label",
           title: option.displayName,
-          htmlFor: id
+          htmlFor: id,
         },
-          option.displayName
+          option.displayName,
         ),
         React.DOM.input(
         {
@@ -86,7 +86,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
           max: range.max,
           step: range.step,
           value: "" + this.props.value,
-          onChange: this.handleChange
+          onChange: this.handleChange,
         }),
         React.DOM.input(
         {
@@ -97,8 +97,8 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
           max: range.max,
           step: range.step,
           value: "" + this.props.value,
-          onChange: this.handleChange
-        })
+          onChange: this.handleChange,
+        }),
       )
     );
   }

@@ -46,7 +46,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      hasAttitudeModifierTootlip: false
+      hasAttitudeModifierTootlip: false,
     });
   }
 
@@ -102,8 +102,8 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
           positionOnUpdate: true,
           ySide: "outerTop",
           xSide: "outerRight",
-          yMargin: 10
-        }
+          yMargin: 10,
+        },
       });
     }
     return(
@@ -111,18 +111,18 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
       {
         className: "player-opinion",
         onMouseEnter: this.setTooltip,
-        onMouseLeave: this.clearTooltip
+        onMouseLeave: this.clearTooltip,
       },
         React.DOM.span(
         {
           style:
           {
-            color: this.getColor()
-          }
+            color: this.getColor(),
+          },
         },
-          this.props.opinion
+          this.props.opinion,
         ),
-        tooltip
+        tooltip,
       )
     );
   }

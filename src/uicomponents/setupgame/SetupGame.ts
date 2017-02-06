@@ -46,7 +46,7 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
     return(
     {
       minPlayers: 1,
-      maxPlayers: 5
+      maxPlayers: 5,
     });
   }
 
@@ -59,7 +59,7 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       minPlayers: props.min,
-      maxPlayers: props.max
+      maxPlayers: props.max,
     });
   }
   private startGame()
@@ -88,15 +88,15 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "setup-game-wrapper"
+        className: "setup-game-wrapper",
       },
         React.DOM.div(
         {
-          className: "setup-game"
+          className: "setup-game",
         },
           React.DOM.div(
           {
-            className: "setup-game-options"
+            className: "setup-game-options",
           },
             SetupGamePlayers(
             {
@@ -105,7 +105,7 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
                 this.ref_TODO_players = component;
               },
               minPlayers: this.state.minPlayers,
-              maxPlayers: this.state.maxPlayers
+              maxPlayers: this.state.maxPlayers,
             }),
             MapSetup(
             {
@@ -113,25 +113,25 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
               ref: (component: MapSetupComponent) =>
               {
                 this.ref_TODO_mapSetup = component;
-              }
-            })
+              },
+            }),
           ),
           React.DOM.div(
           {
-            className: "setup-game-buttons"
+            className: "setup-game-buttons",
           },
             React.DOM.button(
             {
               className: "setup-game-button setup-game-button-randomize",
-              onClick: this.randomize
+              onClick: this.randomize,
             }, "Randomize"),
             React.DOM.button(
             {
               className: "setup-game-button setup-game-button-start",
-              onClick: this.startGame
-            }, "Start game")
-          )
-        )
+              onClick: this.startGame,
+            }, "Start game"),
+          ),
+        ),
       )
     );
   }

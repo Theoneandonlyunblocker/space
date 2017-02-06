@@ -7,7 +7,7 @@ import
 {
   beamAttack,
   rangedAttack,
-  standBy
+  standBy,
 } from "../../common/abilitytemplates/abilities";
 import {distributionGroups} from "../../common/distributionGroups";
 import itemSlot from "../../common/itemSlot";
@@ -22,7 +22,7 @@ const battleCruiser: UnitTemplate =
   {
     imageSrc: "battleCruiser.png",
     anchor: {x: 0.5, y: 0.5},
-    attackOriginPoint: {x: 0.75, y: 0.5}
+    attackOriginPoint: {x: 0.75, y: 0.5},
   },
   isSquadron: true,
   buildCost: 200,
@@ -36,7 +36,7 @@ const battleCruiser: UnitTemplate =
     attack: 0.8,
     defence: 0.8,
     intelligence: 0.7,
-    speed: 0.6
+    speed: 0.6,
   },
   possibleAbilities:
   [
@@ -46,9 +46,9 @@ const battleCruiser: UnitTemplate =
       [
         rangedAttack,
         beamAttack,
-        standBy
-      ]
-    }
+        standBy,
+      ],
+    },
   ],
   itemSlots:
   {
@@ -66,7 +66,7 @@ const battleCruiser: UnitTemplate =
       distributionGroups.rare,
       distributionGroups.unique,
     ],
-  }
+  },
 }
 
 export default battleCruiser;

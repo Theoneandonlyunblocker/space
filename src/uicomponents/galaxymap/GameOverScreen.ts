@@ -29,7 +29,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
   } =
   {
     load: undefined,
-    newGame: undefined
+    newGame: undefined,
   }
 
   private popupProps: CustomPopupProps =
@@ -37,7 +37,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
     dragPositionerProps:
     {
       preventAutoResize: true,
-    }
+    },
   }
 
   constructor(props: PropTypes)
@@ -66,13 +66,13 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
             handleClose: () =>
             {
               this.popupIDs.load = undefined;
-            }
+            },
           }),
           handleClose: () =>
           {
             this.popupIDs.load = undefined;
-          }
-        })
+          },
+        }),
       });
     }
   }
@@ -97,8 +97,8 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
           {
             this.popupIDs.load = undefined;
           },
-          content: "Are you sure you want to start a new game?"
-        })
+          content: "Are you sure you want to start a new game?",
+        }),
       });
     }
   }
@@ -108,45 +108,45 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
     return(
       React.DOM.div(
       {
-        className: "game-over-screen"
+        className: "game-over-screen",
       },
         React.DOM.div(
         {
-          className: "game-over-screen-inner"
+          className: "game-over-screen-inner",
         },
           React.DOM.h1(
           {
-            className: "game-over-header"
+            className: "game-over-header",
           },
-            "Game over"
+            "Game over",
           ),
           React.DOM.div(
           {
-            className: "game-over-buttons"
+            className: "game-over-buttons",
           },
             React.DOM.button(
             {
               className: "game-over-buttons-button",
               onClick: this.toggleLoadPopup,
             },
-              "Load"
+              "Load",
             ),
             React.DOM.button(
             {
               className: "game-over-buttons-button",
               onClick: this.toggleNewGamePopup,
             },
-              "New game"
+              "New game",
             ),
-          )
+          ),
         ),
         PopupManager(
         {
           ref: component =>
           {
             this.popupManager = component;
-          }
-        })
+          },
+        }),
       )
     );
   }

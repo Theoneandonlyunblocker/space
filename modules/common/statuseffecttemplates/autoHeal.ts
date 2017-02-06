@@ -15,11 +15,11 @@ const autoHeal: StatusEffectTemplate =
       getUnitsInArea: user => [user],
       executeAction: bindEffectActionData(adjustHealth,
       {
-        flat: 50
+        flat: 50,
       }),
-      trigger: user => user.currentHealth < user.maxHealth
-    }
-  ]
+      trigger: user => user.currentHealth < user.maxHealth,
+    },
+  ],
 }
 
 export default autoHeal;

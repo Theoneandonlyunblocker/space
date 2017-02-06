@@ -51,9 +51,9 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
         {
           className: "upgrade-attributes-attribute",
           onClick: this.upgradeAttribute.bind(this, attribute),
-          key: attribute
+          key: attribute,
         },
-          attribute + ": " + unit.baseAttributes[attribute] + " -> " + (unit.baseAttributes[attribute] + 1)
+          attribute + ": " + unit.baseAttributes[attribute] + " -> " + (unit.baseAttributes[attribute] + 1),
         ))
       }
     })
@@ -66,20 +66,20 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
     return(
       React.DOM.div(
       {
-        className: "upgrade-attributes"
+        className: "upgrade-attributes",
       },
         React.DOM.div(
         {
-          className: "upgrade-attributes-header"
+          className: "upgrade-attributes-header",
         },
-          "Upgrade stats"
+          "Upgrade stats",
         ),
         React.DOM.ol(
         {
-          className: "upgrade-attributes-list"
+          className: "upgrade-attributes-list",
         },
-          rows
-        )
+          rows,
+        ),
       )
     );
   }

@@ -4,7 +4,7 @@ import Unit from "../../src/Unit";
 import ValuesByUnit from "../../src/ValuesByUnit";
 import
 {
-  shallowExtend
+  shallowExtend,
 } from "../../src/utility";
 
 import PartialAllScripts from "../../src/modulescriptinterfaces/PartialAllScripts";
@@ -74,7 +74,7 @@ export const attachedUnitDataScripts: PartialAllScripts =
         }
 
         attachedUnitData.delete(unit);
-      }
-    ]
-  }
+      },
+    ],
+  },
 }

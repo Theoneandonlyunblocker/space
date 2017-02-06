@@ -79,7 +79,7 @@ const starIncome: MapRendererLayerTemplate =
       doc.addChild(gfx);
     }
     return doc;
-  }
+  },
 }
 
 export default starIncome;

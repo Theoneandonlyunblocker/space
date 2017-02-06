@@ -9,7 +9,7 @@ import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
 {
-  makeShaderSprite
+  makeShaderSprite,
 } from "../../../../src/utility";
 
 interface PartialLightBurstProps
@@ -77,7 +77,7 @@ export default class LightBurst extends SFXFragment<LightBurstProps, PartialLigh
     {
       centerSize: Math.pow(lightBurstIntensity, 2.0) * this.props.centerSize,
       centerBloomStrength: Math.pow(lightBurstIntensity, 2.0) * 5.0,
-      rayStrength: Math.pow(lightBurstIntensity, 3.0) * this.props.rayStrength
+      rayStrength: Math.pow(lightBurstIntensity, 3.0) * this.props.rayStrength,
     });
   }
   public draw(): void
@@ -87,7 +87,7 @@ export default class LightBurst extends SFXFragment<LightBurstProps, PartialLigh
       seed: this.seed,
       rotation: 0,
       raySharpness: this.props.sharpness,
-      rayColor: this.props.color.getRGBA(1.0)
+      rayColor: this.props.color.getRGBA(1.0),
     });
 
     const lightBurstSprite = makeShaderSprite(
@@ -95,7 +95,7 @@ export default class LightBurst extends SFXFragment<LightBurstProps, PartialLigh
       0,
       0,
       this.props.size.x,
-      this.props.size.y
+      this.props.size.y,
     );
 
     lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;

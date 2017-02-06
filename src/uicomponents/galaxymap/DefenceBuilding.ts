@@ -38,24 +38,24 @@ export class DefenceBuildingComponent extends React.Component<PropTypes, StateTy
     return(
       React.DOM.div(
       {
-        className: "defence-building"
+        className: "defence-building",
       },
         React.DOM.img(
         {
           className: "defence-building-icon",
           src: colorImageInPlayerColor(image, building.controller),
-          title: building.template.displayName
+          title: building.template.displayName,
         }),
         PlayerFlag(
         {
           props:
           {
             className: "defence-building-controller",
-            title: building.controller.name.fullName
+            title: building.controller.name.fullName,
           },
           key: "flag",
-          flag: building.controller.flag
-        })
+          flag: building.controller.flag,
+        }),
       )
     );
   }

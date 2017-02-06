@@ -63,7 +63,7 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
 
     var divProps: React.HTMLAttributes =
     {
-      className: "fleet-unit-info"
+      className: "fleet-unit-info",
     };
 
     if (this.props.isDraggable)
@@ -83,37 +83,37 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
       React.DOM.div(divProps,
         React.DOM.div(
         {
-          className: "fleet-unit-info-icon-container"
+          className: "fleet-unit-info-icon-container",
         },
           React.DOM.img(
           {
             className: "fleet-unit-info-icon",
-            src: isNotDetected ? "img/icons/unDetected.png" : unit.template.icon
-          })
+            src: isNotDetected ? "img/icons/unDetected.png" : unit.template.icon,
+          }),
         ),
         React.DOM.div(
         {
-          className: "fleet-unit-info-info"
+          className: "fleet-unit-info-info",
         },
           FleetUnitInfoName(
           {
             unit: unit,
-            isNotDetected: isNotDetected
+            isNotDetected: isNotDetected,
           }),
           React.DOM.div(
           {
-            className: "fleet-unit-info-type"
+            className: "fleet-unit-info-type",
           },
-            isNotDetected ? "???" : unit.template.displayName
-          )
+            isNotDetected ? "???" : unit.template.displayName,
+          ),
         ),
         UnitStrength(
         {
           maxHealth: unit.maxHealth,
           currentHealth: unit.currentHealth,
           isSquadron: true,
-          isNotDetected: isNotDetected
-        })
+          isNotDetected: isNotDetected,
+        }),
 
       )
     );

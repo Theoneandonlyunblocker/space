@@ -6,7 +6,7 @@ import SubEmblemTemplate from "../templateinterfaces/SubEmblemTemplate";
 
 import
 {
-  shallowExtend
+  shallowExtend,
 } from "../utility";
 
 export interface EmblemProps
@@ -86,12 +86,12 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
       ref: (component: HTMLDivElement) =>
       {
         this.container = component;
-      }
+      },
     });
 
     return(
       React.DOM.div(containerProps,
-        null
+        null,
       )
     );
   }

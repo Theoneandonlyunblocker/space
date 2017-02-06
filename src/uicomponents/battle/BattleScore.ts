@@ -34,30 +34,30 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
     return(
       React.DOM.div(
       {
-        className: "battle-score-wrapper"
+        className: "battle-score-wrapper",
       },
         React.DOM.div(
         {
-          className: "battle-score-container"
+          className: "battle-score-container",
         },
           React.DOM.img(
           {
             className: "battle-score-mid-point",
-            src: "img/icons/battleScoreMidPoint.png"
+            src: "img/icons/battleScoreMidPoint.png",
           },
-            null
+            null,
           ),
           PlayerFlag(
           {
             props:
             {
-              className: "battle-score-flag"
+              className: "battle-score-flag",
             },
-            flag: this.props.player1.flag
+            flag: this.props.player1.flag,
           }),
           React.DOM.div(
           {
-            className: "battle-score-bar-container"
+            className: "battle-score-bar-container",
           },
             React.DOM.div(
             {
@@ -67,8 +67,8 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
                 width: "" + evaluationPercentage + "%",
                 backgroundColor: "#" + this.props.player1.color.getHexString(),
                 borderColor: "#" + this.props.player1.secondaryColor.getHexString(),
-                transitionDuration: transitionDurationString
-              }
+                transitionDuration: transitionDurationString,
+              },
             }),
             React.DOM.div(
             {
@@ -78,19 +78,19 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
                 width: "" + (100 - evaluationPercentage) + "%",
                 backgroundColor: "#" + this.props.player2.color.getHexString(),
                 borderColor: "#" + this.props.player2.secondaryColor.getHexString(),
-                transitionDuration: transitionDurationString
-              }
-            })
+                transitionDuration: transitionDurationString,
+              },
+            }),
           ),
           PlayerFlag(
           {
             props:
             {
-              className: "battle-score-flag"
+              className: "battle-score-flag",
             },
-            flag: this.props.player2.flag
-          })
-        )
+            flag: this.props.player2.flag,
+          }),
+        ),
       )
     );
   }

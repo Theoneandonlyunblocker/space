@@ -6,7 +6,7 @@ import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
 import UnitDrawingFunctionData from "../../../../src/UnitDrawingFunctionData";
 import
 {
-  randInt
+  randInt,
 } from "../../../../src/utility";
 
 type impactFN = (projectile: Projectile, container: PIXI.Container, time: number) => void;

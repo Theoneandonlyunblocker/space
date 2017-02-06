@@ -17,7 +17,7 @@ const defaultBuildings: ModuleFile =
     name: "Default Buildings",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   loadAssets: function(onLoaded: () => void)
@@ -39,7 +39,7 @@ const defaultBuildings: ModuleFile =
     moduleData.copyTemplates<BuildingTemplate>(BuildingTemplates, "Buildings");
 
     return moduleData;
-  }
+  },
 }
 
 export default defaultBuildings;

@@ -103,7 +103,7 @@ const playerInfluence: MapRendererLayerTemplate =
       doc.addChild(gfx);
     }
     return doc;
-  }
+  },
 }
 
 export default playerInfluence;

@@ -42,7 +42,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
   {
     return(
     {
-      canAfford: this.props.player.money >= this.props.upgradeData.cost
+      canAfford: this.props.player.money >= this.props.upgradeData.cost,
     });
   }
 
@@ -50,7 +50,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
   {
     this.setState(
     {
-      canAfford: this.props.player.money >= this.props.upgradeData.cost
+      canAfford: this.props.player.money >= this.props.upgradeData.cost,
     })
   }
 
@@ -68,13 +68,13 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
       key: upgradeData.template.type,
       className: "building-upgrade-list-item",
       onClick: this.handleClick,
-      title: upgradeData.template.description
+      title: upgradeData.template.description,
     };
 
     var costProps: React.HTMLAttributes =
     {
       key: "cost",
-      className: "building-upgrade-list-item-cost"
+      className: "building-upgrade-list-item-cost",
     };
 
     if (!this.state.canAfford)
@@ -91,9 +91,9 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
         React.DOM.td(
         {
           key: "name",
-          className: "building-upgrade-list-item-name"
+          className: "building-upgrade-list-item-name",
         }, upgradeData.template.displayName + " " + (upgradeData.level > 1 ? upgradeData.level : "")),
-        React.DOM.td(costProps, upgradeData.cost)
+        React.DOM.td(costProps, upgradeData.cost),
       )
     );
   }

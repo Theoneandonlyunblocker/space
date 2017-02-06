@@ -53,49 +53,49 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "top-bar"
+        className: "top-bar",
       },
         React.DOM.div(
         {
-          className: "top-bar-info"
+          className: "top-bar-info",
         },
           React.DOM.div(
           {
-            className: "top-bar-player"
+            className: "top-bar-player",
           },
             PlayerFlag(
             {
               props:
               {
-                className: "top-bar-player-icon"
+                className: "top-bar-player-icon",
               },
-              flag: player.flag
+              flag: player.flag,
             }),
             React.DOM.div(
             {
-              className: "top-bar-turn-number"
-            }, "Turn " + this.props.game.turnNumber)
+              className: "top-bar-turn-number",
+            }, "Turn " + this.props.game.turnNumber),
           ),
           React.DOM.div(
           {
-            className: "top-bar-money"
+            className: "top-bar-money",
           },
             PlayerMoney(
             {
-              player: player
+              player: player,
             }),
             React.DOM.div(
             {
-              className: incomeClass
+              className: incomeClass,
             },
-              "(+" + player.getIncome() + ")"
-            )
+              "(+" + player.getIncome() + ")",
+            ),
           ),
           TopBarResources(
           {
-            player: player
-          })
-        )
+            player: player,
+          }),
+        ),
       )
     );
   }

@@ -7,11 +7,11 @@ export default class ModuleScripts implements PartialAllScripts
 {
   public readonly unit: UnitScripts =
   {
-    removeFromPlayer: []
+    removeFromPlayer: [],
   };
   public readonly game: GameScripts =
   {
-    afterInit: []
+    afterInit: [],
   };
 
   constructor()

@@ -49,7 +49,7 @@ export class SFXFragmentPropColorComponent extends React.Component<PropTypes, St
       ColorSetter(
       {
         color: this.props.color,
-        onChange: this.onColorChange
+        onChange: this.onColorChange,
       })
     );
   }

@@ -28,8 +28,8 @@ export default class Trade
       money:
       {
         key: "money",
-        amount: this.player.money
-      }
+        amount: this.player.money,
+      },
     }
   }
   getItemsAvailableForTrade()
@@ -42,7 +42,7 @@ export default class Trade
       available[key] =
       {
         key: key,
-        amount: this.allItems[key].amount - stagedAmount
+        amount: this.allItems[key].amount - stagedAmount,
       };
     }
 
@@ -67,7 +67,7 @@ export default class Trade
       this.stagedItems[key] =
       {
         key: key,
-        amount: amount
+        amount: amount,
       }
     }
     else

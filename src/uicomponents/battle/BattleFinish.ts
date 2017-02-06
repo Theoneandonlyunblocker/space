@@ -24,20 +24,20 @@ export class BattleFinishComponent extends React.PureComponent<PropTypes, StateT
     return(
       React.DOM.div(
       {
-        className: "battle-scene-finish-container"
+        className: "battle-scene-finish-container",
       },
         React.DOM.h1(
         {
-          className: "battle-scene-finish-header"
+          className: "battle-scene-finish-header",
         },
-          this.props.humanPlayerWonBattle ? "You win" : "You lose"
+          this.props.humanPlayerWonBattle ? "You win" : "You lose",
         ),
         React.DOM.h3(
         {
-          className: "battle-scene-finish-subheader"
+          className: "battle-scene-finish-subheader",
         },
-          "Click anywhere to continue"
-        )
+          "Click anywhere to continue",
+        ),
       )
     );
   }

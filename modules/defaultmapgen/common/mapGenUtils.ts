@@ -1,7 +1,7 @@
 import
 {
   sectorCommand,
-  starBase
+  starBase,
 } from "../../defaultbuildings/templates/Templates";
 
 import MapGenDataByStarID from "./MapGenDataByStarID";
@@ -12,12 +12,12 @@ import Region from "../../../src/Region";
 import Star from "../../../src/Star";
 import
 {
-  aStar
+  aStar,
 } from "../../../src/pathFinding";
 import
 {
   getRandomKeyWithWeights,
-  getRelativeWeightsFromObject
+  getRelativeWeightsFromObject,
 } from "../../../src/utility";
 
 import {Distributable} from "../../../src/templateinterfaces/Distributable";
@@ -51,7 +51,7 @@ export function partiallySeverLinks(
   stars: Star[],
   mapGenDataByStarID: MapGenDataByStarID,
   minConnectionsToKeep: number,
-  maxCuts: number
+  maxCuts: number,
 ): void
 {
   stars.forEach(star =>
@@ -124,7 +124,7 @@ export function makeSectors(
   stars: Star[],
   mapGenDataByStarID: MapGenDataByStarID,
   minSize: number,
-  maxSize: number
+  maxSize: number,
 ): Region[]
 {
   /*
@@ -204,7 +204,7 @@ export function makeSectors(
         {
           const frontierSortScores:
           {
-            [starId: number]: number
+            [starId: number]: number,
           } = {};
 
           frontier.forEach(star =>
@@ -337,7 +337,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
   sectors: Region[],
   distributionFlagsBySectorID: {[sectorID: string]: string[]},
   distributablesByDistributionGroup: {[groupName: string]: T[]},
-  placerFunction: (sector: Region, distributable: T) => void
+  placerFunction: (sector: Region, distributable: T) => void,
 ): void
 {
   const probabilityWeights:
@@ -354,7 +354,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
     [regionID: string]:
     {
       [distributableName: string]: boolean;
-    }
+    },
   } = {};
 
   for (let distributionGroup in distributablesByDistributionGroup)
@@ -435,7 +435,7 @@ export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCom
     star.addBuilding(new Building(
     {
       template: sectorCommand,
-      location: star
+      location: star,
     }));
 
     var amount = amount - 1;
@@ -446,7 +446,7 @@ export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCom
     star.addBuilding(new Building(
     {
       template: starBase,
-      location: star
+      location: star,
     }));
   }
 }

@@ -75,7 +75,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      displayedStrength: newAmount
+      displayedStrength: newAmount,
     });
   }
   animateDisplayedStrength(newAmount: number, time: number)
@@ -96,19 +96,19 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
 
     const tweeningHealthObject =
     {
-      health: this.state.displayedStrength
+      health: this.state.displayedStrength,
     }
 
     var tween = new TWEEN.Tween(tweeningHealthObject).to(
     {
-      health: newAmount
+      health: newAmount,
     }, time);
 
     tween.onUpdate(() =>
     {
       this.setState(
       {
-        displayedStrength: tweeningHealthObject.health
+        displayedStrength: tweeningHealthObject.health,
       });
     }).easing(TWEEN.Easing.Sinusoidal.Out);
 
@@ -127,7 +127,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
   {
     return(
       React.DOM.div({className: "unit-strength-container"},
-        this.makeStrengthText()
+        this.makeStrengthText(),
       )
     );
   }
@@ -139,22 +139,22 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
 
     var bar = React.DOM.div(
     {
-      className: "unit-strength-bar"
+      className: "unit-strength-bar",
     },
       React.DOM.div(
       {
         className: "unit-strength-bar-value",
         style:
         {
-          width: "" + relativeHealth * 100 + "%"
-        }
-      })
+          width: "" + relativeHealth * 100 + "%",
+        },
+      }),
     );
 
     return(
       React.DOM.div({className: "unit-strength-container"},
         text,
-        bar
+        bar,
       )
     );
   }
@@ -163,7 +163,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
     var critThreshhold = 0.3;
     var currentStyle =
     {
-      className: "unit-strength-current"
+      className: "unit-strength-current",
     };
 
     var healthRatio = this.state.displayedStrength / this.props.maxHealth;
@@ -180,7 +180,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
     var containerProps =
     {
       className: (this.props.isSquadron ? "unit-strength-amount" :
-        "unit-strength-amount-capital")
+        "unit-strength-amount-capital"),
     }
 
     var displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.state.displayedStrength);
@@ -189,7 +189,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(containerProps,
         React.DOM.span(currentStyle, displayed),
-        React.DOM.span({className: "unit-strength-max"}, "/" + max)
+        React.DOM.span({className: "unit-strength-max"}, "/" + max),
       )
     )
   }

@@ -17,7 +17,7 @@ export default class PlayerTechnology
       maxLevel: number;
       priority: number;
       priorityIsLocked: boolean;
-    }
+    },
   };
   tempOverflowedResearchAmount: number = 0;
   getResearchSpeed: () => number;
@@ -41,7 +41,7 @@ export default class PlayerTechnology
         level: 0,
         maxLevel: raceValue.maxLevel,
         priority: undefined,
-        priorityIsLocked: false
+        priorityIsLocked: false,
       }
 
       if (savedData && savedData[techKey])
@@ -335,7 +335,7 @@ export default class PlayerTechnology
       {
         totalResearch: this.technologies[key].totalResearch,
         priority: this.technologies[key].priority,
-        priorityIsLocked: this.technologies[key].priorityIsLocked
+        priorityIsLocked: this.technologies[key].priorityIsLocked,
       }
     }
 

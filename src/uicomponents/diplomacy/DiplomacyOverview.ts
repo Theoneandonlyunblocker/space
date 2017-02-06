@@ -57,16 +57,16 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
       {
         player: this.props.player,
         targetPlayer: player,
-        onUpdate: this.forceUpdate.bind(this)
+        onUpdate: this.forceUpdate.bind(this),
       }),
       popupProps:
       {
         dragPositionerProps:
         {
           preventAutoResize: true,
-          containerDragOnly: true
-        }
-      }
+          containerDragOnly: true,
+        },
+      },
     });
   }
 
@@ -97,7 +97,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           statusSortingNumber: status,
           attitudeModifiers:
             player.diplomacyStatus.attitudeModifiersByPlayer[this.props.player.id],
-        })
+        }),
       });
     }
 
@@ -113,7 +113,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           status: "unmet",
           statusSortingNumber: 99999 + i,
           opinion: null,
-        })
+        }),
       });
     }
 
@@ -123,24 +123,24 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         label: "",
         key: "flag",
         defaultOrder: "asc",
-        notSortable: true
+        notSortable: true,
       },
       {
         label: "Name",
         key: "name",
-        defaultOrder: "asc"
+        defaultOrder: "asc",
       },
       {
         label: "Status",
         key: "status",
         defaultOrder: "asc",
-        propToSortBy: "statusSortingNumber"
+        propToSortBy: "statusSortingNumber",
       },
       {
         label: "Opinion",
         key: "opinion",
-        defaultOrder: "desc"
-      }
+        defaultOrder: "desc",
+      },
     ];
 
     return(
@@ -151,7 +151,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           {
             this.popupManager = component;
           },
-          onlyAllowOne: true
+          onlyAllowOne: true,
         }),
         React.DOM.div({className: "diplomacy-status-list fixed-table-parent"},
           List(
@@ -159,9 +159,9 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
             listItems: rows,
             initialColumns: columns,
             initialSortOrder: [columns[1]],
-            onRowChange: this.makeDiplomacyActionsPopup
-          })
-        )
+            onRowChange: this.makeDiplomacyActionsPopup,
+          }),
+        ),
       )
     );
   }

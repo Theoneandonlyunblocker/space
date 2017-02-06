@@ -9,7 +9,7 @@ import Player from "./Player";
 import
 {
   extendObject,
-  getMatchingLocalstorageItemsByDate
+  getMatchingLocalstorageItemsByDate,
 } from "./utility";
 
 export default class NotificationFilter
@@ -121,7 +121,7 @@ export default class NotificationFilter
       {
         notificationTemplate: NotificationTemplate;
         filterState: NotificationFilterState[];
-      }[]
+      }[],
     } = {};
     var notifications = app.moduleData.Templates.Notifications;
 
@@ -138,7 +138,7 @@ export default class NotificationFilter
         filtersByCategory[notificationTemplate.category].push(
         {
           notificationTemplate: notificationTemplate,
-          filterState: this.filters[key]
+          filterState: this.filters[key],
         });
       }
     }
@@ -180,7 +180,7 @@ export default class NotificationFilter
     var data = JSON.stringify(
     {
       filters: this.filters,
-      date: new Date()
+      date: new Date(),
     });
 
     localStorage.setItem("NotificationFilter." + slot, data);

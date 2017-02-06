@@ -11,7 +11,7 @@ import
   defaultUnitDesireFN,
   defaultUnitFitFN,
   getUnitsToBeatImmediateTarget,
-  makeObjectivesFromScores
+  makeObjectivesFromScores,
 } from "../aiUtils";
 import movePriority from "./common/movePriority";
 import musterAndAttack from "./common/moveroutines/musterAndAttack";
@@ -24,7 +24,7 @@ const fightInvadingEnemy: ObjectiveTemplate =
   {
     combat: 0.65,
     defence: 0.25,
-    utility: 0.1
+    utility: 0.1,
   },
   moveRoutineFN: musterAndAttack.bind(null, null),
   unitDesireFN: defaultUnitDesireFN,
@@ -63,7 +63,7 @@ const fightInvadingEnemy: ObjectiveTemplate =
 
     return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
-  unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget
+  unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget,
 }
 
 export default fightInvadingEnemy;

@@ -9,7 +9,7 @@ const lifeCycleFunctions =
 [
   "componentWillMount" , "componentDidMount" ,
   "componentWillReceiveProps" , "componentWillUpdate" ,
-  "componentDidUpdate" , "componentWillUnmount"
+  "componentDidUpdate" , "componentWillUnmount",
 ];
 
 function wrapLifeCycleFunction(base: React.Component<any, any>, functionName: LifeCycleFunction, mixins: MixinBase<any>[])

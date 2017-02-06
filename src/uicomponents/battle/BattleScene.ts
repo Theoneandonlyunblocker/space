@@ -35,7 +35,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
   {
     const propsThatShouldTriggerUpdate =
     {
-      battleState: true
+      battleState: true,
     };
 
     for (let key in newProps)
@@ -72,18 +72,18 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
       {
         componentToRender = React.DOM.div(
         {
-          className: "battle-scene-flags-container"
+          className: "battle-scene-flags-container",
         },
           BattleSceneFlag(
           {
             flag: this.props.flag1,
-            facingRight: true
+            facingRight: true,
           }),
           BattleSceneFlag(
           {
             flag: this.props.flag2,
-            facingRight: false
-          })
+            facingRight: false,
+          }),
         )
         break;
       }
@@ -96,7 +96,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
       {
         componentToRender = BattleFinish(
         {
-          humanPlayerWonBattle: this.props.humanPlayerWonBattle
+          humanPlayerWonBattle: this.props.humanPlayerWonBattle,
         })
         break;
       }
@@ -105,9 +105,9 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "battle-scene"
+        className: "battle-scene",
       },
-        componentToRender
+        componentToRender,
       )
     );
   }

@@ -44,7 +44,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
   {
     return(
     {
-      notificationFilterPopup: undefined
+      notificationFilterPopup: undefined,
     });
   }
 
@@ -57,9 +57,9 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
         content: NotificationFilterList(
         {
           filter: this.props.filter,
-          highlightedOptionKey: this.props.highlightedOptionKey
+          highlightedOptionKey: this.props.highlightedOptionKey,
         }),
-        handleClose: this.closePopup
+        handleClose: this.closePopup,
       }),
       popupProps:
       {
@@ -71,12 +71,12 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
         resizable: true,
         minWidth: 440,
         minHeight: 150,
-      }
+      },
     });
 
     this.setState(
     {
-      notificationFilterPopup: popupId
+      notificationFilterPopup: popupId,
     });
   }
 
@@ -85,7 +85,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
     this.popupManager.closePopup(this.state.notificationFilterPopup);
     this.setState(
     {
-      notificationFilterPopup: undefined
+      notificationFilterPopup: undefined,
     });
   }
 
@@ -106,14 +106,14 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
     return(
       React.DOM.div(
       {
-        className: "notification-filter-button-container"
+        className: "notification-filter-button-container",
       },
         React.DOM.button(
         {
           className: "notification-filter-button",
-          onClick: this.togglePopup
+          onClick: this.togglePopup,
         },
-          this.props.text
+          this.props.text,
         ),
         PopupManager(
         {
@@ -121,8 +121,8 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
           {
             this.popupManager = component;
           },
-          onlyAllowOne: true
-        })
+          onlyAllowOne: true,
+        }),
       )
     );
   }

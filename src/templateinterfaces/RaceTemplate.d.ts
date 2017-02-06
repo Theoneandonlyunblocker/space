@@ -34,11 +34,11 @@ export declare interface RaceTemplate
   getUnitName(unitTemplate: UnitTemplate): string;
   getUnitPortrait(
     unitTemplate: UnitTemplate,
-    allPortraitTemplates: TemplateCollection<PortraitTemplate>
+    allPortraitTemplates: TemplateCollection<PortraitTemplate>,
   ): PortraitTemplate;
 
   generateIndependentPlayer(
-    allEmblemTemplates: TemplateCollection<SubEmblemTemplate>
+    allEmblemTemplates: TemplateCollection<SubEmblemTemplate>,
   ): Player;
   generateIndependentFleet(
     player: Player,

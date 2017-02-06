@@ -69,7 +69,7 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
   {
     this.setState(
     {
-      displayedStrength: newAmount
+      displayedStrength: newAmount,
     });
   }
   private animateDisplayedStrength(strengthBefore: number, strengthAfter: number, duration: number)
@@ -100,19 +100,19 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
 
     const tweeningHealthObject =
     {
-      health: strengthBefore
+      health: strengthBefore,
     }
 
     var tween = new TWEEN.Tween(tweeningHealthObject).to(
     {
-      health: strengthAfter
+      health: strengthAfter,
     }, duration);
 
     tween.onUpdate(() =>
     {
       this.setState(
       {
-        displayedStrength: tweeningHealthObject.health
+        displayedStrength: tweeningHealthObject.health,
       });
     }).easing(TWEEN.Easing.Sinusoidal.Out);
 
@@ -133,7 +133,7 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
   {
     return(
       React.DOM.div({className: "unit-strength-battle-display"},
-        Math.ceil(this.state.displayedStrength)
+        Math.ceil(this.state.displayedStrength),
       )
     );
   }

@@ -68,50 +68,50 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "fleet-info" + (fleet.isStealthy ? " stealthy" : "")
+        className: "fleet-info" + (fleet.isStealthy ? " stealthy" : ""),
       },
         React.DOM.div(
         {
-          className: "fleet-info-header"
+          className: "fleet-info-header",
         },
           React.DOM.input(
           {
             className: "fleet-info-name",
             value: isNotDetected ? "Unidentified fleet" : fleet.name.fullName,
             onChange: isNotDetected ? null : this.setFleetName,
-            readOnly: isNotDetected
+            readOnly: isNotDetected,
           }),
           React.DOM.div(
           {
-            className: "fleet-info-strength"
+            className: "fleet-info-strength",
           },
             React.DOM.span(
             {
-              className: "fleet-info-strength-current" + healthStatus
+              className: "fleet-info-strength-current" + healthStatus,
             },
-              isNotDetected ? "???" : totalCurrentHealth
+              isNotDetected ? "???" : totalCurrentHealth,
             ),
             React.DOM.span(
             {
-              className: "fleet-info-strength-max"
+              className: "fleet-info-strength-max",
             },
-              isNotDetected ? "/???" : "/" + totalMaxHealth
-            )
+              isNotDetected ? "/???" : "/" + totalMaxHealth,
+            ),
           ),
           FleetControls(
           {
             fleet: fleet,
             hasMultipleSelected: this.props.hasMultipleSelected,
-            isInspecting: this.props.isInspecting
-          })
+            isInspecting: this.props.isInspecting,
+          }),
         ),
         React.DOM.div(
         {
-          className: "fleet-info-move-points"
+          className: "fleet-info-move-points",
         },
           isNotDetected ? "Moves: ?/?" : "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
-            fleet.getMinMaxMovePoints()
-        )
+            fleet.getMinMaxMovePoints(),
+        ),
 
       )
     );

@@ -157,7 +157,7 @@ export default class Region
     return Region.getRegionsWithStarsForQualifier(
       regionsToCheck,
       this.getLinkedStars(),
-      (region: Region, star: Star) => region.hasStar(star)
+      (region: Region, star: Star) => region.hasStar(star),
     );
   }
   private getOverlappingStarsWithRegions(regionsToCheck: Region[]): regionWithStars[]
@@ -165,7 +165,7 @@ export default class Region
     return Region.getRegionsWithStarsForQualifier(
       regionsToCheck,
       this.stars,
-      (region: Region, star: Star) => region.hasStar(star)
+      (region: Region, star: Star) => region.hasStar(star),
     );
   }
   private getNeighboringStarsWithRegions(regionsToCheck: Region[]): regionWithStars[]
@@ -173,14 +173,14 @@ export default class Region
     return Region.getRegionsWithStarsForQualifier(
       regionsToCheck,
       this.getNeighboringStars(),
-      (region: Region, star: Star) => region.hasStar(star)
+      (region: Region, star: Star) => region.hasStar(star),
     );
   }
 
   private static getRegionsWithStarsForQualifier(
     regionsToCheck: Region[],
     starsToCheck: Star[],
-    qualifierFN: (region: Region, star: Star) => boolean
+    qualifierFN: (region: Region, star: Star) => boolean,
   ): regionWithStars[]
   {
     const regionsWithStarsForQualifier: regionWithStars[] = regionsToCheck.map(region =>
@@ -193,7 +193,7 @@ export default class Region
       return(
       {
         region: region,
-        stars: starsThatPassQualifier
+        stars: starsThatPassQualifier,
       });
     });
 

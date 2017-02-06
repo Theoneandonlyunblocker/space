@@ -3,7 +3,7 @@
 import {Flag} from "../Flag";
 import
 {
-  shallowExtend
+  shallowExtend,
 } from "../utility";
 
 
@@ -64,12 +64,12 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
       ref: (component: HTMLElement) =>
       {
         this.ref_TODO_container = component;
-      }
+      },
     });
 
     return(
       React.DOM.div(props,
-        null
+        null,
       )
     );
   }

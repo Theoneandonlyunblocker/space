@@ -503,12 +503,12 @@ export function prettifyDate(date: Date)
       [
         date.getDate(),
         date.getMonth() + 1,
-        date.getFullYear().toString().slice(2,4)
+        date.getFullYear().toString().slice(2,4),
       ].join("/"),
       [
         date.getHours(),
-        date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes().toString()
-      ].join(":")
+        date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes().toString(),
+      ].join(":"),
     ].join(" ")
   );
 }
@@ -604,7 +604,7 @@ export function getDropTargetAtLocation(x: number, y: number)
   var point =
   {
     x: x,
-    y: y
+    y: y,
   }
 
   for (let i = 0; i < dropTargets.length; i++)
@@ -617,7 +617,7 @@ export function getDropTargetAtLocation(x: number, y: number)
       x1: nodeBounds.left,
       x2: nodeBounds.right,
       y1: nodeBounds.top,
-      y2: nodeBounds.bottom
+      y2: nodeBounds.bottom,
     }
     if (rectContains(rect, point))
     {
@@ -781,7 +781,7 @@ export function findEasingFunctionHighPoint(easingFunction: (x: number) => numbe
     resolution, maxIterations,
     highestValueIndex - step / 2,
     highestValueIndex + step / 2,
-    iteration + 1
+    iteration + 1,
   );
 }
 
@@ -805,7 +805,7 @@ export function makeRandomPersonality(): Personality
     aggressiveness: Math.random(),
     friendliness: Math.random(),
 
-    unitCompositionPreference: unitCompositionPreference
+    unitCompositionPreference: unitCompositionPreference,
   });
 }
 export function splitMultilineText(text: string | React.ReactFragment): string | React.ReactNode[]
@@ -818,7 +818,7 @@ export function splitMultilineText(text: string | React.ReactFragment): string |
       returnArr.push(text[i]);
       returnArr.push(React.DOM.br(
       {
-        key: "" + i
+        key: "" + i,
       }));
     }
     return returnArr;
@@ -834,7 +834,7 @@ export function convertClientRectToPixiRect(rect: ClientRect): PIXI.Rectangle
     rect.left,
     rect.top,
     rect.width,
-    rect.height
+    rect.height,
   );
 }
 export function generateTextureWithBounds(

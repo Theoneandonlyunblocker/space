@@ -25,7 +25,7 @@ const unitRoleData:
     health: number;
     attributes: number;
     filterCandidates: (candidates: UnitTemplate[]) => UnitTemplate[];
-  }
+  },
 } =
 {
   normal:
@@ -87,7 +87,7 @@ export function generateIndependentFleet(
 
   const unitCount = Math.min(
     Math.round(unitCountFromGlobalStrength + unitCountFromLocalStrength),
-    maxUnitsPerSideInBattle
+    maxUnitsPerSideInBattle,
   );
 
   const eliteCount = Math.ceil((unitCount / maxUnitsPerSideInBattle - 0.499) * 3);

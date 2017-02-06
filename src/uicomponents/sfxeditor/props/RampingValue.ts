@@ -34,7 +34,7 @@ export class SFXFragmentPropRampingValueComponent extends React.Component<PropTy
     return(
       React.DOM.div(
       {
-        className: "sfx-fragment-prop-ramping-value"
+        className: "sfx-fragment-prop-ramping-value",
       },
         SFXFragmentPropVecBase(
         {
@@ -47,20 +47,20 @@ export class SFXFragmentPropRampingValueComponent extends React.Component<PropTy
             {
               key: "base",
               label: "base",
-              value: this.props.base
+              value: this.props.base,
             },
             {
               key: "up",
               label: "up",
-              value: this.props.up
+              value: this.props.up,
             },
             {
               key: "down",
               label: "down",
-              value: this.props.down
+              value: this.props.down,
             },
-          ]
-        })
+          ],
+        }),
       )
     );
   }

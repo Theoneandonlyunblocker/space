@@ -10,14 +10,14 @@ import
   defaultUnitDesireFN,
   defaultUnitFitFN,
   getUnitsToBeatImmediateTarget,
-  makeObjectivesFromScores
+  makeObjectivesFromScores,
 } from "../aiUtils";
 import movePriority from "./common/movePriority";
 
 import
 {
   default as musterAndAttack,
-  independentTargetFilter
+  independentTargetFilter,
 } from "./common/moveroutines/musterAndAttack";
 
 const expansion: ObjectiveTemplate =
@@ -28,7 +28,7 @@ const expansion: ObjectiveTemplate =
   {
     combat: 0.65,
     defence: 0.25,
-    utility: 0.1
+    utility: 0.1,
   },
   moveRoutineFN: musterAndAttack.bind(null, independentTargetFilter),
   unitDesireFN: defaultUnitDesireFN,
@@ -48,7 +48,7 @@ const expansion: ObjectiveTemplate =
 
     return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
-  unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget
+  unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget,
 }
 
 export default expansion;

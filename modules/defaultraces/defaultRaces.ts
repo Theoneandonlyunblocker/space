@@ -14,7 +14,7 @@ const defaultRaces: ModuleFile =
     name: "Default Buildings",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
   constructModule: function(moduleData: ModuleData)
@@ -22,7 +22,7 @@ const defaultRaces: ModuleFile =
     moduleData.copyTemplates<RaceTemplate>(RaceTemplates, "Races");
 
     return moduleData;
-  }
+  },
 }
 
 export default defaultRaces;

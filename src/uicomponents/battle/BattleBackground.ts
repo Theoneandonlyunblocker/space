@@ -31,7 +31,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
     this.backgroundDrawer = new BackgroundDrawer(
     {
       seed: this.props.backgroundSeed,
-      drawBackgroundFN: this.props.backgroundDrawingFunction
+      drawBackgroundFN: this.props.backgroundDrawingFunction,
     });
   }
   private bindMethods()
@@ -82,9 +82,9 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
         ref: (component: HTMLElement) =>
         {
           this.pixiContainer = component;
-        }
+        },
       },
-        this.props.children
+        this.props.children,
       )
     );
   }

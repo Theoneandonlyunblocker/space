@@ -68,17 +68,17 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "confirm-popup draggable-container"
+        className: "confirm-popup draggable-container",
       },
         React.DOM.div(
         {
-          className: "confirm-popup-content"
+          className: "confirm-popup-content",
         },
-          this.props.content
+          this.props.content,
         ),
         React.DOM.div(
         {
-          className: "popup-buttons draggable-container"
+          className: "popup-buttons draggable-container",
         },
           React.DOM.button(
           {
@@ -87,15 +87,15 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
             ref: (component: HTMLElement) =>
             {
               this.ref_TODO_okButton = component;
-            }
+            },
           }, this.props.okText || "Confirm"),
           this.props.extraButtons,
           React.DOM.button(
           {
             className: "popup-button",
-            onClick: this.handleClose
-          }, this.props.cancelText || "Cancel")
-        )
+            onClick: this.handleClose,
+          }, this.props.cancelText || "Cancel"),
+        ),
       )
     );
   }

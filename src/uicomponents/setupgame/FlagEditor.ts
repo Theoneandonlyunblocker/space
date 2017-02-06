@@ -13,7 +13,7 @@ import EmblemSetterList from "./EmblemSetterList";
 import
 {
   AutoPositionerProps,
-  default as AutoPositioner
+  default as AutoPositioner,
 } from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 
@@ -80,12 +80,12 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
   {
     const flag = Flag.generateRandom(
       this.props.backgroundColor,
-      this.props.playerSecondaryColor
+      this.props.playerSecondaryColor,
     );
 
     this.setState(
     {
-      emblems: this.getEmblemDataFromFlag(flag)
+      emblems: this.getEmblemDataFromFlag(flag),
     });
   }
 
@@ -101,7 +101,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
     return new Emblem(
       emblemData.colors,
       emblemData.template,
-      1
+      1,
     );
   }
   private static emblemToEmblemData(emblem: Emblem, id: number): EmblemPropsWithID
@@ -147,7 +147,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
 
     this.setState(
     {
-      emblems: this.state.emblems.concat([emblemData])
+      emblems: this.state.emblems.concat([emblemData]),
     }, () =>
     {
       this.triggerParentFlagUpdate();
@@ -173,7 +173,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
       emblems: this.state.emblems.filter(emblemProps =>
       {
         return emblemProps.id !== idToFilter;
-      })
+      }),
     }, () =>
     {
       this.triggerParentFlagUpdate();
@@ -218,7 +218,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
     return(
       React.DOM.div(
       {
-        className: "flag-editor"
+        className: "flag-editor",
       },
         EmblemSetterList(
         {
@@ -241,7 +241,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
 
           setEmblemTemplate: this.setEmblemTemplate.bind(this, this.state.activeEmblemSetterID),
           setEmblemColor: this.setEmblemColor.bind(this, this.state.activeEmblemSetterID),
-        })
+        }),
       )
     );
   }

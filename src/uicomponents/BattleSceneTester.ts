@@ -8,7 +8,7 @@ import Unit from "../Unit";
 import
 {
   extendObject,
-  getRandomProperty
+  getRandomProperty,
 } from "../utility";
 
 
@@ -77,7 +77,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       side1Units: side1Units,
       side2Units: side2Units,
       side1Player: side1Player,
-      side2Player: side2Player
+      side2Player: side2Player,
     });
 
     battle.init();
@@ -92,7 +92,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       selectedSide2Unit: side2Units[0],
       selectedSFXTemplateKey: initialSFXTemplateKey,
 
-      duration: initialSFXTemplate.duration
+      duration: initialSFXTemplate.duration,
     });
   }
 
@@ -110,7 +110,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     return Unit.fromTemplate(
     {
       template: template,
-      race: getRandomProperty(app.moduleData.Templates.Races)
+      race: getRandomProperty(app.moduleData.Templates.Races),
     });
   }
 
@@ -151,20 +151,20 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
         attacker:
         {
           player: props.side1Player,
-          units: props.side1Units
+          units: props.side1Units,
         },
         defender:
         {
           player: props.side2Player,
-          units: props.side2Units
-        }
+          units: props.side2Units,
+        },
       },
 
       side1: this.makeFormation(props.side1Units),
       side2: this.makeFormation(props.side2Units),
 
       side1Player: props.side1Player,
-      side2Player: props.side2Player
+      side2Player: props.side2Player,
     });
   }
 
@@ -206,7 +206,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     this.setState(
     {
       selectedSFXTemplateKey: target.value,
-      duration: SFXTemplate.duration
+      duration: SFXTemplate.duration,
     });
   }
 
@@ -215,7 +215,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     var target = <HTMLInputElement> e.target;
     this.setState(
     {
-      duration: parseInt(target.value)
+      duration: parseInt(target.value),
     });
   }
 
@@ -239,7 +239,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       SFXTemplate: SFXTemplate,
       triggerEffectCallback: function(){console.log("triggerEffect")},
       onSFXStartCallback: function(){console.log("onSFXStart")},
-      afterFinishedCallback: function(){console.log("afterFinishedCallback")}
+      afterFinishedCallback: function(){console.log("afterFinishedCallback")},
     });
   }
 
@@ -267,9 +267,9 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
         onMouseLeave: this.handleClearHover.bind(this, unit),
         onClick: this.selectUnit.bind(this, unit),
         key: "" + unit.id,
-        style: style
+        style: style,
       },
-        unit.name
+        unit.name,
       ))
     }
 
@@ -291,16 +291,16 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       SFXTemplateSelectOptions.push(React.DOM.option(
       {
         value: key,
-        key: key
+        key: key,
       },
-        key
+        key,
       ));
     }
 
     return(
       React.DOM.div(
       {
-        className: "battle-scene-test"
+        className: "battle-scene-test",
       },
         React.DOM.div(
         {
@@ -308,45 +308,45 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
           ref: (component: HTMLElement) =>
           {
             this.battleSceneContainer = component;
-          }
+          },
         },
-          null
+          null,
         ),
         React.DOM.div(
         {
-          className: "battle-scene-test-controls"
+          className: "battle-scene-test-controls",
         },
           React.DOM.div(
           {
-            className: "battle-scene-test-controls-units"
+            className: "battle-scene-test-controls-units",
           },
             React.DOM.div(
             {
-              className: "battle-scene-test-controls-units-side1"
+              className: "battle-scene-test-controls-units-side1",
             },
-              side1UnitElements
+              side1UnitElements,
             ),
             React.DOM.div(
             {
-              className: "battle-scene-test-controls-units-side2"
+              className: "battle-scene-test-controls-units-side2",
             },
-              side2UnitElements
-            )
+              side2UnitElements,
+            ),
           ),
           React.DOM.select(
           {
             value: this.state.selectedSFXTemplateKey,
-            onChange: this.handleSelectSFXTemplate
+            onChange: this.handleSelectSFXTemplate,
           },
-            SFXTemplateSelectOptions
+            SFXTemplateSelectOptions,
           ),
           React.DOM.button(
           {
             className: "battle-scene-test-ability2",
             onClick: this.useSelectedAbility,
-            disabled: !this.state.selectedSFXTemplateKey || !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
+            disabled: !this.state.selectedSFXTemplateKey || !(this.state.selectedSide1Unit && this.state.selectedSide2Unit),
           },
-            "use ability"
+            "use ability",
           ),
           React.DOM.input(
           {
@@ -356,11 +356,11 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
             max: 20000,
             value: "" + this.state.duration,
             onChange: this.handleChangeDuration,
-            placeholder: "duration"
+            placeholder: "duration",
           },
-            null
-          )
-        )
+            null,
+          ),
+        ),
       )
     );
   }

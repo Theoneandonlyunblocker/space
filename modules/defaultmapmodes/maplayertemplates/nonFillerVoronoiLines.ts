@@ -29,7 +29,7 @@ const nonFillerVoronoiLines: MapRendererLayerTemplate =
     }
 
     return doc;
-  }
+  },
 }
 
 export default nonFillerVoronoiLines;

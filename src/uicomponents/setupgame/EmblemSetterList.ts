@@ -38,7 +38,7 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
     return(
       React.DOM.ol(
       {
-        className: "emblem-setter-list"
+        className: "emblem-setter-list",
       },
         this.props.emblems.map(emblemProps =>
         {
@@ -59,8 +59,8 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
           className: "add-new-emblem-button",
           onClick: this.props.addEmblem,
           title: "Add new emblem",
-          disabled: !canAddNewEmblem
-        })
+          disabled: !canAddNewEmblem,
+        }),
 
       )
     );

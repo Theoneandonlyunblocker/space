@@ -64,11 +64,11 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "build-queue"
+        className: "build-queue",
       },
         React.DOM.div(
         {
-          className: "manufactory-upgrade-buttons-container"
+          className: "manufactory-upgrade-buttons-container",
         },
           ManufactoryUpgradeButton(
           {
@@ -79,16 +79,16 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
             currentLevel: manufactory.capacity,
             maxLevel: manufactory.maxCapacity,
             levelDecimalPoints: 0,
-            title: "Increase amount of things this manufactory can build per turn"
-          })
+            title: "Increase amount of things this manufactory can build per turn",
+          }),
         ),
         ManufacturableThingsList(
         {
           manufacturableThings: convertedBuildQueue,
           onClick: this.removeItem,
           showCost: false,
-          money: this.props.money
-        })
+          money: this.props.money,
+        }),
       )
     );
   }

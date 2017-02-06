@@ -96,9 +96,9 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "unit-wrapper"
+        className: "unit-wrapper",
       },
-        this.props.children
+        this.props.children,
       )
     );
   }

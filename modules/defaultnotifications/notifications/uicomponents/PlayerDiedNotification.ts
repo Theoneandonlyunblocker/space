@@ -26,12 +26,12 @@ class PlayerDiedNotification extends React.Component<PropTypes, {}>
     return(
       React.DOM.div(
       {
-        className: "player-died-notification draggable-container"
+        className: "player-died-notification draggable-container",
       },
         "Here lies " + notification.props.deadPlayerName + ".",
         React.DOM.br(null),
         React.DOM.br(null),
-        "He never scored."
+        "He never scored.",
       )
     );
   }

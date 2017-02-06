@@ -64,7 +64,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     {
       currentAvailableItemDragKey: undefined,
       currentStagingItemDragKey: undefined,
-      currentDragItemPlayer: undefined
+      currentDragItemPlayer: undefined,
     });
   }
 
@@ -146,7 +146,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.setState(
     {
       currentAvailableItemDragKey: key,
-      currentDragItemPlayer: player
+      currentDragItemPlayer: player,
     });
   }
 
@@ -155,7 +155,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.setState(
     {
       currentStagingItemDragKey: key,
-      currentDragItemPlayer: player
+      currentDragItemPlayer: player,
     });
   }
 
@@ -165,7 +165,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     {
       currentAvailableItemDragKey: undefined,
       currentStagingItemDragKey: undefined,
-      currentDragItemPlayer: undefined
+      currentDragItemPlayer: undefined,
     });
   }
 
@@ -196,11 +196,11 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     return(
       React.DOM.div(
       {
-        className: "trade-overview"
+        className: "trade-overview",
       },
         React.DOM.div(
         {
-          className: "tradeable-items-container available-items-container"
+          className: "tradeable-items-container available-items-container",
         },
           TradeableItemsComponentFactory(
           {
@@ -211,7 +211,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             onDragStart: this.handleAvailableDragStart.bind(this, "self"),
             onDragEnd: this.handleDragEnd,
             onMouseUp: this.handleAvailableMouseUp,
-            onItemClick: this.handleStageItem.bind(this, "self")
+            onItemClick: this.handleStageItem.bind(this, "self"),
           }),
           TradeableItemsComponentFactory(
           {
@@ -222,12 +222,12 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             onDragStart: this.handleAvailableDragStart.bind(this, "other"),
             onDragEnd: this.handleDragEnd,
             onMouseUp: this.handleAvailableMouseUp,
-            onItemClick: this.handleStageItem.bind(this, "other")
-          })
+            onItemClick: this.handleStageItem.bind(this, "other"),
+          }),
         ),
         React.DOM.div(
         {
-          className: "tradeable-items-container trade-staging-areas-container"
+          className: "tradeable-items-container trade-staging-areas-container",
         },
           TradeableItemsComponentFactory(
           {
@@ -239,7 +239,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             onDragEnd: this.handleDragEnd,
             onMouseUp: this.handleStagingAreaMouseUp,
             onItemClick: this.handleRemoveStagedItem.bind(this, "self"),
-            adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "self")
+            adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "self"),
           }),
           TradeableItemsComponentFactory(
           {
@@ -251,28 +251,28 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             onDragEnd: this.handleDragEnd,
             onMouseUp: this.handleStagingAreaMouseUp,
             onItemClick: this.handleRemoveStagedItem.bind(this, "other"),
-            adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "other")
-          })
+            adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "other"),
+          }),
         ),
         React.DOM.div(
         {
-          className: "trade-buttons-container"
+          className: "trade-buttons-container",
         },
           React.DOM.button(
           {
             className: "trade-button",
-            onClick: this.handleCancel
+            onClick: this.handleCancel,
           },
-            "Cancel"
+            "Cancel",
           ),
           React.DOM.button(
           {
             className: "trade-button trade-button-ok",
-            onClick: this.handleOk
+            onClick: this.handleOk,
           },
-            "Ok"
-          )
-        )
+            "Ok",
+          ),
+        ),
       )
     );
   }

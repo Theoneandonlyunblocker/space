@@ -52,7 +52,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
         strength: this.props.baseOpinion,
         endTurn: -1,
         alwaysShowAtTopOfList: true,
-      })
+      }),
     });
 
     for (let i = 0; i < modifiers.length; i++)
@@ -69,7 +69,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
           strength: modifier.getAdjustedStrength(),
           endTurn: modifier.endTurn,
           alwaysShowAtTopOfList: false,
-        })
+        }),
       });
     }
 
@@ -103,18 +103,18 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
           }
 
           return forcedSortOrder + alphabeticSortOrder;
-        }
+        },
       },
       {
         label: "Effect",
         key: "strength",
-        defaultOrder: "asc"
+        defaultOrder: "asc",
       },
       {
         label: "Ends on",
         key: "endTurn",
-        defaultOrder: "desc"
-      }
+        defaultOrder: "desc",
+      },
     ];
 
     return(
@@ -123,8 +123,8 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
         {
           listItems: rows,
           initialColumns: columns,
-          initialSortOrder: [columns[0], columns[1], columns[2]]
-        })
+          initialSortOrder: [columns[0], columns[1], columns[2]],
+        }),
       )
     );
   }

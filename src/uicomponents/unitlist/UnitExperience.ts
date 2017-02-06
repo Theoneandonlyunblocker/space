@@ -44,7 +44,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   {
     return(
     {
-      upgradePopupId: undefined
+      upgradePopupId: undefined,
     });
   }
   makePopup()
@@ -57,22 +57,22 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
         content: UpgradeUnit(
         {
           unit: this.props.unit,
-          onUnitUpgrade: this.handleUnitUpgrade
-        })
+          onUnitUpgrade: this.handleUnitUpgrade,
+        }),
       }),
       popupProps:
       {
         dragPositionerProps:
         {
           preventAutoResize: true,
-          containerDragOnly: true
-        }
-      }
+          containerDragOnly: true,
+        },
+      },
     });
 
     this.setState(
     {
-      upgradePopupId: popupId
+      upgradePopupId: popupId,
     });
   }
   closePopup()
@@ -80,7 +80,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     this.popupManager.closePopup(this.state.upgradePopupId);
     this.setState(
     {
-      upgradePopupId: undefined
+      upgradePopupId: undefined,
     });
   }
   handleUnitUpgrade()
@@ -107,7 +107,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     {
       var bgProps: React.HTMLAttributes =
       {
-        className: "unit-experience-bar-point-background"
+        className: "unit-experience-bar-point-background",
       };
       if (i < filledBars)
       {
@@ -117,7 +117,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
         {
           bgProps.style =
           {
-            width: "" +  lastBarWidth + "%"
+            width: "" +  lastBarWidth + "%",
           }
         }
       }
@@ -129,11 +129,11 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
       rows.push(React.DOM.div(
       {
         className: "unit-experience-bar-point",
-        key: "" + i
+        key: "" + i,
       },
         React.DOM.div(bgProps,
-          null
-        )
+          null,
+        ),
       ))
     }
 
@@ -141,12 +141,12 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
 
     var containerProps: React.HTMLAttributes =
     {
-      className: "unit-experience-bar-container"
+      className: "unit-experience-bar-container",
     }
     var barProps: React.HTMLAttributes =
     {
       className: "unit-experience-bar",
-      title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp"
+      title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp",
     }
     if (isReadyToLevelUp)
     {
@@ -157,7 +157,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     return(
       React.DOM.div(
       {
-        className: "unit-experience-wrapper"
+        className: "unit-experience-wrapper",
       },
         PopupManager(
         {
@@ -165,19 +165,19 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
           {
             this.popupManager = component;
           },
-          onlyAllowOne: true
+          onlyAllowOne: true,
         }),
         React.DOM.div(containerProps,
           React.DOM.div(barProps,
-            rows
+            rows,
           ),
           !isReadyToLevelUp ? null : React.DOM.span(
           {
-            className: "ready-to-level-up-message"
+            className: "ready-to-level-up-message",
           },
-            "Click to level up"
-          )
-        )
+            "Click to level up",
+          ),
+        ),
       )
     );
   }

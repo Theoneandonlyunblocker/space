@@ -69,7 +69,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     {
       selectedStar: initialSelected,
       highlightedStars: [initialSelected],
-      money: player.money
+      money: player.money,
     });
   }
 
@@ -111,7 +111,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     return(
     {
       withManufactories: starsWithManufactories,
-      withoutManufactories: starsWithoutManufactories
+      withoutManufactories: starsWithoutManufactories,
     });
   }
 
@@ -126,7 +126,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
       this.setState(
       {
         selectedStar: star,
-        highlightedStars: [star]
+        highlightedStars: [star],
       });
     }
   }
@@ -136,7 +136,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     this.setState(
     {
       selectedStar: undefined,
-      highlightedStars: []
+      highlightedStars: [],
     });
   }
 
@@ -156,7 +156,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
         {
           manufactory: selectedStar.manufactory,
           triggerUpdate: this.triggerUpdate,
-          money: this.state.money
+          money: this.state.money,
         });
       }
       else
@@ -166,7 +166,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
           star: selectedStar,
           player: player,
           money: this.state.money,
-          triggerUpdate: this.triggerUpdate
+          triggerUpdate: this.triggerUpdate,
         });
       }
     }
@@ -174,18 +174,18 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     return(
       React.DOM.div(
       {
-        className: "production-overview"
+        className: "production-overview",
       },
         ManufactoryStarsList(
         {
           starsWithManufactories: starsByManufactoryPresence.withManufactories,
           starsWithoutManufactories: starsByManufactoryPresence.withoutManufactories,
           highlightedStars: this.state.highlightedStars,
-          handleStarSelect: this.handleStarSelect
+          handleStarSelect: this.handleStarSelect,
         }),
         React.DOM.div(
         {
-          className: "production-overview-contents"
+          className: "production-overview-contents",
         },
           queueElement,
           ManufacturableThings(
@@ -193,9 +193,9 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
             selectedStar: selectedStar,
             player: player,
             money: this.state.money,
-            triggerUpdate: this.triggerUpdate
-          })
-        )
+            triggerUpdate: this.triggerUpdate,
+          }),
+        ),
       )
     );
   }

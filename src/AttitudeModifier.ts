@@ -3,7 +3,7 @@ import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 import
 {
-  getRelativeValue
+  getRelativeValue,
 } from "./utility";
 
 export default class AttitudeModifier
@@ -127,7 +127,7 @@ export default class AttitudeModifier
       templateType: this.template.type,
       startTurn: this.startTurn,
       endTurn: this.endTurn,
-      strength: this.strength
+      strength: this.strength,
     };
 
     return data;

@@ -37,20 +37,20 @@ export class SFXFragmentEditorComponent extends React.Component<PropTypes, State
     return(
       React.DOM.div(
       {
-        className: "sfx-fragment-editor"
+        className: "sfx-fragment-editor",
       },
         React.DOM.button(
         {
           className: "sfx-fragment-reset-props-button",
-          onClick: this.handleReset
+          onClick: this.handleReset,
         },
-          "Reset"
+          "Reset",
         ),
         SFXFragmentPropsList(
         {
           fragment: this.props.fragment,
-          onPropValueChange: this.props.onActiveFragmentPropValueChange
-        })
+          onPropValueChange: this.props.onActiveFragmentPropValueChange,
+        }),
       )
     );
   }

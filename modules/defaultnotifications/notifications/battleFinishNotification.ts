@@ -46,7 +46,7 @@ const battleFinishNotification: NotificationTemplate =
       attackerId: props.attacker.id,
       defenderId: props.defender.id,
       locationId: props.location.id,
-      victorId: props.victor.id
+      victorId: props.victor.id,
     });
   },
   deserializeProps: function(props:SerializedPropTypes, gameLoader: GameLoader): PropTypes
@@ -56,9 +56,9 @@ const battleFinishNotification: NotificationTemplate =
       attacker: gameLoader.playersById[props.attackerId],
       defender: gameLoader.playersById[props.defenderId],
       location: gameLoader.starsById[props.locationId],
-      victor: gameLoader.playersById[props.victorId]
+      victor: gameLoader.playersById[props.victorId],
     });
-  }
+  },
 }
 
 export default battleFinishNotification;

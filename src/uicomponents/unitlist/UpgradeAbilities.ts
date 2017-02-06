@@ -49,19 +49,19 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
     return(
       React.DOM.div(
       {
-        className: "upgrade-abilities"
+        className: "upgrade-abilities",
       },
         React.DOM.div(
         {
-          className: "upgrade-abilities-header"
+          className: "upgrade-abilities-header",
         },
-          headerText
+          headerText,
         ),
         AbilityList(
         {
           abilities: this.props.abilities,
-          handleClick: this.props.handleClick
-        })
+          handleClick: this.props.handleClick,
+        }),
       )
     );
   }

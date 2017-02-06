@@ -30,21 +30,21 @@ export class ResourceComponent extends React.Component<PropTypes, StateType>
       React.DOM.div(
       {
         className: "resource",
-        title: this.props.resource.displayName + ""
+        title: this.props.resource.displayName + "",
       },
         React.DOM.img(
         {
           className: "resource-icon",
-          src: this.props.resource.icon
+          src: this.props.resource.icon,
         },
-          null
+          null,
         ),
         React.DOM.div(
         {
-          className: "resource-amount"
+          className: "resource-amount",
         },
-          "" + this.props.amount + " (" + sign + this.props.income + ")"
-        )
+          "" + this.props.amount + " (" + sign + this.props.income + ")",
+        ),
       )
     );
   }

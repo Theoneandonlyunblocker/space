@@ -31,7 +31,7 @@ export class SFXFragmentPropsListComponent extends React.Component<PropTypes, St
     return(
       React.DOM.ul(
       {
-        className: "sfx-fragment-props-list"
+        className: "sfx-fragment-props-list",
       },
         Object.keys(fragment.props).sort().map(propName =>
         {
@@ -43,9 +43,9 @@ export class SFXFragmentPropsListComponent extends React.Component<PropTypes, St
             propName: propName,
             propType: propType,
             fragment: fragment,
-            onPropValueChange: this.props.onPropValueChange
+            onPropValueChange: this.props.onPropValueChange,
           });
-        })
+        }),
       )
     );
   }

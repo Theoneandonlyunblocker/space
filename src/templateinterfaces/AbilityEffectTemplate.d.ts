@@ -1,7 +1,7 @@
 import
 {
   AbilityEffectAction,
-  ExecutedEffectsResult
+  ExecutedEffectsResult,
 } from "./AbilityEffectAction";
 import BattleSFXTemplate from "./BattleSFXTemplate";
 
@@ -10,7 +10,7 @@ import StatusEffect from "../StatusEffect";
 import Unit from "../Unit";
 import
 {
-  GetUnitsInAreaFN
+  GetUnitsInAreaFN,
 } from "../targeting";
 
 export type AbilityEffectTrigger = (

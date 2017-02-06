@@ -8,7 +8,7 @@ import
   default as Popup,
   InitialPositionRect,
   PopupComponent,
-  PropTypes as PopupProps
+  PropTypes as PopupProps,
 } from "./Popup";
 
 
@@ -100,7 +100,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      popups: []
+      popups: [],
     });
   }
 
@@ -125,7 +125,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
       return(
       {
         left: container.offsetWidth / 2.5 - rect.width / 2,
-        top: container.offsetHeight / 2.5 - rect.height / 2
+        top: container.offsetHeight / 2.5 - rect.height / 2,
       });
     }
     else
@@ -134,7 +134,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
       return(
       {
         left: topMostPopupPosition.x + 20,
-        top: topMostPopupPosition.y + 20
+        top: topMostPopupPosition.y + 20,
       });
     }
   }
@@ -214,7 +214,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     {
       this.setState(
       {
-        popups: [popupProps]
+        popups: [popupProps],
       });
     }
     else
@@ -223,7 +223,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
       this.setState(
       {
-        popups: popups
+        popups: popups,
       });
     }
 
@@ -255,7 +255,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
 
       toRender.push(
-        Popup(popupProps)
+        Popup(popupProps),
       );
     }
 
@@ -267,9 +267,9 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "popup-container"
+        className: "popup-container",
       },
-        toRender
+        toRender,
       )
     );
   }

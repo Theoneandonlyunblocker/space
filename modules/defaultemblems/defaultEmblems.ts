@@ -15,7 +15,7 @@ const defaultEmblems: ModuleFile =
     name: "Default Emblems",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
   loadAssets: function(onLoaded: () => void)
@@ -29,7 +29,7 @@ const defaultEmblems: ModuleFile =
       {
         url: template.src,
         loadType: 2, // image
-        xhrType: "png"
+        xhrType: "png",
       });
     }
 
@@ -59,7 +59,7 @@ const defaultEmblems: ModuleFile =
     moduleData.copyTemplates<SubEmblemTemplate>(SubEmblemTemplates, "SubEmblems");
 
     return moduleData;
-  }
+  },
 }
 
 export default defaultEmblems;

@@ -140,7 +140,7 @@ const fleets: MapRendererLayerTemplate =
     }
 
     return doc;
-  }
+  },
 }
 
 export default fleets;
@@ -159,7 +159,7 @@ function getFleetTextTexture(fleet: Fleet)
     {
       fill: "#FFFFFF",
       stroke: "#000000",
-      strokeThickness: 3
+      strokeThickness: 3,
     });
 
     // TODO PIXI4 | triggers bounds update that gets skipped if we just call generateTexture()

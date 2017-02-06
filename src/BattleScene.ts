@@ -66,8 +66,8 @@ export default class BattleScene
       {
         autoResize: false,
         antialias: true,
-        transparent: true
-      }
+        transparent: true,
+      },
     );
 
     this.renderer.view.setAttribute("id", "battle-scene-pixi-canvas");
@@ -192,7 +192,7 @@ export default class BattleScene
     {
       battleOverlay: new PIXI.Container,
       side1Container: new PIXI.Container,
-      side2Container: new PIXI.Container
+      side2Container: new PIXI.Container,
     };
 
     this.side1Unit = new BattleSceneUnit(this.layers.side1Container, this.renderer);
@@ -225,7 +225,7 @@ export default class BattleScene
     return(
     {
       width: this.renderer.width,
-      height: this.renderer.height
+      height: this.renderer.height,
     });
   }
   private getSFXParams(props:
@@ -250,7 +250,7 @@ export default class BattleScene
       renderer: this.renderer,
       triggerStart: props.triggerStart,
       triggerEffect: this.executeTriggerEffectCallback.bind(this),
-      triggerEnd: props.triggerEnd
+      triggerEnd: props.triggerEnd,
     });
   }
   private getHighestPriorityUnitForSide(side: UnitBattleSide)
@@ -462,7 +462,7 @@ export default class BattleScene
       var SFXParams = this.getSFXParams(
       {
         triggerStart: this.addBattleOverlay.bind(this),
-        triggerEnd: afterFinishedCallback
+        triggerEnd: afterFinishedCallback,
       });
       this.activeSFX.battleOverlay(SFXParams);
     }

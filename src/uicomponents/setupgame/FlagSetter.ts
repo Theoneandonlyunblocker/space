@@ -6,7 +6,7 @@ import {Flag} from "../../Flag";
 import
 {
   getFirstValidImageFromFiles,
-  getHTMLImageElementFromDataTransfer
+  getHTMLImageElementFromDataTransfer,
 } from "../../ImageFileProcessing";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
@@ -26,12 +26,12 @@ const failMessages =
   hotlinkedImageLoadingFailed:
   {
     text: "Linked image failed to load. Try saving it to your own computer " +
-      "and uploading it."
+      "and uploading it.",
   },
   noValidImageFile:
   {
-    text: "The attached file wasn't recognized as an image."
-  }
+    text: "The attached file wasn't recognized as an image.",
+  },
 }
 
 export interface PropTypes extends React.Props<any>
@@ -104,10 +104,10 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       className: "image-info-message image-loading-fail-message",
       style:
       {
-        animationDuration: "" + timeout + "ms"
-      }
+        animationDuration: "" + timeout + "ms",
+      },
     },
-      message.text
+      message.text,
     )
   }
   clearFailMessageTimeout(): void
@@ -128,7 +128,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       failMessageElement: this.makeFailMessage(message, timeout),
-      customImageFile: null
+      customImageFile: null,
     });
 
     this.failMessageTimeoutHandle = window.setTimeout(() =>
@@ -273,7 +273,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         this.props.flag.setCustomImage(reader.result);
         this.setState(
         {
-          customImageFile: file
+          customImageFile: file,
         }, () =>
         {
           this.handleSuccessfulUpdate();
@@ -290,7 +290,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         "Are you sure you want to load an image that is " +
         fileSizeInMegaBytes.toFixed(2) + "MB in size?\n"+
         "(The image won't be stored online, " +
-        "but processing it might take a while)"
+        "but processing it might take a while)",
       ))
       {
         setImageFN();
@@ -332,7 +332,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         },
         onDragEnter: this.stopEvent,
         onDragOver: this.stopEvent,
-        onDrop: this.handleDrop
+        onDrop: this.handleDrop,
       },
         PlayerFlag(
         {
@@ -341,7 +341,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
           props:
           {
             className: "flag-setter-display",
-            onClick: this.toggleActive
+            onClick: this.toggleActive,
           },
           ref: (component: PlayerFlagComponent) =>
           {
@@ -351,7 +351,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         !this.state.isActive ? null :
         React.DOM.div(
         {
-          className: "popup-container"
+          className: "popup-container",
         },
           Popup(
           {
@@ -400,10 +400,10 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
                 //   ySide: "innerTop",
                 //   positionOnResize: true
                 // }
-              })
+              }),
             }),
-          })
-        )
+          }),
+        ),
       )
     );
   }

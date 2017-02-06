@@ -21,14 +21,14 @@ export const sectorCommand: DefenceBuildingTemplate =
   [
     {
       templateType: "sectorCommand1",
-      level: 1
+      level: 1,
     },
     {
       templateType: "sectorCommand2",
-      level: 1
-    }
+      level: 1,
+    },
   ],
-  defenderAdvantage: 0.2
+  defenderAdvantage: 0.2,
 }
 export const sectorCommand1: DefenceBuildingTemplate =
 {
@@ -45,7 +45,7 @@ export const sectorCommand1: DefenceBuildingTemplate =
 
   maxUpgradeLevel: 1,
   upgradeOnly: true,
-  defenderAdvantage: 0.3
+  defenderAdvantage: 0.3,
 }
 export const sectorCommand2: DefenceBuildingTemplate =
 {
@@ -62,7 +62,7 @@ export const sectorCommand2: DefenceBuildingTemplate =
 
   maxUpgradeLevel: 1,
   upgradeOnly: true,
-  defenderAdvantage: 0.3
+  defenderAdvantage: 0.3,
 }
 export const starBase: DefenceBuildingTemplate =
 {
@@ -83,9 +83,9 @@ export const starBase: DefenceBuildingTemplate =
   [
     {
       templateType: "sectorCommand",
-      level: 1
-    }
-  ]
+      level: 1,
+    },
+  ],
 }
 export const commercialPort: BuildingTemplate =
 {
@@ -102,11 +102,11 @@ export const commercialPort: BuildingTemplate =
   {
     income:
     {
-      flat: 20
-    }
+      flat: 20,
+    },
   },
 
-  maxUpgradeLevel: 4
+  maxUpgradeLevel: 4,
 }
 export const deepSpaceRadar: BuildingTemplate =
 {
@@ -122,10 +122,10 @@ export const deepSpaceRadar: BuildingTemplate =
   effect:
   {
     vision: 1,
-    detection: 0.999
+    detection: 0.999,
   },
 
-  maxUpgradeLevel: 2
+  maxUpgradeLevel: 2,
 }
 export const resourceMine: BuildingTemplate =
 {
@@ -142,11 +142,11 @@ export const resourceMine: BuildingTemplate =
   {
     resourceIncome:
     {
-      flat: 1
-    }
+      flat: 1,
+    },
   },
 
-  maxUpgradeLevel: 3
+  maxUpgradeLevel: 3,
 }
 export const reserachLab: BuildingTemplate =
 {
@@ -163,9 +163,9 @@ export const reserachLab: BuildingTemplate =
   {
     research:
     {
-      flat: 10
-    }
+      flat: 10,
+    },
   },
 
-  maxUpgradeLevel: 3
+  maxUpgradeLevel: 3,
 }

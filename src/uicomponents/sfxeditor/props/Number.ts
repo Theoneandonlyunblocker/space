@@ -63,8 +63,8 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
             this.props.fragment.props[this.props.propName] = newValue;
 
             this.props.onValueChange();
-          }
-        })
+          },
+        }),
       )
     );
   }

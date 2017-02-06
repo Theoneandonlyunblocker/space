@@ -48,7 +48,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
     return(
     {
       upgradeData: this.props.unit.getAbilityUpgradeData(),
-      popupId: undefined
+      popupId: undefined,
     });
   }
   upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
@@ -58,7 +58,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
     unit.handleLevelUp();
     this.setState(
     {
-      upgradeData: unit.getAbilityUpgradeData()
+      upgradeData: unit.getAbilityUpgradeData(),
     });
     this.closePopup();
     this.props.onUnitUpgrade();
@@ -86,22 +86,22 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
           abilities: upgradeData.possibleUpgrades,
           handleClick: this.upgradeAbility.bind(this, upgradeData.base),
           sourceAbility: upgradeData.base,
-          learningNewability: !Boolean(upgradeData.base)
-        })
+          learningNewability: !Boolean(upgradeData.base),
+        }),
       }),
       popupProps:
       {
         dragPositionerProps:
         {
           preventAutoResize: true,
-          containerDragOnly: true
-        }
-      }
+          containerDragOnly: true,
+        },
+      },
     });
 
     this.setState(
     {
-      popupId: popupId
+      popupId: popupId,
     });
   }
   closePopup()
@@ -109,7 +109,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
     this.popupManager.closePopup(this.state.popupId);
     this.setState(
     {
-      popupId: undefined
+      popupId: undefined,
     });
   }
   render()
@@ -129,7 +129,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
         {
           type: source,
           displayName: "** New ability **",
-          description: ""
+          description: "",
         });
       }
     }
@@ -137,7 +137,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "upgrade-unit"
+        className: "upgrade-unit",
       },
         PopupManager(
         {
@@ -145,24 +145,24 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
           {
             this.popupManager = component;
           },
-          onlyAllowOne: true
+          onlyAllowOne: true,
         }),
         React.DOM.div(
         {
-          className: "upgrade-unit-header"
+          className: "upgrade-unit-header",
         },
-          unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1)
+          unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1),
         ),
         UpgradeAbilities(
         {
           abilities: upgradableAbilities,
-          handleClick: this.makeAbilityLearnPopup
+          handleClick: this.makeAbilityLearnPopup,
         }),
         UpgradeAttributes(
         {
           unit: unit,
-          handleClick: this.upgradeAttribute
-        })
+          handleClick: this.upgradeAttribute,
+        }),
       )
     );
   }

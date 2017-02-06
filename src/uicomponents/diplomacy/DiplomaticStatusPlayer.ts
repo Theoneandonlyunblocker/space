@@ -48,7 +48,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
   {
     return(
     {
-      hasAttitudeModifierTootlip: false
+      hasAttitudeModifierTootlip: false,
     });
   }
   makeCell(type: string)
@@ -67,8 +67,8 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
         flag: this.props.flag,
         props:
         {
-          className: "diplomacy-status-player-icon"
-        }
+          className: "diplomacy-status-player-icon",
+        },
       });
     }
     if (type === "opinion")
@@ -77,7 +77,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
       {
         attitudeModifiers: this.props.attitudeModifiers,
         opinion: this.props.opinion,
-        baseOpinion: this.props.baseOpinion
+        baseOpinion: this.props.baseOpinion,
       });
     }
 
@@ -85,9 +85,9 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
       React.DOM.td(
       {
         key: type,
-        className: className
+        className: className,
       },
-        cellContent
+        cellContent,
       )
     );
   }
@@ -108,12 +108,12 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
     var rowProps =
     {
       className: "diplomatic-status-player",
-      onClick : this.props.handleClick
+      onClick : this.props.handleClick,
     };
 
     return(
       React.DOM.tr(rowProps,
-        cells
+        cells,
       )
     );
   }

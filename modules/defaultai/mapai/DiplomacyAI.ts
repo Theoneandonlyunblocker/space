@@ -41,7 +41,7 @@ export default class DiplomacyAI
     for (let playerId in diplomacyEvaluations)
     {
       this.diplomacyStatus.processAttitudeModifiersForPlayer(
-        this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]
+        this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId],
       );
     }
   }

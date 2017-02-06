@@ -33,7 +33,7 @@ export class SFXFragmentPropPointComponent extends React.Component<PropTypes, St
     return(
       React.DOM.div(
       {
-        className: "sfx-fragment-prop-point"
+        className: "sfx-fragment-prop-point",
       },
         SFXFragmentPropVecBase(
         {
@@ -46,15 +46,15 @@ export class SFXFragmentPropPointComponent extends React.Component<PropTypes, St
             {
               key: "x",
               label: "X",
-              value: this.props.x
+              value: this.props.x,
             },
             {
               key: "y",
               label: "Y",
-              value: this.props.y
+              value: this.props.y,
             },
-          ]
-        })
+          ],
+        }),
       )
     );
   }

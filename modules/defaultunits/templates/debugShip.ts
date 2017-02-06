@@ -24,7 +24,7 @@ import
 {
   autoHeal,
   medic,
-  warpJammer
+  warpJammer,
 } from "../../common/passiveskilltemplates/passiveSkills";
 
 const debugShip: UnitTemplate =
@@ -37,7 +37,7 @@ const debugShip: UnitTemplate =
   {
     imageSrc: "debugShip.png",
     anchor: {x: 0.5, y: 0.5},
-    attackOriginPoint: {x: 0.75, y: 0.5}
+    attackOriginPoint: {x: 0.75, y: 0.5},
   },
   isSquadron: false,
   buildCost: 0,
@@ -51,7 +51,7 @@ const debugShip: UnitTemplate =
     attack: 9,
     defence: 9,
     intelligence: 9,
-    speed: 9
+    speed: 9,
   },
   possibleAbilities:
   [
@@ -62,7 +62,7 @@ const debugShip: UnitTemplate =
         debugAbility,
         rangedAttack,
         standBy,
-      ]
+      ],
     },
     {
       flatProbability: 1,
@@ -70,17 +70,17 @@ const debugShip: UnitTemplate =
       [
         {
           weight: 0.33,
-          probabilityItems: [bombAttack]
+          probabilityItems: [bombAttack],
         },
         {
           weight: 0.33,
-          probabilityItems: [boardingHook]
+          probabilityItems: [boardingHook],
         },
         {
           weight: 0.33,
-          probabilityItems: [guardRow]
-        }
-      ]
+          probabilityItems: [guardRow],
+        },
+      ],
     },
     {
       flatProbability: 1,
@@ -90,8 +90,8 @@ const debugShip: UnitTemplate =
         {weight: 0.25, probabilityItems: [snipeDefence]},
         {weight: 0.25, probabilityItems: [snipeIntelligence]},
         {weight: 0.25, probabilityItems: [snipeSpeed]},
-      ]
-    }
+      ],
+    },
   ],
   possiblePassiveSkills:
   [
@@ -101,23 +101,23 @@ const debugShip: UnitTemplate =
       [
         {
           weight: 0.33,
-          probabilityItems: [autoHeal]
+          probabilityItems: [autoHeal],
         },
         {
           weight: 0.33,
-          probabilityItems: [warpJammer]
+          probabilityItems: [warpJammer],
         },
         {
           weight: 0.33,
-          probabilityItems: [medic]
-        }
-      ]
-    }
+          probabilityItems: [medic],
+        },
+      ],
+    },
   ],
   learnableAbilities:
   [
     guardRow,
-    closeAttack
+    closeAttack,
   ],
   itemSlots:
   {
@@ -130,7 +130,7 @@ const debugShip: UnitTemplate =
   {
     weight: 0,
     distributionGroups: [distributionGroups.debugModeOnly],
-  }
+  },
 }
 
 export default debugShip;

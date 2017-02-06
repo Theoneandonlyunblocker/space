@@ -55,19 +55,19 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
       {
         className: "notification",
         onClick: this.handleClick,
-        onContextMenu: this.handleRightClick
+        onContextMenu: this.handleRightClick,
       },
         React.DOM.img(
         {
           className: "notification-image",
-          src: notification.template.iconSrc
+          src: notification.template.iconSrc,
         }),
         React.DOM.span(
         {
-          className: "notification-message"
+          className: "notification-message",
         },
-          notification.makeMessage()
-        )
+          notification.makeMessage(),
+        ),
       )
     );
   }

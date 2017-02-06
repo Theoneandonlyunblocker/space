@@ -171,10 +171,10 @@ export default class Unit
             ability: props.battleStats.queuedAction.ability,
             targetId: props.battleStats.queuedAction.targetId,
             turnsPrepared: props.battleStats.queuedAction.turnsPrepared,
-            timesInterrupted: props.battleStats.queuedAction.timesInterrupted
+            timesInterrupted: props.battleStats.queuedAction.timesInterrupted,
           } :
           null,
-        isAnnihilated: props.battleStats.isAnnihilated
+        isAnnihilated: props.battleStats.isAnnihilated,
       };
     }
     else
@@ -346,7 +346,7 @@ export default class Unit
       defence: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.defence, baseValue, variance),
       intelligence: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.intelligence, baseValue, variance),
       speed: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.speed, baseValue, variance),
-      maxActionPoints: randInt(3, 5)
+      maxActionPoints: randInt(3, 5),
     });
   }
   private getBaseMoveDelay()
@@ -371,7 +371,7 @@ export default class Unit
       statusEffects: [],
       lastHealthBeforeReceivingDamage: this.currentHealth,
       queuedAction: null,
-      isAnnihilated: false
+      isAnnihilated: false,
     };
   }
   public setBattlePosition(battle: Battle, side: UnitBattleSide, position: number[])
@@ -443,7 +443,7 @@ export default class Unit
       ability: ability,
       targetId: target.id,
       turnsPrepared: 0,
-      timesInterrupted: 0
+      timesInterrupted: 0,
     }
 
     this.uiDisplayIsDirty = true;
@@ -515,7 +515,7 @@ export default class Unit
         {
           this.passiveSkillsByPhaseAreDirty = true;
         }
-      }
+      },
     );
   }
   // public addItem(item: Item, index: number)
@@ -977,7 +977,7 @@ export default class Unit
             upgradeData[parentAbility.type] =
             {
               base: parentAbility,
-              possibleUpgrades: []
+              possibleUpgrades: [],
             }
           }
 
@@ -992,7 +992,7 @@ export default class Unit
       upgradeData["learnable"] =
       {
         base: null,
-        possibleUpgrades: learnable
+        possibleUpgrades: learnable,
       }
     }
 
@@ -1073,9 +1073,9 @@ export default class Unit
         abilityTemplateKey: this.battleStats.queuedAction.ability.type,
         targetId: this.battleStats.queuedAction.targetId,
         turnsPrepared: this.battleStats.queuedAction.turnsPrepared,
-        timesInterrupted: this.battleStats.queuedAction.timesInterrupted
+        timesInterrupted: this.battleStats.queuedAction.timesInterrupted,
       },
-      isAnnihilated: this.battleStats.isAnnihilated
+      isAnnihilated: this.battleStats.isAnnihilated,
     };
 
     var data: UnitSaveData =

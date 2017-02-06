@@ -8,7 +8,7 @@ import ValuesByPlayer from "../../../src/ValuesByPlayer";
 import ValuesByStar from "../../../src/ValuesByStar";
 import
 {
-  getRelativeValue
+  getRelativeValue,
 } from "../../../src/utility";
 
 import evaluateUnitStrength from "../../../src/evaluateUnitStrength";
@@ -26,7 +26,7 @@ export var defaultEvaluationParameters =
 
     infrastructureWeight: 1,
     productionWeight: 1,
-  }
+  },
 }
 
 interface StarTargetEvaluation
@@ -221,9 +221,9 @@ export default class MapEvaluator
         {
           desirability: desirability,
           hostileStrength: hostileStrength,
-          ownInfluence: ownInfluenceAtStar
+          ownInfluence: ownInfluenceAtStar,
         });
-      }
+      },
     );
 
     return evaluationByStar;
@@ -231,7 +231,7 @@ export default class MapEvaluator
 
   public scoreStarTargets(
     evaluations: ValuesByStar<StarTargetEvaluation>,
-    getScoreFN: (star: Star, evaluation: StarTargetEvaluation) => number
+    getScoreFN: (star: Star, evaluation: StarTargetEvaluation) => number,
   ): ValuesByStar<number>
   {
     const scores = new ValuesByStar<number>();
@@ -280,7 +280,7 @@ export default class MapEvaluator
     return this.player.controlledLocations[0].getIslandForQualifier(
       islandQualifierFN,
       earlyReturnSize,
-      this.player.controlledLocations
+      this.player.controlledLocations,
     );
   }
   public getHostileUnitsAtStar(star: Star): Unit[]
@@ -630,7 +630,7 @@ export default class MapEvaluator
     return(
     {
       visible: visibleStars,
-      detected: detectedStars
+      detected: detectedStars,
     });
   }
   getScoredPerimeterLocationsAgainstPlayer(player: Player, safetyFactor: number, forScouting: boolean)
@@ -682,7 +682,7 @@ export default class MapEvaluator
       scores.push(
       {
         star: star,
-        score: score
+        score: score,
       });
     }
 
@@ -752,7 +752,7 @@ export default class MapEvaluator
         currentTurn: currentTurn,
         opinion: this.player.diplomacyStatus.getOpinionOf(player),
         neighborStars: neighborStarsCountByPlayer.get(player),
-        currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
+        currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id],
       }
     }
 

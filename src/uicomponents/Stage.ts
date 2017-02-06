@@ -57,8 +57,8 @@ export class StageComponent extends React.Component<PropTypes, StateType>
           {
             battle: this.props.battle,
             humanPlayer: this.props.player,
-            key: "battle"
-          })
+            key: "battle",
+          }),
         );
         break;
       }
@@ -68,8 +68,8 @@ export class StageComponent extends React.Component<PropTypes, StateType>
           BattlePrepComponentFactory(
           {
             battlePrep: this.props.battlePrep,
-            key: "battlePrep"
-          })
+            key: "battlePrep",
+          }),
         );
         break;
       }
@@ -83,8 +83,8 @@ export class StageComponent extends React.Component<PropTypes, StateType>
             playerControl: this.props.playerControl,
             player: this.props.player,
             game: this.props.game,
-            key: "galaxyMap"
-          })
+            key: "galaxyMap",
+          }),
         );
         break;
       }
@@ -93,8 +93,8 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           FlagMaker(
           {
-            key: "flagMaker"
-          })
+            key: "flagMaker",
+          }),
         );
         break;
       }
@@ -103,8 +103,8 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           SetupGame(
           {
-            key: "setupGame"
-          })
+            key: "setupGame",
+          }),
         );
         break;
       }
@@ -113,8 +113,8 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           BattleSceneTester(
           {
-            key: "battleSceneTester"
-          })
+            key: "battleSceneTester",
+          }),
         );
         break;
       }
@@ -123,15 +123,15 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           SFXEditor(
           {
-            key: "SFXEditor"
-          })
+            key: "SFXEditor",
+          }),
         );
         break;
       }
     }
     return(
       React.DOM.div({className: "react-stage"},
-        elementsToRender
+        elementsToRender,
       )
     );
   }

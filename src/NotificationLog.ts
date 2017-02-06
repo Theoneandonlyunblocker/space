@@ -132,7 +132,7 @@ export default class NotificationLog
 
     var data: NotificationLogSaveData =
     {
-      notifications: notificationsSaveData
+      notifications: notificationsSaveData,
     };
 
     return data;

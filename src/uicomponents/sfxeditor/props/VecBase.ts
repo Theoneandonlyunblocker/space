@@ -53,7 +53,7 @@ export class SFXFragmentPropVecBaseComponent extends React.Component<PropTypes, 
     return(
       React.DOM.div(
       {
-        className: "sfx-fragment-prop-vec-wrapper"
+        className: "sfx-fragment-prop-vec-wrapper",
       },
         this.props.propProps.map(prop =>
         {
@@ -66,7 +66,7 @@ export class SFXFragmentPropVecBaseComponent extends React.Component<PropTypes, 
             value: prop.value,
             onValueChange: this.handleValueChange.bind(this, prop),
           });
-        })
+        }),
       )
     );
   }

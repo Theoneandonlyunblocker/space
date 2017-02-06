@@ -8,7 +8,7 @@ import Star from "./Star";
 import
 {
   clamp,
-  pointsEqual
+  pointsEqual,
 } from "./utility";
 
 // some problems with this as well as pixi polygon rendering can lead to silly behavior sometimes.
@@ -142,7 +142,7 @@ export function getBorderingHalfEdges(stars: Star[])
         borderingHalfEdges.push(
         {
           star: star,
-          halfEdge: halfEdge
+          halfEdge: halfEdge,
         });
 
         if (!startEdge)
@@ -187,7 +187,7 @@ export function joinPointsWithin(points: Point[], maxDistance: number)
       var newPoint: Point =
       {
         x: (x1 + x2) / 2,
-        y: (y1 + y2) / 2
+        y: (y1 + y2) / 2,
       }
 
       points.splice(i, 2, newPoint);
@@ -206,7 +206,7 @@ export function convertHalfEdgeDataToOffset(halfEdgeData:
     return(
     {
       x: v1.x,
-      y: v1.y
+      y: v1.y,
     });
   });
 
@@ -259,7 +259,7 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
         var edgeCenter: Point =
         {
           x: clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
-          y: clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
+          y: clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2),
         }
 
         var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
@@ -337,7 +337,7 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
     polyLinesData.push(
     {
       points: polyLine,
-      isClosed: isClosed
+      isClosed: isClosed,
     });
   }
 

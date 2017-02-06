@@ -24,7 +24,7 @@ export default class FillerPoint implements Point
     return(
     {
       x: this.x,
-      y: this.y
+      y: this.y,
     });
   }
 }

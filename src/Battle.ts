@@ -11,14 +11,14 @@ import Unit from "./Unit";
 import
 {
   default as UnitBattleSide,
-  UnitBattleSides
+  UnitBattleSides,
 } from "./UnitBattleSide";
 import eventManager from "./eventManager";
 import
 {
   clamp,
   randInt,
-  reverseSide
+  reverseSide,
 } from "./utility";
 
 export default class Battle
@@ -34,7 +34,7 @@ export default class Battle
   } =
   {
     side1: [],
-    side2: []
+    side2: [],
   };
   public side1: Unit[][];
   public side1Player: Player;
@@ -120,7 +120,7 @@ export default class Battle
     this.startHealth =
     {
       side1: this.getTotalCurrentHealthForSide("side1"),
-      side2: this.getTotalCurrentHealthForSide("side2")
+      side2: this.getTotalCurrentHealthForSide("side2"),
     }
 
     if (this.shouldBattleEnd())
@@ -294,7 +294,7 @@ export default class Battle
         location: this.battleData.location,
         attacker: this.battleData.attacker.player,
         defender: this.battleData.defender.player,
-        victor: victor
+        victor: victor,
       });
     }
     for (let i = 0; i < this.afterFinishCallbacks.length; i++)
@@ -643,7 +643,7 @@ export default class Battle
       side1: side1,
       side2: side2,
       side1Player: side1Player,
-      side2Player: side2Player
+      side2Player: side2Player,
     });
 
     [side1, side2].forEach(function(side: Unit[][])

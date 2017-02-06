@@ -48,7 +48,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
   {
     return(
     {
-      activeTab: "units"
+      activeTab: "units",
     });
   }
 
@@ -57,7 +57,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     if (this.state.activeTab === key) return;
     this.setState(
     {
-      activeTab: key
+      activeTab: key,
     });
   }
 
@@ -84,9 +84,9 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
         key: key,
         className: "manufacturable-things-tab-button" +
           (this.state.activeTab === key ? " active-tab" : ""),
-        onClick: this.selectTab.bind(this, key)
+        onClick: this.selectTab.bind(this, key),
       },
-        displayString
+        displayString,
       )
     );
   }
@@ -142,7 +142,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
       consolidateLocations: false,
       triggerUpdate: this.props.triggerUpdate,
       canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
-      money: this.props.money
+      money: this.props.money,
     }
     switch (key)
     {
@@ -168,21 +168,21 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     return(
       React.DOM.div(
       {
-        className: "manufacturable-things"
+        className: "manufacturable-things",
       },
         React.DOM.div(
         {
-          className: "manufacturable-things-tab-buttons"
+          className: "manufacturable-things-tab-buttons",
         },
           this.makeTabButton("units"),
-          this.makeTabButton("items")
+          this.makeTabButton("items"),
         ),
         React.DOM.div(
         {
-          className: "manufacturable-things-active-tab"
+          className: "manufacturable-things-active-tab",
         },
-          this.makeTab(this.state.activeTab)
-        )
+          this.makeTab(this.state.activeTab),
+        ),
       )
     );
   }

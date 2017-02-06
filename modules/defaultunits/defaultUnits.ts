@@ -19,7 +19,7 @@ const defaultUnits: ModuleFile =
     name: "Default units",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   loadAssets: function(onLoaded: () => void)
@@ -44,7 +44,7 @@ const defaultUnits: ModuleFile =
     moduleData.copyTemplates<UnitArchetype>(UnitArchetypes, "UnitArchetypes");
 
     return moduleData;
-  }
+  },
 }
 
 export default defaultUnits;

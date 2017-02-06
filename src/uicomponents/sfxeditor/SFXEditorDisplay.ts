@@ -30,7 +30,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
 
     this.renderer = PIXI.autoDetectRenderer(0, 0,
     {
-      autoResize: false
+      autoResize: false,
     });
 
     this.stage = new PIXI.Container();
@@ -103,7 +103,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
           this.containerDiv = element;
         },
         onMouseMove: !this.props.hasDraggingFragment ? null :
-          this.props.moveDraggingFragment
+          this.props.moveDraggingFragment,
       },
 
       )

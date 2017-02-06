@@ -2,7 +2,7 @@ enum NotificationFilterState
 {
   alwaysShow,
   showIfInvolved,
-  neverShow
+  neverShow,
 }
 
 export default NotificationFilterState;

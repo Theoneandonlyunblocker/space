@@ -56,9 +56,9 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
       options.push(React.DOM.option(
       {
         value: key,
-        key: key
+        key: key,
       },
-        mapMode.displayName
+        mapMode.displayName,
       ))
     }
 
@@ -75,9 +75,9 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
       {
         className: "map-mode-selector",
         value: mapRenderer.currentMapMode.template.key,
-        onChange: this.handleChange
+        onChange: this.handleChange,
       },
-        this.makeOptions()
+        this.makeOptions(),
       )
     );
   }

@@ -6,7 +6,7 @@ export type SelectionTabType = "fragmentConstructors" |
 const displayString =
 {
   fragmentConstructors: "Fragments",
-  placedFragments: "Placed"
+  placedFragments: "Placed",
 }
 
 interface PropTypes extends React.Props<any>
@@ -46,9 +46,9 @@ export class SFXEditorSelectionTabComponent extends React.Component<PropTypes, S
         className: "sfx-editor-selection-tab" +
           " sfx-editor-selection-tab-" + this.props.type,
         disabled: this.props.isActive,
-        onClick: this.handleClick
+        onClick: this.handleClick,
       },
-        displayString[this.props.type]
+        displayString[this.props.type],
       )
     );
   }

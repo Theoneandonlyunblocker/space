@@ -15,7 +15,7 @@ const defaultAttitudeModifiers: ModuleFile =
     name: "Default attitude modifiers",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   constructModule: function(moduleData: ModuleData)
@@ -24,7 +24,7 @@ const defaultAttitudeModifiers: ModuleFile =
     moduleData.copyTemplates<AttitudeModifierTemplate>(AttitudeModifierTemplates, "AttitudeModifiers");
 
     return moduleData;
-  }
+  },
 }
 
 export default defaultAttitudeModifiers;

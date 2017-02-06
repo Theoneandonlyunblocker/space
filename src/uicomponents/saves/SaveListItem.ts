@@ -107,7 +107,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
     {
       className: "save-list-item",
       onClick : this.props.handleClick,
-      onDoubleClick: this.props.onDoubleClick
+      onDoubleClick: this.props.onDoubleClick,
     };
 
     if (this.props.isMarkedForDeletion)
@@ -117,7 +117,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.tr(rowProps,
-        cells
+        cells,
       )
     );
   }

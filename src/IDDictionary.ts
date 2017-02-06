@@ -87,7 +87,7 @@ abstract class IDDictionary<K extends ObjectWithID, V>
       const zippedPair =
       {
         [keyName]: this.keysByID[key],
-        [valueName]: this.valuesByID[key]
+        [valueName]: this.valuesByID[key],
       };
 
       zipped.push(<any>zippedPair);

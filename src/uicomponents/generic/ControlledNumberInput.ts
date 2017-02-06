@@ -41,7 +41,7 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
     {
       this.setState(
       {
-        valueString: this.getValueString(newProps.value)
+        valueString: this.getValueString(newProps.value),
       });
     }
   }
@@ -78,7 +78,7 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
 
     this.setState(
     {
-      valueString: valueString
+      valueString: valueString,
     }, () =>
     {
       const isValid = this.props.valueStringIsValid(valueString);
@@ -104,7 +104,7 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
         value: this.state.valueString,
         spellCheck: false,
       },
-        null
+        null,
       )
     );
   }

@@ -54,13 +54,13 @@ const defaultBeamProps: BeamProps =
   size:
   {
     x: 500,
-    y: 500
+    y: 500,
   },
   relativeImpactTime: 0.2,
   relativeBeamOrigin:
   {
     x: 0,
-    y: 0.5
+    y: 0.5,
   },
   color: new Color(1, 0.9, 0.9),
   timeScale: 100,
@@ -136,7 +136,7 @@ export default class Beam extends SFXFragment<BeamProps, PartialBeamProps>
       lineXSize:
       [
         this.props.relativeBeamOrigin.x * rampUpValue,
-        1.0
+        1.0,
       ],
       lineYSize: this.props.lineYSize.getValue(rampUpValue, rampDownValue),
 
@@ -152,7 +152,7 @@ export default class Beam extends SFXFragment<BeamProps, PartialBeamProps>
       beamColor: this.props.color.getRGBA(1.0),
       aspectRatio: this.props.size.x / this.props.size.y,
       bulgeXPosition: this.props.relativeBeamOrigin.x + 0.1,
-      beamYPosition: this.props.relativeBeamOrigin.y
+      beamYPosition: this.props.relativeBeamOrigin.y,
     });
 
     const beamSprite = makeShaderSprite(
@@ -160,7 +160,7 @@ export default class Beam extends SFXFragment<BeamProps, PartialBeamProps>
       0,
       0,
       this.props.size.x,
-      this.props.size.y
+      this.props.size.y,
     );
     beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
 

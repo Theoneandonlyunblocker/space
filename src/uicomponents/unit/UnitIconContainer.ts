@@ -24,12 +24,12 @@ export class UnitIconContainerComponent extends React.PureComponent<PropTypes, S
   {
     var containerProps: React.HTMLAttributes =
     {
-      className: "unit-icon-container"
+      className: "unit-icon-container",
     };
 
     var fillerProps: React.HTMLAttributes =
     {
-      className: "unit-icon-filler"
+      className: "unit-icon-filler",
     };
 
     if (this.props.facesLeft)
@@ -51,9 +51,9 @@ export class UnitIconContainerComponent extends React.PureComponent<PropTypes, S
       React.DOM.div({className: "unit-icon-wrapper"},
         React.DOM.div(fillerProps),
         React.DOM.div(containerProps,
-          iconElement
+          iconElement,
         ),
-        React.DOM.div(fillerProps)
+        React.DOM.div(fillerProps),
       )
     );
   }

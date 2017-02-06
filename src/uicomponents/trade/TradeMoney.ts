@@ -80,7 +80,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
   {
     var rowProps: React.HTMLAttributes =
     {
-      className: "tradeable-items-list-item"
+      className: "tradeable-items-list-item",
     };
 
     if (this.props.onDragStart)
@@ -115,7 +115,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
         onChange: this.handleMoneyAmountChange,
         onClick: this.captureEvent,
         onMouseDown: this.captureEvent,
-        onTouchStart: this.captureEvent
+        onTouchStart: this.captureEvent,
       };
 
       moneyElement = React.DOM.input(moneyProps);
@@ -124,9 +124,9 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
     {
       moneyElement = React.DOM.span(
       {
-        className: "trade-money-money-available"
+        className: "trade-money-money-available",
       },
-        this.props.moneyAmount
+        this.props.moneyAmount,
       );
     }
 
@@ -136,12 +136,12 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
         React.DOM.td(null,
           React.DOM.span(
           {
-            className: "trade-money-title"
+            className: "trade-money-title",
           },
-            this.props.title
+            this.props.title,
           ),
-          moneyElement
-        )
+          moneyElement,
+        ),
       )
     );
   }

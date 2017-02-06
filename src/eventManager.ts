@@ -11,7 +11,7 @@ const eventManager =
   {
     eventEmitter.on(eventType, listener);
     return listener;
-  }
+  },
 };
 
 export default eventManager;

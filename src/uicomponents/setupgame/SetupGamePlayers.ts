@@ -58,7 +58,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     return(
     {
       playerKeys: players,
-      activeColorSetter: null
+      activeColorSetter: null,
     });
   }
 
@@ -91,7 +91,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
     this.setState(
     {
-      playerKeys: this.state.playerKeys.concat(newIds)
+      playerKeys: this.state.playerKeys.concat(newIds),
     }, () =>
     {
       const ownDOMNode = ReactDOM.findDOMNode(this)
@@ -122,7 +122,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
       playerKeys: this.state.playerKeys.filter(function(playerId: number)
       {
         return toRemove.indexOf(playerId) === -1;
-      })
+      }),
     }, () =>
     {
       this.cleanSetupComponentsByID();
@@ -188,7 +188,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
         setActiveSetterComponent: this.setActiveColorSetter,
         initialName: "Player " + playerID,
         isHuman: i === 0,
-        setHuman: this.setHumanPlayer
+        setHuman: this.setHumanPlayer,
       }));
     });
 
@@ -199,63 +199,63 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
       React.DOM.div({className: "setup-game-players"},
         React.DOM.div(
         {
-          className: "player-setup setup-game-players-header"
+          className: "player-setup setup-game-players-header",
         },
           React.DOM.div(
           {
-            className: "player-setup-is-human"
+            className: "player-setup-is-human",
           }),
           React.DOM.div(
           {
-            className: "player-setup-name"
+            className: "player-setup-name",
           }, "Name"),
           React.DOM.div(
           {
-            className: "player-setup-race-picker"
+            className: "player-setup-race-picker",
           }, "Race"),
           React.DOM.div(
           {
-            className: "color-setter"
+            className: "color-setter",
           }, "Color 1"),
           React.DOM.div(
           {
-            className: "color-setter"
+            className: "color-setter",
           }, "Color 2"),
           React.DOM.div(
           {
-            className: "flag-setter"
+            className: "flag-setter",
           }, "Flag"),
           React.DOM.div(
           {
-            className: "player-setup-remove-player"
-          }, "Remove")
+            className: "player-setup-remove-player",
+          }, "Remove"),
         ),
         React.DOM.div(
         {
-          className: "player-setup-players-list"
+          className: "player-setup-players-list",
         },
-          playerSetups
+          playerSetups,
         ),
         React.DOM.div(
         {
-          className: "setup-game-players-buttons"
+          className: "setup-game-players-buttons",
         },
           React.DOM.button(
           {
             className: "setup-game-button",
-            onClick: this.randomizeAllPlayers
+            onClick: this.randomizeAllPlayers,
           },
-            "Randomize"
+            "Randomize",
           ),
           React.DOM.button(
           {
             className: "setup-game-players-add-new" + (canAddPlayers ? "" : " disabled"),
             onClick: this.makeNewPlayers.bind(this, 1),
-            disabled: !canAddPlayers
+            disabled: !canAddPlayers,
           },
-            "Add new player"
-          )
-        )
+            "Add new player",
+          ),
+        ),
       )
     );
   }

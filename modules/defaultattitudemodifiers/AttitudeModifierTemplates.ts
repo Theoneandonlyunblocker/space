@@ -25,7 +25,7 @@ const neighborStars: AttitudeModifierTemplate =
   getEffectFromEvaluation: function(evaluation: DiplomacyEvaluation)
   {
     return -2 * evaluation.neighborStars;
-  }
+  },
 }
 
 const atWar: AttitudeModifierTemplate =
@@ -40,7 +40,7 @@ const atWar: AttitudeModifierTemplate =
     return (evaluation.currentStatus >= DiplomacyState.war)
   },
 
-  constantEffect: -30
+  constantEffect: -30,
 }
 
 const declaredWar: AttitudeModifierTemplate =
@@ -51,14 +51,14 @@ const declaredWar: AttitudeModifierTemplate =
   duration: 15,
   triggers: ["addDeclaredWarAttitudeModifier"],
 
-  constantEffect: -35
+  constantEffect: -35,
 }
 
 const AttitudeModifierTemplates: TemplateCollection<AttitudeModifierTemplate> =
 {
   [neighborStars.type]: neighborStars,
   [atWar.type]: atWar,
-  [declaredWar.type]: declaredWar
+  [declaredWar.type]: declaredWar,
 }
 
 export default AttitudeModifierTemplates;

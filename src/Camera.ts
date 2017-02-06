@@ -94,7 +94,7 @@ export default class Camera
       yMin: (this.height * this.bounds.min) - rect.height * this.container.scale.y,
       yMax: (this.height * this.bounds.max),
       min: this.bounds.min,
-      max: this.bounds.max
+      max: this.bounds.max,
     }
   }
 
@@ -140,7 +140,7 @@ export default class Camera
     return(
     {
       x: this.width / 2,
-      y: this.height / 2
+      y: this.height / 2,
     });
   }
   getLocalPosition(position: Point): Point
@@ -154,7 +154,7 @@ export default class Camera
     return(
     {
       x: this.container.position.x + this.width / 2 - localOrigin.x,
-      y: this.container.position.y + this.height / 2 - localOrigin.y
+      y: this.container.position.y + this.height / 2 - localOrigin.y,
     });
   }
   centerOnPosition(pos: Point)

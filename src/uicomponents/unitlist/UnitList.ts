@@ -77,9 +77,9 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
           onDragEnd: this.props.onDragEnd,
           dragPositionerProps:
           {
-            shouldMakeClone: true
-          }
-        })
+            shouldMakeClone: true,
+          },
+        }),
       });
     });
 
@@ -88,12 +88,12 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
       {
         label: "Id",
         key: "id",
-        defaultOrder: "asc"
+        defaultOrder: "asc",
       },
       {
         label: "Type",
         key: "typeName",
-        defaultOrder: "asc"
+        defaultOrder: "asc",
       },
       {
         label: "Strength",
@@ -102,33 +102,33 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
         sortingFunction: (a, b) =>
         {
           return a.content.props.currentHealth - b.content.props.currentHealth;
-        }
+        },
       },
       {
         label: "Act",
         key: "maxActionPoints",
-        defaultOrder: "desc"
+        defaultOrder: "desc",
       },
       {
         label: "Atk",
         key: "attack",
-        defaultOrder: "desc"
+        defaultOrder: "desc",
       },
       {
         label: "Def",
         key: "defence",
-        defaultOrder: "desc"
+        defaultOrder: "desc",
       },
       {
         label: "Int",
         key: "intelligence",
-        defaultOrder: "desc"
+        defaultOrder: "desc",
       },
       {
         label: "Spd",
         key: "speed",
-        defaultOrder: "desc"
-      }
+        defaultOrder: "desc",
+      },
 
     ];
 
@@ -140,8 +140,8 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
           initialColumns: columns,
           onRowChange: this.props.onRowChange,
           autoSelect: this.props.autoSelect,
-          keyboardSelect: true
-        })
+          keyboardSelect: true,
+        }),
       )
     );
   }

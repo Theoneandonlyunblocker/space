@@ -9,7 +9,7 @@ import Star from "../../../src/Star";
 import
 {
   getObjectKeysSortedByValue,
-  getRandomArrayItem
+  getRandomArrayItem,
 } from "../../../src/utility";
 
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
@@ -102,7 +102,7 @@ export default class EconomyAI
 
     const globalBuildableUnitTypes = player.getGloballyBuildableUnits();
     const buildableUnitTypes = globalBuildableUnitTypes.concat(
-      manufactory.getUniqueLocalUnitTypes(globalBuildableUnitTypes)
+      manufactory.getUniqueLocalUnitTypes(globalBuildableUnitTypes),
     )
 
     for (let i = 0; i < buildableUnitTypes.length; i++)

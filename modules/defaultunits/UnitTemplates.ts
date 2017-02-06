@@ -19,7 +19,7 @@ const UnitTemplates: TemplateCollection<UnitTemplate> =
   [scout.type]: scout,
   [bomberSquadron.type]: bomberSquadron,
   [fighterSquadron.type]: fighterSquadron,
-  [shieldBoat.type]: shieldBoat
+  [shieldBoat.type]: shieldBoat,
 }
 
 export default UnitTemplates;

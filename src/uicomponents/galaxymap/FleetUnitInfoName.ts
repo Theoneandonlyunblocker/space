@@ -36,7 +36,7 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
   {
     return(
     {
-      inputElementValue: this.props.unit.name
+      inputElementValue: this.props.unit.name,
     });
   }
   onChange(e: React.FormEvent)
@@ -53,7 +53,7 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
         className: "fleet-unit-info-name",
         value: this.props.isNotDetected ? "Unidentified ship" : this.state.inputElementValue,
         onChange: this.props.isNotDetected ? null :  this.onChange,
-        readOnly: this.props.isNotDetected
+        readOnly: this.props.isNotDetected,
       })
     );
   }

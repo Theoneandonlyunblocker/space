@@ -6,14 +6,14 @@ import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 import
 {
   rangedAttack,
-  standBy
+  standBy,
 } from "../../common/abilitytemplates/abilities";
 import {distributionGroups} from "../../common/distributionGroups";
 import itemSlot from "../../common/itemSlot";
 
 import
 {
-  initialGuard
+  initialGuard,
 } from "../../common/passiveskilltemplates/passiveSkills";
 
 const commandShip: UnitTemplate =
@@ -26,7 +26,7 @@ const commandShip: UnitTemplate =
   {
     imageSrc: "shieldBoat.png",
     anchor: {x: 0.5, y: 0.5},
-    attackOriginPoint: {x: 0.75, y: 0.5}
+    attackOriginPoint: {x: 0.75, y: 0.5},
   },
   isSquadron: false,
   buildCost: 300,
@@ -40,7 +40,7 @@ const commandShip: UnitTemplate =
     attack: 0.5,
     defence: 0.6,
     intelligence: 0.7,
-    speed: 0.6
+    speed: 0.6,
   },
   possibleAbilities:
   [
@@ -49,9 +49,9 @@ const commandShip: UnitTemplate =
       probabilityItems:
       [
         rangedAttack,
-        standBy
-      ]
-    }
+        standBy,
+      ],
+    },
   ],
   possiblePassiveSkills:
   [
@@ -59,9 +59,9 @@ const commandShip: UnitTemplate =
       flatProbability: 1,
       probabilityItems:
       [
-        initialGuard
-      ]
-    }
+        initialGuard,
+      ],
+    },
   ],
   itemSlots:
   {
@@ -78,7 +78,7 @@ const commandShip: UnitTemplate =
       distributionGroups.rare,
       distributionGroups.unique,
     ],
-  }
+  },
 }
 
 export default commandShip;

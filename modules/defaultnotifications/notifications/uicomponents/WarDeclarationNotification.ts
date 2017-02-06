@@ -27,9 +27,9 @@ class WarDeclarationNotification extends React.Component<PropTypes, {}>
     return(
       React.DOM.div(
       {
-        className: "war-declaration-notification draggable-container"
+        className: "war-declaration-notification draggable-container",
       },
-        `${p.player1.name} declared war on ${p.player2.name}.`
+        `${p.player1.name} declared war on ${p.player2.name}.`,
       )
     );
   }

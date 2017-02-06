@@ -8,7 +8,7 @@ import ListOrder from "./ListOrder";
 
 import
 {
-  shallowCopy
+  shallowCopy,
 } from "../../utility";
 
 export interface PropTypes extends React.Props<any>
@@ -81,7 +81,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       selected: null, // set in componentDidMount
       selectedColumn: initialColumn,
       columnSortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn),
-      sortingOrderForColumnKey: sortingOrderForColumnKey
+      sortingOrderForColumnKey: sortingOrderForColumnKey,
     });
   }
 
@@ -251,7 +251,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     const stateObj: StateType =
     {
       selectedColumn: column,
-      columnSortingOrder: this.getNewSortingOrder(column)
+      columnSortingOrder: this.getNewSortingOrder(column),
     };
 
     if (this.state.selectedColumn.key === column.key)
@@ -271,7 +271,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      selected: row
+      selected: row,
     });
   }
 
@@ -379,7 +379,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     {
       var colProps: React.HTMLAttributes =
       {
-        key: column.key
+        key: column.key,
       };
 
       if (this.props.colStylingFN)
@@ -388,7 +388,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       }
 
       columns.push(
-        React.DOM.col(colProps)
+        React.DOM.col(colProps),
       );
 
       var sortStatus: string = "";
@@ -410,11 +410,11 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       headerLabels.push(
         React.DOM.th(
           {
-            key: column.key
+            key: column.key,
           },
           React.DOM.div(
             {
-              className: "fixed-table-th-inner"
+              className: "fixed-table-th-inner",
             },
             React.DOM.div(
             {
@@ -423,10 +423,10 @@ export class ListComponent extends React.Component<PropTypes, StateType>
               onMouseDown: this.handleSelectColumn.bind(null, column),
               onTouchStart: this.handleSelectColumn.bind(null, column),
             },
-              column.label
-            )
-          )
-        )
+              column.label,
+            ),
+          ),
+        ),
       );
     });
 
@@ -448,14 +448,14 @@ export class ListComponent extends React.Component<PropTypes, StateType>
         rows.push(React.DOM.tr(
         {
           className: "list-spacer",
-          key: "spacer" + i
+          key: "spacer" + i,
         },
           React.DOM.td(
           {
-            colSpan: 20
+            colSpan: 20,
           },
-            null
-          )
+            null,
+          ),
         ))
       }
     });
@@ -466,7 +466,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       React.DOM.div(
         {
           className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
-          tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
+          tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1,
         },
         React.DOM.div({className: "fixed-table-header-background"}),
         React.DOM.div(
@@ -476,14 +476,14 @@ export class ListComponent extends React.Component<PropTypes, StateType>
           {
             this.ref_TODO_inner = component;
           },
-          onScroll: this.handleScroll
+          onScroll: this.handleScroll,
         },
           React.DOM.table(
           {
-            className: "react-list"
+            className: "react-list",
           },
             React.DOM.colgroup(null,
-              columns
+              columns,
             ),
 
             React.DOM.thead({className: "fixed-table-actual-header", ref: (component: HTMLElement) =>
@@ -491,21 +491,21 @@ export class ListComponent extends React.Component<PropTypes, StateType>
               this.ref_TODO_header = component;
             }},
               React.DOM.tr(null,
-                headerLabels
-              )
+                headerLabels,
+              ),
             ),
 
             React.DOM.thead({className: "fixed-table-hidden-header"},
               React.DOM.tr(null,
-                headerLabels
-              )
+                headerLabels,
+              ),
             ),
 
             React.DOM.tbody(null,
-              rows
-            )
-          )
-        )
+              rows,
+            ),
+          ),
+        ),
       )
     );
   }

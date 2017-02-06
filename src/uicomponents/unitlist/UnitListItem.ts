@@ -6,7 +6,7 @@ import ListItemProps from "../list/ListItemProps";
 import
 {
   default as UnitComponentFactory,
-  PropTypes as UnitComponentPropTypes
+  PropTypes as UnitComponentPropTypes,
 } from "../unit/Unit";
 import UnitStrength from "../unit/UnitStrength";
 
@@ -89,7 +89,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     this.dragPositioner.forcedDragOffset =
     {
       x: container.offsetWidth / 2,
-      y: container.offsetHeight / 2
+      y: container.offsetHeight / 2,
     }
   }
 
@@ -121,9 +121,9 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     ReactDOM.render(
       UnitComponentFactory(shallowExtend<UnitComponentPropTypes>(
         this.props.unit.getDisplayData("battlePrep"),
-        {id: this.props.unit.id}
+        {id: this.props.unit.id},
       )),
-      container
+      container,
     );
 
     const renderedElement = <HTMLElement> container.firstChild;
@@ -136,7 +136,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     this.dragPositioner.forcedDragOffset =
     {
       x: wrapperElement.offsetWidth / 2,
-      y: wrapperElement.offsetHeight / 2
+      y: wrapperElement.offsetHeight / 2,
     }
 
     return renderedElement;
@@ -197,7 +197,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
         {
           maxHealth: this.props.maxHealth,
           currentHealth: this.props.currentHealth,
-          isSquadron: true
+          isSquadron: true,
         });
 
         break;
@@ -249,7 +249,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     var rowProps: React.HTMLAttributes =
     {
       className: "unit-list-item",
-      onClick : this.props.handleClick
+      onClick : this.props.handleClick,
     };
 
     if (this.props.isDraggable && !this.props.hasNoActionsLeft)
@@ -289,7 +289,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.tr(rowProps,
-        cells
+        cells,
       )
     );
   }

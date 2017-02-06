@@ -7,7 +7,7 @@ interface TutorialStatusValues
 
 const defaultTutorialStatus =
 {
-  introTutorial: TutorialState.show
+  introTutorial: TutorialState.show,
 }
 
 class TutorialStatus implements TutorialStatusValues
@@ -52,7 +52,7 @@ class TutorialStatus implements TutorialStatusValues
   {
     return(
     {
-      introTutorial: this.introTutorial
+      introTutorial: this.introTutorial,
     });
   }
   private static getDeSerializedState(state: TutorialState)

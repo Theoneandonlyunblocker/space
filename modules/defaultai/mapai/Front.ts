@@ -84,7 +84,7 @@ export class Front
     return byLocation;
   }
   public getFleetsByLocation(
-    fleets: Fleet[] = this.getAssociatedFleets()
+    fleets: Fleet[] = this.getAssociatedFleets(),
   ): {[starId: number]: Fleet[]}
   {
     const byLocation:

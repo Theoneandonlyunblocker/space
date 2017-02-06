@@ -49,7 +49,7 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
         usedCapacity: manufactory.buildQueue.length,
         totalCapacity: manufactory.capacity,
 
-        onClick: this.props.handleStarSelect
+        onClick: this.props.handleStarSelect,
       }));
     }
     for (let i = 0; i < this.props.starsWithoutManufactories.length; i++)
@@ -65,16 +65,16 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
         usedCapacity: 0,
         totalCapacity: 0,
 
-        onClick: this.props.handleStarSelect
+        onClick: this.props.handleStarSelect,
       }));
     }
 
     return(
       React.DOM.div(
       {
-        className: "manufactory-stars-list"
+        className: "manufactory-stars-list",
       },
-        rows
+        rows,
       )
     );
   }

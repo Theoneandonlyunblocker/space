@@ -49,7 +49,7 @@ export default class FrontsAI
       {
         unit: units[i],
         score: front.scoreUnitFit(units[i]),
-        front: front
+        front: front,
       });
     }
 
@@ -154,7 +154,7 @@ export default class FrontsAI
       idealUnitsDesired: unitsDesired.ideal,
 
       targetLocation: objective.target,
-      musterLocation: musterLocation
+      musterLocation: musterLocation,
     });
 
     return front;

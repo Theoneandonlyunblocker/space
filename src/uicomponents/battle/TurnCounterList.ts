@@ -36,8 +36,8 @@ export class TurnCounterListComponent extends React.PureComponent<PropTypes, Sta
         {
           key: i,
           isEmpty: i < usedTurns,
-          animationDuration: this.props.animationDuration
-        })
+          animationDuration: this.props.animationDuration,
+        }),
       );
     }
 
@@ -45,9 +45,9 @@ export class TurnCounterListComponent extends React.PureComponent<PropTypes, Sta
       React.DOM.div(
       {
         className: "turns-container",
-        title: "Turns left: " + this.props.turnsLeft
+        title: "Turns left: " + this.props.turnsLeft,
       },
-        turnElements
+        turnElements,
       )
     );
   }

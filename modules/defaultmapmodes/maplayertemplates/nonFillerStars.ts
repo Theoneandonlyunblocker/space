@@ -117,7 +117,7 @@ const nonFillerStars: MapRendererLayerTemplate =
     });
 
     return doc;
-  }
+  },
 }
 
 export default nonFillerStars;

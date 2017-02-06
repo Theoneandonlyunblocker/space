@@ -3,7 +3,7 @@ import GuardFilter from "./shaders/Guard";
 
 import
 {
-  getRelativeValue
+  getRelativeValue,
 } from "../../../src/utility";
 
 export default function guard(props: SFXParams)
@@ -25,7 +25,7 @@ export default function guard(props: SFXParams)
     blockSize: 90,
     blockWidth: 0,
     lineAlpha: 1.5,
-    blockAlpha: 0
+    blockAlpha: 0,
   });
 
   const travelTime = 0.3;
@@ -38,7 +38,7 @@ export default function guard(props: SFXParams)
       const adjustedtime = time / travelTime;
       guardFilter.setUniformValues(
       {
-        frontier: maxFrontier * adjustedtime
+        frontier: maxFrontier * adjustedtime,
       });
     }
     else
@@ -57,7 +57,7 @@ export default function guard(props: SFXParams)
         trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
         blockWidth: adjustedtime * maxBlockWidth,
         lineAlpha: (1 - adjustedtime) * 1.5,
-        blockAlpha: 1 - relativeDistance
+        blockAlpha: 1 - relativeDistance,
       });
     }
   }

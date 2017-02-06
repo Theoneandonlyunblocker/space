@@ -7,7 +7,7 @@ import
 {
   bombAttack,
   rangedAttack,
-  standBy
+  standBy,
 } from "../../common/abilitytemplates/abilities";
 import {distributionGroups} from "../../common/distributionGroups";
 import itemSlot from "../../common/itemSlot";
@@ -22,7 +22,7 @@ const bomberSquadron: UnitTemplate =
   {
     imageSrc: "bomber.png",
     anchor: {x: 0.5, y: 0.5},
-    attackOriginPoint: {x: 0.75, y: 0.5}
+    attackOriginPoint: {x: 0.75, y: 0.5},
   },
   isSquadron: true,
   buildCost: 200,
@@ -36,7 +36,7 @@ const bomberSquadron: UnitTemplate =
     attack: 0.7,
     defence: 0.4,
     intelligence: 0.5,
-    speed: 0.8
+    speed: 0.8,
   },
   possibleAbilities:
   [
@@ -46,9 +46,9 @@ const bomberSquadron: UnitTemplate =
       [
         rangedAttack,
         bombAttack,
-        standBy
-      ]
-    }
+        standBy,
+      ],
+    },
   ],
   itemSlots:
   {
@@ -65,7 +65,7 @@ const bomberSquadron: UnitTemplate =
       distributionGroups.common,
       distributionGroups.rare,
     ],
-  }
+  },
 }
 
 export default bomberSquadron;

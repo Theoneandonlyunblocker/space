@@ -3,7 +3,7 @@
 import GuardCoverage from "../../GuardCoverage";
 import
 {
-  clamp
+  clamp,
 } from "../../utility";
 
 
@@ -43,61 +43,61 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
       guardText += "\n" + "This unit takes " + damageReduction + "% reduced damage from physical attacks."
       statusElement = React.DOM.div(
       {
-        className: "status-container guard-meter-container"
+        className: "status-container guard-meter-container",
       },
         React.DOM.div(
         {
           className: "guard-meter-value",
           style:
           {
-            width: "" + clamp(guard, 0, 100) + "%"
-          }
+            width: "" + clamp(guard, 0, 100) + "%",
+          },
         }),
         React.DOM.div(
         {
-          className: "status-inner-wrapper"
+          className: "status-inner-wrapper",
         },
           React.DOM.div(
           {
             className: "guard-text-container status-inner",
-            title: guardText
+            title: guardText,
           },
             React.DOM.div(
             {
-              className: "guard-text status-text"
+              className: "guard-text status-text",
             }, "Guard"),
             React.DOM.div(
             {
-              className: "guard-text-value status-text"
-            }, "" + guard + "%")
-          )
-        )
+              className: "guard-text-value status-text",
+            }, "" + guard + "%"),
+          ),
+        ),
       );
     }
     else if (this.props.isPreparing)
     {
       statusElement = React.DOM.div(
       {
-        className: "status-container preparation-container"
+        className: "status-container preparation-container",
       },
         React.DOM.div(
         {
-          className: "status-inner-wrapper"
+          className: "status-inner-wrapper",
         },
           React.DOM.div(
           {
             className: "preparation-text-container status-inner",
-            title: "Unit is preparing to use ability"
+            title: "Unit is preparing to use ability",
           },
-            "Preparing"
-          )
-        )
+            "Preparing",
+          ),
+        ),
       );
     }
 
     return(
       React.DOM.div({className: "unit-status"},
-        statusElement
+        statusElement,
       )
     );
   }

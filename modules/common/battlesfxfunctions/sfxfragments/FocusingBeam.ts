@@ -9,7 +9,7 @@ import Point from "../../../../src/Point";
 import
 {
   clamp,
-  getRelativeValue
+  getRelativeValue,
 } from "../../../../src/utility";
 
 interface PartialFocusingBeamProps
@@ -123,7 +123,7 @@ export default class FocusingBeam extends SFXFragment<FocusingBeamProps, Partial
       bulgeSizeX: new RampingValue(0.0),
       bulgeSizeY: new RampingValue(0.0),
       lineXSharpness: new RampingValue(0.99),
-      lineYSharpness: this.props.beamSharpness
+      lineYSharpness: this.props.beamSharpness,
 
     });
 

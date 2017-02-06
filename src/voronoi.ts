@@ -12,7 +12,7 @@ export function makeVoronoi<T extends Point>(points: T[], width: number, height:
     xl: 0,
     xr: width,
     yt: 0,
-    yb: height
+    yb: height,
   };
 
   var voronoi = new Voronoi();
@@ -29,7 +29,7 @@ export function makeVoronoi<T extends Point>(points: T[], width: number, height:
  */
 export function relaxVoronoi<T extends Point>(
   diagram: Voronoi.Result<T>,
-  getRelaxAmountFN?: (point: T) => number
+  getRelaxAmountFN?: (point: T) => number,
 ): void
 {
   for (let i = 0; i < diagram.cells.length; i++)
@@ -119,6 +119,6 @@ function getPolygonCentroid(vertices: Point[]): Point
   return(
   {
     x: x,
-    y: y
+    y: y,
   });
 }

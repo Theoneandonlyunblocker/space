@@ -28,7 +28,7 @@ export default class BattlePrepFormation
     units: Unit[],
     hasScouted: boolean,
     minUnits: number,
-    isAttacker: boolean
+    isAttacker: boolean,
   )
   {
     this.player = player;
@@ -101,7 +101,7 @@ export default class BattlePrepFormation
       return(
       {
         isValid: false,
-        description: "Attacker must place at least 1 unit."
+        description: "Attacker must place at least 1 unit.",
       });
     }
 
@@ -113,7 +113,7 @@ export default class BattlePrepFormation
       return(
       {
         isValid: true,
-        description: ""
+        description: "",
       });
     }
     else
@@ -121,7 +121,7 @@ export default class BattlePrepFormation
       return(
       {
         isValid: false,
-        description: `Must place at least ${this.minUnits} units or all available units.`
+        description: `Must place at least ${this.minUnits} units or all available units.`,
       });
     }
   }
@@ -215,7 +215,7 @@ export default class BattlePrepFormation
       {
         unit: unit,
         score: baseScore * archetypeIdealAdjust * rowModifier,
-        row: row
+        row: row,
       });
     }
 

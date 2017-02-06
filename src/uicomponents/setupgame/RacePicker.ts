@@ -44,7 +44,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
         className: "race-picker",
         value: this.props.selectedRace.type,
         onChange: this.handleChangeRace,
-        title: this.props.selectedRace.description
+        title: this.props.selectedRace.description,
       },
         this.props.availableRaces.map(race =>
         {
@@ -54,9 +54,9 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
             value: race.type,
             title: race.description,
           },
-            race.displayName.toString()
+            race.displayName.toString(),
           )
-        })
+        }),
       )
     );
   }

@@ -43,7 +43,7 @@ const drawNebula: BackgroundDrawingFunction = function(
     nebulaStarConcentration: randRange(0.000, 0.004),
     starBrightness: 0.6,
 
-    seed: [Math.random() * 100, Math.random() * 100]
+    seed: [Math.random() * 100, Math.random() * 100],
   });
 
   // TODO PIXI4 | directly calling sprite.generateTexture() doesn't seem to work properly
@@ -74,7 +74,7 @@ const drawNebula: BackgroundDrawingFunction = function(
   return(
   {
     displayObject: sprite,
-    destroy: texture.destroy.bind(texture)
+    destroy: texture.destroy.bind(texture),
   });
 }
 

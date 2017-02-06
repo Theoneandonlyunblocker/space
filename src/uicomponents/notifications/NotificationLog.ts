@@ -113,7 +113,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
       {
         content: notification.template.contentConstructor(
         {
-          notification: notification
+          notification: notification,
         }),
         handleOk: this.handleMarkAsRead.bind(this, notification),
         handleClose: this.closePopup.bind(this, key),
@@ -126,18 +126,18 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
             key: "notificationFilter",
             filter: log.notificationFilter,
             text: "Filter",
-            highlightedOptionKey: notification.template.key
-          })
-        ]
+            highlightedOptionKey: notification.template.key,
+          }),
+        ],
       }),
       popupProps:
       {
         dragPositionerProps:
         {
           containerDragOnly: true,
-          preventAutoResize: true
-        }
-      }
+          preventAutoResize: true,
+        },
+      },
     });
 
     var stateObj: StateType = {};
@@ -181,28 +181,28 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
         notification: notifications[i],
         key: this.getNotificationKey(notifications[i]),
         markAsRead: this.handleMarkAsRead,
-        togglePopup: this.togglePopup
+        togglePopup: this.togglePopup,
       }));
     }
 
     return(
       React.DOM.div(
       {
-        className: "notification-log-container"
+        className: "notification-log-container",
       },
         React.DOM.ol(
         {
-          className: "notification-log"
+          className: "notification-log",
         },
-          items.reverse()
+          items.reverse(),
         ),
         PopupManager(
         {
           ref: (component: PopupManagerComponent) =>
           {
             this.popupManager = component;
-          }
-        })
+          },
+        }),
       )
     );
   }

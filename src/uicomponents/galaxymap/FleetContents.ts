@@ -51,7 +51,7 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
 
     var hasDraggableContent = Boolean(
       this.props.onDragStart ||
-      this.props.onDragEnd
+      this.props.onDragEnd,
     );
 
     for (let i = 0; i < fleet.units.length; i++)
@@ -64,7 +64,7 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
         isDraggable: hasDraggableContent,
         onDragStart: this.props.onDragStart,
         onDragEnd: this.props.onDragEnd,
-        isIdentified: this.props.player.unitIsIdentified(unit)
+        isIdentified: this.props.player.unitIsIdentified(unit),
       }));
     }
 
@@ -73,7 +73,7 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
       fleetUnitInfos.push(React.DOM.div(
       {
         className: "fleet-contents-dummy-unit",
-        key: "dummy"
+        key: "dummy",
       }));
     }
 
@@ -81,9 +81,9 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
       React.DOM.div(
       {
         className: "fleet-contents",
-        onMouseUp: this.handleMouseUp
+        onMouseUp: this.handleMouseUp,
       },
-        fleetUnitInfos
+        fleetUnitInfos,
       )
     );
   }

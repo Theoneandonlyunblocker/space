@@ -1,7 +1,7 @@
 import Range from "./Range";
 import
 {
-  randRange
+  randRange,
 } from "./utility";
 
 export function excludeFromRanges(ranges: Range[], toExclude: Range): Range[]
@@ -69,12 +69,12 @@ export function excludeFromRange(range: Range, toExclude: Range): Range[]
   [
     {
       min: range.min,
-      max: toExclude.min
+      max: toExclude.min,
     },
     {
       min: toExclude.max,
-      max: range.max
-    }
+      max: range.max,
+    },
   ]);
 }
 

@@ -256,13 +256,13 @@ class App
         isIndependent: false,
 
         race: getRandomArrayItem(candidateRaces),
-        money: 1000
+        money: 1000,
       }));
     }
 
     return(
     {
-      players: players
+      players: players,
     });
   }
   private makeMap(playerData: {players: Player[]})
@@ -273,19 +273,19 @@ class App
       {
         height: 1200,
         width: 1200,
-        starCount: 30
+        starCount: 30,
       },
       basicOptions:
       {
         arms: 5,
         centerDensity: 40,
-        starSizeRegularity: 100
-      }
+        starSizeRegularity: 100,
+      },
     }
 
     var mapGenResult = this.moduleData.getDefaultMap().mapGenFunction(
       optionValues,
-      playerData.players
+      playerData.players,
     );
 
     var galaxyMap = mapGenResult.makeMap();
@@ -331,7 +331,7 @@ class App
   {
     this.renderer = new Renderer(
       this.game.galaxyMap.seed,
-      this.moduleData.mapBackgroundDrawingFunction
+      this.moduleData.mapBackgroundDrawingFunction,
     );
     this.renderer.init();
 
@@ -346,7 +346,7 @@ class App
   {
     this.reactUI = new ReactUI(
       document.getElementById("react-container"),
-      this.moduleLoader
+      this.moduleLoader,
     );
   }
   private hookUI()

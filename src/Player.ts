@@ -22,14 +22,14 @@ import Unit from "./Unit";
 import
 {
   generateColorScheme,
-  generateSecondaryColor
+  generateSecondaryColor,
 } from "./colorGeneration";
 import eventManager from "./eventManager";
 import idGenerators from "./idGenerators";
 import
 {
   extendObject,
-  makeRandomPersonality
+  makeRandomPersonality,
 } from "./utility";
 
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
@@ -228,9 +228,9 @@ export default class Player
         generateIndependentPlayer: () => null,
         generateIndependentFleet: () => null,
 
-        getAITemplateConstructor: player => null
+        getAITemplateConstructor: player => null,
       },
-      money: 0
+      money: 0,
     });
   }
   destroy(): void
@@ -253,7 +253,7 @@ export default class Player
 
     eventManager.dispatchEvent("makePlayerDiedNotification",
     {
-      deadPlayerName: this.name.fullName
+      deadPlayerName: this.name.fullName,
     });
     console.log(this.name + " died");
   }
@@ -265,7 +265,7 @@ export default class Player
 
     this.listeners["builtBuildingWithEffect_research"] = eventManager.addEventListener(
       "builtBuildingWithEffect_research",
-      this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology)
+      this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology),
     );
   }
   makeRandomFlag(seed?: any): Flag
@@ -288,7 +288,7 @@ export default class Player
     {
       player: this,
       game: game,
-      personality: makeRandomPersonality()
+      personality: makeRandomPersonality(),
     });
 
     return new AIController(template);
@@ -345,7 +345,7 @@ export default class Player
       positions.push(
       {
         position: fleet.location,
-        data: fleet
+        data: fleet,
       });
     }
 
@@ -428,7 +428,7 @@ export default class Player
         incomeByResource[starIncome.resource.type] =
         {
           resource: starIncome.resource,
-          amount: 0
+          amount: 0,
         }
       }
 
@@ -853,13 +853,13 @@ export default class Player
       attacker:
       {
         player: this,
-        units: location.getUnits(player => player === this)
+        units: location.getUnits(player => player === this),
       },
       defender:
       {
         player: target.enemy,
-        units: target.units
-      }
+        units: target.units,
+      },
     }
 
     var battlePrep = new BattlePrep(battleData);
@@ -981,7 +981,7 @@ export default class Player
         capacityByStar.push(
         {
           star: manufactory.star,
-          capacity: capacity
+          capacity: capacity,
         });
       }
     }
@@ -1025,7 +1025,7 @@ export default class Player
       revealedStarIds: revealedStarIds,
       identifiedUnitIds: identifiedUnitIds,
 
-      raceKey: this.race.type
+      raceKey: this.race.type,
     };
 
     if (this.playerTechnology)

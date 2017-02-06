@@ -8,7 +8,7 @@ function mirrorRectangle(rect: PIXI.Rectangle, midX: number): PIXI.Rectangle
     getMirroredPosition(rect.x, midX) - rect.width,
     rect.y,
     rect.width,
-    rect.height
+    rect.height,
   );
 }
 function mirrorPoint(point: Point, midX: number): Point
@@ -25,7 +25,7 @@ function offsetRectangle(rect: PIXI.Rectangle, offset: Point): PIXI.Rectangle
     rect.x + offset.x,
     rect.y + offset.y,
     rect.width,
-    rect.height
+    rect.height,
   );
 }
 function offsetPoint(point: Point, offset: Point): Point
@@ -33,7 +33,7 @@ function offsetPoint(point: Point, offset: Point): Point
   return(
   {
     x: point.x + offset.x,
-    y: point.y + offset.y
+    y: point.y + offset.y,
   });
 }
 
@@ -84,7 +84,7 @@ export default class UnitDrawingFunctionData
       sequentialAttackOriginPoints: this.sequentialAttackOriginPoints.map(point =>
       {
         return {x: point.x, y: point.y};
-      })
+      }),
     });
   }
   public offset(offset: Point): UnitDrawingFunctionData

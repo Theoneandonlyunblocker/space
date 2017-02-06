@@ -87,7 +87,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
           color: "hsl(" +
             hue + "," +
             saturation + "%," +
-            lightness + "%)"
+            lightness + "%)",
         }
         cellContent = this.props.strength;
         break;
@@ -116,9 +116,9 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
       React.DOM.tr(
       {
         className: "attitude-modifier-info",
-        onClick : this.props.handleClick
+        onClick : this.props.handleClick,
       },
-        cells
+        cells,
       )
     );
   }

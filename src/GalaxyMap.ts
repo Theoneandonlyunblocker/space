@@ -50,7 +50,7 @@ export default class GalaxyMap
     return(
     {
       min: min,
-      max: max
+      max: max,
     });
   }
   serialize(): GalaxyMapSaveData
@@ -69,7 +69,7 @@ export default class GalaxyMap
 
       width: this.width,
       height: this.height,
-      seed: this.seed
+      seed: this.seed,
     };
 
 

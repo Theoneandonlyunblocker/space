@@ -75,7 +75,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
       selectedUnit: null,
       currentDragItem: null,
 
-      leftLowerElement: "playerFormation"
+      leftLowerElement: "playerFormation",
     });
   }
   componentDidMount()
@@ -106,7 +106,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      selectedUnit: null
+      selectedUnit: null,
     });
   }
 
@@ -121,7 +121,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       selectedUnit: unit,
-      hoveredUnit: null
+      hoveredUnit: null,
     });
   }
 
@@ -130,7 +130,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      hoveredUnit: unit
+      hoveredUnit: unit,
     });
   }
 
@@ -138,7 +138,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      hoveredUnit: null
+      hoveredUnit: null,
     });
   }
 
@@ -146,7 +146,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      currentDragUnit: unit
+      currentDragUnit: unit,
     });
   }
   handleDragEnd(dropSuccesful: boolean = false)
@@ -159,7 +159,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       currentDragUnit: null,
-      hoveredUnit: null
+      hoveredUnit: null,
     });
 
     return dropSuccesful;
@@ -179,7 +179,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      currentDragItem: item
+      currentDragItem: item,
     });
   }
   setLeftLowerElement(newElement: string)
@@ -187,7 +187,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     var oldElement = this.state.leftLowerElement;
     var newState: any =
     {
-      leftLowerElement: newElement
+      leftLowerElement: newElement,
     }
 
     if (oldElement === "enemyFormation" || newElement === "enemyFormation")
@@ -210,7 +210,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      currentDragItem: null
+      currentDragItem: null,
     });
   }
   handleItemDrop(index: number)
@@ -243,7 +243,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     {
       leftUpperElement = MenuUnitInfo(
       {
-        unit: hoveredUnit
+        unit: hoveredUnit,
       });
     }
     else if (this.state.selectedUnit)
@@ -258,14 +258,14 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
         isDraggable: selectedUnitIsFriendly,
         onDragStart: this.handleItemDragStart,
         onDragEnd: this.handleItemDragEnd,
-        currentDragItem: this.state.currentDragItem
+        currentDragItem: this.state.currentDragItem,
       })
     }
     else
     {
       leftUpperElement = BattleInfo(
       {
-        battlePrep: battlePrep
+        battlePrep: battlePrep,
       });
     }
 
@@ -333,7 +333,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           isDraggable: true,
           onDragStart: this.handleItemDragStart,
           onDragEnd: this.handleItemDragEnd,
-          onRowChange: this.handleSelectRow
+          onRowChange: this.handleSelectRow,
         })
         break;
       }
@@ -361,22 +361,22 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               },
             },
               React.DOM.div({className: "battle-prep-left-upper-inner"},
-                leftUpperElement
-              )
-            )
+                leftUpperElement,
+              ),
+            ),
           ),
           React.DOM.div({className: "battle-prep-left-controls"},
             React.DOM.button(
             {
               className: "battle-prep-controls-button",
               onClick: this.setLeftLowerElement.bind(this, "itemEquip"),
-              disabled: this.state.leftLowerElement === "itemEquip"
+              disabled: this.state.leftLowerElement === "itemEquip",
             }, "Equip"),
             React.DOM.button(
             {
               className: "battle-prep-controls-button",
               onClick: this.setLeftLowerElement.bind(this, "playerFormation"),
-              disabled: this.state.leftLowerElement === "playerFormation"
+              disabled: this.state.leftLowerElement === "playerFormation",
             }, "Own"),
             React.DOM.button(
             {
@@ -384,11 +384,11 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               onClick: this.setLeftLowerElement.bind(this, "enemyFormation"),
               disabled: this.state.leftLowerElement === "enemyFormation" || !canScout,
               title: canScout ? null : "Can't inspect enemy formation" +
-                " as star is not in detection radius"
+                " as star is not in detection radius",
             }, "Enemy"),
             React.DOM.button(
             {
-              onClick: this.autoMakeFormation
+              onClick: this.autoMakeFormation,
             }, "Auto formation"),
             React.DOM.button(
             {
@@ -396,7 +396,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               {
                 app.reactUI.switchScene("galaxyMap");
               },
-              disabled: playerIsDefending
+              disabled: playerIsDefending,
             }, "Cancel"),
             React.DOM.button(
             {
@@ -408,7 +408,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 var battle = battlePrep.makeBattle();
                 app.reactUI.battle = battle;
                 app.reactUI.switchScene("battle");
-              }.bind(this)
+              }.bind(this),
             }, "Start battle"),
             !Options.debug.enabled ? null: React.DOM.button(
             {
@@ -421,10 +421,10 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 simulator.finishBattle();
                 eventManager.dispatchEvent("setCameraToCenterOn", battle.battleData.location);
                 eventManager.dispatchEvent("switchScene", "galaxyMap");
-              }.bind(this)
-            }, "Simulate battle")
+              }.bind(this),
+            }, "Simulate battle"),
           ),
-          React.DOM.div({className: "battle-prep-left-lower"}, leftLowerElement)
+          React.DOM.div({className: "battle-prep-left-lower"}, leftLowerElement),
         ),
         UnitList(
         {
@@ -442,8 +442,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           onRowChange: this.handleSelectRow,
 
           onMouseEnterUnit: this.handleMouseEnterUnit,
-          onMouseLeave: this.handleMouseLeaveUnit
-        })
+          onMouseLeave: this.handleMouseLeaveUnit,
+        }),
       )
     );
   }

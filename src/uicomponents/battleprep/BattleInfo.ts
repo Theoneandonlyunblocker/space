@@ -34,11 +34,11 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "battle-info"
+        className: "battle-info",
       },
         React.DOM.div(
         {
-          className: "battle-info-opponent"
+          className: "battle-info-opponent",
         },
           PlayerFlag(
           {
@@ -46,26 +46,26 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
             props:
             {
               className: "battle-info-opponent-icon",
-            }
+            },
           }),
           React.DOM.div(
           {
-            className: "battle-info-opponent-name"
+            className: "battle-info-opponent-name",
           },
-            battlePrep.enemyPlayer.name.fullName
-          )
+            battlePrep.enemyPlayer.name.fullName,
+          ),
         ),
         React.DOM.div(
         {
-          className: "battle-info-summary"
+          className: "battle-info-summary",
         },
-          star.name + ": " + (isAttacker ? "Attacking" : "Defending")
+          star.name + ": " + (isAttacker ? "Attacking" : "Defending"),
         ),
         DefenceBuildingList(
         {
           buildings: star.buildings["defence"],
-          reverse: isAttacker
-        })
+          reverse: isAttacker,
+        }),
       )
     );
   }

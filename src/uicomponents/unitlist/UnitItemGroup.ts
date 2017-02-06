@@ -54,17 +54,17 @@ export class UnitItemGroupComponent extends React.Component<PropTypes, StateType
           isDraggable: this.props.isDraggable,
           onDragStart: this.props.onDragStart,
           onDragEnd: this.props.onDragEnd,
-          currentDragItem: this.props.currentDragItem
-        })
+          currentDragItem: this.props.currentDragItem,
+        }),
       );
     }
 
     return(
       React.DOM.div(
       {
-        className: "unit-item-group unit-item-group-" + this.props.slotName
+        className: "unit-item-group unit-item-group-" + this.props.slotName,
       },
-        itemWrappers
+        itemWrappers,
       )
     );
   }

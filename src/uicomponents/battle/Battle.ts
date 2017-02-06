@@ -12,24 +12,24 @@ import UnitDisplayData from "../../UnitDisplayData";
 import
 {
   getTargetsForAllAbilities,
-  getUnitsInAbilityArea
+  getUnitsInAbilityArea,
 } from "../../battleAbilityUI";
 import
 {
   AbilityUseEffect,
-  useAbilityAndGetUseEffects
+  useAbilityAndGetUseEffects,
 } from "../../battleAbilityUsage";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 import
 {
   shallowCopy,
-  shallowExtend
+  shallowExtend,
 } from "../../utility";
 import
 {
   AbilityTooltipComponent,
   default as AbilityTooltip,
-  PropTypes as AbilityTooltipProps
+  PropTypes as AbilityTooltipProps,
 } from "./AbilityTooltip";
 import {BattleBackgroundComponent, default as BattleBackground} from "./BattleBackground";
 import BattleDisplayStrength from "./BattleDisplayStrength";
@@ -164,7 +164,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       abilityTooltip:
       {
         parentElement: null,
-        facesLeft: null
+        facesLeft: null,
       },
 
       battleSceneUnit1: null,
@@ -195,14 +195,14 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     {
       this.setState(
       {
-        UIState: BattleUIState.ending
+        UIState: BattleUIState.ending,
       });
     }
     else
     {
       this.setState(
       {
-        UIState: BattleUIState.idle
+        UIState: BattleUIState.idle,
       },() =>
       {
         this.battleScene.activeUnit = this.props.battle.activeUnit;
@@ -233,12 +233,12 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       highlightedUnit: null,
       abilityTooltip:
       {
-        parentElement: null
+        parentElement: null,
       },
       hoveredAbility: null,
       potentialDelayID: undefined,
       potentialDelayAmount: undefined,
-      targetsInPotentialArea: []
+      targetsInPotentialArea: [],
     });
 
     this.battleScene.hoveredUnit = null;
@@ -300,10 +300,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       abilityTooltip:
       {
         parentElement: parentElement,
-        facesLeft: facesLeft
+        facesLeft: facesLeft,
       },
       hoveredUnit: unit,
-      highlightedUnit: unit
+      highlightedUnit: unit,
     });
 
     this.battleScene.hoveredUnit = unit;
@@ -315,7 +315,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       this.props.battle,
       ability,
       this.props.battle.activeUnit,
-      this.state.hoveredUnit
+      this.state.hoveredUnit,
     )
 
     const abilityUseDelay = ability.preparation ?
@@ -337,7 +337,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       hoveredAbility: null,
       potentialDelayID: undefined,
       potentialDelayAmount: undefined,
-      targetsInPotentialArea: []
+      targetsInPotentialArea: [],
     });
   }
   private getUnitElement(unit: Unit)
@@ -350,7 +350,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       this.props.battle,
       ability,
       this.props.battle.activeUnit,
-      target
+      target,
     );
 
     this.abilityUseEffectQueue.addEffects(abilityUseEffects);
@@ -378,7 +378,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleSceneUnit1: (targetSide === "side1" ? effect.sfxTarget :
         (userSide === "side1" ? effect.sfxUser : null)),
       battleSceneUnit2: (targetSide === "side2" ? effect.sfxTarget :
-        (userSide === "side2" ? effect.sfxUser : null))
+        (userSide === "side2" ? effect.sfxUser : null)),
     });
   }
   private setStateForBattleEffect(effect: AbilityUseEffect)
@@ -429,7 +429,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      UIState: BattleUIState.transitioningTurn
+      UIState: BattleUIState.transitioningTurn,
     }, () =>
     {
       window.setTimeout(this.handleTurnEnd, Options.battleAnimationTiming.turnTransition);
@@ -441,7 +441,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     {
       this.setState(
       {
-        UIState: BattleUIState.ending
+        UIState: BattleUIState.ending,
       });
     }
     else if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction)
@@ -459,7 +459,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
       this.setState(
       {
-        UIState: BattleUIState.idle
+        UIState: BattleUIState.idle,
       });
     }
   }
@@ -535,7 +535,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         {
           this.ref_TODO_abilityTooltip = component;
         },
-        key: this.state.hoveredUnit.id
+        key: this.state.hoveredUnit.id,
       });
     };
 
@@ -562,7 +562,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         hoveredGhostIndex: isFinite(this.state.potentialDelayAmount) ?
           battle.turnOrder.getGhostIndex(
             this.state.potentialDelayAmount,
-            this.state.potentialDelayID
+            this.state.potentialDelayID,
           ) :
           undefined,
 
@@ -570,7 +570,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         onMouseLeaveUnit: this.handleMouseLeaveUnit,
 
         turnIsTransitioning: this.state.UIState === BattleUIState.transitioningTurn,
-        turnTransitionDuration: Options.battleAnimationTiming.turnTransition
+        turnTransitionDuration: Options.battleAnimationTiming.turnTransition,
       })
     }
     else
@@ -578,32 +578,32 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       upperFooterElement = React.DOM.div(
       {
         key: "battleDisplayStrength",
-        className: "battle-display-strength-container"
+        className: "battle-display-strength-container",
       },
         React.DOM.div(
         {
-          className: "battle-display-strength battle-display-strength-side1"
+          className: "battle-display-strength battle-display-strength-side1",
         },
           this.state.battleSceneUnit1 ? BattleDisplayStrength(
           {
             key: "battleDisplayStrength" + this.state.battleSceneUnit1.id,
             animationDuration: this.state.battleEffectDurationAfterTrigger,
             from: this.state.previousUnitDisplayDataByID[this.state.battleSceneUnit1.id].currentHealth,
-            to: this.state.unitDisplayDataByID[this.state.battleSceneUnit1.id].currentHealth
-          }) : null
+            to: this.state.unitDisplayDataByID[this.state.battleSceneUnit1.id].currentHealth,
+          }) : null,
         ),
         React.DOM.div(
         {
-          className: "battle-display-strength battle-display-strength-side2"
+          className: "battle-display-strength battle-display-strength-side2",
         },
           this.state.battleSceneUnit2 ? BattleDisplayStrength(
           {
             key: "battleDisplayStrength" + this.state.battleSceneUnit2.id,
             animationDuration: this.state.battleEffectDurationAfterTrigger,
             from: this.state.previousUnitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth,
-            to: this.state.unitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth
-          }) : null
-        )
+            to: this.state.unitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth,
+          }) : null,
+        ),
       )
     }
 
@@ -621,7 +621,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     const containerProps: React.HTMLAttributes =
     {
-      className: "battle-container"
+      className: "battle-container",
     };
     var playerWonBattle: boolean = null;
     if (this.state.UIState === BattleUIState.starting)
@@ -671,7 +671,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         React.DOM.div(containerProps,
           React.DOM.div(
           {
-            className: "battle-upper"
+            className: "battle-upper",
           },
             BattleScore(
             {
@@ -689,7 +689,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
               flag1: battle.side1Player.flag,
               flag2: battle.side2Player.flag,
-            })
+            }),
           ),
           React.DOM.div(
           {
@@ -697,7 +697,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             ref: (container: HTMLElement) =>
             {
               this.ref_TODO_formationsContainer = container;
-            }
+            },
           },
             Formation(
             {
@@ -723,7 +723,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             {
               turnsLeft: battle.turnsLeft,
               maxTurns: battle.maxTurns,
-              animationDuration: 100
+              animationDuration: 100,
             }),
             Formation(
             {
@@ -748,9 +748,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             abilityTooltip,
             this.state.playingBattleEffect ?
               React.DOM.div({className: "battle-formations-darken"}, null):
-              null
-          )
-        )
+              null,
+          ),
+        ),
       )
     );
   }

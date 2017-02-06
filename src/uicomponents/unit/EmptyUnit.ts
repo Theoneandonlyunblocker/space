@@ -31,16 +31,16 @@ export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType
       React.DOM.div(
       {
         className: "unit-body",
-        key: "body"
+        key: "body",
       },
-        null
+        null,
       ),
       UnitIconContainer(
         {
           iconSrc: null,
           facesLeft: this.props.facesLeft,
-          key: "icon"
-        })
+          key: "icon",
+        }),
     ];
 
     if (this.props.facesLeft)
@@ -52,9 +52,9 @@ export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType
       React.DOM.div(
       {
         className: "unit empty-unit" + (this.props.facesLeft ? " enemy-unit" : " friendly-unit"),
-        onMouseUp: this.props.onMouseUp
+        onMouseUp: this.props.onMouseUp,
       },
-        innerElements
+        innerElements,
       )
     );
   }

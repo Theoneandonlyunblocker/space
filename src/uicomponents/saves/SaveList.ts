@@ -76,8 +76,8 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
           handleUndoDelete: this.props.onUndoDelete ?
             this.props.onUndoDelete.bind(null, saveKeys[i]) :
             null,
-          onDoubleClick: this.props.onDoubleClick
-        })
+          onDoubleClick: this.props.onDoubleClick,
+        }),
       };
 
       rows.push(row);
@@ -92,14 +92,14 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
       {
         label: "Name",
         key: "name",
-        defaultOrder: "asc"
+        defaultOrder: "asc",
       },
       {
         label: "Date",
         key: "date",
         defaultOrder: "desc",
-        propToSortBy: "accurateDate"
-      }
+        propToSortBy: "accurateDate",
+      },
     ];
 
     if (this.props.allowDelete)
@@ -109,7 +109,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
         label: "Del",
         key: "delete",
         defaultOrder: "asc",
-        notSortable: true
+        notSortable: true,
       });
     }
 
@@ -124,8 +124,8 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
           autoSelect: selected ? false : this.props.autoSelect,
           initialSelected: selected,
           keyboardSelect: true,
-          addSpacer: true
-        })
+          addSpacer: true,
+        }),
       )
     );
   }

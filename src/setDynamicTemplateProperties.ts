@@ -38,7 +38,7 @@ export function setTechnologyRequirements(technologyTemplates: TemplateCollectio
         template.technologyRequirements.push(
         {
           technology: technology,
-          level: parseInt(level)
+          level: parseInt(level),
         });
       });
     }

@@ -87,8 +87,8 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
             filter: filter,
             filterState: filtersForCategory[i].filterState,
             keyTODO: notificationTemplate.key,
-            isHighlighted: isHighlighted
-          })
+            isHighlighted: isHighlighted,
+          }),
         });
       }
       filterGroupElements.push(OptionsGroup(
@@ -96,33 +96,33 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
         header: category,
         options: filterElementsForCategory,
         key: category,
-        resetFN: this.handleResetCategory.bind(this, category)
+        resetFN: this.handleResetCategory.bind(this, category),
       }));
     }
 
     return(
       React.DOM.div(
       {
-        className: "notification-filter-list"
+        className: "notification-filter-list",
       },
         React.DOM.div(
         {
-          className: "notification-filter-list-header"
+          className: "notification-filter-list-header",
         },
           React.DOM.div(
           {
-            className: "notification-filter-list-item-label"
+            className: "notification-filter-list-item-label",
           },
-            "Show"
+            "Show",
           ),
           React.DOM.div(
           {
-            className: "notification-filter-list-item-filters"
+            className: "notification-filter-list-item-filters",
           },
             "Always",
             "Involved",
-            "Never"
-          )
+            "Never",
+          ),
         ),
         React.DOM.div(
         {
@@ -130,10 +130,10 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
           ref: (component: HTMLElement) =>
           {
             this.ref_TODO_body = component;
-          }
+          },
         },
-          filterGroupElements
-        )
+          filterGroupElements,
+        ),
       )
     );
   }

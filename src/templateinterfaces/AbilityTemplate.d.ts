@@ -7,7 +7,7 @@ import
 
 import
 {
-  GetBattleTargetsFN
+  GetBattleTargetsFN,
 } from "../targeting";
 
 declare interface AbilityTemplate extends AbilityBase

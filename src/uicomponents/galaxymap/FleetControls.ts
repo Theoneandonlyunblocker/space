@@ -56,7 +56,7 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
 
     var splitButtonProps: React.HTMLAttributes =
     {
-      className: "fleet-controls-split"
+      className: "fleet-controls-split",
     };
     if (fleet.units.length > 1 && !this.props.isInspecting)
     {
@@ -70,25 +70,25 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
     return(
       React.DOM.div(
       {
-        className: "fleet-controls"
+        className: "fleet-controls",
       },
         React.DOM.button(splitButtonProps,
-          "split"
+          "split",
         ),
         React.DOM.button(
         {
           className: "fleet-controls-deselect",
-          onClick: this.deselectFleet
+          onClick: this.deselectFleet,
         },
-          "deselect"
+          "deselect",
         ),
         !this.props.hasMultipleSelected ? null : React.DOM.button(
         {
           className: "fleet-controls-select",
-          onClick: this.selectFleet
+          onClick: this.selectFleet,
         },
-          "select"
-        )
+          "select",
+        ),
       )
     );
   }

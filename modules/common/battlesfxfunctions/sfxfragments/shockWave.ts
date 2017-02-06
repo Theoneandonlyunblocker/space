@@ -10,7 +10,7 @@ import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
 {
-  makeShaderSprite
+  makeShaderSprite,
 } from "../../../../src/utility";
 
 interface ShockWaveProps
@@ -109,7 +109,7 @@ export default class ShockWave extends SFXFragment<ShockWaveProps>
       intersectingEllipseCenter:
       [
         p.intersectingEllipseOrigin.x + p.intersectingEllipseDrift.x * shockWaveTime,
-        p.intersectingEllipseOrigin.y + p.intersectingEllipseDrift.y * shockWaveTime
+        p.intersectingEllipseOrigin.y + p.intersectingEllipseDrift.y * shockWaveTime,
       ],
       mainEllipseSharpness: p.mainEllipseSharpness.getValue(shockWaveTime),
       intersectingEllipseSharpness: p.intersectingEllipseSharpness.getValue(shockWaveTime),
@@ -120,7 +120,7 @@ export default class ShockWave extends SFXFragment<ShockWaveProps>
   {
     const shockWaveFilter = this.shockWaveFilter = new IntersectingEllipsesFilter(
     {
-      mainColor: this.props.color.getRGBA(1.0)
+      mainColor: this.props.color.getRGBA(1.0),
     });
 
     const shockWaveSprite = makeShaderSprite(
@@ -128,7 +128,7 @@ export default class ShockWave extends SFXFragment<ShockWaveProps>
       0,
       0,
       this.props.size.x,
-      this.props.size.y
+      this.props.size.y,
     );
 
     this.setDisplayObject(shockWaveSprite);

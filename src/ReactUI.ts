@@ -83,9 +83,9 @@ export default class ReactUI
         mapRenderer: this.mapRenderer,
         playerControl: this.playerControl,
         player: this.player,
-        game: this.game
+        game: this.game,
       }),
-      this.container
+      this.container,
     );
   }
   // public renderLoadingScreen()

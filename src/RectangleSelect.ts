@@ -102,7 +102,7 @@ export default class RectangleSelect
       y2: y2,
 
       width: x2 - x1,
-      height: y2 - y1
+      height: y2 - y1,
     });
   }
 

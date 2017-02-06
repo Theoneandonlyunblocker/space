@@ -83,11 +83,11 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
     return(
       React.DOM.div(
       {
-        className: "manufacturable-items"
+        className: "manufacturable-items",
       },
         (!this.props.selectedStar || !this.props.selectedStar.manufactory) ? null : React.DOM.div(
         {
-          className: "manufactory-upgrade-buttons-container"
+          className: "manufactory-upgrade-buttons-container",
         },
           ManufactoryUpgradeButton(
           {
@@ -97,16 +97,16 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
             currentLevel: 0,
             maxLevel: 0,
             levelDecimalPoints: 0,
-            onClick: this.upgradeItems
-          })
+            onClick: this.upgradeItems,
+          }),
         ),
         ManufacturableThingsList(
         {
           manufacturableThings: this.props.manufacturableThings,
           onClick: (this.props.canBuild ? this.addItemToBuildQueue : null),
           showCost: true,
-          money: this.props.money
-        })
+          money: this.props.money,
+        }),
       )
     );
   }

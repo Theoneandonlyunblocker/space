@@ -14,7 +14,7 @@ const defaultItems: ModuleFile =
     name: "Default items",
     version: "0.1.0",
     author: "giraluna",
-    description: ""
+    description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   constructModule: function(moduleData: ModuleData)
@@ -22,7 +22,7 @@ const defaultItems: ModuleFile =
     moduleData.copyTemplates<ItemTemplate>(ItemTemplates, "Items");
 
     return moduleData;
-  }
+  },
 }
 
 export default defaultItems;

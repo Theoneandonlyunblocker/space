@@ -45,7 +45,7 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
   {
     var wrapperProps: React.HTMLAttributes =
     {
-      className: "unit-item-wrapper"
+      className: "unit-item-wrapper",
     };
 
     // if this is declared inside the conditional block
@@ -79,8 +79,8 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
 
           isDraggable: this.props.isDraggable,
           onDragStart: this.props.onDragStart,
-          onDragEnd: this.props.onDragEnd
-        })
+          onDragEnd: this.props.onDragEnd,
+        }),
       )
     );
   }

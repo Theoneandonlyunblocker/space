@@ -53,7 +53,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
     var containerProps: any =
     {
       className: "ability-tooltip",
-      onMouseLeave: this.props.handleMouseLeave
+      onMouseLeave: this.props.handleMouseLeave,
     };
 
     var parentRect = this.props.parentElement.getBoundingClientRect();
@@ -61,7 +61,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
     containerProps.style =
     {
       position: "fixed",
-      top: parentRect.top
+      top: parentRect.top,
     }
 
     if (this.props.facesLeft)
@@ -95,15 +95,15 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
 
       abilityElements.push(
         React.DOM.div(data,
-          ability.displayName
-        )
+          ability.displayName,
+        ),
       );
     }
 
 
     return(
       React.DOM.div(containerProps,
-        abilityElements
+        abilityElements,
       )
     );
   }

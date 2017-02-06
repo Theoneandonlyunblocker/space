@@ -55,7 +55,7 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
     this.props.mapRenderer.currentMapMode.moveLayer(
       this.state.currentDraggingLayer,
       this.state.layerToInsertNextTo,
-      this.state.insertPosition
+      this.state.insertPosition,
     );
 
     this.props.mapRenderer.resetMapModeLayersPosition();
@@ -109,7 +109,7 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
       {
         className: "map-renderer-layers-list",
       },
-        listItems
+        listItems,
       )
     );
   }

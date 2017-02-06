@@ -28,21 +28,21 @@ export class OptionsCheckboxComponent extends React.Component<PropTypes, StateTy
     return(
       React.DOM.div(
       {
-        className: "options-checkbox-container"
+        className: "options-checkbox-container",
       },
         React.DOM.input(
         {
           type: "checkbox",
           id: checkboxID,
           checked: this.props.isChecked,
-          onChange: this.props.onChangeFN
+          onChange: this.props.onChangeFN,
         }),
         React.DOM.label(
         {
-          htmlFor: checkboxID
+          htmlFor: checkboxID,
         },
-          this.props.label
-        )
+          this.props.label,
+        ),
       )
     );
   }

@@ -130,7 +130,7 @@ const SubEmblemTemplates: TemplateCollection<SubEmblemTemplate> =
   [Musubikashiwa.key]: Musubikashiwa,
   [Takeda_mon.key]: Takeda_mon,
   [threeHorns.key]: threeHorns,
-  [Flag_of_Edward_England.key]: Flag_of_Edward_England
+  [Flag_of_Edward_England.key]: Flag_of_Edward_England,
 }
 
 export default SubEmblemTemplates;

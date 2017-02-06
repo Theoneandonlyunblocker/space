@@ -31,7 +31,7 @@ export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes
     this.setState(
     {
       canAffordUpgrade: newProps.money >= newProps.upgradeCost,
-      isDisabled: newProps.currentLevel >= newProps.maxLevel
+      isDisabled: newProps.currentLevel >= newProps.maxLevel,
     })
   }
 
@@ -60,28 +60,28 @@ export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes
         className: unitUpgradeButtonBaseClassName + " manufactory-units-upgrade-health-button",
         onClick: (isDisabled ? null : this.props.onClick),
         disabled: isDisabled,
-        title: this.props.title
+        title: this.props.title,
       },
         React.DOM.span(
         {
-          className: "manufactory-upgrade-button-action"
+          className: "manufactory-upgrade-button-action",
         },
-          this.props.actionString
+          this.props.actionString,
         ),
         React.DOM.br(),
         React.DOM.span(
         {
-          className: "manufactory-upgrade-button-level"
+          className: "manufactory-upgrade-button-level",
         },
           "" + this.props.currentLevel.toFixed(this.props.levelDecimalPoints) + "/" +
-            this.props.maxLevel.toFixed(this.props.levelDecimalPoints)
+            this.props.maxLevel.toFixed(this.props.levelDecimalPoints),
         ),
         React.DOM.span(
         {
-          className: unitUpgradeCostBaseClassName
+          className: unitUpgradeCostBaseClassName,
         },
-          this.props.upgradeCost
-        )
+          this.props.upgradeCost,
+        ),
       )
     );
   }

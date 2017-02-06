@@ -50,7 +50,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
     return(
     {
       selectedUnit: null,
-      currentDragItem: null
+      currentDragItem: null,
     });
   }
   handleSelectRow(row: ListItem<UnitListItemProps | ItemListItemProps>)
@@ -62,14 +62,14 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      selectedUnit: row.content.props.unit
+      selectedUnit: row.content.props.unit,
     });
   }
   handleDragStart(item: Item)
   {
     this.setState(
     {
-      currentDragItem: item
+      currentDragItem: item,
     });
   }
   handleDragEnd(dropSuccesful: boolean = false)
@@ -85,7 +85,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      currentDragItem: null
+      currentDragItem: null,
     });
   }
   handleDrop(index: number)
@@ -116,7 +116,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
             isDraggable: true,
             onDragStart: this.handleDragStart,
             onDragEnd: this.handleDragEnd,
-            currentDragItem: this.state.currentDragItem
+            currentDragItem: this.state.currentDragItem,
           }),
           ItemList(
           {
@@ -125,8 +125,8 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
             isDraggable: true,
             onDragStart: this.handleDragStart,
             onDragEnd: this.handleDragEnd,
-            onRowChange: this.handleSelectRow
-          })
+            onRowChange: this.handleSelectRow,
+          }),
         ),
 
         UnitList(
@@ -135,8 +135,8 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
           selectedUnit: this.state.selectedUnit,
           isDraggable: false,
           onRowChange: this.handleSelectRow,
-          autoSelect: true
-        })
+          autoSelect: true,
+        }),
       )
     );
   }

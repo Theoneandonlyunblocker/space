@@ -11,14 +11,14 @@ import
   defaultUnitDesireFN,
   defaultUnitFitFN,
   getUnitsToBeatImmediateTarget,
-  makeObjectivesFromScores
+  makeObjectivesFromScores,
 } from "../aiUtils";
 import movePriority from "./common/movePriority";
 
 import
 {
   buildingControllerFilter,
-  default as musterAndAttack
+  default as musterAndAttack,
 } from "./common/moveroutines/musterAndAttack";
 
 const conquer: ObjectiveTemplate =
@@ -29,7 +29,7 @@ const conquer: ObjectiveTemplate =
   {
     combat: 0.65,
     defence: 0.25,
-    utility: 0.1
+    utility: 0.1,
   },
   moveRoutineFN: musterAndAttack.bind(null, buildingControllerFilter),
   unitDesireFN: defaultUnitDesireFN,
@@ -62,7 +62,7 @@ const conquer: ObjectiveTemplate =
     var template = conquer;
     return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
-  unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget
+  unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget,
 }
 
 export default conquer;

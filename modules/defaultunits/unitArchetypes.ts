@@ -11,8 +11,8 @@ export const combat: UnitArchetype =
   rowScores:
   {
     ROW_FRONT: 1,
-    ROW_BACK: 0.6
-  }
+    ROW_BACK: 0.6,
+  },
 }
 export const utility: UnitArchetype =
 {
@@ -22,8 +22,8 @@ export const utility: UnitArchetype =
   rowScores:
   {
     ROW_FRONT: 0.4,
-    ROW_BACK: 0.6
-  }
+    ROW_BACK: 0.6,
+  },
 }
 export const scouting: UnitArchetype =
 {
@@ -33,8 +33,8 @@ export const scouting: UnitArchetype =
   rowScores:
   {
     ROW_FRONT: 0.01,
-    ROW_BACK: 0.02
-  }
+    ROW_BACK: 0.02,
+  },
 }
 export const defence: UnitArchetype =
 {
@@ -44,7 +44,7 @@ export const defence: UnitArchetype =
   rowScores:
   {
     ROW_FRONT: 1,
-    ROW_BACK: 0.5
+    ROW_BACK: 0.5,
   },
   scoreMultiplierForRowFN: function(row: string, rowUnits: Unit[], enemyUnits: Unit[])
   {
@@ -62,7 +62,7 @@ export const defence: UnitArchetype =
     }, 0);
 
     return multiplier + totalDefenceUnderThreshhold * 0.2;
-  }
+  },
 }
 
 const UnitArchetypes: TemplateCollection<UnitArchetype> =

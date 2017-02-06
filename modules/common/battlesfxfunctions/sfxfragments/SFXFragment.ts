@@ -2,7 +2,7 @@
 
 import
 {
-  shallowCopy
+  shallowCopy,
 } from "../../../../src/utility";
 import {SFXFragmentPropType} from "./SFXFragmentPropTypes";
 

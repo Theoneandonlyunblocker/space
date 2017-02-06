@@ -3,7 +3,7 @@ import Triangle from "./Triangle";
 
 import
 {
-  pointsEqual
+  pointsEqual,
 } from "../../../src/utility";
 
 export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>[]
@@ -50,7 +50,7 @@ export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>
       var newTriangle = new Triangle(
         edgeBuffer[j][0],
         edgeBuffer[j][1],
-        vertex
+        vertex,
       )
 
       triangles.push(newTriangle);
@@ -102,16 +102,16 @@ function makeSuperTriangle<T extends Point>(vertices: T[], highestCoordinateValu
   var triangle = new Triangle(
     {
       x: 3 * max,
-      y: 0
+      y: 0,
     },
     {
       x: 0,
-      y: 3 * max
+      y: 3 * max,
     },
     {
       x: -3 * max,
-      y: -3 * max
-    }
+      y: -3 * max,
+    },
   );
 
   return triangle;

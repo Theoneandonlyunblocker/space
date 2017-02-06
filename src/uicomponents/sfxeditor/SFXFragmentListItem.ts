@@ -70,7 +70,7 @@ export class SFXFragmentListItemComponent<P extends Fragment> extends React.Comp
   {
     const listItemProps: React.HTMLProps<HTMLLIElement> =
     {
-      className: "sfx-fragment-list-item"
+      className: "sfx-fragment-list-item",
     };
 
     if (this.props.isDraggable)
@@ -87,7 +87,7 @@ export class SFXFragmentListItemComponent<P extends Fragment> extends React.Comp
 
     return(
       React.DOM.li(listItemProps,
-        this.props.fragment.displayName
+        this.props.fragment.displayName,
       )
     );
   }

@@ -8,7 +8,7 @@ import RuleSetValues from "./RuleSetValues";
 import
 {
   deepMerge,
-  getRandomProperty
+  getRandomProperty,
 } from "./utility";
 
 import AITemplateConstructor from "./templateinterfaces/AITemplateConstructor";
@@ -83,7 +83,7 @@ export default class ModuleData
     SubEmblems: {},
     Technologies: {},
     UnitArchetypes: {},
-    Units: {}
+    Units: {},
   };
 
   public ruleSet: RuleSetValues = {};

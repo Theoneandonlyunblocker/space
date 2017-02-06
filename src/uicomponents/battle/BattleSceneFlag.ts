@@ -100,9 +100,9 @@ export class BattleSceneFlagComponent extends React.Component<PropTypes, StateTy
     return(
       React.DOM.div(
       {
-        className: "battle-scene-flag-container"
+        className: "battle-scene-flag-container",
       },
-        null
+        null,
       )
     );
   }

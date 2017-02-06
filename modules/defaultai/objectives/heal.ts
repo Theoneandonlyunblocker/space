@@ -44,7 +44,7 @@ const heal: ObjectiveTemplate =
   unitsToFillObjectiveFN: function(mapEvaluator: MapEvaluator, objective: Objective)
   {
     return {min: 0, ideal: 0};
-  }
+  },
 }
 
 export default heal;

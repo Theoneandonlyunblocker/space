@@ -11,7 +11,7 @@ import
   ComponentPropTypes as UnitComponentPropTypes,
   default as UnitComponentFactory,
   DisplayStatus as UnitDisplayStatus,
-  PropTypes as UnitPropTypes
+  PropTypes as UnitPropTypes,
 } from "../unit/Unit";
 import UnitWrapper from "../unit/UnitWrapper";
 
@@ -126,7 +126,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
             onDragStart: this.makeBoundFunction(this.props.onDragStart, unit),
             onDragEnd: this.props.onDragEnd,
             onMouseUp: onMouseUp,
-            animateDuration: this.props.unitStrengthAnimateDuration
+            animateDuration: this.props.unitStrengthAnimateDuration,
           }
           const displayProps: UnitDisplayStatus =
           {
@@ -154,27 +154,27 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
             EmptyUnit(
             {
               facesLeft: this.props.facesLeft,
-              onMouseUp: onMouseUp
+              onMouseUp: onMouseUp,
             }),
             !unit ? null : UnitComponentFactory(
-              unitProps
-            )
-          )
+              unitProps,
+            ),
+          ),
         );
       }
 
       formationRowElements.push(React.DOM.div(
       {
         className: "battle-formation-row",
-        key: "row_" + i
+        key: "row_" + i,
       },
-        unitElements
+        unitElements,
       ))
     }
 
     return(
       React.DOM.div({className: "battle-formation"},
-        formationRowElements
+        formationRowElements,
       )
     );
   }

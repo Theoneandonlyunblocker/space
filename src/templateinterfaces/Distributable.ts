@@ -12,7 +12,7 @@ export interface Distributable
 }
 
 export function getRandomWeightedDistributable<T extends Distributable>(
-  candidates: T[]
+  candidates: T[],
 ): T
 {
   const maxWeight = candidates.map(distributable =>

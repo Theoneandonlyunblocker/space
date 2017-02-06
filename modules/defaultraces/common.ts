@@ -9,18 +9,18 @@ export const defaultRaceTechnologyValues: RaceTechnologyValue[] =
   {
     tech: TechnologyTemplates.stealth,
     startingLevel: 0,
-    maxLevel: 9
+    maxLevel: 9,
   },
   {
     tech: TechnologyTemplates.lasers,
     startingLevel: 0,
-    maxLevel: 9
+    maxLevel: 9,
   },
   {
     tech: TechnologyTemplates.missiles,
     startingLevel: 0,
-    maxLevel: 9
-  }
+    maxLevel: 9,
+  },
 ]
 
 export function mergeTechnologyValues(...valuesToMerge: RaceTechnologyValue[][]): RaceTechnologyValue[]

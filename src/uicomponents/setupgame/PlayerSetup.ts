@@ -7,7 +7,7 @@ import Player from "../../Player";
 import
 {
   generateMainColor,
-  generateSecondaryColor
+  generateSecondaryColor,
 } from "../../colorGeneration";
 import
 {
@@ -151,7 +151,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      race: race
+      race: race,
     });
   }
   public randomize(): void
@@ -192,16 +192,16 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
       {
         main: mainColor,
         secondary: secondaryColor,
-        alpha: 1
+        alpha: 1,
       },
 
-      flag: this.flag
+      flag: this.flag,
     });
 
     this.setState(
     {
       mainColor: player.color,
-      secondaryColor: player.secondaryColor
+      secondaryColor: player.secondaryColor,
     });
 
     return player;
@@ -211,20 +211,20 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "player-setup" + (this.props.isHuman ? " human-player-setup" : "")
+        className: "player-setup" + (this.props.isHuman ? " human-player-setup" : ""),
       },
         React.DOM.input(
         {
           className: "player-setup-is-human",
           type: "checkbox",
           checked: this.props.isHuman,
-          onChange: this.handleSetHuman
+          onChange: this.handleSetHuman,
         }),
         React.DOM.input(
         {
           className: "player-setup-name",
           value: this.state.name,
-          onChange: this.handleNameChange
+          onChange: this.handleNameChange,
         }),
         RacePicker(
         {
@@ -236,21 +236,21 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
             return !race.isNotPlayable;
           }),
           selectedRace: this.state.race,
-          changeRace: this.setRace
+          changeRace: this.setRace,
         }),
         ColorSetter(
         {
           onChange: this.setMainColor,
           setAsActive: this.props.setActiveSetterComponent,
           generateColor: this.generateMainColor,
-          color: this.state.mainColor
+          color: this.state.mainColor,
         }),
         ColorSetter(
         {
           onChange: this.setSubColor,
           setAsActive: this.props.setActiveSetterComponent,
           generateColor: this.generateSubColor,
-          color: this.state.secondaryColor
+          color: this.state.secondaryColor,
         }),
         FlagSetter(
         {
@@ -262,13 +262,13 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
           {
             this.flag = flag;
             this.forceUpdate();
-          }
+          },
         }),
         React.DOM.button(
         {
           className: "player-setup-remove-player",
-          onClick: this.handleRemove
-        }, "X")
+          onClick: this.handleRemove,
+        }, "X"),
       )
     );
   }

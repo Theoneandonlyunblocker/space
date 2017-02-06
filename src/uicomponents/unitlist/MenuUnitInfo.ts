@@ -66,7 +66,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
         isDraggable: this.props.isDraggable,
         onDragStart: this.props.onDragStart,
         onDragEnd: this.props.onDragEnd,
-        currentDragItem: this.props.currentDragItem
+        currentDragItem: this.props.currentDragItem,
       }));
     }
 
@@ -76,39 +76,39 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "menu-unit-info"
+        className: "menu-unit-info",
       },
         React.DOM.div(
         {
-          className: "menu-unit-info-left"
+          className: "menu-unit-info-left",
         },
           React.DOM.div(
           {
-            className: "menu-unit-info-name"
+            className: "menu-unit-info-name",
           }, unit.name),
           React.DOM.div(
           {
-            className: "menu-unit-info-abilities"
+            className: "menu-unit-info-abilities",
           },
             AbilityList(
             {
-              abilities: unitAbilities
-            })
+              abilities: unitAbilities,
+            }),
           ),
           UnitExperience(
           {
             experienceForCurrentLevel: unit.experienceForCurrentLevel,
             experienceToNextLevel: unit.getExperienceToNextLevel(),
             unit: unit,
-            onUnitUpgrade: this.handleUnitUpgrade
-          })
+            onUnitUpgrade: this.handleUnitUpgrade,
+          }),
         ),
         React.DOM.div(
         {
-          className: "menu-unit-info-items-wrapper"
+          className: "menu-unit-info-items-wrapper",
         },
-          itemGroups
-        )
+          itemGroups,
+        ),
       )
     );
   }

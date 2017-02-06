@@ -53,7 +53,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
       location: star,
       controller: upgradeData.parentBuilding.controller,
       upgradeLevel: upgradeData.level,
-      totalCost: upgradeData.parentBuilding.totalCost + upgradeData.cost
+      totalCost: upgradeData.parentBuilding.totalCost + upgradeData.cost,
     });
 
     star.removeBuilding(upgradeData.parentBuilding);
@@ -103,14 +103,14 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
           upgradeElements.push(React.DOM.tr(
           {
             className: "list-spacer",
-            key: "spacer" + i + j
+            key: "spacer" + i + j,
           },
             React.DOM.td(
             {
-              colSpan: 20
+              colSpan: 20,
             },
-              null
-            )
+              null,
+            ),
           ))
         };
 
@@ -119,30 +119,30 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
           key: upgrades[j].template.type,
           player: this.props.player,
           handleUpgrade: this.upgradeBuilding,
-          upgradeData: upgrades[j]
+          upgradeData: upgrades[j],
         }));
       }
 
       var parentElement = React.DOM.div(
       {
         key: "" + parentBuilding.id,
-        className: "building-upgrade-group"
+        className: "building-upgrade-group",
       },
         React.DOM.div(
         {
-          className: "building-upgrade-group-header"
+          className: "building-upgrade-group-header",
         }, parentBuilding.template.displayName),
         React.DOM.table(
         {
-          className: "buildable-item-list"
+          className: "buildable-item-list",
         },
           React.DOM.tbody(
           {
 
           },
-            upgradeElements
-          )
-        )
+            upgradeElements,
+          ),
+        ),
       );
 
       upgradeGroups.push(parentElement);
@@ -151,9 +151,9 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
     return(
       React.DOM.ul(
       {
-        className: "building-upgrade-list"
+        className: "building-upgrade-list",
       },
-        upgradeGroups
+        upgradeGroups,
       )
     );
   }

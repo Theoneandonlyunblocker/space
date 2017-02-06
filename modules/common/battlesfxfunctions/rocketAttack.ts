@@ -41,7 +41,7 @@ function rocketAttack(params: SFXParams)
       clip: PIXI.extras.AnimatedSprite;
       startTime: number;
       relativeTimePerFrame: number;
-    }
+    },
   } = {};
 
   const relativeTimePerSecond = 1000 / params.duration;
@@ -81,7 +81,7 @@ function rocketAttack(params: SFXParams)
       {
         clip: new PIXI.extras.AnimatedSprite(explosionTextures),
         startTime: time,
-        relativeTimePerFrame: Math.min(relativeTimePerExplosionFrame, remainingTimePerFrame)
+        relativeTimePerFrame: Math.min(relativeTimePerExplosionFrame, remainingTimePerFrame),
       }
 
       const explosionClip = explosionsByID[projectile.id].clip;
@@ -111,8 +111,8 @@ function rocketAttack(params: SFXParams)
     impactPosition:
     {
       min: offsetTargetData.boundingBox.x,
-      max: offsetTargetData.boundingBox.x + offsetTargetData.boundingBox.width
-    }
+      max: offsetTargetData.boundingBox.x + offsetTargetData.boundingBox.width,
+    },
   });
 
   projectileAttackFragment.draw(offsetUserData, offsetTargetData);

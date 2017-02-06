@@ -69,11 +69,11 @@ const federationAlliance: PlayerRaceTemplate =
     {
       tech: TechnologyTemplates.test1,
       startingLevel: 1,
-      maxLevel: 5
-    }
+      maxLevel: 5,
+    },
   ]),
 
-  getAITemplateConstructor: player => DefaultAIConstructor
+  getAITemplateConstructor: player => DefaultAIConstructor,
 }
 
 export default federationAlliance;

@@ -123,7 +123,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
       onMouseEnter: this.props.handleMouseEnterUnit ? this.handleMouseEnter : null,
       onMouseLeave: this.props.handleMouseLeaveUnit ? this.handleMouseLeave : null,
       onClick: this.props.onUnitClick ? this.handleClick : null,
-      onMouseUp: this.props.onMouseUp
+      onMouseUp: this.props.onMouseUp,
     };
 
     if (this.props.isDraggable)
@@ -167,20 +167,20 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
       React.DOM.div(
       {
         className: "unit-portrait-container",
-        key: "portraitContainer"
+        key: "portraitContainer",
       },
         UnitPortrait(
         {
-          imageSrc: (this.props.portraitSrc || "")
+          imageSrc: (this.props.portraitSrc || ""),
         }),
         UnitPassiveEffects(
         {
-          passiveEffects: this.props.passiveEffects
+          passiveEffects: this.props.passiveEffects,
         }),
         UnitAttributeChanges(
         {
-          attributeChanges: this.props.attributeChanges
-        })
+          attributeChanges: this.props.attributeChanges,
+        }),
       ),
       UnitInfo(
       {
@@ -211,8 +211,8 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     {
       bodyElements.push(
         React.DOM.div({key: "overlay", className: "unit-annihilated-overlay"},
-          "Unit annihilated"
-        )
+          "Unit annihilated",
+        ),
       );
     }
 
@@ -222,21 +222,21 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
       {
         className: "unit-body",
         id: "unit-id_" + this.props.id,
-        key: "body"
+        key: "body",
       },
-        bodyElements
+        bodyElements,
       ),
       UnitIconContainer(
         {
           key: "icon",
           facesLeft: this.props.facesLeft,
-          iconSrc: this.props.iconSrc
-        })
+          iconSrc: this.props.iconSrc,
+        }),
     ];
 
     return(
       React.DOM.div(wrapperProps,
-        this.props.facesLeft ? innerElements.reverse() : innerElements
+        this.props.facesLeft ? innerElements.reverse() : innerElements,
       )
     );
   }

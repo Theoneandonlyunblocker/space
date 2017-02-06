@@ -33,7 +33,7 @@ export class UnitPassiveEffectsComponent extends React.PureComponent<PropTypes, 
           title: this.props.passiveEffects.reduce((t, e) =>
           {
             return t + e.displayName + ": " + e.description + "\n"
-          }, "")
+          }, ""),
         }) :
         null
     );

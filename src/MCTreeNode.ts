@@ -5,15 +5,15 @@ import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import Battle from "./Battle";
 import
 {
-  getTargetsForAllAbilities
+  getTargetsForAllAbilities,
 } from "./battleAbilityTargeting";
 import
 {
-  useAbility
+  useAbility,
 } from "./battleAbilityUsage";
 import
 {
-  getRandomKeyWithWeights
+  getRandomKeyWithWeights,
 } from "./utility";
 
 export interface Move
@@ -74,7 +74,7 @@ export default class MCTreeNode
           actions.push(
           {
             targetId: parseInt(id),
-            ability: targetActions[i]
+            ability: targetActions[i],
           });
         }
       }
@@ -187,7 +187,7 @@ export default class MCTreeNode
     return(
     {
       targetId: parseInt(selected.slice(0, separatorIndex)),
-      abilityType: selected.slice(separatorIndex + 1)
+      abilityType: selected.slice(separatorIndex + 1),
     });
   }
   simulateOnce(battle: Battle): void

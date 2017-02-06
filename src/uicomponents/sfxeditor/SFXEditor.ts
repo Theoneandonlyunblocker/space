@@ -10,13 +10,13 @@ import ShockWave from "../../../modules/common/battlesfxfunctions/sfxfragments/S
 // import UnitTemplate from "../../templateinterfaces/UnitTemplate";
 import
 {
-  clamp
+  clamp,
 } from "../../utility";
 
 import
 {
   default as SFXEditorDisplay,
-  SFXEditorDisplayComponent
+  SFXEditorDisplayComponent,
 } from "./SFXEditorDisplay";
 import SFXEditorSelection from "./SFXEditorSelection";
 import SFXFragmentConstructor from "./SFXFragmentConstructor";
@@ -27,23 +27,23 @@ const availableFragmentConstructors: SFXFragmentConstructor[] =
   {
     key: "shockWave",
     displayName: "ShockWave",
-    constructorFN: ShockWave
+    constructorFN: ShockWave,
   },
   {
     key: "lightBurst",
     displayName: "LightBurst",
-    constructorFN: LightBurst
+    constructorFN: LightBurst,
   },
   {
     key: "beam",
     displayName: "Beam",
-    constructorFN: Beam
+    constructorFN: Beam,
   },
   {
     key: "foucsingBeam",
     displayName: "FocusingBeam",
-    constructorFN: FocusingBeam
-  }
+    constructorFN: FocusingBeam,
+  },
 ];
 
 function AlphabeticallyByProp<T>(a2: T, b2: T, props: string[]): number
@@ -105,7 +105,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     {
       isPlaying: false,
       currentTime: 0,
-      SFXDuration: 1000
+      SFXDuration: 1000,
     }
 
     this.handleChangeTime = this.handleChangeTime.bind(this);
@@ -141,7 +141,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      SFXDuration: SFXDuration
+      SFXDuration: SFXDuration,
     });
   }
   private togglePlay(): void
@@ -160,7 +160,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      isPlaying: true
+      isPlaying: true,
     }, () =>
     {
       this.lastAnimationTickTime = window.performance.now();
@@ -171,7 +171,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      isPlaying: false
+      isPlaying: false,
     }, () =>
     {
       if (isFinite(this.animationHandle))
@@ -201,7 +201,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      currentTime: relativeTime
+      currentTime: relativeTime,
     });
   }
 
@@ -215,21 +215,21 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       selectedFragment: fragment,
-      draggingFragment: fragment
+      draggingFragment: fragment,
     });
   }
   private handleFragmentConstructorDragEnd(): void
   {
     this.setState(
     {
-      draggingFragment: undefined
+      draggingFragment: undefined,
     });
   }
   private handleFragmentDragMove(e: React.MouseEvent): void
   {
     this.state.draggingFragment.position.set(
       e.clientX,
-      e.clientY
+      e.clientY,
     );
 
     this.display.updateRenderer();
@@ -239,7 +239,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      selectedFragment: fragment
+      selectedFragment: fragment,
     });
   }
   private updateFragment(fragment: SFXFragment<any>): void
@@ -259,11 +259,11 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "sfx-editor"
+        className: "sfx-editor",
       },
         React.DOM.div(
         {
-          className: "sfx-editor-main"
+          className: "sfx-editor-main",
         },
           SFXEditorDisplay(
           {
@@ -272,7 +272,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
             ref: component =>
             {
               this.display = component;
-            }
+            },
           }),
           React.DOM.input(
           {
@@ -283,29 +283,29 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
             step: 0.002,
             value: "" + this.state.currentTime,
             onChange: this.handleChangeTime,
-            title: "Current time"
+            title: "Current time",
           },
 
           ),
           React.DOM.div(
           {
-            className: "sfx-editor-play-wrapper"
+            className: "sfx-editor-play-wrapper",
           },
             React.DOM.button(
             {
               className: "sfx-editor-play-button",
-              onClick: this.togglePlay
+              onClick: this.togglePlay,
             },
               this.state.isPlaying ?
                 "Pause" :
-                "Play"
+                "Play",
             ),
             React.DOM.label(
             {
               className: "sfx-editor-duration-label",
-              htmlFor: "sfx-editor-duration"
+              htmlFor: "sfx-editor-duration",
             },
-              "SFX Duration (ms)"
+              "SFX Duration (ms)",
             ),
             React.DOM.input(
             {
@@ -315,11 +315,11 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
               min: 0,
               step: 100,
               value: "" + this.state.SFXDuration,
-              onChange: this.handleChangeSFXDuration
+              onChange: this.handleChangeSFXDuration,
             },
 
-            )
-          )
+            ),
+          ),
         ),
         SFXEditorSelection(
         {
@@ -328,8 +328,8 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
           onSelectedFragmentPropValueChange: this.handleSelectedFragmentPropValueChange,
           selectFragment: this.selectFragment,
           onFragmentListDragStart: this.handleFragmentConstructorDragStart,
-          onFragmentListDragEnd: this.handleFragmentConstructorDragEnd
-        })
+          onFragmentListDragEnd: this.handleFragmentConstructorDragEnd,
+        }),
       )
     );
   }

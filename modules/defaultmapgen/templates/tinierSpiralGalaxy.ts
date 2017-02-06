@@ -24,8 +24,8 @@ const tinierSpiralGalaxy: MapGenTemplate =
         {
           min: 500,
           max: 1000,
-          step: 1
-        }
+          step: 1,
+        },
       },
       width:
       {
@@ -34,8 +34,8 @@ const tinierSpiralGalaxy: MapGenTemplate =
         {
           min: 500,
           max: 1000,
-          step: 1
-        }
+          step: 1,
+        },
       },
       starCount:
       {
@@ -45,9 +45,9 @@ const tinierSpiralGalaxy: MapGenTemplate =
           min: 15,
           max: 30,
           step: 1,
-          defaultValue: 20
-        }
-      }
+          defaultValue: 20,
+        },
+      },
     },
     basicOptions:
     {
@@ -59,8 +59,8 @@ const tinierSpiralGalaxy: MapGenTemplate =
           min: 2,
           max: 5,
           step: 1,
-          defaultValue: 4
-        }
+          defaultValue: 4,
+        },
       },
       starSizeRegularity:
       {
@@ -70,8 +70,8 @@ const tinierSpiralGalaxy: MapGenTemplate =
           min: 1,
           max: 100,
           step: 1,
-          defaultValue: 100
-        }
+          defaultValue: 100,
+        },
       },
       centerDensity:
       {
@@ -81,11 +81,11 @@ const tinierSpiralGalaxy: MapGenTemplate =
           min: 1,
           max: 90,
           step: 1,
-          defaultValue: 50
-        }
-      }
-    }
-  }
+          defaultValue: 50,
+        },
+      },
+    },
+  },
 }
 
 export default tinierSpiralGalaxy;

@@ -72,22 +72,22 @@ export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, State
           this.containerClassForAnimationState[this.props.animationState],
         style:
         {
-          animationDuration: "" + this.props.transitionDuration + "ms"
-        }
+          animationDuration: "" + this.props.transitionDuration + "ms",
+        },
       },
         React.DOM.div(
         {
           className: "turn-order-unit" + additionalUnitClasses,
           style:
           {
-            animationDuration: "" + this.props.transitionDuration + "ms"
+            animationDuration: "" + this.props.transitionDuration + "ms",
           },
           title: "delay: " + this.props.delay,
           onMouseEnter: this.props.onMouseEnter,
           onMouseLeave: this.props.onMouseLeave,
         },
-          this.props.unitName
-        )
+          this.props.unitName,
+        ),
       )
     );
   }

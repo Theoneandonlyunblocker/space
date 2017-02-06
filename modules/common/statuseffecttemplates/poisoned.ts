@@ -12,16 +12,16 @@ const poisoned: StatusEffectTemplate =
   {
     attack:
     {
-      flat: 9
+      flat: 9,
     },
     defence:
     {
-      flat: 9
+      flat: 9,
     },
     speed:
     {
-      flat: 9
-    }
+      flat: 9,
+    },
   },
   afterAbilityUse:
   [
@@ -30,7 +30,7 @@ const poisoned: StatusEffectTemplate =
       getUnitsInArea: (user, target, battle) => [user],
       executeAction: bindEffectActionData(adjustHealth,
       {
-        maxHealthPercentage: -0.1
+        maxHealthPercentage: -0.1,
       }),
       sfx:
       {
@@ -45,10 +45,10 @@ const poisoned: StatusEffectTemplate =
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
           return canvas;
-        }
-      }
-    }
-  ]
+        },
+      },
+    },
+  ],
 }
 
 export default poisoned;

@@ -99,10 +99,10 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
           className: className,
           title: ability.description,
           key: ability.type + addedAbilityTypes[ability.type],
-          onClick: (this.props.handleClick ? this.props.handleClick.bind(null, ability) : undefined)
+          onClick: (this.props.handleClick ? this.props.handleClick.bind(null, ability) : undefined),
         },
-          "[" + ability.displayName + "]"
-        )
+          "[" + ability.displayName + "]",
+        ),
       );
 
       addedAbilityTypes[ability.type]++;
@@ -111,9 +111,9 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.ul(
       {
-        className: "ability-list"
+        className: "ability-list",
       },
-        abilityElements
+        abilityElements,
       )
     );
   }

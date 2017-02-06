@@ -41,25 +41,25 @@ export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
       ref: (component: ContentComponent) =>
       {
         this.ref_TODO_content = component;
-      }
+      },
     }
 
     return(
       React.DOM.div(
       {
-        className: "top-menu-popup-container draggable-container"
+        className: "top-menu-popup-container draggable-container",
       },
         React.DOM.button(
         {
           className: "light-box-close",
-          onClick: this.props.handleClose
+          onClick: this.props.handleClose,
         }, "X"),
         React.DOM.div(
         {
-          className: "light-box-content"
+          className: "light-box-content",
         },
-          React.cloneElement(this.props.content, contentProps)
-        )
+          React.cloneElement(this.props.content, contentProps),
+        ),
       )
     );
   }

@@ -24,10 +24,10 @@ export var autoHeal: PassiveSkillTemplate =
       executeAction: bindEffectActionData(EffectActions.addStatusEffect,
       {
         duration: -1,
-        template: autoHealStatusEffect
-      })
-    }
-  ]
+        template: autoHealStatusEffect,
+      }),
+    },
+  ],
 }
 export var overdrive: PassiveSkillTemplate =
 {
@@ -43,10 +43,10 @@ export var overdrive: PassiveSkillTemplate =
       executeAction: bindEffectActionData(EffectActions.addStatusEffect,
       {
         duration: 2,
-        template: poisonedStatusEffect
-      })
-    }
-  ]
+        template: poisonedStatusEffect,
+      }),
+    },
+  ],
 }
 export var initialGuard: PassiveSkillTemplate =
 {
@@ -63,9 +63,9 @@ export var initialGuard: PassiveSkillTemplate =
       executeAction: bindEffectActionData(EffectActions.addGuard,
       {
         coverage: GuardCoverage.row,
-        flat: 50
-      })
-    }
+        flat: 50,
+      }),
+    },
   ],
   inBattlePrep:
   [
@@ -74,11 +74,11 @@ export var initialGuard: PassiveSkillTemplate =
       EffectActions.addGuard(
       {
         coverage: GuardCoverage.row,
-        flat: 50
+        flat: 50,
       },
       user, user, null, {});
-    }
-  ]
+    },
+  ],
 }
 export var medic: PassiveSkillTemplate =
 {
@@ -96,8 +96,8 @@ export var medic: PassiveSkillTemplate =
       {
         allFriendlyUnits[i].addHealth(allFriendlyUnits[i].maxHealth)
       }
-    }
-  ]
+    },
+  ],
 }
 export var warpJammer: PassiveSkillTemplate =
 {
@@ -113,7 +113,7 @@ export var warpJammer: PassiveSkillTemplate =
       {
         battlePrep.minDefenders += 1;
       }
-    }
+    },
   ],
-  canUpgradeInto: [medic]
+  canUpgradeInto: [medic],
 }

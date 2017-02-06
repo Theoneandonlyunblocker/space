@@ -14,7 +14,7 @@ import Personality from "../../../src/Personality";
 import Player from "../../../src/Player";
 import
 {
-  makeRandomPersonality
+  makeRandomPersonality,
 } from "../../../src/utility";
 
 export default class DefaultAI implements AITemplate<DefaultAISaveData>
@@ -56,7 +56,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
       objectivesAI: this.objectivesAI,
       frontsAI: this.frontsAI,
       mapEvaluator: this.mapEvaluator,
-      personality: this.personality
+      personality: this.personality,
     });
     this.diplomacyAI = new DiplomacyAI(this.mapEvaluator, this.objectivesAI,
       this.game, this.personality);

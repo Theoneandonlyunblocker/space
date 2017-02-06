@@ -9,7 +9,7 @@ import
 {
   AbilityEffectData,
   AbilityEffectDataByPhase,
-  getAbilityEffectDataByPhase
+  getAbilityEffectDataByPhase,
 } from "./battleAbilityProcessing";
 
 export interface AbilityUseEffect
@@ -33,7 +33,7 @@ export function useAbility(
   {
     ability: ability,
     user: user,
-    intendedTarget: target
+    intendedTarget: target,
   });
 
   executeFullAbilityEffects(battle, effectDataByPhase);
@@ -49,7 +49,7 @@ export function useAbilityAndGetUseEffects(
   {
     ability: ability,
     user: user,
-    intendedTarget: target
+    intendedTarget: target,
   });
 
   const useData = executeFullAbilityEffectsAndGetUseEffects(battle, effectDataByPhase);
@@ -99,7 +99,7 @@ function executeFullAbilityEffectsAndGetUseEffects(battle: Battle,
 function shouldEffectActionTrigger(
   abilityEffectData: AbilityEffectData,
   battle: Battle,
-  executedEffectsResult: ExecutedEffectsResult
+  executedEffectsResult: ExecutedEffectsResult,
 ): boolean
 {
   if (!abilityEffectData.trigger)
@@ -118,7 +118,7 @@ function shouldEffectActionTrigger(
 function executeAbilityEffectData(
   battle: Battle,
   abilityEffectData: AbilityEffectData,
-  executedEffectsResult: ExecutedEffectsResult
+  executedEffectsResult: ExecutedEffectsResult,
 ): boolean
 {
   if (!shouldEffectActionTrigger(abilityEffectData, battle, executedEffectsResult))
@@ -153,7 +153,7 @@ function getIDForAbilityUseEffect(abilityEffectData: AbilityEffectData): string
 function executeAbilityEffectDataAndGetUseEffect(
   battle: Battle,
   abilityEffectData: AbilityEffectData,
-  executedEffectsResult: ExecutedEffectsResult
+  executedEffectsResult: ExecutedEffectsResult,
 ): AbilityUseEffect
 {
   var didTriggerAction = executeAbilityEffectData(battle, abilityEffectData, executedEffectsResult);
@@ -173,6 +173,6 @@ function executeAbilityEffectDataAndGetUseEffect(
     sfx: abilityEffectData.effectTemplate.sfx,
     sfxUser: abilityEffectData.user,
     sfxTarget: abilityEffectData.target,
-    newEvaluation: battle.getEvaluation()
+    newEvaluation: battle.getEvaluation(),
   });
 }

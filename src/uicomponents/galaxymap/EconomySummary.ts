@@ -46,8 +46,8 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
           star: star,
           id: star.id,
           name: star.name,
-          income: star.getIncome()
-        })
+          income: star.getIncome(),
+        }),
       });
     }
 
@@ -56,18 +56,18 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
       {
         label: "Id",
         key: "id",
-        defaultOrder: "asc"
+        defaultOrder: "asc",
       },
       {
         label: "Name",
         key: "name",
-        defaultOrder: "asc"
+        defaultOrder: "asc",
       },
       {
         label: "Income",
         key: "income",
-        defaultOrder: "desc"
-      }
+        defaultOrder: "desc",
+      },
     ];
 
     return(
@@ -76,8 +76,8 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
         {
           listItems: rows,
           initialColumns: columns,
-          initialSortOrder: [columns[2]]
-        })
+          initialSortOrder: [columns[2]],
+        }),
       )
     );
   }

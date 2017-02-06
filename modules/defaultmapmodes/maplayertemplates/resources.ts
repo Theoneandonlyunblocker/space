@@ -33,7 +33,7 @@ const resources: MapRendererLayerTemplate =
       {
         fill: "#FFFFFF",
         stroke: "#000000",
-        strokeThickness: 2
+        strokeThickness: 2,
       });
 
       text.x = star.x;
@@ -44,7 +44,7 @@ const resources: MapRendererLayerTemplate =
     }
 
     return doc;
-  }
+  },
 }
 
 export default resources;

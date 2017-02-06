@@ -60,7 +60,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     {
       const propKeysMap =
       {
-        containerElement: "containerElementDescriptor"
+        containerElement: "containerElementDescriptor",
       }
       for (let key in props)
       {
@@ -125,7 +125,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       top: this.dragPos.y,
       left: this.dragPos.x,
       width: this.dragSize.x,
-      height: this.dragSize.y
+      height: this.dragSize.y,
     });
   }
   public handleReactDownEvent(e: React.MouseEvent | React.TouchEvent)
@@ -186,19 +186,19 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     this.dragOffset = this.forcedDragOffset ||
     {
       x: e.clientX - clientRect.left,
-      y: e.clientY - clientRect.top
+      y: e.clientY - clientRect.top,
     };
 
     this.mouseIsDown = true;
     this.mouseDownPosition =
     {
       x: e.pageX,
-      y: e.pageY
+      y: e.pageY,
     };
     this.originPosition =
     {
       x: clientRect.left + document.body.scrollLeft,
-      y: clientRect.top + document.body.scrollTop
+      y: clientRect.top + document.body.scrollTop,
     }
 
     if (this.dragThreshhold <= 0)
@@ -347,7 +347,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     this.mouseDownPosition =
     {
       x: 0,
-      y: 0
+      y: 0,
     }
 
     if (this.isDragging)

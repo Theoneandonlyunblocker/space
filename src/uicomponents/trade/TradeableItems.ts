@@ -48,7 +48,7 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
   {
     var divProps: React.HTMLAttributes =
     {
-      className: "tradeable-items"
+      className: "tradeable-items",
     };
 
     if (this.props.onMouseUp)
@@ -64,9 +64,9 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
       React.DOM.div(divProps,
         !this.props.header ? null : React.DOM.div(
         {
-          className: "tradeable-items-header"
+          className: "tradeable-items-header",
         },
-          this.props.header
+          this.props.header,
         ),
         TradeableItemsList(
         {
@@ -76,8 +76,8 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
           onDragStart: this.props.onDragStart,
           onDragEnd: this.props.onDragEnd,
           onItemClick: this.props.onItemClick,
-          adjustItemAmount: this.props.adjustItemAmount
-        })
+          adjustItemAmount: this.props.adjustItemAmount,
+        }),
       )
     );
   }

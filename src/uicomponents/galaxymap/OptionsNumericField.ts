@@ -44,7 +44,7 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
   {
     return(
     {
-      value: this.props.value
+      value: this.props.value,
     });
   }
 
@@ -76,7 +76,7 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
 
     this.setState(
     {
-      value: value
+      value: value,
     }, this.triggerOnChangeFN);
   }
 
@@ -88,7 +88,7 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
       React.DOM.div(
       {
         className: "options-numeric-field-container",
-        id: this.props.id
+        id: this.props.id,
       },
         React.DOM.input(
         {
@@ -99,17 +99,17 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
           min: this.props.min,
           max: this.props.max,
           step: this.props.step,
-          onChange: this.handleChange
+          onChange: this.handleChange,
         },
-          null
+          null,
         ),
         React.DOM.label(
         {
           className: "options-numeric-field-label",
-          htmlFor: inputId
+          htmlFor: inputId,
         },
-          this.props.label
-        )
+          this.props.label,
+        ),
       )
     );
   }

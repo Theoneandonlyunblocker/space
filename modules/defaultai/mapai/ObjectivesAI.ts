@@ -172,7 +172,7 @@ export default class ObjectivesAI
           adjustments[adjustment.target.id] =
           {
             target: adjustment.target,
-            multiplier: 1
+            multiplier: 1,
           }
         }
         adjustments[adjustment.target.id].multiplier += adjustment.multiplier;

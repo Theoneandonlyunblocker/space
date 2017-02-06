@@ -91,7 +91,7 @@ export default class BattlePrep
       side1: side1Formation.formation,
       side2: side2Formation.formation.reverse(),
       side1Player: side1Player,
-      side2Player: side2Player
+      side2Player: side2Player,
     });
 
     battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);

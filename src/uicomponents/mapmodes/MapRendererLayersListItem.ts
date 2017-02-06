@@ -95,7 +95,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
         {
           className: "map-renderer-layers-list-item-name draggable-container",
         },
-          this.props.layerName
+          this.props.layerName,
         ),
         React.DOM.input(
         {
@@ -106,7 +106,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
           step: 0.05,
           value: "" + this.props.layer.alpha,
           onChange: this.setLayerAlpha,
-        })
+        }),
       )
     );
   }

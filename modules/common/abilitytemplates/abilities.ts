@@ -43,11 +43,11 @@ export var closeAttack: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.66,
-      damageType: DamageType.physical
+      damageType: DamageType.physical,
     }),
     getUnitsInArea: areaRowNeighbors,
-    sfx: BattleSFX.rocketAttack
-  }
+    sfx: BattleSFX.rocketAttack,
+  },
 }
 export var beamAttack: AbilityTemplate =
 {
@@ -63,10 +63,10 @@ export var beamAttack: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.75,
-      damageType: DamageType.magical
+      damageType: DamageType.magical,
     }),
     getUnitsInArea: areaColumn,
-    sfx: BattleSFX.beam
+    sfx: BattleSFX.beam,
   },
 
   targetCannotBeDiverted: true,
@@ -86,7 +86,7 @@ export var bombAttack: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.5,
-      damageType: DamageType.physical
+      damageType: DamageType.physical,
     }),
     getUnitsInArea: (user, target, battle) =>
     {
@@ -95,8 +95,8 @@ export var bombAttack: AbilityTemplate =
         return !unit || unit.battleStats.side !== user.battleStats.side;
       });
     },
-    sfx: BattleSFX.rocketAttack
-  }
+    sfx: BattleSFX.rocketAttack,
+  },
 }
 export var guardRow: AbilityTemplate =
 {
@@ -113,9 +113,9 @@ export var guardRow: AbilityTemplate =
     {
       perAttribute:
       {
-        intelligence: {flat: 20}
+        intelligence: {flat: 20},
       },
-      coverage: GuardCoverage.row
+      coverage: GuardCoverage.row,
     }),
     getUnitsInArea: areaSingle,
     sfx: BattleSFX.guard,
@@ -137,7 +137,7 @@ export var boardingHook: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.8,
-      damageType: DamageType.physical
+      damageType: DamageType.physical,
     }),
     getUnitsInArea: areaSingle,
     sfx: BattleSFX.rocketAttack,
@@ -148,8 +148,8 @@ export var boardingHook: AbilityTemplate =
         getUnitsInArea: areaSingle,
         executeAction: bindEffectActionData(EffectActions.increaseCaptureChance,
         {
-          flat: 0.5
-        })
+          flat: 0.5,
+        }),
       },
       {
         id: "counter",
@@ -157,10 +157,10 @@ export var boardingHook: AbilityTemplate =
         executeAction: bindEffectActionData(EffectActions.receiveCounterAttack,
         {
           baseDamage: 0.5,
-        })
-      }
-    ]
-  }
+        }),
+      },
+    ],
+  },
 }
 
 export var debugAbility: AbilityTemplate =
@@ -177,7 +177,7 @@ export var debugAbility: AbilityTemplate =
     getUnitsInArea: areaSingle,
     executeAction: () => {},
     sfx: BattleSFX.guard,
-  }
+  },
 }
 
 export var rangedAttack: AbilityTemplate =
@@ -194,7 +194,7 @@ export var rangedAttack: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 1,
-      damageType: DamageType.physical
+      damageType: DamageType.physical,
     }),
     getUnitsInArea: areaSingle,
     sfx: BattleSFX.rocketAttack,
@@ -204,18 +204,18 @@ export var rangedAttack: AbilityTemplate =
         id: "counter",
         executeAction: bindEffectActionData(EffectActions.receiveCounterAttack,
         {
-          baseDamage: 0.5
+          baseDamage: 0.5,
         }),
         getUnitsInArea: areaSingle,
-      }
-    ]
+      },
+    ],
   },
 
   canUpgradeInto:
   [
     bombAttack,
     boardingHook,
-  ]
+  ],
 }
 function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
 {
@@ -248,7 +248,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
       executeAction: bindEffectActionData(EffectActions.inflictDamage,
       {
         baseDamage: 0.6,
-        damageType: DamageType.physical
+        damageType: DamageType.physical,
       }),
       getUnitsInArea: areaSingle,
       sfx: BattleSFX[key],
@@ -262,8 +262,8 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
             duration: -1,
           }),
           getUnitsInArea: areaSingle,
-        }
-      ]
+        },
+      ],
     },
   });
 }
@@ -287,8 +287,8 @@ export var standBy: AbilityTemplate =
     executeAction: () => {},
     sfx:
     {
-      duration: 750
-    }
+      duration: 750,
+    },
   },
 
   doesNotRemoveUserGuard: true,
