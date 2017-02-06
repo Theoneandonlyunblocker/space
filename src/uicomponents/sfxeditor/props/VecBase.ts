@@ -55,7 +55,7 @@ export class SFXFragmentPropVecBaseComponent extends React.Component<PropTypes, 
       {
         className: "sfx-fragment-prop-vec-wrapper"
       },
-        this.props.propProps.map((prop) =>
+        this.props.propProps.map(prop =>
         {
           return InlineNumberProp(
           {

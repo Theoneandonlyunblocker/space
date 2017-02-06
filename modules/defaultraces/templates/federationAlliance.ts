@@ -31,16 +31,16 @@ const federationAlliance: PlayerRaceTemplate =
     distributionGroups: [],
   },
 
-  getBuildableUnitTypes: (player) =>
+  getBuildableUnitTypes: player =>
   {
-    return getDefaultUnits().filter((unitTemplate) =>
+    return getDefaultUnits().filter(unitTemplate =>
     {
       return !unitTemplate.technologyRequirements ||
         player.meetsTechnologyRequirements(unitTemplate.technologyRequirements);
     });
   },
 
-  getUnitName: (unitTemplate) =>
+  getUnitName: unitTemplate =>
   {
     return `Federation ${unitTemplate.displayName}`;
   },
@@ -49,7 +49,7 @@ const federationAlliance: PlayerRaceTemplate =
     return getRandomProperty(allTemplates);
   },
 
-  generateIndependentPlayer: (emblemTemplates) =>
+  generateIndependentPlayer: emblemTemplates =>
   {
     const player = generateIndependentPlayer(federationAlliance);
 
@@ -73,7 +73,7 @@ const federationAlliance: PlayerRaceTemplate =
     }
   ]),
 
-  getAITemplateConstructor: (player) => DefaultAIConstructor
+  getAITemplateConstructor: player => DefaultAIConstructor
 }
 
 export default federationAlliance;

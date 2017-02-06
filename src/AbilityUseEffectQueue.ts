@@ -45,7 +45,7 @@ export class AbilityUseEffectQueue
     const squashedChangedUnitDisplayDataByID = shallowExtend<{[unitID: number]: UnitDisplayData}>(
       {},
       parent.changedUnitDisplayDataByID,
-      ...toSquash.map((effect) => effect.changedUnitDisplayDataByID),
+      ...toSquash.map(effect => effect.changedUnitDisplayDataByID),
     );
 
     if (parentIsMostRecent)

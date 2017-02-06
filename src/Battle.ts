@@ -175,7 +175,7 @@ export default class Battle
   }
   private triggerBattleStartAbilities(): void
   {
-    this.forEachUnit((unit) =>
+    this.forEachUnit(unit =>
     {
       var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
       if (passiveSkillsByPhase["atBattleStart"])
@@ -222,7 +222,7 @@ export default class Battle
   {
     const allUnits: Unit[] = [];
 
-    this.forEachUnit((unit) => allUnits.push(unit));
+    this.forEachUnit(unit => allUnits.push(unit));
 
     return allUnits;
   }
@@ -246,7 +246,7 @@ export default class Battle
       side2: this.getExperienceGainedForSide("side2"),
     }
 
-    this.forEachUnit((unit) =>
+    this.forEachUnit(unit =>
     {
       unit.addExperience(experienceGainedPerSide[unit.battleStats.side]);
       unit.resetBattleStats();
@@ -382,7 +382,7 @@ export default class Battle
     var deadUnits: Unit[] = [];
 
 
-    this.forEachUnit((unit) =>
+    this.forEachUnit(unit =>
     {
       if (unit.currentHealth <= 0)
       {
@@ -406,7 +406,7 @@ export default class Battle
   }
   private getSideValueForExperienceGainedCalculation(side: UnitBattleSide): number
   {
-    return this.getUnitsForSide(side).map((unit) =>
+    return this.getUnitsForSide(side).map(unit =>
     {
       return this.getUnitValueForExperienceGainedCalculation(unit);
     }).reduce((total, value) =>
@@ -458,7 +458,7 @@ export default class Battle
   {
     var evaluation = 0;
 
-    UnitBattleSides.forEach((side) =>
+    UnitBattleSides.forEach(side =>
     {
       // positive * sign === good, negative * sign === bad
       var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
@@ -471,7 +471,7 @@ export default class Battle
       // how much health remains from strating health 0.0-1.0
       var currentHealthFactor = currentHealth / this.startHealth[side];
 
-      this.getUnitsForSide(side).forEach((unit) =>
+      this.getUnitsForSide(side).forEach(unit =>
       {
         if (unit.currentHealth <= 0)
         {
@@ -501,7 +501,7 @@ export default class Battle
   }
   private getTotalCurrentHealthForRow(position: number): number
   {
-    return this.getRowByPosition(position).map((unit) =>
+    return this.getRowByPosition(position).map(unit =>
     {
       return unit ? unit.currentHealth : 0;
     }).reduce((total, value) =>
@@ -511,7 +511,7 @@ export default class Battle
   }
   private getTotalCurrentHealthForSide(side: UnitBattleSide): number
   {
-    return this.getUnitsForSide(side).map((unit) => unit.currentHealth).reduce((total, value) =>
+    return this.getUnitsForSide(side).map(unit => unit.currentHealth).reduce((total, value) =>
     {
       return total + value;
     }, 0);

@@ -228,7 +228,7 @@ export default class Player
         generateIndependentPlayer: () => null,
         generateIndependentFleet: () => null,
 
-        getAITemplateConstructor: (player) => null
+        getAITemplateConstructor: player => null
       },
       money: 0
     });
@@ -485,12 +485,12 @@ export default class Player
 
     const neighboringStars = this.getNeighboringStars();
 
-    neighboringStars.forEach((star) =>
+    neighboringStars.forEach(star =>
     {
       alreadyAddedPlayersByID[star.owner.id] = star.owner;
     })
 
-    return Object.keys(alreadyAddedPlayersByID).map((playerID) =>
+    return Object.keys(alreadyAddedPlayersByID).map(playerID =>
     {
       return alreadyAddedPlayersByID[playerID];
     })
@@ -853,7 +853,7 @@ export default class Player
       attacker:
       {
         player: this,
-        units: location.getUnits((player) => player === this)
+        units: location.getUnits(player => player === this)
       },
       defender:
       {
@@ -1020,8 +1020,8 @@ export default class Player
       money: this.money,
       controlledLocationIds: this.controlledLocations.map(function(star){return star.id}),
 
-      itemIds: this.items.map((item) => item.id),
-      unitIds: this.units.map((unit) => unit.id),
+      itemIds: this.items.map(item => item.id),
+      unitIds: this.units.map(unit => unit.id),
       revealedStarIds: revealedStarIds,
       identifiedUnitIds: identifiedUnitIds,
 

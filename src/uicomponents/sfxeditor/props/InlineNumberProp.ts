@@ -44,7 +44,7 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
         ControlledNumberInput(
         {
           value: this.props.value,
-          valueStringIsValid: (valueString) => isFinite(Number(valueString)),
+          valueStringIsValid: valueString => isFinite(Number(valueString)),
           getValueFromValueString: parseFloat,
           onValueChange: this.props.onValueChange
         })

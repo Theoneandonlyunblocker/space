@@ -76,21 +76,21 @@ export default class GameLoader
     this.map = this.deserializeMap(data.galaxyMap);
 
     // items
-    data.items.forEach((itemSaveData) =>
+    data.items.forEach(itemSaveData =>
     {
       this.itemsById[itemSaveData.id] = this.deserializeItem(itemSaveData);
     });
     // units
-    data.units.forEach((unitSaveData) =>
+    data.units.forEach(unitSaveData =>
     {
       this.unitsById[unitSaveData.id] = this.deserializeUnit(unitSaveData);
     });
     // unit status effects. dependant on other units so have to do these after
-    data.units.forEach((unitSaveData) =>
+    data.units.forEach(unitSaveData =>
     {
       const unit = this.unitsById[unitSaveData.id];
 
-      unitSaveData.battleStats.statusEffects.forEach((statusEffectSaveData) =>
+      unitSaveData.battleStats.statusEffects.forEach(statusEffectSaveData =>
       {
         unit.addStatusEffect(this.deserializeStatusEffect(statusEffectSaveData));
       });
@@ -140,7 +140,7 @@ export default class GameLoader
     }
 
     // ai controllers
-    data.players.forEach((playerData) =>
+    data.players.forEach(playerData =>
     {
       const player = this.playersById[playerData.id];
 
@@ -304,7 +304,7 @@ export default class GameLoader
     });
 
     // units
-    data.unitIds.forEach((unitID) =>
+    data.unitIds.forEach(unitID =>
     {
       player.addUnit(this.unitsById[unitID]);
     });
@@ -323,7 +323,7 @@ export default class GameLoader
     }
 
     // items
-    data.itemIds.forEach((itemID) =>
+    data.itemIds.forEach(itemID =>
     {
       player.addItem(this.itemsById[itemID]);
     });
@@ -336,7 +336,7 @@ export default class GameLoader
     }
 
     // identified units
-    data.identifiedUnitIds.forEach((unitID) =>
+    data.identifiedUnitIds.forEach(unitID =>
     {
       // unit might have been identified but was removed from game before serialization
       if (this.unitsById[unitID])
@@ -388,14 +388,14 @@ export default class GameLoader
   private deserializeEmblem(emblemData: EmblemSaveData): Emblem
   {
     return new Emblem(
-      emblemData.colors.map((colorData) => Color.deSerialize(colorData)),
+      emblemData.colors.map(colorData => Color.deSerialize(colorData)),
       app.moduleData.Templates.SubEmblems[emblemData.templateKey],
       emblemData.alpha
     );
   }
   private deserializeFlag(data: FlagSaveData): Flag
   {
-    const emblems = data.emblems.map((emblemSaveData) =>
+    const emblems = data.emblems.map(emblemSaveData =>
     {
       return this.deserializeEmblem(emblemSaveData);
     });
@@ -406,7 +406,7 @@ export default class GameLoader
   }
   private deserializeFleet(player: Player, data: FleetSaveData): Fleet
   {
-    const units = data.unitIds.map((unitID) => this.unitsById[unitID]);
+    const units = data.unitIds.map(unitID => this.unitsById[unitID]);
     const location = this.starsById[data.locationId];
 
     const fleet = new Fleet(units, data.id);
@@ -422,7 +422,7 @@ export default class GameLoader
   {
     const unit = Unit.fromSaveData(data);
 
-    data.items.itemIDs.forEach((itemID) =>
+    data.items.itemIDs.forEach(itemID =>
     {
       const item = this.itemsById[itemID];
       unit.items.addItemAtPosition(item, item.positionInUnit);

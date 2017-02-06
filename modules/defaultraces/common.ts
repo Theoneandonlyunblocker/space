@@ -30,9 +30,9 @@ export function mergeTechnologyValues(...valuesToMerge: RaceTechnologyValue[][])
     [key: string]: RaceTechnologyValue;
   } = {};
 
-  valuesToMerge.forEach((techValues) =>
+  valuesToMerge.forEach(techValues =>
   {
-    techValues.forEach((techValue) =>
+    techValues.forEach(techValue =>
     {
       valuesByTechKey[techValue.tech.key] = techValue;
     });
@@ -48,7 +48,7 @@ export function mergeTechnologyValues(...valuesToMerge: RaceTechnologyValue[][])
   return mergedValues;
 }
 
-const defaultUnitsArray = Object.keys(defaultUnits).map((templateType) =>
+const defaultUnitsArray = Object.keys(defaultUnits).map(templateType =>
 {
   return defaultUnits[templateType];
 });

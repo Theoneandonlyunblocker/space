@@ -49,7 +49,7 @@ function rocketAttack(params: SFXParams)
 
   const projectileAttackFragment = new ProjectileAttack(
   {
-    makeProjectileSprite: (i) =>
+    makeProjectileSprite: i =>
     {
       return new PIXI.Sprite(PIXI.Texture.fromFrame(rocketUrl));
     },

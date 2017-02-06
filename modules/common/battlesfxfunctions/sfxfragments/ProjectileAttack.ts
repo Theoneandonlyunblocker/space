@@ -246,7 +246,7 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
 
   public animate(time: number): void
   {
-    this.projectiles.forEach((projectile) =>
+    this.projectiles.forEach(projectile =>
     {
       projectile.draw(time);
     });

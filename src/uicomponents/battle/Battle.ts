@@ -145,7 +145,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   private getInitialStateTODO(): StateType
   {
     const initialDisplayData: {[unitID: number]: UnitDisplayData} = {};
-    this.props.battle.forEachUnit((unit) =>
+    this.props.battle.forEachUnit(unit =>
     {
       initialDisplayData[unit.id] = unit.getDisplayData("battle");
     });

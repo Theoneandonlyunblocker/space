@@ -40,7 +40,7 @@ export class SFXFragmentListComponent<P extends Fragment> extends React.Componen
       {
         className: "sfx-fragment-list"
       },
-        this.props.fragments.map((fragment) =>
+        this.props.fragments.map(fragment =>
         {
           return SFXFragmentListItem(
           {

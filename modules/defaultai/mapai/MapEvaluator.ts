@@ -208,7 +208,7 @@ export default class MapEvaluator
   {
     const evaluationByStar = new ValuesByStar<StarTargetEvaluation>(
       targetStars,
-      (star) =>
+      star =>
       {
         const desirability = this.evaluateStarDesirability(star);
 
@@ -260,7 +260,7 @@ export default class MapEvaluator
   }
   getIndependentNeighborStars()
   {
-    const independentNeighborStars = this.player.getNeighboringStars().filter((star) =>
+    const independentNeighborStars = this.player.getNeighboringStars().filter(star =>
     {
       const secondaryController = star.getSecondaryController();
       return star.owner.isIndependent && (!secondaryController || secondaryController === this.player);
@@ -285,7 +285,7 @@ export default class MapEvaluator
   }
   public getHostileUnitsAtStar(star: Star): Unit[]
   {
-    return star.getUnits((player) =>
+    return star.getUnits(player =>
       this.player.diplomacyStatus.canAttackFleetOfPlayer(player));
   }
   public getHostileStrengthAtStar(star: Star): number
@@ -294,7 +294,7 @@ export default class MapEvaluator
   }
   public getIndependentStrengthAtStar(star: Star): number
   {
-    const independentUnits = star.getUnits((player) => player.isIndependent);
+    const independentUnits = star.getUnits(player => player.isIndependent);
     return evaluateUnitStrength(...independentUnits);
   }
   getDefenceBuildingStrengthAtStarByPlayer(star: Star)
@@ -331,14 +331,14 @@ export default class MapEvaluator
   {
     const visibleFleets: Fleet[] = [];
 
-    this.player.getVisibleStars().forEach((star) =>
+    this.player.getVisibleStars().forEach(star =>
     {
       const playerFleetsAtStar = star.fleets[player.id];
       if (playerFleetsAtStar)
       {
         const hasDetectionInStar = this.player.starIsDetected(star);
         const visibleFleetsAtStar = hasDetectionInStar ? playerFleetsAtStar :
-          playerFleetsAtStar.filter((fleet) =>
+          playerFleetsAtStar.filter(fleet =>
           {
             return !fleet.isStealthy;
           });
@@ -352,7 +352,7 @@ export default class MapEvaluator
   getPlayerInfluenceMap(player: Player): InfluenceMap
   {
     const stars = this.player.getRevealedStars();
-    const influence = new ValuesByStar<number>(stars, (star) =>
+    const influence = new ValuesByStar<number>(stars, star =>
     {
       const defenceBuildingStrength = this.getDefenceBuildingStrengthAtStarByPlayer(star);
       return defenceBuildingStrength.get(player) || 0;
@@ -479,7 +479,7 @@ export default class MapEvaluator
 
     var totalInfluenceInOwnStars = 0;
 
-    this.player.controlledLocations.forEach((star) =>
+    this.player.controlledLocations.forEach(star =>
     {
       const ownInfluence = ownInfluenceMap.get(star);
       const otherInfluence = otherInfluenceMap.get(star);
@@ -547,7 +547,7 @@ export default class MapEvaluator
     const fleetLikelyHasScoutingUnit: boolean = fleet.units.length >= 5;
     let estimatedRange = fleetLikelyHasScoutingUnit ? 2 : 1;
 
-    fleet.units.forEach((unit) =>
+    fleet.units.forEach(unit =>
     {
       if (this.player.unitIsIdentified(unit))
       {
@@ -562,7 +562,7 @@ export default class MapEvaluator
     const fleetLikelyHasScoutingUnit: boolean = fleet.units.length >= 5;
     let estimatedRange = fleetLikelyHasScoutingUnit ? 0 : -1;
 
-    fleet.units.forEach((unit) =>
+    fleet.units.forEach(unit =>
     {
       if (this.player.unitIsIdentified(unit))
       {
@@ -647,7 +647,7 @@ export default class MapEvaluator
 
     var revealedStars = this.player.getRevealedStars();
 
-    var stars = revealedStars.filter((star) =>
+    var stars = revealedStars.filter(star =>
     {
       return star.owner.isIndependent || star.owner === this.player;
     });

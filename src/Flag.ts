@@ -26,7 +26,7 @@ export class Flag
     this.backgroundColor = backgroundColor;
     if (emblems)
     {
-      emblems.forEach((emblem) => this.addEmblem(emblem));
+      emblems.forEach(emblem => this.addEmblem(emblem));
     }
   }
   public static generateRandom(
@@ -94,7 +94,7 @@ export class Flag
     const data: FlagSaveData =
     {
       mainColor: this.backgroundColor.serialize(),
-      emblems: this.emblems.map((emblem) => emblem.serialize()),
+      emblems: this.emblems.map(emblem => emblem.serialize()),
     };
 
     return data;
@@ -116,7 +116,7 @@ export class Flag
       ctx.fillRect(0, 0, width, height);
     }
 
-    this.emblems.forEach((emblem) =>
+    this.emblems.forEach(emblem =>
     {
       if (emblem.isDrawable())
       {

@@ -21,9 +21,9 @@ export function getUnitsInAbilityArea(battle: Battle, ability: AbilityTemplate,
     abilityEffects.push(...ability.secondaryEffects);
   }
 
-  abilityEffects.forEach((abilityEffect) =>
+  abilityEffects.forEach(abilityEffect =>
   {
-    getUnitsInEffectArea(abilityEffect, battle, user, target).forEach((unit) =>
+    getUnitsInEffectArea(abilityEffect, battle, user, target).forEach(unit =>
     {
       includedUnitsByID[unit.id] = unit;
     });

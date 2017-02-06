@@ -35,7 +35,7 @@ export class UnitItemGroupComponent extends React.Component<PropTypes, StateType
     const itemWrappers: React.ReactElement<any>[] = [];
     const itemsByPosition: {[position: number]: Item} = {};
 
-    this.props.items.forEach((item) =>
+    this.props.items.forEach(item =>
     {
       itemsByPosition[item.positionInUnit] = item;
     });

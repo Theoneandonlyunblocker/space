@@ -20,7 +20,7 @@ export var autoHeal: PassiveSkillTemplate =
   [
     {
       id: "addStatusEffect",
-      getUnitsInArea: (user) => [user],
+      getUnitsInArea: user => [user],
       executeAction: bindEffectActionData(EffectActions.addStatusEffect,
       {
         duration: -1,
@@ -39,7 +39,7 @@ export var overdrive: PassiveSkillTemplate =
   [
     {
       id: "addStatusEffect",
-      getUnitsInArea: (user) => [user],
+      getUnitsInArea: user => [user],
       executeAction: bindEffectActionData(EffectActions.addStatusEffect,
       {
         duration: 2,
@@ -59,7 +59,7 @@ export var initialGuard: PassiveSkillTemplate =
   [
     {
       id: "addStatusEffect",
-      getUnitsInArea: (user) => [user],
+      getUnitsInArea: user => [user],
       executeAction: bindEffectActionData(EffectActions.addGuard,
       {
         coverage: GuardCoverage.row,
@@ -91,7 +91,7 @@ export var medic: PassiveSkillTemplate =
     function(user: Unit)
     {
       var star = user.fleet.location;
-      var allFriendlyUnits = star.getUnits((player) => player === user.fleet.player);
+      var allFriendlyUnits = star.getUnits(player => player === user.fleet.player);
       for (let i = 0; i < allFriendlyUnits.length; i++)
       {
         allFriendlyUnits[i].addHealth(allFriendlyUnits[i].maxHealth)

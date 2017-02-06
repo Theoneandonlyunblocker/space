@@ -311,19 +311,19 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
           {
             className: "color-picker-input color-picker-input-hex",
             value: this.state.hexColor,
-            valueStringIsValid: (valueString) =>
+            valueStringIsValid: valueString =>
             {
               return /^#*[0-9A-F]{6}$/i.test(valueString);
             },
-            stylizeValue: (value) =>
+            stylizeValue: value =>
             {
               return "#" + Color.fromHex(value).getHexString();
             },
-            getValueFromValueString: (valueString) =>
+            getValueFromValueString: valueString =>
             {
               return Color.fromHexString(valueString).getHex();
             },
-            onValueChange: (value) =>
+            onValueChange: value =>
             {
               this.setState(
               {

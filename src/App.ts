@@ -240,10 +240,10 @@ class App
   private makePlayers()
   {
     var players: Player[] = [];
-    const candidateRaces = <PlayerRaceTemplate[]> Object.keys(this.moduleData.Templates.Races).map((raceKey) =>
+    const candidateRaces = <PlayerRaceTemplate[]> Object.keys(this.moduleData.Templates.Races).map(raceKey =>
     {
       return this.moduleData.Templates.Races[raceKey];
-    }).filter((raceTemplate) =>
+    }).filter(raceTemplate =>
     {
       return !raceTemplate.isNotPlayable;
     });
@@ -314,12 +314,12 @@ class App
       this.game.notificationLog.setTurn(this.game.turnNumber, true);
     }
 
-    app.moduleData.scripts.game.afterInit.forEach((scriptFN) =>
+    app.moduleData.scripts.game.afterInit.forEach(scriptFN =>
     {
       scriptFN(this.game);
     });
 
-    this.game.playerOrder.forEach((player) =>
+    this.game.playerOrder.forEach(player =>
     {
       if (player.isAI && !player.AIController)
       {

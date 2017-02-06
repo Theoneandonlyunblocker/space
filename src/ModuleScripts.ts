@@ -29,7 +29,7 @@ export default class ModuleScripts implements PartialAllScripts
 
   public add(...toAdd: PartialAllScripts[]): void
   {
-    toAdd.forEach((scripts) =>
+    toAdd.forEach(scripts =>
     {
       for (let scriptType in scripts)
       {

@@ -42,7 +42,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
 
     const attributes = unit.baseAttributes.getAttributesTypesSortedForDisplay();
 
-    attributes.forEach((attribute) =>
+    attributes.forEach(attribute =>
     {
       var maxAttribute = attribute === "maxActionPoints" ? 6 : 9;
       if (unit.baseAttributes[attribute] < maxAttribute)

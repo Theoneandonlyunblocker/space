@@ -35,9 +35,9 @@ const fightInvadingEnemy: ObjectiveTemplate =
     const basePriority = grandStrategyAI.desireForConsolidation;
 
 
-    const ownedStarsWithInvaders = mapEvaluator.player.controlledLocations.filter((star) =>
+    const ownedStarsWithInvaders = mapEvaluator.player.controlledLocations.filter(star =>
     {
-      const hostileUnits = star.getUnits((player) =>
+      const hostileUnits = star.getUnits(player =>
       {
         return(
           !player.isIndependent &&

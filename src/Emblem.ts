@@ -69,10 +69,10 @@ export default class Emblem
   }
   private static getAvailableTemplatesForRandomGeneration(): SubEmblemTemplate[]
   {
-    return Object.keys(app.moduleData.Templates.SubEmblems).map((key) =>
+    return Object.keys(app.moduleData.Templates.SubEmblems).map(key =>
     {
       return app.moduleData.Templates.SubEmblems[key];
-    }).filter((template) =>
+    }).filter(template =>
     {
       return !template.disallowRandomGeneration;
     })
@@ -125,7 +125,7 @@ export default class Emblem
     var data: EmblemSaveData =
     {
       alpha: this.alpha,
-      colors: this.colors.map((color) => color.serialize()),
+      colors: this.colors.map(color => color.serialize()),
       templateKey: this.template.key,
     };
 

@@ -161,7 +161,7 @@ export default class Unit
         guardAmount: props.battleStats.guardAmount,
         guardCoverage: props.battleStats.guardCoverage,
         captureChance: props.battleStats.captureChance,
-        statusEffects: props.battleStats.statusEffects.map((statusEffect) =>
+        statusEffects: props.battleStats.statusEffects.map(statusEffect =>
         {
           return statusEffect.clone();
         }),
@@ -183,7 +183,7 @@ export default class Unit
     }
 
     this.items = this.makeUnitItems(props.maxItemSlots);
-    props.items.forEach((item) =>
+    props.items.forEach(item =>
     {
       if (isFinite(item.positionInUnit))
       {
@@ -275,11 +275,11 @@ export default class Unit
       maxMovePoints: data.maxMovePoints,
       timesActedThisTurn: data.timesActedThisTurn,
 
-      abilities: data.abilityTemplateTypes.map((templateType) =>
+      abilities: data.abilityTemplateTypes.map(templateType =>
       {
         return app.moduleData.Templates.Abilities[templateType];
       }),
-      passiveSkills: data.passiveSkillTemplateTypes.map((templateType) =>
+      passiveSkills: data.passiveSkillTemplateTypes.map(templateType =>
       {
         return app.moduleData.Templates.PassiveSkills[templateType];
       }),
@@ -501,11 +501,11 @@ export default class Unit
   {
     return new UnitItems(
       itemSlots,
-      (item) =>
+      item =>
       {
         item.unit = this;
       },
-      (changedItem) =>
+      changedItem =>
       {
         if (changedItem.template.attributeAdjustments)
         {
@@ -614,10 +614,10 @@ export default class Unit
       return [];
     }
 
-    return this.battleStats.statusEffects.filter((statusEffect) =>
+    return this.battleStats.statusEffects.filter(statusEffect =>
     {
       return Boolean(statusEffect.template.attributes);
-    }).map((statusEffect) =>
+    }).map(statusEffect =>
     {
       return statusEffect.template.attributes;
     });
@@ -733,7 +733,7 @@ export default class Unit
       return false;
     }
 
-    const relevantStatusEffectTemplates = this.battleStats.statusEffects.map((statusEffect) =>
+    const relevantStatusEffectTemplates = this.battleStats.statusEffects.map(statusEffect =>
     {
       return statusEffect.template;
     }).filter(effectFilterFN);
@@ -762,7 +762,7 @@ export default class Unit
     }
 
 
-    app.moduleData.scripts.unit.removeFromPlayer.forEach((scriptFN) =>
+    app.moduleData.scripts.unit.removeFromPlayer.forEach(scriptFN =>
     {
       scriptFN(this);
     });
@@ -840,7 +840,7 @@ export default class Unit
   {
     var totalCost = 0;
     totalCost += this.template.buildCost;
-    totalCost += this.items.getAllItems().map((item) =>
+    totalCost += this.items.getAllItems().map(item =>
     {
       return item.template.buildCost;
     }).reduce((a, b) =>
@@ -961,14 +961,14 @@ export default class Unit
     const allAbilities: AbilityBase[] = this.getAllAbilities();
     allAbilities.push(...this.getAllPassiveSkills());
 
-    const upgradableAbilities: AbilityBase[] = allAbilities.filter((abilityTemplate) =>
+    const upgradableAbilities: AbilityBase[] = allAbilities.filter(abilityTemplate =>
     {
       return abilityTemplate.canUpgradeInto && abilityTemplate.canUpgradeInto.length > 0;
     });
 
-    upgradableAbilities.forEach((parentAbility) =>
+    upgradableAbilities.forEach(parentAbility =>
     {
-      parentAbility.canUpgradeInto.forEach((childAbility) =>
+      parentAbility.canUpgradeInto.forEach(childAbility =>
       {
         if (this.canUpgradeIntoAbility(childAbility, allAbilities))
         {

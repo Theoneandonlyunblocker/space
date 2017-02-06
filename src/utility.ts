@@ -358,7 +358,7 @@ export function shallowCopy<T>(toCopy: T): T
 }
 export function shallowExtend<T>(destination: any, ...sources: any[]): T
 {
-  sources.forEach((source) =>
+  sources.forEach(source =>
   {
     for (let key in source)
     {
@@ -868,7 +868,7 @@ export function makePolygonFromPoints(
 ): PIXI.Polygon
 {
   const pointPositions: number[] = [];
-  points.forEach((point) =>
+  points.forEach(point =>
   {
     pointPositions.push(point.x, point.y);
   });

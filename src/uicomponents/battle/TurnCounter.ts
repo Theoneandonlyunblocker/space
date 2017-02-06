@@ -63,7 +63,7 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
           {
             key: "inner",
             className: "available-turn",
-            ref: (element) =>
+            ref: element =>
             {
               this.inner = element;
             }

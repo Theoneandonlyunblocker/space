@@ -15,7 +15,7 @@ export function getRandomWeightedDistributable<T extends Distributable>(
   candidates: T[]
 ): T
 {
-  const maxWeight = candidates.map((distributable) =>
+  const maxWeight = candidates.map(distributable =>
   {
     return distributable.distributionData.weight;
   }).reduce((total, current) =>
@@ -25,7 +25,7 @@ export function getRandomWeightedDistributable<T extends Distributable>(
 
   if (maxWeight <= 0)
   {
-    const candidatesWithMaxWeight = candidates.filter((distributable) =>
+    const candidatesWithMaxWeight = candidates.filter(distributable =>
     {
       return distributable.distributionData.weight === maxWeight;
     });
@@ -60,7 +60,7 @@ export function getDistributablesMatchingHighestPriorityGroup<T extends Distribu
   for (let i = 0; i < groupsByPriority.length; i++)
   {
     const group = groupsByPriority[i];
-    const distributablesWithGroup = candidates.filter((distributable) =>
+    const distributablesWithGroup = candidates.filter(distributable =>
     {
       const distributableHasGroup = distributable.distributionData.distributionGroups.indexOf(group) !== -1;
 
@@ -88,9 +88,9 @@ export function filterCandidatesByGroups<T extends Distributable>(
   valueWhenGroupMatches: boolean,
 ): T[]
 {
-  return candidates.filter((candidate) =>
+  return candidates.filter(candidate =>
   {
-    const hasGroupMatch = candidate.distributionData.distributionGroups.some((candidateGroup) =>
+    const hasGroupMatch = candidate.distributionData.distributionGroups.some(candidateGroup =>
     {
       return groupsToMatch.indexOf(candidateGroup) !== -1;
     });

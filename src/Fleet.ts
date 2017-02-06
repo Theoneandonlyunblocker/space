@@ -42,7 +42,7 @@ export class Fleet
     this.id = isFinite(id) ? id : idGenerators.fleet++;
     this.name = new Name("Fleet " + this.id);
 
-    units.forEach((unitToAdd) =>
+    units.forEach(unitToAdd =>
     {
       this.addUnit(unitToAdd);
     });
@@ -50,13 +50,13 @@ export class Fleet
 
   public static createFleetsFromUnits(units: Unit[]): Fleet[]
   {
-    const stealthyUnits = units.filter((unit) => unit.isStealthy());
-    const nonStealthyUnits = units.filter((unit) => !unit.isStealthy());
+    const stealthyUnits = units.filter(unit => unit.isStealthy());
+    const nonStealthyUnits = units.filter(unit => !unit.isStealthy());
 
-    const fleets = [stealthyUnits, nonStealthyUnits].filter((unitsInGroup) =>
+    const fleets = [stealthyUnits, nonStealthyUnits].filter(unitsInGroup =>
     {
       return unitsInGroup.length > 0;
-    }).map((unitsInGroup) =>
+    }).map(unitsInGroup =>
     {
       return new Fleet(unitsInGroup);
     });
@@ -170,7 +170,7 @@ export class Fleet
   }
   public getMinCurrentMovePoints(): number
   {
-    return this.units.map((unit) =>
+    return this.units.map(unit =>
     {
       return unit.currentMovePoints;
     }).reduce((minMovePoints, currentUnitMovePoints) =>
@@ -180,7 +180,7 @@ export class Fleet
   }
   public getMinMaxMovePoints(): number
   {
-    return this.units.map((unit) =>
+    return this.units.map(unit =>
     {
       return unit.maxMovePoints;
     }).reduce((minMovePoints, currentUnitMovePoints) =>
@@ -229,7 +229,7 @@ export class Fleet
   }
   public getTotalCurrentHealth(): number
   {
-    return this.units.map((unit) =>
+    return this.units.map(unit =>
     {
       return unit.currentHealth;
     }).reduce((total, current) =>
@@ -239,7 +239,7 @@ export class Fleet
   }
   public getTotalMaxHealth(): number
   {
-    return this.units.map((unit) =>
+    return this.units.map(unit =>
     {
       return unit.maxHealth;
     }).reduce((total, current) =>
@@ -274,7 +274,7 @@ export class Fleet
 
       locationId: this.location.id,
       playerId: this.player.id,
-      unitIds: this.units.map((unit) => unit.id),
+      unitIds: this.units.map(unit => unit.id),
     };
 
     return data;
@@ -282,7 +282,7 @@ export class Fleet
 
   private canMove(): boolean
   {
-    return this.units.every((unit) => unit.currentMovePoints > 0);
+    return this.units.every(unit => unit.currentMovePoints > 0);
   }
   private move(newLocation: Star): void
   {
@@ -301,7 +301,7 @@ export class Fleet
     this.location = newLocation;
     newLocation.addFleet(this);
 
-    this.units.forEach((unit) => unit.currentMovePoints -= 1);
+    this.units.forEach(unit => unit.currentMovePoints -= 1);
 
     this.visionIsDirty = true;
     this.player.visionIsDirty = true;

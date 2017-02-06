@@ -132,7 +132,7 @@ export default class Manufactory
     if (units.length > 0)
     {
       const fleets = Fleet.createFleetsFromUnits(units);
-      fleets.forEach((fleet) =>
+      fleets.forEach(fleet =>
       {
         this.player.addFleet(fleet);
         this.star.addFleet(fleet);
@@ -172,14 +172,14 @@ export default class Manufactory
       [type: string]: boolean;
     } = {};
 
-    alreadyAdded.forEach((manufacturableThing) =>
+    alreadyAdded.forEach(manufacturableThing =>
     {
       alreadyAddedTypes[manufacturableThing.type] = true;
     });
 
     const localManufacturableThings = <T[]> this.getManufacturableThingsForType(type);
 
-    return localManufacturableThings.filter((manufacturableThing) =>
+    return localManufacturableThings.filter(manufacturableThing =>
     {
       return !alreadyAddedTypes[manufacturableThing.type];
     });

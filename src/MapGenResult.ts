@@ -106,7 +106,7 @@ export default class MapGenResult
       height: this.height
     });
 
-    this.stars.forEach((star) =>
+    this.stars.forEach(star =>
     {
       treeMap.insert(star.voronoiCell);
     });

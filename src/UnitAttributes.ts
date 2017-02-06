@@ -70,7 +70,7 @@ export default class UnitAttributes implements UnitAttributesObject
   {
     const squashed: UnitAttributeAdjustments = {};
 
-    toSquash.forEach((adjustment) =>
+    toSquash.forEach(adjustment =>
     {
       for (let attribute in adjustment)
       {

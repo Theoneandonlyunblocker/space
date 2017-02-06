@@ -9,7 +9,7 @@ import DefaultAISaveData from "./DefaultAISaveData";
 const DefaultAIConstructor: AITemplateConstructor<DefaultAISaveData> =
 {
   type: DefaultAI.type,
-  construct: (props) =>
+  construct: props =>
   {
     return new DefaultAI(props.player, props.game, props.personality);
   }

@@ -56,9 +56,9 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
         ControlledNumberInput(
         {
           value: this.props.value,
-          valueStringIsValid: (valueString) => isFinite(Number(valueString)),
+          valueStringIsValid: valueString => isFinite(Number(valueString)),
           getValueFromValueString: parseFloat,
-          onValueChange: (newValue) =>
+          onValueChange: newValue =>
           {
             this.props.fragment.props[this.props.propName] = newValue;
 

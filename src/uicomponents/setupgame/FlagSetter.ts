@@ -214,7 +214,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     else
     {
       getHTMLImageElementFromDataTransfer(e.dataTransfer,
-      (image) =>
+      image =>
       {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
@@ -229,7 +229,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         this.props.flag.setCustomImage(dataURL);
         this.handleSuccessfulUpdate();
       },
-      (errorType) =>
+      errorType =>
       {
         switch (errorType)
         {
@@ -363,7 +363,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
             id: 0,
             incrementZIndex: () => 0,
             closePopup: this.setAsInactive,
-            getInitialPosition: (popupRect) =>
+            getInitialPosition: popupRect =>
             {
               const parentRect = this.getClientRect();
               return(

@@ -142,7 +142,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
         ),
         PopupManager(
         {
-          ref: (component) =>
+          ref: component =>
           {
             this.popupManager = component;
           }

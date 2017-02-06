@@ -46,7 +46,7 @@ const cleanUpPirates: ObjectiveTemplate =
       }
       else
       {
-        return star.getUnits((player) => player.isIndependent).length > 0;
+        return star.getUnits(player => player.isIndependent).length > 0;
       }
     });
 

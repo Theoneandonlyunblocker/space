@@ -63,9 +63,9 @@ function executeFullAbilityEffects(battle: Battle, abilityEffectDataByPhase: Abi
     abilityEffectDataByPhase.beforeUse,
     abilityEffectDataByPhase.abilityEffects,
     abilityEffectDataByPhase.afterUse,
-  ].forEach((effectDataForPhase) =>
+  ].forEach(effectDataForPhase =>
   {
-    effectDataForPhase.forEach((effectData) =>
+    effectDataForPhase.forEach(effectData =>
     {
       executeAbilityEffectData(battle, effectData, executedEffectsResult);
     });
@@ -81,9 +81,9 @@ function executeFullAbilityEffectsAndGetUseEffects(battle: Battle,
     abilityEffectDataByPhase.beforeUse,
     abilityEffectDataByPhase.abilityEffects,
     abilityEffectDataByPhase.afterUse,
-  ].forEach((effectDataForPhase) =>
+  ].forEach(effectDataForPhase =>
   {
-    effectDataForPhase.forEach((effectData) =>
+    effectDataForPhase.forEach(effectData =>
     {
       const useEffect = executeAbilityEffectDataAndGetUseEffect(battle, effectData, executedEffectsResult);
       if (useEffect)

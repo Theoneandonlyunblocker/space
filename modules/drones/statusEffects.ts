@@ -17,7 +17,7 @@ export const infest: StatusEffectTemplate =
   [
     {
       id: "damage",
-      getUnitsInArea: (user) => [user],
+      getUnitsInArea: user => [user],
       executeAction: (user, target, battle, executedEffectsResult, sourceStatusEffect) =>
       {
         const tick = sourceStatusEffect.turnsHasBeenActiveFor + 1;

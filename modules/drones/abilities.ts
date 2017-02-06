@@ -44,7 +44,7 @@ export const assimilate: AbilityTemplate =
     [
       {
         id: "increaseUserHealth",
-        getUnitsInArea: (user) => [user],
+        getUnitsInArea: user => [user],
         executeAction: bindEffectActionData(EffectActions.adjustCurrentAndMaxHealth,
         {
           executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
@@ -72,7 +72,7 @@ export const merge: AbilityTemplate =
     {
       maxHealthPercentage: -0.25,
     }),
-    getUnitsInArea: (user) => [user],
+    getUnitsInArea: user => [user],
     sfx: placeholderSFX,
   },
   secondaryEffects:

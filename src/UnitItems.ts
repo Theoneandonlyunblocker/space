@@ -43,7 +43,7 @@ export default class UnitItems
     const itemsBySlot: ItemsBySlot = {};
     const allItems = this.getAllItems();
 
-    allItems.forEach((item) =>
+    allItems.forEach(item =>
     {
       if (!itemsBySlot[item.template.slot])
       {
@@ -72,30 +72,30 @@ export default class UnitItems
   }
   public getAttributeAdjustments(): UnitAttributeAdjustments[]
   {
-    return this.getAllItems().filter((item) =>
+    return this.getAllItems().filter(item =>
     {
       return Boolean(item.template.attributeAdjustments)
-    }).map((item) =>
+    }).map(item =>
     {
       return item.template.attributeAdjustments;
     });
   }
   public getAbilities(): AbilityTemplate[]
   {
-    return this.getAllItems().filter((item) =>
+    return this.getAllItems().filter(item =>
     {
       return Boolean(item.template.ability)
-    }).map((item) =>
+    }).map(item =>
     {
       return item.template.ability;
     });
   }
   public getPassiveSkills(): PassiveSkillTemplate[]
   {
-    return this.getAllItems().filter((item) =>
+    return this.getAllItems().filter(item =>
     {
       return Boolean(item.template.passiveSkill)
-    }).map((item) =>
+    }).map(item =>
     {
       return item.template.passiveSkill;
     });
@@ -186,7 +186,7 @@ export default class UnitItems
   }
   public destroyAllItems(): void
   {
-    this.getAllItems().forEach((item) =>
+    this.getAllItems().forEach(item =>
     {
       item.unit.fleet.player.removeItem(item);
     });
@@ -197,7 +197,7 @@ export default class UnitItems
     return(
     {
       maxItemSlots: this.itemSlots,
-      itemIDs: this.items.map((item) => item.id),
+      itemIDs: this.items.map(item => item.id),
     });
   }
 

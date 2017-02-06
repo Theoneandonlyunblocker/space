@@ -46,7 +46,7 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
             },
             title: "" + this.props.emblem.template.key + "\n\nLeft click to edit\nRight click to remove",
             onClick: this.props.toggleActive,
-            onContextMenu: (e) =>
+            onContextMenu: e =>
             {
               e.stopPropagation();
               e.preventDefault();

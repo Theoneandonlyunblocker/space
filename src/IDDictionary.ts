@@ -19,7 +19,7 @@ abstract class IDDictionary<K extends ObjectWithID, V>
   {
     if (keys)
     {
-      keys.forEach((key) =>
+      keys.forEach(key =>
       {
         this.set(key, getValueFN(key));
       });

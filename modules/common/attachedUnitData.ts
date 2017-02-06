@@ -65,7 +65,7 @@ export const attachedUnitDataScripts: PartialAllScripts =
   {
     removeFromPlayer:
     [
-      (unit) =>
+      unit =>
       {
         const front = attachedUnitData.get(unit).front;
         if (front)

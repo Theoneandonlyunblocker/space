@@ -248,7 +248,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     }
     else if (this.state.selectedUnit)
     {
-      var selectedUnitIsFriendly = battlePrep.humanUnits.some((unit) => unit === this.state.selectedUnit);
+      var selectedUnitIsFriendly = battlePrep.humanUnits.some(unit => unit === this.state.selectedUnit);
 
       leftUpperElement = MenuUnitInfo(
       {

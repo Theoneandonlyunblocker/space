@@ -131,7 +131,7 @@ export class FlagPickerComponent extends React.PureComponent<PropTypes, StateTyp
             selectedEmblemTemplate: emblemData.template,
 
             setEmblemTemplate: this.props.handleSelectEmblem,
-            setEmblemColor: (color) =>
+            setEmblemColor: color =>
             {
               emblemData.emblem.colors = [color];
               this.props.triggerParentUpdate();

@@ -87,7 +87,7 @@ export default class Game
   }
   processPlayerStartTurn(player: Player)
   {
-    player.units.forEach((unit) =>
+    player.units.forEach(unit =>
     {
       unit.addHealth(unit.getHealingForGameTurnStart());
 
@@ -149,7 +149,7 @@ export default class Game
       }
     }
 
-    this.playerOrder.forEach((player) =>
+    this.playerOrder.forEach(player =>
     {
       player.diplomacyStatus.removePlayer(playerToKill);
     });
@@ -176,15 +176,15 @@ export default class Game
     {
       turnNumber: this.turnNumber,
       galaxyMap: this.galaxyMap.serialize(),
-      players: this.getAllPlayers().map((player) =>
+      players: this.getAllPlayers().map(player =>
       {
         return player.serialize();
       }),
       humanPlayerId: this.humanPlayer.id,
       notificationLog: this.notificationLog.serialize(),
-      units: this.getAllPlayers().map((player) =>
+      units: this.getAllPlayers().map(player =>
       {
-        return player.units.map((unit) =>
+        return player.units.map(unit =>
         {
           return unit.serialize();
         });
@@ -192,9 +192,9 @@ export default class Game
       {
         return allUnits.concat(playerUnits);
       }, []),
-      items: this.getAllPlayers().map((player) =>
+      items: this.getAllPlayers().map(player =>
       {
-        return player.items.map((item) => item.serialize());
+        return player.items.map(item => item.serialize());
       }).reduce((allItems, playerItems) =>
       {
         return allItems.concat(playerItems);

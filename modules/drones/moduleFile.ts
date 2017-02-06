@@ -21,7 +21,7 @@ export const drones: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
-  loadAssets: (onLoaded) =>
+  loadAssets: onLoaded =>
   {
     const placeHolderResourceName = "placeHolder";
     const placeHolderURL = "img/placeholder.png";

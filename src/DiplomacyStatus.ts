@@ -76,7 +76,7 @@ export default class DiplomacyStatus
   }
   removePlayer(player: Player)
   {
-    ["metPlayers", "statusByPlayer", "attitudeModifiersByPlayer"].forEach((prop) =>
+    ["metPlayers", "statusByPlayer", "attitudeModifiersByPlayer"].forEach(prop =>
     {
       this[prop][player.id] = null;
       delete this[prop][player.id];

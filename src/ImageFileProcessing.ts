@@ -34,11 +34,11 @@ export function getHTMLImageElementFromDataTransfer(
 
   const img = new Image();
   img.crossOrigin = "Anonymous";
-  img.onload = (e) =>
+  img.onload = e =>
   {
     onComplete(img);
   }
-  img.onerror = (e) =>
+  img.onerror = e =>
   {
     onError("couldntLoad", e);
   }

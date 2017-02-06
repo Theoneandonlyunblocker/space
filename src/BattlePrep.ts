@@ -124,14 +124,14 @@ export default class BattlePrep
   }
   private resetBattleStats(): void
   {
-    this.forEachUnit((unit) =>
+    this.forEachUnit(unit =>
     {
       unit.resetBattleStats();
     });
   }
   private triggerPassiveSkills(formation: BattlePrepFormation): void
   {
-    formation.forEachUnitInFormation((unit) =>
+    formation.forEachUnitInFormation(unit =>
     {
       const passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
       if (passiveSkillsByPhase.inBattlePrep)

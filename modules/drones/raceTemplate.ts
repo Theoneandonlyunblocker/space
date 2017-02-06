@@ -30,7 +30,7 @@ export const drones: RaceTemplate =
   },
 
   isNotPlayable: true,
-  getBuildableUnitTypes: (player) =>
+  getBuildableUnitTypes: player =>
   {
     return(
     [
@@ -40,7 +40,7 @@ export const drones: RaceTemplate =
     ]);
   },
 
-  getUnitName: (unitTemplate) =>
+  getUnitName: unitTemplate =>
   {
     return `${unitTemplate.displayName} #${randInt(0, 20000)}`;
   },
@@ -49,7 +49,7 @@ export const drones: RaceTemplate =
     return getRandomProperty(allTemplates);
   },
 
-  generateIndependentPlayer: (emblemTemplates) =>
+  generateIndependentPlayer: emblemTemplates =>
   {
     return generateIndependentPlayer(drones);
   },

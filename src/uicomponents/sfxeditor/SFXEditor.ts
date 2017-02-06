@@ -269,7 +269,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
           {
             hasDraggingFragment: Boolean(this.state.draggingFragment),
             moveDraggingFragment: this.handleFragmentDragMove,
-            ref: (component) =>
+            ref: component =>
             {
               this.display = component;
             }

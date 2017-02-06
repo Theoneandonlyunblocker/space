@@ -40,7 +40,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var rows: ListItem<UnitListItemProps>[] = this.props.units.map((unit) =>
+    var rows: ListItem<UnitListItemProps>[] = this.props.units.map(unit =>
     {
       return(
       {

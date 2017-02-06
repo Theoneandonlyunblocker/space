@@ -22,13 +22,13 @@ export default function setupIndependents(props:
   mapGenDataByStarID: MapGenDataByStarID;
 }): void
 {
-  const independentStars = props.region.stars.filter((star) =>
+  const independentStars = props.region.stars.filter(star =>
   {
     return !star.owner || star.owner.isIndependent;
   });
 
   // add buildings
-  independentStars.forEach((star) =>
+  independentStars.forEach(star =>
   {
     props.player.addStar(star);
     addDefenceBuildings(star, 1, false);
@@ -54,7 +54,7 @@ export default function setupIndependents(props:
     return maxDistance;
   })();
 
-  independentStars.forEach((star) =>
+  independentStars.forEach(star =>
   {
     const mapGenData = props.mapGenDataByStarID[star.id];
     const distanceFromPlayer = mapGenData.distanceFromPlayerOwnedLocation - 1;
@@ -84,7 +84,7 @@ function getStarsByDistanceToPlayer(
     [distance: number]: Star[];
   } = {};
 
-  stars.forEach((star) =>
+  stars.forEach(star =>
   {
     const distance = mapGenDataByStarID[star.id].distanceFromPlayerOwnedLocation;
 
@@ -102,7 +102,7 @@ function getMaxDistanceFromStarsByDistance(
   starsByDistance: {[distance: number]: Star[]}
 ): number
 {
-  const numericDistances = Object.keys(starsByDistance).map((distanceString) =>
+  const numericDistances = Object.keys(starsByDistance).map(distanceString =>
   {
     return parseInt(distanceString);
   });

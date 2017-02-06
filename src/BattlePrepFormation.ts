@@ -94,7 +94,7 @@ export default class BattlePrepFormation
   public getFormationValidity(): {isValid: boolean; description: string;}
   {
     let amountOfUnitsPlaced = 0;
-    this.forEachUnitInFormation((unit) => amountOfUnitsPlaced += 1);
+    this.forEachUnitInFormation(unit => amountOfUnitsPlaced += 1);
 
     if (this.isAttacker && amountOfUnitsPlaced < 1)
     {
@@ -105,7 +105,7 @@ export default class BattlePrepFormation
       });
     }
 
-    const availableUnits = this.units.filter((unit) => unit.canActThisTurn());
+    const availableUnits = this.units.filter(unit => unit.canActThisTurn());
     const hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
 
     if (amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits)
@@ -171,7 +171,7 @@ export default class BattlePrepFormation
   {
     const displayDataByID: {[unitID: number]: UnitDisplayData} = {};
 
-    this.forEachUnitInFormation((unit) =>
+    this.forEachUnitInFormation(unit =>
     {
       displayDataByID[unit.id] = unit.getDisplayData("battlePrep");
     });
@@ -186,7 +186,7 @@ export default class BattlePrepFormation
     const scoutedFormation = this.hasScouted ? enemyFormation : null;
 
     const formation = getNullFormation();
-    const unitsToPlace = this.units.filter((unit) => unit.canActThisTurn());
+    const unitsToPlace = this.units.filter(unit => unit.canActThisTurn());
 
     const maxUnitsPerRow = formation[0].length;
     const maxUnitsPerSide = app.moduleData.ruleSet.battle.maxUnitsPerSide;

@@ -31,16 +31,16 @@ const wormThings: PlayerRaceTemplate =
     distributionGroups: [],
   },
 
-  getBuildableUnitTypes: (player) =>
+  getBuildableUnitTypes: player =>
   {
-    return getDefaultUnits().filter((unitTemplate) =>
+    return getDefaultUnits().filter(unitTemplate =>
     {
       return !unitTemplate.technologyRequirements ||
         player.meetsTechnologyRequirements(unitTemplate.technologyRequirements);
     });
   },
 
-  getUnitName: (unitTemplate) =>
+  getUnitName: unitTemplate =>
   {
     return `Infested ${unitTemplate.displayName}`;
   },
@@ -49,7 +49,7 @@ const wormThings: PlayerRaceTemplate =
     return getRandomProperty(allTemplates);
   },
 
-  generateIndependentPlayer: (emblemTemplates) =>
+  generateIndependentPlayer: emblemTemplates =>
   {
     return generateIndependentPlayer(wormThings);
   },
@@ -70,7 +70,7 @@ const wormThings: PlayerRaceTemplate =
     }
   ]),
 
-  getAITemplateConstructor: (player) => DefaultAIConstructor
+  getAITemplateConstructor: player => DefaultAIConstructor
 }
 
 export default wormThings;
