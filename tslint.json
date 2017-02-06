@@ -10,7 +10,8 @@
     // "no-reference": true,
     "no-var-requires": true,
     "only-arrow-functions": [true, "allow-declarations"],
-    "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
+    // not sure if this is needed. requires def for string literals etc.
+    // "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
     // tslint doesn't currently recognize newlines which we use after declaration
     // https://github.com/palantir/tslint/pull/1531
     // "typedef-whitespace":
