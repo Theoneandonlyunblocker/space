@@ -77,15 +77,18 @@
     // "prefer-const": true,
     // might be good for later
     // "strict-boolean-expressions": ,
-    "no-magic-numbers": true,
+    // too strict. means we can't do stuff like randInt(2, 5)
+    // "no-magic-numbers": true,
     // probably not
     // "import-blacklist": ,
     "no-string-throw": true,
-    "no-empty-interface": true,
+    // having empty interfaces for stuff like react component state can be cleaner
+    // "no-empty-interface": true,
     "callable-types": true,
 
     "space-before-function-paren": "never",
-    "import-spacing": true,
+    // we use newlines
+    // "import-spacing": true,
     "unified-signatures": true,
     "arrow-return-shorthand": [true],
     // maybe later
