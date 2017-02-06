@@ -25,7 +25,7 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
   {
     super(props);
   }
-  
+
   render()
   {
     return(

@@ -200,8 +200,8 @@ export function getFrom2dArray<T>(target: T[][], arr: number[][]): (T | null)[]
   var result: (T | null)[] = [];
   for (let i = 0; i < arr.length; i++)
   {
-    if 
-    ( 
+    if
+    (
       (arr[i] !== undefined) &&
       (arr[i][0] >= 0 && arr[i][0] < target.length) &&
       (arr[i][1] >= 0 && arr[i][1] < target[0].length)
@@ -260,7 +260,7 @@ export function sortByManufactoryCapacityFN(a: Star, b: Star)
 
   var _a: string = a.name.toLowerCase();
   var _b: string = b.name.toLowerCase();
-  
+
   if (_a > _b) return 1;
   else if (_a < _b) return -1;
   else return 0;
@@ -327,7 +327,7 @@ export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
 
 // http://stackoverflow.com/a/1042676
 // extends 'from' object with members from 'to'. If 'to' is null, a deep clone of 'from' is returned
-// 
+//
 // to[prop] = from[prop] seems to add a reference instead of actually copying value
 // so calling the constructor with "new" is needed
 export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: boolean = false)
@@ -365,13 +365,13 @@ export function shallowExtend<T>(destination: any, ...sources: any[]): T
       destination[key] = source[key];
     }
   });
-  
+
   return <T>destination;
 }
 
 // https://github.com/KyleAMathews/deepmerge
 // The MIT License (MIT)
-// 
+//
 // Copyright (c) 2012 Nicholas Fisher
 export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: boolean = false): T
 {
@@ -482,7 +482,7 @@ export function roundToNearestMultiple(value: number, multiple: number)
 {
   var resto = value % multiple;
   if (resto <= (multiple / 2))
-  { 
+  {
     return value - resto;
   }
   else
@@ -747,7 +747,7 @@ export function makeShaderSprite(
 {
   const sprite = createDummySpriteForShader(x, y, width, height);
 
-  // TODO 08.12.2016 | 
+  // TODO 08.12.2016 |
   sprite.shader = shader;
 
   return sprite;

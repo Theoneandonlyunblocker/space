@@ -17,10 +17,10 @@ interface PropTypes extends React.Props<any>
   delay: number;
   isFriendly: boolean;
   isHovered: boolean;
-  
+
   animationState: AnimationState;
   transitionDuration: number;
-  
+
   onMouseLeave: (e: React.MouseEvent) => void;
   onMouseEnter: () => void;
 }
@@ -43,12 +43,12 @@ export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, State
     [AnimationState.pushUnit]: "push-unit",
     [AnimationState.idle]: "",
   }
-  
+
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
+
   render()
   {
     let additionalUnitClasses = "";
@@ -64,7 +64,7 @@ export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, State
     {
       additionalUnitClasses += " turn-order-unit-hover";
     }
-    
+
     return(
       React.DOM.div(
       {

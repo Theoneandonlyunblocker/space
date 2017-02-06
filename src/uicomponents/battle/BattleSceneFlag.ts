@@ -24,16 +24,16 @@ export class BattleSceneFlagComponent extends React.Component<PropTypes, StateTy
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.handleResize = this.handleResize.bind(this);
     this.setFlag = this.setFlag.bind(this);
-    this.drawFlag = this.drawFlag.bind(this);    
+    this.drawFlag = this.drawFlag.bind(this);
   }
-  
+
   componentDidMount()
   {
     this.setFlag();

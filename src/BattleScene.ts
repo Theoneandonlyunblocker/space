@@ -11,7 +11,7 @@ import UnitBattleSide from "./UnitBattleSide";
 
 // TODO performance
 // BattleScene.render() shouldn't be called unless there's something new to render
-// 
+//
 export default class BattleScene
 {
   public targetUnit: Unit;  // being targeted by ability      | priority
@@ -59,7 +59,7 @@ export default class BattleScene
   constructor(containerElement?: HTMLElement)
   {
     this.container = new PIXI.Container();
-    
+
     this.renderer = PIXI.autoDetectRenderer(
       2, // set in this.bindRendererView()
       2, // set in this.bindRendererView()
@@ -69,14 +69,14 @@ export default class BattleScene
         transparent: true
       }
     );
-    
+
     this.renderer.view.setAttribute("id", "battle-scene-pixi-canvas");
-        
+
     this.initLayers();
 
     this.resizeListener = this.handleResize.bind(this);
     window.addEventListener("resize", this.resizeListener, false);
-    
+
     if (containerElement)
     {
       this.bindRendererView(containerElement);
@@ -105,14 +105,14 @@ export default class BattleScene
     {
       this.containerElement.removeChild(this.renderer.view);
     }
-    
+
     this.containerElement = containerElement;
-    
+
     if (this.renderer)
     {
       this.handleResize();
     }
-    
+
     this.containerElement.appendChild(this.renderer.view);
   }
   public handleAbilityUse(props:
@@ -185,7 +185,7 @@ export default class BattleScene
     this.forceFrame = false;
     this.render();
   }
-  
+
   private initLayers()
   {
     this.layers =
@@ -256,7 +256,7 @@ export default class BattleScene
   private getHighestPriorityUnitForSide(side: UnitBattleSide)
   {
     const units: Unit[] = [];
-    
+
     if (Boolean(this.activeSFX))
     {
       units.push(this.targetUnit, this.userUnit);
@@ -394,14 +394,14 @@ export default class BattleScene
   {
     var SFXDuration = Options.battleAnimationTiming.effectDuration *
       this.activeSFX.duration;
-      
+
     this.executeOnSFXStartCallback();
 
     if (!this.activeSFX.SFXWillTriggerEffect || SFXDuration <= 0)
     {
       this.executeTriggerEffectCallback();
     }
-    
+
     if (SFXDuration <= 0)
     {
       this.handleActiveSFXEnd();
@@ -425,13 +425,13 @@ export default class BattleScene
   private handleActiveSFXEnd()
   {
     const afterUseDelay = Options.battleAnimationTiming.after;
-    
+
     this.afterUseDelayHasFinishedCallback = () =>
     {
       this.clearActiveSFX();
       this.updateUnits(this.executeAbilityUseHasFinishedCallback.bind(this));
     };
-    
+
     if (afterUseDelay >= 0)
     {
       window.setTimeout(this.executeAfterUseDelayHasFinishedCallback.bind(this), afterUseDelay);

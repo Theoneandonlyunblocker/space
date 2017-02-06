@@ -78,7 +78,7 @@ const starOwners: MapRendererLayerTemplate =
         // container.mask = mask;
         gfx.filters = [getOccupationShader(star.owner, occupier)];
       }
-      
+
       doc.addChild(gfx);
     }
     return doc;

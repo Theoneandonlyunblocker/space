@@ -29,16 +29,16 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleChangeState = this.handleChangeState.bind(this);    
+    this.handleChangeState = this.handleChangeState.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -46,7 +46,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
       filterState: this.props.filterState
     });
   }
-  
+
   componentWillReceiveProps(newProps: PropTypes)
   {
     this.setState(
@@ -66,7 +66,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
     });
     eventManager.dispatchEvent("updateNotificationLog");
   }
-  
+
   render()
   {
     var inputElements: React.ReactHTMLElement<any>[] = [];

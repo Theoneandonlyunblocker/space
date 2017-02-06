@@ -35,7 +35,7 @@ export default class PlayerControl
   destroy(): void
   {
     this.removeEventListeners();
-    
+
     this.player = null;
     this.selectedFleets = null;
     this.currentlyReorganizing = null;
@@ -102,7 +102,7 @@ export default class PlayerControl
     {
       self.moveFleets(star);
     });
-    
+
     this.addEventListener("setRectangleSelectTargetFN", function(rectangleSelect: RectangleSelect)
     {
       rectangleSelect.getSelectionTargetsFN =
@@ -142,7 +142,7 @@ export default class PlayerControl
   areAllFleetsInSameLocation(): boolean
   {
     if (this.selectedFleets.length <= 0) return false;
-    
+
     for (let i = 1; i < this.selectedFleets.length; i++)
     {
       if (this.selectedFleets[i].location !== this.selectedFleets[i-1].location)
@@ -161,7 +161,7 @@ export default class PlayerControl
       this.updateSelection();
       return;
     }
-    
+
     var playerFleets: Fleet[] = [];
     var otherFleets: Fleet[] = [];
     for (let i = 0; i < fleets.length; i++)
@@ -231,7 +231,7 @@ export default class PlayerControl
   mergeFleetsOfSameType(fleets: Fleet[]): Fleet[]
   {
     if (fleets.length === 0) return [];
-    
+
     var master = this.getMasterFleetForMerge(fleets);
 
     fleets.splice(fleets.indexOf(master), 1);
@@ -301,7 +301,7 @@ export default class PlayerControl
       fleets[0].location !== fleets[1].location ||
       this.selectedFleets.length !== 2 ||
       this.selectedFleets.indexOf(fleets[0]) < 0 ||
-      this.selectedFleets.indexOf(fleets[1]) < 0 
+      this.selectedFleets.indexOf(fleets[1]) < 0
     )
     {
       throw new Error("cant reorganize fleets");

@@ -15,9 +15,9 @@ function normalizeMouseEvent(nativeEvent: MouseEvent, reactEvent?: React.MouseEv
     pageX: nativeEvent.pageX,
     pageY: nativeEvent.pageY,
     target: <HTMLElement> nativeEvent.target,
-    
+
     button: nativeEvent.button,
-    
+
     preventDefault: (reactEvent ?
       reactEvent.preventDefault.bind(reactEvent) :
       nativeEvent.preventDefault.bind(nativeEvent)),
@@ -29,7 +29,7 @@ function normalizeMouseEvent(nativeEvent: MouseEvent, reactEvent?: React.MouseEv
 function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEvent): NormalizedEvent
 {
   const touch: Touch = nativeEvent.touches[0];
-  
+
   return(
   {
     wasTouchEvent: true,
@@ -38,9 +38,9 @@ function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEv
     pageX: touch.pageX,
     pageY: touch.pageY,
     target: <HTMLElement> touch.target,
-    
+
     button: -1,
-    
+
     preventDefault: (reactEvent ?
       reactEvent.preventDefault.bind(reactEvent) :
       nativeEvent.preventDefault.bind(nativeEvent)),
@@ -55,7 +55,7 @@ export default function normalizeEvent(sourceEvent: MouseEvent | TouchEvent | Re
   const castedEvent = <any> sourceEvent;
   const isReactEvent = Boolean(castedEvent.nativeEvent);
   const isTouchEvent = Boolean(castedEvent.touches);
-  
+
   if (isTouchEvent)
   {
     if (isReactEvent)

@@ -13,7 +13,7 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   typeName: string;
   slot: string;
   unitName: string;
-  
+
   item: Item;
   ability: AbilityBase;
   abilityIsPassive: boolean;
@@ -25,12 +25,12 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   unit: Unit;
   slotIndex: number;
   id: number; // item id
-  
+
   isDraggable: boolean;
   onDragEnd: (dropSuccesful?: boolean) => void;
   onDragStart: (item: Item) => void;
   dragPositionerProps?: DragPositionerProps;
-  
+
 }
 
 interface StateType
@@ -42,14 +42,14 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
   displayName: string = "ItemListItem";
 
   state: StateType;
-  dragPositioner: DragPositioner<ItemListItemComponent>; 
+  dragPositioner: DragPositioner<ItemListItemComponent>;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
-    
+
     if (this.props.isDraggable)
     {
       this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
@@ -62,12 +62,12 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
   private bindMethods()
   {
     this.makeCell = this.makeCell.bind(this);
-    
+
     this.onDragEnd = this.onDragEnd.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
     this.makeDragClone = this.makeDragClone.bind(this);
   }
-  
+
   private onDragStart()
   {
     console.log("onDragStart", this.props.item.template.displayName);
@@ -147,7 +147,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
       onClick : this.props.handleClick,
       key: this.props.keyTODO/*TODO react*/
     };
-    
+
     if (this.dragPositioner)
     {
       rowProps.className += " draggable";

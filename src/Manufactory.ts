@@ -106,7 +106,7 @@ export default class Manufactory
         case "unit":
         {
           var unitTemplate = <UnitTemplate> thingData.template;
-          
+
           const unit = Unit.fromTemplate(
           {
             template: unitTemplate,
@@ -178,7 +178,7 @@ export default class Manufactory
     });
 
     const localManufacturableThings = <T[]> this.getManufacturableThingsForType(type);
-    
+
     return localManufacturableThings.filter((manufacturableThing) =>
     {
       return !alreadyAddedTypes[manufacturableThing.type];

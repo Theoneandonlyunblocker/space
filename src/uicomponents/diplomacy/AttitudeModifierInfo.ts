@@ -13,7 +13,7 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   name: string;
   endTurn: number;
   strength: number;
-  
+
   alwaysShowAtTopOfList?: boolean;
 }
 
@@ -29,14 +29,14 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.makeCell = this.makeCell.bind(this);    
+    this.makeCell = this.makeCell.bind(this);
   }
-  
+
   makeCell(type: string)
   {
     const cellProps:
@@ -98,7 +98,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
       React.DOM.td(cellProps, cellContent)
     );
   }
-  
+
   render()
   {
     var columns = this.props.activeColumns;

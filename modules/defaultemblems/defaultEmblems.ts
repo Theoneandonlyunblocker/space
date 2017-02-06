@@ -21,7 +21,7 @@ const defaultEmblems: ModuleFile =
   loadAssets: function(onLoaded: () => void)
   {
     const loader = new PIXI.loaders.Loader();
-    
+
     for (let templateKey in SubEmblemTemplates)
     {
       const template = SubEmblemTemplates[templateKey];
@@ -32,7 +32,7 @@ const defaultEmblems: ModuleFile =
         xhrType: "png"
       });
     }
-    
+
     loader.load(function(loader: PIXI.loaders.Loader)
     {
       for (let templateKey in SubEmblemTemplates)
@@ -50,14 +50,14 @@ const defaultEmblems: ModuleFile =
           document.body.removeChild(image);
         }
       }
-      
+
       onLoaded();
     });
   },
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<SubEmblemTemplate>(SubEmblemTemplates, "SubEmblems");
-    
+
     return moduleData;
   }
 }

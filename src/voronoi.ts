@@ -36,12 +36,12 @@ export function relaxVoronoi<T extends Point>(
   {
     var cell = diagram.cells[i];
     var point = cell.site;
-    
+
     const vertices = cell.halfedges.map((halfEdge) =>
     {
       return halfEdge.getStartpoint();
     });
-    
+
     const centroid = getPolygonCentroid(vertices);
     if (getRelaxAmountFN)
     {
@@ -66,7 +66,7 @@ export function setVoronoiCells(cells: Voronoi.Cell<(FillerPoint | Star)>[]): vo
   {
     const castedSite = <Star> cell.site;
     const isFiller = !isFinite(castedSite.id);
-    
+
     if (isFiller)
     {
       cell.site.voronoiCell = new VoronoiCell(<Voronoi.Cell<FillerPoint>> cell);

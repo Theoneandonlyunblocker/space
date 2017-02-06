@@ -25,7 +25,7 @@ export class NotificationsComponent extends React.Component<PropTypes, StateType
   {
     super(props);
   }
-  
+
   render()
   {
     return(

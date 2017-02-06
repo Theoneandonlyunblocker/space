@@ -169,7 +169,7 @@ export default class NotificationFilter
     {
       parsedData = getMatchingLocalstorageItemsByDate(baseString)[0];
     }
-    
+
     if (parsedData)
     {
       this.filters = extendObject(parsedData.filters, this.filters, false);

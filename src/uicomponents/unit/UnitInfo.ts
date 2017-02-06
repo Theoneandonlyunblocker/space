@@ -38,7 +38,7 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   render()
   {
     var battleEndStatus: React.ReactHTMLElement<any> = null;
@@ -98,7 +98,7 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
           }),
           battleEndStatus
         )
-        
+
       )
     );
   }

@@ -19,7 +19,7 @@ export class UnitIconContainerComponent extends React.PureComponent<PropTypes, S
   {
     super(props);
   }
-  
+
   render()
   {
     var containerProps: React.HTMLAttributes =
@@ -31,7 +31,7 @@ export class UnitIconContainerComponent extends React.PureComponent<PropTypes, S
     {
       className: "unit-icon-filler"
     };
-    
+
     if (this.props.facesLeft)
     {
       fillerProps.className += " unit-border-right";
@@ -42,7 +42,7 @@ export class UnitIconContainerComponent extends React.PureComponent<PropTypes, S
       fillerProps.className += " unit-border-left";
       containerProps.className += " unit-border-no-left";
     }
-    
+
     const iconElement = React.Children.count(this.props.children) === 1 ?
       React.Children.only(this.props.children) :
       React.DOM.img({src: this.props.iconSrc});

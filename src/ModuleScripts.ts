@@ -56,7 +56,7 @@ export default class ModuleScripts implements PartialAllScripts
             if (ownScripts[i] === scriptsToRemove[j])
             {
               ownScripts.splice(i, 1);
-              
+
               break;
             }
           }

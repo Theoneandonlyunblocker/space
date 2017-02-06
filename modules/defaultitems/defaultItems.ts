@@ -20,7 +20,7 @@ const defaultItems: ModuleFile =
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<ItemTemplate>(ItemTemplates, "Items");
-    
+
     return moduleData;
   }
 }

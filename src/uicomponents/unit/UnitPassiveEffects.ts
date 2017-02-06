@@ -21,7 +21,7 @@ export class UnitPassiveEffectsComponent extends React.PureComponent<PropTypes, 
   {
     super(props);
   }
-  
+
   render()
   {
     return(

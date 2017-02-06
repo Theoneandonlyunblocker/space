@@ -106,7 +106,7 @@ export default class Unit
 
     maxHealth: number;
     currentHealth: number;
-    
+
     attributes: UnitAttributesObject;
 
     currentMovePoints: number;
@@ -204,7 +204,7 @@ export default class Unit
     race: RaceTemplate;
 
     name?: string;
-    
+
     attributeMultiplier?: number;
     healthMultiplier?: number;
   }): Unit
@@ -223,11 +223,11 @@ export default class Unit
 
     const baseHealth = baseHealthValue * template.maxHealth;
     const health = randInt(baseHealth - healthVariance, baseHealth + healthVariance);
-    
+
     const unit = new Unit(
     {
       template: template,
-      
+
       id: idGenerators.unit++,
       name: props.name || race.getUnitName(template),
 
@@ -262,7 +262,7 @@ export default class Unit
     const unit = new Unit(
     {
       template: app.moduleData.Templates.Units[data.templateType],
-      
+
       id: data.id,
       name: data.name,
 
@@ -435,7 +435,7 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  
+
   public setQueuedAction(ability: AbilityTemplate, target: Unit)
   {
     this.battleStats.queuedAction =
@@ -626,7 +626,7 @@ export default class Unit
   {
     const itemAdjustments = this.items.getAttributeAdjustments();
     const effectAdjustments = this.getStatusEffectAttributeAdjustments();
-    
+
     return this.baseAttributes.getAdjustedAttributes(...itemAdjustments, ...effectAdjustments);
   }
   private getAttributesWithEffectsDifference(): UnitAttributes
@@ -658,7 +658,7 @@ export default class Unit
   public getAllPassiveSkills(): PassiveSkillTemplate[]
   {
     var allSkills: PassiveSkillTemplate[] = [];
-    
+
     allSkills = allSkills.concat(this.passiveSkills);
     allSkills = allSkills.concat(this.items.getPassiveSkills());
 
@@ -716,7 +716,7 @@ export default class Unit
         relevantTemplateKeys.push("beforeAbilityUse", "afterAbilityUse");
         break;
     }
-    
+
     const effectFilterFN = (passiveEffect: UnitPassiveEffect) =>
     {
       if (passiveEffect.isHidden)
@@ -732,16 +732,16 @@ export default class Unit
       }
       return false;
     }
-    
+
     const relevantStatusEffectTemplates = this.battleStats.statusEffects.map((statusEffect) =>
     {
       return statusEffect.template;
     }).filter(effectFilterFN);
-    
+
     const relevantPassiveEffectTemplates = this.getAllPassiveSkills().filter(effectFilterFN);
-    
+
     return relevantStatusEffectTemplates.concat(relevantPassiveEffectTemplates);
-  } 
+  }
   public receiveDamage(amount: number)
   {
     this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
@@ -760,7 +760,7 @@ export default class Unit
     {
       fleet.deleteFleet();
     }
-    
+
 
     app.moduleData.scripts.unit.removeFromPlayer.forEach((scriptFN) =>
     {
@@ -776,7 +776,7 @@ export default class Unit
     this.removeFromPlayer();
 
     newPlayer.addUnit(this);
-    
+
     const fleet = new Fleet([this]);
     newPlayer.addFleet(fleet);
     location.addFleet(fleet);
@@ -960,7 +960,7 @@ export default class Unit
 
     const allAbilities: AbilityBase[] = this.getAllAbilities();
     allAbilities.push(...this.getAllPassiveSkills());
-    
+
     const upgradableAbilities: AbilityBase[] = allAbilities.filter((abilityTemplate) =>
     {
       return abilityTemplate.canUpgradeInto && abilityTemplate.canUpgradeInto.length > 0;
@@ -1035,7 +1035,7 @@ export default class Unit
     {
       name: this.name,
       facesLeft: this.battleStats.side === "side2",
-      
+
       currentHealth: this.currentHealth,
       maxHealth: this.maxHealth,
       guardAmount: this.battleStats.guardAmount,
@@ -1045,10 +1045,10 @@ export default class Unit
       isPreparing: Boolean(this.battleStats.queuedAction),
       isAnnihilated: this.battleStats.isAnnihilated,
       isSquadron: this.isSquadron,
-      
+
       portraitSrc: this.portrait.imageSrc,
       iconSrc: this.template.icon,
-      
+
       attributeChanges: this.getAttributesWithEffectsDifference().serialize(),
       passiveEffects: this.getPassiveEffectsForScene(scene),
     });
@@ -1137,12 +1137,12 @@ export default class Unit
       passiveSkills: this.passiveSkills,
       level: this.level,
       experienceForCurrentLevel: this.experienceForCurrentLevel,
-      
+
       battleStats: this.battleStats,
 
       maxItemSlots: this.items.itemSlots,
       items: this.items.items,
-      
+
       portrait: this.portrait,
       race: this.race,
     });

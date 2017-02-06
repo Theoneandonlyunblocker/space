@@ -24,15 +24,15 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
 {
   displayName: string = "FleetUnitInfo";
   state: StateType;
-  
+
   dragPositioner: DragPositioner<FleetUnitInfoComponent>;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
-    
+
     if (this.props.isDraggable)
     {
       this.dragPositioner = new DragPositioner(this);
@@ -44,9 +44,9 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
   private bindMethods()
   {
     this.onDragEnd = this.onDragEnd.bind(this);
-    this.onDragStart = this.onDragStart.bind(this);    
+    this.onDragStart = this.onDragStart.bind(this);
   }
-  
+
   onDragStart()
   {
     this.props.onDragStart(this.props.unit);
@@ -78,7 +78,7 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
         divProps.className += " dragging";
       }
     }
- 
+
     return(
       React.DOM.div(divProps,
         React.DOM.div(
@@ -114,7 +114,7 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
           isSquadron: true,
           isNotDetected: isNotDetected
         })
-        
+
       )
     );
   }

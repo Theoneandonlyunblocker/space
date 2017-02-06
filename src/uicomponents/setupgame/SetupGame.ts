@@ -30,16 +30,16 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.startGame = this.startGame.bind(this);
     this.randomize = this.randomize.bind(this);
-    this.setPlayerLimits = this.setPlayerLimits.bind(this);    
+    this.setPlayerLimits = this.setPlayerLimits.bind(this);
   }
   private getInitialStateTODO(): StateType
   {

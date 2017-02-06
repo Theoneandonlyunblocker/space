@@ -24,12 +24,12 @@ export class UnitItemGroupComponent extends React.Component<PropTypes, StateType
 {
   displayName = "UnitItemGroup";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
+
   render()
   {
     const itemWrappers: React.ReactElement<any>[] = [];

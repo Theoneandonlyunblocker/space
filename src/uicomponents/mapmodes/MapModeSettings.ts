@@ -25,14 +25,14 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleReset = this.handleReset.bind(this);    
+    this.handleReset = this.handleReset.bind(this);
   }
-  
+
   handleReset()
   {
     var mapRenderer = this.props.mapRenderer;

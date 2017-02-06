@@ -31,14 +31,14 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleMouseUp = this.handleMouseUp.bind(this);    
+    this.handleMouseUp = this.handleMouseUp.bind(this);
   }
-  
+
   handleMouseUp()
   {
     this.props.onMouseUp();

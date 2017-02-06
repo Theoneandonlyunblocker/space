@@ -34,15 +34,15 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   battleScene: BattleScene = null;
 
   state: StateType;
-  
+
   battleSceneContainer: HTMLElement;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -56,9 +56,9 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     this.handleUnitHover = this.handleUnitHover.bind(this);
     this.handleClearHover = this.handleClearHover.bind(this);
     this.handleChangeDuration = this.handleChangeDuration.bind(this);
-    this.handleSelectSFXTemplate = this.handleSelectSFXTemplate.bind(this);    
+    this.handleSelectSFXTemplate = this.handleSelectSFXTemplate.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     var side1Units: Unit[] = [];

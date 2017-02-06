@@ -13,7 +13,7 @@ export interface PropTypes extends React.Props<any>
   selectedUnit: Unit;
   onRowChange: (row: ListItem<UnitListItemProps>) => void;
   isDraggable: boolean;
-  
+
   autoSelect?: boolean;
   onMouseLeave?: () => void;
   onDragStart?: (unit: Unit) => void;
@@ -37,7 +37,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   render()
   {
     var rows: ListItem<UnitListItemProps>[] = this.props.units.map((unit) =>
@@ -62,7 +62,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
           intelligence: unit.attributes.intelligence,
           speed: unit.attributes.speed,
 
-          
+
 
           isReserved: Boolean(this.props.reservedUnits && this.props.reservedUnits[unit.id]),
           hasNoActionsLeft: (this.props.checkTimesActed && !unit.canActThisTurn()),

@@ -29,7 +29,7 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   componentDidMount()
   {
     this.updateListener = eventManager.addEventListener(
@@ -49,7 +49,7 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
 
     var incomeClass = "top-bar-money-income";
     if (income < 0) incomeClass += " negative";
-    
+
     return(
       React.DOM.div(
       {
@@ -93,7 +93,7 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
           ),
           TopBarResources(
           {
-            player: player  
+            player: player
           })
         )
       )

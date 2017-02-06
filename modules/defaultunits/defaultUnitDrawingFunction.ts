@@ -80,7 +80,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
   var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
   zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
-  
+
   const boundingBox:
   {
     x1: number;
@@ -138,7 +138,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     const scale = 1 - zPos * props.scalingFactor;
     const scaledWidth = image.width * scale;
     const scaledHeight = image.height * scale;
-    
+
 
     let x = xOffset * scaledWidth * curvature + columnFromRight * (scaledWidth + xDistance * scale);
     let y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
@@ -148,13 +148,13 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     x = Math.round(translated.x);
     y = Math.round(translated.y);
 
-    
-    const attackOriginPoint = 
+
+    const attackOriginPoint =
     {
       x: x + scaledWidth * spriteTemplate.attackOriginPoint.x,
       y: y + scaledHeight * spriteTemplate.attackOriginPoint.y
     };
-    
+
     sequentialAttackOriginPoints.push(attackOriginPoint);
 
     if (column === 0 && i === centermostUnitInFirstColumn)
@@ -169,7 +169,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     sprite.y = y;
 
     container.addChild(sprite);
-    
+
     const unitBounds = new PIXI.Rectangle(
       x,
       y,
@@ -178,7 +178,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     );
 
     allUnitBoundingBoxes.push(unitBounds);
-    
+
     boundingBox.x1 = isFinite(boundingBox.x1) ? Math.min(boundingBox.x1, x) : x;
     boundingBox.y1 = isFinite(boundingBox.y1) ? Math.min(boundingBox.y1, y) : y;
     boundingBox.x2 = isFinite(boundingBox.x2) ? Math.max(boundingBox.x2, x + scaledWidth) : x + scaledWidth;
@@ -197,7 +197,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     singleAttackOriginPoint: primaryAttackOriginPoint,
     sequentialAttackOriginPoints: sequentialAttackOriginPoints,
   });
-  
+
   SFXParams.triggerStart(container);
 }
 

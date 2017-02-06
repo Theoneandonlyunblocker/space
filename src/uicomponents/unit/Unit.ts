@@ -13,17 +13,17 @@ import applyMixins from "../mixins/applyMixins";
 export interface ComponentPropTypes extends React.Props<any>
 {
   id: number;
-  
+
   animateDuration?: number;
-  
+
   // onUnitClick?: (unit: Unit) => void;
   onUnitClick?: () => void;
   onMouseUp?: () => void;
-  
+
   handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
   // handleMouseEnterUnit?: (unit: Unit) => void;
   handleMouseEnterUnit?: () => void;
-  
+
   isDraggable?: boolean;
   // onDragStart?: (unit: Unit) => void;
   onDragStart?: () => void;
@@ -35,7 +35,7 @@ export interface DisplayStatus
 {
   wasDestroyed?: boolean;
   wasCaptured?: boolean;
-  
+
   isInBattlePrep?: boolean;
   isActiveUnit?: boolean;
   isHovered?: boolean;
@@ -57,15 +57,15 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "Unit";
   state: StateType;
-  
+
   dragPositioner: DragPositioner<UnitComponent>;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
     if (this.props.isDraggable)
     {
@@ -81,17 +81,17 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     this.onDragEnd = this.onDragEnd.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
-    this.handleMouseLeave = this.handleMouseLeave.bind(this);    
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
     {
-      
+
     });
   }
-  
+
   onDragStart()
   {
     this.props.onDragStart();
@@ -130,7 +130,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     {
       wrapperProps.className += " draggable";
       wrapperProps.onMouseDown = wrapperProps.onTouchStart = this.dragPositioner.handleReactDownEvent;
-      
+
       if (this.dragPositioner.isDragging)
       {
         wrapperProps.style = this.dragPositioner.getStyleAttributes();
@@ -197,7 +197,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
         isSquadron: this.props.isSquadron,
         wasDestroyed: this.props.wasDestroyed,
         wasCaptured: this.props.wasCaptured,
-        
+
         animateDuration: this.props.animateDuration,
       }),
     ];

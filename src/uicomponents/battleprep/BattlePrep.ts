@@ -43,9 +43,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -63,9 +63,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     this.handleSelectRow = this.handleSelectRow.bind(this);
     this.handleDragStart = this.handleDragStart.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
-    this.getBackgroundBlurArea = this.getBackgroundBlurArea.bind(this);    
+    this.getBackgroundBlurArea = this.getBackgroundBlurArea.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -281,9 +281,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           formation: battlePrep.humanFormation.formation,
           facesLeft: false,
           unitDisplayDataByID: battlePrep.humanFormation.getDisplayData(),
-          
+
           isInBattlePrep: true,
-          
+
           hoveredUnit: this.state.hoveredUnit,
           activeUnit: this.state.selectedUnit,
 
@@ -291,7 +291,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           onUnitClick: this.setSelectedUnit,
           handleMouseEnterUnit: this.handleMouseEnterUnit,
           handleMouseLeaveUnit: this.handleMouseLeaveUnit,
-          
+
           unitStrengthAnimateDuration: undefined,
 
           isDraggable: true,
@@ -308,16 +308,16 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           formation: battlePrep.enemyFormation.formation,
           facesLeft: true,
           unitDisplayDataByID: battlePrep.enemyFormation.getDisplayData(),
-          
+
           isInBattlePrep: true,
-          
+
           hoveredUnit: this.state.hoveredUnit,
           activeUnit: this.state.selectedUnit,
 
           onUnitClick: this.setSelectedUnit,
           handleMouseEnterUnit: this.handleMouseEnterUnit,
           handleMouseLeaveUnit: this.handleMouseLeaveUnit,
-          
+
           unitStrengthAnimateDuration: undefined,
 
           isDraggable: false,

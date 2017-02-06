@@ -21,7 +21,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
 {
   static type: string = "DefaultAI";
   public type: string = "DefaultAI";
-  
+
   player: Player;
   game: Game;
 
@@ -87,7 +87,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
 
     // fai form fronts
     this.frontsAI.formFronts();
-    
+
     // fai assign units
     this.frontsAI.assignUnits();
 

@@ -11,7 +11,7 @@ declare interface SubEmblemTemplate
    */
   colorMappings?: string[][];
   generateColors?(backgroundColor?: Color, colors?: Color[]): Color[]
-  
+
   disallowRandomGeneration?: boolean;
 }
 

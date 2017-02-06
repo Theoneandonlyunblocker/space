@@ -31,17 +31,17 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.buildBuilding = this.buildBuilding.bind(this);
-    this.updateBuildings = this.updateBuildings.bind(this);    
+    this.updateBuildings = this.updateBuildings.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(

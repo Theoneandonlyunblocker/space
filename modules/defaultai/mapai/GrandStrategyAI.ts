@@ -87,7 +87,7 @@ export default class GrandStrategyAI
   {
     if (!this.desiredStars) this.setDesiredStars();
     var starsOwned = this.mapEvaluator.player.controlledLocations.length;
-  
+
 
     var desire = 1 - getRelativeValue(starsOwned, this.desiredStars.min, this.desiredStars.max);
 

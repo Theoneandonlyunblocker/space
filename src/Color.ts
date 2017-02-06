@@ -8,12 +8,12 @@ export default class Color
   private r: number;
   private g: number;
   private b: number;
-  
+
   constructor(r: number, g: number, b: number)
   {
-    this.r = r; 
-    this.g = g; 
-    this.b = b; 
+    this.r = r;
+    this.g = g;
+    this.b = b;
   }
   // 0x000000-0xFFFFFF
   public static fromHex(hex: number): Color
@@ -89,7 +89,7 @@ export default class Color
       g = hue2rgb(p, q, h);
       b = hue2rgb(p, q, h - 1/3);
     }
-    
+
     return new Color(r, g, b);
   }
   /**
@@ -100,7 +100,7 @@ export default class Color
     const RGB = HUSL.toRGB(h * 360, s * 100, l * 100);
     return new Color(RGB[0], RGB[1], RGB[2]);
   }
-  
+
   /**
    * 0-1 -> 0-360, 0-100, 0-100
    */
@@ -115,7 +115,7 @@ export default class Color
   {
     return [d[0] / 360, d[1] / 100, d[2] / 100];
   }
-  
+
   /**
    * 0-1
    */
@@ -137,7 +137,7 @@ export default class Color
   {
     return this.getRGB().map((x) => x * 255);
   }
-  
+
   /**
    * 0x000000-0xFFFFFF
    */
@@ -154,7 +154,7 @@ export default class Color
     const converted = hex.toString(16);
     return '000000'.substr(0, 6 - converted.length) + converted;
   }
-  
+
   /**
    * 0-1
    */
@@ -163,7 +163,7 @@ export default class Color
     const husl = HUSL.fromRGB(this.r, this.g, this.b);
     return [husl[0] / 360, husl[1] / 100, husl[2] / 100];
   }
-  
+
   /**
    * 0-1
    */
@@ -172,7 +172,7 @@ export default class Color
     const r = this.r;
     const g = this.g;
     const b = this.b;
-    
+
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
     var h: number, s: number, v: number = max;
 
@@ -203,7 +203,7 @@ export default class Color
     husl[1] += amount;
     return Color.fromHUSL.apply(null, husl);
   }
-  
+
   public serialize(): ColorSaveData
   {
     return this.getRGB();
@@ -214,7 +214,7 @@ export default class Color
     {
       return undefined;
     }
-    
+
     return new Color(saveData[0], saveData[1], saveData[2]);
   }
   public clone(): Color

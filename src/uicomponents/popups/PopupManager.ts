@@ -34,10 +34,10 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PopupManager";
   state: StateType;
-  
+
   popupId: number = 0;
   currentZIndex: number = 0;
-  
+
   popupComponentsByID:
   {
     [id: number]: PopupComponent;
@@ -50,9 +50,9 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -65,9 +65,9 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     // this.setPopupContent = this.setPopupContent.bind(this);
     this.getPopupId = this.getPopupId.bind(this);
     this.hasPopup = this.hasPopup.bind(this);
-    this.getPopup = this.getPopup.bind(this);    
+    this.getPopup = this.getPopup.bind(this);
   }
-  
+
   componentWillMount()
   {
     var self = this;
@@ -226,7 +226,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
         popups: popups
       });
     }
-    
+
     return id;
   }
 

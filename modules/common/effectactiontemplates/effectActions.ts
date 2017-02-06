@@ -48,7 +48,7 @@ interface DamageWithType
   damageType: DamageType;
 }
 
-interface Adjustment 
+interface Adjustment
 {
   flat?: number;
   perAttribute?: UnitAttributeAdjustments;
@@ -218,7 +218,7 @@ export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResul
 )
 {
   let healAmount = calculateHealthAdjustment(user, target, data);
-  
+
   if (data.executedEffectsResultAdjustment)
   {
     healAmount += data.executedEffectsResultAdjustment(executedEffectsResult);

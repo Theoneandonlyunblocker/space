@@ -28,7 +28,7 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
   {
     super(props);
   }
-  
+
   render()
   {
     var rows: ListItem<EconomySummaryItemProps>[] = [];

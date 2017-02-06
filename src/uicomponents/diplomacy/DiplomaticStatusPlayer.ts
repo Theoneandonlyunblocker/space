@@ -14,10 +14,10 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   status: string;
   name: string;
   flag?: Flag;
-  
+
   baseOpinion?: number;
   attitudeModifiers?: AttitudeModifier[];
-  
+
   statusSortingNumber?: number;
 }
 
@@ -34,16 +34,16 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.makeCell = this.makeCell.bind(this);    
+    this.makeCell = this.makeCell.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -91,7 +91,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
       )
     );
   }
-  
+
   render()
   {
     var columns = this.props.activeColumns;

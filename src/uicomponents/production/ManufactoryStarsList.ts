@@ -27,7 +27,7 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
   {
     super(props);
   }
-  
+
   render()
   {
     var rows: React.ReactElement<any>[] = [];

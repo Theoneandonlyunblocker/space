@@ -24,7 +24,7 @@ export class ManufacturableThingsListComponent extends React.PureComponent<PropT
   {
     super(props);
   }
-  
+
   render()
   {
     var manufacturableThings: ManufacturableThing[] = this.props.manufacturableThings;

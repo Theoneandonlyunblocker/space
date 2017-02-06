@@ -26,16 +26,16 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleConstruct = this.handleConstruct.bind(this);    
+    this.handleConstruct = this.handleConstruct.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -43,7 +43,7 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
       canAfford: this.props.money >= app.moduleData.ruleSet.manufactory.buildCost
     });
   }
-  
+
   componentWillReceiveProps(newProps: PropTypes)
   {
     this.setState(

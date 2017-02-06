@@ -27,7 +27,7 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
   {
     super(props);
   }
-  
+
   componentDidMount()
   {
     this.updateListener = eventManager.addEventListener(
@@ -41,7 +41,7 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
   render()
   {
     var playerTechnology = this.props.playerTechnology;
-    
+
     var researchSpeed = playerTechnology.getResearchSpeed();
     var rows: React.ReactElement<any>[] = [];
 

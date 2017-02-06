@@ -33,7 +33,7 @@ export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
       this.ref_TODO_content.parentPopupDidMount();
     }
   }
-  
+
   render()
   {
     const contentProps =
@@ -43,7 +43,7 @@ export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
         this.ref_TODO_content = component;
       }
     }
-    
+
     return(
       React.DOM.div(
       {

@@ -23,7 +23,7 @@ const defaultAI: ModuleFile =
     {
       [DefaultAIConstructor.type]: DefaultAIConstructor
     }, "AITemplateConstructors");
-    
+
     return moduleData;
   }
 }

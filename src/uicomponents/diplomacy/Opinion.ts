@@ -29,9 +29,9 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -39,9 +39,9 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
     this.getColor = this.getColor.bind(this);
     this.getOpinionTextNodeRect = this.getOpinionTextNodeRect.bind(this);
     this.setTooltip = this.setTooltip.bind(this);
-    this.clearTooltip = this.clearTooltip.bind(this);    
+    this.clearTooltip = this.clearTooltip.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -85,7 +85,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
         lightness + "%)"
     );
   }
-  
+
   render()
   {
     var tooltip: React.ReactElement<any> = null;
@@ -95,7 +95,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
       {
         attitudeModifiers: this.props.attitudeModifiers,
         baseOpinion: this.props.baseOpinion,
-        
+
         autoPositionerProps:
         {
           getParentClientRect: this.getOpinionTextNodeRect,

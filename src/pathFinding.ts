@@ -102,6 +102,6 @@ export function aStar(start: Star, target: Star): AStarGraph | null
       }
     }
   }
- 
-  return null; // didnt find path 
+
+  return null; // didnt find path
 }

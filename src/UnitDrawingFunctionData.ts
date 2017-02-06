@@ -43,7 +43,7 @@ export default class UnitDrawingFunctionData
   public individualUnitBoundingBoxes: PIXI.Rectangle[];
   public singleAttackOriginPoint: Point;
   public sequentialAttackOriginPoints: Point[];
-  
+
   constructor(props:
   {
     boundingBox: PIXI.Rectangle;
@@ -57,18 +57,18 @@ export default class UnitDrawingFunctionData
     this.singleAttackOriginPoint = props.singleAttackOriginPoint;
     this.sequentialAttackOriginPoints = props.sequentialAttackOriginPoints;
   }
-  
+
   public normalizeForBattleSFX(offset: Point, sceneWidth: number, side: "user" | "target"): UnitDrawingFunctionData
   {
     const cloned = this.clone();
     const padding = 25;  // TODO || as defined in src/battlescenunit
     cloned.offset({x: padding, y: offset.y});
-    
+
     if (side === "target")
     {
       cloned.mirror(sceneWidth / 2);
     }
-    
+
     return cloned;
   }
   public clone(): UnitDrawingFunctionData
@@ -99,7 +99,7 @@ export default class UnitDrawingFunctionData
     {
       return offsetPoint(point, offset);
     });
-    
+
     return this;
   }
   public mirror(midX: number): UnitDrawingFunctionData
@@ -114,7 +114,7 @@ export default class UnitDrawingFunctionData
     {
       return mirrorPoint(point, midX);
     });
-    
+
     return this;
   }
 }

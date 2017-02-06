@@ -105,7 +105,7 @@ export default class Beam extends SFXFragment<BeamProps, PartialBeamProps>
   {
     super(BeamPropTypes, defaultBeamProps, props);
   }
-  
+
   public animate(time: number): void
   {
     const rampUpValue = Math.pow(Math.min(time / this.props.relativeImpactTime, 1.0), 7.0);

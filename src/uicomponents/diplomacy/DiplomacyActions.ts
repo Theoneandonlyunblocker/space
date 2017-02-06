@@ -29,9 +29,9 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -40,9 +40,9 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
     this.closePopup = this.closePopup.bind(this);
     this.togglePopup = this.togglePopup.bind(this);
     this.handleMakePeace = this.handleMakePeace.bind(this);
-    this.handleDeclareWar = this.handleDeclareWar.bind(this);    
+    this.handleDeclareWar = this.handleDeclareWar.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -50,7 +50,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       trade: undefined
     });
   }
-  
+
   closePopup(popupType: string)
   {
     this.popupManager.closePopup(this.state[popupType]);

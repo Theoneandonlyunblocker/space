@@ -13,12 +13,12 @@ export class ConfirmDeleteSavesContentComponent extends React.PureComponent<Prop
 {
   displayName = "ConfirmDeleteSavesContent";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
+
   render()
   {
     return(

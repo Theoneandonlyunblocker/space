@@ -25,17 +25,17 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.handleSizeChange = this.handleSizeChange.bind(this);
-    this.makeFlags = this.makeFlags.bind(this);    
+    this.makeFlags = this.makeFlags.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -96,7 +96,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
           ref: (component: HTMLElement) =>
           {
             this.ref_TODO_flags = component;
-          } 
+          }
         },
           flagElements
         ),

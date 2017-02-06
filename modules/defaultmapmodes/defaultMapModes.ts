@@ -35,7 +35,7 @@ const defaultMapModes: ModuleFile =
   {
     moduleData.copyTemplates<MapRendererLayerTemplate>(MapLayerTemplates, "MapRendererLayers");
     moduleData.copyTemplates<MapRendererMapModeTemplate>(MapModeTemplates, "MapRendererMapModes");
-    
+
     return moduleData;
   }
 }

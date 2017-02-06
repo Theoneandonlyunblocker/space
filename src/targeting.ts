@@ -92,7 +92,7 @@ export const areaRow: GetUnitsInAreaFN = function(user: Unit, target: Unit, batt
 export const areaRowNeighbors: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
 {
   const row = areaRow(user, target, battle);
-  
+
   const y = target.battleStats.position[1];
   const y1 = Math.max(y - 1, 0);
   const y2 = Math.min(y + 1, row.length - 1);

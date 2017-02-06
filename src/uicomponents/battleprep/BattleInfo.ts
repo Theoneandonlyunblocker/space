@@ -24,7 +24,7 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   render()
   {
     var battlePrep = this.props.battlePrep;

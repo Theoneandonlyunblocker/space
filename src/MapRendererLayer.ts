@@ -19,9 +19,9 @@ export default class MapRendererLayer
     this._alpha = newAlpha;
     this.container.alpha = newAlpha;
   }
-  
+
   private _alpha: number;
-  
+
   constructor(template: MapRendererLayerTemplate)
   {
     this.template = template;
@@ -29,7 +29,7 @@ export default class MapRendererLayer
     this.container.interactiveChildren = template.interactive;
     this.alpha = template.alpha || 1;
   }
-  
+
   public resetAlpha()
   {
     this.alpha = this.template.alpha || 1;

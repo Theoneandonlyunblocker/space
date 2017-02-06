@@ -26,7 +26,7 @@ const defaultUnits: ModuleFile =
   {
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "units";
-    
+
     loader.add(spriteSheetKey, "modules/defaultunits/img/sprites/units.json");
 
     loader.load(function(loader: PIXI.loaders.Loader)
@@ -34,7 +34,7 @@ const defaultUnits: ModuleFile =
       const json = loader.resources[spriteSheetKey].data;
       const image = loader.resources[spriteSheetKey + "_image"].data;
       cacheSpriteSheetAsImages(json, image);
-      
+
       onLoaded();
     });
   },
@@ -42,7 +42,7 @@ const defaultUnits: ModuleFile =
   {
     moduleData.copyTemplates<UnitTemplate>(UnitTemplates, "Units");
     moduleData.copyTemplates<UnitArchetype>(UnitArchetypes, "UnitArchetypes");
-    
+
     return moduleData;
   }
 }

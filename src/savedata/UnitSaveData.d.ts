@@ -20,7 +20,7 @@ declare interface UnitSaveData
   level: number;
   items: UnitItemsSaveData;
   battleStats: UnitBattleStatsSaveData;
-  
+
   fleetId?: number;
   portraitKey?: string;
   raceKey?: string;

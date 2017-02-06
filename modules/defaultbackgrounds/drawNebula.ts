@@ -38,14 +38,14 @@ const drawNebula: BackgroundDrawingFunction = function(
 
     highlightA: 0.9,
     highlightB: 2.2,
-    
+
     starDensity: randRange(0.0014, 0.0018),
     nebulaStarConcentration: randRange(0.000, 0.004),
     starBrightness: 0.6,
 
     seed: [Math.random() * 100, Math.random() * 100]
   });
-  
+
   // TODO PIXI4 | directly calling sprite.generateTexture() doesn't seem to work properly
   const container = new PIXI.Container();
   const shaderSprite = makeShaderSprite(filter, 0, 0, size.width, size.height);
@@ -55,7 +55,7 @@ const drawNebula: BackgroundDrawingFunction = function(
   // TODO performance | need to destroy or reuse texture from filterContainer.generateTexture()
   // creates a new PIXI.FilterManager() every time that doesn't get cleaned up anywhere
   // balloons up gpu memory
-  
+
   const texture = generateTextureWithBounds(
     renderer,
     container,

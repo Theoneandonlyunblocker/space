@@ -19,14 +19,14 @@ export class UnitPortraitComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   render()
   {
     var props: React.HTMLAttributes = {};
     props.className = "unit-portrait " + (this.props.className || "");
     if (this.props.imageSrc)
     {
-      props.style = 
+      props.style =
       {
         backgroundImage: 'url("' + this.props.imageSrc + '")'
       }

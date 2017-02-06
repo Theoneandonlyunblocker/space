@@ -50,7 +50,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
   state: StateType;
 
   idGenerator = 0;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -210,7 +210,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
 
     return null;
   }
-  
+
   render()
   {
     const activeEmblemData = this.getActiveEmblemData();

@@ -14,8 +14,8 @@ export default function addCommonToModuleData(moduleData: ModuleData)
   moduleData.copyTemplates<any>(ResourceTemplates, "Resources");
   moduleData.copyTemplates<any>(BattleSFXTemplates, "BattleSFX");
   moduleData.copyTemplates<any>(PassiveSkillTemplates, "PassiveSkills");
-  
+
   moduleData.copyTemplates<any>(statusEffectTemplates, "StatusEffects");
-  
+
   moduleData.scripts.add(attachedUnitDataScripts);
 }

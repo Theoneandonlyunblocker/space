@@ -33,9 +33,9 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
     applyMixins(this, new UpdateWhenMoneyChanges(this));
   }
@@ -44,9 +44,9 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     this.clearSelection = this.clearSelection.bind(this);
     this.getStarsWithAndWithoutManufactories = this.getStarsWithAndWithoutManufactories.bind(this);
     this.handleStarSelect = this.handleStarSelect.bind(this);
-    this.triggerUpdate = this.triggerUpdate.bind(this);    
+    this.triggerUpdate = this.triggerUpdate.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     var initialSelected: Star = null;
@@ -114,7 +114,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
       withoutManufactories: starsWithoutManufactories
     });
   }
-  
+
   handleStarSelect(star: Star)
   {
     if (this.state.selectedStar === star)

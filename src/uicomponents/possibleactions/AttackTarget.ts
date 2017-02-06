@@ -22,14 +22,14 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleAttack = this.handleAttack.bind(this);    
+    this.handleAttack = this.handleAttack.bind(this);
   }
-  
+
   handleAttack()
   {
     eventManager.dispatchEvent("attackTarget", this.props.attackTarget);

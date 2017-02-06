@@ -49,9 +49,9 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -62,9 +62,9 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     this.endTurn = this.endTurn.bind(this);
     this.toggleMapModeSettingsExpanded = this.toggleMapModeSettingsExpanded.bind(this);
     this.updateSelection = this.updateSelection.bind(this);
-    this.setPlayerTurn = this.setPlayerTurn.bind(this);    
+    this.setPlayerTurn = this.setPlayerTurn.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     var pc = this.props.playerControl;
@@ -241,7 +241,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             })
           )
         ),
-        
+
         React.DOM.div(
         {
           className: "galaxy-map-ui-bottom-left",

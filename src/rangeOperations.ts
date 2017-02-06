@@ -120,7 +120,7 @@ export function randomSelectFromRanges(ranges: Range[]): number
       return randRange(selectedRange.min, selectedRange.max);
     }
   }
-  
+
   throw new Error("Couldn't select from ranges.");
 
 }

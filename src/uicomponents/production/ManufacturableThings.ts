@@ -31,9 +31,9 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -41,9 +41,9 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     this.makeTabButton = this.makeTabButton.bind(this);
     this.getManufacturableThings = this.getManufacturableThings.bind(this);
     this.selectTab = this.selectTab.bind(this);
-    this.makeTab = this.makeTab.bind(this);    
+    this.makeTab = this.makeTab.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -60,7 +60,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
       activeTab: key
     });
   }
-  
+
   makeTabButton(key: TabKey)
   {
     var displayString: string;

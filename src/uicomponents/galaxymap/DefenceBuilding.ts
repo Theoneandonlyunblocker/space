@@ -29,7 +29,7 @@ export class DefenceBuildingComponent extends React.Component<PropTypes, StateTy
   {
     super(props);
   }
-  
+
   render()
   {
     var building = this.props.building;

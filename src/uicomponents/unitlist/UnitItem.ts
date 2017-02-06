@@ -10,7 +10,7 @@ export interface PropTypes extends React.Props<any>
 {
   item: Item;
   slot: string;
-  
+
   isDraggable: boolean;
   onDragEnd?: (dropSuccesful?: boolean) => void;
   onDragStart?: (item: Item) => void;
@@ -30,9 +30,9 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
-    
+
 
     this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
     this.dragPositioner.onDragStart = this.onDragStart;
@@ -45,7 +45,7 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
     this.getTechIcon = this.getTechIcon.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
   }
-  
+
   onDragStart()
   {
     this.props.onDragStart(this.props.item);
@@ -90,7 +90,7 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
       className: "unit-item",
       title: item.template.displayName
     };
-    
+
     if (this.props.isDraggable)
     {
       divProps.className += " draggable";

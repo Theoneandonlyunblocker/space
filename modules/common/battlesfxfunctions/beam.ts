@@ -46,7 +46,7 @@ export default function beam(props: SFXParams)
     renderedSprite.scale.x = -1;
   }
 
-  var finalColor = 
+  var finalColor =
   [
     0.368627450980392,
     0.792156862745098,
@@ -116,7 +116,7 @@ export default function beam(props: SFXParams)
   const onParticleUpdateFN = function(particle: Proton.Particle)
   {
     const sprite = <PIXI.DisplayObject> particle.sprite;
-    
+
     sprite.position.x = particle.p.x;
     sprite.position.y = particle.p.y;
 
@@ -236,7 +236,7 @@ export default function beam(props: SFXParams)
     sprite.shader = shinyParticleFilter;
     sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
   };
-  
+
   shinyEmitter.rate = new Proton.Rate(
     150 * particlesAmountScale, // particles per emit
     0 // time between emits in seconds
@@ -250,7 +250,7 @@ export default function beam(props: SFXParams)
     x: props.width * 3.0,
     y: props.height * 3.0
   };
-  
+
   const shockWaveFragment = new ShockWave(
   {
     size: shockWaveSize,

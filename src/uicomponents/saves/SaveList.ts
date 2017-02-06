@@ -34,7 +34,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   render()
   {
     var rows: ListItem<SaveListItemProps>[] = [];

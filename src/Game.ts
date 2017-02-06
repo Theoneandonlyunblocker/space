@@ -35,7 +35,7 @@ export default class Game
       map.independents = null;
       delete map.independents;
     }
-    
+
     this.playerOrder = players;
     this.humanPlayer = humanPlayer;
     this.turnNumber = 1;
@@ -74,7 +74,7 @@ export default class Game
     else
     {
       this.turnNumber++;
-      
+
       for (let i = 0; i < this.independents.length; i++)
       {
         this.processPlayerStartTurn(this.independents[i]);
@@ -210,7 +210,7 @@ export default class Game
 
     const date = new Date();
     const gameData = this.serialize();
-    
+
     const fullSaveData: FullSaveData =
     {
       name: name,
@@ -219,7 +219,7 @@ export default class Game
       idGenerators: idGenerators.serialize(),
       cameraLocation: app.renderer.camera.getCenterPosition()
     };
-    
+
     const stringified = JSON.stringify(fullSaveData);
 
     localStorage.setItem(saveString, stringified);

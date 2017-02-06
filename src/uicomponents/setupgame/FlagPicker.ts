@@ -50,7 +50,7 @@ export class FlagPickerComponent extends React.PureComponent<PropTypes, StateTyp
     {
       applyMixins(this, new AutoPositioner(this));
     }
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -89,7 +89,7 @@ export class FlagPickerComponent extends React.PureComponent<PropTypes, StateTyp
       imageInfoMessage = React.DOM.div({className: "image-info-message"},
         "Upload or drag image here to set it as your flag"
       );
-    }    
+    }
 
     return(
       React.DOM.div(

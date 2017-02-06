@@ -115,7 +115,7 @@ export default class Player
 
     race: RaceTemplate | PlayerRaceTemplate;
     money: number;
-    
+
     id?: number;
     name?: string | Name;
 
@@ -138,7 +138,7 @@ export default class Player
 
     this.race = props.race;
     this.money = props.money;
-    
+
     this.id = isFinite(props.id) ? props.id : idGenerators.player++;
 
     if (props.name)
@@ -195,7 +195,7 @@ export default class Player
       {
         console.warn(`Race ${this.race.displayName} is marked as unplayable, but was assigned to player ${this.name}`);
       }
-      
+
       this.initTechnologies(props.technologyData);
     }
 
@@ -221,7 +221,7 @@ export default class Player
           weight: 0,
           distributionGroups: [],
         },
-        
+
         getBuildableUnitTypes: () => [],
         getUnitName: () => "",
         getUnitPortrait: () => null,
@@ -482,7 +482,7 @@ export default class Player
     {
       [playerID: number]: Player;
     } = {};
-    
+
     const neighboringStars = this.getNeighboringStars();
 
     neighboringStars.forEach((star) =>
@@ -757,7 +757,7 @@ export default class Player
     {
       this.updateVisibleStars();
     }
-    
+
     var linksBySourceStarId:
     {
       [starId: number]: Star[];
@@ -990,7 +990,7 @@ export default class Player
   }
   serialize(): PlayerSaveData
   {
-    
+
     var revealedStarIds: number[] = [];
     for (let id in this.revealedStars)
     {
@@ -1045,4 +1045,4 @@ export default class Player
 
     return data;
   }
-}  
+}

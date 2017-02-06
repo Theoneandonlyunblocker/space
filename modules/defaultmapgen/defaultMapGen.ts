@@ -28,12 +28,12 @@ const defaultMapGen: ModuleFile =
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<MapGenTemplate>(Templates, "MapGen");
-    
+
     if (!moduleData.defaultMap)
     {
       moduleData.defaultMap = spiralGalaxy;
     }
-    
+
     return moduleData;
   }
 }

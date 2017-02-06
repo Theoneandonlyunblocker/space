@@ -68,7 +68,7 @@ export var beamAttack: AbilityTemplate =
     getUnitsInArea: areaColumn,
     sfx: BattleSFX.beam
   },
-  
+
   targetCannotBeDiverted: true,
 }
 
@@ -120,7 +120,7 @@ export var guardRow: AbilityTemplate =
     getUnitsInArea: areaSingle,
     sfx: BattleSFX.guard,
   },
-  
+
   doesNotRemoveUserGuard: true,
 }
 export var boardingHook: AbilityTemplate =
@@ -210,7 +210,7 @@ export var rangedAttack: AbilityTemplate =
       }
     ]
   },
-  
+
   canUpgradeInto:
   [
     bombAttack,
@@ -233,7 +233,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
     [UnitAttribute.intelligence]: SnipeStatusEffects.snipeIntelligence,
     [UnitAttribute.speed]: SnipeStatusEffects.snipeSpeed,
   };
-  
+
   return(
   {
     type: key,
@@ -290,7 +290,7 @@ export var standBy: AbilityTemplate =
       duration: 750
     }
   },
-  
+
   doesNotRemoveUserGuard: true,
   AIEvaluationPriority: 0.6,
   AIScoreAdjust: -0.1,

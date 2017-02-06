@@ -303,7 +303,7 @@ export default class DiplomacyStatus
     // loop through all modifiers
     // if modifier is not active and should start,
     // add it and mark as active
-    // 
+    //
     // if modifier is active, set strength based on evaluation
     for (let modifierType in allModifiers)
     {

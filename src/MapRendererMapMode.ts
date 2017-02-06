@@ -109,7 +109,7 @@ export default class MapRendererMapMode
 
     this.layers = newLayers;
     this.activeLayers = newActive;
-    
+
     for (let i = 0; i < this.layers.length; i++)
     {
       this.layers[i].resetAlpha();

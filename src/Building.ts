@@ -116,7 +116,7 @@ export default class Building
   }
   upgrade()
   {
-    
+
   }
   setController(newController: Player)
   {

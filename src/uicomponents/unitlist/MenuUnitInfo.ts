@@ -30,14 +30,14 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);    
+    this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);
   }
-  
+
   handleUnitUpgrade()
   {
     this.forceUpdate();
@@ -57,7 +57,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
       itemGroups.push(UnitItemGroup(
       {
         key: slot,
-        
+
         slotName: slot,
         maxItems: unit.items.itemSlots[slot],
         items: itemsBySlot[slot],

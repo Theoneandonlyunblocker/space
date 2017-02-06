@@ -35,9 +35,9 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -50,9 +50,9 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
     this.deleteSelectedKeys = this.deleteSelectedKeys.bind(this);
     this.handleRowChange = this.handleRowChange.bind(this);
     this.getClosePopupContent = this.getClosePopupContent.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);    
+    this.handleDelete = this.handleDelete.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -61,7 +61,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       saveKey: null
     });
   }
-  
+
   componentDidMount()
   {
     ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_okButton).focus();

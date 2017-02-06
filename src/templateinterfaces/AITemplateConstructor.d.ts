@@ -15,7 +15,7 @@ export interface AITemplateConstructorProps<SaveData>
 export interface AITemplateConstructor<SaveData>
 {
   type: string;
-  
+
   construct(props: AITemplateConstructorProps<SaveData>): AITemplate<SaveData>;
 }
 

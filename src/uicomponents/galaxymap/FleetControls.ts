@@ -25,16 +25,16 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.deselectFleet = this.deselectFleet.bind(this);
     this.selectFleet = this.selectFleet.bind(this);
-    this.splitFleet = this.splitFleet.bind(this);    
+    this.splitFleet = this.splitFleet.bind(this);
   }
-  
+
   deselectFleet()
   {
     eventManager.dispatchEvent("deselectFleet", this.props.fleet);

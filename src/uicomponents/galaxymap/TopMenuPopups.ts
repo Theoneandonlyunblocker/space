@@ -39,18 +39,18 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.makePopup = this.makePopup.bind(this);
     this.closePopup = this.closePopup.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);    
+    this.togglePopup = this.togglePopup.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -92,7 +92,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       minWidth: 150,
       minHeight: 100,
       initialPosition: this.cachedPopupRects[popupType] || {},
-      
+
       dragPositionerProps:
       {
         preventAutoResize: true,

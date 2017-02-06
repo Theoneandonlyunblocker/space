@@ -18,7 +18,7 @@ export default function musterAndAttack(targetFilter: (target: FleetAttackTarget
   var unitsByLocation = front.getUnitsByLocation();
   var fleets = front.getAssociatedFleets();
 
-  var atMuster = unitsByLocation[front.musterLocation.id] ? 
+  var atMuster = unitsByLocation[front.musterLocation.id] ?
     unitsByLocation[front.musterLocation.id].length : 0;
 
 
@@ -59,7 +59,7 @@ export default function musterAndAttack(targetFilter: (target: FleetAttackTarget
   var finishAllMoveFN = function()
   {
     unitsByLocation = front.getUnitsByLocation();
-    var atTarget = unitsByLocation[front.targetLocation.id] ? 
+    var atTarget = unitsByLocation[front.targetLocation.id] ?
       unitsByLocation[front.targetLocation.id].length : 0;
 
     if (atTarget >= front.minUnitsDesired)

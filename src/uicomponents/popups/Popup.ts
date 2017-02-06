@@ -30,14 +30,14 @@ export interface CustomPopupProps
     width?: number;
     height?: number;
   }
-  
+
   dragPositionerProps?: DragPositionerProps;
 }
 
 export interface PropTypes extends CustomPopupProps, React.Props<any>
 {
   content: React.ReactElement<any>;
-  
+
   id?: number;
   incrementZIndex: (childZIndex: number) => number;
   closePopup: () => void;
@@ -62,7 +62,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Popup";
   state: StateType;
-  
+
   dragPositioner: DragPositioner<PopupComponent>;
 
   ref_TODO_content: ContentComponent;
@@ -70,11 +70,11 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
-    
+
     this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
     applyMixins(this, this.dragPositioner);
   }
@@ -82,9 +82,9 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
   {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.handleResizeMove = this.handleResizeMove.bind(this);
-    this.setInitialPosition = this.setInitialPosition.bind(this);    
+    this.setInitialPosition = this.setInitialPosition.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -148,7 +148,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     if (!left && !top)
     {
       var position = this.props.getInitialPosition(rect, container);
-      
+
       left = position.left;
       top = position.top;
     }

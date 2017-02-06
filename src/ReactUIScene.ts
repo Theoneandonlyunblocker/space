@@ -3,10 +3,10 @@ type ReactUIScene =
   "battlePrep" |
   "galaxyMap" |
   "setupGame" |
-  
+
   // debug
   "flagMaker" |
   "battleSceneTester" |
   "SFXEditor";
-  
+
 export default ReactUIScene;

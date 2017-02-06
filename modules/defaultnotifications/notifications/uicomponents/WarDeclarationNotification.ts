@@ -13,12 +13,12 @@ interface PropTypes
 class WarDeclarationNotification extends React.Component<PropTypes, {}>
 {
   displayName = "WarDeclarationNotification";
-  
+
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
+
   public render()
   {
     var notification = this.props.notification;

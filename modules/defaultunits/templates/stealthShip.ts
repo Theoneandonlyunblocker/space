@@ -49,7 +49,7 @@ const stealthShip: UnitTemplate =
       ]
     }
   ],
-  
+
   itemSlots:
   {
     [itemSlot.low]: 1,

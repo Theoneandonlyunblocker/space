@@ -24,13 +24,13 @@ export default class DiplomacyAI
     personality: Personality)
   {
     this.game = game;
-    
+
     this.player = mapEvaluator.player;
     this.diplomacyStatus = this.player.diplomacyStatus;
 
     this.mapEvaluator = mapEvaluator;
     this.objectivesAI = objectivesAI;
-    
+
     this.personality = personality;
   }
   setAttitudes()

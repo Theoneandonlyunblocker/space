@@ -43,7 +43,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
   {
     super(props);
   }
-  
+
   render()
   {
     var abilities = this.props.activeTargets[this.props.targetUnit.id];

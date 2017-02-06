@@ -54,7 +54,7 @@ export default class MapRenderer
     {
       eventManager.removeEventListener(name, this.listeners[name]);
     }
-    
+
     this.container.removeChildren();
     this.parent.removeChild(this.container);
 
@@ -132,7 +132,7 @@ export default class MapRenderer
       for (let i = 0; i < template.layers.length; i++)
       {
         var layer = template.layers[i];
-        
+
         mapMode.addLayer(this.layers[layer.key], true);
         alreadyAdded[layer.key] = true;
       }
@@ -246,7 +246,7 @@ export default class MapRenderer
     this.currentMapMode = newMapMode;
 
     this.resetContainer();
-    
+
     var layerData = this.currentMapMode.getActiveLayers();
     for (let i = 0; i < layerData.length; i++)
     {

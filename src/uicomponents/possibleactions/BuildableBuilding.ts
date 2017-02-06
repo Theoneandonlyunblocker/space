@@ -11,7 +11,7 @@ export interface PropTypes extends ListItemProps, React.Props<any>
 {
   typeName: string;
   buildCost: number;
-  
+
   template: BuildingTemplate;
   player: Player;
 }
@@ -29,18 +29,18 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
     applyMixins(this, new UpdateWhenMoneyChanges(this, this.overrideHandleMoneyChange));
   }
   private bindMethods()
   {
     this.overrideHandleMoneyChange = this.overrideHandleMoneyChange.bind(this);
-    this.makeCell = this.makeCell.bind(this);    
+    this.makeCell = this.makeCell.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -48,7 +48,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
       canAfford: this.props.player.money >= this.props.buildCost
     });
   }
-  
+
   overrideHandleMoneyChange()
   {
     this.setState(

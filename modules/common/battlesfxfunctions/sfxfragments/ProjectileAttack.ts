@@ -65,7 +65,7 @@ const defaultProjectileAttackProps: ProjectileAttackProps =
 {
   makeProjectileSprite: undefined,
   animateProjectile: undefined,
-  
+
   onImpact: undefined,
   animateImpact: undefined,
   useSequentialAttackOriginPoints: true,
@@ -152,7 +152,7 @@ class Projectile
     this.animateImpact = props.animateImpact;
     this.impactPosition = props.impactPosition;
     this.removeAfterImpact = props.removeAfterImpact;
-    
+
     this.willImpact = isFinite(this.impactPosition);
 
     this.container.addChild(this.sprite);
@@ -186,7 +186,7 @@ class Projectile
 
     const shouldDraw = time >= this.spawnTime &&
       (!this.hasImpacted || !this.removeAfterImpact);
-    
+
     if (!shouldDraw)
     {
       this.sprite.visible = false;
@@ -209,7 +209,7 @@ class Projectile
     {
       return undefined;
     }
-    
+
     const timeForMaxSpeed = this.spawnTime + this.maxSpeed / this.acceleration;
 
     const timeAccelerated = Math.min(time, timeForMaxSpeed);
@@ -243,7 +243,7 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
 
     this.container = new PIXI.Container();
   }
-  
+
   public animate(time: number): void
   {
     this.projectiles.forEach((projectile) =>
@@ -255,7 +255,7 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
   {
     this.container.removeChildren()
     this.projectiles = [];
-    
+
     const spawningDuration = this.props.spawnTimeEnd - this.props.spawnTimeStart;
 
     for (let i = 0; i < this.props.amountToSpawn; i++)

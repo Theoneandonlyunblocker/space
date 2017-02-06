@@ -23,7 +23,7 @@ export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType
   {
     super(props);
   }
-  
+
   render()
   {
     const innerElements =
@@ -47,7 +47,7 @@ export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType
     {
       innerElements.reverse();
     }
-    
+
     return(
       React.DOM.div(
       {

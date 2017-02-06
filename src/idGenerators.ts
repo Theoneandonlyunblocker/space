@@ -20,10 +20,10 @@ class IDGenerator implements IDGeneratorValues
   public building: number = 0;
   public objective: number = 0;
   public statusEffect: number = 0;
-  
+
   constructor()
   {
-    
+
   }
   public setValues(newValues: IDGeneratorValues)
   {

@@ -7,7 +7,7 @@ export interface AutoPositionerProps
   getParentClientRect: () => ClientRect;
   xSide?: "innerRight" | "outerRight" | "innerLeft" | "outerLeft";
   ySide?: "innerTop" | "outerTop" | "innerBottom" | "outerBottom";
-  
+
   xMargin?: number;
   yMargin?: number;
   positionOnUpdate?: boolean;
@@ -22,14 +22,14 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
     return this.owner.props.autoPositionerProps;
   }
   private hasResizeListener: boolean = false;
-  
+
   constructor(owner: T)
   {
     this.owner = owner;
 
     this.setAutoPosition = this.setAutoPosition.bind(this);
   }
-  
+
   public componentDidMount()
   {
     this.setAutoPosition();
@@ -53,7 +53,7 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
       this.setAutoPosition();
     }
   }
-  
+
   // not currently used
   // private static flipSide(side: side): side
   // {

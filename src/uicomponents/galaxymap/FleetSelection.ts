@@ -34,16 +34,16 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.reorganizeFleets = this.reorganizeFleets.bind(this);
     this.mergeFleets = this.mergeFleets.bind(this);
-    this.setElementPosition = this.setElementPosition.bind(this);    
+    this.setElementPosition = this.setElementPosition.bind(this);
   }
-  
+
   mergeFleets()
   {
     eventManager.dispatchEvent("mergeFleets", null);

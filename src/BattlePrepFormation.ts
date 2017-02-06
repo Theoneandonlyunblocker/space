@@ -16,13 +16,13 @@ export default class BattlePrepFormation
   {
     [id: number]: number[];
   } = {};
-  
+
   private player: Player;
   private isAttacker: boolean;
-  
+
   private cachedDisplayData: {[unitID: number]: UnitDisplayData};
   private displayDataIsDirty: boolean = true;
-  
+
   constructor(
     player: Player,
     units: Unit[],
@@ -36,10 +36,10 @@ export default class BattlePrepFormation
     this.hasScouted = hasScouted;
     this.minUnits = minUnits;
     this.isAttacker = isAttacker;
-    
+
     this.formation = getNullFormation();
   }
-  
+
   public forEachUnitInFormation(f: (unit: Unit, pos?: number[]) => void): void
   {
     for (let i = 0; i < this.formation.length; i++)
@@ -61,13 +61,13 @@ export default class BattlePrepFormation
       this.cachedDisplayData = this.getFormationDisplayData();
       this.displayDataIsDirty = false;
     }
-    
+
     return this.cachedDisplayData;
   }
   public setAutoFormation(enemyUnits?: Unit[], enemyFormation?: Unit[][]): void
   {
     this.clearFormation();
-    
+
     this.formation = this.getAutoFormation(enemyUnits, enemyFormation);
     this.forEachUnitInFormation((unit, pos) =>
     {
@@ -95,7 +95,7 @@ export default class BattlePrepFormation
   {
     let amountOfUnitsPlaced = 0;
     this.forEachUnitInFormation((unit) => amountOfUnitsPlaced += 1);
-    
+
     if (this.isAttacker && amountOfUnitsPlaced < 1)
     {
       return(
@@ -104,10 +104,10 @@ export default class BattlePrepFormation
         description: "Attacker must place at least 1 unit."
       });
     }
-    
+
     const availableUnits = this.units.filter((unit) => unit.canActThisTurn());
     const hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
-    
+
     if (amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits)
     {
       return(
@@ -135,7 +135,7 @@ export default class BattlePrepFormation
     else
     {
       this.removeUnit(unit);
-      
+
       this.formation[position[0]][position[1]] = unit;
       this.placedUnitPositionsByID[unit.id] = position;
       this.displayDataIsDirty = true;
@@ -148,19 +148,19 @@ export default class BattlePrepFormation
     {
       return;
     }
-    
+
     this.formation[position[0]][position[1]] = null;
     delete this.placedUnitPositionsByID[unit.id];
     this.displayDataIsDirty = true;
   }
-  
+
   private swapUnits(unit1: Unit, unit2: Unit): void
   {
     if (unit1 === unit2) return;
 
     var new1Pos = this.getUnitPosition(unit2);
     var new2Pos = this.getUnitPosition(unit1);
-    
+
     this.removeUnit(unit1);
     this.removeUnit(unit2);
 
@@ -170,12 +170,12 @@ export default class BattlePrepFormation
   private getFormationDisplayData()
   {
     const displayDataByID: {[unitID: number]: UnitDisplayData} = {};
-    
+
     this.forEachUnitInFormation((unit) =>
     {
       displayDataByID[unit.id] = unit.getDisplayData("battlePrep");
     });
-    
+
     return displayDataByID;
   }
   // TODO ruleset | handle variable amount of rows
@@ -184,10 +184,10 @@ export default class BattlePrepFormation
   {
     const scoutedUnits = this.hasScouted ? enemyUnits : null;
     const scoutedFormation = this.hasScouted ? enemyFormation : null;
-    
+
     const formation = getNullFormation();
     const unitsToPlace = this.units.filter((unit) => unit.canActThisTurn());
-    
+
     const maxUnitsPerRow = formation[0].length;
     const maxUnitsPerSide = app.moduleData.ruleSet.battle.maxUnitsPerSide;
 
@@ -199,7 +199,7 @@ export default class BattlePrepFormation
     const getUnitScoreFN = (unit: Unit, row: string) =>
     {
       const baseScore = evaluateUnitStrength(unit);
-      
+
       const archetype = unit.template.archetype;
       const idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
       const unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.type] || 0;
@@ -208,9 +208,9 @@ export default class BattlePrepFormation
 
       const rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
       const rowModifier = archetype.scoreMultiplierForRowFN ?
-        archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits, scoutedFormation) : 
+        archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits, scoutedFormation) :
         archetype.rowScores[row];
-        
+
       return(
       {
         unit: unit,

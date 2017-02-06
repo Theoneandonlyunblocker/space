@@ -33,7 +33,7 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
   {
     super(props);
   }
-  
+
   componentDidMount()
   {
     if (this.inner)

@@ -27,20 +27,20 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
   displayName: string = "OptionsList";
 
   state: StateType;
-  
+
   popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleResetAllOptions = this.handleResetAllOptions.bind(this);    
+    this.handleResetAllOptions = this.handleResetAllOptions.bind(this);
   }
-  
+
   handleResetAllOptions()
   {
     this.popupManager.makePopup(

@@ -127,7 +127,7 @@ export default class ProtonWrapper
 
     this.emitterKeysByID[emitter.id] = null;
     delete this.emitterKeysByID[emitter.id];
-    
+
     this.emitters[key] = null;
     delete this.emitters[key];
   }

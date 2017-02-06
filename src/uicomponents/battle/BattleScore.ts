@@ -7,7 +7,7 @@ export interface PropTypes extends React.Props<any>
 {
   evaluation: number;
   animationDuration: number;
-  
+
   player1: Player;
   player2: Player;
 }
@@ -21,7 +21,7 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
   displayName: string = "BattleScore";
   lastEvaluation: number;
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);

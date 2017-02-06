@@ -17,7 +17,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   // shouldComponentUpdate(newProps: PropTypes)
   // {
   //   if (!this.props.unit && !newProps.unit) return false;
@@ -81,7 +81,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
 
   //   return false;
   // }
-  
+
   render()
   {
     // var wrapperProps: React.HTMLAttributes =

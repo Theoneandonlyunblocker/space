@@ -37,9 +37,9 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -49,9 +49,9 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
     this.getDefaultValues = this.getDefaultValues.bind(this);
     this.getOptionValue = this.getOptionValue.bind(this);
     this.randomizeOptions = this.randomizeOptions.bind(this);
-    this.getOptionValuesForTemplate = this.getOptionValuesForTemplate.bind(this);    
+    this.getOptionValuesForTemplate = this.getOptionValuesForTemplate.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return this.getDefaultValues(this.props.mapGenTemplate);
@@ -97,7 +97,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
         }
 
         value = clamp(roundToNearestMultiple(value, option.step), option.min, option.max);
-        defaultValues["optionValue_" + optionName] = value; 
+        defaultValues["optionValue_" + optionName] = value;
       }
     });
 
@@ -212,7 +212,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
           })
         });
       }
-      
+
       optionGroups.push(OptionsGroup(
       {
         key: groupName,

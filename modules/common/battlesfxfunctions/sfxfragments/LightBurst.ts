@@ -54,7 +54,7 @@ export default class LightBurst extends SFXFragment<LightBurstProps, PartialLigh
 {
   public displayName = "LightBurst";
   public key = "lightBurst";
-  
+
   private lightBurstFilter: LightBurstFilter;
   private seed: number[] = [Math.random() * 69, Math.random() * 420];
 
@@ -62,7 +62,7 @@ export default class LightBurst extends SFXFragment<LightBurstProps, PartialLigh
   {
     super(LightBurstPropTypes, defaultLightBurstProps, props);
   }
-  
+
   public animate(time: number): void
   {
     var rampUpValue = Math.min(time / this.props.delay, 1.0);

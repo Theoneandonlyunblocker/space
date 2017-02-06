@@ -10,7 +10,7 @@ export interface PropTypes extends React.Props<any>
   slot: string;
   index: number;
   currentDragItem: Item;
-  
+
   isDraggable: boolean;
   onDragStart: (item: Item) => void;
   onDragEnd: (dropSuccesful?: boolean) => void;
@@ -28,14 +28,14 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleMouseUp = this.handleMouseUp.bind(this);    
+    this.handleMouseUp = this.handleMouseUp.bind(this);
   }
-  
+
   handleMouseUp()
   {
     this.props.onMouseUp(this.props.index);
@@ -68,7 +68,7 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
         wrapperProps.className += " invalid-drop-target";
       }
     }
-    
+
     return(
       React.DOM.div(wrapperProps,
         UnitItem(

@@ -95,7 +95,7 @@ export default class GameLoader
         unit.addStatusEffect(this.deserializeStatusEffect(statusEffectSaveData));
       });
     });
-    
+
     // players
     for (let i = 0; i < data.players.length; i++)
     {
@@ -117,7 +117,7 @@ export default class GameLoader
     {
       var playerData = data.players[i];
       this.deserializeDiplomacyStatus(
-        this.playersById[playerData.id], 
+        this.playersById[playerData.id],
         playerData.diplomacyStatus
       );
     }
@@ -142,7 +142,7 @@ export default class GameLoader
     // ai controllers
     data.players.forEach((playerData) =>
     {
-      const player = this.playersById[playerData.id]; 
+      const player = this.playersById[playerData.id];
 
       if (playerData.AIController)
       {
@@ -214,7 +214,7 @@ export default class GameLoader
       seed: data.seed,
       independents: null
     });
-    
+
     var galaxyMap = mapGenResult.makeMap();
 
     return galaxyMap;
@@ -288,7 +288,7 @@ export default class GameLoader
 
       race: app.moduleData.Templates.Races[data.raceKey],
       money: data.money,
-      
+
       id: data.id,
       name: Name.fromData(data.name),
       color:
@@ -399,7 +399,7 @@ export default class GameLoader
     {
       return this.deserializeEmblem(emblemSaveData);
     });
-    
+
     const flag = new Flag(Color.deSerialize(data.mainColor), emblems);
 
     return flag;

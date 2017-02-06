@@ -24,14 +24,14 @@ export class PlayerMoneyComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handlePlayerMoneyUpdated = this.handlePlayerMoneyUpdated.bind(this);    
+    this.handlePlayerMoneyUpdated = this.handlePlayerMoneyUpdated.bind(this);
   }
-  
+
   componentDidMount()
   {
     eventManager.addEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);

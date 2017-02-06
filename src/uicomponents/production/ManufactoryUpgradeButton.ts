@@ -39,11 +39,11 @@ export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes
   {
     let unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";
     let unitUpgradeCostBaseClassName = "manufactory-upgrade-button-cost";
-    
+
     const isAtMaxLevel = this.props.currentLevel >= this.props.maxLevel;
     const canAffordUpgrade = this.props.money >= this.props.upgradeCost;
     const isDisabled = isAtMaxLevel || !canAffordUpgrade;
-    
+
     if (isDisabled)
     {
       unitUpgradeButtonBaseClassName += " disabled";

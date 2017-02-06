@@ -10,13 +10,13 @@ declare interface ItemTemplate extends ManufacturableThing
   displayName: string;
   description: string;
   icon: string;
-  
+
   techLevel: number;
-  
+
   slot: string; // low, mid, high
-  
+
   buildCost: number;
-  
+
   ability?: AbilityTemplate;
   passiveSkill?: PassiveSkillTemplate;
   attributeAdjustments?: UnitAttributeAdjustments;

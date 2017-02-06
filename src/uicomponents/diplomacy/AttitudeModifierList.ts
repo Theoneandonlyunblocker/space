@@ -15,7 +15,7 @@ export interface PropTypes extends React.Props<any>
 {
   attitudeModifiers: AttitudeModifier[];
   baseOpinion: number;
-  
+
   autoPositionerProps?: AutoPositionerProps;
 }
 
@@ -37,7 +37,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
       applyMixins(this, new AutoPositioner(this));
     }
   }
-  
+
   render()
   {
     var modifiers = this.props.attitudeModifiers;
@@ -91,7 +91,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
           {
             forcedSortOrder -= 10;
           }
-          
+
           let alphabeticSortOrder = 0;
           if (b.content.props.name > a.content.props.name)
           {
@@ -101,7 +101,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
           {
             alphabeticSortOrder += 1;
           }
-          
+
           return forcedSortOrder + alphabeticSortOrder;
         }
       },

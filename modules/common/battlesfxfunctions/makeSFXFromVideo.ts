@@ -72,6 +72,6 @@ export default function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: P
       sprite.parent.removeChild(sprite);
       sprite.destroy({texture: true, baseTexture: true});
     }
-    
+
   }
 }

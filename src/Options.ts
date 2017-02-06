@@ -88,7 +88,7 @@ class Options implements OptionsValues
   {
     borderWidth: number;
   };
-  
+
   constructor()
   {
     this.setDefaults();
@@ -97,37 +97,37 @@ class Options implements OptionsValues
   {
     let shouldReRenderUI = false;
     let shouldReRenderMap = false;
-    
+
     switch (category)
     {
       case "battleAnimationTiming":
         this.battleAnimationTiming = shallowCopy(defaultOptionsValues.battleAnimationTiming);
         break;
-        
+
       case "debug":
         this.debug = shallowCopy(defaultOptionsValues.debug);
-        
+
         if (this.debug.enabled !== defaultOptionsValues.debug.enabled)
         {
           shouldReRenderUI = true;
           shouldReRenderMap = true;
         }
         break;
-        
+
       case "ui":
         this.ui = shallowCopy(defaultOptionsValues.ui);
         break;
-        
+
       case "display":
         this.display = shallowCopy(defaultOptionsValues.display);
-        
+
         if (this.display.borderWidth !== defaultOptionsValues.display.borderWidth)
         {
           shouldReRenderMap = true;
         }
         break;
     }
-    
+
     if (shouldReRenderUI)
     {
       eventManager.dispatchEvent("renderUI");
@@ -167,11 +167,11 @@ class Options implements OptionsValues
       // month goes 0-11
       const optionsToResetIfSetEarlierThan =
       {
-        
+
       };
 
       const dateOptionsWereSaved = Date.parse(parsedData.date);
-      
+
       for (let key in parsedData.options)
       {
         if (parsedOptions[key] !== undefined)
@@ -186,11 +186,11 @@ class Options implements OptionsValues
           }
         }
       }
-      
+
       this.deSerialize(parsedOptions);
     }
   }
-  
+
   private getParsedDataForSlot(slot?: number)
   {
     var baseString = "Rance.Options.";
@@ -206,14 +206,14 @@ class Options implements OptionsValues
       {
         throw new Error("No options saved in that slot");
       }
-      
+
       parsedData = JSON.parse(localStorage.getItem(baseString + slot));
     }
     else
     {
       parsedData = getMatchingLocalstorageItemsByDate(baseString)[0];
     }
-    
+
     return parsedData;
   }
   private serialize(): OptionsValues

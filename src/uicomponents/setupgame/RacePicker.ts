@@ -17,7 +17,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
 {
   displayName = "RacePicker";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -35,7 +35,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
 
     this.props.changeRace(newRace);
   }
-  
+
   render()
   {
     return(

@@ -8,7 +8,7 @@ declare interface StatusEffectTemplate extends UnitPassiveEffect
   displayName: string;
   description?: string;
   isHidden?: boolean;
-  
+
   attributes?: UnitAttributeAdjustments;
   beforeAbilityUse?: AbilityEffectTemplate[];
   afterAbilityUse?: AbilityEffectTemplate[];

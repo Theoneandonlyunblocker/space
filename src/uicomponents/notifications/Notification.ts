@@ -22,16 +22,16 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleRightClick = this.handleRightClick.bind(this);    
+    this.handleRightClick = this.handleRightClick.bind(this);
   }
-  
+
   handleClose()
   {
     this.props.markAsRead(this.props.notification);

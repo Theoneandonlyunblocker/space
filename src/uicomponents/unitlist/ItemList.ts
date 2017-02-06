@@ -20,7 +20,7 @@ export interface PropTypes extends React.Props<any>
   items: Item[];
   isDraggable: boolean;
   onRowChange: (row: ListItem<ItemListItemProps>) => void;
-  
+
   selectedUnit?: Unit; // only used to trigger updates
 }
 
@@ -50,14 +50,14 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.getSlotIndex = this.getSlotIndex.bind(this);    
+    this.getSlotIndex = this.getSlotIndex.bind(this);
   }
-  
+
   render()
   {
     var rows: ListItem<ItemListItemProps>[] = [];
@@ -84,7 +84,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
         typeName: item.template.displayName,
         slot: item.template.slot,
         unitName: item.unit ? item.unit.name : "",
-        
+
         item: item,
         key: item.id,
         keyTODO: item.id,
@@ -141,7 +141,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
       }
     ];
 
-   
+
 
     return(
       React.DOM.div({className: "item-list fixed-table-parent"},

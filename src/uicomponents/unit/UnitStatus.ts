@@ -29,7 +29,7 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   render()
   {
     var statusElement: React.ReactHTMLElement<any> = null;

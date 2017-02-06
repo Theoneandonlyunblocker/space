@@ -23,7 +23,7 @@ export default class BattleSceneUnit
   public spriteContainer: PIXI.Container;
 
   activeUnit: Unit;
-  
+
   unitState: BattleSceneUnitState = BattleSceneUnitState.removed;
   onFinishEnter: () => void;
   onFinishExit: () => void;
@@ -209,7 +209,7 @@ export default class BattleSceneUnit
     }
 
     this.unitState = BattleSceneUnitState.exiting;
-    
+
     this.tween = this.makeEnterExitTween("exit", exitAnimationDuration,
       this.finishUnitSpriteExit.bind(this));
     this.tween.start();

@@ -67,7 +67,7 @@ export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>
   const trianglesWithoutSuperTriangle = <Triangle<T>[]> triangles.filter((triangle: Triangle<T>) =>
   {
     const verticesSharedWithSuperTriangle = triangle.getAmountOfSharedVerticesWith(superTriangle);
-    
+
     return verticesSharedWithSuperTriangle === 0;
   });
 

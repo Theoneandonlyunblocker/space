@@ -13,12 +13,12 @@ export class BattleFinishComponent extends React.PureComponent<PropTypes, StateT
 {
   displayName = "BattleFinish";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
+
   render()
   {
     return(

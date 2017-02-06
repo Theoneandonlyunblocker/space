@@ -25,7 +25,7 @@ const failMessages =
 {
   hotlinkedImageLoadingFailed:
   {
-    text: "Linked image failed to load. Try saving it to your own computer " + 
+    text: "Linked image failed to load. Try saving it to your own computer " +
       "and uploading it."
   },
   noValidImageFile:
@@ -54,18 +54,18 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagSetter";
   state: StateType;
-  
+
   flagSetterContainer: HTMLElement;
   playerFlagContainer: PlayerFlagComponent;
-  
+
   failMessageTimeoutHandle: number;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods(): void
@@ -82,7 +82,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     this.stopEvent = this.stopEvent.bind(this);
     this.getClientRect = this.getClientRect.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -273,7 +273,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         this.props.flag.setCustomImage(reader.result);
         this.setState(
         {
-          customImageFile: file 
+          customImageFile: file
         }, () =>
         {
           this.handleSuccessfulUpdate();
@@ -391,7 +391,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
                 // customImageFileName: this.state.customImageFile ? this.state.customImageFile.name : null,
                 // triggerParentUpdate: this.handleSuccessfulUpdate,
 
-                
+
                 // autoPositionerProps:
                 // {
                 //   getParentClientRect: this.getClientRect,

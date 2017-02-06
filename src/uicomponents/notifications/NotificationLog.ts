@@ -24,18 +24,18 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
 {
   displayName: string = "NotificationLog";
   updateListener: Function = undefined;
-  
+
   state: StateType;
   popupManager: PopupManagerComponent;
-  
+
   scrollTop: number; // TODO refactor | unused?
 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -44,14 +44,14 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
     this.closePopup = this.closePopup.bind(this);
     this.getNotificationKey = this.getNotificationKey.bind(this);
     this.handleMarkAsRead = this.handleMarkAsRead.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);    
+    this.togglePopup = this.togglePopup.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
     {
-      
+
     });
   }
 

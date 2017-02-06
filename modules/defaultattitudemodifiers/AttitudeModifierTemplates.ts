@@ -21,7 +21,7 @@ const neighborStars: AttitudeModifierTemplate =
   {
     return (evaluation.neighborStars >= 2 && evaluation.opinion < 50);
   },
-  
+
   getEffectFromEvaluation: function(evaluation: DiplomacyEvaluation)
   {
     return -2 * evaluation.neighborStars;

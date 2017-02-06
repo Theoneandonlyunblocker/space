@@ -32,9 +32,9 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -44,9 +44,9 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     this.setActiveColorSetter = this.setActiveColorSetter.bind(this);
     this.setHumanPlayer = this.setHumanPlayer.bind(this);
     this.randomizeAllPlayers = this.randomizeAllPlayers.bind(this);
-    this.removePlayers = this.removePlayers.bind(this);    
+    this.removePlayers = this.removePlayers.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     var players: number[] = [];

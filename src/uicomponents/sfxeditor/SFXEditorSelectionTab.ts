@@ -25,7 +25,7 @@ export class SFXEditorSelectionTabComponent extends React.Component<PropTypes, S
 {
   displayName = "SFXEditorSelectionTab";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -37,7 +37,7 @@ export class SFXEditorSelectionTabComponent extends React.Component<PropTypes, S
   {
     this.props.setTab(this.props.type);
   }
-  
+
   render()
   {
     return(

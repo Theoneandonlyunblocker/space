@@ -23,7 +23,7 @@ export default class MapVoronoiInfo
 
   constructor()
   {
-    
+
   }
   public getNonFillerVoronoiLines(visibleStars?: Star[])
   {

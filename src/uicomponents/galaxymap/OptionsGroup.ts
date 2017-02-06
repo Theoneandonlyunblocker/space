@@ -26,16 +26,16 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.toggleCollapse = this.toggleCollapse.bind(this);    
+    this.toggleCollapse = this.toggleCollapse.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -43,7 +43,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
       isCollapsed: this.props.isCollapsedInitially || false
     });
   }
-  
+
   toggleCollapse()
   {
     this.setState(

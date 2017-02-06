@@ -29,17 +29,17 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.triggerOnChangeFN = this.triggerOnChangeFN.bind(this);
-    this.handleChange = this.handleChange.bind(this);    
+    this.handleChange = this.handleChange.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -55,7 +55,7 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
       this.setState({value: newProps.value});
     }
   }
-  
+
 
   triggerOnChangeFN()
   {

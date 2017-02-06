@@ -12,7 +12,7 @@ export interface PropTypes extends TradeableItemProps, React.Props<any>
   maxMoneyAvailable?: number;
   onClick?: (tradeableItemKey: string) => void;
   adjustItemAmount?: (tradeableItemKey: string, newAmount: number) => void;
-  
+
   onDragStart?: (tradeableItemKey: string) => void;
   onDragEnd?: () => void;
   dragPositionerProps?: DragPositionerProps;
@@ -31,9 +31,9 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
-    
+
     this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
     this.dragPositioner.onDragStart = this.onDragStart;
     this.dragPositioner.onDragEnd = this.onDragEnd;
@@ -45,9 +45,9 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
     this.onDragEnd = this.onDragEnd.bind(this);
     this.captureEvent = this.captureEvent.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
-    this.handleMoneyAmountChange = this.handleMoneyAmountChange.bind(this);    
+    this.handleMoneyAmountChange = this.handleMoneyAmountChange.bind(this);
   }
-  
+
   onDragStart()
   {
     this.props.onDragStart(this.props.keyTODO/*TODO react*/);
@@ -87,7 +87,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
     {
       rowProps.className += " draggable";
       rowProps.onMouseDown = rowProps.onTouchStart = this.dragPositioner.handleReactDownEvent;
-      
+
       if (this.dragPositioner.isDragging)
       {
         rowProps.style = this.dragPositioner.getStyleAttributes();
@@ -99,7 +99,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
     {
       rowProps.onClick = this.handleClick;
     }
-    
+
     var moneyElement: React.ReactHTMLElement<any>;
 
     if (this.props.adjustItemAmount)

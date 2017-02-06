@@ -6,7 +6,7 @@ interface PropTypes extends React.Props<any>
   valueStringIsValid: (valueString: string) => boolean;
   getValueFromValueString: (valueString: string) => number;
   onValueChange: (value: number) => void;
-  
+
   stylizeValue?: (value: number) => string;
   className?: string;
 }
@@ -20,7 +20,7 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
 {
   displayName = "ControlledNumberInput";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -64,7 +64,7 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
     e.preventDefault();
 
     const target = <HTMLInputElement> e.target;
-    
+
     let valueString: string;
     if (e.type === "paste")
     {
@@ -75,7 +75,7 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
     {
       valueString = target.value;
     }
-    
+
     this.setState(
     {
       valueString: valueString
@@ -89,7 +89,7 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
       }
     });
   }
-  
+
   render()
   {
     const valueStringIsValid = this.props.valueStringIsValid(this.state.valueString);

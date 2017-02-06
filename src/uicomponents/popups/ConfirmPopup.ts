@@ -25,15 +25,15 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.handleOk = this.handleOk.bind(this);
-    this.handleClose = this.handleClose.bind(this);    
+    this.handleClose = this.handleClose.bind(this);
   }
-  
+
   componentDidMount()
   {
     ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_okButton).focus();
@@ -46,7 +46,7 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
       this.handleClose();
       return;
     }
-    
+
     var callbackSuccesful = this.props.handleOk();
 
     if (callbackSuccesful !== false)

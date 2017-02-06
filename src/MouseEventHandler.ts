@@ -212,7 +212,7 @@ export default class MouseEventHandler
   {
     if (!this.currentAction) return;
     var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-    if (ui) 
+    if (ui)
     {
       ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
     }
@@ -221,7 +221,7 @@ export default class MouseEventHandler
   {
     if (this.currentAction) return;
     var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-    if (ui) 
+    if (ui)
     {
       ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
     }

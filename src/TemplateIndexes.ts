@@ -35,7 +35,7 @@ class TemplateIndexes
     distributablesByTypeAndDistributionGroup: null,
     itemsByTechLevel: null,
   }
-  
+
   public get distributablesByDistributionGroup()
   {
     if (!this.builtIndexes.distributablesByTypeAndDistributionGroup)
@@ -53,12 +53,12 @@ class TemplateIndexes
     }
     return this.builtIndexes.itemsByTechLevel;
   }
-  
+
   constructor()
   {
-    
+
   }
-  
+
   public clear(): void
   {
     for (let key in this.builtIndexes)
@@ -66,7 +66,7 @@ class TemplateIndexes
       this.builtIndexes[key] = null;
     }
   }
-  
+
   private static getDistributablesByTypeAndDistributionGroup(): DistributablesByTypeAndDistributionGroup
   {
     return(
@@ -80,7 +80,7 @@ class TemplateIndexes
   ): DistributablesByDistributionGroup<T>
   {
     const byGroup: DistributablesByDistributionGroup<T> = {};
-    
+
     for (let key in allDistributables)
     {
       const distributable = allDistributables[key];
@@ -93,7 +93,7 @@ class TemplateIndexes
         byGroup[group].push(distributable);
       });
     }
-    
+
     return byGroup;
   }
   // private static getDistributablesByDistributionGroup()

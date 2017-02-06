@@ -10,7 +10,7 @@ declare interface PassiveSkillTemplate extends AbilityBase, UnitPassiveEffect
   displayName: string;
   description: string;
   isHidden?: boolean;
-  
+
   atBattleStart?: AbilityEffectTemplate[];
   atTurnStart?: TurnStartEffect[];
   inBattlePrep?: BattlePrepEffect[];

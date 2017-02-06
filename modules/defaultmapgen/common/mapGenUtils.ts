@@ -57,7 +57,7 @@ export function partiallySeverLinks(
   stars.forEach((star) =>
   {
     let cutsDone = 0;
-    
+
     var neighbors = star.getAllLinks();
     const mapGenDistance = mapGenDataByStarID[star.id].mapGenDistance;
 
@@ -117,7 +117,7 @@ export function getStarConnectedness(star: Star, maxRange: number): number
     const range = parseInt(rangeString);
     connectedness += linkedByRange[rangeString].length / range;
   }
-  
+
   return connectedness;
 }
 export function makeSectors(
@@ -149,7 +149,7 @@ export function makeSectors(
   const totalStars = stars.length;
   const averageSize = (minSize + maxSize) / 2;
   const averageSectorsAmount = Math.round(totalStars / averageSize);
-  
+
   let sectorIDGen = 0;
   const sectorsByID:
   {
@@ -175,13 +175,13 @@ export function makeSectors(
     {
       return sectorsByStarID[a.id] === sectorsByStarID[b.id];
     }, minSize);
-    
+
     const canFormMinSizeSector = islandForSameSector.length >= minSize;
 
     if (canFormMinSizeSector)
     {
       const sectorID = sectorIDGen++;
-      
+
       const sector = new Region("sector_" + sectorID);
       sectorsByID[sectorID] = sector;
 
@@ -206,14 +206,14 @@ export function makeSectors(
           {
             [starId: number]: number
           } = {};
-          
+
           frontier.forEach((star) =>
           {
             const borderLengthWithSector = sector.getBorderLengthWithStars([star]);
             const borderScore = borderLengthWithSector / 15;
-            
+
             const connectedness = mapGenDataByStarID[star.id].connectedness;
-            
+
             frontierSortScores[star.id] = borderScore - connectedness;
           });
 
@@ -275,19 +275,19 @@ export function makeSectors(
       {
         [sectorId: string]: number;
       } = {};
-      
+
       candidateSectors.forEach((sector) =>
       {
         const sectorLinkedStars = sector.getLinkedStars();
-        
+
         const unclaimedSectorLinkedStars = sectorLinkedStars.filter((star) =>
         {
           return !sectorsByStarID[star.id];
         });
-        
+
         unclaimedNeighborsPerSector[sector.id] = unclaimedSectorLinkedStars.length;
       });
-      
+
       candidateSectors.sort((a, b) =>
       {
         const sizeSort = a.stars.length - b.stars.length;
@@ -348,7 +348,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
   {
     [distributableName: string]: T;
   } = {};
-  
+
   const addedDistributablesByRegionID:
   {
     [regionID: string]:
@@ -356,7 +356,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
       [distributableName: string]: boolean;
     }
   } = {};
-  
+
   for (let distributionGroup in distributablesByDistributionGroup)
   {
     const distributables = distributablesByDistributionGroup[distributionGroup];
@@ -390,7 +390,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
           addedDistributablesByRegionID[linkedRegion.id][candidate.type]);
       });
     });
-    
+
     const candidates = candidatesNotInNeighboringSectors.length > 0 ?
       candidatesNotInNeighboringSectors :
       distributablesForSector;
@@ -399,7 +399,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
     {
       [distributableName: string]: number;
     } = {};
-    
+
     candidates.forEach((candidate) =>
     {
       candidatesByWeight[candidate.type] = alreadyAddedByWeight[candidate.type];
@@ -410,7 +410,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
     probabilityWeights[selectedKey] /= 2;
 
     placerFunction(sector, selectedType);
-    
+
     if (!addedDistributablesByRegionID[sector.id])
     {
       addedDistributablesByRegionID[sector.id] = {};

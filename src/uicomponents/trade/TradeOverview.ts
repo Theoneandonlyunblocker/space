@@ -32,9 +32,9 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -49,9 +49,9 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.handleStagingAreaMouseUp = this.handleStagingAreaMouseUp.bind(this);
     this.handleAvailableMouseUp = this.handleAvailableMouseUp.bind(this);
     this.handleOk = this.handleOk.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);    
+    this.handleCancel = this.handleCancel.bind(this);
   }
-  
+
   componentWillMount()
   {
     this.selfPlayerTrade = new Trade(this.props.selfPlayer);
@@ -67,7 +67,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
       currentDragItemPlayer: undefined
     });
   }
-  
+
 
   handleCancel()
   {

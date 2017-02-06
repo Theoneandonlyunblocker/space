@@ -22,24 +22,24 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   displayName: string = "MapSetup";
 
   state: StateType;
-  
+
   ref_TODO_mapGenOptions: MapGenOptionsComponent;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.setTemplate = this.setTemplate.bind(this);
     this.getMapSetupInfo = this.getMapSetupInfo.bind(this);
-    this.updatePlayerLimits = this.updatePlayerLimits.bind(this);    
+    this.updatePlayerLimits = this.updatePlayerLimits.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     var mapGenTemplates: MapGenTemplate[] = [];
@@ -91,7 +91,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
       optionValues: this.ref_TODO_mapGenOptions.getOptionValuesForTemplate()
     });
   }
-  
+
   render()
   {
     var mapGenTemplateOptions: React.ReactHTMLElement<any>[] = [];

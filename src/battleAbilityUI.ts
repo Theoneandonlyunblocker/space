@@ -14,13 +14,13 @@ export function getUnitsInAbilityArea(battle: Battle, ability: AbilityTemplate,
   {
     [id: number]: Unit;
   } = {};
-  
+
   const abilityEffects: AbilityEffectTemplate[] = [ability.mainEffect];
   if (ability.secondaryEffects)
   {
     abilityEffects.push(...ability.secondaryEffects);
   }
-  
+
   abilityEffects.forEach((abilityEffect) =>
   {
     getUnitsInEffectArea(abilityEffect, battle, user, target).forEach((unit) =>
@@ -28,13 +28,13 @@ export function getUnitsInAbilityArea(battle: Battle, ability: AbilityTemplate,
       includedUnitsByID[unit.id] = unit;
     });
   });
-  
+
   const units: Unit[] = [];
   for (let id in includedUnitsByID)
   {
     units.push(includedUnitsByID[id]);
   }
-  
+
   return units;
 }
 

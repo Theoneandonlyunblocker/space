@@ -27,14 +27,14 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.upgradeAttribute = this.upgradeAttribute.bind(this);    
+    this.upgradeAttribute = this.upgradeAttribute.bind(this);
   }
-  
+
   render()
   {
     var unit = this.props.unit;

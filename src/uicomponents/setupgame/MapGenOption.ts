@@ -40,14 +40,14 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleChange = this.handleChange.bind(this);    
+    this.handleChange = this.handleChange.bind(this);
   }
-  
+
   render()
   {
     var option = this.props.option;

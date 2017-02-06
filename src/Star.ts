@@ -51,7 +51,7 @@ export default class Star implements Point
 
   baseIncome: number;
   resource: ResourceTemplate;
-  
+
   fleets:
   {
     [playerId: string] : Fleet[];
@@ -88,7 +88,7 @@ export default class Star implements Point
   {
     x: number;
     y: number;
-    
+
     id?: number;
     name?: string;
 
@@ -270,7 +270,7 @@ export default class Star implements Point
   getResourceIncome(): {resource: ResourceTemplate; amount: number;}
   {
     if (!this.resource) return null;
-    
+
     return(
     {
       resource: this.resource,
@@ -328,7 +328,7 @@ export default class Star implements Point
     {
       var template: BuildingTemplate = app.moduleData.Templates.Buildings[buildingType];
       var alreadyBuilt: Building[];
-      
+
       if (template.category === "mine" && !this.resource)
       {
         continue;
@@ -513,7 +513,7 @@ export default class Star implements Point
         return player.diplomacyStatus.canAttackFleetOfPlayer(fleetOwner);
       }
     });
-    
+
     for (let i = 0; i < hostileFleetOwners.length; i++)
     {
       if (diplomacyStatus.canAttackFleetOfPlayer(hostileFleetOwners[i]))
@@ -759,7 +759,7 @@ export default class Star implements Point
       var current = frontier.pop();
       connected[current.id] = current;
       var neighbors = current.getLinkedInRange(1).all;
-      
+
       for (let i = 0; i < neighbors.length; i++)
       {
         var neighbor = neighbors[i];
@@ -799,7 +799,7 @@ export default class Star implements Point
   {
     if (qualifier(this)) return this;
 
-    
+
     var visited:
     {
       [starId: number]: boolean;
@@ -842,7 +842,7 @@ export default class Star implements Point
       var a = aStar(this, target);
       return a.cost[target.id];
     }
-    
+
     if (!this.indexedDistanceToStar[target.id])
     {
       var a = aStar(this, target);

@@ -37,11 +37,11 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
   {
     super(props);
   }
-  
+
   render()
   {
     if (!this.props.buildings) return null;
-    
+
     var buildings: React.ReactElement<any>[] = [];
 
     for (let i = 0; i < this.props.buildings.length; i++)

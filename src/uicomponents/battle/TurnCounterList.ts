@@ -22,7 +22,7 @@ export class TurnCounterListComponent extends React.PureComponent<PropTypes, Sta
   {
     super(props);
   }
-  
+
   render()
   {
     const turnElements: React.ReactElement<TurnCounterProps>[] = [];

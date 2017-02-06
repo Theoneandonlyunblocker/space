@@ -44,7 +44,7 @@ export default class BattleSimulator
     var target = this.battle.unitsById[move.targetId];
 
     this.simulateAbility(move.ability, target);
-    
+
     this.battle.endTurn();
   }
   simulateAbility(ability: AbilityTemplate, target: Unit)

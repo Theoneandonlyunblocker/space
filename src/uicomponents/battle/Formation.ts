@@ -25,17 +25,17 @@ export interface PropTypes extends React.Props<any>
   {
     [unitID: number]: UnitDisplayData;
   };
-  
+
   onMouseUp?: (position: number[]) => void;
-  
+
   onUnitClick?: (unit: Unit) => void;
   handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
   handleMouseEnterUnit?: (unit: Unit) => void;
-  
+
   isDraggable?: boolean;
   onDragStart?: (unit: Unit) => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
-  
+
   isInBattlePrep?: boolean;
   hoveredUnit?: Unit;
   activeUnit?: Unit;
@@ -45,7 +45,7 @@ export interface PropTypes extends React.Props<any>
   capturedUnits?: Unit[];
   destroyedUnits?: Unit[];
 
-  
+
   // onMouseUp?: (position: number[]) => void;
 }
 
@@ -64,7 +64,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   private makeBoundFunction(functionToBind: Function, valueToBind: any): () => void
   {
     if (!functionToBind)
@@ -78,7 +78,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
       );
     }
   }
-  
+
   private unitInArray(unitToCheck: Unit, arr: Unit[]): boolean
   {
     if (!arr)
@@ -90,7 +90,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
       return arr.some((unit) => unit === unitToCheck);
     }
   }
-  
+
   render()
   {
     var formationRowElements: React.ReactHTMLElement<HTMLDivElement>[] = [];
@@ -104,17 +104,17 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
       for (let j = 0; j < this.props.formation[i].length; j++)
       {
         const unit = this.props.formation[i][j];
-        
+
         const absolutePosition = [absoluteRowIndex, j];
         const onMouseUp = this.props.onMouseUp ?
           this.props.onMouseUp.bind(null, absolutePosition) :
           null;
-          
+
         let unitProps: UnitPropTypes;
-        
+
         if (unit)
         {
-          
+
           const unitDisplayData = this.props.unitDisplayDataByID[unit.id];
           const componentProps: UnitComponentPropTypes =
           {
@@ -132,7 +132,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
           {
             wasDestroyed: this.unitInArray(unit, this.props.destroyedUnits),
             wasCaptured: this.unitInArray(unit, this.props.capturedUnits),
-            
+
             isInBattlePrep: this.props.isInBattlePrep,
             isActiveUnit: this.props.activeUnit === unit,
             isHovered: this.props.hoveredUnit === unit,
@@ -141,14 +141,14 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
             hoveredActionPointExpenditure: this.props.hoveredAbility &&
               this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
           }
-          
+
           unitProps = shallowExtend<UnitPropTypes>(unitDisplayData, componentProps, displayProps);
           if (this.props.facesLeft && this.props.isInBattlePrep)
           {
             unitProps.facesLeft = true;
           }
         }
-        
+
         unitElements.push(
           UnitWrapper({key: ("unit_wrapper_" + i) + j},
             EmptyUnit(
@@ -162,7 +162,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
           )
         );
       }
-      
+
       formationRowElements.push(React.DOM.div(
       {
         className: "battle-formation-row",

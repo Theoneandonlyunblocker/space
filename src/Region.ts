@@ -18,7 +18,7 @@ export default class Region
   constructor(id: string, initialStars?: Star[])
   {
     this.id = id;
-    
+
     if (initialStars)
     {
       initialStars.forEach((star) => this.addStar(star));
@@ -41,7 +41,7 @@ export default class Region
       {
         return region.hasStar(b);
       });
-      
+
       return !isPartOfExemptRegion;
     });
   }
@@ -52,10 +52,10 @@ export default class Region
     {
       const edge = halfEdge.edge;
       const edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
-      
+
       return edgeLength;
     }, 0);
-    
+
     return borderLength;
   }
   public getStarsByDistanceToQualifier(qualifierFN: (star: Star) => boolean): {[distance: number]: Star[]}
@@ -64,20 +64,20 @@ export default class Region
     {
       [distance: number]: Star[];
     } = {};
-    
+
     this.stars.forEach((star) =>
     {
       const nearestStar = star.getNearestStarForQualifier(qualifierFN);
       const distanceToNearestStar = star.getDistanceToStar(nearestStar);
-      
+
       if (!starsByDistance[distanceToNearestStar])
       {
         starsByDistance[distanceToNearestStar] = [];
       }
-      
+
       starsByDistance[distanceToNearestStar].push(star);
     });
-    
+
     return starsByDistance;
   }
   public getLinkedStars(): Star[]
@@ -85,7 +85,7 @@ export default class Region
     return this.getUniqueStarsFromCallback((star) =>
     {
       const linkedStars = star.getLinkedInRange(1).all;
-      
+
       return linkedStars.filter((linkedStar) =>
       {
         return !this.hasStar(linkedStar);
@@ -95,13 +95,13 @@ export default class Region
   public getMajorityRegions(regionsToCheck: Region[]): Region[]
   {
     const overlappingStarsWithRegions = this.getOverlappingStarsWithRegions(regionsToCheck);
-    
+
     let maxStarCount = 0;
     const regionsByOverlappingStarCount:
     {
       [overlappingStarCount: number]: Region[];
     } = {};
-    
+
     overlappingStarsWithRegions.forEach((regionWithStars) =>
     {
       const starCount = regionWithStars.stars.length;
@@ -109,11 +109,11 @@ export default class Region
       {
         regionsByOverlappingStarCount[starCount] = [];
       }
-      
+
       regionsByOverlappingStarCount[starCount].push(regionWithStars.region);
       maxStarCount = Math.max(maxStarCount, starCount);
     });
-    
+
     return regionsByOverlappingStarCount[maxStarCount];
   }
   public getLinkedRegions(regionsToCheck: Region[]): Region[]
@@ -123,7 +123,7 @@ export default class Region
       return rs.region;
     });
   }
-  
+
   private getSharedHalfEdgesWithStars(stars: Star[]): Voronoi.HalfEdge<Star>[]
   {
     const toCheckRegion = new Region(null, stars);
@@ -142,14 +142,14 @@ export default class Region
           (edge.lSite && this.hasStar(edge.lSite)) ||
           (edge.rSite && this.hasStar(edge.rSite))
         );
-        
+
         if (edgeNeighborsThisRegion)
         {
           sharedHalfEdges.push(halfEdge);
         }
       });
     });
-    
+
     return sharedHalfEdges;
   }
   private getLinkedStarsWithRegions(regionsToCheck: Region[]): regionWithStars[]
@@ -176,7 +176,7 @@ export default class Region
       (region: Region, star: Star) => region.hasStar(star)
     );
   }
-  
+
   private static getRegionsWithStarsForQualifier(
     regionsToCheck: Region[],
     starsToCheck: Star[],
@@ -189,14 +189,14 @@ export default class Region
       {
         return qualifierFN(region, star);
       });
-      
+
       return(
       {
         region: region,
         stars: starsThatPassQualifier
       });
     });
-    
+
     return regionsWithStarsForQualifier.filter((regionWithStars) =>
     {
       return regionWithStars.stars.length > 0;
@@ -220,10 +220,10 @@ export default class Region
     return this.getUniqueStarsFromCallback((star) =>
     {
       const neighborPoints = star.getNeighbors();
-      
+
       return <Star[]> neighborPoints.filter((neighbor: Star) =>
       {
-        const isFillerPoint = !isFinite(neighbor.id); 
+        const isFillerPoint = !isFinite(neighbor.id);
         return !isFillerPoint && !this.hasStar(neighbor);
       });
     });
@@ -235,7 +235,7 @@ export default class Region
     {
       [starId: number]: boolean;
     } = {};
-    
+
     this.stars.forEach((star) =>
     {
       const starsFromCallback = callbackFN(star);
@@ -243,14 +243,14 @@ export default class Region
       {
         return !alreadyAdded[star.id];
       });
-      
+
       newStarsFromCallback.forEach((star) =>
       {
         alreadyAdded[star.id] = true;
         resultStars.push(star);
       });
     });
-    
+
     return resultStars;
   }
 }

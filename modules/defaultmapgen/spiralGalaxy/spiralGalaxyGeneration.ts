@@ -45,7 +45,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   const seed = "" + Math.random();
   const oldRandom = Math.random;
   Math.random = RNG.prototype.uniform.bind(new RNG(seed));
-  
+
   // generate points
   const points: MapGenPoint[] = generateSpiralPoints(options);
 
@@ -57,7 +57,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   {
     return (inverseCenterDensity + centerDensity * point.mapGenData.mapGenDistance) * voronoiRegularity;
   }
-  
+
   for (let i = 0; i < 2; i++)
   {
     const diagram = makeVoronoi(points, options.defaultOptions.width,
@@ -65,17 +65,17 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
 
     relaxVoronoi(diagram, getRelaxAmountFN);
   }
-  
+
   // convert to stars and filler points
   const starsWithMapGenPoints:
   {
     star: Star;
     mapGenpoint: MapGenPoint;
   }[] = [];
-  
+
   const stars: Star[] = [];
   const fillerPoints: FillerPoint[] = [];
-  
+
   points.forEach((point) =>
   {
     if (point.mapGenData.isFiller)
@@ -98,12 +98,12 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
       });
     }
   });
-  
+
   // set voronoi cells for stars (used for checking adjacency)
   const allPoints: (Star | FillerPoint)[] = [].concat(stars, fillerPoints);
   const diagram = makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
   setVoronoiCells(diagram.cells);
-  
+
   // create MapGenData index
   const mapGenDataByStarID: MapGenDataByStarID = {};
   starsWithMapGenPoints.forEach((starWithMapGenPoint) =>
@@ -111,14 +111,14 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     mapGenDataByStarID[starWithMapGenPoint.star.id] =
       starWithMapGenPoint.mapGenpoint.mapGenData;
   });
-  
+
   // make regions (arm_n, center) etc
   const regions: Region[] = [];
   const regionsByID:
   {
     [regionID: string]: Region;
   } = {};
-  
+
   starsWithMapGenPoints.forEach((starWithMapGenPoint) =>
   {
     const tags = starWithMapGenPoint.mapGenpoint.mapGenData.tags;
@@ -169,7 +169,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
 
   //   randomly sever links so links aren't as uniform
   partiallySeverLinks(stars, mapGenDataByStarID, 4, 2);
-  
+
   // get star connectedness
   stars.forEach((star) =>
   {
@@ -184,7 +184,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   {
     [sectorID: string]: string[];
   } = {};
-  
+
   sectors.forEach((sector) =>
   {
     const distributionFlagsByKeyWord =
@@ -198,7 +198,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
       rare: false
     };
     const distributionFlags: string[] = [];
-    
+
     const majorityRegions = sector.getMajorityRegions(regions);
     majorityRegions.forEach((region) =>
     {
@@ -206,7 +206,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
       {
         if (region.id.indexOf(keyWord) !== -1)
         {
-          const distributionFlag = distributionFlagsByKeyWord[keyWord]; 
+          const distributionFlag = distributionFlagsByKeyWord[keyWord];
           if (!foundDistributionFlags[distributionFlag])
           {
             foundDistributionFlags[distributionFlag] = true;
@@ -214,7 +214,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
           }
         }
       }
-      
+
       distributionFlagsBySectorID[sector.id] = distributionFlags;
     });
   });
@@ -227,7 +227,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     {
       return region.id.indexOf("center") === -1;
     });
-    
+
     const armCount = options.basicOptions.arms;
     const playersInArmsCount = Math.min(players.length, armCount);
 
@@ -242,7 +242,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
 
       startRegions.push(regionToAdd);
     }
-    
+
     const leftOverPlayerCount = playersInArmsCount - armCount;
     for (let i = 0; i < leftOverPlayerCount; i++)
     {
@@ -307,7 +307,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   {
     const existingStarsWithRace = sector.stars.filter((star) => Boolean(star.race));
     const existingRaceInSector = existingStarsWithRace.length > 0 ? existingStarsWithRace[0].race : null;
-    
+
     sector.stars.forEach((star) =>
     {
       star.race = existingRaceInSector || race;
@@ -332,10 +332,10 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     TemplateIndexes.distributablesByDistributionGroup.resources,
     resourcePlacerFN
   );
-  
+
   // add unowned locations to independents
   const independents: Player[] = [];
-  
+
   sectors.forEach((sector) =>
   {
     const sectorRace = sector.stars[0].race;

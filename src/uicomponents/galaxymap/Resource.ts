@@ -22,7 +22,7 @@ export class ResourceComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   render()
   {
     var sign = this.props.income < 0 ? "-" : "+";

@@ -38,7 +38,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
     }
     else
     {
-      
+
     }
     if (this.props.canBuild !== newProps.canBuild)
     {
@@ -64,16 +64,16 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.addUnitToBuildQueue = this.addUnitToBuildQueue.bind(this);
     this.upgradeStats = this.upgradeStats.bind(this);
-    this.upgradeHealth = this.upgradeHealth.bind(this);    
+    this.upgradeHealth = this.upgradeHealth.bind(this);
   }
-  
+
   upgradeHealth()
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
@@ -93,7 +93,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
     if (this.props.selectedStar && this.props.selectedStar.manufactory)
     {
       var manufactory: Manufactory = this.props.selectedStar.manufactory;
-      var unitUpgradeCost = manufactory.getUnitUpgradeCost(); 
+      var unitUpgradeCost = manufactory.getUnitUpgradeCost();
       var canAffordUnitUpgrade = this.props.money >= unitUpgradeCost;
 
       var unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";

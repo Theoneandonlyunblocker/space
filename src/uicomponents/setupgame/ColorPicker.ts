@@ -35,7 +35,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   state: StateType;
 
   private onChangeTimeoutHandle: number = null;
-  private baseElementID: string = "color-picker"; 
+  private baseElementID: string = "color-picker";
 
   constructor(props: PropTypes)
   {
@@ -45,10 +45,10 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     {
       applyMixins(this, new AutoPositioner(this));
     }
-    
+
     const initialColor = this.props.initialColor || new Color(1, 1, 1);
     this.state = this.getStateFromColor(initialColor);
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -63,7 +63,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     this.triggerParentOnChange = this.triggerParentOnChange.bind(this);
     this.setVal = this.setVal.bind(this);
     this.makeGradientString = this.makeGradientString.bind(this);
-    this.nullifyColor = this.nullifyColor.bind(this);    
+    this.nullifyColor = this.nullifyColor.bind(this);
   }
 
   private getStateFromColor(color: Color): StateType
@@ -105,7 +105,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     {
       return;
     }
-    
+
     const color: Color = Color.fromHSV.apply(null, Color.convertDegreesToScalars([hue, sat, val]));
 
     this.setState(
@@ -189,7 +189,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       max + " 100%)"
     );
   }
-  
+
   private makeHexStringFromHSVDegreeArray(hsv: number[])
   {
     const color: Color = Color.fromHSV.apply(null, Color.convertDegreesToScalars(hsv));

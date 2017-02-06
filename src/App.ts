@@ -58,7 +58,7 @@ class App
   {
     [id: string]: HTMLImageElement;
   } = {};
-  
+
   private seed: string;
   private mapRenderer: MapRenderer;
   private moduleLoader: ModuleLoader;
@@ -69,14 +69,14 @@ class App
 
     this.seed = "" + Math.random();
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
-    
+
     const moduleLoader = this.moduleLoader = new ModuleLoader();
     this.initUI();
 
     onDOMLoaded(() =>
     {
       this.moduleData = moduleLoader.moduleData;
-      
+
       moduleLoader.addModuleFile(defaultEmblems);
       moduleLoader.addModuleFile(defaultRuleset);
       moduleLoader.addModuleFile(defaultAI);
@@ -92,9 +92,9 @@ class App
       moduleLoader.addModuleFile(defaultNotifications);
       moduleLoader.addModuleFile(defaultRaces);
       moduleLoader.addModuleFile(drones);
-      
+
       addCommonToModuleData(moduleLoader.moduleData);
-      
+
       // some things called in this.makeApp() rely on global app variable
       // this timeout allows constructor to finish and variable to be assigned
       window.setTimeout(() =>
@@ -103,7 +103,7 @@ class App
       }, 0);
     });
   }
-  
+
   public makeGameFromSetup(map: GalaxyMap, players: Player[])
   {
     this.destroy();
@@ -136,7 +136,7 @@ class App
     this.destroy();
 
     this.initUI();
-    
+
     this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.game, () =>
     {
       this.game = new GameLoader().deserializeGame(parsed.gameData);
@@ -154,11 +154,11 @@ class App
     });
 
   }
-  
+
   private makeApp()
   {
     var startTime = Date.now();
-    
+
     Options.load();
     TutorialStatus.load();
 
@@ -167,9 +167,9 @@ class App
     {
       this.moduleLoader.progressivelyLoadModulesByPhase(0);
     }
-    
+
     const initialScene = this.getInitialScene();
-    
+
     const switchSceneFN = () =>
     {
       this.reactUI.switchScene(initialScene);
@@ -186,7 +186,7 @@ class App
 
         this.initDisplay();
         this.hookUI();
-        
+
         switchSceneFN();
       });
     }
@@ -220,7 +220,7 @@ class App
       this.playerControl.destroy();
       this.playerControl = null;
     }
-    
+
     if (this.reactUI)
     {
       this.reactUI.destroy();
@@ -330,7 +330,7 @@ class App
   private initDisplay()
   {
     this.renderer = new Renderer(
-      this.game.galaxyMap.seed, 
+      this.game.galaxyMap.seed,
       this.moduleData.mapBackgroundDrawingFunction
     );
     this.renderer.init();

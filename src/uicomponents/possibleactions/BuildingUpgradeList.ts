@@ -28,15 +28,15 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.hasAvailableUpgrades = this.hasAvailableUpgrades.bind(this);
-    this.upgradeBuilding = this.upgradeBuilding.bind(this);    
+    this.upgradeBuilding = this.upgradeBuilding.bind(this);
   }
-  
+
   hasAvailableUpgrades()
   {
     var possibleUpgrades = this.props.star.getBuildingUpgrades();
@@ -82,7 +82,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
     {
       var a = possibleUpgrades[aId][0].parentBuilding.template.displayName;
       var b = possibleUpgrades[bId][0].parentBuilding.template.displayName;
-      
+
       if (a < b) return -1;
       else if (a > b) return 1;
       else return 0;

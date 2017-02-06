@@ -15,7 +15,7 @@ export default class Renderer
   layers:
   {
     background: PIXI.Container;
-    
+
     main: PIXI.Container;
     map: PIXI.Container;
     select: PIXI.Container;
@@ -23,7 +23,7 @@ export default class Renderer
   camera: Camera;
   mouseEventHandler: MouseEventHandler;
   pathfindingArrow: PathfindingArrow;
-  
+
   private backgroundDrawer: BackgroundDrawer;
   private activeRenderLoopId: number = 0;
   isPaused: boolean = false;
@@ -35,7 +35,7 @@ export default class Renderer
   constructor(backgroundSeed: string, backgroundDrawingFunction: BackgroundDrawingFunction)
   {
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-    
+
     this.stage = new PIXI.Container();
     this.backgroundDrawer = new BackgroundDrawer(
     {
@@ -51,7 +51,7 @@ export default class Renderer
     this.activeRenderLoopId++;
 
     this.stage.renderable = true;
-    
+
     this.resizeListener = this.resize.bind(this);
     window.addEventListener("resize", this.resizeListener, false);
   }
@@ -59,7 +59,7 @@ export default class Renderer
   {
     this.stage.renderable = false;
     this.pause();
-    
+
     this.backgroundDrawer.destroy();
 
     if (this.pathfindingArrow)
@@ -114,17 +114,17 @@ export default class Renderer
           antialias: true
         }
       );
-      
+
       this.backgroundDrawer.setExternalRenderer(this.renderer);
     }
-    
+
     this.pixiContainer.appendChild(this.renderer.view);
     this.renderer.view.setAttribute("id", "pixi-canvas");
-    
+
     this.backgroundDrawer.bindRendererView(this.pixiContainer);
 
     this.resize();
-    
+
     // this.renderOnce();
     this.addCamera();
   }
@@ -133,18 +133,18 @@ export default class Renderer
     this.layers =
     {
       background: this.backgroundDrawer.pixiContainer,
-      
+
       main: new PIXI.Container(),
       map: new PIXI.Container(),
       select: new PIXI.Container(),
     };
-    
+
     this.layers.select.interactiveChildren = false;
-    
+
     this.layers.main.addChild(this.layers.map);
     this.layers.main.addChild(this.layers.select);
-    
-    
+
+
     this.stage.removeChildren();
     this.stage.addChild(this.layers.background);
     this.stage.addChild(this.layers.main);
@@ -224,7 +224,7 @@ export default class Renderer
       var w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
       var h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
       this.renderer.resize(w, h);
-      
+
       this.backgroundDrawer.handleResize();
 
       if (this.isPaused)

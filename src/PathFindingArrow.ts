@@ -480,7 +480,7 @@ export default class PathfindingArrow
     var x = Math.sin(angle) * distance;
     var y = Math.cos(angle) * distance;
 
-    
+
     return(
     {
       x: target.x + x,

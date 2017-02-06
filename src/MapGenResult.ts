@@ -53,10 +53,10 @@ export default class MapGenResult
     this.voronoiInfo = this.makeVoronoiInfo();
 
     var map = new GalaxyMap(this);
-    
+
     return map;
   }
-  
+
   private getAllPoints(): (Star | FillerPoint)[]
   {
     const castedFillerPoints: (Star | FillerPoint)[] = this.fillerPoints;
@@ -66,7 +66,7 @@ export default class MapGenResult
   {
     var voronoiInfo = new MapVoronoiInfo();
     voronoiInfo.diagram = makeVoronoi(this.getAllPoints(), this.width, this.height);
-    
+
     setVoronoiCells(voronoiInfo.diagram.cells);
 
     voronoiInfo.treeMap = this.makeVoronoiTreeMap();

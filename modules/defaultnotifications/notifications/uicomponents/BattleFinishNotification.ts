@@ -18,7 +18,7 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
   {
     super(props);
   }
-  
+
   public render()
   {
     var notification = this.props.notification;

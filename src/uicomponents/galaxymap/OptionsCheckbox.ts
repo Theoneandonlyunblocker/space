@@ -20,11 +20,11 @@ export class OptionsCheckboxComponent extends React.Component<PropTypes, StateTy
   {
     super(props);
   }
-  
+
   render()
   {
     var checkboxID = "options-checkbox-" + this.props.label;
-    
+
     return(
       React.DOM.div(
       {

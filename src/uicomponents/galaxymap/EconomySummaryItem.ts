@@ -6,7 +6,7 @@ import Star from "../../Star";
 export interface PropTypes extends ListItemProps, React.Props<any>
 {
   // isSelected: boolean;
-  
+
   star: Star;
   id: number;
   name: string;
@@ -25,14 +25,14 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.makeCell = this.makeCell.bind(this);    
+    this.makeCell = this.makeCell.bind(this);
   }
-  
+
   makeCell(type: string)
   {
     var cellProps =
@@ -66,7 +66,7 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
       React.DOM.td(cellProps, cellContent)
     );
   }
-  
+
   render()
   {
     var columns = this.props.activeColumns;

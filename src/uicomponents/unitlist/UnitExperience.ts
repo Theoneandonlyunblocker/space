@@ -28,18 +28,18 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.makePopup = this.makePopup.bind(this);
     this.closePopup = this.closePopup.bind(this);
-    this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);    
+    this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(

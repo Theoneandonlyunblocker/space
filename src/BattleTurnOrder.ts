@@ -46,7 +46,7 @@ export default class BattleTurnOrder
     {
       var unit = this.orderedUnits[i];
       var unitMoveDelay = unit.battleStats.moveDelay;
-      
+
       if (ghostMoveDelay < unitMoveDelay)
       {
         return i;
@@ -59,7 +59,7 @@ export default class BattleTurnOrder
 
     return this.orderedUnits.length;
   }
-  
+
   private hasUnit(unit: Unit): boolean
   {
     return this.allUnits.indexOf(unit) !== -1;

@@ -20,7 +20,7 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
   {
     super(props);
   }
-  
+
   render()
   {
     var availableSrc = "img/icons/availableAction.png";

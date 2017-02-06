@@ -18,7 +18,7 @@ const defaultNotifications: ModuleFile =
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates(NotificationTemplates, "Notifications");
-    
+
     return moduleData;
   }
 }

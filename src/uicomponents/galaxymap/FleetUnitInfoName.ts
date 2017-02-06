@@ -22,16 +22,16 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.onChange = this.onChange.bind(this);    
+    this.onChange = this.onChange.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(

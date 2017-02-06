@@ -30,7 +30,7 @@ export default class ModuleLoader
   constructor()
   {
     this.moduleData = new ModuleData();
-    
+
     eventManager.addEventListener("loadModulesNeededForPhase", this.loadModulesNeededForPhase.bind(this));
   }
 
@@ -43,12 +43,12 @@ export default class ModuleLoader
 
     this.moduleFilesByKey[moduleFile.key] = moduleFile;
     this.hasLoaded[moduleFile.key] = false;
-    
+
     if (!this.moduleFilesByPhase[moduleFile.needsToBeLoadedBefore])
     {
       this.moduleFilesByPhase[moduleFile.needsToBeLoadedBefore] = [];
     }
-    
+
     this.moduleFilesByPhase[moduleFile.needsToBeLoadedBefore].push(moduleFile);
   }
   public loadModuleFile(moduleFile: ModuleFile, afterLoaded: () => void)
@@ -57,25 +57,25 @@ export default class ModuleLoader
     {
       this.addModuleFile(moduleFile);
     }
-    
+
     if (this.hasLoaded[moduleFile.key])
     {
       afterLoaded();
       return;
     }
-    
+
     if (!this.moduleLoadFinishCallbacks[moduleFile.key])
     {
       this.moduleLoadFinishCallbacks[moduleFile.key] = [];
     }
     this.moduleLoadFinishCallbacks[moduleFile.key].push(afterLoaded);
-    
+
     if (isFinite(this.moduleLoadStart[moduleFile.key]))
     {
       return;
     }
     console.log("start loading module", moduleFile.key);
-    
+
     this.moduleLoadStart[moduleFile.key] = Date.now();
     if (moduleFile.loadAssets)
     {
@@ -97,12 +97,12 @@ export default class ModuleLoader
       {
         afterLoaded();
       }
-      
+
       return;
     }
-    
+
     const loadedModuleFiles: ModuleFile[] = [];
-    
+
     const executeIfAllLoaded = () =>
     {
       if (loadedModuleFiles.length === moduleFilesToLoad.length)
@@ -110,7 +110,7 @@ export default class ModuleLoader
         afterLoaded();
       }
     }
-    
+
     moduleFilesToLoad.forEach((moduleFile) =>
     {
       this.loadModuleFile(moduleFile, () =>
@@ -130,7 +130,7 @@ export default class ModuleLoader
     {
       allModuleFiles.push(this.moduleFilesByKey[key]);
     }
-    
+
     this.loadModuleFiles(allModuleFiles, afterLoaded);
   }
   public loadModulesForPhase(phase: ModuleFileLoadingPhase, afterLoaded?: () => void): void
@@ -141,7 +141,7 @@ export default class ModuleLoader
   public loadModulesNeededForPhase(phase: ModuleFileLoadingPhase, afterLoaded?: () => void): void
   {
     const moduleFilesNeededForPhase: ModuleFile[] = [];
-    
+
     for (let keyString in this.moduleFilesByPhase)
     {
       if (parseInt(keyString) <= phase)
@@ -149,7 +149,7 @@ export default class ModuleLoader
         moduleFilesNeededForPhase.push(...this.moduleFilesByPhase[keyString]);
       }
     }
-    
+
     this.loadModuleFiles(moduleFilesNeededForPhase, afterLoaded);
   }
   public progressivelyLoadModulesByPhase(startingPhase: ModuleFileLoadingPhase): void
@@ -168,7 +168,7 @@ export default class ModuleLoader
     this.constructModuleFile(moduleFile);
     var loadTime = Date.now() - this.moduleLoadStart[moduleFile.key];
     console.log("Module '" + moduleFile.key + "' finished loading in " + loadTime + "ms");
-    
+
     while (this.moduleLoadFinishCallbacks[moduleFile.key].length > 0)
     {
       const afterLoadedCallback = this.moduleLoadFinishCallbacks[moduleFile.key].pop();
@@ -181,7 +181,7 @@ export default class ModuleLoader
     {
       moduleFile.constructModule(this.moduleData);
     }
-    
+
     this.moduleData.addSubModule(moduleFile);
   }
 }

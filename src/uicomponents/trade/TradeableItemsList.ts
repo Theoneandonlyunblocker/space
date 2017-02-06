@@ -35,14 +35,14 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.makeRowForTradeableItem = this.makeRowForTradeableItem.bind(this);    
+    this.makeRowForTradeableItem = this.makeRowForTradeableItem.bind(this);
   }
-  
+
   makeRowForTradeableItem(item: TradeableItem): ListItem<TradeableItemProps>
   {
     switch (item.key)
@@ -76,7 +76,7 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
   {
     money: 0
   }
-  
+
   render()
   {
     var tradeableItems = this.props.tradeableItems;

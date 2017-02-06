@@ -29,14 +29,14 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.togglePriorityLock = this.togglePriorityLock.bind(this);    
+    this.togglePriorityLock = this.togglePriorityLock.bind(this);
   }
-  
+
   togglePriorityLock()
   {
     var pt = this.props.playerTechnology;

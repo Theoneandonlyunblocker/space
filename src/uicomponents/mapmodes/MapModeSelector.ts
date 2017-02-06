@@ -36,15 +36,15 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.makeOptions = this.makeOptions.bind(this);
-    this.handleChange = this.handleChange.bind(this);    
+    this.handleChange = this.handleChange.bind(this);
   }
-  
+
   makeOptions()
   {
     var mapRenderer = this.props.mapRenderer;
@@ -64,7 +64,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
 
     return options;
   }
-  
+
 
   render()
   {

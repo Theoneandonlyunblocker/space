@@ -24,14 +24,14 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
   {
     super(props);
   }
-  
+
   render()
   {
     if (this.props.abilities.length === 0)
     {
       return null;
     }
-    
+
     var headerText: string;
     if (this.props.learningNewability)
     {

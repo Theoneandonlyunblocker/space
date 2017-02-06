@@ -318,7 +318,7 @@ export default class MapEvaluator
     for (let i = 0; i < star.buildings["defence"].length; i++)
     {
       var building = star.buildings["defence"][i];
-      
+
       if (building.controller.id === this.player.id) continue;
 
       strength += building.totalCost;
@@ -342,7 +342,7 @@ export default class MapEvaluator
           {
             return !fleet.isStealthy;
           });
-        
+
         visibleFleets.push(...visibleFleetsAtStar);
       }
     });
@@ -546,7 +546,7 @@ export default class MapEvaluator
   {
     const fleetLikelyHasScoutingUnit: boolean = fleet.units.length >= 5;
     let estimatedRange = fleetLikelyHasScoutingUnit ? 2 : 1;
-    
+
     fleet.units.forEach((unit) =>
     {
       if (this.player.unitIsIdentified(unit))
@@ -554,14 +554,14 @@ export default class MapEvaluator
         estimatedRange = Math.max(estimatedRange, unit.getVisionRange());
       }
     });
-    
+
     return estimatedRange;
   }
   estimateFleetDetectionRange(fleet: Fleet)
   {
     const fleetLikelyHasScoutingUnit: boolean = fleet.units.length >= 5;
     let estimatedRange = fleetLikelyHasScoutingUnit ? 0 : -1;
-    
+
     fleet.units.forEach((unit) =>
     {
       if (this.player.unitIsIdentified(unit))
@@ -569,7 +569,7 @@ export default class MapEvaluator
         estimatedRange = Math.max(estimatedRange, unit.getDetectionRange());
       }
     });
-    
+
     return estimatedRange;
   }
   getPlayerVisionMap(player: Player)

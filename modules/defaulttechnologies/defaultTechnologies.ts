@@ -21,9 +21,9 @@ const defaultTechnologies: ModuleFile =
   constructModule: function(moduleData: ModuleData)
   {
     setTechnologyRequirements(TechnologyTemplates);
-    
+
     moduleData.copyTemplates<TechnologyTemplate>(TechnologyTemplates, "Technologies");
-    
+
     return moduleData;
   }
 }

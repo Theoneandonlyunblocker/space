@@ -88,9 +88,9 @@ const fleets: MapRendererLayerTemplate =
       fleetContainer.addChild(text);
       text.x += 2;
       text.y -= 1;
-      
+
       fleetContainer.interactive = true;
-      
+
       const boundMouseDownFN = mouseDownFN.bind(null, fleet);
       const boundFleetClickFN = fleetClickFN.bind(null, fleet);
       fleetContainer.on("click", boundFleetClickFN);

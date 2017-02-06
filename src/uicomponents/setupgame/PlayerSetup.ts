@@ -62,9 +62,9 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
 
     this.flag = new Flag(null);
@@ -80,10 +80,10 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     this.handleNameChange = this.handleNameChange.bind(this);
     this.makePlayer = this.makePlayer.bind(this);
     this.handleSetHuman = this.handleSetHuman.bind(this);
-    this.handleSetCustomImage = this.handleSetCustomImage.bind(this);    
+    this.handleSetCustomImage = this.handleSetCustomImage.bind(this);
     this.setRace = this.setRace.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -177,7 +177,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     {
       this.flag = Flag.generateRandom(mainColor, secondaryColor);
     }
-    
+
     const player = new Player(
     {
       isAI: !this.props.isHuman,

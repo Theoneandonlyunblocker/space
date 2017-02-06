@@ -28,18 +28,18 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.makePopup = this.makePopup.bind(this);
     this.closePopup = this.closePopup.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);    
+    this.togglePopup = this.togglePopup.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -47,7 +47,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
       notificationFilterPopup: undefined
     });
   }
-  
+
   makePopup()
   {
     var popupId = this.popupManager.makePopup(

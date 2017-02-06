@@ -21,7 +21,7 @@ export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes
   {
     super(props);
   }
-  
+
   render()
   {
     const attributeElements: React.ReactHTMLElement<any>[] = [];

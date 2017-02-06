@@ -26,9 +26,9 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -36,9 +36,9 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
     this.handleClick = this.handleClick.bind(this);
     this.toggleActive = this.toggleActive.bind(this);
     this.setAsInactive = this.setAsInactive.bind(this);
-    this.getClientRect = this.getClientRect.bind(this);    
+    this.getClientRect = this.getClientRect.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(

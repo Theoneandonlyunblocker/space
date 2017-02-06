@@ -34,9 +34,9 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -46,9 +46,9 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
     this.clearExpandedAction = this.clearExpandedAction.bind(this);
     this.handlePlayerBuiltBuilding = this.handlePlayerBuiltBuilding.bind(this);
     this.updateActions = this.updateActions.bind(this);
-    this.upgradeBuildings = this.upgradeBuildings.bind(this);    
+    this.upgradeBuildings = this.upgradeBuildings.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -168,7 +168,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
           clearExpandedAction: this.clearExpandedAction
         })
       );
-      
+
       this.setState(
       {
         expandedAction: "upgradeBuildings",
@@ -239,7 +239,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
     },
       allActions
     );
-    
+
     return(
       React.DOM.div(
       {

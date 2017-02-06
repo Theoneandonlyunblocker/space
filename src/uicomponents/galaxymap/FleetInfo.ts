@@ -31,14 +31,14 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.setFleetName = this.setFleetName.bind(this);    
+    this.setFleetName = this.setFleetName.bind(this);
   }
-  
+
   render()
   {
     const fleet = this.props.fleet;
@@ -84,7 +84,7 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
           React.DOM.div(
           {
             className: "fleet-info-strength"
-          }, 
+          },
             React.DOM.span(
             {
               className: "fleet-info-strength-current" + healthStatus
@@ -112,7 +112,7 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
           isNotDetected ? "Moves: ?/?" : "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
             fleet.getMinMaxMovePoints()
         )
-        
+
       )
     );
   }

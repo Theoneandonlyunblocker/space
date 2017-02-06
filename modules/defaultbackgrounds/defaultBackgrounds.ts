@@ -25,7 +25,7 @@ const defaultBackgrounds: ModuleFile =
     {
       moduleData.starBackgroundDrawingFunction = drawNebula;
     }
-    
+
     return moduleData;
   }
 }

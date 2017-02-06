@@ -249,7 +249,7 @@ export default class FrontsAI
     /*for each front that doesnt fulfill minimum unit requirement
       make request with same priority of front
     */
-   
+
     this.frontsRequestingUnits = [];
 
     for (let i = 0; i < this.fronts.length; i++)

@@ -4,7 +4,7 @@ interface AIControllerSaveData<TemplateSaveData>
 {
   templateType: string;
   personality: Personality;
-  
+
   templateData: TemplateSaveData;
 }
 

@@ -37,9 +37,9 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -48,9 +48,9 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     this.togglePopup = this.togglePopup.bind(this);
     this.toggleCondensedMenu = this.toggleCondensedMenu.bind(this);
     this.handleToggleHamburger = this.handleToggleHamburger.bind(this);
-    this.delayedResize = this.delayedResize.bind(this);    
+    this.delayedResize = this.delayedResize.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(

@@ -28,16 +28,16 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.closePopup = this.closePopup.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -45,7 +45,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
       shouldShow: TutorialStatus.introTutorial === TutorialState.show
     });
   }
-  
+
 
   componentDidMount()
   {
@@ -103,7 +103,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
     {
       return null;
     }
-    
+
     return(
       PopupManager(
       {

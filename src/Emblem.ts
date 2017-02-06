@@ -34,7 +34,7 @@ export default class Emblem
 
     const templates = Emblem.getAvailableTemplatesForRandomGeneration();
     const template = getSeededRandomArrayItem(templates, _rng);
-    
+
     let _colors: Color[];
     if (template.generateColors)
     {

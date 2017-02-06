@@ -34,15 +34,15 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.removeItem = this.removeItem.bind(this);
-    this.upgradeCapacity = this.upgradeCapacity.bind(this);    
+    this.upgradeCapacity = this.upgradeCapacity.bind(this);
   }
-  
+
   upgradeCapacity()
   {
     var manufactory = this.props.manufactory;

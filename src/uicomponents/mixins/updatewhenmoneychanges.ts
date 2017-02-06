@@ -11,14 +11,14 @@ export default class UpdateWhenMoneyChanges<T extends React.Component<any, any>>
 {
   private owner: T;
   private onMoneyChange: () => void;
-  
+
   constructor(owner: T, onMoneyChange?: () => void)
   {
     this.owner = owner;
     this.onMoneyChange = onMoneyChange;
     this.handleMoneyChange = this.handleMoneyChange.bind(this);
   }
-  
+
   public componentDidMount()
   {
     eventManager.addEventListener("playerMoneyUpdated", this.handleMoneyChange);
@@ -28,7 +28,7 @@ export default class UpdateWhenMoneyChanges<T extends React.Component<any, any>>
   {
     eventManager.removeEventListener("playerMoneyUpdated", this.handleMoneyChange);
   }
-  
+
   private handleMoneyChange()
   {
     if (this.onMoneyChange)

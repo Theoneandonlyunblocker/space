@@ -26,12 +26,12 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   render()
   {
     var star = this.props.selectedStar;
     if (!star) return null;
-    
+
     return(
       React.DOM.div(
       {
@@ -66,7 +66,7 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         {
           buildings: star.buildings["defence"]
         })
-        
+
       )
     );
   }

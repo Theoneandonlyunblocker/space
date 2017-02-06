@@ -28,7 +28,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "GalaxyMap";
   state: StateType;
-  
+
   ref_TODO_pixiContainer: HTMLElement;
   ref_TODO_sceneSelector: HTMLElement;
 
@@ -36,7 +36,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   render()
   {
     return(
@@ -117,12 +117,12 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
     );
   }
 
-  
+
   componentDidMount()
   {
     this.props.renderer.bindRendererView(ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_pixiContainer));
     this.props.mapRenderer.setMapModeByKey("defaultMapMode");
-    
+
     this.props.renderer.resume();
 
     // TODO hack | transparency isn't properly rendered without this

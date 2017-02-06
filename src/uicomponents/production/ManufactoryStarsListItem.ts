@@ -26,14 +26,14 @@ export class ManufactoryStarsListItemComponent extends React.Component<PropTypes
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleClick = this.handleClick.bind(this);    
+    this.handleClick = this.handleClick.bind(this);
   }
-  
+
   handleClick()
   {
     var star = this.props.star;

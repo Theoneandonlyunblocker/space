@@ -84,7 +84,7 @@ export default class Battle
     this.side2 = props.side2;
     this.side2Player = props.side2Player;
     this.battleData = props.battleData;
-    
+
     this.turnOrder = new BattleTurnOrder();
   }
   // Separate because cloned battles (for ai simulation) don't need to call this.
@@ -165,7 +165,7 @@ export default class Battle
 
     return this.getPlayerForSide(side);
   }
-  
+
   private initUnit(unit: Unit, side: UnitBattleSide, position: number[]): void
   {
     unit.resetBattleStats();
@@ -245,7 +245,7 @@ export default class Battle
       side1: this.getExperienceGainedForSide("side1"),
       side2: this.getExperienceGainedForSide("side2"),
     }
-    
+
     this.forEachUnit((unit) =>
     {
       unit.addExperience(experienceGainedPerSide[unit.battleStats.side]);
@@ -268,7 +268,7 @@ export default class Battle
         this.capturedUnits[i].experienceForCurrentLevel = 0;
       }
     }
-    
+
     if (this.battleData.building)
     {
       if (victor)

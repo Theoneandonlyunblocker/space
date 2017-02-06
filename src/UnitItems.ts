@@ -129,7 +129,7 @@ export default class UnitItems
     if (this.hasItem(toAdd))
     {
       const oldPositionForItem = toAdd.positionInUnit;
-      
+
       if (oldItemAtTargetPosition)
       {
         this.moveItem(oldItemAtTargetPosition, oldPositionForItem);

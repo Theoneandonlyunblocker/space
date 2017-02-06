@@ -19,14 +19,14 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
 {
   displayName: string = "BattleBackground";
   state: StateType;
-  
+
   pixiContainer: HTMLElement;
   backgroundDrawer: BackgroundDrawer;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
     this.backgroundDrawer = new BackgroundDrawer(
     {
@@ -36,7 +36,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   }
   private bindMethods()
   {
-    this.handleResize = this.handleResize.bind(this);  
+    this.handleResize = this.handleResize.bind(this);
   }
   public componentWillReceiveProps(newProps: PropTypes)
   {

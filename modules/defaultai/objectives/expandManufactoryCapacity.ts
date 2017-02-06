@@ -47,7 +47,7 @@ const expandManufactoryCapacity: ObjectiveTemplate =
       {
         continue;
       }
-      
+
       var expansionCost: number;
       if (!star.manufactory)
       {

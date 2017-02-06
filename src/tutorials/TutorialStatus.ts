@@ -13,7 +13,7 @@ const defaultTutorialStatus =
 class TutorialStatus implements TutorialStatusValues
 {
   introTutorial: TutorialState;
-  
+
   constructor()
   {
     this.setDefaultValues();
@@ -33,12 +33,12 @@ class TutorialStatus implements TutorialStatusValues
   public load()
   {
     this.setDefaultValues();
-    
+
     if (!localStorage["Rance.TutorialStatus"])
     {
       return;
     }
-    
+
     var parsedData: TutorialStatusValues = JSON.parse(localStorage.getItem("Rance.TutorialStatus"));
     this.deSerialize(parsedData);
   }
@@ -47,7 +47,7 @@ class TutorialStatus implements TutorialStatusValues
     localStorage.removeItem("Rance.TutorialStatus");
     this.setDefaultValues();
   }
-  
+
   private serialize(): TutorialStatusValues
   {
     return(
@@ -62,7 +62,7 @@ class TutorialStatus implements TutorialStatusValues
   private deSerialize(data: TutorialStatusValues)
   {
     this.introTutorial = TutorialStatus.getDeSerializedState(data.introTutorial);
-    
+
     this.setDefaultValuesForUndefined();
   }
 }

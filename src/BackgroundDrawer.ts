@@ -12,7 +12,7 @@ export default class BackgroundDrawer
   public seed: string;
   public blurArea: PIXI.Rectangle;
   public pixiContainer: PIXI.Container;
-  
+
   private containerElement: HTMLElement;
   private resizeBuffer:
   {
@@ -49,11 +49,11 @@ export default class BackgroundDrawer
   {
     this.drawBackgroundFN = props.drawBackgroundFN;
     this.seed = props.seed;
-    
+
     this.blurFilter = new PIXI.filters.BlurFilter();
     this.blurFilter.blur = 1;
     this.pixiContainer = new PIXI.Container();
-    
+
     this.setExternalRenderer(props.renderer);
   }
   public setExternalRenderer(renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer)
@@ -84,14 +84,14 @@ export default class BackgroundDrawer
     {
       this.containerElement.removeChild(this.renderer.view);
     }
-    
+
     this.containerElement = containerElement;
-    
+
     if (!this.renderer)
     {
       this.renderer = this.createRenderer();
     }
-    
+
     this.containerElement.appendChild(this.renderer.view);
   }
   public handleResize(): void
@@ -100,31 +100,31 @@ export default class BackgroundDrawer
     {
       return;
     }
-    
+
     const containerElementRect = this.getContainerElementRect();
-    
+
     if (!this.hasExternalRenderer)
     {
       this.renderer.resize(containerElementRect.width, containerElementRect.height);
     }
-    
+
     if (!this.cachedBackgroundSize ||
       this.isRectBiggerThanCachedBackground(containerElementRect))
     {
       this.drawScene();
     }
-    
+
     if (this.blurArea)
     {
       this.setBlurMask();
     }
-    
+
     if (!this.hasExternalRenderer)
     {
       this.renderer.render(this.pixiContainer);
     }
   }
-  
+
   private drawBackground(): PIXI.DisplayObject
   {
     const backgroundSize = this.getDesiredBackgroundSize();
@@ -137,13 +137,13 @@ export default class BackgroundDrawer
   {
     background.filters = [this.blurFilter];
     const blurTextureSize = this.getDesiredBlurSize();
-    
+
     const blurTexture = generateTextureWithBounds(
       this.renderer, background, PIXI.settings.SCALE_MODE, this.renderer.resolution, blurTextureSize
     );
-    
+
     background.filters = null;
-    
+
     const blurSprite = new PIXI.Sprite(blurTexture);
     return blurSprite;
   }
@@ -151,10 +151,10 @@ export default class BackgroundDrawer
   {
     this.pixiContainer.removeChildren();
     this.destroyOldBackground();
-      
+
     this.layers.bg = this.drawBackground();
     this.pixiContainer.addChild(this.layers.bg);
-    
+
     if (this.blurArea)
     {
       this.layers.blur = this.drawBlurredBackground(this.layers.bg);
@@ -167,7 +167,7 @@ export default class BackgroundDrawer
     {
       this.layers.blur.mask = new PIXI.Graphics();
     }
-    
+
     const mask = <PIXI.Graphics> this.layers.blur.mask;
     mask.clear();
     mask.beginFill(0x000000);
@@ -192,9 +192,9 @@ export default class BackgroundDrawer
         resolution: window.devicePixelRatio
       }
     );
-    
+
     renderer.view.setAttribute("id", "pixi-canvas");
-    
+
     return renderer;
   }
   private addBufferToRect(rect: PIXI.Rectangle): PIXI.Rectangle
@@ -202,7 +202,7 @@ export default class BackgroundDrawer
     const cloned = rect.clone();
     cloned.width += this.resizeBuffer.width;
     cloned.height += this.resizeBuffer.height;
-    
+
     return cloned;
   }
   private getDesiredBackgroundSize(): PIXI.Rectangle

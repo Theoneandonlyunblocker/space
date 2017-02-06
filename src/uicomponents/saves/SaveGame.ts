@@ -36,7 +36,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -49,7 +49,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
     this.handleRowChange = this.handleRowChange.bind(this);
     this.handleSaveNameInput = this.handleSaveNameInput.bind(this);
   }
-  
+
   componentDidMount()
   {
     if (app.game.gameStorageKey)
@@ -69,7 +69,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
       saveName: newText
     });
   }
-  
+
   handleSaveNameInput(e: React.FormEvent)
   {
     const target = <HTMLInputElement> e.target;

@@ -20,7 +20,7 @@ const moduleLoadingPhaseByScene =
   "battlePrep": ModuleFileLoadingPhase.battlePrep,
   "galaxyMap": ModuleFileLoadingPhase.game,
   "setupGame": ModuleFileLoadingPhase.setup,
-  
+
   "flagMaker": ModuleFileLoadingPhase.setup,
   "battleSceneTester": ModuleFileLoadingPhase.battle,
 }
@@ -35,7 +35,7 @@ export default class ReactUI
   public playerControl: PlayerControl;
   public player: Player;
   public game: Game;
-  
+
   private container: HTMLElement;
   private moduleLoader: ModuleLoader;
 
@@ -43,7 +43,7 @@ export default class ReactUI
   {
     this.container = container;
     this.moduleLoader = moduleLoader;
-    
+
     this.addEventListeners();
   }
   private addEventListeners()
@@ -93,7 +93,7 @@ export default class ReactUI
   //   ReactDOM.render(
   //     LoadingScreen(
   //     {
-        
+
   //     }),
   //     this.container
   //   );

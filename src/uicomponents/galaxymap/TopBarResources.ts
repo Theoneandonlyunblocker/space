@@ -27,7 +27,7 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
   {
     super(props);
   }
-  
+
   componentDidMount()
   {
     this.updateListener = eventManager.addEventListener(

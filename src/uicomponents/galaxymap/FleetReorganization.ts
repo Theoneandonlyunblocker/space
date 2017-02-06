@@ -22,15 +22,15 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
 {
   displayName: string = "FleetReorganization";
   state: StateType;
-  
+
   hasClosed: boolean = false;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -38,9 +38,9 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
     this.handleDrop = this.handleDrop.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleDragStart = this.handleDragStart.bind(this);    
+    this.handleDragStart = this.handleDragStart.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(

@@ -19,12 +19,12 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
 {
   displayName = "InlineNumberProp";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
+
   render()
   {
     const baseID = "sfx-fragment-prop-inline-number-" + this.props.propName + "-" + this.props.label;

@@ -30,7 +30,7 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
   state: StateType;
 
   container: HTMLDivElement;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -39,7 +39,7 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
   private renderEmblemCanvas(): void
   {
     const containerRect = this.container.getBoundingClientRect();
-    
+
     const emblem = new Emblem(
       this.props.colors,
       this.props.template,
@@ -73,7 +73,7 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
   {
     this.renderEmblemCanvas();
   }
-  
+
   render()
   {
     const baseClassName = "emblem";

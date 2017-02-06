@@ -27,9 +27,9 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -38,9 +38,9 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
     this.makeSquadronInfo = this.makeSquadronInfo.bind(this);
     this.animateDisplayedStrength = this.animateDisplayedStrength.bind(this);
     this.makeStrengthText = this.makeStrengthText.bind(this);
-    this.makeCapitalInfo = this.makeCapitalInfo.bind(this);    
+    this.makeCapitalInfo = this.makeCapitalInfo.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(

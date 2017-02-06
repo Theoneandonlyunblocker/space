@@ -6,9 +6,9 @@ declare interface NormalizedEvent
   pageX: number;
   pageY: number;
   target: HTMLElement;
-  
+
   button: number;
-  
+
   preventDefault: () => void;
   stopPropagation: () => void;
 }

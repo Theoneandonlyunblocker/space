@@ -218,7 +218,7 @@ export default class PlayerTechnology
     {
       return 0;
     }
-    
+
     return this.technologies[technology.key].priority / totalOpenPriority;
   }
   setTechnologyPriority(technology: TechnologyTemplate, priority: number, force: boolean = false)

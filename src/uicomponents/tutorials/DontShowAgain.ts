@@ -23,17 +23,17 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.toggleState = this.toggleState.bind(this);
-    this.getTutorialState = this.getTutorialState.bind(this);    
+    this.getTutorialState = this.getTutorialState.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -41,7 +41,7 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
       isChecked: this.getTutorialState() === TutorialStateTODO.neverShow
     });
   }
-  
+
   getTutorialState()
   {
     return TutorialStatus[this.props.tutorialId];

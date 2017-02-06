@@ -9,7 +9,7 @@ import LoadGame from "../saves/LoadGame";
 
 interface PropTypes extends React.Props<any>
 {
-  
+
 }
 
 interface StateType
@@ -39,7 +39,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
       preventAutoResize: true,
     }
   }
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -102,7 +102,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
       });
     }
   }
-  
+
   render()
   {
     return(

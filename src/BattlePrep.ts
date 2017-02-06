@@ -18,7 +18,7 @@ export default class BattlePrep
   public enemyUnits: Unit[];
   public afterBattleFinishCallbacks: {(): void}[] = [];
   public minDefenders: number;
-  
+
   private attackerUnits: Unit[];
   private defenderUnits: Unit[];
 
@@ -33,7 +33,7 @@ export default class BattlePrep
     this.battleData = battleData;
     this.attackerUnits = battleData.attacker.units
     this.defenderUnits = battleData.defender.units
-    
+
     const attackerHasScouted = this.attacker.starIsDetected(battleData.location);
     this.attackerFormation = new BattlePrepFormation(
       this.attacker, this.attackerUnits, attackerHasScouted, 1, true);
@@ -41,30 +41,30 @@ export default class BattlePrep
     const defenderHasScouted = this.defender.starIsDetected(battleData.location);
     this.defenderFormation = new BattlePrepFormation(
       this.defender, this.defenderUnits, defenderHasScouted, undefined, false);
-    
+
     this.resetBattleStats();
-    
+
     this.minDefenders = this.getInitialMinDefenders();
-    
+
     this.setHumanAndEnemy();
     if (this.enemyFormation)
     {
       this.enemyFormation.setAutoFormation(this.humanUnits);
-      
+
       this.triggerPassiveSkills(this.enemyFormation);
       this.defenderFormation.minUnits = this.minDefenders;
     }
     else
     {
       this.attackerFormation.setAutoFormation(this.defenderUnits);
-      
+
       this.triggerPassiveSkills(this.attackerFormation);
       this.defenderFormation.minUnits = this.minDefenders;
-      
+
       this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
     }
   }
-  
+
   public forEachUnit(f: (u: Unit) => void): void
   {
     this.attackerUnits.forEach(f);
@@ -100,7 +100,7 @@ export default class BattlePrep
 
     return battle;
   }
-  
+
   private setHumanAndEnemy(): void
   {
     if (!this.attacker.isAI)

@@ -21,11 +21,11 @@ function makeRandomVibrantColor(): Color
     {min: 180 / 360, max: 290 / 360},
     {min: 320 / 360, max: 1}
   ];
-  
+
   const h = randomSelectFromRanges(hRanges);
   const s = randRange(0.8, 0.9);
   const v = randRange(0.88, 0.92);
-  
+
   return Color.fromHSV(h, s, v);
 }
 
@@ -40,11 +40,11 @@ function makeRandomDeepColor(): Color
       {min: 0 / 360, max: 30 / 360},
       {min: 100 / 360, max: 360 / 360}
     ];
-    
+
     const h = randomSelectFromRanges(hRanges);
     const s = randRange(0.9, 1.0);
     const v = randRange(0.6, 0.75);
-    
+
     return Color.fromHSV(h, s, v);
   }
   else if (randomValue < 0.96)
@@ -90,11 +90,11 @@ function makeRandomColor(props:
   const hRanges = props.h || [{min: 0, max: 1}];
   const sRanges = props.s || [{min: 0, max: 1}];
   const lRanges = props.l || [{min: 0, max: 1}];
-  
+
   const h = randomSelectFromRanges(hRanges);
   const s = randomSelectFromRanges(sRanges);
   const l = randomSelectFromRanges(lRanges);
-  
+
   return Color.fromHUSL(h, s, l);
 }
 
@@ -143,48 +143,48 @@ colorGenProps?:
 }): Color
 {
   const props = colorGenProps || {};
-  
+
   const initialRanges = props.initialRanges || {};
   const hRange = initialRanges.h || {min: 0.0, max: 1.0};
   const sRange = initialRanges.s || {min: 0.5, max: 1.0};
   const lRange = initialRanges.l || {min: 0.0, max: 1.0};
-  
+
   const minDifference = props.minDifference || {};
   const hMinDifference = isFinite(minDifference.h) ? minDifference.h : 0.1;
   const sMinDifference = isFinite(minDifference.s) ? minDifference.s : 0.0;
   const lMinDifference = isFinite(minDifference.l) ? minDifference.l : 0.3;
-  
+
   const maxDifference = props.maxDifference || {};
   const hMaxDifference = isFinite(maxDifference.h) ? maxDifference.h : 1.0;
   // const sMaxDifference = isFinite(maxDifference.s) ? maxDifference.s : 1.0;
   // const lMaxDifference = isFinite(maxDifference.l) ? maxDifference.l : 1.0;
-  
+
   const toContrastWithHUSL = toContrastWith.getHUSL();
-  
+
   const hExclusionRange: Range =
   {
     min: (toContrastWithHUSL[0] - hMinDifference) % 1.0,
     max: (toContrastWithHUSL[0] + hMinDifference) % 1.0
   }
-  
+
   const hRangeWithMinExclusion = excludeFromRange(hRange, hExclusionRange);
   const candidateHValue = randomSelectFromRanges(hRangeWithMinExclusion);
   const h = clamp(candidateHValue, toContrastWithHUSL[0] - hMaxDifference, toContrastWithHUSL[0] + hMaxDifference);
-  
+
   const sExclusionRangeMin = clamp(toContrastWithHUSL[1] - sMinDifference, sRange.min, 1.0);
   const sExclusionRange: Range =
   {
     min: sExclusionRangeMin,
     max: clamp(toContrastWithHUSL[1] + sMinDifference, sExclusionRangeMin, 1.0)
   };
-  
+
   const lExclusionRangeMin = clamp(toContrastWithHUSL[2] - lMinDifference, lRange.min, 1.0);
   const lExclusionRange: Range =
   {
     min: lExclusionRangeMin,
     max: clamp(toContrastWithHUSL[2] + lMinDifference, lExclusionRangeMin, 1.0)
   };
-  
+
   return makeRandomColor(
   {
     h: [{min: h, max: h}],

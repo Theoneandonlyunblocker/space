@@ -26,15 +26,15 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.scrollToHighlighted = this.scrollToHighlighted.bind(this);
-    this.handleResetCategory = this.handleResetCategory.bind(this);    
+    this.handleResetCategory = this.handleResetCategory.bind(this);
   }
-  
+
   private handleResetCategory(category: string): void
   {
     var filter = this.props.filter;

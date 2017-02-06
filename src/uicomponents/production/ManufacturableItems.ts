@@ -64,15 +64,15 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.upgradeItems = this.upgradeItems.bind(this);
-    this.addItemToBuildQueue = this.addItemToBuildQueue.bind(this);    
+    this.addItemToBuildQueue = this.addItemToBuildQueue.bind(this);
   }
-  
+
   upgradeItems()
   {
 

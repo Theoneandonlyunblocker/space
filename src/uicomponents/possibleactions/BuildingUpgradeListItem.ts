@@ -26,18 +26,18 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
     applyMixins(this, new UpdateWhenMoneyChanges(this, this.overrideHandleMoneyChange));
   }
   private bindMethods()
   {
     this.handleClick = this.handleClick.bind(this);
-    this.overrideHandleMoneyChange = this.overrideHandleMoneyChange.bind(this);    
+    this.overrideHandleMoneyChange = this.overrideHandleMoneyChange.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -45,7 +45,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
       canAfford: this.props.player.money >= this.props.upgradeData.cost
     });
   }
-  
+
   overrideHandleMoneyChange()
   {
     this.setState(
@@ -71,7 +71,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
       title: upgradeData.template.description
     };
 
-    var costProps: React.HTMLAttributes = 
+    var costProps: React.HTMLAttributes =
     {
       key: "cost",
       className: "building-upgrade-list-item-cost"

@@ -59,7 +59,7 @@ export function defaultUnitFitFN(unit: Unit, front: Front, lowHealthThreshhold: 
 
   // penalize units on low health
   var healthPercentage = unit.currentHealth / unit.maxHealth;
-  
+
   if (healthPercentage < lowHealthThreshhold)
   {
     score *= healthPercentage * healthAdjust;

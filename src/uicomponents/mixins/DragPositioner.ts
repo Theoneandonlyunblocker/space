@@ -20,39 +20,39 @@ export interface DragPositionerProps
 export default class DragPositioner<T extends React.Component<any, any>> implements MixinBase<T>
 {
   public isDragging: boolean = false;
-  
+
   public containerElementDescriptor: HTMLElement | React.Component<any, any>;
   public containerDragOnly: boolean = false;
   public forcedDragOffset: Point;
   public dragThreshhold: number = 5;
   public preventAutoResize: boolean = false;
   public shouldMakeClone: boolean = false;
-  
+
   public makeDragClone: () => HTMLElement;
   public onDragStart: () => void;
   public onDragMove: (x: number, y: number) => void;
   public onDragEnd: () => boolean | void; // return value: was drop succesful
-  
+
   public dragPos: Point = {x: undefined, y: undefined};
   public dragSize: Point = {x: undefined, y: undefined};
   public containerElement: HTMLElement; // set in componentDidMount
-  
-  
+
+
   private owner: T;
-  
+
   private mouseIsDown: boolean = false;
   private dragOffset: Point = {x: 0, y: 0};
   private mouseDownPosition: Point = {x: 0, y: 0};
   private originPosition: Point = {x: 0, y: 0};
-  
+
   private cloneElement: HTMLElement = null;
-  
+
   private ownerDOMNode: HTMLElement;
   private containerRect: ClientRect;
   private touchEventTarget: HTMLElement;
   private needsFirstTouchUpdate: boolean;
   private ownerIsMounted: boolean = false;
-  
+
   constructor(owner: T, props?: DragPositionerProps)
   {
     this.owner = owner;
@@ -74,14 +74,14 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
         }
       }
     }
-    
+
     this.setContainerRect = this.setContainerRect.bind(this);
-    
+
     this.handleNativeMoveEvent = this.handleNativeMoveEvent.bind(this);
     this.handleNativeUpEvent = this.handleNativeUpEvent.bind(this);
     this.handleReactDownEvent = this.handleReactDownEvent.bind(this);
   }
-  
+
   public componentDidMount()
   {
     this.ownerIsMounted = true;
@@ -146,11 +146,11 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       s.width = "" + this.dragSize.x + "px";
       s.height = "" + this.dragSize.y + "px";
     }
-    
+
     s.left = "" + this.dragPos.x + "px";
     s.top = "" + this.dragPos.y + "px";
   }
-  
+
   private handleMouseDown(e: NormalizedEvent)
   {
     if (e.button)
@@ -164,7 +164,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
         return;
       }
     }
-    
+
     e.preventDefault();
     e.stopPropagation();
 
@@ -289,7 +289,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     const maxX = this.containerRect.right;
     const minY = this.containerRect.top;
     const maxY = this.containerRect.bottom;
-    
+
     let x = e.pageX - this.dragOffset.x;
     let y = e.pageY - this.dragOffset.y;
 
@@ -364,7 +364,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       this.cloneElement.parentNode.removeChild(this.cloneElement);
       this.cloneElement = null;
     }
-    
+
     this.isDragging = false;
     this.dragOffset = {x: 0, y: 0};
     this.originPosition = {x: 0, y: 0};
@@ -373,7 +373,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     {
       this.onDragEnd();
     }
-    
+
     if (this.ownerIsMounted)
     {
       this.owner.forceUpdate();

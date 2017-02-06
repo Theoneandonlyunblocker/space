@@ -11,7 +11,7 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   storageKey: string;
   name: string;
   date: string;
-  
+
   accurateDate: string;
 }
 
@@ -27,7 +27,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -89,7 +89,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
       React.DOM.td(cellProps, cellContent)
     );
   }
-  
+
   render()
   {
     var columns = this.props.activeColumns;

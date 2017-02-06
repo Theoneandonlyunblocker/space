@@ -25,16 +25,16 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
   displayName = "EmblemSetterList";
   state: StateType;
 
-  
+
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
+
   render()
   {
     const canAddNewEmblem = this.props.emblems.length < this.props.maxEmblems;
-    
+
     return(
       React.DOM.ol(
       {
@@ -49,7 +49,7 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
 
             toggleActive: this.props.toggleActiveEmblem.bind(null, id),
             remove: this.props.removeEmblem.bind(null, id),
-            
+
             emblem: emblemProps,
             backgroundColor: this.props.backgroundColor,
           });

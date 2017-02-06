@@ -23,7 +23,7 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   defence: number;
   intelligence: number;
   speed: number;
-  
+
   onMouseLeave: () => void;
   hasNoActionsLeft: boolean;
   isHovered: boolean;
@@ -33,12 +33,12 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   onMouseEnter: (unit: Unit) => void;
   maxHealth: number;
   unit: Unit;
-  
+
   isDraggable: boolean;
   onDragEnd: (dropSuccesful?: boolean) => void;
   onDragStart: (unit: Unit) => void;
   dragPositionerProps?: DragPositionerProps;
-  
+
   name: string; // unused
 }
 
@@ -48,16 +48,16 @@ interface StateType
 export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitListItem";
-  
+
   state: StateType;
   dragPositioner: DragPositioner<UnitListItemComponent>;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
-    
+
     if (this.props.isDraggable)
     {
       this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
@@ -73,13 +73,13 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.makeCell = this.makeCell.bind(this);
-    
+
     this.onDragEnd = this.onDragEnd.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
     this.makeDragClone = this.makeDragClone.bind(this);
-    // this.onDragMove = this.onDragMove.bind(this);    
+    // this.onDragMove = this.onDragMove.bind(this);
   }
-  
+
   componentDidMount()
   {
     if (!this.props.isDraggable) return;
@@ -117,7 +117,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   makeDragClone()
   {
     const container = document.createElement("div");
-    
+
     ReactDOM.render(
       UnitComponentFactory(shallowExtend<UnitComponentPropTypes>(
         this.props.unit.getDisplayData("battlePrep"),
@@ -125,12 +125,12 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
       )),
       container
     );
-    
+
     const renderedElement = <HTMLElement> container.firstChild;
     const wrapperElement = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
-    
+
     renderedElement.classList.add("draggable", "dragging");
-    
+
     renderedElement.style.width = "" + wrapperElement.offsetWidth + "px";
     renderedElement.style.height = "" + wrapperElement.offsetHeight + "px";
     this.dragPositioner.forcedDragOffset =
@@ -138,7 +138,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
       x: wrapperElement.offsetWidth / 2,
       y: wrapperElement.offsetHeight / 2
     }
-    
+
     return renderedElement;
   }
   // onDragMove(x: number, y: number)
@@ -208,7 +208,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
       case "speed":
       {
         cellContent = this.props[type];
-        
+
         if (unit.attributes[type] < unit.baseAttributes[type])
         {
           cellProps.className += " lowered-stat"

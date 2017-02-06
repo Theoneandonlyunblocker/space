@@ -29,14 +29,14 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleMouseUp = this.handleMouseUp.bind(this);    
+    this.handleMouseUp = this.handleMouseUp.bind(this);
   }
-  
+
   handleMouseUp()
   {
     if (!this.props.onMouseUp) return;

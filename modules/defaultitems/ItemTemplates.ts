@@ -17,7 +17,7 @@ const bombLauncher1: ItemTemplate =
   displayName: "Bomb Launcher 1",
   description: "",
   icon: "modules/defaultitems/img/cannon.png",
-  
+
   techLevel: 1,
   buildCost: 100,
 
@@ -30,7 +30,7 @@ const bombLauncher2: ItemTemplate =
   displayName: "Bomb Launcher 2",
   description: "",
   icon: "modules/defaultitems/img/cannon.png",
-  
+
   techLevel: 2,
   buildCost: 200,
 
@@ -48,7 +48,7 @@ const bombLauncher3: ItemTemplate =
   displayName: "Bomb Launcher 3",
   description: "",
   icon: "modules/defaultitems/img/cannon.png",
-  
+
   techLevel: 3,
   buildCost: 300,
 
@@ -67,7 +67,7 @@ const afterBurner1: ItemTemplate =
   displayName: "Afterburner 1",
   description: "",
   icon: "modules/defaultitems/img/blueThing.png",
-  
+
   techLevel: 1,
   buildCost: 100,
 
@@ -85,7 +85,7 @@ const afterBurner2: ItemTemplate =
   displayName: "Afterburner 2",
   description: "",
   icon: "modules/defaultitems/img/blueThing.png",
-  
+
   techLevel: 2,
   buildCost: 200,
 
@@ -102,7 +102,7 @@ const afterBurner3: ItemTemplate =
   displayName: "Afterburner 3",
   description: "",
   icon: "modules/defaultitems/img/blueThing.png",
-  
+
   techLevel: 3,
   buildCost: 300,
 
@@ -120,7 +120,7 @@ const shieldPlating1: ItemTemplate =
   displayName: "Shield Plating 1",
   description: "",
   icon: "modules/defaultitems/img/armor1.png",
-  
+
   techLevel: 1,
   buildCost: 100,
 
@@ -137,7 +137,7 @@ const shieldPlating2: ItemTemplate =
   displayName: "Shield Plating 2",
   description: "",
   icon: "modules/defaultitems/img/armor1.png",
-  
+
   techLevel: 2,
   buildCost: 200,
 
@@ -154,7 +154,7 @@ const shieldPlating3: ItemTemplate =
   displayName: "Shield Plating 3",
   description: "",
   icon: "modules/defaultitems/img/armor1.png",
-  
+
   techLevel: 3,
   buildCost: 300,
 
@@ -170,7 +170,7 @@ const shieldPlating3: ItemTemplate =
 
 const ItemTemplates: TemplateCollection<ItemTemplate> =
 {
-  
+
   [bombLauncher1.type]: bombLauncher1,
   [bombLauncher2.type]: bombLauncher2,
   [bombLauncher3.type]: bombLauncher3,

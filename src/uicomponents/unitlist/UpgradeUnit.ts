@@ -30,9 +30,9 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -40,9 +40,9 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
     this.upgradeAttribute = this.upgradeAttribute.bind(this);
     this.upgradeAbility = this.upgradeAbility.bind(this);
     this.makeAbilityLearnPopup = this.makeAbilityLearnPopup.bind(this);
-    this.closePopup = this.closePopup.bind(this);    
+    this.closePopup = this.closePopup.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(

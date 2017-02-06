@@ -82,7 +82,7 @@ export default class NotificationLog
       this.byTurn[notification.turn] = [];
     }
     this.byTurn[notification.turn].unshift(notification);
-    
+
     if (!notification.hasBeenRead)
     {
       this.unread.unshift(notification);

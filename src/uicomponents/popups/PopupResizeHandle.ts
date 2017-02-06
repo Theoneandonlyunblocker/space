@@ -24,9 +24,9 @@ export class PopupResizeHandleComponent extends React.Component<PropTypes, State
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
-    
+
     this.dragPositioner = new DragPositioner(this);
     this.dragPositioner.onDragMove = this.onDragMove;
     applyMixins(this, this.dragPositioner);
@@ -35,7 +35,7 @@ export class PopupResizeHandleComponent extends React.Component<PropTypes, State
   {
     this.onDragMove = this.onDragMove.bind(this);
   }
-  
+
   // onDragStart()
   // {
   //   var rect = ReactDOM.findDOMNode(this).getBoundingClientRect();

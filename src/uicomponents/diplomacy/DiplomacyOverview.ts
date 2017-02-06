@@ -29,20 +29,20 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
 {
   displayName: string = "DiplomacyOverview";
   state: StateType;
-  
+
   popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.makeDiplomacyActionsPopup = this.makeDiplomacyActionsPopup.bind(this);    
+    this.makeDiplomacyActionsPopup = this.makeDiplomacyActionsPopup.bind(this);
   }
-  
+
   makeDiplomacyActionsPopup(rowItem: ListItem<DiplomaticStatusPlayerProps>)
   {
     var player = rowItem.content.props.player;
@@ -69,7 +69,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
       }
     });
   }
-  
+
   render()
   {
     var unmetPlayerCount = this.props.totalPlayerCount -
@@ -92,7 +92,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           status: DiplomacyState[status],
           opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
           flag: player.flag,
-          
+
           baseOpinion: player.diplomacyStatus.getBaseOpinion(),
           statusSortingNumber: status,
           attitudeModifiers:

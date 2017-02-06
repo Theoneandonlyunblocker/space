@@ -30,14 +30,14 @@ const defaultBuildings: ModuleFile =
       const json = loader.resources[spriteSheetKey].data;
       const image = loader.resources[spriteSheetKey + "_image"].data;
       cacheSpriteSheetAsImages(json, image);
-      
+
       onLoaded();
     });
   },
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<BuildingTemplate>(BuildingTemplates, "Buildings");
-    
+
     return moduleData;
   }
 }

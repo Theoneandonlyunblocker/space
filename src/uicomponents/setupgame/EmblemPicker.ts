@@ -26,7 +26,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
 {
   displayName = "EmblemPicker";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);

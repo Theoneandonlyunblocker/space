@@ -22,7 +22,7 @@ const defaultAttitudeModifiers: ModuleFile =
   {
     setAttitudeModifierOverride(AttitudeModifierTemplates);
     moduleData.copyTemplates<AttitudeModifierTemplate>(AttitudeModifierTemplates, "AttitudeModifiers");
-    
+
     return moduleData;
   }
 }

@@ -33,9 +33,9 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -45,7 +45,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
     this.handleLeavePage = this.handleLeavePage.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -87,7 +87,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
 
     if (page.desiredSize)
     {
-      
+
     }
   }
 

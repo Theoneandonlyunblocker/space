@@ -24,14 +24,14 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
 {
   displayName: string = "PlayerFlag";
   state: StateType;
-  
+
   ref_TODO_container: HTMLElement;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
+
   private renderFlagCanvas(): void
   {
     const containerNode = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_container);

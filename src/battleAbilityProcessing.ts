@@ -93,7 +93,7 @@ function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData): Unit
   {
     return abilityUseData.intendedTarget;
   }
-  
+
   var guarding = getGuarders(battle, abilityUseData);
 
   guarding = guarding.sort(function(a: Unit, b: Unit)
@@ -167,7 +167,7 @@ function getAbilityEffectDataFromEffectTemplate(battle: Battle,
 
   const unitsInEffectArea = getUnitsInEffectArea(effectTemplate, battle,
     abilityUseData.user, target);
-  
+
   unitsInEffectArea.forEach((unitInEffectArea) =>
   {
     effectData.push(
@@ -298,8 +298,8 @@ function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abil
       }));
     }
   });
-  
-  
+
+
   return afterUseEffects;
 }
 function makeSelfAbilityEffectData(
@@ -323,7 +323,7 @@ function makeSelfAbilityEffectData(
 function getDefaultBeforeUseEffects(abilityUseData: AbilityUseData): AbilityEffectData[]
 {
   const effects: AbilityEffectData[] = [];
-  
+
   if (!abilityUseData.ability.doesNotRemoveUserGuard)
   {
     effects.push(makeSelfAbilityEffectData(
@@ -332,30 +332,30 @@ function getDefaultBeforeUseEffects(abilityUseData: AbilityUseData): AbilityEffe
       user => user.removeAllGuard()
     ));
   }
-  
+
   effects.push(makeSelfAbilityEffectData(
     abilityUseData.user,
     "removeActionPoints",
     user => user.removeActionPoints(abilityUseData.ability.actionsUse)
   ));
-  
+
   return effects;
 }
 function getDefaultAfterUseEffects(abilityUseData: AbilityUseData): AbilityEffectData[]
 {
   const effects: AbilityEffectData[] = [];
-  
+
   effects.push(makeSelfAbilityEffectData(
     abilityUseData.user,
     "addMoveDelay",
     user => user.addMoveDelay(abilityUseData.ability.moveDelay)
   ));
-  
+
   effects.push(makeSelfAbilityEffectData(
     abilityUseData.user,
     "updateStatusEffects",
     user => user.updateStatusEffects()
   ));
-  
+
   return effects;
 }

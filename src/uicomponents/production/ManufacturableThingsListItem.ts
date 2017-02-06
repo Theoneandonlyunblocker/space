@@ -25,16 +25,16 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
-    this.handleClick = this.handleClick.bind(this);    
+    this.handleClick = this.handleClick.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -43,7 +43,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
       isDisabled: !this.props.onClick
     });
   }
-  
+
   componentWillReceiveProps(newProps: PropTypes)
   {
     this.setState(
@@ -52,7 +52,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
       isDisabled: !newProps.onClick
     });
   }
-  
+
 
   handleClick()
   {

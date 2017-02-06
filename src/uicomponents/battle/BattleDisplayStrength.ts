@@ -23,17 +23,17 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
   {
     this.updateDisplayStrength = this.updateDisplayStrength.bind(this);
-    this.animateDisplayedStrength = this.animateDisplayedStrength.bind(this);    
+    this.animateDisplayedStrength = this.animateDisplayedStrength.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(
@@ -57,7 +57,7 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
       this.activeTween.stop();
     }
   }
-  
+
   private animateDisplayedStrengthIfNeeded(props: PropTypes)
   {
     if (isFinite(props.animationDuration) && props.to !== props.from)
@@ -80,7 +80,7 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
     {
       this.activeTween.stop();
     }
-    
+
     if (strengthBefore === strengthAfter)
     {
       return;

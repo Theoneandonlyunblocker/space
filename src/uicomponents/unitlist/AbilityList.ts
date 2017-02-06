@@ -23,7 +23,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   render()
   {
     var abilities: AbilityBase[] = this.props.abilities;
@@ -50,7 +50,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
 
       var a = _a.displayName.toLowerCase();
       var b = _b.displayName.toLowerCase();
-      
+
       if (a > b) return 1;
       else if (a < b) return -1;
       else return 0;
@@ -85,7 +85,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
         {
           className += " active-skill";
         }
-        
+
         if (addedAbilityTypes[ability.type] >= 1)
         {
           className += " redundant-ability";

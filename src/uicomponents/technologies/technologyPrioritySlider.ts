@@ -30,7 +30,7 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
 
     this.bindMethods();
   }
-  
+
   private bindMethods()
   {
     this.getPlayerPriority = this.getPlayerPriority.bind(this);

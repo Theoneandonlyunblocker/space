@@ -6,7 +6,7 @@ interface UnitDisplayData
 {
   facesLeft: boolean;
   name: string;
-  
+
   currentHealth: number;
   maxHealth: number;
   guardAmount: number;
@@ -16,18 +16,18 @@ interface UnitDisplayData
   isPreparing: boolean;
   isAnnihilated: boolean;
   isSquadron: boolean;
-  
+
   attributeChanges?: PartialUnitAttributes;
   passiveEffects?: UnitPassiveEffect[];
-  
+
   portraitSrc: string; // TODO fluff | allow other portrait elements
   iconSrc: string;
   // iconElement: React.ReactElement<any>; // TODO fluff | allow other icon elements
-  
+
   // in src/uicomponents/unit.ts:DisplayStatus
   // wasDestroyed?: boolean;
   // wasCaptured?: boolean;
-  
+
   // isInBattlePrep?: boolean;
   // isActiveUnit?: boolean;
   // isHovered?: boolean;

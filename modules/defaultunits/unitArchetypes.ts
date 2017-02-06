@@ -54,7 +54,7 @@ export const defence: UnitArchetype =
     const totalDefenceUnderThreshhold = rowUnits.filter((unit) => Boolean(unit)).map(unit =>
     {
       const defenceUnderThreshhold = Math.max(unit.attributes.defence - unitDefenceThreshhold);
-      
+
       return defenceUnderThreshhold;
     }).reduce((total, current) =>
     {

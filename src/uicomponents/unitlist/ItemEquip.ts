@@ -32,9 +32,9 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
+
     this.state = this.getInitialStateTODO();
-    
+
     this.bindMethods();
   }
   private bindMethods()
@@ -42,9 +42,9 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
     this.handleDragStart = this.handleDragStart.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
-    this.handleSelectRow = this.handleSelectRow.bind(this);    
+    this.handleSelectRow = this.handleSelectRow.bind(this);
   }
-  
+
   private getInitialStateTODO(): StateType
   {
     return(

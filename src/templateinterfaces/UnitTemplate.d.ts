@@ -20,19 +20,19 @@ declare interface UnitTemplate extends ManufacturableThing
   icon: string;
   maxHealth: number;
   maxMovePoints: number;
-  
+
   /**
-   * used by the ai to balance unit composition 
+   * used by the ai to balance unit composition
    */
   archetype: UnitArchetype;
-  
+
   /**
    * how many stars away unit can see
    * -1: no vision, 0: current star only, 1: current & neighbors, etc.
    */
   visionRange: number;
   /**
-   * 
+   *
    */
   /**
    * used for vision on stealthy units. detected units have their type & stats revealed
@@ -40,7 +40,7 @@ declare interface UnitTemplate extends ManufacturableThing
    */
   detectionRange: number;
   isStealthy?: boolean;
-  
+
   attributeLevels:
   {
     attack: number;

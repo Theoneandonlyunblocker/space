@@ -12,7 +12,7 @@ export interface PropTypes extends React.Props<any>
   battleState: "start" | "active" | "finish";
   battleScene: BattleScene;
   humanPlayerWonBattle: boolean;
-  
+
   flag1: Flag;
   flag2: Flag;
 }
@@ -30,7 +30,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
   }
-  
+
   shouldComponentUpdate(newProps: PropTypes)
   {
     const propsThatShouldTriggerUpdate =
@@ -61,7 +61,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
       this.props.battleScene.destroy();
     }
   }
-  
+
   render()
   {
     var componentToRender: React.ReactElement<any>;
