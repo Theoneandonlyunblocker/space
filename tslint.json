@@ -68,12 +68,13 @@
     "new-parens": true,
     "object-literal-key-quotes": [true, "as-needed"],
     "one-variable-per-declaration": [true],
-    "ordered-imports": [true],
-    "quotemark": [true, "double"],
+    "ordered-imports": [true, {"import-sources-order": "lowercase-last", "named-imports-order": "case-insensitive"}],
+    "quotemark": [true, "double", "avoid-escape"],
     "semicolon": [true, "always"],
     "variable-name": [true, "ban-keywords", "check-format"],
 
-    "prefer-const": true,
+    // lots of problems. for (let i = 0, n = a.length) etc...
+    // "prefer-const": true,
     // might be good for later
     // "strict-boolean-expressions": ,
     "no-magic-numbers": true,
@@ -97,13 +98,12 @@
 }
 
 // requires typechecking
-    // "promise-function-async": true,
-    // "no-inferred-empty-object-type": true,
-    // "no-void-expression": true,
-    // "no-unbound-method": true,
-    // "no-unsafe-any": true,
-    // "no-unnecessary-qualifier": true,
-    // "await-promise": true,
-    // "no-floating-promises": true,
-    // "strict-type-predicates": true,
-
+// "promise-function-async": true,
+// "no-inferred-empty-object-type": true,
+// "no-void-expression": true,
+// "no-unbound-method": true,
+// "no-unsafe-any": true,
+// "no-unnecessary-qualifier": true,
+// "await-promise": true,
+// "no-floating-promises": true,
+// "strict-type-predicates": true,
