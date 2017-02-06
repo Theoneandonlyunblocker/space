@@ -285,7 +285,7 @@ export function hexToString(hex: number)
 {
   hex = Math.round(hex);
   var converted = hex.toString(16);
-  return '000000'.substr(0, 6 - converted.length) + converted;
+  return "000000".substr(0, 6 - converted.length) + converted;
 }
 export function stringToHex(text: string)
 {
@@ -390,11 +390,11 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
     dst = dst.concat(target);
     src.forEach(function(e: any, i: any)
     {
-      if (typeof dst[i] === 'undefined')
+      if (typeof dst[i] === "undefined")
       {
         dst[i] = e;
       }
-      else if (typeof e === 'object')
+      else if (typeof e === "object")
       {
         dst[i] = deepMerge(target[i], e);
       }
@@ -409,7 +409,7 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
   }
   else
   {
-    if (target && typeof target === 'object')
+    if (target && typeof target === "object")
     {
       Object.keys(target).forEach(function (key)
       {
@@ -418,7 +418,7 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
     }
     Object.keys(src).forEach(function (key)
     {
-      if (typeof src[key] !== 'object' || !src[key])
+      if (typeof src[key] !== "object" || !src[key])
       {
         dst[key] = src[key];
       }
@@ -635,7 +635,7 @@ export function onDOMLoaded(onLoaded: () => void)
   }
   else
   {
-    document.addEventListener('DOMContentLoaded', onLoaded);
+    document.addEventListener("DOMContentLoaded", onLoaded);
   }
 }
 export function meetAllPlayers()

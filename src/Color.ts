@@ -152,7 +152,7 @@ export default class Color
   {
     const hex = Math.round(this.getHex());
     const converted = hex.toString(16);
-    return '000000'.substr(0, 6 - converted.length) + converted;
+    return "000000".substr(0, 6 - converted.length) + converted;
   }
 
   /**

@@ -31,7 +31,7 @@ function rocketAttack(params: SFXParams)
   const explosionTextures: PIXI.Texture[] = [];
   for (let i = 0; i < 26; i++)
   {
-     const explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + '.png');
+     const explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + ".png");
      explosionTextures.push(explosionTexture);
   }
   const explosionsByID:

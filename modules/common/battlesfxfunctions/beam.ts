@@ -154,7 +154,7 @@ export default function beam(props: SFXParams)
 
   smallEmitter.addInitialize(new Proton.ImageTarget(smallParticleTexture));
   smallEmitter.addInitialize(new Proton.Velocity(new Proton.Span(2.5, 3.5),
-    new Proton.Span(270, 35, true), 'polar'));
+    new Proton.Span(270, 35, true), "polar"));
   smallEmitter.addInitialize(new Proton.Position(new Proton.RectZone(
     0,
     -30,
@@ -331,7 +331,7 @@ export default function beam(props: SFXParams)
         var emitterLife = lifeLeftInSeconds * 0.8;
 
         var velocityInitialize = new Proton.Velocity(new Proton.Span(1.5, 3),
-          new Proton.Span(270, 25, true), 'polar')
+          new Proton.Span(270, 25, true), "polar")
         protonWrapper.addInitializeToExistingParticles(shinyEmitter, velocityInitialize);
 
         shinyEmitter.removeInitialize(shinyEmitterLifeInitialize);
