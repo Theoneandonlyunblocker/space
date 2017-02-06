@@ -7,7 +7,7 @@ import SFXFragmentConstructor from "./SFXFragmentConstructor";
 import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-type Fragment = SFXFragment<any, any> | SFXFragmentConstructor;
+type Fragment = SFXFragment<any> | SFXFragmentConstructor;
 
 interface PropTypes<P extends Fragment> extends React.Props<any>
 {
@@ -16,7 +16,7 @@ interface PropTypes<P extends Fragment> extends React.Props<any>
   isDraggable: boolean;
   onDragStart?: (fragment: P) => void;
   onDragEnd?: () => void;
-  
+
   onClick?: (fragment: P) => void;
 }
 
@@ -30,13 +30,13 @@ export class SFXFragmentListItemComponent<P extends Fragment> extends React.Comp
   state: StateType;
 
   dragPositioner: DragPositioner<SFXFragmentListItemComponent<P>>;
-  
+
   constructor(props: PropTypes<P>)
   {
     super(props);
 
-    this.onDragStart = this.onDragStart.bind(this); 
-    this.onDragEnd = this.onDragEnd.bind(this); 
+    this.onDragStart = this.onDragStart.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
     this.handleClick = this.handleClick.bind(this);
 
 
@@ -44,7 +44,7 @@ export class SFXFragmentListItemComponent<P extends Fragment> extends React.Comp
     {
       this.dragPositioner = new DragPositioner(this,
       {
-        
+
       });
       this.dragPositioner.onDragStart = this.onDragStart;
       this.dragPositioner.onDragEnd = this.onDragEnd;
@@ -65,7 +65,7 @@ export class SFXFragmentListItemComponent<P extends Fragment> extends React.Comp
   {
     this.props.onClick(this.props.fragment);
   }
-  
+
   render()
   {
     const listItemProps: React.HTMLProps<HTMLLIElement> =

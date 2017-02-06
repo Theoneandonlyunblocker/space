@@ -6,7 +6,7 @@ import SFXFragmentProp from "./props/SFXFragmentProp";
 
 interface PropTypes extends React.Props<any>
 {
-  fragment: SFXFragment<any, any>;
+  fragment: SFXFragment<any>;
   onPropValueChange: () => void;
 }
 
@@ -18,12 +18,12 @@ export class SFXFragmentPropsListComponent extends React.Component<PropTypes, St
 {
   displayName = "SFXFragmentPropsList";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
+
   render()
   {
     const fragment = this.props.fragment;

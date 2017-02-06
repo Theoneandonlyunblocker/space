@@ -18,12 +18,12 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
   state: StateType;
 
   public containerDiv: HTMLDivElement;
-  
+
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
   stage: PIXI.Container
   fragmentContainer: PIXI.Container;
-  fragments: SFXFragment<any, any>[] = [];
-  
+  fragments: SFXFragment<any>[] = [];
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -37,7 +37,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
     this.fragmentContainer = new PIXI.Container();
     this.stage.addChild(this.fragmentContainer);
 
-    
+
     this.updateRenderer = this.updateRenderer.bind(this);
     this.handleResize = this.handleResize.bind(this);
   }
@@ -67,13 +67,13 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
     this.handleResize();
   }
 
-  public addFragment(fragment: SFXFragment<any, any>): void
+  public addFragment(fragment: SFXFragment<any>): void
   {
     this.fragmentContainer.addChild(fragment.displayObject);
     this.fragments.push(fragment);
     this.updateRenderer();
   }
-  public removeFragment(fragment: SFXFragment<any, any>): void
+  public removeFragment(fragment: SFXFragment<any>): void
   {
     this.fragmentContainer.removeChild(fragment.displayObject);
     this.fragments.splice(this.fragments.indexOf(fragment), 1);
@@ -91,7 +91,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
     this.renderer.render(this.stage);
   }
 
-  
+
   render()
   {
     return(
@@ -105,7 +105,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
         onMouseMove: !this.props.hasDraggingFragment ? null :
           this.props.moveDraggingFragment
       },
-        
+
       )
     );
   }

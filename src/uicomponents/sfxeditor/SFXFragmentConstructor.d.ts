@@ -4,7 +4,7 @@ interface Constructor<T>
 {
   new (...args: any[]): T;
 }
-type SFXFragmentConstructorFunction = Constructor<SFXFragment<any, any>>;
+type SFXFragmentConstructorFunction = Constructor<SFXFragment<any>>;
 
 declare interface SFXFragmentConstructor
 {

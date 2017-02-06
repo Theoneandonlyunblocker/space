@@ -7,7 +7,7 @@ import SFXFragmentPropVecBase from "./VecBase";
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  fragment: SFXFragment<any, any>;
+  fragment: SFXFragment<any>;
   onValueChange: () => void;
 
   base: number;
@@ -23,12 +23,12 @@ export class SFXFragmentPropRampingValueComponent extends React.Component<PropTy
 {
   displayName = "SFXFragmentPropRampingValue";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
+
   render()
   {
     return(

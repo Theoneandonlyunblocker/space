@@ -14,9 +14,9 @@ import
 interface PropTypes extends React.Props<any>
 {
   availableFragmentConstructors: SFXFragmentConstructor[];
-  selectedFragment: SFXFragment<any, any>;
+  selectedFragment: SFXFragment<any>;
   onSelectedFragmentPropValueChange: () => void;
-  selectFragment: (fragment: SFXFragment<any, any>) => void;
+  selectFragment: (fragment: SFXFragment<any>) => void;
 
   onFragmentListDragStart: (fragmentConstructor: SFXFragmentConstructor) => void;
   onFragmentListDragEnd: () => void;
@@ -31,7 +31,7 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
 {
   displayName = "SFXEditorSelection";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -51,7 +51,7 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
       activeTab: tabType
     });
   }
-  
+
   render()
   {
 
@@ -81,7 +81,7 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
         }));
         break;
     }
-    
+
     return(
       React.DOM.div(
       {

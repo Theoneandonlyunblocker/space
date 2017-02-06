@@ -14,7 +14,7 @@ export interface VecProp
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  fragment: SFXFragment<any, any>;
+  fragment: SFXFragment<any>;
   onValueChange: () => void;
 
   propProps: VecProp[];
@@ -28,7 +28,7 @@ export class SFXFragmentPropVecBaseComponent extends React.Component<PropTypes, 
 {
   displayName = "SFXFragmentPropVecBase";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -47,7 +47,7 @@ export class SFXFragmentPropVecBaseComponent extends React.Component<PropTypes, 
 
     this.props.onValueChange();
   }
-  
+
   render()
   {
     return(

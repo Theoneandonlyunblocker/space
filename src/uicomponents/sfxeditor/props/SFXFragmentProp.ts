@@ -21,7 +21,7 @@ interface PropTypes extends React.Props<any>
 {
   propName: string;
   propType: SFXFragmentPropType;
-  fragment: SFXFragment<any, any>;
+  fragment: SFXFragment<any>;
   onPropValueChange: () => void;
 }
 
@@ -34,7 +34,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
 {
   displayName = "SFXFragmentProp";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -54,7 +54,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
       isCollapsed: !this.state.isCollapsed
     });
   }
-  
+
   render()
   {
     let propValuesElement: React.ReactElement<any>;
@@ -136,7 +136,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
         break;
       }
     }
-    
+
     return(
       React.DOM.div(
       {

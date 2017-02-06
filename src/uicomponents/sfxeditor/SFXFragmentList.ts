@@ -6,7 +6,7 @@ import SFXFragmentConstructor from "./SFXFragmentConstructor";
 
 import SFXFragmentListItem from "./SFXFragmentListItem";
 
-type Fragment = SFXFragment<any, any> | SFXFragmentConstructor;
+type Fragment = SFXFragment<any> | SFXFragmentConstructor;
 
 interface PropTypes<P extends Fragment> extends React.Props<any>
 {
@@ -15,7 +15,7 @@ interface PropTypes<P extends Fragment> extends React.Props<any>
   isDraggable: boolean;
   onDragStart?: (fragment: P) => void;
   onDragEnd?: () => void;
-  
+
   onClick?: (fragment: P) => void;
 }
 
@@ -27,12 +27,12 @@ export class SFXFragmentListComponent<P extends Fragment> extends React.Componen
 {
   displayName = "SFXFragmentList";
   state: StateType;
-  
+
   constructor(props: PropTypes<P>)
   {
     super(props);
   }
-  
+
   render()
   {
     return(

@@ -1,6 +1,6 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
-import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
+import {SFXFragmentPropType} from "./SFXFragmentPropTypes";
 import
 {
   shallowCopy
@@ -8,17 +8,18 @@ import
 
 let idGenerator = 0;
 
-abstract class SFXFragment<P extends PartialProps, PartialProps>
+abstract class SFXFragment<P>
 {
   public id: number;
   public abstract key: string;
   public abstract displayName: string;
-  
-  public propTypes: SFXFragmentPropTypes;
+
+  // public propTypes: SFXFragmentPropTypes;
+  public propTypes: {[K in keyof P]: SFXFragmentPropType}
   private readonly defaultProps: P;
   public readonly props: P;
 
-  
+
   protected _displayObject: PIXI.DisplayObject;
   public get displayObject(): PIXI.DisplayObject
   {
@@ -30,7 +31,7 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
     if (oldDisplayObject)
     {
       newDisplayObject.position = oldDisplayObject.position.clone();
-      
+
       const parent = oldDisplayObject.parent;
       if (parent)
       {
@@ -59,7 +60,7 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
   {
     this.displayObject.scale.set(scale.x, scale.y);
   }
-  constructor(propTypes: SFXFragmentPropTypes, defaultProps: P, props?: PartialProps)
+  constructor(propTypes: SFXFragmentPropTypes, defaultProps: P, props?: Partial<P>)
   {
     this.id = idGenerator++;
 
@@ -82,7 +83,7 @@ abstract class SFXFragment<P extends PartialProps, PartialProps>
     this.setProps(this.defaultProps);
   }
 
-  private setProps(props: PartialProps): void
+  private setProps(props: Partial<P>): void
   {
     for (let prop in props)
     {

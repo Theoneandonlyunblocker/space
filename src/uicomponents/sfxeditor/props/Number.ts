@@ -7,7 +7,7 @@ import ControlledNumberInput from "../../generic/ControlledNumberInput";
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  fragment: SFXFragment<any, any>;
+  fragment: SFXFragment<any>;
   onValueChange: () => void;
 
   value: number;
@@ -21,7 +21,7 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
 {
   displayName = "SFXFragmentPropNumber";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -45,7 +45,7 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
 
     this.props.onValueChange();
   }
-  
+
   render()
   {
     return(
@@ -61,7 +61,7 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
           onValueChange: (newValue) =>
           {
             this.props.fragment.props[this.props.propName] = newValue;
-            
+
             this.props.onValueChange();
           }
         })

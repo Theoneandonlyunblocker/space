@@ -6,7 +6,7 @@ import SFXFragmentPropsList from "./SFXFragmentPropsList";
 
 interface PropTypes extends React.Props<any>
 {
-  fragment: SFXFragment<any, any>;
+  fragment: SFXFragment<any>;
   onActiveFragmentPropValueChange: () => void;
 }
 
@@ -18,7 +18,7 @@ export class SFXFragmentEditorComponent extends React.Component<PropTypes, State
 {
   displayName = "SFXFragmentEditor";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -31,7 +31,7 @@ export class SFXFragmentEditorComponent extends React.Component<PropTypes, State
     this.props.fragment.setDefaultProps();
     this.props.onActiveFragmentPropValueChange();
   }
-  
+
   render()
   {
     return(

@@ -83,8 +83,8 @@ interface StateType
   currentTime?: number;
   SFXDuration?: number;
 
-  selectedFragment?: SFXFragment<any, any>;
-  draggingFragment?: SFXFragment<any, any>;
+  selectedFragment?: SFXFragment<any>;
+  draggingFragment?: SFXFragment<any>;
 }
 
 export class SFXEditorComponent extends React.Component<PropTypes, StateType>
@@ -96,7 +96,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
   animationHandle: number;
 
   display: SFXEditorDisplayComponent;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -111,15 +111,15 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     this.handleChangeTime = this.handleChangeTime.bind(this);
     this.handleChangeSFXDuration = this.handleChangeSFXDuration.bind(this);
     this.togglePlay = this.togglePlay.bind(this);
-    this.handleFragmentConstructorDragStart = this.handleFragmentConstructorDragStart.bind(this); 
-    this.handleFragmentConstructorDragEnd = this.handleFragmentConstructorDragEnd.bind(this); 
+    this.handleFragmentConstructorDragStart = this.handleFragmentConstructorDragStart.bind(this);
+    this.handleFragmentConstructorDragEnd = this.handleFragmentConstructorDragEnd.bind(this);
     this.handleFragmentDragMove = this.handleFragmentDragMove.bind(this);
     this.selectFragment = this.selectFragment.bind(this);
     this.handleSelectedFragmentPropValueChange = this.handleSelectedFragmentPropValueChange.bind(this);
 
     this.advanceTime = this.advanceTime.bind(this);
   }
-  
+
   private handleChangeTime(e: React.FormEvent): void
   {
     const target = <HTMLInputElement> e.target;
@@ -198,7 +198,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
   {
     this.display.animateFragments(relativeTime);
     this.display.updateRenderer();
-    
+
     this.setState(
     {
       currentTime: relativeTime
@@ -235,14 +235,14 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     this.display.updateRenderer();
   }
 
-  private selectFragment(fragment: SFXFragment<any, any>): void
+  private selectFragment(fragment: SFXFragment<any>): void
   {
     this.setState(
     {
       selectedFragment: fragment
     });
   }
-  private updateFragment(fragment: SFXFragment<any, any>): void
+  private updateFragment(fragment: SFXFragment<any>): void
   {
     fragment.draw();
     fragment.animate(this.state.currentTime);
@@ -253,7 +253,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     this.updateFragment(this.state.selectedFragment);
     this.forceUpdate();
   }
-  
+
   render()
   {
     return(
@@ -317,7 +317,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
               value: "" + this.state.SFXDuration,
               onChange: this.handleChangeSFXDuration
             },
-              
+
             )
           )
         ),

@@ -9,7 +9,7 @@ import ColorSetter from "../../setupgame/ColorSetter";
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  fragment: SFXFragment<any, any>;
+  fragment: SFXFragment<any>;
   onValueChange: () => void;
 
   color: Color;
@@ -23,7 +23,7 @@ export class SFXFragmentPropColorComponent extends React.Component<PropTypes, St
 {
   displayName = "SFXFragmentPropColor";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -42,7 +42,7 @@ export class SFXFragmentPropColorComponent extends React.Component<PropTypes, St
 
     this.props.onValueChange();
   }
-  
+
   render()
   {
     return(

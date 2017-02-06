@@ -7,7 +7,7 @@ import SFXFragmentPropVecBase from "./VecBase";
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  fragment: SFXFragment<any, any>;
+  fragment: SFXFragment<any>;
   onValueChange: () => void;
 
   x: number;
@@ -22,12 +22,12 @@ export class SFXFragmentPropPointComponent extends React.Component<PropTypes, St
 {
   displayName = "SFXFragmentPropPoint";
   state: StateType;
-  
+
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
+
   render()
   {
     return(
