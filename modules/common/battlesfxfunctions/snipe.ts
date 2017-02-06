@@ -96,11 +96,11 @@ function snipe(type: UnitAttribute, params: SFXParams)
   const maxSpeedAt1000Duration = params.width * params.duration / 2;
   const maxSpeed = maxSpeedAt1000Duration * (1000 / params.duration);
   const acceleration = maxSpeed / 0.5;
-  
+
   const projectileColorMatrixFilter = new ColorMatrixFilter();
   projectileColorMatrixFilter.multiplyByColor(colors[type]);
   projectileColorMatrixFilter.multiplyRGB(3.0);
-  
+
   const projectileFragment = new ProjectileAttack(
   {
     makeProjectileSprite: (i) =>
@@ -112,10 +112,10 @@ function snipe(type: UnitAttribute, params: SFXParams)
 
       return sprite;
     },
-    
+
     maxSpeed: maxSpeed,
     acceleration: acceleration,
-    
+
     amountToSpawn: 1,
     useSequentialAttackOriginPoints: false,
 
@@ -146,7 +146,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
       params.renderer.render(particleContainer, particleRenderTexture, false);
 
       params.renderer.render(particleRenderSprite, particleBufferTexture, true);
-      
+
 
       protonWrapper.update();
     },
@@ -196,7 +196,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
     const particleTexture = (() =>
     {
       const particleSize = emitterData.size;
-      
+
       const gfx = new PIXI.Graphics();
       gfx.beginFill(emitterData.color);
       gfx.drawRect(
@@ -241,7 +241,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
     protonWrapper.onParticleUpdated[emitterData.name] = (particle: Proton.Particle) =>
     {
       const sprite = <PIXI.DisplayObject> particle.sprite;
-      
+
       sprite.position.x = particle.p.x;
       sprite.position.y = particle.p.y;
 
@@ -283,10 +283,10 @@ function snipe(type: UnitAttribute, params: SFXParams)
 export default function preLoadedSnipe(type: UnitAttribute, params: SFXParams)
 {
   const loader = new PIXI.loaders.Loader();
-  
+
   loader.add(projectileURL);
-  
-  loader.load((loader) =>
+
+  loader.load(() =>
   {
     snipe(type, params);
   });

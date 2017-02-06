@@ -5,7 +5,7 @@ declare interface UnitArchetype
   type: string;
   idealWeightInFleet: number; // relative to others
   idealWeightInBattle: number;
-  
+
   // one of these two must be defined
   rowScores?:
   {

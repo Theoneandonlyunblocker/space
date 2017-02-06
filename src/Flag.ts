@@ -12,9 +12,9 @@ import FlagSaveData from "./savedata/FlagSaveData";
 
 export class Flag
 {
+  public backgroundColor: Color | null;
+  public emblems: Emblem[] = [];
   private seed: string;
-  private backgroundColor: Color | null;
-  private emblems: Emblem[] = [];
 
   private cachedCanvases:
   {
@@ -54,10 +54,10 @@ export class Flag
   {
     this.emblems.push(emblem);
   }
-  // public setCustomImage(...args: any[]): void
-  // {
+  public setCustomImage(imageData: string): void
+  {
 
-  // }
+  }
   public getCanvas(
     width: number,
     height: number,

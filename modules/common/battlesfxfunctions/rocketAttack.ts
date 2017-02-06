@@ -20,7 +20,7 @@ function rocketAttack(params: SFXParams)
     container.x = params.width;
     container.scale.x = -1;
   }
-  
+
   const startTime = Date.now();
   let impactHasOccurred = false;
 
@@ -41,7 +41,7 @@ function rocketAttack(params: SFXParams)
       clip: PIXI.extras.AnimatedSprite;
       startTime: number;
       relativeTimePerFrame: number;
-    } 
+    }
   } = {};
 
   const relativeTimePerSecond = 1000 / params.duration;
@@ -56,7 +56,7 @@ function rocketAttack(params: SFXParams)
 
     maxSpeed: maxSpeed,
     acceleration: acceleration,
-    
+
     amountToSpawn: offsetUserData.sequentialAttackOriginPoints.length > 1 ?
       offsetUserData.sequentialAttackOriginPoints.length :
       8,
@@ -117,7 +117,7 @@ function rocketAttack(params: SFXParams)
 
   projectileAttackFragment.draw(offsetUserData, offsetTargetData);
   container.addChild(projectileAttackFragment.displayObject);
-  
+
   function animate()
   {
     const elapsedTime = Date.now() - startTime;
@@ -135,7 +135,7 @@ function rocketAttack(params: SFXParams)
     }
   }
 
-  
+
   params.triggerStart(container);
 
   animate();
@@ -144,11 +144,11 @@ function rocketAttack(params: SFXParams)
 export default function preLoadedRocketAttack(params: SFXParams)
 {
   const loader = new PIXI.loaders.Loader();
-  
+
   loader.add("explosion", "modules/common/battlesfxfunctions/img/explosion.json");
   loader.add(rocketUrl);
-  
-  loader.load((loader) =>
+
+  loader.load(() =>
   {
     rocketAttack(params);
   });

@@ -31,61 +31,36 @@ import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
 import UnitArchetype from "./templateinterfaces/UnitArchetype";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
-
-type TemplateKey =
-  "Abilities" |
-  "AITemplateConstructors" |
-  "AttitudeModifiers" |
-  "BattleSFX" |
-  "Buildings" |
-  "Items" |
-  "MapGen" |
-  "MapRendererLayers" |
-  "MapRendererMapModes" |
-  "Notifications" |
-  "PassiveSkills" |
-  "Personalities" |
-  "Portraits" |
-  "Races" |
-  "Resources" |
-  "StatusEffects" |
-  "SubEmblems" |
-  "Technologies" |
-  "UnitArchetypes" |
-  "Units";
-
-type TemplateIndex<T> = {[type: string]: T}
-
 interface Templates
 {
-  Abilities: TemplateIndex<AbilityTemplate>;
-  AITemplateConstructors: TemplateIndex<AITemplateConstructor<any>>;
-  AttitudeModifiers: TemplateIndex<AttitudeModifierTemplate>;
-  BattleSFX: TemplateIndex<BattleSFXTemplate>;
-  Buildings: TemplateIndex<BuildingTemplate>;
-  Items: TemplateIndex<ItemTemplate>;
-  MapGen: TemplateIndex<MapGenTemplate>;
-  MapRendererLayers: TemplateIndex<MapRendererLayerTemplate>;
-  MapRendererMapModes: TemplateIndex<MapRendererMapModeTemplate>;
-  Notifications: TemplateIndex<NotificationTemplate>;
-  PassiveSkills: TemplateIndex<PassiveSkillTemplate>;
-  Personalities: TemplateIndex<Personality>;
-  Portraits: TemplateIndex<PortraitTemplate>;
-  Races: TemplateIndex<RaceTemplate>;
-  Resources: TemplateIndex<ResourceTemplate>;
-  StatusEffects: TemplateIndex<StatusEffectTemplate>;
-  SubEmblems: TemplateIndex<SubEmblemTemplate>;
-  Technologies: TemplateIndex<TechnologyTemplate>;
-  UnitArchetypes: TemplateIndex<UnitArchetype>;
-  Units: TemplateIndex<UnitTemplate>;
+  Abilities: TemplateCollection<AbilityTemplate>;
+  AITemplateConstructors: TemplateCollection<AITemplateConstructor<any>>;
+  AttitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
+  BattleSFX: TemplateCollection<BattleSFXTemplate>;
+  Buildings: TemplateCollection<BuildingTemplate>;
+  Items: TemplateCollection<ItemTemplate>;
+  MapGen: TemplateCollection<MapGenTemplate>;
+  MapRendererLayers: TemplateCollection<MapRendererLayerTemplate>;
+  MapRendererMapModes: TemplateCollection<MapRendererMapModeTemplate>;
+  Notifications: TemplateCollection<NotificationTemplate>;
+  PassiveSkills: TemplateCollection<PassiveSkillTemplate>;
+  Personalities: TemplateCollection<Personality>;
+  Portraits: TemplateCollection<PortraitTemplate>;
+  Races: TemplateCollection<RaceTemplate>;
+  Resources: TemplateCollection<ResourceTemplate>;
+  StatusEffects: TemplateCollection<StatusEffectTemplate>;
+  SubEmblems: TemplateCollection<SubEmblemTemplate>;
+  Technologies: TemplateCollection<TechnologyTemplate>;
+  UnitArchetypes: TemplateCollection<UnitArchetype>;
+  Units: TemplateCollection<UnitTemplate>;
 }
 
 export default class ModuleData
 {
   private subModuleFiles: ModuleFile[] = [];
 
-  mapBackgroundDrawingFunction: BackgroundDrawingFunction; 
-  starBackgroundDrawingFunction: BackgroundDrawingFunction; 
+  mapBackgroundDrawingFunction: BackgroundDrawingFunction;
+  starBackgroundDrawingFunction: BackgroundDrawingFunction;
 
   public Templates: Templates =
   {
@@ -110,7 +85,7 @@ export default class ModuleData
     UnitArchetypes: {},
     Units: {}
   };
-  
+
   public ruleSet: RuleSetValues = {};
 
   public scripts: ModuleScripts;
@@ -121,7 +96,7 @@ export default class ModuleData
   {
     this.scripts = new ModuleScripts();
   }
-  public copyTemplates<T>(source: TemplateCollection<T>, category: TemplateKey): void
+  public copyTemplates<T>(source: TemplateCollection<T>, category: keyof Templates): void
   {
     if (!this.Templates[category])
     {
@@ -137,7 +112,8 @@ export default class ModuleData
         console.warn("Duplicate template identifier for " + templateType + " in " + category);
         continue;
       }
-      this.Templates[category][templateType] = source[templateType];
+      // TODO 05.02.2017 | bad typing
+      this.Templates[category][templateType] = <any>source[templateType];
     }
   }
   public copyAllTemplates(source: Templates): void
@@ -146,7 +122,7 @@ export default class ModuleData
     {
       if (source[category])
       {
-        this.copyTemplates(source[category], <TemplateKey>category);
+        this.copyTemplates(source[category], <keyof Templates>category);
       }
     }
   }
