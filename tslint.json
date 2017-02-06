@@ -39,7 +39,6 @@
     "no-bitwise": true,
     "no-conditional-assignment": true,
     "no-construct": true,
-    "no-duplicate-key": true,
     "no-eval": true,
     // https://github.com/palantir/tslint/issues/1445
     // "no-for-in-array": true,
@@ -61,7 +60,7 @@
     "trailing-comma": [true, {"multiline": "always", "singleline": "never"}],
 
     "align": [true, "parameters", "statements"],
-    "arrow-parens": true,
+    "arrow-parens": [true, "ban-single-arg-parens"],
     "class-name": true,
     "comment-format": [true, "check-space"],
     "interface-name": [true, "never-prefix"],
@@ -72,6 +71,39 @@
     "ordered-imports": [true],
     "quotemark": [true, "double"],
     "semicolon": [true, "always"],
-    "variable-name": [true, "ban-keywords", "check-format"]
+    "variable-name": [true, "ban-keywords", "check-format"],
+
+    "prefer-const": true,
+    // might be good for later
+    // "strict-boolean-expressions": ,
+    "no-magic-numbers": true,
+    // probably not
+    // "import-blacklist": ,
+    "no-string-throw": true,
+    "no-empty-interface": true,
+    "callable-types": true,
+
+    "space-before-function-paren": "never",
+    "import-spacing": true,
+    "unified-signatures": true,
+    "arrow-return-shorthand": [true],
+    // maybe later
+    // "no-boolean-literal-compare": ,
+    "no-unnecessary-initializer": true,
+    "no-misused-new": true
+    // maybe later
+    // "prefer-method-signature": ,
   }
 }
+
+// requires typechecking
+    // "promise-function-async": true,
+    // "no-inferred-empty-object-type": true,
+    // "no-void-expression": true,
+    // "no-unbound-method": true,
+    // "no-unsafe-any": true,
+    // "no-unnecessary-qualifier": true,
+    // "await-promise": true,
+    // "no-floating-promises": true,
+    // "strict-type-predicates": true,
+
