@@ -55,7 +55,7 @@ export default function cacheSpriteSheetAsImages(sheetData: SpriteSheetData, she
     //   return;
     // }
     onImageCreated(spriteName, image);
-  }
+  };
 
   processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
 }

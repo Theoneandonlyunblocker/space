@@ -160,7 +160,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     }
     if (this.props.isTargetOfActiveEffect)
     {
-      wrapperProps.className += " active-effect-unit"
+      wrapperProps.className += " active-effect-unit";
     }
     const bodyElements =
     [

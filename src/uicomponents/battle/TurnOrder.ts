@@ -15,7 +15,7 @@ export interface PropTypes extends React.Props<any>
   {
     side1: Unit[];
     side2: Unit[];
-  }
+  };
   turnOrderDisplayData: TurnOrderDisplayData[];
   hoveredUnit: Unit;
   hoveredGhostIndex: number;
@@ -149,7 +149,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         animationState: AnimationState.idle,
 
       });
-    }, this.getTransitionDuration())
+    }, this.getTransitionDuration());
   }
   private removeDeadUnits()
   {
@@ -200,7 +200,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         }, () =>
         {
           this.removeUnit();
-        })
+        });
       }, this.getTransitionDuration());
     });
   }

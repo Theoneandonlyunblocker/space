@@ -205,7 +205,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
       {
         this.popupComponentsByID[id] = component;
       }
-    }
+    };
     popupProps.incrementZIndex = this.incrementZIndex;
     popupProps.closePopup = this.closePopup.bind(this, id);
     popupProps.getInitialPosition = this.getInitialPosition;

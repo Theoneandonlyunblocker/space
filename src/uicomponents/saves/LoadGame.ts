@@ -201,8 +201,8 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       {
         callback();
       }
-    }
-    var i = this.state.saveKeysToDelete.indexOf(saveKey)
+    };
+    var i = this.state.saveKeysToDelete.indexOf(saveKey);
     if (i !== -1)
     {
       var newsaveKeysToDelete = this.state.saveKeysToDelete.slice(0);

@@ -45,7 +45,7 @@ const fogOfWar: MapRendererLayerTemplate =
 
     return doc;
   },
-}
+};
 
 export default fogOfWar;
 

@@ -15,6 +15,6 @@ const MapLayerTemplates: TemplateCollection<MapRendererLayerTemplate> =
   [MapLayers.fogOfWar.key]: MapLayers.fogOfWar,
   [MapLayers.ownerBorders.key]: MapLayers.ownerBorders,
   [MapLayers.starIncome.key]: MapLayers.starIncome,
-}
+};
 
 export default MapLayerTemplates;

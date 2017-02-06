@@ -64,6 +64,6 @@ const fightInvadingEnemy: ObjectiveTemplate =
     return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
   unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget,
-}
+};
 
 export default fightInvadingEnemy;

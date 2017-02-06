@@ -16,19 +16,19 @@ export const rocketAttack: BattleSFXTemplate =
   duration: 1500,
   battleOverlay: rocketAttackDrawingFunction,
   SFXWillTriggerEffect: true,
-}
+};
 export const guard: BattleSFXTemplate =
 {
   duration: 750,
   battleOverlay: guardDrawingFunction,
   SFXWillTriggerEffect: true,
-}
+};
 export const beam: BattleSFXTemplate =
 {
   duration: 3500,
   battleOverlay: beamDrawingFunction,
   SFXWillTriggerEffect: true,
-}
+};
 
 function makeSnipeTemplate(attribute: UnitAttribute): BattleSFXTemplate
 {
@@ -54,11 +54,11 @@ export const videoTest: BattleSFXTemplate =
       sprite.shader = new BlackToAlphaFilter();
     }),
   SFXWillTriggerEffect: false,
-}
+};
 
 export const placeholder: BattleSFXTemplate =
 {
   duration: 1000,
   battleOverlay: placeholderFunction,
   SFXWillTriggerEffect: false,
-}
+};

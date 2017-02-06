@@ -53,7 +53,7 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
   }
   onDragEnd()
   {
-    this.props.onDragEnd()
+    this.props.onDragEnd();
   }
 
   render()

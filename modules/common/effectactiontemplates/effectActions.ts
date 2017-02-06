@@ -82,7 +82,7 @@ const calculateHealthAdjustment = (user: Unit, target: Unit, data: HealthAdjustm
   }
 
   return healAmount;
-}
+};
 
 interface ExecutedEffectsResultAdjustment
 {
@@ -111,7 +111,7 @@ export const inflictDamage: UnboundEffectAction<DamageWithType> = function(
   executedEffectsResult[resultType.healthChanged] -= adjustedDamage;
 
   target.receiveDamage(adjustedDamage);
-}
+};
 
 export const addGuard: UnboundEffectAction<Adjustment & GuardCoverageObj> = function(
   data: Adjustment & GuardCoverageObj,
@@ -123,7 +123,7 @@ export const addGuard: UnboundEffectAction<Adjustment & GuardCoverageObj> = func
 {
   const guardAmount = user.attributes.modifyValueByAttributes(data.flat, data.perAttribute);
   target.addGuard(guardAmount, data.coverage);
-}
+};
 
 export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = function(
   data: {baseDamage: number},
@@ -148,7 +148,7 @@ export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = f
       executedEffectsResult,
     );
   }
-}
+};
 
 
 export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustment> = function(
@@ -167,7 +167,7 @@ export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustm
   {
     target.battleStats.captureChance *= data.multiplier;
   }
-}
+};
 export const addStatusEffect: UnboundEffectAction<{template: StatusEffectTemplate, duration: number}> = function(
   data: {template: StatusEffectTemplate, duration: number},
   user: Unit,
@@ -182,7 +182,7 @@ export const addStatusEffect: UnboundEffectAction<{template: StatusEffectTemplat
     turnsToStayActiveFor: data.duration,
     sourceUnit: user,
   }));
-}
+};
 export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> = function(
   data: ExecutedEffectsResultAdjustment & HealthAdjustment,
   user: Unit,
@@ -208,7 +208,7 @@ export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment &
   executedEffectsResult[resultType.healthChanged] += clamped;
 
   target.addHealth(clamped);
-}
+};
 export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> = function(
   data: ExecutedEffectsResultAdjustment & HealthAdjustment,
   user: Unit,
@@ -226,5 +226,5 @@ export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResul
 
   target.addMaxHealth(healAmount);
   target.addHealth(healAmount);
-}
+};
 

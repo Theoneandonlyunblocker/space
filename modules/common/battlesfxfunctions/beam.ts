@@ -36,7 +36,7 @@ export default function beam(props: SFXParams)
   {
     x: beamOrigin.x / props.width,
     y: beamOrigin.y / props.height,
-  }
+  };
 
   const renderTexture = PIXI.RenderTexture.create(props.width, props.height);
   var renderedSprite = new PIXI.Sprite(renderTexture);
@@ -122,7 +122,7 @@ export default function beam(props: SFXParams)
 
     sprite.scale.x = particle.scale;
     sprite.scale.y = particle.scale;
-  }
+  };
   //----------INIT SMALL EMITTER
   var smallEmitter = new Proton.BehaviourEmitter();
   smallEmitter.p.x = beamOrigin.x + 50;
@@ -183,7 +183,7 @@ export default function beam(props: SFXParams)
       spikeIntensity: Math.pow(lifeLeft, 1.5) * 0.4,
       highlightIntensity: Math.pow(lifeLeft, 1.5),
     });
-  }
+  };
 
   protonWrapper.onParticleUpdated["smallParticles"] = onParticleUpdateFN;
   protonWrapper.onSpriteCreated["smallParticles"] = function(sprite: PIXI.Sprite)
@@ -228,7 +228,7 @@ export default function beam(props: SFXParams)
       spikeIntensity: 1 - time * 0.1,
       highlightIntensity: Math.pow(lifeLeft, 2.0),
     });
-  }
+  };
 
   protonWrapper.onParticleUpdated["shinyParticles"] = onParticleUpdateFN;
   protonWrapper.onSpriteCreated["shinyParticles"] = function(sprite: PIXI.Sprite)
@@ -283,7 +283,7 @@ export default function beam(props: SFXParams)
   {
     x: props.height * 1.5,
     y: props.height * 3,
-  }
+  };
 
   const lightBurstFragment = new LightBurst(
   {
@@ -319,7 +319,7 @@ export default function beam(props: SFXParams)
     particleShaderColorArray[2] = particleShaderColor.b;
     particleShaderColorArray[3] = particleShaderColor.a;
 
-    var relativeElapsedTime = elapsedTime / props.duration
+    var relativeElapsedTime = elapsedTime / props.duration;
     var lifeLeft = 1 - relativeElapsedTime;
 
     if (relativeElapsedTime >= relativeImpactTime - 0.02)
@@ -331,7 +331,7 @@ export default function beam(props: SFXParams)
         var emitterLife = lifeLeftInSeconds * 0.8;
 
         var velocityInitialize = new Proton.Velocity(new Proton.Span(1.5, 3),
-          new Proton.Span(270, 25, true), "polar")
+          new Proton.Span(270, 25, true), "polar");
         protonWrapper.addInitializeToExistingParticles(shinyEmitter, velocityInitialize);
 
         shinyEmitter.removeInitialize(shinyEmitterLifeInitialize);

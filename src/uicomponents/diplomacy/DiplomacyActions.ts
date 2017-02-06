@@ -101,7 +101,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
 
     var stateObj: any = {};
     stateObj[popupType] = id;
-    this.setState(stateObj)
+    this.setState(stateObj);
   }
 
   togglePopup(popupType: string)

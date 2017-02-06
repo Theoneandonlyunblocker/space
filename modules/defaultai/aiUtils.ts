@@ -20,7 +20,7 @@ export interface ScoresByStar
   {
     star: Star;
     score: number;
-  }
+  };
 }
 export function defaultUnitDesireFN(front: Front)
 {

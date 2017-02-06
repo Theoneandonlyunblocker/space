@@ -8,7 +8,7 @@ interface TutorialStatusValues
 const defaultTutorialStatus =
 {
   introTutorial: TutorialState.show,
-}
+};
 
 class TutorialStatus implements TutorialStatusValues
 {

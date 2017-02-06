@@ -157,7 +157,7 @@ export default class MouseEventHandler
       {
         e.preventDefault();
       }
-    })
+    });
     pixiCanvas.addEventListener("mousewheel", e =>
     {
       if (e.target === pixiCanvas)
@@ -205,7 +205,7 @@ export default class MouseEventHandler
     }
     this.preventingGhost[type] = window.setTimeout(() =>
     {
-      this.preventingGhost[type] = null
+      this.preventingGhost[type] = null;
     }, delay);
   }
   private makeUITransparent(): void

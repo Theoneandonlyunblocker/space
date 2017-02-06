@@ -37,7 +37,7 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
       " unsuccesfully ";
     var controllerString = attackerGainedControl ?
       ` now ${victor.name.pluralizeVerbWithS("control")} ` :
-      ` ${victor.name.pluralizeVerbWithS("maintain")} control of `
+      ` ${victor.name.pluralizeVerbWithS("maintain")} control of `;
 
     return(
       React.DOM.div(

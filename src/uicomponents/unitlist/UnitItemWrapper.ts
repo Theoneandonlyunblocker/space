@@ -52,7 +52,7 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
     // the component won't accept the first drop properly
     if (this.props.onMouseUp)
     {
-      wrapperProps.onMouseUp = this.handleMouseUp
+      wrapperProps.onMouseUp = this.handleMouseUp;
     };
 
     if (this.props.currentDragItem)

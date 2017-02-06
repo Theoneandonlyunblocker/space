@@ -27,7 +27,7 @@ function wrapLifeCycleFunction(base: React.Component<any, any>, functionName: Li
     {
       originalFunction.apply(base, args);
     }
-  }
+  };
 }
 function wrapRenderFunction(base: React.Component<any, any>, mixins: MixinBase<any>[])
 {
@@ -41,7 +41,7 @@ function wrapRenderFunction(base: React.Component<any, any>, mixins: MixinBase<a
       mixin.onRender.call(mixin);
     });
     return originalFunction.apply(base, args);
-  }
+  };
 }
 
 export default function applyMixins(base: React.Component<any, any>, ...mixins: MixinBase<any>[])

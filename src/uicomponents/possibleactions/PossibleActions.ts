@@ -189,7 +189,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
         {
           key: attackTarget.enemy.id,
           attackTarget: attackTarget,
-        })
+        });
       }));
     }
 

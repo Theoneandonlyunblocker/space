@@ -28,7 +28,7 @@ const scoutingPerimeter: ObjectiveTemplate =
   {
     return {min: 1, ideal: 1};
   },
-}
+};
 
 scoutingPerimeter.creatorFunction = perimeterObjectiveCreation.bind(null, scoutingPerimeter, true, 0.3);
 

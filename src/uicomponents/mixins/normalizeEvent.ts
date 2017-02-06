@@ -24,7 +24,7 @@ function normalizeMouseEvent(nativeEvent: MouseEvent, reactEvent?: React.MouseEv
     stopPropagation: (reactEvent ?
       reactEvent.stopPropagation.bind(reactEvent) :
       nativeEvent.stopPropagation.bind(nativeEvent)),
-  })
+  });
 }
 function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEvent): NormalizedEvent
 {
@@ -47,7 +47,7 @@ function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEv
     stopPropagation: (reactEvent ?
       reactEvent.stopPropagation.bind(reactEvent) :
       nativeEvent.stopPropagation.bind(nativeEvent)),
-  })
+  });
 }
 
 export default function normalizeEvent(sourceEvent: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent): NormalizedEvent
@@ -60,7 +60,7 @@ export default function normalizeEvent(sourceEvent: MouseEvent | TouchEvent | Re
   {
     if (isReactEvent)
     {
-      return normalizeTouchEvent(<TouchEvent> castedEvent.nativeEvent, castedEvent)
+      return normalizeTouchEvent(<TouchEvent> castedEvent.nativeEvent, castedEvent);
     }
     else
     {
@@ -71,7 +71,7 @@ export default function normalizeEvent(sourceEvent: MouseEvent | TouchEvent | Re
   {
     if (isReactEvent)
     {
-      return normalizeMouseEvent(<MouseEvent> castedEvent.nativeEvent, castedEvent)
+      return normalizeMouseEvent(<MouseEvent> castedEvent.nativeEvent, castedEvent);
     }
     else
     {

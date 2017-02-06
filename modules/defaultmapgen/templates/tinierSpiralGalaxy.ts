@@ -86,6 +86,6 @@ const tinierSpiralGalaxy: MapGenTemplate =
       },
     },
   },
-}
+};
 
 export default tinierSpiralGalaxy;

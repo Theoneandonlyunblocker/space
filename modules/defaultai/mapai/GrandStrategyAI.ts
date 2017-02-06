@@ -51,7 +51,7 @@ export default class GrandStrategyAI
     {
       min: minStarsDesired,
       max: maxStarsDesired,
-    }
+    };
   }
 
   setDesires()

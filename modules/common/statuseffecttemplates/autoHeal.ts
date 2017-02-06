@@ -20,6 +20,6 @@ const autoHeal: StatusEffectTemplate =
       trigger: user => user.currentHealth < user.maxHealth,
     },
   ],
-}
+};
 
 export default autoHeal;

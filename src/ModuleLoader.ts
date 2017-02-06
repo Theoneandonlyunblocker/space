@@ -82,7 +82,7 @@ export default class ModuleLoader
       moduleFile.loadAssets(() =>
       {
         this.finishLoadingModuleFile(moduleFile);
-      })
+      });
     }
     else
     {
@@ -109,7 +109,7 @@ export default class ModuleLoader
       {
         afterLoaded();
       }
-    }
+    };
 
     moduleFilesToLoad.forEach(moduleFile =>
     {

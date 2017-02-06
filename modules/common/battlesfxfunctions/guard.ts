@@ -60,7 +60,7 @@ export default function guard(props: SFXParams)
         blockAlpha: 1 - relativeDistance,
       });
     }
-  }
+  };
 
   const container = new PIXI.Container();
 

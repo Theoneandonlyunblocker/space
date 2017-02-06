@@ -44,11 +44,11 @@ const fleets: MapRendererLayerTemplate =
     const mouseDownFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("mouseDown", event, fleet.location);
-    }
+    };
     const mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("mouseUp", event);
-    }
+    };
     const mouseOverFN = function(fleet: Fleet)
     {
       eventManager.dispatchEvent("hoverStar", fleet.location);
@@ -58,7 +58,7 @@ const fleets: MapRendererLayerTemplate =
         const front = attachedUnitData.get(fleet.units[0]).front;
         console.log(`${fleet.id}${front ? ", " + front.objective.type : ""}`);
       }
-    }
+    };
     const fleetClickFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
     {
       var originalEvent = <MouseEvent> event.data.originalEvent;;
@@ -66,7 +66,7 @@ const fleets: MapRendererLayerTemplate =
       {
         eventManager.dispatchEvent("selectFleets", [fleet]);
       }
-    }
+    };
     function singleFleetDrawFN(fleet: Fleet)
     {
       var fleetContainer = new PIXI.Container();
@@ -141,7 +141,7 @@ const fleets: MapRendererLayerTemplate =
 
     return doc;
   },
-}
+};
 
 export default fleets;
 

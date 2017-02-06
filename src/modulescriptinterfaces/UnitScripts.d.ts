@@ -10,4 +10,4 @@ export interface UnitScripts extends PartialUnitScripts
   removeFromPlayer: ((unit: Unit) => void)[];
 }
 
-export default UnitScripts
+export default UnitScripts;

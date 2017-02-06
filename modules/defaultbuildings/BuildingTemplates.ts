@@ -13,6 +13,6 @@ const BuildingTemplates: TemplateCollection<BuildingTemplate> =
   [Templates.deepSpaceRadar.type]: Templates.deepSpaceRadar,
   [Templates.resourceMine.type]: Templates.resourceMine,
   [Templates.reserachLab.type]: Templates.reserachLab,
-}
+};
 
 export default BuildingTemplates;

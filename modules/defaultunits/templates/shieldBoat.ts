@@ -82,6 +82,6 @@ const shieldBoat: UnitTemplate =
       distributionGroups.unique,
     ],
   },
-}
+};
 
 export default shieldBoat;

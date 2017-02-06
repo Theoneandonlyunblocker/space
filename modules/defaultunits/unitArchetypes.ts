@@ -13,7 +13,7 @@ export const combat: UnitArchetype =
     ROW_FRONT: 1,
     ROW_BACK: 0.6,
   },
-}
+};
 export const utility: UnitArchetype =
 {
   type: "utility",
@@ -24,7 +24,7 @@ export const utility: UnitArchetype =
     ROW_FRONT: 0.4,
     ROW_BACK: 0.6,
   },
-}
+};
 export const scouting: UnitArchetype =
 {
   type: "scouting",
@@ -35,7 +35,7 @@ export const scouting: UnitArchetype =
     ROW_FRONT: 0.01,
     ROW_BACK: 0.02,
   },
-}
+};
 export const defence: UnitArchetype =
 {
   type: "defence",
@@ -63,7 +63,7 @@ export const defence: UnitArchetype =
 
     return multiplier + totalDefenceUnderThreshhold * 0.2;
   },
-}
+};
 
 const UnitArchetypes: TemplateCollection<UnitArchetype> =
 {
@@ -71,6 +71,6 @@ const UnitArchetypes: TemplateCollection<UnitArchetype> =
   [utility.type]: utility,
   [scouting.type]: scouting,
   [defence.type]: defence,
-}
+};
 
 export default UnitArchetypes;

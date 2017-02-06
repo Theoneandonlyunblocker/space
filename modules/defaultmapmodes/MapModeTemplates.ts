@@ -10,6 +10,6 @@ const MapModeTemplates: TemplateCollection<MapRendererMapModeTemplate> =
   [MapModes.income.key]: MapModes.income,
   [MapModes.influence.key]: MapModes.influence,
   [MapModes.resources.key]: MapModes.resources,
-}
+};
 
 export default MapModeTemplates;

@@ -131,6 +131,6 @@ const debugShip: UnitTemplate =
     weight: 0,
     distributionGroups: [distributionGroups.debugModeOnly],
   },
-}
+};
 
 export default debugShip;

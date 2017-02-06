@@ -84,7 +84,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
             flag: this.props.flag2,
             facingRight: false,
           }),
-        )
+        );
         break;
       }
       case "active":
@@ -97,7 +97,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
         componentToRender = BattleFinish(
         {
           humanPlayerWonBattle: this.props.humanPlayerWonBattle,
-        })
+        });
         break;
       }
     }

@@ -80,6 +80,6 @@ const starIncome: MapRendererLayerTemplate =
     }
     return doc;
   },
-}
+};
 
 export default starIncome;

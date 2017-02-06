@@ -116,7 +116,7 @@ export default class AttitudeModifier
     }
     else
     {
-      return false
+      return false;
     }
   }
 

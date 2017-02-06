@@ -123,14 +123,14 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
       {
         className: "tutorial-flip-page tutorial-flip-page-back",
         onClick: this.flipPage.bind(this, -1),
-      }, "<")
+      }, "<");
     }
     else
     {
       backElement = React.DOM.div(
       {
         className: "tutorial-flip-page disabled",
-      })
+      });
     }
 
     var hasForwardArrow = this.state.currentPageIndex < this.props.pages.length - 1;
@@ -141,14 +141,14 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
       {
         className: "tutorial-flip-page tutorial-flip-page-forward",
         onClick: this.flipPage.bind(this, 1),
-      }, ">")
+      }, ">");
     }
     else
     {
       forwardElement = React.DOM.div(
       {
         className: "tutorial-flip-page disabled",
-      })
+      });
     }
 
     return(

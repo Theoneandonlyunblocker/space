@@ -285,7 +285,7 @@ export default class BattleScene
   {
     if (this.afterUnitsHaveFinishedUpdatingCallback && this.haveBothUnitsFinishedUpdating())
     {
-      var temp = this.afterUnitsHaveFinishedUpdatingCallback
+      var temp = this.afterUnitsHaveFinishedUpdatingCallback;
       this.afterUnitsHaveFinishedUpdatingCallback = null;
       temp();
     }

@@ -53,6 +53,6 @@ const defaultRuleSet: ModuleFile =
       },
     });
   },
-}
+};
 
 export default defaultRuleSet;

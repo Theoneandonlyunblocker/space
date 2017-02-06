@@ -67,7 +67,7 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
         amount: amount,
         income: income,
         key: resourceType,
-      }
+      };
       resourceElements.push(Resource(resourceData));
     }
 

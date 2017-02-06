@@ -19,7 +19,7 @@ const expandManufactoryCapacity: ObjectiveTemplate =
     // TODO economy ai
     // base priority = manufacturing demand / manufacturing capacity
 
-    var template = expandManufactoryCapacity
+    var template = expandManufactoryCapacity;
     return [new Objective(template, 0.5, null)];
   },
   economyRoutineFN: function(objective: Objective, economyAI: EconomyAI)
@@ -91,6 +91,6 @@ const expandManufactoryCapacity: ObjectiveTemplate =
       player.money -= app.moduleData.ruleSet.manufactory.buildCost;
     }
   },
-}
+};
 
 export default expandManufactoryCapacity;

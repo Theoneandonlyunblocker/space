@@ -63,6 +63,6 @@ const conquer: ObjectiveTemplate =
     return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
   unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget,
-}
+};
 
 export default conquer;

@@ -23,6 +23,6 @@ const defaultRaces: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultRaces;

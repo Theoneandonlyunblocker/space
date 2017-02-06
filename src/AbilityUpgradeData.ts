@@ -6,7 +6,7 @@ declare interface AbilityUpgradeData
   {
     base: AbilityBase;
     possibleUpgrades: AbilityBase[];
-  }
+  };
 }
 
 export default AbilityUpgradeData;

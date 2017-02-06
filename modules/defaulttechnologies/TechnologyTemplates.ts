@@ -12,7 +12,7 @@ export const stealth: TechnologyTemplate =
   {
     1: [stealthShip],
   },
-}
+};
 export const lasers: TechnologyTemplate =
 {
   key: "lasers",
@@ -20,7 +20,7 @@ export const lasers: TechnologyTemplate =
   description: "pew pew",
   maxLevel: 9,
   unlocksPerLevel: {},
-}
+};
 export const missiles: TechnologyTemplate =
 {
   key: "missiles",
@@ -28,7 +28,7 @@ export const missiles: TechnologyTemplate =
   description: "boom",
   maxLevel: 9,
   unlocksPerLevel: {},
-}
+};
 export const test1: TechnologyTemplate =
 {
   key: "test1",
@@ -36,7 +36,7 @@ export const test1: TechnologyTemplate =
   description: "test1",
   maxLevel: 1,
   unlocksPerLevel: {},
-}
+};
 export const test2: TechnologyTemplate =
 {
   key: "test2",
@@ -44,7 +44,7 @@ export const test2: TechnologyTemplate =
   description: "test2",
   maxLevel: 2,
   unlocksPerLevel: {},
-}
+};
 
 const TechnologyTemplates: TemplateCollection<TechnologyTemplate> =
 {
@@ -53,6 +53,6 @@ const TechnologyTemplates: TemplateCollection<TechnologyTemplate> =
   [missiles.key]: missiles,
   [test1.key]: test1,
   [test2.key]: test2,
-}
+};
 
 export default TechnologyTemplates;

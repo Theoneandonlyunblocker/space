@@ -80,7 +80,7 @@ export default class Battle
   })
   {
     this.side1 = props.side1;
-    this.side1Player = props.side1Player
+    this.side1Player = props.side1Player;
     this.side2 = props.side2;
     this.side2Player = props.side2Player;
     this.battleData = props.battleData;
@@ -104,7 +104,7 @@ export default class Battle
             self.unitsById[side[i][j].id] = side[i][j];
             self.unitsBySide[sideId].push(side[i][j]);
 
-            var pos = Battle.getAbsolutePositionFromSidePosition([i, j], sideId)
+            var pos = Battle.getAbsolutePositionFromSidePosition([i, j], sideId);
 
             self.initUnit(side[i][j], sideId, pos);
           }
@@ -121,7 +121,7 @@ export default class Battle
     {
       side1: this.getTotalCurrentHealthForSide("side1"),
       side2: this.getTotalCurrentHealthForSide("side2"),
-    }
+    };
 
     if (this.shouldBattleEnd())
     {
@@ -244,7 +244,7 @@ export default class Battle
     {
       side1: this.getExperienceGainedForSide("side1"),
       side2: this.getExperienceGainedForSide("side2"),
-    }
+    };
 
     this.forEachUnit(unit =>
     {

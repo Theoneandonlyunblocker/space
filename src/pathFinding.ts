@@ -6,11 +6,11 @@ export interface AStarGraph
   came:
   {
     [starID: number]: PathNode;
-  },
+  };
   cost:
   {
     [starID: number]: number;
-  },
+  };
 }
 
 export interface PathNode

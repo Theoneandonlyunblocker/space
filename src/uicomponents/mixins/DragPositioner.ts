@@ -61,7 +61,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       const propKeysMap =
       {
         containerElement: "containerElementDescriptor",
-      }
+      };
       for (let key in props)
       {
         if (propKeysMap[key])
@@ -199,7 +199,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     {
       x: clientRect.left + document.body.scrollLeft,
       y: clientRect.top + document.body.scrollTop,
-    }
+    };
 
     if (this.dragThreshhold <= 0)
     {
@@ -348,7 +348,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     {
       x: 0,
       y: 0,
-    }
+    };
 
     if (this.isDragging)
     {

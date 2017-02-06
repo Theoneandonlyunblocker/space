@@ -75,7 +75,7 @@ export default class Emblem
     }).filter(template =>
     {
       return !template.disallowRandomGeneration;
-    })
+    });
   }
   public isDrawable(): boolean
   {

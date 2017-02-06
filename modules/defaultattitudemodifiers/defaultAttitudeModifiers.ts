@@ -25,6 +25,6 @@ const defaultAttitudeModifiers: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultAttitudeModifiers;

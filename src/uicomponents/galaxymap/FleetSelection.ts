@@ -73,7 +73,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       var rightMostRect = rightMostNode.getBoundingClientRect();
       var ownBottom = domNode.getBoundingClientRect().bottom;
 
-      var first = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_main).firstChild
+      var first = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_main).firstChild;
 
       if (ownBottom > actionsRect.top)
       {
@@ -101,13 +101,13 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
 
   componentDidUpdate()
   {
-    this.setElementPosition()
+    this.setElementPosition();
   }
 
   componentWillUnmount()
   {
     eventManager.removeEventListener("possibleActionsUpdated", this.setElementPosition);
-    window.removeEventListener("resize", this.setElementPosition)
+    window.removeEventListener("resize", this.setElementPosition);
   }
 
   render()
@@ -155,7 +155,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       var mergeProps: React.HTMLAttributes =
       {
         className: "fleet-selection-controls-merge",
-      }
+      };
       if (allFleetsInSameLocation && !this.props.isInspecting && !fleetStealthsAreClashing)
       {
         mergeProps.onClick = this.mergeFleets;
@@ -169,7 +169,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       var reorganizeProps: React.HTMLAttributes =
       {
         className: "fleet-selection-controls-reorganize",
-      }
+      };
       if (allFleetsInSameLocation && selectedFleets.length === 2 && !this.props.isInspecting &&
         !fleetStealthsAreClashing)
       {
@@ -191,7 +191,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         React.DOM.button(mergeProps,
           "merge",
         ),
-      )
+      );
     }
 
     var fleetContents: React.ReactElement<any> = null;

@@ -118,14 +118,14 @@ function canUnitGuardTarget(unit: Unit, intendedTarget: Unit)
   {
     if (unit.battleStats.guardCoverage === GuardCoverage.all)
     {
-      return true
+      return true;
     }
     else if (unit.battleStats.guardCoverage === GuardCoverage.row)
     {
       // same row
       if (unit.battleStats.position[0] === intendedTarget.battleStats.position[0])
       {
-        return true
+        return true;
       }
     }
   }

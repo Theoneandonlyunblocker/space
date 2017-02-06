@@ -12,7 +12,7 @@ const Templates: TemplateCollection<MapGenTemplate> =
 {
   [spiralGalaxy.key]: spiralGalaxy,
   [tinierSpiralGalaxy.key]: tinierSpiralGalaxy,
-}
+};
 
 const defaultMapGen: ModuleFile =
 {
@@ -36,6 +36,6 @@ const defaultMapGen: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultMapGen;

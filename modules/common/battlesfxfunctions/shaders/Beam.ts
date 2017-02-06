@@ -42,7 +42,7 @@ interface PartialUniformValues
 
 export default class Beam extends PIXI.Filter
 {
-  public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
+  public uniforms: Uniforms; // needs to be public for PIXI, but shouldnt be accessed
 
   constructor(initialUniformValues?: PartialUniformValues)
   {
@@ -204,4 +204,4 @@ const sourceLines =
   "",
   "  gl_FragColor = color;",
   "}",
-]
+];

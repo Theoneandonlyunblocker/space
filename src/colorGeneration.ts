@@ -165,7 +165,7 @@ colorGenProps?:
   {
     min: (toContrastWithHUSL[0] - hMinDifference) % 1.0,
     max: (toContrastWithHUSL[0] + hMinDifference) % 1.0,
-  }
+  };
 
   const hRangeWithMinExclusion = excludeFromRange(hRange, hExclusionRange);
   const candidateHValue = randomSelectFromRanges(hRangeWithMinExclusion);
@@ -213,5 +213,5 @@ export function generateColorScheme(mainColor?: Color)
   {
     main: main,
     secondary: generateSecondaryColor(main),
-  })
+  });
 }

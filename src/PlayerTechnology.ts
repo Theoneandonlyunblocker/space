@@ -32,7 +32,7 @@ export default class PlayerTechnology
     raceTechnologyValues.forEach(raceValue =>
     {
       const techKey = raceValue.tech.key;
-      const technology = app.moduleData.Templates.Technologies[techKey]
+      const technology = app.moduleData.Templates.Technologies[techKey];
 
       this.technologies[techKey] =
       {
@@ -42,7 +42,7 @@ export default class PlayerTechnology
         maxLevel: raceValue.maxLevel,
         priority: undefined,
         priorityIsLocked: false,
-      }
+      };
 
       if (savedData && savedData[techKey])
       {
@@ -160,7 +160,7 @@ export default class PlayerTechnology
   }
   addResearchTowardsTechnology(technology: TechnologyTemplate, amount: number): void
   {
-    var tech = this.technologies[technology.key]
+    var tech = this.technologies[technology.key];
     var overflow: number = 0;
 
     if (tech.level >= tech.maxLevel) // probably shouldnt happen in the first place
@@ -336,7 +336,7 @@ export default class PlayerTechnology
         totalResearch: this.technologies[key].totalResearch,
         priority: this.technologies[key].priority,
         priorityIsLocked: this.technologies[key].priorityIsLocked,
-      }
+      };
     }
 
     return data;

@@ -74,7 +74,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
       }[] = [];
       for (let i = 0; i < filtersForCategory.length; i++)
       {
-        var notificationTemplate = filtersForCategory[i].notificationTemplate
+        var notificationTemplate = filtersForCategory[i].notificationTemplate;
         var isHighlighted = Boolean(this.props.highlightedOptionKey &&
           this.props.highlightedOptionKey === notificationTemplate.key);
 

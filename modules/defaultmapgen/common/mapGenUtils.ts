@@ -166,7 +166,7 @@ export function makeSectors(
   unassignedStars.sort((a, b) =>
   {
     return mapGenDataByStarID[b.id].connectedness - mapGenDataByStarID[a.id].connectedness;
-  })
+  });
 
   while (averageSectorsAmount > 0 && unassignedStars.length > 0)
   {

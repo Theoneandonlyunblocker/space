@@ -45,6 +45,6 @@ const heal: ObjectiveTemplate =
   {
     return {min: 0, ideal: 0};
   },
-}
+};
 
 export default heal;

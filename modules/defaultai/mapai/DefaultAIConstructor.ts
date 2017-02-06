@@ -13,6 +13,6 @@ const DefaultAIConstructor: AITemplateConstructor<DefaultAISaveData> =
   {
     return new DefaultAI(props.player, props.game, props.personality);
   },
-}
+};
 
 export default DefaultAIConstructor;

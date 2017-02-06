@@ -106,7 +106,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
       className: "buildable-item buildable-building",
       onClick: this.props.handleClick,
       title: template.description,
-    }
+    };
     if (!this.state.canAfford)
     {
       props.onClick = null;

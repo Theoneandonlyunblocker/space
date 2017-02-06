@@ -118,7 +118,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
           bgProps.style =
           {
             width: "" +  lastBarWidth + "%",
-          }
+          };
         }
       }
       else
@@ -134,7 +134,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
         React.DOM.div(bgProps,
           null,
         ),
-      ))
+      ));
     }
 
     var isReadyToLevelUp = this.props.experienceForCurrentLevel >= this.props.experienceToNextLevel;
@@ -142,16 +142,16 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     var containerProps: React.HTMLAttributes =
     {
       className: "unit-experience-bar-container",
-    }
+    };
     var barProps: React.HTMLAttributes =
     {
       className: "unit-experience-bar",
       title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp",
-    }
+    };
     if (isReadyToLevelUp)
     {
       containerProps.onClick = this.makePopup;
-      containerProps.className += " ready-to-level-up"
+      containerProps.className += " ready-to-level-up";
     }
 
     return(

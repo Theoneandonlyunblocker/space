@@ -133,7 +133,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         contentProps =
         {
           player: this.props.player,
-        }
+        };
         break;
       }
       case "saveGame":
@@ -142,7 +142,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         contentProps =
         {
           handleClose: this.closePopup.bind(this, "saveGame"),
-        }
+        };
         break;
       }
       case "loadGame":
@@ -151,7 +151,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         contentProps =
         {
           handleClose: this.closePopup.bind(this, "loadGame"),
-        }
+        };
         break;
       }
       case "options":
@@ -172,7 +172,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
           totalPlayerCount: this.props.game.playerOrder.length,
           metPlayers: this.props.player.diplomacyStatus.metPlayers,
           statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer,
-        }
+        };
         break;
       }
       case "technologies":
@@ -181,7 +181,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         contentProps =
         {
           playerTechnology: this.props.player.playerTechnology,
-        }
+        };
         popupProps.minWidth = 430;
         break;
       }
@@ -199,7 +199,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
 
     var stateObj: StateType = {};
     stateObj[popupType] = id;
-    this.setState(stateObj)
+    this.setState(stateObj);
   }
 
   togglePopup(popupType: string)

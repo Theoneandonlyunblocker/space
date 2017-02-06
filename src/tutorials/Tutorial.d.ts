@@ -9,7 +9,7 @@ export declare interface TutorialPage
   {
     width: number;
     height: number;
-  }
+  };
 }
 
 declare interface Tutorial

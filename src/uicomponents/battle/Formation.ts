@@ -74,7 +74,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     else
     {
       return(
-        () => {functionToBind(valueToBind)}
+        () => {functionToBind(valueToBind);}
       );
     }
   }
@@ -127,7 +127,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
             onDragEnd: this.props.onDragEnd,
             onMouseUp: onMouseUp,
             animateDuration: this.props.unitStrengthAnimateDuration,
-          }
+          };
           const displayProps: UnitDisplayStatus =
           {
             wasDestroyed: this.unitInArray(unit, this.props.destroyedUnits),
@@ -140,7 +140,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
             isTargetOfActiveEffect: this.unitInArray(unit, this.props.activeEffectUnits),
             hoveredActionPointExpenditure: this.props.hoveredAbility &&
               this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
-          }
+          };
 
           unitProps = shallowExtend<UnitPropTypes>(unitDisplayData, componentProps, displayProps);
           if (this.props.facesLeft && this.props.isInBattlePrep)
@@ -169,7 +169,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
         key: "row_" + i,
       },
         unitElements,
-      ))
+      ));
     }
 
     return(

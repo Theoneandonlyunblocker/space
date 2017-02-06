@@ -59,7 +59,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
     {
       emblems: this.getEmblemDataFromFlag(props.parentFlag),
       activeEmblemSetterID: null,
-    }
+    };
 
     if (this.props.autoPositionerProps)
     {

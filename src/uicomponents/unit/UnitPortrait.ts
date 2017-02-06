@@ -29,7 +29,7 @@ export class UnitPortraitComponent extends React.Component<PropTypes, StateType>
       props.style =
       {
         backgroundImage: 'url("' + this.props.imageSrc + '")',
-      }
+      };
     }
 
     return(

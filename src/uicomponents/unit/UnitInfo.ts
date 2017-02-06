@@ -54,7 +54,7 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
         },
           "Destroyed",
         ),
-      )
+      );
     }
     else if (this.props.wasCaptured)
     {
@@ -68,7 +68,7 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
         },
           "Captured",
         ),
-      )
+      );
     }
 
     return(

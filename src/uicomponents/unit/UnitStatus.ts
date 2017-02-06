@@ -40,7 +40,7 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
       var damageReduction = Math.min(50, guard / 2);
       var guardText = "" + guard + "% chance to protect ";
       guardText += (this.props.guardCoverage === GuardCoverage.all ? "all units." : " units in same row.");
-      guardText += "\n" + "This unit takes " + damageReduction + "% reduced damage from physical attacks."
+      guardText += "\n" + "This unit takes " + damageReduction + "% reduced damage from physical attacks.";
       statusElement = React.DOM.div(
       {
         className: "status-container guard-meter-container",

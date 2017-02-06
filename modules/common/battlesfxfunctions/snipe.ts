@@ -23,7 +23,7 @@ const colors =
   [UnitAttribute.defence]: Color.fromHexString("0BB1FF"),
   [UnitAttribute.intelligence]: Color.fromHexString("EB12FE"),
   [UnitAttribute.speed]: Color.fromHexString("12FE9E"),
-}
+};
 
 for (let attribute in colors)
 {
@@ -60,7 +60,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
   {
     x: beamOrigin.x / params.width,
     y: beamOrigin.y / params.height,
-  }
+  };
   const focusDuration = 0.15;
   const projectileLaunchTime = 0.35;
   const impactTime = 0.5;
@@ -223,7 +223,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
     {
       x: Math.min(params.target.drawingFunctionData.boundingBox.width, 70),
       y: Math.min(params.target.drawingFunctionData.boundingBox.height, 70),
-    }
+    };
     emitter.addInitialize(new Proton.Position(new Proton.RectZone(
       -emitterArea.x / 2,
       -emitterArea.y / 2,
@@ -247,7 +247,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
 
       sprite.scale.x = particle.scale;
       sprite.scale.y = particle.scale;
-    }
+    };
 
     return emitter;
   });

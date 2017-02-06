@@ -44,11 +44,11 @@ const expansion: ObjectiveTemplate =
 
     const zippedScores = scores.zip<{star: Star, score: number}>("star", "score");
 
-    var template = expansion
+    var template = expansion;
 
     return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
   unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget,
-}
+};
 
 export default expansion;

@@ -20,7 +20,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
   public containerDiv: HTMLDivElement;
 
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-  stage: PIXI.Container
+  stage: PIXI.Container;
   fragmentContainer: PIXI.Container;
   fragments: SFXFragment<any>[] = [];
 

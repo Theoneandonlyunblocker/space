@@ -59,6 +59,6 @@ const cleanUpPirates: ObjectiveTemplate =
     return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
   unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget,
-}
+};
 
 export default cleanUpPirates;

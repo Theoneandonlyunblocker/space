@@ -46,7 +46,7 @@ export default function generateSpiralPoints(options: SpiralGalaxyOptionValues):
     point.mapGenData.mapGenDistance = distance;
 
     return point;
-  }
+  };
 
   const points: MapGenPoint[] = [];
 
@@ -89,7 +89,7 @@ function convertMapGenOptionValues(options: SpiralGalaxyOptionValues)
   const totalStars = options.defaultOptions.starCount;
 
   const actualArms = options.basicOptions.arms;
-  const totalArms = actualArms * 2 // includes filler arms
+  const totalArms = actualArms * 2; // includes filler arms
 
   const percentageInCenter = 0.3;
   const percentageInArms = 1 - percentageInCenter;

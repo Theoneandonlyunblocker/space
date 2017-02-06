@@ -45,7 +45,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
 
   upgradeBuilding(upgradeData: BuildingUpgradeData)
   {
-    var star = upgradeData.parentBuilding.location
+    var star = upgradeData.parentBuilding.location;
 
     var newBuilding = new Building(
     {
@@ -111,7 +111,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
             },
               null,
             ),
-          ))
+          ));
         };
 
         upgradeElements.push(BuildingUpgradeListItem(

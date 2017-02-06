@@ -59,7 +59,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
         key: key,
       },
         mapMode.displayName,
-      ))
+      ));
     }
 
     return options;

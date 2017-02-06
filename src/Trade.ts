@@ -30,7 +30,7 @@ export default class Trade
         key: "money",
         amount: this.player.money,
       },
-    }
+    };
   }
   getItemsAvailableForTrade()
   {
@@ -68,7 +68,7 @@ export default class Trade
       {
         key: key,
         amount: amount,
-      }
+      };
     }
     else
     {

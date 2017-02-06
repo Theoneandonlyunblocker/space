@@ -31,8 +31,8 @@ export default class BattlePrep
     this.attacker = battleData.attacker.player;
     this.defender = battleData.defender.player;
     this.battleData = battleData;
-    this.attackerUnits = battleData.attacker.units
-    this.defenderUnits = battleData.defender.units
+    this.attackerUnits = battleData.attacker.units;
+    this.defenderUnits = battleData.defender.units;
 
     const attackerHasScouted = this.attacker.starIsDetected(battleData.location);
     this.attackerFormation = new BattlePrepFormation(

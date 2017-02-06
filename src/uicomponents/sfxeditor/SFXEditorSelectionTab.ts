@@ -7,7 +7,7 @@ const displayString =
 {
   fragmentConstructors: "Fragments",
   placedFragments: "Placed",
-}
+};
 
 interface PropTypes extends React.Props<any>
 {

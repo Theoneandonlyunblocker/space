@@ -92,12 +92,12 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
 
       TWEEN.update();
       this.animationFrameHandle = window.requestAnimationFrame(animateTween);
-    }
+    };
 
     const tweeningHealthObject =
     {
       health: this.state.displayedStrength,
-    }
+    };
 
     var tween = new TWEEN.Tween(tweeningHealthObject).to(
     {
@@ -181,7 +181,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
     {
       className: (this.props.isSquadron ? "unit-strength-amount" :
         "unit-strength-amount-capital"),
-    }
+    };
 
     var displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.state.displayedStrength);
     var max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
@@ -191,7 +191,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
         React.DOM.span(currentStyle, displayed),
         React.DOM.span({className: "unit-strength-max"}, "/" + max),
       )
-    )
+    );
   }
   render()
   {
@@ -201,7 +201,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      return this.makeCapitalInfo()
+      return this.makeCapitalInfo();
     }
   }
 }

@@ -74,7 +74,7 @@ export default class UnitItems
   {
     return this.getAllItems().filter(item =>
     {
-      return Boolean(item.template.attributeAdjustments)
+      return Boolean(item.template.attributeAdjustments);
     }).map(item =>
     {
       return item.template.attributeAdjustments;
@@ -84,7 +84,7 @@ export default class UnitItems
   {
     return this.getAllItems().filter(item =>
     {
-      return Boolean(item.template.ability)
+      return Boolean(item.template.ability);
     }).map(item =>
     {
       return item.template.ability;
@@ -94,7 +94,7 @@ export default class UnitItems
   {
     return this.getAllItems().filter(item =>
     {
-      return Boolean(item.template.passiveSkill)
+      return Boolean(item.template.passiveSkill);
     }).map(item =>
     {
       return item.template.passiveSkill;

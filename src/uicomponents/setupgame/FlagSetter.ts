@@ -32,7 +32,7 @@ const failMessages =
   {
     text: "The attached file wasn't recognized as an image.",
   },
-}
+};
 
 export interface PropTypes extends React.Props<any>
 {
@@ -108,7 +108,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       },
     },
       message.text,
-    )
+    );
   }
   clearFailMessageTimeout(): void
   {
@@ -281,7 +281,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       };
 
       reader.readAsDataURL(file);
-    }
+    };
 
     var fileSizeInMegaBytes = file.size / 1024 / 1024;
     if (fileSizeInMegaBytes > 20)

@@ -27,7 +27,7 @@ export var defaultEvaluationParameters =
     infrastructureWeight: 1,
     productionWeight: 1,
   },
-}
+};
 
 interface StarTargetEvaluation
 {
@@ -175,7 +175,7 @@ export default class MapEvaluator
     var getDistanceFalloff = function(distance: number)
     {
       return 1 / (distance + 1);
-    }
+    };
     var inRange = star.getLinkedInRange(range).byRange;
 
     for (let distanceString in inRange)
@@ -185,7 +185,7 @@ export default class MapEvaluator
 
       for (let i = 0; i < stars.length; i++)
       {
-        evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff
+        evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
       }
     }
 
@@ -252,10 +252,10 @@ export default class MapEvaluator
       var score = evaluation.desirability * easeOfCapturing;
       if (star.getSecondaryController() === this.player)
       {
-        score *= 1.5
+        score *= 1.5;
       }
 
-      return score
+      return score;
     });
   }
   getIndependentNeighborStars()
@@ -275,7 +275,7 @@ export default class MapEvaluator
     {
       const secondaryController = b.getSecondaryController();
       return b.owner.isIndependent && (!secondaryController || secondaryController === this.player);
-    }
+    };
 
     return this.player.controlledLocations[0].getIslandForQualifier(
       islandQualifierFN,
@@ -753,7 +753,7 @@ export default class MapEvaluator
         opinion: this.player.diplomacyStatus.getOpinionOf(player),
         neighborStars: neighborStarsCountByPlayer.get(player),
         currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id],
-      }
+      };
     }
 
     return evaluationByPlayer;

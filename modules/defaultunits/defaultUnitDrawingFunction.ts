@@ -93,7 +93,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     x2: undefined,
     y1: undefined,
     y2: undefined,
-  }
+  };
   const allUnitBoundingBoxes: PIXI.Rectangle[] = [];
   let primaryAttackOriginPoint: Point;
   const sequentialAttackOriginPoints: Point[] = [];
@@ -199,6 +199,6 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   });
 
   SFXParams.triggerStart(container);
-}
+};
 
 export default defaultUnitDrawingFunction;

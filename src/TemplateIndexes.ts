@@ -34,7 +34,7 @@ class TemplateIndexes
   {
     distributablesByTypeAndDistributionGroup: null,
     itemsByTechLevel: null,
-  }
+  };
 
   public get distributablesByDistributionGroup()
   {

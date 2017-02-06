@@ -100,7 +100,7 @@ const discovery: ObjectiveTemplate =
       });
     }
 
-    var template = discovery
+    var template = discovery;
 
     return makeObjectivesFromScores(template, scores, 0.5);
   },
@@ -108,6 +108,6 @@ const discovery: ObjectiveTemplate =
   {
     return {min: 1, ideal: 1};
   },
-}
+};
 
 export default discovery;

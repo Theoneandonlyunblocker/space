@@ -154,7 +154,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
   private setLayerAlpha(e: React.FormEvent): void
   {
     const target = <HTMLInputElement> e.target;
-    const value = parseFloat(target.value)
+    const value = parseFloat(target.value);
     if (isFinite(value))
     {
       this.props.updateLayer(this.props.layer);

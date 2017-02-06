@@ -44,18 +44,18 @@ export default class Name
     }
     else
     {
-      return singularVerb
+      return singularVerb;
     }
   }
   public pluralizeVerbWithS(sourceVerb: string): string
   {
     if (sourceVerb.charAt(sourceVerb.length - 1) === "s")
     {
-      return this.pluralizeVerb(sourceVerb + "s", sourceVerb)
+      return this.pluralizeVerb(sourceVerb + "s", sourceVerb);
     }
     else
     {
-      return this.pluralizeVerb(sourceVerb, sourceVerb + "s")
+      return this.pluralizeVerb(sourceVerb, sourceVerb + "s");
     }
   }
   public serialize(): NameSaveData

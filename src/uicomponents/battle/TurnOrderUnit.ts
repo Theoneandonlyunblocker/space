@@ -42,7 +42,7 @@ export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, State
     [AnimationState.insertUnit]: "insert-unit",
     [AnimationState.pushUnit]: "push-unit",
     [AnimationState.idle]: "",
-  }
+  };
 
   constructor(props: PropTypes)
   {

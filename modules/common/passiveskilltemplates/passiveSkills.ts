@@ -28,7 +28,7 @@ export var autoHeal: PassiveSkillTemplate =
       }),
     },
   ],
-}
+};
 export var overdrive: PassiveSkillTemplate =
 {
   type: "overdrive",
@@ -47,7 +47,7 @@ export var overdrive: PassiveSkillTemplate =
       }),
     },
   ],
-}
+};
 export var initialGuard: PassiveSkillTemplate =
 {
   type: "initialGuard",
@@ -79,7 +79,7 @@ export var initialGuard: PassiveSkillTemplate =
       user, user, null, {});
     },
   ],
-}
+};
 export var medic: PassiveSkillTemplate =
 {
   type: "medic",
@@ -94,11 +94,11 @@ export var medic: PassiveSkillTemplate =
       var allFriendlyUnits = star.getUnits(player => player === user.fleet.player);
       for (let i = 0; i < allFriendlyUnits.length; i++)
       {
-        allFriendlyUnits[i].addHealth(allFriendlyUnits[i].maxHealth)
+        allFriendlyUnits[i].addHealth(allFriendlyUnits[i].maxHealth);
       }
     },
   ],
-}
+};
 export var warpJammer: PassiveSkillTemplate =
 {
   type: "warpJammer",
@@ -116,4 +116,4 @@ export var warpJammer: PassiveSkillTemplate =
     },
   ],
   canUpgradeInto: [medic],
-}
+};

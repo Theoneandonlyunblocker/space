@@ -38,6 +38,6 @@ const defaultMapModes: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultMapModes;

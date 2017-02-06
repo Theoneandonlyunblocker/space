@@ -42,7 +42,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
     this.state =
     {
       isCollapsed: false,
-    }
+    };
 
     this.toggleCollapsed = this.toggleCollapsed.bind(this);
   }

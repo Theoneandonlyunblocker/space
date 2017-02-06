@@ -15,7 +15,7 @@ export interface GetBattleTargetsFN
 export const targetSelf: GetBattleTargetsFN = function(user: Unit, battle: Battle)
 {
   return [user];
-}
+};
 export const targetNextRow: GetBattleTargetsFN = function(user: Unit, battle: Battle)
 {
   const ownPosition = user.battleStats.position;
@@ -24,19 +24,19 @@ export const targetNextRow: GetBattleTargetsFN = function(user: Unit, battle: Ba
   const fullFormation = battle.side1.concat(battle.side2);
 
   return fullFormation[ownPosition[0] + increment].filter(unit => unit !== null);
-}
+};
 export const targetAllies: GetBattleTargetsFN = function(user: Unit, battle: Battle)
 {
   return battle.getUnitsForSide(user.battleStats.side);
-}
+};
 export const targetEnemies: GetBattleTargetsFN = function(user: Unit, battle: Battle)
 {
   return battle.getUnitsForSide(reverseSide(user.battleStats.side));
-}
+};
 export const targetAll: GetBattleTargetsFN = function(user: Unit, battle: Battle)
 {
   return flatten2dArray(battle.side1.concat(battle.side2)).filter(unit => unit !== null);
-}
+};
 
 //------AREAS
 export interface GetUnitsInAreaFN

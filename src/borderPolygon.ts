@@ -147,7 +147,7 @@ export function getBorderingHalfEdges(stars: Star[])
 
         if (!startEdge)
         {
-          startEdge = halfEdge
+          startEdge = halfEdge;
         }
         else if (halfEdge === startEdge)
         {
@@ -188,7 +188,7 @@ export function joinPointsWithin(points: Point[], maxDistance: number)
       {
         x: (x1 + x2) / 2,
         y: (y1 + y2) / 2,
-      }
+      };
 
       points.splice(i, 2, newPoint);
     }
@@ -260,7 +260,7 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
         {
           x: clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
           y: clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2),
-        }
+        };
 
         var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
         if (!pointStar)

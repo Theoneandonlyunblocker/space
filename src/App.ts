@@ -175,7 +175,7 @@ class App
       this.reactUI.switchScene(initialScene);
 
       console.log("Init in " + (Date.now() - startTime) + " ms");
-    }
+    };
 
     if (initialScene === "galaxyMap")
     {
@@ -281,7 +281,7 @@ class App
         centerDensity: 40,
         starSizeRegularity: 100,
       },
-    }
+    };
 
     var mapGenResult = this.moduleData.getDefaultMap().mapGenFunction(
       optionValues,

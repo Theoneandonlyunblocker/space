@@ -169,7 +169,7 @@ export default class UnitAttributes implements UnitAttributesObject
       defence: 2,
       intelligence: 3,
       speed: 4,
-    }
+    };
 
     const sorted = attributeTypes.sort((a, b) =>
     {

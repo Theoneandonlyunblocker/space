@@ -90,7 +90,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     {
       x: container.offsetWidth / 2,
       y: container.offsetHeight / 2,
-    }
+    };
   }
 
   // componentDidUpdate()
@@ -137,7 +137,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     {
       x: wrapperElement.offsetWidth / 2,
       y: wrapperElement.offsetHeight / 2,
-    }
+    };
 
     return renderedElement;
   }
@@ -211,11 +211,11 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 
         if (unit.attributes[type] < unit.baseAttributes[type])
         {
-          cellProps.className += " lowered-stat"
+          cellProps.className += " lowered-stat";
         }
         else if (unit.attributes[type] > unit.baseAttributes[type])
         {
-          cellProps.className += " raised-stat"
+          cellProps.className += " raised-stat";
         }
 
         break;

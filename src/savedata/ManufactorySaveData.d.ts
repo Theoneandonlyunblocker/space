@@ -8,7 +8,7 @@ declare interface ManufactorySaveData
   {
     type: string;
     templateType: string;
-  }[]
+  }[];
 }
 
 export default ManufactorySaveData;

@@ -107,7 +107,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
         cellContent = this.props[type];
         if (isFinite(<number>cellContent))
         {
-          cellProps.className += " center-text"
+          cellProps.className += " center-text";
         }
 
         break;

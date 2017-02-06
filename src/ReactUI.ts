@@ -23,7 +23,7 @@ const moduleLoadingPhaseByScene =
 
   flagMaker: ModuleFileLoadingPhase.setup,
   battleSceneTester: ModuleFileLoadingPhase.battle,
-}
+};
 
 export default class ReactUI
 {

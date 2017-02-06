@@ -29,7 +29,7 @@ export const sectorCommand: DefenceBuildingTemplate =
     },
   ],
   defenderAdvantage: 0.2,
-}
+};
 export const sectorCommand1: DefenceBuildingTemplate =
 {
   type: "sectorCommand1",
@@ -46,7 +46,7 @@ export const sectorCommand1: DefenceBuildingTemplate =
   maxUpgradeLevel: 1,
   upgradeOnly: true,
   defenderAdvantage: 0.3,
-}
+};
 export const sectorCommand2: DefenceBuildingTemplate =
 {
   type: "sectorCommand2",
@@ -63,7 +63,7 @@ export const sectorCommand2: DefenceBuildingTemplate =
   maxUpgradeLevel: 1,
   upgradeOnly: true,
   defenderAdvantage: 0.3,
-}
+};
 export const starBase: DefenceBuildingTemplate =
 {
   type: "starBase",
@@ -86,7 +86,7 @@ export const starBase: DefenceBuildingTemplate =
       level: 1,
     },
   ],
-}
+};
 export const commercialPort: BuildingTemplate =
 {
   type: "commercialPort",
@@ -107,7 +107,7 @@ export const commercialPort: BuildingTemplate =
   },
 
   maxUpgradeLevel: 4,
-}
+};
 export const deepSpaceRadar: BuildingTemplate =
 {
   type: "deepSpaceRadar",
@@ -126,7 +126,7 @@ export const deepSpaceRadar: BuildingTemplate =
   },
 
   maxUpgradeLevel: 2,
-}
+};
 export const resourceMine: BuildingTemplate =
 {
   type: "resourceMine",
@@ -147,7 +147,7 @@ export const resourceMine: BuildingTemplate =
   },
 
   maxUpgradeLevel: 3,
-}
+};
 export const reserachLab: BuildingTemplate =
 {
   type: "reserachLab",
@@ -168,4 +168,4 @@ export const reserachLab: BuildingTemplate =
   },
 
   maxUpgradeLevel: 3,
-}
+};

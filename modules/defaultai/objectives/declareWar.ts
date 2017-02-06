@@ -50,7 +50,7 @@ const declareWar: ObjectiveTemplate =
           score: score,
         });
       }
-    })
+    });
 
     return makeObjectivesFromScores(template, scores, basePriority);
   },
@@ -61,6 +61,6 @@ const declareWar: ObjectiveTemplate =
     diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);
     afterDoneCallback();
   },
-}
+};
 
 export default declareWar;

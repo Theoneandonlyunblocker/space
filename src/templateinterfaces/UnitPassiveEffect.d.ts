@@ -9,4 +9,4 @@ declare interface UnitPassiveEffect
   isHidden?: boolean;
 }
 
-export default UnitPassiveEffect
+export default UnitPassiveEffect;

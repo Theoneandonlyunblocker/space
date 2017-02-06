@@ -21,7 +21,7 @@ interface PartialBeamProps
   relativeImpactTime?: number;
   relativeBeamOrigin?: Point;
   color?: Color;
-  timeScale?: number,
+  timeScale?: number;
   noiseAmplitude?: RampingValue;
   lineIntensity?: RampingValue;
   bulgeIntensity?: RampingValue;
@@ -38,7 +38,7 @@ interface BeamProps extends PartialBeamProps
   relativeImpactTime: number;
   relativeBeamOrigin: Point;
   color: Color;
-  timeScale: number,
+  timeScale: number;
   noiseAmplitude: RampingValue;
   lineIntensity: RampingValue;
   bulgeIntensity: RampingValue;
@@ -73,7 +73,7 @@ const defaultBeamProps: BeamProps =
   bulgeSharpness: new RampingValue(0.3, 0.35, -0.35),
   lineXSharpness: new RampingValue(0.99, -0.99, 0.99),
   lineYSharpness: new RampingValue(0.99, -0.15, 0.16),
-}
+};
 const BeamPropTypes: SFXFragmentPropTypes =
 {
   size: "point",
@@ -90,7 +90,7 @@ const BeamPropTypes: SFXFragmentPropTypes =
   bulgeSharpness: "rampingValue",
   lineXSharpness: "rampingValue",
   lineYSharpness: "rampingValue",
-}
+};
 
 
 export default class Beam extends SFXFragment<BeamProps, PartialBeamProps>

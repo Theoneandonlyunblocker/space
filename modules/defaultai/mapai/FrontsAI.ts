@@ -74,7 +74,7 @@ export default class FrontsAI
       {
         frontScores[i].score = front.scoreUnitFit(frontScores[i].unit);
       }
-    }
+    };
 
     var removeUnit = function(unit: Unit)
     {
@@ -85,13 +85,13 @@ export default class FrontsAI
           return score.unit !== unit;
         });
       }
-    }
+    };
 
     // ascending
     var sortByScoreFN = function(a: IFrontUnitScore, b: IFrontUnitScore)
     {
       return a.score - b.score;
-    }
+    };
 
     for (let i = 0; i < this.fronts.length; i++)
     {

@@ -257,7 +257,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onClick: this.togglePopup.bind(this, "options"),
         tabIndex: menuItemTabIndex,
       }, "Options"),
-    ]
+    ];
 
     var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
     var leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
@@ -281,7 +281,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         className: "top-menu-opened-condensed-menu",
       },
         leftoverButtons,
-      )
+      );
     };
 
     return(

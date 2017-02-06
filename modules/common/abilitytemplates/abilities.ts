@@ -34,7 +34,7 @@ export var closeAttack: AbilityTemplate =
   {
     return targetNextRow(user, battle).filter(unit =>
     {
-      unit.battleStats.side !== user.battleStats.side
+      unit.battleStats.side !== user.battleStats.side;
     });
   },
   mainEffect:
@@ -48,7 +48,7 @@ export var closeAttack: AbilityTemplate =
     getUnitsInArea: areaRowNeighbors,
     sfx: BattleSFX.rocketAttack,
   },
-}
+};
 export var beamAttack: AbilityTemplate =
 {
   type: "beamAttack",
@@ -70,7 +70,7 @@ export var beamAttack: AbilityTemplate =
   },
 
   targetCannotBeDiverted: true,
-}
+};
 
 export var bombAttack: AbilityTemplate =
 {
@@ -97,7 +97,7 @@ export var bombAttack: AbilityTemplate =
     },
     sfx: BattleSFX.rocketAttack,
   },
-}
+};
 export var guardRow: AbilityTemplate =
 {
   type: "guardRow",
@@ -122,7 +122,7 @@ export var guardRow: AbilityTemplate =
   },
 
   doesNotRemoveUserGuard: true,
-}
+};
 export var boardingHook: AbilityTemplate =
 {
   type: "boardingHook",
@@ -161,7 +161,7 @@ export var boardingHook: AbilityTemplate =
       },
     ],
   },
-}
+};
 
 export var debugAbility: AbilityTemplate =
 {
@@ -178,7 +178,7 @@ export var debugAbility: AbilityTemplate =
     executeAction: () => {},
     sfx: BattleSFX.guard,
   },
-}
+};
 
 export var rangedAttack: AbilityTemplate =
 {
@@ -216,7 +216,7 @@ export var rangedAttack: AbilityTemplate =
     bombAttack,
     boardingHook,
   ],
-}
+};
 function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
 {
   const attributeName = UnitAttribute[attribute];
@@ -295,4 +295,4 @@ export var standBy: AbilityTemplate =
   AIEvaluationPriority: 0.6,
   AIScoreAdjust: -0.1,
   disableInAIBattles: true,
-}
+};

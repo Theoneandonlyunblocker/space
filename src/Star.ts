@@ -147,7 +147,7 @@ export default class Star implements Point
       this.buildings[building.template.category].indexOf(building) < 0
     )
     {
-      throw new Error("Location doesn't have building")
+      throw new Error("Location doesn't have building");
     }
 
     var buildings = this.buildings[building.template.category];
@@ -721,7 +721,7 @@ export default class Star implements Point
     {
       all: allVisited,
       byRange: visitedByRange,
-    }
+    };
 
     return(
     {
@@ -909,7 +909,7 @@ export default class Star implements Point
       visible: {},
       stealthy: {},
       all: {},
-    }
+    };
 
     byVisibilityAndId.visible[this.owner.id] = this.owner;
     var secondaryController = this.getSecondaryController();
@@ -968,7 +968,7 @@ export default class Star implements Point
       buildings[category] = [];
       for (let i = 0; i < this.buildings[category].length; i++)
       {
-        buildings[category].push(this.buildings[category][i].serialize())
+        buildings[category].push(this.buildings[category][i].serialize());
       }
     }
 
@@ -984,8 +984,8 @@ export default class Star implements Point
       name: this.name,
       ownerId: this.owner ? this.owner.id : null,
 
-      linksToIds: this.linksTo.map(function(star){return star.id}),
-      linksFromIds: this.linksFrom.map(function(star){return star.id}),
+      linksToIds: this.linksTo.map(function(star){return star.id;}),
+      linksFromIds: this.linksFrom.map(function(star){return star.id;}),
 
       seed: this.seed,
 

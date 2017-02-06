@@ -44,6 +44,6 @@ const playerDiedNotification: NotificationTemplate =
       deadPlayerName: props.deadPlayerName,
     });
   },
-}
+};
 
 export default playerDiedNotification;

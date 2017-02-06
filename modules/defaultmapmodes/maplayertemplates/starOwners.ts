@@ -83,7 +83,7 @@ const starOwners: MapRendererLayerTemplate =
     }
     return doc;
   },
-}
+};
 
 export default starOwners;
 
@@ -120,7 +120,7 @@ function getOccupationShader(owner: Player, occupier: Player)
     });
   }
 
-  return occupationShaders[owner.id][occupier.id]
+  return occupationShaders[owner.id][occupier.id];
 }
 function forEachOccupationShader(cb: (shader: OccupationShader) => void)
 {

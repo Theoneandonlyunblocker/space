@@ -18,7 +18,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  activeTab?: TabKey
+  activeTab?: TabKey;
 }
 
 export class ManufacturableThingsComponent extends React.Component<PropTypes, StateType>
@@ -143,7 +143,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
       triggerUpdate: this.props.triggerUpdate,
       canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
       money: this.props.money,
-    }
+    };
     switch (key)
     {
       case "units":

@@ -10,4 +10,4 @@ export interface GameScripts extends PartialGameScripts
   afterInit: ((game: Game) => void)[];
 }
 
-export default GameScripts
+export default GameScripts;

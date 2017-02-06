@@ -23,7 +23,7 @@ const bombLauncher1: ItemTemplate =
 
   slot: "high",
   ability: bombAttack,
-}
+};
 const bombLauncher2: ItemTemplate =
 {
   type: "bombLauncher2",
@@ -41,7 +41,7 @@ const bombLauncher2: ItemTemplate =
 
   slot: "high",
   ability: bombAttack,
-}
+};
 const bombLauncher3: ItemTemplate =
 {
   type: "bombLauncher3",
@@ -59,7 +59,7 @@ const bombLauncher3: ItemTemplate =
 
   slot: "high",
   ability: bombAttack,
-}
+};
 
 const afterBurner1: ItemTemplate =
 {
@@ -78,7 +78,7 @@ const afterBurner1: ItemTemplate =
 
   slot: "mid",
   passiveSkill: overdrive,
-}
+};
 const afterBurner2: ItemTemplate =
 {
   type: "afterBurner2",
@@ -95,7 +95,7 @@ const afterBurner2: ItemTemplate =
   },
 
   slot: "mid",
-}
+};
 const afterBurner3: ItemTemplate =
 {
   type: "afterBurner3",
@@ -113,7 +113,7 @@ const afterBurner3: ItemTemplate =
   },
 
   slot: "mid",
-}
+};
 const shieldPlating1: ItemTemplate =
 {
   type: "shieldPlating1",
@@ -130,7 +130,7 @@ const shieldPlating1: ItemTemplate =
   },
 
   slot: "low",
-}
+};
 const shieldPlating2: ItemTemplate =
 {
   type: "shieldPlating2",
@@ -147,7 +147,7 @@ const shieldPlating2: ItemTemplate =
   },
 
   slot: "low",
-}
+};
 const shieldPlating3: ItemTemplate =
 {
   type: "shieldPlating3",
@@ -166,7 +166,7 @@ const shieldPlating3: ItemTemplate =
 
   slot: "low",
   ability: guardRow,
-}
+};
 
 const ItemTemplates: TemplateCollection<ItemTemplate> =
 {
@@ -180,6 +180,6 @@ const ItemTemplates: TemplateCollection<ItemTemplate> =
   [shieldPlating1.type]: shieldPlating1,
   [shieldPlating2.type]: shieldPlating2,
   [shieldPlating3.type]: shieldPlating3,
-}
+};
 
 export default ItemTemplates;

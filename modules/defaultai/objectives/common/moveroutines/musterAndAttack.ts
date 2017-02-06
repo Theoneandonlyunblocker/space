@@ -79,7 +79,7 @@ export default function musterAndAttack(targetFilter: (target: FleetAttackTarget
     {
       afterMoveCallback();
     }
-  }
+  };
 
   var finishedMovingCount = 0;
   var finishFleetMoveFN = function()

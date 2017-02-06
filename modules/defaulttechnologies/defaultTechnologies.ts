@@ -26,6 +26,6 @@ const defaultTechnologies: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultTechnologies;

@@ -66,6 +66,6 @@ const fighterSquadron: UnitTemplate =
       distributionGroups.rare,
     ],
   },
-}
+};
 
 export default fighterSquadron;

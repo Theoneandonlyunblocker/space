@@ -74,6 +74,6 @@ const federationAlliance: PlayerRaceTemplate =
   ]),
 
   getAITemplateConstructor: player => DefaultAIConstructor,
-}
+};
 
 export default federationAlliance;

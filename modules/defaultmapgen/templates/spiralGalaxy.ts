@@ -85,6 +85,6 @@ const spiralGalaxy: MapGenTemplate =
       },
     },
   },
-}
+};
 
 export default spiralGalaxy;

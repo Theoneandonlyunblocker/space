@@ -185,17 +185,17 @@ export default class Renderer
     {
       if (event.target !== main) return;
       self.mouseEventHandler.mouseMove(event);
-    }
+    };
     var mainMouseUpFN = function(event: PIXI.interaction.InteractionEvent)
     {
       if (event.target !== main) return;
       self.mouseEventHandler.mouseUp(event);
-    }
+    };
     var mainMouseUpOutsideFN = function(event: PIXI.interaction.InteractionEvent)
     {
       if (event.target !== main) return;
       self.mouseEventHandler.mouseUp(event);
-    }
+    };
 
     var mainListeners =
     {

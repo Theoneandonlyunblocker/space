@@ -92,7 +92,7 @@ export class BattleSceneFlagComponent extends React.Component<PropTypes, StateTy
 
     canvas.classList.add("battle-scene-start-player-flag");
 
-    return canvas
+    return canvas;
   }
 
   render()

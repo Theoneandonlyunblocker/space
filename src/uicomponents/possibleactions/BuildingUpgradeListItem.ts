@@ -10,7 +10,7 @@ export interface PropTypes extends React.Props<any>
 {
   player: Player;
   handleUpgrade: (upgradeData: BuildingUpgradeData) => void;
-  upgradeData: BuildingUpgradeData
+  upgradeData: BuildingUpgradeData;
 }
 
 interface StateType
@@ -51,7 +51,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
     this.setState(
     {
       canAfford: this.props.player.money >= this.props.upgradeData.cost,
-    })
+    });
   }
 
   handleClick()

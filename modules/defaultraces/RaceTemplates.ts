@@ -8,6 +8,6 @@ const RaceTemplates: TemplateCollection<RaceTemplate> =
 {
   [federationAlliance.type]: federationAlliance,
   [wormThings.type]: wormThings,
-}
+};
 
 export default RaceTemplates;

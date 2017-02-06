@@ -15,7 +15,7 @@ abstract class SFXFragment<P>
   public abstract displayName: string;
 
   // public propTypes: SFXFragmentPropTypes;
-  public propTypes: {[K in keyof P]: SFXFragmentPropType}
+  public propTypes: {[K in keyof P]: SFXFragmentPropType};
   private readonly defaultProps: P;
   public readonly props: P;
 

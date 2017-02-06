@@ -79,7 +79,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
       {
         className: "reset-options-button",
         onClick: this.props.resetFN,
-      }, "reset")
+      }, "reset");
     }
 
     var header = this.props.header || resetButton ?
@@ -96,7 +96,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
         ),
         resetButton,
       ) :
-      null
+      null;
 
     return(
       React.DOM.div({className: "option-group"},

@@ -23,6 +23,6 @@ const defaultItems: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultItems;

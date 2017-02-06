@@ -64,6 +64,6 @@ const scout: UnitTemplate =
       distributionGroups.rare,
     ],
   },
-}
+};
 
 export default scout;

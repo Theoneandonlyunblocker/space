@@ -39,7 +39,7 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
     this.state =
     {
       activeTab: "fragmentConstructors",
-    }
+    };
 
     this.setActiveTab = this.setActiveTab.bind(this);
   }

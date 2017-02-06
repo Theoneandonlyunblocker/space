@@ -88,7 +88,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
             hue + "," +
             saturation + "%," +
             lightness + "%)",
-        }
+        };
         cellContent = this.props.strength;
         break;
       }

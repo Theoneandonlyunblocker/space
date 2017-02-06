@@ -217,7 +217,7 @@ export default class BattlePrepFormation
         score: baseScore * archetypeIdealAdjust * rowModifier,
         row: row,
       });
-    }
+    };
 
     while (unitsToPlace.length > 0 && totalPlaced < maxUnitsPerSide)
     {

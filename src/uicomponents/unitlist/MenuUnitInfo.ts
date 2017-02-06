@@ -47,7 +47,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
     const unit = this.props.unit;
     if (!unit) return(
       React.DOM.div({className: "menu-unit-info"})
-    )
+    );
 
     const itemGroups: React.ReactElement<any>[] = [];
     const itemsBySlot = unit.items.getItemsBySlot();

@@ -32,7 +32,7 @@ export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes
     {
       canAffordUpgrade: newProps.money >= newProps.upgradeCost,
       isDisabled: newProps.currentLevel >= newProps.maxLevel,
-    })
+    });
   }
 
   render()

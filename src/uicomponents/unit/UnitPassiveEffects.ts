@@ -32,7 +32,7 @@ export class UnitPassiveEffectsComponent extends React.PureComponent<PropTypes, 
           src: "img/icons/availableAction.png",
           title: this.props.passiveEffects.reduce((t, e) =>
           {
-            return t + e.displayName + ": " + e.description + "\n"
+            return t + e.displayName + ": " + e.description + "\n";
           }, ""),
         }) :
         null

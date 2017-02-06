@@ -51,7 +51,7 @@ export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>
         edgeBuffer[j][0],
         edgeBuffer[j][1],
         vertex,
-      )
+      );
 
       triangles.push(newTriangle);
     }

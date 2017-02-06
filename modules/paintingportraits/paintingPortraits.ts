@@ -21,6 +21,6 @@ const paintingPortraits: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default paintingPortraits;

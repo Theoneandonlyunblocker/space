@@ -7,4 +7,4 @@ declare interface RaceTechnologyValue
   maxLevel: number;
 }
 
-export default RaceTechnologyValue
+export default RaceTechnologyValue;

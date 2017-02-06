@@ -16,7 +16,7 @@ export const defaultMapMode: MapRendererMapModeTemplate =
     MapLayers.fogOfWar,
     MapLayers.fleets,
   ],
-}
+};
 export const noStatic: MapRendererMapModeTemplate =
 {
   key: "noStatic",
@@ -29,7 +29,7 @@ export const noStatic: MapRendererMapModeTemplate =
     MapLayers.fogOfWar,
     MapLayers.fleets,
   ],
-}
+};
 export const income: MapRendererMapModeTemplate =
 {
   key: "income",
@@ -42,7 +42,7 @@ export const income: MapRendererMapModeTemplate =
     MapLayers.nonFillerStars,
     MapLayers.fleets,
   ],
-}
+};
 export const influence: MapRendererMapModeTemplate =
 {
   key: "influence",
@@ -55,7 +55,7 @@ export const influence: MapRendererMapModeTemplate =
     MapLayers.nonFillerStars,
     MapLayers.fleets,
   ],
-}
+};
 export const resources: MapRendererMapModeTemplate =
 {
   key: "resources",
@@ -69,4 +69,4 @@ export const resources: MapRendererMapModeTemplate =
     MapLayers.fleets,
     MapLayers.resources,
   ],
-}
+};

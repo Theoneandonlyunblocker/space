@@ -342,7 +342,7 @@ export default class PlayerControl
   {
     if (this.currentAttackTargets.indexOf(target) < 0)
     {
-      throw new Error("Invalid attack target")
+      throw new Error("Invalid attack target");
     }
 
     var currentLocation = this.selectedFleets[0].location;

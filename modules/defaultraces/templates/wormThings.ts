@@ -71,6 +71,6 @@ const wormThings: PlayerRaceTemplate =
   ]),
 
   getAITemplateConstructor: player => DefaultAIConstructor,
-}
+};
 
 export default wormThings;

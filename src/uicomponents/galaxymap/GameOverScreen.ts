@@ -30,7 +30,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
   {
     load: undefined,
     newGame: undefined,
-  }
+  };
 
   private popupProps: CustomPopupProps =
   {
@@ -38,7 +38,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
     {
       preventAutoResize: true,
     },
-  }
+  };
 
   constructor(props: PropTypes)
   {

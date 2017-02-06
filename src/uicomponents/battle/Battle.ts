@@ -63,8 +63,8 @@ interface StateType
     facesLeft?: boolean;
   };
 
-  battleSceneUnit1?: Unit
-  battleSceneUnit2?: Unit
+  battleSceneUnit1?: Unit;
+  battleSceneUnit2?: Unit;
   playingBattleEffect?: boolean;
   battleEffectDuration?: number;
   battleEffectDurationAfterTrigger?: number;
@@ -316,7 +316,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       ability,
       this.props.battle.activeUnit,
       this.state.hoveredUnit,
-    )
+    );
 
     const abilityUseDelay = ability.preparation ?
       ability.preparation.prepDelay * ability.preparation.turnsToPrep :
@@ -571,7 +571,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
         turnIsTransitioning: this.state.UIState === BattleUIState.transitioningTurn,
         turnTransitionDuration: Options.battleAnimationTiming.turnTransition,
-      })
+      });
     }
     else
     {
@@ -604,7 +604,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             to: this.state.unitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth,
           }) : null,
         ),
-      )
+      );
     }
 
     // is this still relevant? written for react-0.11

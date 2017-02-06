@@ -50,7 +50,7 @@ export default class DiplomacyAI
     var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
     var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
 
-    this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback)
+    this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback);
   }
   resolveNextObjective(objectives: Objective[], adjustments: RoutineAdjustmentByID,
     afterAllDoneCallback: () => void)
@@ -64,6 +64,6 @@ export default class DiplomacyAI
     }
 
     var boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
-    objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN)
+    objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN);
   }
 }

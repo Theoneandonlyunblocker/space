@@ -188,11 +188,11 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     var newState: any =
     {
       leftLowerElement: newElement,
-    }
+    };
 
     if (oldElement === "enemyFormation" || newElement === "enemyFormation")
     {
-      newState.selectedUnit = null
+      newState.selectedUnit = null;
     }
 
     this.setState(newState);
@@ -259,7 +259,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
         onDragStart: this.handleItemDragStart,
         onDragEnd: this.handleItemDragEnd,
         currentDragItem: this.state.currentDragItem,
-      })
+      });
     }
     else
     {
@@ -334,7 +334,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           onDragStart: this.handleItemDragStart,
           onDragEnd: this.handleItemDragEnd,
           onRowChange: this.handleSelectRow,
-        })
+        });
         break;
       }
     };

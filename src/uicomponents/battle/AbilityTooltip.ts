@@ -62,7 +62,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
     {
       position: "fixed",
       top: parentRect.top,
-    }
+    };
 
     if (this.props.facesLeft)
     {

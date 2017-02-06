@@ -10,8 +10,8 @@ export default class Camera
   tempCameraId: number;
 
   container: PIXI.Container;
-  width: number
-  height: number
+  width: number;
+  height: number;
   bounds: any = {};
   startPos: number[];
   startClick: number[];
@@ -71,7 +71,7 @@ export default class Camera
       var style = window.getComputedStyle(container, null);
       self.screenWidth = parseInt(style.width);
       self.screenHeight = parseInt(style.height);
-    }
+    };
 
     window.addEventListener("resize", this.resizeListener, false);
 
@@ -95,7 +95,7 @@ export default class Camera
       yMax: (this.height * this.bounds.max),
       min: this.bounds.min,
       max: this.bounds.max,
-    }
+    };
   }
 
   startScroll(mousePos: number[])
@@ -212,7 +212,7 @@ export default class Camera
     }
     //var scaledDelta = absDelta + scale / absDelta;
     var direction = delta < 0 ? "out" : "in";
-    var adjDelta = 1 + Math.abs(delta) * scale
+    var adjDelta = 1 + Math.abs(delta) * scale;
     if (direction === "out")
     {
       this.zoom(this.currZoom / adjDelta);
@@ -252,6 +252,6 @@ export default class Camera
       y = this.bounds.yMax;
     }
 
-    this.container.position.set(x, y)
+    this.container.position.set(x, y);
   }
 }

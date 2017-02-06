@@ -46,7 +46,7 @@ const playerInfluence: MapRendererLayerTemplate =
       {
         maxInfluence = influence;
       }
-    })
+    });
 
     function getRelativeValue(min: number, max: number, value: number)
     {
@@ -104,6 +104,6 @@ const playerInfluence: MapRendererLayerTemplate =
     }
     return doc;
   },
-}
+};
 
 export default playerInfluence;

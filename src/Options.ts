@@ -62,7 +62,7 @@ const defaultOptionsValues =
   {
     borderWidth: 8,
   },
-}
+};
 
 class Options implements OptionsValues
 {

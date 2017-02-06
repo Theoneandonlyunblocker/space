@@ -414,7 +414,7 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
       Object.keys(target).forEach(function (key)
       {
         dst[key] = target[key];
-      })
+      });
     }
     Object.keys(src).forEach(function (key)
     {
@@ -605,7 +605,7 @@ export function getDropTargetAtLocation(x: number, y: number)
   {
     x: x,
     y: y,
-  }
+  };
 
   for (let i = 0; i < dropTargets.length; i++)
   {
@@ -618,7 +618,7 @@ export function getDropTargetAtLocation(x: number, y: number)
       x2: nodeBounds.right,
       y1: nodeBounds.top,
       y2: nodeBounds.bottom,
-    }
+    };
     if (rectContains(rect, point))
     {
       return node;
@@ -762,7 +762,7 @@ export function findEasingFunctionHighPoint(easingFunction: (x: number) => numbe
   }
 
   var highestValue: number;
-  var highestValueIndex: number
+  var highestValueIndex: number;
 
   var step = (endIndex - startIndex) / resolution;
   for (let i = 0; i < resolution; i++)

@@ -65,6 +65,6 @@ const IntroTutorial: Tutorial =
     //   )
     // }
   ],
-}
+};
 
 export default IntroTutorial;

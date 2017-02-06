@@ -82,7 +82,7 @@ function rocketAttack(params: SFXParams)
         clip: new PIXI.extras.AnimatedSprite(explosionTextures),
         startTime: time,
         relativeTimePerFrame: Math.min(relativeTimePerExplosionFrame, remainingTimePerFrame),
-      }
+      };
 
       const explosionClip = explosionsByID[projectile.id].clip;
       explosionClip.anchor.set(0.5, 0.5);

@@ -55,7 +55,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
             title: race.description,
           },
             race.displayName.toString(),
-          )
+          );
         }),
       )
     );

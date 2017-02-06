@@ -6,17 +6,17 @@ declare interface RuleSetValues
     attributeVariance?: number;
     baseHealthValue?: number;
     healthVariance?: number;
-  }
+  };
   manufactory?:
   {
     startingCapacity?: number;
     maxCapacity?: number;
     buildCost?: number;
-  }
+  };
   research?:
   {
     baseResearchSpeed?: number;
-  }
+  };
   battle?:
   {
     rowsPerFormation?: number; // probably breaks some stuff if not 2
@@ -33,7 +33,7 @@ declare interface RuleSetValues
     aiUnitDeathChance?: number;
     independentUnitDeathChance?: number;
     loserUnitExtraDeathChance?: number;
-  }
+  };
 }
 
 export default RuleSetValues;

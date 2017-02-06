@@ -38,7 +38,7 @@ const defaultLightBurstProps: LightBurstProps =
   color: new Color(0.75, 0.75, 0.62),
   centerSize: 1.0,
   rayStrength: 1.0,
-}
+};
 const LightBurstPropTypes: SFXFragmentPropTypes =
 {
   size: "point",
@@ -47,7 +47,7 @@ const LightBurstPropTypes: SFXFragmentPropTypes =
   color: "color",
   centerSize: "number",
   rayStrength: "number",
-}
+};
 
 
 export default class LightBurst extends SFXFragment<LightBurstProps, PartialLightBurstProps>

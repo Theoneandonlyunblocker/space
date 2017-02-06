@@ -56,7 +56,7 @@ export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes
           src: imageSrc,
           key: attributeType,
           title: titleString,
-        }))
+        }));
       }
     }
 

@@ -67,6 +67,6 @@ const battleCruiser: UnitTemplate =
       distributionGroups.unique,
     ],
   },
-}
+};
 
 export default battleCruiser;

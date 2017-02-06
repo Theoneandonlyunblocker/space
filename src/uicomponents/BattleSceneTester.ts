@@ -101,7 +101,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     var battleScene = this.battleScene = new BattleScene(ReactDOM.findDOMNode<HTMLElement>(this.battleSceneContainer));
     battleScene.resume();
     battleScene.activeUnit = this.state.selectedSide1Unit;
-    battleScene.updateUnits()
+    battleScene.updateUnits();
   }
 
   makeUnit()
@@ -237,9 +237,9 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       user: user,
       target: target,
       SFXTemplate: SFXTemplate,
-      triggerEffectCallback: function(){console.log("triggerEffect")},
-      onSFXStartCallback: function(){console.log("onSFXStart")},
-      afterFinishedCallback: function(){console.log("afterFinishedCallback")},
+      triggerEffectCallback: function(){console.log("triggerEffect");},
+      onSFXStartCallback: function(){console.log("onSFXStart");},
+      afterFinishedCallback: function(){console.log("afterFinishedCallback");},
     });
   }
 
@@ -270,7 +270,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
         style: style,
       },
         unit.name,
-      ))
+      ));
     }
 
 

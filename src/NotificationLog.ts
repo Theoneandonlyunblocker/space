@@ -119,7 +119,7 @@ export default class NotificationLog
   }
   serialize(): NotificationLogSaveData
   {
-    var notificationsSaveData: NotificationSaveData[] = []
+    var notificationsSaveData: NotificationSaveData[] = [];
 
     for (let turnNumber in this.byTurn)
     {

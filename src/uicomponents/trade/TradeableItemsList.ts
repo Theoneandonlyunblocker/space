@@ -75,7 +75,7 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
   private static listItemSortOrder =
   {
     money: 0,
-  }
+  };
 
   render()
   {

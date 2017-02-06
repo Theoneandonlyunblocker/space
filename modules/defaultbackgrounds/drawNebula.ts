@@ -76,6 +76,6 @@ const drawNebula: BackgroundDrawingFunction = function(
     displayObject: sprite,
     destroy: texture.destroy.bind(texture),
   });
-}
+};
 
 export default drawNebula;

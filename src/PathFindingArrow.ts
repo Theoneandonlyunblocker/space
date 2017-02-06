@@ -125,7 +125,7 @@ export default class PathfindingArrow
 
     this.active = true;
     this.currentTarget = null;
-    this.selectedFleets = fleets
+    this.selectedFleets = fleets;
     this.clearArrows();
   }
 
@@ -165,7 +165,7 @@ export default class PathfindingArrow
       self.currentTarget = null;
       self.clearArrows();
       self.clearTargetTimeout = null;
-    }, 10)
+    }, 10);
   }
 
   endMove()
@@ -192,7 +192,7 @@ export default class PathfindingArrow
         textStyle =
         {
           fill: 0xFFFFF0,
-        }
+        };
         break;
       }
       case "unreachable":
@@ -200,7 +200,7 @@ export default class PathfindingArrow
         textStyle =
         {
           fill: 0xFF0000,
-        }
+        };
         break;
       }
     }

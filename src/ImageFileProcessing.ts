@@ -37,11 +37,11 @@ export function getHTMLImageElementFromDataTransfer(
   img.onload = e =>
   {
     onComplete(img);
-  }
+  };
   img.onerror = e =>
   {
     onError("couldntLoad", e);
-  }
+  };
 
   img.src = imageSource;
 

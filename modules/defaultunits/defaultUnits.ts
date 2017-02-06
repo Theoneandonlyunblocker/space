@@ -45,6 +45,6 @@ const defaultUnits: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultUnits;

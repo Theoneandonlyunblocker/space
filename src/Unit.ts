@@ -444,7 +444,7 @@ export default class Unit
       targetId: target.id,
       turnsPrepared: 0,
       timesInterrupted: 0,
-    }
+    };
 
     this.uiDisplayIsDirty = true;
   }
@@ -731,7 +731,7 @@ export default class Unit
         }
       }
       return false;
-    }
+    };
 
     const relevantStatusEffectTemplates = this.battleStats.statusEffects.map(statusEffect =>
     {
@@ -978,7 +978,7 @@ export default class Unit
             {
               base: parentAbility,
               possibleUpgrades: [],
-            }
+            };
           }
 
           upgradeData[parentAbility.type].possibleUpgrades.push(childAbility);
@@ -993,7 +993,7 @@ export default class Unit
       {
         base: null,
         possibleUpgrades: learnable,
-      }
+      };
     }
 
     return upgradeData;

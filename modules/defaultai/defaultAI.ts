@@ -26,6 +26,6 @@ const defaultAI: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultAI;

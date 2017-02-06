@@ -11,7 +11,7 @@ declare interface TechnologyTemplate
   unlocksPerLevel:
   {
     [level: number]: ManufacturableThing[];
-  }
+  };
 }
 
 export default TechnologyTemplate;

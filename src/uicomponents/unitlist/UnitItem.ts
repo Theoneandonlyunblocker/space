@@ -60,11 +60,11 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
     {
       case 2:
       {
-        return "img/icons/t2icon.png"
+        return "img/icons/t2icon.png";
       }
       case 3:
       {
-        return "img/icons/t3icon.png"
+        return "img/icons/t3icon.png";
       }
       default:
       {

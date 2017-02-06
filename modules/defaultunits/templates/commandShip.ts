@@ -79,6 +79,6 @@ const commandShip: UnitTemplate =
       distributionGroups.unique,
     ],
   },
-}
+};
 
 export default commandShip;

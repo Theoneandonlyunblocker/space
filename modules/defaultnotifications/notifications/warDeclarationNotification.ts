@@ -49,6 +49,6 @@ const WarDeclarationNotification: NotificationTemplate =
       player2: gameLoader.playersById[props.player2Id],
     });
   },
-}
+};
 
 export default WarDeclarationNotification;

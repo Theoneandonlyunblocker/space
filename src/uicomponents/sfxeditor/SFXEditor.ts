@@ -106,7 +106,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
       isPlaying: false,
       currentTime: 0,
       SFXDuration: 1000,
-    }
+    };
 
     this.handleChangeTime = this.handleChangeTime.bind(this);
     this.handleChangeSFXDuration = this.handleChangeSFXDuration.bind(this);

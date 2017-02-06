@@ -62,7 +62,7 @@ export default class NotificationFilter
 
     if (playerIsInvolved)
     {
-      return filterStates.indexOf(NotificationFilterState.showIfInvolved) !== -1
+      return filterStates.indexOf(NotificationFilterState.showIfInvolved) !== -1;
     }
 
     return false;

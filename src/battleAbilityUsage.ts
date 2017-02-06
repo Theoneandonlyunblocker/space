@@ -162,7 +162,7 @@ function executeAbilityEffectDataAndGetUseEffect(
     return null;
   }
 
-  var unitDisplayData: {[unitId: number]: UnitDisplayData} = {}
+  var unitDisplayData: {[unitId: number]: UnitDisplayData} = {};
   unitDisplayData[abilityEffectData.user.id] = abilityEffectData.user.getDisplayData("battle");
   unitDisplayData[abilityEffectData.target.id] = abilityEffectData.target.getDisplayData("battle");
 

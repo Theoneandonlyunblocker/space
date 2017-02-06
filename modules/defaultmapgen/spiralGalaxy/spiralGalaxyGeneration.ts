@@ -56,7 +56,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   const getRelaxAmountFN = (point: MapGenPoint) =>
   {
     return (inverseCenterDensity + centerDensity * point.mapGenData.mapGenDistance) * voronoiRegularity;
-  }
+  };
 
   for (let i = 0; i < 2; i++)
   {
@@ -173,7 +173,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   // get star connectedness
   stars.forEach(star =>
   {
-    mapGenDataByStarID[star.id].connectedness = getStarConnectedness(star, 3)
+    mapGenDataByStarID[star.id].connectedness = getStarConnectedness(star, 3);
   });
 
   // make sectors
@@ -191,7 +191,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     {
       arm: "common",
       center: "rare",
-    }
+    };
     const foundDistributionFlags =
     {
       common: false,
@@ -270,7 +270,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
       startPositions.push(star);
     }
 
-    return startPositions
+    return startPositions;
   })(startRegions);
 
   //   add star to player and construct initial buildings
@@ -311,21 +311,21 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     sector.stars.forEach(star =>
     {
       star.race = existingRaceInSector || race;
-    })
-  }
+    });
+  };
 
   distributeDistributablesPerSector(
     sectors,
     distributionFlagsBySectorID,
     TemplateIndexes.distributablesByDistributionGroup.races,
     racePlacerFN,
-  )
+  );
 
   // set resources
   const resourcePlacerFN = function(sector: Region, resource: ResourceTemplate)
   {
     sector.stars[0].setResource(resource);
-  }
+  };
   distributeDistributablesPerSector(
     sectors,
     distributionFlagsBySectorID,
@@ -371,6 +371,6 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     seed: seed,
     independents: independents,
   });
-}
+};
 
 export default spiralGalaxyGeneration;

@@ -48,7 +48,7 @@ const defaultShockWaveProps: ShockWaveProps =
   color: new Color(1, 1, 1),
 
   delay: 0.3,
-}
+};
 const shockWavePropTypes: SFXFragmentPropTypes =
 {
   size: "point",
@@ -66,7 +66,7 @@ const shockWavePropTypes: SFXFragmentPropTypes =
   color: "color",
 
   delay: "number",
-}
+};
 
 export default class ShockWave extends SFXFragment<ShockWaveProps>
 {

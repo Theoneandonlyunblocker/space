@@ -3,4 +3,4 @@ declare interface DefaultAISaveData
 
 }
 
-export default DefaultAISaveData
+export default DefaultAISaveData;

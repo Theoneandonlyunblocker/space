@@ -66,6 +66,6 @@ const bomberSquadron: UnitTemplate =
       distributionGroups.rare,
     ],
   },
-}
+};
 
 export default bomberSquadron;

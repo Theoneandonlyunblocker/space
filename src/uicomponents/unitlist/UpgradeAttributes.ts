@@ -54,9 +54,9 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
           key: attribute,
         },
           attribute + ": " + unit.baseAttributes[attribute] + " -> " + (unit.baseAttributes[attribute] + 1),
-        ))
+        ));
       }
-    })
+    });
 
     if (rows.length === 0)
     {

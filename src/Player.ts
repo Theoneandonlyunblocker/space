@@ -429,7 +429,7 @@ export default class Player
         {
           resource: starIncome.resource,
           amount: 0,
-        }
+        };
       }
 
       incomeByResource[starIncome.resource.type].amount += starIncome.amount;
@@ -488,12 +488,12 @@ export default class Player
     neighboringStars.forEach(star =>
     {
       alreadyAddedPlayersByID[star.owner.id] = star.owner;
-    })
+    });
 
     return Object.keys(alreadyAddedPlayersByID).map(playerID =>
     {
       return alreadyAddedPlayersByID[playerID];
-    })
+    });
   }
   updateVisionInStar(star: Star): void
   {
@@ -840,7 +840,7 @@ export default class Player
     var isOwnedByThisFN = function(star: Star)
     {
       return star.owner === self;
-    }
+    };
 
     return star.getNearestStarForQualifier(isOwnedByThisFN);
   }
@@ -860,7 +860,7 @@ export default class Player
         player: target.enemy,
         units: target.units,
       },
-    }
+    };
 
     var battlePrep = new BattlePrep(battleData);
     if (battlePrep.humanPlayer)
@@ -1016,9 +1016,9 @@ export default class Player
 
       diplomacyStatus: this.diplomacyStatus.serialize(),
 
-      fleets: this.fleets.map(function(fleet){return fleet.serialize()}),
+      fleets: this.fleets.map(function(fleet){return fleet.serialize();}),
       money: this.money,
-      controlledLocationIds: this.controlledLocations.map(function(star){return star.id}),
+      controlledLocationIds: this.controlledLocations.map(function(star){return star.id;}),
 
       itemIds: this.items.map(item => item.id),
       unitIds: this.units.map(unit => unit.id),

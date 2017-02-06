@@ -154,7 +154,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     var ownHeight = ownRect.height;
 
 
-    var strippedOwnHeight = parseInt(getComputedStyle(ownNode).height)
+    var strippedOwnHeight = parseInt(getComputedStyle(ownNode).height);
     var extraHeight = ownHeight - strippedOwnHeight;
 
     var desiredHeight = parentHeight - extraHeight;
@@ -456,7 +456,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
           },
             null,
           ),
-        ))
+        ));
       }
     });
 

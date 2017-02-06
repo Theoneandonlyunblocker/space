@@ -21,6 +21,6 @@ const defaultNotifications: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultNotifications;

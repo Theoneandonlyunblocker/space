@@ -60,6 +60,6 @@ const defaultEmblems: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultEmblems;

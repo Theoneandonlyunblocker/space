@@ -79,7 +79,7 @@ const defaultProjectileAttackProps: ProjectileAttackProps =
 
   spawnTimeStart: 0,
   spawnTimeEnd: 500,
-}
+};
 const ProjectileAttackPropTypes: SFXFragmentPropTypes =
 {
   // makeProjectileSprite,
@@ -98,7 +98,7 @@ const ProjectileAttackPropTypes: SFXFragmentPropTypes =
 
   spawnTimeStart: "number",
   spawnTimeEnd: "number",
-}
+};
 
 class Projectile
 {
@@ -253,7 +253,7 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps,
   }
   public draw(userData: UnitDrawingFunctionData, targetData: UnitDrawingFunctionData): void
   {
-    this.container.removeChildren()
+    this.container.removeChildren();
     this.projectiles = [];
 
     const spawningDuration = this.props.spawnTimeEnd - this.props.spawnTimeStart;

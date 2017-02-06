@@ -33,31 +33,31 @@ const nonFillerStars: MapRendererLayerTemplate =
     var mouseDownFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("mouseDown", event, star);
-    }
+    };
     var mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("mouseUp", event);
-    }
+    };
     var onClickFN = function(star: Star)
     {
       eventManager.dispatchEvent("starClick", star);
-    }
+    };
     var mouseOverFN = function(star: Star)
     {
       eventManager.dispatchEvent("hoverStar", star);
-    }
+    };
     var mouseOutFN = function(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("clearHover");
-    }
+    };
     var touchStartFN = function(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("touchStart", event);
-    }
+    };
     var touchEndFN = function(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("touchEnd", event);
-    }
+    };
     for (let i = 0; i < points.length; i++)
     {
       var star = points[i];
@@ -118,6 +118,6 @@ const nonFillerStars: MapRendererLayerTemplate =
 
     return doc;
   },
-}
+};
 
 export default nonFillerStars;

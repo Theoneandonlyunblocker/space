@@ -59,6 +59,6 @@ const battleFinishNotification: NotificationTemplate =
       victor: gameLoader.playersById[props.victorId],
     });
   },
-}
+};
 
 export default battleFinishNotification;

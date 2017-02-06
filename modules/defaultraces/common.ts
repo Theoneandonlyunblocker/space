@@ -21,7 +21,7 @@ export const defaultRaceTechnologyValues: RaceTechnologyValue[] =
     startingLevel: 0,
     maxLevel: 9,
   },
-]
+];
 
 export function mergeTechnologyValues(...valuesToMerge: RaceTechnologyValue[][]): RaceTechnologyValue[]
 {

@@ -136,7 +136,7 @@ export default class MCTree
         finalScore: node.getCombinedScore(),
         abilityName: node.move.ability.displayName,
         targetId: node.move.targetId,
-      }
+      };
       consoleRows.push(row);
     }
     var _ : any = window;

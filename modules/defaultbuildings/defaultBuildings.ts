@@ -40,6 +40,6 @@ const defaultBuildings: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultBuildings;

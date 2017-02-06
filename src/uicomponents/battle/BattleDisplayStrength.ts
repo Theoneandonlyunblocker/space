@@ -96,12 +96,12 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
 
       TWEEN.update();
       this.animationFrameHandle = window.requestAnimationFrame(animateTween);
-    }
+    };
 
     const tweeningHealthObject =
     {
       health: strengthBefore,
-    }
+    };
 
     var tween = new TWEEN.Tween(tweeningHealthObject).to(
     {

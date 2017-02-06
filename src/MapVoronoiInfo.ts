@@ -33,7 +33,7 @@ export default class MapVoronoiInfo
     if (!visibleStars) indexString = "all";
     else
     {
-      var ids: number[] = visibleStars.map(function(star){return star.id});
+      var ids: number[] = visibleStars.map(function(star){return star.id;});
       ids = ids.sort();
 
       indexString = ids.join();

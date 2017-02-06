@@ -59,7 +59,7 @@ const defaultFocusingBeamProps: FocusingBeamProps =
   beamIntensity: new RampingValue(5.0, 20.0, -25.0),
   beamSharpness: new RampingValue(0.75, 0.24, 0.0),
   beamSize: new RampingValue(0.12, -0.115, -0.005),
-}
+};
 const FocusingBeamPropTypes: SFXFragmentPropTypes =
 {
   color: "color",
@@ -75,7 +75,7 @@ const FocusingBeamPropTypes: SFXFragmentPropTypes =
   beamIntensity: "rampingValue",
   beamSharpness: "rampingValue",
   beamSize: "rampingValue",
-}
+};
 
 
 export default class FocusingBeam extends SFXFragment<FocusingBeamProps, PartialFocusingBeamProps>

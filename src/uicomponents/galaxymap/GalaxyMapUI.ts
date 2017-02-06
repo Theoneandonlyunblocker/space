@@ -173,7 +173,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
       className: "end-turn-button",
       onClick: this.endTurn,
       tabIndex: -1,
-    }
+    };
     if (!this.state.isPlayerTurn)
     {
       endTurnButtonProps.className += " disabled";

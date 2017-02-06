@@ -29,7 +29,7 @@ export interface CustomPopupProps
     left?: number;
     width?: number;
     height?: number;
-  }
+  };
 
   dragPositionerProps?: DragPositionerProps;
 }
@@ -45,7 +45,7 @@ export interface PropTypes extends CustomPopupProps, React.Props<any>
   {
     left: number;
     top: number;
-  }
+  };
 }
 
 interface StateType
@@ -216,7 +216,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
       {
         this.ref_TODO_content = content;
       },
-    }
+    };
 
     var resizeHandle = !this.props.resizable ? null : PopupResizeHandle(
     {

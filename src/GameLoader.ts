@@ -150,7 +150,7 @@ export default class GameLoader
           playerData.AIController,
           player,
           game,
-        )
+        );
       }
     });
 
@@ -192,7 +192,7 @@ export default class GameLoader
       for (let j = 0; j < dataStar.linksToIds.length; j++)
       {
         var linkId = dataStar.linksToIds[j];
-        var linkStar = this.starsById[linkId]
+        var linkStar = this.starsById[linkId];
         realStar.addLink(linkStar);
       }
     }

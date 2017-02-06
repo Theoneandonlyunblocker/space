@@ -85,7 +85,7 @@ export default class EconomyAI
     var starQualifierFN = function(star: Star)
     {
       return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
-    }
+    };
     var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
     if (!star)
     {
@@ -103,7 +103,7 @@ export default class EconomyAI
     const globalBuildableUnitTypes = player.getGloballyBuildableUnits();
     const buildableUnitTypes = globalBuildableUnitTypes.concat(
       manufactory.getUniqueLocalUnitTypes(globalBuildableUnitTypes),
-    )
+    );
 
     for (let i = 0; i < buildableUnitTypes.length; i++)
     {

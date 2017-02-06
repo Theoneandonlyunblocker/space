@@ -66,6 +66,6 @@ const stealthShip: UnitTemplate =
       distributionGroups.unique,
     ],
   },
-}
+};
 
 export default stealthShip;

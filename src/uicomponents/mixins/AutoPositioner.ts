@@ -187,7 +187,7 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
     }
     else if (left + ownRect.width > window.innerWidth)
     {
-      left = left - (left + ownRect.width - window.innerWidth)
+      left = left - (left + ownRect.width - window.innerWidth);
     }
 
     if (top < 0)
@@ -196,7 +196,7 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
     }
     else if (top + ownRect.height > window.innerHeight)
     {
-      top = top - (top + ownRect.height - window.innerHeight)
+      top = top - (top + ownRect.height - window.innerHeight);
     }
 
     ownNode.style.left = "" + left + "px";

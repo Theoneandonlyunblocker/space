@@ -28,6 +28,6 @@ const defaultBackgrounds: ModuleFile =
 
     return moduleData;
   },
-}
+};
 
 export default defaultBackgrounds;
