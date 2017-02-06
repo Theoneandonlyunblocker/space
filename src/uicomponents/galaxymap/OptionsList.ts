@@ -1,16 +1,16 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import OptionsCheckbox from "./OptionsCheckbox";
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-import Options from "../../Options";
-import OptionsNumericField from "./OptionsNumericField";
-import OptionsGroup from "./OptionsGroup";
-import ConfirmPopup from "../popups/ConfirmPopup";
-import NotificationFilterButton from "../notifications/NotificationFilterButton";
 import NotificationLog from "../../NotificationLog";
+import Options from "../../Options";
 import eventManager from "../../eventManager";
-import {clamp} from "../../utility";
 import TutorialStatus from "../../tutorials/TutorialStatus";
+import {clamp} from "../../utility";
+import NotificationFilterButton from "../notifications/NotificationFilterButton";
+import ConfirmPopup from "../popups/ConfirmPopup";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import OptionsCheckbox from "./OptionsCheckbox";
+import OptionsGroup from "./OptionsGroup";
+import OptionsNumericField from "./OptionsNumericField";
 
 
 export interface PropTypes extends React.Props<any>

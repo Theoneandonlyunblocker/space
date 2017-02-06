@@ -5,9 +5,9 @@ import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendere
 import MapEvaluator from "../../defaultai/mapai/MapEvaluator";
 
 import Color from "../../../src/Color";
-import Star from "../../../src/Star";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
+import Star from "../../../src/Star";
 
 import
 {

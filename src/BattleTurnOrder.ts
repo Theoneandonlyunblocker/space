@@ -1,5 +1,5 @@
-import Unit from "./Unit";
 import TurnOrderDisplayData from "./TurnOrderDisplayData";
+import Unit from "./Unit";
 
 export default class BattleTurnOrder
 {

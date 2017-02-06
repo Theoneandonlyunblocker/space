@@ -2,15 +2,15 @@
 
 import Battle from "./Battle";
 import BattlePrep from "./BattlePrep";
-import Renderer from "./Renderer";
-import MapRenderer from "./MapRenderer";
-import PlayerControl from "./PlayerControl";
-import Player from "./Player";
 import Game from "./Game";
-import eventManager from "./eventManager";
-import ModuleLoader from "./ModuleLoader";
+import MapRenderer from "./MapRenderer";
 import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
+import ModuleLoader from "./ModuleLoader";
+import Player from "./Player";
+import PlayerControl from "./PlayerControl";
 import ReactUIScene from "./ReactUIScene";
+import Renderer from "./Renderer";
+import eventManager from "./eventManager";
 
 import Stage from "./uicomponents/Stage";
 

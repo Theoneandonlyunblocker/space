@@ -1,19 +1,19 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import TopMenuPopup from "../popups/TopMenuPopup";
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-import Player from "../../Player";
 import Game from "../../Game";
+import Options from "../../Options";
+import Player from "../../Player";
 import DiplomacyOverview from "../diplomacy/DiplomacyOverview";
-import ItemEquip from "../unitlist/ItemEquip";
-import EconomySummary from "./EconomySummary";
-import TechnologiesList from "../technologies/TechnologiesList";
+import {CustomPopupProps} from "../popups/Popup";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import TopMenuPopup from "../popups/TopMenuPopup";
 import ProductionOverview from "../production/ProductionOverview";
 import LoadGame from "../saves/LoadGame";
 import SaveGame from "../saves/SaveGame";
+import TechnologiesList from "../technologies/TechnologiesList";
+import ItemEquip from "../unitlist/ItemEquip";
+import EconomySummary from "./EconomySummary";
 import OptionsList from "./OptionsList";
-import Options from "../../Options";
-import {CustomPopupProps} from "../popups/Popup";
 
 export interface PropTypes extends React.Props<any>
 {

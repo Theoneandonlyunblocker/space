@@ -1,9 +1,9 @@
 /// <reference path="../lib/offset.d.ts" />
 
-import Star from "./Star";
-import Point from "./Point";
 import MapVoronoiInfo from "./MapVoronoiInfo";
 import Options from "./Options";
+import Point from "./Point";
+import Star from "./Star";
 
 import
 {

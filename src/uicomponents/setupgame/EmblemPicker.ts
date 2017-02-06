@@ -5,8 +5,8 @@ import Color from "../../Color";
 import {generateMainColor, generateSecondaryColor} from "../../colorGeneration";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
-import ColorPicker from "./ColorPicker";
 import EmblemComponent from "../Emblem";
+import ColorPicker from "./ColorPicker";
 
 interface PropTypes extends React.Props<any>
 {

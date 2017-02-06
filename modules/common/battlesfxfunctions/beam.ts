@@ -5,16 +5,16 @@ import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
 import ShinyParticleFilter from "./shaders/ShinyParticle";
 
-import ShockWave from "./sfxfragments/ShockWave";
-import LightBurst from "./sfxfragments/LightBurst";
 import Beam from "./sfxfragments/Beam";
+import LightBurst from "./sfxfragments/LightBurst";
 import RampingValue from "./sfxfragments/RampingValue";
+import ShockWave from "./sfxfragments/ShockWave";
 
 import Color from "../../../src/Color";
 import
 {
-  getDummyTextureForShader,
   generateTextureWithBounds,
+  getDummyTextureForShader,
 } from "../../../src/utility";
 
 import ProtonWrapper from "./ProtonWrapper";

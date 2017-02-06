@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import TopMenuPopup from "../popups/TopMenuPopup";
 import ConfirmPopup from "../popups/ConfirmPopup";
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import {CustomPopupProps} from "../popups/Popup";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import TopMenuPopup from "../popups/TopMenuPopup";
 
 import LoadGame from "../saves/LoadGame";
 

@@ -1,13 +1,13 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-import NotificationLog from "../../NotificationLog";
-import NotificationComponentFactory from "./Notification";
 import Notification from "../../Notification";
-import ConfirmPopup from "../popups/ConfirmPopup";
-import NotificationFilterButton from "./NotificationFilterButton";
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import NotificationLog from "../../NotificationLog";
 import eventManager from "../../eventManager";
+import ConfirmPopup from "../popups/ConfirmPopup";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import NotificationComponentFactory from "./Notification";
+import NotificationFilterButton from "./NotificationFilterButton";
 
 
 export interface PropTypes extends React.Props<any>

@@ -2,8 +2,8 @@
 
 import Color from "../../Color";
 
-import EmblemSetter from "./EmblemSetter";
 import {EmblemProps} from "../Emblem";
+import EmblemSetter from "./EmblemSetter";
 
 interface PropTypes extends React.Props<any>
 {

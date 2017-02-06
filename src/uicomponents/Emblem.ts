@@ -1,8 +1,8 @@
 /// <reference path="../../lib/react-global.d.ts" />
 
-import SubEmblemTemplate from "../templateinterfaces/SubEmblemTemplate";
 import Color from "../Color";
 import Emblem from "../Emblem";
+import SubEmblemTemplate from "../templateinterfaces/SubEmblemTemplate";
 
 import
 {

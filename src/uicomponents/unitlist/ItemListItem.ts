@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import ListItemProps from "../list/ListItemProps";
 import Item from "../../Item";
-import AbilityBase from "../../templateinterfaces/AbilityBase";
 import Unit from "../../Unit";
+import AbilityBase from "../../templateinterfaces/AbilityBase";
+import ListItemProps from "../list/ListItemProps";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";

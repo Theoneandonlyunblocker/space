@@ -1,8 +1,8 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
+import RampingValue from "./RampingValue";
 import SFXFragment from "./SFXFragment";
 import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
-import RampingValue from "./RampingValue";
 
 import BeamFilter from "../shaders/Beam";
 
@@ -10,8 +10,8 @@ import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
 {
-  getRelativeValue,
   clamp,
+  getRelativeValue,
   makeShaderSprite,
 } from "../../../../src/utility";
 

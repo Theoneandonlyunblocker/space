@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import Player from "../../Player";
-import BuildingUpgradeListItem from "./BuildingUpgradeListItem";
-import Star from "../../Star";
 import Building from "../../Building";
 import BuildingUpgradeData from "../../BuildingUpgradeData";
+import Player from "../../Player";
+import Star from "../../Star";
+import BuildingUpgradeListItem from "./BuildingUpgradeListItem";
 
 
 export interface PropTypes extends React.Props<any>

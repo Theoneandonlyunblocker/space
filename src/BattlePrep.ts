@@ -1,9 +1,9 @@
 
-import Unit from "./Unit";
-import Player from "./Player";
 import Battle from "./Battle";
 import BattleData from "./BattleData";
 import BattlePrepFormation from "./BattlePrepFormation";
+import Player from "./Player";
+import Unit from "./Unit";
 
 export default class BattlePrep
 {

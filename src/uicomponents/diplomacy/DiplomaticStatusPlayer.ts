@@ -1,11 +1,11 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import Player from "../../Player";
 import AttitudeModifier from "../../AttitudeModifier";
-import Opinion from "./Opinion";
-import PlayerFlag from "../PlayerFlag";
 import {Flag} from "../../Flag";
+import Player from "../../Player";
+import PlayerFlag from "../PlayerFlag";
 import ListItemProps from "../list/ListItemProps";
+import Opinion from "./Opinion";
 
 export interface PropTypes extends ListItemProps, React.Props<any>
 {

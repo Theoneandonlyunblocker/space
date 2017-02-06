@@ -1,9 +1,9 @@
 /// <reference path="../lib/voronoi.d.ts" />
 
-import VoronoiCell from "./VoronoiCell";
-import Star from "./Star";
-import Point from "./Point";
 import FillerPoint from "./FillerPoint";
+import Point from "./Point";
+import Star from "./Star";
+import VoronoiCell from "./VoronoiCell";
 
 export default class MapVoronoiInfo
 {

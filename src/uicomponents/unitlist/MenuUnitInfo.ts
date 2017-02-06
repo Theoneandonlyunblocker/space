@@ -3,9 +3,9 @@
 import Item from "../../Item";
 import Unit from "../../Unit";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
-import UnitItemGroup from "./UnitItemGroup";
 import AbilityList from "./AbilityList";
 import UnitExperience from "./UnitExperience";
+import UnitItemGroup from "./UnitItemGroup";
 
 
 export interface PropTypes extends React.Props<any>

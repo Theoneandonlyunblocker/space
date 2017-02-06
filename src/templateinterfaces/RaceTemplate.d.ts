@@ -1,19 +1,19 @@
 // used as-is for independent races. extended by PlayerRaceTemplate for player races
 
-import UnitTemplate from "./UnitTemplate";
 import BuildingTemplate from "./BuildingTemplate";
-import SubEmblemTemplate from "./SubEmblemTemplate";
-import PortraitTemplate from "./PortraitTemplate";
-import ItemTemplate from "./ItemTemplate";
 import {DistributionData} from "./DistributionData";
+import ItemTemplate from "./ItemTemplate";
+import PortraitTemplate from "./PortraitTemplate";
+import SubEmblemTemplate from "./SubEmblemTemplate";
 import TemplateCollection from "./TemplateCollection";
+import UnitTemplate from "./UnitTemplate";
 
+import BuildingUpgradeData from "../BuildingUpgradeData";
 import {Fleet} from "../Fleet";
 import Name from "../Name";
 import Player from "../Player";
 import Star from "../Star";
 import Unit from "../Unit";
-import BuildingUpgradeData from "../BuildingUpgradeData";
 
 export declare interface RaceTemplate
 {

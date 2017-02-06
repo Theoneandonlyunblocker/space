@@ -2,14 +2,14 @@
 
 import app from "./App"; // TODO global
 
-import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
-import EmblemSaveData from "./savedata/EmblemSaveData";
 import Color from "./Color";
 import
 {
   generateMainColor,
   generateSecondaryColor
 } from "./colorGeneration";
+import EmblemSaveData from "./savedata/EmblemSaveData";
+import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
 import
 {
   getSeededRandomArrayItem,

@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
-import ManufacturableThingsList from "./ManufacturableThingsList";
 import Manufactory from "../../Manufactory";
 import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
+import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
+import ManufacturableThingsList from "./ManufacturableThingsList";
 
 
 export interface PropTypes extends React.Props<any>

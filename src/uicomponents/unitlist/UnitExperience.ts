@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import UpgradeUnit from "./UpgradeUnit";
-import TopMenuPopup from "../popups/TopMenuPopup";
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import Unit from "../../Unit";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import TopMenuPopup from "../popups/TopMenuPopup";
+import UpgradeUnit from "./UpgradeUnit";
 
 export interface PropTypes extends React.Props<any>
 {

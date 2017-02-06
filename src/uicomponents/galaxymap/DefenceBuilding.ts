@@ -2,9 +2,9 @@
 
 import app from "../../App"; // TODO global
 
-import PlayerFlag from "../PlayerFlag";
 import Building from "../../Building";
 import {colorImageInPlayerColor} from "../../utility";
+import PlayerFlag from "../PlayerFlag";
 
 
 export interface PropTypes extends React.Props<any>

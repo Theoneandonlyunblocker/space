@@ -2,13 +2,13 @@
 import app from "./App"; // TODO global
 import eventManager from "./eventManager";
 
-import Player from "./Player";
 import AttitudeModifier from "./AttitudeModifier";
-import DiplomacyState from "./DiplomacyState";
 import DiplomacyEvaluation from "./DiplomacyEvaluation";
+import DiplomacyState from "./DiplomacyState";
+import Player from "./Player";
 
-import DiplomacyStatusSaveData from "./savedata/DiplomacyStatusSaveData";
 import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData";
+import DiplomacyStatusSaveData from "./savedata/DiplomacyStatusSaveData";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 
 

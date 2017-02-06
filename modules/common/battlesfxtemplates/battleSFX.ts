@@ -1,14 +1,14 @@
-import BattleSFXTemplate from "../../../src/templateinterfaces/BattleSFXTemplate";
 import {UnitAttribute} from "../../../src/UnitAttributes";
+import BattleSFXTemplate from "../../../src/templateinterfaces/BattleSFXTemplate";
 
 import BlackToAlphaFilter from "../battlesfxfunctions/shaders/BlackToAlpha";
 
-import rocketAttackDrawingFunction from "../battlesfxfunctions/rocketAttack";
-import guardDrawingFunction from "../battlesfxfunctions/guard";
 import beamDrawingFunction from "../battlesfxfunctions/beam";
-import snipeDrawingFunction from "../battlesfxfunctions/snipe";
+import guardDrawingFunction from "../battlesfxfunctions/guard";
 import makeSFXFromVideo from "../battlesfxfunctions/makeSFXFromVideo";
 import {placeholder as placeholderFunction} from "../battlesfxfunctions/placeholder";
+import rocketAttackDrawingFunction from "../battlesfxfunctions/rocketAttack";
+import snipeDrawingFunction from "../battlesfxfunctions/snipe";
 
 
 export const rocketAttack: BattleSFXTemplate =

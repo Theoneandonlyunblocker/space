@@ -2,9 +2,9 @@
 
 import {default as EconomySummaryItem, PropTypes as EconomySummaryItemProps} from "./EconomySummaryItem";
 
+import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
-import List from "../list/List";
 
 import Player from "../../Player";
 

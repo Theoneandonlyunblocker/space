@@ -2,11 +2,11 @@
 
 import app from "./App"; // TODO global
 
-import Star from "./Star";
-import {Fleet} from "./Fleet";
 import Color from "./Color";
-import eventManager from "./eventManager";
+import {Fleet} from "./Fleet";
 import Point from "./Point";
+import Star from "./Star";
+import eventManager from "./eventManager";
 
 interface PathFindingArrowCurveStyle
 {

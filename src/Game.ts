@@ -1,14 +1,14 @@
 
 import app from "./App"; // TODO global
-import idGenerators from "./idGenerators";
-import Player from "./Player";
 import GalaxyMap from "./GalaxyMap";
-import eventManager from "./eventManager";
-import NotificationLog from "./NotificationLog";
 import Manufactory from "./Manufactory";
+import NotificationLog from "./NotificationLog";
+import Player from "./Player";
+import eventManager from "./eventManager";
+import idGenerators from "./idGenerators";
 
-import GameSaveData from "./savedata/GameSaveData";
 import FullSaveData from "./savedata/FullSaveData";
+import GameSaveData from "./savedata/GameSaveData";
 
 
 export default class Game

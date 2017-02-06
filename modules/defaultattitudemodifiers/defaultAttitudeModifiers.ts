@@ -1,7 +1,7 @@
 import AttitudeModifierTemplates from "./AttitudeModifierTemplates";
 
-import ModuleFile from "../../src/ModuleFile";
 import ModuleData from "../../src/ModuleData";
+import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import {setAttitudeModifierOverride} from "../../src/setDynamicTemplateProperties";
 

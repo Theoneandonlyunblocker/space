@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import PlayerFlag from "../PlayerFlag";
 import Player from "../../Player";
+import PlayerFlag from "../PlayerFlag";
 
 export interface PropTypes extends React.Props<any>
 {

@@ -2,8 +2,8 @@ import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 
-import Unit from "./Unit";
 import Battle from "./Battle";
+import Unit from "./Unit";
 import UnitDisplayData from "./UnitDisplayData";
 import
 {

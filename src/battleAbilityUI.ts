@@ -1,11 +1,11 @@
 import Battle from "./Battle";
 import Unit from "./Unit";
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
-import {AbilityEffectTemplate} from "./templateinterfaces/AbilityEffectTemplate";
 import
 {
   getUnitsInEffectArea
 } from "./battleAbilityProcessing";
+import {AbilityEffectTemplate} from "./templateinterfaces/AbilityEffectTemplate";
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 
 export function getUnitsInAbilityArea(battle: Battle, ability: AbilityTemplate,
   user: Unit, target: Unit): Unit[]

@@ -1,14 +1,14 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-import ListColumn from "../list/ListColumn";
-import ListItem from "../list/ListItem";
+import Building from "../../Building";
+import Player from "../../Player";
+import Star from "../../Star";
 import BuildingTemplate from "../../templateinterfaces/BuildingTemplate";
 import List from "../list/List";
+import ListColumn from "../list/ListColumn";
+import ListItem from "../list/ListItem";
 import {default as BuildableBuilding, PropTypes as BuildableBuildingProps} from "./BuildableBuilding";
-import Building from "../../Building";
-import Star from "../../Star";
-import Player from "../../Player";
 
 
 export interface PropTypes extends React.Props<any>

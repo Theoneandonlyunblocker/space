@@ -2,14 +2,14 @@
 
 
 import {TutorialPage} from "../../tutorials/Tutorial";
-import DontShowAgain from "./DontShowAgain";
-import {clamp} from "../../utility";
 import TutorialState from "../../tutorials/TutorialState";
 import TutorialStatus from "../../tutorials/TutorialStatus";
+import {clamp} from "../../utility";
 import
 {
   splitMultilineText
 } from "../../utility";
+import DontShowAgain from "./DontShowAgain";
 
 
 export interface PropTypes extends React.Props<any>

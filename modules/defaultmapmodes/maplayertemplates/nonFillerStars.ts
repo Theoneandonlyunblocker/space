@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import eventManager from "../../../src/eventManager";
-import Star from "../../../src/Star";
-import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
+import Star from "../../../src/Star";
+import eventManager from "../../../src/eventManager";
+import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {

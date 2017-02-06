@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import Player from "../../Player";
 import Game from "../../Game";
 import Options from "../../Options";
-import {default as TopMenuPopups, TopMenuPopupsComponent} from "./TopMenuPopups";
+import Player from "../../Player";
 import eventManager from "../../eventManager";
+import {default as TopMenuPopups, TopMenuPopupsComponent} from "./TopMenuPopups";
 
 
 export interface PropTypes extends React.Props<any>

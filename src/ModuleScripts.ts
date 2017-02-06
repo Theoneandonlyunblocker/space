@@ -1,6 +1,6 @@
-import UnitScripts from "./modulescriptinterfaces/UnitScripts";
 import GameScripts from "./modulescriptinterfaces/GameScripts";
 import PartialAllScripts from "./modulescriptinterfaces/PartialAllScripts";
+import UnitScripts from "./modulescriptinterfaces/UnitScripts";
 
 
 export default class ModuleScripts implements PartialAllScripts

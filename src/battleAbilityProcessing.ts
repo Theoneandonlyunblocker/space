@@ -1,14 +1,14 @@
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import
 {
   AbilityEffectTemplate,
   AbilityEffectTrigger,
 } from "./templateinterfaces/AbilityEffectTemplate";
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 
-import Unit from "./Unit";
-import GuardCoverage from "./GuardCoverage";
 import Battle from "./Battle";
+import GuardCoverage from "./GuardCoverage";
 import StatusEffect from "./StatusEffect";
+import Unit from "./Unit";
 import
 {
   areaSingle,

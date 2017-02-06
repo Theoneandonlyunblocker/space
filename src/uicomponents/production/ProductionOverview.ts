@@ -1,13 +1,13 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import BuildQueue from "./BuildQueue";
 import Player from "../../Player";
-import ManufacturableThings from "./ManufacturableThings";
 import Star from "../../Star";
-import ConstructManufactory from "./ConstructManufactory";
-import ManufactoryStarsList from "./ManufactoryStarsList";
 import eventManager from "../../eventManager";
 import {sortByManufactoryCapacityFN} from "../../utility";
+import BuildQueue from "./BuildQueue";
+import ConstructManufactory from "./ConstructManufactory";
+import ManufactoryStarsList from "./ManufactoryStarsList";
+import ManufacturableThings from "./ManufacturableThings";
 
 import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
 import applyMixins from "../mixins/applyMixins";

@@ -1,5 +1,5 @@
-import Triangle from "./Triangle";
 import Point from "../../../src/Point";
+import Triangle from "./Triangle";
 
 import
 {

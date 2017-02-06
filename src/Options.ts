@@ -1,8 +1,8 @@
 import eventManager from "./eventManager";
 import
 {
-  getMatchingLocalstorageItemsByDate,
   deepMerge,
+  getMatchingLocalstorageItemsByDate,
   shallowCopy
 } from "./utility";
 

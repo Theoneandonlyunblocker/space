@@ -4,25 +4,25 @@ import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 
-import eventManager from "./eventManager";
-import Point from "./Point";
-import FillerPoint from "./FillerPoint";
-import Player from "./Player";
-import {Fleet} from "./Fleet";
 import Building from "./Building";
 import BuildingUpgradeData from "./BuildingUpgradeData";
+import FillerPoint from "./FillerPoint";
+import {Fleet} from "./Fleet";
+import FleetAttackTarget from "./FleetAttackTarget";
 import Manufactory from "./Manufactory";
+import Player from "./Player";
+import Point from "./Point";
 import Unit from "./Unit";
 import VoronoiCell from "./VoronoiCell";
-import FleetAttackTarget from "./FleetAttackTarget";
+import eventManager from "./eventManager";
 import idGenerators from "./idGenerators";
 import
 {
   aStar
 } from "./pathFinding";
 
-import StarSaveData from "./savedata/StarSaveData";
 import StarBuildingsSaveData from "./savedata/StarBuildingsSaveData";
+import StarSaveData from "./savedata/StarSaveData";
 
 export default class Star implements Point
 {

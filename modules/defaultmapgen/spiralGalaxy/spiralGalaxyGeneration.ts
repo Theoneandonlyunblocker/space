@@ -2,19 +2,19 @@
 
 import app from "../../../src/App"; // TODO global
 import FillerPoint from "../../../src/FillerPoint";
-import Player from "../../../src/Player";
-import Star from "../../../src/Star";
-import Region from "../../../src/Region";
-import TemplateIndexes from "../../../src/TemplateIndexes";
 import MapGenResult from "../../../src/MapGenResult";
+import Player from "../../../src/Player";
+import Region from "../../../src/Region";
+import Star from "../../../src/Star";
+import TemplateIndexes from "../../../src/TemplateIndexes";
 import
 {
   randInt,
 } from "../../../src/utility";
 
 import MapGenFunction from "../../../src/templateinterfaces/MapGenFunction";
-import ResourceTemplate from "../../../src/templateinterfaces/ResourceTemplate";
 import {RaceTemplate} from "../../../src/templateinterfaces/RaceTemplate";
+import ResourceTemplate from "../../../src/templateinterfaces/ResourceTemplate";
 
 import
 {
@@ -23,17 +23,17 @@ import
   setVoronoiCells
 } from "../../../src/voronoi";
 
-import MapGenPoint from "../common/MapGenPoint";
-import setupIndependents from "../common/setupIndependents";
 import MapGenDataByStarID from "../common/MapGenDataByStarID";
+import MapGenPoint from "../common/MapGenPoint";
 import
 {
   addDefenceBuildings,
-  getStarConnectedness,
   distributeDistributablesPerSector,
+  getStarConnectedness,
   makeSectors,
   partiallySeverLinks,
 } from "../common/mapGenUtils";
+import setupIndependents from "../common/setupIndependents";
 
 import SpiralGalaxyOptionValues from "./SpiralGalaxyOptionValues";
 import generateSpiralPoints from "./generateSpiralPoints";

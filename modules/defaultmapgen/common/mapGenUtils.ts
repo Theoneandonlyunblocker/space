@@ -4,20 +4,20 @@ import
   starBase
 } from "../../defaultbuildings/templates/Templates";
 
-import triangulate from "./triangulate";
 import MapGenDataByStarID from "./MapGenDataByStarID";
+import triangulate from "./triangulate";
 
+import Building from "../../../src/Building";
 import Region from "../../../src/Region";
 import Star from "../../../src/Star";
-import Building from "../../../src/Building";
 import
 {
   aStar
 } from "../../../src/pathFinding";
 import
 {
-  getRelativeWeightsFromObject,
-  getRandomKeyWithWeights
+  getRandomKeyWithWeights,
+  getRelativeWeightsFromObject
 } from "../../../src/utility";
 
 import {Distributable} from "../../../src/templateinterfaces/Distributable";

@@ -1,8 +1,8 @@
-import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
 import {StatusEffectSaveData} from "./savedata/StatusEffectSaveData";
+import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
 
-import idGenerators from "./idGenerators";
 import Unit from "./Unit";
+import idGenerators from "./idGenerators";
 
 export default class StatusEffect
 {

@@ -1,8 +1,8 @@
 /// <reference path="../lib/rng.d.ts" />
 
 import Color from "./Color";
-import {generateMainColor, generateSecondaryColor} from "./colorGeneration";
 import Emblem from "./Emblem";
+import {generateMainColor, generateSecondaryColor} from "./colorGeneration";
 import
 {
   drawElementToCanvas,

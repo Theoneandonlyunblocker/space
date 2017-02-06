@@ -2,18 +2,18 @@
 
 import app from "../../App";
 import Unit from "../../Unit";
-import UnitWrapper from "../unit/UnitWrapper";
 import UnitDisplayData from "../../UnitDisplayData";
+import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
+import {shallowExtend} from "../../utility";
 import EmptyUnit from "../unit/EmptyUnit";
 import
 {
-  default as UnitComponentFactory,
-  PropTypes as UnitPropTypes,
   ComponentPropTypes as UnitComponentPropTypes,
-  DisplayStatus as UnitDisplayStatus
+  default as UnitComponentFactory,
+  DisplayStatus as UnitDisplayStatus,
+  PropTypes as UnitPropTypes
 } from "../unit/Unit";
-import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
-import {shallowExtend} from "../../utility";
+import UnitWrapper from "../unit/UnitWrapper";
 
 
 export interface PropTypes extends React.Props<any>

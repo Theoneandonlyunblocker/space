@@ -1,5 +1,5 @@
-import Unit from "./Unit";
 import app from "./App";
+import Unit from "./Unit";
 
 export default function getNullFormation(): Unit[][]
 {

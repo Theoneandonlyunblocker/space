@@ -8,7 +8,7 @@ import ListItem from "../list/ListItem";
 
 import {default as AttitudeModifierInfo, PropTypes as AttitudeModifierInfoProps} from "./AttitudeModifierInfo";
 
-import {default as AutoPositioner, AutoPositionerProps} from "../mixins/AutoPositioner";
+import {AutoPositionerProps, default as AutoPositioner} from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 
 export interface PropTypes extends React.Props<any>

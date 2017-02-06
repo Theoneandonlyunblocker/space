@@ -1,21 +1,21 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import MapModeSettings from "../mapmodes/MapModeSettings";
-import TopBar from "./TopBar";
-import Notifications from "../notifications/Notifications";
-import StarInfo from "./StarInfo";
-import FleetSelection from "./FleetSelection";
-import Star from "../../Star";
-import TopMenu from "./TopMenu";
-import PossibleActions from "../possibleactions/PossibleActions";
-import IntroTutorial from "../tutorials/IntroTutorial";
-import eventManager from "../../eventManager";
-import PlayerControl from "../../PlayerControl";
+import {Fleet} from "../../Fleet";
+import FleetAttackTarget from "../../FleetAttackTarget";
 import Game from "../../Game";
 import MapRenderer from "../../MapRenderer";
 import Player from "../../Player";
-import {Fleet} from "../../Fleet";
-import FleetAttackTarget from "../../FleetAttackTarget";
+import PlayerControl from "../../PlayerControl";
+import Star from "../../Star";
+import eventManager from "../../eventManager";
+import MapModeSettings from "../mapmodes/MapModeSettings";
+import Notifications from "../notifications/Notifications";
+import PossibleActions from "../possibleactions/PossibleActions";
+import IntroTutorial from "../tutorials/IntroTutorial";
+import FleetSelection from "./FleetSelection";
+import StarInfo from "./StarInfo";
+import TopBar from "./TopBar";
+import TopMenu from "./TopMenu";
 
 
 export interface PropTypes extends React.Props<any>

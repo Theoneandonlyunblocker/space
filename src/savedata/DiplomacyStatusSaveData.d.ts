@@ -1,5 +1,5 @@
-import AttitudeModifierSaveData from "./AttitudeModifierSaveData";
 import DiplomacyState from "../DiplomacyState";
+import AttitudeModifierSaveData from "./AttitudeModifierSaveData";
 
 declare interface DiplomacyStatusSaveData
 {

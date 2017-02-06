@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import DefenceBuilding from "./DefenceBuilding";
 import Building from "../../Building";
+import DefenceBuilding from "./DefenceBuilding";
 
 export interface PropTypes extends React.Props<any>
 {

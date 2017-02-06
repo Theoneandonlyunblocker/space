@@ -5,8 +5,8 @@ import
 } from "./mapGenUtils";
 
 import app from "../../../src/App"; // TODO global
-import Region from "../../../src/Region";
 import Player from "../../../src/Player";
+import Region from "../../../src/Region";
 import Star from "../../../src/Star";
 import
 {

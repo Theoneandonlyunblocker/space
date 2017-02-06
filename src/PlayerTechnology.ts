@@ -1,9 +1,9 @@
 
 import app from "./App"; // TODO global
-import PlayerTechnologySaveData from "./savedata/PlayerTechnologySaveData";
-import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
-import RaceTechnologyValue from "./templateinterfaces/RaceTechnologyValue";
 import eventManager from "./eventManager";
+import PlayerTechnologySaveData from "./savedata/PlayerTechnologySaveData";
+import RaceTechnologyValue from "./templateinterfaces/RaceTechnologyValue";
+import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
 
 export default class PlayerTechnology
 {

@@ -9,15 +9,15 @@ import
 
 import {generateIndependentFleet} from "../../common/generateIndependentFleet";
 import {generateIndependentPlayer} from "../../common/generateIndependentPlayer";
-import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
 import DefaultAIConstructor from "../../defaultai/mapai/DefaultAIConstructor";
+import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
 
 
 import
 {
   defaultRaceTechnologyValues,
-  mergeTechnologyValues,
   getDefaultUnits,
+  mergeTechnologyValues,
 } from "../common";
 
 const federationAlliance: PlayerRaceTemplate =

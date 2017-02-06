@@ -1,7 +1,7 @@
-import QueuedActionData from "./QueuedActionData";
-import UnitBattleSide from "./UnitBattleSide";
 import GuardCoverage from "./GuardCoverage";
+import QueuedActionData from "./QueuedActionData";
 import StatusEffect from "./StatusEffect";
+import UnitBattleSide from "./UnitBattleSide";
 
 declare interface UnitBattleStats
 {

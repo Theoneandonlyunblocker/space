@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import TradeableItemProps from "./TradeableItemProps";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
+import TradeableItemProps from "./TradeableItemProps";
 
 export interface PropTypes extends TradeableItemProps, React.Props<any>
 {

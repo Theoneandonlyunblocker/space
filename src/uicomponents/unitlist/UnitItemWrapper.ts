@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import UnitItem from "./UnitItem";
 import Item from "../../Item";
+import UnitItem from "./UnitItem";
 
 export interface PropTypes extends React.Props<any>
 {

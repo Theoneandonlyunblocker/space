@@ -1,19 +1,19 @@
-import ObjectivesAI from "./mapai/ObjectivesAI";
-import GrandStrategyAI from "./mapai/GrandStrategyAI";
-import MapEvaluator from "./mapai/MapEvaluator";
+import DiplomacyState from "../../src/DiplomacyState";
 import Player from "../../src/Player";
-import ObjectiveTemplate from "./objectives/common/ObjectiveTemplate";
-import Objective from "./mapai/Objective";
-import {Front} from "./mapai/Front";
 import Star from "../../src/Star";
 import Unit from "../../src/Unit";
 import evaluateUnitStrength from "../../src/evaluateUnitStrength";
-import DiplomacyState from "../../src/DiplomacyState";
 import
 {
   clamp,
   getRelativeValue
 } from "../../src/utility";
+import {Front} from "./mapai/Front";
+import GrandStrategyAI from "./mapai/GrandStrategyAI";
+import MapEvaluator from "./mapai/MapEvaluator";
+import Objective from "./mapai/Objective";
+import ObjectivesAI from "./mapai/ObjectivesAI";
+import ObjectiveTemplate from "./objectives/common/ObjectiveTemplate";
 export interface ScoresByStar
 {
   [starId: number]:

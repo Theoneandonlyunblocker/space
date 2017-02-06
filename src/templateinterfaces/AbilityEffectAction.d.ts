@@ -1,6 +1,6 @@
-import Unit from "../Unit";
 import Battle from "../Battle";
 import StatusEffect from "../StatusEffect";
+import Unit from "../Unit";
 
 export declare interface ExecutedEffectsResult
 {

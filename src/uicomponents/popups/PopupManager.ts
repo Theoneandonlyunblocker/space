@@ -1,15 +1,15 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import
-{
-  default as Popup,
-  PopupComponent,
-  CustomPopupProps,
-  PropTypes as PopupProps,
-  InitialPositionRect
-} from "./Popup";
 import eventManager from "../../eventManager";
 import {extendObject} from "../../utility";
+import
+{
+  CustomPopupProps,
+  default as Popup,
+  InitialPositionRect,
+  PopupComponent,
+  PropTypes as PopupProps
+} from "./Popup";
 
 
 interface MakePopupFunctionProps

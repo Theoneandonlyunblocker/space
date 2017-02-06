@@ -2,13 +2,13 @@
 
 import Unit from "../../Unit";
 import {shallowExtend} from "../../utility";
-import UnitStrength from "../unit/UnitStrength";
 import ListItemProps from "../list/ListItemProps";
 import
 {
   default as UnitComponentFactory,
   PropTypes as UnitComponentPropTypes
 } from "../unit/Unit";
+import UnitStrength from "../unit/UnitStrength";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";

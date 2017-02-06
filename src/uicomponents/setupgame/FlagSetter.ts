@@ -1,16 +1,16 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import FlagEditor from "./FlagEditor";
-import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
-import {Flag} from "../../Flag";
 import Color from "../../Color";
 import Emblem from "../../Emblem";
+import {Flag} from "../../Flag";
 import
 {
   getFirstValidImageFromFiles,
   getHTMLImageElementFromDataTransfer
 } from "../../ImageFileProcessing";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
+import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
+import FlagEditor from "./FlagEditor";
 
 import Popup from "../popups/Popup";
 import TopMenuPopup from "../popups/TopMenuPopup";

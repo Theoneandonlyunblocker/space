@@ -1,13 +1,13 @@
 import RoutineAdjustmentByID from "../RoutineAdjustmentByID";
 
-import Personality from "../../../src/Personality";
-import Game from "../../../src/Game";
-import Player from "../../../src/Player";
 import DiplomacyStatus from "../../../src/DiplomacyStatus";
+import Game from "../../../src/Game";
+import Personality from "../../../src/Personality";
+import Player from "../../../src/Player";
 
 import MapEvaluator from "./MapEvaluator";
-import ObjectivesAI from "./ObjectivesAI";
 import Objective from "./Objective";
+import ObjectivesAI from "./ObjectivesAI";
 
 export default class DiplomacyAI
 {

@@ -1,14 +1,14 @@
 
 
 import app from "./App"; // TODO global
-import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
-import BuildingEffect from "./templateinterfaces/BuildingEffect";
-import BuildingSaveData from "./savedata/BuildingSaveData";
 import BuildingUpgradeData from "./BuildingUpgradeData";
 import idGenerators from "./idGenerators";
+import BuildingSaveData from "./savedata/BuildingSaveData";
+import BuildingEffect from "./templateinterfaces/BuildingEffect";
+import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
 
-import Star from "./Star";
 import Player from "./Player";
+import Star from "./Star";
 
 export default class Building
 {

@@ -1,16 +1,16 @@
 
 import app from "./App"; // TODO global
+import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
-import ItemTemplate from "./templateinterfaces/ItemTemplate";
 
 import ManufactorySaveData from "./savedata/ManufactorySaveData";
 
-import Star from "./Star";
-import Player from "./Player";
-import Unit from "./Unit";
-import Item from "./Item";
 import {Fleet} from "./Fleet";
+import Item from "./Item";
+import Player from "./Player";
+import Star from "./Star";
+import Unit from "./Unit";
 import eventManager from "./eventManager";
 
 interface ManufacturableThingWithType

@@ -6,14 +6,14 @@ import ObjectiveTemplate from "./common/ObjectiveTemplate";
 
 import Star from "../../../src/Star";
 
-import movePriority from "./common/movePriority";
 import
 {
   defaultUnitDesireFN,
   defaultUnitFitFN,
-  makeObjectivesFromScores,
-  getUnitsToBeatImmediateTarget
+  getUnitsToBeatImmediateTarget,
+  makeObjectivesFromScores
 } from "../aiUtils";
+import movePriority from "./common/movePriority";
 import musterAndAttack from "./common/moveroutines/musterAndAttack";
 
 const fightInvadingEnemy: ObjectiveTemplate =

@@ -5,15 +5,15 @@ import GuardCoverage from "../../../src/GuardCoverage";
 import {UnitAttribute} from "../../../src/UnitAttributes";
 import
 {
-  targetEnemies,
-  targetNextRow,
-  targetSelf,
-  targetAll,
-
   areaColumn,
   areaOrthogonalNeighbors,
   areaRowNeighbors,
   areaSingle,
+
+  targetAll,
+  targetEnemies,
+  targetNextRow,
+  targetSelf,
 } from "../../../src/targeting";
 
 import * as BattleSFX from "../battlesfxtemplates/battleSFX";

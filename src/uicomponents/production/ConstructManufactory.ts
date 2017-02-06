@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import app from "../../App";
 import Player from "../../Player";
 import Star from "../../Star";
-import app from "../../App";
 
 
 export interface PropTypes extends React.Props<any>

@@ -1,11 +1,11 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
-import ShockWave from "../../../modules/common/battlesfxfunctions/sfxfragments/ShockWave";
-import LightBurst from "../../../modules/common/battlesfxfunctions/sfxfragments/LightBurst";
 import Beam from "../../../modules/common/battlesfxfunctions/sfxfragments/Beam";
 import FocusingBeam from "../../../modules/common/battlesfxfunctions/sfxfragments/FocusingBeam";
+import LightBurst from "../../../modules/common/battlesfxfunctions/sfxfragments/LightBurst";
+import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import ShockWave from "../../../modules/common/battlesfxfunctions/sfxfragments/ShockWave";
 
 // import UnitTemplate from "../../templateinterfaces/UnitTemplate";
 import
@@ -13,13 +13,13 @@ import
   clamp
 } from "../../utility";
 
-import SFXFragmentConstructor from "./SFXFragmentConstructor";
 import
 {
   default as SFXEditorDisplay,
   SFXEditorDisplayComponent
 } from "./SFXEditorDisplay";
 import SFXEditorSelection from "./SFXEditorSelection";
+import SFXFragmentConstructor from "./SFXFragmentConstructor";
 
 
 const availableFragmentConstructors: SFXFragmentConstructor[] =

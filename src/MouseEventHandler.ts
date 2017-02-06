@@ -1,9 +1,9 @@
 
 import app from "./App"; // TODO global
-import Renderer from "./Renderer";
 import Camera from "./Camera";
-import Star from "./Star";
 import RectangleSelect from "./RectangleSelect";
+import Renderer from "./Renderer";
+import Star from "./Star";
 import eventManager from "./eventManager";
 
 type Action =

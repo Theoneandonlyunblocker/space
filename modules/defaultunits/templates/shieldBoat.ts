@@ -3,14 +3,14 @@ import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 import * as UnitArchetypes from "../UnitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
-import {distributionGroups} from "../../common/distributionGroups";
-import itemSlot from "../../common/itemSlot";
 import
 {
+  guardRow,
   rangedAttack,
-  standBy,
-  guardRow
+  standBy
 } from "../../common/abilitytemplates/abilities";
+import {distributionGroups} from "../../common/distributionGroups";
+import itemSlot from "../../common/itemSlot";
 
 import
 {

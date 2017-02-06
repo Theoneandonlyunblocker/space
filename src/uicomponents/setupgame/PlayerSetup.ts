@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import app from "../../App"; // TODO global
-import Player from "../../Player";
 import Color from "../../Color";
 import {Flag} from "../../Flag";
+import Player from "../../Player";
 import
 {
   generateMainColor,
@@ -16,8 +16,8 @@ import
 
 import {PlayerRaceTemplate} from "../../templateinterfaces/PlayerRaceTemplate";
 
+import {ColorSetterComponent, default as ColorSetter} from "./ColorSetter";
 import {default as FlagSetter, FlagSetterComponent} from "./FlagSetter";
-import {default as ColorSetter, ColorSetterComponent} from "./ColorSetter";
 import RacePicker from "./RacePicker";
 
 export interface PropTypes extends React.Props<any>

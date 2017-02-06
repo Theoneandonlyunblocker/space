@@ -2,13 +2,13 @@
 
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 
-import Options from "../../../src/Options";
-import eventManager from "../../../src/eventManager";
-import {Fleet} from "../../../src/Fleet";
-import Star from "../../../src/Star";
-import GalaxyMap from "../../../src/GalaxyMap";
-import Player from "../../../src/Player";
 import app from "../../../src/App";
+import {Fleet} from "../../../src/Fleet";
+import GalaxyMap from "../../../src/GalaxyMap";
+import Options from "../../../src/Options";
+import Player from "../../../src/Player";
+import Star from "../../../src/Star";
+import eventManager from "../../../src/eventManager";
 
 import attachedUnitData from "../../common/attachedUnitData";
 

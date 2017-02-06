@@ -1,15 +1,9 @@
 import
 {
-  getAttackDamageIncrease,
-  getAdjustedDamage
+  getAdjustedDamage,
+  getAttackDamageIncrease
 } from "./damageAdjustments";
 
-import
-{
-  AbilityEffectAction,
-  ExecutedEffectsResult,
-} from "../../../src/templateinterfaces/AbilityEffectAction";
-import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate";
 import Battle from "../../../src/Battle";
 import DamageType from "../../../src/DamageType";
 import FlatAndMultiplierAdjustment from "../../../src/FlatAndMultiplierAdjustment";
@@ -17,6 +11,12 @@ import GuardCoverage from "../../../src/GuardCoverage";
 import StatusEffect from "../../../src/StatusEffect";
 import Unit from "../../../src/Unit";
 import {UnitAttributeAdjustments} from "../../../src/UnitAttributes";
+import
+{
+  AbilityEffectAction,
+  ExecutedEffectsResult,
+} from "../../../src/templateinterfaces/AbilityEffectAction";
+import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate";
 import
 {
   clamp,

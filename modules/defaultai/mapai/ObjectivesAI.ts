@@ -1,13 +1,13 @@
-import MapEvaluator from "./MapEvaluator";
 import GrandStrategyAI from "./GrandStrategyAI";
+import MapEvaluator from "./MapEvaluator";
 import Objective from "./Objective";
 
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
 
+import allObjectiveTemplates from "../Objectives";
 import RoutineAdjustmentByID from "../RoutineAdjustmentByID";
 import ObjectiveTemplate from "../objectives/common/ObjectiveTemplate";
-import allObjectiveTemplates from "../Objectives";
 
 /*
 -- objectives ai

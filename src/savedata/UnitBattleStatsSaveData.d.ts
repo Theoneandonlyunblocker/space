@@ -1,8 +1,8 @@
-import UnitBattleSide from "../UnitBattleSide";
 import GuardCoverage from "../GuardCoverage";
+import UnitBattleSide from "../UnitBattleSide";
 
-import {StatusEffectSaveData} from "./StatusEffectSaveData";
 import QueuedActionSaveData from "./QueuedActionSaveData";
+import {StatusEffectSaveData} from "./StatusEffectSaveData";
 
 declare interface UnitBattleStatsSaveData
 {

@@ -3,9 +3,9 @@ import ObjectiveTemplate from "../objectives/common/ObjectiveTemplate";
 
 import MapEvaluator from "./MapEvaluator";
 
-import idGenerators from "../../../src/idGenerators";
-import Star from "../../../src/Star";
 import Player from "../../../src/Player";
+import Star from "../../../src/Star";
+import idGenerators from "../../../src/idGenerators";
 
 /*
 objectives:

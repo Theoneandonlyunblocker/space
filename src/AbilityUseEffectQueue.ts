@@ -1,6 +1,6 @@
-import {AbilityUseEffect} from "./battleAbilityUsage";
 import BattleScene from "./BattleScene";
 import UnitDisplayData from "./UnitDisplayData";
+import {AbilityUseEffect} from "./battleAbilityUsage";
 import
 {
   shallowExtend,

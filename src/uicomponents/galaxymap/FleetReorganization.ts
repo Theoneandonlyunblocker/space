@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-import Unit from "../../Unit";
-import FleetContents from "./FleetContents";
 import {Fleet} from "../../Fleet";
+import Unit from "../../Unit";
 import eventManager from "../../eventManager";
+import FleetContents from "./FleetContents";
 
 
 export interface PropTypes extends React.Props<any>

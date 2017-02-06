@@ -1,5 +1,5 @@
-import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 import NotificationSaveData from "./savedata/NotificationSaveData";
+import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 
 export default class Notification<P>
 {

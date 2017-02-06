@@ -6,14 +6,14 @@ import {Flag} from "../../Flag";
 
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
-import EmblemSetterList from "./EmblemSetterList";
-import EmblemPicker from "./EmblemPicker";
 import {EmblemProps} from "../Emblem";
+import EmblemPicker from "./EmblemPicker";
+import EmblemSetterList from "./EmblemSetterList";
 
 import
 {
-  default as AutoPositioner,
-  AutoPositionerProps
+  AutoPositionerProps,
+  default as AutoPositioner
 } from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 

@@ -1,12 +1,12 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import AbilityUpgradeData from "../../AbilityUpgradeData";
 import Unit from "../../Unit";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
-import UpgradeAttributes from "./UpgradeAttributes";
-import UpgradeAbilities from "./UpgradeAbilities";
-import TopMenuPopup from "../popups/TopMenuPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-import AbilityUpgradeData from "../../AbilityUpgradeData";
+import TopMenuPopup from "../popups/TopMenuPopup";
+import UpgradeAbilities from "./UpgradeAbilities";
+import UpgradeAttributes from "./UpgradeAttributes";
 
 
 export interface PropTypes extends React.Props<any>

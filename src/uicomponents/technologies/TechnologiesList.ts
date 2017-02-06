@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-import Technology from "./Technology";
 import PlayerTechnology from "../../PlayerTechnology";
 import eventManager from "../../eventManager";
+import Technology from "./Technology";
 
 
 export interface PropTypes extends React.Props<any>

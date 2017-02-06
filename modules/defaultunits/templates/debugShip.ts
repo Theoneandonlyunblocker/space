@@ -3,28 +3,28 @@ import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 import * as UnitArchetypes from "../UnitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
-import {distributionGroups} from "../../common/distributionGroups";
-import itemSlot from "../../common/itemSlot";
 import
 {
-  rangedAttack,
-  standBy,
-  debugAbility,
-  bombAttack,
-  guardRow,
   boardingHook,
+  bombAttack,
   closeAttack,
+  debugAbility,
+  guardRow,
+  rangedAttack,
   snipeAttack,
   snipeDefence,
   snipeIntelligence,
   snipeSpeed,
+  standBy,
 } from "../../common/abilitytemplates/abilities";
+import {distributionGroups} from "../../common/distributionGroups";
+import itemSlot from "../../common/itemSlot";
 
 import
 {
   autoHeal,
-  warpJammer,
-  medic
+  medic,
+  warpJammer
 } from "../../common/passiveskilltemplates/passiveSkills";
 
 const debugShip: UnitTemplate =

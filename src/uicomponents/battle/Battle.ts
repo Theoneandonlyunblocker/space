@@ -1,23 +1,14 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import app from "../../App"; // TODO global
-import UnitDisplayData from "../../UnitDisplayData";
-import Player from "../../Player";
-import Battle from "../../Battle";
-import Unit from "../../Unit";
-import TurnOrder from "./TurnOrder";
-import TurnCounterList from "./TurnCounterList";
-import {default as BattleBackground, BattleBackgroundComponent} from "./BattleBackground";
-import Options from "../../Options";
-import MCTree from "../../MCTree";
-import BattleScene from "../../BattleScene";
 import {AbilityUseEffectQueue} from "../../AbilityUseEffectQueue";
-import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
-import
-{
-  useAbilityAndGetUseEffects,
-  AbilityUseEffect
-} from "../../battleAbilityUsage";
+import app from "../../App"; // TODO global
+import Battle from "../../Battle";
+import BattleScene from "../../BattleScene";
+import MCTree from "../../MCTree";
+import Options from "../../Options";
+import Player from "../../Player";
+import Unit from "../../Unit";
+import UnitDisplayData from "../../UnitDisplayData";
 import
 {
   getTargetsForAllAbilities,
@@ -25,20 +16,29 @@ import
 } from "../../battleAbilityUI";
 import
 {
+  AbilityUseEffect,
+  useAbilityAndGetUseEffects
+} from "../../battleAbilityUsage";
+import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
+import
+{
   shallowCopy,
   shallowExtend
 } from "../../utility";
-import BattleScore from "./BattleScore";
-import BattleSceneComponentFactory from "./BattleScene";
-import Formation from "./Formation";
-import BattleDisplayStrength from "./BattleDisplayStrength";
-import BattleUIState from "./BattleUIState";
 import
 {
-  default as AbilityTooltip,
   AbilityTooltipComponent,
+  default as AbilityTooltip,
   PropTypes as AbilityTooltipProps
 } from "./AbilityTooltip";
+import {BattleBackgroundComponent, default as BattleBackground} from "./BattleBackground";
+import BattleDisplayStrength from "./BattleDisplayStrength";
+import BattleSceneComponentFactory from "./BattleScene";
+import BattleScore from "./BattleScore";
+import BattleUIState from "./BattleUIState";
+import Formation from "./Formation";
+import TurnCounterList from "./TurnCounterList";
+import TurnOrder from "./TurnOrder";
 
 export interface PropTypes extends React.Props<any>
 {

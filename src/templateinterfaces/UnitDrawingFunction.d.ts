@@ -1,7 +1,7 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-import SFXParams from "./SFXParams";
 import Unit from "../Unit";
+import SFXParams from "./SFXParams";
 
 // needs to set unit.drawingFunctionData and call params.triggerStart()
 declare interface UnitDrawingFunction

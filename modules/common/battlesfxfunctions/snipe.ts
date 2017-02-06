@@ -13,8 +13,8 @@ import FocusingBeam from "./sfxfragments/FocusingBeam";
 import ProjectileAttack from "./sfxfragments/ProjectileAttack";
 import RampingValue from "./sfxfragments/RampingValue";
 
-import ProtonWrapper from "./ProtonWrapper";
 import ColorMatrixFilter from "./ColorMatrixFilter";
+import ProtonWrapper from "./ProtonWrapper";
 
 
 const colors =

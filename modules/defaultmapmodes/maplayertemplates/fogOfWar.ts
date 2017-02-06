@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import Star from "../../../src/Star";
-import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
+import app from "../../../src/App";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
-import app from "../../../src/App";
+import Star from "../../../src/Star";
+import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import
 {
   generateTextureWithBounds,

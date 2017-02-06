@@ -1,13 +1,13 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
-import List from "../list/List";
 
 import {default as ItemListItem, PropTypes as ItemListItemProps} from "./ItemListItem";
 
-import Unit from "../../Unit";
 import Item from "../../Item";
+import Unit from "../../Unit";
 
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 

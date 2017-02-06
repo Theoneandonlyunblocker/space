@@ -2,13 +2,13 @@
 import app from "./App"; // TODO global
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 
-import NotificationSaveData from "./savedata/NotificationSaveData";
 import NotificationLogSaveData from "./savedata/NotificationLogSaveData";
+import NotificationSaveData from "./savedata/NotificationSaveData";
 
 import Notification from "./Notification";
 import NotificationFilter from "./NotificationFilter";
-import eventManager from "./eventManager";
 import Player from "./Player";
+import eventManager from "./eventManager";
 
 
 export default class NotificationLog

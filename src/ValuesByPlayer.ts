@@ -1,5 +1,5 @@
-import Player from "./Player";
 import IDDictionary from "./IDDictionary";
+import Player from "./Player";
 
 
 export default class ValuesByPlayer<T> extends IDDictionary<Player, T>

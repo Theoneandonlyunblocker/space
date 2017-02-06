@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import Options from "../../../src/Options";
-import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
+import Options from "../../../src/Options";
 import Player from "../../../src/Player";
 import {getRevealedBorderEdges} from "../../../src/borderPolygon";
+import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {

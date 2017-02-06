@@ -1,14 +1,14 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import GameOverScreen from "./GameOverScreen";
 import GalaxyMapUI from "./GalaxyMapUI";
+import GameOverScreen from "./GameOverScreen";
 
-import Player from "../../Player";
-import PlayerControl from "../../PlayerControl";
 import Game from "../../Game";
 import MapRenderer from "../../MapRenderer";
-import Renderer from "../../Renderer";
+import Player from "../../Player";
+import PlayerControl from "../../PlayerControl";
 import Point from "../../Point";
+import Renderer from "../../Renderer";
 
 export interface PropTypes extends React.Props<any>
 {

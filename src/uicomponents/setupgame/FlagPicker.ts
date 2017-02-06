@@ -1,12 +1,12 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import EmblemPicker from "./EmblemPicker";
 import
 {
-  default as AutoPositioner,
-  AutoPositionerProps
+  AutoPositionerProps,
+  default as AutoPositioner
 } from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
+import EmblemPicker from "./EmblemPicker";
 
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 

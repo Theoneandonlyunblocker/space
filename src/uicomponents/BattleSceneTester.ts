@@ -1,14 +1,14 @@
 /// <reference path="../../lib/react-global.d.ts" />
 
 
-import Unit from "../Unit";
-import Player from "../Player";
 import Battle from "../Battle";
 import BattleScene from "../BattleScene";
+import Player from "../Player";
+import Unit from "../Unit";
 import
 {
-  getRandomProperty,
-  extendObject
+  extendObject,
+  getRandomProperty
 } from "../utility";
 
 

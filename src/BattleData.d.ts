@@ -1,6 +1,6 @@
-import Star from "./Star";
 import Building from "./Building";
 import Player from "./Player";
+import Star from "./Star";
 import Unit from "./Unit";
 
 declare interface BattleData

@@ -5,8 +5,8 @@ import Color from "../../Color";
 import ControlledNumberInput from "../generic/ControlledNumberInput";
 import
 {
-  default as AutoPositioner,
-  AutoPositionerProps
+  AutoPositionerProps,
+  default as AutoPositioner
 } from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 

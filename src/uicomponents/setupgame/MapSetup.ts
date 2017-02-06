@@ -2,8 +2,8 @@
 
 import app from "../../App"; // TODO global
 
-import {default as MapGenOptions, MapGenOptionsComponent} from "./MapGenOptions";
 import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
+import {default as MapGenOptions, MapGenOptionsComponent} from "./MapGenOptions";
 
 
 export interface PropTypes extends React.Props<any>

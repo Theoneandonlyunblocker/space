@@ -1,12 +1,12 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-import UnitDrawingFunction from "../../src/templateinterfaces/UnitDrawingFunction";
 import SFXParams from "../../src/templateinterfaces/SFXParams";
+import UnitDrawingFunction from "../../src/templateinterfaces/UnitDrawingFunction";
 
 
 import app from "../../src/App"; // TODO global
-import UnitDrawingFunctionData from "../../src/UnitDrawingFunctionData";
 import Unit from "../../src/Unit";
+import UnitDrawingFunctionData from "../../src/UnitDrawingFunctionData";
 import
 {
   clamp,

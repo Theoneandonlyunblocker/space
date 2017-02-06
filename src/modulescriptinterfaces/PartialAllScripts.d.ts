@@ -1,5 +1,5 @@
-import {PartialUnitScripts} from "./UnitScripts";
 import {PartialGameScripts} from "./GameScripts";
+import {PartialUnitScripts} from "./UnitScripts";
 
 interface AllPartialScripts
 {

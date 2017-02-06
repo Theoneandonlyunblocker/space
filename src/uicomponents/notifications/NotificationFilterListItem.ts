@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-import NotificationFilterState from "../../NotificationFilterState";
 import NotificationFilter from "../../NotificationFilter";
+import NotificationFilterState from "../../NotificationFilterState";
 import eventManager from "../../eventManager";
 
 

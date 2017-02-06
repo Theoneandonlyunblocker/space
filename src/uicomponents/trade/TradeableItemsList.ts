@@ -1,13 +1,13 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import TradeableItemProps from "./TradeableItemProps";
 import {default as TradeMoney, PropTypes as TradeMoneyProps} from "./TradeMoney";
+import TradeableItemProps from "./TradeableItemProps";
 
+import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
-import List from "../list/List";
 
-import {TradeableItems, TradeableItem} from "../../Trade";
+import {TradeableItem, TradeableItems} from "../../Trade";
 
 
 export interface PropTypes extends React.Props<any>

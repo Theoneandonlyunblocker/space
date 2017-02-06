@@ -1,7 +1,7 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import defaultUnitDrawingFunction from "../../defaultunits/defaultUnitDrawingFunction";
 import * as UnitArchetypes from "../../defaultunits/UnitArchetypes";
+import defaultUnitDrawingFunction from "../../defaultunits/defaultUnitDrawingFunction";
 
 import * as CommonAbility from "../../common/abilitytemplates/abilities";
 import {distributionGroups} from "../../common/distributionGroups";

@@ -1,11 +1,11 @@
-import Star from "../../../src/Star";
-import Player from "../../../src/Player";
-import GalaxyMap from "../../../src/GalaxyMap";
-import {Fleet} from "../../../src/Fleet";
-import Unit from "../../../src/Unit";
 import DiplomacyEvaluation from "../../../src/DiplomacyEvaluation";
-import ValuesByStar from "../../../src/ValuesByStar";
+import {Fleet} from "../../../src/Fleet";
+import GalaxyMap from "../../../src/GalaxyMap";
+import Player from "../../../src/Player";
+import Star from "../../../src/Star";
+import Unit from "../../../src/Unit";
 import ValuesByPlayer from "../../../src/ValuesByPlayer";
+import ValuesByStar from "../../../src/ValuesByStar";
 import
 {
   getRelativeValue

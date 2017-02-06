@@ -1,7 +1,7 @@
 /// <reference path="../lib/voronoi.d.ts" />
 
-import Point from "./Point";
 import FillerPoint from "./FillerPoint";
+import Point from "./Point";
 import Star from "./Star";
 import VoronoiCell from "./VoronoiCell";
 

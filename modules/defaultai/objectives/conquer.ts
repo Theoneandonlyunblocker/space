@@ -6,7 +6,6 @@ import ObjectiveTemplate from "./common/ObjectiveTemplate";
 
 import Star from "../../../src/Star";
 
-import movePriority from "./common/movePriority";
 import
 {
   defaultUnitDesireFN,
@@ -14,11 +13,12 @@ import
   getUnitsToBeatImmediateTarget,
   makeObjectivesFromScores
 } from "../aiUtils";
+import movePriority from "./common/movePriority";
 
 import
 {
-  default as musterAndAttack,
-  buildingControllerFilter
+  buildingControllerFilter,
+  default as musterAndAttack
 } from "./common/moveroutines/musterAndAttack";
 
 const conquer: ObjectiveTemplate =

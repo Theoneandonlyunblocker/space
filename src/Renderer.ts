@@ -1,11 +1,11 @@
 /// <reference path="../lib/pixi.d.ts" />
 
+import BackgroundDrawer from "./BackgroundDrawer";
+import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
 import Camera from "./Camera";
 import MouseEventHandler from "./MouseEventHandler";
 import PathfindingArrow from "./PathfindingArrow";
 import Point from "./Point";
-import BackgroundDrawer from "./BackgroundDrawer";
-import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
 
 export default class Renderer
 {

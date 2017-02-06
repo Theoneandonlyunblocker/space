@@ -1,11 +1,11 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import UnitPortrait from "./UnitPortrait";
-import UnitPassiveEffects from "./UnitPassiveEffects";
-import UnitAttributeChanges from "./UnitAttributeChanges";
-import UnitInfo from "./UnitInfo";
-import UnitIconContainer from "./UnitIconContainer";
 import UnitDisplayData from "../../UnitDisplayData";
+import UnitAttributeChanges from "./UnitAttributeChanges";
+import UnitIconContainer from "./UnitIconContainer";
+import UnitInfo from "./UnitInfo";
+import UnitPassiveEffects from "./UnitPassiveEffects";
+import UnitPortrait from "./UnitPortrait";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";

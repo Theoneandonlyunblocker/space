@@ -1,9 +1,9 @@
-import Player from "./Player";
 import {Fleet} from "./Fleet";
-import eventManager from "./eventManager";
-import Star from "./Star";
 import FleetAttackTarget from "./FleetAttackTarget";
+import Player from "./Player";
 import RectangleSelect from "./RectangleSelect";
+import Star from "./Star";
+import eventManager from "./eventManager";
 
 export default class PlayerControl
 {

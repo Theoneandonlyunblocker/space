@@ -3,14 +3,14 @@ import Objective from "../mapai/Objective";
 
 import ObjectiveTemplate from "./common/ObjectiveTemplate";
 
-import moveTo from "./common/moveroutines/moveTo";
-import movePriority from "./common/movePriority";
 import
 {
+  perimeterObjectiveCreation,
   scoutingUnitDesireFN,
-  scoutingUnitFitFN,
-  perimeterObjectiveCreation
+  scoutingUnitFitFN
 } from "../aiUtils";
+import movePriority from "./common/movePriority";
+import moveTo from "./common/moveroutines/moveTo";
 
 const scoutingPerimeter: ObjectiveTemplate =
 {

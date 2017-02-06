@@ -3,10 +3,10 @@
 import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 import SFXParams from "./templateinterfaces/SFXParams";
 
-import Unit from "./Unit";
 import BattleSceneUnit from "./BattleSceneUnit";
 import BattleSceneUnitOverlay from "./BattleSceneUnitOverlay";
 import Options from "./Options";
+import Unit from "./Unit";
 import UnitBattleSide from "./UnitBattleSide";
 
 // TODO performance

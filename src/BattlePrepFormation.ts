@@ -1,10 +1,10 @@
 import app from "./App";
+import ArchetypeValues from "./ArchetypeValues";
 import Player from "./Player";
 import Unit from "./Unit";
-import evaluateUnitStrength from "./evaluateUnitStrength";
 import UnitDisplayData from "./UnitDisplayData";
+import evaluateUnitStrength from "./evaluateUnitStrength";
 import getNullFormation from "./getNullFormation";
-import ArchetypeValues from "./ArchetypeValues";
 
 export default class BattlePrepFormation
 {

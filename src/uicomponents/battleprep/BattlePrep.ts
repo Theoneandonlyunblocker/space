@@ -2,20 +2,20 @@
 
 import app from "../../App"; // TODO global
 
-import ListItem from "../list/ListItem";
 import BattlePrep from "../../BattlePrep";
+import BattleSimulator from "../../BattleSimulator";
+import Item from "../../Item";
+import Options from "../../Options";
 import Unit from "../../Unit";
 import eventManager from "../../eventManager";
-import MenuUnitInfo from "../unitlist/MenuUnitInfo";
-import {default as BattleBackground, BattleBackgroundComponent} from "../battle/BattleBackground";
-import ItemList from "../unitlist/ItemList";
-import Item from "../../Item";
+import {BattleBackgroundComponent, default as BattleBackground} from "../battle/BattleBackground";
 import Formation from "../battle/Formation";
-import Options from "../../Options";
-import BattleSimulator from "../../BattleSimulator";
+import ListItem from "../list/ListItem";
+import ItemList from "../unitlist/ItemList";
+import {PropTypes as ItemListItemPropTypes} from "../unitlist/ItemListItem";
+import MenuUnitInfo from "../unitlist/MenuUnitInfo";
 import UnitList from "../unitlist/UnitList";
 import {PropTypes as UnitListItemPropTypes} from "../unitlist/UnitListItem";
-import {PropTypes as ItemListItemPropTypes} from "../unitlist/ItemListItem";
 import BattleInfo from "./BattleInfo";
 
 

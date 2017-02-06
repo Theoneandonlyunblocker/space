@@ -1,11 +1,11 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import ItemTemplate from "../../templateinterfaces/ItemTemplate";
-import Star from "../../Star";
-import ManufacturableThingsList from "./ManufacturableThingsList";
-import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
 import Manufactory from "../../Manufactory";
+import Star from "../../Star";
+import ItemTemplate from "../../templateinterfaces/ItemTemplate";
 import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
+import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
+import ManufacturableThingsList from "./ManufacturableThingsList";
 
 export interface PropTypes extends React.Props<any>
 {

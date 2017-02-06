@@ -4,12 +4,12 @@ import app from "./App"; // TODO global
 
 import WeightedProbability from "./templateinterfaces/WeightedProbability";
 
-import Point from "./Point";
+import ArchetypeValues from "./ArchetypeValues";
+import Personality from "./Personality";
 import Player from "./Player";
+import Point from "./Point";
 import Star from "./Star";
 import UnitBattleSide from "./UnitBattleSide";
-import Personality from "./Personality";
-import ArchetypeValues from "./ArchetypeValues";
 
 // TODO refactor | clean these up
 

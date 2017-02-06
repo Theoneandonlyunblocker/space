@@ -2,9 +2,9 @@
 
 import {default as SaveListItem, PropTypes as SaveListItemProps} from "./SaveListItem";
 
+import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
-import List from "../list/List";
 
 import {prettifyDate} from "../../utility";
 

@@ -2,14 +2,14 @@
 import app from "./App"; // TODO global
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 
-import NotificationFilterState from "./NotificationFilterState";
 import Notification from "./Notification";
+import NotificationFilterState from "./NotificationFilterState";
 import Player from "./Player";
 
 import
 {
-  getMatchingLocalstorageItemsByDate,
-  extendObject
+  extendObject,
+  getMatchingLocalstorageItemsByDate
 } from "./utility";
 
 export default class NotificationFilter

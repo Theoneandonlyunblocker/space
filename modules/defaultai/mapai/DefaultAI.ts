@@ -1,17 +1,17 @@
-import MapEvaluator from "./MapEvaluator";
-import GrandStrategyAI from "./GrandStrategyAI";
+import DefaultAISaveData from "./DefaultAISaveData";
+import DiplomacyAI from "./DiplomacyAI";
 import EconomyAI from "./EconomyAI";
 import FrontsAI from "./FrontsAI";
+import GrandStrategyAI from "./GrandStrategyAI";
+import MapEvaluator from "./MapEvaluator";
 import ObjectivesAI from "./ObjectivesAI";
-import DiplomacyAI from "./DiplomacyAI";
-import DefaultAISaveData from "./DefaultAISaveData";
 
 import AITemplate from "../../../src/templateinterfaces/AITemplate";
 
-import Game from "../../../src/Game";
-import Player from "../../../src/Player";
-import Personality from "../../../src/Personality";
 import GalaxyMap from "../../../src/GalaxyMap";
+import Game from "../../../src/Game";
+import Personality from "../../../src/Personality";
+import Player from "../../../src/Player";
 import
 {
   makeRandomPersonality

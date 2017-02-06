@@ -1,18 +1,18 @@
-import ModuleFile from "./ModuleFile";
-import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
 import Personality from "../src/Personality";
 import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
-import RuleSetValues from "./RuleSetValues";
+import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
+import ModuleFile from "./ModuleFile";
 import ModuleScripts from "./ModuleScripts";
+import RuleSetValues from "./RuleSetValues";
 
 import
 {
-  getRandomProperty,
-  deepMerge
+  deepMerge,
+  getRandomProperty
 } from "./utility";
 
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import AITemplateConstructor from "./templateinterfaces/AITemplateConstructor";
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 import BuildingTemplate from "./templateinterfaces/BuildingTemplate";

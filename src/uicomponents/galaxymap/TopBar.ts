@@ -2,10 +2,10 @@
 
 import Game from "../../Game";
 import Player from "../../Player";
+import eventManager from "../../eventManager";
 import PlayerFlag from "../PlayerFlag";
 import PlayerMoney from "./PlayerMoney";
 import TopBarResources from "./TopBarResources";
-import eventManager from "../../eventManager";
 
 
 export interface PropTypes extends React.Props<any>

@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-import NotificationFilterList from "./NotificationFilterList";
 import NotificationFilter from "../../NotificationFilter";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import TopMenuPopup from "../popups/TopMenuPopup";
+import NotificationFilterList from "./NotificationFilterList";
 
 
 export interface PropTypes extends React.Props<any>

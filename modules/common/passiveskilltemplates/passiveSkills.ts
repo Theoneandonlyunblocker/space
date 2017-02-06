@@ -1,8 +1,8 @@
 import PassiveSkillTemplate from "../../../src/templateinterfaces/PassiveSkillTemplate";
 
-import Unit from "../../../src/Unit";
-import GuardCoverage from "../../../src/GuardCoverage";
 import BattlePrep from "../../../src/BattlePrep";
+import GuardCoverage from "../../../src/GuardCoverage";
+import Unit from "../../../src/Unit";
 
 import autoHealStatusEffect from "../statuseffecttemplates/autoHeal";
 import poisonedStatusEffect from "../statuseffecttemplates/poisoned";

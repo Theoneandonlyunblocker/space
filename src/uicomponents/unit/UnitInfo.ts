@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-import UnitStatus from "./UnitStatus";
-import UnitStrength from "./UnitStrength";
 import GuardCoverage from "../../GuardCoverage";
 import UnitActions from "./UnitActions";
+import UnitStatus from "./UnitStatus";
+import UnitStrength from "./UnitStrength";
 
 
 export interface PropTypes extends React.Props<any>

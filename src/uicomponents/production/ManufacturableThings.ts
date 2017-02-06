@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Player from "../../Player";
-import ManufacturableItems from "./ManufacturableItems";
-import ManufacturableUnits from "./ManufacturableUnits";
 import Star from "../../Star";
 import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
+import ManufacturableItems from "./ManufacturableItems";
+import ManufacturableUnits from "./ManufacturableUnits";
 
 type TabKey = "units" | "items";
 

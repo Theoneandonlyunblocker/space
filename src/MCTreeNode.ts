@@ -5,16 +5,16 @@ import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import Battle from "./Battle";
 import
 {
-  getRandomKeyWithWeights
-} from "./utility";
+  getTargetsForAllAbilities
+} from "./battleAbilityTargeting";
 import
 {
   useAbility
 } from "./battleAbilityUsage";
 import
 {
-  getTargetsForAllAbilities
-} from "./battleAbilityTargeting";
+  getRandomKeyWithWeights
+} from "./utility";
 
 export interface Move
 {

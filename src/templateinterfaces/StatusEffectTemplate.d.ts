@@ -1,5 +1,5 @@
-import {AbilityEffectTemplate} from "./AbilityEffectTemplate";
 import {UnitAttributeAdjustments} from "../UnitAttributes";
+import {AbilityEffectTemplate} from "./AbilityEffectTemplate";
 import UnitPassiveEffect from "./UnitPassiveEffect";
 
 declare interface StatusEffectTemplate extends UnitPassiveEffect

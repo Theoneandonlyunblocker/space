@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import Player from "../../Player";
-import FleetUnitInfo from "./FleetUnitInfo";
 import {Fleet} from "../../Fleet";
+import Player from "../../Player";
 import Unit from "../../Unit";
+import FleetUnitInfo from "./FleetUnitInfo";
 
 
 export interface PropTypes extends React.Props<any>

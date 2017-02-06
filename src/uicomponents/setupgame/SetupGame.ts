@@ -1,12 +1,12 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import app from "../../App"; // TODO global
-import eventManager from "../../eventManager";
 import ModuleFileLoadingPhase from "../../ModuleFileLoadingPhase";
+import eventManager from "../../eventManager";
 
-import {default as SetupGamePlayers, SetupGamePlayersComponent} from "./SetupGamePlayers";
-import {default as MapSetup, MapSetupComponent} from "./MapSetup";
 import MapGenFunction from "../../templateinterfaces/MapGenFunction";
+import {default as MapSetup, MapSetupComponent} from "./MapSetup";
+import {default as SetupGamePlayers, SetupGamePlayersComponent} from "./SetupGamePlayers";
 
 
 export interface PropTypes extends React.Props<any>

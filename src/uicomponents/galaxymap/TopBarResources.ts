@@ -3,8 +3,8 @@
 import app from "../../App"; // TODO global
 
 import Player from "../../Player";
-import Resource from "./Resource";
 import eventManager from "../../eventManager";
+import Resource from "./Resource";
 
 
 export interface PropTypes extends React.Props<any>

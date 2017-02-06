@@ -1,6 +1,6 @@
-import GameSaveData from "./GameSaveData";
-import {IDGeneratorValues} from "../idGenerators";
 import Point from "../Point";
+import {IDGeneratorValues} from "../idGenerators";
+import GameSaveData from "./GameSaveData";
 
 declare interface FullSaveData
 {

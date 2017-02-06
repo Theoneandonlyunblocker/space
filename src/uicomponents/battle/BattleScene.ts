@@ -3,8 +3,8 @@
 import BattleFinish from "./BattleFinish";
 import BattleSceneFlag from "./BattleSceneFlag";
 
-import {Flag} from "../../Flag";
 import BattleScene from "../../BattleScene";
+import {Flag} from "../../Flag";
 
 
 export interface PropTypes extends React.Props<any>

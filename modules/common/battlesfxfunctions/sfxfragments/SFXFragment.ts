@@ -1,10 +1,10 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
-import {SFXFragmentPropType} from "./SFXFragmentPropTypes";
 import
 {
   shallowCopy
 } from "../../../../src/utility";
+import {SFXFragmentPropType} from "./SFXFragmentPropTypes";
 
 let idGenerator = 0;
 

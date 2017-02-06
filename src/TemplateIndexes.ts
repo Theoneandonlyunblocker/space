@@ -1,9 +1,9 @@
 
 import app from "./App"; // TODO global
+import {Distributable} from "./templateinterfaces/Distributable";
+import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
-import ItemTemplate from "./templateinterfaces/ItemTemplate";
-import {Distributable} from "./templateinterfaces/Distributable";
 
 interface DistributablesByKey<T extends Distributable>
 {

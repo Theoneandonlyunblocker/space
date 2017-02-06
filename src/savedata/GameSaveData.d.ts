@@ -1,8 +1,8 @@
 import GalaxyMapSaveData from "./GalaxyMapSaveData";
+import ItemSaveData from "./ItemSaveData";
+import NotificationLogSaveData from "./NotificationLogSaveData";
 import PlayerSaveData from "./PlayerSaveData";
 import UnitSaveData from "./UnitSaveData";
-import NotificationLogSaveData from "./NotificationLogSaveData";
-import ItemSaveData from "./ItemSaveData";
 
 declare interface GameSaveData
 {

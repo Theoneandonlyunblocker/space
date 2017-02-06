@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import ManufacturableThingsListItem from "./ManufacturableThingsListItem";
 import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
+import ManufacturableThingsListItem from "./ManufacturableThingsListItem";
 
 export interface PropTypes extends React.Props<any>
 {

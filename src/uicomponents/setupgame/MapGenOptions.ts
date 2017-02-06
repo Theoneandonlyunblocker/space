@@ -1,20 +1,20 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-import MapGenOptions from "../../templateinterfaces/MapGenOptions";
-import MapGenOptionValues from "../../templateinterfaces/MapGenOptionValues";
-import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
-import OptionsGroup from "../galaxymap/OptionsGroup";
-import MapGenOption from "./MapGenOption";
 import Range from "../../Range";
+import MapGenOptionValues from "../../templateinterfaces/MapGenOptionValues";
+import MapGenOptions from "../../templateinterfaces/MapGenOptions";
+import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
 import
 {
   clamp,
-  getRelativeValue,
-  roundToNearestMultiple,
   extendObject,
-  randInt
+  getRelativeValue,
+  randInt,
+  roundToNearestMultiple
 } from "../../utility";
+import OptionsGroup from "../galaxymap/OptionsGroup";
+import MapGenOption from "./MapGenOption";
 
 
 export interface PropTypes extends React.Props<any>

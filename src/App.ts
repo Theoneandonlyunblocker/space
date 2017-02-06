@@ -3,23 +3,23 @@
 import GalaxyMap from "./GalaxyMap";
 import Game from "./Game";
 import GameLoader from "./GameLoader";
-import idGenerators from "./idGenerators";
 import MapRenderer from "./MapRenderer";
 import ModuleData from "./ModuleData";
-import ModuleLoader from "./ModuleLoader";
 import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
+import ModuleLoader from "./ModuleLoader";
 import NotificationLog from "./NotificationLog";
+import Options from "./Options";
 import Player from "./Player";
 import PlayerControl from "./PlayerControl";
 import ReactUI from "./ReactUI";
 import ReactUIScene from "./ReactUIScene";
 import Renderer from "./Renderer";
-import Options from "./Options";
+import idGenerators from "./idGenerators";
 import TutorialStatus from "./tutorials/TutorialStatus";
 import
 {
-  onDOMLoaded,
   getRandomArrayItem,
+  onDOMLoaded,
 } from "./utility";
 
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
@@ -27,19 +27,19 @@ import {PlayerRaceTemplate} from "./templateinterfaces/PlayerRaceTemplate";
 
 import addCommonToModuleData from "../modules/common/addCommonToModuleData";
 
-import defaultEmblems from "../modules/defaultemblems/defaultEmblems";
-import defaultRuleset from "../modules/defaultruleset/defaultRuleset";
 import defaultAI from "../modules/defaultai/defaultAI";
-import defaultItems from "../modules/defaultitems/defaultItems";
-import defaultTechnologies from "../modules/defaulttechnologies/defaultTechnologies";
 import defaultAttitudemodifiers from "../modules/defaultattitudemodifiers/defaultAttitudemodifiers";
-import defaultMapgen from "../modules/defaultmapgen/defaultMapgen";
-import defaultUnits from "../modules/defaultunits/defaultUnits";
 import defaultBackgrounds from "../modules/defaultbackgrounds/defaultBackgrounds";
-import defaultMapmodes from "../modules/defaultmapmodes/defaultMapmodes";
 import defaultBuildings from "../modules/defaultbuildings/defaultBuildings";
+import defaultEmblems from "../modules/defaultemblems/defaultEmblems";
+import defaultItems from "../modules/defaultitems/defaultItems";
+import defaultMapgen from "../modules/defaultmapgen/defaultMapgen";
+import defaultMapmodes from "../modules/defaultmapmodes/defaultMapmodes";
 import defaultNotifications from "../modules/defaultnotifications/defaultNotifications";
 import defaultRaces from "../modules/defaultraces/defaultRaces";
+import defaultRuleset from "../modules/defaultruleset/defaultRuleset";
+import defaultTechnologies from "../modules/defaulttechnologies/defaultTechnologies";
+import defaultUnits from "../modules/defaultunits/defaultUnits";
 
 import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
 

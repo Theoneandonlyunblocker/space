@@ -1,44 +1,44 @@
 
 
-import app from "./App"; // TODO global
-import Unit from "./Unit";
-import {Fleet} from "./Fleet";
-import
-{
-  extendObject,
-  makeRandomPersonality
-} from "./utility";
 import AIController from "./AIController";
-import Star from "./Star";
-import {Flag} from "./Flag";
-import Item from "./Item";
-import BattleSimulator from "./BattleSimulator";
-import BattlePrep from "./BattlePrep";
+import app from "./App"; // TODO global
 import BattleData from "./BattleData";
-import DiplomacyStatus from "./DiplomacyStatus";
-import Manufactory from "./Manufactory";
-import PlayerTechnology from "./PlayerTechnology";
-import FleetAttackTarget from "./FleetAttackTarget";
-import eventManager from "./eventManager";
+import BattlePrep from "./BattlePrep";
+import BattleSimulator from "./BattleSimulator";
 import Color from "./Color";
+import DiplomacyStatus from "./DiplomacyStatus";
+import {Flag} from "./Flag";
+import {Fleet} from "./Fleet";
+import FleetAttackTarget from "./FleetAttackTarget";
 import Game from "./Game";
-import Point from "./Point";
+import Item from "./Item";
+import Manufactory from "./Manufactory";
 import Name from "./Name";
-import idGenerators from "./idGenerators";
+import Options from "./Options";
+import PlayerTechnology from "./PlayerTechnology";
+import Point from "./Point";
+import Star from "./Star";
+import Unit from "./Unit";
 import
 {
   generateColorScheme,
   generateSecondaryColor
 } from "./colorGeneration";
-import Options from "./Options";
+import eventManager from "./eventManager";
+import idGenerators from "./idGenerators";
+import
+{
+  extendObject,
+  makeRandomPersonality
+} from "./utility";
 
-import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
-import UnitTemplate from "./templateinterfaces/UnitTemplate";
-import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
-import {PlayerRaceTemplate} from "./templateinterfaces/PlayerRaceTemplate";
-import TechnologyRequirement from "./templateinterfaces/TechnologyRequirement";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
+import {PlayerRaceTemplate} from "./templateinterfaces/PlayerRaceTemplate";
+import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
+import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
+import TechnologyRequirement from "./templateinterfaces/TechnologyRequirement";
+import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
 import PlayerSaveData from "./savedata/PlayerSaveData";
 import PlayerTechnologySaveData from "./savedata/PlayerTechnologySaveData";

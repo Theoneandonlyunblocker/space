@@ -2,8 +2,8 @@
 
 
 import Player from "../../Player";
-import {default as PlayerSetup, PlayerSetupComponent} from "./PlayerSetup";
 import {ColorSetterComponent} from "./ColorSetter";
+import {default as PlayerSetup, PlayerSetupComponent} from "./PlayerSetup";
 
 
 export interface PropTypes extends React.Props<any>

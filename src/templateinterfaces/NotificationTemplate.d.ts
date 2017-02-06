@@ -1,7 +1,7 @@
 /// <reference path="../../lib/react-global.d.ts" />
 
-import NotificationFilterState from "../NotificationFilterState";
 import GameLoader from "../GameLoader";
+import NotificationFilterState from "../NotificationFilterState";
 
 declare interface NotificationTemplate
 {

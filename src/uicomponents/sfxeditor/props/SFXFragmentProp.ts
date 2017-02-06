@@ -1,21 +1,21 @@
 /// <reference path="../../../../lib/react-global.d.ts" />
 
-import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 import RampingValue from "../../../../modules/common/battlesfxfunctions/sfxfragments/RampingValue";
+import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 import
 {
   SFXFragmentPropType
 } from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragmentPropTypes";
 
-import Point from "../../../Point";
 import Color from "../../../Color";
+import Point from "../../../Point";
 import Range from "../../../Range";
 
+import SFXFragmentPropColor from "./Color";
 import SFXFragmentPropNumber from "./Number";
 import SFXFragmentPropPoint from "./Point";
-import SFXFragmentPropColor from "./Color";
-import SFXFragmentPropRange from "./Range";
 import SFXFragmentPropRampingValue from "./RampingValue";
+import SFXFragmentPropRange from "./Range";
 
 interface PropTypes extends React.Props<any>
 {

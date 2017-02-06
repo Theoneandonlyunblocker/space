@@ -1,6 +1,6 @@
-import MapGenOptionValues from "./MapGenOptionValues";
-import Player from "../Player";
 import MapGenResult from "../MapGenResult";
+import Player from "../Player";
+import MapGenOptionValues from "./MapGenOptionValues";
 
 declare interface MapGenFunction
 {

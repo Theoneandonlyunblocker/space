@@ -5,12 +5,12 @@ import app from "./App"; // TODO global
 import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate";
 
 import GalaxyMap from "./GalaxyMap";
-import Star from "./Star";
-import Player from "./Player";
 import MapRendererLayer from "./MapRendererLayer";
 import MapRendererMapMode from "./MapRendererMapMode";
-import eventManager from "./eventManager";
 import Options from "./Options";
+import Player from "./Player";
+import Star from "./Star";
+import eventManager from "./eventManager";
 
 
 export default class MapRenderer

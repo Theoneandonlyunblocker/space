@@ -3,13 +3,13 @@
 
 import NebulaFilter from "./Nebula";
 
-import {generateColorScheme} from "../../src/colorGeneration";
 import BackgroundDrawingFunction from "../../src/BackgroundDrawingFunction";
+import {generateColorScheme} from "../../src/colorGeneration";
 import
 {
-  randRange,
-  makeShaderSprite,
   generateTextureWithBounds,
+  makeShaderSprite,
+  randRange,
 } from "../../src/utility";
 
 const drawNebula: BackgroundDrawingFunction = function(

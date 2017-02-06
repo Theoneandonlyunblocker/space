@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import ListItem from "../list/ListItem";
-import ListColumn from "../list/ListColumn";
 import List from "../list/List";
+import ListColumn from "../list/ListColumn";
+import ListItem from "../list/ListItem";
 
 import DiplomacyActions from "./DiplomacyActions";
 import {default as DiplomaticStatusPlayer, PropTypes as DiplomaticStatusPlayerProps} from "./DiplomaticStatusPlayer";

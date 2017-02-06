@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import DefenceBuildingList from "./DefenceBuildingList";
 import Star from "../../Star";
+import DefenceBuildingList from "./DefenceBuildingList";
 
 
 export interface PropTypes extends React.Props<any>

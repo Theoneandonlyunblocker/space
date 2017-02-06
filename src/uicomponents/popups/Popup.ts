@@ -2,8 +2,8 @@
 
 
 import eventManager from "../../eventManager";
-import PopupResizeHandle from "./PopupResizeHandle";
 import {clamp} from "../../utility";
+import PopupResizeHandle from "./PopupResizeHandle";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";

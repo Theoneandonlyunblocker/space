@@ -1,12 +1,12 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import AttitudeModifierList from "./AttitudeModifierList";
 import AttitudeModifier from "../../AttitudeModifier";
 import
 {
   clamp,
   getRelativeValue,
 } from "../../utility";
+import AttitudeModifierList from "./AttitudeModifierList";
 
 export interface PropTypes extends React.Props<any>
 {

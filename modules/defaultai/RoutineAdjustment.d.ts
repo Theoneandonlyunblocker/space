@@ -1,5 +1,5 @@
-import Star from "../../src/Star";
 import Player from "../../src/Player";
+import Star from "../../src/Star";
 
 declare interface RoutineAdjustment
 {

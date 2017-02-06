@@ -1,17 +1,17 @@
 /// <reference path="../lib/quadtree.d.ts" />
 
-import MapVoronoiInfo from "./MapVoronoiInfo";
-import Star from "./Star";
-import VoronoiCell from "./VoronoiCell";
 import FillerPoint from "./FillerPoint";
+import GalaxyMap from "./GalaxyMap";
+import MapVoronoiInfo from "./MapVoronoiInfo";
 import Player from "./Player";
 import Point from "./Point";
-import GalaxyMap from "./GalaxyMap";
+import Star from "./Star";
+import VoronoiCell from "./VoronoiCell";
 
 import
 {
-  relaxVoronoi,
   makeVoronoi,
+  relaxVoronoi,
   setVoronoiCells
 } from "./voronoi";
 

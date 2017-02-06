@@ -8,8 +8,8 @@ import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
 {
-  getRelativeValue,
-  clamp
+  clamp,
+  getRelativeValue
 } from "../../../../src/utility";
 
 interface PartialFocusingBeamProps

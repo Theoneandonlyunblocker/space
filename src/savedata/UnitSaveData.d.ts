@@ -1,7 +1,7 @@
 import {UnitAttributesObject} from "../UnitAttributes";
 
-import UnitItemsSaveData from "./UnitItemsSaveData";
 import UnitBattleStatsSaveData from "./UnitBattleStatsSaveData";
+import UnitItemsSaveData from "./UnitItemsSaveData";
 
 declare interface UnitSaveData
 {

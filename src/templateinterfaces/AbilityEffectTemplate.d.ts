@@ -1,13 +1,13 @@
-import BattleSFXTemplate from "./BattleSFXTemplate";
 import
 {
   AbilityEffectAction,
   ExecutedEffectsResult
 } from "./AbilityEffectAction";
+import BattleSFXTemplate from "./BattleSFXTemplate";
 
-import Unit from "../Unit";
 import Battle from "../Battle";
 import StatusEffect from "../StatusEffect";
+import Unit from "../Unit";
 import
 {
   GetUnitsInAreaFN

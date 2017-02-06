@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import AbilityList from "./AbilityList";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
+import AbilityList from "./AbilityList";
 
 export interface PropTypes extends React.Props<any>
 {

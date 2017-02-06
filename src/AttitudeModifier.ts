@@ -1,6 +1,6 @@
-import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
-import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData";
 import DiplomacyEvaluation from "./DiplomacyEvaluation";
+import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData";
+import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 import
 {
   getRelativeValue

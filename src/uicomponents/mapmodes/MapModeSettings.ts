@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-import {default as MapRendererLayersList, MapRendererLayersListComponent} from "./MapRendererLayersList";
 import MapRenderer from "../../MapRenderer";
 import MapModeSelector from "./MapModeSelector";
+import {default as MapRendererLayersList, MapRendererLayersListComponent} from "./MapRendererLayersList";
 
 
 export interface PropTypes extends React.Props<any>

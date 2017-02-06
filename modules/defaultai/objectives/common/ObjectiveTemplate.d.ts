@@ -2,17 +2,17 @@ import RoutineAdjustment from "../../RoutineAdjustment";
 import RoutineAdjustmentByID from "../../RoutineAdjustmentByID";
 
 import ArchetypeValues from "../../../../src/ArchetypeValues";
-import Star from "../../../../src/Star";
 import Player from "../../../../src/Player";
+import Star from "../../../../src/Star";
 import Unit from "../../../../src/Unit";
 
+import DiplomacyAI from "../../mapai/DiplomacyAI";
+import EconomyAI from "../../mapai/EconomyAI";
 import {Front} from "../../mapai/Front";
 import GrandStrategyAI from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
 import Objective from "../../mapai/Objective";
 import ObjectivesAI from "../../mapai/ObjectivesAI";
-import EconomyAI from "../../mapai/EconomyAI";
-import DiplomacyAI from "../../mapai/DiplomacyAI";
 
 
 declare interface ObjectiveTemplate

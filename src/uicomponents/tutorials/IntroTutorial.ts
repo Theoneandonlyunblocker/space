@@ -3,9 +3,9 @@
 import IntroTutorial from "../../tutorials/IntroTutorial";
 import TutorialState from "../../tutorials/TutorialState";
 import TutorialStatus from "../../tutorials/TutorialStatus";
-import Tutorial from "./Tutorial";
-import TopMenuPopup from "../popups/TopMenuPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import TopMenuPopup from "../popups/TopMenuPopup";
+import Tutorial from "./Tutorial";
 
 
 export interface PropTypes extends React.Props<any>

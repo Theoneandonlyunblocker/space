@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-import OptionsGroup from "../galaxymap/OptionsGroup";
-import NotificationFilterListItem from "./NotificationFilterListItem";
 import NotificationFilter from "../../NotificationFilter";
 import eventManager from "../../eventManager";
+import OptionsGroup from "../galaxymap/OptionsGroup";
+import NotificationFilterListItem from "./NotificationFilterListItem";
 
 
 export interface PropTypes extends React.Props<any>

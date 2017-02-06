@@ -1,13 +1,13 @@
 import {Front} from "./Front";
 import MapEvaluator from "./MapEvaluator";
-import ObjectivesAI from "./ObjectivesAI";
 import Objective from "./Objective";
+import ObjectivesAI from "./ObjectivesAI";
 
-import Unit from "../../../src/Unit";
-import Game from "../../../src/Game";
-import Player from "../../../src/Player";
 import GalaxyMap from "../../../src/GalaxyMap";
+import Game from "../../../src/Game";
 import Personality from "../../../src/Personality";
+import Player from "../../../src/Player";
+import Unit from "../../../src/Unit";
 
 interface IFrontUnitScore
 {

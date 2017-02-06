@@ -1,19 +1,19 @@
 
 
 import app from "./App"; // TODO global
-import DefenceBuildingTemplate from "./templateinterfaces/DefenceBuildingTemplate";
 import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
+import DefenceBuildingTemplate from "./templateinterfaces/DefenceBuildingTemplate";
 
 import BattleData from "./BattleData";
-import Unit from "./Unit";
-import eventManager from "./eventManager";
 import BattleTurnOrder from "./BattleTurnOrder";
 import Player from "./Player";
+import Unit from "./Unit";
 import
 {
   default as UnitBattleSide,
   UnitBattleSides
 } from "./UnitBattleSide";
+import eventManager from "./eventManager";
 import
 {
   clamp,

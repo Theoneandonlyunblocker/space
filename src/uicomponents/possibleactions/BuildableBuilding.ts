@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import ListItemProps from "../list/ListItemProps";
 import Player from "../../Player";
 import BuildingTemplate from "../../templateinterfaces/BuildingTemplate";
+import ListItemProps from "../list/ListItemProps";
 
 import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
 import applyMixins from "../mixins/applyMixins";

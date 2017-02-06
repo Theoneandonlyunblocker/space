@@ -1,21 +1,21 @@
 /// <reference path="../../lib/react-global.d.ts" />
 
-import BattlePrepComponentFactory from "./battleprep/BattlePrep";
 import BattleSceneTester from "./BattleSceneTester";
-import SetupGame from "./setupgame/SetupGame";
-import BattleComponentFactory from "./battle/Battle";
-import GalaxyMap from "./galaxymap/GalaxyMap";
 import FlagMaker from "./FlagMaker";
+import BattleComponentFactory from "./battle/Battle";
+import BattlePrepComponentFactory from "./battleprep/BattlePrep";
+import GalaxyMap from "./galaxymap/GalaxyMap";
+import SetupGame from "./setupgame/SetupGame";
 import SFXEditor from "./sfxeditor/SFXEditor";
 
+import Battle from "../Battle";
 import BattlePrep from "../BattlePrep";
+import Game from "../Game";
 import MapRenderer from "../MapRenderer";
 import Player from "../Player";
 import PlayerControl from "../PlayerControl";
-import Battle from "../Battle";
-import Game from "../Game";
-import Renderer from "../Renderer";
 import ReactUIScene from "../ReactUIScene";
+import Renderer from "../Renderer";
 
 
 export interface PropTypes extends React.Props<any>

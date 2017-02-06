@@ -1,6 +1,6 @@
-import TemplateCollection from "./templateinterfaces/TemplateCollection";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
+import TemplateCollection from "./templateinterfaces/TemplateCollection";
 
 export function setAttitudeModifierOverride(attitudeModifiers: TemplateCollection<AttitudeModifierTemplate>)
 {

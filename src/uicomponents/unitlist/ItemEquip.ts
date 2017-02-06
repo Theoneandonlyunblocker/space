@@ -1,16 +1,16 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import ItemList from "./ItemList";
+import {PropTypes as ItemListItemProps} from "./ItemListItem";
 import MenuUnitInfo from "./MenuUnitInfo";
 import UnitList from "./UnitList";
 import {PropTypes as UnitListItemProps} from "./UnitListItem";
-import {PropTypes as ItemListItemProps} from "./ItemListItem";
-import ItemList from "./ItemList";
 
 import ListItem from "../list/ListItem";
 
+import Item from "../../Item";
 import Player from "../../Player";
 import Unit from "../../Unit";
-import Item from "../../Item";
 
 
 export interface PropTypes extends React.Props<any>

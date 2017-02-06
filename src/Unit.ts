@@ -1,44 +1,44 @@
 
 
 import app from "./App"; // TODO global
+import UnitDrawingFunctionData from "./UnitDrawingFunctionData";
 import idGenerators from "./idGenerators";
-import UnitTemplate from "./templateinterfaces/UnitTemplate";
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
-import PortraitTemplate from "./templateinterfaces/PortraitTemplate";
-import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
-import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import AbilityBase from "./templateinterfaces/AbilityBase";
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
+import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
+import PortraitTemplate from "./templateinterfaces/PortraitTemplate";
+import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import SFXParams from "./templateinterfaces/SFXParams";
 import UnitPassiveEffect from "./templateinterfaces/UnitPassiveEffect";
-import UnitDrawingFunctionData from "./UnitDrawingFunctionData";
+import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
+import AbilityUpgradeData from "./AbilityUpgradeData";
+import Battle from "./Battle";
+import {Fleet} from "./Fleet";
+import GuardCoverage from "./GuardCoverage";
+import Item from "./Item";
+import Player from "./Player";
+import Star from "./Star";
+import StatusEffect from "./StatusEffect";
 import
 {
   default as UnitAttributes,
   UnitAttributeAdjustments,
   UnitAttributesObject,
 } from "./UnitAttributes";
-import
-{
-  randInt,
-  clamp,
-  getItemsFromWeightedProbabilities,
-} from "./utility";
-import Battle from "./Battle";
-import Item from "./Item";
-import StatusEffect from "./StatusEffect";
-import {Fleet} from "./Fleet";
-import Player from "./Player";
-import Star from "./Star";
-import GuardCoverage from "./GuardCoverage";
-import UnitBattleStats from "./UnitBattleStats";
 import UnitBattleSide from "./UnitBattleSide";
-import AbilityUpgradeData from "./AbilityUpgradeData";
+import UnitBattleStats from "./UnitBattleStats";
 import UnitDisplayData from "./UnitDisplayData";
 import UnitItems from "./UnitItems";
+import
+{
+  clamp,
+  getItemsFromWeightedProbabilities,
+  randInt,
+} from "./utility";
 
-import UnitSaveData from "./savedata/UnitSaveData";
 import UnitBattleStatsSaveData from "./savedata/UnitBattleStatsSaveData";
+import UnitSaveData from "./savedata/UnitSaveData";
 
 
 export default class Unit

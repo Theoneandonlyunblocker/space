@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Star from "../../Star";
-import ManufactoryStarsListItem from "./ManufactoryStarsListItem";
 import {sortByManufactoryCapacityFN} from "../../utility";
+import ManufactoryStarsListItem from "./ManufactoryStarsListItem";
 
 
 export interface PropTypes extends React.Props<any>

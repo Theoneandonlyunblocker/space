@@ -1,12 +1,12 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import Unit from "../../Unit";
 import TurnOrderDisplayData from "../../TurnOrderDisplayData";
+import Unit from "../../Unit";
 
 import
 {
-  default as TurnOrderUnit,
-  AnimationState
+  AnimationState,
+  default as TurnOrderUnit
 } from "./TurnOrderUnit";
 
 export interface PropTypes extends React.Props<any>

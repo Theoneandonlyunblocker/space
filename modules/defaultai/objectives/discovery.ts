@@ -16,9 +16,9 @@ import moveTo from "./common/moveroutines/moveTo";
 
 import
 {
+  makeObjectivesFromScores,
   scoutingUnitDesireFN,
-  scoutingUnitFitFN,
-  makeObjectivesFromScores
+  scoutingUnitFitFN
 } from "../aiUtils";
 
 

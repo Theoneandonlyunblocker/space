@@ -1,11 +1,11 @@
+import {Front} from "./Front";
+import FrontsAI from "./FrontsAI";
 import MapEvaluator from "./MapEvaluator";
 import ObjectivesAI from "./ObjectivesAI";
-import FrontsAI from "./FrontsAI";
-import {Front} from "./Front";
 
-import Star from "../../../src/Star";
-import Player from "../../../src/Player";
 import Personality from "../../../src/Personality";
+import Player from "../../../src/Player";
+import Star from "../../../src/Star";
 import
 {
   getObjectKeysSortedByValue,

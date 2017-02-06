@@ -3,8 +3,8 @@ import GrandStrategyAI from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 import Objective from "../mapai/Objective";
 
-import ObjectiveTemplate from "./common/ObjectiveTemplate";
 import RoutineAdjustmentByID from "../RoutineAdjustmentByID";
+import ObjectiveTemplate from "./common/ObjectiveTemplate";
 
 import Player from "../../../src/Player";
 

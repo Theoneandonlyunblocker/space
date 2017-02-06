@@ -1,5 +1,5 @@
-import ManufacturableThing from "./ManufacturableThing";
 import AbilityTemplate from "./AbilityTemplate";
+import ManufacturableThing from "./ManufacturableThing";
 import PassiveSkillTemplate from "./PassiveSkillTemplate";
 
 import {UnitAttributeAdjustments} from "../UnitAttributes";

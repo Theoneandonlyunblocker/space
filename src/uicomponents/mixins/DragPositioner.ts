@@ -4,8 +4,8 @@ import MixinBase from "./MixinBase";
 
 import Point from "../../Point";
 import {recursiveRemoveAttribute} from "../../utility";
-import normalizeEvent from "./normalizeEvent";
 import NormalizedEvent from "./NormalizedEvent";
+import normalizeEvent from "./normalizeEvent";
 
 export interface DragPositionerProps
 {

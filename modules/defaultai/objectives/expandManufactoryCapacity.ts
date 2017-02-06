@@ -1,5 +1,5 @@
-import GrandStrategyAI from "../mapai/GrandStrategyAI";
 import EconomyAI from "../mapai/EconomyAI";
+import GrandStrategyAI from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 import Objective from "../mapai/Objective";
 import ObjectivesAI from "../mapai/ObjectivesAI";

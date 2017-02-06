@@ -1,5 +1,5 @@
-import MapGenOptions from "./MapGenOptions";
 import MapGenFunction from "./MapGenFunction";
+import MapGenOptions from "./MapGenOptions";
 
 declare interface MapGenTemplate
 {

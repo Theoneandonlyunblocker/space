@@ -8,8 +8,8 @@ import {PropTypes as SaveListItemProps} from "./SaveListItem";
 
 import ListItem from "../list/ListItem";
 
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import {default as ConfirmPopup, PropTypes as ConfirmPopupProps} from "../popups/ConfirmPopup";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 
 
 export interface PropTypes extends React.Props<any>

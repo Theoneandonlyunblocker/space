@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Unit from "../../Unit";
-import FleetUnitInfoName from "./FleetUnitInfoName";
 import UnitStrength from "../unit/UnitStrength";
+import FleetUnitInfoName from "./FleetUnitInfoName";
 
 import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
