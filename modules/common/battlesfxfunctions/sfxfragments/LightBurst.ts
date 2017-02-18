@@ -1,7 +1,7 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
 import SFXFragment from "./SFXFragment";
-import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
+import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
 
 import LightBurstFilter from "../shaders/LightBurst";
 
@@ -12,16 +12,7 @@ import
   makeShaderSprite,
 } from "../../../../src/utility";
 
-interface PartialLightBurstProps
-{
-  size?: Point;
-  delay?: number;
-  sharpness?: number;
-  color?: Color;
-  centerSize?: number;
-  rayStrength?: number;
-}
-interface LightBurstProps extends PartialLightBurstProps
+interface LightBurstProps
 {
   size: Point;
   delay: number;
@@ -39,7 +30,7 @@ const defaultLightBurstProps: LightBurstProps =
   centerSize: 1.0,
   rayStrength: 1.0,
 };
-const LightBurstPropTypes: SFXFragmentPropTypes =
+const LightBurstPropTypes: SFXFragmentPropTypes<LightBurstProps> =
 {
   size: "point",
   delay: "number",
@@ -50,7 +41,7 @@ const LightBurstPropTypes: SFXFragmentPropTypes =
 };
 
 
-export default class LightBurst extends SFXFragment<LightBurstProps, PartialLightBurstProps>
+export default class LightBurst extends SFXFragment<LightBurstProps>
 {
   public displayName = "LightBurst";
   public key = "lightBurst";

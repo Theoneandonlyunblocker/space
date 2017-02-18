@@ -1,7 +1,7 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
 import SFXFragment from "./SFXFragment";
-import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
+import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
 
 import UnitDrawingFunctionData from "../../../../src/UnitDrawingFunctionData";
 import
@@ -13,31 +13,7 @@ type impactFN = (projectile: Projectile, container: PIXI.Container, time: number
 type makeProjectileSpriteFN = (projectileNumber: number) => PIXI.Sprite;
 type animateProjectileFN = (projectile: Projectile, time: number) => void;
 
-interface PartialProjectileAttackProps
-{
-  makeProjectileSprite?: makeProjectileSpriteFN;
-  animateProjectile?: animateProjectileFN;
-
-  onImpact?: impactFN;
-  animateImpact?: impactFN;
-  useSequentialAttackOriginPoints?: boolean;
-  removeAfterImpact?: boolean;
-  impactRate?: number;
-  impactPosition?:
-  {
-    min: number;
-    max: number;
-  };
-
-  maxSpeed?: number;
-  acceleration?: number;
-
-  amountToSpawn?: number;
-
-  spawnTimeStart?: number;
-  spawnTimeEnd?: number;
-}
-interface ProjectileAttackProps extends PartialProjectileAttackProps
+interface ProjectileAttackProps
 {
   makeProjectileSprite: makeProjectileSpriteFN;
   animateProjectile?: animateProjectileFN;
@@ -80,12 +56,13 @@ const defaultProjectileAttackProps: ProjectileAttackProps =
   spawnTimeStart: 0,
   spawnTimeEnd: 500,
 };
-const ProjectileAttackPropTypes: SFXFragmentPropTypes =
+const ProjectileAttackPropTypes: SFXFragmentPropTypes<ProjectileAttackProps> =
 {
-  // makeProjectileSprite,
+  makeProjectileSprite: "other",
+  animateProjectile: "other",
 
-  // onImpact: impactFN,
-  // animateImpact?: impactFN,
+  onImpact: "other",
+  animateImpact: "other",
   useSequentialAttackOriginPoints: "boolean",
   removeAfterImpact: "boolean",
   impactRate: "number",
@@ -229,7 +206,7 @@ class Projectile
   }
 }
 
-export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps, PartialProjectileAttackProps>
+export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps>
 {
   public displayName = "ProjectileAttack";
   public key = "projectileAttack";

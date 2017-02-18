@@ -2,7 +2,7 @@
 
 import RampingValue from "./RampingValue";
 import SFXFragment from "./SFXFragment";
-import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
+import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
 
 import IntersectingEllipsesFilter from "../shaders/IntersectingEllipses";
 
@@ -49,7 +49,7 @@ const defaultShockWaveProps: ShockWaveProps =
 
   delay: 0.3,
 };
-const shockWavePropTypes: SFXFragmentPropTypes =
+const shockWavePropTypes: SFXFragmentPropTypes<ShockWaveProps> =
 {
   size: "point",
   intersectingEllipseOrigin: "point",

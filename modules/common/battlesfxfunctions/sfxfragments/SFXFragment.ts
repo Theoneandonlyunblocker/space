@@ -4,7 +4,7 @@ import
 {
   shallowCopy,
 } from "../../../../src/utility";
-import {SFXFragmentPropType} from "./SFXFragmentPropTypes";
+import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
 
 let idGenerator = 0;
 
@@ -15,7 +15,7 @@ abstract class SFXFragment<P>
   public abstract displayName: string;
 
   // public propTypes: SFXFragmentPropTypes;
-  public propTypes: {[K in keyof P]: SFXFragmentPropType};
+  public propTypes: SFXFragmentPropTypes<P>;
   private readonly defaultProps: P;
   public readonly props: P;
 
@@ -60,7 +60,7 @@ abstract class SFXFragment<P>
   {
     this.displayObject.scale.set(scale.x, scale.y);
   }
-  constructor(propTypes: SFXFragmentPropTypes, defaultProps: P, props?: Partial<P>)
+  constructor(propTypes: SFXFragmentPropTypes<P>, defaultProps: P, props?: Partial<P>)
   {
     this.id = idGenerator++;
 

@@ -2,7 +2,7 @@
 
 import RampingValue from "./RampingValue";
 import SFXFragment from "./SFXFragment";
-import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
+import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
 
 import BeamFilter from "../shaders/Beam";
 
@@ -15,24 +15,8 @@ import
   makeShaderSprite,
 } from "../../../../src/utility";
 
-interface PartialBeamProps
-{
-  size?: Point;
-  relativeImpactTime?: number;
-  relativeBeamOrigin?: Point;
-  color?: Color;
-  timeScale?: number;
-  noiseAmplitude?: RampingValue;
-  lineIntensity?: RampingValue;
-  bulgeIntensity?: RampingValue;
-  lineYSize?: RampingValue;
-  bulgeSizeX?: RampingValue;
-  bulgeSizeY?: RampingValue;
-  bulgeSharpness?: RampingValue;
-  lineXSharpness?: RampingValue;
-  lineYSharpness?: RampingValue;
-}
-interface BeamProps extends PartialBeamProps
+
+interface BeamProps
 {
   size: Point;
   relativeImpactTime: number;
@@ -74,7 +58,7 @@ const defaultBeamProps: BeamProps =
   lineXSharpness: new RampingValue(0.99, -0.99, 0.99),
   lineYSharpness: new RampingValue(0.99, -0.15, 0.16),
 };
-const BeamPropTypes: SFXFragmentPropTypes =
+const BeamPropTypes: SFXFragmentPropTypes<BeamProps> =
 {
   size: "point",
   relativeImpactTime: "number",
@@ -93,7 +77,7 @@ const BeamPropTypes: SFXFragmentPropTypes =
 };
 
 
-export default class Beam extends SFXFragment<BeamProps, PartialBeamProps>
+export default class Beam extends SFXFragment<BeamProps>
 {
   public displayName = "Beam";
   public key = "beam";

@@ -4,11 +4,10 @@ export type SFXFragmentPropType =
   "color" |
   "boolean" |
   "range" |
-  "rampingValue";
+  "rampingValue" |
+  "other"; // TODO 06.02.2017 | temporary. remove this
 
-interface SFXFragmentPropTypes
+export type SFXFragmentPropTypes<P> =
 {
-  [propName: string]: SFXFragmentPropType;
+  [K in keyof P]: SFXFragmentPropType;
 }
-
-export default SFXFragmentPropTypes;

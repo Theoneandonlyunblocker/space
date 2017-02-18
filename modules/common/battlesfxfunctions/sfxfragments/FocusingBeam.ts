@@ -1,5 +1,5 @@
 import SFXFragment from "./SFXFragment";
-import SFXFragmentPropTypes from "./SFXFragmentPropTypes";
+import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
 
 import Beam from "./Beam";
 import RampingValue from "./RampingValue";
@@ -12,23 +12,8 @@ import
   getRelativeValue,
 } from "../../../../src/utility";
 
-interface PartialFocusingBeamProps
-{
-  color?: Color;
-  size?: Point;
 
-  focusStartTime?: number;
-  focusEndTime?: number;
-  decayStartTime?: number;
-  decayEndtime?: number;
-  focusTimeExponent?: number;
-  relativeYPosition?: number;
-
-  beamIntensity?: RampingValue;
-  beamSharpness?: RampingValue;
-  beamSize?: RampingValue;
-}
-interface FocusingBeamProps extends PartialFocusingBeamProps
+interface FocusingBeamProps
 {
   color: Color;
   size: Point;
@@ -60,7 +45,7 @@ const defaultFocusingBeamProps: FocusingBeamProps =
   beamSharpness: new RampingValue(0.75, 0.24, 0.0),
   beamSize: new RampingValue(0.12, -0.115, -0.005),
 };
-const FocusingBeamPropTypes: SFXFragmentPropTypes =
+const FocusingBeamPropTypes: SFXFragmentPropTypes<FocusingBeamProps> =
 {
   color: "color",
   size: "point",
@@ -78,7 +63,7 @@ const FocusingBeamPropTypes: SFXFragmentPropTypes =
 };
 
 
-export default class FocusingBeam extends SFXFragment<FocusingBeamProps, PartialFocusingBeamProps>
+export default class FocusingBeam extends SFXFragment<FocusingBeamProps>
 {
   public displayName = "FocusingBeam";
   public key = "focusingBeam";
