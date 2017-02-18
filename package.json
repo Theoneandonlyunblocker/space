@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "tsc && lessc ./css/main.less ./built/main.css",
-    "lint": "tslint \"src/**/*.ts\"",
+    "lint": "tslint \"src/**/*.ts\" && tslint \"modules/**/*.ts\"",
     "lintfix": "tslint \"src/**/*.ts\" --fix && tslint \"modules/**/*.ts\" --fix"
   },
   "repository": {
