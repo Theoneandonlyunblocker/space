@@ -67,12 +67,12 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var allOptions: React.ReactElement<any>[] = [];
+    const allOptions: React.ReactElement<any>[] = [];
 
     // battle animation timing
-    var battleAnimationOptions: any[] = [];
+    const battleAnimationOptions: any[] = [];
 
-    var battleAnimationStages =
+    const battleAnimationStages =
     [
       {
         stage: "before",
@@ -119,8 +119,8 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     ];
     for (let i = 0; i < battleAnimationStages.length; i++)
     {
-      var props = battleAnimationStages[i];
-      var stage = props.stage;
+      const props = battleAnimationStages[i];
+      const stage = props.stage;
 
       battleAnimationOptions.push(
         {
@@ -155,7 +155,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       },
     }));
 
-    var debugOptions: any[] = [];
+    const debugOptions: any[] = [];
     debugOptions.push(
     {
       key: "debugMode",
@@ -192,8 +192,8 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
             step: 1,
             onChange: (e: React.FormEvent) =>
             {
-              var target = <HTMLInputElement> e.target;
-              var value = parseInt(target.value);
+              const target = <HTMLInputElement> e.target;
+              let value = parseInt(target.value);
               if (!isFinite(value))
               {
                 return;
@@ -226,7 +226,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       },
     }));
 
-    var uiOptions: any[] = [];
+    const uiOptions: any[] = [];
     uiOptions.push(
     {
       key: "noHamburger",
@@ -279,7 +279,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     }));
 
 
-    var displayOptions: any[] = [];
+    const displayOptions: any[] = [];
     displayOptions.push(
     {
       key: "borderWidth",

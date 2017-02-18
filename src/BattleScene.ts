@@ -213,8 +213,8 @@ export default class BattleScene
     {
       return;
     }
-    var w = this.containerElement.clientWidth * window.devicePixelRatio;
-    var h = this.containerElement.clientHeight * window.devicePixelRatio;
+    const w = this.containerElement.clientWidth * window.devicePixelRatio;
+    const h = this.containerElement.clientHeight * window.devicePixelRatio;
     this.renderer.resize(w, h);
 
     this.side1Unit.resize();
@@ -234,8 +234,8 @@ export default class BattleScene
     triggerEnd?: () => void;
   }): SFXParams
   {
-    var bounds = this.getSceneBounds();
-    var duration = this.activeSFX.duration * Options.battleAnimationTiming.effectDuration;
+    const bounds = this.getSceneBounds();
+    const duration = this.activeSFX.duration * Options.battleAnimationTiming.effectDuration;
 
     return(
     {
@@ -285,7 +285,7 @@ export default class BattleScene
   {
     if (this.afterUnitsHaveFinishedUpdatingCallback && this.haveBothUnitsFinishedUpdating())
     {
-      var temp = this.afterUnitsHaveFinishedUpdatingCallback;
+      const temp = this.afterUnitsHaveFinishedUpdatingCallback;
       this.afterUnitsHaveFinishedUpdatingCallback = null;
       temp();
     }
@@ -314,7 +314,7 @@ export default class BattleScene
       throw new Error("No callback set for 'before ability use delay' finish.");
     }
 
-    var temp = this.beforeUseDelayHasFinishedCallback;
+    const temp = this.beforeUseDelayHasFinishedCallback;
     this.beforeUseDelayHasFinishedCallback = null;
     temp();
   }
@@ -344,7 +344,7 @@ export default class BattleScene
   //     throw new Error("No callback set for active SFX finish.");
   //   }
 
-  //   var temp = this.activeSFXHasFinishedCallback;
+  //   const temp = this.activeSFXHasFinishedCallback;
   //   this.activeSFXHasFinishedCallback = null;
   //   temp();
   // }
@@ -355,7 +355,7 @@ export default class BattleScene
       throw new Error("No callback set for 'after ability use delay' finish.");
     }
 
-    var temp = this.afterUseDelayHasFinishedCallback;
+    const temp = this.afterUseDelayHasFinishedCallback;
     this.afterUseDelayHasFinishedCallback = null;
     temp();
   }
@@ -366,16 +366,16 @@ export default class BattleScene
       throw new Error("No callback set for ability use finish.");
     }
 
-    var temp = this.abilityUseHasFinishedCallback;
+    const temp = this.abilityUseHasFinishedCallback;
     this.abilityUseHasFinishedCallback = null;
     temp();
   }
 
   private prepareSFX()
   {
-    var beforeUseDelay = Options.battleAnimationTiming.before;
+    const beforeUseDelay = Options.battleAnimationTiming.before;
 
-    var afterUnitsHaveFinishedUpdatingCallback = () =>
+    const afterUnitsHaveFinishedUpdatingCallback = () =>
     {
       if (beforeUseDelay >= 0)
       {
@@ -392,7 +392,7 @@ export default class BattleScene
   }
   private playSFX()
   {
-    var SFXDuration = Options.battleAnimationTiming.effectDuration *
+    const SFXDuration = Options.battleAnimationTiming.effectDuration *
       this.activeSFX.duration;
 
     this.executeOnSFXStartCallback();
@@ -459,7 +459,7 @@ export default class BattleScene
     }
     else
     {
-      var SFXParams = this.getSFXParams(
+      const SFXParams = this.getSFXParams(
       {
         triggerStart: this.addBattleOverlay.bind(this),
         triggerEnd: afterFinishedCallback,

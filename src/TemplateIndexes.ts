@@ -98,7 +98,7 @@ class TemplateIndexes
   }
   // private static getDistributablesByDistributionGroup()
   // {
-  //   var result:
+  //   const result:
   //   {
   //     [groupName: string]:
   //     {
@@ -114,10 +114,10 @@ class TemplateIndexes
   //   {
   //     for (let key in distributables)
   //     {
-  //       var distributable = distributables[key];
+  //       const distributable = distributables[key];
   //       for (let i = 0; i < distributable.distributionGroups.length; i++)
   //       {
-  //         var groupName = distributable.distributionGroups[i];
+  //         const groupName = distributable.distributionGroups[i];
   //         if (!result[groupName])
   //         {
   //           result[groupName] =
@@ -139,13 +139,13 @@ class TemplateIndexes
   // }
   private static getItemsByTechLevel()
   {
-    var itemsByTechLevel:
+    const itemsByTechLevel:
     {
       [techLevel: number]: ItemTemplate[];
     } = {};
     for (let itemName in app.moduleData.Templates.Items)
     {
-      var item = app.moduleData.Templates.Items[itemName];
+      const item = app.moduleData.Templates.Items[itemName];
 
       if (!itemsByTechLevel[item.techLevel])
       {

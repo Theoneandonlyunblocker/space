@@ -37,7 +37,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
 
   private handleResetCategory(category: string): void
   {
-    var filter = this.props.filter;
+    const filter = this.props.filter;
     filter.setDefaultFilterStatesForCategory(category);
     filter.save();
     this.forceUpdate();
@@ -47,8 +47,8 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   {
     if (this.props.highlightedOptionKey)
     {
-      var bodyNode = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_body);
-      var highlightedNode = <HTMLElement> bodyNode.getElementsByClassName("highlighted")[0];
+      const bodyNode = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_body);
+      const highlightedNode = <HTMLElement> bodyNode.getElementsByClassName("highlighted")[0];
       bodyNode.scrollTop = highlightedNode.offsetTop - bodyNode.offsetHeight / 3;
     }
   }
@@ -59,23 +59,23 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
 
   render()
   {
-    var filter = this.props.filter;
+    const filter = this.props.filter;
 
-    var filtersByCategory = filter.getFiltersByCategory();
-    var filterGroupElements: React.ReactElement<any>[] = [];
+    const filtersByCategory = filter.getFiltersByCategory();
+    const filterGroupElements: React.ReactElement<any>[] = [];
 
     for (let category in filtersByCategory)
     {
-      var filtersForCategory = filtersByCategory[category];
-      var filterElementsForCategory:
+      const filtersForCategory = filtersByCategory[category];
+      const filterElementsForCategory:
       {
         key: string;
         content: React.ReactElement<any>;
       }[] = [];
       for (let i = 0; i < filtersForCategory.length; i++)
       {
-        var notificationTemplate = filtersForCategory[i].notificationTemplate;
-        var isHighlighted = Boolean(this.props.highlightedOptionKey &&
+        const notificationTemplate = filtersForCategory[i].notificationTemplate;
+        const isHighlighted = Boolean(this.props.highlightedOptionKey &&
           this.props.highlightedOptionKey === notificationTemplate.key);
 
         filterElementsForCategory.push(

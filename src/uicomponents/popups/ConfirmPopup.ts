@@ -47,7 +47,7 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    var callbackSuccesful = this.props.handleOk();
+    const callbackSuccesful = this.props.handleOk();
 
     if (callbackSuccesful !== false)
     {

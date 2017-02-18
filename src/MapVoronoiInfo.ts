@@ -29,12 +29,12 @@ export default class MapVoronoiInfo
   {
     if (!this.diagram) return [];
 
-    var indexString = "";
+    let indexString = "";
     if (!visibleStars) indexString = "all";
     else
     {
-      var ids: number[] = visibleStars.map(function(star){return star.id;});
-      ids = ids.sort();
+      const ids: number[] = visibleStars.map(function(star){return star.id;});
+      ids.sort();
 
       indexString = ids.join();
     }
@@ -45,13 +45,13 @@ export default class MapVoronoiInfo
       this.nonFillerLines[indexString] =
         this.diagram.edges.filter(function(edge)
       {
-        var adjacentSites = [edge.lSite, edge.rSite];
-        var adjacentFillerSites = 0;
-        var maxAllowedFillerSites = 2;
+        const adjacentSites = [edge.lSite, edge.rSite];
+        let adjacentFillerSites = 0;
+        let maxAllowedFillerSites = 2;
 
         for (let i = 0; i < adjacentSites.length; i++)
         {
-          var site = adjacentSites[i];
+          const site = adjacentSites[i];
 
           if (!site)
           {
@@ -98,7 +98,7 @@ export default class MapVoronoiInfo
   }
   public getStarAtPoint(point: Point): Star
   {
-    var items = this.treeMap.retrieve(point);
+    const items = this.treeMap.retrieve(point);
     for (let i = 0; i < items.length; i++)
     {
       if (items[i].pointIntersection(point.x, point.y) > -1)

@@ -255,9 +255,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    var nativeEvent = <MouseEvent> e.nativeEvent;
+    const nativeEvent = <MouseEvent> e.nativeEvent;
 
-    var toElement = nativeEvent.toElement || <HTMLElement> nativeEvent.relatedTarget;
+    const toElement = nativeEvent.toElement || <HTMLElement> nativeEvent.relatedTarget;
 
     if (!toElement)
     {
@@ -272,7 +272,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
 
-    var tooltipElement = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_abilityTooltip);
+    const tooltipElement = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_abilityTooltip);
 
     if(
       toElement !== this.state.abilityTooltip.parentElement &&
@@ -292,8 +292,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    var facesLeft = unit.battleStats.side === "side2";
-    var parentElement = this.getUnitElement(unit);
+    const facesLeft = unit.battleStats.side === "side2";
+    const parentElement = this.getUnitElement(unit);
 
     this.setState(
     {
@@ -465,11 +465,11 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private usePreparedAbility()
   {
-    var unit: Unit = this.props.battle.activeUnit;
-    var action = unit.battleStats.queuedAction;
+    const unit: Unit = this.props.battle.activeUnit;
+    const action = unit.battleStats.queuedAction;
 
-    var target = this.props.battle.unitsById[action.targetId];
-    var userIsHuman = this.props.battle.getActivePlayer() === this.props.humanPlayer;
+    const target = this.props.battle.unitsById[action.targetId];
+    const userIsHuman = this.props.battle.getActivePlayer() === this.props.humanPlayer;
 
     this.handleAbilityUse(action.ability, target, userIsHuman);
   }
@@ -487,9 +487,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     if (!this.MCTree) this.MCTree = new MCTree(this.props.battle,
       this.props.battle.activeUnit.battleStats.side, false);
 
-    var move = this.MCTree.getBestMoveAndAdvance(1000);
+    const move = this.MCTree.getBestMoveAndAdvance(1000);
 
-    var target = this.props.battle.unitsById[move.targetId];
+    const target = this.props.battle.unitsById[move.targetId];
 
     this.handleAbilityUse(move.ability, target, false);
   }
@@ -508,15 +508,13 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     const battle = this.props.battle;
 
-    if (this.state.UIState === BattleUIState.idle)
-    {
-      var activeTargets = getTargetsForAllAbilities(battle, battle.activeUnit);
-    }
+    const playerCanAct = this.state.UIState === BattleUIState.idle;
+    const activeTargets = playerCanAct ? getTargetsForAllAbilities(battle, battle.activeUnit) : undefined;
 
-    var abilityTooltip: React.ReactElement<AbilityTooltipProps> = null;
+    let abilityTooltip: React.ReactElement<AbilityTooltipProps> = null;
 
     if (
-      this.state.UIState === BattleUIState.idle &&
+      playerCanAct &&
       this.state.hoveredUnit &&
       activeTargets[this.state.hoveredUnit.id]
     )
@@ -539,13 +537,13 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       });
     };
 
-    var activeEffectUnits: Unit[] = [];
+    let activeEffectUnits: Unit[] = [];
     if (this.state.playingBattleEffect)
     {
       activeEffectUnits = [this.state.battleSceneUnit1, this.state.battleSceneUnit2];
     }
 
-    var upperFooterElement: React.ReactElement<any>;
+    let upperFooterElement: React.ReactElement<any>;
     if (this.state.UIState === BattleUIState.starting)
     {
       upperFooterElement = null;
@@ -613,17 +611,17 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     // transitiongroups dont work very well, especially in the older version
     // of react we're using. seems to be mostly fine on webkit & ie though
     // so just disable it on firefox for now
-    // var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ?
+    // const upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ?
     //   React.addons.CSSTransitionGroup({transitionName: "battle-upper-footer"},
     //     upperFooterElement
     //   ) : upperFooterElement;
-    var upperFooter = upperFooterElement;
+    const upperFooter = upperFooterElement;
 
     const containerProps: React.HTMLAttributes =
     {
       className: "battle-container",
     };
-    var playerWonBattle: boolean = null;
+    let playerWonBattle: boolean = null;
     if (this.state.UIState === BattleUIState.starting)
     {
       containerProps.className += " battle-start-overlay";

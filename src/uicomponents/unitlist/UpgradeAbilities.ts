@@ -32,7 +32,7 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
       return null;
     }
 
-    var headerText: string;
+    let headerText: string;
     if (this.props.learningNewability)
     {
       headerText = "Learn ability";

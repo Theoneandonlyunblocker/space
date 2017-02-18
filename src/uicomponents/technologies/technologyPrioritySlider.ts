@@ -74,7 +74,7 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
       return;
     }
 
-    var target = <HTMLInputElement> e.target;
+    const target = <HTMLInputElement> e.target;
     this.props.playerTechnology.setTechnologyPriority(this.props.technology, parseFloat(target.value));
   }
   public render()

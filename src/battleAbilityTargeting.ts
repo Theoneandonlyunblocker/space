@@ -12,21 +12,21 @@ export function getTargetsForAllAbilities(battle: Battle, user: Unit)
     throw new Error();
   }
 
-  var allTargets:
+  const allTargets:
   {
     [id: number]: AbilityTemplate[];
   } = {};
 
-  var abilities = user.getAllAbilities();
+  const abilities = user.getAllAbilities();
   for (let i = 0; i < abilities.length; i++)
   {
-    var ability = abilities[i];
+    const ability = abilities[i];
 
-    var targets = getPotentialTargets(battle, user, ability);
+    const targets = getPotentialTargets(battle, user, ability);
 
     for (let j = 0; j < targets.length; j++)
     {
-      var target = targets[j];
+      const target = targets[j];
 
       if (!allTargets[target.id])
       {

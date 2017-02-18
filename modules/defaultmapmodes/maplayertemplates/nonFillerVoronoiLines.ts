@@ -11,19 +11,19 @@ const nonFillerVoronoiLines: MapRendererLayerTemplate =
   interactive: false,
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
-    var doc = new PIXI.Container();
+    const doc = new PIXI.Container();
 
-    var gfx = new PIXI.Graphics();
+    const gfx = new PIXI.Graphics();
     doc.addChild(gfx);
     gfx.lineStyle(1, 0xA0A0A0, 0.5);
 
-    var visible = perspectivePlayer ? perspectivePlayer.getRevealedStars() : null;
+    const visible = perspectivePlayer ? perspectivePlayer.getRevealedStars() : null;
 
-    var lines = map.voronoi.getNonFillerVoronoiLines(visible);
+    const lines = map.voronoi.getNonFillerVoronoiLines(visible);
 
     for (let i = 0; i < lines.length; i++)
     {
-      var line = lines[i];
+      const line = lines[i];
       gfx.moveTo(line.va.x, line.va.y);
       gfx.lineTo(line.vb.x, line.vb.y);
     }

@@ -46,7 +46,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var elementsToRender: React.ReactElement<any>[] = [];
+    const elementsToRender: React.ReactElement<any>[] = [];
 
     switch (this.props.sceneToRender)
     {

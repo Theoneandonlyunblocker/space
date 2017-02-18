@@ -99,9 +99,9 @@ export default class GameLoader
     // players
     for (let i = 0; i < data.players.length; i++)
     {
-      var playerData = data.players[i];
-      var id = playerData.id;
-      var player = this.playersById[id] = this.deserializePlayer(playerData);
+      const playerData = data.players[i];
+      const id = playerData.id;
+      const player = this.playersById[id] = this.deserializePlayer(playerData);
       if (player.isIndependent)
       {
         this.independents.push(player);
@@ -115,7 +115,7 @@ export default class GameLoader
     // player diplomacy status. dependant on other players
     for (let i = 0; i < data.players.length; i++)
     {
-      var playerData = data.players[i];
+      const playerData = data.players[i];
       this.deserializeDiplomacyStatus(
         this.playersById[playerData.id],
         playerData.diplomacyStatus,
@@ -128,7 +128,7 @@ export default class GameLoader
     this.deserializeBuildings(data.galaxyMap);
 
     // create game
-    var game = new Game(this.map, this.players, this.humanPlayer);
+    const game = new Game(this.map, this.players, this.humanPlayer);
     game.independents = game.independents.concat(this.independents);
     game.turnNumber = data.turnNumber;
 
@@ -158,14 +158,14 @@ export default class GameLoader
   }
   private deserializeNotificationLog(data: NotificationLogSaveData): NotificationLog
   {
-    var notificationsData = data.notifications;
+    const notificationsData = data.notifications;
 
-    var notificationLog = new NotificationLog(this.humanPlayer);
+    const notificationLog = new NotificationLog(this.humanPlayer);
     for (let i = 0; i < notificationsData.length; i++)
     {
-      var template = app.moduleData.Templates.Notifications[notificationsData[i].templateKey];
-      var props = template.deserializeProps(notificationsData[i].props, this);
-      var notification = new Notification(template, props, notificationsData[i].turn);
+      const template = app.moduleData.Templates.Notifications[notificationsData[i].templateKey];
+      const props = template.deserializeProps(notificationsData[i].props, this);
+      const notification = new Notification(template, props, notificationsData[i].turn);
       notification.hasBeenRead = notificationsData[i].hasBeenRead;
 
       notificationLog.addNotification(notification);
@@ -175,37 +175,37 @@ export default class GameLoader
   }
   private deserializeMap(data: GalaxyMapSaveData): GalaxyMap
   {
-    var stars: Star[] = [];
+    const stars: Star[] = [];
 
     for (let i = 0; i < data.stars.length; i++)
     {
-      var star = this.deserializeStar(data.stars[i]);
+      const star = this.deserializeStar(data.stars[i]);
       stars.push(star);
       this.starsById[star.id] = star;
     }
 
     for (let i = 0; i < data.stars.length; i++)
     {
-      var dataStar = data.stars[i];
-      var realStar = this.starsById[dataStar.id];
+      const dataStar = data.stars[i];
+      const realStar = this.starsById[dataStar.id];
 
       for (let j = 0; j < dataStar.linksToIds.length; j++)
       {
-        var linkId = dataStar.linksToIds[j];
-        var linkStar = this.starsById[linkId];
+        const linkId = dataStar.linksToIds[j];
+        const linkStar = this.starsById[linkId];
         realStar.addLink(linkStar);
       }
     }
 
-    var fillerPoints: FillerPoint[] = [];
+    const fillerPoints: FillerPoint[] = [];
 
     for (let i = 0; i < data.fillerPoints.length; i++)
     {
-      var dataPoint = data.fillerPoints[i];
+      const dataPoint = data.fillerPoints[i];
       fillerPoints.push(new FillerPoint(dataPoint.x, dataPoint.y));
     }
 
-    var mapGenResult = new MapGenResult(
+    const mapGenResult = new MapGenResult(
     {
       stars: stars,
       fillerPoints: fillerPoints,
@@ -215,13 +215,13 @@ export default class GameLoader
       independents: null,
     });
 
-    var galaxyMap = mapGenResult.makeMap();
+    const galaxyMap = mapGenResult.makeMap();
 
     return galaxyMap;
   }
   private deserializeStar(data: StarSaveData): Star
   {
-    var star = new Star(
+    const star = new Star(
     {
       x: data.x,
       y: data.y,
@@ -243,15 +243,15 @@ export default class GameLoader
   {
     for (let i = 0; i < data.stars.length; i++)
     {
-      var starData = data.stars[i];
-      var star = this.starsById[starData.id];
+      const starData = data.stars[i];
+      const star = this.starsById[starData.id];
 
       for (let category in starData.buildings)
       {
         for (let j = 0; j < starData.buildings[category].length; j++)
         {
-          var buildingData = starData.buildings[category][j];
-          var building = this.deserializeBuilding(buildingData);
+          const buildingData = starData.buildings[category][j];
+          const building = this.deserializeBuilding(buildingData);
 
           star.addBuilding(building);
         }
@@ -265,8 +265,8 @@ export default class GameLoader
   }
   private deserializeBuilding(data: BuildingSaveData): Building
   {
-    var template = app.moduleData.Templates.Buildings[data.templateType];
-    var building = new Building(
+    const template = app.moduleData.Templates.Buildings[data.templateType];
+    const building = new Building(
     {
       template: template,
       location: this.starsById[data.locationId],
@@ -312,7 +312,7 @@ export default class GameLoader
     // fleets
     for (let i = 0; i < data.fleets.length; i++)
     {
-      var fleet = data.fleets[i];
+      const fleet = data.fleets[i];
       player.addFleet(this.deserializeFleet(player, fleet));
     }
 
@@ -331,7 +331,7 @@ export default class GameLoader
     // revealed stars
     for (let i = 0; i < data.revealedStarIds.length; i++)
     {
-      var id = data.revealedStarIds[i];
+      const id = data.revealedStarIds[i];
       player.revealedStars[id] = this.starsById[id];
     }
 
@@ -353,7 +353,7 @@ export default class GameLoader
     {
       for (let i = 0; i < data.metPlayerIds.length; i++)
       {
-        var id = data.metPlayerIds[i];
+        const id = data.metPlayerIds[i];
         player.diplomacyStatus.metPlayers[id] = this.playersById[id];
       }
 
@@ -361,7 +361,7 @@ export default class GameLoader
 
       for (let playerId in data.attitudeModifiersByPlayer)
       {
-        var modifiers = data.attitudeModifiersByPlayer[playerId];
+        const modifiers = data.attitudeModifiersByPlayer[playerId];
 
         if (!modifiers || modifiers.length === 0)
         {
@@ -371,8 +371,8 @@ export default class GameLoader
 
         for (let i = 0; i < modifiers.length; i++)
         {
-          var template = app.moduleData.Templates.AttitudeModifiers[modifiers[i].templateType];
-          var modifier = new AttitudeModifier(
+          const template = app.moduleData.Templates.AttitudeModifiers[modifiers[i].templateType];
+          const modifier = new AttitudeModifier(
           {
             template: template,
             startTurn: modifiers[i].startTurn,

@@ -37,7 +37,7 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var target = this.props.attackTarget;
+    const target = this.props.attackTarget;
 
     return(
       React.DOM.button(

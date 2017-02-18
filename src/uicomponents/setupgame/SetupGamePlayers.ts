@@ -49,7 +49,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
   private getInitialStateTODO(): StateType
   {
-    var players: number[] = [];
+    const players: number[] = [];
     for (let i = 0; i < this.props.maxPlayers; i++)
     {
       players.push(this.newPlayerID++);
@@ -70,7 +70,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     }
     else if (newProps.maxPlayers < this.state.playerKeys.length)
     {
-      var overflowCount = this.state.playerKeys.length - newProps.maxPlayers;
+      const overflowCount = this.state.playerKeys.length - newProps.maxPlayers;
       this.removePlayers(this.state.playerKeys.slice(-overflowCount));
     }
   }
@@ -82,7 +82,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
       return;
     }
 
-    var newIds: number[] = [];
+    const newIds: number[] = [];
 
     for (let i = 0; i < amountToMake; i++)
     {
@@ -101,9 +101,9 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
   setHumanPlayer(playerId: number)
   {
-    var index = this.state.playerKeys.indexOf(playerId);
+    const index = this.state.playerKeys.indexOf(playerId);
 
-    var newPlayerOrder = this.state.playerKeys.slice(0);
+    const newPlayerOrder = this.state.playerKeys.slice(0);
 
     newPlayerOrder.unshift(newPlayerOrder.splice(index, 1)[0]);
 
@@ -154,7 +154,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   {
     for (let id in this.playerSetupComponentsByID)
     {
-      var player = this.playerSetupComponentsByID[id];
+      const player = this.playerSetupComponentsByID[id];
 
       player.randomize();
     }
@@ -162,7 +162,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
   makeAllPlayers()
   {
-    var players: Player[] = [];
+    const players: Player[] = [];
     for (let id in this.playerSetupComponentsByID)
     {
       players.push(this.playerSetupComponentsByID[id].makePlayer());
@@ -173,7 +173,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
   render()
   {
-    var playerSetups: React.ReactElement<any>[] = [];
+    const playerSetups: React.ReactElement<any>[] = [];
     this.state.playerKeys.forEach((playerID, i) =>
     {
       playerSetups.push(PlayerSetup(
@@ -193,7 +193,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     });
 
 
-    var canAddPlayers = this.state.playerKeys.length < this.props.maxPlayers;
+    const canAddPlayers = this.state.playerKeys.length < this.props.maxPlayers;
 
     return(
       React.DOM.div({className: "setup-game-players"},

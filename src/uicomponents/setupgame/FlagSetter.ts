@@ -138,7 +138,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   }
   // handleClick(e: MouseEvent): void
   // {
-  //   var node = ReactDOM.findDOMNode<HTMLElement>(this.flagSetterContainer);
+  //   const node = ReactDOM.findDOMNode<HTMLElement>(this.flagSetterContainer);
   //   const target = <HTMLElement> e.target;
   //   if (target === node || node.contains(target))
   //   {
@@ -178,7 +178,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
   setForegroundEmblem(emblemTemplate: SubEmblemTemplate | null, color: Color): void
   {
-    var emblem: Emblem = null;
+    let emblem: Emblem = null;
     if (emblemTemplate)
     {
       emblem = new Emblem([color], emblemTemplate, 1);
@@ -250,7 +250,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
   handleUpload(files: FileList): void
   {
-    var image = getFirstValidImageFromFiles(files);
+    const image = getFirstValidImageFromFiles(files);
 
     if (image)
     {
@@ -264,9 +264,9 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
   setCustomImageFromFile(file: File): void
   {
-    var setImageFN = () =>
+    const setImageFN = () =>
     {
-      var reader = new FileReader();
+      const reader = new FileReader();
 
       reader.onloadend = () =>
       {
@@ -283,7 +283,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       reader.readAsDataURL(file);
     };
 
-    var fileSizeInMegaBytes = file.size / 1024 / 1024;
+    const fileSizeInMegaBytes = file.size / 1024 / 1024;
     if (fileSizeInMegaBytes > 20)
     {
       if (window.confirm(

@@ -32,13 +32,13 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var statusElement: React.ReactHTMLElement<any> = null;
+    let statusElement: React.ReactHTMLElement<any> = null;
 
     if (this.props.guardAmount > 0)
     {
-      var guard = this.props.guardAmount;
-      var damageReduction = Math.min(50, guard / 2);
-      var guardText = "" + guard + "% chance to protect ";
+      const guard = this.props.guardAmount;
+      const damageReduction = Math.min(50, guard / 2);
+      let guardText = "" + guard + "% chance to protect ";
       guardText += (this.props.guardCoverage === GuardCoverage.all ? "all units." : " units in same row.");
       guardText += "\n" + "This unit takes " + damageReduction + "% reduced damage from physical attacks.";
       statusElement = React.DOM.div(

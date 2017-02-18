@@ -79,13 +79,13 @@ export default class BattlePrep
   }
   public makeBattle(): Battle
   {
-    var side1Formation = this.humanFormation || this.attackerFormation;
-    var side2Formation = this.enemyFormation || this.defenderFormation;
+    const side1Formation = this.humanFormation || this.attackerFormation;
+    const side2Formation = this.enemyFormation || this.defenderFormation;
 
-    var side1Player = this.humanPlayer || this.attacker;
-    var side2Player = this.enemyPlayer || this.defender;
+    const side1Player = this.humanPlayer || this.attacker;
+    const side2Player = this.enemyPlayer || this.defender;
 
-    var battle = new Battle(
+    const battle = new Battle(
     {
       battleData: this.battleData,
       side1: side1Formation.formation,

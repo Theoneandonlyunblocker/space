@@ -79,15 +79,15 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
 
   render()
   {
-    var tradeableItems = this.props.tradeableItems;
-    var rows: ListItem<TradeableItemProps>[] = [];
+    const tradeableItems = this.props.tradeableItems;
+    const rows: ListItem<TradeableItemProps>[] = [];
 
     for (let key in tradeableItems)
     {
       rows.push(this.makeRowForTradeableItem(tradeableItems[key]));
     }
 
-    var columns: ListColumn<TradeableItemProps>[] =
+    const columns: ListColumn<TradeableItemProps>[] =
     [
       {
         label: "Item",

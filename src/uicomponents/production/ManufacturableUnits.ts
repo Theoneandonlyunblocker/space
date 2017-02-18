@@ -54,7 +54,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
 
   addUnitToBuildQueue(template: UnitTemplate)
   {
-    var manufactory: Manufactory = this.props.selectedStar.manufactory;
+    const manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.addThingToQueue(template, "unit");
     this.props.triggerUpdate();
   }
@@ -76,34 +76,65 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
 
   upgradeHealth()
   {
-    var manufactory: Manufactory = this.props.selectedStar.manufactory;
+    const manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.upgradeUnitHealthModifier(0.1);
     this.props.triggerUpdate();
   }
 
   upgradeStats()
   {
-    var manufactory: Manufactory = this.props.selectedStar.manufactory;
+    const manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.upgradeUnitStatsModifier(0.1);
     this.props.triggerUpdate();
   }
 
   render()
   {
-    if (this.props.selectedStar && this.props.selectedStar.manufactory)
-    {
-      var manufactory: Manufactory = this.props.selectedStar.manufactory;
-      var unitUpgradeCost = manufactory.getUnitUpgradeCost();
-      var canAffordUnitUpgrade = this.props.money >= unitUpgradeCost;
+    const selectedStarHasManufactory = this.props.selectedStar && this.props.selectedStar.manufactory;
 
-      var unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";
-      var unitUpgradeCostBaseClassName = "manufactory-upgrade-button-cost";
+    let manufactoryUpgradeButtons: React.ReactElement<any> = null;
+    if (selectedStarHasManufactory)
+    {
+      const manufactory: Manufactory = this.props.selectedStar.manufactory;
+      const unitUpgradeCost = manufactory.getUnitUpgradeCost();
+      const canAffordUnitUpgrade = this.props.money >= unitUpgradeCost;
+
+      let unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";
+      let unitUpgradeCostBaseClassName = "manufactory-upgrade-button-cost";
 
       if (!canAffordUnitUpgrade)
       {
         unitUpgradeButtonBaseClassName += " disabled";
         unitUpgradeCostBaseClassName += " negative";
       }
+
+      manufactoryUpgradeButtons = React.DOM.div(
+      {
+        className: "manufactory-upgrade-buttons-container",
+      },
+        ManufactoryUpgradeButton(
+        {
+          money: this.props.money,
+          upgradeCost: unitUpgradeCost,
+          actionString: "Upgrade health",
+          currentLevel: manufactory.unitHealthModifier,
+          maxLevel: 5.0,
+          levelDecimalPoints: 1,
+          onClick: this.upgradeHealth,
+          title: "Increase base health of units built here",
+        }),
+        ManufactoryUpgradeButton(
+        {
+          money: this.props.money,
+          upgradeCost: unitUpgradeCost,
+          actionString: "Upgrade stats",
+          currentLevel: manufactory.unitStatsModifier,
+          maxLevel: 5.0,
+          levelDecimalPoints: 1,
+          onClick: this.upgradeStats,
+          title: "Increase base stats of units built here",
+        }),
+      )
     }
 
     return(
@@ -111,33 +142,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
       {
         className: "manufacturable-units",
       },
-        (!this.props.selectedStar || !this.props.selectedStar.manufactory) ? null : React.DOM.div(
-        {
-          className: "manufactory-upgrade-buttons-container",
-        },
-          ManufactoryUpgradeButton(
-          {
-            money: this.props.money,
-            upgradeCost: unitUpgradeCost,
-            actionString: "Upgrade health",
-            currentLevel: manufactory.unitHealthModifier,
-            maxLevel: 5.0,
-            levelDecimalPoints: 1,
-            onClick: this.upgradeHealth,
-            title: "Increase base health of units built here",
-          }),
-          ManufactoryUpgradeButton(
-          {
-            money: this.props.money,
-            upgradeCost: unitUpgradeCost,
-            actionString: "Upgrade stats",
-            currentLevel: manufactory.unitStatsModifier,
-            maxLevel: 5.0,
-            levelDecimalPoints: 1,
-            onClick: this.upgradeStats,
-            title: "Increase base stats of units built here",
-          }),
-        ),
+        manufactoryUpgradeButtons,
         ManufacturableThingsList(
         {
           manufacturableThings: this.props.manufacturableThings,

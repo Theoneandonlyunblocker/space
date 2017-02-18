@@ -19,10 +19,10 @@ const declareWar: ObjectiveTemplate =
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,
     mapEvaluator: MapEvaluator)
   {
-    var template = declareWar;
-    var basePriority = grandStrategyAI.desireForWar;
+    const template = declareWar;
+    const basePriority = grandStrategyAI.desireForWar;
 
-    var scores:
+    const scores:
     {
       player: Player;
       score: number;

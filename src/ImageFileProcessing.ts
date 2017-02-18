@@ -2,7 +2,7 @@ export function getFirstValidImageFromFiles(files: FileList): File | null
 {
   for (let i = 0; i < files.length; i++)
   {
-    var file = files[i];
+    const file = files[i];
     if (file.type.indexOf("image") !== -1)
     {
       return file;

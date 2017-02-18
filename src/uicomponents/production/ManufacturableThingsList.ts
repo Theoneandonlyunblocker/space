@@ -27,17 +27,17 @@ export class ManufacturableThingsListComponent extends React.PureComponent<PropT
 
   render()
   {
-    var manufacturableThings: ManufacturableThing[] = this.props.manufacturableThings;
+    const manufacturableThings: ManufacturableThing[] = this.props.manufacturableThings;
 
-    var items: React.ReactElement<any>[] = [];
-    var keyByTemplateType:
+    const items: React.ReactElement<any>[] = [];
+    const keyByTemplateType:
     {
       [templateType: string]: number;
     } = {};
 
     for (let i = 0; i < manufacturableThings.length; i++)
     {
-      var templateType = manufacturableThings[i].type;
+      const templateType = manufacturableThings[i].type;
       if (!keyByTemplateType[templateType])
       {
         keyByTemplateType[templateType] = 0;

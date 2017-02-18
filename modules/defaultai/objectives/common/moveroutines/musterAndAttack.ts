@@ -13,20 +13,20 @@ export function buildingControllerFilter(target: FleetAttackTarget)
 export default function musterAndAttack(targetFilter: (target: FleetAttackTarget) => boolean,
   front: Front, afterMoveCallback: () => void)
 {
-  var shouldMoveToTarget: boolean;
+  let shouldMoveToTarget: boolean;
 
-  var unitsByLocation = front.getUnitsByLocation();
-  var fleets = front.getAssociatedFleets();
+  let unitsByLocation = front.getUnitsByLocation();
+  const fleets = front.getAssociatedFleets();
 
-  var atMuster = unitsByLocation[front.musterLocation.id] ?
+  const atMuster = unitsByLocation[front.musterLocation.id] ?
     unitsByLocation[front.musterLocation.id].length : 0;
 
 
-  var inRangeOfTarget = 0;
+  let inRangeOfTarget = 0;
 
   for (let i = 0; i < fleets.length; i++)
   {
-    var distance = fleets[i].location.getDistanceToStar(front.targetLocation);
+    const distance = fleets[i].location.getDistanceToStar(front.targetLocation);
     if (fleets[i].getMinCurrentMovePoints() >= distance)
     {
       inRangeOfTarget += fleets[i].units.length;
@@ -53,21 +53,21 @@ export default function musterAndAttack(targetFilter: (target: FleetAttackTarget
 
   }
 
-  var moveTarget = shouldMoveToTarget ? front.targetLocation : front.musterLocation;
+  const moveTarget = shouldMoveToTarget ? front.targetLocation : front.musterLocation;
 
 
-  var finishAllMoveFN = function()
+  const finishAllMoveFN = function()
   {
     unitsByLocation = front.getUnitsByLocation();
-    var atTarget = unitsByLocation[front.targetLocation.id] ?
+    const atTarget = unitsByLocation[front.targetLocation.id] ?
       unitsByLocation[front.targetLocation.id].length : 0;
 
     if (atTarget >= front.minUnitsDesired)
     {
-      var star = front.targetLocation;
-      var player = front.units[0].fleet.player;
+      const star = front.targetLocation;
+      const player = front.units[0].fleet.player;
 
-      var attackTargets = star.getTargetsForPlayer(player);
+      const attackTargets = star.getTargetsForPlayer(player);
 
       const target = targetFilter ?
         attackTargets.filter(targetFilter)[0] :
@@ -81,8 +81,8 @@ export default function musterAndAttack(targetFilter: (target: FleetAttackTarget
     }
   };
 
-  var finishedMovingCount = 0;
-  var finishFleetMoveFN = function()
+  let finishedMovingCount = 0;
+  const finishFleetMoveFN = function()
   {
     finishedMovingCount++;
     if (finishedMovingCount >= fleets.length)

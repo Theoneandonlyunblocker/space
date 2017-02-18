@@ -22,7 +22,7 @@ export class UnitPortraitComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var props: React.HTMLAttributes = {};
+    const props: React.HTMLAttributes = {};
     props.className = "unit-portrait " + (this.props.className || "");
     if (this.props.imageSrc)
     {

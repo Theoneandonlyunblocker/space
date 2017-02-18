@@ -105,7 +105,7 @@ export default class Renderer
 
     if (!this.renderer)
     {
-      var containerStyle = window.getComputedStyle(this.pixiContainer);
+      const containerStyle = window.getComputedStyle(this.pixiContainer);
       this.renderer = PIXI.autoDetectRenderer(
         parseInt(containerStyle.width),
         parseInt(containerStyle.height),
@@ -151,7 +151,7 @@ export default class Renderer
   }
   addCamera()
   {
-    var oldToCenterOn: Point;
+    let oldToCenterOn: Point;
 
     if (this.mouseEventHandler) this.mouseEventHandler.destroy();
     if (this.camera)
@@ -169,35 +169,35 @@ export default class Renderer
   }
   addEventListeners()
   {
-    var self = this;
+    const self = this;
 
-    var main = this.stage;
+    const main = this.stage;
     main.interactive = true;
 
     main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
 
-    var mainMouseDownFN = function(event: PIXI.interaction.InteractionEvent)
+    const mainMouseDownFN = function(event: PIXI.interaction.InteractionEvent)
     {
       if (event.target !== main) return;
       self.mouseEventHandler.mouseDown(event);
     };
-    var mainMouseMoveFN = function(event: PIXI.interaction.InteractionEvent)
+    const mainMouseMoveFN = function(event: PIXI.interaction.InteractionEvent)
     {
       if (event.target !== main) return;
       self.mouseEventHandler.mouseMove(event);
     };
-    var mainMouseUpFN = function(event: PIXI.interaction.InteractionEvent)
+    const mainMouseUpFN = function(event: PIXI.interaction.InteractionEvent)
     {
       if (event.target !== main) return;
       self.mouseEventHandler.mouseUp(event);
     };
-    var mainMouseUpOutsideFN = function(event: PIXI.interaction.InteractionEvent)
+    const mainMouseUpOutsideFN = function(event: PIXI.interaction.InteractionEvent)
     {
       if (event.target !== main) return;
       self.mouseEventHandler.mouseUp(event);
     };
 
-    var mainListeners =
+    const mainListeners =
     {
       mousedown: mainMouseDownFN,
       rightdown: mainMouseDownFN,
@@ -221,8 +221,8 @@ export default class Renderer
   {
     if (this.renderer && document.body.contains(this.renderer.view))
     {
-      var w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
-      var h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
+      const w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
+      const h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
       this.renderer.resize(w, h);
 
       this.backgroundDrawer.handleResize();

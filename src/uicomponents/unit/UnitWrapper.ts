@@ -24,7 +24,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
 
   //   if (newProps.unit && newProps.unit.uiDisplayIsDirty) return true;
 
-  //   var targetedProps =
+  //   const targetedProps =
   //   {
   //     activeUnit: true,
   //     hoveredUnit: true,
@@ -45,9 +45,9 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
   //   }
   //   for (let prop in targetedProps)
   //   {
-  //     var unit = newProps.unit;
-  //     var oldValue = this.props[prop];
-  //     var newValue = newProps[prop];
+  //     const unit = newProps.unit;
+  //     const oldValue = this.props[prop];
+  //     const newValue = newProps[prop];
 
   //     if (!newValue && !oldValue) continue;
 
@@ -84,7 +84,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    // var wrapperProps: React.HTMLAttributes =
+    // const wrapperProps: React.HTMLAttributes =
     // {
     //   className: "unit-wrapper drop-target"
     // };

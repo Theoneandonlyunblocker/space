@@ -80,11 +80,11 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
   private makeCell(type: string)
   {
-    var cellProps: React.HTMLProps<HTMLTableCellElement> = {};
+    const cellProps: React.HTMLProps<HTMLTableCellElement> = {};
     cellProps.key = type;
     cellProps.className = "item-list-item-cell" + " item-list-" + type;
 
-    var cellContent: string | number;
+    let cellContent: string | number;
 
     switch (type)
     {
@@ -121,7 +121,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
   private makeDragClone()
   {
-    var clone = new Image();
+    const clone = new Image();
     clone.src = this.props.item.template.icon;
     clone.className = "item-icon-base draggable dragging";
 
@@ -130,18 +130,18 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var columns = this.props.activeColumns;
+    const columns = this.props.activeColumns;
 
-    var cells: React.ReactElement<any>[] = [];
+    const cells: React.ReactElement<any>[] = [];
 
     for (let i = 0; i < columns.length; i++)
     {
-      var cell = this.makeCell(columns[i].key);
+      const cell = this.makeCell(columns[i].key);
 
       cells.push(cell);
     }
 
-    var rowProps: React.HTMLAttributes =
+    const rowProps: React.HTMLAttributes =
     {
       className: "item-list-item",
       onClick : this.props.handleClick,

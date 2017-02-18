@@ -53,7 +53,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   }
   upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
   {
-    var unit = this.props.unit;
+    const unit = this.props.unit;
     unit.upgradeAbility(source, newAbility);
     unit.handleLevelUp();
     this.setState(
@@ -65,7 +65,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   }
   upgradeAttribute(attribute: string)
   {
-    var unit = this.props.unit;
+    const unit = this.props.unit;
 
     unit.baseAttributes[attribute] += 1;
     unit.attributesAreDirty = true;
@@ -75,8 +75,8 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   }
   makeAbilityLearnPopup(ability: AbilityBase)
   {
-    var upgradeData = this.state.upgradeData[ability.type];
-    var popupId = this.popupManager.makePopup(
+    const upgradeData = this.state.upgradeData[ability.type];
+    const popupId = this.popupManager.makePopup(
     {
       content: TopMenuPopup(
       {
@@ -114,8 +114,8 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   }
   render()
   {
-    var unit = this.props.unit;
-    var upgradableAbilities: AbilityBase[] = [];
+    const unit = this.props.unit;
+    const upgradableAbilities: AbilityBase[] = [];
 
     for (let source in this.state.upgradeData)
     {

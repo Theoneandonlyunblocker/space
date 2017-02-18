@@ -54,13 +54,13 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var rows: React.ReactHTMLElement<any>[] = [];
+    const rows: React.ReactHTMLElement<any>[] = [];
 
     if (!this.state.isCollapsed)
     {
       for (let i = 0; i < this.props.options.length; i++)
       {
-        var option = this.props.options[i];
+        const option = this.props.options[i];
 
         rows.push(React.DOM.div(
         {
@@ -72,7 +72,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
       }
     }
 
-    var resetButton: React.ReactHTMLElement<any> = null;
+    let resetButton: React.ReactHTMLElement<any> = null;
     if (this.props.resetFN)
     {
       resetButton = React.DOM.button(
@@ -82,7 +82,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
       }, "reset");
     }
 
-    var header = this.props.header || resetButton ?
+    const header = this.props.header || resetButton ?
       React.DOM.div(
       {
         className: "option-group-header",

@@ -93,8 +93,8 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
 
   flipPage(amount: number)
   {
-    var lastPage = this.props.pages.length - 1;
-    var newPage = this.state.currentPageIndex + amount;
+    const lastPage = this.props.pages.length - 1;
+    let newPage = this.state.currentPageIndex + amount;
     newPage = clamp(newPage, 0, lastPage);
 
     this.handleLeavePage(this.props.pages[this.state.currentPageIndex]);
@@ -115,8 +115,8 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var hasBackArrow = this.state.currentPageIndex > 0;
-    var backElement: React.ReactHTMLElement<any>;
+    const hasBackArrow = this.state.currentPageIndex > 0;
+    let backElement: React.ReactHTMLElement<any>;
     if (hasBackArrow)
     {
       backElement = React.DOM.div(
@@ -133,8 +133,8 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
       });
     }
 
-    var hasForwardArrow = this.state.currentPageIndex < this.props.pages.length - 1;
-    var forwardElement: React.ReactHTMLElement<any>;
+    const hasForwardArrow = this.state.currentPageIndex < this.props.pages.length - 1;
+    let forwardElement: React.ReactHTMLElement<any>;
     if (hasForwardArrow)
     {
       forwardElement = React.DOM.div(

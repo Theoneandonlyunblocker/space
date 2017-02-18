@@ -36,26 +36,26 @@ const discovery: ObjectiveTemplate =
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,
     mapEvaluator: MapEvaluator)
   {
-    var scores:
+    const scores:
     {
       star: Star;
       score: number;
     }[] = [];
-    var starsWithDistance:
+    const starsWithDistance:
     {
       [starId: number]: number;
     } = {};
 
-    var linksToUnrevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
+    const linksToUnrevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
 
-    var minDistance: number;
-    var maxDistance: number;
+    let minDistance: number;
+    let maxDistance: number;
 
     for (let starId in linksToUnrevealedStars)
     {
-      var star = mapEvaluator.player.revealedStars[starId];
-      var nearest = mapEvaluator.player.getNearestOwnedStarTo(star);
-      var distance = star.getDistanceToStar(nearest);
+      const star = mapEvaluator.player.revealedStars[starId];
+      const nearest = mapEvaluator.player.getNearestOwnedStarTo(star);
+      const distance = star.getDistanceToStar(nearest);
       starsWithDistance[starId] = distance;
 
       if (!isFinite(minDistance))
@@ -78,17 +78,16 @@ const discovery: ObjectiveTemplate =
 
     for (let starId in linksToUnrevealedStars)
     {
-      var star = mapEvaluator.player.revealedStars[starId];
-      var score = 0;
+      const star = mapEvaluator.player.revealedStars[starId];
+      let score = 0;
 
-      var relativeDistance = getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
-      var distanceMultiplier = 0.3 + 0.7 * relativeDistance;
+      const relativeDistance = getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
+      const distanceMultiplier = 0.3 + 0.7 * relativeDistance;
 
-      var linksScore = linksToUnrevealedStars[starId].length * 20;
+      const linksScore = linksToUnrevealedStars[starId].length * 20;
       score += linksScore;
 
-      var desirabilityScore = mapEvaluator.evaluateIndividualStarDesirability(star);
-      desirabilityScore *= distanceMultiplier;
+      const desirabilityScore = mapEvaluator.evaluateIndividualStarDesirability(star) * distanceMultiplier;
       score += desirabilityScore;
 
       score *= distanceMultiplier;
@@ -100,7 +99,7 @@ const discovery: ObjectiveTemplate =
       });
     }
 
-    var template = discovery;
+    const template = discovery;
 
     return makeObjectivesFromScores(template, scores, 0.5);
   },

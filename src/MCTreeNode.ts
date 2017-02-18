@@ -60,13 +60,13 @@ export default class MCTreeNode
     {
       return [];
     }
-    var targets = getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
+    const targets = getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
 
-    var actions: Move[] = [];
+    const actions: Move[] = [];
 
     for (let id in targets)
     {
-      var targetActions = targets[id];
+      const targetActions = targets[id];
       for (let i = 0; i < targetActions.length; i++)
       {
         if (!this.isBetweenAI || !targetActions[i].disableInAIBattles)
@@ -89,18 +89,20 @@ export default class MCTreeNode
       this.possibleMoves = this.getPossibleMoves();
     }
 
+    let move: Move;
+
     if (isFinite(possibleMovesIndex))
     {
-      var move = this.possibleMoves.splice(possibleMovesIndex, 1)[0];
+      move = this.possibleMoves.splice(possibleMovesIndex, 1)[0];
     }
     else
     {
-      var move = this.possibleMoves.pop();
+      move = this.possibleMoves.pop();
     }
 
-    var battle = this.battle.makeVirtualClone();
+    const battle = this.battle.makeVirtualClone();
 
-    var child = new MCTreeNode(battle, move);
+    const child = new MCTreeNode(battle, move);
     child.parent = this;
     child.depth = this.depth + 1;
     this.children.push(child);
@@ -117,7 +119,7 @@ export default class MCTreeNode
   {
     for (let i = 0; i < this.children.length; i++)
     {
-      var child = this.children[i];
+      const child = this.children[i];
       if (child.move.targetId === move.targetId &&
         child.move.ability.type === move.ability.type)
       {
@@ -132,7 +134,7 @@ export default class MCTreeNode
 
     for (let i = 0; i < this.possibleMoves.length; i++)
     {
-      var possibleMove = this.possibleMoves[i];
+      const possibleMove = this.possibleMoves[i];
       if (possibleMove.targetId === move.targetId &&
         possibleMove.ability.type === move.ability.type)
       {
@@ -141,7 +143,7 @@ export default class MCTreeNode
     }
 
     return null;
-    // var currId = this.battle.activeUnit.id;
+    // const currId = this.battle.activeUnit.id;
     // throw new Error("Tried to fetch child node for impossible move " +
     //   currId + ": " + move.ability.type + " -> " + move.targetId);
   }
@@ -167,22 +169,22 @@ export default class MCTreeNode
   }
   pickRandomAbilityAndTarget(actions: {[targetId: number]: AbilityTemplate[]})
   {
-    var prioritiesByAbilityAndTarget:
+    const prioritiesByAbilityAndTarget:
     {
       [targetIdAndAbilityType: string]: number;
     } = {};
     for (let targetId in actions)
     {
-      var abilities = actions[targetId];
+      const abilities = actions[targetId];
       for (let i = 0; i < abilities.length; i++)
       {
-        var priority = isFinite(abilities[i].AIEvaluationPriority) ? abilities[i].AIEvaluationPriority : 1;
+        const priority = isFinite(abilities[i].AIEvaluationPriority) ? abilities[i].AIEvaluationPriority : 1;
         prioritiesByAbilityAndTarget["" + targetId + ":" + abilities[i].type] = priority;
       }
     }
 
-    var selected = getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
-    var separatorIndex = selected.indexOf(":");
+    const selected = getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
+    const separatorIndex = selected.indexOf(":");
 
     return(
     {
@@ -192,19 +194,19 @@ export default class MCTreeNode
   }
   simulateOnce(battle: Battle): void
   {
-    var actions = getTargetsForAllAbilities(battle, battle.activeUnit);
+    const actions = getTargetsForAllAbilities(battle, battle.activeUnit);
 
-    var targetData = this.pickRandomAbilityAndTarget(actions);
+    const targetData = this.pickRandomAbilityAndTarget(actions);
 
-    var ability = app.moduleData.Templates.Abilities[targetData.abilityType];
-    var target = battle.unitsById[targetData.targetId];
+    const ability = app.moduleData.Templates.Abilities[targetData.abilityType];
+    const target = battle.unitsById[targetData.targetId];
 
     useAbility(battle, ability, battle.activeUnit, target);
     battle.endTurn();
   }
   simulateToEnd(): void
   {
-    var battle = this.battle.makeVirtualClone();
+    const battle = this.battle.makeVirtualClone();
 
     while (!battle.ended)
     {
@@ -222,11 +224,11 @@ export default class MCTreeNode
   }
   getCombinedScore(): number
   {
-    var sign = this.sideId === "side1" ? 1 : -1;
+    const sign = this.sideId === "side1" ? 1 : -1;
 
-    var baseScore = this.averageScore * sign / 2;
-    var winRate = this.winRate;
-    var aiAdjust = this.move.ability.AIScoreAdjust || 0;
+    const baseScore = this.averageScore * sign / 2;
+    const winRate = this.winRate;
+    const aiAdjust = this.move.ability.AIScoreAdjust || 0;
 
     return (baseScore + winRate) + aiAdjust * 1.5;
   }
@@ -250,10 +252,10 @@ export default class MCTreeNode
   }
   getHighestUctChild(): MCTreeNode
   {
-    var highest = this.children[0];
+    let highest = this.children[0];
     for (let i = 0; i < this.children.length; i++)
     {
-      var child = this.children[i];
+      const child = this.children[i];
       if (child.uctIsDirty)
       {
         child.setUct();

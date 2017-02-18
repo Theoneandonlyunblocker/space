@@ -133,7 +133,7 @@ export class Flag
   // {
   //   if (!this._reactMarkup)
   //   {
-  //     var tempContainer = document.createElement("div");
+  //     const tempContainer = document.createElement("div");
   //     tempContainer.appendChild(this.drawSvg());
 
   //     this._reactMarkup =
@@ -148,7 +148,7 @@ export class Flag
   // {
   //   if (!this._renderedSvg)
   //   {
-  //     var container = document.createElement("div");
+  //     const container = document.createElement("div");
   //     container.classList.add("player-flag");
   //     container.style.backgroundColor = "#" + hexToString(this.mainColor);
 

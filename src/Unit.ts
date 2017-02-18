@@ -422,7 +422,7 @@ export default class Unit
   }
   public updateStatusEffects(): void
   {
-    for (var i = this.battleStats.statusEffects.length - 1; i >= 0; i--)
+    for (let i = this.battleStats.statusEffects.length - 1; i >= 0; i--)
     {
       const statusEffect = this.battleStats.statusEffects[i];
 
@@ -450,7 +450,7 @@ export default class Unit
   }
   public interruptQueuedAction(interruptStrength: number)
   {
-    var action = this.battleStats.queuedAction;
+    const action = this.battleStats.queuedAction;
     if (!action)
     {
       return;
@@ -466,7 +466,7 @@ export default class Unit
   }
   public updateQueuedAction()
   {
-    var action = this.battleStats.queuedAction;
+    const action = this.battleStats.queuedAction;
     if (!action)
     {
       return;
@@ -478,7 +478,7 @@ export default class Unit
   }
   public isReadyToUseQueuedAction()
   {
-    var action = this.battleStats.queuedAction;
+    const action = this.battleStats.queuedAction;
 
     return (action && action.turnsPrepared >= action.ability.preparation.turnsToPrep);
   }
@@ -520,7 +520,7 @@ export default class Unit
   }
   // public addItem(item: Item, index: number)
   // {
-  //   var itemSlot = item.template.slot;
+  //   const itemSlot = item.template.slot;
 
   //   if (!this.items.hasSlotForItem(item))
   //   {
@@ -546,7 +546,7 @@ export default class Unit
   // }
   // public removeItem(item: Item)
   // {
-  //   var itemSlot = item.template.slot;
+  //   const itemSlot = item.template.slot;
 
   //   if (!this.items.hasItem(item))
   //   {
@@ -593,7 +593,7 @@ export default class Unit
   }
   private removeStatusEffect(statusEffect: StatusEffect)
   {
-    var index = this.battleStats.statusEffects.indexOf(statusEffect);
+    const index = this.battleStats.statusEffects.indexOf(statusEffect);
     if (index === -1)
     {
       throw new Error("Tried to remove status effect not active on unit " + this.name);
@@ -657,7 +657,7 @@ export default class Unit
   }
   public getAllPassiveSkills(): PassiveSkillTemplate[]
   {
-    var allSkills: PassiveSkillTemplate[] = [];
+    let allSkills: PassiveSkillTemplate[] = [];
 
     allSkills = allSkills.concat(this.passiveSkills);
     allSkills = allSkills.concat(this.items.getPassiveSkills());
@@ -666,13 +666,13 @@ export default class Unit
   }
   private updatePassiveSkillsByPhase(): void
   {
-    var updatedSkills = {};
+    const updatedSkills = {};
 
-    var allSkills = this.getAllPassiveSkills();
+    const allSkills = this.getAllPassiveSkills();
 
     for (let i = 0; i < allSkills.length; i++)
     {
-      var skill = allSkills[i];
+      const skill = allSkills[i];
       ["atBattleStart", "atTurnStart", "inBattlePrep"].forEach(function(phase)
       {
         if (skill[phase])
@@ -750,7 +750,7 @@ export default class Unit
   public removeFromPlayer()
   {
     const fleet = this.fleet;
-    var player = fleet.player;
+    const player = fleet.player;
 
     this.items.destroyAllItems();
     player.removeUnit(this);
@@ -771,7 +771,7 @@ export default class Unit
   }
   public transferToPlayer(newPlayer: Player)
   {
-    var location = this.fleet.location;
+    const location = this.fleet.location;
 
     this.removeFromPlayer();
 
@@ -827,18 +827,18 @@ export default class Unit
   }
   public getHealingForGameTurnStart(): number
   {
-    var location = this.fleet.location;
+    const location = this.fleet.location;
 
-    var baseHealFactor = 0.05;
-    var healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
+    const baseHealFactor = 0.05;
+    const healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
 
-    var healAmount = this.maxHealth * healingFactor;
+    const healAmount = this.maxHealth * healingFactor;
 
     return healAmount;
   }
   public getTotalCost()
   {
-    var totalCost = 0;
+    let totalCost = 0;
     totalCost += this.template.buildCost;
     totalCost += this.items.getAllItems().map(item =>
     {
@@ -852,8 +852,8 @@ export default class Unit
   }
   public getTurnsToReachStar(star: Star)
   {
-    var currentLocation = this.fleet.location;
-    var distance = currentLocation.getDistanceToStar(star);
+    const currentLocation = this.fleet.location;
+    let distance = currentLocation.getDistanceToStar(star);
     if (distance <= this.currentMovePoints)
     {
       if (this.currentMovePoints === 0)
@@ -1000,17 +1000,17 @@ export default class Unit
   }
   public upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
   {
-    var newAbilityIsPassiveSkill = !newAbility.mainEffect;
+    const newAbilityIsPassiveSkill = !newAbility.mainEffect;
     if (source)
     {
-      var sourceIsPassiveSkill = !source.mainEffect;
+      const sourceIsPassiveSkill = !source.mainEffect;
       if (sourceIsPassiveSkill)
       {
         this.passiveSkills.splice(this.passiveSkills.indexOf(source), 1);
       }
       else
       {
-        var castedSource = <AbilityTemplate> source;
+        const castedSource = <AbilityTemplate> source;
         this.abilities.splice(this.abilities.indexOf(castedSource), 1);
       }
     }
@@ -1021,7 +1021,7 @@ export default class Unit
     }
     else
     {
-      var castedNewAbility = <AbilityTemplate> newAbility;
+      const castedNewAbility = <AbilityTemplate> newAbility;
       this.abilities.push(castedNewAbility);
     }
   }
@@ -1055,7 +1055,7 @@ export default class Unit
   }
   public serialize(): UnitSaveData
   {
-    var battleStatsSavedData: UnitBattleStatsSaveData =
+    const battleStatsSavedData: UnitBattleStatsSaveData =
     {
       moveDelay: this.battleStats.moveDelay,
       side: this.battleStats.side,
@@ -1078,7 +1078,7 @@ export default class Unit
       isAnnihilated: this.battleStats.isAnnihilated,
     };
 
-    var data: UnitSaveData =
+    const data: UnitSaveData =
     {
       templateType: this.template.type,
       id: this.id,

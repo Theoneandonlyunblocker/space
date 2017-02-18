@@ -79,7 +79,7 @@ export default class BattleSceneUnit
   {
     if (this.activeUnit)
     {
-      var duration = SFXTemplate.duration * Options.battleAnimationTiming.effectDuration;
+      const duration = SFXTemplate.duration * Options.battleAnimationTiming.effectDuration;
       if (this.activeUnit === user && SFXTemplate.userSprite)
       {
         this.setSFXSprite(SFXTemplate.userSprite, duration);
@@ -173,7 +173,7 @@ export default class BattleSceneUnit
 
   private startUnitSpriteEnter(unit: Unit)
   {
-    var enterAnimationDuration = Options.battleAnimationTiming.unitEnter;
+    const enterAnimationDuration = Options.battleAnimationTiming.unitEnter;
     if (enterAnimationDuration <= 0)
     {
       this.enterUnitSpriteWithoutAnimation(unit);
@@ -201,7 +201,7 @@ export default class BattleSceneUnit
   }
   private startUnitSpriteExit()
   {
-    var exitAnimationDuration = Options.battleAnimationTiming.unitExit;
+    const exitAnimationDuration = Options.battleAnimationTiming.unitExit;
     if (exitAnimationDuration <= 0)
     {
       this.exitUnitSpriteWithoutAnimation();
@@ -234,7 +234,7 @@ export default class BattleSceneUnit
     triggerEnd?: () => void;
   }): SFXParams
   {
-    var bounds = this.getSceneBounds();
+    const bounds = this.getSceneBounds();
 
     return(
     {
@@ -253,12 +253,12 @@ export default class BattleSceneUnit
   {
     // TODO battle scene | This & unit drawing FN rely on overly fiddly positioning.
     // This function might not work properly with other drawing functions.
-    var sceneBounds = this.getSceneBounds();
-    var shouldReverse = this.activeUnit.battleStats.side === "side2";
+    const sceneBounds = this.getSceneBounds();
+    const shouldReverse = this.activeUnit.battleStats.side === "side2";
 
-    var containerBounds = this.spriteContainer.getLocalBounds();
-    var xPadding = 25;
-    var yPadding = 40;
+    const containerBounds = this.spriteContainer.getLocalBounds();
+    const xPadding = 25;
+    const yPadding = 40;
 
     this.spriteContainer.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
 
@@ -300,7 +300,7 @@ export default class BattleSceneUnit
   private setUnitSprite(unit: Unit)
   {
     this.clearUnitSprite();
-    var SFXParams = this.getSFXParams(
+    const SFXParams = this.getSFXParams(
     {
       unit: unit,
       triggerStart: this.addUnitSprite.bind(this),
@@ -320,25 +320,25 @@ export default class BattleSceneUnit
   }
   private makeEnterExitTween(direction: "enter" | "exit", duration: number, onComplete: () => void)
   {
-    var side = this.activeUnit.battleStats.side;
-    var container = this.spriteContainer;
-    var bounds = container.getBounds();
+    const side = this.activeUnit.battleStats.side;
+    const container = this.spriteContainer;
+    const bounds = container.getBounds();
 
-    var distanceToMove = bounds.width * 1.25;
+    let distanceToMove = bounds.width * 1.25;
     if (side === "side2")
     {
       distanceToMove *= -1;
     }
-    var offscreenLocation = container.x - distanceToMove;
-    var stationaryLocation = container.x;
+    const offscreenLocation = container.x - distanceToMove;
+    const stationaryLocation = container.x;
 
-    var startX = direction === "enter" ? offscreenLocation : stationaryLocation;
-    var finishX = direction === "enter" ? stationaryLocation : offscreenLocation;
+    const startX = direction === "enter" ? offscreenLocation : stationaryLocation;
+    const finishX = direction === "enter" ? stationaryLocation : offscreenLocation;
 
     container.x = startX;
 
     const tweeningObject = {x: startX};
-    var tween = new TWEEN.Tween(tweeningObject).to(
+    const tween = new TWEEN.Tween(tweeningObject).to(
     {
       x: finishX,
     }, duration).onStart(() =>
@@ -355,7 +355,7 @@ export default class BattleSceneUnit
   private setSFXSprite(spriteDrawingFN: (props: SFXParams) => void, duration: number)
   {
     this.clearUnitSprite();
-    var SFXParams = this.getSFXParams(
+    const SFXParams = this.getSFXParams(
     {
       unit: this.activeUnit,
       duration: duration,

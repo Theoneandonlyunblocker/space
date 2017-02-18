@@ -72,7 +72,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     this.cachedPopupRects[popupType] = popupNode.getBoundingClientRect();
 
     this.popupManager.closePopup(this.state[popupType]);
-    var stateObj: StateType = {};
+    const stateObj: StateType = {};
     stateObj[popupType] = undefined;
     this.setState(stateObj);
 
@@ -84,8 +84,8 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
 
   makePopup(popupType: string)
   {
-    var contentConstructor: React.Factory<any>;
-    var contentProps: any;
+    let contentConstructor: React.Factory<any>;
+    let contentProps: any;
     const popupProps: CustomPopupProps =
     {
       resizable: true,
@@ -187,7 +187,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       }
     }
 
-    var id = this.popupManager.makePopup(
+    const id = this.popupManager.makePopup(
     {
       content: TopMenuPopup(
       {
@@ -197,7 +197,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       popupProps: popupProps,
     });
 
-    var stateObj: StateType = {};
+    const stateObj: StateType = {};
     stateObj[popupType] = id;
     this.setState(stateObj);
   }

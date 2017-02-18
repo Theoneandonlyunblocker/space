@@ -54,7 +54,7 @@ export default class ProtonWrapper
 
   private initProtonRenderer()
   {
-    var renderer = this.protonRenderer = new Proton.Renderer("other", this.proton);
+    const renderer = this.protonRenderer = new Proton.Renderer("other", this.proton);
 
     renderer.onParticleCreated = this.onProtonParticleCreated.bind(this);
     renderer.onParticleUpdate = this.onProtonParticleUpdated.bind(this);
@@ -65,12 +65,12 @@ export default class ProtonWrapper
 
   private onProtonParticleCreated(particle: Proton.Particle)
   {
-    var sprite = new PIXI.Sprite(particle.target);
+    const sprite = new PIXI.Sprite(particle.target);
     sprite.anchor.x = 0.5;
     sprite.anchor.y = 0.5;
     particle.sprite = sprite;
-    var emitter = <Proton.Emitter> particle.parent;
-    var emitterKey = this.emitterKeysByID[emitter.id];
+    const emitter = <Proton.Emitter> particle.parent;
+    const emitterKey = this.emitterKeysByID[emitter.id];
     if (this.onSpriteCreated[emitterKey])
     {
       this.onSpriteCreated[emitterKey](sprite);
@@ -121,7 +121,7 @@ export default class ProtonWrapper
   }
   public removeEmitterWithKey(key: string)
   {
-    var emitter = this.emitters[key];
+    const emitter = this.emitters[key];
 
     this.destroyEmitter(emitter);
 

@@ -40,10 +40,10 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
   }
   render()
   {
-    var playerTechnology = this.props.playerTechnology;
+    const playerTechnology = this.props.playerTechnology;
 
-    var researchSpeed = playerTechnology.getResearchSpeed();
-    var rows: React.ReactElement<any>[] = [];
+    const researchSpeed = playerTechnology.getResearchSpeed();
+    const rows: React.ReactElement<any>[] = [];
 
     for (let key in playerTechnology.technologies)
     {

@@ -21,8 +21,8 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
 
   handleChange(e: React.FormEvent)
   {
-    var target = <HTMLInputElement> e.target;
-    var value = target.value;
+    const target = <HTMLInputElement> e.target;
+    const value = target.value;
     this.props.mapRenderer.setMapModeByKey(value);
 
     if (this.props.onUpdate)
@@ -47,12 +47,12 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
 
   makeOptions()
   {
-    var mapRenderer = this.props.mapRenderer;
-    var options: React.ReactHTMLElement<any>[] = [];
+    const mapRenderer = this.props.mapRenderer;
+    const options: React.ReactHTMLElement<any>[] = [];
 
     for (let key in mapRenderer.mapModes)
     {
-      var mapMode = mapRenderer.mapModes[key];
+      const mapMode = mapRenderer.mapModes[key];
       options.push(React.DOM.option(
       {
         value: key,
@@ -68,7 +68,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
 
   render()
   {
-    var mapRenderer = this.props.mapRenderer;
+    const mapRenderer = this.props.mapRenderer;
 
     return(
       React.DOM.select(

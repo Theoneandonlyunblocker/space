@@ -18,8 +18,8 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
   displayName: string = "DefenceBuildingList";
   shouldComponentUpdate(newProps: PropTypes)
   {
-    var newBuildings = newProps.buildings;
-    var oldBuildings = this.props.buildings;
+    const newBuildings = newProps.buildings;
+    const oldBuildings = this.props.buildings;
     if (newBuildings.length !== oldBuildings.length) return true;
     else
     {
@@ -42,7 +42,7 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
   {
     if (!this.props.buildings) return null;
 
-    var buildings: React.ReactElement<any>[] = [];
+    const buildings: React.ReactElement<any>[] = [];
 
     for (let i = 0; i < this.props.buildings.length; i++)
     {

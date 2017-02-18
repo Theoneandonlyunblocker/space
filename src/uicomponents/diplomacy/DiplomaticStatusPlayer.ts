@@ -94,18 +94,18 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
 
   render()
   {
-    var columns = this.props.activeColumns;
+    const columns = this.props.activeColumns;
 
-    var cells: React.ReactHTMLElement<any>[] = [];
+    const cells: React.ReactHTMLElement<any>[] = [];
 
     for (let i = 0; i < columns.length; i++)
     {
-      var cell = this.makeCell(columns[i].key);
+      const cell = this.makeCell(columns[i].key);
 
       cells.push(cell);
     }
 
-    var rowProps =
+    const rowProps =
     {
       className: "diplomatic-status-player",
       onClick : this.props.handleClick,

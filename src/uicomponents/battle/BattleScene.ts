@@ -64,7 +64,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var componentToRender: React.ReactElement<any>;
+    let componentToRender: React.ReactElement<any>;
 
     switch (this.props.battleState)
     {

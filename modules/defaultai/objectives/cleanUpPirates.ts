@@ -36,9 +36,9 @@ const cleanUpPirates: ObjectiveTemplate =
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,
     mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI)
   {
-    var basePriority = grandStrategyAI.desireForExpansion;
+    const basePriority = grandStrategyAI.desireForExpansion;
 
-    var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function(star: Star)
+    const ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function(star: Star)
     {
       if (star.getSecondaryController)
       {
@@ -50,11 +50,11 @@ const cleanUpPirates: ObjectiveTemplate =
       }
     });
 
-    var evaluations = mapEvaluator.evaluateStarTargets(ownedStarsWithPirates);
-    var scores = mapEvaluator.scoreIndependentTargets(evaluations);
+    const evaluations = mapEvaluator.evaluateStarTargets(ownedStarsWithPirates);
+    const scores = mapEvaluator.scoreIndependentTargets(evaluations);
     const zippedScores = scores.zip<{star: Star, score: number}>("star", "score");
 
-    var template = cleanUpPirates;
+    const template = cleanUpPirates;
 
     return makeObjectivesFromScores(template, zippedScores, basePriority);
   },

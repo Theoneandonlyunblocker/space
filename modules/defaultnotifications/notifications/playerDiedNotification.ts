@@ -26,7 +26,7 @@ const playerDiedNotification: NotificationTemplate =
   contentConstructor: UIComponent,
   messageConstructor: function(props: PropTypes)
   {
-    var message = "Player " + props.deadPlayerName + " died";
+    const message = "Player " + props.deadPlayerName + " died";
 
     return message;
   },

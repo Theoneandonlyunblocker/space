@@ -85,7 +85,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
   getActiveTrade(player?: string)
   {
-    var playerStringToUse = player || this.state.currentDragItemPlayer;
+    const playerStringToUse = player || this.state.currentDragItemPlayer;
     if (playerStringToUse === "self")
     {
       return this.selfPlayerTrade;
@@ -99,10 +99,10 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
   handleStageItem(player: "self" | "other", key: string)
   {
-    var activeTrade = this.getActiveTrade(player);
+    const activeTrade = this.getActiveTrade(player);
 
-    var availableItems = activeTrade.getItemsAvailableForTrade();
-    var availableAmount = availableItems[key].amount;
+    const availableItems = activeTrade.getItemsAvailableForTrade();
+    const availableAmount = availableItems[key].amount;
 
     if (availableAmount === 1)
     {
@@ -122,7 +122,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
   handleAdjustStagedItemAmount(player: "self" | "other", key: string, newAmount: number)
   {
-    var activeTrade = this.getActiveTrade(player);
+    const activeTrade = this.getActiveTrade(player);
     {
       activeTrade.setStagedItemAmount(key, newAmount);
     }
@@ -132,7 +132,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
   handleRemoveStagedItem(player: "self" | "other", key: string)
   {
-    var activeTrade = this.getActiveTrade(player);
+    const activeTrade = this.getActiveTrade(player);
     activeTrade.removeStagedItem(key);
 
     if (!this.state.currentDragItemPlayer)
@@ -187,11 +187,11 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
   render()
   {
-    var hasDragItem = Boolean(this.state.currentDragItemPlayer);
-    var selfPlayerAcceptsDrop = this.state.currentDragItemPlayer === "self";
-    var otherPlayerAcceptsDrop = this.state.currentDragItemPlayer === "other";
-    var selfAvailableItems = this.selfPlayerTrade.getItemsAvailableForTrade();
-    var otherAvailableItems = this.otherPlayerTrade.getItemsAvailableForTrade();
+    const hasDragItem = Boolean(this.state.currentDragItemPlayer);
+    const selfPlayerAcceptsDrop = this.state.currentDragItemPlayer === "self";
+    const otherPlayerAcceptsDrop = this.state.currentDragItemPlayer === "other";
+    const selfAvailableItems = this.selfPlayerTrade.getItemsAvailableForTrade();
+    const otherAvailableItems = this.otherPlayerTrade.getItemsAvailableForTrade();
 
     return(
       React.DOM.div(

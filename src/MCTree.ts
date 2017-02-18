@@ -14,7 +14,7 @@ export default class MCTree
 
   constructor(battle: Battle, sideId: string, fastMode: boolean = false)
   {
-    var cloned = battle.makeVirtualClone();
+    const cloned = battle.makeVirtualClone();
     this.rootNode = new MCTreeNode(cloned);
 
     this.actualBattle = battle;
@@ -35,7 +35,7 @@ export default class MCTree
   }
   evaluate(iterations: number): MCTreeNode
   {
-    var root = this.rootNode;
+    let root = this.rootNode;
     if (!root.possibleMoves) root.possibleMoves = root.getPossibleMoves();
 
     if (this.rootSimulationNeedsToBeRemade())
@@ -44,22 +44,22 @@ export default class MCTree
       root = this.rootNode;
     }
 
-    var iterationStart = this.countVisitsAsIterations ? Math.min(iterations - 1, root.visits - root.depth) : 0;
+    const iterationStart = this.countVisitsAsIterations ? Math.min(iterations - 1, root.visits - root.depth) : 0;
     for (let i = iterationStart; i < iterations; i++)
     {
       // select & expand
-      var toSimulateFrom = root.getRecursiveBestUctChild();
+      const toSimulateFrom = root.getRecursiveBestUctChild();
 
 
       // simulate & backpropagate
       toSimulateFrom.simulateToEnd();
     }
 
-    var sortedMoves = root.children.sort(this.sortByCombinedScoreFN.bind(this));
+    const sortedMoves = root.children.sort(this.sortByCombinedScoreFN.bind(this));
 
     //this.printToConsole(sortedMoves);
 
-    var best = sortedMoves[0];
+    const best = sortedMoves[0];
 
     if (!best)
     {
@@ -74,8 +74,8 @@ export default class MCTree
   }
   rootSimulationNeedsToBeRemade(): boolean
   {
-    var scoreVariationTolerance = 0.1;
-    var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
+    const scoreVariationTolerance = 0.1;
+    const scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
 
     if (scoreVariance > scoreVariationTolerance)
     {
@@ -115,18 +115,18 @@ export default class MCTree
   }
   getBestMoveAndAdvance(iterations: number): Move
   {
-    var best = this.evaluate(iterations);
+    const best = this.evaluate(iterations);
     this.rootNode = best;
 
     return best.move;
   }
   printToConsole(nodes: MCTreeNode[]): void
   {
-    var consoleRows: any[] = [];
+    const consoleRows: any[] = [];
     for (let i = 0; i < nodes.length; i++)
     {
-      var node = nodes[i];
-      var row =
+      const node = nodes[i];
+      const row =
       {
         visits: node.visits,
         uctEvaluation: node.uctEvaluation,
@@ -139,7 +139,7 @@ export default class MCTree
       };
       consoleRows.push(row);
     }
-    var _ : any = window;
+    const _ : any = window;
 
     if (_.console.table)
     {

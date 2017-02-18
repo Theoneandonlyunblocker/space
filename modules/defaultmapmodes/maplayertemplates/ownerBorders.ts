@@ -19,21 +19,21 @@ const ownerBorders: MapRendererLayerTemplate =
   alpha: 0.7,
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
-    var doc = new PIXI.Container();
+    const doc = new PIXI.Container();
     if (Options.display.borderWidth <= 0)
     {
       return doc;
     }
 
-    var revealedStars = perspectivePlayer.getRevealedStars();
-    var borderEdges = getRevealedBorderEdges(revealedStars, map.voronoi);
+    const revealedStars = perspectivePlayer.getRevealedStars();
+    const borderEdges = getRevealedBorderEdges(revealedStars, map.voronoi);
 
     for (let i = 0; i < borderEdges.length; i++)
     {
-      var gfx = new PIXI.Graphics();
+      const gfx = new PIXI.Graphics();
       doc.addChild(gfx);
-      var polyLineData = borderEdges[i];
-      var player: Player = polyLineData.points[0].star.owner;
+      const polyLineData = borderEdges[i];
+      const player: Player = polyLineData.points[0].star.owner;
       gfx.lineStyle(Options.display.borderWidth, player.secondaryColor.getHex(), 1);
 
       if (polyLineData.isClosed)
@@ -41,7 +41,7 @@ const ownerBorders: MapRendererLayerTemplate =
         polyLineData.points.push(polyLineData.points[0]);
       }
 
-      var polygon = makePolygonFromPoints(polyLineData.points);
+      const polygon = makePolygonFromPoints(polyLineData.points);
       polygon.closed = polyLineData.isClosed;
       gfx.drawShape(polygon);
     }

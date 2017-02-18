@@ -51,7 +51,7 @@ export default class ModuleScripts implements PartialAllScripts
 
         for (let j = 0; j < scriptsToRemove.length; j++)
         {
-          for (var i = ownScripts.length - 1; i >= 0; i--)
+          for (let i = ownScripts.length - 1; i >= 0; i--)
           {
             if (ownScripts[i] === scriptsToRemove[j])
             {

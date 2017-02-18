@@ -43,12 +43,12 @@ export default class EconomyAI
   }
   resolveEconomicObjectives()
   {
-    var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("economyRoutineFN");
-    var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("economyRoutineAdjustments");
+    const objectives = this.objectivesAI.getObjectivesWithTemplateProperty("economyRoutineFN");
+    const adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("economyRoutineAdjustments");
 
     for (let i = 0; i < objectives.length; i++)
     {
-      var objective = objectives[i];
+      const objective = objectives[i];
       objective.template.economyRoutineFN(objective, this, adjustments);
     }
   }
@@ -59,14 +59,14 @@ export default class EconomyAI
     sort by priority
     fulfill by priority
      */
-    var allRequests: Front[] = this.frontsAI.frontsRequestingUnits;
+    const allRequests: Front[] = this.frontsAI.frontsRequestingUnits;
     allRequests.sort(function(a, b)
     {
       return b.objective.priority - a.objective.priority;
     });
     for (let i = 0; i < allRequests.length; i++)
     {
-      var request = allRequests[i];
+      const request = allRequests[i];
       // is front
       if (request.targetLocation)
       {
@@ -81,21 +81,21 @@ export default class EconomyAI
 
   satisfyFrontRequest(front: Front)
   {
-    var player = this.player;
-    var starQualifierFN = function(star: Star)
+    const player = this.player;
+    const starQualifierFN = function(star: Star)
     {
       return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
     };
-    var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
+    const star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
     if (!star)
     {
       return;
     }
-    var manufactory = star.manufactory;
+    const manufactory = star.manufactory;
 
-    var archetypeScores = front.getNewUnitArchetypeScores();
+    const archetypeScores = front.getNewUnitArchetypeScores();
 
-    var buildableUnitTypesByArchetype:
+    const buildableUnitTypesByArchetype:
     {
       [archetypeType: string]: UnitTemplate[];
     } = {};
@@ -107,7 +107,7 @@ export default class EconomyAI
 
     for (let i = 0; i < buildableUnitTypes.length; i++)
     {
-      var archetype = buildableUnitTypes[i].archetype;
+      const archetype = buildableUnitTypes[i].archetype;
 
       if (!buildableUnitTypesByArchetype[archetype.type])
       {
@@ -121,8 +121,8 @@ export default class EconomyAI
       buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
     }
 
-    var sortedScores = getObjectKeysSortedByValue(archetypeScores, "desc");
-    var unitType: UnitTemplate;
+    const sortedScores = getObjectKeysSortedByValue(archetypeScores, "desc");
+    let unitType: UnitTemplate;
 
     for (let i = 0; i < sortedScores.length; i++)
     {

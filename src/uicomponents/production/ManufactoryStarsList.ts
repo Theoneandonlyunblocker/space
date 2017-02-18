@@ -30,16 +30,16 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
 
   render()
   {
-    var rows: React.ReactElement<any>[] = [];
+    const rows: React.ReactElement<any>[] = [];
 
     this.props.starsWithManufactories.sort(sortByManufactoryCapacityFN);
     this.props.starsWithoutManufactories.sort(sortByManufactoryCapacityFN);
 
     for (let i = 0; i < this.props.starsWithManufactories.length; i++)
     {
-      var star = this.props.starsWithManufactories[i];
-      var manufactory = star.manufactory;
-      var isHighlighted = this.props.highlightedStars.indexOf(star) !== -1;
+      const star = this.props.starsWithManufactories[i];
+      const manufactory = star.manufactory;
+      const isHighlighted = this.props.highlightedStars.indexOf(star) !== -1;
 
       rows.push(ManufactoryStarsListItem(
       {
@@ -54,8 +54,8 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
     }
     for (let i = 0; i < this.props.starsWithoutManufactories.length; i++)
     {
-      var star = this.props.starsWithoutManufactories[i];
-      var isHighlighted = this.props.highlightedStars.indexOf(star) !== -1;
+      const star = this.props.starsWithoutManufactories[i];
+      const isHighlighted = this.props.highlightedStars.indexOf(star) !== -1;
 
       rows.push(ManufactoryStarsListItem(
       {

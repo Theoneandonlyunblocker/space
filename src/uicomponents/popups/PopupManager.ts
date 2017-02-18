@@ -70,7 +70,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
   componentWillMount()
   {
-    var self = this;
+    const self = this;
     this.listeners["makePopup"] =
       eventManager.addEventListener("makePopup", function(data: MakePopupFunctionProps)
       {
@@ -107,7 +107,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   getHighestZIndexPopup()
   {
     if (this.state.popups.length === 0) return null;
-    var popups: PopupComponent[] = [];
+    const popups: PopupComponent[] = [];
     for (let id in this.popupComponentsByID)
     {
       popups.push(this.popupComponentsByID[id]);
@@ -130,7 +130,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      var topMostPopupPosition = this.getHighestZIndexPopup().dragPositioner.dragPos;
+      const topMostPopupPosition = this.getHighestZIndexPopup().dragPositioner.dragPos;
       return(
       {
         left: topMostPopupPosition.x + 20,
@@ -190,9 +190,9 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
   makePopup(props: MakePopupFunctionProps)
   {
-    var id = this.getPopupId();
+    const id = this.getPopupId();
 
-    var popupProps: PopupProps = props.popupProps ? extendObject(props.popupProps) : {};
+    const popupProps: PopupProps = props.popupProps ? extendObject(props.popupProps) : {};
 
     popupProps.content = props.content;
     // popupProps.contentConstructor = props.contentConstructor;
@@ -219,7 +219,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      var popups = this.state.popups.concat(popupProps);
+      const popups = this.state.popups.concat(popupProps);
 
       this.setState(
       {
@@ -232,7 +232,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
   // setPopupContent(popupId: number, newContent: any)
   // {
-  //   var popup = this.getPopup(popupId);
+  //   const popup = this.getPopup(popupId);
   //   if (!popup) throw new Error();
 
   //   popup.contentProps = extendObject(newContent, popup.contentProps);
@@ -242,15 +242,15 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var popups = this.state.popups;
+    const popups = this.state.popups;
 
-    var toRender: React.ReactElement<any>[] = [];
+    const toRender: React.ReactElement<any>[] = [];
 
     for (let i = 0; i < popups.length; i++)
     {
-      var popup = popups[i];
+      const popup = popups[i];
 
-      var popupProps = extendObject(popup);
+      const popupProps = extendObject(popup);
       popupProps.activePopupsCount = popups.length;
 
 

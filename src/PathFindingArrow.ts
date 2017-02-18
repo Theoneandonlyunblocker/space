@@ -88,7 +88,7 @@ export default class PathfindingArrow
   }
   addEventListeners()
   {
-    var self = this;
+    const self = this;
 
     this.addEventListener("startPotentialMove", function(star: Star)
     {
@@ -116,7 +116,7 @@ export default class PathfindingArrow
 
   startMove()
   {
-    var fleets = app.playerControl.selectedFleets;
+    const fleets = app.playerControl.selectedFleets;
 
     if (this.active || !fleets || fleets.length < 1)
     {
@@ -153,7 +153,7 @@ export default class PathfindingArrow
       return;
     }
 
-    var self = this;
+    const self = this;
 
     if (this.clearTargetTimeout)
     {
@@ -183,7 +183,7 @@ export default class PathfindingArrow
 
   makeLabel(style: string, distance: number)
   {
-    var textStyle: PIXI.ITextStyleStyle;
+    let textStyle: PIXI.ITextStyleStyle;
 
     switch (style)
     {
@@ -225,7 +225,7 @@ export default class PathfindingArrow
 
   getAllCurrentPaths()
   {
-    var paths:
+    const paths:
     {
       fleet: Fleet;
       path: any;
@@ -233,11 +233,11 @@ export default class PathfindingArrow
 
     for (let i = 0; i < this.selectedFleets.length; i++)
     {
-      var fleet = this.selectedFleets[i];
+      const fleet = this.selectedFleets[i];
 
       if (fleet.location.id === this.currentTarget.id) continue;
 
-      var path = fleet.getPathTo(this.currentTarget);
+      const path = fleet.getPathTo(this.currentTarget);
 
       paths.push(
       {
@@ -251,19 +251,19 @@ export default class PathfindingArrow
 
   getAllCurrentCurves()
   {
-    var paths = this.getAllCurrentPaths();
+    const paths = this.getAllCurrentPaths();
 
-    var curves:
+    const curves:
     {
       style: string;
       curveData: number[][];
     }[] = [];
 
-    var totalPathsPerStar:
+    const totalPathsPerStar:
     {
       [starId: number]: number;
     } = {};
-    var alreadyVisitedPathsPerStar:
+    const alreadyVisitedPathsPerStar:
     {
       [starId: number]: number;
     } = {};
@@ -275,7 +275,7 @@ export default class PathfindingArrow
     {
       for (let j = 0; j < paths[i].path.length; j++)
       {
-        var star = paths[i].path[j].star;
+        const star = paths[i].path[j].star;
 
         if (!totalPathsPerStar[star.id])
         {
@@ -289,26 +289,26 @@ export default class PathfindingArrow
 
     for (let i = 0; i < paths.length; i++)
     {
-      var fleet = paths[i].fleet;
-      var path = paths[i].path;
-      var distance = path.length - 1;
+      const fleet = paths[i].fleet;
+      const path = paths[i].path;
+      const distance = path.length - 1;
 
-      var currentMovePoints = fleet.getMinCurrentMovePoints();
-      var canReach = currentMovePoints >= distance;
+      const currentMovePoints = fleet.getMinCurrentMovePoints();
+      const canReach = currentMovePoints >= distance;
 
-      var style = canReach ? "reachable" : "unreachable";
+      const style = canReach ? "reachable" : "unreachable";
 
-      var curvePoints: Point[] = [];
+      const curvePoints: Point[] = [];
 
       for (let j = path.length - 1; j >= 0; j--)
       {
-        var star = path[j].star;
+        const star = path[j].star;
 
-        var sourceStar = j < path.length - 1 ? path[j + 1].star : null;
+        const sourceStar = j < path.length - 1 ? path[j + 1].star : null;
 
         if (totalPathsPerStar[star.id] > 1 && star !== this.currentTarget)
         {
-          var visits = ++alreadyVisitedPathsPerStar[star.id];
+          const visits = ++alreadyVisitedPathsPerStar[star.id];
           curvePoints.unshift(this.getTargetOffset(star, sourceStar, visits,
             totalPathsPerStar[star.id], 12));
         }
@@ -318,7 +318,7 @@ export default class PathfindingArrow
         }
       }
 
-      var curveData = this.getCurveData(curvePoints);
+      const curveData = this.getCurveData(curvePoints);
 
       curves.push(
       {
@@ -334,11 +334,11 @@ export default class PathfindingArrow
   {
     this.clearArrows();
 
-    var curves = this.getAllCurrentCurves();
+    const curves = this.getAllCurrentCurves();
 
     for (let i = 0; i < curves.length; i++)
     {
-      var curve = this.drawCurve(curves[i].curveData, this.curveStyles[curves[i].style]);
+      const curve = this.drawCurve(curves[i].curveData, this.curveStyles[curves[i].style]);
 
       this.container.addChild(curve);
     }
@@ -346,19 +346,19 @@ export default class PathfindingArrow
 
   getCurveData(points: Point[]): number[][]
   {
-    var i6 = 1.0 / 6.0;
-    var path: number[][] = [];
-    var abababa = [points[0]].concat(points);
+    const i6 = 1.0 / 6.0;
+    const path: number[][] = [];
+    const abababa = [points[0]].concat(points);
     abababa.push(points[points.length - 1]);
 
 
     for (let i = 3, n = abababa.length; i < n; i++)
     {
 
-      var p0 = abababa[i - 3];
-      var p1 = abababa[i - 2];
-      var p2 = abababa[i - 1];
-      var p3 = abababa[i];
+      const p0 = abababa[i - 3];
+      const p1 = abababa[i - 2];
+      const p2 = abababa[i - 1];
+      const p3 = abababa[i];
 
       path.push(
       [
@@ -379,7 +379,7 @@ export default class PathfindingArrow
 
   private drawCurve(points: number[][], style: PathFindingArrowCurveStyle)
   {
-    var gfx = new PIXI.Graphics();
+    const gfx = new PIXI.Graphics();
 
     gfx.lineStyle(12, style.color.getHex(), 0.7);
     gfx.moveTo(points[0][0], points[0][1]);
@@ -389,7 +389,7 @@ export default class PathfindingArrow
       gfx.bezierCurveTo.apply(gfx, points[i]);
     }
 
-    var curveShape = <PIXI.Polygon> gfx.currentPath.shape;
+    const curveShape = <PIXI.Polygon> gfx.currentPath.shape;
     // TODO 04.11.2016 | still relevant?
     curveShape.closed = false; // PIXI 3.0.7 bug
 
@@ -399,27 +399,27 @@ export default class PathfindingArrow
   }
   drawArrowHead(gfx: PIXI.Graphics, color: number)
   {
-    var curveShape = <PIXI.Polygon> gfx.currentPath.shape;
-    var points = curveShape.points;
+    const curveShape = <PIXI.Polygon> gfx.currentPath.shape;
+    const points = curveShape.points;
 
-    var x1 = points[points.length - 12];
-    var y1 = points[points.length - 11];
-    var x2 = points[points.length - 2];
-    var y2 = points[points.length - 1];
+    const x1 = points[points.length - 12];
+    const y1 = points[points.length - 11];
+    const x2 = points[points.length - 2];
+    const y2 = points[points.length - 1];
 
-    var lineAngle = Math.atan2(y2 - y1, x2 - x1);
-    var headLength = 30;
-    var buttAngle = 27 * (Math.PI / 180);
+    const lineAngle = Math.atan2(y2 - y1, x2 - x1);
+    const headLength = 30;
+    const buttAngle = 27 * (Math.PI / 180);
 
-    var hypotenuseLength = Math.abs(headLength / Math.cos(buttAngle));
+    const hypotenuseLength = Math.abs(headLength / Math.cos(buttAngle));
 
-    var angle1 = lineAngle + Math.PI + buttAngle;
-    var topX = x2 + Math.cos(angle1) * hypotenuseLength;
-    var topY = y2 + Math.sin(angle1) * hypotenuseLength;
+    const angle1 = lineAngle + Math.PI + buttAngle;
+    const topX = x2 + Math.cos(angle1) * hypotenuseLength;
+    const topY = y2 + Math.sin(angle1) * hypotenuseLength;
 
-    var angle2 = lineAngle + Math.PI - buttAngle;
-    var botX = x2 + Math.cos(angle2) * hypotenuseLength;
-    var botY = y2 + Math.sin(angle2) * hypotenuseLength;
+    const angle2 = lineAngle + Math.PI - buttAngle;
+    const botX = x2 + Math.cos(angle2) * hypotenuseLength;
+    const botY = y2 + Math.sin(angle2) * hypotenuseLength;
 
     gfx.lineStyle(null);
 
@@ -430,14 +430,14 @@ export default class PathfindingArrow
     gfx.lineTo(x2, y2);
     gfx.endFill();
 
-    var buttMidX = x2 + Math.cos(lineAngle + Math.PI) * headLength;
-    var buttMidY = y2 + Math.sin(lineAngle + Math.PI) * headLength;
+    const buttMidX = x2 + Math.cos(lineAngle + Math.PI) * headLength;
+    const buttMidY = y2 + Math.sin(lineAngle + Math.PI) * headLength;
 
     for (let i = points.length - 1; i >= 0; i -= 2)
     {
-      var y = points[i];
-      var x = points[i-1];
-      var distance = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
+      const y = points[i];
+      const x = points[i-1];
+      const distance = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
 
       if (distance >= headLength + 10)
       {
@@ -456,29 +456,29 @@ export default class PathfindingArrow
   getTargetOffset(target: Point, sourcePoint: Point, i: number,
     totalPaths: number, offsetPerOrbit: number)
   {
-    var maxPerOrbit = 6;
+    const maxPerOrbit = 6;
 
-    var currentOrbit = Math.ceil(i / maxPerOrbit);
-    var isOuterOrbit = currentOrbit > Math.floor(totalPaths / maxPerOrbit);
-    var pathsInCurrentOrbit = isOuterOrbit ? totalPaths % maxPerOrbit : maxPerOrbit;
+    const currentOrbit = Math.ceil(i / maxPerOrbit);
+    const isOuterOrbit = currentOrbit > Math.floor(totalPaths / maxPerOrbit);
+    const pathsInCurrentOrbit = isOuterOrbit ? totalPaths % maxPerOrbit : maxPerOrbit;
 
-    var positionInOrbit = (i - 1) % pathsInCurrentOrbit;
+    const positionInOrbit = (i - 1) % pathsInCurrentOrbit;
 
-    var distance = currentOrbit * offsetPerOrbit;
+    const distance = currentOrbit * offsetPerOrbit;
 
-    var angle = (Math.PI * 2 / pathsInCurrentOrbit) * positionInOrbit;
+    let angle = (Math.PI * 2 / pathsInCurrentOrbit) * positionInOrbit;
 
     if (sourcePoint)
     {
-      var dx = sourcePoint.x - target.x;
-      var dy = sourcePoint.y - target.y;
-      var approachAngle = Math.atan2(dy, dx);
+      const dx = sourcePoint.x - target.x;
+      const dy = sourcePoint.y - target.y;
+      const approachAngle = Math.atan2(dy, dx);
 
       angle += approachAngle;
     }
 
-    var x = Math.sin(angle) * distance;
-    var y = Math.cos(angle) * distance;
+    const x = Math.sin(angle) * distance;
+    const y = Math.cos(angle) * distance;
 
 
     return(

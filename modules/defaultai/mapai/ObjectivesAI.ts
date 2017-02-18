@@ -85,7 +85,7 @@ export default class ObjectivesAI
   {
     for (let key in allObjectiveTemplates)
     {
-      var template = allObjectiveTemplates[key];
+      const template = allObjectiveTemplates[key];
       if (template[propKey])
       {
         this.setObjectivesOfType(allObjectiveTemplates[key]);
@@ -94,20 +94,20 @@ export default class ObjectivesAI
   }
   getNewObjectivesOfType(objectiveTemplate: ObjectiveTemplate)
   {
-    var objectiveType = objectiveTemplate.key;
-    var byTarget = this.getObjectivesByTarget(objectiveType, true);
-    var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
-    var finalObjectives: Objective[] = [];
+    const objectiveType = objectiveTemplate.key;
+    const byTarget = this.getObjectivesByTarget(objectiveType, true);
+    const newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
+    const finalObjectives: Objective[] = [];
 
     for (let i = 0; i < newObjectives.length; i++)
     {
-      var newObjective = newObjectives[i];
+      const newObjective = newObjectives[i];
       if (newObjective.priority < 0.04)
       {
         continue;
       }
-      var keyString = newObjective.target ? newObjective.target.id : "noTarget";
-      var oldObjective = byTarget[keyString];
+      const keyString = newObjective.target ? newObjective.target.id : "noTarget";
+      const oldObjective = byTarget[keyString];
       if (oldObjective)
       {
         oldObjective.priority = newObjective.priority;
@@ -123,13 +123,13 @@ export default class ObjectivesAI
   }
   setObjectivesOfType(objectiveTemplate: ObjectiveTemplate)
   {
-    var newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
+    const newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
     this.objectivesByType[objectiveTemplate.key] = newObjectives;
     this.objectives = this.objectives.concat(newObjectives);
   }
   getObjectivesByTarget(objectiveType: string, markAsOngoing: boolean)
   {
-    var objectivesByTarget:
+    const objectivesByTarget:
     {
       [targetString: string]: Objective;
     } = {};
@@ -141,10 +141,10 @@ export default class ObjectivesAI
 
     for (let i = 0; i < this.objectivesByType[objectiveType].length; i++)
     {
-      var objective = this.objectivesByType[objectiveType][i];
+      const objective = this.objectivesByType[objectiveType][i];
       if (markAsOngoing) objective.isOngoing = true;
 
-      var keyString = objective.target ? objective.target.id : "noTarget";
+      const keyString = objective.target ? objective.target.id : "noTarget";
       objectivesByTarget[keyString] = objective;
     }
 
@@ -159,14 +159,14 @@ export default class ObjectivesAI
   }
   getAdjustmentsForTemplateProperty(propKey: string)
   {
-    var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
-    var adjustments: RoutineAdjustmentByID;
+    const withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
+    const adjustments: RoutineAdjustmentByID = {};
 
     for (let i = 0; i < withAdjustment.length; i++)
     {
       for (let j = 0; j < withAdjustment[i].template[propKey].length; j++)
       {
-        var adjustment = withAdjustment[i].template[propKey][j];
+        const adjustment = withAdjustment[i].template[propKey][j];
         if (!adjustments[adjustment.target.id])
         {
           adjustments[adjustment.target.id] =

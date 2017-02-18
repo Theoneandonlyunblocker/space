@@ -146,13 +146,13 @@ class Options implements OptionsValues
   }
   public save(slot: number = 0)
   {
-    var data = JSON.stringify(
+    const data = JSON.stringify(
     {
       options: this.serialize(),
       date: new Date(),
     });
 
-    var saveName = "Rance.Options." + slot;
+    const saveName = "Rance.Options." + slot;
 
     localStorage.setItem(saveName, data);
   }
@@ -193,9 +193,9 @@ class Options implements OptionsValues
 
   private getParsedDataForSlot(slot?: number)
   {
-    var baseString = "Rance.Options.";
+    const baseString = "Rance.Options.";
 
-    var parsedData:
+    let parsedData:
     {
       date: string;
       options: OptionsValues;

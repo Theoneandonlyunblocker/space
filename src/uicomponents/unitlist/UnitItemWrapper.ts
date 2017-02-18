@@ -43,7 +43,7 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
 
   render()
   {
-    var wrapperProps: React.HTMLAttributes =
+    const wrapperProps: React.HTMLAttributes =
     {
       className: "unit-item-wrapper",
     };
@@ -57,7 +57,7 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
 
     if (this.props.currentDragItem)
     {
-      var dragItem = this.props.currentDragItem;
+      const dragItem = this.props.currentDragItem;
       if (dragItem.template.slot === this.props.slot)
       {
         wrapperProps.className += " drop-target";

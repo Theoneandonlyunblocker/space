@@ -35,13 +35,13 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
 
   makeCell(type: string)
   {
-    var cellProps =
+    const cellProps =
     {
       key: type,
       className: "economy-summary-item-cell" + " economy-summary-" + type,
     };
 
-    var cellContent: React.ReactNode;
+    let cellContent: React.ReactNode;
 
     switch (type)
     {
@@ -69,18 +69,18 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
 
   render()
   {
-    var columns = this.props.activeColumns;
+    const columns = this.props.activeColumns;
 
-    var cells: React.ReactElement<any>[] = [];
+    const cells: React.ReactElement<any>[] = [];
 
     for (let i = 0; i < columns.length; i++)
     {
-      var cell = this.makeCell(columns[i].key);
+      const cell = this.makeCell(columns[i].key);
 
       cells.push(cell);
     }
 
-    var rowProps =
+    const rowProps =
     {
       className: "economy-summary-item",
       onClick : this.props.handleClick,

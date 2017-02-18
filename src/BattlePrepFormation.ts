@@ -158,8 +158,8 @@ export default class BattlePrepFormation
   {
     if (unit1 === unit2) return;
 
-    var new1Pos = this.getUnitPosition(unit2);
-    var new2Pos = this.getUnitPosition(unit1);
+    const new1Pos = this.getUnitPosition(unit2);
+    const new2Pos = this.getUnitPosition(unit1);
 
     this.removeUnit(unit1);
     this.removeUnit(unit2);

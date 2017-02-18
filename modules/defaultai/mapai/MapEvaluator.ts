@@ -13,7 +13,7 @@ import
 
 import evaluateUnitStrength from "../../../src/evaluateUnitStrength";
 
-export var defaultEvaluationParameters =
+export const defaultEvaluationParameters =
 {
   starDesirability:
   {
@@ -69,7 +69,7 @@ export default class MapEvaluator
 
   evaluateStarIncome(star: Star): number
   {
-    var evaluation = 0;
+    let evaluation = 0;
 
     evaluation += star.baseIncome;
     evaluation += (star.getIncome() - star.baseIncome) *
@@ -80,7 +80,7 @@ export default class MapEvaluator
 
   evaluateStarInfrastructure(star: Star): number
   {
-    var evaluation = 0;
+    let evaluation = 0;
 
     for (let category in star.buildings)
     {
@@ -95,7 +95,7 @@ export default class MapEvaluator
 
   evaluateStarProduction(star: Star): number
   {
-    var evaluation = 0;
+    const evaluation = 0;
 
     // TODO manufactory TODO ai
 
@@ -104,22 +104,22 @@ export default class MapEvaluator
 
   evaluateStarDefendability(star: Star): number
   {
-    var evaluation = 0;
+    let evaluation = 0;
 
     // neighboring own stars ++
     // player owns star ++
     // neighboring neutral stars -
     // neighboring other player stars --
     // neighboring other player with low trust stars --- TODO ai
-    var nearbyStars = star.getLinkedInRange(2).byRange;
+    const nearbyStars = star.getLinkedInRange(2).byRange;
     for (let rangeString in nearbyStars)
     {
-      var distanceMultiplier = 1 / parseInt(rangeString);
-      var starsInRange = nearbyStars[rangeString];
+      const distanceMultiplier = 1 / parseInt(rangeString);
+      const starsInRange = nearbyStars[rangeString];
       for (let i = 0; i < starsInRange.length; i++)
       {
-        var neighbor = starsInRange[i];
-        var neighborDefendability: number;
+        const neighbor = starsInRange[i];
+        let neighborDefendability: number;
         if (neighbor.owner === this.player)
         {
           neighborDefendability = 3;
@@ -147,21 +147,21 @@ export default class MapEvaluator
 
   evaluateIndividualStarDesirability(star: Star): number
   {
-    var evaluation = 0;
-    var p = this.evaluationParameters.starDesirability;
+    let evaluation = 0;
+    const p = this.evaluationParameters.starDesirability;
 
-    var incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
+    let incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
     // prioritize income when would make big relative boost, penalize when opposite
     incomeEvaluation *= incomeEvaluation / (this.player.getIncome() / 4);
     evaluation += incomeEvaluation;
 
-    var infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
+    const infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
     evaluation += infrastructureEvaluation;
 
-    var productionEvaluation = this.evaluateStarProduction(star) * p.productionWeight;
+    const productionEvaluation = this.evaluateStarProduction(star) * p.productionWeight;
     evaluation += productionEvaluation;
 
-    var defendabilityEvaluation = this.evaluateStarDefendability(star) * p.defendabilityWeight;
+    const defendabilityEvaluation = this.evaluateStarDefendability(star) * p.defendabilityWeight;
     evaluation += defendabilityEvaluation;
 
 
@@ -170,18 +170,18 @@ export default class MapEvaluator
 
   evaluateNeighboringStarsDesirability(star: Star, range: number): number
   {
-    var evaluation = 0;
+    let evaluation = 0;
 
-    var getDistanceFalloff = function(distance: number)
+    const getDistanceFalloff = function(distance: number)
     {
       return 1 / (distance + 1);
     };
-    var inRange = star.getLinkedInRange(range).byRange;
+    const inRange = star.getLinkedInRange(range).byRange;
 
     for (let distanceString in inRange)
     {
-      var stars = inRange[distanceString];
-      var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
+      const stars = inRange[distanceString];
+      const distanceFalloff = getDistanceFalloff(parseInt(distanceString));
 
       for (let i = 0; i < stars.length; i++)
       {
@@ -194,8 +194,8 @@ export default class MapEvaluator
 
   evaluateStarDesirability(star: Star): number
   {
-    var evaluation = 0;
-    var p = this.evaluationParameters.starDesirability;
+    let evaluation = 0;
+    const p = this.evaluationParameters.starDesirability;
 
     evaluation += this.evaluateIndividualStarDesirability(star);
     evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) *
@@ -247,9 +247,9 @@ export default class MapEvaluator
   {
     return this.scoreStarTargets(evaluations, (star, evaluation) =>
     {
-      var easeOfCapturing = evaluation.ownInfluence / evaluation.hostileStrength;
+      const easeOfCapturing = evaluation.ownInfluence / evaluation.hostileStrength;
 
-      var score = evaluation.desirability * easeOfCapturing;
+      let score = evaluation.desirability * easeOfCapturing;
       if (star.getSecondaryController() === this.player)
       {
         score *= 1.5;
@@ -299,11 +299,11 @@ export default class MapEvaluator
   }
   getDefenceBuildingStrengthAtStarByPlayer(star: Star)
   {
-    var byPlayer = new ValuesByPlayer<number>();
+    const byPlayer = new ValuesByPlayer<number>();
 
     for (let i = 0; i < star.buildings["defence"].length; i++)
     {
-      var building = star.buildings["defence"][i];
+      const building = star.buildings["defence"][i];
 
       const previousValue = byPlayer.get(building.controller) || 0;
       byPlayer.set(building.controller, previousValue + building.totalCost);
@@ -313,11 +313,11 @@ export default class MapEvaluator
   }
   getTotalDefenceBuildingStrengthAtStar(star: Star): number
   {
-    var strength = 0;
+    let strength = 0;
 
     for (let i = 0; i < star.buildings["defence"].length; i++)
     {
-      var building = star.buildings["defence"][i];
+      const building = star.buildings["defence"][i];
 
       if (building.controller.id === this.player.id) continue;
 
@@ -358,7 +358,7 @@ export default class MapEvaluator
       return defenceBuildingStrength.get(player) || 0;
     });
 
-    var fleets = this.getVisibleFleetsOfPlayer(player);
+    const fleets = this.getVisibleFleetsOfPlayer(player);
 
     function getDistanceFalloff(distance: number)
     {
@@ -367,28 +367,28 @@ export default class MapEvaluator
 
     for (let i = 0; i < fleets.length; i++)
     {
-      var fleet = fleets[i];
-      var strength = evaluateUnitStrength(...fleet.units);
-      var location = fleet.location;
+      const fleet = fleets[i];
+      const strength = evaluateUnitStrength(...fleet.units);
+      const location = fleet.location;
 
-      var range = fleet.getMinMaxMovePoints();
-      var turnsToCheck = 4;
+      const range = fleet.getMinMaxMovePoints();
+      const turnsToCheck = 4;
 
-      var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
+      const inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
 
       inFleetRange[0] = [location];
 
       for (let distance in inFleetRange)
       {
-        var numericDistance = parseInt(distance);
-        var turnsToReach = Math.floor((numericDistance - 1) / range);
+        const numericDistance = parseInt(distance);
+        let turnsToReach = Math.floor((numericDistance - 1) / range);
         if (turnsToReach < 0) turnsToReach = 0;
-        var distanceFalloff = getDistanceFalloff(turnsToReach);
-        var adjustedStrength = strength * distanceFalloff;
+        const distanceFalloff = getDistanceFalloff(turnsToReach);
+        const adjustedStrength = strength * distanceFalloff;
 
         for (let j = 0; j < inFleetRange[distance].length; j++)
         {
-          var star = inFleetRange[distance][j];
+          const star = inFleetRange[distance][j];
 
           const previousInfluence = influence.get(star) || 0;
           influence.set(star, previousInfluence + adjustedStrength);
@@ -404,7 +404,7 @@ export default class MapEvaluator
 
     for (let playerId in this.player.diplomacyStatus.metPlayers)
     {
-      var player = this.player.diplomacyStatus.metPlayers[playerId];
+      const player = this.player.diplomacyStatus.metPlayers[playerId];
       byPlayer.set(player, this.getPlayerInfluenceMap(player));
     }
 
@@ -441,7 +441,7 @@ export default class MapEvaluator
 
     for (let playerId in this.player.diplomacyStatus.metPlayers)
     {
-      var player = this.player.diplomacyStatus.metPlayers[playerId];
+      const player = this.player.diplomacyStatus.metPlayers[playerId];
       byPlayer.set(player, this.getVisibleStarsOfPlayer(player));
     }
 
@@ -449,8 +449,8 @@ export default class MapEvaluator
   }
   estimateGlobalStrength(player: Player)
   {
-    var visibleStrength = 0;
-    var invisibleStrength = 0;
+    let visibleStrength = 0;
+    let invisibleStrength = 0;
 
     const fleets = this.getVisibleFleetsOfPlayer(player);
     for (let i = 0; i < fleets.length; i++)
@@ -474,10 +474,10 @@ export default class MapEvaluator
         " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name.fullName);
     }
 
-    var otherInfluenceMap = this.getPlayerInfluenceMap(player);
-    var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
+    const otherInfluenceMap = this.getPlayerInfluenceMap(player);
+    const ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
 
-    var totalInfluenceInOwnStars = 0;
+    let totalInfluenceInOwnStars = 0;
 
     this.player.controlledLocations.forEach(star =>
     {
@@ -487,18 +487,18 @@ export default class MapEvaluator
       totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
     });
 
-    var globalStrengthDifference =
+    const globalStrengthDifference =
       this.estimateGlobalStrength(player) - this.estimateGlobalStrength(this.player);
 
     return totalInfluenceInOwnStars + globalStrengthDifference;
   }
   getPerceivedThreatOfAllKnownPlayers()
   {
-    var byPlayer = new ValuesByPlayer<number>();
+    const byPlayer = new ValuesByPlayer<number>();
 
     for (let playerId in this.player.diplomacyStatus.metPlayers)
     {
-      var player = this.player.diplomacyStatus.metPlayers[playerId];
+      const player = this.player.diplomacyStatus.metPlayers[playerId];
       byPlayer.set(player, this.getPerceivedThreatOfPlayer(player));
     }
 
@@ -506,10 +506,10 @@ export default class MapEvaluator
   }
   getRelativePerceivedThreatOfAllKnownPlayers()
   {
-    var byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
-    var relative = new ValuesByPlayer<number>();
+    const byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
+    const relative = new ValuesByPlayer<number>();
 
-    var min: number, max: number;
+    let min: number, max: number;
 
     byPlayer.forEach((player, threat) =>
     {
@@ -526,14 +526,14 @@ export default class MapEvaluator
   }
   getVisionCoverageAroundStar(star: Star, range: number, useDetection: boolean = false)
   {
-    var toCheck = star.getLinkedInRange(range).all;
-    var scorePerVisibleStar = 1 / toCheck.length;
-    var coverageScore: number = 0;
-    var visibilityCheckFN = useDetection ? this.player.starIsDetected : this.player.starIsVisible;
+    const toCheck = star.getLinkedInRange(range).all;
+    const scorePerVisibleStar = 1 / toCheck.length;
+    let coverageScore: number = 0;
+    const visibilityCheckFN = useDetection ? this.player.starIsDetected : this.player.starIsVisible;
 
     for (let i = 0; i < toCheck.length; i++)
     {
-      var neighbor = toCheck[i];
+      const neighbor = toCheck[i];
       if (visibilityCheckFN.call(this.player, neighbor))
       {
         coverageScore += scorePerVisibleStar;
@@ -574,37 +574,37 @@ export default class MapEvaluator
   }
   getPlayerVisionMap(player: Player)
   {
-    var detectedStars:
+    const detectedStars:
     {
       [starID: number]: Star;
     } = {};
-    var visibleStars:
+    const visibleStars:
     {
       [starID: number]: Star;
     } = {};
 
-    var revealedStarsOfPlayer: Star[] = this.player.getRevealedStars().filter(function(star: Star)
+    const revealedStarsOfPlayer: Star[] = this.player.getRevealedStars().filter(function(star: Star)
     {
       return star.owner === player;
     });
-    var visibleFleetsOfPlayer: Fleet[] = this.getVisibleFleetsOfPlayer(player);
+    const visibleFleetsOfPlayer: Fleet[] = this.getVisibleFleetsOfPlayer(player);
 
-    var processDetectionSource = function(source: Star, detectionRange: number, visionRange: number)
+    const processDetectionSource = function(source: Star, detectionRange: number, visionRange: number)
     {
-      var detected = source.getLinkedInRange(detectionRange).all;
+      const detected = source.getLinkedInRange(detectionRange).all;
       for (let i = 0; i < detected.length; i++)
       {
-        var star = detected[i];
+        const star = detected[i];
         if (!detectedStars[star.id])
         {
           detectedStars[star.id] = star;
         }
       }
 
-      var visible = source.getLinkedInRange(visionRange).all;
+      const visible = source.getLinkedInRange(visionRange).all;
       for (let i = 0; i < visible.length; i++)
       {
-        var star = visible[i];
+        const star = visible[i];
         if (!visibleStars[star.id])
         {
           visibleStars[star.id] = star;
@@ -614,16 +614,16 @@ export default class MapEvaluator
 
     for (let i = 0; i < revealedStarsOfPlayer.length; i++)
     {
-      var star = revealedStarsOfPlayer[i];
-      var detectionRange = this.player.starIsDetected(star) ? star.getDetectionRange() : 0;
-      var visionRange = this.player.starIsDetected(star) ? star.getVisionRange() : 1;
+      const star = revealedStarsOfPlayer[i];
+      const detectionRange = this.player.starIsDetected(star) ? star.getDetectionRange() : 0;
+      const visionRange = this.player.starIsDetected(star) ? star.getVisionRange() : 1;
       processDetectionSource(star, detectionRange, visionRange);
     }
     for (let i = 0; i < visibleFleetsOfPlayer.length; i++)
     {
-      var fleet = visibleFleetsOfPlayer[i];
-      var detectionRange = this.estimateFleetDetectionRange(fleet);
-      var visionRange = this.estimateFleetVisionRange(fleet);
+      const fleet = visibleFleetsOfPlayer[i];
+      const detectionRange = this.estimateFleetDetectionRange(fleet);
+      const visionRange = this.estimateFleetVisionRange(fleet);
       processDetectionSource(fleet.location, detectionRange, visionRange);
     }
 
@@ -635,32 +635,33 @@ export default class MapEvaluator
   }
   getScoredPerimeterLocationsAgainstPlayer(player: Player, safetyFactor: number, forScouting: boolean)
   {
-    var ownInfluence = this.getPlayerInfluenceMap(this.player);
-    var enemyInfluence = this.getPlayerInfluenceMap(player);
-    var enemyVision = this.getPlayerVisionMap(player);
+    const ownInfluence = this.getPlayerInfluenceMap(this.player);
+    const enemyInfluence = this.getPlayerInfluenceMap(player);
+    const enemyVision = this.getPlayerVisionMap(player);
 
-    var scores:
+    const scores:
     {
       score: number;
       star: Star;
     }[] = [];
 
-    var revealedStars = this.player.getRevealedStars();
+    const revealedStars = this.player.getRevealedStars();
 
-    var stars = revealedStars.filter(star =>
+    const stars = revealedStars.filter(star =>
     {
       return star.owner.isIndependent || star.owner === this.player;
     });
 
     for (let i = 0; i < stars.length; i++)
     {
-      var star = stars[i];
-      var nearestOwnedStar = player.getNearestOwnedStarTo(star);
-      var distanceToEnemy = star.getDistanceToStar(nearestOwnedStar);
+      const star = stars[i];
+      let score: number;
+      const nearestOwnedStar = player.getNearestOwnedStarTo(star);
+      let distanceToEnemy = star.getDistanceToStar(nearestOwnedStar);
       distanceToEnemy = Math.max(distanceToEnemy - 1, 1);
-      var distanceScore = Math.pow(1 / distanceToEnemy, 2);
+      const distanceScore = Math.pow(1 / distanceToEnemy, 2);
 
-      var danger = enemyInfluence.get(star) || 1;
+      let danger = enemyInfluence.get(star) || 1;
       if (!enemyVision.visible[star.id])
       {
         danger *= 0.5;
@@ -668,15 +669,15 @@ export default class MapEvaluator
       danger *= safetyFactor;
       if (forScouting)
       {
-        var safety = ownInfluence.get(star) / (danger * safetyFactor);
-        var score = safety * distanceScore;
-        // var vision = this.getVisionCoverageAroundStar(star, 2);
-        // var lackOfVision = 1 - vision;
-        // var score = lackOfVision * safety;
+        const safety = ownInfluence.get(star) / (danger * safetyFactor);
+        score = safety * distanceScore;
+        // const vision = this.getVisionCoverageAroundStar(star, 2);
+        // const lackOfVision = 1 - vision;
+        // score = lackOfVision * safety;
       }
       else
       {
-        var score = (danger / ownInfluence.get(star)) / safetyFactor;
+        score = (danger / ownInfluence.get(star)) / safetyFactor;
       }
 
       scores.push(
@@ -692,9 +693,9 @@ export default class MapEvaluator
   {
     // // potential gain
     // // perceived difficulty
-    // var strength = this.estimateGlobalStrength(player);
+    // const strength = this.estimateGlobalStrength(player);
     // // relations
-    // var opinion = this.player.diplomacyStatus.getOpinionOf(player);
+    // const opinion = this.player.diplomacyStatus.getOpinionOf(player);
     // // trust
     // // own allies
     // //   ally ability to go to war with
@@ -703,14 +704,14 @@ export default class MapEvaluator
     // // enemy allies
     // //   enemy ally strength
     // // perceived threat
-    // var threat = this.getPerceivedThreatOfPlayer(player);
+    // const threat = this.getPerceivedThreatOfPlayer(player);
 
     return Math.random(); // TODO ai
   }
   getAbilityToGoToWarWith(player: Player)
   {
     // // perceived strength
-    // var strength = this.estimateGlobalStrength(player);
+    // const strength = this.estimateGlobalStrength(player);
     // // own trustworthy allies who can join
     // //   ally ability to go to war with
     // //   ally trustworthiness
@@ -724,17 +725,17 @@ export default class MapEvaluator
   }
   getDiplomacyEvaluations(currentTurn: number)
   {
-    var evaluationByPlayer:
+    const evaluationByPlayer:
     {
       [playerId: number]: DiplomacyEvaluation;
     } = {};
 
-    var neighborStarsCountByPlayer = new ValuesByPlayer<number>();
+    const neighborStarsCountByPlayer = new ValuesByPlayer<number>();
 
-    var allNeighbors = this.player.getNeighboringStars();
+    const allNeighbors = this.player.getNeighboringStars();
     for (let i = 0; i < allNeighbors.length; i++)
     {
-      var star: Star = allNeighbors[i];
+      const star: Star = allNeighbors[i];
       if (!star.owner.isIndependent)
       {
         const previousCount = neighborStarsCountByPlayer.get(star.owner) || 0;
@@ -745,7 +746,7 @@ export default class MapEvaluator
 
     for (let playerId in this.player.diplomacyStatus.metPlayers)
     {
-      var player = this.player.diplomacyStatus.metPlayers[playerId];
+      const player = this.player.diplomacyStatus.metPlayers[playerId];
 
       evaluationByPlayer[player.id] =
       {

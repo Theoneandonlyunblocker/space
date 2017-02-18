@@ -246,7 +246,7 @@ export default class Player
   }
   public die(): void
   {
-    for (var i = this.fleets.length - 1; i >= 0; i--)
+    for (let i = this.fleets.length - 1; i >= 0; i--)
     {
       this.fleets[i].deleteFleet(false);
     }
@@ -320,7 +320,7 @@ export default class Player
   }
   removeFleet(fleet: Fleet): void
   {
-    var fleetIndex = this.getFleetIndex(fleet);
+    const fleetIndex = this.getFleetIndex(fleet);
 
     if (fleetIndex < 0)
     {
@@ -332,7 +332,7 @@ export default class Player
   }
   getFleetsWithPositions(): {position: Point, data: Fleet}[]
   {
-    var positions:
+    const positions:
     {
       position: Point;
       data: Fleet;
@@ -340,7 +340,7 @@ export default class Player
 
     for (let i = 0; i < this.fleets.length; i++)
     {
-      var fleet = this.fleets[i];
+      const fleet = this.fleets[i];
 
       positions.push(
       {
@@ -369,7 +369,7 @@ export default class Player
   }
   removeStar(star: Star): void
   {
-    var index = this.controlledLocations.indexOf(star);
+    const index = this.controlledLocations.indexOf(star);
 
     if (index < 0)
     {
@@ -386,14 +386,10 @@ export default class Player
   }
   getIncome(): number
   {
-    var income = 0;
-
-    for (let i = 0; i < this.controlledLocations.length; i++)
+    return this.controlledLocations.reduce((total, star) =>
     {
-      income += this.controlledLocations[i].getIncome();
-    }
-
-    return income;
+      return total + star.getIncome();
+    }, 0)
   }
   addResource(resource: ResourceTemplate, amount: number): void
   {
@@ -406,7 +402,7 @@ export default class Player
   }
   getResourceIncome(): {[resourceType: string]: {resource: ResourceTemplate; amount: number;}}
   {
-    var incomeByResource:
+    const incomeByResource:
     {
       [resourceType: string]:
       {
@@ -417,9 +413,9 @@ export default class Player
 
     for (let i = 0; i < this.controlledLocations.length; i++)
     {
-      var star = this.controlledLocations[i];
+      const star = this.controlledLocations[i];
 
-      var starIncome = star.getResourceIncome();
+      const starIncome = star.getResourceIncome();
 
       if (!starIncome) continue;
 
@@ -440,15 +436,15 @@ export default class Player
   // TODO refactor | should probably be moved
   public getNeighboringStars(): Star[]
   {
-    var stars:
+    const stars:
     {
       [id: number]: Star;
     } = {};
 
     for (let i = 0; i < this.controlledLocations.length; i++)
     {
-      var currentOwned = this.controlledLocations[i];
-      var frontier =  currentOwned.getLinkedInRange(1).all;
+      const currentOwned = this.controlledLocations[i];
+      const frontier =  currentOwned.getLinkedInRange(1).all;
       for (let j = 0; j < frontier.length; j++)
       {
         if (stars[frontier[j].id])
@@ -466,7 +462,7 @@ export default class Player
       }
     }
 
-    var allStars: Star[] = [];
+    const allStars: Star[] = [];
 
     for (let id in stars)
     {
@@ -511,7 +507,7 @@ export default class Player
       this.meetPlayersInStarByVisibility(star, "stealthy");
     }
     // identify units
-    var unitsToIdentify = star.getUnits();
+    const unitsToIdentify = star.getUnits();
     for (let i = 0; i < unitsToIdentify.length; i++)
     {
       this.identifyUnit(unitsToIdentify[i]);
@@ -530,11 +526,11 @@ export default class Player
   }
   meetPlayersInStarByVisibility(star: Star, visibility: string): void
   {
-    var presentPlayersByVisibility = star.getPresentPlayersByVisibility();
+    const presentPlayersByVisibility = star.getPresentPlayersByVisibility();
 
     for (let playerId in presentPlayersByVisibility[visibility])
     {
-      var player = presentPlayersByVisibility[visibility][playerId];
+      const player = presentPlayersByVisibility[visibility][playerId];
       if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent)
       {
         this.diplomacyStatus.meetPlayer(player);
@@ -543,17 +539,17 @@ export default class Player
   }
   updateVisibleStars(): void
   {
-    var previousVisibleStars = extendObject(this.visibleStars);
-    var previousDetectedStars = extendObject(this.detectedStars);
-    var newVisibleStars: Star[] = [];
-    var newDetectedStars: Star[] = [];
-    var visibilityHasChanged: boolean = false;
-    var detectionHasChanged: boolean = false;
+    const previousVisibleStars = extendObject(this.visibleStars);
+    const previousDetectedStars = extendObject(this.detectedStars);
+    const newVisibleStars: Star[] = [];
+    const newDetectedStars: Star[] = [];
+    let visibilityHasChanged: boolean = false;
+    let detectionHasChanged: boolean = false;
     this.visibleStars = {};
     this.detectedStars = {};
 
-    var allVisible: Star[] = [];
-    var allDetected: Star[] = [];
+    let allVisible: Star[] = [];
+    let allDetected: Star[] = [];
     for (let i = 0; i < this.controlledLocations.length; i++)
     {
       allVisible = allVisible.concat(this.controlledLocations[i].getVision());
@@ -567,7 +563,7 @@ export default class Player
 
     for (let i = 0; i < allVisible.length; i++)
     {
-      var star = allVisible[i];
+      const star = allVisible[i];
       if (!this.visibleStars[star.id])
       {
         this.visibleStars[star.id] = star;
@@ -586,7 +582,7 @@ export default class Player
 
     for (let i = 0; i < allDetected.length; i++)
     {
-      var star = allDetected[i];
+      const star = allDetected[i];
       if (!this.detectedStars[star.id])
       {
         this.detectedStars[star.id] = star;
@@ -655,11 +651,11 @@ export default class Player
       this.updateVisibleStars();
     }
 
-    var visible: Star[] = [];
+    const visible: Star[] = [];
 
     for (let id in this.visibleStars)
     {
-      var star = this.visibleStars[id];
+      const star = this.visibleStars[id];
       visible.push(star);
     }
 
@@ -676,7 +672,7 @@ export default class Player
       this.updateVisibleStars();
     }
 
-    var toReturn: Star[] = [];
+    const toReturn: Star[] = [];
 
     for (let id in this.revealedStars)
     {
@@ -692,7 +688,7 @@ export default class Player
       this.updateVisibleStars();
     }
 
-    var toReturn: Star[] = [];
+    const toReturn: Star[] = [];
 
     for (let id in this.revealedStars)
     {
@@ -715,7 +711,7 @@ export default class Player
       this.updateVisibleStars();
     }
 
-    var toReturn: Star[] = [];
+    const toReturn: Star[] = [];
 
     for (let id in this.detectedStars)
     {
@@ -758,18 +754,18 @@ export default class Player
       this.updateVisibleStars();
     }
 
-    var linksBySourceStarId:
+    const linksBySourceStarId:
     {
       [starId: number]: Star[];
     } = {};
 
     for (let starId in this.revealedStars)
     {
-      var star = this.revealedStars[starId];
-      var links = star.getAllLinks();
+      const star = this.revealedStars[starId];
+      const links = star.getAllLinks();
       for (let i = 0; i < links.length; i++)
       {
-        var linkedStar = links[i];
+        const linkedStar = links[i];
         if (!this.revealedStars[linkedStar.id])
         {
           if (!linksBySourceStarId[star.id])
@@ -826,7 +822,7 @@ export default class Player
   }
   removeItem(item: Item): void
   {
-    var index = this.items.indexOf(item);
+    const index = this.items.indexOf(item);
     if (index === -1)
     {
       throw new Error("Player " + this.name + " has no item " + item.id);
@@ -836,8 +832,8 @@ export default class Player
   }
   getNearestOwnedStarTo(star: Star): Star
   {
-    var self = this;
-    var isOwnedByThisFN = function(star: Star)
+    const self = this;
+    const isOwnedByThisFN = function(star: Star)
     {
       return star.owner === self;
     };
@@ -846,7 +842,7 @@ export default class Player
   }
   attackTarget(location: Star, target: FleetAttackTarget, battleFinishCallback?: () => void): void
   {
-    var battleData: BattleData =
+    const battleData: BattleData =
     {
       location: location,
       building: target.building,
@@ -862,7 +858,7 @@ export default class Player
       },
     };
 
-    var battlePrep = new BattlePrep(battleData);
+    const battlePrep = new BattlePrep(battleData);
     if (battlePrep.humanPlayer)
     {
       app.reactUI.battlePrep = battlePrep;
@@ -874,9 +870,9 @@ export default class Player
     }
     else
     {
-      var battle = battlePrep.makeBattle();
+      const battle = battlePrep.makeBattle();
       battle.afterFinishCallbacks.push(battleFinishCallback);
-      var simulator = new BattleSimulator(battle);
+      const simulator = new BattleSimulator(battle);
       simulator.simulateBattle();
       simulator.finishBattle();
     }
@@ -884,7 +880,7 @@ export default class Player
   // research and technology
   getResearchSpeed(): number
   {
-    var research = 0;
+    let research = 0;
     research += app.moduleData.ruleSet.research.baseResearchSpeed;
 
     for (let i = 0; i < this.controlledLocations.length; i++)
@@ -897,7 +893,7 @@ export default class Player
   // MANUFACTORIES
   getAllManufactories(): Manufactory[]
   {
-    var manufactories: Manufactory[] = [];
+    const manufactories: Manufactory[] = [];
 
     for (let i = 0; i < this.controlledLocations.length; i++)
     {
@@ -918,7 +914,7 @@ export default class Player
 
     for (let i = 0; i < requirements.length; i++)
     {
-      var requirement = requirements[i];
+      const requirement = requirements[i];
       if (this.playerTechnology.technologies[requirement.technology.key].level < requirement.level)
       {
         return false;
@@ -934,7 +930,7 @@ export default class Player
   getGloballyBuildableItems(): ItemTemplate[]
   {
     // TODO manufactory
-    var itemTypes: ItemTemplate[] = [];
+    const itemTypes: ItemTemplate[] = [];
 
     for (let key in app.moduleData.Templates.Items)
     {
@@ -945,38 +941,38 @@ export default class Player
   }
   getManufacturingCapacityFor(template: ManufacturableThing, type: "item" | "unit"): number
   {
-    var totalCapacity = 0;
-    var capacityByStar:
+    let totalCapacity = 0;
+    const capacityByStar:
     {
       star: Star;
       capacity: number;
     }[] = [];
-    var isGloballyBuildable: boolean;
+    let isGloballyBuildable: boolean;
     switch (type)
     {
       case "item":
       {
-        var globallyBuildableItems = <ManufacturableThing[]> this.getGloballyBuildableItems();
+        const globallyBuildableItems = <ManufacturableThing[]> this.getGloballyBuildableItems();
         isGloballyBuildable = globallyBuildableItems.indexOf(template) !== -1;
         break;
       }
       case "unit":
       {
-        var globallyBuildableUnits = <ManufacturableThing[]> this.getGloballyBuildableUnits();
+        const globallyBuildableUnits = <ManufacturableThing[]> this.getGloballyBuildableUnits();
         isGloballyBuildable = globallyBuildableUnits.indexOf(template) !== -1;
         break;
       }
     }
-    var manufactories = this.getAllManufactories();
+    const manufactories = this.getAllManufactories();
 
     for (let i = 0; i < manufactories.length; i++)
     {
-      var manufactory = manufactories[i];
-      var isBuildable = !manufactory.queueIsFull() &&
+      const manufactory = manufactories[i];
+      const isBuildable = !manufactory.queueIsFull() &&
         (isGloballyBuildable || manufactory.canManufactureThing(template, type));
       if (isBuildable)
       {
-        var capacity = manufactory.capacity - manufactory.buildQueue.length;
+        const capacity = manufactory.capacity - manufactory.buildQueue.length;
         totalCapacity += capacity;
         capacityByStar.push(
         {
@@ -991,19 +987,19 @@ export default class Player
   serialize(): PlayerSaveData
   {
 
-    var revealedStarIds: number[] = [];
+    const revealedStarIds: number[] = [];
     for (let id in this.revealedStars)
     {
       revealedStarIds.push(this.revealedStars[id].id);
     }
 
-    var identifiedUnitIds: number[] = [];
+    const identifiedUnitIds: number[] = [];
     for (let id in this.identifiedUnits)
     {
       identifiedUnitIds.push(this.identifiedUnits[id].id);
     }
 
-    var data: PlayerSaveData =
+    const data: PlayerSaveData =
     {
       id: this.id,
       name: this.name.serialize(),

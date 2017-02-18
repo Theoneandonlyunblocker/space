@@ -27,18 +27,18 @@ export function getRandomArrayKey<T>(target: T[]): number
 }
 export function getRandomArrayItem<T>(target: T[]): T
 {
-  var _rnd = Math.floor(Math.random() * (target.length));
+  const _rnd = Math.floor(Math.random() * (target.length));
   return target[_rnd];
 }
 export function getSeededRandomArrayItem<T>(array: T[], rng: any): T
 {
-  var _rnd = Math.floor(rng.uniform() * array.length);
+  const _rnd = Math.floor(rng.uniform() * array.length);
   return array[_rnd];
 }
 export function getRandomKey<T>(target: {[props: string]: T;}): string
 {
-  var _targetKeys = Object.keys(target);
-  var _rnd = Math.floor(Math.random() * (_targetKeys.length));
+  const _targetKeys = Object.keys(target);
+  const _rnd = Math.floor(Math.random() * (_targetKeys.length));
   return _targetKeys[_rnd];
 }
 
@@ -87,12 +87,12 @@ export function sortObjectsByProperty(objects:
 
 export function getRandomProperty<T>(target: {[props: string]: T;}): T
 {
-  var _rndProp = target[getRandomKey(target)];
+  const _rndProp = target[getRandomKey(target)];
   return _rndProp;
 }
 export function getAllPropertiesWithKey<T>(target: {[props: string]: T}, keyToFind: string): T[]
 {
-  var matchingProperties: T[] = [];
+  const matchingProperties: T[] = [];
   for (let key in target)
   {
     if (target[key][keyToFind])
@@ -105,11 +105,11 @@ export function getAllPropertiesWithKey<T>(target: {[props: string]: T}, keyToFi
 }
 export function getRandomPropertyWithKey<T>(target: {[props: string]: T}, keyToFind: string): T | null
 {
-  var keys = Object.keys(target);
+  const keys = Object.keys(target);
   while (keys.length > 0)
   {
-    var key = getRandomArrayItem(keys);
-    var prop = target[key];
+    const key = getRandomArrayItem(keys);
+    const prop = target[key];
     if (prop[keyToFind])
     {
       return prop;
@@ -124,13 +124,13 @@ export function getRandomPropertyWithKey<T>(target: {[props: string]: T}, keyToF
 }
 export function getRandomKeyWithWeights(target: {[prop: string]: number}): string
 {
-  var totalWeight: number = 0;
+  let totalWeight: number = 0;
   for (let prop in target)
   {
     totalWeight += target[prop];
   }
 
-  var selection = randRange(0, totalWeight);
+  let selection = randRange(0, totalWeight);
   for (let prop in target)
   {
     selection -= target[prop];
@@ -144,13 +144,13 @@ export function getRandomKeyWithWeights(target: {[prop: string]: number}): strin
 }
 export function getRandomArrayItemWithWeights<T extends {weight?: number}>(arr: T[]): T
 {
-  var totalWeight: number = 0;
+  let totalWeight: number = 0;
   for (let i = 0; i < arr.length; i++)
   {
     totalWeight += arr[i].weight;
   }
 
-  var selection = randRange(0, totalWeight);
+  let selection = randRange(0, totalWeight);
   for (let i = 0; i < arr.length; i++)
   {
     selection -= arr[i].weight;
@@ -163,9 +163,9 @@ export function getRandomArrayItemWithWeights<T extends {weight?: number}>(arr: 
   throw new Error();
 }
 export function findItemWithKey<T>(source: {[key: string]: any},
-  keyToFind: string, parentKey?: string, hasParentKey: boolean = false): T
+  keyToFind: string, parentKey?: string, _hasParentKey: boolean = false): T
 {
-  var hasParentKey = hasParentKey;
+  let hasParentKey = _hasParentKey;
   if (source[keyToFind])
   {
     if (!parentKey || hasParentKey)
@@ -197,7 +197,7 @@ export function findItemWithKey<T>(source: {[key: string]: any},
 }
 export function getFrom2dArray<T>(target: T[][], arr: number[][]): (T | null)[]
 {
-  var result: (T | null)[] = [];
+  const result: (T | null)[] = [];
   for (let i = 0; i < arr.length; i++)
   {
     if
@@ -219,7 +219,7 @@ export function getFrom2dArray<T>(target: T[][], arr: number[][]): (T | null)[]
 }
 export function flatten2dArray<T>(toFlatten: T[][]): T[]
 {
-  var flattened: T[] = [];
+  const flattened: T[] = [];
   for (let i = 0; i < toFlatten.length; i++)
   {
     for (let j = 0; j < toFlatten[i].length; j++)
@@ -250,16 +250,16 @@ export function reverseSide(side: UnitBattleSide): UnitBattleSide
 }
 export function sortByManufactoryCapacityFN(a: Star, b: Star)
 {
-  var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
-  var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
+  const aLevel = (a.manufactory ? a.manufactory.capacity : -1);
+  const bLevel = (b.manufactory ? b.manufactory.capacity : -1);
 
   if (bLevel !== aLevel)
   {
     return bLevel - aLevel;
   }
 
-  var _a: string = a.name.toLowerCase();
-  var _b: string = b.name.toLowerCase();
+  const _a: string = a.name.toLowerCase();
+  const _b: string = b.name.toLowerCase();
 
   if (_a > _b) return 1;
   else if (_a < _b) return -1;
@@ -267,13 +267,13 @@ export function sortByManufactoryCapacityFN(a: Star, b: Star)
 }
 export function rectContains(rect:{x1: number, x2: number, y1: number, y2: number}, point: Point)
 {
-  var x = point.x;
-  var y = point.y;
+  const x = point.x;
+  const y = point.y;
 
-  var x1 = Math.min(rect.x1, rect.x2);
-  var x2 = Math.max(rect.x1, rect.x2);
-  var y1 = Math.min(rect.y1, rect.y2);
-  var y2 = Math.max(rect.y1, rect.y2);
+  const x1 = Math.min(rect.x1, rect.x2);
+  const x2 = Math.max(rect.x1, rect.x2);
+  const y1 = Math.min(rect.y1, rect.y2);
+  const y2 = Math.max(rect.y1, rect.y2);
 
   return(
     (x >= x1 && x <= x2) &&
@@ -284,7 +284,7 @@ export function rectContains(rect:{x1: number, x2: number, y1: number, y2: numbe
 export function hexToString(hex: number)
 {
   hex = Math.round(hex);
-  var converted = hex.toString(16);
+  const converted = hex.toString(16);
   return "000000".substr(0, 6 - converted.length) + converted;
 }
 export function stringToHex(text: string)
@@ -309,12 +309,12 @@ export function drawElementToCanvas(toClone: HTMLImageElement | HTMLCanvasElemen
 }
 export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
 {
-  var canvas = document.createElement("canvas");
+  const canvas = document.createElement("canvas");
 
   canvas.width = image.width;
   canvas.height = image.height;
 
-  var ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d");
   ctx.drawImage(image, 0, 0, image.width, image.height);
 
   ctx.globalCompositeOperation = "source-in";
@@ -339,7 +339,7 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
     return new from.constructor(from);
 
   to = to || new from.constructor();
-  var toIterateOver = onlyExtendAlreadyPresent ? to : from;
+  const toIterateOver = onlyExtendAlreadyPresent ? to : from;
 
   for (let name in toIterateOver)
   {
@@ -377,12 +377,12 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
 {
   if (excludeKeysNotInTarget)
   {
-    var merged = deepMerge(target, src, false);
+    const merged = deepMerge(target, src, false);
     return deletePropertiesNotSharedWithTarget(merged, target);
   }
 
-  var array = Array.isArray(src);
-  var dst: any = array && [] || {};
+  const array = Array.isArray(src);
+  let dst: any = array && [] || {};
 
   if (array)
   {
@@ -443,7 +443,7 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
 export function deletePropertiesNotSharedWithTarget(source: {[key: string]: any},
   target: {[key: string]: any})
 {
-  var dst: any = {};
+  const dst: any = {};
 
   for (let key in target)
   {
@@ -466,7 +466,7 @@ export function recursiveRemoveAttribute(parent: HTMLElement, attribute: string)
 
   for (let i = 0; i < parent.children.length; i++)
   {
-    var child = <HTMLElement> parent.children[i];
+    const child = <HTMLElement> parent.children[i];
     recursiveRemoveAttribute(child, attribute);
   }
 }
@@ -480,7 +480,7 @@ export function clamp(value: number, min: number, max: number)
 // http://stackoverflow.com/a/3254334
 export function roundToNearestMultiple(value: number, multiple: number)
 {
-  var resto = value % multiple;
+  const resto = value % multiple;
   if (resto <= (multiple / 2))
   {
     return value - resto;
@@ -492,8 +492,8 @@ export function roundToNearestMultiple(value: number, multiple: number)
 }
 export function getAngleBetweenDegrees(degA: number, degB: number)
 {
-  var angle = Math.abs(degB - degA) % 360;
-  var distance = Math.min(360 - angle, angle);
+  const angle = Math.abs(degB - degA) % 360;
+  const distance = Math.min(360 - angle, angle);
   return distance;
 }
 export function prettifyDate(date: Date)
@@ -514,16 +514,16 @@ export function prettifyDate(date: Date)
 }
 export function getMatchingLocalstorageItemsByDate(stringToMatch: string)
 {
-  var allKeys = Object.keys(localStorage);
-  var matchingItems: any[] = [];
+  const allKeys = Object.keys(localStorage);
+  const matchingItems: any[] = [];
 
 
   for (let i = 0; i < allKeys.length; i++)
   {
     if (allKeys[i].indexOf(stringToMatch) !== -1)
     {
-      var item = localStorage.getItem(allKeys[i]);
-      var parsed = JSON.parse(item);
+      const item = localStorage.getItem(allKeys[i]);
+      const parsed = JSON.parse(item);
       if (parsed.date)
       {
         matchingItems.push(parsed);
@@ -540,17 +540,17 @@ export function getMatchingLocalstorageItemsByDate(stringToMatch: string)
 }
 export function shuffleArray(toShuffle: any[], seed?: any)
 {
-  var rng = new RNG(seed);
-  var resultArray = toShuffle.slice(0);
+  const rng = new RNG(seed);
+  const resultArray = toShuffle.slice(0);
 
-  var i = resultArray.length;
+  let i = resultArray.length;
 
   while (i > 0)
   {
     i--;
-    var n = rng.random(0, i);
+    const n = rng.random(0, i);
 
-    var temp = resultArray[i];
+    const temp = resultArray[i];
     resultArray[i] = resultArray[n];
     resultArray[n] = temp;
   }
@@ -577,22 +577,22 @@ export function getRelativeValue(value: number, min: number, max: number, invers
 }
 export function getRelativeWeightsFromObject(byCount: {[prop: string]: number}, inverse?: boolean)
 {
-  var relativeWeights:
+  const relativeWeights:
   {
     [prop: string]: number;
   } = {};
 
-  var min = 0;
-  var max: number;
+  const min = 0;
+  let max: number;
   for (let prop in byCount)
   {
-    var count = byCount[prop];
+    const count = byCount[prop];
     max = isFinite(max) ? Math.max(max, count) : count;
   }
 
   for (let prop in byCount)
   {
-    var count = byCount[prop];
+    const count = byCount[prop];
     relativeWeights[prop] = getRelativeValue(count, min, max);
   }
 
@@ -600,8 +600,8 @@ export function getRelativeWeightsFromObject(byCount: {[prop: string]: number}, 
 }
 export function getDropTargetAtLocation(x: number, y: number)
 {
-  var dropTargets = document.getElementsByClassName("drop-target");
-  var point =
+  const dropTargets = document.getElementsByClassName("drop-target");
+  const point =
   {
     x: x,
     y: y,
@@ -609,10 +609,10 @@ export function getDropTargetAtLocation(x: number, y: number)
 
   for (let i = 0; i < dropTargets.length; i++)
   {
-    var node = <HTMLElement> dropTargets[i];
-    var nodeBounds = node.getBoundingClientRect();
+    const node = <HTMLElement> dropTargets[i];
+    const nodeBounds = node.getBoundingClientRect();
 
-    var rect =
+    const rect =
     {
       x1: nodeBounds.left,
       x2: nodeBounds.right,
@@ -642,7 +642,7 @@ export function meetAllPlayers()
 {
   for (let i = 0; i < app.game.playerOrder.length; i++)
   {
-    var player = app.game.playerOrder[i];
+    const player = app.game.playerOrder[i];
     if (player !== app.humanPlayer)
     {
       app.humanPlayer.diplomacyStatus.meetPlayer(player);
@@ -651,7 +651,7 @@ export function meetAllPlayers()
 }
 export function getItemsFromWeightedProbabilities<T>(probabilities: WeightedProbability<T>[])
 {
-  var allItems: T[] = [];
+  let allItems: T[] = [];
 
   if (probabilities.length === 0)
   {
@@ -661,17 +661,17 @@ export function getItemsFromWeightedProbabilities<T>(probabilities: WeightedProb
   // weighted
   if (probabilities[0].weight)
   {
-    var selected = getRandomArrayItemWithWeights<WeightedProbability<T>>(probabilities);
-    var firstItem = <WeightedProbability<T>> selected.probabilityItems[0];
+    const selected = getRandomArrayItemWithWeights<WeightedProbability<T>>(probabilities);
+    const firstItem = <WeightedProbability<T>> selected.probabilityItems[0];
 
     if (firstItem.probabilityItems)
     {
-      var probabilityItems = <WeightedProbability<T>[]> selected.probabilityItems;
+      const probabilityItems = <WeightedProbability<T>[]> selected.probabilityItems;
       allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
     }
     else
     {
-      var toAdd = <T[]> selected.probabilityItems;
+      const toAdd = <T[]> selected.probabilityItems;
       allItems = allItems.concat(toAdd);
     }
   }
@@ -680,18 +680,18 @@ export function getItemsFromWeightedProbabilities<T>(probabilities: WeightedProb
     // flat probability
     for (let i = 0; i < probabilities.length; i++)
     {
-      var selected: WeightedProbability<T> = probabilities[i];
+      const selected: WeightedProbability<T> = probabilities[i];
       if (Math.random() < selected.flatProbability)
       {
-        var firstItem = <WeightedProbability<T>> selected.probabilityItems[0];
+        const firstItem = <WeightedProbability<T>> selected.probabilityItems[0];
         if (firstItem.probabilityItems)
         {
-          var probabilityItems = <WeightedProbability<T>[]> selected.probabilityItems;
+          const probabilityItems = <WeightedProbability<T>[]> selected.probabilityItems;
           allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
         }
         else
         {
-          var toAdd = <T[]> selected.probabilityItems;
+          const toAdd = <T[]> selected.probabilityItems;
           allItems = allItems.concat(toAdd);
         }
       }
@@ -701,8 +701,8 @@ export function getItemsFromWeightedProbabilities<T>(probabilities: WeightedProb
 }
 export function transformMat3(a: Point, m: number[])
 {
-  var x = m[0] * a.x + m[3] * a.y + m[6];
-  var y = m[1] * a.x + m[4] * a.y + m[7];
+  const x = m[0] * a.x + m[3] * a.y + m[6];
+  const y = m[1] * a.x + m[4] * a.y + m[7];
 
   return {x: x, y: y};
 }
@@ -711,9 +711,9 @@ export function transformMat3(a: Point, m: number[])
 export function createDummySpriteForShader(x?: number, y?: number,
   width?: number, height?: number)
 {
-  var texture = getDummyTextureForShader();
+  const texture = getDummyTextureForShader();
 
-  var sprite = new PIXI.Sprite(texture);
+  const sprite = new PIXI.Sprite(texture);
   if (x || y)
   {
     sprite.position = new PIXI.Point(x || 0, y || 0);
@@ -731,7 +731,7 @@ export function createDummySpriteForShader(x?: number, y?: number,
 }
 export function getDummyTextureForShader()
 {
-  var canvas = <any> document.createElement("canvas");
+  const canvas = <any> document.createElement("canvas");
   canvas._pixiId = "dummyShaderTexture"; // pixi will reuse basetexture with this set
   canvas.width = 1;
   canvas.height = 1;
@@ -761,14 +761,14 @@ export function findEasingFunctionHighPoint(easingFunction: (x: number) => numbe
     return (startIndex + endIndex) / 2;
   }
 
-  var highestValue: number;
-  var highestValueIndex: number;
+  let highestValue: number;
+  let highestValueIndex: number;
 
-  var step = (endIndex - startIndex) / resolution;
+  const step = (endIndex - startIndex) / resolution;
   for (let i = 0; i < resolution; i++)
   {
-    var currentIndex = startIndex + i * step;
-    var currentValue = easingFunction(currentIndex);
+    const currentIndex = startIndex + i * step;
+    const currentValue = easingFunction(currentIndex);
 
     if (!isFinite(highestValue) || currentValue > highestValue)
     {
@@ -792,7 +792,7 @@ export function pointsEqual(p1: Point, p2: Point)
 
 export function makeRandomPersonality(): Personality
 {
-  var unitCompositionPreference: ArchetypeValues = {};
+  const unitCompositionPreference: ArchetypeValues = {};
 
   for (let archetype in app.moduleData.Templates.UnitArchetypes)
   {
@@ -812,7 +812,7 @@ export function splitMultilineText(text: string | React.ReactFragment): string |
 {
   if (Array.isArray(text))
   {
-    var returnArr: React.ReactNode[] = [];
+    const returnArr: React.ReactNode[] = [];
     for (let i = 0; i < text.length; i++)
     {
       returnArr.push(text[i]);

@@ -44,8 +44,8 @@ export default class BattleTurnOrder
   {
     for (let i = 0; i < this.orderedUnits.length; i++)
     {
-      var unit = this.orderedUnits[i];
-      var unitMoveDelay = unit.battleStats.moveDelay;
+      const unit = this.orderedUnits[i];
+      const unitMoveDelay = unit.battleStats.moveDelay;
 
       if (ghostMoveDelay < unitMoveDelay)
       {

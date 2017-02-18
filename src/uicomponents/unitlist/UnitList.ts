@@ -40,7 +40,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var rows: ListItem<UnitListItemProps>[] = this.props.units.map(unit =>
+    const rows: ListItem<UnitListItemProps>[] = this.props.units.map(unit =>
     {
       return(
       {
@@ -83,7 +83,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
       });
     });
 
-    var columns: ListColumn<UnitListItemProps>[] =
+    const columns: ListColumn<UnitListItemProps>[] =
     [
       {
         label: "Id",

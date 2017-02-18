@@ -67,27 +67,27 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 
   getDefaultValues(mapGenTemplate: MapGenTemplate, unsetOnly: boolean = true)
   {
-    var defaultValues = {};
+    const defaultValues = {};
 
     ["defaultOptions", "basicOptions", "advancedOptions"].forEach(optionGroup =>
     {
-      var options: MapGenOptions = mapGenTemplate.options[optionGroup];
+      const options: MapGenOptions = mapGenTemplate.options[optionGroup];
       if (!options) return;
 
       for (let optionName in options)
       {
-        var option: Range = options[optionName].range;
-        var value: number;
+        const option: Range = options[optionName].range;
+        let value: number;
 
         if (unsetOnly && this.state && isFinite(this.getOptionValue(optionName)))
         {
           if (!this.props.mapGenTemplate.options[optionGroup]) continue;
 
-          var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
+          const oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
 
           if (!oldOption) continue;
 
-          var oldValuePercentage = getRelativeValue(
+          const oldValuePercentage = getRelativeValue(
             this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
           value = option.min + (option.max - option.min) * oldValuePercentage;
         }
@@ -111,7 +111,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 
   handleOptionChange(optionName: string, newValue: number)
   {
-    var changedState: StateType = {};
+    const changedState: StateType = {};
     changedState["optionValue_" + optionName] = newValue;
 
     this.setState(changedState);
@@ -124,16 +124,16 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 
   randomizeOptions()
   {
-    var newValues: StateType = {};
+    const newValues: StateType = {};
 
-    var optionGroups: MapGenOptions = this.props.mapGenTemplate.options;
+    const optionGroups: MapGenOptions = this.props.mapGenTemplate.options;
     for (let optionGroupName in optionGroups)
     {
-      var optionGroup = optionGroups[optionGroupName];
+      const optionGroup = optionGroups[optionGroupName];
       for (let optionName in optionGroup)
       {
-        var option = optionGroup[optionName].range;
-        var optionValue = clamp(roundToNearestMultiple(randInt(option.min, option.max), option.step), option.min, option.max);
+        const option = optionGroup[optionName].range;
+        const optionValue = clamp(roundToNearestMultiple(randInt(option.min, option.max), option.step), option.min, option.max);
         newValues["optionValue_" + optionName] = optionValue;
       }
     }
@@ -143,16 +143,16 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 
   getOptionValuesForTemplate(): MapGenOptionValues
   {
-    var optionValues: MapGenOptionValues =
+    const optionValues: MapGenOptionValues =
       extendObject(this.props.mapGenTemplate.options);
 
     for (let groupName in optionValues)
     {
-      var optionsGroup = optionValues[groupName];
+      const optionsGroup = optionValues[groupName];
 
       for (let optionName in optionsGroup)
       {
-        var optionValue = this.getOptionValue(optionName);
+        const optionValue = this.getOptionValue(optionName);
         if (!isFinite(optionValue))
         {
           throw new Error("Value " + optionValue + " for option " + optionName + " is invalid.");
@@ -167,9 +167,9 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 
   render()
   {
-    var optionGroups: React.ReactElement<any>[] = [];
+    const optionGroups: React.ReactElement<any>[] = [];
 
-    var optionGroupsInfo =
+    const optionGroupsInfo =
     {
       defaultOptions:
       {
@@ -193,11 +193,11 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
       if (!this.props.mapGenTemplate.options[groupName]) continue;
 
 
-      var options: {key: string; content: React.ReactElement<any>;}[] = [];
+      const options: {key: string; content: React.ReactElement<any>;}[] = [];
 
       for (let optionName in this.props.mapGenTemplate.options[groupName])
       {
-        var option = this.props.mapGenTemplate.options[groupName][optionName];
+        const option = this.props.mapGenTemplate.options[groupName][optionName];
 
         options.push(
         {

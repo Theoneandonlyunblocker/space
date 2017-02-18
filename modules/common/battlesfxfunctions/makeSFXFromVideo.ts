@@ -22,7 +22,6 @@ export default function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: P
       onStartFN(sprite);
     }
 
-    startTime = Date.now();
     props.triggerStart(sprite);
     animate();
   }
@@ -33,9 +32,9 @@ export default function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: P
     throw new Error("Video " + videoSrc + " failed to load.");
   }
 
-  var baseTexture = PIXI.VideoBaseTexture.fromUrl(videoSrc);
-  var texture = new PIXI.Texture(baseTexture);
-  var sprite = new PIXI.Sprite(texture);
+  const baseTexture = PIXI.VideoBaseTexture.fromUrl(videoSrc);
+  const texture = new PIXI.Texture(baseTexture);
+  const sprite = new PIXI.Sprite(texture);
 
   if (!props.facingRight)
   {
@@ -56,8 +55,6 @@ export default function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: P
   {
     onVideoError();
   }
-
-  var startTime: number;
 
   function animate()
   {

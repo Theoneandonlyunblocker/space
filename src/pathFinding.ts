@@ -21,11 +21,11 @@ export interface PathNode
 
 export function backTrace(graph: {[starID: number]: PathNode}, target: Star): PathNode[]
 {
-  var parent = graph[target.id];
+  let parent = graph[target.id];
 
   if (!parent) return [];
 
-  var path =
+  const path =
   [
     {
       star: target,
@@ -50,7 +50,7 @@ export function backTrace(graph: {[starID: number]: PathNode}, target: Star): Pa
 
 export function aStar(start: Star, target: Star): AStarGraph | null
 {
-  var frontier = new PriorityQueue();
+  const frontier = new PriorityQueue();
   frontier.push(0, start);
 
   const cameFrom:
@@ -71,28 +71,28 @@ export function aStar(start: Star, target: Star): AStarGraph | null
 
   while (!frontier.isEmpty())
   {
-    var current = frontier.pop();
+    const current = frontier.pop();
     if (current === target)
     {
       return {came: cameFrom, cost: costSoFar};
     }
 
-    var neighbors = current.getAllLinks();
+    const neighbors = current.getAllLinks();
 
     for (let i = 0; i < neighbors.length; i++)
     {
-      var neigh = neighbors[i];
+      const neigh = neighbors[i];
       if (!neigh) continue;
 
-      var moveCost = 1;
+      const moveCost = 1;
 
-      var newCost = costSoFar[current.id] + moveCost;
+      const newCost = costSoFar[current.id] + moveCost;
 
       if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id])
       {
         costSoFar[neigh.id] = newCost;
         // ^ done
-        var priority = newCost;
+        const priority = newCost;
         frontier.push(priority, neigh);
         cameFrom[neigh.id] =
         {

@@ -49,7 +49,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   }
   makePopup()
   {
-    var popupId = this.popupManager.makePopup(
+    const popupId = this.popupManager.makePopup(
     {
       content: TopMenuPopup(
       {
@@ -97,15 +97,15 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   }
   render()
   {
-    var rows: React.ReactHTMLElement<any>[] = [];
+    const rows: React.ReactHTMLElement<any>[] = [];
 
-    var totalBars = Math.ceil(this.props.experienceToNextLevel) / 10;
-    var filledBars = Math.ceil(this.props.experienceForCurrentLevel / 10);
-    var lastBarWidth = (10 * (this.props.experienceForCurrentLevel % 10));
+    const totalBars = Math.ceil(this.props.experienceToNextLevel) / 10;
+    const filledBars = Math.ceil(this.props.experienceForCurrentLevel / 10);
+    const lastBarWidth = (10 * (this.props.experienceForCurrentLevel % 10));
 
     for (let i = 0; i < totalBars; i++)
     {
-      var bgProps: React.HTMLAttributes =
+      const bgProps: React.HTMLAttributes =
       {
         className: "unit-experience-bar-point-background",
       };
@@ -137,13 +137,13 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
       ));
     }
 
-    var isReadyToLevelUp = this.props.experienceForCurrentLevel >= this.props.experienceToNextLevel;
+    const isReadyToLevelUp = this.props.experienceForCurrentLevel >= this.props.experienceToNextLevel;
 
-    var containerProps: React.HTMLAttributes =
+    const containerProps: React.HTMLAttributes =
     {
       className: "unit-experience-bar-container",
     };
-    var barProps: React.HTMLAttributes =
+    const barProps: React.HTMLAttributes =
     {
       className: "unit-experience-bar",
       title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp",

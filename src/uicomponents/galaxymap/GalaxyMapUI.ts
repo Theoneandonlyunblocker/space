@@ -67,7 +67,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
 
   private getInitialStateTODO(): StateType
   {
-    var pc = this.props.playerControl;
+    const pc = this.props.playerControl;
 
     return(
     {
@@ -108,8 +108,8 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.state.expandedActionElement) return;
 
-    var maxHeight = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_leftColumnContent).getBoundingClientRect().height;
-    var listElement = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_expandedActionElementContainer).firstChild.firstChild;
+    const maxHeight = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_leftColumnContent).getBoundingClientRect().height;
+    const listElement = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_expandedActionElementContainer).firstChild.firstChild;
     listElement.style.maxHeight = "" + (maxHeight - 10) + "px";
   }
 
@@ -141,9 +141,9 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
 
   updateSelection()
   {
-    var pc = this.props.playerControl;
+    const pc = this.props.playerControl;
 
-    var star: Star = null;
+    let star: Star = null;
     if (pc.selectedStar) star = pc.selectedStar;
     else if (pc.areAllFleetsInSameLocation())
     {
@@ -168,7 +168,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var endTurnButtonProps: any =
+    const endTurnButtonProps: any =
     {
       className: "end-turn-button",
       onClick: this.endTurn,
@@ -180,15 +180,15 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
       endTurnButtonProps.disabled = true;
     }
 
-    var selectionContainerClassName = "fleet-selection-container";
+    let selectionContainerClassName = "fleet-selection-container";
     if (this.state.currentlyReorganizing.length > 0)
     {
       selectionContainerClassName += " reorganizing";
     }
 
-    var isInspecting = this.state.inspectedFleets.length > 0;
+    const isInspecting = this.state.inspectedFleets.length > 0;
 
-    var expandedActionElement: React.ReactHTMLElement<any> = null;
+    let expandedActionElement: React.ReactHTMLElement<any> = null;
     if (this.state.expandedActionElement)
     {
       expandedActionElement = React.DOM.div(

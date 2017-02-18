@@ -166,7 +166,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
   handleDrop(position: number[])
   {
-    var battlePrep = this.props.battlePrep;
+    const battlePrep = this.props.battlePrep;
     if (this.state.currentDragUnit)
     {
       battlePrep.humanFormation.setUnit(this.state.currentDragUnit, position);
@@ -184,8 +184,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
   setLeftLowerElement(newElement: string)
   {
-    var oldElement = this.state.leftLowerElement;
-    var newState: any =
+    const oldElement = this.state.leftLowerElement;
+    const newState: any =
     {
       leftLowerElement: newElement,
     };
@@ -201,7 +201,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   {
     if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit)
     {
-      var item = this.state.currentDragItem;
+      const item = this.state.currentDragItem;
       if (this.state.selectedUnit.items.hasItem(item))
       {
         this.state.selectedUnit.items.removeItem(item);
@@ -215,8 +215,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
   handleItemDrop(index: number)
   {
-    var item = this.state.currentDragItem;
-    var unit = this.state.selectedUnit;
+    const item = this.state.currentDragItem;
+    const unit = this.state.selectedUnit;
     if (unit && item)
     {
       unit.items.addItemAtPosition(item, index);
@@ -232,13 +232,13 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var battlePrep = this.props.battlePrep;
-    var player = battlePrep.humanPlayer;
+    const battlePrep = this.props.battlePrep;
+    const player = battlePrep.humanPlayer;
 
     // priority: hovered unit > selected unit > battle info
-    var leftUpperElement: React.ReactElement<any>;
+    let leftUpperElement: React.ReactElement<any>;
 
-    var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
+    const hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
     if (hoveredUnit)
     {
       leftUpperElement = MenuUnitInfo(
@@ -248,7 +248,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     }
     else if (this.state.selectedUnit)
     {
-      var selectedUnitIsFriendly = battlePrep.humanUnits.some(unit => unit === this.state.selectedUnit);
+      const selectedUnitIsFriendly = battlePrep.humanUnits.some(unit => unit === this.state.selectedUnit);
 
       leftUpperElement = MenuUnitInfo(
       {
@@ -270,7 +270,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     }
 
 
-    var leftLowerElement: React.ReactElement<any>;
+    let leftLowerElement: React.ReactElement<any>;
     switch (this.state.leftLowerElement)
     {
       case "playerFormation":
@@ -339,9 +339,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
       }
     };
 
-    var playerIsDefending = player === battlePrep.defender;
+    const playerIsDefending = player === battlePrep.defender;
     const humanFormationValidity = battlePrep.humanFormation.getFormationValidity();
-    var canScout = player.starIsDetected(battlePrep.battleData.location);
+    const canScout = player.starIsDetected(battlePrep.battleData.location);
 
     return(
       React.DOM.div({className: "battle-prep"},
@@ -405,7 +405,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               title: humanFormationValidity.description,
               onClick: function()
               {
-                var battle = battlePrep.makeBattle();
+                const battle = battlePrep.makeBattle();
                 app.reactUI.battle = battle;
                 app.reactUI.switchScene("battle");
               }.bind(this),
@@ -415,8 +415,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               className: "battle-prep-controls-button",
               onClick: function()
               {
-                var battle = battlePrep.makeBattle();
-                var simulator = new BattleSimulator(battle);
+                const battle = battlePrep.makeBattle();
+                const simulator = new BattleSimulator(battle);
                 simulator.simulateBattle();
                 simulator.finishBattle();
                 eventManager.dispatchEvent("setCameraToCenterOn", battle.battleData.location);

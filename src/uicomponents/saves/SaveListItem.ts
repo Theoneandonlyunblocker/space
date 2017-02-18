@@ -54,11 +54,11 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
   }
   makeCell(type: string)
   {
-    var cellProps: React.HTMLProps<HTMLTableCellElement> = {};
+    const cellProps: React.HTMLProps<HTMLTableCellElement> = {};
     cellProps.key = type;
     cellProps.className = "save-list-item-cell" + " save-list-" + type;
 
-    var cellContent: string;
+    let cellContent: string;
 
     switch (type)
     {
@@ -92,18 +92,18 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var columns = this.props.activeColumns;
+    const columns = this.props.activeColumns;
 
-    var cells: React.ReactElement<any>[] = [];
+    const cells: React.ReactElement<any>[] = [];
 
     for (let i = 0; i < columns.length; i++)
     {
-      var cell = this.makeCell(columns[i].key);
+      const cell = this.makeCell(columns[i].key);
 
       cells.push(cell);
     }
 
-    var rowProps: React.HTMLAttributes =
+    const rowProps: React.HTMLAttributes =
     {
       className: "save-list-item",
       onClick : this.props.handleClick,

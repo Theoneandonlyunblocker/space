@@ -2,7 +2,6 @@
 
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
-import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 const resources: MapRendererLayerTemplate =
@@ -12,24 +11,16 @@ const resources: MapRendererLayerTemplate =
   interactive: false,
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
-    var doc = new PIXI.Container();
+    const doc = new PIXI.Container();
 
-    var points: Star[];
-    if (!perspectivePlayer)
-    {
-      points = map.stars;
-    }
-    else
-    {
-      points = perspectivePlayer.getRevealedStars();
-    }
+    const points = perspectivePlayer ? perspectivePlayer.getRevealedStars() : map.stars;
 
     for (let i = 0; i < points.length; i++)
     {
-      var star = points[i];
+      const star = points[i];
       if (!star.resource) continue;
 
-      var text = new PIXI.Text(star.resource.displayName,
+      const text = new PIXI.Text(star.resource.displayName,
       {
         fill: "#FFFFFF",
         stroke: "#000000",

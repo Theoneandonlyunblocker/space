@@ -33,7 +33,7 @@ export default class MapRendererMapMode
   }
   getLayerIndexInContainer(layer: MapRendererLayer)
   {
-    var index = -1;
+    let index = -1;
     for (let i = 0; i < this.layers.length; i++)
     {
       if (this.activeLayers[this.layers[i].template.key])
@@ -65,7 +65,7 @@ export default class MapRendererMapMode
   }
   getActiveLayers(): MapRendererLayer[]
   {
-    var self = this;
+    const self = this;
     return(this.layers.filter(function(layer: MapRendererLayer)
     {
       return self.activeLayers[layer.template.key];
@@ -73,27 +73,27 @@ export default class MapRendererMapMode
   }
   resetLayers()
   {
-    var layersByKey:
+    const layersByKey:
     {
       [key: string]: MapRendererLayer;
     } = {};
 
-    var newLayers: MapRendererLayer[] = [];
-    var newActive:
+    const newLayers: MapRendererLayer[] = [];
+    const newActive:
     {
       [layerName: string]: boolean;
     } = {};
 
     for (let i = 0; i < this.layers.length; i++)
     {
-      var layer = this.layers[i];
+      const layer = this.layers[i];
       layersByKey[layer.template.key] = layer;
     }
 
     for (let i = 0; i < this.template.layers.length; i++)
     {
-      var layerTemplate = this.template.layers[i];
-      var layer = layersByKey[layerTemplate.key];
+      const layerTemplate = this.template.layers[i];
+      const layer = layersByKey[layerTemplate.key];
       newLayers.push(layer);
       newActive[layerTemplate.key] = true;
 
@@ -102,7 +102,7 @@ export default class MapRendererMapMode
 
     for (let key in layersByKey)
     {
-      var layer = layersByKey[key];
+      const layer = layersByKey[key];
       newLayers.push(layer);
       newActive[key] = false;
     }

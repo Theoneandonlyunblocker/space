@@ -32,8 +32,8 @@ export class DefenceBuildingComponent extends React.Component<PropTypes, StateTy
 
   render()
   {
-    var building = this.props.building;
-    var image = app.images[building.template.iconSrc];
+    const building = this.props.building;
+    const image = app.images[building.template.iconSrc];
 
     return(
       React.DOM.div(

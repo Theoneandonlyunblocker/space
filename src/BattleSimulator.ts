@@ -40,8 +40,8 @@ export default class BattleSimulator
       throw new Error("Simulated battle already ended");
     }
 
-    var move = this.tree.getBestMoveAndAdvance(Options.debug.battleSimulationDepth);
-    var target = this.battle.unitsById[move.targetId];
+    const move = this.tree.getBestMoveAndAdvance(Options.debug.battleSimulationDepth);
+    const target = this.battle.unitsById[move.targetId];
 
     this.simulateAbility(move.ability, target);
 
@@ -58,9 +58,9 @@ export default class BattleSimulator
   //     throw new Error("Simulated battle hasn't ended yet");
   //   }
 
-  //   var captured = this.battle.capturedUnits;
-  //   var destroyed = this.battle.deadUnits;
-  //   var victor = this.battle.getVictor();
+  //   const captured = this.battle.capturedUnits;
+  //   const destroyed = this.battle.deadUnits;
+  //   const victor = this.battle.getVictor();
   // }
   finishBattle()
   {

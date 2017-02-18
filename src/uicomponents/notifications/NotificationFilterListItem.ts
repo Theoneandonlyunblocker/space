@@ -57,7 +57,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
 
   handleChangeState(state: NotificationFilterState)
   {
-    var filter = this.props.filter;
+    const filter = this.props.filter;
     filter.handleFilterStateChange(this.props.keyTODO/*TODO react*/, state);
     filter.save();
     this.setState(
@@ -69,15 +69,15 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
 
   render()
   {
-    var inputElements: React.ReactHTMLElement<any>[] = [];
-    var filterState: NotificationFilterState[] = this.state.filterState;
+    const inputElements: React.ReactHTMLElement<any>[] = [];
+    const filterState: NotificationFilterState[] = this.state.filterState;
 
     for (let state in NotificationFilterState)
     {
-      var numericState = parseInt(state);
+      const numericState = parseInt(state);
       if (!isFinite(numericState)) continue;
 
-      var stateIsActive = filterState.indexOf(numericState) !== -1;
+      const stateIsActive = filterState.indexOf(numericState) !== -1;
       inputElements.push(React.DOM.input(
       {
         className: "notification-filter-list-item-filter",

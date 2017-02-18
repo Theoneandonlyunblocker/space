@@ -72,15 +72,15 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
       }
       case "strength":
       {
-        var relativeValue = getRelativeValue(this.props.strength, -20, 20);
+        let relativeValue = getRelativeValue(this.props.strength, -20, 20);
         relativeValue = clamp(relativeValue, 0, 1);
 
-        var deviation = Math.abs(0.5 - relativeValue) * 2;
+        const deviation = Math.abs(0.5 - relativeValue) * 2;
 
-        var hue = 110 * relativeValue;
-        var saturation = 0 + 50 * deviation;
+        const hue = 110 * relativeValue;
+        let saturation = 0 + 50 * deviation;
         if (deviation > 0.3) saturation += 40;
-        var lightness = 70 - 20 * deviation;
+        const lightness = 70 - 20 * deviation;
 
         cellProps.style =
         {
@@ -101,13 +101,13 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
 
   render()
   {
-    var columns = this.props.activeColumns;
+    const columns = this.props.activeColumns;
 
-    var cells: React.ReactHTMLElement<any>[] = [];
+    const cells: React.ReactHTMLElement<any>[] = [];
 
     for (let i = 0; i < columns.length; i++)
     {
-      var cell = this.makeCell(columns[i].key);
+      const cell = this.makeCell(columns[i].key);
 
       cells.push(cell);
     }

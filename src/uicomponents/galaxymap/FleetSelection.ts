@@ -56,7 +56,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
   setElementPosition()
   {
     if (!this.ref_TODO_selected) return;
-    var domNode = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_selected);
+    const domNode = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_selected);
 
     if (!this.props.selectedStar)
     {
@@ -64,20 +64,20 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
     }
     else
     {
-      var containerNode = <HTMLElement> document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
-      var actionsNode = <HTMLElement> containerNode.firstChild.firstChild;
-      var actionsRect = actionsNode.getBoundingClientRect();
-      var rightMostNode = <HTMLElement> (containerNode.childElementCount > 1 ?
+      const containerNode = <HTMLElement> document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
+      const actionsNode = <HTMLElement> containerNode.firstChild.firstChild;
+      const actionsRect = actionsNode.getBoundingClientRect();
+      const rightMostNode = <HTMLElement> (containerNode.childElementCount > 1 ?
         containerNode.lastChild.lastChild :
         containerNode.lastChild);
-      var rightMostRect = rightMostNode.getBoundingClientRect();
-      var ownBottom = domNode.getBoundingClientRect().bottom;
+      const rightMostRect = rightMostNode.getBoundingClientRect();
+      const ownBottom = domNode.getBoundingClientRect().bottom;
 
-      var first = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_main).firstChild;
+      const first = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_main).firstChild;
 
       if (ownBottom > actionsRect.top)
       {
-        var styleString = "" + (rightMostRect.right) + "px";
+        const styleString = "" + (rightMostRect.right) + "px";
         domNode.style.left = styleString;
         first.style.left = styleString;
         first.classList.add("fleet-selection-displaced");
@@ -112,14 +112,14 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
 
   render()
   {
-    var selectedFleets: Fleet[] = this.props.selectedFleets;
+    const selectedFleets: Fleet[] = this.props.selectedFleets;
     if (!selectedFleets || selectedFleets.length <= 0)
     {
       return null;
     }
 
-    var allFleetsInSameLocation = true;
-    var hasMultipleSelected = selectedFleets.length >= 2;
+    let allFleetsInSameLocation = true;
+    const hasMultipleSelected = selectedFleets.length >= 2;
 
     for (let i = 1; i < selectedFleets.length; i++)
     {
@@ -129,11 +129,11 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         break;
       }
     }
-    var fleetInfos: React.ReactElement<any>[] = [];
+    const fleetInfos: React.ReactElement<any>[] = [];
 
     for (let i = 0; i < selectedFleets.length; i++)
     {
-      var fleet = selectedFleets[i];
+      const fleet = selectedFleets[i];
 
       fleetInfos.push(FleetInfo(
       {
@@ -145,14 +145,14 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       }));
     }
 
-    var fleetSelectionControls: React.ReactHTMLElement<any> = null;
+    let fleetSelectionControls: React.ReactHTMLElement<any> = null;
 
     if (hasMultipleSelected)
     {
-      var fleetStealthsAreClashing =
+      const fleetStealthsAreClashing =
         selectedFleets.length === 2 && selectedFleets[0].isStealthy !== selectedFleets[1].isStealthy;
 
-      var mergeProps: React.HTMLAttributes =
+      const mergeProps: React.HTMLAttributes =
       {
         className: "fleet-selection-controls-merge",
       };
@@ -166,7 +166,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         mergeProps.className += " disabled";
       }
 
-      var reorganizeProps: React.HTMLAttributes =
+      const reorganizeProps: React.HTMLAttributes =
       {
         className: "fleet-selection-controls-reorganize",
       };
@@ -194,7 +194,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       );
     }
 
-    var fleetContents: React.ReactElement<any> = null;
+    let fleetContents: React.ReactElement<any> = null;
 
     if (!hasMultipleSelected)
     {
@@ -205,8 +205,8 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       });
     }
 
-    var isReorganizing = this.props.currentlyReorganizing.length > 0;
-    var reorganizeElement: React.ReactElement<any> = null;
+    const isReorganizing = this.props.currentlyReorganizing.length > 0;
+    let reorganizeElement: React.ReactElement<any> = null;
     if (isReorganizing)
     {
       reorganizeElement = FleetReorganization(

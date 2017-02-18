@@ -50,7 +50,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
 
   makePopup()
   {
-    var popupId = this.popupManager.makePopup(
+    const popupId = this.popupManager.makePopup(
     {
       content: TopMenuPopup(
       {

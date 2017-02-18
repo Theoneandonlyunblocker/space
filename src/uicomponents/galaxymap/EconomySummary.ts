@@ -31,12 +31,12 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
 
   render()
   {
-    var rows: ListItem<EconomySummaryItemProps>[] = [];
-    var player = this.props.player;
+    const rows: ListItem<EconomySummaryItemProps>[] = [];
+    const player = this.props.player;
 
     for (let i = 0; i < player.controlledLocations.length; i++)
     {
-      var star = player.controlledLocations[i];
+      const star = player.controlledLocations[i];
 
       rows.push(
       {
@@ -51,7 +51,7 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
       });
     }
 
-    var columns: ListColumn<EconomySummaryItemProps>[] =
+    const columns: ListColumn<EconomySummaryItemProps>[] =
     [
       {
         label: "Id",

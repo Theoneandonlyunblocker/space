@@ -33,12 +33,12 @@ export default class GalaxyMap
   }
   getIncomeBounds()
   {
-    var min: number, max: number;
+    let min: number, max: number;
 
     for (let i = 0; i < this.stars.length; i++)
     {
-      var star = this.stars[i];
-      var income = star.getIncome();
+      const star = this.stars[i];
+      const income = star.getIncome();
       if (!min) min = max = income;
       else
       {
@@ -55,7 +55,7 @@ export default class GalaxyMap
   }
   serialize(): GalaxyMapSaveData
   {
-    var data: GalaxyMapSaveData =
+    const data: GalaxyMapSaveData =
     {
       stars: this.stars.map(function(star)
       {

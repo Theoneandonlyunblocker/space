@@ -61,7 +61,7 @@ export default class PlayerControl
   }
   addEventListeners(): void
   {
-    var self = this;
+    const self = this;
 
     this.addEventListener("updateSelection", function()
     {
@@ -117,8 +117,8 @@ export default class PlayerControl
   preventGhost(delay: number): void
   {
     this.preventingGhost = true;
-    var self = this;
-    var timeout = window.setTimeout(function()
+    const self = this;
+    const timeout = window.setTimeout(function()
     {
       self.preventingGhost = false;
       window.clearTimeout(timeout);
@@ -162,8 +162,8 @@ export default class PlayerControl
       return;
     }
 
-    var playerFleets: Fleet[] = [];
-    var otherFleets: Fleet[] = [];
+    const playerFleets: Fleet[] = [];
+    const otherFleets: Fleet[] = [];
     for (let i = 0; i < fleets.length; i++)
     {
       if (fleets[i].player === this.player)
@@ -210,8 +210,8 @@ export default class PlayerControl
   }
   deselectFleet(fleet: Fleet): void
   {
-    var fleetsContainer = this.selectedFleets.length > 0 ? this.selectedFleets : this.inspectedFleets;
-    var fleetIndex = fleetsContainer.indexOf(fleet);
+    const fleetsContainer = this.selectedFleets.length > 0 ? this.selectedFleets : this.inspectedFleets;
+    const fleetIndex = fleetsContainer.indexOf(fleet);
 
     if (fleetIndex < 0) return;
 
@@ -232,10 +232,10 @@ export default class PlayerControl
   {
     if (fleets.length === 0) return [];
 
-    var master = this.getMasterFleetForMerge(fleets);
+    const master = this.getMasterFleetForMerge(fleets);
 
     fleets.splice(fleets.indexOf(master), 1);
-    var slaves = fleets;
+    const slaves = fleets;
 
     for (let i = 0; i < slaves.length; i++)
     {
@@ -246,9 +246,9 @@ export default class PlayerControl
   }
   mergeFleets(): void
   {
-    var allFleets = this.selectedFleets;
-    var normalFleets: Fleet[] = [];
-    var stealthyFleets: Fleet[] = [];
+    const allFleets = this.selectedFleets;
+    const normalFleets: Fleet[] = [];
+    const stealthyFleets: Fleet[] = [];
 
     for (let i = 0; i < allFleets.length; i++)
     {
@@ -287,7 +287,7 @@ export default class PlayerControl
   {
     if (fleet.units.length <= 0) return;
     this.endReorganizingFleets();
-    var newFleet = fleet.split();
+    const newFleet = fleet.split();
 
     this.currentlyReorganizing = [fleet, newFleet];
     this.selectedFleets = [fleet, newFleet];
@@ -314,10 +314,10 @@ export default class PlayerControl
   {
     for (let i = 0; i < this.currentlyReorganizing.length; i++)
     {
-      var fleet = this.currentlyReorganizing[i];
+      const fleet = this.currentlyReorganizing[i];
       if (fleet.units.length <= 0)
       {
-        var selectedIndex = this.selectedFleets.indexOf(fleet);
+        const selectedIndex = this.selectedFleets.indexOf(fleet);
         if (selectedIndex >= 0)
         {
           this.selectedFleets.splice(selectedIndex, 1);
@@ -332,8 +332,8 @@ export default class PlayerControl
     if (this.selectedFleets.length < 1) return [];
     if (!this.areAllFleetsInSameLocation()) return [];
 
-    var location = this.selectedFleets[0].location;
-    var possibleTargets = location.getTargetsForPlayer(this.player);
+    const location = this.selectedFleets[0].location;
+    const possibleTargets = location.getTargetsForPlayer(this.player);
 
     return possibleTargets;
   }
@@ -345,7 +345,7 @@ export default class PlayerControl
       throw new Error("Invalid attack target");
     }
 
-    var currentLocation = this.selectedFleets[0].location;
+    const currentLocation = this.selectedFleets[0].location;
 
     this.player.attackTarget(currentLocation, target);
   }

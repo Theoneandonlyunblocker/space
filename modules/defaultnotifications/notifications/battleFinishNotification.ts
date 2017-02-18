@@ -34,7 +34,7 @@ const battleFinishNotification: NotificationTemplate =
   contentConstructor: UIComponent,
   messageConstructor: function(props: PropTypes)
   {
-    var message = "A battle was fought in " + props.location.name + " between " +
+    const message = "A battle was fought in " + props.location.name + " between " +
       props.attacker.name.fullName + " and " + props.defender.name.fullName;
 
     return message;

@@ -38,7 +38,7 @@ const conquer: ObjectiveTemplate =
     mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI)
   {
     const basePriority = grandStrategyAI.desireForExpansion;
-    var possibleTargets: Star[] = mapEvaluator.player.getNeighboringStars().filter(star =>
+    const possibleTargets: Star[] = mapEvaluator.player.getNeighboringStars().filter(star =>
     {
       if (!mapEvaluator.player.starIsRevealed(star))
       {
@@ -59,7 +59,7 @@ const conquer: ObjectiveTemplate =
     const zippedScores = scores.zip<{star: Star, score: number}>("star", "score");
 
 
-    var template = conquer;
+    const template = conquer;
     return makeObjectivesFromScores(template, zippedScores, basePriority);
   },
   unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget,

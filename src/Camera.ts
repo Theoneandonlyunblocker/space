@@ -3,7 +3,7 @@
 import Point from "./Point";
 import eventManager from "./eventManager";
 
-var tempCameraId = 0;
+let tempCameraId = 0;
 
 export default class Camera
 {
@@ -42,7 +42,7 @@ export default class Camera
     this.bounds.min = bound;
     // TODO 19.11.2016 | isn't 1 - bound good enough?
     this.bounds.max = Number((1 - bound).toFixed(1));
-    var screenElement = window.getComputedStyle(
+    const screenElement = window.getComputedStyle(
       document.getElementById("pixi-container"), null);
     this.screenWidth = parseInt(screenElement.width);
     this.screenHeight = parseInt(screenElement.height);
@@ -62,13 +62,13 @@ export default class Camera
 
   private addEventListeners()
   {
-    var self = this;
+    const self = this;
 
     this.resizeListener = function(e: UIEvent)
     {
-      var container = document.getElementById("pixi-container");
+      const container = document.getElementById("pixi-container");
       if (!container) return;
-      var style = window.getComputedStyle(container, null);
+      const style = window.getComputedStyle(container, null);
       self.screenWidth = parseInt(style.width);
       self.screenHeight = parseInt(style.height);
     };
@@ -84,7 +84,7 @@ export default class Camera
 
   private setBounds()
   {
-    var rect = this.container.getLocalBounds();
+    const rect = this.container.getLocalBounds();
     this.width = this.screenWidth;
     this.height = this.screenHeight;
     this.bounds =
@@ -110,13 +110,13 @@ export default class Camera
   }
   private getDelta(currPos: number[])
   {
-    var x = this.startClick[0] - currPos[0];
-    var y = this.startClick[1] - currPos[1];
+    const x = this.startClick[0] - currPos[0];
+    const y = this.startClick[1] - currPos[1];
     return [-x, -y];
   }
   move(currPos: number[]) // used for mouse scrolling
   {
-    var delta = this.getDelta(currPos);
+    const delta = this.getDelta(currPos);
     this.container.position.x = this.startPos[0] + delta[0];
     this.container.position.y = this.startPos[1] + delta[1];
     this.clampEdges();
@@ -145,12 +145,12 @@ export default class Camera
   }
   getLocalPosition(position: Point): Point
   {
-    var pos = <PIXI.Point> position;
+    const pos = <PIXI.Point> position;
     return this.container.worldTransform.apply(pos);
   }
   getCenterPosition(): Point
   {
-    var localOrigin = this.getLocalPosition(this.container.position);
+    const localOrigin = this.getLocalPosition(this.container.position);
     return(
     {
       x: this.container.position.x + this.width / 2 - localOrigin.x,
@@ -161,8 +161,8 @@ export default class Camera
   {
     this.setBounds();
 
-    var localPos = this.getLocalPosition(pos);
-    var center = this.getScreenCenter();
+    const localPos = this.getLocalPosition(pos);
+    const center = this.getScreenCenter();
 
     this.container.position.x += center.x - localPos.x;
     this.container.position.y += center.y - localPos.y;
@@ -179,19 +179,19 @@ export default class Camera
       //zoomAmount = 1;
     }
 
-    var container = this.container;
-    var oldZoom = this.currZoom;
+    const container = this.container;
+    const oldZoom = this.currZoom;
 
-    var zoomDelta = oldZoom - zoomAmount;
-    var rect = container.getLocalBounds();
+    const zoomDelta = oldZoom - zoomAmount;
+    const rect = container.getLocalBounds();
 
     //these 2 get position of screen center in relation to the container
     //0: far left 1: far right
-    var xRatio = 1 - ((container.x - this.screenWidth / 2) / rect.width / oldZoom + 1);
-    var yRatio = 1 - ((container.y - this.screenHeight / 2) / rect.height / oldZoom + 1);
+    const xRatio = 1 - ((container.x - this.screenWidth / 2) / rect.width / oldZoom + 1);
+    const yRatio = 1 - ((container.y - this.screenHeight / 2) / rect.height / oldZoom + 1);
 
-    var xDelta = rect.width * xRatio * zoomDelta;
-    var yDelta = rect.height * yRatio * zoomDelta;
+    const xDelta = rect.width * xRatio * zoomDelta;
+    const yDelta = rect.height * yRatio * zoomDelta;
     container.position.x += xDelta;
     container.position.y += yDelta;
     container.scale.set(zoomAmount, zoomAmount);
@@ -210,9 +210,9 @@ export default class Camera
     {
       return;
     }
-    //var scaledDelta = absDelta + scale / absDelta;
-    var direction = delta < 0 ? "out" : "in";
-    var adjDelta = 1 + Math.abs(delta) * scale;
+    //const scaledDelta = absDelta + scale / absDelta;
+    const direction = delta < 0 ? "out" : "in";
+    const adjDelta = 1 + Math.abs(delta) * scale;
     if (direction === "out")
     {
       this.zoom(this.currZoom / adjDelta);
@@ -225,8 +225,8 @@ export default class Camera
 
   private clampEdges()
   {
-    var x = this.container.position.x;
-    var y = this.container.position.y;
+    let x = this.container.position.x;
+    let y = this.container.position.y;
 
     //horizontal
     //left edge

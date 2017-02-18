@@ -25,7 +25,7 @@ export class ResourceComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var sign = this.props.income < 0 ? "-" : "+";
+    const sign = this.props.income < 0 ? "-" : "+";
     return(
       React.DOM.div(
       {

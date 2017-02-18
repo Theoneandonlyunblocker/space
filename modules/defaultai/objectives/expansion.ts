@@ -36,15 +36,15 @@ const expansion: ObjectiveTemplate =
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,
     mapEvaluator: MapEvaluator)
   {
-    var basePriority = grandStrategyAI.desireForExpansion;
+    const basePriority = grandStrategyAI.desireForExpansion;
 
-    var independentNeighborStars = mapEvaluator.getIndependentNeighborStars();
-    var evaluations = mapEvaluator.evaluateStarTargets(independentNeighborStars);
-    var scores = mapEvaluator.scoreIndependentTargets(evaluations);
+    const independentNeighborStars = mapEvaluator.getIndependentNeighborStars();
+    const evaluations = mapEvaluator.evaluateStarTargets(independentNeighborStars);
+    const scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
     const zippedScores = scores.zip<{star: Star, score: number}>("star", "score");
 
-    var template = expansion;
+    const template = expansion;
 
     return makeObjectivesFromScores(template, zippedScores, basePriority);
   },

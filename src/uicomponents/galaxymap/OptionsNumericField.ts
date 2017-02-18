@@ -64,8 +64,8 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
 
   handleChange(e: React.FormEvent)
   {
-    var target = <HTMLInputElement> e.target;
-    var value = parseFloat(target.value);
+    const target = <HTMLInputElement> e.target;
+    let value = parseFloat(target.value);
 
     if (!isFinite(value))
     {
@@ -82,7 +82,7 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
 
   render()
   {
-    var inputId = "" + this.props.id + "-input";
+    const inputId = "" + this.props.id + "-input";
 
     return(
       React.DOM.div(

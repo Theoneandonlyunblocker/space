@@ -78,7 +78,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
         //       value: app.reactUI.currentScene,
               // onChange: (e: React.FormEvent) =>
               // {
-              //   var target = <HTMLInputElement> e.target;
+              //   const target = <HTMLInputElement> e.target;
               //   app.reactUI.switchScene(target.value);
               // }
         //     },
@@ -94,8 +94,8 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
         //     {
         //       const target = <HTMLButtonElement> e.target;
 
-        //       var position = app.renderer.camera.container.position.clone();
-        //       var zoom = app.renderer.camera.currZoom;
+        //       const position = app.renderer.camera.container.position.clone();
+        //       const zoom = app.renderer.camera.currZoom;
         //       app.destroy();
 
         //       app.initUI();
@@ -128,7 +128,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
     // TODO hack | transparency isn't properly rendered without this
     this.props.mapRenderer.setAllLayersAsDirty();
 
-    var centerLocation = this.props.renderer.camera.toCenterOn ||
+    const centerLocation = this.props.renderer.camera.toCenterOn ||
       this.props.toCenterOn ||
       this.props.player.controlledLocations[0];
 

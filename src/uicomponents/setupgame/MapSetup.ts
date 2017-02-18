@@ -42,7 +42,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 
   private getInitialStateTODO(): StateType
   {
-    var mapGenTemplates: MapGenTemplate[] = [];
+    const mapGenTemplates: MapGenTemplate[] = [];
 
     for (let template in app.moduleData.Templates.MapGen)
     {
@@ -76,7 +76,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 
   setTemplate(e: React.FormEvent)
   {
-    var target = <HTMLInputElement> e.target;
+    const target = <HTMLInputElement> e.target;
     this.setState(
     {
       selectedTemplate: app.moduleData.Templates.MapGen[target.value],
@@ -94,10 +94,10 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var mapGenTemplateOptions: React.ReactHTMLElement<any>[] = [];
+    const mapGenTemplateOptions: React.ReactHTMLElement<any>[] = [];
     for (let i = 0; i < this.state.templates.length; i++)
     {
-      var template = this.state.templates[i];
+      const template = this.state.templates[i];
 
       mapGenTemplateOptions.push(
         React.DOM.option(

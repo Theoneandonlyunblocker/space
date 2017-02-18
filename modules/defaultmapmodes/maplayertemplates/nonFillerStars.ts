@@ -18,55 +18,47 @@ const nonFillerStars: MapRendererLayerTemplate =
   interactive: true,
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
-    var doc = new PIXI.Container();
+    const doc = new PIXI.Container();
 
-    var points: Star[];
-    if (!perspectivePlayer)
-    {
-      points = map.stars;
-    }
-    else
-    {
-      points = perspectivePlayer.getRevealedStars();
-    }
+    const points = perspectivePlayer ? perspectivePlayer.getRevealedStars() : map.stars;
 
-    var mouseDownFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
+    const mouseDownFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("mouseDown", event, star);
     };
-    var mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
+    const mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("mouseUp", event);
     };
-    var onClickFN = function(star: Star)
+    const onClickFN = function(star: Star)
     {
       eventManager.dispatchEvent("starClick", star);
     };
-    var mouseOverFN = function(star: Star)
+    const mouseOverFN = function(star: Star)
     {
       eventManager.dispatchEvent("hoverStar", star);
     };
-    var mouseOutFN = function(event: PIXI.interaction.InteractionEvent)
+    const mouseOutFN = function(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("clearHover");
     };
-    var touchStartFN = function(event: PIXI.interaction.InteractionEvent)
+    const touchStartFN = function(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("touchStart", event);
     };
-    var touchEndFN = function(event: PIXI.interaction.InteractionEvent)
+    const touchEndFN = function(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("touchEnd", event);
     };
     for (let i = 0; i < points.length; i++)
     {
-      var star = points[i];
-      var starSize = 1;
+      const star = points[i];
+      let starSize = 1;
       if (star.buildings["defence"])
       {
         starSize += star.buildings["defence"].length * 2;
       }
-      var gfx = new PIXI.Graphics();
+      const gfx = new PIXI.Graphics();
       if (!star.owner.isIndependent)
       {
         gfx.lineStyle(starSize / 2, star.owner.color.getHex(), 1);
@@ -79,10 +71,10 @@ const nonFillerStars: MapRendererLayerTemplate =
       gfx.interactive = true;
       gfx.hitArea = makePolygonFromPoints(star.voronoiCell.vertices);
 
-      var boundMouseDown = mouseDownFN.bind(null, star);
-      var gfxClickFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
+      const boundMouseDown = mouseDownFN.bind(null, star);
+      const gfxClickFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
       {
-        var originalEvent = <MouseEvent> event.data.originalEvent;
+        const originalEvent = <MouseEvent> event.data.originalEvent;
         if (originalEvent.button) return;
 
         onClickFN(star);
@@ -108,8 +100,8 @@ const nonFillerStars: MapRendererLayerTemplate =
     doc.on("touchend", touchEndFN);
     doc.on("touchmove", function(event: PIXI.interaction.InteractionEvent)
     {
-      var local = event.data.getLocalPosition(doc);
-      var starAtLocal = map.voronoi.getStarAtPoint(local);
+      const local = event.data.getLocalPosition(doc);
+      const starAtLocal = map.voronoi.getStarAtPoint(local);
       if (starAtLocal)
       {
         eventManager.dispatchEvent("hoverStar", starAtLocal);

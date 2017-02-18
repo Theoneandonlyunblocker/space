@@ -70,7 +70,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
       }));
     }
 
-    var unitAbilities: AbilityBase[] = unit.getAllAbilities();
+    let unitAbilities: AbilityBase[] = unit.getAllAbilities();
     unitAbilities = unitAbilities.concat(unit.getAllPassiveSkills());
 
     return(

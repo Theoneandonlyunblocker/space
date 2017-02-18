@@ -77,16 +77,16 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   }
   handleLoad()
   {
-    var saveKey = this.state.saveKey;
+    const saveKey = this.state.saveKey;
 
-    var afterConfirmFN = () =>
+    const afterConfirmFN = () =>
     {
       app.load(saveKey);
     };
 
     if (this.state.saveKeysToDelete.indexOf(saveKey) !== -1)
     {
-      var boundClose = this.handleClose.bind(this, true, afterConfirmFN);
+      const boundClose = this.handleClose.bind(this, true, afterConfirmFN);
       this.handleUndoDelete(saveKey, boundClose);
     }
     else
@@ -111,7 +111,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   getClosePopupContent(afterCloseCallback?: Function, shouldCloseParent: boolean = true,
     shouldUndoAll: boolean = false): ConfirmPopupProps
   {
-    var deleteFN = () =>
+    const deleteFN = () =>
     {
       for (let i = 0; i < this.state.saveKeysToDelete.length; i++)
       {
@@ -123,7 +123,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
         saveKeysToDelete: [],
       });
     };
-    var closeFN = () =>
+    const closeFN = () =>
     {
       this.popupID = undefined;
       if (shouldCloseParent)
@@ -194,7 +194,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   }
   handleUndoDelete(saveKey: string, callback?: () => void)
   {
-    var afterDeleteFN = () =>
+    const afterDeleteFN = () =>
     {
       this.updateClosePopup();
       if (callback)
@@ -202,10 +202,10 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
         callback();
       }
     };
-    var i = this.state.saveKeysToDelete.indexOf(saveKey);
+    const i = this.state.saveKeysToDelete.indexOf(saveKey);
     if (i !== -1)
     {
-      var newsaveKeysToDelete = this.state.saveKeysToDelete.slice(0);
+      const newsaveKeysToDelete = this.state.saveKeysToDelete.slice(0);
       newsaveKeysToDelete.splice(i, 1);
       this.setState(
       {

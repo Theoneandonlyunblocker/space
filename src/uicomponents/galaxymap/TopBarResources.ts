@@ -41,10 +41,10 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
 
   render()
   {
-    var player = this.props.player;
-    var resourceElements: React.ReactElement<any>[] = [];
-    var resourceIncome = player.getResourceIncome();
-    var resourceTypes: string[] = Object.keys(player.resources);
+    const player = this.props.player;
+    const resourceElements: React.ReactElement<any>[] = [];
+    const resourceIncome = player.getResourceIncome();
+    const resourceTypes: string[] = Object.keys(player.resources);
 
     for (let resourceType in resourceIncome)
     {
@@ -57,11 +57,11 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
     for (let i = 0; i < resourceTypes.length; i++)
     {
       const resourceType = resourceTypes[i];
-      var amount = player.resources[resourceType] || 0;
-      var income = resourceIncome[resourceType].amount || 0;
+      const amount = player.resources[resourceType] || 0;
+      const income = resourceIncome[resourceType].amount || 0;
       if (amount === 0 && income === 0) continue;
 
-      var resourceData =
+      const resourceData =
       {
         resource: app.moduleData.Templates.Resources[resourceType],
         amount: amount,

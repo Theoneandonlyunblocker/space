@@ -101,7 +101,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
   onMouseDown(e: React.MouseEvent | React.TouchEvent)
   {
     this.dragPositioner.handleReactDownEvent(e);
-    var newZIndex = this.props.incrementZIndex(this.state.zIndex);
+    const newZIndex = this.props.incrementZIndex(this.state.zIndex);
     if (this.state.zIndex !== newZIndex)
     {
       this.setState(
@@ -113,18 +113,18 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
 
   setInitialPosition()
   {
-    var domRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-    var rect: InitialPositionRect =
+    const domRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
+    const rect: InitialPositionRect =
     {
       top: domRect.top,
       left: domRect.left,
       width: domRect.width,
       height: domRect.height,
     };
-    var left: number;
-    var top: number;
+    let left: number;
+    let top: number;
 
-    var container = this.dragPositioner.containerElement;
+    const container = this.dragPositioner.containerElement;
     if (this.props.initialPosition)
     {
       rect.top = this.props.initialPosition.top || rect.top;
@@ -147,7 +147,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     }
     if (!left && !top)
     {
-      var position = this.props.getInitialPosition(rect, container);
+      const position = this.props.getInitialPosition(rect, container);
 
       left = position.left;
       top = position.top;
@@ -174,10 +174,10 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
 
   handleResizeMove(x: number, y: number)
   {
-    var minWidth = this.props.minWidth || 0;
-    var maxWidth = this.props.maxWidth || window.innerWidth;
-    var minHeight = this.props.minHeight || 0;
-    var maxHeight = this.props.maxHeight || window.innerHeight;
+    const minWidth = this.props.minWidth || 0;
+    const maxWidth = this.props.maxWidth || window.innerWidth;
+    const minHeight = this.props.minHeight || 0;
+    const maxHeight = this.props.maxHeight || window.innerHeight;
 
     this.dragPositioner.dragSize.x = clamp(x + 5 - this.dragPositioner.dragPos.x, minWidth, maxWidth);
     this.dragPositioner.dragSize.y = clamp(y + 5 - this.dragPositioner.dragPos.y, minHeight, maxHeight);
@@ -187,7 +187,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var divProps: React.HTMLAttributes =
+    const divProps: React.HTMLAttributes =
     {
       className: "popup draggable-container",
       onTouchStart: this.onMouseDown,
@@ -209,7 +209,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
       divProps.className += " dragging";
     }
 
-    var contentProps =
+    const contentProps =
     {
       closePopup: this.props.closePopup,
       ref: (content: ContentComponent) =>
@@ -218,7 +218,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
       },
     };
 
-    var resizeHandle = !this.props.resizable ? null : PopupResizeHandle(
+    const resizeHandle = !this.props.resizable ? null : PopupResizeHandle(
     {
       handleResize: this.handleResizeMove,
     });

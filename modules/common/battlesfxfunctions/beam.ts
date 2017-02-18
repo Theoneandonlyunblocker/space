@@ -26,27 +26,27 @@ export default function beam(props: SFXParams)
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(
     props.userOffset, props.width, "user");
 
-  var mainContainer = new PIXI.Container();
+  const mainContainer = new PIXI.Container();
 
-  var impactHasOccurred = false;
-  var relativeImpactTime = 0.18;
+  let impactHasOccurred = false;
+  const relativeImpactTime = 0.18;
 
-  var beamOrigin = offsetUserData.singleAttackOriginPoint;
-  var relativeBeamOrigin =
+  const beamOrigin = offsetUserData.singleAttackOriginPoint;
+  const relativeBeamOrigin =
   {
     x: beamOrigin.x / props.width,
     y: beamOrigin.y / props.height,
   };
 
   const renderTexture = PIXI.RenderTexture.create(props.width, props.height);
-  var renderedSprite = new PIXI.Sprite(renderTexture);
+  const renderedSprite = new PIXI.Sprite(renderTexture);
   if (!props.facingRight)
   {
     renderedSprite.x = props.width;
     renderedSprite.scale.x = -1;
   }
 
-  var finalColor =
+  const finalColor =
   [
     0.368627450980392,
     0.792156862745098,
@@ -55,26 +55,26 @@ export default function beam(props: SFXParams)
   ];
 
   //----------INIT PARTICLES
-  var particleContainer = new PIXI.Container();
+  const particleContainer = new PIXI.Container();
   // particleContainer.alpha = 0.1;
   mainContainer.addChild(particleContainer);
-  var protonWrapper = new ProtonWrapper(props.renderer, particleContainer);
+  const protonWrapper = new ProtonWrapper(props.renderer, particleContainer);
 
-  var particleShaderColor =
+  const particleShaderColor =
   {
     r: 1.0,
     g: 1.0,
     b: 1.0,
     a: 1.0,
   };
-  var particleShaderColorArray =
+  const particleShaderColorArray =
   [
     particleShaderColor.r,
     particleShaderColor.g,
     particleShaderColor.b,
     particleShaderColor.a,
   ];
-  var particleShaderColorTween = new TWEEN.Tween(particleShaderColor).to(
+  const particleShaderColorTween = new TWEEN.Tween(particleShaderColor).to(
     {
       r: finalColor[0],
       g: finalColor[1],
@@ -83,7 +83,7 @@ export default function beam(props: SFXParams)
     }, props.duration / 2,
   );
 
-  var particlesAmountScale = props.width / 700;
+  const particlesAmountScale = props.width / 700;
 
   //----------INIT BEAM
   const beamFragment = new Beam(
@@ -124,17 +124,17 @@ export default function beam(props: SFXParams)
     sprite.scale.y = particle.scale;
   };
   //----------INIT SMALL EMITTER
-  var smallEmitter = new Proton.BehaviourEmitter();
+  const smallEmitter = new Proton.BehaviourEmitter();
   smallEmitter.p.x = beamOrigin.x + 50;
   smallEmitter.p.y = beamOrigin.y;
   smallEmitter.damping = 0.013;
 
-  var smallParticleGraphicsSize =
+  const smallParticleGraphicsSize =
   {
     x: 4,
     y: 4,
   };
-  var smallParticleGraphics = new PIXI.Graphics();
+  const smallParticleGraphics = new PIXI.Graphics();
   smallParticleGraphics.beginFill(0x5ECAB1, 1.0);
   smallParticleGraphics.drawRect(
     smallParticleGraphicsSize.x / 2,
@@ -172,10 +172,10 @@ export default function beam(props: SFXParams)
 
   protonWrapper.addEmitter(smallEmitter, "smallParticles");
 
-  var smallParticleFilter = new ShinyParticleFilter();
+  const smallParticleFilter = new ShinyParticleFilter();
   const syncSmallParticleUniforms = function(time: number)
   {
-    var lifeLeft = 1.0 - time;
+    const lifeLeft = 1.0 - time;
 
     smallParticleFilter.setUniformValues(
     {
@@ -193,18 +193,18 @@ export default function beam(props: SFXParams)
   };
 
   //----------INIT SHINY EMITTER
-  var shinyEmitter = new Proton.BehaviourEmitter();
+  const shinyEmitter = new Proton.BehaviourEmitter();
   shinyEmitter.p.x = beamOrigin.x;
   shinyEmitter.p.y = beamOrigin.y;
 
-  var shinyParticleTexture = getDummyTextureForShader();
+  const shinyParticleTexture = getDummyTextureForShader();
   shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
 
-  var shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
+  const shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
   shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
   shinyEmitter.damping = 0.009;
 
-  var emitterZone = new Proton.RectZone(
+  const emitterZone = new Proton.RectZone(
     0,
     -5,
     props.width + 100 - shinyEmitter.p.x,
@@ -217,10 +217,10 @@ export default function beam(props: SFXParams)
 
   protonWrapper.addEmitter(shinyEmitter, "shinyParticles");
 
-  var shinyParticleFilter = new ShinyParticleFilter();
+  const shinyParticleFilter = new ShinyParticleFilter();
   const syncShinyParticleUniforms = function(time: number)
   {
-    var lifeLeft = 1.0 - time;
+    const lifeLeft = 1.0 - time;
 
     shinyParticleFilter.setUniformValues(
     {
@@ -279,7 +279,7 @@ export default function beam(props: SFXParams)
   mainContainer.addChild(shockWaveFragment.displayObject);
 
   //----------INIT LIGHTBURST
-  var lightBurstSize =
+  const lightBurstSize =
   {
     x: props.height * 1.5,
     y: props.height * 3,
@@ -307,11 +307,11 @@ export default function beam(props: SFXParams)
 
   function animate()
   {
-    var elapsedTime = Date.now() - startTime;
+    const elapsedTime = Date.now() - startTime;
 
     protonWrapper.update();
 
-    var tweenTime = window.performance.now();
+    const tweenTime = window.performance.now();
 
     particleShaderColorTween.update(tweenTime);
     particleShaderColorArray[0] = particleShaderColor.r;
@@ -319,18 +319,18 @@ export default function beam(props: SFXParams)
     particleShaderColorArray[2] = particleShaderColor.b;
     particleShaderColorArray[3] = particleShaderColor.a;
 
-    var relativeElapsedTime = elapsedTime / props.duration;
-    var lifeLeft = 1 - relativeElapsedTime;
+    const relativeElapsedTime = elapsedTime / props.duration;
+    const lifeLeft = 1 - relativeElapsedTime;
 
     if (relativeElapsedTime >= relativeImpactTime - 0.02)
     {
       if (!impactHasOccurred)
       {
         impactHasOccurred = true;
-        var lifeLeftInSeconds = props.duration * lifeLeft / 1000;
-        var emitterLife = lifeLeftInSeconds * 0.8;
+        const lifeLeftInSeconds = props.duration * lifeLeft / 1000;
+        const emitterLife = lifeLeftInSeconds * 0.8;
 
-        var velocityInitialize = new Proton.Velocity(new Proton.Span(1.5, 3),
+        const velocityInitialize = new Proton.Velocity(new Proton.Span(1.5, 3),
           new Proton.Span(270, 25, true), "polar");
         protonWrapper.addInitializeToExistingParticles(shinyEmitter, velocityInitialize);
 
@@ -373,7 +373,7 @@ export default function beam(props: SFXParams)
 
   props.triggerStart(renderedSprite);
 
-  var startTime = Date.now();
+  const startTime = Date.now();
   particleShaderColorTween.start();
   animate();
 }

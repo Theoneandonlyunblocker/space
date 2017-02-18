@@ -122,7 +122,7 @@ export default class MouseEventHandler
       return;
     }
 
-    var originalEvent = <MouseEvent> event.data.originalEvent;
+    const originalEvent = <MouseEvent> event.data.originalEvent;
     if (
         originalEvent.ctrlKey ||
         originalEvent.metaKey ||
@@ -211,7 +211,7 @@ export default class MouseEventHandler
   private makeUITransparent(): void
   {
     if (!this.currentAction) return;
-    var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
+    const ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
     if (ui)
     {
       ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
@@ -220,7 +220,7 @@ export default class MouseEventHandler
   private makeUIOpaque(): void
   {
     if (this.currentAction) return;
-    var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
+    const ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
     if (ui)
     {
       ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
@@ -287,7 +287,7 @@ export default class MouseEventHandler
   }
   private zoomMove(event: PIXI.interaction.InteractionEvent): void
   {
-    var delta = event.data.global.x + this.currPoint[1] -
+    const delta = event.data.global.x + this.currPoint[1] -
       this.currPoint[0] - event.data.global.y;
     this.camera.deltaZoom(delta, 0.005);
     this.currPoint = [event.data.global.x, event.data.global.y];
@@ -319,7 +319,7 @@ export default class MouseEventHandler
   }
   private clearHoveredStar(): void
   {
-    var timeout = window.setTimeout(() =>
+    const timeout = window.setTimeout(() =>
     {
       if (!this.preventingGhost["hover"])
       {

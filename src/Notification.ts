@@ -21,7 +21,7 @@ export default class Notification<P>
   }
   serialize(): NotificationSaveData
   {
-    var data: NotificationSaveData =
+    const data: NotificationSaveData =
     {
       templateKey: this.template.key,
       hasBeenRead: this.hasBeenRead,

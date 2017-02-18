@@ -33,19 +33,19 @@ export default class GrandStrategyAI
 
   private setDesiredStars()
   {
-    var totalStarsInMap = this.mapEvaluator.map.stars.length;
-    var playersInGame = this.game.playerOrder.length;
+    const totalStarsInMap = this.mapEvaluator.map.stars.length;
+    const playersInGame = this.game.playerOrder.length;
 
-    var starsPerPlayer = totalStarsInMap / playersInGame;
+    const starsPerPlayer = totalStarsInMap / playersInGame;
 
-    var baseMinStarsDesired = starsPerPlayer * 0.34;
-    var baseMaxStarsDesired = starsPerPlayer;
+    const baseMinStarsDesired = starsPerPlayer * 0.34;
+    const baseMaxStarsDesired = starsPerPlayer;
 
-    var extraMinStarsDesired = this.personality.expansiveness * (starsPerPlayer * 0.66);
-    var extraMaxStarsDesired = this.personality.expansiveness * (starsPerPlayer * (playersInGame / 4));
+    const extraMinStarsDesired = this.personality.expansiveness * (starsPerPlayer * 0.66);
+    const extraMaxStarsDesired = this.personality.expansiveness * (starsPerPlayer * (playersInGame / 4));
 
-    var minStarsDesired = baseMinStarsDesired + extraMinStarsDesired;
-    var maxStarsDesired = baseMaxStarsDesired + extraMaxStarsDesired;
+    const minStarsDesired = baseMinStarsDesired + extraMinStarsDesired;
+    const maxStarsDesired = baseMaxStarsDesired + extraMaxStarsDesired;
 
     this.desiredStars =
     {
@@ -67,10 +67,10 @@ export default class GrandStrategyAI
     {
       this.setDesiredStars();
     }
-    var fromAggressiveness = this.personality.aggressiveness;
-    var fromExpansiveness = 0;
-    var minStarsStillDesired = this.mapEvaluator.player.controlledLocations.length - this.desiredStars.min;
-    var availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(minStarsStillDesired);
+    const fromAggressiveness = this.personality.aggressiveness;
+    let fromExpansiveness = 0;
+    const minStarsStillDesired = this.mapEvaluator.player.controlledLocations.length - this.desiredStars.min;
+    const availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(minStarsStillDesired);
     if (availableExpansionTargets.length < minStarsStillDesired)
     {
       fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
@@ -78,7 +78,7 @@ export default class GrandStrategyAI
 
     // TODO ai | penalize for lots of ongoing objectives (maybe in objectivesAI instead)
 
-    var desire = fromAggressiveness + fromExpansiveness;
+    const desire = fromAggressiveness + fromExpansiveness;
 
     return clamp(desire, 0, 1);
   }
@@ -86,10 +86,10 @@ export default class GrandStrategyAI
   getDesireForExpansion()
   {
     if (!this.desiredStars) this.setDesiredStars();
-    var starsOwned = this.mapEvaluator.player.controlledLocations.length;
+    const starsOwned = this.mapEvaluator.player.controlledLocations.length;
 
 
-    var desire = 1 - getRelativeValue(starsOwned, this.desiredStars.min, this.desiredStars.max);
+    const desire = 1 - getRelativeValue(starsOwned, this.desiredStars.min, this.desiredStars.max);
 
     // console.table([
     // {

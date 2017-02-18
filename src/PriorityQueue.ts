@@ -28,9 +28,9 @@ export default class PriorityQueue
   }
   pop()
   {
-    var highestPriority = Math.min.apply(null, Object.keys(this.items));
+    const highestPriority = Math.min.apply(null, Object.keys(this.items));
 
-    var toReturn = this.items[highestPriority].pop();
+    const toReturn = this.items[highestPriority].pop();
     if (this.items[highestPriority].length < 1)
     {
       delete this.items[highestPriority];
@@ -39,8 +39,8 @@ export default class PriorityQueue
   }
   peek()
   {
-    var highestPriority = Math.min.apply(null, Object.keys(this.items));
-    var toReturn = this.items[highestPriority][0];
+    const highestPriority = Math.min.apply(null, Object.keys(this.items));
+    const toReturn = this.items[highestPriority][0];
 
     return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
   }

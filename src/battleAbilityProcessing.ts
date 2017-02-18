@@ -94,7 +94,7 @@ function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData): Unit
     return abilityUseData.intendedTarget;
   }
 
-  var guarding = getGuarders(battle, abilityUseData);
+  let guarding = getGuarders(battle, abilityUseData);
 
   guarding = guarding.sort(function(a: Unit, b: Unit)
   {
@@ -103,7 +103,7 @@ function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData): Unit
 
   for (let i = 0; i < guarding.length; i++)
   {
-    var guardRoll = Math.random() * 100;
+    const guardRoll = Math.random() * 100;
     if (guardRoll <= guarding[i].battleStats.guardAmount)
     {
       return guarding[i];
@@ -252,7 +252,7 @@ function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abi
 }
 function getAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplateWithSource[]
 {
-  var abilityUseEffects: AbilityEffectTemplate[] = [];
+  let abilityUseEffects: AbilityEffectTemplate[] = [];
   abilityUseEffects.push(abilityUseData.ability.mainEffect);
 
   if (abilityUseData.ability.secondaryEffects)

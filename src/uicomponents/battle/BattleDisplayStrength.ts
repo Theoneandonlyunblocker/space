@@ -74,7 +74,7 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
   }
   private animateDisplayedStrength(strengthBefore: number, strengthAfter: number, duration: number)
   {
-    var stopped = false;
+    let stopped = false;
 
     if (this.activeTween)
     {
@@ -86,7 +86,7 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
       return;
     }
 
-    var animateTween = () =>
+    const animateTween = () =>
     {
       if (stopped)
       {
@@ -103,7 +103,7 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
       health: strengthBefore,
     };
 
-    var tween = new TWEEN.Tween(tweeningHealthObject).to(
+    const tween = new TWEEN.Tween(tweeningHealthObject).to(
     {
       health: strengthAfter,
     }, duration);

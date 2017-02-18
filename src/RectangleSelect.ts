@@ -55,7 +55,7 @@ export default class RectangleSelect
     }
     this.setSelectionTargets();
 
-    var inSelection = this.getAllInSelection();
+    const inSelection = this.getAllInSelection();
     eventManager.dispatchEvent("selectFleets", inSelection);
 
     this.clearSelection();
@@ -72,8 +72,8 @@ export default class RectangleSelect
   {
     if (!this.current) return;
 
-    var gfx = this.graphics;
-    var bounds = this.getBounds();
+    const gfx = this.graphics;
+    const bounds = this.getBounds();
 
     gfx.clear();
     gfx.lineStyle(1, 0xFFFFFF, 1);
@@ -89,10 +89,10 @@ export default class RectangleSelect
   }
   getBounds()
   {
-    var x1 = Math.min(this.start.x, this.current.x);
-    var x2 = Math.max(this.start.x, this.current.x);
-    var y1 = Math.min(this.start.y, this.current.y);
-    var y2 = Math.max(this.start.y, this.current.y);
+    const x1 = Math.min(this.start.x, this.current.x);
+    const x2 = Math.max(this.start.x, this.current.x);
+    const y1 = Math.min(this.start.y, this.current.y);
+    const y2 = Math.max(this.start.y, this.current.y);
 
     return(
     {
@@ -108,7 +108,7 @@ export default class RectangleSelect
 
   getAllInSelection()
   {
-    var toReturn: any[] = [];
+    const toReturn: any[] = [];
 
     for (let i = 0; i < this.toSelectFrom.length; i++)
     {
@@ -122,10 +122,10 @@ export default class RectangleSelect
 
   selectionContains(point: Point)
   {
-    var x = point.x;
-    var y = point.y;
+    const x = point.x;
+    const y = point.y;
 
-    var bounds = this.getBounds();
+    const bounds = this.getBounds();
 
     return(
       (x >= bounds.x1 && x <= bounds.x2) &&

@@ -83,8 +83,8 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
 
   handleSave()
   {
-    var saveName = this.state.saveName;
-    var saveKey = "Rance.Save." + saveName;
+    const saveName = this.state.saveName;
+    const saveKey = "Rance.Save." + saveName;
     if (localStorage[saveKey])
     {
       this.makeConfirmOverWritePopup(saveName);

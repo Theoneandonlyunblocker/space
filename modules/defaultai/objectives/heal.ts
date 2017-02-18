@@ -32,13 +32,13 @@ const heal: ObjectiveTemplate =
   },
   unitFitFN: function(unit: Unit, front: Front)
   {
-    var healthPercentage = unit.currentHealth / unit.maxHealth;
+    const healthPercentage = unit.currentHealth / unit.maxHealth;
     return 1 - healthPercentage;
   },
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,
     mapEvaluator: MapEvaluator)
   {
-    var template = heal;
+    const template = heal;
     return [new Objective(template, 1, null)];
   },
   unitsToFillObjectiveFN: function(mapEvaluator: MapEvaluator, objective: Objective)

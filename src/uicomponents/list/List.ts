@@ -87,7 +87,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   componentDidMount()
   {
-    var self = this;
+    const self = this;
 
     window.addEventListener("resize", this.setDesiredHeight, false);
     eventManager.addEventListener("popupResized", this.setDesiredHeight);
@@ -143,23 +143,23 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   setDesiredHeight()
   {
-    var ownNode = ReactDOM.findDOMNode<HTMLElement>(this);
-    var innerNode = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_inner);
+    const ownNode = ReactDOM.findDOMNode<HTMLElement>(this);
+    const innerNode = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_inner);
 
     ownNode.style.height = "auto";
     innerNode.style.height = "auto";
 
-    var parentHeight = ownNode.parentElement.getBoundingClientRect().height;
-    var ownRect = ownNode.getBoundingClientRect();
-    var ownHeight = ownRect.height;
+    const parentHeight = ownNode.parentElement.getBoundingClientRect().height;
+    const ownRect = ownNode.getBoundingClientRect();
+    const ownHeight = ownRect.height;
 
 
-    var strippedOwnHeight = parseInt(getComputedStyle(ownNode).height);
-    var extraHeight = ownHeight - strippedOwnHeight;
+    const strippedOwnHeight = parseInt(getComputedStyle(ownNode).height);
+    const extraHeight = ownHeight - strippedOwnHeight;
 
-    var desiredHeight = parentHeight - extraHeight;
+    let desiredHeight = parentHeight - extraHeight;
 
-    var maxHeight = window.innerHeight - ownRect.top - extraHeight;
+    const maxHeight = window.innerHeight - ownRect.top - extraHeight;
 
     desiredHeight = Math.min(desiredHeight, maxHeight);
 
@@ -170,11 +170,11 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   handleScroll(e: React.UIEvent)
   {
     // scrolls header to match list contents
-    var target = <Element> e.target;
-    var header = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_header);
-    var titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
+    const target = <Element> e.target;
+    const header = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_header);
+    const titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
 
-    var marginString = "-" + target.scrollLeft + "px";
+    const marginString = "-" + target.scrollLeft + "px";
 
     for (let i = 0; i < titles.length; i++)
     {
@@ -184,14 +184,14 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   makeInitialSortingOrder(columns: ListColumn<any>[], initialColumn: ListColumn<any>)
   {
-    var initialSortOrder = this.props.initialSortOrder;
+    let initialSortOrder = this.props.initialSortOrder;
     if (!initialSortOrder || initialSortOrder.length < 1)
     {
       initialSortOrder = [initialColumn];
     }
 
 
-    var order = initialSortOrder;
+    const order = initialSortOrder;
 
 
     for (let i = 0; i < columns.length; i++)
@@ -207,8 +207,8 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   getNewSortingOrder(newColumn: ListColumn<any>)
   {
-    var order = this.state.columnSortingOrder.slice(0);
-    var current = order.indexOf(newColumn);
+    const order = this.state.columnSortingOrder.slice(0);
+    const current = order.indexOf(newColumn);
 
     if (current >= 0)
     {
@@ -356,13 +356,13 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   shiftSelection(amountToShift: number)
   {
-    var reverseIndexes = {};
+    const reverseIndexes = {};
     for (let i = 0; i < this.sortedItems.length; i++)
     {
       reverseIndexes[this.sortedItems[i].key] = i;
     };
-    var currSelectedIndex = reverseIndexes[this.state.selected.key];
-    var nextIndex = (currSelectedIndex + amountToShift) % this.sortedItems.length;
+    const currSelectedIndex = reverseIndexes[this.state.selected.key];
+    let nextIndex = (currSelectedIndex + amountToShift) % this.sortedItems.length;
     if (nextIndex < 0)
     {
       nextIndex += this.sortedItems.length;
@@ -372,12 +372,12 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   }
   render()
   {
-    var columns: React.ReactHTMLElement<any>[] = [];
-    var headerLabels: React.ReactHTMLElement<any>[] = [];
+    const columns: React.ReactHTMLElement<any>[] = [];
+    const headerLabels: React.ReactHTMLElement<any>[] = [];
 
     this.state.columns.forEach(column =>
     {
-      var colProps: React.HTMLAttributes =
+      let colProps: React.HTMLAttributes =
       {
         key: column.key,
       };
@@ -391,7 +391,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
         React.DOM.col(colProps),
       );
 
-      var sortStatus: string = "";
+      let sortStatus: string = "";
 
       if (!column.notSortable)
       {
@@ -432,7 +432,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
     this.sortedItems = this.getSortedItems();
 
-    var rows: React.ReactElement<any>[] = [];
+    const rows: React.ReactElement<any>[] = [];
 
     this.sortedItems.forEach((item, i) =>
     {

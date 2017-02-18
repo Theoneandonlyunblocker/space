@@ -52,7 +52,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
 
   updateBuildings()
   {
-    var buildingTemplates = this.props.star.getBuildableBuildings();
+    const buildingTemplates = this.props.star.getBuildableBuildings();
     this.setState(
     {
       buildingTemplates: buildingTemplates,
@@ -66,9 +66,9 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
 
   buildBuilding(rowItem: ListItem<BuildableBuildingProps>)
   {
-    var template = rowItem.content.props.template;
+    const template = rowItem.content.props.template;
 
-    var building = new Building(
+    const building = new Building(
     {
       template: template,
       location: this.props.star,
@@ -87,11 +87,11 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
   render()
   {
     if (this.state.buildingTemplates.length < 1) return null;
-    var rows: ListItem<BuildableBuildingProps>[] = [];
+    const rows: ListItem<BuildableBuildingProps>[] = [];
 
     for (let i = 0; i < this.state.buildingTemplates.length; i++)
     {
-      var template: BuildingTemplate = this.state.buildingTemplates[i];
+      const template: BuildingTemplate = this.state.buildingTemplates[i];
 
       rows.push(
       {
@@ -107,7 +107,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
       });
     }
 
-    var columns: ListColumn<BuildableBuildingProps>[] =
+    const columns: ListColumn<BuildableBuildingProps>[] =
     [
       {
         label: "Name",

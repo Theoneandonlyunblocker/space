@@ -39,7 +39,7 @@ export default class BattleSceneUnitOverlay
   {
     if (this.activeUnit)
     {
-      var duration = SFXTemplate.duration * Options.battleAnimationTiming.effectDuration;
+      const duration = SFXTemplate.duration * Options.battleAnimationTiming.effectDuration;
       if (this.activeUnit === user && SFXTemplate.userOverlay)
       {
         this.setOverlay(SFXTemplate.userOverlay, user, duration);
@@ -71,7 +71,7 @@ export default class BattleSceneUnitOverlay
     }
 
     this.activeUnit = unit;
-    var SFXParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
+    const SFXParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
 
     overlayFN(SFXParams);
   }
@@ -87,7 +87,7 @@ export default class BattleSceneUnitOverlay
     triggerStart: (container: PIXI.DisplayObject) => void,
     triggerEnd?: () => void): SFXParams
   {
-    var bounds = this.getSceneBounds();
+    const bounds = this.getSceneBounds();
 
     return(
     {
@@ -104,10 +104,10 @@ export default class BattleSceneUnitOverlay
   }
   private setContainerPosition()
   {
-    var sceneBounds = this.getSceneBounds();
-    var shouldLockToRight = this.activeUnit.battleStats.side === "side2";
+    const sceneBounds = this.getSceneBounds();
+    const shouldLockToRight = this.activeUnit.battleStats.side === "side2";
 
-    var containerBounds = this.overlayContainer.getLocalBounds();
+    const containerBounds = this.overlayContainer.getLocalBounds();
 
     this.overlayContainer.y = sceneBounds.height - containerBounds.height;
     if (shouldLockToRight)

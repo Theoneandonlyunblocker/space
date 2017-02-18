@@ -29,15 +29,15 @@ const fogOfWar: MapRendererLayerTemplate =
   },
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
-    var doc = new PIXI.Container();
+    const doc = new PIXI.Container();
     if (perspectivePlayer)
     {
-      var starsInFogOfWar: Star[] = perspectivePlayer.getRevealedButNotVisibleStars();
+      const starsInFogOfWar: Star[] = perspectivePlayer.getRevealedButNotVisibleStars();
 
       for (let i = 0; i < starsInFogOfWar.length; i++)
       {
-        var star = starsInFogOfWar[i];
-        var sprite = getFogOfWarSpriteForStar(star, map.width, map.height);
+        const star = starsInFogOfWar[i];
+        const sprite = getFogOfWarSpriteForStar(star, map.width, map.height);
 
         doc.addChild(sprite);
       }
@@ -54,7 +54,7 @@ function getfogOfWarTilingSprite(width: number, height: number)
 {
   if (!fogOfWarTilingSprite)
   {
-    var fowTexture = PIXI.Texture.fromFrame("modules/defaultmapmodes/img/fowTexture.png");
+    const fowTexture = PIXI.Texture.fromFrame("modules/defaultmapmodes/img/fowTexture.png");
     fogOfWarTilingSprite = new PIXI.extras.TilingSprite(fowTexture, width, height);
   }
 
@@ -71,8 +71,8 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number)
   // silly hack to make sure first texture gets created properly
   if (!fogOfWarSpriteByStarID[star.id] || Object.keys(fogOfWarSpriteByStarID).length < 4)
   {
-    var poly = makePolygonFromPoints(star.voronoiCell.vertices);
-    var gfx = new PIXI.Graphics();
+    const poly = makePolygonFromPoints(star.voronoiCell.vertices);
+    const gfx = new PIXI.Graphics();
     gfx.isMask = true;
     gfx.beginFill(0);
     gfx.drawShape(poly);
@@ -85,11 +85,11 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number)
 
     // triggers bounds update that gets skipped if we just call generateTexture()
     // TODO 02.11.2016 | PIXI4 | still relevant?
-    var bounds = tiled.getBounds();
+    const bounds = tiled.getBounds();
 
     const rendered = generateTextureWithBounds(app.renderer.renderer, tiled, PIXI.settings.SCALE_MODE, 1, bounds);
 
-    var sprite = new PIXI.Sprite(rendered);
+    const sprite = new PIXI.Sprite(rendered);
 
     fogOfWarSpriteByStarID[star.id] = sprite;
     tiled.mask = null;

@@ -52,7 +52,7 @@ export default class MapGenResult
   {
     this.voronoiInfo = this.makeVoronoiInfo();
 
-    var map = new GalaxyMap(this);
+    const map = new GalaxyMap(this);
 
     return map;
   }
@@ -64,7 +64,7 @@ export default class MapGenResult
   }
   private makeVoronoiInfo(): MapVoronoiInfo
   {
-    var voronoiInfo = new MapVoronoiInfo();
+    const voronoiInfo = new MapVoronoiInfo();
     voronoiInfo.diagram = makeVoronoi(this.getAllPoints(), this.width, this.height);
 
     setVoronoiCells(voronoiInfo.diagram.cells);
@@ -81,7 +81,7 @@ export default class MapGenResult
     // move all stars to centroid of their voronoi cell. store original position for serialization
     for (let i = 0; i < this.stars.length; i++)
     {
-      var star = this.stars[i];
+      const star = this.stars[i];
       star.basisX = star.x;
       star.basisY = star.y;
     }
@@ -98,7 +98,7 @@ export default class MapGenResult
   }
   private makeVoronoiTreeMap(): BoundsQuadTree<VoronoiCell<Star>>
   {
-    var treeMap = <BoundsQuadTree<VoronoiCell<Star>>> new QuadTree(
+    const treeMap = <BoundsQuadTree<VoronoiCell<Star>>> new QuadTree(
     {
       x: 0,
       y: 0,

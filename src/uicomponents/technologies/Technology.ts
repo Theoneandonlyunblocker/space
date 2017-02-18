@@ -39,25 +39,25 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
 
   togglePriorityLock()
   {
-    var pt = this.props.playerTechnology;
-    var technology = this.props.technology;
+    const pt = this.props.playerTechnology;
+    const technology = this.props.technology;
 
     pt.technologies[technology.key].priorityIsLocked = !pt.technologies[technology.key].priorityIsLocked;
     this.forceUpdate();
   }
   render()
   {
-    var technology = this.props.technology;
-    var isAtMaxLevel: boolean = false;
-    var playerTechnology = this.props.playerTechnology;
-    var techData = playerTechnology.technologies[technology.key];
+    const technology = this.props.technology;
+    let isAtMaxLevel: boolean = false;
+    const playerTechnology = this.props.playerTechnology;
+    const techData = playerTechnology.technologies[technology.key];
 
-    var forCurrentLevel = playerTechnology.getResearchNeededForTechnologyLevel(techData.level);
-    var forNextLevel = playerTechnology.getResearchNeededForTechnologyLevel(techData.level + 1);
+    const forCurrentLevel = playerTechnology.getResearchNeededForTechnologyLevel(techData.level);
+    const forNextLevel = playerTechnology.getResearchNeededForTechnologyLevel(techData.level + 1);
 
-    var progressForLevel = techData.totalResearch - forCurrentLevel;
-    var neededToProgressLevel = forNextLevel - forCurrentLevel;
-    var relativeProgress: number;
+    let progressForLevel = techData.totalResearch - forCurrentLevel;
+    let neededToProgressLevel = forNextLevel - forCurrentLevel;
+    let relativeProgress: number;
 
     if (techData.level === techData.maxLevel)
     {

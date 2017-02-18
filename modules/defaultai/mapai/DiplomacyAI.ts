@@ -35,7 +35,7 @@ export default class DiplomacyAI
   }
   setAttitudes()
   {
-    var diplomacyEvaluations =
+    const diplomacyEvaluations =
       this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
 
     for (let playerId in diplomacyEvaluations)
@@ -47,15 +47,15 @@ export default class DiplomacyAI
   }
   resolveDiplomaticObjectives(afterAllDoneCallback: () => void)
   {
-    var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
-    var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
+    const objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
+    const adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
 
     this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback);
   }
   resolveNextObjective(objectives: Objective[], adjustments: RoutineAdjustmentByID,
     afterAllDoneCallback: () => void)
   {
-    var objective = objectives.pop();
+    const objective = objectives.pop();
 
     if (!objective)
     {
@@ -63,7 +63,7 @@ export default class DiplomacyAI
       return;
     }
 
-    var boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
+    const boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
     objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN);
   }
 }

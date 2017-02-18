@@ -77,15 +77,15 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.props.item)
     {
-      var emptyItemTitle = "Item slot: " + this.props.slot;
+      const emptyItemTitle = "Item slot: " + this.props.slot;
       return(
         React.DOM.div({className: "empty-unit-item", title: emptyItemTitle})
       );
 
     }
-    var item = this.props.item;
+    const item = this.props.item;
 
-    var divProps: React.HTMLAttributes =
+    const divProps: React.HTMLAttributes =
     {
       className: "unit-item",
       title: item.template.displayName,

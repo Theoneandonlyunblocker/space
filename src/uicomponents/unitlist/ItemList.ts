@@ -60,15 +60,15 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var rows: ListItem<ItemListItemProps>[] = [];
-    var items: Item[] = this.props.items;
+    const rows: ListItem<ItemListItemProps>[] = [];
+    const items: Item[] = this.props.items;
 
     for (let i = 0; i < items.length; i++)
     {
-      var item = items[i];
+      const item = items[i];
 
-      var ability: AbilityBase = null;
-      var abilityIsPassive = false;
+      let ability: AbilityBase = null;
+      let abilityIsPassive = false;
       if (item.template.ability)
       {
         ability = item.template.ability;

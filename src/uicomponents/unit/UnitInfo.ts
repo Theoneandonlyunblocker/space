@@ -41,7 +41,7 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
 
   render()
   {
-    var battleEndStatus: React.ReactHTMLElement<any> = null;
+    let battleEndStatus: React.ReactHTMLElement<any> = null;
     if (this.props.wasDestroyed)
     {
       battleEndStatus = React.DOM.div(

@@ -115,7 +115,7 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
   }
   private handleToggleActive(layer: MapRendererLayer): void
   {
-    var mapRenderer = this.props.mapRenderer;
+    const mapRenderer = this.props.mapRenderer;
 
     mapRenderer.currentMapMode.toggleLayer(layer);
     mapRenderer.updateMapModeLayers([layer]);
@@ -131,7 +131,7 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
   }
   private updateLayer(layer: MapRendererLayer): void
   {
-    var mapRenderer = this.props.mapRenderer;
+    const mapRenderer = this.props.mapRenderer;
     mapRenderer.setLayerAsDirty(layer.template.key);
   }
 }

@@ -92,7 +92,7 @@ export default class AttitudeModifier
   }
   getAdjustedStrength(currentTurn: number = this.currentTurn)
   {
-    var freshenss = this.getFreshness(currentTurn);
+    const freshenss = this.getFreshness(currentTurn);
 
     return Math.round(this.strength * freshenss);
   }
@@ -122,7 +122,7 @@ export default class AttitudeModifier
 
   serialize(): AttitudeModifierSaveData
   {
-    var data: AttitudeModifierSaveData =
+    const data: AttitudeModifierSaveData =
     {
       templateType: this.template.type,
       startTurn: this.startTurn,

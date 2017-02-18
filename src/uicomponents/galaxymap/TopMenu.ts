@@ -94,30 +94,30 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     {
       this.cachedTopMenuWidth = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_topMenu).getBoundingClientRect().width;
 
-      var buttons = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_topMenuItems).children;
+      const buttons = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_topMenuItems).children;
 
-      var margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
+      const margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
 
       for (let i = 0; i < buttons.length; i++)
       {
-        var buttonWidth = buttons[i].getBoundingClientRect().width + margin;
+        const buttonWidth = buttons[i].getBoundingClientRect().width + margin;
         this.cachedButtonWidths.push(buttonWidth);
       }
     }
 
-    var topMenuHeight = window.innerHeight > 600 ? 50 : 32;
+    const topMenuHeight = window.innerHeight > 600 ? 50 : 32;
 
-    var topBar = <HTMLElement> document.getElementsByClassName("top-bar-info")[0];
-    var topBarRect = topBar.getBoundingClientRect();
+    const topBar = <HTMLElement> document.getElementsByClassName("top-bar-info")[0];
+    const topBarRect = topBar.getBoundingClientRect();
 
-    var rightmostElement = topBar;
-    var rightmostRect = topBarRect;
+    let rightmostElement = topBar;
+    let rightmostRect = topBarRect;
 
-    var fleetContainer = <HTMLElement> document.getElementsByClassName("fleet-selection")[0];
+    const fleetContainer = <HTMLElement> document.getElementsByClassName("fleet-selection")[0];
     if (fleetContainer)
     {
-      var fleetElementToCheckAgainst: HTMLElement;
-      var firstChild: HTMLElement = <HTMLElement> fleetContainer.firstChild;
+      let fleetElementToCheckAgainst: HTMLElement;
+      const firstChild: HTMLElement = <HTMLElement> fleetContainer.firstChild;
 
       if (firstChild.classList.contains("fleet-selection-controls"))
       {
@@ -131,7 +131,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
       if (fleetElementToCheckAgainst)
       {
-        var fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
+        const fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
 
         if (fleetRect.top < topMenuHeight && fleetRect.right > topBarRect.right)
         {
@@ -141,9 +141,9 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       }
     }
 
-    var spaceAvailable = window.innerWidth - rightmostRect.right;
-    var hasCondensedMenu = spaceAvailable < this.cachedTopMenuWidth;
-    var amountOfButtonsToPlace = 0;
+    let spaceAvailable = window.innerWidth - rightmostRect.right;
+    const hasCondensedMenu = spaceAvailable < this.cachedTopMenuWidth;
+    let amountOfButtonsToPlace = 0;
 
     if (hasCondensedMenu)
     {
@@ -151,11 +151,11 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       {
         spaceAvailable -= this.cachedMenuButtonWidth;
       }
-      var padding = window.innerHeight > 600 ? 25 : 0;
+      const padding = window.innerHeight > 600 ? 25 : 0;
 
       for (let i = 0; i < this.cachedButtonWidths.length; i++)
       {
-        var buttonWidthToCheck = this.cachedButtonWidths[i];
+        const buttonWidthToCheck = this.cachedButtonWidths[i];
         if (spaceAvailable > buttonWidthToCheck + padding)
         {
           amountOfButtonsToPlace++;
@@ -195,9 +195,9 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
   render()
   {
-    var menuItemTabIndex = this.state.opened ? -1 : 0;
+    const menuItemTabIndex = this.state.opened ? -1 : 0;
 
-    var topMenuButtons =
+    const topMenuButtons =
     [
       React.DOM.button(
       {
@@ -259,8 +259,8 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       }, "Options"),
     ];
 
-    var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
-    var leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
+    const topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
+    const leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
 
     if (this.state.hasCondensedMenu && !Options.ui.noHamburger)
     {
@@ -273,7 +273,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       }));
     }
 
-    var openedCondensedMenu: React.ReactHTMLElement<any> = null;
+    let openedCondensedMenu: React.ReactHTMLElement<any> = null;
     if ((this.state.condensedMenuOpened || Options.ui.noHamburger) && leftoverButtons.length > 0)
     {
       openedCondensedMenu = React.DOM.div(

@@ -65,8 +65,8 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
   handleMoneyAmountChange(e: React.FormEvent)
   {
-    var target = <HTMLInputElement> e.target;
-    var value = parseInt(target.value);
+    const target = <HTMLInputElement> e.target;
+    const value = parseInt(target.value);
 
     this.props.adjustItemAmount(this.props.keyTODO/*TODO react*/, value);
   }
@@ -78,7 +78,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var rowProps: React.HTMLAttributes =
+    const rowProps: React.HTMLAttributes =
     {
       className: "tradeable-items-list-item",
     };
@@ -100,11 +100,11 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
       rowProps.onClick = this.handleClick;
     }
 
-    var moneyElement: React.ReactHTMLElement<any>;
+    let moneyElement: React.ReactHTMLElement<any>;
 
     if (this.props.adjustItemAmount)
     {
-      var moneyProps: React.HTMLAttributes =
+      const moneyProps: React.HTMLAttributes =
       {
         className: "trade-money-money-available trade-item-adjust",
         type: "number",

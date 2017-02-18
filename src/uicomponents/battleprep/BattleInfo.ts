@@ -27,9 +27,9 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var battlePrep = this.props.battlePrep;
-    var star = battlePrep.battleData.location;
-    var isAttacker = battlePrep.humanPlayer === battlePrep.attacker;
+    const battlePrep = this.props.battlePrep;
+    const star = battlePrep.battleData.location;
+    const isAttacker = battlePrep.humanPlayer === battlePrep.attacker;
 
     return(
       React.DOM.div(

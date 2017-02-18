@@ -23,13 +23,13 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
 
   render()
   {
-    var availableSrc = "img/icons/availableAction.png";
-    var hoveredSrc = "img/icons/hoveredAction.png";
-    var spentSrc = "img/icons/spentAction.png";
+    const availableSrc = "img/icons/availableAction.png";
+    const hoveredSrc = "img/icons/hoveredAction.png";
+    const spentSrc = "img/icons/spentAction.png";
 
-    var icons: React.ReactHTMLElement<any>[] = [];
+    const icons: React.ReactHTMLElement<any>[] = [];
 
-    var availableCount = this.props.currentActionPoints - (this.props.hoveredActionPointExpenditure || 0);
+    const availableCount = this.props.currentActionPoints - (this.props.hoveredActionPointExpenditure || 0);
     for (let i = 0; i < availableCount; i++)
     {
       icons.push(React.DOM.img(
@@ -41,7 +41,7 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
       ));
     }
 
-    var hoveredCount = Math.min(this.props.hoveredActionPointExpenditure, this.props.currentActionPoints);
+    const hoveredCount = Math.min(this.props.hoveredActionPointExpenditure, this.props.currentActionPoints);
 
     for (let i = 0; i < hoveredCount; i++)
     {
@@ -54,7 +54,7 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
       ));
     }
 
-    var spentCount = this.props.maxActionPoints - this.props.currentActionPoints;
+    const spentCount = this.props.maxActionPoints - this.props.currentActionPoints;
     for (let i = 0; i < spentCount; i++)
     {
       icons.push(React.DOM.img(

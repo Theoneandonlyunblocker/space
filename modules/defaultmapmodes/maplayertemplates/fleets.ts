@@ -7,7 +7,6 @@ import {Fleet} from "../../../src/Fleet";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Options from "../../../src/Options";
 import Player from "../../../src/Player";
-import Star from "../../../src/Star";
 import eventManager from "../../../src/eventManager";
 
 import attachedUnitData from "../../common/attachedUnitData";
@@ -29,17 +28,9 @@ const fleets: MapRendererLayerTemplate =
   },
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
-    var doc = new PIXI.Container();
+    const doc = new PIXI.Container();
 
-    var points: Star[];
-    if (!perspectivePlayer)
-    {
-      points = map.stars;
-    }
-    else
-    {
-      points = perspectivePlayer.getVisibleStars();
-    }
+    const points = perspectivePlayer ? perspectivePlayer.getVisibleStars() : map.stars;
 
     const mouseDownFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
     {
@@ -61,7 +52,7 @@ const fleets: MapRendererLayerTemplate =
     };
     const fleetClickFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
     {
-      var originalEvent = <MouseEvent> event.data.originalEvent;;
+      const originalEvent = <MouseEvent> event.data.originalEvent;;
       if (originalEvent.button === 0)
       {
         eventManager.dispatchEvent("selectFleets", [fleet]);
@@ -69,15 +60,15 @@ const fleets: MapRendererLayerTemplate =
     };
     function singleFleetDrawFN(fleet: Fleet)
     {
-      var fleetContainer = new PIXI.Container();
+      const fleetContainer = new PIXI.Container();
 
-      var color = fleet.player.color.getHex();
-      var fillAlpha = fleet.isStealthy ? 0.3 : 0.7;
+      const color = fleet.player.color.getHex();
+      const fillAlpha = fleet.isStealthy ? 0.3 : 0.7;
 
-      var textTexture = getFleetTextTexture(fleet);
-      var text = new PIXI.Sprite(textTexture);
+      const textTexture = getFleetTextTexture(fleet);
+      const text = new PIXI.Sprite(textTexture);
 
-      var containerGfx = new PIXI.Graphics();
+      const containerGfx = new PIXI.Graphics();
       containerGfx.lineStyle(1, 0x00000, 1);
       containerGfx.beginFill(color, fillAlpha);
       containerGfx.drawRect(0, 0, text.width+4, text.height);
@@ -106,14 +97,14 @@ const fleets: MapRendererLayerTemplate =
 
     for (let i = 0; i < points.length; i++)
     {
-      var star = points[i];
-      var fleets = star.getFleets();
+      const star = points[i];
+      const fleets = star.getFleets();
       if (!fleets || fleets.length < 1)
       {
         continue;
       }
 
-      var fleetsContainer = new PIXI.Container();
+      const fleetsContainer = new PIXI.Container();
       fleetsContainer.x = star.x;
       fleetsContainer.y = star.y - 40;
 
@@ -127,7 +118,7 @@ const fleets: MapRendererLayerTemplate =
         {
           continue;
         }
-        var drawnFleet = singleFleetDrawFN(fleets[j]);
+        const drawnFleet = singleFleetDrawFN(fleets[j]);
         drawnFleet.position.x = fleetsContainer.width;
         fleetsContainer.addChild(drawnFleet);
       }
@@ -151,11 +142,11 @@ const fleetTextTextureCache:
 } = {};
 function getFleetTextTexture(fleet: Fleet)
 {
-  var fleetSize = fleet.units.length;
+  const fleetSize = fleet.units.length;
 
   if (!fleetTextTextureCache[fleetSize])
   {
-    var text = new PIXI.Text("" + fleetSize,
+    const text = new PIXI.Text("" + fleetSize,
     {
       fill: "#FFFFFF",
       stroke: "#000000",

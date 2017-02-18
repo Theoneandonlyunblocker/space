@@ -35,11 +35,11 @@ export default class NotificationLog
   {
     for (let key in app.moduleData.Templates.Notifications)
     {
-      var template = app.moduleData.Templates.Notifications[key];
+      const template = app.moduleData.Templates.Notifications[key];
       for (let i = 0; i < template.eventListeners.length; i++)
       {
-        var listenerKey = template.eventListeners[i];
-        var listener = eventManager.addEventListener(listenerKey,
+        const listenerKey = template.eventListeners[i];
+        const listener = eventManager.addEventListener(listenerKey,
           this.makeNotification.bind(this, template));
 
         if (!this.listeners[listenerKey])
@@ -67,7 +67,7 @@ export default class NotificationLog
   }
   makeNotification(template: NotificationTemplate, props: any)
   {
-    var notification = new Notification(template, props, this.currentTurn);
+    const notification = new Notification(template, props, this.currentTurn);
 
     this.addNotification(notification);
     if (this.isHumanTurn)
@@ -90,7 +90,7 @@ export default class NotificationLog
   }
   markAsRead(notification: Notification<any>)
   {
-    var index = this.unread.indexOf(notification);
+    const index = this.unread.indexOf(notification);
     if (index === -1) throw new Error("Notification is already unread");
 
     notification.hasBeenRead = true;
@@ -105,7 +105,7 @@ export default class NotificationLog
   }
   filterNotifications(notifications: Notification<any>[])
   {
-    var filtered: Notification<any>[] = [];
+    const filtered: Notification<any>[] = [];
 
     for (let i = 0; i < notifications.length; i++)
     {
@@ -119,18 +119,18 @@ export default class NotificationLog
   }
   serialize(): NotificationLogSaveData
   {
-    var notificationsSaveData: NotificationSaveData[] = [];
+    const notificationsSaveData: NotificationSaveData[] = [];
 
     for (let turnNumber in this.byTurn)
     {
-      var notifications = this.byTurn[turnNumber];
+      const notifications = this.byTurn[turnNumber];
       for (let i = 0; i < notifications.length; i++)
       {
         notificationsSaveData.push(notifications[i].serialize());
       }
     }
 
-    var data: NotificationLogSaveData =
+    const data: NotificationLogSaveData =
     {
       notifications: notificationsSaveData,
     };

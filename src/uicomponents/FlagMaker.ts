@@ -50,8 +50,8 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
     {
       window.clearTimeout(this.setStateTimeoutHandle);
     }
-    var target = <HTMLInputElement> e.target;
-    var value = parseInt(target.value);
+    const target = <HTMLInputElement> e.target;
+    const value = parseInt(target.value);
     if (isFinite(value))
     {
       this.sizeValue = value;
@@ -64,12 +64,12 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
   }
   render()
   {
-    var flagElements: React.ReactElement<any>[] = [];
+    const flagElements: React.ReactElement<any>[] = [];
     for (let i = 0; i < 100; i++)
     {
-      var colorScheme = generateColorScheme();
+      const colorScheme = generateColorScheme();
 
-      var flag = new Flag(colorScheme.main);
+      const flag = new Flag(colorScheme.main);
       flag.addRandomEmblem(colorScheme.secondary);
 
       flagElements.push(PlayerFlag(

@@ -37,14 +37,14 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
 
   render()
   {
-    var unit = this.props.unit;
-    var rows: React.ReactHTMLElement<any>[] = [];
+    const unit = this.props.unit;
+    const rows: React.ReactHTMLElement<any>[] = [];
 
     const attributes = unit.baseAttributes.getAttributesTypesSortedForDisplay();
 
     attributes.forEach(attribute =>
     {
-      var maxAttribute = attribute === "maxActionPoints" ? 6 : 9;
+      const maxAttribute = attribute === "maxActionPoints" ? 6 : 9;
       if (unit.baseAttributes[attribute] < maxAttribute)
       {
         rows.push(React.DOM.li(

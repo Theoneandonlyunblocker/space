@@ -34,11 +34,11 @@ export default class Trade
   }
   getItemsAvailableForTrade()
   {
-    var available: TradeableItems = {};
+    const available: TradeableItems = {};
 
     for (let key in this.allItems)
     {
-      var stagedAmount = this.stagedItems[key] ? this.stagedItems[key].amount : 0;
+      const stagedAmount = this.stagedItems[key] ? this.stagedItems[key].amount : 0;
       available[key] =
       {
         key: key,
@@ -87,7 +87,7 @@ export default class Trade
     }
     else
     {
-      var clamped = Math.min(this.allItems[key].amount, newAmount);
+      const clamped = Math.min(this.allItems[key].amount, newAmount);
       this.stagedItems[key].amount = clamped;
     }
   }

@@ -36,16 +36,16 @@ function addImageToApp(name: string, image: HTMLImageElement)
 export default function cacheSpriteSheetAsImages(sheetData: SpriteSheetData, sheetImg: HTMLImageElement,
   onImageCreated: (name: string, image: HTMLImageElement) => void = addImageToApp)
 {
-  var spriteToImageFN = function(sheetImg: HTMLImageElement, frame: SpriteSheetFrame, spriteName: string)
+  const spriteToImageFN = function(sheetImg: HTMLImageElement, frame: SpriteSheetFrame, spriteName: string)
   {
-    var canvas = <HTMLCanvasElement> document.createElement("canvas");
+    const canvas = <HTMLCanvasElement> document.createElement("canvas");
     canvas.width = frame.w;
     canvas.height = frame.h;
-    var context = canvas.getContext("2d");
+    const context = canvas.getContext("2d");
 
     context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
 
-    var image = new Image();
+    const image = new Image();
     image.src = canvas.toDataURL();
 
     // this is never true as pixi loader silently ignores duplicates, which is a shame

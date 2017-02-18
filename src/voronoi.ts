@@ -7,7 +7,7 @@ import VoronoiCell from "./VoronoiCell";
 
 export function makeVoronoi<T extends Point>(points: T[], width: number, height: number)
 {
-  var boundingBox =
+  const boundingBox =
   {
     xl: 0,
     xr: width,
@@ -15,8 +15,8 @@ export function makeVoronoi<T extends Point>(points: T[], width: number, height:
     yb: height,
   };
 
-  var voronoi = new Voronoi();
-  var diagram = voronoi.compute(points, boundingBox);
+  const voronoi = new Voronoi();
+  const diagram = voronoi.compute(points, boundingBox);
 
   return diagram;
 }
@@ -34,8 +34,8 @@ export function relaxVoronoi<T extends Point>(
 {
   for (let i = 0; i < diagram.cells.length; i++)
   {
-    var cell = diagram.cells[i];
-    var point = cell.site;
+    const cell = diagram.cells[i];
+    const point = cell.site;
 
     const vertices = cell.halfedges.map(halfEdge =>
     {
@@ -45,10 +45,10 @@ export function relaxVoronoi<T extends Point>(
     const centroid = getPolygonCentroid(vertices);
     if (getRelaxAmountFN)
     {
-      var dampeningValue = getRelaxAmountFN(point);
+      const dampeningValue = getRelaxAmountFN(point);
 
-      var xDelta = (centroid.x - point.x) * dampeningValue;
-      var yDelta = (centroid.y - point.y) * dampeningValue;
+      const xDelta = (centroid.x - point.x) * dampeningValue;
+      const yDelta = (centroid.y - point.y) * dampeningValue;
 
       point.x = point.x + xDelta;
       point.y = point.y + yDelta;
@@ -80,16 +80,16 @@ export function setVoronoiCells(cells: Voronoi.Cell<(FillerPoint | Star)>[]): vo
 
 function getPolygonCentroid(vertices: Point[]): Point
 {
-  var signedArea: number = 0;
-  var x: number = 0;
-  var y: number = 0;
-  var x0: number; // Current vertex X
-  var y0: number; // Current vertex Y
-  var x1: number; // Next vertex X
-  var y1: number; // Next vertex Y
-  var a: number;  // Partial signed area
+  let signedArea: number = 0;
+  let x: number = 0;
+  let y: number = 0;
+  let x0: number; // Current vertex X
+  let y0: number; // Current vertex Y
+  let x1: number; // Next vertex X
+  let y1: number; // Next vertex Y
+  let a: number;  // Partial signed area
 
-  var i: number = 0;
+  let i: number = 0;
 
   for (i = 0; i < vertices.length - 1; i++)
   {

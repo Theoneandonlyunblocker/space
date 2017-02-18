@@ -123,13 +123,13 @@ class App
   }
   public load(saveKey: string)
   {
-    var data = localStorage.getItem(saveKey);
+    const data = localStorage.getItem(saveKey);
     if (!data)
     {
       return;
     }
 
-    var parsed = JSON.parse(data);
+    const parsed = JSON.parse(data);
 
     idGenerators.setValues(parsed.idGenerators);
 
@@ -157,7 +157,7 @@ class App
 
   private makeApp()
   {
-    var startTime = Date.now();
+    const startTime = Date.now();
 
     Options.load();
     TutorialStatus.load();
@@ -229,17 +229,17 @@ class App
   }
   private makeGame()
   {
-    var playerData = this.makePlayers();
-    var players = playerData.players;
-    var map = this.makeMap(playerData);
+    const playerData = this.makePlayers();
+    const players = playerData.players;
+    const map = this.makeMap(playerData);
 
-    var game = new Game(map, players, players[0]);
+    const game = new Game(map, players, players[0]);
 
     return game;
   }
   private makePlayers()
   {
-    var players: Player[] = [];
+    const players: Player[] = [];
     const candidateRaces = <PlayerRaceTemplate[]> Object.keys(this.moduleData.Templates.Races).map(raceKey =>
     {
       return this.moduleData.Templates.Races[raceKey];
@@ -267,7 +267,7 @@ class App
   }
   private makeMap(playerData: {players: Player[]})
   {
-    var optionValues: MapGenOptionValues =
+    const optionValues: MapGenOptionValues =
     {
       defaultOptions:
       {
@@ -283,12 +283,12 @@ class App
       },
     };
 
-    var mapGenResult = this.moduleData.getDefaultMap().mapGenFunction(
+    const mapGenResult = this.moduleData.getDefaultMap().mapGenFunction(
       optionValues,
       playerData.players,
     );
 
-    var galaxyMap = mapGenResult.makeMap();
+    const galaxyMap = mapGenResult.makeMap();
     return galaxyMap;
   }
   private initGame()

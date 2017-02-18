@@ -62,12 +62,12 @@ export default class PlayerTechnology
   }
   initPriorities()
   {
-    var priorityToAllocate: number = 1;
-    var techsToInit: TechnologyTemplate[] = [];
+    let priorityToAllocate: number = 1;
+    const techsToInit: TechnologyTemplate[] = [];
 
     for (let key in this.technologies)
     {
-      var techData = this.technologies[key];
+      const techData = this.technologies[key];
       if (techData.priority === undefined)
       {
         techsToInit.push(techData.technology);
@@ -85,12 +85,12 @@ export default class PlayerTechnology
 
     while (techsToInit.length > 0)
     {
-      var averagePriority = priorityToAllocate / techsToInit.length;
+      const averagePriority = priorityToAllocate / techsToInit.length;
 
-      var technology = techsToInit.pop();
+      const technology = techsToInit.pop();
 
-      var maxNeededPriority = this.getMaxNeededPriority(technology);
-      var priorityForTech = Math.min(averagePriority, maxNeededPriority);
+      const maxNeededPriority = this.getMaxNeededPriority(technology);
+      const priorityForTech = Math.min(averagePriority, maxNeededPriority);
 
       this.technologies[technology.key].priority = priorityForTech;
       priorityToAllocate -= priorityForTech;
@@ -100,7 +100,7 @@ export default class PlayerTechnology
   {
     // probably not needed as priority should always add up to 1 anyway,
     // but this is cheap and infrequently called so this is here as a safeguard at least for now
-    var totalPriority: number = 0;
+    let totalPriority: number = 0;
     for (let key in this.technologies)
     {
       totalPriority += this.technologies[key].priority;
@@ -109,8 +109,8 @@ export default class PlayerTechnology
 
     for (let key in this.technologies)
     {
-      var techData = this.technologies[key];
-      var relativePriority = techData.priority / totalPriority;
+      const techData = this.technologies[key];
+      const relativePriority = techData.priority / totalPriority;
       if (relativePriority > 0)
       {
         this.addResearchTowardsTechnology(techData.technology, relativePriority * amount);
@@ -132,7 +132,7 @@ export default class PlayerTechnology
   }
   allocateOverflowedResearchPoints(iteration: number = 0)
   {
-    var overflow = this.tempOverflowedResearchAmount;
+    const overflow = this.tempOverflowedResearchAmount;
     this.tempOverflowedResearchAmount = 0;
     this.allocateResearchPoints(overflow, ++iteration);
 
@@ -142,11 +142,11 @@ export default class PlayerTechnology
     if (level <= 0) return 0;
     if (level === 1) return 40;
 
-    var a = 20;
-    var b = 40;
-    var swap: number;
+    let a = 20;
+    let b = 40;
+    let swap: number;
 
-    var total = 0;
+    let total = 0;
 
     for (let i = 0; i < level; i++)
     {
@@ -160,8 +160,8 @@ export default class PlayerTechnology
   }
   addResearchTowardsTechnology(technology: TechnologyTemplate, amount: number): void
   {
-    var tech = this.technologies[technology.key];
-    var overflow: number = 0;
+    const tech = this.technologies[technology.key];
+    let overflow: number = 0;
 
     if (tech.level >= tech.maxLevel) // probably shouldnt happen in the first place
     {
@@ -177,7 +177,7 @@ export default class PlayerTechnology
       }
       if (tech.level === tech.maxLevel)
       {
-        var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
+        const neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
         overflow += tech.totalResearch - neededForMaxLevel;
         tech.totalResearch -= overflow;
         this.setTechnologyPriority(technology, 0, true);
@@ -191,18 +191,18 @@ export default class PlayerTechnology
   {
     const tech = this.technologies[technology.key];
 
-    var researchUntilMaxed =
+    const researchUntilMaxed =
       this.getResearchNeededForTechnologyLevel(tech.maxLevel) - tech.totalResearch;
 
     return researchUntilMaxed / this.getResearchSpeed();
   }
   getOpenTechnologiesPriority()
   {
-    var openPriority = 0;
+    let openPriority = 0;
 
     for (let key in this.technologies)
     {
-      var techData = this.technologies[key];
+      const techData = this.technologies[key];
       if (!techData.priorityIsLocked)
       {
         openPriority += techData.priority;
@@ -213,7 +213,7 @@ export default class PlayerTechnology
   }
   getRelativeOpenTechnologyPriority(technology: TechnologyTemplate)
   {
-    var totalOpenPriority = this.getOpenTechnologiesPriority();
+    const totalOpenPriority = this.getOpenTechnologiesPriority();
     if (this.technologies[technology.key].priorityIsLocked || !totalOpenPriority)
     {
       return 0;
@@ -223,11 +223,11 @@ export default class PlayerTechnology
   }
   setTechnologyPriority(technology: TechnologyTemplate, priority: number, force: boolean = false)
   {
-    var remainingPriority = 1;
+    let remainingPriority = 1;
 
-    var totalOtherPriority: number = 0;
-    var totalOtherPriorityWasZero: boolean = false;
-    var totalOthersCount: number = 0;
+    let totalOtherPriority: number = 0;
+    let totalOtherPriorityWasZero: boolean = false;
+    let totalOthersCount: number = 0;
     for (let key in this.technologies)
     {
       if (key !== technology.key)
@@ -264,8 +264,8 @@ export default class PlayerTechnology
       priority = remainingPriority;
     }
 
-    var priorityNeededForMaxLevel = this.getMaxNeededPriority(technology);
-    var maxNeededPriority = Math.min(priorityNeededForMaxLevel, priority);
+    const priorityNeededForMaxLevel = this.getMaxNeededPriority(technology);
+    const maxNeededPriority = Math.min(priorityNeededForMaxLevel, priority);
 
     this.technologies[technology.key].priority = maxNeededPriority;
     remainingPriority -= maxNeededPriority;
@@ -281,21 +281,21 @@ export default class PlayerTechnology
     {
       if (key !== technology.key && !this.technologies[key].priorityIsLocked)
       {
-        var techData = this.technologies[key];
+        const techData = this.technologies[key];
         if (totalOtherPriorityWasZero)
         {
           techData.priority = 1 / totalOthersCount;
         }
 
-        var maxNeededPriorityForOtherTech = this.getMaxNeededPriority(techData.technology);
+        const maxNeededPriorityForOtherTech = this.getMaxNeededPriority(techData.technology);
 
-        var relativePriority = techData.priority / totalOtherPriority;
-        var reservedPriority = relativePriority * remainingPriority;
+        const relativePriority = techData.priority / totalOtherPriority;
+        const reservedPriority = relativePriority * remainingPriority;
 
         if (reservedPriority > maxNeededPriorityForOtherTech)
         {
           techData.priority = maxNeededPriorityForOtherTech;
-          var priorityOverflow = reservedPriority - maxNeededPriorityForOtherTech;
+          const priorityOverflow = reservedPriority - maxNeededPriorityForOtherTech;
           remainingPriority += priorityOverflow;
         }
         else
@@ -309,13 +309,13 @@ export default class PlayerTechnology
   }
   capTechnologyPrioritiesToMaxNeeded()
   {
-    var overflowPriority: number = 0;
+    let overflowPriority: number = 0;
 
     for (let key in this.technologies)
     {
-      var techData = this.technologies[key];
+      const techData = this.technologies[key];
 
-      var maxNeededPriorityForOtherTech = this.getMaxNeededPriority(techData.technology);
+      const maxNeededPriorityForOtherTech = this.getMaxNeededPriority(techData.technology);
       if (techData.priority > maxNeededPriorityForOtherTech)
       {
         overflowPriority += techData.priority - maxNeededPriorityForOtherTech;
@@ -327,7 +327,7 @@ export default class PlayerTechnology
   }
   serialize(): PlayerTechnologySaveData
   {
-    var data: PlayerTechnologySaveData = {};
+    const data: PlayerTechnologySaveData = {};
 
     for (let key in this.technologies)
     {

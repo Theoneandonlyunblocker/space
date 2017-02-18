@@ -41,7 +41,7 @@ export default class FrontsAI
 
   private getUnitScoresForFront(units: Unit[], front: Front)
   {
-    var scores: IFrontUnitScore[] = [];
+    const scores: IFrontUnitScore[] = [];
 
     for (let i = 0; i < units.length; i++)
     {
@@ -58,17 +58,17 @@ export default class FrontsAI
 
   assignUnits()
   {
-    var units = this.player.units;
+    const units = this.player.units;
 
-    var allUnitScores: IFrontUnitScore[] = [];
-    var unitScoresByFront:
+    const allUnitScores: IFrontUnitScore[] = [];
+    const unitScoresByFront:
     {
       [frontId: number]: any[];
     } = {};
 
-    var recalculateScoresForFront = function(front: Front)
+    const recalculateScoresForFront = function(front: Front)
     {
-      var frontScores = unitScoresByFront[front.id];
+      const frontScores = unitScoresByFront[front.id];
 
       for (let i = 0; i < frontScores.length; i++)
       {
@@ -76,7 +76,7 @@ export default class FrontsAI
       }
     };
 
-    var removeUnit = function(unit: Unit)
+    const removeUnit = function(unit: Unit)
     {
       for (let frontId in unitScoresByFront)
       {
@@ -88,19 +88,19 @@ export default class FrontsAI
     };
 
     // ascending
-    var sortByScoreFN = function(a: IFrontUnitScore, b: IFrontUnitScore)
+    const sortByScoreFN = function(a: IFrontUnitScore, b: IFrontUnitScore)
     {
       return a.score - b.score;
     };
 
     for (let i = 0; i < this.fronts.length; i++)
     {
-      var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
+      const frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
       unitScoresByFront[this.fronts[i].id] = frontScores;
-      allUnitScores = allUnitScores.concat(frontScores);
+      allUnitScores.push(...frontScores);
     }
 
-    var alreadyAdded:
+    const alreadyAdded:
     {
       [unitId: number]: boolean;
     } = {};
@@ -111,7 +111,7 @@ export default class FrontsAI
       // sorted in loop as scores get recalculated every iteration
       allUnitScores.sort(sortByScoreFN);
 
-      var bestScore = allUnitScores.pop();
+      const bestScore = allUnitScores.pop();
       if (alreadyAdded[bestScore.unit.id])
       {
         continue;
@@ -140,12 +140,12 @@ export default class FrontsAI
 
   createFront(objective: Objective)
   {
-    var musterLocation = objective.target ?
+    const musterLocation = objective.target ?
       this.player.getNearestOwnedStarTo(objective.target) :
       null;
-    var unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
+    const unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
 
-    var front = new Front(
+    const front = new Front(
     {
       id: objective.id,
       objective: objective,
@@ -165,12 +165,12 @@ export default class FrontsAI
     // loop backwards because splicing
     for (let i = this.fronts.length - 1; i >= 0; i--)
     {
-      var front = this.fronts[i];
-      var hasActiveObjective = false;
+      const front = this.fronts[i];
+      let hasActiveObjective = false;
 
       for (let j = 0; j < this.objectivesAI.objectives.length; j++)
       {
-        var objective = this.objectivesAI.objectives[j];
+        const objective = this.objectivesAI.objectives[j];
         if (objective.id === front.id)
         {
           hasActiveObjective = true;
@@ -195,7 +195,7 @@ export default class FrontsAI
 
     for (let i = 0; i < this.objectivesAI.objectives.length; i++)
     {
-      var objective = this.objectivesAI.objectives[i];
+      const objective = this.objectivesAI.objectives[i];
       if (!objective.template.moveRoutineFN)
       {
         continue;
@@ -203,7 +203,7 @@ export default class FrontsAI
 
       if (!this.getFrontWithId(objective.id))
       {
-        var front = this.createFront(objective);
+        const front = this.createFront(objective);
         this.fronts.push(front);
       }
     }
@@ -233,7 +233,7 @@ export default class FrontsAI
     {
       return;
     }
-    var front = this.frontsToMove.pop();
+    const front = this.frontsToMove.pop();
 
     if (!front)
     {
@@ -254,7 +254,7 @@ export default class FrontsAI
 
     for (let i = 0; i < this.fronts.length; i++)
     {
-      var front = this.fronts[i];
+      const front = this.fronts[i];
       if (front.units.length < front.idealUnitsDesired)
       {
         this.frontsRequestingUnits.push(front);

@@ -8,24 +8,24 @@ import
 
 export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>[]
 {
-  var triangles: Triangle<Point>[] = [];
+  const triangles: Triangle<Point>[] = [];
 
-  var superTriangle = makeSuperTriangle(vertices);
+  const superTriangle = makeSuperTriangle(vertices);
   triangles.push(superTriangle);
 
   for (let i = 0; i < vertices.length; i++)
   {
-    var vertex: Point = vertices[i];
-    var edgeBuffer: Point[][] = [];
+    const vertex: Point = vertices[i];
+    const edgeBuffer: Point[][] = [];
 
     for (let j = 0; j < triangles.length; j++)
     {
-      var triangle = triangles[j];
+      const triangle = triangles[j];
 
       if (triangle.circumCircleContainsPoint(vertex))
       {
-        var edges = triangle.getEdges();
-        edgeBuffer = edgeBuffer.concat(edges);
+        const edges = triangle.getEdges();
+        edgeBuffer.push(...edges);
         triangles.splice(j, 1);
         j--;
       }
@@ -47,7 +47,7 @@ export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>
     }
     for (let j = 0; j < edgeBuffer.length; j++)
     {
-      var newTriangle = new Triangle(
+      const newTriangle = new Triangle(
         edgeBuffer[j][0],
         edgeBuffer[j][1],
         vertex,
@@ -76,7 +76,7 @@ export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>
 
 function makeSuperTriangle<T extends Point>(vertices: T[], highestCoordinateValue?: number): Triangle<Point>
 {
-  var max: number;
+  let max: number;
 
   if (highestCoordinateValue)
   {
@@ -99,7 +99,7 @@ function makeSuperTriangle<T extends Point>(vertices: T[], highestCoordinateValu
     }
   }
 
-  var triangle = new Triangle(
+  const triangle = new Triangle(
     {
       x: 3 * max,
       y: 0,

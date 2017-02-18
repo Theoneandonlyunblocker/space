@@ -49,10 +49,10 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
   private getInitialStateTODO(): StateType
   {
-    var initialSelected: Star = null;
-    var player = this.props.player;
+    let initialSelected: Star = null;
+    const player = this.props.player;
 
-    var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
+    const starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
 
     if (starsByManufactoryPresence.withManufactories.length > 0)
     {
@@ -90,14 +90,14 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
   getStarsWithAndWithoutManufactories()
   {
-    var player = this.props.player;
+    const player = this.props.player;
 
-    var starsWithManufactories: Star[] = [];
-    var starsWithoutManufactories: Star[] = [];
+    const starsWithManufactories: Star[] = [];
+    const starsWithoutManufactories: Star[] = [];
 
     for (let i = 0; i < player.controlledLocations.length; i++)
     {
-      var star = player.controlledLocations[i];
+      const star = player.controlledLocations[i];
       if (star.manufactory)
       {
         starsWithManufactories.push(star);
@@ -142,12 +142,12 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
   render()
   {
-    var player = this.props.player;
-    var selectedStar = this.state.selectedStar;
+    const player = this.props.player;
+    const selectedStar = this.state.selectedStar;
 
-    var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
+    const starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
 
-    var queueElement: React.ReactElement<any> = null;
+    let queueElement: React.ReactElement<any> = null;
     if (selectedStar)
     {
       if (selectedStar.manufactory)

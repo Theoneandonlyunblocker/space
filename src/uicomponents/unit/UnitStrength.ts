@@ -99,7 +99,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
       health: this.state.displayedStrength,
     };
 
-    var tween = new TWEEN.Tween(tweeningHealthObject).to(
+    const tween = new TWEEN.Tween(tweeningHealthObject).to(
     {
       health: newAmount,
     }, time);
@@ -133,11 +133,11 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
   }
   makeCapitalInfo()
   {
-    var text = this.makeStrengthText();
+    const text = this.makeStrengthText();
 
-    var relativeHealth = this.state.displayedStrength / this.props.maxHealth;
+    const relativeHealth = this.state.displayedStrength / this.props.maxHealth;
 
-    var bar = React.DOM.div(
+    const bar = React.DOM.div(
     {
       className: "unit-strength-bar",
     },
@@ -160,13 +160,13 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
   }
   makeStrengthText()
   {
-    var critThreshhold = 0.3;
-    var currentStyle =
+    const critThreshhold = 0.3;
+    const currentStyle =
     {
       className: "unit-strength-current",
     };
 
-    var healthRatio = this.state.displayedStrength / this.props.maxHealth;
+    const healthRatio = this.state.displayedStrength / this.props.maxHealth;
 
     if (!this.props.isNotDetected && healthRatio <= critThreshhold)
     {
@@ -177,14 +177,14 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
       currentStyle.className += " wounded";
     }
 
-    var containerProps =
+    const containerProps =
     {
       className: (this.props.isSquadron ? "unit-strength-amount" :
         "unit-strength-amount-capital"),
     };
 
-    var displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.state.displayedStrength);
-    var max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
+    const displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.state.displayedStrength);
+    const max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
 
     return(
       React.DOM.div(containerProps,

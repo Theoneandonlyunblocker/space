@@ -40,8 +40,8 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
 
   render()
   {
-    var modifiers = this.props.attitudeModifiers;
-    var rows: ListItem<AttitudeModifierInfoProps>[] = [];
+    const modifiers = this.props.attitudeModifiers;
+    const rows: ListItem<AttitudeModifierInfoProps>[] = [];
 
     rows.push(
     {
@@ -57,7 +57,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
 
     for (let i = 0; i < modifiers.length; i++)
     {
-      var modifier = modifiers[i];
+      const modifier = modifiers[i];
       if (modifier.isOverRidden) continue;
 
       rows.push(
@@ -74,7 +74,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
     }
 
 
-    var columns: ListColumn<AttitudeModifierInfoProps>[] =
+    const columns: ListColumn<AttitudeModifierInfoProps>[] =
     [
       {
         label: "Name",

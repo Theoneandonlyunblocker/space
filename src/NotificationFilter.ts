@@ -30,17 +30,17 @@ export default class NotificationFilter
   }
   setDefaultFilterStates()
   {
-    var notifications = app.moduleData.Templates.Notifications;
+    const notifications = app.moduleData.Templates.Notifications;
 
     for (let key in notifications)
     {
-      var notificationTemplate = notifications[key];
+      const notificationTemplate = notifications[key];
       this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
     }
   }
   shouldDisplayNotification(notification: Notification<any>)
   {
-    var filterStates = this.filters[notification.template.key];
+    const filterStates = this.filters[notification.template.key];
     if (filterStates.indexOf(NotificationFilterState.alwaysShow) !== -1)
     {
       return true;
@@ -50,7 +50,8 @@ export default class NotificationFilter
       return false;
     }
 
-    var playerIsInvolved: boolean = false;
+    // TODO 20.02.2017 | shouldn't we explicitly store involved players in the notification?
+    let playerIsInvolved: boolean = false;
     for (let key in notification.props)
     {
       if (notification.props[key] === this.player)
@@ -87,7 +88,7 @@ export default class NotificationFilter
   }
   handleFilterStateChange(filterKey: string, state: NotificationFilterState)
   {
-    var stateIndex = this.filters[filterKey].indexOf(state);
+    const stateIndex = this.filters[filterKey].indexOf(state);
     if (stateIndex !== -1)
     {
       if (this.filters[filterKey].length === 1)
@@ -101,8 +102,8 @@ export default class NotificationFilter
     }
     else
     {
-      var newState: NotificationFilterState[] = [state];
-      var compatibleStates = this.getCompatibleFilterStates(state);
+      const newState: NotificationFilterState[] = [state];
+      const compatibleStates = this.getCompatibleFilterStates(state);
       for (let i = 0; i < this.filters[filterKey].length; i++)
       {
         if (compatibleStates.indexOf(this.filters[filterKey][i]) !== -1)
@@ -115,7 +116,7 @@ export default class NotificationFilter
   }
   getFiltersByCategory()
   {
-    var filtersByCategory:
+    const filtersByCategory:
     {
       [category: string]:
       {
@@ -123,11 +124,11 @@ export default class NotificationFilter
         filterState: NotificationFilterState[];
       }[],
     } = {};
-    var notifications = app.moduleData.Templates.Notifications;
+    const notifications = app.moduleData.Templates.Notifications;
 
     for (let key in this.filters)
     {
-      var notificationTemplate = notifications[key];
+      const notificationTemplate = notifications[key];
       if (notificationTemplate)
       {
         if (!filtersByCategory[notificationTemplate.category])
@@ -147,20 +148,20 @@ export default class NotificationFilter
   }
   setDefaultFilterStatesForCategory(category: string)
   {
-    var byCategory = this.getFiltersByCategory();
-    var forSelectedCategory = byCategory[category];
+    const byCategory = this.getFiltersByCategory();
+    const forSelectedCategory = byCategory[category];
 
     for (let i = 0; i < forSelectedCategory.length; i++)
     {
-      var template = forSelectedCategory[i].notificationTemplate;
+      const template = forSelectedCategory[i].notificationTemplate;
       this.filters[template.key] = template.defaultFilterState.slice(0);
     }
   }
   load(slot?: number)
   {
-    var baseString = "NotificationFilter.";
+    const baseString = "NotificationFilter.";
 
-    var parsedData: any;
+    let parsedData: any;
     if (slot && localStorage[baseString + slot])
     {
       parsedData = JSON.parse(localStorage.getItem(baseString + slot));
@@ -177,7 +178,7 @@ export default class NotificationFilter
   }
   save(slot: number = 0)
   {
-    var data = JSON.stringify(
+    const data = JSON.stringify(
     {
       filters: this.filters,
       date: new Date(),

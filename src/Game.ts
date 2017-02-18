@@ -91,12 +91,12 @@ export default class Game
     {
       unit.addHealth(unit.getHealingForGameTurnStart());
 
-      var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+      const passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
       if (passiveSkillsByPhase.atTurnStart)
       {
         for (let i = 0; i < passiveSkillsByPhase.atTurnStart.length; i++)
         {
-          var skill = passiveSkillsByPhase.atTurnStart[i];
+          const skill = passiveSkillsByPhase.atTurnStart[i];
           for (let j = 0; j < skill.atTurnStart.length; j++)
           {
             skill.atTurnStart[j](unit);
@@ -112,10 +112,10 @@ export default class Game
     {
       player.money += player.getIncome();
 
-      var allResourceIncomeData = player.getResourceIncome();
+      const allResourceIncomeData = player.getResourceIncome();
       for (let resourceType in allResourceIncomeData)
       {
-        var resourceData = allResourceIncomeData[resourceType];
+        const resourceData = allResourceIncomeData[resourceType];
         player.addResource(resourceData.resource, resourceData.amount);
       }
 

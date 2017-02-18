@@ -46,13 +46,13 @@ export default class DiplomacyStatus
   {
     for (let key in app.moduleData.Templates.AttitudeModifiers)
     {
-      var template = app.moduleData.Templates.AttitudeModifiers[key];
+      const template = app.moduleData.Templates.AttitudeModifiers[key];
       if (template.triggers)
       {
         for (let i = 0; i < template.triggers.length; i++)
         {
-          var listenerKey = template.triggers[i];
-          var listener = eventManager.addEventListener(listenerKey,
+          const listenerKey = template.triggers[i];
+          const listener = eventManager.addEventListener(listenerKey,
             this.triggerAttitudeModifier.bind(this, template));
 
           if (!this.listeners[listenerKey])
@@ -86,7 +86,7 @@ export default class DiplomacyStatus
   {
     if (isFinite(this.baseOpinion)) return this.baseOpinion;
 
-    var friendliness = this.player.AIController.personality.friendliness;
+    const friendliness = this.player.AIController.personality.friendliness;
 
     this.baseOpinion = Math.round((friendliness - 0.5) * 10);
 
@@ -110,10 +110,10 @@ export default class DiplomacyStatus
   }
   getOpinionOf(player: Player)
   {
-    var baseOpinion = this.getBaseOpinion();
+    const baseOpinion = this.getBaseOpinion();
 
-    var attitudeModifiers = this.attitudeModifiersByPlayer[player.id];
-    var modifierOpinion = 0;
+    const attitudeModifiers = this.attitudeModifiersByPlayer[player.id];
+    let modifierOpinion = 0;
 
     for (let i = 0; i < attitudeModifiers.length; i++)
     {
@@ -158,7 +158,7 @@ export default class DiplomacyStatus
 
     eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
 
-    var playersAreRelevantToHuman = true;
+    let playersAreRelevantToHuman = true;
 
     [this.player, player].forEach(function(p: Player)
     {
@@ -216,7 +216,7 @@ export default class DiplomacyStatus
 
   getModifierOfSameType(player: Player, modifier: AttitudeModifier)
   {
-    var modifiers = this.attitudeModifiersByPlayer[player.id];
+    const modifiers = this.attitudeModifiersByPlayer[player.id];
 
     for (let i = 0; i < modifiers.length; i++)
     {
@@ -236,7 +236,7 @@ export default class DiplomacyStatus
       this.attitudeModifiersByPlayer[player.id] = [];
     }
 
-    var sameType = this.getModifierOfSameType(player, modifier);
+    const sameType = this.getModifierOfSameType(player, modifier);
     if (sameType)
     {
       sameType.refresh(modifier);
@@ -250,7 +250,7 @@ export default class DiplomacyStatus
   {
     if (player !== this.player) return;
 
-    var modifier = new AttitudeModifier(
+    const modifier = new AttitudeModifier(
     {
       template: template,
       startTurn: app.game.turnNumber,
@@ -265,22 +265,22 @@ export default class DiplomacyStatus
     add modifiers that should be added. throw if type was already removed
     set new strength for modifier
      */
-    var modifiersByPlayer = this.attitudeModifiersByPlayer;
-    var allModifiers = app.moduleData.Templates.AttitudeModifiers;
+    const modifiersByPlayer = this.attitudeModifiersByPlayer;
+    const allModifiers = app.moduleData.Templates.AttitudeModifiers;
 
-    var playerModifiers = modifiersByPlayer[player.id];
+    const playerModifiers = modifiersByPlayer[player.id];
 
-    var activeModifiers:
+    const activeModifiers:
     {
       [modifierType: string]: AttitudeModifier,
     } = {};
 
     // debugging
-    var modifiersAdded:
+    const modifiersAdded:
     {
       [modifierType: string]: AttitudeModifier,
     } = {};
-    var modifiersRemoved:
+    const modifiersRemoved:
     {
       [modifierType: string]: AttitudeModifier,
     } = {};
@@ -288,7 +288,7 @@ export default class DiplomacyStatus
     // remove modifiers & build active modifiers index
     for (let i = playerModifiers.length - 1; i >= 0; i--)
     {
-      var modifier = playerModifiers[i];
+      const modifier = playerModifiers[i];
       if (modifier.shouldEnd(evaluation))
       {
         playerModifiers.splice(i, 1);
@@ -307,11 +307,11 @@ export default class DiplomacyStatus
     // if modifier is active, set strength based on evaluation
     for (let modifierType in allModifiers)
     {
-      var template = allModifiers[modifierType];
+      const template = allModifiers[modifierType];
 
-      var modifier: AttitudeModifier;
+      let modifier: AttitudeModifier;
       modifier = activeModifiers[template.type];
-      var alreadyHasModifierOfType = modifier;
+      const alreadyHasModifierOfType = modifier;
 
       if (!alreadyHasModifierOfType && !template.triggers)
       {
@@ -321,7 +321,7 @@ export default class DiplomacyStatus
         }
         else
         {
-          var shouldStart = template.startCondition(evaluation);
+          const shouldStart = template.startCondition(evaluation);
 
           if (shouldStart)
           {
@@ -348,19 +348,19 @@ export default class DiplomacyStatus
 
   serialize(): DiplomacyStatusSaveData
   {
-    var metPlayerIds: number[] = [];
+    const metPlayerIds: number[] = [];
     for (let playerId in this.metPlayers)
     {
       metPlayerIds.push(this.metPlayers[playerId].id);
     }
 
-    var attitudeModifiersByPlayer:
+    const attitudeModifiersByPlayer:
     {
       [playerId: number]: AttitudeModifierSaveData[];
     } = {};
     for (let playerId in this.attitudeModifiersByPlayer)
     {
-      var serializedModifiers =
+      const serializedModifiers =
         this.attitudeModifiersByPlayer[playerId].map(function(modifier)
         {
           return modifier.serialize();
@@ -369,7 +369,7 @@ export default class DiplomacyStatus
     }
 
 
-    var data: DiplomacyStatusSaveData =
+    const data: DiplomacyStatusSaveData =
     {
       metPlayerIds: metPlayerIds,
       statusByPlayer: this.statusByPlayer,

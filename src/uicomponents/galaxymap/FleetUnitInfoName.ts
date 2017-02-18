@@ -41,7 +41,7 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
   }
   onChange(e: React.FormEvent)
   {
-    var target = <HTMLInputElement> e.target;
+    const target = <HTMLInputElement> e.target;
     this.setState({inputElementValue: target.value});
     this.props.unit.name = target.value;
   }

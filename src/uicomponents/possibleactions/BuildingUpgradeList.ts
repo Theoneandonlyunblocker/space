@@ -39,15 +39,15 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
 
   hasAvailableUpgrades()
   {
-    var possibleUpgrades = this.props.star.getBuildingUpgrades();
+    const possibleUpgrades = this.props.star.getBuildingUpgrades();
     return Object.keys(possibleUpgrades).length > 0;
   }
 
   upgradeBuilding(upgradeData: BuildingUpgradeData)
   {
-    var star = upgradeData.parentBuilding.location;
+    const star = upgradeData.parentBuilding.location;
 
-    var newBuilding = new Building(
+    const newBuilding = new Building(
     {
       template: upgradeData.template,
       location: star,
@@ -75,13 +75,13 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
   {
     if (!this.hasAvailableUpgrades()) return null;
 
-    var upgradeGroups: React.ReactHTMLElement<any>[] = [];
+    const upgradeGroups: React.ReactHTMLElement<any>[] = [];
 
-    var possibleUpgrades = this.props.star.getBuildingUpgrades();
-    var sortedParentBuildings = Object.keys(possibleUpgrades).sort(function(aId: string, bId: string)
+    const possibleUpgrades = this.props.star.getBuildingUpgrades();
+    const sortedParentBuildings = Object.keys(possibleUpgrades).sort(function(aId: string, bId: string)
     {
-      var a = possibleUpgrades[aId][0].parentBuilding.template.displayName;
-      var b = possibleUpgrades[bId][0].parentBuilding.template.displayName;
+      const a = possibleUpgrades[aId][0].parentBuilding.template.displayName;
+      const b = possibleUpgrades[bId][0].parentBuilding.template.displayName;
 
       if (a < b) return -1;
       else if (a > b) return 1;
@@ -90,11 +90,11 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
 
     for (let i = 0; i < sortedParentBuildings.length; i++)
     {
-      var parentBuildingId = sortedParentBuildings[i];
-      var upgrades = possibleUpgrades[parentBuildingId];
-      var parentBuilding: Building = upgrades[0].parentBuilding;
+      const parentBuildingId = sortedParentBuildings[i];
+      const upgrades = possibleUpgrades[parentBuildingId];
+      const parentBuilding: Building = upgrades[0].parentBuilding;
 
-      var upgradeElements: React.ReactElement<any>[] = [];
+      const upgradeElements: React.ReactElement<any>[] = [];
 
       for (let j = 0; j < upgrades.length; j++)
       {
@@ -123,7 +123,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
         }));
       }
 
-      var parentElement = React.DOM.div(
+      const parentElement = React.DOM.div(
       {
         key: "" + parentBuilding.id,
         className: "building-upgrade-group",

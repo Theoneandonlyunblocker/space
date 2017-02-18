@@ -111,7 +111,7 @@ export default class Star implements Point
       this.buildings[building.template.category] = [];
     }
 
-    var buildings = this.buildings[building.template.category];
+    const buildings = this.buildings[building.template.category];
 
     if (buildings.indexOf(building) >= 0)
     {
@@ -150,7 +150,7 @@ export default class Star implements Point
       throw new Error("Location doesn't have building");
     }
 
-    var buildings = this.buildings[building.template.category];
+    const buildings = this.buildings[building.template.category];
 
     this.buildings[building.template.category].splice(
       buildings.indexOf(building), 1);
@@ -185,7 +185,7 @@ export default class Star implements Point
       return null;
     }
 
-    var defenceBuildings = this.buildings["defence"];
+    const defenceBuildings = this.buildings["defence"];
     for (let i = 0; i < defenceBuildings.length; i++)
     {
       if (defenceBuildings[i].controller !== this.owner)
@@ -200,8 +200,8 @@ export default class Star implements Point
   {
     if (!this.buildings["defence"]) return;
 
-    var oldOwner = this.owner;
-    var newOwner = this.buildings["defence"][0].controller;
+    const oldOwner = this.owner;
+    const newOwner = this.buildings["defence"][0].controller;
 
     if (oldOwner)
     {
@@ -223,13 +223,13 @@ export default class Star implements Point
   }
   updateBuildingsEffect(): void
   {
-    var effect: BuildingEffect = {};
+    const effect: BuildingEffect = {};
 
     for (let category in this.buildings)
     {
       for (let i = 0; i < this.buildings[category].length; i++)
       {
-        var building = this.buildings[category][i];
+        const building = this.buildings[category][i];
         building.getEffect(effect);
       }
     }
@@ -248,8 +248,8 @@ export default class Star implements Point
   }
   getEffectWithBuildingsEffect(base: number, effectType: string): number
   {
-    var effect = base;
-    var buildingsEffect = this.getBuildingsEffect()[effectType];
+    let effect = base;
+    const buildingsEffect = this.getBuildingsEffect()[effectType];
 
     if (isFinite(buildingsEffect))
     {
@@ -283,7 +283,7 @@ export default class Star implements Point
   }
   getAllBuildings(): Building[]
   {
-    var buildings: Building[] = [];
+    let buildings: Building[] = [];
 
     for (let category in this.buildings)
     {
@@ -294,7 +294,7 @@ export default class Star implements Point
   }
   getBuildingsForPlayer(player: Player): Building[]
   {
-    var allBuildings = this.getAllBuildings();
+    const allBuildings = this.getAllBuildings();
 
     return allBuildings.filter(function(building)
     {
@@ -303,10 +303,10 @@ export default class Star implements Point
   }
   getBuildingsByFamily(buildingTemplate: BuildingTemplate): Building[]
   {
-    var propToCheck = buildingTemplate.family ? "family" : "type";
+    const propToCheck = buildingTemplate.family ? "family" : "type";
 
-    var categoryBuildings = this.buildings[buildingTemplate.category];
-    var buildings: Building[] = [];
+    const categoryBuildings = this.buildings[buildingTemplate.category];
+    const buildings: Building[] = [];
 
     if (categoryBuildings)
     {
@@ -323,11 +323,11 @@ export default class Star implements Point
   }
   getBuildableBuildings(): BuildingTemplate[]
   {
-    var canBuild: BuildingTemplate[] = [];
+    const canBuild: BuildingTemplate[] = [];
     for (let buildingType in app.moduleData.Templates.Buildings)
     {
-      var template: BuildingTemplate = app.moduleData.Templates.Buildings[buildingType];
-      var alreadyBuilt: Building[];
+      const template: BuildingTemplate = app.moduleData.Templates.Buildings[buildingType];
+      let alreadyBuilt: Building[];
 
       if (template.category === "mine" && !this.resource)
       {
@@ -346,37 +346,37 @@ export default class Star implements Point
   }
   getBuildingUpgrades(): {[buildingId: number]: BuildingUpgradeData[]}
   {
-    var allUpgrades:
+    const allUpgrades:
     {
       [buildingId: number]: BuildingUpgradeData[];
     } = {};
 
-    var self = this;
+    const self = this;
 
-    var ownerBuildings = this.getBuildingsForPlayer(this.owner);
+    const ownerBuildings = this.getBuildingsForPlayer(this.owner);
 
     for (let i = 0; i < ownerBuildings.length; i++)
     {
-      var building = ownerBuildings[i];
-      var upgrades = building.getPossibleUpgrades();
+      const building = ownerBuildings[i];
+      let upgrades = building.getPossibleUpgrades();
 
       upgrades = upgrades.filter(function(upgradeData: BuildingUpgradeData)
       {
-        var parent = upgradeData.parentBuilding.template;
-        var template = upgradeData.template;
+        const parent = upgradeData.parentBuilding.template;
+        const template = upgradeData.template;
         if (parent.type === template.type)
         {
           return true;
         }
         else
         {
-          var isSameFamily = (template.family && parent.family === template.family);
-          var maxAllowed = template.maxPerType;
+          const isSameFamily = (template.family && parent.family === template.family);
+          let maxAllowed = template.maxPerType;
           if (isSameFamily)
           {
             maxAllowed += 1;
           }
-          var alreadyBuilt = self.getBuildingsByFamily(template);
+          const alreadyBuilt = self.getBuildingsByFamily(template);
           return alreadyBuilt.length < maxAllowed;
         }
       });
@@ -463,7 +463,7 @@ export default class Star implements Point
   }
   removeFleet(fleet: Fleet): void
   {
-    var fleetIndex = this.getFleetIndex(fleet);
+    const fleetIndex = this.getFleetIndex(fleet);
 
     if (fleetIndex < 0)
     {
@@ -479,12 +479,12 @@ export default class Star implements Point
   }
   getTargetsForPlayer(player: Player): FleetAttackTarget[]
   {
-    var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
-    var buildingController = buildingTarget ? buildingTarget.controller : null;
+    const buildingTarget = this.getFirstEnemyDefenceBuilding(player);
+    const buildingController = buildingTarget ? buildingTarget.controller : null;
 
-    var diplomacyStatus = player.diplomacyStatus;
+    const diplomacyStatus = player.diplomacyStatus;
 
-    var targets: FleetAttackTarget[] = [];
+    const targets: FleetAttackTarget[] = [];
 
     if (buildingTarget &&
       (
@@ -544,7 +544,7 @@ export default class Star implements Point
       return null;
     }
 
-    var defenceBuildings = this.buildings["defence"].slice(0);
+    let defenceBuildings = this.buildings["defence"].slice(0);
     if (this.owner === player)
     {
       defenceBuildings = defenceBuildings.reverse();
@@ -585,7 +585,7 @@ export default class Star implements Point
       throw new Error("Tried to remove nonexistant link between stars: " + this.id + " <-> " + linkTo.id);
     }
 
-    var toIndex = this.linksTo.indexOf(linkTo);
+    const toIndex = this.linksTo.indexOf(linkTo);
     if (toIndex >= 0)
     {
       this.linksTo.splice(toIndex, 1);
@@ -608,7 +608,7 @@ export default class Star implements Point
   {
     for (let i = 0; i < this.voronoiCell.halfedges.length; i++)
     {
-      var edge = this.voronoiCell.halfedges[i].edge;
+      const edge = this.voronoiCell.halfedges[i].edge;
 
       if (
         (edge.lSite && edge.lSite === neighbor) ||
@@ -623,14 +623,14 @@ export default class Star implements Point
   }
   getSharedNeighborsWith(neighbor: Star): (Star | FillerPoint)[]
   {
-    var ownNeighbors = this.getNeighbors();
-    var neighborNeighbors = neighbor.getNeighbors();
+    const ownNeighbors = this.getNeighbors();
+    const neighborNeighbors = neighbor.getNeighbors();
 
-    var sharedNeighbors: Array<Star | FillerPoint> = [];
+    const sharedNeighbors: Array<Star | FillerPoint> = [];
 
     for (let i = 0; i < ownNeighbors.length; i++)
     {
-      var star = ownNeighbors[i];
+      const star = ownNeighbors[i];
       if (star !== neighbor && neighborNeighbors.indexOf(star) !== -1)
       {
         sharedNeighbors.push(star);
@@ -642,11 +642,11 @@ export default class Star implements Point
   // return adjacent stars whether they're linked to this or not
   getNeighbors(): (Star | FillerPoint)[]
   {
-    var neighbors: (Star | FillerPoint)[] = [];
+    const neighbors: (Star | FillerPoint)[] = [];
 
     for (let i = 0; i < this.voronoiCell.halfedges.length; i++)
     {
-      var edge = <Voronoi.Edge<Star>> this.voronoiCell.halfedges[i].edge;
+      const edge = <Voronoi.Edge<Star>> this.voronoiCell.halfedges[i].edge;
 
       if (edge.lSite !== null && edge.lSite.id !== this.id)
       {
@@ -671,11 +671,11 @@ export default class Star implements Point
       return this.indexedNeighborsInRange[range];
     }
 
-    var visited:
+    const visited:
     {
       [id: number]: Star;
     } = {};
-    var visitedByRange:
+    const visitedByRange:
     {
       [range: number]: Star[];
     } = {};
@@ -685,8 +685,8 @@ export default class Star implements Point
       visited[this.id] = this;
     }
 
-    var current: Star[] = [];
-    var frontier: Star[] = [this];
+    let current: Star[] = [];
+    let frontier: Star[] = [this];
 
     for (let i = 0; i < range; i++)
     {
@@ -697,7 +697,7 @@ export default class Star implements Point
 
       for (let j = 0; j < current.length; j++)
       {
-        var neighbors = current[j].getAllLinks();
+        const neighbors = current[j].getAllLinks();
 
         for (let k = 0; k < neighbors.length; k++)
         {
@@ -710,7 +710,7 @@ export default class Star implements Point
         }
       }
     }
-    var allVisited: Star[] = [];
+    const allVisited: Star[] = [];
 
     for (let id in visited)
     {
@@ -736,19 +736,19 @@ export default class Star implements Point
     earlyReturnSize?: number,
     initialStars: Star[] = [this]): Star[]
   {
-    var visited:
+    const visited:
     {
       [starId: number]: boolean;
     } = {};
 
-    var connected:
+    const connected:
     {
       [starId: number]: Star;
     } = {};
 
-    var sizeFound = 1;
+    let sizeFound = 1;
 
-    var frontier: Star[] = initialStars.slice(0);
+    const frontier: Star[] = initialStars.slice(0);
     initialStars.forEach(star =>
     {
       visited[star.id] = true;
@@ -756,13 +756,13 @@ export default class Star implements Point
 
     while (frontier.length > 0)
     {
-      var current = frontier.pop();
+      const current = frontier.pop();
       connected[current.id] = current;
-      var neighbors = current.getLinkedInRange(1).all;
+      const neighbors = current.getLinkedInRange(1).all;
 
       for (let i = 0; i < neighbors.length; i++)
       {
-        var neighbor = neighbors[i];
+        const neighbor = neighbors[i];
         if (visited[neighbor.id])
         {
           continue;
@@ -787,7 +787,7 @@ export default class Star implements Point
       }
     }
 
-    var island: Star[] = [];
+    const island: Star[] = [];
     for (let starId in connected)
     {
       island.push(connected[starId]);
@@ -800,23 +800,23 @@ export default class Star implements Point
     if (qualifier(this)) return this;
 
 
-    var visited:
+    const visited:
     {
       [starId: number]: boolean;
     } = {};
 
 
-    var frontier: Star[] = [this];
+    const frontier: Star[] = [this];
     visited[this.id] = true;
 
     while (frontier.length > 0)
     {
-      var current = frontier.shift();
-      var neighbors = current.getLinkedInRange(1).all;
+      const current = frontier.shift();
+      const neighbors = current.getLinkedInRange(1).all;
 
       for (let i = 0; i < neighbors.length; i++)
       {
-        var neighbor = neighbors[i];
+        const neighbor = neighbors[i];
         if (visited[neighbor.id]) continue;
 
         visited[neighbor.id] = true;
@@ -839,13 +839,13 @@ export default class Star implements Point
     // don't index distance while generating map as distance can change
     if (!app.game)
     {
-      var a = aStar(this, target);
+      const a = aStar(this, target);
       return a.cost[target.id];
     }
 
     if (!this.indexedDistanceToStar[target.id])
     {
-      var a = aStar(this, target);
+      const a = aStar(this, target);
       if (!a)
       {
         this.indexedDistanceToStar[target.id] = -1;
@@ -879,7 +879,7 @@ export default class Star implements Point
   }
   getHealingFactor(player: Player): number
   {
-    var factor = 0;
+    let factor = 0;
 
     if (player === this.owner)
     {
@@ -890,7 +890,7 @@ export default class Star implements Point
   }
   getPresentPlayersByVisibility()
   {
-    var byVisibilityAndId:
+    const byVisibilityAndId:
     {
       visible:
       {
@@ -912,7 +912,7 @@ export default class Star implements Point
     };
 
     byVisibilityAndId.visible[this.owner.id] = this.owner;
-    var secondaryController = this.getSecondaryController();
+    const secondaryController = this.getSecondaryController();
     if (secondaryController)
     {
       byVisibilityAndId.visible[secondaryController.id] = secondaryController;
@@ -920,10 +920,10 @@ export default class Star implements Point
 
     for (let playerId in this.fleets)
     {
-      var fleets = this.fleets[playerId];
+      const fleets = this.fleets[playerId];
       for (let i = 0; i < fleets.length; i++)
       {
-        var fleetPlayer = fleets[i].player;
+        const fleetPlayer = fleets[i].player;
         if (byVisibilityAndId.stealthy[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id])
         {
           break;
@@ -946,7 +946,7 @@ export default class Star implements Point
   {
     if (!this.seed)
     {
-      var bgString = "";
+      let bgString = "";
       bgString += Math.round(this.x);
       bgString += Math.round(this.y);
       bgString += new Date().getTime();
@@ -961,7 +961,7 @@ export default class Star implements Point
   }
   serialize(): StarSaveData
   {
-    var buildings: StarBuildingsSaveData = {};
+    const buildings: StarBuildingsSaveData = {};
 
     for (let category in this.buildings)
     {
@@ -973,7 +973,7 @@ export default class Star implements Point
     }
 
 
-    var data: StarSaveData =
+    const data: StarSaveData =
     {
       id: this.id,
       x: this.basisX,

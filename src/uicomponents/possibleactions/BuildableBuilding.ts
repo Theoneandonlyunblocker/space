@@ -59,11 +59,11 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
 
   makeCell(type: string)
   {
-    var cellProps: React.HTMLProps<HTMLTableCellElement> = {};
+    const cellProps: React.HTMLProps<HTMLTableCellElement> = {};
     cellProps.key = type;
     cellProps.className = "buildable-building-list-item-cell " + type;
 
-    var cellContent: React.ReactNode;
+    let cellContent: React.ReactNode;
 
     switch (type)
     {
@@ -90,9 +90,9 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
 
   render()
   {
-    var template = this.props.template;
-    var cells: React.ReactHTMLElement<any>[] = [];
-    var columns = this.props.activeColumns;
+    const template = this.props.template;
+    const cells: React.ReactHTMLElement<any>[] = [];
+    const columns = this.props.activeColumns;
 
     for (let i = 0; i < columns.length; i++)
     {
@@ -101,7 +101,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
       );
     }
 
-    var props: React.HTMLAttributes =
+    const props: React.HTMLAttributes =
     {
       className: "buildable-item buildable-building",
       onClick: this.props.handleClick,

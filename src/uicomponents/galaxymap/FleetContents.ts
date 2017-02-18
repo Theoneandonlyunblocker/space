@@ -46,17 +46,17 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
 
   render()
   {
-    var fleetUnitInfos: React.ReactElement<any>[] = [];
-    var fleet = this.props.fleet;
+    const fleetUnitInfos: React.ReactElement<any>[] = [];
+    const fleet = this.props.fleet;
 
-    var hasDraggableContent = Boolean(
+    const hasDraggableContent = Boolean(
       this.props.onDragStart ||
       this.props.onDragEnd,
     );
 
     for (let i = 0; i < fleet.units.length; i++)
     {
-      var unit = fleet.units[i];
+      const unit = fleet.units[i];
       fleetUnitInfos.push(FleetUnitInfo(
       {
         key: unit.id,

@@ -26,7 +26,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var abilities: AbilityBase[] = this.props.abilities;
+    const abilities: AbilityBase[] = this.props.abilities;
 
     if (abilities.length < 1)
     {
@@ -34,8 +34,8 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
     }
 
 
-    var abilityElements: React.ReactHTMLElement<any>[] = [];
-    var addedAbilityTypes:
+    const abilityElements: React.ReactHTMLElement<any>[] = [];
+    const addedAbilityTypes:
     {
       [abilityType: string]: number;
     } = {};
@@ -48,8 +48,8 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
       if (_a.type === "learnable") return 1;
       else if (_b.type === "learnable") return -1;
 
-      var a = _a.displayName.toLowerCase();
-      var b = _b.displayName.toLowerCase();
+      const a = _a.displayName.toLowerCase();
+      const b = _b.displayName.toLowerCase();
 
       if (a > b) return 1;
       else if (a < b) return -1;
@@ -58,7 +58,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
 
     for (let i = 0; i < abilities.length; i++)
     {
-      var ability = abilities[i];
+      const ability = abilities[i];
       if (ability.isHidden)
       {
         continue;
@@ -68,7 +68,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
         addedAbilityTypes[ability.type] = 0;
       }
 
-      var className = "unit-info-ability";
+      let className = "unit-info-ability";
       const isLearnable = ability.type === "learnable";
       if (isLearnable)
       {
@@ -76,7 +76,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
       }
       else
       {
-        var isPassiveSkill = !ability.mainEffect;
+        const isPassiveSkill = !ability.mainEffect;
         if (isPassiveSkill)
         {
           className += " passive-skill";

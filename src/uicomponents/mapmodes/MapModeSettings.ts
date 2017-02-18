@@ -35,7 +35,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
 
   handleReset()
   {
-    var mapRenderer = this.props.mapRenderer;
+    const mapRenderer = this.props.mapRenderer;
     mapRenderer.currentMapMode.resetLayers();
     mapRenderer.resetMapModeLayersPosition();
     mapRenderer.setAllLayersAsDirty();

@@ -2,7 +2,6 @@
 
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
-import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 const starLinks: MapRendererLayerTemplate =
@@ -12,30 +11,22 @@ const starLinks: MapRendererLayerTemplate =
   interactive: false,
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
-    var doc = new PIXI.Container();
+    const doc = new PIXI.Container();
 
-    var gfx = new PIXI.Graphics();
+    const gfx = new PIXI.Graphics();
     doc.addChild(gfx);
     gfx.lineStyle(1, 0xCCCCCC, 0.6);
 
-    var points: Star[];
-    if (!perspectivePlayer)
-    {
-      points = map.stars;
-    }
-    else
-    {
-      points = perspectivePlayer.getRevealedStars();
-    }
+    const points = perspectivePlayer ? perspectivePlayer.getRevealedStars() : map.stars;
 
-    var starsFullyConnected:
+    const starsFullyConnected:
     {
       [id: number]: boolean;
     } = {};
 
     for (let i = 0; i < points.length; i++)
     {
-      var star = points[i];
+      const star = points[i];
       if (starsFullyConnected[star.id]) continue;
 
       starsFullyConnected[star.id] = true;

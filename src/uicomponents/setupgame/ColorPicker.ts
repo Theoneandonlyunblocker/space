@@ -137,24 +137,24 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   }
   setHue(e: Event)
   {
-    var target = <HTMLInputElement> e.target;
-    var hue = Math.round(parseInt(target.value) % 361);
+    const target = <HTMLInputElement> e.target;
+    let hue = Math.round(parseInt(target.value) % 361);
     if (hue < 0) hue = 360;
     this.setState({hue: hue});
     this.updateFromHsv(hue, this.state.sat, this.state.val, e);
   }
   setSat(e: Event)
   {
-    var target = <HTMLInputElement> e.target;
-    var sat = Math.round(parseInt(target.value) % 101);
+    const target = <HTMLInputElement> e.target;
+    let sat = Math.round(parseInt(target.value) % 101);
     if (sat < 0) sat = 100;
     this.setState({sat: sat});
     this.updateFromHsv(this.state.hue, sat, this.state.val, e);
   }
   setVal(e: Event)
   {
-    var target = <HTMLInputElement> e.target;
-    var val = Math.round(parseInt(target.value) % 101);
+    const target = <HTMLInputElement> e.target;
+    let val = Math.round(parseInt(target.value) % 101);
     if (val < 0) val = 100;
     this.setState({val: val});
     this.updateFromHsv(this.state.hue, this.state.sat, val, e);
@@ -198,9 +198,9 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
   makeGradientStyle(type: string): React.CSSProperties
   {
-    var hue = this.state.hue;
-    var sat = this.state.sat;
-    var val = this.state.val;
+    const hue = this.state.hue;
+    const sat = this.state.sat;
+    const val = this.state.val;
 
     switch (type)
     {
@@ -213,8 +213,8 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       }
       case "sat":
       {
-        var min = "#" + this.makeHexStringFromHSVDegreeArray([hue, 0, val]);
-        var max = "#" + this.makeHexStringFromHSVDegreeArray([hue, 100, val]);
+        const min = "#" + this.makeHexStringFromHSVDegreeArray([hue, 0, val]);
+        const max = "#" + this.makeHexStringFromHSVDegreeArray([hue, 100, val]);
         return(
         {
           background: this.makeGradientString(min, max),
@@ -222,8 +222,8 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       }
       case "val":
       {
-        var min = "#" + this.makeHexStringFromHSVDegreeArray([hue, sat, 0]);
-        var max = "#" + this.makeHexStringFromHSVDegreeArray([hue, sat, 100]);
+        const min = "#" + this.makeHexStringFromHSVDegreeArray([hue, sat, 0]);
+        const max = "#" + this.makeHexStringFromHSVDegreeArray([hue, sat, 100]);
         return(
         {
           background: this.makeGradientString(min, max),
@@ -238,10 +238,10 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
   makeHsvInputs(type: string)
   {
-    var label = "" + type[0].toUpperCase() + ":";
+    const label = "" + type[0].toUpperCase() + ":";
 
-    var max = type === "hue" ? 360 : 100;
-    var updateFunctions =
+    const max = type === "hue" ? 360 : 100;
+    const updateFunctions =
     {
       hue: this.setHue,
       sat: this.setSat,

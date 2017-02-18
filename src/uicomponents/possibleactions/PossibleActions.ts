@@ -63,8 +63,8 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
   {
     if (this.props.selectedStar !== newProps.selectedStar)
     {
-      var newState: StateType = {};
-      var afterStateSetCallback: () => void;
+      const newState: StateType = {};
+      let afterStateSetCallback: () => void;
 
       newState.canUpgradeBuildings = this.canUpgradeBuildings(newProps.selectedStar);
       if (this.state.expandedActionElement)
@@ -128,7 +128,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
     }
     else
     {
-      var element = React.DOM.div(
+      const element = React.DOM.div(
       {
         className: "expanded-action",
       },
@@ -157,7 +157,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
     }
     else
     {
-      var element = React.DOM.div(
+      const element = React.DOM.div(
       {
         className: "expanded-action",
       },
@@ -193,7 +193,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
       }));
     }
 
-    var star = this.props.selectedStar;
+    const star = this.props.selectedStar;
     if (star)
     {
       if (star.owner === this.props.player)
@@ -233,7 +233,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
       return null;
     }
 
-    var possibleActions = React.DOM.div(
+    const possibleActions = React.DOM.div(
     {
       className: "possible-actions",
     },

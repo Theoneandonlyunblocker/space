@@ -66,13 +66,13 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   {
     eventManager.dispatchEvent("loadModulesNeededForPhase", ModuleFileLoadingPhase.mapGen, () =>
     {
-      var players = this.ref_TODO_players.makeAllPlayers();
+      const players = this.ref_TODO_players.makeAllPlayers();
 
-      var mapSetupInfo = this.ref_TODO_mapSetup.getMapSetupInfo();
-      var mapGenFunction: MapGenFunction = mapSetupInfo.template.mapGenFunction;
+      const mapSetupInfo = this.ref_TODO_mapSetup.getMapSetupInfo();
+      const mapGenFunction: MapGenFunction = mapSetupInfo.template.mapGenFunction;
 
-      var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
-      var map = mapGenResult.makeMap();
+      const mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
+      const map = mapGenResult.makeMap();
 
       app.makeGameFromSetup(map, players);
     });

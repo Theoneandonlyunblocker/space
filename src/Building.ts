@@ -46,13 +46,13 @@ export default class Building
   {
     if (!this.template.effect) return {};
 
-    var multiplier = this.template.effectMultiplierFN ?
+    const multiplier = this.template.effectMultiplierFN ?
       this.template.effectMultiplierFN(this.upgradeLevel) :
       this.upgradeLevel;
 
     for (let key in this.template.effect)
     {
-      var prop = this.template.effect[key];
+      const prop = this.template.effect[key];
       if (isFinite(prop))
       {
         if (!effect[key])
@@ -82,8 +82,8 @@ export default class Building
   }
   getPossibleUpgrades()
   {
-    var self = this;
-    var upgrades: BuildingUpgradeData[] = [];
+    const self = this;
+    let upgrades: BuildingUpgradeData[] = [];
 
     if (this.upgradeLevel < this.template.maxUpgradeLevel)
     {
@@ -97,9 +97,9 @@ export default class Building
     }
     else if (this.template.upgradeInto && this.template.upgradeInto.length > 0)
     {
-      var templatedUpgrades = this.template.upgradeInto.map(function(upgradeData)
+      const templatedUpgrades = this.template.upgradeInto.map(function(upgradeData)
       {
-        var template = app.moduleData.Templates.Buildings[upgradeData.templateType];
+        const template = app.moduleData.Templates.Buildings[upgradeData.templateType];
         return(
         {
           level: upgradeData.level,
@@ -120,7 +120,7 @@ export default class Building
   }
   setController(newController: Player)
   {
-    var oldController = this.controller;
+    const oldController = this.controller;
     if (oldController === newController) return;
 
 
@@ -129,7 +129,7 @@ export default class Building
   }
   serialize()
   {
-    var data: BuildingSaveData =
+    const data: BuildingSaveData =
     {
       templateType: this.template.type,
       id: this.id,

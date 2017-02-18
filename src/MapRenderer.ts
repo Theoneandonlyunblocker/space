@@ -76,13 +76,13 @@ export default class MapRenderer
   }
   addEventListeners()
   {
-    var self = this;
+    const self = this;
     this.listeners["renderMap"] =
       eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
     this.listeners["renderLayer"] =
       eventManager.addEventListener("renderLayer", function(layerName: string, star?: Star)
     {
-      var passesStarVisibilityCheck: boolean = true;
+      let passesStarVisibilityCheck: boolean = true;
       if (star)
       {
         switch (layerName)
@@ -115,23 +115,23 @@ export default class MapRenderer
   {
     for (let layerKey in app.moduleData.Templates.MapRendererLayers)
     {
-      var template = app.moduleData.Templates.MapRendererLayers[layerKey];
-      var layer = new MapRendererLayer(template);
+      const template = app.moduleData.Templates.MapRendererLayers[layerKey];
+      const layer = new MapRendererLayer(template);
       this.layers[layerKey] = layer;
     }
   }
   initMapModes()
   {
-    var buildMapMode = (mapModeKey: string, template: MapRendererMapModeTemplate) =>
+    const buildMapMode = (mapModeKey: string, template: MapRendererMapModeTemplate) =>
     {
-      var alreadyAdded :
+      const alreadyAdded :
       {
         [layerKey: string]: boolean;
       } = {};
-      var mapMode = new MapRendererMapMode(template);
+      const mapMode = new MapRendererMapMode(template);
       for (let i = 0; i < template.layers.length; i++)
       {
-        var layer = template.layers[i];
+        const layer = template.layers[i];
 
         mapMode.addLayer(this.layers[layer.key], true);
         alreadyAdded[layer.key] = true;
@@ -149,11 +149,11 @@ export default class MapRenderer
 
     for (let mapModeKey in app.moduleData.Templates.MapRendererMapModes)
     {
-      var template = app.moduleData.Templates.MapRendererMapModes[mapModeKey];
+      const template = app.moduleData.Templates.MapRendererMapModes[mapModeKey];
       buildMapMode(mapModeKey, template);
     }
 
-    // var customMapModeTemplate: MapRendererMapModeTemplate =
+    // const customMapModeTemplate: MapRendererMapModeTemplate =
     // {
     //   key: "custom",
     //   displayName: "Custom",
@@ -163,7 +163,7 @@ export default class MapRenderer
   }
   setParent(newParent: PIXI.Container)
   {
-    var oldParent = this.parent;
+    const oldParent = this.parent;
     if (oldParent)
     {
       oldParent.removeChild(this.container);
@@ -178,7 +178,7 @@ export default class MapRenderer
   }
   setLayerAsDirty(layerName: string)
   {
-    var layer = this.layers[layerName];
+    const layer = this.layers[layerName];
     layer.isDirty = true;
 
     this.isDirty = true;
@@ -202,9 +202,9 @@ export default class MapRenderer
   {
     for (let i = 0; i < updatedLayers.length; i++)
     {
-      var layer = updatedLayers[i];
-      var childIndex = this.container.children.indexOf(layer.container);
-      var mapModeLayerIndex = this.currentMapMode.getLayerIndexInContainer(layer);
+      const layer = updatedLayers[i];
+      const childIndex = this.container.children.indexOf(layer.container);
+      const mapModeLayerIndex = this.currentMapMode.getLayerIndexInContainer(layer);
       if (childIndex === -1)
       {
         this.container.addChildAt(layer.container, mapModeLayerIndex);
@@ -220,10 +220,10 @@ export default class MapRenderer
   {
     this.resetContainer();
 
-    var layerData = this.currentMapMode.getActiveLayers();
+    const layerData = this.currentMapMode.getActiveLayers();
     for (let i = 0; i < layerData.length; i++)
     {
-      var layer = layerData[i];
+      const layer = layerData[i];
       this.container.addChild(layer.container);
     }
   }
@@ -247,10 +247,10 @@ export default class MapRenderer
 
     this.resetContainer();
 
-    var layerData = this.currentMapMode.getActiveLayers();
+    const layerData = this.currentMapMode.getActiveLayers();
     for (let i = 0; i < layerData.length; i++)
     {
-      var layer = layerData[i];
+      const layer = layerData[i];
       this.container.addChild(layer.container);
     }
 
@@ -260,10 +260,10 @@ export default class MapRenderer
   {
     if (this.preventRender || !this.isDirty) return;
 
-    var layerData = this.currentMapMode.getActiveLayers();
+    const layerData = this.currentMapMode.getActiveLayers();
     for (let i = 0; i < layerData.length; i++)
     {
-      var layer = layerData[i];
+      const layer = layerData[i];
       layer.draw(this.galaxyMap, this);
     }
 

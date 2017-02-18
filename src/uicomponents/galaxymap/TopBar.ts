@@ -43,11 +43,11 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var player = this.props.player;
+    const player = this.props.player;
 
-    var income = player.getIncome();
+    const income = player.getIncome();
 
-    var incomeClass = "top-bar-money-income";
+    let incomeClass = "top-bar-money-income";
     if (income < 0) incomeClass += " negative";
 
     return(

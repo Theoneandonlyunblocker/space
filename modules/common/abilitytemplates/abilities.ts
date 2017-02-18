@@ -23,7 +23,7 @@ import {bindEffectActionData} from "../effectactiontemplates/effectActions";
 
 import * as SnipeStatusEffects from "../statuseffecttemplates/snipe";
 
-export var closeAttack: AbilityTemplate =
+export const closeAttack: AbilityTemplate =
 {
   type: "closeAttack",
   displayName: "Close Attack",
@@ -49,7 +49,7 @@ export var closeAttack: AbilityTemplate =
     sfx: BattleSFX.rocketAttack,
   },
 };
-export var beamAttack: AbilityTemplate =
+export const beamAttack: AbilityTemplate =
 {
   type: "beamAttack",
   displayName: "Beam Attack",
@@ -72,7 +72,7 @@ export var beamAttack: AbilityTemplate =
   targetCannotBeDiverted: true,
 };
 
-export var bombAttack: AbilityTemplate =
+export const bombAttack: AbilityTemplate =
 {
   type: "bombAttack",
   displayName: "Bomb Attack",
@@ -98,7 +98,7 @@ export var bombAttack: AbilityTemplate =
     sfx: BattleSFX.rocketAttack,
   },
 };
-export var guardRow: AbilityTemplate =
+export const guardRow: AbilityTemplate =
 {
   type: "guardRow",
   displayName: "Guard Row",
@@ -123,7 +123,7 @@ export var guardRow: AbilityTemplate =
 
   doesNotRemoveUserGuard: true,
 };
-export var boardingHook: AbilityTemplate =
+export const boardingHook: AbilityTemplate =
 {
   type: "boardingHook",
   displayName: "Boarding Hook",
@@ -163,7 +163,7 @@ export var boardingHook: AbilityTemplate =
   },
 };
 
-export var debugAbility: AbilityTemplate =
+export const debugAbility: AbilityTemplate =
 {
   type: "debugAbility",
   displayName: "Debug Ability",
@@ -180,7 +180,7 @@ export var debugAbility: AbilityTemplate =
   },
 };
 
-export var rangedAttack: AbilityTemplate =
+export const rangedAttack: AbilityTemplate =
 {
   type: "rangedAttack",
   displayName: "Ranged Attack",
@@ -272,7 +272,7 @@ export const snipeDefence = makeSnipeTemplate(UnitAttribute.defence);
 export const snipeIntelligence = makeSnipeTemplate(UnitAttribute.intelligence);
 export const snipeSpeed = makeSnipeTemplate(UnitAttribute.speed);
 
-export var standBy: AbilityTemplate =
+export const standBy: AbilityTemplate =
 {
   type: "standBy",
   displayName: "Standby",

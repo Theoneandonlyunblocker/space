@@ -61,18 +61,18 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   private getInitialStateTODO(): StateType
   {
-    var side1Units: Unit[] = [];
-    var side2Units: Unit[] = [];
+    const side1Units: Unit[] = [];
+    const side2Units: Unit[] = [];
     for (let i = 0; i < 5; i++)
     {
       side1Units.push(this.makeUnit());
       side2Units.push(this.makeUnit());
     }
 
-    var side1Player = Player.createDummyPlayer();
-    var side2Player = Player.createDummyPlayer();
+    const side1Player = Player.createDummyPlayer();
+    const side2Player = Player.createDummyPlayer();
 
-    var battle = this.battle = this.makeBattle(
+    const battle = this.battle = this.makeBattle(
     {
       side1Units: side1Units,
       side2Units: side2Units,
@@ -98,7 +98,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   componentDidMount()
   {
-    var battleScene = this.battleScene = new BattleScene(ReactDOM.findDOMNode<HTMLElement>(this.battleSceneContainer));
+    const battleScene = this.battleScene = new BattleScene(ReactDOM.findDOMNode<HTMLElement>(this.battleSceneContainer));
     battleScene.resume();
     battleScene.activeUnit = this.state.selectedSide1Unit;
     battleScene.updateUnits();
@@ -106,7 +106,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   makeUnit()
   {
-    var template = getRandomProperty(app.moduleData.Templates.Units);
+    const template = getRandomProperty(app.moduleData.Templates.Units);
     return Unit.fromTemplate(
     {
       template: template,
@@ -116,15 +116,15 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   makeFormation(units: Unit[])
   {
-    var formation: Unit[][] = [];
-    var unitsIndex: number = 0;
+    const formation: Unit[][] = [];
+    let unitsIndex: number = 0;
 
     for (let i = 0; i < 2; i++)
     {
       formation.push([]);
       for (let j = 0; j < 3; j++)
       {
-        var unitToAdd = units[unitsIndex] ? units[unitsIndex] : null;
+        const unitToAdd = units[unitsIndex] ? units[unitsIndex] : null;
         formation[i].push(unitToAdd);
         unitsIndex++;
       }
@@ -182,15 +182,15 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   selectUnit(unit: Unit)
   {
-    var statePropForSide = unit.battleStats.side === "side1" ? "selectedSide1Unit" : "selectedSide2Unit";
-    var statePropForOtherSide = unit.battleStats.side === "side1" ? "selectedSide2Unit" : "selectedSide1Unit";
-    var previousSelectedUnit = this.state[statePropForSide];
-    var newSelectedUnit = (previousSelectedUnit === unit) ? null : unit;
+    const statePropForSide = unit.battleStats.side === "side1" ? "selectedSide1Unit" : "selectedSide2Unit";
+    const statePropForOtherSide = unit.battleStats.side === "side1" ? "selectedSide2Unit" : "selectedSide1Unit";
+    const previousSelectedUnit = this.state[statePropForSide];
+    const newSelectedUnit = (previousSelectedUnit === unit) ? null : unit;
 
-    var newStateObj: any = {};
+    const newStateObj: any = {};
     newStateObj[statePropForSide] = newSelectedUnit;
 
-    var newActiveUnit = newSelectedUnit || this.state[statePropForOtherSide] || null;
+    const newActiveUnit = newSelectedUnit || this.state[statePropForOtherSide] || null;
     newStateObj.activeUnit = newActiveUnit;
 
     this.setState(newStateObj);
@@ -212,7 +212,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   handleChangeDuration(e: React.FormEvent)
   {
-    var target = <HTMLInputElement> e.target;
+    const target = <HTMLInputElement> e.target;
     this.setState(
     {
       duration: parseInt(target.value),
@@ -221,11 +221,11 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   useSelectedAbility()
   {
-    var user = this.state.activeUnit;
-    var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
+    const user = this.state.activeUnit;
+    const target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
-    var bs: BattleScene = this.battleScene;
-    var SFXTemplate = extendObject(app.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+    const bs: BattleScene = this.battleScene;
+    const SFXTemplate = extendObject(app.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
 
     if (this.state.duration)
     {
@@ -245,12 +245,12 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   makeUnitElements(units: Unit[])
   {
-    var unitElements: React.ReactHTMLElement<any>[] = [];
+    const unitElements: React.ReactHTMLElement<any>[] = [];
 
     for (let i = 0; i < units.length; i++)
     {
-      var unit = units[i];
-      var style: any = {};
+      const unit = units[i];
+      const style: any = {};
       if (unit === this.state.activeUnit)
       {
         style.border = "1px solid red";
@@ -279,12 +279,12 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   render()
   {
-    var battle: Battle = this.battle;
+    const battle: Battle = this.battle;
 
-    var side1UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.getUnitsForSide("side1"));
-    var side2UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.getUnitsForSide("side2"));
+    const side1UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.getUnitsForSide("side1"));
+    const side2UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.getUnitsForSide("side2"));
 
-    var SFXTemplateSelectOptions: React.ReactHTMLElement<any>[] = [];
+    const SFXTemplateSelectOptions: React.ReactHTMLElement<any>[] = [];
 
     for (let key in app.moduleData.Templates.BattleSFX)
     {

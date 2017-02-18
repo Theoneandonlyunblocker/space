@@ -67,10 +67,10 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
 
   handleDrop(fleet: Fleet)
   {
-    var draggingUnit = this.state.currentDragUnit;
+    const draggingUnit = this.state.currentDragUnit;
     if (draggingUnit)
     {
-      var oldFleet: Fleet = draggingUnit.fleet;
+      const oldFleet: Fleet = draggingUnit.fleet;
       if (oldFleet !== fleet)
       {
         oldFleet.transferUnit(fleet, draggingUnit);
@@ -96,7 +96,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
 
   render()
   {
-    var selectedFleets: Fleet[] = this.props.fleets;
+    const selectedFleets: Fleet[] = this.props.fleets;
     if (!selectedFleets || selectedFleets.length < 1)
     {
       return null;

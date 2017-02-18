@@ -53,7 +53,7 @@ export class BattleSceneFlagComponent extends React.Component<PropTypes, StateTy
 
   setFlag()
   {
-    var DOMNode = ReactDOM.findDOMNode(this);
+    const DOMNode = ReactDOM.findDOMNode(this);
     if (this.flagCanvas)
     {
       DOMNode.removeChild(this.flagCanvas);
@@ -65,14 +65,14 @@ export class BattleSceneFlagComponent extends React.Component<PropTypes, StateTy
 
   drawFlag()
   {
-    var bounds = ReactDOM.findDOMNode(this).getBoundingClientRect();
-    var width = bounds.width;
+    const bounds = ReactDOM.findDOMNode(this).getBoundingClientRect();
+    const width = bounds.width;
 
-    var canvas = this.props.flag.getCanvas(width, bounds.height, true, false);
-    var context = canvas.getContext("2d");
+    const canvas = this.props.flag.getCanvas(width, bounds.height, true, false);
+    const context = canvas.getContext("2d");
     context.globalCompositeOperation = "destination-out";
 
-    var gradient: CanvasGradient;
+    let gradient: CanvasGradient;
     if (this.props.facingRight)
     {
       gradient = context.createLinearGradient(0, 0, width, 0);

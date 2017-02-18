@@ -23,7 +23,7 @@ const defaultMapModes: ModuleFile =
   needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
   loadAssets: function(onLoaded: () => void)
   {
-    var loader = new PIXI.loaders.Loader();
+    const loader = new PIXI.loaders.Loader();
 
     loader.add("modules/defaultmapmodes/img/fowTexture.png");
     loader.load(function(loader: PIXI.loaders.Loader)

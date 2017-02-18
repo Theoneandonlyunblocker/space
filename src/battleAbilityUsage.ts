@@ -156,13 +156,13 @@ function executeAbilityEffectDataAndGetUseEffect(
   executedEffectsResult: ExecutedEffectsResult,
 ): AbilityUseEffect
 {
-  var didTriggerAction = executeAbilityEffectData(battle, abilityEffectData, executedEffectsResult);
+  const didTriggerAction = executeAbilityEffectData(battle, abilityEffectData, executedEffectsResult);
   if (!didTriggerAction)
   {
     return null;
   }
 
-  var unitDisplayData: {[unitId: number]: UnitDisplayData} = {};
+  const unitDisplayData: {[unitId: number]: UnitDisplayData} = {};
   unitDisplayData[abilityEffectData.user.id] = abilityEffectData.user.getDisplayData("battle");
   unitDisplayData[abilityEffectData.target.id] = abilityEffectData.target.getDisplayData("battle");
 

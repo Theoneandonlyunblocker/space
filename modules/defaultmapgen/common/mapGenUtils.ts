@@ -35,11 +35,11 @@ export function linkStarsByTriangulation(stars: Star[]): void
     return;
   }
 
-  var triangles = triangulate(stars);
+  const triangles = triangulate(stars);
 
   for (let i = 0; i < triangles.length; i++)
   {
-    var edges: Star[][] = triangles[i].getEdges();
+    const edges: Star[][] = triangles[i].getEdges();
     for (let j = 0; j < edges.length; j++)
     {
       edges[j][0].addLink(edges[j][1]);
@@ -58,25 +58,25 @@ export function partiallySeverLinks(
   {
     let cutsDone = 0;
 
-    var neighbors = star.getAllLinks();
+    const neighbors = star.getAllLinks();
     const mapGenDistance = mapGenDataByStarID[star.id].mapGenDistance;
 
     if (neighbors.length > minConnectionsToKeep)
     {
       for (let j = neighbors.length - 1; j >= 0; j--)
       {
-        var neighbor = neighbors[j];
+        const neighbor = neighbors[j];
 
         if (cutsDone < maxCuts)
         {
-          var neighborLinks = neighbor.getAllLinks();
+          const neighborLinks = neighbor.getAllLinks();
 
           if (neighbors.length <= minConnectionsToKeep || neighborLinks.length <= minConnectionsToKeep) continue;
 
-          var totalLinks = neighbors.length + neighborLinks.length;
+          const totalLinks = neighbors.length + neighborLinks.length;
 
-          var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnectionsToKeep) * (1 - mapGenDistance);
-          var minMultipleCutThreshhold = 0.15;
+          let cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnectionsToKeep) * (1 - mapGenDistance);
+          const minMultipleCutThreshhold = 0.15;
           if (cutThreshhold > 0)
           {
             if (Math.random() < cutThreshhold)
@@ -90,7 +90,7 @@ export function partiallySeverLinks(
               }
               cutsDone++;
 
-              var path = aStar(star, neighbor);
+              const path = aStar(star, neighbor);
 
               if (!path) // left star inaccesible
               {
@@ -222,7 +222,7 @@ export function makeSectors(
             return frontierSortScores[b.id] - frontierSortScores[a.id];
           });
 
-          var toAdd = frontier.pop();
+          const toAdd = frontier.pop();
           unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
 
           sector.addStar(toAdd);
@@ -240,14 +240,14 @@ export function makeSectors(
 
   while (leftoverStars.length > 0)
   {
-    var star = leftoverStars.pop();
+    const star = leftoverStars.pop();
 
-    var neighbors: Star[] = star.getLinkedInRange(1).all;
-    var alreadyAddedNeighborSectors:
+    const neighbors: Star[] = star.getLinkedInRange(1).all;
+    const alreadyAddedNeighborSectors:
     {
       [sectorId: number]: boolean;
     } = {};
-    var candidateSectors: Region[] = [];
+    const candidateSectors: Region[] = [];
 
     neighbors.forEach(neighbor =>
     {
@@ -317,9 +317,9 @@ export function makeSectors(
 // {
 //   for (let i = 0; i < sectors.length; i++)
 //   {
-//     var sector = sectors[i];
+//     const sector = sectors[i];
 //     sector.distributionFlags = [];
-//     var majorityRegions = sector.getMajorityRegions();
+//     const majorityRegions = sector.getMajorityRegions();
 //     for (let j = 0; j < majorityRegions.length; j++)
 //     {
 //       if (majorityRegions[j].id.indexOf("center") !== -1)
@@ -420,12 +420,13 @@ export function distributeDistributablesPerSector<T extends Distributable>(
 }
 export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCommand: boolean = true)
 {
+  let buildingsToAdd = amount;
   if (!star.owner)
   {
     console.warn("Tried to add defence buildings to star without owner.");
     return;
   }
-  if (amount < 1)
+  if (buildingsToAdd < 1)
   {
     return;
   }
@@ -438,10 +439,10 @@ export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCom
       location: star,
     }));
 
-    var amount = amount - 1;
+    buildingsToAdd -= 1;
   }
 
-  for (let i = 0; i < amount; i++)
+  for (let i = 0; i < buildingsToAdd; i++)
   {
     star.addBuilding(new Building(
     {

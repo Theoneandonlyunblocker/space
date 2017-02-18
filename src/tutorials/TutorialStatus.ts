@@ -39,7 +39,7 @@ class TutorialStatus implements TutorialStatusValues
       return;
     }
 
-    var parsedData: TutorialStatusValues = JSON.parse(localStorage.getItem("Rance.TutorialStatus"));
+    const parsedData: TutorialStatusValues = JSON.parse(localStorage.getItem("Rance.TutorialStatus"));
     this.deSerialize(parsedData);
   }
   public reset()

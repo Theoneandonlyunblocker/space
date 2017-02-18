@@ -23,14 +23,14 @@ export default class Triangle<T extends Point>
   }
   private calculateCircumCircle(tolerance: number = 0.00001)
   {
-    var pA = this.a;
-    var pB = this.b;
-    var pC = this.c;
+    const pA = this.a;
+    const pB = this.b;
+    const pC = this.c;
 
-    var m1: number, m2: number;
-    var mx1: number, mx2: number;
-    var my1: number, my2: number;
-    var cX: number, cY: number;
+    let m1: number, m2: number;
+    let mx1: number, mx2: number;
+    let my1: number, my2: number;
+    let cX: number, cY: number;
 
     if (Math.abs(pB.y - pA.y) < tolerance)
     {
@@ -75,16 +75,16 @@ export default class Triangle<T extends Point>
   public circumCircleContainsPoint(point: Point)
   {
     this.calculateCircumCircle();
-    var x = point.x - this.circumCenterX;
-    var y = point.y - this.circumCenterY;
+    const x = point.x - this.circumCenterX;
+    const y = point.y - this.circumCenterY;
 
-    var contains = x * x + y * y <= this.circumRadius * this.circumRadius;
+    const contains = x * x + y * y <= this.circumRadius * this.circumRadius;
 
     return(contains);
   }
   public getEdges()
   {
-    var edges =
+    const edges =
     [
       [this.a, this.b],
       [this.b, this.c],
@@ -95,9 +95,9 @@ export default class Triangle<T extends Point>
   }
   public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle<Point>)
   {
-    var ownPoints = this.getPoints();
-    var otherPoints = toCheckAgainst.getPoints();
-    var shared = 0;
+    const ownPoints = this.getPoints();
+    const otherPoints = toCheckAgainst.getPoints();
+    let shared = 0;
 
     for (let i = 0; i < ownPoints.length; i++)
     {

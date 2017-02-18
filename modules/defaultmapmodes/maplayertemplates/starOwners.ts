@@ -5,7 +5,6 @@
 
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
-import Star from "../../../src/Star";
 import eventManager from "../../../src/eventManager";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 
@@ -31,29 +30,21 @@ const starOwners: MapRendererLayerTemplate =
   },
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
-    var doc = new PIXI.Container();
-    var points: Star[];
-    if (!perspectivePlayer)
-    {
-      points = map.stars;
-    }
-    else
-    {
-      points = perspectivePlayer.getRevealedStars();
-    }
+    const doc = new PIXI.Container();
+    const points = perspectivePlayer ? perspectivePlayer.getRevealedStars() : map.stars;
 
     for (let i = 0; i < points.length; i++)
     {
-      var star = points[i];
-      var occupier = star.getSecondaryController();
+      const star = points[i];
+      const occupier = star.getSecondaryController();
       if (!star.owner || (!occupier && star.owner.colorAlpha === 0))
       {
         continue;
       }
 
-      var poly = makePolygonFromPoints(star.voronoiCell.vertices);
-      var gfx = new PIXI.Graphics();
-      var alpha = 1;
+      const poly = makePolygonFromPoints(star.voronoiCell.vertices);
+      const gfx = new PIXI.Graphics();
+      let alpha = 1;
       if (isFinite(star.owner.colorAlpha))
       {
         alpha *= star.owner.colorAlpha;
@@ -64,10 +55,10 @@ const starOwners: MapRendererLayerTemplate =
 
       if (occupier)
       {
-        // var container = new PIXI.Container();
+        // const container = new PIXI.Container();
         // doc.addChild(container);
 
-        // var mask = new PIXI.Graphics();
+        // const mask = new PIXI.Graphics();
         // mask.isMask = true;
         // mask.beginFill(0);
         // mask.drawShape(poly);

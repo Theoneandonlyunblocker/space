@@ -75,7 +75,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
 
   componentDidUpdate()
   {
-    var domNode = ReactDOM.findDOMNode(this);
+    const domNode = ReactDOM.findDOMNode(this);
     if (!isFinite(this.scrollTop))
     {
       this.scrollTop = domNode.scrollTop;
@@ -92,7 +92,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   handleMarkAsRead(notification: Notification<any>)
   {
     this.props.log.markAsRead(notification);
-    var notificationKey = this.getNotificationKey(notification);
+    const notificationKey = this.getNotificationKey(notification);
     if (isFinite(this.state[notificationKey]))
     {
       this.closePopup(notificationKey);
@@ -105,9 +105,9 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
 
   makePopup(notification: Notification<any>, key: string)
   {
-    var log = this.props.log;
+    const log = this.props.log;
 
-    var popupId = this.popupManager.makePopup(
+    const popupId = this.popupManager.makePopup(
     {
       content: ConfirmPopup(
       {
@@ -140,7 +140,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
       },
     });
 
-    var stateObj: StateType = {};
+    const stateObj: StateType = {};
     stateObj[key] = popupId;
     this.setState(stateObj);
   }
@@ -149,14 +149,14 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   {
     this.popupManager.closePopup(this.state[key]);
 
-    var stateObj: StateType = {};
+    const stateObj: StateType = {};
     stateObj[key] = undefined;
     this.setState(stateObj);
   }
 
   togglePopup(notification: Notification<any>)
   {
-    var key = this.getNotificationKey(notification);
+    const key = this.getNotificationKey(notification);
     if (isFinite(this.state[key]))
     {
       this.closePopup(key);
@@ -169,10 +169,10 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
 
   render()
   {
-    var log = this.props.log;
-    var notifications: Notification<any>[] = log.filterNotifications(log.unread);
+    const log = this.props.log;
+    const notifications: Notification<any>[] = log.filterNotifications(log.unread);
 
-    var items: React.ReactElement<any>[] = [];
+    const items: React.ReactElement<any>[] = [];
 
     for (let i = 0; i < notifications.length; i++)
     {

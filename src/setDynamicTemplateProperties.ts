@@ -6,7 +6,7 @@ export function setAttitudeModifierOverride(attitudeModifiers: TemplateCollectio
 {
   for (let modifierType in attitudeModifiers)
   {
-    var modifier = attitudeModifiers[modifierType];
+    const modifier = attitudeModifiers[modifierType];
     if (modifier.canBeOverriddenBy)
     {
       for (let i = 0; i < modifier.canBeOverriddenBy.length; i++)

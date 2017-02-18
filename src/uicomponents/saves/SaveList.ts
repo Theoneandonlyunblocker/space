@@ -37,21 +37,21 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var rows: ListItem<SaveListItemProps>[] = [];
-    var selected: ListItem<SaveListItemProps>;
+    const rows: ListItem<SaveListItemProps>[] = [];
+    let selected: ListItem<SaveListItemProps>;
 
-    var allKeys = Object.keys(localStorage);
+    const allKeys = Object.keys(localStorage);
 
-    var saveKeys = allKeys.filter(function(key)
+    const saveKeys = allKeys.filter(function(key)
     {
       return (key.indexOf("Save") > -1);
     });
 
     for (let i = 0; i < saveKeys.length; i++)
     {
-      var saveData = JSON.parse(localStorage.getItem(saveKeys[i]));
-      var date = new Date(saveData.date);
-      var isMarkedForDeletion = false;
+      const saveData = JSON.parse(localStorage.getItem(saveKeys[i]));
+      const date = new Date(saveData.date);
+      let isMarkedForDeletion = false;
       if (this.props.saveKeysToDelete)
       {
         if (this.props.saveKeysToDelete.indexOf(saveKeys[i]) !== -1)
@@ -60,7 +60,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
         }
       }
 
-      var row: ListItem<SaveListItemProps> =
+      const row: ListItem<SaveListItemProps> =
       {
         key: saveKeys[i],
         content: SaveListItem(
@@ -87,7 +87,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
       }
     }
 
-    var columns: ListColumn<SaveListItemProps>[] =
+    const columns: ListColumn<SaveListItemProps>[] =
     [
       {
         label: "Name",

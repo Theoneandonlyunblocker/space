@@ -55,7 +55,7 @@ export default class Manufactory
 
     this.buildQueue = data.buildQueue.map(function(savedThing: any)
     {
-      var templatesString: string;
+      let templatesString: string;
       switch (savedThing.type)
       {
         case "unit":
@@ -87,25 +87,25 @@ export default class Manufactory
   }
   removeThingAtIndex(index: number)
   {
-    var template = this.buildQueue[index].template;
+    const template = this.buildQueue[index].template;
     this.player.money += template.buildCost;
     this.buildQueue.splice(index, 1);
   }
   buildAllThings()
   {
-    var units: Unit[] = [];
+    const units: Unit[] = [];
 
-    var toBuild = this.buildQueue.slice(0, this.capacity);
+    const toBuild = this.buildQueue.slice(0, this.capacity);
     this.buildQueue = this.buildQueue.slice(this.capacity);
 
     while (toBuild.length > 0)
     {
-      var thingData = toBuild.pop();
+      const thingData = toBuild.pop();
       switch (thingData.type)
       {
         case "unit":
         {
-          var unitTemplate = <UnitTemplate> thingData.template;
+          const unitTemplate = <UnitTemplate> thingData.template;
 
           const unit = Unit.fromTemplate(
           {
@@ -121,8 +121,8 @@ export default class Manufactory
         }
         case "item":
         {
-          var itemTemplate = <ItemTemplate> thingData.template;
-          var item = new Item(itemTemplate);
+          const itemTemplate = <ItemTemplate> thingData.template;
+          const item = new Item(itemTemplate);
           this.player.addItem(item);
           break;
         }
@@ -200,7 +200,7 @@ export default class Manufactory
   }
   canManufactureThing(template: ManufacturableThing, type: "item" | "unit")
   {
-    var manufacturableThings = this.getManufacturableThingsForType(type);
+    const manufacturableThings = this.getManufacturableThingsForType(type);
     return manufacturableThings.indexOf(template) !== -1;
   }
   handleOwnerChange()
@@ -223,7 +223,7 @@ export default class Manufactory
   }
   getUnitUpgradeCost()
   {
-    var totalUpgrades = (this.unitStatsModifier + this.unitHealthModifier - 2) / 0.1;
+    const totalUpgrades = (this.unitStatsModifier + this.unitHealthModifier - 2) / 0.1;
     return Math.round((totalUpgrades + 1) * 100);
   }
   upgradeUnitStatsModifier(amount: number)
@@ -238,7 +238,7 @@ export default class Manufactory
   }
   serialize(): ManufactorySaveData
   {
-    var buildQueue = this.buildQueue.map(function(thingData: ManufacturableThingWithType)
+    const buildQueue = this.buildQueue.map(function(thingData: ManufacturableThingWithType)
     {
       return(
       {

@@ -45,7 +45,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
 
   makeDiplomacyActionsPopup(rowItem: ListItem<DiplomaticStatusPlayerProps>)
   {
-    var player = rowItem.content.props.player;
+    const player = rowItem.content.props.player;
     if (!player)
     {
       return;
@@ -72,15 +72,15 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
 
   render()
   {
-    var unmetPlayerCount = this.props.totalPlayerCount -
+    const unmetPlayerCount = this.props.totalPlayerCount -
       Object.keys(this.props.metPlayers).length - 1;
 
-    var rows: ListItem<DiplomaticStatusPlayerProps>[] = [];
+    const rows: ListItem<DiplomaticStatusPlayerProps>[] = [];
 
     for (let playerId in this.props.statusByPlayer)
     {
-      var player = this.props.metPlayers[playerId];
-      var status = this.props.player.diplomacyStatus.statusByPlayer[playerId];
+      const player = this.props.metPlayers[playerId];
+      const status = this.props.player.diplomacyStatus.statusByPlayer[playerId];
 
       rows.push(
       {
@@ -117,7 +117,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
       });
     }
 
-    var columns: ListColumn<DiplomaticStatusPlayerProps>[] =
+    const columns: ListColumn<DiplomaticStatusPlayerProps>[] =
     [
       {
         label: "",

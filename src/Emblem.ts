@@ -122,7 +122,7 @@ export default class Emblem
   }
   public serialize(): EmblemSaveData
   {
-    var data: EmblemSaveData =
+    const data: EmblemSaveData =
     {
       alpha: this.alpha,
       colors: this.colors.map(color => color.serialize()),

@@ -46,17 +46,17 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
 
   render()
   {
-    var abilities = this.props.activeTargets[this.props.targetUnit.id];
+    const abilities = this.props.activeTargets[this.props.targetUnit.id];
 
-    var abilityElements: React.ReactElement<any>[] = [];
+    const abilityElements: React.ReactElement<any>[] = [];
 
-    var containerProps: any =
+    const containerProps: any =
     {
       className: "ability-tooltip",
       onMouseLeave: this.props.handleMouseLeave,
     };
 
-    var parentRect = this.props.parentElement.getBoundingClientRect();
+    const parentRect = this.props.parentElement.getBoundingClientRect();
 
     containerProps.style =
     {
@@ -78,8 +78,8 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
 
     for (let i = 0; i < abilities.length; i++)
     {
-      var ability = abilities[i];
-      var data: any = {};
+      const ability = abilities[i];
+      const data: any = {};
 
       data.className = "ability-tooltip-ability";
       data.key = i;

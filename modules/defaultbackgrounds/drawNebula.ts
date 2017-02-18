@@ -18,9 +18,9 @@ const drawNebula: BackgroundDrawingFunction = function(
   const oldRng = Math.random;
   Math.random = RNG.prototype.uniform.bind(new RNG(seed));
 
-  var nebulaColorScheme = generateColorScheme();
+  const nebulaColorScheme = generateColorScheme();
 
-  var filter = new NebulaFilter(
+  const filter = new NebulaFilter(
   {
     baseColor: nebulaColorScheme.main.getRGB(),
     overlayColor: nebulaColorScheme.secondary.getRGB(),
@@ -64,7 +64,7 @@ const drawNebula: BackgroundDrawingFunction = function(
     size,
   );
 
-  var sprite = new PIXI.Sprite(texture);
+  const sprite = new PIXI.Sprite(texture);
 
   container.removeChildren();
   shaderSprite.destroy({texture: true, baseTexture: true});

@@ -93,7 +93,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var formationRowElements: React.ReactHTMLElement<HTMLDivElement>[] = [];
+    const formationRowElements: React.ReactHTMLElement<HTMLDivElement>[] = [];
 
     for (let i = 0; i < this.props.formation.length; i++)
     {

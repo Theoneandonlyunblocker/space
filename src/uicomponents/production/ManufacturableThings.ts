@@ -63,7 +63,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
 
   makeTabButton(key: TabKey)
   {
-    var displayString: string;
+    let displayString: string;
     switch (key)
     {
       case "units":
@@ -94,8 +94,8 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
   getManufacturableThings(key: TabKey)
   {
     let manufacturableThings: ManufacturableThing[];
-    var selectedStar = this.props.selectedStar;
-    var player = this.props.player;
+    const selectedStar = this.props.selectedStar;
+    const player = this.props.player;
 
     switch (key)
     {
@@ -134,7 +134,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
 
   makeTab(key: TabKey)
   {
-    var props =
+    const props =
     {
       key: key,
       selectedStar: this.props.selectedStar,

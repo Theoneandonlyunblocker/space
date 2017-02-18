@@ -54,7 +54,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   closePopup(popupType: string)
   {
     this.popupManager.closePopup(this.state[popupType]);
-    var stateObj: StateType = {};
+    const stateObj: StateType = {};
     stateObj[popupType] = undefined;
     this.setState(stateObj);
   }
@@ -63,7 +63,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   {
     let content: React.ReactElement<any>;
 
-    var popupProps: CustomPopupProps =
+    const popupProps: CustomPopupProps =
     {
       resizable: true,
       minWidth: 150,
@@ -89,7 +89,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       }
     }
 
-    var id = this.popupManager.makePopup(
+    const id = this.popupManager.makePopup(
     {
       content: TopMenuPopup(
       {
@@ -99,7 +99,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       popupProps: popupProps,
     });
 
-    var stateObj: any = {};
+    const stateObj: any = {};
     stateObj[popupType] = id;
     this.setState(stateObj);
   }
@@ -129,11 +129,11 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
 
   render()
   {
-    var player = this.props.player;
-    var targetPlayer = this.props.targetPlayer;
+    const player = this.props.player;
+    const targetPlayer = this.props.targetPlayer;
 
 
-    var declareWarProps: any =
+    const declareWarProps: any =
     {
       className: "diplomacy-action-button",
     };
@@ -148,7 +148,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       declareWarProps.className += " disabled";
     }
 
-    var makePeaceProps: any =
+    const makePeaceProps: any =
     {
       className: "diplomacy-action-button",
     };

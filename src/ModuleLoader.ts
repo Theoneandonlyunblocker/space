@@ -166,7 +166,7 @@ export default class ModuleLoader
   {
     this.hasLoaded[moduleFile.key] = true;
     this.constructModuleFile(moduleFile);
-    var loadTime = Date.now() - this.moduleLoadStart[moduleFile.key];
+    const loadTime = Date.now() - this.moduleLoadStart[moduleFile.key];
     console.log("Module '" + moduleFile.key + "' finished loading in " + loadTime + "ms");
 
     while (this.moduleLoadFinishCallbacks[moduleFile.key].length > 0)

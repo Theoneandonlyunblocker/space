@@ -68,15 +68,15 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
 
   getColor()
   {
-    var relativeValue = getRelativeValue(this.props.opinion, -30, 30);
+    let relativeValue = getRelativeValue(this.props.opinion, -30, 30);
     relativeValue = clamp(relativeValue, 0, 1);
 
-    var deviation = Math.abs(0.5 - relativeValue) * 2;
+    const deviation = Math.abs(0.5 - relativeValue) * 2;
 
-    var hue = 110 * relativeValue;
-    var saturation = 0 + 50 * deviation;
+    const hue = 110 * relativeValue;
+    let saturation = 0 + 50 * deviation;
     if (deviation > 0.3) saturation += 40;
-    var lightness = 70 - 20 * deviation;
+    const lightness = 70 - 20 * deviation;
 
     return(
       "hsl(" +
@@ -88,7 +88,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var tooltip: React.ReactElement<any> = null;
+    let tooltip: React.ReactElement<any> = null;
     if (this.state.hasAttitudeModifierTootlip)
     {
       tooltip = AttitudeModifierList(

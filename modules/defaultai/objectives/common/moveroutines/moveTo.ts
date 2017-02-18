@@ -6,7 +6,7 @@ import {Front} from "../../../mapai/Front";
 export default function moveTo(front: Front,
   afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star)
 {
-  var fleets = front.getAssociatedFleets();
+  const fleets = front.getAssociatedFleets();
 
   if (fleets.length <= 0)
   {
@@ -14,8 +14,8 @@ export default function moveTo(front: Front,
     return;
   }
 
-  var finishedMovingCount = 0;
-  var finishFleetMoveFN = function()
+  let finishedMovingCount = 0;
+  const finishFleetMoveFN = function()
   {
     finishedMovingCount++;
     if (finishedMovingCount >= fleets.length)
@@ -26,7 +26,7 @@ export default function moveTo(front: Front,
 
   for (let i = 0; i < fleets.length; i++)
   {
-    var moveTarget: Star = getMoveTargetFN ? getMoveTargetFN(fleets[i]) : front.objective.target;
+    const moveTarget: Star = getMoveTargetFN ? getMoveTargetFN(fleets[i]) : front.objective.target;
     fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
   }
 }

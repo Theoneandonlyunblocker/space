@@ -84,7 +84,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.props.isDraggable) return;
 
-    var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
+    const container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
 
     this.dragPositioner.forcedDragOffset =
     {
@@ -97,11 +97,11 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   // {
   //   if (this.dragPositioner.needsFirstTouchUpdate && this.ref_TODO_dragClone)
   //   {
-  //     var node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
+  //     const node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
   //     node.classList.add("draggable");
   //     node.classList.add("dragging");
 
-  //     var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
+  //     const container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
 
   //     node.style.width = "" + container.offsetWidth + "px";
   //     node.style.height = "" + container.offsetHeight + "px";
@@ -145,13 +145,13 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   // {
   //   if (!this.ref_TODO_dragClone) return;
 
-  //   var node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
+  //   const node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
   //   node.classList.add("draggable");
   //   node.classList.add("dragging");
   //   node.style.left = "" + x + "px";
   //   node.style.top = "" + y + "px";
 
-  //   var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
+  //   const container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
 
   //   node.style.width = "" + container.offsetWidth + "px";
   //   node.style.height = "" + container.offsetHeight + "px";
@@ -182,12 +182,12 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 
   makeCell(type: string)
   {
-    var unit = this.props.unit;
-    var cellProps: React.HTMLProps<HTMLTableCellElement> = {};
+    const unit = this.props.unit;
+    const cellProps: React.HTMLProps<HTMLTableCellElement> = {};
     cellProps.key = type;
     cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
 
-    var cellContent: string | number | React.ReactElement<any>;
+    let cellContent: string | number | React.ReactElement<any>;
 
     switch (type)
     {
@@ -235,18 +235,18 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 
   render(): React.ReactElement<any>
   {
-    var columns = this.props.activeColumns;
+    const columns = this.props.activeColumns;
 
-    var cells: React.ReactElement<any>[] = [];
+    const cells: React.ReactElement<any>[] = [];
 
     for (let i = 0; i < columns.length; i++)
     {
-      var cell = this.makeCell(columns[i].key);
+      const cell = this.makeCell(columns[i].key);
 
       cells.push(cell);
     }
 
-    var rowProps: React.HTMLAttributes =
+    const rowProps: React.HTMLAttributes =
     {
       className: "unit-list-item",
       onClick : this.props.handleClick,

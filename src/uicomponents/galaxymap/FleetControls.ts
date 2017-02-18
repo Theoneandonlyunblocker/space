@@ -52,9 +52,9 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
 
   render()
   {
-    var fleet = this.props.fleet;
+    const fleet = this.props.fleet;
 
-    var splitButtonProps: React.HTMLAttributes =
+    const splitButtonProps: React.HTMLAttributes =
     {
       className: "fleet-controls-split",
     };

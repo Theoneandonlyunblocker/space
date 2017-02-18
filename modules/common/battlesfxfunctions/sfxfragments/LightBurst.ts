@@ -56,13 +56,12 @@ export default class LightBurst extends SFXFragment<LightBurstProps>
 
   public animate(time: number): void
   {
-    var rampUpValue = Math.min(time / this.props.delay, 1.0);
-    rampUpValue = Math.pow(rampUpValue, 7.0);
+    const rampUpValue = Math.pow(Math.min(time / this.props.delay, 1.0), 7.0);
 
-    var timeAfterImpact = Math.max(time - this.props.delay, 0.0);
-    var rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
+    const timeAfterImpact = Math.max(time - this.props.delay, 0.0);
+    const rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
 
-    var lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
+    const lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
 
     this.lightBurstFilter.setUniformValues(
     {

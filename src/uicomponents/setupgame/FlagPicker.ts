@@ -79,7 +79,7 @@ export class FlagPickerComponent extends React.PureComponent<PropTypes, StateTyp
 
   render()
   {
-    var imageInfoMessage: React.ReactElement<any>;
+    const imageInfoMessage: React.ReactElement<any>;
     if (this.props.failMessage)
     {
       imageInfoMessage = this.props.failMessage;

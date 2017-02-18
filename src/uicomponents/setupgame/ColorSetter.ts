@@ -104,7 +104,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var displayElement = this.props.color === null ?
+    const displayElement = this.props.color === null ?
       React.DOM.img(
       {
         className: "color-setter-display",

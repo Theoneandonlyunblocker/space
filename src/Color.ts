@@ -43,7 +43,7 @@ export default class Color
    */
   public static fromHSV(h: number, s: number, v: number): Color
   {
-    var r: number, g: number, b: number, i: number, f: number, p: number, q: number, t: number;
+    let r: number, g: number, b: number, i: number, f: number, p: number, q: number, t: number;
 
     i = Math.floor(h * 6);
     f = h * 6 - i;
@@ -173,10 +173,10 @@ export default class Color
     const g = this.g;
     const b = this.b;
 
-    var max = Math.max(r, g, b), min = Math.min(r, g, b);
-    var h: number, s: number, v: number = max;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h: number, s: number, v: number = max;
 
-    var d: number = max - min;
+    const d: number = max - min;
     s = max == 0 ? 0 : d / max;
 
     if(max == min)

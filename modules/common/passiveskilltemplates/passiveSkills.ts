@@ -10,7 +10,7 @@ import poisonedStatusEffect from "../statuseffecttemplates/poisoned";
 import * as EffectActions from "../effectactiontemplates/effectActions";
 import {bindEffectActionData} from "../effectactiontemplates/effectActions";
 
-export var autoHeal: PassiveSkillTemplate =
+export const autoHeal: PassiveSkillTemplate =
 {
   type: "autoHeal",
   displayName: "Auto heal",
@@ -29,7 +29,7 @@ export var autoHeal: PassiveSkillTemplate =
     },
   ],
 };
-export var overdrive: PassiveSkillTemplate =
+export const overdrive: PassiveSkillTemplate =
 {
   type: "overdrive",
   displayName: "Overdrive",
@@ -48,7 +48,7 @@ export var overdrive: PassiveSkillTemplate =
     },
   ],
 };
-export var initialGuard: PassiveSkillTemplate =
+export const initialGuard: PassiveSkillTemplate =
 {
   type: "initialGuard",
   displayName: "Initial Guard",
@@ -80,7 +80,7 @@ export var initialGuard: PassiveSkillTemplate =
     },
   ],
 };
-export var medic: PassiveSkillTemplate =
+export const medic: PassiveSkillTemplate =
 {
   type: "medic",
   displayName: "Medic",
@@ -90,8 +90,8 @@ export var medic: PassiveSkillTemplate =
   [
     function(user: Unit)
     {
-      var star = user.fleet.location;
-      var allFriendlyUnits = star.getUnits(player => player === user.fleet.player);
+      const star = user.fleet.location;
+      const allFriendlyUnits = star.getUnits(player => player === user.fleet.player);
       for (let i = 0; i < allFriendlyUnits.length; i++)
       {
         allFriendlyUnits[i].addHealth(allFriendlyUnits[i].maxHealth);
@@ -99,7 +99,7 @@ export var medic: PassiveSkillTemplate =
     },
   ],
 };
-export var warpJammer: PassiveSkillTemplate =
+export const warpJammer: PassiveSkillTemplate =
 {
   type: "warpJammer",
   displayName: "Warp Jammer",

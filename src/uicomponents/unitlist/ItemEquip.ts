@@ -76,7 +76,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
   {
     if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit)
     {
-      var item = this.state.currentDragItem;
+      const item = this.state.currentDragItem;
       if (this.state.selectedUnit.items.hasItem(item))
       {
         this.state.selectedUnit.items.removeItem(item);
@@ -90,8 +90,8 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
   }
   handleDrop(index: number)
   {
-    var item = this.state.currentDragItem;
-    var unit = this.state.selectedUnit;
+    const item = this.state.currentDragItem;
+    const unit = this.state.selectedUnit;
     if (unit && item)
     {
       unit.items.addItemAtPosition(item, index);
@@ -102,7 +102,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var player = this.props.player;
+    const player = this.props.player;
 
     return(
       React.DOM.div({className: "item-equip"},

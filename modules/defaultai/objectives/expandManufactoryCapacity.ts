@@ -19,20 +19,20 @@ const expandManufactoryCapacity: ObjectiveTemplate =
     // TODO economy ai
     // base priority = manufacturing demand / manufacturing capacity
 
-    var template = expandManufactoryCapacity;
+    const template = expandManufactoryCapacity;
     return [new Objective(template, 0.5, null)];
   },
   economyRoutineFN: function(objective: Objective, economyAI: EconomyAI)
   {
     // TODO economy ai
-    var starWithCost:
+    const starWithCost:
     {
       star: Star;
       cost: number;
     }[] = [];
 
-    var player: Player = economyAI.player;
-    var stars = player.controlledLocations;
+    const player: Player = economyAI.player;
+    const stars = player.controlledLocations;
 
     if (player.money < 1200)
     {
@@ -41,22 +41,14 @@ const expandManufactoryCapacity: ObjectiveTemplate =
 
     for (let i = 0; i < stars.length; i++)
     {
-      var star = stars[i];
-      var fullyExpanded = star.manufactory && star.manufactory.capacity >= star.manufactory.maxCapacity;
+      const star = stars[i];
+      const fullyExpanded = star.manufactory && star.manufactory.capacity >= star.manufactory.maxCapacity;
       if (fullyExpanded)
       {
         continue;
       }
 
-      var expansionCost: number;
-      if (!star.manufactory)
-      {
-        expansionCost = app.moduleData.ruleSet.manufactory.buildCost;
-      }
-      else
-      {
-        expansionCost = star.manufactory.getCapacityUpgradeCost();
-      }
+      const expansionCost = star.manufactory ? star.manufactory.getCapacityUpgradeCost() : app.moduleData.ruleSet.manufactory.buildCost;
 
       starWithCost.push(
       {
@@ -75,8 +67,8 @@ const expandManufactoryCapacity: ObjectiveTemplate =
       return a.cost - b.cost;
     });
 
-    var star = starWithCost[0].star;
-    var cost = starWithCost[0].cost;
+    const star = starWithCost[0].star;
+    const cost = starWithCost[0].cost;
     if (player.money < cost * 1.1)
     {
       return;
