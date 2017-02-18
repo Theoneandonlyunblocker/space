@@ -22,8 +22,8 @@ import Star from "./Star";
 import StatusEffect from "./StatusEffect";
 import
 {
-  default as UnitAttributes,
   UnitAttributeAdjustments,
+  UnitAttributes,
   UnitAttributesObject,
 } from "./UnitAttributes";
 import UnitBattleSide from "./UnitBattleSide";

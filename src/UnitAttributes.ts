@@ -12,6 +12,7 @@ export enum UnitAttribute
   speed,
 }
 
+// TODO 06.02.2017 | can't we use the actual class instead of this?
 export interface PartialUnitAttributes
 {
   maxActionPoints?: number;
@@ -39,7 +40,7 @@ export interface UnitAttributesObject
   speed: number;
 }
 
-export default class UnitAttributes implements UnitAttributesObject
+export class UnitAttributes implements UnitAttributesObject
 {
   public maxActionPoints: number;
   public attack: number;
@@ -125,10 +126,10 @@ export default class UnitAttributes implements UnitAttributesObject
   }
   public clamp(min?: number, max?: number): UnitAttributes
   {
-    for (let attribute in this)
+    this.forEachAttribute(attribute =>
     {
       this[attribute] = clamp(this[attribute], min, max);
-    }
+    });
 
     return this;
   }
@@ -197,5 +198,19 @@ export default class UnitAttributes implements UnitAttributesObject
   public serialize(): UnitAttributesObject
   {
     return JSON.parse(JSON.stringify(this));
+  }
+
+  private forEachAttribute(cb: (attribute: string) => void): void
+  {
+    [
+      "maxActionPoints",
+      "attack",
+      "defence",
+      "intelligence",
+      "speed",
+    ].forEach(attribute =>
+    {
+      cb(attribute);
+    });
   }
 }
