@@ -53,7 +53,6 @@ export default class Unit
 
   public maxHealth: number;
   public currentHealth: number;
-  public isSquadron: boolean; // TODO 19.10.2016 | can't we just get this from template?
 
   public currentMovePoints: number;
   public maxMovePoints: number;
@@ -129,7 +128,6 @@ export default class Unit
   })
   {
     this.template = props.template;
-    this.isSquadron = this.template.isSquadron;
 
     this.id = props.id;
     this.name = props.name;
@@ -1044,7 +1042,7 @@ export default class Unit
       maxActionPoints: this.attributes.maxActionPoints,
       isPreparing: Boolean(this.battleStats.queuedAction),
       isAnnihilated: this.battleStats.isAnnihilated,
-      isSquadron: this.isSquadron,
+      isSquadron: this.template.isSquadron,
 
       portraitSrc: this.portrait.imageSrc,
       iconSrc: this.template.icon,

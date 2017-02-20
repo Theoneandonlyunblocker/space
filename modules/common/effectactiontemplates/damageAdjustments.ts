@@ -6,7 +6,7 @@ export function getAdjustedTroopSize(unit: Unit): number
   // used so unit will always counter with at least 1/3 strength it had before being attacked
   const minEffectiveHealth = Math.max(unit.currentHealth, unit.battleStats.lastHealthBeforeReceivingDamage / 3);
 
-  const effectiveHealth = unit.isSquadron ?
+  const effectiveHealth = unit.template.isSquadron ?
     minEffectiveHealth :
     Math.min(unit.maxHealth, minEffectiveHealth + unit.maxHealth * 0.2);
 

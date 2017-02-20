@@ -43,7 +43,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   var zDistance: number = props.zDistance;
   var xDistance: number = props.xDistance;
   var unitsToDraw: number;
-  if (!unit.isSquadron)
+  if (!unit.template.isSquadron)
   {
     unitsToDraw = 1;
   }
