@@ -7,6 +7,12 @@ export interface AITemplate<SaveData>
   personality: Personality;
 
   processTurn(afterFinishedCallback: () => void): void;
+  createBattleFormation(
+    availableUnits: Unit[],
+    hasScouted: boolean,
+    enemyUnits?: Unit[],
+    enemyFormation?: Unit[][],
+  ): Unit[][];
   evaluateUnitStrength(...units: Unit[]): number;
   serialize(): SaveData;
 }

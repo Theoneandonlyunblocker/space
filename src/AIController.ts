@@ -20,6 +20,20 @@ export default class AIController
   {
     this.template.processTurn(afterFinishedCallback);
   }
+  public createBattleFormation(
+    availableUnits: Unit[],
+    hasScouted: boolean,
+    enemyUnits?: Unit[],
+    enemyFormation?: Unit[][],
+  ): Unit[][]
+  {
+    return this.template.createBattleFormation(
+      availableUnits,
+      hasScouted,
+      enemyUnits,
+      enemyFormation,
+    );
+  }
   public evaluateUnitStrength(...units: Unit[]): number
   {
     return this.template.evaluateUnitStrength(...units);

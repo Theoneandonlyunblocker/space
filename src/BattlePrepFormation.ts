@@ -1,9 +1,6 @@
-import app from "./App";
-import ArchetypeValues from "./ArchetypeValues";
 import Player from "./Player";
 import Unit from "./Unit";
 import UnitDisplayData from "./UnitDisplayData";
-import evaluateUnitStrength from "./evaluateUnitStrength";
 import getNullFormation from "./getNullFormation";
 
 export default class BattlePrepFormation
@@ -68,7 +65,12 @@ export default class BattlePrepFormation
   {
     this.clearFormation();
 
-    this.formation = this.getAutoFormation(enemyUnits, enemyFormation);
+    this.formation = this.player.AIController.createBattleFormation(
+      this.units,
+      this.hasScouted,
+      enemyUnits,
+      enemyFormation,
+    );
     this.forEachUnitInFormation((unit, pos) =>
     {
       this.placedUnitPositionsByID[unit.id] = pos;
@@ -177,98 +179,5 @@ export default class BattlePrepFormation
     });
 
     return displayDataByID;
-  }
-  // TODO ruleset | handle variable amount of rows
-  // TODO 11.10.2016 | shouldn't this be in a module?
-  private getAutoFormation(enemyUnits?: Unit[], enemyFormation?: Unit[][]): Unit[][]
-  {
-    const scoutedUnits = this.hasScouted ? enemyUnits : null;
-    const scoutedFormation = this.hasScouted ? enemyFormation : null;
-
-    const formation = getNullFormation();
-    const unitsToPlace = this.units.filter(unit => unit.canActThisTurn());
-
-    const maxUnitsPerRow = formation[0].length;
-    const maxUnitsPerSide = app.moduleData.ruleSet.battle.maxUnitsPerSide;
-
-    let placedInFront = 0;
-    let placedInBack = 0;
-    let totalPlaced = 0;
-    const unitsPlacedByArchetype: ArchetypeValues = {};
-
-    const getUnitScoreFN = (unit: Unit, row: string) =>
-    {
-      const baseScore = evaluateUnitStrength(unit);
-
-      const archetype = unit.template.archetype;
-      const idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
-      const unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.type] || 0;
-      const overMaxOfArchetypeIdeal = Math.max(0, unitsPlacedOfArchetype - idealMaxUnitsOfArchetype);
-      const archetypeIdealAdjust = 1 - overMaxOfArchetypeIdeal * 0.15;
-
-      const rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
-      const rowModifier = archetype.scoreMultiplierForRowFN ?
-        archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits, scoutedFormation) :
-        archetype.rowScores[row];
-
-      return(
-      {
-        unit: unit,
-        score: baseScore * archetypeIdealAdjust * rowModifier,
-        row: row,
-      });
-    };
-
-    while (unitsToPlace.length > 0 && totalPlaced < maxUnitsPerSide)
-    {
-      const positionScores:
-      {
-        unit: Unit;
-        score: number;
-        row: string; // "ROW_FRONT" or "ROW_BACK" // TODO enum
-      }[] = [];
-
-      for (let i = 0; i < unitsToPlace.length; i++)
-      {
-        const unit = unitsToPlace[i];
-
-        if (placedInFront < maxUnitsPerRow)
-        {
-          positionScores.push(getUnitScoreFN(unit, "ROW_FRONT"));
-        }
-        if (placedInBack < maxUnitsPerRow)
-        {
-          positionScores.push(getUnitScoreFN(unit, "ROW_BACK"));
-        }
-      }
-
-      positionScores.sort(function(a, b)
-      {
-        return (b.score - a.score);
-      });
-      const topScore = positionScores[0];
-
-
-      if (topScore.row === "ROW_FRONT")
-      {
-        placedInFront++;
-        formation[1][placedInFront - 1] = topScore.unit;
-      }
-      else
-      {
-        placedInBack++;
-        formation[0][placedInBack - 1] = topScore.unit;
-      }
-
-      totalPlaced++;
-      if (!unitsPlacedByArchetype[topScore.unit.template.archetype.type])
-      {
-        unitsPlacedByArchetype[topScore.unit.template.archetype.type] = 0;
-      }
-      unitsPlacedByArchetype[topScore.unit.template.archetype.type]++;
-      unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
-    }
-
-    return formation;
   }
 }
