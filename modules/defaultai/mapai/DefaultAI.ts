@@ -12,6 +12,7 @@ import GalaxyMap from "../../../src/GalaxyMap";
 import Game from "../../../src/Game";
 import Personality from "../../../src/Personality";
 import Player from "../../../src/Player";
+import Unit from "../../../src/Unit";
 import
 {
   makeRandomPersonality,
@@ -114,6 +115,18 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     {
       afterFinishedCallback();
     }
+  }
+  public evaluateUnitStrength(...units: Unit[]): number
+  {
+    let strength = 0;
+
+    // TODO 20.02.2017 |
+    units.forEach(unit =>
+    {
+      strength += unit.currentHealth;
+    });
+
+    return strength;
   }
   public serialize(): DefaultAISaveData
   {

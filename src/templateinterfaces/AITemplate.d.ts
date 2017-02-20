@@ -1,4 +1,5 @@
 import Personality from "../Personality";
+import Unit from "../Unit";
 
 export interface AITemplate<SaveData>
 {
@@ -6,6 +7,7 @@ export interface AITemplate<SaveData>
   personality: Personality;
 
   processTurn(afterFinishedCallback: () => void): void;
+  evaluateUnitStrength(...units: Unit[]): number;
   serialize(): SaveData;
 }
 

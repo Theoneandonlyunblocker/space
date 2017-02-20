@@ -3,6 +3,7 @@ import AITemplate from "./templateinterfaces/AITemplate";
 import AIControllerSaveData from "./savedata/AIControllerSaveData";
 
 import Personality from "./Personality";
+import Unit from "./Unit";
 
 export default class AIController
 {
@@ -18,6 +19,10 @@ export default class AIController
   public processTurn(afterFinishedCallback: () => void): void
   {
     this.template.processTurn(afterFinishedCallback);
+  }
+  public evaluateUnitStrength(...units: Unit[]): number
+  {
+    return this.template.evaluateUnitStrength(...units);
   }
   public serialize(): AIControllerSaveData<any>
   {

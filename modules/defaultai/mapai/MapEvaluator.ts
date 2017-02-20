@@ -11,8 +11,6 @@ import
   getRelativeValue,
 } from "../../../src/utility";
 
-import evaluateUnitStrength from "../../../src/evaluateUnitStrength";
-
 export const defaultEvaluationParameters =
 {
   starDesirability:
@@ -290,12 +288,12 @@ export default class MapEvaluator
   }
   public getHostileStrengthAtStar(star: Star): number
   {
-    return evaluateUnitStrength(...this.getHostileUnitsAtStar(star));
+    return this.player.AIController.evaluateUnitStrength(...this.getHostileUnitsAtStar(star));
   }
   public getIndependentStrengthAtStar(star: Star): number
   {
     const independentUnits = star.getUnits(player => player.isIndependent);
-    return evaluateUnitStrength(...independentUnits);
+    return this.player.AIController.evaluateUnitStrength(...independentUnits);
   }
   getDefenceBuildingStrengthAtStarByPlayer(star: Star)
   {
@@ -368,7 +366,7 @@ export default class MapEvaluator
     for (let i = 0; i < fleets.length; i++)
     {
       const fleet = fleets[i];
-      const strength = evaluateUnitStrength(...fleet.units);
+      const strength = this.player.AIController.evaluateUnitStrength(...fleet.units);
       const location = fleet.location;
 
       const range = fleet.getMinMaxMovePoints();
@@ -455,7 +453,7 @@ export default class MapEvaluator
     const fleets = this.getVisibleFleetsOfPlayer(player);
     for (let i = 0; i < fleets.length; i++)
     {
-      visibleStrength += evaluateUnitStrength(...fleets[i].units);
+      visibleStrength += this.player.AIController.evaluateUnitStrength(...fleets[i].units);
     }
 
     if (player !== this.player)
