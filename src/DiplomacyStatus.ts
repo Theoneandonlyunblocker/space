@@ -93,17 +93,6 @@ export default class DiplomacyStatus
     return this.baseOpinion;
   }
 
-  updateAttitudes()
-  {
-    if (!this.player.AIController)
-    {
-      return;
-    }
-    // TODO
-    // is this necessary? why cant diplo ai look at attitudes as needed?
-    // this.player.AIController.diplomacyAI.setAttitudes();
-  }
-
   handleDiplomaticStatusUpdate()
   {
     eventManager.dispatchEvent("diplomaticStatusUpdated");
@@ -187,8 +176,6 @@ export default class DiplomacyStatus
 
     this.statusByPlayer[player.id] = DiplomacyState.peace;
     player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState.peace;
-
-    player.diplomacyStatus.updateAttitudes();
   }
 
   canAttackFleetOfPlayer(player: Player)
@@ -244,7 +231,6 @@ export default class DiplomacyStatus
     }
 
     this.attitudeModifiersByPlayer[player.id].push(modifier);
-    this.updateAttitudes();
   }
   triggerAttitudeModifier(template: AttitudeModifierTemplate, player: Player, source: Player)
   {
