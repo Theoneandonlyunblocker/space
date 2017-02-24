@@ -95,6 +95,29 @@ abstract class IDDictionary<K extends ObjectWithID, V>
 
     return zipped;
   }
+  public sort(sortingFN: (a: V, b: V) => number): K[]
+  {
+    const keys: K[] = [];
+    for (let id in this.keysByID)
+    {
+      keys.push(this.keysByID[id]);
+    }
+
+    keys.sort((a, b) =>
+    {
+      const sortingValue = sortingFN(this.valuesByID[a.id], this.valuesByID[b.id]);
+      if (sortingValue)
+      {
+        return sortingValue;
+      }
+      else
+      {
+        return b.id - a.id;
+      }
+    });
+
+    return keys;
+  }
 }
 
 export default IDDictionary;
