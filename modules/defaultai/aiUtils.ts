@@ -77,8 +77,11 @@ export function mergeScoresByStar(merged: ScoresByStar, scores: {star: Star; sco
 
   return merged;
 }
-export function makeObjectivesFromScores(template: ObjectiveTemplate,
-  evaluationScores: {star?: Star; player?: Player; score: number;}[], basePriority: number)
+export function makeObjectivesFromScores(
+  template: ObjectiveTemplate,
+  evaluationScores: {star?: Star; player?: Player; score: number;}[],
+  basePriority: number,
+)
 {
   const allObjectives: Objective[] = [];
 
@@ -107,9 +110,14 @@ export function makeObjectivesFromScores(template: ObjectiveTemplate,
 
   return allObjectives;
 }
-export function perimeterObjectiveCreation(template: ObjectiveTemplate, isForScouting: boolean,
-  basePriority: number, grandStrategyAI: GrandStrategyAI, mapEvaluator: MapEvaluator,
-  objectivesAI: ObjectivesAI)
+export function perimeterObjectiveCreation(
+  template: ObjectiveTemplate,
+  isForScouting: boolean,
+  basePriority: number,
+  grandStrategyAI: GrandStrategyAI,
+  mapEvaluator: MapEvaluator,
+  objectivesAI: ObjectivesAI,
+)
 {
   const playersToEstablishPerimeterAgainst: Player[] = [];
   const diplomacyStatus = mapEvaluator.player.diplomacyStatus;
@@ -149,8 +157,7 @@ export function perimeterObjectiveCreation(template: ObjectiveTemplate, isForSco
 
   return objectives;
 }
-export function getUnitsToBeatImmediateTarget(mapEvaluator: MapEvaluator,
-  objective: Objective)
+export function getUnitsToBeatImmediateTarget(mapEvaluator: MapEvaluator, objective: Objective)
 {
   let min: number;
   let ideal: number;
