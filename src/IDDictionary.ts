@@ -82,12 +82,12 @@ abstract class IDDictionary<K extends ObjectWithID, V>
   {
     const zipped: T[] = [];
 
-    for (let key in this.keysByID)
+    for (let id in this.keysByID)
     {
       const zippedPair =
       {
-        [keyName]: this.keysByID[key],
-        [valueName]: this.valuesByID[key],
+        [keyName]: this.keysByID[id],
+        [valueName]: this.valuesByID[id],
       };
 
       zipped.push(<any>zippedPair);
