@@ -1,5 +1,4 @@
 export {default as nonFillerStars} from  "./maplayertemplates/nonFillerStars";
-export {default as playerInfluence} from  "./maplayertemplates/playerInfluence";
 export {default as starLinks} from  "./maplayertemplates/starLinks";
 export {default as fleets} from  "./maplayertemplates/fleets";
 export {default as nonFillerVoronoiLines} from  "./maplayertemplates/nonFillerVoronoiLines";

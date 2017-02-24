@@ -43,19 +43,6 @@ export const income: MapRendererMapModeTemplate =
     MapLayers.fleets,
   ],
 };
-export const influence: MapRendererMapModeTemplate =
-{
-  key: "influence",
-  displayName: "Player Influence",
-  layers:
-  [
-    MapLayers.playerInfluence,
-    MapLayers.nonFillerVoronoiLines,
-    MapLayers.starLinks,
-    MapLayers.nonFillerStars,
-    MapLayers.fleets,
-  ],
-};
 export const resources: MapRendererMapModeTemplate =
 {
   key: "resources",

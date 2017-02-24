@@ -6,7 +6,6 @@ import * as MapLayers from "./allMapLayerTemplates";
 const MapLayerTemplates: TemplateCollection<MapRendererLayerTemplate> =
 {
   [MapLayers.nonFillerStars.key]: MapLayers.nonFillerStars,
-  [MapLayers.playerInfluence.key]: MapLayers.playerInfluence,
   [MapLayers.starLinks.key]: MapLayers.starLinks,
   [MapLayers.fleets.key]: MapLayers.fleets,
   [MapLayers.nonFillerVoronoiLines.key]: MapLayers.nonFillerVoronoiLines,
