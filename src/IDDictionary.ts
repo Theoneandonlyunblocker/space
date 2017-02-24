@@ -5,7 +5,7 @@ interface ObjectWithID
 
 abstract class IDDictionary<K extends ObjectWithID, V>
 {
-  readonly [a: number]: boolean;
+  readonly [a: number]: boolean; // TODO 24.02.2017 | what is this? legacy?
   private valuesByID:
   {
     [id: number]: V;

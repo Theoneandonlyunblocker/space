@@ -222,6 +222,7 @@ export default class Manufactory
   }
   upgradeCapacity(amount: number)
   {
+    // TODO 24.02.2017 | don't think money should get substracted here
     this.player.money -= this.getCapacityUpgradeCost();
     this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
   }
