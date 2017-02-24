@@ -1,3 +1,5 @@
+import {UnitEvaluator} from "./UnitEvaluator";
+
 import DiplomacyEvaluation from "../../../src/DiplomacyEvaluation";
 import {Fleet} from "../../../src/Fleet";
 import GalaxyMap from "../../../src/GalaxyMap";
@@ -56,11 +58,13 @@ export default class MapEvaluator
       productionWeight: number;
     };
   };
+  private unitEvaluator: UnitEvaluator;
 
-  constructor(map: GalaxyMap, player: Player)
+  constructor(map: GalaxyMap, player: Player, unitEvaluator: UnitEvaluator)
   {
     this.map = map;
     this.player = player;
+    this.unitEvaluator = unitEvaluator;
 
     this.evaluationParameters = defaultEvaluationParameters;
   }
@@ -288,12 +292,12 @@ export default class MapEvaluator
   }
   public getHostileStrengthAtStar(star: Star): number
   {
-    return this.player.AIController.evaluateUnitStrength(...this.getHostileUnitsAtStar(star));
+    return this.unitEvaluator.evaluateMapStrength(...this.getHostileUnitsAtStar(star));
   }
   public getIndependentStrengthAtStar(star: Star): number
   {
     const independentUnits = star.getUnits(player => player.isIndependent);
-    return this.player.AIController.evaluateUnitStrength(...independentUnits);
+    return this.unitEvaluator.evaluateMapStrength(...independentUnits);
   }
   getDefenceBuildingStrengthAtStarByPlayer(star: Star)
   {
@@ -366,7 +370,7 @@ export default class MapEvaluator
     for (let i = 0; i < fleets.length; i++)
     {
       const fleet = fleets[i];
-      const strength = this.player.AIController.evaluateUnitStrength(...fleet.units);
+      const strength = this.unitEvaluator.evaluateMapStrength(...fleet.units);
       const location = fleet.location;
 
       const range = fleet.getMinMaxMovePoints();
@@ -453,7 +457,7 @@ export default class MapEvaluator
     const fleets = this.getVisibleFleetsOfPlayer(player);
     for (let i = 0; i < fleets.length; i++)
     {
-      visibleStrength += this.player.AIController.evaluateUnitStrength(...fleets[i].units);
+      visibleStrength += this.unitEvaluator.evaluateMapStrength(...fleets[i].units);
     }
 
     if (player !== this.player)

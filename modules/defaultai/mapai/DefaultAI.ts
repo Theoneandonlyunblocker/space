@@ -4,6 +4,7 @@ import EconomyAI from "./EconomyAI";
 import FrontsAI from "./FrontsAI";
 import GrandStrategyAI from "./GrandStrategyAI";
 import MapEvaluator from "./MapEvaluator";
+import {UnitEvaluator} from "./UnitEvaluator";
 import ObjectivesAI from "./ObjectivesAI";
 
 import AITemplate from "../../../src/templateinterfaces/AITemplate";
@@ -33,6 +34,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
   map: GalaxyMap;
 
   mapEvaluator: MapEvaluator;
+  unitEvaluator: UnitEvaluator;
 
   grandStrategyAI: GrandStrategyAI;
   objectivesAI: ObjectivesAI;
@@ -49,7 +51,8 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
 
     this.map = game.galaxyMap;
 
-    this.mapEvaluator = new MapEvaluator(this.map, this.player);
+    this.unitEvaluator = new UnitEvaluator();
+    this.mapEvaluator = new MapEvaluator(this.map, this.player, this.unitEvaluator);
 
 
     this.grandStrategyAI = new GrandStrategyAI(this.personality, this.mapEvaluator, this.game);
@@ -143,7 +146,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
 
     const getUnitScoreFN = (unit: Unit, row: string) =>
     {
-      const baseScore = this.evaluateUnitStrength(unit);
+      const baseScore = this.unitEvaluator.evaluateCombatStrength(unit);
 
       const archetype = unit.template.archetype;
       const idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
@@ -215,18 +218,6 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     }
 
     return formation;
-  }
-  public evaluateUnitStrength(...units: Unit[]): number
-  {
-    let strength = 0;
-
-    // TODO 20.02.2017 |
-    units.forEach(unit =>
-    {
-      strength += unit.currentHealth;
-    });
-
-    return strength;
   }
   public serialize(): DefaultAISaveData
   {

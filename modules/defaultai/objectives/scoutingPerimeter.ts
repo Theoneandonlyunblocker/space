@@ -7,7 +7,6 @@ import
 {
   perimeterObjectiveCreation,
   scoutingUnitDesireFN,
-  scoutingUnitFitFN,
 } from "../aiUtils";
 import movePriority from "./common/movePriority";
 import moveTo from "./common/moveroutines/moveTo";

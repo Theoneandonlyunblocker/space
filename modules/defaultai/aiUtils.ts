@@ -1,11 +1,8 @@
 import DiplomacyState from "../../src/DiplomacyState";
 import Player from "../../src/Player";
 import Star from "../../src/Star";
-import Unit from "../../src/Unit";
-import evaluateUnitStrength from "../../src/evaluateUnitStrength";
 import
 {
-  clamp,
   getRelativeValue,
 } from "../../src/utility";
 import {Front} from "./mapai/Front";
@@ -52,62 +49,16 @@ export function defaultUnitDesireFN(front: Front)
 
   return desire;
 }
-export function defaultUnitFitFN(unit: Unit, front: Front, lowHealthThreshhold: number = 0.75,
-  healthAdjust: number = 1, distanceAdjust: number = 1)
-{
-  let score = 1;
-
-  // penalize units on low health
-  const healthPercentage = unit.currentHealth / unit.maxHealth;
-
-  if (healthPercentage < lowHealthThreshhold)
-  {
-    score *= healthPercentage * healthAdjust;
-  }
-
-  // prioritize units closer to front target
-  let turnsToReach = unit.getTurnsToReachStar(front.targetLocation);
-  if (turnsToReach > 0)
-  {
-    turnsToReach *= distanceAdjust;
-    const distanceMultiplier = 1 / (Math.log(turnsToReach + 2.5) / Math.log(2.5));
-    score *= distanceMultiplier;
-  }
-
-  return score;
-}
 export function scoutingUnitDesireFN(front: Front)
 {
-  if (front.units.length < 1) return 1;
-  else return 0;
-}
-export function scoutingUnitFitFN(unit: Unit, front: Front)
-{
-  let baseScore = 0;
-  // ++ stealth
-  const isStealthy = unit.isStealthy();
-  if (isStealthy) baseScore += 0.2;
-  // ++ vision
-  const visionRange = unit.getVisionRange();
-  if (visionRange <= 0)
+  if (front.units.length < 1)
   {
-    return -1;
+    return 1;
   }
   else
   {
-    baseScore += Math.pow(visionRange, 1.5) / 2;
+    return 0;
   }
-
-  // -- strength
-  const strength = evaluateUnitStrength(unit);
-  baseScore -= strength / 1000;
-  // -- cost
-  const cost = unit.getTotalCost();
-  baseScore -= cost / 1000;
-
-  const score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 2);
-
-  return clamp(score, 0, 1);
 }
 export function mergeScoresByStar(merged: ScoresByStar, scores: {star: Star; score: number;}[])
 {

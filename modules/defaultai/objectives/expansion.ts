@@ -8,7 +8,6 @@ import Star from "../../../src/Star";
 import
 {
   defaultUnitDesireFN,
-  defaultUnitFitFN,
   getUnitsToBeatImmediateTarget,
   makeObjectivesFromScores,
 } from "../aiUtils";

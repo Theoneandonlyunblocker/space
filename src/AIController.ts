@@ -34,10 +34,6 @@ export default class AIController
       enemyFormation,
     );
   }
-  public evaluateUnitStrength(...units: Unit[]): number
-  {
-    return this.template.evaluateUnitStrength(...units);
-  }
   public serialize(): AIControllerSaveData<any>
   {
     return(

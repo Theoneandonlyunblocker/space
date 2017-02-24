@@ -18,7 +18,6 @@ import
 {
   makeObjectivesFromScores,
   scoutingUnitDesireFN,
-  scoutingUnitFitFN,
 } from "../aiUtils";
 
 

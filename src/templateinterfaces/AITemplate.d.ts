@@ -13,7 +13,6 @@ export interface AITemplate<SaveData>
     enemyUnits?: Unit[],
     enemyFormation?: Unit[][],
   ): Unit[][];
-  evaluateUnitStrength(...units: Unit[]): number;
   serialize(): SaveData;
 }
 
