@@ -46,6 +46,10 @@ export default class Manufactory
       this.maxCapacity = app.moduleData.ruleSet.manufactory.maxCapacity;
     }
   }
+  public static getBuildCost(): number
+  {
+    return app.moduleData.ruleSet.manufactory.buildCost;
+  }
   makeFromData(data: any)
   {
     this.capacity = data.capacity;
