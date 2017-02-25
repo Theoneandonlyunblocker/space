@@ -118,6 +118,17 @@ abstract class IDDictionary<K extends ObjectWithID, V>
 
     return keys;
   }
+  public map<T>(mapFN: (key: K, value: V) => T): T[]
+  {
+    const mapped: T[] = [];
+
+    for (let ID in this.keysByID)
+    {
+      mapped.push(mapFN(this.keysByID[ID], this.valuesByID[ID]));
+    }
+
+    return mapped;
+  }
 }
 
 export default IDDictionary;
