@@ -1,3 +1,4 @@
+import GrandStrategyAI from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
 
 import idGenerators from "../../../../src/idGenerators";
@@ -5,9 +6,14 @@ import idGenerators from "../../../../src/idGenerators";
 
 export abstract class Objective
 {
-  // TODO 25.02.2017 | should be abstract static, but not currently possible in typescript
+  // TODO 25.02.2017 | these should be abstract and static, but not currently possible in typescript
   // https://github.com/Microsoft/TypeScript/issues/10603
   public static createObjectives: (mapEvaluator: MapEvaluator) => Objective[];
+  /**
+   * player's current priority for this type of objetive. 0-1
+   */
+  public static evaluatePriority: (mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI) => number;
+
 
   public abstract type: string;
   public id: number;

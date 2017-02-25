@@ -1,5 +1,6 @@
 import {EconomicObjective} from "./common/EconomicObjective";
 
+import GrandStrategyAI from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 
 import Manufactory from "../../../src/Manufactory";
@@ -19,9 +20,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
     this.target = target;
   }
 
-  public static createObjectives(
-    mapEvaluator: MapEvaluator,
-  ): ExpandManufactoryCapacity[]
+  public static createObjectives(mapEvaluator: MapEvaluator): ExpandManufactoryCapacity[]
   {
     const starsThatCanExpand = mapEvaluator.player.controlledLocations.filter(star =>
     {
@@ -41,6 +40,11 @@ export class ExpandManufactoryCapacity extends EconomicObjective
 
       return new ExpandManufactoryCapacity(score, mapEvaluator.player, star);
     });
+  }
+  public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  {
+    // TODO 25.02.2017 | manufacturing demand / manufacturing capacity
+    return grandStrategyAI.desireForConsolidation;
   }
   private static getCostForStar(star: Star): number
   {
