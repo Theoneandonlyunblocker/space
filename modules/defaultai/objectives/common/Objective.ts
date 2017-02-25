@@ -1,35 +1,35 @@
-import GrandStrategyAI from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
-import ObjectivesAI from "../../mapai/ObjectivesAI";
 
 import idGenerators from "../../../../src/idGenerators";
 
 
 export abstract class Objective
 {
-  public static createObjectives: (
-    grandStrategyAI: GrandStrategyAI,
-    mapEvaluator: MapEvaluator,
-  ) => Objective[];
+  // TODO 25.02.2017 | should be abstract static, but not currently possible in typescript
+  // https://github.com/Microsoft/TypeScript/issues/10603
+  public static createObjectives: (mapEvaluator: MapEvaluator) => Objective[];
 
   public abstract type: string;
   public id: number;
-  public get priority(): number
+  /**
+   * score relative to other objectives of same type
+   */
+  public get score(): number
   {
-    return this.isOngoing ? this.basePriority * 1.25 : this.basePriority;
+    return this.isOngoing ? this.baseScore * 1.25 : this.baseScore;
   }
-  public set priority(priority: number)
+  public set score(priority: number)
   {
-    this.basePriority = priority;
+    this.baseScore = priority;
   }
   public isOngoing: boolean = false; // used to slightly prioritize old objectives
 
-  private basePriority: number;
+  private baseScore: number;
 
-  constructor(priority: number)
+  constructor(score: number)
   {
     this.id = idGenerators.objective++;
-    this.priority = priority;
+    this.score = score;
   }
 
   public abstract execute(afterDoneCallback: () => void): void;

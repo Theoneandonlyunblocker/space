@@ -1,18 +1,21 @@
 import {Objective} from "./Objective";
 
-import Star from "../../../../src/Star";
+import Player from "../../../../src/Player";
 
 export abstract class EconomicObjective extends Objective
 {
-  public target: Star;
   public estimatedCost: number;
 
-  constructor(priority: number, target: Star, estimatedCost: number)
+  protected player: Player;
+
+  constructor(
+    priority: number,
+    estimatedCost: number,
+    player: Player,
+  )
   {
     super(priority);
-    this.target = target;
     this.estimatedCost = estimatedCost;
+    this.player = player;
   }
-
-  public abstract execute(afterDoneCallback: () => void): void;
 }
