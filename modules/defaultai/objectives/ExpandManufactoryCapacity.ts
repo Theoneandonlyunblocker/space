@@ -9,7 +9,7 @@ import Star from "../../../src/Star";
 
 export class ExpandManufactoryCapacity extends EconomicObjective
 {
-  public type = "ExpandManufactoryCapacity";
+  public readonly type = "ExpandManufactoryCapacity";
 
   private target: Star;
 

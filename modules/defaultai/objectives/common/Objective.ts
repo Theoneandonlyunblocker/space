@@ -15,8 +15,8 @@ export abstract class Objective
   public static evaluatePriority: (mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI) => number;
 
 
-  public abstract type: string;
-  public id: number;
+  public abstract readonly type: string;
+  public readonly id: number;
   /**
    * score relative to other objectives of same type
    */
