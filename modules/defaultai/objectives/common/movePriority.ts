@@ -1,4 +1,4 @@
-enum movePriority
+export enum movePriority
 {
   discovery = 999,
   scoutingPerimeter = 8,
@@ -8,5 +8,3 @@ enum movePriority
   cleanUpPirates = 3,
   heal = -1,
 }
-
-export default movePriority;
