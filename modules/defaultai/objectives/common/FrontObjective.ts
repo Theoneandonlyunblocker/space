@@ -14,7 +14,11 @@ export abstract class FrontObjective extends Objective
   protected front: Front;
   protected mapEvaluator: MapEvaluator;
 
-  protected abstract moveUnits(front: Front, mapEvaluator: MapEvaluator): void;
+  protected abstract moveUnits(
+    front: Front,
+    mapEvaluator: MapEvaluator,
+    afterDoneCallback: () => void,
+  ): void;
   /**
    * how well individual unit fits for this objective. 0-1
    */
