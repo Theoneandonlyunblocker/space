@@ -7,9 +7,7 @@ import Unit from "../../../../src/Unit";
 
 export abstract class FrontObjective extends Objective
 {
-  // TODO 26.02.2017 | should be abstract and static, but not currently possible in typescript
-  // https://github.com/Microsoft/TypeScript/issues/10603
-  protected static movePriority: number;
+  public abstract readonly movePriority: number;
 
   protected front: Front;
   protected mapEvaluator: MapEvaluator;

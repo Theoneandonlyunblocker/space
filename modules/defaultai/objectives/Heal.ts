@@ -1,4 +1,5 @@
 import {FrontObjective} from "./common/FrontObjective";
+import {movePriority} from "./common/movePriority";
 
 import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
@@ -10,13 +11,24 @@ import Manufactory from "../../../src/Manufactory";
 import Player from "../../../src/Player";
 import Unit from "../../../src/Unit";
 
+
 export class Heal extends FrontObjective
 {
   public readonly type = "Heal";
+  public readonly movePriority = movePriority.heal;
 
   constructor(score: number)
   {
     super(score);
+  }
+
+  public static createObjectives(mapEvaluator: MapEvaluator): Heal[]
+  {
+    return [new Heal(1)];
+  }
+  public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  {
+    return 0.5;
   }
 
   public execute(afterDoneCallback: () => void): void
