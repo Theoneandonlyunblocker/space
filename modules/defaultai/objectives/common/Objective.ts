@@ -10,7 +10,7 @@ export abstract class Objective
   // https://github.com/Microsoft/TypeScript/issues/10603
   public static createObjectives: (mapEvaluator: MapEvaluator) => Objective[];
   /**
-   * player's current priority for this type of objetive. 0-1
+   * should return player's current priority for this type of objetive. 0-1
    */
   public static evaluatePriority: (mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI) => number;
 
