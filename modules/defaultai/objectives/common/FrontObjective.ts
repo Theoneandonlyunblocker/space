@@ -2,6 +2,7 @@ import {Objective} from "./Objective";
 
 import {Front} from "../../mapai/Front";
 import MapEvaluator from "../../mapai/MapEvaluator";
+import {UnitEvaluator} from "../../mapai/UnitEvaluator";
 
 import Unit from "../../../../src/Unit";
 
@@ -11,6 +12,7 @@ export abstract class FrontObjective extends Objective
 
   protected front: Front;
   protected mapEvaluator: MapEvaluator;
+  protected unitEvaluator: UnitEvaluator;
 
   protected abstract moveUnits(
     front: Front,
@@ -18,9 +20,9 @@ export abstract class FrontObjective extends Objective
     afterDoneCallback: () => void,
   ): void;
   /**
-   * how well individual unit fits for this objective. 0-1
+   * how well unit fits for this objective relative to other units
    */
   protected abstract evaluateUnitFit(unit: Unit): number;
-  protected abstract evaluateMinimumUnitsNeeded(mapEvaluator: MapEvaluator): number;
-  protected abstract evaluateIdealUnitsNeeded(mapEvaluator: MapEvaluator): number;
+  protected abstract getMinimumRequiredCombatStrength(mapEvaluator: MapEvaluator): number;
+  protected abstract getIdealRequiredCombatStrength(mapEvaluator: MapEvaluator): number;
 }
