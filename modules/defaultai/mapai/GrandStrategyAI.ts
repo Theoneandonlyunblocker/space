@@ -8,15 +8,15 @@ import
   getRelativeValue,
 } from "../../../src/utility";
 
-export default class GrandStrategyAI
+export class GrandStrategyAI
 {
-  private game: Game;
-  personality: Personality;
-  mapEvaluator: MapEvaluator;
+  public desireForWar: number;
+  public desireForExpansion: number;
+  public desireForConsolidation: number;
 
-  desireForWar: number;
-  desireForExpansion: number;
-  desireForConsolidation: number;
+  private personality: Personality;
+  private game: Game;
+  private mapEvaluator: MapEvaluator;
 
   private desiredStars:
   {
@@ -29,6 +29,13 @@ export default class GrandStrategyAI
     this.personality = personality;
     this.mapEvaluator = mapEvaluator;
     this.game = game;
+  }
+
+  public setDesires()
+  {
+    this.desireForExpansion = this.getDesireForExpansion();
+    this.desireForWar = this.getDesireForWar();
+    this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
   }
 
   private setDesiredStars()
@@ -54,14 +61,7 @@ export default class GrandStrategyAI
     };
   }
 
-  setDesires()
-  {
-    this.desireForExpansion = this.getDesireForExpansion();
-    this.desireForWar = this.getDesireForWar();
-    this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
-  }
-
-  getDesireForWar()
+  private getDesireForWar()
   {
     if (!this.desiredStars)
     {
@@ -83,9 +83,12 @@ export default class GrandStrategyAI
     return clamp(desire, 0, 1);
   }
 
-  getDesireForExpansion()
+  private getDesireForExpansion()
   {
-    if (!this.desiredStars) this.setDesiredStars();
+    if (!this.desiredStars)
+    {
+      this.setDesiredStars();
+    }
     const starsOwned = this.mapEvaluator.player.controlledLocations.length;
 
 
