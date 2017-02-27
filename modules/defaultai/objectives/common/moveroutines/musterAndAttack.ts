@@ -10,8 +10,11 @@ export function buildingControllerFilter(target: FleetAttackTarget)
 {
   return target.building && target.enemy === target.building.controller;
 }
-export default function musterAndAttack(targetFilter: (target: FleetAttackTarget) => boolean,
-  front: Front, afterMoveCallback: () => void)
+export function musterAndAttack(
+  front: Front,
+  afterMoveCallback: () => void,
+  targetFilter: (target: FleetAttackTarget) => boolean,
+)
 {
   let shouldMoveToTarget: boolean;
 
@@ -56,7 +59,7 @@ export default function musterAndAttack(targetFilter: (target: FleetAttackTarget
   const moveTarget = shouldMoveToTarget ? front.targetLocation : front.musterLocation;
 
 
-  const finishAllMoveFN = function()
+  const finishAllMoveFN = () =>
   {
     unitsByLocation = front.getUnitsByLocation();
     const atTarget = unitsByLocation[front.targetLocation.id] ?
@@ -82,7 +85,7 @@ export default function musterAndAttack(targetFilter: (target: FleetAttackTarget
   };
 
   let finishedMovingCount = 0;
-  const finishFleetMoveFN = function()
+  const finishFleetMoveFN = () =>
   {
     finishedMovingCount++;
     if (finishedMovingCount >= fleets.length)
