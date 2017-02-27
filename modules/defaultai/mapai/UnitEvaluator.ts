@@ -1,10 +1,6 @@
 import {Front} from "./Front";
 
 import Unit from "../../../src/Unit";
-import
-{
-  clamp,
-} from "../../../src/utility";
 
 export class UnitEvaluator
 {
@@ -58,38 +54,31 @@ export class UnitEvaluator
 
     return score;
   }
-  public evaluateScoutingFrontFit(
-    unit: Unit,
-    front: Front,
-  )
+  public evaluateUnitScoutingAbility(unit: Unit): number
   {
     let score = 0;
-    // ++ stealth
-    const isStealthy = unit.isStealthy();
-    if (isStealthy)
-    {
-      score += 0.2;
-    }
+
     // ++ vision
     const visionRange = unit.getVisionRange();
-    if (visionRange <= 0)
+    if (visionRange < 0)
     {
-      return -1;
+      return -Infinity;
     }
     else
     {
       score += Math.pow(visionRange, 1.5) / 2;
     }
 
-    // -- strength
-    const strength = this.evaluateCombatStrength(unit);
-    score -= strength / 1000;
+    // ++ stealth
+    const isStealthy = unit.isStealthy();
+    if (isStealthy)
+    {
+      score *= 1.5;
+    }
+
     // -- cost
-    const cost = unit.getTotalCost();
-    score -= cost / 1000;
+    score /= unit.getTotalCost();
 
-    score *= this.evaluateDefaultFrontFit(unit, front, -1, 0, 2);
-
-    return clamp(score, 0, 1);
+    return score;
   }
 }
