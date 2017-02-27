@@ -157,27 +157,3 @@ export function perimeterObjectiveCreation(
 
   return objectives;
 }
-export function getUnitsToBeatImmediateTarget(mapEvaluator: MapEvaluator, objective: Objective)
-{
-  let min: number;
-  let ideal: number;
-  const star = objective.target;
-  const hostileUnits = mapEvaluator.getHostileUnitsAtStar(star);
-
-  if (hostileUnits.length <= 1)
-  {
-    min = hostileUnits.length + 1;
-    ideal = hostileUnits.length + 1;
-  }
-  else
-  {
-    min = Math.min(hostileUnits.length + 2, 6);
-    ideal = 6;
-  }
-
-  return(
-  {
-    min: min,
-    ideal: ideal,
-  });
-}
