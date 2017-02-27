@@ -24,36 +24,6 @@ export class UnitEvaluator
   {
     return this.evaluateCombatStrength(...units);
   }
-
-  public evaluateDefaultFrontFit(
-    unit: Unit,
-    front: Front,
-    lowHealthThreshhold: number = 0.75,
-    healthAdjust: number = 1,
-    distanceAdjust: number = 1,
-  )
-  {
-    let score = 1;
-
-    // penalize units on low health
-    const healthPercentage = unit.currentHealth / unit.maxHealth;
-
-    if (healthPercentage < lowHealthThreshhold)
-    {
-      score *= healthPercentage * healthAdjust;
-    }
-
-    // prioritize units closer to front target
-    let turnsToReach = unit.getTurnsToReachStar(front.targetLocation);
-    if (turnsToReach > 0)
-    {
-      turnsToReach *= distanceAdjust;
-      const distanceMultiplier = 1 / (Math.log(turnsToReach + 2.5) / Math.log(2.5));
-      score *= distanceMultiplier;
-    }
-
-    return score;
-  }
   public evaluateUnitScoutingAbility(unit: Unit): number
   {
     let score = 0;

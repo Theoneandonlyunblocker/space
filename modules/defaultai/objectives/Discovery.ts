@@ -67,7 +67,7 @@ export class Discovery extends FrontObjective
   {
     const scoutingScore = this.unitEvaluator.evaluateUnitScoutingAbility(unit);;
 
-    return scoutingScore * this.unitEvaluator.evaluateDefaultFrontFit(unit, this.front);
+    return scoutingScore * this.evaluateDefaultUnitFit(unit, this.front, 0, 0, 2);
   }
   protected getMinimumRequiredCombatStrength(mapEvaluator: MapEvaluator): number
   {

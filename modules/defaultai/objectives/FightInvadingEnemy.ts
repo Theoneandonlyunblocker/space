@@ -77,7 +77,7 @@ export class FightInvadingEnemy extends FrontObjective
   protected evaluateUnitFit(unit: Unit): number
   {
     const strengthScore = this.unitEvaluator.evaluateCombatStrength(unit);
-    return strengthScore * this.unitEvaluator.evaluateDefaultFrontFit(unit, this.front);
+    return strengthScore * this.evaluateDefaultUnitFit(unit, this.front);
   }
   protected getMinimumRequiredCombatStrength(mapEvaluator: MapEvaluator): number
   {
