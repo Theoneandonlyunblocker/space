@@ -3,11 +3,6 @@ import {movePriority} from "./common/movePriority";
 
 import {musterAndAttack} from "./common/moveroutines/musterAndAttack";
 
-import
-{
-  getUnitsToBeatImmediateTarget,
-} from "../aiUtils";
-
 import {Front} from "../mapai/Front";
 import GrandStrategyAI from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
