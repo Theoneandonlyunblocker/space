@@ -2,6 +2,7 @@ import MapEvaluator from "./MapEvaluator";
 
 import Game from "../../../src/Game";
 import Personality from "../../../src/Personality";
+import Star from "../../../src/Star";
 import
 {
   clamp,
@@ -10,9 +11,10 @@ import
 
 export class GrandStrategyAI
 {
-  public desireForWar: number;
-  public desireForExpansion: number;
   public desireForConsolidation: number;
+  public desireForExpansion: number;
+  public desireForExploration: number;
+  public desireForWar: number;
 
   private personality: Personality;
   private game: Game;
@@ -36,6 +38,7 @@ export class GrandStrategyAI
     this.desireForExpansion = this.getDesireForExpansion();
     this.desireForWar = this.getDesireForWar();
     this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
+    this.desireForExploration = this.getDesireForExploration();
   }
 
   private setDesiredStars()
@@ -60,29 +63,6 @@ export class GrandStrategyAI
       max: maxStarsDesired,
     };
   }
-
-  private getDesireForWar()
-  {
-    if (!this.desiredStars)
-    {
-      this.setDesiredStars();
-    }
-    const fromAggressiveness = this.personality.aggressiveness;
-    let fromExpansiveness = 0;
-    const minStarsStillDesired = this.mapEvaluator.player.controlledLocations.length - this.desiredStars.min;
-    const availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(minStarsStillDesired);
-    if (availableExpansionTargets.length < minStarsStillDesired)
-    {
-      fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
-    }
-
-    // TODO ai | penalize for lots of ongoing objectives (maybe in objectivesAI instead)
-
-    const desire = fromAggressiveness + fromExpansiveness;
-
-    return clamp(desire, 0, 1);
-  }
-
   private getDesireForExpansion()
   {
     if (!this.desiredStars)
@@ -105,5 +85,47 @@ export class GrandStrategyAI
     // }]);
 
     return clamp(desire, 0.1, 1);
+  }
+  private getDesireForExploration()
+  {
+    const percentageOfUnrevealedStars = 1 -
+      this.mapEvaluator.player.getRevealedStars().length / this.mapEvaluator.map.stars.length;
+
+    const surroundingStars = Star.getIslandForQualifier(
+      this.mapEvaluator.player.controlledLocations, null, (parent, candidate) =>
+    {
+      const nearestOwnedStar = this.mapEvaluator.player.getNearestOwnedStarTo(candidate);
+      return candidate.getDistanceToStar(nearestOwnedStar) <= 2;
+    });
+
+    const unrevealedSurroundingStars = surroundingStars.filter(star =>
+    {
+      return !this.mapEvaluator.player.revealedStars[star.id];
+    });
+
+    const percentageOfUnrevealedSurroundingStars = unrevealedSurroundingStars.length / surroundingStars.length;
+
+    return percentageOfUnrevealedSurroundingStars * 0.8 + percentageOfUnrevealedStars * 0.2;
+  }
+  private getDesireForWar()
+  {
+    if (!this.desiredStars)
+    {
+      this.setDesiredStars();
+    }
+    const fromAggressiveness = this.personality.aggressiveness;
+    let fromExpansiveness = 0;
+    const minStarsStillDesired = this.mapEvaluator.player.controlledLocations.length - this.desiredStars.min;
+    const availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(minStarsStillDesired);
+    if (availableExpansionTargets.length < minStarsStillDesired)
+    {
+      fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
+    }
+
+    // TODO ai | penalize for lots of ongoing objectives (maybe in objectivesAI instead)
+
+    const desire = fromAggressiveness + fromExpansiveness;
+
+    return clamp(desire, 0, 1);
   }
 }
