@@ -4,10 +4,9 @@ import {movePriority} from "./common/movePriority";
 import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
 import {Front} from "../mapai/Front";
-import GrandStrategyAI from "../mapai/GrandStrategyAI";
+import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 
-import Player from "../../../src/Player";
 import Unit from "../../../src/Unit";
 
 
@@ -51,11 +50,11 @@ export class Heal extends FrontObjective
     const healthPercentage = unit.currentHealth / unit.maxHealth;
     return 1 - healthPercentage;
   }
-  protected evaluateMinimumUnitsNeeded(mapEvaluator: MapEvaluator): number
+  protected getMinimumRequiredCombatStrength(mapEvaluator: MapEvaluator): number
   {
     return 0;
   }
-  protected evaluateIdealUnitsNeeded(mapEvaluator: MapEvaluator): number
+  protected getIdealRequiredCombatStrength(mapEvaluator: MapEvaluator): number
   {
     return 0;
   }

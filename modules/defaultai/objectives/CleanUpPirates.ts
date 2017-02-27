@@ -4,10 +4,9 @@ import {movePriority} from "./common/movePriority";
 import {musterAndAttack} from "./common/moveroutines/musterAndAttack";
 
 import {Front} from "../mapai/Front";
-import GrandStrategyAI from "../mapai/GrandStrategyAI";
+import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 
-import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
 
