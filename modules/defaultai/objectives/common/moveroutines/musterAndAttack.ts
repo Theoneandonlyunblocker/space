@@ -13,7 +13,7 @@ export function buildingControllerFilter(target: FleetAttackTarget)
 export function musterAndAttack(
   front: Front,
   afterMoveCallback: () => void,
-  targetFilter: (target: FleetAttackTarget) => boolean,
+  targetFilter?: (target: FleetAttackTarget) => boolean,
 )
 {
   let shouldMoveToTarget: boolean;
@@ -43,7 +43,6 @@ export function musterAndAttack(
   }
   else
   {
-
     if (atMuster >= front.minUnitsDesired || inRangeOfTarget >= front.minUnitsDesired)
     {
       front.hasMustered = true;
