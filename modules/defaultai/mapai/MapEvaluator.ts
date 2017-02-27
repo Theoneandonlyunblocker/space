@@ -635,17 +635,15 @@ export default class MapEvaluator
       detected: detectedStars,
     });
   }
-  getScoredPerimeterLocationsAgainstPlayer(player: Player, safetyFactor: number, forScouting: boolean)
+  getScoredPerimeterLocationsAgainstPlayer(
+    player: Player,
+    safetyFactor: number,
+    forScouting: boolean
+  ): ValuesByStar<number>
   {
     const ownInfluence = this.getPlayerInfluenceMap(this.player);
     const enemyInfluence = this.getPlayerInfluenceMap(player);
     const enemyVision = this.getPlayerVisionMap(player);
-
-    const scores:
-    {
-      score: number;
-      star: Star;
-    }[] = [];
 
     const revealedStars = this.player.getRevealedStars();
 
@@ -654,9 +652,8 @@ export default class MapEvaluator
       return star.owner.isIndependent || star.owner === this.player;
     });
 
-    for (let i = 0; i < stars.length; i++)
+    const scores = new ValuesByStar(stars, star =>
     {
-      const star = stars[i];
       let score: number;
       const nearestOwnedStar = player.getNearestOwnedStarTo(star);
       let distanceToEnemy = star.getDistanceToStar(nearestOwnedStar);
@@ -682,12 +679,8 @@ export default class MapEvaluator
         score = (danger / ownInfluence.get(star)) / safetyFactor;
       }
 
-      scores.push(
-      {
-        star: star,
-        score: score,
-      });
-    }
+      return score;
+    });
 
     return scores;
   }
