@@ -19,6 +19,7 @@ import PlayerTechnology from "./PlayerTechnology";
 import Point from "./Point";
 import Star from "./Star";
 import Unit from "./Unit";
+import ValuesByStar from "./ValuesByStar";
 import
 {
   generateColorScheme,
@@ -747,17 +748,14 @@ export default class Player
     }
     return Boolean(this.detectedStars[star.id]);
   }
-  getLinksToUnRevealedStars(): {[starID: number]: Star[]}
+  getLinksToUnRevealedStars(): ValuesByStar<Star[]>
   {
     if (this.visionIsDirty)
     {
       this.updateVisibleStars();
     }
 
-    const linksBySourceStarId:
-    {
-      [starId: number]: Star[];
-    } = {};
+    const linksBySourceStar = new ValuesByStar<Star[]>();
 
     for (let starId in this.revealedStars)
     {
@@ -768,19 +766,19 @@ export default class Player
         const linkedStar = links[i];
         if (!this.revealedStars[linkedStar.id])
         {
-          if (!linksBySourceStarId[star.id])
+          if (!linksBySourceStar.has(star))
           {
-            linksBySourceStarId[star.id] = [linkedStar];
+            linksBySourceStar.set(star, [linkedStar]);
           }
           else
           {
-            linksBySourceStarId[star.id].push(linkedStar);
+            linksBySourceStar.get(star).push(linkedStar);
           }
         }
       }
     }
 
-    return linksBySourceStarId;
+    return linksBySourceStar;
   }
   identifyUnit(unit: Unit): void
   {
