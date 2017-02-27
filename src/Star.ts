@@ -110,7 +110,7 @@ export default class Star implements Point
   public static getIslandForQualifier(
     initialStars: Star[],
     earlyReturnSize: number | null,
-    qualifier: (starA: Star, starB: Star) => boolean,
+    qualifier: (parent: Star, candidate: Star) => boolean,
   ): Star[]
   {
     const visited:
