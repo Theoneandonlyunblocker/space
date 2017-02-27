@@ -8,7 +8,7 @@ export abstract class EconomicObjective extends Objective
 
   protected player: Player;
 
-  constructor(
+  protected constructor(
     priority: number,
     estimatedCost: number,
     player: Player,

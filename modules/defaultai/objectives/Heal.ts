@@ -7,7 +7,6 @@ import {Front} from "../mapai/Front";
 import GrandStrategyAI from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 
-import Manufactory from "../../../src/Manufactory";
 import Player from "../../../src/Player";
 import Unit from "../../../src/Unit";
 
@@ -17,7 +16,7 @@ export class Heal extends FrontObjective
   public readonly type = "Heal";
   public readonly movePriority = movePriority.heal;
 
-  constructor(score: number)
+  protected constructor(score: number)
   {
     super(score);
   }

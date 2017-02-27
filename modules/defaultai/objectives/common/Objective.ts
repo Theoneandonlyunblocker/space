@@ -32,7 +32,7 @@ export abstract class Objective
 
   private baseScore: number;
 
-  constructor(score: number)
+  protected constructor(score: number)
   {
     this.id = idGenerators.objective++;
     this.score = score;
