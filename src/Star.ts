@@ -103,6 +103,75 @@ export default class Star implements Point
 
     this.race = props.race;
   }
+  // TODO 27.02.2017 | move this somewhere else
+  /**
+   * Recursively gets all neighbors that fulfill the callback condition with specified stars
+   */
+  public static getIslandForQualifier(
+    initialStars: Star[],
+    earlyReturnSize: number | null,
+    qualifier: (starA: Star, starB: Star) => boolean,
+  ): Star[]
+  {
+    const visited:
+    {
+      [starId: number]: boolean;
+    } = {};
+
+    const connected:
+    {
+      [starId: number]: Star;
+    } = {};
+
+    let sizeFound = 1;
+
+    const frontier: Star[] = initialStars.slice(0);
+    initialStars.forEach(star =>
+    {
+      visited[star.id] = true;
+    });
+
+    while (frontier.length > 0)
+    {
+      const current = frontier.pop();
+      connected[current.id] = current;
+      const neighbors = current.getLinkedInRange(1).all;
+
+      for (let i = 0; i < neighbors.length; i++)
+      {
+        const neighbor = neighbors[i];
+        if (visited[neighbor.id])
+        {
+          continue;
+        }
+
+        visited[neighbor.id] = true;
+        if (qualifier(current, neighbor))
+        {
+          sizeFound++;
+          frontier.push(neighbor);
+        }
+      }
+      // breaks when sufficiently big island has been found
+      if (earlyReturnSize && sizeFound >= earlyReturnSize)
+      {
+        for (let i = 0; i < frontier.length; i++)
+        {
+          connected[frontier[i].id] = frontier[i];
+        }
+
+        break;
+      }
+    }
+
+    const island: Star[] = [];
+    for (let starId in connected)
+    {
+      island.push(connected[starId]);
+    }
+
+    return island;
+  }
   // BUILDINGS
   addBuilding(building: Building): void
   {
@@ -728,72 +797,6 @@ export default class Star implements Point
       all: allVisited,
       byRange: visitedByRange,
     });
-  }
-  // Recursively gets all neighbors that fulfill the callback condition with this star
-  // Optional earlyReturnSize parameter returns if an island of specified size is found
-  getIslandForQualifier(
-    qualifier: (starA: Star, starB: Star) => boolean,
-    earlyReturnSize?: number,
-    initialStars: Star[] = [this]): Star[]
-  {
-    const visited:
-    {
-      [starId: number]: boolean;
-    } = {};
-
-    const connected:
-    {
-      [starId: number]: Star;
-    } = {};
-
-    let sizeFound = 1;
-
-    const frontier: Star[] = initialStars.slice(0);
-    initialStars.forEach(star =>
-    {
-      visited[star.id] = true;
-    });
-
-    while (frontier.length > 0)
-    {
-      const current = frontier.pop();
-      connected[current.id] = current;
-      const neighbors = current.getLinkedInRange(1).all;
-
-      for (let i = 0; i < neighbors.length; i++)
-      {
-        const neighbor = neighbors[i];
-        if (visited[neighbor.id])
-        {
-          continue;
-        }
-
-        visited[neighbor.id] = true;
-        if (qualifier(current, neighbor))
-        {
-          sizeFound++;
-          frontier.push(neighbor);
-        }
-      }
-      // breaks when sufficiently big island has been found
-      if (earlyReturnSize && sizeFound >= earlyReturnSize)
-      {
-        for (let i = 0; i < frontier.length; i++)
-        {
-          connected[frontier[i].id] = frontier[i];
-        }
-
-        break;
-      }
-    }
-
-    const island: Star[] = [];
-    for (let starId in connected)
-    {
-      island.push(connected[starId]);
-    }
-
-    return island;
   }
   getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star
   {

@@ -171,10 +171,10 @@ export function makeSectors(
   while (averageSectorsAmount > 0 && unassignedStars.length > 0)
   {
     const seedStar = unassignedStars.pop();
-    const islandForSameSector = seedStar.getIslandForQualifier((a, b) =>
+    const islandForSameSector = Star.getIslandForQualifier([seedStar], null, (a, b) =>
     {
       return sectorsByStarID[a.id] === sectorsByStarID[b.id];
-    }, minSize);
+    });
 
     const canFormMinSizeSector = islandForSameSector.length >= minSize;
 

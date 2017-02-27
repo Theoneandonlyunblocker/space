@@ -237,7 +237,7 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
 
     if (!star.owner.isIndependent)
     {
-      const ownedIsland = star.getIslandForQualifier(function(a: Star, b: Star)
+      const ownedIsland = Star.getIslandForQualifier([star], null, (a: Star, b: Star) =>
       {
         // don't count stars if the only shared border between them is smaller than 10px
         return (a.owner === b.owner && !starsOnlyShareNarrowBorder(a, b));

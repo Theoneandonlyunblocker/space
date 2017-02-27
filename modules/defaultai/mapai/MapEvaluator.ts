@@ -279,10 +279,10 @@ export default class MapEvaluator
       return b.owner.isIndependent && (!secondaryController || secondaryController === this.player);
     };
 
-    return this.player.controlledLocations[0].getIslandForQualifier(
-      islandQualifierFN,
-      earlyReturnSize,
+    return Star.getIslandForQualifier(
       this.player.controlledLocations,
+      earlyReturnSize,
+      islandQualifierFN,
     );
   }
   public getHostileUnitsAtStar(star: Star): Unit[]
