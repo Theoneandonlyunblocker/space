@@ -24,7 +24,7 @@ export class Discovery extends FrontObjective
     this.target = target;
   }
 
-  public static getObjectives(mapEvaluator: MapEvaluator): Discovery[]
+  public static getObjectives(mapEvaluator: MapEvaluator, currentObjectives: Discovery[]): Discovery[]
   {
     const linksToUnRevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
 

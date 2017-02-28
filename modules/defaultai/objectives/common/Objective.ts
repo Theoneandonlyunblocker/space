@@ -10,7 +10,7 @@ export abstract class Objective
 {
   // TODO 25.02.2017 | these should be abstract and static, but not currently possible in typescript
   // https://github.com/Microsoft/TypeScript/issues/10603
-  public static getObjectives: (mapEvaluator: MapEvaluator) => Objective[];
+  public static getObjectives: (mapEvaluator: MapEvaluator, currentObjectives: Objective[]) => Objective[];
   /**
    * should return player's current priority for this type of objetive. 0-1
    */
