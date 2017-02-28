@@ -1,7 +1,7 @@
 import {Front} from "./Front";
 import FrontsAI from "./FrontsAI";
 import MapEvaluator from "./MapEvaluator";
-import ObjectivesAI from "./ObjectivesAI";
+import {ObjectivesAI} from "./ObjectivesAI";
 
 import Personality from "../../../src/Personality";
 import Player from "../../../src/Player";

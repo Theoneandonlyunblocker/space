@@ -1,4 +1,4 @@
-import GrandStrategyAI from "../../mapai/GrandStrategyAI";
+import {GrandStrategyAI} from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
 
 import idGenerators from "../../../../src/idGenerators";

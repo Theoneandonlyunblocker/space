@@ -7,7 +7,7 @@ import Player from "../../../src/Player";
 
 import MapEvaluator from "./MapEvaluator";
 import Objective from "./Objective";
-import ObjectivesAI from "./ObjectivesAI";
+import {ObjectivesAI} from "./ObjectivesAI";
 
 export default class DiplomacyAI
 {

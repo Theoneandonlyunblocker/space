@@ -1,6 +1,6 @@
 import {EconomicObjective} from "./common/EconomicObjective";
 
-import GrandStrategyAI from "../mapai/GrandStrategyAI";
+import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 
 import Manufactory from "../../../src/Manufactory";

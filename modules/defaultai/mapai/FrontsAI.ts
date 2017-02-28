@@ -1,7 +1,7 @@
 import {Front} from "./Front";
 import MapEvaluator from "./MapEvaluator";
 import Objective from "./Objective";
-import ObjectivesAI from "./ObjectivesAI";
+import {ObjectivesAI} from "./ObjectivesAI";
 
 import GalaxyMap from "../../../src/GalaxyMap";
 import Game from "../../../src/Game";

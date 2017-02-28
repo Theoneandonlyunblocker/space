@@ -2,10 +2,10 @@ import DefaultAISaveData from "./DefaultAISaveData";
 import DiplomacyAI from "./DiplomacyAI";
 import EconomyAI from "./EconomyAI";
 import FrontsAI from "./FrontsAI";
-import GrandStrategyAI from "./GrandStrategyAI";
+import {GrandStrategyAI} from "./GrandStrategyAI";
 import MapEvaluator from "./MapEvaluator";
 import {UnitEvaluator} from "./UnitEvaluator";
-import ObjectivesAI from "./ObjectivesAI";
+import {ObjectivesAI} from "./ObjectivesAI";
 
 import AITemplate from "../../../src/templateinterfaces/AITemplate";
 
