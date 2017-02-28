@@ -1,5 +1,3 @@
-import {Front} from "./Front";
-
 import Unit from "../../../src/Unit";
 
 export class UnitEvaluator
