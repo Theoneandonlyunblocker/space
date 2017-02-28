@@ -1,3 +1,5 @@
+import {ObjectiveFamily} from "./ObjectiveFamily";
+
 import {GrandStrategyAI} from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
 
@@ -14,8 +16,10 @@ export abstract class Objective
    */
   public static evaluatePriority: (mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI) => number;
 
-
+  // TODO 28.02.2017 | family and type might be a bit confusingly named here
+  // type is used like this for templates, so it's used here as well at least for now
   public abstract readonly type: string;
+  public abstract readonly family: ObjectiveFamily;
   public readonly id: number;
   /**
    * score relative to other objectives of same type

@@ -1,9 +1,12 @@
 import {Objective} from "./Objective";
+import {ObjectiveFamily} from "./ObjectiveFamily";
 
 import Player from "../../../../src/Player";
 
 export abstract class EconomicObjective extends Objective
 {
+  public readonly family: ObjectiveFamily.Economic;
+
   public estimatedCost: number;
 
   protected player: Player;

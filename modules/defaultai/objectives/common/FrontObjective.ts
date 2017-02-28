@@ -1,4 +1,5 @@
 import {Objective} from "./Objective";
+import {ObjectiveFamily} from "./ObjectiveFamily";
 
 import {Front} from "../../mapai/Front";
 import MapEvaluator from "../../mapai/MapEvaluator";
@@ -8,6 +9,8 @@ import Unit from "../../../../src/Unit";
 
 export abstract class FrontObjective extends Objective
 {
+  public readonly family: ObjectiveFamily.Front;
+
   public abstract readonly movePriority: number;
 
   protected front: Front;
