@@ -65,9 +65,12 @@ export class Discovery extends FrontObjective
   }
   protected evaluateUnitFit(unit: Unit): number
   {
-    const scoutingScore = this.unitEvaluator.evaluateUnitScoutingAbility(unit);;
+    const scoutingScore = this.unitEvaluator.evaluateUnitScoutingAbility(unit);
+    const movementMultiplier = unit.maxMovePoints;
 
-    return scoutingScore * this.evaluateDefaultUnitFit(unit, this.front, 0, 0, 2);
+    const score = scoutingScore * movementMultiplier;
+
+    return score * this.evaluateDefaultUnitFit(unit, this.front, 0, 0, 2);
   }
   protected getMinimumRequiredCombatStrength(mapEvaluator: MapEvaluator): number
   {
