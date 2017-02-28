@@ -20,7 +20,7 @@ export class Heal extends FrontObjective
     super(score);
   }
 
-  public static createObjectives(mapEvaluator: MapEvaluator): Heal[]
+  public static getObjectives(mapEvaluator: MapEvaluator): Heal[]
   {
     return [new Heal(1)];
   }

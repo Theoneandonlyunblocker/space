@@ -20,7 +20,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
     this.target = target;
   }
 
-  public static createObjectives(mapEvaluator: MapEvaluator): ExpandManufactoryCapacity[]
+  public static getObjectives(mapEvaluator: MapEvaluator): ExpandManufactoryCapacity[]
   {
     const starsThatCanExpand = mapEvaluator.player.controlledLocations.filter(star =>
     {

@@ -24,7 +24,7 @@ export class Expansion extends FrontObjective
     this.target = target;
   }
 
-  public static createObjectives(mapEvaluator: MapEvaluator): Expansion[]
+  public static getObjectives(mapEvaluator: MapEvaluator): Expansion[]
   {
     const independentNeighborStars = mapEvaluator.getIndependentNeighborStars();
 

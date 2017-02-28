@@ -24,7 +24,7 @@ export class FightInvadingEnemy extends FrontObjective
     this.target = target;
   }
 
-  public static createObjectives(mapEvaluator: MapEvaluator): FightInvadingEnemy[]
+  public static getObjectives(mapEvaluator: MapEvaluator): FightInvadingEnemy[]
   {
     const ownedStarsWithInvaders = mapEvaluator.player.controlledLocations.filter(star =>
     {

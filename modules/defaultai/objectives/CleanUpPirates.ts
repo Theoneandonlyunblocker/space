@@ -24,7 +24,7 @@ export class CleanUpPirates extends FrontObjective
     this.target = target;
   }
 
-  public static createObjectives(mapEvaluator: MapEvaluator): CleanUpPirates[]
+  public static getObjectives(mapEvaluator: MapEvaluator): CleanUpPirates[]
   {
     const ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(star =>
     {

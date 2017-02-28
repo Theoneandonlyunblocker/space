@@ -27,7 +27,7 @@ export class ScoutingPerimeter extends FrontObjective
     this.target = target;
   }
 
-  public static createObjectives(mapEvaluator: MapEvaluator): ScoutingPerimeter[]
+  public static getObjectives(mapEvaluator: MapEvaluator): ScoutingPerimeter[]
   {
     const playersToEstablishPerimeterAgainst: Player[] = [];
     const diplomacyStatus = mapEvaluator.player.diplomacyStatus;

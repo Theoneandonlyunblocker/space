@@ -24,7 +24,7 @@ export class Conquer extends FrontObjective
     this.target = target;
   }
 
-  public static createObjectives(mapEvaluator: MapEvaluator): Conquer[]
+  public static getObjectives(mapEvaluator: MapEvaluator): Conquer[]
   {
     const possibleTargets = mapEvaluator.player.getNeighboringStars().filter(star =>
     {
