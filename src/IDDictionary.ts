@@ -129,6 +129,31 @@ abstract class IDDictionary<K extends ObjectWithID, V>
 
     return mapped;
   }
+  public merge<T extends IDDictionary<K, V>>(mergeFN: (...values: V[]) => V, ...toMerge: T[]): T
+  {
+    const merged: T = this.constructor();
+
+    toMerge.forEach(dictToMerge =>
+    {
+      dictToMerge.filter((k, v) =>
+      {
+        return !merged.has(k);
+      }).forEach(key =>
+      {
+        const allValues = toMerge.filter(dictToCheck =>
+        {
+          return dictToCheck.has(key);
+        }).map(dictWithKey =>
+        {
+          return dictWithKey.get(key);
+        });
+
+        merged.set(key, mergeFN(...allValues));
+      });
+    });
+
+    return merged;
+  }
 }
 
 export default IDDictionary;
