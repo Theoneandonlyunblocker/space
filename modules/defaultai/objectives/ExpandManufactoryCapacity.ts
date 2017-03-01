@@ -27,6 +27,8 @@ export class ExpandManufactoryCapacity extends EconomicObjective
       return !star.manufactory || star.manufactory.capacity < star.manufactory.maxCapacity;
     });
 
+    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+
     return starsThatCanExpand.map(star =>
     {
       const upgradeScore = star.manufactory ?
@@ -38,7 +40,16 @@ export class ExpandManufactoryCapacity extends EconomicObjective
 
       const score = costScore + Math.pow(upgradeScore, 2);
 
-      return new ExpandManufactoryCapacity(score, mapEvaluator.player, star);
+      if (currentObjectivesByTarget.has(star))
+      {
+        const ongoing = currentObjectivesByTarget.get(star);
+        ongoing.score = score;
+        return ongoing;
+      }
+      else
+      {
+        return new ExpandManufactoryCapacity(score, mapEvaluator.player, star);
+      }
     });
   }
   public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number

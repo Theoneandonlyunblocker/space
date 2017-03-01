@@ -41,9 +41,20 @@ export class CleanUpPirates extends FrontObjective
     const evaluations = mapEvaluator.evaluateStarTargets(ownedStarsWithPirates);
     const scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
+    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+
     return scores.map((star, score) =>
     {
-      return new CleanUpPirates(score, star);
+      if (currentObjectivesByTarget.has(star))
+      {
+        const ongoing = currentObjectivesByTarget.get(star);
+        ongoing.score = score;
+        return ongoing;
+      }
+      else
+      {
+        return new CleanUpPirates(score, star);
+      }
     });
   }
   public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number

@@ -28,6 +28,8 @@ export class Discovery extends FrontObjective
   {
     const linksToUnRevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
 
+    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+
     return linksToUnRevealedStars.map((targetStar, linkedStars) =>
     {
       const nearestOwnedStar = mapEvaluator.player.getNearestOwnedStarTo(targetStar);
@@ -39,7 +41,16 @@ export class Discovery extends FrontObjective
 
       const score = desirabilityScore * linksMultiplier * distanceMultiplier;
 
-      return new Discovery(score, targetStar);
+      if (currentObjectivesByTarget.has(targetStar))
+      {
+        const ongoing = currentObjectivesByTarget.get(targetStar);
+        ongoing.score = score;
+        return ongoing;
+      }
+      else
+      {
+        return new Discovery(score, targetStar);
+      }
     });
   }
   public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number

@@ -55,9 +55,20 @@ export class ScoutingPerimeter extends FrontObjective
       }, 0);
     }, ...allScores);
 
+    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+
     return mergedScores.map((star, score) =>
     {
-      return new ScoutingPerimeter(score, star);
+      if (currentObjectivesByTarget.has(star))
+      {
+        const ongoing = currentObjectivesByTarget.get(star);
+        ongoing.score = score;
+        return ongoing;
+      }
+      else
+      {
+        return new ScoutingPerimeter(score, star);
+      }
     });
   }
   public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number

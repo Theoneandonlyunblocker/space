@@ -31,9 +31,20 @@ export class Expansion extends FrontObjective
     const evaluations = mapEvaluator.evaluateStarTargets(independentNeighborStars);
     const scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
+    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+
     return scores.map((star, score) =>
     {
-      return new Expansion(score, star);
+      if (currentObjectivesByTarget.has(star))
+      {
+        const ongoing = currentObjectivesByTarget.get(star);
+        ongoing.score = score;
+        return ongoing;
+      }
+      else
+      {
+        return new Expansion(score, star);
+      }
     });
   }
   public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number

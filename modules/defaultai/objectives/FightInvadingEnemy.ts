@@ -48,9 +48,20 @@ export class FightInvadingEnemy extends FrontObjective
       return score;
     });
 
+    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+
     return scores.map((star, score) =>
     {
-      return new FightInvadingEnemy(score, star);
+      if (currentObjectivesByTarget.has(star))
+      {
+        const ongoing = currentObjectivesByTarget.get(star);
+        ongoing.score = score;
+        return ongoing;
+      }
+      else
+      {
+        return new FightInvadingEnemy(score, star);
+      }
     });
   }
   public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number

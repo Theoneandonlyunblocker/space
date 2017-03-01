@@ -22,7 +22,14 @@ export class Heal extends FrontObjective
 
   public static getObjectives(mapEvaluator: MapEvaluator, currentObjectives: Heal[]): Heal[]
   {
-    return [new Heal(1)];
+    if (currentObjectives.length > 0)
+    {
+      return currentObjectives;
+    }
+    else
+    {
+      return [new Heal(1)];
+    }
   }
   public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
   {
