@@ -26,13 +26,15 @@ export abstract class Objective
    */
   public get score(): number
   {
-    return this.isOngoing ? this.baseScore * 1.25 : this.baseScore;
+    return this.isOngoing ? this.baseScore * this.ongoingMultiplier : this.baseScore;
   }
   public set score(priority: number)
   {
     this.baseScore = priority;
   }
   public isOngoing: boolean = false; // used to slightly prioritize old objectives
+
+  protected readonly ongoingMultiplier: number = 1.25;
 
   private baseScore: number;
 
