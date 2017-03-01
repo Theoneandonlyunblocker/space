@@ -16,7 +16,7 @@ export class Discovery extends FrontObjective
   public readonly type = "Discovery";
   public readonly movePriority = movePriority.discovery;
 
-  private target: Star;
+  public readonly target: Star;
 
   protected constructor(score: number, target: Star)
   {

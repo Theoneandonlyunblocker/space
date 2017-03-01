@@ -16,7 +16,7 @@ export class CleanUpPirates extends FrontObjective
   public readonly type = "CleanUpPirates";
   public readonly movePriority = movePriority.cleanUpPirates;
 
-  private target: Star;
+  public readonly target: Star;
 
   protected constructor(score: number, target: Star)
   {

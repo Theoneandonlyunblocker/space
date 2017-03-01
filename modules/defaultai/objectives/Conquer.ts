@@ -16,7 +16,7 @@ export class Conquer extends FrontObjective
   public readonly type = "Conquer";
   public readonly movePriority = movePriority.conquer;
 
-  private target: Star;
+  public readonly target: Star;
 
   protected constructor(score: number, target: Star)
   {

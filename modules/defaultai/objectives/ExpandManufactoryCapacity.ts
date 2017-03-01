@@ -11,7 +11,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
 {
   public readonly type = "ExpandManufactoryCapacity";
 
-  private target: Star;
+  public readonly target: Star;
 
   constructor(score: number, player: Player, target: Star)
   {

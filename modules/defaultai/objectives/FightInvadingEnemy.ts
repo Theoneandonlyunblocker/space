@@ -16,7 +16,7 @@ export class FightInvadingEnemy extends FrontObjective
   public readonly type = "FightInvadingEnemy";
   public readonly movePriority = movePriority.fightInvadingEnemy;
 
-  private target: Star;
+  public readonly target: Star;
 
   protected constructor(score: number, target: Star)
   {
