@@ -54,7 +54,7 @@ export abstract class Objective
     {
       if (byStar.has(objective.target))
       {
-        throw new Error(`Duplicate target star ${objective.target.id} for objectives of type ${objective.type}`);
+        throw new Error(`Duplicate target star '${objective.target.id}' for objectives of type '${objective.type}'`);
       }
       else
       {
