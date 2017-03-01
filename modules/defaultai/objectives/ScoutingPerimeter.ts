@@ -55,7 +55,7 @@ export class ScoutingPerimeter extends FrontObjective
       }, 0);
     }, ...allScores);
 
-    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+    const currentObjectivesByTarget = this.getObjectivesByTarget(currentObjectives);
 
     return mergedScores.map((star, score) =>
     {

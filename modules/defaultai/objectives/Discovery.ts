@@ -28,7 +28,7 @@ export class Discovery extends FrontObjective
   {
     const linksToUnRevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
 
-    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+    const currentObjectivesByTarget = this.getObjectivesByTarget(currentObjectives);
 
     return linksToUnRevealedStars.map((targetStar, linkedStars) =>
     {

@@ -3,8 +3,7 @@ import {ObjectiveFamily} from "./ObjectiveFamily";
 import {GrandStrategyAI} from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
 
-import Star from "../../../../src/Star";
-import ValuesByStar from "../../../../src/ValuesByStar";
+import IDDictionary from "../../../../src/IDDictionary";
 import idGenerators from "../../../../src/idGenerators";
 
 
@@ -46,9 +45,10 @@ export abstract class Objective
     this.score = score;
   }
 
-  protected static getObjectivesByTargetStar<T extends Objective & {target: Star}>(objectives: T[]): ValuesByStar<T>
   {
-    const byStar = new ValuesByStar<T>();
+  protected static getObjectivesByTarget<O extends Objective & {target: T}, T extends {id: number}>(objectives: O[]): IDDictionary<T, O>
+  {
+    const byStar = new IDDictionary<T, O>();
 
     objectives.forEach(objective =>
     {

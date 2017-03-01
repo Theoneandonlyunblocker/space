@@ -45,7 +45,7 @@ export class Conquer extends FrontObjective
       return score;
     });
 
-    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+    const currentObjectivesByTarget = this.getObjectivesByTarget(currentObjectives);
 
     return scores.map((star, score) =>
     {

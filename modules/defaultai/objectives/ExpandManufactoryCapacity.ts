@@ -27,7 +27,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
       return !star.manufactory || star.manufactory.capacity < star.manufactory.maxCapacity;
     });
 
-    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+    const currentObjectivesByTarget = this.getObjectivesByTarget(currentObjectives);
 
     return starsThatCanExpand.map(star =>
     {

@@ -31,7 +31,7 @@ export class Expansion extends FrontObjective
     const evaluations = mapEvaluator.evaluateStarTargets(independentNeighborStars);
     const scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
-    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+    const currentObjectivesByTarget = this.getObjectivesByTarget(currentObjectives);
 
     return scores.map((star, score) =>
     {

@@ -41,7 +41,7 @@ export class CleanUpPirates extends FrontObjective
     const evaluations = mapEvaluator.evaluateStarTargets(ownedStarsWithPirates);
     const scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
-    const currentObjectivesByTarget = this.getObjectivesByTargetStar(currentObjectives);
+    const currentObjectivesByTarget = this.getObjectivesByTarget(currentObjectives);
 
     return scores.map((star, score) =>
     {
