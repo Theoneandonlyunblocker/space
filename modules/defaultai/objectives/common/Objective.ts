@@ -1,3 +1,4 @@
+import {ObjectiveCreatorTemplate} from "./ObjectiveCreatorTemplate";
 import {ObjectiveFamily} from "./ObjectiveFamily";
 
 import {GrandStrategyAI} from "../../mapai/GrandStrategyAI";
@@ -45,7 +46,17 @@ export abstract class Objective
     this.score = score;
   }
 
+  public static makeCreatorTemplate(): ObjectiveCreatorTemplate
   {
+    return(
+    {
+      type: this.prototype.type,
+      family: this.prototype.family,
+      getObjectives: this.getObjectives.bind(this),
+      evaluatePriority: this.evaluatePriority.bind(this),
+    });
+  }
+
   protected static getObjectivesByTarget<O extends Objective & {target: T}, T extends {id: number}>(objectives: O[]): IDDictionary<T, O>
   {
     const byStar = new IDDictionary<T, O>();
