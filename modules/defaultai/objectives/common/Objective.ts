@@ -3,6 +3,8 @@ import {ObjectiveFamily} from "./ObjectiveFamily";
 import {GrandStrategyAI} from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
 
+import Star from "../../../../src/Star";
+import ValuesByStar from "../../../../src/ValuesByStar";
 import idGenerators from "../../../../src/idGenerators";
 
 
@@ -42,6 +44,25 @@ export abstract class Objective
   {
     this.id = idGenerators.objective++;
     this.score = score;
+  }
+
+  protected static getObjectivesByTargetStar<T extends Objective & {target: Star}>(objectives: T[]): ValuesByStar<T>
+  {
+    const byStar = new ValuesByStar<T>();
+
+    objectives.forEach(objective =>
+    {
+      if (byStar.has(objective.target))
+      {
+        throw new Error(`Duplicate target star ${objective.target.id} for objectives of type ${objective.type}`);
+      }
+      else
+      {
+        byStar.set(objective.target, objective);
+      }
+    });
+
+    return byStar;
   }
 
   public abstract execute(afterDoneCallback: () => void): void;

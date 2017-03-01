@@ -7,6 +7,7 @@ import {UnitEvaluator} from "../../mapai/UnitEvaluator";
 
 import Unit from "../../../../src/Unit";
 
+
 export abstract class FrontObjective extends Objective
 {
   public readonly family: ObjectiveFamily.Front;
