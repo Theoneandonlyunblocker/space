@@ -1,7 +1,7 @@
 
-import AIController from "./AIController";
+import {AIController} from "./AIController";
 import app from "./App"; // TODO global
-import AttitudeModifier from "./AttitudeModifier";
+import {AttitudeModifier} from "./AttitudeModifier";
 import Building from "./Building";
 import Color from "./Color";
 import Emblem from "./Emblem";
@@ -443,7 +443,7 @@ export default class GameLoader
     data: AIControllerSaveData<S>,
     player: Player,
     game: Game,
-  ): AIController
+  ): AIController<S>
   {
     const templateConstructor = app.moduleData.Templates.AITemplateConstructors[data.templateType];
 

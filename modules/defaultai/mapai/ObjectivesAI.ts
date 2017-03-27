@@ -45,7 +45,7 @@ import {Objective} from "../objectives/common/Objective";
 import {ObjectiveCreatorTemplate} from "../objectives/common/ObjectiveCreatorTemplate";
 import {ObjectiveFamily} from "../objectives/common/ObjectiveFamily";
 
-import IDDictionary from "../../../src/IDDictionary";
+import {IDDictionary} from "../../../src/IDDictionary";
 import
 {
   getRelativeValue,

@@ -5,12 +5,13 @@ import AIControllerSaveData from "./savedata/AIControllerSaveData";
 import Personality from "./Personality";
 import Unit from "./Unit";
 
-export default class AIController
+export class AIController<SaveData>
 {
-  private template: AITemplate<any>;
   public personality: Personality;
 
-  constructor(template: AITemplate<any>)
+  private template: AITemplate<SaveData>;
+
+  constructor(template: AITemplate<SaveData>)
   {
     this.template = template;
     this.personality = template.personality;
@@ -34,7 +35,7 @@ export default class AIController
       enemyFormation,
     );
   }
-  public serialize(): AIControllerSaveData<any>
+  public serialize(): AIControllerSaveData<SaveData>
   {
     return(
     {

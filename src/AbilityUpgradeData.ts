@@ -1,6 +1,6 @@
 import AbilityBase from "./templateinterfaces/AbilityBase";
 
-declare interface AbilityUpgradeData
+export declare interface AbilityUpgradeData
 {
   [source: string]:
   {
@@ -8,5 +8,3 @@ declare interface AbilityUpgradeData
     possibleUpgrades: AbilityBase[];
   };
 }
-
-export default AbilityUpgradeData;

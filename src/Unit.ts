@@ -12,7 +12,7 @@ import SFXParams from "./templateinterfaces/SFXParams";
 import UnitPassiveEffect from "./templateinterfaces/UnitPassiveEffect";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
-import AbilityUpgradeData from "./AbilityUpgradeData";
+import {AbilityUpgradeData} from "./AbilityUpgradeData";
 import Battle from "./Battle";
 import {Fleet} from "./Fleet";
 import GuardCoverage from "./GuardCoverage";

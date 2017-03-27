@@ -1,6 +1,6 @@
 
 
-import AIController from "./AIController";
+import {AIController} from "./AIController";
 import app from "./App"; // TODO global
 import BattleData from "./BattleData";
 import BattlePrep from "./BattlePrep";
@@ -63,7 +63,7 @@ export default class Player
   items: Item[] = [];
 
   public isAI: boolean = false;
-  public AIController: AIController;
+  public AIController: AIController<any>;
   public isIndependent: boolean = false;
 
   diplomacyStatus: DiplomacyStatus;
@@ -281,7 +281,7 @@ export default class Player
 
     return flag;
   }
-  public makeRandomAIController(game: Game): AIController
+  public makeRandomAIController(game: Game): AIController<any>
   {
     const race = <PlayerRaceTemplate> this.race;
     const templateConstructor = race.getAITemplateConstructor(this);

@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import AttitudeModifier from "../../AttitudeModifier";
+import {AttitudeModifier} from "../../AttitudeModifier";
 import
 {
   clamp,

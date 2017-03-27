@@ -17,32 +17,28 @@ const enum BattleSceneUnitState
 
 export default class BattleSceneUnit
 {
-  container: PIXI.Container;
-  renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-
   public spriteContainer: PIXI.Container;
+  public getSceneBounds: () => {width: number; height: number};
 
-  activeUnit: Unit;
+  private container: PIXI.Container;
+  private renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
 
-  unitState: BattleSceneUnitState = BattleSceneUnitState.removed;
-  onFinishEnter: () => void;
-  onFinishExit: () => void;
-  tween: TWEEN.Tween;
-  hasSFXSprite: boolean = false;
+  private activeUnit: Unit;
 
-  getSceneBounds: () => {width: number; height: number};
+  private unitState: BattleSceneUnitState = BattleSceneUnitState.removed;
+  private onFinishEnter: () => void;
+  private onFinishExit: () => void;
+  private tween: TWEEN.Tween;
+  private hasSFXSprite: boolean = false;
+
 
   constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
   {
     this.container = container;
     this.renderer = renderer;
 
-    this.spriteContainer = new PIXI.Container;
+    this.spriteContainer = new PIXI.Container();
     this.container.addChild(this.spriteContainer);
-  }
-  public destroy()
-  {
-
   }
 
   public changeActiveUnit(unit: Unit, afterChangedCallback?: () => void)
@@ -177,6 +173,7 @@ export default class BattleSceneUnit
     if (enterAnimationDuration <= 0)
     {
       this.enterUnitSpriteWithoutAnimation(unit);
+
       return;
     }
 
@@ -205,6 +202,7 @@ export default class BattleSceneUnit
     if (exitAnimationDuration <= 0)
     {
       this.exitUnitSpriteWithoutAnimation();
+
       return;
     }
 
@@ -350,6 +348,7 @@ export default class BattleSceneUnit
     }).onComplete(onComplete);
 
     tween.start();
+
     return tween;
   }
   private setSFXSprite(spriteDrawingFN: (props: SFXParams) => void, duration: number)

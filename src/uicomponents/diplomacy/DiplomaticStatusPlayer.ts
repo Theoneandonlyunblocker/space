@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import AttitudeModifier from "../../AttitudeModifier";
+import {AttitudeModifier} from "../../AttitudeModifier";
 import {Flag} from "../../Flag";
 import Player from "../../Player";
 import PlayerFlag from "../PlayerFlag";

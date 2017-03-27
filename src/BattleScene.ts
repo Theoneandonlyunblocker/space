@@ -190,9 +190,9 @@ export default class BattleScene
   {
     this.layers =
     {
-      battleOverlay: new PIXI.Container,
-      side1Container: new PIXI.Container,
-      side2Container: new PIXI.Container,
+      battleOverlay: new PIXI.Container(),
+      side1Container: new PIXI.Container(),
+      side2Container: new PIXI.Container(),
     };
 
     this.side1Unit = new BattleSceneUnit(this.layers.side1Container, this.renderer);
@@ -441,8 +441,12 @@ export default class BattleScene
       this.executeAfterUseDelayHasFinishedCallback();
     }
   }
-  private triggerSFXStart(SFXTemplate: BattleSFXTemplate, user: Unit, target: Unit,
-    afterFinishedCallback?: () => void)
+  private triggerSFXStart(
+    SFXTemplate: BattleSFXTemplate,
+    user: Unit,
+    target: Unit,
+    afterFinishedCallback?: () => void,
+  )
   {
     this.activeSFX = SFXTemplate;
     this.side1Unit.setSFX(SFXTemplate, user, target);

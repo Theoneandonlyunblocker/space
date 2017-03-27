@@ -71,8 +71,10 @@ function executeFullAbilityEffects(battle: Battle, abilityEffectDataByPhase: Abi
     });
   });
 }
-function executeFullAbilityEffectsAndGetUseEffects(battle: Battle,
-  abilityEffectDataByPhase: AbilityEffectDataByPhase): AbilityUseEffect[]
+function executeFullAbilityEffectsAndGetUseEffects(
+  battle: Battle,
+  abilityEffectDataByPhase: AbilityEffectDataByPhase,
+): AbilityUseEffect[]
 {
   const useEffects: AbilityUseEffect[] = [];
   const executedEffectsResult: ExecutedEffectsResult = {};

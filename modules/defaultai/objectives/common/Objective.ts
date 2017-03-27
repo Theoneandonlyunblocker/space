@@ -4,7 +4,7 @@ import {ObjectiveFamily} from "./ObjectiveFamily";
 import {GrandStrategyAI} from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
 
-import IDDictionary from "../../../../src/IDDictionary";
+import {IDDictionary} from "../../../../src/IDDictionary";
 import idGenerators from "../../../../src/idGenerators";
 
 

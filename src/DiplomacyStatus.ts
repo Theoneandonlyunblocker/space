@@ -2,7 +2,7 @@
 import app from "./App"; // TODO global
 import eventManager from "./eventManager";
 
-import AttitudeModifier from "./AttitudeModifier";
+import {AttitudeModifier} from "./AttitudeModifier";
 import DiplomacyEvaluation from "./DiplomacyEvaluation";
 import DiplomacyState from "./DiplomacyState";
 import Player from "./Player";
@@ -326,8 +326,7 @@ export default class DiplomacyStatus
 
       if (modifier)
       {
-        modifier.currentTurn = evaluation.currentTurn;
-        modifier.setStrength(evaluation);
+        modifier.updateWithEvaluation(evaluation);
       }
     }
   }

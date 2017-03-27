@@ -7,8 +7,12 @@ import
 import {AbilityEffectTemplate} from "./templateinterfaces/AbilityEffectTemplate";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 
-export function getUnitsInAbilityArea(battle: Battle, ability: AbilityTemplate,
-  user: Unit, target: Unit): Unit[]
+export function getUnitsInAbilityArea(
+  battle: Battle,
+  ability: AbilityTemplate,
+  user: Unit,
+  target: Unit,
+): Unit[]
 {
   const includedUnitsByID:
   {

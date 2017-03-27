@@ -1,4 +1,4 @@
-import IDDictionary from "./IDDictionary";
+import {IDDictionary} from "./IDDictionary";
 import Player from "./Player";
 
 

@@ -82,10 +82,6 @@ export default class BattlePrepFormation
   {
     return this.placedUnitPositionsByID[unit.id];
   }
-  getUnitAtPosition(position: number[]): Unit
-  {
-    return this.formation[position[0]][position[1]];
-  }
   public clearFormation(): void
   {
     this.placedUnitPositionsByID = {};
@@ -156,9 +152,16 @@ export default class BattlePrepFormation
     this.displayDataIsDirty = true;
   }
 
+  private getUnitAtPosition(position: number[]): Unit
+  {
+    return this.formation[position[0]][position[1]];
+  }
   private swapUnits(unit1: Unit, unit2: Unit): void
   {
-    if (unit1 === unit2) return;
+    if (unit1 === unit2)
+    {
+      return;
+    }
 
     const new1Pos = this.getUnitPosition(unit2);
     const new2Pos = this.getUnitPosition(unit1);

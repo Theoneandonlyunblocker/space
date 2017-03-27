@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import AbilityUpgradeData from "../../AbilityUpgradeData";
+import {AbilityUpgradeData} from "../../AbilityUpgradeData";
 import Unit from "../../Unit";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";

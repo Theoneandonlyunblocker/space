@@ -6,14 +6,15 @@ import
   getRelativeValue,
 } from "./utility";
 
-export default class AttitudeModifier
+export class AttitudeModifier
 {
-  template: AttitudeModifierTemplate;
-  startTurn: number;
-  endTurn: number;
-  currentTurn: number;
-  strength: number;
-  isOverRidden: boolean = false;
+  public template: AttitudeModifierTemplate;
+  public isOverRidden: boolean = false;
+  public endTurn: number;
+
+  private startTurn: number;
+  private currentTurn: number;
+  private strength: number;
 
   constructor(props:
   {
@@ -57,50 +58,24 @@ export default class AttitudeModifier
     }
   }
 
-  setStrength(evaluation: DiplomacyEvaluation)
+  public updateWithEvaluation(evaluation: DiplomacyEvaluation)
   {
-    if (this.template.constantEffect)
-    {
-      this.strength = this.template.constantEffect;
-    }
-    else if (this.template.getEffectFromEvaluation)
-    {
-      this.strength = this.template.getEffectFromEvaluation(evaluation);
-    }
-    else
-    {
-      throw new Error("Attitude modifier has no constant effect " +
-        "or effect from evaluation defined");
-    }
-
-    return this.strength;
+    this.currentTurn = evaluation.currentTurn;
+    this.setStrength(evaluation);
   }
-
-  getFreshness(currentTurn: number = this.currentTurn)
-  {
-    if (this.endTurn < 0) return 1;
-    else
-    {
-      return 1 - getRelativeValue(currentTurn, this.startTurn, this.endTurn);
-    }
-  }
-  refresh(newModifier: AttitudeModifier)
+  public refresh(newModifier: AttitudeModifier)
   {
     this.startTurn = newModifier.startTurn;
     this.endTurn = newModifier.endTurn;
     this.strength = newModifier.strength;
   }
-  getAdjustedStrength(currentTurn: number = this.currentTurn)
+  public getAdjustedStrength(currentTurn: number = this.currentTurn)
   {
     const freshenss = this.getFreshness(currentTurn);
 
     return Math.round(this.strength * freshenss);
   }
-  hasExpired(currentTurn: number = this.currentTurn)
-  {
-    return (this.endTurn >= 0 && currentTurn > this.endTurn);
-  }
-  shouldEnd(evaluation: DiplomacyEvaluation)
+  public shouldEnd(evaluation: DiplomacyEvaluation)
   {
     if (this.hasExpired(evaluation.currentTurn))
     {
@@ -119,8 +94,7 @@ export default class AttitudeModifier
       return false;
     }
   }
-
-  serialize(): AttitudeModifierSaveData
+  public serialize(): AttitudeModifierSaveData
   {
     const data: AttitudeModifierSaveData =
     {
@@ -131,5 +105,36 @@ export default class AttitudeModifier
     };
 
     return data;
+  }
+
+  private setStrength(evaluation: DiplomacyEvaluation)
+  {
+    if (this.template.constantEffect)
+    {
+      this.strength = this.template.constantEffect;
+    }
+    else if (this.template.getEffectFromEvaluation)
+    {
+      this.strength = this.template.getEffectFromEvaluation(evaluation);
+    }
+    else
+    {
+      throw new Error("Attitude modifier has no constant effect " +
+        "or effect from evaluation defined");
+    }
+
+    return this.strength;
+  }
+  private getFreshness(currentTurn: number = this.currentTurn)
+  {
+    if (this.endTurn < 0) return 1;
+    else
+    {
+      return 1 - getRelativeValue(currentTurn, this.startTurn, this.endTurn);
+    }
+  }
+  private hasExpired(currentTurn: number = this.currentTurn)
+  {
+    return (this.endTurn >= 0 && currentTurn > this.endTurn);
   }
 }

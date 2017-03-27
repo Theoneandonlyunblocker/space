@@ -4,7 +4,7 @@
   "devDependencies": {
     "typescript": "2.1.x",
     "less": "2.6.x",
-    "tslint": "4.4.x"
+    "tslint": "4.5.x"
   },
   "scripts": {
     "build": "tsc && lessc ./css/main.less ./built/main.css",

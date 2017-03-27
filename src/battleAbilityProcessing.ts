@@ -79,8 +79,12 @@ export function getAbilityEffectDataByPhase(
     afterUse: afterUse,
   });
 }
-export function getUnitsInEffectArea(effect: AbilityEffectTemplate, battle: Battle,
-  user: Unit, target: Unit): Unit[]
+export function getUnitsInEffectArea(
+  effect: AbilityEffectTemplate,
+  battle: Battle,
+  user: Unit,
+  target: Unit,
+): Unit[]
 {
   const inArea = effect.getUnitsInArea(user, target, battle);
 
@@ -96,7 +100,7 @@ function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData): Unit
 
   let guarding = getGuarders(battle, abilityUseData);
 
-  guarding = guarding.sort(function(a: Unit, b: Unit)
+  guarding = guarding.sort((a, b) =>
   {
     return a.battleStats.guardAmount - b.battleStats.guardAmount;
   });
@@ -156,7 +160,8 @@ function activeUnitsFilterFN(unit: Unit)
 {
   return unit && unit.isActiveInBattle();
 }
-function getAbilityEffectDataFromEffectTemplate(battle: Battle,
+function getAbilityEffectDataFromEffectTemplate(
+  battle: Battle,
   abilityUseData: AbilityUseData,
   effectTemplate: AbilityEffectTemplate,
   target: Unit,

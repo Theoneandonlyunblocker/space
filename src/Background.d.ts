@@ -6,4 +6,4 @@ declare interface Background
   destroy: () => void;
 }
 
-export default  Background;
+export default Background;

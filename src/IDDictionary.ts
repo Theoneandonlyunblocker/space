@@ -3,7 +3,7 @@ interface ObjectWithID
   id: number;
 }
 
-export default class IDDictionary<K extends ObjectWithID, V>
+export class IDDictionary<K extends ObjectWithID, V>
 {
   readonly [a: number]: boolean; // TODO 24.02.2017 | what is this? legacy?
   private valuesByID:
