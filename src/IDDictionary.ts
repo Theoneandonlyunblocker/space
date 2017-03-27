@@ -90,7 +90,7 @@ export default class IDDictionary<K extends ObjectWithID, V>
         [valueName]: this.valuesByID[id],
       };
 
-      zipped.push(<any>zippedPair);
+      zipped.push(<T>zippedPair);
     }
 
     return zipped;
