@@ -1,10 +1,6 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
-import
-{
-  shallowCopy,
-} from "../../../../src/utility";
-import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
+import {PropInfo} from "./props/PropInfo";
 
 let idGenerator = 0;
 
@@ -14,9 +10,10 @@ abstract class SFXFragment<P>
   public abstract key: string;
   public abstract displayName: string;
 
-  // public propTypes: SFXFragmentPropTypes;
-  public propTypes: SFXFragmentPropTypes<P>;
-  private readonly defaultProps: P;
+  public abstract readonly propInfo:
+  {
+    [K in keyof P]: PropInfo<any>;
+  };
   public readonly props: P;
 
 
@@ -25,6 +22,48 @@ abstract class SFXFragment<P>
   {
     return this._displayObject;
   }
+
+  public get bounds(): PIXI.Rectangle
+  {
+    return this.displayObject.getBounds();
+  }
+  public get position(): PIXI.Point
+  {
+    return this.displayObject.position;
+  }
+  public get scale(): Point
+  {
+    return this.displayObject.scale;
+  }
+  public set scale(scale: Point)
+  {
+    this.displayObject.scale.set(scale.x, scale.y);
+  }
+  constructor(propInfo: {[K in keyof P]: PropInfo<any>}, props?: Partial<P>)
+  {
+    this.id = idGenerator++;
+
+    this.propInfo = propInfo;
+
+    this.props = <P> {};
+    this.setDefaultProps();
+    if (props)
+    {
+      this.setProps(props);
+    }
+  }
+
+  public abstract animate(relativeTime: number): void;
+  public abstract draw(...args: any[]): void;
+
+  public setDefaultProps(): void
+  {
+    for (let key in this.propInfo)
+    {
+      this.props[key] = this.propInfo[key].getDefaultValue();
+    }
+  }
+
   protected setDisplayObject(newDisplayObject: PIXI.DisplayObject): void
   {
     const oldDisplayObject = this.displayObject;
@@ -44,77 +83,11 @@ abstract class SFXFragment<P>
     this._displayObject = newDisplayObject;
   }
 
-  public get bounds(): PIXI.Rectangle
-  {
-    return this.displayObject.getBounds();
-  }
-  public get position(): PIXI.Point
-  {
-    return this.displayObject.position;
-  }
-  public get scale(): Point
-  {
-    return this.displayObject.scale;
-  }
-  public set scale(scale: Point)
-  {
-    this.displayObject.scale.set(scale.x, scale.y);
-  }
-  constructor(propTypes: SFXFragmentPropTypes<P>, defaultProps: P, props?: Partial<P>)
-  {
-    this.id = idGenerator++;
-
-    this.propTypes = propTypes;
-    this.defaultProps = defaultProps;
-
-    this.props = <P> {};
-    this.setDefaultProps();
-    if (props)
-    {
-      this.setProps(props);
-    }
-  }
-
-  public abstract animate(relativeTime: number): void;
-  public abstract draw(...args: any[]): void;
-
-  public setDefaultProps(): void
-  {
-    this.setProps(this.defaultProps);
-  }
-
   private setProps(props: Partial<P>): void
   {
-    for (let prop in props)
+    for (let key in props)
     {
-      const propType = this.propTypes[prop];
-      switch (propType)
-      {
-        case "number":
-        case "boolean":
-        {
-          this.props[prop] = props[prop];
-          break;
-        };
-        case "point":
-        case "range":
-        {
-          this.props[prop] = shallowCopy(props[prop]);
-          break;
-        }
-        case "color":
-        case "rampingValue":
-        {
-          this.props[prop] = props[prop].clone();
-          break;
-        }
-        default:
-        {
-          this.props[prop] = props[prop];
-          console.warn(`Unrecognized sfx fragment prop type ${this.key}.${prop}: ${propType}`);
-          break;
-        }
-      }
+      this.props[key] = this.propInfo[key].copyValue(props[key]);
     }
   }
 }
