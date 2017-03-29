@@ -99,7 +99,8 @@
     "no-misused-new": true,
     // maybe later
     // "prefer-method-signature": ,
-    "prefer-function-over-method": true,
+    // whines about abstract methods etc.
+    // "prefer-function-over-method": true,
 
 
     "no-import-side-effect": true,
