@@ -1,9 +1,10 @@
 export enum PropInfoType
 {
+  Boolean,
+  Function,
   Number,
   Point,
-  Color,
-  Boolean,
   Range,
+  Color,
   RampingValue,
 }

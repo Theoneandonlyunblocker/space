@@ -12,7 +12,7 @@ abstract class SFXFragment<P>
 
   public abstract readonly propInfo:
   {
-    [K in keyof P]: PropInfo<any>;
+    [K in keyof P]: PropInfo<P[K]>;
   };
   public readonly props: P;
 
@@ -39,11 +39,9 @@ abstract class SFXFragment<P>
   {
     this.displayObject.scale.set(scale.x, scale.y);
   }
-  constructor(propInfo: {[K in keyof P]: PropInfo<any>}, props?: Partial<P>)
+  constructor(props?: Partial<P>)
   {
     this.id = idGenerator++;
-
-    this.propInfo = propInfo;
 
     this.props = <P> {};
     this.setDefaultProps();

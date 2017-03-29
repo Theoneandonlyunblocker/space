@@ -35,7 +35,7 @@ export class SFXFragmentPropsListComponent extends React.Component<PropTypes, St
       },
         Object.keys(fragment.props).sort().map(propName =>
         {
-          const propType = fragment.propTypes[propName];
+          const propType = fragment.propInfo[propName].type;
 
           return SFXFragmentProp(
           {

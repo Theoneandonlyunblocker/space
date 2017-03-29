@@ -1,8 +1,9 @@
+import RampingValue from "./RampingValue";
 import SFXFragment from "./SFXFragment";
-import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
+
+import * as PropInfo from "./props/PropInfoClasses";
 
 import Beam from "./Beam";
-import RampingValue from "./RampingValue";
 
 import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
@@ -29,50 +30,34 @@ interface FocusingBeamProps
   beamSharpness: RampingValue;
   beamSize: RampingValue;
 }
-const defaultFocusingBeamProps: FocusingBeamProps =
-{
-  color: new Color(1.0, 1.0, 1.0),
-  size: {x: 500, y: 500},
-
-  focusStartTime: 0.0,
-  focusEndTime: 0.3,
-  decayStartTime: 0.8,
-  decayEndtime: 1.0,
-  focusTimeExponent: 0.75,
-  relativeYPosition: 0.5,
-
-  beamIntensity: new RampingValue(5.0, 20.0, -25.0),
-  beamSharpness: new RampingValue(0.75, 0.24, 0.0),
-  beamSize: new RampingValue(0.12, -0.115, -0.005),
-};
-const FocusingBeamPropTypes: SFXFragmentPropTypes<FocusingBeamProps> =
-{
-  color: "color",
-  size: "point",
-
-  focusStartTime: "number",
-  focusEndTime: "number",
-  decayStartTime: "number",
-  decayEndtime: "number",
-  focusTimeExponent: "number",
-  relativeYPosition: "number",
-
-  beamIntensity: "rampingValue",
-  beamSharpness: "rampingValue",
-  beamSize: "rampingValue",
-};
-
 
 export default class FocusingBeam extends SFXFragment<FocusingBeamProps>
 {
   public displayName = "FocusingBeam";
   public key = "focusingBeam";
 
+  public readonly propInfo =
+  {
+    color: new PropInfo.Color(new Color(1.0, 1.0, 1.0)),
+    size: new PropInfo.Point({x: 500, y: 500}),
+
+    focusStartTime: new PropInfo.Number(0.0),
+    focusEndTime: new PropInfo.Number(0.3),
+    decayStartTime: new PropInfo.Number(0.8),
+    decayEndtime: new PropInfo.Number(1.0),
+    focusTimeExponent: new PropInfo.Number(0.75),
+    relativeYPosition: new PropInfo.Number(0.5),
+
+    beamIntensity: new PropInfo.RampingValue(new RampingValue(5.0, 20.0, -25.0)),
+    beamSharpness: new PropInfo.RampingValue(new RampingValue(0.75, 0.24, 0.0)),
+    beamSize: new PropInfo.RampingValue(new RampingValue(0.12, -0.115, -0.005)),
+  };
+
   private beamFragment: Beam;
 
   constructor(props: FocusingBeamProps)
   {
-    super(FocusingBeamPropTypes, defaultFocusingBeamProps, props);
+    super(props);
   }
 
   public animate(time: number): void

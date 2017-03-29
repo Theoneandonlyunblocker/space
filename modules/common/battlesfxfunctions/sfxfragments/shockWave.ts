@@ -2,7 +2,8 @@
 
 import RampingValue from "./RampingValue";
 import SFXFragment from "./SFXFragment";
-import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
+
+import * as PropInfo from "./props/PropInfoClasses";
 
 import IntersectingEllipsesFilter from "../shaders/IntersectingEllipses";
 
@@ -31,53 +32,36 @@ interface ShockWaveProps
 
   delay: number;
 }
-const defaultShockWaveProps: ShockWaveProps =
-{
-  size: {x: 200, y: 200},
-  intersectingEllipseOrigin: {x: 0.0, y: 0.0},
-  intersectingEllipseDrift: {x: 0.0, y: 0.0},
-
-  alpha: new RampingValue(1.0, -1.0, 0.0),
-  mainEllipseScaleX: new RampingValue(0.0, 0.9, 0.0),
-  mainEllipseScaleY: new RampingValue(0.0, 0.9, 0.0),
-  mainEllipseSharpness: new RampingValue(1.0, -0.2, 0.0),
-  intersectingEllipseScaleX: new RampingValue(0.0, 1.0, 0.0),
-  intersectingEllipseScaleY: new RampingValue(0.0, 1.0, 0.0),
-  intersectingEllipseSharpness: new RampingValue(0.8, -0.4, 0.0),
-
-  color: new Color(1, 1, 1),
-
-  delay: 0.3,
-};
-const shockWavePropTypes: SFXFragmentPropTypes<ShockWaveProps> =
-{
-  size: "point",
-  intersectingEllipseOrigin: "point",
-  intersectingEllipseDrift: "point",
-
-  alpha: "rampingValue",
-  mainEllipseScaleX: "rampingValue",
-  mainEllipseScaleY: "rampingValue",
-  mainEllipseSharpness: "rampingValue",
-  intersectingEllipseScaleX: "rampingValue",
-  intersectingEllipseScaleY: "rampingValue",
-  intersectingEllipseSharpness: "rampingValue",
-
-  color: "color",
-
-  delay: "number",
-};
 
 export default class ShockWave extends SFXFragment<ShockWaveProps>
 {
   public displayName = "ShockWave";
   public key = "shockWave";
 
+  public readonly propInfo =
+  {
+    size: new PropInfo.Point({x: 200, y: 200}),
+    intersectingEllipseOrigin: new PropInfo.Point({x: 0.0, y: 0.0}),
+    intersectingEllipseDrift: new PropInfo.Point({x: 0.0, y: 0.0}),
+
+    alpha: new PropInfo.RampingValue(new RampingValue(1.0, -1.0, 0.0)),
+    mainEllipseScaleX: new PropInfo.RampingValue(new RampingValue(0.0, 0.9, 0.0)),
+    mainEllipseScaleY: new PropInfo.RampingValue(new RampingValue(0.0, 0.9, 0.0)),
+    mainEllipseSharpness: new PropInfo.RampingValue(new RampingValue(1.0, -0.2, 0.0)),
+    intersectingEllipseScaleX: new PropInfo.RampingValue(new RampingValue(0.0, 1.0, 0.0)),
+    intersectingEllipseScaleY: new PropInfo.RampingValue(new RampingValue(0.0, 1.0, 0.0)),
+    intersectingEllipseSharpness: new PropInfo.RampingValue(new RampingValue(0.8, -0.4, 0.0)),
+
+    color: new PropInfo.Color(new Color(1, 1, 1)),
+
+    delay: new PropInfo.Number(0.3),
+  };
+
   private shockWaveFilter: IntersectingEllipsesFilter;
 
   constructor(props: ShockWaveProps)
   {
-    super(shockWavePropTypes, defaultShockWaveProps, props);
+    super(props);
   }
   public static CreateFromPartialProps(props?: Partial<ShockWaveProps>): ShockWave
   {

@@ -4,8 +4,8 @@ import RampingValue from "../../../../modules/common/battlesfxfunctions/sfxfragm
 import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 import
 {
-  SFXFragmentPropType,
-} from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragmentPropTypes";
+  PropInfoType,
+} from "../../../../modules/common/battlesfxfunctions/sfxfragments/props/PropInfoType";
 
 import Color from "../../../Color";
 import Point from "../../../Point";
@@ -20,7 +20,7 @@ import SFXFragmentPropRange from "./Range";
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  propType: SFXFragmentPropType;
+  propType: PropInfoType;
   fragment: SFXFragment<any>;
   onPropValueChange: () => void;
 }
@@ -62,7 +62,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
 
     switch (this.props.propType)
     {
-      case "number":
+      case PropInfoType.Number:
       {
         const propValue: number = this.props.fragment.props[this.props.propName];
 
@@ -75,7 +75,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
         });
         break;
       }
-      case "point":
+      case PropInfoType.Point:
       {
         const propValue: Point = this.props.fragment.props[this.props.propName];
 
@@ -90,7 +90,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
         });
         break;
       }
-      case "color":
+      case PropInfoType.Color:
       {
         const propValue: Color = this.props.fragment.props[this.props.propName];
 
@@ -104,7 +104,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
         });
         break;
       }
-      case "range":
+      case PropInfoType.Range:
       {
         const propValue: Range = this.props.fragment.props[this.props.propName];
 
@@ -119,7 +119,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
         });
         break;
       }
-      case "rampingValue":
+      case PropInfoType.RampingValue:
       {
         const propValue: RampingValue = this.props.fragment.props[this.props.propName];
 

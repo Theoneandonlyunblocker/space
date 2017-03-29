@@ -1,7 +1,8 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
 import SFXFragment from "./SFXFragment";
-import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
+
+import * as PropInfo from "./props/PropInfoClasses";
 
 import UnitDrawingFunctionData from "../../../../src/UnitDrawingFunctionData";
 import
@@ -37,45 +38,6 @@ interface ProjectileAttackProps
   spawnTimeStart: number;
   spawnTimeEnd: number;
 }
-const defaultProjectileAttackProps: ProjectileAttackProps =
-{
-  makeProjectileSprite: undefined,
-  animateProjectile: undefined,
-
-  onImpact: undefined,
-  animateImpact: undefined,
-  useSequentialAttackOriginPoints: true,
-  removeAfterImpact: true,
-  impactRate: 0.75,
-
-  maxSpeed: 3,
-  acceleration: 0.05,
-
-  amountToSpawn: 20,
-
-  spawnTimeStart: 0,
-  spawnTimeEnd: 500,
-};
-const ProjectileAttackPropTypes: SFXFragmentPropTypes<ProjectileAttackProps> =
-{
-  makeProjectileSprite: "other",
-  animateProjectile: "other",
-
-  onImpact: "other",
-  animateImpact: "other",
-  useSequentialAttackOriginPoints: "boolean",
-  removeAfterImpact: "boolean",
-  impactRate: "number",
-  impactPosition: "range",
-
-  maxSpeed: "number",
-  acceleration: "number",
-
-  amountToSpawn: "number",
-
-  spawnTimeStart: "number",
-  spawnTimeEnd: "number",
-};
 
 class Projectile
 {
@@ -211,12 +173,32 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps>
   public displayName = "ProjectileAttack";
   public key = "projectileAttack";
 
+  public readonly propInfo =
+  {
+    makeProjectileSprite: new PropInfo.Function(undefined),
+    animateProjectile: new PropInfo.Function(undefined),
+
+    onImpact: new PropInfo.Function(undefined),
+    animateImpact: new PropInfo.Function(undefined),
+    useSequentialAttackOriginPoints: new PropInfo.Boolean(true),
+    removeAfterImpact: new PropInfo.Boolean(true),
+    impactRate: new PropInfo.Number(0.75),
+
+    maxSpeed: new PropInfo.Number(3),
+    acceleration: new PropInfo.Number(0.05),
+
+    amountToSpawn: new PropInfo.Number(20),
+
+    spawnTimeStart: new PropInfo.Number(0),
+    spawnTimeEnd: new PropInfo.Number(500),
+  };
+
   private projectiles: Projectile[];
   private container: PIXI.Container;
 
   constructor(props: ProjectileAttackProps)
   {
-    super(ProjectileAttackPropTypes, defaultProjectileAttackProps, props);
+    super(props);
 
     this.container = new PIXI.Container();
   }

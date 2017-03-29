@@ -1,7 +1,8 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
 import SFXFragment from "./SFXFragment";
-import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
+
+import * as PropInfo from "./props/PropInfoClasses";
 
 import LightBurstFilter from "../shaders/LightBurst";
 
@@ -21,37 +22,28 @@ interface LightBurstProps
   centerSize: number;
   rayStrength: number;
 }
-const defaultLightBurstProps: LightBurstProps =
-{
-  size: {x: 200, y: 200},
-  delay: 0.3,
-  sharpness: 2.0,
-  color: new Color(0.75, 0.75, 0.62),
-  centerSize: 1.0,
-  rayStrength: 1.0,
-};
-const LightBurstPropTypes: SFXFragmentPropTypes<LightBurstProps> =
-{
-  size: "point",
-  delay: "number",
-  sharpness: "number",
-  color: "color",
-  centerSize: "number",
-  rayStrength: "number",
-};
-
 
 export default class LightBurst extends SFXFragment<LightBurstProps>
 {
   public displayName = "LightBurst";
   public key = "lightBurst";
 
+  public readonly propInfo =
+  {
+    size: new PropInfo.Point({x: 200, y: 200}),
+    delay: new PropInfo.Number(0.3),
+    sharpness: new PropInfo.Number(2.0),
+    color: new PropInfo.Color(new Color(0.75, 0.75, 0.62)),
+    centerSize: new PropInfo.Number(1.0),
+    rayStrength: new PropInfo.Number(1.0),
+  };
+
   private lightBurstFilter: LightBurstFilter;
   private seed: number[] = [Math.random() * 69, Math.random() * 420];
 
   constructor(props: LightBurstProps)
   {
-    super(LightBurstPropTypes, defaultLightBurstProps, props);
+    super(props);
   }
 
   public animate(time: number): void

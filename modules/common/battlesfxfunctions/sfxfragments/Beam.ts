@@ -2,7 +2,8 @@
 
 import RampingValue from "./RampingValue";
 import SFXFragment from "./SFXFragment";
-import {SFXFragmentPropTypes} from "./SFXFragmentPropTypes";
+
+import * as PropInfo from "./props/PropInfoClasses";
 
 import BeamFilter from "../shaders/Beam";
 
@@ -33,61 +34,36 @@ interface BeamProps
   lineXSharpness: RampingValue;
   lineYSharpness: RampingValue;
 }
-const defaultBeamProps: BeamProps =
-{
-  size:
-  {
-    x: 500,
-    y: 500,
-  },
-  relativeImpactTime: 0.2,
-  relativeBeamOrigin:
-  {
-    x: 0,
-    y: 0.5,
-  },
-  color: new Color(1, 0.9, 0.9),
-  timeScale: 100,
-  noiseAmplitude: new RampingValue(0.0, 0.4, -0.4),
-  lineIntensity: new RampingValue(2.0, 5.0, -5.0),
-  bulgeIntensity: new RampingValue(0.0, 6.0, -6.0),
-  lineYSize: new RampingValue(0.01, 0.2, -0.21),
-  bulgeSizeX: new RampingValue(0.0, 0.7, -0.7),
-  bulgeSizeY: new RampingValue(0.0, 0.4, -0.4),
-  bulgeSharpness: new RampingValue(0.3, 0.35, -0.35),
-  lineXSharpness: new RampingValue(0.99, -0.99, 0.99),
-  lineYSharpness: new RampingValue(0.99, -0.15, 0.16),
-};
-const BeamPropTypes: SFXFragmentPropTypes<BeamProps> =
-{
-  size: "point",
-  relativeImpactTime: "number",
-  relativeBeamOrigin: "point",
-  color: "color",
-  timeScale: "number",
-  noiseAmplitude: "rampingValue",
-  lineIntensity: "rampingValue",
-  bulgeIntensity: "rampingValue",
-  lineYSize: "rampingValue",
-  bulgeSizeX: "rampingValue",
-  bulgeSizeY: "rampingValue",
-  bulgeSharpness: "rampingValue",
-  lineXSharpness: "rampingValue",
-  lineYSharpness: "rampingValue",
-};
-
 
 export default class Beam extends SFXFragment<BeamProps>
 {
   public displayName = "Beam";
   public key = "beam";
 
+  public readonly propInfo =
+  {
+    size: new PropInfo.Point({x: 500, y: 500}),
+    relativeImpactTime: new PropInfo.Number(0.2),
+    relativeBeamOrigin: new PropInfo.Point({x: 0, y: 0.5}),
+    color: new PropInfo.Color(new Color(1, 0.9, 0.9)),
+    timeScale: new PropInfo.Number(100),
+    noiseAmplitude: new PropInfo.RampingValue(new RampingValue(0.0, 0.4, -0.4)),
+    lineIntensity: new PropInfo.RampingValue(new RampingValue(2.0, 5.0, -5.0)),
+    bulgeIntensity: new PropInfo.RampingValue(new RampingValue(0.0, 6.0, -6.0)),
+    lineYSize: new PropInfo.RampingValue(new RampingValue(0.01, 0.2, -0.21)),
+    bulgeSizeX: new PropInfo.RampingValue(new RampingValue(0.0, 0.7, -0.7)),
+    bulgeSizeY: new PropInfo.RampingValue(new RampingValue(0.0, 0.4, -0.4)),
+    bulgeSharpness: new PropInfo.RampingValue(new RampingValue(0.3, 0.35, -0.35)),
+    lineXSharpness: new PropInfo.RampingValue(new RampingValue(0.99, -0.99, 0.99)),
+    lineYSharpness: new PropInfo.RampingValue(new RampingValue(0.99, -0.15, 0.16)),
+  };
+
   private beamFilter: BeamFilter;
   private seed: number = Math.random() * 100;
 
   constructor(props: BeamProps)
   {
-    super(BeamPropTypes, defaultBeamProps, props);
+    super(props);
   }
 
   public animate(time: number): void

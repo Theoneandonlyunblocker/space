@@ -6,35 +6,41 @@ import
 } from "./BasePropInfoClasses";
 import {PropInfoType} from "./PropInfoType";
 
-import RampingValue from "../RampingValue";
+import RampingValueType from "../RampingValue";
 
-import Color from "../../../../../src/Color";
-import Point from "../../../../../src/Point";
-import Range from "../../../../../src/Range";
+import ColorType from "../../../../../src/Color";
+import PointType from "../../../../../src/Point";
+import RangeType from "../../../../../src/Range";
 
-export class BooleanPropInfo extends Primitive<boolean>
+export class Boolean extends Primitive<boolean>
 {
   public readonly type: PropInfoType.Boolean;
 }
-export class NumberPropInfo extends Primitive<number>
+export class Number extends Primitive<number>
 {
   public readonly type: PropInfoType.Number;
 }
+/* tslint:disable:ban-types */
+class FunctionPropType<T extends Function> extends Primitive<T>
+{
+  public readonly type: PropInfoType.Function;
+}
+export {FunctionPropType as Function};
 
-export class PointPropInfo extends ShallowObject<Point>
+export class Point extends ShallowObject<PointType>
 {
   public readonly type: PropInfoType.Point;
 }
-export class RangePropInfo extends ShallowObject<Range>
+export class Range extends ShallowObject<RangeType>
 {
   public readonly type: PropInfoType.Range;
 }
 
-export class ColorPropInfo extends Clonable<Color>
+export class Color extends Clonable<ColorType>
 {
   public readonly type: PropInfoType.Color;
 }
-export class RampingValuePropInfo extends Clonable<RampingValue>
+export class RampingValue extends Clonable<RampingValueType>
 {
   public readonly type: PropInfoType.RampingValue;
 }
