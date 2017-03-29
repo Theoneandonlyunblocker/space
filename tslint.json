@@ -72,7 +72,7 @@
     "ordered-imports": [true, {"import-sources-order": "lowercase-last", "named-imports-order": "case-insensitive"}],
     "quotemark": [true, "double", "avoid-escape"],
     "semicolon": [true, "always"],
-    "variable-name": [true, "ban-keywords", "check-format"],
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
 
     // lots of problems. for (let i = 0, n = a.length) etc...
     // "prefer-const": true,
