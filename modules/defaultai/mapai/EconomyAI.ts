@@ -41,17 +41,7 @@ export default class EconomyAI
 
     this.personality = props.personality;
   }
-  resolveEconomicObjectives()
-  {
-    const objectives = this.objectivesAI.getObjectivesWithTemplateProperty("economyRoutineFN");
-    const adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("economyRoutineAdjustments");
-
-    for (let i = 0; i < objectives.length; i++)
-    {
-      const objective = objectives[i];
-      objective.template.economyRoutineFN(objective, this, adjustments);
-    }
-  }
+  // TODO 03.04.2017 | should have 1 method for all econ objectives. currently oai.processEconomicObjectives
   satisfyAllRequests()
   {
     /*
@@ -60,7 +50,7 @@ export default class EconomyAI
     fulfill by priority
      */
     const allRequests: Front[] = this.frontsAI.frontsRequestingUnits;
-    allRequests.sort(function(a, b)
+    allRequests.sort((a, b) =>
     {
       return b.objective.priority - a.objective.priority;
     });

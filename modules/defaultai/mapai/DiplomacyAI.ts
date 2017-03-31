@@ -1,27 +1,25 @@
-import RoutineAdjustmentByID from "../RoutineAdjustmentByID";
-
 import DiplomacyStatus from "../../../src/DiplomacyStatus";
 import Game from "../../../src/Game";
-import Personality from "../../../src/Personality";
 import Player from "../../../src/Player";
 
 import MapEvaluator from "./MapEvaluator";
-import Objective from "./Objective";
 import {ObjectivesAI} from "./ObjectivesAI";
 
 export default class DiplomacyAI
 {
-  game: Game;
+  private game: Game;
 
-  player: Player;
-  diplomacyStatus: DiplomacyStatus;
+  private player: Player;
+  private diplomacyStatus: DiplomacyStatus;
 
-  personality: Personality;
-  mapEvaluator: MapEvaluator;
-  objectivesAI: ObjectivesAI;
+  private mapEvaluator: MapEvaluator;
+  private objectivesAI: ObjectivesAI;
 
-  constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, game: Game,
-    personality: Personality)
+  constructor(
+    mapEvaluator: MapEvaluator,
+    objectivesAI: ObjectivesAI,
+    game: Game,
+  )
   {
     this.game = game;
 
@@ -30,10 +28,8 @@ export default class DiplomacyAI
 
     this.mapEvaluator = mapEvaluator;
     this.objectivesAI = objectivesAI;
-
-    this.personality = personality;
   }
-  setAttitudes()
+  public setAttitudes()
   {
     const diplomacyEvaluations =
       this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
@@ -44,26 +40,5 @@ export default class DiplomacyAI
         this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId],
       );
     }
-  }
-  resolveDiplomaticObjectives(afterAllDoneCallback: () => void)
-  {
-    const objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
-    const adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
-
-    this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback);
-  }
-  resolveNextObjective(objectives: Objective[], adjustments: RoutineAdjustmentByID,
-    afterAllDoneCallback: () => void)
-  {
-    const objective = objectives.pop();
-
-    if (!objective)
-    {
-      afterAllDoneCallback();
-      return;
-    }
-
-    const boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
-    objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN);
   }
 }

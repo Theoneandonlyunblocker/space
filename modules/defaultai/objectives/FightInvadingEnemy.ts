@@ -85,7 +85,7 @@ export class FightInvadingEnemy extends FrontObjective
       return !target.enemy.isIndependent;
     });
   }
-  protected evaluateUnitFit(unit: Unit): number
+  public evaluateUnitFit(unit: Unit): number
   {
     const strengthScore = this.unitEvaluator.evaluateCombatStrength(unit);
     return strengthScore * this.evaluateDefaultUnitFit(unit, this.front);

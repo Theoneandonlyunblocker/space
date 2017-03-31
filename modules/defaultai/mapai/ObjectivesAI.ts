@@ -31,7 +31,8 @@ END OLD STUFF*/
 
 /*
 diplo           |
-front requests  V
+form fronts     V
+front requests
 econ
 front moves
 diplo
@@ -40,6 +41,7 @@ econ
 
 import {GrandStrategyAI} from "./GrandStrategyAI";
 import MapEvaluator from "./MapEvaluator";
+import {ObjectiveQueue} from "./ObjectiveQueue";
 
 import {Objective} from "../objectives/common/Objective";
 import {ObjectiveCreatorTemplate} from "../objectives/common/ObjectiveCreatorTemplate";
@@ -59,44 +61,92 @@ export class ObjectivesAI
   private readonly grandStrategyAI: GrandStrategyAI;
   private readonly mapEvaluator: MapEvaluator;
 
-  public processDiplomaticObjectives(): void
+  constructor(
+    mapEvaluator: MapEvaluator,
+    grandStrategyAI: GrandStrategyAI,
+  )
   {
-    const filterFN = (toFilter: Objective | ObjectiveCreatorTemplate) =>
-    {
-      return toFilter.family === ObjectiveFamily.Diplomatic;
-    };
+    this.mapEvaluator = mapEvaluator;
+    this.grandStrategyAI = grandStrategyAI;
+  }
 
-    // update objectives
-    this.updateObjectivesForFilter(filterFN);
-
-    // evaluate priorities
-    const priorities: {[type: string]: number} = {};
-    this.objectiveCreatorTemplates.filter(filterFN).forEach(template =>
+  private static diplomaticFilter(toFilter: Objective | ObjectiveCreatorTemplate)
+  {
+    return toFilter.family === ObjectiveFamily.Diplomatic;
+  }
+  private static economicFilter(toFilter: Objective | ObjectiveCreatorTemplate)
+  {
+    return toFilter.family === ObjectiveFamily.Economic;
+  }
+  private static frontFilter(toFilter: Objective | ObjectiveCreatorTemplate)
+  {
+    return toFilter.family === ObjectiveFamily.Front;
+  }
+  private static groupObjectivesByType(objectives: Objective[]): {[type: string]: Objective[]}
+  {
+    const grouped:
     {
-      priorities[template.type] = template.evaluatePriority(this.mapEvaluator, this.grandStrategyAI);
+      [type: string]: Objective[]
+    } = {};
+
+    objectives.forEach(objective =>
+    {
+      if (!grouped[objective.type])
+      {
+        grouped[objective.type] = [];
+      }
+
+      grouped[objective.type].push(objective);
     });
-    // calculate relative scores
-    let minScore: number;
-    let maxScore: number;
 
-
-    // final priority = priority * relative score
-
-    // execute
+    return grouped;
   }
-  public processEconomicObjectives(): void
+
+  public processDiplomaticObjectives(onAllFinished: () => void): void
   {
-
+    this.updateAndExecuteObjectives(ObjectivesAI.diplomaticFilter, onAllFinished);
   }
-  public createFrontRequests(): void
+  public processEconomicObjectives(onAllFinished: () => void): void
   {
-
+    this.updateAndExecuteObjectives(ObjectivesAI.economicFilter, onAllFinished);
   }
-  public executeFrontMoves(): void
+  public createFrontObjectives(): void
   {
+    this.updateObjectivesForFilter(ObjectivesAI.frontFilter);
+  }
+  public executeFrontObjectives(onAllFinished: () => void): void
+  {
+    const objectiveQueue = new ObjectiveQueue(
+      () =>
+      {
+        this.updateObjectivesForFilter(ObjectivesAI.frontFilter);
+        this.calculateFinalPrioritiesForObjectivesMatchingFilter(ObjectivesAI.frontFilter);
 
+        return this.ongoingObjectives.filter(ObjectivesAI.frontFilter);
+      },
+    );
+
+    objectiveQueue.executeObjectives(onAllFinished);
   }
 
+  private updateAndExecuteObjectives(
+    filterFN: (toFilter: Objective | ObjectiveCreatorTemplate) => boolean,
+    onAllFinished: () => void,
+  ): void
+  {
+    const objectiveQueue = new ObjectiveQueue(
+      () =>
+      {
+        this.updateObjectivesForFilter(filterFN);
+        this.calculateFinalPrioritiesForObjectivesMatchingFilter(filterFN);
+
+        return this.ongoingObjectives.filter(filterFN);
+      },
+    );
+
+    objectiveQueue.updateObjectives();
+    objectiveQueue.executeObjectives(onAllFinished);
+  }
   /**
    * removes from this.ongoingObjectives as a side effect
    */
@@ -118,6 +168,7 @@ export class ObjectivesAI
     });
 
     this.ongoingObjectives = filteredOngoingObjectives;
+
     return splicedObjectives;
   }
   private updateObjectivesForFilter(
@@ -136,20 +187,50 @@ export class ObjectivesAI
   }
   private getRelativeScoresForObjectives(objectives: Objective[]): IDDictionary<Objective, number>
   {
-    let min: number;
-    let max: number;
+    const objectivesByType = ObjectivesAI.groupObjectivesByType(objectives);
+    const relativeScores = new IDDictionary<Objective, number>();
 
-    objectives.forEach(objective =>
+    for (let type in objectivesByType)
     {
-      const score = objective.score;
+      let min: number;
+      let max: number;
 
-      min = isFinite(min) ? Math.min(min, score) : score;
-      max = isFinite(max) ? Math.max(max, score) : score;
+      objectivesByType[type].forEach(objective =>
+      {
+        const score = objective.score;
+
+        min = isFinite(min) ? Math.min(min, score) : score;
+        max = isFinite(max) ? Math.max(max, score) : score;
+      });
+
+      objectivesByType[type].forEach(objective =>
+      {
+        const relativeScore = getRelativeValue(objective.score, min, max);
+        relativeScores.set(objective, relativeScore);
+      });
+    }
+
+    return relativeScores;
+  }
+  private calculateFinalPrioritiesForObjectivesMatchingFilter(
+    filterFN: (toFilter: Objective | ObjectiveCreatorTemplate) => boolean,
+  ): void
+  {
+    // evaluate priorities
+    const priorities: {[type: string]: number} = {};
+    this.objectiveCreatorTemplates.filter(filterFN).forEach(template =>
+    {
+      priorities[template.type] = template.evaluatePriority(this.mapEvaluator, this.grandStrategyAI);
     });
 
-    return new IDDictionary(objectives, objective =>
+    // calculate relative scores
+    const relativeScores = this.getRelativeScoresForObjectives(
+      this.ongoingObjectives.filter(filterFN));
+
+    // final priority = priority * relative score
+    relativeScores.forEach((objective, score) =>
     {
-      return getRelativeValue(objective.score, min, max);
+      objective.finalPriority = score * priorities[objective.type];
     });
   }
 }

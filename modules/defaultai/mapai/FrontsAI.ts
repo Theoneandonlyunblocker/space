@@ -9,7 +9,7 @@ import Personality from "../../../src/Personality";
 import Player from "../../../src/Player";
 import Unit from "../../../src/Unit";
 
-interface IFrontUnitScore
+interface FrontUnitScore
 {
   unit: Unit;
   front: Front;
@@ -17,19 +17,23 @@ interface IFrontUnitScore
 }
 export default class FrontsAI
 {
-  player: Player;
-  map: GalaxyMap;
-  game: Game;
-  mapEvaluator: MapEvaluator;
-  objectivesAI: ObjectivesAI;
-  personality: Personality;
+  private player: Player;
+  private map: GalaxyMap;
+  private game: Game;
+  private mapEvaluator: MapEvaluator;
+  private objectivesAI: ObjectivesAI;
+  private personality: Personality;
 
-  fronts: Front[] = [];
-  frontsRequestingUnits: Front[] = [];
-  frontsToMove: Front[] = [];
+  private fronts: Front[] = [];
+  private frontsRequestingUnits: Front[] = [];
+  private frontsToMove: Front[] = [];
 
-  constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI,
-    personality: Personality, game: Game)
+  constructor(
+    mapEvaluator: MapEvaluator,
+    objectivesAI: ObjectivesAI,
+    personality: Personality,
+    game: Game,
+  )
   {
     this.mapEvaluator = mapEvaluator;
     this.map = mapEvaluator.map;
@@ -39,34 +43,17 @@ export default class FrontsAI
     this.game = game;
   }
 
-  private getUnitScoresForFront(units: Unit[], front: Front)
-  {
-    const scores: IFrontUnitScore[] = [];
-
-    for (let i = 0; i < units.length; i++)
-    {
-      scores.push(
-      {
-        unit: units[i],
-        score: front.scoreUnitFit(units[i]),
-        front: front,
-      });
-    }
-
-    return scores;
-  }
-
-  assignUnits()
+  public assignUnits(): void
   {
     const units = this.player.units;
 
-    const allUnitScores: IFrontUnitScore[] = [];
+    const allUnitScores: FrontUnitScore[] = [];
     const unitScoresByFront:
     {
-      [frontId: number]: any[];
+      [frontId: number]: FrontUnitScore[];
     } = {};
 
-    const recalculateScoresForFront = function(front: Front)
+    const recalculateScoresForFront = (front: Front) =>
     {
       const frontScores = unitScoresByFront[front.id];
 
@@ -76,21 +63,15 @@ export default class FrontsAI
       }
     };
 
-    const removeUnit = function(unit: Unit)
+    const removeUnit = (unit: Unit) =>
     {
       for (let frontId in unitScoresByFront)
       {
-        unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function(score)
+        unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(score =>
         {
           return score.unit !== unit;
         });
       }
-    };
-
-    // ascending
-    const sortByScoreFN = function(a: IFrontUnitScore, b: IFrontUnitScore)
-    {
-      return a.score - b.score;
     };
 
     for (let i = 0; i < this.fronts.length; i++)
@@ -105,6 +86,11 @@ export default class FrontsAI
       [unitId: number]: boolean;
     } = {};
 
+    // ascending
+    const sortByScoreFN = (a: FrontUnitScore, b: FrontUnitScore) =>
+    {
+      return a.score - b.score;
+    };
 
     while (allUnitScores.length > 0)
     {
@@ -124,68 +110,14 @@ export default class FrontsAI
       recalculateScoresForFront(bestScore.front);
     }
   }
-
-  getFrontWithId(id: number)
+  public organizeFleets(): void
   {
     for (let i = 0; i < this.fronts.length; i++)
     {
-      if (this.fronts[i].id === id)
-      {
-        return this.fronts[i];
-      }
-    }
-
-    return null;
-  }
-
-  createFront(objective: Objective)
-  {
-    const musterLocation = objective.target ?
-      this.player.getNearestOwnedStarTo(objective.target) :
-      null;
-    const unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
-
-    const front = new Front(
-    {
-      id: objective.id,
-      objective: objective,
-
-      minUnitsDesired: unitsDesired.min,
-      idealUnitsDesired: unitsDesired.ideal,
-
-      targetLocation: objective.target,
-      musterLocation: musterLocation,
-    });
-
-    return front;
-  }
-
-  removeInactiveFronts()
-  {
-    // loop backwards because splicing
-    for (let i = this.fronts.length - 1; i >= 0; i--)
-    {
-      const front = this.fronts[i];
-      let hasActiveObjective = false;
-
-      for (let j = 0; j < this.objectivesAI.objectives.length; j++)
-      {
-        const objective = this.objectivesAI.objectives[j];
-        if (objective.id === front.id)
-        {
-          hasActiveObjective = true;
-          break;
-        }
-      }
-
-      if (!hasActiveObjective)
-      {
-        this.fronts.splice(i, 1);
-      }
+      this.fronts[i].organizeAllFleets();
     }
   }
-
-  formFronts()
+  public formFronts(): void
   {
     /*
     dissolve old fronts without an active objective
@@ -208,26 +140,16 @@ export default class FrontsAI
       }
     }
   }
-
-  organizeFleets()
-  {
-    for (let i = 0; i < this.fronts.length; i++)
-    {
-      this.fronts[i].organizeAllFleets();
-    }
-  }
-
-  setFrontsToMove()
+  public setFrontsToMove(): void
   {
     this.frontsToMove = this.fronts.slice(0);
 
-    this.frontsToMove.sort(function(a: Front, b: Front)
+    this.frontsToMove.sort((a, b) =>
     {
       return a.objective.template.movePriority - b.objective.template.movePriority;
     });
   }
-
-  moveFleets(afterMovingAllCallback: Function)
+  public moveFleets(afterMovingAllCallback: () => void): void
   {
     if (this.game.hasEnded)
     {
@@ -238,13 +160,13 @@ export default class FrontsAI
     if (!front)
     {
       afterMovingAllCallback();
+
       return;
     }
 
     front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
   }
-
-  setUnitRequests()
+  public setUnitRequests()
   {
     /*for each front that doesnt fulfill minimum unit requirement
       make request with same priority of front
@@ -258,6 +180,80 @@ export default class FrontsAI
       if (front.units.length < front.idealUnitsDesired)
       {
         this.frontsRequestingUnits.push(front);
+      }
+    }
+  }
+
+  private getUnitScoresForFront(units: Unit[], front: Front): FrontUnitScore[]
+  {
+    const scores: FrontUnitScore[] = [];
+
+    for (let i = 0; i < units.length; i++)
+    {
+      scores.push(
+      {
+        unit: units[i],
+        score: front.scoreUnitFit(units[i]),
+        front: front,
+      });
+    }
+
+    return scores;
+  }
+  private getFrontWithId(id: number): Front | null
+  {
+    for (let i = 0; i < this.fronts.length; i++)
+    {
+      if (this.fronts[i].id === id)
+      {
+        return this.fronts[i];
+      }
+    }
+
+    return null;
+  }
+  private createFront(objective: Objective): Front
+  {
+    const musterLocation = objective.target ?
+      this.player.getNearestOwnedStarTo(objective.target) :
+      null;
+    const unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
+
+    const front = new Front(
+    {
+      id: objective.id,
+      objective: objective,
+
+      minUnitsDesired: unitsDesired.min,
+      idealUnitsDesired: unitsDesired.ideal,
+
+      targetLocation: objective.target,
+      musterLocation: musterLocation,
+    });
+
+    return front;
+  }
+  private removeInactiveFronts(): void
+  {
+    // loop backwards because splicing
+    for (let i = this.fronts.length - 1; i >= 0; i--)
+    {
+      const front = this.fronts[i];
+      let hasActiveObjective = false;
+
+      for (let j = 0; j < this.objectivesAI.objectives.length; j++)
+      {
+        const objective = this.objectivesAI.objectives[j];
+        if (objective.id === front.id)
+        {
+          hasActiveObjective = true;
+          break;
+        }
+      }
+
+      if (!hasActiveObjective)
+      {
+        this.fronts.splice(i, 1);
       }
     }
   }

@@ -52,7 +52,7 @@ export class Heal extends FrontObjective
       return fleet.player.getNearestOwnedStarTo(fleet.location);
     });
   }
-  protected evaluateUnitFit(unit: Unit): number
+  public evaluateUnitFit(unit: Unit): number
   {
     const healthPercentage = unit.currentHealth / unit.maxHealth;
     return 1 - healthPercentage;

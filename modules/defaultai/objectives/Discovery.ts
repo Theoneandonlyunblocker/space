@@ -74,7 +74,7 @@ export class Discovery extends FrontObjective
       return this.target;
     });
   }
-  protected evaluateUnitFit(unit: Unit): number
+  public evaluateUnitFit(unit: Unit): number
   {
     const scoutingScore = this.unitEvaluator.evaluateUnitScoutingAbility(unit);
     const movementMultiplier = unit.maxMovePoints;

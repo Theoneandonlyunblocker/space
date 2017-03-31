@@ -4,8 +4,8 @@ import EconomyAI from "./EconomyAI";
 import FrontsAI from "./FrontsAI";
 import {GrandStrategyAI} from "./GrandStrategyAI";
 import MapEvaluator from "./MapEvaluator";
-import {UnitEvaluator} from "./UnitEvaluator";
 import {ObjectivesAI} from "./ObjectivesAI";
+import {UnitEvaluator} from "./UnitEvaluator";
 
 import AITemplate from "../../../src/templateinterfaces/AITemplate";
 
@@ -13,10 +13,10 @@ import app from "../../../src/App";
 import ArchetypeValues from "../../../src/ArchetypeValues";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Game from "../../../src/Game";
-import getNullFormation from "../../../src/getNullFormation";
 import Personality from "../../../src/Personality";
 import Player from "../../../src/Player";
 import Unit from "../../../src/Unit";
+import getNullFormation from "../../../src/getNullFormation";
 import
 {
   makeRandomPersonality,
@@ -24,23 +24,24 @@ import
 
 export default class DefaultAI implements AITemplate<DefaultAISaveData>
 {
-  static type: string = "DefaultAI";
-  public type: string = "DefaultAI";
+  public static readonly type: string = "DefaultAI";
+  public readonly type: string = "DefaultAI";
 
-  player: Player;
-  game: Game;
+  public readonly personality: Personality;
 
-  personality: Personality;
-  map: GalaxyMap;
+  private readonly player: Player;
+  private readonly game: Game;
 
-  mapEvaluator: MapEvaluator;
-  unitEvaluator: UnitEvaluator;
+  private readonly map: GalaxyMap;
 
-  grandStrategyAI: GrandStrategyAI;
-  objectivesAI: ObjectivesAI;
-  economyAI: EconomyAI;
-  frontsAI: FrontsAI;
-  diplomacyAI: DiplomacyAI;
+  private readonly mapEvaluator: MapEvaluator;
+  private readonly unitEvaluator: UnitEvaluator;
+
+  private readonly grandStrategyAI: GrandStrategyAI;
+  private readonly objectivesAI: ObjectivesAI;
+  private readonly economyAI: EconomyAI;
+  private readonly frontsAI: FrontsAI;
+  private readonly diplomacyAI: DiplomacyAI;
 
   constructor(player: Player, game: Game, personality?: Personality)
   {
@@ -65,62 +66,58 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
       mapEvaluator: this.mapEvaluator,
       personality: this.personality,
     });
-    this.diplomacyAI = new DiplomacyAI(this.mapEvaluator, this.objectivesAI,
-      this.game, this.personality);
+    this.diplomacyAI = new DiplomacyAI(this.mapEvaluator, this.objectivesAI, this.game);
   }
 
   public processTurn(afterFinishedCallback: () => void)
   {
-    // gsai evaluate grand strategy
+    // evaluate grand strategy
     this.grandStrategyAI.setDesires();
 
-    // dai set attitude
+    // set attitude
     this.diplomacyAI.setAttitudes();
 
-    // oai make objectives
-    this.objectivesAI.setAllDiplomaticObjectives();
+    // process diplo objectives
+    this.objectivesAI.processDiplomaticObjectives();
 
-    // dai resolve diplomatic objectives
-    this.diplomacyAI.resolveDiplomaticObjectives(
-      this.processTurnAfterDiplomaticObjectives.bind(this, afterFinishedCallback));
-  }
-  private processTurnAfterDiplomaticObjectives(afterFinishedCallback: () => void)
-  {
-    this.objectivesAI.setAllEconomicObjectives();
-    this.economyAI.resolveEconomicObjectives();
+    // create front objectives
+    this.objectivesAI.createFrontObjectives();
 
-    // oai make objectives
-    this.objectivesAI.setAllMoveObjectives();
-
-    // fai form fronts
+    // form fronts
     this.frontsAI.formFronts();
 
-    // fai assign units
+    // assign units
     this.frontsAI.assignUnits();
 
-    // fai request units
+    // create front requests
     this.frontsAI.setUnitRequests();
 
-    // eai fulfill requests
-    this.economyAI.satisfyAllRequests();
+    // process economic objectives
+    this.objectivesAI.processEconomicObjectives();
 
-    // fai organize fleets
+    // organize fleets
     this.frontsAI.organizeFleets();
 
-    // fai set fleets yet to move
-    this.frontsAI.setFrontsToMove();
+    // execute front objectives
+    this.objectivesAI.executeFrontObjectives();
 
-    // fai move fleets
-    // function param is called after all fronts have moved
-    this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
-  }
-  private finishMovingFleets(afterFinishedCallback: () => void)
-  {
+    // organize fleets
     this.frontsAI.organizeFleets();
-    if (afterFinishedCallback)
-    {
-      afterFinishedCallback();
-    }
+
+    // evaluate grand strategy
+    this.grandStrategyAI.setDesires();
+
+    // set attitude
+    this.diplomacyAI.setAttitudes();
+
+    // diplo
+    // TODO 03.04.2017 | should do separate things to pre-turn diplo
+    // don't want to declare war here for example
+    this.objectivesAI.processDiplomaticObjectives();
+
+    // econ
+    // same here. no point building stuff that can't be used yet
+    this.objectivesAI.processEconomicObjectives();
   }
   // TODO 20.02.2017 | handle variable amount of rows
   public createBattleFormation(
@@ -190,7 +187,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
         }
       }
 
-      positionScores.sort(function(a, b)
+      positionScores.sort((a, b) =>
       {
         return (b.score - a.score);
       });

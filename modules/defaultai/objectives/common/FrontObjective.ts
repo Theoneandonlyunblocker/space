@@ -18,15 +18,16 @@ export abstract class FrontObjective extends Objective
   protected mapEvaluator: MapEvaluator;
   protected unitEvaluator: UnitEvaluator;
 
+  /**
+   * how well unit fits for this objective relative to other units
+   */
+  public abstract evaluateUnitFit(unit: Unit): number;
+
   protected abstract moveUnits(
     front: Front,
     mapEvaluator: MapEvaluator,
     afterDoneCallback: () => void,
   ): void;
-  /**
-   * how well unit fits for this objective relative to other units
-   */
-  protected abstract evaluateUnitFit(unit: Unit): number;
   protected abstract getMinimumRequiredCombatStrength(mapEvaluator: MapEvaluator): number;
   protected abstract getIdealRequiredCombatStrength(mapEvaluator: MapEvaluator): number;
 

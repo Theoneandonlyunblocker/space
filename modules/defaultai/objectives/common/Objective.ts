@@ -23,18 +23,26 @@ export abstract class Objective
   public abstract readonly type: string;
   public abstract readonly family: ObjectiveFamily;
   public readonly id: number;
+
   /**
-   * score relative to other objectives of same type
+   * score relative to other objectives of same type * priority of objective type
+   * comparable to all other objectives
+   */
+  public finalPriority: number;
+
+  /**
+   * arbitrary score
+   * comparable only to objectives of same type
    */
   public get score(): number
   {
     return this.isOngoing ? this.baseScore * this.ongoingMultiplier : this.baseScore;
   }
-  public set score(priority: number)
+  public set score(score: number)
   {
-    this.baseScore = priority;
+    this.baseScore = score;
   }
-  public isOngoing: boolean = false; // used to slightly prioritize old objectives
+  public isOngoing: boolean = false; // used to prioritize old objectives
 
   protected readonly ongoingMultiplier: number = 1.25;
 
@@ -76,5 +84,8 @@ export abstract class Objective
     return byStar;
   }
 
-  public abstract execute(afterDoneCallback: () => void): void;
+  public abstract execute(
+    afterDoneCallback: () => void,
+    triggerObjectivesReCheck: () => void,
+  ): void;
 }

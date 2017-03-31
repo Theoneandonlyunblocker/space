@@ -118,14 +118,25 @@ export class IDDictionary<K extends ObjectWithID, V>
 
     return keys;
   }
-  public map<T>(mapFN: (key: K, value: V) => T): T[]
+  public map<T>(mapFN: (key: K, value: V) => T): IDDictionary<K, T>
+  {
+    const mapped: IDDictionary<K, T> = this.constructor();
+
+    this.forEach((k, v) =>
+    {
+      mapped.set(k, mapFN(k, v));
+    });
+
+    return mapped;
+  }
+  public mapToArray<T>(mapFN: (key: K, value: V) => T): T[]
   {
     const mapped: T[] = [];
 
-    for (let ID in this.keysByID)
+    this.forEach((k, v) =>
     {
-      mapped.push(mapFN(this.keysByID[ID], this.valuesByID[ID]));
-    }
+      mapped.push(mapFN(k, v));
+    });
 
     return mapped;
   }

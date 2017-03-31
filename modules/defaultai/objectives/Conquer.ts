@@ -53,6 +53,7 @@ export class Conquer extends FrontObjective
       {
         const ongoing = currentObjectivesByTarget.get(star);
         ongoing.score = score;
+
         return ongoing;
       }
       else
@@ -82,9 +83,10 @@ export class Conquer extends FrontObjective
       return target.building && target.enemy === target.building.controller;
     });
   }
-  protected evaluateUnitFit(unit: Unit): number
+  public evaluateUnitFit(unit: Unit): number
   {
     const strengthScore = this.unitEvaluator.evaluateCombatStrength(unit);
+
     return strengthScore * this.evaluateDefaultUnitFit(unit, this.front);
   }
   protected getMinimumRequiredCombatStrength(mapEvaluator: MapEvaluator): number
