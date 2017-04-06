@@ -42,7 +42,9 @@ econ
 import {GrandStrategyAI} from "./GrandStrategyAI";
 import MapEvaluator from "./MapEvaluator";
 import {ObjectiveQueue} from "./ObjectiveQueue";
+import {objectiveCreatorTemplates} from "./objectiveCreatorTemplates";
 
+import {FrontObjective} from "../objectives/common/FrontObjective";
 import {Objective} from "../objectives/common/Objective";
 import {ObjectiveCreatorTemplate} from "../objectives/common/ObjectiveCreatorTemplate";
 import {ObjectiveFamily} from "../objectives/common/ObjectiveFamily";
@@ -55,7 +57,6 @@ import
 
 export class ObjectivesAI
 {
-  private readonly objectiveCreatorTemplates: ObjectiveCreatorTemplate[] = [];
   private ongoingObjectives: Objective[] = [];
 
   private readonly grandStrategyAI: GrandStrategyAI;
@@ -86,7 +87,7 @@ export class ObjectivesAI
   {
     const grouped:
     {
-      [type: string]: Objective[]
+      [type: string]: Objective[],
     } = {};
 
     objectives.forEach(objective =>
@@ -113,20 +114,37 @@ export class ObjectivesAI
   public createFrontObjectives(): void
   {
     this.updateObjectivesForFilter(ObjectivesAI.frontFilter);
+    this.calculateFinalPrioritiesForObjectivesMatchingFilter(ObjectivesAI.frontFilter);
+  }
+  public getFrontObjectives(): FrontObjective[]
+  {
+    return <FrontObjective[]> this.ongoingObjectives.filter(ObjectivesAI.frontFilter);
   }
   public executeFrontObjectives(onAllFinished: () => void): void
   {
-    const objectiveQueue = new ObjectiveQueue(
-      () =>
+    const objectives = this.getFrontObjectives();
+    objectives.sort((a, b) =>
+    {
+      const movePrioritySort = b.movePriority - a.movePriority;
+      if (movePrioritySort)
       {
-        this.updateObjectivesForFilter(ObjectivesAI.frontFilter);
-        this.calculateFinalPrioritiesForObjectivesMatchingFilter(ObjectivesAI.frontFilter);
+        return movePrioritySort;
+      }
 
-        return this.ongoingObjectives.filter(ObjectivesAI.frontFilter);
-      },
+      const finalPrioritySort = b.finalPriority - a.finalPriority;
+      if (finalPrioritySort)
+      {
+        return finalPrioritySort;
+      }
+
+      return a.id - b.id;
+    });
+
+    const objectiveQueue = new ObjectiveQueue();
+    objectiveQueue.executeObjectives(
+      objectives,
+      onAllFinished,
     );
-
-    objectiveQueue.executeObjectives(onAllFinished);
   }
 
   private updateAndExecuteObjectives(
@@ -134,55 +152,27 @@ export class ObjectivesAI
     onAllFinished: () => void,
   ): void
   {
-    const objectiveQueue = new ObjectiveQueue(
-      () =>
-      {
-        this.updateObjectivesForFilter(filterFN);
-        this.calculateFinalPrioritiesForObjectivesMatchingFilter(filterFN);
+    this.updateObjectivesForFilter(filterFN);
+    this.calculateFinalPrioritiesForObjectivesMatchingFilter(filterFN);
 
-        return this.ongoingObjectives.filter(filterFN);
-      },
+    const objectiveQueue = new ObjectiveQueue();
+
+    objectiveQueue.executeObjectives(
+      this.ongoingObjectives.filter(filterFN).sort(ObjectiveQueue.sortByFinalPriority),
+      onAllFinished,
     );
-
-    objectiveQueue.updateObjectives();
-    objectiveQueue.executeObjectives(onAllFinished);
-  }
-  /**
-   * removes from this.ongoingObjectives as a side effect
-   */
-  private spliceOngoingObjectives(filterFN: (objective: Objective) => boolean): Objective[]
-  {
-    const filteredOngoingObjectives: Objective[] = [];
-    const splicedObjectives: Objective[] = [];
-
-    this.ongoingObjectives.forEach(objective =>
-    {
-      if (filterFN(objective))
-      {
-        splicedObjectives.push(objective);
-      }
-      else
-      {
-        filteredOngoingObjectives.push(objective);
-      }
-    });
-
-    this.ongoingObjectives = filteredOngoingObjectives;
-
-    return splicedObjectives;
   }
   private updateObjectivesForFilter(
     filterFN: (toFilter: Objective | ObjectiveCreatorTemplate) => boolean,
   ): void
   {
-    const creatorTemplates = this.objectiveCreatorTemplates.filter(filterFN);
-
-    const ongoingObjectives = this.spliceOngoingObjectives(filterFN);
+    const creatorTemplates = objectiveCreatorTemplates.filter(filterFN);
 
     creatorTemplates.forEach(template =>
     {
-      const newObjectives = template.getObjectives(this.mapEvaluator, ongoingObjectives);
-      this.ongoingObjectives.push(...newObjectives);
+      const newObjectives = template.getUpdatedObjectivesList(this.mapEvaluator, this.ongoingObjectives);
+
+      this.ongoingObjectives = newObjectives;
     });
   }
   private getRelativeScoresForObjectives(objectives: Objective[]): IDDictionary<Objective, number>
@@ -218,7 +208,7 @@ export class ObjectivesAI
   {
     // evaluate priorities
     const priorities: {[type: string]: number} = {};
-    this.objectiveCreatorTemplates.filter(filterFN).forEach(template =>
+    objectiveCreatorTemplates.filter(filterFN).forEach(template =>
     {
       priorities[template.type] = template.evaluatePriority(this.mapEvaluator, this.grandStrategyAI);
     });

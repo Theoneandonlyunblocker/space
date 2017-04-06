@@ -1,11 +1,12 @@
-import {FrontObjective} from "./common/FrontObjective";
+import {Objective} from "./common/Objective";
+import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 import {movePriority} from "./common/movePriority";
 
 import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
-import {Front} from "../mapai/Front";
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
+import {UnitEvaluator} from "../mapai/UnitEvaluator";
 
 import DiplomacyState from "../../../src/DiplomacyState";
 import Player from "../../../src/Player";
@@ -14,20 +15,19 @@ import Unit from "../../../src/Unit";
 import ValuesByStar from "../../../src/ValuesByStar";
 
 
-export class ScoutingPerimeter extends FrontObjective
+export class ScoutingPerimeter extends TargetedFrontObjective
 {
-  public readonly type = "Discovery";
+  public static readonly type = "ScoutingPerimeter";
+  public readonly type = "ScoutingPerimeter";
+
   public readonly movePriority = movePriority.scoutingPerimeter;
 
-  public readonly target: Star;
-
-  protected constructor(score: number, target: Star)
+  protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {
-    super(score);
-    this.target = target;
+    super(score, target, mapEvaluator, unitEvaluator);
   }
 
-  public static getObjectives(mapEvaluator: MapEvaluator, currentObjectives: ScoutingPerimeter[]): ScoutingPerimeter[]
+  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): ScoutingPerimeter[]
   {
     const playersToEstablishPerimeterAgainst: Player[] = [];
     const diplomacyStatus = mapEvaluator.player.diplomacyStatus;
@@ -55,39 +55,19 @@ export class ScoutingPerimeter extends FrontObjective
       }, 0);
     }, ...allScores);
 
-    const currentObjectivesByTarget = this.getObjectivesByTarget(currentObjectives);
-
-    return mergedScores.map((star, score) =>
+    return mergedScores.mapToArray((star, score) =>
     {
-      if (currentObjectivesByTarget.has(star))
-      {
-        const ongoing = currentObjectivesByTarget.get(star);
-        ongoing.score = score;
-        return ongoing;
-      }
-      else
-      {
-        return new ScoutingPerimeter(score, star);
-      }
+      return new ScoutingPerimeter(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
   {
     return grandStrategyAI.desireForConsolidation;
   }
 
   public execute(afterDoneCallback: () => void): void
   {
-    this.moveUnits(this.front, this.mapEvaluator, afterDoneCallback);
-  }
-
-  protected moveUnits(
-    front: Front,
-    mapEvaluator: MapEvaluator,
-    afterDoneCallback: () => void,
-  ): void
-  {
-    moveToTarget(front, afterDoneCallback, fleet =>
+    moveToTarget(this.front, afterDoneCallback, fleet =>
     {
       return this.target;
     });
@@ -98,11 +78,11 @@ export class ScoutingPerimeter extends FrontObjective
 
     return scoutingScore * this.evaluateDefaultUnitFit(unit, this.front, 0, 0, 2);
   }
-  protected getMinimumRequiredCombatStrength(mapEvaluator: MapEvaluator): number
+  public getMinimumRequiredCombatStrength(): number
   {
     return 0;
   }
-  protected getIdealRequiredCombatStrength(mapEvaluator: MapEvaluator): number
+  public getIdealRequiredCombatStrength(): number
   {
     return 0;
   }

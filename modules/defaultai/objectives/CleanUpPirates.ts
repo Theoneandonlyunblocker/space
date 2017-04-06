@@ -1,30 +1,28 @@
-import {FrontObjective} from "./common/FrontObjective";
+import {Objective} from "./common/Objective";
+import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 import {movePriority} from "./common/movePriority";
 
-import {musterAndAttack} from "./common/moveroutines/musterAndAttack";
-
-import {Front} from "../mapai/Front";
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
+import {UnitEvaluator} from "../mapai/UnitEvaluator";
 
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
 
 
-export class CleanUpPirates extends FrontObjective
+export class CleanUpPirates extends TargetedFrontObjective
 {
+  public static readonly type = "CleanUpPirates";
   public readonly type = "CleanUpPirates";
+
   public readonly movePriority = movePriority.cleanUpPirates;
 
-  public readonly target: Star;
-
-  protected constructor(score: number, target: Star)
+  protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {
-    super(score);
-    this.target = target;
+    super(score, target, mapEvaluator, unitEvaluator);
   }
 
-  public static getObjectives(mapEvaluator: MapEvaluator, currentObjectives: CleanUpPirates[]): CleanUpPirates[]
+  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): CleanUpPirates[]
   {
     const ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(star =>
     {
@@ -41,39 +39,19 @@ export class CleanUpPirates extends FrontObjective
     const evaluations = mapEvaluator.evaluateStarTargets(ownedStarsWithPirates);
     const scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
-    const currentObjectivesByTarget = this.getObjectivesByTarget(currentObjectives);
-
-    return scores.map((star, score) =>
+    return scores.mapToArray((star, score) =>
     {
-      if (currentObjectivesByTarget.has(star))
-      {
-        const ongoing = currentObjectivesByTarget.get(star);
-        ongoing.score = score;
-        return ongoing;
-      }
-      else
-      {
-        return new CleanUpPirates(score, star);
-      }
+      return new CleanUpPirates(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
   {
     return grandStrategyAI.desireForConsolidation;
   }
 
   public execute(afterDoneCallback: () => void): void
   {
-    this.moveUnits(this.front, this.mapEvaluator, afterDoneCallback);
-  }
-
-  protected moveUnits(
-    front: Front,
-    mapEvaluator: MapEvaluator,
-    afterDoneCallback: () => void,
-  ): void
-  {
-    musterAndAttack(front, afterDoneCallback, target =>
+    this.musterAndAttack(afterDoneCallback, target =>
     {
       return target.enemy.isIndependent;
     });
@@ -81,15 +59,16 @@ export class CleanUpPirates extends FrontObjective
   public evaluateUnitFit(unit: Unit): number
   {
     const strengthScore = this.unitEvaluator.evaluateCombatStrength(unit);
+
     return strengthScore * this.evaluateDefaultUnitFit(unit, this.front);
   }
-  protected getMinimumRequiredCombatStrength(mapEvaluator: MapEvaluator): number
+  public getMinimumRequiredCombatStrength(): number
   {
     const enemyStrength = this.mapEvaluator.getIndependentStrengthAtStar(this.target);
 
     return enemyStrength * 1.5;
   }
-  protected getIdealRequiredCombatStrength(mapEvaluator: MapEvaluator): number
+  public getIdealRequiredCombatStrength(): number
   {
     const enemyStrength = this.mapEvaluator.getIndependentStrengthAtStar(this.target);
 

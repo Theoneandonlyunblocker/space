@@ -1,33 +1,37 @@
-import {FrontObjective} from "./common/FrontObjective";
+import {Objective} from "./common/Objective";
+import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 import {movePriority} from "./common/movePriority";
 
-import {musterAndAttack} from "./common/moveroutines/musterAndAttack";
-
-import {Front} from "../mapai/Front";
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
+import {UnitEvaluator} from "../mapai/UnitEvaluator";
 
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
 
 
-export class Conquer extends FrontObjective
+export class Conquer extends TargetedFrontObjective
 {
+  public static readonly type = "Conquer";
   public readonly type = "Conquer";
+
   public readonly movePriority = movePriority.conquer;
 
-  public readonly target: Star;
-
-  protected constructor(score: number, target: Star)
+  protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {
-    super(score);
-    this.target = target;
+    super(score, target, mapEvaluator, unitEvaluator);
   }
 
-  public static getObjectives(mapEvaluator: MapEvaluator, currentObjectives: Conquer[]): Conquer[]
+  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): Conquer[]
   {
     const possibleTargets = mapEvaluator.player.getNeighboringStars().filter(star =>
     {
+      // covered by expansion objectives
+      if (star.owner.isIndependent)
+      {
+        return false;
+      }
+
       if (!mapEvaluator.player.starIsRevealed(star))
       {
         return false;
@@ -45,40 +49,19 @@ export class Conquer extends FrontObjective
       return score;
     });
 
-    const currentObjectivesByTarget = this.getObjectivesByTarget(currentObjectives);
-
-    return scores.map((star, score) =>
+    return scores.mapToArray((star, score) =>
     {
-      if (currentObjectivesByTarget.has(star))
-      {
-        const ongoing = currentObjectivesByTarget.get(star);
-        ongoing.score = score;
-
-        return ongoing;
-      }
-      else
-      {
-        return new Conquer(score, star);
-      }
+      return new Conquer(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
   {
     return grandStrategyAI.desireForExpansion;
   }
 
   public execute(afterDoneCallback: () => void): void
   {
-    this.moveUnits(this.front, this.mapEvaluator, afterDoneCallback);
-  }
-
-  protected moveUnits(
-    front: Front,
-    mapEvaluator: MapEvaluator,
-    afterDoneCallback: () => void,
-  ): void
-  {
-    musterAndAttack(front, afterDoneCallback, target =>
+    this.musterAndAttack(afterDoneCallback, target =>
     {
       return target.building && target.enemy === target.building.controller;
     });
@@ -89,13 +72,15 @@ export class Conquer extends FrontObjective
 
     return strengthScore * this.evaluateDefaultUnitFit(unit, this.front);
   }
-  protected getMinimumRequiredCombatStrength(mapEvaluator: MapEvaluator): number
+
+
+  public getMinimumRequiredCombatStrength(): number
   {
     const enemyStrength = this.mapEvaluator.getHostileStrengthAtStar(this.target);
 
     return enemyStrength * 1.3;
   }
-  protected getIdealRequiredCombatStrength(mapEvaluator: MapEvaluator): number
+  public getIdealRequiredCombatStrength(): number
   {
     const enemyStrength = this.mapEvaluator.getHostileStrengthAtStar(this.target);
 

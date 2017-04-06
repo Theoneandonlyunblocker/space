@@ -1,4 +1,5 @@
 import {EconomicObjective} from "./common/EconomicObjective";
+import {Objective} from "./common/Objective";
 
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
@@ -9,25 +10,27 @@ import Star from "../../../src/Star";
 
 export class ExpandManufactoryCapacity extends EconomicObjective
 {
+  public static readonly type = "ExpandManufactoryCapacity";
   public readonly type = "ExpandManufactoryCapacity";
 
   public readonly target: Star;
 
+  private readonly player: Player;
+
   constructor(score: number, player: Player, target: Star)
   {
-    super(score, ExpandManufactoryCapacity.getCostForStar(target), player);
+    super(score);
 
+    this.player = player;
     this.target = target;
   }
 
-  public static getObjectives(mapEvaluator: MapEvaluator, currentObjectives: ExpandManufactoryCapacity[]): ExpandManufactoryCapacity[]
+  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): ExpandManufactoryCapacity[]
   {
     const starsThatCanExpand = mapEvaluator.player.controlledLocations.filter(star =>
     {
       return !star.manufactory || star.manufactory.capacity < star.manufactory.maxCapacity;
     });
-
-    const currentObjectivesByTarget = this.getObjectivesByTarget(currentObjectives);
 
     return starsThatCanExpand.map(star =>
     {
@@ -40,29 +43,29 @@ export class ExpandManufactoryCapacity extends EconomicObjective
 
       const score = costScore + Math.pow(upgradeScore, 2);
 
-      if (currentObjectivesByTarget.has(star))
-      {
-        const ongoing = currentObjectivesByTarget.get(star);
-        ongoing.score = score;
-        return ongoing;
-      }
-      else
-      {
-        return new ExpandManufactoryCapacity(score, mapEvaluator.player, star);
-      }
+      return new ExpandManufactoryCapacity(score, mapEvaluator.player, star);
     });
   }
-  public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
   {
     // TODO 25.02.2017 | manufacturing demand / manufacturing capacity
     return grandStrategyAI.desireForConsolidation;
   }
+  protected static updateOngoingObjectivesList(
+    allOngoingObjectives: Objective[],
+    createdObjectives: ExpandManufactoryCapacity[],
+  ): Objective[]
+  {
+    return this.updateTargetedObjectives(allOngoingObjectives, createdObjectives);
+  }
+
   private static getCostForStar(star: Star): number
   {
     return star.manufactory ?
       star.manufactory.getCapacityUpgradeCost() :
       Manufactory.getBuildCost();
   }
+
   public execute(afterDoneCallback: () => void): void
   {
     const upgradeCost = ExpandManufactoryCapacity.getCostForStar(this.target);

@@ -1,36 +1,34 @@
-import {FrontObjective} from "./common/FrontObjective";
+import {Objective} from "./common/Objective";
+import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 import {movePriority} from "./common/movePriority";
 
 import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
-import {Front} from "../mapai/Front";
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
+import {UnitEvaluator} from "../mapai/UnitEvaluator";
 
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
 
 
-export class Discovery extends FrontObjective
+export class Discovery extends TargetedFrontObjective
 {
+  public static readonly type = "Discovery";
   public readonly type = "Discovery";
+
   public readonly movePriority = movePriority.discovery;
 
-  public readonly target: Star;
-
-  protected constructor(score: number, target: Star)
+  protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {
-    super(score);
-    this.target = target;
+    super(score, target, mapEvaluator, unitEvaluator);
   }
 
-  public static getObjectives(mapEvaluator: MapEvaluator, currentObjectives: Discovery[]): Discovery[]
+  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): Discovery[]
   {
     const linksToUnRevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
 
-    const currentObjectivesByTarget = this.getObjectivesByTarget(currentObjectives);
-
-    return linksToUnRevealedStars.map((targetStar, linkedStars) =>
+    return linksToUnRevealedStars.mapToArray((targetStar, linkedStars) =>
     {
       const nearestOwnedStar = mapEvaluator.player.getNearestOwnedStarTo(targetStar);
       const distanceToNearestOwnedStar = nearestOwnedStar.getDistanceToStar(targetStar);
@@ -41,35 +39,17 @@ export class Discovery extends FrontObjective
 
       const score = desirabilityScore * linksMultiplier * distanceMultiplier;
 
-      if (currentObjectivesByTarget.has(targetStar))
-      {
-        const ongoing = currentObjectivesByTarget.get(targetStar);
-        ongoing.score = score;
-        return ongoing;
-      }
-      else
-      {
-        return new Discovery(score, targetStar);
-      }
+      return new Discovery(score, targetStar, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  public static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
   {
     return grandStrategyAI.desireForExploration;
   }
 
   public execute(afterDoneCallback: () => void): void
   {
-    this.moveUnits(this.front, this.mapEvaluator, afterDoneCallback);
-  }
-
-  protected moveUnits(
-    front: Front,
-    mapEvaluator: MapEvaluator,
-    afterDoneCallback: () => void,
-  ): void
-  {
-    moveToTarget(front, afterDoneCallback, fleet =>
+    moveToTarget(this.front, afterDoneCallback, fleet =>
     {
       return this.target;
     });
@@ -83,11 +63,11 @@ export class Discovery extends FrontObjective
 
     return score * this.evaluateDefaultUnitFit(unit, this.front, 0, 0, 2);
   }
-  protected getMinimumRequiredCombatStrength(mapEvaluator: MapEvaluator): number
+  public getMinimumRequiredCombatStrength(): number
   {
     return 0;
   }
-  protected getIdealRequiredCombatStrength(mapEvaluator: MapEvaluator): number
+  public getIdealRequiredCombatStrength(): number
   {
     return 0;
   }

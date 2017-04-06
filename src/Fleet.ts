@@ -188,6 +188,10 @@ export class Fleet
       return Math.min(minMovePoints, currentUnitMovePoints);
     }, Infinity);
   }
+  public hasEnoughMovePointsToMoveTo(target: Star): boolean
+  {
+    return this.getMinCurrentMovePoints() >= this.location.getDistanceToStar(target);
+  }
   public getPathTo(newLocation: Star): PathNode[]
   {
     const a = aStar(this.location, newLocation);

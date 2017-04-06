@@ -3,7 +3,6 @@ import Game from "../../../src/Game";
 import Player from "../../../src/Player";
 
 import MapEvaluator from "./MapEvaluator";
-import {ObjectivesAI} from "./ObjectivesAI";
 
 export default class DiplomacyAI
 {
@@ -13,11 +12,9 @@ export default class DiplomacyAI
   private diplomacyStatus: DiplomacyStatus;
 
   private mapEvaluator: MapEvaluator;
-  private objectivesAI: ObjectivesAI;
 
   constructor(
     mapEvaluator: MapEvaluator,
-    objectivesAI: ObjectivesAI,
     game: Game,
   )
   {
@@ -27,8 +24,8 @@ export default class DiplomacyAI
     this.diplomacyStatus = this.player.diplomacyStatus;
 
     this.mapEvaluator = mapEvaluator;
-    this.objectivesAI = objectivesAI;
   }
+
   public setAttitudes()
   {
     const diplomacyEvaluations =

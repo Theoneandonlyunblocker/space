@@ -1,6 +1,5 @@
 import DefaultAISaveData from "./DefaultAISaveData";
 import DiplomacyAI from "./DiplomacyAI";
-import EconomyAI from "./EconomyAI";
 import FrontsAI from "./FrontsAI";
 import {GrandStrategyAI} from "./GrandStrategyAI";
 import MapEvaluator from "./MapEvaluator";
@@ -29,6 +28,9 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
 
   public readonly personality: Personality;
 
+  private turnProcessingQueue: {(afterFinishedCallback: () => void): void}[] = [];
+  private afterTurnHasProcessed: () => void;
+
   private readonly player: Player;
   private readonly game: Game;
 
@@ -39,7 +41,6 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
 
   private readonly grandStrategyAI: GrandStrategyAI;
   private readonly objectivesAI: ObjectivesAI;
-  private readonly economyAI: EconomyAI;
   private readonly frontsAI: FrontsAI;
   private readonly diplomacyAI: DiplomacyAI;
 
@@ -55,69 +56,19 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     this.unitEvaluator = new UnitEvaluator();
     this.mapEvaluator = new MapEvaluator(this.map, this.player, this.unitEvaluator);
 
-
     this.grandStrategyAI = new GrandStrategyAI(this.personality, this.mapEvaluator, this.game);
     this.objectivesAI = new ObjectivesAI(this.mapEvaluator, this.grandStrategyAI);
     this.frontsAI = new FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality, this.game);
-    this.economyAI = new EconomyAI(
-    {
-      objectivesAI: this.objectivesAI,
-      frontsAI: this.frontsAI,
-      mapEvaluator: this.mapEvaluator,
-      personality: this.personality,
-    });
-    this.diplomacyAI = new DiplomacyAI(this.mapEvaluator, this.objectivesAI, this.game);
+
+    this.diplomacyAI = new DiplomacyAI(this.mapEvaluator, this.game);
   }
 
   public processTurn(afterFinishedCallback: () => void)
   {
-    // evaluate grand strategy
-    this.grandStrategyAI.setDesires();
+    this.afterTurnHasProcessed = afterFinishedCallback;
 
-    // set attitude
-    this.diplomacyAI.setAttitudes();
-
-    // process diplo objectives
-    this.objectivesAI.processDiplomaticObjectives();
-
-    // create front objectives
-    this.objectivesAI.createFrontObjectives();
-
-    // form fronts
-    this.frontsAI.formFronts();
-
-    // assign units
-    this.frontsAI.assignUnits();
-
-    // create front requests
-    this.frontsAI.setUnitRequests();
-
-    // process economic objectives
-    this.objectivesAI.processEconomicObjectives();
-
-    // organize fleets
-    this.frontsAI.organizeFleets();
-
-    // execute front objectives
-    this.objectivesAI.executeFrontObjectives();
-
-    // organize fleets
-    this.frontsAI.organizeFleets();
-
-    // evaluate grand strategy
-    this.grandStrategyAI.setDesires();
-
-    // set attitude
-    this.diplomacyAI.setAttitudes();
-
-    // diplo
-    // TODO 03.04.2017 | should do separate things to pre-turn diplo
-    // don't want to declare war here for example
-    this.objectivesAI.processDiplomaticObjectives();
-
-    // econ
-    // same here. no point building stuff that can't be used yet
-    this.objectivesAI.processEconomicObjectives();
+    this.turnProcessingQueue = this.constructTurnProcessingQueue();
+    this.processTurnStep();
   }
   // TODO 20.02.2017 | handle variable amount of rows
   public createBattleFormation(
@@ -220,5 +171,92 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
   {
     // TODO
     return undefined;
+  }
+
+  private constructTurnProcessingQueue(): {(afterFinishedCallback: () => void): void}[]
+  {
+    const queue: {(afterFinishedCallback: () => void): void}[] = [];
+
+
+    queue.push(triggerFinish =>
+    {
+      // evaluate grand strategy
+      this.grandStrategyAI.setDesires();
+
+      // set attitude
+      this.diplomacyAI.setAttitudes();
+
+      // process diplo objectives
+      this.objectivesAI.processDiplomaticObjectives(triggerFinish);
+    });
+
+
+    queue.push(triggerFinish =>
+    {
+      // create front objectives
+      this.objectivesAI.createFrontObjectives();
+
+      // form fronts
+      this.frontsAI.formFronts();
+
+      // assign units
+      this.frontsAI.assignUnits();
+
+      // process economic objectives
+      this.objectivesAI.processEconomicObjectives(triggerFinish);
+    });
+
+    queue.push(triggerFinish =>
+    {
+      // organize fleets
+      this.frontsAI.organizeFleets();
+
+      // execute front objectives
+      this.objectivesAI.executeFrontObjectives(triggerFinish);
+    });
+
+    queue.push(triggerFinish =>
+    {
+      // organize fleets
+      this.frontsAI.organizeFleets();
+      triggerFinish();
+
+      // // evaluate grand strategy
+      // this.grandStrategyAI.setDesires();
+
+      // // set attitude
+      // this.diplomacyAI.setAttitudes();
+
+      // // diplo
+      // // TODO 03.04.2017 | should do separate things to pre-turn diplo
+      // // don't want to declare war here for example
+      // this.objectivesAI.processDiplomaticObjectives(triggerFinish);
+    });
+
+    // queue.push(triggerFinish =>
+    // {
+    //   // econ
+    //   // same here. no point building stuff that can't be used yet
+    //   this.objectivesAI.processEconomicObjectives(triggerFinish);
+    // });
+
+
+    return queue;
+  }
+  private processTurnStep(): void
+  {
+    const nextStep = this.turnProcessingQueue.shift();
+
+    if (!nextStep)
+    {
+      const afterFinishedCallback = this.afterTurnHasProcessed;
+      this.afterTurnHasProcessed = null;
+
+      afterFinishedCallback();
+
+      return;
+    }
+
+    nextStep(this.processTurnStep.bind(this));
   }
 }

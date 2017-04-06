@@ -1,8 +1,5 @@
-import Objective from "./Objective";
-
 import ArchetypeValues from "../../../src/ArchetypeValues";
 import {Fleet} from "../../../src/Fleet";
-import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
 
 import attachedUnitData from "../../common/attachedUnitData";
@@ -10,38 +7,19 @@ import attachedUnitData from "../../common/attachedUnitData";
 export class Front
 {
   public id: number;
-  public objective: Objective;
   public units: Unit[];
 
-  public minUnitsDesired: number;
-  public idealUnitsDesired: number;
-
-  public targetLocation: Star;
-  public musterLocation: Star;
-  public hasMustered: boolean = false;
-
-  constructor(props:
+  constructor(id: number, units?: Unit[])
   {
-    id: number;
-    objective: Objective;
-    units?: Unit[];
-
-    minUnitsDesired: number;
-    idealUnitsDesired: number;
-
-    targetLocation: Star;
-    musterLocation: Star;
-  })
+    this.id = id;
+    this.units = units || [];
+  }
+  public destroy(): void
   {
-    this.id = props.id;
-    this.objective = props.objective;
-    this.units = props.units || [];
-
-    this.minUnitsDesired = props.minUnitsDesired;
-    this.idealUnitsDesired = props.idealUnitsDesired;
-
-    this.targetLocation = props.targetLocation;
-    this.musterLocation = props.musterLocation;
+    this.units.forEach(unit =>
+    {
+      attachedUnitData.get(unit).front = null;
+    });
   }
   public addUnit(unit: Unit): void
   {
@@ -105,19 +83,6 @@ export class Front
 
     return byLocation;
   }
-  public moveFleets(afterMoveCallback: () => void): void
-  {
-    if (this.units.length < 1)
-    {
-      afterMoveCallback();
-      return;
-    }
-    else
-    {
-      const moveRoutine = this.objective.template.moveRoutineFN;
-      moveRoutine(this, afterMoveCallback);
-    }
-  }
   public getAssociatedFleets(): Fleet[]
   {
     const fleetsById:
@@ -147,40 +112,6 @@ export class Front
 
     return allFleets;
   }
-  public scoreUnitFit(unit: Unit): number
-  {
-    const template = this.objective.template;
-    let score = 1;
-    if (this.hasUnit(unit))
-    {
-      score += 0.2;
-      if (this.hasMustered)
-      {
-        score += 0.3;
-      }
-
-      this.removeUnit(unit);
-    }
-    score *= this.objective.priority;
-    score *= template.unitFitFN(unit, this);
-    score *= template.unitDesireFN(this);
-    return score;
-  }
-  public getNewUnitArchetypeScores(): ArchetypeValues
-  {
-    const countByArchetype = this.getUnitCountByArchetype();
-    const totalUnits = this.units.length;
-    const idealWeights = this.objective.template.preferredUnitComposition;
-    const scores: ArchetypeValues = {};
-
-    for (let unitType in idealWeights)
-    {
-      const archetypeCount = countByArchetype[unitType] || 0;
-      scores[unitType] = totalUnits * idealWeights[unitType] - archetypeCount;
-    }
-
-    return scores;
-  }
   public organizeAllFleets(): void
   {
     this.organizeFleets(
@@ -192,6 +123,28 @@ export class Front
       this.getAssociatedFleets().filter(fleet => fleet.isStealthy),
       this.units.filter(unit => unit.isStealthy()),
     );
+  }
+  public hasUnit(unit: Unit): boolean
+  {
+    return this.getUnitIndex(unit) !== -1;
+  }
+  public getUnitCountByArchetype(): ArchetypeValues
+  {
+    const unitCountByArchetype: ArchetypeValues = {};
+
+    for (let i = 0; i < this.units.length; i++)
+    {
+      const archetype = this.units[i].template.archetype;
+
+      if (!unitCountByArchetype[archetype.type])
+      {
+        unitCountByArchetype[archetype.type] = 0;
+      }
+
+      unitCountByArchetype[archetype.type]++;
+    }
+
+    return unitCountByArchetype;
   }
 
   private organizeFleets(fleetsToOrganize: Fleet[], unitsToOrganize: Unit[]): void
@@ -254,28 +207,6 @@ export class Front
   private getUnitIndex(unit: Unit): number
   {
     return this.units.indexOf(unit);
-  }
-  private hasUnit(unit: Unit): boolean
-  {
-    return this.getUnitIndex(unit) !== -1;
-  }
-  private getUnitCountByArchetype(): ArchetypeValues
-  {
-    const unitCountByArchetype: ArchetypeValues = {};
-
-    for (let i = 0; i < this.units.length; i++)
-    {
-      const archetype = this.units[i].template.archetype;
-
-      if (!unitCountByArchetype[archetype.type])
-      {
-        unitCountByArchetype[archetype.type] = 0;
-      }
-
-      unitCountByArchetype[archetype.type]++;
-    }
-
-    return unitCountByArchetype;
   }
   private mergeFleetsWithSharedLocation(fleetsToMerge: Fleet[]): void
   {

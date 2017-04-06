@@ -74,7 +74,7 @@ export default class ModuleLoader
     {
       return;
     }
-    console.log("start loading module", moduleFile.key);
+    console.log("start loading module '", moduleFile.key, "'");
 
     this.moduleLoadStart[moduleFile.key] = Date.now();
     if (moduleFile.loadAssets)

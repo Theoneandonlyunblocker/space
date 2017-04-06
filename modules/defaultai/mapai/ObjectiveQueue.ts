@@ -3,43 +3,36 @@ import {Objective} from "../objectives/common/Objective";
 export class ObjectiveQueue
 {
   private objectivesToExecute: Objective[] = [];
-  private objectivesExecutedSinceRecheck: number = 0;
-  private recheckInterval: number = 20;
-
   private currentObjective: Objective;
-
-  private getUpdatedObjectives: () => Objective[];
   private onAllFinished: () => void;
+  private executionFailureTimeoutHandle: number;
 
-  constructor(getUpdatedObjectivesFN: () => Objective[])
+  constructor()
   {
-    this.getUpdatedObjectives = getUpdatedObjectivesFN;
+
   }
 
-  public executeObjectives(onAllFinished: () => void): void
+  public static sortByFinalPriority(a: Objective, b: Objective): number
   {
+    return b.finalPriority - a.finalPriority;
+  }
+
+  public executeObjectives(
+    objectivesToExecute: Objective[],
+    onAllFinished: () => void,
+  ): void
+  {
+    this.objectivesToExecute = objectivesToExecute;
     this.onAllFinished = onAllFinished;
 
     this.executeNextObjective();
   }
-  public updateObjectives(): void
-  {
-    this.objectivesToExecute = this.getUpdatedObjectives().sort((a, b) =>
-    {
-      return b.finalPriority - a.finalPriority;
-    });
-
-    this.objectivesExecutedSinceRecheck = 0;
-  }
-
   private executeNextObjective(): void
   {
-    if (this.objectivesExecutedSinceRecheck >= this.recheckInterval)
-    {
-      this.updateObjectives();
-    }
-
     this.currentObjective = this.objectivesToExecute.shift();
+
+    console.log("execute", this.currentObjective);
+    this.clearExecutionFailureTimeout();
 
     if (!this.currentObjective)
     {
@@ -48,11 +41,23 @@ export class ObjectiveQueue
       return;
     }
 
-    this.objectivesExecutedSinceRecheck += 1;
+    this.setExecutionFailureTimeout();
 
     this.currentObjective.execute(
       this.executeNextObjective.bind(this),
-      this.updateObjectives.bind(this),
     );
+  }
+  private setExecutionFailureTimeout(delay: number = 5000): void
+  {
+    this.executionFailureTimeoutHandle = window.setTimeout(() =>
+    {
+      console.warn(`Objective of type ${this.currentObjective.type} failed to trigger finish callback for objective execution after ${delay}ms`);
+      this.clearExecutionFailureTimeout();
+    }, delay);
+  }
+  private clearExecutionFailureTimeout(): void
+  {
+    window.clearTimeout(this.executionFailureTimeoutHandle);
+    this.executionFailureTimeoutHandle = null;
   }
 }

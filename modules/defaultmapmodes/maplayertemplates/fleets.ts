@@ -5,11 +5,8 @@ import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendere
 import app from "../../../src/App";
 import {Fleet} from "../../../src/Fleet";
 import GalaxyMap from "../../../src/GalaxyMap";
-import Options from "../../../src/Options";
 import Player from "../../../src/Player";
 import eventManager from "../../../src/eventManager";
-
-import attachedUnitData from "../../common/attachedUnitData";
 
 
 const fleets: MapRendererLayerTemplate =
@@ -43,12 +40,6 @@ const fleets: MapRendererLayerTemplate =
     const mouseOverFN = function(fleet: Fleet)
     {
       eventManager.dispatchEvent("hoverStar", fleet.location);
-
-      if (Options.debug.enabled && fleet.units.length > 0)
-      {
-        const front = attachedUnitData.get(fleet.units[0]).front;
-        console.log(`${fleet.id}${front ? ", " + front.objective.type : ""}`);
-      }
     };
     const fleetClickFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
     {

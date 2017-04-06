@@ -58,7 +58,7 @@ export default class MapEvaluator
       productionWeight: number;
     };
   };
-  private unitEvaluator: UnitEvaluator;
+  public unitEvaluator: UnitEvaluator;
 
   constructor(map: GalaxyMap, player: Player, unitEvaluator: UnitEvaluator)
   {

@@ -9,6 +9,6 @@ export interface ObjectiveCreatorTemplate
   type: string;
   family: ObjectiveFamily;
 
-  getObjectives: (mapEvaluator: MapEvaluator, currentObjectives: Objective[]) => Objective[];
+  getUpdatedObjectivesList: (mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]) => Objective[];
   evaluatePriority: (mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI) => number;
 }

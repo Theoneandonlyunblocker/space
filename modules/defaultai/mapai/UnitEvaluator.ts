@@ -10,7 +10,7 @@ export class UnitEvaluator
   {
     let strength = 0;
 
-    // TODO 20.02.2017 |
+    // TODO 20.02.2017 | take more than health into account
     units.forEach(unit =>
     {
       strength += unit.currentHealth;

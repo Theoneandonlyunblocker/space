@@ -158,11 +158,11 @@ export default class Manufactory
 
     return [];
   }
-  public getUniqueLocalUnitTypes(alreadyAdded: UnitTemplate[]): UnitTemplate[]
+  public getUniqueLocalUnitTypes(alreadyAdded: UnitTemplate[] = []): UnitTemplate[]
   {
     return this.getUniqueLocalManufacturableThings(alreadyAdded, "unit");
   }
-  public getUniqueLocalItemTypes(alreadyAdded: ItemTemplate[]): ItemTemplate[]
+  public getUniqueLocalItemTypes(alreadyAdded: ItemTemplate[] = []): ItemTemplate[]
   {
     return this.getUniqueLocalManufacturableThings(alreadyAdded, "item");
   }
