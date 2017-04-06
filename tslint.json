@@ -86,7 +86,7 @@
     // having empty interfaces for stuff like react component state can be cleaner
     // "no-empty-interface": true,
     // this warns for {(): void}[] which is annoying
-    "callable-types": true,
+    // "callable-types": true,
 
     "space-before-function-paren": "never",
     // we use newlines
