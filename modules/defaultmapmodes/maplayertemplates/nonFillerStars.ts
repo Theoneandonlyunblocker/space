@@ -9,7 +9,7 @@ import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendere
 import
 {
   makePolygonFromPoints,
-} from "../../../src/utility";
+} from "../../../src/pixiWrapperFunctions";
 
 const nonFillerStars: MapRendererLayerTemplate =
 {

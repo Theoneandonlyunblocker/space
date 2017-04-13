@@ -15,7 +15,7 @@ import
 {
   generateTextureWithBounds,
   getDummyTextureForShader,
-} from "../../../src/utility";
+} from "../../../src/pixiWrapperFunctions";
 
 import ProtonWrapper from "./ProtonWrapper";
 

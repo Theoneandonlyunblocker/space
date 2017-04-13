@@ -7,7 +7,7 @@ import {UnitAttribute} from "../../../src/UnitAttributes";
 import
 {
   generateTextureWithBounds,
-} from "../../../src/utility";
+} from "../../../src/pixiWrapperFunctions";
 
 import FocusingBeam from "./sfxfragments/FocusingBeam";
 import ProjectileAttack from "./sfxfragments/ProjectileAttack";

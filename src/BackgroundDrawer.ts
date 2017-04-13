@@ -4,7 +4,7 @@ import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
 import
 {
   generateTextureWithBounds,
-} from "./utility";
+} from "./pixiWrapperFunctions";
 
 export default class BackgroundDrawer
 {

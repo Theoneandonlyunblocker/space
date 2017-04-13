@@ -9,6 +9,9 @@ import
 {
   generateTextureWithBounds,
   makeShaderSprite,
+} from "../../src/pixiWrapperFunctions";
+import
+{
   randRange,
 } from "../../src/utility";
 

@@ -5,11 +5,12 @@ import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
+
 import
 {
   generateTextureWithBounds,
   makePolygonFromPoints,
-} from "../../../src/utility";
+} from "../../../src/pixiWrapperFunctions";
 
 const fogOfWar: MapRendererLayerTemplate =
 {

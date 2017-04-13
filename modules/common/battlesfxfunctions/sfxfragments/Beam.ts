@@ -11,11 +11,13 @@ import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
 {
+  makeShaderSprite,
+} from "../../../../src/pixiWrapperFunctions";
+import
+{
   clamp,
   getRelativeValue,
-  makeShaderSprite,
 } from "../../../../src/utility";
-
 
 interface BeamProps
 {

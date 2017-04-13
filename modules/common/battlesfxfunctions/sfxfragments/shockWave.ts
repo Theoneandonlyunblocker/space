@@ -12,7 +12,7 @@ import Point from "../../../../src/Point";
 import
 {
   makeShaderSprite,
-} from "../../../../src/utility";
+} from "../../../../src/pixiWrapperFunctions";
 
 interface ShockWaveProps
 {
