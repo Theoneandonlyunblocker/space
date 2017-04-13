@@ -6,6 +6,7 @@ import {ObjectiveFamily} from "./common/ObjectiveFamily";
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 
+import Player from "../../../src/Player";
 import
 {
   getRandomArrayItem,
@@ -20,12 +21,14 @@ export class BuildUnitsForFront extends EconomicObjective
   protected readonly ongoingMultiplier = 1;
 
   private objective: FrontObjective;
+  private player: Player;
 
-  constructor(objective: FrontObjective)
+  constructor(objective: FrontObjective, player: Player)
   {
     super(objective.finalPriority);
 
     this.objective = objective;
+    this.player = player;
   }
 
   protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): BuildUnitsForFront[]
@@ -42,7 +45,7 @@ export class BuildUnitsForFront extends EconomicObjective
 
     return frontObjectivesRequestingUnits.map(objective =>
     {
-      return new BuildUnitsForFront(objective);
+      return new BuildUnitsForFront(objective, mapEvaluator.player);
     });
   }
   protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
@@ -71,7 +74,7 @@ export class BuildUnitsForFront extends EconomicObjective
 
     const manufactoryLocation = this.objective.getRallyPoint().getNearestStarForQualifier(location =>
     {
-      return location.manufactory && !location.manufactory.queueIsFull();
+      return location.owner === this.player && location.manufactory && !location.manufactory.queueIsFull();
     });
 
     if (!manufactoryLocation)
