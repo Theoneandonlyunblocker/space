@@ -10,7 +10,6 @@ import RampingValueType from "../RampingValue";
 
 import ColorType from "../../../../../src/Color";
 import PointType from "../../../../../src/Point";
-import RangeType from "../../../../../src/Range";
 
 export class Boolean extends Primitive<boolean>
 {
@@ -31,7 +30,7 @@ export class Point extends ShallowObject<PointType>
 {
   public readonly type: PropInfoType.Point;
 }
-export class Range extends ShallowObject<RangeType>
+export class Range extends ShallowObject<{min: number, max: number}>
 {
   public readonly type: PropInfoType.Range;
 }
