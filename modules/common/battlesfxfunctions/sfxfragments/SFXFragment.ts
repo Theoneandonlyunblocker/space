@@ -14,7 +14,7 @@ abstract class SFXFragment<P>
   {
     [K in keyof P]: PropInfo<P[K]>;
   };
-  public readonly props: P;
+  public readonly props: P = <P> {};
 
 
   protected _displayObject: PIXI.DisplayObject;
@@ -39,16 +39,12 @@ abstract class SFXFragment<P>
   {
     this.displayObject.scale.set(scale.x, scale.y);
   }
-  constructor(props?: Partial<P>)
+  /**
+   * make sure to call this.initializeProps(initialProps) in derived constructor
+   */
+  constructor()
   {
     this.id = idGenerator++;
-
-    this.props = <P> {};
-    this.setDefaultProps();
-    if (props)
-    {
-      this.setProps(props);
-    }
   }
 
   public abstract animate(relativeTime: number): void;
@@ -62,6 +58,15 @@ abstract class SFXFragment<P>
     }
   }
 
+  // not done in constructor as we want derived class parameter initialization to be done first
+  protected initializeProps(initialValues?: Partial<P>): void
+  {
+    this.setDefaultProps();
+    if (initialValues)
+    {
+      this.setProps(initialValues);
+    }
+  }
   protected setDisplayObject(newDisplayObject: PIXI.DisplayObject): void
   {
     const oldDisplayObject = this.displayObject;

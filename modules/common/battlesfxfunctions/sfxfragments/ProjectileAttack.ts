@@ -183,6 +183,7 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps>
     useSequentialAttackOriginPoints: new PropInfo.Boolean(true),
     removeAfterImpact: new PropInfo.Boolean(true),
     impactRate: new PropInfo.Number(0.75),
+    impactPosition: new PropInfo.Range({min: 0.7, max: 1.0}),
 
     maxSpeed: new PropInfo.Number(3),
     acceleration: new PropInfo.Number(0.05),
@@ -198,8 +199,9 @@ export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps>
 
   constructor(props: ProjectileAttackProps)
   {
-    super(props);
+    super();
 
+    this.initializeProps(props);
     this.container = new PIXI.Container();
   }
 

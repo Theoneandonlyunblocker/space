@@ -61,7 +61,8 @@ export default class ShockWave extends SFXFragment<ShockWaveProps>
 
   constructor(props: ShockWaveProps)
   {
-    super(props);
+    super();
+    this.initializeProps(props);
   }
   public static CreateFromPartialProps(props?: Partial<ShockWaveProps>): ShockWave
   {

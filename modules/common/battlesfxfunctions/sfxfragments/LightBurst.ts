@@ -43,7 +43,8 @@ export default class LightBurst extends SFXFragment<LightBurstProps>
 
   constructor(props: LightBurstProps)
   {
-    super(props);
+    super();
+    this.initializeProps(props);
   }
 
   public animate(time: number): void

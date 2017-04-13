@@ -63,7 +63,9 @@ export default class Beam extends SFXFragment<BeamProps>
 
   constructor(props: BeamProps)
   {
-    super(props);
+    super();
+
+    this.initializeProps(props);
   }
 
   public animate(time: number): void

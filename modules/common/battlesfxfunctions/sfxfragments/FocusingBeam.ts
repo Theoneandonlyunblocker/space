@@ -57,7 +57,8 @@ export default class FocusingBeam extends SFXFragment<FocusingBeamProps>
 
   constructor(props: FocusingBeamProps)
   {
-    super(props);
+    super();
+    this.initializeProps(props);
   }
 
   public animate(time: number): void
