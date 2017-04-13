@@ -1,9 +1,9 @@
-// used as-is for independent races. extended by PlayerRaceTemplate for player races
-
+import AITemplateConstructor from "./AITemplateConstructor";
 import BuildingTemplate from "./BuildingTemplate";
 import {DistributionData} from "./DistributionData";
 import ItemTemplate from "./ItemTemplate";
 import PortraitTemplate from "./PortraitTemplate";
+import RaceTechnologyValue from "./RaceTechnologyValue";
 import SubEmblemTemplate from "./SubEmblemTemplate";
 import TemplateCollection from "./TemplateCollection";
 import UnitTemplate from "./UnitTemplate";
@@ -53,4 +53,7 @@ export declare interface RaceTemplate
     localStrength: number,
     maxUnitsPerSideInBattle: number,
   ): Fleet;
+
+  technologies: RaceTechnologyValue[];
+  getAITemplateConstructor: (player: Player) => AITemplateConstructor<any>;
 }

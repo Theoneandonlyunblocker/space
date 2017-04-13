@@ -18,6 +18,8 @@ import {droneBase} from  "./units/droneBase";
 import {droneCommander} from  "./units/droneCommander";
 import {droneSwarm} from  "./units/droneSwarm";
 
+import DefaultAIConstructor from "../defaultai/mapai/DefaultAIConstructor";
+
 export const drones: RaceTemplate =
 {
   type: "drones",
@@ -59,6 +61,9 @@ export const drones: RaceTemplate =
     return generateIndependentFleet(drones, player, location,
       globalStrength, localStrength, maxUnitsPerSideInBattle);
   },
+
+  technologies: [],
+  getAITemplateConstructor: player => DefaultAIConstructor,
 };
 
 export const raceTemplates: TemplateCollection<RaceTemplate> =

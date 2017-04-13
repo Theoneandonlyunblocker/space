@@ -1,4 +1,4 @@
-import {PlayerRaceTemplate} from "../../../src/templateinterfaces/PlayerRaceTemplate";
+import {RaceTemplate} from "../../../src/templateinterfaces/RaceTemplate";
 
 import Name from "../../../src/Name";
 
@@ -20,7 +20,7 @@ import
   mergeTechnologyValues,
 } from "../common";
 
-const federationAlliance: PlayerRaceTemplate =
+const federationAlliance: RaceTemplate =
 {
   type: "federationAlliance",
   displayName: new Name("Federation Alliance", false),

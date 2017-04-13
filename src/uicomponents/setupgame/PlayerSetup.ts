@@ -14,7 +14,7 @@ import
   getRandomArrayItem,
 } from "../../utility";
 
-import {PlayerRaceTemplate} from "../../templateinterfaces/PlayerRaceTemplate";
+import {RaceTemplate} from "../../templateinterfaces/RaceTemplate";
 
 import {ColorSetterComponent, default as ColorSetter} from "./ColorSetter";
 import {default as FlagSetter, FlagSetterComponent} from "./FlagSetter";
@@ -35,12 +35,12 @@ interface StateType
   name?: string;
   secondaryColor?: Color;
   mainColor?: Color;
-  race?: PlayerRaceTemplate;
+  race?: RaceTemplate;
 }
 
-function getRandomPlayerRaceTemplate(): PlayerRaceTemplate
+function getRandomPlayerRaceTemplate(): RaceTemplate
 {
-  const candidateRaces = <PlayerRaceTemplate[]> Object.keys(app.moduleData.Templates.Races).map(raceKey =>
+  const candidateRaces = Object.keys(app.moduleData.Templates.Races).map(raceKey =>
   {
     return app.moduleData.Templates.Races[raceKey];
   }).filter(raceTemplate =>
@@ -147,7 +147,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   {
     // this.setState({flagHasCustomImage: Boolean(image)});
   }
-  private setRace(race: PlayerRaceTemplate): void
+  private setRace(race: RaceTemplate): void
   {
     this.setState(
     {

@@ -35,7 +35,6 @@ import
 
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
-import {PlayerRaceTemplate} from "./templateinterfaces/PlayerRaceTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import TechnologyRequirement from "./templateinterfaces/TechnologyRequirement";
@@ -53,7 +52,7 @@ export default class Player
   colorAlpha: number;
   secondaryColor: Color;
   flag: Flag;
-  race: RaceTemplate | PlayerRaceTemplate;
+  race: RaceTemplate;
   units: Unit[] = [];
   resources:
   {
@@ -114,7 +113,7 @@ export default class Player
     isAI: boolean;
     isIndependent: boolean;
 
-    race: RaceTemplate | PlayerRaceTemplate;
+    race: RaceTemplate;
     money: number;
 
     id?: number;
@@ -260,7 +259,7 @@ export default class Player
   }
   initTechnologies(savedData?: PlayerTechnologySaveData): void
   {
-    const race = <PlayerRaceTemplate> this.race;
+    const race = this.race;
     this.playerTechnology = new PlayerTechnology(this.getResearchSpeed.bind(this),
       race.technologies, savedData);
 
@@ -283,7 +282,7 @@ export default class Player
   }
   public makeRandomAIController(game: Game): AIController<any>
   {
-    const race = <PlayerRaceTemplate> this.race;
+    const race = this.race;
     const templateConstructor = race.getAITemplateConstructor(this);
     const template = templateConstructor.construct(
     {
