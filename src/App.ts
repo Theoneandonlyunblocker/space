@@ -319,7 +319,7 @@ class App
       scriptFN(this.game);
     });
 
-    this.game.playerOrder.forEach(player =>
+    this.game.playerOrder.concat(this.game.independents).forEach(player =>
     {
       if (player.isAI && !player.AIController)
       {
