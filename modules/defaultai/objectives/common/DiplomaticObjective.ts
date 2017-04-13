@@ -12,8 +12,10 @@ export abstract class DiplomaticObjective extends Objective
 
   protected constructor(
     priority: number,
+    diplomacyStatus: DiplomacyStatus,
   )
   {
     super(priority);
+    this.diplomacyStatus = diplomacyStatus;
   }
 }

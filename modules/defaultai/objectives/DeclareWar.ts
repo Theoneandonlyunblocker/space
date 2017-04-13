@@ -4,6 +4,7 @@ import {Objective} from "./common/Objective";
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 
+import DiplomacyStatus from "../../../src/DiplomacyStatus";
 import Player from "../../../src/Player";
 
 export class DeclareWar extends DiplomaticObjective
@@ -13,9 +14,9 @@ export class DeclareWar extends DiplomaticObjective
 
   public readonly target: Player;
 
-  protected constructor(score: number, target: Player)
+  protected constructor(score: number, target: Player, diplomacyStatus: DiplomacyStatus)
   {
-    super(score);
+    super(score, diplomacyStatus);
     this.target = target;
   }
 
@@ -36,7 +37,7 @@ export class DeclareWar extends DiplomaticObjective
       const score = mapEvaluator.getDesireToGoToWarWith(player) *
         mapEvaluator.getAbilityToGoToWarWith(player);
 
-      return new DeclareWar(score, player);
+      return new DeclareWar(score, player, mapEvaluator.player.diplomacyStatus);
     });
   }
   protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
