@@ -88,7 +88,10 @@ export class BuildUnitsForFront extends EconomicObjective
 
     const unitType = getRandomArrayItem(manufactory.getManufacturableThingsForType("unit"));
 
-    manufactory.addThingToQueue(unitType, "unit");
+    if (this.player.money >= unitType.buildCost)
+    {
+      manufactory.addThingToQueue(unitType, "unit");
+    }
 
     afterDoneCallback();
   }
