@@ -93,7 +93,6 @@ export default class BattleScene
       this.renderer = null;
     }
 
-    this.container.destroy(true);
     this.container = null;
     this.containerElement = null;
 
