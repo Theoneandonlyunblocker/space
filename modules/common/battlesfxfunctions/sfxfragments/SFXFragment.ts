@@ -27,7 +27,7 @@ abstract class SFXFragment<P>
   {
     return this.displayObject.getBounds();
   }
-  public get position(): PIXI.Point
+  public get position(): PIXI.Point | PIXI.ObservablePoint
   {
     return this.displayObject.position;
   }
@@ -72,7 +72,7 @@ abstract class SFXFragment<P>
     const oldDisplayObject = this.displayObject;
     if (oldDisplayObject)
     {
-      newDisplayObject.position = oldDisplayObject.position.clone();
+      newDisplayObject.position.copy(oldDisplayObject.position);
 
       const parent = oldDisplayObject.parent;
       if (parent)
