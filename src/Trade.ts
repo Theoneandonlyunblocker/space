@@ -1,8 +1,14 @@
 import Player from "./Player";
 
+export enum TradeableItemType
+{
+  Resource,
+}
+
 export interface TradeableItem
 {
   key: string;
+  type: TradeableItemType;
   amount: number;
 }
 export interface TradeableItems
@@ -28,6 +34,7 @@ export default class Trade
       money:
       {
         key: "money",
+        type: TradeableItemType.Resource,
         amount: this.player.money,
       },
     };
@@ -42,6 +49,7 @@ export default class Trade
       available[key] =
       {
         key: key,
+        type: this.allItems[key].type,
         amount: this.allItems[key].amount - stagedAmount,
       };
     }
@@ -67,6 +75,7 @@ export default class Trade
       this.stagedItems[key] =
       {
         key: key,
+        type: this.allItems[key].type,
         amount: amount,
       };
     }
@@ -113,5 +122,25 @@ export default class Trade
   {
     this.setAllTradeableItems();
     this.removeAllStagedItems();
+  }
+  public copyStagedItemsFrom(toCopyFrom: Trade): void
+  {
+    for (let key in toCopyFrom.stagedItems)
+    {
+      this.stagedItems[key] =
+      {
+        key: key,
+        type: toCopyFrom.stagedItems[key].type,
+        amount: toCopyFrom.stagedItems[key].amount,
+      };
+    }
+  }
+  public clone()
+  {
+    const cloned = new Trade(this.player);
+
+    cloned.copyStagedItemsFrom(this);
+
+    return cloned;
   }
 }
