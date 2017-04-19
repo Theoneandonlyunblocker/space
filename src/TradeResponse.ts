@@ -2,9 +2,7 @@ import Trade from "./Trade";
 
 export interface TradeResponse
 {
-  originalOwnTrade: Trade;
   proposedOwnTrade: Trade;
-  originalReceivedOffer: Trade;
   proposedReceivedOffer: Trade;
 
   /**

@@ -1,16 +1,11 @@
 import DefaultAISaveData from "./DefaultAISaveData";
 import DiplomacyAI from "./DiplomacyAI";
+import {EconomicAI} from "./EconomicAI";
 import FrontsAI from "./FrontsAI";
 import {GrandStrategyAI} from "./GrandStrategyAI";
 import MapEvaluator from "./MapEvaluator";
 import {ObjectivesAI} from "./ObjectivesAI";
 import {UnitEvaluator} from "./UnitEvaluator";
-import
-{
-  evaluateOneSidedTradeFavourability,
-  evaluateValueOfOffer,
-  offerItemsOfValue,
-} from "./tradeEvaluationFunctions";
 
 import AITemplate from "../../../src/templateinterfaces/AITemplate";
 
@@ -51,6 +46,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
   private readonly objectivesAI: ObjectivesAI;
   private readonly frontsAI: FrontsAI;
   private readonly diplomacyAI: DiplomacyAI;
+  private readonly economicAI: EconomicAI;
 
   constructor(player: Player, game: Game, personality?: Personality)
   {
@@ -180,74 +176,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     ownTrade: Trade,
   ): TradeResponse
   {
-    const value = evaluateValueOfOffer(receivedOffer);
-
-    return(
-    {
-      originalOwnTrade: ownTrade,
-      originalReceivedOffer: receivedOffer,
-    });
-  }
-  public setItemsForTrade(offeredTrade: Trade, ownTrade: Trade): void
-  {
-    const value = evaluateValueOfOffer(offeredTrade);
-    offerItemsOfValue(ownTrade, value);
-
-    return;
-  }
-  public wouldAcceptTrade(offeredTrade: Trade, ownTrade: Trade): boolean
-  {
-    const offeredValue = evaluateValueOfOffer(offeredTrade);
-    const ownValue = evaluateValueOfOffer(ownTrade);
-
-    if (offeredValue === 0 || ownValue === 0)
-    {
-
-    }
-
-    const valueRatioDifference = Math.abs(1 - offeredValue / ownValue);
-  }
-
-  public evaluateTradeFavourability(offeredTrade: Trade, ownTrade: Trade): TradeFavourability
-  {
-    const offeredValue = evaluateValueOfOffer(offeredTrade);
-    const ownValue = evaluateValueOfOffer(ownTrade);
-
-    if (offeredValue === 0 || ownValue === 0)
-    {
-      return evaluateOneSidedTradeFavourability(offeredTrade, ownTrade);
-    }
-
-    const valueRatioDifference = Math.abs(1 - offeredValue / ownValue);
-    const inFavourOfSelf = valueRatioDifference > 0;
-
-    if (valueRatioDifference < 0.02)
-    {
-      return TradeFavourability.even;
-    }
-    else if (valueRatioDifference < 0.06)
-    {
-      return inFavourOfSelf ? TradeFavourability.bitFavourable : TradeFavourability.bitUnfavourable;
-    }
-    else if (valueRatioDifference < 0.15)
-    {
-      return inFavourOfSelf ? TradeFavourability.favourable : TradeFavourability.unfavourable;
-    }
-    else if (valueRatioDifference < 0.25)
-    {
-      return inFavourOfSelf ? TradeFavourability.veryFavourable : TradeFavourability.veryUnfavourable;
-    }
-    else
-    {
-      return evaluateOneSidedTradeFavourability(offeredTrade, ownTrade);
-    }
-    // within 2% = even
-    // within 6% = slightly biased
-    // within 15% = biased
-    // within 25% = very biased
-    // more = too unfair to be considered a trade.
-    //   treat as gift / demand instead
-    //   if too insignificant, maybe just ignore completely
+    return this.economicAI.respondToTradeOffer(receivedOffer, ownTrade);
   }
   public serialize(): DefaultAISaveData
   {

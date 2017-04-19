@@ -16,7 +16,7 @@ export interface TradeableItems
   [key: string]: TradeableItem;
 }
 
-export default class Trade
+export class Trade
 {
   allItems: TradeableItems;
   stagedItems: TradeableItems = {};
