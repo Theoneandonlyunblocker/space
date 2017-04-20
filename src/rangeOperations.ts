@@ -41,6 +41,24 @@ export function getIntersectingRanges(ranges: Range[], toIntersectWith: Range): 
   return intersecting;
 }
 
+export function rangesHaveOverlap(...ranges: Range[]): boolean
+{
+  const sorted = ranges.sort((a, b) =>
+  {
+    return a.min - b.min;
+  });
+
+  for (let i = 0; i < sorted.length - 1; i++)
+  {
+    if (sorted[i].max > sorted[i + 1].min)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export function excludeFromRange(range: Range, toExclude: Range): Range[]
 {
   if (toExclude.max < range.min || toExclude.min > range.max)

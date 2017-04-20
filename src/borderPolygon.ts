@@ -329,6 +329,7 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
     if (isClosed) polyLine.pop();
     for (let j = 0; j < polyLine.length; j++)
     {
+      // TODO 20.04.2017 | still relevant?
       // stupid hack to fix pixi bug with drawing polygons
       // without this consecutive edges with the same angle disappear
       polyLine[j].x += (j % 2) * 0.1;
