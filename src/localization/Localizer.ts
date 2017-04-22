@@ -1,3 +1,4 @@
+import {IntermediateLocalizedString} from "./IntermediateLocalizedString";
 import {Language} from "./Language";
 import
 {
@@ -164,10 +165,10 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText}>
    * default props:
    *  quantity = 1
    */
-  public tr(key: keyof Texts, props?:
+  public localize(key: keyof Texts, props?:
   {
     quantity?: number,
-  }): string
+  }): IntermediateLocalizedString
   {
     const missingLocalizationString = `${this.activeLanguage.code}.${key}`;
 
@@ -181,20 +182,25 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText}>
         if (typeof localizedText === "string")
         {
           // TODO 20.04.2017 | bad typing
-          return <string><any>localizedText;
+          return new IntermediateLocalizedString(<string><any>localizedText);
         }
         else
         {
           const quantity = (props && isFinite(props.quantity)) ? props.quantity : 1;
+          const matchingText = Localizer.getStringFromLocalizedTextByQuantity(
+            // TODO 20.04.2017 | bad typing
+            <LocalizedTextByQuantity><any>localizedText,
+            quantity,
+          );
 
-
+          return new IntermediateLocalizedString(matchingText);
         }
       }
     }
 
     console.warn(`Missing localization '${missingLocalizationString}'`);
 
-    return missingLocalizationString;
+    return new IntermediateLocalizedString(missingLocalizationString);
   }
 }
 
@@ -210,4 +216,4 @@ const a =
 
 const b = new Localizer<typeof a>();
 
-b.tr("lol");
+b.localize("lol");
