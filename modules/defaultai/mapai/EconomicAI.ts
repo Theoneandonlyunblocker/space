@@ -5,6 +5,8 @@ import
   offerItemsOfValue,
 } from "./tradeEvaluationFunctions";
 
+import {localize} from "../localization/localize";
+
 import
 {
   Trade,
@@ -30,7 +32,7 @@ export class EconomicAI
         proposedReceivedOffer: receivedOffer.clone(),
 
         willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
-        message: "please make an offer",
+        message: localize("requestOffer").format(),
         willingToAccept: false,
       });
     }
