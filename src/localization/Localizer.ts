@@ -11,9 +11,13 @@ import
 {
   rangesHaveOverlap,
 } from "../rangeOperations";
+import
+{
+  getRandomArrayItem,
+} from "../utility";
 
 // export class Localizer<Texts extends {[k: string]: LocalizedText}>
-export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText}>
+export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText[]}>
 {
   private activeLanguage: Language;
   private readonly textsByLanguageCode:
@@ -153,12 +157,29 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText}>
 
     for (let textKey in texts)
     {
-      if (!Localizer.localizedTextIsValid(<LocalizedText><any>texts[textKey]))
+      if (!this.textsByLanguageCode[language.code][textKey])
       {
-        console.warn(`Invalid localization ${language.code}.${textKey}`);
+        // TODO 24.04.2017 | bad typing
+        this.textsByLanguageCode[language.code][textKey] = <any> [];
       }
 
-      this.textsByLanguageCode[language.code][textKey] = texts[textKey];
+      // TODO 24.04.2017 | bad typing
+      const localizedTexts = <LocalizedText[]><any> texts[textKey];
+
+      localizedTexts.forEach(text =>
+      {
+        const isValid = Localizer.localizedTextIsValid(text);
+
+        if (isValid)
+        {
+          // TODO 24.04.2017 | bad typing
+          (<LocalizedText[]><any> this.textsByLanguageCode[language.code][textKey]).push(text);
+        }
+        else
+        {
+          console.warn(`Invalid localization ${language.code}.${textKey}`);
+        }
+      });
     }
   }
   /**
@@ -175,10 +196,13 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText}>
     const textsForActiveLanguage = this.textsByLanguageCode[this.activeLanguage.code];
     if (textsForActiveLanguage)
     {
-      const localizedText = this.textsByLanguageCode[this.activeLanguage.code][key];
+      // TODO 25.04.2017 | bad typing
+      const localizedTexts = <LocalizedText[]><any> this.textsByLanguageCode[this.activeLanguage.code][key];
 
-      if (localizedText)
+      if (localizedTexts && localizedTexts.length > 0)
       {
+        const localizedText = getRandomArrayItem(localizedTexts);
+
         if (typeof localizedText === "string")
         {
           // TODO 20.04.2017 | bad typing
@@ -203,17 +227,3 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText}>
     return new IntermediateLocalizedString(missingLocalizationString);
   }
 }
-
-const a =
-{
-  lol: "50",
-  b:
-  {
-    5: "5",
-    other: "other",
-  },
-};
-
-const b = new Localizer<typeof a>();
-
-b.localize("lol");
