@@ -24,4 +24,12 @@ export const tradeMessages =
     "We accept your terms.",
     "Looks fair. We accept.",
   ],
+  willingToAcceptGift:
+  [
+    "How generous. We'll gladly accept.",
+  ],
+  notWillingToAcceptDemand:
+  [
+    "Over my dead body.",
+  ],
 };

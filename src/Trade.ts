@@ -2,6 +2,7 @@ import Player from "./Player";
 
 export enum TradeableItemType
 {
+  Money,
   Resource,
 }
 
@@ -34,7 +35,7 @@ export class Trade
       money:
       {
         key: "money",
-        type: TradeableItemType.Resource,
+        type: TradeableItemType.Money,
         amount: this.player.money,
       },
     };

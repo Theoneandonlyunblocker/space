@@ -1,8 +1,6 @@
 import
 {
-  evaluateOneSidedTradeFavourability,
   evaluateValueOfOffer,
-  offerItemsOfValue,
 } from "./tradeEvaluationFunctions";
 
 import {localize} from "../localization/localize";
@@ -10,7 +8,6 @@ import {localize} from "../localization/localize";
 import
 {
   Trade,
-  TradeableItems,
 } from "../../../src/Trade";
 import {TradeResponse} from "../../../src/TradeResponse";
 
@@ -32,6 +29,7 @@ export class EconomicAI
         proposedReceivedOffer: receivedOffer.clone(),
 
         willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
+
         message: localize("requestOffer").format(),
         willingToAccept: false,
       });
@@ -49,12 +47,21 @@ export class EconomicAI
     const isFavourable = valueRatio > 1;
     const valueRatioDifference = Math.abs(1 - valueRatio);
 
+    const willingToAccept = isFavourable || valueRatioDifference < 0.04;
+    const message = willingToAccept ?
+      localize("willingToAcceptOffer").format() :
+      localize("notWillingToAcceptOffer").format();
+
+
     return(
     {
+      proposedOwnTrade: ownTrade.clone(),
+      proposedReceivedOffer: receivedOffer.clone(),
+
       willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
 
-      message: "",
-      willingToAccept: false
+      message: message,
+      willingToAccept: willingToAccept,
     });
   }
 
@@ -63,19 +70,45 @@ export class EconomicAI
     ownTrade: Trade,
   ): TradeResponse
   {
+    return(
+    {
+      proposedOwnTrade: ownTrade.clone(),
+      proposedReceivedOffer: receivedOffer.clone(),
 
+      willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
+
+      message: localize("notWillingToAcceptDemand").format(),
+      willingToAccept: false,
+    });
   }
   private respondToGift(
     receivedOffer: Trade,
     ownTrade: Trade,
   ): TradeResponse
   {
+    return(
+    {
+      proposedOwnTrade: ownTrade.clone(),
+      proposedReceivedOffer: receivedOffer.clone(),
 
+      willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
+
+      message: localize("willingToAcceptGift").format(),
+      willingToAccept: true,
+    });
   }
   private getWillingnessToTradeItems(
     ownTrade: Trade,
   ): {[key: string]: number}
   {
+    // TODO 25.04.2017 | unimplemented
+    const willingnessPerItem: {[key: string]: number} = {};
 
+    for (let key in ownTrade.allItems)
+    {
+      willingnessPerItem[key] = 1;
+    }
+
+    return willingnessPerItem;
   }
 }
