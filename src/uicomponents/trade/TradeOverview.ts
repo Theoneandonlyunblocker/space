@@ -1,15 +1,18 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import TradeableItemsComponentFactory from "./TradeableItems";
 
 import Player from "../../Player";
-import TradeableItemsComponentFactory from "./TradeableItems";
 import {Trade} from "../../Trade";
+import {TradeResponse} from "../../TradeResponse";
 
+/* tslint:disable:member-access member-ordering */
 
 export interface PropTypes extends React.Props<any>
 {
   selfPlayer: Player;
   otherPlayer: Player;
+  initialReceivedOffer?: TradeResponse;
   handleClose: () => void;
 }
 
@@ -18,25 +21,50 @@ interface StateType
   currentStagingItemDragKey?: string;
   currentAvailableItemDragKey?: string;
   currentDragItemPlayer?: "self" | "other";
+  activeTrade?: TradeResponse;
 }
 
 export class TradeOverviewComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "TradeOverview";
-  selfPlayerTrade: Trade = undefined;
-  otherPlayerTrade: Trade = undefined;
+  public displayName: string = "TradeOverview";
+  public state: StateType;
 
-
-  state: StateType;
+  private selfTrade: TradeResponse;
+  private otherTrade: TradeResponse;
 
   constructor(props: PropTypes)
   {
     super(props);
 
+    this.selfTrade = TradeOverviewComponent.makeInitialTradeResponse(props.selfPlayer, props.otherPlayer);
+    this.otherTrade = props.initialReceivedOffer ||
+      props.otherPlayer.AIController.respondToTradeOffer(this.selfTrade);
+
     this.state = this.getInitialStateTODO();
 
     this.bindMethods();
   }
+  private static makeInitialTradeResponse(selfPlayer: Player, otherPlayer: Player): TradeResponse
+  {
+    const ownTrade = new Trade(selfPlayer);
+
+    // TODO 25.04.2017 | smarter way to do this for human player
+    const willingnessToTradeItems: {[key: string]: number} = {};
+    for (let key in ownTrade.allItems)
+    {
+      willingnessToTradeItems[key] = 1;
+    }
+
+    return(
+    {
+      proposedOwnTrade: ownTrade,
+      proposedReceivedOffer: new Trade(otherPlayer),
+      willingnessToTradeItems: willingnessToTradeItems,
+      message: "" ,
+      willingToAccept: false,
+    });
+  }
+
   private bindMethods()
   {
     this.handleDragEnd = this.handleDragEnd.bind(this);
@@ -51,13 +79,6 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
   }
-
-  componentWillMount()
-  {
-    this.selfPlayerTrade = new Trade(this.props.selfPlayer);
-    this.otherPlayerTrade = new Trade(this.props.otherPlayer);
-  }
-
   private getInitialStateTODO(): StateType
   {
     return(
@@ -65,6 +86,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
       currentAvailableItemDragKey: undefined,
       currentStagingItemDragKey: undefined,
       currentDragItemPlayer: undefined,
+      activeTrade: this.props.initialReceivedOffer ? this.otherTrade : this.selfTrade,
     });
   }
 
@@ -193,6 +215,9 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     const selfAvailableItems = this.selfPlayerTrade.getItemsAvailableForTrade();
     const otherAvailableItems = this.otherPlayerTrade.getItemsAvailableForTrade();
 
+    const lastOfferWasByOtherPlayer = this.state.activeTrade === this.otherTrade;
+    const ableToAcceptTrade = lastOfferWasByOtherPlayer && this.state.activeTrade.willingToAccept;
+
     return(
       React.DOM.div(
       {
@@ -256,22 +281,45 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
         ),
         React.DOM.div(
         {
-          className: "trade-buttons-container",
+          className: "trade-buttons-container tradeable-items-reset-buttons-container",
         },
           React.DOM.button(
           {
-            className: "trade-button",
-            onClick: this.handleCancel,
+            className: "trade-button tradeable-items-reset-button",
           },
-            "Cancel",
+            "Reset",
           ),
           React.DOM.button(
           {
-            className: "trade-button trade-button-ok",
-            onClick: this.handleOk,
+            className: "trade-button tradeable-items-reset-button",
           },
-            "Ok",
+            "Reset",
           ),
+        ),
+        React.DOM.div(
+        {
+          className: "trade-buttons-container trade-controls-container",
+        },
+          React.DOM.button(
+          {
+            className: "trade-button trade-control-button",
+            disabled: !ableToAcceptTrade,
+          },
+            "Reject",
+          ),
+          ableToAcceptTrade ?
+            React.DOM.button(
+            {
+              className: "trade-button trade-control-button",
+            },
+              "Accept",
+            ) :
+            React.DOM.button(
+            {
+              className: "trade-button trade-control-button",
+            },
+              "Propose",
+            ),
         ),
       )
     );
