@@ -1,5 +1,7 @@
-import Trade from "./Trade";
+import {Trade} from "./Trade";
 
+// TODO 25.04.2017 | probably rename this.
+// meant to be used as general protocol for trading communication
 export interface TradeResponse
 {
   proposedOwnTrade: Trade;

@@ -1,5 +1,8 @@
-import Trade from "../../../src/Trade";
 import {TradeFavourability} from "../../../src/TradeFavourability";
+import
+{
+  Trade,
+} from "../../../src/Trade";
 
 export function evaluateValueOfOffer(offeredTrade: Trade): number
 {

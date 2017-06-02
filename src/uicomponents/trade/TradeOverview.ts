@@ -2,8 +2,8 @@
 
 
 import Player from "../../Player";
-import Trade from "../../Trade";
 import TradeableItemsComponentFactory from "./TradeableItems";
+import {Trade} from "../../Trade";
 
 
 export interface PropTypes extends React.Props<any>
