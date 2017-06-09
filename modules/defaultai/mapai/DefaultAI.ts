@@ -15,7 +15,6 @@ import GalaxyMap from "../../../src/GalaxyMap";
 import Game from "../../../src/Game";
 import Personality from "../../../src/Personality";
 import Player from "../../../src/Player";
-import {Trade} from "../../../src/Trade";
 import {TradeResponse} from "../../../src/TradeResponse";
 import Unit from "../../../src/Unit";
 import getNullFormation from "../../../src/getNullFormation";
@@ -172,11 +171,10 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     return formation;
   }
   public respondToTradeOffer(
-    receivedOffer: Trade,
-    ownTrade: Trade,
+    receivedOffer: TradeResponse,
   ): TradeResponse
   {
-    return this.economicAI.respondToTradeOffer(receivedOffer, ownTrade);
+    return this.economicAI.respondToTradeOffer(receivedOffer);
   }
   public serialize(): DefaultAISaveData
   {

@@ -14,10 +14,13 @@ import {TradeResponse} from "../../../src/TradeResponse";
 export class EconomicAI
 {
   public respondToTradeOffer(
-    receivedOffer: Trade,
-    ownTrade: Trade,
+    // TODO 09.06.2017 | rename
+    incomingResponse: TradeResponse,
   ): TradeResponse
   {
+    const receivedOffer = incomingResponse.proposedReceivedOffer;
+    const ownTrade = incomingResponse.proposedOwnTrade;
+
     const offeredValue = evaluateValueOfOffer(receivedOffer);
     const ownValue = evaluateValueOfOffer(ownTrade);
 
