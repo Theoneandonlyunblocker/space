@@ -348,10 +348,10 @@ declare module PIXI {
         y: number;
         worldTransform: Matrix;
         localTransform: Matrix;
-        position: Point;
-        scale: Point;
-        pivot: Point;
-        skew: Point;
+        position: Point | ObservablePoint;
+        scale: Point | ObservablePoint;
+        pivot: Point | ObservablePoint;
+        skew: ObservablePoint;
         rotation: number;
         worldVisible: boolean;
         mask: PIXI.Graphics | PIXI.Sprite;
@@ -675,8 +675,8 @@ declare module PIXI {
         y: number;
 
         clone(): Point;
-        copy(p: Point): void;
-        equals(p: Point): boolean;
+        copy(p: Point | ObservablePoint): void;
+        equals(p: Point | ObservablePoint): boolean;
         set(x?: number, y?: number): void;
 
     }
