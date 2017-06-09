@@ -28,48 +28,16 @@ export class Trade
     this.player = player;
     this.setAllTradeableItems();
   }
-  setAllTradeableItems()
-  {
-    this.allItems =
-    {
-      money:
-      {
-        key: "money",
-        type: TradeableItemType.Money,
-        amount: this.player.money,
-      },
-    };
-  }
-  getItemsAvailableForTrade()
-  {
-    const available: TradeableItems = {};
 
-    for (let key in this.allItems)
-    {
-      const stagedAmount = this.stagedItems[key] ? this.stagedItems[key].amount : 0;
-      available[key] =
-      {
-        key: key,
-        type: this.allItems[key].type,
-        amount: this.allItems[key].amount - stagedAmount,
-      };
-    }
+  public executeTrade(otherTrade: Trade): void
+  {
+    this.executeAllStagedTrades(otherTrade.player);
+    otherTrade.executeAllStagedTrades(this.player);
 
-    return available;
+    this.updateAfterExecutedTrade();
+    otherTrade.updateAfterExecutedTrade();
   }
-  removeStagedItem(key: string)
-  {
-    this.stagedItems[key] = null;
-    delete this.stagedItems[key];
-  }
-  removeAllStagedItems()
-  {
-    for (let key in this.stagedItems)
-    {
-      this.removeStagedItem(key);
-    }
-  }
-  stageItem(key: string, amount: number)
+  public stageItem(key: string, amount: number)
   {
     if (!this.stagedItems[key])
     {
@@ -89,7 +57,7 @@ export class Trade
       }
     }
   }
-  setStagedItemAmount(key: string, newAmount: number)
+  public setStagedItemAmount(key: string, newAmount: number)
   {
     if (newAmount <= 0)
     {
@@ -101,7 +69,57 @@ export class Trade
       this.stagedItems[key].amount = clamped;
     }
   }
-  handleTradeOfItem(key: string, amount: number, targetPlayer: Player)
+  public getItemsAvailableForTrade()
+  {
+    const available: TradeableItems = {};
+
+    for (let key in this.allItems)
+    {
+      const stagedAmount = this.stagedItems[key] ? this.stagedItems[key].amount : 0;
+      available[key] =
+      {
+        key: key,
+        type: this.allItems[key].type,
+        amount: this.allItems[key].amount - stagedAmount,
+      };
+    }
+
+    return available;
+  }
+  public removeStagedItem(key: string)
+  {
+    this.stagedItems[key] = null;
+    delete this.stagedItems[key];
+  }
+  public removeAllStagedItems()
+  {
+    for (let key in this.stagedItems)
+    {
+      this.removeStagedItem(key);
+    }
+  }
+  public clone()
+  {
+    const cloned = new Trade(this.player);
+
+    cloned.copyStagedItemsFrom(this);
+
+    return cloned;
+  }
+
+  private setAllTradeableItems()
+  {
+    this.allItems =
+    {
+      money:
+      {
+        key: "money",
+        type: TradeableItemType.Money,
+        amount: this.player.money,
+      },
+    };
+  }
+  private handleTradeOfItem(key: string, amount: number, targetPlayer: Player)
   {
     switch (key)
     {
@@ -112,19 +130,19 @@ export class Trade
       }
     }
   }
-  executeAllStagedTrades(targetPlayer: Player)
+  private executeAllStagedTrades(targetPlayer: Player)
   {
     for (let key in this.stagedItems)
     {
       this.handleTradeOfItem(key, this.stagedItems[key].amount, targetPlayer);
     }
   }
-  updateAfterExecutedTrade()
+  private updateAfterExecutedTrade()
   {
     this.setAllTradeableItems();
     this.removeAllStagedItems();
   }
-  public copyStagedItemsFrom(toCopyFrom: Trade): void
+  private copyStagedItemsFrom(toCopyFrom: Trade): void
   {
     for (let key in toCopyFrom.stagedItems)
     {
@@ -135,13 +153,5 @@ export class Trade
         amount: toCopyFrom.stagedItems[key].amount,
       };
     }
-  }
-  public clone()
-  {
-    const cloned = new Trade(this.player);
-
-    cloned.copyStagedItemsFrom(this);
-
-    return cloned;
   }
 }

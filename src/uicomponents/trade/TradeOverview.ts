@@ -18,9 +18,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  currentStagingItemDragKey?: string;
-  currentAvailableItemDragKey?: string;
+  currentDragItemKey?: string;
   currentDragItemPlayer?: "self" | "other";
+  currentDragItemWasStaged?: boolean;
   activeTrade?: TradeResponse;
 }
 
@@ -71,21 +71,21 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.handleStagingDragStart = this.handleStagingDragStart.bind(this);
     this.handleAvailableDragStart = this.handleAvailableDragStart.bind(this);
     this.handleRemoveStagedItem = this.handleRemoveStagedItem.bind(this);
-    this.getActiveTrade = this.getActiveTrade.bind(this);
     this.handleStageItem = this.handleStageItem.bind(this);
     this.handleAdjustStagedItemAmount = this.handleAdjustStagedItemAmount.bind(this);
     this.handleStagingAreaMouseUp = this.handleStagingAreaMouseUp.bind(this);
     this.handleAvailableMouseUp = this.handleAvailableMouseUp.bind(this);
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.getActiveTradeObjectForPlayer = this.getActiveTradeObjectForPlayer.bind(this);
   }
   private getInitialStateTODO(): StateType
   {
     return(
     {
-      currentAvailableItemDragKey: undefined,
-      currentStagingItemDragKey: undefined,
+      currentDragItemKey: undefined,
       currentDragItemPlayer: undefined,
+      currentDragItemWasStaged: undefined,
       activeTrade: this.props.initialReceivedOffer ? this.otherTrade : this.selfTrade,
     });
   }
@@ -98,30 +98,33 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
   handleOk()
   {
-    this.selfPlayerTrade.executeAllStagedTrades(this.props.otherPlayer);
-    this.otherPlayerTrade.executeAllStagedTrades(this.props.selfPlayer);
-    this.selfPlayerTrade.updateAfterExecutedTrade();
-    this.otherPlayerTrade.updateAfterExecutedTrade();
-    this.forceUpdate();
+    const activeTrade = this.state.activeTrade;
+    if (activeTrade)
+    {
+      activeTrade.proposedOwnTrade.executeTrade(activeTrade.proposedReceivedOffer);
+
+      this.forceUpdate();
+    }
   }
 
-  getActiveTrade(player?: string)
+  private getActiveTradeObjectForPlayer(player: "self" | "other"): Trade
   {
-    const playerStringToUse = player || this.state.currentDragItemPlayer;
-    if (playerStringToUse === "self")
+    if (player === "self")
     {
-      return this.selfPlayerTrade;
+      return this.state.activeTrade.proposedOwnTrade;
     }
-    else if (playerStringToUse === "other")
+    else if (player === "other")
     {
-      return this.otherPlayerTrade;
+      return this.state.activeTrade.proposedReceivedOffer;
     }
-    else return null;
+    else
+    {
+      throw new Error(`Invalid player key '${player}'`);
+    }
   }
-
   handleStageItem(player: "self" | "other", key: string)
   {
-    const activeTrade = this.getActiveTrade(player);
+    const activeTrade = this.getActiveTradeObjectForPlayer(player);
 
     const availableItems = activeTrade.getItemsAvailableForTrade();
     const availableAmount = availableItems[key].amount;
@@ -144,7 +147,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
   handleAdjustStagedItemAmount(player: "self" | "other", key: string, newAmount: number)
   {
-    const activeTrade = this.getActiveTrade(player);
+    const activeTrade = this.getActiveTradeObjectForPlayer(player);
     {
       activeTrade.setStagedItemAmount(key, newAmount);
     }
@@ -154,7 +157,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
   handleRemoveStagedItem(player: "self" | "other", key: string)
   {
-    const activeTrade = this.getActiveTrade(player);
+    const activeTrade = this.getActiveTradeObjectForPlayer(player);
     activeTrade.removeStagedItem(key);
 
     if (!this.state.currentDragItemPlayer)
@@ -167,8 +170,9 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     this.setState(
     {
-      currentAvailableItemDragKey: key,
+      currentDragItemKey: key,
       currentDragItemPlayer: player,
+      currentDragItemWasStaged: false,
     });
   }
 
@@ -176,8 +180,9 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     this.setState(
     {
-      currentStagingItemDragKey: key,
+      currentDragItemKey: key,
       currentDragItemPlayer: player,
+      currentDragItemWasStaged: true,
     });
   }
 
@@ -185,35 +190,35 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     this.setState(
     {
-      currentAvailableItemDragKey: undefined,
-      currentStagingItemDragKey: undefined,
+      currentDragItemKey: undefined,
       currentDragItemPlayer: undefined,
+      currentDragItemWasStaged: undefined,
     });
   }
 
   handleAvailableMouseUp()
   {
-    if (this.state.currentStagingItemDragKey)
+    if (this.state.currentDragItemKey && this.state.currentDragItemWasStaged)
     {
-      this.handleRemoveStagedItem(null, this.state.currentStagingItemDragKey);
+      this.handleRemoveStagedItem(null, this.state.currentDragItemKey);
     }
   }
 
   handleStagingAreaMouseUp()
   {
-    if (this.state.currentAvailableItemDragKey)
+    if (this.state.currentDragItemKey && !this.state.currentDragItemWasStaged)
     {
-      this.handleStageItem(null, this.state.currentAvailableItemDragKey);
+      this.handleStageItem(null, this.state.currentDragItemKey);
     }
   }
 
   render()
   {
-    const hasDragItem = Boolean(this.state.currentDragItemPlayer);
+    const hasDragItem = Boolean(this.state.currentDragItemKey);
     const selfPlayerAcceptsDrop = this.state.currentDragItemPlayer === "self";
     const otherPlayerAcceptsDrop = this.state.currentDragItemPlayer === "other";
-    const selfAvailableItems = this.selfPlayerTrade.getItemsAvailableForTrade();
-    const otherAvailableItems = this.otherPlayerTrade.getItemsAvailableForTrade();
+    const selfAvailableItems = this.state.activeTrade.proposedOwnTrade.getItemsAvailableForTrade();
+    const otherAvailableItems = this.state.activeTrade.proposedReceivedOffer.getItemsAvailableForTrade();
 
     const lastOfferWasByOtherPlayer = this.state.activeTrade === this.otherTrade;
     const ableToAcceptTrade = lastOfferWasByOtherPlayer && this.state.activeTrade.willingToAccept;
@@ -256,8 +261,8 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
         },
           TradeableItemsComponentFactory(
           {
-            tradeableItems: this.selfPlayerTrade.stagedItems,
-            availableItems: this.selfPlayerTrade.allItems,
+            tradeableItems: this.state.activeTrade.proposedOwnTrade.stagedItems,
+            availableItems: this.state.activeTrade.proposedOwnTrade.allItems,
             noListHeader: true,
             isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
             onDragStart: this.handleStagingDragStart.bind(this, "self"),
@@ -268,8 +273,8 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
           }),
           TradeableItemsComponentFactory(
           {
-            tradeableItems: this.otherPlayerTrade.stagedItems,
-            availableItems: this.otherPlayerTrade.allItems,
+            tradeableItems: this.state.activeTrade.proposedReceivedOffer.stagedItems,
+            availableItems: this.state.activeTrade.proposedReceivedOffer.allItems,
             noListHeader: true,
             isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
             onDragStart: this.handleStagingDragStart.bind(this, "other"),
