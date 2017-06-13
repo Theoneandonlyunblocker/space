@@ -25,6 +25,8 @@ import
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 
+import FullSaveData from "./savedata/FullSaveData";
+
 import addCommonToModuleData from "../modules/common/addCommonToModuleData";
 
 import defaultAI from "../modules/defaultai/defaultAI";
@@ -129,7 +131,7 @@ class App
       return;
     }
 
-    const parsed = JSON.parse(data);
+    const parsed: FullSaveData = JSON.parse(data);
 
     idGenerators.setValues(parsed.idGenerators);
 
