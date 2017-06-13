@@ -5,9 +5,14 @@ import Options from "../../Options";
 import eventManager from "../../eventManager";
 import TutorialStatus from "../../tutorials/TutorialStatus";
 import {clamp} from "../../utility";
+
 import NotificationFilterButton from "../notifications/NotificationFilterButton";
+
 import ConfirmPopup from "../popups/ConfirmPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+
+import {default as AppLanguageSelect} from "../language/AppLanguageSelect";
+
 import OptionsCheckbox from "./OptionsCheckbox";
 import OptionsGroup from "./OptionsGroup";
 import OptionsNumericField from "./OptionsNumericField";
@@ -68,6 +73,21 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
   render()
   {
     const allOptions: React.ReactElement<any>[] = [];
+
+    const languageOptions: any[] = [];
+
+    languageOptions.push(
+    {
+      key: "selectAppLanguage",
+      content: AppLanguageSelect(),
+    });
+
+    allOptions.push(OptionsGroup(
+    {
+      key: "language",
+      header: "Language",
+      options: languageOptions,
+    }));
 
     const battleAnimationOptions: any[] = [];
 
