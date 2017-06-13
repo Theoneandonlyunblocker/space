@@ -57,7 +57,7 @@ interface Templates
 
 export default class ModuleData
 {
-  private subModuleFiles: ModuleFile[] = [];
+  public moduleFiles: ModuleFile[] = [];
 
   mapBackgroundDrawingFunction: BackgroundDrawingFunction;
   starBackgroundDrawingFunction: BackgroundDrawingFunction;
@@ -128,7 +128,7 @@ export default class ModuleData
   }
   public addSubModule(moduleFile: ModuleFile): void
   {
-    this.subModuleFiles.push(moduleFile);
+    this.moduleFiles.push(moduleFile);
   }
   public getDefaultMap(): MapGenTemplate
   {
