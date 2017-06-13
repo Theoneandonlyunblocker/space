@@ -55,6 +55,7 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
     setActiveLanguageCode(newLanguage.code);
     localStorage.setItem("Rance.language", newLanguage.code);
     // TODO 13.06.2017 | need some way to trigger ui update here
+    // could probably just send down language as props for the ui components
   }
 }
 

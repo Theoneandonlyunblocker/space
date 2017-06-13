@@ -3,6 +3,8 @@
 import {Language} from "../../localization/Language";
 import {LanguageSupportLevel} from "../../localization/languageSupport";
 
+import {localize} from "../../../localization/options/localize";
+
 interface PropTypes extends React.Props<any>
 {
   activeLanguage: Language;
@@ -61,8 +63,8 @@ export class LanguageSelectComponent extends React.Component<PropTypes, StateTyp
         value: language.code,
         key: language.code,
         title: supportLevel === LanguageSupportLevel.full ?
-          "Full language support":
-          "Partial language support",
+          localize("fullLanguageSupport").format() :
+          localize("partialLanguageSupport").format(),
       },
         // TODO 13.06.2017 | add language flag
         language.displayName,

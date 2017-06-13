@@ -12,8 +12,8 @@ export function getActiveLanguage(): Language
 
   if (!languagesByCode[activeLanguageCode])
   {
-    throw new Error(`Invalid language ${activeLanguageCode}. ` +
-      `Valid languages: ${Object.keys(languagesByCode)}`);
+    throw new Error(`Language '${activeLanguageCode}' is not supported by any module files. ` +
+      `Supported languages: ${Object.keys(languagesByCode).join(", ")}`);
   }
   else
   {

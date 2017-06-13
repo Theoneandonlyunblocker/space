@@ -48,6 +48,7 @@ import defaultUnits from "../modules/defaultunits/defaultUnits";
 import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
 
 import {drones} from "../modules/drones/moduleFile";
+import {translationTest} from "../modules/translationtest/moduleFile";
 
 class App
 {
@@ -96,6 +97,7 @@ class App
       moduleLoader.addModuleFile(defaultNotifications);
       moduleLoader.addModuleFile(defaultRaces);
       moduleLoader.addModuleFile(drones);
+      moduleLoader.addModuleFile(translationTest);
 
       addCommonToModuleData(moduleLoader.moduleData);
 
