@@ -6,6 +6,8 @@ import AITemplateConstructor from "../../src/templateinterfaces/AITemplateConstr
 
 import DefaultAIConstructor from "./mapai/DefaultAIConstructor";
 
+import * as Languages from "../common/defaultLanguages";
+
 const defaultAI: ModuleFile =
 {
   key: "defaultAI",
@@ -17,6 +19,7 @@ const defaultAI: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
+  supportedLanguages: [Languages.en],
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<AITemplateConstructor<any>>(

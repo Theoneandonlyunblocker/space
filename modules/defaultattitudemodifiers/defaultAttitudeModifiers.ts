@@ -7,6 +7,8 @@ import {setAttitudeModifierOverride} from "../../src/setDynamicTemplatePropertie
 
 import AttitudeModifierTemplate from "../../src/templateinterfaces/AttitudeModifierTemplate";
 
+import * as Languages from "../common/defaultLanguages";
+
 const defaultAttitudeModifiers: ModuleFile =
 {
   key: "defaultAttitudeModifiers",
@@ -18,6 +20,7 @@ const defaultAttitudeModifiers: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
+  supportedLanguages: [Languages.en],
   constructModule: function(moduleData: ModuleData)
   {
     setAttitudeModifierOverride(AttitudeModifierTemplates);

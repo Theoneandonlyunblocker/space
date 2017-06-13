@@ -10,6 +10,8 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import MapRendererLayerTemplate from "../../src/templateinterfaces/MapRendererLayerTemplate";
 import MapRendererMapModeTemplate from "../../src/templateinterfaces/MapRendererMapModeTemplate";
 
+import * as Languages from "../common/defaultLanguages";
+
 const defaultMapModes: ModuleFile =
 {
   key: "defaultMapModes",
@@ -21,6 +23,7 @@ const defaultMapModes: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
+  supportedLanguages: [Languages.en],
   loadAssets: function(onLoaded: () => void)
   {
     const loader = new PIXI.loaders.Loader();

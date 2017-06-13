@@ -9,6 +9,8 @@ import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 
 import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate";
 
+import * as Languages from "../common/defaultLanguages";
+
 const defaultBuildings: ModuleFile =
 {
   key: "defaultBuildings",
@@ -20,6 +22,7 @@ const defaultBuildings: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
+  supportedLanguages: [Languages.en],
   loadAssets: function(onLoaded: () => void)
   {
     const loader = new PIXI.loaders.Loader();

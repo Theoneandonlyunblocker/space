@@ -18,6 +18,7 @@ const defaultEmblems: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
+  supportedLanguages: "all",
   loadAssets: function(onLoaded: () => void)
   {
     const loader = new PIXI.loaders.Loader();

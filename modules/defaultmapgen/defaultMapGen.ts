@@ -8,6 +8,8 @@ import TemplateCollection from "../../src/templateinterfaces/TemplateCollection"
 import spiralGalaxy from "./templates/spiralGalaxy";
 import tinierSpiralGalaxy from "./templates/tinierSpiralGalaxy";
 
+import * as Languages from "../common/defaultLanguages";
+
 const Templates: TemplateCollection<MapGenTemplate> =
 {
   [spiralGalaxy.key]: spiralGalaxy,
@@ -25,6 +27,7 @@ const defaultMapGen: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
+  supportedLanguages: [Languages.en],
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<MapGenTemplate>(Templates, "MapGen");

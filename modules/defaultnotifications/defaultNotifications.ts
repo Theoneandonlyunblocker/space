@@ -4,6 +4,8 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import NotificationTemplates from "./NotificationTemplates";
 
+import * as Languages from "../common/defaultLanguages";
+
 const defaultNotifications: ModuleFile =
 {
   key: "defaultNotifications",
@@ -15,6 +17,7 @@ const defaultNotifications: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
+  supportedLanguages: [Languages.en],
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates(NotificationTemplates, "Notifications");

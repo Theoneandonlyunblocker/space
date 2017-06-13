@@ -11,6 +11,8 @@ import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
 
+import * as Languages from "../common/defaultLanguages";
+
 const defaultUnits: ModuleFile =
 {
   key: "defaultUnits",
@@ -22,6 +24,7 @@ const defaultUnits: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
+  supportedLanguages: [Languages.en],
   loadAssets: function(onLoaded: () => void)
   {
     const loader = new PIXI.loaders.Loader();

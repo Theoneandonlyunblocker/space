@@ -7,6 +7,8 @@ import {setTechnologyRequirements} from "../../src/setDynamicTemplateProperties"
 
 import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate";
 
+import * as Languages from "../common/defaultLanguages";
+
 const defaultTechnologies: ModuleFile =
 {
   key: "defaultTechnologies",
@@ -18,6 +20,7 @@ const defaultTechnologies: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
+  supportedLanguages: [Languages.en],
   constructModule: function(moduleData: ModuleData)
   {
     setTechnologyRequirements(TechnologyTemplates);

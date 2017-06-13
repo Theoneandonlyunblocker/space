@@ -13,6 +13,7 @@ const defaultRuleSet: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
+  supportedLanguages: "all",
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.applyRuleSet(

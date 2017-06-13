@@ -6,6 +6,8 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
 
+import * as Languages from "../common/defaultLanguages";
+
 const defaultRaces: ModuleFile =
 {
   key: "defaultRaces",
@@ -17,6 +19,7 @@ const defaultRaces: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
+  supportedLanguages: [Languages.en],
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<RaceTemplate>(RaceTemplates, "Races");

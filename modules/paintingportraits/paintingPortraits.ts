@@ -15,6 +15,7 @@ const paintingPortraits: ModuleFile =
     description: "old ppl",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
+  supportedLanguages: "all",
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates(paintingPortraitTemplates, "Portraits");

@@ -6,6 +6,8 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import ItemTemplate from "../../src/templateinterfaces/ItemTemplate";
 
+import * as Languages from "../common/defaultLanguages";
+
 const defaultItems: ModuleFile =
 {
   key: "defaultItems",
@@ -17,6 +19,7 @@ const defaultItems: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
+  supportedLanguages: [Languages.en],
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<ItemTemplate>(ItemTemplates, "Items");

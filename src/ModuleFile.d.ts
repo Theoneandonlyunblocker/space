@@ -1,6 +1,8 @@
 import ModuleData from "./ModuleData";
 import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
 
+import {Language} from "./localization/Language";
+
 interface ModuleMetaData
 {
   name: string;
@@ -14,6 +16,7 @@ declare interface ModuleFile
   key: string;
   metaData: ModuleMetaData;
   needsToBeLoadedBefore: ModuleFileLoadingPhase;
+  supportedLanguages: Language[] | "all";
   loadAssets?: (callback: Function) => void;
   constructModule?: (ModuleData: ModuleData) => void;
 }
