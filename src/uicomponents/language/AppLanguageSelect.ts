@@ -53,6 +53,7 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
   private handleLanguageChange(newLanguage: Language): void
   {
     setActiveLanguageCode(newLanguage.code);
+    localStorage.setItem("Rance.language", newLanguage.code);
     // TODO 13.06.2017 | need some way to trigger ui update here
   }
 }
