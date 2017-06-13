@@ -67,6 +67,8 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
     const target = <HTMLInputElement> e.target;
     let value = parseFloat(target.value);
 
+    // TODO 13.06.2017 | doesn't allow erasing last remaining digit
+    // there's a working implementation of this somewhere...
     if (!isFinite(value))
     {
       return;

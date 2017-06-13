@@ -3,6 +3,7 @@ import PartialAllScripts from "./modulescriptinterfaces/PartialAllScripts";
 import UnitScripts from "./modulescriptinterfaces/UnitScripts";
 
 
+// TODO 13.06.2017 | move non-internal stuff from eventManager to here
 export default class ModuleScripts implements PartialAllScripts
 {
   public readonly unit: UnitScripts =

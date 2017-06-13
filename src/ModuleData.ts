@@ -132,12 +132,18 @@ export default class ModuleData
   }
   public getDefaultMap(): MapGenTemplate
   {
-    if (this.defaultMap) return this.defaultMap;
+    if (this.defaultMap)
+    {
+      return this.defaultMap;
+    }
     else if (Object.keys(this.Templates.MapGen).length > 0)
     {
       return getRandomProperty(this.Templates.MapGen);
     }
-    else throw new Error("Module has no maps registered");
+    else
+    {
+      throw new Error("No modules have map generators registered.");
+    }
   }
   public applyRuleSet(ruleSetValuesToCopy: RuleSetValues): void
   {

@@ -16,7 +16,7 @@ import
   getRandomArrayItem,
 } from "../utility";
 
-// export class Localizer<Texts extends {[k: string]: LocalizedText}>
+
 export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText[]}>
 {
   private activeLanguage: Language;

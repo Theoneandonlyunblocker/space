@@ -69,7 +69,6 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
   {
     const allOptions: React.ReactElement<any>[] = [];
 
-    // battle animation timing
     const battleAnimationOptions: any[] = [];
 
     const battleAnimationStages =
