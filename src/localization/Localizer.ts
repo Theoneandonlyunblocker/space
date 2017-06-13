@@ -5,6 +5,7 @@ import
   LocalizedText,
   LocalizedTextByQuantity,
 } from "./LocalizedText";
+import {getActiveLanguage} from "./activeLanguage";
 
 import {Range} from "../Range";
 import
@@ -19,7 +20,6 @@ import
 
 export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText[]}>
 {
-  private activeLanguage: Language;
   private readonly textsByLanguageCode:
   {
     [languageCode: string]: Texts;
@@ -191,13 +191,14 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText[]}>
     quantity?: number,
   }): IntermediateLocalizedString
   {
-    const missingLocalizationString = `${this.activeLanguage.code}.${key}`;
+    const activeLanguage = getActiveLanguage();
+    const missingLocalizationString = `${activeLanguage.code}.${key}`;
 
-    const textsForActiveLanguage = this.textsByLanguageCode[this.activeLanguage.code];
+    const textsForActiveLanguage = this.textsByLanguageCode[activeLanguage.code];
     if (textsForActiveLanguage)
     {
       // TODO 25.04.2017 | bad typing
-      const localizedTexts = <LocalizedText[]><any> this.textsByLanguageCode[this.activeLanguage.code][key];
+      const localizedTexts = <LocalizedText[]><any> this.textsByLanguageCode[activeLanguage.code][key];
 
       if (localizedTexts && localizedTexts.length > 0)
       {
