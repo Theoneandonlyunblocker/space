@@ -19,9 +19,10 @@ export interface TradeableItems
 
 export class Trade
 {
-  allItems: TradeableItems;
-  stagedItems: TradeableItems = {};
-  player: Player;
+  public allItems: TradeableItems;
+  public stagedItems: TradeableItems = {};
+
+  private player: Player;
 
   constructor(player: Player)
   {
