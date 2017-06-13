@@ -4,7 +4,7 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import NotificationTemplates from "./NotificationTemplates";
 
-import * as Languages from "../common/defaultLanguages";
+import * as Languages from "../../localization/defaultLanguages";
 
 const defaultNotifications: ModuleFile =
 {

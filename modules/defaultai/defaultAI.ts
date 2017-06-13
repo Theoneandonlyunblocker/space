@@ -6,7 +6,7 @@ import AITemplateConstructor from "../../src/templateinterfaces/AITemplateConstr
 
 import DefaultAIConstructor from "./mapai/DefaultAIConstructor";
 
-import * as Languages from "../common/defaultLanguages";
+import * as Languages from "../../localization/defaultLanguages";
 
 const defaultAI: ModuleFile =
 {

@@ -8,7 +8,7 @@ import TemplateCollection from "../../src/templateinterfaces/TemplateCollection"
 import spiralGalaxy from "./templates/spiralGalaxy";
 import tinierSpiralGalaxy from "./templates/tinierSpiralGalaxy";
 
-import * as Languages from "../common/defaultLanguages";
+import * as Languages from "../../localization/defaultLanguages";
 
 const Templates: TemplateCollection<MapGenTemplate> =
 {

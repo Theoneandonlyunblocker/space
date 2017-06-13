@@ -11,7 +11,7 @@ import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
 
-import * as Languages from "../common/defaultLanguages";
+import * as Languages from "../../localization/defaultLanguages";
 
 const defaultUnits: ModuleFile =
 {

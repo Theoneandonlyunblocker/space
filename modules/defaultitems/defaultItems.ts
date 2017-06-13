@@ -6,7 +6,7 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import ItemTemplate from "../../src/templateinterfaces/ItemTemplate";
 
-import * as Languages from "../common/defaultLanguages";
+import * as Languages from "../../localization/defaultLanguages";
 
 const defaultItems: ModuleFile =
 {

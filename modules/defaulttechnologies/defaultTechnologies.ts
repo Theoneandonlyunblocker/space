@@ -7,7 +7,7 @@ import {setTechnologyRequirements} from "../../src/setDynamicTemplateProperties"
 
 import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate";
 
-import * as Languages from "../common/defaultLanguages";
+import * as Languages from "../../localization/defaultLanguages";
 
 const defaultTechnologies: ModuleFile =
 {

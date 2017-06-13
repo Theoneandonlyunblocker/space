@@ -10,7 +10,7 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import MapRendererLayerTemplate from "../../src/templateinterfaces/MapRendererLayerTemplate";
 import MapRendererMapModeTemplate from "../../src/templateinterfaces/MapRendererMapModeTemplate";
 
-import * as Languages from "../common/defaultLanguages";
+import * as Languages from "../../localization/defaultLanguages";
 
 const defaultMapModes: ModuleFile =
 {

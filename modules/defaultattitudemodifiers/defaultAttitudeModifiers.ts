@@ -7,7 +7,7 @@ import {setAttitudeModifierOverride} from "../../src/setDynamicTemplatePropertie
 
 import AttitudeModifierTemplate from "../../src/templateinterfaces/AttitudeModifierTemplate";
 
-import * as Languages from "../common/defaultLanguages";
+import * as Languages from "../../localization/defaultLanguages";
 
 const defaultAttitudeModifiers: ModuleFile =
 {

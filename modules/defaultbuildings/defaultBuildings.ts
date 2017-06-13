@@ -9,7 +9,7 @@ import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 
 import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate";
 
-import * as Languages from "../common/defaultLanguages";
+import * as Languages from "../../localization/defaultLanguages";
 
 const defaultBuildings: ModuleFile =
 {

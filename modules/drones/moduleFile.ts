@@ -10,7 +10,7 @@ import {raceTemplates} from "./raceTemplate";
 import {statusEffectTemplates} from "./statusEffects";
 import {unitTemplates} from "./unitTemplates";
 
-import * as Languages from "../common/defaultLanguages";
+import * as Languages from "../../localization/defaultLanguages";
 
 export const drones: ModuleFile =
 {
@@ -23,7 +23,7 @@ export const drones: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
-  supportedLanguages: [Languages.en, Languages.ja],
+  supportedLanguages: [Languages.en],
   loadAssets: onLoaded =>
   {
     const placeHolderResourceName = "placeHolder";
