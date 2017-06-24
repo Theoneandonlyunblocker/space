@@ -84,8 +84,8 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
 
   makePopup(popupType: string)
   {
-    let contentConstructor: React.Factory<any>;
-    let contentProps: any;
+    let content: React.ReactElement<any>;
+
     const popupProps: CustomPopupProps =
     {
       resizable: true,
@@ -104,11 +104,10 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     {
       case "production":
       {
-        contentConstructor = ProductionOverview;
-        contentProps =
+        content = ProductionOverview(
         {
           player: this.props.player,
-        };
+        });
 
         if (!popupProps.initialPosition.width)
         {
@@ -119,69 +118,69 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       }
       case "equipItems":
       {
-        contentConstructor = ItemEquip;
-        contentProps =
+        content = ItemEquip(
         {
           player: this.props.player,
-        };
+          activeLanguage: this.props.activeLanguage,
+        });
         popupProps.minWidth = 440;
         break;
       }
       case "economySummary":
       {
-        contentConstructor = EconomySummary;
-        contentProps =
+        content = EconomySummary(
         {
           player: this.props.player,
-        };
+          activeLanguage: this.props.activeLanguage,
+        });
         break;
       }
       case "saveGame":
       {
-        contentConstructor = SaveGame;
-        contentProps =
+        content = SaveGame(
         {
           handleClose: this.closePopup.bind(this, "saveGame"),
-        };
+          activeLanguage: this.props.activeLanguage,
+        });
         break;
       }
       case "loadGame":
       {
-        contentConstructor = LoadGame;
-        contentProps =
+        content = LoadGame(
         {
           handleClose: this.closePopup.bind(this, "loadGame"),
-        };
+          activeLanguage: this.props.activeLanguage,
+        });
         break;
       }
       case "options":
       {
-        contentConstructor = OptionsList;
-        contentProps =
+        content = OptionsList(
         {
           log: this.props.game.notificationLog,
-        };
+          activeLanguage: this.props.activeLanguage,
+        });
         break;
       }
       case "diplomacy":
       {
-        contentConstructor = DiplomacyOverview;
-        contentProps =
+        content = DiplomacyOverview(
         {
           player: this.props.player,
           totalPlayerCount: this.props.game.playerOrder.length,
           metPlayers: this.props.player.diplomacyStatus.metPlayers,
           statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer,
-        };
+          activeLanguage: this.props.activeLanguage,
+        });
         break;
       }
       case "technologies":
       {
-        contentConstructor = TechnologiesList;
-        contentProps =
+        content = TechnologiesList(
         {
           playerTechnology: this.props.player.playerTechnology,
-        };
+          activeLanguage: this.props.activeLanguage,
+        });
         popupProps.minWidth = 430;
         break;
       }
@@ -191,7 +190,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     {
       content: TopMenuPopup(
       {
-        content: contentConstructor(contentProps),
+        content: content,
         handleClose: this.closePopup.bind(this, popupType),
       }),
       popupProps: popupProps,
