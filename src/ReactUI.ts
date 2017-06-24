@@ -46,11 +46,7 @@ export default class ReactUI
 
     this.addEventListeners();
   }
-  private addEventListeners()
-  {
-    eventManager.addEventListener("switchScene", this.switchScene.bind(this));
-    eventManager.addEventListener("renderUI", this.render.bind(this));
-  }
+
   public switchScene(newScene: ReactUIScene)
   {
     this.currentScene = newScene;
@@ -58,11 +54,6 @@ export default class ReactUI
     {
       this.render();
     });
-  }
-  private loadModulesNeededForCurrentScene(afterLoaded: () => void): void
-  {
-    const phase = moduleLoadingPhaseByScene[this.currentScene];
-    this.moduleLoader.loadModulesNeededForPhase(phase, afterLoaded);
   }
   public destroy()
   {
@@ -88,14 +79,15 @@ export default class ReactUI
       this.container,
     );
   }
-  // public renderLoadingScreen()
-  // {
-  //   ReactDOM.render(
-  //     LoadingScreen(
-  //     {
 
-  //     }),
-  //     this.container
-  //   );
-  // }
+  private addEventListeners()
+  {
+    eventManager.addEventListener("switchScene", this.switchScene.bind(this));
+    eventManager.addEventListener("renderUI", this.render.bind(this));
+  }
+  private loadModulesNeededForCurrentScene(afterLoaded: () => void): void
+  {
+    const phase = moduleLoadingPhaseByScene[this.currentScene];
+    this.moduleLoader.loadModulesNeededForPhase(phase, afterLoaded);
+  }
 }

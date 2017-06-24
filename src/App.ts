@@ -298,6 +298,7 @@ class App
     );
 
     const galaxyMap = mapGenResult.makeMap();
+
     return galaxyMap;
   }
   private initGame()
@@ -323,7 +324,7 @@ class App
       this.game.notificationLog.setTurn(this.game.turnNumber, true);
     }
 
-    app.moduleData.scripts.game.afterInit.forEach(scriptFN =>
+    this.moduleData.scripts.game.afterInit.forEach(scriptFN =>
     {
       scriptFN(this.game);
     });
