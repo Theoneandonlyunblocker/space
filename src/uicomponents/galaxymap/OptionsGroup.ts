@@ -1,10 +1,13 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import {Language} from "../../localization/Language";
+
 export interface PropTypes extends React.Props<any>
 {
   isCollapsedInitially?: boolean;
   resetFN?: () => void;
   header?: string;
+  activeLanguage: Language;
   options:
   {
     key: string;
@@ -31,28 +34,8 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
 
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    this.toggleCollapse = this.toggleCollapse.bind(this);
-  }
 
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      isCollapsed: this.props.isCollapsedInitially || false,
-    });
-  }
-
-  toggleCollapse()
-  {
-    this.setState(
-    {
-      isCollapsed: !this.state.isCollapsed,
-    });
-  }
-
-  render()
+  public render()
   {
     const rows: React.ReactHTMLElement<any>[] = [];
 
@@ -104,6 +87,25 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
         rows,
       )
     );
+  }
+
+  private bindMethods()
+  {
+    this.toggleCollapse = this.toggleCollapse.bind(this);
+  }
+  private getInitialStateTODO(): StateType
+  {
+    return(
+    {
+      isCollapsed: this.props.isCollapsedInitially || false,
+    });
+  }
+  private toggleCollapse()
+  {
+    this.setState(
+    {
+      isCollapsed: !this.state.isCollapsed,
+    });
   }
 }
 

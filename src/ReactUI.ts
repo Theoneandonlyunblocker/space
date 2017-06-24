@@ -12,6 +12,8 @@ import ReactUIScene from "./ReactUIScene";
 import Renderer from "./Renderer";
 import eventManager from "./eventManager";
 
+import {getActiveLanguage} from "./localization/activeLanguage";
+
 import Stage from "./uicomponents/Stage";
 
 const moduleLoadingPhaseByScene =
@@ -75,6 +77,7 @@ export default class ReactUI
         playerControl: this.playerControl,
         player: this.player,
         game: this.game,
+        activeLanguage: getActiveLanguage(),
       }),
       this.container,
     );

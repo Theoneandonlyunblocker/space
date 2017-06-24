@@ -8,10 +8,17 @@ import Player from "../../Player";
 import PlayerControl from "../../PlayerControl";
 import Star from "../../Star";
 import eventManager from "../../eventManager";
+
+import {Language} from "../../localization/Language";
+
 import MapModeSettings from "../mapmodes/MapModeSettings";
+
 import Notifications from "../notifications/Notifications";
+
 import PossibleActions from "../possibleactions/PossibleActions";
+
 import IntroTutorial from "../tutorials/IntroTutorial";
+
 import FleetSelection from "./FleetSelection";
 import StarInfo from "./StarInfo";
 import TopBar from "./TopBar";
@@ -24,6 +31,7 @@ export interface PropTypes extends React.Props<any>
   mapRenderer: MapRenderer;
   player: Player;
   playerControl: PlayerControl;
+  activeLanguage: Language;
 }
 
 interface StateType
@@ -217,11 +225,13 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
           {
             player: this.props.player,
             game: this.props.game,
+            // activeLanguage: this.props.activeLanguage,
           }),
           TopMenu(
           {
             player: this.props.player,
             game: this.props.game,
+            activeLanguage: this.props.activeLanguage,
             // log: this.props.game.notificationLog,
             // currentTurn: this.props.game.turnNumber
           }),
@@ -238,6 +248,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
               currentlyReorganizing: this.state.currentlyReorganizing,
               closeReorganization: this.closeReorganization,
               player: this.props.player,
+              // activeLanguage: this.props.activeLanguage,
             }),
           ),
         ),
@@ -267,11 +278,13 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
                 selectedStar: this.state.selectedStar,
                 player: this.props.player,
                 setExpandedActionElementOnParent: this.setExpandedActionElement,
+                // activeLanguage: this.props.activeLanguage,
                 key: "possibleActions",
               }),
               StarInfo(
               {
                 selectedStar: this.state.selectedStar,
+                // activeLanguage: this.props.activeLanguage,
                 key: "starInfo",
               }),
             ),
@@ -286,6 +299,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
           !this.state.hasMapModeSettingsExpanded ? null : MapModeSettings(
           {
             mapRenderer: this.props.mapRenderer,
+            // activeLanguage: this.props.activeLanguage,
             key: "mapRendererLayersList",
           }),
           React.DOM.button(
@@ -300,6 +314,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
           {
             log: this.props.game.notificationLog,
             currentTurn: this.props.game.turnNumber,
+            activeLanguage: this.props.activeLanguage,
             key: "notifications",
           }),
           React.DOM.button(endTurnButtonProps, "End turn"),

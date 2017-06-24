@@ -4,13 +4,17 @@ import app from "../../App"; // TODO global
 import ModuleFileLoadingPhase from "../../ModuleFileLoadingPhase";
 import eventManager from "../../eventManager";
 
+import {Language} from "../../localization/Language";
+
 import MapGenFunction from "../../templateinterfaces/MapGenFunction";
+
 import {default as MapSetup, MapSetupComponent} from "./MapSetup";
 import {default as SetupGamePlayers, SetupGamePlayersComponent} from "./SetupGamePlayers";
 
 
 export interface PropTypes extends React.Props<any>
 {
+  activeLanguage: Language;
 }
 
 interface StateType
@@ -110,6 +114,7 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
             MapSetup(
             {
               setPlayerLimits: this.setPlayerLimits,
+              activeLanguage: this.props.activeLanguage,
               ref: (component: MapSetupComponent) =>
               {
                 this.ref_TODO_mapSetup = component;

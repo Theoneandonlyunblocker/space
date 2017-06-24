@@ -3,7 +3,11 @@
 
 import NotificationFilter from "../../NotificationFilter";
 import eventManager from "../../eventManager";
+
+import {Language} from "../../localization/Language";
+
 import OptionsGroup from "../galaxymap/OptionsGroup";
+
 import NotificationFilterListItem from "./NotificationFilterListItem";
 
 
@@ -11,6 +15,7 @@ export interface PropTypes extends React.Props<any>
 {
   filter: NotificationFilter;
   highlightedOptionKey?: string;
+  activeLanguage: Language;
 }
 
 interface StateType
@@ -97,6 +102,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
         options: filterElementsForCategory,
         key: category,
         resetFN: this.handleResetCategory.bind(this, category),
+        activeLanguage: this.props.activeLanguage,
       }));
     }
 

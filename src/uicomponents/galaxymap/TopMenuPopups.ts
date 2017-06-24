@@ -3,15 +3,24 @@
 import Game from "../../Game";
 import Options from "../../Options";
 import Player from "../../Player";
+
 import DiplomacyOverview from "../diplomacy/DiplomacyOverview";
+
+import {Language} from "../../localization/Language";
+
 import {CustomPopupProps} from "../popups/Popup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import TopMenuPopup from "../popups/TopMenuPopup";
+
 import ProductionOverview from "../production/ProductionOverview";
+
 import LoadGame from "../saves/LoadGame";
 import SaveGame from "../saves/SaveGame";
+
 import TechnologiesList from "../technologies/TechnologiesList";
+
 import ItemEquip from "../unitlist/ItemEquip";
+
 import EconomySummary from "./EconomySummary";
 import OptionsList from "./OptionsList";
 
@@ -19,6 +28,7 @@ export interface PropTypes extends React.Props<any>
 {
   player: Player;
   game: Game;
+  activeLanguage: Language;
 }
 
 interface StateType
@@ -121,7 +131,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         content = ItemEquip(
         {
           player: this.props.player,
-          activeLanguage: this.props.activeLanguage,
+          // activeLanguage: this.props.activeLanguage,
         });
         popupProps.minWidth = 440;
         break;
@@ -131,7 +141,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         content = EconomySummary(
         {
           player: this.props.player,
-          activeLanguage: this.props.activeLanguage,
+          // activeLanguage: this.props.activeLanguage,
         });
         break;
       }
@@ -140,7 +150,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         content = SaveGame(
         {
           handleClose: this.closePopup.bind(this, "saveGame"),
-          activeLanguage: this.props.activeLanguage,
+          // activeLanguage: this.props.activeLanguage,
         });
         break;
       }
@@ -149,7 +159,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         content = LoadGame(
         {
           handleClose: this.closePopup.bind(this, "loadGame"),
-          activeLanguage: this.props.activeLanguage,
+          // activeLanguage: this.props.activeLanguage,
         });
         break;
       }
@@ -170,7 +180,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
           totalPlayerCount: this.props.game.playerOrder.length,
           metPlayers: this.props.player.diplomacyStatus.metPlayers,
           statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer,
-          activeLanguage: this.props.activeLanguage,
+          // activeLanguage: this.props.activeLanguage,
         });
         break;
       }
@@ -179,7 +189,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         content = TechnologiesList(
         {
           playerTechnology: this.props.player.playerTechnology,
-          activeLanguage: this.props.activeLanguage,
+          // activeLanguage: this.props.activeLanguage,
         });
         popupProps.minWidth = 430;
         break;

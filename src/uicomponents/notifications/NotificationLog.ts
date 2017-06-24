@@ -4,8 +4,12 @@
 import Notification from "../../Notification";
 import NotificationLog from "../../NotificationLog";
 import eventManager from "../../eventManager";
+
+import {Language} from "../../localization/Language";
+
 import ConfirmPopup from "../popups/ConfirmPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+
 import NotificationComponentFactory from "./Notification";
 import NotificationFilterButton from "./NotificationFilterButton";
 
@@ -14,6 +18,7 @@ export interface PropTypes extends React.Props<any>
 {
   log: NotificationLog;
   currentTurn: number;
+  activeLanguage: Language;
 }
 
 interface StateType
@@ -127,6 +132,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
             filter: log.notificationFilter,
             text: "Filter",
             highlightedOptionKey: notification.template.key,
+            activeLanguage: this.props.activeLanguage,
           }),
         ],
       }),

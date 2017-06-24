@@ -17,6 +17,8 @@ import PlayerControl from "../PlayerControl";
 import ReactUIScene from "../ReactUIScene";
 import Renderer from "../Renderer";
 
+import {Language} from "../localization/Language";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -28,6 +30,7 @@ export interface PropTypes extends React.Props<any>
   game: Game;
   sceneToRender: ReactUIScene;
   renderer: Renderer;
+  activeLanguage: Language;
 }
 
 interface StateType
@@ -36,15 +39,15 @@ interface StateType
 
 export class StageComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "Stage";
-  state: StateType;
+  public displayName: string = "Stage";
+  public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public render()
   {
     const elementsToRender: React.ReactElement<any>[] = [];
 
@@ -57,6 +60,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
           {
             battle: this.props.battle,
             humanPlayer: this.props.player,
+            // activeLanguage: this.props.activeLanguage,
             key: "battle",
           }),
         );
@@ -68,6 +72,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
           BattlePrepComponentFactory(
           {
             battlePrep: this.props.battlePrep,
+            // activeLanguage: this.props.activeLanguage,
             key: "battlePrep",
           }),
         );
@@ -83,6 +88,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
             playerControl: this.props.playerControl,
             player: this.props.player,
             game: this.props.game,
+            activeLanguage: this.props.activeLanguage,
             key: "galaxyMap",
           }),
         );
@@ -93,6 +99,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           FlagMaker(
           {
+            // activeLanguage: this.props.activeLanguage,
             key: "flagMaker",
           }),
         );
@@ -103,6 +110,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           SetupGame(
           {
+            activeLanguage: this.props.activeLanguage,
             key: "setupGame",
           }),
         );
@@ -113,6 +121,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           BattleSceneTester(
           {
+            // activeLanguage: this.props.activeLanguage,
             key: "battleSceneTester",
           }),
         );
@@ -123,12 +132,14 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           SFXEditor(
           {
+            // activeLanguage: this.props.activeLanguage,
             key: "SFXEditor",
           }),
         );
         break;
       }
     }
+
     return(
       React.DOM.div({className: "react-stage"},
         elementsToRender,

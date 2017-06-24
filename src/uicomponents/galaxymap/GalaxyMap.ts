@@ -10,6 +10,8 @@ import PlayerControl from "../../PlayerControl";
 import Point from "../../Point";
 import Renderer from "../../Renderer";
 
+import {Language} from "../../localization/Language";
+
 export interface PropTypes extends React.Props<any>
 {
   toCenterOn?: Point;
@@ -18,6 +20,7 @@ export interface PropTypes extends React.Props<any>
   game: Game;
   mapRenderer: MapRenderer;
   renderer: Renderer;
+  activeLanguage: Language;
 }
 
 interface StateType
@@ -60,6 +63,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
               player: this.props.player,
               game: this.props.game,
               mapRenderer: this.props.mapRenderer,
+              activeLanguage: this.props.activeLanguage,
               key: "galaxyMapUI",
             }),
         ),

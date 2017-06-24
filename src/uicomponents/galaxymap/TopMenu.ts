@@ -4,6 +4,9 @@ import Game from "../../Game";
 import Options from "../../Options";
 import Player from "../../Player";
 import eventManager from "../../eventManager";
+
+import {Language} from "../../localization/Language";
+
 import {default as TopMenuPopups, TopMenuPopupsComponent} from "./TopMenuPopups";
 
 
@@ -11,6 +14,7 @@ export interface PropTypes extends React.Props<any>
 {
   player: Player;
   game: Game;
+  activeLanguage: Language;
 }
 
 interface StateType
@@ -317,6 +321,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
           },
           player: this.props.player,
           game: this.props.game,
+          activeLanguage: this.props.activeLanguage,
         }),
       )
     );

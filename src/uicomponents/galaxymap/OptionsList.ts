@@ -6,6 +6,8 @@ import eventManager from "../../eventManager";
 import TutorialStatus from "../../tutorials/TutorialStatus";
 import {clamp} from "../../utility";
 
+import {Language} from "../../localization/Language";
+
 import NotificationFilterButton from "../notifications/NotificationFilterButton";
 
 import ConfirmPopup from "../popups/ConfirmPopup";
@@ -21,6 +23,7 @@ import OptionsNumericField from "./OptionsNumericField";
 export interface PropTypes extends React.Props<any>
 {
   log: NotificationLog;
+  activeLanguage: Language;
 }
 
 interface StateType
@@ -79,7 +82,10 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     languageOptions.push(
     {
       key: "selectAppLanguage",
-      content: AppLanguageSelect(),
+      content: AppLanguageSelect(
+      {
+        activeLanguage: this.props.activeLanguage,
+      }),
     });
 
     allOptions.push(OptionsGroup(
@@ -87,6 +93,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "language",
       header: "Language",
       options: languageOptions,
+      activeLanguage: this.props.activeLanguage,
     }));
 
     const battleAnimationOptions: any[] = [];
@@ -167,6 +174,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "battleAnimationOptions",
       header: "Battle animation timing",
       options: battleAnimationOptions,
+      activeLanguage: this.props.activeLanguage,
       resetFN: () =>
       {
         Options.setDefaultForCategory("battleAnimationTiming");
@@ -238,6 +246,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "debug",
       header: "Debug",
       options: debugOptions,
+      activeLanguage: this.props.activeLanguage,
       resetFN: () =>
       {
         Options.setDefaultForCategory("debug");
@@ -271,6 +280,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         filter: this.props.log.notificationFilter,
         text: "Message settings",
         highlightedOptionKey: null,
+        activeLanguage: this.props.activeLanguage,
       }),
     });
 
@@ -291,6 +301,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "ui",
       header: "UI",
       options: uiOptions,
+      activeLanguage: this.props.activeLanguage,
       resetFN: () =>
       {
         Options.setDefaultForCategory("ui");
@@ -323,6 +334,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "display",
       header: "Display",
       options: displayOptions,
+      activeLanguage: this.props.activeLanguage,
       resetFN: () =>
       {
         Options.setDefaultForCategory("display");

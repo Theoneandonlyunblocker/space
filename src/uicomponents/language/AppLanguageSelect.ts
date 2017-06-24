@@ -7,7 +7,6 @@ import app from "../../App"; // TODO global
 import {Language} from "../../localization/Language";
 import
 {
-  getActiveLanguage,
   setActiveLanguageCode,
 } from "../../localization/activeLanguage";
 import
@@ -18,6 +17,7 @@ import
 
 interface PropTypes extends React.Props<any>
 {
+  activeLanguage: Language;
   onChange?: () => void;
 }
 
@@ -39,10 +39,11 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
 
   public render()
   {
+    console.log("als", this.props.activeLanguage);
     return(
       LanguageSelect(
       {
-        activeLanguage: getActiveLanguage(),
+        activeLanguage: this.props.activeLanguage,
         availableLanguagesByCode: getLanguagesByCode(...app.moduleData.moduleFiles),
         languageSupportLevelByCode: getLanguageSupportLevelForModuleFiles(...app.moduleData.moduleFiles),
         onChange: this.handleLanguageChange,
@@ -54,8 +55,7 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
   {
     setActiveLanguageCode(newLanguage.code);
     localStorage.setItem("Rance.language", newLanguage.code);
-    // TODO 13.06.2017 | need some way to trigger ui update here
-    // could probably just send down language as props for the ui components
+    app.reactUI.render();
   }
 }
 
