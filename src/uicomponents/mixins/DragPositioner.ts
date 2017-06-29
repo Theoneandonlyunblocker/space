@@ -29,7 +29,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public shouldMakeClone: boolean = false;
 
   public makeDragClone: () => HTMLElement;
-  public onDragStart: () => void;
+  public onDragStart: (x?: number, y?: number) => void;
   public onDragMove: (x: number, y: number) => void;
   public onDragEnd: () => boolean | void; // return value: was drop succesful
 
@@ -43,7 +43,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   private mouseIsDown: boolean = false;
   private dragOffset: Point = {x: 0, y: 0};
   private mouseDownPosition: Point = {x: 0, y: 0};
-  private originPosition: Point = {x: 0, y: 0};
+  public originPosition: Point = {x: 0, y: 0};
 
   private cloneElement: HTMLElement = null;
 
@@ -251,15 +251,18 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
           }
         }
 
+        const x = e.pageX - this.dragOffset.x;
+        const y = e.pageY - this.dragOffset.y;
+
         this.owner.forceUpdate();
 
         if (this.onDragStart)
         {
-          this.onDragStart();
+          this.onDragStart(x, y);
         }
         if (this.onDragMove)
         {
-          this.onDragMove(e.pageX - this.dragOffset.x, e.pageY - this.dragOffset.y);
+          this.onDragMove(x, y);
         }
       }
     }

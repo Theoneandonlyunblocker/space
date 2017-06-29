@@ -1,9 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-
+import {Direction} from "../../Direction";
 import eventManager from "../../eventManager";
 import {clamp} from "../../utility";
-import PopupResizeHandle from "./PopupResizeHandle";
+
+import {default as PopupResizeHandle, PropTypes as PopupResizeHandleProps} from "./PopupResizeHandle";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
@@ -64,6 +65,9 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
   state: StateType;
 
   dragPositioner: DragPositioner<PopupComponent>;
+  private resizeStartQuadrant: {top: boolean, left: boolean};
+  private resizeStartPos: {x: number, y: number};
+  private resizeStartSize: {width: number, height: number};
 
   ref_TODO_content: ContentComponent;
 
@@ -77,20 +81,6 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
 
     this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
     applyMixins(this, this.dragPositioner);
-  }
-  private bindMethods()
-  {
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.handleResizeMove = this.handleResizeMove.bind(this);
-    this.setInitialPosition = this.setInitialPosition.bind(this);
-  }
-
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      zIndex: -1,
-    });
   }
 
   componentDidMount()
@@ -172,20 +162,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  handleResizeMove(x: number, y: number)
-  {
-    const minWidth = this.props.minWidth || 0;
-    const maxWidth = this.props.maxWidth || window.innerWidth;
-    const minHeight = this.props.minHeight || 0;
-    const maxHeight = this.props.maxHeight || window.innerHeight;
-
-    this.dragPositioner.dragSize.x = clamp(x + 5 - this.dragPositioner.dragPos.x, minWidth, maxWidth);
-    this.dragPositioner.dragSize.y = clamp(y + 5 - this.dragPositioner.dragPos.y, minHeight, maxHeight);
-    this.dragPositioner.updateDOMNodeStyle();
-    eventManager.dispatchEvent("popupResized");
-  }
-
-  render()
+  public render()
   {
     const divProps: React.HTMLAttributes =
     {
@@ -218,17 +195,121 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
       },
     };
 
-    const resizeHandle = !this.props.resizable ? null : PopupResizeHandle(
-    {
-      handleResize: this.handleResizeMove,
-    });
+    const resizeHandles = !this.props.resizable ? null : this.makeResizeHandles();
 
     return(
       React.DOM.div(divProps,
+        // TODO 24.06.2017 | why??
+        // this causes lots of problems I think
         React.cloneElement(this.props.content, contentProps),
-        resizeHandle,
+        resizeHandles,
       )
     );
+  }
+
+  private bindMethods()
+  {
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.handleResizeMove = this.handleResizeMove.bind(this);
+    this.handleResizeStart = this.handleResizeStart.bind(this);
+    this.setInitialPosition = this.setInitialPosition.bind(this);
+  }
+  private getInitialStateTODO(): StateType
+  {
+    return(
+    {
+      zIndex: -1,
+    });
+  }
+  private handleResizeMove(rawDeltaX: number, rawDeltaY: number): void
+  {
+    const minWidth = this.props.minWidth || 0;
+    const maxWidth = this.props.maxWidth || window.innerWidth;
+    const minHeight = this.props.minHeight || 0;
+    const maxHeight = this.props.maxHeight || window.innerHeight;
+
+
+
+    if (this.resizeStartQuadrant.left)
+    {
+      const deltaX = clamp(
+        rawDeltaX,
+        this.resizeStartSize.width - maxWidth,
+        this.resizeStartSize.width - minWidth,
+      );
+
+      this.dragPositioner.dragSize.x = this.resizeStartSize.width - deltaX;
+      this.dragPositioner.dragPos.x = this.resizeStartPos.x + deltaX;
+    }
+    else
+    {
+      const deltaX = rawDeltaX;
+
+      this.dragPositioner.dragSize.x = this.resizeStartSize.width + deltaX;
+      this.dragPositioner.dragSize.x = clamp(this.dragPositioner.dragSize.x, minWidth, maxWidth);
+    }
+
+    if (this.resizeStartQuadrant.top)
+    {
+      const deltaY = clamp(
+        rawDeltaY,
+        this.resizeStartSize.height - maxHeight,
+        this.resizeStartSize.height - minHeight,
+      );
+
+      this.dragPositioner.dragPos.y = this.resizeStartPos.y + deltaY;
+      this.dragPositioner.dragSize.y = this.resizeStartSize.height - deltaY;
+    }
+    else
+    {
+      const deltaY = rawDeltaY;
+
+      this.dragPositioner.dragSize.y = this.resizeStartSize.height + deltaY;
+      this.dragPositioner.dragSize.y = clamp(this.dragPositioner.dragSize.y, minHeight, maxHeight);
+    }
+
+
+    this.dragPositioner.updateDOMNodeStyle();
+    eventManager.dispatchEvent("popupResized");
+  }
+  private handleResizeStart(x: number, y: number): void
+  {
+    const rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
+    const midX = rect.left + rect.width / 2;
+    const midY = rect.top + rect.height / 2;
+
+    this.resizeStartPos =
+    {
+      x: this.dragPositioner.dragPos.x,
+      y: this.dragPositioner.dragPos.y,
+    };
+    this.resizeStartSize =
+    {
+      width: this.dragPositioner.dragSize.x,
+      height: this.dragPositioner.dragSize.y,
+    };
+    this.resizeStartQuadrant =
+    {
+      left: x < midX,
+      top: y < midY,
+    };
+  }
+  private makeResizeHandles(directions: Direction[] | "all" = "all"): React.ReactElement<PopupResizeHandleProps>[]
+  {
+    const directionsToCreate: Direction[] = directions === "all" ?
+      ["n", "e", "w", "s", "ne", "se", "sw", "nw"] :
+      directions.slice(0);
+
+    return directionsToCreate.map(direction =>
+    {
+      return PopupResizeHandle(
+      {
+        handleResizeMove: this.handleResizeMove,
+        handleResizeStart: this.handleResizeStart,
+        direction: direction,
+        key: direction,
+      });
+    });
   }
 }
 

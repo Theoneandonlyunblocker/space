@@ -3,9 +3,15 @@
 import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
+import {Direction} from "../../Direction";
+
+type DirectionRestriction = "horizontal" | "vertical" | "free";
+
 export interface PropTypes extends React.Props<any>
 {
-  handleResize: (x: number, y: number) => void;
+  handleResizeStart: (x: number, y: number) => void;
+  handleResizeMove: (x: number, y: number) => void;
+  direction: Direction;
 }
 
 interface StateType
@@ -14,12 +20,11 @@ interface StateType
 
 export class PopupResizeHandleComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "PopupResizeHandle";
-  // originBottom: reactTypeTODO_any = undefined;
-  // originRight: reactTypeTODO_any = undefined;
+  public displayName: string = "PopupResizeHandle";
+  public state: StateType;
 
-  state: StateType;
-  dragPositioner: DragPositioner<PopupResizeHandleComponent>;
+  private dragPositioner: DragPositioner<PopupResizeHandleComponent>;
+  private directionRestriction: DirectionRestriction;
 
   constructor(props: PropTypes)
   {
@@ -27,39 +32,72 @@ export class PopupResizeHandleComponent extends React.Component<PropTypes, State
 
     this.bindMethods();
 
+    switch (this.props.direction)
+    {
+      case "n":
+      case "s":
+      {
+        this.directionRestriction = "vertical";
+        break;
+      }
+      case "e":
+      case "w":
+      {
+        this.directionRestriction = "horizontal";
+        break;
+      }
+      case "ne":
+      case "se":
+      case "sw":
+      case "nw":
+      {
+        this.directionRestriction = "free";
+        break;
+      }
+      default:
+      {
+        throw new Error(`Invalid popup resize handle direction '${this.props.direction}'`);
+      }
+    }
+
     this.dragPositioner = new DragPositioner(this);
     this.dragPositioner.onDragMove = this.onDragMove;
+    this.dragPositioner.onDragStart = this.onDragStart;
+    this.dragPositioner.forcedDragOffset = {x: 0, y: 0};
     applyMixins(this, this.dragPositioner);
   }
-  private bindMethods()
-  {
-    this.onDragMove = this.onDragMove.bind(this);
-  }
 
-  // onDragStart()
-  // {
-  //   const rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-  //   this.originBottom = rect.bottom;
-  //   this.originRight = rect.right;
-  // }
-
-  onDragMove(x: number, y: number)
-  {
-    const rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-    this.props.handleResize(x + rect.width, y + rect.height);
-  }
-
-  render()
+  public render()
   {
     return(
-      React.DOM.img(
+      React.DOM.div(
       {
-        className: "popup-resize-handle",
-        src: "img/icons/resizeHandle.png",
+        className: "popup-resize-handle" + ` popup-resize-handle-${this.props.direction}`,
         onTouchStart: this.dragPositioner.handleReactDownEvent,
         onMouseDown: this.dragPositioner.handleReactDownEvent,
       })
     );
+  }
+
+  protected onDragStart(x: number, y: number): void
+  {
+    this.props.handleResizeStart(x, y);
+  }
+  protected onDragMove(x: number, y: number): void
+  {
+    const deltaX = x - this.dragPositioner.originPosition.x;
+    const deltaY = y - this.dragPositioner.originPosition.y;
+
+    this.props.handleResizeMove(
+      this.directionRestriction === "vertical" ? 0 : deltaX,
+      this.directionRestriction === "horizontal" ? 0 : deltaY,
+    );
+  }
+
+  private bindMethods(): void
+  {
+    this.onDragStart = this.onDragStart.bind(this);
+    this.onDragMove = this.onDragMove.bind(this);
   }
 }
 

@@ -81,6 +81,11 @@ ol {
 .glow {
   box-shadow: 0px 0px 12px #fff inset, 0px 0px 10px #ff0;
 }
+.prevent-text-overflow {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 #react-container {
   height: 100%;
 }
@@ -158,10 +163,8 @@ ol {
   width: 16px;
   margin-left: -8px;
 }
-.battle-score-flag-wrapper {
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
+.battle-score-flag {
+  height: 100%;
   width: 46px;
 }
 .battle-score-bar-container {
@@ -318,6 +321,7 @@ ol {
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
   text-overflow: clip;
   transition: background-color 100ms;
 }
@@ -538,7 +542,7 @@ ol {
   flex: none;
   flex-basis: 0px;
   flex-flow: column;
-  width: 128px;
+  min-width: 128px;
   height: 64px;
   pointer-events: none;
 }
@@ -549,6 +553,10 @@ ol {
   flex: 1;
   max-height: 50%;
   pointer-events: auto;
+  max-width: 20em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .ability-tooltip-faces-right .ability-tooltip-ability {
   background: linear-gradient(to left, rgba(113, 113, 5, 0.9), rgba(113, 113, 5, 0.7));
@@ -1105,10 +1113,10 @@ ol {
 }
 .unit-list .unit-list-typeName {
   text-align: left;
-  overflow: hidden;
   max-width: 90px;
-  text-overflow: ellipsis;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .unit-list .unit-list-strength {
   text-align: right;
@@ -1436,6 +1444,56 @@ ol {
 .galaxy-map-ui > * {
   pointer-events: auto;
 }
+.game-over-screen {
+  z-index: 100;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.game-over-screen-inner {
+  position: relative;
+  display: inline-flex;
+  flex-flow: column;
+}
+.game-over-header {
+  color: #eeeeec;
+  font-size: 6em;
+  margin: 0.33em 0;
+}
+.game-over-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+.game-over-buttons button {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.game-over-buttons button:hover,
+.game-over-buttons button:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.game-over-buttons button:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.game-over-buttons button:disabled,
+.game-over-buttons button.disabled {
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
 .mouse-event-active-ui {
   opacity: 0.1;
   transition-delay: 0.6s;
@@ -1459,6 +1517,7 @@ ol {
 .player-name {
   max-width: 300px;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 .top-bar {
@@ -1841,8 +1900,10 @@ ol {
   padding: 0;
   color: #eeeeec;
   max-width: 7em;
-  text-overflow: ellipsis;
   cursor: text;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .fleet-info-strength {
   margin-right: 5px;
@@ -1880,6 +1941,8 @@ ol {
   padding: 0;
   color: #eeeeec;
   width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 .fleet-unit-info-icon-container {
@@ -2159,7 +2222,7 @@ ol {
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
-  margin: 6px 0;
+  margin: 3px 0;
   padding: 6px;
 }
 .possible-action:hover,
@@ -2174,9 +2237,6 @@ ol {
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.possible-action-title {
-  align-self: center;
 }
 .expanded-action {
   position: relative;
@@ -2193,6 +2253,11 @@ ol {
 }
 .expanded-action > * {
   background-color: #0c1615;
+}
+.attack-target-player-flag {
+  width: 1em;
+  height: 1em;
+  margin-left: 0.5em;
 }
 .star-info {
   display: flex;
@@ -2470,7 +2535,10 @@ ol {
   background: #868a0a;
 }
 .item-list td {
+  max-width: 10em;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .reserved-item {
   background: #064b0a;
@@ -2507,10 +2575,10 @@ ol {
   }
 }
 .item-list-unitName {
-  overflow: hidden;
   max-width: 110px;
-  text-overflow: ellipsis;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .menu-unit-info {
   display: flex;
@@ -2598,6 +2666,10 @@ ol {
   display: block;
   float: left;
   clear: both;
+  max-width: 20em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .active-skill {
   color: #ffffff;
@@ -3196,6 +3268,7 @@ ol {
 .save-list-name {
   max-width: 400px;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 .save-list-delete {
@@ -3288,8 +3361,62 @@ ol {
 }
 .popup-resize-handle {
   position: absolute;
-  bottom: 0;
+  background: rgba(255, 0, 0, 0.3);
+}
+.popup-resize-handle-n {
+  top: -5px;
+  left: 0;
   right: 0;
+  height: 5px;
+  cursor: ns-resize;
+}
+.popup-resize-handle-s {
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  height: 5px;
+  cursor: ns-resize;
+}
+.popup-resize-handle-e {
+  right: -5px;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  cursor: ew-resize;
+}
+.popup-resize-handle-w {
+  left: -5px;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  cursor: ew-resize;
+}
+.popup-resize-handle-ne {
+  top: -5px;
+  right: -5px;
+  width: 5px;
+  height: 5px;
+  cursor: nesw-resize;
+}
+.popup-resize-handle-sw {
+  bottom: -5px;
+  left: -5px;
+  width: 5px;
+  height: 5px;
+  cursor: nesw-resize;
+}
+.popup-resize-handle-se {
+  bottom: -5px;
+  right: -5px;
+  width: 5px;
+  height: 5px;
+  cursor: nwse-resize;
+}
+.popup-resize-handle-nw {
+  top: -5px;
+  left: -5px;
+  width: 5px;
+  height: 5px;
   cursor: nwse-resize;
 }
 .dont-show-again-wrapper {
@@ -3609,6 +3736,7 @@ ol {
   background-repeat: no-repeat;
   background-position: center top;
   background-attachment: fixed;
+  background-size: cover;
   overflow-y: hidden;
 }
 .setup-game {
@@ -3718,6 +3846,8 @@ ol {
   width: 8em;
   height: 1.5em;
   margin: 0.5em;
+  overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 @media (max-width: 650px) {
@@ -3739,8 +3869,20 @@ ol {
 .color-setter {
   width: 4em;
 }
+.color-setter > .color-picker {
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+  position: fixed;
+  z-index: 201;
+  background-color: #0c1615;
+}
 .flag-setter {
   width: 4em;
+}
+.flag-setter .popup {
+  width: auto !important;
+  height: auto !important;
 }
 .player-setup-remove-player {
   width: 4em;
@@ -3799,12 +3941,7 @@ button.player-setup-remove-player.disabled {
   border: 1px solid #c4e5fb;
 }
 .color-picker {
-  border: 5px solid transparent;
-  border-image-source: url("../img/uiBorder.png");
-  border-image-slice: 10%;
-  position: fixed;
-  z-index: 201;
-  background-color: #0c1615;
+  display: inline-block;
 }
 .color-picker-hsv {
   display: flex;
@@ -3951,14 +4088,9 @@ button.player-setup-remove-player.disabled {
   width: 2em;
   border: 1px solid #c4e5fb;
 }
-.flag-picker {
-  border: 5px solid transparent;
-  border-image-source: url("../img/uiBorder.png");
-  border-image-slice: 10%;
-  position: fixed;
-  z-index: 201;
-  background-color: #0c1615;
-  max-width: 368px;
+.flag-editor {
+  border: 1px solid #77abce;
+  padding: 5px;
 }
 .flag-picker-title {
   background-color: #0d2335;
@@ -3978,11 +4110,53 @@ button.player-setup-remove-player.disabled {
   background-color: #550f0f;
   animation-name: flash-bg-red;
   animation-timing-function: ease-in-out;
-  animation-duration: 2000ms;
+}
+.emblem-setter-list {
+  display: flex;
+  flex-flow: row;
+}
+.add-new-emblem-button {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+  width: 46px;
+  height: 46px;
+}
+.add-new-emblem-button:hover,
+.add-new-emblem-button:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.add-new-emblem-button:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.add-new-emblem-button:disabled,
+.add-new-emblem-button.disabled {
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.add-new-emblem-button::after {
+  content: "\f067";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+}
+.emblem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.emblem-setter .emblem {
+  cursor: pointer;
+  height: 46px;
+  width: 46px;
 }
 .emblem-picker {
-  background: magenta;
   display: inline-block;
+  max-width: 368px;
 }
 .emblem-picker-container {
   cursor: pointer;
@@ -4020,7 +4194,8 @@ button.player-setup-remove-player.disabled {
 }
 .map-gen-option-label {
   flex: 1 1 40%;
-  overflow-x: hidden;
+  overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 .map-gen-slider-thumb-mixin {
@@ -4259,9 +4434,9 @@ button.player-setup-remove-player.disabled {
 }
 .build-queue .manufacturable-things-list-item-name {
   max-width: 10em;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .construct-manufactory-container {
   border: 1px solid #c4e5fb;
@@ -4600,6 +4775,7 @@ button.player-setup-remove-player.disabled {
 .sfx-fragment-prop-name {
   font-size: 0.8em;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
   flex: 1 1 auto;
 }
