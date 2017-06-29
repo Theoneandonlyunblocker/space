@@ -2349,13 +2349,30 @@ ul, ol
   }
 }
 
+@top-menu-popup-title-height: 25px;
+@top-menu-title-vertical-padding: 2px;
+
 .top-menu-popup-container
 {
-  padding: 25px;
-  background-color: @bg-color2;
+  padding-top: @top-menu-popup-title-height + @top-menu-title-vertical-padding * 2;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+}
+
+.top-menu-popup-title-bar
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: @top-menu-popup-title-height;
+  padding: @top-menu-title-vertical-padding 0;
+
+  background-color: @bg-color2;
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-end;
 }
 
 .light-box-wrapper
@@ -2433,13 +2450,10 @@ ul, ol
     height: 100%;
   }
 }
-
 .light-box-close
 {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  right: 0;
+  width: @top-menu-popup-title-height;
+  height: @top-menu-popup-title-height;
   color: #444;
   text-decoration: none;
 }
@@ -3735,7 +3749,6 @@ ul, ol
 .popup-resize-handle
 {
   position: absolute;
-  background: rgba(255,0,0,0.3);
 }
 
 .popup-resize-handle-n

@@ -47,13 +47,18 @@ export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "top-menu-popup-container draggable-container",
+        className: "top-menu-popup-container",
       },
-        React.DOM.button(
+        React.DOM.div(
         {
-          className: "light-box-close",
-          onClick: this.props.handleClose,
-        }, "X"),
+          className: "top-menu-popup-title-bar draggable-container",
+        },
+          React.DOM.button(
+          {
+            className: "light-box-close",
+            onClick: this.props.handleClose,
+          }, "X"),
+        ),
         React.DOM.div(
         {
           className: "light-box-content",
