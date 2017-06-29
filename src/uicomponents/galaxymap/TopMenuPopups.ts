@@ -95,6 +95,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   makePopup(popupType: string)
   {
     let content: React.ReactElement<any>;
+    let popupTitle: string;
 
     const popupProps: CustomPopupProps =
     {
@@ -118,6 +119,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         {
           player: this.props.player,
         });
+        popupTitle = "Production";
 
         if (!popupProps.initialPosition.width)
         {
@@ -133,6 +135,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
           player: this.props.player,
           // activeLanguage: this.props.activeLanguage,
         });
+        popupTitle = "Equip";
         popupProps.minWidth = 440;
         break;
       }
@@ -143,6 +146,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
           player: this.props.player,
           // activeLanguage: this.props.activeLanguage,
         });
+        popupTitle = "Economy";
         break;
       }
       case "saveGame":
@@ -152,6 +156,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
           handleClose: this.closePopup.bind(this, "saveGame"),
           // activeLanguage: this.props.activeLanguage,
         });
+        popupTitle = "Save";
         break;
       }
       case "loadGame":
@@ -161,6 +166,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
           handleClose: this.closePopup.bind(this, "loadGame"),
           // activeLanguage: this.props.activeLanguage,
         });
+        popupTitle = "Load";
         break;
       }
       case "options":
@@ -170,6 +176,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
           log: this.props.game.notificationLog,
           activeLanguage: this.props.activeLanguage,
         });
+        popupTitle = "Options";
         break;
       }
       case "diplomacy":
@@ -182,6 +189,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
           statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer,
           // activeLanguage: this.props.activeLanguage,
         });
+        popupTitle = "Diplomacy";
         break;
       }
       case "technologies":
@@ -191,6 +199,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
           playerTechnology: this.props.player.playerTechnology,
           // activeLanguage: this.props.activeLanguage,
         });
+        popupTitle = "Technology";
         popupProps.minWidth = 430;
         break;
       }
@@ -202,6 +211,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         content: content,
         handleClose: this.closePopup.bind(this, popupType),
+        title: popupTitle,
       }),
       popupProps: popupProps,
     });

@@ -64,6 +64,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
           pages: IntroTutorial.pages,
           tutorialId: "introTutorial",
         }),
+        title: "Tutorial",
       }),
       popupProps:
       {

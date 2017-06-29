@@ -95,6 +95,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       {
         content: content,
         handleClose: this.closePopup.bind(this, popupType),
+        title: "Diplomacy",
       }),
       popupProps: popupProps,
     });

@@ -59,6 +59,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
           unit: this.props.unit,
           onUnitUpgrade: this.handleUnitUpgrade,
         }),
+        title: "Upgrade unit",
       }),
       popupProps:
       {

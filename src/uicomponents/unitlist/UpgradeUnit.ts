@@ -88,6 +88,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
           sourceAbility: upgradeData.base,
           learningNewability: !Boolean(upgradeData.base),
         }),
+        title: "Upgrade ability",
       }),
       popupProps:
       {

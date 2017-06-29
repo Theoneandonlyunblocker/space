@@ -401,6 +401,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
                 //   positionOnResize: true
                 // }
               }),
+              title: "Flag editor",
             }),
           }),
         ),

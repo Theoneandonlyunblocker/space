@@ -4,6 +4,7 @@ export interface PropTypes extends React.Props<any>
 {
   handleClose: () => void;
   content: React.ReactElement<any>;
+  title: string;
 }
 
 interface StateType
@@ -53,6 +54,12 @@ export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
         {
           className: "top-menu-popup-title-bar draggable-container",
         },
+          React.DOM.div(
+          {
+            className: "top-menu-popup-title",
+          },
+            this.props.title,
+          ),
           React.DOM.button(
           {
             className: "light-box-close",

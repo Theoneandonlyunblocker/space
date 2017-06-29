@@ -1677,6 +1677,36 @@ ol {
   flex-flow: row;
   justify-content: flex-end;
 }
+.top-menu-popup-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 auto;
+  pointer-events: none;
+}
+.light-box-close {
+  width: 25px;
+  height: 25px;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+  flex: 0 0 25px;
+}
+.light-box-close:hover,
+.light-box-close:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.light-box-close:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.light-box-close:disabled,
+.light-box-close.disabled {
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
 .light-box-wrapper {
   position: fixed;
   display: flex;
@@ -1731,16 +1761,7 @@ ol {
 }
 .light-box-content > * {
   height: 100%;
-}
-.light-box-close {
-  width: 25px;
-  height: 25px;
-  color: #444;
-  text-decoration: none;
-}
-.light-box-close:hover,
-.light-box-close:focus {
-  text-decoration: underline;
+  box-sizing: border-box;
 }
 .fleet-selection-container {
   position: relative;

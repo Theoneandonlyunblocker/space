@@ -66,6 +66,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
           activeLanguage: this.props.activeLanguage,
         }),
         handleClose: this.closePopup,
+        title: "Message settings",
       }),
       popupProps:
       {

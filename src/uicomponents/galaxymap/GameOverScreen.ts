@@ -72,6 +72,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
           {
             this.popupIDs.load = undefined;
           },
+          title: "Load game",
         }),
       });
     }
