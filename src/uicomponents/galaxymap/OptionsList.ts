@@ -355,7 +355,6 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         }),
 
         React.DOM.div({className: "options-header"},
-          "Options",
           React.DOM.button(
           {
             className: "reset-options-button reset-all-options-button",
