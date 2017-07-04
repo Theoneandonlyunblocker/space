@@ -3529,10 +3529,21 @@ ul, ol
   margin: 5px;
 }
 
+.technologies-list-container
+{
+  display: flex;
+  flex-flow: column;
+}
+
 .technologies-list
 {
-  max-height: 100%;
+  flex: 1 1 auto;
   overflow-y: auto;
+}
+
+.technologies-list-research-speed
+{
+  flex: 0 0 auto;
 }
 
 .technology-listing
@@ -3963,7 +3974,6 @@ ul, ol
 {
   padding: 0px 8px;
   overflow-y: auto;
-  max-height: 500px;
   :last-child::after
   {
     content: none;

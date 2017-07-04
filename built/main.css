@@ -2995,9 +2995,16 @@ ol {
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
+.technologies-list-container {
+  display: flex;
+  flex-flow: column;
+}
 .technologies-list {
-  max-height: 100%;
+  flex: 1 1 auto;
   overflow-y: auto;
+}
+.technologies-list-research-speed {
+  flex: 0 0 auto;
 }
 .technology-listing {
   display: flex;
@@ -3670,7 +3677,6 @@ ol {
 .options {
   padding: 0px 8px;
   overflow-y: auto;
-  max-height: 500px;
 }
 .options :last-child::after {
   content: none;
@@ -3678,8 +3684,8 @@ ol {
 .options-header {
   position: relative;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-flow: row;
+  justify-content: flex-end;
   padding: 10px 0px;
 }
 .options-header::after {
