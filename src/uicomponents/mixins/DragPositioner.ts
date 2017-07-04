@@ -3,7 +3,12 @@
 import MixinBase from "./MixinBase";
 
 import Point from "../../Point";
-import {recursiveRemoveAttribute} from "../../utility";
+import {Rect} from "../../Rect";
+import
+{
+  recursiveRemoveAttribute,
+  shallowCopy,
+} from "../../utility";
 import NormalizedEvent from "./NormalizedEvent";
 import normalizeEvent from "./normalizeEvent";
 
@@ -33,8 +38,8 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public onDragMove: (x: number, y: number) => void;
   public onDragEnd: () => boolean | void; // return value: was drop succesful
 
-  public dragPos: Point = {x: undefined, y: undefined};
-  public dragSize: Point = {x: undefined, y: undefined};
+  public position: Rect;
+  public originPosition: Point = {x: 0, y: 0};
   public containerElement: HTMLElement; // set in componentDidMount
 
 
@@ -43,7 +48,6 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   private mouseIsDown: boolean = false;
   private dragOffset: Point = {x: 0, y: 0};
   private mouseDownPosition: Point = {x: 0, y: 0};
-  public originPosition: Point = {x: 0, y: 0};
 
   private cloneElement: HTMLElement = null;
 
@@ -120,13 +124,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   // }
   public getStyleAttributes(): React.CSSProperties
   {
-    return(
-    {
-      top: this.dragPos.y,
-      left: this.dragPos.x,
-      width: this.dragSize.x,
-      height: this.dragSize.y,
-    });
+    return shallowCopy(this.position);
   }
   public handleReactDownEvent(e: React.MouseEvent | React.TouchEvent)
   {
@@ -143,12 +141,12 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     {
       s = this.ownerDOMNode.style;
       // should we check this.preventAutoResize here?
-      s.width = "" + this.dragSize.x + "px";
-      s.height = "" + this.dragSize.y + "px";
+      s.width = "" + this.position.width + "px";
+      s.height = "" + this.position.height + "px";
     }
 
-    s.left = "" + this.dragPos.x + "px";
-    s.top = "" + this.dragPos.y + "px";
+    s.left = "" + this.position.left + "px";
+    s.top = "" + this.position.top + "px";
   }
 
   private handleMouseDown(e: NormalizedEvent)
@@ -227,8 +225,8 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
         this.isDragging = true;
         if (!this.preventAutoResize)
         {
-          this.dragSize.x = this.ownerDOMNode.offsetWidth;
-          this.dragSize.y = this.ownerDOMNode.offsetHeight;
+          this.position.width = this.ownerDOMNode.offsetWidth;
+          this.position.height = this.ownerDOMNode.offsetHeight;
         }
 
         if (this.shouldMakeClone || this.makeDragClone)
@@ -260,6 +258,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
         {
           this.onDragStart(x, y);
         }
+        // TODO 04.07.2017 | can't we delete this? called below in this.handleDrag()
         if (this.onDragMove)
         {
           this.onDragMove(x, y);
@@ -306,7 +305,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     else if (x2 > maxX)
     {
       x = maxX- domWidth;
-    };
+    }
 
     if (y < minY)
     {
@@ -315,7 +314,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     else if (y2 > maxY)
     {
       y = maxY - domHeight;
-    };
+    }
 
     if (this.onDragMove)
     {
@@ -323,8 +322,8 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     }
     else
     {
-      this.dragPos.x = x;
-      this.dragPos.y = y;
+      this.position.left = x;
+      this.position.top = y;
       this.updateDOMNodeStyle();
     }
   }

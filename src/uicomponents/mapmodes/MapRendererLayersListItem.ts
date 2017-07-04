@@ -118,7 +118,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
 
   private onDragMove(x: number, y: number): void
   {
-    this.dragPositioner.dragPos.y = y;
+    this.dragPositioner.position.top = y;
     this.dragPositioner.updateDOMNodeStyle();
   }
 
