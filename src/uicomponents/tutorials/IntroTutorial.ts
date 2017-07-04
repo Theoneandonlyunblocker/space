@@ -3,8 +3,7 @@
 import IntroTutorial from "../../tutorials/IntroTutorial";
 import TutorialState from "../../tutorials/TutorialState";
 import TutorialStatus from "../../tutorials/TutorialStatus";
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-import TopMenuPopup from "../popups/TopMenuPopup";
+import {default as DefaultWindow} from "../windows/DefaultWindow";
 import Tutorial from "./Tutorial";
 
 
@@ -19,86 +18,22 @@ interface StateType
 
 export class IntroTutorialComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "IntroTutorial";
-  popupId: number = null;
+  public displayName: string = "IntroTutorial";
+  public popupId: number = null;
 
-  state: StateType;
-  popupManager: PopupManagerComponent;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
-
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.closePopup = this.closePopup.bind(this);
-  }
-
-  private getInitialStateTODO(): StateType
-  {
-    return(
+    this.state =
     {
       shouldShow: TutorialStatus.introTutorial === TutorialState.show,
-    });
+    };
   }
 
-
-  componentDidMount()
-  {
-    if (!this.state.shouldShow)
-    {
-      return;
-    }
-
-    this.popupId = this.popupManager.makePopup(
-    {
-      content: TopMenuPopup(
-      {
-        handleClose: this.closePopup,
-        content: Tutorial(
-        {
-          pages: IntroTutorial.pages,
-          tutorialId: "introTutorial",
-        }),
-        title: "Tutorial",
-      }),
-      popupProps:
-      {
-        resizable: true,
-        initialPosition:
-        {
-          width: 600,
-          height: 350,
-        },
-        minWidth: 300,
-        minHeight: 250,
-        dragPositionerProps:
-        {
-          containerDragOnly: true,
-        },
-      },
-    });
-  }
-
-  componentWillUnmount()
-  {
-    if (this.popupId)
-    {
-      this.closePopup();
-    }
-  }
-
-  closePopup()
-  {
-    this.popupManager.closePopup(this.popupId);
-    this.popupId = null;
-  }
-
-  render()
+  public render()
   {
     if (!this.state.shouldShow)
     {
@@ -106,14 +41,22 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
     }
 
     return(
-      PopupManager(
+      DefaultWindow(
       {
-        ref: (component: PopupManagerComponent) =>
+        title: "Tutorial",
+        handleClose: () =>
         {
-          this.popupManager = component;
+          this.setState({shouldShow: false});
         },
-        onlyAllowOne: true,
-      })
+        minWidth: 300,
+        minHeight: 250,
+      },
+        Tutorial(
+        {
+          pages: IntroTutorial.pages,
+          tutorialId: "introTutorial",
+        }),
+      )
     );
   }
 }

@@ -18,12 +18,12 @@ interface StateType
 {
 }
 
-export class PopupResizeHandleComponent extends React.Component<PropTypes, StateType>
+export class WindowResizeHandleComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName: string = "PopupResizeHandle";
+  public displayName: string = "WindowResizeHandle";
   public state: StateType;
 
-  private dragPositioner: DragPositioner<PopupResizeHandleComponent>;
+  private dragPositioner: DragPositioner<WindowResizeHandleComponent>;
   private directionRestriction: DirectionRestriction;
 
   constructor(props: PropTypes)
@@ -56,7 +56,7 @@ export class PopupResizeHandleComponent extends React.Component<PropTypes, State
       }
       default:
       {
-        throw new Error(`Invalid popup resize handle direction '${this.props.direction}'`);
+        throw new Error(`Invalid window resize handle direction '${this.props.direction}'`);
       }
     }
 
@@ -72,7 +72,7 @@ export class PopupResizeHandleComponent extends React.Component<PropTypes, State
     return(
       React.DOM.div(
       {
-        className: "popup-resize-handle" + ` popup-resize-handle-${this.props.direction}`,
+        className: "window-resize-handle" + ` window-resize-handle-${this.props.direction}`,
         onTouchStart: this.dragPositioner.handleReactDownEvent,
         onMouseDown: this.dragPositioner.handleReactDownEvent,
       })
@@ -101,5 +101,5 @@ export class PopupResizeHandleComponent extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PopupResizeHandleComponent);
+const Factory: React.Factory<PropTypes> = React.createFactory(WindowResizeHandleComponent);
 export default Factory;
