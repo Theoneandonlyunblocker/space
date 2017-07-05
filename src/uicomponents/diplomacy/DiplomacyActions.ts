@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Player from "../../Player";
-import {CustomPopupProps} from "../popups/Popup";
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-import TopMenuPopup from "../popups/TopMenuPopup";
+// import {CustomPopupProps} from "../popups/Popup";
+// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+// import TopMenuPopup from "../popups/TopMenuPopup";
 import TradeOverview from "../trade/TradeOverview";
 
 export interface PropTypes extends React.Props<any>

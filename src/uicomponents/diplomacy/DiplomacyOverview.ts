@@ -7,7 +7,7 @@ import ListItem from "../list/ListItem";
 import DiplomacyActions from "./DiplomacyActions";
 import {default as DiplomaticStatusPlayer, PropTypes as DiplomaticStatusPlayerProps} from "./DiplomaticStatusPlayer";
 
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 
 import DiplomacyState from "../../DiplomacyState";
 import Player from "../../Player";

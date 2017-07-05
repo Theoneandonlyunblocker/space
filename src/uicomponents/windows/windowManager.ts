@@ -1,4 +1,4 @@
-import {BaseWindowComponent} from "./BaseWindow";
+import {WindowContainerComponent} from "./WindowContainer";
 
 import {IDDictionary} from "../../IDDictionary";
 import {Rect} from "../../Rect";
@@ -8,7 +8,7 @@ const windowCascadeMargin = 20;
 
 let zIndex = baseZIndex;
 
-export function getNewZIndex(component: BaseWindowComponent): number
+export function getNewZIndex(component: WindowContainerComponent): number
 {
   if (component.state && component.state.zIndex && component.state.zIndex === zIndex)
   {
@@ -20,7 +20,8 @@ export function getNewZIndex(component: BaseWindowComponent): number
   }
 }
 
-const byID = new IDDictionary<BaseWindowComponent, BaseWindowComponent>();
+
+const byID = new IDDictionary<WindowContainerComponent, WindowContainerComponent>();
 
 export function getDefaultInitialPosition(rect: Rect, container: HTMLElement): Rect
 {
@@ -53,7 +54,7 @@ export function getDefaultInitialPosition(rect: Rect, container: HTMLElement): R
   }
 }
 
-export function handleMount(component: BaseWindowComponent): void
+export function handleMount(component: WindowContainerComponent): void
 {
   if (byID.has(component))
   {
@@ -63,7 +64,7 @@ export function handleMount(component: BaseWindowComponent): void
   byID.set(component, component);
 }
 
-export function handleUnount(component: BaseWindowComponent): void
+export function handleUnount(component: WindowContainerComponent): void
 {
   byID.delete(component);
 }

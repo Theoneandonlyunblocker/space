@@ -38,7 +38,13 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public onDragMove: (x: number, y: number) => void;
   public onDragEnd: () => boolean | void; // return value: was drop succesful
 
-  public position: Rect;
+  public position: Rect =
+  {
+    left: undefined,
+    top: undefined,
+    width: undefined,
+    height: undefined,
+  };
   public originPosition: Point = {x: 0, y: 0};
   public containerElement: HTMLElement; // set in componentDidMount
 

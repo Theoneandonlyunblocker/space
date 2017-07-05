@@ -21,12 +21,11 @@ export interface PropTypes extends React.Props<any>
   getInitialPosition?: (ownRect: Rect, container: HTMLElement) => Rect;
   isResizable: boolean;
 
+  // TODO 05.07.2017 | shouldn't these be doable in css?
   minWidth: number;
   minHeight: number;
   maxWidth: number;
   maxHeight: number;
-
-  attributes?: React.HTMLAttributes;
 }
 
 interface StateType
@@ -38,13 +37,13 @@ interface StateType
 let id = 0;
 
 
-export class BaseWindowComponent extends React.Component<PropTypes, StateType>
+export class WindowContainerComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "BaseWindow";
+  public displayName = "WindowContainer";
   public state: StateType;
 
   public id: number;
-  public dragPositioner: DragPositioner<BaseWindowComponent>;
+  public dragPositioner: DragPositioner<WindowContainerComponent>;
 
   private resizeStartQuadrant: {top: boolean, left: boolean};
   private resizeStartPosition: Rect =
@@ -79,13 +78,14 @@ export class BaseWindowComponent extends React.Component<PropTypes, StateType>
     this.setInitialPosition();
     windowManager.handleMount(this);
   }
-  public componentDidUnmount(): void
+  public componentWillUnmount(): void
   {
     windowManager.handleUnount(this);
   }
   public render()
   {
-    const customAttributes = this.props.attributes ? shallowCopy(this.props.attributes) : {};
+    // const customAttributes = this.props.attributes ? shallowCopy(this.props.attributes) : {};
+    const customAttributes = {};
     const defaultAttributes: React.HTMLAttributes =
     {
       className: "window-container",
@@ -103,7 +103,7 @@ export class BaseWindowComponent extends React.Component<PropTypes, StateType>
       },
     };
 
-    const attributes = shallowExtend(customAttributes, defaultAttributes);
+    const attributes = shallowExtend<React.HTMLAttributes>(customAttributes, defaultAttributes);
 
     return(
       React.DOM.div(attributes,
@@ -111,6 +111,10 @@ export class BaseWindowComponent extends React.Component<PropTypes, StateType>
         !this.props.isResizable ? null : this.makeResizeHandles(),
       )
     );
+  }
+  public getPosition(): Rect
+  {
+    return shallowCopy(this.dragPositioner.position);
   }
 
   private bindMethods()
@@ -238,6 +242,6 @@ export class BaseWindowComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BaseWindowComponent);
+const Factory: React.Factory<PropTypes> = React.createFactory(WindowContainerComponent);
 export default Factory;
 

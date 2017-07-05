@@ -7,7 +7,7 @@ import eventManager from "../../eventManager";
 
 import {Language} from "../../localization/Language";
 
-import {default as TopMenuPopups, TopMenuPopupsComponent} from "./TopMenuPopups";
+import {default as TopMenuPopups, PopupType, TopMenuPopupsComponent} from "./TopMenuPopups";
 
 
 export interface PropTypes extends React.Props<any>
@@ -183,7 +183,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     });
   }
 
-  togglePopup(popupType: string)
+  togglePopup(popupType: PopupType)
   {
     this.ref_TODO_popups.togglePopup(popupType);
     this.forceUpdate();

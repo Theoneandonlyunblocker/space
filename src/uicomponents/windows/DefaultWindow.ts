@@ -1,11 +1,18 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import {default as BaseWindow} from "./BaseWindow";
+import
+{
+  WindowContainerComponent,
+  default as WindowContainer,
+} from "./WindowContainer";
+
+import {Rect} from "../../Rect";
 
 interface PropTypes extends React.Props<any>
 {
   title: string;
   handleClose: () => void;
+  getInitialPosition?: (ownRect: Rect, container: HTMLElement) => Rect;
 
   minWidth: number;
   minHeight: number;
@@ -22,6 +29,8 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
   public displayName = "DefaultWindow";
   public state: StateType;
 
+  public windowContainerComponent: WindowContainerComponent;
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -30,7 +39,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
   public render()
   {
     return(
-      BaseWindow(
+      WindowContainer(
       {
         isResizable: true,
         containerElement: document.body,
@@ -39,6 +48,11 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
         minHeight: this.props.minHeight,
         maxWidth: this.props.maxWidth || Infinity,
         maxHeight: this.props.maxHeight || Infinity,
+
+        ref: (component: WindowContainerComponent) =>
+        {
+          this.windowContainerComponent = component;
+        },
       },
         React.DOM.div(
         {

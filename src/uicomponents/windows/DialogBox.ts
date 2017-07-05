@@ -1,19 +1,19 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import {default as BaseWindow} from "./BaseWindow";
+import {default as WindowContainer} from "./WindowContainer";
 
 interface PropTypes extends React.Props<any>
 {
-  handleOk: () => boolean; // return value: was callback successful
-  handleClose?: () => void;
+  handleOk: () => void;
+  handleCancel?: () => void;
   extraButtons?: React.ReactNode[];
   okText?: string;
   cancelText?: string;
 
-  minWidth: number;
-  minHeight: number;
-  maxWidth: number;
-  maxHeight: number;
+  minWidth?: number;
+  minHeight?: number;
+  maxWidth?: number;
+  maxHeight?: number;
 }
 
 interface StateType
@@ -30,8 +30,6 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-
-    this.bindMethods();
   }
 
   public componentDidMount()
@@ -41,70 +39,50 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
   public render()
   {
     return(
-      BaseWindow(
+      WindowContainer(
       {
         isResizable: false,
         containerElement: document.body,
 
-        minWidth: this.props.minWidth,
-        minHeight: this.props.minHeight,
-        maxWidth: this.props.maxWidth,
-        maxHeight: this.props.maxHeight,
+        minWidth: this.props.minWidth || 50,
+        minHeight: this.props.minHeight || 50,
+        maxWidth: this.props.maxWidth || Infinity,
+        maxHeight: this.props.maxHeight || Infinity,
       },
         React.DOM.div(
         {
-          className: "confirm-popup-content",
+          className: "dialog-box",
         },
-          this.props.children,
-        ),
-        React.DOM.div(
-        {
-          className: "confirm-popup-buttons",
-        },
-          React.DOM.button(
+          React.DOM.div(
           {
-            className: "confirm-popup-button confirm-button",
-            onClick: this.handleOk,
-            ref: (component: HTMLElement) =>
+            className: "dialog-box-content",
+          },
+            this.props.children,
+          ),
+          React.DOM.div(
+          {
+            className: "dialog-box-buttons",
+          },
+            React.DOM.button(
             {
-              this.ref_TODO_okButton = component;
-            },
-          }, this.props.okText || "Confirm"),
-          this.props.extraButtons,
-          React.DOM.button(
-          {
-            className: "confirm-popup-button cancel-button",
-            onClick: this.handleClose,
-          }, this.props.cancelText || "Cancel"),
+              className: "dialog-box-button ok-button",
+              onClick: this.props.handleOk,
+              ref: (component: HTMLElement) =>
+              {
+                this.ref_TODO_okButton = component;
+              },
+            }, this.props.okText || "Ok"),
+            this.props.extraButtons,
+            !this.props.handleCancel ? null :
+              React.DOM.button(
+              {
+                className: "dialog-box-button cancel-button",
+                onClick: this.props.handleCancel,
+              }, this.props.cancelText || "Cancel"),
+          ),
         ),
       )
     );
-  }
-
-  private bindMethods()
-  {
-    this.handleOk = this.handleOk.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-  }
-  private handleOk()
-  {
-    if (!this.props.handleOk)
-    {
-      this.handleClose();
-
-      return;
-    }
-
-    const callbackSuccesful = this.props.handleOk();
-
-    if (callbackSuccesful)
-    {
-      this.handleClose();
-    }
-  }
-  private handleClose()
-  {
-    this.props.handleClose();
   }
 }
 

@@ -12,8 +12,8 @@ import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
 import FlagEditor from "./FlagEditor";
 
-import Popup from "../popups/Popup";
-import TopMenuPopup from "../popups/TopMenuPopup";
+// import Popup from "../popups/Popup";
+// import TopMenuPopup from "../popups/TopMenuPopup";
 
 
 interface FailMessage

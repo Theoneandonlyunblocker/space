@@ -3,8 +3,8 @@
 import {AbilityUpgradeData} from "../../AbilityUpgradeData";
 import Unit from "../../Unit";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-import TopMenuPopup from "../popups/TopMenuPopup";
+// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+// import TopMenuPopup from "../popups/TopMenuPopup";
 import UpgradeAbilities from "./UpgradeAbilities";
 import UpgradeAttributes from "./UpgradeAttributes";
 

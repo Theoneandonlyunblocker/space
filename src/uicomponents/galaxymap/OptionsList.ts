@@ -10,8 +10,8 @@ import {Language} from "../../localization/Language";
 
 import NotificationFilterButton from "../notifications/NotificationFilterButton";
 
-import ConfirmPopup from "../popups/ConfirmPopup";
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+// import ConfirmPopup from "../popups/ConfirmPopup";
+// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 
 import {default as AppLanguageSelect} from "../language/AppLanguageSelect";
 
