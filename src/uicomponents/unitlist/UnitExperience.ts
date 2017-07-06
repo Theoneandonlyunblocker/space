@@ -66,7 +66,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
         dragPositionerProps:
         {
           preventAutoResize: true,
-          containerDragOnly: true,
+          startOnHandleElementOnly: true,
         },
       },
     });

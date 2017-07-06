@@ -66,7 +66,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       {
         dragPositionerProps:
         {
-          containerDragOnly: true,
+          startOnHandleElementOnly: true,
           preventAutoResize: true,
         },
       },

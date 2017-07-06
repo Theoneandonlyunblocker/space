@@ -69,6 +69,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     this.dragPositioner = new DragPositioner(this,
     {
       preventAutoResize: true,
+      startOnHandleElementOnly: true,
     });
     applyMixins(this, this.dragPositioner);
   }

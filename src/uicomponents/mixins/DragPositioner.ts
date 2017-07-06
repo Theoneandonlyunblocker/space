@@ -15,7 +15,8 @@ import normalizeEvent from "./normalizeEvent";
 export interface DragPositionerProps
 {
   containerElement?: HTMLElement | React.Component<any, any>;
-  containerDragOnly?: boolean;
+  // doesn't start dragging unless event target has class "draggable"
+  startOnHandleElementOnly?: boolean;
   forcedDragOffset?: Point;
   dragThreshhold?: number;
   preventAutoResize?: boolean;
@@ -27,7 +28,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public isDragging: boolean = false;
 
   public containerElementDescriptor: HTMLElement | React.Component<any, any>;
-  public containerDragOnly: boolean = false;
+  public startOnHandleElementOnly: boolean = false;
   public forcedDragOffset: Point;
   public dragThreshhold: number = 5;
   public preventAutoResize: boolean = false;
@@ -161,7 +162,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     {
       return;
     }
-    if (this.containerDragOnly)
+    if (this.startOnHandleElementOnly)
     {
       if (!e.target.classList.contains("draggable-container"))
       {

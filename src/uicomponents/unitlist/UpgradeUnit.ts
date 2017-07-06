@@ -95,7 +95,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
         dragPositionerProps:
         {
           preventAutoResize: true,
-          containerDragOnly: true,
+          startOnHandleElementOnly: true,
         },
       },
     });

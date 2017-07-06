@@ -64,7 +64,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         dragPositionerProps:
         {
           preventAutoResize: true,
-          containerDragOnly: true,
+          startOnHandleElementOnly: true,
         },
       },
     });

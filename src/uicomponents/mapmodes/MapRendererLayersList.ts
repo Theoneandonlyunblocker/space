@@ -99,7 +99,7 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
         dragPositionerProps:
         {
           containerElement: this,
-          containerDragOnly: true,
+          startOnHandleElementOnly: true,
         },
       }));
     }

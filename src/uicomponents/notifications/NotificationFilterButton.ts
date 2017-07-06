@@ -72,7 +72,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
       {
         dragPositionerProps:
         {
-          containerDragOnly: true,
+          startOnHandleElementOnly: true,
           preventAutoResize: true,
         },
         resizable: true,

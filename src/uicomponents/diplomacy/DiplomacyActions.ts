@@ -70,7 +70,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       minHeight: 50,
       dragPositionerProps:
       {
-        containerDragOnly: true,
+        startOnHandleElementOnly: true,
         preventAutoResize: true,
       },
     };
