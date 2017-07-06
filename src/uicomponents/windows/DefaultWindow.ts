@@ -60,7 +60,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
         },
           React.DOM.div(
           {
-            className: "window-title-bar draggable-container",
+            className: "window-title-bar draggable",
           },
             React.DOM.div(
             {

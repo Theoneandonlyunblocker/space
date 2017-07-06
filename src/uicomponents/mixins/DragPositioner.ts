@@ -164,7 +164,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     }
     if (this.startOnHandleElementOnly)
     {
-      if (!e.target.classList.contains("draggable-container"))
+      if (!e.target.classList.contains("draggable"))
       {
         return;
       }

@@ -61,7 +61,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
   {
     const divProps: React.HTMLAttributes =
     {
-      className: "map-renderer-layers-list-item draggable draggable-container",
+      className: "map-renderer-layers-list-item draggable",
       onMouseDown: this.dragPositioner.handleReactDownEvent,
       onTouchStart: this.dragPositioner.handleReactDownEvent,
     };
@@ -93,7 +93,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
         }),
         React.DOM.span(
         {
-          className: "map-renderer-layers-list-item-name draggable-container",
+          className: "map-renderer-layers-list-item-name draggable",
         },
           this.props.layerName,
         ),

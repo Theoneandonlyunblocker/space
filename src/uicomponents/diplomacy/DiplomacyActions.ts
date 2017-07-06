@@ -167,7 +167,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
     return(
       React.DOM.div(
       {
-        className: "diplomacy-actions-container draggable-container",
+        className: "diplomacy-actions-container draggable",
       },
         PopupManager(
         {

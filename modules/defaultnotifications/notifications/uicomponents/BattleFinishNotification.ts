@@ -42,7 +42,7 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
     return(
       React.DOM.div(
       {
-        className: "battle-finish-notification draggable-container",
+        className: "battle-finish-notification draggable",
       },
         message + ".",
         React.DOM.br(null),
