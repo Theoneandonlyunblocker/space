@@ -166,6 +166,8 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     {
       if (!e.target.classList.contains("draggable"))
       {
+        e.stopPropagation();
+
         return;
       }
     }
