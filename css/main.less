@@ -2068,23 +2068,6 @@ ul, ol
   }
 }
 
-.popup-container
-{
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 999;
-  pointer-events: none !important;
-  >*
-  {
-    pointer-events: auto;
-  }
-}
-
-
-
 .galaxy-map
 {
   display: flex;
@@ -2148,15 +2131,6 @@ ul, ol
 {
   opacity: 0.1;
   transition-delay: 0.6s;
-}
-
-.galaxy-map-ui-top
-{
-  pointer-events: none;
-  >*
-  {
-    pointer-events: auto;
-  }
 }
 
 .prevent-pointer-events
@@ -2335,126 +2309,6 @@ ul, ol
   @media(max-height: @top-menu-flatten-breakpoint)
   {
     top: @top-bar-height;
-  }
-}
-
-@top-menu-popup-title-height: 25px;
-@top-menu-title-vertical-padding: 2px;
-
-.top-menu-popup-container
-{
-  padding-top: @top-menu-popup-title-height + @top-menu-title-vertical-padding * 2;
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-}
-
-.top-menu-popup-title-bar
-{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: @top-menu-popup-title-height;
-  padding: @top-menu-title-vertical-padding 0;
-
-  background-color: @bg-color2;
-  display: flex;
-  flex-flow: row;
-  justify-content: flex-end;
-}
-
-.top-menu-popup-title
-{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1 1 auto;
-  pointer-events: none;
-}
-
-.light-box-close
-{
-  width: @top-menu-popup-title-height;
-  height: @top-menu-popup-title-height;
-  .button-style;
-  flex: 0 0 @top-menu-popup-title-height;
-}
-
-.light-box-wrapper
-{
-  position: fixed;
-  display: flex;
-  z-index: 2;
-  height: 100%;
-  width: 100%;
-  top: @top-bar-height;
-  left: 0;
-  box-sizing: border-box;
-
-  align-items: center;
-  justify-content: center;
-
-  background-color: rgba(0, 0, 0, 0.4);
-
-  pointer-events: none;
-  >*
-  {
-    pointer-events: auto;
-  }
-}
-
-.light-box-container
-{
-  position: relative;
-
-  background-color: @bg-color2;
-  padding: 5px;
-  box-sizing: border-box;
-
-  .full-border(5px);
-  border-width: 0px;
-}
-
-.light-box-fill-horizontal
-{
-  width: 100%;
-}
-
-.light-box-horizontal-padding
-{
-  padding-left: 25px;
-  padding-right: 25px;
-  border-left: 5px;
-  border-right: 5px;
-}
-
-.light-box-fill-vertical
-{
-  height: 100%;
-}
-
-.light-box-vertical-padding
-{
-  padding-top: 25px;
-  padding-bottom: 25px;
-  border-top: 5px;
-  border-bottom: 5px;
-}
-
-.light-box-content
-{
-  position: relative;
-  width: 100%;
-  height: 100%;
-
-  background-color: @bg-color;
-  color: @text-color;
-
-  >*
-  {
-    height: 100%;
-    box-sizing: border-box;
   }
 }
 
@@ -3527,7 +3381,7 @@ ul, ol
 .technologies-list
 {
   flex: 1 1 auto;
-  overflow-y: auto;
+  overflow: auto;
 }
 
 .technologies-list-research-speed
@@ -3719,127 +3573,10 @@ ul, ol
   color: darken(@text-color, 20%) !important;
 }
 
-@popup-border-size: 5px;
-@popup-resize-handle-size: @popup-border-size;
-@popup-resize-handle-shift: (@popup-resize-handle-size + @popup-border-size) / 2;
-
-.popup
-{
-  position: absolute;
-  color: @text-color;
-  background-color: @bg-color;
-  box-sizing: border-box;
-  max-width: 100%;
-  max-height: 100%;
-
-  .full-border(@popup-border-size);
-}
-
-.popup-buttons
-{
-  display: flex;
-  justify-content: center;
-
-  .notification-filter-button
-  {
-    .popup-button;
-  }
-}
-
-.popup-button
-{
-  .button-style;
-  margin: 5px 20px 0px 20px;
-}
-
-
-.popup-resize-handle
-{
-  position: absolute;
-}
-
-.popup-resize-handle-n
-{
-  top: -@popup-resize-handle-shift;
-  left: 0;
-  right: 0;
-
-  height: @popup-resize-handle-size;
-
-  cursor: ns-resize;
-}
-.popup-resize-handle-s
-{
-  bottom: -@popup-resize-handle-shift;
-  left: 0;
-  right: 0;
-
-  height: @popup-resize-handle-size;
-
-  cursor: ns-resize;
-}
-
-.popup-resize-handle-e
-{
-  right: -@popup-resize-handle-shift;
-  top: 0;
-  bottom: 0;
-
-  width: @popup-resize-handle-size;
-
-  cursor: ew-resize;
-}
-.popup-resize-handle-w
-{
-  left: -@popup-resize-handle-shift;
-  top: 0;
-  bottom: 0;
-
-  width: @popup-resize-handle-size;
-
-  cursor: ew-resize;
-}
-
-.popup-resize-handle-ne
-{
-  top: -@popup-resize-handle-shift;
-  right: -@popup-resize-handle-shift;
-
-  width: @popup-resize-handle-size;
-  height: @popup-resize-handle-size;
-
-  cursor: nesw-resize;
-}
-.popup-resize-handle-sw
-{
-  bottom: -@popup-resize-handle-shift;
-  left: -@popup-resize-handle-shift;
-
-  width: @popup-resize-handle-size;
-  height: @popup-resize-handle-size;
-
-  cursor: nesw-resize;
-}
-.popup-resize-handle-se
-{
-  bottom: -@popup-resize-handle-shift;
-  right: -@popup-resize-handle-shift;
-
-  width: @popup-resize-handle-size;
-  height: @popup-resize-handle-size;
-
-  cursor: nwse-resize;
-}
-.popup-resize-handle-nw
-{
-  top: -@popup-resize-handle-shift;
-  left: -@popup-resize-handle-shift;
-
-  width: @popup-resize-handle-size;
-  height: @popup-resize-handle-size;
-
-  cursor: nwse-resize;
-}
+@import (once) "./windows/DefaultWindow.less";
+@import (once) "./windows/DialogBox.less";
+@import (once) "./windows/WindowContainer.less";
+@import (once) "./windows/WindowResizeHandle.less";
 
 .dont-show-again-wrapper
 {
@@ -3853,12 +3590,6 @@ ul, ol
 .dont-show-again
 {
   margin-right: 0.5em;
-}
-
-.confirm-popup
-{
-  padding: 8px;
-  box-sizing: border-box;
 }
 
 .tutorial
@@ -4194,7 +3925,7 @@ ul, ol
 {
   width: 4em;
 
-  .popup
+  .window
   {
     width: auto !important;
     height: auto !important;

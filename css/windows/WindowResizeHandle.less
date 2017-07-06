@@ -1,0 +1,91 @@
+.window-resize-handle
+{
+  position: absolute;
+}
+
+.window-resize-handles(@border-size)
+{
+  @resize-handle-size: @border-size * 2;
+  @resize-handle-shift: @border-size / 2 - @resize-handle-size / 2;
+
+  ~.window-resize-handle-n
+  {
+    top: @resize-handle-shift;
+    left: 0;
+    right: 0;
+
+    height: @resize-handle-size;
+
+    cursor: ns-resize;
+  }
+  ~.window-resize-handle-s
+  {
+    bottom: @resize-handle-shift;
+    left: 0;
+    right: 0;
+
+    height: @resize-handle-size;
+
+    cursor: ns-resize;
+  }
+  ~.window-resize-handle-e
+  {
+    right: @resize-handle-shift;
+    top: 0;
+    bottom: 0;
+
+    width: @resize-handle-size;
+
+    cursor: ew-resize;
+  }
+  ~.window-resize-handle-w
+  {
+    left: @resize-handle-shift;
+    top: 0;
+    bottom: 0;
+
+    width: @resize-handle-size;
+
+    cursor: ew-resize;
+  }
+  ~.window-resize-handle-ne
+  {
+    top: @resize-handle-shift;
+    right: @resize-handle-shift;
+
+    width: @resize-handle-size;
+    height: @resize-handle-size;
+
+    cursor: nesw-resize;
+  }
+  ~.window-resize-handle-sw
+  {
+    bottom: @resize-handle-shift;
+    left: @resize-handle-shift;
+
+    width: @resize-handle-size;
+    height: @resize-handle-size;
+
+    cursor: nesw-resize;
+  }
+  ~.window-resize-handle-se
+  {
+    bottom: @resize-handle-shift;
+    right: @resize-handle-shift;
+
+    width: @resize-handle-size;
+    height: @resize-handle-size;
+
+    cursor: nwse-resize;
+  }
+  ~.window-resize-handle-nw
+  {
+    top: @resize-handle-shift;
+    left: @resize-handle-shift;
+
+    width: @resize-handle-size;
+    height: @resize-handle-size;
+
+    cursor: nwse-resize;
+  }
+}
