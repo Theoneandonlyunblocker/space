@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import {default as WindowContainer} from "./WindowContainer";
+import {default as WindowContainer, WindowContainerComponent} from "./WindowContainer";
 
 interface PropTypes extends React.Props<any>
 {
@@ -25,7 +25,8 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
   public displayName = "DialogBox";
   public state: StateType;
 
-  private ref_TODO_okButton: HTMLElement;
+  private okButtonElement: HTMLElement;
+  private windowContainerComponent: WindowContainerComponent;
 
   constructor(props: PropTypes)
   {
@@ -34,7 +35,7 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
 
   public componentDidMount()
   {
-    ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_okButton).focus();
+    ReactDOM.findDOMNode<HTMLElement>(this.okButtonElement).focus();
   }
   public render()
   {
@@ -48,10 +49,17 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
         minHeight: this.props.minHeight || 50,
         maxWidth: this.props.maxWidth || Infinity,
         maxHeight: this.props.maxHeight || Infinity,
+
+        ref: (component: WindowContainerComponent) =>
+        {
+          this.windowContainerComponent = component;
+        },
       },
         React.DOM.div(
         {
-          className: "dialog-box",
+          className: "dialog-box draggable",
+          onMouseDown: this.handleTitleBarMouseDown,
+          onTouchStart: this.handleTitleBarMouseDown,
         },
           React.DOM.div(
           {
@@ -69,7 +77,7 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
               onClick: this.props.handleOk,
               ref: (component: HTMLElement) =>
               {
-                this.ref_TODO_okButton = component;
+                this.okButtonElement = component;
               },
             }, this.props.okText || "Ok"),
             this.props.extraButtons,
@@ -83,6 +91,11 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
         ),
       )
     );
+  }
+
+  private handleTitleBarMouseDown(e: React.MouseEvent | React.TouchEvent): void
+  {
+    this.windowContainerComponent.onMouseDown(e);
   }
 }
 
