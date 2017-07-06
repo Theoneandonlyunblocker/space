@@ -58,6 +58,8 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   public displayName: string = "TopMenuPopups";
   public state: StateType;
 
+  private popupComponents: Partial<ValuesByPopup<DefaultWindowComponent>> = {};
+  private cachedPopupPositions: Partial<ValuesByPopup<Rect>> = {};
   private popupConstructData: ValuesByPopup<PopupConstructData> =
   {
     production:
@@ -143,8 +145,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       // popupProps.minWidth = 430;
     },
   };
-  private popupComponents: Partial<ValuesByPopup<DefaultWindowComponent>> = {};
-  private cachedPopupPositions: Partial<ValuesByPopup<Rect>> = {};
 
   constructor(props: PropTypes)
   {
@@ -217,6 +217,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       Options.save();
     }
 
+    this.popupComponents[popupType] = null;
     const stateObj: StateType = {};
     stateObj[popupType] = false;
     this.setState(stateObj);
@@ -234,6 +235,11 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     return DefaultWindow(
     {
       key: popupType,
+      ref: (component: DefaultWindowComponent) =>
+      {
+        this.popupComponents[popupType] = component;
+      },
+
       title: constructData.title,
       handleClose: () =>
       {
