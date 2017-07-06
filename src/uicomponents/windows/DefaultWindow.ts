@@ -2,8 +2,8 @@
 
 import
 {
-  WindowContainerComponent,
   default as WindowContainer,
+  WindowContainerComponent,
 } from "./WindowContainer";
 
 import {Rect} from "../../Rect";
@@ -34,6 +34,8 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
   constructor(props: PropTypes)
   {
     super(props);
+
+    this.handleTitleBarMouseDown = this.handleTitleBarMouseDown.bind(this);
   }
 
   public render()
@@ -61,6 +63,8 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
           React.DOM.div(
           {
             className: "window-title-bar draggable",
+            onMouseDown: this.handleTitleBarMouseDown,
+            onTouchStart: this.handleTitleBarMouseDown,
           },
             React.DOM.div(
             {
@@ -83,6 +87,10 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
         ),
       )
     );
+  }
+  private handleTitleBarMouseDown(e: React.MouseEvent | React.TouchEvent): void
+  {
+    this.windowContainerComponent.onMouseDown(e);
   }
 }
 

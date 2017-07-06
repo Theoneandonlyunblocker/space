@@ -117,6 +117,15 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   {
     return shallowCopy(this.dragPositioner.position);
   }
+  public onMouseDown(e: React.MouseEvent | React.TouchEvent)
+  {
+    this.dragPositioner.handleReactDownEvent(e);
+
+    this.setState(
+    {
+      zIndex: windowManager.getNewZIndex(this),
+    });
+  }
 
   private bindMethods()
   {
@@ -230,15 +239,6 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
         direction: direction,
         key: direction,
       });
-    });
-  }
-  private onMouseDown(e: React.MouseEvent | React.TouchEvent)
-  {
-    this.dragPositioner.handleReactDownEvent(e);
-
-    this.setState(
-    {
-      zIndex: windowManager.getNewZIndex(this),
     });
   }
 }
