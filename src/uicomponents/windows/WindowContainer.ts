@@ -99,7 +99,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
         minWidth: this.props.minWidth,
         minHeight: this.props.minHeight,
         maxWidth: this.props.maxWidth,
-        maxHeight: this.props.minHeight,
+        maxHeight: this.props.maxHeight,
       },
     };
 
