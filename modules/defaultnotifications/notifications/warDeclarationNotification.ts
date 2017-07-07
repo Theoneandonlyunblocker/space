@@ -33,6 +33,7 @@ const WarDeclarationNotification: NotificationTemplate =
 
     return message;
   },
+  getTitle: (props: PropTypes) => "War declaration",
   serializeProps: function(props: PropTypes): SerializedPropTypes
   {
     return(

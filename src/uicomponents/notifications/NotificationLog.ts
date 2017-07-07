@@ -88,6 +88,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
           return DialogBox(
           {
             key: this.getNotificationKey(notification),
+            title: notification.getTitle(),
             handleOk: () =>
             {
               this.handleMarkAsRead(notification);

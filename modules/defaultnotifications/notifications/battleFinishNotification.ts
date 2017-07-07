@@ -39,6 +39,7 @@ const battleFinishNotification: NotificationTemplate =
 
     return message;
   },
+  getTitle: (props: PropTypes) => "Battle finished",
   serializeProps: function(props: PropTypes): SerializedPropTypes
   {
     return(

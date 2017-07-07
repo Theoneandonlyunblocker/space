@@ -15,11 +15,15 @@ export default class Notification<P>
     this.props = props;
     this.turn = turn;
   }
-  makeMessage()
+  public makeMessage(): string
   {
     return this.template.messageConstructor(this.props);
   }
-  serialize(): NotificationSaveData
+  public getTitle(): string
+  {
+    return this.template.getTitle(this.props);
+  }
+  public serialize(): NotificationSaveData
   {
     const data: NotificationSaveData =
     {

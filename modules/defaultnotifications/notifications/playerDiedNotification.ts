@@ -30,6 +30,7 @@ const playerDiedNotification: NotificationTemplate =
 
     return message;
   },
+  getTitle: (props: PropTypes) => "Player died",
   serializeProps: function(props: PropTypes): SerializedPropTypes
   {
     return(
