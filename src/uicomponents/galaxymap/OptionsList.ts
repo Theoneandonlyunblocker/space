@@ -10,8 +10,7 @@ import {Language} from "../../localization/Language";
 
 import NotificationFilterButton from "../notifications/NotificationFilterButton";
 
-// import ConfirmPopup from "../popups/ConfirmPopup";
-// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import {default as DialogBox} from "../windows/DialogBox";
 
 import {default as AppLanguageSelect} from "../language/AppLanguageSelect";
 
@@ -28,52 +27,27 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
+  hasConfirmResetAllDialog?: boolean;
 }
 
 export class OptionsListComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "OptionsList";
-
-  state: StateType;
-
-  popupManager: PopupManagerComponent;
+  public displayName: string = "OptionsList";
+  public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
 
+    this.state =
+    {
+      hasConfirmResetAllDialog: false,
+    };
+
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    this.handleResetAllOptions = this.handleResetAllOptions.bind(this);
-  }
 
-  handleResetAllOptions()
-  {
-    this.popupManager.makePopup(
-    {
-      content: ConfirmPopup(
-      {
-        handleOk: () =>
-        {
-          Options.setDefaults();
-          this.forceUpdate();
-        },
-        content: "Are you sure you want to reset all options?",
-      }),
-      popupProps:
-      {
-        dragPositionerProps:
-        {
-          startOnHandleElementOnly: true,
-          preventAutoResize: true,
-        },
-      },
-    });
-  }
-
-  render()
+  public render()
   {
     const allOptions: React.ReactElement<any>[] = [];
 
@@ -345,20 +319,28 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div({className: "options"},
 
-        PopupManager(
-        {
-          ref: (component: PopupManagerComponent) =>
+        !this.state.hasConfirmResetAllDialog ? null :
+          DialogBox(
           {
-            this.popupManager = component;
+            title: "Reset all options",
+            handleOk: () =>
+            {
+              Options.setDefaults();
+              this.closeResetAllOptionsDialog();
+            },
+            handleCancel: () =>
+            {
+              this.closeResetAllOptionsDialog();
+            },
           },
-          onlyAllowOne: true,
-        }),
+          "Are you sure you want to reset all options?",
+        ),
 
         React.DOM.div({className: "options-header"},
           React.DOM.button(
           {
             className: "reset-options-button reset-all-options-button",
-            onClick: this.handleResetAllOptions,
+            onClick: this.openResetAllOptionsDialog,
           },
             "Reset all options",
           ),
@@ -366,6 +348,26 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         allOptions,
       )
     );
+  }
+
+  private bindMethods()
+  {
+    this.openResetAllOptionsDialog = this.openResetAllOptionsDialog.bind(this);
+    this.closeResetAllOptionsDialog = this.closeResetAllOptionsDialog.bind(this);
+  }
+  private openResetAllOptionsDialog()
+  {
+    this.setState(
+    {
+      hasConfirmResetAllDialog: true,
+    });
+  }
+  private closeResetAllOptionsDialog()
+  {
+    this.setState(
+    {
+      hasConfirmResetAllDialog: false,
+    });
   }
 }
 
