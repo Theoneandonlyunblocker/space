@@ -3694,10 +3694,6 @@ ul, ol
 {
   padding: 0px 8px;
   overflow-y: auto;
-  :last-child::after
-  {
-    content: none;
-  }
 }
 
 .options-header
@@ -3724,6 +3720,10 @@ ul, ol
   &::after
   {
     .civ-splitter-horizontal(@ver-padding);
+  }
+  &:last-child::after
+  {
+    content: none;
   }
 
   label
