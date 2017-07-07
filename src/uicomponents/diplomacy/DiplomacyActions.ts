@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Player from "../../Player";
-// import {CustomPopupProps} from "../popups/Popup";
-// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-// import TopMenuPopup from "../popups/TopMenuPopup";
+
 import TradeOverview from "../trade/TradeOverview";
+
+import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 export interface PropTypes extends React.Props<any>
 {
@@ -16,7 +16,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  trade?: number;
+  hasTradePopup?: boolean;
 }
 
 export class DiplomacyActionsComponent extends React.Component<PropTypes, StateType>
@@ -24,117 +24,26 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   displayName: string = "DiplomacyActions";
 
   state: StateType;
-  popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state =
+    {
+      hasTradePopup: false,
+    };
 
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    this.makePopup = this.makePopup.bind(this);
-    this.closePopup = this.closePopup.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);
-    this.handleMakePeace = this.handleMakePeace.bind(this);
-    this.handleDeclareWar = this.handleDeclareWar.bind(this);
-  }
 
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      trade: undefined,
-    });
-  }
-
-  closePopup(popupType: string)
-  {
-    this.popupManager.closePopup(this.state[popupType]);
-    const stateObj: StateType = {};
-    stateObj[popupType] = undefined;
-    this.setState(stateObj);
-  }
-
-  makePopup(popupType: string)
-  {
-    let content: React.ReactElement<any>;
-
-    const popupProps: CustomPopupProps =
-    {
-      resizable: true,
-      minWidth: 150,
-      minHeight: 50,
-      dragPositionerProps:
-      {
-        startOnHandleElementOnly: true,
-        preventAutoResize: true,
-      },
-    };
-
-    switch (popupType)
-    {
-      case "trade":
-      {
-        content = TradeOverview(
-        {
-          selfPlayer: this.props.player,
-          otherPlayer: this.props.targetPlayer,
-          handleClose: this.closePopup.bind(this, popupType),
-        });
-        break;
-      }
-    }
-
-    const id = this.popupManager.makePopup(
-    {
-      content: TopMenuPopup(
-      {
-        content: content,
-        handleClose: this.closePopup.bind(this, popupType),
-        title: "Diplomacy",
-      }),
-      popupProps: popupProps,
-    });
-
-    const stateObj: any = {};
-    stateObj[popupType] = id;
-    this.setState(stateObj);
-  }
-
-  togglePopup(popupType: string)
-  {
-    if (isFinite(this.state[popupType]))
-    {
-      this.closePopup(popupType);
-    }
-    else
-    {
-      this.makePopup(popupType);
-    }
-  }
-
-  handleDeclareWar()
-  {
-    this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
-    this.props.onUpdate();
-  }
-  handleMakePeace()
-  {
-    this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
-    this.props.onUpdate();
-  }
-
-  render()
+  public render()
   {
     const player = this.props.player;
     const targetPlayer = this.props.targetPlayer;
 
 
-    const declareWarProps: any =
+    const declareWarProps: React.HTMLAttributes =
     {
       className: "diplomacy-action-button",
     };
@@ -149,7 +58,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       declareWarProps.className += " disabled";
     }
 
-    const makePeaceProps: any =
+    const makePeaceProps: React.HTMLAttributes =
     {
       className: "diplomacy-action-button",
     };
@@ -167,47 +76,76 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
     return(
       React.DOM.div(
       {
-        className: "diplomacy-actions-container draggable",
+        className: "diplomacy-actions",
       },
-        PopupManager(
-        {
-          ref: (component: PopupManagerComponent) =>
-          {
-            this.popupManager = component;
-          },
-          onlyAllowOne: true,
-        }),
+        React.DOM.button(declareWarProps,
+          "Declare war",
+        ),
+        React.DOM.button(makePeaceProps,
+          "Make peace",
+        ),
         React.DOM.button(
         {
-          className: "light-box-close",
-          onClick: this.props.closePopup,
-        }, "X"),
-        React.DOM.div(
-        {
-          className: "diplomacy-actions",
+          className: "diplomacy-action-button",
+          onClick: this.toggleTradePopup,
         },
-          React.DOM.div(
-          {
-            className: "diplomacy-actions-header",
-          },
-            targetPlayer.name.fullName,
-          ),
-          React.DOM.button(declareWarProps,
-            "Declare war",
-          ),
-          React.DOM.button(makePeaceProps,
-            "Make peace",
-          ),
-          React.DOM.button(
-          {
-            className: "diplomacy-action-button",
-            onClick: this.togglePopup.bind(this, "trade"),
-          },
-            "Trade",
-          ),
+          "Trade",
         ),
-      )
-    );
+        !this.state.hasTradePopup ? null :
+          DefaultWindow(
+          {
+            handleClose: this.closeTradePopup,
+            title: "Trade",
+
+            minWidth: 150,
+            minHeight: 50,
+          },
+            TradeOverview(
+            {
+              selfPlayer: this.props.player,
+              otherPlayer: this.props.targetPlayer,
+              handleClose: this.closeTradePopup,
+            }),
+          ),
+    ));
+  }
+
+  private bindMethods()
+  {
+    this.openTradePopup = this.openTradePopup.bind(this);
+    this.closeTradePopup = this.closeTradePopup.bind(this);
+    this.toggleTradePopup = this.toggleTradePopup.bind(this);
+    this.handleMakePeace = this.handleMakePeace.bind(this);
+    this.handleDeclareWar = this.handleDeclareWar.bind(this);
+  }
+  private openTradePopup(): void
+  {
+    this.setState({hasTradePopup: true});
+  }
+  private closeTradePopup(): void
+  {
+    this.setState({hasTradePopup: false});
+  }
+  private toggleTradePopup(): void
+  {
+    if (this.state.hasTradePopup)
+    {
+      this.closeTradePopup();
+    }
+    else
+    {
+      this.openTradePopup();
+    }
+  }
+  private handleDeclareWar()
+  {
+    this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
+    this.props.onUpdate();
+  }
+  private handleMakePeace()
+  {
+    this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
+    this.props.onUpdate();
   }
 }
 

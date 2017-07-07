@@ -7,7 +7,7 @@ import ListItem from "../list/ListItem";
 import DiplomacyActions from "./DiplomacyActions";
 import {default as DiplomaticStatusPlayer, PropTypes as DiplomaticStatusPlayerProps} from "./DiplomaticStatusPlayer";
 
-// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import DiplomacyState from "../../DiplomacyState";
 import Player from "../../Player";
@@ -23,6 +23,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
+  playersWithOpenedDiplomacyActionsPopup: Player[];
 }
 
 export class DiplomacyOverviewComponent extends React.Component<PropTypes, StateType>
@@ -30,47 +31,19 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
   displayName: string = "DiplomacyOverview";
   state: StateType;
 
-  popupManager: PopupManagerComponent;
-
   constructor(props: PropTypes)
   {
     super(props);
 
+    this.state =
+    {
+      playersWithOpenedDiplomacyActionsPopup: [],
+    };
+
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    this.makeDiplomacyActionsPopup = this.makeDiplomacyActionsPopup.bind(this);
-  }
 
-  makeDiplomacyActionsPopup(rowItem: ListItem<DiplomaticStatusPlayerProps>)
-  {
-    const player = rowItem.content.props.player;
-    if (!player)
-    {
-      return;
-    }
-
-    this.popupManager.makePopup(
-    {
-      content: DiplomacyActions(
-      {
-        player: this.props.player,
-        targetPlayer: player,
-        onUpdate: this.forceUpdate.bind(this),
-      }),
-      popupProps:
-      {
-        dragPositionerProps:
-        {
-          preventAutoResize: true,
-          startOnHandleElementOnly: true,
-        },
-      },
-    });
-  }
-
-  render()
+  public render()
   {
     const unmetPlayerCount = this.props.totalPlayerCount -
       Object.keys(this.props.metPlayers).length - 1;
@@ -145,13 +118,26 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
 
     return(
       React.DOM.div({className: "diplomacy-overview"},
-        PopupManager(
+        this.state.playersWithOpenedDiplomacyActionsPopup.map(targetPlayer =>
         {
-          ref: (component: PopupManagerComponent) =>
+          return DefaultWindow(
           {
-            this.popupManager = component;
+            key: targetPlayer.id,
+
+            handleClose: this.closeDiplomacyActionsPopup.bind(null, targetPlayer),
+            title: `${targetPlayer.name}`,
+            isResizable: false,
+
+            minWidth: 200,
+            minHeight: 200,
           },
-          onlyAllowOne: true,
+            DiplomacyActions(
+            {
+              player: this.props.player,
+              targetPlayer: targetPlayer,
+              onUpdate: this.forceUpdate.bind(this),
+            }),
+          );
         }),
         React.DOM.div({className: "diplomacy-status-list fixed-table-parent"},
           List(
@@ -159,11 +145,54 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
             listItems: rows,
             initialColumns: columns,
             initialSortOrder: [columns[1]],
-            onRowChange: this.makeDiplomacyActionsPopup,
+            onRowChange: this.toggleDiplomacyActionsPopup,
           }),
         ),
       )
     );
+  }
+
+  private bindMethods(): void
+  {
+    this.hasDiplomacyActionsPopup = this.hasDiplomacyActionsPopup.bind(this);
+    this.openDiplomacyActionsPopup = this.openDiplomacyActionsPopup.bind(this);
+    this.closeDiplomacyActionsPopup = this.closeDiplomacyActionsPopup.bind(this);
+    this.toggleDiplomacyActionsPopup = this.toggleDiplomacyActionsPopup.bind(this);
+  }
+  private hasDiplomacyActionsPopup(player: Player): boolean
+  {
+    return this.state.playersWithOpenedDiplomacyActionsPopup.indexOf(player) !== -1;
+  }
+  private openDiplomacyActionsPopup(player: Player): void
+  {
+    this.setState(
+    {
+      playersWithOpenedDiplomacyActionsPopup:
+        this.state.playersWithOpenedDiplomacyActionsPopup.concat(player),
+    });
+  }
+  private closeDiplomacyActionsPopup(playerToCloseFor: Player): void
+  {
+    this.setState(
+    {
+      playersWithOpenedDiplomacyActionsPopup:
+        this.state.playersWithOpenedDiplomacyActionsPopup.filter(player =>
+        {
+          return player !== playerToCloseFor;
+        }),
+    });
+  }
+  private toggleDiplomacyActionsPopup(rowItem: ListItem<DiplomaticStatusPlayerProps>): void
+  {
+    const player = rowItem.content.props.player;
+    if (this.hasDiplomacyActionsPopup(player))
+    {
+      this.closeDiplomacyActionsPopup(player);
+    }
+    else
+    {
+      this.openDiplomacyActionsPopup(player);
+    }
   }
 }
 
