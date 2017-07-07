@@ -1,9 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-// import ConfirmPopup from "../popups/ConfirmPopup";
-// import {CustomPopupProps} from "../popups/Popup";
-// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-// import TopMenuPopup from "../popups/TopMenuPopup";
+import {default as DefaultWindow} from "../windows/DefaultWindow";
+import {default as DialogBox} from "../windows/DialogBox";
 
 import LoadGame from "../saves/LoadGame";
 
@@ -14,97 +12,32 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
+  hasLoadPopup?: boolean;
+  hasConfirmNewGamePopup?: boolean;
 }
 
 export class GameOverScreenComponent extends React.Component<PropTypes, StateType>
 {
   displayName = "GameOverScreen";
   state: StateType;
-  private popupManager: PopupManagerComponent;
-
-  private popupIDs:
-  {
-    load: number | undefined;
-    newGame: number | undefined;
-  } =
-  {
-    load: undefined,
-    newGame: undefined,
-  };
-
-  private popupProps: CustomPopupProps =
-  {
-    dragPositionerProps:
-    {
-      preventAutoResize: true,
-    },
-  };
 
   constructor(props: PropTypes)
   {
     super(props);
 
+    this.state =
+    {
+      hasLoadPopup: false,
+      hasConfirmNewGamePopup: false,
+    };
+
     this.toggleLoadPopup = this.toggleLoadPopup.bind(this);
+    this.closeLoadPopup = this.closeLoadPopup.bind(this);
     this.toggleNewGamePopup = this.toggleNewGamePopup.bind(this);
+    this.closeNewGamePopup = this.closeNewGamePopup.bind(this);
   }
 
-  private toggleLoadPopup(): void
-  {
-    if (isFinite(this.popupIDs.load))
-    {
-      this.popupManager.closePopup(this.popupIDs.load);
-    }
-    else
-    {
-      this.popupIDs.load = this.popupManager.makePopup(
-      {
-        popupProps: this.popupProps,
-        content: TopMenuPopup(
-        {
-          content: LoadGame(
-          {
-            handleClose: () =>
-            {
-              this.popupIDs.load = undefined;
-            },
-          }),
-          handleClose: () =>
-          {
-            this.popupIDs.load = undefined;
-          },
-          title: "Load game",
-        }),
-      });
-    }
-  }
-  private toggleNewGamePopup(): void
-  {
-    if (isFinite(this.popupIDs.newGame))
-    {
-      this.popupManager.closePopup(this.popupIDs.newGame);
-    }
-    else
-    {
-      this.popupIDs.newGame = this.popupManager.makePopup(
-      {
-        popupProps: this.popupProps,
-        content: ConfirmPopup(
-        {
-          handleOk: () =>
-          {
-            window.location.reload(false);
-          },
-          handleClose: () =>
-          {
-            this.popupIDs.load = undefined;
-          },
-          content: "Are you sure you want to start a new game?",
-        }),
-      });
-    }
-  }
-
-  render()
+  public render()
   {
     return(
       React.DOM.div(
@@ -141,16 +74,68 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
             ),
           ),
         ),
-        PopupManager(
-        {
-          ref: component =>
+        !this.state.hasConfirmNewGamePopup ? null :
+          DialogBox(
           {
-            this.popupManager = component;
+            title: "New game",
+            handleOk: () =>
+            {
+              window.location.reload(false);
+            },
+            handleCancel: this.closeNewGamePopup,
           },
-        }),
+            "Are you sure you want to start a new game?",
+          ),
+        !this.state.hasLoadPopup ? null :
+          DefaultWindow(
+          {
+            title: "Load game",
+            handleClose: this.closeLoadPopup,
+
+            minWidth: 200,
+            minHeight: 200,
+          },
+            LoadGame(
+            {
+              handleClose: this.closeLoadPopup,
+            }),
+          ),
       )
     );
   }
+
+  private closeLoadPopup(): void
+  {
+    this.setState({hasLoadPopup: false});
+  }
+  private closeNewGamePopup(): void
+  {
+    this.setState({hasConfirmNewGamePopup: false});
+  }
+  private toggleLoadPopup(): void
+  {
+    if (this.state.hasLoadPopup)
+    {
+      this.closeLoadPopup();
+    }
+    else
+    {
+      this.setState({hasLoadPopup: true});
+    }
+  }
+  private toggleNewGamePopup(): void
+  {
+    if (this.state.hasConfirmNewGamePopup)
+    {
+      this.closeNewGamePopup();
+    }
+    else
+    {
+      this.setState({hasConfirmNewGamePopup: true});
+    }
+  }
+
+
 }
 
 const Factory: React.Factory<PropTypes> = React.createFactory(GameOverScreenComponent);
