@@ -4,12 +4,8 @@ import app from "../../App"; // TODO global
 
 import ConfirmDeleteSavesContent from "./ConfirmDeleteSavesContent";
 import SaveList from "./SaveList";
-import {PropTypes as SaveListItemProps} from "./SaveListItem";
 
-import ListItem from "../list/ListItem";
-
-// import {default as ConfirmPopup, PropTypes as ConfirmPopupProps} from "../popups/ConfirmPopup";
-// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import {default as DialogBox} from "../windows/DialogBox";
 
 
 export interface PropTypes extends React.Props<any>
@@ -20,227 +16,72 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   saveKeysToDelete?: string[];
-  saveKey?: string;
+  selectedSaveKey?: string;
+  hasConfirmDeleteSavePopup?: boolean;
 }
 
 export class LoadGameComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "LoadGame";
-  popupID: number = undefined;
+  public displayName: string = "LoadGame";
+  public state: StateType;
 
-  state: StateType;
-  ref_TODO_okButton: HTMLElement;
-  popupManager: PopupManagerComponent;
+  private loadButtonElement: HTMLElement;
+  private afterConfirmDeleteCallback: () => void;
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state =
+    {
+      saveKeysToDelete: [],
+      selectedSaveKey: null,
+      hasConfirmDeleteSavePopup: false,
+    };
 
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    this.handleLoad = this.handleLoad.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.updateClosePopup = this.updateClosePopup.bind(this);
-    this.overRideLightBoxClose = this.overRideLightBoxClose.bind(this);
-    this.handleUndoDelete = this.handleUndoDelete.bind(this);
-    this.deleteSelectedKeys = this.deleteSelectedKeys.bind(this);
-    this.handleRowChange = this.handleRowChange.bind(this);
-    this.getClosePopupContent = this.getClosePopupContent.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-  }
 
-  private getInitialStateTODO(): StateType
+  public componentDidMount()
   {
-    return(
-    {
-      saveKeysToDelete: [],
-      saveKey: null,
-    });
+    ReactDOM.findDOMNode<HTMLElement>(this.loadButtonElement).focus();
   }
-
-  componentDidMount()
-  {
-    ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_okButton).focus();
-  }
-
-  handleRowChange(row: ListItem<SaveListItemProps>)
-  {
-    this.setState(
-    {
-      saveKey: row.content.props.storageKey,
-    });
-    this.handleUndoDelete(row.content.props.storageKey);
-  }
-  handleLoad()
-  {
-    const saveKey = this.state.saveKey;
-
-    const afterConfirmFN = () =>
-    {
-      app.load(saveKey);
-    };
-
-    if (this.state.saveKeysToDelete.indexOf(saveKey) !== -1)
-    {
-      const boundClose = this.handleClose.bind(this, true, afterConfirmFN);
-      this.handleUndoDelete(saveKey, boundClose);
-    }
-    else
-    {
-      this.handleClose(true, afterConfirmFN);
-    }
-  }
-  deleteSelectedKeys()
-  {
-    this.popupID = this.popupManager.makePopup(
-    {
-      content: ConfirmPopup(this.getClosePopupContent(null, false, false)),
-      popupProps:
-      {
-        dragPositionerProps:
-        {
-          preventAutoResize: true,
-        },
-      },
-    });
-  }
-  getClosePopupContent(afterCloseCallback?: Function, shouldCloseParent: boolean = true,
-    shouldUndoAll: boolean = false): ConfirmPopupProps
-  {
-    const deleteFN = () =>
-    {
-      for (let i = 0; i < this.state.saveKeysToDelete.length; i++)
-      {
-        localStorage.removeItem(this.state.saveKeysToDelete[i]);
-      }
-
-      this.setState(
-      {
-        saveKeysToDelete: [],
-      });
-    };
-    const closeFN = () =>
-    {
-      this.popupID = undefined;
-      if (shouldCloseParent)
-      {
-        this.props.handleClose();
-      }
-      if (shouldUndoAll)
-      {
-        this.setState(
-        {
-          saveKeysToDelete: [],
-        });
-      }
-      if (afterCloseCallback) afterCloseCallback();
-    };
-
-    return(
-    {
-      handleOk: deleteFN,
-      handleClose: closeFN,
-      content: ConfirmDeleteSavesContent(
-      {
-        saveNames: this.state.saveKeysToDelete,
-      }),
-    });
-  }
-  updateClosePopup()
-  {
-    // TODO refactor
-    if (isFinite(this.popupID))
-    {
-      // this.popupManager.setPopupContent(this.popupID,
-      //   {contentText: this.getClosePopupContent().content});
-    }
-    else if (this.state.saveKeysToDelete.length < 1)
-    {
-      if (isFinite(this.popupID)) this.popupManager.closePopup(this.popupID);
-      this.popupID = undefined;
-    }
-  }
-  handleClose(deleteSaves: boolean = true, afterCloseCallback?: Function)
-  {
-    if (!deleteSaves || this.state.saveKeysToDelete.length < 1)
-    {
-      this.props.handleClose();
-      if (afterCloseCallback) afterCloseCallback();
-      return;
-    }
-
-    this.popupID = this.popupManager.makePopup(
-    {
-      content: ConfirmPopup(this.getClosePopupContent(afterCloseCallback, true, true)),
-      popupProps:
-      {
-        dragPositionerProps:
-        {
-          preventAutoResize: true,
-        },
-      },
-    });
-  }
-  handleDelete(saveKey: string)
-  {
-    this.setState(
-    {
-      saveKeysToDelete: this.state.saveKeysToDelete.concat(saveKey),
-    }, this.updateClosePopup);
-  }
-  handleUndoDelete(saveKey: string, callback?: () => void)
-  {
-    const afterDeleteFN = () =>
-    {
-      this.updateClosePopup();
-      if (callback)
-      {
-        callback();
-      }
-    };
-    const i = this.state.saveKeysToDelete.indexOf(saveKey);
-    if (i !== -1)
-    {
-      const newsaveKeysToDelete = this.state.saveKeysToDelete.slice(0);
-      newsaveKeysToDelete.splice(i, 1);
-      this.setState(
-      {
-        saveKeysToDelete: newsaveKeysToDelete,
-      }, afterDeleteFN);
-    }
-  }
-  overRideLightBoxClose()
-  {
-    this.handleClose();
-  }
-
-  render()
+  public render()
   {
     return(
       React.DOM.div(
       {
         className: "save-game",
       },
-        PopupManager(
-        {
-          ref: (component: PopupManagerComponent) =>
+        !this.state.hasConfirmDeleteSavePopup ? null :
+          DialogBox(
           {
-            this.popupManager = component;
+            title: "Confirm deletion",
+            handleOk: () =>
+            {
+              this.deleteSelectedKeys();
+              this.closeConfirmDeleteSavesPopup();
+            },
+            handleCancel: this.closeConfirmDeleteSavesPopup,
           },
-          onlyAllowOne: true,
-        }),
+            ConfirmDeleteSavesContent(
+            {
+              saveNames: this.state.saveKeysToDelete,
+            }),
+          ),
         SaveList(
         {
-          onRowChange: this.handleRowChange,
+          onRowChange: row =>
+          {
+            this.setState({selectedSaveKey: row.content.props.storageKey});
+
+            this.handleUndoMarkForDeletion(row.content.props.storageKey);
+          },
           autoSelect: !Boolean(app.game.gameStorageKey),
           selectedKey: app.game.gameStorageKey,
           allowDelete: true,
-          onDelete: this.handleDelete,
-          onUndoDelete: this.handleUndoDelete,
+          onDelete: this.handleMarkForDeletion,
+          onUndoDelete: this.handleUndoMarkForDeletion,
           saveKeysToDelete: this.state.saveKeysToDelete,
           onDoubleClick: this.handleLoad,
         }),
@@ -254,7 +95,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           {
             className: "save-game-name",
             type: "text",
-            value: this.state.saveKey ? this.state.saveKey.replace("Rance.Save.", "") : "",
+            value: this.state.selectedSaveKey ? this.state.selectedSaveKey.replace("Rance.Save.", "") : "",
             readOnly: true,
           }),
         ),
@@ -268,7 +109,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
             onClick: this.handleLoad,
             ref: (component: HTMLElement) =>
             {
-              this.ref_TODO_okButton = component;
+              this.loadButtonElement = component;
             },
           }, "Load"),
           React.DOM.button(
@@ -279,7 +120,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           React.DOM.button(
           {
             className: "save-game-button",
-            onClick: this.deleteSelectedKeys,
+            onClick: this.openConfirmDeleteSavesPopup,
             disabled: this.state.saveKeysToDelete.length < 1,
           },
             "Delete",
@@ -287,6 +128,67 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
         ),
       )
     );
+  }
+  public openConfirmDeleteSavesPopup(): void
+  {
+    this.setState({hasConfirmDeleteSavePopup: true});
+  }
+
+  private bindMethods()
+  {
+    this.handleLoad = this.handleLoad.bind(this);
+    this.deleteSelectedKeys = this.deleteSelectedKeys.bind(this);
+    this.handleMarkForDeletion = this.handleMarkForDeletion.bind(this);
+    this.handleUndoMarkForDeletion = this.handleUndoMarkForDeletion.bind(this);
+    this.openConfirmDeleteSavesPopup = this.openConfirmDeleteSavesPopup.bind(this);
+    this.closeConfirmDeleteSavesPopup = this.closeConfirmDeleteSavesPopup.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+  }
+  private handleLoad()
+  {
+    app.load(this.state.selectedSaveKey);
+  }
+  private deleteSelectedKeys()
+  {
+    this.state.saveKeysToDelete.forEach(key =>
+    {
+      localStorage.removeItem(key);
+    });
+
+    this.setState({saveKeysToDelete: []}, () =>
+    {
+      if (this.afterConfirmDeleteCallback)
+      {
+        const afterConfirmDeleteCallback = this.afterConfirmDeleteCallback;
+        this.afterConfirmDeleteCallback = undefined;
+        afterConfirmDeleteCallback();
+      }
+    });
+  }
+  private handleMarkForDeletion(saveKey: string): void
+  {
+    this.setState(
+    {
+      saveKeysToDelete: this.state.saveKeysToDelete.concat(saveKey),
+    });
+  }
+  private handleUndoMarkForDeletion(saveKey: string): void
+  {
+    this.setState(
+    {
+      saveKeysToDelete: this.state.saveKeysToDelete.filter(currentKey =>
+      {
+        return currentKey !== saveKey;
+      }),
+    });
+  }
+  private closeConfirmDeleteSavesPopup(): void
+  {
+    this.setState({hasConfirmDeleteSavePopup: false});
+  }
+  private handleClose(): void
+  {
+    this.props.handleClose();
   }
 }
 
