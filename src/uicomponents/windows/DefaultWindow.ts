@@ -13,6 +13,7 @@ interface PropTypes extends React.Props<any>
   title: string;
   handleClose: () => void;
   getInitialPosition?: (ownRect: Rect, container: HTMLElement) => Rect;
+  isResizable?: boolean;
 
   minWidth: number;
   minHeight: number;
@@ -43,7 +44,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
     return(
       WindowContainer(
       {
-        isResizable: true,
+        isResizable: this.props.isResizable === false ? false : true,
         containerElement: document.body,
 
         minWidth: this.props.minWidth,

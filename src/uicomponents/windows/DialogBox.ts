@@ -1,9 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import {default as WindowContainer, WindowContainerComponent} from "./WindowContainer";
+import {default as DefaultWindow} from "./DefaultWindow";
 
 interface PropTypes extends React.Props<any>
 {
+  title: string;
   handleOk: () => void;
   handleCancel?: () => void;
   extraButtons?: React.ReactNode[];
@@ -26,7 +27,6 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
   public state: StateType;
 
   private okButtonElement: HTMLElement;
-  private windowContainerComponent: WindowContainerComponent;
 
   constructor(props: PropTypes)
   {
@@ -40,26 +40,20 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
   public render()
   {
     return(
-      WindowContainer(
+      DefaultWindow(
       {
+        title: this.props.title,
+        handleClose: this.props.handleCancel,
         isResizable: false,
-        containerElement: document.body,
 
         minWidth: this.props.minWidth || 50,
         minHeight: this.props.minHeight || 50,
         maxWidth: this.props.maxWidth || Infinity,
         maxHeight: this.props.maxHeight || Infinity,
-
-        ref: (component: WindowContainerComponent) =>
-        {
-          this.windowContainerComponent = component;
-        },
       },
         React.DOM.div(
         {
-          className: "dialog-box draggable",
-          onMouseDown: this.handleTitleBarMouseDown,
-          onTouchStart: this.handleTitleBarMouseDown,
+          className: "dialog-box",
         },
           React.DOM.div(
           {
@@ -91,11 +85,6 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
         ),
       )
     );
-  }
-
-  private handleTitleBarMouseDown(e: React.MouseEvent | React.TouchEvent): void
-  {
-    this.windowContainerComponent.onMouseDown(e);
   }
 }
 
