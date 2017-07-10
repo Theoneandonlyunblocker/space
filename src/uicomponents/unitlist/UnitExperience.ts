@@ -105,6 +105,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
         {
           title: "Upgrade unit",
           handleClose: this.closePopup,
+          isResizable: false,
 
           minWidth: 150,
           minHeight: 150,

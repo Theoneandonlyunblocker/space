@@ -2,9 +2,11 @@
 
 import {AbilityUpgradeData} from "../../AbilityUpgradeData";
 import Unit from "../../Unit";
+
 import AbilityBase from "../../templateinterfaces/AbilityBase";
-// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-// import TopMenuPopup from "../popups/TopMenuPopup";
+
+import {default as DefaultWindow} from "../windows/DefaultWindow";
+
 import UpgradeAbilities from "./UpgradeAbilities";
 import UpgradeAttributes from "./UpgradeAttributes";
 
@@ -17,103 +19,29 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  popupId?: number;
+  currentlyUpgradingAbility?: AbilityBase;
   upgradeData?: AbilityUpgradeData;
 }
 
 export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "UpgradeUnit";
-  state: StateType;
-  popupManager: PopupManagerComponent;
+  public displayName: string = "UpgradeUnit";
+  public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state =
+    {
+      currentlyUpgradingAbility: null,
+      upgradeData: this.props.unit.getAbilityUpgradeData(),
+    };
 
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    this.upgradeAttribute = this.upgradeAttribute.bind(this);
-    this.upgradeAbility = this.upgradeAbility.bind(this);
-    this.makeAbilityLearnPopup = this.makeAbilityLearnPopup.bind(this);
-    this.closePopup = this.closePopup.bind(this);
-  }
 
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      upgradeData: this.props.unit.getAbilityUpgradeData(),
-      popupId: undefined,
-    });
-  }
-  upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
-  {
-    const unit = this.props.unit;
-    unit.upgradeAbility(source, newAbility);
-    unit.handleLevelUp();
-    this.setState(
-    {
-      upgradeData: unit.getAbilityUpgradeData(),
-    });
-    this.closePopup();
-    this.props.onUnitUpgrade();
-  }
-  upgradeAttribute(attribute: string)
-  {
-    const unit = this.props.unit;
-
-    unit.baseAttributes[attribute] += 1;
-    unit.attributesAreDirty = true;
-
-    unit.handleLevelUp();
-    this.props.onUnitUpgrade();
-  }
-  makeAbilityLearnPopup(ability: AbilityBase)
-  {
-    const upgradeData = this.state.upgradeData[ability.type];
-    const popupId = this.popupManager.makePopup(
-    {
-      content: TopMenuPopup(
-      {
-        handleClose: this.closePopup,
-        content: UpgradeAbilities(
-        {
-          abilities: upgradeData.possibleUpgrades,
-          handleClick: this.upgradeAbility.bind(this, upgradeData.base),
-          sourceAbility: upgradeData.base,
-          learningNewability: !Boolean(upgradeData.base),
-        }),
-        title: "Upgrade ability",
-      }),
-      popupProps:
-      {
-        dragPositionerProps:
-        {
-          preventAutoResize: true,
-          startOnHandleElementOnly: true,
-        },
-      },
-    });
-
-    this.setState(
-    {
-      popupId: popupId,
-    });
-  }
-  closePopup()
-  {
-    this.popupManager.closePopup(this.state.popupId);
-    this.setState(
-    {
-      popupId: undefined,
-    });
-  }
-  render()
+  public render()
   {
     const unit = this.props.unit;
     const upgradableAbilities: AbilityBase[] = [];
@@ -135,19 +63,33 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
       }
     }
 
+    const activeUpgradeData = !this.state.currentlyUpgradingAbility ?
+      null :
+      this.state.upgradeData[this.state.currentlyUpgradingAbility.type];
+
     return(
       React.DOM.div(
       {
         className: "upgrade-unit",
       },
-        PopupManager(
+        !this.state.currentlyUpgradingAbility ? null:
+        DefaultWindow(
         {
-          ref: (component: PopupManagerComponent) =>
+          title: "Upgrade ability",
+          handleClose: this.closeAbilityUpgradePopup,
+          isResizable: false,
+
+          minWidth: 150,
+          minHeight: 150,
+        },
+          UpgradeAbilities(
           {
-            this.popupManager = component;
-          },
-          onlyAllowOne: true,
-        }),
+            abilities: activeUpgradeData.possibleUpgrades,
+            handleClick: this.upgradeAbility.bind(this, activeUpgradeData.base),
+            sourceAbility: activeUpgradeData.base,
+            learningNewability: !Boolean(activeUpgradeData.base),
+          }),
+        ),
         React.DOM.div(
         {
           className: "upgrade-unit-header",
@@ -167,6 +109,45 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
       )
     );
   }
+
+  private bindMethods()
+  {
+    this.upgradeAttribute = this.upgradeAttribute.bind(this);
+    this.upgradeAbility = this.upgradeAbility.bind(this);
+    this.makeAbilityLearnPopup = this.makeAbilityLearnPopup.bind(this);
+    this.closeAbilityUpgradePopup = this.closeAbilityUpgradePopup.bind(this);
+  }
+  private upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
+  {
+    const unit = this.props.unit;
+    unit.upgradeAbility(source, newAbility);
+    unit.handleLevelUp();
+    this.setState(
+    {
+      upgradeData: unit.getAbilityUpgradeData(),
+    });
+    this.closeAbilityUpgradePopup();
+    this.props.onUnitUpgrade();
+  }
+  private upgradeAttribute(attribute: string)
+  {
+    const unit = this.props.unit;
+
+    unit.baseAttributes[attribute] += 1;
+    unit.attributesAreDirty = true;
+
+    unit.handleLevelUp();
+    this.props.onUnitUpgrade();
+  }
+  private makeAbilityLearnPopup(ability: AbilityBase)
+  {
+    this.setState({currentlyUpgradingAbility: ability});
+  }
+  private closeAbilityUpgradePopup()
+  {
+    this.setState({currentlyUpgradingAbility: null});
+  }
+
 }
 
 const Factory: React.Factory<PropTypes> = React.createFactory(UpgradeUnitComponent);
