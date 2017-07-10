@@ -39,7 +39,6 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
 
   public render()
   {
-    console.log("als", this.props.activeLanguage);
     return(
       LanguageSelect(
       {

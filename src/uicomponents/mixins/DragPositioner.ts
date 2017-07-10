@@ -124,11 +124,6 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     this.removeEventListeners();
     window.removeEventListener("resize", this.setContainerRect);
   }
-  // public onRender()
-  // {
-  //   // do we need to update clone position here? some components used to, but
-  //   // it gets updated in this.handleDrag() anyway
-  // }
   public getStyleAttributes(): React.CSSProperties
   {
     return shallowCopy(this.position);
