@@ -7,8 +7,7 @@ import {PropTypes as SaveListItemProps} from "./SaveListItem";
 
 import ListItem from "../list/ListItem";
 
-// import ConfirmPopup from "../popups/ConfirmPopup";
-// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import {default as DialogBox} from "../windows/DialogBox";
 
 
 export interface PropTypes extends React.Props<any>
@@ -19,19 +18,20 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   saveName?: string;
+  hasConfirmOverwritePopup?: boolean;
 }
 
 export class SaveGameComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "SaveGame";
-
-  state: StateType =
+  public displayName: string = "SaveGame";
+  public state: StateType =
   {
     saveName: "",
+    hasConfirmOverwritePopup: false,
   };
-  ref_TODO_okButton: HTMLElement;
-  popupManager: PopupManagerComponent;
-  ref_TODO_saveName: HTMLElement;
+
+  private ref_TODO_okButton: HTMLElement;
+  private ref_TODO_saveName: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -39,18 +39,8 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
 
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    this.handleClose = this.handleClose.bind(this);
-    this.makeConfirmOverWritePopup = this.makeConfirmOverWritePopup.bind(this);
-    this.setSaveName = this.setSaveName.bind(this);
-    this.saveGame = this.saveGame.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleRowChange = this.handleRowChange.bind(this);
-    this.handleSaveNameInput = this.handleSaveNameInput.bind(this);
-  }
 
-  componentDidMount()
+  public componentDidMount()
   {
     if (app.game.gameStorageKey)
     {
@@ -61,76 +51,22 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
       ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_saveName).focus();
     }
   }
-
-  setSaveName(newText: string)
-  {
-    this.setState(
-    {
-      saveName: newText,
-    });
-  }
-
-  handleSaveNameInput(e: React.FormEvent)
-  {
-    const target = <HTMLInputElement> e.target;
-    this.setSaveName(target.value);
-  }
-
-  handleRowChange(row: ListItem<SaveListItemProps>)
-  {
-    this.setSaveName(row.content.props.name);
-  }
-
-  handleSave()
-  {
-    const saveName = this.state.saveName;
-    const saveKey = "Rance.Save." + saveName;
-    if (localStorage[saveKey])
-    {
-      this.makeConfirmOverWritePopup(saveName);
-    }
-    else
-    {
-      this.saveGame();
-    }
-  }
-  saveGame()
-  {
-    app.game.save(this.state.saveName);
-    this.handleClose();
-  }
-  handleClose()
-  {
-    this.props.handleClose();
-  }
-  makeConfirmOverWritePopup(saveName: string)
-  {
-    this.popupManager.makePopup(
-    {
-      content: ConfirmPopup(
-      {
-        handleOk: this.saveGame,
-        content: "Are you sure you want to overwrite " +
-          saveName.replace("Rance.Save.", "") + "?",
-      }),
-    });
-  }
-
-  render()
+  public render()
   {
     return(
       React.DOM.div(
       {
         className: "save-game",
       },
-        PopupManager(
-        {
-          ref: (component: PopupManagerComponent) =>
+        !this.state.hasConfirmOverwritePopup ? null :
+          DialogBox(
           {
-            this.popupManager = component;
+            title: "Confirm overwrite",
+            handleOk: this.saveGame,
+            handleCancel: this.closeConfirmOverwritePopup,
           },
-          onlyAllowOne: true,
-        }),
+            `Are you sure you want to overwrite ${this.state.saveName.replace("Rance.Save.", "")} ?`,
+          ),
         SaveList(
         {
           onRowChange: this.handleRowChange,
@@ -178,6 +114,59 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
         ),
       )
     );
+  }
+
+  private bindMethods()
+  {
+    this.handleClose = this.handleClose.bind(this);
+    this.setSaveName = this.setSaveName.bind(this);
+    this.saveGame = this.saveGame.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleRowChange = this.handleRowChange.bind(this);
+    this.handleSaveNameInput = this.handleSaveNameInput.bind(this);
+    this.closeConfirmOverwritePopup = this.closeConfirmOverwritePopup.bind(this);
+  }
+  private setSaveName(newText: string)
+  {
+    this.setState(
+    {
+      saveName: newText,
+    });
+  }
+  private handleSaveNameInput(e: React.FormEvent)
+  {
+    const target = <HTMLInputElement> e.target;
+    this.setSaveName(target.value);
+  }
+  private handleRowChange(row: ListItem<SaveListItemProps>)
+  {
+    this.setSaveName(row.content.props.name);
+  }
+  private handleSave()
+  {
+    const saveName = this.state.saveName;
+    const saveKey = "Rance.Save." + saveName;
+    if (localStorage[saveKey])
+    {
+      this.setState({hasConfirmOverwritePopup: true});
+    }
+    else
+    {
+      this.saveGame();
+    }
+  }
+  private closeConfirmOverwritePopup(): void
+  {
+    this.setState({hasConfirmOverwritePopup: false});
+  }
+  private saveGame()
+  {
+    app.game.save(this.state.saveName);
+    this.handleClose();
+  }
+  private handleClose()
+  {
+    this.props.handleClose();
   }
 }
 
