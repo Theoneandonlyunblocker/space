@@ -356,6 +356,7 @@ export function shallowCopy<T>(toCopy: T): T
 {
   return <T> shallowExtend({}, toCopy);
 }
+// TODO 2017.07.10 | can't we get better typing for this?
 export function shallowExtend<T>(destination: any, ...sources: any[]): T
 {
   sources.forEach(source =>

@@ -1,5 +1,11 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import
+{
+  shallowCopy,
+  shallowExtend,
+} from "../../utility";
+
 interface PropTypes extends React.Props<any>
 {
   value: number;
@@ -8,7 +14,7 @@ interface PropTypes extends React.Props<any>
   onValueChange: (value: number) => void;
 
   stylizeValue?: (value: number) => string;
-  className?: string;
+  attributes?: React.HTMLAttributes;
 }
 
 interface StateType
@@ -34,7 +40,7 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
     this.getValueString = this.getValueString.bind(this);
   }
 
-  componentWillReceiveProps(newProps: PropTypes): void
+  public componentWillReceiveProps(newProps: PropTypes): void
   {
     const didChange = newProps.value !== this.props.getValueFromValueString(this.state.valueString);
     if (didChange)
@@ -44,6 +50,32 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
         valueString: this.getValueString(newProps.value),
       });
     }
+  }
+  public render()
+  {
+    const valueStringIsValid = this.props.valueStringIsValid(this.state.valueString);
+
+    const defaultAttributes: React.HTMLAttributes =
+    {
+      className: "controlled-number-input" +
+        (valueStringIsValid ? "" : " invalid-value"),
+      onChange: this.handleValueChange,
+      value: this.state.valueString,
+      spellCheck: false,
+    };
+    const customAttributes = this.props.attributes ?
+      shallowCopy(this.props.attributes) :
+      {};
+    const attributes = shallowExtend<React.HTMLAttributes>({}, defaultAttributes, customAttributes);
+
+    if (customAttributes.className)
+    {
+      attributes.className = defaultAttributes.className + " " + customAttributes.className;
+    }
+
+    return(
+      React.DOM.input(attributes)
+    );
   }
 
   private getValueString(value: number): string
@@ -57,7 +89,6 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
       return "" + value;
     }
   }
-
   private handleValueChange(e: React.FormEvent | ClipboardEvent): void
   {
     e.stopPropagation();
@@ -88,25 +119,6 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
         this.props.onValueChange(value);
       }
     });
-  }
-
-  render()
-  {
-    const valueStringIsValid = this.props.valueStringIsValid(this.state.valueString);
-
-    return(
-      React.DOM.input(
-      {
-        className: "controlled-number-input" +
-          (valueStringIsValid ? "" : " invalid-value") +
-          (this.props.className ? " " + this.props.className : ""),
-        onChange: this.handleValueChange,
-        value: this.state.valueString,
-        spellCheck: false,
-      },
-        null,
-      )
-    );
   }
 }
 

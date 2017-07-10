@@ -273,6 +273,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
             onTouchEnd: updateFunctions[type],
           }),
         ),
+        // TODO 2017.07.10 | use ControlledNumberInput component for all these
         React.DOM.input(
         {
           className: "color-picker-input",
@@ -309,7 +310,10 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
             }, "Clear"),
           ControlledNumberInput(
           {
-            className: "color-picker-input color-picker-input-hex",
+            attributes:
+            {
+              className: "color-picker-input color-picker-input-hex",
+            },
             value: this.state.hexColor,
             valueStringIsValid: valueString =>
             {
