@@ -4,7 +4,7 @@ import Point from "./Point";
 
 // creating a dummy sprite for attaching a shader to
 // works much better than using pixi filters
-// TODO 13.04.2017 | doesn't actually work at all lol
+// TODO 2017.04.13 | doesn't actually work at all lol
 export function createDummySpriteForShader(x?: number, y?: number, width?: number, height?: number)
 {
   const texture = getDummyTextureForShader();
@@ -45,7 +45,7 @@ export function makeShaderSprite(
 {
   const sprite = createDummySpriteForShader(x, y, width, height);
 
-  // TODO 08.12.2016 | doesn't work
+  // TODO 2016.12.08 | doesn't work
   sprite.shader = shader;
 
   return sprite;

@@ -14,7 +14,7 @@ import {TradeResponse} from "../../../src/TradeResponse";
 export class EconomicAI
 {
   public respondToTradeOffer(
-    // TODO 09.06.2017 | rename
+    // TODO 2017.06.09 | rename
     incomingResponse: TradeResponse,
   ): TradeResponse
   {
@@ -104,7 +104,7 @@ export class EconomicAI
     ownTrade: Trade,
   ): {[key: string]: number}
   {
-    // TODO 25.04.2017 | unimplemented
+    // TODO 2017.04.25 | unimplemented
     const willingnessPerItem: {[key: string]: number} = {};
 
     for (let key in ownTrade.allItems)

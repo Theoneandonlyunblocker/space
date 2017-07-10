@@ -48,7 +48,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     const ownTrade = new Trade(selfPlayer);
 
-    // TODO 25.04.2017 | smarter way to do this for human player
+    // TODO 2017.04.25 | smarter way to do this for human player
     const willingnessToTradeItems: {[key: string]: number} = {};
     for (let key in ownTrade.allItems)
     {

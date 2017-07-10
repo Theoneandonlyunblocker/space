@@ -135,7 +135,7 @@ export default class FrontsAI
   {
     const scores: FrontUnitScore[] = [];
 
-    // TODO 06.04.2017 | this is really stupid
+    // TODO 2017.04.06 | this is really stupid
     const activeObjectives = this.objectivesAI.getFrontObjectives();
     let objective: FrontObjective;
 

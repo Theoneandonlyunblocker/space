@@ -10,7 +10,7 @@ import {attachedUnitDataScripts} from "./attachedUnitData";
 
 export default function addCommonToModuleData(moduleData: ModuleData)
 {
-  // TODO 13.06.2017 | none of these have supported languages set
+  // TODO 2017.06.13 | none of these have supported languages set
   moduleData.copyTemplates<any>(AbilityTemplates, "Abilities");
   moduleData.copyTemplates<any>(ResourceTemplates, "Resources");
   moduleData.copyTemplates<any>(BattleSFXTemplates, "BattleSFX");

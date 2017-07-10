@@ -3,7 +3,7 @@
 import GameLoader from "../GameLoader";
 import NotificationFilterState from "../NotificationFilterState";
 
-// TODO 07.07.2017 | use generic for props type
+// TODO 2017.07.07 | use generic for props type
 declare interface NotificationTemplate
 {
   key: string;

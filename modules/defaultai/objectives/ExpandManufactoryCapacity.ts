@@ -48,7 +48,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
   }
   protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
   {
-    // TODO 25.02.2017 | manufacturing demand / manufacturing capacity
+    // TODO 2017.02.25 | manufacturing demand / manufacturing capacity
     return grandStrategyAI.desireForConsolidation;
   }
   protected static updateOngoingObjectivesList(

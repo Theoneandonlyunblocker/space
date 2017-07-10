@@ -112,7 +112,7 @@ export default class ModuleData
         console.warn("Duplicate template identifier for " + templateType + " in " + category);
         continue;
       }
-      // TODO 05.02.2017 | bad typing
+      // TODO 2017.02.05 | bad typing
       this.Templates[category][templateType] = <any>source[templateType];
     }
   }

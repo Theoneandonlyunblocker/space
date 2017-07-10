@@ -10,10 +10,10 @@ import idGenerators from "../../../../src/idGenerators";
 
 export abstract class Objective
 {
-  // TODO 25.02.2017 | all this static stuff should be abstract and static, but not currently possible in typescript
+  // TODO 2017.02.25 | all this static stuff should be abstract and static, but not currently possible in typescript
   // https://github.com/Microsoft/TypeScript/issues/10603
 
-  // TODO 28.02.2017 | family and type might be a bit confusingly named here
+  // TODO 2017.02.28 | family and type might be a bit confusingly named here
   // type is used like this for templates, so it's used here as well at least for now
   // should be static & abstract
   public static readonly type: string;
@@ -100,7 +100,7 @@ export abstract class Objective
     });
   }
 
-  // TODO 09.04.2017 | doesn't belong in this class
+  // TODO 2017.04.09 | doesn't belong in this class
   protected static getObjectivesByTarget<O extends Objective & {target: T}, T extends {id: number}>(objectives: O[]): IDDictionary<T, O>
   {
     const byTarget = new IDDictionary<T, O>();
@@ -119,7 +119,7 @@ export abstract class Objective
 
     return byTarget;
   }
-  // TODO 09.04.2017 | doesn't belong in this class
+  // TODO 2017.04.09 | doesn't belong in this class
   protected static updateTargetedObjectives<O extends Objective & {target: T}, T extends {id: number}>(
     allOngoingObjectives: Objective[],
     createdObjectives: O[],
@@ -161,7 +161,7 @@ export abstract class Objective
 
     return resultingObjectives;
   }
-  // TODO 09.04.2017 | probably doesn't belong in this class
+  // TODO 2017.04.09 | probably doesn't belong in this class
   protected static updateUniqueObjective(allOngoingObjectives: Objective[], createdObjective: Objective): Objective[]
   {
     for (let i = 0; i < allOngoingObjectives.length; i++)
@@ -180,7 +180,7 @@ export abstract class Objective
 
     return allOngoingObjectives;
   }
-  // TODO 12.04.2017 | probably doesn't belong in this class
+  // TODO 2017.04.12 | probably doesn't belong in this class
   protected static replaceObjectives<O extends Objective>(
     allOngoingObjectives: Objective[],
     createdObjectives: O[],

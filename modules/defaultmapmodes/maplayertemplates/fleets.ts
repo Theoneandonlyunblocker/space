@@ -145,7 +145,7 @@ function getFleetTextTexture(fleet: Fleet)
     });
 
     // TODO PIXI4 | triggers bounds update that gets skipped if we just call generateTexture()
-    // TODO 02.11.2016 | still relevant?
+    // TODO 2016.11.02 | still relevant?
     text.getBounds();
 
     fleetTextTextureCache[fleetSize] = app.renderer.renderer.generateTexture(text);

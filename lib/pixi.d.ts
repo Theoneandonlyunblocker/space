@@ -1260,7 +1260,7 @@ declare module PIXI {
         static fromFrame(frameId: string): Sprite;
         static fromImage(imageId: string, crossorigin?: boolean, scaleMode?: number): Sprite;
 
-        // TODO 05.02.2017 | REMOVE THIS
+        // TODO 2017.02.05 | REMOVE THIS
         shader: Filter;
     }
     export class BatchBuffer {

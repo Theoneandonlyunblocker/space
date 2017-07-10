@@ -1,6 +1,6 @@
 import {Trade} from "./Trade";
 
-// TODO 25.04.2017 | probably rename this.
+// TODO 2017.04.25 | probably rename this.
 // meant to be used as general protocol for trading communication
 export interface TradeResponse
 {

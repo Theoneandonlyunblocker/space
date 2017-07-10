@@ -159,11 +159,11 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText[]}>
     {
       if (!this.textsByLanguageCode[language.code][textKey])
       {
-        // TODO 24.04.2017 | bad typing
+        // TODO 2017.04.24 | bad typing
         this.textsByLanguageCode[language.code][textKey] = <any> [];
       }
 
-      // TODO 24.04.2017 | bad typing
+      // TODO 2017.04.24 | bad typing
       const localizedTexts = <LocalizedText[]><any> texts[textKey];
 
       localizedTexts.forEach(text =>
@@ -172,7 +172,7 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText[]}>
 
         if (isValid)
         {
-          // TODO 24.04.2017 | bad typing
+          // TODO 2017.04.24 | bad typing
           (<LocalizedText[]><any> this.textsByLanguageCode[language.code][textKey]).push(text);
         }
         else
@@ -197,7 +197,7 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText[]}>
     const textsForActiveLanguage = this.textsByLanguageCode[activeLanguage.code];
     if (textsForActiveLanguage)
     {
-      // TODO 25.04.2017 | bad typing
+      // TODO 2017.04.25 | bad typing
       const localizedTexts = <LocalizedText[]><any> this.textsByLanguageCode[activeLanguage.code][key];
 
       if (localizedTexts && localizedTexts.length > 0)
@@ -206,14 +206,14 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText[]}>
 
         if (typeof localizedText === "string")
         {
-          // TODO 20.04.2017 | bad typing
+          // TODO 2017.04.20 | bad typing
           return new IntermediateLocalizedString(<string><any>localizedText);
         }
         else
         {
           const quantity = (props && isFinite(props.quantity)) ? props.quantity : 1;
           const matchingText = Localizer.getStringFromLocalizedTextByQuantity(
-            // TODO 20.04.2017 | bad typing
+            // TODO 2017.04.20 | bad typing
             <LocalizedTextByQuantity><any>localizedText,
             quantity,
           );

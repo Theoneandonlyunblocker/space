@@ -50,7 +50,7 @@ export default class NotificationFilter
       return false;
     }
 
-    // TODO 20.02.2017 | shouldn't we explicitly store involved players in the notification?
+    // TODO 2017.02.20 | shouldn't we explicitly store involved players in the notification?
     let playerIsInvolved: boolean = false;
     for (let key in notification.props)
     {

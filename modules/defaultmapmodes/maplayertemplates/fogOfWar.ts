@@ -85,7 +85,7 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number)
     tiled.addChild(gfx);
 
     // triggers bounds update that gets skipped if we just call generateTexture()
-    // TODO 02.11.2016 | PIXI4 | still relevant?
+    // TODO 2016.11.02 | PIXI4 | still relevant?
     const bounds = tiled.getBounds();
 
     const rendered = generateTextureWithBounds(app.renderer.renderer, tiled, PIXI.settings.SCALE_MODE, 1, bounds);

@@ -262,7 +262,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
         {
           this.onDragStart(x, y);
         }
-        // TODO 04.07.2017 | can't we delete this? called below in this.handleDrag()
+        // TODO 2017.07.04 | can't we delete this? called below in this.handleDrag()
         if (this.onDragMove)
         {
           this.onDragMove(x, y);

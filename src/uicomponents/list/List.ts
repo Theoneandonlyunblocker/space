@@ -90,7 +90,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     const self = this;
 
     window.addEventListener("resize", this.setDesiredHeight, false);
-    // TODO 04.07.2017 | do this some other way
+    // TODO 2017.07.04 | do this some other way
     eventManager.addEventListener("popupResized", this.setDesiredHeight);
 
     if (this.props.keyboardSelect)

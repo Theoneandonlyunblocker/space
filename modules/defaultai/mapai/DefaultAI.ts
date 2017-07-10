@@ -74,7 +74,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     this.turnProcessingQueue = this.constructTurnProcessingQueue();
     this.processTurnStep();
   }
-  // TODO 20.02.2017 | handle variable amount of rows
+  // TODO 2017.02.20 | handle variable amount of rows
   public createBattleFormation(
     availableUnits: Unit[],
     hasScouted: boolean,
@@ -238,7 +238,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
       // this.diplomacyAI.setAttitudes();
 
       // // diplo
-      // // TODO 03.04.2017 | should do separate things to pre-turn diplo
+      // // TODO 2017.04.03 | should do separate things to pre-turn diplo
       // // don't want to declare war here for example
       // this.objectivesAI.processDiplomaticObjectives(triggerFinish);
     });

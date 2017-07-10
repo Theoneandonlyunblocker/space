@@ -103,7 +103,7 @@ export default class Star implements Point
 
     this.race = props.race;
   }
-  // TODO 27.02.2017 | move this somewhere else
+  // TODO 2017.02.27 | move this somewhere else
   /**
    * Recursively gets all neighbors that fulfill the callback condition with specified stars
    */

@@ -390,7 +390,7 @@ export default class PathfindingArrow
     }
 
     const curveShape = <PIXI.Polygon> gfx.currentPath.shape;
-    // TODO 04.11.2016 | still relevant?
+    // TODO 2016.11.04 | still relevant?
     curveShape.closed = false; // PIXI 3.0.7 bug
 
     this.drawArrowHead(gfx, style.color.getHex());

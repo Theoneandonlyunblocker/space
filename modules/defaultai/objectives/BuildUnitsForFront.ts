@@ -63,12 +63,12 @@ export class BuildUnitsForFront extends EconomicObjective
 
   public execute(afterDoneCallback: () => void): void
   {
-    // TODO 10.04.2017 | no logic behind unit selection
+    // TODO 2017.04.10 | no logic behind unit selection
     // have to balance building location, target fleet & unit type. too expensive without approximation?
     // probably just reuse monte carlo tree search approach from battle ai
     // heuristic: money required, unit composition (global & local), strength, objective priority, etc.
 
-    // TODO 10.04.2017 | what about unit assignment for fronts?
+    // TODO 2017.04.10 | what about unit assignment for fronts?
     // actually solvable since we only need to match unit to front?
     // it's still done stupidly for now
 

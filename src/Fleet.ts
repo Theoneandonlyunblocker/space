@@ -65,7 +65,7 @@ export class Fleet
   }
   public static sortByImportance(a: Fleet, b: Fleet): number
   {
-    // TODO 26.10.2016 | should keep track of fleets with custom names
+    // TODO 2016.10.26 | should keep track of fleets with custom names
     const unitCountSort = b.units.length - a.units.length;
     if (unitCountSort)
     {

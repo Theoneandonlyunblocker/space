@@ -37,7 +37,7 @@ export abstract class FrontObjective extends Objective
   }
   public getRallyPoint(): Star
   {
-    // TODO 10.04.2017 | temporary
+    // TODO 2017.04.10 | temporary
     // maybe use influence map to get average location
     // overridden in derived classes for targeted objectives
 
