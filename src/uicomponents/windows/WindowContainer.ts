@@ -159,8 +159,8 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     position.left = clamp(requestedPosition.left, 0, container.offsetWidth - position.width);
     position.top = clamp(requestedPosition.top, 0, container.offsetHeight - position.height);
 
-
     this.dragPositioner.position = position;
+    this.dragPositioner.updateDOMNodeStyle();
   }
   private handleResizeMove(rawDeltaX: number, rawDeltaY: number): void
   {
