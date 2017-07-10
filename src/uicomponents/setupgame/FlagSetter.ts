@@ -12,8 +12,7 @@ import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
 import FlagEditor from "./FlagEditor";
 
-// import Popup from "../popups/Popup";
-// import TopMenuPopup from "../popups/TopMenuPopup";
+import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 
 interface FailMessage
@@ -52,13 +51,13 @@ interface StateType
 
 export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "FlagSetter";
-  state: StateType;
+  public displayName: string = "FlagSetter";
+  public state: StateType;
 
-  flagSetterContainer: HTMLElement;
-  playerFlagContainer: PlayerFlagComponent;
+  private flagSetterContainer: HTMLElement;
+  private playerFlagContainer: PlayerFlagComponent;
 
-  failMessageTimeoutHandle: number;
+  private failMessageTimeoutHandle: number;
 
   constructor(props: PropTypes)
   {
@@ -68,6 +67,86 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
     this.bindMethods();
   }
+
+  public componentWillUnmount(): void
+  {
+    this.clearFailMessageTimeout();
+    // document.removeEventListener("click", this.handleClick);
+  }
+  public render()
+  {
+    return(
+      React.DOM.div(
+      {
+        className: "flag-setter",
+        ref: (component: HTMLElement) =>
+        {
+          this.flagSetterContainer = component;
+        },
+        onDragEnter: this.stopEvent,
+        onDragOver: this.stopEvent,
+        onDrop: this.handleDrop,
+      },
+        PlayerFlag(
+        {
+          flag: this.props.flag,
+          isMutable: true,
+          props:
+          {
+            className: "flag-setter-display",
+            onClick: this.toggleActive,
+          },
+          ref: (component: PlayerFlagComponent) =>
+          {
+            this.playerFlagContainer = component;
+          },
+        }),
+        !this.state.isActive ? null :
+        React.DOM.div(
+        {
+          className: "popup-container",
+        },
+          DefaultWindow(
+          {
+            title: "Edit flag",
+            handleClose: this.setAsInactive,
+            isResizable: false,
+            getInitialPosition: (popupRect, containerRect) =>
+            {
+              const parentRect = this.getClientRect();
+
+              return(
+              {
+                left: parentRect.right,
+                top: parentRect.top - popupRect.height / 3,
+                width: popupRect.width,
+                height: popupRect.height,
+              });
+            },
+
+            minWidth: 0,
+            minHeight: 0,
+          },
+            FlagEditor(
+            {
+              parentFlag: this.props.flag,
+              backgroundColor: this.props.mainColor,
+              playerSecondaryColor: this.props.secondaryColor,
+
+              updateParentFlag: this.props.updateParentFlag,
+
+              // handleSelectEmblem: this.setForegroundEmblem,
+              // uploadFiles: this.handleUpload,
+              // failMessage: this.state.failMessageElement,
+              // customImageFileName: this.state.customImageFile ? this.state.customImageFile.name : null,
+              // triggerParentUpdate: this.handleSuccessfulUpdate,
+            }),
+          ),
+        ),
+      )
+    );
+  }
+
   private bindMethods(): void
   {
     this.setAsInactive = this.setAsInactive.bind(this);
@@ -82,7 +161,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     this.stopEvent = this.stopEvent.bind(this);
     this.getClientRect = this.getClientRect.bind(this);
   }
-
   private getInitialStateTODO(): StateType
   {
     return(
@@ -92,12 +170,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       customImageFile: null,
     });
   }
-  componentWillUnmount(): void
-  {
-    this.clearFailMessageTimeout();
-    // document.removeEventListener("click", this.handleClick);
-  }
-  makeFailMessage(message: FailMessage, timeout: number): React.ReactElement<any>
+  private makeFailMessage(message: FailMessage, timeout: number): React.ReactElement<any>
   {
     return React.DOM.div(
     {
@@ -110,20 +183,20 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       message.text,
     );
   }
-  clearFailMessageTimeout(): void
+  private clearFailMessageTimeout(): void
   {
     if (this.failMessageTimeoutHandle)
     {
       window.clearTimeout(this.failMessageTimeoutHandle);
     }
   }
-  clearFailMessage(): void
+  private clearFailMessage(): void
   {
     this.clearFailMessageTimeout();
 
     this.setState({failMessageElement: null});
   }
-  setFailMessage(message: FailMessage, timeout: number): void
+  private setFailMessage(message: FailMessage, timeout: number): void
   {
     this.setState(
     {
@@ -136,7 +209,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       this.clearFailMessage();
     }, timeout);
   }
-  // handleClick(e: MouseEvent): void
+  // private handleClick(e: MouseEvent): void
   // {
   //   const node = ReactDOM.findDOMNode<HTMLElement>(this.flagSetterContainer);
   //   const target = <HTMLElement> e.target;
@@ -151,7 +224,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   //     this.setAsInactive();
   //   }
   // }
-  toggleActive(): void
+  private toggleActive(): void
   {
     if (this.state.isActive)
     {
@@ -167,7 +240,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       // document.addEventListener("click", this.handleClick, false);
     }
   }
-  setAsInactive(): void
+  private setAsInactive(): void
   {
     if (this.state.isActive)
     {
@@ -175,8 +248,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       // document.removeEventListener("click", this.handleClick);
     }
   }
-
-  setForegroundEmblem(emblemTemplate: SubEmblemTemplate | null, color: Color): void
+  private setForegroundEmblem(emblemTemplate: SubEmblemTemplate | null, color: Color): void
   {
     let emblem: Emblem = null;
     if (emblemTemplate)
@@ -187,14 +259,12 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     this.props.flag.addEmblem(emblem);
     this.handleSuccessfulUpdate();
   }
-
-  stopEvent(e: React.DragEvent): void
+  private stopEvent(e: React.DragEvent): void
   {
     e.stopPropagation();
     e.preventDefault();
   }
-
-  handleDrop(e: React.DragEvent): void
+  private handleDrop(e: React.DragEvent): void
   {
     if (!e.dataTransfer)
     {
@@ -247,8 +317,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       });
     }
   }
-
-  handleUpload(files: FileList): void
+  private handleUpload(files: FileList): void
   {
     const image = getFirstValidImageFromFiles(files);
 
@@ -261,8 +330,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       this.setFailMessage(failMessages.noValidImageFile, 2000);
     }
   }
-
-  setCustomImageFromFile(file: File): void
+  private setCustomImageFromFile(file: File): void
   {
     const setImageFN = () =>
     {
@@ -301,8 +369,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       setImageFN();
     }
   }
-
-  handleSuccessfulUpdate(): void
+  private handleSuccessfulUpdate(): void
   {
     if (this.state.failMessageElement)
     {
@@ -313,101 +380,13 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       this.forceUpdate();
     }
   }
-
-  getClientRect(): ClientRect
+  private getClientRect(): ClientRect
   {
     const ownNode = <HTMLElement> ReactDOM.findDOMNode<HTMLElement>(this.playerFlagContainer);
     return ownNode.getBoundingClientRect();
   }
 
-  render()
-  {
-    return(
-      React.DOM.div(
-      {
-        className: "flag-setter",
-        ref: (component: HTMLElement) =>
-        {
-          this.flagSetterContainer = component;
-        },
-        onDragEnter: this.stopEvent,
-        onDragOver: this.stopEvent,
-        onDrop: this.handleDrop,
-      },
-        PlayerFlag(
-        {
-          flag: this.props.flag,
-          isMutable: true,
-          props:
-          {
-            className: "flag-setter-display",
-            onClick: this.toggleActive,
-          },
-          ref: (component: PlayerFlagComponent) =>
-          {
-            this.playerFlagContainer = component;
-          },
-        }),
-        !this.state.isActive ? null :
-        React.DOM.div(
-        {
-          className: "popup-container",
-        },
-          Popup(
-          {
-            dragPositionerProps:
-            {
-              preventAutoResize: true,
-              startOnHandleElementOnly: true,
-            },
-            id: 0,
-            incrementZIndex: () => 0,
-            closePopup: this.setAsInactive,
-            getInitialPosition: popupRect =>
-            {
-              const parentRect = this.getClientRect();
-              return(
-              {
-                left: parentRect.right,
-                top: parentRect.top - popupRect.height / 3,
-              });
-            },
 
-            content: TopMenuPopup(
-            {
-              handleClose: this.setAsInactive,
-
-              content: FlagEditor(
-              {
-                parentFlag: this.props.flag,
-                backgroundColor: this.props.mainColor,
-                playerSecondaryColor: this.props.secondaryColor,
-
-                updateParentFlag: this.props.updateParentFlag,
-
-                // handleSelectEmblem: this.setForegroundEmblem,
-                // uploadFiles: this.handleUpload,
-                // failMessage: this.state.failMessageElement,
-                // customImageFileName: this.state.customImageFile ? this.state.customImageFile.name : null,
-                // triggerParentUpdate: this.handleSuccessfulUpdate,
-
-
-                // autoPositionerProps:
-                // {
-                //   getParentClientRect: this.getClientRect,
-                //   positionOnUpdate: true,
-                //   xSide: "outerRight",
-                //   ySide: "innerTop",
-                //   positionOnResize: true
-                // }
-              }),
-              title: "Flag editor",
-            }),
-          }),
-        ),
-      )
-    );
-  }
 }
 
 const Factory: React.Factory<PropTypes> = React.createFactory(FlagSetterComponent);

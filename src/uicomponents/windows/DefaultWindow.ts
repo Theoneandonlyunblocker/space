@@ -12,8 +12,8 @@ interface PropTypes extends React.Props<any>
 {
   title: string;
   handleClose: () => void;
-  getInitialPosition?: (ownRect: Rect, container: HTMLElement) => Rect;
   isResizable?: boolean;
+  getInitialPosition?: (ownRect: Rect, container: HTMLElement) => Rect;
 
   minWidth: number;
   minHeight: number;
