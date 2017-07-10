@@ -53,64 +53,6 @@ define("src/FillerPoint", ["require", "exports"], function (require, exports) {
 define("src/FlatAndMultiplierAdjustment", ["require", "exports"], function (require, exports) {
     "use strict";
 });
-define("src/idGenerators", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var IDGenerator = (function () {
-        function IDGenerator() {
-            this.fleet = 0;
-            this.item = 0;
-            this.player = 0;
-            this.star = 0;
-            this.unit = 0;
-            this.building = 0;
-            this.objective = 0;
-            this.statusEffect = 0;
-        }
-        IDGenerator.prototype.setValues = function (newValues) {
-            for (var key in newValues) {
-                this[key] = newValues[key];
-            }
-        };
-        IDGenerator.prototype.serialize = function () {
-            return ({
-                fleet: this.fleet,
-                item: this.item,
-                player: this.player,
-                star: this.star,
-                unit: this.unit,
-                building: this.building,
-                objective: this.objective,
-                statusEffect: this.statusEffect,
-            });
-        };
-        return IDGenerator;
-    }());
-    var idGenerators = new IDGenerator();
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = idGenerators;
-});
-define("src/AIController", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var AIController = (function () {
-        function AIController(template) {
-            this.template = template;
-            this.personality = template.personality;
-        }
-        AIController.prototype.processTurn = function (afterFinishedCallback) {
-            this.template.processTurn(afterFinishedCallback);
-        };
-        AIController.prototype.serialize = function () {
-            return ({
-                templateType: this.template.type,
-                templateData: this.template.serialize(),
-                personality: this.personality,
-            });
-        };
-        return AIController;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = AIController;
-});
 define("src/UnitDrawingFunctionData", ["require", "exports"], function (require, exports) {
     "use strict";
     function mirrorRectangle(rect, midX) {
@@ -186,65 +128,209 @@ define("src/UnitDrawingFunctionData", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = UnitDrawingFunctionData;
 });
-define("src/AbilityUpgradeData", ["require", "exports"], function (require, exports) {
+define("src/idGenerators", ["require", "exports"], function (require, exports) {
     "use strict";
-});
-define("src/Name", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var Name = (function () {
-        function Name(fullName, isPlural) {
-            if (isPlural === void 0) { isPlural = false; }
-            this.isPlural = false;
-            this.fullName = fullName;
-            this.isPlural = isPlural;
+    var IDGenerator = (function () {
+        function IDGenerator() {
+            this.fleet = 0;
+            this.item = 0;
+            this.player = 0;
+            this.star = 0;
+            this.unit = 0;
+            this.building = 0;
+            this.objective = 0;
+            this.statusEffect = 0;
         }
-        Name.fromData = function (data) {
-            return new Name(data.fullName, data.isPlural);
-        };
-        Name.prototype.setName = function (name, isPlural) {
-            if (isPlural === void 0) { isPlural = false; }
-            this.fullName = name;
-            this.isPlural = isPlural;
-        };
-        Name.prototype.toString = function () {
-            return this.fullName;
-        };
-        Name.prototype.getPossessive = function () {
-            var standard = this.toString();
-            var lastChar = standard[standard.length - 1];
-            if (lastChar.toLocaleLowerCase() === "s") {
-                return standard + "'";
-            }
-            else {
-                return standard + "'s";
+        IDGenerator.prototype.setValues = function (newValues) {
+            for (var key in newValues) {
+                this[key] = newValues[key];
             }
         };
-        Name.prototype.pluralizeVerb = function (singularVerb, pluralVerb) {
-            if (this.isPlural) {
-                return pluralVerb;
-            }
-            else {
-                return singularVerb;
-            }
-        };
-        Name.prototype.pluralizeVerbWithS = function (sourceVerb) {
-            if (sourceVerb.charAt(sourceVerb.length - 1) === "s") {
-                return this.pluralizeVerb(sourceVerb + "s", sourceVerb);
-            }
-            else {
-                return this.pluralizeVerb(sourceVerb, sourceVerb + "s");
-            }
-        };
-        Name.prototype.serialize = function () {
+        IDGenerator.prototype.serialize = function () {
             return ({
-                fullName: this.fullName,
-                isPlural: this.isPlural,
+                fleet: this.fleet,
+                item: this.item,
+                player: this.player,
+                star: this.star,
+                unit: this.unit,
+                building: this.building,
+                objective: this.objective,
+                statusEffect: this.statusEffect,
             });
         };
-        return Name;
+        return IDGenerator;
+    }());
+    var idGenerators = new IDGenerator();
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = idGenerators;
+});
+define("src/Building", ["require", "exports", "src/App", "src/idGenerators"], function (require, exports, App_1, idGenerators_1) {
+    "use strict";
+    var Building = (function () {
+        function Building(props) {
+            this.template = props.template;
+            this.id = (props.id && isFinite(props.id)) ?
+                props.id : idGenerators_1.default.building++;
+            this.location = props.location;
+            this.controller = props.controller || this.location.owner;
+            this.upgradeLevel = props.upgradeLevel || 1;
+            this.totalCost = props.totalCost || this.template.buildCost || 0;
+        }
+        Building.prototype.getEffect = function (effect) {
+            if (effect === void 0) { effect = {}; }
+            if (!this.template.effect)
+                return {};
+            var multiplier = this.template.effectMultiplierFN ?
+                this.template.effectMultiplierFN(this.upgradeLevel) :
+                this.upgradeLevel;
+            for (var key in this.template.effect) {
+                var prop = this.template.effect[key];
+                if (isFinite(prop)) {
+                    if (!effect[key]) {
+                        effect[key] = 0;
+                    }
+                    effect[key] += prop * multiplier;
+                }
+                else {
+                    if (!effect[key]) {
+                        effect[key] = {};
+                    }
+                    for (var key2 in prop) {
+                        if (!effect[key][key2]) {
+                            effect[key][key2] = 0;
+                        }
+                        effect[key][key2] += prop[key2] * multiplier;
+                    }
+                }
+            }
+            return effect;
+        };
+        Building.prototype.getPossibleUpgrades = function () {
+            var self = this;
+            var upgrades = [];
+            if (this.upgradeLevel < this.template.maxUpgradeLevel) {
+                upgrades.push({
+                    template: this.template,
+                    level: this.upgradeLevel + 1,
+                    cost: this.template.buildCost * (this.upgradeLevel + 1),
+                    parentBuilding: this,
+                });
+            }
+            else if (this.template.upgradeInto && this.template.upgradeInto.length > 0) {
+                var templatedUpgrades = this.template.upgradeInto.map(function (upgradeData) {
+                    var template = App_1.default.moduleData.Templates.Buildings[upgradeData.templateType];
+                    return ({
+                        level: upgradeData.level,
+                        template: template,
+                        cost: template.buildCost,
+                        parentBuilding: self,
+                    });
+                });
+                upgrades = upgrades.concat(templatedUpgrades);
+            }
+            return upgrades;
+        };
+        Building.prototype.upgrade = function () {
+        };
+        Building.prototype.setController = function (newController) {
+            var oldController = this.controller;
+            if (oldController === newController)
+                return;
+            this.controller = newController;
+            this.location.updateController();
+        };
+        Building.prototype.serialize = function () {
+            var data = {
+                templateType: this.template.type,
+                id: this.id,
+                locationId: this.location.id,
+                controllerId: this.controller.id,
+                upgradeLevel: this.upgradeLevel,
+                totalCost: this.totalCost,
+            };
+            return data;
+        };
+        return Building;
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Name;
+    exports.default = Building;
+});
+define("src/BattleTurnOrder", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var BattleTurnOrder = (function () {
+        function BattleTurnOrder() {
+            this.allUnits = [];
+            this.orderedUnits = [];
+        }
+        BattleTurnOrder.prototype.destroy = function () {
+            this.allUnits = null;
+            this.orderedUnits = null;
+        };
+        BattleTurnOrder.prototype.addUnit = function (unit) {
+            if (this.hasUnit(unit)) {
+                throw new Error("Unit " + unit.name + " is already part of turn order");
+            }
+            this.allUnits.push(unit);
+            this.orderedUnits.push(unit);
+        };
+        BattleTurnOrder.prototype.update = function () {
+            this.orderedUnits = this.allUnits.filter(BattleTurnOrder.turnOrderFilterFN);
+            this.orderedUnits.sort(BattleTurnOrder.turnOrderSortFN);
+        };
+        BattleTurnOrder.prototype.getActiveUnit = function () {
+            return this.orderedUnits[0];
+        };
+        BattleTurnOrder.prototype.getDisplayData = function () {
+            return this.orderedUnits.map(BattleTurnOrder.getDisplayDataFromUnit);
+        };
+        BattleTurnOrder.prototype.getGhostIndex = function (ghostMoveDelay, ghostId) {
+            for (var i = 0; i < this.orderedUnits.length; i++) {
+                var unit = this.orderedUnits[i];
+                var unitMoveDelay = unit.battleStats.moveDelay;
+                if (ghostMoveDelay < unitMoveDelay) {
+                    return i;
+                }
+                else if (ghostMoveDelay === unitMoveDelay && ghostId < unit.id) {
+                    return i;
+                }
+            }
+            return this.orderedUnits.length;
+        };
+        BattleTurnOrder.prototype.hasUnit = function (unit) {
+            return this.allUnits.indexOf(unit) !== -1;
+        };
+        BattleTurnOrder.turnOrderFilterFN = function (unit) {
+            if (unit.battleStats.currentActionPoints <= 0) {
+                return false;
+            }
+            if (unit.currentHealth <= 0) {
+                return false;
+            }
+            return true;
+        };
+        BattleTurnOrder.turnOrderSortFN = function (a, b) {
+            if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
+                return a.battleStats.moveDelay - b.battleStats.moveDelay;
+            }
+            else {
+                return a.id - b.id;
+            }
+        };
+        BattleTurnOrder.getDisplayDataFromUnit = function (unit) {
+            return ({
+                moveDelay: unit.battleStats.moveDelay,
+                unit: unit,
+                displayName: unit.name,
+            });
+        };
+        return BattleTurnOrder;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BattleTurnOrder;
+});
+define("src/UnitBattleSide", ["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.UnitBattleSides = ["side1", "side2"];
 });
 define("src/eventManager", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -260,349 +346,6 @@ define("src/eventManager", ["require", "exports"], function (require, exports) {
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = eventManager;
-});
-define("src/PriorityQueue", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var PriorityQueue = (function () {
-        function PriorityQueue() {
-            this.items = {};
-        }
-        PriorityQueue.prototype.isEmpty = function () {
-            if (Object.keys(this.items).length > 0)
-                return false;
-            else
-                return true;
-        };
-        PriorityQueue.prototype.push = function (priority, data) {
-            if (!this.items[priority]) {
-                this.items[priority] = [];
-            }
-            this.items[priority].push(data);
-        };
-        PriorityQueue.prototype.pop = function () {
-            var highestPriority = Math.min.apply(null, Object.keys(this.items));
-            var toReturn = this.items[highestPriority].pop();
-            if (this.items[highestPriority].length < 1) {
-                delete this.items[highestPriority];
-            }
-            return toReturn;
-        };
-        PriorityQueue.prototype.peek = function () {
-            var highestPriority = Math.min.apply(null, Object.keys(this.items));
-            var toReturn = this.items[highestPriority][0];
-            return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
-        };
-        return PriorityQueue;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = PriorityQueue;
-});
-define("src/pathFinding", ["require", "exports", "src/PriorityQueue"], function (require, exports, PriorityQueue_1) {
-    "use strict";
-    function backTrace(graph, target) {
-        var parent = graph[target.id];
-        if (!parent)
-            return [];
-        var path = [
-            {
-                star: target,
-                cost: parent.cost,
-            },
-        ];
-        while (parent) {
-            path.push({
-                star: parent.star,
-                cost: parent.cost,
-            });
-            parent = graph[parent.star.id];
-        }
-        path.reverse();
-        path[0].cost = null;
-        return path;
-    }
-    exports.backTrace = backTrace;
-    function aStar(start, target) {
-        var frontier = new PriorityQueue_1.default();
-        frontier.push(0, start);
-        var cameFrom = {};
-        var costSoFar = {};
-        cameFrom[start.id] = null;
-        costSoFar[start.id] = 0;
-        while (!frontier.isEmpty()) {
-            var current = frontier.pop();
-            if (current === target) {
-                return { came: cameFrom, cost: costSoFar };
-            }
-            var neighbors = current.getAllLinks();
-            for (var i = 0; i < neighbors.length; i++) {
-                var neigh = neighbors[i];
-                if (!neigh)
-                    continue;
-                var moveCost = 1;
-                var newCost = costSoFar[current.id] + moveCost;
-                if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
-                    costSoFar[neigh.id] = newCost;
-                    var priority = newCost;
-                    frontier.push(priority, neigh);
-                    cameFrom[neigh.id] =
-                        {
-                            star: current,
-                            cost: moveCost,
-                        };
-                }
-            }
-        }
-        return null;
-    }
-    exports.aStar = aStar;
-});
-define("src/Fleet", ["require", "exports", "src/App", "src/Name", "src/eventManager", "src/idGenerators", "src/pathFinding"], function (require, exports, App_1, Name_1, eventManager_1, idGenerators_1, pathFinding_1) {
-    "use strict";
-    var Fleet = (function () {
-        function Fleet(units, id) {
-            var _this = this;
-            this.units = [];
-            this.visionIsDirty = true;
-            this.visibleStars = [];
-            this.detectedStars = [];
-            this.id = isFinite(id) ? id : idGenerators_1.default.fleet++;
-            this.name = new Name_1.default("Fleet " + this.id);
-            units.forEach(function (unitToAdd) {
-                _this.addUnit(unitToAdd);
-            });
-        }
-        Fleet.createFleetsFromUnits = function (units) {
-            var stealthyUnits = units.filter(function (unit) { return unit.isStealthy(); });
-            var nonStealthyUnits = units.filter(function (unit) { return !unit.isStealthy(); });
-            var fleets = [stealthyUnits, nonStealthyUnits].filter(function (unitsInGroup) {
-                return unitsInGroup.length > 0;
-            }).map(function (unitsInGroup) {
-                return new Fleet(unitsInGroup);
-            });
-            return fleets;
-        };
-        Fleet.sortByImportance = function (a, b) {
-            var unitCountSort = b.units.length - a.units.length;
-            if (unitCountSort) {
-                return unitCountSort;
-            }
-            else {
-                return a.id - b.id;
-            }
-        };
-        Fleet.makeAlreadyInFleetError = function (unit) {
-            return new Error("Unit " + unit.name + " is already part of fleet " + unit.fleet.name.toString());
-        };
-        Fleet.makeNotInFleetError = function (unit, fleet) {
-            return new Error("Unit " + unit.name + " is not part of fleet " + fleet.name.toString());
-        };
-        Fleet.prototype.deleteFleet = function (shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            this.location.removeFleet(this);
-            this.player.removeFleet(this);
-            if (shouldRender) {
-                eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
-            }
-        };
-        Fleet.prototype.mergeWith = function (fleetToMergeWith, shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            if (fleetToMergeWith.isStealthy !== this.isStealthy) {
-                throw new Error("Tried to merge stealthy fleet with non stealthy or other way around");
-            }
-            for (var i = this.units.length - 1; i >= 0; i--) {
-                var unit = this.units[i];
-                this.transferUnit(fleetToMergeWith, unit);
-            }
-            this.deleteFleet();
-        };
-        Fleet.prototype.addUnit = function (unit) {
-            if (unit.fleet) {
-                throw Fleet.makeAlreadyInFleetError(unit);
-            }
-            if (this.units.length === 0) {
-                this.isStealthy = unit.isStealthy();
-            }
-            else if (unit.isStealthy() !== this.isStealthy) {
-                throw new Error("Tried to add stealthy unit to non stealthy fleet or other way around");
-            }
-            this.units.push(unit);
-            unit.fleet = this;
-            this.visionIsDirty = true;
-        };
-        Fleet.prototype.removeUnit = function (unit) {
-            var index = this.units.indexOf(unit);
-            if (index < 0) {
-                throw Fleet.makeNotInFleetError(unit, this);
-            }
-            this.units.splice(index, 1);
-            unit.fleet = null;
-            this.visionIsDirty = true;
-        };
-        Fleet.prototype.transferUnit = function (receivingFleet, unitToTransfer, shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            if (receivingFleet === this) {
-                throw new Error("Tried to transfer unit into unit's current fleet");
-            }
-            this.removeUnit(unitToTransfer);
-            receivingFleet.addUnit(unitToTransfer);
-            if (shouldRender) {
-                eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
-            }
-        };
-        Fleet.prototype.split = function () {
-            var newFleet = new Fleet([]);
-            this.player.addFleet(newFleet);
-            this.location.addFleet(newFleet);
-            return newFleet;
-        };
-        Fleet.prototype.getMinCurrentMovePoints = function () {
-            return this.units.map(function (unit) {
-                return unit.currentMovePoints;
-            }).reduce(function (minMovePoints, currentUnitMovePoints) {
-                return Math.min(minMovePoints, currentUnitMovePoints);
-            }, Infinity);
-        };
-        Fleet.prototype.getMinMaxMovePoints = function () {
-            return this.units.map(function (unit) {
-                return unit.maxMovePoints;
-            }).reduce(function (minMovePoints, currentUnitMovePoints) {
-                return Math.min(minMovePoints, currentUnitMovePoints);
-            }, Infinity);
-        };
-        Fleet.prototype.getPathTo = function (newLocation) {
-            var a = pathFinding_1.aStar(this.location, newLocation);
-            if (!a) {
-                throw new Error("Couldn't find path between " + this.location.name + " and " + newLocation.name);
-            }
-            var path = pathFinding_1.backTrace(a.came, newLocation);
-            return path;
-        };
-        Fleet.prototype.pathFind = function (newLocation, onMove, afterMove) {
-            var _this = this;
-            var path = this.getPathTo(newLocation);
-            var interval = window.setInterval(function () {
-                if (!path || path.length <= 0) {
-                    window.clearInterval(interval);
-                    if (afterMove) {
-                        afterMove();
-                    }
-                    return;
-                }
-                var move = path.shift();
-                _this.move(move.star);
-                if (onMove) {
-                    onMove();
-                }
-            }, 10);
-        };
-        Fleet.prototype.getTotalCurrentHealth = function () {
-            return this.units.map(function (unit) {
-                return unit.currentHealth;
-            }).reduce(function (total, current) {
-                return total + current;
-            }, 0);
-        };
-        Fleet.prototype.getTotalMaxHealth = function () {
-            return this.units.map(function (unit) {
-                return unit.maxHealth;
-            }).reduce(function (total, current) {
-                return total + current;
-            }, 0);
-        };
-        Fleet.prototype.getVisibleStars = function () {
-            if (this.visionIsDirty) {
-                this.updateVisibleStars();
-            }
-            return this.visibleStars;
-        };
-        Fleet.prototype.getDetectedStars = function () {
-            if (this.visionIsDirty) {
-                this.updateVisibleStars();
-            }
-            return this.detectedStars;
-        };
-        Fleet.prototype.serialize = function () {
-            var data = {
-                id: this.id,
-                name: this.name.serialize(),
-                locationId: this.location.id,
-                playerId: this.player.id,
-                unitIds: this.units.map(function (unit) { return unit.id; }),
-            };
-            return data;
-        };
-        Fleet.prototype.canMove = function () {
-            return this.units.every(function (unit) { return unit.currentMovePoints > 0; });
-        };
-        Fleet.prototype.move = function (newLocation) {
-            if (newLocation === this.location) {
-                return;
-            }
-            if (!this.canMove()) {
-                return;
-            }
-            var oldLocation = this.location;
-            oldLocation.removeFleet(this);
-            this.location = newLocation;
-            newLocation.addFleet(this);
-            this.units.forEach(function (unit) { return unit.currentMovePoints -= 1; });
-            this.visionIsDirty = true;
-            this.player.visionIsDirty = true;
-            for (var i = 0; i < App_1.default.game.playerOrder.length; i++) {
-                var player = App_1.default.game.playerOrder[i];
-                if (player.isIndependent || player === this.player) {
-                    continue;
-                }
-                player.updateAllVisibilityInStar(newLocation);
-            }
-            eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.location);
-            eventManager_1.default.dispatchEvent("updateSelection", null);
-        };
-        Fleet.prototype.updateVisibleStars = function () {
-            var highestVisionRange = 0;
-            var highestDetectionRange = -1;
-            for (var i = 0; i < this.units.length; i++) {
-                highestVisionRange = Math.max(this.units[i].getVisionRange(), highestVisionRange);
-                highestDetectionRange = Math.max(this.units[i].getDetectionRange(), highestDetectionRange);
-            }
-            var inVision = this.location.getLinkedInRange(highestVisionRange);
-            var inDetection = this.location.getLinkedInRange(highestDetectionRange);
-            this.visibleStars = inVision.all;
-            this.detectedStars = inDetection.all;
-            this.visionIsDirty = false;
-        };
-        return Fleet;
-    }());
-    exports.Fleet = Fleet;
-});
-define("src/GuardCoverage", ["require", "exports"], function (require, exports) {
-    "use strict";
-});
-define("src/Item", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_2) {
-    "use strict";
-    var Item = (function () {
-        function Item(template, id) {
-            this.id = isFinite(id) ? id : idGenerators_2.default.item++;
-            this.template = template;
-        }
-        Item.prototype.serialize = function () {
-            var data = {
-                id: this.id,
-                templateType: this.template.type,
-            };
-            if (this.unit) {
-                data.positionInUnit = this.positionInUnit;
-            }
-            return data;
-        };
-        return Item;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Item;
-});
-define("src/UnitBattleSide", ["require", "exports"], function (require, exports) {
-    "use strict";
-    exports.UnitBattleSides = ["side1", "side2"];
 });
 define("src/utility", ["require", "exports", "src/App"], function (require, exports, App_2) {
     "use strict";
@@ -724,9 +467,9 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
         throw new Error();
     }
     exports.getRandomArrayItemWithWeights = getRandomArrayItemWithWeights;
-    function findItemWithKey(source, keyToFind, parentKey, hasParentKey) {
-        if (hasParentKey === void 0) { hasParentKey = false; }
-        var hasParentKey = hasParentKey;
+    function findItemWithKey(source, keyToFind, parentKey, _hasParentKey) {
+        if (_hasParentKey === void 0) { _hasParentKey = false; }
+        var hasParentKey = _hasParentKey;
         if (source[keyToFind]) {
             if (!parentKey || hasParentKey) {
                 return source[keyToFind];
@@ -1144,35 +887,6 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
         return { x: x, y: y };
     }
     exports.transformMat3 = transformMat3;
-    function createDummySpriteForShader(x, y, width, height) {
-        var texture = getDummyTextureForShader();
-        var sprite = new PIXI.Sprite(texture);
-        if (x || y) {
-            sprite.position = new PIXI.Point(x || 0, y || 0);
-        }
-        if (width) {
-            sprite.width = width;
-        }
-        if (height) {
-            sprite.height = height;
-        }
-        return sprite;
-    }
-    exports.createDummySpriteForShader = createDummySpriteForShader;
-    function getDummyTextureForShader() {
-        var canvas = document.createElement("canvas");
-        canvas._pixiId = "dummyShaderTexture";
-        canvas.width = 1;
-        canvas.height = 1;
-        return PIXI.Texture.fromCanvas(canvas);
-    }
-    exports.getDummyTextureForShader = getDummyTextureForShader;
-    function makeShaderSprite(shader, x, y, width, height) {
-        var sprite = createDummySpriteForShader(x, y, width, height);
-        sprite.shader = shader;
-        return sprite;
-    }
-    exports.makeShaderSprite = makeShaderSprite;
     function findEasingFunctionHighPoint(easingFunction, resolution, maxIterations, startIndex, endIndex, iteration) {
         if (resolution === void 0) { resolution = 10; }
         if (maxIterations === void 0) { maxIterations = 4; }
@@ -1229,30 +943,471 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
         }
     }
     exports.splitMultilineText = splitMultilineText;
-    function convertClientRectToPixiRect(rect) {
-        return new PIXI.Rectangle(rect.left, rect.top, rect.width, rect.height);
-    }
-    exports.convertClientRectToPixiRect = convertClientRectToPixiRect;
-    function generateTextureWithBounds(renderer, displayObject, scaleMode, resolution, customBounds) {
-        var bounds = customBounds;
-        var renderTexture = PIXI.RenderTexture.create(bounds.width || 0, bounds.height || 0, scaleMode, resolution);
-        var tempMatrix = new PIXI.Matrix();
-        tempMatrix.tx = -bounds.x;
-        tempMatrix.ty = -bounds.y;
-        renderer.render(displayObject, renderTexture, false, tempMatrix, true);
-        return renderTexture;
-    }
-    exports.generateTextureWithBounds = generateTextureWithBounds;
-    function makePolygonFromPoints(points) {
-        var pointPositions = [];
-        points.forEach(function (point) {
-            pointPositions.push(point.x, point.y);
-        });
-        return new PIXI.Polygon(pointPositions);
-    }
-    exports.makePolygonFromPoints = makePolygonFromPoints;
 });
-define("src/UnitAttributes", ["require", "exports", "src/utility"], function (require, exports, utility_1) {
+define("src/Battle", ["require", "exports", "src/App", "src/BattleTurnOrder", "src/UnitBattleSide", "src/eventManager", "src/utility"], function (require, exports, App_3, BattleTurnOrder_1, UnitBattleSide_1, eventManager_1, utility_1) {
+    "use strict";
+    var Battle = (function () {
+        function Battle(props) {
+            this.unitsById = {};
+            this.unitsBySide = {
+                side1: [],
+                side2: [],
+            };
+            this.isVirtual = false;
+            this.isSimulated = false;
+            this.ended = false;
+            this.afterFinishCallbacks = [];
+            this.evaluation = {};
+            this.side1 = props.side1;
+            this.side1Player = props.side1Player;
+            this.side2 = props.side2;
+            this.side2Player = props.side2Player;
+            this.battleData = props.battleData;
+            this.turnOrder = new BattleTurnOrder_1.default();
+        }
+        Battle.prototype.init = function () {
+            var self = this;
+            UnitBattleSide_1.UnitBattleSides.forEach(function (sideId) {
+                var side = self[sideId];
+                for (var i = 0; i < side.length; i++) {
+                    for (var j = 0; j < side[i].length; j++) {
+                        if (side[i][j]) {
+                            self.unitsById[side[i][j].id] = side[i][j];
+                            self.unitsBySide[sideId].push(side[i][j]);
+                            var pos = Battle.getAbsolutePositionFromSidePosition([i, j], sideId);
+                            self.initUnit(side[i][j], sideId, pos);
+                        }
+                    }
+                }
+            });
+            this.currentTurn = 0;
+            this.maxTurns = 24;
+            this.turnsLeft = this.maxTurns;
+            this.updateTurnOrder();
+            this.startHealth =
+                {
+                    side1: this.getTotalCurrentHealthForSide("side1"),
+                    side2: this.getTotalCurrentHealthForSide("side2"),
+                };
+            if (this.shouldBattleEnd()) {
+                this.endBattle();
+            }
+            else {
+                this.shiftRowsIfNeeded();
+            }
+            this.triggerBattleStartAbilities();
+        };
+        Battle.prototype.forEachUnit = function (callBack) {
+            for (var id in this.unitsById) {
+                callBack(this.unitsById[id]);
+            }
+        };
+        Battle.prototype.endTurn = function () {
+            this.currentTurn++;
+            this.turnsLeft--;
+            this.updateTurnOrder();
+            var shouldEnd = this.shouldBattleEnd();
+            if (shouldEnd) {
+                this.endBattle();
+            }
+            else {
+                this.shiftRowsIfNeeded();
+            }
+        };
+        Battle.prototype.getActivePlayer = function () {
+            if (!this.activeUnit) {
+                return null;
+            }
+            var side = this.activeUnit.battleStats.side;
+            return this.getPlayerForSide(side);
+        };
+        Battle.prototype.initUnit = function (unit, side, position) {
+            unit.resetBattleStats();
+            unit.setBattlePosition(this, side, position);
+            this.turnOrder.addUnit(unit);
+            unit.timesActedThisTurn++;
+        };
+        Battle.prototype.triggerBattleStartAbilities = function () {
+            var _this = this;
+            this.forEachUnit(function (unit) {
+                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase.atBattleStart) {
+                    var executedEffectsResult = {};
+                    var skills = passiveSkillsByPhase.atBattleStart;
+                    for (var i = 0; i < skills.length; i++) {
+                        for (var j = 0; j < skills[i].atBattleStart.length; j++) {
+                            var effect = skills[i].atBattleStart[j];
+                            effect.executeAction(unit, unit, _this, executedEffectsResult, null);
+                        }
+                    }
+                }
+            });
+        };
+        Battle.prototype.getPlayerForSide = function (side) {
+            if (side === "side1") {
+                return this.side1Player;
+            }
+            else if (side === "side2") {
+                return this.side2Player;
+            }
+            else {
+                throw new Error("invalid side");
+            }
+        };
+        Battle.prototype.getSideForPlayer = function (player) {
+            if (this.side1Player === player) {
+                return "side1";
+            }
+            else if (this.side2Player === player) {
+                return "side2";
+            }
+            else {
+                throw new Error("invalid player");
+            }
+        };
+        Battle.prototype.getRowByPosition = function (position) {
+            var rowsPerSide = App_3.default.moduleData.ruleSet.battle.rowsPerFormation;
+            var side = position < rowsPerSide ? "side1" : "side2";
+            var relativePosition = position % rowsPerSide;
+            return this[side][relativePosition];
+        };
+        Battle.prototype.getAllUnits = function () {
+            var allUnits = [];
+            this.forEachUnit(function (unit) { return allUnits.push(unit); });
+            return allUnits;
+        };
+        Battle.prototype.getUnitsForSide = function (side) {
+            return this.unitsBySide[side].slice(0);
+        };
+        Battle.prototype.finishBattle = function (forcedVictor) {
+            var _this = this;
+            var victor = forcedVictor || this.getVictor();
+            for (var i = 0; i < this.deadUnits.length; i++) {
+                this.deadUnits[i].removeFromPlayer();
+            }
+            var experienceGainedPerSide = {
+                side1: this.getExperienceGainedForSide("side1"),
+                side2: this.getExperienceGainedForSide("side2"),
+            };
+            this.forEachUnit(function (unit) {
+                unit.addExperience(experienceGainedPerSide[unit.battleStats.side]);
+                unit.resetBattleStats();
+                if (unit.currentHealth < Math.round(unit.maxHealth * 0.1)) {
+                    unit.currentHealth = Math.round(unit.maxHealth * 0.1);
+                }
+                _this.side1Player.identifyUnit(unit);
+                _this.side2Player.identifyUnit(unit);
+            });
+            if (victor) {
+                for (var i = 0; i < this.capturedUnits.length; i++) {
+                    this.capturedUnits[i].transferToPlayer(victor);
+                    this.capturedUnits[i].experienceForCurrentLevel = 0;
+                }
+            }
+            if (this.battleData.building) {
+                if (victor) {
+                    this.battleData.building.setController(victor);
+                }
+            }
+            if (this.isSimulated) {
+                eventManager_1.default.dispatchEvent("renderLayer", "fleets", this.battleData.location);
+            }
+            else {
+                eventManager_1.default.dispatchEvent("setCameraToCenterOn", this.battleData.location);
+                eventManager_1.default.dispatchEvent("switchScene", "galaxyMap");
+            }
+            if (App_3.default.humanPlayer.starIsVisible(this.battleData.location)) {
+                eventManager_1.default.dispatchEvent("makeBattleFinishNotification", {
+                    location: this.battleData.location,
+                    attacker: this.battleData.attacker.player,
+                    defender: this.battleData.defender.player,
+                    victor: victor,
+                });
+            }
+            for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
+                this.afterFinishCallbacks[i]();
+            }
+        };
+        Battle.prototype.getVictor = function () {
+            var evaluation = this.getEvaluation();
+            if (evaluation > 0) {
+                return this.side1Player;
+            }
+            else if (evaluation < 0) {
+                return this.side2Player;
+            }
+            else {
+                return this.battleData.defender.player;
+            }
+        };
+        Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
+            if (!victor || victor.isIndependent) {
+                return [];
+            }
+            var winningSide = this.getSideForPlayer(victor);
+            var losingSide = utility_1.reverseSide(winningSide);
+            var losingUnits = this.getUnitsForSide(losingSide);
+            losingUnits.sort(function (a, b) {
+                var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
+                if (captureChanceSort) {
+                    return captureChanceSort;
+                }
+                else {
+                    return utility_1.randInt(0, 1) * 2 - 1;
+                }
+            });
+            var capturedUnits = [];
+            for (var i = 0; i < losingUnits.length; i++) {
+                if (capturedUnits.length >= maxCapturedUnits) {
+                    break;
+                }
+                var unit = losingUnits[i];
+                if (unit.currentHealth <= 0 &&
+                    Math.random() <= unit.battleStats.captureChance) {
+                    capturedUnits.push(unit);
+                }
+            }
+            return capturedUnits;
+        };
+        Battle.prototype.getUnitDeathChance = function (unit, victor) {
+            var player = unit.fleet.player;
+            var deathChance;
+            if (player.isIndependent) {
+                deathChance = App_3.default.moduleData.ruleSet.battle.independentUnitDeathChance;
+            }
+            else if (player.isAI) {
+                deathChance = App_3.default.moduleData.ruleSet.battle.aiUnitDeathChance;
+            }
+            else {
+                deathChance = App_3.default.moduleData.ruleSet.battle.humanUnitDeathChance;
+            }
+            var playerDidLose = (victor && player !== victor);
+            if (playerDidLose) {
+                deathChance += App_3.default.moduleData.ruleSet.battle.loserUnitExtraDeathChance;
+            }
+            return deathChance;
+        };
+        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
+            var _this = this;
+            var deadUnits = [];
+            this.forEachUnit(function (unit) {
+                if (unit.currentHealth <= 0) {
+                    var wasCaptured = capturedUnits.indexOf(unit) >= 0;
+                    if (!wasCaptured) {
+                        var deathChance = _this.getUnitDeathChance(unit, victor);
+                        if (Math.random() < deathChance) {
+                            deadUnits.push(unit);
+                        }
+                    }
+                }
+            });
+            return deadUnits;
+        };
+        Battle.prototype.getUnitValueForExperienceGainedCalculation = function (unit) {
+            return unit.level + 1;
+        };
+        Battle.prototype.getSideValueForExperienceGainedCalculation = function (side) {
+            var _this = this;
+            return this.getUnitsForSide(side).map(function (unit) {
+                return _this.getUnitValueForExperienceGainedCalculation(unit);
+            }).reduce(function (total, value) {
+                return total + value;
+            }, 0);
+        };
+        Battle.prototype.getExperienceGainedForSide = function (side) {
+            var ownSideValue = this.getSideValueForExperienceGainedCalculation(side);
+            var enemySideValue = this.getSideValueForExperienceGainedCalculation(utility_1.reverseSide(side));
+            return (enemySideValue / ownSideValue) * 10;
+        };
+        Battle.prototype.shouldBattleEnd = function () {
+            if (!this.activeUnit) {
+                return true;
+            }
+            if (this.turnsLeft <= 0) {
+                return true;
+            }
+            if (this.getTotalCurrentHealthForSide("side1") <= 0 ||
+                this.getTotalCurrentHealthForSide("side2") <= 0) {
+                return true;
+            }
+            return false;
+        };
+        Battle.prototype.endBattle = function () {
+            this.ended = true;
+            if (this.isVirtual) {
+                return;
+            }
+            this.activeUnit = null;
+            var victor = this.getVictor();
+            var maxCapturedUnits = App_3.default.moduleData.ruleSet.battle.baseMaxCapturedUnits;
+            this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
+            this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
+        };
+        Battle.prototype.getEvaluation = function () {
+            var _this = this;
+            var evaluation = 0;
+            UnitBattleSide_1.UnitBattleSides.forEach(function (side) {
+                var sign = side === "side1" ? 1 : -1;
+                var currentHealth = _this.getTotalCurrentHealthForSide(side);
+                if (currentHealth <= 0) {
+                    evaluation -= 999 * sign;
+                    return;
+                }
+                var currentHealthFactor = currentHealth / _this.startHealth[side];
+                _this.getUnitsForSide(side).forEach(function (unit) {
+                    if (unit.currentHealth <= 0) {
+                        evaluation -= 0.2 * sign;
+                    }
+                });
+                var defenderMultiplier = 1;
+                if (_this.battleData.building) {
+                    var template = _this.battleData.building.template;
+                    var isDefender = _this.battleData.defender.player === _this.getPlayerForSide(side);
+                    if (isDefender) {
+                        defenderMultiplier += template.defenderAdvantage;
+                    }
+                }
+                evaluation += currentHealthFactor * defenderMultiplier * sign;
+            });
+            evaluation = utility_1.clamp(evaluation, -1, 1);
+            this.evaluation[this.currentTurn] = evaluation;
+            return this.evaluation[this.currentTurn];
+        };
+        Battle.prototype.getTotalCurrentHealthForRow = function (position) {
+            return this.getRowByPosition(position).map(function (unit) {
+                return unit ? unit.currentHealth : 0;
+            }).reduce(function (total, value) {
+                return total + value;
+            }, 0);
+        };
+        Battle.prototype.getTotalCurrentHealthForSide = function (side) {
+            return this.getUnitsForSide(side).map(function (unit) { return unit.currentHealth; }).reduce(function (total, value) {
+                return total + value;
+            }, 0);
+        };
+        Battle.getAbsolutePositionFromSidePosition = function (relativePosition, side) {
+            if (side === "side1") {
+                return relativePosition;
+            }
+            else {
+                var rowsPerSide = App_3.default.moduleData.ruleSet.battle.rowsPerFormation;
+                return [relativePosition[0] + rowsPerSide, relativePosition[1]];
+            }
+        };
+        Battle.prototype.updateBattlePositions = function (side) {
+            var units = this[side];
+            for (var i = 0; i < units.length; i++) {
+                var row = this[side][i];
+                for (var j = 0; j < row.length; j++) {
+                    var pos = Battle.getAbsolutePositionFromSidePosition([i, j], side);
+                    var unit = row[j];
+                    if (unit) {
+                        unit.setBattlePosition(this, side, pos);
+                    }
+                }
+            }
+        };
+        Battle.prototype.shiftRowsForSide = function (side) {
+            var formation = this[side];
+            if (side === "side1") {
+                formation.reverse();
+            }
+            var nextHealthyRowIndex;
+            for (var i = 1; i < formation.length; i++) {
+                var absoluteRow = side === "side1" ? i : i + App_3.default.moduleData.ruleSet.battle.rowsPerFormation;
+                if (this.getTotalCurrentHealthForRow(absoluteRow) > 0) {
+                    nextHealthyRowIndex = i;
+                    break;
+                }
+            }
+            if (!isFinite(nextHealthyRowIndex)) {
+                throw new Error("Tried to shift battle rows when all rows are defeated");
+            }
+            var rowsToShift = formation.splice(0, nextHealthyRowIndex);
+            formation = formation.concat(rowsToShift);
+            if (side === "side1") {
+                formation.reverse();
+            }
+            this[side] = formation;
+            this.updateBattlePositions(side);
+        };
+        Battle.prototype.shiftRowsIfNeeded = function () {
+            var rowsPerSide = App_3.default.moduleData.ruleSet.battle.rowsPerFormation;
+            var side1FrontRowHealth = this.getTotalCurrentHealthForRow(rowsPerSide - 1);
+            if (side1FrontRowHealth <= 0) {
+                this.shiftRowsForSide("side1");
+            }
+            var side2FrontRowHealth = this.getTotalCurrentHealthForRow(rowsPerSide);
+            if (side2FrontRowHealth <= 0) {
+                this.shiftRowsForSide("side2");
+            }
+        };
+        Battle.prototype.makeVirtualClone = function () {
+            var battleData = this.battleData;
+            function cloneUnits(units) {
+                var clones = [];
+                for (var i = 0; i < units.length; i++) {
+                    var row = [];
+                    for (var j = 0; j < units[i].length; j++) {
+                        var unit = units[i][j];
+                        if (!unit) {
+                            row.push(unit);
+                        }
+                        else {
+                            row.push(unit.makeVirtualClone());
+                        }
+                    }
+                    clones.push(row);
+                }
+                return clones;
+            }
+            var side1 = cloneUnits(this.side1);
+            var side2 = cloneUnits(this.side2);
+            var side1Player = this.side1Player;
+            var side2Player = this.side2Player;
+            var clone = new Battle({
+                battleData: battleData,
+                side1: side1,
+                side2: side2,
+                side1Player: side1Player,
+                side2Player: side2Player,
+            });
+            [side1, side2].forEach(function (side) {
+                for (var i = 0; i < side.length; i++) {
+                    for (var j = 0; j < side[i].length; j++) {
+                        if (!side[i][j]) {
+                            continue;
+                        }
+                        clone.turnOrder.addUnit(side[i][j]);
+                        clone.unitsById[side[i][j].id] = side[i][j];
+                        clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
+                    }
+                }
+            });
+            clone.isVirtual = true;
+            clone.currentTurn = this.currentTurn;
+            clone.maxTurns = this.maxTurns;
+            clone.turnsLeft = this.turnsLeft;
+            clone.startHealth = this.startHealth;
+            clone.updateTurnOrder();
+            if (clone.shouldBattleEnd()) {
+                clone.endBattle();
+            }
+            else {
+                clone.shiftRowsIfNeeded();
+            }
+            return clone;
+        };
+        Battle.prototype.updateTurnOrder = function () {
+            this.turnOrder.update();
+            this.activeUnit = this.turnOrder.getActiveUnit();
+        };
+        return Battle;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Battle;
+});
+define("src/UnitAttributes", ["require", "exports", "src/utility"], function (require, exports, utility_2) {
     "use strict";
     var UnitAttribute;
     (function (UnitAttribute) {
@@ -1320,7 +1475,7 @@ define("src/UnitAttributes", ["require", "exports", "src/utility"], function (re
         UnitAttributes.prototype.clamp = function (min, max) {
             var _this = this;
             this.forEachAttribute(function (attribute) {
-                _this[attribute] = utility_1.clamp(_this[attribute], min, max);
+                _this[attribute] = utility_2.clamp(_this[attribute], min, max);
             });
             return this;
         };
@@ -1392,12 +1547,12 @@ define("src/UnitAttributes", ["require", "exports", "src/utility"], function (re
     }());
     exports.UnitAttributes = UnitAttributes;
 });
-define("src/StatusEffect", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_3) {
+define("src/StatusEffect", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_2) {
     "use strict";
     var StatusEffect = (function () {
         function StatusEffect(props) {
             this.turnsHasBeenActiveFor = 0;
-            this.id = isFinite(props.id) ? props.id : idGenerators_3.default.statusEffect++;
+            this.id = isFinite(props.id) ? props.id : idGenerators_2.default.statusEffect++;
             this.template = props.template;
             this.turnsToStayActiveFor = props.turnsToStayActiveFor;
             this.turnsHasBeenActiveFor = props.turnsHasBeenActiveFor || 0;
@@ -1429,6 +1584,702 @@ define("src/StatusEffect", ["require", "exports", "src/idGenerators"], function 
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = StatusEffect;
+});
+define("src/targeting", ["require", "exports", "src/utility"], function (require, exports, utility_3) {
+    "use strict";
+    exports.targetSelf = function (user, battle) {
+        return [user];
+    };
+    exports.targetNextRow = function (user, battle) {
+        var ownPosition = user.battleStats.position;
+        var increment = user.battleStats.side === "side1" ? 1 : -1;
+        var fullFormation = battle.side1.concat(battle.side2);
+        return fullFormation[ownPosition[0] + increment].filter(function (unit) { return unit !== null; });
+    };
+    exports.targetAllies = function (user, battle) {
+        return battle.getUnitsForSide(user.battleStats.side);
+    };
+    exports.targetEnemies = function (user, battle) {
+        return battle.getUnitsForSide(utility_3.reverseSide(user.battleStats.side));
+    };
+    exports.targetAll = function (user, battle) {
+        return utility_3.flatten2dArray(battle.side1.concat(battle.side2)).filter(function (unit) { return unit !== null; });
+    };
+    exports.areaSingle = function (user, target, battle) {
+        return [target];
+    };
+    exports.areaAll = function (user, target, battle) {
+        return utility_3.flatten2dArray(battle.side1.concat(battle.side2));
+    };
+    exports.areaColumn = function (user, target, battle) {
+        var allRows = battle.side1.concat(battle.side2);
+        var y = target.battleStats.position[1];
+        return allRows.map(function (row) { return row[y]; });
+    };
+    exports.areaRow = function (user, target, battle) {
+        var allRows = battle.side1.concat(battle.side2);
+        var x = target.battleStats.position[0];
+        return allRows[x];
+    };
+    exports.areaRowNeighbors = function (user, target, battle) {
+        var row = exports.areaRow(user, target, battle);
+        var y = target.battleStats.position[1];
+        var y1 = Math.max(y - 1, 0);
+        var y2 = Math.min(y + 1, row.length - 1);
+        return row.slice(y1, y2);
+    };
+    exports.areaOrthogonalNeighbors = function (user, target, battle) {
+        var allRows = battle.side1.concat(battle.side2);
+        var x = target.battleStats.position[0];
+        var y = target.battleStats.position[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x - 1, y]);
+        targetLocations.push([x + 1, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return utility_3.getFrom2dArray(allRows, targetLocations);
+    };
+});
+define("src/GuardCoverage", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
+define("src/getNullFormation", ["require", "exports", "src/App"], function (require, exports, App_4) {
+    "use strict";
+    function getNullFormation() {
+        var nullFormation = [];
+        var rows = App_4.default.moduleData.ruleSet.battle.rowsPerFormation;
+        var columns = App_4.default.moduleData.ruleSet.battle.cellsPerRow;
+        for (var i = 0; i < rows; i++) {
+            nullFormation.push([]);
+            for (var j = 0; j < columns; j++) {
+                nullFormation[i].push(null);
+            }
+        }
+        return nullFormation;
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = getNullFormation;
+});
+define("src/BattlePrepFormation", ["require", "exports", "src/getNullFormation"], function (require, exports, getNullFormation_1) {
+    "use strict";
+    var BattlePrepFormation = (function () {
+        function BattlePrepFormation(player, units, hasScouted, minUnits, isAttacker) {
+            this.placedUnitPositionsByID = {};
+            this.displayDataIsDirty = true;
+            this.player = player;
+            this.units = units;
+            this.hasScouted = hasScouted;
+            this.minUnits = minUnits;
+            this.isAttacker = isAttacker;
+            this.formation = getNullFormation_1.default();
+        }
+        BattlePrepFormation.prototype.forEachUnitInFormation = function (f) {
+            for (var i = 0; i < this.formation.length; i++) {
+                for (var j = 0; j < this.formation[i].length; j++) {
+                    var unit = this.formation[i][j];
+                    if (unit) {
+                        f(unit, [i, j]);
+                    }
+                }
+            }
+        };
+        BattlePrepFormation.prototype.getDisplayData = function () {
+            if (this.displayDataIsDirty) {
+                this.cachedDisplayData = this.getFormationDisplayData();
+                this.displayDataIsDirty = false;
+            }
+            return this.cachedDisplayData;
+        };
+        BattlePrepFormation.prototype.setAutoFormation = function (enemyUnits, enemyFormation) {
+            var _this = this;
+            this.clearFormation();
+            this.formation = this.player.AIController.createBattleFormation(this.units, this.hasScouted, enemyUnits, enemyFormation);
+            this.forEachUnitInFormation(function (unit, pos) {
+                _this.placedUnitPositionsByID[unit.id] = pos;
+            });
+            this.displayDataIsDirty = true;
+        };
+        BattlePrepFormation.prototype.getUnitPosition = function (unit) {
+            return this.placedUnitPositionsByID[unit.id];
+        };
+        BattlePrepFormation.prototype.clearFormation = function () {
+            this.placedUnitPositionsByID = {};
+            this.formation = getNullFormation_1.default();
+            this.displayDataIsDirty = true;
+        };
+        BattlePrepFormation.prototype.getFormationValidity = function () {
+            var amountOfUnitsPlaced = 0;
+            this.forEachUnitInFormation(function (unit) { return amountOfUnitsPlaced += 1; });
+            if (this.isAttacker && amountOfUnitsPlaced < 1) {
+                return ({
+                    isValid: false,
+                    description: "Attacker must place at least 1 unit.",
+                });
+            }
+            var availableUnits = this.units.filter(function (unit) { return unit.canActThisTurn(); });
+            var hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
+            if (amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits) {
+                return ({
+                    isValid: true,
+                    description: "",
+                });
+            }
+            else {
+                return ({
+                    isValid: false,
+                    description: "Must place at least " + this.minUnits + " units or all available units.",
+                });
+            }
+        };
+        BattlePrepFormation.prototype.setUnit = function (unit, position) {
+            var unitInTargetPosition = this.getUnitAtPosition(position);
+            if (unitInTargetPosition) {
+                this.swapUnits(unit, unitInTargetPosition);
+            }
+            else {
+                this.removeUnit(unit);
+                this.formation[position[0]][position[1]] = unit;
+                this.placedUnitPositionsByID[unit.id] = position;
+                this.displayDataIsDirty = true;
+            }
+        };
+        BattlePrepFormation.prototype.removeUnit = function (unit) {
+            var position = this.getUnitPosition(unit);
+            if (!position) {
+                return;
+            }
+            this.formation[position[0]][position[1]] = null;
+            delete this.placedUnitPositionsByID[unit.id];
+            this.displayDataIsDirty = true;
+        };
+        BattlePrepFormation.prototype.getUnitAtPosition = function (position) {
+            return this.formation[position[0]][position[1]];
+        };
+        BattlePrepFormation.prototype.swapUnits = function (unit1, unit2) {
+            if (unit1 === unit2) {
+                return;
+            }
+            var new1Pos = this.getUnitPosition(unit2);
+            var new2Pos = this.getUnitPosition(unit1);
+            this.removeUnit(unit1);
+            this.removeUnit(unit2);
+            this.setUnit(unit1, new1Pos);
+            this.setUnit(unit2, new2Pos);
+        };
+        BattlePrepFormation.prototype.getFormationDisplayData = function () {
+            var displayDataByID = {};
+            this.forEachUnitInFormation(function (unit) {
+                displayDataByID[unit.id] = unit.getDisplayData("battlePrep");
+            });
+            return displayDataByID;
+        };
+        return BattlePrepFormation;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BattlePrepFormation;
+});
+define("src/BattlePrep", ["require", "exports", "src/Battle", "src/BattlePrepFormation"], function (require, exports, Battle_1, BattlePrepFormation_1) {
+    "use strict";
+    var BattlePrep = (function () {
+        function BattlePrep(battleData) {
+            this.afterBattleFinishCallbacks = [];
+            this.attacker = battleData.attacker.player;
+            this.defender = battleData.defender.player;
+            this.battleData = battleData;
+            this.attackerUnits = battleData.attacker.units;
+            this.defenderUnits = battleData.defender.units;
+            var attackerHasScouted = this.attacker.starIsDetected(battleData.location);
+            this.attackerFormation = new BattlePrepFormation_1.default(this.attacker, this.attackerUnits, attackerHasScouted, 1, true);
+            var defenderHasScouted = this.defender.starIsDetected(battleData.location);
+            this.defenderFormation = new BattlePrepFormation_1.default(this.defender, this.defenderUnits, defenderHasScouted, undefined, false);
+            this.resetBattleStats();
+            this.minDefenders = this.getInitialMinDefenders();
+            this.setHumanAndEnemy();
+            if (this.enemyFormation) {
+                this.enemyFormation.setAutoFormation(this.humanUnits);
+                this.triggerPassiveSkills(this.enemyFormation);
+                this.defenderFormation.minUnits = this.minDefenders;
+            }
+            else {
+                this.attackerFormation.setAutoFormation(this.defenderUnits);
+                this.triggerPassiveSkills(this.attackerFormation);
+                this.defenderFormation.minUnits = this.minDefenders;
+                this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
+            }
+        }
+        BattlePrep.prototype.forEachUnit = function (f) {
+            this.attackerUnits.forEach(f);
+            this.defenderUnits.forEach(f);
+        };
+        BattlePrep.prototype.isLocationNeutral = function () {
+            return (this.battleData.location.owner !== this.attacker &&
+                this.battleData.location.owner !== this.defender);
+        };
+        BattlePrep.prototype.makeBattle = function () {
+            var side1Formation = this.humanFormation || this.attackerFormation;
+            var side2Formation = this.enemyFormation || this.defenderFormation;
+            var side1Player = this.humanPlayer || this.attacker;
+            var side2Player = this.enemyPlayer || this.defender;
+            var battle = new Battle_1.default({
+                battleData: this.battleData,
+                side1: side1Formation.formation,
+                side2: side2Formation.formation.reverse(),
+                side1Player: side1Player,
+                side2Player: side2Player,
+            });
+            battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);
+            battle.init();
+            return battle;
+        };
+        BattlePrep.prototype.setHumanAndEnemy = function () {
+            if (!this.attacker.isAI) {
+                this.humanPlayer = this.attacker;
+                this.enemyPlayer = this.defender;
+                this.humanUnits = this.attackerUnits;
+                this.enemyUnits = this.defenderUnits;
+                this.humanFormation = this.attackerFormation;
+                this.enemyFormation = this.defenderFormation;
+            }
+            else if (!this.defender.isAI) {
+                this.humanPlayer = this.defender;
+                this.enemyPlayer = this.attacker;
+                this.humanUnits = this.defenderUnits;
+                this.enemyUnits = this.attackerUnits;
+                this.humanFormation = this.defenderFormation;
+                this.enemyFormation = this.attackerFormation;
+            }
+        };
+        BattlePrep.prototype.resetBattleStats = function () {
+            this.forEachUnit(function (unit) {
+                unit.resetBattleStats();
+            });
+        };
+        BattlePrep.prototype.triggerPassiveSkills = function (formation) {
+            var _this = this;
+            formation.forEachUnitInFormation(function (unit) {
+                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase.inBattlePrep) {
+                    for (var j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++) {
+                        var skill = passiveSkillsByPhase.inBattlePrep[j];
+                        for (var k = 0; k < skill.inBattlePrep.length; k++) {
+                            skill.inBattlePrep[k](unit, _this);
+                        }
+                    }
+                }
+            });
+        };
+        BattlePrep.prototype.getInitialMinDefenders = function () {
+            if (this.isLocationNeutral()) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
+        };
+        return BattlePrep;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BattlePrep;
+});
+define("src/AbilityUpgradeData", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
+define("src/Name", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var Name = (function () {
+        function Name(fullName, isPlural) {
+            if (isPlural === void 0) { isPlural = false; }
+            this.isPlural = false;
+            this.fullName = fullName;
+            this.isPlural = isPlural;
+        }
+        Name.fromData = function (data) {
+            return new Name(data.fullName, data.isPlural);
+        };
+        Name.prototype.setName = function (name, isPlural) {
+            if (isPlural === void 0) { isPlural = false; }
+            this.fullName = name;
+            this.isPlural = isPlural;
+        };
+        Name.prototype.toString = function () {
+            return this.fullName;
+        };
+        Name.prototype.getPossessive = function () {
+            var standard = this.toString();
+            var lastChar = standard[standard.length - 1];
+            if (lastChar.toLocaleLowerCase() === "s") {
+                return standard + "'";
+            }
+            else {
+                return standard + "'s";
+            }
+        };
+        Name.prototype.pluralizeVerb = function (singularVerb, pluralVerb) {
+            if (this.isPlural) {
+                return pluralVerb;
+            }
+            else {
+                return singularVerb;
+            }
+        };
+        Name.prototype.pluralizeVerbWithS = function (sourceVerb) {
+            if (sourceVerb.charAt(sourceVerb.length - 1) === "s") {
+                return this.pluralizeVerb(sourceVerb + "s", sourceVerb);
+            }
+            else {
+                return this.pluralizeVerb(sourceVerb, sourceVerb + "s");
+            }
+        };
+        Name.prototype.serialize = function () {
+            return ({
+                fullName: this.fullName,
+                isPlural: this.isPlural,
+            });
+        };
+        return Name;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Name;
+});
+define("src/PriorityQueue", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var PriorityQueue = (function () {
+        function PriorityQueue() {
+            this.items = {};
+        }
+        PriorityQueue.prototype.isEmpty = function () {
+            if (Object.keys(this.items).length > 0)
+                return false;
+            else
+                return true;
+        };
+        PriorityQueue.prototype.push = function (priority, data) {
+            if (!this.items[priority]) {
+                this.items[priority] = [];
+            }
+            this.items[priority].push(data);
+        };
+        PriorityQueue.prototype.pop = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+            var toReturn = this.items[highestPriority].pop();
+            if (this.items[highestPriority].length < 1) {
+                delete this.items[highestPriority];
+            }
+            return toReturn;
+        };
+        PriorityQueue.prototype.peek = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+            var toReturn = this.items[highestPriority][0];
+            return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
+        };
+        return PriorityQueue;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = PriorityQueue;
+});
+define("src/pathFinding", ["require", "exports", "src/PriorityQueue"], function (require, exports, PriorityQueue_1) {
+    "use strict";
+    function backTrace(graph, target) {
+        var parent = graph[target.id];
+        if (!parent)
+            return [];
+        var path = [
+            {
+                star: target,
+                cost: parent.cost,
+            },
+        ];
+        while (parent) {
+            path.push({
+                star: parent.star,
+                cost: parent.cost,
+            });
+            parent = graph[parent.star.id];
+        }
+        path.reverse();
+        path[0].cost = null;
+        return path;
+    }
+    exports.backTrace = backTrace;
+    function aStar(start, target) {
+        var frontier = new PriorityQueue_1.default();
+        frontier.push(0, start);
+        var cameFrom = {};
+        var costSoFar = {};
+        cameFrom[start.id] = null;
+        costSoFar[start.id] = 0;
+        while (!frontier.isEmpty()) {
+            var current = frontier.pop();
+            if (current === target) {
+                return { came: cameFrom, cost: costSoFar };
+            }
+            var neighbors = current.getAllLinks();
+            for (var i = 0; i < neighbors.length; i++) {
+                var neigh = neighbors[i];
+                if (!neigh)
+                    continue;
+                var moveCost = 1;
+                var newCost = costSoFar[current.id] + moveCost;
+                if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
+                    costSoFar[neigh.id] = newCost;
+                    var priority = newCost;
+                    frontier.push(priority, neigh);
+                    cameFrom[neigh.id] =
+                        {
+                            star: current,
+                            cost: moveCost,
+                        };
+                }
+            }
+        }
+        return null;
+    }
+    exports.aStar = aStar;
+});
+define("src/Fleet", ["require", "exports", "src/App", "src/Name", "src/eventManager", "src/idGenerators", "src/pathFinding"], function (require, exports, App_5, Name_1, eventManager_2, idGenerators_3, pathFinding_1) {
+    "use strict";
+    var Fleet = (function () {
+        function Fleet(units, id) {
+            var _this = this;
+            this.units = [];
+            this.visionIsDirty = true;
+            this.visibleStars = [];
+            this.detectedStars = [];
+            this.id = isFinite(id) ? id : idGenerators_3.default.fleet++;
+            this.name = new Name_1.default("Fleet " + this.id);
+            units.forEach(function (unitToAdd) {
+                _this.addUnit(unitToAdd);
+            });
+        }
+        Fleet.createFleetsFromUnits = function (units) {
+            var stealthyUnits = units.filter(function (unit) { return unit.isStealthy(); });
+            var nonStealthyUnits = units.filter(function (unit) { return !unit.isStealthy(); });
+            var fleets = [stealthyUnits, nonStealthyUnits].filter(function (unitsInGroup) {
+                return unitsInGroup.length > 0;
+            }).map(function (unitsInGroup) {
+                return new Fleet(unitsInGroup);
+            });
+            return fleets;
+        };
+        Fleet.sortByImportance = function (a, b) {
+            var unitCountSort = b.units.length - a.units.length;
+            if (unitCountSort) {
+                return unitCountSort;
+            }
+            else {
+                return a.id - b.id;
+            }
+        };
+        Fleet.makeAlreadyInFleetError = function (unit) {
+            return new Error("Unit " + unit.name + " is already part of fleet " + unit.fleet.name.toString());
+        };
+        Fleet.makeNotInFleetError = function (unit, fleet) {
+            return new Error("Unit " + unit.name + " is not part of fleet " + fleet.name.toString());
+        };
+        Fleet.prototype.deleteFleet = function (shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            this.location.removeFleet(this);
+            this.player.removeFleet(this);
+            if (shouldRender) {
+                eventManager_2.default.dispatchEvent("renderLayer", "fleets", this.location);
+            }
+        };
+        Fleet.prototype.mergeWith = function (fleetToMergeWith, shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            if (fleetToMergeWith.isStealthy !== this.isStealthy) {
+                throw new Error("Tried to merge stealthy fleet with non stealthy or other way around");
+            }
+            for (var i = this.units.length - 1; i >= 0; i--) {
+                var unit = this.units[i];
+                this.transferUnit(fleetToMergeWith, unit);
+            }
+            this.deleteFleet();
+        };
+        Fleet.prototype.addUnit = function (unit) {
+            if (unit.fleet) {
+                throw Fleet.makeAlreadyInFleetError(unit);
+            }
+            if (this.units.length === 0) {
+                this.isStealthy = unit.isStealthy();
+            }
+            else if (unit.isStealthy() !== this.isStealthy) {
+                throw new Error("Tried to add stealthy unit to non stealthy fleet or other way around");
+            }
+            this.units.push(unit);
+            unit.fleet = this;
+            this.visionIsDirty = true;
+        };
+        Fleet.prototype.removeUnit = function (unit) {
+            var index = this.units.indexOf(unit);
+            if (index < 0) {
+                throw Fleet.makeNotInFleetError(unit, this);
+            }
+            this.units.splice(index, 1);
+            unit.fleet = null;
+            this.visionIsDirty = true;
+        };
+        Fleet.prototype.transferUnit = function (receivingFleet, unitToTransfer, shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            if (receivingFleet === this) {
+                throw new Error("Tried to transfer unit into unit's current fleet");
+            }
+            this.removeUnit(unitToTransfer);
+            receivingFleet.addUnit(unitToTransfer);
+            if (shouldRender) {
+                eventManager_2.default.dispatchEvent("renderLayer", "fleets", this.location);
+            }
+        };
+        Fleet.prototype.split = function () {
+            var newFleet = new Fleet([]);
+            this.player.addFleet(newFleet);
+            this.location.addFleet(newFleet);
+            return newFleet;
+        };
+        Fleet.prototype.getMinCurrentMovePoints = function () {
+            return this.units.map(function (unit) {
+                return unit.currentMovePoints;
+            }).reduce(function (minMovePoints, currentUnitMovePoints) {
+                return Math.min(minMovePoints, currentUnitMovePoints);
+            }, Infinity);
+        };
+        Fleet.prototype.getMinMaxMovePoints = function () {
+            return this.units.map(function (unit) {
+                return unit.maxMovePoints;
+            }).reduce(function (minMovePoints, currentUnitMovePoints) {
+                return Math.min(minMovePoints, currentUnitMovePoints);
+            }, Infinity);
+        };
+        Fleet.prototype.hasEnoughMovePointsToMoveTo = function (target) {
+            return this.getMinCurrentMovePoints() >= this.location.getDistanceToStar(target);
+        };
+        Fleet.prototype.getPathTo = function (newLocation) {
+            var a = pathFinding_1.aStar(this.location, newLocation);
+            if (!a) {
+                throw new Error("Couldn't find path between " + this.location.name + " and " + newLocation.name);
+            }
+            var path = pathFinding_1.backTrace(a.came, newLocation);
+            return path;
+        };
+        Fleet.prototype.pathFind = function (newLocation, onMove, afterMove) {
+            var _this = this;
+            var path = this.getPathTo(newLocation);
+            var interval = window.setInterval(function () {
+                if (!path || path.length <= 0) {
+                    window.clearInterval(interval);
+                    if (afterMove) {
+                        afterMove();
+                    }
+                    return;
+                }
+                var move = path.shift();
+                _this.move(move.star);
+                if (onMove) {
+                    onMove();
+                }
+            }, 10);
+        };
+        Fleet.prototype.getTotalCurrentHealth = function () {
+            return this.units.map(function (unit) {
+                return unit.currentHealth;
+            }).reduce(function (total, current) {
+                return total + current;
+            }, 0);
+        };
+        Fleet.prototype.getTotalMaxHealth = function () {
+            return this.units.map(function (unit) {
+                return unit.maxHealth;
+            }).reduce(function (total, current) {
+                return total + current;
+            }, 0);
+        };
+        Fleet.prototype.getVisibleStars = function () {
+            if (this.visionIsDirty) {
+                this.updateVisibleStars();
+            }
+            return this.visibleStars;
+        };
+        Fleet.prototype.getDetectedStars = function () {
+            if (this.visionIsDirty) {
+                this.updateVisibleStars();
+            }
+            return this.detectedStars;
+        };
+        Fleet.prototype.serialize = function () {
+            var data = {
+                id: this.id,
+                name: this.name.serialize(),
+                locationId: this.location.id,
+                playerId: this.player.id,
+                unitIds: this.units.map(function (unit) { return unit.id; }),
+            };
+            return data;
+        };
+        Fleet.prototype.canMove = function () {
+            return this.units.every(function (unit) { return unit.currentMovePoints > 0; });
+        };
+        Fleet.prototype.move = function (newLocation) {
+            if (newLocation === this.location) {
+                return;
+            }
+            if (!this.canMove()) {
+                return;
+            }
+            var oldLocation = this.location;
+            oldLocation.removeFleet(this);
+            this.location = newLocation;
+            newLocation.addFleet(this);
+            this.units.forEach(function (unit) { return unit.currentMovePoints -= 1; });
+            this.visionIsDirty = true;
+            this.player.visionIsDirty = true;
+            for (var i = 0; i < App_5.default.game.playerOrder.length; i++) {
+                var player = App_5.default.game.playerOrder[i];
+                if (player.isIndependent || player === this.player) {
+                    continue;
+                }
+                player.updateAllVisibilityInStar(newLocation);
+            }
+            eventManager_2.default.dispatchEvent("renderLayer", "fleets", this.location);
+            eventManager_2.default.dispatchEvent("updateSelection", null);
+        };
+        Fleet.prototype.updateVisibleStars = function () {
+            var highestVisionRange = 0;
+            var highestDetectionRange = -1;
+            for (var i = 0; i < this.units.length; i++) {
+                highestVisionRange = Math.max(this.units[i].getVisionRange(), highestVisionRange);
+                highestDetectionRange = Math.max(this.units[i].getDetectionRange(), highestDetectionRange);
+            }
+            var inVision = this.location.getLinkedInRange(highestVisionRange);
+            var inDetection = this.location.getLinkedInRange(highestDetectionRange);
+            this.visibleStars = inVision.all;
+            this.detectedStars = inDetection.all;
+            this.visionIsDirty = false;
+        };
+        return Fleet;
+    }());
+    exports.Fleet = Fleet;
+});
+define("src/Item", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_4) {
+    "use strict";
+    var Item = (function () {
+        function Item(template, id) {
+            this.id = isFinite(id) ? id : idGenerators_4.default.item++;
+            this.template = template;
+        }
+        Item.prototype.serialize = function () {
+            var data = {
+                id: this.id,
+                templateType: this.template.type,
+            };
+            if (this.unit) {
+                data.positionInUnit = this.positionInUnit;
+            }
+            return data;
+        };
+        return Item;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Item;
 });
 define("src/UnitItems", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -1575,7 +2426,7 @@ define("src/UnitItems", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = UnitItems;
 });
-define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fleet", "src/UnitAttributes", "src/UnitItems", "src/utility"], function (require, exports, App_3, idGenerators_4, Fleet_1, UnitAttributes_1, UnitItems_1, utility_2) {
+define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fleet", "src/UnitAttributes", "src/UnitItems", "src/utility"], function (require, exports, App_6, idGenerators_5, Fleet_1, UnitAttributes_1, UnitItems_1, utility_4) {
     "use strict";
     var Unit = (function () {
         function Unit(props) {
@@ -1587,7 +2438,6 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
             this.passiveSkillsByPhaseAreDirty = true;
             this.uiDisplayIsDirty = true;
             this.template = props.template;
-            this.isSquadron = this.template.isSquadron;
             this.id = props.id;
             this.name = props.name;
             this.maxHealth = props.maxHealth;
@@ -1656,15 +2506,15 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
             var race = props.race;
             var attributeMultiplier = isFinite(props.attributeMultiplier) ? props.attributeMultiplier : 1;
             var healthMultiplier = isFinite(props.healthMultiplier) ? props.healthMultiplier : 1;
-            var baseAttributeValue = App_3.default.moduleData.ruleSet.units.baseAttributeValue * attributeMultiplier;
-            var attributeVariance = App_3.default.moduleData.ruleSet.units.attributeVariance;
-            var baseHealthValue = App_3.default.moduleData.ruleSet.units.baseHealthValue * healthMultiplier;
-            var healthVariance = App_3.default.moduleData.ruleSet.units.healthVariance;
+            var baseAttributeValue = App_6.default.moduleData.ruleSet.units.baseAttributeValue * attributeMultiplier;
+            var attributeVariance = App_6.default.moduleData.ruleSet.units.attributeVariance;
+            var baseHealthValue = App_6.default.moduleData.ruleSet.units.baseHealthValue * healthMultiplier;
+            var healthVariance = App_6.default.moduleData.ruleSet.units.healthVariance;
             var baseHealth = baseHealthValue * template.maxHealth;
-            var health = utility_2.randInt(baseHealth - healthVariance, baseHealth + healthVariance);
+            var health = utility_4.randInt(baseHealth - healthVariance, baseHealth + healthVariance);
             var unit = new Unit({
                 template: template,
-                id: idGenerators_4.default.unit++,
+                id: idGenerators_5.default.unit++,
                 name: props.name || race.getUnitName(template),
                 maxHealth: health,
                 currentHealth: health,
@@ -1672,22 +2522,22 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
                 currentMovePoints: template.maxMovePoints,
                 maxMovePoints: template.maxMovePoints,
                 timesActedThisTurn: 0,
-                abilities: utility_2.getItemsFromWeightedProbabilities(template.possibleAbilities),
+                abilities: utility_4.getItemsFromWeightedProbabilities(template.possibleAbilities),
                 passiveSkills: template.possiblePassiveSkills ?
-                    utility_2.getItemsFromWeightedProbabilities(template.possiblePassiveSkills) :
+                    utility_4.getItemsFromWeightedProbabilities(template.possiblePassiveSkills) :
                     [],
                 level: 1,
                 experienceForCurrentLevel: 0,
                 maxItemSlots: template.itemSlots,
                 items: [],
-                portrait: race.getUnitPortrait(template, App_3.default.moduleData.Templates.Portraits),
+                portrait: race.getUnitPortrait(template, App_6.default.moduleData.Templates.Portraits),
                 race: race,
             });
             return unit;
         };
         Unit.fromSaveData = function (data) {
             var unit = new Unit({
-                template: App_3.default.moduleData.Templates.Units[data.templateType],
+                template: App_6.default.moduleData.Templates.Units[data.templateType],
                 id: data.id,
                 name: data.name,
                 maxHealth: data.maxHealth,
@@ -1697,10 +2547,10 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
                 maxMovePoints: data.maxMovePoints,
                 timesActedThisTurn: data.timesActedThisTurn,
                 abilities: data.abilityTemplateTypes.map(function (templateType) {
-                    return App_3.default.moduleData.Templates.Abilities[templateType];
+                    return App_6.default.moduleData.Templates.Abilities[templateType];
                 }),
                 passiveSkills: data.passiveSkillTemplateTypes.map(function (templateType) {
-                    return App_3.default.moduleData.Templates.PassiveSkills[templateType];
+                    return App_6.default.moduleData.Templates.PassiveSkills[templateType];
                 }),
                 level: data.level,
                 experienceForCurrentLevel: data.experienceForCurrentLevel,
@@ -1717,7 +2567,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
                     statusEffects: [],
                     queuedAction: data.battleStats.queuedAction ?
                         {
-                            ability: App_3.default.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
+                            ability: App_6.default.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
                             targetId: data.battleStats.queuedAction.targetId,
                             turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
                             timesInterrupted: data.battleStats.queuedAction.timesInterrupted,
@@ -1727,17 +2577,17 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
                 maxItemSlots: data.items.maxItemSlots,
                 items: [],
                 portrait: data.portraitKey ?
-                    App_3.default.moduleData.Templates.Portraits[data.portraitKey] :
+                    App_6.default.moduleData.Templates.Portraits[data.portraitKey] :
                     null,
                 race: data.raceKey ?
-                    App_3.default.moduleData.Templates.Races[data.raceKey] :
+                    App_6.default.moduleData.Templates.Races[data.raceKey] :
                     null,
             });
             return unit;
         };
         Unit.getRandomValueFromAttributeLevel = function (level, baseValue, variance) {
             var baseValueForLevel = baseValue * level;
-            return utility_2.randInt(baseValueForLevel - variance, baseValueForLevel + variance);
+            return utility_4.randInt(baseValueForLevel - variance, baseValueForLevel + variance);
         };
         Unit.getRandomAttributesFromTemplate = function (template, baseValue, variance) {
             return ({
@@ -1745,7 +2595,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
                 defence: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.defence, baseValue, variance),
                 intelligence: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.intelligence, baseValue, variance),
                 speed: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.speed, baseValue, variance),
-                maxActionPoints: utility_2.randInt(3, 5),
+                maxActionPoints: utility_4.randInt(3, 5),
             });
         };
         Unit.prototype.getBaseMoveDelay = function () {
@@ -1763,7 +2613,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
                     position: null,
                     guardAmount: 0,
                     guardCoverage: null,
-                    captureChance: App_3.default.moduleData.ruleSet.battle.baseUnitCaptureChance,
+                    captureChance: App_6.default.moduleData.ruleSet.battle.baseUnitCaptureChance,
                     statusEffects: [],
                     lastHealthBeforeReceivingDamage: this.currentHealth,
                     queuedAction: null,
@@ -1783,7 +2633,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
         };
         Unit.prototype.addHealth = function (amountToAdd) {
             var newHealth = this.currentHealth + Math.round(amountToAdd);
-            this.currentHealth = utility_2.clamp(newHealth, 0, this.maxHealth);
+            this.currentHealth = utility_4.clamp(newHealth, 0, this.maxHealth);
             if (this.currentHealth <= 0) {
                 this.battleStats.isAnnihilated = true;
             }
@@ -2002,7 +2852,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
             if (fleet.units.length <= 0) {
                 fleet.deleteFleet();
             }
-            App_3.default.moduleData.scripts.unit.removeFromPlayer.forEach(function (scriptFN) {
+            App_6.default.moduleData.scripts.unit.removeFromPlayer.forEach(function (scriptFN) {
                 scriptFN(_this);
             });
             this.uiDisplayIsDirty = true;
@@ -2204,7 +3054,7 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
                 maxActionPoints: this.attributes.maxActionPoints,
                 isPreparing: Boolean(this.battleStats.queuedAction),
                 isAnnihilated: this.battleStats.isAnnihilated,
-                isSquadron: this.isSquadron,
+                isSquadron: this.template.isSquadron,
                 portraitSrc: this.portrait.imageSrc,
                 iconSrc: this.template.icon,
                 attributeChanges: this.getAttributesWithEffectsDifference().serialize(),
@@ -2288,320 +3138,32 @@ define("src/Unit", ["require", "exports", "src/App", "src/idGenerators", "src/Fl
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Unit;
 });
-define("src/evaluateUnitStrength", ["require", "exports"], function (require, exports) {
+define("src/AIController", ["require", "exports"], function (require, exports) {
     "use strict";
-    function evaluateUnitStrength() {
-        var units = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            units[_i] = arguments[_i];
+    var AIController = (function () {
+        function AIController(template) {
+            this.template = template;
+            this.personality = template.personality;
         }
-        var totalStrength = 0;
-        units.forEach(function (unit) {
-            var unitStrength = 0;
-            unitStrength += unit.currentHealth;
-            totalStrength += unitStrength;
-        });
-        return totalStrength;
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = evaluateUnitStrength;
-});
-define("src/getNullFormation", ["require", "exports", "src/App"], function (require, exports, App_4) {
-    "use strict";
-    function getNullFormation() {
-        var nullFormation = [];
-        var rows = App_4.default.moduleData.ruleSet.battle.rowsPerFormation;
-        var columns = App_4.default.moduleData.ruleSet.battle.cellsPerRow;
-        for (var i = 0; i < rows; i++) {
-            nullFormation.push([]);
-            for (var j = 0; j < columns; j++) {
-                nullFormation[i].push(null);
-            }
-        }
-        return nullFormation;
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = getNullFormation;
-});
-define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/evaluateUnitStrength", "src/getNullFormation"], function (require, exports, App_5, evaluateUnitStrength_1, getNullFormation_1) {
-    "use strict";
-    var BattlePrepFormation = (function () {
-        function BattlePrepFormation(player, units, hasScouted, minUnits, isAttacker) {
-            this.placedUnitPositionsByID = {};
-            this.displayDataIsDirty = true;
-            this.player = player;
-            this.units = units;
-            this.hasScouted = hasScouted;
-            this.minUnits = minUnits;
-            this.isAttacker = isAttacker;
-            this.formation = getNullFormation_1.default();
-        }
-        BattlePrepFormation.prototype.forEachUnitInFormation = function (f) {
-            for (var i = 0; i < this.formation.length; i++) {
-                for (var j = 0; j < this.formation[i].length; j++) {
-                    var unit = this.formation[i][j];
-                    if (unit) {
-                        f(unit, [i, j]);
-                    }
-                }
-            }
+        AIController.prototype.processTurn = function (afterFinishedCallback) {
+            this.template.processTurn(afterFinishedCallback);
         };
-        BattlePrepFormation.prototype.getDisplayData = function () {
-            if (this.displayDataIsDirty) {
-                this.cachedDisplayData = this.getFormationDisplayData();
-                this.displayDataIsDirty = false;
-            }
-            return this.cachedDisplayData;
+        AIController.prototype.createBattleFormation = function (availableUnits, hasScouted, enemyUnits, enemyFormation) {
+            return this.template.createBattleFormation(availableUnits, hasScouted, enemyUnits, enemyFormation);
         };
-        BattlePrepFormation.prototype.setAutoFormation = function (enemyUnits, enemyFormation) {
-            var _this = this;
-            this.clearFormation();
-            this.formation = this.getAutoFormation(enemyUnits, enemyFormation);
-            this.forEachUnitInFormation(function (unit, pos) {
-                _this.placedUnitPositionsByID[unit.id] = pos;
+        AIController.prototype.respondToTradeOffer = function (receivedOffer) {
+            return this.template.respondToTradeOffer(receivedOffer);
+        };
+        AIController.prototype.serialize = function () {
+            return ({
+                templateType: this.template.type,
+                templateData: this.template.serialize(),
+                personality: this.personality,
             });
-            this.displayDataIsDirty = true;
         };
-        BattlePrepFormation.prototype.getUnitPosition = function (unit) {
-            return this.placedUnitPositionsByID[unit.id];
-        };
-        BattlePrepFormation.prototype.getUnitAtPosition = function (position) {
-            return this.formation[position[0]][position[1]];
-        };
-        BattlePrepFormation.prototype.clearFormation = function () {
-            this.placedUnitPositionsByID = {};
-            this.formation = getNullFormation_1.default();
-            this.displayDataIsDirty = true;
-        };
-        BattlePrepFormation.prototype.getFormationValidity = function () {
-            var amountOfUnitsPlaced = 0;
-            this.forEachUnitInFormation(function (unit) { return amountOfUnitsPlaced += 1; });
-            if (this.isAttacker && amountOfUnitsPlaced < 1) {
-                return ({
-                    isValid: false,
-                    description: "Attacker must place at least 1 unit.",
-                });
-            }
-            var availableUnits = this.units.filter(function (unit) { return unit.canActThisTurn(); });
-            var hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
-            if (amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits) {
-                return ({
-                    isValid: true,
-                    description: "",
-                });
-            }
-            else {
-                return ({
-                    isValid: false,
-                    description: "Must place at least " + this.minUnits + " units or all available units.",
-                });
-            }
-        };
-        BattlePrepFormation.prototype.setUnit = function (unit, position) {
-            var unitInTargetPosition = this.getUnitAtPosition(position);
-            if (unitInTargetPosition) {
-                this.swapUnits(unit, unitInTargetPosition);
-            }
-            else {
-                this.removeUnit(unit);
-                this.formation[position[0]][position[1]] = unit;
-                this.placedUnitPositionsByID[unit.id] = position;
-                this.displayDataIsDirty = true;
-            }
-        };
-        BattlePrepFormation.prototype.removeUnit = function (unit) {
-            var position = this.getUnitPosition(unit);
-            if (!position) {
-                return;
-            }
-            this.formation[position[0]][position[1]] = null;
-            delete this.placedUnitPositionsByID[unit.id];
-            this.displayDataIsDirty = true;
-        };
-        BattlePrepFormation.prototype.swapUnits = function (unit1, unit2) {
-            if (unit1 === unit2)
-                return;
-            var new1Pos = this.getUnitPosition(unit2);
-            var new2Pos = this.getUnitPosition(unit1);
-            this.removeUnit(unit1);
-            this.removeUnit(unit2);
-            this.setUnit(unit1, new1Pos);
-            this.setUnit(unit2, new2Pos);
-        };
-        BattlePrepFormation.prototype.getFormationDisplayData = function () {
-            var displayDataByID = {};
-            this.forEachUnitInFormation(function (unit) {
-                displayDataByID[unit.id] = unit.getDisplayData("battlePrep");
-            });
-            return displayDataByID;
-        };
-        BattlePrepFormation.prototype.getAutoFormation = function (enemyUnits, enemyFormation) {
-            var scoutedUnits = this.hasScouted ? enemyUnits : null;
-            var scoutedFormation = this.hasScouted ? enemyFormation : null;
-            var formation = getNullFormation_1.default();
-            var unitsToPlace = this.units.filter(function (unit) { return unit.canActThisTurn(); });
-            var maxUnitsPerRow = formation[0].length;
-            var maxUnitsPerSide = App_5.default.moduleData.ruleSet.battle.maxUnitsPerSide;
-            var placedInFront = 0;
-            var placedInBack = 0;
-            var totalPlaced = 0;
-            var unitsPlacedByArchetype = {};
-            var getUnitScoreFN = function (unit, row) {
-                var baseScore = evaluateUnitStrength_1.default(unit);
-                var archetype = unit.template.archetype;
-                var idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
-                var unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.type] || 0;
-                var overMaxOfArchetypeIdeal = Math.max(0, unitsPlacedOfArchetype - idealMaxUnitsOfArchetype);
-                var archetypeIdealAdjust = 1 - overMaxOfArchetypeIdeal * 0.15;
-                var rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
-                var rowModifier = archetype.scoreMultiplierForRowFN ?
-                    archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits, scoutedFormation) :
-                    archetype.rowScores[row];
-                return ({
-                    unit: unit,
-                    score: baseScore * archetypeIdealAdjust * rowModifier,
-                    row: row,
-                });
-            };
-            while (unitsToPlace.length > 0 && totalPlaced < maxUnitsPerSide) {
-                var positionScores = [];
-                for (var i = 0; i < unitsToPlace.length; i++) {
-                    var unit = unitsToPlace[i];
-                    if (placedInFront < maxUnitsPerRow) {
-                        positionScores.push(getUnitScoreFN(unit, "ROW_FRONT"));
-                    }
-                    if (placedInBack < maxUnitsPerRow) {
-                        positionScores.push(getUnitScoreFN(unit, "ROW_BACK"));
-                    }
-                }
-                positionScores.sort(function (a, b) {
-                    return (b.score - a.score);
-                });
-                var topScore = positionScores[0];
-                if (topScore.row === "ROW_FRONT") {
-                    placedInFront++;
-                    formation[1][placedInFront - 1] = topScore.unit;
-                }
-                else {
-                    placedInBack++;
-                    formation[0][placedInBack - 1] = topScore.unit;
-                }
-                totalPlaced++;
-                if (!unitsPlacedByArchetype[topScore.unit.template.archetype.type]) {
-                    unitsPlacedByArchetype[topScore.unit.template.archetype.type] = 0;
-                }
-                unitsPlacedByArchetype[topScore.unit.template.archetype.type]++;
-                unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
-            }
-            return formation;
-        };
-        return BattlePrepFormation;
+        return AIController;
     }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = BattlePrepFormation;
-});
-define("src/BattlePrep", ["require", "exports", "src/Battle", "src/BattlePrepFormation"], function (require, exports, Battle_1, BattlePrepFormation_1) {
-    "use strict";
-    var BattlePrep = (function () {
-        function BattlePrep(battleData) {
-            this.afterBattleFinishCallbacks = [];
-            this.attacker = battleData.attacker.player;
-            this.defender = battleData.defender.player;
-            this.battleData = battleData;
-            this.attackerUnits = battleData.attacker.units;
-            this.defenderUnits = battleData.defender.units;
-            var attackerHasScouted = this.attacker.starIsDetected(battleData.location);
-            this.attackerFormation = new BattlePrepFormation_1.default(this.attacker, this.attackerUnits, attackerHasScouted, 1, true);
-            var defenderHasScouted = this.defender.starIsDetected(battleData.location);
-            this.defenderFormation = new BattlePrepFormation_1.default(this.defender, this.defenderUnits, defenderHasScouted, undefined, false);
-            this.resetBattleStats();
-            this.minDefenders = this.getInitialMinDefenders();
-            this.setHumanAndEnemy();
-            if (this.enemyFormation) {
-                this.enemyFormation.setAutoFormation(this.humanUnits);
-                this.triggerPassiveSkills(this.enemyFormation);
-                this.defenderFormation.minUnits = this.minDefenders;
-            }
-            else {
-                this.attackerFormation.setAutoFormation(this.defenderUnits);
-                this.triggerPassiveSkills(this.attackerFormation);
-                this.defenderFormation.minUnits = this.minDefenders;
-                this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
-            }
-        }
-        BattlePrep.prototype.forEachUnit = function (f) {
-            this.attackerUnits.forEach(f);
-            this.defenderUnits.forEach(f);
-        };
-        BattlePrep.prototype.isLocationNeutral = function () {
-            return (this.battleData.location.owner !== this.attacker &&
-                this.battleData.location.owner !== this.defender);
-        };
-        BattlePrep.prototype.makeBattle = function () {
-            var side1Formation = this.humanFormation || this.attackerFormation;
-            var side2Formation = this.enemyFormation || this.defenderFormation;
-            var side1Player = this.humanPlayer || this.attacker;
-            var side2Player = this.enemyPlayer || this.defender;
-            var battle = new Battle_1.default({
-                battleData: this.battleData,
-                side1: side1Formation.formation,
-                side2: side2Formation.formation.reverse(),
-                side1Player: side1Player,
-                side2Player: side2Player,
-            });
-            battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);
-            battle.init();
-            return battle;
-        };
-        BattlePrep.prototype.setHumanAndEnemy = function () {
-            if (!this.attacker.isAI) {
-                this.humanPlayer = this.attacker;
-                this.enemyPlayer = this.defender;
-                this.humanUnits = this.attackerUnits;
-                this.enemyUnits = this.defenderUnits;
-                this.humanFormation = this.attackerFormation;
-                this.enemyFormation = this.defenderFormation;
-            }
-            else if (!this.defender.isAI) {
-                this.humanPlayer = this.defender;
-                this.enemyPlayer = this.attacker;
-                this.humanUnits = this.defenderUnits;
-                this.enemyUnits = this.attackerUnits;
-                this.humanFormation = this.defenderFormation;
-                this.enemyFormation = this.attackerFormation;
-            }
-        };
-        BattlePrep.prototype.resetBattleStats = function () {
-            this.forEachUnit(function (unit) {
-                unit.resetBattleStats();
-            });
-        };
-        BattlePrep.prototype.triggerPassiveSkills = function (formation) {
-            var _this = this;
-            formation.forEachUnitInFormation(function (unit) {
-                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
-                if (passiveSkillsByPhase.inBattlePrep) {
-                    for (var j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++) {
-                        var skill = passiveSkillsByPhase.inBattlePrep[j];
-                        for (var k = 0; k < skill.inBattlePrep.length; k++) {
-                            skill.inBattlePrep[k](unit, _this);
-                        }
-                    }
-                }
-            });
-        };
-        BattlePrep.prototype.getInitialMinDefenders = function () {
-            if (this.isLocationNeutral()) {
-                return 1;
-            }
-            else {
-                return 0;
-            }
-        };
-        return BattlePrep;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = BattlePrep;
+    exports.AIController = AIController;
 });
 define("src/battleAbilityTargeting", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -2633,62 +3195,6 @@ define("src/battleAbilityTargeting", ["require", "exports"], function (require, 
         var targets = targetsInRange.filter(isTargetableFilterFN);
         return targets;
     }
-});
-define("src/targeting", ["require", "exports", "src/utility"], function (require, exports, utility_3) {
-    "use strict";
-    exports.targetSelf = function (user, battle) {
-        return [user];
-    };
-    exports.targetNextRow = function (user, battle) {
-        var ownPosition = user.battleStats.position;
-        var increment = user.battleStats.side === "side1" ? 1 : -1;
-        var fullFormation = battle.side1.concat(battle.side2);
-        return fullFormation[ownPosition[0] + increment].filter(function (unit) { return unit !== null; });
-    };
-    exports.targetAllies = function (user, battle) {
-        return battle.getUnitsForSide(user.battleStats.side);
-    };
-    exports.targetEnemies = function (user, battle) {
-        return battle.getUnitsForSide(utility_3.reverseSide(user.battleStats.side));
-    };
-    exports.targetAll = function (user, battle) {
-        return utility_3.flatten2dArray(battle.side1.concat(battle.side2)).filter(function (unit) { return unit !== null; });
-    };
-    exports.areaSingle = function (user, target, battle) {
-        return [target];
-    };
-    exports.areaAll = function (user, target, battle) {
-        return utility_3.flatten2dArray(battle.side1.concat(battle.side2));
-    };
-    exports.areaColumn = function (user, target, battle) {
-        var allRows = battle.side1.concat(battle.side2);
-        var y = target.battleStats.position[1];
-        return allRows.map(function (row) { return row[y]; });
-    };
-    exports.areaRow = function (user, target, battle) {
-        var allRows = battle.side1.concat(battle.side2);
-        var x = target.battleStats.position[0];
-        return allRows[x];
-    };
-    exports.areaRowNeighbors = function (user, target, battle) {
-        var row = exports.areaRow(user, target, battle);
-        var y = target.battleStats.position[1];
-        var y1 = Math.max(y - 1, 0);
-        var y2 = Math.min(y + 1, row.length - 1);
-        return row.slice(y1, y2);
-    };
-    exports.areaOrthogonalNeighbors = function (user, target, battle) {
-        var allRows = battle.side1.concat(battle.side2);
-        var x = target.battleStats.position[0];
-        var y = target.battleStats.position[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x - 1, y]);
-        targetLocations.push([x + 1, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return utility_3.getFrom2dArray(allRows, targetLocations);
-    };
 });
 define("src/battleAbilityProcessing", ["require", "exports", "src/targeting"], function (require, exports, targeting_1) {
     "use strict";
@@ -2958,7 +3464,7 @@ define("src/battleAbilityUsage", ["require", "exports", "src/battleAbilityProces
         });
     }
 });
-define("src/MCTreeNode", ["require", "exports", "src/App", "src/battleAbilityTargeting", "src/battleAbilityUsage", "src/utility"], function (require, exports, App_6, battleAbilityTargeting_1, battleAbilityUsage_1, utility_4) {
+define("src/MCTreeNode", ["require", "exports", "src/App", "src/battleAbilityTargeting", "src/battleAbilityUsage", "src/utility"], function (require, exports, App_7, battleAbilityTargeting_1, battleAbilityUsage_1, utility_5) {
     "use strict";
     var MCTreeNode = (function () {
         function MCTreeNode(battle, move) {
@@ -2999,11 +3505,12 @@ define("src/MCTreeNode", ["require", "exports", "src/App", "src/battleAbilityTar
             if (!this.possibleMoves) {
                 this.possibleMoves = this.getPossibleMoves();
             }
+            var move;
             if (isFinite(possibleMovesIndex)) {
-                var move = this.possibleMoves.splice(possibleMovesIndex, 1)[0];
+                move = this.possibleMoves.splice(possibleMovesIndex, 1)[0];
             }
             else {
-                var move = this.possibleMoves.pop();
+                move = this.possibleMoves.pop();
             }
             var battle = this.battle.makeVirtualClone();
             var child = new MCTreeNode(battle, move);
@@ -3061,7 +3568,7 @@ define("src/MCTreeNode", ["require", "exports", "src/App", "src/battleAbilityTar
                     prioritiesByAbilityAndTarget["" + targetId + ":" + abilities[i].type] = priority;
                 }
             }
-            var selected = utility_4.getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
+            var selected = utility_5.getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
             var separatorIndex = selected.indexOf(":");
             return ({
                 targetId: parseInt(selected.slice(0, separatorIndex)),
@@ -3071,7 +3578,7 @@ define("src/MCTreeNode", ["require", "exports", "src/App", "src/battleAbilityTar
         MCTreeNode.prototype.simulateOnce = function (battle) {
             var actions = battleAbilityTargeting_1.getTargetsForAllAbilities(battle, battle.activeUnit);
             var targetData = this.pickRandomAbilityAndTarget(actions);
-            var ability = App_6.default.moduleData.Templates.Abilities[targetData.abilityType];
+            var ability = App_7.default.moduleData.Templates.Abilities[targetData.abilityType];
             var target = battle.unitsById[targetData.targetId];
             battleAbilityUsage_1.useAbility(battle, ability, battle.activeUnit, target);
             battle.endTurn();
@@ -3251,7 +3758,7 @@ define("src/MCTree", ["require", "exports", "src/MCTreeNode"], function (require
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MCTree;
 });
-define("src/Options", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_2, utility_5) {
+define("src/Options", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_3, utility_6) {
     "use strict";
     var OptionsCategories = [
         "battleAnimationTiming", "debug", "ui", "display",
@@ -3285,30 +3792,30 @@ define("src/Options", ["require", "exports", "src/eventManager", "src/utility"],
             var shouldReRenderMap = false;
             switch (category) {
                 case "battleAnimationTiming":
-                    this.battleAnimationTiming = utility_5.shallowCopy(defaultOptionsValues.battleAnimationTiming);
+                    this.battleAnimationTiming = utility_6.shallowCopy(defaultOptionsValues.battleAnimationTiming);
                     break;
                 case "debug":
-                    this.debug = utility_5.shallowCopy(defaultOptionsValues.debug);
+                    this.debug = utility_6.shallowCopy(defaultOptionsValues.debug);
                     if (this.debug.enabled !== defaultOptionsValues.debug.enabled) {
                         shouldReRenderUI = true;
                         shouldReRenderMap = true;
                     }
                     break;
                 case "ui":
-                    this.ui = utility_5.shallowCopy(defaultOptionsValues.ui);
+                    this.ui = utility_6.shallowCopy(defaultOptionsValues.ui);
                     break;
                 case "display":
-                    this.display = utility_5.shallowCopy(defaultOptionsValues.display);
+                    this.display = utility_6.shallowCopy(defaultOptionsValues.display);
                     if (this.display.borderWidth !== defaultOptionsValues.display.borderWidth) {
                         shouldReRenderMap = true;
                     }
                     break;
             }
             if (shouldReRenderUI) {
-                eventManager_2.default.dispatchEvent("renderUI");
+                eventManager_3.default.dispatchEvent("renderUI");
             }
             if (shouldReRenderMap) {
-                eventManager_2.default.dispatchEvent("renderMap");
+                eventManager_3.default.dispatchEvent("renderMap");
             }
         };
         Options.prototype.setDefaults = function () {
@@ -3339,7 +3846,7 @@ define("src/Options", ["require", "exports", "src/eventManager", "src/utility"],
                             console.log("Reset option: " + key);
                         }
                         else {
-                            parsedOptions[key] = utility_5.deepMerge(parsedOptions[key], parsedData.options[key]);
+                            parsedOptions[key] = utility_6.deepMerge(parsedOptions[key], parsedData.options[key]);
                         }
                     }
                 }
@@ -3356,7 +3863,7 @@ define("src/Options", ["require", "exports", "src/eventManager", "src/utility"],
                 parsedData = JSON.parse(localStorage.getItem(baseString + slot));
             }
             else {
-                parsedData = utility_5.getMatchingLocalstorageItemsByDate(baseString)[0];
+                parsedData = utility_6.getMatchingLocalstorageItemsByDate(baseString)[0];
             }
             return parsedData;
         };
@@ -3369,10 +3876,10 @@ define("src/Options", ["require", "exports", "src/eventManager", "src/utility"],
             });
         };
         Options.prototype.deSerialize = function (data) {
-            this.battleAnimationTiming = utility_5.deepMerge(this.battleAnimationTiming, data.battleAnimationTiming, true);
-            this.debug = utility_5.deepMerge(this.debug, data.debug, true);
-            this.ui = utility_5.deepMerge(this.ui, data.ui, true);
-            this.display = utility_5.deepMerge(this.display, data.display, true);
+            this.battleAnimationTiming = utility_6.deepMerge(this.battleAnimationTiming, data.battleAnimationTiming, true);
+            this.debug = utility_6.deepMerge(this.debug, data.debug, true);
+            this.ui = utility_6.deepMerge(this.ui, data.ui, true);
+            this.display = utility_6.deepMerge(this.display, data.display, true);
         };
         return Options;
     }());
@@ -3584,7 +4091,7 @@ define("src/DiplomacyState", ["require", "exports"], function (require, exports)
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = DiplomacyState;
 });
-define("src/AttitudeModifier", ["require", "exports", "src/utility"], function (require, exports, utility_6) {
+define("src/AttitudeModifier", ["require", "exports", "src/utility"], function (require, exports, utility_7) {
     "use strict";
     var AttitudeModifier = (function () {
         function AttitudeModifier(props) {
@@ -3613,26 +4120,9 @@ define("src/AttitudeModifier", ["require", "exports", "src/utility"], function (
                 this.strength = props.strength;
             }
         }
-        AttitudeModifier.prototype.setStrength = function (evaluation) {
-            if (this.template.constantEffect) {
-                this.strength = this.template.constantEffect;
-            }
-            else if (this.template.getEffectFromEvaluation) {
-                this.strength = this.template.getEffectFromEvaluation(evaluation);
-            }
-            else {
-                throw new Error("Attitude modifier has no constant effect " +
-                    "or effect from evaluation defined");
-            }
-            return this.strength;
-        };
-        AttitudeModifier.prototype.getFreshness = function (currentTurn) {
-            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
-            if (this.endTurn < 0)
-                return 1;
-            else {
-                return 1 - utility_6.getRelativeValue(currentTurn, this.startTurn, this.endTurn);
-            }
+        AttitudeModifier.prototype.updateWithEvaluation = function (evaluation) {
+            this.currentTurn = evaluation.currentTurn;
+            this.setStrength(evaluation);
         };
         AttitudeModifier.prototype.refresh = function (newModifier) {
             this.startTurn = newModifier.startTurn;
@@ -3643,10 +4133,6 @@ define("src/AttitudeModifier", ["require", "exports", "src/utility"], function (
             if (currentTurn === void 0) { currentTurn = this.currentTurn; }
             var freshenss = this.getFreshness(currentTurn);
             return Math.round(this.strength * freshenss);
-        };
-        AttitudeModifier.prototype.hasExpired = function (currentTurn) {
-            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
-            return (this.endTurn >= 0 && currentTurn > this.endTurn);
         };
         AttitudeModifier.prototype.shouldEnd = function (evaluation) {
             if (this.hasExpired(evaluation.currentTurn)) {
@@ -3671,12 +4157,36 @@ define("src/AttitudeModifier", ["require", "exports", "src/utility"], function (
             };
             return data;
         };
+        AttitudeModifier.prototype.setStrength = function (evaluation) {
+            if (this.template.constantEffect) {
+                this.strength = this.template.constantEffect;
+            }
+            else if (this.template.getEffectFromEvaluation) {
+                this.strength = this.template.getEffectFromEvaluation(evaluation);
+            }
+            else {
+                throw new Error("Attitude modifier has no constant effect " +
+                    "or effect from evaluation defined");
+            }
+            return this.strength;
+        };
+        AttitudeModifier.prototype.getFreshness = function (currentTurn) {
+            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
+            if (this.endTurn < 0)
+                return 1;
+            else {
+                return 1 - utility_7.getRelativeValue(currentTurn, this.startTurn, this.endTurn);
+            }
+        };
+        AttitudeModifier.prototype.hasExpired = function (currentTurn) {
+            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
+            return (this.endTurn >= 0 && currentTurn > this.endTurn);
+        };
         return AttitudeModifier;
     }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = AttitudeModifier;
+    exports.AttitudeModifier = AttitudeModifier;
 });
-define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManager", "src/AttitudeModifier", "src/DiplomacyState"], function (require, exports, App_7, eventManager_3, AttitudeModifier_1, DiplomacyState_1) {
+define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManager", "src/AttitudeModifier", "src/DiplomacyState"], function (require, exports, App_8, eventManager_4, AttitudeModifier_1, DiplomacyState_1) {
     "use strict";
     var DiplomacyStatus = (function () {
         function DiplomacyStatus(player) {
@@ -3688,12 +4198,12 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
             this.addEventListeners();
         }
         DiplomacyStatus.prototype.addEventListeners = function () {
-            for (var key in App_7.default.moduleData.Templates.AttitudeModifiers) {
-                var template = App_7.default.moduleData.Templates.AttitudeModifiers[key];
+            for (var key in App_8.default.moduleData.Templates.AttitudeModifiers) {
+                var template = App_8.default.moduleData.Templates.AttitudeModifiers[key];
                 if (template.triggers) {
                     for (var i = 0; i < template.triggers.length; i++) {
                         var listenerKey = template.triggers[i];
-                        var listener = eventManager_3.default.addEventListener(listenerKey, this.triggerAttitudeModifier.bind(this, template));
+                        var listener = eventManager_4.default.addEventListener(listenerKey, this.triggerAttitudeModifier.bind(this, template));
                         if (!this.listeners[listenerKey]) {
                             this.listeners[listenerKey] = [];
                         }
@@ -3705,7 +4215,7 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
         DiplomacyStatus.prototype.destroy = function () {
             for (var key in this.listeners) {
                 for (var i = 0; i < this.listeners[key].length; i++) {
-                    eventManager_3.default.removeEventListener(key, this.listeners[key][i]);
+                    eventManager_4.default.removeEventListener(key, this.listeners[key][i]);
                 }
             }
         };
@@ -3723,13 +4233,8 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
             this.baseOpinion = Math.round((friendliness - 0.5) * 10);
             return this.baseOpinion;
         };
-        DiplomacyStatus.prototype.updateAttitudes = function () {
-            if (!this.player.AIController) {
-                return;
-            }
-        };
         DiplomacyStatus.prototype.handleDiplomaticStatusUpdate = function () {
-            eventManager_3.default.dispatchEvent("diplomaticStatusUpdated");
+            eventManager_4.default.dispatchEvent("diplomaticStatusUpdated");
         };
         DiplomacyStatus.prototype.getOpinionOf = function (player) {
             var baseOpinion = this.getBaseOpinion();
@@ -3741,7 +4246,7 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
             return Math.round(baseOpinion + modifierOpinion);
         };
         DiplomacyStatus.prototype.getUnMetPlayerCount = function () {
-            return App_7.default.game.playerOrder.length - Object.keys(this.metPlayers).length;
+            return App_8.default.game.playerOrder.length - Object.keys(this.metPlayers).length;
         };
         DiplomacyStatus.prototype.meetPlayer = function (player) {
             if (this.metPlayers[player.id] || player === this.player)
@@ -3766,15 +4271,15 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
             }
             this.statusByPlayer[player.id] = DiplomacyState_1.default.war;
             player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState_1.default.war;
-            eventManager_3.default.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
+            eventManager_4.default.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
             var playersAreRelevantToHuman = true;
             [this.player, player].forEach(function (p) {
-                if (App_7.default.humanPlayer !== p && !App_7.default.humanPlayer.diplomacyStatus.metPlayers[p.id]) {
+                if (App_8.default.humanPlayer !== p && !App_8.default.humanPlayer.diplomacyStatus.metPlayers[p.id]) {
                     playersAreRelevantToHuman = false;
                 }
             });
             if (playersAreRelevantToHuman) {
-                eventManager_3.default.dispatchEvent("makeWarDeclarationNotification", {
+                eventManager_4.default.dispatchEvent("makeWarDeclarationNotification", {
                     player1: this.player,
                     player2: player,
                 });
@@ -3786,7 +4291,6 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
             }
             this.statusByPlayer[player.id] = DiplomacyState_1.default.peace;
             player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState_1.default.peace;
-            player.diplomacyStatus.updateAttitudes();
         };
         DiplomacyStatus.prototype.canAttackFleetOfPlayer = function (player) {
             if (player.isIndependent)
@@ -3823,20 +4327,19 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
                 return;
             }
             this.attitudeModifiersByPlayer[player.id].push(modifier);
-            this.updateAttitudes();
         };
         DiplomacyStatus.prototype.triggerAttitudeModifier = function (template, player, source) {
             if (player !== this.player)
                 return;
-            var modifier = new AttitudeModifier_1.default({
+            var modifier = new AttitudeModifier_1.AttitudeModifier({
                 template: template,
-                startTurn: App_7.default.game.turnNumber,
+                startTurn: App_8.default.game.turnNumber,
             });
             this.addAttitudeModifier(source, modifier);
         };
         DiplomacyStatus.prototype.processAttitudeModifiersForPlayer = function (player, evaluation) {
             var modifiersByPlayer = this.attitudeModifiersByPlayer;
-            var allModifiers = App_7.default.moduleData.Templates.AttitudeModifiers;
+            var allModifiers = App_8.default.moduleData.Templates.AttitudeModifiers;
             var playerModifiers = modifiersByPlayer[player.id];
             var activeModifiers = {};
             var modifiersAdded = {};
@@ -3863,7 +4366,7 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
                     else {
                         var shouldStart = template.startCondition(evaluation);
                         if (shouldStart) {
-                            modifier = new AttitudeModifier_1.default({
+                            modifier = new AttitudeModifier_1.AttitudeModifier({
                                 template: template,
                                 startTurn: evaluation.currentTurn,
                             });
@@ -3873,8 +4376,7 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
                     }
                 }
                 if (modifier) {
-                    modifier.currentTurn = evaluation.currentTurn;
-                    modifier.setStrength(evaluation);
+                    modifier.updateWithEvaluation(evaluation);
                 }
             }
         };
@@ -3905,7 +4407,7 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
 define("src/Range", ["require", "exports"], function (require, exports) {
     "use strict";
 });
-define("src/rangeOperations", ["require", "exports", "src/utility"], function (require, exports, utility_7) {
+define("src/rangeOperations", ["require", "exports", "src/utility"], function (require, exports, utility_8) {
     "use strict";
     function excludeFromRanges(ranges, toExclude) {
         var intersecting = getIntersectingRanges(ranges, toExclude);
@@ -3932,6 +4434,22 @@ define("src/rangeOperations", ["require", "exports", "src/utility"], function (r
         return intersecting;
     }
     exports.getIntersectingRanges = getIntersectingRanges;
+    function rangesHaveOverlap() {
+        var ranges = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            ranges[_i] = arguments[_i];
+        }
+        var sorted = ranges.sort(function (a, b) {
+            return a.min - b.min;
+        });
+        for (var i = 0; i < sorted.length - 1; i++) {
+            if (sorted[i].max > sorted[i + 1].min) {
+                return true;
+            }
+        }
+        return false;
+    }
+    exports.rangesHaveOverlap = rangesHaveOverlap;
     function excludeFromRange(range, toExclude) {
         if (toExclude.max < range.min || toExclude.min > range.max) {
             return null;
@@ -3985,14 +4503,14 @@ define("src/rangeOperations", ["require", "exports", "src/utility"], function (r
         for (var i = 0; i < sortedWeights.length; i++) {
             if (rand < sortedWeights[i]) {
                 var selectedRange = rangesByRelativeWeight[sortedWeights[i]];
-                return utility_7.randRange(selectedRange.min, selectedRange.max);
+                return utility_8.randRange(selectedRange.min, selectedRange.max);
             }
         }
         throw new Error("Couldn't select from ranges.");
     }
     exports.randomSelectFromRanges = randomSelectFromRanges;
 });
-define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOperations", "src/utility"], function (require, exports, Color_1, rangeOperations_1, utility_8) {
+define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOperations", "src/utility"], function (require, exports, Color_1, rangeOperations_1, utility_9) {
     "use strict";
     function makeRandomVibrantColor() {
         var hRanges = [
@@ -4002,8 +4520,8 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
             { min: 320 / 360, max: 1 },
         ];
         var h = rangeOperations_1.randomSelectFromRanges(hRanges);
-        var s = utility_8.randRange(0.8, 0.9);
-        var v = utility_8.randRange(0.88, 0.92);
+        var s = utility_9.randRange(0.8, 0.9);
+        var v = utility_9.randRange(0.88, 0.92);
         return Color_1.default.fromHSV(h, s, v);
     }
     function makeRandomDeepColor() {
@@ -4014,8 +4532,8 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
                 { min: 100 / 360, max: 360 / 360 },
             ];
             var h = rangeOperations_1.randomSelectFromRanges(hRanges);
-            var s = utility_8.randRange(0.9, 1.0);
-            var v = utility_8.randRange(0.6, 0.75);
+            var s = utility_9.randRange(0.9, 1.0);
+            var v = utility_9.randRange(0.6, 0.75);
             return Color_1.default.fromHSV(h, s, v);
         }
         else if (randomValue < 0.96) {
@@ -4034,7 +4552,7 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
         }
     }
     function makeRandomLightVibrantColor() {
-        return Color_1.default.fromHSV(utility_8.randRange(0, 1), utility_8.randRange(0.55, 0.65), 1);
+        return Color_1.default.fromHSV(utility_9.randRange(0, 1), utility_9.randRange(0.55, 0.65), 1);
     }
     function makeRandomPastelColor() {
         return makeRandomColor({
@@ -4086,16 +4604,16 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
         };
         var hRangeWithMinExclusion = rangeOperations_1.excludeFromRange(hRange, hExclusionRange);
         var candidateHValue = rangeOperations_1.randomSelectFromRanges(hRangeWithMinExclusion);
-        var h = utility_8.clamp(candidateHValue, toContrastWithHUSL[0] - hMaxDifference, toContrastWithHUSL[0] + hMaxDifference);
-        var sExclusionRangeMin = utility_8.clamp(toContrastWithHUSL[1] - sMinDifference, sRange.min, 1.0);
+        var h = utility_9.clamp(candidateHValue, toContrastWithHUSL[0] - hMaxDifference, toContrastWithHUSL[0] + hMaxDifference);
+        var sExclusionRangeMin = utility_9.clamp(toContrastWithHUSL[1] - sMinDifference, sRange.min, 1.0);
         var sExclusionRange = {
             min: sExclusionRangeMin,
-            max: utility_8.clamp(toContrastWithHUSL[1] + sMinDifference, sExclusionRangeMin, 1.0),
+            max: utility_9.clamp(toContrastWithHUSL[1] + sMinDifference, sExclusionRangeMin, 1.0),
         };
-        var lExclusionRangeMin = utility_8.clamp(toContrastWithHUSL[2] - lMinDifference, lRange.min, 1.0);
+        var lExclusionRangeMin = utility_9.clamp(toContrastWithHUSL[2] - lMinDifference, lRange.min, 1.0);
         var lExclusionRange = {
             min: lExclusionRangeMin,
-            max: utility_8.clamp(toContrastWithHUSL[2] + lMinDifference, lExclusionRangeMin, 1.0),
+            max: utility_9.clamp(toContrastWithHUSL[2] + lMinDifference, lExclusionRangeMin, 1.0),
         };
         return makeRandomColor({
             h: [{ min: h, max: h }],
@@ -4121,7 +4639,7 @@ define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOper
     }
     exports.generateColorScheme = generateColorScheme;
 });
-define("src/Emblem", ["require", "exports", "src/App", "src/colorGeneration", "src/utility"], function (require, exports, App_8, colorGeneration_1, utility_9) {
+define("src/Emblem", ["require", "exports", "src/App", "src/colorGeneration", "src/utility"], function (require, exports, App_9, colorGeneration_1, utility_10) {
     "use strict";
     var Emblem = (function () {
         function Emblem(colors, template, alpha) {
@@ -4135,7 +4653,7 @@ define("src/Emblem", ["require", "exports", "src/App", "src/colorGeneration", "s
             if (minAlpha === void 0) { minAlpha = 1; }
             var _rng = new RNG(seed);
             var templates = Emblem.getAvailableTemplatesForRandomGeneration();
-            var template = utility_9.getSeededRandomArrayItem(templates, _rng);
+            var template = utility_10.getSeededRandomArrayItem(templates, _rng);
             var _colors;
             if (template.generateColors) {
                 _colors = template.generateColors(backgroundColor, colors);
@@ -4153,12 +4671,12 @@ define("src/Emblem", ["require", "exports", "src/App", "src/colorGeneration", "s
                     }
                 }
             }
-            var alpha = utility_9.randRange(minAlpha, 1);
+            var alpha = utility_10.randRange(minAlpha, 1);
             return new Emblem(_colors, template, alpha);
         };
         Emblem.getAvailableTemplatesForRandomGeneration = function () {
-            return Object.keys(App_8.default.moduleData.Templates.SubEmblems).map(function (key) {
-                return App_8.default.moduleData.Templates.SubEmblems[key];
+            return Object.keys(App_9.default.moduleData.Templates.SubEmblems).map(function (key) {
+                return App_9.default.moduleData.Templates.SubEmblems[key];
             }).filter(function (template) {
                 return !template.disallowRandomGeneration;
             });
@@ -4168,7 +4686,7 @@ define("src/Emblem", ["require", "exports", "src/App", "src/colorGeneration", "s
             return this.alpha > 0 && amountOfColorsIsWithinRange;
         };
         Emblem.prototype.draw = function (maxWidth, maxHeight, stretch) {
-            var image = App_8.default.images[this.template.src];
+            var image = App_9.default.images[this.template.src];
             var width = image.width;
             var height = image.height;
             if (stretch) {
@@ -4205,7 +4723,7 @@ define("src/Emblem", ["require", "exports", "src/App", "src/colorGeneration", "s
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Emblem;
 });
-define("src/Flag", ["require", "exports", "src/Emblem", "src/colorGeneration", "src/utility"], function (require, exports, Emblem_1, colorGeneration_2, utility_10) {
+define("src/Flag", ["require", "exports", "src/Emblem", "src/colorGeneration", "src/utility"], function (require, exports, Emblem_1, colorGeneration_2, utility_11) {
     "use strict";
     var Flag = (function () {
         function Flag(backgroundColor, emblems) {
@@ -4246,7 +4764,7 @@ define("src/Flag", ["require", "exports", "src/Emblem", "src/colorGeneration", "
                     this.cachedCanvases[sizeString] = canvas_1;
                 }
                 var cachedCanvas = this.cachedCanvases[sizeString];
-                var canvas = utility_10.drawElementToCanvas(cachedCanvas);
+                var canvas = utility_11.drawElementToCanvas(cachedCanvas);
                 return canvas;
             }
             else {
@@ -4289,7 +4807,7 @@ define("src/Flag", ["require", "exports", "src/Emblem", "src/colorGeneration", "
     }());
     exports.Flag = Flag;
 });
-define("src/Manufactory", ["require", "exports", "src/App", "src/Fleet", "src/Item", "src/Unit", "src/eventManager"], function (require, exports, App_9, Fleet_2, Item_1, Unit_1, eventManager_4) {
+define("src/Manufactory", ["require", "exports", "src/App", "src/Fleet", "src/Item", "src/Unit", "src/eventManager"], function (require, exports, App_10, Fleet_2, Item_1, Unit_1, eventManager_5) {
     "use strict";
     var Manufactory = (function () {
         function Manufactory(star, serializedData) {
@@ -4302,10 +4820,13 @@ define("src/Manufactory", ["require", "exports", "src/App", "src/Fleet", "src/It
                 this.makeFromData(serializedData);
             }
             else {
-                this.capacity = App_9.default.moduleData.ruleSet.manufactory.startingCapacity;
-                this.maxCapacity = App_9.default.moduleData.ruleSet.manufactory.maxCapacity;
+                this.capacity = App_10.default.moduleData.ruleSet.manufactory.startingCapacity;
+                this.maxCapacity = App_10.default.moduleData.ruleSet.manufactory.maxCapacity;
             }
         }
+        Manufactory.getBuildCost = function () {
+            return App_10.default.moduleData.ruleSet.manufactory.buildCost;
+        };
         Manufactory.prototype.makeFromData = function (data) {
             this.capacity = data.capacity;
             this.maxCapacity = data.maxCapacity;
@@ -4326,7 +4847,7 @@ define("src/Manufactory", ["require", "exports", "src/App", "src/Fleet", "src/It
                 }
                 return ({
                     type: savedThing.type,
-                    template: App_9.default.moduleData.Templates[templatesString][savedThing.templateType],
+                    template: App_10.default.moduleData.Templates[templatesString][savedThing.templateType],
                 });
             });
         };
@@ -4380,7 +4901,7 @@ define("src/Manufactory", ["require", "exports", "src/App", "src/Fleet", "src/It
                 });
             }
             if (!this.player.isAI) {
-                eventManager_4.default.dispatchEvent("playerManufactoryBuiltThings");
+                eventManager_5.default.dispatchEvent("playerManufactoryBuiltThings");
             }
         };
         Manufactory.prototype.getLocalUnitTypes = function () {
@@ -4390,9 +4911,11 @@ define("src/Manufactory", ["require", "exports", "src/App", "src/Fleet", "src/It
             return [];
         };
         Manufactory.prototype.getUniqueLocalUnitTypes = function (alreadyAdded) {
+            if (alreadyAdded === void 0) { alreadyAdded = []; }
             return this.getUniqueLocalManufacturableThings(alreadyAdded, "unit");
         };
         Manufactory.prototype.getUniqueLocalItemTypes = function (alreadyAdded) {
+            if (alreadyAdded === void 0) { alreadyAdded = []; }
             return this.getUniqueLocalManufacturableThings(alreadyAdded, "item");
         };
         Manufactory.prototype.getUniqueLocalManufacturableThings = function (alreadyAdded, type) {
@@ -4429,7 +4952,7 @@ define("src/Manufactory", ["require", "exports", "src/App", "src/Fleet", "src/It
             this.capacity = Math.max(1, this.capacity - 1);
         };
         Manufactory.prototype.getCapacityUpgradeCost = function () {
-            return App_9.default.moduleData.ruleSet.manufactory.buildCost * this.capacity;
+            return App_10.default.moduleData.ruleSet.manufactory.buildCost * this.capacity;
         };
         Manufactory.prototype.upgradeCapacity = function (amount) {
             this.player.money -= this.getCapacityUpgradeCost();
@@ -4479,6 +5002,9 @@ define("src/Notification", ["require", "exports"], function (require, exports) {
         Notification.prototype.makeMessage = function () {
             return this.template.messageConstructor(this.props);
         };
+        Notification.prototype.getTitle = function () {
+            return this.template.getTitle(this.props);
+        };
         Notification.prototype.serialize = function () {
             var data = {
                 templateKey: this.template.key,
@@ -4493,7 +5019,7 @@ define("src/Notification", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Notification;
 });
-define("src/GameLoader", ["require", "exports", "src/AIController", "src/App", "src/AttitudeModifier", "src/Building", "src/Color", "src/Emblem", "src/FillerPoint", "src/Flag", "src/Fleet", "src/Game", "src/Item", "src/Manufactory", "src/MapGenResult", "src/Name", "src/Notification", "src/NotificationLog", "src/Player", "src/Star", "src/StatusEffect", "src/Unit"], function (require, exports, AIController_1, App_10, AttitudeModifier_2, Building_1, Color_2, Emblem_2, FillerPoint_1, Flag_1, Fleet_3, Game_1, Item_2, Manufactory_1, MapGenResult_1, Name_2, Notification_1, NotificationLog_1, Player_1, Star_1, StatusEffect_1, Unit_2) {
+define("src/GameLoader", ["require", "exports", "src/AIController", "src/App", "src/AttitudeModifier", "src/Building", "src/Color", "src/Emblem", "src/FillerPoint", "src/Flag", "src/Fleet", "src/Game", "src/Item", "src/Manufactory", "src/MapGenResult", "src/Name", "src/Notification", "src/NotificationLog", "src/Player", "src/Star", "src/StatusEffect", "src/Unit"], function (require, exports, AIController_1, App_11, AttitudeModifier_2, Building_1, Color_2, Emblem_2, FillerPoint_1, Flag_1, Fleet_3, Game_1, Item_2, Manufactory_1, MapGenResult_1, Name_2, Notification_1, NotificationLog_1, Player_1, Star_1, StatusEffect_1, Unit_2) {
     "use strict";
     var GameLoader = (function () {
         function GameLoader() {
@@ -4556,7 +5082,7 @@ define("src/GameLoader", ["require", "exports", "src/AIController", "src/App", "
             var notificationsData = data.notifications;
             var notificationLog = new NotificationLog_1.default(this.humanPlayer);
             for (var i = 0; i < notificationsData.length; i++) {
-                var template = App_10.default.moduleData.Templates.Notifications[notificationsData[i].templateKey];
+                var template = App_11.default.moduleData.Templates.Notifications[notificationsData[i].templateKey];
                 var props = template.deserializeProps(notificationsData[i].props, this);
                 var notification = new Notification_1.default(template, props, notificationsData[i].turn);
                 notification.hasBeenRead = notificationsData[i].hasBeenRead;
@@ -4602,12 +5128,12 @@ define("src/GameLoader", ["require", "exports", "src/AIController", "src/App", "
                 y: data.y,
                 id: data.id,
                 name: data.name,
-                race: App_10.default.moduleData.Templates.Races[data.raceType],
+                race: App_11.default.moduleData.Templates.Races[data.raceType],
             });
             star.baseIncome = data.baseIncome;
             star.seed = data.seed;
             if (data.resourceType) {
-                star.setResource(App_10.default.moduleData.Templates.Resources[data.resourceType]);
+                star.setResource(App_11.default.moduleData.Templates.Resources[data.resourceType]);
             }
             return star;
         };
@@ -4628,7 +5154,7 @@ define("src/GameLoader", ["require", "exports", "src/AIController", "src/App", "
             }
         };
         GameLoader.prototype.deserializeBuilding = function (data) {
-            var template = App_10.default.moduleData.Templates.Buildings[data.templateType];
+            var template = App_11.default.moduleData.Templates.Buildings[data.templateType];
             var building = new Building_1.default({
                 template: template,
                 location: this.starsById[data.locationId],
@@ -4644,7 +5170,7 @@ define("src/GameLoader", ["require", "exports", "src/AIController", "src/App", "
             var player = new Player_1.default({
                 isAI: data.isAI,
                 isIndependent: data.isIndependent,
-                race: App_10.default.moduleData.Templates.Races[data.raceKey],
+                race: App_11.default.moduleData.Templates.Races[data.raceKey],
                 money: data.money,
                 id: data.id,
                 name: Name_2.default.fromData(data.name),
@@ -4694,8 +5220,8 @@ define("src/GameLoader", ["require", "exports", "src/AIController", "src/App", "
                         continue;
                     }
                     for (var i = 0; i < modifiers.length; i++) {
-                        var template = App_10.default.moduleData.Templates.AttitudeModifiers[modifiers[i].templateType];
-                        var modifier = new AttitudeModifier_2.default({
+                        var template = App_11.default.moduleData.Templates.AttitudeModifiers[modifiers[i].templateType];
+                        var modifier = new AttitudeModifier_2.AttitudeModifier({
                             template: template,
                             startTurn: modifiers[i].startTurn,
                             endTurn: modifiers[i].endTurn,
@@ -4707,7 +5233,7 @@ define("src/GameLoader", ["require", "exports", "src/AIController", "src/App", "
             }
         };
         GameLoader.prototype.deserializeEmblem = function (emblemData) {
-            return new Emblem_2.default(emblemData.colors.map(function (colorData) { return Color_2.default.deSerialize(colorData); }), App_10.default.moduleData.Templates.SubEmblems[emblemData.templateKey], emblemData.alpha);
+            return new Emblem_2.default(emblemData.colors.map(function (colorData) { return Color_2.default.deSerialize(colorData); }), App_11.default.moduleData.Templates.SubEmblems[emblemData.templateKey], emblemData.alpha);
         };
         GameLoader.prototype.deserializeFlag = function (data) {
             var _this = this;
@@ -4737,26 +5263,26 @@ define("src/GameLoader", ["require", "exports", "src/AIController", "src/App", "
             return unit;
         };
         GameLoader.prototype.deserializeItem = function (data) {
-            var template = App_10.default.moduleData.Templates.Items[data.templateType];
+            var template = App_11.default.moduleData.Templates.Items[data.templateType];
             var item = new Item_2.default(template, data.id);
             item.positionInUnit = data.positionInUnit;
             return item;
         };
         GameLoader.prototype.deserializeAIController = function (data, player, game) {
-            var templateConstructor = App_10.default.moduleData.Templates.AITemplateConstructors[data.templateType];
+            var templateConstructor = App_11.default.moduleData.Templates.AITemplateConstructors[data.templateType];
             var template = templateConstructor.construct({
                 game: game,
                 player: player,
                 saveData: data.templateData,
                 personality: data.personality,
             });
-            var controller = new AIController_1.default(template);
+            var controller = new AIController_1.AIController(template);
             return controller;
         };
         GameLoader.prototype.deserializeStatusEffect = function (data) {
             return new StatusEffect_1.default({
                 id: data.id,
-                template: App_10.default.moduleData.Templates.StatusEffects[data.templateType],
+                template: App_11.default.moduleData.Templates.StatusEffects[data.templateType],
                 turnsToStayActiveFor: data.turnsToStayActiveFor,
                 turnsHasBeenActiveFor: data.turnsHasBeenActiveFor,
                 sourceUnit: this.unitsById[data.sourceUnitID],
@@ -4778,7 +5304,7 @@ define("src/NotificationFilterState", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = NotificationFilterState;
 });
-define("src/NotificationFilter", ["require", "exports", "src/App", "src/NotificationFilterState", "src/utility"], function (require, exports, App_11, NotificationFilterState_1, utility_11) {
+define("src/NotificationFilter", ["require", "exports", "src/App", "src/NotificationFilterState", "src/utility"], function (require, exports, App_12, NotificationFilterState_1, utility_12) {
     "use strict";
     var NotificationFilter = (function () {
         function NotificationFilter(player) {
@@ -4788,7 +5314,7 @@ define("src/NotificationFilter", ["require", "exports", "src/App", "src/Notifica
             this.load();
         }
         NotificationFilter.prototype.setDefaultFilterStates = function () {
-            var notifications = App_11.default.moduleData.Templates.Notifications;
+            var notifications = App_12.default.moduleData.Templates.Notifications;
             for (var key in notifications) {
                 var notificationTemplate = notifications[key];
                 this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
@@ -4853,7 +5379,7 @@ define("src/NotificationFilter", ["require", "exports", "src/App", "src/Notifica
         };
         NotificationFilter.prototype.getFiltersByCategory = function () {
             var filtersByCategory = {};
-            var notifications = App_11.default.moduleData.Templates.Notifications;
+            var notifications = App_12.default.moduleData.Templates.Notifications;
             for (var key in this.filters) {
                 var notificationTemplate = notifications[key];
                 if (notificationTemplate) {
@@ -4883,10 +5409,10 @@ define("src/NotificationFilter", ["require", "exports", "src/App", "src/Notifica
                 parsedData = JSON.parse(localStorage.getItem(baseString + slot));
             }
             else {
-                parsedData = utility_11.getMatchingLocalstorageItemsByDate(baseString)[0];
+                parsedData = utility_12.getMatchingLocalstorageItemsByDate(baseString)[0];
             }
             if (parsedData) {
-                this.filters = utility_11.extendObject(parsedData.filters, this.filters, false);
+                this.filters = utility_12.extendObject(parsedData.filters, this.filters, false);
             }
         };
         NotificationFilter.prototype.save = function (slot) {
@@ -4902,7 +5428,7 @@ define("src/NotificationFilter", ["require", "exports", "src/App", "src/Notifica
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = NotificationFilter;
 });
-define("src/NotificationLog", ["require", "exports", "src/App", "src/Notification", "src/NotificationFilter", "src/eventManager"], function (require, exports, App_12, Notification_2, NotificationFilter_1, eventManager_5) {
+define("src/NotificationLog", ["require", "exports", "src/App", "src/Notification", "src/NotificationFilter", "src/eventManager"], function (require, exports, App_13, Notification_2, NotificationFilter_1, eventManager_6) {
     "use strict";
     var NotificationLog = (function () {
         function NotificationLog(player) {
@@ -4914,11 +5440,11 @@ define("src/NotificationLog", ["require", "exports", "src/App", "src/Notificatio
             this.notificationFilter = new NotificationFilter_1.default(player);
         }
         NotificationLog.prototype.addEventListeners = function () {
-            for (var key in App_12.default.moduleData.Templates.Notifications) {
-                var template = App_12.default.moduleData.Templates.Notifications[key];
+            for (var key in App_13.default.moduleData.Templates.Notifications) {
+                var template = App_13.default.moduleData.Templates.Notifications[key];
                 for (var i = 0; i < template.eventListeners.length; i++) {
                     var listenerKey = template.eventListeners[i];
-                    var listener = eventManager_5.default.addEventListener(listenerKey, this.makeNotification.bind(this, template));
+                    var listener = eventManager_6.default.addEventListener(listenerKey, this.makeNotification.bind(this, template));
                     if (!this.listeners[listenerKey]) {
                         this.listeners[listenerKey] = [];
                     }
@@ -4929,7 +5455,7 @@ define("src/NotificationLog", ["require", "exports", "src/App", "src/Notificatio
         NotificationLog.prototype.destroy = function () {
             for (var key in this.listeners) {
                 for (var i = 0; i < this.listeners[key].length; i++) {
-                    eventManager_5.default.removeEventListener(key, this.listeners[key][i]);
+                    eventManager_6.default.removeEventListener(key, this.listeners[key][i]);
                 }
             }
         };
@@ -4941,7 +5467,7 @@ define("src/NotificationLog", ["require", "exports", "src/App", "src/Notificatio
             var notification = new Notification_2.default(template, props, this.currentTurn);
             this.addNotification(notification);
             if (this.isHumanTurn) {
-                eventManager_5.default.dispatchEvent("updateNotificationLog");
+                eventManager_6.default.dispatchEvent("updateNotificationLog");
             }
         };
         NotificationLog.prototype.addNotification = function (notification) {
@@ -4992,7 +5518,7 @@ define("src/NotificationLog", ["require", "exports", "src/App", "src/Notificatio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = NotificationLog;
 });
-define("src/Game", ["require", "exports", "src/App", "src/eventManager", "src/idGenerators"], function (require, exports, App_13, eventManager_6, idGenerators_5) {
+define("src/Game", ["require", "exports", "src/App", "src/eventManager", "src/idGenerators"], function (require, exports, App_14, eventManager_7, idGenerators_6) {
     "use strict";
     var Game = (function () {
         function Game(map, players, humanPlayer) {
@@ -5035,8 +5561,8 @@ define("src/Game", ["require", "exports", "src/App", "src/eventManager", "src/id
                     this.processPlayerStartTurn(this.independents[i]);
                 }
             }
-            eventManager_6.default.dispatchEvent("endTurn", null);
-            eventManager_6.default.dispatchEvent("updateSelection", null);
+            eventManager_7.default.dispatchEvent("endTurn", null);
+            eventManager_7.default.dispatchEvent("updateSelection", null);
         };
         Game.prototype.processPlayerStartTurn = function (player) {
             player.units.forEach(function (unit) {
@@ -5129,8 +5655,8 @@ define("src/Game", ["require", "exports", "src/App", "src/eventManager", "src/id
                 name: name,
                 date: date,
                 gameData: gameData,
-                idGenerators: idGenerators_5.default.serialize(),
-                cameraLocation: App_13.default.renderer.camera.getCenterPosition(),
+                idGenerators: idGenerators_6.default.serialize(),
+                cameraLocation: App_14.default.renderer.camera.getCenterPosition(),
             };
             var stringified = JSON.stringify(fullSaveData);
             localStorage.setItem(saveString, stringified);
@@ -5140,7 +5666,7 @@ define("src/Game", ["require", "exports", "src/App", "src/eventManager", "src/id
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Game;
 });
-define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManager"], function (require, exports, App_14, eventManager_7) {
+define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManager"], function (require, exports, App_15, eventManager_8) {
     "use strict";
     var PlayerTechnology = (function () {
         function PlayerTechnology(getResearchSpeed, raceTechnologyValues, savedData) {
@@ -5150,7 +5676,7 @@ define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManag
             this.technologies = {};
             raceTechnologyValues.forEach(function (raceValue) {
                 var techKey = raceValue.tech.key;
-                var technology = App_14.default.moduleData.Templates.Technologies[techKey];
+                var technology = App_15.default.moduleData.Templates.Technologies[techKey];
                 _this.technologies[techKey] =
                     {
                         technology: technology,
@@ -5308,7 +5834,7 @@ define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManag
             if (totalOthersCount === 0) {
                 if (force) {
                     this.technologies[technology.key].priority = priority;
-                    eventManager_7.default.dispatchEvent("technologyPrioritiesUpdated");
+                    eventManager_8.default.dispatchEvent("technologyPrioritiesUpdated");
                 }
                 return;
             }
@@ -5345,7 +5871,7 @@ define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManag
                     }
                 }
             }
-            eventManager_7.default.dispatchEvent("technologyPrioritiesUpdated");
+            eventManager_8.default.dispatchEvent("technologyPrioritiesUpdated");
         };
         PlayerTechnology.prototype.capTechnologyPrioritiesToMaxNeeded = function () {
             var overflowPriority = 0;
@@ -5376,7 +5902,128 @@ define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManag
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = PlayerTechnology;
 });
-define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/BattlePrep", "src/BattleSimulator", "src/DiplomacyStatus", "src/Flag", "src/Name", "src/Options", "src/PlayerTechnology", "src/colorGeneration", "src/eventManager", "src/idGenerators", "src/utility"], function (require, exports, AIController_2, App_15, BattlePrep_1, BattleSimulator_1, DiplomacyStatus_1, Flag_2, Name_3, Options_2, PlayerTechnology_1, colorGeneration_3, eventManager_8, idGenerators_6, utility_12) {
+define("src/IDDictionary", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var IDDictionary = (function () {
+        function IDDictionary(keys, getValueFN) {
+            var _this = this;
+            this.valuesByID = {};
+            this.keysByID = {};
+            if (keys) {
+                keys.forEach(function (key) {
+                    _this.set(key, getValueFN(key));
+                });
+            }
+        }
+        IDDictionary.prototype.has = function (key) {
+            return Boolean(this.valuesByID[key.id]);
+        };
+        IDDictionary.prototype.get = function (key) {
+            return this.valuesByID[key.id];
+        };
+        IDDictionary.prototype.getByID = function (id) {
+            return this.valuesByID[id];
+        };
+        IDDictionary.prototype.set = function (key, value) {
+            this.valuesByID[key.id] = value;
+            this.keysByID[key.id] = key;
+        };
+        IDDictionary.prototype.setIfDoesntExist = function (key, value) {
+            if (!this.keysByID[key.id]) {
+                this.set(key, value);
+            }
+        };
+        IDDictionary.prototype.delete = function (key) {
+            delete this.valuesByID[key.id];
+            delete this.keysByID[key.id];
+        };
+        IDDictionary.prototype.forEach = function (callback) {
+            for (var ID in this.keysByID) {
+                callback(this.keysByID[ID], this.valuesByID[ID]);
+            }
+        };
+        IDDictionary.prototype.filter = function (filterFN) {
+            var filtered = this.constructor();
+            this.forEach(function (key, value) {
+                if (filterFN(key, value)) {
+                    filtered.set(key, value);
+                }
+            });
+            return filtered;
+        };
+        IDDictionary.prototype.zip = function (keyName, valueName) {
+            var zipped = [];
+            for (var id in this.keysByID) {
+                var zippedPair = (_a = {},
+                    _a[keyName] = this.keysByID[id],
+                    _a[valueName] = this.valuesByID[id],
+                    _a);
+                zipped.push(zippedPair);
+            }
+            return zipped;
+            var _a;
+        };
+        IDDictionary.prototype.sort = function (sortingFN) {
+            var _this = this;
+            var keys = [];
+            for (var id in this.keysByID) {
+                keys.push(this.keysByID[id]);
+            }
+            keys.sort(function (a, b) {
+                var sortingValue = sortingFN(_this.valuesByID[a.id], _this.valuesByID[b.id]);
+                if (sortingValue) {
+                    return sortingValue;
+                }
+                else {
+                    return b.id - a.id;
+                }
+            });
+            return keys;
+        };
+        IDDictionary.prototype.mapToArray = function (mapFN) {
+            var mapped = [];
+            this.forEach(function (k, v) {
+                mapped.push(mapFN(k, v));
+            });
+            return mapped;
+        };
+        IDDictionary.prototype.merge = function (mergeFN) {
+            var toMerge = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                toMerge[_i - 1] = arguments[_i];
+            }
+            var merged = this.constructor();
+            toMerge.forEach(function (dictToMerge) {
+                dictToMerge.filter(function (k, v) {
+                    return !merged.has(k);
+                }).forEach(function (key) {
+                    var allValues = toMerge.filter(function (dictToCheck) {
+                        return dictToCheck.has(key);
+                    }).map(function (dictWithKey) {
+                        return dictWithKey.get(key);
+                    });
+                    merged.set(key, mergeFN.apply(void 0, allValues));
+                });
+            });
+            return merged;
+        };
+        return IDDictionary;
+    }());
+    exports.IDDictionary = IDDictionary;
+});
+define("src/ValuesByStar", ["require", "exports", "src/IDDictionary"], function (require, exports, IDDictionary_1) {
+    "use strict";
+    var ValuesByStar = (function (_super) {
+        __extends(ValuesByStar, _super);
+        function ValuesByStar(stars, getValueFN) {
+            return _super.call(this, stars, getValueFN) || this;
+        }
+        return ValuesByStar;
+    }(IDDictionary_1.IDDictionary));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ValuesByStar;
+});
+define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/BattlePrep", "src/BattleSimulator", "src/DiplomacyStatus", "src/Flag", "src/Name", "src/Options", "src/PlayerTechnology", "src/ValuesByStar", "src/colorGeneration", "src/eventManager", "src/idGenerators", "src/utility"], function (require, exports, AIController_2, App_16, BattlePrep_1, BattleSimulator_1, DiplomacyStatus_1, Flag_2, Name_3, Options_2, PlayerTechnology_1, ValuesByStar_1, colorGeneration_3, eventManager_9, idGenerators_7, utility_13) {
     "use strict";
     var Player = (function () {
         function Player(props) {
@@ -5398,7 +6045,7 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
             this.isIndependent = props.isIndependent;
             this.race = props.race;
             this.money = props.money;
-            this.id = isFinite(props.id) ? props.id : idGenerators_6.default.player++;
+            this.id = isFinite(props.id) ? props.id : idGenerators_7.default.player++;
             if (props.name) {
                 if (typeof props.name === "string") {
                     var castedStringName = props.name;
@@ -5430,7 +6077,7 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
                 this.flag = this.makeRandomFlag();
             }
             if (props.resources) {
-                this.resources = utility_12.extendObject(props.resources);
+                this.resources = utility_13.extendObject(props.resources);
             }
             this.diplomacyStatus = new DiplomacyStatus_1.default(this);
             if (!this.isIndependent) {
@@ -5447,7 +6094,7 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
             set: function (amount) {
                 this._money = amount;
                 if (!this.isAI) {
-                    eventManager_8.default.dispatchEvent("playerMoneyUpdated");
+                    eventManager_9.default.dispatchEvent("playerMoneyUpdated");
                 }
             },
             enumerable: true,
@@ -5483,14 +6130,14 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
             this.diplomacyStatus = null;
             this.AIController = null;
             for (var key in this.listeners) {
-                eventManager_8.default.removeEventListener(key, this.listeners[key]);
+                eventManager_9.default.removeEventListener(key, this.listeners[key]);
             }
         };
         Player.prototype.die = function () {
             for (var i = this.fleets.length - 1; i >= 0; i--) {
                 this.fleets[i].deleteFleet(false);
             }
-            eventManager_8.default.dispatchEvent("makePlayerDiedNotification", {
+            eventManager_9.default.dispatchEvent("makePlayerDiedNotification", {
                 deadPlayerName: this.name.fullName,
             });
             console.log(this.name + " died");
@@ -5498,7 +6145,7 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
         Player.prototype.initTechnologies = function (savedData) {
             var race = this.race;
             this.playerTechnology = new PlayerTechnology_1.default(this.getResearchSpeed.bind(this), race.technologies, savedData);
-            this.listeners["builtBuildingWithEffect_research"] = eventManager_8.default.addEventListener("builtBuildingWithEffect_research", this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology));
+            this.listeners["builtBuildingWithEffect_research"] = eventManager_9.default.addEventListener("builtBuildingWithEffect_research", this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology));
         };
         Player.prototype.makeRandomFlag = function (seed) {
             if (!this.color || !this.secondaryColor) {
@@ -5514,9 +6161,9 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
             var template = templateConstructor.construct({
                 player: this,
                 game: game,
-                personality: utility_12.makeRandomPersonality(),
+                personality: utility_13.makeRandomPersonality(),
             });
-            return new AIController_2.default(template);
+            return new AIController_2.AIController(template);
         };
         Player.prototype.addUnit = function (unit) {
             this.units.push(unit);
@@ -5576,7 +6223,7 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
             this.controlledLocations.splice(index, 1);
             this.visionIsDirty = true;
             if (this.controlledLocations.length === 0) {
-                App_15.default.game.killPlayer(this);
+                App_16.default.game.killPlayer(this);
             }
         };
         Player.prototype.getIncome = function () {
@@ -5673,8 +6320,8 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
             }
         };
         Player.prototype.updateVisibleStars = function () {
-            var previousVisibleStars = utility_12.extendObject(this.visibleStars);
-            var previousDetectedStars = utility_12.extendObject(this.detectedStars);
+            var previousVisibleStars = utility_13.extendObject(this.visibleStars);
+            var previousDetectedStars = utility_13.extendObject(this.detectedStars);
             var newVisibleStars = [];
             var newDetectedStars = [];
             var visibilityHasChanged = false;
@@ -5730,10 +6377,10 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
                 this.updateDetectionInStar(newDetectedStars[i]);
             }
             if (visibilityHasChanged && !this.isAI) {
-                eventManager_8.default.dispatchEvent("renderMap");
+                eventManager_9.default.dispatchEvent("renderMap");
             }
             if (detectionHasChanged && !this.isAI) {
-                eventManager_8.default.dispatchEvent("renderLayer", "fleets");
+                eventManager_9.default.dispatchEvent("renderLayer", "fleets");
             }
         };
         Player.prototype.getDebugVisibleStars = function () {
@@ -5828,23 +6475,23 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
             if (this.visionIsDirty) {
                 this.updateVisibleStars();
             }
-            var linksBySourceStarId = {};
+            var linksBySourceStar = new ValuesByStar_1.default();
             for (var starId in this.revealedStars) {
                 var star = this.revealedStars[starId];
                 var links = star.getAllLinks();
                 for (var i = 0; i < links.length; i++) {
                     var linkedStar = links[i];
                     if (!this.revealedStars[linkedStar.id]) {
-                        if (!linksBySourceStarId[star.id]) {
-                            linksBySourceStarId[star.id] = [linkedStar];
+                        if (!linksBySourceStar.has(star)) {
+                            linksBySourceStar.set(star, [linkedStar]);
                         }
                         else {
-                            linksBySourceStarId[star.id].push(linkedStar);
+                            linksBySourceStar.get(star).push(linkedStar);
                         }
                     }
                 }
             }
-            return linksBySourceStarId;
+            return linksBySourceStar;
         };
         Player.prototype.identifyUnit = function (unit) {
             if (!this.identifiedUnits[unit.id]) {
@@ -5903,11 +6550,11 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
             };
             var battlePrep = new BattlePrep_1.default(battleData);
             if (battlePrep.humanPlayer) {
-                App_15.default.reactUI.battlePrep = battlePrep;
+                App_16.default.reactUI.battlePrep = battlePrep;
                 if (battleFinishCallback) {
                     battlePrep.afterBattleFinishCallbacks.push(battleFinishCallback);
                 }
-                App_15.default.reactUI.switchScene("battlePrep");
+                App_16.default.reactUI.switchScene("battlePrep");
             }
             else {
                 var battle = battlePrep.makeBattle();
@@ -5919,7 +6566,7 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
         };
         Player.prototype.getResearchSpeed = function () {
             var research = 0;
-            research += App_15.default.moduleData.ruleSet.research.baseResearchSpeed;
+            research += App_16.default.moduleData.ruleSet.research.baseResearchSpeed;
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 research += this.controlledLocations[i].getResearchPoints();
             }
@@ -5951,8 +6598,8 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
         };
         Player.prototype.getGloballyBuildableItems = function () {
             var itemTypes = [];
-            for (var key in App_15.default.moduleData.Templates.Items) {
-                itemTypes.push(App_15.default.moduleData.Templates.Items[key]);
+            for (var key in App_16.default.moduleData.Templates.Items) {
+                itemTypes.push(App_16.default.moduleData.Templates.Items[key]);
             }
             return itemTypes;
         };
@@ -6007,7 +6654,7 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
                 secondaryColor: this.secondaryColor.serialize(),
                 isIndependent: this.isIndependent,
                 isAI: this.isAI,
-                resources: utility_12.extendObject(this.resources),
+                resources: utility_13.extendObject(this.resources),
                 diplomacyStatus: this.diplomacyStatus.serialize(),
                 fleets: this.fleets.map(function (fleet) { return fleet.serialize(); }),
                 money: this.money,
@@ -6034,620 +6681,123 @@ define("src/Player", ["require", "exports", "src/AIController", "src/App", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Player;
 });
-define("src/Building", ["require", "exports", "src/App", "src/idGenerators"], function (require, exports, App_16, idGenerators_7) {
+define("src/Trade", ["require", "exports"], function (require, exports) {
     "use strict";
-    var Building = (function () {
-        function Building(props) {
-            this.template = props.template;
-            this.id = (props.id && isFinite(props.id)) ?
-                props.id : idGenerators_7.default.building++;
-            this.location = props.location;
-            this.controller = props.controller || this.location.owner;
-            this.upgradeLevel = props.upgradeLevel || 1;
-            this.totalCost = props.totalCost || this.template.buildCost || 0;
+    var TradeableItemType;
+    (function (TradeableItemType) {
+        TradeableItemType[TradeableItemType["Money"] = 0] = "Money";
+        TradeableItemType[TradeableItemType["Resource"] = 1] = "Resource";
+    })(TradeableItemType = exports.TradeableItemType || (exports.TradeableItemType = {}));
+    var Trade = (function () {
+        function Trade(player) {
+            this.stagedItems = {};
+            this.player = player;
+            this.setAllTradeableItems();
         }
-        Building.prototype.getEffect = function (effect) {
-            if (effect === void 0) { effect = {}; }
-            if (!this.template.effect)
-                return {};
-            var multiplier = this.template.effectMultiplierFN ?
-                this.template.effectMultiplierFN(this.upgradeLevel) :
-                this.upgradeLevel;
-            for (var key in this.template.effect) {
-                var prop = this.template.effect[key];
-                if (isFinite(prop)) {
-                    if (!effect[key]) {
-                        effect[key] = 0;
-                    }
-                    effect[key] += prop * multiplier;
-                }
-                else {
-                    if (!effect[key]) {
-                        effect[key] = {};
-                    }
-                    for (var key2 in prop) {
-                        if (!effect[key][key2]) {
-                            effect[key][key2] = 0;
-                        }
-                        effect[key][key2] += prop[key2] * multiplier;
-                    }
-                }
-            }
-            return effect;
+        Trade.prototype.executeTrade = function (otherTrade) {
+            this.executeAllStagedTrades(otherTrade.player);
+            otherTrade.executeAllStagedTrades(this.player);
+            this.updateAfterExecutedTrade();
+            otherTrade.updateAfterExecutedTrade();
         };
-        Building.prototype.getPossibleUpgrades = function () {
-            var self = this;
-            var upgrades = [];
-            if (this.upgradeLevel < this.template.maxUpgradeLevel) {
-                upgrades.push({
-                    template: this.template,
-                    level: this.upgradeLevel + 1,
-                    cost: this.template.buildCost * (this.upgradeLevel + 1),
-                    parentBuilding: this,
-                });
-            }
-            else if (this.template.upgradeInto && this.template.upgradeInto.length > 0) {
-                var templatedUpgrades = this.template.upgradeInto.map(function (upgradeData) {
-                    var template = App_16.default.moduleData.Templates.Buildings[upgradeData.templateType];
-                    return ({
-                        level: upgradeData.level,
-                        template: template,
-                        cost: template.buildCost,
-                        parentBuilding: self,
-                    });
-                });
-                upgrades = upgrades.concat(templatedUpgrades);
-            }
-            return upgrades;
-        };
-        Building.prototype.upgrade = function () {
-        };
-        Building.prototype.setController = function (newController) {
-            var oldController = this.controller;
-            if (oldController === newController)
-                return;
-            this.controller = newController;
-            this.location.updateController();
-        };
-        Building.prototype.serialize = function () {
-            var data = {
-                templateType: this.template.type,
-                id: this.id,
-                locationId: this.location.id,
-                controllerId: this.controller.id,
-                upgradeLevel: this.upgradeLevel,
-                totalCost: this.totalCost,
-            };
-            return data;
-        };
-        return Building;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Building;
-});
-define("src/BattleTurnOrder", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var BattleTurnOrder = (function () {
-        function BattleTurnOrder() {
-            this.allUnits = [];
-            this.orderedUnits = [];
-        }
-        BattleTurnOrder.prototype.destroy = function () {
-            this.allUnits = null;
-            this.orderedUnits = null;
-        };
-        BattleTurnOrder.prototype.addUnit = function (unit) {
-            if (this.hasUnit(unit)) {
-                throw new Error("Unit " + unit.name + " is already part of turn order");
-            }
-            this.allUnits.push(unit);
-            this.orderedUnits.push(unit);
-        };
-        BattleTurnOrder.prototype.update = function () {
-            this.orderedUnits = this.allUnits.filter(BattleTurnOrder.turnOrderFilterFN);
-            this.orderedUnits.sort(BattleTurnOrder.turnOrderSortFN);
-        };
-        BattleTurnOrder.prototype.getActiveUnit = function () {
-            return this.orderedUnits[0];
-        };
-        BattleTurnOrder.prototype.getDisplayData = function () {
-            return this.orderedUnits.map(BattleTurnOrder.getDisplayDataFromUnit);
-        };
-        BattleTurnOrder.prototype.getGhostIndex = function (ghostMoveDelay, ghostId) {
-            for (var i = 0; i < this.orderedUnits.length; i++) {
-                var unit = this.orderedUnits[i];
-                var unitMoveDelay = unit.battleStats.moveDelay;
-                if (ghostMoveDelay < unitMoveDelay) {
-                    return i;
-                }
-                else if (ghostMoveDelay === unitMoveDelay && ghostId < unit.id) {
-                    return i;
-                }
-            }
-            return this.orderedUnits.length;
-        };
-        BattleTurnOrder.prototype.hasUnit = function (unit) {
-            return this.allUnits.indexOf(unit) !== -1;
-        };
-        BattleTurnOrder.turnOrderFilterFN = function (unit) {
-            if (unit.battleStats.currentActionPoints <= 0) {
-                return false;
-            }
-            if (unit.currentHealth <= 0) {
-                return false;
-            }
-            return true;
-        };
-        BattleTurnOrder.turnOrderSortFN = function (a, b) {
-            if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
-                return a.battleStats.moveDelay - b.battleStats.moveDelay;
+        Trade.prototype.stageItem = function (key, amount) {
+            if (!this.stagedItems[key]) {
+                this.stagedItems[key] =
+                    {
+                        key: key,
+                        type: this.allItems[key].type,
+                        amount: amount,
+                    };
             }
             else {
-                return a.id - b.id;
+                this.stagedItems[key].amount += amount;
+                if (this.stagedItems[key].amount <= 0) {
+                    this.removeStagedItem(key);
+                }
             }
         };
-        BattleTurnOrder.getDisplayDataFromUnit = function (unit) {
-            return ({
-                moveDelay: unit.battleStats.moveDelay,
-                unit: unit,
-                displayName: unit.name,
-            });
+        Trade.prototype.setStagedItemAmount = function (key, newAmount) {
+            if (newAmount <= 0) {
+                this.removeStagedItem(key);
+            }
+            else {
+                var clamped = Math.min(this.allItems[key].amount, newAmount);
+                this.stagedItems[key].amount = clamped;
+            }
         };
-        return BattleTurnOrder;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = BattleTurnOrder;
-});
-define("src/Battle", ["require", "exports", "src/App", "src/BattleTurnOrder", "src/UnitBattleSide", "src/eventManager", "src/utility"], function (require, exports, App_17, BattleTurnOrder_1, UnitBattleSide_1, eventManager_9, utility_13) {
-    "use strict";
-    var Battle = (function () {
-        function Battle(props) {
-            this.unitsById = {};
-            this.unitsBySide = {
-                side1: [],
-                side2: [],
-            };
-            this.evaluation = {};
-            this.isVirtual = false;
-            this.isSimulated = false;
-            this.ended = false;
-            this.afterFinishCallbacks = [];
-            this.side1 = props.side1;
-            this.side1Player = props.side1Player;
-            this.side2 = props.side2;
-            this.side2Player = props.side2Player;
-            this.battleData = props.battleData;
-            this.turnOrder = new BattleTurnOrder_1.default();
-        }
-        Battle.prototype.init = function () {
-            var self = this;
-            UnitBattleSide_1.UnitBattleSides.forEach(function (sideId) {
-                var side = self[sideId];
-                for (var i = 0; i < side.length; i++) {
-                    for (var j = 0; j < side[i].length; j++) {
-                        if (side[i][j]) {
-                            self.unitsById[side[i][j].id] = side[i][j];
-                            self.unitsBySide[sideId].push(side[i][j]);
-                            var pos = Battle.getAbsolutePositionFromSidePosition([i, j], sideId);
-                            self.initUnit(side[i][j], sideId, pos);
-                        }
-                    }
-                }
-            });
-            this.currentTurn = 0;
-            this.maxTurns = 24;
-            this.turnsLeft = this.maxTurns;
-            this.updateTurnOrder();
-            this.startHealth =
+        Trade.prototype.getItemsAvailableForTrade = function () {
+            var available = {};
+            for (var key in this.allItems) {
+                var stagedAmount = this.stagedItems[key] ? this.stagedItems[key].amount : 0;
+                available[key] =
+                    {
+                        key: key,
+                        type: this.allItems[key].type,
+                        amount: this.allItems[key].amount - stagedAmount,
+                    };
+            }
+            return available;
+        };
+        Trade.prototype.removeStagedItem = function (key) {
+            this.stagedItems[key] = null;
+            delete this.stagedItems[key];
+        };
+        Trade.prototype.removeAllStagedItems = function () {
+            for (var key in this.stagedItems) {
+                this.removeStagedItem(key);
+            }
+        };
+        Trade.prototype.clone = function () {
+            var cloned = new Trade(this.player);
+            cloned.copyStagedItemsFrom(this);
+            return cloned;
+        };
+        Trade.prototype.setAllTradeableItems = function () {
+            this.allItems =
                 {
-                    side1: this.getTotalCurrentHealthForSide("side1"),
-                    side2: this.getTotalCurrentHealthForSide("side2"),
+                    money: {
+                        key: "money",
+                        type: TradeableItemType.Money,
+                        amount: this.player.money,
+                    },
                 };
-            if (this.shouldBattleEnd()) {
-                this.endBattle();
-            }
-            else {
-                this.shiftRowsIfNeeded();
-            }
-            this.triggerBattleStartAbilities();
         };
-        Battle.prototype.forEachUnit = function (callBack) {
-            for (var id in this.unitsById) {
-                callBack(this.unitsById[id]);
-            }
-        };
-        Battle.prototype.endTurn = function () {
-            this.currentTurn++;
-            this.turnsLeft--;
-            this.updateTurnOrder();
-            var shouldEnd = this.shouldBattleEnd();
-            if (shouldEnd) {
-                this.endBattle();
-            }
-            else {
-                this.shiftRowsIfNeeded();
-            }
-        };
-        Battle.prototype.getActivePlayer = function () {
-            if (!this.activeUnit)
-                return null;
-            var side = this.activeUnit.battleStats.side;
-            return this.getPlayerForSide(side);
-        };
-        Battle.prototype.initUnit = function (unit, side, position) {
-            unit.resetBattleStats();
-            unit.setBattlePosition(this, side, position);
-            this.turnOrder.addUnit(unit);
-            unit.timesActedThisTurn++;
-        };
-        Battle.prototype.triggerBattleStartAbilities = function () {
-            var _this = this;
-            this.forEachUnit(function (unit) {
-                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
-                if (passiveSkillsByPhase["atBattleStart"]) {
-                    var executedEffectsResult = {};
-                    var skills = passiveSkillsByPhase["atBattleStart"];
-                    for (var i = 0; i < skills.length; i++) {
-                        for (var j = 0; j < skills[i].atBattleStart.length; j++) {
-                            var effect = skills[i].atBattleStart[j];
-                            effect.executeAction(unit, unit, _this, executedEffectsResult, null);
-                        }
+        Trade.prototype.handleTradeOfItem = function (key, amount, targetPlayer) {
+            switch (key) {
+                case "money":
+                    {
+                        this.player.money -= amount;
+                        targetPlayer.money += amount;
                     }
-                }
-            });
-        };
-        Battle.prototype.getPlayerForSide = function (side) {
-            if (side === "side1")
-                return this.side1Player;
-            else if (side === "side2")
-                return this.side2Player;
-            else
-                throw new Error("invalid side");
-        };
-        Battle.prototype.getSideForPlayer = function (player) {
-            if (this.side1Player === player)
-                return "side1";
-            else if (this.side2Player === player)
-                return "side2";
-            else
-                throw new Error("invalid player");
-        };
-        Battle.prototype.getRowByPosition = function (position) {
-            var rowsPerSide = App_17.default.moduleData.ruleSet.battle.rowsPerFormation;
-            var side = position < rowsPerSide ? "side1" : "side2";
-            var relativePosition = position % rowsPerSide;
-            return this[side][relativePosition];
-        };
-        Battle.prototype.getAllUnits = function () {
-            var allUnits = [];
-            this.forEachUnit(function (unit) { return allUnits.push(unit); });
-            return allUnits;
-        };
-        Battle.prototype.getUnitsForSide = function (side) {
-            return this.unitsBySide[side].slice(0);
-        };
-        Battle.prototype.finishBattle = function (forcedVictor) {
-            var _this = this;
-            var victor = forcedVictor || this.getVictor();
-            for (var i = 0; i < this.deadUnits.length; i++) {
-                this.deadUnits[i].removeFromPlayer();
-            }
-            var experienceGainedPerSide = {
-                side1: this.getExperienceGainedForSide("side1"),
-                side2: this.getExperienceGainedForSide("side2"),
-            };
-            this.forEachUnit(function (unit) {
-                unit.addExperience(experienceGainedPerSide[unit.battleStats.side]);
-                unit.resetBattleStats();
-                if (unit.currentHealth < Math.round(unit.maxHealth * 0.1)) {
-                    unit.currentHealth = Math.round(unit.maxHealth * 0.1);
-                }
-                _this.side1Player.identifyUnit(unit);
-                _this.side2Player.identifyUnit(unit);
-            });
-            if (victor) {
-                for (var i = 0; i < this.capturedUnits.length; i++) {
-                    this.capturedUnits[i].transferToPlayer(victor);
-                    this.capturedUnits[i].experienceForCurrentLevel = 0;
-                }
-            }
-            if (this.battleData.building) {
-                if (victor) {
-                    this.battleData.building.setController(victor);
-                }
-            }
-            if (this.isSimulated) {
-                eventManager_9.default.dispatchEvent("renderLayer", "fleets", this.battleData.location);
-            }
-            else {
-                eventManager_9.default.dispatchEvent("setCameraToCenterOn", this.battleData.location);
-                eventManager_9.default.dispatchEvent("switchScene", "galaxyMap");
-            }
-            if (App_17.default.humanPlayer.starIsVisible(this.battleData.location)) {
-                eventManager_9.default.dispatchEvent("makeBattleFinishNotification", {
-                    location: this.battleData.location,
-                    attacker: this.battleData.attacker.player,
-                    defender: this.battleData.defender.player,
-                    victor: victor,
-                });
-            }
-            for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
-                this.afterFinishCallbacks[i]();
             }
         };
-        Battle.prototype.getVictor = function () {
-            var evaluation = this.getEvaluation();
-            if (evaluation > 0)
-                return this.side1Player;
-            else if (evaluation < 0)
-                return this.side2Player;
-            else {
-                return this.battleData.defender.player;
+        Trade.prototype.executeAllStagedTrades = function (targetPlayer) {
+            for (var key in this.stagedItems) {
+                this.handleTradeOfItem(key, this.stagedItems[key].amount, targetPlayer);
             }
         };
-        Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
-            if (!victor || victor.isIndependent)
-                return [];
-            var winningSide = this.getSideForPlayer(victor);
-            var losingSide = utility_13.reverseSide(winningSide);
-            var losingUnits = this.getUnitsForSide(losingSide);
-            losingUnits.sort(function (a, b) {
-                var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
-                if (captureChanceSort) {
-                    return captureChanceSort;
-                }
-                else {
-                    return utility_13.randInt(0, 1) * 2 - 1;
-                }
-            });
-            var capturedUnits = [];
-            for (var i = 0; i < losingUnits.length; i++) {
-                if (capturedUnits.length >= maxCapturedUnits)
-                    break;
-                var unit = losingUnits[i];
-                if (unit.currentHealth <= 0 &&
-                    Math.random() <= unit.battleStats.captureChance) {
-                    capturedUnits.push(unit);
-                }
-            }
-            return capturedUnits;
+        Trade.prototype.updateAfterExecutedTrade = function () {
+            this.setAllTradeableItems();
+            this.removeAllStagedItems();
         };
-        Battle.prototype.getUnitDeathChance = function (unit, victor) {
-            var player = unit.fleet.player;
-            var deathChance;
-            if (player.isIndependent) {
-                deathChance = App_17.default.moduleData.ruleSet.battle.independentUnitDeathChance;
-            }
-            else if (player.isAI) {
-                deathChance = App_17.default.moduleData.ruleSet.battle.aiUnitDeathChance;
-            }
-            else {
-                deathChance = App_17.default.moduleData.ruleSet.battle.humanUnitDeathChance;
-            }
-            var playerDidLose = (victor && player !== victor);
-            if (playerDidLose) {
-                deathChance += App_17.default.moduleData.ruleSet.battle.loserUnitExtraDeathChance;
-            }
-            return deathChance;
-        };
-        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
-            var _this = this;
-            var deadUnits = [];
-            this.forEachUnit(function (unit) {
-                if (unit.currentHealth <= 0) {
-                    var wasCaptured = capturedUnits.indexOf(unit) >= 0;
-                    if (!wasCaptured) {
-                        var deathChance = _this.getUnitDeathChance(unit, victor);
-                        if (Math.random() < deathChance) {
-                            deadUnits.push(unit);
-                        }
-                    }
-                }
-            });
-            return deadUnits;
-        };
-        Battle.prototype.getUnitValueForExperienceGainedCalculation = function (unit) {
-            return unit.level + 1;
-        };
-        Battle.prototype.getSideValueForExperienceGainedCalculation = function (side) {
-            var _this = this;
-            return this.getUnitsForSide(side).map(function (unit) {
-                return _this.getUnitValueForExperienceGainedCalculation(unit);
-            }).reduce(function (total, value) {
-                return total + value;
-            }, 0);
-        };
-        Battle.prototype.getExperienceGainedForSide = function (side) {
-            var ownSideValue = this.getSideValueForExperienceGainedCalculation(side);
-            var enemySideValue = this.getSideValueForExperienceGainedCalculation(utility_13.reverseSide(side));
-            return (enemySideValue / ownSideValue) * 10;
-        };
-        Battle.prototype.shouldBattleEnd = function () {
-            if (!this.activeUnit)
-                return true;
-            if (this.turnsLeft <= 0)
-                return true;
-            if (this.getTotalCurrentHealthForSide("side1") <= 0 ||
-                this.getTotalCurrentHealthForSide("side2") <= 0) {
-                return true;
-            }
-            return false;
-        };
-        Battle.prototype.endBattle = function () {
-            this.ended = true;
-            if (this.isVirtual) {
-                return;
-            }
-            this.activeUnit = null;
-            var victor = this.getVictor();
-            var maxCapturedUnits = App_17.default.moduleData.ruleSet.battle.baseMaxCapturedUnits;
-            this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
-            this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
-        };
-        Battle.prototype.getEvaluation = function () {
-            var _this = this;
-            var evaluation = 0;
-            UnitBattleSide_1.UnitBattleSides.forEach(function (side) {
-                var sign = side === "side1" ? 1 : -1;
-                var currentHealth = _this.getTotalCurrentHealthForSide(side);
-                if (currentHealth <= 0) {
-                    evaluation -= 999 * sign;
-                    return;
-                }
-                var currentHealthFactor = currentHealth / _this.startHealth[side];
-                _this.getUnitsForSide(side).forEach(function (unit) {
-                    if (unit.currentHealth <= 0) {
-                        evaluation -= 0.2 * sign;
-                    }
-                });
-                var defenderMultiplier = 1;
-                if (_this.battleData.building) {
-                    var template = _this.battleData.building.template;
-                    var isDefender = _this.battleData.defender.player === _this.getPlayerForSide(side);
-                    if (isDefender) {
-                        defenderMultiplier += template.defenderAdvantage;
-                    }
-                }
-                evaluation += currentHealthFactor * defenderMultiplier * sign;
-            });
-            evaluation = utility_13.clamp(evaluation, -1, 1);
-            this.evaluation[this.currentTurn] = evaluation;
-            return this.evaluation[this.currentTurn];
-        };
-        Battle.prototype.getTotalCurrentHealthForRow = function (position) {
-            return this.getRowByPosition(position).map(function (unit) {
-                return unit ? unit.currentHealth : 0;
-            }).reduce(function (total, value) {
-                return total + value;
-            }, 0);
-        };
-        Battle.prototype.getTotalCurrentHealthForSide = function (side) {
-            return this.getUnitsForSide(side).map(function (unit) { return unit.currentHealth; }).reduce(function (total, value) {
-                return total + value;
-            }, 0);
-        };
-        Battle.getAbsolutePositionFromSidePosition = function (relativePosition, side) {
-            if (side === "side1") {
-                return relativePosition;
-            }
-            else {
-                var rowsPerSide = App_17.default.moduleData.ruleSet.battle.rowsPerFormation;
-                return [relativePosition[0] + rowsPerSide, relativePosition[1]];
+        Trade.prototype.copyStagedItemsFrom = function (toCopyFrom) {
+            for (var key in toCopyFrom.stagedItems) {
+                this.stagedItems[key] =
+                    {
+                        key: key,
+                        type: toCopyFrom.stagedItems[key].type,
+                        amount: toCopyFrom.stagedItems[key].amount,
+                    };
             }
         };
-        Battle.prototype.updateBattlePositions = function (side) {
-            var units = this[side];
-            for (var i = 0; i < units.length; i++) {
-                var row = this[side][i];
-                for (var j = 0; j < row.length; j++) {
-                    var pos = Battle.getAbsolutePositionFromSidePosition([i, j], side);
-                    var unit = row[j];
-                    if (unit) {
-                        unit.setBattlePosition(this, side, pos);
-                    }
-                }
-            }
-        };
-        Battle.prototype.shiftRowsForSide = function (side) {
-            var formation = this[side];
-            if (side === "side1") {
-                formation.reverse();
-            }
-            var nextHealthyRowIndex;
-            for (var i = 1; i < formation.length; i++) {
-                var absoluteRow = side === "side1" ? i : i + App_17.default.moduleData.ruleSet.battle.rowsPerFormation;
-                if (this.getTotalCurrentHealthForRow(absoluteRow) > 0) {
-                    nextHealthyRowIndex = i;
-                    break;
-                }
-            }
-            if (!isFinite(nextHealthyRowIndex)) {
-                throw new Error("Tried to shift battle rows when all rows are defeated");
-            }
-            var rowsToShift = formation.splice(0, nextHealthyRowIndex);
-            formation = formation.concat(rowsToShift);
-            if (side === "side1") {
-                formation.reverse();
-            }
-            this[side] = formation;
-            this.updateBattlePositions(side);
-        };
-        Battle.prototype.shiftRowsIfNeeded = function () {
-            var rowsPerSide = App_17.default.moduleData.ruleSet.battle.rowsPerFormation;
-            var side1FrontRowHealth = this.getTotalCurrentHealthForRow(rowsPerSide - 1);
-            if (side1FrontRowHealth <= 0) {
-                this.shiftRowsForSide("side1");
-            }
-            var side2FrontRowHealth = this.getTotalCurrentHealthForRow(rowsPerSide);
-            if (side2FrontRowHealth <= 0) {
-                this.shiftRowsForSide("side2");
-            }
-        };
-        Battle.prototype.makeVirtualClone = function () {
-            var battleData = this.battleData;
-            function cloneUnits(units) {
-                var clones = [];
-                for (var i = 0; i < units.length; i++) {
-                    var row = [];
-                    for (var j = 0; j < units[i].length; j++) {
-                        var unit = units[i][j];
-                        if (!unit) {
-                            row.push(unit);
-                        }
-                        else {
-                            row.push(unit.makeVirtualClone());
-                        }
-                    }
-                    clones.push(row);
-                }
-                return clones;
-            }
-            var side1 = cloneUnits(this.side1);
-            var side2 = cloneUnits(this.side2);
-            var side1Player = this.side1Player;
-            var side2Player = this.side2Player;
-            var clone = new Battle({
-                battleData: battleData,
-                side1: side1,
-                side2: side2,
-                side1Player: side1Player,
-                side2Player: side2Player,
-            });
-            [side1, side2].forEach(function (side) {
-                for (var i = 0; i < side.length; i++) {
-                    for (var j = 0; j < side[i].length; j++) {
-                        if (!side[i][j])
-                            continue;
-                        clone.turnOrder.addUnit(side[i][j]);
-                        clone.unitsById[side[i][j].id] = side[i][j];
-                        clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
-                    }
-                }
-            });
-            clone.isVirtual = true;
-            clone.currentTurn = this.currentTurn;
-            clone.maxTurns = this.maxTurns;
-            clone.turnsLeft = this.turnsLeft;
-            clone.startHealth = this.startHealth;
-            clone.updateTurnOrder();
-            if (clone.shouldBattleEnd()) {
-                clone.endBattle();
-            }
-            else {
-                clone.shiftRowsIfNeeded();
-            }
-            return clone;
-        };
-        Battle.prototype.updateTurnOrder = function () {
-            this.turnOrder.update();
-            this.activeUnit = this.turnOrder.getActiveUnit();
-        };
-        return Battle;
+        return Trade;
     }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Battle;
+    exports.Trade = Trade;
 });
-define("src/Star", ["require", "exports", "src/App", "src/Manufactory", "src/eventManager", "src/idGenerators", "src/pathFinding"], function (require, exports, App_18, Manufactory_2, eventManager_10, idGenerators_8, pathFinding_2) {
+define("src/TradeResponse", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
+define("src/Star", ["require", "exports", "src/App", "src/Manufactory", "src/eventManager", "src/idGenerators", "src/pathFinding"], function (require, exports, App_17, Manufactory_2, eventManager_10, idGenerators_8, pathFinding_2) {
     "use strict";
     var Star = (function () {
         function Star(props) {
@@ -6664,6 +6814,42 @@ define("src/Star", ["require", "exports", "src/App", "src/Manufactory", "src/eve
             this.name = props.name || "Star " + this.id;
             this.race = props.race;
         }
+        Star.getIslandForQualifier = function (initialStars, earlyReturnSize, qualifier) {
+            var visited = {};
+            var connected = {};
+            var sizeFound = 1;
+            var frontier = initialStars.slice(0);
+            initialStars.forEach(function (star) {
+                visited[star.id] = true;
+            });
+            while (frontier.length > 0) {
+                var current = frontier.pop();
+                connected[current.id] = current;
+                var neighbors = current.getLinkedInRange(1).all;
+                for (var i = 0; i < neighbors.length; i++) {
+                    var neighbor = neighbors[i];
+                    if (visited[neighbor.id]) {
+                        continue;
+                    }
+                    visited[neighbor.id] = true;
+                    if (qualifier(current, neighbor)) {
+                        sizeFound++;
+                        frontier.push(neighbor);
+                    }
+                }
+                if (earlyReturnSize && sizeFound >= earlyReturnSize) {
+                    for (var i = 0; i < frontier.length; i++) {
+                        connected[frontier[i].id] = frontier[i];
+                    }
+                    break;
+                }
+            }
+            var island = [];
+            for (var starId in connected) {
+                island.push(connected[starId]);
+            }
+            return island;
+        };
         Star.prototype.addBuilding = function (building) {
             if (!this.buildings[building.template.category]) {
                 this.buildings[building.template.category] = [];
@@ -6681,7 +6867,7 @@ define("src/Star", ["require", "exports", "src/App", "src/Manufactory", "src/eve
             if (building.template.category === "vision") {
                 this.owner.updateVisibleStars();
             }
-            if (this.owner === App_18.default.humanPlayer) {
+            if (this.owner === App_17.default.humanPlayer) {
                 for (var key in building.template.effect) {
                     eventManager_10.default.dispatchEvent("builtBuildingWithEffect_" + key);
                 }
@@ -6768,7 +6954,6 @@ define("src/Star", ["require", "exports", "src/App", "src/Manufactory", "src/eve
                 effect += (buildingsEffect.flat || 0);
                 effect *= (isFinite(buildingsEffect.multiplier) ? 1 + buildingsEffect.multiplier : 1);
             }
-            let;
             return effect;
         };
         Star.prototype.getIncome = function () {
@@ -6813,8 +6998,8 @@ define("src/Star", ["require", "exports", "src/App", "src/Manufactory", "src/eve
         };
         Star.prototype.getBuildableBuildings = function () {
             var canBuild = [];
-            for (var buildingType in App_18.default.moduleData.Templates.Buildings) {
-                var template = App_18.default.moduleData.Templates.Buildings[buildingType];
+            for (var buildingType in App_17.default.moduleData.Templates.Buildings) {
+                var template = App_17.default.moduleData.Templates.Buildings[buildingType];
                 var alreadyBuilt = void 0;
                 if (template.category === "mine" && !this.resource) {
                     continue;
@@ -7084,43 +7269,6 @@ define("src/Star", ["require", "exports", "src/App", "src/Manufactory", "src/eve
                 byRange: visitedByRange,
             });
         };
-        Star.prototype.getIslandForQualifier = function (qualifier, earlyReturnSize, initialStars) {
-            if (initialStars === void 0) { initialStars = [this]; }
-            var visited = {};
-            var connected = {};
-            var sizeFound = 1;
-            var frontier = initialStars.slice(0);
-            initialStars.forEach(function (star) {
-                visited[star.id] = true;
-            });
-            while (frontier.length > 0) {
-                var current = frontier.pop();
-                connected[current.id] = current;
-                var neighbors = current.getLinkedInRange(1).all;
-                for (var i = 0; i < neighbors.length; i++) {
-                    var neighbor = neighbors[i];
-                    if (visited[neighbor.id]) {
-                        continue;
-                    }
-                    visited[neighbor.id] = true;
-                    if (qualifier(current, neighbor)) {
-                        sizeFound++;
-                        frontier.push(neighbor);
-                    }
-                }
-                if (earlyReturnSize && sizeFound >= earlyReturnSize) {
-                    for (var i = 0; i < frontier.length; i++) {
-                        connected[frontier[i].id] = frontier[i];
-                    }
-                    break;
-                }
-            }
-            var island = [];
-            for (var starId in connected) {
-                island.push(connected[starId]);
-            }
-            return island;
-        };
         Star.prototype.getNearestStarForQualifier = function (qualifier) {
             if (qualifier(this))
                 return this;
@@ -7146,7 +7294,7 @@ define("src/Star", ["require", "exports", "src/App", "src/Manufactory", "src/eve
             return null;
         };
         Star.prototype.getDistanceToStar = function (target) {
-            if (!App_18.default.game) {
+            if (!App_17.default.game) {
                 var a = pathFinding_2.aStar(this, target);
                 return a.cost[target.id];
             }
@@ -7648,7 +7796,7 @@ define("src/MapRendererMapMode", ["require", "exports"], function (require, expo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapRendererMapMode;
 });
-define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLayer", "src/MapRendererMapMode", "src/Options", "src/eventManager"], function (require, exports, App_19, MapRendererLayer_1, MapRendererMapMode_1, Options_3, eventManager_11) {
+define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLayer", "src/MapRendererMapMode", "src/Options", "src/eventManager"], function (require, exports, App_18, MapRendererLayer_1, MapRendererMapMode_1, Options_3, eventManager_11) {
     "use strict";
     var MapRenderer = (function () {
         function MapRenderer(map, player) {
@@ -7712,8 +7860,8 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
             this.setAllLayersAsDirty();
         };
         MapRenderer.prototype.initLayers = function () {
-            for (var layerKey in App_19.default.moduleData.Templates.MapRendererLayers) {
-                var template = App_19.default.moduleData.Templates.MapRendererLayers[layerKey];
+            for (var layerKey in App_18.default.moduleData.Templates.MapRendererLayers) {
+                var template = App_18.default.moduleData.Templates.MapRendererLayers[layerKey];
                 var layer = new MapRendererLayer_1.default(template);
                 this.layers[layerKey] = layer;
             }
@@ -7736,8 +7884,8 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
                 }
                 _this.mapModes[mapModeKey] = mapMode;
             };
-            for (var mapModeKey in App_19.default.moduleData.Templates.MapRendererMapModes) {
-                var template = App_19.default.moduleData.Templates.MapRendererMapModes[mapModeKey];
+            for (var mapModeKey in App_18.default.moduleData.Templates.MapRendererMapModes) {
+                var template = App_18.default.moduleData.Templates.MapRendererMapModes[mapModeKey];
                 buildMapMode(mapModeKey, template);
             }
         };
@@ -7834,6 +7982,9 @@ define("src/ModuleFileLoadingPhase", ["require", "exports"], function (require, 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ModuleFileLoadingPhase;
 });
+define("src/localization/Language", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
 define("src/ModuleScripts", ["require", "exports"], function (require, exports) {
     "use strict";
     var ModuleScripts = (function () {
@@ -7894,7 +8045,7 @@ define("src/ModuleData", ["require", "exports", "src/ModuleScripts", "src/utilit
     "use strict";
     var ModuleData = (function () {
         function ModuleData() {
-            this.subModuleFiles = [];
+            this.moduleFiles = [];
             this.Templates = {
                 Abilities: {},
                 AITemplateConstructors: {},
@@ -7942,16 +8093,18 @@ define("src/ModuleData", ["require", "exports", "src/ModuleScripts", "src/utilit
             }
         };
         ModuleData.prototype.addSubModule = function (moduleFile) {
-            this.subModuleFiles.push(moduleFile);
+            this.moduleFiles.push(moduleFile);
         };
         ModuleData.prototype.getDefaultMap = function () {
-            if (this.defaultMap)
+            if (this.defaultMap) {
                 return this.defaultMap;
+            }
             else if (Object.keys(this.Templates.MapGen).length > 0) {
                 return utility_14.getRandomProperty(this.Templates.MapGen);
             }
-            else
-                throw new Error("Module has no maps registered");
+            else {
+                throw new Error("No modules have map generators registered.");
+            }
         };
         ModuleData.prototype.applyRuleSet = function (ruleSetValuesToCopy) {
             this.ruleSet = utility_14.deepMerge(this.ruleSet, ruleSetValuesToCopy);
@@ -8000,7 +8153,7 @@ define("src/ModuleLoader", ["require", "exports", "src/ModuleData", "src/ModuleF
             if (isFinite(this.moduleLoadStart[moduleFile.key])) {
                 return;
             }
-            console.log("start loading module", moduleFile.key);
+            console.log("start loading module '", moduleFile.key, "'");
             this.moduleLoadStart[moduleFile.key] = Date.now();
             if (moduleFile.loadAssets) {
                 moduleFile.loadAssets(function () {
@@ -8429,7 +8582,61 @@ define("src/PlayerControl", ["require", "exports", "src/eventManager"], function
 define("src/ReactUIScene", ["require", "exports"], function (require, exports) {
     "use strict";
 });
-define("src/BackgroundDrawer", ["require", "exports", "src/utility"], function (require, exports, utility_15) {
+define("src/pixiWrapperFunctions", ["require", "exports"], function (require, exports) {
+    "use strict";
+    function createDummySpriteForShader(x, y, width, height) {
+        var texture = getDummyTextureForShader();
+        var sprite = new PIXI.Sprite(texture);
+        if (x || y) {
+            sprite.position = new PIXI.Point(x || 0, y || 0);
+        }
+        if (width) {
+            sprite.width = width;
+        }
+        if (height) {
+            sprite.height = height;
+        }
+        return sprite;
+    }
+    exports.createDummySpriteForShader = createDummySpriteForShader;
+    function getDummyTextureForShader() {
+        var canvas = document.createElement("canvas");
+        canvas._pixiId = "dummyShaderTexture";
+        canvas.width = 1;
+        canvas.height = 1;
+        return PIXI.Texture.fromCanvas(canvas);
+    }
+    exports.getDummyTextureForShader = getDummyTextureForShader;
+    function makeShaderSprite(shader, x, y, width, height) {
+        var sprite = createDummySpriteForShader(x, y, width, height);
+        sprite.shader = shader;
+        return sprite;
+    }
+    exports.makeShaderSprite = makeShaderSprite;
+    function convertClientRectToPixiRect(rect) {
+        return new PIXI.Rectangle(rect.left, rect.top, rect.width, rect.height);
+    }
+    exports.convertClientRectToPixiRect = convertClientRectToPixiRect;
+    function generateTextureWithBounds(renderer, displayObject, scaleMode, resolution, customBounds) {
+        var bounds = customBounds;
+        var renderTexture = PIXI.RenderTexture.create(bounds.width || 0, bounds.height || 0, scaleMode, resolution);
+        var tempMatrix = new PIXI.Matrix();
+        tempMatrix.tx = -bounds.x;
+        tempMatrix.ty = -bounds.y;
+        renderer.render(displayObject, renderTexture, false, tempMatrix, true);
+        return renderTexture;
+    }
+    exports.generateTextureWithBounds = generateTextureWithBounds;
+    function makePolygonFromPoints(points) {
+        var pointPositions = [];
+        points.forEach(function (point) {
+            pointPositions.push(point.x, point.y);
+        });
+        return new PIXI.Polygon(pointPositions);
+    }
+    exports.makePolygonFromPoints = makePolygonFromPoints;
+});
+define("src/BackgroundDrawer", ["require", "exports", "src/pixiWrapperFunctions"], function (require, exports, pixiWrapperFunctions_1) {
     "use strict";
     var BackgroundDrawer = (function () {
         function BackgroundDrawer(props) {
@@ -8505,7 +8712,7 @@ define("src/BackgroundDrawer", ["require", "exports", "src/utility"], function (
         BackgroundDrawer.prototype.drawBlurredBackground = function (background) {
             background.filters = [this.blurFilter];
             var blurTextureSize = this.getDesiredBlurSize();
-            var blurTexture = utility_15.generateTextureWithBounds(this.renderer, background, PIXI.settings.SCALE_MODE, this.renderer.resolution, blurTextureSize);
+            var blurTexture = pixiWrapperFunctions_1.generateTextureWithBounds(this.renderer, background, PIXI.settings.SCALE_MODE, this.renderer.resolution, blurTextureSize);
             background.filters = null;
             var blurSprite = new PIXI.Sprite(blurTexture);
             return blurSprite;
@@ -8735,7 +8942,7 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Camera;
 });
-define("src/MouseEventHandler", ["require", "exports", "src/App", "src/RectangleSelect", "src/eventManager"], function (require, exports, App_20, RectangleSelect_1, eventManager_16) {
+define("src/MouseEventHandler", ["require", "exports", "src/App", "src/RectangleSelect", "src/eventManager"], function (require, exports, App_19, RectangleSelect_1, eventManager_16) {
     "use strict";
     var MouseEventHandler = (function () {
         function MouseEventHandler(renderer, camera) {
@@ -8886,7 +9093,7 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
             }
         };
         MouseEventHandler.prototype.touchStart = function (event, star) {
-            if (App_20.default.playerControl.selectedFleets.length === 0) {
+            if (App_19.default.playerControl.selectedFleets.length === 0) {
                 this.startSelect(event);
             }
             else {
@@ -8984,7 +9191,7 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MouseEventHandler;
 });
-define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "src/eventManager"], function (require, exports, App_21, Color_3, eventManager_17) {
+define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "src/eventManager"], function (require, exports, App_20, Color_3, eventManager_17) {
     "use strict";
     var PathfindingArrow = (function () {
         function PathfindingArrow(parentContainer) {
@@ -9045,7 +9252,7 @@ define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "s
             });
         };
         PathfindingArrow.prototype.startMove = function () {
-            var fleets = App_21.default.playerControl.selectedFleets;
+            var fleets = App_20.default.playerControl.selectedFleets;
             if (this.active || !fleets || fleets.length < 1) {
                 return;
             }
@@ -9471,6 +9678,98 @@ define("src/Renderer", ["require", "exports", "src/BackgroundDrawer", "src/Camer
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Renderer;
 });
+define("src/localization/languageSupport", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var LanguageSupportLevel;
+    (function (LanguageSupportLevel) {
+        LanguageSupportLevel[LanguageSupportLevel["none"] = 0] = "none";
+        LanguageSupportLevel[LanguageSupportLevel["partial"] = 1] = "partial";
+        LanguageSupportLevel[LanguageSupportLevel["full"] = 2] = "full";
+    })(LanguageSupportLevel = exports.LanguageSupportLevel || (exports.LanguageSupportLevel = {}));
+    function getLanguageSupportLevelForModuleFiles() {
+        var moduleFiles = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            moduleFiles[_i] = arguments[_i];
+        }
+        var totalModulesCount = moduleFiles.length;
+        var languageSupportLevelByCode = {};
+        var modulesGroupedByLanguageSupport = groupModuleFilesByLanguageSupport.apply(void 0, moduleFiles);
+        for (var languageCode in modulesGroupedByLanguageSupport) {
+            var supportedModulesCount = modulesGroupedByLanguageSupport[languageCode].length;
+            if (supportedModulesCount < totalModulesCount) {
+                languageSupportLevelByCode[languageCode] = LanguageSupportLevel.partial;
+            }
+            else {
+                languageSupportLevelByCode[languageCode] = LanguageSupportLevel.full;
+            }
+        }
+        return languageSupportLevelByCode;
+    }
+    exports.getLanguageSupportLevelForModuleFiles = getLanguageSupportLevelForModuleFiles;
+    function getLanguagesByCode() {
+        var moduleFiles = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            moduleFiles[_i] = arguments[_i];
+        }
+        var languagesByCode = {};
+        moduleFiles.forEach(function (moduleFile) {
+            if (moduleFile.supportedLanguages !== "all") {
+                moduleFile.supportedLanguages.forEach(function (language) {
+                    languagesByCode[language.code] = language;
+                });
+            }
+        });
+        return languagesByCode;
+    }
+    exports.getLanguagesByCode = getLanguagesByCode;
+    function groupModuleFilesByLanguageSupport() {
+        var moduleFiles = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            moduleFiles[_i] = arguments[_i];
+        }
+        var moduleFilesByLanguageSupport = {};
+        moduleFiles.forEach(function (moduleFile) {
+            if (moduleFile.supportedLanguages !== "all") {
+                moduleFile.supportedLanguages.forEach(function (language) {
+                    if (!moduleFilesByLanguageSupport[language.code]) {
+                        moduleFilesByLanguageSupport[language.code] = [];
+                    }
+                    moduleFilesByLanguageSupport[language.code].push(moduleFile);
+                });
+            }
+        });
+        var universalModuleFiles = moduleFiles.filter(function (moduleFile) {
+            return moduleFile.supportedLanguages === "all";
+        });
+        for (var code in moduleFilesByLanguageSupport) {
+            (_a = moduleFilesByLanguageSupport[code]).push.apply(_a, universalModuleFiles);
+        }
+        return moduleFilesByLanguageSupport;
+        var _a;
+    }
+});
+define("src/localization/activeLanguage", ["require", "exports", "src/App", "src/localization/languageSupport"], function (require, exports, App_21, languageSupport_1) {
+    "use strict";
+    var activeLanguageCode;
+    function getActiveLanguage() {
+        var languagesByCode = languageSupport_1.getLanguagesByCode.apply(void 0, App_21.default.moduleData.moduleFiles);
+        if (!languagesByCode[activeLanguageCode]) {
+            throw new Error("Language '" + activeLanguageCode + "' is not supported by any module files. " +
+                ("Supported languages: " + Object.keys(languagesByCode).join(", ")));
+        }
+        else {
+            return languagesByCode[activeLanguageCode];
+        }
+    }
+    exports.getActiveLanguage = getActiveLanguage;
+    function setActiveLanguageCode(languageCode) {
+        if (languageCode === activeLanguageCode) {
+            return;
+        }
+        activeLanguageCode = languageCode;
+    }
+    exports.setActiveLanguageCode = setActiveLanguageCode;
+});
 define("src/BattleSceneUnit", ["require", "exports", "src/Options"], function (require, exports, Options_4) {
     "use strict";
     var BattleSceneUnit = (function () {
@@ -9479,11 +9778,9 @@ define("src/BattleSceneUnit", ["require", "exports", "src/Options"], function (r
             this.hasSFXSprite = false;
             this.container = container;
             this.renderer = renderer;
-            this.spriteContainer = new PIXI.Container;
+            this.spriteContainer = new PIXI.Container();
             this.container.addChild(this.spriteContainer);
         }
-        BattleSceneUnit.prototype.destroy = function () {
-        };
         BattleSceneUnit.prototype.changeActiveUnit = function (unit, afterChangedCallback) {
             if (this.hasSFXSprite) {
                 if (unit) {
@@ -9818,7 +10115,6 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
                 this.renderer.destroy(true);
                 this.renderer = null;
             }
-            this.container.destroy(true);
             this.container = null;
             this.containerElement = null;
             window.removeEventListener("resize", this.resizeListener);
@@ -9878,9 +10174,9 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
         BattleScene.prototype.initLayers = function () {
             this.layers =
                 {
-                    battleOverlay: new PIXI.Container,
-                    side1Container: new PIXI.Container,
-                    side2Container: new PIXI.Container,
+                    battleOverlay: new PIXI.Container(),
+                    side1Container: new PIXI.Container(),
+                    side2Container: new PIXI.Container(),
                 };
             this.side1Unit = new BattleSceneUnit_1.default(this.layers.side1Container, this.renderer);
             this.side2Unit = new BattleSceneUnit_1.default(this.layers.side2Container, this.renderer);
@@ -10110,7 +10406,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleScene;
 });
-define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Battle", "src/BattleScene", "src/Player", "src/Unit", "src/utility", "src/App"], function (require, exports, Battle_2, BattleScene_1, Player_2, Unit_3, utility_16, App_22) {
+define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Battle", "src/BattleScene", "src/Player", "src/Unit", "src/utility", "src/App"], function (require, exports, Battle_2, BattleScene_1, Player_2, Unit_3, utility_15, App_22) {
     "use strict";
     var BattleSceneTesterComponent = (function (_super) {
         __extends(BattleSceneTesterComponent, _super);
@@ -10168,10 +10464,10 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Battle"
             battleScene.updateUnits();
         };
         BattleSceneTesterComponent.prototype.makeUnit = function () {
-            var template = utility_16.getRandomProperty(App_22.default.moduleData.Templates.Units);
+            var template = utility_15.getRandomProperty(App_22.default.moduleData.Templates.Units);
             return Unit_3.default.fromTemplate({
                 template: template,
-                race: utility_16.getRandomProperty(App_22.default.moduleData.Templates.Races),
+                race: utility_15.getRandomProperty(App_22.default.moduleData.Templates.Races),
             });
         };
         BattleSceneTesterComponent.prototype.makeFormation = function (units) {
@@ -10246,7 +10542,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Battle"
             var user = this.state.activeUnit;
             var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
             var bs = this.battleScene;
-            var SFXTemplate = utility_16.extendObject(App_22.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+            var SFXTemplate = utility_15.extendObject(App_22.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
             if (this.state.duration) {
                 SFXTemplate.duration = this.state.duration;
             }
@@ -10332,7 +10628,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Battle"
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/PlayerFlag", ["require", "exports", "src/utility"], function (require, exports, utility_17) {
+define("src/uicomponents/PlayerFlag", ["require", "exports", "src/utility"], function (require, exports, utility_16) {
     "use strict";
     var PlayerFlagComponent = (function (_super) {
         __extends(PlayerFlagComponent, _super);
@@ -10360,7 +10656,7 @@ define("src/uicomponents/PlayerFlag", ["require", "exports", "src/utility"], fun
         };
         PlayerFlagComponent.prototype.render = function () {
             var _this = this;
-            var props = utility_17.shallowExtend(this.props.props, {
+            var props = utility_16.shallowExtend(this.props.props, {
                 ref: function (component) {
                     _this.ref_TODO_container = component;
                 },
@@ -10449,7 +10745,7 @@ define("src/uicomponents/FlagMaker", ["require", "exports", "src/Flag", "src/col
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_18) {
+define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_17) {
     "use strict";
     var AbilityUseEffectQueue = (function () {
         function AbilityUseEffectQueue(battleScene, callbacks) {
@@ -10463,14 +10759,14 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
         }
         AbilityUseEffectQueue.squashEffects = function (parent, toSquash, parentIsMostRecent) {
             if (parentIsMostRecent === void 0) { parentIsMostRecent = false; }
-            var squashedChangedUnitDisplayDataByID = utility_18.shallowExtend.apply(void 0, [{},
+            var squashedChangedUnitDisplayDataByID = utility_17.shallowExtend.apply(void 0, [{},
                 parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
             if (parentIsMostRecent) {
-                var squashedEffect = utility_18.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
+                var squashedEffect = utility_17.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
                 return squashedEffect;
             }
             else {
-                var squashedEffect = utility_18.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
+                var squashedEffect = utility_17.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
                 return squashedEffect;
             }
         };
@@ -10626,7 +10922,7 @@ define("src/uicomponents/battle/AbilityTooltip", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/BackgroundDrawer", "src/utility"], function (require, exports, BackgroundDrawer_2, utility_19) {
+define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/BackgroundDrawer", "src/pixiWrapperFunctions"], function (require, exports, BackgroundDrawer_2, pixiWrapperFunctions_2) {
     "use strict";
     var BattleBackgroundComponent = (function (_super) {
         __extends(BattleBackgroundComponent, _super);
@@ -10655,7 +10951,7 @@ define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/B
         };
         BattleBackgroundComponent.prototype.handleResize = function () {
             var blurarea = this.props.getBlurArea();
-            this.backgroundDrawer.blurArea = utility_19.convertClientRectToPixiRect(blurarea);
+            this.backgroundDrawer.blurArea = pixiWrapperFunctions_2.convertClientRectToPixiRect(blurarea);
             this.backgroundDrawer.handleResize();
         };
         BattleBackgroundComponent.prototype.componentDidMount = function () {
@@ -11166,7 +11462,7 @@ define("src/uicomponents/unit/UnitActions", ["require", "exports"], function (re
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_20) {
+define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_18) {
     "use strict";
     var UnitStatusComponent = (function (_super) {
         __extends(UnitStatusComponent, _super);
@@ -11188,7 +11484,7 @@ define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"]
                 }, React.DOM.div({
                     className: "guard-meter-value",
                     style: {
-                        width: "" + utility_20.clamp(guard, 0, 100) + "%",
+                        width: "" + utility_18.clamp(guard, 0, 100) + "%",
                     },
                 }), React.DOM.div({
                     className: "status-inner-wrapper",
@@ -11446,6 +11742,9 @@ define("src/uicomponents/unit/UnitPortrait", ["require", "exports"], function (r
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
+define("src/Rect", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
 define("src/uicomponents/mixins/normalizeEvent", ["require", "exports"], function (require, exports) {
     "use strict";
     function normalizeMouseEvent(nativeEvent, reactEvent) {
@@ -11507,21 +11806,25 @@ define("src/uicomponents/mixins/normalizeEvent", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = normalizeEvent;
 });
-define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/utility", "src/uicomponents/mixins/normalizeEvent"], function (require, exports, utility_21, normalizeEvent_1) {
+define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/utility", "src/uicomponents/mixins/normalizeEvent"], function (require, exports, utility_19, normalizeEvent_1) {
     "use strict";
     var DragPositioner = (function () {
         function DragPositioner(owner, props) {
             this.isDragging = false;
-            this.containerDragOnly = false;
+            this.startOnHandleElementOnly = false;
             this.dragThreshhold = 5;
             this.preventAutoResize = false;
             this.shouldMakeClone = false;
-            this.dragPos = { x: undefined, y: undefined };
-            this.dragSize = { x: undefined, y: undefined };
+            this.position = {
+                left: undefined,
+                top: undefined,
+                width: undefined,
+                height: undefined,
+            };
+            this.originPosition = { x: 0, y: 0 };
             this.mouseIsDown = false;
             this.dragOffset = { x: 0, y: 0 };
             this.mouseDownPosition = { x: 0, y: 0 };
-            this.originPosition = { x: 0, y: 0 };
             this.cloneElement = null;
             this.ownerIsMounted = false;
             this.owner = owner;
@@ -11566,12 +11869,7 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
             window.removeEventListener("resize", this.setContainerRect);
         };
         DragPositioner.prototype.getStyleAttributes = function () {
-            return ({
-                top: this.dragPos.y,
-                left: this.dragPos.x,
-                width: this.dragSize.x,
-                height: this.dragSize.y,
-            });
+            return utility_19.shallowCopy(this.position);
         };
         DragPositioner.prototype.handleReactDownEvent = function (e) {
             this.handleMouseDown(normalizeEvent_1.default(e));
@@ -11583,18 +11881,19 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
             }
             else {
                 s = this.ownerDOMNode.style;
-                s.width = "" + this.dragSize.x + "px";
-                s.height = "" + this.dragSize.y + "px";
+                s.width = "" + this.position.width + "px";
+                s.height = "" + this.position.height + "px";
             }
-            s.left = "" + this.dragPos.x + "px";
-            s.top = "" + this.dragPos.y + "px";
+            s.left = "" + this.position.left + "px";
+            s.top = "" + this.position.top + "px";
         };
         DragPositioner.prototype.handleMouseDown = function (e) {
             if (e.button) {
                 return;
             }
-            if (this.containerDragOnly) {
-                if (!e.target.classList.contains("draggable-container")) {
+            if (this.startOnHandleElementOnly) {
+                if (!e.target.classList.contains("draggable")) {
+                    e.stopPropagation();
                     return;
                 }
             }
@@ -11641,30 +11940,32 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
                 if (delta >= this.dragThreshhold) {
                     this.isDragging = true;
                     if (!this.preventAutoResize) {
-                        this.dragSize.x = this.ownerDOMNode.offsetWidth;
-                        this.dragSize.y = this.ownerDOMNode.offsetHeight;
+                        this.position.width = this.ownerDOMNode.offsetWidth;
+                        this.position.height = this.ownerDOMNode.offsetHeight;
                     }
                     if (this.shouldMakeClone || this.makeDragClone) {
                         if (!this.makeDragClone) {
                             var nextSibling = this.ownerDOMNode.nextSibling;
                             var clone = this.ownerDOMNode.cloneNode(true);
-                            utility_21.recursiveRemoveAttribute(clone, "data-reactid");
+                            utility_19.recursiveRemoveAttribute(clone, "data-reactid");
                             this.ownerDOMNode.parentNode.insertBefore(clone, nextSibling);
                             this.cloneElement = clone;
                         }
                         else {
                             var clone = this.makeDragClone();
-                            utility_21.recursiveRemoveAttribute(clone, "data-reactid");
+                            utility_19.recursiveRemoveAttribute(clone, "data-reactid");
                             document.body.appendChild(clone);
                             this.cloneElement = clone;
                         }
                     }
+                    var x = e.pageX - this.dragOffset.x;
+                    var y = e.pageY - this.dragOffset.y;
                     this.owner.forceUpdate();
                     if (this.onDragStart) {
-                        this.onDragStart();
+                        this.onDragStart(x, y);
                     }
                     if (this.onDragMove) {
-                        this.onDragMove(e.pageX - this.dragOffset.x, e.pageY - this.dragOffset.y);
+                        this.onDragMove(x, y);
                     }
                 }
             }
@@ -11697,20 +11998,18 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
             else if (x2 > maxX) {
                 x = maxX - domWidth;
             }
-            ;
             if (y < minY) {
                 y = minY;
             }
             else if (y2 > maxY) {
                 y = maxY - domHeight;
             }
-            ;
             if (this.onDragMove) {
                 this.onDragMove(x, y);
             }
             else {
-                this.dragPos.x = x;
-                this.dragPos.y = y;
+                this.position.left = x;
+                this.position.top = y;
                 this.updateDOMNodeStyle();
             }
         };
@@ -11976,7 +12275,7 @@ define("src/uicomponents/unit/UnitWrapper", ["require", "exports"], function (re
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/utility", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/uicomponents/unit/UnitWrapper"], function (require, exports, App_23, utility_22, EmptyUnit_1, Unit_4, UnitWrapper_1) {
+define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/utility", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/uicomponents/unit/UnitWrapper"], function (require, exports, App_23, utility_20, EmptyUnit_1, Unit_4, UnitWrapper_1) {
     "use strict";
     var FormationComponent = (function (_super) {
         __extends(FormationComponent, _super);
@@ -12039,7 +12338,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
                             hoveredActionPointExpenditure: this.props.hoveredAbility &&
                                 this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
                         };
-                        unitProps = utility_22.shallowExtend(unitDisplayData, componentProps, displayProps);
+                        unitProps = utility_20.shallowExtend(unitDisplayData, componentProps, displayProps);
                         if (this.props.facesLeft && this.props.isInBattlePrep) {
                             unitProps.facesLeft = true;
                         }
@@ -12456,7 +12755,7 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports", "src/uicompon
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Battle", ["require", "exports", "src/AbilityUseEffectQueue", "src/App", "src/BattleScene", "src/MCTree", "src/Options", "src/battleAbilityUI", "src/battleAbilityUsage", "src/utility", "src/uicomponents/battle/AbilityTooltip", "src/uicomponents/battle/BattleBackground", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleUIState", "src/uicomponents/battle/Formation", "src/uicomponents/battle/TurnCounterList", "src/uicomponents/battle/TurnOrder"], function (require, exports, AbilityUseEffectQueue_1, App_24, BattleScene_2, MCTree_2, Options_7, battleAbilityUI_1, battleAbilityUsage_3, utility_23, AbilityTooltip_1, BattleBackground_1, BattleDisplayStrength_1, BattleScene_3, BattleScore_1, BattleUIState_1, Formation_1, TurnCounterList_1, TurnOrder_1) {
+define("src/uicomponents/battle/Battle", ["require", "exports", "src/AbilityUseEffectQueue", "src/App", "src/BattleScene", "src/MCTree", "src/Options", "src/battleAbilityUI", "src/battleAbilityUsage", "src/utility", "src/uicomponents/battle/AbilityTooltip", "src/uicomponents/battle/BattleBackground", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleUIState", "src/uicomponents/battle/Formation", "src/uicomponents/battle/TurnCounterList", "src/uicomponents/battle/TurnOrder"], function (require, exports, AbilityUseEffectQueue_1, App_24, BattleScene_2, MCTree_2, Options_7, battleAbilityUI_1, battleAbilityUsage_3, utility_21, AbilityTooltip_1, BattleBackground_1, BattleDisplayStrength_1, BattleScene_3, BattleScore_1, BattleUIState_1, Formation_1, TurnCounterList_1, TurnOrder_1) {
     "use strict";
     var BattleComponent = (function (_super) {
         __extends(BattleComponent, _super);
@@ -12667,8 +12966,8 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/AbilityUseE
         };
         BattleComponent.prototype.onBattleEffectTrigger = function (effect) {
             this.setState({
-                previousUnitDisplayDataByID: utility_23.shallowCopy(this.state.unitDisplayDataByID),
-                unitDisplayDataByID: utility_23.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
+                previousUnitDisplayDataByID: utility_21.shallowCopy(this.state.unitDisplayDataByID),
+                unitDisplayDataByID: utility_21.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
                 battleEvaluation: effect.newEvaluation,
                 battleEffectDurationAfterTrigger: this.state.battleEffectDuration -
                     (Date.now() - this.SFXStartTime),
@@ -12744,11 +13043,10 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/AbilityUseE
         BattleComponent.prototype.render = function () {
             var _this = this;
             var battle = this.props.battle;
-            if (this.state.UIState === BattleUIState_1.default.idle) {
-                var activeTargets = battleAbilityUI_1.getTargetsForAllAbilities(battle, battle.activeUnit);
-            }
+            var playerCanAct = this.state.UIState === BattleUIState_1.default.idle;
+            var activeTargets = playerCanAct ? battleAbilityUI_1.getTargetsForAllAbilities(battle, battle.activeUnit) : undefined;
             var abilityTooltip = null;
-            if (this.state.UIState === BattleUIState_1.default.idle &&
+            if (playerCanAct &&
                 this.state.hoveredUnit &&
                 activeTargets[this.state.hoveredUnit.id]) {
                 abilityTooltip = AbilityTooltip_1.default({
@@ -12907,7 +13205,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/AbilityUseE
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_18, utility_24) {
+define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_18, utility_22) {
     "use strict";
     var ListComponent = (function (_super) {
         __extends(ListComponent, _super);
@@ -13044,7 +13342,7 @@ define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", 
             }
         };
         ListComponent.prototype.getSortingOrderForColumnKeyWithColumnReversed = function (columnToReverse) {
-            var copied = utility_24.shallowCopy(this.state.sortingOrderForColumnKey);
+            var copied = utility_22.shallowCopy(this.state.sortingOrderForColumnKey);
             copied[columnToReverse.key] = ListComponent.reverseListOrder(copied[columnToReverse.key]);
             return copied;
         };
@@ -13487,358 +13785,320 @@ define("src/uicomponents/unitlist/AbilityList", ["require", "exports"], function
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/popups/PopupResizeHandle", ["require", "exports", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, DragPositioner_3, applyMixins_3) {
+define("src/Direction", ["require", "exports"], function (require, exports) {
     "use strict";
-    var PopupResizeHandleComponent = (function (_super) {
-        __extends(PopupResizeHandleComponent, _super);
-        function PopupResizeHandleComponent(props) {
+});
+define("src/uicomponents/windows/WindowResizeHandle", ["require", "exports", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, DragPositioner_3, applyMixins_3) {
+    "use strict";
+    var WindowResizeHandleComponent = (function (_super) {
+        __extends(WindowResizeHandleComponent, _super);
+        function WindowResizeHandleComponent(props) {
             var _this = _super.call(this, props) || this;
-            _this.displayName = "PopupResizeHandle";
+            _this.displayName = "WindowResizeHandle";
             _this.bindMethods();
+            switch (_this.props.direction) {
+                case "n":
+                case "s":
+                    {
+                        _this.directionRestriction = "vertical";
+                        break;
+                    }
+                case "e":
+                case "w":
+                    {
+                        _this.directionRestriction = "horizontal";
+                        break;
+                    }
+                case "ne":
+                case "se":
+                case "sw":
+                case "nw":
+                    {
+                        _this.directionRestriction = "free";
+                        break;
+                    }
+                default:
+                    {
+                        throw new Error("Invalid window resize handle direction '" + _this.props.direction + "'");
+                    }
+            }
             _this.dragPositioner = new DragPositioner_3.default(_this);
             _this.dragPositioner.onDragMove = _this.onDragMove;
+            _this.dragPositioner.onDragStart = _this.onDragStart;
+            _this.dragPositioner.forcedDragOffset = { x: 0, y: 0 };
             applyMixins_3.default(_this, _this.dragPositioner);
             return _this;
         }
-        PopupResizeHandleComponent.prototype.bindMethods = function () {
-            this.onDragMove = this.onDragMove.bind(this);
-        };
-        PopupResizeHandleComponent.prototype.onDragMove = function (x, y) {
-            var rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-            this.props.handleResize(x + rect.width, y + rect.height);
-        };
-        PopupResizeHandleComponent.prototype.render = function () {
-            return (React.DOM.img({
-                className: "popup-resize-handle",
-                src: "img/icons/resizeHandle.png",
+        WindowResizeHandleComponent.prototype.render = function () {
+            return (React.DOM.div({
+                className: "window-resize-handle" + (" window-resize-handle-" + this.props.direction),
                 onTouchStart: this.dragPositioner.handleReactDownEvent,
                 onMouseDown: this.dragPositioner.handleReactDownEvent,
             }));
         };
-        return PopupResizeHandleComponent;
+        WindowResizeHandleComponent.prototype.onDragStart = function (x, y) {
+            this.props.handleResizeStart(x, y);
+        };
+        WindowResizeHandleComponent.prototype.onDragMove = function (x, y) {
+            var deltaX = x - this.dragPositioner.originPosition.x;
+            var deltaY = y - this.dragPositioner.originPosition.y;
+            this.props.handleResizeMove(this.directionRestriction === "vertical" ? 0 : deltaX, this.directionRestriction === "horizontal" ? 0 : deltaY);
+        };
+        WindowResizeHandleComponent.prototype.bindMethods = function () {
+            this.onDragStart = this.onDragStart.bind(this);
+            this.onDragMove = this.onDragMove.bind(this);
+        };
+        return WindowResizeHandleComponent;
     }(React.Component));
-    exports.PopupResizeHandleComponent = PopupResizeHandleComponent;
-    var Factory = React.createFactory(PopupResizeHandleComponent);
+    exports.WindowResizeHandleComponent = WindowResizeHandleComponent;
+    var Factory = React.createFactory(WindowResizeHandleComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager", "src/utility", "src/uicomponents/popups/PopupResizeHandle", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, eventManager_19, utility_25, PopupResizeHandle_1, DragPositioner_4, applyMixins_4) {
+define("src/uicomponents/windows/windowManager", ["require", "exports", "src/IDDictionary"], function (require, exports, IDDictionary_2) {
     "use strict";
-    var PopupComponent = (function (_super) {
-        __extends(PopupComponent, _super);
-        function PopupComponent(props) {
+    var baseZIndex = 10000;
+    var windowCascadeMargin = 20;
+    var zIndex = baseZIndex;
+    function getNewZIndex(component) {
+        if (component.state && component.state.zIndex && component.state.zIndex === zIndex) {
+            return zIndex;
+        }
+        else {
+            return zIndex++;
+        }
+    }
+    exports.getNewZIndex = getNewZIndex;
+    var byID = new IDDictionary_2.IDDictionary();
+    function getDefaultInitialPosition(rect, container) {
+        var windowsByZIndex = byID.sort(function (a, b) {
+            return b.state.zIndex - a.state.zIndex;
+        });
+        if (windowsByZIndex.length === 0) {
+            return ({
+                left: container.offsetWidth / 2.5 - rect.width / 2,
+                top: container.offsetHeight / 2.5 - rect.height / 2,
+                width: rect.width,
+                height: rect.height,
+            });
+        }
+        else {
+            var topMostWindowPosition = windowsByZIndex[0].dragPositioner.position;
+            return ({
+                left: topMostWindowPosition.left + windowCascadeMargin,
+                top: topMostWindowPosition.top + windowCascadeMargin,
+                width: rect.width,
+                height: rect.height,
+            });
+        }
+    }
+    exports.getDefaultInitialPosition = getDefaultInitialPosition;
+    function handleMount(component) {
+        if (byID.has(component)) {
+            throw new Error("Duplicate window ID " + component.id + " in window " + component);
+        }
+        byID.set(component, component);
+    }
+    exports.handleMount = handleMount;
+    function handleUnount(component) {
+        byID.delete(component);
+    }
+    exports.handleUnount = handleUnount;
+});
+define("src/uicomponents/windows/WindowContainer", ["require", "exports", "src/uicomponents/windows/WindowResizeHandle", "src/uicomponents/windows/windowManager", "src/utility", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, WindowResizeHandle_1, windowManager, utility_23, DragPositioner_4, applyMixins_4) {
+    "use strict";
+    var id = 0;
+    var WindowContainerComponent = (function (_super) {
+        __extends(WindowContainerComponent, _super);
+        function WindowContainerComponent(props) {
             var _this = _super.call(this, props) || this;
-            _this.displayName = "Popup";
-            _this.state = _this.getInitialStateTODO();
+            _this.displayName = "WindowContainer";
+            _this.resizeStartPosition = {
+                top: undefined,
+                left: undefined,
+                width: undefined,
+                height: undefined,
+            };
+            _this.id = id++;
             _this.bindMethods();
-            _this.dragPositioner = new DragPositioner_4.default(_this, _this.props.dragPositionerProps);
+            _this.state =
+                {
+                    zIndex: windowManager.getNewZIndex(_this),
+                };
+            _this.dragPositioner = new DragPositioner_4.default(_this, {
+                preventAutoResize: true,
+                startOnHandleElementOnly: true,
+            });
             applyMixins_4.default(_this, _this.dragPositioner);
             return _this;
         }
-        PopupComponent.prototype.bindMethods = function () {
+        WindowContainerComponent.prototype.componentDidMount = function () {
+            this.setInitialPosition();
+            windowManager.handleMount(this);
+        };
+        WindowContainerComponent.prototype.componentWillUnmount = function () {
+            windowManager.handleUnount(this);
+        };
+        WindowContainerComponent.prototype.render = function () {
+            var customAttributes = {};
+            var defaultAttributes = {
+                className: "window-container",
+                style: {
+                    top: this.dragPositioner.position.top,
+                    left: this.dragPositioner.position.left,
+                    width: this.dragPositioner.position.width,
+                    height: this.dragPositioner.position.height,
+                    zIndex: this.state.zIndex,
+                    minWidth: this.props.minWidth,
+                    minHeight: this.props.minHeight,
+                    maxWidth: this.props.maxWidth,
+                    maxHeight: this.props.maxHeight,
+                },
+            };
+            var attributes = utility_23.shallowExtend(customAttributes, defaultAttributes);
+            return (React.DOM.div(attributes, this.props.children, !this.props.isResizable ? null : this.makeResizeHandles()));
+        };
+        WindowContainerComponent.prototype.getPosition = function () {
+            return utility_23.shallowCopy(this.dragPositioner.position);
+        };
+        WindowContainerComponent.prototype.onMouseDown = function (e) {
+            this.dragPositioner.handleReactDownEvent(e);
+            this.setState({
+                zIndex: windowManager.getNewZIndex(this),
+            });
+        };
+        WindowContainerComponent.prototype.bindMethods = function () {
             this.onMouseDown = this.onMouseDown.bind(this);
             this.handleResizeMove = this.handleResizeMove.bind(this);
+            this.handleResizeStart = this.handleResizeStart.bind(this);
             this.setInitialPosition = this.setInitialPosition.bind(this);
+            this.makeResizeHandles = this.makeResizeHandles.bind(this);
         };
-        PopupComponent.prototype.getInitialStateTODO = function () {
-            return ({
-                zIndex: -1,
-            });
-        };
-        PopupComponent.prototype.componentDidMount = function () {
-            this.setInitialPosition();
-        };
-        PopupComponent.prototype.onMouseDown = function (e) {
-            this.dragPositioner.handleReactDownEvent(e);
-            var newZIndex = this.props.incrementZIndex(this.state.zIndex);
-            if (this.state.zIndex !== newZIndex) {
-                this.setState({
-                    zIndex: this.props.incrementZIndex(this.state.zIndex),
-                });
-            }
-        };
-        PopupComponent.prototype.setInitialPosition = function () {
-            var _this = this;
-            var domRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-            var rect = {
-                top: domRect.top,
-                left: domRect.left,
-                width: domRect.width,
-                height: domRect.height,
+        WindowContainerComponent.prototype.setInitialPosition = function () {
+            var initialRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
+            var position = {
+                top: initialRect.top,
+                left: initialRect.left,
+                width: initialRect.width,
+                height: initialRect.height,
             };
-            var left;
-            var top;
-            var container = this.dragPositioner.containerElement;
-            if (this.props.initialPosition) {
-                rect.top = this.props.initialPosition.top || rect.top;
-                rect.left = this.props.initialPosition.left || rect.left;
-                if (this.props.initialPosition.width) {
-                    rect.width = Math.min(this.props.initialPosition.width, container.offsetWidth);
-                }
-                if (this.props.initialPosition.height) {
-                    rect.height = Math.min(this.props.initialPosition.height, container.offsetHeight);
-                }
-                if (rect.left || rect.top) {
-                    left = rect.left;
-                    top = rect.top;
-                }
-            }
-            if (!left && !top) {
-                var position = this.props.getInitialPosition(rect, container);
-                left = position.left;
-                top = position.top;
-            }
-            left = utility_25.clamp(left, 0, container.offsetWidth - rect.width);
-            top = utility_25.clamp(top, 0, container.offsetHeight - rect.height);
-            this.dragPositioner.dragPos.y = top;
-            this.dragPositioner.dragPos.x = left;
-            this.dragPositioner.dragSize.x = Math.min(window.innerWidth, rect.width);
-            this.dragPositioner.dragSize.y = Math.min(window.innerHeight, rect.height);
-            this.setState({
-                zIndex: this.props.incrementZIndex(this.state.zIndex),
-            }, function () {
-                if (_this.ref_TODO_content.parentPopupDidMount) {
-                    _this.ref_TODO_content.parentPopupDidMount();
-                }
-            });
+            var container = this.props.containerElement;
+            var requestedPosition = this.props.getInitialPosition ?
+                this.props.getInitialPosition(position, container) :
+                windowManager.getDefaultInitialPosition(position, container);
+            var maxWidth = Math.min(this.props.maxWidth, container.offsetWidth);
+            var maxHeight = Math.min(this.props.maxHeight, container.offsetHeight);
+            position.width = utility_23.clamp(requestedPosition.width, this.props.minWidth, maxWidth);
+            position.height = utility_23.clamp(requestedPosition.height, this.props.minHeight, maxHeight);
+            position.left = utility_23.clamp(requestedPosition.left, 0, container.offsetWidth - position.width);
+            position.top = utility_23.clamp(requestedPosition.top, 0, container.offsetHeight - position.height);
+            this.dragPositioner.position = position;
+            this.dragPositioner.updateDOMNodeStyle();
         };
-        PopupComponent.prototype.handleResizeMove = function (x, y) {
+        WindowContainerComponent.prototype.handleResizeMove = function (rawDeltaX, rawDeltaY) {
             var minWidth = this.props.minWidth || 0;
             var maxWidth = this.props.maxWidth || window.innerWidth;
             var minHeight = this.props.minHeight || 0;
             var maxHeight = this.props.maxHeight || window.innerHeight;
-            this.dragPositioner.dragSize.x = utility_25.clamp(x + 5 - this.dragPositioner.dragPos.x, minWidth, maxWidth);
-            this.dragPositioner.dragSize.y = utility_25.clamp(y + 5 - this.dragPositioner.dragPos.y, minHeight, maxHeight);
+            if (this.resizeStartQuadrant.left) {
+                var deltaX = utility_23.clamp(rawDeltaX, this.resizeStartPosition.width - maxWidth, this.resizeStartPosition.width - minWidth);
+                this.dragPositioner.position.width = this.resizeStartPosition.width - deltaX;
+                this.dragPositioner.position.left = this.resizeStartPosition.left + deltaX;
+            }
+            else {
+                var deltaX = rawDeltaX;
+                this.dragPositioner.position.width = this.resizeStartPosition.width + deltaX;
+                this.dragPositioner.position.width = utility_23.clamp(this.dragPositioner.position.width, minWidth, maxWidth);
+            }
+            if (this.resizeStartQuadrant.top) {
+                var deltaY = utility_23.clamp(rawDeltaY, this.resizeStartPosition.height - maxHeight, this.resizeStartPosition.height - minHeight);
+                this.dragPositioner.position.top = this.resizeStartPosition.top + deltaY;
+                this.dragPositioner.position.height = this.resizeStartPosition.height - deltaY;
+            }
+            else {
+                var deltaY = rawDeltaY;
+                this.dragPositioner.position.height = this.resizeStartPosition.height + deltaY;
+                this.dragPositioner.position.height = utility_23.clamp(this.dragPositioner.position.height, minHeight, maxHeight);
+            }
             this.dragPositioner.updateDOMNodeStyle();
-            eventManager_19.default.dispatchEvent("popupResized");
         };
-        PopupComponent.prototype.render = function () {
+        WindowContainerComponent.prototype.handleResizeStart = function (x, y) {
+            var rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
+            var midX = rect.left + rect.width / 2;
+            var midY = rect.top + rect.height / 2;
+            this.resizeStartPosition = utility_23.shallowCopy(this.dragPositioner.position);
+            this.resizeStartQuadrant =
+                {
+                    left: x < midX,
+                    top: y < midY,
+                };
+        };
+        WindowContainerComponent.prototype.makeResizeHandles = function (directions) {
             var _this = this;
-            var divProps = {
-                className: "popup draggable-container",
-                onTouchStart: this.onMouseDown,
-                onMouseDown: this.onMouseDown,
-                style: {
-                    top: this.dragPositioner.dragPos ? this.dragPositioner.dragPos.y : 0,
-                    left: this.dragPositioner.dragPos ? this.dragPositioner.dragPos.x : 0,
-                    width: this.dragPositioner.dragSize.x,
-                    height: this.dragPositioner.dragSize.y,
-                    zIndex: this.state.zIndex,
-                    minWidth: this.props.minWidth,
-                    minHeight: this.props.minHeight,
-                },
-            };
-            if (this.dragPositioner.isDragging) {
-                divProps.className += " dragging";
-            }
-            var contentProps = {
-                closePopup: this.props.closePopup,
-                ref: function (content) {
-                    _this.ref_TODO_content = content;
-                },
-            };
-            var resizeHandle = !this.props.resizable ? null : PopupResizeHandle_1.default({
-                handleResize: this.handleResizeMove,
+            if (directions === void 0) { directions = "all"; }
+            var directionsToCreate = directions === "all" ?
+                ["n", "e", "w", "s", "ne", "se", "sw", "nw"] :
+                directions.slice(0);
+            return directionsToCreate.map(function (direction) {
+                return WindowResizeHandle_1.default({
+                    handleResizeMove: _this.handleResizeMove,
+                    handleResizeStart: _this.handleResizeStart,
+                    direction: direction,
+                    key: direction,
+                });
             });
-            return (React.DOM.div(divProps, React.cloneElement(this.props.content, contentProps), resizeHandle));
         };
-        return PopupComponent;
+        return WindowContainerComponent;
     }(React.Component));
-    exports.PopupComponent = PopupComponent;
-    var Factory = React.createFactory(PopupComponent);
+    exports.WindowContainerComponent = WindowContainerComponent;
+    var Factory = React.createFactory(WindowContainerComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/eventManager", "src/utility", "src/uicomponents/popups/Popup"], function (require, exports, eventManager_20, utility_26, Popup_1) {
+define("src/uicomponents/windows/DefaultWindow", ["require", "exports", "src/uicomponents/windows/WindowContainer"], function (require, exports, WindowContainer_1) {
     "use strict";
-    var PopupManagerComponent = (function (_super) {
-        __extends(PopupManagerComponent, _super);
-        function PopupManagerComponent(props) {
+    var DefaultWindowComponent = (function (_super) {
+        __extends(DefaultWindowComponent, _super);
+        function DefaultWindowComponent(props) {
             var _this = _super.call(this, props) || this;
-            _this.displayName = "PopupManager";
-            _this.popupId = 0;
-            _this.currentZIndex = 0;
-            _this.popupComponentsByID = {};
-            _this.listeners = {};
-            _this.state = _this.getInitialStateTODO();
-            _this.bindMethods();
+            _this.displayName = "DefaultWindow";
+            _this.handleTitleBarMouseDown = _this.handleTitleBarMouseDown.bind(_this);
             return _this;
         }
-        PopupManagerComponent.prototype.bindMethods = function () {
-            this.getHighestZIndexPopup = this.getHighestZIndexPopup.bind(this);
-            this.incrementZIndex = this.incrementZIndex.bind(this);
-            this.getInitialPosition = this.getInitialPosition.bind(this);
-            this.closePopup = this.closePopup.bind(this);
-            this.makePopup = this.makePopup.bind(this);
-            this.getPopupId = this.getPopupId.bind(this);
-            this.hasPopup = this.hasPopup.bind(this);
-            this.getPopup = this.getPopup.bind(this);
-        };
-        PopupManagerComponent.prototype.componentWillMount = function () {
-            var self = this;
-            this.listeners["makePopup"] =
-                eventManager_20.default.addEventListener("makePopup", function (data) {
-                    self.makePopup(data);
-                });
-            this.listeners["closePopup"] =
-                eventManager_20.default.addEventListener("closePopup", function (popupId) {
-                    self.closePopup(popupId);
-                });
-        };
-        PopupManagerComponent.prototype.componentWillUnmount = function () {
-            for (var listenerId in this.listeners) {
-                eventManager_20.default.removeEventListener(listenerId, this.listeners[listenerId]);
-            }
-        };
-        PopupManagerComponent.prototype.getInitialStateTODO = function () {
-            return ({
-                popups: [],
-            });
-        };
-        PopupManagerComponent.prototype.getHighestZIndexPopup = function () {
-            if (this.state.popups.length === 0)
-                return null;
-            var popups = [];
-            for (var id in this.popupComponentsByID) {
-                popups.push(this.popupComponentsByID[id]);
-            }
-            return popups.sort(function (a, b) {
-                return b.state.zIndex - a.state.zIndex;
-            })[0];
-        };
-        PopupManagerComponent.prototype.getInitialPosition = function (rect, container) {
-            if (this.state.popups.length === 1) {
-                return ({
-                    left: container.offsetWidth / 2.5 - rect.width / 2,
-                    top: container.offsetHeight / 2.5 - rect.height / 2,
-                });
-            }
-            else {
-                var topMostPopupPosition = this.getHighestZIndexPopup().dragPositioner.dragPos;
-                return ({
-                    left: topMostPopupPosition.x + 20,
-                    top: topMostPopupPosition.y + 20,
-                });
-            }
-        };
-        PopupManagerComponent.prototype.incrementZIndex = function (childZIndex) {
-            if (childZIndex === this.currentZIndex) {
-                return this.currentZIndex;
-            }
-            else {
-                return ++this.currentZIndex;
-            }
-        };
-        PopupManagerComponent.prototype.getPopupId = function () {
-            return this.popupId++;
-        };
-        PopupManagerComponent.prototype.getPopup = function (id) {
-            for (var i = 0; i < this.state.popups.length; i++) {
-                if (this.state.popups[i].id === id)
-                    return this.state.popups[i];
-            }
-            return null;
-        };
-        PopupManagerComponent.prototype.hasPopup = function (id) {
-            for (var i = 0; i < this.state.popups.length; i++) {
-                if (this.state.popups[i].id === id)
-                    return true;
-            }
-            return false;
-        };
-        PopupManagerComponent.prototype.closePopup = function (id) {
-            if (!this.hasPopup(id))
-                throw new Error("No such popup");
-            var newPopups = this.state.popups.filter(function (popup) { return popup.id !== id; });
-            this.popupComponentsByID[id] = null;
-            delete this.popupComponentsByID[id];
-            this.setState({ popups: newPopups });
-        };
-        PopupManagerComponent.prototype.makePopup = function (props) {
+        DefaultWindowComponent.prototype.render = function () {
             var _this = this;
-            var id = this.getPopupId();
-            var popupProps = props.popupProps ? utility_26.extendObject(props.popupProps) : {};
-            popupProps.content = props.content;
-            popupProps.id = id;
-            popupProps.key = id;
-            popupProps.ref = function (component) {
-                if (component) {
-                    _this.popupComponentsByID[id] = component;
-                }
-            };
-            popupProps.incrementZIndex = this.incrementZIndex;
-            popupProps.closePopup = this.closePopup.bind(this, id);
-            popupProps.getInitialPosition = this.getInitialPosition;
-            if (this.props.onlyAllowOne) {
-                this.setState({
-                    popups: [popupProps],
-                });
-            }
-            else {
-                var popups = this.state.popups.concat(popupProps);
-                this.setState({
-                    popups: popups,
-                });
-            }
-            return id;
-        };
-        PopupManagerComponent.prototype.render = function () {
-            var popups = this.state.popups;
-            var toRender = [];
-            for (var i = 0; i < popups.length; i++) {
-                var popup = popups[i];
-                var popupProps = utility_26.extendObject(popup);
-                popupProps.activePopupsCount = popups.length;
-                toRender.push(Popup_1.default(popupProps));
-            }
-            if (toRender.length < 1) {
-                return null;
-            }
-            return (React.DOM.div({
-                className: "popup-container",
-            }, toRender));
-        };
-        return PopupManagerComponent;
-    }(React.Component));
-    exports.PopupManagerComponent = PopupManagerComponent;
-    var Factory = React.createFactory(PopupManagerComponent);
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Factory;
-});
-define("src/uicomponents/popups/TopMenuPopup", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var TopMenuPopupComponent = (function (_super) {
-        __extends(TopMenuPopupComponent, _super);
-        function TopMenuPopupComponent(props) {
-            var _this = _super.call(this, props) || this;
-            _this.displayName = "TopMenuPopup";
-            return _this;
-        }
-        TopMenuPopupComponent.prototype.parentPopupDidMount = function () {
-            if (this.ref_TODO_content.parentPopupDidMount) {
-                this.ref_TODO_content.parentPopupDidMount();
-            }
-        };
-        TopMenuPopupComponent.prototype.render = function () {
-            var _this = this;
-            var contentProps = {
+            return (WindowContainer_1.default({
+                isResizable: this.props.isResizable === false ? false : true,
+                containerElement: document.body,
+                minWidth: this.props.minWidth,
+                minHeight: this.props.minHeight,
+                maxWidth: this.props.maxWidth || Infinity,
+                maxHeight: this.props.maxHeight || Infinity,
                 ref: function (component) {
-                    _this.ref_TODO_content = component;
+                    _this.windowContainerComponent = component;
                 },
-            };
-            return (React.DOM.div({
-                className: "top-menu-popup-container draggable-container",
-            }, React.DOM.button({
-                className: "light-box-close",
+            }, React.DOM.div({
+                className: "window",
+            }, React.DOM.div({
+                className: "window-title-bar draggable",
+                onMouseDown: this.handleTitleBarMouseDown,
+                onTouchStart: this.handleTitleBarMouseDown,
+            }, React.DOM.div({
+                className: "window-title",
+            }, this.props.title), React.DOM.button({
+                className: "window-close-button",
                 onClick: this.props.handleClose,
-            }, "X"), React.DOM.div({
-                className: "light-box-content",
-            }, React.cloneElement(this.props.content, contentProps))));
+            })), React.DOM.div({
+                className: "window-content",
+            }, this.props.children))));
         };
-        return TopMenuPopupComponent;
+        DefaultWindowComponent.prototype.handleTitleBarMouseDown = function (e) {
+            this.windowContainerComponent.onMouseDown(e);
+        };
+        return DefaultWindowComponent;
     }(React.Component));
-    exports.TopMenuPopupComponent = TopMenuPopupComponent;
-    var Factory = React.createFactory(TopMenuPopupComponent);
+    exports.DefaultWindowComponent = DefaultWindowComponent;
+    var Factory = React.createFactory(DefaultWindowComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
@@ -13932,77 +14192,22 @@ define("src/uicomponents/unitlist/UpgradeAttributes", ["require", "exports"], fu
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/UpgradeUnit", ["require", "exports", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/unitlist/UpgradeAbilities", "src/uicomponents/unitlist/UpgradeAttributes"], function (require, exports, PopupManager_1, TopMenuPopup_1, UpgradeAbilities_1, UpgradeAttributes_1) {
+define("src/uicomponents/unitlist/UpgradeUnit", ["require", "exports", "src/uicomponents/windows/DefaultWindow", "src/uicomponents/unitlist/UpgradeAbilities", "src/uicomponents/unitlist/UpgradeAttributes"], function (require, exports, DefaultWindow_1, UpgradeAbilities_1, UpgradeAttributes_1) {
     "use strict";
     var UpgradeUnitComponent = (function (_super) {
         __extends(UpgradeUnitComponent, _super);
         function UpgradeUnitComponent(props) {
             var _this = _super.call(this, props) || this;
             _this.displayName = "UpgradeUnit";
-            _this.state = _this.getInitialStateTODO();
+            _this.state =
+                {
+                    currentlyUpgradingAbility: null,
+                    upgradeData: _this.props.unit.getAbilityUpgradeData(),
+                };
             _this.bindMethods();
             return _this;
         }
-        UpgradeUnitComponent.prototype.bindMethods = function () {
-            this.upgradeAttribute = this.upgradeAttribute.bind(this);
-            this.upgradeAbility = this.upgradeAbility.bind(this);
-            this.makeAbilityLearnPopup = this.makeAbilityLearnPopup.bind(this);
-            this.closePopup = this.closePopup.bind(this);
-        };
-        UpgradeUnitComponent.prototype.getInitialStateTODO = function () {
-            return ({
-                upgradeData: this.props.unit.getAbilityUpgradeData(),
-                popupId: undefined,
-            });
-        };
-        UpgradeUnitComponent.prototype.upgradeAbility = function (source, newAbility) {
-            var unit = this.props.unit;
-            unit.upgradeAbility(source, newAbility);
-            unit.handleLevelUp();
-            this.setState({
-                upgradeData: unit.getAbilityUpgradeData(),
-            });
-            this.closePopup();
-            this.props.onUnitUpgrade();
-        };
-        UpgradeUnitComponent.prototype.upgradeAttribute = function (attribute) {
-            var unit = this.props.unit;
-            unit.baseAttributes[attribute] += 1;
-            unit.attributesAreDirty = true;
-            unit.handleLevelUp();
-            this.props.onUnitUpgrade();
-        };
-        UpgradeUnitComponent.prototype.makeAbilityLearnPopup = function (ability) {
-            var upgradeData = this.state.upgradeData[ability.type];
-            var popupId = this.popupManager.makePopup({
-                content: TopMenuPopup_1.default({
-                    handleClose: this.closePopup,
-                    content: UpgradeAbilities_1.default({
-                        abilities: upgradeData.possibleUpgrades,
-                        handleClick: this.upgradeAbility.bind(this, upgradeData.base),
-                        sourceAbility: upgradeData.base,
-                        learningNewability: !Boolean(upgradeData.base),
-                    }),
-                }),
-                popupProps: {
-                    dragPositionerProps: {
-                        preventAutoResize: true,
-                        containerDragOnly: true,
-                    },
-                },
-            });
-            this.setState({
-                popupId: popupId,
-            });
-        };
-        UpgradeUnitComponent.prototype.closePopup = function () {
-            this.popupManager.closePopup(this.state.popupId);
-            this.setState({
-                popupId: undefined,
-            });
-        };
         UpgradeUnitComponent.prototype.render = function () {
-            var _this = this;
             var unit = this.props.unit;
             var upgradableAbilities = [];
             for (var source in this.state.upgradeData) {
@@ -14017,14 +14222,24 @@ define("src/uicomponents/unitlist/UpgradeUnit", ["require", "exports", "src/uico
                     });
                 }
             }
+            var activeUpgradeData = !this.state.currentlyUpgradingAbility ?
+                null :
+                this.state.upgradeData[this.state.currentlyUpgradingAbility.type];
             return (React.DOM.div({
                 className: "upgrade-unit",
-            }, PopupManager_1.default({
-                ref: function (component) {
-                    _this.popupManager = component;
-                },
-                onlyAllowOne: true,
-            }), React.DOM.div({
+            }, !this.state.currentlyUpgradingAbility ? null :
+                DefaultWindow_1.default({
+                    title: "Upgrade ability",
+                    handleClose: this.closeAbilityUpgradePopup,
+                    isResizable: false,
+                    minWidth: 150,
+                    minHeight: 150,
+                }, UpgradeAbilities_1.default({
+                    abilities: activeUpgradeData.possibleUpgrades,
+                    handleClick: this.upgradeAbility.bind(this, activeUpgradeData.base),
+                    sourceAbility: activeUpgradeData.base,
+                    learningNewability: !Boolean(activeUpgradeData.base),
+                })), React.DOM.div({
                 className: "upgrade-unit-header",
             }, unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1)), UpgradeAbilities_1.default({
                 abilities: upgradableAbilities,
@@ -14034,6 +14249,35 @@ define("src/uicomponents/unitlist/UpgradeUnit", ["require", "exports", "src/uico
                 handleClick: this.upgradeAttribute,
             })));
         };
+        UpgradeUnitComponent.prototype.bindMethods = function () {
+            this.upgradeAttribute = this.upgradeAttribute.bind(this);
+            this.upgradeAbility = this.upgradeAbility.bind(this);
+            this.makeAbilityLearnPopup = this.makeAbilityLearnPopup.bind(this);
+            this.closeAbilityUpgradePopup = this.closeAbilityUpgradePopup.bind(this);
+        };
+        UpgradeUnitComponent.prototype.upgradeAbility = function (source, newAbility) {
+            var unit = this.props.unit;
+            unit.upgradeAbility(source, newAbility);
+            unit.handleLevelUp();
+            this.setState({
+                upgradeData: unit.getAbilityUpgradeData(),
+            });
+            this.closeAbilityUpgradePopup();
+            this.props.onUnitUpgrade();
+        };
+        UpgradeUnitComponent.prototype.upgradeAttribute = function (attribute) {
+            var unit = this.props.unit;
+            unit.baseAttributes[attribute] += 1;
+            unit.attributesAreDirty = true;
+            unit.handleLevelUp();
+            this.props.onUnitUpgrade();
+        };
+        UpgradeUnitComponent.prototype.makeAbilityLearnPopup = function (ability) {
+            this.setState({ currentlyUpgradingAbility: ability });
+        };
+        UpgradeUnitComponent.prototype.closeAbilityUpgradePopup = function () {
+            this.setState({ currentlyUpgradingAbility: null });
+        };
         return UpgradeUnitComponent;
     }(React.Component));
     exports.UpgradeUnitComponent = UpgradeUnitComponent;
@@ -14041,64 +14285,21 @@ define("src/uicomponents/unitlist/UpgradeUnit", ["require", "exports", "src/uico
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/UnitExperience", ["require", "exports", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/unitlist/UpgradeUnit"], function (require, exports, PopupManager_2, TopMenuPopup_2, UpgradeUnit_1) {
+define("src/uicomponents/unitlist/UnitExperience", ["require", "exports", "src/uicomponents/windows/DefaultWindow", "src/uicomponents/unitlist/UpgradeUnit"], function (require, exports, DefaultWindow_2, UpgradeUnit_1) {
     "use strict";
     var UnitExperienceComponent = (function (_super) {
         __extends(UnitExperienceComponent, _super);
         function UnitExperienceComponent(props) {
             var _this = _super.call(this, props) || this;
             _this.displayName = "UnitExperience";
-            _this.state = _this.getInitialStateTODO();
+            _this.state =
+                {
+                    hasUpgradePopup: false,
+                };
             _this.bindMethods();
             return _this;
         }
-        UnitExperienceComponent.prototype.bindMethods = function () {
-            this.makePopup = this.makePopup.bind(this);
-            this.closePopup = this.closePopup.bind(this);
-            this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);
-        };
-        UnitExperienceComponent.prototype.getInitialStateTODO = function () {
-            return ({
-                upgradePopupId: undefined,
-            });
-        };
-        UnitExperienceComponent.prototype.makePopup = function () {
-            var popupId = this.popupManager.makePopup({
-                content: TopMenuPopup_2.default({
-                    handleClose: this.closePopup,
-                    content: UpgradeUnit_1.default({
-                        unit: this.props.unit,
-                        onUnitUpgrade: this.handleUnitUpgrade,
-                    }),
-                }),
-                popupProps: {
-                    dragPositionerProps: {
-                        preventAutoResize: true,
-                        containerDragOnly: true,
-                    },
-                },
-            });
-            this.setState({
-                upgradePopupId: popupId,
-            });
-        };
-        UnitExperienceComponent.prototype.closePopup = function () {
-            this.popupManager.closePopup(this.state.upgradePopupId);
-            this.setState({
-                upgradePopupId: undefined,
-            });
-        };
-        UnitExperienceComponent.prototype.handleUnitUpgrade = function () {
-            if (!this.props.unit.canLevelUp()) {
-                this.closePopup();
-            }
-            else {
-                this.popupManager.forceUpdate();
-            }
-            this.props.onUnitUpgrade();
-        };
         UnitExperienceComponent.prototype.render = function () {
-            var _this = this;
             var rows = [];
             var totalBars = Math.ceil(this.props.experienceToNextLevel) / 10;
             var filledBars = Math.ceil(this.props.experienceForCurrentLevel / 10);
@@ -14133,19 +14334,43 @@ define("src/uicomponents/unitlist/UnitExperience", ["require", "exports", "src/u
                 title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp",
             };
             if (isReadyToLevelUp) {
-                containerProps.onClick = this.makePopup;
+                containerProps.onClick = this.openPopup;
                 containerProps.className += " ready-to-level-up";
             }
             return (React.DOM.div({
                 className: "unit-experience-wrapper",
-            }, PopupManager_2.default({
-                ref: function (component) {
-                    _this.popupManager = component;
-                },
-                onlyAllowOne: true,
-            }), React.DOM.div(containerProps, React.DOM.div(barProps, rows), !isReadyToLevelUp ? null : React.DOM.span({
+            }, !this.state.hasUpgradePopup ? null :
+                DefaultWindow_2.default({
+                    title: "Upgrade unit",
+                    handleClose: this.closePopup,
+                    isResizable: false,
+                    minWidth: 150,
+                    minHeight: 150,
+                }, UpgradeUnit_1.default({
+                    unit: this.props.unit,
+                    onUnitUpgrade: this.handleUnitUpgrade,
+                })), React.DOM.div(containerProps, React.DOM.div(barProps, rows), !isReadyToLevelUp ? null : React.DOM.span({
                 className: "ready-to-level-up-message",
             }, "Click to level up"))));
+        };
+        UnitExperienceComponent.prototype.bindMethods = function () {
+            this.openPopup = this.openPopup.bind(this);
+            this.closePopup = this.closePopup.bind(this);
+            this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);
+        };
+        UnitExperienceComponent.prototype.openPopup = function () {
+            this.setState({ hasUpgradePopup: true });
+        };
+        UnitExperienceComponent.prototype.closePopup = function () {
+            this.setState({ hasUpgradePopup: false });
+        };
+        UnitExperienceComponent.prototype.handleUnitUpgrade = function () {
+            if (!this.props.unit.canLevelUp()) {
+                this.closePopup();
+            }
+            else {
+                this.props.onUnitUpgrade();
+            }
         };
         return UnitExperienceComponent;
     }(React.Component));
@@ -14383,7 +14608,7 @@ define("src/uicomponents/unitlist/MenuUnitInfo", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/Unit", "src/uicomponents/unit/UnitStrength", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_27, Unit_5, UnitStrength_2, DragPositioner_6, applyMixins_6) {
+define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/Unit", "src/uicomponents/unit/UnitStrength", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_24, Unit_5, UnitStrength_2, DragPositioner_6, applyMixins_6) {
     "use strict";
     var UnitListItemComponent = (function (_super) {
         __extends(UnitListItemComponent, _super);
@@ -14423,7 +14648,7 @@ define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/uti
         };
         UnitListItemComponent.prototype.makeDragClone = function () {
             var container = document.createElement("div");
-            ReactDOM.render(Unit_5.default(utility_27.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
+            ReactDOM.render(Unit_5.default(utility_24.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
             var renderedElement = container.firstChild;
             var wrapperElement = document.getElementsByClassName("unit-wrapper")[0];
             renderedElement.classList.add("draggable", "dragging");
@@ -14627,7 +14852,7 @@ define("src/uicomponents/unitlist/UnitList", ["require", "exports", "src/uicompo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/utility", "src/uicomponents/PlayerFlag"], function (require, exports, App_25, utility_28, PlayerFlag_3) {
+define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/utility", "src/uicomponents/PlayerFlag"], function (require, exports, App_25, utility_25, PlayerFlag_3) {
     "use strict";
     var DefenceBuildingComponent = (function (_super) {
         __extends(DefenceBuildingComponent, _super);
@@ -14646,7 +14871,7 @@ define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src
                 className: "defence-building",
             }, React.DOM.img({
                 className: "defence-building-icon",
-                src: utility_28.colorImageInPlayerColor(image, building.controller),
+                src: utility_25.colorImageInPlayerColor(image, building.controller),
                 title: building.template.displayName,
             }), PlayerFlag_3.default({
                 props: {
@@ -14748,7 +14973,7 @@ define("src/uicomponents/battleprep/BattleInfo", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/BattleSimulator", "src/Options", "src/eventManager", "src/uicomponents/battle/BattleBackground", "src/uicomponents/battle/Formation", "src/uicomponents/unitlist/ItemList", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_26, BattleSimulator_2, Options_8, eventManager_21, BattleBackground_2, Formation_2, ItemList_1, MenuUnitInfo_1, UnitList_1, BattleInfo_1) {
+define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/BattleSimulator", "src/Options", "src/eventManager", "src/uicomponents/battle/BattleBackground", "src/uicomponents/battle/Formation", "src/uicomponents/unitlist/ItemList", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_26, BattleSimulator_2, Options_8, eventManager_19, BattleBackground_2, Formation_2, ItemList_1, MenuUnitInfo_1, UnitList_1, BattleInfo_1) {
     "use strict";
     var BattlePrepComponent = (function (_super) {
         __extends(BattlePrepComponent, _super);
@@ -15016,8 +15241,8 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                     var simulator = new BattleSimulator_2.default(battle);
                     simulator.simulateBattle();
                     simulator.finishBattle();
-                    eventManager_21.default.dispatchEvent("setCameraToCenterOn", battle.battleData.location);
-                    eventManager_21.default.dispatchEvent("switchScene", "galaxyMap");
+                    eventManager_19.default.dispatchEvent("setCameraToCenterOn", battle.battleData.location);
+                    eventManager_19.default.dispatchEvent("switchScene", "galaxyMap");
                 }.bind(this),
             }, "Simulate battle")), React.DOM.div({ className: "battle-prep-left-lower" }, leftLowerElement)), UnitList_1.default({
                 units: battlePrep.humanFormation.units,
@@ -15116,7 +15341,7 @@ define("src/uicomponents/mapmodes/MapRendererLayersListItem", ["require", "expor
         };
         MapRendererLayersListItemComponent.prototype.render = function () {
             var divProps = {
-                className: "map-renderer-layers-list-item draggable draggable-container",
+                className: "map-renderer-layers-list-item draggable",
                 onMouseDown: this.dragPositioner.handleReactDownEvent,
                 onTouchStart: this.dragPositioner.handleReactDownEvent,
             };
@@ -15137,7 +15362,7 @@ define("src/uicomponents/mapmodes/MapRendererLayersListItem", ["require", "expor
                 checked: this.props.isActive,
                 onChange: this.props.toggleActive,
             }), React.DOM.span({
-                className: "map-renderer-layers-list-item-name draggable-container",
+                className: "map-renderer-layers-list-item-name draggable",
             }, this.props.layerName), React.DOM.input({
                 className: "map-renderer-layers-list-item-alpha",
                 type: "number",
@@ -15152,7 +15377,7 @@ define("src/uicomponents/mapmodes/MapRendererLayersListItem", ["require", "expor
             this.props.onDragStart(this.props.layer);
         };
         MapRendererLayersListItemComponent.prototype.onDragMove = function (x, y) {
-            this.dragPositioner.dragPos.y = y;
+            this.dragPositioner.position.top = y;
             this.dragPositioner.updateDOMNodeStyle();
         };
         MapRendererLayersListItemComponent.prototype.onDragEnd = function () {
@@ -15247,7 +15472,7 @@ define("src/uicomponents/mapmodes/MapRendererLayersList", ["require", "exports",
                     updateLayer: this.updateLayer,
                     dragPositionerProps: {
                         containerElement: this,
-                        containerDragOnly: true,
+                        startOnHandleElementOnly: true,
                     },
                 }));
             }
@@ -15323,62 +15548,49 @@ define("src/uicomponents/mapmodes/MapModeSettings", ["require", "exports", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/popups/ConfirmPopup", ["require", "exports"], function (require, exports) {
+define("src/uicomponents/windows/DialogBox", ["require", "exports", "src/uicomponents/windows/DefaultWindow"], function (require, exports, DefaultWindow_3) {
     "use strict";
-    var ConfirmPopupComponent = (function (_super) {
-        __extends(ConfirmPopupComponent, _super);
-        function ConfirmPopupComponent(props) {
+    var DialogBoxComponent = (function (_super) {
+        __extends(DialogBoxComponent, _super);
+        function DialogBoxComponent(props) {
             var _this = _super.call(this, props) || this;
-            _this.displayName = "ConfirmPopup";
-            _this.bindMethods();
+            _this.displayName = "DialogBox";
             return _this;
         }
-        ConfirmPopupComponent.prototype.bindMethods = function () {
-            this.handleOk = this.handleOk.bind(this);
-            this.handleClose = this.handleClose.bind(this);
+        DialogBoxComponent.prototype.componentDidMount = function () {
+            ReactDOM.findDOMNode(this.okButtonElement).focus();
         };
-        ConfirmPopupComponent.prototype.componentDidMount = function () {
-            ReactDOM.findDOMNode(this.ref_TODO_okButton).focus();
-        };
-        ConfirmPopupComponent.prototype.handleOk = function () {
-            if (!this.props.handleOk) {
-                this.handleClose();
-                return;
-            }
-            var callbackSuccesful = this.props.handleOk();
-            if (callbackSuccesful !== false) {
-                this.handleClose();
-            }
-        };
-        ConfirmPopupComponent.prototype.handleClose = function () {
-            if (this.props.handleClose) {
-                this.props.handleClose();
-            }
-            this.props.closePopup();
-        };
-        ConfirmPopupComponent.prototype.render = function () {
+        DialogBoxComponent.prototype.render = function () {
             var _this = this;
-            return (React.DOM.div({
-                className: "confirm-popup draggable-container",
+            return (DefaultWindow_3.default({
+                title: this.props.title,
+                handleClose: this.props.handleCancel,
+                isResizable: false,
+                minWidth: this.props.minWidth || 50,
+                minHeight: this.props.minHeight || 50,
+                maxWidth: this.props.maxWidth || Infinity,
+                maxHeight: this.props.maxHeight || Infinity,
             }, React.DOM.div({
-                className: "confirm-popup-content",
-            }, this.props.content), React.DOM.div({
-                className: "popup-buttons draggable-container",
+                className: "dialog-box",
+            }, React.DOM.div({
+                className: "dialog-box-content",
+            }, this.props.children), React.DOM.div({
+                className: "dialog-box-buttons",
             }, React.DOM.button({
-                className: "popup-button",
-                onClick: this.handleOk,
+                className: "dialog-box-button ok-button",
+                onClick: this.props.handleOk,
                 ref: function (component) {
-                    _this.ref_TODO_okButton = component;
+                    _this.okButtonElement = component;
                 },
-            }, this.props.okText || "Confirm"), this.props.extraButtons, React.DOM.button({
-                className: "popup-button",
-                onClick: this.handleClose,
-            }, this.props.cancelText || "Cancel"))));
+            }, this.props.okText || "Ok"), this.props.extraButtons, React.DOM.button({
+                className: "dialog-box-button cancel-button",
+                onClick: this.props.handleCancel,
+            }, this.props.cancelText || "Cancel")))));
         };
-        return ConfirmPopupComponent;
+        return DialogBoxComponent;
     }(React.Component));
-    exports.ConfirmPopupComponent = ConfirmPopupComponent;
-    var Factory = React.createFactory(ConfirmPopupComponent);
+    exports.DialogBoxComponent = DialogBoxComponent;
+    var Factory = React.createFactory(DialogBoxComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
@@ -15439,19 +15651,6 @@ define("src/uicomponents/galaxymap/OptionsGroup", ["require", "exports"], functi
             _this.bindMethods();
             return _this;
         }
-        OptionsGroupComponent.prototype.bindMethods = function () {
-            this.toggleCollapse = this.toggleCollapse.bind(this);
-        };
-        OptionsGroupComponent.prototype.getInitialStateTODO = function () {
-            return ({
-                isCollapsed: this.props.isCollapsedInitially || false,
-            });
-        };
-        OptionsGroupComponent.prototype.toggleCollapse = function () {
-            this.setState({
-                isCollapsed: !this.state.isCollapsed,
-            });
-        };
         OptionsGroupComponent.prototype.render = function () {
             var rows = [];
             if (!this.state.isCollapsed) {
@@ -15480,6 +15679,19 @@ define("src/uicomponents/galaxymap/OptionsGroup", ["require", "exports"], functi
                 null;
             return (React.DOM.div({ className: "option-group" }, header, rows));
         };
+        OptionsGroupComponent.prototype.bindMethods = function () {
+            this.toggleCollapse = this.toggleCollapse.bind(this);
+        };
+        OptionsGroupComponent.prototype.getInitialStateTODO = function () {
+            return ({
+                isCollapsed: this.props.isCollapsedInitially || false,
+            });
+        };
+        OptionsGroupComponent.prototype.toggleCollapse = function () {
+            this.setState({
+                isCollapsed: !this.state.isCollapsed,
+            });
+        };
         return OptionsGroupComponent;
     }(React.Component));
     exports.OptionsGroupComponent = OptionsGroupComponent;
@@ -15487,7 +15699,7 @@ define("src/uicomponents/galaxymap/OptionsGroup", ["require", "exports"], functi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/notifications/NotificationFilterListItem", ["require", "exports", "src/NotificationFilterState", "src/eventManager"], function (require, exports, NotificationFilterState_2, eventManager_22) {
+define("src/uicomponents/notifications/NotificationFilterListItem", ["require", "exports", "src/NotificationFilterState", "src/eventManager"], function (require, exports, NotificationFilterState_2, eventManager_20) {
     "use strict";
     var NotificationFilterListItemComponent = (function (_super) {
         __extends(NotificationFilterListItemComponent, _super);
@@ -15518,7 +15730,7 @@ define("src/uicomponents/notifications/NotificationFilterListItem", ["require", 
             this.setState({
                 filterState: filter.filters[this.props.keyTODO],
             });
-            eventManager_22.default.dispatchEvent("updateNotificationLog");
+            eventManager_20.default.dispatchEvent("updateNotificationLog");
         };
         NotificationFilterListItemComponent.prototype.render = function () {
             var inputElements = [];
@@ -15554,7 +15766,7 @@ define("src/uicomponents/notifications/NotificationFilterListItem", ["require", 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/notifications/NotificationFilterList", ["require", "exports", "src/eventManager", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/notifications/NotificationFilterListItem"], function (require, exports, eventManager_23, OptionsGroup_1, NotificationFilterListItem_1) {
+define("src/uicomponents/notifications/NotificationFilterList", ["require", "exports", "src/eventManager", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/notifications/NotificationFilterListItem"], function (require, exports, eventManager_21, OptionsGroup_1, NotificationFilterListItem_1) {
     "use strict";
     var NotificationFilterListComponent = (function (_super) {
         __extends(NotificationFilterListComponent, _super);
@@ -15573,7 +15785,7 @@ define("src/uicomponents/notifications/NotificationFilterList", ["require", "exp
             filter.setDefaultFilterStatesForCategory(category);
             filter.save();
             this.forceUpdate();
-            eventManager_23.default.dispatchEvent("updateNotificationLog");
+            eventManager_21.default.dispatchEvent("updateNotificationLog");
         };
         NotificationFilterListComponent.prototype.scrollToHighlighted = function () {
             if (this.props.highlightedOptionKey) {
@@ -15613,6 +15825,7 @@ define("src/uicomponents/notifications/NotificationFilterList", ["require", "exp
                     options: filterElementsForCategory,
                     key: category,
                     resetFN: this.handleResetCategory.bind(this, category),
+                    activeLanguage: this.props.activeLanguage,
                 }));
             }
             return (React.DOM.div({
@@ -15637,77 +15850,60 @@ define("src/uicomponents/notifications/NotificationFilterList", ["require", "exp
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/notifications/NotificationFilterButton", ["require", "exports", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/notifications/NotificationFilterList"], function (require, exports, PopupManager_3, TopMenuPopup_3, NotificationFilterList_1) {
+define("src/uicomponents/notifications/NotificationFilterButton", ["require", "exports", "src/uicomponents/windows/DefaultWindow", "src/uicomponents/notifications/NotificationFilterList"], function (require, exports, DefaultWindow_4, NotificationFilterList_1) {
     "use strict";
     var NotificationFilterButtonComponent = (function (_super) {
         __extends(NotificationFilterButtonComponent, _super);
         function NotificationFilterButtonComponent(props) {
             var _this = _super.call(this, props) || this;
             _this.displayName = "NotificationFilterButton";
-            _this.state = _this.getInitialStateTODO();
+            _this.state =
+                {
+                    hasNotificationFilterPopup: false,
+                };
             _this.bindMethods();
             return _this;
         }
-        NotificationFilterButtonComponent.prototype.bindMethods = function () {
-            this.makePopup = this.makePopup.bind(this);
-            this.closePopup = this.closePopup.bind(this);
-            this.togglePopup = this.togglePopup.bind(this);
-        };
-        NotificationFilterButtonComponent.prototype.getInitialStateTODO = function () {
-            return ({
-                notificationFilterPopup: undefined,
-            });
-        };
-        NotificationFilterButtonComponent.prototype.makePopup = function () {
-            var popupId = this.popupManager.makePopup({
-                content: TopMenuPopup_3.default({
-                    content: NotificationFilterList_1.default({
-                        filter: this.props.filter,
-                        highlightedOptionKey: this.props.highlightedOptionKey,
-                    }),
-                    handleClose: this.closePopup,
-                }),
-                popupProps: {
-                    dragPositionerProps: {
-                        containerDragOnly: true,
-                        preventAutoResize: true,
-                    },
-                    resizable: true,
-                    minWidth: 440,
-                    minHeight: 150,
-                },
-            });
-            this.setState({
-                notificationFilterPopup: popupId,
-            });
-        };
-        NotificationFilterButtonComponent.prototype.closePopup = function () {
-            this.popupManager.closePopup(this.state.notificationFilterPopup);
-            this.setState({
-                notificationFilterPopup: undefined,
-            });
-        };
-        NotificationFilterButtonComponent.prototype.togglePopup = function () {
-            if (isFinite(this.state.notificationFilterPopup)) {
-                this.closePopup();
-            }
-            else {
-                this.makePopup();
-            }
-        };
         NotificationFilterButtonComponent.prototype.render = function () {
-            var _this = this;
             return (React.DOM.div({
                 className: "notification-filter-button-container",
             }, React.DOM.button({
                 className: "notification-filter-button",
                 onClick: this.togglePopup,
-            }, this.props.text), PopupManager_3.default({
-                ref: function (component) {
-                    _this.popupManager = component;
-                },
-                onlyAllowOne: true,
-            })));
+            }, this.props.text), !this.state.hasNotificationFilterPopup ? null :
+                DefaultWindow_4.default({
+                    title: "Message settings",
+                    handleClose: this.closePopup,
+                    minWidth: 440,
+                    minHeight: 150,
+                }, NotificationFilterList_1.default({
+                    filter: this.props.filter,
+                    highlightedOptionKey: this.props.highlightedOptionKey,
+                    activeLanguage: this.props.activeLanguage,
+                }))));
+        };
+        NotificationFilterButtonComponent.prototype.bindMethods = function () {
+            this.openPopup = this.openPopup.bind(this);
+            this.closePopup = this.closePopup.bind(this);
+            this.togglePopup = this.togglePopup.bind(this);
+        };
+        NotificationFilterButtonComponent.prototype.openPopup = function () {
+            this.setState({
+                hasNotificationFilterPopup: true,
+            });
+        };
+        NotificationFilterButtonComponent.prototype.closePopup = function () {
+            this.setState({
+                hasNotificationFilterPopup: false,
+            });
+        };
+        NotificationFilterButtonComponent.prototype.togglePopup = function () {
+            if (this.state.hasNotificationFilterPopup) {
+                this.closePopup();
+            }
+            else {
+                this.openPopup();
+            }
         };
         return NotificationFilterButtonComponent;
     }(React.Component));
@@ -15716,7 +15912,7 @@ define("src/uicomponents/notifications/NotificationFilterButton", ["require", "e
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/notifications/NotificationLog", ["require", "exports", "src/eventManager", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/popups/PopupManager", "src/uicomponents/notifications/Notification", "src/uicomponents/notifications/NotificationFilterButton"], function (require, exports, eventManager_24, ConfirmPopup_1, PopupManager_4, Notification_3, NotificationFilterButton_1) {
+define("src/uicomponents/notifications/NotificationLog", ["require", "exports", "src/eventManager", "src/uicomponents/windows/DialogBox", "src/uicomponents/notifications/Notification", "src/uicomponents/notifications/NotificationFilterButton"], function (require, exports, eventManager_22, DialogBox_1, Notification_3, NotificationFilterButton_1) {
     "use strict";
     var NotificationLogComponent = (function (_super) {
         __extends(NotificationLogComponent, _super);
@@ -15728,92 +15924,15 @@ define("src/uicomponents/notifications/NotificationLog", ["require", "exports", 
             _this.bindMethods();
             return _this;
         }
-        NotificationLogComponent.prototype.bindMethods = function () {
-            this.makePopup = this.makePopup.bind(this);
-            this.closePopup = this.closePopup.bind(this);
-            this.getNotificationKey = this.getNotificationKey.bind(this);
-            this.handleMarkAsRead = this.handleMarkAsRead.bind(this);
-            this.togglePopup = this.togglePopup.bind(this);
-        };
-        NotificationLogComponent.prototype.getInitialStateTODO = function () {
-            return ({});
-        };
-        NotificationLogComponent.prototype.componentWillReceiveProps = function (newProps) {
-            if (newProps.currentTurn !== this.props.currentTurn) {
-                this.scrollTop = undefined;
-            }
-        };
         NotificationLogComponent.prototype.componentDidMount = function () {
-            this.updateListener = eventManager_24.default.addEventListener("updateNotificationLog", this.forceUpdate.bind(this));
+            this.updateListener = eventManager_22.default.addEventListener("updateNotificationLog", this.forceUpdate.bind(this));
         };
         NotificationLogComponent.prototype.componentWillUnmount = function () {
-            eventManager_24.default.removeEventListener("updateNotificationLog", this.updateListener);
+            eventManager_22.default.removeEventListener("updateNotificationLog", this.updateListener);
         };
         NotificationLogComponent.prototype.componentDidUpdate = function () {
             var domNode = ReactDOM.findDOMNode(this);
-            if (!isFinite(this.scrollTop)) {
-                this.scrollTop = domNode.scrollTop;
-            }
             domNode.scrollTop = domNode.scrollHeight;
-        };
-        NotificationLogComponent.prototype.getNotificationKey = function (notification) {
-            return "" + notification.turn + this.props.log.byTurn[notification.turn].indexOf(notification);
-        };
-        NotificationLogComponent.prototype.handleMarkAsRead = function (notification) {
-            this.props.log.markAsRead(notification);
-            var notificationKey = this.getNotificationKey(notification);
-            if (isFinite(this.state[notificationKey])) {
-                this.closePopup(notificationKey);
-            }
-            else {
-                this.forceUpdate();
-            }
-        };
-        NotificationLogComponent.prototype.makePopup = function (notification, key) {
-            var log = this.props.log;
-            var popupId = this.popupManager.makePopup({
-                content: ConfirmPopup_1.default({
-                    content: notification.template.contentConstructor({
-                        notification: notification,
-                    }),
-                    handleOk: this.handleMarkAsRead.bind(this, notification),
-                    handleClose: this.closePopup.bind(this, key),
-                    okText: "Mark as read",
-                    cancelText: "Close",
-                    extraButtons: [
-                        NotificationFilterButton_1.default({
-                            key: "notificationFilter",
-                            filter: log.notificationFilter,
-                            text: "Filter",
-                            highlightedOptionKey: notification.template.key,
-                        }),
-                    ],
-                }),
-                popupProps: {
-                    dragPositionerProps: {
-                        containerDragOnly: true,
-                        preventAutoResize: true,
-                    },
-                },
-            });
-            var stateObj = {};
-            stateObj[key] = popupId;
-            this.setState(stateObj);
-        };
-        NotificationLogComponent.prototype.closePopup = function (key) {
-            this.popupManager.closePopup(this.state[key]);
-            var stateObj = {};
-            stateObj[key] = undefined;
-            this.setState(stateObj);
-        };
-        NotificationLogComponent.prototype.togglePopup = function (notification) {
-            var key = this.getNotificationKey(notification);
-            if (isFinite(this.state[key])) {
-                this.closePopup(key);
-            }
-            else {
-                this.makePopup(notification, key);
-            }
         };
         NotificationLogComponent.prototype.render = function () {
             var _this = this;
@@ -15832,11 +15951,72 @@ define("src/uicomponents/notifications/NotificationLog", ["require", "exports", 
                 className: "notification-log-container",
             }, React.DOM.ol({
                 className: "notification-log",
-            }, items.reverse()), PopupManager_4.default({
-                ref: function (component) {
-                    _this.popupManager = component;
-                },
+            }, items.reverse()), this.state.notificationsWithActivePopup.map(function (notification) {
+                return DialogBox_1.default({
+                    key: _this.getNotificationKey(notification),
+                    title: notification.getTitle(),
+                    handleOk: function () {
+                        _this.handleMarkAsRead(notification);
+                        _this.closePopup(notification);
+                    },
+                    handleCancel: function () {
+                        _this.closePopup(notification);
+                    },
+                    okText: "Mark as read",
+                    cancelText: "Close",
+                    extraButtons: [
+                        NotificationFilterButton_1.default({
+                            key: "notificationFilter",
+                            filter: log.notificationFilter,
+                            text: "Filter",
+                            highlightedOptionKey: notification.template.key,
+                            activeLanguage: _this.props.activeLanguage,
+                        }),
+                    ],
+                }, notification.template.contentConstructor({
+                    notification: notification,
+                }));
             })));
+        };
+        NotificationLogComponent.prototype.bindMethods = function () {
+            this.closePopup = this.closePopup.bind(this);
+            this.getNotificationKey = this.getNotificationKey.bind(this);
+            this.handleMarkAsRead = this.handleMarkAsRead.bind(this);
+            this.togglePopup = this.togglePopup.bind(this);
+        };
+        NotificationLogComponent.prototype.getInitialStateTODO = function () {
+            return ({
+                notificationsWithActivePopup: [],
+            });
+        };
+        NotificationLogComponent.prototype.getNotificationKey = function (notification) {
+            return "" + notification.turn + this.props.log.byTurn[notification.turn].indexOf(notification);
+        };
+        NotificationLogComponent.prototype.handleMarkAsRead = function (notification) {
+            this.props.log.markAsRead(notification);
+        };
+        NotificationLogComponent.prototype.openPopup = function (notification) {
+            this.setState({
+                notificationsWithActivePopup: this.state.notificationsWithActivePopup.concat(notification),
+            });
+        };
+        NotificationLogComponent.prototype.closePopup = function (notificationToRemove) {
+            this.setState({
+                notificationsWithActivePopup: this.state.notificationsWithActivePopup.filter(function (notification) {
+                    return notification !== notificationToRemove;
+                }),
+            });
+        };
+        NotificationLogComponent.prototype.hasPopup = function (notification) {
+            return this.state.notificationsWithActivePopup.indexOf(notification) >= 0;
+        };
+        NotificationLogComponent.prototype.togglePopup = function (notification) {
+            if (this.hasPopup(notification)) {
+                this.closePopup(notification);
+            }
+            else {
+                this.openPopup(notification);
+            }
         };
         return NotificationLogComponent;
     }(React.PureComponent));
@@ -15860,6 +16040,7 @@ define("src/uicomponents/notifications/Notifications", ["require", "exports", "s
             }, NotificationLog_2.default({
                 log: this.props.log,
                 currentTurn: this.props.currentTurn,
+                activeLanguage: this.props.activeLanguage,
                 key: "log",
             })));
         };
@@ -15870,7 +16051,7 @@ define("src/uicomponents/notifications/Notifications", ["require", "exports", "s
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/possibleactions/AttackTarget", ["require", "exports", "src/eventManager", "src/uicomponents/PlayerFlag"], function (require, exports, eventManager_25, PlayerFlag_5) {
+define("src/uicomponents/possibleactions/AttackTarget", ["require", "exports", "src/eventManager", "src/uicomponents/PlayerFlag"], function (require, exports, eventManager_23, PlayerFlag_5) {
     "use strict";
     var AttackTargetComponent = (function (_super) {
         __extends(AttackTargetComponent, _super);
@@ -15884,7 +16065,7 @@ define("src/uicomponents/possibleactions/AttackTarget", ["require", "exports", "
             this.handleAttack = this.handleAttack.bind(this);
         };
         AttackTargetComponent.prototype.handleAttack = function () {
-            eventManager_25.default.dispatchEvent("attackTarget", this.props.attackTarget);
+            eventManager_23.default.dispatchEvent("attackTarget", this.props.attackTarget);
         };
         AttackTargetComponent.prototype.render = function () {
             var target = this.props.attackTarget;
@@ -15908,7 +16089,7 @@ define("src/uicomponents/possibleactions/AttackTarget", ["require", "exports", "
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_26) {
+define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_24) {
     "use strict";
     var UpdateWhenMoneyChanges = (function () {
         function UpdateWhenMoneyChanges(owner, onMoneyChange) {
@@ -15917,10 +16098,10 @@ define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", 
             this.handleMoneyChange = this.handleMoneyChange.bind(this);
         }
         UpdateWhenMoneyChanges.prototype.componentDidMount = function () {
-            eventManager_26.default.addEventListener("playerMoneyUpdated", this.handleMoneyChange);
+            eventManager_24.default.addEventListener("playerMoneyUpdated", this.handleMoneyChange);
         };
         UpdateWhenMoneyChanges.prototype.componentWillUnmount = function () {
-            eventManager_26.default.removeEventListener("playerMoneyUpdated", this.handleMoneyChange);
+            eventManager_24.default.removeEventListener("playerMoneyUpdated", this.handleMoneyChange);
         };
         UpdateWhenMoneyChanges.prototype.handleMoneyChange = function () {
             if (this.onMoneyChange) {
@@ -16247,7 +16428,7 @@ define("src/uicomponents/possibleactions/BuildingUpgradeList", ["require", "expo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/possibleactions/PossibleActions", ["require", "exports", "src/eventManager", "src/uicomponents/possibleactions/AttackTarget", "src/uicomponents/possibleactions/BuildableBuildingList", "src/uicomponents/possibleactions/BuildingUpgradeList"], function (require, exports, eventManager_27, AttackTarget_1, BuildableBuildingList_1, BuildingUpgradeList_1) {
+define("src/uicomponents/possibleactions/PossibleActions", ["require", "exports", "src/eventManager", "src/uicomponents/possibleactions/AttackTarget", "src/uicomponents/possibleactions/BuildableBuildingList", "src/uicomponents/possibleactions/BuildingUpgradeList"], function (require, exports, eventManager_25, AttackTarget_1, BuildableBuildingList_1, BuildingUpgradeList_1) {
     "use strict";
     var PossibleActionsComponent = (function (_super) {
         __extends(PossibleActionsComponent, _super);
@@ -16287,12 +16468,12 @@ define("src/uicomponents/possibleactions/PossibleActions", ["require", "exports"
             }
         };
         PossibleActionsComponent.prototype.componentDidMount = function () {
-            eventManager_27.default.addEventListener("clearPossibleActions", this.clearExpandedAction);
-            eventManager_27.default.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
+            eventManager_25.default.addEventListener("clearPossibleActions", this.clearExpandedAction);
+            eventManager_25.default.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
         };
         PossibleActionsComponent.prototype.componentWillUnmount = function () {
-            eventManager_27.default.removeAllListeners("clearPossibleActions");
-            eventManager_27.default.removeEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
+            eventManager_25.default.removeAllListeners("clearPossibleActions");
+            eventManager_25.default.removeEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
         };
         PossibleActionsComponent.prototype.canUpgradeBuildings = function (star) {
             return star && Object.keys(star.getBuildingUpgrades()).length > 0;
@@ -16304,7 +16485,7 @@ define("src/uicomponents/possibleactions/PossibleActions", ["require", "exports"
         };
         PossibleActionsComponent.prototype.updateActions = function () {
             this.props.setExpandedActionElementOnParent(this.state.expandedActionElement);
-            eventManager_27.default.dispatchEvent("possibleActionsUpdated");
+            eventManager_25.default.dispatchEvent("possibleActionsUpdated");
         };
         PossibleActionsComponent.prototype.clearExpandedAction = function () {
             this.setState({
@@ -16556,7 +16737,7 @@ define("src/uicomponents/tutorials/DontShowAgain", ["require", "exports", "src/t
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility", "src/utility", "src/uicomponents/tutorials/DontShowAgain"], function (require, exports, TutorialState_3, TutorialStatus_2, utility_29, utility_30, DontShowAgain_1) {
+define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility", "src/utility", "src/uicomponents/tutorials/DontShowAgain"], function (require, exports, TutorialState_3, TutorialStatus_2, utility_26, utility_27, DontShowAgain_1) {
     "use strict";
     var TutorialComponent = (function (_super) {
         __extends(TutorialComponent, _super);
@@ -16602,7 +16783,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/tutori
         TutorialComponent.prototype.flipPage = function (amount) {
             var lastPage = this.props.pages.length - 1;
             var newPage = this.state.currentPageIndex + amount;
-            newPage = utility_29.clamp(newPage, 0, lastPage);
+            newPage = utility_26.clamp(newPage, 0, lastPage);
             this.handleLeavePage(this.props.pages[this.state.currentPageIndex]);
             this.setState({
                 currentPageIndex: newPage,
@@ -16646,7 +16827,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/tutori
                 className: "tutorial-inner",
             }, backElement, React.DOM.div({
                 className: "tutorial-content",
-            }, utility_30.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
+            }, utility_27.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
                 tutorialId: this.props.tutorialId,
             })));
         };
@@ -16657,7 +16838,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/tutori
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/tutorials/IntroTutorial", ["require", "exports", "src/tutorials/IntroTutorial", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/tutorials/Tutorial"], function (require, exports, IntroTutorial_1, TutorialState_4, TutorialStatus_3, PopupManager_5, TopMenuPopup_4, Tutorial_1) {
+define("src/uicomponents/tutorials/IntroTutorial", ["require", "exports", "src/tutorials/IntroTutorial", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/uicomponents/windows/DefaultWindow", "src/uicomponents/tutorials/Tutorial"], function (require, exports, IntroTutorial_1, TutorialState_4, TutorialStatus_3, DefaultWindow_5, Tutorial_1) {
     "use strict";
     var IntroTutorialComponent = (function (_super) {
         __extends(IntroTutorialComponent, _super);
@@ -16665,64 +16846,28 @@ define("src/uicomponents/tutorials/IntroTutorial", ["require", "exports", "src/t
             var _this = _super.call(this, props) || this;
             _this.displayName = "IntroTutorial";
             _this.popupId = null;
-            _this.state = _this.getInitialStateTODO();
-            _this.bindMethods();
+            _this.state =
+                {
+                    shouldShow: TutorialStatus_3.default.introTutorial === TutorialState_4.default.show,
+                };
             return _this;
         }
-        IntroTutorialComponent.prototype.bindMethods = function () {
-            this.closePopup = this.closePopup.bind(this);
-        };
-        IntroTutorialComponent.prototype.getInitialStateTODO = function () {
-            return ({
-                shouldShow: TutorialStatus_3.default.introTutorial === TutorialState_4.default.show,
-            });
-        };
-        IntroTutorialComponent.prototype.componentDidMount = function () {
-            if (!this.state.shouldShow) {
-                return;
-            }
-            this.popupId = this.popupManager.makePopup({
-                content: TopMenuPopup_4.default({
-                    handleClose: this.closePopup,
-                    content: Tutorial_1.default({
-                        pages: IntroTutorial_1.default.pages,
-                        tutorialId: "introTutorial",
-                    }),
-                }),
-                popupProps: {
-                    resizable: true,
-                    initialPosition: {
-                        width: 600,
-                        height: 350,
-                    },
-                    minWidth: 300,
-                    minHeight: 250,
-                    dragPositionerProps: {
-                        containerDragOnly: true,
-                    },
-                },
-            });
-        };
-        IntroTutorialComponent.prototype.componentWillUnmount = function () {
-            if (this.popupId) {
-                this.closePopup();
-            }
-        };
-        IntroTutorialComponent.prototype.closePopup = function () {
-            this.popupManager.closePopup(this.popupId);
-            this.popupId = null;
-        };
         IntroTutorialComponent.prototype.render = function () {
             var _this = this;
             if (!this.state.shouldShow) {
                 return null;
             }
-            return (PopupManager_5.default({
-                ref: function (component) {
-                    _this.popupManager = component;
+            return (DefaultWindow_5.default({
+                title: "Tutorial",
+                handleClose: function () {
+                    _this.setState({ shouldShow: false });
                 },
-                onlyAllowOne: true,
-            }));
+                minWidth: 300,
+                minHeight: 250,
+            }, Tutorial_1.default({
+                pages: IntroTutorial_1.default.pages,
+                tutorialId: "introTutorial",
+            })));
         };
         return IntroTutorialComponent;
     }(React.Component));
@@ -16889,7 +17034,7 @@ define("src/uicomponents/galaxymap/FleetContents", ["require", "exports", "src/u
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/FleetControls", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_28) {
+define("src/uicomponents/galaxymap/FleetControls", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_26) {
     "use strict";
     var FleetControlsComponent = (function (_super) {
         __extends(FleetControlsComponent, _super);
@@ -16905,13 +17050,13 @@ define("src/uicomponents/galaxymap/FleetControls", ["require", "exports", "src/e
             this.splitFleet = this.splitFleet.bind(this);
         };
         FleetControlsComponent.prototype.deselectFleet = function () {
-            eventManager_28.default.dispatchEvent("deselectFleet", this.props.fleet);
+            eventManager_26.default.dispatchEvent("deselectFleet", this.props.fleet);
         };
         FleetControlsComponent.prototype.selectFleet = function () {
-            eventManager_28.default.dispatchEvent("selectFleets", [this.props.fleet]);
+            eventManager_26.default.dispatchEvent("selectFleets", [this.props.fleet]);
         };
         FleetControlsComponent.prototype.splitFleet = function () {
-            eventManager_28.default.dispatchEvent("splitFleet", this.props.fleet);
+            eventManager_26.default.dispatchEvent("splitFleet", this.props.fleet);
         };
         FleetControlsComponent.prototype.render = function () {
             var fleet = this.props.fleet;
@@ -17008,7 +17153,7 @@ define("src/uicomponents/galaxymap/FleetInfo", ["require", "exports", "src/uicom
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/FleetReorganization", ["require", "exports", "src/eventManager", "src/uicomponents/galaxymap/FleetContents"], function (require, exports, eventManager_29, FleetContents_1) {
+define("src/uicomponents/galaxymap/FleetReorganization", ["require", "exports", "src/eventManager", "src/uicomponents/galaxymap/FleetContents"], function (require, exports, eventManager_27, FleetContents_1) {
     "use strict";
     var FleetReorganizationComponent = (function (_super) {
         __extends(FleetReorganizationComponent, _super);
@@ -17047,7 +17192,7 @@ define("src/uicomponents/galaxymap/FleetReorganization", ["require", "exports", 
                 var oldFleet = draggingUnit.fleet;
                 if (oldFleet !== fleet) {
                     oldFleet.transferUnit(fleet, draggingUnit);
-                    eventManager_29.default.dispatchEvent("playerControlUpdated", null);
+                    eventManager_27.default.dispatchEvent("playerControlUpdated", null);
                 }
             }
             this.handleDragEnd();
@@ -17059,7 +17204,7 @@ define("src/uicomponents/galaxymap/FleetReorganization", ["require", "exports", 
         FleetReorganizationComponent.prototype.componentWillUnmount = function () {
             if (this.hasClosed)
                 return;
-            eventManager_29.default.dispatchEvent("endReorganizingFleets");
+            eventManager_27.default.dispatchEvent("endReorganizingFleets");
         };
         FleetReorganizationComponent.prototype.render = function () {
             var selectedFleets = this.props.fleets;
@@ -17110,7 +17255,7 @@ define("src/uicomponents/galaxymap/FleetReorganization", ["require", "exports", 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/eventManager", "src/uicomponents/galaxymap/FleetContents", "src/uicomponents/galaxymap/FleetInfo", "src/uicomponents/galaxymap/FleetReorganization"], function (require, exports, eventManager_30, FleetContents_2, FleetInfo_1, FleetReorganization_1) {
+define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/eventManager", "src/uicomponents/galaxymap/FleetContents", "src/uicomponents/galaxymap/FleetInfo", "src/uicomponents/galaxymap/FleetReorganization"], function (require, exports, eventManager_28, FleetContents_2, FleetInfo_1, FleetReorganization_1) {
     "use strict";
     var FleetSelectionComponent = (function (_super) {
         __extends(FleetSelectionComponent, _super);
@@ -17126,10 +17271,10 @@ define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/
             this.setElementPosition = this.setElementPosition.bind(this);
         };
         FleetSelectionComponent.prototype.mergeFleets = function () {
-            eventManager_30.default.dispatchEvent("mergeFleets", null);
+            eventManager_28.default.dispatchEvent("mergeFleets", null);
         };
         FleetSelectionComponent.prototype.reorganizeFleets = function () {
-            eventManager_30.default.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
+            eventManager_28.default.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
         };
         FleetSelectionComponent.prototype.setElementPosition = function () {
             if (!this.ref_TODO_selected)
@@ -17163,14 +17308,14 @@ define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/
         };
         FleetSelectionComponent.prototype.componentDidMount = function () {
             this.setElementPosition();
-            eventManager_30.default.addEventListener("possibleActionsUpdated", this.setElementPosition);
+            eventManager_28.default.addEventListener("possibleActionsUpdated", this.setElementPosition);
             window.addEventListener("resize", this.setElementPosition, false);
         };
         FleetSelectionComponent.prototype.componentDidUpdate = function () {
             this.setElementPosition();
         };
         FleetSelectionComponent.prototype.componentWillUnmount = function () {
-            eventManager_30.default.removeEventListener("possibleActionsUpdated", this.setElementPosition);
+            eventManager_28.default.removeEventListener("possibleActionsUpdated", this.setElementPosition);
             window.removeEventListener("resize", this.setElementPosition);
         };
         FleetSelectionComponent.prototype.render = function () {
@@ -17300,7 +17445,7 @@ define("src/uicomponents/galaxymap/StarInfo", ["require", "exports", "src/uicomp
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/PlayerMoney", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_31) {
+define("src/uicomponents/galaxymap/PlayerMoney", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_29) {
     "use strict";
     var PlayerMoneyComponent = (function (_super) {
         __extends(PlayerMoneyComponent, _super);
@@ -17315,10 +17460,10 @@ define("src/uicomponents/galaxymap/PlayerMoney", ["require", "exports", "src/eve
             this.handlePlayerMoneyUpdated = this.handlePlayerMoneyUpdated.bind(this);
         };
         PlayerMoneyComponent.prototype.componentDidMount = function () {
-            eventManager_31.default.addEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
+            eventManager_29.default.addEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
         };
         PlayerMoneyComponent.prototype.componentWillUnmount = function () {
-            eventManager_31.default.removeEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
+            eventManager_29.default.removeEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
         };
         PlayerMoneyComponent.prototype.handlePlayerMoneyUpdated = function () {
             if (this.props.player.money !== this.lastAmountRendered) {
@@ -17366,7 +17511,7 @@ define("src/uicomponents/galaxymap/Resource", ["require", "exports"], function (
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/galaxymap/Resource"], function (require, exports, App_27, eventManager_32, Resource_1) {
+define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/galaxymap/Resource"], function (require, exports, App_27, eventManager_30, Resource_1) {
     "use strict";
     var TopBarResourcesComponent = (function (_super) {
         __extends(TopBarResourcesComponent, _super);
@@ -17377,10 +17522,10 @@ define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src
             return _this;
         }
         TopBarResourcesComponent.prototype.componentDidMount = function () {
-            this.updateListener = eventManager_32.default.addEventListener("builtBuildingWithEffect_resourceIncome", this.forceUpdate.bind(this));
+            this.updateListener = eventManager_30.default.addEventListener("builtBuildingWithEffect_resourceIncome", this.forceUpdate.bind(this));
         };
         TopBarResourcesComponent.prototype.componentWillUnmount = function () {
-            eventManager_32.default.removeEventListener("builtBuildingWithEffect_resourceIncome", this.updateListener);
+            eventManager_30.default.removeEventListener("builtBuildingWithEffect_resourceIncome", this.updateListener);
         };
         TopBarResourcesComponent.prototype.render = function () {
             var player = this.props.player;
@@ -17417,7 +17562,7 @@ define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/TopBar", ["require", "exports", "src/eventManager", "src/uicomponents/PlayerFlag", "src/uicomponents/galaxymap/PlayerMoney", "src/uicomponents/galaxymap/TopBarResources"], function (require, exports, eventManager_33, PlayerFlag_6, PlayerMoney_1, TopBarResources_1) {
+define("src/uicomponents/galaxymap/TopBar", ["require", "exports", "src/eventManager", "src/uicomponents/PlayerFlag", "src/uicomponents/galaxymap/PlayerMoney", "src/uicomponents/galaxymap/TopBarResources"], function (require, exports, eventManager_31, PlayerFlag_6, PlayerMoney_1, TopBarResources_1) {
     "use strict";
     var TopBarComponent = (function (_super) {
         __extends(TopBarComponent, _super);
@@ -17428,10 +17573,10 @@ define("src/uicomponents/galaxymap/TopBar", ["require", "exports", "src/eventMan
             return _this;
         }
         TopBarComponent.prototype.componentDidMount = function () {
-            this.updateListener = eventManager_33.default.addEventListener("builtBuildingWithEffect_income", this.forceUpdate.bind(this));
+            this.updateListener = eventManager_31.default.addEventListener("builtBuildingWithEffect_income", this.forceUpdate.bind(this));
         };
         TopBarComponent.prototype.componentWillUnmount = function () {
-            eventManager_33.default.removeEventListener("builtBuildingWithEffect_income", this.updateListener);
+            eventManager_31.default.removeEventListener("builtBuildingWithEffect_income", this.updateListener);
         };
         TopBarComponent.prototype.render = function () {
             var player = this.props.player;
@@ -17468,91 +17613,6 @@ define("src/uicomponents/galaxymap/TopBar", ["require", "exports", "src/eventMan
     var Factory = React.createFactory(TopBarComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
-});
-define("src/Trade", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var Trade = (function () {
-        function Trade(player) {
-            this.stagedItems = {};
-            this.player = player;
-            this.setAllTradeableItems();
-        }
-        Trade.prototype.setAllTradeableItems = function () {
-            this.allItems =
-                {
-                    money: {
-                        key: "money",
-                        amount: this.player.money,
-                    },
-                };
-        };
-        Trade.prototype.getItemsAvailableForTrade = function () {
-            var available = {};
-            for (var key in this.allItems) {
-                var stagedAmount = this.stagedItems[key] ? this.stagedItems[key].amount : 0;
-                available[key] =
-                    {
-                        key: key,
-                        amount: this.allItems[key].amount - stagedAmount,
-                    };
-            }
-            return available;
-        };
-        Trade.prototype.removeStagedItem = function (key) {
-            this.stagedItems[key] = null;
-            delete this.stagedItems[key];
-        };
-        Trade.prototype.removeAllStagedItems = function () {
-            for (var key in this.stagedItems) {
-                this.removeStagedItem(key);
-            }
-        };
-        Trade.prototype.stageItem = function (key, amount) {
-            if (!this.stagedItems[key]) {
-                this.stagedItems[key] =
-                    {
-                        key: key,
-                        amount: amount,
-                    };
-            }
-            else {
-                this.stagedItems[key].amount += amount;
-                if (this.stagedItems[key].amount <= 0) {
-                    this.removeStagedItem(key);
-                }
-            }
-        };
-        Trade.prototype.setStagedItemAmount = function (key, newAmount) {
-            if (newAmount <= 0) {
-                this.removeStagedItem(key);
-            }
-            else {
-                var clamped = Math.min(this.allItems[key].amount, newAmount);
-                this.stagedItems[key].amount = clamped;
-            }
-        };
-        Trade.prototype.handleTradeOfItem = function (key, amount, targetPlayer) {
-            switch (key) {
-                case "money":
-                    {
-                        this.player.money -= amount;
-                        targetPlayer.money += amount;
-                    }
-            }
-        };
-        Trade.prototype.executeAllStagedTrades = function (targetPlayer) {
-            for (var key in this.stagedItems) {
-                this.handleTradeOfItem(key, this.stagedItems[key].amount, targetPlayer);
-            }
-        };
-        Trade.prototype.updateAfterExecutedTrade = function () {
-            this.setAllTradeableItems();
-            this.removeAllStagedItems();
-        };
-        return Trade;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Trade;
 });
 define("src/uicomponents/trade/TradeMoney", ["require", "exports", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, DragPositioner_9, applyMixins_11) {
     "use strict";
@@ -17758,66 +17818,78 @@ define("src/uicomponents/trade/TradeableItems", ["require", "exports", "src/uico
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/Trade", "src/uicomponents/trade/TradeableItems"], function (require, exports, Trade_1, TradeableItems_1) {
+define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/uicomponents/trade/TradeableItems", "src/Trade"], function (require, exports, TradeableItems_1, Trade_1) {
     "use strict";
     var TradeOverviewComponent = (function (_super) {
         __extends(TradeOverviewComponent, _super);
         function TradeOverviewComponent(props) {
             var _this = _super.call(this, props) || this;
             _this.displayName = "TradeOverview";
-            _this.selfPlayerTrade = undefined;
-            _this.otherPlayerTrade = undefined;
+            _this.selfTrade = TradeOverviewComponent.makeInitialTradeResponse(props.selfPlayer, props.otherPlayer);
+            _this.otherTrade = props.initialReceivedOffer ||
+                props.otherPlayer.AIController.respondToTradeOffer(_this.selfTrade);
             _this.state = _this.getInitialStateTODO();
             _this.bindMethods();
             return _this;
         }
+        TradeOverviewComponent.makeInitialTradeResponse = function (selfPlayer, otherPlayer) {
+            var ownTrade = new Trade_1.Trade(selfPlayer);
+            var willingnessToTradeItems = {};
+            for (var key in ownTrade.allItems) {
+                willingnessToTradeItems[key] = 1;
+            }
+            return ({
+                proposedOwnTrade: ownTrade,
+                proposedReceivedOffer: new Trade_1.Trade(otherPlayer),
+                willingnessToTradeItems: willingnessToTradeItems,
+                message: "",
+                willingToAccept: false,
+            });
+        };
         TradeOverviewComponent.prototype.bindMethods = function () {
             this.handleDragEnd = this.handleDragEnd.bind(this);
             this.handleStagingDragStart = this.handleStagingDragStart.bind(this);
             this.handleAvailableDragStart = this.handleAvailableDragStart.bind(this);
             this.handleRemoveStagedItem = this.handleRemoveStagedItem.bind(this);
-            this.getActiveTrade = this.getActiveTrade.bind(this);
             this.handleStageItem = this.handleStageItem.bind(this);
             this.handleAdjustStagedItemAmount = this.handleAdjustStagedItemAmount.bind(this);
             this.handleStagingAreaMouseUp = this.handleStagingAreaMouseUp.bind(this);
             this.handleAvailableMouseUp = this.handleAvailableMouseUp.bind(this);
             this.handleOk = this.handleOk.bind(this);
             this.handleCancel = this.handleCancel.bind(this);
-        };
-        TradeOverviewComponent.prototype.componentWillMount = function () {
-            this.selfPlayerTrade = new Trade_1.default(this.props.selfPlayer);
-            this.otherPlayerTrade = new Trade_1.default(this.props.otherPlayer);
+            this.getActiveTradeObjectForPlayer = this.getActiveTradeObjectForPlayer.bind(this);
         };
         TradeOverviewComponent.prototype.getInitialStateTODO = function () {
             return ({
-                currentAvailableItemDragKey: undefined,
-                currentStagingItemDragKey: undefined,
+                currentDragItemKey: undefined,
                 currentDragItemPlayer: undefined,
+                currentDragItemWasStaged: undefined,
+                activeTrade: this.props.initialReceivedOffer ? this.otherTrade : this.selfTrade,
             });
         };
         TradeOverviewComponent.prototype.handleCancel = function () {
             this.props.handleClose();
         };
         TradeOverviewComponent.prototype.handleOk = function () {
-            this.selfPlayerTrade.executeAllStagedTrades(this.props.otherPlayer);
-            this.otherPlayerTrade.executeAllStagedTrades(this.props.selfPlayer);
-            this.selfPlayerTrade.updateAfterExecutedTrade();
-            this.otherPlayerTrade.updateAfterExecutedTrade();
-            this.forceUpdate();
+            var activeTrade = this.state.activeTrade;
+            if (activeTrade) {
+                activeTrade.proposedOwnTrade.executeTrade(activeTrade.proposedReceivedOffer);
+                this.forceUpdate();
+            }
         };
-        TradeOverviewComponent.prototype.getActiveTrade = function (player) {
-            var playerStringToUse = player || this.state.currentDragItemPlayer;
-            if (playerStringToUse === "self") {
-                return this.selfPlayerTrade;
+        TradeOverviewComponent.prototype.getActiveTradeObjectForPlayer = function (player) {
+            if (player === "self") {
+                return this.state.activeTrade.proposedOwnTrade;
             }
-            else if (playerStringToUse === "other") {
-                return this.otherPlayerTrade;
+            else if (player === "other") {
+                return this.state.activeTrade.proposedReceivedOffer;
             }
-            else
-                return null;
+            else {
+                throw new Error("Invalid player key '" + player + "'");
+            }
         };
         TradeOverviewComponent.prototype.handleStageItem = function (player, key) {
-            var activeTrade = this.getActiveTrade(player);
+            var activeTrade = this.getActiveTradeObjectForPlayer(player);
             var availableItems = activeTrade.getItemsAvailableForTrade();
             var availableAmount = availableItems[key].amount;
             if (availableAmount === 1) {
@@ -17831,14 +17903,14 @@ define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/Trade
             }
         };
         TradeOverviewComponent.prototype.handleAdjustStagedItemAmount = function (player, key, newAmount) {
-            var activeTrade = this.getActiveTrade(player);
+            var activeTrade = this.getActiveTradeObjectForPlayer(player);
             {
                 activeTrade.setStagedItemAmount(key, newAmount);
             }
             this.forceUpdate();
         };
         TradeOverviewComponent.prototype.handleRemoveStagedItem = function (player, key) {
-            var activeTrade = this.getActiveTrade(player);
+            var activeTrade = this.getActiveTradeObjectForPlayer(player);
             activeTrade.removeStagedItem(key);
             if (!this.state.currentDragItemPlayer) {
                 this.forceUpdate();
@@ -17846,39 +17918,43 @@ define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/Trade
         };
         TradeOverviewComponent.prototype.handleAvailableDragStart = function (player, key) {
             this.setState({
-                currentAvailableItemDragKey: key,
+                currentDragItemKey: key,
                 currentDragItemPlayer: player,
+                currentDragItemWasStaged: false,
             });
         };
         TradeOverviewComponent.prototype.handleStagingDragStart = function (player, key) {
             this.setState({
-                currentStagingItemDragKey: key,
+                currentDragItemKey: key,
                 currentDragItemPlayer: player,
+                currentDragItemWasStaged: true,
             });
         };
         TradeOverviewComponent.prototype.handleDragEnd = function () {
             this.setState({
-                currentAvailableItemDragKey: undefined,
-                currentStagingItemDragKey: undefined,
+                currentDragItemKey: undefined,
                 currentDragItemPlayer: undefined,
+                currentDragItemWasStaged: undefined,
             });
         };
         TradeOverviewComponent.prototype.handleAvailableMouseUp = function () {
-            if (this.state.currentStagingItemDragKey) {
-                this.handleRemoveStagedItem(null, this.state.currentStagingItemDragKey);
+            if (this.state.currentDragItemKey && this.state.currentDragItemWasStaged) {
+                this.handleRemoveStagedItem(null, this.state.currentDragItemKey);
             }
         };
         TradeOverviewComponent.prototype.handleStagingAreaMouseUp = function () {
-            if (this.state.currentAvailableItemDragKey) {
-                this.handleStageItem(null, this.state.currentAvailableItemDragKey);
+            if (this.state.currentDragItemKey && !this.state.currentDragItemWasStaged) {
+                this.handleStageItem(null, this.state.currentDragItemKey);
             }
         };
         TradeOverviewComponent.prototype.render = function () {
-            var hasDragItem = Boolean(this.state.currentDragItemPlayer);
+            var hasDragItem = Boolean(this.state.currentDragItemKey);
             var selfPlayerAcceptsDrop = this.state.currentDragItemPlayer === "self";
             var otherPlayerAcceptsDrop = this.state.currentDragItemPlayer === "other";
-            var selfAvailableItems = this.selfPlayerTrade.getItemsAvailableForTrade();
-            var otherAvailableItems = this.otherPlayerTrade.getItemsAvailableForTrade();
+            var selfAvailableItems = this.state.activeTrade.proposedOwnTrade.getItemsAvailableForTrade();
+            var otherAvailableItems = this.state.activeTrade.proposedReceivedOffer.getItemsAvailableForTrade();
+            var lastOfferWasByOtherPlayer = this.state.activeTrade === this.otherTrade;
+            var ableToAcceptTrade = lastOfferWasByOtherPlayer && this.state.activeTrade.willingToAccept;
             return (React.DOM.div({
                 className: "trade-overview",
             }, React.DOM.div({
@@ -17904,8 +17980,8 @@ define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/Trade
             })), React.DOM.div({
                 className: "tradeable-items-container trade-staging-areas-container",
             }, TradeableItems_1.default({
-                tradeableItems: this.selfPlayerTrade.stagedItems,
-                availableItems: this.selfPlayerTrade.allItems,
+                tradeableItems: this.state.activeTrade.proposedOwnTrade.stagedItems,
+                availableItems: this.state.activeTrade.proposedOwnTrade.allItems,
                 noListHeader: true,
                 isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
                 onDragStart: this.handleStagingDragStart.bind(this, "self"),
@@ -17914,8 +17990,8 @@ define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/Trade
                 onItemClick: this.handleRemoveStagedItem.bind(this, "self"),
                 adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "self"),
             }), TradeableItems_1.default({
-                tradeableItems: this.otherPlayerTrade.stagedItems,
-                availableItems: this.otherPlayerTrade.allItems,
+                tradeableItems: this.state.activeTrade.proposedReceivedOffer.stagedItems,
+                availableItems: this.state.activeTrade.proposedReceivedOffer.allItems,
                 noListHeader: true,
                 isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
                 onDragStart: this.handleStagingDragStart.bind(this, "other"),
@@ -17924,14 +18000,23 @@ define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/Trade
                 onItemClick: this.handleRemoveStagedItem.bind(this, "other"),
                 adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "other"),
             })), React.DOM.div({
-                className: "trade-buttons-container",
+                className: "trade-buttons-container tradeable-items-reset-buttons-container",
             }, React.DOM.button({
-                className: "trade-button",
-                onClick: this.handleCancel,
-            }, "Cancel"), React.DOM.button({
-                className: "trade-button trade-button-ok",
-                onClick: this.handleOk,
-            }, "Ok"))));
+                className: "trade-button tradeable-items-reset-button",
+            }, "Reset"), React.DOM.button({
+                className: "trade-button tradeable-items-reset-button",
+            }, "Reset")), React.DOM.div({
+                className: "trade-buttons-container trade-controls-container",
+            }, React.DOM.button({
+                className: "trade-button trade-control-button",
+                disabled: !ableToAcceptTrade,
+            }, "Reject"), ableToAcceptTrade ?
+                React.DOM.button({
+                    className: "trade-button trade-control-button",
+                }, "Accept") :
+                React.DOM.button({
+                    className: "trade-button trade-control-button",
+                }, "Propose"))));
         };
         return TradeOverviewComponent;
     }(React.Component));
@@ -17940,86 +18025,21 @@ define("src/uicomponents/trade/TradeOverview", ["require", "exports", "src/Trade
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/trade/TradeOverview"], function (require, exports, PopupManager_6, TopMenuPopup_5, TradeOverview_1) {
+define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "src/uicomponents/trade/TradeOverview", "src/uicomponents/windows/DefaultWindow"], function (require, exports, TradeOverview_1, DefaultWindow_6) {
     "use strict";
     var DiplomacyActionsComponent = (function (_super) {
         __extends(DiplomacyActionsComponent, _super);
         function DiplomacyActionsComponent(props) {
             var _this = _super.call(this, props) || this;
             _this.displayName = "DiplomacyActions";
-            _this.state = _this.getInitialStateTODO();
+            _this.state =
+                {
+                    hasTradePopup: false,
+                };
             _this.bindMethods();
             return _this;
         }
-        DiplomacyActionsComponent.prototype.bindMethods = function () {
-            this.makePopup = this.makePopup.bind(this);
-            this.closePopup = this.closePopup.bind(this);
-            this.togglePopup = this.togglePopup.bind(this);
-            this.handleMakePeace = this.handleMakePeace.bind(this);
-            this.handleDeclareWar = this.handleDeclareWar.bind(this);
-        };
-        DiplomacyActionsComponent.prototype.getInitialStateTODO = function () {
-            return ({
-                trade: undefined,
-            });
-        };
-        DiplomacyActionsComponent.prototype.closePopup = function (popupType) {
-            this.popupManager.closePopup(this.state[popupType]);
-            var stateObj = {};
-            stateObj[popupType] = undefined;
-            this.setState(stateObj);
-        };
-        DiplomacyActionsComponent.prototype.makePopup = function (popupType) {
-            var content;
-            var popupProps = {
-                resizable: true,
-                minWidth: 150,
-                minHeight: 50,
-                dragPositionerProps: {
-                    containerDragOnly: true,
-                    preventAutoResize: true,
-                },
-            };
-            switch (popupType) {
-                case "trade":
-                    {
-                        content = TradeOverview_1.default({
-                            selfPlayer: this.props.player,
-                            otherPlayer: this.props.targetPlayer,
-                            handleClose: this.closePopup.bind(this, popupType),
-                        });
-                        break;
-                    }
-            }
-            var id = this.popupManager.makePopup({
-                content: TopMenuPopup_5.default({
-                    content: content,
-                    handleClose: this.closePopup.bind(this, popupType),
-                }),
-                popupProps: popupProps,
-            });
-            var stateObj = {};
-            stateObj[popupType] = id;
-            this.setState(stateObj);
-        };
-        DiplomacyActionsComponent.prototype.togglePopup = function (popupType) {
-            if (isFinite(this.state[popupType])) {
-                this.closePopup(popupType);
-            }
-            else {
-                this.makePopup(popupType);
-            }
-        };
-        DiplomacyActionsComponent.prototype.handleDeclareWar = function () {
-            this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
-            this.props.onUpdate();
-        };
-        DiplomacyActionsComponent.prototype.handleMakePeace = function () {
-            this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
-            this.props.onUpdate();
-        };
         DiplomacyActionsComponent.prototype.render = function () {
-            var _this = this;
             var player = this.props.player;
             var targetPlayer = this.props.targetPlayer;
             var declareWarProps = {
@@ -18043,23 +18063,50 @@ define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "sr
                 makePeaceProps.className += " disabled";
             }
             return (React.DOM.div({
-                className: "diplomacy-actions-container draggable-container",
-            }, PopupManager_6.default({
-                ref: function (component) {
-                    _this.popupManager = component;
-                },
-                onlyAllowOne: true,
-            }), React.DOM.button({
-                className: "light-box-close",
-                onClick: this.props.closePopup,
-            }, "X"), React.DOM.div({
                 className: "diplomacy-actions",
-            }, React.DOM.div({
-                className: "diplomacy-actions-header",
-            }, targetPlayer.name.fullName), React.DOM.button(declareWarProps, "Declare war"), React.DOM.button(makePeaceProps, "Make peace"), React.DOM.button({
+            }, React.DOM.button(declareWarProps, "Declare war"), React.DOM.button(makePeaceProps, "Make peace"), React.DOM.button({
                 className: "diplomacy-action-button",
-                onClick: this.togglePopup.bind(this, "trade"),
-            }, "Trade"))));
+                onClick: this.toggleTradePopup,
+            }, "Trade"), !this.state.hasTradePopup ? null :
+                DefaultWindow_6.default({
+                    handleClose: this.closeTradePopup,
+                    title: "Trade",
+                    minWidth: 150,
+                    minHeight: 50,
+                }, TradeOverview_1.default({
+                    selfPlayer: this.props.player,
+                    otherPlayer: this.props.targetPlayer,
+                    handleClose: this.closeTradePopup,
+                }))));
+        };
+        DiplomacyActionsComponent.prototype.bindMethods = function () {
+            this.openTradePopup = this.openTradePopup.bind(this);
+            this.closeTradePopup = this.closeTradePopup.bind(this);
+            this.toggleTradePopup = this.toggleTradePopup.bind(this);
+            this.handleMakePeace = this.handleMakePeace.bind(this);
+            this.handleDeclareWar = this.handleDeclareWar.bind(this);
+        };
+        DiplomacyActionsComponent.prototype.openTradePopup = function () {
+            this.setState({ hasTradePopup: true });
+        };
+        DiplomacyActionsComponent.prototype.closeTradePopup = function () {
+            this.setState({ hasTradePopup: false });
+        };
+        DiplomacyActionsComponent.prototype.toggleTradePopup = function () {
+            if (this.state.hasTradePopup) {
+                this.closeTradePopup();
+            }
+            else {
+                this.openTradePopup();
+            }
+        };
+        DiplomacyActionsComponent.prototype.handleDeclareWar = function () {
+            this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
+            this.props.onUpdate();
+        };
+        DiplomacyActionsComponent.prototype.handleMakePeace = function () {
+            this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
+            this.props.onUpdate();
         };
         return DiplomacyActionsComponent;
     }(React.Component));
@@ -18068,7 +18115,7 @@ define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "sr
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_31) {
+define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_28) {
     "use strict";
     var AttitudeModifierInfoComponent = (function (_super) {
         __extends(AttitudeModifierInfoComponent, _super);
@@ -18102,8 +18149,8 @@ define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports",
                     }
                 case "strength":
                     {
-                        var relativeValue = utility_31.getRelativeValue(this.props.strength, -20, 20);
-                        relativeValue = utility_31.clamp(relativeValue, 0, 1);
+                        var relativeValue = utility_28.getRelativeValue(this.props.strength, -20, 20);
+                        relativeValue = utility_28.clamp(relativeValue, 0, 1);
                         var deviation = Math.abs(0.5 - relativeValue) * 2;
                         var hue = 110 * relativeValue;
                         var saturation = 0 + 50 * deviation;
@@ -18333,7 +18380,7 @@ define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports",
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/utility", "src/uicomponents/diplomacy/AttitudeModifierList"], function (require, exports, utility_32, AttitudeModifierList_1) {
+define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/utility", "src/uicomponents/diplomacy/AttitudeModifierList"], function (require, exports, utility_29, AttitudeModifierList_1) {
     "use strict";
     var OpinionComponent = (function (_super) {
         __extends(OpinionComponent, _super);
@@ -18366,8 +18413,8 @@ define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/utility
             return firstChild.getBoundingClientRect();
         };
         OpinionComponent.prototype.getColor = function () {
-            var relativeValue = utility_32.getRelativeValue(this.props.opinion, -30, 30);
-            relativeValue = utility_32.clamp(relativeValue, 0, 1);
+            var relativeValue = utility_29.getRelativeValue(this.props.opinion, -30, 30);
+            relativeValue = utility_29.clamp(relativeValue, 0, 1);
             var deviation = Math.abs(0.5 - relativeValue) * 2;
             var hue = 110 * relativeValue;
             var saturation = 0 + 50 * deviation;
@@ -18476,38 +18523,20 @@ define("src/uicomponents/diplomacy/DiplomaticStatusPlayer", ["require", "exports
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/diplomacy/DiplomacyActions", "src/uicomponents/diplomacy/DiplomaticStatusPlayer", "src/uicomponents/popups/PopupManager", "src/DiplomacyState"], function (require, exports, List_6, DiplomacyActions_1, DiplomaticStatusPlayer_1, PopupManager_7, DiplomacyState_2) {
+define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/diplomacy/DiplomacyActions", "src/uicomponents/diplomacy/DiplomaticStatusPlayer", "src/uicomponents/windows/DefaultWindow", "src/DiplomacyState"], function (require, exports, List_6, DiplomacyActions_1, DiplomaticStatusPlayer_1, DefaultWindow_7, DiplomacyState_2) {
     "use strict";
     var DiplomacyOverviewComponent = (function (_super) {
         __extends(DiplomacyOverviewComponent, _super);
         function DiplomacyOverviewComponent(props) {
             var _this = _super.call(this, props) || this;
             _this.displayName = "DiplomacyOverview";
+            _this.state =
+                {
+                    playersWithOpenedDiplomacyActionsPopup: [],
+                };
             _this.bindMethods();
             return _this;
         }
-        DiplomacyOverviewComponent.prototype.bindMethods = function () {
-            this.makeDiplomacyActionsPopup = this.makeDiplomacyActionsPopup.bind(this);
-        };
-        DiplomacyOverviewComponent.prototype.makeDiplomacyActionsPopup = function (rowItem) {
-            var player = rowItem.content.props.player;
-            if (!player) {
-                return;
-            }
-            this.popupManager.makePopup({
-                content: DiplomacyActions_1.default({
-                    player: this.props.player,
-                    targetPlayer: player,
-                    onUpdate: this.forceUpdate.bind(this),
-                }),
-                popupProps: {
-                    dragPositionerProps: {
-                        preventAutoResize: true,
-                        containerDragOnly: true,
-                    },
-                },
-            });
-        };
         DiplomacyOverviewComponent.prototype.render = function () {
             var _this = this;
             var unmetPlayerCount = this.props.totalPlayerCount -
@@ -18566,17 +18595,55 @@ define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "s
                     defaultOrder: "desc",
                 },
             ];
-            return (React.DOM.div({ className: "diplomacy-overview" }, PopupManager_7.default({
-                ref: function (component) {
-                    _this.popupManager = component;
-                },
-                onlyAllowOne: true,
+            return (React.DOM.div({ className: "diplomacy-overview" }, this.state.playersWithOpenedDiplomacyActionsPopup.map(function (targetPlayer) {
+                return DefaultWindow_7.default({
+                    key: targetPlayer.id,
+                    handleClose: _this.closeDiplomacyActionsPopup.bind(null, targetPlayer),
+                    title: "" + targetPlayer.name,
+                    isResizable: false,
+                    minWidth: 200,
+                    minHeight: 200,
+                }, DiplomacyActions_1.default({
+                    player: _this.props.player,
+                    targetPlayer: targetPlayer,
+                    onUpdate: _this.forceUpdate.bind(_this),
+                }));
             }), React.DOM.div({ className: "diplomacy-status-list fixed-table-parent" }, List_6.default({
                 listItems: rows,
                 initialColumns: columns,
                 initialSortOrder: [columns[1]],
-                onRowChange: this.makeDiplomacyActionsPopup,
+                onRowChange: this.toggleDiplomacyActionsPopup,
             }))));
+        };
+        DiplomacyOverviewComponent.prototype.bindMethods = function () {
+            this.hasDiplomacyActionsPopup = this.hasDiplomacyActionsPopup.bind(this);
+            this.openDiplomacyActionsPopup = this.openDiplomacyActionsPopup.bind(this);
+            this.closeDiplomacyActionsPopup = this.closeDiplomacyActionsPopup.bind(this);
+            this.toggleDiplomacyActionsPopup = this.toggleDiplomacyActionsPopup.bind(this);
+        };
+        DiplomacyOverviewComponent.prototype.hasDiplomacyActionsPopup = function (player) {
+            return this.state.playersWithOpenedDiplomacyActionsPopup.indexOf(player) !== -1;
+        };
+        DiplomacyOverviewComponent.prototype.openDiplomacyActionsPopup = function (player) {
+            this.setState({
+                playersWithOpenedDiplomacyActionsPopup: this.state.playersWithOpenedDiplomacyActionsPopup.concat(player),
+            });
+        };
+        DiplomacyOverviewComponent.prototype.closeDiplomacyActionsPopup = function (playerToCloseFor) {
+            this.setState({
+                playersWithOpenedDiplomacyActionsPopup: this.state.playersWithOpenedDiplomacyActionsPopup.filter(function (player) {
+                    return player !== playerToCloseFor;
+                }),
+            });
+        };
+        DiplomacyOverviewComponent.prototype.toggleDiplomacyActionsPopup = function (rowItem) {
+            var player = rowItem.content.props.player;
+            if (this.hasDiplomacyActionsPopup(player)) {
+                this.closeDiplomacyActionsPopup(player);
+            }
+            else {
+                this.openDiplomacyActionsPopup(player);
+            }
         };
         return DiplomacyOverviewComponent;
     }(React.Component));
@@ -18871,7 +18938,7 @@ define("src/uicomponents/production/ManufactoryStarsListItem", ["require", "expo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/utility", "src/uicomponents/production/ManufactoryStarsListItem"], function (require, exports, utility_33, ManufactoryStarsListItem_1) {
+define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/utility", "src/uicomponents/production/ManufactoryStarsListItem"], function (require, exports, utility_30, ManufactoryStarsListItem_1) {
     "use strict";
     var ManufactoryStarsListComponent = (function (_super) {
         __extends(ManufactoryStarsListComponent, _super);
@@ -18882,8 +18949,8 @@ define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports"
         }
         ManufactoryStarsListComponent.prototype.render = function () {
             var rows = [];
-            this.props.starsWithManufactories.sort(utility_33.sortByManufactoryCapacityFN);
-            this.props.starsWithoutManufactories.sort(utility_33.sortByManufactoryCapacityFN);
+            this.props.starsWithManufactories.sort(utility_30.sortByManufactoryCapacityFN);
+            this.props.starsWithoutManufactories.sort(utility_30.sortByManufactoryCapacityFN);
             for (var i = 0; i < this.props.starsWithManufactories.length; i++) {
                 var star = this.props.starsWithManufactories[i];
                 var manufactory = star.manufactory;
@@ -19033,7 +19100,9 @@ define("src/uicomponents/production/ManufacturableUnits", ["require", "exports",
             this.props.triggerUpdate();
         };
         ManufacturableUnitsComponent.prototype.render = function () {
-            if (this.props.selectedStar && this.props.selectedStar.manufactory) {
+            var selectedStarHasManufactory = this.props.selectedStar && this.props.selectedStar.manufactory;
+            var manufactoryUpgradeButtons = null;
+            if (selectedStarHasManufactory) {
                 var manufactory = this.props.selectedStar.manufactory;
                 var unitUpgradeCost = manufactory.getUnitUpgradeCost();
                 var canAffordUnitUpgrade = this.props.money >= unitUpgradeCost;
@@ -19043,30 +19112,31 @@ define("src/uicomponents/production/ManufacturableUnits", ["require", "exports",
                     unitUpgradeButtonBaseClassName += " disabled";
                     unitUpgradeCostBaseClassName += " negative";
                 }
+                manufactoryUpgradeButtons = React.DOM.div({
+                    className: "manufactory-upgrade-buttons-container",
+                }, ManufactoryUpgradeButton_3.default({
+                    money: this.props.money,
+                    upgradeCost: unitUpgradeCost,
+                    actionString: "Upgrade health",
+                    currentLevel: manufactory.unitHealthModifier,
+                    maxLevel: 5.0,
+                    levelDecimalPoints: 1,
+                    onClick: this.upgradeHealth,
+                    title: "Increase base health of units built here",
+                }), ManufactoryUpgradeButton_3.default({
+                    money: this.props.money,
+                    upgradeCost: unitUpgradeCost,
+                    actionString: "Upgrade stats",
+                    currentLevel: manufactory.unitStatsModifier,
+                    maxLevel: 5.0,
+                    levelDecimalPoints: 1,
+                    onClick: this.upgradeStats,
+                    title: "Increase base stats of units built here",
+                }));
             }
             return (React.DOM.div({
                 className: "manufacturable-units",
-            }, (!this.props.selectedStar || !this.props.selectedStar.manufactory) ? null : React.DOM.div({
-                className: "manufactory-upgrade-buttons-container",
-            }, ManufactoryUpgradeButton_3.default({
-                money: this.props.money,
-                upgradeCost: unitUpgradeCost,
-                actionString: "Upgrade health",
-                currentLevel: manufactory.unitHealthModifier,
-                maxLevel: 5.0,
-                levelDecimalPoints: 1,
-                onClick: this.upgradeHealth,
-                title: "Increase base health of units built here",
-            }), ManufactoryUpgradeButton_3.default({
-                money: this.props.money,
-                upgradeCost: unitUpgradeCost,
-                actionString: "Upgrade stats",
-                currentLevel: manufactory.unitStatsModifier,
-                maxLevel: 5.0,
-                levelDecimalPoints: 1,
-                onClick: this.upgradeStats,
-                title: "Increase base stats of units built here",
-            })), ManufacturableThingsList_3.default({
+            }, manufactoryUpgradeButtons, ManufacturableThingsList_3.default({
                 manufacturableThings: this.props.manufacturableThings,
                 onClick: (this.props.canBuild ? this.addUnitToBuildQueue : null),
                 showCost: true,
@@ -19198,7 +19268,7 @@ define("src/uicomponents/production/ManufacturableThings", ["require", "exports"
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/eventManager", "src/utility", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, eventManager_34, utility_34, BuildQueue_1, ConstructManufactory_1, ManufactoryStarsList_1, ManufacturableThings_1, UpdateWhenMoneyChanges_3, applyMixins_13) {
+define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/eventManager", "src/utility", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, eventManager_32, utility_31, BuildQueue_1, ConstructManufactory_1, ManufactoryStarsList_1, ManufacturableThings_1, UpdateWhenMoneyChanges_3, applyMixins_13) {
     "use strict";
     var ProductionOverviewComponent = (function (_super) {
         __extends(ProductionOverviewComponent, _super);
@@ -19221,11 +19291,11 @@ define("src/uicomponents/production/ProductionOverview", ["require", "exports", 
             var player = this.props.player;
             var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
             if (starsByManufactoryPresence.withManufactories.length > 0) {
-                starsByManufactoryPresence.withManufactories.sort(utility_34.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withManufactories.sort(utility_31.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withManufactories[0];
             }
             else if (starsByManufactoryPresence.withoutManufactories.length > 0) {
-                starsByManufactoryPresence.withoutManufactories.sort(utility_34.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withoutManufactories.sort(utility_31.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withoutManufactories[0];
             }
             return ({
@@ -19238,10 +19308,10 @@ define("src/uicomponents/production/ProductionOverview", ["require", "exports", 
             this.forceUpdate();
         };
         ProductionOverviewComponent.prototype.componentDidMount = function () {
-            eventManager_34.default.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+            eventManager_32.default.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
         };
         ProductionOverviewComponent.prototype.componentWillUnmount = function () {
-            eventManager_34.default.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+            eventManager_32.default.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
         };
         ProductionOverviewComponent.prototype.getStarsWithAndWithoutManufactories = function () {
             var player = this.props.player;
@@ -19432,7 +19502,7 @@ define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/list/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_35) {
+define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/list/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_32) {
     "use strict";
     var SaveListComponent = (function (_super) {
         __extends(SaveListComponent, _super);
@@ -19462,7 +19532,7 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
                     content: SaveListItem_1.default({
                         storageKey: saveKeys[i],
                         name: saveData.name,
-                        date: utility_35.prettifyDate(date),
+                        date: utility_32.prettifyDate(date),
                         accurateDate: saveData.date,
                         isMarkedForDeletion: isMarkedForDeletion,
                         handleDelete: this.props.onDelete ?
@@ -19518,167 +19588,49 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src/uicomponents/saves/ConfirmDeleteSavesContent", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/popups/PopupManager"], function (require, exports, App_29, ConfirmDeleteSavesContent_1, SaveList_1, ConfirmPopup_2, PopupManager_8) {
+define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src/uicomponents/saves/ConfirmDeleteSavesContent", "src/uicomponents/saves/SaveList", "src/uicomponents/windows/DialogBox"], function (require, exports, App_29, ConfirmDeleteSavesContent_1, SaveList_1, DialogBox_2) {
     "use strict";
     var LoadGameComponent = (function (_super) {
         __extends(LoadGameComponent, _super);
         function LoadGameComponent(props) {
             var _this = _super.call(this, props) || this;
             _this.displayName = "LoadGame";
-            _this.popupID = undefined;
-            _this.state = _this.getInitialStateTODO();
+            _this.state =
+                {
+                    saveKeysToDelete: [],
+                    selectedSaveKey: null,
+                    hasConfirmDeleteSavePopup: false,
+                };
             _this.bindMethods();
             return _this;
         }
-        LoadGameComponent.prototype.bindMethods = function () {
-            this.handleLoad = this.handleLoad.bind(this);
-            this.handleClose = this.handleClose.bind(this);
-            this.updateClosePopup = this.updateClosePopup.bind(this);
-            this.overRideLightBoxClose = this.overRideLightBoxClose.bind(this);
-            this.handleUndoDelete = this.handleUndoDelete.bind(this);
-            this.deleteSelectedKeys = this.deleteSelectedKeys.bind(this);
-            this.handleRowChange = this.handleRowChange.bind(this);
-            this.getClosePopupContent = this.getClosePopupContent.bind(this);
-            this.handleDelete = this.handleDelete.bind(this);
-        };
-        LoadGameComponent.prototype.getInitialStateTODO = function () {
-            return ({
-                saveKeysToDelete: [],
-                saveKey: null,
-            });
-        };
         LoadGameComponent.prototype.componentDidMount = function () {
-            ReactDOM.findDOMNode(this.ref_TODO_okButton).focus();
-        };
-        LoadGameComponent.prototype.handleRowChange = function (row) {
-            this.setState({
-                saveKey: row.content.props.storageKey,
-            });
-            this.handleUndoDelete(row.content.props.storageKey);
-        };
-        LoadGameComponent.prototype.handleLoad = function () {
-            var saveKey = this.state.saveKey;
-            var afterConfirmFN = function () {
-                App_29.default.load(saveKey);
-            };
-            if (this.state.saveKeysToDelete.indexOf(saveKey) !== -1) {
-                var boundClose = this.handleClose.bind(this, true, afterConfirmFN);
-                this.handleUndoDelete(saveKey, boundClose);
-            }
-            else {
-                this.handleClose(true, afterConfirmFN);
-            }
-        };
-        LoadGameComponent.prototype.deleteSelectedKeys = function () {
-            this.popupID = this.popupManager.makePopup({
-                content: ConfirmPopup_2.default(this.getClosePopupContent(null, false, false)),
-                popupProps: {
-                    dragPositionerProps: {
-                        preventAutoResize: true,
-                    },
-                },
-            });
-        };
-        LoadGameComponent.prototype.getClosePopupContent = function (afterCloseCallback, shouldCloseParent, shouldUndoAll) {
-            var _this = this;
-            if (shouldCloseParent === void 0) { shouldCloseParent = true; }
-            if (shouldUndoAll === void 0) { shouldUndoAll = false; }
-            var deleteFN = function () {
-                for (var i = 0; i < _this.state.saveKeysToDelete.length; i++) {
-                    localStorage.removeItem(_this.state.saveKeysToDelete[i]);
-                }
-                _this.setState({
-                    saveKeysToDelete: [],
-                });
-            };
-            var closeFN = function () {
-                _this.popupID = undefined;
-                if (shouldCloseParent) {
-                    _this.props.handleClose();
-                }
-                if (shouldUndoAll) {
-                    _this.setState({
-                        saveKeysToDelete: [],
-                    });
-                }
-                if (afterCloseCallback)
-                    afterCloseCallback();
-            };
-            return ({
-                handleOk: deleteFN,
-                handleClose: closeFN,
-                content: ConfirmDeleteSavesContent_1.default({
-                    saveNames: this.state.saveKeysToDelete,
-                }),
-            });
-        };
-        LoadGameComponent.prototype.updateClosePopup = function () {
-            if (isFinite(this.popupID)) {
-            }
-            else if (this.state.saveKeysToDelete.length < 1) {
-                if (isFinite(this.popupID))
-                    this.popupManager.closePopup(this.popupID);
-                this.popupID = undefined;
-            }
-        };
-        LoadGameComponent.prototype.handleClose = function (deleteSaves, afterCloseCallback) {
-            if (deleteSaves === void 0) { deleteSaves = true; }
-            if (!deleteSaves || this.state.saveKeysToDelete.length < 1) {
-                this.props.handleClose();
-                if (afterCloseCallback)
-                    afterCloseCallback();
-                return;
-            }
-            this.popupID = this.popupManager.makePopup({
-                content: ConfirmPopup_2.default(this.getClosePopupContent(afterCloseCallback, true, true)),
-                popupProps: {
-                    dragPositionerProps: {
-                        preventAutoResize: true,
-                    },
-                },
-            });
-        };
-        LoadGameComponent.prototype.handleDelete = function (saveKey) {
-            this.setState({
-                saveKeysToDelete: this.state.saveKeysToDelete.concat(saveKey),
-            }, this.updateClosePopup);
-        };
-        LoadGameComponent.prototype.handleUndoDelete = function (saveKey, callback) {
-            var _this = this;
-            var afterDeleteFN = function () {
-                _this.updateClosePopup();
-                if (callback) {
-                    callback();
-                }
-            };
-            var i = this.state.saveKeysToDelete.indexOf(saveKey);
-            if (i !== -1) {
-                var newsaveKeysToDelete = this.state.saveKeysToDelete.slice(0);
-                newsaveKeysToDelete.splice(i, 1);
-                this.setState({
-                    saveKeysToDelete: newsaveKeysToDelete,
-                }, afterDeleteFN);
-            }
-        };
-        LoadGameComponent.prototype.overRideLightBoxClose = function () {
-            this.handleClose();
+            ReactDOM.findDOMNode(this.loadButtonElement).focus();
         };
         LoadGameComponent.prototype.render = function () {
             var _this = this;
             return (React.DOM.div({
                 className: "save-game",
-            }, PopupManager_8.default({
-                ref: function (component) {
-                    _this.popupManager = component;
+            }, !this.state.hasConfirmDeleteSavePopup ? null :
+                DialogBox_2.default({
+                    title: "Confirm deletion",
+                    handleOk: function () {
+                        _this.deleteSelectedKeys();
+                        _this.closeConfirmDeleteSavesPopup();
+                    },
+                    handleCancel: this.closeConfirmDeleteSavesPopup,
+                }, ConfirmDeleteSavesContent_1.default({
+                    saveNames: this.state.saveKeysToDelete,
+                })), SaveList_1.default({
+                onRowChange: function (row) {
+                    _this.setState({ selectedSaveKey: row.content.props.storageKey });
+                    _this.handleUndoMarkForDeletion(row.content.props.storageKey);
                 },
-                onlyAllowOne: true,
-            }), SaveList_1.default({
-                onRowChange: this.handleRowChange,
                 autoSelect: !Boolean(App_29.default.game.gameStorageKey),
                 selectedKey: App_29.default.game.gameStorageKey,
                 allowDelete: true,
-                onDelete: this.handleDelete,
-                onUndoDelete: this.handleUndoDelete,
+                onDelete: this.handleMarkForDeletion,
+                onUndoDelete: this.handleUndoMarkForDeletion,
                 saveKeysToDelete: this.state.saveKeysToDelete,
                 onDoubleClick: this.handleLoad,
             }), React.DOM.form({
@@ -19688,7 +19640,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
             }, React.DOM.input({
                 className: "save-game-name",
                 type: "text",
-                value: this.state.saveKey ? this.state.saveKey.replace("Rance.Save.", "") : "",
+                value: this.state.selectedSaveKey ? this.state.selectedSaveKey.replace("Rance.Save.", "") : "",
                 readOnly: true,
             })), React.DOM.div({
                 className: "save-game-buttons-container",
@@ -19696,16 +19648,62 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
                 className: "save-game-button",
                 onClick: this.handleLoad,
                 ref: function (component) {
-                    _this.ref_TODO_okButton = component;
+                    _this.loadButtonElement = component;
                 },
             }, "Load"), React.DOM.button({
                 className: "save-game-button",
                 onClick: this.handleClose.bind(this, true, null),
             }, "Cancel"), React.DOM.button({
                 className: "save-game-button",
-                onClick: this.deleteSelectedKeys,
+                onClick: this.openConfirmDeleteSavesPopup,
                 disabled: this.state.saveKeysToDelete.length < 1,
             }, "Delete"))));
+        };
+        LoadGameComponent.prototype.openConfirmDeleteSavesPopup = function () {
+            this.setState({ hasConfirmDeleteSavePopup: true });
+        };
+        LoadGameComponent.prototype.bindMethods = function () {
+            this.handleLoad = this.handleLoad.bind(this);
+            this.deleteSelectedKeys = this.deleteSelectedKeys.bind(this);
+            this.handleMarkForDeletion = this.handleMarkForDeletion.bind(this);
+            this.handleUndoMarkForDeletion = this.handleUndoMarkForDeletion.bind(this);
+            this.openConfirmDeleteSavesPopup = this.openConfirmDeleteSavesPopup.bind(this);
+            this.closeConfirmDeleteSavesPopup = this.closeConfirmDeleteSavesPopup.bind(this);
+            this.handleClose = this.handleClose.bind(this);
+        };
+        LoadGameComponent.prototype.handleLoad = function () {
+            App_29.default.load(this.state.selectedSaveKey);
+        };
+        LoadGameComponent.prototype.deleteSelectedKeys = function () {
+            var _this = this;
+            this.state.saveKeysToDelete.forEach(function (key) {
+                localStorage.removeItem(key);
+            });
+            this.setState({ saveKeysToDelete: [] }, function () {
+                if (_this.afterConfirmDeleteCallback) {
+                    var afterConfirmDeleteCallback = _this.afterConfirmDeleteCallback;
+                    _this.afterConfirmDeleteCallback = undefined;
+                    afterConfirmDeleteCallback();
+                }
+            });
+        };
+        LoadGameComponent.prototype.handleMarkForDeletion = function (saveKey) {
+            this.setState({
+                saveKeysToDelete: this.state.saveKeysToDelete.concat(saveKey),
+            });
+        };
+        LoadGameComponent.prototype.handleUndoMarkForDeletion = function (saveKey) {
+            this.setState({
+                saveKeysToDelete: this.state.saveKeysToDelete.filter(function (currentKey) {
+                    return currentKey !== saveKey;
+                }),
+            });
+        };
+        LoadGameComponent.prototype.closeConfirmDeleteSavesPopup = function () {
+            this.setState({ hasConfirmDeleteSavePopup: false });
+        };
+        LoadGameComponent.prototype.handleClose = function () {
+            this.props.handleClose();
         };
         return LoadGameComponent;
     }(React.Component));
@@ -19714,7 +19712,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/popups/PopupManager"], function (require, exports, App_30, SaveList_2, ConfirmPopup_3, PopupManager_9) {
+define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/windows/DialogBox"], function (require, exports, App_30, SaveList_2, DialogBox_3) {
     "use strict";
     var SaveGameComponent = (function (_super) {
         __extends(SaveGameComponent, _super);
@@ -19723,26 +19721,67 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             _this.displayName = "SaveGame";
             _this.state = {
                 saveName: "",
+                hasConfirmOverwritePopup: false,
             };
             _this.bindMethods();
             return _this;
         }
+        SaveGameComponent.prototype.componentDidMount = function () {
+            if (App_30.default.game.gameStorageKey) {
+                ReactDOM.findDOMNode(this.okButtonElement).focus();
+            }
+            else {
+                ReactDOM.findDOMNode(this.saveNameElement).focus();
+            }
+        };
+        SaveGameComponent.prototype.render = function () {
+            var _this = this;
+            return (React.DOM.div({
+                className: "save-game",
+            }, !this.state.hasConfirmOverwritePopup ? null :
+                DialogBox_3.default({
+                    title: "Confirm overwrite",
+                    handleOk: this.saveGame,
+                    handleCancel: this.closeConfirmOverwritePopup,
+                }, "Are you sure you want to overwrite " + this.state.saveName.replace("Rance.Save.", "") + " ?"), SaveList_2.default({
+                onRowChange: this.handleRowChange,
+                selectedKey: App_30.default.game.gameStorageKey,
+                autoSelect: false,
+                onDoubleClick: this.saveGame,
+            }), React.DOM.form({
+                className: "save-game-form",
+                onSubmit: this.handleSave,
+                action: "javascript:void(0);",
+            }, React.DOM.input({
+                className: "save-game-name",
+                ref: function (component) {
+                    _this.saveNameElement = component;
+                },
+                type: "text",
+                value: this.state.saveName,
+                onChange: this.handleSaveNameInput,
+                maxLength: 64,
+            })), React.DOM.div({
+                className: "save-game-buttons-container",
+            }, React.DOM.button({
+                className: "save-game-button",
+                onClick: this.handleSave,
+                ref: function (component) {
+                    _this.okButtonElement = component;
+                },
+            }, "Save"), React.DOM.button({
+                className: "save-game-button",
+                onClick: this.handleClose,
+            }, "Cancel"))));
+        };
         SaveGameComponent.prototype.bindMethods = function () {
             this.handleClose = this.handleClose.bind(this);
-            this.makeConfirmOverWritePopup = this.makeConfirmOverWritePopup.bind(this);
             this.setSaveName = this.setSaveName.bind(this);
             this.saveGame = this.saveGame.bind(this);
             this.handleSave = this.handleSave.bind(this);
             this.handleRowChange = this.handleRowChange.bind(this);
             this.handleSaveNameInput = this.handleSaveNameInput.bind(this);
-        };
-        SaveGameComponent.prototype.componentDidMount = function () {
-            if (App_30.default.game.gameStorageKey) {
-                ReactDOM.findDOMNode(this.ref_TODO_okButton).focus();
-            }
-            else {
-                ReactDOM.findDOMNode(this.ref_TODO_saveName).focus();
-            }
+            this.closeConfirmOverwritePopup = this.closeConfirmOverwritePopup.bind(this);
         };
         SaveGameComponent.prototype.setSaveName = function (newText) {
             this.setState({
@@ -19760,11 +19799,14 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             var saveName = this.state.saveName;
             var saveKey = "Rance.Save." + saveName;
             if (localStorage[saveKey]) {
-                this.makeConfirmOverWritePopup(saveName);
+                this.setState({ hasConfirmOverwritePopup: true });
             }
             else {
                 this.saveGame();
             }
+        };
+        SaveGameComponent.prototype.closeConfirmOverwritePopup = function () {
+            this.setState({ hasConfirmOverwritePopup: false });
         };
         SaveGameComponent.prototype.saveGame = function () {
             App_30.default.game.save(this.state.saveName);
@@ -19773,55 +19815,6 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
         SaveGameComponent.prototype.handleClose = function () {
             this.props.handleClose();
         };
-        SaveGameComponent.prototype.makeConfirmOverWritePopup = function (saveName) {
-            this.popupManager.makePopup({
-                content: ConfirmPopup_3.default({
-                    handleOk: this.saveGame,
-                    content: "Are you sure you want to overwrite " +
-                        saveName.replace("Rance.Save.", "") + "?",
-                }),
-            });
-        };
-        SaveGameComponent.prototype.render = function () {
-            var _this = this;
-            return (React.DOM.div({
-                className: "save-game",
-            }, PopupManager_9.default({
-                ref: function (component) {
-                    _this.popupManager = component;
-                },
-                onlyAllowOne: true,
-            }), SaveList_2.default({
-                onRowChange: this.handleRowChange,
-                selectedKey: App_30.default.game.gameStorageKey,
-                autoSelect: false,
-                onDoubleClick: this.saveGame,
-            }), React.DOM.form({
-                className: "save-game-form",
-                onSubmit: this.handleSave,
-                action: "javascript:void(0);",
-            }, React.DOM.input({
-                className: "save-game-name",
-                ref: function (component) {
-                    _this.ref_TODO_saveName = component;
-                },
-                type: "text",
-                value: this.state.saveName,
-                onChange: this.handleSaveNameInput,
-                maxLength: 64,
-            })), React.DOM.div({
-                className: "save-game-buttons-container",
-            }, React.DOM.button({
-                className: "save-game-button",
-                onClick: this.handleSave,
-                ref: function (component) {
-                    _this.ref_TODO_okButton = component;
-                },
-            }, "Save"), React.DOM.button({
-                className: "save-game-button",
-                onClick: this.handleClose,
-            }, "Cancel"))));
-        };
         return SaveGameComponent;
     }(React.Component));
     exports.SaveGameComponent = SaveGameComponent;
@@ -19829,7 +19822,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/technologies/technologyPrioritySlider", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_35) {
+define("src/uicomponents/technologies/technologyPrioritySlider", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_33) {
     "use strict";
     var TechnologyPrioritySliderComponent = (function (_super) {
         __extends(TechnologyPrioritySliderComponent, _super);
@@ -19851,10 +19844,10 @@ define("src/uicomponents/technologies/technologyPrioritySlider", ["require", "ex
             });
         };
         TechnologyPrioritySliderComponent.prototype.componentDidMount = function () {
-            eventManager_35.default.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
+            eventManager_33.default.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
         };
         TechnologyPrioritySliderComponent.prototype.componentWillUnmount = function () {
-            eventManager_35.default.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
+            eventManager_33.default.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
         };
         TechnologyPrioritySliderComponent.prototype.isTechnologyLocked = function () {
             return this.props.playerTechnology.technologies[this.props.technology.key].priorityIsLocked;
@@ -19969,7 +19962,7 @@ define("src/uicomponents/technologies/Technology", ["require", "exports", "src/u
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/technologies/TechnologiesList", ["require", "exports", "src/eventManager", "src/uicomponents/technologies/Technology"], function (require, exports, eventManager_36, Technology_1) {
+define("src/uicomponents/technologies/TechnologiesList", ["require", "exports", "src/eventManager", "src/uicomponents/technologies/Technology"], function (require, exports, eventManager_34, Technology_1) {
     "use strict";
     var TechnologiesListComponent = (function (_super) {
         __extends(TechnologiesListComponent, _super);
@@ -19980,10 +19973,10 @@ define("src/uicomponents/technologies/TechnologiesList", ["require", "exports", 
             return _this;
         }
         TechnologiesListComponent.prototype.componentDidMount = function () {
-            this.updateListener = eventManager_36.default.addEventListener("builtBuildingWithEffect_research", this.forceUpdate.bind(this));
+            this.updateListener = eventManager_34.default.addEventListener("builtBuildingWithEffect_research", this.forceUpdate.bind(this));
         };
         TechnologiesListComponent.prototype.componentWillUnmount = function () {
-            eventManager_36.default.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
+            eventManager_34.default.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
         };
         TechnologiesListComponent.prototype.render = function () {
             var playerTechnology = this.props.playerTechnology;
@@ -20211,6 +20204,265 @@ define("src/uicomponents/galaxymap/EconomySummary", ["require", "exports", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
+define("localization/defaultLanguages", ["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.en = {
+        code: "en",
+        displayName: "English",
+    };
+});
+define("src/localization/IntermediateLocalizedString", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var IntermediateLocalizedString = (function () {
+        function IntermediateLocalizedString(value) {
+            this.value = value;
+        }
+        IntermediateLocalizedString.prototype.format = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return formatString(this.value, args);
+        };
+        return IntermediateLocalizedString;
+    }());
+    exports.IntermediateLocalizedString = IntermediateLocalizedString;
+});
+define("src/localization/LocalizedText", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
+define("src/localization/Localizer", ["require", "exports", "src/localization/IntermediateLocalizedString", "src/localization/activeLanguage", "src/rangeOperations", "src/utility"], function (require, exports, IntermediateLocalizedString_1, activeLanguage_1, rangeOperations_2, utility_33) {
+    "use strict";
+    var Localizer = (function () {
+        function Localizer() {
+            this.textsByLanguageCode = {};
+        }
+        Localizer.parseRangeString = function (rangeString) {
+            var rangeRegex = /^(-?(?:0|[1-9]\d*)(?:\.\d+)?)?\.\.(-?(?:0|[1-9]\d*)(?:\.\d+)?)?$/;
+            var match = rangeString.match(rangeRegex);
+            if (!match) {
+                return null;
+            }
+            var min = match[1] === "" ? -Infinity : Number(match[1]);
+            var max = match[2] === "" ? Infinity : Number(match[2]);
+            return { min: min, max: max };
+        };
+        Localizer.localizedTextIsValid = function (text) {
+            if (typeof text === "string") {
+                return true;
+            }
+            else {
+                var textByQuantity = text;
+                var allRanges = [];
+                for (var quantityKey in textByQuantity) {
+                    if (quantityKey === "other") {
+                        continue;
+                    }
+                    else if (!isNaN(Number(quantityKey))) {
+                        continue;
+                    }
+                    else {
+                        var range = Localizer.parseRangeString(quantityKey);
+                        if (!range) {
+                            console.warn("Couldn't parse range string '" + quantityKey + "' " + text);
+                            return false;
+                        }
+                        else if (!isFinite(range.min) && !isFinite(range.max)) {
+                            console.warn("Infinite range string '" + quantityKey + "' " + text + ". Please use 'other' as the key instead.");
+                            return false;
+                        }
+                        else {
+                            allRanges.push(range);
+                            continue;
+                        }
+                    }
+                }
+                if (rangeOperations_2.rangesHaveOverlap(allRanges)) {
+                    console.warn("Ambiguous quantity-dependant localization. Overlapping ranges in " + text + ".");
+                    return false;
+                }
+                return true;
+            }
+        };
+        Localizer.getStringFromLocalizedTextByQuantity = function (text, quantity) {
+            for (var quantityString in text) {
+                if (quantityString === "other") {
+                    continue;
+                }
+                else if (!isNaN(Number(quantityString))) {
+                    var quantityStringValue = Number(quantityString);
+                    var delta = Math.abs(quantity - quantityStringValue);
+                    var epsilon = 0.00001;
+                    if (delta < epsilon) {
+                        return text[quantityString];
+                    }
+                }
+                else {
+                    var range = Localizer.parseRangeString(quantityString);
+                    if (quantity >= range.min && quantity <= range.max) {
+                        return text[quantityString];
+                    }
+                }
+            }
+            return text.other;
+        };
+        Localizer.prototype.registerTexts = function (texts, language) {
+            this.textsByLanguageCode[language.code] = {};
+            this.appendTexts(texts, language);
+        };
+        Localizer.prototype.appendTexts = function (texts, language) {
+            var _this = this;
+            if (!this.textsByLanguageCode[language.code]) {
+                throw new Error("No texts registered for language code " + language.code + ".\n        Call " + this.registerTexts + " first.");
+            }
+            var _loop_3 = function (textKey) {
+                if (!this_2.textsByLanguageCode[language.code][textKey]) {
+                    this_2.textsByLanguageCode[language.code][textKey] = [];
+                }
+                var localizedTexts = texts[textKey];
+                localizedTexts.forEach(function (text) {
+                    var isValid = Localizer.localizedTextIsValid(text);
+                    if (isValid) {
+                        _this.textsByLanguageCode[language.code][textKey].push(text);
+                    }
+                    else {
+                        console.warn("Invalid localization " + language.code + "." + textKey);
+                    }
+                });
+            };
+            var this_2 = this;
+            for (var textKey in texts) {
+                _loop_3(textKey);
+            }
+        };
+        Localizer.prototype.localize = function (key, props) {
+            var activeLanguage = activeLanguage_1.getActiveLanguage();
+            var missingLocalizationString = activeLanguage.code + "." + key;
+            var textsForActiveLanguage = this.textsByLanguageCode[activeLanguage.code];
+            if (textsForActiveLanguage) {
+                var localizedTexts = this.textsByLanguageCode[activeLanguage.code][key];
+                if (localizedTexts && localizedTexts.length > 0) {
+                    var localizedText = utility_33.getRandomArrayItem(localizedTexts);
+                    if (typeof localizedText === "string") {
+                        return new IntermediateLocalizedString_1.IntermediateLocalizedString(localizedText);
+                    }
+                    else {
+                        var quantity = (props && isFinite(props.quantity)) ? props.quantity : 1;
+                        var matchingText = Localizer.getStringFromLocalizedTextByQuantity(localizedText, quantity);
+                        return new IntermediateLocalizedString_1.IntermediateLocalizedString(matchingText);
+                    }
+                }
+            }
+            console.warn("Missing localization '" + missingLocalizationString + "'");
+            return new IntermediateLocalizedString_1.IntermediateLocalizedString(missingLocalizationString);
+        };
+        return Localizer;
+    }());
+    exports.Localizer = Localizer;
+});
+define("localization/options/en", ["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.options = {
+        fullLanguageSupport: ["Full language support"],
+        partialLanguageSupport: ["Partial language support"],
+    };
+});
+define("localization/options/localize", ["require", "exports", "localization/defaultLanguages", "src/localization/Localizer", "localization/options/en"], function (require, exports, Languages, Localizer_1, en_1) {
+    "use strict";
+    exports.localizer = new Localizer_1.Localizer();
+    exports.localizer.registerTexts(en_1.options, Languages.en);
+    exports.localize = exports.localizer.localize.bind(exports.localizer);
+});
+define("src/uicomponents/language/LanguageSelect", ["require", "exports", "src/localization/languageSupport", "localization/options/localize"], function (require, exports, languageSupport_2, localize_1) {
+    "use strict";
+    var LanguageSelectComponent = (function (_super) {
+        __extends(LanguageSelectComponent, _super);
+        function LanguageSelectComponent(props) {
+            var _this = _super.call(this, props) || this;
+            _this.displayName = "LanguageSelect";
+            _this.handleLanguageChange = _this.handleLanguageChange.bind(_this);
+            return _this;
+        }
+        LanguageSelectComponent.prototype.render = function () {
+            var _this = this;
+            var sortedLanguages = Object.keys(this.props.availableLanguagesByCode).map(function (code) {
+                return _this.props.availableLanguagesByCode[code];
+            }).sort(function (a, b) {
+                var aSupportLevel = _this.props.languageSupportLevelByCode[a.code];
+                var bSupportLevel = _this.props.languageSupportLevelByCode[b.code];
+                var supportLevelSort = bSupportLevel - aSupportLevel;
+                if (supportLevelSort) {
+                    return supportLevelSort;
+                }
+                else {
+                    return a.displayName.localeCompare(b.displayName);
+                }
+            });
+            var languageOptionElements = sortedLanguages.map(function (language) {
+                var supportLevel = _this.props.languageSupportLevelByCode[language.code];
+                return React.DOM.option({
+                    className: "language-select-option" + (supportLevel === languageSupport_2.LanguageSupportLevel.full ?
+                        " full-language-support" :
+                        " partial-language-support"),
+                    value: language.code,
+                    key: language.code,
+                    title: supportLevel === languageSupport_2.LanguageSupportLevel.full ?
+                        localize_1.localize("fullLanguageSupport").format() :
+                        localize_1.localize("partialLanguageSupport").format(),
+                }, language.displayName);
+            });
+            return (React.DOM.select({
+                className: "language-select",
+                value: this.props.activeLanguage.code,
+                onChange: this.handleLanguageChange,
+            }, languageOptionElements));
+        };
+        LanguageSelectComponent.prototype.handleLanguageChange = function (e) {
+            var target = e.target;
+            var selectedLanguageCode = target.value;
+            var newLanguage = this.props.availableLanguagesByCode[selectedLanguageCode];
+            if (!newLanguage) {
+                throw new Error("Couldn't select language with code " + selectedLanguageCode + ".\n        Valid languages: " + Object.keys(this.props.availableLanguagesByCode));
+            }
+            this.props.onChange(newLanguage);
+        };
+        return LanguageSelectComponent;
+    }(React.Component));
+    exports.LanguageSelectComponent = LanguageSelectComponent;
+    var Factory = React.createFactory(LanguageSelectComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+});
+define("src/uicomponents/language/AppLanguageSelect", ["require", "exports", "src/uicomponents/language/LanguageSelect", "src/App", "src/localization/activeLanguage", "src/localization/languageSupport"], function (require, exports, LanguageSelect_1, App_31, activeLanguage_2, languageSupport_3) {
+    "use strict";
+    var AppLanguageSelectComponent = (function (_super) {
+        __extends(AppLanguageSelectComponent, _super);
+        function AppLanguageSelectComponent(props) {
+            var _this = _super.call(this, props) || this;
+            _this.displayName = "AppLanguageSelect";
+            _this.handleLanguageChange = _this.handleLanguageChange.bind(_this);
+            return _this;
+        }
+        AppLanguageSelectComponent.prototype.render = function () {
+            return (LanguageSelect_1.default({
+                activeLanguage: this.props.activeLanguage,
+                availableLanguagesByCode: languageSupport_3.getLanguagesByCode.apply(void 0, App_31.default.moduleData.moduleFiles),
+                languageSupportLevelByCode: languageSupport_3.getLanguageSupportLevelForModuleFiles.apply(void 0, App_31.default.moduleData.moduleFiles),
+                onChange: this.handleLanguageChange,
+            }));
+        };
+        AppLanguageSelectComponent.prototype.handleLanguageChange = function (newLanguage) {
+            activeLanguage_2.setActiveLanguageCode(newLanguage.code);
+            localStorage.setItem("Rance.language", newLanguage.code);
+            App_31.default.reactUI.render();
+        };
+        return AppLanguageSelectComponent;
+    }(React.Component));
+    exports.AppLanguageSelectComponent = AppLanguageSelectComponent;
+    var Factory = React.createFactory(AppLanguageSelectComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+});
 define("src/uicomponents/galaxymap/OptionsCheckbox", ["require", "exports"], function (require, exports) {
     "use strict";
     var OptionsCheckboxComponent = (function (_super) {
@@ -20240,7 +20492,7 @@ define("src/uicomponents/galaxymap/OptionsCheckbox", ["require", "exports"], fun
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_36) {
+define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_34) {
     "use strict";
     var OptionsNumericFieldComponent = (function (_super) {
         __extends(OptionsNumericFieldComponent, _super);
@@ -20274,7 +20526,7 @@ define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", 
             if (!isFinite(value)) {
                 return;
             }
-            value = utility_36.clamp(value, parseFloat(target.min), parseFloat(target.max));
+            value = utility_34.clamp(value, parseFloat(target.min), parseFloat(target.max));
             this.setState({
                 value: value,
             }, this.triggerOnChangeFN);
@@ -20305,40 +20557,36 @@ define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Options", "src/eventManager", "src/tutorials/TutorialStatus", "src/utility", "src/uicomponents/notifications/NotificationFilterButton", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/popups/PopupManager", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/galaxymap/OptionsNumericField"], function (require, exports, Options_9, eventManager_37, TutorialStatus_4, utility_37, NotificationFilterButton_2, ConfirmPopup_4, PopupManager_10, OptionsCheckbox_1, OptionsGroup_2, OptionsNumericField_1) {
+define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Options", "src/eventManager", "src/tutorials/TutorialStatus", "src/utility", "src/uicomponents/notifications/NotificationFilterButton", "src/uicomponents/windows/DialogBox", "src/uicomponents/language/AppLanguageSelect", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/galaxymap/OptionsNumericField"], function (require, exports, Options_9, eventManager_35, TutorialStatus_4, utility_35, NotificationFilterButton_2, DialogBox_4, AppLanguageSelect_1, OptionsCheckbox_1, OptionsGroup_2, OptionsNumericField_1) {
     "use strict";
     var OptionsListComponent = (function (_super) {
         __extends(OptionsListComponent, _super);
         function OptionsListComponent(props) {
             var _this = _super.call(this, props) || this;
             _this.displayName = "OptionsList";
+            _this.state =
+                {
+                    hasConfirmResetAllDialog: false,
+                };
             _this.bindMethods();
             return _this;
         }
-        OptionsListComponent.prototype.bindMethods = function () {
-            this.handleResetAllOptions = this.handleResetAllOptions.bind(this);
-        };
-        OptionsListComponent.prototype.handleResetAllOptions = function () {
-            var _this = this;
-            this.popupManager.makePopup({
-                content: ConfirmPopup_4.default({
-                    handleOk: function () {
-                        Options_9.default.setDefaults();
-                        _this.forceUpdate();
-                    },
-                    content: "Are you sure you want to reset all options?",
-                }),
-                popupProps: {
-                    dragPositionerProps: {
-                        containerDragOnly: true,
-                        preventAutoResize: true,
-                    },
-                },
-            });
-        };
         OptionsListComponent.prototype.render = function () {
             var _this = this;
             var allOptions = [];
+            var languageOptions = [];
+            languageOptions.push({
+                key: "selectAppLanguage",
+                content: AppLanguageSelect_1.default({
+                    activeLanguage: this.props.activeLanguage,
+                }),
+            });
+            allOptions.push(OptionsGroup_2.default({
+                key: "language",
+                header: "Language",
+                options: languageOptions,
+                activeLanguage: this.props.activeLanguage,
+            }));
             var battleAnimationOptions = [];
             var battleAnimationStages = [
                 {
@@ -20406,6 +20654,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Opt
                 key: "battleAnimationOptions",
                 header: "Battle animation timing",
                 options: battleAnimationOptions,
+                activeLanguage: this.props.activeLanguage,
                 resetFN: function () {
                     Options_9.default.setDefaultForCategory("battleAnimationTiming");
                     _this.forceUpdate();
@@ -20420,7 +20669,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Opt
                     onChangeFN: function () {
                         Options_9.default.debug.enabled = !Options_9.default.debug.enabled;
                         _this.forceUpdate();
-                        eventManager_37.default.dispatchEvent("renderUI");
+                        eventManager_35.default.dispatchEvent("renderUI");
                     },
                 }),
             });
@@ -20440,7 +20689,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Opt
                             if (!isFinite(value)) {
                                 return;
                             }
-                            value = utility_37.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                            value = utility_35.clamp(value, parseFloat(target.min), parseFloat(target.max));
                             Options_9.default.debug.battleSimulationDepth = value;
                             _this.forceUpdate();
                         },
@@ -20453,6 +20702,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Opt
                 key: "debug",
                 header: "Debug",
                 options: debugOptions,
+                activeLanguage: this.props.activeLanguage,
                 resetFN: function () {
                     Options_9.default.setDefaultForCategory("debug");
                     _this.forceUpdate();
@@ -20466,7 +20716,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Opt
                     label: "Always expand top right menu on low resolution",
                     onChangeFN: function () {
                         Options_9.default.ui.noHamburger = !Options_9.default.ui.noHamburger;
-                        eventManager_37.default.dispatchEvent("updateHamburgerMenu");
+                        eventManager_35.default.dispatchEvent("updateHamburgerMenu");
                         _this.forceUpdate();
                     },
                 }),
@@ -20477,6 +20727,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Opt
                     filter: this.props.log.notificationFilter,
                     text: "Message settings",
                     highlightedOptionKey: null,
+                    activeLanguage: this.props.activeLanguage,
                 }),
             });
             uiOptions.push({
@@ -20490,6 +20741,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Opt
                 key: "ui",
                 header: "UI",
                 options: uiOptions,
+                activeLanguage: this.props.activeLanguage,
                 resetFN: function () {
                     Options_9.default.setDefaultForCategory("ui");
                 },
@@ -20506,7 +20758,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Opt
                     value: Options_9.default.display.borderWidth,
                     onChangeFN: function (value) {
                         Options_9.default.display.borderWidth = value;
-                        eventManager_37.default.dispatchEvent("renderMap");
+                        eventManager_35.default.dispatchEvent("renderMap");
                     },
                 }),
             });
@@ -20514,20 +20766,40 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Opt
                 key: "display",
                 header: "Display",
                 options: displayOptions,
+                activeLanguage: this.props.activeLanguage,
                 resetFN: function () {
                     Options_9.default.setDefaultForCategory("display");
                     _this.forceUpdate();
                 },
             }));
-            return (React.DOM.div({ className: "options" }, PopupManager_10.default({
-                ref: function (component) {
-                    _this.popupManager = component;
-                },
-                onlyAllowOne: true,
-            }), React.DOM.div({ className: "options-header" }, "Options", React.DOM.button({
+            return (React.DOM.div({ className: "options" }, !this.state.hasConfirmResetAllDialog ? null :
+                DialogBox_4.default({
+                    title: "Reset all options",
+                    handleOk: function () {
+                        Options_9.default.setDefaults();
+                        _this.closeResetAllOptionsDialog();
+                    },
+                    handleCancel: function () {
+                        _this.closeResetAllOptionsDialog();
+                    },
+                }, "Are you sure you want to reset all options?"), React.DOM.div({ className: "options-header" }, React.DOM.button({
                 className: "reset-options-button reset-all-options-button",
-                onClick: this.handleResetAllOptions,
+                onClick: this.openResetAllOptionsDialog,
             }, "Reset all options")), allOptions));
+        };
+        OptionsListComponent.prototype.bindMethods = function () {
+            this.openResetAllOptionsDialog = this.openResetAllOptionsDialog.bind(this);
+            this.closeResetAllOptionsDialog = this.closeResetAllOptionsDialog.bind(this);
+        };
+        OptionsListComponent.prototype.openResetAllOptionsDialog = function () {
+            this.setState({
+                hasConfirmResetAllDialog: true,
+            });
+        };
+        OptionsListComponent.prototype.closeResetAllOptionsDialog = function () {
+            this.setState({
+                hasConfirmResetAllDialog: false,
+            });
         };
         return OptionsListComponent;
     }(React.Component));
@@ -20536,168 +20808,145 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/Opt
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/Options", "src/uicomponents/diplomacy/DiplomacyOverview", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/production/ProductionOverview", "src/uicomponents/saves/LoadGame", "src/uicomponents/saves/SaveGame", "src/uicomponents/technologies/TechnologiesList", "src/uicomponents/unitlist/ItemEquip", "src/uicomponents/galaxymap/EconomySummary", "src/uicomponents/galaxymap/OptionsList"], function (require, exports, Options_10, DiplomacyOverview_1, PopupManager_11, TopMenuPopup_6, ProductionOverview_1, LoadGame_1, SaveGame_1, TechnologiesList_1, ItemEquip_1, EconomySummary_1, OptionsList_1) {
+define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/Options", "src/uicomponents/windows/DefaultWindow", "src/uicomponents/diplomacy/DiplomacyOverview", "src/uicomponents/production/ProductionOverview", "src/uicomponents/saves/LoadGame", "src/uicomponents/saves/SaveGame", "src/uicomponents/technologies/TechnologiesList", "src/uicomponents/unitlist/ItemEquip", "src/uicomponents/galaxymap/EconomySummary", "src/uicomponents/galaxymap/OptionsList"], function (require, exports, Options_10, DefaultWindow_8, DiplomacyOverview_1, ProductionOverview_1, LoadGame_1, SaveGame_1, TechnologiesList_1, ItemEquip_1, EconomySummary_1, OptionsList_1) {
     "use strict";
     var TopMenuPopupsComponent = (function (_super) {
         __extends(TopMenuPopupsComponent, _super);
         function TopMenuPopupsComponent(props) {
             var _this = _super.call(this, props) || this;
             _this.displayName = "TopMenuPopups";
-            _this.cachedPopupRects = {};
+            _this.popupComponents = {};
+            _this.cachedPopupPositions = {};
+            _this.popupConstructData = {
+                production: {
+                    makeContent: function () { return ProductionOverview_1.default({
+                        player: _this.props.player,
+                    }); },
+                    title: "Production",
+                },
+                equipItems: {
+                    makeContent: function () { return ItemEquip_1.default({
+                        player: _this.props.player,
+                    }); },
+                    title: "Equip",
+                },
+                economySummary: {
+                    makeContent: function () { return EconomySummary_1.default({
+                        player: _this.props.player,
+                    }); },
+                    title: "Economy",
+                },
+                saveGame: {
+                    makeContent: function () { return SaveGame_1.default({
+                        handleClose: _this.closePopup.bind(_this, "saveGame"),
+                    }); },
+                    title: "Save",
+                },
+                loadGame: {
+                    makeContent: function () { return LoadGame_1.default({
+                        handleClose: _this.closePopup.bind(_this, "loadGame"),
+                    }); },
+                    title: "Load",
+                },
+                options: {
+                    makeContent: function () { return OptionsList_1.default({
+                        log: _this.props.game.notificationLog,
+                        activeLanguage: _this.props.activeLanguage,
+                    }); },
+                    title: "Options",
+                },
+                diplomacy: {
+                    makeContent: function () { return DiplomacyOverview_1.default({
+                        player: _this.props.player,
+                        totalPlayerCount: _this.props.game.playerOrder.length,
+                        metPlayers: _this.props.player.diplomacyStatus.metPlayers,
+                        statusByPlayer: _this.props.player.diplomacyStatus.statusByPlayer,
+                    }); },
+                    title: "Diplomacy",
+                },
+                technologies: {
+                    makeContent: function () { return TechnologiesList_1.default({
+                        playerTechnology: _this.props.player.playerTechnology,
+                    }); },
+                    title: "Technology",
+                },
+            };
             _this.state = _this.getInitialStateTODO();
             _this.bindMethods();
             return _this;
         }
+        TopMenuPopupsComponent.prototype.togglePopup = function (popupType) {
+            if (this.state[popupType]) {
+                this.closePopup(popupType);
+            }
+            else {
+                this.openPopup(popupType);
+            }
+        };
+        TopMenuPopupsComponent.prototype.render = function () {
+            var popups = [];
+            for (var popupType in this.state) {
+                if (this.state[popupType]) {
+                    popups.push(this.makePopup(popupType));
+                }
+            }
+            return (React.DOM.div({
+                className: "top-menu-popups-wrapper",
+            }, popups));
+        };
         TopMenuPopupsComponent.prototype.bindMethods = function () {
-            this.makePopup = this.makePopup.bind(this);
+            this.openPopup = this.openPopup.bind(this);
             this.closePopup = this.closePopup.bind(this);
             this.togglePopup = this.togglePopup.bind(this);
         };
         TopMenuPopupsComponent.prototype.getInitialStateTODO = function () {
             return ({
-                production: undefined,
-                equipItems: undefined,
-                economySummary: undefined,
-                saveGame: undefined,
-                loadGame: undefined,
-                options: undefined,
-                diplomacy: undefined,
-                technologies: undefined,
+                production: false,
+                equipItems: false,
+                economySummary: false,
+                saveGame: false,
+                loadGame: false,
+                options: false,
+                diplomacy: false,
+                technologies: false,
             });
         };
         TopMenuPopupsComponent.prototype.closePopup = function (popupType) {
-            var popupComponent = this.popupManager.popupComponentsByID[this.state[popupType]];
-            var popupNode = ReactDOM.findDOMNode(popupComponent);
-            this.cachedPopupRects[popupType] = popupNode.getBoundingClientRect();
-            this.popupManager.closePopup(this.state[popupType]);
-            var stateObj = {};
-            stateObj[popupType] = undefined;
-            this.setState(stateObj);
+            var popupComponent = this.popupComponents[popupType];
+            this.cachedPopupPositions[popupType] = popupComponent.windowContainerComponent.getPosition();
             if (popupType === "options") {
                 Options_10.default.save();
             }
-        };
-        TopMenuPopupsComponent.prototype.makePopup = function (popupType) {
-            var contentConstructor;
-            var contentProps;
-            var popupProps = {
-                resizable: true,
-                minWidth: 150,
-                minHeight: 100,
-                initialPosition: this.cachedPopupRects[popupType] || {},
-                dragPositionerProps: {
-                    preventAutoResize: true,
-                    containerDragOnly: true,
-                },
-            };
-            switch (popupType) {
-                case "production":
-                    {
-                        contentConstructor = ProductionOverview_1.default;
-                        contentProps =
-                            {
-                                player: this.props.player,
-                            };
-                        if (!popupProps.initialPosition.width) {
-                            popupProps.initialPosition.width = 600;
-                        }
-                        break;
-                    }
-                case "equipItems":
-                    {
-                        contentConstructor = ItemEquip_1.default;
-                        contentProps =
-                            {
-                                player: this.props.player,
-                            };
-                        popupProps.minWidth = 440;
-                        break;
-                    }
-                case "economySummary":
-                    {
-                        contentConstructor = EconomySummary_1.default;
-                        contentProps =
-                            {
-                                player: this.props.player,
-                            };
-                        break;
-                    }
-                case "saveGame":
-                    {
-                        contentConstructor = SaveGame_1.default;
-                        contentProps =
-                            {
-                                handleClose: this.closePopup.bind(this, "saveGame"),
-                            };
-                        break;
-                    }
-                case "loadGame":
-                    {
-                        contentConstructor = LoadGame_1.default;
-                        contentProps =
-                            {
-                                handleClose: this.closePopup.bind(this, "loadGame"),
-                            };
-                        break;
-                    }
-                case "options":
-                    {
-                        contentConstructor = OptionsList_1.default;
-                        contentProps =
-                            {
-                                log: this.props.game.notificationLog,
-                            };
-                        break;
-                    }
-                case "diplomacy":
-                    {
-                        contentConstructor = DiplomacyOverview_1.default;
-                        contentProps =
-                            {
-                                player: this.props.player,
-                                totalPlayerCount: this.props.game.playerOrder.length,
-                                metPlayers: this.props.player.diplomacyStatus.metPlayers,
-                                statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer,
-                            };
-                        break;
-                    }
-                case "technologies":
-                    {
-                        contentConstructor = TechnologiesList_1.default;
-                        contentProps =
-                            {
-                                playerTechnology: this.props.player.playerTechnology,
-                            };
-                        popupProps.minWidth = 430;
-                        break;
-                    }
-            }
-            var id = this.popupManager.makePopup({
-                content: TopMenuPopup_6.default({
-                    content: contentConstructor(contentProps),
-                    handleClose: this.closePopup.bind(this, popupType),
-                }),
-                popupProps: popupProps,
-            });
+            this.popupComponents[popupType] = null;
             var stateObj = {};
-            stateObj[popupType] = id;
+            stateObj[popupType] = false;
             this.setState(stateObj);
         };
-        TopMenuPopupsComponent.prototype.togglePopup = function (popupType) {
-            if (isFinite(this.state[popupType])) {
-                this.closePopup(popupType);
-            }
-            else {
-                this.makePopup(popupType);
-            }
+        TopMenuPopupsComponent.prototype.openPopup = function (popupType) {
+            var stateObj = {};
+            stateObj[popupType] = true;
+            this.setState(stateObj);
         };
-        TopMenuPopupsComponent.prototype.render = function () {
+        TopMenuPopupsComponent.prototype.makePopup = function (popupType) {
             var _this = this;
-            return (PopupManager_11.default({
+            var constructData = this.popupConstructData[popupType];
+            return DefaultWindow_8.default({
+                key: popupType,
                 ref: function (component) {
-                    _this.popupManager = component;
+                    _this.popupComponents[popupType] = component;
                 },
-            }));
+                title: constructData.title,
+                handleClose: function () {
+                    _this.closePopup(popupType);
+                },
+                getInitialPosition: !this.cachedPopupPositions[popupType] ?
+                    undefined :
+                    function (ownRect, container) {
+                        return _this.cachedPopupPositions[popupType];
+                    },
+                minWidth: 150,
+                minHeight: 100,
+            }, constructData.makeContent());
         };
         return TopMenuPopupsComponent;
     }(React.Component));
@@ -20706,7 +20955,7 @@ define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/O
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/Options", "src/eventManager", "src/uicomponents/galaxymap/TopMenuPopups"], function (require, exports, Options_11, eventManager_38, TopMenuPopups_1) {
+define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/Options", "src/eventManager", "src/uicomponents/galaxymap/TopMenuPopups"], function (require, exports, Options_11, eventManager_36, TopMenuPopups_1) {
     "use strict";
     var TopMenuComponent = (function (_super) {
         __extends(TopMenuComponent, _super);
@@ -20736,14 +20985,14 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/Options
         };
         TopMenuComponent.prototype.componentDidMount = function () {
             window.addEventListener("resize", this.handleResize, false);
-            eventManager_38.default.addEventListener("playerControlUpdated", this.delayedResize);
-            eventManager_38.default.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
+            eventManager_36.default.addEventListener("playerControlUpdated", this.delayedResize);
+            eventManager_36.default.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
             this.handleResize();
         };
         TopMenuComponent.prototype.componentWillUnmount = function () {
             window.removeEventListener("resize", this.handleResize);
-            eventManager_38.default.removeEventListener("playerControlUpdated", this.delayedResize);
-            eventManager_38.default.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
+            eventManager_36.default.removeEventListener("playerControlUpdated", this.delayedResize);
+            eventManager_36.default.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
         };
         TopMenuComponent.prototype.handleToggleHamburger = function () {
             this.handleResize();
@@ -20903,6 +21152,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/Options
                 },
                 player: this.props.player,
                 game: this.props.game,
+                activeLanguage: this.props.activeLanguage,
             })));
         };
         return TopMenuComponent;
@@ -20912,7 +21162,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/Options
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/eventManager", "src/uicomponents/mapmodes/MapModeSettings", "src/uicomponents/notifications/Notifications", "src/uicomponents/possibleactions/PossibleActions", "src/uicomponents/tutorials/IntroTutorial", "src/uicomponents/galaxymap/FleetSelection", "src/uicomponents/galaxymap/StarInfo", "src/uicomponents/galaxymap/TopBar", "src/uicomponents/galaxymap/TopMenu"], function (require, exports, eventManager_39, MapModeSettings_1, Notifications_1, PossibleActions_1, IntroTutorial_2, FleetSelection_1, StarInfo_1, TopBar_1, TopMenu_1) {
+define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/eventManager", "src/uicomponents/mapmodes/MapModeSettings", "src/uicomponents/notifications/Notifications", "src/uicomponents/possibleactions/PossibleActions", "src/uicomponents/tutorials/IntroTutorial", "src/uicomponents/galaxymap/FleetSelection", "src/uicomponents/galaxymap/StarInfo", "src/uicomponents/galaxymap/TopBar", "src/uicomponents/galaxymap/TopMenu"], function (require, exports, eventManager_37, MapModeSettings_1, Notifications_1, PossibleActions_1, IntroTutorial_2, FleetSelection_1, StarInfo_1, TopBar_1, TopMenu_1) {
     "use strict";
     var GalaxyMapUIComponent = (function (_super) {
         __extends(GalaxyMapUIComponent, _super);
@@ -20946,12 +21196,12 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/eve
             });
         };
         GalaxyMapUIComponent.prototype.componentWillMount = function () {
-            eventManager_39.default.addEventListener("playerControlUpdated", this.updateSelection);
-            eventManager_39.default.addEventListener("endTurn", this.setPlayerTurn);
+            eventManager_37.default.addEventListener("playerControlUpdated", this.updateSelection);
+            eventManager_37.default.addEventListener("endTurn", this.setPlayerTurn);
         };
         GalaxyMapUIComponent.prototype.componentWillUnmount = function () {
-            eventManager_39.default.removeEventListener("playerControlUpdated", this.updateSelection);
-            eventManager_39.default.removeEventListener("endTurn", this.setPlayerTurn);
+            eventManager_37.default.removeEventListener("playerControlUpdated", this.updateSelection);
+            eventManager_37.default.removeEventListener("endTurn", this.setPlayerTurn);
         };
         GalaxyMapUIComponent.prototype.componentDidUpdate = function () {
             this.clampExpandedActionElement();
@@ -20997,7 +21247,7 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/eve
             });
         };
         GalaxyMapUIComponent.prototype.closeReorganization = function () {
-            eventManager_39.default.dispatchEvent("endReorganizingFleets");
+            eventManager_37.default.dispatchEvent("endReorganizingFleets");
             this.updateSelection();
         };
         GalaxyMapUIComponent.prototype.render = function () {
@@ -21035,6 +21285,7 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/eve
             }), TopMenu_1.default({
                 player: this.props.player,
                 game: this.props.game,
+                activeLanguage: this.props.activeLanguage,
             }), React.DOM.div({
                 className: selectionContainerClassName,
             }, FleetSelection_1.default({
@@ -21079,6 +21330,7 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/eve
             }, "Map mode"), Notifications_1.default({
                 log: this.props.game.notificationLog,
                 currentTurn: this.props.game.turnNumber,
+                activeLanguage: this.props.activeLanguage,
                 key: "notifications",
             }), React.DOM.button(endTurnButtonProps, "End turn"))));
         };
@@ -21089,69 +21341,25 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/eve
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/GameOverScreen", ["require", "exports", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/saves/LoadGame"], function (require, exports, ConfirmPopup_5, PopupManager_12, TopMenuPopup_7, LoadGame_2) {
+define("src/uicomponents/galaxymap/GameOverScreen", ["require", "exports", "src/uicomponents/windows/DefaultWindow", "src/uicomponents/windows/DialogBox", "src/uicomponents/saves/LoadGame"], function (require, exports, DefaultWindow_9, DialogBox_5, LoadGame_2) {
     "use strict";
     var GameOverScreenComponent = (function (_super) {
         __extends(GameOverScreenComponent, _super);
         function GameOverScreenComponent(props) {
             var _this = _super.call(this, props) || this;
             _this.displayName = "GameOverScreen";
-            _this.popupIDs = {
-                load: undefined,
-                newGame: undefined,
-            };
-            _this.popupProps = {
-                dragPositionerProps: {
-                    preventAutoResize: true,
-                },
-            };
+            _this.state =
+                {
+                    hasLoadPopup: false,
+                    hasConfirmNewGamePopup: false,
+                };
             _this.toggleLoadPopup = _this.toggleLoadPopup.bind(_this);
+            _this.closeLoadPopup = _this.closeLoadPopup.bind(_this);
             _this.toggleNewGamePopup = _this.toggleNewGamePopup.bind(_this);
+            _this.closeNewGamePopup = _this.closeNewGamePopup.bind(_this);
             return _this;
         }
-        GameOverScreenComponent.prototype.toggleLoadPopup = function () {
-            var _this = this;
-            if (isFinite(this.popupIDs.load)) {
-                this.popupManager.closePopup(this.popupIDs.load);
-            }
-            else {
-                this.popupIDs.load = this.popupManager.makePopup({
-                    popupProps: this.popupProps,
-                    content: TopMenuPopup_7.default({
-                        content: LoadGame_2.default({
-                            handleClose: function () {
-                                _this.popupIDs.load = undefined;
-                            },
-                        }),
-                        handleClose: function () {
-                            _this.popupIDs.load = undefined;
-                        },
-                    }),
-                });
-            }
-        };
-        GameOverScreenComponent.prototype.toggleNewGamePopup = function () {
-            var _this = this;
-            if (isFinite(this.popupIDs.newGame)) {
-                this.popupManager.closePopup(this.popupIDs.newGame);
-            }
-            else {
-                this.popupIDs.newGame = this.popupManager.makePopup({
-                    popupProps: this.popupProps,
-                    content: ConfirmPopup_5.default({
-                        handleOk: function () {
-                            window.location.reload(false);
-                        },
-                        handleClose: function () {
-                            _this.popupIDs.load = undefined;
-                        },
-                        content: "Are you sure you want to start a new game?",
-                    }),
-                });
-            }
-        };
         GameOverScreenComponent.prototype.render = function () {
-            var _this = this;
             return (React.DOM.div({
                 className: "game-over-screen",
             }, React.DOM.div({
@@ -21166,11 +21374,44 @@ define("src/uicomponents/galaxymap/GameOverScreen", ["require", "exports", "src/
             }, "Load"), React.DOM.button({
                 className: "game-over-buttons-button",
                 onClick: this.toggleNewGamePopup,
-            }, "New game"))), PopupManager_12.default({
-                ref: function (component) {
-                    _this.popupManager = component;
-                },
-            })));
+            }, "New game"))), !this.state.hasConfirmNewGamePopup ? null :
+                DialogBox_5.default({
+                    title: "New game",
+                    handleOk: function () {
+                        window.location.reload(false);
+                    },
+                    handleCancel: this.closeNewGamePopup,
+                }, "Are you sure you want to start a new game?"), !this.state.hasLoadPopup ? null :
+                DefaultWindow_9.default({
+                    title: "Load game",
+                    handleClose: this.closeLoadPopup,
+                    minWidth: 200,
+                    minHeight: 200,
+                }, LoadGame_2.default({
+                    handleClose: this.closeLoadPopup,
+                }))));
+        };
+        GameOverScreenComponent.prototype.closeLoadPopup = function () {
+            this.setState({ hasLoadPopup: false });
+        };
+        GameOverScreenComponent.prototype.closeNewGamePopup = function () {
+            this.setState({ hasConfirmNewGamePopup: false });
+        };
+        GameOverScreenComponent.prototype.toggleLoadPopup = function () {
+            if (this.state.hasLoadPopup) {
+                this.closeLoadPopup();
+            }
+            else {
+                this.setState({ hasLoadPopup: true });
+            }
+        };
+        GameOverScreenComponent.prototype.toggleNewGamePopup = function () {
+            if (this.state.hasConfirmNewGamePopup) {
+                this.closeNewGamePopup();
+            }
+            else {
+                this.setState({ hasConfirmNewGamePopup: true });
+            }
         };
         return GameOverScreenComponent;
     }(React.Component));
@@ -21204,6 +21445,7 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/uicom
                     player: this.props.player,
                     game: this.props.game,
                     mapRenderer: this.props.mapRenderer,
+                    activeLanguage: this.props.activeLanguage,
                     key: "galaxyMapUI",
                 }))));
         };
@@ -21228,7 +21470,7 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/uicom
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_38) {
+define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_36) {
     "use strict";
     var MapGenOptionComponent = (function (_super) {
         __extends(MapGenOptionComponent, _super);
@@ -21241,7 +21483,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
         MapGenOptionComponent.prototype.handleChange = function (e) {
             var target = e.target;
             var option = this.props.option;
-            var newValue = utility_38.clamp(parseFloat(target.value), option.range.min, option.range.max);
+            var newValue = utility_36.clamp(parseFloat(target.value), option.range.min, option.range.max);
             this.props.onChange(this.props.id, newValue);
         };
         MapGenOptionComponent.prototype.shouldComponentUpdate = function (newProps) {
@@ -21293,7 +21535,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/utility", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption"], function (require, exports, utility_39, OptionsGroup_3, MapGenOption_1) {
+define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/utility", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption"], function (require, exports, utility_37, OptionsGroup_3, MapGenOption_1) {
     "use strict";
     var MapGenOptionsComponent = (function (_super) {
         __extends(MapGenOptionsComponent, _super);
@@ -21337,13 +21579,13 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                         var oldOption = _this.props.mapGenTemplate.options[optionGroup][optionName];
                         if (!oldOption)
                             continue;
-                        var oldValuePercentage = utility_39.getRelativeValue(_this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
+                        var oldValuePercentage = utility_37.getRelativeValue(_this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
                         value = option.min + (option.max - option.min) * oldValuePercentage;
                     }
                     else {
                         value = isFinite(option.defaultValue) ? option.defaultValue : (option.min + option.max) / 2;
                     }
-                    value = utility_39.clamp(utility_39.roundToNearestMultiple(value, option.step), option.min, option.max);
+                    value = utility_37.clamp(utility_37.roundToNearestMultiple(value, option.step), option.min, option.max);
                     defaultValues["optionValue_" + optionName] = value;
                 }
             });
@@ -21367,14 +21609,14 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                 var optionGroup = optionGroups[optionGroupName];
                 for (var optionName in optionGroup) {
                     var option = optionGroup[optionName].range;
-                    var optionValue = utility_39.clamp(utility_39.roundToNearestMultiple(utility_39.randInt(option.min, option.max), option.step), option.min, option.max);
+                    var optionValue = utility_37.clamp(utility_37.roundToNearestMultiple(utility_37.randInt(option.min, option.max), option.step), option.min, option.max);
                     newValues["optionValue_" + optionName] = optionValue;
                 }
             }
             this.setState(newValues);
         };
         MapGenOptionsComponent.prototype.getOptionValuesForTemplate = function () {
-            var optionValues = utility_39.extendObject(this.props.mapGenTemplate.options);
+            var optionValues = utility_37.extendObject(this.props.mapGenTemplate.options);
             for (var groupName in optionValues) {
                 var optionsGroup = optionValues[groupName];
                 for (var optionName in optionsGroup) {
@@ -21425,6 +21667,7 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                     header: optionGroupsInfo[groupName].title,
                     options: options,
                     isCollapsedInitially: optionGroupsInfo[groupName].isCollapsedInitially,
+                    activeLanguage: this.props.activeLanguage,
                 }));
             }
             return (React.DOM.div({
@@ -21448,7 +21691,7 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", "src/uicomponents/setupgame/MapGenOptions"], function (require, exports, App_31, MapGenOptions_1) {
+define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", "src/uicomponents/setupgame/MapGenOptions"], function (require, exports, App_32, MapGenOptions_1) {
     "use strict";
     var MapSetupComponent = (function (_super) {
         __extends(MapSetupComponent, _super);
@@ -21466,9 +21709,9 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
         };
         MapSetupComponent.prototype.getInitialStateTODO = function () {
             var mapGenTemplates = [];
-            for (var template in App_31.default.moduleData.Templates.MapGen) {
-                if (App_31.default.moduleData.Templates.MapGen[template].key) {
-                    mapGenTemplates.push(App_31.default.moduleData.Templates.MapGen[template]);
+            for (var template in App_32.default.moduleData.Templates.MapGen) {
+                if (App_32.default.moduleData.Templates.MapGen[template].key) {
+                    mapGenTemplates.push(App_32.default.moduleData.Templates.MapGen[template]);
                 }
             }
             return ({
@@ -21488,7 +21731,7 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
         MapSetupComponent.prototype.setTemplate = function (e) {
             var target = e.target;
             this.setState({
-                selectedTemplate: App_31.default.moduleData.Templates.MapGen[target.value],
+                selectedTemplate: App_32.default.moduleData.Templates.MapGen[target.value],
             }, this.updatePlayerLimits);
         };
         MapSetupComponent.prototype.getMapSetupInfo = function () {
@@ -21521,6 +21764,7 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
                 className: "map-setup-description",
             }, this.state.selectedTemplate.description), MapGenOptions_1.default({
                 mapGenTemplate: this.state.selectedTemplate,
+                activeLanguage: this.props.activeLanguage,
                 ref: function (component) {
                     _this.ref_TODO_mapGenOptions = component;
                 },
@@ -21965,7 +22209,7 @@ define("src/ImageFileProcessing", ["require", "exports"], function (require, exp
     }
     exports.getHTMLImageElementFromDataTransfer = getHTMLImageElementFromDataTransfer;
 });
-define("src/uicomponents/Emblem", ["require", "exports", "src/Emblem", "src/utility"], function (require, exports, Emblem_3, utility_40) {
+define("src/uicomponents/Emblem", ["require", "exports", "src/Emblem", "src/utility"], function (require, exports, Emblem_3, utility_38) {
     "use strict";
     var EmblemComponent = (function (_super) {
         __extends(EmblemComponent, _super);
@@ -22000,7 +22244,7 @@ define("src/uicomponents/Emblem", ["require", "exports", "src/Emblem", "src/util
         EmblemComponent.prototype.render = function () {
             var _this = this;
             var baseClassName = "emblem";
-            var containerProps = utility_40.shallowExtend(this.props.containerProps, {
+            var containerProps = utility_38.shallowExtend(this.props.containerProps, {
                 className: baseClassName + (this.props.containerProps && this.props.containerProps.className ?
                     " " + this.props.containerProps.className :
                     ""),
@@ -22017,7 +22261,7 @@ define("src/uicomponents/Emblem", ["require", "exports", "src/Emblem", "src/util
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/EmblemPicker", ["require", "exports", "src/App", "src/colorGeneration", "src/uicomponents/Emblem", "src/uicomponents/setupgame/ColorPicker"], function (require, exports, App_32, colorGeneration_5, Emblem_4, ColorPicker_2) {
+define("src/uicomponents/setupgame/EmblemPicker", ["require", "exports", "src/App", "src/colorGeneration", "src/uicomponents/Emblem", "src/uicomponents/setupgame/ColorPicker"], function (require, exports, App_33, colorGeneration_5, Emblem_4, ColorPicker_2) {
     "use strict";
     var EmblemPickerComponent = (function (_super) {
         __extends(EmblemPickerComponent, _super);
@@ -22041,8 +22285,8 @@ define("src/uicomponents/setupgame/EmblemPicker", ["require", "exports", "src/Ap
         EmblemPickerComponent.prototype.render = function () {
             var _this = this;
             var emblemElements = [];
-            for (var emblemType in App_32.default.moduleData.Templates.SubEmblems) {
-                var template = App_32.default.moduleData.Templates.SubEmblems[emblemType];
+            for (var emblemType in App_33.default.moduleData.Templates.SubEmblems) {
+                var template = App_33.default.moduleData.Templates.SubEmblems[emblemType];
                 var className = "emblem-picker-image";
                 var templateIsSelected = this.props.selectedEmblemTemplate && this.props.selectedEmblemTemplate.key === template.key;
                 if (templateIsSelected) {
@@ -22308,7 +22552,7 @@ define("src/uicomponents/setupgame/FlagEditor", ["require", "exports", "src/Embl
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/Emblem", "src/ImageFileProcessing", "src/uicomponents/PlayerFlag", "src/uicomponents/setupgame/FlagEditor", "src/uicomponents/popups/Popup", "src/uicomponents/popups/TopMenuPopup"], function (require, exports, Emblem_7, ImageFileProcessing_1, PlayerFlag_8, FlagEditor_1, Popup_2, TopMenuPopup_8) {
+define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/Emblem", "src/ImageFileProcessing", "src/uicomponents/PlayerFlag", "src/uicomponents/setupgame/FlagEditor", "src/uicomponents/windows/DefaultWindow"], function (require, exports, Emblem_7, ImageFileProcessing_1, PlayerFlag_8, FlagEditor_1, DefaultWindow_10) {
     "use strict";
     var failMessages = {
         hotlinkedImageLoadingFailed: {
@@ -22328,6 +22572,54 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/Embl
             _this.bindMethods();
             return _this;
         }
+        FlagSetterComponent.prototype.componentWillUnmount = function () {
+            this.clearFailMessageTimeout();
+        };
+        FlagSetterComponent.prototype.render = function () {
+            var _this = this;
+            return (React.DOM.div({
+                className: "flag-setter",
+                ref: function (component) {
+                    _this.flagSetterContainer = component;
+                },
+                onDragEnter: this.stopEvent,
+                onDragOver: this.stopEvent,
+                onDrop: this.handleDrop,
+            }, PlayerFlag_8.default({
+                flag: this.props.flag,
+                isMutable: true,
+                props: {
+                    className: "flag-setter-display",
+                    onClick: this.toggleActive,
+                },
+                ref: function (component) {
+                    _this.playerFlagContainer = component;
+                },
+            }), !this.state.isActive ? null :
+                React.DOM.div({
+                    className: "popup-container",
+                }, DefaultWindow_10.default({
+                    title: "Edit flag",
+                    handleClose: this.setAsInactive,
+                    isResizable: false,
+                    getInitialPosition: function (popupRect, containerRect) {
+                        var parentRect = _this.getClientRect();
+                        return ({
+                            left: parentRect.right,
+                            top: parentRect.top - popupRect.height / 3,
+                            width: popupRect.width,
+                            height: popupRect.height,
+                        });
+                    },
+                    minWidth: 0,
+                    minHeight: 0,
+                }, FlagEditor_1.default({
+                    parentFlag: this.props.flag,
+                    backgroundColor: this.props.mainColor,
+                    playerSecondaryColor: this.props.secondaryColor,
+                    updateParentFlag: this.props.updateParentFlag,
+                })))));
+        };
         FlagSetterComponent.prototype.bindMethods = function () {
             this.setAsInactive = this.setAsInactive.bind(this);
             this.setForegroundEmblem = this.setForegroundEmblem.bind(this);
@@ -22347,9 +22639,6 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/Embl
                 failMessageElement: null,
                 customImageFile: null,
             });
-        };
-        FlagSetterComponent.prototype.componentWillUnmount = function () {
-            this.clearFailMessageTimeout();
         };
         FlagSetterComponent.prototype.makeFailMessage = function (message, timeout) {
             return React.DOM.div({
@@ -22491,55 +22780,6 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/Embl
             var ownNode = ReactDOM.findDOMNode(this.playerFlagContainer);
             return ownNode.getBoundingClientRect();
         };
-        FlagSetterComponent.prototype.render = function () {
-            var _this = this;
-            return (React.DOM.div({
-                className: "flag-setter",
-                ref: function (component) {
-                    _this.flagSetterContainer = component;
-                },
-                onDragEnter: this.stopEvent,
-                onDragOver: this.stopEvent,
-                onDrop: this.handleDrop,
-            }, PlayerFlag_8.default({
-                flag: this.props.flag,
-                isMutable: true,
-                props: {
-                    className: "flag-setter-display",
-                    onClick: this.toggleActive,
-                },
-                ref: function (component) {
-                    _this.playerFlagContainer = component;
-                },
-            }), !this.state.isActive ? null :
-                React.DOM.div({
-                    className: "popup-container",
-                }, Popup_2.default({
-                    dragPositionerProps: {
-                        preventAutoResize: true,
-                        containerDragOnly: true,
-                    },
-                    id: 0,
-                    incrementZIndex: function () { return 0; },
-                    closePopup: this.setAsInactive,
-                    getInitialPosition: function (popupRect) {
-                        var parentRect = _this.getClientRect();
-                        return ({
-                            left: parentRect.right,
-                            top: parentRect.top - popupRect.height / 3,
-                        });
-                    },
-                    content: TopMenuPopup_8.default({
-                        handleClose: this.setAsInactive,
-                        content: FlagEditor_1.default({
-                            parentFlag: this.props.flag,
-                            backgroundColor: this.props.mainColor,
-                            playerSecondaryColor: this.props.secondaryColor,
-                            updateParentFlag: this.props.updateParentFlag,
-                        }),
-                    }),
-                }))));
-        };
         return FlagSetterComponent;
     }(React.Component));
     exports.FlagSetterComponent = FlagSetterComponent;
@@ -22585,15 +22825,15 @@ define("src/uicomponents/setupgame/RacePicker", ["require", "exports"], function
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/PlayerSetup", ["require", "exports", "src/App", "src/Flag", "src/Player", "src/colorGeneration", "src/utility", "src/uicomponents/setupgame/ColorSetter", "src/uicomponents/setupgame/FlagSetter", "src/uicomponents/setupgame/RacePicker"], function (require, exports, App_33, Flag_5, Player_3, colorGeneration_6, utility_41, ColorSetter_1, FlagSetter_1, RacePicker_1) {
+define("src/uicomponents/setupgame/PlayerSetup", ["require", "exports", "src/App", "src/Flag", "src/Player", "src/colorGeneration", "src/utility", "src/uicomponents/setupgame/ColorSetter", "src/uicomponents/setupgame/FlagSetter", "src/uicomponents/setupgame/RacePicker"], function (require, exports, App_34, Flag_5, Player_3, colorGeneration_6, utility_39, ColorSetter_1, FlagSetter_1, RacePicker_1) {
     "use strict";
     function getRandomPlayerRaceTemplate() {
-        var candidateRaces = Object.keys(App_33.default.moduleData.Templates.Races).map(function (raceKey) {
-            return App_33.default.moduleData.Templates.Races[raceKey];
+        var candidateRaces = Object.keys(App_34.default.moduleData.Templates.Races).map(function (raceKey) {
+            return App_34.default.moduleData.Templates.Races[raceKey];
         }).filter(function (raceTemplate) {
             return !raceTemplate.isNotPlayable;
         });
-        return utility_41.getRandomArrayItem(candidateRaces);
+        return utility_39.getRandomArrayItem(candidateRaces);
     }
     var PlayerSetupComponent = (function (_super) {
         __extends(PlayerSetupComponent, _super);
@@ -22719,8 +22959,8 @@ define("src/uicomponents/setupgame/PlayerSetup", ["require", "exports", "src/App
                 value: this.state.name,
                 onChange: this.handleNameChange,
             }), RacePicker_1.default({
-                availableRaces: Object.keys(App_33.default.moduleData.Templates.Races).map(function (raceKey) {
-                    return App_33.default.moduleData.Templates.Races[raceKey];
+                availableRaces: Object.keys(App_34.default.moduleData.Templates.Races).map(function (raceKey) {
+                    return App_34.default.moduleData.Templates.Races[raceKey];
                 }).filter(function (race) {
                     return !race.isNotPlayable;
                 }),
@@ -22914,7 +23154,7 @@ define("src/uicomponents/setupgame/SetupGamePlayers", ["require", "exports", "sr
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App", "src/ModuleFileLoadingPhase", "src/eventManager", "src/uicomponents/setupgame/MapSetup", "src/uicomponents/setupgame/SetupGamePlayers"], function (require, exports, App_34, ModuleFileLoadingPhase_2, eventManager_40, MapSetup_1, SetupGamePlayers_1) {
+define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App", "src/ModuleFileLoadingPhase", "src/eventManager", "src/uicomponents/setupgame/MapSetup", "src/uicomponents/setupgame/SetupGamePlayers"], function (require, exports, App_35, ModuleFileLoadingPhase_2, eventManager_38, MapSetup_1, SetupGamePlayers_1) {
     "use strict";
     var SetupGameComponent = (function (_super) {
         __extends(SetupGameComponent, _super);
@@ -22944,13 +23184,13 @@ define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App",
         };
         SetupGameComponent.prototype.startGame = function () {
             var _this = this;
-            eventManager_40.default.dispatchEvent("loadModulesNeededForPhase", ModuleFileLoadingPhase_2.default.mapGen, function () {
+            eventManager_38.default.dispatchEvent("loadModulesNeededForPhase", ModuleFileLoadingPhase_2.default.mapGen, function () {
                 var players = _this.ref_TODO_players.makeAllPlayers();
                 var mapSetupInfo = _this.ref_TODO_mapSetup.getMapSetupInfo();
                 var mapGenFunction = mapSetupInfo.template.mapGenFunction;
                 var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
                 var map = mapGenResult.makeMap();
-                App_34.default.makeGameFromSetup(map, players);
+                App_35.default.makeGameFromSetup(map, players);
             });
         };
         SetupGameComponent.prototype.randomize = function () {
@@ -22973,6 +23213,7 @@ define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App",
                 maxPlayers: this.state.maxPlayers,
             }), MapSetup_1.default({
                 setPlayerLimits: this.setPlayerLimits,
+                activeLanguage: this.props.activeLanguage,
                 ref: function (component) {
                     _this.ref_TODO_mapSetup = component;
                 },
@@ -23016,22 +23257,39 @@ define("modules/common/battlesfxfunctions/sfxfragments/RampingValue", ["require"
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = RampingValue;
 });
-define("modules/common/battlesfxfunctions/sfxfragments/SFXFragmentPropTypes", ["require", "exports"], function (require, exports) {
+define("modules/common/battlesfxfunctions/sfxfragments/props/PropInfoType", ["require", "exports"], function (require, exports) {
     "use strict";
+    var PropInfoType;
+    (function (PropInfoType) {
+        PropInfoType[PropInfoType["Boolean"] = 0] = "Boolean";
+        PropInfoType[PropInfoType["Function"] = 1] = "Function";
+        PropInfoType[PropInfoType["Number"] = 2] = "Number";
+        PropInfoType[PropInfoType["Point"] = 3] = "Point";
+        PropInfoType[PropInfoType["Range"] = 4] = "Range";
+        PropInfoType[PropInfoType["Color"] = 5] = "Color";
+        PropInfoType[PropInfoType["RampingValue"] = 6] = "RampingValue";
+    })(PropInfoType = exports.PropInfoType || (exports.PropInfoType = {}));
 });
-define("modules/common/battlesfxfunctions/sfxfragments/SFXFragment", ["require", "exports", "src/utility"], function (require, exports, utility_42) {
+define("modules/common/battlesfxfunctions/sfxfragments/props/PropInfo", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var PropInfo = (function () {
+        function PropInfo(defaultValue) {
+            this.defaultValue = defaultValue;
+        }
+        PropInfo.prototype.getDefaultValue = function () {
+            return this.copyValue(this.defaultValue);
+        };
+        return PropInfo;
+    }());
+    exports.PropInfo = PropInfo;
+});
+define("modules/common/battlesfxfunctions/sfxfragments/SFXFragment", ["require", "exports"], function (require, exports) {
     "use strict";
     var idGenerator = 0;
     var SFXFragment = (function () {
-        function SFXFragment(propTypes, defaultProps, props) {
-            this.id = idGenerator++;
-            this.propTypes = propTypes;
-            this.defaultProps = defaultProps;
+        function SFXFragment() {
             this.props = {};
-            this.setDefaultProps();
-            if (props) {
-                this.setProps(props);
-            }
+            this.id = idGenerator++;
         }
         Object.defineProperty(SFXFragment.prototype, "displayObject", {
             get: function () {
@@ -23040,19 +23298,6 @@ define("modules/common/battlesfxfunctions/sfxfragments/SFXFragment", ["require",
             enumerable: true,
             configurable: true
         });
-        SFXFragment.prototype.setDisplayObject = function (newDisplayObject) {
-            var oldDisplayObject = this.displayObject;
-            if (oldDisplayObject) {
-                newDisplayObject.position = oldDisplayObject.position.clone();
-                var parent_1 = oldDisplayObject.parent;
-                if (parent_1) {
-                    var childIndex = parent_1.children.indexOf(oldDisplayObject);
-                    parent_1.removeChildAt(childIndex);
-                    parent_1.addChildAt(newDisplayObject, childIndex);
-                }
-            }
-            this._displayObject = newDisplayObject;
-        };
         Object.defineProperty(SFXFragment.prototype, "bounds", {
             get: function () {
                 return this.displayObject.getBounds();
@@ -23078,44 +23323,133 @@ define("modules/common/battlesfxfunctions/sfxfragments/SFXFragment", ["require",
             configurable: true
         });
         SFXFragment.prototype.setDefaultProps = function () {
-            this.setProps(this.defaultProps);
+            for (var key in this.propInfo) {
+                this.props[key] = this.propInfo[key].getDefaultValue();
+            }
+        };
+        SFXFragment.prototype.initializeProps = function (initialValues) {
+            this.setDefaultProps();
+            if (initialValues) {
+                this.setProps(initialValues);
+            }
+        };
+        SFXFragment.prototype.setDisplayObject = function (newDisplayObject) {
+            var oldDisplayObject = this.displayObject;
+            if (oldDisplayObject) {
+                newDisplayObject.position.copy(oldDisplayObject.position);
+                var parent_1 = oldDisplayObject.parent;
+                if (parent_1) {
+                    var childIndex = parent_1.children.indexOf(oldDisplayObject);
+                    parent_1.removeChildAt(childIndex);
+                    parent_1.addChildAt(newDisplayObject, childIndex);
+                }
+            }
+            this._displayObject = newDisplayObject;
         };
         SFXFragment.prototype.setProps = function (props) {
-            for (var prop in props) {
-                var propType = this.propTypes[prop];
-                switch (propType) {
-                    case "number":
-                    case "boolean":
-                        {
-                            this.props[prop] = props[prop];
-                            break;
-                        }
-                        ;
-                    case "point":
-                    case "range":
-                        {
-                            this.props[prop] = utility_42.shallowCopy(props[prop]);
-                            break;
-                        }
-                    case "color":
-                    case "rampingValue":
-                        {
-                            this.props[prop] = props[prop].clone();
-                            break;
-                        }
-                    default:
-                        {
-                            this.props[prop] = props[prop];
-                            console.warn("Unrecognized sfx fragment prop type " + this.key + "." + prop + ": " + propType);
-                            break;
-                        }
-                }
+            for (var key in props) {
+                this.props[key] = this.propInfo[key].copyValue(props[key]);
             }
         };
         return SFXFragment;
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = SFXFragment;
+});
+define("modules/common/battlesfxfunctions/sfxfragments/props/BasePropInfoClasses", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/props/PropInfo", "src/utility"], function (require, exports, PropInfo_1, utility_40) {
+    "use strict";
+    var Primitive = (function (_super) {
+        __extends(Primitive, _super);
+        function Primitive() {
+            return _super.apply(this, arguments) || this;
+        }
+        Primitive.prototype.copyValue = function (value) {
+            return value;
+        };
+        return Primitive;
+    }(PropInfo_1.PropInfo));
+    exports.Primitive = Primitive;
+    var ShallowObject = (function (_super) {
+        __extends(ShallowObject, _super);
+        function ShallowObject() {
+            return _super.apply(this, arguments) || this;
+        }
+        ShallowObject.prototype.copyValue = function (value) {
+            return utility_40.shallowCopy(value);
+        };
+        return ShallowObject;
+    }(PropInfo_1.PropInfo));
+    exports.ShallowObject = ShallowObject;
+    var Clonable = (function (_super) {
+        __extends(Clonable, _super);
+        function Clonable() {
+            return _super.apply(this, arguments) || this;
+        }
+        Clonable.prototype.copyValue = function (value) {
+            return value.clone();
+        };
+        return Clonable;
+    }(PropInfo_1.PropInfo));
+    exports.Clonable = Clonable;
+});
+define("modules/common/battlesfxfunctions/sfxfragments/props/PropInfoClasses", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/props/BasePropInfoClasses"], function (require, exports, BasePropInfoClasses_1) {
+    "use strict";
+    var Boolean = (function (_super) {
+        __extends(Boolean, _super);
+        function Boolean() {
+            return _super.apply(this, arguments) || this;
+        }
+        return Boolean;
+    }(BasePropInfoClasses_1.Primitive));
+    exports.Boolean = Boolean;
+    var Number = (function (_super) {
+        __extends(Number, _super);
+        function Number() {
+            return _super.apply(this, arguments) || this;
+        }
+        return Number;
+    }(BasePropInfoClasses_1.Primitive));
+    exports.Number = Number;
+    var FunctionPropType = (function (_super) {
+        __extends(FunctionPropType, _super);
+        function FunctionPropType() {
+            return _super.apply(this, arguments) || this;
+        }
+        return FunctionPropType;
+    }(BasePropInfoClasses_1.Primitive));
+    exports.Function = FunctionPropType;
+    var Point = (function (_super) {
+        __extends(Point, _super);
+        function Point() {
+            return _super.apply(this, arguments) || this;
+        }
+        return Point;
+    }(BasePropInfoClasses_1.ShallowObject));
+    exports.Point = Point;
+    var Range = (function (_super) {
+        __extends(Range, _super);
+        function Range() {
+            return _super.apply(this, arguments) || this;
+        }
+        return Range;
+    }(BasePropInfoClasses_1.ShallowObject));
+    exports.Range = Range;
+    var Color = (function (_super) {
+        __extends(Color, _super);
+        function Color() {
+            return _super.apply(this, arguments) || this;
+        }
+        return Color;
+    }(BasePropInfoClasses_1.Clonable));
+    exports.Color = Color;
+    var RampingValue = (function (_super) {
+        __extends(RampingValue, _super);
+        function RampingValue() {
+            return _super.apply(this, arguments) || this;
+        }
+        return RampingValue;
+    }(BasePropInfoClasses_1.Clonable));
+    exports.RampingValue = RampingValue;
 });
 define("modules/common/battlesfxfunctions/shaders/Beam", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -23282,60 +23616,39 @@ define("modules/common/battlesfxfunctions/shaders/Beam", ["require", "exports"],
         "}",
     ];
 });
-define("modules/common/battlesfxfunctions/sfxfragments/Beam", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/shaders/Beam", "src/Color", "src/utility"], function (require, exports, RampingValue_1, SFXFragment_1, Beam_1, Color_5, utility_43) {
+define("modules/common/battlesfxfunctions/sfxfragments/Beam", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/sfxfragments/props/PropInfoClasses", "modules/common/battlesfxfunctions/shaders/Beam", "src/Color", "src/pixiWrapperFunctions", "src/utility"], function (require, exports, RampingValue_1, SFXFragment_1, PropInfo, Beam_1, Color_5, pixiWrapperFunctions_3, utility_41) {
     "use strict";
-    var defaultBeamProps = {
-        size: {
-            x: 500,
-            y: 500,
-        },
-        relativeImpactTime: 0.2,
-        relativeBeamOrigin: {
-            x: 0,
-            y: 0.5,
-        },
-        color: new Color_5.default(1, 0.9, 0.9),
-        timeScale: 100,
-        noiseAmplitude: new RampingValue_1.default(0.0, 0.4, -0.4),
-        lineIntensity: new RampingValue_1.default(2.0, 5.0, -5.0),
-        bulgeIntensity: new RampingValue_1.default(0.0, 6.0, -6.0),
-        lineYSize: new RampingValue_1.default(0.01, 0.2, -0.21),
-        bulgeSizeX: new RampingValue_1.default(0.0, 0.7, -0.7),
-        bulgeSizeY: new RampingValue_1.default(0.0, 0.4, -0.4),
-        bulgeSharpness: new RampingValue_1.default(0.3, 0.35, -0.35),
-        lineXSharpness: new RampingValue_1.default(0.99, -0.99, 0.99),
-        lineYSharpness: new RampingValue_1.default(0.99, -0.15, 0.16),
-    };
-    var BeamPropTypes = {
-        size: "point",
-        relativeImpactTime: "number",
-        relativeBeamOrigin: "point",
-        color: "color",
-        timeScale: "number",
-        noiseAmplitude: "rampingValue",
-        lineIntensity: "rampingValue",
-        bulgeIntensity: "rampingValue",
-        lineYSize: "rampingValue",
-        bulgeSizeX: "rampingValue",
-        bulgeSizeY: "rampingValue",
-        bulgeSharpness: "rampingValue",
-        lineXSharpness: "rampingValue",
-        lineYSharpness: "rampingValue",
-    };
     var Beam = (function (_super) {
         __extends(Beam, _super);
         function Beam(props) {
-            var _this = _super.call(this, BeamPropTypes, defaultBeamProps, props) || this;
+            var _this = _super.call(this) || this;
             _this.displayName = "Beam";
             _this.key = "beam";
+            _this.propInfo = {
+                size: new PropInfo.Point({ x: 500, y: 500 }),
+                relativeImpactTime: new PropInfo.Number(0.2),
+                relativeBeamOrigin: new PropInfo.Point({ x: 0, y: 0.5 }),
+                color: new PropInfo.Color(new Color_5.default(1, 0.9, 0.9)),
+                timeScale: new PropInfo.Number(100),
+                noiseAmplitude: new PropInfo.RampingValue(new RampingValue_1.default(0.0, 0.4, -0.4)),
+                lineIntensity: new PropInfo.RampingValue(new RampingValue_1.default(2.0, 5.0, -5.0)),
+                bulgeIntensity: new PropInfo.RampingValue(new RampingValue_1.default(0.0, 6.0, -6.0)),
+                lineYSize: new PropInfo.RampingValue(new RampingValue_1.default(0.01, 0.2, -0.21)),
+                bulgeSizeX: new PropInfo.RampingValue(new RampingValue_1.default(0.0, 0.7, -0.7)),
+                bulgeSizeY: new PropInfo.RampingValue(new RampingValue_1.default(0.0, 0.4, -0.4)),
+                bulgeSharpness: new PropInfo.RampingValue(new RampingValue_1.default(0.3, 0.35, -0.35)),
+                lineXSharpness: new PropInfo.RampingValue(new RampingValue_1.default(0.99, -0.99, 0.99)),
+                lineYSharpness: new PropInfo.RampingValue(new RampingValue_1.default(0.99, -0.15, 0.16)),
+            };
             _this.seed = Math.random() * 100;
+            _this.initializeProps(props);
             return _this;
         }
         Beam.prototype.animate = function (time) {
             var rampUpValue = Math.pow(Math.min(time / this.props.relativeImpactTime, 1.0), 7.0);
             var timeAfterImpact = Math.max(time - this.props.relativeImpactTime, 0.0);
-            var relativeTimeAfterImpact = utility_43.getRelativeValue(timeAfterImpact, 0.0, 1.0 - this.props.relativeImpactTime);
-            var rampDownValue = utility_43.clamp(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 0.0, 1.0);
+            var relativeTimeAfterImpact = utility_41.getRelativeValue(timeAfterImpact, 0.0, 1.0 - this.props.relativeImpactTime);
+            var rampDownValue = utility_41.clamp(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 0.0, 1.0);
             this.animateFromRampValues(time, rampUpValue, rampDownValue);
         };
         Beam.prototype.animateFromRampValues = function (time, rampUpValue, rampDownValue) {
@@ -23366,7 +23679,7 @@ define("modules/common/battlesfxfunctions/sfxfragments/Beam", ["require", "expor
                 bulgeXPosition: this.props.relativeBeamOrigin.x + 0.1,
                 beamYPosition: this.props.relativeBeamOrigin.y,
             });
-            var beamSprite = utility_43.makeShaderSprite(this.beamFilter, 0, 0, this.props.size.x, this.props.size.y);
+            var beamSprite = pixiWrapperFunctions_3.makeShaderSprite(this.beamFilter, 0, 0, this.props.size.x, this.props.size.y);
             beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
             this.setDisplayObject(beamSprite);
         };
@@ -23375,47 +23688,35 @@ define("modules/common/battlesfxfunctions/sfxfragments/Beam", ["require", "expor
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Beam;
 });
-define("modules/common/battlesfxfunctions/sfxfragments/FocusingBeam", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/sfxfragments/Beam", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "src/Color", "src/utility"], function (require, exports, SFXFragment_2, Beam_2, RampingValue_2, Color_6, utility_44) {
+define("modules/common/battlesfxfunctions/sfxfragments/FocusingBeam", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/sfxfragments/props/PropInfoClasses", "modules/common/battlesfxfunctions/sfxfragments/Beam", "src/Color", "src/utility"], function (require, exports, RampingValue_2, SFXFragment_2, PropInfo, Beam_2, Color_6, utility_42) {
     "use strict";
-    var defaultFocusingBeamProps = {
-        color: new Color_6.default(1.0, 1.0, 1.0),
-        size: { x: 500, y: 500 },
-        focusStartTime: 0.0,
-        focusEndTime: 0.3,
-        decayStartTime: 0.8,
-        decayEndtime: 1.0,
-        focusTimeExponent: 0.75,
-        relativeYPosition: 0.5,
-        beamIntensity: new RampingValue_2.default(5.0, 20.0, -25.0),
-        beamSharpness: new RampingValue_2.default(0.75, 0.24, 0.0),
-        beamSize: new RampingValue_2.default(0.12, -0.115, -0.005),
-    };
-    var FocusingBeamPropTypes = {
-        color: "color",
-        size: "point",
-        focusStartTime: "number",
-        focusEndTime: "number",
-        decayStartTime: "number",
-        decayEndtime: "number",
-        focusTimeExponent: "number",
-        relativeYPosition: "number",
-        beamIntensity: "rampingValue",
-        beamSharpness: "rampingValue",
-        beamSize: "rampingValue",
-    };
     var FocusingBeam = (function (_super) {
         __extends(FocusingBeam, _super);
         function FocusingBeam(props) {
-            var _this = _super.call(this, FocusingBeamPropTypes, defaultFocusingBeamProps, props) || this;
+            var _this = _super.call(this) || this;
             _this.displayName = "FocusingBeam";
             _this.key = "focusingBeam";
+            _this.propInfo = {
+                color: new PropInfo.Color(new Color_6.default(1.0, 1.0, 1.0)),
+                size: new PropInfo.Point({ x: 500, y: 500 }),
+                focusStartTime: new PropInfo.Number(0.0),
+                focusEndTime: new PropInfo.Number(0.3),
+                decayStartTime: new PropInfo.Number(0.8),
+                decayEndtime: new PropInfo.Number(1.0),
+                focusTimeExponent: new PropInfo.Number(0.75),
+                relativeYPosition: new PropInfo.Number(0.5),
+                beamIntensity: new PropInfo.RampingValue(new RampingValue_2.default(5.0, 20.0, -25.0)),
+                beamSharpness: new PropInfo.RampingValue(new RampingValue_2.default(0.75, 0.24, 0.0)),
+                beamSize: new PropInfo.RampingValue(new RampingValue_2.default(0.12, -0.115, -0.005)),
+            };
+            _this.initializeProps(props);
             return _this;
         }
         FocusingBeam.prototype.animate = function (time) {
-            var relativeFocusTime = Math.pow(utility_44.getRelativeValue(time, this.props.focusStartTime, this.props.focusEndTime), this.props.focusTimeExponent);
-            var rampUpValue = utility_44.clamp(relativeFocusTime, 0.0, 1.0);
-            var relativeDecayTime = utility_44.getRelativeValue(time, this.props.decayStartTime, this.props.decayEndtime);
-            var rampDownValue = utility_44.clamp(relativeDecayTime, 0.0, 1.0);
+            var relativeFocusTime = Math.pow(utility_42.getRelativeValue(time, this.props.focusStartTime, this.props.focusEndTime), this.props.focusTimeExponent);
+            var rampUpValue = utility_42.clamp(relativeFocusTime, 0.0, 1.0);
+            var relativeDecayTime = utility_42.getRelativeValue(time, this.props.decayStartTime, this.props.decayEndtime);
+            var rampDownValue = utility_42.clamp(relativeDecayTime, 0.0, 1.0);
             this.beamFragment.animateFromRampValues(time, rampUpValue, rampDownValue);
         };
         FocusingBeam.prototype.draw = function () {
@@ -23599,31 +23900,24 @@ define("modules/common/battlesfxfunctions/shaders/LightBurst", ["require", "expo
         "}",
     ];
 });
-define("modules/common/battlesfxfunctions/sfxfragments/LightBurst", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/shaders/LightBurst", "src/Color", "src/utility"], function (require, exports, SFXFragment_3, LightBurst_1, Color_7, utility_45) {
+define("modules/common/battlesfxfunctions/sfxfragments/LightBurst", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/sfxfragments/props/PropInfoClasses", "modules/common/battlesfxfunctions/shaders/LightBurst", "src/Color", "src/pixiWrapperFunctions"], function (require, exports, SFXFragment_3, PropInfo, LightBurst_1, Color_7, pixiWrapperFunctions_4) {
     "use strict";
-    var defaultLightBurstProps = {
-        size: { x: 200, y: 200 },
-        delay: 0.3,
-        sharpness: 2.0,
-        color: new Color_7.default(0.75, 0.75, 0.62),
-        centerSize: 1.0,
-        rayStrength: 1.0,
-    };
-    var LightBurstPropTypes = {
-        size: "point",
-        delay: "number",
-        sharpness: "number",
-        color: "color",
-        centerSize: "number",
-        rayStrength: "number",
-    };
     var LightBurst = (function (_super) {
         __extends(LightBurst, _super);
         function LightBurst(props) {
-            var _this = _super.call(this, LightBurstPropTypes, defaultLightBurstProps, props) || this;
+            var _this = _super.call(this) || this;
             _this.displayName = "LightBurst";
             _this.key = "lightBurst";
+            _this.propInfo = {
+                size: new PropInfo.Point({ x: 200, y: 200 }),
+                delay: new PropInfo.Number(0.3),
+                sharpness: new PropInfo.Number(2.0),
+                color: new PropInfo.Color(new Color_7.default(0.75, 0.75, 0.62)),
+                centerSize: new PropInfo.Number(1.0),
+                rayStrength: new PropInfo.Number(1.0),
+            };
             _this.seed = [Math.random() * 69, Math.random() * 420];
+            _this.initializeProps(props);
             return _this;
         }
         LightBurst.prototype.animate = function (time) {
@@ -23644,7 +23938,7 @@ define("modules/common/battlesfxfunctions/sfxfragments/LightBurst", ["require", 
                 raySharpness: this.props.sharpness,
                 rayColor: this.props.color.getRGBA(1.0),
             });
-            var lightBurstSprite = utility_45.makeShaderSprite(this.lightBurstFilter, 0, 0, this.props.size.x, this.props.size.y);
+            var lightBurstSprite = pixiWrapperFunctions_4.makeShaderSprite(this.lightBurstFilter, 0, 0, this.props.size.x, this.props.size.y);
             lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
             this.setDisplayObject(lightBurstSprite);
         };
@@ -23759,42 +24053,29 @@ define("modules/common/battlesfxfunctions/shaders/IntersectingEllipses", ["requi
         "}",
     ];
 });
-define("modules/common/battlesfxfunctions/sfxfragments/ShockWave", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "src/Color", "src/utility"], function (require, exports, RampingValue_3, SFXFragment_4, IntersectingEllipses_1, Color_8, utility_46) {
+define("modules/common/battlesfxfunctions/sfxfragments/ShockWave", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/sfxfragments/props/PropInfoClasses", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "src/Color", "src/pixiWrapperFunctions"], function (require, exports, RampingValue_3, SFXFragment_4, PropInfo, IntersectingEllipses_1, Color_8, pixiWrapperFunctions_5) {
     "use strict";
-    var defaultShockWaveProps = {
-        size: { x: 200, y: 200 },
-        intersectingEllipseOrigin: { x: 0.0, y: 0.0 },
-        intersectingEllipseDrift: { x: 0.0, y: 0.0 },
-        alpha: new RampingValue_3.default(1.0, -1.0, 0.0),
-        mainEllipseScaleX: new RampingValue_3.default(0.0, 0.9, 0.0),
-        mainEllipseScaleY: new RampingValue_3.default(0.0, 0.9, 0.0),
-        mainEllipseSharpness: new RampingValue_3.default(1.0, -0.2, 0.0),
-        intersectingEllipseScaleX: new RampingValue_3.default(0.0, 1.0, 0.0),
-        intersectingEllipseScaleY: new RampingValue_3.default(0.0, 1.0, 0.0),
-        intersectingEllipseSharpness: new RampingValue_3.default(0.8, -0.4, 0.0),
-        color: new Color_8.default(1, 1, 1),
-        delay: 0.3,
-    };
-    var shockWavePropTypes = {
-        size: "point",
-        intersectingEllipseOrigin: "point",
-        intersectingEllipseDrift: "point",
-        alpha: "rampingValue",
-        mainEllipseScaleX: "rampingValue",
-        mainEllipseScaleY: "rampingValue",
-        mainEllipseSharpness: "rampingValue",
-        intersectingEllipseScaleX: "rampingValue",
-        intersectingEllipseScaleY: "rampingValue",
-        intersectingEllipseSharpness: "rampingValue",
-        color: "color",
-        delay: "number",
-    };
     var ShockWave = (function (_super) {
         __extends(ShockWave, _super);
         function ShockWave(props) {
-            var _this = _super.call(this, shockWavePropTypes, defaultShockWaveProps, props) || this;
+            var _this = _super.call(this) || this;
             _this.displayName = "ShockWave";
             _this.key = "shockWave";
+            _this.propInfo = {
+                size: new PropInfo.Point({ x: 200, y: 200 }),
+                intersectingEllipseOrigin: new PropInfo.Point({ x: 0.0, y: 0.0 }),
+                intersectingEllipseDrift: new PropInfo.Point({ x: 0.0, y: 0.0 }),
+                alpha: new PropInfo.RampingValue(new RampingValue_3.default(1.0, -1.0, 0.0)),
+                mainEllipseScaleX: new PropInfo.RampingValue(new RampingValue_3.default(0.0, 0.9, 0.0)),
+                mainEllipseScaleY: new PropInfo.RampingValue(new RampingValue_3.default(0.0, 0.9, 0.0)),
+                mainEllipseSharpness: new PropInfo.RampingValue(new RampingValue_3.default(1.0, -0.2, 0.0)),
+                intersectingEllipseScaleX: new PropInfo.RampingValue(new RampingValue_3.default(0.0, 1.0, 0.0)),
+                intersectingEllipseScaleY: new PropInfo.RampingValue(new RampingValue_3.default(0.0, 1.0, 0.0)),
+                intersectingEllipseSharpness: new PropInfo.RampingValue(new RampingValue_3.default(0.8, -0.4, 0.0)),
+                color: new PropInfo.Color(new Color_8.default(1, 1, 1)),
+                delay: new PropInfo.Number(0.3),
+            };
+            _this.initializeProps(props);
             return _this;
         }
         ShockWave.CreateFromPartialProps = function (props) {
@@ -23828,7 +24109,7 @@ define("modules/common/battlesfxfunctions/sfxfragments/ShockWave", ["require", "
             var shockWaveFilter = this.shockWaveFilter = new IntersectingEllipses_1.default({
                 mainColor: this.props.color.getRGBA(1.0),
             });
-            var shockWaveSprite = utility_46.makeShaderSprite(shockWaveFilter, 0, 0, this.props.size.x, this.props.size.y);
+            var shockWaveSprite = pixiWrapperFunctions_5.makeShaderSprite(shockWaveFilter, 0, 0, this.props.size.x, this.props.size.y);
             this.setDisplayObject(shockWaveSprite);
         };
         return ShockWave;
@@ -24193,7 +24474,7 @@ define("src/uicomponents/sfxeditor/props/Range", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports", "src/uicomponents/sfxeditor/props/Color", "src/uicomponents/sfxeditor/props/Number", "src/uicomponents/sfxeditor/props/Point", "src/uicomponents/sfxeditor/props/RampingValue", "src/uicomponents/sfxeditor/props/Range"], function (require, exports, Color_9, Number_1, Point_1, RampingValue_4, Range_1) {
+define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/props/PropInfoType", "src/uicomponents/sfxeditor/props/Color", "src/uicomponents/sfxeditor/props/Number", "src/uicomponents/sfxeditor/props/Point", "src/uicomponents/sfxeditor/props/RampingValue", "src/uicomponents/sfxeditor/props/Range"], function (require, exports, PropInfoType_1, Color_9, Number_1, Point_1, RampingValue_4, Range_1) {
     "use strict";
     var SFXFragmentPropComponent = (function (_super) {
         __extends(SFXFragmentPropComponent, _super);
@@ -24215,7 +24496,7 @@ define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports"
         SFXFragmentPropComponent.prototype.render = function () {
             var propValuesElement;
             switch (this.props.propType) {
-                case "number":
+                case PropInfoType_1.PropInfoType.Number:
                     {
                         var propValue = this.props.fragment.props[this.props.propName];
                         propValuesElement = Number_1.default({
@@ -24226,7 +24507,7 @@ define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports"
                         });
                         break;
                     }
-                case "point":
+                case PropInfoType_1.PropInfoType.Point:
                     {
                         var propValue = this.props.fragment.props[this.props.propName];
                         propValuesElement = Point_1.default({
@@ -24238,7 +24519,7 @@ define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports"
                         });
                         break;
                     }
-                case "color":
+                case PropInfoType_1.PropInfoType.Color:
                     {
                         var propValue = this.props.fragment.props[this.props.propName];
                         propValuesElement = Color_9.default({
@@ -24249,7 +24530,7 @@ define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports"
                         });
                         break;
                     }
-                case "range":
+                case PropInfoType_1.PropInfoType.Range:
                     {
                         var propValue = this.props.fragment.props[this.props.propName];
                         propValuesElement = Range_1.default({
@@ -24261,7 +24542,7 @@ define("src/uicomponents/sfxeditor/props/SFXFragmentProp", ["require", "exports"
                         });
                         break;
                     }
-                case "rampingValue":
+                case PropInfoType_1.PropInfoType.RampingValue:
                     {
                         var propValue = this.props.fragment.props[this.props.propName];
                         propValuesElement = RampingValue_4.default({
@@ -24308,7 +24589,7 @@ define("src/uicomponents/sfxeditor/SFXFragmentPropsList", ["require", "exports",
             return (React.DOM.ul({
                 className: "sfx-fragment-props-list",
             }, Object.keys(fragment.props).sort().map(function (propName) {
-                var propType = fragment.propTypes[propName];
+                var propType = fragment.propInfo[propName].type;
                 return SFXFragmentProp_1.default({
                     key: propName,
                     propName: propName,
@@ -24501,7 +24782,7 @@ define("src/uicomponents/sfxeditor/SFXEditorSelection", ["require", "exports", "
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/sfxeditor/SFXEditor", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/Beam", "modules/common/battlesfxfunctions/sfxfragments/FocusingBeam", "modules/common/battlesfxfunctions/sfxfragments/LightBurst", "modules/common/battlesfxfunctions/sfxfragments/ShockWave", "src/utility", "src/uicomponents/sfxeditor/SFXEditorDisplay", "src/uicomponents/sfxeditor/SFXEditorSelection"], function (require, exports, Beam_3, FocusingBeam_1, LightBurst_2, ShockWave_1, utility_47, SFXEditorDisplay_1, SFXEditorSelection_1) {
+define("src/uicomponents/sfxeditor/SFXEditor", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/Beam", "modules/common/battlesfxfunctions/sfxfragments/FocusingBeam", "modules/common/battlesfxfunctions/sfxfragments/LightBurst", "modules/common/battlesfxfunctions/sfxfragments/ShockWave", "src/utility", "src/uicomponents/sfxeditor/SFXEditorDisplay", "src/uicomponents/sfxeditor/SFXEditorSelection"], function (require, exports, Beam_3, FocusingBeam_1, LightBurst_2, ShockWave_1, utility_43, SFXEditorDisplay_1, SFXEditorSelection_1) {
     "use strict";
     var availableFragmentConstructors = [
         {
@@ -24566,7 +24847,7 @@ define("src/uicomponents/sfxeditor/SFXEditor", ["require", "exports", "modules/c
         }
         SFXEditorComponent.prototype.handleChangeTime = function (e) {
             var target = e.target;
-            var newTime = utility_47.clamp(parseFloat(target.value), 0, 1);
+            var newTime = utility_43.clamp(parseFloat(target.value), 0, 1);
             if (this.state.isPlaying) {
                 this.togglePlay();
             }
@@ -24748,6 +25029,7 @@ define("src/uicomponents/Stage", ["require", "exports", "src/uicomponents/Battle
                             playerControl: this.props.playerControl,
                             player: this.props.player,
                             game: this.props.game,
+                            activeLanguage: this.props.activeLanguage,
                             key: "galaxyMap",
                         }));
                         break;
@@ -24762,6 +25044,7 @@ define("src/uicomponents/Stage", ["require", "exports", "src/uicomponents/Battle
                 case "setupGame":
                     {
                         elementsToRender.push(SetupGame_1.default({
+                            activeLanguage: this.props.activeLanguage,
                             key: "setupGame",
                         }));
                         break;
@@ -24790,7 +25073,7 @@ define("src/uicomponents/Stage", ["require", "exports", "src/uicomponents/Battle
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/ReactUI", ["require", "exports", "src/ModuleFileLoadingPhase", "src/eventManager", "src/uicomponents/Stage"], function (require, exports, ModuleFileLoadingPhase_3, eventManager_41, Stage_1) {
+define("src/ReactUI", ["require", "exports", "src/ModuleFileLoadingPhase", "src/eventManager", "src/localization/activeLanguage", "src/uicomponents/Stage"], function (require, exports, ModuleFileLoadingPhase_3, eventManager_39, activeLanguage_3, Stage_1) {
     "use strict";
     var moduleLoadingPhaseByScene = {
         battle: ModuleFileLoadingPhase_3.default.battle,
@@ -24806,10 +25089,6 @@ define("src/ReactUI", ["require", "exports", "src/ModuleFileLoadingPhase", "src/
             this.moduleLoader = moduleLoader;
             this.addEventListeners();
         }
-        ReactUI.prototype.addEventListeners = function () {
-            eventManager_41.default.addEventListener("switchScene", this.switchScene.bind(this));
-            eventManager_41.default.addEventListener("renderUI", this.render.bind(this));
-        };
         ReactUI.prototype.switchScene = function (newScene) {
             var _this = this;
             this.currentScene = newScene;
@@ -24817,13 +25096,9 @@ define("src/ReactUI", ["require", "exports", "src/ModuleFileLoadingPhase", "src/
                 _this.render();
             });
         };
-        ReactUI.prototype.loadModulesNeededForCurrentScene = function (afterLoaded) {
-            var phase = moduleLoadingPhaseByScene[this.currentScene];
-            this.moduleLoader.loadModulesNeededForPhase(phase, afterLoaded);
-        };
         ReactUI.prototype.destroy = function () {
-            eventManager_41.default.removeAllListeners("switchScene");
-            eventManager_41.default.removeAllListeners("renderUI");
+            eventManager_39.default.removeAllListeners("switchScene");
+            eventManager_39.default.removeAllListeners("renderUI");
             ReactDOM.unmountComponentAtNode(this.container);
             this.container = null;
         };
@@ -24837,7 +25112,16 @@ define("src/ReactUI", ["require", "exports", "src/ModuleFileLoadingPhase", "src/
                 playerControl: this.playerControl,
                 player: this.player,
                 game: this.game,
+                activeLanguage: activeLanguage_3.getActiveLanguage(),
             }), this.container);
+        };
+        ReactUI.prototype.addEventListeners = function () {
+            eventManager_39.default.addEventListener("switchScene", this.switchScene.bind(this));
+            eventManager_39.default.addEventListener("renderUI", this.render.bind(this));
+        };
+        ReactUI.prototype.loadModulesNeededForCurrentScene = function (afterLoaded) {
+            var phase = moduleLoadingPhaseByScene[this.currentScene];
+            this.moduleLoader.loadModulesNeededForPhase(phase, afterLoaded);
         };
         return ReactUI;
     }());
@@ -25079,7 +25363,7 @@ define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"]
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ProtonWrapper;
 });
-define("modules/common/battlesfxfunctions/beam", ["require", "exports", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/sfxfragments/Beam", "modules/common/battlesfxfunctions/sfxfragments/LightBurst", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/sfxfragments/ShockWave", "src/Color", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, ShinyParticle_1, Beam_4, LightBurst_3, RampingValue_5, ShockWave_2, Color_10, utility_48, ProtonWrapper_1) {
+define("modules/common/battlesfxfunctions/beam", ["require", "exports", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/sfxfragments/Beam", "modules/common/battlesfxfunctions/sfxfragments/LightBurst", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/sfxfragments/ShockWave", "src/Color", "src/pixiWrapperFunctions", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, ShinyParticle_1, Beam_4, LightBurst_3, RampingValue_5, ShockWave_2, Color_10, pixiWrapperFunctions_6, ProtonWrapper_1) {
     "use strict";
     function beam(props) {
         var offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(props.userOffset, props.width, "user");
@@ -25165,7 +25449,7 @@ define("modules/common/battlesfxfunctions/beam", ["require", "exports", "modules
         smallParticleGraphics.beginFill(0x5ECAB1, 1.0);
         smallParticleGraphics.drawRect(smallParticleGraphicsSize.x / 2, smallParticleGraphicsSize.y / 2, smallParticleGraphicsSize.x, smallParticleGraphicsSize.y);
         smallParticleGraphics.endFill();
-        var smallParticleTexture = utility_48.generateTextureWithBounds(props.renderer, smallParticleGraphics, PIXI.settings.SCALE_MODE, 1, new PIXI.Rectangle(0, 0, smallParticleGraphicsSize.x * 1.5, smallParticleGraphicsSize.y * 1.5));
+        var smallParticleTexture = pixiWrapperFunctions_6.generateTextureWithBounds(props.renderer, smallParticleGraphics, PIXI.settings.SCALE_MODE, 1, new PIXI.Rectangle(0, 0, smallParticleGraphicsSize.x * 1.5, smallParticleGraphicsSize.y * 1.5));
         smallEmitter.addInitialize(new Proton.ImageTarget(smallParticleTexture));
         smallEmitter.addInitialize(new Proton.Velocity(new Proton.Span(2.5, 3.5), new Proton.Span(270, 35, true), "polar"));
         smallEmitter.addInitialize(new Proton.Position(new Proton.RectZone(0, -30, props.width + 100 - smallEmitter.p.x, 30)));
@@ -25190,7 +25474,7 @@ define("modules/common/battlesfxfunctions/beam", ["require", "exports", "modules
         var shinyEmitter = new Proton.BehaviourEmitter();
         shinyEmitter.p.x = beamOrigin.x;
         shinyEmitter.p.y = beamOrigin.y;
-        var shinyParticleTexture = utility_48.getDummyTextureForShader();
+        var shinyParticleTexture = pixiWrapperFunctions_6.getDummyTextureForShader();
         shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
         var shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
         shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
@@ -25422,7 +25706,7 @@ define("modules/common/battlesfxfunctions/shaders/Guard", ["require", "exports"]
         "}",
     ];
 });
-define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_49) {
+define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_44) {
     "use strict";
     function guard(props) {
         var offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(props.userOffset, props.width, "user");
@@ -25455,9 +25739,9 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "module
                     hasTriggeredEffect = true;
                     props.triggerEffect();
                 }
-                var relativeTime = utility_49.getRelativeValue(time, travelTime - 0.02, 1);
+                var relativeTime = utility_44.getRelativeValue(time, travelTime - 0.02, 1);
                 var adjustedtime = Math.pow(relativeTime, 4);
-                var relativeDistance = utility_49.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
+                var relativeDistance = utility_44.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
                 guardFilter.setUniformValues({
                     trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
                     blockWidth: adjustedtime * maxBlockWidth,
@@ -25571,37 +25855,8 @@ define("modules/common/battlesfxfunctions/placeholder", ["require", "exports"], 
     }
     exports.placeholder = placeholder;
 });
-define("modules/common/battlesfxfunctions/sfxfragments/ProjectileAttack", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "src/utility"], function (require, exports, SFXFragment_5, utility_50) {
+define("modules/common/battlesfxfunctions/sfxfragments/ProjectileAttack", ["require", "exports", "modules/common/battlesfxfunctions/sfxfragments/SFXFragment", "modules/common/battlesfxfunctions/sfxfragments/props/PropInfoClasses", "src/utility"], function (require, exports, SFXFragment_5, PropInfo, utility_45) {
     "use strict";
-    var defaultProjectileAttackProps = {
-        makeProjectileSprite: undefined,
-        animateProjectile: undefined,
-        onImpact: undefined,
-        animateImpact: undefined,
-        useSequentialAttackOriginPoints: true,
-        removeAfterImpact: true,
-        impactRate: 0.75,
-        maxSpeed: 3,
-        acceleration: 0.05,
-        amountToSpawn: 20,
-        spawnTimeStart: 0,
-        spawnTimeEnd: 500,
-    };
-    var ProjectileAttackPropTypes = {
-        makeProjectileSprite: "other",
-        animateProjectile: "other",
-        onImpact: "other",
-        animateImpact: "other",
-        useSequentialAttackOriginPoints: "boolean",
-        removeAfterImpact: "boolean",
-        impactRate: "number",
-        impactPosition: "range",
-        maxSpeed: "number",
-        acceleration: "number",
-        amountToSpawn: "number",
-        spawnTimeStart: "number",
-        spawnTimeEnd: "number",
-    };
     var Projectile = (function () {
         function Projectile(props) {
             this.hasImpacted = false;
@@ -25672,9 +25927,25 @@ define("modules/common/battlesfxfunctions/sfxfragments/ProjectileAttack", ["requ
     var ProjectileAttack = (function (_super) {
         __extends(ProjectileAttack, _super);
         function ProjectileAttack(props) {
-            var _this = _super.call(this, ProjectileAttackPropTypes, defaultProjectileAttackProps, props) || this;
+            var _this = _super.call(this) || this;
             _this.displayName = "ProjectileAttack";
             _this.key = "projectileAttack";
+            _this.propInfo = {
+                makeProjectileSprite: new PropInfo.Function(undefined),
+                animateProjectile: new PropInfo.Function(undefined),
+                onImpact: new PropInfo.Function(undefined),
+                animateImpact: new PropInfo.Function(undefined),
+                useSequentialAttackOriginPoints: new PropInfo.Boolean(true),
+                removeAfterImpact: new PropInfo.Boolean(true),
+                impactRate: new PropInfo.Number(0.75),
+                impactPosition: new PropInfo.Range({ min: 0.7, max: 1.0 }),
+                maxSpeed: new PropInfo.Number(3),
+                acceleration: new PropInfo.Number(0.05),
+                amountToSpawn: new PropInfo.Number(20),
+                spawnTimeStart: new PropInfo.Number(0),
+                spawnTimeEnd: new PropInfo.Number(500),
+            };
+            _this.initializeProps(props);
             _this.container = new PIXI.Container();
             return _this;
         }
@@ -25705,7 +25976,7 @@ define("modules/common/battlesfxfunctions/sfxfragments/ProjectileAttack", ["requ
                     animateProjectile: this.props.animateProjectile,
                     onImpact: this.props.onImpact,
                     animateImpact: this.props.animateImpact,
-                    impactPosition: utility_50.randInt(this.props.impactPosition.min, this.props.impactPosition.max),
+                    impactPosition: utility_45.randInt(this.props.impactPosition.min, this.props.impactPosition.max),
                     removeAfterImpact: this.props.removeAfterImpact,
                 }));
             }
@@ -25769,7 +26040,7 @@ define("modules/common/battlesfxfunctions/rocketAttack", ["require", "exports", 
                 var explosionClip = explosionsByID[projectile.id].clip;
                 explosionClip.anchor.set(0.5, 0.5);
                 explosionClip.loop = false;
-                explosionClip.position = projectile.sprite.position.clone();
+                explosionClip.position.copy(projectile.sprite.position);
                 explosionClip.position.x += projectile.sprite.width;
                 container.addChild(explosionClip);
             },
@@ -25870,7 +26141,7 @@ define("modules/common/battlesfxfunctions/ColorMatrixFilter", ["require", "expor
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ColorMatrixFilter;
 });
-define("modules/common/battlesfxfunctions/snipe", ["require", "exports", "src/Color", "src/UnitAttributes", "src/utility", "modules/common/battlesfxfunctions/sfxfragments/FocusingBeam", "modules/common/battlesfxfunctions/sfxfragments/ProjectileAttack", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/ColorMatrixFilter", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Color_12, UnitAttributes_2, utility_51, FocusingBeam_2, ProjectileAttack_2, RampingValue_6, ColorMatrixFilter_1, ProtonWrapper_2) {
+define("modules/common/battlesfxfunctions/snipe", ["require", "exports", "src/Color", "src/UnitAttributes", "src/pixiWrapperFunctions", "modules/common/battlesfxfunctions/sfxfragments/FocusingBeam", "modules/common/battlesfxfunctions/sfxfragments/ProjectileAttack", "modules/common/battlesfxfunctions/sfxfragments/RampingValue", "modules/common/battlesfxfunctions/ColorMatrixFilter", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Color_12, UnitAttributes_2, pixiWrapperFunctions_7, FocusingBeam_2, ProjectileAttack_2, RampingValue_6, ColorMatrixFilter_1, ProtonWrapper_2) {
     "use strict";
     var colors = (_a = {},
         _a[UnitAttributes_2.UnitAttribute.attack] = Color_12.default.fromHexString("FF4D77"),
@@ -26000,7 +26271,7 @@ define("modules/common/battlesfxfunctions/snipe", ["require", "exports", "src/Co
                 gfx.beginFill(emitterData.color);
                 gfx.drawRect(particleSize / 2, particleSize / 2, particleSize, particleSize);
                 gfx.endFill();
-                return utility_51.generateTextureWithBounds(params.renderer, gfx, PIXI.settings.SCALE_MODE, 1, new PIXI.Rectangle(0, 0, particleSize, particleSize));
+                return pixiWrapperFunctions_7.generateTextureWithBounds(params.renderer, gfx, PIXI.settings.SCALE_MODE, 1, new PIXI.Rectangle(0, 0, particleSize, particleSize));
             })();
             emitter.addInitialize(new Proton.ImageTarget(particleTexture));
             emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 5.0), new Proton.Span(270, 35, true), "polar"));
@@ -26095,7 +26366,7 @@ define("modules/common/effectactiontemplates/damageAdjustments", ["require", "ex
     "use strict";
     function getAdjustedTroopSize(unit) {
         var minEffectiveHealth = Math.max(unit.currentHealth, unit.battleStats.lastHealthBeforeReceivingDamage / 3);
-        var effectiveHealth = unit.isSquadron ?
+        var effectiveHealth = unit.template.isSquadron ?
             minEffectiveHealth :
             Math.min(unit.maxHealth, minEffectiveHealth + unit.maxHealth * 0.2);
         if (effectiveHealth <= 500) {
@@ -26165,7 +26436,7 @@ define("modules/common/effectactiontemplates/damageAdjustments", ["require", "ex
     }
     exports.getAdjustedDamage = getAdjustedDamage;
 });
-define("modules/common/effectactiontemplates/effectActions", ["require", "exports", "modules/common/effectactiontemplates/damageAdjustments", "src/StatusEffect", "src/utility"], function (require, exports, damageAdjustments_1, StatusEffect_2, utility_52) {
+define("modules/common/effectactiontemplates/effectActions", ["require", "exports", "modules/common/effectactiontemplates/damageAdjustments", "src/StatusEffect", "src/utility"], function (require, exports, damageAdjustments_1, StatusEffect_2, utility_46) {
     "use strict";
     function bindEffectActionData(toBind, data) {
         return toBind.bind(null, data);
@@ -26231,7 +26502,7 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
         }
         var minAdjustment = -target.currentHealth;
         var maxAdjustment = target.maxHealth - target.currentHealth;
-        var clamped = utility_52.clamp(healAmount, minAdjustment, maxAdjustment);
+        var clamped = utility_46.clamp(healAmount, minAdjustment, maxAdjustment);
         if (!executedEffectsResult[resultType.healthChanged]) {
             executedEffectsResult[resultType.healthChanged] = 0;
         }
@@ -26701,73 +26972,7 @@ define("modules/common/statuseffecttemplates/statusEffectTemplates", ["require",
         _a);
     var _a;
 });
-define("src/IDDictionary", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var IDDictionary = (function () {
-        function IDDictionary(keys, getValueFN) {
-            var _this = this;
-            this.valuesByID = {};
-            this.keysByID = {};
-            if (keys) {
-                keys.forEach(function (key) {
-                    _this.set(key, getValueFN(key));
-                });
-            }
-        }
-        IDDictionary.prototype.has = function (key) {
-            return Boolean(this.valuesByID[key.id]);
-        };
-        IDDictionary.prototype.get = function (key) {
-            return this.valuesByID[key.id];
-        };
-        IDDictionary.prototype.getByID = function (id) {
-            return this.valuesByID[id];
-        };
-        IDDictionary.prototype.set = function (key, value) {
-            this.valuesByID[key.id] = value;
-            this.keysByID[key.id] = key;
-        };
-        IDDictionary.prototype.setIfDoesntExist = function (key, value) {
-            if (!this.keysByID[key.id]) {
-                this.set(key, value);
-            }
-        };
-        IDDictionary.prototype.delete = function (key) {
-            delete this.valuesByID[key.id];
-            delete this.keysByID[key.id];
-        };
-        IDDictionary.prototype.forEach = function (callback) {
-            for (var ID in this.keysByID) {
-                callback(this.keysByID[ID], this.valuesByID[ID]);
-            }
-        };
-        IDDictionary.prototype.filter = function (filterFN) {
-            var filtered = this.constructor();
-            this.forEach(function (key, value) {
-                if (filterFN(key, value)) {
-                    filtered.set(key, value);
-                }
-            });
-            return filtered;
-        };
-        IDDictionary.prototype.zip = function (keyName, valueName) {
-            var zipped = [];
-            for (var key in this.keysByID) {
-                var zippedPair = (_a = {},
-                    _a[keyName] = this.keysByID[key],
-                    _a[valueName] = this.valuesByID[key],
-                    _a);
-                zipped.push(zippedPair);
-            }
-            return zipped;
-            var _a;
-        };
-        return IDDictionary;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = IDDictionary;
-});
-define("src/ValuesByUnit", ["require", "exports", "src/IDDictionary"], function (require, exports, IDDictionary_1) {
+define("src/ValuesByUnit", ["require", "exports", "src/IDDictionary"], function (require, exports, IDDictionary_3) {
     "use strict";
     var ValuesByUnit = (function (_super) {
         __extends(ValuesByUnit, _super);
@@ -26775,11 +26980,265 @@ define("src/ValuesByUnit", ["require", "exports", "src/IDDictionary"], function 
             return _super.call(this, units, getValueFN) || this;
         }
         return ValuesByUnit;
-    }(IDDictionary_1.default));
+    }(IDDictionary_3.IDDictionary));
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ValuesByUnit;
 });
-define("src/ValuesByPlayer", ["require", "exports", "src/IDDictionary"], function (require, exports, IDDictionary_2) {
+define("modules/defaultai/mapai/Front", ["require", "exports", "src/Fleet", "modules/common/attachedUnitData"], function (require, exports, Fleet_4, attachedUnitData_1) {
+    "use strict";
+    var Front = (function () {
+        function Front(id, units) {
+            this.id = id;
+            this.units = units || [];
+        }
+        Front.prototype.destroy = function () {
+            this.units.forEach(function (unit) {
+                attachedUnitData_1.default.get(unit).front = null;
+            });
+        };
+        Front.prototype.addUnit = function (unit) {
+            var unitData = attachedUnitData_1.default.get(unit);
+            if (unitData.front) {
+                unitData.front.removeUnit(unit);
+            }
+            unitData.front = this;
+            this.units.push(unit);
+        };
+        Front.prototype.removeUnit = function (unit) {
+            attachedUnitData_1.default.get(unit).front = null;
+            var unitIndex = this.getUnitIndex(unit);
+            this.units.splice(unitIndex, 1);
+        };
+        Front.prototype.getUnitsByLocation = function (units) {
+            if (units === void 0) { units = this.units; }
+            var byLocation = {};
+            units.forEach(function (unit) {
+                var star = unit.fleet.location;
+                if (!byLocation[star.id]) {
+                    byLocation[star.id] = [];
+                }
+                byLocation[star.id].push(unit);
+            });
+            return byLocation;
+        };
+        Front.prototype.getFleetsByLocation = function (fleets) {
+            if (fleets === void 0) { fleets = this.getAssociatedFleets(); }
+            var byLocation = {};
+            fleets.forEach(function (fleet) {
+                var star = fleet.location;
+                if (!byLocation[star.id]) {
+                    byLocation[star.id] = [];
+                }
+                byLocation[star.id].push(fleet);
+            });
+            return byLocation;
+        };
+        Front.prototype.getAssociatedFleets = function () {
+            var fleetsById = {};
+            for (var i = 0; i < this.units.length; i++) {
+                if (!this.units[i].fleet) {
+                    continue;
+                }
+                if (!fleetsById[this.units[i].fleet.id]) {
+                    fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
+                }
+            }
+            var allFleets = [];
+            for (var fleetId in fleetsById) {
+                allFleets.push(fleetsById[fleetId]);
+            }
+            return allFleets;
+        };
+        Front.prototype.organizeAllFleets = function () {
+            this.organizeFleets(this.getAssociatedFleets().filter(function (fleet) { return !fleet.isStealthy; }), this.units.filter(function (unit) { return !unit.isStealthy(); }));
+            this.organizeFleets(this.getAssociatedFleets().filter(function (fleet) { return fleet.isStealthy; }), this.units.filter(function (unit) { return unit.isStealthy(); }));
+        };
+        Front.prototype.hasUnit = function (unit) {
+            return this.getUnitIndex(unit) !== -1;
+        };
+        Front.prototype.getUnitCountByArchetype = function () {
+            var unitCountByArchetype = {};
+            for (var i = 0; i < this.units.length; i++) {
+                var archetype = this.units[i].template.archetype;
+                if (!unitCountByArchetype[archetype.type]) {
+                    unitCountByArchetype[archetype.type] = 0;
+                }
+                unitCountByArchetype[archetype.type]++;
+            }
+            return unitCountByArchetype;
+        };
+        Front.prototype.organizeFleets = function (fleetsToOrganize, unitsToOrganize) {
+            var _this = this;
+            var pureFleetsBeforeMerge = fleetsToOrganize.filter(function (fleet) { return _this.isFleetPure(fleet); });
+            this.mergeFleetsWithSharedLocation(pureFleetsBeforeMerge);
+            var pureFleets = pureFleetsBeforeMerge.filter(function (fleet) { return fleet.units.length > 0; });
+            var unitsInImpureFleets = this.getUnitsInImpureFleets(unitsToOrganize);
+            var pureFleetsByLocation = this.getFleetsByLocation(pureFleets);
+            var impureUnitsByLocation = this.getUnitsByLocation(unitsInImpureFleets);
+            var _loop_4 = function (locationID) {
+                if (pureFleetsByLocation[locationID]) {
+                    var fleet_1 = pureFleetsByLocation[locationID][0];
+                    impureUnitsByLocation[locationID].forEach(function (unitToTransfer) {
+                        var fleetToTransferFrom = unitToTransfer.fleet;
+                        fleetToTransferFrom.transferUnit(fleet_1, unitToTransfer);
+                        if (fleetToTransferFrom.units.length <= 0) {
+                            fleetToTransferFrom.deleteFleet();
+                        }
+                    });
+                    delete impureUnitsByLocation[locationID];
+                }
+            };
+            for (var locationID in impureUnitsByLocation) {
+                _loop_4(locationID);
+            }
+            for (var locationID in impureUnitsByLocation) {
+                var units = impureUnitsByLocation[locationID];
+                var player = units[0].fleet.player;
+                var location_1 = units[0].fleet.location;
+                units.forEach(function (unitToRemove) {
+                    unitToRemove.fleet.removeUnit(unitToRemove);
+                });
+                var fleet = new Fleet_4.Fleet(units);
+                player.addFleet(fleet);
+                location_1.addFleet(fleet);
+            }
+        };
+        Front.prototype.isFleetPure = function (fleet) {
+            var _this = this;
+            return fleet.units.every(function (unit) { return _this.hasUnit(unit); });
+        };
+        Front.prototype.getUnitIndex = function (unit) {
+            return this.units.indexOf(unit);
+        };
+        Front.prototype.mergeFleetsWithSharedLocation = function (fleetsToMerge) {
+            var fleetsByLocationID = this.getFleetsByLocation(fleetsToMerge);
+            for (var locationID in fleetsByLocationID) {
+                var fleetsAtLocation = fleetsByLocationID[locationID].sort(Fleet_4.Fleet.sortByImportance);
+                for (var i = fleetsAtLocation.length - 1; i >= 1; i--) {
+                    fleetsAtLocation[i].mergeWith(fleetsAtLocation[0]);
+                }
+            }
+        };
+        Front.prototype.getUnitsInImpureFleets = function (units) {
+            var _this = this;
+            var fleetPurityByID = {};
+            return units.filter(function (unit) {
+                if (fleetPurityByID.hasOwnProperty("" + unit.fleet.id)) {
+                    return !fleetPurityByID[unit.fleet.id];
+                }
+                else {
+                    var fleetIsPure = _this.isFleetPure(unit.fleet);
+                    fleetPurityByID[unit.fleet.id] = fleetIsPure;
+                    return !fleetIsPure;
+                }
+            });
+        };
+        return Front;
+    }());
+    exports.Front = Front;
+});
+define("modules/common/attachedUnitData", ["require", "exports", "src/ValuesByUnit", "src/utility"], function (require, exports, ValuesByUnit_1, utility_47) {
+    "use strict";
+    var AttachedUnitData = (function () {
+        function AttachedUnitData() {
+            this.byUnit = new ValuesByUnit_1.default();
+        }
+        AttachedUnitData.prototype.get = function (unit) {
+            if (!this.byUnit.has(unit)) {
+                this.byUnit.set(unit, {});
+            }
+            return this.byUnit.get(unit);
+        };
+        AttachedUnitData.prototype.set = function (unit, data) {
+            if (this.byUnit.has(unit)) {
+                utility_47.shallowExtend(this.byUnit.get(unit), data);
+            }
+            else {
+                this.byUnit.set(unit, data);
+            }
+        };
+        AttachedUnitData.prototype.delete = function (unit) {
+            this.byUnit.delete(unit);
+        };
+        AttachedUnitData.prototype.deleteAll = function () {
+            this.byUnit = new ValuesByUnit_1.default();
+        };
+        return AttachedUnitData;
+    }());
+    var attachedUnitData = new AttachedUnitData();
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = attachedUnitData;
+    exports.attachedUnitDataScripts = {
+        unit: {
+            removeFromPlayer: [
+                function (unit) {
+                    var front = attachedUnitData.get(unit).front;
+                    if (front) {
+                        front.removeUnit(unit);
+                    }
+                    attachedUnitData.delete(unit);
+                },
+            ],
+        },
+    };
+});
+define("modules/common/addCommonToModuleData", ["require", "exports", "modules/common/abilitytemplates/abilities", "modules/common/battlesfxtemplates/battleSFX", "modules/common/passiveskilltemplates/passiveSkills", "modules/common/resourcetemplates/resources", "modules/common/statuseffecttemplates/statusEffectTemplates", "modules/common/attachedUnitData"], function (require, exports, AbilityTemplates, BattleSFXTemplates, PassiveSkillTemplates, ResourceTemplates, statusEffectTemplates_1, attachedUnitData_2) {
+    "use strict";
+    function addCommonToModuleData(moduleData) {
+        moduleData.copyTemplates(AbilityTemplates, "Abilities");
+        moduleData.copyTemplates(ResourceTemplates, "Resources");
+        moduleData.copyTemplates(BattleSFXTemplates, "BattleSFX");
+        moduleData.copyTemplates(PassiveSkillTemplates, "PassiveSkills");
+        moduleData.copyTemplates(statusEffectTemplates_1.statusEffectTemplates, "StatusEffects");
+        moduleData.scripts.add(attachedUnitData_2.attachedUnitDataScripts);
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = addCommonToModuleData;
+});
+define("modules/defaultai/mapai/UnitEvaluator", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var UnitEvaluator = (function () {
+        function UnitEvaluator() {
+        }
+        UnitEvaluator.prototype.evaluateCombatStrength = function () {
+            var units = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                units[_i] = arguments[_i];
+            }
+            var strength = 0;
+            units.forEach(function (unit) {
+                strength += unit.currentHealth;
+            });
+            return strength;
+        };
+        UnitEvaluator.prototype.evaluateMapStrength = function () {
+            var units = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                units[_i] = arguments[_i];
+            }
+            return this.evaluateCombatStrength.apply(this, units);
+        };
+        UnitEvaluator.prototype.evaluateUnitScoutingAbility = function (unit) {
+            var score = 0;
+            var visionRange = unit.getVisionRange();
+            if (visionRange < 0) {
+                return -Infinity;
+            }
+            else {
+                score += Math.pow(visionRange, 1.5) / 2;
+            }
+            var isStealthy = unit.isStealthy();
+            if (isStealthy) {
+                score *= 1.5;
+            }
+            score /= unit.getTotalCost();
+            return score;
+        };
+        return UnitEvaluator;
+    }());
+    exports.UnitEvaluator = UnitEvaluator;
+});
+define("src/ValuesByPlayer", ["require", "exports", "src/IDDictionary"], function (require, exports, IDDictionary_4) {
     "use strict";
     var ValuesByPlayer = (function (_super) {
         __extends(ValuesByPlayer, _super);
@@ -26787,23 +27246,11 @@ define("src/ValuesByPlayer", ["require", "exports", "src/IDDictionary"], functio
             return _super.call(this, players, getValueFN) || this;
         }
         return ValuesByPlayer;
-    }(IDDictionary_2.default));
+    }(IDDictionary_4.IDDictionary));
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ValuesByPlayer;
 });
-define("src/ValuesByStar", ["require", "exports", "src/IDDictionary"], function (require, exports, IDDictionary_3) {
-    "use strict";
-    var ValuesByStar = (function (_super) {
-        __extends(ValuesByStar, _super);
-        function ValuesByStar(stars, getValueFN) {
-            return _super.call(this, stars, getValueFN) || this;
-        }
-        return ValuesByStar;
-    }(IDDictionary_3.default));
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = ValuesByStar;
-});
-define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/ValuesByPlayer", "src/ValuesByStar", "src/utility", "src/evaluateUnitStrength"], function (require, exports, ValuesByPlayer_1, ValuesByStar_1, utility_53, evaluateUnitStrength_2) {
+define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Star", "src/ValuesByPlayer", "src/ValuesByStar", "src/utility"], function (require, exports, Star_2, ValuesByPlayer_1, ValuesByStar_2, utility_48) {
     "use strict";
     exports.defaultEvaluationParameters = {
         starDesirability: {
@@ -26817,9 +27264,10 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
         },
     };
     var MapEvaluator = (function () {
-        function MapEvaluator(map, player) {
+        function MapEvaluator(map, player, unitEvaluator) {
             this.map = map;
             this.player = player;
+            this.unitEvaluator = unitEvaluator;
             this.evaluationParameters = exports.defaultEvaluationParameters;
         }
         MapEvaluator.prototype.evaluateStarIncome = function (star) {
@@ -26907,7 +27355,7 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
         };
         MapEvaluator.prototype.evaluateStarTargets = function (targetStars) {
             var _this = this;
-            var evaluationByStar = new ValuesByStar_1.default(targetStars, function (star) {
+            var evaluationByStar = new ValuesByStar_2.default(targetStars, function (star) {
                 var desirability = _this.evaluateStarDesirability(star);
                 var hostileStrength = _this.getHostileStrengthAtStar(star);
                 var ownInfluenceMap = _this.getPlayerInfluenceMap(_this.player);
@@ -26921,7 +27369,7 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
             return evaluationByStar;
         };
         MapEvaluator.prototype.scoreStarTargets = function (evaluations, getScoreFN) {
-            var scores = new ValuesByStar_1.default();
+            var scores = new ValuesByStar_2.default();
             evaluations.forEach(function (star, evaluation) {
                 scores.set(star, getScoreFN(star, evaluation));
             });
@@ -26952,7 +27400,7 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
                 var secondaryController = b.getSecondaryController();
                 return b.owner.isIndependent && (!secondaryController || secondaryController === _this.player);
             };
-            return this.player.controlledLocations[0].getIslandForQualifier(islandQualifierFN, earlyReturnSize, this.player.controlledLocations);
+            return Star_2.default.getIslandForQualifier(this.player.controlledLocations, earlyReturnSize, islandQualifierFN);
         };
         MapEvaluator.prototype.getHostileUnitsAtStar = function (star) {
             var _this = this;
@@ -26961,11 +27409,13 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
             });
         };
         MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
-            return evaluateUnitStrength_2.default.apply(void 0, this.getHostileUnitsAtStar(star));
+            return (_a = this.unitEvaluator).evaluateMapStrength.apply(_a, this.getHostileUnitsAtStar(star));
+            var _a;
         };
         MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
             var independentUnits = star.getUnits(function (player) { return player.isIndependent; });
-            return evaluateUnitStrength_2.default.apply(void 0, independentUnits);
+            return (_a = this.unitEvaluator).evaluateMapStrength.apply(_a, independentUnits);
+            var _a;
         };
         MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
             var byPlayer = new ValuesByPlayer_1.default();
@@ -27005,7 +27455,7 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
         MapEvaluator.prototype.getPlayerInfluenceMap = function (player) {
             var _this = this;
             var stars = this.player.getRevealedStars();
-            var influence = new ValuesByStar_1.default(stars, function (star) {
+            var influence = new ValuesByStar_2.default(stars, function (star) {
                 var defenceBuildingStrength = _this.getDefenceBuildingStrengthAtStarByPlayer(star);
                 return defenceBuildingStrength.get(player) || 0;
             });
@@ -27015,12 +27465,12 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
             }
             for (var i = 0; i < fleets.length; i++) {
                 var fleet = fleets[i];
-                var strength = evaluateUnitStrength_2.default.apply(void 0, fleet.units);
-                var location_1 = fleet.location;
+                var strength = (_a = this.unitEvaluator).evaluateMapStrength.apply(_a, fleet.units);
+                var location_2 = fleet.location;
                 var range = fleet.getMinMaxMovePoints();
                 var turnsToCheck = 4;
-                var inFleetRange = location_1.getLinkedInRange(range * turnsToCheck).byRange;
-                inFleetRange[0] = [location_1];
+                var inFleetRange = location_2.getLinkedInRange(range * turnsToCheck).byRange;
+                inFleetRange[0] = [location_2];
                 for (var distance in inFleetRange) {
                     var numericDistance = parseInt(distance);
                     var turnsToReach = Math.floor((numericDistance - 1) / range);
@@ -27036,6 +27486,7 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
                 }
             }
             return influence;
+            var _a;
         };
         MapEvaluator.prototype.getInfluenceMapsForKnownPlayers = function () {
             var byPlayer = new ValuesByPlayer_1.default();
@@ -27074,12 +27525,13 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
             var invisibleStrength = 0;
             var fleets = this.getVisibleFleetsOfPlayer(player);
             for (var i = 0; i < fleets.length; i++) {
-                visibleStrength += evaluateUnitStrength_2.default.apply(void 0, fleets[i].units);
+                visibleStrength += (_a = this.unitEvaluator).evaluateMapStrength.apply(_a, fleets[i].units);
             }
             if (player !== this.player) {
                 invisibleStrength = visibleStrength * 0.5;
             }
             return visibleStrength + invisibleStrength;
+            var _a;
         };
         MapEvaluator.prototype.getPerceivedThreatOfPlayer = function (player) {
             if (!this.player.diplomacyStatus.metPlayers[player.id]) {
@@ -27114,7 +27566,7 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
                 max = isFinite(max) ? Math.max(max, threat) : threat;
             });
             byPlayer.forEach(function (player, threat) {
-                relative.set(player, utility_53.getRelativeValue(threat, min, max));
+                relative.set(player, utility_48.getRelativeValue(threat, min, max));
             });
             return relative;
         };
@@ -27199,14 +27651,12 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
             var ownInfluence = this.getPlayerInfluenceMap(this.player);
             var enemyInfluence = this.getPlayerInfluenceMap(player);
             var enemyVision = this.getPlayerVisionMap(player);
-            var scores = [];
             var revealedStars = this.player.getRevealedStars();
             var stars = revealedStars.filter(function (star) {
                 return star.owner.isIndependent || star.owner === _this.player;
             });
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                var score = void 0;
+            var scores = new ValuesByStar_2.default(stars, function (star) {
+                var score;
                 var nearestOwnedStar = player.getNearestOwnedStarTo(star);
                 var distanceToEnemy = star.getDistanceToStar(nearestOwnedStar);
                 distanceToEnemy = Math.max(distanceToEnemy - 1, 1);
@@ -27223,11 +27673,8 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
                 else {
                     score = (danger / ownInfluence.get(star)) / safetyFactor;
                 }
-                scores.push({
-                    star: star,
-                    score: score,
-                });
-            }
+                return score;
+            });
             return scores;
         };
         MapEvaluator.prototype.getDesireToGoToWarWith = function (player) {
@@ -27264,7 +27711,156 @@ define("modules/defaultai/mapai/MapEvaluator", ["require", "exports", "src/Value
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapEvaluator;
 });
-define("modules/defaultai/mapai/GrandStrategyAI", ["require", "exports", "src/utility"], function (require, exports, utility_54) {
+define("modules/defaultai/mapai/DiplomacyAI", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var DiplomacyAI = (function () {
+        function DiplomacyAI(mapEvaluator, game) {
+            this.game = game;
+            this.player = mapEvaluator.player;
+            this.diplomacyStatus = this.player.diplomacyStatus;
+            this.mapEvaluator = mapEvaluator;
+        }
+        DiplomacyAI.prototype.setAttitudes = function () {
+            var diplomacyEvaluations = this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
+            for (var playerId in diplomacyEvaluations) {
+                this.diplomacyStatus.processAttitudeModifiersForPlayer(this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]);
+            }
+        };
+        return DiplomacyAI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = DiplomacyAI;
+});
+define("modules/defaultai/mapai/tradeEvaluationFunctions", ["require", "exports", "src/Trade"], function (require, exports, Trade_2) {
+    "use strict";
+    function evaluateValueOfOffer(offeredTrade) {
+        var value = 0;
+        for (var key in offeredTrade.stagedItems) {
+            var item = offeredTrade.stagedItems[key];
+            value += evaluateTradeableItemValue(item);
+        }
+        return value;
+    }
+    exports.evaluateValueOfOffer = evaluateValueOfOffer;
+    function evaluateTradeableItemValue(item) {
+        switch (item.type) {
+            case Trade_2.TradeableItemType.Money:
+                {
+                    return item.amount;
+                }
+            default:
+                {
+                    throw new Error("Unrecognized trade item " + item + ".");
+                }
+        }
+    }
+    exports.evaluateTradeableItemValue = evaluateTradeableItemValue;
+});
+define("modules/defaultai/localization/en/tradeMessages", ["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.tradeMessages = {
+        requestOffer: [
+            "Please make an offer.",
+            "What do you propose?",
+        ],
+        willingToAcceptOffer: [
+            "Seems good to me.",
+        ],
+        notWillingToAcceptOffer: [
+            "That won't work for us.",
+            "We can't do that.",
+        ],
+        proposeOffer: [
+            "How does this sound?",
+            "Here's my offer.",
+        ],
+        acceptOffer: [
+            "We accept your terms.",
+            "Looks fair. We accept.",
+        ],
+        willingToAcceptGift: [
+            "How generous. We'll gladly accept.",
+        ],
+        notWillingToAcceptDemand: [
+            "Over my dead body.",
+        ],
+    };
+});
+define("modules/defaultai/localization/localize", ["require", "exports", "src/localization/Localizer"], function (require, exports, Localizer_2) {
+    "use strict";
+    exports.localizer = new Localizer_2.Localizer();
+    exports.localize = exports.localizer.localize.bind(exports.localizer);
+});
+define("modules/defaultai/mapai/EconomicAI", ["require", "exports", "modules/defaultai/mapai/tradeEvaluationFunctions", "modules/defaultai/localization/localize"], function (require, exports, tradeEvaluationFunctions_1, localize_2) {
+    "use strict";
+    var EconomicAI = (function () {
+        function EconomicAI() {
+        }
+        EconomicAI.prototype.respondToTradeOffer = function (incomingResponse) {
+            var receivedOffer = incomingResponse.proposedReceivedOffer;
+            var ownTrade = incomingResponse.proposedOwnTrade;
+            var offeredValue = tradeEvaluationFunctions_1.evaluateValueOfOffer(receivedOffer);
+            var ownValue = tradeEvaluationFunctions_1.evaluateValueOfOffer(ownTrade);
+            if (offeredValue === 0 && ownValue === 0) {
+                return ({
+                    proposedOwnTrade: ownTrade.clone(),
+                    proposedReceivedOffer: receivedOffer.clone(),
+                    willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
+                    message: localize_2.localize("requestOffer").format(),
+                    willingToAccept: false,
+                });
+            }
+            else if (offeredValue === 0) {
+                return this.respondToDemand(receivedOffer, ownTrade);
+            }
+            else if (ownValue === 0) {
+                return this.respondToGift(receivedOffer, ownTrade);
+            }
+            var valueRatio = offeredValue / ownValue;
+            var isFavourable = valueRatio > 1;
+            var valueRatioDifference = Math.abs(1 - valueRatio);
+            var willingToAccept = isFavourable || valueRatioDifference < 0.04;
+            var message = willingToAccept ?
+                localize_2.localize("willingToAcceptOffer").format() :
+                localize_2.localize("notWillingToAcceptOffer").format();
+            return ({
+                proposedOwnTrade: ownTrade.clone(),
+                proposedReceivedOffer: receivedOffer.clone(),
+                willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
+                message: message,
+                willingToAccept: willingToAccept,
+            });
+        };
+        EconomicAI.prototype.respondToDemand = function (receivedOffer, ownTrade) {
+            return ({
+                proposedOwnTrade: ownTrade.clone(),
+                proposedReceivedOffer: receivedOffer.clone(),
+                willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
+                message: localize_2.localize("notWillingToAcceptDemand").format(),
+                willingToAccept: false,
+            });
+        };
+        EconomicAI.prototype.respondToGift = function (receivedOffer, ownTrade) {
+            return ({
+                proposedOwnTrade: ownTrade.clone(),
+                proposedReceivedOffer: receivedOffer.clone(),
+                willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
+                message: localize_2.localize("willingToAcceptGift").format(),
+                willingToAccept: true,
+            });
+        };
+        EconomicAI.prototype.getWillingnessToTradeItems = function (ownTrade) {
+            var willingnessPerItem = {};
+            for (var key in ownTrade.allItems) {
+                willingnessPerItem[key] = 1;
+            }
+            return willingnessPerItem;
+        };
+        return EconomicAI;
+    }());
+    exports.EconomicAI = EconomicAI;
+});
+define("modules/defaultai/mapai/GrandStrategyAI", ["require", "exports", "src/Star", "src/utility"], function (require, exports, Star_3, utility_49) {
     "use strict";
     var GrandStrategyAI = (function () {
         function GrandStrategyAI(personality, mapEvaluator, game) {
@@ -27272,6 +27868,12 @@ define("modules/defaultai/mapai/GrandStrategyAI", ["require", "exports", "src/ut
             this.mapEvaluator = mapEvaluator;
             this.game = game;
         }
+        GrandStrategyAI.prototype.setDesires = function () {
+            this.desireForExpansion = this.getDesireForExpansion();
+            this.desireForWar = this.getDesireForWar();
+            this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
+            this.desireForExploration = this.getDesireForExploration();
+        };
         GrandStrategyAI.prototype.setDesiredStars = function () {
             var totalStarsInMap = this.mapEvaluator.map.stars.length;
             var playersInGame = this.game.playerOrder.length;
@@ -27288,10 +27890,27 @@ define("modules/defaultai/mapai/GrandStrategyAI", ["require", "exports", "src/ut
                     max: maxStarsDesired,
                 };
         };
-        GrandStrategyAI.prototype.setDesires = function () {
-            this.desireForExpansion = this.getDesireForExpansion();
-            this.desireForWar = this.getDesireForWar();
-            this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
+        GrandStrategyAI.prototype.getDesireForExpansion = function () {
+            if (!this.desiredStars) {
+                this.setDesiredStars();
+            }
+            var starsOwned = this.mapEvaluator.player.controlledLocations.length;
+            var desire = 1 - utility_49.getRelativeValue(starsOwned, this.desiredStars.min, this.desiredStars.max);
+            return utility_49.clamp(desire, 0.1, 1);
+        };
+        GrandStrategyAI.prototype.getDesireForExploration = function () {
+            var _this = this;
+            var percentageOfUnrevealedStars = 1 -
+                this.mapEvaluator.player.getRevealedStars().length / this.mapEvaluator.map.stars.length;
+            var surroundingStars = Star_3.default.getIslandForQualifier(this.mapEvaluator.player.controlledLocations, null, function (parent, candidate) {
+                var nearestOwnedStar = _this.mapEvaluator.player.getNearestOwnedStarTo(candidate);
+                return candidate.getDistanceToStar(nearestOwnedStar) <= 2;
+            });
+            var unrevealedSurroundingStars = surroundingStars.filter(function (star) {
+                return !_this.mapEvaluator.player.revealedStars[star.id];
+            });
+            var percentageOfUnrevealedSurroundingStars = unrevealedSurroundingStars.length / surroundingStars.length;
+            return percentageOfUnrevealedSurroundingStars * 0.8 + percentageOfUnrevealedStars * 0.2;
         };
         GrandStrategyAI.prototype.getDesireForWar = function () {
             if (!this.desiredStars) {
@@ -27305,164 +27924,363 @@ define("modules/defaultai/mapai/GrandStrategyAI", ["require", "exports", "src/ut
                 fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
             }
             var desire = fromAggressiveness + fromExpansiveness;
-            return utility_54.clamp(desire, 0, 1);
-        };
-        GrandStrategyAI.prototype.getDesireForExpansion = function () {
-            if (!this.desiredStars)
-                this.setDesiredStars();
-            var starsOwned = this.mapEvaluator.player.controlledLocations.length;
-            var desire = 1 - utility_54.getRelativeValue(starsOwned, this.desiredStars.min, this.desiredStars.max);
-            return utility_54.clamp(desire, 0.1, 1);
+            return utility_49.clamp(desire, 0, 1);
         };
         return GrandStrategyAI;
     }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = GrandStrategyAI;
+    exports.GrandStrategyAI = GrandStrategyAI;
 });
-define("modules/defaultai/aiUtils", ["require", "exports", "src/DiplomacyState", "src/evaluateUnitStrength", "src/utility", "modules/defaultai/mapai/Objective"], function (require, exports, DiplomacyState_3, evaluateUnitStrength_3, utility_55, Objective_1) {
+define("modules/defaultai/objectives/common/ObjectiveFamily", ["require", "exports"], function (require, exports) {
     "use strict";
-    function defaultUnitDesireFN(front) {
-        var desire = 1;
-        var unitsOverMinimum = front.units.length - front.minUnitsDesired;
-        var unitsOverIdeal = front.units.length - front.idealUnitsDesired;
-        var unitsUnderMinimum = front.minUnitsDesired - front.units.length;
-        if (unitsOverMinimum > 0) {
-            desire *= 0.85 / unitsOverMinimum;
+    var ObjectiveFamily;
+    (function (ObjectiveFamily) {
+        ObjectiveFamily[ObjectiveFamily["Diplomatic"] = 0] = "Diplomatic";
+        ObjectiveFamily[ObjectiveFamily["Economic"] = 1] = "Economic";
+        ObjectiveFamily[ObjectiveFamily["Front"] = 2] = "Front";
+    })(ObjectiveFamily = exports.ObjectiveFamily || (exports.ObjectiveFamily = {}));
+});
+define("modules/defaultai/objectives/common/Objective", ["require", "exports", "src/IDDictionary", "src/idGenerators"], function (require, exports, IDDictionary_5, idGenerators_9) {
+    "use strict";
+    var Objective = (function () {
+        function Objective(score) {
+            this.isOngoing = false;
+            this.ongoingMultiplier = 1.25;
+            this.id = idGenerators_9.default.objective++;
+            this.score = score;
         }
-        if (unitsOverIdeal > 0) {
-            desire *= 0.6 / unitsOverIdeal;
+        Object.defineProperty(Objective.prototype, "score", {
+            get: function () {
+                return this.isOngoing ? this.baseScore * this.ongoingMultiplier : this.baseScore;
+            },
+            set: function (score) {
+                this.baseScore = score;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Objective.makeCreatorTemplate = function () {
+            var _this = this;
+            [
+                { member: this.type, memberIdentifier: "type" },
+                { member: this.family, memberIdentifier: "family" },
+                { member: this.createObjectives, memberIdentifier: "createObjectives" },
+                { member: this.updateOngoingObjectivesList, memberIdentifier: "updateOngoingObjectivesList" },
+                { member: this.evaluatePriority, memberIdentifier: "evaluatePriority" },
+            ].forEach(function (toCheck) {
+                if (toCheck.member === undefined) {
+                    throw new Error("Objective " + (_this.type || _this) + " lacks required static member " + toCheck.memberIdentifier);
+                }
+            });
+            return ({
+                type: this.type,
+                family: this.family,
+                getUpdatedObjectivesList: function (mapEvaluator, allOngoingObjectives) {
+                    var createdObjectives = _this.createObjectives(mapEvaluator, allOngoingObjectives);
+                    return _this.updateOngoingObjectivesList(allOngoingObjectives, createdObjectives);
+                },
+                evaluatePriority: this.evaluatePriority.bind(this),
+            });
+        };
+        Objective.getObjectivesByTarget = function (objectives) {
+            var byTarget = new IDDictionary_5.IDDictionary();
+            objectives.forEach(function (objective) {
+                if (byTarget.has(objective.target)) {
+                    throw new Error("Duplicate target id:'" + objective.target.id + "' for objectives of type '" + objective.type + "'");
+                }
+                else {
+                    byTarget.set(objective.target, objective);
+                }
+            });
+            return byTarget;
+        };
+        Objective.updateTargetedObjectives = function (allOngoingObjectives, createdObjectives) {
+            var _this = this;
+            var resultingObjectives = [];
+            var createdObjectivesByTarget = Objective.getObjectivesByTarget(createdObjectives);
+            allOngoingObjectives.forEach(function (objective) {
+                if (objective.type === _this.type) {
+                    if (createdObjectivesByTarget.has(objective.target)) {
+                        var createdObjective = createdObjectivesByTarget.get(objective.target);
+                        objective.score = createdObjective.score;
+                        objective.isOngoing = true;
+                        resultingObjectives.push(objective);
+                        createdObjectivesByTarget.delete(objective.target);
+                    }
+                    else {
+                    }
+                }
+                else {
+                    resultingObjectives.push(objective);
+                }
+            });
+            createdObjectivesByTarget.forEach(function (target, objective) {
+                resultingObjectives.push(objective);
+            });
+            return resultingObjectives;
+        };
+        Objective.updateUniqueObjective = function (allOngoingObjectives, createdObjective) {
+            for (var i = 0; i < allOngoingObjectives.length; i++) {
+                var objective = allOngoingObjectives[i];
+                if (objective.type === createdObjective.type) {
+                    objective.score = createdObjective.score;
+                    return allOngoingObjectives;
+                }
+            }
+            allOngoingObjectives.push(createdObjective);
+            return allOngoingObjectives;
+        };
+        Objective.replaceObjectives = function (allOngoingObjectives, createdObjectives) {
+            var _this = this;
+            var resultingObjectives = allOngoingObjectives.filter(function (objective) {
+                return objective.type !== _this.type;
+            });
+            resultingObjectives.push.apply(resultingObjectives, createdObjectives);
+            return resultingObjectives;
+        };
+        return Objective;
+    }());
+    exports.Objective = Objective;
+});
+define("modules/defaultai/mapai/ObjectiveQueue", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var ObjectiveQueue = (function () {
+        function ObjectiveQueue() {
+            this.objectivesToExecute = [];
         }
-        if (unitsUnderMinimum > 0) {
-            var intertiaPerMissingUnit = 0.5 / front.minUnitsDesired;
-            var newUnitInertia = intertiaPerMissingUnit * (unitsUnderMinimum - 1);
-            desire *= 1 - newUnitInertia;
+        ObjectiveQueue.sortByFinalPriority = function (a, b) {
+            return b.finalPriority - a.finalPriority;
+        };
+        ObjectiveQueue.prototype.executeObjectives = function (objectivesToExecute, onAllFinished) {
+            this.objectivesToExecute = objectivesToExecute;
+            this.onAllFinished = onAllFinished;
+            this.executeNextObjective();
+        };
+        ObjectiveQueue.prototype.executeNextObjective = function () {
+            this.currentObjective = this.objectivesToExecute.shift();
+            console.log("execute", this.currentObjective);
+            this.clearExecutionFailureTimeout();
+            if (!this.currentObjective) {
+                this.onAllFinished();
+                return;
+            }
+            this.setExecutionFailureTimeout();
+            this.currentObjective.execute(this.executeNextObjective.bind(this));
+        };
+        ObjectiveQueue.prototype.setExecutionFailureTimeout = function (delay) {
+            var _this = this;
+            if (delay === void 0) { delay = 5000; }
+            this.executionFailureTimeoutHandle = window.setTimeout(function () {
+                console.warn("Objective of type " + _this.currentObjective.type + " failed to trigger finish callback for objective execution after " + delay + "ms");
+                _this.clearExecutionFailureTimeout();
+            }, delay);
+        };
+        ObjectiveQueue.prototype.clearExecutionFailureTimeout = function () {
+            window.clearTimeout(this.executionFailureTimeoutHandle);
+            this.executionFailureTimeoutHandle = null;
+        };
+        return ObjectiveQueue;
+    }());
+    exports.ObjectiveQueue = ObjectiveQueue;
+});
+define("modules/defaultai/objectives/common/EconomicObjective", ["require", "exports", "modules/defaultai/objectives/common/Objective", "modules/defaultai/objectives/common/ObjectiveFamily"], function (require, exports, Objective_1, ObjectiveFamily_1) {
+    "use strict";
+    var EconomicObjective = (function (_super) {
+        __extends(EconomicObjective, _super);
+        function EconomicObjective(priority) {
+            var _this = _super.call(this, priority) || this;
+            _this.family = ObjectiveFamily_1.ObjectiveFamily.Economic;
+            return _this;
         }
-        return desire;
-    }
-    exports.defaultUnitDesireFN = defaultUnitDesireFN;
-    function defaultUnitFitFN(unit, front, lowHealthThreshhold, healthAdjust, distanceAdjust) {
-        if (lowHealthThreshhold === void 0) { lowHealthThreshhold = 0.75; }
-        if (healthAdjust === void 0) { healthAdjust = 1; }
-        if (distanceAdjust === void 0) { distanceAdjust = 1; }
-        var score = 1;
-        var healthPercentage = unit.currentHealth / unit.maxHealth;
-        if (healthPercentage < lowHealthThreshhold) {
-            score *= healthPercentage * healthAdjust;
+        return EconomicObjective;
+    }(Objective_1.Objective));
+    EconomicObjective.family = ObjectiveFamily_1.ObjectiveFamily.Economic;
+    exports.EconomicObjective = EconomicObjective;
+});
+define("modules/defaultai/objectives/common/FrontObjective", ["require", "exports", "modules/defaultai/objectives/common/Objective", "modules/defaultai/objectives/common/ObjectiveFamily", "modules/defaultai/mapai/Front"], function (require, exports, Objective_2, ObjectiveFamily_2, Front_1) {
+    "use strict";
+    var frontIDGenerator = 0;
+    var FrontObjective = (function (_super) {
+        __extends(FrontObjective, _super);
+        function FrontObjective(score, mapEvaluator, unitEvaluator) {
+            var _this = _super.call(this, score) || this;
+            _this.family = ObjectiveFamily_2.ObjectiveFamily.Front;
+            _this.front = new Front_1.Front(frontIDGenerator++);
+            _this.mapEvaluator = mapEvaluator;
+            _this.unitEvaluator = unitEvaluator;
+            return _this;
         }
-        var turnsToReach = unit.getTurnsToReachStar(front.targetLocation);
-        if (turnsToReach > 0) {
-            turnsToReach *= distanceAdjust;
-            var distanceMultiplier = 1 / (Math.log(turnsToReach + 2.5) / Math.log(2.5));
-            score *= distanceMultiplier;
+        FrontObjective.prototype.evaluateCurrentCombatStrength = function () {
+            return (_a = this.unitEvaluator).evaluateCombatStrength.apply(_a, this.front.units);
+            var _a;
+        };
+        FrontObjective.prototype.getRallyPoint = function () {
+            return this.mapEvaluator.player.controlledLocations[0];
+        };
+        return FrontObjective;
+    }(Objective_2.Objective));
+    FrontObjective.family = ObjectiveFamily_2.ObjectiveFamily.Front;
+    exports.FrontObjective = FrontObjective;
+});
+define("modules/defaultai/objectives/BuildUnitsForFront", ["require", "exports", "modules/defaultai/objectives/common/EconomicObjective", "modules/defaultai/objectives/common/ObjectiveFamily", "src/utility"], function (require, exports, EconomicObjective_1, ObjectiveFamily_3, utility_50) {
+    "use strict";
+    var BuildUnitsForFront = (function (_super) {
+        __extends(BuildUnitsForFront, _super);
+        function BuildUnitsForFront(objective, player) {
+            var _this = _super.call(this, objective.finalPriority) || this;
+            _this.type = "BuildUnitsForFront";
+            _this.ongoingMultiplier = 1;
+            _this.objective = objective;
+            _this.player = player;
+            return _this;
         }
-        return score;
-    }
-    exports.defaultUnitFitFN = defaultUnitFitFN;
-    function scoutingUnitDesireFN(front) {
-        if (front.units.length < 1)
-            return 1;
-        else
-            return 0;
-    }
-    exports.scoutingUnitDesireFN = scoutingUnitDesireFN;
-    function scoutingUnitFitFN(unit, front) {
-        var baseScore = 0;
-        var isStealthy = unit.isStealthy();
-        if (isStealthy)
-            baseScore += 0.2;
-        var visionRange = unit.getVisionRange();
-        if (visionRange <= 0) {
-            return -1;
+        BuildUnitsForFront.createObjectives = function (mapEvaluator, allOngoingObjectives) {
+            var frontObjectives = allOngoingObjectives.filter(function (objective) {
+                return objective.family === ObjectiveFamily_3.ObjectiveFamily.Front;
+            });
+            var frontObjectivesRequestingUnits = frontObjectives.filter(function (objective) {
+                return objective.evaluateCurrentCombatStrength() < objective.getIdealRequiredCombatStrength();
+            });
+            return frontObjectivesRequestingUnits.map(function (objective) {
+                return new BuildUnitsForFront(objective, mapEvaluator.player);
+            });
+        };
+        BuildUnitsForFront.evaluatePriority = function (mapEvaluator, grandStrategyAI) {
+            return 0.66;
+        };
+        BuildUnitsForFront.updateOngoingObjectivesList = function (allOngoingObjectives, createdObjectives) {
+            return this.replaceObjectives(allOngoingObjectives, createdObjectives);
+        };
+        BuildUnitsForFront.prototype.execute = function (afterDoneCallback) {
+            var _this = this;
+            var manufactoryLocation = this.objective.getRallyPoint().getNearestStarForQualifier(function (location) {
+                return location.owner === _this.player && location.manufactory && !location.manufactory.queueIsFull();
+            });
+            if (!manufactoryLocation) {
+                afterDoneCallback();
+                return;
+            }
+            var manufactory = manufactoryLocation.manufactory;
+            var unitType = utility_50.getRandomArrayItem(manufactory.getManufacturableThingsForType("unit"));
+            if (this.player.money >= unitType.buildCost) {
+                manufactory.addThingToQueue(unitType, "unit");
+            }
+            afterDoneCallback();
+        };
+        return BuildUnitsForFront;
+    }(EconomicObjective_1.EconomicObjective));
+    BuildUnitsForFront.type = "BuildUnitsForFront";
+    exports.BuildUnitsForFront = BuildUnitsForFront;
+});
+define("modules/defaultai/objectives/common/TargetedFrontObjective", ["require", "exports", "modules/defaultai/objectives/common/FrontObjective"], function (require, exports, FrontObjective_1) {
+    "use strict";
+    var TargetedFrontObjective = (function (_super) {
+        __extends(TargetedFrontObjective, _super);
+        function TargetedFrontObjective(score, target, mapEvaluator, unitEvaluator) {
+            var _this = _super.call(this, score, mapEvaluator, unitEvaluator) || this;
+            _this.hasMustered = false;
+            _this.target = target;
+            _this.musterLocation = mapEvaluator.player.getNearestOwnedStarTo(target);
+            return _this;
         }
-        else {
-            baseScore += Math.pow(visionRange, 1.5) / 2;
-        }
-        var strength = evaluateUnitStrength_3.default(unit);
-        baseScore -= strength / 1000;
-        var cost = unit.getTotalCost();
-        baseScore -= cost / 1000;
-        var score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 2);
-        return utility_55.clamp(score, 0, 1);
-    }
-    exports.scoutingUnitFitFN = scoutingUnitFitFN;
-    function mergeScoresByStar(merged, scores) {
-        for (var i = 0; i < scores.length; i++) {
-            var star = scores[i].star;
-            if (!merged[star.id]) {
-                merged[star.id] = scores[i];
+        TargetedFrontObjective.updateOngoingObjectivesList = function (allOngoingObjectives, createdObjectives) {
+            return this.updateTargetedObjectives(allOngoingObjectives, createdObjectives);
+        };
+        TargetedFrontObjective.prototype.getRallyPoint = function () {
+            return this.hasMustered ? this.target : this.musterLocation;
+        };
+        TargetedFrontObjective.prototype.evaluateDefaultUnitFit = function (unit, front, lowHealthThreshhold, healthAdjust, distanceAdjust) {
+            if (lowHealthThreshhold === void 0) { lowHealthThreshhold = 0.75; }
+            if (healthAdjust === void 0) { healthAdjust = 1; }
+            if (distanceAdjust === void 0) { distanceAdjust = 1; }
+            var score = 1;
+            var healthPercentage = unit.currentHealth / unit.maxHealth;
+            if (healthPercentage < lowHealthThreshhold) {
+                score *= healthPercentage * healthAdjust;
+            }
+            var turnsToReach = unit.getTurnsToReachStar(this.target);
+            if (turnsToReach > 0) {
+                turnsToReach *= distanceAdjust;
+                var distanceMultiplier = 1 / (Math.log(turnsToReach + 2.5) / Math.log(2.5));
+                score *= distanceMultiplier;
+            }
+            if (this.front.hasUnit(unit)) {
+                score *= 1.2;
+                if (this.hasMustered) {
+                    score *= 1.2;
+                }
+            }
+            return score;
+        };
+        TargetedFrontObjective.prototype.musterAndAttack = function (afterMoveCallback, targetFilter) {
+            var _this = this;
+            var moveTarget = this.getMoveTarget();
+            var fleets = this.front.getAssociatedFleets();
+            if (fleets.length <= 0) {
+                afterMoveCallback();
+                return;
+            }
+            var finishAllMoveFN = function () {
+                var unitsByLocation = _this.front.getUnitsByLocation();
+                var strengthAtTarget = (_a = _this.unitEvaluator).evaluateCombatStrength.apply(_a, unitsByLocation[_this.target.id]);
+                if (strengthAtTarget >= _this.getMinimumRequiredCombatStrength()) {
+                    var targetLocation = _this.target;
+                    var player = _this.mapEvaluator.player;
+                    var attackTargets = targetLocation.getTargetsForPlayer(player);
+                    var targetToAttack = targetFilter ?
+                        attackTargets.filter(targetFilter)[0] :
+                        attackTargets[0];
+                    player.attackTarget(targetLocation, targetToAttack, afterMoveCallback);
+                }
+                else {
+                    afterMoveCallback();
+                }
+                var _a;
+            };
+            var finishedMovingCount = 0;
+            var finishFleetMoveFN = function () {
+                finishedMovingCount++;
+                if (finishedMovingCount >= fleets.length) {
+                    finishAllMoveFN();
+                }
+            };
+            for (var i = 0; i < fleets.length; i++) {
+                fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+            }
+        };
+        TargetedFrontObjective.prototype.getMoveTarget = function () {
+            var _this = this;
+            var shouldMoveToTarget = false;
+            var unitsByLocation = this.front.getUnitsByLocation();
+            var fleets = this.front.getAssociatedFleets();
+            if (this.hasMustered) {
+                shouldMoveToTarget = true;
             }
             else {
-                merged[star.id].score += scores[i].score;
+                var minimumRequiredStrength = this.getMinimumRequiredCombatStrength();
+                var strengthAtMuster = (_a = this.unitEvaluator).evaluateCombatStrength.apply(_a, unitsByLocation[this.musterLocation.id]);
+                if (strengthAtMuster >= minimumRequiredStrength) {
+                    this.hasMustered = true;
+                    shouldMoveToTarget = true;
+                }
+                else {
+                    var fleetsInRange = fleets.filter(function (fleet) { return fleet.hasEnoughMovePointsToMoveTo(_this.target); });
+                    var strengthInRange = fleetsInRange.map(function (fleet) { return fleet.units; }).reduce(function (total, units) {
+                        return total + (_a = _this.unitEvaluator).evaluateCombatStrength.apply(_a, units);
+                        var _a;
+                    }, 0);
+                    if (strengthInRange >= minimumRequiredStrength) {
+                        this.hasMustered = true;
+                        shouldMoveToTarget = true;
+                    }
+                }
             }
-        }
-        return merged;
-    }
-    exports.mergeScoresByStar = mergeScoresByStar;
-    function makeObjectivesFromScores(template, evaluationScores, basePriority) {
-        var allObjectives = [];
-        var minScore = 0;
-        var maxScore;
-        for (var i = 0; i < evaluationScores.length; i++) {
-            var score = evaluationScores[i].score;
-            maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
-        }
-        for (var i = 0; i < evaluationScores.length; i++) {
-            var star = evaluationScores[i].star || null;
-            var player = evaluationScores[i].player || null;
-            if (score < 0.04) {
-                continue;
-            }
-            var relativeScore = utility_55.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
-            var priority = relativeScore * basePriority;
-            allObjectives.push(new Objective_1.default(template, priority, star, player));
-        }
-        return allObjectives;
-    }
-    exports.makeObjectivesFromScores = makeObjectivesFromScores;
-    function perimeterObjectiveCreation(template, isForScouting, basePriority, grandStrategyAI, mapEvaluator, objectivesAI) {
-        var playersToEstablishPerimeterAgainst = [];
-        var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
-        var statusByPlayer = diplomacyStatus.statusByPlayer;
-        for (var playerId in statusByPlayer) {
-            if (statusByPlayer[playerId] >= DiplomacyState_3.default.war) {
-                playersToEstablishPerimeterAgainst.push(diplomacyStatus.metPlayers[playerId]);
-            }
-        }
-        var allScoresByStar = {};
-        for (var i = 0; i < playersToEstablishPerimeterAgainst.length; i++) {
-            var player = playersToEstablishPerimeterAgainst[i];
-            var scores = mapEvaluator.getScoredPerimeterLocationsAgainstPlayer(player, 1, isForScouting);
-            mergeScoresByStar(allScoresByStar, scores);
-        }
-        var allScores = [];
-        for (var starId in allScoresByStar) {
-            if (allScoresByStar[starId].score > 0.04) {
-                allScores.push(allScoresByStar[starId]);
-            }
-        }
-        var objectives = makeObjectivesFromScores(template, allScores, basePriority);
-        return objectives;
-    }
-    exports.perimeterObjectiveCreation = perimeterObjectiveCreation;
-    function getUnitsToBeatImmediateTarget(mapEvaluator, objective) {
-        var min;
-        var ideal;
-        var star = objective.target;
-        var hostileUnits = mapEvaluator.getHostileUnitsAtStar(star);
-        if (hostileUnits.length <= 1) {
-            min = hostileUnits.length + 1;
-            ideal = hostileUnits.length + 1;
-        }
-        else {
-            min = Math.min(hostileUnits.length + 2, 6);
-            ideal = 6;
-        }
-        return ({
-            min: min,
-            ideal: ideal,
-        });
-    }
-    exports.getUnitsToBeatImmediateTarget = getUnitsToBeatImmediateTarget;
+            var moveTarget = shouldMoveToTarget ? this.target : this.musterLocation;
+            return moveTarget;
+            var _a;
+        };
+        return TargetedFrontObjective;
+    }(FrontObjective_1.FrontObjective));
+    exports.TargetedFrontObjective = TargetedFrontObjective;
 });
 define("modules/defaultai/objectives/common/movePriority", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -27475,92 +28293,19 @@ define("modules/defaultai/objectives/common/movePriority", ["require", "exports"
         movePriority[movePriority["expansion"] = 4] = "expansion";
         movePriority[movePriority["cleanUpPirates"] = 3] = "cleanUpPirates";
         movePriority[movePriority["heal"] = -1] = "heal";
-    })(movePriority || (movePriority = {}));
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = movePriority;
+    })(movePriority = exports.movePriority || (exports.movePriority = {}));
 });
-define("modules/defaultai/objectives/common/moveroutines/musterAndAttack", ["require", "exports"], function (require, exports) {
+define("modules/defaultai/objectives/CleanUpPirates", ["require", "exports", "modules/defaultai/objectives/common/TargetedFrontObjective", "modules/defaultai/objectives/common/movePriority"], function (require, exports, TargetedFrontObjective_1, movePriority_1) {
     "use strict";
-    function independentTargetFilter(target) {
-        return target.enemy.isIndependent;
-    }
-    exports.independentTargetFilter = independentTargetFilter;
-    function buildingControllerFilter(target) {
-        return target.building && target.enemy === target.building.controller;
-    }
-    exports.buildingControllerFilter = buildingControllerFilter;
-    function musterAndAttack(targetFilter, front, afterMoveCallback) {
-        var shouldMoveToTarget;
-        var unitsByLocation = front.getUnitsByLocation();
-        var fleets = front.getAssociatedFleets();
-        var atMuster = unitsByLocation[front.musterLocation.id] ?
-            unitsByLocation[front.musterLocation.id].length : 0;
-        var inRangeOfTarget = 0;
-        for (var i = 0; i < fleets.length; i++) {
-            var distance = fleets[i].location.getDistanceToStar(front.targetLocation);
-            if (fleets[i].getMinCurrentMovePoints() >= distance) {
-                inRangeOfTarget += fleets[i].units.length;
-            }
+    var CleanUpPirates = (function (_super) {
+        __extends(CleanUpPirates, _super);
+        function CleanUpPirates(score, target, mapEvaluator, unitEvaluator) {
+            var _this = _super.call(this, score, target, mapEvaluator, unitEvaluator) || this;
+            _this.type = "CleanUpPirates";
+            _this.movePriority = movePriority_1.movePriority.cleanUpPirates;
+            return _this;
         }
-        if (front.hasMustered) {
-            shouldMoveToTarget = true;
-        }
-        else {
-            if (atMuster >= front.minUnitsDesired || inRangeOfTarget >= front.minUnitsDesired) {
-                front.hasMustered = true;
-                shouldMoveToTarget = true;
-            }
-            else {
-                shouldMoveToTarget = false;
-            }
-        }
-        var moveTarget = shouldMoveToTarget ? front.targetLocation : front.musterLocation;
-        var finishAllMoveFN = function () {
-            unitsByLocation = front.getUnitsByLocation();
-            var atTarget = unitsByLocation[front.targetLocation.id] ?
-                unitsByLocation[front.targetLocation.id].length : 0;
-            if (atTarget >= front.minUnitsDesired) {
-                var star = front.targetLocation;
-                var player = front.units[0].fleet.player;
-                var attackTargets = star.getTargetsForPlayer(player);
-                var target = targetFilter ?
-                    attackTargets.filter(targetFilter)[0] :
-                    attackTargets[0];
-                player.attackTarget(star, target, afterMoveCallback);
-            }
-            else {
-                afterMoveCallback();
-            }
-        };
-        var finishedMovingCount = 0;
-        var finishFleetMoveFN = function () {
-            finishedMovingCount++;
-            if (finishedMovingCount >= fleets.length) {
-                finishAllMoveFN();
-            }
-        };
-        for (var i = 0; i < fleets.length; i++) {
-            fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
-        }
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = musterAndAttack;
-});
-define("modules/defaultai/objectives/cleanUpPirates", ["require", "exports", "modules/defaultai/aiUtils", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/musterAndAttack"], function (require, exports, aiUtils_1, movePriority_1, musterAndAttack_1) {
-    "use strict";
-    var cleanUpPirates = {
-        key: "cleanUpPirates",
-        movePriority: movePriority_1.default.cleanUpPirates,
-        preferredUnitComposition: {
-            combat: 0.65,
-            defence: 0.25,
-            utility: 0.1,
-        },
-        moveRoutineFN: musterAndAttack_1.default.bind(null, musterAndAttack_1.independentTargetFilter),
-        unitDesireFN: aiUtils_1.defaultUnitDesireFN,
-        unitFitFN: aiUtils_1.defaultUnitFitFN,
-        creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
-            var basePriority = grandStrategyAI.desireForExpansion;
+        CleanUpPirates.createObjectives = function (mapEvaluator, allOngoingObjectives) {
             var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function (star) {
                 if (star.getSecondaryController) {
                     return false;
@@ -27571,31 +28316,50 @@ define("modules/defaultai/objectives/cleanUpPirates", ["require", "exports", "mo
             });
             var evaluations = mapEvaluator.evaluateStarTargets(ownedStarsWithPirates);
             var scores = mapEvaluator.scoreIndependentTargets(evaluations);
-            var zippedScores = scores.zip("star", "score");
-            var template = cleanUpPirates;
-            return aiUtils_1.makeObjectivesFromScores(template, zippedScores, basePriority);
-        },
-        unitsToFillObjectiveFN: aiUtils_1.getUnitsToBeatImmediateTarget,
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = cleanUpPirates;
+            return scores.mapToArray(function (star, score) {
+                return new CleanUpPirates(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
+            });
+        };
+        CleanUpPirates.evaluatePriority = function (mapEvaluator, grandStrategyAI) {
+            return grandStrategyAI.desireForConsolidation;
+        };
+        CleanUpPirates.prototype.execute = function (afterDoneCallback) {
+            this.musterAndAttack(afterDoneCallback, function (target) {
+                return target.enemy.isIndependent;
+            });
+        };
+        CleanUpPirates.prototype.evaluateUnitFit = function (unit) {
+            var strengthScore = this.unitEvaluator.evaluateCombatStrength(unit);
+            return strengthScore * this.evaluateDefaultUnitFit(unit, this.front);
+        };
+        CleanUpPirates.prototype.getMinimumRequiredCombatStrength = function () {
+            var enemyStrength = this.mapEvaluator.getIndependentStrengthAtStar(this.target);
+            return enemyStrength * 1.5;
+        };
+        CleanUpPirates.prototype.getIdealRequiredCombatStrength = function () {
+            var enemyStrength = this.mapEvaluator.getIndependentStrengthAtStar(this.target);
+            return enemyStrength * 2;
+        };
+        return CleanUpPirates;
+    }(TargetedFrontObjective_1.TargetedFrontObjective));
+    CleanUpPirates.type = "CleanUpPirates";
+    exports.CleanUpPirates = CleanUpPirates;
 });
-define("modules/defaultai/objectives/conquer", ["require", "exports", "modules/defaultai/aiUtils", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/musterAndAttack"], function (require, exports, aiUtils_2, movePriority_2, musterAndAttack_2) {
+define("modules/defaultai/objectives/Conquer", ["require", "exports", "modules/defaultai/objectives/common/TargetedFrontObjective", "modules/defaultai/objectives/common/movePriority"], function (require, exports, TargetedFrontObjective_2, movePriority_2) {
     "use strict";
-    var conquer = {
-        key: "conquer",
-        movePriority: movePriority_2.default.conquer,
-        preferredUnitComposition: {
-            combat: 0.65,
-            defence: 0.25,
-            utility: 0.1,
-        },
-        moveRoutineFN: musterAndAttack_2.default.bind(null, musterAndAttack_2.buildingControllerFilter),
-        unitDesireFN: aiUtils_2.defaultUnitDesireFN,
-        unitFitFN: aiUtils_2.defaultUnitFitFN,
-        creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
-            var basePriority = grandStrategyAI.desireForExpansion;
+    var Conquer = (function (_super) {
+        __extends(Conquer, _super);
+        function Conquer(score, target, mapEvaluator, unitEvaluator) {
+            var _this = _super.call(this, score, target, mapEvaluator, unitEvaluator) || this;
+            _this.type = "Conquer";
+            _this.movePriority = movePriority_2.movePriority.conquer;
+            return _this;
+        }
+        Conquer.createObjectives = function (mapEvaluator, allOngoingObjectives) {
             var possibleTargets = mapEvaluator.player.getNeighboringStars().filter(function (star) {
+                if (star.owner.isIndependent) {
+                    return false;
+                }
                 if (!mapEvaluator.player.starIsRevealed(star)) {
                     return false;
                 }
@@ -27607,455 +28371,267 @@ define("modules/defaultai/objectives/conquer", ["require", "exports", "modules/d
                 var score = evaluation.desirability * strengthRatio;
                 return score;
             });
-            var zippedScores = scores.zip("star", "score");
-            var template = conquer;
-            return aiUtils_2.makeObjectivesFromScores(template, zippedScores, basePriority);
-        },
-        unitsToFillObjectiveFN: aiUtils_2.getUnitsToBeatImmediateTarget,
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = conquer;
+            return scores.mapToArray(function (star, score) {
+                return new Conquer(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
+            });
+        };
+        Conquer.evaluatePriority = function (mapEvaluator, grandStrategyAI) {
+            return grandStrategyAI.desireForExpansion;
+        };
+        Conquer.prototype.execute = function (afterDoneCallback) {
+            this.musterAndAttack(afterDoneCallback, function (target) {
+                return target.building && target.enemy === target.building.controller;
+            });
+        };
+        Conquer.prototype.evaluateUnitFit = function (unit) {
+            var strengthScore = this.unitEvaluator.evaluateCombatStrength(unit);
+            return strengthScore * this.evaluateDefaultUnitFit(unit, this.front);
+        };
+        Conquer.prototype.getMinimumRequiredCombatStrength = function () {
+            var enemyStrength = this.mapEvaluator.getHostileStrengthAtStar(this.target);
+            return enemyStrength * 1.3;
+        };
+        Conquer.prototype.getIdealRequiredCombatStrength = function () {
+            var enemyStrength = this.mapEvaluator.getHostileStrengthAtStar(this.target);
+            return enemyStrength * 1.75;
+        };
+        return Conquer;
+    }(TargetedFrontObjective_2.TargetedFrontObjective));
+    Conquer.type = "Conquer";
+    exports.Conquer = Conquer;
 });
-define("modules/defaultai/objectives/declareWar", ["require", "exports", "modules/defaultai/aiUtils"], function (require, exports, aiUtils_3) {
+define("modules/defaultai/objectives/common/DiplomaticObjective", ["require", "exports", "modules/defaultai/objectives/common/Objective", "modules/defaultai/objectives/common/ObjectiveFamily"], function (require, exports, Objective_3, ObjectiveFamily_4) {
     "use strict";
-    var declareWar = {
-        key: "declareWar",
-        creatorFunction: function (grandStrategyAI, mapEvaluator) {
-            var template = declareWar;
-            var basePriority = grandStrategyAI.desireForWar;
-            var scores = [];
-            var neighborPlayers = mapEvaluator.player.getNeighboringPlayers();
-            var metNeighborPlayers = neighborPlayers.filter(function (player) {
+    var DiplomaticObjective = (function (_super) {
+        __extends(DiplomaticObjective, _super);
+        function DiplomaticObjective(priority, diplomacyStatus) {
+            var _this = _super.call(this, priority) || this;
+            _this.family = ObjectiveFamily_4.ObjectiveFamily.Diplomatic;
+            _this.diplomacyStatus = diplomacyStatus;
+            return _this;
+        }
+        return DiplomaticObjective;
+    }(Objective_3.Objective));
+    DiplomaticObjective.family = ObjectiveFamily_4.ObjectiveFamily.Diplomatic;
+    exports.DiplomaticObjective = DiplomaticObjective;
+});
+define("modules/defaultai/objectives/DeclareWar", ["require", "exports", "modules/defaultai/objectives/common/DiplomaticObjective"], function (require, exports, DiplomaticObjective_1) {
+    "use strict";
+    var DeclareWar = (function (_super) {
+        __extends(DeclareWar, _super);
+        function DeclareWar(score, target, diplomacyStatus) {
+            var _this = _super.call(this, score, diplomacyStatus) || this;
+            _this.type = "DeclareWar";
+            _this.target = target;
+            return _this;
+        }
+        DeclareWar.createObjectives = function (mapEvaluator, allOngoingObjectives) {
+            var metNeighborPlayers = mapEvaluator.player.getNeighboringPlayers().filter(function (player) {
                 return Boolean(mapEvaluator.player.diplomacyStatus.metPlayers[player.id]);
             });
-            metNeighborPlayers.forEach(function (targetPlayer) {
-                var canDeclareWar = mapEvaluator.player.diplomacyStatus.canDeclareWarOn(targetPlayer);
-                if (canDeclareWar) {
-                    var score = mapEvaluator.getDesireToGoToWarWith(targetPlayer) *
-                        mapEvaluator.getAbilityToGoToWarWith(targetPlayer);
-                    console.log("make declare war objective " + mapEvaluator.player.id + "->" + targetPlayer.id);
-                    scores.push({
-                        player: targetPlayer,
-                        score: score,
-                    });
-                }
+            var declarableNeighbors = metNeighborPlayers.filter(function (player) {
+                return mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player);
             });
-            return aiUtils_3.makeObjectivesFromScores(template, scores, basePriority);
-        },
-        diplomacyRoutineFN: function (objective, diplomacyAI, adjustments, afterDoneCallback) {
-            console.log("declare war " + diplomacyAI.mapEvaluator.player.id + "->" + objective.targetPlayer.id);
-            diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);
+            return declarableNeighbors.map(function (player) {
+                var score = mapEvaluator.getDesireToGoToWarWith(player) *
+                    mapEvaluator.getAbilityToGoToWarWith(player);
+                return new DeclareWar(score, player, mapEvaluator.player.diplomacyStatus);
+            });
+        };
+        DeclareWar.evaluatePriority = function (mapEvaluator, grandStrategyAI) {
+            return grandStrategyAI.desireForWar;
+        };
+        DeclareWar.updateOngoingObjectivesList = function (allOngoingObjectives, createdObjectives) {
+            return this.updateTargetedObjectives(allOngoingObjectives, createdObjectives);
+        };
+        DeclareWar.prototype.execute = function (afterDoneCallback) {
+            this.diplomacyStatus.declareWarOn(this.target);
             afterDoneCallback();
-        },
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = declareWar;
+        };
+        return DeclareWar;
+    }(DiplomaticObjective_1.DiplomaticObjective));
+    DeclareWar.type = "DeclareWar";
+    exports.DeclareWar = DeclareWar;
 });
-define("modules/defaultai/objectives/common/moveroutines/moveTo", ["require", "exports"], function (require, exports) {
+define("modules/defaultai/objectives/common/moveroutines/moveToTarget", ["require", "exports"], function (require, exports) {
     "use strict";
-    function moveTo(front, afterMoveCallback, getMoveTargetFN) {
+    function moveToTarget(front, afterDoneCallback, getMoveTarget) {
         var fleets = front.getAssociatedFleets();
         if (fleets.length <= 0) {
-            afterMoveCallback();
+            afterDoneCallback();
             return;
         }
         var finishedMovingCount = 0;
-        var finishFleetMoveFN = function () {
+        var afterFleetMoveCallback = function () {
             finishedMovingCount++;
             if (finishedMovingCount >= fleets.length) {
-                afterMoveCallback();
+                afterDoneCallback();
             }
         };
-        for (var i = 0; i < fleets.length; i++) {
-            var moveTarget = getMoveTargetFN ? getMoveTargetFN(fleets[i]) : front.objective.target;
-            fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
-        }
+        fleets.forEach(function (fleet) {
+            var moveTarget = getMoveTarget(fleet);
+            fleet.pathFind(moveTarget, null, afterFleetMoveCallback);
+        });
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = moveTo;
+    exports.moveToTarget = moveToTarget;
 });
-define("modules/defaultai/objectives/discovery", ["require", "exports", "src/utility", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/moveTo", "modules/defaultai/aiUtils"], function (require, exports, utility_56, movePriority_3, moveTo_1, aiUtils_4) {
+define("modules/defaultai/objectives/Discovery", ["require", "exports", "modules/defaultai/objectives/common/TargetedFrontObjective", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/moveToTarget"], function (require, exports, TargetedFrontObjective_3, movePriority_3, moveToTarget_1) {
     "use strict";
-    var discovery = {
-        key: "discovery",
-        movePriority: movePriority_3.default.discovery,
-        preferredUnitComposition: {
-            scouting: 1,
-        },
-        moveRoutineFN: moveTo_1.default,
-        unitDesireFN: aiUtils_4.scoutingUnitDesireFN,
-        unitFitFN: aiUtils_4.scoutingUnitFitFN,
-        creatorFunction: function (grandStrategyAI, mapEvaluator) {
-            var scores = [];
-            var starsWithDistance = {};
-            var linksToUnrevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
-            var minDistance;
-            var maxDistance;
-            for (var starId in linksToUnrevealedStars) {
-                var star = mapEvaluator.player.revealedStars[starId];
-                var nearest = mapEvaluator.player.getNearestOwnedStarTo(star);
-                var distance = star.getDistanceToStar(nearest);
-                starsWithDistance[starId] = distance;
-                if (!isFinite(minDistance)) {
-                    minDistance = distance;
-                }
-                else {
-                    minDistance = Math.min(minDistance, distance);
-                }
-                if (!isFinite(maxDistance)) {
-                    maxDistance = distance;
-                }
-                else {
-                    maxDistance = Math.max(maxDistance, distance);
-                }
-            }
-            for (var starId in linksToUnrevealedStars) {
-                var star = mapEvaluator.player.revealedStars[starId];
-                var score = 0;
-                var relativeDistance = utility_56.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
-                var distanceMultiplier = 0.3 + 0.7 * relativeDistance;
-                var linksScore = linksToUnrevealedStars[starId].length * 20;
-                score += linksScore;
-                var desirabilityScore = mapEvaluator.evaluateIndividualStarDesirability(star) * distanceMultiplier;
-                score += desirabilityScore;
-                score *= distanceMultiplier;
-                scores.push({
-                    star: star,
-                    score: score,
-                });
-            }
-            var template = discovery;
-            return aiUtils_4.makeObjectivesFromScores(template, scores, 0.5);
-        },
-        unitsToFillObjectiveFN: function (mapEvaluator, objective) {
-            return { min: 1, ideal: 1 };
-        },
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = discovery;
-});
-define("modules/defaultai/mapai/FrontsAI", ["require", "exports", "modules/defaultai/mapai/Front"], function (require, exports, Front_1) {
-    "use strict";
-    var FrontsAI = (function () {
-        function FrontsAI(mapEvaluator, objectivesAI, personality, game) {
-            this.fronts = [];
-            this.frontsRequestingUnits = [];
-            this.frontsToMove = [];
-            this.mapEvaluator = mapEvaluator;
-            this.map = mapEvaluator.map;
-            this.player = mapEvaluator.player;
-            this.objectivesAI = objectivesAI;
-            this.personality = personality;
-            this.game = game;
+    var Discovery = (function (_super) {
+        __extends(Discovery, _super);
+        function Discovery(score, target, mapEvaluator, unitEvaluator) {
+            var _this = _super.call(this, score, target, mapEvaluator, unitEvaluator) || this;
+            _this.type = "Discovery";
+            _this.movePriority = movePriority_3.movePriority.discovery;
+            return _this;
         }
-        FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
-            var scores = [];
-            for (var i = 0; i < units.length; i++) {
-                scores.push({
-                    unit: units[i],
-                    score: front.scoreUnitFit(units[i]),
-                    front: front,
-                });
-            }
-            return scores;
-        };
-        FrontsAI.prototype.assignUnits = function () {
-            var units = this.player.units;
-            var allUnitScores = [];
-            var unitScoresByFront = {};
-            var recalculateScoresForFront = function (front) {
-                var frontScores = unitScoresByFront[front.id];
-                for (var i = 0; i < frontScores.length; i++) {
-                    frontScores[i].score = front.scoreUnitFit(frontScores[i].unit);
-                }
-            };
-            var removeUnit = function (unit) {
-                for (var frontId in unitScoresByFront) {
-                    unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
-                        return score.unit !== unit;
-                    });
-                }
-            };
-            var sortByScoreFN = function (a, b) {
-                return a.score - b.score;
-            };
-            for (var i = 0; i < this.fronts.length; i++) {
-                var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
-                unitScoresByFront[this.fronts[i].id] = frontScores;
-                allUnitScores.push.apply(allUnitScores, frontScores);
-            }
-            var alreadyAdded = {};
-            while (allUnitScores.length > 0) {
-                allUnitScores.sort(sortByScoreFN);
-                var bestScore = allUnitScores.pop();
-                if (alreadyAdded[bestScore.unit.id]) {
-                    continue;
-                }
-                bestScore.front.addUnit(bestScore.unit);
-                removeUnit(bestScore.unit);
-                alreadyAdded[bestScore.unit.id] = true;
-                recalculateScoresForFront(bestScore.front);
-            }
-        };
-        FrontsAI.prototype.getFrontWithId = function (id) {
-            for (var i = 0; i < this.fronts.length; i++) {
-                if (this.fronts[i].id === id) {
-                    return this.fronts[i];
-                }
-            }
-            return null;
-        };
-        FrontsAI.prototype.createFront = function (objective) {
-            var musterLocation = objective.target ?
-                this.player.getNearestOwnedStarTo(objective.target) :
-                null;
-            var unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
-            var front = new Front_1.Front({
-                id: objective.id,
-                objective: objective,
-                minUnitsDesired: unitsDesired.min,
-                idealUnitsDesired: unitsDesired.ideal,
-                targetLocation: objective.target,
-                musterLocation: musterLocation,
-            });
-            return front;
-        };
-        FrontsAI.prototype.removeInactiveFronts = function () {
-            for (var i = this.fronts.length - 1; i >= 0; i--) {
-                var front = this.fronts[i];
-                var hasActiveObjective = false;
-                for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
-                    var objective = this.objectivesAI.objectives[j];
-                    if (objective.id === front.id) {
-                        hasActiveObjective = true;
-                        break;
-                    }
-                }
-                if (!hasActiveObjective) {
-                    this.fronts.splice(i, 1);
-                }
-            }
-        };
-        FrontsAI.prototype.formFronts = function () {
-            this.removeInactiveFronts();
-            for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
-                var objective = this.objectivesAI.objectives[i];
-                if (!objective.template.moveRoutineFN) {
-                    continue;
-                }
-                if (!this.getFrontWithId(objective.id)) {
-                    var front = this.createFront(objective);
-                    this.fronts.push(front);
-                }
-            }
-        };
-        FrontsAI.prototype.organizeFleets = function () {
-            for (var i = 0; i < this.fronts.length; i++) {
-                this.fronts[i].organizeAllFleets();
-            }
-        };
-        FrontsAI.prototype.setFrontsToMove = function () {
-            this.frontsToMove = this.fronts.slice(0);
-            this.frontsToMove.sort(function (a, b) {
-                return a.objective.template.movePriority - b.objective.template.movePriority;
+        Discovery.createObjectives = function (mapEvaluator, allOngoingObjectives) {
+            var linksToUnRevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
+            return linksToUnRevealedStars.mapToArray(function (targetStar, linkedStars) {
+                var nearestOwnedStar = mapEvaluator.player.getNearestOwnedStarTo(targetStar);
+                var distanceToNearestOwnedStar = nearestOwnedStar.getDistanceToStar(targetStar);
+                var desirabilityScore = mapEvaluator.evaluateIndividualStarDesirability(targetStar);
+                var linksMultiplier = linkedStars.length;
+                var distanceMultiplier = 1 / distanceToNearestOwnedStar;
+                var score = desirabilityScore * linksMultiplier * distanceMultiplier;
+                return new Discovery(score, targetStar, mapEvaluator, mapEvaluator.unitEvaluator);
             });
         };
-        FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
-            if (this.game.hasEnded) {
-                return;
-            }
-            var front = this.frontsToMove.pop();
-            if (!front) {
-                afterMovingAllCallback();
-                return;
-            }
-            front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
+        Discovery.evaluatePriority = function (mapEvaluator, grandStrategyAI) {
+            return grandStrategyAI.desireForExploration;
         };
-        FrontsAI.prototype.setUnitRequests = function () {
-            this.frontsRequestingUnits = [];
-            for (var i = 0; i < this.fronts.length; i++) {
-                var front = this.fronts[i];
-                if (front.units.length < front.idealUnitsDesired) {
-                    this.frontsRequestingUnits.push(front);
-                }
-            }
+        Discovery.prototype.execute = function (afterDoneCallback) {
+            var _this = this;
+            moveToTarget_1.moveToTarget(this.front, afterDoneCallback, function (fleet) {
+                return _this.target;
+            });
         };
-        return FrontsAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = FrontsAI;
+        Discovery.prototype.evaluateUnitFit = function (unit) {
+            var scoutingScore = this.unitEvaluator.evaluateUnitScoutingAbility(unit);
+            var movementMultiplier = unit.maxMovePoints;
+            var score = scoutingScore * movementMultiplier;
+            return score * this.evaluateDefaultUnitFit(unit, this.front, 0, 0, 2);
+        };
+        Discovery.prototype.getMinimumRequiredCombatStrength = function () {
+            return 0;
+        };
+        Discovery.prototype.getIdealRequiredCombatStrength = function () {
+            return 0;
+        };
+        return Discovery;
+    }(TargetedFrontObjective_3.TargetedFrontObjective));
+    Discovery.type = "Discovery";
+    exports.Discovery = Discovery;
 });
-define("modules/defaultai/mapai/EconomyAI", ["require", "exports", "src/utility"], function (require, exports, utility_57) {
+define("modules/defaultai/objectives/ExpandManufactoryCapacity", ["require", "exports", "modules/defaultai/objectives/common/EconomicObjective", "src/Manufactory"], function (require, exports, EconomicObjective_2, Manufactory_3) {
     "use strict";
-    var EconomyAI = (function () {
-        function EconomyAI(props) {
-            this.objectivesAI = props.objectivesAI;
-            this.frontsAI = props.frontsAI;
-            this.mapEvaluator = props.mapEvaluator;
-            this.player = props.mapEvaluator.player;
-            this.personality = props.personality;
+    var ExpandManufactoryCapacity = (function (_super) {
+        __extends(ExpandManufactoryCapacity, _super);
+        function ExpandManufactoryCapacity(score, player, target) {
+            var _this = _super.call(this, score) || this;
+            _this.type = "ExpandManufactoryCapacity";
+            _this.player = player;
+            _this.target = target;
+            return _this;
         }
-        EconomyAI.prototype.resolveEconomicObjectives = function () {
-            var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("economyRoutineFN");
-            var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("economyRoutineAdjustments");
-            for (var i = 0; i < objectives.length; i++) {
-                var objective = objectives[i];
-                objective.template.economyRoutineFN(objective, this, adjustments);
-            }
-        };
-        EconomyAI.prototype.satisfyAllRequests = function () {
-            var allRequests = this.frontsAI.frontsRequestingUnits;
-            allRequests.sort(function (a, b) {
-                return b.objective.priority - a.objective.priority;
+        ExpandManufactoryCapacity.createObjectives = function (mapEvaluator, allOngoingObjectives) {
+            var starsThatCanExpand = mapEvaluator.player.controlledLocations.filter(function (star) {
+                return !star.manufactory || star.manufactory.capacity < star.manufactory.maxCapacity;
             });
-            for (var i = 0; i < allRequests.length; i++) {
-                var request = allRequests[i];
-                if (request.targetLocation) {
-                    this.satisfyFrontRequest(request);
+            return starsThatCanExpand.map(function (star) {
+                var upgradeScore = star.manufactory ?
+                    1 * star.manufactory.unitStatsModifier * star.manufactory.unitHealthModifier :
+                    1;
+                var upgradeCost = ExpandManufactoryCapacity.getCostForStar(star);
+                var costScore = Manufactory_3.default.getBuildCost() / upgradeCost;
+                var score = costScore + Math.pow(upgradeScore, 2);
+                return new ExpandManufactoryCapacity(score, mapEvaluator.player, star);
+            });
+        };
+        ExpandManufactoryCapacity.evaluatePriority = function (mapEvaluator, grandStrategyAI) {
+            return grandStrategyAI.desireForConsolidation;
+        };
+        ExpandManufactoryCapacity.updateOngoingObjectivesList = function (allOngoingObjectives, createdObjectives) {
+            return this.updateTargetedObjectives(allOngoingObjectives, createdObjectives);
+        };
+        ExpandManufactoryCapacity.getCostForStar = function (star) {
+            return star.manufactory ?
+                star.manufactory.getCapacityUpgradeCost() :
+                Manufactory_3.default.getBuildCost();
+        };
+        ExpandManufactoryCapacity.prototype.execute = function (afterDoneCallback) {
+            var upgradeCost = ExpandManufactoryCapacity.getCostForStar(this.target);
+            var canAffordUpgrade = upgradeCost <= this.player.money;
+            if (canAffordUpgrade) {
+                if (this.target.manufactory) {
+                    this.target.manufactory.upgradeCapacity(1);
                 }
                 else {
+                    this.target.buildManufactory();
+                    this.player.money -= Manufactory_3.default.getBuildCost();
                 }
             }
+            afterDoneCallback();
         };
-        EconomyAI.prototype.satisfyFrontRequest = function (front) {
-            var player = this.player;
-            var starQualifierFN = function (star) {
-                return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
-            };
-            var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
-            if (!star) {
-                return;
-            }
-            var manufactory = star.manufactory;
-            var archetypeScores = front.getNewUnitArchetypeScores();
-            var buildableUnitTypesByArchetype = {};
-            var globalBuildableUnitTypes = player.getGloballyBuildableUnits();
-            var buildableUnitTypes = globalBuildableUnitTypes.concat(manufactory.getUniqueLocalUnitTypes(globalBuildableUnitTypes));
-            for (var i = 0; i < buildableUnitTypes.length; i++) {
-                var archetype = buildableUnitTypes[i].archetype;
-                if (!buildableUnitTypesByArchetype[archetype.type]) {
-                    buildableUnitTypesByArchetype[archetype.type] = [];
-                }
-                if (!archetypeScores[archetype.type]) {
-                    archetypeScores[archetype.type] = 0;
-                }
-                buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
-            }
-            var sortedScores = utility_57.getObjectKeysSortedByValue(archetypeScores, "desc");
-            var unitType;
-            for (var i = 0; i < sortedScores.length; i++) {
-                if (buildableUnitTypesByArchetype[sortedScores[i]]) {
-                    unitType = utility_57.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
-                    if (this.player.money < unitType.buildCost) {
-                        return;
-                    }
-                    else {
-                        break;
-                    }
-                }
-            }
-            if (!unitType) {
-                throw new Error();
-            }
-            manufactory.addThingToQueue(unitType, "unit");
-        };
-        return EconomyAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = EconomyAI;
+        return ExpandManufactoryCapacity;
+    }(EconomicObjective_2.EconomicObjective));
+    ExpandManufactoryCapacity.type = "ExpandManufactoryCapacity";
+    exports.ExpandManufactoryCapacity = ExpandManufactoryCapacity;
 });
-define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "exports", "modules/defaultai/mapai/Objective", "src/App"], function (require, exports, Objective_2, App_35) {
+define("modules/defaultai/objectives/Expansion", ["require", "exports", "modules/defaultai/objectives/common/TargetedFrontObjective", "modules/defaultai/objectives/common/movePriority"], function (require, exports, TargetedFrontObjective_4, movePriority_4) {
     "use strict";
-    var expandManufactoryCapacity = {
-        key: "expandManufactoryCapacity",
-        creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
-            var template = expandManufactoryCapacity;
-            return [new Objective_2.default(template, 0.5, null)];
-        },
-        economyRoutineFN: function (objective, economyAI) {
-            var starWithCost = [];
-            var player = economyAI.player;
-            var stars = player.controlledLocations;
-            if (player.money < 1200) {
-                return;
-            }
-            for (var i = 0; i < stars.length; i++) {
-                var star_1 = stars[i];
-                var fullyExpanded = star_1.manufactory && star_1.manufactory.capacity >= star_1.manufactory.maxCapacity;
-                if (fullyExpanded) {
-                    continue;
-                }
-                var expansionCost = star_1.manufactory ? star_1.manufactory.getCapacityUpgradeCost() : App_35.default.moduleData.ruleSet.manufactory.buildCost;
-                starWithCost.push({
-                    star: star_1,
-                    cost: expansionCost,
-                });
-            }
-            if (starWithCost.length === 0) {
-                return;
-            }
-            starWithCost.sort(function (a, b) {
-                return a.cost - b.cost;
-            });
-            var star = starWithCost[0].star;
-            var cost = starWithCost[0].cost;
-            if (player.money < cost * 1.1) {
-                return;
-            }
-            if (star.manufactory) {
-                star.manufactory.upgradeCapacity(1);
-            }
-            else {
-                star.buildManufactory();
-                player.money -= App_35.default.moduleData.ruleSet.manufactory.buildCost;
-            }
-        },
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = expandManufactoryCapacity;
-});
-define("modules/defaultai/objectives/expansion", ["require", "exports", "modules/defaultai/aiUtils", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/musterAndAttack"], function (require, exports, aiUtils_5, movePriority_4, musterAndAttack_3) {
-    "use strict";
-    var expansion = {
-        key: "expansion",
-        movePriority: movePriority_4.default.expansion,
-        preferredUnitComposition: {
-            combat: 0.65,
-            defence: 0.25,
-            utility: 0.1,
-        },
-        moveRoutineFN: musterAndAttack_3.default.bind(null, musterAndAttack_3.independentTargetFilter),
-        unitDesireFN: aiUtils_5.defaultUnitDesireFN,
-        unitFitFN: aiUtils_5.defaultUnitFitFN,
-        creatorFunction: function (grandStrategyAI, mapEvaluator) {
-            var basePriority = grandStrategyAI.desireForExpansion;
+    var Expansion = (function (_super) {
+        __extends(Expansion, _super);
+        function Expansion(score, target, mapEvaluator, unitEvaluator) {
+            var _this = _super.call(this, score, target, mapEvaluator, unitEvaluator) || this;
+            _this.type = "Expansion";
+            _this.movePriority = movePriority_4.movePriority.expansion;
+            return _this;
+        }
+        Expansion.createObjectives = function (mapEvaluator, allOngoingObjectives) {
             var independentNeighborStars = mapEvaluator.getIndependentNeighborStars();
             var evaluations = mapEvaluator.evaluateStarTargets(independentNeighborStars);
             var scores = mapEvaluator.scoreIndependentTargets(evaluations);
-            var zippedScores = scores.zip("star", "score");
-            var template = expansion;
-            return aiUtils_5.makeObjectivesFromScores(template, zippedScores, basePriority);
-        },
-        unitsToFillObjectiveFN: aiUtils_5.getUnitsToBeatImmediateTarget,
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = expansion;
+            return scores.mapToArray(function (star, score) {
+                return new Expansion(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
+            });
+        };
+        Expansion.evaluatePriority = function (mapEvaluator, grandStrategyAI) {
+            return grandStrategyAI.desireForExpansion;
+        };
+        Expansion.prototype.execute = function (afterDoneCallback) {
+            this.musterAndAttack(afterDoneCallback, function (target) {
+                return target.enemy.isIndependent;
+            });
+        };
+        Expansion.prototype.evaluateUnitFit = function (unit) {
+            var strengthScore = this.unitEvaluator.evaluateCombatStrength(unit);
+            return strengthScore * this.evaluateDefaultUnitFit(unit, this.front);
+        };
+        Expansion.prototype.getMinimumRequiredCombatStrength = function () {
+            var enemyStrength = this.mapEvaluator.getHostileStrengthAtStar(this.target);
+            return enemyStrength * 1.2;
+        };
+        Expansion.prototype.getIdealRequiredCombatStrength = function () {
+            var enemyStrength = this.mapEvaluator.getHostileStrengthAtStar(this.target);
+            return enemyStrength * 1.6;
+        };
+        return Expansion;
+    }(TargetedFrontObjective_4.TargetedFrontObjective));
+    Expansion.type = "Expansion";
+    exports.Expansion = Expansion;
 });
-define("modules/defaultai/objectives/fightInvadingEnemy", ["require", "exports", "modules/defaultai/aiUtils", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/musterAndAttack"], function (require, exports, aiUtils_6, movePriority_5, musterAndAttack_4) {
+define("modules/defaultai/objectives/FightInvadingEnemy", ["require", "exports", "modules/defaultai/objectives/common/TargetedFrontObjective", "modules/defaultai/objectives/common/movePriority"], function (require, exports, TargetedFrontObjective_5, movePriority_5) {
     "use strict";
-    var fightInvadingEnemy = {
-        key: "fightInvadingEnemy",
-        movePriority: movePriority_5.default.fightInvadingEnemy,
-        preferredUnitComposition: {
-            combat: 0.65,
-            defence: 0.25,
-            utility: 0.1,
-        },
-        moveRoutineFN: musterAndAttack_4.default.bind(null, null),
-        unitDesireFN: aiUtils_6.defaultUnitDesireFN,
-        unitFitFN: aiUtils_6.defaultUnitFitFN,
-        creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
-            var basePriority = grandStrategyAI.desireForConsolidation;
+    var FightInvadingEnemy = (function (_super) {
+        __extends(FightInvadingEnemy, _super);
+        function FightInvadingEnemy(score, target, mapEvaluator, unitEvaluator) {
+            var _this = _super.call(this, score, target, mapEvaluator, unitEvaluator) || this;
+            _this.type = "FightInvadingEnemy";
+            _this.movePriority = movePriority_5.movePriority.fightInvadingEnemy;
+            return _this;
+        }
+        FightInvadingEnemy.createObjectives = function (mapEvaluator, allOngoingObjectives) {
             var ownedStarsWithInvaders = mapEvaluator.player.controlledLocations.filter(function (star) {
                 var hostileUnits = star.getUnits(function (player) {
                     return (!player.isIndependent &&
@@ -28069,546 +28645,479 @@ define("modules/defaultai/objectives/fightInvadingEnemy", ["require", "exports",
                 var score = evaluation.desirability * strengthRatio;
                 return score;
             });
-            var zippedScores = scores.zip("star", "score");
-            var template = fightInvadingEnemy;
-            return aiUtils_6.makeObjectivesFromScores(template, zippedScores, basePriority);
-        },
-        unitsToFillObjectiveFN: aiUtils_6.getUnitsToBeatImmediateTarget,
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = fightInvadingEnemy;
+            return scores.mapToArray(function (star, score) {
+                return new FightInvadingEnemy(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
+            });
+        };
+        FightInvadingEnemy.evaluatePriority = function (mapEvaluator, grandStrategyAI) {
+            return grandStrategyAI.desireForConsolidation;
+        };
+        FightInvadingEnemy.prototype.execute = function (afterDoneCallback) {
+            this.musterAndAttack(afterDoneCallback, function (target) {
+                return !target.enemy.isIndependent;
+            });
+        };
+        FightInvadingEnemy.prototype.evaluateUnitFit = function (unit) {
+            var strengthScore = this.unitEvaluator.evaluateCombatStrength(unit);
+            return strengthScore * this.evaluateDefaultUnitFit(unit, this.front);
+        };
+        FightInvadingEnemy.prototype.getMinimumRequiredCombatStrength = function () {
+            var enemyStrength = this.mapEvaluator.getIndependentStrengthAtStar(this.target);
+            return enemyStrength * 1.2;
+        };
+        FightInvadingEnemy.prototype.getIdealRequiredCombatStrength = function () {
+            var enemyStrength = this.mapEvaluator.getIndependentStrengthAtStar(this.target);
+            return enemyStrength * 2;
+        };
+        return FightInvadingEnemy;
+    }(TargetedFrontObjective_5.TargetedFrontObjective));
+    FightInvadingEnemy.type = "FightInvadingEnemy";
+    exports.FightInvadingEnemy = FightInvadingEnemy;
 });
-define("modules/defaultai/objectives/heal", ["require", "exports", "modules/defaultai/mapai/Objective", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/moveTo"], function (require, exports, Objective_3, movePriority_6, moveTo_2) {
+define("modules/defaultai/objectives/Heal", ["require", "exports", "modules/defaultai/objectives/common/FrontObjective", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/moveToTarget"], function (require, exports, FrontObjective_2, movePriority_6, moveToTarget_2) {
     "use strict";
-    var heal = {
-        key: "heal",
-        movePriority: movePriority_6.default.heal,
-        preferredUnitComposition: {},
-        moveRoutineFN: function (front, afterMoveCallback) {
-            moveTo_2.default(front, afterMoveCallback, function (fleet) {
+    var Heal = (function (_super) {
+        __extends(Heal, _super);
+        function Heal(score, mapEvaluator, unitEvaluator) {
+            var _this = _super.call(this, score, mapEvaluator, unitEvaluator) || this;
+            _this.type = "Heal";
+            _this.movePriority = movePriority_6.movePriority.heal;
+            return _this;
+        }
+        Heal.createObjectives = function (mapEvaluator, allOngoingObjectives) {
+            return [new Heal(1, mapEvaluator, mapEvaluator.unitEvaluator)];
+        };
+        Heal.evaluatePriority = function (mapEvaluator, grandStrategyAI) {
+            return 0.5;
+        };
+        Heal.updateOngoingObjectivesList = function (allOngoingObjectives, createdObjectives) {
+            return this.updateUniqueObjective(allOngoingObjectives, createdObjectives[0]);
+        };
+        Heal.prototype.execute = function (afterDoneCallback) {
+            moveToTarget_2.moveToTarget(this.front, afterDoneCallback, function (fleet) {
                 return fleet.player.getNearestOwnedStarTo(fleet.location);
             });
-        },
-        unitDesireFN: function (front) {
-            return 1;
-        },
-        unitFitFN: function (unit, front) {
+        };
+        Heal.prototype.evaluateUnitFit = function (unit) {
             var healthPercentage = unit.currentHealth / unit.maxHealth;
             return 1 - healthPercentage;
-        },
-        creatorFunction: function (grandStrategyAI, mapEvaluator) {
-            var template = heal;
-            return [new Objective_3.default(template, 1, null)];
-        },
-        unitsToFillObjectiveFN: function (mapEvaluator, objective) {
-            return { min: 0, ideal: 0 };
-        },
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = heal;
+        };
+        Heal.prototype.getMinimumRequiredCombatStrength = function () {
+            return 0;
+        };
+        Heal.prototype.getIdealRequiredCombatStrength = function () {
+            return 0;
+        };
+        return Heal;
+    }(FrontObjective_2.FrontObjective));
+    Heal.type = "Heal";
+    exports.Heal = Heal;
 });
-define("modules/defaultai/objectives/scoutingPerimeter", ["require", "exports", "modules/defaultai/aiUtils", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/moveTo"], function (require, exports, aiUtils_7, movePriority_7, moveTo_3) {
+define("modules/defaultai/objectives/ScoutingPerimeter", ["require", "exports", "modules/defaultai/objectives/common/TargetedFrontObjective", "modules/defaultai/objectives/common/movePriority", "modules/defaultai/objectives/common/moveroutines/moveToTarget", "src/DiplomacyState", "src/ValuesByStar"], function (require, exports, TargetedFrontObjective_6, movePriority_7, moveToTarget_3, DiplomacyState_3, ValuesByStar_3) {
     "use strict";
-    var scoutingPerimeter = {
-        key: "scoutingPerimeter",
-        movePriority: movePriority_7.default.scoutingPerimeter,
-        preferredUnitComposition: {
-            scouting: 1,
-        },
-        moveRoutineFN: moveTo_3.default,
-        unitDesireFN: aiUtils_7.scoutingUnitDesireFN,
-        unitFitFN: aiUtils_7.scoutingUnitFitFN,
-        creatorFunction: null,
-        unitsToFillObjectiveFN: function (mapEvaluator, objective) {
-            return { min: 1, ideal: 1 };
-        },
-    };
-    scoutingPerimeter.creatorFunction = aiUtils_7.perimeterObjectiveCreation.bind(null, scoutingPerimeter, true, 0.3);
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = scoutingPerimeter;
+    var ScoutingPerimeter = (function (_super) {
+        __extends(ScoutingPerimeter, _super);
+        function ScoutingPerimeter(score, target, mapEvaluator, unitEvaluator) {
+            var _this = _super.call(this, score, target, mapEvaluator, unitEvaluator) || this;
+            _this.type = "ScoutingPerimeter";
+            _this.movePriority = movePriority_7.movePriority.scoutingPerimeter;
+            return _this;
+        }
+        ScoutingPerimeter.createObjectives = function (mapEvaluator, allOngoingObjectives) {
+            var playersToEstablishPerimeterAgainst = [];
+            var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
+            var statusByPlayer = diplomacyStatus.statusByPlayer;
+            for (var playerId in statusByPlayer) {
+                if (statusByPlayer[playerId] >= DiplomacyState_3.default.war) {
+                    playersToEstablishPerimeterAgainst.push(diplomacyStatus.metPlayers[playerId]);
+                }
+            }
+            var allScores = playersToEstablishPerimeterAgainst.map(function (player) {
+                return mapEvaluator.getScoredPerimeterLocationsAgainstPlayer(player, 1, true);
+            });
+            var mergedScores = new ValuesByStar_3.default();
+            mergedScores.merge.apply(mergedScores, [function () {
+                    var scores = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        scores[_i] = arguments[_i];
+                    }
+                    return scores.reduce(function (total, current) {
+                        return total + current;
+                    }, 0);
+                }].concat(allScores));
+            return mergedScores.mapToArray(function (star, score) {
+                return new ScoutingPerimeter(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
+            });
+        };
+        ScoutingPerimeter.evaluatePriority = function (mapEvaluator, grandStrategyAI) {
+            return grandStrategyAI.desireForConsolidation;
+        };
+        ScoutingPerimeter.prototype.execute = function (afterDoneCallback) {
+            var _this = this;
+            moveToTarget_3.moveToTarget(this.front, afterDoneCallback, function (fleet) {
+                return _this.target;
+            });
+        };
+        ScoutingPerimeter.prototype.evaluateUnitFit = function (unit) {
+            var scoutingScore = this.unitEvaluator.evaluateUnitScoutingAbility(unit);
+            ;
+            return scoutingScore * this.evaluateDefaultUnitFit(unit, this.front, 0, 0, 2);
+        };
+        ScoutingPerimeter.prototype.getMinimumRequiredCombatStrength = function () {
+            return 0;
+        };
+        ScoutingPerimeter.prototype.getIdealRequiredCombatStrength = function () {
+            return 0;
+        };
+        return ScoutingPerimeter;
+    }(TargetedFrontObjective_6.TargetedFrontObjective));
+    ScoutingPerimeter.type = "ScoutingPerimeter";
+    exports.ScoutingPerimeter = ScoutingPerimeter;
 });
-define("modules/defaultai/Objectives", ["require", "exports", "modules/defaultai/objectives/cleanUpPirates", "modules/defaultai/objectives/conquer", "modules/defaultai/objectives/declareWar", "modules/defaultai/objectives/discovery", "modules/defaultai/objectives/expandManufactoryCapacity", "modules/defaultai/objectives/expansion", "modules/defaultai/objectives/fightInvadingEnemy", "modules/defaultai/objectives/heal", "modules/defaultai/objectives/scoutingPerimeter"], function (require, exports, cleanUpPirates_1, conquer_1, declareWar_1, discovery_1, expandManufactoryCapacity_1, expansion_1, fightInvadingEnemy_1, heal_1, scoutingPerimeter_1) {
+define("modules/defaultai/mapai/objectiveCreatorTemplates", ["require", "exports", "modules/defaultai/objectives/BuildUnitsForFront", "modules/defaultai/objectives/CleanUpPirates", "modules/defaultai/objectives/Conquer", "modules/defaultai/objectives/DeclareWar", "modules/defaultai/objectives/Discovery", "modules/defaultai/objectives/ExpandManufactoryCapacity", "modules/defaultai/objectives/Expansion", "modules/defaultai/objectives/FightInvadingEnemy", "modules/defaultai/objectives/Heal", "modules/defaultai/objectives/ScoutingPerimeter"], function (require, exports, BuildUnitsForFront_1, CleanUpPirates_1, Conquer_1, DeclareWar_1, Discovery_1, ExpandManufactoryCapacity_1, Expansion_1, FightInvadingEnemy_1, Heal_1, ScoutingPerimeter_1) {
     "use strict";
-    var Objectives = (_a = {},
-        _a[declareWar_1.default.key] = declareWar_1.default,
-        _a[expansion_1.default.key] = expansion_1.default,
-        _a[cleanUpPirates_1.default.key] = cleanUpPirates_1.default,
-        _a[discovery_1.default.key] = discovery_1.default,
-        _a[heal_1.default.key] = heal_1.default,
-        _a[conquer_1.default.key] = conquer_1.default,
-        _a[expandManufactoryCapacity_1.default.key] = expandManufactoryCapacity_1.default,
-        _a[scoutingPerimeter_1.default.key] = scoutingPerimeter_1.default,
-        _a[fightInvadingEnemy_1.default.key] = fightInvadingEnemy_1.default,
-        _a);
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Objectives;
-    var _a;
+    exports.objectiveCreatorTemplates = [
+        BuildUnitsForFront_1.BuildUnitsForFront.makeCreatorTemplate(),
+        CleanUpPirates_1.CleanUpPirates.makeCreatorTemplate(),
+        Conquer_1.Conquer.makeCreatorTemplate(),
+        DeclareWar_1.DeclareWar.makeCreatorTemplate(),
+        Discovery_1.Discovery.makeCreatorTemplate(),
+        ExpandManufactoryCapacity_1.ExpandManufactoryCapacity.makeCreatorTemplate(),
+        Expansion_1.Expansion.makeCreatorTemplate(),
+        FightInvadingEnemy_1.FightInvadingEnemy.makeCreatorTemplate(),
+        Heal_1.Heal.makeCreatorTemplate(),
+        ScoutingPerimeter_1.ScoutingPerimeter.makeCreatorTemplate(),
+    ];
 });
-define("modules/defaultai/mapai/ObjectivesAI", ["require", "exports", "modules/defaultai/Objectives"], function (require, exports, Objectives_1) {
+define("modules/defaultai/mapai/ObjectivesAI", ["require", "exports", "modules/defaultai/mapai/ObjectiveQueue", "modules/defaultai/mapai/objectiveCreatorTemplates", "modules/defaultai/objectives/common/ObjectiveFamily", "src/IDDictionary", "src/utility"], function (require, exports, ObjectiveQueue_1, objectiveCreatorTemplates_1, ObjectiveFamily_5, IDDictionary_6, utility_51) {
     "use strict";
     var ObjectivesAI = (function () {
         function ObjectivesAI(mapEvaluator, grandStrategyAI) {
-            this.objectivesByType = {};
-            this.objectives = [];
-            this.requests = [];
+            this.ongoingObjectives = [];
             this.mapEvaluator = mapEvaluator;
-            this.map = mapEvaluator.map;
-            this.player = mapEvaluator.player;
             this.grandStrategyAI = grandStrategyAI;
         }
-        ObjectivesAI.prototype.clearObjectives = function () {
-            this.objectives = [];
+        ObjectivesAI.diplomaticFilter = function (toFilter) {
+            return toFilter.family === ObjectiveFamily_5.ObjectiveFamily.Diplomatic;
         };
-        ObjectivesAI.prototype.setAllDiplomaticObjectives = function () {
-            this.clearObjectives();
-            this.setAllObjectivesWithTemplateProperty("diplomacyRoutineFN");
+        ObjectivesAI.economicFilter = function (toFilter) {
+            return toFilter.family === ObjectiveFamily_5.ObjectiveFamily.Economic;
         };
-        ObjectivesAI.prototype.setAllEconomicObjectives = function () {
-            this.clearObjectives();
-            this.setAllObjectivesWithTemplateProperty("economyRoutineFN");
+        ObjectivesAI.frontFilter = function (toFilter) {
+            return toFilter.family === ObjectiveFamily_5.ObjectiveFamily.Front;
         };
-        ObjectivesAI.prototype.setAllMoveObjectives = function () {
-            this.clearObjectives();
-            this.setAllObjectivesWithTemplateProperty("moveRoutineFN");
-        };
-        ObjectivesAI.prototype.setAllObjectivesWithTemplateProperty = function (propKey) {
-            for (var key in Objectives_1.default) {
-                var template = Objectives_1.default[key];
-                if (template[propKey]) {
-                    this.setObjectivesOfType(Objectives_1.default[key]);
+        ObjectivesAI.groupObjectivesByType = function (objectives) {
+            var grouped = {};
+            objectives.forEach(function (objective) {
+                if (!grouped[objective.type]) {
+                    grouped[objective.type] = [];
                 }
-            }
+                grouped[objective.type].push(objective);
+            });
+            return grouped;
         };
-        ObjectivesAI.prototype.getNewObjectivesOfType = function (objectiveTemplate) {
-            var objectiveType = objectiveTemplate.key;
-            var byTarget = this.getObjectivesByTarget(objectiveType, true);
-            var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
-            var finalObjectives = [];
-            for (var i = 0; i < newObjectives.length; i++) {
-                var newObjective = newObjectives[i];
-                if (newObjective.priority < 0.04) {
-                    continue;
+        ObjectivesAI.prototype.processDiplomaticObjectives = function (onAllFinished) {
+            this.updateAndExecuteObjectives(ObjectivesAI.diplomaticFilter, onAllFinished);
+        };
+        ObjectivesAI.prototype.processEconomicObjectives = function (onAllFinished) {
+            this.updateAndExecuteObjectives(ObjectivesAI.economicFilter, onAllFinished);
+        };
+        ObjectivesAI.prototype.createFrontObjectives = function () {
+            this.updateObjectivesForFilter(ObjectivesAI.frontFilter);
+            this.calculateFinalPrioritiesForObjectivesMatchingFilter(ObjectivesAI.frontFilter);
+        };
+        ObjectivesAI.prototype.getFrontObjectives = function () {
+            return this.ongoingObjectives.filter(ObjectivesAI.frontFilter);
+        };
+        ObjectivesAI.prototype.executeFrontObjectives = function (onAllFinished) {
+            var objectives = this.getFrontObjectives();
+            objectives.sort(function (a, b) {
+                var movePrioritySort = b.movePriority - a.movePriority;
+                if (movePrioritySort) {
+                    return movePrioritySort;
                 }
-                var keyString = newObjective.target ? newObjective.target.id : "noTarget";
-                var oldObjective = byTarget[keyString];
-                if (oldObjective) {
-                    oldObjective.priority = newObjective.priority;
-                    finalObjectives.push(oldObjective);
+                var finalPrioritySort = b.finalPriority - a.finalPriority;
+                if (finalPrioritySort) {
+                    return finalPrioritySort;
                 }
-                else {
-                    finalObjectives.push(newObjective);
-                }
-            }
-            return finalObjectives;
+                return a.id - b.id;
+            });
+            var objectiveQueue = new ObjectiveQueue_1.ObjectiveQueue();
+            objectiveQueue.executeObjectives(objectives, onAllFinished);
         };
-        ObjectivesAI.prototype.setObjectivesOfType = function (objectiveTemplate) {
-            var newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
-            this.objectivesByType[objectiveTemplate.key] = newObjectives;
-            this.objectives = this.objectives.concat(newObjectives);
+        ObjectivesAI.prototype.updateAndExecuteObjectives = function (filterFN, onAllFinished) {
+            this.updateObjectivesForFilter(filterFN);
+            this.calculateFinalPrioritiesForObjectivesMatchingFilter(filterFN);
+            var objectiveQueue = new ObjectiveQueue_1.ObjectiveQueue();
+            objectiveQueue.executeObjectives(this.ongoingObjectives.filter(filterFN).sort(ObjectiveQueue_1.ObjectiveQueue.sortByFinalPriority), onAllFinished);
         };
-        ObjectivesAI.prototype.getObjectivesByTarget = function (objectiveType, markAsOngoing) {
-            var objectivesByTarget = {};
-            if (!this.objectivesByType[objectiveType]) {
-                return objectivesByTarget;
-            }
-            for (var i = 0; i < this.objectivesByType[objectiveType].length; i++) {
-                var objective = this.objectivesByType[objectiveType][i];
-                if (markAsOngoing)
-                    objective.isOngoing = true;
-                var keyString = objective.target ? objective.target.id : "noTarget";
-                objectivesByTarget[keyString] = objective;
-            }
-            return objectivesByTarget;
-        };
-        ObjectivesAI.prototype.getObjectivesWithTemplateProperty = function (propKey) {
-            return this.objectives.filter(function (objective) {
-                return Boolean(objective.template[propKey]);
+        ObjectivesAI.prototype.updateObjectivesForFilter = function (filterFN) {
+            var _this = this;
+            var creatorTemplates = objectiveCreatorTemplates_1.objectiveCreatorTemplates.filter(filterFN);
+            creatorTemplates.forEach(function (template) {
+                var newObjectives = template.getUpdatedObjectivesList(_this.mapEvaluator, _this.ongoingObjectives);
+                _this.ongoingObjectives = newObjectives;
             });
         };
-        ObjectivesAI.prototype.getAdjustmentsForTemplateProperty = function (propKey) {
-            var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
-            var adjustments = {};
-            for (var i = 0; i < withAdjustment.length; i++) {
-                for (var j = 0; j < withAdjustment[i].template[propKey].length; j++) {
-                    var adjustment = withAdjustment[i].template[propKey][j];
-                    if (!adjustments[adjustment.target.id]) {
-                        adjustments[adjustment.target.id] =
-                            {
-                                target: adjustment.target,
-                                multiplier: 1,
-                            };
-                    }
-                    adjustments[adjustment.target.id].multiplier += adjustment.multiplier;
-                }
+        ObjectivesAI.prototype.getRelativeScoresForObjectives = function (objectives) {
+            var objectivesByType = ObjectivesAI.groupObjectivesByType(objectives);
+            var relativeScores = new IDDictionary_6.IDDictionary();
+            var _loop_5 = function (type) {
+                var min;
+                var max;
+                objectivesByType[type].forEach(function (objective) {
+                    var score = objective.score;
+                    min = isFinite(min) ? Math.min(min, score) : score;
+                    max = isFinite(max) ? Math.max(max, score) : score;
+                });
+                objectivesByType[type].forEach(function (objective) {
+                    var relativeScore = utility_51.getRelativeValue(objective.score, min, max);
+                    relativeScores.set(objective, relativeScore);
+                });
+            };
+            for (var type in objectivesByType) {
+                _loop_5(type);
             }
-            return adjustments;
+            return relativeScores;
+        };
+        ObjectivesAI.prototype.calculateFinalPrioritiesForObjectivesMatchingFilter = function (filterFN) {
+            var _this = this;
+            var priorities = {};
+            objectiveCreatorTemplates_1.objectiveCreatorTemplates.filter(filterFN).forEach(function (template) {
+                priorities[template.type] = template.evaluatePriority(_this.mapEvaluator, _this.grandStrategyAI);
+            });
+            var relativeScores = this.getRelativeScoresForObjectives(this.ongoingObjectives.filter(filterFN));
+            relativeScores.forEach(function (objective, score) {
+                objective.finalPriority = score * priorities[objective.type];
+            });
         };
         return ObjectivesAI;
     }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = ObjectivesAI;
+    exports.ObjectivesAI = ObjectivesAI;
 });
-define("modules/defaultai/mapai/DiplomacyAI", ["require", "exports"], function (require, exports) {
+define("modules/defaultai/mapai/FrontsAI", ["require", "exports", "src/IDDictionary"], function (require, exports, IDDictionary_7) {
     "use strict";
-    var DiplomacyAI = (function () {
-        function DiplomacyAI(mapEvaluator, objectivesAI, game, personality) {
-            this.game = game;
-            this.player = mapEvaluator.player;
-            this.diplomacyStatus = this.player.diplomacyStatus;
+    var FrontsAI = (function () {
+        function FrontsAI(mapEvaluator, objectivesAI, personality, game) {
+            this.fronts = [];
             this.mapEvaluator = mapEvaluator;
+            this.map = mapEvaluator.map;
+            this.player = mapEvaluator.player;
             this.objectivesAI = objectivesAI;
             this.personality = personality;
+            this.game = game;
         }
-        DiplomacyAI.prototype.setAttitudes = function () {
-            var diplomacyEvaluations = this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
-            for (var playerId in diplomacyEvaluations) {
-                this.diplomacyStatus.processAttitudeModifiersForPlayer(this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]);
-            }
-        };
-        DiplomacyAI.prototype.resolveDiplomaticObjectives = function (afterAllDoneCallback) {
-            var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
-            var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
-            this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback);
-        };
-        DiplomacyAI.prototype.resolveNextObjective = function (objectives, adjustments, afterAllDoneCallback) {
-            var objective = objectives.pop();
-            if (!objective) {
-                afterAllDoneCallback();
-                return;
-            }
-            var boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
-            objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN);
-        };
-        return DiplomacyAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = DiplomacyAI;
-});
-define("modules/defaultai/mapai/Objective", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_9) {
-    "use strict";
-    var Objective = (function () {
-        function Objective(template, priority, target, targetPlayer) {
-            this.isOngoing = false;
-            this.id = idGenerators_9.default.objective++;
-            this.template = template;
-            this.type = this.template.key;
-            this.priority = priority;
-            this.target = target;
-            this.targetPlayer = targetPlayer;
-        }
-        Object.defineProperty(Objective.prototype, "priority", {
-            get: function () {
-                return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
-            },
-            set: function (priority) {
-                this._basePriority = priority;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Objective.prototype.getUnitsDesired = function (mapEvaluator) {
-            return this.template.unitsToFillObjectiveFN(mapEvaluator, this);
-        };
-        return Objective;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Objective;
-});
-define("modules/defaultai/mapai/Front", ["require", "exports", "src/Fleet", "modules/common/attachedUnitData"], function (require, exports, Fleet_4, attachedUnitData_1) {
-    "use strict";
-    var Front = (function () {
-        function Front(props) {
-            this.hasMustered = false;
-            this.id = props.id;
-            this.objective = props.objective;
-            this.units = props.units || [];
-            this.minUnitsDesired = props.minUnitsDesired;
-            this.idealUnitsDesired = props.idealUnitsDesired;
-            this.targetLocation = props.targetLocation;
-            this.musterLocation = props.musterLocation;
-        }
-        Front.prototype.addUnit = function (unit) {
-            var unitData = attachedUnitData_1.default.get(unit);
-            if (unitData.front) {
-                unitData.front.removeUnit(unit);
-            }
-            unitData.front = this;
-            this.units.push(unit);
-        };
-        Front.prototype.removeUnit = function (unit) {
-            attachedUnitData_1.default.get(unit).front = null;
-            var unitIndex = this.getUnitIndex(unit);
-            this.units.splice(unitIndex, 1);
-        };
-        Front.prototype.getUnitsByLocation = function (units) {
-            if (units === void 0) { units = this.units; }
-            var byLocation = {};
-            units.forEach(function (unit) {
-                var star = unit.fleet.location;
-                if (!byLocation[star.id]) {
-                    byLocation[star.id] = [];
-                }
-                byLocation[star.id].push(unit);
+        FrontsAI.prototype.assignUnits = function () {
+            var units = this.player.units;
+            var allUnitScores = [];
+            var unitScoresByFront = {};
+            var objectivesByFront = new IDDictionary_7.IDDictionary();
+            this.objectivesAI.getFrontObjectives().forEach(function (objective) {
+                objectivesByFront.set(objective.front, objective);
             });
-            return byLocation;
-        };
-        Front.prototype.getFleetsByLocation = function (fleets) {
-            if (fleets === void 0) { fleets = this.getAssociatedFleets(); }
-            var byLocation = {};
-            fleets.forEach(function (fleet) {
-                var star = fleet.location;
-                if (!byLocation[star.id]) {
-                    byLocation[star.id] = [];
+            var recalculateScoresForFront = function (front) {
+                var frontScores = unitScoresByFront[front.id];
+                var objective = objectivesByFront.get(front);
+                for (var i = 0; i < frontScores.length; i++) {
+                    frontScores[i].score = objective.evaluateUnitFit(frontScores[i].unit);
                 }
-                byLocation[star.id].push(fleet);
-            });
-            return byLocation;
-        };
-        Front.prototype.moveFleets = function (afterMoveCallback) {
-            if (this.units.length < 1) {
-                afterMoveCallback();
-                return;
+            };
+            var removeUnit = function (unit) {
+                for (var frontId in unitScoresByFront) {
+                    unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
+                        return score.unit !== unit;
+                    });
+                }
+            };
+            for (var i = 0; i < this.fronts.length; i++) {
+                var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
+                unitScoresByFront[this.fronts[i].id] = frontScores;
+                allUnitScores.push.apply(allUnitScores, frontScores);
             }
-            else {
-                var moveRoutine = this.objective.template.moveRoutineFN;
-                moveRoutine(this, afterMoveCallback);
-            }
-        };
-        Front.prototype.getAssociatedFleets = function () {
-            var fleetsById = {};
-            for (var i = 0; i < this.units.length; i++) {
-                if (!this.units[i].fleet) {
+            var alreadyAdded = {};
+            var sortByScoreFN = function (a, b) {
+                return a.score - b.score;
+            };
+            while (allUnitScores.length > 0) {
+                allUnitScores.sort(sortByScoreFN);
+                var bestScore = allUnitScores.pop();
+                if (alreadyAdded[bestScore.unit.id]) {
                     continue;
                 }
-                if (!fleetsById[this.units[i].fleet.id]) {
-                    fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
+                bestScore.front.addUnit(bestScore.unit);
+                removeUnit(bestScore.unit);
+                alreadyAdded[bestScore.unit.id] = true;
+                recalculateScoresForFront(bestScore.front);
+            }
+        };
+        FrontsAI.prototype.organizeFleets = function () {
+            for (var i = 0; i < this.fronts.length; i++) {
+                this.fronts[i].organizeAllFleets();
+            }
+        };
+        FrontsAI.prototype.formFronts = function () {
+            this.destroyInactiveFronts();
+            this.fronts = this.objectivesAI.getFrontObjectives().map(function (objective) { return objective.front; });
+        };
+        FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
+            var scores = [];
+            var activeObjectives = this.objectivesAI.getFrontObjectives();
+            var objective;
+            for (var i = 0; i < activeObjectives.length; i++) {
+                if (activeObjectives[i].front === front) {
+                    objective = activeObjectives[i];
+                    break;
                 }
             }
-            var allFleets = [];
-            for (var fleetId in fleetsById) {
-                allFleets.push(fleetsById[fleetId]);
-            }
-            return allFleets;
-        };
-        Front.prototype.scoreUnitFit = function (unit) {
-            var template = this.objective.template;
-            var score = 1;
-            if (this.hasUnit(unit)) {
-                score += 0.2;
-                if (this.hasMustered) {
-                    score += 0.3;
-                }
-                this.removeUnit(unit);
-            }
-            score *= this.objective.priority;
-            score *= template.unitFitFN(unit, this);
-            score *= template.unitDesireFN(this);
-            return score;
-        };
-        Front.prototype.getNewUnitArchetypeScores = function () {
-            var countByArchetype = this.getUnitCountByArchetype();
-            var totalUnits = this.units.length;
-            var idealWeights = this.objective.template.preferredUnitComposition;
-            var scores = {};
-            for (var unitType in idealWeights) {
-                var archetypeCount = countByArchetype[unitType] || 0;
-                scores[unitType] = totalUnits * idealWeights[unitType] - archetypeCount;
+            for (var i = 0; i < units.length; i++) {
+                scores.push({
+                    unit: units[i],
+                    score: objective.evaluateUnitFit(units[i]),
+                    front: front,
+                });
             }
             return scores;
         };
-        Front.prototype.organizeAllFleets = function () {
-            this.organizeFleets(this.getAssociatedFleets().filter(function (fleet) { return !fleet.isStealthy; }), this.units.filter(function (unit) { return !unit.isStealthy(); }));
-            this.organizeFleets(this.getAssociatedFleets().filter(function (fleet) { return fleet.isStealthy; }), this.units.filter(function (unit) { return unit.isStealthy(); }));
-        };
-        Front.prototype.organizeFleets = function (fleetsToOrganize, unitsToOrganize) {
-            var _this = this;
-            var pureFleetsBeforeMerge = fleetsToOrganize.filter(function (fleet) { return _this.isFleetPure(fleet); });
-            this.mergeFleetsWithSharedLocation(pureFleetsBeforeMerge);
-            var pureFleets = pureFleetsBeforeMerge.filter(function (fleet) { return fleet.units.length > 0; });
-            var unitsInImpureFleets = this.getUnitsInImpureFleets(unitsToOrganize);
-            var pureFleetsByLocation = this.getFleetsByLocation(pureFleets);
-            var impureUnitsByLocation = this.getUnitsByLocation(unitsInImpureFleets);
-            var _loop_3 = function (locationID) {
-                if (pureFleetsByLocation[locationID]) {
-                    var fleet_1 = pureFleetsByLocation[locationID][0];
-                    impureUnitsByLocation[locationID].forEach(function (unitToTransfer) {
-                        var fleetToTransferFrom = unitToTransfer.fleet;
-                        fleetToTransferFrom.transferUnit(fleet_1, unitToTransfer);
-                        if (fleetToTransferFrom.units.length <= 0) {
-                            fleetToTransferFrom.deleteFleet();
-                        }
-                    });
-                    delete impureUnitsByLocation[locationID];
-                }
-            };
-            for (var locationID in impureUnitsByLocation) {
-                _loop_3(locationID);
-            }
-            for (var locationID in impureUnitsByLocation) {
-                var units = impureUnitsByLocation[locationID];
-                var player = units[0].fleet.player;
-                var location_2 = units[0].fleet.location;
-                units.forEach(function (unitToRemove) {
-                    unitToRemove.fleet.removeUnit(unitToRemove);
-                });
-                var fleet = new Fleet_4.Fleet(units);
-                player.addFleet(fleet);
-                location_2.addFleet(fleet);
-            }
-        };
-        Front.prototype.isFleetPure = function (fleet) {
-            var _this = this;
-            return fleet.units.every(function (unit) { return _this.hasUnit(unit); });
-        };
-        Front.prototype.getUnitIndex = function (unit) {
-            return this.units.indexOf(unit);
-        };
-        Front.prototype.hasUnit = function (unit) {
-            return this.getUnitIndex(unit) !== -1;
-        };
-        Front.prototype.getUnitCountByArchetype = function () {
-            var unitCountByArchetype = {};
-            for (var i = 0; i < this.units.length; i++) {
-                var archetype = this.units[i].template.archetype;
-                if (!unitCountByArchetype[archetype.type]) {
-                    unitCountByArchetype[archetype.type] = 0;
-                }
-                unitCountByArchetype[archetype.type]++;
-            }
-            return unitCountByArchetype;
-        };
-        Front.prototype.mergeFleetsWithSharedLocation = function (fleetsToMerge) {
-            var fleetsByLocationID = this.getFleetsByLocation(fleetsToMerge);
-            for (var locationID in fleetsByLocationID) {
-                var fleetsAtLocation = fleetsByLocationID[locationID].sort(Fleet_4.Fleet.sortByImportance);
-                for (var i = fleetsAtLocation.length - 1; i >= 1; i--) {
-                    fleetsAtLocation[i].mergeWith(fleetsAtLocation[0]);
-                }
-            }
-        };
-        Front.prototype.getUnitsInImpureFleets = function (units) {
-            var _this = this;
-            var fleetPurityByID = {};
-            return units.filter(function (unit) {
-                if (fleetPurityByID.hasOwnProperty("" + unit.fleet.id)) {
-                    return !fleetPurityByID[unit.fleet.id];
-                }
-                else {
-                    var fleetIsPure = _this.isFleetPure(unit.fleet);
-                    fleetPurityByID[unit.fleet.id] = fleetIsPure;
-                    return !fleetIsPure;
-                }
+        FrontsAI.prototype.destroyInactiveFronts = function () {
+            var activeObjectives = this.objectivesAI.getFrontObjectives();
+            var activeFrontsWithObjective = new IDDictionary_7.IDDictionary();
+            activeObjectives.forEach(function (objective) {
+                activeFrontsWithObjective.set(objective.front, objective);
+            });
+            this.fronts.filter(function (front) {
+                return !activeFrontsWithObjective.has(front);
+            }).forEach(function (front) {
+                front.destroy();
             });
         };
-        return Front;
+        return FrontsAI;
     }());
-    exports.Front = Front;
-});
-define("modules/common/attachedUnitData", ["require", "exports", "src/ValuesByUnit", "src/utility"], function (require, exports, ValuesByUnit_1, utility_58) {
-    "use strict";
-    var AttachedUnitData = (function () {
-        function AttachedUnitData() {
-            this.byUnit = new ValuesByUnit_1.default();
-        }
-        AttachedUnitData.prototype.get = function (unit) {
-            if (!this.byUnit.has(unit)) {
-                this.byUnit.set(unit, {});
-            }
-            return this.byUnit.get(unit);
-        };
-        AttachedUnitData.prototype.set = function (unit, data) {
-            if (this.byUnit.has(unit)) {
-                utility_58.shallowExtend(this.byUnit.get(unit), data);
-            }
-            else {
-                this.byUnit.set(unit, data);
-            }
-        };
-        AttachedUnitData.prototype.delete = function (unit) {
-            this.byUnit.delete(unit);
-        };
-        AttachedUnitData.prototype.deleteAll = function () {
-            this.byUnit = new ValuesByUnit_1.default();
-        };
-        return AttachedUnitData;
-    }());
-    var attachedUnitData = new AttachedUnitData();
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = attachedUnitData;
-    exports.attachedUnitDataScripts = {
-        unit: {
-            removeFromPlayer: [
-                function (unit) {
-                    var front = attachedUnitData.get(unit).front;
-                    if (front) {
-                        front.removeUnit(unit);
-                    }
-                    attachedUnitData.delete(unit);
-                },
-            ],
-        },
-    };
+    exports.default = FrontsAI;
 });
-define("modules/common/addCommonToModuleData", ["require", "exports", "modules/common/abilitytemplates/abilities", "modules/common/battlesfxtemplates/battleSFX", "modules/common/passiveskilltemplates/passiveSkills", "modules/common/resourcetemplates/resources", "modules/common/statuseffecttemplates/statusEffectTemplates", "modules/common/attachedUnitData"], function (require, exports, AbilityTemplates, BattleSFXTemplates, PassiveSkillTemplates, ResourceTemplates, statusEffectTemplates_1, attachedUnitData_2) {
-    "use strict";
-    function addCommonToModuleData(moduleData) {
-        moduleData.copyTemplates(AbilityTemplates, "Abilities");
-        moduleData.copyTemplates(ResourceTemplates, "Resources");
-        moduleData.copyTemplates(BattleSFXTemplates, "BattleSFX");
-        moduleData.copyTemplates(PassiveSkillTemplates, "PassiveSkills");
-        moduleData.copyTemplates(statusEffectTemplates_1.statusEffectTemplates, "StatusEffects");
-        moduleData.scripts.add(attachedUnitData_2.attachedUnitDataScripts);
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = addCommonToModuleData;
-});
-define("modules/defaultai/mapai/DefaultAI", ["require", "exports", "modules/defaultai/mapai/DiplomacyAI", "modules/defaultai/mapai/EconomyAI", "modules/defaultai/mapai/FrontsAI", "modules/defaultai/mapai/GrandStrategyAI", "modules/defaultai/mapai/MapEvaluator", "modules/defaultai/mapai/ObjectivesAI", "src/utility"], function (require, exports, DiplomacyAI_1, EconomyAI_1, FrontsAI_1, GrandStrategyAI_1, MapEvaluator_1, ObjectivesAI_1, utility_59) {
+define("modules/defaultai/mapai/DefaultAI", ["require", "exports", "modules/defaultai/mapai/DiplomacyAI", "modules/defaultai/mapai/EconomicAI", "modules/defaultai/mapai/FrontsAI", "modules/defaultai/mapai/GrandStrategyAI", "modules/defaultai/mapai/MapEvaluator", "modules/defaultai/mapai/ObjectivesAI", "modules/defaultai/mapai/UnitEvaluator", "src/App", "src/getNullFormation", "src/utility"], function (require, exports, DiplomacyAI_1, EconomicAI_1, FrontsAI_1, GrandStrategyAI_1, MapEvaluator_1, ObjectivesAI_1, UnitEvaluator_1, App_36, getNullFormation_2, utility_52) {
     "use strict";
     var DefaultAI = (function () {
         function DefaultAI(player, game, personality) {
             this.type = "DefaultAI";
-            this.personality = personality || utility_59.makeRandomPersonality();
+            this.turnProcessingQueue = [];
+            this.personality = personality || utility_52.makeRandomPersonality();
             this.player = player;
             this.game = game;
             this.map = game.galaxyMap;
-            this.mapEvaluator = new MapEvaluator_1.default(this.map, this.player);
-            this.grandStrategyAI = new GrandStrategyAI_1.default(this.personality, this.mapEvaluator, this.game);
-            this.objectivesAI = new ObjectivesAI_1.default(this.mapEvaluator, this.grandStrategyAI);
+            this.unitEvaluator = new UnitEvaluator_1.UnitEvaluator();
+            this.mapEvaluator = new MapEvaluator_1.default(this.map, this.player, this.unitEvaluator);
+            this.grandStrategyAI = new GrandStrategyAI_1.GrandStrategyAI(this.personality, this.mapEvaluator, this.game);
+            this.objectivesAI = new ObjectivesAI_1.ObjectivesAI(this.mapEvaluator, this.grandStrategyAI);
             this.frontsAI = new FrontsAI_1.default(this.mapEvaluator, this.objectivesAI, this.personality, this.game);
-            this.economyAI = new EconomyAI_1.default({
-                objectivesAI: this.objectivesAI,
-                frontsAI: this.frontsAI,
-                mapEvaluator: this.mapEvaluator,
-                personality: this.personality,
-            });
-            this.diplomacyAI = new DiplomacyAI_1.default(this.mapEvaluator, this.objectivesAI, this.game, this.personality);
+            this.diplomacyAI = new DiplomacyAI_1.default(this.mapEvaluator, this.game);
+            this.economicAI = new EconomicAI_1.EconomicAI();
         }
         DefaultAI.prototype.processTurn = function (afterFinishedCallback) {
-            this.grandStrategyAI.setDesires();
-            this.diplomacyAI.setAttitudes();
-            this.objectivesAI.setAllDiplomaticObjectives();
-            this.diplomacyAI.resolveDiplomaticObjectives(this.processTurnAfterDiplomaticObjectives.bind(this, afterFinishedCallback));
+            this.afterTurnHasProcessed = afterFinishedCallback;
+            this.turnProcessingQueue = this.constructTurnProcessingQueue();
+            this.processTurnStep();
         };
-        DefaultAI.prototype.processTurnAfterDiplomaticObjectives = function (afterFinishedCallback) {
-            this.objectivesAI.setAllEconomicObjectives();
-            this.economyAI.resolveEconomicObjectives();
-            this.objectivesAI.setAllMoveObjectives();
-            this.frontsAI.formFronts();
-            this.frontsAI.assignUnits();
-            this.frontsAI.setUnitRequests();
-            this.economyAI.satisfyAllRequests();
-            this.frontsAI.organizeFleets();
-            this.frontsAI.setFrontsToMove();
-            this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
-        };
-        DefaultAI.prototype.finishMovingFleets = function (afterFinishedCallback) {
-            this.frontsAI.organizeFleets();
-            if (afterFinishedCallback) {
-                afterFinishedCallback();
+        DefaultAI.prototype.createBattleFormation = function (availableUnits, hasScouted, enemyUnits, enemyFormation) {
+            var _this = this;
+            var scoutedUnits = hasScouted ? enemyUnits : null;
+            var scoutedFormation = hasScouted ? enemyFormation : null;
+            var formation = getNullFormation_2.default();
+            var unitsToPlace = availableUnits.filter(function (unit) { return unit.canActThisTurn(); });
+            var maxUnitsPerRow = formation[0].length;
+            var maxUnitsPerSide = App_36.default.moduleData.ruleSet.battle.maxUnitsPerSide;
+            var placedInFront = 0;
+            var placedInBack = 0;
+            var totalPlaced = 0;
+            var unitsPlacedByArchetype = {};
+            var getUnitScoreFN = function (unit, row) {
+                var baseScore = _this.unitEvaluator.evaluateCombatStrength(unit);
+                var archetype = unit.template.archetype;
+                var idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
+                var unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.type] || 0;
+                var overMaxOfArchetypeIdeal = Math.max(0, unitsPlacedOfArchetype - idealMaxUnitsOfArchetype);
+                var archetypeIdealAdjust = 1 - overMaxOfArchetypeIdeal * 0.15;
+                var rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
+                var rowModifier = archetype.scoreMultiplierForRowFN ?
+                    archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits, scoutedFormation) :
+                    archetype.rowScores[row];
+                return ({
+                    unit: unit,
+                    score: baseScore * archetypeIdealAdjust * rowModifier,
+                    row: row,
+                });
+            };
+            while (unitsToPlace.length > 0 && totalPlaced < maxUnitsPerSide) {
+                var positionScores = [];
+                for (var i = 0; i < unitsToPlace.length; i++) {
+                    var unit = unitsToPlace[i];
+                    if (placedInFront < maxUnitsPerRow) {
+                        positionScores.push(getUnitScoreFN(unit, "ROW_FRONT"));
+                    }
+                    if (placedInBack < maxUnitsPerRow) {
+                        positionScores.push(getUnitScoreFN(unit, "ROW_BACK"));
+                    }
+                }
+                positionScores.sort(function (a, b) {
+                    return (b.score - a.score);
+                });
+                var topScore = positionScores[0];
+                if (topScore.row === "ROW_FRONT") {
+                    placedInFront++;
+                    formation[1][placedInFront - 1] = topScore.unit;
+                }
+                else {
+                    placedInBack++;
+                    formation[0][placedInBack - 1] = topScore.unit;
+                }
+                totalPlaced++;
+                if (!unitsPlacedByArchetype[topScore.unit.template.archetype.type]) {
+                    unitsPlacedByArchetype[topScore.unit.template.archetype.type] = 0;
+                }
+                unitsPlacedByArchetype[topScore.unit.template.archetype.type]++;
+                unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
             }
+            return formation;
+        };
+        DefaultAI.prototype.respondToTradeOffer = function (receivedOffer) {
+            return this.economicAI.respondToTradeOffer(receivedOffer);
         };
         DefaultAI.prototype.serialize = function () {
             return undefined;
+        };
+        DefaultAI.prototype.constructTurnProcessingQueue = function () {
+            var _this = this;
+            var queue = [];
+            queue.push(function (triggerFinish) {
+                _this.grandStrategyAI.setDesires();
+                _this.diplomacyAI.setAttitudes();
+                _this.objectivesAI.processDiplomaticObjectives(triggerFinish);
+            });
+            queue.push(function (triggerFinish) {
+                _this.objectivesAI.createFrontObjectives();
+                _this.frontsAI.formFronts();
+                _this.frontsAI.assignUnits();
+                _this.objectivesAI.processEconomicObjectives(triggerFinish);
+            });
+            queue.push(function (triggerFinish) {
+                _this.frontsAI.organizeFleets();
+                _this.objectivesAI.executeFrontObjectives(triggerFinish);
+            });
+            queue.push(function (triggerFinish) {
+                _this.frontsAI.organizeFleets();
+                triggerFinish();
+            });
+            return queue;
+        };
+        DefaultAI.prototype.processTurnStep = function () {
+            var nextStep = this.turnProcessingQueue.shift();
+            if (!nextStep) {
+                var afterFinishedCallback = this.afterTurnHasProcessed;
+                this.afterTurnHasProcessed = null;
+                afterFinishedCallback();
+                return;
+            }
+            nextStep(this.processTurnStep.bind(this));
         };
         return DefaultAI;
     }());
@@ -28627,7 +29136,7 @@ define("modules/defaultai/mapai/DefaultAIConstructor", ["require", "exports", "m
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = DefaultAIConstructor;
 });
-define("modules/defaultai/defaultAI", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultai/mapai/DefaultAIConstructor"], function (require, exports, ModuleFileLoadingPhase_4, DefaultAIConstructor_1) {
+define("modules/defaultai/defaultAI", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultai/mapai/DefaultAIConstructor", "localization/defaultLanguages"], function (require, exports, ModuleFileLoadingPhase_4, DefaultAIConstructor_1, Languages) {
     "use strict";
     var defaultAI = {
         key: "defaultAI",
@@ -28638,6 +29147,7 @@ define("modules/defaultai/defaultAI", ["require", "exports", "src/ModuleFileLoad
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_4.default.game,
+        supportedLanguages: [Languages.en],
         constructModule: function (moduleData) {
             moduleData.copyTemplates((_a = {},
                 _a[DefaultAIConstructor_1.default.type] = DefaultAIConstructor_1.default,
@@ -28707,9 +29217,9 @@ define("src/setDynamicTemplateProperties", ["require", "exports"], function (req
     }
     exports.setAttitudeModifierOverride = setAttitudeModifierOverride;
     function setTechnologyRequirements(technologyTemplates) {
-        var _loop_4 = function (technologyKey) {
+        var _loop_6 = function (technologyKey) {
             var technology = technologyTemplates[technologyKey];
-            var _loop_5 = function (level) {
+            var _loop_7 = function (level) {
                 var unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
                 unlockedTemplatesForLevel.forEach(function (template) {
                     if (!template.technologyRequirements) {
@@ -28722,16 +29232,16 @@ define("src/setDynamicTemplateProperties", ["require", "exports"], function (req
                 });
             };
             for (var level in technology.unlocksPerLevel) {
-                _loop_5(level);
+                _loop_7(level);
             }
         };
         for (var technologyKey in technologyTemplates) {
-            _loop_4(technologyKey);
+            _loop_6(technologyKey);
         }
     }
     exports.setTechnologyRequirements = setTechnologyRequirements;
 });
-define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", "exports", "modules/defaultattitudemodifiers/AttitudeModifierTemplates", "src/ModuleFileLoadingPhase", "src/setDynamicTemplateProperties"], function (require, exports, AttitudeModifierTemplates_1, ModuleFileLoadingPhase_5, setDynamicTemplateProperties_1) {
+define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", "exports", "modules/defaultattitudemodifiers/AttitudeModifierTemplates", "src/ModuleFileLoadingPhase", "src/setDynamicTemplateProperties", "localization/defaultLanguages"], function (require, exports, AttitudeModifierTemplates_1, ModuleFileLoadingPhase_5, setDynamicTemplateProperties_1, Languages) {
     "use strict";
     var defaultAttitudeModifiers = {
         key: "defaultAttitudeModifiers",
@@ -28742,6 +29252,7 @@ define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", 
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_5.default.mapGen,
+        supportedLanguages: [Languages.en],
         constructModule: function (moduleData) {
             setDynamicTemplateProperties_1.setAttitudeModifierOverride(AttitudeModifierTemplates_1.default);
             moduleData.copyTemplates(AttitudeModifierTemplates_1.default, "AttitudeModifiers");
@@ -28936,7 +29447,7 @@ define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (re
         "}",
     ];
 });
-define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_7, utility_60) {
+define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/pixiWrapperFunctions", "src/utility"], function (require, exports, Nebula_1, colorGeneration_7, pixiWrapperFunctions_8, utility_53) {
     "use strict";
     var drawNebula = function (seed, size, renderer) {
         var oldRng = Math.random;
@@ -28946,23 +29457,23 @@ define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/
             baseColor: nebulaColorScheme.main.getRGB(),
             overlayColor: nebulaColorScheme.secondary.getRGB(),
             highlightColor: [1.0, 1.0, 1.0],
-            coverage: utility_60.randRange(0.28, 0.32),
-            scale: utility_60.randRange(4, 8),
-            diffusion: utility_60.randRange(1.5, 3.0),
-            streakiness: utility_60.randRange(1.5, 2.5),
-            streakLightness: utility_60.randRange(1, 1.2),
-            cloudLightness: utility_60.randRange(1, 1.2),
+            coverage: utility_53.randRange(0.28, 0.32),
+            scale: utility_53.randRange(4, 8),
+            diffusion: utility_53.randRange(1.5, 3.0),
+            streakiness: utility_53.randRange(1.5, 2.5),
+            streakLightness: utility_53.randRange(1, 1.2),
+            cloudLightness: utility_53.randRange(1, 1.2),
             highlightA: 0.9,
             highlightB: 2.2,
-            starDensity: utility_60.randRange(0.0014, 0.0018),
-            nebulaStarConcentration: utility_60.randRange(0.000, 0.004),
+            starDensity: utility_53.randRange(0.0014, 0.0018),
+            nebulaStarConcentration: utility_53.randRange(0.000, 0.004),
             starBrightness: 0.6,
             seed: [Math.random() * 100, Math.random() * 100],
         });
         var container = new PIXI.Container();
-        var shaderSprite = utility_60.makeShaderSprite(filter, 0, 0, size.width, size.height);
+        var shaderSprite = pixiWrapperFunctions_8.makeShaderSprite(filter, 0, 0, size.width, size.height);
         container.addChild(shaderSprite);
-        var texture = utility_60.generateTextureWithBounds(renderer, container, PIXI.settings.SCALE_MODE, 1, size);
+        var texture = pixiWrapperFunctions_8.generateTextureWithBounds(renderer, container, PIXI.settings.SCALE_MODE, 1, size);
         var sprite = new PIXI.Sprite(texture);
         container.removeChildren();
         shaderSprite.destroy({ texture: true, baseTexture: true });
@@ -28986,6 +29497,7 @@ define("modules/defaultbackgrounds/defaultBackgrounds", ["require", "exports", "
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_6.default.game,
+        supportedLanguages: "all",
         constructModule: function (moduleData) {
             if (!moduleData.mapBackgroundDrawingFunction) {
                 moduleData.mapBackgroundDrawingFunction = drawNebula_1.default;
@@ -29144,7 +29656,7 @@ define("modules/defaultbuildings/BuildingTemplates", ["require", "exports", "mod
     exports.default = BuildingTemplates;
     var _a;
 });
-define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_36) {
+define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_37) {
     "use strict";
     ;
     function processSpriteSheet(sheetData, sheetImg, processFrameFN) {
@@ -29153,7 +29665,7 @@ define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], functi
         }
     }
     function addImageToApp(name, image) {
-        App_36.default.images[name] = image;
+        App_37.default.images[name] = image;
     }
     function cacheSpriteSheetAsImages(sheetData, sheetImg, onImageCreated) {
         if (onImageCreated === void 0) { onImageCreated = addImageToApp; }
@@ -29172,7 +29684,7 @@ define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], functi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = cacheSpriteSheetAsImages;
 });
-define("modules/defaultbuildings/defaultBuildings", ["require", "exports", "modules/defaultbuildings/BuildingTemplates", "src/ModuleFileLoadingPhase", "src/cacheSpriteSheetAsImages"], function (require, exports, BuildingTemplates_1, ModuleFileLoadingPhase_7, cacheSpriteSheetAsImages_1) {
+define("modules/defaultbuildings/defaultBuildings", ["require", "exports", "modules/defaultbuildings/BuildingTemplates", "src/ModuleFileLoadingPhase", "src/cacheSpriteSheetAsImages", "localization/defaultLanguages"], function (require, exports, BuildingTemplates_1, ModuleFileLoadingPhase_7, cacheSpriteSheetAsImages_1, Languages) {
     "use strict";
     var defaultBuildings = {
         key: "defaultBuildings",
@@ -29183,6 +29695,7 @@ define("modules/defaultbuildings/defaultBuildings", ["require", "exports", "modu
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_7.default.mapGen,
+        supportedLanguages: [Languages.en],
         loadAssets: function (onLoaded) {
             var loader = new PIXI.loaders.Loader();
             var spriteSheetKey = "buildings";
@@ -29316,7 +29829,7 @@ define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], func
     exports.default = SubEmblemTemplates;
     var _a;
 });
-define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App", "src/ModuleFileLoadingPhase"], function (require, exports, SubEmblemTemplates_1, App_37, ModuleFileLoadingPhase_8) {
+define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App", "src/ModuleFileLoadingPhase"], function (require, exports, SubEmblemTemplates_1, App_38, ModuleFileLoadingPhase_8) {
     "use strict";
     var defaultEmblems = {
         key: "defaultEmblems",
@@ -29327,6 +29840,7 @@ define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_8.default.setup,
+        supportedLanguages: "all",
         loadAssets: function (onLoaded) {
             var loader = new PIXI.loaders.Loader();
             for (var templateKey in SubEmblemTemplates_1.default) {
@@ -29341,7 +29855,7 @@ define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/
                 for (var templateKey in SubEmblemTemplates_1.default) {
                     var template = SubEmblemTemplates_1.default[templateKey];
                     var image = loader.resources[template.src].data;
-                    App_37.default.images[template.src] = image;
+                    App_38.default.images[template.src] = image;
                     if (!image.width) {
                         document.body.appendChild(image);
                         image.width = image.offsetWidth;
@@ -29489,7 +30003,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
     exports.default = ItemTemplates;
     var _a;
 });
-define("modules/defaultitems/defaultItems", ["require", "exports", "modules/defaultitems/ItemTemplates", "src/ModuleFileLoadingPhase"], function (require, exports, ItemTemplates_1, ModuleFileLoadingPhase_9) {
+define("modules/defaultitems/defaultItems", ["require", "exports", "modules/defaultitems/ItemTemplates", "src/ModuleFileLoadingPhase", "localization/defaultLanguages"], function (require, exports, ItemTemplates_1, ModuleFileLoadingPhase_9, Languages) {
     "use strict";
     var defaultItems = {
         key: "defaultItems",
@@ -29500,6 +30014,7 @@ define("modules/defaultitems/defaultItems", ["require", "exports", "modules/defa
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_9.default.mapGen,
+        supportedLanguages: [Languages.en],
         constructModule: function (moduleData) {
             moduleData.copyTemplates(ItemTemplates_1.default, "Items");
             return moduleData;
@@ -29664,7 +30179,7 @@ define("src/Region", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Region;
 });
-define("src/templateinterfaces/Distributable", ["require", "exports", "src/utility"], function (require, exports, utility_61) {
+define("src/templateinterfaces/Distributable", ["require", "exports", "src/utility"], function (require, exports, utility_54) {
     "use strict";
     function getRandomWeightedDistributable(candidates) {
         var maxWeight = candidates.map(function (distributable) {
@@ -29676,11 +30191,11 @@ define("src/templateinterfaces/Distributable", ["require", "exports", "src/utili
             var candidatesWithMaxWeight = candidates.filter(function (distributable) {
                 return distributable.distributionData.weight === maxWeight;
             });
-            return utility_61.getRandomArrayItem(candidatesWithMaxWeight);
+            return utility_54.getRandomArrayItem(candidatesWithMaxWeight);
         }
         else {
             while (true) {
-                var candidate = utility_61.getRandomArrayItem(candidates);
+                var candidate = utility_54.getRandomArrayItem(candidates);
                 if (Math.random() < candidate.distributionData.weight / maxWeight) {
                     return candidate;
                 }
@@ -29693,7 +30208,7 @@ define("src/templateinterfaces/Distributable", ["require", "exports", "src/utili
             return candidates;
         }
         var distributablesThatDidntMatchGroups = [];
-        var _loop_6 = function (i) {
+        var _loop_8 = function (i) {
             var group = groupsByPriority[i];
             var distributablesWithGroup = candidates.filter(function (distributable) {
                 var distributableHasGroup = distributable.distributionData.distributionGroups.indexOf(group) !== -1;
@@ -29707,7 +30222,7 @@ define("src/templateinterfaces/Distributable", ["require", "exports", "src/utili
             }
         };
         for (var i = 0; i < groupsByPriority.length; i++) {
-            var state_1 = _loop_6(i);
+            var state_1 = _loop_8(i);
             if (typeof state_1 === "object")
                 return state_1.value;
         }
@@ -29737,7 +30252,7 @@ define("src/templateinterfaces/Distributable", ["require", "exports", "src/utili
     }
     exports.getDistributablesWithoutGroups = getDistributablesWithoutGroups;
 });
-define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_38) {
+define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_39) {
     "use strict";
     var TemplateIndexes = (function () {
         function TemplateIndexes() {
@@ -29774,13 +30289,13 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
         };
         TemplateIndexes.getDistributablesByTypeAndDistributionGroup = function () {
             return ({
-                resources: TemplateIndexes.getDistributablesByGroup(App_38.default.moduleData.Templates.Resources),
-                races: TemplateIndexes.getDistributablesByGroup(App_38.default.moduleData.Templates.Races),
+                resources: TemplateIndexes.getDistributablesByGroup(App_39.default.moduleData.Templates.Resources),
+                races: TemplateIndexes.getDistributablesByGroup(App_39.default.moduleData.Templates.Races),
             });
         };
         TemplateIndexes.getDistributablesByGroup = function (allDistributables) {
             var byGroup = {};
-            var _loop_7 = function (key) {
+            var _loop_9 = function (key) {
                 var distributable = allDistributables[key];
                 distributable.distributionData.distributionGroups.forEach(function (group) {
                     if (!byGroup[group]) {
@@ -29790,14 +30305,14 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
                 });
             };
             for (var key in allDistributables) {
-                _loop_7(key);
+                _loop_9(key);
             }
             return byGroup;
         };
         TemplateIndexes.getItemsByTechLevel = function () {
             var itemsByTechLevel = {};
-            for (var itemName in App_38.default.moduleData.Templates.Items) {
-                var item = App_38.default.moduleData.Templates.Items[itemName];
+            for (var itemName in App_39.default.moduleData.Templates.Items) {
+                var item = App_39.default.moduleData.Templates.Items[itemName];
                 if (!itemsByTechLevel[item.techLevel]) {
                     itemsByTechLevel[item.techLevel] = [];
                 }
@@ -29904,7 +30419,7 @@ define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Triangle;
 });
-define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_62) {
+define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_55) {
     "use strict";
     function triangulate(vertices) {
         var triangles = [];
@@ -29981,11 +30496,11 @@ define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modul
         return triangle;
     }
     function edgesEqual(e1, e2) {
-        return ((utility_62.pointsEqual(e1[0], e2[0]) && utility_62.pointsEqual(e1[1], e2[1])) ||
-            (utility_62.pointsEqual(e1[0], e2[1]) && utility_62.pointsEqual(e1[1], e2[0])));
+        return ((utility_55.pointsEqual(e1[0], e2[0]) && utility_55.pointsEqual(e1[1], e2[1])) ||
+            (utility_55.pointsEqual(e1[0], e2[1]) && utility_55.pointsEqual(e1[1], e2[0])));
     }
 });
-define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modules/defaultbuildings/templates/Templates", "modules/defaultmapgen/common/triangulate", "src/Building", "src/Region", "src/pathFinding", "src/utility"], function (require, exports, Templates_1, triangulate_1, Building_4, Region_1, pathFinding_3, utility_63) {
+define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modules/defaultbuildings/templates/Templates", "modules/defaultmapgen/common/triangulate", "src/Building", "src/Region", "src/Star", "src/pathFinding", "src/utility"], function (require, exports, Templates_1, triangulate_1, Building_4, Region_1, Star_4, pathFinding_3, utility_56) {
     "use strict";
     function linkStarsByTriangulation(stars) {
         if (stars.length < 3) {
@@ -30063,11 +30578,11 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
         unassignedStars.sort(function (a, b) {
             return mapGenDataByStarID[b.id].connectedness - mapGenDataByStarID[a.id].connectedness;
         });
-        var _loop_8 = function () {
+        var _loop_10 = function () {
             var seedStar = unassignedStars.pop();
-            var islandForSameSector = seedStar.getIslandForQualifier(function (a, b) {
+            var islandForSameSector = Star_4.default.getIslandForQualifier([seedStar], null, function (a, b) {
                 return sectorsByStarID[a.id] === sectorsByStarID[b.id];
-            }, minSize);
+            });
             var canFormMinSizeSector = islandForSameSector.length >= minSize;
             if (canFormMinSizeSector) {
                 var sectorID = sectorIDGen++;
@@ -30083,7 +30598,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
                         var starHasSector = Boolean(sectorsByStarID[star.id]);
                         return !starHasSector;
                     });
-                    var _loop_9 = function () {
+                    var _loop_11 = function () {
                         var frontierSortScores = {};
                         frontier.forEach(function (star) {
                             var borderLengthWithSector = sector_1.getBorderLengthWithStars([star]);
@@ -30100,7 +30615,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
                         sectorsByStarID[toAdd.id] = sector_1;
                     };
                     while (sector_1.stars.length < minSize && frontier.length > 0) {
-                        _loop_9();
+                        _loop_11();
                     }
                     discoveryStarIndex++;
                 }
@@ -30110,9 +30625,9 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
             }
         };
         while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
-            _loop_8();
+            _loop_10();
         }
-        var _loop_10 = function () {
+        var _loop_12 = function () {
             var star = leftoverStars.pop();
             var neighbors = star.getLinkedInRange(1).all;
             var alreadyAddedNeighborSectors = {};
@@ -30157,7 +30672,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
             }
         };
         while (leftoverStars.length > 0) {
-            _loop_10();
+            _loop_12();
         }
         return Object.keys(sectorsByID).map(function (sectorID) {
             return sectorsByID[sectorID];
@@ -30176,7 +30691,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
             });
         }
         sectors.forEach(function (sector) {
-            var alreadyAddedByWeight = utility_63.getRelativeWeightsFromObject(probabilityWeights);
+            var alreadyAddedByWeight = utility_56.getRelativeWeightsFromObject(probabilityWeights);
             var distributionFlags = distributionFlagsBySectorID[sector.id];
             var distributablesForSector = distributionFlags.reduce(function (distributables, flag) {
                 return distributables.concat(distributablesByDistributionGroup[flag]);
@@ -30198,7 +30713,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
             candidates.forEach(function (candidate) {
                 candidatesByWeight[candidate.type] = alreadyAddedByWeight[candidate.type];
             });
-            var selectedKey = utility_63.getRandomKeyWithWeights(candidatesByWeight);
+            var selectedKey = utility_56.getRandomKeyWithWeights(candidatesByWeight);
             var selectedType = allDistributablesByType[selectedKey];
             probabilityWeights[selectedKey] /= 2;
             placerFunction(sector, selectedType);
@@ -30246,7 +30761,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
     }
     exports.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
 });
-define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", "modules/defaultmapgen/common/mapGenUtils", "src/App", "src/utility"], function (require, exports, mapGenUtils_1, App_39, utility_64) {
+define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", "modules/defaultmapgen/common/mapGenUtils", "src/App", "src/utility"], function (require, exports, mapGenUtils_1, App_40, utility_57) {
     "use strict";
     function setupIndependents(props) {
         var independentStars = props.region.stars.filter(function (star) {
@@ -30272,9 +30787,9 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
             var mapGenData = props.mapGenDataByStarID[star.id];
             var distanceFromPlayer = mapGenData.distanceFromPlayerOwnedLocation - 1;
             var relativeDistanceFromPlayer = distanceFromPlayer / globalMaxDistanceFromPlayer;
-            var globalStrength = Math.pow(relativeDistanceFromPlayer, 1.8) * props.intensity + utility_64.randRange(-props.variance, props.variance);
+            var globalStrength = Math.pow(relativeDistanceFromPlayer, 1.8) * props.intensity + utility_57.randRange(-props.variance, props.variance);
             var localStrength = star === commanderStar ? 1 : 0.5;
-            star.race.generateIndependentFleet(props.player, star, globalStrength, localStrength, App_39.default.moduleData.ruleSet.battle.maxUnitsPerSide);
+            star.race.generateIndependentFleet(props.player, star, globalStrength, localStrength, App_40.default.moduleData.ruleSet.battle.maxUnitsPerSide);
         });
     }
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -30312,12 +30827,12 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
 define("modules/defaultmapgen/spiralGalaxy/SpiralGalaxyOptionValues", ["require", "exports"], function (require, exports) {
     "use strict";
 });
-define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "exports", "modules/defaultmapgen/common/MapGenPoint", "src/utility"], function (require, exports, MapGenPoint_1, utility_65) {
+define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "exports", "modules/defaultmapgen/common/MapGenPoint", "src/utility"], function (require, exports, MapGenPoint_1, utility_58) {
     "use strict";
     function generateSpiralPoints(options) {
         var sg = convertMapGenOptionValues(options);
         var makePoint = function (distanceMin, distanceMax, arm, maxOffset) {
-            var distance = utility_65.randRange(distanceMin, distanceMax);
+            var distance = utility_58.randRange(distanceMin, distanceMax);
             var offset = Math.random() * maxOffset - maxOffset / 2;
             offset *= (1 / distance);
             if (offset < 0) {
@@ -30395,11 +30910,11 @@ define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "e
             armDistance: Math.PI * 2 / totalArms,
             armOffsetMax: 0.5,
             armRotationFactor: actualArms / 3,
-            galaxyRotation: utility_65.randRange(0, Math.PI * 2),
+            galaxyRotation: utility_58.randRange(0, Math.PI * 2),
         });
     }
 });
-define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", "exports", "src/App", "src/FillerPoint", "src/MapGenResult", "src/Region", "src/Star", "src/TemplateIndexes", "src/utility", "src/voronoi", "modules/defaultmapgen/common/mapGenUtils", "modules/defaultmapgen/common/setupIndependents", "modules/defaultmapgen/spiralGalaxy/generateSpiralPoints"], function (require, exports, App_40, FillerPoint_2, MapGenResult_2, Region_2, Star_2, TemplateIndexes_1, utility_66, voronoi_2, mapGenUtils_2, setupIndependents_1, generateSpiralPoints_1) {
+define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", "exports", "src/App", "src/FillerPoint", "src/MapGenResult", "src/Region", "src/Star", "src/TemplateIndexes", "src/utility", "src/voronoi", "modules/defaultmapgen/common/mapGenUtils", "modules/defaultmapgen/common/setupIndependents", "modules/defaultmapgen/spiralGalaxy/generateSpiralPoints"], function (require, exports, App_41, FillerPoint_2, MapGenResult_2, Region_2, Star_5, TemplateIndexes_1, utility_59, voronoi_2, mapGenUtils_2, setupIndependents_1, generateSpiralPoints_1) {
     "use strict";
     var spiralGalaxyGeneration = function (options, players) {
         var seed = "" + Math.random();
@@ -30425,7 +30940,7 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
                 fillerPoints.push(fillerPoint);
             }
             else {
-                var star = new Star_2.default({
+                var star = new Star_5.default({
                     x: point.x,
                     y: point.y,
                 });
@@ -30570,7 +31085,7 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
         var independents = [];
         sectors.forEach(function (sector) {
             var sectorRace = sector.stars[0].race;
-            var sectorIndependents = sectorRace.generateIndependentPlayer(App_40.default.moduleData.Templates.SubEmblems);
+            var sectorIndependents = sectorRace.generateIndependentPlayer(App_41.default.moduleData.Templates.SubEmblems);
             independents.push(sectorIndependents);
             setupIndependents_1.default({
                 player: sectorIndependents,
@@ -30581,7 +31096,7 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
             });
         });
         stars.forEach(function (star) {
-            star.baseIncome = utility_66.randInt(4, 6) * 10;
+            star.baseIncome = utility_59.randInt(4, 6) * 10;
         });
         Math.random = oldRandom;
         return new MapGenResult_2.default({
@@ -30737,7 +31252,7 @@ define("modules/defaultmapgen/templates/tinierSpiralGalaxy", ["require", "export
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = tinierSpiralGalaxy;
 });
-define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultmapgen/templates/spiralGalaxy", "modules/defaultmapgen/templates/tinierSpiralGalaxy"], function (require, exports, ModuleFileLoadingPhase_10, spiralGalaxy_1, tinierSpiralGalaxy_1) {
+define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultmapgen/templates/spiralGalaxy", "modules/defaultmapgen/templates/tinierSpiralGalaxy", "localization/defaultLanguages"], function (require, exports, ModuleFileLoadingPhase_10, spiralGalaxy_1, tinierSpiralGalaxy_1, Languages) {
     "use strict";
     var Templates = (_a = {},
         _a[spiralGalaxy_1.default.key] = spiralGalaxy_1.default,
@@ -30752,6 +31267,7 @@ define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "src/Module
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_10.default.setup,
+        supportedLanguages: [Languages.en],
         constructModule: function (moduleData) {
             moduleData.copyTemplates(Templates, "MapGen");
             if (!moduleData.defaultMap) {
@@ -30764,7 +31280,7 @@ define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "src/Module
     exports.default = defaultMapGen;
     var _a;
 });
-define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_42, utility_67) {
+define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "exports", "src/eventManager", "src/pixiWrapperFunctions"], function (require, exports, eventManager_40, pixiWrapperFunctions_9) {
     "use strict";
     var nonFillerStars = {
         key: "nonFillerStars",
@@ -30774,25 +31290,25 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
             var doc = new PIXI.Container();
             var points = perspectivePlayer ? perspectivePlayer.getRevealedStars() : map.stars;
             var mouseDownFN = function (star, event) {
-                eventManager_42.default.dispatchEvent("mouseDown", event, star);
+                eventManager_40.default.dispatchEvent("mouseDown", event, star);
             };
             var mouseUpFN = function (event) {
-                eventManager_42.default.dispatchEvent("mouseUp", event);
+                eventManager_40.default.dispatchEvent("mouseUp", event);
             };
             var onClickFN = function (star) {
-                eventManager_42.default.dispatchEvent("starClick", star);
+                eventManager_40.default.dispatchEvent("starClick", star);
             };
             var mouseOverFN = function (star) {
-                eventManager_42.default.dispatchEvent("hoverStar", star);
+                eventManager_40.default.dispatchEvent("hoverStar", star);
             };
             var mouseOutFN = function (event) {
-                eventManager_42.default.dispatchEvent("clearHover");
+                eventManager_40.default.dispatchEvent("clearHover");
             };
             var touchStartFN = function (event) {
-                eventManager_42.default.dispatchEvent("touchStart", event);
+                eventManager_40.default.dispatchEvent("touchStart", event);
             };
             var touchEndFN = function (event) {
-                eventManager_42.default.dispatchEvent("touchEnd", event);
+                eventManager_40.default.dispatchEvent("touchEnd", event);
             };
             for (var i = 0; i < points.length; i++) {
                 var star = points[i];
@@ -30808,7 +31324,7 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
                 gfx.drawCircle(star.x, star.y, starSize);
                 gfx.endFill();
                 gfx.interactive = true;
-                gfx.hitArea = utility_67.makePolygonFromPoints(star.voronoiCell.vertices);
+                gfx.hitArea = pixiWrapperFunctions_9.makePolygonFromPoints(star.voronoiCell.vertices);
                 var boundMouseDown = mouseDownFN.bind(null, star);
                 var gfxClickFN = function (star, event) {
                     var originalEvent = event.data.originalEvent;
@@ -30833,7 +31349,7 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
                 var local = event.data.getLocalPosition(doc);
                 var starAtLocal = map.voronoi.getStarAtPoint(local);
                 if (starAtLocal) {
-                    eventManager_42.default.dispatchEvent("hoverStar", starAtLocal);
+                    eventManager_40.default.dispatchEvent("hoverStar", starAtLocal);
                 }
             });
             return doc;
@@ -30841,68 +31357,6 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = nonFillerStars;
-});
-define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", "exports", "modules/defaultai/mapai/MapEvaluator", "src/Color", "src/utility"], function (require, exports, MapEvaluator_2, Color_13, utility_68) {
-    "use strict";
-    var playerInfluence = {
-        key: "playerInfluence",
-        displayName: "Influence",
-        interactive: false,
-        drawingFunction: function (map, perspectivePlayer) {
-            var doc = new PIXI.Container();
-            var points = perspectivePlayer ? perspectivePlayer.getRevealedStars() : map.stars;
-            var mapEvaluator = new MapEvaluator_2.default(map, perspectivePlayer);
-            var influenceByStar = mapEvaluator.getPlayerInfluenceMap(perspectivePlayer);
-            var minInfluence, maxInfluence;
-            influenceByStar.forEach(function (star, influence) {
-                if (!isFinite(minInfluence) || influence < minInfluence) {
-                    minInfluence = influence;
-                }
-                if (!isFinite(maxInfluence) || influence > maxInfluence) {
-                    maxInfluence = influence;
-                }
-            });
-            function getRelativeValue(min, max, value) {
-                var difference = Math.max(max - min, 1);
-                var threshhold = Math.max(difference / 10, 1);
-                var relative = (Math.round(value / threshhold) * threshhold - min) / (difference);
-                return relative;
-            }
-            var colorIndexes = {};
-            function getRelativeColor(min, max, value) {
-                if (!colorIndexes[value]) {
-                    if (value < 0)
-                        value = 0;
-                    else if (value > 1)
-                        value = 1;
-                    var deviation = Math.abs(0.5 - value) * 2;
-                    var hue = 110 * value;
-                    var saturation = 0.5 + 0.2 * deviation;
-                    var lightness = 0.6 + 0.25 * deviation;
-                    colorIndexes[value] = Color_13.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
-                }
-                return colorIndexes[value];
-            }
-            for (var i = 0; i < points.length; i++) {
-                var star = points[i];
-                var influence = influenceByStar.get(star);
-                if (!influence) {
-                    continue;
-                }
-                var relativeInfluence = getRelativeValue(minInfluence, maxInfluence, influence);
-                var color = getRelativeColor(minInfluence, maxInfluence, relativeInfluence);
-                var poly = utility_68.makePolygonFromPoints(star.voronoiCell.vertices);
-                var gfx = new PIXI.Graphics();
-                gfx.beginFill(color, 0.6);
-                gfx.drawShape(poly);
-                gfx.endFill;
-                doc.addChild(gfx);
-            }
-            return doc;
-        },
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = playerInfluence;
 });
 define("modules/defaultmapmodes/maplayertemplates/starLinks", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -30937,7 +31391,7 @@ define("modules/defaultmapmodes/maplayertemplates/starLinks", ["require", "expor
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = starLinks;
 });
-define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/App", "src/Options", "src/eventManager", "modules/common/attachedUnitData"], function (require, exports, App_41, Options_12, eventManager_43, attachedUnitData_3) {
+define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/App", "src/eventManager"], function (require, exports, App_42, eventManager_41) {
     "use strict";
     var fleets = {
         key: "fleets",
@@ -30954,23 +31408,19 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
             var doc = new PIXI.Container();
             var points = perspectivePlayer ? perspectivePlayer.getVisibleStars() : map.stars;
             var mouseDownFN = function (fleet, event) {
-                eventManager_43.default.dispatchEvent("mouseDown", event, fleet.location);
+                eventManager_41.default.dispatchEvent("mouseDown", event, fleet.location);
             };
             var mouseUpFN = function (event) {
-                eventManager_43.default.dispatchEvent("mouseUp", event);
+                eventManager_41.default.dispatchEvent("mouseUp", event);
             };
             var mouseOverFN = function (fleet) {
-                eventManager_43.default.dispatchEvent("hoverStar", fleet.location);
-                if (Options_12.default.debug.enabled && fleet.units.length > 0) {
-                    var front = attachedUnitData_3.default.get(fleet.units[0]).front;
-                    console.log("" + fleet.id + (front ? ", " + front.objective.type : ""));
-                }
+                eventManager_41.default.dispatchEvent("hoverStar", fleet.location);
             };
             var fleetClickFN = function (fleet, event) {
                 var originalEvent = event.data.originalEvent;
                 ;
                 if (originalEvent.button === 0) {
-                    eventManager_43.default.dispatchEvent("selectFleets", [fleet]);
+                    eventManager_41.default.dispatchEvent("selectFleets", [fleet]);
                 }
             };
             function singleFleetDrawFN(fleet) {
@@ -31040,7 +31490,7 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
                 strokeThickness: 3,
             });
             text_1.getBounds();
-            fleetTextTextureCache[fleetSize] = App_41.default.renderer.renderer.generateTexture(text_1);
+            fleetTextTextureCache[fleetSize] = App_42.default.renderer.renderer.generateTexture(text_1);
             window.setTimeout(function () {
                 text_1.texture.destroy(true);
             }, 0);
@@ -31161,7 +31611,7 @@ define("modules/defaultmapmodes/maplayertemplates/shaders/Occupation", ["require
         "}",
     ];
 });
-define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "exports", "src/eventManager", "src/utility", "modules/defaultmapmodes/maplayertemplates/shaders/Occupation"], function (require, exports, eventManager_44, utility_69, Occupation_1) {
+define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "exports", "src/eventManager", "src/pixiWrapperFunctions", "modules/defaultmapmodes/maplayertemplates/shaders/Occupation"], function (require, exports, eventManager_42, pixiWrapperFunctions_10, Occupation_1) {
     "use strict";
     var starOwners = {
         key: "starOwners",
@@ -31182,7 +31632,7 @@ define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "expo
                 if (!star.owner || (!occupier && star.owner.colorAlpha === 0)) {
                     continue;
                 }
-                var poly = utility_69.makePolygonFromPoints(star.voronoiCell.vertices);
+                var poly = pixiWrapperFunctions_10.makePolygonFromPoints(star.voronoiCell.vertices);
                 var gfx = new PIXI.Graphics();
                 var alpha = 1;
                 if (isFinite(star.owner.colorAlpha)) {
@@ -31205,8 +31655,8 @@ define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "expo
     var hasAddedEventListeners = false;
     function getOccupationShader(owner, occupier) {
         if (!hasAddedEventListeners) {
-            eventManager_44.default.addEventListener("cameraZoomed", updateShaderZoom);
-            eventManager_44.default.addEventListener("cameraMoved", updateShaderOffset);
+            eventManager_42.default.addEventListener("cameraZoomed", updateShaderZoom);
+            eventManager_42.default.addEventListener("cameraMoved", updateShaderOffset);
         }
         if (!occupationShaders[owner.id]) {
             occupationShaders[owner.id] = {};
@@ -31240,7 +31690,7 @@ define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "expo
         });
     }
 });
-define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_42, utility_70) {
+define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App", "src/pixiWrapperFunctions"], function (require, exports, App_43, pixiWrapperFunctions_11) {
     "use strict";
     var fogOfWar = {
         key: "fogOfWar",
@@ -31282,7 +31732,7 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
     function getFogOfWarSpriteForStar(star, width, height) {
         var tiled = getfogOfWarTilingSprite(width, height);
         if (!fogOfWarSpriteByStarID[star.id] || Object.keys(fogOfWarSpriteByStarID).length < 4) {
-            var poly = utility_70.makePolygonFromPoints(star.voronoiCell.vertices);
+            var poly = pixiWrapperFunctions_11.makePolygonFromPoints(star.voronoiCell.vertices);
             var gfx = new PIXI.Graphics();
             gfx.isMask = true;
             gfx.beginFill(0);
@@ -31292,7 +31742,7 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
             tiled.mask = gfx;
             tiled.addChild(gfx);
             var bounds = tiled.getBounds();
-            var rendered = utility_70.generateTextureWithBounds(App_42.default.renderer.renderer, tiled, PIXI.settings.SCALE_MODE, 1, bounds);
+            var rendered = pixiWrapperFunctions_11.generateTextureWithBounds(App_43.default.renderer.renderer, tiled, PIXI.settings.SCALE_MODE, 1, bounds);
             var sprite = new PIXI.Sprite(rendered);
             fogOfWarSpriteByStarID[star.id] = sprite;
             tiled.mask = null;
@@ -31300,10 +31750,10 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
         return fogOfWarSpriteByStarID[star.id];
     }
 });
-define("src/borderPolygon", ["require", "exports", "src/Options", "src/utility"], function (require, exports, Options_13, utility_71) {
+define("src/borderPolygon", ["require", "exports", "src/Options", "src/Star", "src/utility"], function (require, exports, Options_12, Star_6, utility_60) {
     "use strict";
     function starsOnlyShareNarrowBorder(a, b) {
-        var minBorderWidth = Options_13.default.display.borderWidth * 2;
+        var minBorderWidth = Options_12.default.display.borderWidth * 2;
         var edge = a.getEdgeWith(b);
         if (!edge) {
             return false;
@@ -31435,10 +31885,10 @@ define("src/borderPolygon", ["require", "exports", "src/Options", "src/utility"]
                 y: v1.y,
             });
         });
-        joinPointsWithin(convertedToPoints, Options_13.default.display.borderWidth / 2);
+        joinPointsWithin(convertedToPoints, Options_12.default.display.borderWidth / 2);
         var offset = new Offset();
         offset.arcSegments(0);
-        var convertedToOffset = offset.data(convertedToPoints).padding(Options_13.default.display.borderWidth / 2);
+        var convertedToOffset = offset.data(convertedToPoints).padding(Options_12.default.display.borderWidth / 2);
         return convertedToOffset;
     }
     exports.convertHalfEdgeDataToOffset = convertHalfEdgeDataToOffset;
@@ -31451,7 +31901,7 @@ define("src/borderPolygon", ["require", "exports", "src/Options", "src/utility"]
                 continue;
             }
             if (!star.owner.isIndependent) {
-                var ownedIsland = star.getIslandForQualifier(function (a, b) {
+                var ownedIsland = Star_6.default.getIslandForQualifier([star], null, function (a, b) {
                     return (a.owner === b.owner && !starsOnlyShareNarrowBorder(a, b));
                 });
                 var currentPolyLine = [];
@@ -31461,8 +31911,8 @@ define("src/borderPolygon", ["require", "exports", "src/Options", "src/utility"]
                     var point = offsetted[j];
                     var nextPoint = offsetted[(j + 1) % offsetted.length];
                     var edgeCenter = {
-                        x: utility_71.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
-                        y: utility_71.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2),
+                        x: utility_60.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
+                        y: utility_60.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2),
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
                     if (!pointStar) {
@@ -31504,7 +31954,7 @@ define("src/borderPolygon", ["require", "exports", "src/Options", "src/utility"]
         var polyLinesData = [];
         for (var i = 0; i < polyLines.length; i++) {
             var polyLine = polyLines[i];
-            var isClosed = utility_71.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+            var isClosed = utility_60.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
             if (isClosed)
                 polyLine.pop();
             for (var j = 0; j < polyLine.length; j++) {
@@ -31520,7 +31970,7 @@ define("src/borderPolygon", ["require", "exports", "src/Options", "src/utility"]
     }
     exports.getRevealedBorderEdges = getRevealedBorderEdges;
 });
-define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "exports", "src/Options", "src/borderPolygon", "src/utility"], function (require, exports, Options_14, borderPolygon_1, utility_72) {
+define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "exports", "src/Options", "src/borderPolygon", "src/pixiWrapperFunctions"], function (require, exports, Options_13, borderPolygon_1, pixiWrapperFunctions_12) {
     "use strict";
     var ownerBorders = {
         key: "ownerBorders",
@@ -31529,7 +31979,7 @@ define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "ex
         alpha: 0.7,
         drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
-            if (Options_14.default.display.borderWidth <= 0) {
+            if (Options_13.default.display.borderWidth <= 0) {
                 return doc;
             }
             var revealedStars = perspectivePlayer.getRevealedStars();
@@ -31539,11 +31989,11 @@ define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "ex
                 doc.addChild(gfx);
                 var polyLineData = borderEdges[i];
                 var player = polyLineData.points[0].star.owner;
-                gfx.lineStyle(Options_14.default.display.borderWidth, player.secondaryColor.getHex(), 1);
+                gfx.lineStyle(Options_13.default.display.borderWidth, player.secondaryColor.getHex(), 1);
                 if (polyLineData.isClosed) {
                     polyLineData.points.push(polyLineData.points[0]);
                 }
-                var polygon = utility_72.makePolygonFromPoints(polyLineData.points);
+                var polygon = pixiWrapperFunctions_12.makePolygonFromPoints(polyLineData.points);
                 polygon.closed = polyLineData.isClosed;
                 gfx.drawShape(polygon);
             }
@@ -31553,7 +32003,7 @@ define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "ex
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ownerBorders;
 });
-define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "exports", "src/Color", "src/utility"], function (require, exports, Color_14, utility_73) {
+define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "exports", "src/Color", "src/pixiWrapperFunctions"], function (require, exports, Color_13, pixiWrapperFunctions_13) {
     "use strict";
     var starIncome = {
         key: "starIncome",
@@ -31580,7 +32030,7 @@ define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "expo
                     var hue = 110 * value;
                     var saturation = 0.5 + 0.2 * deviation;
                     var lightness = 0.6 + 0.25 * deviation;
-                    colorIndexes[value] = Color_14.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
+                    colorIndexes[value] = Color_13.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
                 }
                 return colorIndexes[value];
             }
@@ -31589,7 +32039,7 @@ define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "expo
                 var income = star.getIncome();
                 var relativeIncome = getRelativeValue(incomeBounds.min, incomeBounds.max, income);
                 var color = getRelativeColor(incomeBounds.min, incomeBounds.max, relativeIncome);
-                var poly = utility_73.makePolygonFromPoints(star.voronoiCell.vertices);
+                var poly = pixiWrapperFunctions_13.makePolygonFromPoints(star.voronoiCell.vertices);
                 var gfx = new PIXI.Graphics();
                 gfx.beginFill(color, 0.6);
                 gfx.drawShape(poly);
@@ -31602,10 +32052,9 @@ define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "expo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = starIncome;
 });
-define("modules/defaultmapmodes/allMapLayerTemplates", ["require", "exports", "modules/defaultmapmodes/maplayertemplates/nonFillerStars", "modules/defaultmapmodes/maplayertemplates/playerInfluence", "modules/defaultmapmodes/maplayertemplates/starLinks", "modules/defaultmapmodes/maplayertemplates/fleets", "modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", "modules/defaultmapmodes/maplayertemplates/resources", "modules/defaultmapmodes/maplayertemplates/starOwners", "modules/defaultmapmodes/maplayertemplates/fogOfWar", "modules/defaultmapmodes/maplayertemplates/ownerBorders", "modules/defaultmapmodes/maplayertemplates/starIncome"], function (require, exports, nonFillerStars_1, playerInfluence_1, starLinks_1, fleets_2, nonFillerVoronoiLines_1, resources_1, starOwners_1, fogOfWar_1, ownerBorders_1, starIncome_1) {
+define("modules/defaultmapmodes/allMapLayerTemplates", ["require", "exports", "modules/defaultmapmodes/maplayertemplates/nonFillerStars", "modules/defaultmapmodes/maplayertemplates/starLinks", "modules/defaultmapmodes/maplayertemplates/fleets", "modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", "modules/defaultmapmodes/maplayertemplates/resources", "modules/defaultmapmodes/maplayertemplates/starOwners", "modules/defaultmapmodes/maplayertemplates/fogOfWar", "modules/defaultmapmodes/maplayertemplates/ownerBorders", "modules/defaultmapmodes/maplayertemplates/starIncome"], function (require, exports, nonFillerStars_1, starLinks_1, fleets_2, nonFillerVoronoiLines_1, resources_1, starOwners_1, fogOfWar_1, ownerBorders_1, starIncome_1) {
     "use strict";
     exports.nonFillerStars = nonFillerStars_1.default;
-    exports.playerInfluence = playerInfluence_1.default;
     exports.starLinks = starLinks_1.default;
     exports.fleets = fleets_2.default;
     exports.nonFillerVoronoiLines = nonFillerVoronoiLines_1.default;
@@ -31619,7 +32068,6 @@ define("modules/defaultmapmodes/MapLayerTemplates", ["require", "exports", "modu
     "use strict";
     var MapLayerTemplates = (_a = {},
         _a[MapLayers.nonFillerStars.key] = MapLayers.nonFillerStars,
-        _a[MapLayers.playerInfluence.key] = MapLayers.playerInfluence,
         _a[MapLayers.starLinks.key] = MapLayers.starLinks,
         _a[MapLayers.fleets.key] = MapLayers.fleets,
         _a[MapLayers.nonFillerVoronoiLines.key] = MapLayers.nonFillerVoronoiLines,
@@ -31670,17 +32118,6 @@ define("modules/defaultmapmodes/mapmodetemplates/mapModes", ["require", "exports
             MapLayers.fleets,
         ],
     };
-    exports.influence = {
-        key: "influence",
-        displayName: "Player Influence",
-        layers: [
-            MapLayers.playerInfluence,
-            MapLayers.nonFillerVoronoiLines,
-            MapLayers.starLinks,
-            MapLayers.nonFillerStars,
-            MapLayers.fleets,
-        ],
-    };
     exports.resources = {
         key: "resources",
         displayName: "Resources",
@@ -31700,14 +32137,13 @@ define("modules/defaultmapmodes/MapModeTemplates", ["require", "exports", "modul
         _a[MapModes.defaultMapMode.key] = MapModes.defaultMapMode,
         _a[MapModes.noStatic.key] = MapModes.noStatic,
         _a[MapModes.income.key] = MapModes.income,
-        _a[MapModes.influence.key] = MapModes.influence,
         _a[MapModes.resources.key] = MapModes.resources,
         _a);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapModeTemplates;
     var _a;
 });
-define("modules/defaultmapmodes/defaultMapmodes", ["require", "exports", "modules/defaultmapmodes/MapLayerTemplates", "modules/defaultmapmodes/MapModeTemplates", "src/ModuleFileLoadingPhase"], function (require, exports, MapLayerTemplates_1, MapModeTemplates_1, ModuleFileLoadingPhase_11) {
+define("modules/defaultmapmodes/defaultMapmodes", ["require", "exports", "modules/defaultmapmodes/MapLayerTemplates", "modules/defaultmapmodes/MapModeTemplates", "src/ModuleFileLoadingPhase", "localization/defaultLanguages"], function (require, exports, MapLayerTemplates_1, MapModeTemplates_1, ModuleFileLoadingPhase_11, Languages) {
     "use strict";
     var defaultMapModes = {
         key: "defaultMapModes",
@@ -31718,6 +32154,7 @@ define("modules/defaultmapmodes/defaultMapmodes", ["require", "exports", "module
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_11.default.game,
+        supportedLanguages: [Languages.en],
         loadAssets: function (onLoaded) {
             var loader = new PIXI.loaders.Loader();
             loader.add("modules/defaultmapmodes/img/fowTexture.png");
@@ -31759,7 +32196,7 @@ define("modules/defaultnotifications/notifications/uicomponents/BattleFinishNoti
                 " now " + victor.name.pluralizeVerbWithS("control") + " " :
                 " " + victor.name.pluralizeVerbWithS("maintain") + " control of ";
             return (React.DOM.div({
-                className: "battle-finish-notification draggable-container",
+                className: "battle-finish-notification draggable",
             }, message + ".", React.DOM.br(null), React.DOM.br(null), "" + attacker.name + attackSuccessString + "attacked " + defender.name + " in " +
                 location.name + ". " + victor.name + controllerString + location.name + "."));
         };
@@ -31784,6 +32221,7 @@ define("modules/defaultnotifications/notifications/battleFinishNotification", ["
                 props.attacker.name.fullName + " and " + props.defender.name.fullName;
             return message;
         },
+        getTitle: function (props) { return "Battle finished"; },
         serializeProps: function (props) {
             return ({
                 attackerId: props.attacker.id,
@@ -31816,7 +32254,7 @@ define("modules/defaultnotifications/notifications/uicomponents/PlayerDiedNotifi
         PlayerDiedNotification.prototype.render = function () {
             var notification = this.props.notification;
             return (React.DOM.div({
-                className: "player-died-notification draggable-container",
+                className: "player-died-notification draggable",
             }, "Here lies " + notification.props.deadPlayerName + ".", React.DOM.br(null), React.DOM.br(null), "He never scored."));
         };
         return PlayerDiedNotification;
@@ -31839,6 +32277,7 @@ define("modules/defaultnotifications/notifications/playerDiedNotification", ["re
             var message = "Player " + props.deadPlayerName + " died";
             return message;
         },
+        getTitle: function (props) { return "Player died"; },
         serializeProps: function (props) {
             return ({
                 deadPlayerName: props.deadPlayerName,
@@ -31866,7 +32305,7 @@ define("modules/defaultnotifications/notifications/uicomponents/WarDeclarationNo
             var notification = this.props.notification;
             var p = notification.props;
             return (React.DOM.div({
-                className: "war-declaration-notification draggable-container",
+                className: "war-declaration-notification draggable",
             }, p.player1.name + " declared war on " + p.player2.name + "."));
         };
         return WarDeclarationNotification;
@@ -31889,6 +32328,7 @@ define("modules/defaultnotifications/notifications/warDeclarationNotification", 
             var message = props.player1.name + " declared war on " + props.player2.name;
             return message;
         },
+        getTitle: function (props) { return "War declaration"; },
         serializeProps: function (props) {
             return ({
                 player1Id: props.player1.id,
@@ -31916,7 +32356,7 @@ define("modules/defaultnotifications/NotificationTemplates", ["require", "export
     exports.default = Notifications;
     var _a;
 });
-define("modules/defaultnotifications/defaultNotifications", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultnotifications/NotificationTemplates"], function (require, exports, ModuleFileLoadingPhase_12, NotificationTemplates_1) {
+define("modules/defaultnotifications/defaultNotifications", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/defaultnotifications/NotificationTemplates", "localization/defaultLanguages"], function (require, exports, ModuleFileLoadingPhase_12, NotificationTemplates_1, Languages) {
     "use strict";
     var defaultNotifications = {
         key: "defaultNotifications",
@@ -31927,6 +32367,7 @@ define("modules/defaultnotifications/defaultNotifications", ["require", "exports
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_12.default.game,
+        supportedLanguages: [Languages.en],
         constructModule: function (moduleData) {
             moduleData.copyTemplates(NotificationTemplates_1.default, "Notifications");
             return moduleData;
@@ -32088,7 +32529,7 @@ define("modules/defaultunits/UnitArchetypes", ["require", "exports"], function (
     exports.default = UnitArchetypes;
     var _a;
 });
-define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/UnitDrawingFunctionData", "src/utility"], function (require, exports, App_43, UnitDrawingFunctionData_1, utility_74) {
+define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/UnitDrawingFunctionData", "src/utility"], function (require, exports, App_44, UnitDrawingFunctionData_1, utility_61) {
     "use strict";
     var defaultUnitDrawingFunction = function (unit, SFXParams) {
         var spriteTemplate = unit.template.sprite;
@@ -32106,11 +32547,11 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
         var maxColumns = 3;
         var isConvex = props.curvature >= 0;
         var curvature = Math.abs(props.curvature);
-        var image = App_43.default.images[spriteTemplate.imageSrc];
+        var image = App_44.default.images[spriteTemplate.imageSrc];
         var zDistance = props.zDistance;
         var xDistance = props.xDistance;
         var unitsToDraw;
-        if (!unit.isSquadron) {
+        if (!unit.template.isSquadron) {
             unitsToDraw = 1;
         }
         else {
@@ -32122,7 +32563,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
             unitsToDraw = Math.round(unitsToDraw * heightRatio);
             zDistance *= (1 / heightRatio);
-            unitsToDraw = utility_74.clamp(unitsToDraw, 1, maxUnitsPerColumn * maxColumns);
+            unitsToDraw = utility_61.clamp(unitsToDraw, 1, maxUnitsPerColumn * maxColumns);
         }
         var rotationAngle = Math.PI / 180 * props.rotationAngle;
         var sA = Math.sin(rotationAngle);
@@ -32178,7 +32619,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             var scaledHeight = image.height * scale;
             var x = xOffset * scaledWidth * curvature + columnFromRight * (scaledWidth + xDistance * scale);
             var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-            var translated = utility_74.transformMat3({ x: x, y: y }, rotationMatrix);
+            var translated = utility_61.transformMat3({ x: x, y: y }, rotationMatrix);
             x = Math.round(translated.x);
             y = Math.round(translated.y);
             var attackOriginPoint = {
@@ -32819,7 +33260,7 @@ define("modules/defaultraces/common", ["require", "exports", "modules/defaulttec
     }
     exports.getDefaultUnits = getDefaultUnits;
 });
-define("modules/defaultraces/templates/federationAlliance", ["require", "exports", "src/Name", "src/utility", "modules/common/generateIndependentFleet", "modules/common/generateIndependentPlayer", "modules/defaultai/mapai/DefaultAIConstructor", "modules/defaulttechnologies/TechnologyTemplates", "modules/defaultraces/common"], function (require, exports, Name_6, utility_75, generateIndependentFleet_1, generateIndependentPlayer_1, DefaultAIConstructor_2, TechnologyTemplates, common_1) {
+define("modules/defaultraces/templates/federationAlliance", ["require", "exports", "src/Name", "src/utility", "modules/common/generateIndependentFleet", "modules/common/generateIndependentPlayer", "modules/defaultai/mapai/DefaultAIConstructor", "modules/defaulttechnologies/TechnologyTemplates", "modules/defaultraces/common"], function (require, exports, Name_6, utility_62, generateIndependentFleet_1, generateIndependentPlayer_1, DefaultAIConstructor_2, TechnologyTemplates, common_1) {
     "use strict";
     var federationAlliance = {
         type: "federationAlliance",
@@ -32839,7 +33280,7 @@ define("modules/defaultraces/templates/federationAlliance", ["require", "exports
             return "Federation " + unitTemplate.displayName;
         },
         getUnitPortrait: function (unitTemplate, allTemplates) {
-            return utility_75.getRandomProperty(allTemplates);
+            return utility_62.getRandomProperty(allTemplates);
         },
         generateIndependentPlayer: function (emblemTemplates) {
             var player = generateIndependentPlayer_1.generateIndependentPlayer(federationAlliance);
@@ -32861,7 +33302,7 @@ define("modules/defaultraces/templates/federationAlliance", ["require", "exports
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = federationAlliance;
 });
-define("modules/defaultraces/templates/wormThings", ["require", "exports", "src/Name", "src/utility", "modules/common/generateIndependentFleet", "modules/common/generateIndependentPlayer", "modules/defaultai/mapai/DefaultAIConstructor", "modules/defaulttechnologies/TechnologyTemplates", "modules/defaultraces/common"], function (require, exports, Name_7, utility_76, generateIndependentFleet_2, generateIndependentPlayer_2, DefaultAIConstructor_3, TechnologyTemplates, common_2) {
+define("modules/defaultraces/templates/wormThings", ["require", "exports", "src/Name", "src/utility", "modules/common/generateIndependentFleet", "modules/common/generateIndependentPlayer", "modules/defaultai/mapai/DefaultAIConstructor", "modules/defaulttechnologies/TechnologyTemplates", "modules/defaultraces/common"], function (require, exports, Name_7, utility_63, generateIndependentFleet_2, generateIndependentPlayer_2, DefaultAIConstructor_3, TechnologyTemplates, common_2) {
     "use strict";
     var wormThings = {
         type: "wormThings",
@@ -32881,7 +33322,7 @@ define("modules/defaultraces/templates/wormThings", ["require", "exports", "src/
             return "Infested " + unitTemplate.displayName;
         },
         getUnitPortrait: function (unitTemplate, allTemplates) {
-            return utility_76.getRandomProperty(allTemplates);
+            return utility_63.getRandomProperty(allTemplates);
         },
         generateIndependentPlayer: function (emblemTemplates) {
             return generateIndependentPlayer_2.generateIndependentPlayer(wormThings);
@@ -32911,7 +33352,7 @@ define("modules/defaultraces/RaceTemplates", ["require", "exports", "modules/def
     exports.default = RaceTemplates;
     var _a;
 });
-define("modules/defaultraces/defaultRaces", ["require", "exports", "modules/defaultraces/RaceTemplates", "src/ModuleFileLoadingPhase"], function (require, exports, RaceTemplates_1, ModuleFileLoadingPhase_13) {
+define("modules/defaultraces/defaultRaces", ["require", "exports", "modules/defaultraces/RaceTemplates", "src/ModuleFileLoadingPhase", "localization/defaultLanguages"], function (require, exports, RaceTemplates_1, ModuleFileLoadingPhase_13, Languages) {
     "use strict";
     var defaultRaces = {
         key: "defaultRaces",
@@ -32922,6 +33363,7 @@ define("modules/defaultraces/defaultRaces", ["require", "exports", "modules/defa
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_13.default.setup,
+        supportedLanguages: [Languages.en],
         constructModule: function (moduleData) {
             moduleData.copyTemplates(RaceTemplates_1.default, "Races");
             return moduleData;
@@ -32941,6 +33383,7 @@ define("modules/defaultruleset/defaultRuleset", ["require", "exports", "src/Modu
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_14.default.mapGen,
+        supportedLanguages: "all",
         constructModule: function (moduleData) {
             moduleData.applyRuleSet({
                 units: {
@@ -32976,7 +33419,7 @@ define("modules/defaultruleset/defaultRuleset", ["require", "exports", "src/Modu
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultRuleSet;
 });
-define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates", "src/ModuleFileLoadingPhase", "src/setDynamicTemplateProperties"], function (require, exports, TechnologyTemplates_1, ModuleFileLoadingPhase_15, setDynamicTemplateProperties_2) {
+define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates", "src/ModuleFileLoadingPhase", "src/setDynamicTemplateProperties", "localization/defaultLanguages"], function (require, exports, TechnologyTemplates_1, ModuleFileLoadingPhase_15, setDynamicTemplateProperties_2, Languages) {
     "use strict";
     var defaultTechnologies = {
         key: "defaultTechnologies",
@@ -32987,6 +33430,7 @@ define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports",
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_15.default.mapGen,
+        supportedLanguages: [Languages.en],
         constructModule: function (moduleData) {
             setDynamicTemplateProperties_2.setTechnologyRequirements(TechnologyTemplates_1.default);
             moduleData.copyTemplates(TechnologyTemplates_1.default, "Technologies");
@@ -32996,7 +33440,7 @@ define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports",
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultTechnologies;
 });
-define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defaultunits/UnitArchetypes", "modules/defaultunits/UnitTemplates", "src/ModuleFileLoadingPhase", "src/cacheSpriteSheetAsImages"], function (require, exports, UnitArchetypes_1, UnitTemplates_2, ModuleFileLoadingPhase_16, cacheSpriteSheetAsImages_2) {
+define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defaultunits/UnitArchetypes", "modules/defaultunits/UnitTemplates", "src/ModuleFileLoadingPhase", "src/cacheSpriteSheetAsImages", "localization/defaultLanguages"], function (require, exports, UnitArchetypes_1, UnitTemplates_2, ModuleFileLoadingPhase_16, cacheSpriteSheetAsImages_2, Languages) {
     "use strict";
     var defaultUnits = {
         key: "defaultUnits",
@@ -33007,6 +33451,7 @@ define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defa
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_16.default.mapGen,
+        supportedLanguages: [Languages.en],
         loadAssets: function (onLoaded) {
             var loader = new PIXI.loaders.Loader();
             var spriteSheetKey = "units";
@@ -33371,6 +33816,7 @@ define("modules/paintingportraits/paintingPortraits", ["require", "exports", "sr
             description: "old ppl",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_17.default.mapGen,
+        supportedLanguages: "all",
         constructModule: function (moduleData) {
             moduleData.copyTemplates(paintingPortraitTemplates_1.paintingPortraitTemplates, "Portraits");
             return moduleData;
@@ -33710,7 +34156,7 @@ define("modules/drones/units/droneSwarm", ["require", "exports", "modules/defaul
         },
     };
 });
-define("modules/drones/raceTemplate", ["require", "exports", "src/Name", "src/utility", "modules/common/distributionGroups", "modules/common/generateIndependentFleet", "modules/common/generateIndependentPlayer", "modules/drones/units/droneBase", "modules/drones/units/droneCommander", "modules/drones/units/droneSwarm"], function (require, exports, Name_8, utility_77, distributionGroups_13, generateIndependentFleet_3, generateIndependentPlayer_3, droneBase_1, droneCommander_1, droneSwarm_1) {
+define("modules/drones/raceTemplate", ["require", "exports", "src/Name", "src/utility", "modules/common/distributionGroups", "modules/common/generateIndependentFleet", "modules/common/generateIndependentPlayer", "modules/drones/units/droneBase", "modules/drones/units/droneCommander", "modules/drones/units/droneSwarm", "modules/defaultai/mapai/DefaultAIConstructor"], function (require, exports, Name_8, utility_64, distributionGroups_13, generateIndependentFleet_3, generateIndependentPlayer_3, droneBase_1, droneCommander_1, droneSwarm_1, DefaultAIConstructor_4) {
     "use strict";
     exports.drones = {
         type: "drones",
@@ -33729,10 +34175,10 @@ define("modules/drones/raceTemplate", ["require", "exports", "src/Name", "src/ut
             ]);
         },
         getUnitName: function (unitTemplate) {
-            return unitTemplate.displayName + " #" + utility_77.randInt(0, 20000);
+            return unitTemplate.displayName + " #" + utility_64.randInt(0, 20000);
         },
         getUnitPortrait: function (unitTemplate, allTemplates) {
-            return utility_77.getRandomProperty(allTemplates);
+            return utility_64.getRandomProperty(allTemplates);
         },
         generateIndependentPlayer: function (emblemTemplates) {
             return generateIndependentPlayer_3.generateIndependentPlayer(exports.drones);
@@ -33740,6 +34186,8 @@ define("modules/drones/raceTemplate", ["require", "exports", "src/Name", "src/ut
         generateIndependentFleet: function (player, location, globalStrength, localStrength, maxUnitsPerSideInBattle) {
             return generateIndependentFleet_3.generateIndependentFleet(exports.drones, player, location, globalStrength, localStrength, maxUnitsPerSideInBattle);
         },
+        technologies: [],
+        getAITemplateConstructor: function (player) { return DefaultAIConstructor_4.default; },
     };
     exports.raceTemplates = (_a = {},
         _a[exports.drones.type] = exports.drones,
@@ -33755,7 +34203,7 @@ define("modules/drones/unitTemplates", ["require", "exports", "modules/drones/un
         _a);
     var _a;
 });
-define("modules/drones/moduleFile", ["require", "exports", "src/App", "src/ModuleFileLoadingPhase", "modules/drones/abilities", "modules/drones/raceTemplate", "modules/drones/statusEffects", "modules/drones/unitTemplates"], function (require, exports, App_44, ModuleFileLoadingPhase_18, abilities_10, raceTemplate_1, statusEffects_1, unitTemplates_1) {
+define("modules/drones/moduleFile", ["require", "exports", "src/App", "src/ModuleFileLoadingPhase", "modules/drones/abilities", "modules/drones/raceTemplate", "modules/drones/statusEffects", "modules/drones/unitTemplates", "localization/defaultLanguages"], function (require, exports, App_45, ModuleFileLoadingPhase_18, abilities_10, raceTemplate_1, statusEffects_1, unitTemplates_1, Languages) {
     "use strict";
     exports.drones = {
         key: "drones",
@@ -33766,6 +34214,7 @@ define("modules/drones/moduleFile", ["require", "exports", "src/App", "src/Modul
             description: "",
         },
         needsToBeLoadedBefore: ModuleFileLoadingPhase_18.default.setup,
+        supportedLanguages: [Languages.en],
         loadAssets: function (onLoaded) {
             var placeHolderResourceName = "placeHolder";
             var placeHolderURL = "img/placeholder.png";
@@ -33773,7 +34222,7 @@ define("modules/drones/moduleFile", ["require", "exports", "src/App", "src/Modul
             loader.add(placeHolderResourceName, placeHolderURL);
             loader.load(function () {
                 var image = loader.resources[placeHolderResourceName].data;
-                App_44.default.images[placeHolderURL] = image;
+                App_45.default.images[placeHolderURL] = image;
                 onLoaded();
             });
         },
@@ -33786,7 +34235,39 @@ define("modules/drones/moduleFile", ["require", "exports", "src/App", "src/Modul
         },
     };
 });
-define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/MapRenderer", "src/ModuleFileLoadingPhase", "src/ModuleLoader", "src/NotificationLog", "src/Options", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/idGenerators", "src/tutorials/TutorialStatus", "src/utility", "modules/common/addCommonToModuleData", "modules/defaultai/defaultAI", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultbuildings/defaultBuildings", "modules/defaultemblems/defaultEmblems", "modules/defaultitems/defaultItems", "modules/defaultmapgen/defaultMapgen", "modules/defaultmapmodes/defaultMapmodes", "modules/defaultnotifications/defaultNotifications", "modules/defaultraces/defaultRaces", "modules/defaultruleset/defaultRuleset", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultunits/defaultUnits", "modules/paintingportraits/paintingPortraits", "modules/drones/moduleFile"], function (require, exports, Game_2, GameLoader_1, MapRenderer_1, ModuleFileLoadingPhase_19, ModuleLoader_1, NotificationLog_3, Options_15, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, idGenerators_10, TutorialStatus_5, utility_78, addCommonToModuleData_1, defaultAI_1, defaultAttitudemodifiers_1, defaultBackgrounds_1, defaultBuildings_1, defaultEmblems_1, defaultItems_1, defaultMapgen_1, defaultMapmodes_1, defaultNotifications_1, defaultRaces_1, defaultRuleset_1, defaultTechnologies_1, defaultUnits_1, paintingPortraits_1, moduleFile_1) {
+define("modules/translationtest/jaLanguage", ["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.ja = {
+        code: "ja",
+        displayName: "Japanese",
+    };
+});
+define("modules/translationtest/localization/options/ja", ["require", "exports", "modules/translationtest/jaLanguage", "localization/options/localize"], function (require, exports, jaLanguage_1, localize_3) {
+    "use strict";
+    exports.options = {
+        fullLanguageSupport: ["完全言語サポート"],
+        partialLanguageSupport: ["部分言語サポート"],
+    };
+    localize_3.localizer.registerTexts(exports.options, jaLanguage_1.ja);
+});
+define("modules/translationtest/moduleFile", ["require", "exports", "src/ModuleFileLoadingPhase", "modules/translationtest/jaLanguage", "modules/translationtest/localization/options/ja"], function (require, exports, ModuleFileLoadingPhase_19, jaLanguage_2) {
+    "use strict";
+    exports.translationTest = {
+        key: "translationTest",
+        metaData: {
+            name: "translation test",
+            version: "0.1.0",
+            author: "giraluna",
+            description: "",
+        },
+        needsToBeLoadedBefore: ModuleFileLoadingPhase_19.default.setup,
+        supportedLanguages: [jaLanguage_2.ja],
+        constructModule: function (moduleData) {
+            return moduleData;
+        },
+    };
+});
+define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/MapRenderer", "src/ModuleFileLoadingPhase", "src/ModuleLoader", "src/NotificationLog", "src/Options", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/idGenerators", "src/tutorials/TutorialStatus", "src/utility", "src/localization/activeLanguage", "modules/common/addCommonToModuleData", "modules/defaultai/defaultAI", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultbuildings/defaultBuildings", "modules/defaultemblems/defaultEmblems", "modules/defaultitems/defaultItems", "modules/defaultmapgen/defaultMapgen", "modules/defaultmapmodes/defaultMapmodes", "modules/defaultnotifications/defaultNotifications", "modules/defaultraces/defaultRaces", "modules/defaultruleset/defaultRuleset", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultunits/defaultUnits", "modules/paintingportraits/paintingPortraits", "modules/drones/moduleFile", "modules/translationtest/moduleFile"], function (require, exports, Game_2, GameLoader_1, MapRenderer_1, ModuleFileLoadingPhase_20, ModuleLoader_1, NotificationLog_3, Options_14, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, idGenerators_10, TutorialStatus_5, utility_65, activeLanguage_4, addCommonToModuleData_1, defaultAI_1, defaultAttitudemodifiers_1, defaultBackgrounds_1, defaultBuildings_1, defaultEmblems_1, defaultItems_1, defaultMapgen_1, defaultMapmodes_1, defaultNotifications_1, defaultRaces_1, defaultRuleset_1, defaultTechnologies_1, defaultUnits_1, paintingPortraits_1, moduleFile_1, moduleFile_2) {
     "use strict";
     var App = (function () {
         function App() {
@@ -33797,7 +34278,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/MapR
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var moduleLoader = this.moduleLoader = new ModuleLoader_1.default();
             this.initUI();
-            utility_78.onDOMLoaded(function () {
+            utility_65.onDOMLoaded(function () {
                 _this.moduleData = moduleLoader.moduleData;
                 moduleLoader.addModuleFile(defaultEmblems_1.default);
                 moduleLoader.addModuleFile(defaultRuleset_1.default);
@@ -33814,6 +34295,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/MapR
                 moduleLoader.addModuleFile(defaultNotifications_1.default);
                 moduleLoader.addModuleFile(defaultRaces_1.default);
                 moduleLoader.addModuleFile(moduleFile_1.drones);
+                moduleLoader.addModuleFile(moduleFile_2.translationTest);
                 addCommonToModuleData_1.default(moduleLoader.moduleData);
                 window.setTimeout(function () {
                     _this.makeApp();
@@ -33824,7 +34306,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/MapR
             var _this = this;
             this.destroy();
             this.initUI();
-            this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_19.default.game, function () {
+            this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_20.default.game, function () {
                 _this.game = new Game_2.default(map, players, players[0]);
                 _this.initGame();
                 _this.initDisplay();
@@ -33842,7 +34324,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/MapR
             idGenerators_10.default.setValues(parsed.idGenerators);
             this.destroy();
             this.initUI();
-            this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_19.default.game, function () {
+            this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_20.default.game, function () {
                 _this.game = new GameLoader_1.default().deserializeGame(parsed.gameData);
                 _this.game.gameStorageKey = saveKey;
                 _this.initGame();
@@ -33857,9 +34339,11 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/MapR
         App.prototype.makeApp = function () {
             var _this = this;
             var startTime = Date.now();
-            Options_15.default.load();
+            Options_14.default.load();
             TutorialStatus_5.default.load();
-            if (!Options_15.default.debug.enabled) {
+            var initialLanguageCode = this.getInitialLanguageCode();
+            activeLanguage_4.setActiveLanguageCode(initialLanguageCode);
+            if (!Options_14.default.debug.enabled) {
                 this.moduleLoader.progressivelyLoadModulesByPhase(0);
             }
             var initialScene = this.getInitialScene();
@@ -33868,7 +34352,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/MapR
                 console.log("Init in " + (Date.now() - startTime) + " ms");
             };
             if (initialScene === "galaxyMap") {
-                this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_19.default.game, function () {
+                this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase_20.default.game, function () {
                     _this.game = _this.makeGame();
                     _this.initGame();
                     _this.initDisplay();
@@ -33921,7 +34405,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/MapR
                 players.push(new Player_5.default({
                     isAI: i > 0,
                     isIndependent: false,
-                    race: utility_78.getRandomArrayItem(candidateRaces),
+                    race: utility_65.getRandomArrayItem(candidateRaces),
                     money: 1000,
                 }));
             }
@@ -33961,10 +34445,10 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/MapR
                 this.game.notificationLog = new NotificationLog_3.default(this.humanPlayer);
                 this.game.notificationLog.setTurn(this.game.turnNumber, true);
             }
-            app.moduleData.scripts.game.afterInit.forEach(function (scriptFN) {
+            this.moduleData.scripts.game.afterInit.forEach(function (scriptFN) {
                 scriptFN(_this.game);
             });
-            this.game.playerOrder.forEach(function (player) {
+            this.game.playerOrder.concat(this.game.independents).forEach(function (player) {
                 if (player.isAI && !player.AIController) {
                     player.AIController = player.makeRandomAIController(_this.game);
                 }
@@ -33996,6 +34480,15 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/MapR
             }
             else {
                 return "setupGame";
+            }
+        };
+        App.prototype.getInitialLanguageCode = function () {
+            var storedLanguageCode = localStorage.getItem("Rance.language");
+            if (storedLanguageCode) {
+                return storedLanguageCode;
+            }
+            else {
+                return "en";
             }
         };
         return App;
