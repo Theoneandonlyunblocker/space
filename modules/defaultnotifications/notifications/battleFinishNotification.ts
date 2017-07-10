@@ -15,7 +15,7 @@ export interface PropTypes
   victor: Player;
 }
 
-interface SerializedPropTypes
+export interface SerializedPropTypes
 {
   attackerId: number;
   defenderId: number;
@@ -23,7 +23,7 @@ interface SerializedPropTypes
   victorId: number;
 }
 
-const battleFinishNotification: NotificationTemplate =
+const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
 {
   key: "battleFinishNotification",
   displayName: "Battle finished",

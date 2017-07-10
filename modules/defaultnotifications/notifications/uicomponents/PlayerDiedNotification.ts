@@ -2,12 +2,16 @@
 
 import Notification from "../../../../src/Notification";
 
-import {PropTypes as NotificationProps} from "../playerDiedNotification";
+import
+{
+  PropTypes as NotificationProps,
+  SerializedPropTypes as SerializedNotificationProps,
+} from "../playerDiedNotification";
 
 
 interface PropTypes
 {
-  notification: Notification<NotificationProps>;
+  notification: Notification<NotificationProps, SerializedNotificationProps>;
 }
 
 class PlayerDiedNotification extends React.Component<PropTypes, {}>

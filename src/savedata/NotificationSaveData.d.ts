@@ -1,10 +1,10 @@
-declare interface NotificationSaveData
+declare interface NotificationSaveData<P>
 {
   templateKey: string;
   hasBeenRead: boolean;
   turn: number;
 
-  props: any;
+  props: P;
 }
 
 export default NotificationSaveData;

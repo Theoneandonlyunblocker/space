@@ -5,7 +5,7 @@ import battleFinishNotification from "./notifications/battleFinishNotification";
 import playerDiedNotification from "./notifications/playerDiedNotification";
 import warDeclarationNotification from "./notifications/warDeclarationNotification";
 
-const Notifications: TemplateCollection<NotificationTemplate> =
+const Notifications: TemplateCollection<NotificationTemplate<any, any>> =
 {
   [battleFinishNotification.key]: battleFinishNotification,
   [playerDiedNotification.key]: playerDiedNotification,

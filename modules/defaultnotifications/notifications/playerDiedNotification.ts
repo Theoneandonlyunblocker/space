@@ -10,12 +10,12 @@ export interface PropTypes
   deadPlayerName: string;
 }
 
-interface SerializedPropTypes
+export interface SerializedPropTypes
 {
   deadPlayerName: string;
 }
 
-const playerDiedNotification: NotificationTemplate =
+const playerDiedNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
 {
   key: "playerDiedNotification",
   displayName: "Player died",

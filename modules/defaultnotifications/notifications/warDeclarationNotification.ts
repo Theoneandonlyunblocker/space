@@ -12,13 +12,13 @@ export interface PropTypes
   player2: Player;
 }
 
-interface SerializedPropTypes
+export interface SerializedPropTypes
 {
   player1Id: number;
   player2Id: number;
 }
 
-const WarDeclarationNotification: NotificationTemplate =
+const WarDeclarationNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
 {
   key: "WarDeclarationNotification",
   displayName: "War declaration",

@@ -38,7 +38,7 @@ export default class NotificationFilter
       this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
     }
   }
-  shouldDisplayNotification(notification: Notification<any>)
+  shouldDisplayNotification(notification: Notification<any, any>)
   {
     const filterStates = this.filters[notification.template.key];
     if (filterStates.indexOf(NotificationFilterState.alwaysShow) !== -1)
@@ -120,7 +120,7 @@ export default class NotificationFilter
     {
       [category: string]:
       {
-        notificationTemplate: NotificationTemplate;
+        notificationTemplate: NotificationTemplate<any, any>;
         filterState: NotificationFilterState[];
       }[],
     } = {};

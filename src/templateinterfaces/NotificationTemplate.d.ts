@@ -3,8 +3,7 @@
 import GameLoader from "../GameLoader";
 import NotificationFilterState from "../NotificationFilterState";
 
-// TODO 2017.07.07 | use generic for props type
-declare interface NotificationTemplate
+declare interface NotificationTemplate<P, D>
 {
   key: string;
   displayName: string;
@@ -13,11 +12,11 @@ declare interface NotificationTemplate
   iconSrc: string;
   eventListeners: string[];
   contentConstructor: React.Factory<any>;
-  messageConstructor: (props: any) => string;
-  getTitle: (props: any) => string;
+  messageConstructor: (props: P) => string;
+  getTitle: (props: P) => string;
 
-  serializeProps: (props: any) => any;
-  deserializeProps: (dataProps: any, gameLoader: GameLoader) => any;
+  serializeProps: (props: P) => D;
+  deserializeProps: (dataProps: D, gameLoader: GameLoader) => P;
 }
 
 export default NotificationTemplate;

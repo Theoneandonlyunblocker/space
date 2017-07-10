@@ -42,7 +42,7 @@ interface Templates
   MapGen: TemplateCollection<MapGenTemplate>;
   MapRendererLayers: TemplateCollection<MapRendererLayerTemplate>;
   MapRendererMapModes: TemplateCollection<MapRendererMapModeTemplate>;
-  Notifications: TemplateCollection<NotificationTemplate>;
+  Notifications: TemplateCollection<NotificationTemplate<any, any>>;
   PassiveSkills: TemplateCollection<PassiveSkillTemplate>;
   Personalities: TemplateCollection<Personality>;
   Portraits: TemplateCollection<PortraitTemplate>;

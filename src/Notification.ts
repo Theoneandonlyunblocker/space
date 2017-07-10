@@ -1,15 +1,15 @@
 import NotificationSaveData from "./savedata/NotificationSaveData";
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 
-export default class Notification<P>
+export default class Notification<P, D>
 {
-  template: NotificationTemplate;
+  template: NotificationTemplate<P, D>;
   props: P;
   turn: number;
 
   hasBeenRead: boolean = false;
 
-  constructor(template: NotificationTemplate, props: P, turn: number)
+  constructor(template: NotificationTemplate<P, D>, props: P, turn: number)
   {
     this.template = template;
     this.props = props;
@@ -23,9 +23,9 @@ export default class Notification<P>
   {
     return this.template.getTitle(this.props);
   }
-  public serialize(): NotificationSaveData
+  public serialize(): NotificationSaveData<D>
   {
-    const data: NotificationSaveData =
+    const data: NotificationSaveData<D> =
     {
       templateKey: this.template.key,
       hasBeenRead: this.hasBeenRead,
@@ -33,7 +33,6 @@ export default class Notification<P>
 
       props: this.template.serializeProps(this.props),
     };
-
 
     return data;
   }

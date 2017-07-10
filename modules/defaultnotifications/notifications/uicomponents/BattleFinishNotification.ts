@@ -2,12 +2,17 @@
 
 import Notification from "../../../../src/Notification";
 
-import {PropTypes as NotificationProps} from "../battleFinishNotification";
+
+import
+{
+  PropTypes as NotificationProps,
+  SerializedPropTypes as SerializedNotificationProps,
+} from "../battleFinishNotification";
 
 
 interface PropTypes
 {
-  notification: Notification<NotificationProps>;
+  notification: Notification<NotificationProps, SerializedNotificationProps>;
 }
 
 class BattleFinishNotification extends React.Component<PropTypes, {}>

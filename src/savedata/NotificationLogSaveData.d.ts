@@ -2,7 +2,7 @@ import NotificationSaveData from "./NotificationSaveData";
 
 declare interface NotificationLogSaveData
 {
-  notifications: NotificationSaveData[];
+  notifications: NotificationSaveData<any>[];
 }
 
 export default NotificationLogSaveData;

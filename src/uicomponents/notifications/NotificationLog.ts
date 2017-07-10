@@ -22,7 +22,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  notificationsWithActivePopup: Notification<any>[];
+  notificationsWithActivePopup: Notification<any, any>[];
 }
 
 export class NotificationLogComponent extends React.PureComponent<PropTypes, StateType>
@@ -57,7 +57,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   public render()
   {
     const log = this.props.log;
-    const notifications: Notification<any>[] = log.filterNotifications(log.unread);
+    const notifications: Notification<any, any>[] = log.filterNotifications(log.unread);
 
     const items: React.ReactElement<any>[] = [];
 
@@ -137,22 +137,22 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
       notificationsWithActivePopup: [],
     });
   }
-  private getNotificationKey(notification: Notification<any>)
+  private getNotificationKey(notification: Notification<any, any>)
   {
     return "" + notification.turn + this.props.log.byTurn[notification.turn].indexOf(notification);
   }
-  private handleMarkAsRead(notification: Notification<any>)
+  private handleMarkAsRead(notification: Notification<any, any>)
   {
     this.props.log.markAsRead(notification);
   }
-  private openPopup(notification: Notification<any>): void
+  private openPopup(notification: Notification<any, any>): void
   {
     this.setState(
     {
       notificationsWithActivePopup: this.state.notificationsWithActivePopup.concat(notification),
     });
   }
-  private closePopup(notificationToRemove: Notification<any>): void
+  private closePopup(notificationToRemove: Notification<any, any>): void
   {
     this.setState(
     {
@@ -162,11 +162,11 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
       }),
     });
   }
-  private hasPopup(notification: Notification<any>): boolean
+  private hasPopup(notification: Notification<any, any>): boolean
   {
     return this.state.notificationsWithActivePopup.indexOf(notification) >= 0;
   }
-  private togglePopup(notification: Notification<any>): void
+  private togglePopup(notification: Notification<any, any>): void
   {
     if (this.hasPopup(notification))
     {

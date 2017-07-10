@@ -15,9 +15,9 @@ export default class NotificationLog
 {
   byTurn:
   {
-    [turnNumber: number]: Notification<any>[];
+    [turnNumber: number]: Notification<any, any>[];
   } = {};
-  unread: Notification<any>[] = [];
+  unread: Notification<any, any>[] = [];
   currentTurn: number;
   isHumanTurn: boolean = true;
   listeners:
@@ -65,7 +65,7 @@ export default class NotificationLog
     this.currentTurn = turn;
     this.isHumanTurn = isHumanTurn;
   }
-  makeNotification(template: NotificationTemplate, props: any)
+  makeNotification<P>(template: NotificationTemplate<P, any>, props: P)
   {
     const notification = new Notification(template, props, this.currentTurn);
 
@@ -75,7 +75,7 @@ export default class NotificationLog
       eventManager.dispatchEvent("updateNotificationLog");
     }
   }
-  addNotification(notification: Notification<any>)
+  addNotification(notification: Notification<any, any>)
   {
     if (!this.byTurn[notification.turn])
     {
@@ -88,7 +88,7 @@ export default class NotificationLog
       this.unread.unshift(notification);
     }
   }
-  markAsRead(notification: Notification<any>)
+  markAsRead(notification: Notification<any, any>)
   {
     const index = this.unread.indexOf(notification);
     if (index === -1) throw new Error("Notification is already unread");
@@ -98,14 +98,14 @@ export default class NotificationLog
   }
   getUnreadNotificationsForTurn(turn: number)
   {
-    return this.byTurn[turn].filter(function(notification: Notification<any>)
+    return this.byTurn[turn].filter(function(notification: Notification<any, any>)
     {
       return !notification.hasBeenRead;
     });
   }
-  filterNotifications(notifications: Notification<any>[])
+  filterNotifications(notifications: Notification<any, any>[])
   {
-    const filtered: Notification<any>[] = [];
+    const filtered: Notification<any, any>[] = [];
 
     for (let i = 0; i < notifications.length; i++)
     {
@@ -119,7 +119,7 @@ export default class NotificationLog
   }
   serialize(): NotificationLogSaveData
   {
-    const notificationsSaveData: NotificationSaveData[] = [];
+    const notificationsSaveData: NotificationSaveData<any>[] = [];
 
     for (let turnNumber in this.byTurn)
     {
