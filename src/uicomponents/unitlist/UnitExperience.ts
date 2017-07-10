@@ -1,8 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Unit from "../../Unit";
-// import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-// import TopMenuPopup from "../popups/TopMenuPopup";
+
+import {default as DefaultWindow} from "../windows/DefaultWindow";
+
 import UpgradeUnit from "./UpgradeUnit";
 
 export interface PropTypes extends React.Props<any>
@@ -15,88 +16,27 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  upgradePopupId?: number;
+  hasUpgradePopup?: boolean;
 }
 
 export class UnitExperienceComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "UnitExperience";
-
-  state: StateType;
-  popupManager: PopupManagerComponent;
+  public displayName: string = "UnitExperience";
+  public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state =
+    {
+      hasUpgradePopup: false,
+    };
 
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    this.makePopup = this.makePopup.bind(this);
-    this.closePopup = this.closePopup.bind(this);
-    this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);
-  }
 
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      upgradePopupId: undefined,
-    });
-  }
-  makePopup()
-  {
-    const popupId = this.popupManager.makePopup(
-    {
-      content: TopMenuPopup(
-      {
-        handleClose: this.closePopup,
-        content: UpgradeUnit(
-        {
-          unit: this.props.unit,
-          onUnitUpgrade: this.handleUnitUpgrade,
-        }),
-        title: "Upgrade unit",
-      }),
-      popupProps:
-      {
-        dragPositionerProps:
-        {
-          preventAutoResize: true,
-          startOnHandleElementOnly: true,
-        },
-      },
-    });
-
-    this.setState(
-    {
-      upgradePopupId: popupId,
-    });
-  }
-  closePopup()
-  {
-    this.popupManager.closePopup(this.state.upgradePopupId);
-    this.setState(
-    {
-      upgradePopupId: undefined,
-    });
-  }
-  handleUnitUpgrade()
-  {
-    if (!this.props.unit.canLevelUp())
-    {
-      this.closePopup();
-    }
-    else
-    {
-      this.popupManager.forceUpdate();
-    }
-    this.props.onUnitUpgrade();
-  }
-  render()
+  public render()
   {
     const rows: React.ReactHTMLElement<any>[] = [];
 
@@ -151,7 +91,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     };
     if (isReadyToLevelUp)
     {
-      containerProps.onClick = this.makePopup;
+      containerProps.onClick = this.openPopup;
       containerProps.className += " ready-to-level-up";
     }
 
@@ -160,14 +100,21 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
       {
         className: "unit-experience-wrapper",
       },
-        PopupManager(
+        !this.state.hasUpgradePopup ? null :
+        DefaultWindow(
         {
-          ref: (component: PopupManagerComponent) =>
+          title: "Upgrade unit",
+          handleClose: this.closePopup,
+
+          minWidth: 150,
+          minHeight: 150,
+        },
+          UpgradeUnit(
           {
-            this.popupManager = component;
-          },
-          onlyAllowOne: true,
-        }),
+            unit: this.props.unit,
+            onUnitUpgrade: this.handleUnitUpgrade,
+          }),
+        ),
         React.DOM.div(containerProps,
           React.DOM.div(barProps,
             rows,
@@ -182,7 +129,36 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
       )
     );
   }
+
+  private bindMethods()
+  {
+    this.openPopup = this.openPopup.bind(this);
+    this.closePopup = this.closePopup.bind(this);
+    this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);
+  }
+  private openPopup()
+  {
+    this.setState({hasUpgradePopup: true});
+  }
+  private closePopup()
+  {
+    this.setState({hasUpgradePopup: false});
+  }
+  private handleUnitUpgrade()
+  {
+    // TODO 10.07.2017 | ???
+    // is this for repeat upgrades?
+    if (!this.props.unit.canLevelUp())
+    {
+      this.closePopup();
+    }
+    else
+    {
+      this.props.onUnitUpgrade();
+    }
+  }
 }
+
 
 const Factory: React.Factory<PropTypes> = React.createFactory(UnitExperienceComponent);
 export default Factory;
