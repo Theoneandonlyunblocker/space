@@ -6,7 +6,7 @@ interface PropTypes extends React.Props<any>
 {
   title: string;
   handleOk: () => void;
-  handleCancel?: () => void;
+  handleCancel: () => void;
   extraButtons?: React.ReactNode[];
   okText?: string;
   cancelText?: string;
@@ -75,12 +75,11 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
               },
             }, this.props.okText || "Ok"),
             this.props.extraButtons,
-            !this.props.handleCancel ? null :
-              React.DOM.button(
-              {
-                className: "dialog-box-button cancel-button",
-                onClick: this.props.handleCancel,
-              }, this.props.cancelText || "Cancel"),
+            React.DOM.button(
+            {
+              className: "dialog-box-button cancel-button",
+              onClick: this.props.handleCancel,
+            }, this.props.cancelText || "Cancel"),
           ),
         ),
       )
