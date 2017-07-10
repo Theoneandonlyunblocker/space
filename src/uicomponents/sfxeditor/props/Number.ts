@@ -2,7 +2,7 @@
 
 import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 
-import ControlledNumberInput from "../../generic/ControlledNumberInput";
+import NumericTextInput from "../../generic/NumericTextInput";
 
 interface PropTypes extends React.Props<any>
 {
@@ -53,7 +53,7 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
       {
         className: "sfx-fragment-prop-number-input",
       },
-        ControlledNumberInput(
+        NumericTextInput(
         {
           value: this.props.value,
           valueStringIsValid: valueString => isFinite(Number(valueString)),

@@ -1,6 +1,6 @@
 /// <reference path="../../../../lib/react-global.d.ts" />
 
-import ControlledNumberInput from "../../generic/ControlledNumberInput";
+import NumericTextInput from "../../generic/NumericTextInput";
 
 interface PropTypes extends React.Props<any>
 {
@@ -41,7 +41,7 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
         },
           this.props.label + ":",
         ),
-        ControlledNumberInput(
+        NumericTextInput(
         {
           value: this.props.value,
           valueStringIsValid: valueString => isFinite(Number(valueString)),

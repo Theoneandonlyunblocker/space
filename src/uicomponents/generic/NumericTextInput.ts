@@ -22,9 +22,9 @@ interface StateType
   valueString?: string;
 }
 
-export class ControlledNumberInputComponent extends React.Component<PropTypes, StateType>
+export class NumericTextInputComponent extends React.Component<PropTypes, StateType>
 {
-  displayName = "ControlledNumberInput";
+  displayName = "NumericTextInput";
   state: StateType;
 
   constructor(props: PropTypes)
@@ -57,7 +57,7 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
 
     const defaultAttributes: React.HTMLAttributes =
     {
-      className: "controlled-number-input" +
+      className: "numeric-text-input" +
         (valueStringIsValid ? "" : " invalid-value"),
       onChange: this.handleValueChange,
       value: this.state.valueString,
@@ -122,5 +122,5 @@ export class ControlledNumberInputComponent extends React.Component<PropTypes, S
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ControlledNumberInputComponent);
+const Factory: React.Factory<PropTypes> = React.createFactory(NumericTextInputComponent);
 export default Factory;

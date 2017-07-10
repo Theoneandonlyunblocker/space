@@ -2,7 +2,7 @@
 
 import Color from "../../Color";
 
-import ControlledNumberInput from "../generic/ControlledNumberInput";
+import NumericTextInput from "../generic/NumericTextInput";
 import
 {
   AutoPositionerProps,
@@ -273,7 +273,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
             onTouchEnd: updateFunctions[type],
           }),
         ),
-        // TODO 2017.07.10 | use ControlledNumberInput component for all these
+        // TODO 2017.07.10 | use NumericTextInput component for all these
         React.DOM.input(
         {
           className: "color-picker-input",
@@ -308,7 +308,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
               className: "color-picker-button",
               onClick: this.nullifyColor,
             }, "Clear"),
-          ControlledNumberInput(
+          NumericTextInput(
           {
             attributes:
             {
