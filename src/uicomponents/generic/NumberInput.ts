@@ -4,6 +4,7 @@ import {default as Spinner} from "./Spinner";
 
 import
 {
+  clamp,
   mergeReactAttributes,
 } from "../../utility";
 
@@ -15,8 +16,7 @@ interface PropTypes extends React.Props<any>
 
   min?: number;
   max?: number;
-  suggestedStep?: number;
-  strictStep?: number;
+  step?: number;
 
   attributes?: React.HTMLAttributes;
 }
@@ -42,6 +42,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
 
     this.handleValueChange = this.handleValueChange.bind(this);
     this.changeValue = this.changeValue.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
   }
 
   public componentWillReceiveProps(newProps: PropTypes): void
@@ -54,6 +55,10 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
       });
     }
   }
+  public componentWillUnmount(): void
+  {
+    this.handleBlur();
+  }
   public render()
   {
     const defaultAttributes: React.HTMLAttributes =
@@ -62,10 +67,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
       type: "text",
       value: this.state.displayedValue,
       onChange: this.handleValueChange,
-      onBlur: () =>
-      {
-        this.setState({displayedValue: "" + this.props.value});
-      },
+      onBlur: this.handleBlur,
     };
     const customAttributes = this.props.attributes || {};
     const attributes = mergeReactAttributes(defaultAttributes, customAttributes);
@@ -91,7 +93,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
 
   private getStep(): number
   {
-    return this.props.strictStep || this.props.suggestedStep || 1;
+    return this.props.step || 1;
   }
   private getDecimalPlacesInStep(): number
   {
@@ -99,6 +101,17 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     const split = ("" + this.getStep()).split(".");
 
     return split[1] ? split[1].length : 0;
+  }
+  private handleBlur(): void
+  {
+    if (this.valueStringIsValid(this.state.displayedValue))
+    {
+      this.changeValue(parseFloat(this.state.displayedValue));
+    }
+    else
+    {
+      this.setState({displayedValue: "" + this.props.value});
+    }
   }
   private handleValueChange(e: React.FormEvent | ClipboardEvent): void
   {
@@ -108,24 +121,38 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     const target = <HTMLInputElement> e.target;
     const valueString = target.value;
 
+    const isValid = this.valueStringIsValid(valueString);
+    const isWithinBounds = this.valueIsWithinBounds(parseFloat(valueString));
 
-    this.setState(
+    if (isValid && isWithinBounds)
     {
-      displayedValue: valueString,
-    }, () =>
+      this.changeValue(parseFloat(valueString));
+    }
+    else
     {
-      if (this.valueStringIsValid(valueString))
+      this.setState(
       {
-        this.changeValue(parseFloat(valueString));
-      }
-    });
+        displayedValue: valueString,
+      });
+    }
   }
   private changeValue(value: number): void
   {
-    const precision = 1 + this.getDecimalPlacesInStep();
-    const roundedValue = parseFloat(value.toPrecision(precision));
+    if (value === this.props.value)
+    {
+      this.setState({displayedValue: "" + value});
 
-    this.props.onChange(roundedValue);
+      return;
+    }
+
+    const precision = this.getDecimalPlacesInStep();
+    const roundedValue = parseFloat(value.toFixed(precision));
+
+    const min = isFinite(this.props.min) ? this.props.min : -Infinity;
+    const max = isFinite(this.props.max) ? this.props.max : Infinity;
+    const clampedValue = clamp(roundedValue, min, max);
+
+    this.props.onChange(clampedValue);
   }
   private valueStringIsValid(valueString: string): boolean
   {
@@ -138,19 +165,14 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
       return false;
     }
 
-    const min = this.props.min || -Infinity;
-    const max = this.props.max || Infinity;
-    if (value < min || value > max)
-    {
-      return false;
-    }
-
-    if (this.props.strictStep && value % this.props.strictStep !== 0)
-    {
-      return false;
-    }
-
     return true;
+  }
+  private valueIsWithinBounds(value: number): boolean
+  {
+    const min = isFinite(this.props.min) ? this.props.min : -Infinity;
+    const max = isFinite(this.props.max) ? this.props.max : Infinity;
+
+    return value >= min && value <= max;
   }
 }
 

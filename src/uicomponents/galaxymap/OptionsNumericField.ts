@@ -49,7 +49,7 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
 
           min: this.props.min,
           max: this.props.max,
-          suggestedStep: this.props.step,
+          step: this.props.step,
         }),
         React.DOM.label(
         {
