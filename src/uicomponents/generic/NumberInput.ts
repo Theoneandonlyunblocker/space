@@ -7,6 +7,7 @@ import
   mergeReactAttributes,
 } from "../../utility";
 
+
 interface PropTypes extends React.Props<any>
 {
   value: number;
@@ -40,6 +41,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     };
 
     this.handleValueChange = this.handleValueChange.bind(this);
+    this.changeValue = this.changeValue.bind(this);
   }
 
   public componentWillReceiveProps(newProps: PropTypes): void
@@ -77,8 +79,8 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
         Spinner(
         {
           value: this.props.value,
-          step: this.props.strictStep || this.props.suggestedStep || 1,
-          onChange: this.props.onChange,
+          step: this.getStep(),
+          onChange: this.changeValue,
 
           min: this.props.min,
           max: this.props.max,
@@ -87,6 +89,17 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     );
   }
 
+  private getStep(): number
+  {
+    return this.props.strictStep || this.props.suggestedStep || 1;
+  }
+  private getDecimalPlacesInStep(): number
+  {
+    // step is specified in code, so assume no precision issues
+    const split = ("" + this.getStep()).split(".");
+
+    return split[1] ? split[1].length : 0;
+  }
   private handleValueChange(e: React.FormEvent | ClipboardEvent): void
   {
     e.stopPropagation();
@@ -103,9 +116,16 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     {
       if (this.valueStringIsValid(valueString))
       {
-        this.props.onChange(parseFloat(valueString));
+        this.changeValue(parseFloat(valueString));
       }
     });
+  }
+  private changeValue(value: number): void
+  {
+    const precision = 1 + this.getDecimalPlacesInStep();
+    const roundedValue = parseFloat(value.toPrecision(precision));
+
+    this.props.onChange(roundedValue);
   }
   private valueStringIsValid(valueString: string): boolean
   {
