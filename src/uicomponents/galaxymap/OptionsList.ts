@@ -4,7 +4,6 @@ import NotificationLog from "../../NotificationLog";
 import Options from "../../Options";
 import eventManager from "../../eventManager";
 import TutorialStatus from "../../tutorials/TutorialStatus";
-import {clamp} from "../../utility";
 
 import {Language} from "../../localization/Language";
 
@@ -184,33 +183,20 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         {
 
         },
-          React.DOM.input(
+          OptionsNumericField(
           {
-            type: "number",
+            label: "AI vs. AI Battle simulation depth",
             id: "battle-simulation-depth-input",
-            value: "" + Options.debug.battleSimulationDepth,
+            value: Options.debug.battleSimulationDepth,
             min: 1,
             max: 500,
             step: 1,
-            onChange: (e: React.FormEvent) =>
+            onChange: value =>
             {
-              const target = <HTMLInputElement> e.target;
-              let value = parseInt(target.value);
-              if (!isFinite(value))
-              {
-                return;
-              }
-              value = clamp(value, parseFloat(target.min), parseFloat(target.max));
               Options.debug.battleSimulationDepth = value;
               this.forceUpdate();
             },
           }),
-          React.DOM.label(
-          {
-            htmlFor: "battle-simulation-depth-input",
-          },
-            "AI vs. AI Battle simulation depth",
-          ),
         ),
       });
     }
