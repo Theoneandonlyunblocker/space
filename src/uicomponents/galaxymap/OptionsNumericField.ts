@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import {clamp} from "../../utility";
+import {default as NumberInput} from "../generic/NumberInput";
 
 export interface PropTypes extends React.Props<any>
 {
-  onChangeFN: (value: number) => void;
+  onChange: (value: number) => void;
 
   label: string;
   id: string;
@@ -16,73 +16,18 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  value?: number;
 }
 
 export class OptionsNumericFieldComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "OptionsNumericField";
-
-
-  state: StateType;
+  public displayName: string = "OptionsNumericField";
+  public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
-
-    this.state = this.getInitialStateTODO();
-
-    this.bindMethods();
   }
-  private bindMethods()
-  {
-    this.triggerOnChangeFN = this.triggerOnChangeFN.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      value: this.props.value,
-    });
-  }
-
-  componentWillReceiveProps(newProps: PropTypes)
-  {
-    if (newProps.value !== this.state.value)
-    {
-      this.setState({value: newProps.value});
-    }
-  }
-
-
-  triggerOnChangeFN()
-  {
-    this.props.onChangeFN(this.state.value);
-  }
-
-  handleChange(e: React.FormEvent)
-  {
-    const target = <HTMLInputElement> e.target;
-    let value = parseFloat(target.value);
-
-    // TODO 2017.06.13 | doesn't allow erasing last remaining digit
-    // there's a working implementation of this somewhere...
-    if (!isFinite(value))
-    {
-      return;
-    }
-
-    value = clamp(value, parseFloat(target.min), parseFloat(target.max));
-
-    this.setState(
-    {
-      value: value,
-    }, this.triggerOnChangeFN);
-  }
-
-  render()
+  public render()
   {
     const inputId = "" + this.props.id + "-input";
 
@@ -92,19 +37,20 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
         className: "options-numeric-field-container",
         id: this.props.id,
       },
-        React.DOM.input(
+        NumberInput(
         {
-          className: "options-numeric-field-input",
-          type: "number",
-          id: inputId,
-          value: "" + this.state.value,
+          attributes:
+          {
+            className: "options-numeric-field-input",
+            id: inputId,
+          },
+          value: this.props.value,
+          onChange: this.props.onChange,
+
           min: this.props.min,
           max: this.props.max,
-          step: this.props.step,
-          onChange: this.handleChange,
-        },
-          null,
-        ),
+          suggestedStep: this.props.step,
+        }),
         React.DOM.label(
         {
           className: "options-numeric-field-label",
