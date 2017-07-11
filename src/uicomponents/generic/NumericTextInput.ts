@@ -2,8 +2,7 @@
 
 import
 {
-  shallowCopy,
-  shallowExtend,
+  mergeReactAttributes,
 } from "../../utility";
 
 interface PropTypes extends React.Props<any>
@@ -63,15 +62,8 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
       value: this.state.valueString,
       spellCheck: false,
     };
-    const customAttributes = this.props.attributes ?
-      shallowCopy(this.props.attributes) :
-      {};
-    const attributes = shallowExtend<React.HTMLAttributes>({}, defaultAttributes, customAttributes);
-
-    if (customAttributes.className)
-    {
-      attributes.className = defaultAttributes.className + " " + customAttributes.className;
-    }
+    const customAttributes = this.props.attributes || {};
+    const attributes = mergeReactAttributes(defaultAttributes, customAttributes);
 
     return(
       React.DOM.input(attributes)
