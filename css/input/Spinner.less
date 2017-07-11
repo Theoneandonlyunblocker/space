@@ -1,0 +1,38 @@
+.spinner
+{
+  display: flex;
+  flex-flow: column;
+}
+
+.spinner-arrow
+{
+  position: relative;
+  box-sizing: border-box;
+  flex: 1 1 50%;
+  width: 100%;
+  padding: 0;
+
+  &::after
+  {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.spinner-arrow-up::after
+{
+  .fa("\f077");
+  bottom: 0;
+}
+
+.spinner-arrow-down::after
+{
+  .fa("\f078");
+  top: 0;
+}
