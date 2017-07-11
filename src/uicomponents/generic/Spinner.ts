@@ -55,8 +55,8 @@ export class SpinnerComponent extends React.Component<PropTypes, StateType>
 
   private adjust(delta: number): void
   {
-    const min = this.props.min || -Infinity;
-    const max = this.props.max || Infinity;
+    const min = isFinite(this.props.min) ? this.props.min : -Infinity;
+    const max = isFinite(this.props.max) ? this.props.max : Infinity;
 
     const newValue = clamp(this.props.value + delta, min, max);
 
