@@ -133,10 +133,11 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
             min: props.min,
             max: props.max,
             step: props.step,
-            onChangeFN: function(stage: string, value: number)
+            onChange: (value: number) =>
             {
               Options.battleAnimationTiming[stage] = value;
-            }.bind(null, stage),
+              this.forceUpdate();
+            },
           }),
         },
       );
@@ -295,10 +296,11 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         max: 50,
         step: 1,
         value: Options.display.borderWidth,
-        onChangeFN: (value: number) =>
+        onChange: (value: number) =>
         {
           Options.display.borderWidth = value;
           eventManager.dispatchEvent("renderMap");
+          this.forceUpdate();
         },
       }),
     });
