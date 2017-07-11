@@ -3693,7 +3693,7 @@ ul, ol
 .options
 {
   padding: 0px 8px;
-  overflow-y: auto;
+  overflow: auto;
 }
 
 .options-header
@@ -3767,6 +3767,22 @@ ul, ol
 {
   .button-style;
   margin-left: 1em;
+}
+
+.options-numeric-field-container
+{
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+
+  .number-input-container
+  {
+    flex: 0 0 6em;
+  }
+  .options-numeric-field-label
+  {
+    flex: 1 0 auto;
+  }
 }
 
 .setup-game-wrapper
