@@ -3,6 +3,7 @@
 import
 {
   clamp,
+  roundToNearestMultiple,
 } from "../../utility";
 
 interface PropTypes extends React.Props<any>
@@ -58,7 +59,11 @@ export class SpinnerComponent extends React.Component<PropTypes, StateType>
     const min = isFinite(this.props.min) ? this.props.min : -Infinity;
     const max = isFinite(this.props.max) ? this.props.max : Infinity;
 
-    const newValue = clamp(this.props.value + delta, min, max);
+    const newValue = clamp(
+      roundToNearestMultiple(this.props.value + delta, this.props.step),
+      min,
+      max,
+    );
 
     this.props.onChange(newValue);
   }
