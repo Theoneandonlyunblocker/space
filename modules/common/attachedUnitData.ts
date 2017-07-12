@@ -38,7 +38,9 @@ class AttachedUnitData
   {
     if (this.byUnit.has(unit))
     {
-      shallowExtend<PartialAttachedUnitData>(this.byUnit.get(unit), data);
+      const oldData = this.byUnit.get(unit);
+      const mergedData = shallowExtend(oldData, data);
+      this.byUnit.set(unit, mergedData);
     }
     else
     {
