@@ -38,7 +38,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
 
     this.state =
     {
-      displayedValue: "" + this.props.value,
+      displayedValue: "" + this.roundValue(this.props.value),
     };
 
     this.handleValueChange = this.handleValueChange.bind(this);
@@ -52,7 +52,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     {
       this.setState(
       {
-        displayedValue: "" + newProps.value,
+        displayedValue: "" + this.roundValue(newProps.value),
       });
     }
   }
@@ -104,6 +104,12 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
 
     return split[1] ? split[1].length : 0;
   }
+  private roundValue(value: number): number
+  {
+    const precision = this.getDecimalPlacesInStep();
+
+    return parseFloat(value.toFixed(precision));
+  }
   private handleBlur(): void
   {
     if (this.valueStringIsValid(this.state.displayedValue))
@@ -147,8 +153,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    const precision = this.getDecimalPlacesInStep();
-    const roundedValue = parseFloat(value.toFixed(precision));
+    const roundedValue = this.roundValue(value);
 
     const min = isFinite(this.props.min) ? this.props.min : -Infinity;
     const max = isFinite(this.props.max) ? this.props.max : Infinity;
