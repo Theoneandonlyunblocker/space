@@ -17,6 +17,7 @@ interface PropTypes extends React.Props<any>
   min?: number;
   max?: number;
   step?: number;
+  canWrap?: boolean;
 
   attributes?: React.HTMLAttributes;
 }
@@ -84,8 +85,8 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
           step: this.getStep(),
           onChange: this.changeValue,
 
-          min: this.props.min,
-          max: this.props.max,
+          min: this.props.canWrap ? -Infinity : this.props.min,
+          max: this.props.canWrap ? Infinity : this.props.max,
         }),
       )
     );
@@ -150,9 +151,29 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
 
     const min = isFinite(this.props.min) ? this.props.min : -Infinity;
     const max = isFinite(this.props.max) ? this.props.max : Infinity;
-    const clampedValue = clamp(roundedValue, min, max);
 
-    this.props.onChange(clampedValue);
+    if (this.props.canWrap)
+    {
+      if (!isFinite(min) || !isFinite(max))
+      {
+        throw new Error(`NumberInput component with wrapping enabled must specify min and max values.`);
+      }
+
+      if (roundedValue < min)
+      {
+        const underMin = min - (roundedValue % max);
+        this.props.onChange(max - underMin);
+      }
+      else
+      {
+        this.props.onChange(roundedValue % max);
+      }
+    }
+    else
+    {
+      const clampedValue = clamp(roundedValue, min, max);
+      this.props.onChange(clampedValue);
+    }
   }
   private valueStringIsValid(valueString: string): boolean
   {
