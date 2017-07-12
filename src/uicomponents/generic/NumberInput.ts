@@ -183,8 +183,12 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
   }
   private valueStringIsValid(valueString: string): boolean
   {
-    // TODO 2017.07.11 | VVV not true anymore
-    // valueString comes from a number input, so assume it's always a valid number
+    // signed float
+    if (!valueString.match(/^(-?(?:0|[1-9]\d*)(?:\.\d+)?)?$/))
+    {
+      return false;
+    }
+
     const value = parseFloat(valueString);
 
     if (!isFinite(value))
