@@ -359,15 +359,17 @@ export function shallowCopy<T>(toCopy: T): T
 // TODO 2017.07.10 | can't we get better typing for this?
 export function shallowExtend<T>(destination: any, ...sources: any[]): T
 {
+  const merged = <T> {};
+
   sources.forEach(source =>
   {
     for (let key in source)
     {
-      destination[key] = source[key];
+      merged[key] = source[key];
     }
   });
 
-  return <T>destination;
+  return merged;
 }
 
 // https://github.com/KyleAMathews/deepmerge
