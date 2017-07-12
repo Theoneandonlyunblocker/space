@@ -3,11 +3,7 @@
 import Unit from "../../Unit";
 import {shallowExtend} from "../../utility";
 import ListItemProps from "../list/ListItemProps";
-import
-{
-  default as UnitComponentFactory,
-  PropTypes as UnitComponentPropTypes,
-} from "../unit/Unit";
+import {default as UnitComponentFactory} from "../unit/Unit";
 import UnitStrength from "../unit/UnitStrength";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
@@ -119,7 +115,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     const container = document.createElement("div");
 
     ReactDOM.render(
-      UnitComponentFactory(shallowExtend<UnitComponentPropTypes>(
+      UnitComponentFactory(shallowExtend(
         this.props.unit.getDisplayData("battlePrep"),
         {id: this.props.unit.id},
       )),

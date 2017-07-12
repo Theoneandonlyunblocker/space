@@ -104,7 +104,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       },
     };
 
-    const attributes = shallowExtend<React.HTMLAttributes>(customAttributes, defaultAttributes);
+    const attributes = shallowExtend(customAttributes, defaultAttributes);
 
     return(
       React.DOM.div(attributes,

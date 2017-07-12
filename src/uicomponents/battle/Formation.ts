@@ -142,7 +142,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
               this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
           };
 
-          unitProps = shallowExtend<UnitPropTypes>(unitDisplayData, componentProps, displayProps);
+          unitProps = shallowExtend(unitDisplayData, componentProps, displayProps);
           if (this.props.facesLeft && this.props.isInBattlePrep)
           {
             unitProps.facesLeft = true;

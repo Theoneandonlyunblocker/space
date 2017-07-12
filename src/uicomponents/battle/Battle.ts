@@ -400,7 +400,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       previousUnitDisplayDataByID: shallowCopy(this.state.unitDisplayDataByID),
-      unitDisplayDataByID: shallowExtend<{[unitID: number]: UnitDisplayData}>(
+      // TODO 2017.07.12 | different capitalization
+      unitDisplayDataByID: shallowExtend(
         this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
       battleEvaluation: effect.newEvaluation,
       battleEffectDurationAfterTrigger: this.state.battleEffectDuration -

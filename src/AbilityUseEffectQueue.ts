@@ -1,5 +1,4 @@
 import BattleScene from "./BattleScene";
-import UnitDisplayData from "./UnitDisplayData";
 import {AbilityUseEffect} from "./battleAbilityUsage";
 import
 {
@@ -42,7 +41,7 @@ export class AbilityUseEffectQueue
     private static squashEffects(
     parent: AbilityUseEffect, toSquash: AbilityUseEffect[], parentIsMostRecent: boolean = false): AbilityUseEffect
   {
-    const squashedChangedUnitDisplayDataByID = shallowExtend<{[unitID: number]: UnitDisplayData}>(
+    const squashedChangedUnitDisplayDataByID = shallowExtend(
       {},
       parent.changedUnitDisplayDataByID,
       ...toSquash.map(effect => effect.changedUnitDisplayDataByID),
@@ -50,7 +49,7 @@ export class AbilityUseEffectQueue
 
     if (parentIsMostRecent)
     {
-      const squashedEffect = shallowExtend<AbilityUseEffect>(
+      const squashedEffect = shallowExtend(
         {},
         {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID},
         parent,
@@ -60,7 +59,7 @@ export class AbilityUseEffectQueue
     }
     else
     {
-      const squashedEffect = shallowExtend<AbilityUseEffect>(
+      const squashedEffect = shallowExtend(
         {},
         parent,
         {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID},
