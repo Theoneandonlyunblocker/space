@@ -66,7 +66,6 @@ export class LanguageSelectComponent extends React.Component<PropTypes, StateTyp
           localize("fullLanguageSupport").format() :
           localize("partialLanguageSupport").format(),
       },
-        // TODO 2017.06.13 | add country flag
         language.displayName,
       );
     });

@@ -40,8 +40,7 @@ export default class Camera
     this.tempCameraId = tempCameraId++;
     this.container = container;
     this.bounds.min = bound;
-    // TODO 2016.11.19 | isn't 1 - bound good enough?
-    this.bounds.max = Number((1 - bound).toFixed(1));
+    this.bounds.max = 1 - bound;
     const screenElement = window.getComputedStyle(
       document.getElementById("pixi-container"), null);
     this.screenWidth = parseInt(screenElement.width);

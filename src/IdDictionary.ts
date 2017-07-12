@@ -5,7 +5,6 @@ interface ObjectWithId
 
 export class IdDictionary<K extends ObjectWithId, V>
 {
-  readonly [a: number]: boolean; // TODO 2017.02.24 | what is this? legacy?
   private valuesById:
   {
     [id: number]: V;
