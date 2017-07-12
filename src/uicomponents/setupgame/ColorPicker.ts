@@ -2,6 +2,8 @@
 
 import Color from "../../Color";
 
+import {default as ColorPickerSlider} from "./ColorPickerSlider";
+
 import NumberInput from "../generic/NumberInput";
 import NumericTextInput from "../generic/NumericTextInput";
 
@@ -37,7 +39,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   public state: StateType;
 
   private onChangeTimeoutHandle: number = null;
-  private baseElementID: string = "color-picker";
 
   constructor(props: PropTypes)
   {
@@ -64,7 +65,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
           this.makeHsvInputs("val"),
         ),
         React.DOM.div({className: "color-picker-input-container", key: "hex"},
-          React.DOM.label({className: "color-picker-label", htmlFor: "" + this.baseElementID + "-hex"}, "Hex:"),
+          React.DOM.label({className: "color-picker-label"}, "Hex:"),
           !this.props.generateColor ? null :
             React.DOM.button(
             {
@@ -192,38 +193,20 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       this.triggerParentOnChange(color, false);
     }
   }
-  private setHue(e: Event)
+  private setHue(hue: number)
   {
-    const target = <HTMLInputElement> e.target;
-    let hue = Math.round(parseInt(target.value) % 361);
-    if (hue < 0)
-    {
-      hue = 360;
-    }
     this.setState({hue: hue});
-    this.updateFromHsv(hue, this.state.sat, this.state.val, e);
+    this.updateFromHsv(hue, this.state.sat, this.state.val);
   }
-  private setSat(e: Event)
+  private setSat(sat: number)
   {
-    const target = <HTMLInputElement> e.target;
-    let sat = Math.round(parseInt(target.value) % 101);
-    if (sat < 0)
-    {
-      sat = 100;
-    }
     this.setState({sat: sat});
-    this.updateFromHsv(this.state.hue, sat, this.state.val, e);
+    this.updateFromHsv(this.state.hue, sat, this.state.val);
   }
-  private setVal(e: Event)
+  private setVal(val: number)
   {
-    const target = <HTMLInputElement> e.target;
-    let val = Math.round(parseInt(target.value) % 101);
-    if (val < 0)
-    {
-      val = 100;
-    }
     this.setState({val: val});
-    this.updateFromHsv(this.state.hue, this.state.sat, val, e);
+    this.updateFromHsv(this.state.hue, this.state.sat, val);
   }
   private autoGenerateColor()
   {
@@ -258,7 +241,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
     return color.getHexString();
   }
-  private makeGradientStyle(type: string): React.CSSProperties
+  private makeGradientStyle(type: "hue" | "sat" | "val"): string
   {
     const hue = this.state.hue;
     const sat = this.state.sat;
@@ -268,38 +251,25 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     {
       case "hue":
       {
-        return(
-        {
-
-        });
+        return `linear-gradient(to right, #FF0000 0%, #FFFF00 17%, #00FF00 33%, #00FFFF 50%, #0000FF 67%, #FF00FF 83%, #FF0000 100%)`;
       }
       case "sat":
       {
         const min = "#" + this.makeHexStringFromHSVDegreeArray([hue, 0, val]);
         const max = "#" + this.makeHexStringFromHSVDegreeArray([hue, 100, val]);
 
-        return(
-        {
-          background: this.makeGradientString(min, max),
-        });
+        return this.makeGradientString(min, max);
       }
       case "val":
       {
         const min = "#" + this.makeHexStringFromHSVDegreeArray([hue, sat, 0]);
         const max = "#" + this.makeHexStringFromHSVDegreeArray([hue, sat, 100]);
 
-        return(
-        {
-          background: this.makeGradientString(min, max),
-        });
-      }
-      default:
-      {
-        return null;
+        return this.makeGradientString(min, max);
       }
     }
   }
-  private makeHsvInputs(type: string)
+  private makeHsvInputs(type: "hue" | "sat" | "val")
   {
     const label = "" + type[0].toUpperCase() + ":";
 
@@ -311,39 +281,26 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       val: this.setVal,
     };
 
-    const idForType = "" + this.baseElementID + "-" + type;
-
     return(
       React.DOM.div({className: "color-picker-input-container", key: type},
-        React.DOM.label({className: "color-picker-label", htmlFor: idForType}, label),
-        React.DOM.div(
+        React.DOM.label({className: "color-picker-label"}, label),
+        ColorPickerSlider(
         {
-          className: "color-picker-slider-background" + " color-picker-slider-background-" + type,
-          style: this.makeGradientStyle(type),
-        },
-          React.DOM.input(
-          {
-            className: "color-picker-slider",
-            id: idForType,
-            ref: type,
-            type: "range",
-            min: 0,
-            max: max,
-            step: 1,
-            value: this.state[type],
-            onChange: updateFunctions[type],
-            onMouseUp: updateFunctions[type],
-            onTouchEnd: updateFunctions[type],
-          }),
-        ),
-        // TODO 2017.07.10 | use NumericTextInput component for all these
-        React.DOM.input(
-        {
-          className: "color-picker-input",
-          type: "number",
-          step: 1,
-          value: "" + Math.round(this.state[type]),
+          value: this.state[type],
+          max: max,
           onChange: updateFunctions[type],
+
+          backgroundStyle: this.makeGradientStyle(type),
+        }),
+        NumberInput(
+        {
+          value: this.state[type],
+          onChange: updateFunctions[type],
+
+          min: 0,
+          max: max,
+          step: 1,
+          canWrap: type === "hue",
         }),
       )
     );
