@@ -82,7 +82,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
           {
             attributes:
             {
-              className: "color-picker-input color-picker-input-hex",
+              className: "color-picker-input",
             },
             value: this.state.hexColor,
             valueStringIsValid: valueString =>
@@ -294,6 +294,10 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
         }),
         NumberInput(
         {
+          attributes:
+          {
+            className: "color-picker-input",
+          },
           value: this.state[type],
           onChange: updateFunctions[type],
 
