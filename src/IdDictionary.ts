@@ -3,7 +3,7 @@ interface ObjectWithID
   id: number;
 }
 
-export class IDDictionary<K extends ObjectWithID, V>
+export class IdDictionary<K extends ObjectWithID, V>
 {
   readonly [a: number]: boolean; // TODO 2017.02.24 | what is this? legacy?
   private valuesByID:
@@ -63,9 +63,9 @@ export class IDDictionary<K extends ObjectWithID, V>
       callback(this.keysByID[ID], this.valuesByID[ID]);
     }
   }
-  public filter(filterFN: (key: K, value: V) => boolean): IDDictionary<K, V>
+  public filter(filterFN: (key: K, value: V) => boolean): IdDictionary<K, V>
   {
-    const filtered: IDDictionary<K, V> = this.constructor();
+    const filtered: IdDictionary<K, V> = this.constructor();
 
     this.forEach((key, value) =>
     {
@@ -129,7 +129,7 @@ export class IDDictionary<K extends ObjectWithID, V>
 
     return mapped;
   }
-  public merge<T extends IDDictionary<K, V>>(mergeFN: (...values: V[]) => V, ...toMerge: T[]): T
+  public merge<T extends IdDictionary<K, V>>(mergeFN: (...values: V[]) => V, ...toMerge: T[]): T
   {
     const merged: T = this.constructor();
 

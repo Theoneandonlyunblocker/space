@@ -1,7 +1,7 @@
-import {IDDictionary} from "./IDDictionary";
+import {IdDictionary} from "./IdDictionary";
 import Star from "./Star";
 
-export default class ValuesByStar<T> extends IDDictionary<Star, T>
+export default class ValuesByStar<T> extends IdDictionary<Star, T>
 {
   constructor(stars?: Star[], getValueFN?: (star: Star) => T)
   {

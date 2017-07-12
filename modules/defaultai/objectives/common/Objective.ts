@@ -4,7 +4,7 @@ import {ObjectiveFamily} from "./ObjectiveFamily";
 import {GrandStrategyAI} from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
 
-import {IDDictionary} from "../../../../src/IDDictionary";
+import {IdDictionary} from "../../../../src/IdDictionary";
 import idGenerators from "../../../../src/idGenerators";
 
 
@@ -101,9 +101,9 @@ export abstract class Objective
   }
 
   // TODO 2017.04.09 | doesn't belong in this class
-  protected static getObjectivesByTarget<O extends Objective & {target: T}, T extends {id: number}>(objectives: O[]): IDDictionary<T, O>
+  protected static getObjectivesByTarget<O extends Objective & {target: T}, T extends {id: number}>(objectives: O[]): IdDictionary<T, O>
   {
-    const byTarget = new IDDictionary<T, O>();
+    const byTarget = new IdDictionary<T, O>();
 
     objectives.forEach(objective =>
     {

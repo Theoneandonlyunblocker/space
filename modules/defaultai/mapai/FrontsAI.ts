@@ -6,7 +6,7 @@ import {FrontObjective} from "../objectives/common/FrontObjective";
 
 import GalaxyMap from "../../../src/GalaxyMap";
 import Game from "../../../src/Game";
-import {IDDictionary} from "../../../src/IDDictionary";
+import {IdDictionary} from "../../../src/IdDictionary";
 import Personality from "../../../src/Personality";
 import Player from "../../../src/Player";
 import Unit from "../../../src/Unit";
@@ -53,7 +53,7 @@ export default class FrontsAI
       [frontId: number]: FrontUnitScore[];
     } = {};
 
-    const objectivesByFront = new IDDictionary<Front, FrontObjective>();
+    const objectivesByFront = new IdDictionary<Front, FrontObjective>();
     this.objectivesAI.getFrontObjectives().forEach(objective =>
     {
       objectivesByFront.set(objective.front, objective);
@@ -164,7 +164,7 @@ export default class FrontsAI
   {
     const activeObjectives = this.objectivesAI.getFrontObjectives();
 
-    const activeFrontsWithObjective = new IDDictionary<Front, FrontObjective>();
+    const activeFrontsWithObjective = new IdDictionary<Front, FrontObjective>();
 
     activeObjectives.forEach(objective =>
     {

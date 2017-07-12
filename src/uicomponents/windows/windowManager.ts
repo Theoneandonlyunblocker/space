@@ -1,6 +1,6 @@
 import {WindowContainerComponent} from "./WindowContainer";
 
-import {IDDictionary} from "../../IDDictionary";
+import {IdDictionary} from "../../IdDictionary";
 import {Rect} from "../../Rect";
 
 const baseZIndex = 10000;
@@ -21,7 +21,7 @@ export function getNewZIndex(component: WindowContainerComponent): number
 }
 
 
-const byID = new IDDictionary<WindowContainerComponent, WindowContainerComponent>();
+const byID = new IdDictionary<WindowContainerComponent, WindowContainerComponent>();
 
 export function getDefaultInitialPosition(rect: Rect, container: HTMLElement): Rect
 {

@@ -49,7 +49,7 @@ import {Objective} from "../objectives/common/Objective";
 import {ObjectiveCreatorTemplate} from "../objectives/common/ObjectiveCreatorTemplate";
 import {ObjectiveFamily} from "../objectives/common/ObjectiveFamily";
 
-import {IDDictionary} from "../../../src/IDDictionary";
+import {IdDictionary} from "../../../src/IdDictionary";
 import
 {
   getRelativeValue,
@@ -175,10 +175,10 @@ export class ObjectivesAI
       this.ongoingObjectives = newObjectives;
     });
   }
-  private getRelativeScoresForObjectives(objectives: Objective[]): IDDictionary<Objective, number>
+  private getRelativeScoresForObjectives(objectives: Objective[]): IdDictionary<Objective, number>
   {
     const objectivesByType = ObjectivesAI.groupObjectivesByType(objectives);
-    const relativeScores = new IDDictionary<Objective, number>();
+    const relativeScores = new IdDictionary<Objective, number>();
 
     for (let type in objectivesByType)
     {
