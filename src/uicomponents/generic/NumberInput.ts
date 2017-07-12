@@ -64,21 +64,22 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
   {
     const defaultAttributes: React.HTMLAttributes =
     {
-      className: "number-input",
-      type: "text",
-      value: this.state.displayedValue,
-      onChange: this.handleValueChange,
-      onBlur: this.handleBlur,
+      className: "number-input-container",
     };
+    ;
     const customAttributes = this.props.attributes || {};
     const attributes = mergeReactAttributes(defaultAttributes, customAttributes);
 
     return(
-      React.DOM.div(
-      {
-        className: "number-input-container",
-      },
-        React.DOM.input(attributes),
+      React.DOM.div(attributes,
+        React.DOM.input(
+        {
+          className: "number-input",
+          type: "text",
+          value: this.state.displayedValue,
+          onChange: this.handleValueChange,
+          onBlur: this.handleBlur,
+        }),
         Spinner(
         {
           value: this.props.value,
