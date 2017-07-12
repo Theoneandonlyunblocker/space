@@ -147,15 +147,14 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   }
   private handleUnitUpgrade()
   {
-    // TODO 2017.07.10 | ???
-    // is this for repeat upgrades?
-    if (!this.props.unit.canLevelUp())
+    // unit can upgrade again
+    if (this.props.unit.canLevelUp())
     {
-      this.closePopup();
+      this.props.onUnitUpgrade();
     }
     else
     {
-      this.props.onUnitUpgrade();
+      this.closePopup();
     }
   }
 }
