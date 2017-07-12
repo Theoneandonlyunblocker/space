@@ -27,7 +27,7 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
 
   render()
   {
-    const baseID = "sfx-fragment-prop-inline-number-" + this.props.propName + "-" + this.props.label;
+    const baseId = "sfx-fragment-prop-inline-number-" + this.props.propName + "-" + this.props.label;
 
     return(
       React.DOM.div(
@@ -37,7 +37,7 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
         React.DOM.label(
         {
           className: "sfx-fragment-prop-inline-number-label",
-          htmlFor: baseID,
+          htmlFor: baseId,
         },
           this.props.label + ":",
         ),

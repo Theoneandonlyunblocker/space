@@ -1,4 +1,4 @@
-export interface IDGeneratorValues
+export interface IdGeneratorValues
 {
   fleet: number;
   item: number;
@@ -10,7 +10,7 @@ export interface IDGeneratorValues
   statusEffect: number;
 }
 
-class IDGenerator implements IDGeneratorValues
+class IdGenerator implements IdGeneratorValues
 {
   public fleet: number = 0;
   public item: number = 0;
@@ -25,14 +25,14 @@ class IDGenerator implements IDGeneratorValues
   {
 
   }
-  public setValues(newValues: IDGeneratorValues)
+  public setValues(newValues: IdGeneratorValues)
   {
     for (let key in newValues)
     {
       this[key] = newValues[key];
     }
   }
-  public serialize(): IDGeneratorValues
+  public serialize(): IdGeneratorValues
   {
     return(
     {
@@ -48,5 +48,5 @@ class IDGenerator implements IDGeneratorValues
   }
 }
 
-const idGenerators = new IDGenerator();
+const idGenerators = new IdGenerator();
 export default idGenerators;

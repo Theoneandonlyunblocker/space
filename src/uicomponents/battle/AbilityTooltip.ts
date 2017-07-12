@@ -7,7 +7,7 @@ export interface PropTypes extends React.Props<any>
 {
   parentElement: HTMLElement;
   facesLeft: boolean;
-  activeTargets: {[unitID: number]: AbilityTemplate[]};
+  activeTargets: {[unitId: number]: AbilityTemplate[]};
   handleMouseLeave: (e: React.MouseEvent) => void;
   handleAbilityUse: (ability: AbilityTemplate, target: Unit) => void;
   targetUnit: Unit;

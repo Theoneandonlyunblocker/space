@@ -20,12 +20,12 @@ const fogOfWar: MapRendererLayerTemplate =
   alpha: 0.35,
   destroy: function()
   {
-    for (let starId in fogOfWarSpriteByStarID)
+    for (let starId in fogOfWarSpriteByStarId)
     {
-      fogOfWarSpriteByStarID[starId].renderable = false;
-      fogOfWarSpriteByStarID[starId].texture.destroy(true);
-      fogOfWarSpriteByStarID[starId] = null;
-      delete fogOfWarSpriteByStarID[starId];
+      fogOfWarSpriteByStarId[starId].renderable = false;
+      fogOfWarSpriteByStarId[starId].texture.destroy(true);
+      fogOfWarSpriteByStarId[starId] = null;
+      delete fogOfWarSpriteByStarId[starId];
     }
   },
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
@@ -62,7 +62,7 @@ function getfogOfWarTilingSprite(width: number, height: number)
   return fogOfWarTilingSprite;
 }
 
-const fogOfWarSpriteByStarID:
+const fogOfWarSpriteByStarId:
 {
   [starId: number]: PIXI.Sprite;
 } = {};
@@ -70,7 +70,7 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number)
 {
   const tiled = getfogOfWarTilingSprite(width, height);
   // silly hack to make sure first texture gets created properly
-  if (!fogOfWarSpriteByStarID[star.id] || Object.keys(fogOfWarSpriteByStarID).length < 4)
+  if (!fogOfWarSpriteByStarId[star.id] || Object.keys(fogOfWarSpriteByStarId).length < 4)
   {
     const poly = makePolygonFromPoints(star.voronoiCell.vertices);
     const gfx = new PIXI.Graphics();
@@ -92,9 +92,9 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number)
 
     const sprite = new PIXI.Sprite(rendered);
 
-    fogOfWarSpriteByStarID[star.id] = sprite;
+    fogOfWarSpriteByStarId[star.id] = sprite;
     tiled.mask = null;
   }
 
-  return fogOfWarSpriteByStarID[star.id];
+  return fogOfWarSpriteByStarId[star.id];
 }

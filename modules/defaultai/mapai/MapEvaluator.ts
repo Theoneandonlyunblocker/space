@@ -578,11 +578,11 @@ export default class MapEvaluator
   {
     const detectedStars:
     {
-      [starID: number]: Star;
+      [starId: number]: Star;
     } = {};
     const visibleStars:
     {
-      [starID: number]: Star;
+      [starId: number]: Star;
     } = {};
 
     const revealedStarsOfPlayer: Star[] = this.player.getRevealedStars().filter(function(star: Star)

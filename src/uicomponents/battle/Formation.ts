@@ -21,9 +21,9 @@ export interface PropTypes extends React.Props<any>
   formation: Unit[][];
   facesLeft: boolean;
   unitStrengthAnimateDuration: number;
-  unitDisplayDataByID:
+  unitDisplayDataById:
   {
-    [unitID: number]: UnitDisplayData;
+    [unitId: number]: UnitDisplayData;
   };
 
   onMouseUp?: (position: number[]) => void;
@@ -115,7 +115,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
         if (unit)
         {
 
-          const unitDisplayData = this.props.unitDisplayDataByID[unit.id];
+          const unitDisplayData = this.props.unitDisplayDataById[unit.id];
           const componentProps: UnitComponentPropTypes =
           {
             id: unit.id,

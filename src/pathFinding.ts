@@ -5,11 +5,11 @@ export interface AStarGraph
 {
   came:
   {
-    [starID: number]: PathNode;
+    [starId: number]: PathNode;
   };
   cost:
   {
-    [starID: number]: number;
+    [starId: number]: number;
   };
 }
 
@@ -19,7 +19,7 @@ export interface PathNode
   cost: number;
 }
 
-export function backTrace(graph: {[starID: number]: PathNode}, target: Star): PathNode[]
+export function backTrace(graph: {[starId: number]: PathNode}, target: Star): PathNode[]
 {
   let parent = graph[target.id];
 
@@ -55,7 +55,7 @@ export function aStar(start: Star, target: Star): AStarGraph | null
 
   const cameFrom:
   {
-    [starID: number]:
+    [starId: number]:
     {
       star: Star,
       cost: number,
@@ -63,7 +63,7 @@ export function aStar(start: Star, target: Star): AStarGraph | null
   } = {};
   const costSoFar:
   {
-    [starID: number]: number;
+    [starId: number]: number;
   } = {};
   cameFrom[start.id] = null;
   costSoFar[start.id] = 0;

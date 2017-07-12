@@ -304,9 +304,9 @@ export default class GameLoader
     });
 
     // units
-    data.unitIds.forEach(unitID =>
+    data.unitIds.forEach(unitId =>
     {
-      player.addUnit(this.unitsById[unitID]);
+      player.addUnit(this.unitsById[unitId]);
     });
 
     // fleets
@@ -323,9 +323,9 @@ export default class GameLoader
     }
 
     // items
-    data.itemIds.forEach(itemID =>
+    data.itemIds.forEach(itemId =>
     {
-      player.addItem(this.itemsById[itemID]);
+      player.addItem(this.itemsById[itemId]);
     });
 
     // revealed stars
@@ -336,12 +336,12 @@ export default class GameLoader
     }
 
     // identified units
-    data.identifiedUnitIds.forEach(unitID =>
+    data.identifiedUnitIds.forEach(unitId =>
     {
       // unit might have been identified but was removed from game before serialization
-      if (this.unitsById[unitID])
+      if (this.unitsById[unitId])
       {
-        player.identifyUnit(this.unitsById[unitID]);
+        player.identifyUnit(this.unitsById[unitId]);
       }
     });
 
@@ -406,7 +406,7 @@ export default class GameLoader
   }
   private deserializeFleet(player: Player, data: FleetSaveData): Fleet
   {
-    const units = data.unitIds.map(unitID => this.unitsById[unitID]);
+    const units = data.unitIds.map(unitId => this.unitsById[unitId]);
     const location = this.starsById[data.locationId];
 
     const fleet = new Fleet(units, data.id);
@@ -422,9 +422,9 @@ export default class GameLoader
   {
     const unit = Unit.fromSaveData(data);
 
-    data.items.itemIDs.forEach(itemID =>
+    data.items.itemIds.forEach(itemId =>
     {
-      const item = this.itemsById[itemID];
+      const item = this.itemsById[itemId];
       unit.items.addItemAtPosition(item, item.positionInUnit);
     });
 
@@ -467,7 +467,7 @@ export default class GameLoader
       template: app.moduleData.Templates.StatusEffects[data.templateType],
       turnsToStayActiveFor: data.turnsToStayActiveFor,
       turnsHasBeenActiveFor: data.turnsHasBeenActiveFor,
-      sourceUnit: this.unitsById[data.sourceUnitID],
+      sourceUnit: this.unitsById[data.sourceUnitId],
     });
   }
 }

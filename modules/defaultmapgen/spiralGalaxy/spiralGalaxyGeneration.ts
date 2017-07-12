@@ -23,7 +23,7 @@ import
   setVoronoiCells,
 } from "../../../src/voronoi";
 
-import MapGenDataByStarID from "../common/MapGenDataByStarID";
+import MapGenDataByStarId from "../common/MapGenDataByStarId";
 import MapGenPoint from "../common/MapGenPoint";
 import
 {
@@ -105,18 +105,18 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   setVoronoiCells(diagram.cells);
 
   // create MapGenData index
-  const mapGenDataByStarID: MapGenDataByStarID = {};
+  const mapGenDataByStarId: MapGenDataByStarId = {};
   starsWithMapGenPoints.forEach(starWithMapGenPoint =>
   {
-    mapGenDataByStarID[starWithMapGenPoint.star.id] =
+    mapGenDataByStarId[starWithMapGenPoint.star.id] =
       starWithMapGenPoint.mapGenpoint.mapGenData;
   });
 
   // make regions (arm_n, center) etc
   const regions: Region[] = [];
-  const regionsByID:
+  const regionsById:
   {
-    [regionID: string]: Region;
+    [regionId: string]: Region;
   } = {};
 
   starsWithMapGenPoints.forEach(starWithMapGenPoint =>
@@ -124,12 +124,12 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     const tags = starWithMapGenPoint.mapGenpoint.mapGenData.tags;
     tags.forEach(tag =>
     {
-      if (!regionsByID[tag])
+      if (!regionsById[tag])
       {
-        regionsByID[tag] = new Region(tag);
-        regions.push(regionsByID[tag]);
+        regionsById[tag] = new Region(tag);
+        regions.push(regionsById[tag]);
       }
-      regionsByID[tag].addStar(starWithMapGenPoint.star);
+      regionsById[tag].addStar(starWithMapGenPoint.star);
     });
   });
 
@@ -151,11 +151,11 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   //   sever links between arms
   const armRegions = regions.filter(region =>
   {
-    return region !== regionsByID["center"];
+    return region !== regionsById["center"];
   });
   armRegions.forEach(region =>
   {
-    region.severLinksToRegionsExcept([region, regionsByID["center"]]);
+    region.severLinksToRegionsExcept([region, regionsById["center"]]);
   });
 
 
@@ -168,21 +168,21 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   }
 
   //   randomly sever links so links aren't as uniform
-  partiallySeverLinks(stars, mapGenDataByStarID, 4, 2);
+  partiallySeverLinks(stars, mapGenDataByStarId, 4, 2);
 
   // get star connectedness
   stars.forEach(star =>
   {
-    mapGenDataByStarID[star.id].connectedness = getStarConnectedness(star, 3);
+    mapGenDataByStarId[star.id].connectedness = getStarConnectedness(star, 3);
   });
 
   // make sectors
-  const sectors = makeSectors(stars, mapGenDataByStarID, 3, 3);
+  const sectors = makeSectors(stars, mapGenDataByStarId, 3, 3);
 
   // make sector distribution flags
-  const distributionFlagsBySectorID:
+  const distributionFlagsBySectorId:
   {
-    [sectorID: string]: string[];
+    [sectorId: string]: string[];
   } = {};
 
   sectors.forEach(sector =>
@@ -215,7 +215,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
         }
       }
 
-      distributionFlagsBySectorID[sector.id] = distributionFlags;
+      distributionFlagsBySectorId[sector.id] = distributionFlags;
     });
   });
 
@@ -246,7 +246,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     const leftOverPlayerCount = playersInArmsCount - armCount;
     for (let i = 0; i < leftOverPlayerCount; i++)
     {
-      startRegions.push(regionsByID["center"]);
+      startRegions.push(regionsById["center"]);
     }
 
     return startRegions;
@@ -263,7 +263,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
 
       const starsByDistance = region.stars.slice(0).sort(function(a: Star, b: Star)
       {
-        return mapGenDataByStarID[b.id].mapGenDistance - mapGenDataByStarID[a.id].mapGenDistance;
+        return mapGenDataByStarId[b.id].mapGenDistance - mapGenDataByStarId[a.id].mapGenDistance;
       });
 
       const star = starsByDistance[0];
@@ -298,7 +298,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     {
       const nearestPlayerStar = star.getNearestStarForQualifier(isPlayerOwnedFN);
       const distanceToPlayer = star.getDistanceToStar(nearestPlayerStar);
-      mapGenDataByStarID[star.id].distanceFromPlayerOwnedLocation = distanceToPlayer;
+      mapGenDataByStarId[star.id].distanceFromPlayerOwnedLocation = distanceToPlayer;
     });
   })();
 
@@ -316,7 +316,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
 
   distributeDistributablesPerSector(
     sectors,
-    distributionFlagsBySectorID,
+    distributionFlagsBySectorId,
     TemplateIndexes.distributablesByDistributionGroup.races,
     racePlacerFN,
   );
@@ -328,7 +328,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   };
   distributeDistributablesPerSector(
     sectors,
-    distributionFlagsBySectorID,
+    distributionFlagsBySectorId,
     TemplateIndexes.distributablesByDistributionGroup.resources,
     resourcePlacerFN,
   );
@@ -349,7 +349,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
       region: sector,
       intensity: 1,
       variance: 0,
-      mapGenDataByStarID: mapGenDataByStarID,
+      mapGenDataByStarId: mapGenDataByStarId,
     });
   });
 

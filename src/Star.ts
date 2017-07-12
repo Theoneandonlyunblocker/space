@@ -495,11 +495,11 @@ export default class Star implements Point
   {
     const fleetOwners: Player[] = [];
 
-    for (let playerID in this.fleets)
+    for (let playerId in this.fleets)
     {
-      if (this.fleets[playerID].length > 0)
+      if (this.fleets[playerId].length > 0)
       {
-        fleetOwners.push(this.fleets[playerID][0].player);
+        fleetOwners.push(this.fleets[playerId][0].player);
       }
     }
 

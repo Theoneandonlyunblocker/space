@@ -23,8 +23,8 @@ import RacePicker from "./RacePicker";
 export interface PropTypes extends React.Props<any>
 {
   setActiveSetterComponent: (setter: ColorSetterComponent | FlagSetterComponent) => void;
-  setHuman: (playerID: number) => void;
-  removePlayers: (playerIDsToRemove: number[]) => void;
+  setHuman: (playerId: number) => void;
+  removePlayers: (playerIdsToRemove: number[]) => void;
   initialName: string;
   keyTODO: number;
   isHuman: boolean;

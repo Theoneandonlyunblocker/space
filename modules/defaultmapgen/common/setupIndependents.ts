@@ -1,4 +1,4 @@
-import MapGenDataByStarID from "./MapGenDataByStarID";
+import MapGenDataByStarId from "./MapGenDataByStarId";
 import
 {
   addDefenceBuildings,
@@ -19,7 +19,7 @@ export default function setupIndependents(props:
   region: Region;
   intensity: number;
   variance: number;
-  mapGenDataByStarID: MapGenDataByStarID;
+  mapGenDataByStarId: MapGenDataByStarId;
 }): void
 {
   const independentStars = props.region.stars.filter(star =>
@@ -35,19 +35,19 @@ export default function setupIndependents(props:
   });
 
   // add units
-  const starsByDistance = getStarsByDistanceToPlayer(independentStars, props.mapGenDataByStarID);
+  const starsByDistance = getStarsByDistanceToPlayer(independentStars, props.mapGenDataByStarId);
   const maxDistanceFromPlayer = getMaxDistanceFromStarsByDistance(starsByDistance);
 
   const starsAtMaxDistance = starsByDistance[maxDistanceFromPlayer];
-  const commanderStar = getMostSuitableCommanderStarFromStars(starsAtMaxDistance, props.mapGenDataByStarID);
+  const commanderStar = getMostSuitableCommanderStarFromStars(starsAtMaxDistance, props.mapGenDataByStarId);
 
   const globalMaxDistanceFromPlayer: number = (function()
   {
     let maxDistance = 0;
 
-    for (let starID in props.mapGenDataByStarID)
+    for (let starId in props.mapGenDataByStarId)
     {
-      const distance = props.mapGenDataByStarID[starID].distanceFromPlayerOwnedLocation;
+      const distance = props.mapGenDataByStarId[starId].distanceFromPlayerOwnedLocation;
       maxDistance = Math.max(maxDistance, distance);
     }
 
@@ -56,7 +56,7 @@ export default function setupIndependents(props:
 
   independentStars.forEach(star =>
   {
-    const mapGenData = props.mapGenDataByStarID[star.id];
+    const mapGenData = props.mapGenDataByStarId[star.id];
     const distanceFromPlayer = mapGenData.distanceFromPlayerOwnedLocation - 1;
     const relativeDistanceFromPlayer = distanceFromPlayer / globalMaxDistanceFromPlayer;
 
@@ -76,7 +76,7 @@ export default function setupIndependents(props:
 
 function getStarsByDistanceToPlayer(
   stars: Star[],
-  mapGenDataByStarID: MapGenDataByStarID,
+  mapGenDataByStarId: MapGenDataByStarId,
 ): {[distance: number]: Star[]}
 {
   const starsByDistance:
@@ -86,7 +86,7 @@ function getStarsByDistanceToPlayer(
 
   stars.forEach(star =>
   {
-    const distance = mapGenDataByStarID[star.id].distanceFromPlayerOwnedLocation;
+    const distance = mapGenDataByStarId[star.id].distanceFromPlayerOwnedLocation;
 
     if (!starsByDistance[distance])
     {
@@ -113,19 +113,19 @@ function getMaxDistanceFromStarsByDistance(
 }
 function getMostSuitableCommanderStarFromStars(
   stars: Star[],
-  mapGenDataByStarID: MapGenDataByStarID,
+  mapGenDataByStarId: MapGenDataByStarId,
 ): Star
 {
   return stars.sort((a, b) =>
   {
-    const connectednessSort = mapGenDataByStarID[b.id].connectedness - mapGenDataByStarID[a.id].connectedness;
+    const connectednessSort = mapGenDataByStarId[b.id].connectedness - mapGenDataByStarId[a.id].connectedness;
     if (connectednessSort)
     {
       return connectednessSort;
     }
     else
     {
-      return mapGenDataByStarID[b.id].mapGenDistance - mapGenDataByStarID[a.id].mapGenDistance;
+      return mapGenDataByStarId[b.id].mapGenDistance - mapGenDataByStarId[a.id].mapGenDistance;
     }
   })[0];
 }

@@ -41,17 +41,17 @@ export class AbilityUseEffectQueue
     private static squashEffects(
     parent: AbilityUseEffect, toSquash: AbilityUseEffect[], parentIsMostRecent: boolean = false): AbilityUseEffect
   {
-    const squashedChangedUnitDisplayDataByID = shallowExtend(
+    const squashedChangedUnitDisplayDataById = shallowExtend(
       {},
-      parent.changedUnitDisplayDataByID,
-      ...toSquash.map(effect => effect.changedUnitDisplayDataByID),
+      parent.changedUnitDisplayDataById,
+      ...toSquash.map(effect => effect.changedUnitDisplayDataById),
     );
 
     if (parentIsMostRecent)
     {
       const squashedEffect = shallowExtend(
         {},
-        {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID},
+        {changedUnitDisplayDataById: squashedChangedUnitDisplayDataById},
         parent,
       );
 
@@ -62,7 +62,7 @@ export class AbilityUseEffectQueue
       const squashedEffect = shallowExtend(
         {},
         parent,
-        {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID},
+        {changedUnitDisplayDataById: squashedChangedUnitDisplayDataById},
       );
 
       return squashedEffect;

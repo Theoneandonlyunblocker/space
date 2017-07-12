@@ -6,7 +6,7 @@ declare interface UnitItemsSaveData
   {
     [slot: string]: number;
   };
-  itemIDs: number[];
+  itemIds: number[];
 }
 
 export default UnitItemsSaveData;

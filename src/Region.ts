@@ -10,9 +10,9 @@ export default class Region
 {
   id: string;
   stars: Star[] = [];
-  starsByID:
+  starsById:
   {
-    [starID: number]: Star;
+    [starId: number]: Star;
   } = {};
 
   constructor(id: string, initialStars?: Star[])
@@ -27,11 +27,11 @@ export default class Region
   public addStar(star: Star): void
   {
     this.stars.push(star);
-    this.starsByID[star.id] = star;
+    this.starsById[star.id] = star;
   }
   public hasStar(star: Star): boolean
   {
-    return Boolean(this.starsByID[star.id]);
+    return Boolean(this.starsById[star.id]);
   }
   public severLinksToRegionsExcept(exemptRegions: Region[]): void
   {

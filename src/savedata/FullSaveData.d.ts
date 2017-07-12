@@ -1,5 +1,5 @@
 import Point from "../Point";
-import {IDGeneratorValues} from "../idGenerators";
+import {IdGeneratorValues} from "../idGenerators";
 import GameSaveData from "./GameSaveData";
 
 declare interface FullSaveData
@@ -7,7 +7,7 @@ declare interface FullSaveData
   name: string;
   date: Date;
   gameData: GameSaveData;
-  idGenerators: IDGeneratorValues;
+  idGenerators: IdGeneratorValues;
   cameraLocation: Point;
 }
 

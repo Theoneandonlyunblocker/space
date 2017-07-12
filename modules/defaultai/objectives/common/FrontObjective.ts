@@ -8,7 +8,7 @@ import {UnitEvaluator} from "../../mapai/UnitEvaluator";
 import Star from "../../../../src/Star";
 import Unit from "../../../../src/Unit";
 
-let frontIDGenerator = 0;
+let frontIdGenerator = 0;
 
 export abstract class FrontObjective extends Objective
 {
@@ -26,7 +26,7 @@ export abstract class FrontObjective extends Objective
   {
     super(score);
 
-    this.front = new Front(frontIDGenerator++);
+    this.front = new Front(frontIdGenerator++);
     this.mapEvaluator = mapEvaluator;
     this.unitEvaluator = unitEvaluator;
   }

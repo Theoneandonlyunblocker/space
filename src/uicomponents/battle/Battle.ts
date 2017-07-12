@@ -54,7 +54,7 @@ interface StateType
   hoveredUnit?: Unit;
   hoveredAbility?: AbilityTemplate;
   targetsInPotentialArea?: Unit[];
-  potentialDelayID?: number;
+  potentialDelayId?: number;
   potentialDelayAmount?: number;
 
   abilityTooltip?:
@@ -70,8 +70,8 @@ interface StateType
   battleEffectDurationAfterTrigger?: number;
 
   battleEvaluation?: number;
-  unitDisplayDataByID?: {[unitID: number]: UnitDisplayData};
-  previousUnitDisplayDataByID?: {[unitID: number]: UnitDisplayData};
+  unitDisplayDataById?: {[unitId: number]: UnitDisplayData};
+  previousUnitDisplayDataById?: {[unitId: number]: UnitDisplayData};
 }
 
 export class BattleComponent extends React.Component<PropTypes, StateType>
@@ -144,7 +144,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
   private getInitialStateTODO(): StateType
   {
-    const initialDisplayData: {[unitID: number]: UnitDisplayData} = {};
+    const initialDisplayData: {[unitId: number]: UnitDisplayData} = {};
     this.props.battle.forEachUnit(unit =>
     {
       initialDisplayData[unit.id] = unit.getDisplayData("battle");
@@ -158,7 +158,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       hoveredUnit: null,
       hoveredAbility: null,
       targetsInPotentialArea: [],
-      potentialDelayID: undefined,
+      potentialDelayId: undefined,
       potentialDelayAmount: undefined,
 
       abilityTooltip:
@@ -174,8 +174,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleEffectDurationAfterTrigger: undefined,
 
       battleEvaluation: this.props.battle.getEvaluation(),
-      unitDisplayDataByID: initialDisplayData,
-      previousUnitDisplayDataByID: initialDisplayData,
+      unitDisplayDataById: initialDisplayData,
+      previousUnitDisplayDataById: initialDisplayData,
     });
   }
 
@@ -236,7 +236,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         parentElement: null,
       },
       hoveredAbility: null,
-      potentialDelayID: undefined,
+      potentialDelayId: undefined,
       potentialDelayAmount: undefined,
       targetsInPotentialArea: [],
     });
@@ -325,7 +325,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       hoveredAbility: ability,
-      potentialDelayID: this.props.battle.activeUnit.id,
+      potentialDelayId: this.props.battle.activeUnit.id,
       potentialDelayAmount: this.props.battle.activeUnit.battleStats.moveDelay + abilityUseDelay,
       targetsInPotentialArea: targetsInPotentialArea,
     });
@@ -335,7 +335,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       hoveredAbility: null,
-      potentialDelayID: undefined,
+      potentialDelayId: undefined,
       potentialDelayAmount: undefined,
       targetsInPotentialArea: [],
     });
@@ -399,10 +399,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      previousUnitDisplayDataByID: shallowCopy(this.state.unitDisplayDataByID),
-      // TODO 2017.07.12 | different capitalization
-      unitDisplayDataByID: shallowExtend(
-        this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
+      previousUnitDisplayDataById: shallowCopy(this.state.unitDisplayDataById),
+      unitDisplayDataById: shallowExtend(
+        this.state.unitDisplayDataById, effect.changedUnitDisplayDataById),
       battleEvaluation: effect.newEvaluation,
       battleEffectDurationAfterTrigger: this.state.battleEffectDuration -
         (Date.now() - this.SFXStartTime),
@@ -561,7 +560,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         hoveredGhostIndex: isFinite(this.state.potentialDelayAmount) ?
           battle.turnOrder.getGhostIndex(
             this.state.potentialDelayAmount,
-            this.state.potentialDelayID,
+            this.state.potentialDelayId,
           ) :
           undefined,
 
@@ -587,8 +586,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           {
             key: "battleDisplayStrength" + this.state.battleSceneUnit1.id,
             animationDuration: this.state.battleEffectDurationAfterTrigger,
-            from: this.state.previousUnitDisplayDataByID[this.state.battleSceneUnit1.id].currentHealth,
-            to: this.state.unitDisplayDataByID[this.state.battleSceneUnit1.id].currentHealth,
+            from: this.state.previousUnitDisplayDataById[this.state.battleSceneUnit1.id].currentHealth,
+            to: this.state.unitDisplayDataById[this.state.battleSceneUnit1.id].currentHealth,
           }) : null,
         ),
         React.DOM.div(
@@ -599,8 +598,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           {
             key: "battleDisplayStrength" + this.state.battleSceneUnit2.id,
             animationDuration: this.state.battleEffectDurationAfterTrigger,
-            from: this.state.previousUnitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth,
-            to: this.state.unitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth,
+            from: this.state.previousUnitDisplayDataById[this.state.battleSceneUnit2.id].currentHealth,
+            to: this.state.unitDisplayDataById[this.state.battleSceneUnit2.id].currentHealth,
           }) : null,
         ),
       );
@@ -700,7 +699,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           },
             Formation(
             {
-              unitDisplayDataByID: this.state.unitDisplayDataByID,
+              unitDisplayDataById: this.state.unitDisplayDataById,
               formation: battle.side1,
               facesLeft: false,
 
@@ -726,7 +725,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             }),
             Formation(
             {
-              unitDisplayDataByID: this.state.unitDisplayDataByID,
+              unitDisplayDataById: this.state.unitDisplayDataById,
               formation: battle.side2,
               facesLeft: true,
 

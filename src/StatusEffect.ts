@@ -56,7 +56,7 @@ export default class StatusEffect
       templateType: this.template.type,
       turnsToStayActiveFor: this.turnsToStayActiveFor,
       turnsHasBeenActiveFor: this.turnsHasBeenActiveFor,
-      sourceUnitID: this.sourceUnit.id,
+      sourceUnitId: this.sourceUnit.id,
     });
   }
 }

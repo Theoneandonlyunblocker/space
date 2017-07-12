@@ -14,7 +14,7 @@ export function getUnitsInAbilityArea(
   target: Unit,
 ): Unit[]
 {
-  const includedUnitsByID:
+  const includedUnitsById:
   {
     [id: number]: Unit;
   } = {};
@@ -29,14 +29,14 @@ export function getUnitsInAbilityArea(
   {
     getUnitsInEffectArea(abilityEffect, battle, user, target).forEach(unit =>
     {
-      includedUnitsByID[unit.id] = unit;
+      includedUnitsById[unit.id] = unit;
     });
   });
 
   const units: Unit[] = [];
-  for (let id in includedUnitsByID)
+  for (let id in includedUnitsById)
   {
-    units.push(includedUnitsByID[id]);
+    units.push(includedUnitsById[id]);
   }
 
   return units;

@@ -4,7 +4,7 @@ import
   starBase,
 } from "../../defaultbuildings/templates/Templates";
 
-import MapGenDataByStarID from "./MapGenDataByStarID";
+import MapGenDataByStarId from "./MapGenDataByStarId";
 import triangulate from "./triangulate";
 
 import Building from "../../../src/Building";
@@ -49,7 +49,7 @@ export function linkStarsByTriangulation(stars: Star[]): void
 
 export function partiallySeverLinks(
   stars: Star[],
-  mapGenDataByStarID: MapGenDataByStarID,
+  mapGenDataByStarId: MapGenDataByStarId,
   minConnectionsToKeep: number,
   maxCuts: number,
 ): void
@@ -59,7 +59,7 @@ export function partiallySeverLinks(
     let cutsDone = 0;
 
     const neighbors = star.getAllLinks();
-    const mapGenDistance = mapGenDataByStarID[star.id].mapGenDistance;
+    const mapGenDistance = mapGenDataByStarId[star.id].mapGenDistance;
 
     if (neighbors.length > minConnectionsToKeep)
     {
@@ -122,7 +122,7 @@ export function getStarConnectedness(star: Star, maxRange: number): number
 }
 export function makeSectors(
   stars: Star[],
-  mapGenDataByStarID: MapGenDataByStarID,
+  mapGenDataByStarId: MapGenDataByStarId,
   minSize: number,
   maxSize: number,
 ): Region[]
@@ -150,14 +150,14 @@ export function makeSectors(
   const averageSize = (minSize + maxSize) / 2;
   const averageSectorsAmount = Math.round(totalStars / averageSize);
 
-  let sectorIDGen = 0;
-  const sectorsByID:
+  let sectorIdGen = 0;
+  const sectorsById:
   {
     [sectorId: number]: Region;
   } = {};
-  const sectorsByStarID:
+  const sectorsByStarId:
   {
-    [starID: number]: Region;
+    [starId: number]: Region;
   } = {};
 
   const unassignedStars: Star[] = stars.slice(0);
@@ -165,7 +165,7 @@ export function makeSectors(
 
   unassignedStars.sort((a, b) =>
   {
-    return mapGenDataByStarID[b.id].connectedness - mapGenDataByStarID[a.id].connectedness;
+    return mapGenDataByStarId[b.id].connectedness - mapGenDataByStarId[a.id].connectedness;
   });
 
   while (averageSectorsAmount > 0 && unassignedStars.length > 0)
@@ -173,21 +173,21 @@ export function makeSectors(
     const seedStar = unassignedStars.pop();
     const islandForSameSector = Star.getIslandForQualifier([seedStar], null, (a, b) =>
     {
-      return sectorsByStarID[a.id] === sectorsByStarID[b.id];
+      return sectorsByStarId[a.id] === sectorsByStarId[b.id];
     });
 
     const canFormMinSizeSector = islandForSameSector.length >= minSize;
 
     if (canFormMinSizeSector)
     {
-      const sectorID = sectorIDGen++;
+      const sectorId = sectorIdGen++;
 
-      const sector = new Region("sector_" + sectorID);
-      sectorsByID[sectorID] = sector;
+      const sector = new Region("sector_" + sectorId);
+      sectorsById[sectorId] = sector;
 
       let discoveryStarIndex = 0;
       sector.addStar(seedStar);
-      sectorsByStarID[seedStar.id] = sector;
+      sectorsByStarId[seedStar.id] = sector;
 
       while (sector.stars.length < minSize)
       {
@@ -196,7 +196,7 @@ export function makeSectors(
         const discoveryStarLinkedNeighbors = discoveryStar.getLinkedInRange(1).all;
         const frontier = discoveryStarLinkedNeighbors.filter(star =>
         {
-          const starHasSector = Boolean(sectorsByStarID[star.id]);
+          const starHasSector = Boolean(sectorsByStarId[star.id]);
           return !starHasSector;
         });
 
@@ -212,7 +212,7 @@ export function makeSectors(
             const borderLengthWithSector = sector.getBorderLengthWithStars([star]);
             const borderScore = borderLengthWithSector / 15;
 
-            const connectedness = mapGenDataByStarID[star.id].connectedness;
+            const connectedness = mapGenDataByStarId[star.id].connectedness;
 
             frontierSortScores[star.id] = borderScore - connectedness;
           });
@@ -226,7 +226,7 @@ export function makeSectors(
           unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
 
           sector.addStar(toAdd);
-          sectorsByStarID[toAdd.id] = sector;
+          sectorsByStarId[toAdd.id] = sector;
         }
 
         discoveryStarIndex++;
@@ -251,7 +251,7 @@ export function makeSectors(
 
     neighbors.forEach(neighbor =>
     {
-      const neighborSector = sectorsByStarID[neighbor.id];
+      const neighborSector = sectorsByStarId[neighbor.id];
       if (neighborSector)
       {
         if (!alreadyAddedNeighborSectors[neighborSector.id])
@@ -282,7 +282,7 @@ export function makeSectors(
 
         const unclaimedSectorLinkedStars = sectorLinkedStars.filter(star =>
         {
-          return !sectorsByStarID[star.id];
+          return !sectorsByStarId[star.id];
         });
 
         unclaimedNeighborsPerSector[sector.id] = unclaimedSectorLinkedStars.length;
@@ -304,13 +304,13 @@ export function makeSectors(
       });
 
       candidateSectors[0].addStar(star);
-      sectorsByStarID[star.id] = candidateSectors[0];
+      sectorsByStarId[star.id] = candidateSectors[0];
     }
   }
 
-  return Object.keys(sectorsByID).map(sectorID =>
+  return Object.keys(sectorsById).map(sectorId =>
   {
-    return sectorsByID[sectorID];
+    return sectorsById[sectorId];
   });
 }
 // export function setSectorDistributionFlags(sectors: Sector[])
@@ -335,7 +335,7 @@ export function makeSectors(
 // }
 export function distributeDistributablesPerSector<T extends Distributable>(
   sectors: Region[],
-  distributionFlagsBySectorID: {[sectorID: string]: string[]},
+  distributionFlagsBySectorId: {[sectorId: string]: string[]},
   distributablesByDistributionGroup: {[groupName: string]: T[]},
   placerFunction: (sector: Region, distributable: T) => void,
 ): void
@@ -349,9 +349,9 @@ export function distributeDistributablesPerSector<T extends Distributable>(
     [distributableName: string]: T;
   } = {};
 
-  const addedDistributablesByRegionID:
+  const addedDistributablesByRegionId:
   {
-    [regionID: string]:
+    [regionId: string]:
     {
       [distributableName: string]: boolean;
     },
@@ -370,7 +370,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
   sectors.forEach(sector =>
   {
     const alreadyAddedByWeight = getRelativeWeightsFromObject(probabilityWeights);
-    const distributionFlags = distributionFlagsBySectorID[sector.id];
+    const distributionFlags = distributionFlagsBySectorId[sector.id];
     const distributablesForSector = distributionFlags.reduce((distributables: T[], flag: string) =>
     {
       return distributables.concat(distributablesByDistributionGroup[flag]);
@@ -386,8 +386,8 @@ export function distributeDistributablesPerSector<T extends Distributable>(
     {
       return linkedNeighborRegions.some(linkedRegion =>
       {
-        return(addedDistributablesByRegionID[linkedRegion.id] &&
-          addedDistributablesByRegionID[linkedRegion.id][candidate.type]);
+        return(addedDistributablesByRegionId[linkedRegion.id] &&
+          addedDistributablesByRegionId[linkedRegion.id][candidate.type]);
       });
     });
 
@@ -411,11 +411,11 @@ export function distributeDistributablesPerSector<T extends Distributable>(
 
     placerFunction(sector, selectedType);
 
-    if (!addedDistributablesByRegionID[sector.id])
+    if (!addedDistributablesByRegionId[sector.id])
     {
-      addedDistributablesByRegionID[sector.id] = {};
+      addedDistributablesByRegionId[sector.id] = {};
     }
-    addedDistributablesByRegionID[sector.id][selectedKey] = true;
+    addedDistributablesByRegionId[sector.id][selectedKey] = true;
   });
 }
 export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCommand: boolean = true)

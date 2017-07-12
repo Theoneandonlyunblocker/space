@@ -9,7 +9,7 @@ export default class BattlePrepFormation
   public units: Unit[];
   public minUnits: number;
   public hasScouted: boolean;
-  public placedUnitPositionsByID:
+  public placedUnitPositionsById:
   {
     [id: number]: number[];
   } = {};
@@ -17,7 +17,7 @@ export default class BattlePrepFormation
   private player: Player;
   private isAttacker: boolean;
 
-  private cachedDisplayData: {[unitID: number]: UnitDisplayData};
+  private cachedDisplayData: {[unitId: number]: UnitDisplayData};
   private displayDataIsDirty: boolean = true;
 
   constructor(
@@ -51,7 +51,7 @@ export default class BattlePrepFormation
       }
     }
   }
-  public getDisplayData(): {[unitID: number]: UnitDisplayData}
+  public getDisplayData(): {[unitId: number]: UnitDisplayData}
   {
     if (this.displayDataIsDirty)
     {
@@ -73,18 +73,18 @@ export default class BattlePrepFormation
     );
     this.forEachUnitInFormation((unit, pos) =>
     {
-      this.placedUnitPositionsByID[unit.id] = pos;
+      this.placedUnitPositionsById[unit.id] = pos;
     });
     this.displayDataIsDirty = true;
   }
   // human formation stuff
   public getUnitPosition(unit: Unit): number[]
   {
-    return this.placedUnitPositionsByID[unit.id];
+    return this.placedUnitPositionsById[unit.id];
   }
   public clearFormation(): void
   {
-    this.placedUnitPositionsByID = {};
+    this.placedUnitPositionsById = {};
     this.formation = getNullFormation();
     this.displayDataIsDirty = true;
   }
@@ -135,7 +135,7 @@ export default class BattlePrepFormation
       this.removeUnit(unit);
 
       this.formation[position[0]][position[1]] = unit;
-      this.placedUnitPositionsByID[unit.id] = position;
+      this.placedUnitPositionsById[unit.id] = position;
       this.displayDataIsDirty = true;
     }
   }
@@ -148,7 +148,7 @@ export default class BattlePrepFormation
     }
 
     this.formation[position[0]][position[1]] = null;
-    delete this.placedUnitPositionsByID[unit.id];
+    delete this.placedUnitPositionsById[unit.id];
     this.displayDataIsDirty = true;
   }
 
@@ -174,13 +174,13 @@ export default class BattlePrepFormation
   }
   private getFormationDisplayData()
   {
-    const displayDataByID: {[unitID: number]: UnitDisplayData} = {};
+    const displayDataById: {[unitId: number]: UnitDisplayData} = {};
 
     this.forEachUnitInFormation(unit =>
     {
-      displayDataByID[unit.id] = unit.getDisplayData("battlePrep");
+      displayDataById[unit.id] = unit.getDisplayData("battlePrep");
     });
 
-    return displayDataByID;
+    return displayDataById;
   }
 }

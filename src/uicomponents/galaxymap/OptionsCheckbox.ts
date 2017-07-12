@@ -23,7 +23,7 @@ export class OptionsCheckboxComponent extends React.Component<PropTypes, StateTy
 
   render()
   {
-    const checkboxID = "options-checkbox-" + this.props.label;
+    const checkboxId = "options-checkbox-" + this.props.label;
 
     return(
       React.DOM.div(
@@ -33,13 +33,13 @@ export class OptionsCheckboxComponent extends React.Component<PropTypes, StateTy
         React.DOM.input(
         {
           type: "checkbox",
-          id: checkboxID,
+          id: checkboxId,
           checked: this.props.isChecked,
           onChange: this.props.onChangeFN,
         }),
         React.DOM.label(
         {
-          htmlFor: checkboxID,
+          htmlFor: checkboxId,
         },
           this.props.label,
         ),

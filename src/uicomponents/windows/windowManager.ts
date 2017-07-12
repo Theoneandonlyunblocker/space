@@ -21,11 +21,11 @@ export function getNewZIndex(component: WindowContainerComponent): number
 }
 
 
-const byID = new IdDictionary<WindowContainerComponent, WindowContainerComponent>();
+const byId = new IdDictionary<WindowContainerComponent, WindowContainerComponent>();
 
 export function getDefaultInitialPosition(rect: Rect, container: HTMLElement): Rect
 {
-  const windowsByZIndex = byID.sort((a, b) =>
+  const windowsByZIndex = byId.sort((a, b) =>
   {
     return b.state.zIndex - a.state.zIndex;
   });
@@ -56,15 +56,15 @@ export function getDefaultInitialPosition(rect: Rect, container: HTMLElement): R
 
 export function handleMount(component: WindowContainerComponent): void
 {
-  if (byID.has(component))
+  if (byId.has(component))
   {
-    throw new Error(`Duplicate window ID ${component.id} in window ${component}`);
+    throw new Error(`Duplicate window Id ${component.id} in window ${component}`);
   }
 
-  byID.set(component, component);
+  byId.set(component, component);
 }
 
 export function handleUnount(component: WindowContainerComponent): void
 {
-  byID.delete(component);
+  byId.delete(component);
 }

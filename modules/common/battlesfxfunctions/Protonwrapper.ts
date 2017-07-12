@@ -13,7 +13,7 @@ export default class ProtonWrapper
   {
     [emitterKey: string]: Proton.Emitter;
   } = {};
-  private emitterKeysByID:
+  private emitterKeysById:
   {
     [emitterId: string]: string;
   } = {};
@@ -70,7 +70,7 @@ export default class ProtonWrapper
     sprite.anchor.y = 0.5;
     particle.sprite = sprite;
     const emitter = <Proton.Emitter> particle.parent;
-    const emitterKey = this.emitterKeysByID[emitter.id];
+    const emitterKey = this.emitterKeysById[emitter.id];
     if (this.onSpriteCreated[emitterKey])
     {
       this.onSpriteCreated[emitterKey](sprite);
@@ -84,7 +84,7 @@ export default class ProtonWrapper
     if (particle.parent)
     {
       const emitter = <Proton.Emitter> particle.parent;
-      const emitterKey = this.emitterKeysByID[emitter.id];
+      const emitterKey = this.emitterKeysById[emitter.id];
       if (this.onParticleUpdated[emitterKey])
       {
         this.onParticleUpdated[emitterKey](particle);
@@ -107,17 +107,17 @@ export default class ProtonWrapper
   public addEmitter(emitter: Proton.Emitter, key: string)
   {
     this.emitters[key] = emitter;
-    this.emitterKeysByID[emitter.id] = key;
+    this.emitterKeysById[emitter.id] = key;
 
     this.proton.addEmitter(emitter);
   }
-  private getEmitterKeyWithID(id: string)
+  private getEmitterKeyWithId(id: string)
   {
-    return this.emitterKeysByID[id];
+    return this.emitterKeysById[id];
   }
   private getEmitterKey(emitter: Proton.Emitter)
   {
-    return this.getEmitterKeyWithID(emitter.id) || null;
+    return this.getEmitterKeyWithId(emitter.id) || null;
   }
   public removeEmitterWithKey(key: string)
   {
@@ -125,8 +125,8 @@ export default class ProtonWrapper
 
     this.destroyEmitter(emitter);
 
-    this.emitterKeysByID[emitter.id] = null;
-    delete this.emitterKeysByID[emitter.id];
+    this.emitterKeysById[emitter.id] = null;
+    delete this.emitterKeysById[emitter.id];
 
     this.emitters[key] = null;
     delete this.emitters[key];

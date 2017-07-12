@@ -1,8 +1,8 @@
 import MapGenData from "./MapGenData";
 
-declare interface MapGenDataByStarID
+declare interface MapGenDataByStarId
 {
-  [starID: number]: MapGenData;
+  [starId: number]: MapGenData;
 }
 
-export default MapGenDataByStarID;
+export default MapGenDataByStarId;

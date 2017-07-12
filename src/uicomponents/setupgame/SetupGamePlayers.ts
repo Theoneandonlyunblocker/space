@@ -23,10 +23,10 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   displayName: string = "SetupGamePlayers";
 
   state: StateType;
-  newPlayerID: number = 0;
-  playerSetupComponentsByID:
+  newPlayerId: number = 0;
+  playerSetupComponentsById:
   {
-    [playerID: number]: PlayerSetupComponent;
+    [playerId: number]: PlayerSetupComponent;
   } = {};
 
   constructor(props: PropTypes)
@@ -52,7 +52,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     const players: number[] = [];
     for (let i = 0; i < this.props.maxPlayers; i++)
     {
-      players.push(this.newPlayerID++);
+      players.push(this.newPlayerId++);
     }
 
     return(
@@ -86,7 +86,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
     for (let i = 0; i < amountToMake; i++)
     {
-      newIds.push(this.newPlayerID++);
+      newIds.push(this.newPlayerId++);
     }
 
     this.setState(
@@ -125,17 +125,17 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
       }),
     }, () =>
     {
-      this.cleanSetupComponentsByID();
+      this.cleanSetupComponentsById();
     });
   }
 
-  private cleanSetupComponentsByID(): void
+  private cleanSetupComponentsById(): void
   {
-    for (let playerID in this.playerSetupComponentsByID)
+    for (let playerId in this.playerSetupComponentsById)
     {
-      if (!this.playerSetupComponentsByID[playerID])
+      if (!this.playerSetupComponentsById[playerId])
       {
-        delete this.playerSetupComponentsByID[playerID];
+        delete this.playerSetupComponentsById[playerId];
       }
     };
   }
@@ -152,9 +152,9 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
   randomizeAllPlayers()
   {
-    for (let id in this.playerSetupComponentsByID)
+    for (let id in this.playerSetupComponentsById)
     {
-      const player = this.playerSetupComponentsByID[id];
+      const player = this.playerSetupComponentsById[id];
 
       player.randomize();
     }
@@ -163,9 +163,9 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   makeAllPlayers()
   {
     const players: Player[] = [];
-    for (let id in this.playerSetupComponentsByID)
+    for (let id in this.playerSetupComponentsById)
     {
-      players.push(this.playerSetupComponentsByID[id].makePlayer());
+      players.push(this.playerSetupComponentsById[id].makePlayer());
     }
 
     return players;
@@ -174,19 +174,19 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   render()
   {
     const playerSetups: React.ReactElement<any>[] = [];
-    this.state.playerKeys.forEach((playerID, i) =>
+    this.state.playerKeys.forEach((playerId, i) =>
     {
       playerSetups.push(PlayerSetup(
       {
-        key: playerID,
-        keyTODO: playerID,
+        key: playerId,
+        keyTODO: playerId,
         ref: (component: PlayerSetupComponent) =>
         {
-          this.playerSetupComponentsByID[playerID] = component;
+          this.playerSetupComponentsById[playerId] = component;
         },
         removePlayers: this.removePlayers,
         setActiveSetterComponent: this.setActiveColorSetter,
-        initialName: "Player " + playerID,
+        initialName: "Player " + playerId,
         isHuman: i === 0,
         setHuman: this.setHumanPlayer,
       }));

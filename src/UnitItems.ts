@@ -197,7 +197,7 @@ export default class UnitItems
     return(
     {
       maxItemSlots: this.itemSlots,
-      itemIDs: this.items.map(item => item.id),
+      itemIds: this.items.map(item => item.id),
     });
   }
 

@@ -474,21 +474,21 @@ export default class Player
   // TODO refactor | should probably be moved
   public getNeighboringPlayers(): Player[]
   {
-    const alreadyAddedPlayersByID:
+    const alreadyAddedPlayersById:
     {
-      [playerID: number]: Player;
+      [playerId: number]: Player;
     } = {};
 
     const neighboringStars = this.getNeighboringStars();
 
     neighboringStars.forEach(star =>
     {
-      alreadyAddedPlayersByID[star.owner.id] = star.owner;
+      alreadyAddedPlayersById[star.owner.id] = star.owner;
     });
 
-    return Object.keys(alreadyAddedPlayersByID).map(playerID =>
+    return Object.keys(alreadyAddedPlayersById).map(playerId =>
     {
-      return alreadyAddedPlayersByID[playerID];
+      return alreadyAddedPlayersById[playerId];
     });
   }
   updateVisionInStar(star: Star): void

@@ -163,12 +163,12 @@ export class Front
     const pureFleetsByLocation = this.getFleetsByLocation(pureFleets);
     const impureUnitsByLocation = this.getUnitsByLocation(unitsInImpureFleets);
 
-    for (let locationID in impureUnitsByLocation)
+    for (let locationId in impureUnitsByLocation)
     {
-      if (pureFleetsByLocation[locationID])
+      if (pureFleetsByLocation[locationId])
       {
-        const fleet = pureFleetsByLocation[locationID][0];
-        impureUnitsByLocation[locationID].forEach(unitToTransfer =>
+        const fleet = pureFleetsByLocation[locationId][0];
+        impureUnitsByLocation[locationId].forEach(unitToTransfer =>
         {
           const fleetToTransferFrom = unitToTransfer.fleet;
           fleetToTransferFrom.transferUnit(fleet, unitToTransfer);
@@ -179,14 +179,14 @@ export class Front
           }
         });
 
-        delete impureUnitsByLocation[locationID];
+        delete impureUnitsByLocation[locationId];
       }
     }
 
     // create new pure fleets from impure units
-    for (let locationID in impureUnitsByLocation)
+    for (let locationId in impureUnitsByLocation)
     {
-      const units = impureUnitsByLocation[locationID];
+      const units = impureUnitsByLocation[locationId];
       const player = units[0].fleet.player;
       const location = units[0].fleet.location;
 
@@ -210,11 +210,11 @@ export class Front
   }
   private mergeFleetsWithSharedLocation(fleetsToMerge: Fleet[]): void
   {
-    const fleetsByLocationID = this.getFleetsByLocation(fleetsToMerge);
+    const fleetsByLocationId = this.getFleetsByLocation(fleetsToMerge);
 
-    for (let locationID in fleetsByLocationID)
+    for (let locationId in fleetsByLocationId)
     {
-      const fleetsAtLocation = fleetsByLocationID[locationID].sort(Fleet.sortByImportance);
+      const fleetsAtLocation = fleetsByLocationId[locationId].sort(Fleet.sortByImportance);
 
       // only goes down to i = 1
       for (let i = fleetsAtLocation.length - 1; i >= 1; i--)
@@ -225,21 +225,21 @@ export class Front
   }
   private getUnitsInImpureFleets(units: Unit[]): Unit[]
   {
-    const fleetPurityByID:
+    const fleetPurityById:
     {
-      [fleetID: number]: boolean;
+      [fleetId: number]: boolean;
     } = {};
 
     return units.filter(unit =>
     {
-      if (fleetPurityByID.hasOwnProperty("" + unit.fleet.id))
+      if (fleetPurityById.hasOwnProperty("" + unit.fleet.id))
       {
-        return !fleetPurityByID[unit.fleet.id];
+        return !fleetPurityById[unit.fleet.id];
       }
       else
       {
         const fleetIsPure = this.isFleetPure(unit.fleet);
-        fleetPurityByID[unit.fleet.id] = fleetIsPure;
+        fleetPurityById[unit.fleet.id] = fleetIsPure;
 
         return !fleetIsPure;
       }

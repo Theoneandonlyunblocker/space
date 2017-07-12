@@ -33,7 +33,7 @@ interface StateType
 
   currentDisplayData?: TurnOrderDisplayData[];
   pendingDisplayData?: TurnOrderDisplayData[];
-  pendingDeadUnitsByID?: {[id: number]: boolean};
+  pendingDeadUnitsById?: {[id: number]: boolean};
   pendingDeadUnitIndices?: {[index: number]: boolean};
 
   insertIndex?: number;
@@ -69,7 +69,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
       currentDisplayData: this.props.turnOrderDisplayData,
       pendingDisplayData: undefined,
-      pendingDeadUnitsByID: {},
+      pendingDeadUnitsById: {},
       pendingDeadUnitIndices: {},
 
       insertIndex: undefined,
@@ -107,7 +107,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         }
       }
 
-      const pendingDeadUnitsByID: {[id: number]: boolean} = {};
+      const pendingDeadUnitsById: {[id: number]: boolean} = {};
       this.props.turnOrderDisplayData.forEach(currentDisplayData =>
       {
         const unit = currentDisplayData.unit;
@@ -116,7 +116,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
           return newDisplayData.unit === unit;
         }))
         {
-          pendingDeadUnitsByID[unit.id] = true;
+          pendingDeadUnitsById[unit.id] = true;
         }
       });
 
@@ -126,7 +126,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       this.setState(
       {
         pendingDisplayData: newProps.turnOrderDisplayData,
-        pendingDeadUnitsByID: pendingDeadUnitsByID,
+        pendingDeadUnitsById: pendingDeadUnitsById,
 
         insertIndex: shouldInsertRemovedUnit ? newRemovedUnitIndex : undefined,
       }, () =>
@@ -153,13 +153,13 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   }
   private removeDeadUnits()
   {
-    if (Object.keys(this.state.pendingDeadUnitsByID).length > 0)
+    if (Object.keys(this.state.pendingDeadUnitsById).length > 0)
     {
       const deadUnitIndices: {[index: number]: boolean} = {};
 
       this.state.currentDisplayData.forEach((displayData, i) =>
       {
-        if (this.state.pendingDeadUnitsByID[displayData.unit.id])
+        if (this.state.pendingDeadUnitsById[displayData.unit.id])
         {
           deadUnitIndices[i] = true;
         }
@@ -195,7 +195,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         {
           currentDisplayData: this.state.currentDisplayData.filter(d =>
           {
-            return !this.state.pendingDeadUnitsByID[d.unit.id];
+            return !this.state.pendingDeadUnitsById[d.unit.id];
           }),
         }, () =>
         {
@@ -303,7 +303,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       {
         case AnimationState.removeDeadUnit:
         {
-          if (this.state.pendingDeadUnitsByID[displayData.unit.id])
+          if (this.state.pendingDeadUnitsById[displayData.unit.id])
           {
             unitAnimationState = AnimationState.removeDeadUnit;
           }

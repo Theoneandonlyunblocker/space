@@ -34,7 +34,7 @@ function rocketAttack(params: SFXParams)
      const explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + ".png");
      explosionTextures.push(explosionTexture);
   }
-  const explosionsByID:
+  const explosionsById:
   {
     [id: number]:
     {
@@ -77,14 +77,14 @@ function rocketAttack(params: SFXParams)
       const remainingTime = 1 - time;
       const remainingTimePerFrame = remainingTime / explosionTextures.length;
 
-      explosionsByID[projectile.id] =
+      explosionsById[projectile.id] =
       {
         clip: new PIXI.extras.AnimatedSprite(explosionTextures),
         startTime: time,
         relativeTimePerFrame: Math.min(relativeTimePerExplosionFrame, remainingTimePerFrame),
       };
 
-      const explosionClip = explosionsByID[projectile.id].clip;
+      const explosionClip = explosionsById[projectile.id].clip;
       explosionClip.anchor.set(0.5, 0.5);
       explosionClip.loop = false;
       explosionClip.position.copy(projectile.sprite.position);
@@ -93,7 +93,7 @@ function rocketAttack(params: SFXParams)
     },
     animateImpact: (projectile, container, time) =>
     {
-      const explosion = explosionsByID[projectile.id];
+      const explosion = explosionsById[projectile.id];
       const relativeTimePlayed = time - explosion.startTime;
       const targetFrame = Math.round(relativeTimePlayed / explosion.relativeTimePerFrame);
 

@@ -14,8 +14,8 @@ import
 
 export interface AbilityUseEffect
 {
-  effectID: string;
-  changedUnitDisplayDataByID: {[unitId: number]: UnitDisplayData};
+  effectId: string;
+  changedUnitDisplayDataById: {[unitId: number]: UnitDisplayData};
   sfx: BattleSFXTemplate;
   sfxUser: Unit;
   sfxTarget: Unit;
@@ -138,7 +138,7 @@ function executeAbilityEffectData(
 
   return true;
 }
-function getIDForAbilityUseEffect(abilityEffectData: AbilityEffectData): string
+function getIdForAbilityUseEffect(abilityEffectData: AbilityEffectData): string
 {
   let sourceString = "";
   if (abilityEffectData.sourceStatusEffect)
@@ -170,8 +170,8 @@ function executeAbilityEffectDataAndGetUseEffect(
 
   return(
   {
-    effectID: getIDForAbilityUseEffect(abilityEffectData),
-    changedUnitDisplayDataByID: unitDisplayData,
+    effectId: getIdForAbilityUseEffect(abilityEffectData),
+    changedUnitDisplayDataById: unitDisplayData,
     sfx: abilityEffectData.effectTemplate.sfx,
     sfxUser: abilityEffectData.user,
     sfxTarget: abilityEffectData.target,

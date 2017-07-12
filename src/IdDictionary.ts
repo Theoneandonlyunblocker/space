@@ -1,16 +1,16 @@
-interface ObjectWithID
+interface ObjectWithId
 {
   id: number;
 }
 
-export class IdDictionary<K extends ObjectWithID, V>
+export class IdDictionary<K extends ObjectWithId, V>
 {
   readonly [a: number]: boolean; // TODO 2017.02.24 | what is this? legacy?
-  private valuesByID:
+  private valuesById:
   {
     [id: number]: V;
   } = {};
-  private keysByID:
+  private keysById:
   {
     [id: number]: K;
   } = {};
@@ -28,39 +28,39 @@ export class IdDictionary<K extends ObjectWithID, V>
 
   public has(key: K): boolean
   {
-    return Boolean(this.valuesByID[key.id]);
+    return Boolean(this.valuesById[key.id]);
   }
   public get(key: K): V | undefined
   {
-    return this.valuesByID[key.id];
+    return this.valuesById[key.id];
   }
-  public getByID(id: number): V | undefined
+  public getById(id: number): V | undefined
   {
-    return this.valuesByID[id];
+    return this.valuesById[id];
   }
   public set(key: K, value: V): void
   {
-    this.valuesByID[key.id] = value;
-    this.keysByID[key.id] = key;
+    this.valuesById[key.id] = value;
+    this.keysById[key.id] = key;
   }
   public setIfDoesntExist(key: K, value: V): void
   {
-    if (!this.keysByID[key.id])
+    if (!this.keysById[key.id])
     {
       this.set(key, value);
     }
   }
   public delete(key: K): void
   {
-    delete this.valuesByID[key.id];
-    delete this.keysByID[key.id];
+    delete this.valuesById[key.id];
+    delete this.keysById[key.id];
   }
 
   public forEach(callback: (key: K, value: V) => void): void
   {
-    for (let ID in this.keysByID)
+    for (let Id in this.keysById)
     {
-      callback(this.keysByID[ID], this.valuesByID[ID]);
+      callback(this.keysById[Id], this.valuesById[Id]);
     }
   }
   public filter(filterFN: (key: K, value: V) => boolean): IdDictionary<K, V>
@@ -82,12 +82,12 @@ export class IdDictionary<K extends ObjectWithID, V>
   {
     const zipped: T[] = [];
 
-    for (let id in this.keysByID)
+    for (let id in this.keysById)
     {
       const zippedPair =
       {
-        [keyName]: this.keysByID[id],
-        [valueName]: this.valuesByID[id],
+        [keyName]: this.keysById[id],
+        [valueName]: this.valuesById[id],
       };
 
       zipped.push(<T>zippedPair);
@@ -98,14 +98,14 @@ export class IdDictionary<K extends ObjectWithID, V>
   public sort(sortingFN: (a: V, b: V) => number): K[]
   {
     const keys: K[] = [];
-    for (let id in this.keysByID)
+    for (let id in this.keysById)
     {
-      keys.push(this.keysByID[id]);
+      keys.push(this.keysById[id]);
     }
 
     keys.sort((a, b) =>
     {
-      const sortingValue = sortingFN(this.valuesByID[a.id], this.valuesByID[b.id]);
+      const sortingValue = sortingFN(this.valuesById[a.id], this.valuesById[b.id]);
       if (sortingValue)
       {
         return sortingValue;

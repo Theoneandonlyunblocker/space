@@ -280,7 +280,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           key: "playerFormation",
           formation: battlePrep.humanFormation.formation,
           facesLeft: false,
-          unitDisplayDataByID: battlePrep.humanFormation.getDisplayData(),
+          unitDisplayDataById: battlePrep.humanFormation.getDisplayData(),
 
           isInBattlePrep: true,
 
@@ -307,7 +307,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           key: "enemyFormation",
           formation: battlePrep.enemyFormation.formation,
           facesLeft: true,
-          unitDisplayDataByID: battlePrep.enemyFormation.getDisplayData(),
+          unitDisplayDataById: battlePrep.enemyFormation.getDisplayData(),
 
           isInBattlePrep: true,
 
@@ -430,7 +430,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
         {
           units: battlePrep.humanFormation.units,
           selectedUnit: this.state.selectedUnit,
-          reservedUnits: battlePrep.humanFormation.placedUnitPositionsByID,
+          reservedUnits: battlePrep.humanFormation.placedUnitPositionsById,
           hoveredUnit: this.state.hoveredUnit,
 
           checkTimesActed: true,
