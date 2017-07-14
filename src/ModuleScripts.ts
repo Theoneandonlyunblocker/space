@@ -7,13 +7,17 @@ import {UnitScripts} from "./modulescriptinterfaces/UnitScripts";
 // TODO 2017.06.13 | move non-internal stuff from eventManager to here
 export default class ModuleScripts implements AllScripts
 {
-  public readonly unit: UnitScripts =
+  public readonly battle: BattleScripts =
   {
-    removeFromPlayer: [],
+    battleFinish: [],
   };
   public readonly game: GameScripts =
   {
     afterInit: [],
+  };
+  public readonly unit: UnitScripts =
+  {
+    removeFromPlayer: [],
   };
 
   constructor()
