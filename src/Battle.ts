@@ -50,8 +50,9 @@ export default class Battle
 
   public isVirtual: boolean = false; // true when a clone made by battle ai
   public isSimulated: boolean = false; // true when battle is between two ai players
-  public ended: boolean = false;
 
+  public ended: boolean = false;
+  public victor: Player;
   public capturedUnits: Unit[];
   public deadUnits: Unit[];
 
@@ -252,7 +253,7 @@ export default class Battle
   // Battle End
   public finishBattle(forcedVictor?: Player): void
   {
-    const victor = forcedVictor || this.getVictor();
+    const victor = this.victor = forcedVictor || this.getVictor();
 
     for (let i = 0; i < this.deadUnits.length; i++)
     {
