@@ -69,7 +69,7 @@ export default function setupIndependents(props:
       star,
       globalStrength,
       localStrength,
-      app.moduleData.ruleSet.battle.maxUnitsPerSide,
+      activeModuleData.ruleSet.battle.maxUnitsPerSide,
     );
   });
 }

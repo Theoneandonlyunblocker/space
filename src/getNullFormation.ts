@@ -5,8 +5,8 @@ export default function getNullFormation(): Unit[][]
 {
   const nullFormation: Unit[][] = [];
 
-  const rows = app.moduleData.ruleSet.battle.rowsPerFormation;
-  const columns = app.moduleData.ruleSet.battle.cellsPerRow;
+  const rows = activeModuleData.ruleSet.battle.rowsPerFormation;
+  const columns = activeModuleData.ruleSet.battle.cellsPerRow;
   for (let i = 0; i < rows; i++)
   {
     nullFormation.push([]);

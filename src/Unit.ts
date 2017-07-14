@@ -214,10 +214,10 @@ export default class Unit
     const healthMultiplier = isFinite(props.healthMultiplier) ? props.healthMultiplier : 1;
 
 
-    const baseAttributeValue = app.moduleData.ruleSet.units.baseAttributeValue * attributeMultiplier;
-    const attributeVariance = app.moduleData.ruleSet.units.attributeVariance;
-    const baseHealthValue = app.moduleData.ruleSet.units.baseHealthValue * healthMultiplier;
-    const healthVariance = app.moduleData.ruleSet.units.healthVariance;
+    const baseAttributeValue = activeModuleData.ruleSet.units.baseAttributeValue * attributeMultiplier;
+    const attributeVariance = activeModuleData.ruleSet.units.attributeVariance;
+    const baseHealthValue = activeModuleData.ruleSet.units.baseHealthValue * healthMultiplier;
+    const healthVariance = activeModuleData.ruleSet.units.healthVariance;
 
     const baseHealth = baseHealthValue * template.maxHealth;
     const health = randInt(baseHealth - healthVariance, baseHealth + healthVariance);
@@ -249,7 +249,7 @@ export default class Unit
       maxItemSlots: template.itemSlots,
       items: [],
 
-      portrait: race.getUnitPortrait(template, app.moduleData.Templates.Portraits),
+      portrait: race.getUnitPortrait(template, activeModuleData.Templates.Portraits),
       race: race,
     });
 
@@ -259,7 +259,7 @@ export default class Unit
   {
     const unit = new Unit(
     {
-      template: app.moduleData.Templates.Units[data.templateType],
+      template: activeModuleData.Templates.Units[data.templateType],
 
       id: data.id,
       name: data.name,
@@ -275,11 +275,11 @@ export default class Unit
 
       abilities: data.abilityTemplateTypes.map(templateType =>
       {
-        return app.moduleData.Templates.Abilities[templateType];
+        return activeModuleData.Templates.Abilities[templateType];
       }),
       passiveSkills: data.passiveSkillTemplateTypes.map(templateType =>
       {
-        return app.moduleData.Templates.PassiveSkills[templateType];
+        return activeModuleData.Templates.PassiveSkills[templateType];
       }),
 
       level: data.level,
@@ -301,7 +301,7 @@ export default class Unit
          statusEffects: [],
          queuedAction:  data.battleStats.queuedAction ?
           {
-            ability: app.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
+            ability: activeModuleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
             targetId: data.battleStats.queuedAction.targetId,
             turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
             timesInterrupted: data.battleStats.queuedAction.timesInterrupted,
@@ -313,10 +313,10 @@ export default class Unit
       items: [],
 
       portrait: data.portraitKey ?
-        app.moduleData.Templates.Portraits[data.portraitKey] :
+        activeModuleData.Templates.Portraits[data.portraitKey] :
         null,
       race: data.raceKey ?
-        app.moduleData.Templates.Races[data.raceKey] :
+        activeModuleData.Templates.Races[data.raceKey] :
         null,
     });
 
@@ -365,7 +365,7 @@ export default class Unit
       position: null,
       guardAmount: 0,
       guardCoverage: null,
-      captureChance: app.moduleData.ruleSet.battle.baseUnitCaptureChance,
+      captureChance: activeModuleData.ruleSet.battle.baseUnitCaptureChance,
       statusEffects: [],
       lastHealthBeforeReceivingDamage: this.currentHealth,
       queuedAction: null,
@@ -760,7 +760,7 @@ export default class Unit
     }
 
 
-    app.moduleData.scripts.unit.removeFromPlayer.forEach(scriptFN =>
+    activeModuleData.scripts.unit.removeFromPlayer.forEach(scriptFN =>
     {
       scriptFN(this);
     });

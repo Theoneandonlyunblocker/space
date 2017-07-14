@@ -659,7 +659,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       BattleBackground(
       {
         backgroundSeed: this.props.battle.battleData.location.getSeed(),
-        backgroundDrawingFunction: app.moduleData.starBackgroundDrawingFunction,
+        backgroundDrawingFunction: activeModuleData.starBackgroundDrawingFunction,
         getBlurArea: this.getBlurArea,
         ref: (component: BattleBackgroundComponent) =>
         {

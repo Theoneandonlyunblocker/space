@@ -30,7 +30,7 @@ export default class NotificationFilter
   }
   setDefaultFilterStates()
   {
-    const notifications = app.moduleData.Templates.Notifications;
+    const notifications = activeModuleData.Templates.Notifications;
 
     for (let key in notifications)
     {
@@ -115,7 +115,7 @@ export default class NotificationFilter
         filterState: NotificationFilterState[];
       }[],
     } = {};
-    const notifications = app.moduleData.Templates.Notifications;
+    const notifications = activeModuleData.Templates.Notifications;
 
     for (let key in this.filters)
     {

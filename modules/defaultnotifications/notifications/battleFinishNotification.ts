@@ -63,7 +63,7 @@ const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTy
   },
 };
 
-app.moduleData.scripts.add(
+activeModuleData.scripts.add(
 {
   battle:
   {

@@ -354,7 +354,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
             {
               getBlurArea: this.getBackgroundBlurArea,
               backgroundSeed: battlePrep.battleData.location.getSeed(),
-              backgroundDrawingFunction: app.moduleData.starBackgroundDrawingFunction,
+              backgroundDrawingFunction: activeModuleData.starBackgroundDrawingFunction,
               ref: (component: BattleBackgroundComponent) =>
               {
                 this.ref_TODO_background = component;

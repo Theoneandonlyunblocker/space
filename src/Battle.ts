@@ -232,7 +232,7 @@ export default class Battle
   }
   private getRowByPosition(position: number): (Unit | null)[]
   {
-    const rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+    const rowsPerSide = activeModuleData.ruleSet.battle.rowsPerFormation;
     const side: UnitBattleSide = position < rowsPerSide ? "side1" : "side2";
     const relativePosition = position % rowsPerSide;
 
@@ -307,7 +307,7 @@ export default class Battle
       eventManager.dispatchEvent("switchScene", "galaxyMap");
     }
 
-    app.moduleData.scripts.battle.battleFinish.forEach(script =>
+    activeModuleData.scripts.battle.battleFinish.forEach(script =>
     {
       script(this);
     });
@@ -397,21 +397,21 @@ export default class Battle
 
     if (player.isIndependent)
     {
-      deathChance = app.moduleData.ruleSet.battle.independentUnitDeathChance;
+      deathChance = activeModuleData.ruleSet.battle.independentUnitDeathChance;
     }
     else if (player.isAI)
     {
-      deathChance = app.moduleData.ruleSet.battle.aiUnitDeathChance;
+      deathChance = activeModuleData.ruleSet.battle.aiUnitDeathChance;
     }
     else
     {
-      deathChance = app.moduleData.ruleSet.battle.humanUnitDeathChance;
+      deathChance = activeModuleData.ruleSet.battle.humanUnitDeathChance;
     }
 
     const playerDidLose = (victor && player !== victor);
     if (playerDidLose)
     {
-      deathChance += app.moduleData.ruleSet.battle.loserUnitExtraDeathChance;
+      deathChance += activeModuleData.ruleSet.battle.loserUnitExtraDeathChance;
     }
 
     return deathChance;
@@ -493,7 +493,7 @@ export default class Battle
     const victor = this.getVictor();
 
     // TODO content | Abilities that increase max captured units
-    const maxCapturedUnits = app.moduleData.ruleSet.battle.baseMaxCapturedUnits;
+    const maxCapturedUnits = activeModuleData.ruleSet.battle.baseMaxCapturedUnits;
     this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
     this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
   }
@@ -572,7 +572,7 @@ export default class Battle
     }
     else
     {
-      const rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+      const rowsPerSide = activeModuleData.ruleSet.battle.rowsPerFormation;
 
       return [relativePosition[0] + rowsPerSide, relativePosition[1]];
     }
@@ -608,7 +608,7 @@ export default class Battle
     // start at 1 because frontmost row shouldn't be healthy if this is called
     for (let i = 1; i < formation.length; i++)
     {
-      const absoluteRow = side === "side1" ? i : i + app.moduleData.ruleSet.battle.rowsPerFormation;
+      const absoluteRow = side === "side1" ? i : i + activeModuleData.ruleSet.battle.rowsPerFormation;
       if (this.getTotalCurrentHealthForRow(absoluteRow) > 0)
       {
         nextHealthyRowIndex = i;
@@ -635,7 +635,7 @@ export default class Battle
   }
   private shiftRowsIfNeeded(): void
   {
-    const rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+    const rowsPerSide = activeModuleData.ruleSet.battle.rowsPerFormation;
     const side1FrontRowHealth = this.getTotalCurrentHealthForRow(rowsPerSide - 1);
     if (side1FrontRowHealth <= 0)
     {

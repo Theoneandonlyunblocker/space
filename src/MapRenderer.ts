@@ -113,9 +113,9 @@ export default class MapRenderer
   }
   initLayers()
   {
-    for (let layerKey in app.moduleData.Templates.MapRendererLayers)
+    for (let layerKey in activeModuleData.Templates.MapRendererLayers)
     {
-      const template = app.moduleData.Templates.MapRendererLayers[layerKey];
+      const template = activeModuleData.Templates.MapRendererLayers[layerKey];
       const layer = new MapRendererLayer(template);
       this.layers[layerKey] = layer;
     }
@@ -147,9 +147,9 @@ export default class MapRenderer
       this.mapModes[mapModeKey] = mapMode;
     };
 
-    for (let mapModeKey in app.moduleData.Templates.MapRendererMapModes)
+    for (let mapModeKey in activeModuleData.Templates.MapRendererMapModes)
     {
-      const template = app.moduleData.Templates.MapRendererMapModes[mapModeKey];
+      const template = activeModuleData.Templates.MapRendererMapModes[mapModeKey];
       buildMapMode(mapModeKey, template);
     }
 

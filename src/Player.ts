@@ -878,7 +878,7 @@ export default class Player
   getResearchSpeed(): number
   {
     let research = 0;
-    research += app.moduleData.ruleSet.research.baseResearchSpeed;
+    research += activeModuleData.ruleSet.research.baseResearchSpeed;
 
     for (let i = 0; i < this.controlledLocations.length; i++)
     {
@@ -929,9 +929,9 @@ export default class Player
     // TODO manufactory
     const itemTypes: ItemTemplate[] = [];
 
-    for (let key in app.moduleData.Templates.Items)
+    for (let key in activeModuleData.Templates.Items)
     {
-      itemTypes.push(app.moduleData.Templates.Items[key]);
+      itemTypes.push(activeModuleData.Templates.Items[key]);
     }
 
     return itemTypes;

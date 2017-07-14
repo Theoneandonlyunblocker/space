@@ -44,9 +44,9 @@ export default class DiplomacyStatus
   }
   addEventListeners()
   {
-    for (let key in app.moduleData.Templates.AttitudeModifiers)
+    for (let key in activeModuleData.Templates.AttitudeModifiers)
     {
-      const template = app.moduleData.Templates.AttitudeModifiers[key];
+      const template = activeModuleData.Templates.AttitudeModifiers[key];
       if (template.triggers)
       {
         for (let i = 0; i < template.triggers.length; i++)
@@ -252,7 +252,7 @@ export default class DiplomacyStatus
     set new strength for modifier
      */
     const modifiersByPlayer = this.attitudeModifiersByPlayer;
-    const allModifiers = app.moduleData.Templates.AttitudeModifiers;
+    const allModifiers = activeModuleData.Templates.AttitudeModifiers;
 
     const playerModifiers = modifiersByPlayer[player.id];
 

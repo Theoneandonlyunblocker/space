@@ -89,7 +89,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     const unitsToPlace = availableUnits.filter(unit => unit.canActThisTurn());
 
     const maxUnitsPerRow = formation[0].length;
-    const maxUnitsPerSide = app.moduleData.ruleSet.battle.maxUnitsPerSide;
+    const maxUnitsPerSide = activeModuleData.ruleSet.battle.maxUnitsPerSide;
 
     let placedInFront = 0;
     let placedInBack = 0;

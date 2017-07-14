@@ -162,7 +162,7 @@ export default class GameLoader
 
     data.notifications.forEach(notificationData =>
     {
-      const template = app.moduleData.Templates.Notifications[notificationData.templateKey];
+      const template = activeModuleData.Templates.Notifications[notificationData.templateKey];
       const props = template.deserializeProps(notificationData.props, this);
       const players = notificationData.involvedPlayerIds.map(id => this.playersById[id]);
       const notification = new Notification(template, props, notificationData.turn, players);
@@ -227,14 +227,14 @@ export default class GameLoader
       y: data.y,
       id: data.id,
       name: data.name,
-      race: app.moduleData.Templates.Races[data.raceType],
+      race: activeModuleData.Templates.Races[data.raceType],
     });
     star.baseIncome = data.baseIncome;
     star.seed = data.seed;
 
     if (data.resourceType)
     {
-      star.setResource(app.moduleData.Templates.Resources[data.resourceType]);
+      star.setResource(activeModuleData.Templates.Resources[data.resourceType]);
     }
 
     return star;
@@ -265,7 +265,7 @@ export default class GameLoader
   }
   private deserializeBuilding(data: BuildingSaveData): Building
   {
-    const template = app.moduleData.Templates.Buildings[data.templateType];
+    const template = activeModuleData.Templates.Buildings[data.templateType];
     const building = new Building(
     {
       template: template,
@@ -286,7 +286,7 @@ export default class GameLoader
       isAI: data.isAI,
       isIndependent: data.isIndependent,
 
-      race: app.moduleData.Templates.Races[data.raceKey],
+      race: activeModuleData.Templates.Races[data.raceKey],
       money: data.money,
 
       id: data.id,
@@ -371,7 +371,7 @@ export default class GameLoader
 
         for (let i = 0; i < modifiers.length; i++)
         {
-          const template = app.moduleData.Templates.AttitudeModifiers[modifiers[i].templateType];
+          const template = activeModuleData.Templates.AttitudeModifiers[modifiers[i].templateType];
           const modifier = new AttitudeModifier(
           {
             template: template,
@@ -389,7 +389,7 @@ export default class GameLoader
   {
     return new Emblem(
       emblemData.colors.map(colorData => Color.deSerialize(colorData)),
-      app.moduleData.Templates.SubEmblems[emblemData.templateKey],
+      activeModuleData.Templates.SubEmblems[emblemData.templateKey],
       emblemData.alpha,
     );
   }
@@ -432,7 +432,7 @@ export default class GameLoader
   }
   private deserializeItem(data: ItemSaveData): Item
   {
-    const template = app.moduleData.Templates.Items[data.templateType];
+    const template = activeModuleData.Templates.Items[data.templateType];
 
     const item = new Item(template, data.id);
     item.positionInUnit = data.positionInUnit;
@@ -445,7 +445,7 @@ export default class GameLoader
     game: Game,
   ): AIController<S>
   {
-    const templateConstructor = app.moduleData.Templates.AITemplateConstructors[data.templateType];
+    const templateConstructor = activeModuleData.Templates.AITemplateConstructors[data.templateType];
 
     const template = templateConstructor.construct(
     {
@@ -464,7 +464,7 @@ export default class GameLoader
     return new StatusEffect(
     {
       id: data.id,
-      template: app.moduleData.Templates.StatusEffects[data.templateType],
+      template: activeModuleData.Templates.StatusEffects[data.templateType],
       turnsToStayActiveFor: data.turnsToStayActiveFor,
       turnsHasBeenActiveFor: data.turnsHasBeenActiveFor,
       sourceUnit: this.unitsById[data.sourceUnitId],

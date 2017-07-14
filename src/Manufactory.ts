@@ -42,13 +42,13 @@ export default class Manufactory
     }
     else
     {
-      this.capacity = app.moduleData.ruleSet.manufactory.startingCapacity;
-      this.maxCapacity = app.moduleData.ruleSet.manufactory.maxCapacity;
+      this.capacity = activeModuleData.ruleSet.manufactory.startingCapacity;
+      this.maxCapacity = activeModuleData.ruleSet.manufactory.maxCapacity;
     }
   }
   public static getBuildCost(): number
   {
-    return app.moduleData.ruleSet.manufactory.buildCost;
+    return activeModuleData.ruleSet.manufactory.buildCost;
   }
   makeFromData(data: any)
   {
@@ -76,7 +76,7 @@ export default class Manufactory
       return(
       {
         type: savedThing.type,
-        template: app.moduleData.Templates[templatesString][savedThing.templateType],
+        template: activeModuleData.Templates[templatesString][savedThing.templateType],
       });
     });
   }
@@ -218,7 +218,7 @@ export default class Manufactory
   }
   getCapacityUpgradeCost()
   {
-    return app.moduleData.ruleSet.manufactory.buildCost * this.capacity;
+    return activeModuleData.ruleSet.manufactory.buildCost * this.capacity;
   }
   upgradeCapacity(amount: number)
   {

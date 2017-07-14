@@ -198,7 +198,7 @@ export default class MCTreeNode
 
     const targetData = this.pickRandomAbilityAndTarget(actions);
 
-    const ability = app.moduleData.Templates.Abilities[targetData.abilityType];
+    const ability = activeModuleData.Templates.Abilities[targetData.abilityType];
     const target = battle.unitsById[targetData.targetId];
 
     useAbility(battle, ability, battle.activeUnit, target);

@@ -43,8 +43,8 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
       LanguageSelect(
       {
         activeLanguage: this.props.activeLanguage,
-        availableLanguagesByCode: getLanguagesByCode(...app.moduleData.moduleFiles),
-        languageSupportLevelByCode: getLanguageSupportLevelForModuleFiles(...app.moduleData.moduleFiles),
+        availableLanguagesByCode: getLanguagesByCode(...activeModuleData.moduleFiles),
+        languageSupportLevelByCode: getLanguageSupportLevelForModuleFiles(...activeModuleData.moduleFiles),
         onChange: this.handleLanguageChange,
       })
     );

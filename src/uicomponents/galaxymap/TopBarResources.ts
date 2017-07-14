@@ -63,7 +63,7 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
 
       const resourceData =
       {
-        resource: app.moduleData.Templates.Resources[resourceType],
+        resource: activeModuleData.Templates.Resources[resourceType],
         amount: amount,
         income: income,
         key: resourceType,

@@ -8,7 +8,7 @@ let activeLanguageCode: string;
 
 export function getActiveLanguage(): Language
 {
-  const languagesByCode = getLanguagesByCode(...app.moduleData.moduleFiles);
+  const languagesByCode = getLanguagesByCode(...activeModuleData.moduleFiles);
 
   if (!languagesByCode[activeLanguageCode])
   {

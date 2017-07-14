@@ -98,7 +98,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     for (let i = 0; i < this.props.formation.length; i++)
     {
       const absoluteRowIndex = this.props.facesLeft ?
-        i + app.moduleData.ruleSet.battle.rowsPerFormation :
+        i + activeModuleData.ruleSet.battle.rowsPerFormation :
         i;
       const unitElements: React.ReactElement<any>[] = [];
       for (let j = 0; j < this.props.formation[i].length; j++)

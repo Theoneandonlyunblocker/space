@@ -32,7 +32,7 @@ export default class PlayerTechnology
     raceTechnologyValues.forEach(raceValue =>
     {
       const techKey = raceValue.tech.key;
-      const technology = app.moduleData.Templates.Technologies[techKey];
+      const technology = activeModuleData.Templates.Technologies[techKey];
 
       this.technologies[techKey] =
       {

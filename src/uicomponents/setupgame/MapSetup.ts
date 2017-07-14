@@ -48,11 +48,11 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   {
     const mapGenTemplates: MapGenTemplate[] = [];
 
-    for (let template in app.moduleData.Templates.MapGen)
+    for (let template in activeModuleData.Templates.MapGen)
     {
-      if (app.moduleData.Templates.MapGen[template].key)
+      if (activeModuleData.Templates.MapGen[template].key)
       {
-        mapGenTemplates.push(app.moduleData.Templates.MapGen[template]);
+        mapGenTemplates.push(activeModuleData.Templates.MapGen[template]);
       }
     }
 
@@ -83,7 +83,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     const target = <HTMLInputElement> e.target;
     this.setState(
     {
-      selectedTemplate: app.moduleData.Templates.MapGen[target.value],
+      selectedTemplate: activeModuleData.Templates.MapGen[target.value],
     }, this.updatePlayerLimits);
   }
 

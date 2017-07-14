@@ -54,9 +54,9 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
   {
     const emblemElements: React.ReactHTMLElement<any>[] = [];
 
-    for (let emblemType in app.moduleData.Templates.SubEmblems)
+    for (let emblemType in activeModuleData.Templates.SubEmblems)
     {
-      const template = app.moduleData.Templates.SubEmblems[emblemType];
+      const template = activeModuleData.Templates.SubEmblems[emblemType];
 
       let className = "emblem-picker-image";
 

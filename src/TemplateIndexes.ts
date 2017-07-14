@@ -71,8 +71,8 @@ class TemplateIndexes
   {
     return(
     {
-      resources: TemplateIndexes.getDistributablesByGroup(app.moduleData.Templates.Resources),
-      races: TemplateIndexes.getDistributablesByGroup(app.moduleData.Templates.Races),
+      resources: TemplateIndexes.getDistributablesByGroup(activeModuleData.Templates.Resources),
+      races: TemplateIndexes.getDistributablesByGroup(activeModuleData.Templates.Races),
     });
   }
   private static getDistributablesByGroup<T extends Distributable>(
@@ -132,8 +132,8 @@ class TemplateIndexes
   //     }
   //   }
 
-  //   putInGroups(app.moduleData.Templates.UnitFamilies, "unitFamilies");
-  //   putInGroups(app.moduleData.Templates.Resources, "resources");
+  //   putInGroups(activeModuleData.Templates.UnitFamilies, "unitFamilies");
+  //   putInGroups(activeModuleData.Templates.Resources, "resources");
 
   //   return result;
   // }
@@ -143,9 +143,9 @@ class TemplateIndexes
     {
       [techLevel: number]: ItemTemplate[];
     } = {};
-    for (let itemName in app.moduleData.Templates.Items)
+    for (let itemName in activeModuleData.Templates.Items)
     {
-      const item = app.moduleData.Templates.Items[itemName];
+      const item = activeModuleData.Templates.Items[itemName];
 
       if (!itemsByTechLevel[item.techLevel])
       {

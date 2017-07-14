@@ -69,9 +69,9 @@ export default class Emblem
   }
   private static getAvailableTemplatesForRandomGeneration(): SubEmblemTemplate[]
   {
-    return Object.keys(app.moduleData.Templates.SubEmblems).map(key =>
+    return Object.keys(activeModuleData.Templates.SubEmblems).map(key =>
     {
-      return app.moduleData.Templates.SubEmblems[key];
+      return activeModuleData.Templates.SubEmblems[key];
     }).filter(template =>
     {
       return !template.disallowRandomGeneration;

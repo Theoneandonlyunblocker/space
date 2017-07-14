@@ -83,7 +83,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     battle.init();
 
     const initialSFXTemplateKey = "rocketAttack";
-    const initialSFXTemplate = app.moduleData.Templates.BattleSFX[initialSFXTemplateKey];
+    const initialSFXTemplate = activeModuleData.Templates.BattleSFX[initialSFXTemplateKey];
 
     return(
     {
@@ -106,11 +106,11 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   makeUnit()
   {
-    const template = getRandomProperty(app.moduleData.Templates.Units);
+    const template = getRandomProperty(activeModuleData.Templates.Units);
     return Unit.fromTemplate(
     {
       template: template,
-      race: getRandomProperty(app.moduleData.Templates.Races),
+      race: getRandomProperty(activeModuleData.Templates.Races),
     });
   }
 
@@ -201,7 +201,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   handleSelectSFXTemplate(e: React.FormEvent)
   {
     const target = <HTMLInputElement> e.target;
-    const SFXTemplate = app.moduleData.Templates.BattleSFX[target.value];
+    const SFXTemplate = activeModuleData.Templates.BattleSFX[target.value];
 
     this.setState(
     {
@@ -225,7 +225,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     const target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
     const bs: BattleScene = this.battleScene;
-    const SFXTemplate = extendObject(app.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+    const SFXTemplate = extendObject(activeModuleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
 
     if (this.state.duration)
     {
@@ -286,7 +286,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
     const SFXTemplateSelectOptions: React.ReactHTMLElement<any>[] = [];
 
-    for (let key in app.moduleData.Templates.BattleSFX)
+    for (let key in activeModuleData.Templates.BattleSFX)
     {
       SFXTemplateSelectOptions.push(React.DOM.option(
       {
