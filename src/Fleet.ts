@@ -65,16 +65,19 @@ export class Fleet
   }
   public static sortByImportance(a: Fleet, b: Fleet): number
   {
-    // TODO 2016.10.26 | should keep track of fleets with custom names
+    const customNameSort = Number(b.name.hasBeenCustomized) - Number(a.name.hasBeenCustomized);
+    if (customNameSort)
+    {
+      return customNameSort;
+    }
+
     const unitCountSort = b.units.length - a.units.length;
     if (unitCountSort)
     {
       return unitCountSort;
     }
-    else
-    {
-      return a.id - b.id;
-    }
+
+    return a.id - b.id;
   }
   private static makeAlreadyInFleetError(unit: Unit): Error
   {
