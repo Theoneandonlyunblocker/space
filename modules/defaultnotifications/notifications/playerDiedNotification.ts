@@ -22,7 +22,7 @@ const playerDiedNotification: NotificationTemplate<PropTypes, SerializedPropType
   category: "game",
   defaultFilterState: [NotificationFilterState.alwaysShow],
   iconSrc: "modules/common/resourcetemplates/img/test1.png",
-  eventListeners: ["makePlayerDiedNotification"],
+  // eventListeners: ["makePlayerDiedNotification"],
   contentConstructor: UIComponent,
   messageConstructor: function(props: PropTypes)
   {

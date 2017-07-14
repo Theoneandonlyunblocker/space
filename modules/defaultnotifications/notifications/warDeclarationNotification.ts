@@ -25,7 +25,7 @@ const WarDeclarationNotification: NotificationTemplate<PropTypes, SerializedProp
   category: "diplomacy",
   defaultFilterState: [NotificationFilterState.showIfInvolved],
   iconSrc: "modules/common/resourcetemplates/img/test2.png",
-  eventListeners: ["makeWarDeclarationNotification"],
+  // eventListeners: ["makeWarDeclarationNotification"],
   contentConstructor: UIComponent,
   messageConstructor: function(props: PropTypes)
   {

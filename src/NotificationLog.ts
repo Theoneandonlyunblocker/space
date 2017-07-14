@@ -1,5 +1,3 @@
-
-import app from "./App"; // TODO global
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 
 import NotificationLogSaveData from "./savedata/NotificationLogSaveData";
@@ -20,45 +18,11 @@ export default class NotificationLog
   unread: Notification<any, any>[] = [];
   currentTurn: number;
   isHumanTurn: boolean = true;
-  listeners:
-  {
-    [name: string]: Function[];
-  } = {};
   notificationFilter: NotificationFilter;
 
   constructor(player: Player)
   {
-    this.addEventListeners();
     this.notificationFilter = new NotificationFilter(player);
-  }
-  addEventListeners()
-  {
-    for (let key in app.moduleData.Templates.Notifications)
-    {
-      const template = app.moduleData.Templates.Notifications[key];
-      for (let i = 0; i < template.eventListeners.length; i++)
-      {
-        const listenerKey = template.eventListeners[i];
-        const listener = eventManager.addEventListener(listenerKey,
-          this.makeNotification.bind(this, template));
-
-        if (!this.listeners[listenerKey])
-        {
-          this.listeners[listenerKey] = [];
-        }
-        this.listeners[listenerKey].push(listener);
-      }
-    }
-  }
-  destroy()
-  {
-    for (let key in this.listeners)
-    {
-      for (let i = 0; i < this.listeners[key].length; i++)
-      {
-        eventManager.removeEventListener(key, this.listeners[key][i]);
-      }
-    }
   }
   setTurn(turn: number, isHumanTurn: boolean)
   {

@@ -30,7 +30,7 @@ const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTy
   category: "combat",
   defaultFilterState: [NotificationFilterState.neverShow],
   iconSrc: "modules/common/resourcetemplates/img/test1.png",
-  eventListeners: ["makeBattleFinishNotification"],
+  // eventListeners: ["makeBattleFinishNotification"],
   contentConstructor: UIComponent,
   messageConstructor: function(props: PropTypes)
   {

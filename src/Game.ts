@@ -42,7 +42,6 @@ export default class Game
   }
   destroy()
   {
-    this.notificationLog.destroy();
     this.notificationLog = null;
     for (let i = 0; i < this.playerOrder.length; i++)
     {

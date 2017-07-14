@@ -10,7 +10,6 @@ declare interface NotificationTemplate<P, D>
   category: string;
   defaultFilterState: NotificationFilterState[];
   iconSrc: string;
-  eventListeners: string[];
   contentConstructor: React.Factory<any>;
   messageConstructor: (props: P) => string;
   getTitle: (props: P) => string;
