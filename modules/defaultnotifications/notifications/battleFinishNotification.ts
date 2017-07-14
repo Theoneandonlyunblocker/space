@@ -2,6 +2,7 @@ import UIComponent from "./uicomponents/BattleFinishNotification";
 
 import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
 
+import app from "../../../src/App"; // TODO global
 import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
 import Player from "../../../src/Player";
@@ -31,7 +32,6 @@ const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTy
   category: "combat",
   defaultFilterState: [NotificationFilterState.neverShow],
   iconSrc: "modules/common/resourcetemplates/img/test1.png",
-  // eventListeners: ["makeBattleFinishNotification"],
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
@@ -62,5 +62,14 @@ const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTy
     });
   },
 };
+
+app.moduleData.scripts.add(
+{
+  battle:
+  {
+    // TODO 2017.07.14 | implement & do other notifications as well
+    battleFinish: [],
+  },
+});
 
 export default battleFinishNotification;
