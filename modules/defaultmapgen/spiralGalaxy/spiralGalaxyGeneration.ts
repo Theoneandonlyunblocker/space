@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/rng.d.ts" />
 
-import app from "../../../src/App"; // TODO global
+import {activeModuleData} from "../../../src/activeModuleData";
 import FillerPoint from "../../../src/FillerPoint";
 import MapGenResult from "../../../src/MapGenResult";
 import Player from "../../../src/Player";

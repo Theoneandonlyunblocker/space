@@ -1,6 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 
 import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 
 import WeightedProbability from "./templateinterfaces/WeightedProbability";
 

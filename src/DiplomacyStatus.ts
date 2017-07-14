@@ -1,5 +1,5 @@
-
 import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 import eventManager from "./eventManager";
 
 import {AttitudeModifier} from "./AttitudeModifier";

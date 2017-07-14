@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import {AbilityUseEffectQueue} from "../../AbilityUseEffectQueue";
-import app from "../../App"; // TODO global
+import {activeModuleData} from "../../activeModuleData";
 import Battle from "../../Battle";
 import BattleScene from "../../BattleScene";
 import MCTree from "../../MCTree";

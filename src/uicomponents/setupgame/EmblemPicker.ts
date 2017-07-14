@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import app from "../../App"; // TODO global
+import {activeModuleData} from "../../activeModuleData";
 import Color from "../../Color";
 import {generateMainColor, generateSecondaryColor} from "../../colorGeneration";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";

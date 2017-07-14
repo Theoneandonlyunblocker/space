@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import app from "../../App"; // TODO global
+import {activeModuleData} from "../../activeModuleData";
 
 import Player from "../../Player";
 import eventManager from "../../eventManager";

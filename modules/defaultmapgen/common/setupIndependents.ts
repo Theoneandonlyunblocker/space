@@ -4,7 +4,7 @@ import
   addDefenceBuildings,
 } from "./mapGenUtils";
 
-import app from "../../../src/App"; // TODO global
+import {activeModuleData} from "../../../src/activeModuleData";
 import Player from "../../../src/Player";
 import Region from "../../../src/Region";
 import Star from "../../../src/Star";

@@ -1,6 +1,6 @@
 
 
-import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 import BuildingUpgradeData from "./BuildingUpgradeData";
 import idGenerators from "./idGenerators";
 import BuildingSaveData from "./savedata/BuildingSaveData";

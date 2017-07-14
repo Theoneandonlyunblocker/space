@@ -1,6 +1,6 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 
 import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate";
 

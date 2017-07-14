@@ -12,7 +12,7 @@ import
 } from "../utility";
 
 
-import app from "../App"; // TODO global
+import {activeModuleData} from "../activeModuleData";
 
 export interface PropTypes extends React.Props<any>
 {

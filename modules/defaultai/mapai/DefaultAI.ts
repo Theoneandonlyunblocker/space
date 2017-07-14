@@ -9,7 +9,7 @@ import {UnitEvaluator} from "./UnitEvaluator";
 
 import AITemplate from "../../../src/templateinterfaces/AITemplate";
 
-import app from "../../../src/App";
+import {activeModuleData} from "../../../src/activeModuleData";
 import ArchetypeValues from "../../../src/ArchetypeValues";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Game from "../../../src/Game";

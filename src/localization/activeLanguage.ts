@@ -1,4 +1,4 @@
-import app from "../App"; // TODO global
+import {activeModuleData} from "../activeModuleData";
 
 import {Language} from "./Language";
 import {getLanguagesByCode} from "./languageSupport";

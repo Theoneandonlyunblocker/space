@@ -1,5 +1,5 @@
 
-import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";

@@ -1,6 +1,6 @@
 
 
-import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 import UnitDrawingFunctionData from "./UnitDrawingFunctionData";
 import idGenerators from "./idGenerators";
 import AbilityBase from "./templateinterfaces/AbilityBase";

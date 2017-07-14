@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import app from "../../App";
+import {activeModuleData} from "../../activeModuleData";
 import Unit from "../../Unit";
 import UnitDisplayData from "../../UnitDisplayData";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";

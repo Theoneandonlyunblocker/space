@@ -2,7 +2,7 @@ import UIComponent from "./uicomponents/BattleFinishNotification";
 
 import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
 
-import app from "../../../src/App"; // TODO global
+import {activeModuleData} from "../../../src/activeModuleData";
 import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
 import Player from "../../../src/Player";

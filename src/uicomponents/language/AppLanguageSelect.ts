@@ -3,6 +3,7 @@
 import {default as LanguageSelect} from "./LanguageSelect";
 
 import app from "../../App"; // TODO global
+import {activeModuleData} from "../../activeModuleData";
 
 import {Language} from "../../localization/Language";
 import

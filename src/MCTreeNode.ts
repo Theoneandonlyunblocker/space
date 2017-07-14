@@ -1,5 +1,5 @@
 
-import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 
 import Battle from "./Battle";

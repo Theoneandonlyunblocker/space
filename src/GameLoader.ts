@@ -1,6 +1,6 @@
 
 import {AIController} from "./AIController";
-import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 import {AttitudeModifier} from "./AttitudeModifier";
 import Building from "./Building";
 import Color from "./Color";

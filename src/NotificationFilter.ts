@@ -1,5 +1,5 @@
 
-import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 
 import Notification from "./Notification";

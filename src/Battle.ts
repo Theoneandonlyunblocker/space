@@ -1,4 +1,4 @@
-import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
 import DefenceBuildingTemplate from "./templateinterfaces/DefenceBuildingTemplate";
 

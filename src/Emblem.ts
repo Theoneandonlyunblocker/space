@@ -1,6 +1,7 @@
 /// <reference path="../lib/rng.d.ts" />
 
 import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 
 import Color from "./Color";
 import

@@ -1,4 +1,5 @@
 import app from "./App"; // TODO global
+import {activeModuleData} from "./activeModuleData";
 import BuildingEffect from "./templateinterfaces/BuildingEffect";
 import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
