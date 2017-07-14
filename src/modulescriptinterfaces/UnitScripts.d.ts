@@ -1,13 +1,6 @@
 import Unit from "../Unit";
 
-export interface PartialUnitScripts
-{
-  removeFromPlayer?: ((unit: Unit) => void)[];
-}
-
-export interface UnitScripts extends PartialUnitScripts
+export interface UnitScripts
 {
   removeFromPlayer: ((unit: Unit) => void)[];
 }
-
-export default UnitScripts;

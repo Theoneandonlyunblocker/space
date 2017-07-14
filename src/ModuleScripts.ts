@@ -1,10 +1,11 @@
-import GameScripts from "./modulescriptinterfaces/GameScripts";
-import PartialAllScripts from "./modulescriptinterfaces/PartialAllScripts";
-import UnitScripts from "./modulescriptinterfaces/UnitScripts";
+import {AllScripts} from "./modulescriptinterfaces/AllScripts";
+import {BattleScripts} from "./modulescriptinterfaces/BattleScripts";
+import {GameScripts} from "./modulescriptinterfaces/GameScripts";
+import {UnitScripts} from "./modulescriptinterfaces/UnitScripts";
 
 
 // TODO 2017.06.13 | move non-internal stuff from eventManager to here
-export default class ModuleScripts implements PartialAllScripts
+export default class ModuleScripts implements AllScripts
 {
   public readonly unit: UnitScripts =
   {
@@ -28,7 +29,7 @@ export default class ModuleScripts implements PartialAllScripts
     return merged;
   }
 
-  public add(...toAdd: PartialAllScripts[]): void
+  public add(...toAdd: Partial<AllScripts>[]): void
   {
     toAdd.forEach(scripts =>
     {
@@ -41,7 +42,7 @@ export default class ModuleScripts implements PartialAllScripts
       }
     });
   }
-  public remove(toRemove: PartialAllScripts): void
+  public remove(toRemove: Partial<AllScripts>): void
   {
     for (let scriptType in toRemove)
     {
