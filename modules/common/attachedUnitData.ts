@@ -7,25 +7,25 @@ import
   shallowExtend,
 } from "../../src/utility";
 
-import PartialAllScripts from "../../src/modulescriptinterfaces/PartialAllScripts";
+import {AllScripts} from "../../src/modulescriptinterfaces/AllScripts";
 
 import {Front} from "../defaultai/mapai/Front";
 
-interface PartialAttachedUnitData
+interface AttachedUnitData
 {
   front?: Front;
 }
 
-class AttachedUnitData
+class AttachedUnitDataManager
 {
-  private byUnit: ValuesByUnit<PartialAttachedUnitData>;
+  private byUnit: ValuesByUnit<AttachedUnitData>;
 
   constructor()
   {
-    this.byUnit = new ValuesByUnit<PartialAttachedUnitData>();
+    this.byUnit = new ValuesByUnit<AttachedUnitData>();
   }
 
-  public get(unit: Unit): PartialAttachedUnitData
+  public get(unit: Unit): AttachedUnitData
   {
     if (!this.byUnit.has(unit))
     {
@@ -34,7 +34,7 @@ class AttachedUnitData
 
     return this.byUnit.get(unit);
   }
-  public set(unit: Unit, data: PartialAttachedUnitData): void
+  public set(unit: Unit, data: AttachedUnitData): void
   {
     if (this.byUnit.has(unit))
     {
@@ -53,15 +53,15 @@ class AttachedUnitData
   }
   public deleteAll(): void
   {
-    this.byUnit = new ValuesByUnit<PartialAttachedUnitData>();
+    this.byUnit = new ValuesByUnit<AttachedUnitData>();
   }
 }
 
-const attachedUnitData = new AttachedUnitData();
+const attachedUnitData = new AttachedUnitDataManager();
 
 export default attachedUnitData;
 
-export const attachedUnitDataScripts: PartialAllScripts =
+export const attachedUnitDataScripts: Partial<AllScripts> =
 {
   unit:
   {
