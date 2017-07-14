@@ -4,7 +4,6 @@ import GalaxyMap from "./GalaxyMap";
 import Game from "./Game";
 import GameLoader from "./GameLoader";
 import MapRenderer from "./MapRenderer";
-import ModuleData from "./ModuleData";
 import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
 import ModuleLoader from "./ModuleLoader";
 import NotificationLog from "./NotificationLog";
@@ -14,13 +13,16 @@ import PlayerControl from "./PlayerControl";
 import ReactUI from "./ReactUI";
 import ReactUIScene from "./ReactUIScene";
 import Renderer from "./Renderer";
+import {activeModuleData} from "./activeModuleData";
+import {defaultModuleData} from "./defaultModuleData";
 import idGenerators from "./idGenerators";
-import TutorialStatus from "./tutorials/TutorialStatus";
 import
 {
   getRandomArrayItem,
   onDOMLoaded,
 } from "./utility";
+
+import TutorialStatus from "./tutorials/TutorialStatus";
 
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
@@ -31,31 +33,11 @@ import {setActiveLanguageCode} from "./localization/activeLanguage";
 
 import addCommonToModuleData from "../modules/common/addCommonToModuleData";
 
-import defaultAI from "../modules/defaultai/defaultAI";
-import defaultAttitudemodifiers from "../modules/defaultattitudemodifiers/defaultAttitudemodifiers";
-import defaultBackgrounds from "../modules/defaultbackgrounds/defaultBackgrounds";
-import defaultBuildings from "../modules/defaultbuildings/defaultBuildings";
-import defaultEmblems from "../modules/defaultemblems/defaultEmblems";
-import defaultItems from "../modules/defaultitems/defaultItems";
-import defaultMapgen from "../modules/defaultmapgen/defaultMapgen";
-import defaultMapmodes from "../modules/defaultmapmodes/defaultMapmodes";
-import defaultNotifications from "../modules/defaultnotifications/defaultNotifications";
-import defaultRaces from "../modules/defaultraces/defaultRaces";
-import defaultRuleset from "../modules/defaultruleset/defaultRuleset";
-import defaultTechnologies from "../modules/defaulttechnologies/defaultTechnologies";
-import defaultUnits from "../modules/defaultunits/defaultUnits";
-
-import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
-
-import {drones} from "../modules/drones/moduleFile";
-import {translationTest} from "../modules/translationtest/moduleFile";
-
 class App
 {
   // TODO refactor | most (all?) of these should be private or moved
   public renderer: Renderer;
   public game: Game;
-  public moduleData: ModuleData;
   public humanPlayer: Player;
   public playerControl: PlayerControl;
   public reactUI: ReactUI;
@@ -75,31 +57,17 @@ class App
     this.seed = "" + Math.random();
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
-    const moduleLoader = this.moduleLoader = new ModuleLoader();
+    this.moduleLoader = new ModuleLoader(activeModuleData);
     this.initUI();
 
     onDOMLoaded(() =>
     {
-      this.moduleData = moduleLoader.moduleData;
+      defaultModuleData.moduleFiles.forEach(moduleFile =>
+      {
+        this.moduleLoader.addModuleFile(moduleFile);
+      });
 
-      moduleLoader.addModuleFile(defaultEmblems);
-      moduleLoader.addModuleFile(defaultRuleset);
-      moduleLoader.addModuleFile(defaultAI);
-      moduleLoader.addModuleFile(defaultItems);
-      moduleLoader.addModuleFile(defaultTechnologies);
-      moduleLoader.addModuleFile(defaultAttitudemodifiers);
-      moduleLoader.addModuleFile(defaultMapgen);
-      moduleLoader.addModuleFile(defaultUnits);
-      moduleLoader.addModuleFile(defaultBackgrounds);
-      moduleLoader.addModuleFile(defaultMapmodes);
-      moduleLoader.addModuleFile(paintingPortraits);
-      moduleLoader.addModuleFile(defaultBuildings);
-      moduleLoader.addModuleFile(defaultNotifications);
-      moduleLoader.addModuleFile(defaultRaces);
-      moduleLoader.addModuleFile(drones);
-      moduleLoader.addModuleFile(translationTest);
-
-      addCommonToModuleData(moduleLoader.moduleData);
+      addCommonToModuleData(this.moduleLoader.moduleData);
 
       // some things called in this.makeApp() rely on global app variable
       // this timeout allows constructor to finish and variable to be assigned
@@ -249,9 +217,9 @@ class App
   private makePlayers()
   {
     const players: Player[] = [];
-    const candidateRaces = <RaceTemplate[]> Object.keys(this.moduleData.Templates.Races).map(raceKey =>
+    const candidateRaces = <RaceTemplate[]> Object.keys(activeModuleData.Templates.Races).map(raceKey =>
     {
-      return this.moduleData.Templates.Races[raceKey];
+      return activeModuleData.Templates.Races[raceKey];
     }).filter(raceTemplate =>
     {
       return !raceTemplate.isNotPlayable;
@@ -292,7 +260,7 @@ class App
       },
     };
 
-    const mapGenResult = this.moduleData.getDefaultMap().mapGenFunction(
+    const mapGenResult = activeModuleData.getDefaultMap().mapGenFunction(
       optionValues,
       playerData.players,
     );
@@ -324,7 +292,7 @@ class App
       this.game.notificationLog.setTurn(this.game.turnNumber, true);
     }
 
-    this.moduleData.scripts.game.afterInit.forEach(scriptFN =>
+    activeModuleData.scripts.game.afterInit.forEach(scriptFN =>
     {
       scriptFN(this.game);
     });
@@ -341,7 +309,7 @@ class App
   {
     this.renderer = new Renderer(
       this.game.galaxyMap.seed,
-      this.moduleData.mapBackgroundDrawingFunction,
+      activeModuleData.mapBackgroundDrawingFunction,
     );
     this.renderer.init();
 
