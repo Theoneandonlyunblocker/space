@@ -307,6 +307,11 @@ export default class Battle
       eventManager.dispatchEvent("switchScene", "galaxyMap");
     }
 
+    app.moduleData.scripts.battle.battleFinish.forEach(script =>
+    {
+      script(this);
+    });
+    /*
     if (app.humanPlayer.starIsVisible(this.battleData.location))
     {
       eventManager.dispatchEvent("makeBattleFinishNotification",
@@ -317,6 +322,8 @@ export default class Battle
         victor: victor,
       });
     }
+    */
+
     for (let i = 0; i < this.afterFinishCallbacks.length; i++)
     {
       this.afterFinishCallbacks[i]();
