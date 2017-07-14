@@ -4,6 +4,7 @@ export default class Name
 {
   public fullName: string;
   public isPlural: boolean = false;
+  public hasBeenCustomized: boolean = false;
 
   constructor(fullName: string, isPlural: boolean = false)
   {
@@ -12,12 +13,21 @@ export default class Name
   }
   public static fromData(data: NameSaveData)
   {
-    return new Name(data.fullName, data.isPlural);
+    const name = new Name(data.fullName, data.isPlural);
+    name.hasBeenCustomized = data.hasBeenCustomized;
+
+    return name;
   }
   public setName(name: string, isPlural: boolean = false): void
   {
     this.fullName = name;
     this.isPlural = isPlural;
+  }
+  public customizeName(name: string, isPlural: boolean = false): void
+  {
+    this.hasBeenCustomized = true;
+
+    this.setName(name, isPlural);
   }
   public toString(): string
   {
@@ -64,6 +74,7 @@ export default class Name
     {
       fullName: this.fullName,
       isPlural: this.isPlural,
+      hasBeenCustomized: this.hasBeenCustomized,
     });
   }
 }
