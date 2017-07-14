@@ -158,18 +158,18 @@ export default class GameLoader
   }
   private deserializeNotificationLog(data: NotificationLogSaveData): NotificationLog
   {
-    const notificationsData = data.notifications;
-
     const notificationLog = new NotificationLog(this.humanPlayer);
-    for (let i = 0; i < notificationsData.length; i++)
+
+    data.notifications.forEach(notificationData =>
     {
-      const template = app.moduleData.Templates.Notifications[notificationsData[i].templateKey];
-      const props = template.deserializeProps(notificationsData[i].props, this);
-      const notification = new Notification(template, props, notificationsData[i].turn);
-      notification.hasBeenRead = notificationsData[i].hasBeenRead;
+      const template = app.moduleData.Templates.Notifications[notificationData.templateKey];
+      const props = template.deserializeProps(notificationData.props, this);
+      const players = notificationData.involvedPlayerIds.map(id => this.playersById[id]);
+      const notification = new Notification(template, props, notificationData.turn, players);
+      notification.hasBeenRead = notificationData.hasBeenRead;
 
       notificationLog.addNotification(notification);
-    }
+    });
 
     return notificationLog;
   }

@@ -50,16 +50,7 @@ export default class NotificationFilter
       return false;
     }
 
-    // TODO 2017.02.20 | shouldn't we explicitly store involved players in the notification?
-    let playerIsInvolved: boolean = false;
-    for (let key in notification.props)
-    {
-      if (notification.props[key] === this.player)
-      {
-        playerIsInvolved = true;
-        break;
-      }
-    }
+    const playerIsInvolved = notification.involvedPlayers.indexOf(this.player) !== -1;
 
     if (playerIsInvolved)
     {
