@@ -7,6 +7,7 @@ import NotificationFilterState from "../../../src/NotificationFilterState";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 
+
 export interface PropTypes
 {
   location: Star;
@@ -32,7 +33,7 @@ const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTy
   iconSrc: "modules/common/resourcetemplates/img/test1.png",
   // eventListeners: ["makeBattleFinishNotification"],
   contentConstructor: UIComponent,
-  messageConstructor: function(props: PropTypes)
+  messageConstructor: (props: PropTypes) =>
   {
     const message = "A battle was fought in " + props.location.name + " between " +
       props.attacker.name.fullName + " and " + props.defender.name.fullName;
@@ -40,7 +41,7 @@ const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTy
     return message;
   },
   getTitle: (props: PropTypes) => "Battle finished",
-  serializeProps: function(props: PropTypes): SerializedPropTypes
+  serializeProps: (props: PropTypes) =>
   {
     return(
     {
@@ -50,7 +51,7 @@ const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTy
       victorId: props.victor.id,
     });
   },
-  deserializeProps: function(props:SerializedPropTypes, gameLoader: GameLoader): PropTypes
+  deserializeProps: (props: SerializedPropTypes, gameLoader: GameLoader) =>
   {
     return(
     {

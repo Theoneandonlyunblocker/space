@@ -6,6 +6,7 @@ import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
 import Player from "../../../src/Player";
 
+
 export interface PropTypes
 {
   player1: Player;
@@ -18,23 +19,23 @@ export interface SerializedPropTypes
   player2Id: number;
 }
 
-const WarDeclarationNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
+const warDeclarationNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
 {
-  key: "WarDeclarationNotification",
+  key: "warDeclarationNotification",
   displayName: "War declaration",
   category: "diplomacy",
   defaultFilterState: [NotificationFilterState.showIfInvolved],
   iconSrc: "modules/common/resourcetemplates/img/test2.png",
   // eventListeners: ["makeWarDeclarationNotification"],
   contentConstructor: UIComponent,
-  messageConstructor: function(props: PropTypes)
+  messageConstructor: (props: PropTypes) =>
   {
-    var message = props.player1.name + " declared war on " + props.player2.name;
+    const message = props.player1.name + " declared war on " + props.player2.name;
 
     return message;
   },
   getTitle: (props: PropTypes) => "War declaration",
-  serializeProps: function(props: PropTypes): SerializedPropTypes
+  serializeProps: (props: PropTypes) =>
   {
     return(
     {
@@ -42,7 +43,7 @@ const WarDeclarationNotification: NotificationTemplate<PropTypes, SerializedProp
       player2Id: props.player2.id,
     });
   },
-  deserializeProps: function(props: SerializedPropTypes, gameLoader: GameLoader): PropTypes
+  deserializeProps: (props: SerializedPropTypes, gameLoader: GameLoader) =>
   {
     return(
     {
@@ -52,4 +53,4 @@ const WarDeclarationNotification: NotificationTemplate<PropTypes, SerializedProp
   },
 };
 
-export default WarDeclarationNotification;
+export default warDeclarationNotification;
