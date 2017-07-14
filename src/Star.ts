@@ -1,5 +1,6 @@
 import app from "./App"; // TODO global
 import {activeModuleData} from "./activeModuleData";
+import {activePlayer} from "./activePlayer";
 import BuildingEffect from "./templateinterfaces/BuildingEffect";
 import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
@@ -201,7 +202,7 @@ export default class Star implements Point
       this.owner.updateVisibleStars();
     }
 
-    if (this.owner === app.humanPlayer)
+    if (this.owner === activePlayer)
     {
       for (let key in building.template.effect)
       {

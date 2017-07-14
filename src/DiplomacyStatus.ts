@@ -1,5 +1,6 @@
 import app from "./App"; // TODO global
 import {activeModuleData} from "./activeModuleData";
+import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";
 
 import {AttitudeModifier} from "./AttitudeModifier";
@@ -151,7 +152,7 @@ export default class DiplomacyStatus
 
     [this.player, player].forEach(function(p: Player)
     {
-      if (app.humanPlayer !== p && !app.humanPlayer.diplomacyStatus.metPlayers[p.id])
+      if (activePlayer !== p && !activePlayer.diplomacyStatus.metPlayers[p.id])
       {
         playersAreRelevantToHuman = false;
       }

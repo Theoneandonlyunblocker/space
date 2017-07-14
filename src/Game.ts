@@ -1,9 +1,9 @@
-
 import app from "./App"; // TODO global
 import GalaxyMap from "./GalaxyMap";
 import Manufactory from "./Manufactory";
 import NotificationLog from "./NotificationLog";
 import Player from "./Player";
+import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";
 import idGenerators from "./idGenerators";
 
@@ -17,7 +17,6 @@ export default class Game
   independents: Player[] = [];
   playerOrder: Player[];
   galaxyMap: GalaxyMap;
-  humanPlayer: Player;
   activePlayer: Player;
   public hasEnded: boolean = false;
 
@@ -25,8 +24,7 @@ export default class Game
 
   gameStorageKey: string;
 
-  constructor(map: GalaxyMap,
-    players: Player[], humanPlayer: Player)
+  constructor(map: GalaxyMap, players: Player[])
   {
     this.galaxyMap = map;
     if (map.independents)
@@ -37,7 +35,6 @@ export default class Game
     }
 
     this.playerOrder = players;
-    this.humanPlayer = humanPlayer;
     this.turnNumber = 1;
   }
   destroy()
@@ -156,7 +153,7 @@ export default class Game
     playerToKill.die();
     playerToKill.destroy();
 
-    if (playerToKill === this.humanPlayer)
+    if (playerToKill === activePlayer)
     {
       this.endGame();
     }
@@ -179,7 +176,6 @@ export default class Game
       {
         return player.serialize();
       }),
-      humanPlayerId: this.humanPlayer.id,
       notificationLog: this.notificationLog.serialize(),
       units: this.getAllPlayers().map(player =>
       {

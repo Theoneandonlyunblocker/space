@@ -312,7 +312,7 @@ export default class Battle
       script(this);
     });
     /*
-    if (app.humanPlayer.starIsVisible(this.battleData.location))
+    if (activePlayer.starIsVisible(this.battleData.location))
     {
       eventManager.dispatchEvent("makeBattleFinishNotification",
       {

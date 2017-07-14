@@ -14,6 +14,7 @@ import ReactUI from "./ReactUI";
 import ReactUIScene from "./ReactUIScene";
 import Renderer from "./Renderer";
 import {activeModuleData} from "./activeModuleData";
+import {activePlayer, setActivePlayer} from "./activePlayer";
 import {defaultModuleData} from "./defaultModuleData";
 import idGenerators from "./idGenerators";
 import
@@ -38,7 +39,6 @@ class App
   // TODO refactor | most (all?) of these should be private or moved
   public renderer: Renderer;
   public game: Game;
-  public humanPlayer: Player;
   public playerControl: PlayerControl;
   public reactUI: ReactUI;
   public images:
@@ -86,7 +86,7 @@ class App
 
     this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.game, () =>
     {
-      this.game = new Game(map, players, players[0]);
+      this.game = new Game(map, players);
       this.initGame();
 
       this.initDisplay();
@@ -210,7 +210,7 @@ class App
     const players = playerData.players;
     const map = this.makeMap(playerData);
 
-    const game = new Game(map, players, players[0]);
+    const game = new Game(map, players);
 
     return game;
   }
@@ -276,19 +276,19 @@ class App
       throw new Error("App tried to init game without having one specified");
     }
 
-    this.humanPlayer = this.game.humanPlayer;
-    this.humanPlayer.isAI = false;
+    setActivePlayer(this.game.playerOrder[0]);
+    activePlayer.isAI = false;
 
     if (this.playerControl)
     {
       this.playerControl.removeEventListeners();
     }
 
-    this.playerControl = new PlayerControl(this.humanPlayer);
+    this.playerControl = new PlayerControl(activePlayer);
 
     if (!this.game.notificationLog)
     {
-      this.game.notificationLog = new NotificationLog(this.humanPlayer);
+      this.game.notificationLog = new NotificationLog();
       this.game.notificationLog.setTurn(this.game.turnNumber, true);
     }
 
@@ -313,7 +313,7 @@ class App
     );
     this.renderer.init();
 
-    this.mapRenderer = new MapRenderer(this.game.galaxyMap, this.humanPlayer);
+    this.mapRenderer = new MapRenderer(this.game.galaxyMap, activePlayer);
     this.mapRenderer.setParent(this.renderer.layers.map);
     this.mapRenderer.init();
 
@@ -330,7 +330,7 @@ class App
   private hookUI()
   {
     this.reactUI.game = this.game;
-    this.reactUI.player = this.humanPlayer;
+    this.reactUI.player = activePlayer;
     this.reactUI.playerControl = this.playerControl;
     this.reactUI.renderer = this.renderer;
     this.reactUI.mapRenderer = this.mapRenderer;

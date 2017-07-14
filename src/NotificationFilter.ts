@@ -1,10 +1,9 @@
-
 import {activeModuleData} from "./activeModuleData";
+import {activePlayer} from "./activePlayer";
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 
 import Notification from "./Notification";
 import NotificationFilterState from "./NotificationFilterState";
-import Player from "./Player";
 
 import
 {
@@ -19,12 +18,8 @@ export default class NotificationFilter
     [notificationKey: string]: NotificationFilterState[];
   } = {};
 
-  player: Player;
-
-  constructor(player: Player)
+  constructor()
   {
-    this.player = player;
-
     this.setDefaultFilterStates();
     this.load();
   }
@@ -50,9 +45,9 @@ export default class NotificationFilter
       return false;
     }
 
-    const playerIsInvolved = notification.involvedPlayers.indexOf(this.player) !== -1;
+    const activePlayerWasInvolved = notification.involvedPlayers.indexOf(activePlayer) !== -1;
 
-    if (playerIsInvolved)
+    if (activePlayerWasInvolved)
     {
       return filterStates.indexOf(NotificationFilterState.showIfInvolved) !== -1;
     }

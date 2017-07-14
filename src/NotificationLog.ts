@@ -20,9 +20,9 @@ export default class NotificationLog
   isHumanTurn: boolean = true;
   notificationFilter: NotificationFilter;
 
-  constructor(player: Player)
+  constructor()
   {
-    this.notificationFilter = new NotificationFilter(player);
+    this.notificationFilter = new NotificationFilter();
   }
   setTurn(turn: number, isHumanTurn: boolean)
   {
@@ -73,17 +73,10 @@ export default class NotificationLog
   }
   filterNotifications(notifications: Notification<any, any>[])
   {
-    const filtered: Notification<any, any>[] = [];
-
-    for (let i = 0; i < notifications.length; i++)
+    return notifications.filter(notification =>
     {
-      if (this.notificationFilter.shouldDisplayNotification(notifications[i]))
-      {
-        filtered.push(notifications[i]);
-      }
-    }
-
-    return filtered;
+      return this.notificationFilter.shouldDisplayNotification(notification);
+    });
   }
   serialize(): NotificationLogSaveData
   {

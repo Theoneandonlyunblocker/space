@@ -40,7 +40,6 @@ import UnitSaveData from "./savedata/UnitSaveData";
 export default class GameLoader
 {
   public map: GalaxyMap;
-  public humanPlayer: Player;
   public players: Player[] = [];
   public independents: Player[] = [];
 
@@ -122,13 +121,11 @@ export default class GameLoader
       );
     }
 
-    this.humanPlayer = this.playersById[data.humanPlayerId];
-
     // buildings
     this.deserializeBuildings(data.galaxyMap);
 
     // create game
-    const game = new Game(this.map, this.players, this.humanPlayer);
+    const game = new Game(this.map, this.players);
     game.independents = game.independents.concat(this.independents);
     game.turnNumber = data.turnNumber;
 
@@ -158,7 +155,7 @@ export default class GameLoader
   }
   private deserializeNotificationLog(data: NotificationLogSaveData): NotificationLog
   {
-    const notificationLog = new NotificationLog(this.humanPlayer);
+    const notificationLog = new NotificationLog();
 
     data.notifications.forEach(notificationData =>
     {

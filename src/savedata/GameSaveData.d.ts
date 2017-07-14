@@ -11,7 +11,6 @@ declare interface GameSaveData
   players: PlayerSaveData[];
   units: UnitSaveData[];
   items: ItemSaveData[];
-  humanPlayerId: number;
   notificationLog: NotificationLogSaveData;
 }
 

@@ -2,6 +2,7 @@
 
 import app from "./App"; // TODO global
 import {activeModuleData} from "./activeModuleData";
+import {activePlayer} from "./activePlayer";
 
 import WeightedProbability from "./templateinterfaces/WeightedProbability";
 
@@ -653,9 +654,9 @@ export function meetAllPlayers()
   for (let i = 0; i < app.game.playerOrder.length; i++)
   {
     const player = app.game.playerOrder[i];
-    if (player !== app.humanPlayer)
+    if (player !== activePlayer)
     {
-      app.humanPlayer.diplomacyStatus.meetPlayer(player);
+      activePlayer.diplomacyStatus.meetPlayer(player);
     }
   }
 }
