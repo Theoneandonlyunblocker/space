@@ -27,9 +27,9 @@ export default class ModuleLoader
   {
     [key: string]: (() => void)[];
   } = {};
-  constructor()
+  constructor(moduleData: ModuleData)
   {
-    this.moduleData = new ModuleData();
+    this.moduleData = moduleData;
 
     eventManager.addEventListener("loadModulesNeededForPhase", this.loadModulesNeededForPhase.bind(this));
   }
