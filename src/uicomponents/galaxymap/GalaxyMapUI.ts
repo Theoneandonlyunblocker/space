@@ -130,7 +130,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      isPlayerTurn: !this.props.game.activePlayer.isAI,
+      isPlayerTurn: !this.props.game.playerToAct.isAI,
     });
   }
 

@@ -17,7 +17,7 @@ export default class Game
   independents: Player[] = [];
   playerOrder: Player[];
   galaxyMap: GalaxyMap;
-  activePlayer: Player;
+  public playerToAct: Player;
   public hasEnded: boolean = false;
 
   notificationLog: NotificationLog;
@@ -54,18 +54,18 @@ export default class Game
   {
     this.setNextPlayer();
 
-    while (this.activePlayer.controlledLocations.length === 0)
+    while (this.playerToAct.controlledLocations.length === 0)
     {
-      this.killPlayer(this.activePlayer);
-      this.activePlayer = this.playerOrder[0];
+      this.killPlayer(this.playerToAct);
+      this.playerToAct = this.playerOrder[0];
     }
 
-    this.processPlayerStartTurn(this.activePlayer);
-    this.notificationLog.setTurn(this.turnNumber, !this.activePlayer.isAI);
+    this.processPlayerStartTurn(this.playerToAct);
+    this.notificationLog.setTurn(this.turnNumber, !this.playerToAct.isAI);
 
-    if (this.activePlayer.isAI)
+    if (this.playerToAct.isAI)
     {
-      this.activePlayer.AIController.processTurn(this.endTurn.bind(this));
+      this.playerToAct.AIController.processTurn(this.endTurn.bind(this));
     }
     else
     {
@@ -126,7 +126,7 @@ export default class Game
   {
     this.playerOrder.push(this.playerOrder.shift());
 
-    this.activePlayer = this.playerOrder[0];
+    this.playerToAct = this.playerOrder[0];
   }
   killPlayer(playerToKill: Player)
   {
