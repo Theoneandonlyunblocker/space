@@ -1,6 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Game from "../../Game";
+import NotificationLog from "../../NotificationLog";
 import Options from "../../Options";
 import Player from "../../Player";
 import {Rect} from "../../Rect";
@@ -49,6 +50,7 @@ export interface PropTypes extends React.Props<any>
   player: Player;
   game: Game;
   activeLanguage: Language;
+  notificationLog: NotificationLog;
 }
 
 type StateType = Partial<ValuesByPopup<boolean>>;
@@ -117,7 +119,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     {
       makeContent: () => OptionsList(
       {
-        log: this.props.game.notificationLog,
+        log: this.props.notificationLog,
         activeLanguage: this.props.activeLanguage,
       }),
       title: "Options",

@@ -4,6 +4,7 @@ import {Fleet} from "../../Fleet";
 import FleetAttackTarget from "../../FleetAttackTarget";
 import Game from "../../Game";
 import MapRenderer from "../../MapRenderer";
+import NotificationLog from "../../NotificationLog";
 import Player from "../../Player";
 import PlayerControl from "../../PlayerControl";
 import Star from "../../Star";
@@ -32,6 +33,7 @@ export interface PropTypes extends React.Props<any>
   player: Player;
   playerControl: PlayerControl;
   activeLanguage: Language;
+  notificationLog: NotificationLog;
 }
 
 interface StateType
@@ -232,7 +234,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             player: this.props.player,
             game: this.props.game,
             activeLanguage: this.props.activeLanguage,
-            // log: this.props.game.notificationLog,
+            notificationLog: this.props.notificationLog,
             // currentTurn: this.props.game.turnNumber
           }),
           React.DOM.div(
@@ -312,7 +314,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
           ),
           Notifications(
           {
-            log: this.props.game.notificationLog,
+            log: this.props.notificationLog,
             currentTurn: this.props.game.turnNumber,
             activeLanguage: this.props.activeLanguage,
             key: "notifications",

@@ -4,6 +4,7 @@ import {Language} from "./Language";
 import {getLanguagesByCode} from "./languageSupport";
 
 
+// TODO 2017.07.14 | why not just store the language object itself?
 let activeLanguageCode: string;
 
 export function getActiveLanguage(): Language

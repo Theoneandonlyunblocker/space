@@ -1,6 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Game from "../../Game";
+import NotificationLog from "../../NotificationLog";
 import Options from "../../Options";
 import Player from "../../Player";
 import eventManager from "../../eventManager";
@@ -15,6 +16,7 @@ export interface PropTypes extends React.Props<any>
   player: Player;
   game: Game;
   activeLanguage: Language;
+  notificationLog: NotificationLog;
 }
 
 interface StateType
@@ -322,6 +324,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
           player: this.props.player,
           game: this.props.game,
           activeLanguage: this.props.activeLanguage,
+          notificationLog: this.props.notificationLog,
         }),
       )
     );

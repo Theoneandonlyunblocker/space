@@ -10,6 +10,7 @@ import Player from "./Player";
 import PlayerControl from "./PlayerControl";
 import ReactUIScene from "./ReactUIScene";
 import Renderer from "./Renderer";
+import {activeNotificationLog} from "./activeNotificationLog";
 import eventManager from "./eventManager";
 
 import {getActiveLanguage} from "./localization/activeLanguage";
@@ -78,6 +79,7 @@ export default class ReactUI
         player: this.player,
         game: this.game,
         activeLanguage: getActiveLanguage(),
+        notificationLog: activeNotificationLog,
       }),
       this.container,
     );

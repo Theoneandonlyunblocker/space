@@ -1,8 +1,8 @@
 import app from "./App"; // TODO global
 import GalaxyMap from "./GalaxyMap";
 import Manufactory from "./Manufactory";
-import NotificationLog from "./NotificationLog";
 import Player from "./Player";
+import {activeNotificationLog} from "./activeNotificationLog";
 import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";
 import idGenerators from "./idGenerators";
@@ -19,8 +19,6 @@ export default class Game
   galaxyMap: GalaxyMap;
   public playerToAct: Player;
   public hasEnded: boolean = false;
-
-  notificationLog: NotificationLog;
 
   gameStorageKey: string;
 
@@ -39,7 +37,6 @@ export default class Game
   }
   destroy()
   {
-    this.notificationLog = null;
     for (let i = 0; i < this.playerOrder.length; i++)
     {
       this.playerOrder[i].destroy();
@@ -61,7 +58,7 @@ export default class Game
     }
 
     this.processPlayerStartTurn(this.playerToAct);
-    this.notificationLog.setTurn(this.turnNumber, !this.playerToAct.isAI);
+    activeNotificationLog.setTurn(this.turnNumber, !this.playerToAct.isAI);
 
     if (this.playerToAct.isAI)
     {
@@ -176,7 +173,8 @@ export default class Game
       {
         return player.serialize();
       }),
-      notificationLog: this.notificationLog.serialize(),
+      // TODO 2017.07.14 | does this belong here?
+      notificationLog: activeNotificationLog.serialize(),
       units: this.getAllPlayers().map(player =>
       {
         return player.units.map(unit =>

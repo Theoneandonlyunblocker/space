@@ -12,6 +12,7 @@ import Battle from "../Battle";
 import BattlePrep from "../BattlePrep";
 import Game from "../Game";
 import MapRenderer from "../MapRenderer";
+import NotificationLog from "../NotificationLog";
 import Player from "../Player";
 import PlayerControl from "../PlayerControl";
 import ReactUIScene from "../ReactUIScene";
@@ -31,6 +32,7 @@ export interface PropTypes extends React.Props<any>
   sceneToRender: ReactUIScene;
   renderer: Renderer;
   activeLanguage: Language;
+  notificationLog: NotificationLog;
 }
 
 interface StateType
@@ -89,6 +91,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
             player: this.props.player,
             game: this.props.game,
             activeLanguage: this.props.activeLanguage,
+            notificationLog: this.props.notificationLog,
             key: "galaxyMap",
           }),
         );

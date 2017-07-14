@@ -11,6 +11,7 @@ export default class Notification<P, D>
   turn: number;
   involvedPlayers: Player[];
 
+  // TODO 2017.07.14 | should keep track of this per player if we want to allow multiple players
   hasBeenRead: boolean = false;
 
   constructor(

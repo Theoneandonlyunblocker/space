@@ -1,6 +1,7 @@
 
 import {AIController} from "./AIController";
 import {activeModuleData} from "./activeModuleData";
+import {activeNotificationLog, setActiveNotificationLog} from "./activeNotificationLog";
 import {AttitudeModifier} from "./AttitudeModifier";
 import Building from "./Building";
 import Color from "./Color";
@@ -132,8 +133,8 @@ export default class GameLoader
     // notification log
     if (data.notificationLog)
     {
-      game.notificationLog = this.deserializeNotificationLog(data.notificationLog);
-      game.notificationLog.setTurn(game.turnNumber, true);
+      setActiveNotificationLog(this.deserializeNotificationLog(data.notificationLog));
+      activeNotificationLog.setTurn(game.turnNumber, true);
     }
 
     // ai controllers

@@ -14,6 +14,7 @@ import ReactUI from "./ReactUI";
 import ReactUIScene from "./ReactUIScene";
 import Renderer from "./Renderer";
 import {activeModuleData} from "./activeModuleData";
+import {activeNotificationLog, setActiveNotificationLog} from "./activeNotificationLog";
 import {activePlayer, setActivePlayer} from "./activePlayer";
 import {defaultModuleData} from "./defaultModuleData";
 import idGenerators from "./idGenerators";
@@ -286,10 +287,10 @@ class App
 
     this.playerControl = new PlayerControl(activePlayer);
 
-    if (!this.game.notificationLog)
+    if (!activeNotificationLog)
     {
-      this.game.notificationLog = new NotificationLog();
-      this.game.notificationLog.setTurn(this.game.turnNumber, true);
+      setActiveNotificationLog(new NotificationLog());
+      activeNotificationLog.setTurn(this.game.turnNumber, true);
     }
 
     activeModuleData.scripts.game.afterInit.forEach(scriptFN =>
