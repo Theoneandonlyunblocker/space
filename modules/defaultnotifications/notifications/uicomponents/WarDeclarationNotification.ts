@@ -27,11 +27,11 @@ class WarDeclarationNotification extends React.Component<PropTypes, {}>
   {
     var notification = this.props.notification;
     var p = notification.props;
-    // TODO
+
     return(
       React.DOM.div(
       {
-        className: "war-declaration-notification draggable",
+        className: "war-declaration-notification",
       },
         `${p.player1.name} declared war on ${p.player2.name}.`,
       )
