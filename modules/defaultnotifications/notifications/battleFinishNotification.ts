@@ -78,15 +78,19 @@ activeModuleData.scripts.add(
     [
       battle =>
       {
-        activeNotificationLog.makeNotification(battleFinishNotification,
+        activeNotificationLog.makeNotification(
         {
+          template: battleFinishNotification,
+          props:
+          {
+            location: battle.battleData.location,
+            attacker: battle.battleData.attacker.player,
+            defender: battle.battleData.defender.player,
+            victor: battle.victor,
+          },
+          involvedPlayers: [battle.side1Player, battle.side2Player],
           location: battle.battleData.location,
-          attacker: battle.battleData.attacker.player,
-          defender: battle.battleData.defender.player,
-          victor: battle.victor,
-        },
-          [battle.side1Player, battle.side2Player],
-        );
+        });
       },
     ],
   },

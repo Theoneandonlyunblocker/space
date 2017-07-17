@@ -59,12 +59,16 @@ activeModuleData.scripts.add(
     [
       player =>
       {
-        activeNotificationLog.makeNotification(playerDiedNotification,
+        activeNotificationLog.makeNotification(
         {
-          deadPlayerName: player.name.fullName,
-        },
-          [player],
-        );
+          template: playerDiedNotification,
+          props:
+          {
+            deadPlayerName: player.name.fullName,
+          },
+          involvedPlayers: [player],
+          location: null,
+        });
       },
     ],
   },

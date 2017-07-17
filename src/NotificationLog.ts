@@ -27,7 +27,7 @@ export default class NotificationLog
     template: NotificationTemplate<P, D>,
     props: P,
     involvedPlayers: Player[],
-    location?: Star,
+    location: Star | null,
   })
   {
     const notification = new Notification(

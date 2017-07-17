@@ -69,13 +69,17 @@ activeModuleData.scripts.add(
       [
         (aggressor, defender) =>
         {
-          activeNotificationLog.makeNotification(warDeclarationNotification,
+          activeNotificationLog.makeNotification(
           {
-            player1: aggressor,
-            player2: defender,
-          },
-            [aggressor, defender],
-          );
+            template: warDeclarationNotification,
+            props:
+            {
+              player1: aggressor,
+              player2: defender,
+            },
+            involvedPlayers: [aggressor, defender],
+            location: null,
+          });
         },
       ],
     },
