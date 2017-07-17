@@ -57,7 +57,10 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   public render()
   {
     const log = this.props.log;
-    const notifications: Notification<any, any>[] = log.filterNotifications(log.unread);
+    const notifications: Notification<any, any>[] = log.filterNotifications(log.notifications.filter(notification =>
+    {
+      return !notification.hasBeenRead;
+    }));
 
     const items: React.ReactElement<any>[] = [];
 
@@ -139,7 +142,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   }
   private getNotificationKey(notification: Notification<any, any>)
   {
-    return "" + notification.turn + this.props.log.byTurn[notification.turn].indexOf(notification);
+    return `${notification.turn}_${this.props.log.notifications.indexOf(notification)}`;
   }
   private handleMarkAsRead(notification: Notification<any, any>)
   {

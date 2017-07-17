@@ -1,7 +1,6 @@
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 
 import NotificationLogSaveData from "./savedata/NotificationLogSaveData";
-import NotificationSaveData from "./savedata/NotificationSaveData";
 
 import Notification from "./Notification";
 import NotificationFilter from "./NotificationFilter";
@@ -11,12 +10,8 @@ import Player from "./Player";
 
 export default class NotificationLog
 {
-  byTurn:
-  {
-    [turnNumber: number]: Notification<any, any>[];
-  } = {};
-  unread: Notification<any, any>[] = [];
-  notificationFilter: NotificationFilter;
+  public readonly notifications: Notification<any, any>[] = [];
+  public notificationFilter: NotificationFilter;
   public currentTurn: number;
 
   constructor()
@@ -50,60 +45,38 @@ export default class NotificationLog
     //   eventManager.dispatchEvent("updateNotificationLog");
     // }
   }
-  addNotification(notification: Notification<any, any>)
+  // TODO 2017.07.17 | seems unnecessary
+  public addNotification(notification: Notification<any, any>)
   {
-    if (!this.byTurn[notification.turn])
-    {
-      this.byTurn[notification.turn] = [];
-    }
-    this.byTurn[notification.turn].unshift(notification);
-
-    if (!notification.hasBeenRead)
-    {
-      this.unread.unshift(notification);
-    }
+    this.notifications.push(notification);
   }
-  markAsRead(notification: Notification<any, any>)
+  // TODO 2017.07.17 | seems unnecessary
+  public markAsRead(notification: Notification<any, any>)
   {
-    const index = this.unread.indexOf(notification);
-    if (index === -1) throw new Error("Notification is already unread");
-
     notification.hasBeenRead = true;
-    this.unread.splice(index, 1);
   }
-  getUnreadNotificationsForTurn(turn: number)
+  // TODO 2017.07.17 | seems unnecessary
+  public getUnreadNotificationsForTurn(turn: number)
   {
-    return this.byTurn[turn].filter(function(notification: Notification<any, any>)
+    return this.notifications.filter(notification =>
     {
-      return !notification.hasBeenRead;
+      return !notification.hasBeenRead && notification.turn === turn;
     });
   }
-  filterNotifications(notifications: Notification<any, any>[])
+  // TODO 2017.07.17 | doesn't belong here
+  public filterNotifications(notifications: Notification<any, any>[])
   {
     return notifications.filter(notification =>
     {
       return this.notificationFilter.shouldDisplayNotification(notification);
     });
   }
-  serialize(): NotificationLogSaveData
+  public serialize(): NotificationLogSaveData
   {
-    const notificationsSaveData: NotificationSaveData<any>[] = [];
-
-    for (let turnNumber in this.byTurn)
+    return(
     {
-      const notifications = this.byTurn[turnNumber];
-      for (let i = 0; i < notifications.length; i++)
-      {
-        notificationsSaveData.push(notifications[i].serialize());
-      }
-    }
-
-    const data: NotificationLogSaveData =
-    {
-      notifications: notificationsSaveData,
-    };
-
-    return data;
+      notifications: this.notifications.map(notification => notification.serialize()),
+    });
   }
 
   private getWitnessingPlayers(
