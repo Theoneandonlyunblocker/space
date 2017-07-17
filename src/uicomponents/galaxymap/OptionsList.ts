@@ -17,6 +17,8 @@ import OptionsCheckbox from "./OptionsCheckbox";
 import OptionsGroup from "./OptionsGroup";
 import OptionsNumericField from "./OptionsNumericField";
 
+import {localize} from "../../../localization/options/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -64,7 +66,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     allOptions.push(OptionsGroup(
     {
       key: "language",
-      header: "Language",
+      header: localize("language"),
       options: languageOptions,
       activeLanguage: this.props.activeLanguage,
     }));
@@ -75,42 +77,42 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     [
       {
         stage: "before",
-        displayName: "Before ability (ms)",
+        displayName: localize("beforeAbility"),
         min: 0,
         max: 5000,
         step: 100,
       },
       {
         stage: "effectDuration",
-        displayName: "Ability effect duration (*)",
+        displayName: localize("abilityEffectDuration"),
         min: 0,
         max: 10,
         step: 0.1,
       },
       {
         stage: "after",
-        displayName: "After ability (ms)",
+        displayName: localize("afterAbility"),
         min: 0,
         max: 5000,
         step: 100,
       },
       {
         stage: "unitEnter",
-        displayName: "Unit enter (ms)",
+        displayName: localize("unitEnter"),
         min: 0,
         max: 1000,
         step: 50,
       },
       {
         stage: "unitExit",
-        displayName: "Unit exit (ms)",
+        displayName: localize("unitExit"),
         min: 0,
         max: 1000,
         step: 50,
       },
       {
         stage: "turnTransition",
-        displayName: "Turn transition (ms)",
+        displayName: localize("turnTransition"),
         min: 0,
         max: 2000,
         step: 100,
@@ -146,7 +148,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     allOptions.push(OptionsGroup(
     {
       key: "battleAnimationOptions",
-      header: "Battle animation timing",
+      header: localize("battleAnimationTiming"),
       options: battleAnimationOptions,
       activeLanguage: this.props.activeLanguage,
       resetFN: () =>
@@ -164,7 +166,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         OptionsCheckbox(
         {
           isChecked: Options.debug.enabled,
-          label: "Debug mode",
+          label: localize("debugMode"),
           onChangeFN: () =>
           {
             Options.debug.enabled = !Options.debug.enabled;
@@ -185,7 +187,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         },
           OptionsNumericField(
           {
-            label: "AI vs. AI Battle simulation depth",
+            label: localize("aiVsAiBattleSimulationDepth"),
             id: "battle-simulation-depth-input",
             value: Options.debug.battleSimulationDepth,
             min: 1,
@@ -205,7 +207,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     allOptions.push(OptionsGroup(
     {
       key: "debug",
-      header: "Debug",
+      header: localize("debug"),
       options: debugOptions,
       activeLanguage: this.props.activeLanguage,
       resetFN: () =>
@@ -223,7 +225,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         OptionsCheckbox(
         {
           isChecked: Options.ui.noHamburger,
-          label: "Always expand top right menu on low resolution",
+          label: localize("alwaysExpandTopRightMenuOnLowResolution"),
           onChangeFN: () =>
           {
             Options.ui.noHamburger = !Options.ui.noHamburger;
@@ -239,7 +241,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       content: NotificationFilterButton(
       {
         filter: this.props.log.notificationFilter,
-        text: "Message settings",
+        text: localize("messageSettings"),
         highlightedOptionKey: null,
         activeLanguage: this.props.activeLanguage,
       }),
@@ -253,14 +255,14 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         className: "reset-tutorials-button",
         onClick: TutorialStatus.reset,
       },
-        "Reset tutorials",
+        localize("resetTutorials"),
       ),
     });
 
     allOptions.push(OptionsGroup(
     {
       key: "ui",
-      header: "UI",
+      header: localize("ui"),
       options: uiOptions,
       activeLanguage: this.props.activeLanguage,
       resetFN: () =>
@@ -276,7 +278,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "borderWidth",
       content: OptionsNumericField(
       {
-        label: "Border width",
+        label: localize("borderWidth"),
         id: "options-border-width",
         min: 0,
         max: 50,
@@ -294,7 +296,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     allOptions.push(OptionsGroup(
     {
       key: "display",
-      header: "Display",
+      header: localize("display"),
       options: displayOptions,
       activeLanguage: this.props.activeLanguage,
       resetFN: () =>
@@ -310,7 +312,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         !this.state.hasConfirmResetAllDialog ? null :
           DialogBox(
           {
-            title: "Reset all options",
+            title: localize("resetAllOptions"),
             handleOk: () =>
             {
               Options.setDefaults();
@@ -321,7 +323,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
               this.closeResetAllOptionsDialog();
             },
           },
-          "Are you sure you want to reset all options?",
+          localize("areYouSureYouWantToResetAllOptions"),
         ),
 
         React.DOM.div({className: "options-header"},
@@ -330,7 +332,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
             className: "reset-options-button reset-all-options-button",
             onClick: this.openResetAllOptionsDialog,
           },
-            "Reset all options",
+            localize("resetAllOptions"),
           ),
         ),
         allOptions,

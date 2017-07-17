@@ -2,6 +2,9 @@
 
 import {Language} from "../../localization/Language";
 
+import {localize} from "../../../localization/options/localize";
+
+
 export interface PropTypes extends React.Props<any>
 {
   isCollapsedInitially?: boolean;
@@ -62,7 +65,9 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
       {
         className: "reset-options-button",
         onClick: this.props.resetFN,
-      }, "reset");
+      },
+        localize("reset"),
+      );
     }
 
     const header = this.props.header || resetButton ?

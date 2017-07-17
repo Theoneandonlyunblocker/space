@@ -7,4 +7,8 @@ import {options as enOptions} from "./en";
 export const localizer = new Localizer<typeof enOptions>();
 localizer.registerTexts(enOptions, Languages.en);
 
-export const localize: typeof localizer.localize = localizer.localize.bind(localizer);
+export const localizeF: typeof localizer.localize = localizer.localize.bind(localizer);
+export function localize(key: keyof typeof enOptions): string
+{
+  return localizeF(key).format();
+}
