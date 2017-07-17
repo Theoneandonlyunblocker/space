@@ -2,7 +2,7 @@
 
 import GameLoader from "../GameLoader";
 import NotificationFilterState from "../NotificationFilterState";
-import {NotificationWitnessCriteria} from "../NotificationWitnessCriteria";
+import {NotificationWitnessCriterion} from "../NotificationWitnessCriterion";
 
 
 declare interface NotificationTemplate<P, D>
@@ -12,12 +12,12 @@ declare interface NotificationTemplate<P, D>
   category: string;
   defaultFilterState: NotificationFilterState[];
   /*
-    use separate array elements for logical OR
-      [isInvolved, locationIsVisible] => involved OR visible
-    use bitwise OR for logical AND
-      [isInvolved | locationIsVisible] => involved AND visible
+    if any outer elements are true
+      [[isInvolved], [locationIsVisible]] => involved OR visible
+    if all inner elements are true
+      [[isInvolved, locationIsVisible]] => involved AND visible
   */
-  witnessCriteria: NotificationWitnessCriteria[];
+  witnessCriteria: NotificationWitnessCriterion[][];
   iconSrc: string;
   contentConstructor: React.Factory<any>;
   messageConstructor: (props: P) => string;
