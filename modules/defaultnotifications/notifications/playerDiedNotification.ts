@@ -4,6 +4,7 @@ import NotificationTemplate from "../../../src/templateinterfaces/NotificationTe
 
 import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
+import {NotificationWitnessCriterion} from "../../../src/NotificationWitnessCriterion";
 import {activeModuleData} from "../../../src/activeModuleData";
 import {activeNotificationLog} from "../../../src/activeNotificationLog";
 
@@ -24,6 +25,7 @@ const playerDiedNotification: NotificationTemplate<PropTypes, SerializedPropType
   displayName: "Player died",
   category: "game",
   defaultFilterState: [NotificationFilterState.alwaysShow],
+  witnessCriteria: [[NotificationWitnessCriterion.metOneInvolvedPlayer]],
   iconSrc: "modules/common/resourcetemplates/img/test1.png",
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>

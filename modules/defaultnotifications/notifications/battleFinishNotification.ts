@@ -4,6 +4,7 @@ import NotificationTemplate from "../../../src/templateinterfaces/NotificationTe
 
 import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
+import {NotificationWitnessCriterion} from "../../../src/NotificationWitnessCriterion";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 import {activeModuleData} from "../../../src/activeModuleData";
@@ -32,6 +33,11 @@ const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTy
   displayName: "Battle finished",
   category: "combat",
   defaultFilterState: [NotificationFilterState.neverShow],
+  witnessCriteria:
+  [
+    [NotificationWitnessCriterion.isInvolved],
+    [NotificationWitnessCriterion.locationIsVisible]
+  ],
   iconSrc: "modules/common/resourcetemplates/img/test1.png",
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>

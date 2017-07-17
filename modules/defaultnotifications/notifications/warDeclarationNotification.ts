@@ -4,6 +4,7 @@ import NotificationTemplate from "../../../src/templateinterfaces/NotificationTe
 
 import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
+import {NotificationWitnessCriterion} from "../../../src/NotificationWitnessCriterion";
 import Player from "../../../src/Player";
 import {activeModuleData} from "../../../src/activeModuleData";
 import {activeNotificationLog} from "../../../src/activeNotificationLog";
@@ -28,6 +29,11 @@ const warDeclarationNotification: NotificationTemplate<PropTypes, SerializedProp
   displayName: "War declaration",
   category: "diplomacy",
   defaultFilterState: [NotificationFilterState.showIfInvolved],
+  witnessCriteria:
+  [
+    [NotificationWitnessCriterion.isInvolved],
+    [NotificationWitnessCriterion.metAllInvolvedPlayers],
+  ],
   iconSrc: "modules/common/resourcetemplates/img/test2.png",
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
