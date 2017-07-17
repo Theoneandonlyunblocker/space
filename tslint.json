@@ -3,6 +3,8 @@
   {
     "member-access": true,
     "member-ordering": [true, { "order": "fields-first" }],
+    // should allow this after fixing existing lazy use cases.
+    // anything handling generics probably wants to use 'any'
     "no-any": true,
     "no-internal-module": true,
     "no-namespace": [true, "allow-declarations"],
