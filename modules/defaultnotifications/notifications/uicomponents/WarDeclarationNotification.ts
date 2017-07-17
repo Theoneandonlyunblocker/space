@@ -33,7 +33,7 @@ class WarDeclarationNotification extends React.Component<PropTypes, {}>
       {
         className: "war-declaration-notification",
       },
-        `${p.player1.name} declared war on ${p.player2.name}.`,
+        `${p.aggressor.name} declared war on ${p.defender.name}.`,
       )
     );
   }

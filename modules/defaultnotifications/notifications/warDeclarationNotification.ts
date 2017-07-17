@@ -10,17 +10,16 @@ import {activeModuleData} from "../../../src/activeModuleData";
 import {activeNotificationLog} from "../../../src/activeNotificationLog";
 
 
-// TODO 2017.07.15 | clarify these names. aggressor/defender
 export interface PropTypes
 {
-  player1: Player;
-  player2: Player;
+  aggressor: Player;
+  defender: Player;
 }
 
 export interface SerializedPropTypes
 {
-  player1Id: number;
-  player2Id: number;
+  aggressorId: number;
+  defenderId: number;
 }
 
 const warDeclarationNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
@@ -38,7 +37,7 @@ const warDeclarationNotification: NotificationTemplate<PropTypes, SerializedProp
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
-    const message = props.player1.name + " declared war on " + props.player2.name;
+    const message = props.aggressor.name + " declared war on " + props.defender.name;
 
     return message;
   },
@@ -47,16 +46,16 @@ const warDeclarationNotification: NotificationTemplate<PropTypes, SerializedProp
   {
     return(
     {
-      player1Id: props.player1.id,
-      player2Id: props.player2.id,
+      aggressorId: props.aggressor.id,
+      defenderId: props.defender.id,
     });
   },
   deserializeProps: (props: SerializedPropTypes, gameLoader: GameLoader) =>
   {
     return(
     {
-      player1: gameLoader.playersById[props.player1Id],
-      player2: gameLoader.playersById[props.player2Id],
+      aggressor: gameLoader.playersById[props.aggressorId],
+      defender: gameLoader.playersById[props.defenderId],
     });
   },
 };
@@ -74,8 +73,8 @@ activeModuleData.scripts.add(
             template: warDeclarationNotification,
             props:
             {
-              player1: aggressor,
-              player2: defender,
+              aggressor: aggressor,
+              defender: defender,
             },
             involvedPlayers: [aggressor, defender],
             location: null,
