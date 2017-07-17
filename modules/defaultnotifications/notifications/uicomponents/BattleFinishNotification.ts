@@ -35,8 +35,6 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
 
     var attackerGainedControl = location.owner === attacker;
 
-    var message = notification.makeMessage();
-
     var attackSuccessString = victor === attacker ?
       " succesfully " :
       " unsuccesfully ";
@@ -49,9 +47,6 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
       {
         className: "battle-finish-notification",
       },
-        message + ".",
-        React.DOM.br(null),
-        React.DOM.br(null),
         "" + attacker.name + attackSuccessString + "attacked " + defender.name + " in " +
           location.name + ". " + victor.name + controllerString + location.name + ".",
       )
