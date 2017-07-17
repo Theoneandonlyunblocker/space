@@ -6,6 +6,7 @@ import Notification from "./Notification";
 import NotificationFilter from "./NotificationFilter";
 import {NotificationWitnessCriteria} from "./NotificationWitnessCriteria";
 import Player from "./Player";
+import Star from "./Star";
 
 
 export default class NotificationLog
@@ -23,6 +24,7 @@ export default class NotificationLog
     template: NotificationTemplate<P, D>,
     props: P,
     involvedPlayers: Player[],
+    location?: Star,
   })
   {
     const notification = new Notification(
@@ -38,6 +40,7 @@ export default class NotificationLog
       ),
       turn: this.currentTurn,
     });
+
     this.addNotification(notification);
     // TODO 2017.07.17 | this seems stupid & unnecessary
     // if (this.isHumanTurn)
