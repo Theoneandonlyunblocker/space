@@ -161,9 +161,15 @@ export default class GameLoader
     data.notifications.forEach(notificationData =>
     {
       const template = activeModuleData.Templates.Notifications[notificationData.templateKey];
-      const props = template.deserializeProps(notificationData.props, this);
-      const players = notificationData.involvedPlayerIds.map(id => this.playersById[id]);
-      const notification = new Notification(template, props, notificationData.turn, players);
+
+      const notification = new Notification(
+      {
+        template: activeModuleData.Templates.Notifications[notificationData.templateKey],
+        props: template.deserializeProps(notificationData.props, this),
+        turn: notificationData.turn,
+        involvedPlayers: notificationData.involvedPlayerIds.map(id => this.playersById[id]),
+      });
+
       notification.hasBeenRead = notificationData.hasBeenRead;
 
       notificationLog.addNotification(notification);

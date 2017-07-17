@@ -14,17 +14,18 @@ export default class Notification<P, D>
   // TODO 2017.07.14 | should keep track of this per player if we want to allow multiple players
   hasBeenRead: boolean = false;
 
-  constructor(
+  constructor(args:
+  {
     template: NotificationTemplate<P, D>,
     props: P,
     turn: number,
     involvedPlayers: Player[],
-  )
+  })
   {
-    this.template = template;
-    this.props = props;
-    this.turn = turn;
-    this.involvedPlayers = involvedPlayers;
+    this.template = args.template;
+    this.props = args.props;
+    this.turn = args.turn;
+    this.involvedPlayers = args.involvedPlayers;
   }
   public makeMessage(): string
   {

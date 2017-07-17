@@ -29,14 +29,22 @@ export default class NotificationLog
     this.currentTurn = turn;
     this.isHumanTurn = isHumanTurn;
   }
-  makeNotification<P, D>(
+  public makeNotification<P, D>(args:
+  {
     template: NotificationTemplate<P, D>,
     props: P,
     involvedPlayers: Player[],
-  )
+  })
   {
-    const notification = new Notification(template, props, this.currentTurn, involvedPlayers);
+    const notification = new Notification(
+    {
+      template: args.template,
+      props: args.props,
+      involvedPlayers: args.involvedPlayers,
 
+      ),
+      turn: this.currentTurn,
+    });
     this.addNotification(notification);
     if (this.isHumanTurn)
     {
