@@ -1,5 +1,6 @@
 import {AllScripts} from "./modulescriptinterfaces/AllScripts";
 import {BattleScripts} from "./modulescriptinterfaces/BattleScripts";
+import {DiplomacyScripts} from "./modulescriptinterfaces/DiplomacyScripts";
 import {GameScripts} from "./modulescriptinterfaces/GameScripts";
 import {UnitScripts} from "./modulescriptinterfaces/UnitScripts";
 
@@ -10,6 +11,10 @@ export default class ModuleScripts implements AllScripts
   public readonly battle: BattleScripts =
   {
     battleFinish: [],
+  };
+  public readonly diplomacy: DiplomacyScripts =
+  {
+    onWarDeclaration: [],
   };
   public readonly game: GameScripts =
   {

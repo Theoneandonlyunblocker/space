@@ -5,8 +5,11 @@ import NotificationTemplate from "../../../src/templateinterfaces/NotificationTe
 import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
 import Player from "../../../src/Player";
+import {activeModuleData} from "../../../src/activeModuleData";
+import {activeNotificationLog} from "../../../src/activeNotificationLog";
 
 
+// TODO 2017.07.15 | clarify these names. aggressor/defender
 export interface PropTypes
 {
   player1: Player;
@@ -26,7 +29,6 @@ const warDeclarationNotification: NotificationTemplate<PropTypes, SerializedProp
   category: "diplomacy",
   defaultFilterState: [NotificationFilterState.showIfInvolved],
   iconSrc: "modules/common/resourcetemplates/img/test2.png",
-  // eventListeners: ["makeWarDeclarationNotification"],
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
@@ -52,5 +54,25 @@ const warDeclarationNotification: NotificationTemplate<PropTypes, SerializedProp
     });
   },
 };
+
+activeModuleData.scripts.add(
+  {
+    diplomacy:
+    {
+      onWarDeclaration:
+      [
+        (aggressor, defender) =>
+        {
+          activeNotificationLog.makeNotification(warDeclarationNotification,
+          {
+            player1: aggressor,
+            player2: defender,
+          },
+            [aggressor, defender],
+          );
+        },
+      ],
+    },
+  });
 
 export default warDeclarationNotification;
