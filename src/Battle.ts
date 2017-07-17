@@ -311,18 +311,6 @@ export default class Battle
     {
       script(this);
     });
-    /*
-    if (activePlayer.starIsVisible(this.battleData.location))
-    {
-      eventManager.dispatchEvent("makeBattleFinishNotification",
-      {
-        location: this.battleData.location,
-        attacker: this.battleData.attacker.player,
-        defender: this.battleData.defender.player,
-        victor: victor,
-      });
-    }
-    */
 
     for (let i = 0; i < this.afterFinishCallbacks.length; i++)
     {

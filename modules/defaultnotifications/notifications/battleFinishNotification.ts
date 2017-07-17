@@ -2,11 +2,12 @@ import UIComponent from "./uicomponents/BattleFinishNotification";
 
 import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
 
-import {activeModuleData} from "../../../src/activeModuleData";
 import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
+import {activeModuleData} from "../../../src/activeModuleData";
+import {activeNotificationLog} from "../../../src/activeNotificationLog";
 
 
 export interface PropTypes
@@ -67,8 +68,21 @@ activeModuleData.scripts.add(
 {
   battle:
   {
-    // TODO 2017.07.14 | implement & do other notifications as well
-    battleFinish: [],
+    battleFinish:
+    [
+      battle =>
+      {
+        activeNotificationLog.makeNotification(battleFinishNotification,
+        {
+          location: battle.battleData.location,
+          attacker: battle.battleData.attacker.player,
+          defender: battle.battleData.defender.player,
+          victor: battle.victor,
+        },
+          [battle.side1Player, battle.side2Player],
+        );
+      },
+    ],
   },
 });
 
