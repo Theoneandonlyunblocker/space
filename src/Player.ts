@@ -250,11 +250,10 @@ export default class Player
       this.fleets[i].deleteFleet(false);
     }
 
-    eventManager.dispatchEvent("makePlayerDiedNotification",
+    activeModuleData.scripts.player.onDeath.forEach(script =>
     {
-      deadPlayerName: this.name.fullName,
+      script(this);
     });
-    console.log(this.name + " died");
   }
   initTechnologies(savedData?: PlayerTechnologySaveData): void
   {

@@ -4,6 +4,8 @@ import NotificationTemplate from "../../../src/templateinterfaces/NotificationTe
 
 import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
+import {activeModuleData} from "../../../src/activeModuleData";
+import {activeNotificationLog} from "../../../src/activeNotificationLog";
 
 
 export interface PropTypes
@@ -23,7 +25,6 @@ const playerDiedNotification: NotificationTemplate<PropTypes, SerializedPropType
   category: "game",
   defaultFilterState: [NotificationFilterState.alwaysShow],
   iconSrc: "modules/common/resourcetemplates/img/test1.png",
-  // eventListeners: ["makePlayerDiedNotification"],
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
@@ -47,5 +48,24 @@ const playerDiedNotification: NotificationTemplate<PropTypes, SerializedPropType
     });
   },
 };
+
+activeModuleData.scripts.add(
+{
+  player:
+  {
+    onDeath:
+    [
+      player =>
+      {
+        activeNotificationLog.makeNotification(playerDiedNotification,
+        {
+          deadPlayerName: player.name.fullName,
+        },
+          [player],
+        );
+      },
+    ],
+  },
+});
 
 export default playerDiedNotification;

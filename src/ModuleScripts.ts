@@ -2,6 +2,7 @@ import {AllScripts} from "./modulescriptinterfaces/AllScripts";
 import {BattleScripts} from "./modulescriptinterfaces/BattleScripts";
 import {DiplomacyScripts} from "./modulescriptinterfaces/DiplomacyScripts";
 import {GameScripts} from "./modulescriptinterfaces/GameScripts";
+import {PlayerScripts} from "./modulescriptinterfaces/PlayerScripts";
 import {UnitScripts} from "./modulescriptinterfaces/UnitScripts";
 
 
@@ -19,6 +20,10 @@ export default class ModuleScripts implements AllScripts
   public readonly game: GameScripts =
   {
     afterInit: [],
+  };
+  public readonly player: PlayerScripts =
+  {
+    onDeath: [],
   };
   public readonly unit: UnitScripts =
   {
