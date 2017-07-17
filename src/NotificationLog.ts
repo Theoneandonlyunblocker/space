@@ -4,7 +4,10 @@ import NotificationLogSaveData from "./savedata/NotificationLogSaveData";
 
 import Notification from "./Notification";
 import NotificationFilter from "./NotificationFilter";
-import {NotificationWitnessCriteria} from "./NotificationWitnessCriteria";
+import
+{
+  NotificationWitnessCriterion,
+} from "./NotificationWitnessCriterion";
 import Player from "./Player";
 import Star from "./Star";
 
@@ -34,9 +37,9 @@ export default class NotificationLog
       involvedPlayers: args.involvedPlayers,
 
       witnessingPlayers: this.getWitnessingPlayers(
+        args.template.witnessCriteria,
         args.involvedPlayers,
         args.location,
-        args.template.witnessCriteria,
       ),
       turn: this.currentTurn,
     });
@@ -65,15 +68,77 @@ export default class NotificationLog
   }
 
   private getWitnessingPlayers(
+    witnessCriteria: NotificationWitnessCriterion[][],
     involvedPlayers: Player[],
     location: Star | undefined,
-    witnessCriteria: NotificationWitnessCriteria[],
   ): Player[]
   {
-    // TODO 2017.07.17 | implement
-    return this.subscribedPlayers.filter(player =>
+    return this.subscribedPlayers.filter(witnessingPlayer =>
     {
+      const oneCriteriaGroupIsSatisfied = witnessCriteria.some(criteriaGroup =>
+      {
+        const allCriteriaInGroupAreSatisfied = criteriaGroup.every(criterion =>
+        {
+          const criterionIsSatisfied = this.witnessCriterionIsSatisfied(
+            criterion,
+            involvedPlayers,
+            witnessingPlayer,
+            location,
+          );
 
+          return criterionIsSatisfied;
+        });
+
+        return allCriteriaInGroupAreSatisfied;
+      });
+
+      return oneCriteriaGroupIsSatisfied;
     });
+  }
+  // TODO 2017.07.17 | does this belong in this class?
+  private witnessCriterionIsSatisfied(
+    criterion: NotificationWitnessCriterion,
+    involvedPlayers: Player[],
+    witnessingPlayer: Player,
+    location: Star | undefined,
+  ): boolean
+  {
+    switch (criterion)
+    {
+      case NotificationWitnessCriterion.always:
+      {
+        return true;
+      }
+      case NotificationWitnessCriterion.isInvolved:
+      {
+        return involvedPlayers.indexOf(witnessingPlayer) !== -1;
+      }
+      case NotificationWitnessCriterion.metOneInvolvedPlayer:
+      {
+        return involvedPlayers.some(involvedPlayer =>
+        {
+          return Boolean(witnessingPlayer.diplomacyStatus.metPlayers[involvedPlayer.id]);
+        });
+      }
+      case NotificationWitnessCriterion.metAllInvolvedPlayers:
+      {
+        return involvedPlayers.every(involvedPlayer =>
+        {
+          return Boolean(witnessingPlayer.diplomacyStatus.metPlayers[involvedPlayer.id]);
+        });
+      }
+      case NotificationWitnessCriterion.locationIsRevealed:
+      {
+        return witnessingPlayer.starIsRevealed(location);
+      }
+      case NotificationWitnessCriterion.locationIsVisible:
+      {
+        return witnessingPlayer.starIsVisible(location);
+      }
+      case NotificationWitnessCriterion.locationIsDetected:
+      {
+        return witnessingPlayer.starIsDetected(location);
+      }
+    }
   }
 }
