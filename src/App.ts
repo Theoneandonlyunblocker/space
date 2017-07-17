@@ -289,7 +289,7 @@ class App
 
     if (!activeNotificationLog)
     {
-      setActiveNotificationLog(new NotificationLog());
+      setActiveNotificationLog(new NotificationLog(this.game.playerOrder));
       activeNotificationLog.currentTurn = this.game.turnNumber;
     }
 

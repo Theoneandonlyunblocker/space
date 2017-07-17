@@ -18,8 +18,12 @@ export default class NotificationLog
   public notificationFilter: NotificationFilter;
   public currentTurn: number;
 
-  constructor()
+  private readonly subscribedPlayers: Player[] = [];
+
+  constructor(subscribedPlayers: Player[])
   {
+    this.subscribedPlayers.push(...subscribedPlayers);
+
     this.notificationFilter = new NotificationFilter();
   }
   public makeNotification<P, D>(args:

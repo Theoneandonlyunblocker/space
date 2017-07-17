@@ -155,7 +155,7 @@ export default class GameLoader
   }
   private deserializeNotificationLog(data: NotificationLogSaveData): NotificationLog
   {
-    const notificationLog = new NotificationLog();
+    const notificationLog = new NotificationLog(this.players);
 
     data.notifications.forEach(notificationData =>
     {
