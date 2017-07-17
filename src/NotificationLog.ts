@@ -48,14 +48,6 @@ export default class NotificationLog
     //   eventManager.dispatchEvent("updateNotificationLog");
     // }
   }
-  // TODO 2017.07.17 | seems unnecessary
-  public getUnreadNotificationsForTurn(turn: number)
-  {
-    return this.notifications.filter(notification =>
-    {
-      return !notification.hasBeenRead && notification.turn === turn;
-    });
-  }
   // TODO 2017.07.17 | doesn't belong here
   public filterNotifications(notifications: Notification<any, any>[])
   {
