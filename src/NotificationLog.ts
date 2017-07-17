@@ -54,11 +54,6 @@ export default class NotificationLog
     this.notifications.push(notification);
   }
   // TODO 2017.07.17 | seems unnecessary
-  public markAsRead(notification: Notification<any, any>)
-  {
-    notification.hasBeenRead = true;
-  }
-  // TODO 2017.07.17 | seems unnecessary
   public getUnreadNotificationsForTurn(turn: number)
   {
     return this.notifications.filter(notification =>

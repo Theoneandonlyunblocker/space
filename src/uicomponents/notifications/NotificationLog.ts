@@ -146,7 +146,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   }
   private handleMarkAsRead(notification: Notification<any, any>)
   {
-    this.props.log.markAsRead(notification);
+    notification.hasBeenRead = true;
   }
   private openPopup(notification: Notification<any, any>): void
   {
