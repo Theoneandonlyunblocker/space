@@ -58,7 +58,7 @@ export default class Game
     }
 
     this.processPlayerStartTurn(this.playerToAct);
-    activeNotificationLog.setTurn(this.turnNumber, !this.playerToAct.isAI);
+    activeNotificationLog.currentTurn = this.turnNumber;
 
     if (this.playerToAct.isAI)
     {

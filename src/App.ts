@@ -290,7 +290,7 @@ class App
     if (!activeNotificationLog)
     {
       setActiveNotificationLog(new NotificationLog());
-      activeNotificationLog.setTurn(this.game.turnNumber, true);
+      activeNotificationLog.currentTurn = this.game.turnNumber;
     }
 
     activeModuleData.scripts.game.afterInit.forEach(scriptFN =>

@@ -7,7 +7,6 @@ import Notification from "./Notification";
 import NotificationFilter from "./NotificationFilter";
 import {NotificationWitnessCriteria} from "./NotificationWitnessCriteria";
 import Player from "./Player";
-import eventManager from "./eventManager";
 
 
 export default class NotificationLog
@@ -17,18 +16,12 @@ export default class NotificationLog
     [turnNumber: number]: Notification<any, any>[];
   } = {};
   unread: Notification<any, any>[] = [];
-  currentTurn: number;
-  isHumanTurn: boolean = true;
   notificationFilter: NotificationFilter;
+  public currentTurn: number;
 
   constructor()
   {
     this.notificationFilter = new NotificationFilter();
-  }
-  setTurn(turn: number, isHumanTurn: boolean)
-  {
-    this.currentTurn = turn;
-    this.isHumanTurn = isHumanTurn;
   }
   public makeNotification<P, D>(args:
   {
@@ -51,10 +44,11 @@ export default class NotificationLog
       turn: this.currentTurn,
     });
     this.addNotification(notification);
-    if (this.isHumanTurn)
-    {
-      eventManager.dispatchEvent("updateNotificationLog");
-    }
+    // TODO 2017.07.17 | this seems stupid & unnecessary
+    // if (this.isHumanTurn)
+    // {
+    //   eventManager.dispatchEvent("updateNotificationLog");
+    // }
   }
   addNotification(notification: Notification<any, any>)
   {
