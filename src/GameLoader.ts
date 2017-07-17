@@ -172,7 +172,7 @@ export default class GameLoader
 
       notification.hasBeenRead = notificationData.hasBeenRead;
 
-      notificationLog.addNotification(notification);
+      notificationLog.notifications.push(notification);
     });
 
     return notificationLog;

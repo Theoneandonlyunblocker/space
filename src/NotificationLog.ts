@@ -41,17 +41,12 @@ export default class NotificationLog
       turn: this.currentTurn,
     });
 
-    this.addNotification(notification);
+    this.notifications.push(notification);
     // TODO 2017.07.17 | this seems stupid & unnecessary
     // if (this.isHumanTurn)
     // {
     //   eventManager.dispatchEvent("updateNotificationLog");
     // }
-  }
-  // TODO 2017.07.17 | seems unnecessary
-  public addNotification(notification: Notification<any, any>)
-  {
-    this.notifications.push(notification);
   }
   // TODO 2017.07.17 | seems unnecessary
   public getUnreadNotificationsForTurn(turn: number)
