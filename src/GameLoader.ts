@@ -168,6 +168,7 @@ export default class GameLoader
         props: template.deserializeProps(notificationData.props, this),
         turn: notificationData.turn,
         involvedPlayers: notificationData.involvedPlayerIds.map(id => this.playersById[id]),
+        witnessingPlayers: notificationData.witnessingPlayerIds.map(id => this.playersById[id]),
       });
 
       notification.hasBeenRead = notificationData.hasBeenRead;

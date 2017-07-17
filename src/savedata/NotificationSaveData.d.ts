@@ -4,6 +4,7 @@ declare interface NotificationSaveData<P>
   hasBeenRead: boolean;
   turn: number;
   involvedPlayerIds: number[];
+  witnessingPlayerIds: number[];
 
   props: P;
 }

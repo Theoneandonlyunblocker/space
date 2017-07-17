@@ -5,6 +5,7 @@ import NotificationSaveData from "./savedata/NotificationSaveData";
 
 import Notification from "./Notification";
 import NotificationFilter from "./NotificationFilter";
+import {NotificationWitnessCriteria} from "./NotificationWitnessCriteria";
 import Player from "./Player";
 import eventManager from "./eventManager";
 
@@ -42,6 +43,10 @@ export default class NotificationLog
       props: args.props,
       involvedPlayers: args.involvedPlayers,
 
+      witnessingPlayers: this.getWitnessingPlayers(
+        args.involvedPlayers,
+        args.location,
+        args.template.witnessCriteria,
       ),
       turn: this.currentTurn,
     });
@@ -105,5 +110,18 @@ export default class NotificationLog
     };
 
     return data;
+  }
+
+  private getWitnessingPlayers(
+    involvedPlayers: Player[],
+    location: Star | undefined,
+    witnessCriteria: NotificationWitnessCriteria[],
+  ): Player[]
+  {
+    // TODO 2017.07.17 | implement
+    return this.subscribedPlayers.filter(player =>
+    {
+
+    });
   }
 }

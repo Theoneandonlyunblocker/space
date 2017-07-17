@@ -10,6 +10,7 @@ export default class Notification<P, D>
   props: P;
   turn: number;
   involvedPlayers: Player[];
+  witnessingPlayers: Player[];
 
   // TODO 2017.07.14 | should keep track of this per player if we want to allow multiple players
   hasBeenRead: boolean = false;
@@ -20,12 +21,14 @@ export default class Notification<P, D>
     props: P,
     turn: number,
     involvedPlayers: Player[],
+    witnessingPlayers: Player[],
   })
   {
     this.template = args.template;
     this.props = args.props;
     this.turn = args.turn;
     this.involvedPlayers = args.involvedPlayers;
+    this.witnessingPlayers = args.witnessingPlayers;
   }
   public makeMessage(): string
   {
@@ -43,6 +46,7 @@ export default class Notification<P, D>
       hasBeenRead: this.hasBeenRead,
       turn: this.turn,
       involvedPlayerIds: this.involvedPlayers.map(player => player.id),
+      witnessingPlayerIds: this.witnessingPlayers.map(player => player.id),
 
       props: this.template.serializeProps(this.props),
     };
