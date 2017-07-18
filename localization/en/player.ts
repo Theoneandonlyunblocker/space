@@ -7,4 +7,9 @@ export const player =
   color_1: "Color 1",
   color_2: "Color 2",
   race: "Race",
+  player:
+  {
+    1: "player",
+    "2..": "players",
+  },
 };

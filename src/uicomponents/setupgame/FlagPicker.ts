@@ -1,3 +1,5 @@
+// TODO 2017.07.18 | unused?
+
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import
@@ -12,6 +14,9 @@ import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 import Color from "../../Color";
 import Emblem from "../../Emblem";
+
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {

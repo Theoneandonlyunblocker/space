@@ -14,24 +14,12 @@ import FlagEditor from "./FlagEditor";
 
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 
+import {localize, localizeF} from "../../../localization/localize";
 
-interface FailMessage
-{
-  text: string;
-}
 
-const failMessages =
-{
-  hotlinkedImageLoadingFailed:
-  {
-    text: "Linked image failed to load. Try saving it to your own computer " +
-      "and uploading it.",
-  },
-  noValidImageFile:
-  {
-    text: "The attached file wasn't recognized as an image.",
-  },
-};
+type FailMessageHandle =
+  "hotLinkedImageLoadingFailed" |
+  "noValidImageFile";
 
 export interface PropTypes extends React.Props<any>
 {
@@ -108,7 +96,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         },
           DefaultWindow(
           {
-            title: "Edit flag",
+            title: localize("editFlag"),
             handleClose: this.setAsInactive,
             isResizable: false,
             getInitialPosition: (popupRect, containerRect) =>
@@ -170,7 +158,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       customImageFile: null,
     });
   }
-  private makeFailMessage(message: FailMessage, timeout: number): React.ReactElement<any>
+  private makeFailMessage(messageHandle: FailMessageHandle, timeout: number): React.ReactElement<any>
   {
     return React.DOM.div(
     {
@@ -180,7 +168,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         animationDuration: "" + timeout + "ms",
       },
     },
-      message.text,
+      localize(messageHandle),
     );
   }
   private clearFailMessageTimeout(): void
@@ -196,11 +184,11 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
     this.setState({failMessageElement: null});
   }
-  private setFailMessage(message: FailMessage, timeout: number): void
+  private setFailMessage(messageHandle: FailMessageHandle, timeout: number): void
   {
     this.setState(
     {
-      failMessageElement: this.makeFailMessage(message, timeout),
+      failMessageElement: this.makeFailMessage(messageHandle, timeout),
       customImageFile: null,
     });
 
@@ -305,12 +293,12 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         {
           case "noImage":
           {
-            this.setFailMessage(failMessages.noValidImageFile, 2000);
+            this.setFailMessage("noValidImageFile", 2000);
             break;
           }
           case "couldntLoad":
           {
-            this.setFailMessage(failMessages.hotlinkedImageLoadingFailed, 2000);
+            this.setFailMessage("hotLinkedImageLoadingFailed", 2000);
             break;
           }
         }
@@ -327,7 +315,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      this.setFailMessage(failMessages.noValidImageFile, 2000);
+      this.setFailMessage("noValidImageFile", 2000);
     }
   }
   private setCustomImageFromFile(file: File): void
@@ -354,12 +342,12 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     const fileSizeInMegaBytes = file.size / 1024 / 1024;
     if (fileSizeInMegaBytes > 20)
     {
-      if (window.confirm(
-        "Are you sure you want to load an image that is " +
-        fileSizeInMegaBytes.toFixed(2) + "MB in size?\n"+
-        "(The image won't be stored online, " +
-        "but processing it might take a while)",
-      ))
+      const confirmMessage = localizeF("confirmUseLargeImage").format(
+      {
+        fileSize: fileSizeInMegaBytes.toFixed(2),
+      });
+
+      if (window.confirm(confirmMessage))
       {
         setImageFN();
       }
@@ -385,8 +373,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     const ownNode = <HTMLElement> ReactDOM.findDOMNode<HTMLElement>(this.playerFlagContainer);
     return ownNode.getBoundingClientRect();
   }
-
-
 }
 
 const Factory: React.Factory<PropTypes> = React.createFactory(FlagSetterComponent);

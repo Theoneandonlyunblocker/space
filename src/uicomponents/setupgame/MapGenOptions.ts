@@ -21,6 +21,8 @@ import OptionsGroup from "../galaxymap/OptionsGroup";
 
 import MapGenOption from "./MapGenOption";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -179,17 +181,17 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
     {
       defaultOptions:
       {
-        title: "Default Options",
+        title: localize("defaultOptions"),
         isCollapsedInitially: false,
       },
       basicOptions:
       {
-        title: "Basic Options",
+        title: localize("basicOptions"),
         isCollapsedInitially: false,
       },
       advancedOptions:
       {
-        title: "Advanced Options",
+        title: localize("advancedOptions"),
         isCollapsedInitially: true,
       },
     };
@@ -249,14 +251,14 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
             className: "map-gen-options-button",
             onClick: this.randomizeOptions,
           },
-            "Randomize",
+            localize("randomize"),
           ),
           React.DOM.button(
           {
             className: "map-gen-options-button",
             onClick: this.resetValuesToDefault,
           },
-            "Reset",
+            localize("reset"),
           ),
         ),
       )

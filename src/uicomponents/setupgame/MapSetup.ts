@@ -8,6 +8,8 @@ import {Language} from "../../localization/Language";
 
 import {default as MapGenOptions, MapGenOptionsComponent} from "./MapGenOptions";
 
+import {localizeF} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -132,8 +134,8 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
         {
           className: "map-setup-player-limit",
         },
-          "Players: " + this.state.selectedTemplate.minPlayers + "-" +
-            this.state.selectedTemplate.maxPlayers,
+          `${localizeF("player", 2).capitalize()}: ` +
+            `${this.state.selectedTemplate.minPlayers} - ${this.state.selectedTemplate.maxPlayers}`,
         ),
         React.DOM.div(
         {

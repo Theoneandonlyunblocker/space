@@ -5,6 +5,9 @@ import Color from "../../Color";
 import {EmblemProps} from "../Emblem";
 import EmblemSetter from "./EmblemSetter";
 
+import {localize} from "../../../localization/localize";
+
+
 interface PropTypes extends React.Props<any>
 {
   backgroundColor: Color;
@@ -43,6 +46,7 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
         this.props.emblems.map(emblemProps =>
         {
           const id = emblemProps.id;
+
           return EmblemSetter(
           {
             key: id,
@@ -58,7 +62,7 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
         {
           className: "add-new-emblem-button",
           onClick: this.props.addEmblem,
-          title: "Add new emblem",
+          title: localize("addNewEmblem"),
           disabled: !canAddNewEmblem,
         }),
 

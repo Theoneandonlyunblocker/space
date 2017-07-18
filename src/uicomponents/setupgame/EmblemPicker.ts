@@ -8,6 +8,9 @@ import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 import EmblemComponent from "../Emblem";
 import ColorPicker from "./ColorPicker";
 
+import {localize} from "../../../localization/localize";
+
+
 interface PropTypes extends React.Props<any>
 {
   color: Color | null;
@@ -96,7 +99,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
         className: "emblem-picker",
       },
         React.DOM.div({className: "flag-picker-title"},
-          "Emblem color",
+          localize("emblemColor"),
         ),
         ColorPicker(
         {
@@ -115,7 +118,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
           },
         }),
         React.DOM.div({className: "flag-picker-title"},
-          "Emblems",
+          localize("emblems"),
         ),
         React.DOM.div({className: "emblem-picker-emblem-list"},
           emblemElements,

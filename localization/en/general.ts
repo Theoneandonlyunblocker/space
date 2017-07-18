@@ -8,4 +8,6 @@ export const general =
   randomize: "Randomize",
   remove: "Remove",
   name: "Name",
+  clear: "Clear",
+  auto: "Auto",
 };

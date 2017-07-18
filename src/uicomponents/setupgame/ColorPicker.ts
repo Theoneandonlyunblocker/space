@@ -14,6 +14,9 @@ import
 } from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 
+import {localize} from "../../../localization/localize";
+
+
 export interface PropTypes extends React.Props<any>
 {
   generateColor?: () => Color;
@@ -71,13 +74,13 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
             {
               className: "color-picker-button",
               onClick: this.autoGenerateColor,
-            }, "Auto"),
+            }, localize("auto")),
           !this.props.isNullable ? null :
             React.DOM.button(
             {
               className: "color-picker-button",
               onClick: this.nullifyColor,
-            }, "Clear"),
+            }, localize("clear")),
           NumericTextInput(
           {
             attributes:
