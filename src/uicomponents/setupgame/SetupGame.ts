@@ -11,6 +11,8 @@ import MapGenFunction from "../../templateinterfaces/MapGenFunction";
 import {default as MapSetup, MapSetupComponent} from "./MapSetup";
 import {default as SetupGamePlayers, SetupGamePlayersComponent} from "./SetupGamePlayers";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -129,12 +131,12 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
             {
               className: "setup-game-button setup-game-button-randomize",
               onClick: this.randomize,
-            }, "Randomize"),
+            }, localize("randomize")),
             React.DOM.button(
             {
               className: "setup-game-button setup-game-button-start",
               onClick: this.startGame,
-            }, "Start game"),
+            }, localize("startGame")),
           ),
         ),
       )

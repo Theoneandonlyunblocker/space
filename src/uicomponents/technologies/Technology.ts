@@ -5,7 +5,7 @@ import PlayerTechnology from "../../PlayerTechnology";
 import TechnologyTemplate from "../../templateinterfaces/TechnologyTemplate";
 import TechnologyPrioritySlider from "./technologyPrioritySlider";
 
-import {localize} from "../../../localization/player/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

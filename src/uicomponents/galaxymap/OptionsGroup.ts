@@ -2,7 +2,7 @@
 
 import {Language} from "../../localization/Language";
 
-import {localize} from "../../../localization/miscUI/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

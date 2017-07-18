@@ -17,7 +17,7 @@ import OptionsCheckbox from "./OptionsCheckbox";
 import OptionsGroup from "./OptionsGroup";
 import OptionsNumericField from "./OptionsNumericField";
 
-import {localize} from "../../../localization/options/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

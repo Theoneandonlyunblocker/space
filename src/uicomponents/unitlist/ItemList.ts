@@ -11,7 +11,7 @@ import Unit from "../../Unit";
 
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 
-import {localize} from "../../../localization/items/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

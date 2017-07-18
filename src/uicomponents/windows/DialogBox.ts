@@ -2,7 +2,7 @@
 
 import {default as DefaultWindow} from "./DefaultWindow";
 
-import {localize} from "../../../localization/miscUI/localize";
+import {localize} from "../../../localization/localize";
 
 
 interface PropTypes extends React.Props<any>

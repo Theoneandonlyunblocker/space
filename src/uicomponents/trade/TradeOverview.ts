@@ -6,8 +6,7 @@ import Player from "../../Player";
 import {Trade} from "../../Trade";
 import {TradeResponse} from "../../TradeResponse";
 
-import {localize as localizeMiscUI} from "../../../localization/miscUI/localize";
-import {localize} from "../../../localization/trade/localize";
+import {localize} from "../../../localization/localize";
 
 
 /* tslint:disable:member-access member-ordering */
@@ -296,13 +295,13 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
           {
             className: "trade-button tradeable-items-reset-button",
           },
-            localizeMiscUI("reset"),
+            localize("reset"),
           ),
           React.DOM.button(
           {
             className: "trade-button tradeable-items-reset-button",
           },
-            localizeMiscUI("reset"),
+            localize("reset"),
           ),
         ),
         React.DOM.div(

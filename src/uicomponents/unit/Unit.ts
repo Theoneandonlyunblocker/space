@@ -10,7 +10,7 @@ import UnitPortrait from "./UnitPortrait";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-import {localize} from "../../../localization/battle/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface ComponentPropTypes extends React.Props<any>

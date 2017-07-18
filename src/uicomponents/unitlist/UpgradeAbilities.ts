@@ -3,7 +3,7 @@
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 import AbilityList from "./AbilityList";
 
-import {localize} from "../../../localization/unitlist/localize";
+import {localize} from "../../../localization/localize";
 
 export interface PropTypes extends React.Props<any>
 {

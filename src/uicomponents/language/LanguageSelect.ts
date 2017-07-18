@@ -3,7 +3,7 @@
 import {Language} from "../../localization/Language";
 import {LanguageSupportLevel} from "../../localization/languageSupport";
 
-import {localize} from "../../../localization/options/localize";
+import {localize} from "../../../localization/localize";
 
 interface PropTypes extends React.Props<any>
 {

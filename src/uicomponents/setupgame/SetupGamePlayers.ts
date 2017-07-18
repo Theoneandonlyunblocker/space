@@ -5,6 +5,8 @@ import Player from "../../Player";
 import {ColorSetterComponent} from "./ColorSetter";
 import {default as PlayerSetup, PlayerSetupComponent} from "./PlayerSetup";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -186,6 +188,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
         },
         removePlayers: this.removePlayers,
         setActiveSetterComponent: this.setActiveColorSetter,
+        // TODO 2017.07.18 | missing localization
         initialName: "Player " + playerId,
         isHuman: i === 0,
         setHuman: this.setHumanPlayer,
@@ -208,27 +211,27 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
           React.DOM.div(
           {
             className: "player-setup-name",
-          }, "Name"),
+          }, localize("name")),
           React.DOM.div(
           {
             className: "player-setup-race-picker",
-          }, "Race"),
+          }, localize("race")),
           React.DOM.div(
           {
             className: "color-setter",
-          }, "Color 1"),
+          }, localize("color_1")),
           React.DOM.div(
           {
             className: "color-setter",
-          }, "Color 2"),
+          }, localize("color_2")),
           React.DOM.div(
           {
             className: "flag-setter",
-          }, "Flag"),
+          }, localize("flag")),
           React.DOM.div(
           {
             className: "player-setup-remove-player",
-          }, "Remove"),
+          }, localize("remove")),
         ),
         React.DOM.div(
         {
@@ -245,7 +248,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
             className: "setup-game-button",
             onClick: this.randomizeAllPlayers,
           },
-            "Randomize",
+            localize("randomize"),
           ),
           React.DOM.button(
           {
@@ -253,7 +256,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
             onClick: this.makeNewPlayers.bind(this, 1),
             disabled: !canAddPlayers,
           },
-            "Add new player",
+            localize("addNewPlayer"),
           ),
         ),
       )

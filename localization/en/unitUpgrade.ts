@@ -1,4 +1,4 @@
-export const unitList =
+export const unitUpgrade =
 {
   unitUpgradeHeader: "{unitName} level {currentLevel} -> {nextLevel}",
   upgradeAttribute: "{attribute}: {currentLevel} -> {nextLevel}",

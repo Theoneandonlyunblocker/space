@@ -2,8 +2,7 @@
 
 import Unit from "../../Unit";
 
-import {localize as localizeUnit} from "../../../localization/unit/localize";
-import {localize, localizeF} from "../../../localization/unitlist/localize";
+import {localize, localizeF} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>
@@ -57,7 +56,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
         },
           localizeF("upgradeAttribute").format(
           {
-            attribute: localizeUnit(attribute),
+            attribute: localize(attribute),
             currentLevel: unit.baseAttributes[attribute],
             nextLevel: unit.baseAttributes[attribute] + 1,
           }),

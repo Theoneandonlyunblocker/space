@@ -5,8 +5,7 @@ import PlayerTechnology from "../../PlayerTechnology";
 import eventManager from "../../eventManager";
 import Technology from "./Technology";
 
-import {localize as localizeMiscUI} from "../../../localization/miscUI/localize";
-import {localize as localizePlayer} from "../../../localization/player/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>
@@ -74,7 +73,7 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
         {
           className: "technologies-list-research-speed",
         },
-          `${localizePlayer("researchSpeed")}: ${researchSpeed}${localizeMiscUI("perTurn")}`,
+          `${localize("researchSpeed")}: ${researchSpeed}${localize("perTurn")}`,
         ),
       )
     );

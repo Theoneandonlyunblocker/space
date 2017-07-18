@@ -9,7 +9,7 @@ import ListItem from "../list/ListItem";
 
 import {TradeableItem, TradeableItems} from "../../Trade";
 
-import {localize} from "../../../localization/player/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

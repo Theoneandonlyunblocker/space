@@ -6,7 +6,7 @@ import Unit from "../../Unit";
 import List from "../list/List";
 import {default as UnitListItem, PropTypes as UnitListItemProps} from "./UnitListItem";
 
-import {localize as localizeUnit} from "../../../localization/unit/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>
@@ -88,17 +88,17 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
     const columns: ListColumn<UnitListItemProps>[] =
     [
       {
-        label: localizeUnit("id"),
+        label: localize("id"),
         key: "id",
         defaultOrder: "asc",
       },
       {
-        label: localizeUnit("type"),
+        label: localize("type"),
         key: "typeName",
         defaultOrder: "asc",
       },
       {
-        label: localizeUnit("strength"),
+        label: localize("strength"),
         key: "strength",
         defaultOrder: "desc",
         sortingFunction: (a, b) =>
@@ -107,27 +107,27 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
         },
       },
       {
-        label: localizeUnit("act"),
+        label: localize("act"),
         key: "maxActionPoints",
         defaultOrder: "desc",
       },
       {
-        label: localizeUnit("atk"),
+        label: localize("atk"),
         key: "attack",
         defaultOrder: "desc",
       },
       {
-        label: localizeUnit("def"),
+        label: localize("def"),
         key: "defence",
         defaultOrder: "desc",
       },
       {
-        label: localizeUnit("int"),
+        label: localize("int"),
         key: "intelligence",
         defaultOrder: "desc",
       },
       {
-        label: localizeUnit("spd"),
+        label: localize("spd"),
         key: "speed",
         defaultOrder: "desc",
       },
