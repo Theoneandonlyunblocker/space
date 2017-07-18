@@ -8,6 +8,8 @@ import ListItem from "../list/ListItem";
 
 import {prettifyDate} from "../../utility";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -90,12 +92,12 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
     const columns: ListColumn<SaveListItemProps>[] =
     [
       {
-        label: "Name",
+        label: localize("saveName"),
         key: "name",
         defaultOrder: "asc",
       },
       {
-        label: "Date",
+        label: localize("date"),
         key: "date",
         defaultOrder: "desc",
         propToSortBy: "accurateDate",
@@ -106,7 +108,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
     {
       columns.push(
       {
-        label: "Del",
+        label: localize("del"),
         key: "delete",
         defaultOrder: "asc",
         notSortable: true,

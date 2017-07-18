@@ -73,6 +73,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
         }
         else
         {
+          // TODO 2017.07.18 | use pseudo element
           cellContent = "X";
           cellProps.onClick = this.handleDelete;
         }

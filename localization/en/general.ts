@@ -9,4 +9,8 @@ export const general =
   remove: "Remove",
   clear: "Clear",
   auto: "Auto",
+  date: "Date",
+  del: "Del",
+  delete: "Delete",
+  confirmDeletion: "Confirm deletion",
 };

@@ -9,6 +9,8 @@ import ListItem from "../list/ListItem";
 
 import {default as DialogBox} from "../windows/DialogBox";
 
+import {localize, localizeF} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -61,11 +63,14 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
         !this.state.hasConfirmOverwritePopup ? null :
           DialogBox(
           {
-            title: "Confirm overwrite",
+            title: localize("confirmOverwrite"),
             handleOk: this.saveGame,
             handleCancel: this.closeConfirmOverwritePopup,
           },
-            `Are you sure you want to overwrite ${this.state.saveName.replace("Rance.Save.", "")} ?`,
+            localizeF("promptOverwrite").format(
+            {
+              toOverWrite: this.state.saveName.replace("Rance.Save.", "")
+            }),
           ),
         SaveList(
         {
@@ -105,12 +110,12 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
             {
               this.okButtonElement = component;
             },
-          }, "Save"),
+          }, localize("save_imperative")),
           React.DOM.button(
           {
             className: "save-game-button",
             onClick: this.handleClose,
-          }, "Cancel"),
+          }, localize("cancel")),
         ),
       )
     );

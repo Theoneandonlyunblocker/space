@@ -1,5 +1,8 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import {localize} from "../../../localization/localize";
+
+
 interface PropTypes extends React.Props<any>
 {
   saveNames: string[];
@@ -30,7 +33,7 @@ export class ConfirmDeleteSavesContentComponent extends React.PureComponent<Prop
         {
           className: "confirm-delete-saves-content-title",
         },
-          "Are you sure you want to delete the following saves?",
+          localize("confirmSaveDeletion", this.props.saveNames.length),
         ),
         React.DOM.ol(
         {

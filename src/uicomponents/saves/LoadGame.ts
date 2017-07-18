@@ -7,6 +7,8 @@ import SaveList from "./SaveList";
 
 import {default as DialogBox} from "../windows/DialogBox";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -56,7 +58,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
         !this.state.hasConfirmDeleteSavePopup ? null :
           DialogBox(
           {
-            title: "Confirm deletion",
+            title: localize("confirmDeletion"),
             handleOk: () =>
             {
               this.deleteSelectedKeys();
@@ -111,19 +113,19 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
             {
               this.loadButtonElement = component;
             },
-          }, "Load"),
+          }, localize("load_imperative")),
           React.DOM.button(
           {
             className: "save-game-button",
             onClick: this.handleClose.bind(this, true, null),
-          }, "Cancel"),
+          }, localize("cancel")),
           React.DOM.button(
           {
             className: "save-game-button",
             onClick: this.openConfirmDeleteSavesPopup,
             disabled: this.state.saveKeysToDelete.length < 1,
           },
-            "Delete",
+            localize("delete"),
           ),
         ),
       )
