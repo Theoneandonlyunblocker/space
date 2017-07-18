@@ -154,7 +154,7 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText | Locali
     if (!this.textsByLanguageCode[language.code])
     {
       throw new Error(`No texts registered for language code ${language.code}.
-        Call ${this.registerTexts} first.`);
+        Call Localizer.registerTexts first.`);
     }
 
     for (let textKey in texts)
