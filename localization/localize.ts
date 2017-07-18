@@ -49,8 +49,17 @@ const mergedTexts = shallowExtend<mergedType>(
 
 localizer.registerTexts(mergedTexts, Languages.en);
 
-export const localizeF: typeof localizer.localize = localizer.localize.bind(localizer);
-export function localize(key: keyof mergedType, quantity: number = 1): string
+const boundLocalize: typeof localizer.localize = localizer.localize.bind(localizer);
+
+export function localizeF(key: keyof mergedType, quantity: number | "plural" = 1)
 {
-  return localizeF(key, quantity).format();
+  const realQuantity = quantity === "plural" ? 2 : quantity;
+
+  return boundLocalize(key, realQuantity);
+}
+export function localize(key: keyof mergedType, quantity: number | "plural" = 1)
+{
+  const realQuantity = quantity === "plural" ? 2 : quantity;
+
+  return boundLocalize(key, realQuantity).format();
 }
