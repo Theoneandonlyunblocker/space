@@ -12,6 +12,7 @@ import Player from "./Player";
 import Star from "./Star";
 
 
+// TODO 2017.07.17 | updates to here don't propagate to ui
 export default class NotificationLog
 {
   public readonly notifications: Notification<any, any>[] = [];

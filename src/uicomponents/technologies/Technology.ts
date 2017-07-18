@@ -5,6 +5,7 @@ import PlayerTechnology from "../../PlayerTechnology";
 import TechnologyTemplate from "../../templateinterfaces/TechnologyTemplate";
 import TechnologyPrioritySlider from "./technologyPrioritySlider";
 
+import {localize} from "../../../localization/player/localize";
 
 
 export interface PropTypes extends React.Props<any>
@@ -87,7 +88,7 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
         {
           className: "technology-level",
         },
-          "Level " + techData.level,
+          localize("technologyLevel") + " " + techData.level,
         ),
         React.DOM.div(
         {

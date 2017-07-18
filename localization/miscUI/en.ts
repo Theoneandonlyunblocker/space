@@ -4,4 +4,5 @@ export const miscUI =
   cancel: "Cancel",
   dontShowAgain: "Don't show again",
   reset: "Reset",
+  perTurn: " per turn",
 };
