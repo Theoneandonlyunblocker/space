@@ -11,4 +11,11 @@
  *     String(arg.prop)
  */
 
+type formatter = typeof formatString;
+type transformer = (s: string) => string;
+
 declare function formatString(toFormat: string, ...args: (any | {[key: string]: any})[]): string;
+declare namespace formatString
+{
+  function create(transformers?: {[key: string]: transformer}): formatter;
+}
