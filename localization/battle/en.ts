@@ -7,4 +7,7 @@ export const battle =
   allUnits: "all units",
   sameRowUnits: "units in same row",
   takesReducedDamage: "This unit takes {damageReduction}% reduced damage from physical attacks.",
+  destroyed: "Destroyed",
+  captured: "Captured",
+  unitAnnihilated: "Unit annihilated",
 };

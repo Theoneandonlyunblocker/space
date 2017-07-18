@@ -115,6 +115,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
+    // TODO 2017.07.18 | use pseudo elements for arrows instead
     const hasBackArrow = this.state.currentPageIndex > 0;
     let backElement: React.ReactHTMLElement<any>;
     if (hasBackArrow)

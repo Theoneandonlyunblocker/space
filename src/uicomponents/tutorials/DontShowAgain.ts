@@ -3,6 +3,9 @@
 import TutorialStateTODO from "../../tutorials/TutorialState";
 import TutorialStatus from "../../tutorials/TutorialStatus";
 
+import {localize} from "../../../localization/miscUI/localize";
+
+
 export interface PropTypes extends React.Props<any>
 {
   tutorialId: string;
@@ -81,7 +84,7 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
             checked: this.state.isChecked,
             onChange: this.toggleState,
           }),
-          "Don't show again",
+          localize("dontShowAgain"),
         ),
       )
     );
