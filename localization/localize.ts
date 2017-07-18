@@ -12,6 +12,13 @@ import {trade as en_trade} from "./en/trade";
 import {unit as en_unit} from "./en/unit";
 import {unitUpgrade as en_unitUpgrade} from "./en/unitUpgrade";
 
+import
+{
+  shallowExtend,
+} from "../src/utility";
+
+
+// TODO 2017.07.18 | sort out capitalization for all these...
 type mergedType =
   typeof en_battle &
   typeof en_general &
@@ -23,17 +30,21 @@ type mergedType =
   typeof en_unit &
   typeof en_unitUpgrade;
 
-export const localizer = new Localizer<mergedType>("defaultLocalize");
+export const localizer = new Localizer<mergedType>("ui");
 
-localizer.appendTexts(en_battle, Languages.en);
-localizer.appendTexts(en_general, Languages.en);
-localizer.appendTexts(en_items, Languages.en);
-localizer.appendTexts(en_options, Languages.en);
-localizer.appendTexts(en_player, Languages.en);
-localizer.appendTexts(en_setupGame, Languages.en);
-localizer.appendTexts(en_trade, Languages.en);
-localizer.appendTexts(en_unit, Languages.en);
-localizer.appendTexts(en_unitUpgrade, Languages.en);
+const mergedTexts = shallowExtend<mergedType>(
+  en_battle,
+  en_general,
+  en_items,
+  en_options,
+  en_player,
+  en_setupGame,
+  en_trade,
+  en_unit,
+  en_unitUpgrade,
+);
+
+localizer.registerTexts(mergedTexts, Languages.en);
 
 export const localizeF: typeof localizer.localize = localizer.localize.bind(localizer);
 export function localize(key: keyof mergedType, quantity: number = 1): string
