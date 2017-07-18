@@ -2,7 +2,6 @@ export const options =
 {
   options: "Options",
   resetAllOptions: "Reset all options",
-  reset: "Reset",
   language: "Language",
   fullLanguageSupport: "Full language support",
   partialLanguageSupport: "Partial language support",
