@@ -1,13 +1,12 @@
 /*
-
+// TODO 2017.07.18 | dont think any of these are implemented
 global macros:
-
-  // character related. unimplemented
   {subj_pronoun}       i, you
   {obj_pronoun}        me, you
   {poss_determiner}    my, your
 
-
+// TODO 2017.07.18 | not how localization function currently works or data is stored
+// see localization folder in project root for up to date examples
 custom macros can be passed where the translation function is called, ex:
 s =
 {
@@ -22,7 +21,6 @@ tr(s.CONFIRM_EQUIP).format(
 });
 
 tr(s.CONFIRM_WAR_DECLARATION).format(targetPlayer.name);
-
 */
 
 export interface LocalizedTextByQuantity

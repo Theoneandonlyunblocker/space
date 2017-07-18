@@ -18,7 +18,7 @@ import
 } from "../utility";
 
 
-export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText[]}>
+export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText | LocalizedText[]}>
 {
   private readonly textsByLanguageCode:
   {
@@ -164,7 +164,9 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText[]}>
       }
 
       // TODO 2017.04.24 | bad typing
-      const localizedTexts = <LocalizedText[]><any> texts[textKey];
+      const localizedTexts = <LocalizedText[]><any> (Array.isArray(texts[textKey]) ?
+        texts[textKey] :
+        [texts[textKey]]);
 
       localizedTexts.forEach(text =>
       {
