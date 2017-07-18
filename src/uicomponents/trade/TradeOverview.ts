@@ -6,6 +6,10 @@ import Player from "../../Player";
 import {Trade} from "../../Trade";
 import {TradeResponse} from "../../TradeResponse";
 
+import {localize as localizeMiscUI} from "../../../localization/miscUI/localize";
+import {localize} from "../../../localization/trade/localize";
+
+
 /* tslint:disable:member-access member-ordering */
 
 export interface PropTypes extends React.Props<any>
@@ -234,7 +238,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
         },
           TradeableItemsComponentFactory(
           {
-            header: "tradeable items " + this.props.selfPlayer.name.fullName,
+            header: localize("tradeableItems") + " " + this.props.selfPlayer.name.fullName,
             tradeableItems: selfAvailableItems,
             noListHeader: true,
             isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
@@ -245,7 +249,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
           }),
           TradeableItemsComponentFactory(
           {
-            header: "tradeable items " + this.props.otherPlayer.name.fullName,
+            header: localize("tradeableItems") + " " + this.props.otherPlayer.name.fullName,
             tradeableItems: otherAvailableItems,
             noListHeader: true,
             isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
@@ -292,13 +296,13 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
           {
             className: "trade-button tradeable-items-reset-button",
           },
-            "Reset",
+            localizeMiscUI("reset"),
           ),
           React.DOM.button(
           {
             className: "trade-button tradeable-items-reset-button",
           },
-            "Reset",
+            localizeMiscUI("reset"),
           ),
         ),
         React.DOM.div(
@@ -310,20 +314,20 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             className: "trade-button trade-control-button",
             disabled: !ableToAcceptTrade,
           },
-            "Reject",
+            localize("reject"),
           ),
           ableToAcceptTrade ?
             React.DOM.button(
             {
               className: "trade-button trade-control-button",
             },
-              "Accept",
+              localize("accept"),
             ) :
             React.DOM.button(
             {
               className: "trade-button trade-control-button",
             },
-              "Propose",
+              localize("propose"),
             ),
         ),
       )

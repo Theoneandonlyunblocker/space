@@ -9,6 +9,8 @@ import ListItem from "../list/ListItem";
 
 import {TradeableItem, TradeableItems} from "../../Trade";
 
+import {localize} from "../../../localization/player/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -55,7 +57,7 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
           content: TradeMoney(
           {
             keyTODO: "money",
-            title: "Money",
+            title: localize("money"),
             moneyAmount: item.amount,
             onDragStart: this.props.onDragStart,
             onDragEnd: this.props.onDragEnd,
