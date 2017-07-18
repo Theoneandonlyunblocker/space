@@ -9,9 +9,9 @@ export class IntermediateLocalizedString
     this.value = value;
   }
 
-  // tslint:disable-next-line
-  public format(...args: any[]): string
+  // tslint:disable-next-line:no-any
+  public format(...args: (any | {[key: string]: any})[]): string
   {
-    return formatString(this.value, args);
+    return formatString(this.value, ...args);
   }
 }
