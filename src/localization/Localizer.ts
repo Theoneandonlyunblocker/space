@@ -43,8 +43,8 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText | Locali
       return null;
     }
 
-    const min = match[1] === "" ? -Infinity : Number(match[1]);
-    const max = match[2] === "" ? Infinity : Number(match[2]);
+    const min = match[1] ? Number(match[1]) : -Infinity;
+    const max = match[2] ? Number(match[2]) : Infinity;
 
     return {min: min, max: max};
   }
