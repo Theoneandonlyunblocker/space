@@ -1,11 +1,8 @@
 /// <reference path="../../lib/string-format.d.ts" />
 
-const formatters =
-{
-  capitalize: (s: string) => s.charAt(0).toUpperCase() + s.slice(1),
-};
+import {transformers} from "./transformers";
 
-const format = formatString.create(formatters);
+const format = formatString.create(transformers);
 
 export class IntermediateLocalizedString
 {
@@ -23,6 +20,6 @@ export class IntermediateLocalizedString
   }
   public capitalize(): string
   {
-    return formatters.capitalize(this.value);
+    return transformers.capitalize(this.value);
   }
 }
