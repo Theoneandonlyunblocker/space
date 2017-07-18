@@ -186,14 +186,7 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText | Locali
       });
     }
   }
-  /**
-   * default props:
-   *  quantity = 1
-   */
-  public localize(key: keyof Texts, props?:
-  {
-    quantity?: number,
-  }): IntermediateLocalizedString
+  public localize(key: keyof Texts, quantity: number = 1): IntermediateLocalizedString
   {
     const activeLanguage = getActiveLanguage();
     const missingLocalizationString = `${activeLanguage.code}.${this.key}.${key}`;
@@ -215,7 +208,6 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText | Locali
         }
         else
         {
-          const quantity = (props && isFinite(props.quantity)) ? props.quantity : 1;
           const matchingText = Localizer.getStringFromLocalizedTextByQuantity(
             // TODO 2017.04.20 | bad typing
             <LocalizedTextByQuantity><any>localizedText,

@@ -36,7 +36,7 @@ localizer.appendTexts(en_unit, Languages.en);
 localizer.appendTexts(en_unitUpgrade, Languages.en);
 
 export const localizeF: typeof localizer.localize = localizer.localize.bind(localizer);
-export function localize(key: keyof mergedType): string
+export function localize(key: keyof mergedType, quantity: number = 1): string
 {
-  return localizeF(key).format();
+  return localizeF(key, quantity).format();
 }
