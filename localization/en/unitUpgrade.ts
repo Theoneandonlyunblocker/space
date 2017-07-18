@@ -8,6 +8,5 @@ export const unitUpgrade =
   upgradeStats: "Upgrade stats",
   upgradeUnit: "Upgrade unit",
   clickToLevelUp: "Click to level up",
-  // TODO 2017.07.18 | generalize
   EXPReadOut: "{currentEXP} / {EXPToNextLevel} EXP",
 };
