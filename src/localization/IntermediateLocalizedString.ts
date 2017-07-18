@@ -1,5 +1,7 @@
 /// <reference path="../../lib/string-format.d.ts" />
 
+const format = formatString.create();
+
 export class IntermediateLocalizedString
 {
   private value: string;
@@ -12,7 +14,7 @@ export class IntermediateLocalizedString
   // tslint:disable-next-line:no-any
   public format(...args: (any | {[key: string]: any})[]): string
   {
-    return formatString(this.value, ...args);
+    return format(this.value, ...args);
   }
   public capitalize(): string
   {
