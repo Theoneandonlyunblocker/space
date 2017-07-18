@@ -185,7 +185,7 @@ export class UnitAttributes implements UnitAttributesObject
     return JSON.parse(JSON.stringify(this));
   }
 
-  private forEachAttribute(cb: (attribute: string) => void): void
+  private forEachAttribute(cb: (attribute: keyof UnitAttributesObject) => void): void
   {
     [
       "maxActionPoints",
@@ -193,7 +193,7 @@ export class UnitAttributes implements UnitAttributesObject
       "defence",
       "intelligence",
       "speed",
-    ].forEach(attribute =>
+    ].forEach((attribute: keyof UnitAttributesObject) =>
     {
       cb(attribute);
     });
