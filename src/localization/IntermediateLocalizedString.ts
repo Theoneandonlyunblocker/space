@@ -14,4 +14,8 @@ export class IntermediateLocalizedString
   {
     return formatString(this.value, ...args);
   }
+  public capitalize(): string
+  {
+    return this.value.charAt(0).toUpperCase() + this.value.slice(1);
+  }
 }
