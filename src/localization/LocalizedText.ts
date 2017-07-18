@@ -36,6 +36,19 @@ include other localized text with '[]'
   tr(s.unitDestroyed, 1) => "1 unit was destroyed"
   tr(s.unitDestroyed, 69) => "69 units were destroyed"
 
+
+you can pass a transformer function with '!'
+see transformers.ts for available transformers
+  s =
+  {
+    unit:
+    {
+      1: "unit",
+      "2..": "units",
+    },
+    unitUpgraded: "{unitName!capitalize} was upgraded. [unit!capitalize] is now level {level}",
+  }
+
 */
 
 export interface LocalizedTextByQuantity
