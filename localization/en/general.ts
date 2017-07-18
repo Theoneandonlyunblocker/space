@@ -7,7 +7,6 @@ export const general =
   perTurn: " per turn",
   randomize: "Randomize",
   remove: "Remove",
-  name: "Name",
   clear: "Clear",
   auto: "Auto",
 };

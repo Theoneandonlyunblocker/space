@@ -12,4 +12,5 @@ export const player =
     1: "player",
     "2..": "players",
   },
+  playerName: "Name",
 };

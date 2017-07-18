@@ -211,7 +211,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
           React.DOM.div(
           {
             className: "player-setup-name",
-          }, localize("name")),
+          }, localize("playerName")),
           React.DOM.div(
           {
             className: "player-setup-race-picker",
