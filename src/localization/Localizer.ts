@@ -20,14 +20,16 @@ import
 
 export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText | LocalizedText[]}>
 {
+  public readonly key: string;
+
   private readonly textsByLanguageCode:
   {
     [languageCode: string]: Texts;
   } = {};
 
-  constructor()
+  constructor(key: string)
   {
-
+    this.key = key;
   }
 
   private static parseRangeString(rangeString: string): Range | null
@@ -194,7 +196,7 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText | Locali
   }): IntermediateLocalizedString
   {
     const activeLanguage = getActiveLanguage();
-    const missingLocalizationString = `${activeLanguage.code}.${key}`;
+    const missingLocalizationString = `${activeLanguage.code}.${this.key}.${key}`;
 
     const textsForActiveLanguage = this.textsByLanguageCode[activeLanguage.code];
     if (textsForActiveLanguage)
