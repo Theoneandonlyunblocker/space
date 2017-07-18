@@ -5,6 +5,8 @@ import applyMixins from "../mixins/applyMixins";
 
 import Item from "../../Item";
 
+import {localize as localizeItems} from "../../../localization/items/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -77,10 +79,11 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.props.item)
     {
-      const emptyItemTitle = "Item slot: " + this.props.slot;
       return(
-        React.DOM.div({className: "empty-unit-item", title: emptyItemTitle})
-      );
+        React.DOM.div(
+        {className: "empty-unit-item",
+        title: `${localizeItems("itemSlot")}: ${this.props.slot}`
+      }));
 
     }
     const item = this.props.item;

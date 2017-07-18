@@ -1,7 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-
 import Unit from "../../Unit";
+
+import {localize as localizeUnit} from "../../../localization/unit/localize";
+import {localize, localizeF} from "../../../localization/unitlist/localize";
 
 
 export interface PropTypes extends React.Props<any>
@@ -53,7 +55,12 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
           onClick: this.upgradeAttribute.bind(this, attribute),
           key: attribute,
         },
-          attribute + ": " + unit.baseAttributes[attribute] + " -> " + (unit.baseAttributes[attribute] + 1),
+          localizeF("upgradeAttribute").format(
+          {
+            attribute: localizeUnit(attribute),
+            current_level: unit.baseAttributes[attribute],
+            next_level: unit.baseAttributes[attribute] + 1,
+          }),
         ));
       }
     });
@@ -72,7 +79,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
         {
           className: "upgrade-attributes-header",
         },
-          "Upgrade stats",
+          localize("upgradeStats"),
         ),
         React.DOM.ol(
         {

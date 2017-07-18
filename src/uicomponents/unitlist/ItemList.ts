@@ -11,6 +11,8 @@ import Unit from "../../Unit";
 
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 
+import {localize} from "../../../localization/items/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -119,23 +121,23 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
     const columns: ListColumn<ItemListItemProps>[] =
     [
       {
-        label: "Type",
+        label: localize("type"),
         key: "typeName",
         defaultOrder: "asc",
       },
       {
-        label: "Slot",
+        label: localize("slot"),
         key: "slot",
         propToSortBy: "slotIndex",
         defaultOrder: "desc",
       },
       {
-        label: "Unit",
+        label: localize("unit"),
         key: "unitName",
         defaultOrder: "desc",
       },
       {
-        label: "Ability",
+        label: localize("ability"),
         key: "ability",
         defaultOrder: "desc",
       },

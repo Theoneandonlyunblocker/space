@@ -10,6 +10,8 @@ import {default as DefaultWindow} from "../windows/DefaultWindow";
 import UpgradeAbilities from "./UpgradeAbilities";
 import UpgradeAttributes from "./UpgradeAttributes";
 
+import {localize, localizeF} from "../../../localization/unitlist/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -57,7 +59,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
         upgradableAbilities.push(
         {
           type: source,
-          displayName: "** New ability **",
+          displayName: localize("newAbility"),
           description: "",
         });
       }
@@ -75,7 +77,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
         !this.state.currentlyUpgradingAbility ? null:
         DefaultWindow(
         {
-          title: "Upgrade ability",
+          title: localize("upgradeAbility"),
           handleClose: this.closeAbilityUpgradePopup,
           isResizable: false,
 
@@ -94,7 +96,12 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
         {
           className: "upgrade-unit-header",
         },
-          unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1),
+          localizeF("unitUpgradeHeader").format(
+          {
+            unit_name: unit.name,
+            current_level: unit.level,
+            next_level: unit.level + 1,
+          }),
         ),
         UpgradeAbilities(
         {

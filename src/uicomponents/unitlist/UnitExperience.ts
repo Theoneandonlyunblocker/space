@@ -6,6 +6,9 @@ import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import UpgradeUnit from "./UpgradeUnit";
 
+import {localize, localizeF} from "../../../localization/unitlist/localize";
+
+
 export interface PropTypes extends React.Props<any>
 {
   unit: Unit;
@@ -87,7 +90,11 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     const barProps: React.HTMLAttributes =
     {
       className: "unit-experience-bar",
-      title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp",
+      title: localizeF("EXPReadOut").format(
+      {
+        currentEXP: this.props.experienceForCurrentLevel,
+        EXPToNextLevel: this.props.experienceToNextLevel,
+      }),
     };
     if (isReadyToLevelUp)
     {
@@ -103,7 +110,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
         !this.state.hasUpgradePopup ? null :
         DefaultWindow(
         {
-          title: "Upgrade unit",
+          title: localize("upgradeUnit"),
           handleClose: this.closePopup,
           isResizable: false,
 
@@ -124,7 +131,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
           {
             className: "ready-to-level-up-message",
           },
-            "Click to level up",
+            localize("clickToLevelUp"),
           ),
         ),
       )

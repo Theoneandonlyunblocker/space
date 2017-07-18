@@ -3,6 +3,8 @@
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 import AbilityList from "./AbilityList";
 
+import {localize} from "../../../localization/unitlist/localize";
+
 export interface PropTypes extends React.Props<any>
 {
   sourceAbility?: AbilityBase;
@@ -35,11 +37,11 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
     let headerText: string;
     if (this.props.learningNewability)
     {
-      headerText = "Learn ability";
+      headerText = localize("learnAbility");
     }
     else
     {
-      headerText = "Upgrade ability";
+      headerText = localize("upgradeAbility");
       if (this.props.sourceAbility)
       {
         headerText += " " + this.props.sourceAbility.displayName;
