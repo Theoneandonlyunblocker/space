@@ -1,26 +1,41 @@
 /*
-// TODO 2017.07.18 | dont think any of these are implemented
-global macros:
-  {subj_pronoun}       i, you
-  {obj_pronoun}        me, you
-  {poss_determiner}    my, your
 
-// TODO 2017.07.18 | not how localization function currently works or data is stored
-// see localization folder in project root for up to date examples
-custom macros can be passed where the translation function is called, ex:
-s =
-{
-  CONFIRM_EQUIP: "Equip {item_name} on {unit_name}?",
-  CONFIRM_WAR_DECLARATION: "Declare war on {0}",
-}
+custom macros can be defined by '{}'
+see string-format.js for details
+  s =
+  {
+    CONFIRM_EQUIP: "Equip {item_name} on {unit_name}?",
+    CONFIRM_WAR_DECLARATION: "Declare war on {0}",
+  }
 
-tr(s.CONFIRM_EQUIP).format(
-{
-  item_name: item.template.displayName,
-  unit_name: unit.name,
-});
+  tr(s.CONFIRM_EQUIP).format(
+  {
+    item_name: item.template.displayName,
+    unit_name: unit.name,
+  });
 
-tr(s.CONFIRM_WAR_DECLARATION).format(targetPlayer.name);
+  tr(s.CONFIRM_WAR_DECLARATION).format(targetPlayer.name);
+
+
+include other localized text with '[]'
+  s =
+  {
+    unit:
+    {
+      1: "unit",
+      "2..": "units",
+    },
+    wasWere:
+    {
+      1: "was",
+      "2..": "were",
+    },
+    unitDestroyed: "{n} [unit] [wasWere] destroyed.",
+  }
+
+  tr(s.unitDestroyed, 1) => "1 unit was destroyed"
+  tr(s.unitDestroyed, 69) => "69 units were destroyed"
+
 */
 
 export interface LocalizedTextByQuantity
