@@ -58,8 +58,8 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
           localizeF("upgradeAttribute").format(
           {
             attribute: localizeUnit(attribute),
-            current_level: unit.baseAttributes[attribute],
-            next_level: unit.baseAttributes[attribute] + 1,
+            currentLevel: unit.baseAttributes[attribute],
+            nextLevel: unit.baseAttributes[attribute] + 1,
           }),
         ));
       }

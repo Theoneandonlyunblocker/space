@@ -1,7 +1,7 @@
 export const unitList =
 {
-  unitUpgradeHeader: "{unit_name} level {current_level} -> {next_level}",
-  upgradeAttribute: "{attribute}: {current_level} -> {next_level}",
+  unitUpgradeHeader: "{unitName} level {currentLevel} -> {nextLevel}",
+  upgradeAttribute: "{attribute}: {currentLevel} -> {nextLevel}",
   newAbility: "** New ability **",
   learnAbility: "Learn ability",
   upgradeAbility: "Upgrade ability",

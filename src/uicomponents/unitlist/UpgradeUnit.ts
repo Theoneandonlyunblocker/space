@@ -98,9 +98,9 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
         },
           localizeF("unitUpgradeHeader").format(
           {
-            unit_name: unit.name,
-            current_level: unit.level,
-            next_level: unit.level + 1,
+            unitName: unit.name,
+            currentLevel: unit.level,
+            nextLevel: unit.level + 1,
           }),
         ),
         UpgradeAbilities(
