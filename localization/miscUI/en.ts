@@ -1,5 +1,5 @@
 export const miscUI =
 {
-  ok: ["Ok"],
-  cancel: ["Cancel"],
+  ok: "Ok",
+  cancel: "Cancel",
 };
