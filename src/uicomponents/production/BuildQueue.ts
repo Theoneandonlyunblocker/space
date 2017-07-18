@@ -75,11 +75,11 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
             money: this.props.money,
             upgradeCost: manufactory.getCapacityUpgradeCost(),
             onClick: this.upgradeCapacity,
-            actionString: "Upgrade capacity",
+            actionString: localize("upgradeManufactoryCapacity"),
             currentLevel: manufactory.capacity,
             maxLevel: manufactory.maxCapacity,
             levelDecimalPoints: 0,
-            title: "Increase amount of things this manufactory can build per turn",
+            title: localize("upgradeManufactoryCapacityTooltip"),
           }),
         ),
         ManufacturableThingsList(

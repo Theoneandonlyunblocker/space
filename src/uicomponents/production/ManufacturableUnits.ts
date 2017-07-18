@@ -7,6 +7,9 @@ import UnitTemplate from "../../templateinterfaces/UnitTemplate";
 import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
 import ManufacturableThingsList from "./ManufacturableThingsList";
 
+import {localize} from "../../../localization/localize";
+
+
 export interface PropTypes extends React.Props<any>
 {
   selectedStar?: Star;
@@ -116,23 +119,23 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
         {
           money: this.props.money,
           upgradeCost: unitUpgradeCost,
-          actionString: "Upgrade health",
+          actionString: localize("upgradeHealth"),
           currentLevel: manufactory.unitHealthModifier,
           maxLevel: 5.0,
           levelDecimalPoints: 1,
           onClick: this.upgradeHealth,
-          title: "Increase base health of units built here",
+          title: localize("increaseBaseHealthOfUnitsBuiltHere"),
         }),
         ManufactoryUpgradeButton(
         {
           money: this.props.money,
           upgradeCost: unitUpgradeCost,
-          actionString: "Upgrade stats",
+          actionString: localize("upgradeStats"),
           currentLevel: manufactory.unitStatsModifier,
           maxLevel: 5.0,
           levelDecimalPoints: 1,
           onClick: this.upgradeStats,
-          title: "Increase base stats of units built here",
+          title: localize("increaseBaseStatsOfUnitsBuiltHere"),
         }),
       )
     }

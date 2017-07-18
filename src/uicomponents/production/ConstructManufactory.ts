@@ -4,6 +4,8 @@ import {activeModuleData} from "../../activeModuleData";
 import Player from "../../Player";
 import Star from "../../Star";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -78,7 +80,7 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
           {
             className: "construct-manufactory-action",
           },
-            "Construct manufactory",
+            localize("constructManufactory"),
           ),
           React.DOM.span(
           {

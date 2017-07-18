@@ -6,6 +6,9 @@ import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 import ManufacturableItems from "./ManufacturableItems";
 import ManufacturableUnits from "./ManufacturableUnits";
 
+import {localizeF} from "../../../localization/localize";
+
+
 type TabKey = "units" | "items";
 
 export interface PropTypes extends React.Props<any>
@@ -68,12 +71,12 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     {
       case "units":
       {
-        displayString = "Units";
+        displayString = localizeF("unit", "plural").capitalize();
         break;
       }
       case "items":
       {
-        displayString = "Items";
+        displayString = localizeF("item", "plural").capitalize();
         break;
       }
     }

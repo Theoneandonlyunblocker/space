@@ -7,6 +7,9 @@ import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
 import ManufacturableThingsList from "./ManufacturableThingsList";
 
+import {localize} from "../../../localization/localize";
+
+
 export interface PropTypes extends React.Props<any>
 {
   selectedStar?: Star;
@@ -93,7 +96,7 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
           {
             money: this.props.money,
             upgradeCost: 0,
-            actionString: "Upgrade items",
+            actionString: localize("upgradeItems"),
             currentLevel: 0,
             maxLevel: 0,
             levelDecimalPoints: 0,

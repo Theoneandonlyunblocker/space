@@ -7,6 +7,7 @@ import {general as en_general} from "./en/general";
 import {items as en_items} from "./en/items";
 import {options as en_options} from "./en/options";
 import {player as en_player} from "./en/player";
+import {production as en_production} from "./en/production";
 import {saves as en_saves} from "./en/saves";
 import {setupGame as en_setupGame} from "./en/setupGame";
 import {trade as en_trade} from "./en/trade";
@@ -26,6 +27,7 @@ type mergedType =
   typeof en_items &
   typeof en_options &
   typeof en_player &
+  typeof en_production &
   typeof en_saves &
   typeof en_setupGame &
   typeof en_trade &
@@ -40,6 +42,7 @@ const mergedTexts = shallowExtend<mergedType>(
   en_items,
   en_options,
   en_player,
+  en_production,
   en_saves,
   en_setupGame,
   en_trade,
