@@ -364,7 +364,7 @@ export function shallowExtend<T1, T2, T3>(s1: T1, s2: T2, s3: T3): T1 & T2 & T3;
 export function shallowExtend<T1, T2, T3, T4>(s1: T1, s2: T2, s3: T3, s4: T4): T1 & T2 & T3 & T4;
 export function shallowExtend<T1, T2>(s1: T1, ...s2: T2[]): T1 & T2;
 export function shallowExtend<T1, T2, T3>(s1: T1, s2: T2, ...s3: T3[]): T1 & T2 & T3;
-// export function shallowExtend<T>(destination: any, ...sources: any[]): T
+export function shallowExtend<T>(...sources: any[]): T;
 export function shallowExtend<T>(...sources: any[]): T
 {
   const merged = <T> {};
