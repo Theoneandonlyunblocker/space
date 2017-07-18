@@ -2,6 +2,9 @@
 
 import {default as DefaultWindow} from "./DefaultWindow";
 
+import {localize} from "../../../localization/miscUI/localize";
+
+
 interface PropTypes extends React.Props<any>
 {
   title: string;
@@ -73,13 +76,13 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
               {
                 this.okButtonElement = component;
               },
-            }, this.props.okText || "Ok"),
+            }, this.props.okText || localize("ok")),
             this.props.extraButtons,
             React.DOM.button(
             {
               className: "dialog-box-button cancel-button",
               onClick: this.props.handleCancel,
-            }, this.props.cancelText || "Cancel"),
+            }, this.props.cancelText || localize("cancel")),
           ),
         ),
       )
