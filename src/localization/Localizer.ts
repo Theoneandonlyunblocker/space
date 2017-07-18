@@ -6,6 +6,7 @@ import
   LocalizedTextByQuantity,
 } from "./LocalizedText";
 import {getActiveLanguage} from "./activeLanguage";
+import {transformers} from "./transformers";
 
 import {Range} from "../Range";
 import
@@ -93,7 +94,7 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText | Locali
         }
       }
 
-      if(rangesHaveOverlap(allRanges))
+      if (rangesHaveOverlap(allRanges))
       {
         console.warn(`Ambiguous quantity-dependant localization. Overlapping ranges in ${text}.`);
 
@@ -188,6 +189,47 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText | Locali
   }
   public localize(key: keyof Texts, quantity: number = 1): IntermediateLocalizedString
   {
+    return new IntermediateLocalizedString(this.localizeRaw(key, quantity));
+  }
+
+  private processNestedLocalizations(s: string, quantity: number): string
+  {
+   return s.replace(
+      /([\[\]])\1|[\[](.*?)(?:!(.+?))?[\]]/g,
+      (match, literal, key, transformerKey) =>
+      {
+        if (literal)
+        {
+          return literal;
+        }
+
+        if (!key)
+        {
+          throw new Error(`Invalid nested localization text ${s}`);
+        }
+
+        const localized = this.localizeRaw(key, quantity);
+
+        if (transformerKey)
+        {
+          if (transformers[transformerKey])
+          {
+            return transformers[transformerKey](localized);
+          }
+          else
+          {
+            throw new Error(`Invalid transformer ${transformerKey} in text ${s}.\n` +
+              `Valid transformers: ${Object.keys(transformers).join(", ")}`);
+          }
+        }
+        else
+        {
+          return localized;
+        }
+      });
+  }
+  private localizeRaw(key: keyof Texts, quantity: number): string
+  {
     const activeLanguage = getActiveLanguage();
     const missingLocalizationString = `${activeLanguage.code}.${this.key}.${key}`;
 
@@ -200,27 +242,22 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText | Locali
       if (localizedTexts && localizedTexts.length > 0)
       {
         const localizedText = getRandomArrayItem(localizedTexts);
-
-        if (typeof localizedText === "string")
-        {
-          // TODO 2017.04.20 | bad typing
-          return new IntermediateLocalizedString(<string><any>localizedText);
-        }
-        else
-        {
-          const matchingText = Localizer.getStringFromLocalizedTextByQuantity(
+        const stringForQuantity = (typeof localizedText === "string") ?
+          localizedText :
+          Localizer.getStringFromLocalizedTextByQuantity(
             // TODO 2017.04.20 | bad typing
             <LocalizedTextByQuantity><any>localizedText,
             quantity,
           );
 
-          return new IntermediateLocalizedString(matchingText);
-        }
+        const processedText = this.processNestedLocalizations(stringForQuantity, quantity);
+
+        return processedText;
       }
     }
 
     console.warn(`Missing localization '${missingLocalizationString}'`);
 
-    return new IntermediateLocalizedString(missingLocalizationString);
+    return missingLocalizationString;
   }
 }
