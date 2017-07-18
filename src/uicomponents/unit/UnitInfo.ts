@@ -6,6 +6,8 @@ import UnitActions from "./UnitActions";
 import UnitStatus from "./UnitStatus";
 import UnitStrength from "./UnitStrength";
 
+import {localize} from "../../../localization/battle/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -52,7 +54,7 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
         {
           className: "unit-battle-end-status unit-battle-end-status-dead",
         },
-          "Destroyed",
+          localize("destroyed"),
         ),
       );
     }
@@ -66,7 +68,7 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
         {
           className: "unit-battle-end-status unit-battle-end-status-captured",
         },
-          "Captured",
+          localize("captured"),
         ),
       );
     }

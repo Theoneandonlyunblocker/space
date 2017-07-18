@@ -10,6 +10,9 @@ import UnitPortrait from "./UnitPortrait";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
+import {localize} from "../../../localization/battle/localize";
+
+
 export interface ComponentPropTypes extends React.Props<any>
 {
   id: number;
@@ -211,7 +214,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     {
       bodyElements.push(
         React.DOM.div({key: "overlay", className: "unit-annihilated-overlay"},
-          "Unit annihilated",
+          localize("unitAnnihilated"),
         ),
       );
     }

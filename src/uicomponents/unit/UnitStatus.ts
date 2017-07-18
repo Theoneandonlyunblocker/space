@@ -6,6 +6,8 @@ import
   clamp,
 } from "../../utility";
 
+import {localize, localizeF} from "../../../localization/battle/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -38,9 +40,16 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
     {
       const guard = this.props.guardAmount;
       const damageReduction = Math.min(50, guard / 2);
-      let guardText = "" + guard + "% chance to protect ";
-      guardText += (this.props.guardCoverage === GuardCoverage.all ? "all units." : " units in same row.");
-      guardText += "\n" + "This unit takes " + damageReduction + "% reduced damage from physical attacks.";
+
+      const chanceToProtectString = localizeF("chanceToProtect").format({guardChance: guard});
+      const protectedUnitsString = this.props.guardCoverage === GuardCoverage.all ?
+        localize("allUnits") :
+        localize("sameRowUnits");
+      const damageReductionString = localizeF("takesReducedDamage").format({damageReduction: damageReduction});
+
+      const guardText = `${chanceToProtectString} ${protectedUnitsString}.` +
+        `\n${damageReductionString}`;
+
       statusElement = React.DOM.div(
       {
         className: "status-container guard-meter-container",
@@ -65,7 +74,7 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
             React.DOM.div(
             {
               className: "guard-text status-text",
-            }, "Guard"),
+            }, localize("guard")),
             React.DOM.div(
             {
               className: "guard-text-value status-text",
@@ -87,9 +96,9 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
           React.DOM.div(
           {
             className: "preparation-text-container status-inner",
-            title: "Unit is preparing to use ability",
+            title: localize("unitIsPreparingToUseAbility"),
           },
-            "Preparing",
+            localize("preparing"),
           ),
         ),
       );
