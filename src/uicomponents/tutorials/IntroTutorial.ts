@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/react-global.d.ts" />
+import * as React from "react";
 
 import IntroTutorial from "../../tutorials/IntroTutorial";
 import TutorialState from "../../tutorials/TutorialState";

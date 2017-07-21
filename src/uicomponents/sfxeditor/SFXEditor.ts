@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/react-global.d.ts" />
+import * as React from "react";
 /// <reference path="../../../lib/pixi.d.ts" />
 
 import Beam from "../../../modules/common/battlesfxfunctions/sfxfragments/Beam";

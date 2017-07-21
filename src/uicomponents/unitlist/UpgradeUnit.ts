@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/react-global.d.ts" />
+import * as React from "react";
 
 import {AbilityUpgradeData} from "../../AbilityUpgradeData";
 import Unit from "../../Unit";

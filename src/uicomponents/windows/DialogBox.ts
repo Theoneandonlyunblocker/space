@@ -1,4 +1,5 @@
-/// <reference path="../../../lib/react-global.d.ts" />
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 import {default as DefaultWindow} from "./DefaultWindow";
 

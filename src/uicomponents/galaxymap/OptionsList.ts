@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/react-global.d.ts" />
+import * as React from "react";
 
 import NotificationLog from "../../NotificationLog";
 import Options from "../../Options";

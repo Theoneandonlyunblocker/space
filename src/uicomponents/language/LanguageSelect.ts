@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/react-global.d.ts" />
+import * as React from "react";
 
 import {Language} from "../../localization/Language";
 import {LanguageSupportLevel} from "../../localization/languageSupport";

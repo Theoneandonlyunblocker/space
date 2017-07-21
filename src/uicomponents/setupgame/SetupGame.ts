@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/react-global.d.ts" />
+import * as React from "react";
 
 import app from "../../App"; // TODO global
 import ModuleFileLoadingPhase from "../../ModuleFileLoadingPhase";

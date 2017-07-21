@@ -1,4 +1,4 @@
-/// <reference path="../../../../lib/react-global.d.ts" />
+import * as React from "react";
 
 import RampingValue from "../../../../modules/common/battlesfxfunctions/sfxfragments/RampingValue";
 import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";

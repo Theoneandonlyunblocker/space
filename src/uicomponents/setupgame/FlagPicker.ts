@@ -1,6 +1,6 @@
 // TODO 2017.07.18 | unused?
 
-/// <reference path="../../../lib/react-global.d.ts" />
+import * as React from "react";
 
 import
 {
