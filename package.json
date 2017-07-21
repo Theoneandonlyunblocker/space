@@ -5,8 +5,8 @@
     "typescript": "2.4.x",
     "less": "2.6.x",
     "tslint": "4.5.x",
-    "@types/react": "14.0.x",
-    "@types/react-dom": "14.0.x"
+    "@types/react": "0.14.x",
+    "@types/react-dom": "0.14.x"
   },
   "scripts": {
     "build": "tsc && lessc ./css/main.less ./built/main.css",

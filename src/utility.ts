@@ -1,4 +1,5 @@
 /// <reference path="../lib/pixi.d.ts" />
+import * as React from "react";
 
 import app from "./App"; // TODO global
 import {activeModuleData} from "./activeModuleData";
@@ -796,9 +797,9 @@ export function splitMultilineText(text: string | React.ReactFragment): string |
   }
 }
 // TODO 2017.07.11 | this should be in a base class for ui components instead
-export function mergeReactAttributes(
-  ...toMerge: React.HTMLAttributes[],
-): React.HTMLAttributes
+export function mergeReactAttributes<T>(
+  ...toMerge: React.HTMLAttributes<T>[],
+): React.HTMLAttributes<T>
 {
   const merged = shallowExtend({}, ...toMerge);
 
