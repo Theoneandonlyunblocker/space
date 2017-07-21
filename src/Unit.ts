@@ -567,7 +567,7 @@ export default class Unit
   // }
   private getAttributesWithItems()
   {
-    return this.baseAttributes.getAdjustedAttributes(this.items.getAttributeAdjustments()).clamp(1, 9);
+    return this.baseAttributes.getAdjustedAttributes(...this.items.getAttributeAdjustments()).clamp(1, 9);
   }
   public addStatusEffect(statusEffect: StatusEffect)
   {

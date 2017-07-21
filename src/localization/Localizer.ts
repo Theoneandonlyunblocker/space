@@ -94,7 +94,7 @@ export class Localizer<Texts extends {[k in keyof Texts]: LocalizedText | Locali
         }
       }
 
-      if (rangesHaveOverlap(allRanges))
+      if (rangesHaveOverlap(...allRanges))
       {
         console.warn(`Ambiguous quantity-dependant localization. Overlapping ranges in ${text}.`);
 
