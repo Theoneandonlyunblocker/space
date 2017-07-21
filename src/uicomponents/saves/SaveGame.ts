@@ -141,7 +141,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   }
   private handleSaveNameInput(e: React.FormEvent<HTMLInputElement>)
   {
-    const target = <HTMLInputElement> e.target;
+    const target = e.currentTarget;
     this.setSaveName(target.value);
   }
   private handleRowChange(row: ListItem<SaveListItemProps>)

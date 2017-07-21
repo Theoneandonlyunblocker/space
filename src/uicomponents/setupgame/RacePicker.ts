@@ -27,7 +27,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
 
   handleChangeRace(e: React.FormEvent<HTMLSelectElement>)
   {
-    const target = <HTMLSelectElement> e.target;
+    const target = e.currentTarget;
     const newRace = this.props.availableRaces.filter(raceTemplate =>
     {
       return raceTemplate.type === target.value;

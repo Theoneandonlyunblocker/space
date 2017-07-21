@@ -84,7 +84,7 @@ export class LanguageSelectComponent extends React.Component<PropTypes, StateTyp
 
   private handleLanguageChange(e: React.FormEvent<HTMLSelectElement>): void
   {
-    const target = <HTMLInputElement> e.target;
+    const target = e.currentTarget;
     const selectedLanguageCode = target.value;
     const newLanguage = this.props.availableLanguagesByCode[selectedLanguageCode];
 

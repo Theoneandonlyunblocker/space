@@ -172,7 +172,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   handleScroll(e: React.UIEvent<HTMLDivElement>)
   {
     // scrolls header to match list contents
-    const target = <Element> e.target;
+    const target = e.currentTarget;
     const header = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_header);
     const titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
 

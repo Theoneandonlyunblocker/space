@@ -81,23 +81,13 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
       return "" + value;
     }
   }
-  private handleValueChange(e: React.FormEvent<HTMLInputElement> | ClipboardEvent): void
+  private handleValueChange(e: React.FormEvent<HTMLInputElement> | React.ClipboardEvent<HTMLInputElement>): void
   {
     e.stopPropagation();
     e.preventDefault();
 
-    const target = <HTMLInputElement> e.target;
-
-    let valueString: string;
-    if (e.type === "paste")
-    {
-      const e2 = <ClipboardEvent> e;
-      valueString = e2.clipboardData.getData("text");
-    }
-    else
-    {
-      valueString = target.value;
-    }
+    const target = e.currentTarget;
+    const valueString = target.value;
 
     this.setState(
     {

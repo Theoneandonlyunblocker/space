@@ -50,7 +50,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
     {
       window.clearTimeout(this.setStateTimeoutHandle);
     }
-    const target = <HTMLInputElement> e.target;
+    const target = e.currentTarget;
     const value = parseInt(target.value);
     if (isFinite(value))
     {

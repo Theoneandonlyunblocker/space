@@ -24,7 +24,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
 
   handleChange(e: React.FormEvent<HTMLInputElement>)
   {
-    const target = <HTMLInputElement> e.target;
+    const target = e.currentTarget;
     const option = this.props.option;
     const newValue = clamp(parseFloat(target.value), option.range.min, option.range.max);
     this.props.onChange(this.props.id, newValue);

@@ -201,7 +201,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   // private handleClick(e: MouseEvent): void
   // {
   //   const node = ReactDOM.findDOMNode<HTMLElement>(this.flagSetterContainer);
-  //   const target = <HTMLElement> e.target;
+  //   const target = e.currentTarget;
   //   if (target === node || node.contains(target))
   //   {
   //     return;

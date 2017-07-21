@@ -23,7 +23,7 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
   displayName: string = "FleetInfo";
   setFleetName(e: React.FormEvent<HTMLInputElement>)
   {
-    const target = <HTMLInputElement> e.target;
+    const target = e.currentTarget;
     this.props.fleet.name.customizeName(target.value);
     this.forceUpdate();
   }

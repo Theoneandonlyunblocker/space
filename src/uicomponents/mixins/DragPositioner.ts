@@ -181,7 +181,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     if (e.wasTouchEvent)
     {
       this.needsFirstTouchUpdate = true;
-      this.touchEventTarget = <HTMLElement> e.target;
+      this.touchEventTarget = e.target;
     }
 
     this.addEventListeners();

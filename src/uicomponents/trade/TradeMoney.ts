@@ -65,7 +65,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
   handleMoneyAmountChange(e: React.FormEvent<HTMLInputElement>)
   {
-    const target = <HTMLInputElement> e.target;
+    const target = e.currentTarget;
     const value = parseInt(target.value);
 
     this.props.adjustItemAmount(this.props.keyTODO/*TODO react*/, value);

@@ -5,7 +5,7 @@ declare interface NormalizedEvent
   clientY: number;
   pageX: number;
   pageY: number;
-  target: HTMLElement;
+  target: HTMLElement & EventTarget;
 
   button: number;
 

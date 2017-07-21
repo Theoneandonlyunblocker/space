@@ -122,7 +122,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
 
   private handleChangeTime(e: React.FormEvent<HTMLInputElement>): void
   {
-    const target = <HTMLInputElement> e.target;
+    const target = e.currentTarget;
 
     const newTime = clamp(parseFloat(target.value), 0, 1);
 
@@ -135,7 +135,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
   }
   private handleChangeSFXDuration(e: React.FormEvent<HTMLInputElement>): void
   {
-    const target = <HTMLInputElement> e.target;
+    const target = e.currentTarget;
 
     const SFXDuration = Math.max(parseInt(target.value), 0);
 

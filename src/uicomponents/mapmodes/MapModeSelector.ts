@@ -21,7 +21,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
 
   handleChange(e: React.FormEvent<HTMLSelectElement>)
   {
-    const target = <HTMLSelectElement> e.target;
+    const target = e.currentTarget;
     const value = target.value;
     this.props.mapRenderer.setMapModeByKey(value);
 

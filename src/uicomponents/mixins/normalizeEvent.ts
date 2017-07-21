@@ -14,6 +14,7 @@ function normalizeMouseEvent(nativeEvent: MouseEvent, reactEvent?: React.MouseEv
     clientY: nativeEvent.clientY,
     pageX: nativeEvent.pageX,
     pageY: nativeEvent.pageY,
+    // TODO 2017.07.21 | don't think this is right...
     target: <HTMLElement> nativeEvent.target,
 
     button: nativeEvent.button,

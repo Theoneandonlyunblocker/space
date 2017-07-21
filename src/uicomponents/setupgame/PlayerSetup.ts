@@ -127,7 +127,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
 
   handleNameChange(e: React.FormEvent<HTMLInputElement>)
   {
-    const target = <HTMLInputElement> e.target;
+    const target = e.currentTarget;
     this.setState({name: target.value});
   }
 

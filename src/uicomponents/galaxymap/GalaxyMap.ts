@@ -86,7 +86,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
         //       value: app.reactUI.currentScene,
               // onChange: (e: React.FormEvent) =>
               // {
-              //   const target = <HTMLInputElement> e.target;
+              //   const target = e.currentTarget;
               //   app.reactUI.switchScene(target.value);
               // }
         //     },
@@ -100,7 +100,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
         //     className: "debug",
         //     onClick: function(e: React.FormEvent)
         //     {
-        //       const target = <HTMLButtonElement> e.target;
+        //       const target = e.currentTarget;
 
         //       const position = app.renderer.camera.container.position.clone();
         //       const zoom = app.renderer.camera.currZoom;

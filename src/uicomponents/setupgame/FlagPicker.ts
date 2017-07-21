@@ -73,7 +73,7 @@ export class FlagPickerComponent extends React.PureComponent<PropTypes, StateTyp
 
   handleUpload(e: React.FormEvent)
   {
-    const imageUploader = <HTMLInputElement> e.target;
+    const imageUploader = e.currentTarget;
 
     this.props.uploadFiles(imageUploader.files);
   }
