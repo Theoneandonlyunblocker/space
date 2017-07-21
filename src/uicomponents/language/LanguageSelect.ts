@@ -82,7 +82,7 @@ export class LanguageSelectComponent extends React.Component<PropTypes, StateTyp
     );
   }
 
-  private handleLanguageChange(e: React.FormEvent): void
+  private handleLanguageChange(e: React.FormEvent<HTMLSelectElement>): void
   {
     const target = <HTMLInputElement> e.target;
     const selectedLanguageCode = target.value;

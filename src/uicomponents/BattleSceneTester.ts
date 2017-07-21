@@ -199,7 +199,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     this.battleScene.updateUnits();
   }
 
-  handleSelectSFXTemplate(e: React.FormEvent)
+  handleSelectSFXTemplate(e: React.FormEvent<HTMLSelectElement>)
   {
     const target = <HTMLInputElement> e.target;
     const SFXTemplate = activeModuleData.Templates.BattleSFX[target.value];
@@ -211,7 +211,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     });
   }
 
-  handleChangeDuration(e: React.FormEvent)
+  handleChangeDuration(e: React.FormEvent<HTMLInputElement>)
   {
     const target = <HTMLInputElement> e.target;
     this.setState(

@@ -81,7 +81,7 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
       return "" + value;
     }
   }
-  private handleValueChange(e: React.FormEvent | ClipboardEvent): void
+  private handleValueChange(e: React.FormEvent<HTMLInputElement> | ClipboardEvent): void
   {
     e.stopPropagation();
     e.preventDefault();

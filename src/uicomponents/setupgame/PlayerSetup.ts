@@ -125,7 +125,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     this.props.setHuman(this.props.keyTODO/*TODO react*/);
   }
 
-  handleNameChange(e: React.FormEvent)
+  handleNameChange(e: React.FormEvent<HTMLInputElement>)
   {
     const target = <HTMLInputElement> e.target;
     this.setState({name: target.value});

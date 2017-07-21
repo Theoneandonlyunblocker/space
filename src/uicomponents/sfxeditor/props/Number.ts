@@ -29,7 +29,7 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
     this.handleChange = this.handleChange.bind(this);
   }
 
-  private handleChange(e: React.FormEvent): void
+  private handleChange(e: React.FormEvent<HTMLInputElement>): void
   {
     const target = <HTMLInputElement> e.target;
     const value = parseFloat(target.value);

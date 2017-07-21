@@ -67,7 +67,7 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
       priority: this.getPlayerPriority(),
     });
   }
-  private handlePriorityChange(e: React.FormEvent)
+  private handlePriorityChange(e: React.FormEvent<HTMLInputElement>)
   {
     if (this.isTechnologyLocked())
     {

@@ -139,7 +139,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
       saveName: newText,
     });
   }
-  private handleSaveNameInput(e: React.FormEvent)
+  private handleSaveNameInput(e: React.FormEvent<HTMLInputElement>)
   {
     const target = <HTMLInputElement> e.target;
     this.setSaveName(target.value);

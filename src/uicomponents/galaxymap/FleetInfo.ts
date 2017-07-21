@@ -21,7 +21,7 @@ import {localize} from "../../../localization/localize";
 export class FleetInfoComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetInfo";
-  setFleetName(e: React.FormEvent)
+  setFleetName(e: React.FormEvent<HTMLInputElement>)
   {
     const target = <HTMLInputElement> e.target;
     this.props.fleet.name.customizeName(target.value);

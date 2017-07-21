@@ -44,7 +44,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  handleSizeChange(e: React.FormEvent)
+  handleSizeChange(e: React.FormEvent<HTMLInputElement>)
   {
     if (this.setStateTimeoutHandle)
     {

@@ -22,7 +22,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapGenOption";
 
-  handleChange(e: React.FormEvent)
+  handleChange(e: React.FormEvent<HTMLInputElement>)
   {
     const target = <HTMLInputElement> e.target;
     const option = this.props.option;

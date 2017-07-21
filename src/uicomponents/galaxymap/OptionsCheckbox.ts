@@ -2,7 +2,7 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  onChangeFN: (e: React.FormEvent) => void;
+  onChangeFN: (e: React.FormEvent<HTMLInputElement>) => void;
   label: string;
   isChecked: boolean;
 }

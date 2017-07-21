@@ -120,7 +120,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
     this.advanceTime = this.advanceTime.bind(this);
   }
 
-  private handleChangeTime(e: React.FormEvent): void
+  private handleChangeTime(e: React.FormEvent<HTMLInputElement>): void
   {
     const target = <HTMLInputElement> e.target;
 
@@ -133,7 +133,7 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
 
     this.updateTime(newTime);
   }
-  private handleChangeSFXDuration(e: React.FormEvent): void
+  private handleChangeSFXDuration(e: React.FormEvent<HTMLInputElement>): void
   {
     const target = <HTMLInputElement> e.target;
 

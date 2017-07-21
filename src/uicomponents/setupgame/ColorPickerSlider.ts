@@ -53,7 +53,7 @@ export class ColorPickerSliderComponent extends React.Component<PropTypes, State
     );
   }
 
-  private handleChangeEvent(e: React.FormEvent): void
+  private handleChangeEvent(e: React.FormEvent<HTMLInputElement>): void
   {
     const target = <HTMLInputElement> e.target;
     const value = parseInt(target.value);

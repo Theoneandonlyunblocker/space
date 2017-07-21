@@ -80,9 +80,9 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  setTemplate(e: React.FormEvent)
+  setTemplate(e: React.FormEvent<HTMLSelectElement>)
   {
-    const target = <HTMLInputElement> e.target;
+    const target = <HTMLSelectElement> e.target;
     this.setState(
     {
       selectedTemplate: activeModuleData.Templates.MapGen[target.value],

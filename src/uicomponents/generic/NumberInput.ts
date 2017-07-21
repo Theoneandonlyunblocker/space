@@ -121,7 +121,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
       this.setState({displayedValue: "" + this.props.value});
     }
   }
-  private handleValueChange(e: React.FormEvent | ClipboardEvent): void
+  private handleValueChange(e: React.FormEvent<HTMLInputElement> | ClipboardEvent): void
   {
     e.stopPropagation();
     e.preventDefault();
