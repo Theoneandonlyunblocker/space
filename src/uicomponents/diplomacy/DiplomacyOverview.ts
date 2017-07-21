@@ -12,6 +12,8 @@ import {default as DefaultWindow} from "../windows/DefaultWindow";
 import DiplomacyState from "../../DiplomacyState";
 import Player from "../../Player";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -99,18 +101,18 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         notSortable: true,
       },
       {
-        label: "Name",
+        label: localize("displayName"),
         key: "name",
         defaultOrder: "asc",
       },
       {
-        label: "Status",
+        label: localize("diplomaticStatus"),
         key: "status",
         defaultOrder: "asc",
         propToSortBy: "statusSortingNumber",
       },
       {
-        label: "Opinion",
+        label: localize("opinion"),
         key: "opinion",
         defaultOrder: "desc",
       },

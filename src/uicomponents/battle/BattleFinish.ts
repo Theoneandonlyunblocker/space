@@ -9,6 +9,8 @@ interface StateType
 {
 }
 
+import {localize} from "../../../localization/localize";
+
 export class BattleFinishComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName = "BattleFinish";
@@ -36,7 +38,7 @@ export class BattleFinishComponent extends React.PureComponent<PropTypes, StateT
         {
           className: "battle-scene-finish-subheader",
         },
-          "Click anywhere to continue",
+          localize("clickAnywhereToContinue"),
         ),
       )
     );

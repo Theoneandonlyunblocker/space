@@ -13,6 +13,9 @@ interface StateType
 {
 }
 
+import {localize} from "../../../localization/localize";
+
+
 export class TurnCounterListComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "TurnCounterList";
@@ -45,7 +48,7 @@ export class TurnCounterListComponent extends React.PureComponent<PropTypes, Sta
       React.DOM.div(
       {
         className: "turns-container",
-        title: "Turns left: " + this.props.turnsLeft,
+        title: localize("turnsLeft") + ": " + this.props.turnsLeft,
       },
         turnElements,
       )

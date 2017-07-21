@@ -6,6 +6,8 @@ import Unit from "../../Unit";
 import eventManager from "../../eventManager";
 import FleetContents from "./FleetContents";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -110,7 +112,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
         React.DOM.div(
         {
           className: "fleet-reorganization-header",
-        }, "Reorganize fleets"),
+        }, localize("reorganizeFleets")),
         React.DOM.div(
         {
           className: "fleet-reorganization-subheader",
@@ -165,7 +167,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
           {
             className: "close-reorganization",
             onClick: this.handleClose,
-          }, "Close"),
+          }, localize("close")),
         ),
       )
     );

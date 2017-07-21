@@ -5,6 +5,9 @@ import {default as DialogBox} from "../windows/DialogBox";
 
 import LoadGame from "../saves/LoadGame";
 
+import {localize} from "../../../localization/localize";
+
+
 interface PropTypes extends React.Props<any>
 {
 
@@ -52,7 +55,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
           {
             className: "game-over-header",
           },
-            "Game over",
+            localize("gameOver"),
           ),
           React.DOM.div(
           {
@@ -63,33 +66,33 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
               className: "game-over-buttons-button",
               onClick: this.toggleLoadPopup,
             },
-              "Load",
+              localize("load_imperative"),
             ),
             React.DOM.button(
             {
               className: "game-over-buttons-button",
               onClick: this.toggleNewGamePopup,
             },
-              "New game",
+              localize("newGame"),
             ),
           ),
         ),
         !this.state.hasConfirmNewGamePopup ? null :
           DialogBox(
           {
-            title: "New game",
+            title: localize("newGame"),
             handleOk: () =>
             {
               window.location.reload(false);
             },
             handleCancel: this.closeNewGamePopup,
           },
-            "Are you sure you want to start a new game?",
+            localize("areYouSureYouWantToStartANewGame"),
           ),
         !this.state.hasLoadPopup ? null :
           DefaultWindow(
           {
-            title: "Load game",
+            title: localize("loadGame"),
             handleClose: this.closeLoadPopup,
 
             minWidth: 200,

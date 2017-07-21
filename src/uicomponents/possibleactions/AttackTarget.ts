@@ -4,6 +4,8 @@ import FleetAttackTarget from "../../FleetAttackTarget";
 import eventManager from "../../eventManager";
 import PlayerFlag from "../PlayerFlag";
 
+import {localize, localizeF} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -44,13 +46,17 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
       {
         className: "attack-target-button possible-action",
         onClick: this.handleAttack,
-        title: `Attack ${target.enemy.name.getPossessive()} ${target.type}`,
+        title: localizeF("attackTargetTooltip").format(
+        {
+          enemyName: target.enemy.name.getPossessive(),
+          targetType: target.type,
+        }),
       },
         React.DOM.span(
         {
           className: "possible-action-title",
         },
-          "attack",
+          localize("attackTarget_imperative"),
         ),
         PlayerFlag(
         {

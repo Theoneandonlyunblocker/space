@@ -8,6 +8,8 @@ import ListItem from "../list/ListItem";
 
 import Player from "../../Player";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -54,17 +56,17 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
     const columns: ListColumn<EconomySummaryItemProps>[] =
     [
       {
-        label: "Id",
+        label: localize("id"),
         key: "id",
         defaultOrder: "asc",
       },
       {
-        label: "Name",
+        label: localize("displayName"),
         key: "name",
         defaultOrder: "asc",
       },
       {
-        label: "Income",
+        label: localize("income"),
         key: "income",
         defaultOrder: "desc",
       },

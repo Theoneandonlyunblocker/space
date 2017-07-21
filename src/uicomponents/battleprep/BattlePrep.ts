@@ -19,6 +19,7 @@ import UnitList from "../unitlist/UnitList";
 import {PropTypes as UnitListItemPropTypes} from "../unitlist/UnitListItem";
 import BattleInfo from "./BattleInfo";
 
+import {localize} from "../../../localization/localize";
 
 export interface PropTypes extends React.Props<any>
 {
@@ -372,25 +373,26 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               className: "battle-prep-controls-button",
               onClick: this.setLeftLowerElement.bind(this, "itemEquip"),
               disabled: this.state.leftLowerElement === "itemEquip",
-            }, "Equip"),
+            }, localize("equip")),
             React.DOM.button(
             {
               className: "battle-prep-controls-button",
               onClick: this.setLeftLowerElement.bind(this, "playerFormation"),
               disabled: this.state.leftLowerElement === "playerFormation",
-            }, "Own"),
+            }, localize("own_adjective")),
             React.DOM.button(
             {
               className: "battle-prep-controls-button",
               onClick: this.setLeftLowerElement.bind(this, "enemyFormation"),
               disabled: this.state.leftLowerElement === "enemyFormation" || !canScout,
-              title: canScout ? null : "Can't inspect enemy formation" +
-                " as star is not in detection radius",
-            }, "Enemy"),
+              title: canScout ?
+                null :
+                localize("cantInspectEnemyFormationAsStarIsNotInDetectionRadius"),
+            }, localize("enemy")),
             React.DOM.button(
             {
               onClick: this.autoMakeFormation,
-            }, "Auto formation"),
+            }, localize("autoFormation")),
             React.DOM.button(
             {
               onClick: function()
@@ -398,7 +400,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 app.reactUI.switchScene("galaxyMap");
               },
               disabled: playerIsDefending,
-            }, "Cancel"),
+            }, localize("cancel")),
             React.DOM.button(
             {
               className: "battle-prep-controls-button",
@@ -410,7 +412,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 app.reactUI.battle = battle;
                 app.reactUI.switchScene("battle");
               }.bind(this),
-            }, "Start battle"),
+            }, localize("startBattle")),
             !Options.debug.enabled ? null: React.DOM.button(
             {
               className: "battle-prep-controls-button",
@@ -423,7 +425,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 eventManager.dispatchEvent("setCameraToCenterOn", battle.battleData.location);
                 eventManager.dispatchEvent("switchScene", "galaxyMap");
               }.bind(this),
-            }, "Simulate battle"),
+            }, localize("simulateBattle")),
           ),
           React.DOM.div({className: "battle-prep-left-lower"}, leftLowerElement),
         ),

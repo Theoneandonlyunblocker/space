@@ -10,7 +10,6 @@ export const unit =
   defence: "Defence",
   intelligence: "Intelligence",
   speed: "Speed",
-  id: "Id",
   type: "Type",
   strength: "Strength",
   act: "Act",

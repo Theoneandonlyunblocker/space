@@ -2,6 +2,8 @@
 
 import Unit from "../../Unit";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -51,7 +53,7 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
       React.DOM.input(
       {
         className: "fleet-unit-info-name",
-        value: this.props.isNotDetected ? "Unidentified ship" : this.state.inputElementValue,
+        value: this.props.isNotDetected ? localize("unidentifiedShip") : this.state.inputElementValue,
         onChange: this.props.isNotDetected ? null :  this.onChange,
         readOnly: this.props.isNotDetected,
       })

@@ -12,6 +12,8 @@ import {default as DialogBox} from "../windows/DialogBox";
 import NotificationComponentFactory from "./Notification";
 import NotificationFilterButton from "./NotificationFilterButton";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -101,15 +103,15 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
             {
               this.closePopup(notification);
             },
-            okText: "Mark as read",
-            cancelText: "Close",
+            okText: localize("markAsRead"),
+            cancelText: localize("close"),
             extraButtons:
             [
               NotificationFilterButton(
               {
                 key: "notificationFilter",
                 filter: log.notificationFilter,
-                text: "Filter",
+                text: localize("notificationFilterButton"),
                 highlightedOptionKey: notification.template.key,
                 activeLanguage: this.props.activeLanguage,
               }),

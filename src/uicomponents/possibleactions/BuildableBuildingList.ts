@@ -10,6 +10,8 @@ import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
 import {default as BuildableBuilding, PropTypes as BuildableBuildingProps} from "./BuildableBuilding";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -110,12 +112,12 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
     const columns: ListColumn<BuildableBuildingProps>[] =
     [
       {
-        label: "Name",
+        label: localize("buildingTypeName"),
         key: "typeName",
         defaultOrder: "asc",
       },
       {
-        label: "Cost",
+        label: localize("buildingCost"),
         key: "buildCost",
         defaultOrder: "desc",
       },

@@ -25,6 +25,8 @@ import StarInfo from "./StarInfo";
 import TopBar from "./TopBar";
 import TopMenu from "./TopMenu";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -310,7 +312,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             tabIndex: -1,
             onClick: this.toggleMapModeSettingsExpanded,
           },
-            "Map mode",
+            localize("mapMode"),
           ),
           Notifications(
           {
@@ -319,7 +321,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             activeLanguage: this.props.activeLanguage,
             key: "notifications",
           }),
-          React.DOM.button(endTurnButtonProps, "End turn"),
+          React.DOM.button(endTurnButtonProps, localize("endTurn")),
         ),
       )
     );

@@ -11,4 +11,5 @@ export const saves =
     "2..": "saves",
   },
   confirmSaveDeletion: "Are you sure you want to delete the following [save_noun]?",
+  loadGame: "Load game",
 };

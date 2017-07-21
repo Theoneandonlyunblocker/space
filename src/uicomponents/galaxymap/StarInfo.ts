@@ -3,6 +3,8 @@
 import Star from "../../Star";
 import DefenceBuildingList from "./DefenceBuildingList";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -54,13 +56,13 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
           className: "star-info-location",
         },
           "x: " + star.x.toFixed() +
-          " y: " + star.y.toFixed(),
+          "y: " + star.y.toFixed(),
         ),
         React.DOM.div(
         {
           className: "star-info-income",
         },
-          "Income: " + star.getIncome(),
+          localize("income") + ": " + star.getIncome(),
         ),
         DefenceBuildingList(
         {

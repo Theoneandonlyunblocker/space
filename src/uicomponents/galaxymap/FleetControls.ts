@@ -3,6 +3,8 @@
 import {Fleet} from "../../Fleet";
 import eventManager from "../../eventManager";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -73,21 +75,21 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
         className: "fleet-controls",
       },
         React.DOM.button(splitButtonProps,
-          "split",
+          localize("split_imperative"),
         ),
         React.DOM.button(
         {
           className: "fleet-controls-deselect",
           onClick: this.deselectFleet,
         },
-          "deselect",
+          localize("deselect_imperative"),
         ),
         !this.props.hasMultipleSelected ? null : React.DOM.button(
         {
           className: "fleet-controls-select",
           onClick: this.selectFleet,
         },
-          "select",
+          localize("select_imperative"),
         ),
       )
     );

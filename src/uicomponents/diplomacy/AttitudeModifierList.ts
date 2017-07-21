@@ -11,6 +11,8 @@ import {default as AttitudeModifierInfo, PropTypes as AttitudeModifierInfoProps}
 import {AutoPositionerProps, default as AutoPositioner} from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 
+import {localize} from "../../../localization/localize";
+
 export interface PropTypes extends React.Props<any>
 {
   attitudeModifiers: AttitudeModifier[];
@@ -48,7 +50,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
       key: "baseOpinion",
       content: AttitudeModifierInfo(
       {
-        name: "AI Personality",
+        name: localize("aiPersonality"),
         strength: this.props.baseOpinion,
         endTurn: -1,
         alwaysShowAtTopOfList: true,
@@ -77,7 +79,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
     const columns: ListColumn<AttitudeModifierInfoProps>[] =
     [
       {
-        label: "Name",
+        label: localize("displayName"),
         key: "name",
         defaultOrder: "asc",
         sortingFunction: (a, b) =>
@@ -106,12 +108,12 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
         },
       },
       {
-        label: "Effect",
+        label: localize("attitudeModifierEffect"),
         key: "strength",
         defaultOrder: "asc",
       },
       {
-        label: "Ends on",
+        label: localize("endsOn"),
         key: "endTurn",
         defaultOrder: "desc",
       },

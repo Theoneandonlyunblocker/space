@@ -1,5 +1,8 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import {localize} from "../../../localization/localize";
+
+
 export enum AnimationState
 {
   removeDeadUnit,
@@ -82,7 +85,7 @@ export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, State
           {
             animationDuration: "" + this.props.transitionDuration + "ms",
           },
-          title: "delay: " + this.props.delay,
+          title: localize("delay_turnOrder") + ": " + this.props.delay,
           onMouseEnter: this.props.onMouseEnter,
           onMouseLeave: this.props.onMouseLeave,
         },

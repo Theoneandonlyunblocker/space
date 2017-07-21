@@ -24,6 +24,8 @@ import ItemEquip from "../unitlist/ItemEquip";
 import EconomySummary from "./EconomySummary";
 import OptionsList from "./OptionsList";
 
+import {localize} from "../../../localization/localize";
+
 
 interface ValuesByPopup<T>
 {
@@ -70,7 +72,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         player: this.props.player,
       }),
-      title: "Production",
+      title: localize("production"),
 
       // if (!popupProps.initialPosition.width)
       // {
@@ -85,7 +87,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         player: this.props.player,
         // activeLanguage: this.props.activeLanguage,
       }),
-      title: "Equip",
+      title: localize("equip"),
       // popupProps.minWidth = 440;
     },
     economySummary:
@@ -95,7 +97,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         player: this.props.player,
         // activeLanguage: this.props.activeLanguage,
       }),
-      title: "Economy",
+      title: localize("economy"),
     },
     saveGame:
     {
@@ -104,7 +106,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         handleClose: this.closePopup.bind(this, "saveGame"),
         // activeLanguage: this.props.activeLanguage,
       }),
-      title: "Save",
+      title: localize("save_imperative"),
     },
     loadGame:
     {
@@ -113,7 +115,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         handleClose: this.closePopup.bind(this, "loadGame"),
         // activeLanguage: this.props.activeLanguage,
       }),
-      title: "Load",
+      title: localize("load_imperative"),
     },
     options:
     {
@@ -122,7 +124,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         log: this.props.notificationLog,
         activeLanguage: this.props.activeLanguage,
       }),
-      title: "Options",
+      title: localize("options"),
     },
     diplomacy:
     {
@@ -134,7 +136,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer,
         // activeLanguage: this.props.activeLanguage,
       }),
-      title: "Diplomacy",
+      title: localize("diplomacy"),
     },
     technologies:
     {
@@ -143,7 +145,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         playerTechnology: this.props.player.playerTechnology,
         // activeLanguage: this.props.activeLanguage,
       }),
-      title: "Technology",
+      title: localize("technology"),
       // popupProps.minWidth = 430;
     },
   };

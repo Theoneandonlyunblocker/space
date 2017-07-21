@@ -16,6 +16,8 @@ interface StateType
 {
 }
 
+import {localize} from "../../../localization/localize";
+
 export class FleetInfoComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetInfo";
@@ -109,8 +111,9 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
         {
           className: "fleet-info-move-points",
         },
-          isNotDetected ? "Moves: ?/?" : "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
-            fleet.getMinMaxMovePoints(),
+          isNotDetected ?
+            `${localize("movesRemaining")}: ?/?` :
+            `${localize("movesRemaining")}: ${fleet.getMinCurrentMovePoints()}/${fleet.getMinMaxMovePoints()}`
         ),
 
       )

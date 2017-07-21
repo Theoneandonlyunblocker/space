@@ -10,6 +10,8 @@ import {Language} from "../../localization/Language";
 
 import {default as TopMenuPopups, PopupType, TopMenuPopupsComponent} from "./TopMenuPopups";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -211,14 +213,14 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         key: "production",
         onClick: this.togglePopup.bind(this, "production"),
         tabIndex: menuItemTabIndex,
-      }, "Production"),
+      }, localize("production")),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-equip",
         key: "equipItems",
         onClick: this.togglePopup.bind(this, "equipItems"),
         tabIndex: menuItemTabIndex,
-      }, "Equip"),
+      }, localize("equip")),
       /*
       React.DOM.button(
       {
@@ -226,7 +228,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         key: "economySummary",
         onClick: this.togglePopup.bind(this, "economySummary"),
         tabIndex: menuItemTabIndex
-      }, "Economy"),
+      }, localize("economy")),
       */
       React.DOM.button(
       {
@@ -234,35 +236,35 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         key: "diplomacy",
         onClick: this.togglePopup.bind(this, "diplomacy"),
         tabIndex: menuItemTabIndex,
-      }, "Diplomacy"),
+      }, localize("diplomacy")),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-technology",
         key: "technologies",
         onClick: this.togglePopup.bind(this, "technologies"),
         tabIndex: menuItemTabIndex,
-      }, "Technology"),
+      }, localize("technology")),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-load",
         key: "loadGame",
         onClick: this.togglePopup.bind(this, "loadGame"),
         tabIndex: menuItemTabIndex,
-      }, "Load"),
+      }, localize("load_imperative")),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-save",
         key: "saveGame",
         onClick: this.togglePopup.bind(this, "saveGame"),
         tabIndex: menuItemTabIndex,
-      }, "Save"),
+      }, localize("save_imperative")),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-options",
         key: "options",
         onClick: this.togglePopup.bind(this, "options"),
         tabIndex: menuItemTabIndex,
-      }, "Options"),
+      }, localize("options")),
     ];
 
     const topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);

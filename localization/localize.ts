@@ -3,8 +3,13 @@ import * as Languages from "./defaultLanguages";
 import {Localizer} from "../src/localization/Localizer";
 
 import {battle as en_battle} from "./en/battle";
+import {diplomacy as en_diplomacy} from "./en/diplomacy";
+import {fleet as en_fleet} from "./en/fleet";
+import {galaxyMapUI as en_galaxyMapUI} from "./en/galaxyMapUI";
+import {gameOver as en_gameOver} from "./en/gameOver";
 import {general as en_general} from "./en/general";
 import {items as en_items} from "./en/items";
+import {notifications as en_notifications} from "./en/notifications";
 import {options as en_options} from "./en/options";
 import {player as en_player} from "./en/player";
 import {production as en_production} from "./en/production";
@@ -23,8 +28,13 @@ import
 // TODO 2017.07.18 | sort out capitalization for all these...
 type mergedType =
   typeof en_battle &
+  typeof en_diplomacy &
+  typeof en_fleet &
+  typeof en_galaxyMapUI &
+  typeof en_gameOver &
   typeof en_general &
   typeof en_items &
+  typeof en_notifications &
   typeof en_options &
   typeof en_player &
   typeof en_production &
@@ -38,8 +48,13 @@ export const localizer = new Localizer<mergedType>("ui");
 
 const mergedTexts = shallowExtend<mergedType>(
   en_battle,
+  en_diplomacy,
+  en_fleet,
+  en_galaxyMapUI,
+  en_gameOver,
   en_general,
   en_items,
+  en_notifications,
   en_options,
   en_player,
   en_production,

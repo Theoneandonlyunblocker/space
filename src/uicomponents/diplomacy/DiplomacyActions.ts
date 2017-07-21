@@ -6,6 +6,8 @@ import TradeOverview from "../trade/TradeOverview";
 
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 
+import {localize} from "../../../localization/localize";
+
 export interface PropTypes extends React.Props<any>
 {
   closePopup?: () => void;
@@ -79,23 +81,23 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
         className: "diplomacy-actions",
       },
         React.DOM.button(declareWarProps,
-          "Declare war",
+          localize("declareWar"),
         ),
         React.DOM.button(makePeaceProps,
-          "Make peace",
+          localize("makePeace"),
         ),
         React.DOM.button(
         {
           className: "diplomacy-action-button",
           onClick: this.toggleTradePopup,
         },
-          "Trade",
+          localize("trade_imperative"),
         ),
         !this.state.hasTradePopup ? null :
           DefaultWindow(
           {
             handleClose: this.closeTradePopup,
-            title: "Trade",
+            title: localize("trade_noun"),
 
             minWidth: 150,
             minHeight: 50,

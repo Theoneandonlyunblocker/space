@@ -8,6 +8,8 @@ import FleetContents from "./FleetContents";
 import FleetInfo from "./FleetInfo";
 import FleetReorganization from "./FleetReorganization";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -186,10 +188,10 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         className: "fleet-selection-controls",
       },
         React.DOM.button(reorganizeProps,
-          "reorganize",
+          localize("reorganize"),
         ),
         React.DOM.button(mergeProps,
-          "merge",
+          localize("merge"),
         ),
       );
     }

@@ -10,4 +10,16 @@ export const battle =
   destroyed: "Destroyed",
   captured: "Captured",
   unitAnnihilated: "Unit annihilated",
+  delay_turnOrder: "delay",
+  turnsLeft: "Turns left",
+  clickAnywhereToContinue: "Click anywhere to continue",
+
+  simulateBattle: "Simulate battle",
+  startBattle: "Start battle",
+  autoFormation: "Auto formation",
+  enemy: "Enemy",
+  cantInspectEnemyFormationAsStarIsNotInDetectionRadius: "Can't inspect enemy formation as star is not in detection radius",
+  own_adjective: "Own",
+  attacking: "Attacking",
+  defending: "Defending",
 };

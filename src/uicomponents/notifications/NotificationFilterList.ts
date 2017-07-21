@@ -10,6 +10,8 @@ import OptionsGroup from "../galaxymap/OptionsGroup";
 
 import NotificationFilterListItem from "./NotificationFilterListItem";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -119,12 +121,13 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
           {
             className: "notification-filter-list-item-label",
           },
-            "Show",
+            localize("show"),
           ),
           React.DOM.div(
           {
             className: "notification-filter-list-item-filters",
           },
+            // TODO 2017.07.18 | get these from somewhere else
             "Always",
             "Involved",
             "Never",

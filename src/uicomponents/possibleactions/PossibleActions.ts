@@ -9,6 +9,9 @@ import AttackTarget from "./AttackTarget";
 import BuildableBuildingList from "./BuildableBuildingList";
 import BuildingUpgradeList from "./BuildingUpgradeList";
 
+import {localize} from "../../../localization/localize";
+
+
 export interface PropTypes extends React.Props<any>
 {
   player: Player;
@@ -207,7 +210,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
               onClick: this.buildBuildings,
               key: "buildActions",
             },
-              "construct",
+              localize("constructBuilding"),
             ),
           );
         }
@@ -221,7 +224,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
               onClick: this.upgradeBuildings,
               key: "upgradeActions",
             },
-              "upgrade",
+              localize("upgradeBuilding"),
             ),
           );
         }

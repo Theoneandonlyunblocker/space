@@ -5,6 +5,8 @@ import MapRenderer from "../../MapRenderer";
 import MapModeSelector from "./MapModeSelector";
 import {default as MapRendererLayersList, MapRendererLayersListComponent} from "./MapRendererLayersList";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -59,7 +61,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
           className: "reset-map-mode-button",
           onClick: this.handleReset,
         },
-          "Reset",
+          localize("reset"),
         ),
         MapRendererLayersList(
         {

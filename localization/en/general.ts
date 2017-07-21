@@ -13,4 +13,8 @@ export const general =
   del: "Del",
   delete: "Delete",
   confirmDeletion: "Confirm deletion",
+  close: "Close",
+  show: "Show",
+  id: "Id",
+  displayName: "Name",
 };

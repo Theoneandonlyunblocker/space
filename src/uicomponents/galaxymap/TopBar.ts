@@ -7,6 +7,8 @@ import PlayerFlag from "../PlayerFlag";
 import PlayerMoney from "./PlayerMoney";
 import TopBarResources from "./TopBarResources";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -74,7 +76,7 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
             React.DOM.div(
             {
               className: "top-bar-turn-number",
-            }, "Turn " + this.props.game.turnNumber),
+            }, localize("turnCounter") + this.props.game.turnNumber),
           ),
           React.DOM.div(
           {

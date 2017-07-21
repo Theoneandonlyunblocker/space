@@ -3,6 +3,7 @@
 import Player from "../../Player";
 import eventManager from "../../eventManager";
 
+import {localize} from "../../../localization/localize";
 
 export interface PropTypes extends React.Props<any>
 {
@@ -59,7 +60,7 @@ export class PlayerMoneyComponent extends React.Component<PropTypes, StateType>
       {
         className: "player-money",
       },
-        "Money: " + this.props.player.money,
+        localize("money") + this.props.player.money,
       )
     );
   }

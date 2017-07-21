@@ -8,6 +8,8 @@ import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import NotificationFilterList from "./NotificationFilterList";
 
+import {localize} from "../../../localization/localize";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -56,7 +58,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
         !this.state.hasNotificationFilterPopup ? null :
           DefaultWindow(
           {
-            title: "Message settings",
+            title: localize("messageSettings"),
             handleClose: this.closePopup,
 
             minWidth: 440,
