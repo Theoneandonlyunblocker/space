@@ -120,7 +120,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
 
   render()
   {
-    const wrapperProps: React.HTMLAttributes =
+    const wrapperProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "unit",
       onMouseEnter: this.props.handleMouseEnterUnit ? this.handleMouseEnter : null,

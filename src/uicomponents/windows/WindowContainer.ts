@@ -88,7 +88,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   {
     // const customAttributes = this.props.attributes ? shallowCopy(this.props.attributes) : {};
     const customAttributes = {};
-    const defaultAttributes: React.HTMLAttributes =
+    const defaultAttributes: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "window-container",
       style:

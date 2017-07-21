@@ -49,7 +49,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
 
     for (let i = 0; i < totalBars; i++)
     {
-      const bgProps: React.HTMLAttributes =
+      const bgProps: React.HTMLAttributes<HTMLDivElement> =
       {
         className: "unit-experience-bar-point-background",
       };
@@ -83,11 +83,11 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
 
     const isReadyToLevelUp = this.props.experienceForCurrentLevel >= this.props.experienceToNextLevel;
 
-    const containerProps: React.HTMLAttributes =
+    const containerProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "unit-experience-bar-container",
     };
-    const barProps: React.HTMLAttributes =
+    const barProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "unit-experience-bar",
       title: localizeF("EXPReadOut").format(

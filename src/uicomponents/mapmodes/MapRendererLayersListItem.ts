@@ -60,7 +60,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
   }
   public render(): React.ReactHTMLElement<HTMLLIElement>
   {
-    const divProps: React.HTMLAttributes =
+    const divProps: React.HTMLAttributes<HTMLLIElement> =
     {
       className: "map-renderer-layers-list-item draggable",
       onMouseDown: this.dragPositioner.handleReactDownEvent,
@@ -128,7 +128,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
     this.props.onDragEnd();
   }
 
-  private handleHover(e: React.MouseEvent<HTMLDivElement>): void
+  private handleHover(e: React.MouseEvent<HTMLLIElement>): void
   {
     const rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
     const midPoint = rect.top + rect.height / 2;

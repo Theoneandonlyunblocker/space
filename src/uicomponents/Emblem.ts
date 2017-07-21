@@ -17,7 +17,7 @@ export interface EmblemProps
 
 interface PropTypes extends React.Props<any>, EmblemProps
 {
-  containerProps?: React.HTMLAttributes;
+  containerProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
 interface StateType

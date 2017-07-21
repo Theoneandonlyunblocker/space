@@ -101,7 +101,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
       );
     }
 
-    const props: React.HTMLAttributes =
+    const props: React.HTMLAttributes<HTMLTableRowElement> =
     {
       className: "buildable-item buildable-building",
       onClick: this.props.handleClick,

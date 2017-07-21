@@ -61,7 +61,7 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
     const unit = this.props.unit;
     const isNotDetected = !this.props.isIdentified;
 
-    const divProps: React.HTMLAttributes =
+    const divProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "fleet-unit-info",
     };

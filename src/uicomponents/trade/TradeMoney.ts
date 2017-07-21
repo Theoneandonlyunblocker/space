@@ -78,7 +78,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    const rowProps: React.HTMLAttributes =
+    const rowProps: React.HTMLAttributes<HTMLTableRowElement> =
     {
       className: "tradeable-items-list-item",
     };
@@ -104,7 +104,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.adjustItemAmount)
     {
-      const moneyProps: React.HTMLAttributes =
+      const moneyProps: React.HTMLAttributes<HTMLInputElement> =
       {
         className: "trade-money-money-available trade-item-adjust",
         type: "number",

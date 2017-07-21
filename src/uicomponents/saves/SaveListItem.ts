@@ -105,7 +105,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
       cells.push(cell);
     }
 
-    const rowProps: React.HTMLAttributes =
+    const rowProps: React.HTMLAttributes<HTMLTableRowElement> =
     {
       className: "save-list-item",
       onClick : this.props.handleClick,

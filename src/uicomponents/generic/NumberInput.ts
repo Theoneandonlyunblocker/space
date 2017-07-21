@@ -19,7 +19,7 @@ interface PropTypes extends React.Props<any>
   step?: number;
   canWrap?: boolean;
 
-  attributes?: React.HTMLAttributes;
+  attributes?: React.HTMLAttributes<HTMLDivElement>;
 }
 
 interface StateType
@@ -62,7 +62,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
   }
   public render()
   {
-    const defaultAttributes: React.HTMLAttributes =
+    const defaultAttributes: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "number-input-container",
     };

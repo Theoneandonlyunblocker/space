@@ -618,7 +618,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     //   ) : upperFooterElement;
     const upperFooter = upperFooterElement;
 
-    const containerProps: React.HTMLAttributes =
+    const containerProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "battle-container",
     };

@@ -88,7 +88,7 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
     }
     const item = this.props.item;
 
-    const divProps: React.HTMLAttributes =
+    const divProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "unit-item",
       title: item.template.displayName,

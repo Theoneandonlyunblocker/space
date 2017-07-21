@@ -23,7 +23,7 @@ export interface PropTypes extends React.Props<any>
   noHeader?: boolean; // boolean = false
   addSpacer?: boolean; // boolean = false
   onRowChange?: (row: ListItem<any>) => void;
-  colStylingFN?: (column: ListColumn<any>, props: React.HTMLAttributes) => React.HTMLAttributes;
+  colStylingFN?: (column: ListColumn<any>, props: React.HTMLProps<HTMLTableColElement>) => React.HTMLProps<HTMLTableColElement>;
   autoSelect?: boolean;
 }
 
@@ -379,7 +379,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
     this.state.columns.forEach(column =>
     {
-      let colProps: React.HTMLAttributes =
+      let colProps: React.HTMLProps<HTMLTableColElement> =
       {
         key: column.key,
       };

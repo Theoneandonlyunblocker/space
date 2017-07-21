@@ -63,7 +63,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
   {
     const upgradeData = this.props.upgradeData;
 
-    const rowProps: React.HTMLAttributes =
+    const rowProps: React.HTMLProps<HTMLTableRowElement> =
     {
       key: upgradeData.template.type,
       className: "building-upgrade-list-item",
@@ -71,7 +71,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
       title: upgradeData.template.description,
     };
 
-    const costProps: React.HTMLAttributes =
+    const costProps: React.HTMLProps<HTMLTableCellElement> =
     {
       key: "cost",
       className: "building-upgrade-list-item-cost",

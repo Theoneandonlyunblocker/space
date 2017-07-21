@@ -13,7 +13,7 @@ interface PropTypes extends React.Props<any>
   onValueChange: (value: number) => void;
 
   stylizeValue?: (value: number) => string;
-  attributes?: React.HTMLAttributes;
+  attributes?: React.HTMLAttributes<HTMLInputElement>;
 }
 
 interface StateType
@@ -54,7 +54,7 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
   {
     const valueStringIsValid = this.props.valueStringIsValid(this.state.valueString);
 
-    const defaultAttributes: React.HTMLAttributes =
+    const defaultAttributes: React.HTMLAttributes<HTMLInputElement> =
     {
       className: "numeric-text-input" +
         (valueStringIsValid ? "" : " invalid-value"),

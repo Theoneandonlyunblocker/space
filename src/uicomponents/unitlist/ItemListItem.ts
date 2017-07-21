@@ -141,7 +141,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
       cells.push(cell);
     }
 
-    const rowProps: React.HTMLAttributes =
+    const rowProps: React.HTMLProps<HTMLTableRowElement> =
     {
       className: "item-list-item",
       onClick : this.props.handleClick,

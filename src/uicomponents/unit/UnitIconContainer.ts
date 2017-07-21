@@ -22,12 +22,12 @@ export class UnitIconContainerComponent extends React.PureComponent<PropTypes, S
 
   render()
   {
-    const containerProps: React.HTMLAttributes =
+    const containerProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "unit-icon-container",
     };
 
-    const fillerProps: React.HTMLAttributes =
+    const fillerProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "unit-icon-filler",
     };

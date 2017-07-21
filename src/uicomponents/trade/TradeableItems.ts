@@ -46,7 +46,7 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
 
   render()
   {
-    const divProps: React.HTMLAttributes =
+    const divProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "tradeable-items",
     };
