@@ -21,7 +21,8 @@
         "removeComments": true,
 
         "types": [
-          "react"
+          "react",
+          "react-dom"
         ]
 
         // causes RangeError: Maximum call stack size exceeded with tsc 2.1.4
