@@ -47,7 +47,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
     e.stopPropagation();
     this.props.handleUndoDelete();
   }
-  private static preventDefault(e: React.SyntheticEvent)
+  private static preventDefault(e: React.SyntheticEvent<any>)
   {
     e.preventDefault();
     e.stopPropagation();

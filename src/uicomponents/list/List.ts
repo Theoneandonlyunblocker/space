@@ -169,7 +169,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     innerNode.style.height = "" + desiredHeight + "px";
   }
 
-  handleScroll(e: React.UIEvent)
+  handleScroll(e: React.UIEvent<HTMLDivElement>)
   {
     // scrolls header to match list contents
     const target = <Element> e.target;

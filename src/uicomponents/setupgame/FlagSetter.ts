@@ -248,12 +248,12 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     this.props.flag.addEmblem(emblem);
     this.handleSuccessfulUpdate();
   }
-  private stopEvent(e: React.DragEvent): void
+  private stopEvent(e: React.DragEvent<HTMLDivElement>): void
   {
     e.stopPropagation();
     e.preventDefault();
   }
-  private handleDrop(e: React.DragEvent): void
+  private handleDrop(e: React.DragEvent<HTMLDivElement>): void
   {
     if (!e.dataTransfer)
     {
