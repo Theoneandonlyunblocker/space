@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 import {default as WindowResizeHandle, PropTypes as WindowResizeHandleProps} from "./WindowResizeHandle";
 import * as windowManager from "./windowManager";

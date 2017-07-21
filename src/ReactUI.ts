@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 import Battle from "./Battle";
 import BattlePrep from "./BattlePrep";

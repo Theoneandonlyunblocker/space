@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 import GalaxyMapUI from "./GalaxyMapUI";
 import GameOverScreen from "./GameOverScreen";

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 import Game from "../../Game";
 import NotificationLog from "../../NotificationLog";

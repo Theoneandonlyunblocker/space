@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 import Unit from "../../Unit";
 import {shallowExtend} from "../../utility";

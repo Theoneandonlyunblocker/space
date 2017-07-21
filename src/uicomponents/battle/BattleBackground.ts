@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 import BackgroundDrawer from "../../BackgroundDrawer";
 import BackgroundDrawingFunction from "../../BackgroundDrawingFunction";
