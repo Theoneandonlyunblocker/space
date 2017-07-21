@@ -55,8 +55,7 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         {
           className: "star-info-location",
         },
-          "x: " + star.x.toFixed() +
-          "y: " + star.y.toFixed(),
+          `x:${star.x.toFixed()} y:${star.y.toFixed}`,
         ),
         React.DOM.div(
         {
