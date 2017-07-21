@@ -4,7 +4,8 @@
   "devDependencies": {
     "typescript": "2.4.x",
     "less": "2.6.x",
-    "tslint": "4.5.x"
+    "tslint": "4.5.x",
+    "@types/react": "14.0.x"
   },
   "scripts": {
     "build": "tsc && lessc ./css/main.less ./built/main.css",
