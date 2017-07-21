@@ -5,10 +5,10 @@
         "moduleResolution": "classic",
         "outFile": "built/main.js",
         "sourceMap": true,
-        
+
         "noImplicitAny": true,
         "suppressImplicitAnyIndexErrors": true,
-        
+
         "declaration": false,
         "experimentalDecorators": false,
         "emitDecoratorMetadata": false,
@@ -17,8 +17,11 @@
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "noUnusedLocals": true,
-        
+
         "removeComments": true
+
+        // causes RangeError: Maximum call stack size exceeded with tsc 2.1.4
+        // "strictNullChecks": true
     },
     "files": [
       "src/App.ts"
