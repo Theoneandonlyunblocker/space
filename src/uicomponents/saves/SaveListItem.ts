@@ -37,12 +37,12 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
     this.makeCell = this.makeCell.bind(this);
   }
 
-  handleDelete(e: React.MouseEvent)
+  handleDelete(e: React.MouseEvent<HTMLTableCellElement>)
   {
     e.stopPropagation();
     this.props.handleDelete();
   }
-  handleUndoDelete(e: React.MouseEvent)
+  handleUndoDelete(e: React.MouseEvent<HTMLTableCellElement>)
   {
     e.stopPropagation();
     this.props.handleUndoDelete();
@@ -54,6 +54,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
   }
   makeCell(type: string)
   {
+    // TODO 2017.07.21 | use a button element for delete button
     const cellProps: React.HTMLProps<HTMLTableCellElement> = {};
     cellProps.key = type;
     cellProps.className = "save-list-item-cell" + " save-list-" + type;

@@ -5,7 +5,7 @@ import NormalizedEvent from "./NormalizedEvent";
 // TODO performance | performance might be pretty bad
 // we should be able to use native event and fetch some flags
 // using methods like wasTouchEvent(e) & didHaveButtonPressed(e)
-function normalizeMouseEvent(nativeEvent: MouseEvent, reactEvent?: React.MouseEvent): NormalizedEvent
+function normalizeMouseEvent(nativeEvent: MouseEvent, reactEvent?: React.MouseEvent<any>): NormalizedEvent
 {
   return(
   {
@@ -26,7 +26,7 @@ function normalizeMouseEvent(nativeEvent: MouseEvent, reactEvent?: React.MouseEv
       nativeEvent.stopPropagation.bind(nativeEvent)),
   });
 }
-function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEvent): NormalizedEvent
+function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEvent<any>): NormalizedEvent
 {
   const touch: Touch = nativeEvent.touches[0];
 
@@ -50,7 +50,7 @@ function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEv
   });
 }
 
-export default function normalizeEvent(sourceEvent: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent): NormalizedEvent
+export default function normalizeEvent(sourceEvent: MouseEvent | TouchEvent | React.MouseEvent<any> | React.TouchEvent<any>): NormalizedEvent
 {
   const castedEvent = <any> sourceEvent;
   const isReactEvent = Boolean(castedEvent.nativeEvent);

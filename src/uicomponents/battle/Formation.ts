@@ -29,7 +29,7 @@ export interface PropTypes extends React.Props<any>
   onMouseUp?: (position: number[]) => void;
 
   onUnitClick?: (unit: Unit) => void;
-  handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
+  handleMouseLeaveUnit?: (e: React.MouseEvent<HTMLDivElement>) => void;
   handleMouseEnterUnit?: (unit: Unit) => void;
 
   isDraggable?: boolean;

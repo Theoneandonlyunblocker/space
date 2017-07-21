@@ -129,7 +129,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   {
     return shallowCopy(this.position);
   }
-  public handleReactDownEvent(e: React.MouseEvent | React.TouchEvent)
+  public handleReactDownEvent(e: React.MouseEvent<any> | React.TouchEvent<any>)
   {
     this.handleMouseDown(normalizeEvent(e));
   }

@@ -24,7 +24,7 @@ export interface PropTypes extends React.Props<any>
   turnIsTransitioning: boolean;
   turnTransitionDuration: number;
 
-  onMouseLeaveUnit: (e: React.MouseEvent) => void;
+  onMouseLeaveUnit: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseEnterUnit: (unit: Unit) => void;
 }
 

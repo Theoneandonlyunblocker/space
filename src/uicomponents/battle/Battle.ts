@@ -248,7 +248,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       this.battleScene.updateUnits();
     }
   }
-  private handleMouseLeaveUnit(e: React.MouseEvent)
+  private handleMouseLeaveUnit(e: React.MouseEvent<HTMLDivElement>)
   {
     if (!this.state.hoveredUnit || this.state.playingBattleEffect)
     {

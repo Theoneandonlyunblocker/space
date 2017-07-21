@@ -63,7 +63,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
     this.props.onClick(this.props.keyTODO/*TODO react*/);
   }
 
-  handleMoneyAmountChange(e: React.FormEvent)
+  handleMoneyAmountChange(e: React.FormEvent<HTMLInputElement>)
   {
     const target = <HTMLInputElement> e.target;
     const value = parseInt(target.value);
@@ -71,7 +71,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
     this.props.adjustItemAmount(this.props.keyTODO/*TODO react*/, value);
   }
 
-  captureEvent(e: React.MouseEvent | React.TouchEvent)
+  captureEvent(e: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>)
   {
     e.stopPropagation();
   }

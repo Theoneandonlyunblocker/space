@@ -40,7 +40,7 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
   {
     this.props.togglePopup(this.props.notification);
   }
-  handleRightClick(e: React.MouseEvent)
+  handleRightClick(e: React.MouseEvent<HTMLLIElement>)
   {
     e.preventDefault();
     e.stopPropagation();

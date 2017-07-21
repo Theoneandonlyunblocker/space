@@ -89,7 +89,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
       )
     );
   }
-  private handleTitleBarMouseDown(e: React.MouseEvent | React.TouchEvent): void
+  private handleTitleBarMouseDown(e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>): void
   {
     this.windowContainerComponent.onMouseDown(e);
   }

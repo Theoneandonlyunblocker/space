@@ -23,7 +23,7 @@ export interface ComponentPropTypes extends React.Props<any>
   onUnitClick?: () => void;
   onMouseUp?: () => void;
 
-  handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
+  handleMouseLeaveUnit?: (e: React.MouseEvent<HTMLDivElement>) => void;
   // handleMouseEnterUnit?: (unit: Unit) => void;
   handleMouseEnterUnit?: () => void;
 
@@ -113,7 +113,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
   {
     this.props.handleMouseEnterUnit();
   }
-  handleMouseLeave(e: React.MouseEvent)
+  handleMouseLeave(e: React.MouseEvent<HTMLDivElement>)
   {
     this.props.handleMouseLeaveUnit(e);
   }

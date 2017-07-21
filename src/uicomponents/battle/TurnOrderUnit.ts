@@ -24,7 +24,7 @@ interface PropTypes extends React.Props<any>
   animationState: AnimationState;
   transitionDuration: number;
 
-  onMouseLeave: (e: React.MouseEvent) => void;
+  onMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseEnter: () => void;
 }
 

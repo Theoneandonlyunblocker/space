@@ -128,7 +128,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
     this.props.onDragEnd();
   }
 
-  private handleHover(e: React.MouseEvent): void
+  private handleHover(e: React.MouseEvent<HTMLDivElement>): void
   {
     const rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
     const midPoint = rect.top + rect.height / 2;

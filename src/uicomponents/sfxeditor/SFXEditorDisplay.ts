@@ -5,7 +5,7 @@ import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments
 interface PropTypes extends React.Props<any>
 {
   hasDraggingFragment: boolean;
-  moveDraggingFragment: (e: React.MouseEvent) => void;
+  moveDraggingFragment: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 interface StateType

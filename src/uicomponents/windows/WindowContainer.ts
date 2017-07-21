@@ -118,7 +118,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   {
     return shallowCopy(this.dragPositioner.position);
   }
-  public onMouseDown(e: React.MouseEvent | React.TouchEvent)
+  public onMouseDown(e: React.MouseEvent<any> | React.TouchEvent<any>)
   {
     this.dragPositioner.handleReactDownEvent(e);
 
