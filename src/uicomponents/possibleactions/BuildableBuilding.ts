@@ -114,6 +114,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
       props.className += " disabled";
     }
 
+    // TODO 2017.07.21 | use a button element
     return(
       React.DOM.tr(props,
       cells,

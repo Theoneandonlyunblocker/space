@@ -155,7 +155,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       const fleetStealthsAreClashing =
         selectedFleets.length === 2 && selectedFleets[0].isStealthy !== selectedFleets[1].isStealthy;
 
-      const mergeProps: React.HTMLAttributes<HTMLButtonElement> =
+      const mergeProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
       {
         className: "fleet-selection-controls-merge",
       };
@@ -169,7 +169,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         mergeProps.className += " disabled";
       }
 
-      const reorganizeProps: React.HTMLAttributes<HTMLButtonElement> =
+      const reorganizeProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
       {
         className: "fleet-selection-controls-reorganize",
       };

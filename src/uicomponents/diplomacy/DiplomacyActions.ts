@@ -45,7 +45,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
     const targetPlayer = this.props.targetPlayer;
 
 
-    const declareWarProps: React.HTMLAttributes<HTMLButtonElement> =
+    const declareWarProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
     {
       className: "diplomacy-action-button",
     };
@@ -60,7 +60,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       declareWarProps.className += " disabled";
     }
 
-    const makePeaceProps: React.HTMLAttributes<HTMLButtonElement> =
+    const makePeaceProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
     {
       className: "diplomacy-action-button",
     };

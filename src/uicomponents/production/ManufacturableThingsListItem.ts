@@ -67,6 +67,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
     const canAfford = this.props.money >= this.props.template.buildCost;
     const isDisabled = !Boolean(this.props.onClick) || (this.props.showCost && !canAfford);
 
+    // TODO 2017.07.21 | use li to wrap a button
     return(
       React.DOM.li(
       {

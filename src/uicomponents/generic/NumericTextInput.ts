@@ -54,7 +54,7 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
   {
     const valueStringIsValid = this.props.valueStringIsValid(this.state.valueString);
 
-    const defaultAttributes: React.HTMLAttributes<HTMLInputElement> =
+    const defaultAttributes: React.InputHTMLAttributes<HTMLInputElement> =
     {
       className: "numeric-text-input" +
         (valueStringIsValid ? "" : " invalid-value"),

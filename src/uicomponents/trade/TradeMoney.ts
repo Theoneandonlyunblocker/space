@@ -104,7 +104,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.adjustItemAmount)
     {
-      const moneyProps: React.HTMLAttributes<HTMLInputElement> =
+      const moneyProps: React.InputHTMLAttributes<HTMLInputElement> =
       {
         className: "trade-money-money-available trade-item-adjust",
         type: "number",
