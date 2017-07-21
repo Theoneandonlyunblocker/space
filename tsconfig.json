@@ -18,7 +18,11 @@
         "noImplicitThis": true,
         "noUnusedLocals": true,
 
-        "removeComments": true
+        "removeComments": true,
+
+        "types": [
+          "react"
+        ]
 
         // causes RangeError: Maximum call stack size exceeded with tsc 2.1.4
         // "strictNullChecks": true
