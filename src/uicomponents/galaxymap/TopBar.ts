@@ -76,7 +76,7 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
             React.DOM.div(
             {
               className: "top-bar-turn-number",
-            }, localize("turnCounter") + this.props.game.turnNumber),
+            }, localize("turnCounter") + " " + this.props.game.turnNumber),
           ),
           React.DOM.div(
           {
