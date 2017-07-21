@@ -22,7 +22,8 @@
 
         "types": [
           "react",
-          "react-dom"
+          "react-dom",
+          "react-transition-group"
         ]
 
         // causes RangeError: Maximum call stack size exceeded with tsc 2.1.4

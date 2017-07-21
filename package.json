@@ -5,8 +5,10 @@
     "typescript": "2.4.x",
     "less": "2.6.x",
     "tslint": "4.5.x",
+
     "@types/react": "15.x",
-    "@types/react-dom": "15.x"
+    "@types/react-dom": "15.x",
+    "@types/react-transition-group": "1.x"
   },
   "scripts": {
     "build": "tsc && lessc ./css/main.less ./built/main.css",

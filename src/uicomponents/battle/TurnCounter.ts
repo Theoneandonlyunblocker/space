@@ -1,7 +1,7 @@
 import * as React from "react";
+import * as ReactTransitionGroup from "react-transition-group";
 
-const ReactCSSTransitionGroup =
-  React.createFactory(React.addons.CSSTransitionGroup);
+const ReactCSSTransitionGroup = React.createFactory(ReactTransitionGroup.CSSTransitionGroup);
 
 
 const FirstChild = React.createClass(
