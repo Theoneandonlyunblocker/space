@@ -115,7 +115,6 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    // TODO 2017.07.18 | use pseudo elements for arrows instead
     const hasBackArrow = this.state.currentPageIndex > 0;
     let backElement: React.ReactHTMLElement<any>;
     if (hasBackArrow)
@@ -124,7 +123,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
       {
         className: "tutorial-flip-page tutorial-flip-page-back",
         onClick: this.flipPage.bind(this, -1),
-      }, "<");
+      });
     }
     else
     {
@@ -142,7 +141,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
       {
         className: "tutorial-flip-page tutorial-flip-page-forward",
         onClick: this.flipPage.bind(this, 1),
-      }, ">");
+      });
     }
     else
     {
