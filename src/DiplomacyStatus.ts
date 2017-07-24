@@ -1,6 +1,5 @@
 import app from "./App"; // TODO global
 import {activeModuleData} from "./activeModuleData";
-import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";
 
 import {AttitudeModifier} from "./AttitudeModifier";
@@ -135,37 +134,22 @@ export default class DiplomacyStatus
   {
     return this.statusByPlayer[player.id] > DiplomacyState.peace;
   }
-  declareWarOn(player: Player)
+  declareWarOn(targetPlayer: Player)
   {
-    if (this.statusByPlayer[player.id] >= DiplomacyState.war)
+    if (this.statusByPlayer[targetPlayer.id] >= DiplomacyState.war)
     {
-      // TODO crash
-      console.error("Players " + this.player.id + " and " + player.id + " are already at war");
+      // TODO
+      console.error("Players " + this.player.id + " and " + targetPlayer.id + " are already at war");
       return;
     }
-    this.statusByPlayer[player.id] = DiplomacyState.war;
-    player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState.war;
+    this.statusByPlayer[targetPlayer.id] = DiplomacyState.war;
+    targetPlayer.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState.war;
 
-    eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
-
-    let playersAreRelevantToHuman = true;
-
-    [this.player, player].forEach(function(p: Player)
+    eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", targetPlayer, this.player);
+    activeModuleData.scripts.diplomacy.onWarDeclaration.forEach(script =>
     {
-      if (activePlayer !== p && !activePlayer.diplomacyStatus.metPlayers[p.id])
-      {
-        playersAreRelevantToHuman = false;
-      }
+      script(this.player, targetPlayer);
     });
-
-    if (playersAreRelevantToHuman)
-    {
-      eventManager.dispatchEvent("makeWarDeclarationNotification",
-      {
-        player1: this.player,
-        player2: player,
-      });
-    }
   }
 
   makePeaceWith(player: Player)
