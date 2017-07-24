@@ -2,7 +2,8 @@
 
 /// <reference path="../../../../lib/pixi.d.ts"/>
 
-interface Uniforms
+
+interface UniformData
 {
   centerBloomStrength: {type: "float"; value: number;};
   centerSize: {type: "float"; value: number;};
@@ -13,27 +14,16 @@ interface Uniforms
   seed: {type: "vec2"; value: number[];};
 }
 
-interface PartialUniformValues
-{
-  centerBloomStrength?: number;
-  centerSize?: number;
-  rayColor?: number[];
-  raySharpness?: number;
-  rayStrength?: number;
-  rotation?: number;
-  seed?: number[];
-}
+type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};
 
-export default class LightBurst extends PIXI.Filter
+export default class LightBurst extends PIXI.Filter<Uniforms>
 {
-  public uniforms: Uniforms; // needs to be public for PIXI, but shouldnt be accessed
-
-  constructor(initialUniformValues?: PartialUniformValues)
+  constructor(initialUniformValues?: Partial<Uniforms>)
   {
-    const uniforms = LightBurst.makeUniformsObject(initialUniformValues);
-    super(null, sourceLines.join("\n"), uniforms);
+    const uniformData = LightBurst.makeUniformDataObject(initialUniformValues);
+    super(null, sourceLines.join("\n"), uniformData);
   }
-  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
+  private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
     {
@@ -45,13 +35,6 @@ export default class LightBurst extends PIXI.Filter
       rotation: {type: "float", value: initialValues.rotation},
       seed: {type: "vec2", value: initialValues.seed},
     });
-  }
-  public setUniformValues(values: PartialUniformValues)
-  {
-    for (let key in values)
-    {
-      this.uniforms[key] = values[key];
-    }
   }
 }
 
@@ -103,7 +86,7 @@ const sourceLines =
   "  return fract(sin(dot(p, seed)) * 5151.5473453);",
   "}",
   "",
-  "float noise(in vec2 p, in float scale )",
+  "float noise(in vec2 p, in float scale)",
   "{",
   "  vec2 f;",
   "",

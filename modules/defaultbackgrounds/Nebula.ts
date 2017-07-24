@@ -2,7 +2,8 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-interface Uniforms
+
+interface UniformData
 {
   baseColor: {type: "vec3"; value: number[];};
   cloudLightness: {type: "float"; value: number;};
@@ -21,35 +22,16 @@ interface Uniforms
   streakiness: {type: "float"; value: number;};
 }
 
-interface PartialUniformValues
-{
-  baseColor?: number[];
-  cloudLightness?: number;
-  coverage?: number;
-  diffusion?: number;
-  highlightA?: number;
-  highlightB?: number;
-  highlightColor?: number[];
-  nebulaStarConcentration?: number;
-  overlayColor?: number[];
-  scale?: number;
-  seed?: number[];
-  starBrightness?: number;
-  starDensity?: number;
-  streakLightness?: number;
-  streakiness?: number;
-}
+type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};
 
-export default class Nebula extends PIXI.Filter
+export default class Nebula extends PIXI.Filter<Uniforms>
 {
-  public uniforms: Uniforms; // needs to be public for PIXI, but shouldnt be accessed
-
-  constructor(initialUniformValues?: PartialUniformValues)
+  constructor(initialUniformValues?: Partial<Uniforms>)
   {
-    const uniforms = Nebula.makeUniformsObject(initialUniformValues);
-    super(null, sourceLines.join("\n"), uniforms);
+    const uniformData = Nebula.makeUniformDataObject(initialUniformValues);
+    super(null, sourceLines.join("\n"), uniformData);
   }
-  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
+  private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
     {
@@ -69,13 +51,6 @@ export default class Nebula extends PIXI.Filter
       streakLightness: {type: "float", value: initialValues.streakLightness},
       streakiness: {type: "float", value: initialValues.streakiness},
     });
-  }
-  public setUniformValues(values: PartialUniformValues)
-  {
-    for (let key in values)
-    {
-      this.uniforms[key] = values[key];
-    }
   }
 }
 
@@ -198,7 +173,7 @@ const sourceLines =
   "  vec3 c = colorLayer(pos + vec2(42.0, 6.9), baseColor);",
   "  c = mix(c, overlayColor, dot(on.x, on.y));",
   "  c = mix(c, highlightColor, volume *",
-  "    smoothstep(highlightA, highlightB, abs(on.x)+abs(on.y)) );",
+  "    smoothstep(highlightA, highlightB, abs(on.x)+abs(on.y)));",
   "",
   "",
   "  return c * volume;",

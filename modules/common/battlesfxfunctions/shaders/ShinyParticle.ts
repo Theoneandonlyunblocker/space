@@ -2,30 +2,24 @@
 
 /// <reference path="../../../../lib/pixi.d.ts"/>
 
-interface Uniforms
+
+interface UniformData
 {
   highlightIntensity: {type: "float"; value: number;};
   spikeColor: {type: "vec4"; value: number[];};
   spikeIntensity: {type: "float"; value: number;};
 }
 
-interface PartialUniformValues
-{
-  highlightIntensity?: number;
-  spikeColor?: number[];
-  spikeIntensity?: number;
-}
+type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};
 
-export default class ShinyParticle extends PIXI.Filter
+export default class ShinyParticle extends PIXI.Filter<Uniforms>
 {
-  public uniforms: Uniforms; // needs to be public for PIXI, but shouldnt be accessed
-
-  constructor(initialUniformValues?: PartialUniformValues)
+  constructor(initialUniformValues?: Partial<Uniforms>)
   {
-    const uniforms = ShinyParticle.makeUniformsObject(initialUniformValues);
-    super(null, sourceLines.join("\n"), uniforms);
+    const uniformData = ShinyParticle.makeUniformDataObject(initialUniformValues);
+    super(null, sourceLines.join("\n"), uniformData);
   }
-  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
+  private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
     {
@@ -33,13 +27,6 @@ export default class ShinyParticle extends PIXI.Filter
       spikeColor: {type: "vec4", value: initialValues.spikeColor},
       spikeIntensity: {type: "float", value: initialValues.spikeIntensity},
     });
-  }
-  public setUniformValues(values: PartialUniformValues)
-  {
-    for (let key in values)
-    {
-      this.uniforms[key] = values[key];
-    }
   }
 }
 

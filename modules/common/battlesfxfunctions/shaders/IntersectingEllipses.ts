@@ -2,7 +2,8 @@
 
 /// <reference path="../../../../lib/pixi.d.ts"/>
 
-interface Uniforms
+
+interface UniformData
 {
   intersectingEllipseCenter: {type: "vec2"; value: number[];};
   intersectingEllipseSharpness: {type: "float"; value: number;};
@@ -13,27 +14,16 @@ interface Uniforms
   mainEllipseSize: {type: "vec2"; value: number[];};
 }
 
-interface PartialUniformValues
-{
-  intersectingEllipseCenter?: number[];
-  intersectingEllipseSharpness?: number;
-  intersectingEllipseSize?: number[];
-  mainAlpha?: number;
-  mainColor?: number[];
-  mainEllipseSharpness?: number;
-  mainEllipseSize?: number[];
-}
+type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};
 
-export default class IntersectingEllipses extends PIXI.Filter
+export default class IntersectingEllipses extends PIXI.Filter<Uniforms>
 {
-  public uniforms: Uniforms; // needs to be public for PIXI, but shouldnt be accessed
-
-  constructor(initialUniformValues?: PartialUniformValues)
+  constructor(initialUniformValues?: Partial<Uniforms>)
   {
-    const uniforms = IntersectingEllipses.makeUniformsObject(initialUniformValues);
-    super(null, sourceLines.join("\n"), uniforms);
+    const uniformData = IntersectingEllipses.makeUniformDataObject(initialUniformValues);
+    super(null, sourceLines.join("\n"), uniformData);
   }
-  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
+  private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
     {
@@ -45,13 +35,6 @@ export default class IntersectingEllipses extends PIXI.Filter
       mainEllipseSharpness: {type: "float", value: initialValues.mainEllipseSharpness},
       mainEllipseSize: {type: "vec2", value: initialValues.mainEllipseSize},
     });
-  }
-  public setUniformValues(values: PartialUniformValues)
-  {
-    for (let key in values)
-    {
-      this.uniforms[key] = values[key];
-    }
   }
 }
 

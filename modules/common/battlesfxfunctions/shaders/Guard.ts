@@ -2,7 +2,8 @@
 
 /// <reference path="../../../../lib/pixi.d.ts"/>
 
-interface Uniforms
+
+interface UniformData
 {
   blockAlpha: {type: "float"; value: number;};
   blockSize: {type: "float"; value: number;};
@@ -13,27 +14,16 @@ interface Uniforms
   trailDistance: {type: "float"; value: number;};
 }
 
-interface PartialUniformValues
-{
-  blockAlpha?: number;
-  blockSize?: number;
-  blockWidth?: number;
-  frontier?: number;
-  lineAlpha?: number;
-  seed?: number;
-  trailDistance?: number;
-}
+type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};
 
-export default class Guard extends PIXI.Filter
+export default class Guard extends PIXI.Filter<Uniforms>
 {
-  public uniforms: Uniforms; // needs to be public for PIXI, but shouldnt be accessed
-
-  constructor(initialUniformValues?: PartialUniformValues)
+  constructor(initialUniformValues?: Partial<Uniforms>)
   {
-    const uniforms = Guard.makeUniformsObject(initialUniformValues);
-    super(null, sourceLines.join("\n"), uniforms);
+    const uniformData = Guard.makeUniformDataObject(initialUniformValues);
+    super(null, sourceLines.join("\n"), uniformData);
   }
-  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
+  private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
     {
@@ -45,13 +35,6 @@ export default class Guard extends PIXI.Filter
       seed: {type: "float", value: initialValues.seed},
       trailDistance: {type: "float", value: initialValues.trailDistance},
     });
-  }
-  public setUniformValues(values: PartialUniformValues)
-  {
-    for (let key in values)
-    {
-      this.uniforms[key] = values[key];
-    }
   }
 }
 

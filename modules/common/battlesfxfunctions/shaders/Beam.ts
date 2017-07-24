@@ -2,7 +2,8 @@
 
 /// <reference path="../../../../lib/pixi.d.ts"/>
 
-interface Uniforms
+
+interface UniformData
 {
   aspectRatio: {type: "float"; value: number;};
   beamColor: {type: "vec4"; value: number[];};
@@ -21,35 +22,16 @@ interface Uniforms
   time: {type: "float"; value: number;};
 }
 
-interface PartialUniformValues
-{
-  aspectRatio?: number;
-  beamColor?: number[];
-  beamYPosition?: number;
-  bulgeIntensity?: number;
-  bulgeSharpness?: number;
-  bulgeSize?: number[];
-  bulgeXPosition?: number;
-  lineIntensity?: number;
-  lineXSharpness?: number;
-  lineXSize?: number[];
-  lineYSharpness?: number;
-  lineYSize?: number;
-  noiseAmplitude?: number;
-  seed?: number;
-  time?: number;
-}
+type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};
 
-export default class Beam extends PIXI.Filter
+export default class Beam extends PIXI.Filter<Uniforms>
 {
-  public uniforms: Uniforms; // needs to be public for PIXI, but shouldnt be accessed
-
-  constructor(initialUniformValues?: PartialUniformValues)
+  constructor(initialUniformValues?: Partial<Uniforms>)
   {
-    const uniforms = Beam.makeUniformsObject(initialUniformValues);
-    super(null, sourceLines.join("\n"), uniforms);
+    const uniformData = Beam.makeUniformDataObject(initialUniformValues);
+    super(null, sourceLines.join("\n"), uniformData);
   }
-  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
+  private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
     {
@@ -69,13 +51,6 @@ export default class Beam extends PIXI.Filter
       seed: {type: "float", value: initialValues.seed},
       time: {type: "float", value: initialValues.time},
     });
-  }
-  public setUniformValues(values: PartialUniformValues)
-  {
-    for (let key in values)
-    {
-      this.uniforms[key] = values[key];
-    }
   }
 }
 
