@@ -277,7 +277,7 @@ class App
       throw new Error("App tried to init game without having one specified");
     }
 
-    setActivePlayer(this.game.playerOrder[0]);
+    setActivePlayer(this.game.players[0]);
     activePlayer.isAI = false;
 
     if (this.playerControl)
@@ -289,7 +289,8 @@ class App
 
     if (!activeNotificationLog)
     {
-      setActiveNotificationLog(new NotificationLog(this.game.playerOrder));
+      const playersToSubscribe = this.game.getLiveMajorPlayers();
+      setActiveNotificationLog(new NotificationLog(playersToSubscribe));
       activeNotificationLog.currentTurn = this.game.turnNumber;
     }
 
@@ -298,7 +299,9 @@ class App
       script(this.game);
     });
 
-    this.game.playerOrder.concat(this.game.independents).forEach(player =>
+    // TODO 2017.07.24 | do we need to include non-ai players here?
+    // ai controller is currently used for auto formation in battle prep i think
+    this.game.players.forEach(player =>
     {
       if (player.isAI && !player.AIController)
       {

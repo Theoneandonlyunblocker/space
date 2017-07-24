@@ -44,15 +44,15 @@ export class GrandStrategyAI
   private setDesiredStars()
   {
     const totalStarsInMap = this.mapEvaluator.map.stars.length;
-    const playersInGame = this.game.playerOrder.length;
+    const majorPlayersCount = this.game.getLiveMajorPlayers().length;
 
-    const starsPerPlayer = totalStarsInMap / playersInGame;
+    const starsPerPlayer = totalStarsInMap / majorPlayersCount;
 
     const baseMinStarsDesired = starsPerPlayer * 0.34;
     const baseMaxStarsDesired = starsPerPlayer;
 
     const extraMinStarsDesired = this.personality.expansiveness * (starsPerPlayer * 0.66);
-    const extraMaxStarsDesired = this.personality.expansiveness * (starsPerPlayer * (playersInGame / 4));
+    const extraMaxStarsDesired = this.personality.expansiveness * (starsPerPlayer * (majorPlayersCount / 4));
 
     const minStarsDesired = baseMinStarsDesired + extraMinStarsDesired;
     const maxStarsDesired = baseMaxStarsDesired + extraMaxStarsDesired;

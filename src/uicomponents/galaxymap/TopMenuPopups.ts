@@ -131,7 +131,8 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       makeContent: () => DiplomacyOverview(
       {
         player: this.props.player,
-        totalPlayerCount: this.props.game.playerOrder.length,
+        // TODO 2017.07.24 | handle dead players here
+        totalPlayerCount: this.props.game.getLiveMajorPlayers().length,
         metPlayers: this.props.player.diplomacyStatus.metPlayers,
         statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer,
         // activeLanguage: this.props.activeLanguage,

@@ -113,7 +113,7 @@ export default class DiplomacyStatus
   }
   getUnMetPlayerCount()
   {
-    return app.game.playerOrder.length - Object.keys(this.metPlayers).length;
+    return app.game.getLiveMajorPlayers().length - Object.keys(this.metPlayers).length;
   }
   meetPlayer(player: Player)
   {

@@ -89,7 +89,8 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
       currentlyReorganizing: pc.currentlyReorganizing,
       selectedStar: pc.selectedStar,
       attackTargets: pc.currentAttackTargets,
-      isPlayerTurn: !this.props.game.playerOrder[0].isAI,
+      // TODO 2017.07.24 | check against activePlayer
+      isPlayerTurn: !this.props.game.playerToAct.isAI,
       expandedActionElement: null,
       hasMapModeSettingsExpanded: false,
     });

@@ -314,16 +314,13 @@ export class Fleet
     this.player.visionIsDirty = true;
 
     // maybe send an event instead?
-    for (let i = 0; i < app.game.playerOrder.length; i++)
+    app.game.getLiveMajorPlayers().forEach(player =>
     {
-      const player = app.game.playerOrder[i];
-      if (player.isIndependent || player === this.player)
+      if (player !== this.player)
       {
-        continue;
+        player.updateAllVisibilityInStar(newLocation);
       }
-
-      player.updateAllVisibilityInStar(newLocation);
-    }
+    });
 
     eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     eventManager.dispatchEvent("updateSelection", null);

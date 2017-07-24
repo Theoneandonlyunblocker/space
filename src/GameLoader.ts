@@ -41,6 +41,7 @@ import UnitSaveData from "./savedata/UnitSaveData";
 export default class GameLoader
 {
   public map: GalaxyMap;
+  // TODO 2017.07.24 | no need to keep these separate i think
   public players: Player[] = [];
   public independents: Player[] = [];
 
@@ -127,7 +128,6 @@ export default class GameLoader
 
     // create game
     const game = new Game(this.map, this.players);
-    game.independents = game.independents.concat(this.independents);
     game.turnNumber = data.turnNumber;
 
     // notification log

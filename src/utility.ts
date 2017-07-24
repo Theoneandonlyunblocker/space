@@ -652,14 +652,13 @@ export function onDOMLoaded(onLoaded: () => void)
 }
 export function meetAllPlayers()
 {
-  for (let i = 0; i < app.game.playerOrder.length; i++)
+  app.game.getLiveMajorPlayers().forEach(player =>
   {
-    const player = app.game.playerOrder[i];
     if (player !== activePlayer)
     {
       activePlayer.diplomacyStatus.meetPlayer(player);
     }
-  }
+  });
 }
 export function getItemsFromWeightedProbabilities<T>(probabilities: WeightedProbability<T>[])
 {
