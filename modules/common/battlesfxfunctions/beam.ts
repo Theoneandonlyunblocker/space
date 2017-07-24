@@ -13,6 +13,7 @@ import ShockWave from "./sfxfragments/ShockWave";
 import Color from "../../../src/Color";
 import
 {
+  attachShaderToSprite,
   generateTextureWithBounds,
   getDummyTextureForShader,
 } from "../../../src/pixiWrapperFunctions";
@@ -188,7 +189,7 @@ export default function beam(props: SFXParams)
   protonWrapper.onParticleUpdated["smallParticles"] = onParticleUpdateFN;
   protonWrapper.onSpriteCreated["smallParticles"] = function(sprite: PIXI.Sprite)
   {
-    sprite.shader = smallParticleFilter;
+    attachShaderToSprite(sprite, smallParticleFilter);
     sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
   };
 
@@ -233,7 +234,7 @@ export default function beam(props: SFXParams)
   protonWrapper.onParticleUpdated["shinyParticles"] = onParticleUpdateFN;
   protonWrapper.onSpriteCreated["shinyParticles"] = function(sprite: PIXI.Sprite)
   {
-    sprite.shader = shinyParticleFilter;
+    attachShaderToSprite(sprite, shinyParticleFilter);
     sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
   };
 

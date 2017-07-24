@@ -36,7 +36,7 @@ export function getDummyTextureForShader()
   return PIXI.Texture.fromCanvas(canvas);
 }
 export function makeShaderSprite(
-  shader: PIXI.Filter,
+  shader: PIXI.Filter<any>,
   x?: number,
   y?: number,
   width?: number,
@@ -45,10 +45,17 @@ export function makeShaderSprite(
 {
   const sprite = createDummySpriteForShader(x, y, width, height);
 
-  // TODO 2016.12.08 | doesn't work
-  sprite.shader = shader;
+  attachShaderToSprite(sprite, shader);
 
   return sprite;
+}
+export function attachShaderToSprite(
+  sprite: PIXI.Sprite,
+  shader: PIXI.Filter<any>
+)
+{
+  // TODO 2016.12.08 | doesn't work
+  sprite.shader = shader;
 }
 export function convertClientRectToPixiRect(rect: ClientRect): PIXI.Rectangle
 {
