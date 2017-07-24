@@ -127,13 +127,13 @@ function updateShaderOffset(x: number, y: number)
 {
   forEachOccupationShader(shader =>
   {
-    shader.uniforms.offset.value = [-x, y];
+    shader.uniforms.offset = [-x, y];
   });
 }
 function updateShaderZoom(zoom: number)
 {
   forEachOccupationShader(shader =>
   {
-    shader.uniforms.scale.value = zoom * 8.0;
+    shader.uniforms.scale = zoom * 8.0;
   });
 }
