@@ -1,31 +1,46 @@
-import {AllScripts} from "./modulescriptinterfaces/AllScripts";
 import {BattleScripts} from "./modulescriptinterfaces/BattleScripts";
 import {DiplomacyScripts} from "./modulescriptinterfaces/DiplomacyScripts";
 import {GameScripts} from "./modulescriptinterfaces/GameScripts";
 import {PlayerScripts} from "./modulescriptinterfaces/PlayerScripts";
 import {UnitScripts} from "./modulescriptinterfaces/UnitScripts";
 
+import {ModuleScriptData} from "./ModuleScriptData";
+
+
+type ScriptsWithData<Scripts extends {[T in keyof Scripts]: (...args: any[]) => void}> =
+{
+  [T in keyof Scripts]: ModuleScriptData<Scripts[T]>[];
+};
+
+interface AllModuleScriptsWithData
+{
+  battle: ScriptsWithData<BattleScripts>;
+  diplomacy: ScriptsWithData<DiplomacyScripts>;
+  game: ScriptsWithData<GameScripts>;
+  player: ScriptsWithData<PlayerScripts>;
+  unit: ScriptsWithData<UnitScripts>;
+}
 
 // TODO 2017.06.13 | move non-internal stuff from eventManager to here
-export default class ModuleScripts implements AllScripts
+export default class ModuleScripts implements AllModuleScriptsWithData
 {
-  public readonly battle: BattleScripts =
+  public readonly battle: ScriptsWithData<BattleScripts> =
   {
     battleFinish: [],
   };
-  public readonly diplomacy: DiplomacyScripts =
+  public readonly diplomacy: ScriptsWithData<DiplomacyScripts> =
   {
     onWarDeclaration: [],
   };
-  public readonly game: GameScripts =
+  public readonly game: ScriptsWithData<GameScripts> =
   {
     afterInit: [],
   };
-  public readonly player: PlayerScripts =
+  public readonly player: ScriptsWithData<PlayerScripts> =
   {
     onDeath: [],
   };
-  public readonly unit: UnitScripts =
+  public readonly unit: ScriptsWithData<UnitScripts> =
   {
     removeFromPlayer: [],
   };
@@ -34,36 +49,41 @@ export default class ModuleScripts implements AllScripts
   {
 
   }
+
   public static merge(...toMerge: ModuleScripts[]): ModuleScripts
   {
     const merged = new ModuleScripts();
 
-    merged.add(...toMerge);
+    toMerge.forEach(moduleScripts =>
+    {
+      merged.add(moduleScripts);
+    });
 
     return merged;
   }
-
-  public add(...toAdd: Partial<AllScripts>[]): void
+  private static sort(a: ModuleScriptData<any>, b: ModuleScriptData<any>): number
   {
-    toAdd.forEach(scripts =>
-    {
-      for (let scriptType in scripts)
-      {
-        for (let scriptKey in scripts[scriptType])
-        {
-          this[scriptType][scriptKey].push(...scripts[scriptType][scriptKey]);
-        }
-      }
-    });
+    return b.priority - a.priority;
   }
-  public remove(toRemove: Partial<AllScripts>): void
+
+  public add(toAdd: Partial<AllModuleScriptsWithData>): void
   {
-    for (let scriptType in toRemove)
+    for (let category in toAdd)
     {
-      for (let scriptKey in toRemove[scriptType])
+      for (let scriptType in toAdd[category])
       {
-        const ownScripts: Function[] = this[scriptType][scriptKey];
-        const scriptsToRemove: Function[] = toRemove[scriptType][scriptKey];
+        this[category][scriptType].push(...toAdd[category][scriptType]);
+      }
+    }
+  }
+  public remove(toRemove: Partial<AllModuleScriptsWithData>): void
+  {
+    for (let category in toRemove)
+    {
+      for (let scriptType in toRemove[category])
+      {
+        const ownScripts: Function[] = this[category][scriptType];
+        const scriptsToRemove: Function[] = toRemove[category][scriptType];
 
         for (let j = 0; j < scriptsToRemove.length; j++)
         {
@@ -79,5 +99,12 @@ export default class ModuleScripts implements AllScripts
         }
       }
     }
+  }
+  public get<T extends (...args: any[]) => void>(allScriptData: ModuleScriptData<T>[]): T[]
+  {
+    return allScriptData.sort(ModuleScripts.sort).map(scriptData =>
+    {
+      return scriptData.script;
+    });
   }
 }
