@@ -7,8 +7,6 @@ import
   shallowExtend,
 } from "../../src/utility";
 
-import {AllScripts} from "../../src/modulescriptinterfaces/AllScripts";
-
 import {Front} from "../defaultai/mapai/Front";
 
 interface AttachedUnitData
@@ -61,21 +59,25 @@ const attachedUnitData = new AttachedUnitDataManager();
 
 export default attachedUnitData;
 
-export const attachedUnitDataScripts: Partial<AllScripts> =
+export const attachedUnitDataScripts =
 {
   unit:
   {
     removeFromPlayer:
     [
-      unit =>
       {
-        const front = attachedUnitData.get(unit).front;
-        if (front)
+        key: "removeFromFront",
+        priority: 0,
+        script: (unit: Unit) =>
         {
-          front.removeUnit(unit);
-        }
+          const front = attachedUnitData.get(unit).front;
+          if (front)
+          {
+            front.removeUnit(unit);
+          }
 
-        attachedUnitData.delete(unit);
+          attachedUnitData.delete(unit);
+        },
       },
     ],
   },

@@ -254,7 +254,7 @@ export default class Player
       this.fleets[i].deleteFleet(false);
     }
 
-    activeModuleData.scripts.player.onDeath.forEach(script =>
+    activeModuleData.scripts.get(activeModuleData.scripts.player.onDeath).forEach(script =>
     {
       script(this);
     });

@@ -66,19 +66,23 @@ activeModuleData.scripts.add(
     {
       onWarDeclaration:
       [
-        (aggressor, defender) =>
         {
-          activeNotificationLog.makeNotification(
+          key: "makeWarDeclarationNotification",
+          priority: 0,
+          script: (aggressor, defender) =>
           {
-            template: warDeclarationNotification,
-            props:
+            activeNotificationLog.makeNotification(
             {
-              aggressor: aggressor,
-              defender: defender,
-            },
-            involvedPlayers: [aggressor, defender],
-            location: null,
-          });
+              template: warDeclarationNotification,
+              props:
+              {
+                aggressor: aggressor,
+                defender: defender,
+              },
+              involvedPlayers: [aggressor, defender],
+              location: null,
+            });
+          },
         },
       ],
     },

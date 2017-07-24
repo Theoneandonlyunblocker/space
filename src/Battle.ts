@@ -307,7 +307,7 @@ export default class Battle
       eventManager.dispatchEvent("switchScene", "galaxyMap");
     }
 
-    activeModuleData.scripts.battle.battleFinish.forEach(script =>
+    activeModuleData.scripts.get(activeModuleData.scripts.battle.battleFinish).forEach(script =>
     {
       script(this);
     });

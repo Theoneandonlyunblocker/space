@@ -51,24 +51,29 @@ const playerDiedNotification: NotificationTemplate<PropTypes, SerializedPropType
   },
 };
 
+// TODO 2017.07.24 | these should be added in module loading phase
 activeModuleData.scripts.add(
 {
   player:
   {
     onDeath:
     [
-      player =>
       {
-        activeNotificationLog.makeNotification(
+        key: "playerDiedNotification",
+        priority: 0,
+        script: player =>
         {
-          template: playerDiedNotification,
-          props:
+          activeNotificationLog.makeNotification(
           {
-            deadPlayerName: player.name.fullName,
-          },
-          involvedPlayers: [player],
-          location: null,
-        });
+            template: playerDiedNotification,
+            props:
+            {
+              deadPlayerName: player.name.fullName,
+            },
+            involvedPlayers: [player],
+            location: null,
+          });
+        },
       },
     ],
   },

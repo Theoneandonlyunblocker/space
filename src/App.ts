@@ -293,9 +293,9 @@ class App
       activeNotificationLog.currentTurn = this.game.turnNumber;
     }
 
-    activeModuleData.scripts.game.afterInit.forEach(scriptFN =>
+    activeModuleData.scripts.get(activeModuleData.scripts.game.afterInit).forEach(script =>
     {
-      scriptFN(this.game);
+      script(this.game);
     });
 
     this.game.playerOrder.concat(this.game.independents).forEach(player =>
