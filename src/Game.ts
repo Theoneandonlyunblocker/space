@@ -25,6 +25,7 @@ export default class Game
   constructor(map: GalaxyMap, players: Player[])
   {
     this.galaxyMap = map;
+    // TODO 2017.07.24 | this seems kinda weird
     if (map.independents)
     {
       this.independents = map.independents;
@@ -32,10 +33,11 @@ export default class Game
       delete map.independents;
     }
 
-    this.playerOrder = players;
+    this.playerOrder = [...players];
     this.turnNumber = 1;
   }
-  destroy()
+
+  public destroy()
   {
     for (let i = 0; i < this.playerOrder.length; i++)
     {
@@ -46,8 +48,7 @@ export default class Game
       this.independents[i].destroy();
     }
   }
-
-  endTurn()
+  public endTurn()
   {
     this.setNextPlayer();
 
@@ -78,7 +79,29 @@ export default class Game
     eventManager.dispatchEvent("endTurn", null);
     eventManager.dispatchEvent("updateSelection", null);
   }
-  processPlayerStartTurn(player: Player)
+  public save(name: string)
+  {
+    const saveString = "Rance.Save." + name;
+    this.gameStorageKey = saveString;
+
+    const date = new Date();
+    const gameData = this.serialize();
+
+    const fullSaveData: FullSaveData =
+    {
+      name: name,
+      date: date,
+      gameData: gameData,
+      idGenerators: idGenerators.serialize(),
+      cameraLocation: app.renderer.camera.getCenterPosition(),
+    };
+
+    const stringified = JSON.stringify(fullSaveData);
+
+    localStorage.setItem(saveString, stringified);
+  }
+
+  private processPlayerStartTurn(player: Player)
   {
     player.units.forEach(unit =>
     {
@@ -119,13 +142,14 @@ export default class Game
       });
     }
   }
-  setNextPlayer()
+  private setNextPlayer()
   {
     this.playerOrder.push(this.playerOrder.shift());
 
     this.playerToAct = this.playerOrder[0];
   }
-  killPlayer(playerToKill: Player)
+  // TODO 2017.07.24 | can't all this be done in Player#die() ?
+  private killPlayer(playerToKill: Player)
   {
     const playerOrderIndex = this.playerOrder.indexOf(playerToKill);
 
@@ -156,15 +180,11 @@ export default class Game
       this.endGame();
     }
   }
-  public getAllPlayers(): Player[]
+  private getAllPlayers(): Player[]
   {
     return this.playerOrder.concat(this.independents);
   }
-  private endGame(): void
-  {
-    this.hasEnded = true;
-  }
-  serialize(): GameSaveData
+  private serialize(): GameSaveData
   {
     const data: GameSaveData =
     {
@@ -197,25 +217,8 @@ export default class Game
 
     return data;
   }
-  save(name: string)
+  private endGame(): void
   {
-    const saveString = "Rance.Save." + name;
-    this.gameStorageKey = saveString;
-
-    const date = new Date();
-    const gameData = this.serialize();
-
-    const fullSaveData: FullSaveData =
-    {
-      name: name,
-      date: date,
-      gameData: gameData,
-      idGenerators: idGenerators.serialize(),
-      cameraLocation: app.renderer.camera.getCenterPosition(),
-    };
-
-    const stringified = JSON.stringify(fullSaveData);
-
-    localStorage.setItem(saveString, stringified);
+    this.hasEnded = true;
   }
 }
