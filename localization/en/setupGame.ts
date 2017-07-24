@@ -11,8 +11,7 @@ export const setupGame =
   hotLinkedImageLoadingFailed: "Linked image failed to load. Try saving it and using a local copy.",
   noValidImageFile: "The attached file wasn't recognized as an image.",
   addNewEmblem: "Add new emblem",
-  emblemSetterTooltip: "Left click to edit\n" +
-    "Right click to remove",
+  emblemSetterTooltip: "Left click to edit. Right click to remove",
   emblems: "Emblems",
   emblemColor: "Emblem color",
 };

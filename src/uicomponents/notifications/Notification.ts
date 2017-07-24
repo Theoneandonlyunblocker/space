@@ -2,6 +2,8 @@ import * as React from "react";
 
 import Notification from "../../Notification";
 
+import {localize} from "../../../localization/localize";
+
 export interface PropTypes extends React.Props<any>
 {
   markAsRead: (notification: Notification<any, any>) => void;
@@ -56,6 +58,7 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
         className: "notification",
         onClick: this.handleClick,
         onContextMenu: this.handleRightClick,
+        title: localize("notificationToolTip"),
       },
         React.DOM.img(
         {

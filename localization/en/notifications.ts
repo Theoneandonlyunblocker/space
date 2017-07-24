@@ -6,4 +6,5 @@ export const notifications =
   alwaysShow_short: "Always",
   showIfInvolved_short: "Involved",
   neverShow_short: "Never",
+  notificationToolTip: "Left click to show details. Right click to mark as read.",
 };
