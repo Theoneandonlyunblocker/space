@@ -178,7 +178,7 @@ export default function beam(props: SFXParams)
   {
     const lifeLeft = 1.0 - time;
 
-    smallParticleFilter.setUniformValues(
+    smallParticleFilter.setUniforms(
     {
       spikeColor: particleShaderColorArray,
       spikeIntensity: Math.pow(lifeLeft, 1.5) * 0.4,
@@ -223,7 +223,7 @@ export default function beam(props: SFXParams)
   {
     const lifeLeft = 1.0 - time;
 
-    shinyParticleFilter.setUniformValues(
+    shinyParticleFilter.setUniforms(
     {
       spikeColor: particleShaderColorArray,
       spikeIntensity: 1 - time * 0.1,

@@ -83,7 +83,7 @@ export default class Beam extends SFXFragment<BeamProps>
   }
   public animateFromRampValues(time: number, rampUpValue: number, rampDownValue: number): void
   {
-    this.beamFilter.setUniformValues(
+    this.beamFilter.setUniforms(
     {
       time: time * this.props.timeScale,
       noiseAmplitude: this.props.noiseAmplitude.getValue(rampUpValue, rampDownValue),

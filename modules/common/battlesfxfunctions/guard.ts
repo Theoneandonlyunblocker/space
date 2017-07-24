@@ -36,7 +36,7 @@ export default function guard(props: SFXParams)
     if (time < travelTime)
     {
       const adjustedtime = time / travelTime;
-      guardFilter.setUniformValues(
+      guardFilter.setUniforms(
       {
         frontier: maxFrontier * adjustedtime,
       });
@@ -52,7 +52,7 @@ export default function guard(props: SFXParams)
       const adjustedtime = Math.pow(relativeTime, 4);
       const relativeDistance = getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
 
-      guardFilter.setUniformValues(
+      guardFilter.setUniforms(
       {
         trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
         blockWidth: adjustedtime * maxBlockWidth,

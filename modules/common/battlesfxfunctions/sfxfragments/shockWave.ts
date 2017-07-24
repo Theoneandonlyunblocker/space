@@ -79,7 +79,7 @@ export default class ShockWave extends SFXFragment<ShockWaveProps>
 
     const shockWaveTime = TWEEN.Easing.Quintic.Out(burstX);
 
-    this.shockWaveFilter.setUniformValues(
+    this.shockWaveFilter.setUniforms(
     {
       mainEllipseSize:
       [

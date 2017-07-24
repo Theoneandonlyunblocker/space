@@ -56,7 +56,7 @@ export default class LightBurst extends SFXFragment<LightBurstProps>
 
     const lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
 
-    this.lightBurstFilter.setUniformValues(
+    this.lightBurstFilter.setUniforms(
     {
       centerSize: Math.pow(lightBurstIntensity, 2.0) * this.props.centerSize,
       centerBloomStrength: Math.pow(lightBurstIntensity, 2.0) * 5.0,
