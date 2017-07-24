@@ -2,12 +2,12 @@ import UIComponent from "./uicomponents/BattleFinishNotification";
 
 import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
 
+import Battle from "../../../src/Battle";
 import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
 import {NotificationWitnessCriterion} from "../../../src/NotificationWitnessCriterion";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
-import {activeModuleData} from "../../../src/activeModuleData";
 import {activeNotificationLog} from "../../../src/activeNotificationLog";
 
 
@@ -27,7 +27,7 @@ export interface SerializedPropTypes
   victorId: number;
 }
 
-const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
+export const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
 {
   key: "battleFinishNotification",
   displayName: "Battle finished",
@@ -70,7 +70,7 @@ const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTy
   },
 };
 
-activeModuleData.scripts.add(
+export const battleFinishNotificationCreationScripts =
 {
   battle:
   {
@@ -79,7 +79,7 @@ activeModuleData.scripts.add(
       {
         key: "makeBattleFinishNotification",
         priority: 0,
-        script: battle =>
+        script: (battle: Battle) =>
         {
           activeNotificationLog.makeNotification(
           {
@@ -98,6 +98,4 @@ activeModuleData.scripts.add(
       },
     ],
   },
-});
-
-export default battleFinishNotification;
+};

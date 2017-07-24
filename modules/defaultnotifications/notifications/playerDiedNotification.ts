@@ -5,7 +5,7 @@ import NotificationTemplate from "../../../src/templateinterfaces/NotificationTe
 import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
 import {NotificationWitnessCriterion} from "../../../src/NotificationWitnessCriterion";
-import {activeModuleData} from "../../../src/activeModuleData";
+import Player from "../../../src/Player";
 import {activeNotificationLog} from "../../../src/activeNotificationLog";
 
 
@@ -19,7 +19,7 @@ export interface SerializedPropTypes
   deadPlayerName: string;
 }
 
-const playerDiedNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
+export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
 {
   key: "playerDiedNotification",
   displayName: "Player died",
@@ -51,8 +51,7 @@ const playerDiedNotification: NotificationTemplate<PropTypes, SerializedPropType
   },
 };
 
-// TODO 2017.07.24 | these should be added in module loading phase
-activeModuleData.scripts.add(
+export const playerDiedNotificationCreationScripts =
 {
   player:
   {
@@ -61,7 +60,7 @@ activeModuleData.scripts.add(
       {
         key: "playerDiedNotification",
         priority: 0,
-        script: player =>
+        script: (player: Player) =>
         {
           activeNotificationLog.makeNotification(
           {
@@ -77,6 +76,4 @@ activeModuleData.scripts.add(
       },
     ],
   },
-});
-
-export default playerDiedNotification;
+};

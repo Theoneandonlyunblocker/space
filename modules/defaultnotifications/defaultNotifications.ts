@@ -2,7 +2,11 @@ import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
-import NotificationTemplates from "./NotificationTemplates";
+import
+{
+  notificationCreationScripts,
+  notificationTemplates,
+} from "./NotificationTemplates";
 
 import * as Languages from "../../localization/defaultLanguages";
 
@@ -18,9 +22,10 @@ const defaultNotifications: ModuleFile =
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
   supportedLanguages: [Languages.en],
-  constructModule: function(moduleData: ModuleData)
+  constructModule: (moduleData: ModuleData) =>
   {
-    moduleData.copyTemplates(NotificationTemplates, "Notifications");
+    moduleData.copyTemplates(notificationTemplates, "Notifications");
+    moduleData.scripts.add(...notificationCreationScripts);
 
     return moduleData;
   },

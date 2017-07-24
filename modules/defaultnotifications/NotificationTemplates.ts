@@ -1,15 +1,32 @@
 import NotificationTemplate from "../../src/templateinterfaces/NotificationTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
-import battleFinishNotification from "./notifications/battleFinishNotification";
-import playerDiedNotification from "./notifications/playerDiedNotification";
-import warDeclarationNotification from "./notifications/warDeclarationNotification";
+import
+{
+  battleFinishNotification,
+  battleFinishNotificationCreationScripts,
+} from "./notifications/battleFinishNotification";
+import
+{
+  playerDiedNotification,
+  playerDiedNotificationCreationScripts,
+} from "./notifications/playerDiedNotification";
+import
+{
+  warDeclarationNotification,
+  warDeclarationNotificationCreationScripts,
+} from "./notifications/warDeclarationNotification";
 
-const Notifications: TemplateCollection<NotificationTemplate<any, any>> =
+export const notificationTemplates: TemplateCollection<NotificationTemplate<any, any>> =
 {
   [battleFinishNotification.key]: battleFinishNotification,
   [playerDiedNotification.key]: playerDiedNotification,
   [warDeclarationNotification.key]: warDeclarationNotification,
 };
 
-export default Notifications;
+export const notificationCreationScripts =
+[
+  battleFinishNotificationCreationScripts,
+  playerDiedNotificationCreationScripts,
+  warDeclarationNotificationCreationScripts,
+];

@@ -6,7 +6,6 @@ import GameLoader from "../../../src/GameLoader";
 import NotificationFilterState from "../../../src/NotificationFilterState";
 import {NotificationWitnessCriterion} from "../../../src/NotificationWitnessCriterion";
 import Player from "../../../src/Player";
-import {activeModuleData} from "../../../src/activeModuleData";
 import {activeNotificationLog} from "../../../src/activeNotificationLog";
 
 
@@ -22,7 +21,7 @@ export interface SerializedPropTypes
   defenderId: number;
 }
 
-const warDeclarationNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
+export const warDeclarationNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
 {
   key: "warDeclarationNotification",
   displayName: "War declaration",
@@ -60,32 +59,30 @@ const warDeclarationNotification: NotificationTemplate<PropTypes, SerializedProp
   },
 };
 
-activeModuleData.scripts.add(
+export const warDeclarationNotificationCreationScripts =
+{
+  diplomacy:
   {
-    diplomacy:
-    {
-      onWarDeclaration:
-      [
+    onWarDeclaration:
+    [
+      {
+        key: "makeWarDeclarationNotification",
+        priority: 0,
+        script: (aggressor: Player, defender: Player) =>
         {
-          key: "makeWarDeclarationNotification",
-          priority: 0,
-          script: (aggressor, defender) =>
+          activeNotificationLog.makeNotification(
           {
-            activeNotificationLog.makeNotification(
+            template: warDeclarationNotification,
+            props:
             {
-              template: warDeclarationNotification,
-              props:
-              {
-                aggressor: aggressor,
-                defender: defender,
-              },
-              involvedPlayers: [aggressor, defender],
-              location: null,
-            });
-          },
+              aggressor: aggressor,
+              defender: defender,
+            },
+            involvedPlayers: [aggressor, defender],
+            location: null,
+          });
         },
-      ],
-    },
-  });
-
-export default warDeclarationNotification;
+      },
+    ],
+  },
+};
