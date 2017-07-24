@@ -64,17 +64,16 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
     {
       case "delete":
       {
+        cellContent = "";
         cellProps.onDoubleClick = SaveListItemComponent.preventDefault;
+
         if (this.props.isMarkedForDeletion)
         {
-          cellContent = "";
           cellProps.className += " undo-delete-button";
           cellProps.onClick = this.handleUndoDelete;
         }
         else
         {
-          // TODO 2017.07.18 | use pseudo element
-          cellContent = "X";
           cellProps.onClick = this.handleDelete;
         }
         break;
