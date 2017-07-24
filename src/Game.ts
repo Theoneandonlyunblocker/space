@@ -142,6 +142,7 @@ export default class Game
       }
     }
 
+    // TODO 2017.07.24 | keep dead players around
     this.playerOrder.forEach(player =>
     {
       player.diplomacyStatus.removePlayer(playerToKill);

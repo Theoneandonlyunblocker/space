@@ -81,6 +81,9 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
       inputElements.push(React.DOM.input(
       {
         className: "notification-filter-list-item-filter",
+        // could use radio buttons for now as filter states don't overlap currently
+        // but they might in the future so just use checkboxes
+        // see src/NotificationFilter#getCompatibleFilterStates()
         type: "checkbox",
         id: this.props.keyTODO/*TODO react*/,
         key: state,
