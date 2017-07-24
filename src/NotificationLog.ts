@@ -10,9 +10,9 @@ import
 } from "./NotificationWitnessCriterion";
 import Player from "./Player";
 import Star from "./Star";
+import eventManager from "./eventManager";
 
 
-// TODO 2017.07.17 | updates to here don't propagate to ui
 export default class NotificationLog
 {
   public readonly notifications: Notification<any, any>[] = [];
@@ -50,11 +50,7 @@ export default class NotificationLog
     });
 
     this.notifications.push(notification);
-    // TODO 2017.07.17 | this seems stupid & unnecessary
-    // if (this.isHumanTurn)
-    // {
-    //   eventManager.dispatchEvent("updateNotificationLog");
-    // }
+    eventManager.dispatchEvent("updateNotificationLog");
   }
   // TODO 2017.07.17 | doesn't belong here
   public filterNotifications(notifications: Notification<any, any>[])

@@ -119,10 +119,9 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
             ],
           },
             notification.template.contentConstructor(
-              {
-                notification: notification,
-              },
-            ),
+            {
+              notification: notification,
+            }),
           );
         }),
       )
@@ -150,6 +149,15 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   private handleMarkAsRead(notification: Notification<any, any>)
   {
     notification.hasBeenRead = true;
+
+    if (this.hasPopup(notification))
+    {
+      this.closePopup(notification);
+    }
+    else
+    {
+      this.forceUpdate();
+    }
   }
   private openPopup(notification: Notification<any, any>): void
   {
