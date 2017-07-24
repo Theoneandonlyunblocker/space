@@ -39,15 +39,6 @@ export default class Game
     this.turnNumber = 1;
   }
 
-  private static playerIsPartOfGame(player: Player): boolean
-  {
-    return !player.isDead;
-  }
-  private static playerCanAct(player: Player): boolean
-  {
-    return Game.playerIsPartOfGame(player) && !player.isIndependent;
-  }
-
   public destroy()
   {
     this.players.forEach(player =>
@@ -73,7 +64,7 @@ export default class Game
 
     this.processPlayerStartTurn(this.playerToAct);
 
-    if (!Game.playerCanAct(this.playerToAct))
+    if (this.playerToAct.isIndependent)
     {
       this.endTurn();
 
@@ -108,6 +99,13 @@ export default class Game
     const stringified = JSON.stringify(fullSaveData);
 
     localStorage.setItem(saveString, stringified);
+  }
+  public getLiveMajorPlayers(): Player[]
+  {
+    return this.players.filter(player =>
+    {
+      return !player.isDead && !player.isIndependent;
+    });
   }
 
   // for every player, not just human

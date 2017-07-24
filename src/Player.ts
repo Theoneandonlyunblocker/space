@@ -62,6 +62,7 @@ export default class Player
 
   public isAI: boolean = false;
   public AIController: AIController<any>;
+  // TODO 2017.07.24 | rename independent => minor
   public isIndependent: boolean = false;
   public isDead: boolean = false;
 
