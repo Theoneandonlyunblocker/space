@@ -85,6 +85,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       makeContent: () => ItemEquip(
       {
         player: this.props.player,
+        // TODO 2017.07.24 | remove these
         // activeLanguage: this.props.activeLanguage,
       }),
       title: localize("equip"),

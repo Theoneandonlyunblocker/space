@@ -104,7 +104,7 @@ export default class Player
   tempOverflowedResearchAmount: number = 0;
   playerTechnology: PlayerTechnology;
 
-  listeners:
+  private listeners:
   {
     [key: string]: Function;
   } = {};
@@ -236,7 +236,7 @@ export default class Player
       money: 0,
     });
   }
-  destroy(): void
+  public destroy(): void
   {
     this.diplomacyStatus.destroy();
     this.diplomacyStatus = null;
