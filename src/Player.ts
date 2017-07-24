@@ -246,9 +246,14 @@ export default class Player
       eventManager.removeEventListener(key, this.listeners[key]);
     }
   }
+  public shouldDie(): boolean
+  {
+    return this.controlledLocations.length === 0;
+  }
   private die(): void
   {
     this.isDead = true;
+
     for (let i = this.fleets.length - 1; i >= 0; i--)
     {
       this.fleets[i].deleteFleet(false);
@@ -381,7 +386,7 @@ export default class Player
     star.owner = null;
     this.controlledLocations.splice(index, 1);
     this.visionIsDirty = true;
-    if (this.controlledLocations.length === 0)
+    if (this.shouldDie())
     {
       app.game.killPlayer(this);
     }
