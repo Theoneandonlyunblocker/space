@@ -31,6 +31,7 @@ declare interface PlayerSaveData
   identifiedUnitIds: number[];
   researchByTechnology?: PlayerTechnologySaveData;
   raceKey: string;
+  isDead: boolean;
 
   isAI: boolean;
   AIController?: AIControllerSaveData<any>;

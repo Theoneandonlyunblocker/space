@@ -289,6 +289,7 @@ export default class GameLoader
     {
       isAI: data.isAI,
       isIndependent: data.isIndependent,
+      isDead: data.isDead,
 
       race: activeModuleData.Templates.Races[data.raceKey],
       money: data.money,
