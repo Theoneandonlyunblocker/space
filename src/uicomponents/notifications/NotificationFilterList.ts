@@ -128,10 +128,9 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
           {
             className: "notification-filter-list-item-filters",
           },
-            // TODO 2017.07.18 | get these from somewhere else
-            "Always",
-            "Involved",
-            "Never",
+            localize("alwaysShow_short"),
+            localize("showIfInvolved_short"),
+            localize("neverShow_short"),
           ),
         ),
         React.DOM.div(
