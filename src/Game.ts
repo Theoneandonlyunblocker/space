@@ -14,69 +14,79 @@ import GameSaveData from "./savedata/GameSaveData";
 export default class Game
 {
   public turnNumber: number;
-  public independents: Player[] = [];
-  public playerOrder: Player[];
-  public galaxyMap: GalaxyMap;
-  public playerToAct: Player;
+  public readonly players: Player[] = [];
+  public readonly galaxyMap: GalaxyMap;
   public hasEnded: boolean = false;
-
+  public playerToAct: Player;
   public gameStorageKey: string;
+
+  private actingPlayerIndex: number = 0;
+
 
   constructor(map: GalaxyMap, players: Player[])
   {
     this.galaxyMap = map;
+    this.players = [...players]
+
     // TODO 2017.07.24 | this seems kinda weird
     if (map.independents)
     {
-      this.independents = map.independents;
+      this.players.push(...map.independents);
       map.independents = null;
       delete map.independents;
     }
 
-    this.playerOrder = [...players];
     this.turnNumber = 1;
+  }
+
+  private static playerIsPartOfGame(player: Player): boolean
+  {
+    return !player.isDead;
+  }
+  private static playerCanAct(player: Player): boolean
+  {
+    return Game.playerIsPartOfGame(player) && !player.isIndependent;
   }
 
   public destroy()
   {
-    for (let i = 0; i < this.playerOrder.length; i++)
+    this.players.forEach(player =>
     {
-      this.playerOrder[i].destroy();
-    }
-    for (let i = 0; i < this.independents.length; i++)
-    {
-      this.independents[i].destroy();
-    }
+      player.destroy();
+    });
   }
   public endTurn()
   {
     this.setNextPlayer();
 
-    while (this.playerToAct.controlledLocations.length === 0)
+    while (this.playerToAct.isDead)
     {
-      this.playerToAct = this.playerOrder[0];
+      if (this.playerToAct === activePlayer)
+      {
+        this.endGame();
+
+        return;
+      }
+
+      this.setNextPlayer();
     }
 
     this.processPlayerStartTurn(this.playerToAct);
-    activeNotificationLog.currentTurn = this.turnNumber;
+
+    if (!Game.playerCanAct(this.playerToAct))
+    {
+      this.endTurn();
+
+      return;
+    }
+
+    eventManager.dispatchEvent("endTurn", null);
+    eventManager.dispatchEvent("updateSelection", null);
 
     if (this.playerToAct.isAI)
     {
       this.playerToAct.AIController.processTurn(this.endTurn.bind(this));
     }
-    else
-    {
-      this.turnNumber++;
-
-      for (let i = 0; i < this.independents.length; i++)
-      {
-        this.processPlayerStartTurn(this.independents[i]);
-      }
-
-    }
-
-    eventManager.dispatchEvent("endTurn", null);
-    eventManager.dispatchEvent("updateSelection", null);
   }
   public save(name: string)
   {
@@ -100,6 +110,7 @@ export default class Game
     localStorage.setItem(saveString, stringified);
   }
 
+  // for every player, not just human
   private processPlayerStartTurn(player: Player)
   {
     player.units.forEach(unit =>
@@ -141,20 +152,21 @@ export default class Game
       });
     }
   }
+  // after each player has has a go
+  private processNewRoundOfPlayStart(): void
+  {
+    this.turnNumber++;
+    activeNotificationLog.currentTurn = this.turnNumber;
+  }
   private setNextPlayer()
   {
-    this.playerOrder.push(this.playerOrder.shift());
+    this.actingPlayerIndex = (this.actingPlayerIndex + 1) % this.players.length;
+    this.playerToAct = this.players[this.actingPlayerIndex];
 
-    this.playerToAct = this.playerOrder[0];
-  }
-  {
-
+    if (this.actingPlayerIndex === 0)
     {
+      this.processNewRoundOfPlayStart();
     }
-  }
-  private getAllPlayers(): Player[]
-  {
-    return this.playerOrder.concat(this.independents);
   }
   private serialize(): GameSaveData
   {
@@ -162,13 +174,13 @@ export default class Game
     {
       turnNumber: this.turnNumber,
       galaxyMap: this.galaxyMap.serialize(),
-      players: this.getAllPlayers().map(player =>
+      players: this.players.map(player =>
       {
         return player.serialize();
       }),
       // TODO 2017.07.14 | does this belong here?
       notificationLog: activeNotificationLog.serialize(),
-      units: this.getAllPlayers().map(player =>
+      units: this.players.map(player =>
       {
         return player.units.map(unit =>
         {
@@ -178,7 +190,7 @@ export default class Game
       {
         return allUnits.concat(playerUnits);
       }, []),
-      items: this.getAllPlayers().map(player =>
+      items: this.players.map(player =>
       {
         return player.items.map(item => item.serialize());
       }).reduce((allItems, playerItems) =>
