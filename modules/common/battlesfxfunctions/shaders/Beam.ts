@@ -31,6 +31,7 @@ export default class Beam extends PIXI.Filter<Uniforms>
     const uniformData = Beam.makeUniformDataObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniformData);
   }
+
   private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
@@ -51,6 +52,14 @@ export default class Beam extends PIXI.Filter<Uniforms>
       seed: {type: "float", value: initialValues.seed},
       time: {type: "float", value: initialValues.time},
     });
+  }
+
+  public setUniforms(uniforms: Partial<Uniforms>): void
+  {
+    for (let key in uniforms)
+    {
+      this.uniforms[key] = uniforms[key];
+    }
   }
 }
 

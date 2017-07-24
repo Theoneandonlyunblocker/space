@@ -21,6 +21,7 @@ export default class Occupation extends PIXI.Filter<Uniforms>
     const uniformData = Occupation.makeUniformDataObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniformData);
   }
+
   private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
@@ -31,6 +32,14 @@ export default class Occupation extends PIXI.Filter<Uniforms>
       stripeColor: {type: "vec4", value: initialValues.stripeColor},
       stripeSize: {type: "float", value: initialValues.stripeSize},
     });
+  }
+
+  public setUniforms(uniforms: Partial<Uniforms>): void
+  {
+    for (let key in uniforms)
+    {
+      this.uniforms[key] = uniforms[key];
+    }
   }
 }
 

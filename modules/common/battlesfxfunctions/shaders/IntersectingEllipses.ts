@@ -23,6 +23,7 @@ export default class IntersectingEllipses extends PIXI.Filter<Uniforms>
     const uniformData = IntersectingEllipses.makeUniformDataObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniformData);
   }
+
   private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
@@ -35,6 +36,14 @@ export default class IntersectingEllipses extends PIXI.Filter<Uniforms>
       mainEllipseSharpness: {type: "float", value: initialValues.mainEllipseSharpness},
       mainEllipseSize: {type: "vec2", value: initialValues.mainEllipseSize},
     });
+  }
+
+  public setUniforms(uniforms: Partial<Uniforms>): void
+  {
+    for (let key in uniforms)
+    {
+      this.uniforms[key] = uniforms[key];
+    }
   }
 }
 

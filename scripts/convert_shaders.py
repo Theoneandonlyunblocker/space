@@ -123,8 +123,21 @@ def getGetUniformDataObjectLines(uniformTypes, indentationLevel):
 
   lines.extend([
     '  });\n',
-    '}\n'
+    '}\n\n'
   ])
+
+  return ["  " * indentationLevel + line for line in lines]
+
+def getSetUniformValuesLines(indentationLevel):
+  lines = [
+    'public setUniforms(uniforms: Partial<Uniforms>): void\n',
+    '{\n',
+    '  for (let key in uniforms)\n',
+    '  {\n',
+    '    this.uniforms[key] = uniforms[key];\n',
+    '  }\n',
+    '}\n'
+  ]
 
   return ["  " * indentationLevel + line for line in lines]
 
@@ -147,11 +160,15 @@ def writeConvertedShader(outFile, sourceLines, shaderName, fileName, rootDir):
     '  {\n',
     '    const uniformData = {0}.makeUniformDataObject(initialUniformValues);\n'.format(shaderName),
     '    super(null, sourceLines.join("\\n"), uniformData);\n',
-    '  }\n'
+    '  }\n\n'
   ])
 
   getUniformTypesLines = getGetUniformDataObjectLines(glslUniformTypes, 1)
   for line in getUniformTypesLines:
+    outFile.write(line)
+
+  setUniformValuesLines = getSetUniformValuesLines(1)
+  for line in setUniformValuesLines:
     outFile.write(line)
 
   outFile.writelines([

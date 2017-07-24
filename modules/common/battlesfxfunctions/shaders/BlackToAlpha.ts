@@ -16,11 +16,20 @@ export default class BlackToAlpha extends PIXI.Filter<Uniforms>
     const uniformData = BlackToAlpha.makeUniformDataObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniformData);
   }
+
   private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
     {
     });
+  }
+
+  public setUniforms(uniforms: Partial<Uniforms>): void
+  {
+    for (let key in uniforms)
+    {
+      this.uniforms[key] = uniforms[key];
+    }
   }
 }
 

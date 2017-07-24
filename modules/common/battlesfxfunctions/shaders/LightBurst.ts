@@ -23,6 +23,7 @@ export default class LightBurst extends PIXI.Filter<Uniforms>
     const uniformData = LightBurst.makeUniformDataObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniformData);
   }
+
   private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
@@ -35,6 +36,14 @@ export default class LightBurst extends PIXI.Filter<Uniforms>
       rotation: {type: "float", value: initialValues.rotation},
       seed: {type: "vec2", value: initialValues.seed},
     });
+  }
+
+  public setUniforms(uniforms: Partial<Uniforms>): void
+  {
+    for (let key in uniforms)
+    {
+      this.uniforms[key] = uniforms[key];
+    }
   }
 }
 

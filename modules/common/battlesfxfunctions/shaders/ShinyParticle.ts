@@ -19,6 +19,7 @@ export default class ShinyParticle extends PIXI.Filter<Uniforms>
     const uniformData = ShinyParticle.makeUniformDataObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniformData);
   }
+
   private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
@@ -27,6 +28,14 @@ export default class ShinyParticle extends PIXI.Filter<Uniforms>
       spikeColor: {type: "vec4", value: initialValues.spikeColor},
       spikeIntensity: {type: "float", value: initialValues.spikeIntensity},
     });
+  }
+
+  public setUniforms(uniforms: Partial<Uniforms>): void
+  {
+    for (let key in uniforms)
+    {
+      this.uniforms[key] = uniforms[key];
+    }
   }
 }
 

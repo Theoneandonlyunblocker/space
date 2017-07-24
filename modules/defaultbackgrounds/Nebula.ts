@@ -31,6 +31,7 @@ export default class Nebula extends PIXI.Filter<Uniforms>
     const uniformData = Nebula.makeUniformDataObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniformData);
   }
+
   private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
@@ -51,6 +52,14 @@ export default class Nebula extends PIXI.Filter<Uniforms>
       streakLightness: {type: "float", value: initialValues.streakLightness},
       streakiness: {type: "float", value: initialValues.streakiness},
     });
+  }
+
+  public setUniforms(uniforms: Partial<Uniforms>): void
+  {
+    for (let key in uniforms)
+    {
+      this.uniforms[key] = uniforms[key];
+    }
   }
 }
 

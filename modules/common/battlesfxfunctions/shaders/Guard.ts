@@ -23,6 +23,7 @@ export default class Guard extends PIXI.Filter<Uniforms>
     const uniformData = Guard.makeUniformDataObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniformData);
   }
+
   private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
   {
     return(
@@ -35,6 +36,14 @@ export default class Guard extends PIXI.Filter<Uniforms>
       seed: {type: "float", value: initialValues.seed},
       trailDistance: {type: "float", value: initialValues.trailDistance},
     });
+  }
+
+  public setUniforms(uniforms: Partial<Uniforms>): void
+  {
+    for (let key in uniforms)
+    {
+      this.uniforms[key] = uniforms[key];
+    }
   }
 }
 
