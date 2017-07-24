@@ -14,8 +14,8 @@ function normalizeMouseEvent(nativeEvent: MouseEvent, reactEvent?: React.MouseEv
     clientY: nativeEvent.clientY,
     pageX: nativeEvent.pageX,
     pageY: nativeEvent.pageY,
-    // TODO 2017.07.21 | don't think this is right...
-    target: <HTMLElement> nativeEvent.target,
+    // https://github.com/Microsoft/TSJS-lib-generator/pull/207
+    target: <HTMLElement & EventTarget> nativeEvent.target,
 
     button: nativeEvent.button,
 
@@ -38,7 +38,7 @@ function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEv
     clientY: touch.clientY,
     pageX: touch.pageX,
     pageY: touch.pageY,
-    target: <HTMLElement> touch.target,
+    target: <HTMLElement & EventTarget> touch.target,
 
     button: -1,
 
