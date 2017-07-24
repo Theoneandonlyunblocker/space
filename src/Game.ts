@@ -13,14 +13,14 @@ import GameSaveData from "./savedata/GameSaveData";
 
 export default class Game
 {
-  turnNumber: number;
-  independents: Player[] = [];
-  playerOrder: Player[];
-  galaxyMap: GalaxyMap;
+  public turnNumber: number;
+  public independents: Player[] = [];
+  public playerOrder: Player[];
+  public galaxyMap: GalaxyMap;
   public playerToAct: Player;
   public hasEnded: boolean = false;
 
-  gameStorageKey: string;
+  public gameStorageKey: string;
 
   constructor(map: GalaxyMap, players: Player[])
   {
