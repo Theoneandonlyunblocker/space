@@ -388,7 +388,7 @@ export default class Player
     this.visionIsDirty = true;
     if (this.shouldDie())
     {
-      app.game.killPlayer(this);
+      this.die();
     }
   }
   getIncome(): number

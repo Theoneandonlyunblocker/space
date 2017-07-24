@@ -54,7 +54,6 @@ export default class Game
 
     while (this.playerToAct.controlledLocations.length === 0)
     {
-      this.killPlayer(this.playerToAct);
       this.playerToAct = this.playerOrder[0];
     }
 
@@ -148,36 +147,9 @@ export default class Game
 
     this.playerToAct = this.playerOrder[0];
   }
-  // TODO 2017.07.24 | can't all this be done in Player#die() ?
-  private killPlayer(playerToKill: Player)
   {
-    const playerOrderIndex = this.playerOrder.indexOf(playerToKill);
 
-    if (playerOrderIndex !== -1)
     {
-      this.playerOrder.splice(playerOrderIndex, 1);
-    }
-    else
-    {
-      const independentsIndex = this.independents.indexOf(playerToKill);
-      if (independentsIndex !== -1)
-      {
-        this.independents.splice(independentsIndex, 1);
-      }
-    }
-
-    // TODO 2017.07.24 | keep dead players around
-    this.playerOrder.forEach(player =>
-    {
-      player.diplomacyStatus.removePlayer(playerToKill);
-    });
-
-    playerToKill.die();
-    playerToKill.destroy();
-
-    if (playerToKill === activePlayer)
-    {
-      this.endGame();
     }
   }
   private getAllPlayers(): Player[]
