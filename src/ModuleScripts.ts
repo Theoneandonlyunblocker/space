@@ -66,15 +66,18 @@ export default class ModuleScripts implements AllModuleScriptsWithData
     return b.priority - a.priority;
   }
 
-  public add(toAdd: Partial<AllModuleScriptsWithData>): void
+  public add(...allScriptData: Partial<AllModuleScriptsWithData>[]): void
   {
-    for (let category in toAdd)
+    allScriptData.forEach(toAdd =>
     {
-      for (let scriptType in toAdd[category])
+      for (let category in toAdd)
       {
-        this[category][scriptType].push(...toAdd[category][scriptType]);
+        for (let scriptType in toAdd[category])
+        {
+          this[category][scriptType].push(...toAdd[category][scriptType]);
+        }
       }
-    }
+    });
   }
   public remove(toRemove: Partial<AllModuleScriptsWithData>): void
   {
