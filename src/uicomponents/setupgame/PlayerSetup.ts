@@ -264,12 +264,11 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
             this.forceUpdate();
           },
         }),
-        // TODO 2017.07.18 | use pseudo element
         React.DOM.button(
         {
           className: "player-setup-remove-player",
           onClick: this.handleRemove,
-        }, "X"),
+        }),
       )
     );
   }
