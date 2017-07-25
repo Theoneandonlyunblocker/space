@@ -299,11 +299,9 @@ class App
       script(this.game);
     });
 
-    // TODO 2017.07.24 | do we need to include non-ai players here?
-    // ai controller is currently used for auto formation in battle prep i think
     this.game.players.forEach(player =>
     {
-      if (player.isAI && !player.AIController)
+      if (!player.AIController)
       {
         player.AIController = player.makeRandomAIController(this.game);
       }
