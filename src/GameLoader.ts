@@ -40,10 +40,9 @@ import UnitSaveData from "./savedata/UnitSaveData";
 
 export default class GameLoader
 {
+  // these are public as GameLoader objects can get passed around to deserializing functions which might want access
   public map: GalaxyMap;
-  // TODO 2017.07.24 | no need to keep these separate i think
   public players: Player[] = [];
-  public independents: Player[] = [];
 
   public playersById:
   {
@@ -103,14 +102,7 @@ export default class GameLoader
       const playerData = data.players[i];
       const id = playerData.id;
       const player = this.playersById[id] = this.deserializePlayer(playerData);
-      if (player.isIndependent)
-      {
-        this.independents.push(player);
-      }
-      else
-      {
-        this.players.push(player);
-      }
+      this.players.push(player);
     }
 
     // player diplomacy status. dependant on other players
@@ -153,6 +145,7 @@ export default class GameLoader
 
     return game;
   }
+
   private deserializeNotificationLog(data: NotificationLogSaveData): NotificationLog
   {
     const notificationLog = new NotificationLog(this.players);
