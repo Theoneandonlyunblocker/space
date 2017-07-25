@@ -6,33 +6,22 @@ import {AttitudeModifier} from "./AttitudeModifier";
 import DiplomacyEvaluation from "./DiplomacyEvaluation";
 import DiplomacyState from "./DiplomacyState";
 import Player from "./Player";
+import {default as ValuesByPlayer} from "./ValuesByPlayer";
 
 import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData";
 import DiplomacyStatusSaveData from "./savedata/DiplomacyStatusSaveData";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 
 
+// TODO 2017.07.25 | rename
 export default class DiplomacyStatus
 {
-  player: Player;
-  baseOpinion: number;
+  private statusByPlayer: ValuesByPlayer<DiplomacyState>;
+  private attitudeModifiersByPlayer: ValuesByPlayer<AttitudeModifier[]>;
 
-  metPlayers:
-  {
-    [playerId: number]: Player;
-  } = {};
-
-  statusByPlayer:
-  {
-    [playerId: number]: DiplomacyState,
-  } = {};
-
-  attitudeModifiersByPlayer:
-  {
-    [playerId: number]: AttitudeModifier[];
-  } = {};
-
-  listeners:
+  private player: Player;
+  private baseOpinion: number;
+  private listeners:
   {
     [name: string]: Function[];
   } = {};
@@ -42,29 +31,7 @@ export default class DiplomacyStatus
     this.player = player;
     this.addEventListeners();
   }
-  addEventListeners()
-  {
-    for (let key in activeModuleData.Templates.AttitudeModifiers)
-    {
-      const template = activeModuleData.Templates.AttitudeModifiers[key];
-      if (template.triggers)
-      {
-        for (let i = 0; i < template.triggers.length; i++)
-        {
-          const listenerKey = template.triggers[i];
-          const listener = eventManager.addEventListener(listenerKey,
-            this.triggerAttitudeModifier.bind(this, template));
-
-          if (!this.listeners[listenerKey])
-          {
-            this.listeners[listenerKey] = [];
-          }
-          this.listeners[listenerKey].push(listener);
-        }
-      }
-    }
-  }
-  destroy()
+  public destroy()
   {
     for (let key in this.listeners)
     {
@@ -74,17 +41,12 @@ export default class DiplomacyStatus
       }
     }
   }
-  removePlayer(player: Player)
+  public getBaseOpinion()
   {
-    ["metPlayers", "statusByPlayer", "attitudeModifiersByPlayer"].forEach(prop =>
+    if (isFinite(this.baseOpinion))
     {
-      this[prop][player.id] = null;
-      delete this[prop][player.id];
-    });
-  }
-  getBaseOpinion()
-  {
-    if (isFinite(this.baseOpinion)) return this.baseOpinion;
+      return this.baseOpinion;
+    }
 
     const friendliness = this.player.AIController.personality.friendliness;
 
@@ -92,16 +54,11 @@ export default class DiplomacyStatus
 
     return this.baseOpinion;
   }
-
-  handleDiplomaticStatusUpdate()
-  {
-    eventManager.dispatchEvent("diplomaticStatusUpdated");
-  }
-  getOpinionOf(player: Player)
+  public getOpinionOf(player: Player)
   {
     const baseOpinion = this.getBaseOpinion();
 
-    const attitudeModifiers = this.attitudeModifiersByPlayer[player.id];
+    const attitudeModifiers = this.attitudeModifiersByPlayer.get(player);
     let modifierOpinion = 0;
 
     for (let i = 0; i < attitudeModifiers.length; i++)
@@ -111,39 +68,43 @@ export default class DiplomacyStatus
 
     return Math.round(baseOpinion + modifierOpinion);
   }
-  getUnMetPlayerCount()
+  public meetPlayer(player: Player)
   {
-    return app.game.getLiveMajorPlayers().length - Object.keys(this.metPlayers).length;
-  }
-  meetPlayer(player: Player)
-  {
-    if (this.metPlayers[player.id] || player === this.player) return;
+    if (this.hasMetPlayer(player))
+    {
+      return;
+    }
     else
     {
-      this.metPlayers[player.id] = player;
-      this.statusByPlayer[player.id] = DiplomacyState.coldWar;
-      this.attitudeModifiersByPlayer[player.id] = [];
+      this.statusByPlayer.set(player, DiplomacyState.coldWar);
+      this.attitudeModifiersByPlayer.set(player, []);
       player.diplomacyStatus.meetPlayer(this.player);
     }
   }
-  canDeclareWarOn(player: Player)
+  public hasMetPlayer(player: Player): Boolean
   {
-    return this.statusByPlayer[player.id] < DiplomacyState.war;
+    return this.statusByPlayer.get(player) > DiplomacyState.unmet;
   }
-  canMakePeaceWith(player: Player)
+  public canDeclareWarOn(player: Player)
   {
-    return this.statusByPlayer[player.id] > DiplomacyState.peace;
+    return this.hasMetPlayer(player) && this.statusByPlayer.get(player) < DiplomacyState.war;
   }
-  declareWarOn(targetPlayer: Player)
+  public canMakePeaceWith(player: Player)
   {
-    if (this.statusByPlayer[targetPlayer.id] >= DiplomacyState.war)
+    return this.hasMetPlayer(player) && this.statusByPlayer.get(player) > DiplomacyState.peace;
+  }
+  public declareWarOn(targetPlayer: Player)
+  {
+    if (this.statusByPlayer.get(targetPlayer) >= DiplomacyState.war)
     {
-      // TODO
+      // TODO 2017.07.25 | default ai module does this sometimes
       console.error("Players " + this.player.id + " and " + targetPlayer.id + " are already at war");
+
       return;
     }
-    this.statusByPlayer[targetPlayer.id] = DiplomacyState.war;
-    targetPlayer.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState.war;
+
+    this.statusByPlayer.set(targetPlayer, DiplomacyState.war);
+    targetPlayer.diplomacyStatus.statusByPlayer.set(this.player, DiplomacyState.war);
 
     eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", targetPlayer, this.player);
     activeModuleData.scripts.get(activeModuleData.scripts.diplomacy.onWarDeclaration).forEach(script =>
@@ -151,95 +112,72 @@ export default class DiplomacyStatus
       script(this.player, targetPlayer);
     });
   }
-
-  makePeaceWith(player: Player)
+  public makePeaceWith(player: Player)
   {
-    if (this.statusByPlayer[player.id] <= DiplomacyState.peace)
+    if (!this.canMakePeaceWith(player))
     {
-      throw new Error("Players " + this.player.id + " and " + player.id + " are already at peace");
+      throw new Error("Players " + this.player.id + " and " + player.id + " can't delcare peace.");
     }
 
-    this.statusByPlayer[player.id] = DiplomacyState.peace;
-    player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState.peace;
+    this.statusByPlayer.set(player, DiplomacyState.peace);
+    player.diplomacyStatus.statusByPlayer.set(this.player, DiplomacyState.peace);
   }
-
-  canAttackFleetOfPlayer(player: Player)
+  public canAttackFleetOfPlayer(player: Player)
   {
-    if (player.isIndependent) return true;
+    if (player.isIndependent)
+    {
+      return true;
+    }
 
-    if (this.statusByPlayer[player.id] >= DiplomacyState.coldWar)
+    if (this.statusByPlayer.get(player) >= DiplomacyState.coldWar)
     {
       return true;
     }
 
     return false;
   }
-  canAttackBuildingOfPlayer(player: Player)
+  public canAttackBuildingOfPlayer(player: Player)
   {
-    if (player.isIndependent) return true;
+    if (player.isIndependent)
+    {
+      return true;
+    }
 
-    if (this.statusByPlayer[player.id] >= DiplomacyState.war)
+    if (this.statusByPlayer.get(player) >= DiplomacyState.war)
     {
       return true;
     }
 
     return false;
   }
-
-  getModifierOfSameType(player: Player, modifier: AttitudeModifier)
+  public addAttitudeModifier(player: Player, modifier: AttitudeModifier)
   {
-    const modifiers = this.attitudeModifiersByPlayer[player.id];
-
-    for (let i = 0; i < modifiers.length; i++)
-    {
-      if (modifiers[i].template.type === modifier.template.type)
-      {
-        return modifiers[i];
-      }
-    }
-
-    return null;
-  }
-
-  addAttitudeModifier(player: Player, modifier: AttitudeModifier)
-  {
-    if (!this.attitudeModifiersByPlayer[player.id])
-    {
-      this.attitudeModifiersByPlayer[player.id] = [];
-    }
+    // TODO 2017.07.25 | can this happen?
+    // if (!todoModifiers[player.id])
+    // {
+    //   todoModifiers[player.id] = [];
+    // }
 
     const sameType = this.getModifierOfSameType(player, modifier);
     if (sameType)
     {
       sameType.refresh(modifier);
+
       return;
     }
 
-    this.attitudeModifiersByPlayer[player.id].push(modifier);
+    this.attitudeModifiersByPlayer.get(player).push(modifier);
   }
-  triggerAttitudeModifier(template: AttitudeModifierTemplate, player: Player, source: Player)
-  {
-    if (player !== this.player) return;
-
-    const modifier = new AttitudeModifier(
-    {
-      template: template,
-      startTurn: app.game.turnNumber,
-    });
-    this.addAttitudeModifier(source, modifier);
-  }
-
-  processAttitudeModifiersForPlayer(player: Player, evaluation: DiplomacyEvaluation)
+  public processAttitudeModifiersForPlayer(player: Player, evaluation: DiplomacyEvaluation)
   {
     /*
     remove modifiers that should be removed
     add modifiers that should be added. throw if type was already removed
     set new strength for modifier
      */
-    const modifiersByPlayer = this.attitudeModifiersByPlayer;
     const allModifiers = activeModuleData.Templates.AttitudeModifiers;
 
-    const playerModifiers = modifiersByPlayer[player.id];
+    const modifiersForPlayer = this.attitudeModifiersByPlayer.get(player);
 
     const activeModifiers:
     {
@@ -257,12 +195,12 @@ export default class DiplomacyStatus
     } = {};
 
     // remove modifiers & build active modifiers index
-    for (let i = playerModifiers.length - 1; i >= 0; i--)
+    for (let i = modifiersForPlayer.length - 1; i >= 0; i--)
     {
-      const modifier = playerModifiers[i];
+      const modifier = modifiersForPlayer[i];
       if (modifier.shouldEnd(evaluation))
       {
-        playerModifiers.splice(i, 1);
+        modifiersForPlayer.splice(i, 1);
         modifiersRemoved[modifier.template.type] = modifier;
       }
       else
@@ -302,7 +240,7 @@ export default class DiplomacyStatus
               startTurn: evaluation.currentTurn,
             });
 
-            playerModifiers.push(modifier);
+            modifiersForPlayer.push(modifier);
             modifiersAdded[template.type] = modifier;
           }
         }
@@ -315,37 +253,77 @@ export default class DiplomacyStatus
       }
     }
   }
-
-  serialize(): DiplomacyStatusSaveData
+  public serialize(): DiplomacyStatusSaveData
   {
-    const metPlayerIds: number[] = [];
-    for (let playerId in this.metPlayers)
-    {
-      metPlayerIds.push(this.metPlayers[playerId].id);
-    }
-
     const attitudeModifiersByPlayer:
     {
       [playerId: number]: AttitudeModifierSaveData[];
     } = {};
-    for (let playerId in this.attitudeModifiersByPlayer)
-    {
-      const serializedModifiers =
-        this.attitudeModifiersByPlayer[playerId].map(function(modifier)
-        {
-          return modifier.serialize();
-        });
-      attitudeModifiersByPlayer[playerId] = serializedModifiers;
-    }
 
+    this.attitudeModifiersByPlayer.forEach((player, modifiers) =>
+    {
+      attitudeModifiersByPlayer[player.id] = modifiers.map(modifier => modifier.serialize());
+    });
 
     const data: DiplomacyStatusSaveData =
     {
-      metPlayerIds: metPlayerIds,
       statusByPlayer: this.statusByPlayer,
       attitudeModifiersByPlayer: attitudeModifiersByPlayer,
     };
 
     return data;
+  }
+
+  // TODO 2017.07.25 | use same system as notifications here
+  private addEventListeners()
+  {
+    for (let key in activeModuleData.Templates.AttitudeModifiers)
+    {
+      const template = activeModuleData.Templates.AttitudeModifiers[key];
+      if (template.triggers)
+      {
+        for (let i = 0; i < template.triggers.length; i++)
+        {
+          const listenerKey = template.triggers[i];
+          const listener = eventManager.addEventListener(listenerKey,
+            this.triggerAttitudeModifier.bind(this, template));
+
+          if (!this.listeners[listenerKey])
+          {
+            this.listeners[listenerKey] = [];
+          }
+          this.listeners[listenerKey].push(listener);
+        }
+      }
+    }
+  }
+  private getModifierOfSameType(player: Player, modifier: AttitudeModifier)
+  {
+    const modifiers = this.attitudeModifiersByPlayer.get(player);
+
+    for (let i = 0; i < modifiers.length; i++)
+    {
+      if (modifiers[i].template.type === modifier.template.type)
+      {
+        return modifiers[i];
+      }
+    }
+
+    return null;
+  }
+  private triggerAttitudeModifier(template: AttitudeModifierTemplate, player: Player, source: Player)
+  {
+    // TODO 2017.07.25 | why would this happen?
+    if (player !== this.player)
+    {
+      return;
+    }
+
+    const modifier = new AttitudeModifier(
+    {
+      template: template,
+      startTurn: app.game.turnNumber,
+    });
+    this.addAttitudeModifier(source, modifier);
   }
 }
