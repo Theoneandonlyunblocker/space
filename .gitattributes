@@ -1,5 +1,5 @@
-built/* -diff
+dist/* -diff
 *.png -diff
 
 lib/* linguist-vendored
-built/* linguist-vendored
+dist/* linguist-vendored
