@@ -57,9 +57,9 @@ export class IdDictionary<K extends ObjectWithId, V>
 
   public forEach(callback: (key: K, value: V) => void): void
   {
-    for (let Id in this.keysById)
+    for (let id in this.keysById)
     {
-      callback(this.keysById[Id], this.valuesById[Id]);
+      callback(this.keysById[id], this.valuesById[id]);
     }
   }
   public filter(filterFN: (key: K, value: V) => boolean): IdDictionary<K, V>

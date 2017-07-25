@@ -58,7 +58,7 @@ export function handleMount(component: WindowContainerComponent): void
 {
   if (byId.has(component))
   {
-    throw new Error(`Duplicate window Id ${component.id} in window ${component}`);
+    throw new Error(`Duplicate window id ${component.id} in window ${component}`);
   }
 
   byId.set(component, component);
