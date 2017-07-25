@@ -1,17 +1,25 @@
 {
   "name": "spacegame",
   "version": "0.1.0",
+  "dependencies": {
+    "pixi.js": "4.3.x"
+  },
   "devDependencies": {
     "typescript": "2.4.x",
     "less": "2.6.x",
     "tslint": "4.5.x",
+    "ncp": "2.0.x",
+    "mkdirp": "0.5.x",
 
     "@types/react": "15.x",
     "@types/react-dom": "15.x",
     "@types/react-transition-group": "1.x"
   },
   "scripts": {
-    "build": "tsc && lessc ./css/main.less ./built/main.css",
+    "postinstall": "mkdirp dist && npm run copy-dependencies",
+
+    "build": "tsc && lessc ./css/main.less ./dist/main.css",
+    "copy-dependencies": "ncp node_modules/pixi.js/dist/pixi.js dist/pixi.js",
     "lint": "tslint \"src/**/*.ts\" && tslint \"modules/**/*.ts\"",
     "lintfix": "tslint \"src/**/*.ts\" --fix && tslint \"modules/**/*.ts\" --fix"
   },
