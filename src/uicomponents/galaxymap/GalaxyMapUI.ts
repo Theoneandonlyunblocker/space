@@ -9,6 +9,7 @@ import NotificationLog from "../../NotificationLog";
 import Player from "../../Player";
 import PlayerControl from "../../PlayerControl";
 import Star from "../../Star";
+import {activePlayer} from "../../activePlayer";
 import eventManager from "../../eventManager";
 
 import {Language} from "../../localization/Language";
@@ -89,8 +90,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
       currentlyReorganizing: pc.currentlyReorganizing,
       selectedStar: pc.selectedStar,
       attackTargets: pc.currentAttackTargets,
-      // TODO 2017.07.24 | check against activePlayer
-      isPlayerTurn: !this.props.game.playerToAct.isAI,
+      isPlayerTurn: this.props.game.playerToAct === activePlayer,
       expandedActionElement: null,
       hasMapModeSettingsExpanded: false,
     });
