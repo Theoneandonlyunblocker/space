@@ -5,6 +5,9 @@ interface ObjectWithId
 
 export class IdDictionary<K extends ObjectWithId, V>
 {
+  // prevents accidental assignment. don't think there's a way to prevent access completely
+  readonly [id: number]: never;
+
   private valuesById:
   {
     [id: number]: V;
