@@ -68,7 +68,6 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "language",
       header: localize("language"),
       options: languageOptions,
-      activeLanguage: this.props.activeLanguage,
     }));
 
     const battleAnimationOptions: any[] = [];
@@ -150,7 +149,6 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "battleAnimationOptions",
       header: localize("battleAnimationTiming"),
       options: battleAnimationOptions,
-      activeLanguage: this.props.activeLanguage,
       resetFN: () =>
       {
         Options.setDefaultForCategory("battleAnimationTiming");
@@ -209,7 +207,6 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "debug",
       header: localize("debug"),
       options: debugOptions,
-      activeLanguage: this.props.activeLanguage,
       resetFN: () =>
       {
         Options.setDefaultForCategory("debug");
@@ -243,7 +240,6 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         filter: this.props.log.notificationFilter,
         text: localize("messageSettings"),
         highlightedOptionKey: null,
-        activeLanguage: this.props.activeLanguage,
       }),
     });
 
@@ -264,7 +260,6 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "ui",
       header: localize("ui"),
       options: uiOptions,
-      activeLanguage: this.props.activeLanguage,
       resetFN: () =>
       {
         Options.setDefaultForCategory("ui");
@@ -298,7 +293,6 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "display",
       header: localize("display"),
       options: displayOptions,
-      activeLanguage: this.props.activeLanguage,
       resetFN: () =>
       {
         Options.setDefaultForCategory("display");

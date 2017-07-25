@@ -15,8 +15,6 @@ import MapGenOptionValues from "../../templateinterfaces/MapGenOptionValues";
 import MapGenOptions from "../../templateinterfaces/MapGenOptions";
 import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
 
-import {Language} from "../../localization/Language";
-
 import OptionsGroup from "../galaxymap/OptionsGroup";
 
 import MapGenOption from "./MapGenOption";
@@ -27,7 +25,6 @@ import {localize} from "../../../localization/localize";
 export interface PropTypes extends React.Props<any>
 {
   mapGenTemplate: MapGenTemplate;
-  activeLanguage: Language;
 }
 
 interface StateType
@@ -227,7 +224,6 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
         header: optionGroupsInfo[groupName].title,
         options: options,
         isCollapsedInitially: optionGroupsInfo[groupName].isCollapsedInitially,
-        activeLanguage: this.props.activeLanguage,
       }));
     }
 

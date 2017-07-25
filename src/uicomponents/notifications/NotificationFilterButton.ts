@@ -2,8 +2,6 @@ import * as React from "react";
 
 import NotificationFilter from "../../NotificationFilter";
 
-import {Language} from "../../localization/Language";
-
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import NotificationFilterList from "./NotificationFilterList";
@@ -16,7 +14,6 @@ export interface PropTypes extends React.Props<any>
   filter: NotificationFilter;
   text: string;
   highlightedOptionKey?: string;
-  activeLanguage: Language;
 }
 
 interface StateType
@@ -68,7 +65,6 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
             {
               filter: this.props.filter,
               highlightedOptionKey: this.props.highlightedOptionKey,
-              activeLanguage: this.props.activeLanguage,
             }),
           ),
       )

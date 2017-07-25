@@ -231,7 +231,6 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
           {
             player: this.props.player,
             game: this.props.game,
-            // activeLanguage: this.props.activeLanguage,
           }),
           TopMenu(
           {
@@ -254,7 +253,6 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
               currentlyReorganizing: this.state.currentlyReorganizing,
               closeReorganization: this.closeReorganization,
               player: this.props.player,
-              // activeLanguage: this.props.activeLanguage,
             }),
           ),
         ),
@@ -284,13 +282,11 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
                 selectedStar: this.state.selectedStar,
                 player: this.props.player,
                 setExpandedActionElementOnParent: this.setExpandedActionElement,
-                // activeLanguage: this.props.activeLanguage,
                 key: "possibleActions",
               }),
               StarInfo(
               {
                 selectedStar: this.state.selectedStar,
-                // activeLanguage: this.props.activeLanguage,
                 key: "starInfo",
               }),
             ),
@@ -305,7 +301,6 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
           !this.state.hasMapModeSettingsExpanded ? null : MapModeSettings(
           {
             mapRenderer: this.props.mapRenderer,
-            // activeLanguage: this.props.activeLanguage,
             key: "mapRendererLayersList",
           }),
           React.DOM.button(
@@ -320,7 +315,6 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
           {
             log: this.props.notificationLog,
             currentTurn: this.props.game.turnNumber,
-            activeLanguage: this.props.activeLanguage,
             key: "notifications",
           }),
           React.DOM.button(endTurnButtonProps, localize("endTurn")),

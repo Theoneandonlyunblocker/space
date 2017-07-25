@@ -1,7 +1,5 @@
 import * as React from "react";
 
-import {Language} from "../../localization/Language";
-
 import {localize} from "../../../localization/localize";
 
 
@@ -10,7 +8,6 @@ export interface PropTypes extends React.Props<any>
   isCollapsedInitially?: boolean;
   resetFN?: () => void;
   header?: string;
-  activeLanguage: Language;
   options:
   {
     key: string;

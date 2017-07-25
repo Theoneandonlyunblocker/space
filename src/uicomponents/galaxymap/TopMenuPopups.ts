@@ -85,8 +85,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       makeContent: () => ItemEquip(
       {
         player: this.props.player,
-        // TODO 2017.07.24 | remove these
-        // activeLanguage: this.props.activeLanguage,
       }),
       title: localize("equip"),
       // popupProps.minWidth = 440;
@@ -96,7 +94,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       makeContent: () => EconomySummary(
       {
         player: this.props.player,
-        // activeLanguage: this.props.activeLanguage,
       }),
       title: localize("economy"),
     },
@@ -105,7 +102,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       makeContent: () => SaveGame(
       {
         handleClose: this.closePopup.bind(this, "saveGame"),
-        // activeLanguage: this.props.activeLanguage,
       }),
       title: localize("save_imperative"),
     },
@@ -114,7 +110,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       makeContent: () => LoadGame(
       {
         handleClose: this.closePopup.bind(this, "loadGame"),
-        // activeLanguage: this.props.activeLanguage,
       }),
       title: localize("load_imperative"),
     },
@@ -136,7 +131,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         totalPlayerCount: this.props.game.getLiveMajorPlayers().length,
         metPlayers: this.props.player.diplomacyStatus.metPlayers,
         statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer,
-        // activeLanguage: this.props.activeLanguage,
       }),
       title: localize("diplomacy"),
     },
@@ -145,7 +139,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       makeContent: () => TechnologiesList(
       {
         playerTechnology: this.props.player.playerTechnology,
-        // activeLanguage: this.props.activeLanguage,
       }),
       title: localize("technology"),
       // popupProps.minWidth = 430;

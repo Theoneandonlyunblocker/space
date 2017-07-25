@@ -6,8 +6,6 @@ import Notification from "../../Notification";
 import NotificationLog from "../../NotificationLog";
 import eventManager from "../../eventManager";
 
-import {Language} from "../../localization/Language";
-
 import {default as DialogBox} from "../windows/DialogBox";
 
 import NotificationComponentFactory from "./Notification";
@@ -20,7 +18,6 @@ export interface PropTypes extends React.Props<any>
 {
   log: NotificationLog;
   currentTurn: number;
-  activeLanguage: Language;
 }
 
 interface StateType
@@ -114,7 +111,6 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
                 filter: log.notificationFilter,
                 text: localize("notificationFilterButton"),
                 highlightedOptionKey: notification.template.key,
-                activeLanguage: this.props.activeLanguage,
               }),
             ],
           },

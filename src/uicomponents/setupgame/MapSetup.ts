@@ -4,7 +4,6 @@ import {activeModuleData} from "../../activeModuleData";
 
 import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
 
-import {Language} from "../../localization/Language";
 
 import {default as MapGenOptions, MapGenOptionsComponent} from "./MapGenOptions";
 
@@ -14,7 +13,6 @@ import {localizeF} from "../../../localization/localize";
 export interface PropTypes extends React.Props<any>
 {
   setPlayerLimits: (limits: {min: number; max: number;}) => void;
-  activeLanguage: Language;
 }
 
 interface StateType
@@ -146,7 +144,6 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
         MapGenOptions(
         {
           mapGenTemplate: this.state.selectedTemplate,
-          activeLanguage: this.props.activeLanguage,
           ref: (component: MapGenOptionsComponent) =>
           {
             this.ref_TODO_mapGenOptions = component;

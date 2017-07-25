@@ -62,7 +62,6 @@ export class StageComponent extends React.Component<PropTypes, StateType>
           {
             battle: this.props.battle,
             humanPlayer: this.props.player,
-            // activeLanguage: this.props.activeLanguage,
             key: "battle",
           }),
         );
@@ -74,7 +73,6 @@ export class StageComponent extends React.Component<PropTypes, StateType>
           BattlePrepComponentFactory(
           {
             battlePrep: this.props.battlePrep,
-            // activeLanguage: this.props.activeLanguage,
             key: "battlePrep",
           }),
         );
@@ -102,7 +100,6 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           FlagMaker(
           {
-            // activeLanguage: this.props.activeLanguage,
             key: "flagMaker",
           }),
         );
@@ -113,7 +110,6 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           SetupGame(
           {
-            activeLanguage: this.props.activeLanguage,
             key: "setupGame",
           }),
         );
@@ -124,7 +120,6 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           BattleSceneTester(
           {
-            // activeLanguage: this.props.activeLanguage,
             key: "battleSceneTester",
           }),
         );
@@ -135,7 +130,6 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           SFXEditor(
           {
-            // activeLanguage: this.props.activeLanguage,
             key: "SFXEditor",
           }),
         );

@@ -2,8 +2,6 @@ import * as React from "react";
 
 import NotificationLog from "../../NotificationLog";
 
-import {Language} from "../../localization/Language";
-
 import NotificationLogComponentFactory from "./NotificationLog";
 
 
@@ -11,7 +9,6 @@ export interface PropTypes extends React.Props<any>
 {
   log: NotificationLog;
   currentTurn: number;
-  activeLanguage: Language;
 }
 
 interface StateType
@@ -40,7 +37,6 @@ export class NotificationsComponent extends React.Component<PropTypes, StateType
         {
           log: this.props.log,
           currentTurn: this.props.currentTurn,
-          activeLanguage: this.props.activeLanguage,
           key: "log",
         }),
       )
