@@ -2,9 +2,7 @@
 
 import Point from "./Point";
 
-// creating a dummy sprite for attaching a shader to
-// works much better than using pixi filters
-// TODO 2017.04.13 | doesn't actually work at all lol
+
 export function createDummySpriteForShader(x?: number, y?: number, width?: number, height?: number)
 {
   const texture = getDummyTextureForShader();
@@ -54,8 +52,10 @@ export function attachShaderToSprite(
   shader: PIXI.Filter<any>
 )
 {
-  // TODO 2016.12.08 | doesn't work
-  sprite.shader = shader;
+  // sprite.shader = shader;
+  // TODO 2017.07.24 | really just a temporary workaround
+  sprite.filters = [shader];
+  sprite.filterArea = sprite.getBounds();
 }
 export function convertClientRectToPixiRect(rect: ClientRect): PIXI.Rectangle
 {

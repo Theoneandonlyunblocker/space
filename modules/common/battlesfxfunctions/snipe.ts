@@ -6,7 +6,6 @@ import Color from "../../../src/Color";
 import {UnitAttribute} from "../../../src/UnitAttributes";
 import
 {
-  attachShaderToSprite,
   generateTextureWithBounds,
 } from "../../../src/pixiWrapperFunctions";
 
@@ -109,7 +108,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
       const sprite = new PIXI.Sprite(PIXI.Texture.fromFrame(projectileURL));
       sprite.height = 6;
       sprite.width = 32;
-      attachShaderToSprite(sprite, projectileColorMatrixFilter);
+      sprite.filters = [projectileColorMatrixFilter]
 
       return sprite;
     },
