@@ -1,9 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 import * as React from "react";
 
-import app from "./App"; // TODO global
 import {activeModuleData} from "./activeModuleData";
-import {activePlayer} from "./activePlayer";
 
 import WeightedProbability from "./templateinterfaces/WeightedProbability";
 
@@ -649,16 +647,6 @@ export function onDOMLoaded(onLoaded: () => void)
   {
     document.addEventListener("DOMContentLoaded", onLoaded);
   }
-}
-export function meetAllPlayers()
-{
-  app.game.getLiveMajorPlayers().forEach(player =>
-  {
-    if (player !== activePlayer)
-    {
-      activePlayer.diplomacyStatus.meetPlayer(player);
-    }
-  });
 }
 export function getItemsFromWeightedProbabilities<T>(probabilities: WeightedProbability<T>[])
 {

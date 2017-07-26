@@ -1,4 +1,5 @@
 import app from "./App"; // TODO global
+import {default as DiplomacyStatus} from "./DiplomacyStatus";
 import GalaxyMap from "./GalaxyMap";
 import Manufactory from "./Manufactory";
 import Player from "./Player";
@@ -36,6 +37,14 @@ export default class Game
       map.independents = null;
       delete map.independents;
     }
+
+    this.players.filter(player =>
+    {
+      return !player.isIndependent && !player.isDead;
+    }).forEach(player =>
+    {
+      player.diplomacyStatus = new DiplomacyStatus(player, this.players);
+    });
 
     this.turnNumber = 1;
   }

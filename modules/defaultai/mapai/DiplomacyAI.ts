@@ -31,11 +31,9 @@ export default class DiplomacyAI
     const diplomacyEvaluations =
       this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
 
-    for (let playerId in diplomacyEvaluations)
+    diplomacyEvaluations.forEach((player, evaluation) =>
     {
-      this.diplomacyStatus.processAttitudeModifiersForPlayer(
-        this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId],
-      );
-    }
+      this.diplomacyStatus.processAttitudeModifiersForPlayer(player, evaluation);
+    });
   }
 }

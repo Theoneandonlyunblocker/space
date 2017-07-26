@@ -24,7 +24,7 @@ export class DeclareWar extends DiplomaticObjective
   {
     const metNeighborPlayers = mapEvaluator.player.getNeighboringPlayers().filter(player =>
     {
-      return Boolean(mapEvaluator.player.diplomacyStatus.metPlayers[player.id]);
+      return mapEvaluator.player.diplomacyStatus.hasMetPlayer(player);
     });
 
     const declarableNeighbors = metNeighborPlayers.filter(player =>

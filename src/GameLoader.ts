@@ -43,7 +43,6 @@ export default class GameLoader
   // these are public as GameLoader objects can get passed around to deserializing functions which might want access
   public map: GalaxyMap;
   public players: Player[] = [];
-
   public playersById:
   {
     [id: number]: Player;
@@ -64,6 +63,8 @@ export default class GameLoader
   {
     [id: number]: Item;
   } = {};
+
+  private game: Game;
 
   constructor()
   {
@@ -105,22 +106,22 @@ export default class GameLoader
       this.players.push(player);
     }
 
-    // player diplomacy status. dependant on other players
-    for (let i = 0; i < data.players.length; i++)
-    {
-      const playerData = data.players[i];
-      this.deserializeDiplomacyStatus(
-        this.playersById[playerData.id],
-        playerData.diplomacyStatus,
-      );
-    }
-
     // buildings
     this.deserializeBuildings(data.galaxyMap);
 
     // create game
-    const game = new Game(this.map, this.players);
+    const game = this.game = new Game(this.map, this.players);
     game.turnNumber = data.turnNumber;
+
+    // player diplomacy status. dependant on other players & game
+    for (let i = 0; i < data.players.length; i++)
+      {
+        const playerData = data.players[i];
+        this.deserializeDiplomacyStatus(
+          this.playersById[playerData.id],
+          playerData.diplomacyStatus,
+        );
+      }
 
     // notification log
     if (data.notificationLog)
@@ -148,7 +149,7 @@ export default class GameLoader
 
   private deserializeNotificationLog(data: NotificationLogSaveData): NotificationLog
   {
-    const notificationLog = new NotificationLog(this.players);
+    const notificationLog = new NotificationLog(this.game.getLiveMajorPlayers());
 
     data.notifications.forEach(notificationData =>
     {
@@ -349,37 +350,28 @@ export default class GameLoader
   {
     if (data)
     {
-      for (let i = 0; i < data.metPlayerIds.length; i++)
+      for (let playerId in data.statusByPlayer)
       {
-        const id = data.metPlayerIds[i];
-        player.diplomacyStatus.metPlayers[id] = this.playersById[id];
+        player.diplomacyStatus.statusByPlayer.set(this.playersById[playerId], data.statusByPlayer[playerId]);
       }
-
-      player.diplomacyStatus.statusByPlayer = data.statusByPlayer;
 
       for (let playerId in data.attitudeModifiersByPlayer)
       {
         const modifiers = data.attitudeModifiersByPlayer[playerId];
 
-        if (!modifiers || modifiers.length === 0)
+        modifiers.forEach(modifierData =>
         {
-          player.diplomacyStatus.attitudeModifiersByPlayer[playerId] = [];
-          continue;
-        }
-
-        for (let i = 0; i < modifiers.length; i++)
-        {
-          const template = activeModuleData.Templates.AttitudeModifiers[modifiers[i].templateType];
+          const template = activeModuleData.Templates.AttitudeModifiers[modifierData.templateType];
           const modifier = new AttitudeModifier(
           {
             template: template,
-            startTurn: modifiers[i].startTurn,
-            endTurn: modifiers[i].endTurn,
-            strength: modifiers[i].strength,
+            startTurn:modifierData.startTurn,
+            endTurn:modifierData.endTurn,
+            strength:modifierData.strength,
           });
 
           player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
-        }
+        });
       }
     }
   }

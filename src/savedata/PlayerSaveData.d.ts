@@ -18,7 +18,7 @@ declare interface PlayerSaveData
   {
     [resourceType: string]: number;
   };
-  diplomacyStatus: DiplomacyStatusSaveData;
+  diplomacyStatus?: DiplomacyStatusSaveData;
 
   flag?: FlagSaveData;
 

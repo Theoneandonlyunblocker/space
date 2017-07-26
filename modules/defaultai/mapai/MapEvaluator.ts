@@ -404,11 +404,10 @@ export default class MapEvaluator
   {
     const byPlayer = new ValuesByPlayer<InfluenceMap>();
 
-    for (let playerId in this.player.diplomacyStatus.metPlayers)
+    this.player.diplomacyStatus.getMetPlayers().forEach(player =>
     {
-      const player = this.player.diplomacyStatus.metPlayers[playerId];
       byPlayer.set(player, this.getPlayerInfluenceMap(player));
-    }
+    });
 
     return byPlayer;
   }
@@ -441,11 +440,10 @@ export default class MapEvaluator
   {
     const byPlayer = new ValuesByPlayer<Star[]>();
 
-    for (let playerId in this.player.diplomacyStatus.metPlayers)
+    this.player.diplomacyStatus.getMetPlayers().forEach(player =>
     {
-      const player = this.player.diplomacyStatus.metPlayers[playerId];
       byPlayer.set(player, this.getVisibleStarsOfPlayer(player));
-    }
+    });
 
     return byPlayer;
   }
@@ -470,10 +468,10 @@ export default class MapEvaluator
   }
   getPerceivedThreatOfPlayer(player: Player)
   {
-    if (!this.player.diplomacyStatus.metPlayers[player.id])
+    if (!this.player.diplomacyStatus.hasMetPlayer(player))
     {
       throw new Error(this.player.name.fullName +
-        " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name.fullName);
+        " tried to call getPerceivedThreatOfPlayer on unmet player " + player.name.fullName);
     }
 
     const otherInfluenceMap = this.getPlayerInfluenceMap(player);
@@ -498,11 +496,10 @@ export default class MapEvaluator
   {
     const byPlayer = new ValuesByPlayer<number>();
 
-    for (let playerId in this.player.diplomacyStatus.metPlayers)
+    this.player.diplomacyStatus.getMetPlayers().forEach(player =>
     {
-      const player = this.player.diplomacyStatus.metPlayers[playerId];
       byPlayer.set(player, this.getPerceivedThreatOfPlayer(player));
-    }
+    });
 
     return byPlayer;
   }
@@ -718,40 +715,30 @@ export default class MapEvaluator
 
     return Math.random(); // TODO ai
   }
-  getDiplomacyEvaluations(currentTurn: number)
+  getDiplomacyEvaluations(currentTurn: number): ValuesByPlayer<DiplomacyEvaluation>
   {
-    const evaluationByPlayer:
+    const evaluations = new ValuesByPlayer<DiplomacyEvaluation>();
+    const neighborStarsByPlayer = new ValuesByPlayer<Star[]>();
+
+    this.player.getNeighboringStars().forEach(star =>
     {
-      [playerId: number]: DiplomacyEvaluation;
-    } = {};
+      neighborStarsByPlayer.setIfDoesntExist(star.owner, []);
+      neighborStarsByPlayer.get(star.owner).push(star);
+    });
 
-    const neighborStarsCountByPlayer = new ValuesByPlayer<number>();
-
-    const allNeighbors = this.player.getNeighboringStars();
-    for (let i = 0; i < allNeighbors.length; i++)
+    this.player.diplomacyStatus.getMetPlayers().forEach(player =>
     {
-      const star: Star = allNeighbors[i];
-      if (!star.owner.isIndependent)
-      {
-        const previousCount = neighborStarsCountByPlayer.get(star.owner) || 0;
-        neighborStarsCountByPlayer.set(star.owner, previousCount + 1);
-      }
-    }
+      neighborStarsByPlayer.setIfDoesntExist(player, []);
 
-
-    for (let playerId in this.player.diplomacyStatus.metPlayers)
-    {
-      const player = this.player.diplomacyStatus.metPlayers[playerId];
-
-      evaluationByPlayer[player.id] =
+      evaluations.set(player,
       {
         currentTurn: currentTurn,
         opinion: this.player.diplomacyStatus.getOpinionOf(player),
-        neighborStars: neighborStarsCountByPlayer.get(player),
-        currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id],
-      };
-    }
+        neighborStars: neighborStarsByPlayer.get(player).length,
+        currentStatus: this.player.diplomacyStatus.statusByPlayer.get(player),
+      });
+    });
 
-    return evaluationByPlayer;
+    return evaluations;
   }
 }

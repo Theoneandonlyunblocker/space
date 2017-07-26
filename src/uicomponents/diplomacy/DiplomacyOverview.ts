@@ -17,9 +17,6 @@ import {localize} from "../../../localization/localize";
 
 export interface PropTypes extends React.Props<any>
 {
-  metPlayers: {[id: number]: Player};
-  totalPlayerCount: number;
-  statusByPlayer: {[id: number]: DiplomacyState};
   player: Player;
 }
 
@@ -47,17 +44,14 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
 
   public render()
   {
-    const unmetPlayerCount = this.props.totalPlayerCount -
-      Object.keys(this.props.metPlayers).length - 1;
-
-    const rows: ListItem<DiplomaticStatusPlayerProps>[] = [];
-
-    for (let playerId in this.props.statusByPlayer)
+    // TODO 2017.07.26 | handle dead players
+    const metPlayers = this.props.player.diplomacyStatus.getMetPlayers();
+    const rows: ListItem<DiplomaticStatusPlayerProps>[] = metPlayers.map(player =>
     {
-      const player = this.props.metPlayers[playerId];
-      const status = this.props.player.diplomacyStatus.statusByPlayer[playerId];
+      const status = this.props.player.diplomacyStatus.statusByPlayer.get(player);
+      const statusSortingNumber = status === DiplomacyState.unmet ? Infinity : status;
 
-      rows.push(
+      return(
       {
         key: "" + player.id,
         content: DiplomaticStatusPlayer(
@@ -69,28 +63,11 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           flag: player.flag,
 
           baseOpinion: player.diplomacyStatus.getBaseOpinion(),
-          statusSortingNumber: status,
-          attitudeModifiers:
-            player.diplomacyStatus.attitudeModifiersByPlayer[this.props.player.id],
+          statusSortingNumber: statusSortingNumber,
+          attitudeModifiers: player.diplomacyStatus.attitudeModifiersByPlayer.get(this.props.player),
         }),
       });
-    }
-
-    for (let i = 0; i < unmetPlayerCount; i++)
-    {
-      rows.push(
-      {
-        key: "unmet" + i,
-        content: DiplomaticStatusPlayer(
-        {
-          player: null,
-          name: "?????",
-          status: "unmet",
-          statusSortingNumber: 99999 + i,
-          opinion: null,
-        }),
-      });
-    }
+    });
 
     const columns: ListColumn<DiplomaticStatusPlayerProps>[] =
     [

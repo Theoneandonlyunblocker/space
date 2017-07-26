@@ -43,6 +43,7 @@ import PlayerSaveData from "./savedata/PlayerSaveData";
 import PlayerTechnologySaveData from "./savedata/PlayerTechnologySaveData";
 
 
+// TODO 2017.07.26 | probably should split minor & major players into subclasses
 export default class Player
 {
   id: number;
@@ -190,8 +191,6 @@ export default class Player
       this.resources = extendObject(props.resources);
     }
 
-
-    this.diplomacyStatus = new DiplomacyStatus(this);
     if (!this.isIndependent)
     {
       if (this.race.isNotPlayable)
@@ -238,8 +237,12 @@ export default class Player
   }
   public destroy(): void
   {
-    this.diplomacyStatus.destroy();
-    this.diplomacyStatus = null;
+    if (this.diplomacyStatus)
+    {
+      this.diplomacyStatus.destroy();
+      this.diplomacyStatus = null;
+    }
+
     this.AIController = null;
 
     for (let key in this.listeners)
@@ -502,7 +505,7 @@ export default class Player
   updateVisionInStar(star: Star): void
   {
     // meet players
-    if (this.diplomacyStatus.getUnMetPlayerCount() > 0)
+    if (this.diplomacyStatus && this.diplomacyStatus.hasAnUnmetPlayer())
     {
       this.meetPlayersInStarByVisibility(star, "visible");
     }
@@ -510,7 +513,7 @@ export default class Player
   updateDetectionInStar(star: Star): void
   {
     // meet players
-    if (this.diplomacyStatus.getUnMetPlayerCount() > 0)
+    if (this.diplomacyStatus && this.diplomacyStatus.hasAnUnmetPlayer())
     {
       this.meetPlayersInStarByVisibility(star, "stealthy");
     }
@@ -539,10 +542,7 @@ export default class Player
     for (let playerId in presentPlayersByVisibility[visibility])
     {
       const player = presentPlayersByVisibility[visibility][playerId];
-      if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent)
-      {
-        this.diplomacyStatus.meetPlayer(player);
-      }
+      this.diplomacyStatus.meetPlayerIfNeeded(player);
     }
   }
   updateVisibleStars(): void
@@ -1015,8 +1015,6 @@ export default class Player
       isAI: this.isAI,
       resources: extendObject(this.resources),
 
-      diplomacyStatus: this.diplomacyStatus.serialize(),
-
       fleets: this.fleets.map(function(fleet){return fleet.serialize();}),
       money: this.money,
       controlledLocationIds: this.controlledLocations.map(function(star){return star.id;}),
@@ -1028,22 +1026,12 @@ export default class Player
 
       raceKey: this.race.type,
       isDead: this.isDead,
+
+      diplomacyStatus: this.diplomacyStatus ? this.diplomacyStatus.serialize() : null,
+      researchByTechnology: this.playerTechnology ? this.playerTechnology.serialize() : null,
+      flag: this.flag ? this.flag.serialize() : null,
+      AIController: this.AIController ? this.AIController.serialize() : null,
     };
-
-    if (this.playerTechnology)
-    {
-      data.researchByTechnology = this.playerTechnology.serialize();
-    }
-
-    if (this.flag)
-    {
-      data.flag = this.flag.serialize();
-    }
-
-    if (this.AIController)
-    {
-      data.AIController = this.AIController.serialize();
-    }
 
     return data;
   }

@@ -8,8 +8,6 @@ import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 import {UnitEvaluator} from "../mapai/UnitEvaluator";
 
-import DiplomacyState from "../../../src/DiplomacyState";
-import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
 import ValuesByStar from "../../../src/ValuesByStar";
@@ -29,16 +27,10 @@ export class ScoutingPerimeter extends TargetedFrontObjective
 
   protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): ScoutingPerimeter[]
   {
-    const playersToEstablishPerimeterAgainst: Player[] = [];
-    const diplomacyStatus = mapEvaluator.player.diplomacyStatus;
-    const statusByPlayer = diplomacyStatus.statusByPlayer;
-    for (let playerId in statusByPlayer)
+    const playersToEstablishPerimeterAgainst = mapEvaluator.player.diplomacyStatus.getMetPlayers().filter(player =>
     {
-      if (statusByPlayer[playerId] >= DiplomacyState.war)
-      {
-        playersToEstablishPerimeterAgainst.push(diplomacyStatus.metPlayers[playerId]);
-      }
-    }
+      return player.diplomacyStatus.canAttackBuildingOfPlayer(mapEvaluator.player);
+    });
 
     const allScores = playersToEstablishPerimeterAgainst.map(player =>
     {

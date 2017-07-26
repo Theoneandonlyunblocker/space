@@ -13,24 +13,36 @@ import DiplomacyStatusSaveData from "./savedata/DiplomacyStatusSaveData";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 
 
-// TODO 2017.07.25 | rename
+// TODO 2017.07.25 | rename. confusing with DiplomacyState
 export default class DiplomacyStatus
 {
-  private statusByPlayer: ValuesByPlayer<DiplomacyState>;
-  private attitudeModifiersByPlayer: ValuesByPlayer<AttitudeModifier[]>;
+  public readonly statusByPlayer: ValuesByPlayer<DiplomacyState>;
+  public readonly attitudeModifiersByPlayer: ValuesByPlayer<AttitudeModifier[]>;
 
-  private player: Player;
+  private readonly player: Player;
   private baseOpinion: number;
   private listeners:
   {
     [name: string]: Function[];
   } = {};
 
-  constructor(player: Player)
+  constructor(player: Player, allPlayersInGame: Player[])
   {
     this.player = player;
     this.addEventListeners();
+
+    const validPlayers = allPlayersInGame.filter(gamePlayer => this.canDoDiplomacyWithPlayer(gamePlayer));
+
+    this.statusByPlayer = new ValuesByPlayer<DiplomacyState>(validPlayers, () =>
+    {
+      return DiplomacyState.unmet;
+    });
+    this.attitudeModifiersByPlayer = new ValuesByPlayer<AttitudeModifier[]>(validPlayers, () =>
+    {
+      return [];
+    });
   }
+
   public destroy()
   {
     for (let key in this.listeners)
@@ -54,36 +66,56 @@ export default class DiplomacyStatus
 
     return this.baseOpinion;
   }
-  public getOpinionOf(player: Player)
+  public getOpinionOf(player: Player): number
   {
     const baseOpinion = this.getBaseOpinion();
 
     const attitudeModifiers = this.attitudeModifiersByPlayer.get(player);
-    let modifierOpinion = 0;
 
-    for (let i = 0; i < attitudeModifiers.length; i++)
+    const modifierOpinion = attitudeModifiers.map(modifier =>
     {
-      modifierOpinion += attitudeModifiers[i].getAdjustedStrength();
-    }
+      return modifier.getAdjustedStrength();
+    }).reduce((totalOpinion, currentOpinion) =>
+    {
+      return totalOpinion + currentOpinion;
+    }, 0);
 
     return Math.round(baseOpinion + modifierOpinion);
   }
-  public meetPlayer(player: Player)
+  public canDoDiplomacyWithPlayer(player: Player): boolean
   {
-    if (this.hasMetPlayer(player))
-    {
-      return;
-    }
-    else
-    {
-      this.statusByPlayer.set(player, DiplomacyState.coldWar);
-      this.attitudeModifiersByPlayer.set(player, []);
-      player.diplomacyStatus.meetPlayer(this.player);
-    }
+    return player !== this.player &&
+      !player.isIndependent &&
+      !player.isDead;
   }
-  public hasMetPlayer(player: Player): Boolean
+  public hasMetPlayer(player: Player): boolean
   {
     return this.statusByPlayer.get(player) > DiplomacyState.unmet;
+  }
+  public meetPlayerIfNeeded(player: Player): void
+  {
+    if (!this.hasMetPlayer(player) && this.canDoDiplomacyWithPlayer(player))
+    {
+      this.triggerMeetingWithPlayer(player);
+      player.diplomacyStatus.triggerMeetingWithPlayer(this.player);
+    }
+  }
+  public getMetPlayers(): Player[]
+  {
+    return this.statusByPlayer.filter((player, state) =>
+    {
+      return state > DiplomacyState.unmet;
+    }).mapToArray(player =>
+    {
+      return player;
+    });
+  }
+  public hasAnUnmetPlayer(): boolean
+  {
+    return this.statusByPlayer.some((player, state) =>
+    {
+      return state === DiplomacyState.unmet;
+    });
   }
   public canDeclareWarOn(player: Player)
   {
@@ -267,7 +299,7 @@ export default class DiplomacyStatus
 
     const data: DiplomacyStatusSaveData =
     {
-      statusByPlayer: this.statusByPlayer,
+      statusByPlayer: this.statusByPlayer.toObject(),
       attitudeModifiersByPlayer: attitudeModifiersByPlayer,
     };
 
@@ -324,6 +356,11 @@ export default class DiplomacyStatus
       template: template,
       startTurn: app.game.turnNumber,
     });
+
     this.addAttitudeModifier(source, modifier);
+  }
+  private triggerMeetingWithPlayer(player: Player): void
+  {
+    this.statusByPlayer.set(player, DiplomacyState.coldWar);
   }
 }

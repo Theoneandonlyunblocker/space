@@ -118,14 +118,14 @@ export default class NotificationLog
       {
         return involvedPlayers.some(involvedPlayer =>
         {
-          return Boolean(witnessingPlayer.diplomacyStatus.metPlayers[involvedPlayer.id]);
+          return witnessingPlayer.diplomacyStatus.hasMetPlayer(involvedPlayer);
         });
       }
       case NotificationWitnessCriterion.metAllInvolvedPlayers:
       {
         return involvedPlayers.every(involvedPlayer =>
         {
-          return Boolean(witnessingPlayer.diplomacyStatus.metPlayers[involvedPlayer.id]);
+          return witnessingPlayer.diplomacyStatus.hasMetPlayer(involvedPlayer)
         });
       }
       case NotificationWitnessCriterion.locationIsRevealed:
