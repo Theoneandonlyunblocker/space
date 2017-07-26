@@ -28,6 +28,7 @@ const stealthShip: UnitTemplate =
   icon: "modules/defaultunits/img/icons/sc.png",
   maxHealth: 0.6,
   maxMovePoints: 1,
+  maxOffensiveBattlesPerTurn: 1,
   visionRange: 1,
   detectionRange: -1,
   isStealthy: true,

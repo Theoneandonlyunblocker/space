@@ -18,8 +18,10 @@ declare interface UnitTemplate extends ManufacturableThing
   isSquadron: boolean;
   buildCost: number;
   icon: string;
+  // TODO 2017.07.26 | rename maxHealthLevel
   maxHealth: number;
   maxMovePoints: number;
+  maxOffensiveBattlesPerTurn: number;
 
   /**
    * used by the ai to balance unit composition

@@ -44,8 +44,9 @@ const debugShip: UnitTemplate =
   icon: "modules/defaultunits/img/icons/f.png",
   maxHealth: 1,
   maxMovePoints: 999,
-  visionRange: 1,
-  detectionRange: -1,
+  maxOffensiveBattlesPerTurn: 999,
+  visionRange: 999,
+  detectionRange: 999,
   attributeLevels:
   {
     attack: 9,

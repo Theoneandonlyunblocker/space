@@ -29,6 +29,7 @@ const battleCruiser: UnitTemplate =
   icon: "modules/defaultunits/img/icons/bc.png",
   maxHealth: 1,
   maxMovePoints: 1,
+  maxOffensiveBattlesPerTurn: 1,
   visionRange: 1,
   detectionRange: -1,
   attributeLevels:

@@ -34,6 +34,7 @@ const shieldBoat: UnitTemplate =
   icon: "modules/defaultunits/img/icons/sh.png",
   maxHealth: 0.9,
   maxMovePoints: 1,
+  maxOffensiveBattlesPerTurn: 1,
   visionRange: 1,
   detectionRange: -1,
   attributeLevels:

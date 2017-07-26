@@ -29,6 +29,7 @@ export const droneCommander: UnitTemplate =
 
   maxHealth: 0.75,
   maxMovePoints: 1,
+  maxOffensiveBattlesPerTurn: 1,
   visionRange: 1,
   detectionRange: -1,
   attributeLevels:

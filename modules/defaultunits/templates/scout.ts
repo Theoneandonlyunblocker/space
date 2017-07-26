@@ -28,6 +28,7 @@ const scout: UnitTemplate =
   icon: "modules/defaultunits/img/icons/sc.png",
   maxHealth: 0.6,
   maxMovePoints: 2,
+  maxOffensiveBattlesPerTurn: 1,
   visionRange: 2,
   detectionRange: 0,
   attributeLevels:
