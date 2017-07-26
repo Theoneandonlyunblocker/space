@@ -434,7 +434,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
         {
           units: battlePrep.humanFormation.units,
           selectedUnit: this.state.selectedUnit,
-          reservedUnits: battlePrep.humanFormation.placedUnitPositionsById,
+          reservedUnits: battlePrep.humanFormation.getPlacedUnits(),
           unavailableUnits: battlePrep.humanPlayer === battlePrep.attacker ?
             battlePrep.humanUnits.filter(unit => !unit.canFightOffensiveBattle()) :
             [],

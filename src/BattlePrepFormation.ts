@@ -2,6 +2,10 @@ import Player from "./Player";
 import Unit from "./Unit";
 import UnitDisplayData from "./UnitDisplayData";
 import getNullFormation from "./getNullFormation";
+import
+{
+  flatten2dArray,
+} from "./utility";
 
 export default class BattlePrepFormation
 {
@@ -37,6 +41,10 @@ export default class BattlePrepFormation
     this.formation = getNullFormation();
   }
 
+  public getPlacedUnits(): Unit[]
+  {
+    return flatten2dArray(this.formation).filter(unit => Boolean(unit));
+  }
   public forEachUnitInFormation(f: (unit: Unit, pos?: number[]) => void): void
   {
     for (let i = 0; i < this.formation.length; i++)

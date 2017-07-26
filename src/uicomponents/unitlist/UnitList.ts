@@ -15,12 +15,12 @@ export interface PropTypes extends React.Props<any>
   selectedUnit: Unit;
   onRowChange: (row: ListItem<UnitListItemProps>) => void;
   isDraggable: boolean;
+  reservedUnits: Unit[];
   unavailableUnits: Unit[];
 
   autoSelect?: boolean;
   onMouseLeave?: () => void;
   onDragStart?: (unit: Unit) => void;
-  reservedUnits?: {[unitId: number]: number[]};
   onDragEnd?: (dropSuccesful?: boolean) => void;
   onMouseEnterUnit?: (unit: Unit) => void;
   hoveredUnit?: Unit;
@@ -64,7 +64,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
           intelligence: unit.attributes.intelligence,
           speed: unit.attributes.speed,
 
-          isReserved: Boolean(this.props.reservedUnits && this.props.reservedUnits[unit.id]),
+          isReserved: this.props.reservedUnits.indexOf(unit) !== -1,
           isUnavailable: this.props.unavailableUnits.indexOf(unit) !== -1,
           isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
           isHovered: (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),

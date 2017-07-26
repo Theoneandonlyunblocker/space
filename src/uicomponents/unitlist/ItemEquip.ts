@@ -133,6 +133,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
         {
           units: player.units,
           selectedUnit: this.state.selectedUnit,
+          reservedUnits: [],
           unavailableUnits: player.units.filter(unit => !unit.canFightOffensiveBattle()),
           isDraggable: false,
           onRowChange: this.handleSelectRow,
