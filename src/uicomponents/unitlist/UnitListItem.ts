@@ -22,10 +22,10 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   speed: number;
 
   onMouseLeave: () => void;
-  hasNoActionsLeft: boolean;
   isHovered: boolean;
   currentHealth: number;
   isReserved: boolean;
+  isUnavailable: boolean;
   isSelected: boolean;
   onMouseEnter: (unit: Unit) => void;
   maxHealth: number;
@@ -249,7 +249,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
       onClick : this.props.handleClick,
     };
 
-    if (this.props.isDraggable && !this.props.hasNoActionsLeft)
+    if (this.props.isDraggable && !this.props.isUnavailable)
     {
       rowProps.className += " draggable";
       rowProps.onTouchStart = rowProps.onMouseDown =
@@ -261,19 +261,17 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     {
       rowProps.className += " selected-unit";
     };
-
     if (this.props.isReserved)
     {
       rowProps.className += " reserved-unit";
     }
+    if (this.props.isUnavailable)
+    {
+      rowProps.className += " unavailable-unit";
+    }
     if (this.props.isHovered)
     {
       rowProps.className += " unit-list-item-hovered";
-    }
-
-    if (this.props.hasNoActionsLeft)
-    {
-      rowProps.className += " no-actions-left";
     }
 
 

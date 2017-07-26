@@ -435,9 +435,10 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           units: battlePrep.humanFormation.units,
           selectedUnit: this.state.selectedUnit,
           reservedUnits: battlePrep.humanFormation.placedUnitPositionsById,
+          unavailableUnits: battlePrep.humanPlayer === battlePrep.attacker ?
+            battlePrep.humanUnits.filter(unit => !unit.canFightOffensiveBattle()) :
+            [],
           hoveredUnit: this.state.hoveredUnit,
-
-          checkTimesActed: true,
 
           isDraggable: this.state.leftLowerElement === "playerFormation",
           onDragStart: this.handleDragStart,
