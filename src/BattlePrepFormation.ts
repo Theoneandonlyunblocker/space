@@ -66,7 +66,7 @@ export default class BattlePrepFormation
     this.clearFormation();
 
     this.formation = this.player.AIController.createBattleFormation(
-      this.units,
+      this.getAvailableUnits(),
       this.hasScouted,
       enemyUnits,
       enemyFormation,
@@ -103,7 +103,7 @@ export default class BattlePrepFormation
       });
     }
 
-    const availableUnits = this.units.filter(unit => unit.canActThisTurn());
+    const availableUnits = this.getAvailableUnits();
     const hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
 
     if (amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits)
@@ -182,5 +182,11 @@ export default class BattlePrepFormation
     });
 
     return displayDataById;
+  }
+  private getAvailableUnits(): Unit[]
+  {
+    return this.isAttacker ?
+      this.units.filter(unit => unit.canFightOffensiveBattle()) :
+      this.units.slice();
   }
 }

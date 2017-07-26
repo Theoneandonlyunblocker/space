@@ -86,7 +86,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     const scoutedFormation = hasScouted ? enemyFormation : null;
 
     const formation = getNullFormation();
-    const unitsToPlace = availableUnits.filter(unit => unit.canActThisTurn());
+    const unitsToPlace = availableUnits.slice();
 
     const maxUnitsPerRow = formation[0].length;
     const maxUnitsPerSide = activeModuleData.ruleSet.battle.maxUnitsPerSide;

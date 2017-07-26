@@ -139,7 +139,7 @@ export default class Game
       }
 
       unit.resetMovePoints();
-      unit.timesActedThisTurn = 0;
+      unit.offensiveBattlesFoughtThisTurn = 0;
     });
 
     if (!player.isIndependent)

@@ -57,7 +57,7 @@ export default class Unit
   public currentMovePoints: number;
   public maxMovePoints: number;
 
-  public timesActedThisTurn: number;
+  public offensiveBattlesFoughtThisTurn: number;
 
   public baseAttributes: UnitAttributes;
   public attributesAreDirty: boolean = false;
@@ -110,7 +110,7 @@ export default class Unit
 
     currentMovePoints: number;
     maxMovePoints: number;
-    timesActedThisTurn: number;
+    offensiveBattlesFoughtThisTurn: number;
 
     abilities: AbilityTemplate[];
     passiveSkills: PassiveSkillTemplate[];
@@ -140,7 +140,7 @@ export default class Unit
 
     this.currentMovePoints = props.currentMovePoints;
     this.maxMovePoints = props.maxMovePoints;
-    this.timesActedThisTurn = props.timesActedThisTurn;
+    this.offensiveBattlesFoughtThisTurn = props.offensiveBattlesFoughtThisTurn;
 
     this.abilities = props.abilities.slice(0);
     this.passiveSkills = props.passiveSkills.slice(0);
@@ -236,7 +236,8 @@ export default class Unit
 
       currentMovePoints: template.maxMovePoints,
       maxMovePoints: template.maxMovePoints,
-      timesActedThisTurn: 0,
+
+      offensiveBattlesFoughtThisTurn: 0,
 
       abilities: getItemsFromWeightedProbabilities(template.possibleAbilities),
       passiveSkills: template.possiblePassiveSkills ?
@@ -271,7 +272,7 @@ export default class Unit
 
       currentMovePoints: data.currentMovePoints,
       maxMovePoints: data.maxMovePoints,
-      timesActedThisTurn: data.timesActedThisTurn,
+      offensiveBattlesFoughtThisTurn: data.offensiveBattlesFoughtThisTurn,
 
       abilities: data.abilityTemplateTypes.map(templateType =>
       {
@@ -802,25 +803,26 @@ export default class Unit
   }
   public getCounterAttackStrength()
   {
-    return 1; // TODO unit
+    return 1;
   }
-  public canActThisTurn(): boolean
+  public getMaxOffensiveBattlesPerTurn(): number
   {
-    return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
+    return this.template.maxOffensiveBattlesPerTurn;
+  }
+  public canFightOffensiveBattle(): boolean
+  {
+    return this.offensiveBattlesFoughtThisTurn < this.getMaxOffensiveBattlesPerTurn();
   }
   public isStealthy(): boolean
   {
-    // TODO unit
     return this.template.isStealthy;
   }
   public getVisionRange(): number
   {
-    // TODO unit
     return this.template.visionRange;
   }
   public getDetectionRange(): number
   {
-    // TODO unit
     return this.template.detectionRange;
   }
   public getHealingForGameTurnStart(): number
@@ -1088,7 +1090,7 @@ export default class Unit
       currentMovePoints: this.currentMovePoints,
       maxMovePoints: this.maxMovePoints,
 
-      timesActedThisTurn: this.timesActedThisTurn,
+      offensiveBattlesFoughtThisTurn: this.offensiveBattlesFoughtThisTurn,
 
       baseAttributes: this.baseAttributes.serialize(),
       abilityTemplateTypes: this.abilities.map(function(ability: AbilityTemplate)
@@ -1130,7 +1132,7 @@ export default class Unit
       attributes: this.baseAttributes.clone(),
       currentMovePoints: this.currentMovePoints,
       maxMovePoints: this.maxMovePoints,
-      timesActedThisTurn: this.timesActedThisTurn,
+      offensiveBattlesFoughtThisTurn: this.offensiveBattlesFoughtThisTurn,
       abilities: this.abilities,
       passiveSkills: this.passiveSkills,
       level: this.level,

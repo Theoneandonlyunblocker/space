@@ -173,7 +173,12 @@ export default class Battle
     unit.resetBattleStats();
     unit.setBattlePosition(this, side, position);
     this.turnOrder.addUnit(unit);
-    unit.timesActedThisTurn++;
+
+    const isAttacking = this.battleData.attacker.units.indexOf(unit) !== -1;
+    if (isAttacking)
+    {
+      unit.offensiveBattlesFoughtThisTurn += 1;
+    }
   }
   private triggerBattleStartAbilities(): void
   {

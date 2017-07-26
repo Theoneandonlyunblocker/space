@@ -12,7 +12,7 @@ declare interface UnitSaveData
   currentHealth: number;
   currentMovePoints: number;
   maxMovePoints: number;
-  timesActedThisTurn: number;
+  offensiveBattlesFoughtThisTurn: number;
   baseAttributes: UnitAttributesObject;
   abilityTemplateTypes: string[];
   passiveSkillTemplateTypes: string[];
