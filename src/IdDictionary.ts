@@ -1,3 +1,9 @@
+import
+{
+  shallowCopy,
+} from "./utility";
+
+
 interface ObjectWithId
 {
   id: number;
@@ -57,7 +63,6 @@ export class IdDictionary<K extends ObjectWithId, V>
     delete this.valuesById[key.id];
     delete this.keysById[key.id];
   }
-
   public forEach(callback: (key: K, value: V) => void): void
   {
     for (let id in this.keysById)
@@ -96,6 +101,10 @@ export class IdDictionary<K extends ObjectWithId, V>
     }
 
     return zipped;
+  }
+  public toObject(): {[id: number]: V}
+  {
+    return shallowCopy(this.valuesById);
   }
   public sort(sortingFN: (a: V, b: V) => number): K[]
   {
@@ -155,5 +164,21 @@ export class IdDictionary<K extends ObjectWithId, V>
     });
 
     return merged;
+  }
+  public find(filterFN: (key: K, value: V) => boolean): K | null
+  {
+    for (let id in this.keysById)
+    {
+      if (filterFN(this.keysById[id], this.valuesById[id]))
+      {
+        return this.keysById[id];
+      }
+    }
+
+    return null;
+  }
+  public some(filterFN: (key: K, value: V) => boolean): boolean
+  {
+    return Boolean(this.find(filterFN));
   }
 }
