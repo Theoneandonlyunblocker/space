@@ -32,9 +32,6 @@ declare interface UnitTemplate extends ManufacturableThing
    */
   visionRange: number;
   /**
-   *
-   */
-  /**
    * used for vision on stealthy units. detected units have their type & stats revealed
    * -1: no vision, 0: current star only, 1: current & neighbors, etc.
    */
@@ -52,7 +49,7 @@ declare interface UnitTemplate extends ManufacturableThing
   possibleAbilities: WeightedProbability<AbilityTemplate>[];
   possiblePassiveSkills?: WeightedProbability<PassiveSkillTemplate>[];
   /**
-   * List of abilities that can be upgraded into despite 'onlyAllowExplicitUpgrade' flag
+   * List of abilities that can be upgraded into even if ability has 'onlyAllowExplicitUpgrade' flag
    */
   specialAbilityUpgrades?: AbilityBase[];
   /**

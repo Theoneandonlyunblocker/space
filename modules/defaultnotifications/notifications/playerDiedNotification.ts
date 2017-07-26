@@ -26,7 +26,7 @@ export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedP
   category: "game",
   defaultFilterState: [NotificationFilterState.alwaysShow],
   witnessCriteria: [[NotificationWitnessCriterion.metOneInvolvedPlayer]],
-  iconSrc: "modules/common/resourcetemplates/img/test1.png",
+  iconSrc: "modules/common/resourcetemplates/img/test3.png",
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {

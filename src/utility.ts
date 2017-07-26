@@ -353,6 +353,7 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
   return to;
 }
 
+// TODO 2017.07.26 | remove & replace with object spread
 export function shallowCopy<T>(toCopy: T): T
 {
   return shallowExtend(toCopy);
