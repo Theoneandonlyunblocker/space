@@ -26,7 +26,7 @@ import
 
 
 // TODO 2017.07.18 | sort out capitalization for all these...
-type mergedType =
+type AllLocalizedTexts =
   typeof en_battle &
   typeof en_diplomacy &
   typeof en_fleet &
@@ -44,9 +44,9 @@ type mergedType =
   typeof en_unit &
   typeof en_unitUpgrade;
 
-export const localizer = new Localizer<mergedType>("ui");
+export const localizer = new Localizer<AllLocalizedTexts>("ui");
 
-const mergedTexts = shallowExtend<mergedType>(
+const mergedTexts = shallowExtend<AllLocalizedTexts>(
   en_battle,
   en_diplomacy,
   en_fleet,
@@ -69,13 +69,13 @@ localizer.registerTexts(mergedTexts, Languages.en);
 
 const boundLocalize: typeof localizer.localize = localizer.localize.bind(localizer);
 
-export function localizeF(key: keyof mergedType, quantity: number | "plural" = 1)
+export function localizeF(key: keyof AllLocalizedTexts, quantity: number | "plural" = 1)
 {
   const realQuantity = quantity === "plural" ? 2 : quantity;
 
   return boundLocalize(key, realQuantity);
 }
-export function localize(key: keyof mergedType, quantity: number | "plural" = 1)
+export function localize(key: keyof AllLocalizedTexts, quantity: number | "plural" = 1)
 {
   const realQuantity = quantity === "plural" ? 2 : quantity;
 
