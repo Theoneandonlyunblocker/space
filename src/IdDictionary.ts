@@ -67,7 +67,7 @@ export class IdDictionary<K extends ObjectWithId, V>
   }
   public filter(filterFN: (key: K, value: V) => boolean): IdDictionary<K, V>
   {
-    const filtered: IdDictionary<K, V> = this.constructor();
+    const filtered: IdDictionary<K, V> = new (this.constructor as any)();
 
     this.forEach((key, value) =>
     {
