@@ -51,17 +51,6 @@ export default class BattleSimulator
   {
     useAbility(this.battle, ability, this.battle.activeUnit, target);
   }
-  // getBattleEndData()
-  // {
-  //   if (!this.battle.ended)
-  //   {
-  //     throw new Error("Simulated battle hasn't ended yet");
-  //   }
-
-  //   const captured = this.battle.capturedUnits;
-  //   const destroyed = this.battle.deadUnits;
-  //   const victor = this.battle.getVictor();
-  // }
   finishBattle()
   {
     this.battle.finishBattle();
