@@ -372,6 +372,9 @@ export default class Unit
       queuedAction: null,
       isAnnihilated: false,
     };
+
+    this.attributesAreDirty = true;
+    this.uiDisplayIsDirty = true;
   }
   public setBattlePosition(battle: Battle, side: UnitBattleSide, position: number[])
   {
