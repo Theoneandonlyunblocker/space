@@ -1,7 +1,6 @@
 import app from "./App"; // TODO global
 import {default as DiplomacyStatus} from "./DiplomacyStatus";
 import GalaxyMap from "./GalaxyMap";
-import Manufactory from "./Manufactory";
 import Player from "./Player";
 import {activeNotificationLog} from "./activeNotificationLog";
 import {activePlayer} from "./activePlayer";
@@ -58,6 +57,8 @@ export default class Game
   }
   public endTurn()
   {
+    this.processPlayerEndTurn(this.playerToAct);
+
     this.setNextPlayer();
 
     while (this.playerToAct.isDead)
@@ -154,7 +155,13 @@ export default class Game
       }
 
       player.playerTechnology.allocateResearchPoints(player.getResearchSpeed());
-      player.getAllManufactories().forEach(function(manufactory: Manufactory)
+    }
+  }
+  private processPlayerEndTurn(player: Player): void
+  {
+    if (!player.isIndependent)
+    {
+      player.getAllManufactories().forEach(manufactory =>
       {
         manufactory.buildAllThings();
       });
