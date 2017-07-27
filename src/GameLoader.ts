@@ -114,14 +114,14 @@ export default class GameLoader
     game.turnNumber = data.turnNumber;
 
     // player diplomacy status. dependant on other players & game
-    for (let i = 0; i < data.players.length; i++)
+    data.players.forEach(playerData =>
+    {
+      const player = this.playersById[playerData.id];
+      if (player.diplomacyStatus && playerData.diplomacyStatus)
       {
-        const playerData = data.players[i];
-        this.deserializeDiplomacyStatus(
-          this.playersById[playerData.id],
-          playerData.diplomacyStatus,
-        );
+        this.deserializeDiplomacyStatus(player, playerData.diplomacyStatus);
       }
+    });
 
     // notification log
     if (data.notificationLog)
@@ -348,31 +348,28 @@ export default class GameLoader
   }
   private deserializeDiplomacyStatus(player: Player, data: DiplomacyStatusSaveData): void
   {
-    if (data)
+    for (let playerId in data.statusByPlayer)
     {
-      for (let playerId in data.statusByPlayer)
-      {
-        player.diplomacyStatus.statusByPlayer.set(this.playersById[playerId], data.statusByPlayer[playerId]);
-      }
+      player.diplomacyStatus.statusByPlayer.set(this.playersById[playerId], data.statusByPlayer[playerId]);
+    }
 
-      for (let playerId in data.attitudeModifiersByPlayer)
-      {
-        const modifiers = data.attitudeModifiersByPlayer[playerId];
+    for (let playerId in data.attitudeModifiersByPlayer)
+    {
+      const modifiers = data.attitudeModifiersByPlayer[playerId];
 
-        modifiers.forEach(modifierData =>
+      modifiers.forEach(modifierData =>
+      {
+        const template = activeModuleData.Templates.AttitudeModifiers[modifierData.templateType];
+        const modifier = new AttitudeModifier(
         {
-          const template = activeModuleData.Templates.AttitudeModifiers[modifierData.templateType];
-          const modifier = new AttitudeModifier(
-          {
-            template: template,
-            startTurn:modifierData.startTurn,
-            endTurn:modifierData.endTurn,
-            strength:modifierData.strength,
-          });
-
-          player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
+          template: template,
+          startTurn:modifierData.startTurn,
+          endTurn:modifierData.endTurn,
+          strength:modifierData.strength,
         });
-      }
+
+        player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
+      });
     }
   }
   private deserializeEmblem(emblemData: EmblemSaveData): Emblem
