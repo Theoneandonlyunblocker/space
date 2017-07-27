@@ -53,6 +53,7 @@ export default class Battle
 
   public ended: boolean = false;
   public victor: Player;
+  public loser: Player;
   public capturedUnits: Unit[];
   public deadUnits: Unit[];
 
@@ -235,6 +236,21 @@ export default class Battle
       throw new Error("invalid player");
     }
   }
+  private getOtherPlayer(player: Player): Player
+  {
+    if (player === this.side1Player)
+    {
+      return this.side2Player;
+    }
+    else if (player === this.side2Player)
+    {
+      return this.side1Player;
+    }
+    else
+    {
+      throw new Error("Invalid player");
+    }
+  }
   private getRowByPosition(position: number): (Unit | null)[]
   {
     const rowsPerSide = activeModuleData.ruleSet.battle.rowsPerFormation;
@@ -258,7 +274,8 @@ export default class Battle
   // Battle End
   public finishBattle(forcedVictor?: Player): void
   {
-    const victor = this.victor = forcedVictor || this.getVictor();
+    this.victor = forcedVictor || this.getVictor();
+    this.loser = this.getOtherPlayer(this.victor);
 
     for (let i = 0; i < this.deadUnits.length; i++)
     {
@@ -285,20 +302,22 @@ export default class Battle
       this.side2Player.identifyUnit(unit);
     });
 
-    if (victor)
+    if (this.victor)
     {
-      for (let i = 0; i < this.capturedUnits.length; i++)
+      this.capturedUnits.forEach(unit =>
       {
-        this.capturedUnits[i].transferToPlayer(victor);
-        this.capturedUnits[i].experienceForCurrentLevel = 0;
-      }
+        activeModuleData.scripts.unit.onCapture.forEach(script =>
+        {
+          script(unit, this.loser, this.victor);
+        });
+      });
     }
 
     if (this.battleData.building)
     {
-      if (victor)
+      if (this.victor)
       {
-        this.battleData.building.setController(victor);
+        this.battleData.building.setController(this.victor);
       }
     }
 
