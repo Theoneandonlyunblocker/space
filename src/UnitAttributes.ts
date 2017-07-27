@@ -6,10 +6,10 @@ import
 
 export enum UnitAttribute
 {
-  attack,
-  defence,
-  intelligence,
-  speed,
+  Attack,
+  Defence,
+  Intelligence,
+  Speed,
 }
 
 // TODO 2017.02.06 | can't we use the actual class instead of this?

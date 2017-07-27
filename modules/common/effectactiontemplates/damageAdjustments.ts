@@ -31,13 +31,13 @@ export function getAttackDamageIncrease(unit: Unit, damageType: DamageType): num
 
   switch (damageType)
   {
-    case DamageType.physical:
+    case DamageType.Physical:
     {
       attackStat = unit.attributes.attack;
       attackFactor = 0.1;
       break;
     }
-    case DamageType.magical:
+    case DamageType.Magical:
     {
       attackStat = unit.attributes.intelligence;
       attackFactor = 0.1;
@@ -60,7 +60,7 @@ export function getReducedDamageFactor(unit: Unit, damageType: DamageType): numb
 
   switch (damageType)
   {
-    case DamageType.physical:
+    case DamageType.Physical:
     {
       defenceStat = unit.attributes.defence;
       defenceFactor = 0.045;
@@ -69,7 +69,7 @@ export function getReducedDamageFactor(unit: Unit, damageType: DamageType): numb
       finalDamageMultiplier = 1 - guardAmount / 200; // 1.0-0.5
       break;
     }
-    case DamageType.magical:
+    case DamageType.Magical:
     {
       defenceStat = unit.attributes.intelligence;
       defenceFactor = 0.045;

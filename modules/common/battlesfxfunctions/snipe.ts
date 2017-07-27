@@ -19,10 +19,10 @@ import ProtonWrapper from "./ProtonWrapper";
 
 const colors =
 {
-  [UnitAttribute.attack]: Color.fromHexString("FF4D77"),
-  [UnitAttribute.defence]: Color.fromHexString("0BB1FF"),
-  [UnitAttribute.intelligence]: Color.fromHexString("EB12FE"),
-  [UnitAttribute.speed]: Color.fromHexString("12FE9E"),
+  [UnitAttribute.Attack]: Color.fromHexString("FF4D77"),
+  [UnitAttribute.Defence]: Color.fromHexString("0BB1FF"),
+  [UnitAttribute.Intelligence]: Color.fromHexString("EB12FE"),
+  [UnitAttribute.Speed]: Color.fromHexString("12FE9E"),
 };
 
 for (let attribute in colors)

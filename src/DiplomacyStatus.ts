@@ -35,7 +35,7 @@ export default class DiplomacyStatus
 
     this.statusByPlayer = new ValuesByPlayer<DiplomacyState>(validPlayers, () =>
     {
-      return DiplomacyState.unmet;
+      return DiplomacyState.Unmet;
     });
     this.attitudeModifiersByPlayer = new ValuesByPlayer<AttitudeModifier[]>(validPlayers, () =>
     {
@@ -90,7 +90,7 @@ export default class DiplomacyStatus
   }
   public hasMetPlayer(player: Player): boolean
   {
-    return this.statusByPlayer.get(player) > DiplomacyState.unmet;
+    return this.statusByPlayer.get(player) > DiplomacyState.Unmet;
   }
   public meetPlayerIfNeeded(player: Player): void
   {
@@ -104,7 +104,7 @@ export default class DiplomacyStatus
   {
     return this.statusByPlayer.filter((player, state) =>
     {
-      return state > DiplomacyState.unmet;
+      return state > DiplomacyState.Unmet;
     }).mapToArray(player =>
     {
       return player;
@@ -114,20 +114,20 @@ export default class DiplomacyStatus
   {
     return this.statusByPlayer.some((player, state) =>
     {
-      return state === DiplomacyState.unmet;
+      return state === DiplomacyState.Unmet;
     });
   }
   public canDeclareWarOn(player: Player)
   {
-    return this.hasMetPlayer(player) && this.statusByPlayer.get(player) < DiplomacyState.war;
+    return this.hasMetPlayer(player) && this.statusByPlayer.get(player) < DiplomacyState.War;
   }
   public canMakePeaceWith(player: Player)
   {
-    return this.hasMetPlayer(player) && this.statusByPlayer.get(player) > DiplomacyState.peace;
+    return this.hasMetPlayer(player) && this.statusByPlayer.get(player) > DiplomacyState.Peace;
   }
   public declareWarOn(targetPlayer: Player)
   {
-    if (this.statusByPlayer.get(targetPlayer) >= DiplomacyState.war)
+    if (this.statusByPlayer.get(targetPlayer) >= DiplomacyState.War)
     {
       // TODO 2017.07.25 | default ai module does this sometimes
       console.error("Players " + this.player.id + " and " + targetPlayer.id + " are already at war");
@@ -135,8 +135,8 @@ export default class DiplomacyStatus
       return;
     }
 
-    this.statusByPlayer.set(targetPlayer, DiplomacyState.war);
-    targetPlayer.diplomacyStatus.statusByPlayer.set(this.player, DiplomacyState.war);
+    this.statusByPlayer.set(targetPlayer, DiplomacyState.War);
+    targetPlayer.diplomacyStatus.statusByPlayer.set(this.player, DiplomacyState.War);
 
     eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", targetPlayer, this.player);
     activeModuleData.scripts.diplomacy.onWarDeclaration.forEach(script =>
@@ -151,8 +151,8 @@ export default class DiplomacyStatus
       throw new Error("Players " + this.player.id + " and " + player.id + " can't delcare peace.");
     }
 
-    this.statusByPlayer.set(player, DiplomacyState.peace);
-    player.diplomacyStatus.statusByPlayer.set(this.player, DiplomacyState.peace);
+    this.statusByPlayer.set(player, DiplomacyState.Peace);
+    player.diplomacyStatus.statusByPlayer.set(this.player, DiplomacyState.Peace);
   }
   public canAttackFleetOfPlayer(player: Player)
   {
@@ -161,7 +161,7 @@ export default class DiplomacyStatus
       return true;
     }
 
-    if (this.statusByPlayer.get(player) >= DiplomacyState.coldWar)
+    if (this.statusByPlayer.get(player) >= DiplomacyState.ColdWar)
     {
       return true;
     }
@@ -175,7 +175,7 @@ export default class DiplomacyStatus
       return true;
     }
 
-    if (this.statusByPlayer.get(player) >= DiplomacyState.war)
+    if (this.statusByPlayer.get(player) >= DiplomacyState.War)
     {
       return true;
     }
@@ -361,6 +361,6 @@ export default class DiplomacyStatus
   }
   private triggerMeetingWithPlayer(player: Player): void
   {
-    this.statusByPlayer.set(player, DiplomacyState.coldWar);
+    this.statusByPlayer.set(player, DiplomacyState.ColdWar);
   }
 }

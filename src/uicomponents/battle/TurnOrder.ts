@@ -75,7 +75,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
       insertIndex: undefined,
 
-      animationState: AnimationState.idle,
+      animationState: AnimationState.Idle,
     });
   }
   componentDidMount()
@@ -147,7 +147,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
     {
       this.setState(
       {
-        animationState: AnimationState.idle,
+        animationState: AnimationState.Idle,
 
       });
     }, this.getTransitionDuration());
@@ -168,7 +168,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
       this.setState(
       {
-        animationState: AnimationState.removeDeadUnit,
+        animationState: AnimationState.RemoveDeadUnit,
         pendingDeadUnitIndices: deadUnitIndices,
       }, () =>
       {
@@ -187,7 +187,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      animationState: AnimationState.fillSpaceLeftByDeadUnits,
+      animationState: AnimationState.FillSpaceLeftByDeadUnits,
     }, () =>
     {
       this.timeoutHandle = window.setTimeout(() =>
@@ -209,7 +209,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      animationState: AnimationState.removeUnit,
+      animationState: AnimationState.RemoveUnit,
     }, () =>
     {
       this.timeoutHandle = window.setTimeout(() =>
@@ -234,7 +234,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      animationState: AnimationState.clearSpaceForUnit,
+      animationState: AnimationState.ClearSpaceForUnit,
     }, () =>
     {
       this.timeoutHandle = window.setTimeout(() =>
@@ -250,7 +250,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       currentDisplayData: this.state.pendingDisplayData,
       pendingDisplayData: undefined,
 
-      animationState: AnimationState.insertUnit,
+      animationState: AnimationState.InsertUnit,
     }, () =>
     {
       this.setFinishAnimatingTimeout();
@@ -263,7 +263,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       currentDisplayData: this.state.pendingDisplayData,
       pendingDisplayData: undefined,
 
-      animationState: AnimationState.pushUnit,
+      animationState: AnimationState.PushUnit,
     }, () =>
     {
       this.setFinishAnimatingTimeout();
@@ -298,55 +298,55 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
     {
       const displayData = this.state.currentDisplayData[i];
 
-      let unitAnimationState: AnimationState = AnimationState.idle;
+      let unitAnimationState: AnimationState = AnimationState.Idle;
 
       switch (this.state.animationState)
       {
-        case AnimationState.removeDeadUnit:
+        case AnimationState.RemoveDeadUnit:
         {
           if (this.state.pendingDeadUnitsById[displayData.unit.id])
           {
-            unitAnimationState = AnimationState.removeDeadUnit;
+            unitAnimationState = AnimationState.RemoveDeadUnit;
           }
           break;
         }
-        case AnimationState.fillSpaceLeftByDeadUnits:
+        case AnimationState.FillSpaceLeftByDeadUnits:
         {
           if (this.state.pendingDeadUnitIndices[i])
           {
-            unitAnimationState = AnimationState.fillSpaceLeftByDeadUnits;
+            unitAnimationState = AnimationState.FillSpaceLeftByDeadUnits;
           }
           break;
         }
-        case AnimationState.removeUnit:
+        case AnimationState.RemoveUnit:
         {
           if (i === 0)
           {
-            unitAnimationState = AnimationState.removeUnit;
+            unitAnimationState = AnimationState.RemoveUnit;
           }
           break;
         }
-        case AnimationState.clearSpaceForUnit:
+        case AnimationState.ClearSpaceForUnit:
         {
           if (i === this.state.insertIndex)
           {
-            unitAnimationState = AnimationState.clearSpaceForUnit;
+            unitAnimationState = AnimationState.ClearSpaceForUnit;
           }
           break;
         }
-        case AnimationState.insertUnit:
+        case AnimationState.InsertUnit:
         {
           if (i === this.state.insertIndex)
           {
-            unitAnimationState = AnimationState.insertUnit;
+            unitAnimationState = AnimationState.InsertUnit;
           }
           break;
         }
-        case AnimationState.pushUnit:
+        case AnimationState.PushUnit:
         {
           if (i === unitsToRender - 1)
           {
-            unitAnimationState = AnimationState.pushUnit;
+            unitAnimationState = AnimationState.PushUnit;
           }
           break;
         }

@@ -18,7 +18,7 @@ const defaultItems: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
   supportedLanguages: [Languages.en],
   constructModule: function(moduleData: ModuleData)
   {

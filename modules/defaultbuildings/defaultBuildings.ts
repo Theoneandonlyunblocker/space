@@ -21,7 +21,7 @@ const defaultBuildings: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
   supportedLanguages: [Languages.en],
   loadAssets: function(onLoaded: () => void)
   {

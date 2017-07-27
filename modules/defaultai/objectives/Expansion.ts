@@ -15,7 +15,7 @@ export class Expansion extends TargetedFrontObjective
   public static readonly type = "Expansion";
   public readonly type = "Expansion";
 
-  public readonly movePriority = movePriority.expansion;
+  public readonly movePriority = movePriority.Expansion;
 
   protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {

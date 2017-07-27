@@ -36,11 +36,11 @@ export default class NotificationFilter
   shouldDisplayNotification(notification: Notification<any, any>)
   {
     const filterStates = this.filters[notification.template.key];
-    if (filterStates.indexOf(NotificationFilterState.alwaysShow) !== -1)
+    if (filterStates.indexOf(NotificationFilterState.AlwaysShow) !== -1)
     {
       return true;
     }
-    else if (filterStates.indexOf(NotificationFilterState.neverShow) !== -1)
+    else if (filterStates.indexOf(NotificationFilterState.NeverShow) !== -1)
     {
       return false;
     }
@@ -49,7 +49,7 @@ export default class NotificationFilter
 
     if (activePlayerWasInvolved)
     {
-      return filterStates.indexOf(NotificationFilterState.showIfInvolved) !== -1;
+      return filterStates.indexOf(NotificationFilterState.ShowIfInvolved) !== -1;
     }
 
     return false;
@@ -58,15 +58,15 @@ export default class NotificationFilter
   {
     switch (filterState)
     {
-      case NotificationFilterState.alwaysShow:
+      case NotificationFilterState.AlwaysShow:
       {
         return [];
       }
-      case NotificationFilterState.showIfInvolved:
+      case NotificationFilterState.ShowIfInvolved:
       {
         return [];
       }
-      case NotificationFilterState.neverShow:
+      case NotificationFilterState.NeverShow:
       {
         return [];
       }
@@ -79,7 +79,7 @@ export default class NotificationFilter
     {
       if (this.filters[filterKey].length === 1)
       {
-        this.filters[filterKey] = [NotificationFilterState.neverShow];
+        this.filters[filterKey] = [NotificationFilterState.NeverShow];
       }
       else
       {

@@ -85,7 +85,7 @@ class App
 
     this.initUI();
 
-    this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.game, () =>
+    this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.Game, () =>
     {
       this.game = new Game(map, players);
       this.initGame();
@@ -112,7 +112,7 @@ class App
 
     this.initUI();
 
-    this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.game, () =>
+    this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.Game, () =>
     {
       this.game = new GameLoader().deserializeGame(parsed.gameData);
       this.game.gameStorageKey = saveKey;
@@ -157,7 +157,7 @@ class App
 
     if (initialScene === "galaxyMap")
     {
-      this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.game, () =>
+      this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.Game, () =>
       {
         this.game = this.makeGame();
         this.initGame();

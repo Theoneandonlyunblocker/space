@@ -15,7 +15,7 @@ export class CleanUpPirates extends TargetedFrontObjective
   public static readonly type = "CleanUpPirates";
   public readonly type = "CleanUpPirates";
 
-  public readonly movePriority = movePriority.cleanUpPirates;
+  public readonly movePriority = movePriority.CleanUpPirates;
 
   protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {

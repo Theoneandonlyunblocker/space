@@ -1,10 +1,10 @@
 export enum NotificationWitnessCriterion
 {
-  always,
-  isInvolved,
-  metOneInvolvedPlayer,
-  metAllInvolvedPlayers,
-  locationIsRevealed,
-  locationIsVisible,
-  locationIsDetected,
+  Always,
+  IsInvolved,
+  MetOneInvolvedPlayer,
+  MetAllInvolvedPlayers,
+  LocationIsRevealed,
+  LocationIsVisible,
+  LocationIsDetected,
 }

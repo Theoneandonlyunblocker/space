@@ -22,7 +22,7 @@ export const drones: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
   supportedLanguages: [Languages.en],
   loadAssets: onLoaded =>
   {

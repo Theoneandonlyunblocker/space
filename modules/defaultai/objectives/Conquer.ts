@@ -15,7 +15,7 @@ export class Conquer extends TargetedFrontObjective
   public static readonly type = "Conquer";
   public readonly type = "Conquer";
 
-  public readonly movePriority = movePriority.conquer;
+  public readonly movePriority = movePriority.Conquer;
 
   protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {

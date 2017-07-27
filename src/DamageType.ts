@@ -1,7 +1,7 @@
 const enum DamageType
 {
-  physical,
-  magical,
+  Physical,
+  Magical,
 }
 
 export default DamageType;

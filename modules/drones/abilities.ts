@@ -36,7 +36,7 @@ export const assimilate: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.8,
-      damageType: DamageType.physical,
+      damageType: DamageType.Physical,
     }),
     getUnitsInArea: areaSingle,
     sfx: placeholderSFX,
@@ -49,7 +49,7 @@ export const assimilate: AbilityTemplate =
         {
           executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
           {
-            const damageDealt = executedEffectsResult[resultType.healthChanged] || 0;
+            const damageDealt = executedEffectsResult[resultType.HealthChanged] || 0;
             return damageDealt * -0.1;
           },
         }),
@@ -82,7 +82,7 @@ export const merge: AbilityTemplate =
       getUnitsInArea: areaSingle,
       trigger: (user, target, battle, executedEffectsResult) =>
       {
-        return Boolean(executedEffectsResult[resultType.healthChanged]);
+        return Boolean(executedEffectsResult[resultType.HealthChanged]);
       },
       executeAction: bindEffectActionData(EffectActions.addStatusEffect,
       {
@@ -96,13 +96,13 @@ export const merge: AbilityTemplate =
           getUnitsInArea: areaSingle,
           trigger: (user, target, battle, executedEffectsResult) =>
           {
-            return Boolean(executedEffectsResult[resultType.healthChanged]);
+            return Boolean(executedEffectsResult[resultType.HealthChanged]);
           },
           executeAction: bindEffectActionData(EffectActions.adjustHealth,
           {
             executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
             {
-              return -executedEffectsResult[resultType.healthChanged];
+              return -executedEffectsResult[resultType.HealthChanged];
             },
           }),
         },

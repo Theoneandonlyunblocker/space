@@ -1,9 +1,9 @@
 enum DiplomacyState
 {
-  unmet,
-  peace, // no fighting
-  coldWar, // fighting on neutral ground only
-  war, // any fighting
+  Unmet,
+  Peace, // no fighting
+  ColdWar, // fighting on neutral ground only
+  War, // any fighting
 }
 
 export default DiplomacyState;

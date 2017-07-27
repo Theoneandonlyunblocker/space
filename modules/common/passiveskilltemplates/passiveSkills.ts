@@ -62,7 +62,7 @@ export const initialGuard: PassiveSkillTemplate =
       getUnitsInArea: user => [user],
       executeAction: bindEffectActionData(EffectActions.addGuard,
       {
-        coverage: GuardCoverage.row,
+        coverage: GuardCoverage.Row,
         flat: 50,
       }),
     },
@@ -73,7 +73,7 @@ export const initialGuard: PassiveSkillTemplate =
     {
       EffectActions.addGuard(
       {
-        coverage: GuardCoverage.row,
+        coverage: GuardCoverage.Row,
         flat: 50,
       },
       user, user, null, {});

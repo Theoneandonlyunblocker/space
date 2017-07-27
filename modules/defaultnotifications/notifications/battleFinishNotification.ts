@@ -32,11 +32,11 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
   key: "battleFinishNotification",
   displayName: "Battle finished",
   category: "combat",
-  defaultFilterState: [NotificationFilterState.neverShow],
+  defaultFilterState: [NotificationFilterState.NeverShow],
   witnessCriteria:
   [
-    [NotificationWitnessCriterion.isInvolved],
-    [NotificationWitnessCriterion.locationIsVisible]
+    [NotificationWitnessCriterion.IsInvolved],
+    [NotificationWitnessCriterion.LocationIsVisible]
   ],
   iconSrc: "modules/common/resourcetemplates/img/test1.png",
   contentConstructor: UIComponent,

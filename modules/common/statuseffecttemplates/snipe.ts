@@ -24,7 +24,7 @@ function makeSnipeStatusEffect(attribute: UnitAttribute): StatusEffectTemplate
   });
 }
 
-export const snipeAttack = makeSnipeStatusEffect(UnitAttribute.attack);
-export const snipeDefence = makeSnipeStatusEffect(UnitAttribute.defence);
-export const snipeIntelligence = makeSnipeStatusEffect(UnitAttribute.intelligence);
-export const snipeSpeed = makeSnipeStatusEffect(UnitAttribute.speed);
+export const snipeAttack = makeSnipeStatusEffect(UnitAttribute.Attack);
+export const snipeDefence = makeSnipeStatusEffect(UnitAttribute.Defence);
+export const snipeIntelligence = makeSnipeStatusEffect(UnitAttribute.Intelligence);
+export const snipeSpeed = makeSnipeStatusEffect(UnitAttribute.Speed);

@@ -1,10 +1,10 @@
 export enum movePriority
 {
-  discovery = 999,
-  scoutingPerimeter = 8,
-  fightInvadingEnemy = 7,
-  conquer = 6,
-  expansion = 4,
-  cleanUpPirates = 3,
-  heal = -1,
+  Discovery = 999,
+  ScoutingPerimeter = 8,
+  FightInvadingEnemy = 7,
+  Conquer = 6,
+  Expansion = 4,
+  CleanUpPirates = 3,
+  Heal = -1,
 }

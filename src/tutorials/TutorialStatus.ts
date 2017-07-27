@@ -7,7 +7,7 @@ interface TutorialStatusValues
 
 const defaultTutorialStatus =
 {
-  introTutorial: TutorialState.show,
+  introTutorial: TutorialState.Show,
 };
 
 class TutorialStatus implements TutorialStatusValues
@@ -57,7 +57,7 @@ class TutorialStatus implements TutorialStatusValues
   }
   private static getDeSerializedState(state: TutorialState)
   {
-    return state === TutorialState.dontShowThisSession ? TutorialState.show : state;
+    return state === TutorialState.DontShowThisSession ? TutorialState.Show : state;
   }
   private deSerialize(data: TutorialStatusValues)
   {

@@ -49,7 +49,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
     const rows: ListItem<DiplomaticStatusPlayerProps>[] = metPlayers.map(player =>
     {
       const status = this.props.player.diplomacyStatus.statusByPlayer.get(player);
-      const statusSortingNumber = status === DiplomacyState.unmet ? Infinity : status;
+      const statusSortingNumber = status === DiplomacyState.Unmet ? Infinity : status;
 
       return(
       {

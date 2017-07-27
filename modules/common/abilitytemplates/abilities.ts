@@ -43,7 +43,7 @@ export const closeAttack: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.66,
-      damageType: DamageType.physical,
+      damageType: DamageType.Physical,
     }),
     getUnitsInArea: areaRowNeighbors,
     sfx: BattleSFX.rocketAttack,
@@ -63,7 +63,7 @@ export const beamAttack: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.75,
-      damageType: DamageType.magical,
+      damageType: DamageType.Magical,
     }),
     getUnitsInArea: areaColumn,
     sfx: BattleSFX.beam,
@@ -86,7 +86,7 @@ export const bombAttack: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.5,
-      damageType: DamageType.physical,
+      damageType: DamageType.Physical,
     }),
     getUnitsInArea: (user, target, battle) =>
     {
@@ -115,7 +115,7 @@ export const guardRow: AbilityTemplate =
       {
         intelligence: {flat: 20},
       },
-      coverage: GuardCoverage.row,
+      coverage: GuardCoverage.Row,
     }),
     getUnitsInArea: areaSingle,
     sfx: BattleSFX.guard,
@@ -137,7 +137,7 @@ export const boardingHook: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 0.8,
-      damageType: DamageType.physical,
+      damageType: DamageType.Physical,
     }),
     getUnitsInArea: areaSingle,
     sfx: BattleSFX.rocketAttack,
@@ -194,7 +194,7 @@ export const rangedAttack: AbilityTemplate =
     executeAction: bindEffectActionData(EffectActions.inflictDamage,
     {
       baseDamage: 1,
-      damageType: DamageType.physical,
+      damageType: DamageType.Physical,
     }),
     getUnitsInArea: areaSingle,
     sfx: BattleSFX.rocketAttack,
@@ -228,10 +228,10 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
 
   const statusEffectTemplateByAttribute =
   {
-    [UnitAttribute.attack]: SnipeStatusEffects.snipeAttack,
-    [UnitAttribute.defence]: SnipeStatusEffects.snipeDefence,
-    [UnitAttribute.intelligence]: SnipeStatusEffects.snipeIntelligence,
-    [UnitAttribute.speed]: SnipeStatusEffects.snipeSpeed,
+    [UnitAttribute.Attack]: SnipeStatusEffects.snipeAttack,
+    [UnitAttribute.Defence]: SnipeStatusEffects.snipeDefence,
+    [UnitAttribute.Intelligence]: SnipeStatusEffects.snipeIntelligence,
+    [UnitAttribute.Speed]: SnipeStatusEffects.snipeSpeed,
   };
 
   return(
@@ -248,7 +248,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
       executeAction: bindEffectActionData(EffectActions.inflictDamage,
       {
         baseDamage: 0.6,
-        damageType: DamageType.physical,
+        damageType: DamageType.Physical,
       }),
       getUnitsInArea: areaSingle,
       sfx: BattleSFX[key],
@@ -267,10 +267,10 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
     },
   });
 }
-export const snipeAttack = makeSnipeTemplate(UnitAttribute.attack);
-export const snipeDefence = makeSnipeTemplate(UnitAttribute.defence);
-export const snipeIntelligence = makeSnipeTemplate(UnitAttribute.intelligence);
-export const snipeSpeed = makeSnipeTemplate(UnitAttribute.speed);
+export const snipeAttack = makeSnipeTemplate(UnitAttribute.Attack);
+export const snipeDefence = makeSnipeTemplate(UnitAttribute.Defence);
+export const snipeIntelligence = makeSnipeTemplate(UnitAttribute.Intelligence);
+export const snipeSpeed = makeSnipeTemplate(UnitAttribute.Speed);
 
 export const standBy: AbilityTemplate =
 {

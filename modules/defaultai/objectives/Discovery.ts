@@ -17,7 +17,7 @@ export class Discovery extends TargetedFrontObjective
   public static readonly type = "Discovery";
   public readonly type = "Discovery";
 
-  public readonly movePriority = movePriority.discovery;
+  public readonly movePriority = movePriority.Discovery;
 
   protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {

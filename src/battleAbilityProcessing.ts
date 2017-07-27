@@ -120,11 +120,11 @@ function canUnitGuardTarget(unit: Unit, intendedTarget: Unit)
 {
   if (unit.battleStats.guardAmount > 0 && unit.isTargetable())
   {
-    if (unit.battleStats.guardCoverage === GuardCoverage.all)
+    if (unit.battleStats.guardCoverage === GuardCoverage.All)
     {
       return true;
     }
-    else if (unit.battleStats.guardCoverage === GuardCoverage.row)
+    else if (unit.battleStats.guardCoverage === GuardCoverage.Row)
     {
       // same row
       if (unit.battleStats.position[0] === intendedTarget.battleStats.position[0])

@@ -5,13 +5,13 @@ import {localize} from "../../../localization/localize";
 
 export enum AnimationState
 {
-  removeDeadUnit,
-  fillSpaceLeftByDeadUnits,
-  removeUnit,
-  clearSpaceForUnit,
-  insertUnit,
-  pushUnit,
-  idle,
+  RemoveDeadUnit,
+  FillSpaceLeftByDeadUnits,
+  RemoveUnit,
+  ClearSpaceForUnit,
+  InsertUnit,
+  PushUnit,
+  Idle,
 }
 
 interface PropTypes extends React.Props<any>
@@ -38,13 +38,13 @@ export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, State
   state: StateType;
   containerClassForAnimationState =
   {
-    [AnimationState.removeDeadUnit]: "remove-dead-unit",
-    [AnimationState.fillSpaceLeftByDeadUnits]: "fill-space-left-by-dead-unit",
-    [AnimationState.removeUnit]: "remove-unit",
-    [AnimationState.clearSpaceForUnit]: "clear-space-for-unit",
-    [AnimationState.insertUnit]: "insert-unit",
-    [AnimationState.pushUnit]: "push-unit",
-    [AnimationState.idle]: "",
+    [AnimationState.RemoveDeadUnit]: "remove-dead-unit",
+    [AnimationState.FillSpaceLeftByDeadUnits]: "fill-space-left-by-dead-unit",
+    [AnimationState.RemoveUnit]: "remove-unit",
+    [AnimationState.ClearSpaceForUnit]: "clear-space-for-unit",
+    [AnimationState.InsertUnit]: "insert-unit",
+    [AnimationState.PushUnit]: "push-unit",
+    [AnimationState.Idle]: "",
   };
 
   constructor(props: PropTypes)

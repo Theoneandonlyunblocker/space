@@ -14,7 +14,7 @@ const defaultBackgrounds: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.Game,
   supportedLanguages: "all",
   constructModule: function(moduleData: ModuleData)
   {

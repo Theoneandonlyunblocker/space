@@ -9,10 +9,10 @@ import Unit from "./Unit";
 
 const enum BattleSceneUnitState
 {
-  entering,
-  stationary,
-  exiting,
-  removed,
+  Entering,
+  Stationary,
+  Exiting,
+  Removed,
 }
 
 export default class BattleSceneUnit
@@ -25,7 +25,7 @@ export default class BattleSceneUnit
 
   private activeUnit: Unit;
 
-  private unitState: BattleSceneUnitState = BattleSceneUnitState.removed;
+  private unitState: BattleSceneUnitState = BattleSceneUnitState.Removed;
   private onFinishEnter: () => void;
   private onFinishExit: () => void;
   private tween: TWEEN.Tween;
@@ -120,7 +120,7 @@ export default class BattleSceneUnit
   // enter with animation
   private enterUnitSprite(unit: Unit)
   {
-    if (this.unitState === BattleSceneUnitState.stationary)
+    if (this.unitState === BattleSceneUnitState.Stationary)
     {
       // trigger exit
       // on exit finish:
@@ -128,7 +128,7 @@ export default class BattleSceneUnit
       this.onFinishExit = this.startUnitSpriteEnter.bind(this, unit);
       this.exitUnitSprite();
     }
-    else if (this.unitState === BattleSceneUnitState.exiting)
+    else if (this.unitState === BattleSceneUnitState.Exiting)
     {
       // on exit finish:
       //    trigger enter
@@ -149,15 +149,15 @@ export default class BattleSceneUnit
   // exit with animation
   private exitUnitSprite()
   {
-    if (this.unitState === BattleSceneUnitState.entering)
+    if (this.unitState === BattleSceneUnitState.Entering)
     {
       this.finishUnitSpriteExit();
     }
-    else if (this.unitState === BattleSceneUnitState.stationary)
+    else if (this.unitState === BattleSceneUnitState.Stationary)
     {
       this.startUnitSpriteExit();
     }
-    else if (this.unitState === BattleSceneUnitState.exiting)
+    else if (this.unitState === BattleSceneUnitState.Exiting)
     {
       this.onFinishExit = null;
     }
@@ -179,7 +179,7 @@ export default class BattleSceneUnit
 
     this.setUnit(unit);
     this.setUnitSprite(unit);
-    this.unitState = BattleSceneUnitState.entering;
+    this.unitState = BattleSceneUnitState.Entering;
 
     this.tween = this.makeEnterExitTween("enter", enterAnimationDuration,
       this.finishUnitSpriteEnter.bind(this));
@@ -187,7 +187,7 @@ export default class BattleSceneUnit
   }
   private finishUnitSpriteEnter()
   {
-    this.unitState = BattleSceneUnitState.stationary;
+    this.unitState = BattleSceneUnitState.Stationary;
     this.clearTween();
 
     if (this.onFinishEnter)
@@ -206,7 +206,7 @@ export default class BattleSceneUnit
       return;
     }
 
-    this.unitState = BattleSceneUnitState.exiting;
+    this.unitState = BattleSceneUnitState.Exiting;
 
     this.tween = this.makeEnterExitTween("exit", exitAnimationDuration,
       this.finishUnitSpriteExit.bind(this));
@@ -277,7 +277,7 @@ export default class BattleSceneUnit
   }
   private clearUnit()
   {
-    this.unitState = BattleSceneUnitState.removed;
+    this.unitState = BattleSceneUnitState.Removed;
     this.activeUnit = null;
     this.clearTween();
   }

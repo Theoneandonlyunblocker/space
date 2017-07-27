@@ -16,7 +16,7 @@ export class Heal extends FrontObjective
   public static readonly type = "Heal";
   public readonly type = "Heal";
 
-  public readonly movePriority = movePriority.heal;
+  public readonly movePriority = movePriority.Heal;
 
   protected constructor(score: number, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {

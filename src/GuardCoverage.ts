@@ -1,7 +1,7 @@
 const enum GuardCoverage
 {
-  row,
-  all,
+  Row,
+  All,
 }
 
 export default GuardCoverage;

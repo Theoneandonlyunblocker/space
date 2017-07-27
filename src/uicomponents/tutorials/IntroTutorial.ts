@@ -29,7 +29,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
 
     this.state =
     {
-      shouldShow: TutorialStatus.introTutorial === TutorialState.show,
+      shouldShow: TutorialStatus.introTutorial === TutorialState.Show,
     };
   }
 

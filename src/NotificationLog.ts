@@ -106,37 +106,37 @@ export default class NotificationLog
   {
     switch (criterion)
     {
-      case NotificationWitnessCriterion.always:
+      case NotificationWitnessCriterion.Always:
       {
         return true;
       }
-      case NotificationWitnessCriterion.isInvolved:
+      case NotificationWitnessCriterion.IsInvolved:
       {
         return involvedPlayers.indexOf(witnessingPlayer) !== -1;
       }
-      case NotificationWitnessCriterion.metOneInvolvedPlayer:
+      case NotificationWitnessCriterion.MetOneInvolvedPlayer:
       {
         return involvedPlayers.some(involvedPlayer =>
         {
           return witnessingPlayer.diplomacyStatus.hasMetPlayer(involvedPlayer);
         });
       }
-      case NotificationWitnessCriterion.metAllInvolvedPlayers:
+      case NotificationWitnessCriterion.MetAllInvolvedPlayers:
       {
         return involvedPlayers.every(involvedPlayer =>
         {
           return witnessingPlayer.diplomacyStatus.hasMetPlayer(involvedPlayer)
         });
       }
-      case NotificationWitnessCriterion.locationIsRevealed:
+      case NotificationWitnessCriterion.LocationIsRevealed:
       {
         return witnessingPlayer.starIsRevealed(location);
       }
-      case NotificationWitnessCriterion.locationIsVisible:
+      case NotificationWitnessCriterion.LocationIsVisible:
       {
         return witnessingPlayer.starIsVisible(location);
       }
-      case NotificationWitnessCriterion.locationIsDetected:
+      case NotificationWitnessCriterion.LocationIsDetected:
       {
         return witnessingPlayer.starIsDetected(location);
       }

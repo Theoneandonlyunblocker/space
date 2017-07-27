@@ -67,7 +67,7 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   }
   private startGame()
   {
-    eventManager.dispatchEvent("loadModulesNeededForPhase", ModuleFileLoadingPhase.mapGen, () =>
+    eventManager.dispatchEvent("loadModulesNeededForPhase", ModuleFileLoadingPhase.MapGen, () =>
     {
       const players = this.ref_TODO_players.makeAllPlayers();
 

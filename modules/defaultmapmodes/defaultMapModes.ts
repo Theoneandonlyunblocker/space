@@ -22,7 +22,7 @@ const defaultMapModes: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.Game,
   supportedLanguages: [Languages.en],
   loadAssets: function(onLoaded: () => void)
   {

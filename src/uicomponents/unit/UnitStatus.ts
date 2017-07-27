@@ -42,7 +42,7 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
       const damageReduction = Math.min(50, guard / 2);
 
       const chanceToProtectString = localizeF("chanceToProtect").format({guardChance: guard});
-      const protectedUnitsString = this.props.guardCoverage === GuardCoverage.all ?
+      const protectedUnitsString = this.props.guardCoverage === GuardCoverage.All ?
         localize("allUnits") :
         localize("sameRowUnits");
       const damageReductionString = localizeF("takesReducedDamage").format({damageReduction: damageReduction});

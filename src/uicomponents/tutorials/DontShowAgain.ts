@@ -41,7 +41,7 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   {
     return(
     {
-      isChecked: this.getTutorialState() === TutorialStateTODO.neverShow,
+      isChecked: this.getTutorialState() === TutorialStateTODO.NeverShow,
     });
   }
 
@@ -54,11 +54,11 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   {
     if (this.state.isChecked)
     {
-      TutorialStatus[this.props.tutorialId] = TutorialStateTODO.show;
+      TutorialStatus[this.props.tutorialId] = TutorialStateTODO.Show;
     }
     else
     {
-      TutorialStatus[this.props.tutorialId] = TutorialStateTODO.neverShow;
+      TutorialStatus[this.props.tutorialId] = TutorialStateTODO.NeverShow;
     }
 
     TutorialStatus.save();

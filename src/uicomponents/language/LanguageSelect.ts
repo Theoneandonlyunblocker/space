@@ -57,12 +57,12 @@ export class LanguageSelectComponent extends React.Component<PropTypes, StateTyp
 
       return React.DOM.option(
       {
-        className: "language-select-option" + (supportLevel === LanguageSupportLevel.full ?
+        className: "language-select-option" + (supportLevel === LanguageSupportLevel.Full ?
           " full-language-support" :
           " partial-language-support"),
         value: language.code,
         key: language.code,
-        title: supportLevel === LanguageSupportLevel.full ?
+        title: supportLevel === LanguageSupportLevel.Full ?
           localize("fullLanguageSupport") :
           localize("partialLanguageSupport"),
       },

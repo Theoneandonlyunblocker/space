@@ -26,11 +26,11 @@ export const warDeclarationNotification: NotificationTemplate<PropTypes, Seriali
   key: "warDeclarationNotification",
   displayName: "War declaration",
   category: "diplomacy",
-  defaultFilterState: [NotificationFilterState.showIfInvolved],
+  defaultFilterState: [NotificationFilterState.ShowIfInvolved],
   witnessCriteria:
   [
-    [NotificationWitnessCriterion.isInvolved],
-    [NotificationWitnessCriterion.metAllInvolvedPlayers],
+    [NotificationWitnessCriterion.IsInvolved],
+    [NotificationWitnessCriterion.MetAllInvolvedPlayers],
   ],
   iconSrc: "modules/common/resourcetemplates/img/test2.png",
   contentConstructor: UIComponent,

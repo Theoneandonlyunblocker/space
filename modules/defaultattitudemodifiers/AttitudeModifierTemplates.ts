@@ -37,7 +37,7 @@ const atWar: AttitudeModifierTemplate =
 
   startCondition: function(evaluation: DiplomacyEvaluation)
   {
-    return (evaluation.currentStatus >= DiplomacyState.war);
+    return (evaluation.currentStatus >= DiplomacyState.War);
   },
 
   constantEffect: -30,

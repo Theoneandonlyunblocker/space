@@ -14,7 +14,7 @@ const paintingPortraits: ModuleFile =
     author: "various artists",
     description: "old ppl",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
   supportedLanguages: "all",
   constructModule: function(moduleData: ModuleData)
   {

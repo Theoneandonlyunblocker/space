@@ -4,9 +4,9 @@ import ModuleFile from "../ModuleFile";
 
 export enum LanguageSupportLevel
 {
-  none,
-  partial,
-  full,
+  None,
+  Partial,
+  Full,
 }
 
 export function getLanguageSupportLevelForModuleFiles(...moduleFiles: ModuleFile[]): LanguageSupportLevelByCode
@@ -21,11 +21,11 @@ export function getLanguageSupportLevelForModuleFiles(...moduleFiles: ModuleFile
     const supportedModulesCount = modulesGroupedByLanguageSupport[languageCode].length;
     if (supportedModulesCount < totalModulesCount)
     {
-      languageSupportLevelByCode[languageCode] = LanguageSupportLevel.partial;
+      languageSupportLevelByCode[languageCode] = LanguageSupportLevel.Partial;
     }
     else
     {
-      languageSupportLevelByCode[languageCode] = LanguageSupportLevel.full;
+      languageSupportLevelByCode[languageCode] = LanguageSupportLevel.Full;
     }
   }
 

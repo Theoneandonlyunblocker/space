@@ -44,10 +44,10 @@ function makeSnipeTemplate(attribute: UnitAttribute): BattleSFXTemplate
     SFXWillTriggerEffect: true,
   });
 }
-export const snipeAttack = makeSnipeTemplate(UnitAttribute.attack);
-export const snipeDefence = makeSnipeTemplate(UnitAttribute.defence);
-export const snipeIntelligence = makeSnipeTemplate(UnitAttribute.intelligence);
-export const snipeSpeed = makeSnipeTemplate(UnitAttribute.speed);
+export const snipeAttack = makeSnipeTemplate(UnitAttribute.Attack);
+export const snipeDefence = makeSnipeTemplate(UnitAttribute.Defence);
+export const snipeIntelligence = makeSnipeTemplate(UnitAttribute.Intelligence);
+export const snipeSpeed = makeSnipeTemplate(UnitAttribute.Speed);
 
 export const videoTest: BattleSFXTemplate =
 {

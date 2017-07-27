@@ -1,8 +1,8 @@
 enum NotificationFilterState
 {
-  alwaysShow,
-  showIfInvolved,
-  neverShow,
+  AlwaysShow,
+  ShowIfInvolved,
+  NeverShow,
 }
 
 export default NotificationFilterState;

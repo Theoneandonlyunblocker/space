@@ -20,7 +20,7 @@ const defaultNotifications: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.Game,
   supportedLanguages: [Languages.en],
   constructModule: (moduleData: ModuleData) =>
   {

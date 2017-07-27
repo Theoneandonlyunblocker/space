@@ -107,9 +107,9 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
 
   handleClose()
   {
-    if (TutorialStatus[this.props.tutorialId] === TutorialState.show)
+    if (TutorialStatus[this.props.tutorialId] === TutorialState.Show)
     {
-      TutorialStatus[this.props.tutorialId] = TutorialState.dontShowThisSession;
+      TutorialStatus[this.props.tutorialId] = TutorialState.DontShowThisSession;
     }
   }
 

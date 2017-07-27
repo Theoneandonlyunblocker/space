@@ -12,7 +12,7 @@ const defaultRuleSet: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
   supportedLanguages: "all",
   constructModule: function(moduleData: ModuleData)
   {

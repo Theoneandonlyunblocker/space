@@ -78,7 +78,7 @@ const calculateHealthAdjustment = (user: Unit, target: Unit, data: HealthAdjustm
   }
   if (data.perUserUnit)
   {
-    healAmount += data.perUserUnit * getAttackDamageIncrease(user, DamageType.magical);
+    healAmount += data.perUserUnit * getAttackDamageIncrease(user, DamageType.Magical);
   }
 
   return healAmount;
@@ -90,7 +90,7 @@ interface ExecutedEffectsResultAdjustment
 }
 export enum resultType
 {
-  healthChanged,
+  HealthChanged,
 }
 
 
@@ -104,11 +104,11 @@ export const inflictDamage: UnboundEffectAction<DamageWithType> = function(
 {
   const adjustedDamage = getAdjustedDamage(user, target, data.baseDamage, data.damageType);
 
-  if (!executedEffectsResult[resultType.healthChanged])
+  if (!executedEffectsResult[resultType.HealthChanged])
   {
-    executedEffectsResult[resultType.healthChanged] = 0;
+    executedEffectsResult[resultType.HealthChanged] = 0;
   }
-  executedEffectsResult[resultType.healthChanged] -= adjustedDamage;
+  executedEffectsResult[resultType.HealthChanged] -= adjustedDamage;
 
   target.receiveDamage(adjustedDamage);
 };
@@ -140,7 +140,7 @@ export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = f
     inflictDamage(
       {
         baseDamage: data.baseDamage * counterStrength,
-        damageType: DamageType.physical,
+        damageType: DamageType.Physical,
       },
       target,
       user,
@@ -201,11 +201,11 @@ export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment &
   const maxAdjustment = target.maxHealth - target.currentHealth;
   const clamped = clamp(healAmount, minAdjustment, maxAdjustment);
 
-  if (!executedEffectsResult[resultType.healthChanged])
+  if (!executedEffectsResult[resultType.HealthChanged])
   {
-    executedEffectsResult[resultType.healthChanged] = 0;
+    executedEffectsResult[resultType.HealthChanged] = 0;
   }
-  executedEffectsResult[resultType.healthChanged] += clamped;
+  executedEffectsResult[resultType.HealthChanged] += clamped;
 
   target.addHealth(clamped);
 };

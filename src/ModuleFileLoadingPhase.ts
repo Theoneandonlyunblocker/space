@@ -1,10 +1,10 @@
 enum ModuleFileLoadingPhase
 {
-  setup,
-  mapGen,
-  game,
-  battlePrep,
-  battle,
+  Setup,
+  MapGen,
+  Game,
+  BattlePrep,
+  Battle,
 }
 
 export default ModuleFileLoadingPhase;

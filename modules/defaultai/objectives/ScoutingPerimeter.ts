@@ -18,7 +18,7 @@ export class ScoutingPerimeter extends TargetedFrontObjective
   public static readonly type = "ScoutingPerimeter";
   public readonly type = "ScoutingPerimeter";
 
-  public readonly movePriority = movePriority.scoutingPerimeter;
+  public readonly movePriority = movePriority.ScoutingPerimeter;
 
   protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {

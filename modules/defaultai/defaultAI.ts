@@ -18,7 +18,7 @@ const defaultAI: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.Game,
   supportedLanguages: [Languages.en],
   constructModule: function(moduleData: ModuleData)
   {

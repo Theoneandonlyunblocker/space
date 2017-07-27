@@ -19,13 +19,13 @@ import Stage from "./uicomponents/Stage";
 
 const moduleLoadingPhaseByScene =
 {
-  battle: ModuleFileLoadingPhase.battle,
-  battlePrep: ModuleFileLoadingPhase.battlePrep,
-  galaxyMap: ModuleFileLoadingPhase.game,
-  setupGame: ModuleFileLoadingPhase.setup,
+  battle: ModuleFileLoadingPhase.Battle,
+  battlePrep: ModuleFileLoadingPhase.BattlePrep,
+  galaxyMap: ModuleFileLoadingPhase.Game,
+  setupGame: ModuleFileLoadingPhase.Setup,
 
-  flagMaker: ModuleFileLoadingPhase.setup,
-  battleSceneTester: ModuleFileLoadingPhase.battle,
+  flagMaker: ModuleFileLoadingPhase.Setup,
+  battleSceneTester: ModuleFileLoadingPhase.Battle,
 };
 
 export default class ReactUI

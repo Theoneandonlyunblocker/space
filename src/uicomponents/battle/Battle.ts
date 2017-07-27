@@ -153,7 +153,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     return(
     {
-      UIState: BattleUIState.starting,
+      UIState: BattleUIState.Starting,
 
       highlightedUnit: null,
       hoveredUnit: null,
@@ -196,14 +196,14 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     {
       this.setState(
       {
-        UIState: BattleUIState.ending,
+        UIState: BattleUIState.Ending,
       });
     }
     else
     {
       this.setState(
       {
-        UIState: BattleUIState.idle,
+        UIState: BattleUIState.Idle,
       },() =>
       {
         this.battleScene.activeUnit = this.props.battle.activeUnit;
@@ -243,7 +243,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     });
 
     this.battleScene.hoveredUnit = null;
-    if (this.state.UIState === BattleUIState.idle)
+    if (this.state.UIState === BattleUIState.Idle)
     {
       this.battleScene.updateUnits();
     }
@@ -288,7 +288,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     this.tempHoveredUnit = unit;
 
-    if (this.state.UIState !== BattleUIState.idle)
+    if (this.state.UIState !== BattleUIState.Idle)
     {
       return;
     }
@@ -386,7 +386,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     const stateObj: StateType = BattleComponent.getUnitsBySideFromEffect(effect);
     stateObj.playingBattleEffect = true;
-    stateObj.UIState = BattleUIState.playingSFX;
+    stateObj.UIState = BattleUIState.PlayingSFX;
     stateObj.battleEffectDuration = effect.sfx.duration * Options.battleAnimationTiming.effectDuration;
 
 
@@ -430,7 +430,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.setState(
     {
-      UIState: BattleUIState.transitioningTurn,
+      UIState: BattleUIState.TransitioningTurn,
     }, () =>
     {
       window.setTimeout(this.handleTurnEnd, Options.battleAnimationTiming.turnTransition);
@@ -442,7 +442,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     {
       this.setState(
       {
-        UIState: BattleUIState.ending,
+        UIState: BattleUIState.Ending,
       });
     }
     else if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction)
@@ -460,7 +460,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
       this.setState(
       {
-        UIState: BattleUIState.idle,
+        UIState: BattleUIState.Idle,
       });
     }
   }
@@ -509,7 +509,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     const battle = this.props.battle;
 
-    const playerCanAct = this.state.UIState === BattleUIState.idle;
+    const playerCanAct = this.state.UIState === BattleUIState.Idle;
     const activeTargets = playerCanAct ? getTargetsForAllAbilities(battle, battle.activeUnit) : undefined;
 
     let abilityTooltip: React.ReactElement<AbilityTooltipProps> = null;
@@ -545,7 +545,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
     let upperFooterElement: React.ReactElement<any>;
-    if (this.state.UIState === BattleUIState.starting)
+    if (this.state.UIState === BattleUIState.Starting)
     {
       upperFooterElement = null;
     }
@@ -568,7 +568,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         onMouseEnterUnit: this.handleMouseEnterUnit,
         onMouseLeaveUnit: this.handleMouseLeaveUnit,
 
-        turnIsTransitioning: this.state.UIState === BattleUIState.transitioningTurn,
+        turnIsTransitioning: this.state.UIState === BattleUIState.TransitioningTurn,
         turnTransitionDuration: Options.battleAnimationTiming.turnTransition,
       });
     }
@@ -623,7 +623,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       className: "battle-container",
     };
     let playerWonBattle: boolean = null;
-    if (this.state.UIState === BattleUIState.starting)
+    if (this.state.UIState === BattleUIState.Starting)
     {
       containerProps.className += " battle-start-overlay";
       containerProps.onClick = this.endBattleStart;
@@ -643,11 +643,11 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     // TODO refactor
     let battleState: "start" | "active" | "finish";
-    if (this.state.UIState === BattleUIState.starting)
+    if (this.state.UIState === BattleUIState.Starting)
     {
       battleState = "start";
     }
-    else if (this.state.UIState === BattleUIState.ending)
+    else if (this.state.UIState === BattleUIState.Ending)
     {
       battleState = "finish";
     }

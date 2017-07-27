@@ -17,7 +17,7 @@ const core: ModuleFile =
     author: "giraluna",
     description: "Core gameplay functionality",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
   supportedLanguages: [Languages.en],
   constructModule: (moduleData: ModuleData) =>
   {

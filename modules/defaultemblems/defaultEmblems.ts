@@ -17,7 +17,7 @@ const defaultEmblems: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
   supportedLanguages: "all",
   loadAssets: function(onLoaded: () => void)
   {
