@@ -46,10 +46,13 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
   {
     // TODO 2017.07.26 | handle dead players
     const metPlayers = this.props.player.diplomacyStatus.getMetPlayers();
-    const rows: ListItem<DiplomaticStatusPlayerProps>[] = metPlayers.map(player =>
+
+    const alivePlayers = metPlayers.filter(player => !player.isDead);
+    const deadPlayers = metPlayers.filter(player => player.isDead);
+
+    const rows: ListItem<DiplomaticStatusPlayerProps>[] = alivePlayers.map(player =>
     {
       const status = this.props.player.diplomacyStatus.statusByPlayer.get(player);
-      const statusSortingNumber = status === DiplomacyState.Unmet ? Infinity : status;
 
       return(
       {
@@ -63,11 +66,27 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           flag: player.flag,
 
           baseOpinion: player.diplomacyStatus.getBaseOpinion(),
-          statusSortingNumber: statusSortingNumber,
+          statusSortingNumber: status,
           attitudeModifiers: player.diplomacyStatus.attitudeModifiersByPlayer.get(this.props.player),
         }),
       });
-    });
+    }).concat(deadPlayers.map(player =>
+    {
+      return(
+      {
+        key: "" + player.id,
+        content: DiplomaticStatusPlayer(
+        {
+          player: player,
+          name: player.name.fullName,
+          status: localize("deadPlayer"),
+          opinion: null,
+          flag: player.flag,
+
+          statusSortingNumber: -99999,
+        }),
+      });
+    }));
 
     const columns: ListColumn<DiplomaticStatusPlayerProps>[] =
     [
@@ -85,7 +104,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
       {
         label: localize("diplomaticStatus"),
         key: "status",
-        defaultOrder: "asc",
+        defaultOrder: "desc",
         propToSortBy: "statusSortingNumber",
       },
       {
@@ -123,7 +142,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           {
             listItems: rows,
             initialColumns: columns,
-            initialSortOrder: [columns[1]],
+            initialSortOrder: [columns[2], columns[1]],
             onRowChange: this.toggleDiplomacyActionsPopup,
           }),
         ),

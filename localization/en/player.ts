@@ -13,4 +13,5 @@ export const player =
     "2..": "players",
   },
   playerName: "Name",
+  deadPlayer: "Dead",
 };
