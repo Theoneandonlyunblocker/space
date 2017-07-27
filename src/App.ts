@@ -294,7 +294,7 @@ class App
       activeNotificationLog.currentTurn = this.game.turnNumber;
     }
 
-    activeModuleData.scripts.get(activeModuleData.scripts.game.afterInit).forEach(script =>
+    activeModuleData.scripts.game.afterInit.forEach(script =>
     {
       script(this.game);
     });

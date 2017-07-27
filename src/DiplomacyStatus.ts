@@ -139,7 +139,7 @@ export default class DiplomacyStatus
     targetPlayer.diplomacyStatus.statusByPlayer.set(this.player, DiplomacyState.war);
 
     eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", targetPlayer, this.player);
-    activeModuleData.scripts.get(activeModuleData.scripts.diplomacy.onWarDeclaration).forEach(script =>
+    activeModuleData.scripts.diplomacy.onWarDeclaration.forEach(script =>
     {
       script(this.player, targetPlayer);
     });

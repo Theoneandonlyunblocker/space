@@ -761,7 +761,7 @@ export default class Unit
     }
 
 
-    activeModuleData.scripts.get(activeModuleData.scripts.unit.removeFromPlayer).forEach(scriptFN =>
+    activeModuleData.scripts.unit.removeFromPlayer.forEach(scriptFN =>
     {
       scriptFN(this);
     });
