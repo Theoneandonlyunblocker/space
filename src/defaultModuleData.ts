@@ -19,7 +19,6 @@ import defaultUnits from "../modules/defaultunits/defaultUnits";
 import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
 
 import {drones} from "../modules/drones/moduleFile";
-import {translationTest} from "../modules/translationtest/moduleFile";
 
 
 export const defaultModuleData:
@@ -46,6 +45,5 @@ export const defaultModuleData:
     defaultNotifications,
     defaultRaces,
     drones,
-    translationTest,
   ],
 };
