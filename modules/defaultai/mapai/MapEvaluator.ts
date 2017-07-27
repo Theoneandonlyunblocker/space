@@ -404,7 +404,7 @@ export default class MapEvaluator
   {
     const byPlayer = new ValuesByPlayer<InfluenceMap>();
 
-    this.player.diplomacyStatus.getMetPlayers().forEach(player =>
+    this.player.diplomacyStatus.getMetPlayers().filter(player => !player.isDead).forEach(player =>
     {
       byPlayer.set(player, this.getPlayerInfluenceMap(player));
     });
@@ -440,7 +440,7 @@ export default class MapEvaluator
   {
     const byPlayer = new ValuesByPlayer<Star[]>();
 
-    this.player.diplomacyStatus.getMetPlayers().forEach(player =>
+    this.player.diplomacyStatus.getMetPlayers().filter(player => !player.isDead).forEach(player =>
     {
       byPlayer.set(player, this.getVisibleStarsOfPlayer(player));
     });
@@ -496,7 +496,7 @@ export default class MapEvaluator
   {
     const byPlayer = new ValuesByPlayer<number>();
 
-    this.player.diplomacyStatus.getMetPlayers().forEach(player =>
+    this.player.diplomacyStatus.getMetPlayers().filter(player => !player.isDead).forEach(player =>
     {
       byPlayer.set(player, this.getPerceivedThreatOfPlayer(player));
     });
@@ -726,7 +726,7 @@ export default class MapEvaluator
       neighborStarsByPlayer.get(star.owner).push(star);
     });
 
-    this.player.diplomacyStatus.getMetPlayers().forEach(player =>
+    this.player.diplomacyStatus.getMetPlayers().filter(player => !player.isDead).forEach(player =>
     {
       neighborStarsByPlayer.setIfDoesntExist(player, []);
 
