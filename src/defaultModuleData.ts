@@ -1,5 +1,7 @@
 import {default as ModuleFile} from "./ModuleFile";
 
+import core from "../modules/core/core";
+
 import defaultAI from "../modules/defaultai/defaultAI";
 import defaultAttitudemodifiers from "../modules/defaultattitudemodifiers/defaultAttitudemodifiers";
 import defaultBackgrounds from "../modules/defaultbackgrounds/defaultBackgrounds";
@@ -27,6 +29,8 @@ export const defaultModuleData:
 {
   moduleFiles:
   [
+    core,
+
     defaultEmblems,
     defaultRuleset,
     defaultAI,

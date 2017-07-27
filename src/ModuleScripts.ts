@@ -52,7 +52,6 @@ type AllModuleScripts =
   }
 };
 
-// TODO 2017.06.13 | move non-internal stuff from eventManager to here
 export default class ModuleScripts implements AllModuleScripts
 {
   /* tslint:disable:member-ordering */
