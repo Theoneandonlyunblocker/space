@@ -7,9 +7,10 @@ import MouseEventHandler from "./MouseEventHandler";
 import PathfindingArrow from "./PathfindingArrow";
 import Point from "./Point";
 
+
 export default class Renderer
 {
-  public renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+  public renderer: PIXI.WebGLRenderer;
   public layers:
   {
     background: PIXI.Container;
@@ -107,7 +108,7 @@ export default class Renderer
     if (!this.renderer)
     {
       const containerStyle = window.getComputedStyle(this.pixiContainer);
-      this.renderer = PIXI.autoDetectRenderer(
+      this.renderer = new PIXI.WebGLRenderer(
         parseInt(containerStyle.width),
         parseInt(containerStyle.height),
         {
