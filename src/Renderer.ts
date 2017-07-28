@@ -42,9 +42,7 @@ export default class Renderer
       seed: backgroundSeed,
       drawBackgroundFN: backgroundDrawingFunction,
     });
-  }
-  init()
-  {
+
     this.setupDefaultLayers();
 
     this.addEventListeners();

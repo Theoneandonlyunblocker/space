@@ -313,7 +313,6 @@ class App
       this.game.galaxyMap.seed,
       activeModuleData.mapBackgroundDrawingFunction,
     );
-    this.renderer.init();
 
     this.mapRenderer = new MapRenderer(this.game.galaxyMap, activePlayer);
     this.mapRenderer.setParent(this.renderer.layers.map);
