@@ -15,6 +15,11 @@ type PreventGhostKey =
   "mouseUp" |
   "mouseDown";
 
+
+// prevent pixi from using pointer events
+(window as any).PointerEvent = null;
+
+
 export default class MouseEventHandler
 {
   private interactionManager: PIXI.interaction.InteractionManager;
@@ -267,7 +272,6 @@ export default class MouseEventHandler
   }
   private startScroll(event: PIXI.interaction.InteractionEvent): void
   {
-    // TODO 2017.07.28 | doesn't work
     if (this.currentAction !== "scroll")
     {
       this.stashedAction = this.currentAction;
@@ -390,6 +394,5 @@ export default class MouseEventHandler
   private handleMouseWheel(e: WheelEvent): void
   {
     this.camera.deltaZoom(e.wheelDelta / 40, 0.05);
-
   }
 }
