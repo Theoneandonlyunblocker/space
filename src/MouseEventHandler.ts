@@ -44,6 +44,7 @@ export default class MouseEventHandler
     this.currentAction = undefined;
 
     this.addEventListeners();
+    this.bindEventHandlers();
   }
   public destroy(): void
   {
@@ -370,5 +371,11 @@ export default class MouseEventHandler
     this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers.main));
     this.currentAction = undefined;
     this.makeUIOpaque();
+  }
+  private bindEventHandlers(): void
+  {
+    this.mouseMove = this.mouseMove.bind(this);
+    this.mouseUp = this.mouseUp.bind(this);
+    this.mouseDown = this.mouseDown.bind(this);
   }
 }

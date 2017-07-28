@@ -48,7 +48,6 @@ export default class Renderer
 
     this.setupDefaultLayers();
 
-    this.addEventListeners();
     this.activeRenderLoopId++;
 
     this.stage.renderable = true;
@@ -182,68 +181,16 @@ export default class Renderer
     this.toCenterOn = null;
 
     this.mouseEventHandler = new MouseEventHandler(this, this.camera);
+    this.addEventListeners();
 
     this.pathfindingArrow = new PathfindingArrow(this.layers.select);
   }
   private addEventListeners()
   {
-    const main = this.stage;
-    main.interactive = true;
-
-    main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
-
-    const mainMouseDownFN = (event: PIXI.interaction.InteractionEvent) =>
-    {
-      if (event.target !== main)
-      {
-        return;
-      }
-      this.mouseEventHandler.mouseDown(event);
-    };
-    const mainMouseMoveFN = (event: PIXI.interaction.InteractionEvent) =>
-    {
-      if (event.target !== main)
-      {
-        return;
-      }
-      this.mouseEventHandler.mouseMove(event);
-    };
-    const mainMouseUpFN = (event: PIXI.interaction.InteractionEvent) =>
-    {
-      if (event.target !== main)
-      {
-        return;
-      }
-      this.mouseEventHandler.mouseUp(event);
-    };
-    const mainMouseUpOutsideFN = (event: PIXI.interaction.InteractionEvent) =>
-    {
-      if (event.target !== main)
-      {
-        return;
-      }
-      this.mouseEventHandler.mouseUp(event);
-    };
-
-    const mainListeners =
-    {
-      mousedown: mainMouseDownFN,
-      rightdown: mainMouseDownFN,
-      touchstart: mainMouseDownFN,
-      mousemove: mainMouseMoveFN,
-      touchmove: mainMouseMoveFN,
-      mouseup: mainMouseUpFN,
-      rightup: mainMouseUpFN,
-      touchend: mainMouseUpFN,
-      mouseupoutside: mainMouseUpOutsideFN,
-      rightupoutside: mainMouseUpOutsideFN,
-      touchendoutside: mainMouseUpOutsideFN,
-    };
-
-    for (let eventType in mainListeners)
-    {
-      main.on(eventType, mainListeners[eventType]);
-    }
+    this.renderer.plugins.interaction.on("pointerdown", this.mouseEventHandler.mouseDown);
+    this.renderer.plugins.interaction.on("pointerup", this.mouseEventHandler.mouseUp);
+    this.renderer.plugins.interaction.on("pointerupoutside", this.mouseEventHandler.mouseUp);
+    this.renderer.plugins.interaction.on("pointermove", this.mouseEventHandler.mouseMove);
   }
   private resize()
   {
