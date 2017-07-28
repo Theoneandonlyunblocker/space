@@ -10,29 +10,45 @@ type Action =
   "scroll" |
   "zoom";
 
+type PreventGhostKey =
+  "hover" |
+  "mouseUp" |
+  "mouseDown";
+
 export default class MouseEventHandler
 {
-  renderer: Renderer;
-  camera: Camera;
-  rectangleSelect: RectangleSelect;
+  private renderer: Renderer;
+  private camera: Camera;
+  private rectangleSelect: RectangleSelect;
 
-  startPoint: number[];
-  currPoint: number[];
+  private startPoint: number[];
+  private currPoint: number[];
 
-  currentAction: Action;
-  stashedAction: Action;
+  private currentAction: Action;
+  private stashedAction: Action;
 
-  hoveredStar: Star;
+  private hoveredStar: Star;
 
-  preventingGhost:
+  private preventingGhost:
   {
-    [type: string]: number; // number = timeout handle
-  } = {};
-
-  listeners:
+    hover: number,
+    mouseUp: number,
+    mouseDown: number,
+  } =
   {
-    [name: string]: Function;
-  } = {};
+    hover: undefined,
+    mouseUp: undefined,
+    mouseDown: undefined,
+  };
+  private listeners:
+  {
+    hoverStar: (star: Star) => void,
+    clearHover: () => void,
+  } =
+  {
+    hoverStar: undefined,
+    clearHover: undefined,
+  };
 
   constructor(renderer: Renderer, camera: Camera)
   {
@@ -41,9 +57,10 @@ export default class MouseEventHandler
     this.rectangleSelect = new RectangleSelect(renderer.layers.select);
     this.currentAction = undefined;
 
-    this.addEventListeners();
     this.bindEventHandlers();
+    this.addEventListeners();
   }
+
   public destroy(): void
   {
     for (let name in this.listeners)
@@ -60,7 +77,44 @@ export default class MouseEventHandler
     this.camera = null;
   }
 
-  public mouseMove(event: PIXI.interaction.InteractionEvent): void
+  private addEventListeners(): void
+  {
+    const pixiCanvas = document.getElementById("pixi-canvas");
+
+    pixiCanvas.addEventListener("contextmenu", e =>
+    {
+      e.stopPropagation();
+      if (e.target === pixiCanvas)
+      {
+        e.preventDefault();
+      }
+    });
+    pixiCanvas.addEventListener("mousewheel", e =>
+    {
+      if (e.target === pixiCanvas)
+      {
+        this.camera.deltaZoom(e.wheelDelta / 40, 0.05);
+      }
+    });
+
+    this.listeners.hoverStar = eventManager.addEventListener("hoverStar",
+      (star: Star) =>
+    {
+      this.setHoveredStar(star);
+    });
+    this.listeners.clearHover = eventManager.addEventListener("clearHover",
+      () =>
+    {
+      this.clearHoveredStar();
+    });
+  }
+  private bindEventHandlers(): void
+  {
+    this.mouseMove = this.mouseMove.bind(this);
+    this.mouseUp = this.mouseUp.bind(this);
+    this.mouseDown = this.mouseDown.bind(this);
+  }
+  private mouseMove(event: PIXI.interaction.InteractionEvent): void
   {
     if (this.currentAction === "scroll")
     {
@@ -75,7 +129,7 @@ export default class MouseEventHandler
       this.dragSelect(event);
     }
   }
-  public mouseUp(event: PIXI.interaction.InteractionEvent): void
+  private mouseUp(event: PIXI.interaction.InteractionEvent): void
   {
     switch (this.currentAction)
     {
@@ -91,7 +145,7 @@ export default class MouseEventHandler
       }
       case "select":
       {
-        if (!this.preventingGhost["mouseUp"])
+        if (!this.preventingGhost.mouseUp)
         {
           this.endSelect(event);
         }
@@ -99,7 +153,7 @@ export default class MouseEventHandler
       }
       case "fleetMove":
       {
-        if (!this.preventingGhost["mouseUp"])
+        if (!this.preventingGhost.mouseUp)
         {
           this.completeFleetMove();
         }
@@ -114,9 +168,9 @@ export default class MouseEventHandler
       // }
     }
   }
-  public mouseDown(event: PIXI.interaction.InteractionEvent, star?: Star): void
+  private mouseDown(event: PIXI.interaction.InteractionEvent, star?: Star): void
   {
-    if (this.preventingGhost["mouseDown"])
+    if (this.preventingGhost.mouseDown)
     {
       return;
     }
@@ -144,39 +198,7 @@ export default class MouseEventHandler
 
     this.preventGhost(15, "mouseDown");
   }
-
-  private addEventListeners(): void
-  {
-    const pixiCanvas = document.getElementById("pixi-canvas");
-
-    pixiCanvas.addEventListener("contextmenu", e =>
-    {
-      e.stopPropagation();
-      if (e.target === pixiCanvas)
-      {
-        e.preventDefault();
-      }
-    });
-    pixiCanvas.addEventListener("mousewheel", e =>
-    {
-      if (e.target === pixiCanvas)
-      {
-        this.camera.deltaZoom(e.wheelDelta / 40, 0.05);
-      }
-    });
-
-    this.listeners["hoverStar"] = eventManager.addEventListener("hoverStar",
-      (star: Star) =>
-    {
-      this.setHoveredStar(star);
-    });
-    this.listeners["clearHover"] = eventManager.addEventListener("clearHover",
-      () =>
-    {
-      this.clearHoveredStar();
-    });
-  }
-  private preventGhost(delay: number, type: string): void
+  private preventGhost(delay: number, type: PreventGhostKey): void
   {
     if (this.preventingGhost[type])
     {
@@ -189,7 +211,10 @@ export default class MouseEventHandler
   }
   private makeUITransparent(): void
   {
-    if (!this.currentAction) return;
+    if (!this.currentAction)
+    {
+      return;
+    }
     const ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
     if (ui)
     {
@@ -198,7 +223,10 @@ export default class MouseEventHandler
   }
   private makeUIOpaque(): void
   {
-    if (this.currentAction) return;
+    if (this.currentAction)
+    {
+      return;
+    }
     const ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
     if (ui)
     {
@@ -219,6 +247,7 @@ export default class MouseEventHandler
   }
   private startScroll(event: PIXI.interaction.InteractionEvent): void
   {
+    // TODO 2017.07.28 | doesn't work
     if (this.currentAction !== "scroll")
     {
       this.stashedAction = this.currentAction;
@@ -247,7 +276,7 @@ export default class MouseEventHandler
     this.camera.deltaZoom(delta, 0.005);
     this.currPoint = [event.data.global.x, event.data.global.y];
   }
-  // Can be used for touch controls I think
+  // these can be used for touch controls I think
   // private endZoom(event: PIXI.interaction.InteractionEvent): void
   // {
   //   this.startPoint = undefined;
@@ -276,7 +305,7 @@ export default class MouseEventHandler
   {
     const timeout = window.setTimeout(() =>
     {
-      if (!this.preventingGhost["hover"])
+      if (!this.preventingGhost.hover)
       {
         this.hoveredStar = null;
         this.clearFleetMoveTarget();
@@ -292,7 +321,10 @@ export default class MouseEventHandler
   }
   private setFleetMoveTarget(star: Star): void
   {
-    if (this.currentAction !== "fleetMove") return;
+    if (this.currentAction !== "fleetMove")
+    {
+      return;
+    }
     eventManager.dispatchEvent("setPotentialMoveTarget", star);
   }
   private completeFleetMove(): void
@@ -307,12 +339,16 @@ export default class MouseEventHandler
   }
   private clearFleetMoveTarget(): void
   {
-    if (this.currentAction !== "fleetMove") return;
+    if (this.currentAction !== "fleetMove")
+    {
+      return;
+    }
     eventManager.dispatchEvent("clearPotentialMoveTarget");
   }
   private startSelect(event: PIXI.interaction.InteractionEvent): void
   {
     this.currentAction = "select";
+    // TODO 2017.07.28 | use interactionmanager
     this.rectangleSelect.startSelection(event.data.getLocalPosition(this.renderer.layers.main));
     this.makeUITransparent();
   }
@@ -325,11 +361,5 @@ export default class MouseEventHandler
     this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers.main));
     this.currentAction = undefined;
     this.makeUIOpaque();
-  }
-  private bindEventHandlers(): void
-  {
-    this.mouseMove = this.mouseMove.bind(this);
-    this.mouseUp = this.mouseUp.bind(this);
-    this.mouseDown = this.mouseDown.bind(this);
   }
 }
