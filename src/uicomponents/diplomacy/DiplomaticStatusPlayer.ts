@@ -13,12 +13,12 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   opinion: number;
   status: string;
   name: string;
-  flag?: Flag;
+  flag: Flag;
+  statusSortingNumber: number;
+  canInteractWith: boolean;
 
   baseOpinion?: number;
   attitudeModifiers?: AttitudeModifier[];
-
-  statusSortingNumber?: number;
 }
 
 interface StateType
@@ -108,8 +108,15 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
     const rowProps =
     {
       className: "diplomatic-status-player",
-      onClick : this.props.handleClick,
+      onClick: this.props.canInteractWith ?
+        this.props.handleClick :
+        null,
     };
+
+    if (!this.props.canInteractWith)
+    {
+      rowProps.className += " disabled";
+    }
 
     return(
       React.DOM.tr(rowProps,

@@ -64,6 +64,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           status: DiplomacyState[status],
           opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
           flag: player.flag,
+          canInteractWith: this.props.player.diplomacyStatus.canDoDiplomacyWithPlayer(player),
 
           baseOpinion: player.diplomacyStatus.getBaseOpinion(),
           statusSortingNumber: status,
@@ -82,6 +83,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           status: localize("deadPlayer"),
           opinion: null,
           flag: player.flag,
+          canInteractWith: this.props.player.diplomacyStatus.canDoDiplomacyWithPlayer(player),
 
           statusSortingNumber: -99999,
         }),
