@@ -167,7 +167,10 @@ export default class Renderer
   {
     let oldToCenterOn: Point;
 
-    if (this.mouseEventHandler) this.mouseEventHandler.destroy();
+    if (this.mouseEventHandler)
+    {
+      this.mouseEventHandler.destroy();
+    }
     if (this.camera)
     {
       oldToCenterOn = this.camera.toCenterOn;
@@ -183,32 +186,42 @@ export default class Renderer
   }
   private addEventListeners()
   {
-    const self = this;
-
     const main = this.stage;
     main.interactive = true;
 
     main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
 
-    const mainMouseDownFN = function(event: PIXI.interaction.InteractionEvent)
+    const mainMouseDownFN = (event: PIXI.interaction.InteractionEvent) =>
     {
-      if (event.target !== main) return;
-      self.mouseEventHandler.mouseDown(event);
+      if (event.target !== main)
+      {
+        return;
+      }
+      this.mouseEventHandler.mouseDown(event);
     };
-    const mainMouseMoveFN = function(event: PIXI.interaction.InteractionEvent)
+    const mainMouseMoveFN = (event: PIXI.interaction.InteractionEvent) =>
     {
-      if (event.target !== main) return;
-      self.mouseEventHandler.mouseMove(event);
+      if (event.target !== main)
+      {
+        return;
+      }
+      this.mouseEventHandler.mouseMove(event);
     };
-    const mainMouseUpFN = function(event: PIXI.interaction.InteractionEvent)
+    const mainMouseUpFN = (event: PIXI.interaction.InteractionEvent) =>
     {
-      if (event.target !== main) return;
-      self.mouseEventHandler.mouseUp(event);
+      if (event.target !== main)
+      {
+        return;
+      }
+      this.mouseEventHandler.mouseUp(event);
     };
-    const mainMouseUpOutsideFN = function(event: PIXI.interaction.InteractionEvent)
+    const mainMouseUpOutsideFN = (event: PIXI.interaction.InteractionEvent) =>
     {
-      if (event.target !== main) return;
-      self.mouseEventHandler.mouseUp(event);
+      if (event.target !== main)
+      {
+        return;
+      }
+      this.mouseEventHandler.mouseUp(event);
     };
 
     const mainListeners =
@@ -257,6 +270,7 @@ export default class Renderer
     if (!document.body.contains(this.pixiContainer))
     {
       this.pause();
+
       return;
     }
     if (this.isPaused)
