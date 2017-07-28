@@ -7,7 +7,7 @@ const eventManager =
   dispatchEvent: eventEmitter.emit.bind(eventEmitter),
   removeEventListener: eventEmitter.removeListener.bind(eventEmitter),
   removeAllListeners: eventEmitter.removeAllListeners.bind(eventEmitter),
-  addEventListener: (eventType: string, listener: Function) =>
+  addEventListener: <T extends Function>(eventType: string, listener: T) =>
   {
     eventEmitter.on(eventType, listener);
 
