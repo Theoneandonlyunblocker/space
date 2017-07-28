@@ -2,7 +2,7 @@
   "name": "spacegame",
   "version": "0.1.0",
   "dependencies": {
-    "pixi.js": "4.3.x"
+    "pixi.js": "4.5.3"
   },
   "devDependencies": {
     "typescript": "2.4.x",
