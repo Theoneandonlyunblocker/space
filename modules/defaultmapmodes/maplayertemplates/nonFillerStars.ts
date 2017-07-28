@@ -22,14 +22,6 @@ const nonFillerStars: MapRendererLayerTemplate =
 
     const points = perspectivePlayer ? perspectivePlayer.getRevealedStars() : map.stars;
 
-    const mouseDownFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
-    {
-      eventManager.dispatchEvent("mouseDown", event, star);
-    };
-    const mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
-    {
-      eventManager.dispatchEvent("mouseUp", event);
-    };
     const onClickFN = function(star: Star)
     {
       eventManager.dispatchEvent("starClick", star);
@@ -41,14 +33,6 @@ const nonFillerStars: MapRendererLayerTemplate =
     const mouseOutFN = function(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("clearHover");
-    };
-    const touchStartFN = function(event: PIXI.interaction.InteractionEvent)
-    {
-      eventManager.dispatchEvent("touchStart", event);
-    };
-    const touchEndFN = function(event: PIXI.interaction.InteractionEvent)
-    {
-      eventManager.dispatchEvent("touchEnd", event);
     };
     for (let i = 0; i < points.length; i++)
     {
@@ -71,7 +55,6 @@ const nonFillerStars: MapRendererLayerTemplate =
       gfx.interactive = true;
       gfx.hitArea = makePolygonFromPoints(star.voronoiCell.vertices);
 
-      const boundMouseDown = mouseDownFN.bind(null, star);
       const gfxClickFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
       {
         const originalEvent = <MouseEvent> event.data.originalEvent;
@@ -80,10 +63,6 @@ const nonFillerStars: MapRendererLayerTemplate =
         onClickFN(star);
       }.bind(null, star);
 
-      gfx.on("mousedown", boundMouseDown);
-      gfx.on("mouseup", mouseUpFN);
-      gfx.on("rightdown", boundMouseDown);
-      gfx.on("rightup", mouseUpFN);
       gfx.on("click", gfxClickFN);
       gfx.on("mouseover", mouseOverFN.bind(gfx, star));
       gfx.on("mouseout", mouseOutFN);
@@ -96,8 +75,6 @@ const nonFillerStars: MapRendererLayerTemplate =
 
     // cant be set on gfx as touchmove and touchend only register
     // on the object that had touchstart called on it
-    doc.on("touchstart", touchStartFN);
-    doc.on("touchend", touchEndFN);
     doc.on("touchmove", function(event: PIXI.interaction.InteractionEvent)
     {
       const local = event.data.getLocalPosition(doc);

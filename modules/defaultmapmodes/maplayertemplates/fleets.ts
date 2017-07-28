@@ -29,14 +29,6 @@ const fleets: MapRendererLayerTemplate =
 
     const points = perspectivePlayer ? perspectivePlayer.getVisibleStars() : map.stars;
 
-    const mouseDownFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
-    {
-      eventManager.dispatchEvent("mouseDown", event, fleet.location);
-    };
-    const mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
-    {
-      eventManager.dispatchEvent("mouseUp", event);
-    };
     const mouseOverFN = function(fleet: Fleet)
     {
       eventManager.dispatchEvent("hoverStar", fleet.location);
@@ -73,14 +65,9 @@ const fleets: MapRendererLayerTemplate =
 
       fleetContainer.interactive = true;
 
-      const boundMouseDownFN = mouseDownFN.bind(null, fleet);
       const boundFleetClickFN = fleetClickFN.bind(null, fleet);
       fleetContainer.on("click", boundFleetClickFN);
       fleetContainer.on("tap", boundFleetClickFN);
-      fleetContainer.on("mousedown", boundMouseDownFN);
-      fleetContainer.on("mouseup", mouseUpFN);
-      fleetContainer.on("rightdown", boundMouseDownFN);
-      fleetContainer.on("rightup", mouseUpFN);
       fleetContainer.on("mouseover", mouseOverFN.bind(null, fleet));
 
       return fleetContainer;

@@ -126,7 +126,6 @@ export default class Renderer
 
     this.resize();
 
-    // this.renderOnce();
     this.addCamera();
   }
   public pause()

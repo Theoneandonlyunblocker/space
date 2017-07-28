@@ -1,5 +1,3 @@
-
-import app from "./App"; // TODO global
 import Camera from "./Camera";
 import RectangleSelect from "./RectangleSelect";
 import Renderer from "./Renderer";
@@ -167,26 +165,6 @@ export default class MouseEventHandler
       }
     });
 
-    this.listeners["mouseDown"] = eventManager.addEventListener("mouseDown",
-      (e: PIXI.interaction.InteractionEvent, star?: Star) =>
-    {
-      this.mouseDown(e, star);
-    });
-    this.listeners["mouseUp"] = eventManager.addEventListener("mouseUp",
-      (e: PIXI.interaction.InteractionEvent) =>
-    {
-      this.mouseUp(e);
-    });
-    this.listeners["touchStart"] = eventManager.addEventListener("touchStart",
-      (e: PIXI.interaction.InteractionEvent) =>
-    {
-      this.touchStart(e);
-    });
-    this.listeners["touchEnd"] = eventManager.addEventListener("touchEnd",
-      (e: PIXI.interaction.InteractionEvent) =>
-    {
-      this.touchEnd(e);
-    });
     this.listeners["hoverStar"] = eventManager.addEventListener("hoverStar",
       (star: Star) =>
     {
@@ -239,30 +217,6 @@ export default class MouseEventHandler
       }
     }
   }
-
-  private touchStart(event: PIXI.interaction.InteractionEvent, star?: Star): void
-  {
-    if (app.playerControl.selectedFleets.length === 0)
-    {
-      this.startSelect(event);
-    }
-    else
-    {
-      this.startFleetMove(event, star);
-    }
-  }
-  private touchEnd(event: PIXI.interaction.InteractionEvent): void
-  {
-    if (this.currentAction === "select")
-    {
-      this.endSelect(event);
-    }
-    if (this.currentAction === "fleetMove")
-    {
-      this.completeFleetMove();
-    }
-  }
-
   private startScroll(event: PIXI.interaction.InteractionEvent): void
   {
     if (this.currentAction !== "scroll")
