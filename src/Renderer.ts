@@ -179,17 +179,9 @@ export default class Renderer
     this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
     this.toCenterOn = null;
 
-    this.mouseEventHandler = new MouseEventHandler(this, this.camera);
-    this.addEventListeners();
+    this.mouseEventHandler = new MouseEventHandler(this, this.renderer.plugins.interaction, this.camera);
 
     this.pathfindingArrow = new PathfindingArrow(this.layers.select);
-  }
-  private addEventListeners()
-  {
-    this.renderer.plugins.interaction.on("pointerdown", this.mouseEventHandler.mouseDown);
-    this.renderer.plugins.interaction.on("pointerup", this.mouseEventHandler.mouseUp);
-    this.renderer.plugins.interaction.on("pointerupoutside", this.mouseEventHandler.mouseUp);
-    this.renderer.plugins.interaction.on("pointermove", this.mouseEventHandler.mouseMove);
   }
   private resize()
   {

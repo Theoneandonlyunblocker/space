@@ -17,6 +17,7 @@ type PreventGhostKey =
 
 export default class MouseEventHandler
 {
+  private interactionManager: PIXI.interaction.InteractionManager;
   private renderer: Renderer;
   private camera: Camera;
   private rectangleSelect: RectangleSelect;
@@ -50,9 +51,10 @@ export default class MouseEventHandler
     clearHover: undefined,
   };
 
-  constructor(renderer: Renderer, camera: Camera)
+  constructor(renderer: Renderer, interactionManager: PIXI.interaction.InteractionManager, camera: Camera)
   {
     this.renderer = renderer;
+    this.interactionManager = interactionManager;
     this.camera = camera;
     this.rectangleSelect = new RectangleSelect(renderer.layers.select);
     this.currentAction = undefined;
@@ -68,12 +70,18 @@ export default class MouseEventHandler
       eventManager.removeEventListener(name, this.listeners[name]);
     }
 
+    this.interactionManager.off("pointerdown", this.mouseDown);
+    this.interactionManager.off("pointerup", this.mouseUp);
+    this.interactionManager.off("pointerupoutside", this.mouseUp);
+    this.interactionManager.off("pointermove", this.mouseMove);
+
     this.hoveredStar = null;
 
     this.rectangleSelect.destroy();
     this.rectangleSelect = null;
 
     this.renderer = null;
+    this.interactionManager = null;
     this.camera = null;
   }
 
