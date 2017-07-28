@@ -43,12 +43,21 @@ export default class MouseEventHandler
   };
   private listeners:
   {
-    hoverStar: (star: Star) => void,
-    clearHover: () => void,
+    hoverStar: (star: Star) => void;
+    clearHover: () => void;
   } =
   {
     hoverStar: undefined,
     clearHover: undefined,
+  };
+  private pixiCanvasListeners:
+  {
+    mousewheel: (e: WheelEvent) => void;
+    contextmenu: (e: PointerEvent) => void;
+  } =
+  {
+    mousewheel: undefined,
+    contextmenu: undefined,
   };
 
   constructor(renderer: Renderer, interactionManager: PIXI.interaction.InteractionManager, camera: Camera)
@@ -65,9 +74,15 @@ export default class MouseEventHandler
 
   public destroy(): void
   {
+    const pixiCanvas = document.getElementById("pixi-canvas");
+
     for (let name in this.listeners)
     {
       eventManager.removeEventListener(name, this.listeners[name]);
+    }
+    for (let name in this.pixiCanvasListeners)
+    {
+      pixiCanvas.removeEventListener(name, this.pixiCanvasListeners[name]);
     }
 
     this.interactionManager.off("pointerdown", this.mouseDown);
@@ -89,21 +104,11 @@ export default class MouseEventHandler
   {
     const pixiCanvas = document.getElementById("pixi-canvas");
 
-    pixiCanvas.addEventListener("contextmenu", e =>
-    {
-      e.stopPropagation();
-      if (e.target === pixiCanvas)
-      {
-        e.preventDefault();
-      }
-    });
-    pixiCanvas.addEventListener("mousewheel", e =>
-    {
-      if (e.target === pixiCanvas)
-      {
-        this.camera.deltaZoom(e.wheelDelta / 40, 0.05);
-      }
-    });
+    this.pixiCanvasListeners.contextmenu = this.handleContextMenu;
+    pixiCanvas.addEventListener("contextmenu", this.handleContextMenu);
+
+    this.pixiCanvasListeners.mousewheel = this.handleMouseWheel;
+    pixiCanvas.addEventListener("mousewheel", this.handleMouseWheel);
 
     this.listeners.hoverStar = eventManager.addEventListener("hoverStar",
       (star: Star) =>
@@ -115,12 +120,19 @@ export default class MouseEventHandler
     {
       this.clearHoveredStar();
     });
+
+    this.interactionManager.on("pointerdown", this.mouseDown);
+    this.interactionManager.on("pointerup", this.mouseUp);
+    this.interactionManager.on("pointerupoutside", this.mouseUp);
+    this.interactionManager.on("pointermove", this.mouseMove);
   }
   private bindEventHandlers(): void
   {
     this.mouseMove = this.mouseMove.bind(this);
     this.mouseUp = this.mouseUp.bind(this);
     this.mouseDown = this.mouseDown.bind(this);
+    this.handleContextMenu = this.handleContextMenu.bind(this);
+    this.handleMouseWheel = this.handleMouseWheel.bind(this);
   }
   private mouseMove(event: PIXI.interaction.InteractionEvent): void
   {
@@ -369,5 +381,15 @@ export default class MouseEventHandler
     this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers.main));
     this.currentAction = undefined;
     this.makeUIOpaque();
+  }
+  private handleContextMenu(e: PointerEvent): void
+  {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+  private handleMouseWheel(e: WheelEvent): void
+  {
+    this.camera.deltaZoom(e.wheelDelta / 40, 0.05);
+
   }
 }
