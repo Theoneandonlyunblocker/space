@@ -9,10 +9,8 @@ import Point from "./Point";
 
 export default class Renderer
 {
-  stage: PIXI.Container;
-  renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-  pixiContainer: HTMLElement;
-  layers:
+  public renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+  public layers:
   {
     background: PIXI.Container;
 
@@ -20,17 +18,21 @@ export default class Renderer
     map: PIXI.Container;
     select: PIXI.Container;
   };
-  camera: Camera;
-  mouseEventHandler: MouseEventHandler;
-  pathfindingArrow: PathfindingArrow;
+  public camera: Camera;
+  public toCenterOn: Point;
+
+
+  private stage: PIXI.Container;
+  private pixiContainer: HTMLElement;
+  private mouseEventHandler: MouseEventHandler;
+  private pathfindingArrow: PathfindingArrow;
 
   private backgroundDrawer: BackgroundDrawer;
   private activeRenderLoopId: number = 0;
-  isPaused: boolean = false;
-  forceFrame: boolean = false;
+  private isPaused: boolean = false;
+  private forceFrame: boolean = false;
 
-  toCenterOn: Point;
-  resizeListener: (e: Event) => void;
+  private resizeListener: (e: Event) => void;
 
   constructor(backgroundSeed: string, backgroundDrawingFunction: BackgroundDrawingFunction)
   {
@@ -53,7 +55,8 @@ export default class Renderer
     this.resizeListener = this.resize.bind(this);
     window.addEventListener("resize", this.resizeListener, false);
   }
-  destroy()
+
+  public destroy()
   {
     this.stage.renderable = false;
     this.pause();
@@ -90,14 +93,14 @@ export default class Renderer
 
     window.removeEventListener("resize", this.resizeListener);
   }
-  removeRendererView()
+  public removeRendererView()
   {
     if (this.renderer && this.renderer.view.parentNode)
     {
       this.renderer.view.parentNode.removeChild(this.renderer.view);
     }
   }
-  bindRendererView(container: HTMLElement)
+  public bindRendererView(container: HTMLElement)
   {
     this.pixiContainer = container;
 
@@ -126,7 +129,20 @@ export default class Renderer
     // this.renderOnce();
     this.addCamera();
   }
-  setupDefaultLayers()
+  public pause()
+  {
+    this.isPaused = true;
+    this.forceFrame = false;
+  }
+  public resume()
+  {
+    this.isPaused = false;
+    this.forceFrame = false;
+    this.activeRenderLoopId = this.activeRenderLoopId++;
+    this.render(this.activeRenderLoopId);
+  }
+
+  private setupDefaultLayers()
   {
     this.layers =
     {
@@ -147,7 +163,7 @@ export default class Renderer
     this.stage.addChild(this.layers.background);
     this.stage.addChild(this.layers.main);
   }
-  addCamera()
+  private addCamera()
   {
     let oldToCenterOn: Point;
 
@@ -165,7 +181,7 @@ export default class Renderer
 
     this.pathfindingArrow = new PathfindingArrow(this.layers.select);
   }
-  addEventListeners()
+  private addEventListeners()
   {
     const self = this;
 
@@ -215,7 +231,7 @@ export default class Renderer
       main.on(eventType, mainListeners[eventType]);
     }
   }
-  resize()
+  private resize()
   {
     if (this.renderer && document.body.contains(this.renderer.view))
     {
@@ -231,24 +247,12 @@ export default class Renderer
       }
     }
   }
-  renderOnce()
+  private renderOnce()
   {
     this.forceFrame = true;
     this.render();
   }
-  pause()
-  {
-    this.isPaused = true;
-    this.forceFrame = false;
-  }
-  resume()
-  {
-    this.isPaused = false;
-    this.forceFrame = false;
-    this.activeRenderLoopId = this.activeRenderLoopId++;
-    this.render(this.activeRenderLoopId);
-  }
-  render(renderLoopId?: number)
+  private render(renderLoopId?: number)
   {
     if (!document.body.contains(this.pixiContainer))
     {
