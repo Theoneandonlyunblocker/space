@@ -41,6 +41,8 @@ export class Fleet
     {
       this.addUnit(unitToAdd);
     });
+
+    eventManager.dispatchEvent("renderLayer", "fleets", this.location);
   }
   public static createFleetsFromUnits(units: Unit[]): Fleet[]
   {
