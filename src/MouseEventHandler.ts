@@ -172,7 +172,7 @@ export default class MouseEventHandler
       {
         if (!this.preventingGhost.mouseUp)
         {
-          this.endSelect(event);
+          this.completeSelect(event);
         }
         break;
       }
@@ -212,13 +212,25 @@ export default class MouseEventHandler
     else if (originalEvent.button === 0 ||
       !isFinite(originalEvent.button))
     {
-      this.cancelCurrentAction();
-      this.startSelect(event);
+      if (this.currentAction)
+      {
+        this.cancelCurrentAction();
+      }
+      else
+      {
+        this.startSelect(event);
+      }
     }
     else if (originalEvent.button === 2)
     {
-      this.cancelCurrentAction();
-      this.startFleetMove(event);
+      if (this.currentAction)
+      {
+        this.cancelCurrentAction();
+      }
+      else
+      {
+        this.startFleetMove(event);
+      }
     }
 
     this.preventGhost(15, "mouseDown");
@@ -262,11 +274,18 @@ export default class MouseEventHandler
   {
     switch (this.currentAction)
     {
-      case "select": // other events handle fine without explicitly canceling
+      case "select":
       {
         this.rectangleSelect.clearSelection();
-        this.currentAction = undefined;
-        this.makeUIOpaque();
+        this.stopSelect();
+
+        break;
+      }
+      case "fleetMove":
+      {
+        this.stopFleetMove();
+
+        break;
       }
     }
   }
@@ -365,6 +384,11 @@ export default class MouseEventHandler
     {
       eventManager.dispatchEvent("moveFleets", this.hoveredStar);
     }
+
+    this.stopFleetMove();
+  }
+  private stopFleetMove(): void
+  {
     eventManager.dispatchEvent("endPotentialMove");
     this.currentAction = undefined;
     this.makeUIOpaque();
@@ -384,9 +408,14 @@ export default class MouseEventHandler
   {
     this.rectangleSelect.moveSelection(event.data.getLocalPosition(this.renderer.layers.main));
   }
-  private endSelect(event: PIXI.interaction.InteractionEvent): void
+  private completeSelect(event: PIXI.interaction.InteractionEvent): void
   {
     this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers.main));
+
+    this.stopSelect();
+  }
+  private stopSelect(): void
+  {
     this.currentAction = undefined;
     this.makeUIOpaque();
   }
