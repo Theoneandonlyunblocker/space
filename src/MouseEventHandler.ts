@@ -243,7 +243,7 @@ export default class MouseEventHandler
     const ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
     if (ui)
     {
-      ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
+      ui.classList.add("mouse-event-active-ui");
     }
   }
   private makeUIOpaque(): void
@@ -255,7 +255,7 @@ export default class MouseEventHandler
     const ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
     if (ui)
     {
-      ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
+      ui.classList.remove("mouse-event-active-ui");
     }
   }
   private cancelCurrentAction(): void
