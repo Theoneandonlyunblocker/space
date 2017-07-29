@@ -447,7 +447,6 @@ export default class PathfindingArrow
     }
   }
 
-  // TODO 2017.07.29 | maybe only do this for final target
   getTargetOffset(target: Point, sourcePoint: Point, i: number,
     totalPaths: number, offsetPerOrbit: number)
   {

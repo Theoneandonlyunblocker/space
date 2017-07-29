@@ -1,5 +1,6 @@
 import NameSaveData from "./savedata/NameSaveData";
 
+// TODO 2017.07.28 | localization stuff like this should live in modules
 export default class Name
 {
   public fullName: string;
@@ -33,6 +34,7 @@ export default class Name
   {
     return this.fullName;
   }
+  // TODO 2017.07.28 | use localization stuff for this instead
   public getPossessive(): string
   {
     const standard = this.toString();
