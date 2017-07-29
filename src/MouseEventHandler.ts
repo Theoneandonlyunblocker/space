@@ -16,10 +16,12 @@ type PreventGhostKey =
   "mouseDown";
 
 
+// TODO 2017.07.29 | refactor for more pointer event friendly style. keep track of modifier keys here etc.
 // prevent pixi from using pointer events
 (window as any).PointerEvent = null;
 
 
+// TODO 2017.07.29 | display object for select rectangle is counted for camera bounds
 export default class MouseEventHandler
 {
   private interactionManager: PIXI.interaction.InteractionManager;
@@ -154,63 +156,41 @@ export default class MouseEventHandler
       this.dragSelect(event);
     }
   }
-  private mouseUp(event: PIXI.interaction.InteractionEvent): void
+  private mouseUp(e: PIXI.interaction.InteractionEvent): void
   {
-    switch (this.currentAction)
-    {
-      case undefined:
-      {
-        break;
-      }
-      case "scroll":
-      {
-        this.endScroll(event);
-        this.preventGhost(15, "mouseUp");
-        break;
-      }
-      case "select":
-      {
-        if (!this.preventingGhost.mouseUp)
-        {
-          this.completeSelect(event);
-        }
-        break;
-      }
-      case "fleetMove":
-      {
-        if (!this.preventingGhost.mouseUp)
-        {
-          this.completeFleetMove();
-        }
-        break;
 
+    if (this.currentAction === "scroll" && this.eventShouldTriggerScroll(e))
+    {
+      this.endScroll(e);
+      this.preventGhost(15, "mouseUp");
+    }
+    else if ((this.currentAction === "select" || this.stashedAction === "select") && this.eventShouldTriggerSelect(e))
+    {
+      if (!this.preventingGhost.mouseUp)
+      {
+        this.completeSelect(e);
       }
-      // case "zoom":
-      // {
-      //   this.endZoom(event);
-      //   this.preventGhost(15, "mouseUp");
-      //   break;
-      // }
+    }
+    else if ((this.currentAction === "fleetMove" || this.stashedAction === "fleetMove") && this.eventShouldTriggerFleetMove(e))
+    {
+      if (!this.preventingGhost.mouseUp)
+      {
+        this.completeFleetMove();
+      }
     }
   }
-  private mouseDown(event: PIXI.interaction.InteractionEvent): void
+  private mouseDown(e: PIXI.interaction.InteractionEvent): void
   {
     if (this.preventingGhost.mouseDown)
     {
       return;
     }
 
-    const originalEvent = <MouseEvent> event.data.originalEvent;
-    if (
-        originalEvent.ctrlKey ||
-        originalEvent.metaKey ||
-        originalEvent.button === 1
-      )
+    if (this.eventShouldTriggerScroll(e))
     {
-      this.startScroll(event);
+      this.startScroll(e);
     }
-    else if (originalEvent.button === 0 ||
-      !isFinite(originalEvent.button))
+    else if (this.eventShouldTriggerSelect(e))
     {
       if (this.currentAction)
       {
@@ -218,10 +198,10 @@ export default class MouseEventHandler
       }
       else
       {
-        this.startSelect(event);
+        this.startSelect(e);
       }
     }
-    else if (originalEvent.button === 2)
+    else if (this.eventShouldTriggerFleetMove(e))
     {
       if (this.currentAction)
       {
@@ -229,7 +209,7 @@ export default class MouseEventHandler
       }
       else
       {
-        this.startFleetMove(event);
+        this.startFleetMove(e);
       }
     }
 
@@ -390,7 +370,14 @@ export default class MouseEventHandler
   private stopFleetMove(): void
   {
     eventManager.dispatchEvent("endPotentialMove");
-    this.currentAction = undefined;
+    if (this.currentAction === "fleetMove")
+    {
+      this.currentAction = undefined;
+    }
+    else if (this.stashedAction === "fleetMove")
+    {
+      this.stashedAction = undefined;
+    }
     this.makeUIOpaque();
   }
   private clearFleetMoveTarget(): void
@@ -416,7 +403,14 @@ export default class MouseEventHandler
   }
   private stopSelect(): void
   {
-    this.currentAction = undefined;
+    if (this.currentAction === "select")
+    {
+      this.currentAction = undefined;
+    }
+    else if (this.stashedAction === "select")
+    {
+      this.stashedAction = undefined;
+    }
     this.makeUIOpaque();
   }
   private handleContextMenu(e: PointerEvent): void
@@ -427,5 +421,21 @@ export default class MouseEventHandler
   private handleMouseWheel(e: WheelEvent): void
   {
     this.camera.deltaZoom(e.wheelDelta / 40, 0.05);
+  }
+  private eventShouldTriggerScroll(e: PIXI.interaction.InteractionEvent): boolean
+  {
+    const originalEvent = <MouseEvent> e.data.originalEvent;
+
+    return e.data.button === 1 ||
+      originalEvent.ctrlKey ||
+      originalEvent.metaKey;
+  }
+  private eventShouldTriggerFleetMove(e: PIXI.interaction.InteractionEvent): boolean
+  {
+    return e.data.button === 2;
+  }
+  private eventShouldTriggerSelect(e: PIXI.interaction.InteractionEvent): boolean
+  {
+    return e.data.button === 0;
   }
 }
