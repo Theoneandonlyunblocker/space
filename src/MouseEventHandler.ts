@@ -193,7 +193,7 @@ export default class MouseEventHandler
       // }
     }
   }
-  private mouseDown(event: PIXI.interaction.InteractionEvent, star?: Star): void
+  private mouseDown(event: PIXI.interaction.InteractionEvent): void
   {
     if (this.preventingGhost.mouseDown)
     {
@@ -218,7 +218,7 @@ export default class MouseEventHandler
     else if (originalEvent.button === 2)
     {
       this.cancelCurrentAction();
-      this.startFleetMove(event, star);
+      this.startFleetMove(event);
     }
 
     this.preventGhost(15, "mouseDown");
@@ -322,7 +322,10 @@ export default class MouseEventHandler
     if (star !== this.hoveredStar)
     {
       this.hoveredStar = star;
-      this.setFleetMoveTarget(star);
+      if (this.currentAction === "fleetMove")
+      {
+        this.setFleetMoveTarget(star);
+      }
     }
   }
   private clearHoveredStar(): void
@@ -332,23 +335,28 @@ export default class MouseEventHandler
       if (!this.preventingGhost.hover)
       {
         this.hoveredStar = null;
-        this.clearFleetMoveTarget();
+        if (this.currentAction === "fleetMove")
+        {
+          this.clearFleetMoveTarget();
+        }
       }
       window.clearTimeout(timeout);
     }, 15);
   }
-  private startFleetMove(event: PIXI.interaction.InteractionEvent, star: Star): void
+  private startFleetMove(event: PIXI.interaction.InteractionEvent): void
   {
-    eventManager.dispatchEvent("startPotentialMove", star);
     this.currentAction = "fleetMove";
+    eventManager.dispatchEvent("startPotentialMove");
+
+    if (this.hoveredStar)
+    {
+      this.setFleetMoveTarget(this.hoveredStar);
+    }
+
     this.makeUITransparent();
   }
   private setFleetMoveTarget(star: Star): void
   {
-    if (this.currentAction !== "fleetMove")
-    {
-      return;
-    }
     eventManager.dispatchEvent("setPotentialMoveTarget", star);
   }
   private completeFleetMove(): void
@@ -363,10 +371,6 @@ export default class MouseEventHandler
   }
   private clearFleetMoveTarget(): void
   {
-    if (this.currentAction !== "fleetMove")
-    {
-      return;
-    }
     eventManager.dispatchEvent("clearPotentialMoveTarget");
   }
   private startSelect(event: PIXI.interaction.InteractionEvent): void

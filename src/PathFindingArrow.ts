@@ -90,15 +90,10 @@ export default class PathfindingArrow
   {
     const self = this;
 
-    this.addEventListener("startPotentialMove", function(star: Star)
+    this.addEventListener("startPotentialMove", function()
     {
       self.startMove();
-      if (star)
-      {
-        self.setTarget(star);
-      }
     });
-
     this.addEventListener("setPotentialMoveTarget", function(star: Star)
     {
       self.setTarget(star);
@@ -107,7 +102,6 @@ export default class PathfindingArrow
     {
       self.clearTarget();
     });
-
     this.addEventListener("endPotentialMove", function()
     {
       self.endMove();
@@ -453,6 +447,7 @@ export default class PathfindingArrow
     }
   }
 
+  // TODO 2017.07.29 | maybe only do this for final target
   getTargetOffset(target: Point, sourcePoint: Point, i: number,
     totalPaths: number, offsetPerOrbit: number)
   {
