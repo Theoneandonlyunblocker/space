@@ -40,7 +40,7 @@ export declare interface RaceTemplate
   generateIndependentPlayer(
     allEmblemTemplates: TemplateCollection<SubEmblemTemplate>,
   ): Player;
-  generateIndependentFleet(
+  generateIndependentFleets(
     player: Player,
     location: Star,
     /**
@@ -52,7 +52,7 @@ export declare interface RaceTemplate
      */
     localStrength: number,
     maxUnitsPerSideInBattle: number,
-  ): Fleet;
+  ): Fleet[];
 
   technologies: RaceTechnologyValue[];
   getAITemplateConstructor: (player: Player) => AITemplateConstructor<any>;

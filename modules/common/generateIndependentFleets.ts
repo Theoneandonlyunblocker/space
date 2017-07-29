@@ -69,14 +69,14 @@ const unitRoleData:
   },
 };
 
-export function generateIndependentFleet(
+export function generateIndependentFleets(
   race: RaceTemplate,
   player: Player,
   location: Star,
   globalStrength: number,
   localStrength: number,
   maxUnitsPerSideInBattle: number,
-): Fleet
+): Fleet[]
 {
   const locationHasLeader = localStrength > 0.8;
 
@@ -133,10 +133,13 @@ export function generateIndependentFleet(
     player.addUnit(unit);
   }
 
-  const fleet = new Fleet(units);
-  player.addFleet(fleet);
-  location.addFleet(fleet);
-  fleet.name = new Name(`Independent ${race.displayName} Fleet`, false);
+  const fleets = Fleet.createFleetsFromUnits(units);
+  fleets.forEach(fleet =>
+  {
+    player.addFleet(fleet);
+    location.addFleet(fleet);
+    fleet.name = new Name(`Independent ${race.displayName} Fleet`, false);
+  });
 
-  return fleet;
+  return fleets;
 }

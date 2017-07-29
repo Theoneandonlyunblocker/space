@@ -64,7 +64,7 @@ export default function setupIndependents(props:
     const localStrength = star === commanderStar ? 1 : 0.5;
 
 
-    star.race.generateIndependentFleet(
+    star.race.generateIndependentFleets(
       props.player,
       star,
       globalStrength,

@@ -7,7 +7,7 @@ import
   getRandomProperty,
 } from "../../../src/utility";
 
-import {generateIndependentFleet} from "../../common/generateIndependentFleet";
+import {generateIndependentFleets} from "../../common/generateIndependentFleets";
 import {generateIndependentPlayer} from "../../common/generateIndependentPlayer";
 import DefaultAIConstructor from "../../defaultai/mapai/DefaultAIConstructor";
 import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
@@ -53,10 +53,10 @@ const wormThings: RaceTemplate =
   {
     return generateIndependentPlayer(wormThings);
   },
-  generateIndependentFleet: (player, location, globalStrength, localStrength,
+  generateIndependentFleets: (player, location, globalStrength, localStrength,
     maxUnitsPerSideInBattle) =>
   {
-    return generateIndependentFleet(wormThings, player, location,
+    return generateIndependentFleets(wormThings, player, location,
       globalStrength, localStrength, maxUnitsPerSideInBattle);
   },
 

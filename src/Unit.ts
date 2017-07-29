@@ -779,7 +779,7 @@ export default class Unit
 
     newPlayer.addUnit(this);
 
-    const fleet = new Fleet([this]);
+    const fleet = Fleet.createFleet([this]);
     newPlayer.addFleet(fleet);
     location.addFleet(fleet);
   }

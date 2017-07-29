@@ -195,9 +195,12 @@ export class Front
         unitToRemove.fleet.removeUnit(unitToRemove);
       });
 
-      const fleet = new Fleet(units);
-      player.addFleet(fleet);
-      location.addFleet(fleet);
+      const fleets = Fleet.createFleetsFromUnits(units);
+      fleets.forEach(fleet =>
+      {
+        player.addFleet(fleet);
+        location.addFleet(fleet);
+      });
     }
   }
   private isFleetPure(fleet: Fleet): boolean

@@ -396,7 +396,7 @@ export default class GameLoader
     const units = data.unitIds.map(unitId => this.unitsById[unitId]);
     const location = this.starsById[data.locationId];
 
-    const fleet = new Fleet(units, data.id);
+    const fleet = Fleet.createFleet(units, data.id);
 
     player.addFleet(fleet);
     location.addFleet(fleet);

@@ -11,7 +11,7 @@ import
 
 
 import {distributionGroups} from "../common/distributionGroups";
-import {generateIndependentFleet} from "../common/generateIndependentFleet";
+import {generateIndependentFleets} from "../common/generateIndependentFleets";
 import {generateIndependentPlayer} from "../common/generateIndependentPlayer";
 
 import {droneBase} from  "./units/droneBase";
@@ -55,10 +55,10 @@ export const drones: RaceTemplate =
   {
     return generateIndependentPlayer(drones);
   },
-  generateIndependentFleet: (player, location, globalStrength, localStrength,
+  generateIndependentFleets: (player, location, globalStrength, localStrength,
     maxUnitsPerSideInBattle) =>
   {
-    return generateIndependentFleet(drones, player, location,
+    return generateIndependentFleets(drones, player, location,
       globalStrength, localStrength, maxUnitsPerSideInBattle);
   },
 
