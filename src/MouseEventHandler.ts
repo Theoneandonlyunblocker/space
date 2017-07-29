@@ -48,6 +48,8 @@ export default class MouseEventHandler
     fleetMove: false,
   };
   private currentActionIsCanceled: boolean = false;
+  private actionHasStarted: boolean = false;
+
   private preventingGhost: PreventGhostHandles =
   {
     hover: undefined,
@@ -70,6 +72,7 @@ export default class MouseEventHandler
     mousewheel: undefined,
     contextmenu: undefined,
   };
+
 
   constructor(renderer: Renderer, interactionManager: PIXI.interaction.InteractionManager, camera: Camera)
   {
@@ -190,12 +193,18 @@ export default class MouseEventHandler
 
   private onPointerDown(e: PIXI.interaction.InteractionEvent): void
   {
-
     this.currentActionIsCanceled = false;
+    this.actionHasStarted = true;
+    this.makeUITransparent();
     this.onPointerChange(e);
   }
   private onPointerChange(e: PIXI.interaction.InteractionEvent): void
   {
+    if (!this.actionHasStarted)
+    {
+      return;
+    }
+
     const newPressedButtons = this.currentActionIsCanceled ?
       // nullify left & right button
       e.data.buttons & ~MouseButtons.Left & ~MouseButtons.Right :
@@ -215,7 +224,6 @@ export default class MouseEventHandler
           this.handleActionChange(<keyof MouseActions> key, e);
         }
       }
-
     }
 
     if (this.currentActions.pan)
@@ -232,6 +240,10 @@ export default class MouseEventHandler
   }
   private onPointerUp(e: PIXI.interaction.InteractionEvent): void
   {
+    this.onPointerChange(e);
+
+    this.actionHasStarted = false;
+    this.makeUIOpaque();
   }
 
   private handleContextMenu(e: PointerEvent): void
@@ -272,23 +284,8 @@ export default class MouseEventHandler
     }, 15);
   }
 
-  private hasAnyCurrentAction(): boolean
-  {
-    for (let key in this.currentActions)
-    {
-      if (this.currentActions[key])
-      {
-        return true;
-      }
-    }
-
-    return false;
-  }
   private handleActionChange(action: keyof MouseActions, e: PIXI.interaction.InteractionEvent): void
   {
-    const hadCurrentActionBeforeToggle = this.hasAnyCurrentAction();
-
-
     switch (action)
     {
       case "pan":
@@ -339,25 +336,6 @@ export default class MouseEventHandler
         break;
       }
     }
-
-    const hasCurrentActionAfterToggle = this.hasAnyCurrentAction();
-
-    if (!hadCurrentActionBeforeToggle && hasCurrentActionAfterToggle)
-    {
-      this.handleActionStart();
-    }
-    else if (hadCurrentActionBeforeToggle && !hasCurrentActionAfterToggle)
-    {
-      this.handleActionEnd();
-    }
-  }
-  private handleActionStart(): void
-  {
-    this.makeUITransparent();
-  }
-  private handleActionEnd(): void
-  {
-    this.makeUIOpaque();
   }
   private cancelCurrentAction(): void
   {
@@ -409,7 +387,6 @@ export default class MouseEventHandler
     this.rectangleSelect.clearSelection();
     this.currentActions.select = false;
   }
-
 
   private setFleetMoveTarget(star: Star): void
   {
