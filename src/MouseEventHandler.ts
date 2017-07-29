@@ -39,6 +39,8 @@ export default class MouseEventHandler
   private hoveredStar: Star;
   private pressedButtons: MouseButtons;
 
+  private pixiCanvas: HTMLCanvasElement;
+
   private readonly currentActions: MouseActions =
   {
     pan: false,
@@ -96,15 +98,13 @@ export default class MouseEventHandler
 
   public destroy(): void
   {
-    const pixiCanvas = document.getElementById("pixi-canvas");
-
     for (let name in this.listeners)
     {
       eventManager.removeEventListener(name, this.listeners[name]);
     }
     for (let name in this.pixiCanvasListeners)
     {
-      pixiCanvas.removeEventListener(name, this.pixiCanvasListeners[name]);
+      this.pixiCanvas.removeEventListener(name, this.pixiCanvasListeners[name]);
     }
 
     this.interactionManager.off("pointerdown", this.onPointerDown);
@@ -112,6 +112,7 @@ export default class MouseEventHandler
     this.interactionManager.off("pointerupoutside", this.onPointerUp);
     this.interactionManager.off("pointermove", this.onPointerChange);
 
+    this.pixiCanvas = null;
     this.hoveredStar = null;
 
     this.rectangleSelect.destroy();
@@ -124,13 +125,13 @@ export default class MouseEventHandler
 
   private addEventListeners(): void
   {
-    const pixiCanvas = document.getElementById("pixi-canvas");
+    this.pixiCanvas = <HTMLCanvasElement> document.getElementById("pixi-canvas");
 
     this.pixiCanvasListeners.contextmenu = this.handleContextMenu;
-    pixiCanvas.addEventListener("contextmenu", this.handleContextMenu);
+    this.pixiCanvas.addEventListener("contextmenu", this.handleContextMenu);
 
     this.pixiCanvasListeners.mousewheel = this.handleMouseWheel;
-    pixiCanvas.addEventListener("mousewheel", this.handleMouseWheel);
+    this.pixiCanvas.addEventListener("mousewheel", this.handleMouseWheel);
 
     this.listeners.hoverStar = eventManager.addEventListener("hoverStar",
       (star: Star) =>
