@@ -48,11 +48,6 @@ export default class RectangleSelect
   }
   endSelection(point: Point)
   {
-    if (Math.abs(this.start.x - this.current.x) < 10 || Math.abs(this.start.y - this.current.y) < 10)
-    {
-      this.clearSelection();
-      return;
-    }
     this.setSelectionTargets();
 
     const inSelection = this.getAllInSelection();
