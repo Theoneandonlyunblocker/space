@@ -77,6 +77,7 @@ export default class ModuleLoader
     console.log("start loading module '", moduleFile.key, "'");
 
     this.moduleLoadStart[moduleFile.key] = Date.now();
+    // TODO 2017.07.29 | keep track of what's already been loaded
     if (moduleFile.loadAssets)
     {
       moduleFile.loadAssets(() =>

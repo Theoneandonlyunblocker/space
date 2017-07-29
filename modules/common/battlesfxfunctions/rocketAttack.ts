@@ -5,9 +5,25 @@ import ProjectileAttack from "./sfxfragments/ProjectileAttack";
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
 
+let hasLoaded: boolean = false;
+export default function rocketAttack(params: SFXParams): void
+{
+  if (hasLoaded)
+  {
+    playRocketAttack(params);
+  }
+  else
+  {
+    loadRocketAttack(() =>
+    {
+      playRocketAttack(params);
+    });
+  }
+}
+
 const rocketUrl = "modules/common/battlesfxfunctions/img/rocket.png";
 
-function rocketAttack(params: SFXParams)
+function playRocketAttack(params: SFXParams)
 {
   const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSFX(
     params.targetOffset, params.width, "target");
@@ -141,16 +157,13 @@ function rocketAttack(params: SFXParams)
   animate();
 }
 
-export default function preLoadedRocketAttack(params: SFXParams)
+function loadRocketAttack(callback: () => void)
 {
   const loader = new PIXI.loaders.Loader();
 
   loader.add("explosion", "modules/common/battlesfxfunctions/img/explosion.json");
   loader.add(rocketUrl);
 
-  loader.load(() =>
-  {
-    rocketAttack(params);
-  });
+  loader.load(callback);
 }
 

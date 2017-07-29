@@ -17,6 +17,22 @@ import ColorMatrixFilter from "./ColorMatrixFilter";
 import ProtonWrapper from "./ProtonWrapper";
 
 
+let hasLoaded: boolean = false;
+export default function snipe(type: UnitAttribute, params: SFXParams): void
+{
+  if (hasLoaded)
+  {
+    playSnipe(type, params);
+  }
+  else
+  {
+    loadSnipe(type, () =>
+    {
+      playSnipe(type, params);
+    });
+  }
+}
+
 const colors =
 {
   [UnitAttribute.Attack]: Color.fromHexString("FF4D77"),
@@ -37,9 +53,9 @@ for (let attribute in colors)
 
 const projectileURL = "modules/common/battlesfxfunctions/img/ellipse.png";
 
-function snipe(type: UnitAttribute, params: SFXParams)
+function playSnipe(type: UnitAttribute, params: SFXParams)
 {
-  //----------INIT
+  // ----------INIT
   const mainContainer = new PIXI.Container();
 
   const offsetUserData = params.user.drawingFunctionData.normalizeForBattleSFX(
@@ -68,7 +84,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
   let impactHasOccurred = false;
 
 
-  //----------FOCUSING BEAM
+  // ----------FOCUSING BEAM
   const beamFragment = new FocusingBeam(
   {
     color: colors[type].saturate(-0.1),
@@ -92,7 +108,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
   beamFragment.draw();
   mainContainer.addChild(beamFragment.displayObject);
 
-  //----------PROJECTILE
+  // ----------PROJECTILE
   const maxSpeedAt1000Duration = params.width * params.duration / 2;
   const maxSpeed = maxSpeedAt1000Duration * (1000 / params.duration);
   const acceleration = maxSpeed / 0.5;
@@ -160,7 +176,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
   projectileFragment.draw(offsetUserData, offsetTargetData);
   mainContainer.addChild(projectileFragment.displayObject);
 
-  //----------PARTICLES
+  // ----------PARTICLES
   const particleContainer = new PIXI.Container();
 
   const protonWrapper = new ProtonWrapper(params.renderer, particleContainer);
@@ -253,7 +269,7 @@ function snipe(type: UnitAttribute, params: SFXParams)
   });
 
 
-  //----------ANIMATE
+  // ----------ANIMATE
 
   function animate()
   {
@@ -280,14 +296,11 @@ function snipe(type: UnitAttribute, params: SFXParams)
   animate();
 }
 
-export default function preLoadedSnipe(type: UnitAttribute, params: SFXParams)
+function loadSnipe(type: UnitAttribute, callback: () => void)
 {
   const loader = new PIXI.loaders.Loader();
 
   loader.add(projectileURL);
 
-  loader.load(() =>
-  {
-    snipe(type, params);
-  });
+  loader.load(callback);
 }
