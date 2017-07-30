@@ -1,6 +1,5 @@
 import Camera from "./Camera";
 import RectangleSelect from "./RectangleSelect";
-import Renderer from "./Renderer";
 import Star from "./Star";
 import eventManager from "./eventManager";
 
@@ -27,12 +26,9 @@ enum MouseButtons
 }
 
 
-// TODO 2017.07.29 | display object for select rectangle is counted for camera bounds
 export default class MouseEventHandler
 {
   private interactionManager: PIXI.interaction.InteractionManager;
-  // TODO 2017.07.29 | get rid of this
-  private renderer: Renderer;
   private camera: Camera;
   private rectangleSelect: RectangleSelect;
 
@@ -74,12 +70,15 @@ export default class MouseEventHandler
   };
 
 
-  constructor(renderer: Renderer, interactionManager: PIXI.interaction.InteractionManager, camera: Camera)
+  constructor(
+    interactionManager: PIXI.interaction.InteractionManager,
+    camera: Camera,
+    selectionLayer: PIXI.Container,
+  )
   {
-    this.renderer = renderer;
     this.interactionManager = interactionManager;
     this.camera = camera;
-    this.rectangleSelect = new RectangleSelect(renderer.layers.select);
+    this.rectangleSelect = new RectangleSelect(selectionLayer);
 
     this.bindEventHandlers();
     this.addEventListeners();
@@ -121,7 +120,6 @@ export default class MouseEventHandler
     this.rectangleSelect.destroy();
     this.rectangleSelect = null;
 
-    this.renderer = null;
     this.interactionManager = null;
     this.camera = null;
   }
@@ -368,17 +366,16 @@ export default class MouseEventHandler
 
   private handleSelectionStart(e: PIXI.interaction.InteractionEvent): void
   {
-    // TODO 2017.07.29 | isn't there a cleaner way to do this? it should use global coordinates anyway
-    this.rectangleSelect.startSelection(e.data.getLocalPosition(this.renderer.layers.main));
+    this.rectangleSelect.startSelection(e.data.getLocalPosition(this.rectangleSelect.parentContainer));
     this.currentActions.select = true;
   }
   private handleSelectionMove(e: PIXI.interaction.InteractionEvent): void
   {
-    this.rectangleSelect.moveSelection(e.data.getLocalPosition(this.renderer.layers.main));
+    this.rectangleSelect.moveSelection(e.data.getLocalPosition(this.rectangleSelect.parentContainer));
   }
   private completeSelection(e: PIXI.interaction.InteractionEvent): void
   {
-    this.rectangleSelect.endSelection(e.data.getLocalPosition(this.renderer.layers.main));
+    this.rectangleSelect.endSelection(e.data.getLocalPosition(this.rectangleSelect.parentContainer));
 
     this.handleSelectionStop();
   }

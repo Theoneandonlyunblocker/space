@@ -12,6 +12,7 @@ export default class Camera
   container: PIXI.Container;
   width: number;
   height: number;
+  // TODO 2017.07.30 | these are messed up
   bounds: any = {};
   startPos: number[];
   startClick: number[];
