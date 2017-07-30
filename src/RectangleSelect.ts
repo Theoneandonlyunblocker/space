@@ -15,6 +15,8 @@ export default class RectangleSelect
   toSelectFrom: {position: Point; data: any}[];
   getSelectionTargetsFN: () => {position: Point; data: any}[];
 
+  private readonly minimumSizeThreshhold = 5;
+
   constructor(parentContainer: PIXI.Container)
   {
     this.parentContainer = parentContainer;
@@ -48,6 +50,12 @@ export default class RectangleSelect
   }
   endSelection(point: Point)
   {
+    if (Math.abs(this.start.x - this.current.x) < this.minimumSizeThreshhold ||
+      Math.abs(this.start.y - this.current.y) < this.minimumSizeThreshhold)
+    {
+      return;
+    }
+
     this.setSelectionTargets();
 
     const inSelection = this.getAllInSelection();
