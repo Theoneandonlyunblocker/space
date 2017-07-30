@@ -38,12 +38,12 @@ export default class RectangleSelect
   startSelection(point: Point)
   {
     this.selecting = true;
-    this.start = point;
-    this.current = point;
+    this.start = {x: point.x, y: point.y};
+    this.current = {x: point.x, y: point.y};
   }
   moveSelection(point: Point)
   {
-    this.current = point;
+    this.current = {x: point.x, y: point.y};
     this.drawSelectionRectangle();
   }
   endSelection(point: Point)
