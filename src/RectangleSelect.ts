@@ -5,53 +5,54 @@ import eventManager from "./eventManager";
 
 export default class RectangleSelect
 {
-  parentContainer: PIXI.Container;
-  graphics: PIXI.Graphics;
-  selecting: boolean;
+  public getSelectionTargetsFN: () => {position: Point; data: any}[];
 
-  start: Point;
-  current: Point;
+  private graphics: PIXI.Graphics;
+  private selecting: boolean;
 
-  toSelectFrom: {position: Point; data: any}[];
-  getSelectionTargetsFN: () => {position: Point; data: any}[];
+  private startLocal: PIXI.Point;
+  private currentGlobal: Point;
+
+  private toSelectFrom: {position: Point; data: any}[];
 
   private readonly minimumSizeThreshhold = 5;
+  private gfxContainer: PIXI.Container;
+  private targetLayer: PIXI.Container;
 
-  constructor(parentContainer: PIXI.Container)
+  constructor(gfxContainer: PIXI.Container, targetLayer: PIXI.Container)
   {
-    this.parentContainer = parentContainer;
+    this.gfxContainer = gfxContainer;
+    this.targetLayer = targetLayer;
     this.graphics = new PIXI.Graphics();
-    parentContainer.addChild(this.graphics);
+    gfxContainer.addChild(this.graphics);
 
     this.addEventListeners();
   }
-  destroy()
+
+  public destroy(): void
   {
-    this.parentContainer = null;
+    this.gfxContainer.removeChild(this.graphics);
+    this.gfxContainer = null;
     this.graphics = null;
     this.toSelectFrom = null;
     this.getSelectionTargetsFN = null;
   }
-  addEventListeners()
-  {
-    eventManager.dispatchEvent("setRectangleSelectTargetFN", this);
-  }
-
-  startSelection(point: Point)
+  public startSelection(point: Point): void
   {
     this.selecting = true;
-    this.start = {x: point.x, y: point.y};
-    this.current = {x: point.x, y: point.y};
+    this.startLocal = this.targetLayer.worldTransform.applyInverse(new PIXI.Point(point.x, point.y));
+    this.currentGlobal = {x: point.x, y: point.y};
+
   }
-  moveSelection(point: Point)
+  public moveSelection(point: Point): void
   {
-    this.current = {x: point.x, y: point.y};
+    this.currentGlobal = {x: point.x, y: point.y};
     this.drawSelectionRectangle();
   }
-  endSelection(point: Point)
+  public endSelection(): void
   {
-    if (Math.abs(this.start.x - this.current.x) < this.minimumSizeThreshhold ||
-      Math.abs(this.start.y - this.current.y) < this.minimumSizeThreshhold)
+    const bounds = this.getBounds();
+    if (bounds.width < this.minimumSizeThreshhold || bounds.height < this.minimumSizeThreshhold)
     {
       return;
     }
@@ -63,53 +64,69 @@ export default class RectangleSelect
 
     this.clearSelection();
   }
-  clearSelection()
+  public clearSelection(): void
   {
     this.selecting = false;
     this.graphics.clear();
-    this.start = null;
-    this.current = null;
+    this.startLocal = null;
+    this.currentGlobal = null;
+  }
+  public handleTargetLayerShift(): void
+  {
+    window.requestAnimationFrame(() =>
+    {
+      this.drawSelectionRectangle();
+    });
   }
 
-  drawSelectionRectangle()
+  private addEventListeners(): void
   {
-    if (!this.current) return;
+    eventManager.dispatchEvent("setRectangleSelectTargetFN", this);
+  }
+  private drawSelectionRectangle(): void
+  {
+    if (!this.currentGlobal)
+    {
+      return;
+    }
 
-    const gfx = this.graphics;
     const bounds = this.getBounds();
 
-    gfx.clear();
-    gfx.lineStyle(1, 0xFFFFFF, 1);
-    gfx.beginFill(0x000000, 0);
-    gfx.drawRect(bounds.x1, bounds.y1, bounds.width, bounds.height);
-    gfx.endFill();
+    this.graphics.clear();
+    this.graphics.lineStyle(1, 0xFFFFFF, 1);
+    this.graphics.beginFill(0x000000, 0);
+    this.graphics.drawRect(bounds.left, bounds.top, bounds.width, bounds.height);
+    this.graphics.endFill();
   }
-  setSelectionTargets()
+  private setSelectionTargets(): void
   {
-    if (!this.getSelectionTargetsFN) return;
+    if (!this.getSelectionTargetsFN)
+    {
+      return;
+    }
 
     this.toSelectFrom = this.getSelectionTargetsFN();
   }
-  getBounds()
+  private getBounds()
   {
-    const x1 = Math.min(this.start.x, this.current.x);
-    const x2 = Math.max(this.start.x, this.current.x);
-    const y1 = Math.min(this.start.y, this.current.y);
-    const y2 = Math.max(this.start.y, this.current.y);
+    const startGlobal = this.targetLayer.worldTransform.apply(this.startLocal);
+    const x1 = Math.min(startGlobal.x, this.currentGlobal.x);
+    const x2 = Math.max(startGlobal.x, this.currentGlobal.x);
+    const y1 = Math.min(startGlobal.y, this.currentGlobal.y);
+    const y2 = Math.max(startGlobal.y, this.currentGlobal.y);
 
     return(
     {
-      x1: x1,
-      x2: x2,
-      y1: y1,
-      y2: y2,
+      left: x1,
+      top: y1,
+      right: x2,
+      bottom: y2,
 
       width: x2 - x1,
       height: y2 - y1,
     });
   }
-
-  getAllInSelection()
+  private getAllInSelection(): any[]
   {
     const toReturn: any[] = [];
 
@@ -120,19 +137,22 @@ export default class RectangleSelect
         toReturn.push(this.toSelectFrom[i].data);
       }
     }
+
     return toReturn;
   }
-
-  selectionContains(point: Point)
+  private selectionContains(point: Point): boolean
   {
-    const x = point.x;
-    const y = point.y;
+    const pixiPoint = new PIXI.Point(point.x, point.y);
+    const transformedPoint = this.targetLayer.worldTransform.apply(pixiPoint);
+
+    const x = transformedPoint.x;
+    const y = transformedPoint.y;
 
     const bounds = this.getBounds();
 
     return(
-      (x >= bounds.x1 && x <= bounds.x2) &&
-      (y >= bounds.y1 && y <= bounds.y2)
+      (x >= bounds.left && x <= bounds.right) &&
+      (y >= bounds.top && y <= bounds.bottom)
     );
   }
 }

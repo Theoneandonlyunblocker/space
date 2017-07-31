@@ -74,11 +74,12 @@ export default class MouseEventHandler
     interactionManager: PIXI.interaction.InteractionManager,
     camera: Camera,
     selectionLayer: PIXI.Container,
+    mainLayer: PIXI.Container,
   )
   {
     this.interactionManager = interactionManager;
     this.camera = camera;
-    this.rectangleSelect = new RectangleSelect(selectionLayer);
+    this.rectangleSelect = new RectangleSelect(selectionLayer, mainLayer);
 
     this.bindEventHandlers();
     this.addEventListeners();
@@ -252,6 +253,7 @@ export default class MouseEventHandler
   private handleMouseWheel(e: WheelEvent): void
   {
     this.camera.deltaZoom(e.wheelDelta / 40, 0.05);
+    this.rectangleSelect.handleTargetLayerShift();
   }
 
   private setHoveredStar(star: Star): void
@@ -357,6 +359,7 @@ export default class MouseEventHandler
   private handlePanMove(e: PIXI.interaction.InteractionEvent): void
   {
     this.camera.move([e.data.global.x, e.data.global.y]);
+    this.rectangleSelect.handleTargetLayerShift();
   }
   private handlePanEnd(): void
   {
@@ -366,16 +369,16 @@ export default class MouseEventHandler
 
   private handleSelectionStart(e: PIXI.interaction.InteractionEvent): void
   {
-    this.rectangleSelect.startSelection(e.data.getLocalPosition(this.rectangleSelect.parentContainer));
+    this.rectangleSelect.startSelection(e.data.global);
     this.currentActions.select = true;
   }
   private handleSelectionMove(e: PIXI.interaction.InteractionEvent): void
   {
-    this.rectangleSelect.moveSelection(e.data.getLocalPosition(this.rectangleSelect.parentContainer));
+    this.rectangleSelect.moveSelection(e.data.global);
   }
   private completeSelection(e: PIXI.interaction.InteractionEvent): void
   {
-    this.rectangleSelect.endSelection(e.data.getLocalPosition(this.rectangleSelect.parentContainer));
+    this.rectangleSelect.endSelection();
 
     this.handleSelectionStop();
   }

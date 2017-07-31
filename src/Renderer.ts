@@ -152,15 +152,18 @@ export default class Renderer
       select: new PIXI.Container(),
     };
 
-    this.layers.select.interactiveChildren = false;
-
-    this.layers.main.addChild(this.layers.map);
-    this.layers.main.addChild(this.layers.select);
-
-
     this.stage.removeChildren();
+
     this.stage.addChild(this.layers.background);
+    this.layers.background.interactive = false;
+    this.layers.background.interactiveChildren = false;
+
     this.stage.addChild(this.layers.main);
+    this.layers.main.addChild(this.layers.map);
+
+    this.stage.addChild(this.layers.select);
+    this.layers.select.interactive = false;
+    this.layers.select.interactiveChildren = false;
   }
   private addCamera()
   {
@@ -179,9 +182,14 @@ export default class Renderer
     this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
     this.toCenterOn = null;
 
-    this.mouseEventHandler = new MouseEventHandler(this, this.renderer.plugins.interaction, this.camera);
+    this.mouseEventHandler = new MouseEventHandler(
+      this.renderer.plugins.interaction,
+      this.camera,
+      this.layers.select,
+      this.layers.main,
+    );
 
-    this.pathfindingArrow = new PathfindingArrow(this.layers.select);
+    this.pathfindingArrow = new PathfindingArrow(this.layers.main);
   }
   private resize()
   {
