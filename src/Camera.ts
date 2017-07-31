@@ -2,46 +2,47 @@
 
 import Point from "./Point";
 import eventManager from "./eventManager";
-
-let tempCameraId = 0;
+import
+{
+  clamp,
+} from "./utility";
 
 export default class Camera
 {
-  tempCameraId: number;
+  public toCenterOn: Point;
 
-  container: PIXI.Container;
-  width: number;
-  height: number;
+  private container: PIXI.Container;
+  private width: number;
+  private height: number;
+  private percentageCameraCanScrollOverEdge: number;
   // TODO 2017.07.30 | these are messed up
-  bounds: any = {};
-  startPos: number[];
-  startClick: number[];
-  currZoom: number = 1;
-  screenWidth: number;
-  screenHeight: number;
-
-  toCenterOn: Point; // point to center on once
-                     // renderer view is mounted
-
-  listeners:
+  private containerPositionBounds:
   {
-    [name: string]: any;
-  } = {};
+    left: number,
+    top: number,
+    right: number,
+    bottom: number,
+  };
+  private startPos: number[];
+  private startClick: number[];
+  private currZoom: number = 1;
+  private screenWidth: number;
+  private screenHeight: number;
 
-  resizeListener: any;
-
-  /**
-   * [constructor description]
-   * @param {PIXI.Container} container [DOC the camera views and manipulates]
-   * @param {number}                      bound     [How much of the container is allowed to leave the camera view.
-   * 0.0 to 1.0]
-   */
-  constructor(container: PIXI.Container, bound: number)
+  private readonly eventManagerListeners:
   {
-    this.tempCameraId = tempCameraId++;
+    setCameraToCenterOn: (position: Point) => void;
+  } =
+  {
+    setCameraToCenterOn: undefined,
+  };
+  private resizeListener: (e: UIEvent) => void;
+
+
+  constructor(container: PIXI.Container, percentageCameraCanScrollOverEdge: number)
+  {
     this.container = container;
-    this.bounds.min = bound;
-    this.bounds.max = 1 - bound;
+    this.percentageCameraCanScrollOverEdge = percentageCameraCanScrollOverEdge;
     const screenElement = window.getComputedStyle(
       document.getElementById("pixi-container"), null);
     this.screenWidth = parseInt(screenElement.width);
@@ -50,71 +51,27 @@ export default class Camera
     this.addEventListeners();
     this.setBounds();
   }
-  destroy()
+
+  public destroy()
   {
-    for (let name in this.listeners)
+    for (let name in this.eventManagerListeners)
     {
-      eventManager.removeEventListener(name, this.listeners[name]);
+      eventManager.removeEventListener(name, this.eventManagerListeners[name]);
     }
 
     window.removeEventListener("resize", this.resizeListener);
   }
-
-  private addEventListeners()
-  {
-    const self = this;
-
-    this.resizeListener = function(e: UIEvent)
-    {
-      const container = document.getElementById("pixi-container");
-      if (!container) return;
-      const style = window.getComputedStyle(container, null);
-      self.screenWidth = parseInt(style.width);
-      self.screenHeight = parseInt(style.height);
-    };
-
-    window.addEventListener("resize", this.resizeListener, false);
-
-    this.listeners["setCameraToCenterOn"] =
-      eventManager.addEventListener("setCameraToCenterOn", function(position: Point)
-    {
-      self.toCenterOn = position;
-    });
-  }
-
-  private setBounds()
-  {
-    const rect = this.container.getLocalBounds();
-    this.width = this.screenWidth;
-    this.height = this.screenHeight;
-    this.bounds =
-    {
-      xMin: (this.width  * this.bounds.min) - rect.width * this.container.scale.x,
-      xMax: (this.width  * this.bounds.max),
-      yMin: (this.height * this.bounds.min) - rect.height * this.container.scale.y,
-      yMax: (this.height * this.bounds.max),
-      min: this.bounds.min,
-      max: this.bounds.max,
-    };
-  }
-
-  startScroll(mousePos: number[])
+  public startScroll(mousePos: number[])
   {
     this.setBounds();
     this.startClick = mousePos;
     this.startPos = [this.container.position.x, this.container.position.y];
   }
-  end()
+  public end()
   {
     this.startPos = undefined;
   }
-  private getDelta(currPos: number[])
-  {
-    const x = this.startClick[0] - currPos[0];
-    const y = this.startClick[1] - currPos[1];
-    return [-x, -y];
-  }
-  move(currPos: number[]) // used for mouse scrolling
+  public move(currPos: number[]) // used for mouse scrolling
   {
     const delta = this.getDelta(currPos);
     this.container.position.x = this.startPos[0] + delta[0];
@@ -123,7 +80,7 @@ export default class Camera
 
     this.onMove();
   }
-  deltaMove(delta: number[]) // used for keyboard scrolling
+  public deltaMove(delta: number[]) // used for keyboard scrolling
   {
     this.container.position.x += delta[0];
     this.container.position.y += delta[1];
@@ -131,33 +88,17 @@ export default class Camera
 
     this.onMove();
   }
-  private onMove()
-  {
-    eventManager.dispatchEvent("cameraMoved", this.container.position.x, this.container.position.y);
-  }
-  getScreenCenter()
-  {
-    return(
-    {
-      x: this.width / 2,
-      y: this.height / 2,
-    });
-  }
-  getLocalPosition(position: Point): Point
-  {
-    const pos = <PIXI.Point> position;
-    return this.container.worldTransform.apply(pos);
-  }
-  getCenterPosition(): Point
+  public getCenterPosition(): Point
   {
     const localOrigin = this.getLocalPosition(this.container.position);
+
     return(
     {
       x: this.container.position.x + this.width / 2 - localOrigin.x,
       y: this.container.position.y + this.height / 2 - localOrigin.y,
     });
   }
-  centerOnPosition(pos: Point)
+  public centerOnPosition(pos: Point)
   {
     this.setBounds();
 
@@ -172,11 +113,11 @@ export default class Camera
     this.onMove();
   }
 
-  zoom(zoomAmount: number)
+  public zoom(zoomAmount: number)
   {
     if (zoomAmount > 1)
     {
-      //zoomAmount = 1;
+      // zoomAmount = 1;
     }
 
     const container = this.container;
@@ -185,8 +126,8 @@ export default class Camera
     const zoomDelta = oldZoom - zoomAmount;
     const rect = container.getLocalBounds();
 
-    //these 2 get position of screen center in relation to the container
-    //0: far left 1: far right
+    // these 2 get position of screen center in relation to the container
+    // 0: far left 1: far right
     const xRatio = 1 - ((container.x - this.screenWidth / 2) / rect.width / oldZoom + 1);
     const yRatio = 1 - ((container.y - this.screenHeight / 2) / rect.height / oldZoom + 1);
 
@@ -200,17 +141,14 @@ export default class Camera
     this.onMove();
     this.onZoom();
   }
-  private onZoom()
-  {
-    eventManager.dispatchEvent("cameraZoomed", this.currZoom);
-  }
-  deltaZoom(delta: number, scale: number)
+
+  public deltaZoom(delta: number, scale: number)
   {
     if (delta === 0)
     {
       return;
     }
-    //const scaledDelta = absDelta + scale / absDelta;
+    // const scaledDelta = absDelta + scale / absDelta;
     const direction = delta < 0 ? "out" : "in";
     const adjDelta = 1 + Math.abs(delta) * scale;
     if (direction === "out")
@@ -222,36 +160,91 @@ export default class Camera
       this.zoom(this.currZoom * adjDelta);
     }
   }
+  private addEventListeners()
+  {
+    this.resizeListener = (e: UIEvent) =>
+    {
+      const container = document.getElementById("pixi-container");
+      if (!container)
+      {
+        throw new Error("Camera has no container element");
+      }
 
+      const style = window.getComputedStyle(container, null);
+      this.screenWidth = parseInt(style.width);
+      this.screenHeight = parseInt(style.height);
+    };
+
+    window.addEventListener("resize", this.resizeListener, false);
+
+    this.eventManagerListeners.setCameraToCenterOn =
+      eventManager.addEventListener("setCameraToCenterOn", (position: Point) =>
+    {
+      this.toCenterOn = position;
+    });
+  }
+  private setBounds()
+  {
+    this.width = this.screenWidth;
+    this.height = this.screenHeight;
+
+    const rect = this.container.getLocalBounds();
+
+    const min = 1 - this.percentageCameraCanScrollOverEdge;
+    const max = this.percentageCameraCanScrollOverEdge;
+
+    this.containerPositionBounds =
+    {
+      left: (this.width  * min) - rect.width * this.container.scale.x,
+      right: (this.width  * max),
+      top: (this.height * min) - rect.height * this.container.scale.y,
+      bottom: (this.height * max),
+    };
+  }
+
+  private onMove()
+  {
+    eventManager.dispatchEvent("cameraMoved", this.container.position.x, this.container.position.y);
+  }
+  private onZoom()
+  {
+    eventManager.dispatchEvent("cameraZoomed", this.currZoom);
+  }
+  private getDelta(currPos: number[])
+  {
+    const x = this.startClick[0] - currPos[0];
+    const y = this.startClick[1] - currPos[1];
+
+    return [-x, -y];
+  }
   private clampEdges()
   {
-    let x = this.container.position.x;
-    let y = this.container.position.y;
+    const x = clamp(
+      this.container.position.x,
+      this.containerPositionBounds.left,
+      this.containerPositionBounds.right,
+    );
 
-    //horizontal
-    //left edge
-    if (x < this.bounds.xMin)
-    {
-      x = this.bounds.xMin;
-    }
-    //right edge
-    else if (x > this.bounds.xMax)
-    {
-      x = this.bounds.xMax;
-    }
-
-    //vertical
-    //top
-    if (y < this.bounds.yMin)
-    {
-      y = this.bounds.yMin;
-    }
-    //bottom
-    else if (y > this.bounds.yMax)
-    {
-      y = this.bounds.yMax;
-    }
+    const y = clamp(
+      this.container.position.y,
+      this.containerPositionBounds.top,
+      this.containerPositionBounds.bottom,
+    );
 
     this.container.position.set(x, y);
+  }
+  private getScreenCenter()
+  {
+    return(
+    {
+      x: this.width / 2,
+      y: this.height / 2,
+    });
+  }
+  private getLocalPosition(position: Point): Point
+  {
+    const pos = <PIXI.Point> position;
+
+    return this.container.worldTransform.apply(pos);
   }
 }
