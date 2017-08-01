@@ -353,17 +353,16 @@ export default class MouseEventHandler
 
   private handlePanStart(e: PIXI.interaction.InteractionEvent): void
   {
-    this.camera.startScroll([e.data.global.x, e.data.global.y]);
+    this.camera.startScroll(e.data.global);
     this.currentActions.pan = true;
   }
   private handlePanMove(e: PIXI.interaction.InteractionEvent): void
   {
-    this.camera.move([e.data.global.x, e.data.global.y]);
+    this.camera.scrollMove(e.data.global);
     this.rectangleSelect.handleTargetLayerShift();
   }
   private handlePanEnd(): void
   {
-    this.camera.end();
     this.currentActions.pan = false;
   }
 

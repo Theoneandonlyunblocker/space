@@ -1,6 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 
 import Point from "./Point";
+import {registerActiveCamera} from "./centerCameraOnPosition";
 import eventManager from "./eventManager";
 import
 {
@@ -9,139 +10,65 @@ import
 
 export default class Camera
 {
-  public toCenterOn: Point;
   public getBoundsObjectBoundsFN: () => PIXI.Rectangle;
 
   private container: PIXI.Container;
   private width: number;
   private height: number;
-  // TODO 2017.07.30 | these are messed up
-  private containerPositionBounds:
-  {
-    minX: number,
-    minY: number,
-    maxX: number,
-    maxY: number,
-  };
-  private startPos: number[];
-  private startClick: number[];
-  private currZoom: number = 1;
-  private screenWidth: number;
-  private screenHeight: number;
-
-  private readonly eventManagerListeners:
-  {
-    setCameraToCenterOn: (position: Point) => void;
-  } =
-  {
-    setCameraToCenterOn: undefined,
-  };
-  private resizeListener: (e: UIEvent) => void;
-
+  private scrollPosition: Point;
 
   constructor(container: PIXI.Container)
   {
     this.container = container;
-    const screenElement = window.getComputedStyle(
-      document.getElementById("pixi-container"), null);
-    this.screenWidth = parseInt(screenElement.width);
-    this.screenHeight = parseInt(screenElement.height);
+
+    this.setSize = this.setSize.bind(this);
+    this.setSize();
 
     this.addEventListeners();
+    registerActiveCamera(this);
   }
 
-  public destroy()
+  public destroy(): void
   {
-    for (let name in this.eventManagerListeners)
-    {
-      eventManager.removeEventListener(name, this.eventManagerListeners[name]);
-    }
-
-    window.removeEventListener("resize", this.resizeListener);
+    registerActiveCamera(null);
+    window.removeEventListener("resize", this.setSize);
 
     this.getBoundsObjectBoundsFN = null;
   }
-  public startScroll(mousePos: number[])
+  public move(x: number, y: number): void
   {
-    this.setContainerPositionBounds();
-    this.startClick = mousePos;
-    this.startPos = [this.container.position.x, this.container.position.y];
-  }
-  public end()
-  {
-    this.startPos = undefined;
-  }
-  public move(currPos: number[]) // used for mouse scrolling
-  {
-    const delta = this.getDelta(currPos);
-    this.container.position.x = this.startPos[0] + delta[0];
-    this.container.position.y = this.startPos[1] + delta[1];
-    this.clampEdges();
-
-    this.onMove();
-  }
-  public deltaMove(delta: number[]) // used for keyboard scrolling
-  {
-    this.container.position.x += delta[0];
-    this.container.position.y += delta[1];
-    this.clampEdges();
-
-    this.onMove();
-  }
-  public getCenterPosition(): Point
-  {
-    const localOrigin = this.getLocalPosition(this.container.position);
-
-    return(
-    {
-      x: this.container.position.x + this.width / 2 - localOrigin.x,
-      y: this.container.position.y + this.height / 2 - localOrigin.y,
-    });
-  }
-  public centerOnPosition(pos: Point)
-  {
-    this.setBounds();
-
-    const localPos = this.getLocalPosition(pos);
-    const center = this.getScreenCenter();
-
-    this.container.position.x += center.x - localPos.x;
-    this.container.position.y += center.y - localPos.y;
+    this.container.pivot.set(x, y);
 
     this.clampEdges();
-
     this.onMove();
   }
+  public deltaMove(deltaX: number, deltaY: number): void
+  {
+    this.move(
+      this.container.pivot.x + deltaX,
+      this.container.pivot.y + deltaY,
+    );
+  }
+  public startScroll(position: Point): void
+  {
+    this.scrollPosition = {x: position.x, y: position.y};
+  }
+  public scrollMove(position: Point): void
+  {
+    this.deltaMove(
+      (this.scrollPosition.x - position.x) / this.container.scale.x,
+      (this.scrollPosition.y - position.y) / this.container.scale.y,
+    );
 
+    this.scrollPosition = {x: position.x, y: position.y};
+  }
   public zoom(zoomAmount: number)
   {
-    if (zoomAmount > 1)
-    {
-      // zoomAmount = 1;
-    }
-
-    const container = this.container;
-    const oldZoom = this.currZoom;
-
-    const zoomDelta = oldZoom - zoomAmount;
-    const rect = container.getLocalBounds();
-
-    // these 2 get position of screen center in relation to the container
-    // 0: far left 1: far right
-    const xRatio = 1 - ((container.x - this.screenWidth / 2) / rect.width / oldZoom + 1);
-    const yRatio = 1 - ((container.y - this.screenHeight / 2) / rect.height / oldZoom + 1);
-
-    const xDelta = rect.width * xRatio * zoomDelta;
-    const yDelta = rect.height * yRatio * zoomDelta;
-    container.position.x += xDelta;
-    container.position.y += yDelta;
-    container.scale.set(zoomAmount, zoomAmount);
-    this.currZoom = zoomAmount;
+    this.container.scale.set(zoomAmount, zoomAmount);
 
     this.onMove();
     this.onZoom();
   }
-
   public deltaZoom(delta: number, scale: number)
   {
     if (delta === 0)
@@ -153,98 +80,65 @@ export default class Camera
     const adjDelta = 1 + Math.abs(delta) * scale;
     if (direction === "out")
     {
-      this.zoom(this.currZoom / adjDelta);
+      this.zoom(this.container.scale.x / adjDelta);
     }
     else
     {
-      this.zoom(this.currZoom * adjDelta);
+      this.zoom(this.container.scale.x * adjDelta);
     }
   }
+  public getCenterPosition(): Point
+  {
+    return {x: this.container.pivot.x, y: this.container.pivot.y};
+  }
+  public centerOnPosition(x: number, y: number): void
+  {
+    this.container.pivot.set(x, y);
+  }
+
   private addEventListeners()
   {
-    this.resizeListener = (e: UIEvent) =>
-    {
-      const container = document.getElementById("pixi-container");
-      if (!container)
-      {
-        throw new Error("Camera has no container element");
-      }
-
-      const style = window.getComputedStyle(container, null);
-      this.screenWidth = parseInt(style.width);
-      this.screenHeight = parseInt(style.height);
-    };
-
-    window.addEventListener("resize", this.resizeListener, false);
-
-    this.eventManagerListeners.setCameraToCenterOn =
-      eventManager.addEventListener("setCameraToCenterOn", (position: Point) =>
-    {
-      this.toCenterOn = position;
-    });
+    window.addEventListener("resize", this.setSize, false);
   }
-  private setContainerPositionBounds(): void
-  {
-    this.width = this.screenWidth;
-    this.height = this.screenHeight;
-
-    const bounds = this.getBoundsObjectBoundsFN();
-
-    const xOffset = bounds.x - this.container.position.x;
-    const yOffset = bounds.y - this.container.position.y;
-
-    this.containerPositionBounds =
-    {
-      minX: (this.width * 0.5) - bounds.width - xOffset,
-      minY: (this.height * 0.5) - bounds.height - yOffset,
-      maxX: (this.width * 0.5) - xOffset,
-      maxY: (this.height * 0.5) - yOffset,
-    };
-  }
-
   private onMove()
   {
     eventManager.dispatchEvent("cameraMoved", this.container.position.x, this.container.position.y);
   }
   private onZoom()
   {
-    eventManager.dispatchEvent("cameraZoomed", this.currZoom);
+    eventManager.dispatchEvent("cameraZoomed", this.container.scale.x);
   }
-  private getDelta(currPos: number[])
+  private setSize(): void
   {
-    const x = this.startClick[0] - currPos[0];
-    const y = this.startClick[1] - currPos[1];
-
-    return [-x, -y];
-  }
-  private clampEdges()
-  {
-    const x = clamp(
-      this.container.position.x,
-      this.containerPositionBounds.minX,
-      this.containerPositionBounds.maxX,
-    );
-
-    const y = clamp(
-      this.container.position.y,
-      this.containerPositionBounds.minY,
-      this.containerPositionBounds.maxY,
-    );
-
-    this.container.position.set(x, y);
-  }
-  private getScreenCenter()
-  {
-    return(
+    const container = document.getElementById("pixi-container");
+    if (!container)
     {
-      x: this.width / 2,
-      y: this.height / 2,
-    });
-  }
-  private getLocalPosition(position: Point): Point
-  {
-    const pos = <PIXI.Point> position;
+      throw new Error("Camera has no container element");
+    }
 
-    return this.container.worldTransform.apply(pos);
+    const style = window.getComputedStyle(container, null);
+    this.width = parseInt(style.width);
+    this.height = parseInt(style.height);
+
+    this.container.position.set(
+      this.width / 2,
+      this.height / 2,
+    );
+  }
+  private clampEdges(): void
+  {
+    const bounds = this.getBoundsObjectBoundsFN();
+
+    this.container.pivot.x = clamp(
+      this.container.pivot.x,
+      bounds.x,
+      bounds.x + bounds.width,
+    );
+
+    this.container.pivot.y = clamp(
+      this.container.pivot.y,
+      bounds.y,
+      bounds.y + bounds.height,
+    );
   }
 }

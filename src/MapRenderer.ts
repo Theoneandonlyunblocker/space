@@ -188,7 +188,7 @@ export default class MapRenderer
     {
       return boundsLayers.map(layer =>
       {
-        return layer.container.getBounds();
+        return layer.container.getLocalBounds();
       }).reduce((finalBounds, bounds) =>
       {
         if (!finalBounds)
@@ -205,7 +205,7 @@ export default class MapRenderer
     }
     else
     {
-      return this.container.getBounds();
+      return this.container.getLocalBounds();
     }
   }
   setLayerAsDirty(layerName: string)
