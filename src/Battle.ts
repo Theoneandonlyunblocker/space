@@ -329,6 +329,7 @@ export default class Battle
     else
     {
       centerCameraOnPosition(this.battleData.location);
+      eventManager.dispatchEvent("selectFleets", []);
       eventManager.dispatchEvent("switchScene", "galaxyMap");
     }
 
