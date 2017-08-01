@@ -5,7 +5,6 @@ import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
 import Camera from "./Camera";
 import MouseEventHandler from "./MouseEventHandler";
 import PathfindingArrow from "./PathfindingArrow";
-import Point from "./Point";
 
 
 export default class Renderer
@@ -20,8 +19,6 @@ export default class Renderer
     select: PIXI.Container;
   };
   public camera: Camera;
-  public toCenterOn: Point;
-
 
   private stage: PIXI.Container;
   private pixiContainer: HTMLElement;
@@ -167,20 +164,15 @@ export default class Renderer
   }
   private addCamera()
   {
-    let oldToCenterOn: Point;
-
     if (this.mouseEventHandler)
     {
       this.mouseEventHandler.destroy();
     }
     if (this.camera)
     {
-      oldToCenterOn = this.camera.toCenterOn;
       this.camera.destroy();
     }
     this.camera = new Camera(this.layers.main);
-    this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
-    this.toCenterOn = null;
 
     this.mouseEventHandler = new MouseEventHandler(
       this.renderer.plugins.interaction,

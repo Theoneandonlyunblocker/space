@@ -9,14 +9,12 @@ import MapRenderer from "../../MapRenderer";
 import NotificationLog from "../../NotificationLog";
 import Player from "../../Player";
 import PlayerControl from "../../PlayerControl";
-import Point from "../../Point";
 import Renderer from "../../Renderer";
 
 import {Language} from "../../localization/Language";
 
 export interface PropTypes extends React.Props<any>
 {
-  toCenterOn?: Point;
   player: Player;
   playerControl: PlayerControl;
   game: Game;
@@ -137,12 +135,6 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
 
     // TODO hack | transparency isn't properly rendered without this
     this.props.mapRenderer.setAllLayersAsDirty();
-
-    const centerLocation = this.props.renderer.camera.toCenterOn ||
-      this.props.toCenterOn ||
-      this.props.player.controlledLocations[0];
-
-    this.props.renderer.camera.centerOnPosition(centerLocation);
   }
   componentWillUnmount()
   {

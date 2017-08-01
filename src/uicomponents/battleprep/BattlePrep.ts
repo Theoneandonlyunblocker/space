@@ -9,7 +9,6 @@ import BattleSimulator from "../../BattleSimulator";
 import Item from "../../Item";
 import Options from "../../Options";
 import Unit from "../../Unit";
-import eventManager from "../../eventManager";
 import {BattleBackgroundComponent, default as BattleBackground} from "../battle/BattleBackground";
 import Formation from "../battle/Formation";
 import ListItem from "../list/ListItem";
@@ -422,9 +421,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 const battle = battlePrep.makeBattle();
                 const simulator = new BattleSimulator(battle);
                 simulator.simulateBattle();
+                battle.isSimulated = false;
                 simulator.finishBattle();
-                eventManager.dispatchEvent("setCameraToCenterOn", battle.battleData.location);
-                eventManager.dispatchEvent("switchScene", "galaxyMap");
               }.bind(this),
             }, localize("simulateBattle")),
           ),

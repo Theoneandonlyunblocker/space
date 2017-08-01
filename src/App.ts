@@ -16,6 +16,7 @@ import Renderer from "./Renderer";
 import {activeModuleData} from "./activeModuleData";
 import {activeNotificationLog, setActiveNotificationLog} from "./activeNotificationLog";
 import {activePlayer, setActivePlayer} from "./activePlayer";
+import {centerCameraOnPosition} from "./centerCameraOnPosition";
 import {defaultModuleData} from "./defaultModuleData";
 import idGenerators from "./idGenerators";
 import
@@ -92,6 +93,7 @@ class App
 
       this.initDisplay();
       this.hookUI();
+      centerCameraOnPosition(activePlayer.controlledLocations[0]);
 
       this.reactUI.switchScene("galaxyMap");
     });
@@ -122,7 +124,7 @@ class App
       this.hookUI();
       if (parsed.cameraLocation)
       {
-        this.renderer.toCenterOn = parsed.cameraLocation;
+        centerCameraOnPosition(parsed.cameraLocation);
       }
 
       this.reactUI.switchScene("galaxyMap");
@@ -164,6 +166,7 @@ class App
 
         this.initDisplay();
         this.hookUI();
+        centerCameraOnPosition(activePlayer.controlledLocations[0]);
 
         switchSceneFN();
       });

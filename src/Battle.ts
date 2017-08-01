@@ -11,6 +11,7 @@ import
   default as UnitBattleSide,
   UnitBattleSides,
 } from "./UnitBattleSide";
+import {centerCameraOnPosition} from "./centerCameraOnPosition";
 import eventManager from "./eventManager";
 import
 {
@@ -327,7 +328,7 @@ export default class Battle
     }
     else
     {
-      eventManager.dispatchEvent("setCameraToCenterOn", this.battleData.location);
+      centerCameraOnPosition(this.battleData.location);
       eventManager.dispatchEvent("switchScene", "galaxyMap");
     }
 
