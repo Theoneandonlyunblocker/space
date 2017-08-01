@@ -17,7 +17,7 @@ const fogOfWar: MapRendererLayerTemplate =
   key: "fogOfWar",
   displayName: "Fog of war",
   interactive: false,
-  isUsedForCameraBounds: true,
+  isUsedForCameraBounds: false,
   alpha: 0.35,
   destroy: function()
   {
