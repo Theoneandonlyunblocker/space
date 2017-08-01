@@ -20,6 +20,7 @@ const starOwners: MapRendererLayerTemplate =
   key: "starOwners",
   displayName: "Star owners",
   interactive: false,
+  isUsedForCameraBounds: true,
   alpha: 0.5,
   destroy: function()
   {

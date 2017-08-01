@@ -178,7 +178,7 @@ export default class Renderer
       oldToCenterOn = this.camera.toCenterOn;
       this.camera.destroy();
     }
-    this.camera = new Camera(this.layers.main, 0.5);
+    this.camera = new Camera(this.layers.main);
     this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
     this.toCenterOn = null;
 

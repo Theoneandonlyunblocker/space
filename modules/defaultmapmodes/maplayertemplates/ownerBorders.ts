@@ -16,6 +16,7 @@ const ownerBorders: MapRendererLayerTemplate =
   key: "ownerBorders",
   displayName: "Owner borders",
   interactive: false,
+  isUsedForCameraBounds: true,
   alpha: 0.7,
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {

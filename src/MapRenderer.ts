@@ -38,6 +38,7 @@ export default class MapRenderer
     [name: string]: Function;
   } = {};
 
+
   constructor(map: GalaxyMap, player: Player)
   {
     this.container = new PIXI.Container();
@@ -175,6 +176,37 @@ export default class MapRenderer
   resetContainer()
   {
     this.container.removeChildren();
+  }
+  public getMapBoundsForCamera(): PIXI.Rectangle
+  {
+    const boundsLayers = this.currentMapMode.getActiveLayers().filter(layer =>
+    {
+      return layer.container.width && layer.container.height && layer.template.isUsedForCameraBounds;
+    });
+
+    if (boundsLayers.length > 0)
+    {
+      return boundsLayers.map(layer =>
+      {
+        return layer.container.getBounds();
+      }).reduce((finalBounds, bounds) =>
+      {
+        if (!finalBounds)
+        {
+          return bounds.clone();
+        }
+        else
+        {
+          finalBounds.enlarge(bounds);
+
+          return finalBounds;
+        }
+      });
+    }
+    else
+    {
+      return this.container.getBounds();
+    }
   }
   setLayerAsDirty(layerName: string)
   {

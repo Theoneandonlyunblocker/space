@@ -34,9 +34,13 @@ export default class MapRendererLayer
   {
     this.alpha = this.template.alpha || 1;
   }
-  public draw(map: GalaxyMap, mapRenderer: MapRenderer)
+  public draw(map: GalaxyMap, mapRenderer: MapRenderer): void
   {
-    if (!this.isDirty) return;
+    if (!this.isDirty)
+    {
+      return;
+    }
+
     this.container.removeChildren();
     this.container.addChild(this.template.drawingFunction(map, mapRenderer.player));
     this.isDirty = false;

@@ -16,6 +16,7 @@ const nonFillerStars: MapRendererLayerTemplate =
   key: "nonFillerStars",
   displayName: "Stars",
   interactive: true,
+  isUsedForCameraBounds: false,
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     const doc = new PIXI.Container();

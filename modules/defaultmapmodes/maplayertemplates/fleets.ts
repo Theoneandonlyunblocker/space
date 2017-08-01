@@ -14,6 +14,7 @@ const fleets: MapRendererLayerTemplate =
   key: "fleets",
   displayName: "Fleets",
   interactive: true,
+  isUsedForCameraBounds: false,
   destroy: function()
   {
     for (let fleetSize in fleetTextTextureCache)

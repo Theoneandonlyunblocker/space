@@ -15,6 +15,7 @@ const starIncome: MapRendererLayerTemplate =
   key: "starIncome",
   displayName: "Income",
   interactive: false,
+  isUsedForCameraBounds: true,
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     const doc = new PIXI.Container();

@@ -9,6 +9,7 @@ const resources: MapRendererLayerTemplate =
   key: "resources",
   displayName: "Resources",
   interactive: false,
+  isUsedForCameraBounds: false,
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     const doc = new PIXI.Container();

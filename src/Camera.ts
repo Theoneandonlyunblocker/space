@@ -10,18 +10,18 @@ import
 export default class Camera
 {
   public toCenterOn: Point;
+  public getBoundsObjectBoundsFN: () => PIXI.Rectangle;
 
   private container: PIXI.Container;
   private width: number;
   private height: number;
-  private percentageCameraCanScrollOverEdge: number;
   // TODO 2017.07.30 | these are messed up
   private containerPositionBounds:
   {
-    left: number,
-    top: number,
-    right: number,
-    bottom: number,
+    minX: number,
+    minY: number,
+    maxX: number,
+    maxY: number,
   };
   private startPos: number[];
   private startClick: number[];
@@ -39,17 +39,15 @@ export default class Camera
   private resizeListener: (e: UIEvent) => void;
 
 
-  constructor(container: PIXI.Container, percentageCameraCanScrollOverEdge: number)
+  constructor(container: PIXI.Container)
   {
     this.container = container;
-    this.percentageCameraCanScrollOverEdge = percentageCameraCanScrollOverEdge;
     const screenElement = window.getComputedStyle(
       document.getElementById("pixi-container"), null);
     this.screenWidth = parseInt(screenElement.width);
     this.screenHeight = parseInt(screenElement.height);
 
     this.addEventListeners();
-    this.setBounds();
   }
 
   public destroy()
@@ -60,10 +58,12 @@ export default class Camera
     }
 
     window.removeEventListener("resize", this.resizeListener);
+
+    this.getBoundsObjectBoundsFN = null;
   }
   public startScroll(mousePos: number[])
   {
-    this.setBounds();
+    this.setContainerPositionBounds();
     this.startClick = mousePos;
     this.startPos = [this.container.position.x, this.container.position.y];
   }
@@ -183,22 +183,22 @@ export default class Camera
       this.toCenterOn = position;
     });
   }
-  private setBounds()
+  private setContainerPositionBounds(): void
   {
     this.width = this.screenWidth;
     this.height = this.screenHeight;
 
-    const rect = this.container.getLocalBounds();
+    const bounds = this.getBoundsObjectBoundsFN();
 
-    const min = 1 - this.percentageCameraCanScrollOverEdge;
-    const max = this.percentageCameraCanScrollOverEdge;
+    const xOffset = bounds.x - this.container.position.x;
+    const yOffset = bounds.y - this.container.position.y;
 
     this.containerPositionBounds =
     {
-      left: (this.width  * min) - rect.width * this.container.scale.x,
-      right: (this.width  * max),
-      top: (this.height * min) - rect.height * this.container.scale.y,
-      bottom: (this.height * max),
+      minX: (this.width * 0.5) - bounds.width - xOffset,
+      minY: (this.height * 0.5) - bounds.height - yOffset,
+      maxX: (this.width * 0.5) - xOffset,
+      maxY: (this.height * 0.5) - yOffset,
     };
   }
 
@@ -221,14 +221,14 @@ export default class Camera
   {
     const x = clamp(
       this.container.position.x,
-      this.containerPositionBounds.left,
-      this.containerPositionBounds.right,
+      this.containerPositionBounds.minX,
+      this.containerPositionBounds.maxX,
     );
 
     const y = clamp(
       this.container.position.y,
-      this.containerPositionBounds.top,
-      this.containerPositionBounds.bottom,
+      this.containerPositionBounds.minY,
+      this.containerPositionBounds.maxY,
     );
 
     this.container.position.set(x, y);

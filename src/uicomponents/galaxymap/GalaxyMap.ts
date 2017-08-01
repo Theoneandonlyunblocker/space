@@ -131,6 +131,8 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
     this.props.renderer.bindRendererView(ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_pixiContainer));
     this.props.mapRenderer.setMapModeByKey("defaultMapMode");
 
+    this.props.renderer.camera.getBoundsObjectBoundsFN = this.props.mapRenderer.getMapBoundsForCamera.bind(this.props.mapRenderer);
+
     this.props.renderer.resume();
 
     // TODO hack | transparency isn't properly rendered without this
