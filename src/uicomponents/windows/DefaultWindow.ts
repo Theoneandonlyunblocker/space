@@ -37,6 +37,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
 
   public windowContainerComponent: WindowContainerComponent;
   private contentContainerElement: HTMLDivElement;
+  private titleBarElement: HTMLDivElement;
 
 
   constructor(props: PropTypes)
@@ -92,6 +93,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
             className: "window-title-bar draggable",
             onMouseDown: this.handleTitleBarMouseDown,
             onTouchStart: this.handleTitleBarMouseDown,
+            ref: element => this.titleBarElement = element,
           },
             React.DOM.div(
             {
@@ -132,12 +134,18 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
       const contentElement = contentElements[i];
 
       const contentElementStyle = getComputedStyle(contentElement);
+      const titleBarHeight = this.titleBarElement.getBoundingClientRect().height;
+
 
       for (let prop in this.state.sizeBounds)
       {
         if (contentElementStyle[prop] !== "none")
         {
-          const propValue = parseInt(contentElementStyle[prop])
+          let propValue = parseInt(contentElementStyle[prop]);
+          if (prop === "minHeight" || prop === "maxHeight")
+          {
+            propValue += titleBarHeight;
+          }
 
           if (!isFinite(bounds[prop]))
           {
