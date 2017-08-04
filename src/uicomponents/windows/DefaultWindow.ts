@@ -8,21 +8,26 @@ import
 
 import {Rect} from "../../Rect";
 
+
+type SizeBounds =
+{
+  minWidth: number;
+  minHeight: number;
+  maxWidth: number;
+  maxHeight: number;
+};
+
 interface PropTypes extends React.Props<any>
 {
   title: string;
   handleClose: () => void;
   isResizable?: boolean;
   getInitialPosition?: (ownRect: Rect, container: HTMLElement) => Rect;
-
-  minWidth: number;
-  minHeight: number;
-  maxWidth?: number;
-  maxHeight?: number;
 }
 
 interface StateType
 {
+  sizeBounds: SizeBounds;
 }
 
 export class DefaultWindowComponent extends React.Component<PropTypes, StateType>
@@ -31,14 +36,35 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
   public state: StateType;
 
   public windowContainerComponent: WindowContainerComponent;
+  private contentContainerElement: HTMLDivElement;
+
 
   constructor(props: PropTypes)
   {
     super(props);
 
     this.handleTitleBarMouseDown = this.handleTitleBarMouseDown.bind(this);
+    this.getContentSizeBounds = this.getContentSizeBounds.bind(this);
+
+    this.state =
+    {
+      sizeBounds:
+      {
+        minWidth: 100,
+        minHeight: 100,
+        maxWidth: Infinity,
+        maxHeight: Infinity,
+      },
+    };
   }
 
+  public componentDidMount(): void
+  {
+    this.setState(
+    {
+      sizeBounds: {...this.state.sizeBounds, ...this.getContentSizeBounds()},
+    });
+  }
   public render()
   {
     return(
@@ -47,10 +73,10 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
         isResizable: this.props.isResizable === false ? false : true,
         containerElement: document.body,
 
-        minWidth: this.props.minWidth,
-        minHeight: this.props.minHeight,
-        maxWidth: this.props.maxWidth || Infinity,
-        maxHeight: this.props.maxHeight || Infinity,
+        minWidth: this.state.sizeBounds.minWidth,
+        minHeight: this.state.sizeBounds.minHeight,
+        maxWidth: this.state.sizeBounds.maxWidth,
+        maxHeight: this.state.sizeBounds.maxHeight,
 
         ref: (component: WindowContainerComponent) =>
         {
@@ -82,6 +108,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
           React.DOM.div(
           {
             className: "window-content",
+            ref: element => this.contentContainerElement = element,
           },
             this.props.children,
           ),
@@ -89,9 +116,46 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
       )
     );
   }
+
   private handleTitleBarMouseDown(e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>): void
   {
     this.windowContainerComponent.onMouseDown(e);
+  }
+  private getContentSizeBounds(): Partial<SizeBounds>
+  {
+    const bounds: Partial<SizeBounds> = {};
+
+    const contentElements = this.contentContainerElement.children;
+
+    for (let i = 0; i < contentElements.length; i++)
+    {
+      const contentElement = contentElements[i];
+
+      const contentElementStyle = getComputedStyle(contentElement);
+
+      for (let prop in this.state.sizeBounds)
+      {
+        if (contentElementStyle[prop] !== "none")
+        {
+          const propValue = parseInt(contentElementStyle[prop])
+
+          if (!isFinite(bounds[prop]))
+          {
+            bounds[prop] = propValue;
+          }
+          else if (prop.substring(0, 3) === "min")
+          {
+            bounds[prop] = Math.max(bounds[prop], propValue);
+          }
+          else
+          {
+            bounds[prop] = Math.min(bounds[prop], propValue);
+          }
+        }
+      }
+    }
+
+    return bounds;
   }
 }
 

@@ -22,7 +22,6 @@ export interface PropTypes extends React.Props<any>
   getInitialPosition?: (ownRect: Rect, container: HTMLElement) => Rect;
   isResizable: boolean;
 
-  // TODO 2017.07.05 | shouldn't these be doable in css?
   minWidth: number;
   minHeight: number;
   maxWidth: number;
