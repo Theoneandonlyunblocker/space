@@ -55,6 +55,12 @@ class App
   constructor()
   {
     PIXI.utils.skipHello();
+    window.onhashchange = () =>
+    {
+      this.destroy();
+      this.initUI();
+      this.makeApp();
+    };
 
     this.seed = "" + Math.random();
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
