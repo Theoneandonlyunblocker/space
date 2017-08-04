@@ -20,6 +20,7 @@ const bombLauncher1: ItemTemplate =
 
   techLevel: 1,
   buildCost: 100,
+  unlockType: "item",
 
   slot: "high",
   ability: bombAttack,
@@ -33,6 +34,7 @@ const bombLauncher2: ItemTemplate =
 
   techLevel: 2,
   buildCost: 200,
+  unlockType: "item",
 
   attributeAdjustments:
   {
@@ -51,6 +53,7 @@ const bombLauncher3: ItemTemplate =
 
   techLevel: 3,
   buildCost: 300,
+  unlockType: "item",
 
   attributeAdjustments:
   {
@@ -70,6 +73,7 @@ const afterBurner1: ItemTemplate =
 
   techLevel: 1,
   buildCost: 100,
+  unlockType: "item",
 
   attributeAdjustments:
   {
@@ -88,6 +92,7 @@ const afterBurner2: ItemTemplate =
 
   techLevel: 2,
   buildCost: 200,
+  unlockType: "item",
 
   attributeAdjustments:
   {
@@ -105,6 +110,7 @@ const afterBurner3: ItemTemplate =
 
   techLevel: 3,
   buildCost: 300,
+  unlockType: "item",
 
   attributeAdjustments:
   {
@@ -123,6 +129,7 @@ const shieldPlating1: ItemTemplate =
 
   techLevel: 1,
   buildCost: 100,
+  unlockType: "item",
 
   attributeAdjustments:
   {
@@ -140,6 +147,7 @@ const shieldPlating2: ItemTemplate =
 
   techLevel: 2,
   buildCost: 200,
+  unlockType: "item",
 
   attributeAdjustments:
   {
@@ -157,6 +165,7 @@ const shieldPlating3: ItemTemplate =
 
   techLevel: 3,
   buildCost: 300,
+  unlockType: "item",
 
   attributeAdjustments:
   {

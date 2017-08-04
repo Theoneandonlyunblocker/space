@@ -30,6 +30,7 @@ const commandShip: UnitTemplate =
   },
   isSquadron: false,
   buildCost: 300,
+  unlockType: "unit",
   icon: "modules/defaultunits/img/icons/sh.png",
   maxHealth: 0.7,
   maxMovePoints: 1,

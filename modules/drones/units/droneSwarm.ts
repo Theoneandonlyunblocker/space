@@ -26,6 +26,7 @@ export const droneSwarm: UnitTemplate =
 
   isSquadron: true,
   buildCost: 150,
+  unlockType: "unit",
 
   maxHealth: 0.6,
   maxMovePoints: 1,

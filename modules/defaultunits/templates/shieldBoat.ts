@@ -31,6 +31,7 @@ const shieldBoat: UnitTemplate =
   },
   isSquadron: true,
   buildCost: 200,
+  unlockType: "unit",
   icon: "modules/defaultunits/img/icons/sh.png",
   maxHealth: 0.9,
   maxMovePoints: 1,

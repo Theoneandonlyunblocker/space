@@ -1,4 +1,4 @@
-import ManufacturableThing from "./ManufacturableThing";
+import {UnlockableThing} from "./UnlockableThing";
 
 declare interface TechnologyTemplate
 {
@@ -8,9 +8,10 @@ declare interface TechnologyTemplate
 
   maxLevel: number;
 
+  // used to dynamically set unlockable thing tech requirements
   unlocksPerLevel:
   {
-    [level: number]: ManufacturableThing[];
+    [level: number]: UnlockableThing[];
   };
 }
 

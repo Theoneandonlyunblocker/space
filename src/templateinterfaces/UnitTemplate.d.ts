@@ -17,6 +17,7 @@ declare interface UnitTemplate extends ManufacturableThing
   sprite: SpriteTemplate;
   isSquadron: boolean;
   buildCost: number;
+  unlockType: "unit";
   icon: string;
   // TODO 2017.07.26 | rename maxHealthLevel
   maxHealth: number;
