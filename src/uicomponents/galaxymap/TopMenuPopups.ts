@@ -246,9 +246,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         {
           return this.cachedPopupPositions[popupType];
         },
-
-      minWidth: 150,
-      minHeight: 100,
     },
       constructData.makeContent(),
     );

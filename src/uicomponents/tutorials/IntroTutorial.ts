@@ -48,8 +48,6 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
         {
           this.setState({shouldShow: false});
         },
-        minWidth: 300,
-        minHeight: 250,
       },
         Tutorial(
         {

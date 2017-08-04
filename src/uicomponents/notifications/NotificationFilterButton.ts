@@ -57,9 +57,6 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
           {
             title: localize("messageSettings"),
             handleClose: this.closePopup,
-
-            minWidth: 440,
-            minHeight: 150,
           },
             NotificationFilterList(
             {

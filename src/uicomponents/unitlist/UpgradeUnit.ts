@@ -80,9 +80,6 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
           title: localize("upgradeAbility"),
           handleClose: this.closeAbilityUpgradePopup,
           isResizable: false,
-
-          minWidth: 150,
-          minHeight: 150,
         },
           UpgradeAbilities(
           {

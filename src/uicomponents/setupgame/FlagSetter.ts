@@ -112,9 +112,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
                 height: popupRect.height,
               });
             },
-
-            minWidth: 0,
-            minHeight: 0,
           },
             FlagEditor(
             {

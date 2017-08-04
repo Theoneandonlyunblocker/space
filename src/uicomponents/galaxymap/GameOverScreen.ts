@@ -94,9 +94,6 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
           {
             title: localize("loadGame"),
             handleClose: this.closeLoadPopup,
-
-            minWidth: 200,
-            minHeight: 200,
           },
             LoadGame(
             {

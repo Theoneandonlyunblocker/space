@@ -113,9 +113,6 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
           title: localize("upgradeUnit"),
           handleClose: this.closePopup,
           isResizable: false,
-
-          minWidth: 150,
-          minHeight: 150,
         },
           UpgradeUnit(
           {

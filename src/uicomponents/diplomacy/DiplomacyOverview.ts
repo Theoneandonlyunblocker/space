@@ -127,9 +127,6 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
             handleClose: this.closeDiplomacyActionsPopup.bind(null, targetPlayer),
             title: `${targetPlayer.name}`,
             isResizable: false,
-
-            minWidth: 200,
-            minHeight: 200,
           },
             DiplomacyActions(
             {

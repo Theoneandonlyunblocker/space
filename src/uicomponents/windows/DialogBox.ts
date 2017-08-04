@@ -49,11 +49,6 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
         title: this.props.title,
         handleClose: this.props.handleCancel,
         isResizable: false,
-
-        minWidth: this.props.minWidth || 50,
-        minHeight: this.props.minHeight || 50,
-        maxWidth: this.props.maxWidth || Infinity,
-        maxHeight: this.props.maxHeight || Infinity,
       },
         React.DOM.div(
         {

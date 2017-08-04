@@ -98,9 +98,6 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
           {
             handleClose: this.closeTradePopup,
             title: localize("trade_noun"),
-
-            minWidth: 150,
-            minHeight: 50,
           },
             TradeOverview(
             {
