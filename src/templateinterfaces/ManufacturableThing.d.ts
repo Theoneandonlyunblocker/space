@@ -1,14 +1,11 @@
-import TechnologyRequirement from "./TechnologyRequirement";
+import {UnlockableThing} from "./UnlockableThing";
 
-declare interface ManufacturableThing
+declare interface ManufacturableThing extends UnlockableThing
 {
   type: string;
   displayName: string;
   description: string;
   buildCost: number;
-
-  // set dynamically
-  technologyRequirements?: TechnologyRequirement[];
 }
 
 export default ManufacturableThing;
