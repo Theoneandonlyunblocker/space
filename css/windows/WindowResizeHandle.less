@@ -7,12 +7,13 @@
 {
   @resize-handle-size: @border-size * 2;
   @resize-handle-shift: @border-size / 2 - @resize-handle-size / 2;
+  @border-size-shift: -@border-size * 2;
 
   ~.window-resize-handle-n
   {
     top: @resize-handle-shift;
     left: 0;
-    right: 0;
+    right: @border-size-shift;
 
     height: @resize-handle-size;
 
@@ -20,9 +21,9 @@
   }
   ~.window-resize-handle-s
   {
-    bottom: @resize-handle-shift;
+    bottom: @resize-handle-shift + @border-size-shift;
     left: 0;
-    right: 0;
+    right: @border-size-shift;
 
     height: @resize-handle-size;
 
@@ -30,9 +31,9 @@
   }
   ~.window-resize-handle-e
   {
-    right: @resize-handle-shift;
+    right: @resize-handle-shift + @border-size-shift;
     top: 0;
-    bottom: 0;
+    bottom: @border-size-shift;
 
     width: @resize-handle-size;
 
@@ -42,7 +43,7 @@
   {
     left: @resize-handle-shift;
     top: 0;
-    bottom: 0;
+    bottom: @border-size-shift;
 
     width: @resize-handle-size;
 
@@ -51,7 +52,7 @@
   ~.window-resize-handle-ne
   {
     top: @resize-handle-shift;
-    right: @resize-handle-shift;
+    right: @resize-handle-shift + @border-size-shift;
 
     width: @resize-handle-size;
     height: @resize-handle-size;
@@ -60,7 +61,7 @@
   }
   ~.window-resize-handle-sw
   {
-    bottom: @resize-handle-shift;
+    bottom: @resize-handle-shift + @border-size-shift;
     left: @resize-handle-shift;
 
     width: @resize-handle-size;
@@ -70,8 +71,8 @@
   }
   ~.window-resize-handle-se
   {
-    bottom: @resize-handle-shift;
-    right: @resize-handle-shift;
+    bottom: @resize-handle-shift + @border-size-shift;
+    right: @resize-handle-shift + @border-size-shift;
 
     width: @resize-handle-size;
     height: @resize-handle-size;
