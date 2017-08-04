@@ -2,6 +2,7 @@ export const player =
 {
   money: "Money",
   technologyLevel: "Level",
+  technologyUnlocks_present: "unlocks",
   researchSpeed: "Research speed",
   flag: "Flag",
   color_1: "Color 1",

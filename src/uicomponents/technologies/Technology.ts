@@ -1,8 +1,12 @@
 import * as React from "react";
 
+import {DefaultWindow} from "../windows/DefaultWindow";
 
 import PlayerTechnology from "../../PlayerTechnology";
+
 import TechnologyTemplate from "../../templateinterfaces/TechnologyTemplate";
+
+import {TechnologyUnlocks} from "./TechnologyUnlocks";
 import TechnologyPrioritySlider from "./technologyPrioritySlider";
 
 import {localize} from "../../../localization/localize";
@@ -18,35 +22,30 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
+  hasUnlocksPopup?: boolean;
 }
 
 export class TechnologyComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "Technology";
-
-
-  state: StateType;
+  public displayName: string = "Technology";
+  public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
+    this.state =
+    {
+      hasUnlocksPopup: false,
+    };
+
     this.togglePriorityLock = this.togglePriorityLock.bind(this);
+    this.toggleUnlocksPopup = this.toggleUnlocksPopup.bind(this);
+    this.openUnlocksPopup = this.openUnlocksPopup.bind(this);
+    this.closeUnlocksPopup = this.closeUnlocksPopup.bind(this);
   }
 
-  togglePriorityLock()
-  {
-    const pt = this.props.playerTechnology;
-    const technology = this.props.technology;
-
-    pt.technologies[technology.key].priorityIsLocked = !pt.technologies[technology.key].priorityIsLocked;
-    this.forceUpdate();
-  }
-  render()
+  public render()
   {
     const technology = this.props.technology;
     let isAtMaxLevel: boolean = false;
@@ -80,15 +79,33 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
       },
         React.DOM.div(
         {
-          className: "technology-name",
+          className: "technology-listing-label",
+          onClick: this.toggleUnlocksPopup,
         },
-          technology.displayName,
-        ),
-        React.DOM.div(
-        {
-          className: "technology-level",
-        },
-          localize("technologyLevel") + " " + techData.level,
+          React.DOM.div(
+          {
+            className: "technology-name",
+            title: technology.displayName,
+          },
+            technology.displayName,
+          ),
+          React.DOM.div(
+          {
+            className: "technology-level",
+          },
+            React.DOM.span(
+            {
+              className: "technology-level-title",
+            },
+              localize("technologyLevel") + " ",
+            ),
+            React.DOM.span(
+            {
+              className: "technology-level-amount",
+            },
+              techData.level,
+            ),
+          ),
         ),
         React.DOM.div(
         {
@@ -124,8 +141,53 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
         },
           null,
         ),
+        !this.state.hasUnlocksPopup ? null :
+        DefaultWindow(
+        {
+          key: `technologyUnlocks ${this.props.technology.key}`,
+
+          title: `${this.props.technology.displayName} ${localize("technologyUnlocks_present")}`,
+          handleClose: this.closeUnlocksPopup,
+
+          minWidth: 200,
+          minHeight: 200,
+        },
+          TechnologyUnlocks(
+          {
+            technologyDisplayName: this.props.technology.displayName,
+            unlocksPerLevel: this.props.technology.unlocksPerLevel,
+          }),
+        ),
       )
     );
+  }
+
+  private togglePriorityLock(): void
+  {
+    const pt = this.props.playerTechnology;
+    const technology = this.props.technology;
+
+    pt.technologies[technology.key].priorityIsLocked = !pt.technologies[technology.key].priorityIsLocked;
+    this.forceUpdate();
+  }
+  private toggleUnlocksPopup(): void
+  {
+    if (this.state.hasUnlocksPopup)
+    {
+      this.closeUnlocksPopup();
+    }
+    else
+    {
+      this.openUnlocksPopup();
+    }
+  }
+  private openUnlocksPopup(): void
+  {
+    this.setState({hasUnlocksPopup: true});
+  }
+  private closeUnlocksPopup(): void
+  {
+    this.setState({hasUnlocksPopup: false});
   }
 }
 

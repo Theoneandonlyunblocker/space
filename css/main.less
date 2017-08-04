@@ -3406,23 +3406,31 @@ ul, ol
   align-items: center;
 }
 
-.technology-name
+.technology-listing-label
 {
-  flex: 0 0 60px;
-  margin-right: 1em;
+  cursor: pointer;
+
+  display: flex;
+  flex-flow: row;
+  flex: 0 0 9em;
+  justify-content: space-between;
+  margin-right: 0.5em;
 }
 
-.technology-level
+.technology-name
 {
-  flex: 0 0 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 5em;
 }
 
 .technology-progress-bar-container
 {
   display: flex;
   flex-flow: row;
-  flex: 1 1 300px;
-  min-width: 200px;
+  flex: 1 1 auto;
+  min-width: 120px;
   position: relative;
   height: 1em;
   border: 1px solid @ui-border-color1;

@@ -95,5 +95,5 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(DefaultWindowComponent);
-export default Factory;
+export const DefaultWindow: React.Factory<PropTypes> = React.createFactory(DefaultWindowComponent);
+export default DefaultWindow;
