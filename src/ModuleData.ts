@@ -3,7 +3,11 @@ import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
 import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
 import ModuleFile from "./ModuleFile";
 import ModuleScripts from "./ModuleScripts";
-import RuleSetValues from "./RuleSetValues";
+import
+{
+  PartialRuleSetValues,
+  RuleSetValues,
+} from "./RuleSetValues";
 
 import
 {
@@ -86,7 +90,7 @@ export default class ModuleData
     Units: {},
   };
 
-  public ruleSet: RuleSetValues = {};
+  public ruleSet: RuleSetValues;
 
   public scripts: ModuleScripts;
 
@@ -145,8 +149,13 @@ export default class ModuleData
       throw new Error("No modules have map generators registered.");
     }
   }
-  public applyRuleSet(ruleSetValuesToCopy: RuleSetValues): void
+  public appendRuleSet(valuesToAppend: PartialRuleSetValues): void
   {
-    this.ruleSet = deepMerge(this.ruleSet, ruleSetValuesToCopy);
+    if (!this.ruleSet)
+    {
+      throw new Error("Set ModuleData.ruleSet first");
+    }
+
+    this.ruleSet = deepMerge(this.ruleSet, valuesToAppend);
   }
 }

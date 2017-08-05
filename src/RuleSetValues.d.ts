@@ -1,39 +1,42 @@
-declare interface RuleSetValues
+export interface RuleSetValues
 {
-  units?:
+  units:
   {
-    baseAttributeValue?: number;
-    attributeVariance?: number;
-    baseHealthValue?: number;
-    healthVariance?: number;
+    baseAttributeValue: number;
+    attributeVariance: number;
+    baseHealthValue: number;
+    healthVariance: number;
   };
-  manufactory?:
+  manufactory:
   {
-    startingCapacity?: number;
-    maxCapacity?: number;
-    buildCost?: number;
+    startingCapacity: number;
+    maxCapacity: number;
+    buildCost: number;
   };
-  research?:
+  research:
   {
-    baseResearchSpeed?: number;
+    baseResearchSpeed: number;
   };
-  battle?:
+  battle:
   {
-    rowsPerFormation?: number; // probably breaks some stuff if not 2
-    cellsPerRow?: number;
+    rowsPerFormation: number; // probably breaks some stuff if not 2
+    cellsPerRow: number;
 
-    maxUnitsPerSide?: number; // TODO | not handled properly for humans
-    maxUnitsPerRow?: number; // TODO | not handled properly for humans
+    maxUnitsPerSide: number; // TODO | not handled properly for humans
+    maxUnitsPerRow: number; // TODO | not handled properly for humans
 
-    baseMaxCapturedUnits?: number;
-    absoluteMaxCapturedUnits?: number;
-    baseUnitCaptureChance?: number;
+    baseMaxCapturedUnits: number;
+    absoluteMaxCapturedUnits: number;
+    baseUnitCaptureChance: number;
 
-    humanUnitDeathChance?: number;
-    aiUnitDeathChance?: number;
-    independentUnitDeathChance?: number;
-    loserUnitExtraDeathChance?: number;
+    humanUnitDeathChance: number;
+    aiUnitDeathChance: number;
+    independentUnitDeathChance: number;
+    loserUnitExtraDeathChance: number;
   };
 }
 
-export default RuleSetValues;
+export type PartialRuleSetValues =
+{
+  [category in keyof RuleSetValues]?: Partial<RuleSetValues[category]>;
+}

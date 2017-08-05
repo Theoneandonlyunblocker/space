@@ -16,7 +16,7 @@ const defaultRuleSet: ModuleFile =
   supportedLanguages: "all",
   constructModule: function(moduleData: ModuleData)
   {
-    moduleData.applyRuleSet(
+    moduleData.ruleSet =
     {
       units:
       {
@@ -52,7 +52,7 @@ const defaultRuleSet: ModuleFile =
         independentUnitDeathChance: 1.0,
         loserUnitExtraDeathChance: 0.35,
       },
-    });
+    };
   },
 };
 
