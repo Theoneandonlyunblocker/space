@@ -6,7 +6,7 @@ import eventManager from "./eventManager";
 
 type PreventGhostHandles =
 {
-  hover: number;
+  hover?: number;
 };
 
 type MouseActions =
@@ -32,7 +32,7 @@ export default class MouseEventHandler
   private camera: Camera;
   private rectangleSelect: RectangleSelect;
 
-  private hoveredStar: Star;
+  private hoveredStar: Star | null;
   private pressedButtons: MouseButtons;
 
   private pixiCanvas: HTMLCanvasElement;
@@ -52,8 +52,8 @@ export default class MouseEventHandler
   };
   private listeners:
   {
-    hoverStar: (star: Star) => void;
-    clearHover: () => void;
+    hoverStar?: (star: Star) => void;
+    clearHover?: () => void;
   } =
   {
     hoverStar: undefined,
@@ -61,8 +61,8 @@ export default class MouseEventHandler
   };
   private pixiCanvasListeners:
   {
-    mousewheel: (e: WheelEvent) => void;
-    contextmenu: (e: PointerEvent) => void;
+    mousewheel?: (e: WheelEvent) => void;
+    contextmenu?: (e: PointerEvent) => void;
   } =
   {
     mousewheel: undefined,
@@ -164,13 +164,13 @@ export default class MouseEventHandler
   }
   private preventGhost(delay: number, type: keyof PreventGhostHandles): void
   {
-    if (this.preventingGhost[type])
+    if (this.preventingGhost[type] !== undefined)
     {
-      window.clearTimeout(this.preventingGhost[type]);
+      window.clearTimeout(this.preventingGhost[type]!);
     }
     this.preventingGhost[type] = window.setTimeout(() =>
     {
-      this.preventingGhost[type] = null;
+      this.preventingGhost[type] = undefined;
     }, delay);
   }
   private makeUITransparent(): void

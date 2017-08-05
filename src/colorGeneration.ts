@@ -119,27 +119,28 @@ export function generateMainColor(): Color
   }
 }
 
-function makeContrastingColor(toContrastWith: Color,
-colorGenProps?:
-{
-  initialRanges?:
+function makeContrastingColor(
+  toContrastWith: Color,
+  colorGenProps?:
   {
-    h?: Range;
-    s?: Range;
-    l?: Range;
-  };
-  minDifference?:
-  {
-    h?: number;
-    s?: number;
-    l?: number;
-  };
-  maxDifference?:
-  {
-    h?: number;
-    // s?: number;
-    // l?: number;
-  }
+    initialRanges?:
+    {
+      h?: Range;
+      s?: Range;
+      l?: Range;
+    };
+    minDifference?:
+    {
+      h?: number;
+      s?: number;
+      l?: number;
+    };
+    maxDifference?:
+    {
+      h?: number;
+      // s?: number;
+      // l?: number;
+    }
 }): Color
 {
   const props = colorGenProps || {};

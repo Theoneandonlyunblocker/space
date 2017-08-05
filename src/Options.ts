@@ -200,14 +200,16 @@ class Options implements OptionsValues
       date: string;
       options: OptionsValues;
     };
-    if (isFinite(slot))
+    if (slot !== undefined)
     {
-      if (!localStorage[baseString + slot])
+      const savedData = localStorage.getItem(baseString + slot);
+
+      if (!savedData)
       {
         throw new Error("No options saved in that slot");
       }
 
-      parsedData = JSON.parse(localStorage.getItem(baseString + slot));
+      parsedData = JSON.parse(savedData);
     }
     else
     {

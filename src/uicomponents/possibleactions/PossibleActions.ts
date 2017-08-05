@@ -66,19 +66,22 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
   {
     if (this.props.selectedStar !== newProps.selectedStar)
     {
-      const newState: StateType = {};
-      let afterStateSetCallback: () => void;
-
-      newState.canUpgradeBuildings = this.canUpgradeBuildings(newProps.selectedStar);
       if (this.state.expandedActionElement)
       {
-        newState.expandedAction = null;
-        newState.expandedActionElement = null;
-
-        afterStateSetCallback = this.updateActions;
+        this.setState(
+        {
+          canUpgradeBuildings: this.canUpgradeBuildings(newProps.selectedStar),
+          expandedAction: null,
+          expandedActionElement: null,
+        }, this.updateActions);
       }
-
-      this.setState(newState, afterStateSetCallback);
+      else
+      {
+        this.setState(
+        {
+          canUpgradeBuildings: this.canUpgradeBuildings(newProps.selectedStar),
+        });
+      }
     }
   }
 

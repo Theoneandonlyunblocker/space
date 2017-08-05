@@ -83,8 +83,8 @@ interface StateType
   currentTime: number;
   SFXDuration: number;
 
-  selectedFragment: SFXFragment<any>;
-  draggingFragment: SFXFragment<any>;
+  selectedFragment: SFXFragment<any> | null;
+  draggingFragment: SFXFragment<any> | null;
 }
 
 export class SFXEditorComponent extends React.Component<PropTypes, StateType>
@@ -106,6 +106,9 @@ export class SFXEditorComponent extends React.Component<PropTypes, StateType>
       isPlaying: false,
       currentTime: 0,
       SFXDuration: 1000,
+
+      selectedFragment: null,
+      draggingFragment: null,
     };
 
     this.handleChangeTime = this.handleChangeTime.bind(this);

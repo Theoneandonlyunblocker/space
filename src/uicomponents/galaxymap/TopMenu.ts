@@ -65,6 +65,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     return(
     {
       hasCondensedMenu: false,
+      opened: false,
       buttonsToPlace: 999,
       condensedMenuOpened: Options.ui.noHamburger,
     });

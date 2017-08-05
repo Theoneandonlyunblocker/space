@@ -112,6 +112,11 @@ export default class Emblem
     canvas.height = height;
     const ctx = canvas.getContext("2d");
 
+    if (!ctx)
+    {
+      throw new Error("Couldn't get canvas context");
+    }
+
     ctx.drawImage(image, 0, 0, width, height);
 
     ctx.globalCompositeOperation = "source-in";

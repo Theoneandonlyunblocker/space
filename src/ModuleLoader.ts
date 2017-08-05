@@ -108,7 +108,10 @@ export default class ModuleLoader
     {
       if (loadedModuleFiles.length === moduleFilesToLoad.length)
       {
-        afterLoaded();
+        if (afterLoaded)
+        {
+          afterLoaded();
+        }
       }
     };
 
@@ -172,7 +175,7 @@ export default class ModuleLoader
 
     while (this.moduleLoadFinishCallbacks[moduleFile.key].length > 0)
     {
-      const afterLoadedCallback = this.moduleLoadFinishCallbacks[moduleFile.key].pop();
+      const afterLoadedCallback = this.moduleLoadFinishCallbacks[moduleFile.key].pop()!;
       afterLoadedCallback();
     }
   }

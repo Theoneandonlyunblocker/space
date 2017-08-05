@@ -10,15 +10,15 @@ export default class Item
 {
   id: number;
   template: ItemTemplate;
-  unit: Unit;
-  positionInUnit: number;
+  unit: Unit | undefined;
+  positionInUnit: number | undefined;
 
   constructor(
     template: ItemTemplate,
     id?: number,
   )
   {
-    this.id = isFinite(id) ? id : idGenerators.item++;
+    this.id = id !== undefined ? id : idGenerators.item++;
     this.template = template;
   }
 
@@ -30,7 +30,7 @@ export default class Item
       templateType: this.template.type,
     };
 
-    if (this.unit)
+    if (this.positionInUnit)
     {
       data.positionInUnit = this.positionInUnit;
     }

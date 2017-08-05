@@ -676,7 +676,12 @@ export default class Unit
   }
   private updatePassiveSkillsByPhase(): void
   {
-    const updatedSkills = {};
+    const updatedSkills: PassiveSkillsByPhase =
+    {
+      atBattleStart: [],
+      atTurnStart: [],
+      inBattlePrep: [],
+    };
 
     const allSkills = this.getAllPassiveSkills();
 
@@ -687,11 +692,6 @@ export default class Unit
       {
         if (skill[phase])
         {
-          if (!updatedSkills[phase])
-          {
-            updatedSkills[phase] = [];
-          }
-
           if (updatedSkills[phase].indexOf(skill) === -1)
           {
             updatedSkills[phase].push(skill);

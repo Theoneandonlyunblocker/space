@@ -369,28 +369,30 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.playQueuedBattleEffects();
   }
-  private static getUnitsBySideFromEffect(effect: AbilityUseEffect): StateType
+  private static getUnitsBySideFromEffect(effect: AbilityUseEffect)
   {
     const userSide = effect.sfxUser.battleStats.side;
     const targetSide = effect.sfxTarget.battleStats.side;
 
     return(
     {
-      battleSceneUnit1: (targetSide === "side1" ? effect.sfxTarget :
+      side1: (targetSide === "side1" ? effect.sfxTarget :
         (userSide === "side1" ? effect.sfxUser : null)),
-      battleSceneUnit2: (targetSide === "side2" ? effect.sfxTarget :
+      side2: (targetSide === "side2" ? effect.sfxTarget :
         (userSide === "side2" ? effect.sfxUser : null)),
     });
   }
   private setStateForBattleEffect(effect: AbilityUseEffect)
   {
-    const stateObj: StateType = BattleComponent.getUnitsBySideFromEffect(effect);
-    stateObj.playingBattleEffect = true;
-    stateObj.UIState = BattleUIState.PlayingSFX;
-    stateObj.battleEffectDuration = effect.sfx.duration * Options.battleAnimationTiming.effectDuration;
-
-
-    this.setState(stateObj, this.clearHoveredUnit);
+    const units = BattleComponent.getUnitsBySideFromEffect(effect);
+    this.setState(
+    {
+      battleSceneUnit1: units.side1,
+      battleSceneUnit2: units.side2,
+      playingBattleEffect: true,
+      UIState: BattleUIState.PlayingSFX,
+      battleEffectDuration: effect.sfx.duration * Options.battleAnimationTiming.effectDuration,
+    }, this.clearHoveredUnit);
   }
   private playQueuedBattleEffects()
   {

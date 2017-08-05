@@ -148,9 +148,16 @@ export default class NotificationFilter
     const baseString = "NotificationFilter.";
 
     let parsedData: any;
-    if (slot && localStorage[baseString + slot])
+    if (slot !== undefined )
     {
-      parsedData = JSON.parse(localStorage.getItem(baseString + slot));
+      const savedData = localStorage.getItem(baseString + slot);
+
+      if (!savedData)
+      {
+        throw new Error("No options saved in that slot");
+      }
+
+      parsedData = JSON.parse(savedData);
     }
     else
     {

@@ -77,7 +77,7 @@ export default class UnitItems
       return Boolean(item.template.attributeAdjustments);
     }).map(item =>
     {
-      return item.template.attributeAdjustments;
+      return item.template.attributeAdjustments!;
     });
   }
   public getAbilities(): AbilityTemplate[]
@@ -87,7 +87,7 @@ export default class UnitItems
       return Boolean(item.template.ability);
     }).map(item =>
     {
-      return item.template.ability;
+      return item.template.ability!;
     });
   }
   public getPassiveSkills(): PassiveSkillTemplate[]
@@ -97,7 +97,7 @@ export default class UnitItems
       return Boolean(item.template.passiveSkill);
     }).map(item =>
     {
-      return item.template.passiveSkill;
+      return item.template.passiveSkill!;
     });
   }
 
@@ -105,7 +105,7 @@ export default class UnitItems
   {
     return this.getAmountOfAvailableItemSlots(item.template.slot) > 0;
   }
-  public getItemAtPosition(slot: string, position: number): Item
+  public getItemAtPosition(slot: string, position: number): Item | null
   {
     const itemsForSlot = this.getItemsBySlot()[slot];
     for (let i = 0; i < itemsForSlot.length; i++)
@@ -128,7 +128,7 @@ export default class UnitItems
       toAdd.template.slot, position);
     if (this.hasItem(toAdd))
     {
-      const oldPositionForItem = toAdd.positionInUnit;
+      const oldPositionForItem = toAdd.positionInUnit!;
 
       if (oldItemAtTargetPosition)
       {
@@ -162,6 +162,7 @@ export default class UnitItems
       this.updateUnit(toAdd);
     }
   }
+  // TODO 2017.08.05 | remove. use addItemAtPosition instead
   public addItem(toAdd: Item): void
   {
     this.addItemAtPosition(toAdd, this.getFirstAvailablePositionForItem(toAdd));
@@ -179,8 +180,8 @@ export default class UnitItems
 
     this.items.splice(this.indexOf(toRemove), 1);
 
-    toRemove.unit = null;
-    toRemove.positionInUnit = null;
+    toRemove.unit = undefined;
+    toRemove.positionInUnit = undefined;
 
     this.updateUnit(toRemove);
   }
@@ -188,7 +189,7 @@ export default class UnitItems
   {
     this.getAllItems().forEach(item =>
     {
-      item.unit.fleet.player.removeItem(item);
+      item.unit!.fleet.player.removeItem(item);
     });
   }
 
@@ -215,7 +216,7 @@ export default class UnitItems
     {
       const itemsForSlot = this.getItemsForSlot(item.template.slot).sort((a, b) =>
       {
-        return a.positionInUnit - b.positionInUnit;
+        return a.positionInUnit! - b.positionInUnit!;
       });
 
       const maxPosition = this.itemSlots[item.template.slot] - 1;

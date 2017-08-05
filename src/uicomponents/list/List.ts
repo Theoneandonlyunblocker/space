@@ -18,7 +18,7 @@ export interface PropTypes extends React.Props<any>
   listItems: ListItem<any>[];
   initialSortOrder?: ListColumn<any>[];
   keyboardSelect?: boolean; // boolean = false
-  initialSelected: ListItem<any> | null;
+  initialSelected?: ListItem<any>;
   tabIndex?: number; // number = 1
   noHeader?: boolean; // boolean = false
   addSpacer?: boolean; // boolean = false
@@ -250,18 +250,14 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    const stateObj: StateType =
+    this.setState(
     {
       selectedColumn: column,
       columnSortingOrder: this.getNewSortingOrder(column),
-    };
-
-    if (this.state.selectedColumn.key === column.key)
-    {
-      stateObj.sortingOrderForColumnKey = this.getSortingOrderForColumnKeyWithColumnReversed(column);
-    }
-
-    this.setState(stateObj);
+      sortingOrderForColumnKey: this.state.selectedColumn.key === column.key ?
+        this.getSortingOrderForColumnKeyWithColumnReversed(column) :
+        this.state.sortingOrderForColumnKey,
+    });
   }
 
   handleSelectRow(row: ListItem<any>)

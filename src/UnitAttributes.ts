@@ -124,7 +124,7 @@ export class UnitAttributes implements UnitAttributesObject
 
     return this;
   }
-  public clamp(min?: number, max?: number): UnitAttributes
+  public clamp(min: number, max: number): UnitAttributes
   {
     this.forEachAttribute(attribute =>
     {
