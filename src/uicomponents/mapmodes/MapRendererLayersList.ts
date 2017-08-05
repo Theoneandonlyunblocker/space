@@ -53,9 +53,9 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
   public handleDragEnd(): void
   {
     this.props.mapRenderer.currentMapMode.moveLayer(
-      this.state.currentDraggingLayer,
-      this.state.layerToInsertNextTo,
-      this.state.insertPosition,
+      this.state.currentDraggingLayer!,
+      this.state.layerToInsertNextTo!,
+      this.state.insertPosition!,
     );
 
     this.props.mapRenderer.resetMapModeLayersPosition();

@@ -18,7 +18,7 @@ export interface PropTypes extends React.Props<any>
   listItems: ListItem<any>[];
   initialSortOrder?: ListColumn<any>[];
   keyboardSelect?: boolean; // boolean = false
-  initialSelected?: ListItem<any>;
+  initialSelected: ListItem<any> | null;
   tabIndex?: number; // number = 1
   noHeader?: boolean; // boolean = false
   addSpacer?: boolean; // boolean = false

@@ -21,7 +21,7 @@ interface StateType
 {
   highlightedStars: Star[];
   money: number;
-  selectedStar: Star;
+  selectedStar: Star | null;
 }
 
 export class ProductionOverviewComponent extends React.Component<PropTypes, StateType>
@@ -49,7 +49,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
   private getInitialStateTODO(): StateType
   {
-    let initialSelected: Star = null;
+    let initialSelected: Star | null = null;
     const player = this.props.player;
 
     const starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
@@ -68,7 +68,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     return(
     {
       selectedStar: initialSelected,
-      highlightedStars: [initialSelected],
+      highlightedStars: initialSelected ? [initialSelected] : [],
       money: player.money,
     });
   }

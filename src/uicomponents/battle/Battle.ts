@@ -51,9 +51,9 @@ interface StateType
 {
   UIState: BattleUIState;
 
-  highlightedUnit: Unit;
-  hoveredUnit: Unit;
-  hoveredAbility: AbilityTemplate;
+  highlightedUnit: Unit | null;
+  hoveredUnit: Unit | null;
+  hoveredAbility: AbilityTemplate | null;
   targetsInPotentialArea: Unit[];
   potentialDelayId: number;
   potentialDelayAmount: number;

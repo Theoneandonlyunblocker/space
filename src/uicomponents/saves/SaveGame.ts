@@ -33,8 +33,8 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
     hasConfirmOverwritePopup: false,
   };
 
-  private okButtonElement: HTMLElement;
-  private saveNameElement: HTMLElement;
+  private okButtonElement: HTMLElement | null;
+  private saveNameElement: HTMLElement | null;
 
   constructor(props: PropTypes)
   {
@@ -47,11 +47,11 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   {
     if (app.game.gameStorageKey)
     {
-      ReactDOM.findDOMNode<HTMLElement>(this.okButtonElement).focus();
+      ReactDOM.findDOMNode<HTMLElement>(this.okButtonElement!).focus();
     }
     else
     {
-      ReactDOM.findDOMNode<HTMLElement>(this.saveNameElement).focus();
+      ReactDOM.findDOMNode<HTMLElement>(this.saveNameElement!).focus();
     }
   }
   public render()
@@ -89,7 +89,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           React.DOM.input(
           {
             className: "save-game-name",
-            ref: (component: HTMLElement) =>
+            ref: (component: HTMLElement | null) =>
             {
               this.saveNameElement = component;
             },
@@ -107,7 +107,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           {
             className: "save-game-button",
             onClick: this.handleSave,
-            ref: (component: HTMLElement) =>
+            ref: (component: HTMLElement | null) =>
             {
               this.okButtonElement = component;
             },

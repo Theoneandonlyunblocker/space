@@ -5,7 +5,7 @@ declare interface AttitudeModifierTemplate
   type: string;
   displayName: string;
   family: string;
-  duration: number; // -1 === infinite;
+  duration: number;
 
   // if these modifiers are present and one of them has either
   // stronger effect or opposite sign (+-), don't count this modifier

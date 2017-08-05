@@ -40,7 +40,7 @@ export default class BattlePrep
 
     const defenderHasScouted = this.defender.starIsDetected(battleData.location);
     this.defenderFormation = new BattlePrepFormation(
-      this.defender, this.defenderUnits, defenderHasScouted, undefined, false);
+      this.defender, this.defenderUnits, defenderHasScouted, 0, false);
 
     this.resetBattleStats();
 

@@ -31,11 +31,7 @@ export default class BackgroundDrawer
   private layers:
   {
     bg: PIXI.DisplayObject;
-    blur: PIXI.DisplayObject;
-  } =
-  {
-    bg: null,
-    blur: null,
+    blur: PIXI.DisplayObject | null;
   };
 
   constructor(props:
@@ -54,7 +50,10 @@ export default class BackgroundDrawer
     this.blurFilter.blur = 1;
     this.pixiContainer = new PIXI.Container();
 
-    this.setExternalRenderer(props.renderer);
+    if (props.renderer)
+    {
+      this.setExternalRenderer(props.renderer);
+    }
   }
   public setExternalRenderer(renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer)
   {
@@ -78,6 +77,7 @@ export default class BackgroundDrawer
     if (this.hasExternalRenderer)
     {
       this.containerElement = containerElement;
+
       return;
     }
     if (this.containerElement)
@@ -131,6 +131,7 @@ export default class BackgroundDrawer
     const bg = this.drawBackgroundFN(this.seed, backgroundSize, this.renderer);
     this.destroyBackgroundFN = bg.destroy;
     this.cachedBackgroundSize = backgroundSize;
+
     return bg.displayObject;
   }
   private drawBlurredBackground(background: PIXI.DisplayObject): PIXI.DisplayObject
@@ -145,6 +146,7 @@ export default class BackgroundDrawer
     background.filters = null;
 
     const blurSprite = new PIXI.Sprite(blurTexture);
+
     return blurSprite;
   }
   private drawScene(): void
@@ -152,7 +154,12 @@ export default class BackgroundDrawer
     this.pixiContainer.removeChildren();
     this.destroyOldBackground();
 
-    this.layers.bg = this.drawBackground();
+    this.layers =
+    {
+      bg: this.drawBackground(),
+      blur: null,
+    };
+
     this.pixiContainer.addChild(this.layers.bg);
 
     if (this.blurArea)
@@ -163,6 +170,11 @@ export default class BackgroundDrawer
   }
   private setBlurMask(): void
   {
+    if (!this.layers.blur)
+    {
+      throw new Error("BackgroundDrawer has no blur layer");
+    }
+
     if (!this.layers.blur.mask)
     {
       this.layers.blur.mask = new PIXI.Graphics();

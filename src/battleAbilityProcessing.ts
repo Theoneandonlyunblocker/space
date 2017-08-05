@@ -156,9 +156,9 @@ function getGuarders(battle: Battle, abilityUseData: AbilityUseData): Unit[]
   return guarders;
 }
 
-function activeUnitsFilterFN(unit: Unit)
+function activeUnitsFilterFN(unit: Unit | null): unit is Unit
 {
-  return unit && unit.isActiveInBattle();
+  return Boolean(unit) && unit!.isActiveInBattle();
 }
 function getAbilityEffectDataFromEffectTemplate(
   battle: Battle,

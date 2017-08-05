@@ -40,7 +40,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public onDragMove: (x: number, y: number) => void;
   public onDragEnd: () => boolean | void; // return value: was drop succesful
 
-  public position: Rect =
+  public position: Partial<Rect> =
   {
     left: undefined,
     top: undefined,
@@ -242,6 +242,10 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
             const clone = <HTMLElement> this.ownerDOMNode.cloneNode(true);
             recursiveRemoveAttribute(clone, "data-reactid");
 
+            if (!this.ownerDOMNode.parentNode)
+            {
+              throw new Error("DragPositioner owner node has no parent.");
+            }
             this.ownerDOMNode.parentNode.insertBefore(clone, nextSibling);
             this.cloneElement = clone;
           }
@@ -276,7 +280,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     let domWidth: number;
     let domHeight: number;
 
-    if (this.makeDragClone)
+    if (this.cloneElement)
     {
       domWidth = this.cloneElement.offsetWidth;
       domHeight = this.cloneElement.offsetHeight;
@@ -363,7 +367,10 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   {
     if (this.cloneElement)
     {
-      this.cloneElement.parentNode.removeChild(this.cloneElement);
+      if (this.cloneElement.parentNode)
+      {
+        this.cloneElement.parentNode.removeChild(this.cloneElement);
+      }
       this.cloneElement = null;
     }
 

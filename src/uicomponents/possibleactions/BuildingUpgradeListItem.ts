@@ -79,7 +79,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
 
     if (!this.state.canAfford)
     {
-      rowProps.onClick = null;
+      rowProps.onClick = undefined;
       rowProps.disabled = true;
       rowProps.className += " disabled";
 

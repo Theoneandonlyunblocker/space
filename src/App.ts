@@ -332,8 +332,15 @@ class App
   }
   private initUI()
   {
+    const reactContainer = document.getElementById("react-container");
+
+    if (!reactContainer)
+    {
+      throw new Error("Couldn't get react container");
+    }
+
     this.reactUI = new ReactUI(
-      document.getElementById("react-container"),
+      reactContainer,
       this.moduleLoader,
     );
   }

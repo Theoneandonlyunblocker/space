@@ -97,7 +97,7 @@ export class AbilityUseEffectQueue
 
     if (effectsToSquash.length > 0)
     {
-      const lastEffectWithSFX = squashed.pop();
+      const lastEffectWithSFX = squashed.pop()!;
       squashed.push(AbilityUseEffectQueue.squashEffects(lastEffectWithSFX, effectsToSquash, true));
     }
 
@@ -117,6 +117,7 @@ export class AbilityUseEffectQueue
     if (!this.currentEffect)
     {
       this.handleEndOfQueue();
+
       return;
     }
 

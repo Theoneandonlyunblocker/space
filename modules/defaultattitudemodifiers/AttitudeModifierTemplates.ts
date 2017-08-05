@@ -15,7 +15,7 @@ const neighborStars: AttitudeModifierTemplate =
   type: "neighborStars",
   displayName: "neighborStars",
   family: "geographic",
-  duration: -1,
+  duration: Infinity,
 
   startCondition: function(evaluation: DiplomacyEvaluation)
   {
@@ -33,7 +33,7 @@ const atWar: AttitudeModifierTemplate =
   type: "atWar",
   displayName: "At war",
   family: "current",
-  duration: -1,
+  duration: Infinity,
 
   startCondition: function(evaluation: DiplomacyEvaluation)
   {

@@ -28,33 +28,26 @@ export class AttitudeModifier
     this.startTurn = props.startTurn;
     this.currentTurn = this.startTurn;
 
-    if (isFinite(props.endTurn))
+    if (props.endTurn !== undefined)
     {
       this.endTurn = props.endTurn;
     }
-    else if (isFinite(this.template.duration))
-    {
-      if (this.template.duration < 0)
-      {
-        this.endTurn = -1;
-      }
-      else
-      {
-        this.endTurn = this.startTurn + this.template.duration;
-      }
-    }
     else
     {
-      throw new Error("Attitude modifier has no duration or end turn set");
+      this.endTurn = this.startTurn + this.template.duration;
     }
 
-    if (isFinite(this.template.constantEffect))
+    if (this.template.constantEffect !== undefined)
     {
       this.strength = this.template.constantEffect;
     }
-    else
+    else if (props.strength !== undefined)
     {
       this.strength = props.strength;
+    }
+    else
+    {
+      throw new Error("Attitude modifier didn't receive modifier strength value.");
     }
   }
 

@@ -40,7 +40,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
   render()
   {
     const rows: ListItem<SaveListItemProps>[] = [];
-    let selected: ListItem<SaveListItemProps>;
+    let selected: ListItem<SaveListItemProps> | null = null;
 
     const allKeys = Object.keys(localStorage);
 
@@ -51,7 +51,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
 
     for (let i = 0; i < saveKeys.length; i++)
     {
-      const saveData = JSON.parse(localStorage.getItem(saveKeys[i]));
+      const saveData = JSON.parse(localStorage.getItem(saveKeys[i])!);
       const date = new Date(saveData.date);
       let isMarkedForDeletion = false;
       if (this.props.saveKeysToDelete)
@@ -121,7 +121,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
         {
           listItems: rows,
           initialColumns: columns,
-          initialSortOrder: [columns[1], columns[0]], //date, name
+          initialSortOrder: [columns[1], columns[0]], // date, name
           onRowChange: this.props.onRowChange,
           autoSelect: selected ? false : this.props.autoSelect,
           initialSelected: selected,

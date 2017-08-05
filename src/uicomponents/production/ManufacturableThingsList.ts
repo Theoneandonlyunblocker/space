@@ -8,7 +8,7 @@ export interface PropTypes extends React.Props<any>
   manufacturableThings: ManufacturableThing[];
   onClick?: (toManufacture: ManufacturableThing, parentIndex: number) => void;
   showCost: boolean;
-  money?: number;
+  money: number;
 }
 
 interface StateType

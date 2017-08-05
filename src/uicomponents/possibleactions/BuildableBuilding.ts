@@ -109,7 +109,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     };
     if (!this.state.canAfford)
     {
-      props.onClick = null;
+      props.onClick = undefined;
       props.className += " disabled";
     }
 

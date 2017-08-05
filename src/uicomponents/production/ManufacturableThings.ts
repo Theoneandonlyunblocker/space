@@ -89,7 +89,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
           (this.state.activeTab === key ? " active-tab" : ""),
         onClick: this.selectTab.bind(this, key),
       },
-        displayString,
+        displayString!,
       )
     );
   }
@@ -132,7 +132,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
       }
     }
 
-    return manufacturableThings;
+    return manufacturableThings!;
   }
 
   makeTab(key: TabKey)
