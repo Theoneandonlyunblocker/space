@@ -6,7 +6,7 @@ import PassiveSkillTemplate from "./PassiveSkillTemplate";
 import SpriteTemplate from "./SpriteTemplate";
 import UnitArchetype from "./UnitArchetype";
 import UnitDrawingFunction from "./UnitDrawingFunction";
-import WeightedProbability from "./WeightedProbability";
+import {ProbabilityDistributions} from "./ProbabilityDistribution";
 
 
 declare interface UnitTemplate extends ManufacturableThing
@@ -49,8 +49,8 @@ declare interface UnitTemplate extends ManufacturableThing
     speed: number;
   };
 
-  possibleAbilities: WeightedProbability<AbilityTemplate>[];
-  possiblePassiveSkills?: WeightedProbability<PassiveSkillTemplate>[];
+  possibleAbilities: ProbabilityDistributions<AbilityTemplate>;
+  possiblePassiveSkills?: ProbabilityDistributions<PassiveSkillTemplate>;
   /**
    * List of abilities that can be upgraded into even if ability has 'onlyAllowExplicitUpgrade' flag
    */

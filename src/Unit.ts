@@ -33,7 +33,7 @@ import UnitItems from "./UnitItems";
 import
 {
   clamp,
-  getItemsFromWeightedProbabilities,
+  getItemsFromProbabilityDistributions,
   randInt,
 } from "./utility";
 
@@ -239,9 +239,9 @@ export default class Unit
 
       offensiveBattlesFoughtThisTurn: 0,
 
-      abilities: getItemsFromWeightedProbabilities(template.possibleAbilities),
+      abilities: getItemsFromProbabilityDistributions(template.possibleAbilities),
       passiveSkills: template.possiblePassiveSkills ?
-        getItemsFromWeightedProbabilities(template.possiblePassiveSkills) :
+        getItemsFromProbabilityDistributions(template.possiblePassiveSkills) :
         [],
 
       level: 1,

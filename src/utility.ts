@@ -3,7 +3,13 @@ import * as React from "react";
 
 import {activeModuleData} from "./activeModuleData";
 
-import WeightedProbability from "./templateinterfaces/WeightedProbability";
+import
+{
+  NonTerminalProbabilityDistribution,
+  ProbabilityDistributions,
+  ProbabilityItems,
+  WeightedProbabilityDistribution,
+} from "./templateinterfaces/ProbabilityDistribution";
 
 import ArchetypeValues from "./ArchetypeValues";
 import Personality from "./Personality";
@@ -143,7 +149,7 @@ export function getRandomKeyWithWeights(target: {[prop: string]: number}): strin
 
   throw new Error();
 }
-export function getRandomArrayItemWithWeights<T extends {weight?: number}>(arr: T[]): T
+export function getRandomArrayItemWithWeights<T extends {weight: number}>(arr: T[]): T
 {
   let totalWeight: number = 0;
   for (let i = 0; i < arr.length; i++)
@@ -664,54 +670,61 @@ export function onDOMLoaded(onLoaded: () => void)
     document.addEventListener("DOMContentLoaded", onLoaded);
   }
 }
-export function getItemsFromWeightedProbabilities<T>(probabilities: WeightedProbability<T>[])
+function probabilityDistributionsAreWeighted<T>(distributions: ProbabilityDistributions<T>): distributions is WeightedProbabilityDistribution<T>[]
+{
+  return Boolean((<WeightedProbabilityDistribution<T>[]>distributions)[0].weight);
+}
+function probabilityItemsAreTerminal<T>(items: ProbabilityItems<T>): items is T[]
+{
+  const firstItem = (<NonTerminalProbabilityDistribution<T>>items[0]);
+
+  return !firstItem.probabilityItems;
+}
+export function getItemsFromProbabilityDistributions<T>(distributions: ProbabilityDistributions<T>)
 {
   let allItems: T[] = [];
 
-  if (probabilities.length === 0)
+  if (distributions.length === 0)
   {
     return allItems;
   }
 
   // weighted
-  if (probabilities[0].weight)
+  if (probabilityDistributionsAreWeighted(distributions))
   {
-    const selected = getRandomArrayItemWithWeights<WeightedProbability<T>>(probabilities);
-    const firstItem = <WeightedProbability<T>> selected.probabilityItems[0];
+    const selected = getRandomArrayItemWithWeights(distributions);
 
-    if (firstItem.probabilityItems)
+    if (!probabilityItemsAreTerminal(selected.probabilityItems))
     {
-      const probabilityItems = <WeightedProbability<T>[]> selected.probabilityItems;
-      allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
+      const probabilityItems = selected.probabilityItems;
+      allItems = allItems.concat(getItemsFromProbabilityDistributions<T>(probabilityItems));
     }
     else
     {
-      const toAdd = <T[]> selected.probabilityItems;
+      const toAdd = selected.probabilityItems;
       allItems = allItems.concat(toAdd);
     }
   }
   else
   {
-    // flat probability
-    for (let i = 0; i < probabilities.length; i++)
+    for (let i = 0; i < distributions.length; i++)
     {
-      const selected: WeightedProbability<T> = probabilities[i];
+      const selected = distributions[i];
       if (Math.random() < selected.flatProbability)
       {
-        const firstItem = <WeightedProbability<T>> selected.probabilityItems[0];
-        if (firstItem.probabilityItems)
+        if (!probabilityItemsAreTerminal(selected.probabilityItems))
         {
-          const probabilityItems = <WeightedProbability<T>[]> selected.probabilityItems;
-          allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
+          allItems = allItems.concat(getItemsFromProbabilityDistributions<T>(selected.probabilityItems));
         }
         else
         {
-          const toAdd = <T[]> selected.probabilityItems;
+          const toAdd = selected.probabilityItems;
           allItems = allItems.concat(toAdd);
         }
       }
     }
   }
+
   return allItems;
 }
 export function transformMat3(a: Point, m: number[])
