@@ -41,6 +41,14 @@ import UnitBattleStatsSaveData from "./savedata/UnitBattleStatsSaveData";
 import UnitSaveData from "./savedata/UnitSaveData";
 
 
+type PassiveSkillsByPhase =
+{
+  atBattleStart: PassiveSkillTemplate[];
+  atTurnStart: PassiveSkillTemplate[];
+  inBattlePrep: PassiveSkillTemplate[];
+};
+
+
 export default class Unit
 {
   public template: UnitTemplate;
@@ -85,12 +93,12 @@ export default class Unit
 
   public items: UnitItems;
 
-  private passiveSkillsByPhase:
+  private passiveSkillsByPhase: PassiveSkillsByPhase =
   {
-    atBattleStart?: PassiveSkillTemplate[];
-    atTurnStart?: PassiveSkillTemplate[];
-    inBattlePrep?: PassiveSkillTemplate[];
-  } = {};
+    atBattleStart: [],
+    atTurnStart: [],
+    inBattlePrep: [],
+  };
   private passiveSkillsByPhaseAreDirty: boolean = true;
 
   public uiDisplayIsDirty: boolean = true;
@@ -210,8 +218,8 @@ export default class Unit
     const template = props.template;
     const race = props.race;
 
-    const attributeMultiplier = isFinite(props.attributeMultiplier) ? props.attributeMultiplier : 1;
-    const healthMultiplier = isFinite(props.healthMultiplier) ? props.healthMultiplier : 1;
+    const attributeMultiplier = props.attributeMultiplier !== undefined ? props.attributeMultiplier : 1;
+    const healthMultiplier = props.healthMultiplier !== undefined ? props.healthMultiplier : 1;
 
 
     const baseAttributeValue = activeModuleData.ruleSet.units.baseAttributeValue * attributeMultiplier;

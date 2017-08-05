@@ -150,14 +150,14 @@ colorGenProps?:
   const lRange = initialRanges.l || {min: 0.0, max: 1.0};
 
   const minDifference = props.minDifference || {};
-  const hMinDifference = isFinite(minDifference.h) ? minDifference.h : 0.1;
-  const sMinDifference = isFinite(minDifference.s) ? minDifference.s : 0.0;
-  const lMinDifference = isFinite(minDifference.l) ? minDifference.l : 0.3;
+  const hMinDifference = minDifference.h !== undefined ? minDifference.h : 0.1;
+  const sMinDifference = minDifference.s !== undefined ? minDifference.s : 0.0;
+  const lMinDifference = minDifference.l !== undefined ? minDifference.l : 0.3;
 
   const maxDifference = props.maxDifference || {};
-  const hMaxDifference = isFinite(maxDifference.h) ? maxDifference.h : 1.0;
-  // const sMaxDifference = isFinite(maxDifference.s) ? maxDifference.s : 1.0;
-  // const lMaxDifference = isFinite(maxDifference.l) ? maxDifference.l : 1.0;
+  const hMaxDifference = maxDifference.h !== undefined ? maxDifference.h : 1.0;
+  // const sMaxDifference = maxDifference.s !== undefined ? maxDifference.s : 1.0;
+  // const lMaxDifference = maxDifference.l !== undefined ? maxDifference.l : 1.0;
 
   const toContrastWithHUSL = toContrastWith.getHUSL();
 

@@ -12,8 +12,8 @@ export default class BattleTurnOrder
   }
   public destroy(): void
   {
-    this.allUnits = null;
-    this.orderedUnits = null;
+    this.allUnits = [];
+    this.orderedUnits = [];
   }
 
   public addUnit(unit: Unit): void

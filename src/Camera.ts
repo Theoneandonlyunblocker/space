@@ -116,9 +116,9 @@ export default class Camera
       throw new Error("Camera has no container element");
     }
 
-    const style = window.getComputedStyle(container, null);
-    this.width = parseInt(style.width);
-    this.height = parseInt(style.height);
+    const style = window.getComputedStyle(container);
+    this.width = parseInt(style.width!);
+    this.height = parseInt(style.height!);
 
     this.container.position.set(
       this.width / 2,

@@ -89,7 +89,6 @@ export class Trade
   }
   public removeStagedItem(key: string)
   {
-    this.stagedItems[key] = null;
     delete this.stagedItems[key];
   }
   public removeAllStagedItems()

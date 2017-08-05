@@ -13,7 +13,7 @@ export default class BattleSceneUnitOverlay
 
   overlayContainer: PIXI.Container;
 
-  activeUnit: Unit;
+  activeUnit: Unit | null;
   getSceneBounds: () => {width: number; height: number};
 
   animationIsActive: boolean = false;

@@ -43,6 +43,11 @@ export default function cacheSpriteSheetAsImages(sheetData: SpriteSheetData, she
     canvas.height = frame.h;
     const context = canvas.getContext("2d");
 
+    if (!context)
+    {
+      throw new Error("Couldn't get canvas context");
+    }
+
     context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
 
     const image = new Image();

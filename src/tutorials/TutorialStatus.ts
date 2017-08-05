@@ -34,12 +34,14 @@ class TutorialStatus implements TutorialStatusValues
   {
     this.setDefaultValues();
 
-    if (!localStorage["Rance.TutorialStatus"])
+    const tutorialStatusData = localStorage.getItem("Rance.TutorialStatus");
+
+    if (!tutorialStatusData)
     {
       return;
     }
 
-    const parsedData: TutorialStatusValues = JSON.parse(localStorage.getItem("Rance.TutorialStatus"));
+    const parsedData: TutorialStatusValues = JSON.parse(tutorialStatusData);
     this.deSerialize(parsedData);
   }
   public reset()

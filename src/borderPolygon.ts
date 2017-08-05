@@ -97,10 +97,13 @@ export function getBorderingHalfEdges(stars: Star[])
 
 
   let startEdge: any;
-  let star: Star;
+  let star: Star | undefined;
   for (let i = 0; i < stars.length; i++)
   {
-    if (star) break;
+    if (star)
+    {
+      break;
+    }
 
     for (let j = 0; j < stars[i].voronoiCell.halfedges.length; j++)
     {
@@ -114,7 +117,10 @@ export function getBorderingHalfEdges(stars: Star[])
     }
   }
 
-  if (!star) throw new Error("Couldn't find starting location for border polygon");
+  if (!star)
+  {
+    throw new Error("Couldn't find starting location for border polygon");
+  }
 
   let hasProcessedStartEdge = false;
   let contiguousEdge: any = null;

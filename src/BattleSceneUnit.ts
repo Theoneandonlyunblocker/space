@@ -6,6 +6,7 @@ import SFXParams from "./templateinterfaces/SFXParams";
 
 import Options from "./Options";
 import Unit from "./Unit";
+import UnitBattleSide from "./UnitBattleSide";
 
 const enum BattleSceneUnitState
 {
@@ -23,25 +24,27 @@ export default class BattleSceneUnit
   private container: PIXI.Container;
   private renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
 
-  private activeUnit: Unit;
+  private side: UnitBattleSide;
+  private activeUnit: Unit | null;
 
   private unitState: BattleSceneUnitState = BattleSceneUnitState.Removed;
-  private onFinishEnter: () => void;
-  private onFinishExit: () => void;
-  private tween: TWEEN.Tween;
+  private onFinishEnter?: () => void;
+  private onFinishExit?: () => void;
+  private tween: TWEEN.Tween | null;
   private hasSFXSprite: boolean = false;
 
 
-  constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
+  constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, side: UnitBattleSide)
   {
     this.container = container;
     this.renderer = renderer;
+    this.side = side;
 
     this.spriteContainer = new PIXI.Container();
     this.container.addChild(this.spriteContainer);
   }
 
-  public changeActiveUnit(unit: Unit, afterChangedCallback?: () => void)
+  public changeActiveUnit(unit: Unit | null, afterChangedCallback?: () => void)
   {
     if (this.hasSFXSprite)
     {
@@ -159,7 +162,7 @@ export default class BattleSceneUnit
     }
     else if (this.unitState === BattleSceneUnitState.Exiting)
     {
-      this.onFinishExit = null;
+      this.onFinishExit = undefined;
     }
     else
     {
@@ -193,7 +196,7 @@ export default class BattleSceneUnit
     if (this.onFinishEnter)
     {
       this.onFinishEnter();
-      this.onFinishEnter = null;
+      this.onFinishEnter = undefined;
     }
   }
   private startUnitSpriteExit()
@@ -220,7 +223,7 @@ export default class BattleSceneUnit
     if (this.onFinishExit)
     {
       this.onFinishExit();
-      this.onFinishExit = null;
+      this.onFinishExit = undefined;
     }
   }
 
@@ -252,7 +255,7 @@ export default class BattleSceneUnit
     // TODO battle scene | This & unit drawing FN rely on overly fiddly positioning.
     // This function might not work properly with other drawing functions.
     const sceneBounds = this.getSceneBounds();
-    const shouldReverse = this.activeUnit.battleStats.side === "side2";
+    const shouldReverse = this.side === "side2";
 
     const containerBounds = this.spriteContainer.getLocalBounds();
     const xPadding = 25;
@@ -318,7 +321,7 @@ export default class BattleSceneUnit
   }
   private makeEnterExitTween(direction: "enter" | "exit", duration: number, onComplete: () => void)
   {
-    const side = this.activeUnit.battleStats.side;
+    const side = this.activeUnit!.battleStats.side;
     const container = this.spriteContainer;
     const bounds = container.getBounds();
 
