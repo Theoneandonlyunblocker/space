@@ -6,8 +6,8 @@ import MixinBase from "./MixinBase";
 export interface AutoPositionerProps
 {
   getParentClientRect: () => ClientRect;
-  xSide?: "innerRight" | "outerRight" | "innerLeft" | "outerLeft";
-  ySide?: "innerTop" | "outerTop" | "innerBottom" | "outerBottom";
+  xSide: "innerRight" | "outerRight" | "innerLeft" | "outerLeft";
+  ySide: "innerTop" | "outerTop" | "innerBottom" | "outerBottom";
 
   xMargin?: number;
   yMargin?: number;
@@ -132,8 +132,8 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
     const yMargin = this.props.yMargin || 0;
     const xMargin = this.props.xMargin || 0;
 
-    let top: number = null;
-    let left: number = null;
+    let top: number;
+    let left: number;
 
     switch (ySide)
     {

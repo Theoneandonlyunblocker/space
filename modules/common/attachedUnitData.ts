@@ -30,13 +30,13 @@ class AttachedUnitDataManager
       this.byUnit.set(unit, {});
     }
 
-    return this.byUnit.get(unit);
+    return this.byUnit.get(unit)!;
   }
   public set(unit: Unit, data: AttachedUnitData): void
   {
     if (this.byUnit.has(unit))
     {
-      const oldData = this.byUnit.get(unit);
+      const oldData = this.byUnit.get(unit)!;
       const mergedData = shallowExtend(oldData, data);
       this.byUnit.set(unit, mergedData);
     }

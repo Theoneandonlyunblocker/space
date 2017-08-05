@@ -89,7 +89,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    let tooltip: React.ReactElement<any> = null;
+    let tooltip: React.ReactElement<any> | null = null;
     if (this.state.hasAttitudeModifierTootlip)
     {
       tooltip = AttitudeModifierList(

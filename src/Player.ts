@@ -779,7 +779,7 @@ export default class Player
           }
           else
           {
-            linksBySourceStar.get(star).push(linkedStar);
+            linksBySourceStar.get(star)!.push(linkedStar);
           }
         }
       }

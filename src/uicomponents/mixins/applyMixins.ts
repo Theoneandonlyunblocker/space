@@ -38,7 +38,7 @@ function wrapRenderFunction(base: React.Component<any, any>, mixins: MixinBase<a
   {
     mixinsWithFunction.forEach(mixin =>
     {
-      mixin.onRender.call(mixin);
+      mixin.onRender!.call(mixin);
     });
     return originalFunction.apply(base, args);
   };

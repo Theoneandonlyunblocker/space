@@ -10,7 +10,7 @@ import Opinion from "./Opinion";
 export interface PropTypes extends ListItemProps, React.Props<any>
 {
   player: Player;
-  opinion: number;
+  opinion: number | null;
   status: string;
   name: string;
   flag: Flag;

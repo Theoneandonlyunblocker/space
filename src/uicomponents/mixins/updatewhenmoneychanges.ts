@@ -10,7 +10,7 @@ import eventManager from "../../eventManager";
 export default class UpdateWhenMoneyChanges<T extends React.Component<any, any>> implements MixinBase<T>
 {
   private owner: T;
-  private onMoneyChange: () => void;
+  private onMoneyChange?: () => void;
 
   constructor(owner: T, onMoneyChange?: () => void)
   {

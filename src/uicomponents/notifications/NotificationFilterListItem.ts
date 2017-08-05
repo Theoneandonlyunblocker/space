@@ -17,7 +17,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  filterState?: NotificationFilterState[];
+  filterState: NotificationFilterState[];
 }
 
 export class NotificationFilterListItemComponent extends React.Component<PropTypes, StateType>
@@ -70,7 +70,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
   render()
   {
     const inputElements: React.ReactHTMLElement<any>[] = [];
-    const filterState: NotificationFilterState[] = this.state.filterState;
+    const filterState = this.state.filterState;
 
     for (let state in NotificationFilterState)
     {

@@ -28,7 +28,7 @@ interface StateType
 export class NotificationLogComponent extends React.PureComponent<PropTypes, StateType>
 {
   displayName: string = "NotificationLog";
-  updateListener: Function = undefined;
+  updateListener: Function;
 
   state: StateType;
 

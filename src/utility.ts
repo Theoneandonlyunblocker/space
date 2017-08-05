@@ -615,12 +615,13 @@ export function getRelativeWeightsFromObject(byCount: {[prop: string]: number}, 
   } = {};
 
   const min = 0;
-  let max: number;
-  for (let prop in byCount)
+  const max = Object.keys(byCount).map(key =>
   {
-    const count = byCount[prop];
-    max = isFinite(max) ? Math.max(max, count) : count;
-  }
+    return byCount[key]
+  }).reduce((maxWeight, itemWeight) =>
+  {
+    return Math.max(maxWeight, itemWeight);
+  }, min);
 
   for (let prop in byCount)
   {

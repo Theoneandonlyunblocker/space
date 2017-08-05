@@ -159,7 +159,7 @@ def writeConvertedShader(outFile, sourceLines, shaderName, fileName, rootDir):
     '  constructor(initialUniformValues?: Partial<Uniforms>)\n',
     '  {\n',
     '    const uniformData = {0}.makeUniformDataObject(initialUniformValues);\n'.format(shaderName),
-    '    super(null, sourceLines.join("\\n"), uniformData);\n',
+    '    super(undefined, sourceLines.join("\\n"), uniformData);\n',
     '  }\n\n'
   ])
 

@@ -156,7 +156,7 @@ export class IdDictionary<K extends ObjectWithId, V>
           return dictToCheck.has(key);
         }).map(dictWithKey =>
         {
-          return dictWithKey.get(key);
+          return dictWithKey.get(key)!;
         });
 
         merged.set(key, mergeFN(...allValues));

@@ -29,11 +29,11 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  columns?: ListColumn<any>[];
-  selectedColumn?: ListColumn<any>;
-  columnSortingOrder?: ListColumn<any>[]; // Sort by month->day->year etc.
-  sortingOrderForColumnKey?: {[columnKey: string]: ListOrder}; // day: asc, month: asc, year: desc
-  selected?: ListItem<any>;
+  columns: ListColumn<any>[];
+  selectedColumn: ListColumn<any>;
+  columnSortingOrder: ListColumn<any>[]; // Sort by month->day->year etc.
+  sortingOrderForColumnKey: {[columnKey: string]: ListOrder}; // day: asc, month: asc, year: desc
+  selected: ListItem<any> | null;
 }
 
 export class ListComponent extends React.Component<PropTypes, StateType>

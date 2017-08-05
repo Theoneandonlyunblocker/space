@@ -57,11 +57,11 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   private dragOffset: Point = {x: 0, y: 0};
   private mouseDownPosition: Point = {x: 0, y: 0};
 
-  private cloneElement: HTMLElement = null;
+  private cloneElement: HTMLElement | null = null;
 
   private ownerDOMNode: HTMLElement;
   private containerRect: ClientRect;
-  private touchEventTarget: HTMLElement;
+  private touchEventTarget: HTMLElement | null;
   private needsFirstTouchUpdate: boolean;
   private ownerIsMounted: boolean = false;
 

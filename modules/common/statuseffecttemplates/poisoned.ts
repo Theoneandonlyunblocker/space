@@ -41,8 +41,15 @@ const poisoned: StatusEffectTemplate =
           canvas.width = props.width;
           canvas.height = props.height;
           const ctx = canvas.getContext("2d");
-          ctx.fillStyle = "rgba(30, 150, 30, 0.5)";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          if (!ctx)
+          {
+            throw new Error("Couldn't get context");
+          }
+          else
+          {
+            ctx.fillStyle = "rgba(30, 150, 30, 0.5)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          }
 
           return canvas;
         },

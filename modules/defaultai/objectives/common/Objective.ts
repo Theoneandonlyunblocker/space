@@ -135,7 +135,7 @@ export abstract class Objective
       {
         if (createdObjectivesByTarget.has((<O>objective).target))
         {
-          const createdObjective = createdObjectivesByTarget.get((<O>objective).target);
+          const createdObjective = createdObjectivesByTarget.get((<O>objective).target)!;
 
           objective.score = createdObjective.score;
           objective.isOngoing = true;

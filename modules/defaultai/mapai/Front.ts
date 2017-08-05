@@ -18,7 +18,7 @@ export class Front
   {
     this.units.forEach(unit =>
     {
-      attachedUnitData.get(unit).front = null;
+      attachedUnitData.get(unit)!.front = undefined;
     });
   }
   public addUnit(unit: Unit): void
@@ -36,7 +36,7 @@ export class Front
   }
   public removeUnit(unit: Unit): void
   {
-    attachedUnitData.get(unit).front = null;
+    attachedUnitData.get(unit).front = undefined;
 
     const unitIndex = this.getUnitIndex(unit);
     this.units.splice(unitIndex, 1);

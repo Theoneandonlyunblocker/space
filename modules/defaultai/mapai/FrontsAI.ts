@@ -62,7 +62,7 @@ export default class FrontsAI
     const recalculateScoresForFront = (front: Front) =>
     {
       const frontScores = unitScoresByFront[front.id];
-      const objective = objectivesByFront.get(front);
+      const objective = objectivesByFront.get(front)!;
 
       for (let i = 0; i < frontScores.length; i++)
       {
