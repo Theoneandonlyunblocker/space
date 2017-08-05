@@ -20,8 +20,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  saveName?: string;
-  hasConfirmOverwritePopup?: boolean;
+  saveName: string;
+  hasConfirmOverwritePopup: boolean;
 }
 
 export class SaveGameComponent extends React.Component<PropTypes, StateType>

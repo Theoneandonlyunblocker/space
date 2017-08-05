@@ -27,7 +27,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  isCollapsed?: boolean;
+  isCollapsed: boolean;
 }
 
 export class SFXFragmentPropComponent extends React.Component<PropTypes, StateType>

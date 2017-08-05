@@ -15,8 +15,8 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hasLoadPopup?: boolean;
-  hasConfirmNewGamePopup?: boolean;
+  hasLoadPopup: boolean;
+  hasConfirmNewGamePopup: boolean;
 }
 
 export class GameOverScreenComponent extends React.Component<PropTypes, StateType>

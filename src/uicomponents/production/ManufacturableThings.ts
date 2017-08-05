@@ -21,7 +21,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  activeTab?: TabKey;
+  activeTab: TabKey;
 }
 
 export class ManufacturableThingsComponent extends React.Component<PropTypes, StateType>

@@ -18,7 +18,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  valueString?: string;
+  valueString: string;
 }
 
 export class NumericTextInputComponent extends React.Component<PropTypes, StateType>

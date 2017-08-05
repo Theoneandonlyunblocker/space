@@ -49,30 +49,30 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  UIState?: BattleUIState;
+  UIState: BattleUIState;
 
-  highlightedUnit?: Unit;
-  hoveredUnit?: Unit;
-  hoveredAbility?: AbilityTemplate;
-  targetsInPotentialArea?: Unit[];
-  potentialDelayId?: number;
-  potentialDelayAmount?: number;
+  highlightedUnit: Unit;
+  hoveredUnit: Unit;
+  hoveredAbility: AbilityTemplate;
+  targetsInPotentialArea: Unit[];
+  potentialDelayId: number;
+  potentialDelayAmount: number;
 
-  abilityTooltip?:
+  abilityTooltip:
   {
     parentElement?: HTMLElement;
     facesLeft?: boolean;
   };
 
-  battleSceneUnit1?: Unit;
-  battleSceneUnit2?: Unit;
-  playingBattleEffect?: boolean;
-  battleEffectDuration?: number;
-  battleEffectDurationAfterTrigger?: number;
+  battleSceneUnit1: Unit;
+  battleSceneUnit2: Unit;
+  playingBattleEffect: boolean;
+  battleEffectDuration: number;
+  battleEffectDurationAfterTrigger: number;
 
-  battleEvaluation?: number;
-  unitDisplayDataById?: {[unitId: number]: UnitDisplayData};
-  previousUnitDisplayDataById?: {[unitId: number]: UnitDisplayData};
+  battleEvaluation: number;
+  unitDisplayDataById: {[unitId: number]: UnitDisplayData};
+  previousUnitDisplayDataById: {[unitId: number]: UnitDisplayData};
 }
 
 export class BattleComponent extends React.Component<PropTypes, StateType>

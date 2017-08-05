@@ -15,7 +15,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  isActive?: boolean;
+  isActive: boolean;
 }
 
 export class ColorSetterComponent extends React.Component<PropTypes, StateType>

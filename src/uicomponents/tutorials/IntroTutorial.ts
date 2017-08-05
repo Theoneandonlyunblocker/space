@@ -13,7 +13,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  shouldShow?: boolean;
+  shouldShow: boolean;
 }
 
 export class IntroTutorialComponent extends React.Component<PropTypes, StateType>

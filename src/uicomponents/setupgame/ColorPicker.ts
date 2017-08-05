@@ -30,10 +30,10 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hexColor?: number;
-  hue?: number;
-  val?: number;
-  sat?: number;
+  hexColor: number;
+  hue: number;
+  val: number;
+  sat: number;
 }
 
 export class ColorPickerComponent extends React.Component<PropTypes, StateType>

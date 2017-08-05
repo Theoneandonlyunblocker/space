@@ -13,7 +13,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  isChecked?: boolean;
+  isChecked: boolean;
 }
 
 export class DontShowAgainComponent extends React.Component<PropTypes, StateType>

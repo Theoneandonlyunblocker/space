@@ -24,10 +24,10 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  condensedMenuOpened?: boolean;
-  hasCondensedMenu?: boolean;
-  opened?: boolean;
-  buttonsToPlace?: number;
+  condensedMenuOpened: boolean;
+  hasCondensedMenu: boolean;
+  opened: boolean;
+  buttonsToPlace: number;
 }
 
 export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>

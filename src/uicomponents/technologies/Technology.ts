@@ -22,7 +22,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hasUnlocksPopup?: boolean;
+  hasUnlocksPopup: boolean;
 }
 
 export class TechnologyComponent extends React.Component<PropTypes, StateType>

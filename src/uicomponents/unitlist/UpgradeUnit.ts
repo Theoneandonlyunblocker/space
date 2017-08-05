@@ -21,8 +21,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  currentlyUpgradingAbility?: AbilityBase;
-  upgradeData?: AbilityUpgradeData;
+  currentlyUpgradingAbility: AbilityBase;
+  upgradeData: AbilityUpgradeData;
 }
 
 export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>

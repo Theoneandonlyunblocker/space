@@ -18,7 +18,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hasAttitudeModifierTootlip?: boolean;
+  hasAttitudeModifierTootlip: boolean;
 }
 
 export class OpinionComponent extends React.Component<PropTypes, StateType>

@@ -28,7 +28,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hasConfirmResetAllDialog?: boolean;
+  hasConfirmResetAllDialog: boolean;
 }
 
 export class OptionsListComponent extends React.Component<PropTypes, StateType>

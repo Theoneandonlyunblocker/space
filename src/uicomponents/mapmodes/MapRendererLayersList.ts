@@ -15,9 +15,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  layerToInsertNextTo?: MapRendererLayer | null;
-  insertPosition?: "top" | "bottom" | null;
-  currentDraggingLayer?: MapRendererLayer | null;
+  layerToInsertNextTo: MapRendererLayer | null;
+  insertPosition: "top" | "bottom" | null;
+  currentDraggingLayer: MapRendererLayer | null;
 }
 
 export class MapRendererLayersListComponent extends React.PureComponent<PropTypes, StateType>

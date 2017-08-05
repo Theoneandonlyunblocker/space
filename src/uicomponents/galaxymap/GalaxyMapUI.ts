@@ -42,14 +42,14 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  attackTargets?: FleetAttackTarget[];
-  hasMapModeSettingsExpanded?: boolean;
-  currentlyReorganizing?: Fleet[];
-  selectedFleets?: Fleet[];
-  inspectedFleets?: Fleet[];
-  isPlayerTurn?: boolean;
-  expandedActionElement?: React.ReactElement<any>;
-  selectedStar?: Star;
+  attackTargets: FleetAttackTarget[];
+  hasMapModeSettingsExpanded: boolean;
+  currentlyReorganizing: Fleet[];
+  selectedFleets: Fleet[];
+  inspectedFleets: Fleet[];
+  isPlayerTurn: boolean;
+  expandedActionElement: React.ReactElement<any>;
+  selectedStar: Star;
 }
 
 export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>

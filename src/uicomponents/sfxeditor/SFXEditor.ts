@@ -79,12 +79,12 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  isPlaying?: boolean;
-  currentTime?: number;
-  SFXDuration?: number;
+  isPlaying: boolean;
+  currentTime: number;
+  SFXDuration: number;
 
-  selectedFragment?: SFXFragment<any>;
-  draggingFragment?: SFXFragment<any>;
+  selectedFragment: SFXFragment<any>;
+  draggingFragment: SFXFragment<any>;
 }
 
 export class SFXEditorComponent extends React.Component<PropTypes, StateType>

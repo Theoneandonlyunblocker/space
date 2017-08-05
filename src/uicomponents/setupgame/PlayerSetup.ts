@@ -32,10 +32,10 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  name?: string;
-  secondaryColor?: Color;
-  mainColor?: Color;
-  race?: RaceTemplate;
+  name: string;
+  secondaryColor: Color;
+  mainColor: Color;
+  race: RaceTemplate;
 }
 
 function getRandomPlayerRaceTemplate(): RaceTemplate

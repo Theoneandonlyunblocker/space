@@ -12,7 +12,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  size?: number;
+  size: number;
 }
 
 export class FlagMakerComponent extends React.Component<PropTypes, StateType>

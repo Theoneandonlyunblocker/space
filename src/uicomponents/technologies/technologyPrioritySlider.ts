@@ -14,7 +14,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  priority?: number;
+  priority: number;
 }
 
 export class TechnologyPrioritySliderComponent extends React.Component<PropTypes, StateType>

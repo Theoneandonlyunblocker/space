@@ -14,7 +14,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  displayedStrength?: number;
+  displayedStrength: number;
 }
 
 export class UnitStrengthComponent extends React.Component<PropTypes, StateType>

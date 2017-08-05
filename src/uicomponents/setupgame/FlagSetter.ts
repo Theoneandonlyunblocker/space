@@ -33,9 +33,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  isActive?: boolean;
-  failMessageElement?: React.ReactElement<any> | null;
-  customImageFile?: File | null;
+  isActive: boolean;
+  failMessageElement: React.ReactElement<any> | null;
+  customImageFile: File | null;
 }
 
 export class FlagSetterComponent extends React.Component<PropTypes, StateType>

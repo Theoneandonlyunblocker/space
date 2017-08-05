@@ -17,8 +17,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  selectedTemplate?: MapGenTemplate;
-  templates?: MapGenTemplate[];
+  selectedTemplate: MapGenTemplate;
+  templates: MapGenTemplate[];
 }
 
 export class MapSetupComponent extends React.Component<PropTypes, StateType>

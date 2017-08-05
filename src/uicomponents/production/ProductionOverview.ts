@@ -19,9 +19,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  highlightedStars?: Star[];
-  money?: number;
-  selectedStar?: Star;
+  highlightedStars: Star[];
+  money: number;
+  selectedStar: Star;
 }
 
 export class ProductionOverviewComponent extends React.Component<PropTypes, StateType>

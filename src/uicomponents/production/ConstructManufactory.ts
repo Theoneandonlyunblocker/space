@@ -17,7 +17,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  canAfford?: boolean;
+  canAfford: boolean;
 }
 
 export class ConstructManufactoryComponent extends React.PureComponent<PropTypes, StateType>

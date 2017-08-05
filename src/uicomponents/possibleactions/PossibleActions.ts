@@ -22,9 +22,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  canUpgradeBuildings?: boolean;
-  expandedAction?: "buildBuildings" | "upgradeBuildings";
-  expandedActionElement?: React.ReactHTMLElement<any>;
+  canUpgradeBuildings: boolean;
+  expandedAction: "buildBuildings" | "upgradeBuildings";
+  expandedActionElement: React.ReactHTMLElement<any>;
 }
 
 export class PossibleActionsComponent extends React.Component<PropTypes, StateType>

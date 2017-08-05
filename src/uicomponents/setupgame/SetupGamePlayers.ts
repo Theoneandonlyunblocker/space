@@ -17,8 +17,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  activeColorSetter?: ColorSetterComponent;
-  playerKeys?: number[];
+  activeColorSetter: ColorSetterComponent;
+  playerKeys: number[];
 }
 
 export class SetupGamePlayersComponent extends React.Component<PropTypes, StateType>

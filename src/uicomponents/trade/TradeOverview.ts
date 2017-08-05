@@ -21,10 +21,10 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  currentDragItemKey?: string;
-  currentDragItemPlayer?: "self" | "other";
-  currentDragItemWasStaged?: boolean;
-  activeTrade?: TradeOffer;
+  currentDragItemKey: string;
+  currentDragItemPlayer: "self" | "other";
+  currentDragItemWasStaged: boolean;
+  activeTrade: TradeOffer;
 }
 
 export class TradeOverviewComponent extends React.Component<PropTypes, StateType>

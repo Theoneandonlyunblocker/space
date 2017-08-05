@@ -17,7 +17,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  currentDragUnit?: Unit;
+  currentDragUnit: Unit;
 }
 
 export class FleetReorganizationComponent extends React.Component<PropTypes, StateType>

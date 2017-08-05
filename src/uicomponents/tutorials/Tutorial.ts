@@ -21,7 +21,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  currentPageIndex?: number;
+  currentPageIndex: number;
 }
 
 export class TutorialComponent extends React.Component<PropTypes, StateType>

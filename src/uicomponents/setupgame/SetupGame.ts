@@ -18,8 +18,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  maxPlayers?: number;
-  minPlayers?: number;
+  maxPlayers: number;
+  minPlayers: number;
 }
 
 export class SetupGameComponent extends React.Component<PropTypes, StateType>

@@ -40,8 +40,8 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  emblems?: EmblemPropsWithId[];
-  activeEmblemSetterId?: number | null;
+  emblems: EmblemPropsWithId[];
+  activeEmblemSetterId: number | null;
 }
 
 export class FlagEditorComponent extends React.PureComponent<PropTypes, StateType>

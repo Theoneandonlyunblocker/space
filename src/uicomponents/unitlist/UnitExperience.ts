@@ -19,7 +19,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hasUpgradePopup?: boolean;
+  hasUpgradePopup: boolean;
 }
 
 export class UnitExperienceComponent extends React.Component<PropTypes, StateType>

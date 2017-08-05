@@ -22,7 +22,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  buildingTemplates?: BuildingTemplate[];
+  buildingTemplates: BuildingTemplate[];
 }
 
 export class BuildableBuildingListComponent extends React.Component<PropTypes, StateType>

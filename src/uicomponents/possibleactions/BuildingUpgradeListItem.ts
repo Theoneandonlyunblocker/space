@@ -15,7 +15,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  canAfford?: boolean;
+  canAfford: boolean;
 }
 
 export class BuildingUpgradeListItemComponent extends React.Component<PropTypes, StateType>

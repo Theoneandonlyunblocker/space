@@ -28,11 +28,11 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hoveredUnit?: Unit;
-  currentDragUnit?: Unit;
-  leftLowerElement?: "playerFormation" | "enemyFormation" | "itemEquip";
-  currentDragItem?: Item;
-  selectedUnit?: Unit;
+  hoveredUnit: Unit;
+  currentDragUnit: Unit;
+  leftLowerElement: "playerFormation" | "enemyFormation" | "itemEquip";
+  currentDragItem: Item;
+  selectedUnit: Unit;
 }
 
 export class BattlePrepComponent extends React.Component<PropTypes, StateType>

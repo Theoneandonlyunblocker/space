@@ -18,7 +18,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hasNotificationFilterPopup?: boolean;
+  hasNotificationFilterPopup: boolean;
 }
 
 export class NotificationFilterButtonComponent extends React.Component<PropTypes, StateType>

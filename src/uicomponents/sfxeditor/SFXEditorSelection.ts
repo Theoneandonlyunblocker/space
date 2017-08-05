@@ -24,7 +24,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  activeTab?: SelectionTabType;
+  activeTab: SelectionTabType;
 }
 
 export class SFXEditorSelectionComponent extends React.Component<PropTypes, StateType>

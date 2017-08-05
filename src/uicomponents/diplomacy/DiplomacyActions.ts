@@ -18,7 +18,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hasTradePopup?: boolean;
+  hasTradePopup: boolean;
 }
 
 export class DiplomacyActionsComponent extends React.Component<PropTypes, StateType>

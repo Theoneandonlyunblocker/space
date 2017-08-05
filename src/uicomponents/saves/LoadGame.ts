@@ -18,9 +18,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  saveKeysToDelete?: string[];
-  selectedSaveKey?: string;
-  hasConfirmDeleteSavePopup?: boolean;
+  saveKeysToDelete: string[];
+  selectedSaveKey: string;
+  hasConfirmDeleteSavePopup: boolean;
 }
 
 export class LoadGameComponent extends React.Component<PropTypes, StateType>

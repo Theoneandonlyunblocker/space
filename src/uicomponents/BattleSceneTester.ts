@@ -21,11 +21,11 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  selectedSide1Unit?: Unit;
-  selectedSFXTemplateKey?: string;
-  activeUnit?: Unit;
-  selectedSide2Unit?: Unit;
-  duration?: number;
+  selectedSide1Unit: Unit;
+  selectedSFXTemplateKey: string;
+  activeUnit: Unit;
+  selectedSide2Unit: Unit;
+  duration: number;
 }
 
 export class BattleSceneTesterComponent extends React.Component<PropTypes, StateType>

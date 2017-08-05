@@ -30,16 +30,16 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  maxUnits?: number;
+  maxUnits: number;
 
-  currentDisplayData?: TurnOrderDisplayData[];
-  pendingDisplayData?: TurnOrderDisplayData[];
-  pendingDeadUnitsById?: {[id: number]: boolean};
-  pendingDeadUnitIndices?: {[index: number]: boolean};
+  currentDisplayData: TurnOrderDisplayData[];
+  pendingDisplayData: TurnOrderDisplayData[];
+  pendingDeadUnitsById: {[id: number]: boolean};
+  pendingDeadUnitIndices: {[index: number]: boolean};
 
-  insertIndex?: number;
+  insertIndex: number;
 
-  animationState?: AnimationState;
+  animationState: AnimationState;
 }
 
 export class TurnOrderComponent extends React.Component<PropTypes, StateType>

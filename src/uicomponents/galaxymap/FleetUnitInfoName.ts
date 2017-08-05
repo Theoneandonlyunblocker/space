@@ -13,7 +13,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  inputElementValue?: string;
+  inputElementValue: string;
 }
 
 export class FleetUnitInfoNameComponent extends React.Component<PropTypes, StateType>
