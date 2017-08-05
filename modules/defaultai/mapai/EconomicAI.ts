@@ -9,17 +9,17 @@ import
 {
   Trade,
 } from "../../../src/Trade";
-import {TradeResponse} from "../../../src/TradeResponse";
+import {TradeOffer} from "../../../src/TradeOffer";
 
 export class EconomicAI
 {
   public respondToTradeOffer(
     // TODO 2017.06.09 | rename
-    incomingResponse: TradeResponse,
-  ): TradeResponse
+    incomingResponse: TradeOffer,
+  ): TradeOffer
   {
-    const receivedOffer = incomingResponse.proposedReceivedOffer;
-    const ownTrade = incomingResponse.proposedOwnTrade;
+    const receivedOffer = incomingResponse.otherTrade;
+    const ownTrade = incomingResponse.ownTrade;
 
     const offeredValue = evaluateValueOfOffer(receivedOffer);
     const ownValue = evaluateValueOfOffer(ownTrade);
@@ -28,8 +28,8 @@ export class EconomicAI
     {
       return(
       {
-        proposedOwnTrade: ownTrade.clone(),
-        proposedReceivedOffer: receivedOffer.clone(),
+        ownTrade: ownTrade.clone(),
+        otherTrade: receivedOffer.clone(),
 
         willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
 
@@ -58,8 +58,8 @@ export class EconomicAI
 
     return(
     {
-      proposedOwnTrade: ownTrade.clone(),
-      proposedReceivedOffer: receivedOffer.clone(),
+      ownTrade: ownTrade.clone(),
+      otherTrade: receivedOffer.clone(),
 
       willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
 
@@ -71,12 +71,12 @@ export class EconomicAI
   private respondToDemand(
     receivedOffer: Trade,
     ownTrade: Trade,
-  ): TradeResponse
+  ): TradeOffer
   {
     return(
     {
-      proposedOwnTrade: ownTrade.clone(),
-      proposedReceivedOffer: receivedOffer.clone(),
+      ownTrade: ownTrade.clone(),
+      otherTrade: receivedOffer.clone(),
 
       willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
 
@@ -87,12 +87,12 @@ export class EconomicAI
   private respondToGift(
     receivedOffer: Trade,
     ownTrade: Trade,
-  ): TradeResponse
+  ): TradeOffer
   {
     return(
     {
-      proposedOwnTrade: ownTrade.clone(),
-      proposedReceivedOffer: receivedOffer.clone(),
+      ownTrade: ownTrade.clone(),
+      otherTrade: receivedOffer.clone(),
 
       willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
 

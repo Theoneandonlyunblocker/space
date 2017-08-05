@@ -1,5 +1,5 @@
 import Personality from "../Personality";
-import {TradeResponse} from "../TradeResponse";
+import {TradeOffer} from "../TradeOffer";
 import Unit from "../Unit";
 
 export interface AITemplate<SaveData>
@@ -15,8 +15,8 @@ export interface AITemplate<SaveData>
     enemyFormation?: Unit[][],
   ): Unit[][];
   respondToTradeOffer(
-    receivedOffer: TradeResponse,
-  ): TradeResponse
+    receivedOffer: TradeOffer,
+  ): TradeOffer
 
   serialize(): SaveData;
 }

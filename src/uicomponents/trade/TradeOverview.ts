@@ -4,7 +4,7 @@ import TradeableItemsComponentFactory from "./TradeableItems";
 
 import Player from "../../Player";
 import {Trade} from "../../Trade";
-import {TradeResponse} from "../../TradeResponse";
+import {TradeOffer} from "../../TradeOffer";
 
 import {localize} from "../../../localization/localize";
 
@@ -15,7 +15,7 @@ export interface PropTypes extends React.Props<any>
 {
   selfPlayer: Player;
   otherPlayer: Player;
-  initialReceivedOffer?: TradeResponse;
+  initialReceivedOffer?: TradeOffer;
   handleClose: () => void;
 }
 
@@ -24,7 +24,7 @@ interface StateType
   currentDragItemKey?: string;
   currentDragItemPlayer?: "self" | "other";
   currentDragItemWasStaged?: boolean;
-  activeTrade?: TradeResponse;
+  activeTrade?: TradeOffer;
 }
 
 export class TradeOverviewComponent extends React.Component<PropTypes, StateType>
@@ -32,14 +32,14 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   public displayName: string = "TradeOverview";
   public state: StateType;
 
-  private selfTrade: TradeResponse;
-  private otherTrade: TradeResponse;
+  private selfTrade: TradeOffer;
+  private otherTrade: TradeOffer;
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.selfTrade = TradeOverviewComponent.makeInitialTradeResponse(props.selfPlayer, props.otherPlayer);
+    this.selfTrade = TradeOverviewComponent.makeInitialTradeOffer(props.selfPlayer, props.otherPlayer);
     this.otherTrade = props.initialReceivedOffer ||
       props.otherPlayer.AIController.respondToTradeOffer(this.selfTrade);
 
@@ -47,7 +47,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
     this.bindMethods();
   }
-  private static makeInitialTradeResponse(selfPlayer: Player, otherPlayer: Player): TradeResponse
+  private static makeInitialTradeOffer(selfPlayer: Player, otherPlayer: Player): TradeOffer
   {
     const ownTrade = new Trade(selfPlayer);
 
@@ -60,8 +60,8 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
     return(
     {
-      proposedOwnTrade: ownTrade,
-      proposedReceivedOffer: new Trade(otherPlayer),
+      ownTrade: ownTrade,
+      otherTrade: new Trade(otherPlayer),
       willingnessToTradeItems: willingnessToTradeItems,
       message: "" ,
       willingToAccept: false,
@@ -104,7 +104,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     const activeTrade = this.state.activeTrade;
     if (activeTrade)
     {
-      activeTrade.proposedOwnTrade.executeTrade(activeTrade.proposedReceivedOffer);
+      activeTrade.ownTrade.executeTrade(activeTrade.otherTrade);
 
       this.forceUpdate();
     }
@@ -114,11 +114,11 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     if (player === "self")
     {
-      return this.state.activeTrade.proposedOwnTrade;
+      return this.state.activeTrade.ownTrade;
     }
     else if (player === "other")
     {
-      return this.state.activeTrade.proposedReceivedOffer;
+      return this.state.activeTrade.otherTrade;
     }
     else
     {
@@ -220,8 +220,8 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     const hasDragItem = Boolean(this.state.currentDragItemKey);
     const selfPlayerAcceptsDrop = this.state.currentDragItemPlayer === "self";
     const otherPlayerAcceptsDrop = this.state.currentDragItemPlayer === "other";
-    const selfAvailableItems = this.state.activeTrade.proposedOwnTrade.getItemsAvailableForTrade();
-    const otherAvailableItems = this.state.activeTrade.proposedReceivedOffer.getItemsAvailableForTrade();
+    const selfAvailableItems = this.state.activeTrade.ownTrade.getItemsAvailableForTrade();
+    const otherAvailableItems = this.state.activeTrade.otherTrade.getItemsAvailableForTrade();
 
     const lastOfferWasByOtherPlayer = this.state.activeTrade === this.otherTrade;
     const ableToAcceptTrade = lastOfferWasByOtherPlayer && this.state.activeTrade.willingToAccept;
@@ -262,8 +262,8 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
         },
           TradeableItemsComponentFactory(
           {
-            tradeableItems: this.state.activeTrade.proposedOwnTrade.stagedItems,
-            availableItems: this.state.activeTrade.proposedOwnTrade.allItems,
+            tradeableItems: this.state.activeTrade.ownTrade.stagedItems,
+            availableItems: this.state.activeTrade.ownTrade.allItems,
             isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
             onDragStart: this.handleStagingDragStart.bind(this, "self"),
             onDragEnd: this.handleDragEnd,
@@ -273,8 +273,8 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
           }),
           TradeableItemsComponentFactory(
           {
-            tradeableItems: this.state.activeTrade.proposedReceivedOffer.stagedItems,
-            availableItems: this.state.activeTrade.proposedReceivedOffer.allItems,
+            tradeableItems: this.state.activeTrade.otherTrade.stagedItems,
+            availableItems: this.state.activeTrade.otherTrade.allItems,
             isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
             onDragStart: this.handleStagingDragStart.bind(this, "other"),
             onDragEnd: this.handleDragEnd,

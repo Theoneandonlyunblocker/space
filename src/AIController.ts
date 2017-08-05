@@ -3,7 +3,7 @@ import AITemplate from "./templateinterfaces/AITemplate";
 import AIControllerSaveData from "./savedata/AIControllerSaveData";
 
 import Personality from "./Personality";
-import {TradeResponse} from "./TradeResponse";
+import {TradeOffer} from "./TradeOffer";
 import Unit from "./Unit";
 
 export class AIController<SaveData>
@@ -36,7 +36,7 @@ export class AIController<SaveData>
       enemyFormation,
     );
   }
-  public respondToTradeOffer(receivedOffer: TradeResponse): TradeResponse
+  public respondToTradeOffer(receivedOffer: TradeOffer): TradeOffer
   {
     return this.template.respondToTradeOffer(receivedOffer);
   }
