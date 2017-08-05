@@ -164,7 +164,7 @@ export function getRandomArrayItemWithWeights<T extends {weight?: number}>(arr: 
   throw new Error();
 }
 export function findItemWithKey<T>(source: {[key: string]: any},
-  keyToFind: string, parentKey?: string, _hasParentKey: boolean = false): T
+  keyToFind: string, parentKey?: string, _hasParentKey: boolean = false): T | null
 {
   let hasParentKey = _hasParentKey;
   if (source[keyToFind])
@@ -304,7 +304,14 @@ export function drawElementToCanvas(toClone: HTMLImageElement | HTMLCanvasElemen
   canvas.height = toClone.height;
 
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(toClone, 0, 0);
+  if (!ctx)
+  {
+    throw new Error("Couldn't get canvas context");
+  }
+  else
+  {
+    ctx.drawImage(toClone, 0, 0);
+  }
 
   return canvas;
 }
@@ -316,12 +323,20 @@ export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
   canvas.height = image.height;
 
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(image, 0, 0, image.width, image.height);
+  if (!ctx)
+  {
 
-  ctx.globalCompositeOperation = "source-in";
+  }
+  else
+  {
+    ctx.drawImage(image, 0, 0, image.width, image.height);
 
-  ctx.fillStyle = "#" + player.color.getHexString();
-  ctx.fillRect(0, 0, image.width, image.height);
+    ctx.globalCompositeOperation = "source-in";
+
+    ctx.fillStyle = "#" + player.color.getHexString();
+    ctx.fillRect(0, 0, image.width, image.height);
+  }
+
 
   return canvas.toDataURL();
 }
@@ -534,7 +549,7 @@ export function getMatchingLocalstorageItemsByDate(stringToMatch: string)
     if (allKeys[i].indexOf(stringToMatch) !== -1)
     {
       const item = localStorage.getItem(allKeys[i]);
-      const parsed = JSON.parse(item);
+      const parsed = JSON.parse(item!);
       if (parsed.date)
       {
         matchingItems.push(parsed);
@@ -717,8 +732,8 @@ export function findEasingFunctionHighPoint(easingFunction: (x: number) => numbe
     return (startIndex + endIndex) / 2;
   }
 
-  let highestValue: number;
-  let highestValueIndex: number;
+  let highestValue: number | undefined;
+  let highestValueIndex: number | undefined;
 
   const step = (endIndex - startIndex) / resolution;
   for (let i = 0; i < resolution; i++)
@@ -726,7 +741,7 @@ export function findEasingFunctionHighPoint(easingFunction: (x: number) => numbe
     const currentIndex = startIndex + i * step;
     const currentValue = easingFunction(currentIndex);
 
-    if (!isFinite(highestValue) || currentValue > highestValue)
+    if (highestValue === undefined || currentValue > highestValue)
     {
       highestValue = currentValue;
       highestValueIndex = currentIndex;
@@ -735,8 +750,8 @@ export function findEasingFunctionHighPoint(easingFunction: (x: number) => numbe
 
   return findEasingFunctionHighPoint(easingFunction,
     resolution, maxIterations,
-    highestValueIndex - step / 2,
-    highestValueIndex + step / 2,
+    highestValueIndex! - step / 2,
+    highestValueIndex! + step / 2,
     iteration + 1,
   );
 }

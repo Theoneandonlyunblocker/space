@@ -25,7 +25,7 @@ export class IdDictionary<K extends ObjectWithId, V>
 
   constructor(keys?: K[], getValueFN?: (key: K) => V)
   {
-    if (keys)
+    if (keys && getValueFN)
     {
       keys.forEach(key =>
       {
