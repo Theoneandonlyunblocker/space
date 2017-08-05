@@ -143,6 +143,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
             initialColumns: columns,
             initialSortOrder: [columns[2], columns[1]],
             onRowChange: this.toggleDiplomacyActionsPopup,
+            addSpacer: true,
           }),
         ),
       )
