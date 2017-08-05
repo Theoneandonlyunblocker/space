@@ -9,7 +9,6 @@ export interface PropTypes extends React.Props<any>
 
   availableItems?: TradeableItems;
   header?: string;
-  noListHeader?: boolean;
   onMouseUp?: () => void;
   onDragStart?: (tradeableItemKey: string) => void;
   onDragEnd?: () => void;
@@ -72,7 +71,6 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
         {
           tradeableItems: this.props.tradeableItems,
           availableItems: this.props.availableItems,
-          noListHeader: this.props.noListHeader,
           onDragStart: this.props.onDragStart,
           onDragEnd: this.props.onDragEnd,
           onItemClick: this.props.onItemClick,

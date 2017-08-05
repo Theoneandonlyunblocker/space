@@ -237,9 +237,8 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
         },
           TradeableItemsComponentFactory(
           {
-            header: localize("tradeableItems") + " " + this.props.selfPlayer.name.fullName,
+            header: this.props.selfPlayer.name.fullName,
             tradeableItems: selfAvailableItems,
-            noListHeader: true,
             isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
             onDragStart: this.handleAvailableDragStart.bind(this, "self"),
             onDragEnd: this.handleDragEnd,
@@ -248,9 +247,8 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
           }),
           TradeableItemsComponentFactory(
           {
-            header: localize("tradeableItems") + " " + this.props.otherPlayer.name.fullName,
+            header: this.props.otherPlayer.name.fullName,
             tradeableItems: otherAvailableItems,
-            noListHeader: true,
             isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
             onDragStart: this.handleAvailableDragStart.bind(this, "other"),
             onDragEnd: this.handleDragEnd,
@@ -266,7 +264,6 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
           {
             tradeableItems: this.state.activeTrade.proposedOwnTrade.stagedItems,
             availableItems: this.state.activeTrade.proposedOwnTrade.allItems,
-            noListHeader: true,
             isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
             onDragStart: this.handleStagingDragStart.bind(this, "self"),
             onDragEnd: this.handleDragEnd,
@@ -278,7 +275,6 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
           {
             tradeableItems: this.state.activeTrade.proposedReceivedOffer.stagedItems,
             availableItems: this.state.activeTrade.proposedReceivedOffer.allItems,
-            noListHeader: true,
             isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
             onDragStart: this.handleStagingDragStart.bind(this, "other"),
             onDragEnd: this.handleDragEnd,

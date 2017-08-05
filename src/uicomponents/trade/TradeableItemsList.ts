@@ -17,7 +17,6 @@ export interface PropTypes extends React.Props<any>
   tradeableItems: TradeableItems;
 
   availableItems?: TradeableItems;
-  noListHeader?: boolean;
   onDragStart?: (tradeableItemKey: string) => void;
   onDragEnd?: () => void;
   onItemClick?: (tradeableItemKey: string) => void;
@@ -115,7 +114,7 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
           listItems: rows,
           initialColumns: columns,
           initialSortOrder: [columns[0]], // item
-          noHeader: this.props.noListHeader,
+          noHeader: true,
         }),
       )
     );
