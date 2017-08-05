@@ -73,12 +73,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         player: this.props.player,
       }),
       title: localize("production"),
-
-      // if (!popupProps.initialPosition.width)
-      // {
-      //   popupProps.initialPosition.width = 600;
-      //   // popupProps.initialPosition.height = 300;
-      // }
     },
     equipItems:
     {
@@ -87,7 +81,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         player: this.props.player,
       }),
       title: localize("equip"),
-      // popupProps.minWidth = 440;
     },
     economySummary:
     {
@@ -137,7 +130,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         playerTechnology: this.props.player.playerTechnology,
       }),
       title: localize("technology"),
-      // popupProps.minWidth = 430;
     },
   };
 
