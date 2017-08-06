@@ -28,11 +28,11 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hoveredUnit: Unit;
-  currentDragUnit: Unit;
+  hoveredUnit: Unit | null;
+  currentDragUnit: Unit | null;
   leftLowerElement: "playerFormation" | "enemyFormation" | "itemEquip";
-  currentDragItem: Item;
-  selectedUnit: Unit;
+  currentDragItem: Item | null;
+  selectedUnit: Unit | null;
 }
 
 export class BattlePrepComponent extends React.Component<PropTypes, StateType>
@@ -40,7 +40,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   displayName: string = "BattlePrep";
   state: StateType;
   ref_TODO_background: BattleBackgroundComponent;
-  ref_TODO_upper: HTMLElement;
+  ref_TODO_upper: HTMLElement | null;
 
   constructor(props: PropTypes)
   {
@@ -229,7 +229,13 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
   getBackgroundBlurArea()
   {
-    return ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_upper).getBoundingClientRect();
+    const backgroundElement = this.ref_TODO_upper;
+    if (!backgroundElement)
+    {
+      throw new Error("Battle prep background element hasn't mounted yet");
+    }
+
+    return ReactDOM.findDOMNode(backgroundElement).getBoundingClientRect();
   }
 
   render()
@@ -348,7 +354,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div({className: "battle-prep"},
         React.DOM.div({className: "battle-prep-left"},
-          React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: (component: HTMLElement) =>
+          React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: component =>
           {
             this.ref_TODO_upper = component;
           }},
@@ -386,7 +392,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               onClick: this.setLeftLowerElement.bind(this, "enemyFormation"),
               disabled: this.state.leftLowerElement === "enemyFormation" || !canScout,
               title: canScout ?
-                null :
+                undefined :
                 localize("cantInspectEnemyFormationAsStarIsNotInDetectionRadius"),
             }, localize("enemy")),
             React.DOM.button(

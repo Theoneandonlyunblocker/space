@@ -21,7 +21,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  currentlyUpgradingAbility: AbilityBase;
+  currentlyUpgradingAbility: AbilityBase | null;
   upgradeData: AbilityUpgradeData;
 }
 
@@ -52,7 +52,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
     {
       if (this.state.upgradeData[source].base)
       {
-        upgradableAbilities.push(this.state.upgradeData[source].base);
+        upgradableAbilities.push(this.state.upgradeData[source].base!);
       }
       else
       {
@@ -74,7 +74,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
       {
         className: "upgrade-unit",
       },
-        !this.state.currentlyUpgradingAbility ? null:
+        !activeUpgradeData ? null:
         DefaultWindow(
         {
           title: localize("upgradeAbility"),

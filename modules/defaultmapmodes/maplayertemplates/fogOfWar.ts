@@ -12,6 +12,13 @@ import
   makePolygonFromPoints,
 } from "../../../src/pixiWrapperFunctions";
 
+
+const fogOfWarSpriteByStarId:
+{
+  [starId: number]: PIXI.Sprite;
+} = {};
+
+
 const fogOfWar: MapRendererLayerTemplate =
 {
   key: "fogOfWar",
@@ -25,7 +32,6 @@ const fogOfWar: MapRendererLayerTemplate =
     {
       fogOfWarSpriteByStarId[starId].renderable = false;
       fogOfWarSpriteByStarId[starId].texture.destroy(true);
-      fogOfWarSpriteByStarId[starId] = null;
       delete fogOfWarSpriteByStarId[starId];
     }
   },
@@ -63,11 +69,7 @@ function getfogOfWarTilingSprite(width: number, height: number)
   return fogOfWarTilingSprite;
 }
 
-const fogOfWarSpriteByStarId:
-{
-  [starId: number]: PIXI.Sprite;
-} = {};
-function getFogOfWarSpriteForStar(star: Star, width: number, height: number)
+function getFogOfWarSpriteForStar(star: Star, width: number, height: number): PIXI.Sprite
 {
   const tiled = getfogOfWarTilingSprite(width, height);
   // silly hack to make sure first texture gets created properly
@@ -97,5 +99,5 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number)
     tiled.mask = null;
   }
 
-  return fogOfWarSpriteByStarId[star.id];
+  return fogOfWarSpriteByStarId[star.id]!;
 }

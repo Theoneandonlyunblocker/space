@@ -10,7 +10,7 @@ interface UnitDisplayData
   currentHealth: number;
   maxHealth: number;
   guardAmount: number;
-  guardType: GuardCoverage;
+  guardType: GuardCoverage | null;
   currentActionPoints: number;
   maxActionPoints: number;
   isPreparing: boolean;

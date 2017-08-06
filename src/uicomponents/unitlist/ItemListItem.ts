@@ -18,11 +18,10 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   ability: AbilityBase;
   abilityIsPassive: boolean;
   isReserved: boolean;
-  // isSelected: boolean;
   keyTODO: number;
   cost: number;
   techLevel: number;
-  unit: Unit;
+  unit: Unit | null;
   slotIndex: number;
   id: number; // item id
 

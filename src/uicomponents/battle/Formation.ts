@@ -20,7 +20,7 @@ export interface PropTypes extends React.Props<any>
 {
   formation: Unit[][];
   facesLeft: boolean;
-  unitStrengthAnimateDuration: number;
+  unitStrengthAnimateDuration: number | undefined;
   unitDisplayDataById:
   {
     [unitId: number]: UnitDisplayData;
@@ -37,16 +37,13 @@ export interface PropTypes extends React.Props<any>
   onDragEnd?: (dropSuccessful?: boolean) => void;
 
   isInBattlePrep?: boolean;
-  hoveredUnit?: Unit;
-  activeUnit?: Unit;
+  hoveredUnit: Unit | null;
+  activeUnit: Unit | null;
   targetsInPotentialArea?: Unit[];
   activeEffectUnits?: Unit[];
   hoveredAbility?: AbilityTemplate;
   capturedUnits?: Unit[];
   destroyedUnits?: Unit[];
-
-
-  // onMouseUp?: (position: number[]) => void;
 }
 
 interface StateType
@@ -65,7 +62,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     super(props);
   }
 
-  private makeBoundFunction(functionToBind: Function, valueToBind: any): () => void
+  private makeBoundFunction(functionToBind: Function | undefined, valueToBind: any): (() => void) | null
   {
     if (!functionToBind)
     {
@@ -79,7 +76,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  private unitInArray(unitToCheck: Unit, arr: Unit[]): boolean
+  private unitInArray(unitToCheck: Unit, arr: Unit[] | undefined): boolean
   {
     if (!arr)
     {

@@ -11,9 +11,9 @@ import {localize, localizeF} from "../../../localization/localize";
 
 export interface PropTypes extends React.Props<any>
 {
-  guardAmount?: number;
-  guardCoverage?: GuardCoverage;
-  isPreparing?: boolean;
+  guardAmount: number;
+  guardCoverage: GuardCoverage | null;
+  isPreparing: boolean;
 }
 
 interface StateType
@@ -34,7 +34,7 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    let statusElement: React.ReactHTMLElement<any> = null;
+    let statusElement: React.ReactHTMLElement<any> | null = null;
 
     if (this.props.guardAmount > 0)
     {

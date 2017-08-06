@@ -99,7 +99,8 @@ export default class BattleSceneUnitOverlay
       facingRight: this.activeUnit.battleStats.side === "side1",
       renderer: this.renderer,
       triggerStart: triggerStart,
-      triggerEnd: triggerEnd,
+      triggerEffect: () => {},
+      triggerEnd: triggerEnd || (() => {}),
     });
   }
   private setContainerPosition()

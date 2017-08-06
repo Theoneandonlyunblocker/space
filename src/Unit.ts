@@ -56,8 +56,8 @@ export default class Unit
   public id: number;
 
   public name: string;
-  public portrait: PortraitTemplate;
-  private race: RaceTemplate;
+  public portrait?: PortraitTemplate;
+  private race?: RaceTemplate;
 
   public maxHealth: number;
   public currentHealth: number;
@@ -131,8 +131,8 @@ export default class Unit
     maxItemSlots: {[slot: string]: number;};
     items: Item[];
 
-    portrait: PortraitTemplate;
-    race: RaceTemplate;
+    portrait?: PortraitTemplate;
+    race?: RaceTemplate;
   })
   {
     this.template = props.template;
@@ -191,7 +191,7 @@ export default class Unit
     this.items = this.makeUnitItems(props.maxItemSlots);
     props.items.forEach(item =>
     {
-      if (isFinite(item.positionInUnit))
+      if (item.positionInUnit !== undefined)
       {
         this.items.addItemAtPosition(item, item.positionInUnit);
       }
@@ -323,10 +323,10 @@ export default class Unit
 
       portrait: data.portraitKey ?
         activeModuleData.Templates.Portraits[data.portraitKey] :
-        null,
+        undefined,
       race: data.raceKey ?
         activeModuleData.Templates.Races[data.raceKey] :
-        null,
+        undefined,
     });
 
     return unit;
@@ -629,7 +629,7 @@ export default class Unit
       return Boolean(statusEffect.template.attributes);
     }).map(statusEffect =>
     {
-      return statusEffect.template.attributes;
+      return statusEffect.template.attributes!;
     });
   }
   private getAttributesWithItemsAndEffects()
@@ -826,7 +826,7 @@ export default class Unit
   }
   public isStealthy(): boolean
   {
-    return this.template.isStealthy;
+    return Boolean(this.template.isStealthy);
   }
   public getVisionRange(): number
   {
@@ -979,7 +979,7 @@ export default class Unit
 
     upgradableAbilities.forEach(parentAbility =>
     {
-      parentAbility.canUpgradeInto.forEach(childAbility =>
+      parentAbility.canUpgradeInto!.forEach(childAbility =>
       {
         if (this.canUpgradeIntoAbility(childAbility, allAbilities))
         {
@@ -1000,7 +1000,7 @@ export default class Unit
     const learnable = this.getLearnableAbilities(allAbilities);
     if (learnable.length > 0)
     {
-      upgradeData["learnable"] =
+      upgradeData.learnable =
       {
         base: null,
         possibleUpgrades: learnable,

@@ -100,7 +100,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   });
 
   // set voronoi cells for stars (used for checking adjacency)
-  const allPoints: (Star | FillerPoint)[] = [].concat(stars, fillerPoints);
+  const allPoints: (Star | FillerPoint)[] = [...stars, ...fillerPoints];
   const diagram = makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
   setVoronoiCells(diagram.cells);
 

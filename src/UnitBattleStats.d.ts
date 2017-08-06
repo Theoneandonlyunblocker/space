@@ -6,15 +6,15 @@ import UnitBattleSide from "./UnitBattleSide";
 declare interface UnitBattleStats
 {
   moveDelay: number;
-  side: UnitBattleSide;
-  position: number[];
+  side: UnitBattleSide | null;
+  position: number[] | null;
   currentActionPoints: number;
   guardAmount: number;
-  guardCoverage: GuardCoverage;
+  guardCoverage: GuardCoverage | null;
   captureChance: number;
   statusEffects: StatusEffect[];
   lastHealthBeforeReceivingDamage: number;
-  queuedAction: QueuedActionData;
+  queuedAction: QueuedActionData | null;
   isAnnihilated: boolean;
 }
 

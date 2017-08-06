@@ -20,8 +20,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  currentDragItem: Item;
-  selectedUnit: Unit;
+  currentDragItem: Item | null;
+  selectedUnit: Unit | null;
 }
 
 export class ItemEquipComponent extends React.Component<PropTypes, StateType>

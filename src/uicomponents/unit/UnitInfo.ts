@@ -21,9 +21,9 @@ export interface PropTypes extends React.Props<any>
   wasDestroyed?: boolean;
   wasCaptured?: boolean;
   guardAmount: number;
-  guardType?: GuardCoverage;
+  guardType: GuardCoverage | null;
 
-  isPreparing?: boolean;
+  isPreparing: boolean;
   animateDuration?: number;
 }
 
@@ -82,6 +82,7 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
           UnitStatus(
           {
             guardAmount: this.props.guardAmount,
+            guardCoverage: this.props.guardType,
             isPreparing: this.props.isPreparing,
           }),
           UnitStrength(

@@ -37,7 +37,7 @@ interface StateType
   pendingDeadUnitsById: {[id: number]: boolean};
   pendingDeadUnitIndices: {[index: number]: boolean};
 
-  insertIndex: number;
+  insertIndex: number | undefined;
 
   animationState: AnimationState;
 }
@@ -69,7 +69,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       maxUnits: 7,
 
       currentDisplayData: this.props.turnOrderDisplayData,
-      pendingDisplayData: undefined,
+      pendingDisplayData: [],
       pendingDeadUnitsById: {},
       pendingDeadUnitIndices: {},
 
@@ -219,7 +219,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
           currentDisplayData: this.state.currentDisplayData.slice(1),
         });
 
-        if (isFinite(this.state.insertIndex))
+        if (this.state.insertIndex !== undefined)
         {
           this.clearSpaceForUnit();
         }
@@ -248,7 +248,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       currentDisplayData: this.state.pendingDisplayData,
-      pendingDisplayData: undefined,
+      pendingDisplayData: [],
 
       animationState: AnimationState.InsertUnit,
     }, () =>
@@ -261,7 +261,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       currentDisplayData: this.state.pendingDisplayData,
-      pendingDisplayData: undefined,
+      pendingDisplayData: [],
 
       animationState: AnimationState.PushUnit,
     }, () =>

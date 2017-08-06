@@ -23,7 +23,8 @@ export interface PropTypes extends React.Props<any>
   isDraggable: boolean;
   onRowChange: (row: ListItem<ItemListItemProps>) => void;
 
-  selectedUnit?: Unit; // only used to trigger updates
+  // TODO 2017.08.06 | can this be removed?
+  selectedUnit?: Unit | null; // only used to trigger updates
 }
 
 interface StateType

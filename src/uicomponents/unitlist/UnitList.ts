@@ -12,7 +12,7 @@ import {localize} from "../../../localization/localize";
 export interface PropTypes extends React.Props<any>
 {
   units: Unit[];
-  selectedUnit: Unit;
+  selectedUnit: Unit | null;
   onRowChange: (row: ListItem<UnitListItemProps>) => void;
   isDraggable: boolean;
   reservedUnits: Unit[];
@@ -23,7 +23,7 @@ export interface PropTypes extends React.Props<any>
   onDragStart?: (unit: Unit) => void;
   onDragEnd?: (dropSuccesful?: boolean) => void;
   onMouseEnterUnit?: (unit: Unit) => void;
-  hoveredUnit?: Unit;
+  hoveredUnit?: Unit | null;
 }
 
 interface StateType
@@ -66,8 +66,8 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
 
           isReserved: this.props.reservedUnits.indexOf(unit) !== -1,
           isUnavailable: this.props.unavailableUnits.indexOf(unit) !== -1,
-          isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
-          isHovered: (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
+          isSelected: Boolean(this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
+          isHovered: Boolean(this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
 
           onMouseEnter: this.props.onMouseEnterUnit,
           onMouseLeave: this.props.onMouseLeave,

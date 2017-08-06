@@ -71,7 +71,10 @@ export function partiallySeverLinks(
         {
           const neighborLinks = neighbor.getAllLinks();
 
-          if (neighbors.length <= minConnectionsToKeep || neighborLinks.length <= minConnectionsToKeep) continue;
+          if (neighbors.length <= minConnectionsToKeep || neighborLinks.length <= minConnectionsToKeep)
+          {
+            continue;
+          }
 
           const totalLinks = neighbors.length + neighborLinks.length;
 

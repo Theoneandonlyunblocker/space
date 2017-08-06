@@ -36,8 +36,8 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
   public state: StateType;
 
   public windowContainerComponent: WindowContainerComponent;
-  private contentContainerElement: HTMLDivElement;
-  private titleBarElement: HTMLDivElement;
+  private contentContainerElement: HTMLDivElement | null;
+  private titleBarElement: HTMLDivElement | null;
 
 
   constructor(props: PropTypes)
@@ -127,14 +127,14 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
   {
     const bounds: Partial<SizeBounds> = {};
 
-    const contentElements = this.contentContainerElement.children;
+    const contentElements = this.contentContainerElement!.children;
 
     for (let i = 0; i < contentElements.length; i++)
     {
       const contentElement = contentElements[i];
 
       const contentElementStyle = getComputedStyle(contentElement);
-      const titleBarHeight = this.titleBarElement.getBoundingClientRect().height;
+      const titleBarHeight = this.titleBarElement!.getBoundingClientRect().height;
 
 
       for (let prop in this.state.sizeBounds)

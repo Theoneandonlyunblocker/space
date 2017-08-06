@@ -13,8 +13,8 @@ export interface PropTypes extends React.Props<any>
   onDragEnd?: (dropSuccesful?: boolean) => void;
   onDragStart?: (item: Item) => void;
   onMouseUp?: (index: number) => void;
-  currentDragItem?: Item;
-  unit: Unit;
+  currentDragItem?: Item | null;
+  unit: Unit | null;
   isDraggable?: boolean;
 }
 

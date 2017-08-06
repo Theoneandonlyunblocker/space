@@ -11,12 +11,12 @@ declare interface SFXParams
   targetOffset?: Point;
   width: number;
   height: number;
-  duration?: number; // in milliseconds
+  duration: number; // in milliseconds
   facingRight: boolean;
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
   triggerStart: (displayObject: PIXI.DisplayObject) => void;
-  triggerEffect?: () => void;
-  triggerEnd?: () => void;
+  triggerEffect: () => void;
+  triggerEnd: () => void;
 }
 
 export default SFXParams;

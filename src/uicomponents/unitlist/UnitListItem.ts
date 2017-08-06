@@ -21,19 +21,19 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   intelligence: number;
   speed: number;
 
-  onMouseLeave: () => void;
   isHovered: boolean;
   currentHealth: number;
   isReserved: boolean;
   isUnavailable: boolean;
   isSelected: boolean;
-  onMouseEnter: (unit: Unit) => void;
+  onMouseEnter?: (unit: Unit) => void;
+  onMouseLeave?: () => void;
   maxHealth: number;
   unit: Unit;
 
   isDraggable: boolean;
-  onDragEnd: (dropSuccesful?: boolean) => void;
-  onDragStart: (unit: Unit) => void;
+  onDragEnd?: (dropSuccesful?: boolean) => void;
+  onDragStart?: (unit: Unit) => void;
   dragPositionerProps?: DragPositionerProps;
 
   name: string; // unused
@@ -109,6 +109,10 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 
   onDragStart()
   {
+    if (!this.props.onDragStart)
+    {
+      throw new Error("Draggable list item must specify props.onDragStart handler");
+    }
     this.props.onDragStart(this.props.unit);
   }
   makeDragClone()
@@ -275,7 +279,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     }
 
 
-    else if (this.props.onMouseEnter)
+    else if (this.props.onMouseEnter && this.props.onMouseLeave)
     {
       rowProps.onMouseEnter = this.handleMouseEnter;
       rowProps.onMouseLeave = this.handleMouseLeave;

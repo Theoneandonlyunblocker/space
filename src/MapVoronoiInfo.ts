@@ -25,12 +25,18 @@ export default class MapVoronoiInfo
   {
 
   }
-  public getNonFillerVoronoiLines(visibleStars?: Star[])
+  public getNonFillerVoronoiLines(visibleStars: Star[] | null)
   {
-    if (!this.diagram) return [];
+    if (!this.diagram)
+    {
+      return [];
+    }
 
     let indexString = "";
-    if (!visibleStars) indexString = "all";
+    if (!visibleStars)
+    {
+      indexString = "all";
+    }
     else
     {
       const ids: number[] = visibleStars.map(function(star){return star.id;});

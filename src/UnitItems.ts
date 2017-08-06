@@ -165,7 +165,7 @@ export default class UnitItems
   // TODO 2017.08.05 | remove. use addItemAtPosition instead
   public addItem(toAdd: Item): void
   {
-    this.addItemAtPosition(toAdd, this.getFirstAvailablePositionForItem(toAdd));
+    this.addItemAtPosition(toAdd, this.getFirstAvailablePositionForItem(toAdd)!);
   }
   public moveItem(toMove: Item, newPosition: number): void
   {

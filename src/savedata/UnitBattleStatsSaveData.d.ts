@@ -7,14 +7,14 @@ import {StatusEffectSaveData} from "./StatusEffectSaveData";
 declare interface UnitBattleStatsSaveData
 {
   moveDelay: number;
-  side: UnitBattleSide;
-  position: number[];
+  side: UnitBattleSide | null;
+  position: number[] | null;
   currentActionPoints: number;
   guardAmount: number;
-  guardCoverage: GuardCoverage;
+  guardCoverage: GuardCoverage | null;
   captureChance: number;
   statusEffects: StatusEffectSaveData[];
-  queuedAction: QueuedActionSaveData;
+  queuedAction: QueuedActionSaveData | null;
   isAnnihilated: boolean;
 }
 

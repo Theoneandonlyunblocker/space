@@ -30,7 +30,7 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
   public displayName = "DialogBox";
   public state: StateType;
 
-  private okButtonElement: HTMLElement;
+  private okButtonElement: HTMLElement | null;
 
   constructor(props: PropTypes)
   {
@@ -39,7 +39,7 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
 
   public componentDidMount()
   {
-    ReactDOM.findDOMNode<HTMLElement>(this.okButtonElement).focus();
+    ReactDOM.findDOMNode<HTMLElement>(this.okButtonElement!).focus();
   }
   public render()
   {
@@ -68,7 +68,7 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
             {
               className: "dialog-box-button ok-button",
               onClick: this.props.handleOk,
-              ref: (component: HTMLElement) =>
+              ref: component =>
               {
                 this.okButtonElement = component;
               },

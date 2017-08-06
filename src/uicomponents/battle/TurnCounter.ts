@@ -27,7 +27,7 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
 {
   displayName: string = "TurnCounter";
   state: StateType;
-  inner: HTMLDivElement;
+  inner: HTMLDivElement | null;
 
   constructor(props: PropTypes)
   {

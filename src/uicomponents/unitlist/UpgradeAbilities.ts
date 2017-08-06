@@ -7,7 +7,7 @@ import {localize} from "../../../localization/localize";
 
 export interface PropTypes extends React.Props<any>
 {
-  sourceAbility?: AbilityBase;
+  sourceAbility?: AbilityBase | null;
   handleClick: (ability: AbilityBase) => void;
   abilities: AbilityBase[];
   learningNewability?: boolean;
