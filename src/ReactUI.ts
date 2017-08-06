@@ -17,7 +17,10 @@ import {getActiveLanguage} from "./localization/activeLanguage";
 
 import Stage from "./uicomponents/Stage";
 
-const moduleLoadingPhaseByScene =
+const moduleLoadingPhaseByScene:
+{
+  [key in ReactUIScene]: ModuleFileLoadingPhase;
+} =
 {
   battle: ModuleFileLoadingPhase.Battle,
   battlePrep: ModuleFileLoadingPhase.BattlePrep,
@@ -26,6 +29,7 @@ const moduleLoadingPhaseByScene =
 
   flagMaker: ModuleFileLoadingPhase.Setup,
   battleSceneTester: ModuleFileLoadingPhase.Battle,
+  SFXEditor: ModuleFileLoadingPhase.Battle,
 };
 
 export default class ReactUI
