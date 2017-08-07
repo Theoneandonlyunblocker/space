@@ -125,7 +125,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     this.removeEventListeners();
     window.removeEventListener("resize", this.setContainerRect);
   }
-  public getStyleAttributes(): React.CSSProperties
+  public getStyleAttributes(): Partial<Rect>
   {
     return shallowCopy(this.position);
   }

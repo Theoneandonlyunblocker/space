@@ -21,9 +21,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  currentDragItemKey: string;
-  currentDragItemPlayer: "self" | "other";
-  currentDragItemWasStaged: boolean;
+  currentDragItemKey: string | null;
+  currentDragItemPlayer: "self" | "other" | null;
+  currentDragItemWasStaged: boolean | null;
   activeTrade: TradeOffer;
 }
 
@@ -43,10 +43,17 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.otherTrade = props.initialReceivedOffer ||
       props.otherPlayer.AIController.respondToTradeOffer(this.selfTrade);
 
-    this.state = this.getInitialStateTODO();
+    this.state =
+    {
+      currentDragItemKey: null,
+      currentDragItemPlayer: null,
+      currentDragItemWasStaged: null,
+      activeTrade: this.props.initialReceivedOffer ? this.otherTrade : this.selfTrade,
+    }
 
     this.bindMethods();
   }
+
   private static makeInitialTradeOffer(selfPlayer: Player, otherPlayer: Player): TradeOffer
   {
     const ownTrade = new Trade(selfPlayer);
@@ -82,17 +89,6 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.handleCancel = this.handleCancel.bind(this);
     this.getActiveTradeObjectForPlayer = this.getActiveTradeObjectForPlayer.bind(this);
   }
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      currentDragItemKey: undefined,
-      currentDragItemPlayer: undefined,
-      currentDragItemWasStaged: undefined,
-      activeTrade: this.props.initialReceivedOffer ? this.otherTrade : this.selfTrade,
-    });
-  }
-
 
   handleCancel()
   {
@@ -193,9 +189,9 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     this.setState(
     {
-      currentDragItemKey: undefined,
-      currentDragItemPlayer: undefined,
-      currentDragItemWasStaged: undefined,
+      currentDragItemKey: null,
+      currentDragItemPlayer: null,
+      currentDragItemWasStaged: null,
     });
   }
 
@@ -203,7 +199,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     if (this.state.currentDragItemKey && this.state.currentDragItemWasStaged)
     {
-      this.handleRemoveStagedItem(null, this.state.currentDragItemKey);
+      this.handleRemoveStagedItem(this.state.currentDragItemPlayer!, this.state.currentDragItemKey);
     }
   }
 
@@ -211,7 +207,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     if (this.state.currentDragItemKey && !this.state.currentDragItemWasStaged)
     {
-      this.handleStageItem(null, this.state.currentDragItemKey);
+      this.handleStageItem(this.state.currentDragItemPlayer!, this.state.currentDragItemKey);
     }
   }
 

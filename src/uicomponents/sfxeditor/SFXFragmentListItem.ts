@@ -55,15 +55,15 @@ export class SFXFragmentListItemComponent<P extends Fragment> extends React.Comp
 
   private onDragStart(): void
   {
-    this.props.onDragStart(this.props.fragment);
+    this.props.onDragStart!(this.props.fragment);
   }
   private onDragEnd(): void
   {
-    this.props.onDragEnd();
+    this.props.onDragEnd!();
   }
   private handleClick(): void
   {
-    this.props.onClick(this.props.fragment);
+    this.props.onClick!(this.props.fragment);
   }
 
   render()

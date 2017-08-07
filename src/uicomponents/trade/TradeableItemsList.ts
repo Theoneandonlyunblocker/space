@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import {default as TradeMoney, PropTypes as TradeMoneyProps} from "./TradeMoney";
+import TradeMoney from "./TradeMoney";
 import TradeableItemProps from "./TradeableItemProps";
 
 import List from "../list/List";
@@ -17,9 +17,9 @@ export interface PropTypes extends React.Props<any>
   tradeableItems: TradeableItems;
 
   availableItems?: TradeableItems;
-  onDragStart?: (tradeableItemKey: string) => void;
-  onDragEnd?: () => void;
-  onItemClick?: (tradeableItemKey: string) => void;
+  onDragStart: (tradeableItemKey: string) => void;
+  onDragEnd: () => void;
+  onItemClick: (tradeableItemKey: string) => void;
   adjustItemAmount?: (tradeableItemKey: string, newAmount: number) => void;
 }
 
@@ -50,7 +50,7 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
     {
       case "money":
       {
-        return <ListItem<TradeMoneyProps>>(
+        return(
         {
           key: "money",
           content: TradeMoney(

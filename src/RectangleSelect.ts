@@ -10,8 +10,8 @@ export default class RectangleSelect
   private graphics: PIXI.Graphics;
   private selecting: boolean;
 
-  private startLocal: PIXI.Point;
-  private currentGlobal: Point;
+  private startLocal: PIXI.Point | null;
+  private currentGlobal: Point | null;
 
   private toSelectFrom: {position: Point; data: any}[];
 
@@ -109,11 +109,11 @@ export default class RectangleSelect
   }
   private getBounds()
   {
-    const startGlobal = this.targetLayer.worldTransform.apply(this.startLocal);
-    const x1 = Math.round(Math.min(startGlobal.x, this.currentGlobal.x));
-    const x2 = Math.round(Math.max(startGlobal.x, this.currentGlobal.x));
-    const y1 = Math.round(Math.min(startGlobal.y, this.currentGlobal.y));
-    const y2 = Math.round(Math.max(startGlobal.y, this.currentGlobal.y));
+    const startGlobal = this.targetLayer.worldTransform.apply(this.startLocal!);
+    const x1 = Math.round(Math.min(startGlobal.x, this.currentGlobal!.x));
+    const x2 = Math.round(Math.max(startGlobal.x, this.currentGlobal!.x));
+    const y1 = Math.round(Math.min(startGlobal.y, this.currentGlobal!.y));
+    const y2 = Math.round(Math.max(startGlobal.y, this.currentGlobal!.y));
 
     return(
     {

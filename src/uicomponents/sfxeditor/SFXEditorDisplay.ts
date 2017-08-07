@@ -17,7 +17,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
   displayName = "SFXEditorDisplay";
   state: StateType;
 
-  public containerDiv: HTMLDivElement;
+  public containerDiv: HTMLDivElement | null;
 
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
   stage: PIXI.Container;
@@ -57,13 +57,13 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
 
   private handleResize(): void
   {
-    const containerBounds = this.containerDiv.getBoundingClientRect();
+    const containerBounds = this.containerDiv!.getBoundingClientRect();
     this.renderer.resize(containerBounds.width, containerBounds.height);
   }
 
   private bindRendererView(): void
   {
-    this.containerDiv.appendChild(this.renderer.view);
+    this.containerDiv!.appendChild(this.renderer.view);
     this.handleResize();
   }
 
@@ -102,7 +102,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
         {
           this.containerDiv = element;
         },
-        onMouseMove: !this.props.hasDraggingFragment ? null :
+        onMouseMove: !this.props.hasDraggingFragment ? undefined :
           this.props.moveDraggingFragment,
       },
 

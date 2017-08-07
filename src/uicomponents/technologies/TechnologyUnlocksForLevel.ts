@@ -38,7 +38,7 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
         unlockableThingsByType[unlockableThing.unlockType] = [];
       }
 
-      unlockableThingsByType[unlockableThing.unlockType].push(unlockableThing);
+      unlockableThingsByType[unlockableThing.unlockType]!.push(unlockableThing);
     });
 
     return(

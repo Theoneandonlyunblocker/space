@@ -10,11 +10,11 @@ export interface PropTypes extends TradeableItemProps, React.Props<any>
   moneyAmount: number;
   title: string;
   maxMoneyAvailable?: number;
-  onClick?: (tradeableItemKey: string) => void;
+  onClick: (tradeableItemKey: string) => void;
   adjustItemAmount?: (tradeableItemKey: string, newAmount: number) => void;
 
-  onDragStart?: (tradeableItemKey: string) => void;
-  onDragEnd?: () => void;
+  onDragStart: (tradeableItemKey: string) => void;
+  onDragEnd: () => void;
   dragPositionerProps?: DragPositionerProps;
 }
 
@@ -68,7 +68,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
     const target = e.currentTarget;
     const value = parseInt(target.value);
 
-    this.props.adjustItemAmount(this.props.keyTODO/*TODO react*/, value);
+    this.props.adjustItemAmount!(this.props.keyTODO/*TODO react*/, value);
   }
 
   captureEvent(e: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>)

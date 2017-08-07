@@ -9,12 +9,11 @@ export interface PropTypes extends React.Props<any>
 
   availableItems?: TradeableItems;
   header?: string;
-  onMouseUp?: () => void;
-  onDragStart?: (tradeableItemKey: string) => void;
-  onDragEnd?: () => void;
-  hasDragItem?: boolean;
-  isInvalidDropTarget?: boolean;
-  onItemClick?: (tradeableItemKey: string) => void;
+  onMouseUp: () => void;
+  onDragStart: (tradeableItemKey: string) => void;
+  onDragEnd: () => void;
+  isInvalidDropTarget: boolean;
+  onItemClick: (tradeableItemKey: string) => void;
   adjustItemAmount?: (tradeableItemKey: string, newAmount: number) => void;
 }
 
@@ -40,7 +39,7 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
 
   handleMouseUp()
   {
-    this.props.onMouseUp();
+    this.props.onMouseUp!();
   }
 
   render()

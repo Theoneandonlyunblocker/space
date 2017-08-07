@@ -9,7 +9,6 @@ import {Rect} from "../../Rect";
 import
 {
   clamp,
-  shallowCopy,
   shallowExtend,
 } from "../../utility";
 
@@ -115,7 +114,13 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   }
   public getPosition(): Rect
   {
-    return shallowCopy(this.dragPositioner.position);
+    return(
+    {
+      left: this.dragPositioner.position.left!,
+      top: this.dragPositioner.position.top!,
+      width: this.dragPositioner.position.width!,
+      height: this.dragPositioner.position.height!,
+    });
   }
   public onMouseDown(e: React.MouseEvent<any> | React.TouchEvent<any>)
   {
@@ -217,7 +222,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     const midX = rect.left + rect.width / 2;
     const midY = rect.top + rect.height / 2;
 
-    this.resizeStartPosition = shallowCopy(this.dragPositioner.position);
+    this.resizeStartPosition = this.getPosition();
     this.resizeStartQuadrant =
     {
       left: x < midX,
