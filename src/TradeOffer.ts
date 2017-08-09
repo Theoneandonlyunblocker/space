@@ -37,3 +37,11 @@ export function cloneTradeOffer(offer: TradeOffer): TradeOffer
     willingToKeepNegotiating: offer.willingToKeepNegotiating,
   });
 }
+
+export function flipTradeOffer(offer: TradeOffer): void
+{
+  const tempOwn = offer.ownTrade;
+
+  offer.ownTrade = offer.otherTrade;
+  offer.otherTrade = tempOwn;
+}

@@ -7,6 +7,7 @@ import {Trade} from "../../Trade";
 import
 {
   cloneTradeOffer,
+  flipTradeOffer,
   TradeOffer,
 } from "../../TradeOffer";
 
@@ -53,6 +54,8 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
       activeOffer = initialResponse;
     }
+
+    flipTradeOffer(activeOffer);
 
     this.state =
     {
@@ -354,6 +357,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.state.activeOffer.tradeWasAccepted = true;
 
     const response = this.props.otherPlayer.AIController.respondToTradeOffer(this.state.activeOffer);
+    flipTradeOffer(response);
 
     this.setState(
     {
@@ -365,6 +369,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   private proposeTrade(): void
   {
     const response = this.props.otherPlayer.AIController.respondToTradeOffer(this.state.activeOffer);
+    flipTradeOffer(response);
 
     this.setState(
     {
