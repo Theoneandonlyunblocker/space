@@ -5,13 +5,13 @@ import
   TradeableItemType,
 } from "../../../src/Trade";
 
-export function evaluateValueOfOffer(offeredTrade: Trade): number
+export function evaluateValueOfTrade(trade: Trade): number
 {
   let value = 0;
 
-  for (let key in offeredTrade.stagedItems)
+  for (let key in trade.stagedItems)
   {
-    const item = offeredTrade.stagedItems[key];
+    const item = trade.stagedItems[key];
 
     value += evaluateTradeableItemValue(item);
   }

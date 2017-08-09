@@ -1,6 +1,6 @@
 import
 {
-  evaluateValueOfOffer,
+  evaluateValueOfTrade,
 } from "./tradeEvaluationFunctions";
 
 import {localize} from "../localization/localize";
@@ -14,25 +14,25 @@ import {TradeOffer} from "../../../src/TradeOffer";
 export class EconomicAI
 {
   public respondToTradeOffer(
-    // TODO 2017.06.09 | rename
-    incomingResponse: TradeOffer,
+    incomingOffer: TradeOffer,
   ): TradeOffer
   {
-    const receivedOffer = incomingResponse.otherTrade;
-    const ownTrade = incomingResponse.ownTrade;
+    // the offer is from the other player's perspective, so these are flipped
+    const tradeBeingReceived = incomingOffer.ownTrade;
+    const tradeBeingDemanded = incomingOffer.otherTrade;
 
-    const offeredValue = evaluateValueOfOffer(receivedOffer);
-    const ownValue = evaluateValueOfOffer(ownTrade);
+    const receivingValue = evaluateValueOfTrade(tradeBeingReceived);
+    const demandingValue = evaluateValueOfTrade(tradeBeingDemanded);
 
-    if (offeredValue === 0 && ownValue === 0)
+    if (receivingValue === 0 && demandingValue === 0)
     {
       let message: string;
 
-      if (incomingResponse.tradeWasAccepted)
+      if (incomingOffer.tradeWasAccepted)
       {
         message = localize("afterAcceptedOffer").format();
       }
-      else if (incomingResponse.isInitialOffer)
+      else if (incomingOffer.isInitialOffer)
       {
         message = localize("initialOffer").format();
       }
@@ -43,26 +43,26 @@ export class EconomicAI
 
       return(
       {
-        ownTrade: ownTrade.clone(),
-        otherTrade: receivedOffer.clone(),
+        ownTrade: tradeBeingDemanded.clone(),
+        otherTrade: tradeBeingReceived.clone(),
 
-        willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
+        willingnessToTradeItems: this.getWillingnessToTradeItems(tradeBeingDemanded),
 
         message: message,
         willingToAccept: false,
         willingToKeepNegotiating: true,
       });
     }
-    else if (offeredValue === 0)
+    else if (receivingValue === 0)
     {
-      return this.respondToDemand(receivedOffer, ownTrade);
+      return this.respondToDemand(tradeBeingReceived, tradeBeingDemanded);
     }
-    else if (ownValue === 0)
+    else if (demandingValue === 0)
     {
-      return this.respondToGift(receivedOffer, ownTrade);
+      return this.respondToGift(tradeBeingReceived, tradeBeingDemanded);
     }
 
-    const valueRatio = offeredValue / ownValue;
+    const valueRatio = receivingValue / demandingValue;
     const isFavourable = valueRatio > 1;
     const valueRatioDifference = Math.abs(1 - valueRatio);
 
@@ -74,10 +74,10 @@ export class EconomicAI
 
     return(
     {
-      ownTrade: ownTrade.clone(),
-      otherTrade: receivedOffer.clone(),
+      ownTrade: tradeBeingDemanded.clone(),
+      otherTrade: tradeBeingReceived.clone(),
 
-      willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
+      willingnessToTradeItems: this.getWillingnessToTradeItems(tradeBeingDemanded),
 
       message: message,
       willingToAccept: willingToAccept,
