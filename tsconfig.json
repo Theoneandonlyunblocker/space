@@ -26,7 +26,7 @@
           "react-transition-group"
         ],
 
-        "strictNullChecks": true
+        "strictNullChecks": false
     },
     "files": [
       "src/App.ts"
