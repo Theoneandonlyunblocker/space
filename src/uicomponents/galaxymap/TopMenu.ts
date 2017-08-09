@@ -32,16 +32,16 @@ interface StateType
 
 export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName: string = "TopMenu";
-  state: StateType;
+  public displayName: string = "TopMenu";
+  public state: StateType;
 
-  cachedTopMenuWidth: number = undefined;
-  cachedButtonWidths: number[] = [];
-  cachedMenuButtonWidth: number = 37;
+  private cachedTopMenuWidth: number = undefined;
+  private cachedButtonWidths: number[] = [];
+  private cachedMenuButtonWidth: number = 37;
 
-  ref_TODO_topMenu: HTMLElement;
-  ref_TODO_popups: TopMenuPopupsComponent;
-  ref_TODO_topMenuItems: HTMLElement;
+  private ref_TODO_topMenu: HTMLElement;
+  private ref_TODO_popups: TopMenuPopupsComponent;
+  private ref_TODO_topMenuItems: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -51,15 +51,195 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
     this.bindMethods();
   }
+
+  public componentDidMount()
+  {
+    window.addEventListener("resize", this.handleResize, false);
+    eventManager.addEventListener("playerControlUpdated", this.delayedResize);
+    eventManager.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
+
+    this.handleResize();
+  }
+  public componentWillUnmount()
+  {
+    window.removeEventListener("resize", this.handleResize);
+    eventManager.removeEventListener("playerControlUpdated", this.delayedResize);
+    eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
+  }
+  public render()
+  {
+    const menuItemTabIndex = this.state.opened ? -1 : 0;
+    const menuItemTitle = "Left click to open. Right click to close";
+
+    const topMenuButtons =
+    [
+      React.DOM.button(
+      {
+        className: "top-menu-items-button top-menu-items-button-production",
+        key: "production",
+        title: menuItemTitle,
+        onClick: this.openOrBringPopupToTop.bind(this, "production"),
+        onDoubleClick: this.closePopup.bind(this, "production"),
+        onContextMenu: this.closePopup.bind(this, "production"),
+        tabIndex: menuItemTabIndex,
+      }, localize("production")),
+      React.DOM.button(
+      {
+        className: "top-menu-items-button top-menu-items-button-equip",
+        key: "equipItems",
+        title: menuItemTitle,
+        onClick: this.openOrBringPopupToTop.bind(this, "equipItems"),
+        onDoubleClick: this.closePopup.bind(this, "equipItems"),
+        onContextMenu: this.closePopup.bind(this, "equipItems"),
+        tabIndex: menuItemTabIndex,
+      }, localize("equip")),
+      // React.DOM.button(
+      // {
+      //   className: "top-menu-items-button top-menu-items-button-economy",
+      //   key: "economySummary",
+      //   title: menuItemTitle,
+      //   onClick: this.openOrBringPopupToTop.bind(this, "economySummary"),
+      //   onDoubleClick: this.closePopup.bind(this, "economySummary"),
+      //   onContextMenu: this.closePopup.bind(this, "economySummary"),
+      //   tabIndex: menuItemTabIndex,
+      // }, localize("economy")),
+      React.DOM.button(
+      {
+        className: "top-menu-items-button top-menu-items-button-diplomacy",
+        key: "diplomacy",
+        title: menuItemTitle,
+        onClick: this.openOrBringPopupToTop.bind(this, "diplomacy"),
+        onDoubleClick: this.closePopup.bind(this, "diplomacy"),
+        onContextMenu: this.closePopup.bind(this, "diplomacy"),
+        tabIndex: menuItemTabIndex,
+      }, localize("diplomacy")),
+      React.DOM.button(
+      {
+        className: "top-menu-items-button top-menu-items-button-technology",
+        key: "technologies",
+        title: menuItemTitle,
+        onClick: this.openOrBringPopupToTop.bind(this, "technologies"),
+        onDoubleClick: this.closePopup.bind(this, "technologies"),
+        onContextMenu: this.closePopup.bind(this, "technologies"),
+        tabIndex: menuItemTabIndex,
+      }, localize("technology")),
+      React.DOM.button(
+      {
+        className: "top-menu-items-button top-menu-items-button-load",
+        key: "loadGame",
+        title: menuItemTitle,
+        onClick: this.openOrBringPopupToTop.bind(this, "loadGame"),
+        onDoubleClick: this.closePopup.bind(this, "loadGame"),
+        onContextMenu: this.closePopup.bind(this, "loadGame"),
+        tabIndex: menuItemTabIndex,
+      }, localize("load_imperative")),
+      React.DOM.button(
+      {
+        className: "top-menu-items-button top-menu-items-button-save",
+        key: "saveGame",
+        title: menuItemTitle,
+        onClick: this.openOrBringPopupToTop.bind(this, "saveGame"),
+        onDoubleClick: this.closePopup.bind(this, "saveGame"),
+        onContextMenu: this.closePopup.bind(this, "saveGame"),
+        tabIndex: menuItemTabIndex,
+      }, localize("save_imperative")),
+      React.DOM.button(
+      {
+        className: "top-menu-items-button top-menu-items-button-options",
+        key: "options",
+        title: menuItemTitle,
+        onClick: this.openOrBringPopupToTop.bind(this, "options"),
+        onDoubleClick: this.closePopup.bind(this, "options"),
+        onContextMenu: this.closePopup.bind(this, "options"),
+        tabIndex: menuItemTabIndex,
+      }, localize("options")),
+    ];
+
+    const topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
+    const leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
+
+    if (this.state.hasCondensedMenu && !Options.ui.noHamburger)
+    {
+      topMenuItems.push(React.DOM.button(
+      {
+        className: "top-menu-items-button top-menu-open-condensed-button",
+        key: "openCondensedMenu",
+        title: menuItemTitle,
+        onClick: this.toggleCondensedMenu,
+        onContextMenu: e =>
+        {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (this.state.condensedMenuOpened)
+          {
+            this.toggleCondensedMenu();
+          }
+        },
+        tabIndex: menuItemTabIndex,
+      }));
+    }
+
+    let openedCondensedMenu: React.ReactHTMLElement<any> = null;
+    if ((this.state.condensedMenuOpened || Options.ui.noHamburger) && leftoverButtons.length > 0)
+    {
+      openedCondensedMenu = React.DOM.div(
+      {
+        className: "top-menu-opened-condensed-menu",
+      },
+        leftoverButtons,
+      );
+    };
+
+    return(
+      React.DOM.div(
+      {
+        className: "top-menu-wrapper",
+      },
+        React.DOM.div(
+        {
+          className: "top-menu",
+          ref: (component: HTMLElement) =>
+          {
+            this.ref_TODO_topMenu = component;
+          },
+        },
+          React.DOM.div(
+          {
+            className: "top-menu-items",
+            ref: (component: HTMLElement) =>
+            {
+              this.ref_TODO_topMenuItems = component;
+            },
+          },
+            topMenuItems,
+          ),
+        ),
+        openedCondensedMenu,
+        TopMenuPopups(
+        {
+          ref: (component: TopMenuPopupsComponent) =>
+          {
+            this.ref_TODO_popups = component;
+          },
+          player: this.props.player,
+          game: this.props.game,
+          activeLanguage: this.props.activeLanguage,
+          notificationLog: this.props.notificationLog,
+        }),
+      )
+    );
+  }
+
   private bindMethods()
   {
     this.handleResize = this.handleResize.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);
+    this.openOrBringPopupToTop = this.openOrBringPopupToTop.bind(this);
+    this.closePopup = this.closePopup.bind(this);
     this.toggleCondensedMenu = this.toggleCondensedMenu.bind(this);
     this.handleToggleHamburger = this.handleToggleHamburger.bind(this);
     this.delayedResize = this.delayedResize.bind(this);
   }
-
   private getInitialStateTODO(): StateType
   {
     return(
@@ -70,35 +250,16 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       condensedMenuOpened: Options.ui.noHamburger,
     });
   }
-
-  componentDidMount()
-  {
-    window.addEventListener("resize", this.handleResize, false);
-    eventManager.addEventListener("playerControlUpdated", this.delayedResize);
-    eventManager.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
-
-    this.handleResize();
-  }
-
-  componentWillUnmount()
-  {
-    window.removeEventListener("resize", this.handleResize);
-    eventManager.removeEventListener("playerControlUpdated", this.delayedResize);
-    eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
-  }
-
-  handleToggleHamburger()
+  private handleToggleHamburger()
   {
     this.handleResize();
     this.forceUpdate();
   }
-
-  delayedResize()
+  private delayedResize()
   {
     window.setTimeout(this.handleResize, 0);
   }
-
-  handleResize()
+  private handleResize()
   {
     if (!this.cachedTopMenuWidth)
     {
@@ -188,14 +349,28 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       buttonsToPlace: amountOfButtonsToPlace,
     });
   }
-
-  togglePopup(popupType: PopupType)
+  private openOrBringPopupToTop(popupType: PopupType): void
   {
-    this.ref_TODO_popups.togglePopup(popupType);
-    this.forceUpdate();
+    if (this.ref_TODO_popups.state[popupType])
+    {
+      this.ref_TODO_popups.bringPopupToFront(popupType);
+    }
+    else
+    {
+      this.ref_TODO_popups.togglePopup(popupType);
+    }
   }
+  private closePopup(popupType: PopupType, e: React.MouseEvent<HTMLButtonElement>): void
+  {
+    e.preventDefault();
+    e.stopPropagation();
 
-  toggleCondensedMenu()
+    if (this.ref_TODO_popups.state[popupType])
+    {
+      this.ref_TODO_popups.togglePopup(popupType)
+    }
+  }
+  private toggleCondensedMenu()
   {
     this.setState(
     {
@@ -203,136 +378,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     });
   }
 
-  render()
-  {
-    const menuItemTabIndex = this.state.opened ? -1 : 0;
 
-    const topMenuButtons =
-    [
-      React.DOM.button(
-      {
-        className: "top-menu-items-button top-menu-items-button-production",
-        key: "production",
-        onClick: this.togglePopup.bind(this, "production"),
-        tabIndex: menuItemTabIndex,
-      }, localize("production")),
-      React.DOM.button(
-      {
-        className: "top-menu-items-button top-menu-items-button-equip",
-        key: "equipItems",
-        onClick: this.togglePopup.bind(this, "equipItems"),
-        tabIndex: menuItemTabIndex,
-      }, localize("equip")),
-      /*
-      React.DOM.button(
-      {
-        className: "top-menu-items-button top-menu-items-button-economy",
-        key: "economySummary",
-        onClick: this.togglePopup.bind(this, "economySummary"),
-        tabIndex: menuItemTabIndex
-      }, localize("economy")),
-      */
-      React.DOM.button(
-      {
-        className: "top-menu-items-button top-menu-items-button-diplomacy",
-        key: "diplomacy",
-        onClick: this.togglePopup.bind(this, "diplomacy"),
-        tabIndex: menuItemTabIndex,
-      }, localize("diplomacy")),
-      React.DOM.button(
-      {
-        className: "top-menu-items-button top-menu-items-button-technology",
-        key: "technologies",
-        onClick: this.togglePopup.bind(this, "technologies"),
-        tabIndex: menuItemTabIndex,
-      }, localize("technology")),
-      React.DOM.button(
-      {
-        className: "top-menu-items-button top-menu-items-button-load",
-        key: "loadGame",
-        onClick: this.togglePopup.bind(this, "loadGame"),
-        tabIndex: menuItemTabIndex,
-      }, localize("load_imperative")),
-      React.DOM.button(
-      {
-        className: "top-menu-items-button top-menu-items-button-save",
-        key: "saveGame",
-        onClick: this.togglePopup.bind(this, "saveGame"),
-        tabIndex: menuItemTabIndex,
-      }, localize("save_imperative")),
-      React.DOM.button(
-      {
-        className: "top-menu-items-button top-menu-items-button-options",
-        key: "options",
-        onClick: this.togglePopup.bind(this, "options"),
-        tabIndex: menuItemTabIndex,
-      }, localize("options")),
-    ];
-
-    const topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
-    const leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
-
-    if (this.state.hasCondensedMenu && !Options.ui.noHamburger)
-    {
-      topMenuItems.push(React.DOM.button(
-      {
-        className: "top-menu-items-button top-menu-open-condensed-button",
-        key: "openCondensedMenu",
-        onClick: this.toggleCondensedMenu,
-        tabIndex: menuItemTabIndex,
-      }));
-    }
-
-    let openedCondensedMenu: React.ReactHTMLElement<any> = null;
-    if ((this.state.condensedMenuOpened || Options.ui.noHamburger) && leftoverButtons.length > 0)
-    {
-      openedCondensedMenu = React.DOM.div(
-      {
-        className: "top-menu-opened-condensed-menu",
-      },
-        leftoverButtons,
-      );
-    };
-
-    return(
-      React.DOM.div(
-      {
-        className: "top-menu-wrapper",
-      },
-        React.DOM.div(
-        {
-          className: "top-menu",
-          ref: (component: HTMLElement) =>
-          {
-            this.ref_TODO_topMenu = component;
-          },
-        },
-          React.DOM.div(
-          {
-            className: "top-menu-items",
-            ref: (component: HTMLElement) =>
-            {
-              this.ref_TODO_topMenuItems = component;
-            },
-          },
-            topMenuItems,
-          ),
-        ),
-        openedCondensedMenu,
-        TopMenuPopups(
-        {
-          ref: (component: TopMenuPopupsComponent) =>
-          {
-            this.ref_TODO_popups = component;
-          },
-          player: this.props.player,
-          game: this.props.game,
-          activeLanguage: this.props.activeLanguage,
-          notificationLog: this.props.notificationLog,
-        }),
-      )
-    );
-  }
 }
 
 const Factory: React.Factory<PropTypes> = React.createFactory(TopMenuComponent);

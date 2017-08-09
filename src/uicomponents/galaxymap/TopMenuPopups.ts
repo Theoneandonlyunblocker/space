@@ -153,6 +153,10 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       this.openPopup(popupType);
     }
   }
+  public bringPopupToFront(popupType: PopupType): void
+  {
+    this.popupComponents[popupType].windowContainerComponent.bringToTop();
+  }
   public render()
   {
     const popups: React.ReactElement<any>[] = [];
@@ -179,6 +183,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     this.openPopup = this.openPopup.bind(this);
     this.closePopup = this.closePopup.bind(this);
     this.togglePopup = this.togglePopup.bind(this);
+    this.bringPopupToFront = this.bringPopupToFront.bind(this);
   }
   private getInitialStateTODO(): StateType
   {

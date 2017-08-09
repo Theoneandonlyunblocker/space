@@ -8,6 +8,9 @@ const windowCascadeMargin = 20;
 
 let zIndex = baseZIndex;
 
+const byId = new IdDictionary<WindowContainerComponent, WindowContainerComponent>();
+
+
 export function getNewZIndex(component: WindowContainerComponent): number
 {
   if (component.state && component.state.zIndex && component.state.zIndex === zIndex)
@@ -20,15 +23,17 @@ export function getNewZIndex(component: WindowContainerComponent): number
   }
 }
 
-
-const byId = new IdDictionary<WindowContainerComponent, WindowContainerComponent>();
-
-export function getDefaultInitialPosition(rect: Rect, container: HTMLElement): Rect
+export function getWindowsByZIndex(): WindowContainerComponent[]
 {
-  const windowsByZIndex = byId.sort((a, b) =>
+  return byId.sort((a, b) =>
   {
     return b.state.zIndex - a.state.zIndex;
   });
+}
+
+export function getDefaultInitialPosition(rect: Rect, container: HTMLElement): Rect
+{
+  const windowsByZIndex = getWindowsByZIndex();
 
   if (windowsByZIndex.length === 0)
   {

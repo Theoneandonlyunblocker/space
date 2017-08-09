@@ -70,6 +70,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       preventAutoResize: true,
       startOnHandleElementOnly: true,
     });
+
     applyMixins(this, this.dragPositioner);
   }
 
@@ -126,6 +127,14 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   {
     this.dragPositioner.handleReactDownEvent(e);
 
+    this.bringToTop();
+  }
+  public isTopMostWindow(): boolean
+  {
+    return windowManager.getWindowsByZIndex()[0] === this;
+  }
+  public bringToTop(): void
+  {
     this.setState(
     {
       zIndex: windowManager.getNewZIndex(this),
@@ -139,6 +148,8 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     this.handleResizeStart = this.handleResizeStart.bind(this);
     this.setInitialPosition = this.setInitialPosition.bind(this);
     this.makeResizeHandles = this.makeResizeHandles.bind(this);
+    this.isTopMostWindow = this.isTopMostWindow.bind(this);
+    this.bringToTop = this.bringToTop.bind(this);
   }
   private setInitialPosition()
   {
