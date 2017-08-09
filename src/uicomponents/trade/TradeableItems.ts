@@ -39,7 +39,7 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
 
   handleMouseUp()
   {
-    this.props.onMouseUp!();
+    this.props.onMouseUp();
   }
 
   render()
@@ -49,13 +49,13 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
       className: "tradeable-items",
     };
 
-    if (this.props.onMouseUp)
-    {
-      divProps.onMouseUp = this.handleMouseUp;
-    }
     if (this.props.isInvalidDropTarget)
     {
       divProps.className += " invalid-drop-target";
+    }
+    else if (this.props.onMouseUp)
+    {
+      divProps.onMouseUp = this.handleMouseUp;
     }
 
     return(

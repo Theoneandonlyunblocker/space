@@ -16,6 +16,24 @@ export interface TradeOffer
     [tradeItemKey: string]: number;
   };
 
+  isInitialOffer?: boolean;
+  tradeWasAccepted?: boolean;
   message: string;
   willingToAccept: boolean;
+  willingToKeepNegotiating: boolean;
+}
+
+export function cloneTradeOffer(offer: TradeOffer): TradeOffer
+{
+  return(
+  {
+    ownTrade: offer.ownTrade.clone(),
+    otherTrade: offer.otherTrade.clone(),
+
+    willingnessToTradeItems: {...offer.willingnessToTradeItems},
+
+    message: offer.message,
+    willingToAccept: offer.willingToAccept,
+    willingToKeepNegotiating: offer.willingToKeepNegotiating,
+  });
 }

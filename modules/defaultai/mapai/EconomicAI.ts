@@ -26,6 +26,21 @@ export class EconomicAI
 
     if (offeredValue === 0 && ownValue === 0)
     {
+      let message: string;
+
+      if (incomingResponse.tradeWasAccepted)
+      {
+        message = localize("afterAcceptedOffer").format();
+      }
+      else if (incomingResponse.isInitialOffer)
+      {
+        message = localize("initialOffer").format();
+      }
+      else
+      {
+        message = localize("requestOffer").format();
+      }
+
       return(
       {
         ownTrade: ownTrade.clone(),
@@ -33,8 +48,9 @@ export class EconomicAI
 
         willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
 
-        message: localize("requestOffer").format(),
+        message: message,
         willingToAccept: false,
+        willingToKeepNegotiating: true,
       });
     }
     else if (offeredValue === 0)
@@ -65,6 +81,7 @@ export class EconomicAI
 
       message: message,
       willingToAccept: willingToAccept,
+      willingToKeepNegotiating: true,
     });
   }
 
@@ -82,6 +99,7 @@ export class EconomicAI
 
       message: localize("notWillingToAcceptDemand").format(),
       willingToAccept: false,
+      willingToKeepNegotiating: true,
     });
   }
   private respondToGift(
@@ -98,6 +116,7 @@ export class EconomicAI
 
       message: localize("willingToAcceptGift").format(),
       willingToAccept: true,
+      willingToKeepNegotiating: true,
     });
   }
   private getWillingnessToTradeItems(

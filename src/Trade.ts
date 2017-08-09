@@ -30,6 +30,24 @@ export class Trade
     this.setAllTradeableItems();
   }
 
+  private static tradeableItemsAreEqual(t1: TradeableItems, t2: TradeableItems): boolean
+  {
+    if (Object.keys(t1).length !== Object.keys(t2).length)
+    {
+      return false;
+    }
+
+    for (let key in t1)
+    {
+      if (!t2[key] || t1[key].amount !== t2[key].amount)
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   public executeTrade(otherTrade: Trade): void
   {
     this.executeAllStagedTrades(otherTrade.player);
@@ -105,6 +123,14 @@ export class Trade
     cloned.copyStagedItemsFrom(this);
 
     return cloned;
+  }
+  public isEqualWith(t2: Trade): boolean
+  {
+    return Trade.tradeableItemsAreEqual(this.stagedItems, t2.stagedItems);
+  }
+  public isEmpty(): boolean
+  {
+    return Object.keys(this.stagedItems).length === 0;
   }
 
   private setAllTradeableItems()

@@ -37,7 +37,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
     this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
     this.dragPositioner.onDragStart = this.onDragStart;
     this.dragPositioner.onDragEnd = this.onDragEnd;
-      applyMixins(this, this.dragPositioner);
+    applyMixins(this, this.dragPositioner);
   }
   private bindMethods()
   {

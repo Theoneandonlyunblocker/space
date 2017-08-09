@@ -1,9 +1,12 @@
 export const tradeMessages =
 {
+  initialOffer:
+  [
+    "What do you propose?",
+  ],
   requestOffer:
   [
     "Please make an offer.",
-    "What do you propose?",
   ],
   willingToAcceptOffer:
   [
@@ -19,10 +22,9 @@ export const tradeMessages =
     "How does this sound?",
     "Here's my offer.",
   ],
-  acceptOffer:
+  afterAcceptedOffer:
   [
     "We accept your terms.",
-    "Looks fair. We accept.",
   ],
   willingToAcceptGift:
   [
