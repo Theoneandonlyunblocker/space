@@ -308,7 +308,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     }
     else if (x2 > maxX)
     {
-      x = maxX- domWidth;
+      x = maxX - domWidth;
     }
 
     if (y < minY)

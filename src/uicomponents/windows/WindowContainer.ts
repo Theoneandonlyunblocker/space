@@ -17,6 +17,7 @@ import applyMixins from "../mixins/applyMixins";
 
 export interface PropTypes extends React.Props<any>
 {
+  // TODO 2017.08.10 | rename. element used as containing area for this element
   containerElement: HTMLElement;
   getInitialPosition?: (ownRect: Rect, container: HTMLElement) => Rect;
   isResizable: boolean;
@@ -44,14 +45,23 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   public id: number;
   public dragPositioner: DragPositioner<WindowContainerComponent>;
 
-  private resizeStartQuadrant: {top: boolean, left: boolean};
+  private resizeStartQuadrant: {left: boolean; top: boolean;};
   private resizeStartPosition: Rect =
   {
-    top: undefined,
-    left: undefined,
-    width: undefined,
+    top   : undefined,
+    left  : undefined,
+    width : undefined,
     height: undefined,
   };
+
+  private minWidth : number;
+  private minHeight: number;
+  private maxWidth : number;
+  private maxHeight: number;
+
+  private ownDOMNode: HTMLDivElement;
+  private onDocumentWindowResizeTimeoutHandle: number | undefined;
+
 
   constructor(props: PropTypes)
   {
@@ -76,12 +86,22 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
 
   public componentDidMount(): void
   {
+    this.ownDOMNode = ReactDOM.findDOMNode(this);
     this.setInitialPosition();
     windowManager.handleMount(this);
+
+    window.addEventListener("resize", this.onDocumentWindowResize, false);
   }
   public componentWillUnmount(): void
   {
     windowManager.handleUnount(this);
+
+    window.removeEventListener("resize", this.onDocumentWindowResize);
+
+    if (this.onDocumentWindowResizeTimeoutHandle !== undefined)
+    {
+      window.cancelAnimationFrame(this.onDocumentWindowResizeTimeoutHandle);
+    }
   }
   public render()
   {
@@ -97,10 +117,6 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
         width: this.dragPositioner.position.width,
         height: this.dragPositioner.position.height,
         zIndex: this.state.zIndex,
-        minWidth: this.props.minWidth,
-        minHeight: this.props.minHeight,
-        maxWidth: this.props.maxWidth,
-        maxHeight: this.props.maxHeight,
       },
     };
 
@@ -150,9 +166,13 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     this.makeResizeHandles = this.makeResizeHandles.bind(this);
     this.isTopMostWindow = this.isTopMostWindow.bind(this);
     this.bringToTop = this.bringToTop.bind(this);
+    this.setDimensionBounds = this.setDimensionBounds.bind(this);
+    this.onDocumentWindowResize = this.onDocumentWindowResize.bind(this);
   }
   private setInitialPosition()
   {
+    this.setDimensionBounds();
+
     const initialRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
     const position: Rect =
     {
@@ -167,11 +187,8 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       this.props.getInitialPosition(position, container) :
       windowManager.getDefaultInitialPosition(position, container);
 
-    const maxWidth = Math.min(this.props.maxWidth, container.offsetWidth);
-    const maxHeight = Math.min(this.props.maxHeight, container.offsetHeight);
-
-    position.width = clamp(requestedPosition.width, this.props.minWidth, maxWidth);
-    position.height = clamp(requestedPosition.height, this.props.minHeight, maxHeight);
+    position.width = clamp(requestedPosition.width, this.minWidth, this.maxWidth);
+    position.height = clamp(requestedPosition.height, this.minHeight, this.maxHeight);
     position.left = clamp(requestedPosition.left, 0, container.offsetWidth - position.width);
     position.top = clamp(requestedPosition.top, 0, container.offsetHeight - position.height);
 
@@ -180,19 +197,12 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   }
   private handleResizeMove(rawDeltaX: number, rawDeltaY: number): void
   {
-    const minWidth = this.props.minWidth || 0;
-    const maxWidth = this.props.maxWidth || window.innerWidth;
-    const minHeight = this.props.minHeight || 0;
-    const maxHeight = this.props.maxHeight || window.innerHeight;
-
-
-
     if (this.resizeStartQuadrant.left)
     {
       const deltaX = clamp(
         rawDeltaX,
-        this.resizeStartPosition.width - maxWidth,
-        this.resizeStartPosition.width - minWidth,
+        this.resizeStartPosition.width - this.maxWidth,
+        this.resizeStartPosition.width - this.minWidth,
       );
 
       this.dragPositioner.position.width = this.resizeStartPosition.width - deltaX;
@@ -203,15 +213,15 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       const deltaX = rawDeltaX;
 
       this.dragPositioner.position.width = this.resizeStartPosition.width + deltaX;
-      this.dragPositioner.position.width = clamp(this.dragPositioner.position.width, minWidth, maxWidth);
+      this.dragPositioner.position.width = clamp(this.dragPositioner.position.width, this.minWidth, this.maxWidth);
     }
 
     if (this.resizeStartQuadrant.top)
     {
       const deltaY = clamp(
         rawDeltaY,
-        this.resizeStartPosition.height - maxHeight,
-        this.resizeStartPosition.height - minHeight,
+        this.resizeStartPosition.height - this.maxHeight,
+        this.resizeStartPosition.height - this.minHeight,
       );
 
       this.dragPositioner.position.top = this.resizeStartPosition.top + deltaY;
@@ -222,7 +232,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       const deltaY = rawDeltaY;
 
       this.dragPositioner.position.height = this.resizeStartPosition.height + deltaY;
-      this.dragPositioner.position.height = clamp(this.dragPositioner.position.height, minHeight, maxHeight);
+      this.dragPositioner.position.height = clamp(this.dragPositioner.position.height, this.minHeight, this.maxHeight);
     }
 
     this.dragPositioner.updateDOMNodeStyle();
@@ -256,6 +266,67 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
         key: direction,
       });
     });
+  }
+  private setDimensionBounds(): void
+  {
+    const container = this.props.containerElement;
+    const containerRect = container.getBoundingClientRect();
+
+    this.minWidth  = Math.min(this.props.minWidth , containerRect.width);
+    this.minHeight = Math.min(this.props.minHeight, containerRect.height);
+    this.maxWidth  = Math.min(this.props.maxWidth , containerRect.width);
+    this.maxHeight = Math.min(this.props.maxHeight, containerRect.height);
+
+    this.ownDOMNode.style.minWidth = "" + this.minWidth + "px";
+    this.ownDOMNode.style.minHeight = "" + this.minHeight + "px";
+    this.ownDOMNode.style.maxWidth = "" + this.maxWidth + "px";
+    this.ownDOMNode.style.maxHeight = "" + this.maxHeight + "px";
+  }
+  private onDocumentWindowResize(): void
+  {
+    if (this.onDocumentWindowResizeTimeoutHandle !== undefined)
+    {
+      window.cancelAnimationFrame(this.onDocumentWindowResizeTimeoutHandle);
+    }
+
+    this.onDocumentWindowResizeTimeoutHandle = window.requestAnimationFrame(() =>
+    {
+      this.setDimensionBounds();
+
+      this.clampToContainerElementBounds();
+    });
+  }
+  // TODO 2017.08.10 | rename
+  private clampToContainerElementBounds(): void
+  {
+    const container = this.props.containerElement;
+    const containerRect = container.getBoundingClientRect();
+
+    this.dragPositioner.position.width = clamp(
+      this.dragPositioner.position.width,
+      this.minWidth,
+      this.maxWidth,
+    );
+
+    this.dragPositioner.position.height = clamp(
+      this.dragPositioner.position.height,
+      this.minHeight,
+      this.maxHeight,
+    );
+
+    this.dragPositioner.position.left = clamp(
+      this.dragPositioner.position.left,
+      containerRect.left,
+      containerRect.right - this.dragPositioner.position.width,
+    );
+
+    this.dragPositioner.position.top = clamp(
+      this.dragPositioner.position.top,
+      containerRect.top,
+      containerRect.bottom - this.dragPositioner.position.height,
+    );
+
+    this.dragPositioner.updateDOMNodeStyle();
   }
 }
 
