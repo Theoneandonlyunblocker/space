@@ -185,7 +185,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   {
     this.setDimensionBounds();
 
-    const initialRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
+    const initialRect = this.ownDOMNode.getBoundingClientRect();
     const position: Rect =
     {
       top: initialRect.top,
@@ -263,7 +263,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   }
   private handleResizeStart(x: number, y: number): void
   {
-    const rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
+    const rect = this.ownDOMNode.getBoundingClientRect();
     const midX = rect.left + rect.width / 2;
     const midY = rect.top + rect.height / 2;
 
