@@ -103,6 +103,18 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       window.cancelAnimationFrame(this.onDocumentWindowResizeTimeoutHandle);
     }
   }
+  public componentWillReceiveProps(newProps: PropTypes): void
+  {
+    const propsToCheck: (keyof PropTypes)[] = ["minWidth", "minHeight", "maxWidth", "maxHeight"];
+    for (let prop of propsToCheck)
+    {
+      if (this.props[prop] !== newProps[prop])
+      {
+        this.setDimensionBounds(newProps);
+        break;
+      }
+    }
+  }
   public render()
   {
     // const customAttributes = this.props.attributes ? shallowCopy(this.props.attributes) : {};
@@ -279,15 +291,15 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       });
     });
   }
-  private setDimensionBounds(): void
+  private setDimensionBounds(props: PropTypes = this.props): void
   {
-    const container = this.props.containerElement;
+    const container = props.containerElement;
     const containerRect = container.getBoundingClientRect();
 
-    this.minWidth  = Math.min(this.props.minWidth , containerRect.width);
-    this.minHeight = Math.min(this.props.minHeight, containerRect.height);
-    this.maxWidth  = Math.min(this.props.maxWidth , containerRect.width);
-    this.maxHeight = Math.min(this.props.maxHeight, containerRect.height);
+    this.minWidth  = Math.min(props.minWidth , containerRect.width);
+    this.minHeight = Math.min(props.minHeight, containerRect.height);
+    this.maxWidth  = Math.min(props.maxWidth , containerRect.width);
+    this.maxHeight = Math.min(props.maxHeight, containerRect.height);
 
     this.ownDOMNode.style.minWidth = "" + this.minWidth + "px";
     this.ownDOMNode.style.minHeight = "" + this.minHeight + "px";
