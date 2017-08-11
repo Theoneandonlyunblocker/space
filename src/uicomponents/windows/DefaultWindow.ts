@@ -9,6 +9,15 @@ import
 import {Rect} from "../../Rect";
 
 
+const cssPropertyPrefix = "--rance-window-";
+const prefixedCssPropertyMap =
+{
+  minWidth: cssPropertyPrefix + "min-width",
+  minHeight: cssPropertyPrefix + "min-height",
+  maxWidth: cssPropertyPrefix + "max-width",
+  maxHeight: cssPropertyPrefix + "max-height",
+}
+
 type SizeBounds =
 {
   minWidth: number;
@@ -133,15 +142,18 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
     {
       const contentElement = contentElements[i];
 
-      const contentElementStyle = getComputedStyle(contentElement);
+      const contentElementStyle = window.getComputedStyle(contentElement);
       const titleBarHeight = this.titleBarElement!.getBoundingClientRect().height;
 
 
       for (let prop in this.state.sizeBounds)
       {
-        if (contentElementStyle[prop] !== "none")
+        const prefixedPropName = prefixedCssPropertyMap[prop];
+        const valueString = contentElementStyle.getPropertyValue(prefixedPropName);
+
+        if (valueString !== "")
         {
-          let propValue = parseInt(contentElementStyle[prop]);
+          let propValue = parseInt(valueString);
           if (prop === "minHeight" || prop === "maxHeight")
           {
             propValue += titleBarHeight;
