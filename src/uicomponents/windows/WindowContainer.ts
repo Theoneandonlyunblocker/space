@@ -194,6 +194,18 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
 
     this.dragPositioner.position = position;
     this.dragPositioner.updateDOMNodeStyle();
+
+    const firstChildElement = this.ownDOMNode.firstElementChild;
+    if (firstChildElement)
+    {
+      const firstChildRect = firstChildElement.getBoundingClientRect();
+
+      const horizontalPadding = firstChildRect.width - initialRect.width;
+      const verticalPadding = firstChildRect.height - initialRect.height;
+
+      this.ownDOMNode.style.paddingRight = "" + horizontalPadding + "px";
+      this.ownDOMNode.style.paddingBottom = "" + verticalPadding + "px";
+    }
   }
   private handleResizeMove(rawDeltaX: number, rawDeltaY: number): void
   {
