@@ -402,7 +402,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   }
   private addEventListeners()
   {
-    this.containerElement.addEventListener("mousemove", this.handleNativeMoveEvent);
+    document.addEventListener("mousemove", this.handleNativeMoveEvent);
     document.addEventListener("mouseup", this.handleNativeUpEvent);
 
     if (this.touchEventTarget)
@@ -413,7 +413,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   }
   private removeEventListeners()
   {
-    this.containerElement.removeEventListener("mousemove", this.handleNativeMoveEvent);
+    document.removeEventListener("mousemove", this.handleNativeMoveEvent);
     document.removeEventListener("mouseup", this.handleNativeUpEvent);
 
     if (this.touchEventTarget)
