@@ -211,9 +211,11 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     if (firstChildElement)
     {
       const firstChildRect = firstChildElement.getBoundingClientRect();
+      // needs to be updated since we called this.dragPositioner.updateDOMNodeStyle()
+      const ownRect = this.ownDOMNode.getBoundingClientRect();
 
-      const horizontalPadding = firstChildRect.width - initialRect.width;
-      const verticalPadding = firstChildRect.height - initialRect.height;
+      const horizontalPadding = firstChildRect.width - ownRect.width;
+      const verticalPadding = firstChildRect.height - ownRect.height;
 
       this.ownDOMNode.style.paddingRight = "" + horizontalPadding + "px";
       this.ownDOMNode.style.paddingBottom = "" + verticalPadding + "px";
