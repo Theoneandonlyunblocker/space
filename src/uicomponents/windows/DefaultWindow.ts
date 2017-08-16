@@ -80,7 +80,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
     return(
       WindowContainer(
       {
-        containerElement: document.body,
+        containingAreaElement: document.body,
         getInitialPosition: this.props.getInitialPosition,
         isResizable: this.props.isResizable === false ? false : true,
 

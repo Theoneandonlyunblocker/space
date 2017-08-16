@@ -184,12 +184,6 @@ export default class DiplomacyStatus
   }
   public addAttitudeModifier(player: Player, modifier: AttitudeModifier)
   {
-    // TODO 2017.07.25 | can this happen?
-    // if (!todoModifiers[player.id])
-    // {
-    //   todoModifiers[player.id] = [];
-    // }
-
     const sameType = this.getModifierOfSameType(player, modifier);
     if (sameType)
     {
@@ -348,7 +342,7 @@ export default class DiplomacyStatus
     // TODO 2017.07.25 | why would this happen?
     if (player !== this.player)
     {
-      return;
+      throw new Error();
     }
 
     const modifier = new AttitudeModifier(

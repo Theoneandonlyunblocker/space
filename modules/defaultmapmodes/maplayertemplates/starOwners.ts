@@ -21,7 +21,7 @@ const starOwners: MapRendererLayerTemplate =
   displayName: "Star owners",
   interactive: false,
   isUsedForCameraBounds: true,
-  alpha: 0.5,
+  initialAlpha: 0.5,
   destroy: function()
   {
     for (let key in occupationShaders)

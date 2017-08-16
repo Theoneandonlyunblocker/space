@@ -30,6 +30,6 @@ export function moveToTarget(
   fleets.forEach(fleet =>
   {
     const moveTarget = getMoveTarget(fleet);
-    fleet.pathFind(moveTarget, null, afterFleetMoveCallback);
+    fleet.pathFind(moveTarget, undefined, afterFleetMoveCallback);
   });
 }

@@ -44,7 +44,6 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
 
   public render()
   {
-    // TODO 2017.07.26 | handle dead players
     const metPlayers = this.props.player.diplomacyStatus.getMetPlayers();
 
     const alivePlayers = metPlayers.filter(player => !player.isDead);

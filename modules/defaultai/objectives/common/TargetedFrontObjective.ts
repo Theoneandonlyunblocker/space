@@ -131,7 +131,7 @@ export abstract class TargetedFrontObjective extends FrontObjective
 
     for (let i = 0; i < fleets.length; i++)
     {
-      fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+      fleets[i].pathFind(moveTarget, undefined, finishFleetMoveFN);
     }
   }
 

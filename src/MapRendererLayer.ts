@@ -27,12 +27,12 @@ export default class MapRendererLayer
     this.template = template;
     this.container = new PIXI.Container();
     this.container.interactiveChildren = template.interactive;
-    this.alpha = template.alpha || 1;
+    this.alpha = template.initialAlpha || 1;
   }
 
   public resetAlpha()
   {
-    this.alpha = this.template.alpha || 1;
+    this.alpha = this.template.initialAlpha || 1;
   }
   public draw(map: GalaxyMap, mapRenderer: MapRenderer): void
   {

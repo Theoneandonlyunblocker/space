@@ -17,8 +17,7 @@ import applyMixins from "../mixins/applyMixins";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO 2017.08.10 | rename. element used as containing area for this element
-  containerElement: HTMLElement;
+  containingAreaElement: HTMLElement;
   getInitialPosition?: (ownRect: Rect, container: HTMLElement) => Rect;
   isResizable: boolean;
 
@@ -194,7 +193,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       height: initialRect.height,
     };
 
-    const container = this.props.containerElement;
+    const container = this.props.containingAreaElement;
     const requestedPosition = this.props.getInitialPosition ?
       this.props.getInitialPosition(position, container) :
       windowManager.getDefaultInitialPosition(position, container);
@@ -295,7 +294,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   }
   private setDimensionBounds(props: PropTypes = this.props): void
   {
-    const container = props.containerElement;
+    const container = props.containingAreaElement;
     const containerRect = container.getBoundingClientRect();
 
     this.minWidth  = Math.min(props.minWidth , containerRect.width);
@@ -319,13 +318,12 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     {
       this.setDimensionBounds();
 
-      this.clampToContainerElementBounds();
+      this.clampToContainingAreaElementBounds();
     });
   }
-  // TODO 2017.08.10 | rename
-  private clampToContainerElementBounds(): void
+  private clampToContainingAreaElementBounds(): void
   {
-    const container = this.props.containerElement;
+    const container = this.props.containingAreaElement;
     const containerRect = container.getBoundingClientRect();
 
     this.dragPositioner.position.width = clamp(

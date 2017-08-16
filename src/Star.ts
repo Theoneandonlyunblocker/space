@@ -26,6 +26,8 @@ import
 import StarBuildingsSaveData from "./savedata/StarBuildingsSaveData";
 import StarSaveData from "./savedata/StarSaveData";
 
+
+// represents single location in game world. see Region for a grouping of these locations
 export default class Star implements Point
 {
   id: number;

@@ -102,6 +102,7 @@ export default class MapVoronoiInfo
 
     return this.nonFillerLines[indexString];
   }
+  // TODO 2017.08.16 | this should be in modules. would allow non-voronoi maps
   public getStarAtPoint(point: Point): Star
   {
     const items = this.treeMap.retrieve(point);

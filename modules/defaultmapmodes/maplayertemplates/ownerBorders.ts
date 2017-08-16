@@ -17,7 +17,7 @@ const ownerBorders: MapRendererLayerTemplate =
   displayName: "Owner borders",
   interactive: false,
   isUsedForCameraBounds: true,
-  alpha: 0.7,
+  initialAlpha: 0.7,
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     const doc = new PIXI.Container();

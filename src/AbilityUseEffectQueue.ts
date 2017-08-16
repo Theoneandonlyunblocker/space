@@ -14,7 +14,7 @@ export class AbilityUseEffectQueue
   private onEffectTrigger: (abilityUseEffect: AbilityUseEffect) => void;
 
   private queue: AbilityUseEffect[] = [];
-  private currentEffect: AbilityUseEffect;
+  private currentEffect: AbilityUseEffect | null;
   private battleScene: BattleScene;
 
 
@@ -112,7 +112,7 @@ export class AbilityUseEffectQueue
   }
   public playOnce(): void
   {
-    this.currentEffect = this.queue.shift();
+    this.currentEffect = this.queue.shift() || null;
 
     if (!this.currentEffect)
     {
@@ -141,7 +141,7 @@ export class AbilityUseEffectQueue
   {
     if (this.onEffectTrigger)
     {
-      this.onEffectTrigger(this.currentEffect);
+      this.onEffectTrigger(this.currentEffect!);
     }
   }
   private finishEffect(): void

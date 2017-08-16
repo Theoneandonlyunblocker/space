@@ -25,7 +25,7 @@ const fogOfWar: MapRendererLayerTemplate =
   displayName: "Fog of war",
   interactive: false,
   isUsedForCameraBounds: false,
-  alpha: 0.35,
+  initialAlpha: 0.35,
   destroy: function()
   {
     for (let starId in fogOfWarSpriteByStarId)

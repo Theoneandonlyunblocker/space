@@ -10,8 +10,7 @@ declare interface MapRendererLayerTemplate
   drawingFunction: (map: GalaxyMap, perspectivePlayer?: Player) => PIXI.Container;
   interactive: boolean;
   isUsedForCameraBounds: boolean;
-  // TODO 2017.08.01 | rename defaultAlpha
-  alpha?: number; // default 1.0
+  initialAlpha?: number; // default = 1
   destroy?: () => void;
 }
 
