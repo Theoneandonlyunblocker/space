@@ -2,12 +2,12 @@ import {TerrainTemplate} from "../../../src/templateinterfaces/TerrainTemplate";
 
 export const noneTerrain: TerrainTemplate =
 {
-  type: "none",
+  type: "noneTerrain",
   displayName: "None",
 };
 
 export const asteroidsTerrain: TerrainTemplate =
 {
-  type: "asteroids",
+  type: "asteroidsTerrain",
   displayName: "Asteroids",
 };
