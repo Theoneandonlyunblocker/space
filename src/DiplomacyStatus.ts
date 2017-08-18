@@ -339,10 +339,11 @@ export default class DiplomacyStatus
   }
   private triggerAttitudeModifier(template: AttitudeModifierTemplate, player: Player, source: Player)
   {
-    // TODO 2017.07.25 | why would this happen?
+    // this function is called on each player's diplo status. ignore if not actually the target
+    // kinda dumb
     if (player !== this.player)
     {
-      throw new Error();
+      return;
     }
 
     const modifier = new AttitudeModifier(
