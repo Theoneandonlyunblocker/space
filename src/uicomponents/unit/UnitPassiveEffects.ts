@@ -1,11 +1,11 @@
 import * as React from "react";
 
-import UnitPassiveEffect from "../../templateinterfaces/UnitPassiveEffect";
+import UnitEffectTemplate from "../../templateinterfaces/UnitEffectTemplate";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  passiveEffects?: UnitPassiveEffect[];
+  passiveEffects?: UnitEffectTemplate[];
 }
 
 interface StateType

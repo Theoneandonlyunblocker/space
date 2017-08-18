@@ -1,5 +1,5 @@
 import {StatusEffectSaveData} from "./savedata/StatusEffectSaveData";
-import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
+import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
 
 import Unit from "./Unit";
 import idGenerators from "./idGenerators";
@@ -7,7 +7,7 @@ import idGenerators from "./idGenerators";
 export default class StatusEffect
 {
   public id: number;
-  public template: StatusEffectTemplate;
+  public template: UnitEffectTemplate;
   // incremented after status effect actions are called
   public turnsHasBeenActiveFor: number = 0;
   public turnsToStayActiveFor: number;
@@ -16,7 +16,7 @@ export default class StatusEffect
 
   constructor(props:
   {
-    template: StatusEffectTemplate;
+    template: UnitEffectTemplate;
     id?: number;
     turnsHasBeenActiveFor?: number;
     turnsToStayActiveFor: number;

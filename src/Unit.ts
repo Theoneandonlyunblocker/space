@@ -9,7 +9,7 @@ import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
 import PortraitTemplate from "./templateinterfaces/PortraitTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import SFXParams from "./templateinterfaces/SFXParams";
-import UnitPassiveEffect from "./templateinterfaces/UnitPassiveEffect";
+import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
 import {AbilityUpgradeData} from "./AbilityUpgradeData";
@@ -712,7 +712,7 @@ export default class Unit
 
     return this.passiveSkillsByPhase;
   }
-  private getPassiveEffectsForScene(scene: "galaxyMap" | "battle" | "battlePrep"): UnitPassiveEffect[]
+  private getPassiveEffectsForScene(scene: "galaxyMap" | "battle" | "battlePrep"): UnitEffectTemplate[]
   {
     const relevantTemplateKeys: string[] = [];
     switch (scene)
@@ -727,7 +727,7 @@ export default class Unit
         break;
     }
 
-    const effectFilterFN = (passiveEffect: UnitPassiveEffect) =>
+    const effectFilterFN = (passiveEffect: UnitEffectTemplate) =>
     {
       if (passiveEffect.isHidden)
       {

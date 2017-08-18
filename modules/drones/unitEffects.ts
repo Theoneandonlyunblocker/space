@@ -1,4 +1,4 @@
-import StatusEffectTemplate from "../../src/templateinterfaces/StatusEffectTemplate";
+import UnitEffectTemplate from "../../src/templateinterfaces/UnitEffectTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
 import
@@ -8,7 +8,7 @@ import
 
 import {placeholder as placeholderSFX} from "../common/battlesfxtemplates/battleSFX";
 
-export const infest: StatusEffectTemplate =
+export const infest: UnitEffectTemplate =
 {
   type: "infest",
   displayName: "Infest",
@@ -32,7 +32,7 @@ export const infest: StatusEffectTemplate =
   ],
 };
 
-export const merge: StatusEffectTemplate =
+export const merge: UnitEffectTemplate =
 {
   type: "merge",
   displayName: "Merge",
@@ -45,7 +45,7 @@ export const merge: StatusEffectTemplate =
   },
 };
 
-export const statusEffectTemplates: TemplateCollection<StatusEffectTemplate> =
+export const unitEffectTemplates: TemplateCollection<UnitEffectTemplate> =
 {
   [infest.type]: infest,
   [merge.type]: merge,

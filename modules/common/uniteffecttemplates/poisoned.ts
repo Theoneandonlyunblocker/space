@@ -1,9 +1,9 @@
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
-import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate";
+import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
 import {adjustHealth} from "../effectactiontemplates/effectActions";
 import {bindEffectActionData} from "../effectactiontemplates/effectActions";
 
-const poisoned: StatusEffectTemplate =
+const poisoned: UnitEffectTemplate =
 {
   type: "poisoned",
   displayName: "Poisoned",

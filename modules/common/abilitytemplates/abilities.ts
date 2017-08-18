@@ -21,7 +21,7 @@ import * as BattleSFX from "../battlesfxtemplates/battleSFX";
 import * as EffectActions from "../effectactiontemplates/effectActions";
 import {bindEffectActionData} from "../effectactiontemplates/effectActions";
 
-import * as SnipeStatusEffects from "../statuseffecttemplates/snipe";
+import * as SnipeStatusEffects from "../uniteffecttemplates/snipe";
 
 export const closeAttack: AbilityTemplate =
 {

@@ -20,7 +20,7 @@ import
   resultType,
 } from "../common/effectactiontemplates/effectActions";
 
-import * as DroneStatusEffects from "./statusEffects";
+import * as DroneStatusEffects from "./unitEffects";
 
 export const assimilate: AbilityTemplate =
 {

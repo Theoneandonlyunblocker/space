@@ -7,7 +7,7 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import {abilityTemplates} from "./abilities";
 import {raceTemplates} from "./raceTemplate";
-import {statusEffectTemplates} from "./statusEffects";
+import {unitEffectTemplates} from "./unitEffects";
 import {unitTemplates} from "./unitTemplates";
 
 import * as Languages from "../../localization/defaultLanguages";
@@ -42,7 +42,7 @@ export const drones: ModuleFile =
   {
     moduleData.copyTemplates(abilityTemplates, "Abilities");
     moduleData.copyTemplates(raceTemplates, "Races");
-    moduleData.copyTemplates(statusEffectTemplates, "StatusEffects");
+    moduleData.copyTemplates(unitEffectTemplates, "UnitEffects");
     moduleData.copyTemplates(unitTemplates, "Units");
 
     return moduleData;

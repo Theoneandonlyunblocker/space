@@ -16,7 +16,7 @@ import
   AbilityEffectAction,
   ExecutedEffectsResult,
 } from "../../../src/templateinterfaces/AbilityEffectAction";
-import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate";
+import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
 import
 {
   clamp,
@@ -168,8 +168,8 @@ export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustm
     target.battleStats.captureChance *= data.multiplier;
   }
 };
-export const addStatusEffect: UnboundEffectAction<{template: StatusEffectTemplate, duration: number}> = function(
-  data: {template: StatusEffectTemplate, duration: number},
+export const addStatusEffect: UnboundEffectAction<{template: UnitEffectTemplate, duration: number}> = function(
+  data: {template: UnitEffectTemplate, duration: number},
   user: Unit,
   target: Unit,
   battle: Battle,

@@ -4,8 +4,8 @@ import BattlePrep from "../../../src/BattlePrep";
 import GuardCoverage from "../../../src/GuardCoverage";
 import Unit from "../../../src/Unit";
 
-import autoHealStatusEffect from "../statuseffecttemplates/autoHeal";
-import poisonedStatusEffect from "../statuseffecttemplates/poisoned";
+import autoHealStatusEffect from "../uniteffecttemplates/autoHeal";
+import poisonedStatusEffect from "../uniteffecttemplates/poisoned";
 
 import * as EffectActions from "../effectactiontemplates/effectActions";
 import {bindEffectActionData} from "../effectactiontemplates/effectActions";

@@ -1,8 +1,8 @@
-import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate";
+import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
 import {adjustHealth} from "../effectactiontemplates/effectActions";
 import {bindEffectActionData} from "../effectactiontemplates/effectActions";
 
-const autoHeal: StatusEffectTemplate =
+const autoHeal: UnitEffectTemplate =
 {
   type: "autoHeal",
   displayName: "Auto heal",

@@ -1,8 +1,8 @@
-import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate";
+import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
 
 import {UnitAttribute} from "../../../src/UnitAttributes";
 
-function makeSnipeStatusEffect(attribute: UnitAttribute): StatusEffectTemplate
+function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
 {
   const attributeName = UnitAttribute[attribute];
   const capitalizedAttributeName = attributeName[0].toUpperCase() + attributeName.slice(1);

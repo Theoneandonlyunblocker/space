@@ -29,11 +29,11 @@ import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
 import PortraitTemplate from "./templateinterfaces/PortraitTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
-import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
 import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
 import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
 import {TerrainTemplate} from "./templateinterfaces/TerrainTemplate";
 import UnitArchetype from "./templateinterfaces/UnitArchetype";
+import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
 interface Templates
@@ -53,11 +53,11 @@ interface Templates
   Portraits: TemplateCollection<PortraitTemplate>;
   Races: TemplateCollection<RaceTemplate>;
   Resources: TemplateCollection<ResourceTemplate>;
-  StatusEffects: TemplateCollection<StatusEffectTemplate>;
   SubEmblems: TemplateCollection<SubEmblemTemplate>;
   Technologies: TemplateCollection<TechnologyTemplate>;
   Terrains: TemplateCollection<TerrainTemplate>;
   UnitArchetypes: TemplateCollection<UnitArchetype>;
+  UnitEffects: TemplateCollection<UnitEffectTemplate>;
   Units: TemplateCollection<UnitTemplate>;
 }
 
@@ -85,11 +85,11 @@ export default class ModuleData
     Portraits: {},
     Races: {},
     Resources: {},
-    StatusEffects: {},
     SubEmblems: {},
     Technologies: {},
     Terrains: {},
     UnitArchetypes: {},
+    UnitEffects: {},
     Units: {},
   };
 

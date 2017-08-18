@@ -452,7 +452,7 @@ export default class GameLoader
     return new StatusEffect(
     {
       id: data.id,
-      template: activeModuleData.Templates.StatusEffects[data.templateType],
+      template: activeModuleData.Templates.UnitEffects[data.templateType],
       turnsToStayActiveFor: data.turnsToStayActiveFor,
       turnsHasBeenActiveFor: data.turnsHasBeenActiveFor,
       sourceUnit: this.unitsById[data.sourceUnitId],
