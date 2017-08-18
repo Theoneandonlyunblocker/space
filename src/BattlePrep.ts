@@ -47,18 +47,19 @@ export default class BattlePrep
     this.minDefenders = this.getInitialMinDefenders();
 
     this.setHumanAndEnemy();
+
+    this.triggerPassiveSkills();
+
     if (this.enemyFormation)
     {
       this.enemyFormation.setAutoFormation(this.humanUnits);
 
-      this.triggerPassiveSkills(this.enemyFormation);
       this.defenderFormation.minUnits = this.minDefenders;
     }
     else
     {
       this.attackerFormation.setAutoFormation(this.defenderUnits);
 
-      this.triggerPassiveSkills(this.attackerFormation);
       this.defenderFormation.minUnits = this.minDefenders;
 
       this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
@@ -129,9 +130,9 @@ export default class BattlePrep
       unit.resetBattleStats();
     });
   }
-  private triggerPassiveSkills(formation: BattlePrepFormation): void
+  private triggerPassiveSkills(): void
   {
-    formation.forEachUnitInFormation(unit =>
+    [...this.attackerUnits, ...this.defenderUnits].forEach(unit =>
     {
       const passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
       if (passiveSkillsByPhase.inBattlePrep)

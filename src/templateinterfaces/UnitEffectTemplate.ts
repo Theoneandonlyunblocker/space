@@ -14,6 +14,7 @@ declare interface UnitEffectTemplate
 
   attributes?: UnitAttributeAdjustments;
 
+  // should just be used for display purposes
   inBattlePrep?: BattlePrepEffect[];
   atBattleStart?: AbilityEffectTemplate[];
   beforeAbilityUse?: AbilityEffectTemplate[];
