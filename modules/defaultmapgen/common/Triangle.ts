@@ -109,4 +109,32 @@ export default class Triangle<T extends Point>
 
     return shared;
   }
+  public getArea(): number
+  {
+    return Math.abs(this.a.x * (this.b.y - this.c.y) + this.b.x * (this.c.y - this.a.y) + this.c.x * (this.a.y - this.b.y)) / 2;
+  }
+  public getRandomPoint(): Point
+  {
+    const r1 = Math.random();
+    const r2 = Math.random();
+
+    const v1 = [r1 * (this.b.x - this.a.x), r1 * (this.b.y - this.a.y)];
+    const v2 = [r2 * (this.c.x - this.a.x), r2 * (this.c.y - this.a.y)];
+
+    const x = v1[0] + v2[0];
+    const y = v1[1] + v2[1];
+
+    if (r1 + r2 > 1)
+    {
+      return this.getRandomPoint();
+    }
+    else
+    {
+      return(
+      {
+        x: x + this.a.x,
+        y: y + this.a.y,
+      });
+    }
+  }
 }
