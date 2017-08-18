@@ -59,6 +59,12 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         ),
         React.DOM.div(
         {
+          className: "star-info-terrain",
+        },
+          `Terrain: ${star.terrain.displayName}`,
+        ),
+        React.DOM.div(
+        {
           className: "star-info-income",
         },
           localize("income") + ": " + star.getIncome(),

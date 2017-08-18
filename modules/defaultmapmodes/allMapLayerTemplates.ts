@@ -7,3 +7,4 @@ export {default as starOwners} from  "./maplayertemplates/starOwners";
 export {default as fogOfWar} from  "./maplayertemplates/fogOfWar";
 export {default as ownerBorders} from  "./maplayertemplates/ownerBorders";
 export {default as starIncome} from  "./maplayertemplates/starIncome";
+export {terrain} from  "./maplayertemplates/terrain";

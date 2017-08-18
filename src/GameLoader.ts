@@ -226,6 +226,7 @@ export default class GameLoader
       id: data.id,
       name: data.name,
       race: activeModuleData.Templates.Races[data.raceType],
+      terrain: activeModuleData.Templates.Terrains[data.terrainType],
     });
     star.baseIncome = data.baseIncome;
     star.seed = data.seed;

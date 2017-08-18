@@ -5,6 +5,7 @@ import BuildingEffect from "./templateinterfaces/BuildingEffect";
 import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
+import {TerrainTemplate} from "./templateinterfaces/TerrainTemplate";
 
 import Building from "./Building";
 import BuildingUpgradeData from "./BuildingUpgradeData";
@@ -87,6 +88,7 @@ export default class Star implements Point
 
   manufactory: Manufactory;
   public race: RaceTemplate;
+  public terrain: TerrainTemplate;
 
   constructor(props:
   {
@@ -97,6 +99,7 @@ export default class Star implements Point
     name?: string;
 
     race?: RaceTemplate;
+    terrain?: TerrainTemplate;
   })
   {
     this.x = props.x;
@@ -106,6 +109,7 @@ export default class Star implements Point
     this.name = props.name || "Star " + this.id;
 
     this.race = props.race;
+    this.terrain = props.terrain;
   }
   // TODO 2017.02.27 | move this somewhere else
   /**
@@ -999,6 +1003,7 @@ export default class Star implements Point
       buildings: buildings,
 
       raceType: this.race.type,
+      terrainType: this.terrain.type,
     };
 
     if (this.resource)

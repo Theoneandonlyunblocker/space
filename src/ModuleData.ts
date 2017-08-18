@@ -32,6 +32,7 @@ import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
 import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
 import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
+import {TerrainTemplate} from "./templateinterfaces/TerrainTemplate";
 import UnitArchetype from "./templateinterfaces/UnitArchetype";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
@@ -55,6 +56,7 @@ interface Templates
   StatusEffects: TemplateCollection<StatusEffectTemplate>;
   SubEmblems: TemplateCollection<SubEmblemTemplate>;
   Technologies: TemplateCollection<TechnologyTemplate>;
+  Terrains: TemplateCollection<TerrainTemplate>;
   UnitArchetypes: TemplateCollection<UnitArchetype>;
   Units: TemplateCollection<UnitTemplate>;
 }
@@ -86,6 +88,7 @@ export default class ModuleData
     StatusEffects: {},
     SubEmblems: {},
     Technologies: {},
+    Terrains: {},
     UnitArchetypes: {},
     Units: {},
   };

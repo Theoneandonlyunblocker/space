@@ -23,6 +23,8 @@ import
   setVoronoiCells,
 } from "../../../src/voronoi";
 
+import * as Terrains from "../../common/terraintemplates/terrains";
+
 import MapGenDataByStarId from "../common/MapGenDataByStarId";
 import MapGenPoint from "../common/MapGenPoint";
 import
@@ -273,7 +275,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     return startPositions;
   })(startRegions);
 
-  //   add star to player and construct initial buildings
+  // add star to player and construct initial buildings
   for (let i = 0; i < startPositions.length; i++)
   {
     const star = startPositions[i];
@@ -332,6 +334,19 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     TemplateIndexes.distributablesByDistributionGroup.resources,
     resourcePlacerFN,
   );
+
+  // set terrains
+  stars.forEach(star =>
+  {
+    if (star.resource)
+    {
+      star.terrain = Terrains.asteroidsTerrain;
+    }
+    else
+    {
+      star.terrain = Terrains.noneTerrain;
+    }
+  });
 
   // add unowned locations to independents
   const independents: Player[] = [];
