@@ -189,7 +189,7 @@ export default class Battle
   }
   private triggerBattleStartAbilities(): void
   {
-    this.battleData.location.getAllBuildings().forEach(building =>
+    this.battleData.location.buildings.forEach(building =>
     {
       if (building.template.battleEffects)
       {

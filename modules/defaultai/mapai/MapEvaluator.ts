@@ -82,17 +82,16 @@ export default class MapEvaluator
 
   evaluateStarInfrastructure(star: Star): number
   {
-    let evaluation = 0;
 
-    for (let category in star.buildings)
+    const totalCostOfAllBuildings = star.buildings.map(building =>
     {
-      for (let i = 0; i < star.buildings[category].length; i++)
-      {
-        evaluation += star.buildings[category][i].totalCost / 25;
-      }
-    }
+      return building.totalCost;
+    }).reduce((total, current) =>
+    {
+      return total + current;
+    }, 0);
 
-    return evaluation;
+    return totalCostOfAllBuildings / 25;
   }
 
   evaluateStarProduction(star: Star): number
@@ -303,30 +302,13 @@ export default class MapEvaluator
   {
     const byPlayer = new ValuesByPlayer<number>();
 
-    for (let i = 0; i < star.buildings["defence"].length; i++)
+    star.getDefenceBuildings().forEach(building =>
     {
-      const building = star.buildings["defence"][i];
-
       const previousValue = byPlayer.get(building.controller) || 0;
       byPlayer.set(building.controller, previousValue + building.totalCost);
-    }
+    });
 
     return byPlayer;
-  }
-  getTotalDefenceBuildingStrengthAtStar(star: Star): number
-  {
-    let strength = 0;
-
-    for (let i = 0; i < star.buildings["defence"].length; i++)
-    {
-      const building = star.buildings["defence"][i];
-
-      if (building.controller.id === this.player.id) continue;
-
-      strength += building.totalCost;
-    }
-
-    return strength;
   }
 
   public getVisibleFleetsOfPlayer(player: Player): Fleet[]

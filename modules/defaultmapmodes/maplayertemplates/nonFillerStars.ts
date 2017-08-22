@@ -38,11 +38,10 @@ const nonFillerStars: MapRendererLayerTemplate =
     for (let i = 0; i < points.length; i++)
     {
       const star = points[i];
-      let starSize = 1;
-      if (star.buildings["defence"])
-      {
-        starSize += star.buildings["defence"].length * 2;
-      }
+      const defenceBuildingsCount = star.getDefenceBuildings().length;
+
+      const starSize = 1 + defenceBuildingsCount * 2;
+
       const gfx = new PIXI.Graphics();
       if (!star.owner.isIndependent)
       {

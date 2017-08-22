@@ -71,7 +71,7 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         ),
         DefenceBuildingList(
         {
-          buildings: star.buildings["defence"],
+          buildings: star.getDefenceBuildings(),
         }),
 
       )

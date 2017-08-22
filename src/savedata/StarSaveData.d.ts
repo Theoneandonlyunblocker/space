@@ -1,5 +1,5 @@
 import ManufactorySaveData from "./ManufactorySaveData";
-import StarBuildingsSaveData from "./StarBuildingsSaveData";
+import BuildingSaveData from "./BuildingSaveData";
 
 declare interface StarSaveData
 {
@@ -17,7 +17,7 @@ declare interface StarSaveData
   resourceType?: string;
   manufactory?: ManufactorySaveData;
 
-  buildings: StarBuildingsSaveData;
+  buildings: BuildingSaveData[];
 
   raceType: string;
   terrainType: string;

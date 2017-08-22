@@ -40,18 +40,19 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
 
   render()
   {
-    if (!this.props.buildings) return null;
-
-    const buildings: React.ReactElement<any>[] = [];
-
-    for (let i = 0; i < this.props.buildings.length; i++)
+    if (!this.props.buildings)
     {
-      buildings.push(DefenceBuilding(
-      {
-        key: this.props.buildings[i].id,
-        building: this.props.buildings[i],
-      }));
+      return null;
     }
+
+    const buildings = this.props.buildings.map(building =>
+    {
+      return DefenceBuilding(
+      {
+        key: building.id,
+        building: building,
+      });
+    });
 
     if (this.props.reverse)
     {

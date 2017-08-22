@@ -245,16 +245,13 @@ export default class GameLoader
       const starData = data.stars[i];
       const star = this.starsById[starData.id];
 
-      for (let category in starData.buildings)
+      starData.buildings.forEach(buildingData =>
       {
-        for (let j = 0; j < starData.buildings[category].length; j++)
-        {
-          const buildingData = starData.buildings[category][j];
-          const building = this.deserializeBuilding(buildingData);
+        const building = this.deserializeBuilding(buildingData);
 
-          star.addBuilding(building);
-        }
-      }
+        star.addBuilding(building);
+      });
+
 
       if (starData.manufactory)
       {

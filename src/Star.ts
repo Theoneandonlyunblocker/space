@@ -24,7 +24,6 @@ import
   aStar,
 } from "./pathFinding";
 
-import StarBuildingsSaveData from "./savedata/StarBuildingsSaveData";
 import StarSaveData from "./savedata/StarSaveData";
 
 
@@ -61,11 +60,7 @@ export default class Star implements Point
     [playerId: string] : Fleet[];
   } = {};
 
-  // TODO 2017.08.22 | store all these in flat array
-  buildings:
-  {
-    [category: string] : Building[];
-  } = {};
+  public buildings: Building[] = [];
   buildingsEffect: BuildingEffect;
   buildingsEffectIsDirty: boolean = true;
 
@@ -181,26 +176,22 @@ export default class Star implements Point
     return island;
   }
   // BUILDINGS
+  hasBuilding(building: Building): boolean
+  {
+    return this.buildings.indexOf(building) !== -1;
+  }
   addBuilding(building: Building): void
   {
-    if (!this.buildings[building.template.category])
-    {
-      this.buildings[building.template.category] = [];
-    }
-
-    const buildings = this.buildings[building.template.category];
-
-    if (buildings.indexOf(building) >= 0)
+    if (this.hasBuilding(building))
     {
       throw new Error("Already has building");
     }
 
-    buildings.push(building);
+    this.buildings.push(building);
     this.buildingsEffectIsDirty = true;
 
     if (building.template.category === "defence")
     {
-      this.sortDefenceBuildings();
       eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
     }
     if (building.template.category === "vision")
@@ -219,23 +210,20 @@ export default class Star implements Point
   }
   removeBuilding(building: Building): void
   {
-    if (
-      !this.buildings[building.template.category] ||
-      this.buildings[building.template.category].indexOf(building) < 0
-    )
+    if (!this.hasBuilding(building))
     {
       throw new Error("Location doesn't have building");
     }
 
-    const buildings = this.buildings[building.template.category];
-
-    this.buildings[building.template.category].splice(
-      buildings.indexOf(building), 1);
+    this.buildings.splice(this.buildings.indexOf(building), 1);
     this.buildingsEffectIsDirty = true;
   }
-  sortDefenceBuildings(): void
+  public getDefenceBuildings(): Building[]
   {
-    this.buildings["defence"].sort(function(a, b)
+    return this.buildings.filter(building =>
+    {
+      return building.template.category === "defence";
+    }).sort((a, b) =>
     {
       if (a.template.maxPerType === 1) //hq
       {
@@ -257,12 +245,7 @@ export default class Star implements Point
 
   getSecondaryController(): Player | null
   {
-    if (!this.buildings["defence"])
-    {
-      return null;
-    }
-
-    const defenceBuildings = this.buildings["defence"];
+    const defenceBuildings = this.getDefenceBuildings();
     for (let i = 0; i < defenceBuildings.length; i++)
     {
       if (defenceBuildings[i].controller !== this.owner)
@@ -275,16 +258,21 @@ export default class Star implements Point
   }
   updateController(): void
   {
-    if (!this.buildings["defence"]) return;
+    const defenceBuildings = this.getDefenceBuildings();
 
     const oldOwner = this.owner;
-    const newOwner = this.buildings["defence"][0].controller;
+    const newOwner = defenceBuildings[0].controller;
 
     if (oldOwner)
     {
-      if (oldOwner === newOwner) return;
-
-      oldOwner.removeStar(this);
+      if (oldOwner === newOwner)
+      {
+        return;
+      }
+      else
+      {
+        oldOwner.removeStar(this);
+      }
     }
 
     newOwner.addStar(this);
@@ -300,16 +288,12 @@ export default class Star implements Point
   }
   updateBuildingsEffect(): void
   {
-    const effect: BuildingEffect = {};
+    let effect: BuildingEffect = {};
 
-    for (let category in this.buildings)
+    this.buildings.forEach(building =>
     {
-      for (let i = 0; i < this.buildings[category].length; i++)
-      {
-        const building = this.buildings[category][i];
-        building.getEffect(effect);
-      }
-    }
+      effect = building.getEffect(effect);
+    });
 
     this.buildingsEffect = effect;
     this.buildingsEffectIsDirty = false;
@@ -358,45 +342,18 @@ export default class Star implements Point
   {
     return this.getEffectWithBuildingsEffect(0, "research");
   }
-  getAllBuildings(): Building[]
-  {
-    let buildings: Building[] = [];
-
-    for (let category in this.buildings)
-    {
-      buildings = buildings.concat(this.buildings[category]);
-    }
-
-    return buildings;
-  }
   getBuildingsForPlayer(player: Player): Building[]
   {
-    const allBuildings = this.getAllBuildings();
-
-    return allBuildings.filter(function(building)
-    {
-      return building.controller.id === player.id;
-    });
+    return this.buildings.filter(building => building.controller === player);
   }
-  getBuildingsByFamily(buildingTemplate: BuildingTemplate): Building[]
+  getBuildingsInFamilyOfTemplate(buildingTemplate: BuildingTemplate): Building[]
   {
     const propToCheck = buildingTemplate.family ? "family" : "type";
 
-    const categoryBuildings = this.buildings[buildingTemplate.category];
-    const buildings: Building[] = [];
-
-    if (categoryBuildings)
+    return this.buildings.filter(building =>
     {
-      for (let i = 0; i < categoryBuildings.length; i++)
-      {
-        if (categoryBuildings[i].template[propToCheck] === buildingTemplate[propToCheck])
-        {
-          buildings.push(categoryBuildings[i]);
-        }
-      }
-    }
-
-    return buildings;
+      return building.template[propToCheck] === buildingTemplate[propToCheck];
+    });
   }
   getBuildableBuildings(): BuildingTemplate[]
   {
@@ -411,7 +368,7 @@ export default class Star implements Point
         continue;
       }
 
-      alreadyBuilt = this.getBuildingsByFamily(template);
+      alreadyBuilt = this.getBuildingsInFamilyOfTemplate(template);
 
       if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly)
       {
@@ -453,7 +410,7 @@ export default class Star implements Point
           {
             maxAllowed += 1;
           }
-          const alreadyBuilt = self.getBuildingsByFamily(template);
+          const alreadyBuilt = self.getBuildingsInFamilyOfTemplate(template);
           return alreadyBuilt.length < maxAllowed;
         }
       });
@@ -616,15 +573,11 @@ export default class Star implements Point
   }
   getFirstEnemyDefenceBuilding(player: Player): Building
   {
-    if (!this.buildings["defence"])
-    {
-      return null;
-    }
+    const defenceBuildings = this.getDefenceBuildings();
 
-    let defenceBuildings = this.buildings["defence"].slice(0);
     if (this.owner === player)
     {
-      defenceBuildings = defenceBuildings.reverse();
+      defenceBuildings.reverse();
     }
 
     for (let i = defenceBuildings.length - 1; i >= 0; i--)
@@ -972,18 +925,6 @@ export default class Star implements Point
   }
   serialize(): StarSaveData
   {
-    const buildings: StarBuildingsSaveData = {};
-
-    for (let category in this.buildings)
-    {
-      buildings[category] = [];
-      for (let i = 0; i < this.buildings[category].length; i++)
-      {
-        buildings[category].push(this.buildings[category][i].serialize());
-      }
-    }
-
-
     const data: StarSaveData =
     {
       id: this.id,
@@ -1000,7 +941,7 @@ export default class Star implements Point
 
       seed: this.seed,
 
-      buildings: buildings,
+      buildings: this.buildings.map(building => building.serialize()),
 
       raceType: this.race.type,
       terrainType: this.terrain.type,
