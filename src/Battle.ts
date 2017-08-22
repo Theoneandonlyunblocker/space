@@ -559,13 +559,12 @@ export default class Battle
       const currentHealthFactor = currentHealth / this.startHealth[side];
       evaluation += currentHealthFactor * sign;
 
-      this.getUnitsForSide(side).forEach(unit =>
+      const destroyedUnits = this.getUnitsForSide(side).filter(unit => !unit.isActiveInBattle());
+      const destroyedUnitsCount = destroyedUnits.length;
+      if (destroyedUnitsCount > 0)
       {
-        if (unit.currentHealth <= 0)
-        {
-          evaluation -= 0.2 * sign;
-        }
-      });
+        evaluation *= Math.pow(destroyedUnits.length, 0.8);
+      }
 
       if (this.evaluationAdjustment)
       {
