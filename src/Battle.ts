@@ -1,6 +1,5 @@
 import {activeModuleData} from "./activeModuleData";
 import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
-import DefenceBuildingTemplate from "./templateinterfaces/DefenceBuildingTemplate";
 
 import BattleData from "./BattleData";
 import BattleTurnOrder from "./BattleTurnOrder";
@@ -57,6 +56,12 @@ export default class Battle
   public loser: Player;
   public capturedUnits: Unit[];
   public deadUnits: Unit[];
+
+  /**
+   * 0.4 == 40% increased base evaluation for side1,
+   * -0.1 == 10% increase for side2
+   */
+  public evaluationAdjustment: number = 0;
 
   public afterFinishCallbacks: {(): void}[] = [];
 
@@ -184,27 +189,49 @@ export default class Battle
   }
   private triggerBattleStartAbilities(): void
   {
-    this.forEachUnit(unit =>
+    this.battleData.location.getAllBuildings().forEach(building =>
     {
-      const passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
-      if (passiveSkillsByPhase.atBattleStart)
+      if (building.template.battleEffects)
       {
-        const executedEffectsResult: ExecutedEffectsResult = {};
-        const skills = passiveSkillsByPhase.atBattleStart;
-        for (let i = 0; i < skills.length; i++)
+        building.template.battleEffects.filter(unitEffect =>
         {
-          for (let j = 0; j < skills[i].atBattleStart.length; j++)
+          return unitEffect.atBattleStart;
+        }).forEach(unitEffect =>
+        {
+          const executedEffectsResult: ExecutedEffectsResult = {};
+
+          unitEffect.atBattleStart.forEach(abilityEffect =>
           {
-            const effect = skills[i].atBattleStart[j];
-            effect.executeAction(unit,
-              unit,
+            abilityEffect.executeAction(
+              null,
+              null,
               this,
               executedEffectsResult,
               null,
             );
-          }
-        }
+          });
+        });
       }
+    });
+
+    this.forEachUnit(unit =>
+    {
+      const passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+      passiveSkillsByPhase.atBattleStart.forEach(passiveSkill =>
+      {
+        const executedEffectsResult: ExecutedEffectsResult = {};
+
+        passiveSkill.atBattleStart.forEach(effect =>
+        {
+          effect.executeAction(
+            unit,
+            unit,
+            this,
+            executedEffectsResult,
+            null,
+          );
+        });
+      });
     });
   }
   private getPlayerForSide(side: UnitBattleSide): Player
@@ -222,7 +249,7 @@ export default class Battle
       throw new Error("invalid side");
     }
   }
-  private getSideForPlayer(player: Player): UnitBattleSide
+  public getSideForPlayer(player: Player): UnitBattleSide
   {
     if (this.side1Player === player)
     {
@@ -528,8 +555,9 @@ export default class Battle
 
         return;
       }
-      // how much health remains from strating health 0.0-1.0
+      // how much health remains from strating health 0.0 - 1.0
       const currentHealthFactor = currentHealth / this.startHealth[side];
+      evaluation += currentHealthFactor * sign;
 
       this.getUnitsForSide(side).forEach(unit =>
       {
@@ -539,18 +567,18 @@ export default class Battle
         }
       });
 
-      let defenderMultiplier = 1;
-      if (this.battleData.building)
+      if (this.evaluationAdjustment)
       {
-        const template = <DefenceBuildingTemplate> this.battleData.building.template;
-        const isDefender = this.battleData.defender.player === this.getPlayerForSide(side);
-        if (isDefender)
+        const sideWithAdvantageousAdjustment = this.evaluationAdjustment > 0 ?
+          "side1" :
+          "side2";
+        if (side === sideWithAdvantageousAdjustment)
         {
-          defenderMultiplier += template.defenderAdvantage;
+          const evaluationMultiplier = 1 + Math.abs(this.evaluationAdjustment);
+
+          evaluation *= evaluationMultiplier;
         }
       }
-
-      evaluation += currentHealthFactor * defenderMultiplier * sign;
     });
 
     evaluation = clamp(evaluation, -1, 1);

@@ -35,8 +35,9 @@ export default class Star implements Point
   x: number;
   y: number;
 
-  // position voronoi cell is calculated from. after voronoi is calculated, star is moved
-  // to the centroid of its cell and these are stored to calculate voronoi after loading map
+  // position voronoi cell is calculated from
+  // after voronoi is calculated, star is moved to the centroid of its cell
+  // these are stored to calculate voronoi after loading map
   basisX: number;
   basisY: number;
 
@@ -45,8 +46,6 @@ export default class Star implements Point
   linksTo: Star[] = [];
   linksFrom: Star[] = [];
 
-  // set by voronoi library and deleted after mapgen
-  // voronoiId: number;
   voronoiCell: VoronoiCell<Star>;
 
   seed: string;
@@ -62,6 +61,7 @@ export default class Star implements Point
     [playerId: string] : Fleet[];
   } = {};
 
+  // TODO 2017.08.22 | store all these in flat array
   buildings:
   {
     [category: string] : Building[];

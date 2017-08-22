@@ -168,6 +168,7 @@ export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustm
     target.battleStats.captureChance *= data.multiplier;
   }
 };
+
 export const addStatusEffect: UnboundEffectAction<{template: UnitEffectTemplate, duration: number}> = function(
   data: {template: UnitEffectTemplate, duration: number},
   user: Unit,
@@ -183,6 +184,7 @@ export const addStatusEffect: UnboundEffectAction<{template: UnitEffectTemplate,
     sourceUnit: user,
   }));
 };
+
 export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> = function(
   data: ExecutedEffectsResultAdjustment & HealthAdjustment,
   user: Unit,
@@ -209,6 +211,7 @@ export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment &
 
   target.addHealth(clamped);
 };
+
 export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> = function(
   data: ExecutedEffectsResultAdjustment & HealthAdjustment,
   user: Unit,
@@ -226,5 +229,35 @@ export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResul
 
   target.addMaxHealth(healAmount);
   target.addHealth(healAmount);
+};
+
+export const adjustBattleEvaluationAdjustment: UnboundEffectAction<Adjustment> = (
+  data: Adjustment,
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult,
+): void =>
+{
+  const adjustment = user.attributes.modifyValueByAttributes(data.flat, data.perAttribute);
+  const sign = target.battleStats.side === "side1" ? 1 : -1;
+
+  battle.evaluationAdjustment += adjustment * sign;
+};
+
+export const adjustDefenderBattleEvaluationAdjustment: UnboundEffectAction<{amount: number}> = (
+  data: {amount: number},
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult,
+): void =>
+{
+  const defender = battle.battleData.defender.player;
+  const defendingSide = battle.getSideForPlayer(defender);
+
+  const sign = defendingSide === "side1" ? 1 : -1;
+
+  battle.evaluationAdjustment += data.amount * sign;
 };
 

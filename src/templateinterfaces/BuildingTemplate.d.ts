@@ -1,4 +1,5 @@
 import BuildingEffect from "./BuildingEffect";
+import UnitEffectTemplate from "./UnitEffectTemplate";
 
 declare interface BuildingTemplate
 {
@@ -24,6 +25,8 @@ declare interface BuildingTemplate
     templateType: string;
     level: number;
   }[];
+
+  battleEffects?: UnitEffectTemplate[];
 }
 
 export default BuildingTemplate;

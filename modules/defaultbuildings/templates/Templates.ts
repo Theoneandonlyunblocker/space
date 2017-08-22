@@ -1,7 +1,9 @@
 import BuildingTemplate from "../../../src/templateinterfaces/BuildingTemplate";
-import DefenceBuildingTemplate from "../../../src/templateinterfaces/DefenceBuildingTemplate";
 
-export const sectorCommand: DefenceBuildingTemplate =
+import {makeDefensiveBuildingEffect} from "./makeDefensiveBuildingEffect";
+
+
+export const sectorCommand: BuildingTemplate =
 {
   type: "sectorCommand",
   category: "defence",
@@ -28,9 +30,9 @@ export const sectorCommand: DefenceBuildingTemplate =
       level: 1,
     },
   ],
-  defenderAdvantage: 0.2,
+  battleEffects: [makeDefensiveBuildingEffect(0.2)],
 };
-export const sectorCommand1: DefenceBuildingTemplate =
+export const sectorCommand1: BuildingTemplate =
 {
   type: "sectorCommand1",
   category: "defence",
@@ -45,9 +47,9 @@ export const sectorCommand1: DefenceBuildingTemplate =
 
   maxUpgradeLevel: 1,
   upgradeOnly: true,
-  defenderAdvantage: 0.3,
+  battleEffects: [makeDefensiveBuildingEffect(0.3)],
 };
-export const sectorCommand2: DefenceBuildingTemplate =
+export const sectorCommand2: BuildingTemplate =
 {
   type: "sectorCommand2",
   category: "defence",
@@ -62,9 +64,9 @@ export const sectorCommand2: DefenceBuildingTemplate =
 
   maxUpgradeLevel: 1,
   upgradeOnly: true,
-  defenderAdvantage: 0.3,
+  battleEffects: [makeDefensiveBuildingEffect(0.3)],
 };
-export const starBase: DefenceBuildingTemplate =
+export const starBase: BuildingTemplate =
 {
   type: "starBase",
   category: "defence",
@@ -78,7 +80,7 @@ export const starBase: DefenceBuildingTemplate =
   maxPerType: 3,
 
   maxUpgradeLevel: 1,
-  defenderAdvantage: 0.1,
+  battleEffects: [makeDefensiveBuildingEffect(0.1)],
   upgradeInto:
   [
     {
