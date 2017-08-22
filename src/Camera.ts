@@ -31,7 +31,7 @@ export default class Camera
   public destroy(): void
   {
     registerActiveCamera(null);
-    window.removeEventListener("resize", this.setSize);
+    this.removeEventListeners();
 
     this.getBoundsObjectBoundsFN = null;
   }
@@ -98,7 +98,11 @@ export default class Camera
 
   private addEventListeners()
   {
-    window.addEventListener("resize", this.setSize, false);
+    window.addEventListener("resize", this.setSize);
+  }
+  private removeEventListeners()
+  {
+    window.removeEventListener("resize", this.setSize);
   }
   private onMove()
   {

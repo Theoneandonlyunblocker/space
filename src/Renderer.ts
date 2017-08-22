@@ -60,23 +60,7 @@ export default class Renderer
 
     this.backgroundDrawer.destroy();
 
-    if (this.pathfindingArrow)
-    {
-      this.pathfindingArrow.destroy();
-      this.pathfindingArrow = null;
-    }
-
-    if (this.mouseEventHandler)
-    {
-      this.mouseEventHandler.destroy();
-      this.mouseEventHandler = null;
-    }
-
-    if (this.camera)
-    {
-      this.camera.destroy();
-      this.camera = null;
-    }
+    this.removeCamera();
 
     if (this.renderer)
     {
@@ -96,6 +80,8 @@ export default class Renderer
     {
       this.renderer.view.parentNode.removeChild(this.renderer.view);
     }
+
+    this.removeCamera();
   }
   public bindRendererView(container: HTMLElement)
   {
@@ -162,16 +148,30 @@ export default class Renderer
     this.layers.select.interactive = false;
     this.layers.select.interactiveChildren = false;
   }
-  private addCamera()
+  private removeCamera(): void
   {
+    if (this.pathfindingArrow)
+    {
+      this.pathfindingArrow.destroy();
+      this.pathfindingArrow = null;
+    }
+
     if (this.mouseEventHandler)
     {
       this.mouseEventHandler.destroy();
+      this.mouseEventHandler = null;
     }
+
     if (this.camera)
     {
       this.camera.destroy();
+      this.camera = null;
     }
+  }
+  private addCamera()
+  {
+    this.removeCamera();
+
     this.camera = new Camera(this.layers.main);
 
     this.mouseEventHandler = new MouseEventHandler(
