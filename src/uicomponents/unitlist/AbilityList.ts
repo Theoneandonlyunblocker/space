@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import {AbilityListItem, AbilityListItemType} from "./AbilityListItem";
 
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 
@@ -28,13 +29,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
   {
     const abilities: AbilityBase[] = this.props.abilities;
 
-    if (abilities.length < 1)
-    {
-      return null;
-    }
-
-
-    const abilityElements: React.ReactHTMLElement<any>[] = [];
+    const abilityElements: React.ReactElement<any>[] = [];
     const addedAbilityTypes:
     {
       [abilityType: string]: number;
@@ -68,54 +63,47 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
         addedAbilityTypes[ability.type] = 0;
       }
 
-      let className = "unit-info-ability";
-      const isLearnable = ability.type === "learnable";
-      if (isLearnable)
-      {
-        className += " learnable-ability";
-      }
-      else
-      {
-        const isPassiveSkill = !ability.mainEffect;
-        if (isPassiveSkill)
-        {
-          className += " passive-skill";
-        }
-        else
-        {
-          className += " active-skill";
-        }
-
-        if (addedAbilityTypes[ability.type] >= 1)
-        {
-          className += " redundant-ability";
-        }
-      }
-
 
       abilityElements.push(
-        React.DOM.li(
+        AbilityListItem(
         {
-          className: className,
-          title: ability.description,
           key: ability.type + addedAbilityTypes[ability.type],
-          onClick: (this.props.handleClick ? this.props.handleClick.bind(null, ability) : undefined),
-        },
-          "[" + ability.displayName + "]",
-        ),
+          type: this.getAbilityListItemType(ability, addedAbilityTypes[ability.type]),
+          displayName: ability.displayName,
+          title: ability.description,
+
+          onClick: (this.props.handleClick ? this.props.handleClick.bind(null, ability) : undefined)
+        }),
       );
 
       addedAbilityTypes[ability.type]++;
     }
 
     return(
-      React.DOM.ul(
+      React.DOM.ol(
       {
         className: "ability-list",
       },
         abilityElements,
+        this.props.children,
       )
     );
+  }
+
+  private getAbilityListItemType(ability: AbilityBase, addedAbilitiesOfType: number): AbilityListItemType
+  {
+    if (addedAbilitiesOfType > 0)
+    {
+      return "redundant";
+    }
+    else if (!ability.mainEffect)
+    {
+      return "passive";
+    }
+    else
+    {
+      return "active";
+    }
   }
 }
 

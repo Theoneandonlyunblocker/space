@@ -12,7 +12,6 @@ import SFXParams from "./templateinterfaces/SFXParams";
 import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
-import {AbilityUpgradeData} from "./AbilityUpgradeData";
 import Battle from "./Battle";
 import {Fleet} from "./Fleet";
 import GuardCoverage from "./GuardCoverage";
@@ -30,6 +29,7 @@ import UnitBattleSide from "./UnitBattleSide";
 import UnitBattleStats from "./UnitBattleStats";
 import UnitDisplayData from "./UnitDisplayData";
 import UnitItems from "./UnitItems";
+import {UpgradableAbilitiesData} from "./UpgradableAbilitiesData";
 import
 {
   clamp,
@@ -896,7 +896,10 @@ export default class Unit
     this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
     this.level++;
   }
-  private hasAbility(ability: AbilityBase, allAbilities: AbilityBase[])
+  private hasAbility(
+    ability: AbilityBase,
+    allAbilities: AbilityBase[] = [...this.getAllAbilities(), ...this.getAllPassiveSkills()],
+  ): boolean
   {
     for (let i = 0; i < allAbilities.length; i++)
     {
@@ -908,46 +911,44 @@ export default class Unit
 
     return false;
   }
-  private getLearnableAbilities(allAbilities: AbilityBase[]): AbilityBase[]
+  public getLearnableAbilities(
+    allAbilities: AbilityBase[] = [...this.getAllAbilities(), ...this.getAllPassiveSkills()],
+  ): AbilityBase[]
   {
-    const abilities: AbilityBase[] = [];
+    const learnableAbilities: AbilityBase[] = [];
 
     if (!this.template.learnableAbilities)
     {
-      return abilities;
+      return learnableAbilities;
     }
 
-    for (let i = 0; i < this.template.learnableAbilities.length; i++)
+    this.template.learnableAbilities.forEach(learnable =>
     {
-      if (Array.isArray(this.template.learnableAbilities[i]))
+      if (Array.isArray(learnable))
       {
-        const learnableAbilityGroup = <AbilityBase[]> this.template.learnableAbilities[i];
-        let hasAbilityFromGroup: boolean = false;
-        for (let j = 0; j < learnableAbilityGroup.length; j++)
+        const learnableAbilityGroup = learnable;
+        const hasAbilityFromGroup = learnableAbilityGroup.some(ability =>
         {
-          if (this.hasAbility(learnableAbilityGroup[j], allAbilities))
-          {
-            hasAbilityFromGroup = true;
-            break;
-          }
-        }
+          return this.hasAbility(ability, allAbilities);
+        });
 
         if (!hasAbilityFromGroup)
         {
-          abilities.push(...learnableAbilityGroup);
+          learnableAbilities.push(...learnableAbilityGroup);
         }
       }
       else
       {
-        const learnableAbility = <AbilityBase> this.template.learnableAbilities[i];
-        if (!this.hasAbility(learnableAbility, allAbilities))
+        const learnableAbility = learnable;
+
+        if (!this.hasAbility(learnable, allAbilities))
         {
-          abilities.push(learnableAbility);
+          learnableAbilities.push(learnableAbility);
         }
       }
-    }
+    });
 
-    return abilities;
+    return learnableAbilities;
   }
   private canUpgradeIntoAbility(ability: AbilityBase, allAbilities: AbilityBase[])
   {
@@ -965,66 +966,57 @@ export default class Unit
 
     return true;
   }
-  public getAbilityUpgradeData(): AbilityUpgradeData
+  public getUpgradableAbilitiesData(): UpgradableAbilitiesData
   {
-    const upgradeData: AbilityUpgradeData = {};
+    const data: UpgradableAbilitiesData = {};
 
-    const allAbilities: AbilityBase[] = this.getAllAbilities();
-    allAbilities.push(...this.getAllPassiveSkills());
+    const allAbilities = [...this.getAllAbilities(), ...this.getAllPassiveSkills()];
 
-    const upgradableAbilities: AbilityBase[] = allAbilities.filter(abilityTemplate =>
+    const upgradableAbilities = allAbilities.filter(abilityTemplate =>
     {
       return abilityTemplate.canUpgradeInto && abilityTemplate.canUpgradeInto.length > 0;
     });
 
     upgradableAbilities.forEach(parentAbility =>
-    {
-      parentAbility.canUpgradeInto!.forEach(childAbility =>
       {
-        if (this.canUpgradeIntoAbility(childAbility, allAbilities))
+        parentAbility.canUpgradeInto!.forEach(childAbility =>
         {
-          if (!upgradeData[parentAbility.type])
+          if (this.canUpgradeIntoAbility(childAbility, allAbilities))
           {
-            upgradeData[parentAbility.type] =
+            if (!data[parentAbility.type])
             {
-              base: parentAbility,
-              possibleUpgrades: [],
-            };
+              data[parentAbility.type] =
+              {
+                base: parentAbility,
+                possibleUpgrades: [],
+              };
+            }
+
+            data[parentAbility.type].possibleUpgrades.push(childAbility);
           }
-
-          upgradeData[parentAbility.type].possibleUpgrades.push(childAbility);
-        }
+        });
       });
-    });
 
-    const learnable = this.getLearnableAbilities(allAbilities);
-    if (learnable.length > 0)
-    {
-      upgradeData.learnable =
-      {
-        base: null,
-        possibleUpgrades: learnable,
-      };
-    }
-
-    return upgradeData;
+    return data;
   }
   public upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
   {
-    const newAbilityIsPassiveSkill = !newAbility.mainEffect;
-    if (source)
+    const sourceIsPassiveSkill = !source.mainEffect;
+
+    if (sourceIsPassiveSkill)
     {
-      const sourceIsPassiveSkill = !source.mainEffect;
-      if (sourceIsPassiveSkill)
-      {
-        this.passiveSkills.splice(this.passiveSkills.indexOf(source), 1);
-      }
-      else
-      {
-        const castedSource = <AbilityTemplate> source;
-        this.abilities.splice(this.abilities.indexOf(castedSource), 1);
-      }
+      this.passiveSkills.splice(this.passiveSkills.indexOf(source), 1);
     }
+    else
+    {
+      this.abilities.splice(this.abilities.indexOf(<AbilityTemplate> source), 1);
+    }
+
+    this.learnAbility(newAbility);
+  }
+  public learnAbility(newAbility: AbilityBase): void
+  {
+    const newAbilityIsPassiveSkill = !newAbility.mainEffect
 
     if (newAbilityIsPassiveSkill)
     {
@@ -1032,8 +1024,7 @@ export default class Unit
     }
     else
     {
-      const castedNewAbility = <AbilityTemplate> newAbility;
-      this.abilities.push(castedNewAbility);
+      this.abilities.push(<AbilityTemplate> newAbility);
     }
   }
   public drawBattleScene(params: SFXParams)

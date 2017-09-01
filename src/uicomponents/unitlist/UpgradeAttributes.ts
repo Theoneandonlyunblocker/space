@@ -64,11 +64,6 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
       }
     });
 
-    if (rows.length === 0)
-    {
-      return null;
-    }
-
     return(
       React.DOM.div(
       {
