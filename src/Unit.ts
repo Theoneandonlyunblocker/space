@@ -987,7 +987,7 @@ export default class Unit
             {
               data[parentAbility.type] =
               {
-                base: parentAbility,
+                source: parentAbility,
                 possibleUpgrades: [],
               };
             }

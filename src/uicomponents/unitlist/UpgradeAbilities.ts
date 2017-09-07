@@ -73,7 +73,7 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
         {
           abilities: Object.keys(this.props.upgradableAbilitiesData).map(sourceAbilityType =>
           {
-            return this.props.upgradableAbilitiesData[sourceAbilityType].base;
+            return this.props.upgradableAbilitiesData[sourceAbilityType].source;
           }),
           handleClick: this.toggleUpgradeAbilityPopup,
         },
@@ -92,7 +92,7 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
           {
             title: this.state.activePopupType === "learn" ?
               localize("learnAbility") :
-              `${localize("upgradeAbility")} ${currentlyUpgradingAbility.base.displayName}`,
+              `${localize("upgradeAbility")} ${currentlyUpgradingAbility.source.displayName}`,
             handleClose: this.closePopup,
             isResizable: false,
           },
