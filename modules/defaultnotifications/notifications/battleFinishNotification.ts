@@ -19,6 +19,7 @@ export interface PropTypes
   attacker: Player;
   defender: Player;
   victor: Player;
+  newController: Player;
 }
 
 export interface SerializedPropTypes
@@ -27,6 +28,7 @@ export interface SerializedPropTypes
   defenderId: number;
   locationId: number;
   victorId: number;
+  newControllerId: number;
 }
 
 export const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
@@ -60,6 +62,7 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
       defenderId: props.defender.id,
       locationId: props.location.id,
       victorId: props.victor.id,
+      newControllerId: props.newController.id,
     });
   },
   deserializeProps: (props: SerializedPropTypes, gameLoader: GameLoader) =>
@@ -70,6 +73,7 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
       defender: gameLoader.playersById[props.defenderId],
       location: gameLoader.starsById[props.locationId],
       victor: gameLoader.playersById[props.victorId],
+      newController: gameLoader.playersById[props.newControllerId],
     });
   },
 };
@@ -94,6 +98,7 @@ export const battleFinishNotificationCreationScripts =
               attacker: battle.battleData.attacker.player,
               defender: battle.battleData.defender.player,
               victor: battle.victor,
+              newController: battle.battleData.location.owner,
             },
             involvedPlayers: [battle.side1Player, battle.side2Player],
             location: battle.battleData.location,

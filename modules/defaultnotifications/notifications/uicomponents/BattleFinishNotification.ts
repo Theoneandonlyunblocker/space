@@ -28,13 +28,14 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
   public render()
   {
     const notification = this.props.notification;
+    const location = notification.props.location;
     const attacker = notification.props.attacker;
     const defender = notification.props.defender;
     const victor = notification.props.victor;
-    const location = notification.props.location;
+    const newController = notification.props.newController;
 
     const attackWasSuccessful = victor === attacker;
-    const attackerGainedControl = location.owner === attacker;
+    const attackerGainedControl = newController === attacker;
 
     const messageToLocalize = attackWasSuccessful ?
       attackerGainedControl ?
