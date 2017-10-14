@@ -65,7 +65,7 @@ export const playerDiedNotificationCreationScripts =
         priority: 0,
         script: (player: Player) =>
         {
-          activeNotificationLog.makeNotification(
+          activeNotificationLog.makeNotification<PropTypes, SerializedPropTypes>(
           {
             template: playerDiedNotification,
             props:

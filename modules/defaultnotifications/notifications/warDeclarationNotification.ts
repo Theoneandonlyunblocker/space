@@ -74,7 +74,7 @@ export const warDeclarationNotificationCreationScripts =
         priority: 0,
         script: (aggressor: Player, defender: Player) =>
         {
-          activeNotificationLog.makeNotification(
+          activeNotificationLog.makeNotification<PropTypes, SerializedPropTypes>(
           {
             template: warDeclarationNotification,
             props:

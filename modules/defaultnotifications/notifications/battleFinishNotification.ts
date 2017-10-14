@@ -85,7 +85,7 @@ export const battleFinishNotificationCreationScripts =
         priority: 0,
         script: (battle: Battle) =>
         {
-          activeNotificationLog.makeNotification(
+          activeNotificationLog.makeNotification<PropTypes, SerializedPropTypes>(
           {
             template: battleFinishNotification,
             props:
