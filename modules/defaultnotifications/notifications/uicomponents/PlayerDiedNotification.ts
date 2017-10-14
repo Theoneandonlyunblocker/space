@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import {localizeF} from "../../localization/localize";
+
 import Notification from "../../../../src/Notification";
 
 import
@@ -25,17 +27,23 @@ class PlayerDiedNotification extends React.Component<PropTypes, {}>
 
   public render()
   {
-    var notification = this.props.notification;
+    const notification = this.props.notification;
 
     return(
       React.DOM.div(
       {
         className: "player-died-notification",
       },
-        "Here lies " + notification.props.deadPlayerName + ".",
+        localizeF("playerDiedTextTop").format(
+        {
+          playerName: notification.props.deadPlayerName,
+        }),
         React.DOM.br(null),
         React.DOM.br(null),
-        "He never scored.",
+        localizeF("playerDiedTextBottom").format(
+        {
+          playerPronoun: "He", // TODO 2017.10.14 | need to do this stuff better
+        }),
       )
     );
   }

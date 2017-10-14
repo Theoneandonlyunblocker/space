@@ -1,5 +1,7 @@
 import UIComponent from "./uicomponents/PlayerDiedNotification";
 
+import {localize, localizeF} from "../localization/localize";
+
 import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
 
 import GameLoader from "../../../src/GameLoader";
@@ -30,11 +32,12 @@ export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedP
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
-    const message = "Player " + props.deadPlayerName + " died";
-
-    return message;
+    return localizeF("playerDiedMessage").format(
+    {
+      playerName: props.deadPlayerName,
+    });
   },
-  getTitle: (props: PropTypes) => "Player died",
+  getTitle: (props: PropTypes) => localize("playerDiedTitle"),
   serializeProps: (props: PropTypes) =>
   {
     return(

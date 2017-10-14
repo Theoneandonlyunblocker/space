@@ -1,7 +1,7 @@
 /*
 
 custom macros can be defined by '{}'
-see string-format.js for details
+see /lib/string-format.js for details
   s =
   {
     CONFIRM_EQUIP: "Equip {item_name} on {unit_name}?",

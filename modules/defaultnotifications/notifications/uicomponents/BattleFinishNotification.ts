@@ -2,6 +2,7 @@ import * as React from "react";
 
 import Notification from "../../../../src/Notification";
 
+import {localizeF} from "../../localization/localize";
 
 import
 {
@@ -26,29 +27,32 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
 
   public render()
   {
-    var notification = this.props.notification;
-    var p = notification.props;
-    var attacker = p.attacker;
-    var defender = p.defender;
-    var victor = p.victor;
-    var location = p.location;
+    const notification = this.props.notification;
+    const attacker = notification.props.attacker;
+    const defender = notification.props.defender;
+    const victor = notification.props.victor;
+    const location = notification.props.location;
 
-    var attackerGainedControl = location.owner === attacker;
+    const attackWasSuccessful = victor === attacker;
+    const attackerGainedControl = location.owner === attacker;
 
-    var attackSuccessString = victor === attacker ?
-      " succesfully " :
-      " unsuccesfully ";
-    var controllerString = attackerGainedControl ?
-      ` now ${victor.name.pluralizeVerbWithS("control")} ` :
-      ` ${victor.name.pluralizeVerbWithS("maintain")} control of `;
+    const messageToLocalize = attackWasSuccessful ?
+      attackerGainedControl ?
+        "battleFinishText_locationConquered" :
+        "battleFinishText_attackerWon" :
+      "battleFinishText_attackerLost";
 
     return(
       React.DOM.div(
       {
         className: "battle-finish-notification",
       },
-        "" + attacker.name + attackSuccessString + "attacked " + defender.name + " in " +
-          location.name + ". " + victor.name + controllerString + location.name + ".",
+        localizeF(messageToLocalize).format(
+        {
+          attackerName: attacker.name.toString(),
+          defenderName: defender.name.toString(),
+          locationName: location.name.toString(),
+        }),
       )
     );
   }

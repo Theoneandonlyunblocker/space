@@ -1,5 +1,7 @@
 import UIComponent from "./uicomponents/BattleFinishNotification";
 
+import {localize, localizeF} from "../localization/localize";
+
 import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
 
 import Battle from "../../../src/Battle";
@@ -42,12 +44,14 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
-    const message = "A battle was fought in " + props.location.name + " between " +
-      props.attacker.name.fullName + " and " + props.defender.name.fullName;
-
-    return message;
+    return localizeF("battleFinishMessage").format(
+    {
+      locationName: props.location.name,
+      attackerName: props.attacker.name.toString(),
+      defenderName: props.defender.name.toString(),
+    });
   },
-  getTitle: (props: PropTypes) => "Battle finished",
+  getTitle: (props: PropTypes) => localize("battleFinishTitle"),
   serializeProps: (props: PropTypes) =>
   {
     return(

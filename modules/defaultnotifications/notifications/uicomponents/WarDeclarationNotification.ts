@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import {localizeF} from "../../localization/localize";
+
 import Notification from "../../../../src/Notification";
 
 import
@@ -25,15 +27,18 @@ class WarDeclarationNotification extends React.Component<PropTypes, {}>
 
   public render()
   {
-    var notification = this.props.notification;
-    var p = notification.props;
+    const notification = this.props.notification;
 
     return(
       React.DOM.div(
       {
         className: "war-declaration-notification",
       },
-        `${p.aggressor.name} declared war on ${p.defender.name}.`,
+        localizeF("warDeclarationText").format(
+        {
+          aggressorName: notification.props.aggressor.name.toString(),
+          defenderName: notification.props.defender.name.toString(),
+        }),
       )
     );
   }

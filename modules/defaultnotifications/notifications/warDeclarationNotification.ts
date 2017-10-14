@@ -1,5 +1,7 @@
 import UIComponent from "./uicomponents/WarDeclarationNotification";
 
+import {localize, localizeF} from "../localization/localize";
+
 import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
 
 import GameLoader from "../../../src/GameLoader";
@@ -36,11 +38,13 @@ export const warDeclarationNotification: NotificationTemplate<PropTypes, Seriali
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
-    const message = props.aggressor.name + " declared war on " + props.defender.name;
-
-    return message;
+    return localizeF("warDeclarationMessage").format(
+    {
+      aggressorName: props.aggressor.name,
+      defenderName: props.defender.name,
+    });
   },
-  getTitle: (props: PropTypes) => "War declaration",
+  getTitle: (props: PropTypes) => localize("warDeclarationTitle"),
   serializeProps: (props: PropTypes) =>
   {
     return(

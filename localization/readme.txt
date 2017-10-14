@@ -1,2 +1,4 @@
 These are only used for UI localization.
 Localization should be contained in their relevant modules, but the UI is currently not part of the module system.
+
+see /src/localization/LocalizedText.ts for usage
