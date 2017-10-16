@@ -18,7 +18,7 @@ interface PropTypes
 
 class PlayerDiedNotification extends React.Component<PropTypes, {}>
 {
-  displayName = "PlayerDiedNotification";
+  public displayName = "PlayerDiedNotification";
 
   constructor(props: PropTypes)
   {
@@ -49,5 +49,6 @@ class PlayerDiedNotification extends React.Component<PropTypes, {}>
   }
 }
 
+// tslint:disable-next-line:variable-name
 const Factory = React.createFactory(PlayerDiedNotification);
 export default Factory;

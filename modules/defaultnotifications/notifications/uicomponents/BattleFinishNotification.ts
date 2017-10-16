@@ -18,7 +18,7 @@ interface PropTypes
 
 class BattleFinishNotification extends React.Component<PropTypes, {}>
 {
-  displayName = "BattleFinishNotification";
+  public displayName = "BattleFinishNotification";
 
   constructor(props: PropTypes)
   {
@@ -59,5 +59,6 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
   }
 }
 
+// tslint:disable-next-line:variable-name
 const Factory = React.createFactory(BattleFinishNotification);
 export default Factory;

@@ -18,7 +18,7 @@ interface PropTypes
 
 class WarDeclarationNotification extends React.Component<PropTypes, {}>
 {
-  displayName = "WarDeclarationNotification";
+  public displayName = "WarDeclarationNotification";
 
   constructor(props: PropTypes)
   {
@@ -44,5 +44,6 @@ class WarDeclarationNotification extends React.Component<PropTypes, {}>
   }
 }
 
+// tslint:disable-next-line:variable-name
 const Factory = React.createFactory(WarDeclarationNotification);
 export default Factory;
