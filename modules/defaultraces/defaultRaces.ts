@@ -13,14 +13,14 @@ const defaultRaces: ModuleFile =
   key: "defaultRaces",
   metaData:
   {
-    name: "Default Buildings",
+    name: "Default Races",
     version: "0.1.0",
     author: "giraluna",
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
   supportedLanguages: [Languages.en],
-  constructModule: function(moduleData: ModuleData)
+  constructModule: (moduleData: ModuleData) =>
   {
     moduleData.copyTemplates<RaceTemplate>(RaceTemplates, "Races");
 

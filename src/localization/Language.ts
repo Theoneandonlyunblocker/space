@@ -6,8 +6,4 @@ export interface Language
   // keep display name in english
   displayName: string;
   flagSrc?: string;
-
-  // getSubjectPronoun(characters: ...Character[]): string;
-  // getObjectPronoun(characters: ...Character[]): string;
-  // getPossessivePronoun(characters: ...Character[]): string;
 }

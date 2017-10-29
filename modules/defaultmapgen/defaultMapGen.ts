@@ -28,7 +28,7 @@ const defaultMapGen: ModuleFile =
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
   supportedLanguages: [Languages.en],
-  constructModule: function(moduleData: ModuleData)
+  constructModule: (moduleData: ModuleData) =>
   {
     moduleData.copyTemplates<MapGenTemplate>(Templates, "MapGen");
 

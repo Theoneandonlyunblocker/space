@@ -36,6 +36,7 @@ import UnitArchetype from "./templateinterfaces/UnitArchetype";
 import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
+// tslint:disable:no-any
 interface Templates
 {
   Abilities: TemplateCollection<AbilityTemplate>;
@@ -60,13 +61,14 @@ interface Templates
   UnitEffects: TemplateCollection<UnitEffectTemplate>;
   Units: TemplateCollection<UnitTemplate>;
 }
+// tslint:enable:no-any
 
 export default class ModuleData
 {
   public moduleFiles: ModuleFile[] = [];
 
-  mapBackgroundDrawingFunction: BackgroundDrawingFunction;
-  starBackgroundDrawingFunction: BackgroundDrawingFunction;
+  public mapBackgroundDrawingFunction: BackgroundDrawingFunction;
+  public starBackgroundDrawingFunction: BackgroundDrawingFunction;
 
   public Templates: Templates =
   {
@@ -97,7 +99,7 @@ export default class ModuleData
 
   public scripts: ModuleScripts;
 
-  defaultMap: MapGenTemplate;
+  public defaultMap: MapGenTemplate;
 
   constructor()
   {
@@ -109,6 +111,7 @@ export default class ModuleData
     {
       console.warn("Tried to copy templates in invalid category \"" + category +
         "\". Category must be one of: " + Object.keys(this.Templates).join(", "));
+
       return;
     }
 
