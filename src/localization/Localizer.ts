@@ -23,7 +23,12 @@ export class Localizer<Messages extends {[K in keyof Messages]: string}>
       // tslint:disable-next-line:no-any
       [K in keyof Messages]: MessageFunction<any>;
     },
-  };
+  } = {};
+
+  private readonly warningMessagesOutputted:
+  {
+    [message: string]: boolean;
+  } = {};
 
   constructor(key: string)
   {
@@ -61,7 +66,10 @@ export class Localizer<Messages extends {[K in keyof Messages]: string}>
       }
     }
 
-    return this.getMissingLocalizationMessage.bind(this, key, activeLanguage);
+    const missingLocalizationMessageFunction = this.getMissingLocalizationMessage.bind(this, key, activeLanguage);
+    this.warnOfMissingLocalization(missingLocalizationMessageFunction());
+
+    return missingLocalizationMessageFunction;
   }
 
   private compileMessage(key: keyof Messages, language: Language): void
@@ -80,5 +88,14 @@ export class Localizer<Messages extends {[K in keyof Messages]: string}>
   private getMissingLocalizationMessage(key: keyof Messages, activeLanguage: Language): string
   {
     return `${this.key}.${activeLanguage.code}.${key}`;
+  }
+  private warnOfMissingLocalization(warningMessage: string): void
+  {
+    if (!this.warningMessagesOutputted[warningMessage])
+    {
+      this.warningMessagesOutputted[warningMessage] = true;
+
+      console.warn(`Missing localization: ${warningMessage}`);
+    }
   }
 }
