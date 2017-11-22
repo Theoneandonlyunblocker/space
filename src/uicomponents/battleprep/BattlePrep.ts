@@ -385,7 +385,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               className: "battle-prep-controls-button",
               onClick: this.setLeftLowerElement.bind(this, "playerFormation"),
               disabled: this.state.leftLowerElement === "playerFormation",
-            }, localize("own_adjective")),
+            }, localize("ownFormation")),
             React.DOM.button(
             {
               className: "battle-prep-controls-button",

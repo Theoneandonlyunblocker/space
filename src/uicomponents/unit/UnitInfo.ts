@@ -54,7 +54,7 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
         {
           className: "unit-battle-end-status unit-battle-end-status-dead",
         },
-          localize("destroyed"),
+          localize("destroyed_statusText"),
         ),
       );
     }
@@ -68,7 +68,7 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
         {
           className: "unit-battle-end-status unit-battle-end-status-captured",
         },
-          localize("captured"),
+          localize("captured_statusText"),
         ),
       );
     }
