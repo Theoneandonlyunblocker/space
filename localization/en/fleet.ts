@@ -4,8 +4,8 @@ export const fleet =
   merge: "merge",
   reorganize: "reorganize",
   reorganizeFleets: "Reorganize fleets",
-  movesRemaining: "Moves",
-  select_imperative: "select",
-  deselect_imperative: "deselect",
-  split_imperative: "split",
+  fleet_movesRemaining: "Moves: {0}/{1}",
+  select_fleet: "select",
+  deselect_fleet: "deselect",
+  split_fleet: "split",
 };
