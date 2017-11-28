@@ -1,11 +1,15 @@
+import GuardCoverage from "../../src/GuardCoverage";
+
 export const battle =
 {
   preparing_statusText: "Preparing",
   preparing_tooltip: "Unit is preparing to use ability",
   guard_statusText: "Guard",
-  guard_chanceToProtect: "{0}% chance to protect",
-  guard_allUnits: "all units",
-  guard_sameRowUnits: "units in same row",
+  guard_toolTip: `{protChance}% chance to protect ` +
+    `{guardCoverage, select,` +
+      `${GuardCoverage.Row} {units in same row.}` +
+      `${GuardCoverage.All} {all units.}` +
+    `}`,
   reducedPhysicalDamage: "This unit takes {damageReduction}% reduced damage from physical attacks.",
   destroyed_statusText: "Destroyed",
   captured_statusText: "Captured",

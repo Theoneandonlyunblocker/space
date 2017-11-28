@@ -41,13 +41,14 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
       const guard = this.props.guardAmount;
       const damageReduction = Math.min(50, guard / 2);
 
-      const chanceToProtectString = localizeF("guard_chanceToProtect").format(guard);
-      const protectedUnitsString = this.props.guardCoverage === GuardCoverage.All ?
-        localize("guard_allUnits") :
-        localize("guard_sameRowUnits");
+      const protectString = localizeF("guard_chanceToProtect").format(
+      {
+        protChance: guard,
+        guardCoverage: this.props.guardCoverage,
+      });
       const damageReductionString = localizeF("reducedPhysicalDamage").format({damageReduction: damageReduction});
 
-      const guardText = `${chanceToProtectString} ${protectedUnitsString}.` +
+      const guardText = `${protectString}` +
         `\n${damageReductionString}`;
 
       statusElement = React.DOM.div(
