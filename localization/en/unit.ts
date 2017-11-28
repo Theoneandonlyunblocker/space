@@ -1,10 +1,6 @@
 export const unit =
 {
-  unit:
-  {
-    1: "unit",
-    "2..": "units",
-  },
+  unit: "unit",
   maxActionPoints: "Max action points",
   attack: "Attack",
   defence: "Defence",

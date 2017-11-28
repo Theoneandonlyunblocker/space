@@ -66,7 +66,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
               className: "game-over-buttons-button",
               onClick: this.toggleLoadPopup,
             },
-              localize("load_imperative"),
+              localize("load_action"),
             ),
             React.DOM.button(
             {

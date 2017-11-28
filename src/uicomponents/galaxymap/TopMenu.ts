@@ -132,7 +132,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onDoubleClick: this.closePopup.bind(this, "loadGame"),
         onContextMenu: this.closePopup.bind(this, "loadGame"),
         tabIndex: menuItemTabIndex,
-      }, localize("load_imperative")),
+      }, localize("load_action")),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-save",
@@ -142,7 +142,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onDoubleClick: this.closePopup.bind(this, "saveGame"),
         onContextMenu: this.closePopup.bind(this, "saveGame"),
         tabIndex: menuItemTabIndex,
-      }, localize("save_imperative")),
+      }, localize("save_action")),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-options",

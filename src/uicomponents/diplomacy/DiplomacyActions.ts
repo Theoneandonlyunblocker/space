@@ -91,13 +91,13 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
           className: "diplomacy-action-button",
           onClick: this.toggleTradePopup,
         },
-          localize("trade_imperative"),
+          localize("trade_action"),
         ),
         !this.state.hasTradePopup ? null :
           DefaultWindow(
           {
             handleClose: this.closeTradePopup,
-            title: localize("trade_noun"),
+            title: localize("tradeWindowTitle"),
           },
             TradeOverview(
             {

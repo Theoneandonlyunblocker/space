@@ -3,6 +3,7 @@ export const galaxyMapUI =
   technology: "Technology",
   diplomacy: "Diplomacy",
   economy: "Economy",
+  production: "Production",
   equip: "Equip",
   turnCounter: "Turn",
   income: "Income",
@@ -12,6 +13,6 @@ export const galaxyMapUI =
   upgradeBuilding: "upgrade",
   buildingCost: "Cost",
   buildingTypeName: "Name",
-  attackTarget_imperative: "attack",
+  attackTarget_action: "attack",
   attackTargetTooltip: "Attack {enemyName} {targetType}",
 };

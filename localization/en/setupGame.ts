@@ -14,4 +14,5 @@ export const setupGame =
   emblemSetterTooltip: "Left click to edit. Right click to remove",
   emblems: "Emblems",
   emblemColor: "Emblem color",
+  allowedPlayerCount: `Players: {min}-{max}`,
 };

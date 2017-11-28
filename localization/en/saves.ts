@@ -1,15 +1,13 @@
 export const saves =
 {
   saveName: "Name",
-  save_imperative: "Save",
+  save_action: "Save",
   promptOverwrite: "Are you sure you want to overwrite '{toOverWrite}'?",
   confirmOverwrite: "Confirm overwrite",
-  load_imperative: "Load",
-  save_noun:
-  {
-    1: "save",
-    "2..": "saves",
-  },
-  confirmSaveDeletion: "Are you sure you want to delete the following [save_noun]?",
+  load_action: "Load",
+  confirmSaveDeletion: "Are you sure you want to delete the following {count, plural," +
+      "  one {save}" +
+      "other {saves}" +
+    "}?",
   loadGame: "Load game",
 };

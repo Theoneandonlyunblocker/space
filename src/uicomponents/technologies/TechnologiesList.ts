@@ -73,7 +73,7 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
         {
           className: "technologies-list-research-speed",
         },
-          `${localize("researchSpeed")}: ${researchSpeed}${localize("perTurn")}`,
+          `${localize("researchSpeed")}: ${researchSpeed} ${localize("perTurn")}`,
         ),
       )
     );

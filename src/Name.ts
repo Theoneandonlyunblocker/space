@@ -1,6 +1,6 @@
 import NameSaveData from "./savedata/NameSaveData";
 
-// TODO 2017.07.28 | localization stuff like this should live in modules
+// TODO 2017.11.29 | rework
 export default class Name
 {
   public fullName: string;

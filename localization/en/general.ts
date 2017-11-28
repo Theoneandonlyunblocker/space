@@ -4,7 +4,7 @@ export const general =
   cancel: "Cancel",
   dontShowAgain: "Don't show again",
   reset: "Reset",
-  perTurn: " per turn",
+  perTurn: "per turn",
   randomize: "Randomize",
   remove: "Remove",
   clear: "Clear",
@@ -17,4 +17,6 @@ export const general =
   show: "Show",
   id: "Id",
   displayName: "Name",
+  ability: "Ability",
+  type: "Type",
 };

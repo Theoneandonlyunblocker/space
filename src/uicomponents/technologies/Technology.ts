@@ -146,7 +146,10 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
         {
           key: `technologyUnlocks ${this.props.technology.key}`,
 
-          title: `${this.props.technology.displayName} ${localize("technologyUnlocks_present")}`,
+          title: localizeF("technologyUnlocks_present").format(
+          {
+            technologyName: this.props.technology.displayName,
+          }),
           handleClose: this.closeUnlocksPopup,
           isResizable: false,
         },

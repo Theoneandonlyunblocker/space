@@ -114,7 +114,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
             {
               this.loadButtonElement = component;
             },
-          }, localize("load_imperative")),
+          }, localize("load_action")),
           React.DOM.button(
           {
             className: "save-game-button",

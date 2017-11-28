@@ -96,7 +96,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         handleClose: this.closePopup.bind(this, "saveGame"),
       }),
-      title: localize("save_imperative"),
+      title: localize("save_action"),
     },
     loadGame:
     {
@@ -104,7 +104,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         handleClose: this.closePopup.bind(this, "loadGame"),
       }),
-      title: localize("load_imperative"),
+      title: localize("load_action"),
     },
     options:
     {

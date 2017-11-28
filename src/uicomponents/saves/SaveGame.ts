@@ -111,7 +111,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
             {
               this.okButtonElement = component;
             },
-          }, localize("save_imperative")),
+          }, localize("save_action")),
           React.DOM.button(
           {
             className: "save-game-button",

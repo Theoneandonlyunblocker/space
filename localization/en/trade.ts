@@ -4,6 +4,6 @@ export const trade =
   accept: "Accept",
   reject: "Reject",
   tradeableItems: "tradeable items",
-  trade_noun: "Trade",
-  trade_imperative: "Trade",
+  tradeWindowTitle: "Trade",
+  trade_action: "Trade",
 };
