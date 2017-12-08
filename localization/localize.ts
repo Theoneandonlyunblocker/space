@@ -19,14 +19,14 @@ import {trade as en_trade} from "./en/trade";
 import {unit as en_unit} from "./en/unit";
 import {unitUpgrade as en_unitUpgrade} from "./en/unitUpgrade";
 
+
 import
 {
   shallowExtend,
 } from "../src/utility";
 
 
-// TODO 2017.07.18 | sort out capitalization for all these...
-type AllLocalizedTexts =
+type AllMessages =
   typeof en_battle &
   typeof en_diplomacy &
   typeof en_fleet &
@@ -44,9 +44,9 @@ type AllLocalizedTexts =
   typeof en_unit &
   typeof en_unitUpgrade;
 
-export const localizer = new Localizer<AllLocalizedTexts>("ui");
+export const localizer = new Localizer<AllMessages>("ui");
 
-const mergedTexts = shallowExtend<AllLocalizedTexts>(
+const mergedMessages = shallowExtend<AllMessages>(
   en_battle,
   en_diplomacy,
   en_fleet,
@@ -65,19 +65,6 @@ const mergedTexts = shallowExtend<AllLocalizedTexts>(
   en_unitUpgrade,
 );
 
-localizer.registerTexts(mergedTexts, Languages.en);
+localizer.registerMessages(mergedMessages, Languages.en);
 
-const boundLocalize: typeof localizer.localize = localizer.localize.bind(localizer);
-
-export function localizeF(key: keyof AllLocalizedTexts, quantity: number | "plural" = 1)
-{
-  const realQuantity = quantity === "plural" ? 2 : quantity;
-
-  return boundLocalize(key, realQuantity);
-}
-export function localize(key: keyof AllLocalizedTexts, quantity: number | "plural" = 1)
-{
-  const realQuantity = quantity === "plural" ? 2 : quantity;
-
-  return boundLocalize(key, realQuantity).format();
-}
+export const localize = localizer.localize;
