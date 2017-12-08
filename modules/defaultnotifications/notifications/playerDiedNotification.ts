@@ -35,6 +35,8 @@ export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedP
     return localize("playerDiedMessage")(
     {
       playerName: props.deadPlayerName,
+      // TODO 2017.12.08 | plural names
+      count: 1,
     });
   },
   getTitle: (props: PropTypes) => localize("playerDiedTitle")(),

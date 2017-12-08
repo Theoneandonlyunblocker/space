@@ -1,3 +1,5 @@
+import {wasWere} from "../../../../localization/en/_helpers";
+
 export const notificationMessages =
 {
   battleFinishTitle: "Battle finished",
@@ -11,11 +13,7 @@ export const notificationMessages =
   battleFinishText_locationConquered: "[attackSuccessful] [locationConquered]",
 
   playerDiedTitle: "Player eliminated",
-  playerDiedMessage:
-  {
-    1: "{playerName} was eliminated.",
-    "2..": "{playerName} were eliminated.",
-  },
+  playerDiedMessage: `{playerName} ${wasWere("count")} eliminated.`,
   playerDiedTextTop: "Here lies {playerName}.",
   playerDiedTextBottom: "{playerPronoun} never scored.",
 

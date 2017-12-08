@@ -1,6 +1,7 @@
 import * as React from "react";
 
-import {localize} from "../../../localization/localize";
+// TODO 2017.12.08 |
+// import {localize} from "../../../localization/localize";
 
 import {UnlockableThing, UnlockType} from "../../templateinterfaces/UnlockableThing";
 
