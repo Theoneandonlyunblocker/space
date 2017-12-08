@@ -32,7 +32,7 @@ export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedP
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
-    return localizeF("playerDiedMessage").format(
+    return localize("playerDiedMessage")(
     {
       playerName: props.deadPlayerName,
     });

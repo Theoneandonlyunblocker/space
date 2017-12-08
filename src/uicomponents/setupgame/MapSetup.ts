@@ -132,7 +132,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
         {
           className: "map-setup-player-limit",
         },
-          localizeF("allowedPlayerCount").format(
+          localize("allowedPlayerCount")(
           {
             min: this.state.selectedTemplate.minPlayers,
             max: this.state.selectedTemplate.maxPlayers,

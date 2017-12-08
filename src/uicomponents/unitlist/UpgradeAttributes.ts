@@ -54,7 +54,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
           onClick: this.upgradeAttribute.bind(this, attribute),
           key: attribute,
         },
-          localizeF("upgradeAttribute").format(
+          localize("upgradeAttribute")(
           {
             attribute: localize(attribute),
             currentLevel: unit.baseAttributes[attribute],

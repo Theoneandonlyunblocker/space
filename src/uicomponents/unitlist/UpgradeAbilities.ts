@@ -92,7 +92,7 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
           {
             title: this.state.activePopupType === "learn" ?
               localize("learnAbility") :
-              localizeF("upgradeSpecificAbility").format(currentlyUpgradingAbility.source.displayName),
+              localize("upgradeSpecificAbility")(currentlyUpgradingAbility.source.displayName),
             handleClose: this.closePopup,
             isResizable: false,
           },

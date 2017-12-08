@@ -340,7 +340,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     const fileSizeInMegaBytes = file.size / 1024 / 1024;
     if (fileSizeInMegaBytes > 20)
     {
-      const confirmMessage = localizeF("confirmUseLargeImage").format(
+      const confirmMessage = localize("confirmUseLargeImage")(
       {
         fileSize: fileSizeInMegaBytes.toFixed(2),
       });

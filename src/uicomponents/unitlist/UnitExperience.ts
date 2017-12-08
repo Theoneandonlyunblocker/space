@@ -90,7 +90,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     const barProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "unit-experience-bar",
-      title: localizeF("EXPReadOut").format(
+      title: localize("EXPReadOut")(
       {
         currentEXP: this.props.experienceForCurrentLevel,
         EXPToNextLevel: this.props.experienceToNextLevel,

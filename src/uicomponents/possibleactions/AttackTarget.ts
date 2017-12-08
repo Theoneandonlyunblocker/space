@@ -46,7 +46,7 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
       {
         className: "attack-target-button possible-action",
         onClick: this.handleAttack,
-        title: localizeF("attackTargetTooltip").format(
+        title: localize("attackTargetTooltip")(
         {
           enemyName: target.enemy.name.getPossessive(),
           targetType: target.type,

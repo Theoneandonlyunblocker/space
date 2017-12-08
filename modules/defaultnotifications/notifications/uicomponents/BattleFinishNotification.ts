@@ -48,7 +48,7 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
       {
         className: "battle-finish-notification",
       },
-        localizeF(messageToLocalize).format(
+        localize(messageToLocalize)(
         {
           attackerName: attacker.name.toString(),
           defenderName: defender.name.toString(),

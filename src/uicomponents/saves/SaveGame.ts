@@ -68,7 +68,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
             handleOk: this.saveGame,
             handleCancel: this.closeConfirmOverwritePopup,
           },
-            localizeF("promptOverwrite").format(
+            localize("promptOverwrite")(
             {
               toOverWrite: this.state.saveName.replace("Rance.Save.", "")
             }),

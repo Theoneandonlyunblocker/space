@@ -34,13 +34,13 @@ class PlayerDiedNotification extends React.Component<PropTypes, {}>
       {
         className: "player-died-notification",
       },
-        localizeF("playerDiedTextTop").format(
+        localize("playerDiedTextTop")(
         {
           playerName: notification.props.deadPlayerName,
         }),
         React.DOM.br(null),
         React.DOM.br(null),
-        localizeF("playerDiedTextBottom").format(
+        localize("playerDiedTextBottom")(
         {
           playerPronoun: "He", // TODO 2017.10.14 | need to do this stuff better
         }),
