@@ -99,7 +99,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
         className: "emblem-picker",
       },
         React.DOM.div({className: "flag-picker-title"},
-          localize("emblemColor"),
+          localize("emblemColor")(),
         ),
         ColorPicker(
         {
@@ -118,7 +118,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
           },
         }),
         React.DOM.div({className: "flag-picker-title"},
-          localize("emblems"),
+          localize("emblems")(),
         ),
         React.DOM.div({className: "emblem-picker-emblem-list"},
           emblemElements,

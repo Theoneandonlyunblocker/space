@@ -212,27 +212,27 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
           React.DOM.div(
           {
             className: "player-setup-name",
-          }, localize("playerName")),
+          }, localize("playerName")()),
           React.DOM.div(
           {
             className: "player-setup-race-picker",
-          }, localize("race")),
+          }, localize("race")()),
           React.DOM.div(
           {
             className: "color-setter",
-          }, localize("color_1")),
+          }, localize("color_1")()),
           React.DOM.div(
           {
             className: "color-setter",
-          }, localize("color_2")),
+          }, localize("color_2")()),
           React.DOM.div(
           {
             className: "flag-setter",
-          }, localize("flag")),
+          }, localize("flag")()),
           React.DOM.div(
           {
             className: "player-setup-remove-player",
-          }, localize("remove")),
+          }, localize("remove")()),
         ),
         React.DOM.div(
         {
@@ -249,7 +249,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
             className: "setup-game-button",
             onClick: this.randomizeAllPlayers,
           },
-            localize("randomize"),
+            localize("randomize")(),
           ),
           React.DOM.button(
           {
@@ -257,7 +257,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
             onClick: this.makeNewPlayers.bind(this, 1),
             disabled: !canAddPlayers,
           },
-            localize("addNewPlayer"),
+            localize("addNewPlayer")(),
           ),
         ),
       )

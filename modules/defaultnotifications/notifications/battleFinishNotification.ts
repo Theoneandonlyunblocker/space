@@ -53,7 +53,7 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
       defenderName: props.defender.name.toString(),
     });
   },
-  getTitle: (props: PropTypes) => localize("battleFinishTitle"),
+  getTitle: (props: PropTypes) => localize("battleFinishTitle")(),
   serializeProps: (props: PropTypes) =>
   {
     return(

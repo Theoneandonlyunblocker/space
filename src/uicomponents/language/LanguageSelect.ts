@@ -63,8 +63,8 @@ export class LanguageSelectComponent extends React.Component<PropTypes, StateTyp
         value: language.code,
         key: language.code,
         title: supportLevel === LanguageSupportLevel.Full ?
-          localize("fullLanguageSupport") :
-          localize("partialLanguageSupport"),
+          localize("fullLanguageSupport")() :
+          localize("partialLanguageSupport")(),
       },
         language.displayName,
       );

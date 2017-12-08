@@ -75,7 +75,7 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
             React.DOM.div(
             {
               className: "guard-text status-text",
-            }, localize("guard_statusText")),
+            }, localize("guard_statusText")()),
             React.DOM.div(
             {
               className: "guard-text-value status-text",
@@ -97,9 +97,9 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
           React.DOM.div(
           {
             className: "preparation-text-container status-inner",
-            title: localize("preparing_toolTip"),
+            title: localize("preparing_toolTip")(),
           },
-            localize("preparing_statusText"),
+            localize("preparing_statusText")(),
           ),
         ),
       );

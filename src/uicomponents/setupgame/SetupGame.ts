@@ -127,12 +127,12 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
             {
               className: "setup-game-button setup-game-button-randomize",
               onClick: this.randomize,
-            }, localize("randomize")),
+            }, localize("randomize")()),
             React.DOM.button(
             {
               className: "setup-game-button setup-game-button-start",
               onClick: this.startGame,
-            }, localize("startGame")),
+            }, localize("startGame")()),
           ),
         ),
       )

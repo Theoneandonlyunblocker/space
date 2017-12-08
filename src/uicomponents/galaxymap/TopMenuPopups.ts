@@ -72,7 +72,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         player: this.props.player,
       }),
-      title: localize("production"),
+      title: localize("production")(),
     },
     equipItems:
     {
@@ -80,7 +80,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         player: this.props.player,
       }),
-      title: localize("equip"),
+      title: localize("equip")(),
     },
     economySummary:
     {
@@ -88,7 +88,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         player: this.props.player,
       }),
-      title: localize("economy"),
+      title: localize("economy")(),
     },
     saveGame:
     {
@@ -96,7 +96,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         handleClose: this.closePopup.bind(this, "saveGame"),
       }),
-      title: localize("save_action"),
+      title: localize("save_action")(),
     },
     loadGame:
     {
@@ -104,7 +104,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         handleClose: this.closePopup.bind(this, "loadGame"),
       }),
-      title: localize("load_action"),
+      title: localize("load_action")(),
     },
     options:
     {
@@ -113,7 +113,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         log: this.props.notificationLog,
         activeLanguage: this.props.activeLanguage,
       }),
-      title: localize("options"),
+      title: localize("options")(),
     },
     diplomacy:
     {
@@ -121,7 +121,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         player: this.props.player,
       }),
-      title: localize("diplomacy"),
+      title: localize("diplomacy")(),
     },
     technologies:
     {
@@ -129,7 +129,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         playerTechnology: this.props.player.playerTechnology,
       }),
-      title: localize("technology"),
+      title: localize("technology")(),
     },
   };
 

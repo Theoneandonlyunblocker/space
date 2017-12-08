@@ -33,14 +33,14 @@ export class BattleFinishComponent extends React.PureComponent<PropTypes, StateT
           className: "battle-scene-finish-header",
         },
           this.props.humanPlayerWonBattle ?
-            localize("battleFinish_victory") :
-            localize("battleFinish_loss"),
+            localize("battleFinish_victory")() :
+            localize("battleFinish_loss")(),
         ),
         React.DOM.h3(
         {
           className: "battle-scene-finish-subheader",
         },
-          localize("battleFinish_clickAnywhereToContinue"),
+          localize("battleFinish_clickAnywhereToContinue")(),
         ),
       )
     );

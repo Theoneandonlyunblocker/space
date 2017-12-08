@@ -82,7 +82,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onDoubleClick: this.closePopup.bind(this, "production"),
         onContextMenu: this.closePopup.bind(this, "production"),
         tabIndex: menuItemTabIndex,
-      }, localize("production")),
+      }, localize("production")()),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-equip",
@@ -92,7 +92,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onDoubleClick: this.closePopup.bind(this, "equipItems"),
         onContextMenu: this.closePopup.bind(this, "equipItems"),
         tabIndex: menuItemTabIndex,
-      }, localize("equip")),
+      }, localize("equip")()),
       // React.DOM.button(
       // {
       //   className: "top-menu-items-button top-menu-items-button-economy",
@@ -102,7 +102,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       //   onDoubleClick: this.closePopup.bind(this, "economySummary"),
       //   onContextMenu: this.closePopup.bind(this, "economySummary"),
       //   tabIndex: menuItemTabIndex,
-      // }, localize("economy")),
+      // }, localize("economy")()),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-diplomacy",
@@ -112,7 +112,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onDoubleClick: this.closePopup.bind(this, "diplomacy"),
         onContextMenu: this.closePopup.bind(this, "diplomacy"),
         tabIndex: menuItemTabIndex,
-      }, localize("diplomacy")),
+      }, localize("diplomacy")()),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-technology",
@@ -122,7 +122,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onDoubleClick: this.closePopup.bind(this, "technologies"),
         onContextMenu: this.closePopup.bind(this, "technologies"),
         tabIndex: menuItemTabIndex,
-      }, localize("technology")),
+      }, localize("technology")()),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-load",
@@ -132,7 +132,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onDoubleClick: this.closePopup.bind(this, "loadGame"),
         onContextMenu: this.closePopup.bind(this, "loadGame"),
         tabIndex: menuItemTabIndex,
-      }, localize("load_action")),
+      }, localize("load_action")()),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-save",
@@ -142,7 +142,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onDoubleClick: this.closePopup.bind(this, "saveGame"),
         onContextMenu: this.closePopup.bind(this, "saveGame"),
         tabIndex: menuItemTabIndex,
-      }, localize("save_action")),
+      }, localize("save_action")()),
       React.DOM.button(
       {
         className: "top-menu-items-button top-menu-items-button-options",
@@ -152,7 +152,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onDoubleClick: this.closePopup.bind(this, "options"),
         onContextMenu: this.closePopup.bind(this, "options"),
         tabIndex: menuItemTabIndex,
-      }, localize("options")),
+      }, localize("options")()),
     ];
 
     const topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);

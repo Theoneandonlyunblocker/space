@@ -59,7 +59,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
         !this.state.hasConfirmDeleteSavePopup ? null :
           DialogBox(
           {
-            title: localize("confirmDeletion"),
+            title: localize("confirmDeletion")(),
             handleOk: () =>
             {
               this.deleteSelectedKeys();
@@ -114,19 +114,19 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
             {
               this.loadButtonElement = component;
             },
-          }, localize("load_action")),
+          }, localize("load_action")()),
           React.DOM.button(
           {
             className: "save-game-button",
             onClick: this.handleClose.bind(this, true, null),
-          }, localize("cancel")),
+          }, localize("cancel")()),
           React.DOM.button(
           {
             className: "save-game-button",
             onClick: this.openConfirmDeleteSavesPopup,
             disabled: this.state.saveKeysToDelete.length < 1,
           },
-            localize("delete"),
+            localize("delete")(),
           ),
         ),
       )

@@ -80,7 +80,7 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
           {
             className: "construct-manufactory-action",
           },
-            localize("constructManufactory"),
+            localize("constructManufactory")(),
           ),
           React.DOM.span(
           {

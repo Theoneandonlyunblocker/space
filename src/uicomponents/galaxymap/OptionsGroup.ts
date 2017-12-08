@@ -63,7 +63,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
         className: "reset-options-button",
         onClick: this.props.resetFN,
       },
-        localize("reset"),
+        localize("reset")(),
       );
     }
 

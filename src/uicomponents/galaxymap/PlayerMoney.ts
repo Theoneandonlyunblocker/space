@@ -60,7 +60,7 @@ export class PlayerMoneyComponent extends React.Component<PropTypes, StateType>
       {
         className: "player-money",
       },
-        localize("money") + " " + this.props.player.money,
+        localize("money")() + " " + this.props.player.money,
       )
     );
   }

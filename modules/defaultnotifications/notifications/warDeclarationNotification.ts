@@ -44,7 +44,7 @@ export const warDeclarationNotification: NotificationTemplate<PropTypes, Seriali
       defenderName: props.defender.name,
     });
   },
-  getTitle: (props: PropTypes) => localize("warDeclarationTitle"),
+  getTitle: (props: PropTypes) => localize("warDeclarationTitle")(),
   serializeProps: (props: PropTypes) =>
   {
     return(

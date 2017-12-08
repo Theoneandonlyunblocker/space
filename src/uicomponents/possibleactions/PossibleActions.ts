@@ -213,7 +213,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
               onClick: this.buildBuildings,
               key: "buildActions",
             },
-              localize("constructBuilding"),
+              localize("constructBuilding")(),
             ),
           );
         }
@@ -227,7 +227,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
               onClick: this.upgradeBuildings,
               key: "upgradeActions",
             },
-              localize("upgradeBuilding"),
+              localize("upgradeBuilding")(),
             ),
           );
         }

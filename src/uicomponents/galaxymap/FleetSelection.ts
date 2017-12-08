@@ -189,10 +189,10 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         className: "fleet-selection-controls",
       },
         React.DOM.button(reorganizeProps,
-          localize("reorganize"),
+          localize("reorganize")(),
         ),
         React.DOM.button(mergeProps,
-          localize("merge"),
+          localize("merge")(),
         ),
       );
     }

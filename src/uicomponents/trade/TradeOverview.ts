@@ -170,7 +170,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             disabled: this.state.activeOffer.ownTrade.isEqualWith(this.state.lastOfferByPlayer.ownTrade),
             onClick: this.resetSelfTrade,
           },
-            localize("reset"),
+            localize("reset")(),
           ),
           React.DOM.button(
           {
@@ -178,7 +178,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             disabled: this.state.activeOffer.otherTrade.isEqualWith(this.state.lastOfferByPlayer.otherTrade),
             onClick: this.resetOtherTrade,
           },
-            localize("reset"),
+            localize("reset")(),
           ),
         ),
         React.DOM.div(
@@ -197,7 +197,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             disabled: !ableToAcceptTrade,
             onClick: this.rejectTrade,
           },
-            localize("reject"),
+            localize("reject")(),
           ),
           this.state.hasActiveProposal ?
             React.DOM.button(
@@ -206,7 +206,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
               disabled: !ableToAcceptTrade,
               onClick: this.acceptTrade,
             },
-              localize("accept"),
+              localize("accept")(),
             ) :
             React.DOM.button(
             {
@@ -214,7 +214,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
               disabled: !this.state.activeOffer.willingToKeepNegotiating,
               onClick: this.proposeTrade,
             },
-              localize("propose"),
+              localize("propose")(),
             ),
         ),
       )

@@ -56,17 +56,17 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
     const columns: ListColumn<EconomySummaryItemProps>[] =
     [
       {
-        label: localize("id"),
+        label: localize("id")(),
         key: "id",
         defaultOrder: "asc",
       },
       {
-        label: localize("displayName"),
+        label: localize("displayName")(),
         key: "name",
         defaultOrder: "asc",
       },
       {
-        label: localize("income"),
+        label: localize("income")(),
         key: "income",
         defaultOrder: "desc",
       },

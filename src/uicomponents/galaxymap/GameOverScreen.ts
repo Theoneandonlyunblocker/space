@@ -55,7 +55,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
           {
             className: "game-over-header",
           },
-            localize("gameOver"),
+            localize("gameOver")(),
           ),
           React.DOM.div(
           {
@@ -66,33 +66,33 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
               className: "game-over-buttons-button",
               onClick: this.toggleLoadPopup,
             },
-              localize("load_action"),
+              localize("load_action")(),
             ),
             React.DOM.button(
             {
               className: "game-over-buttons-button",
               onClick: this.toggleNewGamePopup,
             },
-              localize("newGame"),
+              localize("newGame")(),
             ),
           ),
         ),
         !this.state.hasConfirmNewGamePopup ? null :
           DialogBox(
           {
-            title: localize("newGame"),
+            title: localize("newGame")(),
             handleOk: () =>
             {
               window.location.reload(false);
             },
             handleCancel: this.closeNewGamePopup,
           },
-            localize("areYouSureYouWantToStartANewGame"),
+            localize("areYouSureYouWantToStartANewGame")(),
           ),
         !this.state.hasLoadPopup ? null :
           DefaultWindow(
           {
-            title: localize("loadGame"),
+            title: localize("loadGame")(),
             handleClose: this.closeLoadPopup,
           },
             LoadGame(

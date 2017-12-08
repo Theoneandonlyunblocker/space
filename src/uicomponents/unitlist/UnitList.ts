@@ -86,17 +86,17 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
     const columns: ListColumn<UnitListItemProps>[] =
     [
       {
-        label: localize("id"),
+        label: localize("id")(),
         key: "id",
         defaultOrder: "asc",
       },
       {
-        label: localize("type"),
+        label: localize("type")(),
         key: "typeName",
         defaultOrder: "asc",
       },
       {
-        label: localize("strength"),
+        label: localize("strength")(),
         key: "strength",
         defaultOrder: "desc",
         sortingFunction: (a, b) =>
@@ -105,27 +105,27 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
         },
       },
       {
-        label: localize("act"),
+        label: localize("act")(),
         key: "maxActionPoints",
         defaultOrder: "desc",
       },
       {
-        label: localize("atk"),
+        label: localize("atk")(),
         key: "attack",
         defaultOrder: "desc",
       },
       {
-        label: localize("def"),
+        label: localize("def")(),
         key: "defence",
         defaultOrder: "desc",
       },
       {
-        label: localize("int"),
+        label: localize("int")(),
         key: "intelligence",
         defaultOrder: "desc",
       },
       {
-        label: localize("spd"),
+        label: localize("spd")(),
         key: "speed",
         defaultOrder: "desc",
       },

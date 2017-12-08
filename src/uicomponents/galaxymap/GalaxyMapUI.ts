@@ -309,7 +309,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             tabIndex: -1,
             onClick: this.toggleMapModeSettingsExpanded,
           },
-            localize("mapMode"),
+            localize("mapMode")(),
           ),
           Notifications(
           {
@@ -317,7 +317,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             currentTurn: this.props.game.turnNumber,
             key: "notifications",
           }),
-          React.DOM.button(endTurnButtonProps, localize("endTurn")),
+          React.DOM.button(endTurnButtonProps, localize("endTurn")()),
         ),
       )
     );

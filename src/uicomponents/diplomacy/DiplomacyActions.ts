@@ -81,23 +81,23 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
         className: "diplomacy-actions",
       },
         React.DOM.button(declareWarProps,
-          localize("declareWar"),
+          localize("declareWar")(),
         ),
         React.DOM.button(makePeaceProps,
-          localize("makePeace"),
+          localize("makePeace")(),
         ),
         React.DOM.button(
         {
           className: "diplomacy-action-button",
           onClick: this.toggleTradePopup,
         },
-          localize("trade_action"),
+          localize("trade_action")(),
         ),
         !this.state.hasTradePopup ? null :
           DefaultWindow(
           {
             handleClose: this.closeTradePopup,
-            title: localize("tradeWindowTitle"),
+            title: localize("tradeWindowTitle")(),
           },
             TradeOverview(
             {

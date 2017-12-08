@@ -56,7 +56,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
         },
           localize("upgradeAttribute")(
           {
-            attribute: localize(attribute),
+            attribute: localize(attribute)(),
             currentLevel: unit.baseAttributes[attribute],
             nextLevel: unit.baseAttributes[attribute] + 1,
           }),
@@ -73,7 +73,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
         {
           className: "upgrade-attributes-header",
         },
-          localize("upgradeStats"),
+          localize("upgradeStats")(),
         ),
         React.DOM.ol(
         {

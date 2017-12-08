@@ -101,15 +101,15 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
             {
               this.closePopup(notification);
             },
-            okText: localize("markAsRead"),
-            cancelText: localize("close"),
+            okText: localize("markAsRead")(),
+            cancelText: localize("close")(),
             extraButtons:
             [
               NotificationFilterButton(
               {
                 key: "notificationFilter",
                 filter: log.notificationFilter,
-                text: localize("notificationFilterButton"),
+                text: localize("notificationFilterButton")(),
                 highlightedOptionKey: notification.template.key,
               }),
             ],

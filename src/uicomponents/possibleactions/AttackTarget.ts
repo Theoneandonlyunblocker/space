@@ -56,7 +56,7 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
         {
           className: "possible-action-title",
         },
-          localize("attackTarget_action"),
+          localize("attackTarget_action")(),
         ),
         PlayerFlag(
         {

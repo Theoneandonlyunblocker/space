@@ -61,7 +61,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
           className: "reset-map-mode-button",
           onClick: this.handleReset,
         },
-          localize("reset"),
+          localize("reset")(),
         ),
         MapRendererLayersList(
         {

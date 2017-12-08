@@ -64,7 +64,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
         !this.state.hasConfirmOverwritePopup ? null :
           DialogBox(
           {
-            title: localize("confirmOverwrite"),
+            title: localize("confirmOverwrite")(),
             handleOk: this.saveGame,
             handleCancel: this.closeConfirmOverwritePopup,
           },
@@ -111,12 +111,12 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
             {
               this.okButtonElement = component;
             },
-          }, localize("save_action")),
+          }, localize("save_action")()),
           React.DOM.button(
           {
             className: "save-game-button",
             onClick: this.handleClose,
-          }, localize("cancel")),
+          }, localize("cancel")()),
         ),
       )
     );

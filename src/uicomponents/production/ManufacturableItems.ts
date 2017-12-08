@@ -96,7 +96,7 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
           {
             money: this.props.money,
             upgradeCost: 0,
-            actionString: localize("upgradeItems"),
+            actionString: localize("upgradeItems")(),
             currentLevel: 0,
             maxLevel: 0,
             levelDecimalPoints: 0,

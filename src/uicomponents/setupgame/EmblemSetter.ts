@@ -47,7 +47,7 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
             {
               backgroundColor: "#" + this.props.backgroundColor.getHexString(),
             },
-            title: `${this.props.emblem.template.key}\n\n${localize("emblemSetterTooltip")}`,
+            title: `${this.props.emblem.template.key}\n\n${localize("emblemSetterTooltip")()}`,
             onClick: this.props.toggleActive,
             onContextMenu: e =>
             {

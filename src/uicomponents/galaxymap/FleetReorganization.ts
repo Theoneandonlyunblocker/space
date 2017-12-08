@@ -112,7 +112,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
         React.DOM.div(
         {
           className: "fleet-reorganization-header",
-        }, localize("reorganizeFleets")),
+        }, localize("reorganizeFleets")()),
         React.DOM.div(
         {
           className: "fleet-reorganization-subheader",
@@ -167,7 +167,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
           {
             className: "close-reorganization",
             onClick: this.handleClose,
-          }, localize("close")),
+          }, localize("close")()),
         ),
       )
     );

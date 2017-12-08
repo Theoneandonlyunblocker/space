@@ -37,7 +37,9 @@ export class TechnologyUnlocksForTypeComponent extends React.Component<PropTypes
       {
         className: "technology-unlocks-for-type-header",
       },
-        localizeF(this.props.unlockType, "plural").capitalize(),
+        // TODO 2017.12.08 |
+        "PLACEHOLDER",
+        // localizeF(this.props.unlockType, "plural").capitalize(),
       ),
       React.DOM.ol(
       {

@@ -89,22 +89,12 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
           },
             technology.displayName,
           ),
+          // TODO 2017.12.08 | ???
           React.DOM.div(
           {
             className: "technology-level",
           },
-            React.DOM.span(
-            {
-              className: "technology-level-title",
-            },
-              localize("technologyLevel") + " ",
-            ),
-            React.DOM.span(
-            {
-              className: "technology-level-amount",
-            },
-              techData.level,
-            ),
+            localize("technologyLevel")(techData.level),
           ),
         ),
         React.DOM.div(
@@ -146,7 +136,7 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
         {
           key: `technologyUnlocks ${this.props.technology.key}`,
 
-          title: localize("technologyUnlocks_present")(
+          title: localize("technologyUnlocks")(
           {
             technologyName: this.props.technology.displayName,
           }),

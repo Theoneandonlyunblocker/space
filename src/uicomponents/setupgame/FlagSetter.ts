@@ -97,7 +97,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         },
           DefaultWindow(
           {
-            title: localize("editFlag"),
+            title: localize("editFlag")(),
             handleClose: this.setAsInactive,
             isResizable: false,
             getInitialPosition: (popupRect, containerRect) =>
@@ -166,7 +166,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         animationDuration: "" + timeout + "ms",
       },
     },
-      localize(messageHandle),
+      localize(messageHandle)(),
     );
   }
   private clearFailMessageTimeout(): void

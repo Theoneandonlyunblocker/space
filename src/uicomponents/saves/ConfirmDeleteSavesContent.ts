@@ -33,7 +33,10 @@ export class ConfirmDeleteSavesContentComponent extends React.PureComponent<Prop
         {
           className: "confirm-delete-saves-content-title",
         },
-          localize("confirmSaveDeletion", this.props.saveNames.length),
+          localize("confirmSaveDeletion")(
+          {
+            count: this.props.saveNames.length
+          }),
         ),
         React.DOM.ol(
         {

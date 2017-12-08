@@ -50,7 +50,7 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
         {
           className: "technology-unlocks-for-level-header",
         },
-          `${localizeF("technologyLevel").capitalize()} ${this.props.level}`,
+          localize("technologyLevel")(this.props.level),
         ),
         React.DOM.ol(
         {

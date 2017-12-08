@@ -50,7 +50,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
       key: "baseOpinion",
       content: AttitudeModifierInfo(
       {
-        name: localize("aiPersonality"),
+        name: localize("aiPersonality")(),
         strength: this.props.baseOpinion,
         endTurn: -1,
         alwaysShowAtTopOfList: true,
@@ -79,7 +79,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
     const columns: ListColumn<AttitudeModifierInfoProps>[] =
     [
       {
-        label: localize("displayName"),
+        label: localize("displayName")(),
         key: "name",
         defaultOrder: "asc",
         sortingFunction: (a, b) =>
@@ -108,12 +108,12 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
         },
       },
       {
-        label: localize("attitudeModifierEffect"),
+        label: localize("attitudeModifierEffect")(),
         key: "strength",
         defaultOrder: "asc",
       },
       {
-        label: localize("endsOn"),
+        label: localize("endsOn")(),
         key: "endTurn",
         defaultOrder: "desc",
       },

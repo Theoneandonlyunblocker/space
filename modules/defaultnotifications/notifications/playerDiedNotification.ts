@@ -37,7 +37,7 @@ export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedP
       playerName: props.deadPlayerName,
     });
   },
-  getTitle: (props: PropTypes) => localize("playerDiedTitle"),
+  getTitle: (props: PropTypes) => localize("playerDiedTitle")(),
   serializeProps: (props: PropTypes) =>
   {
     return(

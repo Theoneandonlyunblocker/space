@@ -110,7 +110,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
         !this.state.hasUpgradePopup ? null :
         DefaultWindow(
         {
-          title: localize("upgradeUnit"),
+          title: localize("upgradeUnit")(),
           handleClose: this.closePopup,
           isResizable: false,
         },
@@ -128,7 +128,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
           {
             className: "ready-to-level-up-message",
           },
-            localize("clickToLevelUp"),
+            localize("clickToLevelUp")(),
           ),
         ),
       )

@@ -79,7 +79,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         {
           player: player,
           name: player.name.fullName,
-          status: localize("deadPlayer"),
+          status: localize("deadPlayer")(),
           opinion: null,
           flag: player.flag,
           canInteractWith: this.props.player.diplomacyStatus.canDoDiplomacyWithPlayer(player),
@@ -98,18 +98,18 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         notSortable: true,
       },
       {
-        label: localize("displayName"),
+        label: localize("displayName")(),
         key: "name",
         defaultOrder: "asc",
       },
       {
-        label: localize("diplomaticStatus"),
+        label: localize("diplomaticStatus")(),
         key: "status",
         defaultOrder: "desc",
         propToSortBy: "statusSortingNumber",
       },
       {
-        label: localize("opinion"),
+        label: localize("opinion")(),
         key: "opinion",
         defaultOrder: "desc",
       },
