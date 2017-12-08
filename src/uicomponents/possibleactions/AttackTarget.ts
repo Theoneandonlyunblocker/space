@@ -4,7 +4,7 @@ import FleetAttackTarget from "../../FleetAttackTarget";
 import eventManager from "../../eventManager";
 import PlayerFlag from "../PlayerFlag";
 
-import {localize, localizeF} from "../../../localization/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

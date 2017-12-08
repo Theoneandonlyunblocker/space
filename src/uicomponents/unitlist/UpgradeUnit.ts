@@ -5,7 +5,7 @@ import Unit from "../../Unit";
 import UpgradeAbilities from "./UpgradeAbilities";
 import UpgradeAttributes from "./UpgradeAttributes";
 
-import {localizeF} from "../../../localization/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

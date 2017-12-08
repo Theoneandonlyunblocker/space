@@ -6,7 +6,7 @@ import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import UpgradeUnit from "./UpgradeUnit";
 
-import {localize, localizeF} from "../../../localization/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

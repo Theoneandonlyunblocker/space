@@ -6,7 +6,7 @@ import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 import ManufacturableItems from "./ManufacturableItems";
 import ManufacturableUnits from "./ManufacturableUnits";
 
-import {localizeF} from "../../../localization/localize";
+import {localize} from "../../../localization/localize";
 
 
 type TabKey = "units" | "items";

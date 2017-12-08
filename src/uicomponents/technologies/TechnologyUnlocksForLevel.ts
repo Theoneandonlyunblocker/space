@@ -2,7 +2,7 @@ import * as React from "react";
 
 import {UnlockableThing, UnlockType} from "../../templateinterfaces/UnlockableThing";
 
-import {localizeF} from "../../../localization/localize";
+import {localize} from "../../../localization/localize";
 
 import {TechnologyUnlocksForType} from "./TechnologyUnlocksForType";
 

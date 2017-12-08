@@ -10,7 +10,7 @@ import ListItem from "../list/ListItem";
 
 import {default as DialogBox} from "../windows/DialogBox";
 
-import {localize, localizeF} from "../../../localization/localize";
+import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

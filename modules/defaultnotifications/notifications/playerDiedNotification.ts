@@ -1,6 +1,6 @@
 import UIComponent from "./uicomponents/PlayerDiedNotification";
 
-import {localize, localizeF} from "../localization/localize";
+import {localize} from "../localization/localize";
 
 import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
 

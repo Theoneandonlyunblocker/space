@@ -15,7 +15,7 @@ import FlagEditor from "./FlagEditor";
 
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 
-import {localize, localizeF} from "../../../localization/localize";
+import {localize} from "../../../localization/localize";
 
 
 type FailMessageHandle =

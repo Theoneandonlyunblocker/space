@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import {localizeF} from "../../localization/localize";
+import {localize} from "../../localization/localize";
 
 import Notification from "../../../../src/Notification";
 
