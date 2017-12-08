@@ -1,4 +1,4 @@
-declare type MessageFunction<P> = (props: P) => string;
+declare type MessageFunction<T> = (...args: T[]) => string;
 
 declare class MessageFormat
 {
