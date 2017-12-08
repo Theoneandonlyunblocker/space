@@ -112,8 +112,8 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
           className: "fleet-info-move-points",
         },
           isNotDetected ?
-            localize("movesRemaining").format("?", "?") :
-            localize("movesRemaining").format(fleet.getMinCurrentMovePoints(), fleet.getMinMaxMovePoints()),
+            localize("fleet_movesRemaining")("?", "?") :
+            localize("fleet_movesRemaining")(fleet.getMinCurrentMovePoints(), fleet.getMinMaxMovePoints()),
         ),
 
       )
