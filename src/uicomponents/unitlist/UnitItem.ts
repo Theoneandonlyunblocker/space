@@ -82,6 +82,7 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
       return(
         React.DOM.div(
         {className: "empty-unit-item",
+        // TODO 2017.12.08 | don't compose message here
         title: `${localize("itemSlot")}: ${this.props.slot}`
       }));
 
