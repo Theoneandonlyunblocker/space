@@ -2,6 +2,7 @@
 
 import {Language} from "./Language";
 import {getActiveLanguage} from "./activeLanguage";
+import {transformers} from "./transformers";
 
 
 export class Localizer<Messages extends {[K in keyof Messages]: string}>
@@ -76,7 +77,8 @@ export class Localizer<Messages extends {[K in keyof Messages]: string}>
   {
     if (!this.messageFormattersByLanguageCode[language.code])
     {
-      this.messageFormattersByLanguageCode[language.code] = new MessageFormat(language.code);
+      const mf = this.messageFormattersByLanguageCode[language.code] = new MessageFormat(language.code);
+      mf.addFormatters(transformers);
       // tslint:disable-next-line:no-any
       this.compiledMessagesByLanguageCode[language.code] = <{[K in keyof Messages]: MessageFunction<any>}>  {};
     }
