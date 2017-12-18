@@ -9,6 +9,24 @@ import
   getRandomArrayItem,
 } from "../utility";
 
+
+// messageformat.js requires positional arguments to be wrapped in an array.
+// create wrapper function that packs up args in an array if needed
+function wrapMessageFunction(messageFN: MessageFunction<any>): MessageFunction<any>
+{
+  return (...args: any[]) =>
+  {
+    if (args.length === 0 || (typeof args[0] === "object" && args[0] !== null))
+    {
+      return messageFN.call(null, args);
+    }
+    else
+    {
+      return messageFN(args);
+    }
+  }
+}
+
 export class Localizer<Messages extends {[K in keyof Messages]: (string | string[])}>
 {
   public readonly key: string;
@@ -95,14 +113,14 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
 
       if (matchingCompiledMessages)
       {
-        return matchingCompiledMessage;
+        return wrapMessageFunction(getRandomArrayItem(matchingCompiledMessages));
       }
     }
 
     const missingLocalizationMessageFunction = this.getMissingLocalizationMessage.bind(this, key, activeLanguage);
     this.warnOfMissingLocalization(missingLocalizationMessageFunction());
 
-    return missingLocalizationMessageFunction;
+    return wrapMessageFunction(missingLocalizationMessageFunction);
   }
 
   private languageHasBeenInit(language: Language): boolean
