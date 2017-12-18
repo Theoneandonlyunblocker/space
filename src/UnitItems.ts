@@ -162,10 +162,16 @@ export default class UnitItems
       this.updateUnit(toAdd);
     }
   }
-  // TODO 2017.08.05 | remove. use addItemAtPosition instead
   public addItem(toAdd: Item): void
   {
-    this.addItemAtPosition(toAdd, this.getFirstAvailablePositionForItem(toAdd)!);
+    const position = this.getFirstAvailablePositionForItem(toAdd);
+
+    if (!position)
+    {
+      throw new Error("Tried to add item to unit without an open slot for item.");
+    }
+
+    this.addItemAtPosition(toAdd, position);
   }
   public moveItem(toMove: Item, newPosition: number): void
   {
