@@ -67,4 +67,4 @@ const mergedMessages = shallowExtend<AllMessages>(
 
 localizer.registerMessages(mergedMessages, Languages.en);
 
-export const localize = localizer.localize;
+export const localize = localizer.localize.bind(localizer);

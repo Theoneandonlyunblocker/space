@@ -9,4 +9,4 @@ export const localizer = new Localizer<typeof tradeMessages>("tradeMessages");
 
 localizer.registerTexts(tradeMessages, Languages.en);
 
-export const localize: typeof localizer.localize = localizer.localize.bind(localizer);
+export const localize = localizer.localize.bind(localizer);
