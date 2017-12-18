@@ -7,3 +7,8 @@ export function wasWere(argName: string): string
     `}`
   );
 }
+
+export function noOther(argName: string): string
+{
+  return `other {\\{INVALID_VALUE {${argName}}\\}}`;
+}

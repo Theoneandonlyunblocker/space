@@ -1,3 +1,5 @@
+import {noOther} from "./_helpers";
+
 import GuardCoverage from "../../src/GuardCoverage";
 
 export const battle =
@@ -9,6 +11,7 @@ export const battle =
     `{guardCoverage, select,` +
       `${GuardCoverage.Row} {units in same row.}` +
       `${GuardCoverage.All} {all units.}` +
+      noOther("guardCoverage") +
     `}`,
   reducedPhysicalDamage: "This unit takes {damageReduction}% reduced damage from physical attacks.",
   destroyed_statusText: "Destroyed",
