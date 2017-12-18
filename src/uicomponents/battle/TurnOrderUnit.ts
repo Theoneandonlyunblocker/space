@@ -85,7 +85,7 @@ export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, State
           {
             animationDuration: "" + this.props.transitionDuration + "ms",
           },
-          title: localize("delay_toolTip")(this.props.delay),
+          title: localize("delay_tooltip")(this.props.delay),
           onMouseEnter: this.props.onMouseEnter,
           onMouseLeave: this.props.onMouseLeave,
         },

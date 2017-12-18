@@ -97,7 +97,7 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
           React.DOM.div(
           {
             className: "preparation-text-container status-inner",
-            title: localize("preparing_toolTip")(),
+            title: localize("preparing_tooltip")(),
           },
             localize("preparing_statusText")(),
           ),

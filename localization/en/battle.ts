@@ -5,7 +5,7 @@ import GuardCoverage from "../../src/GuardCoverage";
 export const battle =
 {
   preparing_statusText: "Preparing",
-  preparing_toolTip: "Unit is preparing to use ability",
+  preparing_tooltip: "Unit is preparing to use ability",
   guard_statusText: "Guard",
   guard_chanceToProtect: `{protChance}% chance to protect ` +
     `{guardCoverage, select,` +
@@ -17,8 +17,8 @@ export const battle =
   destroyed_statusText: "Destroyed",
   captured_statusText: "Captured",
   unitAnnihilated: "Unit annihilated",
-  delay_toolTip: "Delay: {0}",
-  turnsLeft_toolTip: "Turns left: {0}",
+  delay_tooltip: "Delay: {0}",
+  turnsLeft_tooltip: "Turns left: {0}",
   battleFinish_victory: "You win",
   battleFinish_loss: "You lose",
   battleFinish_clickAnywhereToContinue: "Click anywhere to continue",
