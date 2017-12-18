@@ -18,7 +18,7 @@ function wrapMessageFunction(messageFN: MessageFunction<any>): MessageFunction<a
   {
     if (args.length === 0 || (typeof args[0] === "object" && args[0] !== null))
     {
-      return messageFN.call(null, args);
+      return messageFN.apply(null, args);
     }
     else
     {
