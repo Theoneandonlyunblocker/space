@@ -4,8 +4,12 @@ import {Language} from "./Language";
 import {getActiveLanguage} from "./activeLanguage";
 import {transformers} from "./transformers";
 
+import
+{
+  getRandomArrayItem,
+} from "../utility";
 
-export class Localizer<Messages extends {[K in keyof Messages]: string}>
+export class Localizer<Messages extends {[K in keyof Messages]: (string | string[])}>
 {
   public readonly key: string;
 
@@ -15,14 +19,14 @@ export class Localizer<Messages extends {[K in keyof Messages]: string}>
   } = {};
   private readonly messagesByLanguageCode:
   {
-    [languageCode: string]: Messages;
+    [languageCode: string]: {[K in keyof Messages]: string[]};
   } = {};
   private readonly compiledMessagesByLanguageCode:
   {
     [langaugeCode: string]:
     {
       // tslint:disable-next-line:no-any
-      [K in keyof Messages]: MessageFunction<any>;
+      [K in keyof Messages]: MessageFunction<any>[];
     },
   } = {};
 
@@ -36,20 +40,48 @@ export class Localizer<Messages extends {[K in keyof Messages]: string}>
     this.key = key;
   }
 
-  public registerMessages(messages: Partial<Messages>, language: Language): void
+  // for checking all messages are present
+  public setAllMessages(messages: Messages, language: Language): void
   {
-    if (!this.messagesByLanguageCode[language.code])
+    this.setMessages(messages, language);
+  }
+  public setMessages(messages: Partial<Messages>, language: Language): void
+  {
+    if (this.languageHasBeenInit(language))
     {
-      this.messagesByLanguageCode[language.code] = <Messages> {};
+      this.clearMessages(messages, language);
+    }
+    this.appendMessages(messages, language);
+  }
+  public appendMessages(messages: Partial<Messages>, language: Language): void
+  {
+    if (!this.languageHasBeenInit(language))
+    {
+      this.initLanguage(language);
     }
 
     for (let key in messages)
     {
-      this.messagesByLanguageCode[language.code][key] = messages[key];
-      this.compileMessage(key, language);
+      const messagesForKey = Array.isArray(messages[key]) ?
+        messages[key] as string[]:
+        [messages[key] as string];
+
+      if (!this.messagesByLanguageCode[language.code][key])
+      {
+        this.messagesByLanguageCode[language.code][key] = [];
+      }
+      this.messagesByLanguageCode[language.code][key].push(...messagesForKey);
+
+      if (!this.compiledMessagesByLanguageCode[language.code][key])
+      {
+        this.compiledMessagesByLanguageCode[language.code][key] = [];
+      }
+      this.compiledMessagesByLanguageCode[language.code][key].push(...messagesForKey.map(message =>
+      {
+        return this.compileMessage(message, language);
+      }));
     }
   }
-
   // TODO 2017.12.08 | would be nice to have typing here. don't think it's feasible right now
   // tslint:disable-next-line:no-any
   public localize(key: keyof Messages): MessageFunction<any>
@@ -59,9 +91,9 @@ export class Localizer<Messages extends {[K in keyof Messages]: string}>
     const compiledMessagesForLanguage = this.compiledMessagesByLanguageCode[activeLanguage.code];
     if (compiledMessagesForLanguage)
     {
-      const matchingCompiledMessage = this.compiledMessagesByLanguageCode[activeLanguage.code][key];
+      const matchingCompiledMessages = this.compiledMessagesByLanguageCode[activeLanguage.code][key];
 
-      if (matchingCompiledMessage)
+      if (matchingCompiledMessages)
       {
         return matchingCompiledMessage;
       }
@@ -73,19 +105,33 @@ export class Localizer<Messages extends {[K in keyof Messages]: string}>
     return missingLocalizationMessageFunction;
   }
 
-  private compileMessage(key: keyof Messages, language: Language): void
+  private languageHasBeenInit(language: Language): boolean
   {
-    if (!this.messageFormattersByLanguageCode[language.code])
-    {
-      const mf = this.messageFormattersByLanguageCode[language.code] = new MessageFormat(language.code);
-      mf.addFormatters(transformers);
-      // tslint:disable-next-line:no-any
-      this.compiledMessagesByLanguageCode[language.code] = <{[K in keyof Messages]: MessageFunction<any>}>  {};
-    }
+    return Boolean(this.messagesByLanguageCode[language.code]);
+  }
+  private initLanguage(language: Language): void
+  {
+    this.messagesByLanguageCode[language.code] = <{[K in keyof Messages]: string[]}> {};
 
+    this.messageFormattersByLanguageCode[language.code] = new MessageFormat(language.code);
+    this.messageFormattersByLanguageCode[language.code].addFormatters(transformers);
+    // tslint:disable-next-line:no-any
+    this.compiledMessagesByLanguageCode[language.code] = <{[K in keyof Messages]: MessageFunction<any>[]}> {};
+  }
+  private clearMessages(messages: Partial<Messages>, language: Language): void
+  {
+    for (let key in messages)
+    {
+      this.messagesByLanguageCode[language.code][key] = [];
+      this.compiledMessagesByLanguageCode[language.code][key] = [];
+    }
+  }
+  // tslint:disable-next-line:no-any
+  private compileMessage<T = any>(message: string, language: Language): MessageFunction<T>
+  {
     const messageFormatter = this.messageFormattersByLanguageCode[language.code];
 
-    this.compiledMessagesByLanguageCode[language.code][key] = messageFormatter.compile(this.messagesByLanguageCode[language.code][key]);
+    return messageFormatter.compile(message);
   }
   private getMissingLocalizationMessage(key: keyof Messages, activeLanguage: Language): string
   {
