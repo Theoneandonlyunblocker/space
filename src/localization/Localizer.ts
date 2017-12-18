@@ -100,7 +100,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
       }));
     }
   }
-  // TODO 2017.12.08 | would be nice to have typing here. don't think it's feasible right now
+  // would be nice to have typing here. don't think it's feasible right now
   // tslint:disable-next-line:no-any
   public localize(key: keyof Messages): MessageFunction<any>
   {
