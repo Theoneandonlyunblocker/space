@@ -121,7 +121,6 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
           ItemList(
           {
             items: player.items,
-            selectedUnit: this.state.selectedUnit, // only used to trigger updates
             isDraggable: true,
             onDragStart: this.handleDragStart,
             onDragEnd: this.handleDragEnd,

@@ -7,7 +7,6 @@ import ListItem from "../list/ListItem";
 import {default as ItemListItem, PropTypes as ItemListItemProps} from "./ItemListItem";
 
 import Item from "../../Item";
-import Unit from "../../Unit";
 
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 
@@ -22,9 +21,6 @@ export interface PropTypes extends React.Props<any>
   items: Item[];
   isDraggable: boolean;
   onRowChange: (row: ListItem<ItemListItemProps>) => void;
-
-  // TODO 2017.08.06 | can this be removed?
-  selectedUnit?: Unit | null; // only used to trigger updates
 }
 
 interface StateType
