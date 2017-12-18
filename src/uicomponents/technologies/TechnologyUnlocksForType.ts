@@ -1,7 +1,6 @@
 import * as React from "react";
 
-// TODO 2017.12.08 |
-// import {localize} from "../../../localization/localize";
+import {localize} from "../../../localization/localize";
 
 import {UnlockableThing, UnlockType} from "../../templateinterfaces/UnlockableThing";
 
@@ -38,9 +37,9 @@ export class TechnologyUnlocksForTypeComponent extends React.Component<PropTypes
       {
         className: "technology-unlocks-for-type-header",
       },
-        // TODO 2017.12.08 |
-        "PLACEHOLDER",
-        // localizeF(this.props.unlockType, "plural").capitalize(),
+        this.props.unlockType === "item" ?
+          localize("techUnlock_items")() :
+          localize("techUnlock_units")(),
       ),
       React.DOM.ol(
       {

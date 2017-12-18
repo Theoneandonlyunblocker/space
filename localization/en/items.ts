@@ -1,5 +1,5 @@
 export const items =
 {
-  itemSlot: "Item slot",
+  itemSlot: "Item slot: {0}",
   slot: "Slot",
 };

@@ -89,7 +89,6 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
           },
             technology.displayName,
           ),
-          // TODO 2017.12.08 | ???
           React.DOM.div(
           {
             className: "technology-level",
