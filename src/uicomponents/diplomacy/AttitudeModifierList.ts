@@ -45,6 +45,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
     const modifiers = this.props.attitudeModifiers;
     const rows: ListItem<AttitudeModifierInfoProps>[] = [];
 
+    // TODO 2017.12.19 | can't we actually make this using attitude modifier templates?
     rows.push(
     {
       key: "baseOpinion",

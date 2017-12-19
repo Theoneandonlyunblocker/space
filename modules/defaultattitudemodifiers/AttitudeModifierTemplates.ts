@@ -52,6 +52,7 @@ const declaredWar: AttitudeModifierTemplate =
   triggers: ["addDeclaredWarAttitudeModifier"],
 
   baseEffect: -35,
+  decayRate: 0.5,
 };
 
 const AttitudeModifierTemplates: TemplateCollection<AttitudeModifierTemplate> =

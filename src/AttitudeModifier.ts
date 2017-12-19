@@ -125,13 +125,22 @@ export class AttitudeModifier
   }
   private getFreshness(currentTurn: number = this.currentTurn)
   {
-    if (this.endTurn < 0)
+    if (!isFinite(this.endTurn))
     {
       return 1;
     }
     else
     {
-      return 1 - getRelativeValue(currentTurn, this.startTurn, this.endTurn);
+      if (!isFinite(this.template.decayRate))
+      {
+        throw new Error(`Attitude modifier ${this.template.type} has finite duration but no decayRate set.`);
+      }
+      else
+      {
+        const base = 1 - getRelativeValue(currentTurn, this.startTurn, this.endTurn);
+
+        return Math.pow(base, this.template.decayRate);
+      }
     }
   }
   private hasExpired(currentTurn: number = this.currentTurn)

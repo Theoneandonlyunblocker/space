@@ -20,6 +20,7 @@ declare interface AttitudeModifierTemplate
 
   baseEffect?: number;
   getEffectFromEvaluation?: (evaluation: DiplomacyEvaluation) => number;
+  decayRate?: number;
 
 
   canOverride?: AttitudeModifierTemplate[]; // set dynamically
