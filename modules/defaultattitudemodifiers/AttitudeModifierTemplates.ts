@@ -1,20 +1,13 @@
-import AttitudeModifierTemplateBase from "../../src/templateinterfaces/AttitudeModifierTemplate";
+import AttitudeModifierTemplate from "../../src/templateinterfaces/AttitudeModifierTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
 import DiplomacyEvaluation from "../../src/DiplomacyEvaluation";
 import DiplomacyState from "../../src/DiplomacyState";
 
-
-interface AttitudeModifierTemplate extends AttitudeModifierTemplateBase
-{
-  family: "geographic" | "current" | "history";
-}
-
 const neighborStars: AttitudeModifierTemplate =
 {
   type: "neighborStars",
   displayName: "neighborStars",
-  family: "geographic",
   duration: Infinity,
 
   startCondition: function(evaluation: DiplomacyEvaluation)
@@ -32,7 +25,6 @@ const atWar: AttitudeModifierTemplate =
 {
   type: "atWar",
   displayName: "At war",
-  family: "current",
   duration: Infinity,
 
   startCondition: function(evaluation: DiplomacyEvaluation)
@@ -47,7 +39,6 @@ const declaredWar: AttitudeModifierTemplate =
 {
   type: "declaredWar",
   displayName: "Declared war",
-  family: "history",
   duration: 15,
   triggers: ["addDeclaredWarAttitudeModifier"],
 

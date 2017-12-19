@@ -4,7 +4,6 @@ declare interface AttitudeModifierTemplate
 {
   type: string;
   displayName: string;
-  family: string;
   duration: number;
 
   // if these modifiers are present and one of them has either

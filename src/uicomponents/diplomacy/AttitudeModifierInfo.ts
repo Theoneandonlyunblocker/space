@@ -14,6 +14,7 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   endTurn: number;
   strength: number;
 
+  // TODO 2017.12.19 | actual sorting for these instead
   alwaysShowAtTopOfList?: boolean;
 }
 
