@@ -4,8 +4,8 @@ import {Objective} from "./common/Objective";
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 
-import DiplomacyStatus from "../../../src/DiplomacyStatus";
 import Player from "../../../src/Player";
+import PlayerDiplomacy from "../../../src/PlayerDiplomacy";
 
 export class DeclareWar extends DiplomaticObjective
 {
@@ -14,9 +14,9 @@ export class DeclareWar extends DiplomaticObjective
 
   public readonly target: Player;
 
-  protected constructor(score: number, target: Player, diplomacyStatus: DiplomacyStatus)
+  protected constructor(score: number, target: Player, playerDiplomacy: PlayerDiplomacy)
   {
-    super(score, diplomacyStatus);
+    super(score, playerDiplomacy);
     this.target = target;
   }
 
@@ -24,12 +24,12 @@ export class DeclareWar extends DiplomaticObjective
   {
     const metNeighborPlayers = mapEvaluator.player.getNeighboringPlayers().filter(player =>
     {
-      return mapEvaluator.player.diplomacyStatus.hasMetPlayer(player);
+      return mapEvaluator.player.diplomacy.hasMetPlayer(player);
     });
 
     const declarableNeighbors = metNeighborPlayers.filter(player =>
     {
-      return mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player);
+      return mapEvaluator.player.diplomacy.canDeclareWarOn(player);
     });
 
     return declarableNeighbors.map(player =>
@@ -37,7 +37,7 @@ export class DeclareWar extends DiplomaticObjective
       const score = mapEvaluator.getDesireToGoToWarWith(player) *
         mapEvaluator.getAbilityToGoToWarWith(player);
 
-      return new DeclareWar(score, player, mapEvaluator.player.diplomacyStatus);
+      return new DeclareWar(score, player, mapEvaluator.player.diplomacy);
     });
   }
   protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
@@ -54,7 +54,7 @@ export class DeclareWar extends DiplomaticObjective
 
   public execute(afterDoneCallback: () => void): void
   {
-    this.diplomacyStatus.declareWarOn(this.target);
+    this.playerDiplomacy.declareWarOn(this.target);
     afterDoneCallback();
   }
 }

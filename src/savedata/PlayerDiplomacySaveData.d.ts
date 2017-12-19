@@ -1,7 +1,7 @@
 import DiplomacyState from "../DiplomacyState";
 import AttitudeModifierSaveData from "./AttitudeModifierSaveData";
 
-declare interface DiplomacyStatusSaveData
+declare interface PlayerDiplomacySaveData
 {
   statusByPlayer:
   {
@@ -13,4 +13,4 @@ declare interface DiplomacyStatusSaveData
   };
 }
 
-export default DiplomacyStatusSaveData;
+export default PlayerDiplomacySaveData;

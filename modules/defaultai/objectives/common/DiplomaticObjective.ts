@@ -1,21 +1,21 @@
 import {Objective} from "./Objective";
 import {ObjectiveFamily} from "./ObjectiveFamily";
 
-import DiplomacyStatus from "../../../../src/DiplomacyStatus";
+import PlayerDiplomacy from "../../../../src/PlayerDiplomacy";
 
 export abstract class DiplomaticObjective extends Objective
 {
   public static readonly family = ObjectiveFamily.Diplomatic;
   public readonly family = ObjectiveFamily.Diplomatic;
 
-  protected readonly diplomacyStatus: DiplomacyStatus;
+  protected readonly playerDiplomacy: PlayerDiplomacy;
 
   protected constructor(
     priority: number,
-    diplomacyStatus: DiplomacyStatus,
+    playerDiplomacy: PlayerDiplomacy,
   )
   {
     super(priority);
-    this.diplomacyStatus = diplomacyStatus;
+    this.playerDiplomacy = playerDiplomacy;
   }
 }

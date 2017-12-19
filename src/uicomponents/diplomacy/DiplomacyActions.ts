@@ -50,7 +50,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       className: "diplomacy-action-button",
     };
 
-    if (player.diplomacyStatus.canDeclareWarOn(targetPlayer))
+    if (player.diplomacy.canDeclareWarOn(targetPlayer))
     {
       declareWarProps.onClick = this.handleDeclareWar;
     }
@@ -65,7 +65,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       className: "diplomacy-action-button",
     };
 
-    if (player.diplomacyStatus.canMakePeaceWith(targetPlayer))
+    if (player.diplomacy.canMakePeaceWith(targetPlayer))
     {
       makePeaceProps.onClick = this.handleMakePeace;
     }
@@ -138,12 +138,12 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   }
   private handleDeclareWar()
   {
-    this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
+    this.props.player.diplomacy.declareWarOn(this.props.targetPlayer);
     this.props.onUpdate();
   }
   private handleMakePeace()
   {
-    this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
+    this.props.player.diplomacy.makePeaceWith(this.props.targetPlayer);
     this.props.onUpdate();
   }
 }

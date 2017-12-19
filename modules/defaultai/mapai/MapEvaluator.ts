@@ -287,7 +287,7 @@ export default class MapEvaluator
   public getHostileUnitsAtStar(star: Star): Unit[]
   {
     return star.getUnits(player =>
-      this.player.diplomacyStatus.canAttackFleetOfPlayer(player));
+      this.player.diplomacy.canAttackFleetOfPlayer(player));
   }
   public getHostileStrengthAtStar(star: Star): number
   {
@@ -386,7 +386,7 @@ export default class MapEvaluator
   {
     const byPlayer = new ValuesByPlayer<InfluenceMap>();
 
-    this.player.diplomacyStatus.getMetPlayers().filter(player => !player.isDead).forEach(player =>
+    this.player.diplomacy.getMetPlayers().filter(player => !player.isDead).forEach(player =>
     {
       byPlayer.set(player, this.getPlayerInfluenceMap(player));
     });
@@ -422,7 +422,7 @@ export default class MapEvaluator
   {
     const byPlayer = new ValuesByPlayer<Star[]>();
 
-    this.player.diplomacyStatus.getMetPlayers().filter(player => !player.isDead).forEach(player =>
+    this.player.diplomacy.getMetPlayers().filter(player => !player.isDead).forEach(player =>
     {
       byPlayer.set(player, this.getVisibleStarsOfPlayer(player));
     });
@@ -450,7 +450,7 @@ export default class MapEvaluator
   }
   getPerceivedThreatOfPlayer(player: Player)
   {
-    if (!this.player.diplomacyStatus.hasMetPlayer(player))
+    if (!this.player.diplomacy.hasMetPlayer(player))
     {
       throw new Error(this.player.name.fullName +
         " tried to call getPerceivedThreatOfPlayer on unmet player " + player.name.fullName);
@@ -478,7 +478,7 @@ export default class MapEvaluator
   {
     const byPlayer = new ValuesByPlayer<number>();
 
-    this.player.diplomacyStatus.getMetPlayers().filter(player => !player.isDead).forEach(player =>
+    this.player.diplomacy.getMetPlayers().filter(player => !player.isDead).forEach(player =>
     {
       byPlayer.set(player, this.getPerceivedThreatOfPlayer(player));
     });
@@ -669,7 +669,7 @@ export default class MapEvaluator
     // // perceived difficulty
     // const strength = this.estimateGlobalStrength(player);
     // // relations
-    // const opinion = this.player.diplomacyStatus.getOpinionOf(player);
+    // const opinion = this.player.diplomacy.getOpinionOf(player);
     // // trust
     // // own allies
     // //   ally ability to go to war with
@@ -708,16 +708,16 @@ export default class MapEvaluator
       neighborStarsByPlayer.get(star.owner).push(star);
     });
 
-    this.player.diplomacyStatus.getMetPlayers().filter(player => !player.isDead).forEach(player =>
+    this.player.diplomacy.getMetPlayers().filter(player => !player.isDead).forEach(player =>
     {
       neighborStarsByPlayer.setIfDoesntExist(player, []);
 
       evaluations.set(player,
       {
         currentTurn: currentTurn,
-        opinion: this.player.diplomacyStatus.getOpinionOf(player),
+        opinion: this.player.diplomacy.getOpinionOf(player),
         neighborStars: neighborStarsByPlayer.get(player).length,
-        currentStatus: this.player.diplomacyStatus.statusByPlayer.get(player),
+        currentStatus: this.player.diplomacy.statusByPlayer.get(player),
       });
     });
 

@@ -24,7 +24,7 @@ import Unit from "./Unit";
 
 import AIControllerSaveData from "./savedata/AIControllerSaveData";
 import BuildingSaveData from "./savedata/BuildingSaveData";
-import DiplomacyStatusSaveData from "./savedata/DiplomacyStatusSaveData";
+import PlayerDiplomacySaveData from "./savedata/PlayerDiplomacySaveData";
 import EmblemSaveData from "./savedata/EmblemSaveData";
 import FlagSaveData from "./savedata/FlagSaveData";
 import FleetSaveData from "./savedata/FleetSaveData";
@@ -117,9 +117,9 @@ export default class GameLoader
     data.players.forEach(playerData =>
     {
       const player = this.playersById[playerData.id];
-      if (player.diplomacyStatus && playerData.diplomacyStatus)
+      if (player.diplomacy && playerData.diplomacyData)
       {
-        this.deserializeDiplomacyStatus(player, playerData.diplomacyStatus);
+        this.deserializePlayerDiplomacy(player, playerData.diplomacyData);
       }
     });
 
@@ -344,11 +344,11 @@ export default class GameLoader
 
     return player;
   }
-  private deserializeDiplomacyStatus(player: Player, data: DiplomacyStatusSaveData): void
+  private deserializePlayerDiplomacy(player: Player, data: PlayerDiplomacySaveData): void
   {
     for (let playerId in data.statusByPlayer)
     {
-      player.diplomacyStatus.statusByPlayer.set(this.playersById[playerId], data.statusByPlayer[playerId]);
+      player.diplomacy.statusByPlayer.set(this.playersById[playerId], data.statusByPlayer[playerId]);
     }
 
     for (let playerId in data.attitudeModifiersByPlayer)
@@ -366,7 +366,7 @@ export default class GameLoader
           strength:modifierData.strength,
         });
 
-        player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
+        player.diplomacy.addAttitudeModifier(this.playersById[playerId], modifier);
       });
     }
   }

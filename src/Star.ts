@@ -516,14 +516,12 @@ export default class Star implements Point
     const buildingTarget = this.getFirstEnemyDefenceBuilding(player);
     const buildingController = buildingTarget ? buildingTarget.controller : null;
 
-    const diplomacyStatus = player.diplomacyStatus;
-
     const targets: FleetAttackTarget[] = [];
 
     if (buildingTarget &&
       (
         player === this.owner ||
-        diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller)
+        player.diplomacy.canAttackBuildingOfPlayer(buildingTarget.controller)
       )
     )
     {
@@ -544,13 +542,13 @@ export default class Star implements Point
       }
       else
       {
-        return player.diplomacyStatus.canAttackFleetOfPlayer(fleetOwner);
+        return player.diplomacy.canAttackFleetOfPlayer(fleetOwner);
       }
     });
 
     for (let i = 0; i < hostileFleetOwners.length; i++)
     {
-      if (diplomacyStatus.canAttackFleetOfPlayer(hostileFleetOwners[i]))
+      if (player.diplomacy.canAttackFleetOfPlayer(hostileFleetOwners[i]))
       {
         targets.push(
         {

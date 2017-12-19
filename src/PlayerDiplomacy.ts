@@ -9,12 +9,11 @@ import Player from "./Player";
 import {default as ValuesByPlayer} from "./ValuesByPlayer";
 
 import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData";
-import DiplomacyStatusSaveData from "./savedata/DiplomacyStatusSaveData";
+import PlayerDiplomacySaveData from "./savedata/PlayerDiplomacySaveData";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 
 
-// TODO 2017.07.25 | rename. confusing with DiplomacyState
-export default class DiplomacyStatus
+export default class PlayerDiplomacy
 {
   public readonly statusByPlayer: ValuesByPlayer<DiplomacyState>;
   public readonly attitudeModifiersByPlayer: ValuesByPlayer<AttitudeModifier[]>;
@@ -97,7 +96,7 @@ export default class DiplomacyStatus
     if (!this.hasMetPlayer(player) && this.canDoDiplomacyWithPlayer(player))
     {
       this.triggerMeetingWithPlayer(player);
-      player.diplomacyStatus.triggerMeetingWithPlayer(this.player);
+      player.diplomacy.triggerMeetingWithPlayer(this.player);
     }
   }
   public getMetPlayers(): Player[]
@@ -136,7 +135,7 @@ export default class DiplomacyStatus
     }
 
     this.statusByPlayer.set(targetPlayer, DiplomacyState.War);
-    targetPlayer.diplomacyStatus.statusByPlayer.set(this.player, DiplomacyState.War);
+    targetPlayer.diplomacy.statusByPlayer.set(this.player, DiplomacyState.War);
 
     eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", targetPlayer, this.player);
     activeModuleData.scripts.diplomacy.onWarDeclaration.forEach(script =>
@@ -152,7 +151,7 @@ export default class DiplomacyStatus
     }
 
     this.statusByPlayer.set(player, DiplomacyState.Peace);
-    player.diplomacyStatus.statusByPlayer.set(this.player, DiplomacyState.Peace);
+    player.diplomacy.statusByPlayer.set(this.player, DiplomacyState.Peace);
   }
   public canAttackFleetOfPlayer(player: Player)
   {
@@ -279,7 +278,7 @@ export default class DiplomacyStatus
       }
     }
   }
-  public serialize(): DiplomacyStatusSaveData
+  public serialize(): PlayerDiplomacySaveData
   {
     const attitudeModifiersByPlayer:
     {
@@ -291,7 +290,7 @@ export default class DiplomacyStatus
       attitudeModifiersByPlayer[player.id] = modifiers.map(modifier => modifier.serialize());
     });
 
-    const data: DiplomacyStatusSaveData =
+    const data: PlayerDiplomacySaveData =
     {
       statusByPlayer: this.statusByPlayer.toObject(),
       attitudeModifiersByPlayer: attitudeModifiersByPlayer,

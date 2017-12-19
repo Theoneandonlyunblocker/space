@@ -1,7 +1,7 @@
 import app from "./App"; // TODO global
-import {default as DiplomacyStatus} from "./DiplomacyStatus";
 import GalaxyMap from "./GalaxyMap";
 import Player from "./Player";
+import {default as PlayerDiplomacy} from "./PlayerDiplomacy";
 import {activeNotificationLog} from "./activeNotificationLog";
 import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";
@@ -42,7 +42,7 @@ export default class Game
       return !player.isIndependent && !player.isDead;
     }).forEach(player =>
     {
-      player.diplomacyStatus = new DiplomacyStatus(player, this.players);
+      player.diplomacy = new PlayerDiplomacy(player, this.players);
     });
 
     this.turnNumber = 1;

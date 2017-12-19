@@ -1,6 +1,6 @@
-import DiplomacyStatus from "../../../src/DiplomacyStatus";
 import Game from "../../../src/Game";
 import Player from "../../../src/Player";
+import PlayerDiplomacy from "../../../src/PlayerDiplomacy";
 
 import MapEvaluator from "./MapEvaluator";
 
@@ -9,7 +9,7 @@ export default class DiplomacyAI
   private game: Game;
 
   private player: Player;
-  private diplomacyStatus: DiplomacyStatus;
+  private playerDiplomacy: PlayerDiplomacy;
 
   private mapEvaluator: MapEvaluator;
 
@@ -21,7 +21,7 @@ export default class DiplomacyAI
     this.game = game;
 
     this.player = mapEvaluator.player;
-    this.diplomacyStatus = this.player.diplomacyStatus;
+    this.playerDiplomacy = this.player.diplomacy;
 
     this.mapEvaluator = mapEvaluator;
   }
@@ -33,7 +33,7 @@ export default class DiplomacyAI
 
     diplomacyEvaluations.forEach((player, evaluation) =>
     {
-      this.diplomacyStatus.processAttitudeModifiersForPlayer(player, evaluation);
+      this.playerDiplomacy.processAttitudeModifiersForPlayer(player, evaluation);
     });
   }
 }

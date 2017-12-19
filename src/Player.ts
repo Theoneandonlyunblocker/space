@@ -5,7 +5,6 @@ import BattleData from "./BattleData";
 import BattlePrep from "./BattlePrep";
 import BattleSimulator from "./BattleSimulator";
 import Color from "./Color";
-import DiplomacyStatus from "./DiplomacyStatus";
 import {Flag} from "./Flag";
 import {Fleet} from "./Fleet";
 import FleetAttackTarget from "./FleetAttackTarget";
@@ -14,6 +13,7 @@ import Item from "./Item";
 import Manufactory from "./Manufactory";
 import Name from "./Name";
 import Options from "./Options";
+import PlayerDiplomacy from "./PlayerDiplomacy";
 import PlayerTechnology from "./PlayerTechnology";
 import Point from "./Point";
 import Star from "./Star";
@@ -67,7 +67,7 @@ export default class Player
   public isIndependent: boolean = false;
   public isDead: boolean = false;
 
-  diplomacyStatus: DiplomacyStatus;
+  public diplomacy: PlayerDiplomacy;
 
   private _money: number;
   get money(): number
@@ -237,10 +237,10 @@ export default class Player
   }
   public destroy(): void
   {
-    if (this.diplomacyStatus)
+    if (this.diplomacy)
     {
-      this.diplomacyStatus.destroy();
-      this.diplomacyStatus = null;
+      this.diplomacy.destroy();
+      this.diplomacy = null;
     }
 
     this.AIController = null;
@@ -505,7 +505,7 @@ export default class Player
   updateVisionInStar(star: Star): void
   {
     // meet players
-    if (this.diplomacyStatus && this.diplomacyStatus.hasAnUnmetPlayer())
+    if (this.diplomacy && this.diplomacy.hasAnUnmetPlayer())
     {
       this.meetPlayersInStarByVisibility(star, "visible");
     }
@@ -513,7 +513,7 @@ export default class Player
   updateDetectionInStar(star: Star): void
   {
     // meet players
-    if (this.diplomacyStatus && this.diplomacyStatus.hasAnUnmetPlayer())
+    if (this.diplomacy && this.diplomacy.hasAnUnmetPlayer())
     {
       this.meetPlayersInStarByVisibility(star, "stealthy");
     }
@@ -542,7 +542,7 @@ export default class Player
     for (let playerId in presentPlayersByVisibility[visibility])
     {
       const player = presentPlayersByVisibility[visibility][playerId];
-      this.diplomacyStatus.meetPlayerIfNeeded(player);
+      this.diplomacy.meetPlayerIfNeeded(player);
     }
   }
   updateVisibleStars(): void
@@ -1027,7 +1027,7 @@ export default class Player
       raceKey: this.race.type,
       isDead: this.isDead,
 
-      diplomacyStatus: this.diplomacyStatus ? this.diplomacyStatus.serialize() : null,
+      diplomacyData: this.diplomacy ? this.diplomacy.serialize() : null,
       researchByTechnology: this.playerTechnology ? this.playerTechnology.serialize() : null,
       flag: this.flag ? this.flag.serialize() : null,
       AIController: this.AIController ? this.AIController.serialize() : null,

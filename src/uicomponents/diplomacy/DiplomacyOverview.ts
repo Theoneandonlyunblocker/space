@@ -44,14 +44,14 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
 
   public render()
   {
-    const metPlayers = this.props.player.diplomacyStatus.getMetPlayers();
+    const metPlayers = this.props.player.diplomacy.getMetPlayers();
 
     const alivePlayers = metPlayers.filter(player => !player.isDead);
     const deadPlayers = metPlayers.filter(player => player.isDead);
 
     const rows: ListItem<DiplomaticStatusPlayerProps>[] = alivePlayers.map(player =>
     {
-      const status = this.props.player.diplomacyStatus.statusByPlayer.get(player)!;
+      const status = this.props.player.diplomacy.statusByPlayer.get(player)!;
 
       return(
       {
@@ -61,13 +61,13 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           player: player,
           name: player.name.fullName,
           status: DiplomacyState[status],
-          opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
+          opinion: player.diplomacy.getOpinionOf(this.props.player),
           flag: player.flag,
-          canInteractWith: this.props.player.diplomacyStatus.canDoDiplomacyWithPlayer(player),
+          canInteractWith: this.props.player.diplomacy.canDoDiplomacyWithPlayer(player),
 
-          baseOpinion: player.diplomacyStatus.getBaseOpinion(),
+          baseOpinion: player.diplomacy.getBaseOpinion(),
           statusSortingNumber: status,
-          attitudeModifiers: player.diplomacyStatus.attitudeModifiersByPlayer.get(this.props.player)!,
+          attitudeModifiers: player.diplomacy.attitudeModifiersByPlayer.get(this.props.player)!,
         }),
       });
     }).concat(deadPlayers.map(player =>
@@ -82,7 +82,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           status: localize("deadPlayer")(),
           opinion: null,
           flag: player.flag,
-          canInteractWith: this.props.player.diplomacyStatus.canDoDiplomacyWithPlayer(player),
+          canInteractWith: this.props.player.diplomacy.canDoDiplomacyWithPlayer(player),
 
           statusSortingNumber: -99999,
         }),

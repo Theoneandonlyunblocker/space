@@ -1,6 +1,6 @@
 import AIControllerSaveData from "./AIControllerSaveData";
 import ColorSaveData from "./ColorSaveData";
-import DiplomacyStatusSaveData from "./DiplomacyStatusSaveData";
+import PlayerDiplomacySaveData from "./PlayerDiplomacySaveData";
 import FlagSaveData from "./FlagSaveData";
 import FleetSaveData from "./FleetSaveData";
 import NameSaveData from "./NameSaveData";
@@ -18,7 +18,7 @@ declare interface PlayerSaveData
   {
     [resourceType: string]: number;
   };
-  diplomacyStatus?: DiplomacyStatusSaveData;
+  diplomacyData?: PlayerDiplomacySaveData;
 
   flag?: FlagSaveData;
 

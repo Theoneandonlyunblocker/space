@@ -30,7 +30,7 @@ export class FightInvadingEnemy extends TargetedFrontObjective
       {
         return(
           !player.isIndependent &&
-          mapEvaluator.player.diplomacyStatus.canAttackFleetOfPlayer(player)
+          mapEvaluator.player.diplomacy.canAttackFleetOfPlayer(player)
         );
       });
 
