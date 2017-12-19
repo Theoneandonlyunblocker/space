@@ -22,6 +22,7 @@ export class AttitudeModifier
     startTurn: number;
     endTurn?: number;
     strength?: number;
+    evaluation?: DiplomacyEvaluation,
   })
   {
     this.template = props.template;
@@ -37,17 +38,21 @@ export class AttitudeModifier
       this.endTurn = this.startTurn + this.template.duration;
     }
 
-    if (this.template.constantEffect !== undefined)
-    {
-      this.strength = this.template.constantEffect;
-    }
-    else if (props.strength !== undefined)
+    if (props.strength !== undefined)
     {
       this.strength = props.strength;
     }
+    else if (this.template.constantEffect !== undefined)
+    {
+      this.strength = this.template.constantEffect;
+    }
+    else if (props.evaluation && this.template.getEffectFromEvaluation)
+    {
+      this.setStrength(props.evaluation);
+    }
     else
     {
-      throw new Error("Attitude modifier didn't receive modifier strength value.");
+      throw new Error("Attitude modifier couldn't initialize with a strength value.");
     }
   }
 

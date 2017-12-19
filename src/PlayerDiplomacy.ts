@@ -245,7 +245,7 @@ export default class PlayerDiplomacy
 
       let modifier: AttitudeModifier;
       modifier = activeModifiers[template.type];
-      const alreadyHasModifierOfType = modifier;
+      const alreadyHasModifierOfType = Boolean(modifier);
 
       if (!alreadyHasModifierOfType && !template.triggers)
       {
@@ -263,6 +263,7 @@ export default class PlayerDiplomacy
             {
               template: template,
               startTurn: evaluation.currentTurn,
+              evaluation: evaluation,
             });
 
             modifiersForPlayer.push(modifier);
@@ -270,9 +271,7 @@ export default class PlayerDiplomacy
           }
         }
       }
-
-
-      if (modifier)
+      else if (modifier)
       {
         modifier.updateWithEvaluation(evaluation);
       }
@@ -336,6 +335,7 @@ export default class PlayerDiplomacy
 
     return null;
   }
+  // TODO 2017.12.19 | should rework this. very inflexible. only allows triggered modifiers with static strength
   private triggerAttitudeModifier(template: AttitudeModifierTemplate, player: Player, source: Player)
   {
     // this function is called on each player's diplo status. ignore if not actually the target
