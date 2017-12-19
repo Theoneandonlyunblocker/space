@@ -227,7 +227,7 @@ export default class Unit
     const baseHealthValue = activeModuleData.ruleSet.units.baseHealthValue * healthMultiplier;
     const healthVariance = activeModuleData.ruleSet.units.healthVariance;
 
-    const baseHealth = baseHealthValue * template.maxHealth;
+    const baseHealth = baseHealthValue * template.maxHealthLevel;
     const health = randInt(baseHealth - healthVariance, baseHealth + healthVariance);
 
     const unit = new Unit(

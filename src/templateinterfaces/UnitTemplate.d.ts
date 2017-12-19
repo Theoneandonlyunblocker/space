@@ -19,8 +19,10 @@ declare interface UnitTemplate extends ManufacturableThing
   buildCost: number;
   unlockType: "unit";
   icon: string;
-  // TODO 2017.07.26 | rename maxHealthLevel
-  maxHealth: number;
+  /**
+   * relative to other unit types. base value is determined in ruleset
+   */
+  maxHealthLevel: number;
   maxMovePoints: number;
   maxOffensiveBattlesPerTurn: number;
 
@@ -41,6 +43,9 @@ declare interface UnitTemplate extends ManufacturableThing
   detectionRange: number;
   isStealthy?: boolean;
 
+  /**
+   * relative to other unit types. base value is determined in ruleset
+   */
   attributeLevels:
   {
     attack: number;

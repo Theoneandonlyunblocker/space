@@ -51,7 +51,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   {
     var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
     unit.lastHealthDrawnAt = unit.currentHealth;
-    unitsToDraw = Math.round(lastHealthDrawnAt * 0.04) * (1 / unit.template.maxHealth);
+    unitsToDraw = Math.round(lastHealthDrawnAt * 0.04);
     var heightRatio = 25 / image.height;
     heightRatio = Math.min(heightRatio, 1.25);
     maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);

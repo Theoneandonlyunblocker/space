@@ -28,7 +28,7 @@ const bomberSquadron: UnitTemplate =
   buildCost: 200,
   unlockType: "unit",
   icon: "modules/defaultunits/img/icons/fb.png",
-  maxHealth: 0.5,
+  maxHealthLevel: 0.5,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,
   visionRange: 1,

@@ -28,7 +28,7 @@ export const droneCommander: UnitTemplate =
   buildCost: 200,
   unlockType: "unit",
 
-  maxHealth: 0.75,
+  maxHealthLevel: 0.75,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,
   visionRange: 1,

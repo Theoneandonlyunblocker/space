@@ -43,7 +43,7 @@ const debugShip: UnitTemplate =
   buildCost: 0,
   unlockType: "unit",
   icon: "modules/defaultunits/img/icons/f.png",
-  maxHealth: 1,
+  maxHealthLevel: 1,
   maxMovePoints: 999,
   maxOffensiveBattlesPerTurn: 999,
   visionRange: 999,

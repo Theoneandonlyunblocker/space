@@ -28,7 +28,7 @@ export const droneSwarm: UnitTemplate =
   buildCost: 150,
   unlockType: "unit",
 
-  maxHealth: 0.6,
+  maxHealthLevel: 0.6,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,
   visionRange: 1,

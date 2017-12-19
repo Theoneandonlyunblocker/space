@@ -28,7 +28,7 @@ const battleCruiser: UnitTemplate =
   buildCost: 200,
   unlockType: "unit",
   icon: "modules/defaultunits/img/icons/bc.png",
-  maxHealth: 1,
+  maxHealthLevel: 1,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,
   visionRange: 1,
