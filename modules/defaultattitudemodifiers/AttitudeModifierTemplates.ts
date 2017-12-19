@@ -40,7 +40,7 @@ const atWar: AttitudeModifierTemplate =
     return (evaluation.currentStatus >= DiplomacyState.War);
   },
 
-  constantEffect: -30,
+  baseEffect: -30,
 };
 
 const declaredWar: AttitudeModifierTemplate =
@@ -51,7 +51,7 @@ const declaredWar: AttitudeModifierTemplate =
   duration: 15,
   triggers: ["addDeclaredWarAttitudeModifier"],
 
-  constantEffect: -35,
+  baseEffect: -35,
 };
 
 const AttitudeModifierTemplates: TemplateCollection<AttitudeModifierTemplate> =

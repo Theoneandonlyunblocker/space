@@ -9,6 +9,7 @@ declare interface AttitudeModifierTemplate
 
   // if these modifiers are present and one of them has either
   // stronger effect or opposite sign (+-), don't count this modifier
+  // TODO 2017.12.19 | unused
   canBeOverriddenBy?: AttitudeModifierTemplate[];
 
   triggers?: string[];
@@ -17,9 +18,8 @@ declare interface AttitudeModifierTemplate
   // to determine when to end modifier
   endCondition?: (evaluation: DiplomacyEvaluation) => boolean;
 
-  constantEffect?: number;
+  baseEffect?: number;
   getEffectFromEvaluation?: (evaluation: DiplomacyEvaluation) => number;
-
 
 
   canOverride?: AttitudeModifierTemplate[]; // set dynamically

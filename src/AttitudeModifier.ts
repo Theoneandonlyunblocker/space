@@ -42,9 +42,9 @@ export class AttitudeModifier
     {
       this.strength = props.strength;
     }
-    else if (this.template.constantEffect !== undefined)
+    else if (this.template.baseEffect !== undefined)
     {
-      this.strength = this.template.constantEffect;
+      this.strength = this.template.baseEffect;
     }
     else if (props.evaluation && this.template.getEffectFromEvaluation)
     {
@@ -107,9 +107,9 @@ export class AttitudeModifier
 
   private setStrength(evaluation: DiplomacyEvaluation)
   {
-    if (this.template.constantEffect)
+    if (this.template.baseEffect)
     {
-      this.strength = this.template.constantEffect;
+      this.strength = this.template.baseEffect;
     }
     else if (this.template.getEffectFromEvaluation)
     {
@@ -125,7 +125,10 @@ export class AttitudeModifier
   }
   private getFreshness(currentTurn: number = this.currentTurn)
   {
-    if (this.endTurn < 0) return 1;
+    if (this.endTurn < 0)
+    {
+      return 1;
+    }
     else
     {
       return 1 - getRelativeValue(currentTurn, this.startTurn, this.endTurn);
