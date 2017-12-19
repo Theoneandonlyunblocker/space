@@ -1,7 +1,8 @@
+// should be used as little as possible. old code using this should be refactored
+
 /// <reference path="../lib/pixi.d.ts" />
 
 let eventEmitter = new PIXI.utils.EventEmitter();
-// TODO refactor | rename EventManager
 const eventManager =
 {
   dispatchEvent: eventEmitter.emit.bind(eventEmitter),

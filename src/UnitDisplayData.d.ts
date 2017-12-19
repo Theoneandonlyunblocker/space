@@ -20,9 +20,9 @@ interface UnitDisplayData
   attributeChanges?: PartialUnitAttributes;
   passiveEffects?: UnitEffectTemplate[];
 
-  portraitSrc: string; // TODO fluff | allow other portrait elements
+  portraitSrc: string; // could also allow other portrait elements
   iconSrc: string;
-  // iconElement: React.ReactElement<any>; // TODO fluff | allow other icon elements
+  // iconElement: React.ReactElement<any>;
 
   // in src/uicomponents/unit.ts:DisplayStatus
   // wasDestroyed?: boolean;

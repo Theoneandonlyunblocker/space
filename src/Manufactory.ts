@@ -154,7 +154,7 @@ export default class Manufactory
   }
   getLocalItemTypes(): ItemTemplate[]
   {
-    // TODO manufactory | currently no local item types exist
+    // currently no local item types exist
 
     return [];
   }

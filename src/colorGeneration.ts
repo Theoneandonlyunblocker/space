@@ -196,7 +196,7 @@ function makeContrastingColor(
 
 export function generateSecondaryColor(mainColor: Color): Color
 {
-  // TODO color | used to have additional system. maybe for more interesting colors?
+  // could have additional systems here for more variation
   return makeContrastingColor(mainColor,
   {
     minDifference:
@@ -210,6 +210,7 @@ export function generateSecondaryColor(mainColor: Color): Color
 export function generateColorScheme(mainColor?: Color)
 {
   const main = mainColor || generateMainColor();
+
   return(
   {
     main: main,

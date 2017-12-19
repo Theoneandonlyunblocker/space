@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import TutorialStateTODO from "../../tutorials/TutorialState";
+import TutorialState from "../../tutorials/TutorialState";
 import TutorialStatus from "../../tutorials/TutorialStatus";
 
 import {localize} from "../../../localization/localize";
@@ -41,7 +41,7 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   {
     return(
     {
-      isChecked: this.getTutorialState() === TutorialStateTODO.NeverShow,
+      isChecked: this.getTutorialState() === TutorialState.NeverShow,
     });
   }
 
@@ -54,11 +54,11 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   {
     if (this.state.isChecked)
     {
-      TutorialStatus[this.props.tutorialId] = TutorialStateTODO.Show;
+      TutorialStatus[this.props.tutorialId] = TutorialState.Show;
     }
     else
     {
-      TutorialStatus[this.props.tutorialId] = TutorialStateTODO.NeverShow;
+      TutorialStatus[this.props.tutorialId] = TutorialState.NeverShow;
     }
 
     TutorialStatus.save();

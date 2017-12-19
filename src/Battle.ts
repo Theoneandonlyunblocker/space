@@ -533,7 +533,7 @@ export default class Battle
     this.activeUnit = null;
     const victor = this.getVictor();
 
-    // TODO content | Abilities that increase max captured units
+    // could add abilities that increase max captured units
     const maxCapturedUnits = activeModuleData.ruleSet.battle.baseMaxCapturedUnits;
     this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
     this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);

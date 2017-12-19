@@ -1,4 +1,7 @@
+// TODO 2017.12.19 | rename. confusing with TutorialState
+
 import TutorialState from "./TutorialState";
+
 
 interface TutorialStatusValues
 {

@@ -497,7 +497,6 @@ export default class Unit
     this.battleStats.queuedAction = null;
     this.uiDisplayIsDirty = true;
   }
-  // TODO gameplay | allow units to become untargetable in battle (cloaking?)
   public isTargetable()
   {
     return this.isActiveInBattle();
