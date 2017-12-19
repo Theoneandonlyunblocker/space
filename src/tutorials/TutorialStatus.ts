@@ -1,39 +1,35 @@
-// TODO 2017.12.19 | rename. confusing with TutorialState
-
-import TutorialState from "./TutorialState";
+import TutorialVisibility from "./TutorialVisibility";
 
 
 interface TutorialStatusValues
 {
-  introTutorial: TutorialState;
+  introTutorial: TutorialVisibility;
 }
 
-const defaultTutorialStatus =
+const defaultTutorialStatus: TutorialStatusValues =
 {
-  introTutorial: TutorialState.Show,
+  introTutorial: TutorialVisibility.Show,
 };
 
 class TutorialStatus implements TutorialStatusValues
 {
-  introTutorial: TutorialState;
+  public introTutorial: TutorialVisibility;
 
   constructor()
   {
     this.setDefaultValues();
   }
-  private setDefaultValues()
+
+  private static getDeserializedState(state: TutorialVisibility): TutorialVisibility
   {
-    this.introTutorial = defaultTutorialStatus.introTutorial;
+    return state === TutorialVisibility.DontShowThisSession ? TutorialVisibility.Show : state;
   }
-  private setDefaultValuesForUndefined()
-  {
-    this.introTutorial = isFinite(this.introTutorial) ? this.introTutorial : defaultTutorialStatus.introTutorial;
-  }
-  public save()
+
+  public save(): void
   {
     localStorage.setItem("Rance.TutorialStatus", JSON.stringify(this.serialize()));
   }
-  public load()
+  public load(): void
   {
     this.setDefaultValues();
 
@@ -47,12 +43,20 @@ class TutorialStatus implements TutorialStatusValues
     const parsedData: TutorialStatusValues = JSON.parse(tutorialStatusData);
     this.deSerialize(parsedData);
   }
-  public reset()
+  public reset(): void
   {
     localStorage.removeItem("Rance.TutorialStatus");
     this.setDefaultValues();
   }
 
+  private setDefaultValues(): void
+  {
+    this.introTutorial = defaultTutorialStatus.introTutorial;
+  }
+  private setDefaultValuesForUndefined(): void
+  {
+    this.introTutorial = isFinite(this.introTutorial) ? this.introTutorial : defaultTutorialStatus.introTutorial;
+  }
   private serialize(): TutorialStatusValues
   {
     return(
@@ -60,13 +64,9 @@ class TutorialStatus implements TutorialStatusValues
       introTutorial: this.introTutorial,
     });
   }
-  private static getDeSerializedState(state: TutorialState)
+  private deSerialize(data: TutorialStatusValues): void
   {
-    return state === TutorialState.DontShowThisSession ? TutorialState.Show : state;
-  }
-  private deSerialize(data: TutorialStatusValues)
-  {
-    this.introTutorial = TutorialStatus.getDeSerializedState(data.introTutorial);
+    this.introTutorial = TutorialStatus.getDeserializedState(data.introTutorial);
 
     this.setDefaultValuesForUndefined();
   }

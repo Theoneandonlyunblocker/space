@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import IntroTutorial from "../../tutorials/IntroTutorial";
-import TutorialState from "../../tutorials/TutorialState";
+import TutorialVisibility from "../../tutorials/TutorialVisibility";
 import TutorialStatus from "../../tutorials/TutorialStatus";
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 import Tutorial from "./Tutorial";
@@ -29,7 +29,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
 
     this.state =
     {
-      shouldShow: TutorialStatus.introTutorial === TutorialState.Show,
+      shouldShow: TutorialStatus.introTutorial === TutorialVisibility.Show,
     };
   }
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import TutorialState from "../../tutorials/TutorialState";
+import TutorialVisibility from "../../tutorials/TutorialVisibility";
 import TutorialStatus from "../../tutorials/TutorialStatus";
 
 import {localize} from "../../../localization/localize";
@@ -34,18 +34,18 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   private bindMethods()
   {
     this.toggleState = this.toggleState.bind(this);
-    this.getTutorialState = this.getTutorialState.bind(this);
+    this.getTutorialVisibility = this.getTutorialVisibility.bind(this);
   }
 
   private getInitialStateTODO(): StateType
   {
     return(
     {
-      isChecked: this.getTutorialState() === TutorialState.NeverShow,
+      isChecked: this.getTutorialVisibility() === TutorialVisibility.NeverShow,
     });
   }
 
-  getTutorialState()
+  getTutorialVisibility()
   {
     return TutorialStatus[this.props.tutorialId];
   }
@@ -54,11 +54,11 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   {
     if (this.state.isChecked)
     {
-      TutorialStatus[this.props.tutorialId] = TutorialState.Show;
+      TutorialStatus[this.props.tutorialId] = TutorialVisibility.Show;
     }
     else
     {
-      TutorialStatus[this.props.tutorialId] = TutorialState.NeverShow;
+      TutorialStatus[this.props.tutorialId] = TutorialVisibility.NeverShow;
     }
 
     TutorialStatus.save();
