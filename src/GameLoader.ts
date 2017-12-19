@@ -361,9 +361,9 @@ export default class GameLoader
         const modifier = new AttitudeModifier(
         {
           template: template,
-          startTurn:modifierData.startTurn,
-          endTurn:modifierData.endTurn,
-          strength:modifierData.strength,
+          startTurn: modifierData.startTurn,
+          endTurn: modifierData.endTurn,
+          strength: modifierData.strength,
         });
 
         player.diplomacy.addAttitudeModifier(this.playersById[playerId], modifier);
