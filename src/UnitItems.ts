@@ -225,8 +225,13 @@ export default class UnitItems
         return a.positionInUnit! - b.positionInUnit!;
       });
 
+      if (itemsForSlot.length === 0)
+      {
+        return 0;
+      }
+
       const maxPosition = this.itemSlots[item.template.slot] - 1;
-      for (let i = 0; i < maxPosition; i++)
+      for (let i = 0; i <= maxPosition; i++)
       {
         if (itemsForSlot[i].positionInUnit !== i)
         {
