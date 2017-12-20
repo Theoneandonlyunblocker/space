@@ -29,6 +29,7 @@ export const attitudeModifierModuleScripts =
             // TODO 2017.12.19 |
             startTurn: 0,
             strength: opinion,
+            hasFixedStrength: true,
           });
 
           a.diplomacy.addAttitudeModifier(b, modifier);

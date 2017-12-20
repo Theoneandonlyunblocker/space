@@ -4,6 +4,7 @@ declare interface AttitudeModifierSaveData
   startTurn: number;
   endTurn: number;
   strength: number;
+  hasFixedStrength: boolean;
 }
 
 export default AttitudeModifierSaveData;

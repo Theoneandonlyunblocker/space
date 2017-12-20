@@ -362,8 +362,11 @@ export default class GameLoader
         {
           template: template,
           startTurn: modifierData.startTurn,
-          endTurn: modifierData.endTurn,
+          endTurn: modifierData.endTurn === null ?
+            Infinity :
+            modifierData.endTurn,
           strength: modifierData.strength,
+          hasFixedStrength: modifierData.hasFixedStrength,
         });
 
         player.diplomacy.addAttitudeModifier(this.playersById[playerId], modifier);

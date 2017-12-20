@@ -23,12 +23,14 @@ export class AttitudeModifier
     startTurn: number;
     endTurn?: number;
     strength?: number;
+    hasFixedStrength?: boolean;
     evaluation?: DiplomacyEvaluation,
   })
   {
     this.template = props.template;
     this.startTurn = props.startTurn;
     this.currentTurn = this.startTurn;
+    this.hasFixedStrength = props.hasFixedStrength;
 
     if (props.endTurn !== undefined)
     {
@@ -42,7 +44,6 @@ export class AttitudeModifier
     if (props.strength !== undefined)
     {
       this.strength = props.strength;
-      this.hasFixedStrength = true;
     }
     else if (this.template.baseEffect !== undefined)
     {
@@ -54,7 +55,7 @@ export class AttitudeModifier
     }
     else
     {
-      throw new Error("Attitude modifier couldn't initialize with a strength value.");
+      throw new Error(`Attitude modifier ${this.template.type} couldn't initialize with a strength value.`);
     }
   }
 
@@ -106,6 +107,7 @@ export class AttitudeModifier
       startTurn: this.startTurn,
       endTurn: this.endTurn,
       strength: this.strength,
+      hasFixedStrength: this.hasFixedStrength,
     };
 
     return data;
