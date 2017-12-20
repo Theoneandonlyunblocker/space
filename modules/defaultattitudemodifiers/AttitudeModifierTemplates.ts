@@ -4,30 +4,30 @@ import TemplateCollection from "../../src/templateinterfaces/TemplateCollection"
 import DiplomacyEvaluation from "../../src/DiplomacyEvaluation";
 import DiplomacyState from "../../src/DiplomacyState";
 
-const neighborStars: AttitudeModifierTemplate =
+export const neighborStars: AttitudeModifierTemplate =
 {
   type: "neighborStars",
   displayName: "neighborStars",
   duration: Infinity,
 
-  startCondition: function(evaluation: DiplomacyEvaluation)
+  startCondition: (evaluation: DiplomacyEvaluation) =>
   {
     return (evaluation.neighborStars.length >= 2 && evaluation.opinion < 50);
   },
 
-  getEffectFromEvaluation: function(evaluation: DiplomacyEvaluation)
+  getEffectFromEvaluation: (evaluation: DiplomacyEvaluation) =>
   {
     return -2 * evaluation.neighborStars.length;
   },
 };
 
-const atWar: AttitudeModifierTemplate =
+export const atWar: AttitudeModifierTemplate =
 {
   type: "atWar",
   displayName: "At war",
   duration: Infinity,
 
-  startCondition: function(evaluation: DiplomacyEvaluation)
+  startCondition: (evaluation: DiplomacyEvaluation) =>
   {
     return (evaluation.currentStatus >= DiplomacyState.War);
   },

@@ -117,7 +117,7 @@ export class AttitudeModifier
     }
     else
     {
-      throw new Error("Attitude modifier has no constant effect " +
+      throw new Error(`Attitude modifier ${this.template.type} has no constant effect ` +
         "or effect from evaluation defined");
     }
 

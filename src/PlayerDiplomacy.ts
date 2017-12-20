@@ -39,7 +39,7 @@ export default class PlayerDiplomacy
     });
   }
 
-  public destroy()
+  public destroy(): void
   {
     for (let key in this.listeners)
     {
@@ -49,7 +49,7 @@ export default class PlayerDiplomacy
       }
     }
   }
-  public getBaseOpinion()
+  public getBaseOpinion(): number
   {
     if (isFinite(this.baseOpinion))
     {
@@ -113,15 +113,15 @@ export default class PlayerDiplomacy
       return state === DiplomacyState.Unmet;
     });
   }
-  public canDeclareWarOn(player: Player)
+  public canDeclareWarOn(player: Player): boolean
   {
     return this.hasMetPlayer(player) && this.statusByPlayer.get(player) < DiplomacyState.War;
   }
-  public canMakePeaceWith(player: Player)
+  public canMakePeaceWith(player: Player): boolean
   {
     return this.hasMetPlayer(player) && this.statusByPlayer.get(player) > DiplomacyState.Peace;
   }
-  public declareWarOn(targetPlayer: Player)
+  public declareWarOn(targetPlayer: Player): void
   {
     if (this.statusByPlayer.get(targetPlayer) >= DiplomacyState.War)
     {
@@ -139,7 +139,7 @@ export default class PlayerDiplomacy
       script(this.player, targetPlayer);
     });
   }
-  public makePeaceWith(player: Player)
+  public makePeaceWith(player: Player): void
   {
     if (!this.canMakePeaceWith(player))
     {
@@ -149,7 +149,7 @@ export default class PlayerDiplomacy
     this.statusByPlayer.set(player, DiplomacyState.Peace);
     player.diplomacy.statusByPlayer.set(this.player, DiplomacyState.Peace);
   }
-  public canAttackFleetOfPlayer(player: Player)
+  public canAttackFleetOfPlayer(player: Player): boolean
   {
     if (player.isIndependent)
     {
@@ -163,7 +163,7 @@ export default class PlayerDiplomacy
 
     return false;
   }
-  public canAttackBuildingOfPlayer(player: Player)
+  public canAttackBuildingOfPlayer(player: Player): boolean
   {
     if (player.isIndependent)
     {
@@ -287,7 +287,7 @@ export default class PlayerDiplomacy
     return data;
   }
 
-  private getModifierOfSameType(player: Player, modifier: AttitudeModifier)
+  private getModifierOfSameType(player: Player, modifier: AttitudeModifier): AttitudeModifier | null
   {
     const modifiers = this.attitudeModifiersByPlayer.get(player);
 
