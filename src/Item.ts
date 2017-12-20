@@ -22,7 +22,7 @@ export default class Item
     this.template = template;
   }
 
-  serialize(): ItemSaveData
+  public serialize(): ItemSaveData
   {
     const data: ItemSaveData =
     {
@@ -30,7 +30,7 @@ export default class Item
       templateType: this.template.type,
     };
 
-    if (this.positionInUnit)
+    if (isFinite(this.positionInUnit))
     {
       data.positionInUnit = this.positionInUnit;
     }
