@@ -2,5 +2,8 @@
 <!-- Created with gedit -->
 <!-- https://commons.wikimedia.org/wiki/File:Heraldic_pentacle.svg -->
 <svg height="289.18" width="303.04" xmlns="http://www.w3.org/2000/svg">
-  <path d="m151.52 9.9983126 34.9852 100.6479174 106.53288 2.17099-84.91086 64.3748 30.85575 101.98966-87.46297-60.8621-87.462978 60.8621 30.855751-101.98966-84.910841-64.37481 106.532878-2.17098z" fill="#c0c0c0" fill-rule="evenodd"/>
+  <linearGradient id="fillColor">
+    <stop stop-color="#000"/>
+  </linearGradient>
+  <path fill="url(#fillColor)" d="m151.52 9.9983126 34.9852 100.6479174 106.53288 2.17099-84.91086 64.3748 30.85575 101.98966-87.46297-60.8621-87.462978 60.8621 30.855751-101.98966-84.910841-64.37481 106.532878-2.17098z" fill-rule="evenodd"/>
 </svg>
