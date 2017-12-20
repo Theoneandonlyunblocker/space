@@ -322,7 +322,7 @@ export class Fleet
     {
       if (player !== this.player)
       {
-        // TODO 2017.12.19 | why not update vision for old location as well?
+        player.updateAllVisibilityInStar(oldLocation);
         player.updateAllVisibilityInStar(newLocation);
       }
     });
