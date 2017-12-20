@@ -1,88 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <!-- https://commons.wikimedia.org/wiki/File:Japanese_crest_Tsuki_ni_Hoshi.svg -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   viewBox="0 0 500.81262 500.81287"
-   width="500.81262"
-   height="500.81287"
-   id="svg2"
-   version="1.1"
-   inkscape:version="0.48.0 r9654"
-   sodipodi:docname="Japanese crest Tsuki ni Hoshi-2.svg">
-  <defs
-     id="defs4" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="1.5530283"
-     inkscape:cx="221.1113"
-     inkscape:cy="276.35021"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:snap-grids="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:window-width="1280"
-     inkscape:window-height="975"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4"
-     inkscape:window-maximized="1"
-     borderlayer="false">
-    <inkscape:grid
-       type="xygrid"
-       id="grid3009"
-       empspacing="5"
-       visible="true"
-       enabled="true"
-       snapvisiblegridlinesonly="true" />
-  </sodipodi:namedview>
-  <metadata
-     id="metadata7">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     inkscape:label="レイヤー 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(1901.9376,-285.59344)">
-    <path
-       inkscape:connector-curvature="0"
-       class="emblem-color"
-       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       d="m -1828.7528,374.14705 c -86.5375,94.16186 -84.1942,240.6771 7.0932,331.96453 93.7258,93.72583 245.6854,93.72583 339.4112,0 93.7259,-93.72583 93.7259,-245.68542 0,-339.41125 -91.2874,-91.28744 -237.8026,-93.6307 -331.9645,-7.09317 78.5105,-70.93507 199.7319,-68.57091 275.396,7.09317 78.1049,78.10486 78.1049,204.73785 0,282.84271 -78.1049,78.10486 -204.7379,78.10486 -282.8427,0 -75.6641,-75.66408 -78.0283,-196.88551 -7.0932,-275.39599 z"
-       id="path2984" />
-    <path
-       sodipodi:type="arc"
-       class="emblem-color"
-       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="path3754-6"
-       sodipodi:cx="-9.6585493"
-       sodipodi:cy="106.10015"
-       sodipodi:rx="33.482971"
-       sodipodi:ry="37.34639"
-       d="m 23.824422,106.10015 a 33.482971,37.34639 0 1 1 -66.965943,0 33.482971,37.34639 0 1 1 66.965943,0 z"
-       transform="matrix(0.95032804,-0.95032804,0.8520182,0.8520182,-1871.0599,298.94225)" />
+<svg height="500.81287" viewBox="0 0 500.81262 500.81287" width="500.81262" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(1901.9376 -285.59344)">
+    <path class="emblem-color" d="m-1828.7528 374.14705c-86.5375 94.16186-84.1942 240.6771 7.0932 331.96453 93.7258 93.72583 245.6854 93.72583 339.4112 0 93.7259-93.72583 93.7259-245.68542 0-339.41125-91.2874-91.28744-237.8026-93.6307-331.9645-7.09317 78.5105-70.93507 199.7319-68.57091 275.396 7.09317 78.1049 78.10486 78.1049 204.73785 0 282.84271s-204.7379 78.10486-282.8427 0c-75.6641-75.66408-78.0283-196.88551-7.0932-275.39599z"/>
+    <path class="emblem-color" d="m23.824422 106.10015a33.482971 37.34639 0 1 1 -66.965943 0 33.482971 37.34639 0 1 1 66.965943 0z" transform="matrix(.95032804 -.95032804 .8520182 .8520182 -1871.0599 298.94225)"/>
   </g>
 </svg>

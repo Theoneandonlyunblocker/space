@@ -1,57 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   width="205.6268"
-   height="220"
-   viewBox="0 0 205.62681 220"
-   id="svg4415"
-   version="1.1"
-   >
-  <defs
-     id="defs4417" />
-  <metadata
-     id="metadata4420">
-    </metadata>
-  <g
-     id="layer1"
-     transform="matrix(0.34856392,0,0,0.34856428,-24.661404,-59.628095)">
-    <g
-       id="g4437"
-       transform="translate(425.71429,-311.42857)">
-      <g
-         id="g4181"
-         transform="translate(-416.25997,339.48371)">
-        <path
-           id="path4161"
-           d="M 90.714286,377.71935 C 120.2789,537.48533 213.56283,576.23711 338.31444,539.20471 c 20.20305,23.12611 40.40611,35.02926 60.60916,43.43656 C 203.75648,669.73935 84.552139,516.79332 90.714286,377.71935 Z"
-           style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-           />
-        <path
-           style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-           d="m 415.1727,462.43312 c 40.24139,31.8198 62.07098,31.8198 62.12438,31.8198 39.39882,-97.66154 23.22255,-185.34807 -42.42641,-264.15489 -17.00418,10.07053 -30.78014,24.61843 -44.95179,45.45687 32.00945,53.96633 60.60552,109.13737 25.25382,186.87822 z"
-           id="path4171"
-           />
-      </g>
-      <use
-         height="100%"
-         width="100%"
-         transform="matrix(-0.5,-0.8660254,0.8660254,-0.5,-703.82485,1161.1947)"
-         id="use4396"
-         xlink:href="#g4181"
-         y="0"
-         x="0" />
-      <use
-         height="100%"
-         width="100%"
-         transform="matrix(-0.5,-0.8660254,0.8660254,-0.5,-703.82485,1161.1947)"
-         id="use4398"
-         xlink:href="#use4396"
-         y="0"
-         x="0" />
+<svg height="220" viewBox="0 0 205.62681 220" width="205.6268" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g transform="matrix(.34856392 0 0 .34856428 123.72723772242 -168.18097027348)">
+    <g id="g4181" transform="translate(-416.25997 339.48371)">
+      <path d="m90.714286 377.71935c29.564614 159.76598 122.848544 198.51776 247.600154 161.48536 20.20305 23.12611 40.40611 35.02926 60.60916 43.43656-195.16712 87.09808-314.371461-65.84795-308.209314-204.92192z" fill-rule="evenodd" stroke="#000"/>
+      <path d="m415.1727 462.43312c40.24139 31.8198 62.07098 31.8198 62.12438 31.8198 39.39882-97.66154 23.22255-185.34807-42.42641-264.15489-17.00418 10.07053-30.78014 24.61843-44.95179 45.45687 32.00945 53.96633 60.60552 109.13737 25.25382 186.87822z" fill-rule="evenodd" stroke="#000"/>
     </g>
+    <use id="use4396" height="100%" transform="matrix(-.5 -.8660254 .8660254 -.5 -703.82485 1161.1947)" width="100%" xlink:href="#g4181"/>
+    <use height="100%" transform="matrix(-.5 -.8660254 .8660254 -.5 -703.82485 1161.1947)" width="100%" xlink:href="#use4396"/>
   </g>
 </svg>

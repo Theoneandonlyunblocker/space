@@ -1,36 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Planet_Moon.svg -->
-
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="256"
-   height="300"
-   id="svg3336"
-   version="1.1"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="Coa_Illustration_Elements_Planet_Moon.svg">
-  <metadata
-     id="metadata3344">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs3342" />
-  <path
-     style="fill:#e9e9e9;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"
-     d="m 150.98511,6.5121809 c 36.5466,0.4108704 72.0324,14.8326671 98.6065,40.7535521 C 218.61307,32.913438 181.50142,32.782461 148.99018,49.973136 93.722856,79.196341 72.601152,147.60288 101.82436,202.8702 c 28.28019,53.48389 93.36773,75.16844 147.62475,50.01573 -9.56345,9.29074 -20.53383,17.39176 -32.91633,23.93914 C 146.49383,313.85894 59.631036,287.15865 22.597172,217.1197 -14.436692,147.08074 12.406093,60.217953 82.445045,23.184088 104.33222,11.611006 127.85459,6.252139 150.98511,6.5121809 Z"
-     id="path3338"
-     inkscape:connector-curvature="0" />
+<svg height="300" width="256" xmlns="http://www.w3.org/2000/svg">
+  <path d="m150.98511 6.5121809c36.5466.4108704 72.0324 14.8326671 98.6065 40.7535521-30.97854-14.352295-68.09019-14.483272-100.60143 2.707403-55.267324 29.223205-76.389028 97.629744-47.16582 152.897064 28.28019 53.48389 93.36773 75.16844 147.62475 50.01573-9.56345 9.29074-20.53383 17.39176-32.91633 23.93914-70.03895 37.03387-156.901744 10.33358-193.935608-59.70537-37.033864-70.03896-10.191079-156.901747 59.847873-193.935612 21.887175-11.573082 45.409545-16.931949 68.540065-16.6719071z" fill="#e9e9e9" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
 </svg>
