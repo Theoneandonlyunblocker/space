@@ -277,9 +277,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     {
       rowProps.className += " unit-list-item-hovered";
     }
-
-
-    else if (this.props.onMouseEnter && this.props.onMouseLeave)
+    if (this.props.onMouseEnter && this.props.onMouseLeave)
     {
       rowProps.onMouseEnter = this.handleMouseEnter;
       rowProps.onMouseLeave = this.handleMouseLeave;

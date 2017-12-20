@@ -69,7 +69,6 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
   private onDragStart()
   {
-    console.log("onDragStart", this.props.item.template.displayName);
     this.props.onDragStart(this.props.item);
   }
   private onDragEnd()

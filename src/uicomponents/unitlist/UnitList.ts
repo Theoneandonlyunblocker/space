@@ -19,10 +19,10 @@ export interface PropTypes extends React.Props<any>
   unavailableUnits: Unit[];
 
   autoSelect?: boolean;
-  onMouseLeave?: () => void;
   onDragStart?: (unit: Unit) => void;
   onDragEnd?: (dropSuccesful?: boolean) => void;
   onMouseEnterUnit?: (unit: Unit) => void;
+  onMouseLeaveUnit?: () => void;
   hoveredUnit?: Unit | null;
 }
 
@@ -70,7 +70,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
           isHovered: Boolean(this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
 
           onMouseEnter: this.props.onMouseEnterUnit,
-          onMouseLeave: this.props.onMouseLeave,
+          onMouseLeave: this.props.onMouseLeaveUnit,
 
           isDraggable: this.props.isDraggable,
           onDragStart: this.props.onDragStart,

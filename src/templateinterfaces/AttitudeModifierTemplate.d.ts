@@ -8,7 +8,7 @@ declare interface AttitudeModifierTemplate
 
   // if these modifiers are present and one of them has either
   // stronger effect or opposite sign (+-), don't count this modifier
-  // TODO 2017.12.19 | unused
+  // unused
   canBeOverriddenBy?: AttitudeModifierTemplate[];
 
   startCondition?: (evaluation: DiplomacyEvaluation) => boolean;
