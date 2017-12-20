@@ -166,7 +166,7 @@ export default class UnitItems
   {
     const position = this.getFirstAvailablePositionForItem(toAdd);
 
-    if (!position)
+    if (position === null)
     {
       throw new Error("Tried to add item to unit without an open slot for item.");
     }
