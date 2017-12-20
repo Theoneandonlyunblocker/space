@@ -8,10 +8,10 @@ import ItemSaveData from "./savedata/ItemSaveData";
 
 export default class Item
 {
-  id: number;
-  template: ItemTemplate;
-  unit: Unit | undefined;
-  positionInUnit: number | undefined;
+  public id: number;
+  public template: ItemTemplate;
+  public unit: Unit | undefined;
+  public positionInUnit: number | undefined;
 
   constructor(
     template: ItemTemplate,

@@ -38,7 +38,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public makeDragClone: () => HTMLElement;
   public onDragStart: (x?: number, y?: number) => void;
   public onDragMove: (x: number, y: number) => void;
-  public onDragEnd: () => boolean | void; // return value: was drop succesful
+  public onDragEnd: () => boolean | void; // return value: was drop successful
 
   public position: Partial<Rect> =
   {

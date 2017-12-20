@@ -15,7 +15,7 @@ import {localize} from "../../../localization/localize";
 
 export interface PropTypes extends React.Props<any>
 {
-  onDragEnd: (dropSuccesful?: boolean) => void;
+  onDragEnd: (dropSuccessful?: boolean) => void;
   onDragStart: (item: Item) => void;
   isItemPurchaseList?: boolean;
   items: Item[];

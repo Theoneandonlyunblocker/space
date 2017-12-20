@@ -151,9 +151,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
       currentDragUnit: unit,
     });
   }
-  handleDragEnd(dropSuccesful: boolean = false)
+  handleDragEnd(dropSuccessful: boolean = false)
   {
-    if (!dropSuccesful && this.state.currentDragUnit)
+    if (!dropSuccessful && this.state.currentDragUnit)
     {
       this.props.battlePrep.humanFormation.removeUnit(this.state.currentDragUnit);
     }
@@ -164,7 +164,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
       hoveredUnit: null,
     });
 
-    return dropSuccesful;
+    return dropSuccessful;
   }
   handleDrop(position: number[])
   {
@@ -199,9 +199,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
     this.setState(newState);
   }
-  handleItemDragEnd(dropSuccesful: boolean = false)
+  handleItemDragEnd(dropSuccessful: boolean = false)
   {
-    if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit)
+    if (!dropSuccessful && this.state.currentDragItem && this.state.selectedUnit)
     {
       const item = this.state.currentDragItem;
       if (this.state.selectedUnit.items.hasItem(item))

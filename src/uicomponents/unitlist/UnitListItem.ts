@@ -33,7 +33,7 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   unit: Unit;
 
   isDraggable: boolean;
-  onDragEnd?: (dropSuccesful?: boolean) => void;
+  onDragEnd?: (dropSuccessful?: boolean) => void;
   onDragStart?: (unit: Unit) => void;
   dragPositionerProps?: DragPositionerProps;
 

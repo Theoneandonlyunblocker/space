@@ -20,7 +20,7 @@ export interface PropTypes extends React.Props<any>
 
   autoSelect?: boolean;
   onDragStart?: (unit: Unit) => void;
-  onDragEnd?: (dropSuccesful?: boolean) => void;
+  onDragEnd?: (dropSuccessful?: boolean) => void;
   onMouseEnterUnit?: (unit: Unit) => void;
   onMouseLeaveUnit?: () => void;
   onMouseUp?: (unit: Unit) => void;

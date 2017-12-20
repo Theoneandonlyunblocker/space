@@ -13,7 +13,7 @@ export interface PropTypes extends React.Props<any>
 
   isDraggable: boolean;
   onDragStart: (item: Item) => void;
-  onDragEnd: (dropSuccesful?: boolean) => void;
+  onDragEnd: (dropSuccessful?: boolean) => void;
 }
 
 interface StateType

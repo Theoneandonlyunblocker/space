@@ -10,7 +10,7 @@ import UnitItemGroup from "./UnitItemGroup";
 
 export interface PropTypes extends React.Props<any>
 {
-  onDragEnd?: (dropSuccesful?: boolean) => void;
+  onDragEnd?: (dropSuccessful?: boolean) => void;
   onDragStart?: (item: Item) => void;
   onMouseUp?: (index: number) => void;
   currentDragItem?: Item | null;
