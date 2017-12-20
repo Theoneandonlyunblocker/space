@@ -1,4 +1,3 @@
-import app from "./App"; // TODO global
 import {activeModuleData} from "./activeModuleData";
 import eventManager from "./eventManager";
 
@@ -10,7 +9,6 @@ import {default as ValuesByPlayer} from "./ValuesByPlayer";
 
 import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData";
 import PlayerDiplomacySaveData from "./savedata/PlayerDiplomacySaveData";
-import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 
 
 export default class PlayerDiplomacy
@@ -28,7 +26,6 @@ export default class PlayerDiplomacy
   constructor(player: Player, allPlayersInGame: Player[])
   {
     this.player = player;
-    this.addEventListeners();
 
     const validPlayers = allPlayersInGame.filter(gamePlayer => this.canDoDiplomacyWithPlayer(gamePlayer));
 
@@ -137,7 +134,6 @@ export default class PlayerDiplomacy
     this.statusByPlayer.set(targetPlayer, DiplomacyState.War);
     targetPlayer.diplomacy.statusByPlayer.set(this.player, DiplomacyState.War);
 
-    eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", targetPlayer, this.player);
     activeModuleData.scripts.diplomacy.onWarDeclaration.forEach(script =>
     {
       script(this.player, targetPlayer);
@@ -247,33 +243,26 @@ export default class PlayerDiplomacy
       modifier = activeModifiers[template.type];
       const alreadyHasModifierOfType = Boolean(modifier);
 
-      if (!alreadyHasModifierOfType && !template.triggers)
+      if (!alreadyHasModifierOfType && template.startCondition)
       {
-        if (!template.startCondition)
-        {
-          throw new Error("Attitude modifier has no start condition or triggers");
-        }
-        else
-        {
-          const shouldStart = template.startCondition(evaluation);
+        const shouldStart = template.startCondition(evaluation);
 
-          if (shouldStart)
+        if (shouldStart)
+        {
+          modifier = new AttitudeModifier(
           {
-            modifier = new AttitudeModifier(
-            {
-              template: template,
-              startTurn: evaluation.currentTurn,
-              evaluation: evaluation,
-            });
+            template: template,
+            startTurn: evaluation.currentTurn,
+            evaluation: evaluation,
+          });
 
-            modifiersForPlayer.push(modifier);
-            modifiersAdded[template.type] = modifier;
-          }
+          modifiersForPlayer.push(modifier);
+          modifiersAdded[template.type] = modifier;
         }
       }
       else if (modifier)
       {
-        modifier.updateWithEvaluation(evaluation);
+        modifier.update(evaluation);
       }
     }
   }
@@ -298,29 +287,6 @@ export default class PlayerDiplomacy
     return data;
   }
 
-  // TODO 2017.07.25 | use same system as notifications here
-  private addEventListeners()
-  {
-    for (let key in activeModuleData.Templates.AttitudeModifiers)
-    {
-      const template = activeModuleData.Templates.AttitudeModifiers[key];
-      if (template.triggers)
-      {
-        for (let i = 0; i < template.triggers.length; i++)
-        {
-          const listenerKey = template.triggers[i];
-          const listener = eventManager.addEventListener(listenerKey,
-            this.triggerAttitudeModifier.bind(this, template));
-
-          if (!this.listeners[listenerKey])
-          {
-            this.listeners[listenerKey] = [];
-          }
-          this.listeners[listenerKey].push(listener);
-        }
-      }
-    }
-  }
   private getModifierOfSameType(player: Player, modifier: AttitudeModifier)
   {
     const modifiers = this.attitudeModifiersByPlayer.get(player);
@@ -335,26 +301,12 @@ export default class PlayerDiplomacy
 
     return null;
   }
-  // TODO 2017.12.19 | should rework this. very inflexible. only allows triggered modifiers with static strength
-  private triggerAttitudeModifier(template: AttitudeModifierTemplate, player: Player, source: Player)
-  {
-    // this function is called on each player's diplo status. ignore if not actually the target
-    // kinda dumb
-    if (player !== this.player)
-    {
-      return;
-    }
-
-    const modifier = new AttitudeModifier(
-    {
-      template: template,
-      startTurn: app.game.turnNumber,
-    });
-
-    this.addAttitudeModifier(source, modifier);
-  }
   private triggerMeetingWithPlayer(player: Player): void
   {
     this.statusByPlayer.set(player, DiplomacyState.ColdWar);
+    activeModuleData.scripts.diplomacy.onFirstMeeting.forEach(script =>
+    {
+      script(this.player, player);
+    });
   }
 }

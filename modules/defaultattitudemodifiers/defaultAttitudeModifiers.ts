@@ -1,4 +1,5 @@
 import AttitudeModifierTemplates from "./AttitudeModifierTemplates";
+import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";
 
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
@@ -25,6 +26,8 @@ const defaultAttitudeModifiers: ModuleFile =
   {
     setAttitudeModifierOverride(AttitudeModifierTemplates);
     moduleData.copyTemplates<AttitudeModifierTemplate>(AttitudeModifierTemplates, "AttitudeModifiers");
+
+    moduleData.scripts.add(attitudeModifierModuleScripts);
 
     return moduleData;
   },

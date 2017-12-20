@@ -40,7 +40,6 @@ const declaredWar: AttitudeModifierTemplate =
   type: "declaredWar",
   displayName: "Declared war",
   duration: 15,
-  triggers: ["addDeclaredWarAttitudeModifier"],
 
   baseEffect: -35,
   decayRate: 0.5,

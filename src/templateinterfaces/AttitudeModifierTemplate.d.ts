@@ -11,7 +11,6 @@ declare interface AttitudeModifierTemplate
   // TODO 2017.12.19 | unused
   canBeOverriddenBy?: AttitudeModifierTemplate[];
 
-  triggers?: string[];
   startCondition?: (evaluation: DiplomacyEvaluation) => boolean;
   // if endCondition is not defined and duration is infinite, the opposite of startCondition is used
   // to determine when to end modifier
