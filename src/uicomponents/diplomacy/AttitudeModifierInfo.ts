@@ -13,9 +13,6 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   name: string;
   endTurn: number;
   strength: number;
-
-  // TODO 2017.12.19 | actual sorting for these instead
-  alwaysShowAtTopOfList?: boolean;
 }
 
 interface StateType

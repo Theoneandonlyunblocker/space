@@ -21,7 +21,8 @@ declare interface AttitudeModifierTemplate
   decayRate?: number;
 
 
-  canOverride?: AttitudeModifierTemplate[]; // set dynamically
+  // set dynamically
+  canOverride?: AttitudeModifierTemplate[];
 }
 
 export default AttitudeModifierTemplate;
