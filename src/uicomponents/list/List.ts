@@ -198,7 +198,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
     for (let i = 0; i < columns.length; i++)
     {
-      if (initialSortOrder.indexOf(columns[i]) < 0)
+      if (initialSortOrder.indexOf(columns[i]) === -1)
       {
         order.push(columns[i]);
       }
@@ -287,24 +287,36 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       }
       else
       {
-        return (function (a: ListItem<any>, b: ListItem<any>)
+        return ((a: ListItem<any>, b: ListItem<any>) =>
         {
-          let a1: any;
-          let b1: any;
-          if (column.propToSortBy)
+          const propToSortBy = column.propToSortBy || column.key;
+
+          const vA = a.content.props[propToSortBy];
+          const vB = b.content.props[propToSortBy];
+
+          if (vA > vB)
           {
-            a1 = a.content.props[column.propToSortBy];
-            b1 = b.content.props[column.propToSortBy];
+            return 1;
+          }
+          else if (vA < vB)
+          {
+            return -1;
           }
           else
           {
-            a1 = a.key;
-            b1 = b.key;
+            if (a.key > b.key)
+            {
+              return 1;
+            }
+            else if (a.key < b.key)
+            {
+              return 0;
+            }
+            else
+            {
+              throw new Error(`Duplicate key ${a.key} for list items.`);
+            }
           }
-
-          if (a1 > b1) return 1;
-          else if (a1 < b1) return -1;
-          else return 0;
         });
       }
     }
