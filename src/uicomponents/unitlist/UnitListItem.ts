@@ -28,6 +28,7 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   isSelected: boolean;
   onMouseEnter?: (unit: Unit) => void;
   onMouseLeave?: () => void;
+  onMouseUp?: (unit: Unit) => void;
   maxHealth: number;
   unit: Unit;
 
@@ -69,6 +70,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   {
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
     this.makeCell = this.makeCell.bind(this);
 
     this.onDragEnd = this.onDragEnd.bind(this);
@@ -179,6 +181,10 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   {
     this.props.onMouseLeave();
   }
+  private handleMouseUp(): void
+  {
+    this.props.onMouseUp(this.props.unit);
+  }
 
 
   makeCell(type: string)
@@ -281,6 +287,10 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     {
       rowProps.onMouseEnter = this.handleMouseEnter;
       rowProps.onMouseLeave = this.handleMouseLeave;
+    }
+    if (this.props.onMouseUp)
+    {
+      rowProps.onMouseUp = this.handleMouseUp;
     }
 
 

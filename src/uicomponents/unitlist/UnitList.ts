@@ -23,6 +23,7 @@ export interface PropTypes extends React.Props<any>
   onDragEnd?: (dropSuccesful?: boolean) => void;
   onMouseEnterUnit?: (unit: Unit) => void;
   onMouseLeaveUnit?: () => void;
+  onMouseUp?: (unit: Unit) => void;
   hoveredUnit?: Unit | null;
 }
 
@@ -71,6 +72,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
 
           onMouseEnter: this.props.onMouseEnterUnit,
           onMouseLeave: this.props.onMouseLeaveUnit,
+          onMouseUp: this.props.onMouseUp,
 
           isDraggable: this.props.isDraggable,
           onDragStart: this.props.onDragStart,

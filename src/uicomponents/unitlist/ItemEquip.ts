@@ -26,81 +26,27 @@ interface StateType
 
 export class ItemEquipComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "ItemEquip";
-  state: StateType;
+  public displayName = "ItemEquip";
+  public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state =
+    {
+      selectedUnit: null,
+      currentDragItem: null,
+    };
 
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
     this.handleDragStart = this.handleDragStart.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.handleSelectRow = this.handleSelectRow.bind(this);
+    this.equipItemOnSelectedUnit = this.equipItemOnSelectedUnit.bind(this);
   }
 
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      selectedUnit: null,
-      currentDragItem: null,
-    });
-  }
-  handleSelectRow(row: ListItem<UnitListItemProps | ItemListItemProps>)
-  {
-    if (!row.content.props.unit)
-    {
-      return;
-    }
-
-    this.setState(
-    {
-      selectedUnit: row.content.props.unit,
-    });
-  }
-  handleDragStart(item: Item)
-  {
-    this.setState(
-    {
-      currentDragItem: item,
-    });
-  }
-  handleDragEnd(dropSuccesful: boolean = false)
-  {
-    if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit)
-    {
-      const item = this.state.currentDragItem;
-      if (this.state.selectedUnit.items.hasItem(item))
-      {
-        this.state.selectedUnit.items.removeItem(item);
-      }
-    }
-
-    this.setState(
-    {
-      currentDragItem: null,
-    });
-  }
-  handleDrop(index: number)
-  {
-    const item = this.state.currentDragItem;
-    const unit = this.state.selectedUnit;
-    if (unit && item)
-    {
-      unit.items.addItemAtPosition(item, index);
-    }
-
-    this.handleDragEnd(true);
-  }
-
-  render()
+  public render()
   {
     const player = this.props.player;
 
@@ -137,9 +83,79 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
           isDraggable: false,
           onRowChange: this.handleSelectRow,
           autoSelect: true,
+          onMouseUp: this.equipItemOnSelectedUnit,
         }),
       )
     );
+  }
+
+  private handleSelectRow(row: ListItem<UnitListItemProps | ItemListItemProps>)
+  {
+    if (!row.content.props.unit)
+    {
+      return;
+    }
+
+    this.setState(
+    {
+      selectedUnit: row.content.props.unit,
+    });
+  }
+  private handleDragStart(item: Item)
+  {
+    this.setState(
+    {
+      currentDragItem: item,
+    });
+  }
+  private handleDragEnd(dropSuccessful: boolean = false)
+  {
+    console.log("handledragend " + dropSuccessful)
+    if (!dropSuccessful && this.state.currentDragItem && this.state.selectedUnit)
+    {
+      const item = this.state.currentDragItem;
+      if (this.state.selectedUnit.items.hasItem(item))
+      {
+        console.log(`fail drag remove`);
+        this.state.selectedUnit.items.removeItem(item);
+      }
+    }
+
+    this.setState(
+    {
+      currentDragItem: null,
+    });
+  }
+  private handleDrop(index: number)
+  {
+    console.log("handledrop")
+    const item = this.state.currentDragItem;
+    const unit = this.state.selectedUnit;
+    if (unit && item)
+    {
+      unit.items.addItemAtPosition(item, index);
+    }
+
+    this.handleDragEnd(true);
+  }
+  private equipItemOnSelectedUnit(unit: Unit): void
+  {
+    const item = this.state.currentDragItem;
+
+    if (item)
+    {
+      if (!unit.items.hasItem(item) && unit.items.hasSlotForItem(item))
+      {
+        console.log(`Unit list drop ${unit.template.type} => ${item.template.type}`);
+        unit.items.addItem(item);
+        this.setState(
+        {
+          selectedUnit: unit,
+        });
+      }
+    }
+
+    this.handleDragEnd(true);
   }
 }
 
