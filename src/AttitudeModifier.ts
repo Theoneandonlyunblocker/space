@@ -15,6 +15,7 @@ export class AttitudeModifier
   private startTurn: number;
   private currentTurn: number;
   private strength: number;
+  private hasFixedStrength: boolean = false;
 
   constructor(props:
   {
@@ -41,6 +42,7 @@ export class AttitudeModifier
     if (props.strength !== undefined)
     {
       this.strength = props.strength;
+      this.hasFixedStrength = true;
     }
     else if (this.template.baseEffect !== undefined)
     {
@@ -56,10 +58,14 @@ export class AttitudeModifier
     }
   }
 
-  public updateWithEvaluation(evaluation: DiplomacyEvaluation)
+  public update(evaluation: DiplomacyEvaluation)
   {
     this.currentTurn = evaluation.currentTurn;
-    this.setStrength(evaluation);
+
+    if (!this.hasFixedStrength)
+    {
+      this.setStrength(evaluation);
+    }
   }
   public refresh(newModifier: AttitudeModifier)
   {

@@ -35,7 +35,15 @@ export const atWar: AttitudeModifierTemplate =
   baseEffect: -30,
 };
 
-const declaredWar: AttitudeModifierTemplate =
+
+export const baseOpinion: AttitudeModifierTemplate =
+{
+  type: "baseOpinion",
+  displayName: "Base opinion",
+  duration: Infinity,
+};
+
+export const declaredWar: AttitudeModifierTemplate =
 {
   type: "declaredWar",
   displayName: "Declared war",
@@ -45,11 +53,13 @@ const declaredWar: AttitudeModifierTemplate =
   decayRate: 0.5,
 };
 
+
 const AttitudeModifierTemplates: TemplateCollection<AttitudeModifierTemplate> =
 {
   [neighborStars.type]: neighborStars,
   [atWar.type]: atWar,
   [declaredWar.type]: declaredWar,
+  [baseOpinion.type]: baseOpinion,
 };
 
 export default AttitudeModifierTemplates;

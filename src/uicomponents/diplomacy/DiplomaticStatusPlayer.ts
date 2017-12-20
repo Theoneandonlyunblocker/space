@@ -17,7 +17,6 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   statusSortingNumber: number;
   canInteractWith: boolean;
 
-  baseOpinion?: number;
   attitudeModifiers?: AttitudeModifier[];
 }
 
@@ -77,7 +76,6 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
       {
         attitudeModifiers: this.props.attitudeModifiers,
         opinion: this.props.opinion,
-        baseOpinion: this.props.baseOpinion,
       });
     }
 

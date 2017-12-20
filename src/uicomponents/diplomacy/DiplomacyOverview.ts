@@ -65,7 +65,6 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           flag: player.flag,
           canInteractWith: this.props.player.diplomacy.canDoDiplomacyWithPlayer(player),
 
-          baseOpinion: player.diplomacy.getBaseOpinion(),
           statusSortingNumber: status,
           attitudeModifiers: player.diplomacy.attitudeModifiersByPlayer.get(this.props.player)!,
         }),

@@ -12,7 +12,6 @@ import AttitudeModifierList from "./AttitudeModifierList";
 export interface PropTypes extends React.Props<any>
 {
   attitudeModifiers: AttitudeModifier[];
-  baseOpinion: number;
   opinion: number;
 }
 
@@ -95,7 +94,6 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
       tooltip = AttitudeModifierList(
       {
         attitudeModifiers: this.props.attitudeModifiers,
-        baseOpinion: this.props.baseOpinion,
 
         autoPositionerProps:
         {

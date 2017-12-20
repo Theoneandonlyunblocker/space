@@ -17,7 +17,6 @@ export default class PlayerDiplomacy
   public readonly attitudeModifiersByPlayer: ValuesByPlayer<AttitudeModifier[]>;
 
   private readonly player: Player;
-  private baseOpinion: number;
   private listeners:
   {
     [name: string]: Function[];
@@ -49,23 +48,8 @@ export default class PlayerDiplomacy
       }
     }
   }
-  public getBaseOpinion(): number
-  {
-    if (isFinite(this.baseOpinion))
-    {
-      return this.baseOpinion;
-    }
-
-    const friendliness = this.player.AIController.personality.friendliness;
-
-    this.baseOpinion = Math.round((friendliness - 0.5) * 10);
-
-    return this.baseOpinion;
-  }
   public getOpinionOf(player: Player): number
   {
-    const baseOpinion = this.getBaseOpinion();
-
     const attitudeModifiers = this.attitudeModifiersByPlayer.get(player);
 
     const modifierOpinion = attitudeModifiers.map(modifier =>
@@ -76,7 +60,7 @@ export default class PlayerDiplomacy
       return totalOpinion + currentOpinion;
     }, 0);
 
-    return Math.round(baseOpinion + modifierOpinion);
+    return Math.round(modifierOpinion);
   }
   public canDoDiplomacyWithPlayer(player: Player): boolean
   {

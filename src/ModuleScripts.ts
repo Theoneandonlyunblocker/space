@@ -64,6 +64,7 @@ export default class ModuleScripts implements AllModuleScripts
     diplomacy:
     {
       onWarDeclaration: [],
+      onFirstMeeting: [],
     },
     game:
     {

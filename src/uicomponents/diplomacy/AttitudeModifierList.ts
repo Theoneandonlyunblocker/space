@@ -16,7 +16,6 @@ import {localize} from "../../../localization/localize";
 export interface PropTypes extends React.Props<any>
 {
   attitudeModifiers: AttitudeModifier[];
-  baseOpinion: number;
 
   autoPositionerProps?: AutoPositionerProps;
 }
@@ -44,19 +43,6 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
   {
     const modifiers = this.props.attitudeModifiers;
     const rows: ListItem<AttitudeModifierInfoProps>[] = [];
-
-    // TODO 2017.12.19 | can't we actually make this using attitude modifier templates?
-    rows.push(
-    {
-      key: "baseOpinion",
-      content: AttitudeModifierInfo(
-      {
-        name: localize("aiPersonality")(),
-        strength: this.props.baseOpinion,
-        endTurn: -1,
-        alwaysShowAtTopOfList: true,
-      }),
-    });
 
     for (let i = 0; i < modifiers.length; i++)
     {

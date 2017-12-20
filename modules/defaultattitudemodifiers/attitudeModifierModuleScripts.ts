@@ -1,5 +1,6 @@
 import
 {
+  baseOpinion,
   declaredWar,
 } from "./AttitudeModifierTemplates";
 
@@ -11,6 +12,29 @@ export const attitudeModifierModuleScripts =
 {
   diplomacy:
   {
+    onFirstMeeting:
+    [
+      {
+        key: "addBaseOpinionAttitudeModifier",
+        priority: 0,
+        script: (a: Player, b: Player) =>
+        {
+          const friendliness = a.AIController.personality.friendliness;
+
+          const opinion = Math.round((friendliness - 0.5) * 10);
+
+          const modifier = new AttitudeModifier(
+          {
+            template: baseOpinion,
+            // TODO 2017.12.19 |
+            startTurn: 0,
+            strength: opinion,
+          });
+
+          a.diplomacy.addAttitudeModifier(b, modifier);
+        },
+      },
+    ],
     onWarDeclaration:
     [
       {
