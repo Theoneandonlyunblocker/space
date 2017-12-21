@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- https://commons.wikimedia.org/wiki/File:Berliner_Baer.svg -->
-<svg height="826" viewBox="0 0 2490 4130" width="498" xmlns="http://www.w3.org/2000/svg">
+<svg preserveAspectRatio="xMaxYMax meet" height="826" viewBox="0 0 2490 4130" width="498" xmlns="http://www.w3.org/2000/svg">
   <linearGradient id="mainColor">
     <stop stop-color="#000"/>
   </linearGradient>

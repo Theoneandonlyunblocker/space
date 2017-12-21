@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Planet_Moon.svg -->
-<svg height="300" width="256" xmlns="http://www.w3.org/2000/svg">
+<svg height="300" width="256" viewBox="0 0 256 300" xmlns="http://www.w3.org/2000/svg">
   <linearGradient id="fillColor">
     <stop stop-color="#888"/>
   </linearGradient>
