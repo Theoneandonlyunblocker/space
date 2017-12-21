@@ -6,10 +6,14 @@ declare interface SubEmblemTemplate
   src: string;
 
   /**
-   * SVG classes to map colors to.
-   * Probably should put most important stuff first.
+   * Selectors to map colors to.
+   * Probably should put most important stuff first for ease of customization.
    */
-  colorMappings?: string[][];
+  colorMappings:
+  {
+    [selector: string]: string; // name of style prop to assign color value to
+  }[];
+
   generateColors?(backgroundColor?: Color, colors?: Color[]): Color[];
 
   disallowRandomGeneration?: boolean;

@@ -41,9 +41,8 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
       containerNode.removeChild(containerNode.firstChild);
     }
 
-    const containerRect = containerNode.getBoundingClientRect();
-
-    const canvas = this.props.flag.getCanvas(containerRect.width, containerRect.height, this.props.stretch, !this.props.isMutable);
+    // const canvas = this.props.flag.getCanvas(containerRect.width, containerRect.height, this.props.stretch, !this.props.isMutable);
+    const canvas = this.props.flag.draw();
     canvas.style.maxWidth = "100%";
     canvas.style.maxHeight = "100%";
     containerNode.appendChild(canvas);

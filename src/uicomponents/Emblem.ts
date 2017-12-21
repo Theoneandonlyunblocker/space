@@ -38,31 +38,18 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
 
   private renderEmblemCanvas(): void
   {
-    const containerRect = this.container.getBoundingClientRect();
-
     const emblem = new Emblem(
       this.props.colors,
       this.props.template,
       1,
     );
 
-    const drawn = emblem.draw(containerRect.width, containerRect.height, true);
-
     if (this.container.firstChild)
     {
-      const canvas = <HTMLCanvasElement> this.container.firstChild;
-      canvas.width = drawn.width;
-      canvas.height = drawn.height;
+      this.container.removeChild(this.container.firstChild);
+    }
 
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(drawn, 0, 0);
-    }
-    else
-    {
-      drawn.style.maxWidth = "100%";
-      drawn.style.maxHeight = "100%";
-      this.container.appendChild(drawn);
-    }
+    this.container.appendChild(emblem.draw());
   }
 
   componentDidMount()

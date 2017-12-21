@@ -1,9 +1,9 @@
 import SubEmblemTemplates from "./SubEmblemTemplates";
 
-import app from "../../src/App"; // TODO global
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import {svgCache} from "../../src/svgCache";
 
 import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
 
@@ -19,7 +19,7 @@ const defaultEmblems: ModuleFile =
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
   supportedLanguages: "all",
-  loadAssets: function(onLoaded: () => void)
+  loadAssets: (onLoaded: () => void) =>
   {
     const loader = new PIXI.loaders.Loader();
 
@@ -29,27 +29,18 @@ const defaultEmblems: ModuleFile =
       loader.add(
       {
         url: template.src,
-        loadType: 2, // image
-        xhrType: "png",
+        loadType: 1, // XML
       });
     }
 
-    loader.load(function(loader: PIXI.loaders.Loader)
+    loader.load(() =>
     {
       for (let templateKey in SubEmblemTemplates)
       {
         const template = SubEmblemTemplates[templateKey];
-        const image = loader.resources[template.src].data;
-        app.images[template.src] = image;
-
-        // IE fix
-        if (!image.width)
-        {
-          document.body.appendChild(image);
-          image.width = image.offsetWidth;
-          image.height = image.offsetHeight;
-          document.body.removeChild(image);
-        }
+        const response = <XMLDocument> loader.resources[template.src].data;
+        const svgDoc = <SVGElement> response.children[0];
+        svgCache[template.src] = svgDoc;
       }
 
       onLoaded();

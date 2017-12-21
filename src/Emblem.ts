@@ -1,21 +1,23 @@
 /// <reference path="../lib/rng.d.ts" />
 
-import app from "./App"; // TODO global
 import {activeModuleData} from "./activeModuleData";
-
 import Color from "./Color";
 import
 {
   generateMainColor,
   generateSecondaryColor,
 } from "./colorGeneration";
-import EmblemSaveData from "./savedata/EmblemSaveData";
-import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
+import {svgCache} from "./svgCache";
 import
 {
   getSeededRandomArrayItem,
   randRange,
 } from "./utility";
+
+import EmblemSaveData from "./savedata/EmblemSaveData";
+
+import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
+
 
 export default class Emblem
 {
@@ -78,54 +80,74 @@ export default class Emblem
       return !template.disallowRandomGeneration;
     });
   }
-  public isDrawable(): boolean
+  public draw(): SVGElement
   {
-    const amountOfColorsIsWithinRange = this.colors.length > 0;
+    const sourceElement = svgCache[this.template.src];
+    const result = <SVGElement> sourceElement.cloneNode(true);
 
-    return this.alpha > 0 && amountOfColorsIsWithinRange;
+    this.template.colorMappings.forEach((selectorMap: {[selector: string]: string}, i: number) =>
+    {
+      // TODO 2017.12.21 |
+      // const color = this.colors[i];
+      const color = this.colors[0];
+
+      for (let selector in selectorMap)
+      {
+        const selection = result.querySelectorAll(selector);
+        const styleProp = selectorMap[selector];
+
+        for (let j = 0; j < selection.length; j++)
+        {
+          const match = <SVGElement> selection[j];
+          match.style[styleProp] = `#${color.getHexString()}`;
+        }
+      }
+    });
+
+    return result;
   }
-  // TODO 29.9.2016 | actually use svg attributes
-  public draw(maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement
-  {
-    const image = app.images[this.template.src];
+  // // TODO 29.9.2016 | actually use svg attributes
+  // public draw(maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement
+  // {
+  //   const image = app.images[this.template.src];
 
-    let width = image.width;
-    let height = image.height;
+  //   let width = image.width;
+  //   let height = image.height;
 
-    if (stretch)
-    {
-      const widthRatio = width / maxWidth;
-      const heightRatio = height / maxHeight;
+  //   if (stretch)
+  //   {
+  //     const widthRatio = width / maxWidth;
+  //     const heightRatio = height / maxHeight;
 
-      const largestRatio = Math.max(widthRatio, heightRatio);
-      width /= largestRatio;
-      height /= largestRatio;
-    }
-    else
-    {
-      width = Math.min(width, maxWidth);
-      height = Math.max(height, maxHeight);
-    }
+  //     const largestRatio = Math.max(widthRatio, heightRatio);
+  //     width /= largestRatio;
+  //     height /= largestRatio;
+  //   }
+  //   else
+  //   {
+  //     width = Math.min(width, maxWidth);
+  //     height = Math.max(height, maxHeight);
+  //   }
 
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
+  //   const canvas = document.createElement("canvas");
+  //   canvas.width = width;
+  //   canvas.height = height;
+  //   const ctx = canvas.getContext("2d");
 
-    if (!ctx)
-    {
-      throw new Error("Couldn't get canvas context");
-    }
+  //   if (!ctx)
+  //   {
+  //     throw new Error("Couldn't get canvas context");
+  //   }
 
-    ctx.drawImage(image, 0, 0, width, height);
+  //   ctx.drawImage(image, 0, 0, width, height);
 
-    ctx.globalCompositeOperation = "source-in";
+  //   ctx.globalCompositeOperation = "source-in";
 
-    ctx.fillStyle = "#" + this.colors[0].getHexString();
-    ctx.fillRect(0, 0, width, height);
+  //   ctx.fillStyle = "#" + this.colors[0].getHexString();
+  //   ctx.fillRect(0, 0, width, height);
 
-    return canvas;
-  }
+  //   return canvas;
+  // }
   public serialize(): EmblemSaveData
   {
     const data: EmblemSaveData =

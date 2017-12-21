@@ -3,10 +3,6 @@
 import Color from "./Color";
 import Emblem from "./Emblem";
 import {generateMainColor, generateSecondaryColor} from "./colorGeneration";
-import
-{
-  drawElementToCanvas,
-} from "./utility";
 
 import FlagSaveData from "./savedata/FlagSaveData";
 
@@ -16,11 +12,6 @@ export class Flag
   public emblems: Emblem[] = [];
   private seed: string;
 
-  private cachedCanvases:
-  {
-    [sizeString: string]: HTMLCanvasElement;
-  } = {};
-
   constructor(backgroundColor: Color | null, emblems?: Emblem[])
   {
     this.backgroundColor = backgroundColor;
@@ -29,6 +20,7 @@ export class Flag
       emblems.forEach(emblem => this.addEmblem(emblem));
     }
   }
+
   public static generateRandom(
     backgroundColor: Color = generateMainColor(),
     secondaryColor: Color = generateSecondaryColor(backgroundColor),
@@ -42,6 +34,23 @@ export class Flag
 
     return flag;
   }
+
+  public draw(): SVGElement
+  {
+    const container = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    if (this.backgroundColor)
+    {
+      container.style.backgroundColor = `#${this.backgroundColor.getHexString()}`;
+    }
+
+    this.emblems.forEach(emblem =>
+    {
+      // TODO 2017.12.21 | these need to be centered
+      container.appendChild(emblem.draw());
+    });
+
+    return container;
+  }
   public generateRandomEmblem(secondaryColor?: Color, seed?: string): Emblem
   {
     return Emblem.generateRandom(this.backgroundColor, [secondaryColor], 1, seed);
@@ -54,41 +63,6 @@ export class Flag
   {
     this.emblems.push(emblem);
   }
-  public setCustomImage(imageData: string): void
-  {
-
-  }
-  public getCanvas(
-    width: number,
-    height: number,
-    stretch: boolean = true,
-    useCache: boolean = true,
-  ): HTMLCanvasElement
-  {
-    if (useCache)
-    {
-      const sizeString = "" + width + "," + height + stretch;
-      if (!this.cachedCanvases[sizeString])
-      {
-        const canvas = this.draw(width, height, stretch);
-        this.cachedCanvases[sizeString] = canvas;
-      }
-
-      const cachedCanvas = this.cachedCanvases[sizeString];
-      const canvas = drawElementToCanvas(cachedCanvas);
-
-      return canvas;
-    }
-    else
-    {
-      const canvas = this.draw(width, height, stretch);
-      return canvas;
-    }
-  }
-  public isDrawable(): boolean
-  {
-    return true; // TODO 29.9.2016 | ?
-  }
   public serialize(): FlagSaveData
   {
     const data: FlagSaveData =
@@ -99,71 +73,4 @@ export class Flag
 
     return data;
   }
-
-
-  private draw(width: number, height: number, stretch: boolean = true): HTMLCanvasElement
-  {
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx = canvas.getContext("2d");
-
-    ctx.globalCompositeOperation = "source-over";
-    if (this.backgroundColor)
-    {
-      ctx.fillStyle = "#" + this.backgroundColor.getHexString();
-      ctx.fillRect(0, 0, width, height);
-    }
-
-    this.emblems.forEach(emblem =>
-    {
-      if (emblem.isDrawable())
-      {
-        const foreground = emblem.draw(width, height, stretch);
-        const x = (width - foreground.width) / 2;
-        const y = (height - foreground.height) / 2;
-        ctx.drawImage(foreground, x, y);
-      }
-    });
-
-    return canvas;
-  }
-  // getReactMarkup()
-  // {
-  //   if (!this._reactMarkup)
-  //   {
-  //     const tempContainer = document.createElement("div");
-  //     tempContainer.appendChild(this.drawSvg());
-
-  //     this._reactMarkup =
-  //     {
-  //       __html: tempContainer.innerHTML
-  //     }
-  //   }
-
-  //   return this._reactMarkup;
-  // }
-  // drawSvg(): HTMLElement
-  // {
-  //   if (!this._renderedSvg)
-  //   {
-  //     const container = document.createElement("div");
-  //     container.classList.add("player-flag");
-  //     container.style.backgroundColor = "#" + hexToString(this.mainColor);
-
-  //     if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null)
-  //     {
-  //       container.appendChild(this.backgroundEmblem.drawSvg());
-  //     }
-  //     if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null)
-  //     {
-  //       container.appendChild(this.foregroundEmblem.drawSvg());
-  //     }
-
-  //     this._renderedSvg = container;
-  //   }
-
-  //   return this._renderedSvg;
-  // }
 }
