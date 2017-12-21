@@ -2,8 +2,8 @@ import {PropInfoType} from "./PropInfoType";
 
 export abstract class PropInfo<T>
 {
-  // TODO 2017.03.29 | should be abstract and static, but not currently possible in typescript
-  // https://github.com/Microsoft/TypeScript/issues/10603
+  // should be abstract and static, but not currently possible in typescript
+  // https://github.com/Microsoft/TypeScript/issues/14600
   public abstract readonly type: PropInfoType;
 
   private readonly defaultValue: T;

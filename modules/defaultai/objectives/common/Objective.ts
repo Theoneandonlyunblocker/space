@@ -10,12 +10,11 @@ import idGenerators from "../../../../src/idGenerators";
 
 export abstract class Objective
 {
-  // TODO 2017.02.25 | all this static stuff should be abstract and static, but not currently possible in typescript
-  // https://github.com/Microsoft/TypeScript/issues/10603
+  // all this static stuff should be abstract and static, but not currently possible in typescript
+  // https://github.com/Microsoft/TypeScript/issues/14600
 
   // TODO 2017.02.28 | family and type might be a bit confusingly named here
   // type is used like this for templates, so it's used here as well at least for now
-  // should be static & abstract
   public static readonly type: string;
   public static readonly family: ObjectiveFamily;
 
@@ -71,7 +70,7 @@ export abstract class Objective
   public static makeCreatorTemplate(): ObjectiveCreatorTemplate
   {
     // checking these at runtime since we can't actually tag them abstract for the compiler
-    // https://github.com/Microsoft/TypeScript/issues/10603
+    // https://github.com/Microsoft/TypeScript/issues/14600
     [
       {member: this.type, memberIdentifier: "type"},
       {member: this.family, memberIdentifier: "family"},
