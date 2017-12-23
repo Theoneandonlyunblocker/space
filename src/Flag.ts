@@ -35,9 +35,13 @@ export class Flag
     return flag;
   }
 
-  public draw(): SVGElement
+  public draw(): HTMLDivElement
   {
-    const container = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const container = document.createElement("div");
+
+    // TODO 2017.12.21 |
+    container.style.position = "relative";
+
     if (this.backgroundColor)
     {
       container.style.backgroundColor = `#${this.backgroundColor.getHexString()}`;
@@ -45,7 +49,6 @@ export class Flag
 
     this.emblems.forEach(emblem =>
     {
-      // TODO 2017.12.21 | these need to be centered
       container.appendChild(emblem.draw());
     });
 

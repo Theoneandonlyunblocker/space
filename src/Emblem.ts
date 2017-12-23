@@ -84,6 +84,11 @@ export default class Emblem
   {
     const sourceElement = svgCache[this.template.src];
     const result = <SVGElement> sourceElement.cloneNode(true);
+    // TODO 2017.12.21 |
+    result.style.position = "absolute";
+    result.style.top = result.style.left = "0";
+    result.style.width = result.style.height = "100%";
+    result.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
     for (let i = 0; i < this.template.colorMappings.length; i++)
     {
