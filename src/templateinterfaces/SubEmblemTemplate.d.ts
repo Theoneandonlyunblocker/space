@@ -5,13 +5,14 @@ declare interface SubEmblemTemplate
   key: string;
   src: string;
 
-  /**
-   * Selectors to map colors to.
-   * Probably should put most important stuff first for ease of customization.
-   */
+  // Probably should put most important stuff first for ease of customization.
   colorMappings:
   {
-    [selector: string]: string; // name of style prop to assign color value to
+    [selector: string]:
+    {
+      attributeName: string;
+      displayName: string;
+    };
   }[];
 
   generateColors?(backgroundColor?: Color, colors?: Color[]): Color[];

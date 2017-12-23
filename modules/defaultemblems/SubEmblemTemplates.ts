@@ -9,12 +9,48 @@ export const Aguila_explayada_2: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#mainColor stop": "stop-color"},
-    {"#beakFootTongueColor stop": "stop-color"},
-    {"#highlightColor stop": "stop-color"},
-    {"#irisColor stop": "stop-color"},
-    {"#eyeballColor stop": "stop-color"},
-    {"#pupilColor stop": "stop-color"},
+    {
+      "#mainColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "mainColor",
+      },
+    },
+    {
+      "#beakFootTongueColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "beakFootTongueColor",
+      },
+    },
+    {
+      "#highlightColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "highlightColor",
+      },
+    },
+    {
+      "#irisColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "irisColor",
+      },
+    },
+    {
+      "#eyeballColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "eyeballColor",
+      },
+    },
+    {
+      "#pupilColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "pupilColor",
+      },
+    },
   ],
 };
 export const Berliner_Baer: SubEmblemTemplate =
@@ -24,9 +60,27 @@ export const Berliner_Baer: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#mainColor stop": "stop-color"},
-    {"#accentColor stop": "stop-color"},
-    {"#faceDetailsColor stop": "stop-color"},
+    {
+      "#mainColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "mainColor",
+      },
+    },
+    {
+      "#accentColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "accentColor",
+      },
+    },
+    {
+      "#faceDetailsColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "faceDetailsColor",
+      },
+    },
   ],
 };
 export const Cles_en_sautoir: SubEmblemTemplate =
@@ -36,8 +90,20 @@ export const Cles_en_sautoir: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
-    {"#strokeColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
+    {
+      "#strokeColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "strokeColor",
+      },
+    },
   ],
 };
 export const Coa_Illustration_Cross_Bowen_3: SubEmblemTemplate =
@@ -47,8 +113,20 @@ export const Coa_Illustration_Cross_Bowen_3: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
-    {"#strokeColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
+    {
+      "#strokeColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "strokeColor",
+      },
+    },
   ],
 };
 export const Coa_Illustration_Cross_Malte_1: SubEmblemTemplate =
@@ -58,8 +136,20 @@ export const Coa_Illustration_Cross_Malte_1: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
-    {"#strokeColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
+    {
+      "#strokeColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "strokeColor",
+      },
+    },
   ],
 };
 export const Coa_Illustration_Elements_Planet_Moon: SubEmblemTemplate =
@@ -69,8 +159,20 @@ export const Coa_Illustration_Elements_Planet_Moon: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
-    {"#strokeColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
+    {
+      "#strokeColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "strokeColor",
+      },
+    },
   ],
 };
 export const Couronne_heraldique_svg: SubEmblemTemplate =
@@ -80,8 +182,20 @@ export const Couronne_heraldique_svg: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
-    {"#strokeColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
+    {
+      "#strokeColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "strokeColor",
+      },
+    },
   ],
 };
 export const Flag_of_Edward_England: SubEmblemTemplate =
@@ -92,7 +206,13 @@ export const Flag_of_Edward_England: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const Gomaisasa: SubEmblemTemplate =
@@ -102,7 +222,13 @@ export const Gomaisasa: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const Gryphon_Segreant: SubEmblemTemplate =
@@ -112,10 +238,34 @@ export const Gryphon_Segreant: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#mainColor stop": "stop-color"},
-    {"#outlineColor stop": "stop-color"},
-    {"#handBeakColor stop": "stop-color"},
-    {"#clawTongueColor stop": "stop-color"},
+    {
+      "#mainColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "mainColor",
+      },
+    },
+    {
+      "#outlineColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "outlineColor",
+      },
+    },
+    {
+      "#handBeakColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "handBeakColor",
+      },
+    },
+    {
+      "#clawTongueColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "clawTongueColor",
+      },
+    },
   ],
 };
 export const Heraldic_pentacle: SubEmblemTemplate =
@@ -125,7 +275,13 @@ export const Heraldic_pentacle: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const Japanese_Crest_Futatsudomoe_1: SubEmblemTemplate =
@@ -135,7 +291,13 @@ export const Japanese_Crest_Futatsudomoe_1: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const Japanese_Crest_Hana_Hisi: SubEmblemTemplate =
@@ -145,7 +307,13 @@ export const Japanese_Crest_Hana_Hisi: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const Japanese_Crest_Mitsumori_Janome: SubEmblemTemplate =
@@ -155,7 +323,13 @@ export const Japanese_Crest_Mitsumori_Janome: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const Japanese_Crest_Oda_ka: SubEmblemTemplate =
@@ -165,7 +339,13 @@ export const Japanese_Crest_Oda_ka: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const Japanese_crest_Tsuki_ni_Hoshi: SubEmblemTemplate =
@@ -175,7 +355,13 @@ export const Japanese_crest_Tsuki_ni_Hoshi: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const Japanese_Crest_Ume: SubEmblemTemplate =
@@ -185,7 +371,13 @@ export const Japanese_Crest_Ume: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const Mitsuuroko: SubEmblemTemplate =
@@ -195,7 +387,13 @@ export const Mitsuuroko: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const Musubikashiwa: SubEmblemTemplate =
@@ -205,7 +403,13 @@ export const Musubikashiwa: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const Takeda_mon: SubEmblemTemplate =
@@ -215,7 +419,13 @@ export const Takeda_mon: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
   ],
 };
 export const threeHorns: SubEmblemTemplate =
@@ -225,8 +435,20 @@ export const threeHorns: SubEmblemTemplate =
 
   colorMappings:
   [
-    {"#fillColor stop": "stop-color"},
-    {"#strokeColor stop": "stop-color"},
+    {
+      "#fillColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "fillColor",
+      },
+    },
+    {
+      "#strokeColor stop":
+      {
+        attributeName: "stop-color",
+        displayName: "strokeColor",
+      },
+    },
   ],
 };
 

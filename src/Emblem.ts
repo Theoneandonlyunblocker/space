@@ -85,8 +85,10 @@ export default class Emblem
     const sourceElement = svgCache[this.template.src];
     const result = <SVGElement> sourceElement.cloneNode(true);
 
-    this.template.colorMappings.forEach((selectorMap: {[selector: string]: string}, i: number) =>
+    for (let i = 0; i < this.template.colorMappings.length; i++)
     {
+      const selectorMap = this.template.colorMappings[i];
+
       // TODO 2017.12.21 |
       // const color = this.colors[i];
       const color = this.colors[0];
@@ -94,15 +96,15 @@ export default class Emblem
       for (let selector in selectorMap)
       {
         const selection = result.querySelectorAll(selector);
-        const styleProp = selectorMap[selector];
+        const attributeName = selectorMap[selector].attributeName;
 
         for (let j = 0; j < selection.length; j++)
         {
           const match = <SVGElement> selection[j];
-          match.style[styleProp] = `#${color.getHexString()}`;
+          match.setAttribute(attributeName, `#${color.getHexString()}`);
         }
       }
-    });
+    };
 
     return result;
   }
