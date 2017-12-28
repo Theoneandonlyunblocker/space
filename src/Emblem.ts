@@ -1,7 +1,7 @@
 /// <reference path="../lib/rng.d.ts" />
 
-import {activeModuleData} from "./activeModuleData";
 import Color from "./Color";
+import {activeModuleData} from "./activeModuleData";
 import
 {
   generateMainColor,
@@ -19,17 +19,22 @@ import EmblemSaveData from "./savedata/EmblemSaveData";
 import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
 
 
+let id = 0;
+
 export default class Emblem
 {
   alpha: number;
   colors: Color[];
   template: SubEmblemTemplate;
 
+  private id: number;
+
   constructor(colors: Color[], template: SubEmblemTemplate, alpha: number = 1)
   {
     this.colors = colors;
     this.alpha = alpha;
     this.template = template;
+    this.id = id++;
   }
   public static generateRandom(backgroundColor?: Color, colors: Color[] = [], minAlpha: number = 1, seed?: string): Emblem
   {
@@ -82,8 +87,8 @@ export default class Emblem
   }
   public draw(): SVGElement
   {
-    const sourceElement = svgCache[this.template.src];
-    const result = <SVGElement> sourceElement.cloneNode(true);
+    const result = this.createElementClone();
+
     // TODO 2017.12.21 |
     result.style.position = "absolute";
     result.style.top = result.style.left = "0";
@@ -92,24 +97,23 @@ export default class Emblem
 
     for (let i = 0; i < this.template.colorMappings.length; i++)
     {
-      const selectorMap = this.template.colorMappings[i];
+      const colorMap = this.template.colorMappings[i];
 
       // TODO 2017.12.21 |
       // const color = this.colors[i];
       const color = this.colors[0];
 
-      for (let selector in selectorMap)
+      colorMap.selectors.forEach(selectorData =>
       {
-        const selection = result.querySelectorAll(selector);
-        const attributeName = selectorMap[selector].attributeName;
+        const selection = result.querySelectorAll(selectorData.selector);
 
         for (let j = 0; j < selection.length; j++)
         {
           const match = <SVGElement> selection[j];
-          match.setAttribute(attributeName, `#${color.getHexString()}`);
+          match.setAttribute(selectorData.attributeName, `#${color.getHexString()}`);
         }
-      }
-    };
+      });
+    }
 
     return result;
   }
@@ -165,5 +169,13 @@ export default class Emblem
     };
 
     return data;
+  }
+
+  private createElementClone(): SVGElement
+  {
+    const sourceElement = svgCache[this.template.src];
+    const clone = <SVGElement> sourceElement.cloneNode(true);
+
+    return clone;
   }
 }

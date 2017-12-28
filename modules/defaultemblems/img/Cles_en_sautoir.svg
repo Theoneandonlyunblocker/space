@@ -2,13 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <!-- https://commons.wikimedia.org/wiki/File:Cl%C3%A9s_en_sautoir.svg -->
 <svg height="250" width="250" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
-  <linearGradient id="fillColor">
-    <stop stop-color="#fcef3c"/>
-  </linearGradient>
-  <linearGradient id="strokeColor">
-    <stop stop-color="#000"/>
-  </linearGradient>
-  <g fill="url(#fillColor)" stroke="url(#strokeColor)" transform="translate(-28.911349 41.982535)">
+  <g class="emblem-main" fill="#fcef3c" stroke="#000" transform="translate(-28.911349 41.982535)">
     <g transform="matrix(-.70710678 -.70710678 -.70710678 .70710678 362.67006 132.42266)">
       <path d="m52.999999 107.08333c0 3.58986-2.910149 6.5-6.5 6.5-3.58985 0-6.5-2.91014-6.5-6.5 0-3.58985 2.91015-6.5 6.5-6.5 3.589851 0 6.5 2.91015 6.5 6.5z"/>
       <path d="m53.155025 105.31579c.193302 1.21355.198544 2.49962-.046875 3.69688.249809.3856.713274-.1817 1.01314-.27306.906206-.58681 1.930142-.95078 2.889985-1.40819.313212-.41864-.426807-.57968-.690625-.71875-1.074411-.3542-2.020966-1.01721-3.05625-1.40938l-.069707.0717-.039668.0408z"/>

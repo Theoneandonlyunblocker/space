@@ -8,11 +8,12 @@ declare interface SubEmblemTemplate
   // Probably should put most important stuff first for ease of customization.
   colorMappings:
   {
-    [selector: string]:
+    displayName: string;
+    selectors:
     {
+      selector: string;
       attributeName: string;
-      displayName: string;
-    };
+    }[];
   }[];
 
   generateColors?(backgroundColor?: Color, colors?: Color[]): Color[];
