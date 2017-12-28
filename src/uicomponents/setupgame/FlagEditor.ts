@@ -7,7 +7,7 @@ import {Flag} from "../../Flag";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 import {EmblemProps} from "../Emblem";
-import EmblemPicker from "./EmblemPicker";
+import EmblemEditor from "./EmblemEditor";
 import EmblemSetterList from "./EmblemSetterList";
 
 import
@@ -232,9 +232,9 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
           removeEmblem: this.removeEmblem,
         }),
         !activeEmblemData ? null :
-        EmblemPicker(
+        EmblemEditor(
         {
-          key: "emblemPicker",
+          key: "emblemEditor",
           color: activeEmblemData.colors[0],
           backgroundColor: this.props.backgroundColor,
           selectedEmblemTemplate: activeEmblemData.template,

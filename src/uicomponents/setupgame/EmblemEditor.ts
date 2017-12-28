@@ -25,9 +25,9 @@ interface StateType
 {
 }
 
-export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateType>
+export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName = "EmblemPicker";
+  displayName = "EmblemEditor";
   state: StateType;
 
   constructor(props: PropTypes)
@@ -61,7 +61,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
     {
       const template = activeModuleData.Templates.SubEmblems[emblemType];
 
-      let className = "emblem-picker-image";
+      let className = "emblem-editor-image";
 
       const templateIsSelected = this.props.selectedEmblemTemplate && this.props.selectedEmblemTemplate.key === template.key;
       if (templateIsSelected)
@@ -72,7 +72,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
       emblemElements.push(
         React.DOM.div(
         {
-          className: "emblem-picker-container",
+          className: "emblem-editor-container",
           key: template.key,
           onClick: this.handleSelectEmblem.bind(this, template),
           style: !this.props.backgroundColor ? null :
@@ -96,7 +96,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
     return(
       React.DOM.div(
       {
-        className: "emblem-picker",
+        className: "emblem-editor",
       },
         React.DOM.div({className: "flag-picker-title"},
           localize("emblemColor")(),
@@ -120,7 +120,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
         React.DOM.div({className: "flag-picker-title"},
           localize("emblems")(),
         ),
-        React.DOM.div({className: "emblem-picker-emblem-list"},
+        React.DOM.div({className: "emblem-editor-emblem-list"},
           emblemElements,
         ),
       )
@@ -128,5 +128,5 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(EmblemPickerComponent);
+const Factory: React.Factory<PropTypes> = React.createFactory(EmblemEditorComponent);
 export default Factory;
