@@ -17,7 +17,7 @@ interface StateType
 export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "EmptyUnit";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

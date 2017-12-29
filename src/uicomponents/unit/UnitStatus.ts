@@ -25,7 +25,7 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
   public displayName = "UnitStatus";
 
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

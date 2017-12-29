@@ -35,7 +35,7 @@ interface StateType
 export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "TurnOrderUnit";
-  state: StateType;
+  public state: StateType;
   containerClassForAnimationState =
   {
     [AnimationState.RemoveDeadUnit]: "remove-dead-unit",

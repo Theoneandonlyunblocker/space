@@ -25,7 +25,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
 {
   public displayName = "DiplomacyActions";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

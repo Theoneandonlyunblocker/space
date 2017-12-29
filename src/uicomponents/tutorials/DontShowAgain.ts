@@ -21,7 +21,7 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   public displayName = "DontShowAgain";
 
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

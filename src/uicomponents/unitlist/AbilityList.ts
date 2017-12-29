@@ -18,7 +18,7 @@ interface StateType
 export class AbilityListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "AbilityList";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

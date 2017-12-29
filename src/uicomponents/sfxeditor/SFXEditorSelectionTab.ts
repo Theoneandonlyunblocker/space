@@ -24,7 +24,7 @@ interface StateType
 export class SFXEditorSelectionTabComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SFXEditorSelectionTab";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

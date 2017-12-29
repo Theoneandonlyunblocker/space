@@ -28,7 +28,7 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
     this.forceUpdate();
   }
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

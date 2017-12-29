@@ -24,7 +24,7 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
 {
   public displayName = "EconomySummary";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

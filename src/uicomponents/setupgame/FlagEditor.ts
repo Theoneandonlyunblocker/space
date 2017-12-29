@@ -47,7 +47,7 @@ interface StateType
 export class FlagEditorComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "FlagEditor";
-  state: StateType;
+  public state: StateType;
 
   idGenerator = 0;
 

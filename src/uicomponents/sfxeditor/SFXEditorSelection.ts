@@ -30,7 +30,7 @@ interface StateType
 export class SFXEditorSelectionComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SFXEditorSelection";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

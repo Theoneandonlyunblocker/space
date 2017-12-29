@@ -19,7 +19,7 @@ interface StateType
 export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "ManufactoryUpgradeButton";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

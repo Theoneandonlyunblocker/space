@@ -24,7 +24,7 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
   public displayName = "FleetContents";
 
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

@@ -27,7 +27,7 @@ interface StateType
 export class SFXFragmentListItemComponent<P extends Fragment> extends React.Component<PropTypes<P>, StateType>
 {
   public displayName = "SFXFragmentListItem";
-  state: StateType;
+  public state: StateType;
 
   dragPositioner: DragPositioner<SFXFragmentListItemComponent<P>>;
 

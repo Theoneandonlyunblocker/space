@@ -21,7 +21,7 @@ interface StateType
 export class SFXFragmentPropPointComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SFXFragmentPropPoint";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

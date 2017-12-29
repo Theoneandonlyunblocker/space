@@ -19,7 +19,7 @@ interface StateType
 export class AttackTargetComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "AttackTarget";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

@@ -23,7 +23,7 @@ interface StateType
 export class UnitItemGroupComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitItemGroup";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

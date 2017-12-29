@@ -62,7 +62,7 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
     this.props.triggerUpdate();
   }
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

@@ -31,7 +31,7 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
 {
   public displayName = "TradeableItemsList";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

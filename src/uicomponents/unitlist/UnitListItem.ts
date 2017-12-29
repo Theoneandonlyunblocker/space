@@ -47,7 +47,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitListItem";
 
-  state: StateType;
+  public state: StateType;
   dragPositioner: DragPositioner<UnitListItemComponent>;
 
   constructor(props: PropTypes)

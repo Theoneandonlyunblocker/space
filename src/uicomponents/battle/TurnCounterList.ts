@@ -19,7 +19,7 @@ import {localize} from "../../../localization/localize";
 export class TurnCounterListComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "TurnCounterList";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

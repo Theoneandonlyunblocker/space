@@ -20,7 +20,7 @@ interface StateType
 export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitStrength";
-  state: StateType;
+  public state: StateType;
   activeTween: TWEEN.Tween;
   animationFrameHandle: number;
 

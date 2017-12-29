@@ -23,7 +23,7 @@ export class DefenceBuildingComponent extends React.Component<PropTypes, StateTy
   {
     return newProps.building !== this.props.building;
   }
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

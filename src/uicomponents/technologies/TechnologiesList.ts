@@ -23,7 +23,7 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
   updateListener: Function;
 
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

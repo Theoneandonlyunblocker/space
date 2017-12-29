@@ -55,7 +55,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "PlayerSetup";
 
-  state: StateType;
+  public state: StateType;
 
   flag: Flag;
 

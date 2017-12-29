@@ -30,7 +30,7 @@ interface StateType
 export class SaveListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SaveList";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

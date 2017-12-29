@@ -28,7 +28,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 {
   public displayName = "ProductionOverview";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

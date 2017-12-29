@@ -18,7 +18,7 @@ interface StateType
 export class ManufacturableThingsListComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "ManufacturableThingsList";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

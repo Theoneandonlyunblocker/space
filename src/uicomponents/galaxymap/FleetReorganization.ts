@@ -23,7 +23,7 @@ interface StateType
 export class FleetReorganizationComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "FleetReorganization";
-  state: StateType;
+  public state: StateType;
 
   hasClosed: boolean = false;
 

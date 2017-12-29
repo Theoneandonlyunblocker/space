@@ -29,7 +29,7 @@ interface StateType
 export class FleetSelectionComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "FleetSelection";
-  state: StateType;
+  public state: StateType;
 
   ref_TODO_main: HTMLElement;
   ref_TODO_selected: HTMLElement;

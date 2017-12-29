@@ -23,7 +23,7 @@ interface StateType
 export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "FleetUnitInfo";
-  state: StateType;
+  public state: StateType;
 
   dragPositioner: DragPositioner<FleetUnitInfoComponent>;
 

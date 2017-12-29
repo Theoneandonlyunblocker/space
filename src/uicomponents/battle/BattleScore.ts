@@ -20,7 +20,7 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
 {
   public displayName = "BattleScore";
   lastEvaluation: number;
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

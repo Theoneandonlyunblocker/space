@@ -30,7 +30,7 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
     this.props.triggerUpdate();
   }
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

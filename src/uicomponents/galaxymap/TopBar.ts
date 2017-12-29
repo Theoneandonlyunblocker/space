@@ -25,7 +25,7 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
   public displayName = "TopBar";
   updateListener: Function = undefined;
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

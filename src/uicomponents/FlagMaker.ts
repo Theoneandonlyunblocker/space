@@ -19,7 +19,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
 {
   setStateTimeoutHandle: number = undefined;
   sizeValue: number = 46;
-  state: StateType;
+  public state: StateType;
   ref_TODO_flags: HTMLElement;
 
   constructor(props: PropTypes)

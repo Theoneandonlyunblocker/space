@@ -28,7 +28,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
 {
   public displayName = "AttitudeModifierList";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

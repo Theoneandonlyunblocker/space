@@ -32,7 +32,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
   public displayName = "PossibleActions";
 
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

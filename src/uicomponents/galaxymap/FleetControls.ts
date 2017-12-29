@@ -22,7 +22,7 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
   public displayName = "FleetControls";
 
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

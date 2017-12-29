@@ -16,7 +16,7 @@ interface StateType
 export class BattleDisplayStrengthComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BattleDisplayStrength";
-  state: StateType;
+  public state: StateType;
   activeTween: TWEEN.Tween;
   animationFrameHandle: number;
 

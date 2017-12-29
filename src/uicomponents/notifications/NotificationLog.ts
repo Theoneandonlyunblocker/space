@@ -30,7 +30,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   public displayName = "NotificationLog";
   updateListener: Function;
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

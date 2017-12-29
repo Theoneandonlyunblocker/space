@@ -39,7 +39,7 @@ interface StateType
 export class ListComponent extends React.Component<PropTypes, StateType>
 {
   sortedItems: ListItem<any>[];
-  state: StateType;
+  public state: StateType;
 
   ref_TODO_header: HTMLElement;
   ref_TODO_inner: HTMLElement;

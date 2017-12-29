@@ -35,7 +35,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
     return newProps.value !== this.props.value;
   }
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

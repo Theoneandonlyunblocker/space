@@ -24,7 +24,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "Opinion";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

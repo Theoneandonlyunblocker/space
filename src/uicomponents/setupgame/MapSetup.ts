@@ -25,7 +25,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "MapSetup";
 
-  state: StateType;
+  public state: StateType;
 
   ref_TODO_mapGenOptions: MapGenOptionsComponent;
 

@@ -28,7 +28,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "Tutorial";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

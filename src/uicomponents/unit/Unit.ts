@@ -59,7 +59,7 @@ interface StateType
 export class UnitComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "Unit";
-  state: StateType;
+  public state: StateType;
 
   dragPositioner: DragPositioner<UnitComponent>;
 

@@ -23,7 +23,7 @@ interface StateType
 export class UnitItemWrapperComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitItemWrapper";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

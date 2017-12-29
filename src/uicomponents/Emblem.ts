@@ -27,7 +27,7 @@ interface StateType
 export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "Emblem";
-  state: StateType;
+  public state: StateType;
 
   container: HTMLDivElement;
 

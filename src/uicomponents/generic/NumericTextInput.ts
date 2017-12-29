@@ -24,7 +24,7 @@ interface StateType
 export class NumericTextInputComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "NumericTextInput";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

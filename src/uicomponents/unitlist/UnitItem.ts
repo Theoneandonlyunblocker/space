@@ -26,7 +26,7 @@ interface StateType
 export class UnitItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitItem";
-  state: StateType;
+  public state: StateType;
   dragPositioner: DragPositioner<UnitItemComponent>;
 
   constructor(props: PropTypes)

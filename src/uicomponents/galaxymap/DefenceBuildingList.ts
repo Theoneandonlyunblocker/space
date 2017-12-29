@@ -31,7 +31,7 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
 
     return false;
   }
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

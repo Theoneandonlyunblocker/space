@@ -29,7 +29,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
   public displayName = "ManufacturableThings";
 
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

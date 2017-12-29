@@ -22,7 +22,7 @@ interface StateType
 export class SFXFragmentPropRampingValueComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SFXFragmentPropRampingValue";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

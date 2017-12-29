@@ -25,7 +25,7 @@ interface StateType
 export class NotificationFilterListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "NotificationFilterList";
-  state: StateType;
+  public state: StateType;
   ref_TODO_body: HTMLElement;
 
   constructor(props: PropTypes)

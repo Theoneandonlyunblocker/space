@@ -16,7 +16,7 @@ interface StateType
 export class ResourceComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "Resource";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

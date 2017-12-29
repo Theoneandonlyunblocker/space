@@ -45,7 +45,7 @@ interface StateType
 export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TurnOrder";
-  state: StateType;
+  public state: StateType;
 
   timeoutHandle: number;
 

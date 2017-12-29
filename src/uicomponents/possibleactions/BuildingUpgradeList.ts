@@ -23,7 +23,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
   public displayName = "BuildingUpgradeList";
 
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

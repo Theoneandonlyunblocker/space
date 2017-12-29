@@ -31,7 +31,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
     }
   }
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

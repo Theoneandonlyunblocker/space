@@ -28,7 +28,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
 {
   public displayName = "DiplomaticStatusPlayer";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

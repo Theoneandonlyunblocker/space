@@ -23,7 +23,7 @@ interface StateType
 export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "EmblemSetter";
-  state: StateType;
+  public state: StateType;
   constructor(props: PropTypes)
   {
     super(props);

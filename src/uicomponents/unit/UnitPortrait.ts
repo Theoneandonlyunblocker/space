@@ -13,7 +13,7 @@ interface StateType
 export class UnitPortraitComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitPortrait";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

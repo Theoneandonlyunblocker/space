@@ -21,7 +21,7 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
 {
   public displayName = "ManufactoryStarsList";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

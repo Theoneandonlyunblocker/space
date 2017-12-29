@@ -16,7 +16,7 @@ interface StateType
 export class RacePickerComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "RacePicker";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

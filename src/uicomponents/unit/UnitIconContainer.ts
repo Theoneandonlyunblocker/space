@@ -13,7 +13,7 @@ interface StateType
 export class UnitIconContainerComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "UnitIconContainer";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

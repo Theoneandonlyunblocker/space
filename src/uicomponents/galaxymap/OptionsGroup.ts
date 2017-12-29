@@ -24,7 +24,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "OptionsGroup";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

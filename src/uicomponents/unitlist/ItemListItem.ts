@@ -40,7 +40,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "ItemListItem";
 
-  state: StateType;
+  public state: StateType;
   dragPositioner: DragPositioner<ItemListItemComponent>;
 
   constructor(props: PropTypes)

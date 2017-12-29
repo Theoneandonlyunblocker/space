@@ -20,7 +20,7 @@ export class PlayerMoneyComponent extends React.Component<PropTypes, StateType>
   lastAmountRendered: number = undefined;
 
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

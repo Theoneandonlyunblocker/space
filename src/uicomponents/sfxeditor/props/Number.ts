@@ -20,7 +20,7 @@ interface StateType
 export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SFXFragmentPropNumber";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

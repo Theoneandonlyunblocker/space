@@ -15,7 +15,7 @@ interface StateType
 export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SFXEditorDisplay";
-  state: StateType;
+  public state: StateType;
 
   public containerDiv: HTMLDivElement | null;
 

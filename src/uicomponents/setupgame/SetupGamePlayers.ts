@@ -25,7 +25,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 {
   public displayName = "SetupGamePlayers";
 
-  state: StateType;
+  public state: StateType;
   newPlayerId: number = 0;
   playerSetupComponentsById:
   {

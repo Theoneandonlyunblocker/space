@@ -19,7 +19,7 @@ interface StateType
 export class BattleInfoComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BattleInfo";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

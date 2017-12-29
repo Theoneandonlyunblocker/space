@@ -37,7 +37,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 {
   public displayName = "MapGenOptions";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

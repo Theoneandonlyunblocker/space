@@ -34,7 +34,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   battle: Battle = null;
   battleScene: BattleScene = null;
 
-  state: StateType;
+  public state: StateType;
 
   battleSceneContainer: HTMLElement;
 

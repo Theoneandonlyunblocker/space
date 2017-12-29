@@ -34,7 +34,7 @@ interface StateType
 export class UnitListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitList";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

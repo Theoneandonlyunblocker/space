@@ -22,7 +22,7 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
   {
     return this.props.selectedStar !== newProps.selectedStar;
   }
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

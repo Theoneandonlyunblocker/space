@@ -25,7 +25,7 @@ interface StateType
 export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TradeMoney";
-  state: StateType;
+  public state: StateType;
   dragPositioner: DragPositioner<TradeMoneyComponent>;
 
   constructor(props: PropTypes)

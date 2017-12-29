@@ -20,7 +20,7 @@ interface StateType
 export class TechnologyPrioritySliderComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TechnologyPrioritySlider";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

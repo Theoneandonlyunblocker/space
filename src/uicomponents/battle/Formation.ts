@@ -55,7 +55,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
   public displayName = "Formation";
 
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

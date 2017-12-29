@@ -21,7 +21,7 @@ interface StateType
 export class BuildingUpgradeListItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BuildingUpgradeListItem";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

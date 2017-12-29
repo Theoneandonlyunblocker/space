@@ -23,7 +23,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
     if (e.button) return;
     this.props.handleClick(attribute);
   }
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

@@ -19,7 +19,7 @@ export class NotificationsComponent extends React.Component<PropTypes, StateType
 {
   public displayName = "Notifications";
 
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {

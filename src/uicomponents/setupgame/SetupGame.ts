@@ -26,7 +26,7 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SetupGame";
 
-  state: StateType;
+  public state: StateType;
   ref_TODO_players: SetupGamePlayersComponent;
   ref_TODO_mapSetup: MapSetupComponent;
 

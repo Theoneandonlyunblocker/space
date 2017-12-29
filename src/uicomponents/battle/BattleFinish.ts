@@ -14,7 +14,7 @@ import {localize} from "../../../localization/localize";
 export class BattleFinishComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "BattleFinish";
-  state: StateType;
+  public state: StateType;
 
   constructor(props: PropTypes)
   {
