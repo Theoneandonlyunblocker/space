@@ -21,7 +21,7 @@ interface StateType
 
 export class SaveListItemComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "SaveListItem";
+  public displayName = "SaveListItem";
   state: StateType;
 
   constructor(props: PropTypes)

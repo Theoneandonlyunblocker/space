@@ -14,7 +14,7 @@ interface StateType
 
 export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName: string = "UnitAttributeChanges";
+  public displayName = "UnitAttributeChanges";
   state: StateType;
 
   constructor(props: PropTypes)

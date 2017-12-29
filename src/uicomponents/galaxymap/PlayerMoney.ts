@@ -16,7 +16,7 @@ interface StateType
 
 export class PlayerMoneyComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "PlayerMoney";
+  public displayName = "PlayerMoney";
   lastAmountRendered: number = undefined;
 
 

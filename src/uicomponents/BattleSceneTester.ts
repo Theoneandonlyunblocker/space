@@ -30,7 +30,7 @@ interface StateType
 
 export class BattleSceneTesterComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "BattleSceneTester";
+  public displayName = "BattleSceneTester";
   battle: Battle = null;
   battleScene: BattleScene = null;
 

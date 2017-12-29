@@ -17,7 +17,7 @@ interface StateType
 
 export class StarInfoComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "StarInfo";
+  public displayName = "StarInfo";
   shouldComponentUpdate(newProps: PropTypes)
   {
     return this.props.selectedStar !== newProps.selectedStar;

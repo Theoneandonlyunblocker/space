@@ -29,7 +29,7 @@ interface StateType
 
 export class PossibleActionsComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "PossibleActions";
+  public displayName = "PossibleActions";
 
 
   state: StateType;

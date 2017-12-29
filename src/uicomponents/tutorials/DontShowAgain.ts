@@ -18,7 +18,7 @@ interface StateType
 
 export class DontShowAgainComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "DontShowAgain";
+  public displayName = "DontShowAgain";
 
 
   state: StateType;

@@ -22,7 +22,7 @@ interface StateType
 
 export class NotificationFilterListItemComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "NotificationFilterListItem";
+  public displayName = "NotificationFilterListItem";
 
   state: StateType;
 

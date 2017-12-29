@@ -25,7 +25,7 @@ interface StateType
 
 export class TurnCounterComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName: string = "TurnCounter";
+  public displayName = "TurnCounter";
   state: StateType;
   inner: HTMLDivElement | null;
 

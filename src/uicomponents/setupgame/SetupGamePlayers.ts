@@ -23,7 +23,7 @@ interface StateType
 
 export class SetupGamePlayersComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "SetupGamePlayers";
+  public displayName = "SetupGamePlayers";
 
   state: StateType;
   newPlayerId: number = 0;

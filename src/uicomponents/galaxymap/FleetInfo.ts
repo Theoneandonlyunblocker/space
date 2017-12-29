@@ -20,7 +20,7 @@ import {localize} from "../../../localization/localize";
 
 export class FleetInfoComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "FleetInfo";
+  public displayName = "FleetInfo";
   setFleetName(e: React.FormEvent<HTMLInputElement>)
   {
     const target = e.currentTarget;

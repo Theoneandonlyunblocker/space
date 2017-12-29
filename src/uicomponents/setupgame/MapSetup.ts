@@ -23,7 +23,7 @@ interface StateType
 
 export class MapSetupComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "MapSetup";
+  public displayName = "MapSetup";
 
   state: StateType;
 

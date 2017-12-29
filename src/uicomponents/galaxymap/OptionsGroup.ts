@@ -22,7 +22,7 @@ interface StateType
 
 export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "OptionsGroup";
+  public displayName = "OptionsGroup";
 
   state: StateType;
 

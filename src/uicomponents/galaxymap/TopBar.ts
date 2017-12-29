@@ -22,7 +22,7 @@ interface StateType
 
 export class TopBarComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "TopBar";
+  public displayName = "TopBar";
   updateListener: Function = undefined;
 
   state: StateType;

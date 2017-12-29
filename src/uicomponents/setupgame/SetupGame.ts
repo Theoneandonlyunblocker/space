@@ -24,7 +24,7 @@ interface StateType
 
 export class SetupGameComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "SetupGame";
+  public displayName = "SetupGame";
 
   state: StateType;
   ref_TODO_players: SetupGamePlayersComponent;

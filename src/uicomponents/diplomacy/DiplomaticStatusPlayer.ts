@@ -26,7 +26,7 @@ interface StateType
 
 export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "DiplomaticStatusPlayer";
+  public displayName = "DiplomaticStatusPlayer";
 
   state: StateType;
 

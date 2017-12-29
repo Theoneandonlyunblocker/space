@@ -26,7 +26,7 @@ interface StateType
 
 export class SFXFragmentPropVecBaseComponent extends React.Component<PropTypes, StateType>
 {
-  displayName = "SFXFragmentPropVecBase";
+  public displayName = "SFXFragmentPropVecBase";
   state: StateType;
 
   constructor(props: PropTypes)

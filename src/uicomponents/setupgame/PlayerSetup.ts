@@ -53,7 +53,7 @@ function getRandomPlayerRaceTemplate(): RaceTemplate
 
 export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "PlayerSetup";
+  public displayName = "PlayerSetup";
 
   state: StateType;
 

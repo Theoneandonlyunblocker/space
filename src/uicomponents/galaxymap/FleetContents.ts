@@ -21,7 +21,7 @@ interface StateType
 
 export class FleetContentsComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "FleetContents";
+  public displayName = "FleetContents";
 
 
   state: StateType;

@@ -89,7 +89,7 @@ interface StateType
 
 export class SFXEditorComponent extends React.Component<PropTypes, StateType>
 {
-  displayName = "SFXEditor";
+  public displayName = "SFXEditor";
   state: StateType;
 
   lastAnimationTickTime: number;

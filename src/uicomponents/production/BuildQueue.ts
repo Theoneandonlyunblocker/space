@@ -20,7 +20,7 @@ interface StateType
 
 export class BuildQueueComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "BuildQueue";
+  public displayName = "BuildQueue";
 
 
   removeItem(template: ManufacturableThing, parentIndex: number)

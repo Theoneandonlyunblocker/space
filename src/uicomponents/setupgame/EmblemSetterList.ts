@@ -25,7 +25,7 @@ interface StateType
 
 export class EmblemSetterListComponent extends React.Component<PropTypes, StateType>
 {
-  displayName = "EmblemSetterList";
+  public displayName = "EmblemSetterList";
   state: StateType;
 
 

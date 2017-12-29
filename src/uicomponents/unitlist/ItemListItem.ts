@@ -38,7 +38,7 @@ interface StateType
 
 export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "ItemListItem";
+  public displayName = "ItemListItem";
 
   state: StateType;
   dragPositioner: DragPositioner<ItemListItemComponent>;

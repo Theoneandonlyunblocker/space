@@ -26,7 +26,7 @@ interface StateType
 
 export class ProductionOverviewComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "ProductionOverview";
+  public displayName = "ProductionOverview";
 
   state: StateType;
 

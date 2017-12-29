@@ -37,7 +37,7 @@ interface StateType
 
 export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "BattlePrep";
+  public displayName = "BattlePrep";
   state: StateType;
   ref_TODO_background: BattleBackgroundComponent;
   ref_TODO_upper: HTMLElement | null;

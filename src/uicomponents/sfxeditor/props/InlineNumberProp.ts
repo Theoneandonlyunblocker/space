@@ -17,7 +17,7 @@ interface StateType
 
 export class InlineNumberPropComponent extends React.Component<PropTypes, StateType>
 {
-  displayName = "InlineNumberProp";
+  public displayName = "InlineNumberProp";
   state: StateType;
 
   constructor(props: PropTypes)

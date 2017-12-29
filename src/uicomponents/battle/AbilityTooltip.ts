@@ -21,7 +21,7 @@ interface StateType
 
 export class AbilityTooltipComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "AbilityTooltip";
+  public displayName = "AbilityTooltip";
 
   shouldComponentUpdate(newProps: PropTypes)
   {

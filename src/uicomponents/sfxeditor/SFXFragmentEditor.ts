@@ -16,7 +16,7 @@ interface StateType
 
 export class SFXFragmentEditorComponent extends React.Component<PropTypes, StateType>
 {
-  displayName = "SFXFragmentEditor";
+  public displayName = "SFXFragmentEditor";
   state: StateType;
 
   constructor(props: PropTypes)

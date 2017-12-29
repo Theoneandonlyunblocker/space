@@ -18,7 +18,7 @@ interface StateType
 
 export class BattleBackgroundComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "BattleBackground";
+  public displayName = "BattleBackground";
   state: StateType;
 
   pixiContainer: HTMLElement;

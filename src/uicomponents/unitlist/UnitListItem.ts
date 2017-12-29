@@ -45,7 +45,7 @@ interface StateType
 }
 export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "UnitListItem";
+  public displayName = "UnitListItem";
 
   state: StateType;
   dragPositioner: DragPositioner<UnitListItemComponent>;

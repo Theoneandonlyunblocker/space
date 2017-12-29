@@ -22,7 +22,7 @@ interface StateType
 
 export class UnitStatusComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "UnitStatus";
+  public displayName = "UnitStatus";
 
 
   state: StateType;

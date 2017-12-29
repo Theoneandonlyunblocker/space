@@ -26,7 +26,7 @@ interface StateType
 
 export class TutorialComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "Tutorial";
+  public displayName = "Tutorial";
 
   state: StateType;
 

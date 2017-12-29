@@ -29,7 +29,7 @@ interface StateType
 
 export class TradeableItemsListComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "TradeableItemsList";
+  public displayName = "TradeableItemsList";
 
   state: StateType;
 

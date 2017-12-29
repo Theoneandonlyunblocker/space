@@ -29,7 +29,7 @@ interface StateType
 
 export class ItemListComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "ItemList";
+  public displayName = "ItemList";
 
   getSlotIndex(slot: string)
   {

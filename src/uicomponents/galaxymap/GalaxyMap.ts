@@ -30,7 +30,7 @@ interface StateType
 
 export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "GalaxyMap";
+  public displayName = "GalaxyMap";
   state: StateType;
 
   ref_TODO_pixiContainer: HTMLElement;

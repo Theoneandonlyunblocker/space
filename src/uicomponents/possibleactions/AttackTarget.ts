@@ -18,7 +18,7 @@ interface StateType
 
 export class AttackTargetComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "AttackTarget";
+  public displayName = "AttackTarget";
   state: StateType;
 
   constructor(props: PropTypes)

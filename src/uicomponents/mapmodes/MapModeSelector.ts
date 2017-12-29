@@ -16,7 +16,7 @@ interface StateType
 
 export class MapModeSelectorComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "MapModeSelector";
+  public displayName = "MapModeSelector";
 
 
   handleChange(e: React.FormEvent<HTMLSelectElement>)

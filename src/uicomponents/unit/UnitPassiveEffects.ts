@@ -14,7 +14,7 @@ interface StateType
 
 export class UnitPassiveEffectsComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName: string = "UnitPassiveEffects";
+  public displayName = "UnitPassiveEffects";
   state: StateType;
 
   constructor(props: PropTypes)

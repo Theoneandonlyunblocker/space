@@ -33,7 +33,7 @@ interface StateType
 
 export class UnitListComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "UnitList";
+  public displayName = "UnitList";
   state: StateType;
 
   constructor(props: PropTypes)

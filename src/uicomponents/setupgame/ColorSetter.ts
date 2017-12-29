@@ -25,7 +25,7 @@ interface StateType
 
 export class ColorSetterComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "ColorSetter";
+  public displayName = "ColorSetter";
   state: StateType;
 
   private ownNode: HTMLElement;

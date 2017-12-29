@@ -21,7 +21,7 @@ interface StateType
 
 export class AttitudeModifierInfoComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "AttitudeModifierInfo";
+  public displayName = "AttitudeModifierInfo";
   state: StateType;
 
   constructor(props: PropTypes)

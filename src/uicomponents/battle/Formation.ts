@@ -52,7 +52,7 @@ interface StateType
 
 export class FormationComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "Formation";
+  public displayName = "Formation";
 
 
   state: StateType;

@@ -13,7 +13,7 @@ interface StateType
 
 export class UnitActionsComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName: string = "UnitActions";
+  public displayName = "UnitActions";
   state: StateType;
 
   constructor(props: PropTypes)

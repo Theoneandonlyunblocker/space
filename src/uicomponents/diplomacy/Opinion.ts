@@ -22,7 +22,7 @@ interface StateType
 
 export class OpinionComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "Opinion";
+  public displayName = "Opinion";
 
   state: StateType;
 

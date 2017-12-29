@@ -24,7 +24,7 @@ interface StateType
 
 export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "MenuUnitInfo";
+  public displayName = "MenuUnitInfo";
   state: StateType;
 
   constructor(props: PropTypes)

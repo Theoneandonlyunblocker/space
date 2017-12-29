@@ -22,7 +22,7 @@ interface StateType
 
 export class ConstructManufactoryComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName: string = "ConstructManufactory";
+  public displayName = "ConstructManufactory";
   state: StateType;
 
   constructor(props: PropTypes)

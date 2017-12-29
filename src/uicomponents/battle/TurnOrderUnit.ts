@@ -34,7 +34,7 @@ interface StateType
 
 export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName = "TurnOrderUnit";
+  public displayName = "TurnOrderUnit";
   state: StateType;
   containerClassForAnimationState =
   {

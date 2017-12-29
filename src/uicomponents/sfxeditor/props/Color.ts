@@ -21,7 +21,7 @@ interface StateType
 
 export class SFXFragmentPropColorComponent extends React.Component<PropTypes, StateType>
 {
-  displayName = "SFXFragmentPropColor";
+  public displayName = "SFXFragmentPropColor";
   state: StateType;
 
   constructor(props: PropTypes)

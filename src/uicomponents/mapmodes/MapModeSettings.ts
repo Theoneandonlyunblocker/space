@@ -19,7 +19,7 @@ interface StateType
 
 export class MapModeSettingsComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "MapModeSettings";
+  public displayName = "MapModeSettings";
 
   state: StateType;
   ref_TODO_layersList: MapRendererLayersListComponent;

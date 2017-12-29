@@ -23,7 +23,7 @@ interface StateType
 
 export class BuildableBuildingComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "BuildableBuilding";
+  public displayName = "BuildableBuilding";
   state: StateType;
 
   constructor(props: PropTypes)

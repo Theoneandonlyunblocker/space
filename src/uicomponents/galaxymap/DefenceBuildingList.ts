@@ -15,7 +15,7 @@ interface StateType
 
 export class DefenceBuildingListComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "DefenceBuildingList";
+  public displayName = "DefenceBuildingList";
   shouldComponentUpdate(newProps: PropTypes)
   {
     const newBuildings = newProps.buildings;

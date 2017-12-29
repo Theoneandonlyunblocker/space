@@ -13,7 +13,7 @@ interface StateType
 
 export class OptionsCheckboxComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "OptionsCheckbox";
+  public displayName = "OptionsCheckbox";
   state: StateType;
 
   constructor(props: PropTypes)

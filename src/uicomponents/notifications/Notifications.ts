@@ -17,7 +17,7 @@ interface StateType
 
 export class NotificationsComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "Notifications";
+  public displayName = "Notifications";
 
   state: StateType;
 

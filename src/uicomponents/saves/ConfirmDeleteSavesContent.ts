@@ -14,7 +14,7 @@ interface StateType
 
 export class ConfirmDeleteSavesContentComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName = "ConfirmDeleteSavesContent";
+  public displayName = "ConfirmDeleteSavesContent";
   state: StateType;
 
   constructor(props: PropTypes)

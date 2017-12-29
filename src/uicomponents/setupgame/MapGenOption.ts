@@ -20,7 +20,7 @@ interface StateType
 
 export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "MapGenOption";
+  public displayName = "MapGenOption";
 
   handleChange(e: React.FormEvent<HTMLInputElement>)
   {

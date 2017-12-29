@@ -33,7 +33,7 @@ interface StateType
 
 export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName: string = "UnitInfo";
+  public displayName = "UnitInfo";
   state: StateType;
 
   constructor(props: PropTypes)

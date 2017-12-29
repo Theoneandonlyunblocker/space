@@ -18,7 +18,7 @@ interface StateType
 
 export class BattleScoreComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName: string = "BattleScore";
+  public displayName = "BattleScore";
   lastEvaluation: number;
   state: StateType;
 

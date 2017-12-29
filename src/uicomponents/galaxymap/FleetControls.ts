@@ -19,7 +19,7 @@ interface StateType
 
 export class FleetControlsComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "FleetControls";
+  public displayName = "FleetControls";
 
 
   state: StateType;

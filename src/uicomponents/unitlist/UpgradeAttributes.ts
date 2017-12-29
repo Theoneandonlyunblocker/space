@@ -17,7 +17,7 @@ interface StateType
 
 export class UpgradeAttributesComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "UpgradeAttributes";
+  public displayName = "UpgradeAttributes";
   upgradeAttribute(attribute: string, e: MouseEvent)
   {
     if (e.button) return;

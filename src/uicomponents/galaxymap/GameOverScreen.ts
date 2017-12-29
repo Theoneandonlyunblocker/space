@@ -21,7 +21,7 @@ interface StateType
 
 export class GameOverScreenComponent extends React.Component<PropTypes, StateType>
 {
-  displayName = "GameOverScreen";
+  public displayName = "GameOverScreen";
   state: StateType;
 
   constructor(props: PropTypes)

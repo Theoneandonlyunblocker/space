@@ -26,7 +26,7 @@ interface StateType
 
 export class ManufacturableThingsComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "ManufacturableThings";
+  public displayName = "ManufacturableThings";
 
 
   state: StateType;

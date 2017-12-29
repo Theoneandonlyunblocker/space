@@ -19,7 +19,7 @@ interface StateType
 
 export class EconomySummaryItemComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "EconomySummaryItem";
+  public displayName = "EconomySummaryItem";
   state: StateType;
 
   constructor(props: PropTypes)

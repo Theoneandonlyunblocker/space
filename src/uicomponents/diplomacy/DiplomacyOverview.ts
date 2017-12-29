@@ -27,7 +27,7 @@ interface StateType
 
 export class DiplomacyOverviewComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "DiplomacyOverview";
+  public displayName = "DiplomacyOverview";
   state: StateType;
 
   constructor(props: PropTypes)
