@@ -1,6 +1,7 @@
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import {svgCache} from "../../src/svgCache";
 
 import * as Languages from "../../localization/defaultLanguages";
 
@@ -19,6 +20,26 @@ const core: ModuleFile =
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
   supportedLanguages: [Languages.en],
+  loadAssets: (onLoaded: () => void) =>
+  {
+    const loader = new PIXI.loaders.Loader();
+
+    const battleSceneFlagFadeUrl = "img/battleSceneFlagFade.svg";
+    loader.add(
+    {
+      url: battleSceneFlagFadeUrl,
+      loadType: 1, // XML
+    });
+
+    loader.load(() =>
+    {
+      const response = <XMLDocument> loader.resources[battleSceneFlagFadeUrl].data;
+      const svgDoc = <SVGElement> response.children[0];
+      svgCache[battleSceneFlagFadeUrl] = svgDoc;
+
+      onLoaded();
+    });
+  },
   constructModule: (moduleData: ModuleData) =>
   {
     moduleData.scripts.add(allScripts);

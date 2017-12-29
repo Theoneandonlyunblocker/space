@@ -11,10 +11,9 @@ import
 export interface PropTypes extends React.Props<any>
 {
   flag: Flag;
-
   props: React.HTMLProps<any>;
-  isMutable?: boolean;
-  stretch?: boolean;
+
+  onUpdate?: (flagElement: HTMLDivElement) => void;
 }
 
 interface StateType
@@ -23,47 +22,31 @@ interface StateType
 
 export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName: string = "PlayerFlag";
-  state: StateType;
+  public displayName: string = "PlayerFlag";
+  public state: StateType;
 
-  ref_TODO_container: HTMLElement;
+  private containerElement: HTMLElement;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  private renderFlagCanvas(): void
+  public componentDidMount()
   {
-    const containerNode = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_container);
-    if (containerNode.firstChild)
-    {
-      containerNode.removeChild(containerNode.firstChild);
-    }
-
-    const canvas = this.props.flag.draw();
-    // TODO 2017.12.21 |
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    containerNode.appendChild(canvas);
+    this.renderFlagElement();
   }
-
-  componentDidMount()
+  public componentDidUpdate()
   {
-    this.renderFlagCanvas();
+    this.renderFlagElement();
   }
-  componentDidUpdate()
-  {
-    this.renderFlagCanvas();
-  }
-
-  render(): React.ReactHTMLElement<any>
+  public render(): React.ReactHTMLElement<any>
   {
     const props = shallowExtend(this.props.props,
     {
       ref: (component: HTMLElement) =>
       {
-        this.ref_TODO_container = component;
+        this.containerElement = component;
       },
     });
 
@@ -72,6 +55,27 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
         null,
       )
     );
+  }
+
+  private renderFlagElement(): void
+  {
+    const containerNode = ReactDOM.findDOMNode<HTMLElement>(this.containerElement);
+    if (containerNode.firstChild)
+    {
+      containerNode.removeChild(containerNode.firstChild);
+    }
+
+    const flagElement = this.props.flag.draw();
+    flagElement.classList.add("player-flag");
+    // TODO 2017.12.21 |
+    flagElement.style.width = "100%";
+    flagElement.style.height = "100%";
+    containerNode.appendChild(flagElement);
+
+    if (this.props.onUpdate)
+    {
+      this.props.onUpdate(flagElement);
+    }
   }
 }
 

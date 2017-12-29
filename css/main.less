@@ -800,6 +800,28 @@ ul, ol
 {
   flex: 1 1 50%;
   height: 100%;
+  width: 50%;
+}
+
+.battle-scene-flag
+{
+  height: 100%;
+  width: 100%;
+}
+
+.battle-scene-flag-fade-right
+{
+  >svg>*
+  {
+    mask: url(#battle-scene-flag-fade-right);
+  }
+}
+.battle-scene-flag-fade-left
+{
+  >svg>*
+  {
+    mask: url(#battle-scene-flag-fade-left);
+  }
 }
 
 .battle-scene-units-container
