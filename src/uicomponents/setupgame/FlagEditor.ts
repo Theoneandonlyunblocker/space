@@ -73,29 +73,10 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
     this.getEmblemProps = this.getEmblemProps.bind(this);
     this.removeEmblem = this.removeEmblem.bind(this);
     this.setEmblemTemplate = this.setEmblemTemplate.bind(this);
-    this.setEmblemColor = this.setEmblemColor.bind(this);
+    this.setEmblemColors = this.setEmblemColors.bind(this);
     this.toggleActiveEmblemSetter = this.toggleActiveEmblemSetter.bind(this);
   }
-  public randomize(): void
-  {
-    const flag = Flag.generateRandom(
-      this.props.backgroundColor,
-      this.props.playerSecondaryColor,
-    );
 
-    this.setState(
-    {
-      emblems: this.getEmblemDataFromFlag(flag),
-    });
-  }
-
-  public generateFlag(): Flag
-  {
-    const emblems = this.state.emblems.map(emblemData => FlagEditorComponent.emblemDataToEmblem(emblemData));
-    const flag = new Flag(this.props.backgroundColor, emblems);
-
-    return flag;
-  }
   private static emblemDataToEmblem(emblemData: EmblemProps): Emblem
   {
     return new Emblem(
@@ -114,6 +95,61 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
       id: id,
     });
   }
+
+  public randomize(): void
+  {
+    const flag = Flag.generateRandom(
+      this.props.backgroundColor,
+      this.props.playerSecondaryColor,
+    );
+
+    this.setState(
+    {
+      emblems: this.getEmblemDataFromFlag(flag),
+    });
+  }
+  public generateFlag(): Flag
+  {
+    const emblems = this.state.emblems.map(emblemData => FlagEditorComponent.emblemDataToEmblem(emblemData));
+    const flag = new Flag(this.props.backgroundColor, emblems);
+
+    return flag;
+  }
+  public render()
+  {
+    const activeEmblemData = this.getActiveEmblemData();
+
+    return(
+      React.DOM.div(
+      {
+        className: "flag-editor",
+      },
+        EmblemSetterList(
+        {
+          backgroundColor: this.props.backgroundColor,
+          emblems: this.state.emblems,
+          maxEmblems: maxEmblems,
+
+          toggleActiveEmblem: this.toggleActiveEmblemSetter,
+
+          addEmblem: this.addEmblem,
+          removeEmblem: this.removeEmblem,
+        }),
+        !activeEmblemData ? null :
+        EmblemEditor(
+        {
+          key: "emblemEditor",
+          colors: activeEmblemData.colors,
+          backgroundColor: this.props.backgroundColor,
+          selectedEmblemTemplate: activeEmblemData.template,
+
+          setEmblemTemplate: this.setEmblemTemplate.bind(this, this.state.activeEmblemSetterId),
+          setEmblemColors: this.setEmblemColors.bind(this, this.state.activeEmblemSetterId),
+        }),
+      )
+    );
+  }
+
   private triggerParentFlagUpdate(): void
   {
     this.props.updateParentFlag(this.generateFlag());
@@ -153,7 +189,6 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
       this.triggerParentFlagUpdate();
     });
   }
-
   private getEmblemProps(id: number): EmblemProps | null
   {
     for (let i = 0; i < this.state.emblems.length; i++)
@@ -186,10 +221,10 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
 
     this.triggerParentFlagUpdate();
   }
-  private setEmblemColor(id: number, color: Color | null): void
+  private setEmblemColors(id: number, colors: (Color | null)[]): void
   {
     const emblem = this.getEmblemProps(id);
-    emblem.colors = [color];
+    emblem.colors = colors;
 
     this.triggerParentFlagUpdate();
   }
@@ -209,41 +244,6 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
     }
 
     return null;
-  }
-
-  render()
-  {
-    const activeEmblemData = this.getActiveEmblemData();
-
-    return(
-      React.DOM.div(
-      {
-        className: "flag-editor",
-      },
-        EmblemSetterList(
-        {
-          backgroundColor: this.props.backgroundColor,
-          emblems: this.state.emblems,
-          maxEmblems: maxEmblems,
-
-          toggleActiveEmblem: this.toggleActiveEmblemSetter,
-
-          addEmblem: this.addEmblem,
-          removeEmblem: this.removeEmblem,
-        }),
-        !activeEmblemData ? null :
-        EmblemEditor(
-        {
-          key: "emblemEditor",
-          color: activeEmblemData.colors[0],
-          backgroundColor: this.props.backgroundColor,
-          selectedEmblemTemplate: activeEmblemData.template,
-
-          setEmblemTemplate: this.setEmblemTemplate.bind(this, this.state.activeEmblemSetterId),
-          setEmblemColor: this.setEmblemColor.bind(this, this.state.activeEmblemSetterId),
-        }),
-      )
-    );
   }
 }
 

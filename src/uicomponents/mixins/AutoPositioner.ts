@@ -3,11 +3,16 @@ import * as ReactDOM from "react-dom";
 
 import MixinBase from "./MixinBase";
 
-export interface AutoPositionerProps
+
+export interface AutoPositionerPosition
 {
-  getParentClientRect: () => ClientRect;
   xSide: "innerRight" | "outerRight" | "innerLeft" | "outerLeft";
   ySide: "innerTop" | "outerTop" | "innerBottom" | "outerBottom";
+}
+
+export interface AutoPositionerProps extends AutoPositionerPosition
+{
+  getParentClientRect: () => ClientRect;
 
   xMargin?: number;
   yMargin?: number;

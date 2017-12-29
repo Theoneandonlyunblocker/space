@@ -1,130 +1,132 @@
 import * as React from "react";
 
-import {activeModuleData} from "../../activeModuleData";
 import Color from "../../Color";
-import {generateMainColor, generateSecondaryColor} from "../../colorGeneration";
+// import {generateMainColor, generateSecondaryColor} from "../../colorGeneration";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
-import EmblemComponent from "../Emblem";
-import ColorPicker from "./ColorPicker";
+import {EmblemColorPicker} from "./EmblemColorPicker";
+import EmblemPicker from "./EmblemPicker";
 
 import {localize} from "../../../localization/localize";
 
 
 interface PropTypes extends React.Props<any>
 {
-  color: Color | null;
+  colors: (Color | null)[];
   backgroundColor: Color | null;
   selectedEmblemTemplate: SubEmblemTemplate | null;
 
-  setEmblemTemplate: (emblem: SubEmblemTemplate | null, color: Color) => void;
-  setEmblemColor: (color: Color | null) => void;
+  setEmblemTemplate: (emblem: SubEmblemTemplate | null, colors: Color[]) => void;
+  setEmblemColors: (colors: (Color | null)[]) => void;
 }
 
 interface StateType
 {
+  colorPickerIsCollapsed: boolean;
+  emblemPickerIsCollapsed: boolean;
 }
 
 export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateType>
 {
-  displayName = "EmblemEditor";
-  state: StateType;
+  public displayName = "EmblemEditor";
+  public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
 
+    this.state =
+    {
+      colorPickerIsCollapsed: false,
+      emblemPickerIsCollapsed: false,
+    };
+
     this.handleEmblemColorChange = this.handleEmblemColorChange.bind(this);
+    this.toggleColorPickerCollapse = this.toggleColorPickerCollapse.bind(this);
+    this.toggleEmblemPickerCollapse = this.toggleEmblemPickerCollapse.bind(this);
   }
 
-  private handleSelectEmblem(emblem: SubEmblemTemplate | null): void
+  public render()
   {
-    if (this.props.selectedEmblemTemplate === emblem)
-    {
-      this.props.setEmblemTemplate(null, this.props.color);
-    }
-    else
-    {
-      this.props.setEmblemTemplate(emblem, this.props.color);
-    }
-  }
-  private handleEmblemColorChange(color: Color, isNull: boolean): void
-  {
-    this.props.setEmblemColor(isNull ? null : color);
-  }
-
-  render()
-  {
-    const emblemElements: React.ReactHTMLElement<any>[] = [];
-
-    for (let emblemType in activeModuleData.Templates.SubEmblems)
-    {
-      const template = activeModuleData.Templates.SubEmblems[emblemType];
-
-      let className = "emblem-editor-image";
-
-      const templateIsSelected = this.props.selectedEmblemTemplate && this.props.selectedEmblemTemplate.key === template.key;
-      if (templateIsSelected)
-      {
-        className += " selected-emblem";
-      }
-
-      emblemElements.push(
-        React.DOM.div(
-        {
-          className: "emblem-editor-container",
-          key: template.key,
-          onClick: this.handleSelectEmblem.bind(this, template),
-          style: !this.props.backgroundColor ? null :
-          {
-            backgroundColor: "#" + this.props.backgroundColor.getHexString(),
-          },
-        },
-          EmblemComponent(
-          {
-            template: template,
-            colors: [this.props.color],
-            containerProps:
-            {
-              className: className,
-            },
-          }),
-        ),
-      );
-    }
-
     return(
       React.DOM.div(
       {
         className: "emblem-editor",
       },
-        React.DOM.div({className: "flag-picker-title"},
+        React.DOM.div(
+        {
+          className: "flag-picker-title"  + (this.state.colorPickerIsCollapsed ? " collapsed" : " collapsible"),
+          onClick: this.toggleColorPickerCollapse,
+        },
           localize("emblemColor")(),
         ),
-        ColorPicker(
-        {
-          initialColor: this.props.color,
-          onChange: this.handleEmblemColorChange,
-          generateColor: () =>
+        this.state.colorPickerIsCollapsed ?
+          null :
+          React.DOM.div(
           {
-            if (this.props.backgroundColor)
-            {
-              return generateSecondaryColor(this.props.backgroundColor);
-            }
-            else
-            {
-              return generateMainColor();
-            }
+            className: "emblem-color-pickers-container",
           },
-        }),
-        React.DOM.div({className: "flag-picker-title"},
+            this.props.selectedEmblemTemplate.colorMappings.map((colorMappingData, i) =>
+            {
+              return EmblemColorPicker(
+              {
+                key: i,
+                colors: this.props.colors,
+                colorIndex: i,
+                emblemTemplate: this.props.selectedEmblemTemplate,
+                // TODO 2017.12.28 | always does the same color
+                onColorChange: this.handleEmblemColorChange,
+              });
+            }),
+          ),
+          // ColorPicker(
+          // {
+          //   initialColor: this.props.color,
+          //   onChange: this.handleEmblemColorChange,
+          //   generateColor: () =>
+          //   {
+          //     if (this.props.backgroundColor)
+          //     {
+          //       return generateSecondaryColor(this.props.backgroundColor);
+          //     }
+          //     else
+          //     {
+          //       return generateMainColor();
+          //     }
+          //   },
+          // }),
+        React.DOM.div(
+        {
+          className: "flag-picker-title" + (this.state.emblemPickerIsCollapsed ? " collapsed" : " collapsible"),
+          onClick: this.toggleEmblemPickerCollapse,
+        },
           localize("emblems")(),
         ),
-        React.DOM.div({className: "emblem-editor-emblem-list"},
-          emblemElements,
-        ),
+        this.state.emblemPickerIsCollapsed ?
+          null :
+          EmblemPicker(
+          {
+            colors: this.props.colors,
+            backgroundColor: this.props.backgroundColor,
+            selectedEmblemTemplate: this.props.selectedEmblemTemplate,
+
+            setEmblemTemplate: this.props.setEmblemTemplate,
+          }),
       )
     );
+  }
+
+  private handleEmblemColorChange(colors: (Color | null)[]): void
+  {
+    this.props.setEmblemColors(colors);
+  }
+  private toggleColorPickerCollapse(): void
+  {
+    this.setState({colorPickerIsCollapsed: !this.state.colorPickerIsCollapsed});
+  }
+  private toggleEmblemPickerCollapse(): void
+  {
+    this.setState({emblemPickerIsCollapsed: !this.state.emblemPickerIsCollapsed});
   }
 }
 

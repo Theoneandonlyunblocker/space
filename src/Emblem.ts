@@ -95,13 +95,9 @@ export default class Emblem
     result.style.width = result.style.height = "100%";
     result.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
-    for (let i = 0; i < this.template.colorMappings.length; i++)
+    this.template.colorMappings.forEach((colorMap, i) =>
     {
-      const colorMap = this.template.colorMappings[i];
-
-      // TODO 2017.12.21 |
-      // const color = this.colors[i];
-      const color = this.colors[0];
+      const color = this.colors[i];
 
       colorMap.selectors.forEach(selectorData =>
       {
@@ -110,55 +106,14 @@ export default class Emblem
         for (let j = 0; j < selection.length; j++)
         {
           const match = <SVGElement> selection[j];
-          match.setAttribute(selectorData.attributeName, `#${color.getHexString()}`);
+          const colorString = color ? `#${color.getHexString()}` : "none";
+          match.setAttribute(selectorData.attributeName, colorString);
         }
       });
-    }
+    });
 
     return result;
   }
-  // // TODO 29.9.2016 | actually use svg attributes
-  // public draw(maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement
-  // {
-  //   const image = app.images[this.template.src];
-
-  //   let width = image.width;
-  //   let height = image.height;
-
-  //   if (stretch)
-  //   {
-  //     const widthRatio = width / maxWidth;
-  //     const heightRatio = height / maxHeight;
-
-  //     const largestRatio = Math.max(widthRatio, heightRatio);
-  //     width /= largestRatio;
-  //     height /= largestRatio;
-  //   }
-  //   else
-  //   {
-  //     width = Math.min(width, maxWidth);
-  //     height = Math.max(height, maxHeight);
-  //   }
-
-  //   const canvas = document.createElement("canvas");
-  //   canvas.width = width;
-  //   canvas.height = height;
-  //   const ctx = canvas.getContext("2d");
-
-  //   if (!ctx)
-  //   {
-  //     throw new Error("Couldn't get canvas context");
-  //   }
-
-  //   ctx.drawImage(image, 0, 0, width, height);
-
-  //   ctx.globalCompositeOperation = "source-in";
-
-  //   ctx.fillStyle = "#" + this.colors[0].getHexString();
-  //   ctx.fillRect(0, 0, width, height);
-
-  //   return canvas;
-  // }
   public serialize(): EmblemSaveData
   {
     const data: EmblemSaveData =

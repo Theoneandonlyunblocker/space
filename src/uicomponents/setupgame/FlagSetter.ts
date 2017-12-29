@@ -79,7 +79,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         PlayerFlag(
         {
           flag: this.props.flag,
-          isMutable: true,
           props:
           {
             className: "flag-setter-display",
