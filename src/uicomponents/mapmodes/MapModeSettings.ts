@@ -51,6 +51,15 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
       {
         className: "map-mode-settings",
       },
+        MapRendererLayersList(
+        {
+          mapRenderer: this.props.mapRenderer,
+          currentMapMode: this.props.mapRenderer.currentMapMode,
+          ref: (component: MapRendererLayersListComponent) =>
+          {
+            this.ref_TODO_layersList = component;
+          },
+        }),
         MapModeSelector(
         {
           mapRenderer: this.props.mapRenderer,
@@ -63,15 +72,6 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
         },
           localize("reset")(),
         ),
-        MapRendererLayersList(
-        {
-          mapRenderer: this.props.mapRenderer,
-          currentMapMode: this.props.mapRenderer.currentMapMode,
-          ref: (component: MapRendererLayersListComponent) =>
-          {
-            this.ref_TODO_layersList = component;
-          },
-        }),
       )
     );
   }
