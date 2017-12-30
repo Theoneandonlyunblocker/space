@@ -13,4 +13,5 @@ export const unit =
   def: "Def",
   int: "Int",
   spd: "Spd",
+  unitName: "Name",
 };

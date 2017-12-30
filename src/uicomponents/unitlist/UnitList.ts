@@ -88,8 +88,8 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
     const columns: ListColumn<UnitListItemProps>[] =
     [
       {
-        label: localize("id")(),
-        key: "id",
+        label: localize("unitName")(),
+        key: "name",
         defaultOrder: "asc",
       },
       {
