@@ -2,14 +2,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import Color from "../../Color";
-import Emblem from "../../Emblem";
 import {Flag} from "../../Flag";
-import
-{
-  getFirstValidImageFromFiles,
-  getHTMLImageElementFromDataTransfer,
-} from "../../ImageFileProcessing";
-import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
+
 import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
 import FlagEditor from "./FlagEditor";
 
@@ -17,10 +11,6 @@ import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import {localize} from "../../../localization/localize";
 
-
-type FailMessageHandle =
-  "hotLinkedImageLoadingFailed" |
-  "noValidImageFile";
 
 export interface PropTypes extends React.Props<any>
 {
@@ -34,8 +24,6 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   isActive: boolean;
-  failMessageElement: React.ReactElement<any> | null;
-  customImageFile: File | null;
 }
 
 export class FlagSetterComponent extends React.Component<PropTypes, StateType>
@@ -46,22 +34,20 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   private flagSetterContainer: HTMLElement;
   private playerFlagContainer: PlayerFlagComponent;
 
-  private failMessageTimeoutHandle: number;
-
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state =
+    {
+      isActive: false,
+    };
 
-    this.bindMethods();
+    this.setAsInactive = this.setAsInactive.bind(this);
+    this.toggleActive = this.toggleActive.bind(this);
+    this.getClientRect = this.getClientRect.bind(this);
   }
 
-  public componentWillUnmount(): void
-  {
-    this.clearFailMessageTimeout();
-    // document.removeEventListener("click", this.handleClick);
-  }
   public render()
   {
     return(
@@ -72,9 +58,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         {
           this.flagSetterContainer = component;
         },
-        onDragEnter: this.stopEvent,
-        onDragOver: this.stopEvent,
-        onDrop: this.handleDrop,
       },
         PlayerFlag(
         {
@@ -119,12 +102,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
               playerSecondaryColor: this.props.secondaryColor,
 
               updateParentFlag: this.props.updateParentFlag,
-
-              // handleSelectEmblem: this.setForegroundEmblem,
-              // uploadFiles: this.handleUpload,
-              // failMessage: this.state.failMessageElement,
-              // customImageFileName: this.state.customImageFile ? this.state.customImageFile.name : null,
-              // triggerParentUpdate: this.handleSuccessfulUpdate,
             }),
           ),
         ),
@@ -132,83 +109,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     );
   }
 
-  private bindMethods(): void
-  {
-    this.setAsInactive = this.setAsInactive.bind(this);
-    this.setForegroundEmblem = this.setForegroundEmblem.bind(this);
-    this.setFailMessage = this.setFailMessage.bind(this);
-    this.clearFailMessage = this.clearFailMessage.bind(this);
-    this.setCustomImageFromFile = this.setCustomImageFromFile.bind(this);
-    this.handleSuccessfulUpdate = this.handleSuccessfulUpdate.bind(this);
-    this.handleUpload = this.handleUpload.bind(this);
-    this.handleDrop = this.handleDrop.bind(this);
-    this.toggleActive = this.toggleActive.bind(this);
-    this.stopEvent = this.stopEvent.bind(this);
-    this.getClientRect = this.getClientRect.bind(this);
-  }
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      isActive: false,
-      failMessageElement: null,
-      customImageFile: null,
-    });
-  }
-  private makeFailMessage(messageHandle: FailMessageHandle, timeout: number): React.ReactElement<any>
-  {
-    return React.DOM.div(
-    {
-      className: "image-info-message image-loading-fail-message",
-      style:
-      {
-        animationDuration: "" + timeout + "ms",
-      },
-    },
-      localize(messageHandle)(),
-    );
-  }
-  private clearFailMessageTimeout(): void
-  {
-    if (this.failMessageTimeoutHandle)
-    {
-      window.clearTimeout(this.failMessageTimeoutHandle);
-    }
-  }
-  private clearFailMessage(): void
-  {
-    this.clearFailMessageTimeout();
-
-    this.setState({failMessageElement: null});
-  }
-  private setFailMessage(messageHandle: FailMessageHandle, timeout: number): void
-  {
-    this.setState(
-    {
-      failMessageElement: this.makeFailMessage(messageHandle, timeout),
-      customImageFile: null,
-    });
-
-    this.failMessageTimeoutHandle = window.setTimeout(() =>
-    {
-      this.clearFailMessage();
-    }, timeout);
-  }
-  // private handleClick(e: MouseEvent): void
-  // {
-  //   const node = ReactDOM.findDOMNode<HTMLElement>(this.flagSetterContainer);
-  //   const target = e.currentTarget;
-  //   if (target === node || node.contains(target))
-  //   {
-  //     return;
-  //   }
-  //   else
-  //   {
-  //     e.stopPropagation();
-  //     e.preventDefault();
-  //     this.setAsInactive();
-  //   }
-  // }
   private toggleActive(): void
   {
     if (this.state.isActive)
@@ -222,7 +122,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         this.props.setAsActive(this);
       }
       this.setState({isActive: true});
-      // document.addEventListener("click", this.handleClick, false);
     }
   }
   private setAsInactive(): void
@@ -230,144 +129,12 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     if (this.state.isActive)
     {
       this.setState({isActive: false});
-      // document.removeEventListener("click", this.handleClick);
-    }
-  }
-  private setForegroundEmblem(emblemTemplate: SubEmblemTemplate | null, color: Color): void
-  {
-    let emblem: Emblem = null;
-    if (emblemTemplate)
-    {
-      emblem = new Emblem([color], emblemTemplate, 1);
-    }
-
-    this.props.flag.addEmblem(emblem);
-    this.handleSuccessfulUpdate();
-  }
-  private stopEvent(e: React.DragEvent<HTMLDivElement>): void
-  {
-    e.stopPropagation();
-    e.preventDefault();
-  }
-  private handleDrop(e: React.DragEvent<HTMLDivElement>): void
-  {
-    if (!e.dataTransfer)
-    {
-      return;
-    }
-
-    this.stopEvent(e);
-
-    const files: FileList = e.dataTransfer.files;
-
-    const imageFile = getFirstValidImageFromFiles(files);
-
-    if (imageFile)
-    {
-      this.setCustomImageFromFile(imageFile);
-    }
-    else
-    {
-      getHTMLImageElementFromDataTransfer(e.dataTransfer,
-      image =>
-      {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        canvas.width = image.width;
-        canvas.height = image.height;
-
-        ctx.drawImage(image, 0, 0);
-
-        const dataURL = canvas.toDataURL();
-
-        this.props.flag.setCustomImage(dataURL);
-        this.handleSuccessfulUpdate();
-      },
-      errorType =>
-      {
-        switch (errorType)
-        {
-          case "noImage":
-          {
-            this.setFailMessage("noValidImageFile", 2000);
-            break;
-          }
-          case "couldntLoad":
-          {
-            this.setFailMessage("hotLinkedImageLoadingFailed", 2000);
-            break;
-          }
-        }
-      });
-    }
-  }
-  private handleUpload(files: FileList): void
-  {
-    const image = getFirstValidImageFromFiles(files);
-
-    if (image)
-    {
-      this.setCustomImageFromFile(image);
-    }
-    else
-    {
-      this.setFailMessage("noValidImageFile", 2000);
-    }
-  }
-  private setCustomImageFromFile(file: File): void
-  {
-    const setImageFN = () =>
-    {
-      const reader = new FileReader();
-
-      reader.onloadend = () =>
-      {
-        this.props.flag.setCustomImage(reader.result);
-        this.setState(
-        {
-          customImageFile: file,
-        }, () =>
-        {
-          this.handleSuccessfulUpdate();
-        });
-      };
-
-      reader.readAsDataURL(file);
-    };
-
-    const fileSizeInMegaBytes = file.size / 1024 / 1024;
-    if (fileSizeInMegaBytes > 20)
-    {
-      const confirmMessage = localize("confirmUseLargeImage")(
-      {
-        fileSize: fileSizeInMegaBytes.toFixed(2),
-      });
-
-      if (window.confirm(confirmMessage))
-      {
-        setImageFN();
-      }
-    }
-    else
-    {
-      setImageFN();
-    }
-  }
-  private handleSuccessfulUpdate(): void
-  {
-    if (this.state.failMessageElement)
-    {
-      this.clearFailMessage();
-    }
-    else
-    {
-      this.forceUpdate();
     }
   }
   private getClientRect(): ClientRect
   {
     const ownNode = <HTMLElement> ReactDOM.findDOMNode<HTMLElement>(this.playerFlagContainer);
+
     return ownNode.getBoundingClientRect();
   }
 }

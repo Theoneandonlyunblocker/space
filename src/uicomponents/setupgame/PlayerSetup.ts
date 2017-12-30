@@ -80,7 +80,6 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     this.handleNameChange = this.handleNameChange.bind(this);
     this.makePlayer = this.makePlayer.bind(this);
     this.handleSetHuman = this.handleSetHuman.bind(this);
-    this.handleSetCustomImage = this.handleSetCustomImage.bind(this);
     this.setRace = this.setRace.bind(this);
   }
 
@@ -142,10 +141,6 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   handleRemove()
   {
     this.props.removePlayers([this.props.keyTODO/*TODO react*/]);
-  }
-  handleSetCustomImage(image?: string)
-  {
-    // this.setState({flagHasCustomImage: Boolean(image)});
   }
   private setRace(race: RaceTemplate): void
   {

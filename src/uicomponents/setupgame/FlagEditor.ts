@@ -29,12 +29,6 @@ interface PropTypes extends React.Props<any>
 
   updateParentFlag: (newFlag: Flag) => void;
 
-  // handleSelectEmblem: (selectedEmblemTemplate: SubEmblemTemplate | null, color: Color) => void;
-  // triggerParentUpdate: () => void;
-  // uploadFiles: (files: FileList) => void;
-  // failMessage: React.ReactElement<any>;
-  // customImageFileName: string | null;
-
   autoPositionerProps?: AutoPositionerProps;
 }
 
