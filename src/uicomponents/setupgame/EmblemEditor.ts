@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import Color from "../../Color";
-// import {generateMainColor, generateSecondaryColor} from "../../colorGeneration";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 import {EmblemColorPicker} from "./EmblemColorPicker";
@@ -74,27 +73,10 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
                 colors: this.props.colors,
                 colorIndex: i,
                 emblemTemplate: this.props.selectedEmblemTemplate,
-                // TODO 2017.12.28 | always does the same color
                 onColorChange: this.handleEmblemColorChange,
               });
             }),
           ),
-          // ColorPicker(
-          // {
-          //   initialColor: this.props.color,
-          //   onChange: this.handleEmblemColorChange,
-          //   generateColor: () =>
-          //   {
-          //     if (this.props.backgroundColor)
-          //     {
-          //       return generateSecondaryColor(this.props.backgroundColor);
-          //     }
-          //     else
-          //     {
-          //       return generateMainColor();
-          //     }
-          //   },
-          // }),
         React.DOM.div(
         {
           className: "flag-picker-title" + (this.state.emblemPickerIsCollapsed ? " collapsed" : " collapsible"),
