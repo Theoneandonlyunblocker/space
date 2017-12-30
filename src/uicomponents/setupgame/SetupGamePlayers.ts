@@ -1,8 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-
-import Player from "../../Player";
 import {ColorSetterComponent} from "./ColorSetter";
 import {default as PlayerSetup, PlayerSetupComponent} from "./PlayerSetup";
 
@@ -165,13 +163,10 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
   makeAllPlayers()
   {
-    const players: Player[] = [];
-    for (let id in this.playerSetupComponentsById)
+    return this.state.playerKeys.map(id =>
     {
-      players.push(this.playerSetupComponentsById[id].makePlayer());
-    }
-
-    return players;
+      return this.playerSetupComponentsById[id].makePlayer();
+    });
   }
 
   render()
