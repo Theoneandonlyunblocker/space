@@ -1,16 +1,21 @@
 import {wasWere} from "../../../../localization/en/_helpers";
 
-export const notificationMessages =
+const battleFinish =
 {
-  battleFinishTitle: "Battle finished",
-  battleFinishMessage: "A battle was fought in {locationName} between {attackerName} and {defenderName}",
   attackSuccessful: "{attackerName} successfully attacked {locationName}.",
   attackUnsuccessful: "{attackerName} unsuccessfully attacked {locationName}.",
   locationConquered: "{attackerName} now controls {locationName}.",
   locationNotConquered: "{defenderName} maintains control of {locationName}.",
-  battleFinishText_attackerLost: "[attackUnsuccessful] [locationNotConquered]",
-  battleFinishText_attackerWon: "[attackSuccessful] [locationNotConquered]",
-  battleFinishText_locationConquered: "[attackSuccessful] [locationConquered]",
+};
+
+export const notificationMessages =
+{
+  battleFinishTitle: "Battle finished",
+  battleFinishMessage: "A battle was fought in {locationName} between {attackerName} and {defenderName}",
+
+  battleFinishText_attackerLost: `${battleFinish.attackUnsuccessful} ${battleFinish.locationNotConquered}`,
+  battleFinishText_attackerWon: `${battleFinish.attackSuccessful} ${battleFinish.locationNotConquered}`,
+  battleFinishText_locationConquered: `${battleFinish.attackSuccessful} ${battleFinish.locationConquered}`,
 
   playerDiedTitle: "Player eliminated",
   playerDiedMessage: `{playerName} ${wasWere("count")} eliminated.`,
