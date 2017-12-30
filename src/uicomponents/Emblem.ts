@@ -63,7 +63,7 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
 
   render()
   {
-    const baseClassName = "emblem";
+    const baseClassName = "standalone-emblem";
 
     const containerProps = shallowExtend(this.props.containerProps,
     {

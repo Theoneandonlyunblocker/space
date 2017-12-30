@@ -38,9 +38,7 @@ export class Flag
   public draw(): HTMLDivElement
   {
     const container = document.createElement("div");
-
-    // TODO 2017.12.21 |
-    container.style.position = "relative";
+    container.classList.add("flag");
 
     if (this.backgroundColor)
     {

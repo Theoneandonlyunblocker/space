@@ -89,10 +89,7 @@ export default class Emblem
   {
     const result = this.createElementClone();
 
-    // TODO 2017.12.21 |
-    result.style.position = "absolute";
-    result.style.top = result.style.left = "0";
-    result.style.width = result.style.height = "100%";
+    result.classList.add("emblem");
     result.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
     this.template.colorMappings.forEach((colorMap, i) =>

@@ -4219,7 +4219,27 @@ button.player-setup-remove-player
   }
 }
 
+.flag
+{
+  position: relative;
+}
+
+.player-flag
+{
+  width: 100%;
+  height: 100%;
+}
+
 .emblem
+{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.standalone-emblem
 {
   position: relative;
   display: flex;
@@ -4229,7 +4249,7 @@ button.player-setup-remove-player
 
 .emblem-setter
 {
-  .emblem
+  .standalone-emblem
   {
     cursor: pointer;
     height: @emblem-size;

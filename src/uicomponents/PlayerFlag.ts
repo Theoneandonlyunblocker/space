@@ -67,9 +67,6 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
 
     const flagElement = this.props.flag.draw();
     flagElement.classList.add("player-flag");
-    // TODO 2017.12.21 |
-    flagElement.style.width = "100%";
-    flagElement.style.height = "100%";
     containerNode.appendChild(flagElement);
 
     if (this.props.onUpdate)
