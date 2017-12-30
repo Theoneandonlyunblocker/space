@@ -7,7 +7,7 @@
         <stop stop-color="white" offset="0.8" stop-opacity="0.2"/>
         <stop stop-color="white" offset="1.0" stop-opacity="0.0"/>
       </linearGradient>
-      <rect id="battle-scene-flag-fade-right-rect" height="1" width="1" y="0" x="0" stroke-width="0" fill="url(#battle-scene-flag-fade-right-gradient)"/>
+      <rect id="battle-scene-flag-fade-right-rect" height="1.2" width="1.2" y="-0.1" x="-0.1" stroke-width="0" fill="url(#battle-scene-flag-fade-right-gradient)"/>
     </mask>
     <mask maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox" id="battle-scene-flag-fade-left">
       <linearGradient id="battle-scene-flag-fade-left-gradient" gradientUnits="objectBoundingBox" y2="0.5" x2="1" y1="0.5" x1="0">
@@ -16,7 +16,7 @@
         <stop stop-color="white" offset="0.8" stop-opacity="0.5"/>
         <stop stop-color="white" offset="1.0" stop-opacity="0.7"/>
       </linearGradient>
-      <rect id="battle-scene-flag-fade-left-rect" height="1" width="1" y="0" x="0" stroke-width="0" fill="url(#battle-scene-flag-fade-left-gradient)"/>
+      <rect id="battle-scene-flag-fade-left-rect" height="1.2" width="1.2" y="-0.1" x="-0.1" stroke-width="0" fill="url(#battle-scene-flag-fade-left-gradient)"/>
     </mask>
   </defs>
 </svg>
