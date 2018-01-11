@@ -7,6 +7,19 @@ import
 import {AbilityEffectTemplate} from "./templateinterfaces/AbilityEffectTemplate";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 
+
+export enum AbilityTargetType
+{
+  Primary,
+  Secondary,
+  Random,
+}
+
+export type AbilityTargetTypeById =
+{
+  [id: number]: AbilityTargetType;
+};
+
 export function getUnitsInAbilityArea(
   battle: Battle,
   ability: AbilityTemplate,

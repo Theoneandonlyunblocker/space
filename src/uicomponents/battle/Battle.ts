@@ -14,7 +14,7 @@ import
 {
   getTargetsForAllAbilities,
   getUnitsInAbilityArea,
-} from "../../battleAbilityUI";
+} from "../../battleAbilityDisplay";
 import
 {
   AbilityUseEffect,
