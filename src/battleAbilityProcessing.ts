@@ -156,6 +156,7 @@ function getGuarders(battle: Battle, abilityUseData: AbilityUseData): Unit[]
   return guarders;
 }
 
+// TODO 2018.01.13 | should let abilities themselves handle this
 function activeUnitsFilterFN(unit: Unit | null): unit is Unit
 {
   return Boolean(unit) && unit!.isActiveInBattle();
@@ -317,6 +318,7 @@ function makeSelfAbilityEffectData(
     effectTemplate:
     {
       id: name,
+      getDisplayDataForTarget: () => {return {}},
       getUnitsInArea: areaSingle,
       executeAction: actionFN,
     },

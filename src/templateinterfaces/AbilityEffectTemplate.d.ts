@@ -5,6 +5,10 @@ import
 } from "./AbilityEffectAction";
 import BattleSFXTemplate from "./BattleSFXTemplate";
 
+import
+{
+  AbilityTargetDisplayDataById,
+} from "../AbilityTargetDisplayData";
 import Battle from "../Battle";
 import StatusEffect from "../StatusEffect";
 import Unit from "../Unit";
@@ -25,6 +29,13 @@ export declare interface AbilityEffectTemplate
 {
   id: string;
 
+  /**
+   * display purposes only
+   */
+  getDisplayDataForTarget: GetUnitsInAreaFN<AbilityTargetDisplayDataById>;
+  /**
+   * actual targets effect action is executed on
+   */
   getUnitsInArea: GetUnitsInAreaFN;
   executeAction: AbilityEffectAction;
 

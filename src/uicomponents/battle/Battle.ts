@@ -13,7 +13,7 @@ import UnitDisplayData from "../../UnitDisplayData";
 import
 {
   getTargetsForAllAbilities,
-  getUnitsInAbilityArea,
+  getAbilityTargetDisplayData,
 } from "../../battleAbilityDisplay";
 import
 {
@@ -312,7 +312,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private handleMouseEnterAbility(ability: AbilityTemplate)
   {
-    const targetsInPotentialArea = getUnitsInAbilityArea(
+    const targetsInPotentialArea = getAbilityTargetDisplayData(
       this.props.battle,
       ability,
       this.props.battle.activeUnit,

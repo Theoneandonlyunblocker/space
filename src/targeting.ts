@@ -39,9 +39,10 @@ export const targetAll: GetBattleTargetsFN = function(user: Unit, battle: Battle
 };
 
 //------AREAS
-export interface GetUnitsInAreaFN
+// TODO 2018.01.13 | rename
+export interface GetUnitsInAreaFN<T = (Unit | null)[]>
 {
-  (user: Unit, target: Unit, battle: Battle): (Unit | null)[];
+  (user: Unit, target: Unit, battle: Battle): T;
 }
 //**
 //**
