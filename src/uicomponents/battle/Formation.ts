@@ -16,6 +16,33 @@ import
 import UnitWrapper from "../unit/UnitWrapper";
 
 
+function bindFunctionIfExists(functionToBind: Function | undefined, valueToBind: any): (() => void) | null
+{
+  if (!functionToBind)
+  {
+    return null;
+  }
+  else
+  {
+    return(
+      () => {functionToBind(valueToBind);}
+    );
+  }
+}
+
+// TODO 2018.01.28 | unneeded. should pass empty arrays instead of undefined to props
+function unitInArray(unitToCheck: Unit, arr: Unit[] | undefined): boolean
+{
+  if (!arr)
+  {
+    return false;
+  }
+  else
+  {
+    return arr.some(unit => unit === unitToCheck);
+  }
+}
+
 export interface PropTypes extends React.Props<any>
 {
   formation: Unit[][];
@@ -62,33 +89,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     super(props);
   }
 
-  private makeBoundFunction(functionToBind: Function | undefined, valueToBind: any): (() => void) | null
-  {
-    if (!functionToBind)
-    {
-      return null;
-    }
-    else
-    {
-      return(
-        () => {functionToBind(valueToBind);}
-      );
-    }
-  }
-
-  private unitInArray(unitToCheck: Unit, arr: Unit[] | undefined): boolean
-  {
-    if (!arr)
-    {
-      return false;
-    }
-    else
-    {
-      return arr.some(unit => unit === unitToCheck);
-    }
-  }
-
-  render()
+  public render()
   {
     const formationRowElements: React.ReactHTMLElement<HTMLDivElement>[] = [];
 
@@ -116,25 +117,25 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
           const componentProps: UnitComponentPropTypes =
           {
             id: unit.id,
-            onUnitClick: this.makeBoundFunction(this.props.onUnitClick, unit),
-            handleMouseEnterUnit: this.makeBoundFunction(this.props.handleMouseEnterUnit, unit),
+            onUnitClick: bindFunctionIfExists(this.props.onUnitClick, unit),
+            handleMouseEnterUnit: bindFunctionIfExists(this.props.handleMouseEnterUnit, unit),
             handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
             isDraggable: this.props.isDraggable,
-            onDragStart: this.makeBoundFunction(this.props.onDragStart, unit),
+            onDragStart: bindFunctionIfExists(this.props.onDragStart, unit),
             onDragEnd: this.props.onDragEnd,
             onMouseUp: onMouseUp,
             animateDuration: this.props.unitStrengthAnimateDuration,
           };
           const displayProps: UnitDisplayStatus =
           {
-            wasDestroyed: this.unitInArray(unit, this.props.destroyedUnits),
-            wasCaptured: this.unitInArray(unit, this.props.capturedUnits),
+            wasDestroyed: unitInArray(unit, this.props.destroyedUnits),
+            wasCaptured: unitInArray(unit, this.props.capturedUnits),
 
             isInBattlePrep: this.props.isInBattlePrep,
             isActiveUnit: this.props.activeUnit === unit,
             isHovered: this.props.hoveredUnit === unit,
             isInPotentialTargetArea: this.unitInArray(unit, this.props.targetsInPotentialArea),
-            isTargetOfActiveEffect: this.unitInArray(unit, this.props.activeEffectUnits),
+            isTargetOfActiveEffect: unitInArray(unit, this.props.activeEffectUnits),
             hoveredActionPointExpenditure: this.props.hoveredAbility &&
               this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
           };

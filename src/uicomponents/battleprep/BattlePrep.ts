@@ -39,19 +39,24 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BattlePrep";
   public state: StateType;
-  ref_TODO_background: BattleBackgroundComponent;
-  ref_TODO_upper: HTMLElement | null;
+
+  private ref_TODO_background: BattleBackgroundComponent;
+  private ref_TODO_upper: HTMLElement | null;
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state =
+    {
+      currentDragUnit: null,
+      hoveredUnit: null,
+      selectedUnit: null,
+      currentDragItem: null,
 
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
+      leftLowerElement: "playerFormation",
+    };
+
     this.handleMouseEnterUnit = this.handleMouseEnterUnit.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
     this.handleItemDragStart = this.handleItemDragStart.bind(this);
@@ -68,177 +73,11 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     this.getBackgroundBlurArea = this.getBackgroundBlurArea.bind(this);
   }
 
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      currentDragUnit: null,
-      hoveredUnit: null,
-      selectedUnit: null,
-      currentDragItem: null,
-
-      leftLowerElement: "playerFormation",
-    });
-  }
-  componentDidMount()
+  public componentDidMount()
   {
     this.ref_TODO_background.handleResize();
   }
-  autoMakeFormation()
-  {
-    this.props.battlePrep.humanFormation.clearFormation();
-    this.props.battlePrep.humanFormation.setAutoFormation(
-      this.props.battlePrep.enemyUnits, this.props.battlePrep.enemyFormation.formation);
-
-    this.setLeftLowerElement("playerFormation");
-    this.forceUpdate();
-  }
-
-  handleSelectRow(row: ListItem<UnitListItemPropTypes | ItemListItemPropTypes>)
-  {
-    if (!row.content.props.unit)
-    {
-      return;
-    }
-
-    this.setSelectedUnit(row.content.props.unit);
-  }
-
-  clearSelectedUnit()
-  {
-    this.setState(
-    {
-      selectedUnit: null,
-    });
-  }
-
-  setSelectedUnit(unit: Unit)
-  {
-    if (unit === this.state.selectedUnit)
-    {
-      this.clearSelectedUnit();
-      return;
-    }
-
-    this.setState(
-    {
-      selectedUnit: unit,
-      hoveredUnit: null,
-    });
-  }
-
-
-  handleMouseEnterUnit(unit: Unit)
-  {
-    this.setState(
-    {
-      hoveredUnit: unit,
-    });
-  }
-
-  handleMouseLeaveUnit()
-  {
-    this.setState(
-    {
-      hoveredUnit: null,
-    });
-  }
-
-  handleDragStart(unit: Unit)
-  {
-    this.setState(
-    {
-      currentDragUnit: unit,
-    });
-  }
-  handleDragEnd(dropSuccessful: boolean = false)
-  {
-    if (!dropSuccessful && this.state.currentDragUnit)
-    {
-      this.props.battlePrep.humanFormation.removeUnit(this.state.currentDragUnit);
-    }
-
-    this.setState(
-    {
-      currentDragUnit: null,
-      hoveredUnit: null,
-    });
-
-    return dropSuccessful;
-  }
-  handleDrop(position: number[])
-  {
-    const battlePrep = this.props.battlePrep;
-    if (this.state.currentDragUnit)
-    {
-      battlePrep.humanFormation.setUnit(this.state.currentDragUnit, position);
-    }
-
-    this.handleDragEnd(true);
-  }
-
-  handleItemDragStart(item: Item)
-  {
-    this.setState(
-    {
-      currentDragItem: item,
-    });
-  }
-  setLeftLowerElement(newElement: string)
-  {
-    const oldElement = this.state.leftLowerElement;
-    const newState: any =
-    {
-      leftLowerElement: newElement,
-    };
-
-    if (oldElement === "enemyFormation" || newElement === "enemyFormation")
-    {
-      newState.selectedUnit = null;
-    }
-
-    this.setState(newState);
-  }
-  handleItemDragEnd(dropSuccessful: boolean = false)
-  {
-    if (!dropSuccessful && this.state.currentDragItem && this.state.selectedUnit)
-    {
-      const item = this.state.currentDragItem;
-      if (this.state.selectedUnit.items.hasItem(item))
-      {
-        this.state.selectedUnit.items.removeItem(item);
-      }
-    }
-
-    this.setState(
-    {
-      currentDragItem: null,
-    });
-  }
-  handleItemDrop(index: number)
-  {
-    const item = this.state.currentDragItem;
-    const unit = this.state.selectedUnit;
-    if (unit && item)
-    {
-      unit.items.addItemAtPosition(item, index);
-    }
-
-    this.handleItemDragEnd(true);
-  }
-
-  getBackgroundBlurArea()
-  {
-    const backgroundElement = this.ref_TODO_upper;
-    if (!backgroundElement)
-    {
-      throw new Error("Battle prep background element hasn't mounted yet");
-    }
-
-    return ReactDOM.findDOMNode(backgroundElement).getBoundingClientRect();
-  }
-
-  render()
+  public render()
   {
     const battlePrep = this.props.battlePrep;
     const player = battlePrep.humanPlayer;
@@ -455,6 +294,151 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
         }),
       )
     );
+  }
+
+  private autoMakeFormation()
+  {
+    this.props.battlePrep.humanFormation.clearFormation();
+    this.props.battlePrep.humanFormation.setAutoFormation(
+      this.props.battlePrep.enemyUnits, this.props.battlePrep.enemyFormation.formation);
+
+    this.setLeftLowerElement("playerFormation");
+    this.forceUpdate();
+  }
+  private handleSelectRow(row: ListItem<UnitListItemPropTypes | ItemListItemPropTypes>)
+  {
+    if (!row.content.props.unit)
+    {
+      return;
+    }
+
+    this.setSelectedUnit(row.content.props.unit);
+  }
+  private clearSelectedUnit()
+  {
+    this.setState(
+    {
+      selectedUnit: null,
+    });
+  }
+  private setSelectedUnit(unit: Unit)
+  {
+    if (unit === this.state.selectedUnit)
+    {
+      this.clearSelectedUnit();
+      return;
+    }
+
+    this.setState(
+    {
+      selectedUnit: unit,
+      hoveredUnit: null,
+    });
+  }
+  private handleMouseEnterUnit(unit: Unit)
+  {
+    this.setState(
+    {
+      hoveredUnit: unit,
+    });
+  }
+  private handleMouseLeaveUnit()
+  {
+    this.setState(
+    {
+      hoveredUnit: null,
+    });
+  }
+  private handleDragStart(unit: Unit)
+  {
+    this.setState(
+    {
+      currentDragUnit: unit,
+    });
+  }
+  private handleDragEnd(dropSuccessful: boolean = false)
+  {
+    if (!dropSuccessful && this.state.currentDragUnit)
+    {
+      this.props.battlePrep.humanFormation.removeUnit(this.state.currentDragUnit);
+    }
+
+    this.setState(
+    {
+      currentDragUnit: null,
+      hoveredUnit: null,
+    });
+
+    return dropSuccessful;
+  }
+  private handleDrop(position: number[])
+  {
+    const battlePrep = this.props.battlePrep;
+    if (this.state.currentDragUnit)
+    {
+      battlePrep.humanFormation.setUnit(this.state.currentDragUnit, position);
+    }
+
+    this.handleDragEnd(true);
+  }
+  private handleItemDragStart(item: Item)
+  {
+    this.setState(
+    {
+      currentDragItem: item,
+    });
+  }
+  private setLeftLowerElement(newElement: string)
+  {
+    const oldElement = this.state.leftLowerElement;
+    const newState: any =
+    {
+      leftLowerElement: newElement,
+    };
+
+    if (oldElement === "enemyFormation" || newElement === "enemyFormation")
+    {
+      newState.selectedUnit = null;
+    }
+
+    this.setState(newState);
+  }
+  private handleItemDragEnd(dropSuccessful: boolean = false)
+  {
+    if (!dropSuccessful && this.state.currentDragItem && this.state.selectedUnit)
+    {
+      const item = this.state.currentDragItem;
+      if (this.state.selectedUnit.items.hasItem(item))
+      {
+        this.state.selectedUnit.items.removeItem(item);
+      }
+    }
+
+    this.setState(
+    {
+      currentDragItem: null,
+    });
+  }
+  private handleItemDrop(index: number)
+  {
+    const item = this.state.currentDragItem;
+    const unit = this.state.selectedUnit;
+    if (unit && item)
+    {
+      unit.items.addItemAtPosition(item, index);
+    }
+
+    this.handleItemDragEnd(true);
+  }
+  private getBackgroundBlurArea()
+  {
+    const backgroundElement = this.ref_TODO_upper;
+    if (!backgroundElement)
+    {
+      throw new Error("Battle prep background element hasn't mounted yet");
+    }
+
+    return ReactDOM.findDOMNode(backgroundElement).getBoundingClientRect();
   }
 }
 

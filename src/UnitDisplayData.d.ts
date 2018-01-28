@@ -21,8 +21,7 @@ interface UnitDisplayData
   passiveEffects?: UnitEffectTemplate[];
 
   portraitSrc: string; // could also allow other portrait elements
-  iconSrc: string;
-  // iconElement: React.ReactElement<any>;
+  iconSrc: string; // could also allow other icon elements
 
   // in src/uicomponents/unit.ts:DisplayStatus
   // wasDestroyed?: boolean;
