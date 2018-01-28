@@ -133,6 +133,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
           hoveredUnit: this.state.hoveredUnit,
           activeUnit: this.state.selectedUnit,
+          abilityTargetDisplayDataById: {},
 
           onMouseUp: this.handleDrop,
           onUnitClick: this.setSelectedUnit,
@@ -160,6 +161,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
           hoveredUnit: this.state.hoveredUnit,
           activeUnit: this.state.selectedUnit,
+          abilityTargetDisplayDataById: {},
 
           onUnitClick: this.setSelectedUnit,
           handleMouseEnterUnit: this.handleMouseEnterUnit,

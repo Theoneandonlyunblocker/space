@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import {AbilityTargetDisplayDataById} from "../../AbilityTargetDisplayData";
 import {AbilityUseEffectQueue} from "../../AbilityUseEffectQueue";
 import {activeModuleData} from "../../activeModuleData";
 import Battle from "../../Battle";
@@ -54,7 +55,7 @@ interface StateType
   highlightedUnit: Unit | null;
   hoveredUnit: Unit | null;
   hoveredAbility: AbilityTemplate | null;
-  targetsInPotentialArea: Unit[];
+  abilityTargetDisplayDataById: AbilityTargetDisplayDataById;
   potentialDelayId: number;
   potentialDelayAmount: number;
 
@@ -158,7 +159,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       highlightedUnit: null,
       hoveredUnit: null,
       hoveredAbility: null,
-      targetsInPotentialArea: [],
+      abilityTargetDisplayDataById: {},
       potentialDelayId: undefined,
       potentialDelayAmount: undefined,
 
@@ -239,7 +240,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       hoveredAbility: null,
       potentialDelayId: undefined,
       potentialDelayAmount: undefined,
-      targetsInPotentialArea: [],
+      abilityTargetDisplayDataById: {},
     });
 
     this.battleScene.hoveredUnit = null;
@@ -312,7 +313,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private handleMouseEnterAbility(ability: AbilityTemplate)
   {
-    const targetsInPotentialArea = getAbilityTargetDisplayData(
+    const targetDisplayDataForAbility = getAbilityTargetDisplayData(
       this.props.battle,
       ability,
       this.props.battle.activeUnit,
@@ -328,7 +329,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       hoveredAbility: ability,
       potentialDelayId: this.props.battle.activeUnit.id,
       potentialDelayAmount: this.props.battle.activeUnit.battleStats.moveDelay + abilityUseDelay,
-      targetsInPotentialArea: targetsInPotentialArea,
+      abilityTargetDisplayDataById: targetDisplayDataForAbility,
     });
   }
   private handleMouseLeaveAbility()
@@ -338,7 +339,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       hoveredAbility: null,
       potentialDelayId: undefined,
       potentialDelayAmount: undefined,
-      targetsInPotentialArea: [],
+      abilityTargetDisplayDataById: {},
     });
   }
   private getUnitElement(unit: Unit)
@@ -712,7 +713,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
               isInBattlePrep: false,
               hoveredUnit: this.state.highlightedUnit,
               activeUnit: battle.activeUnit,
-              targetsInPotentialArea: this.state.targetsInPotentialArea,
+              abilityTargetDisplayDataById: this.state.abilityTargetDisplayDataById,
               activeEffectUnits: activeEffectUnits,
               hoveredAbility: this.state.hoveredAbility,
 
@@ -738,7 +739,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
               isInBattlePrep: false,
               hoveredUnit: this.state.highlightedUnit,
               activeUnit: battle.activeUnit,
-              targetsInPotentialArea: this.state.targetsInPotentialArea,
+              abilityTargetDisplayDataById: this.state.abilityTargetDisplayDataById,
               activeEffectUnits: activeEffectUnits,
               hoveredAbility: this.state.hoveredAbility,
 

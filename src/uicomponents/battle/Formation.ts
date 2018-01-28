@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import {AbilityTargetDisplayDataById} from "../../AbilityTargetDisplayData";
 import {activeModuleData} from "../../activeModuleData";
 import Unit from "../../Unit";
 import UnitDisplayData from "../../UnitDisplayData";
@@ -66,7 +67,7 @@ export interface PropTypes extends React.Props<any>
   isInBattlePrep?: boolean;
   hoveredUnit: Unit | null;
   activeUnit: Unit | null;
-  targetsInPotentialArea?: Unit[];
+  abilityTargetDisplayDataById: AbilityTargetDisplayDataById;
   activeEffectUnits?: Unit[];
   hoveredAbility?: AbilityTemplate;
   capturedUnits?: Unit[];
@@ -134,7 +135,8 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
             isInBattlePrep: this.props.isInBattlePrep,
             isActiveUnit: this.props.activeUnit === unit,
             isHovered: this.props.hoveredUnit === unit,
-            isInPotentialTargetArea: this.unitInArray(unit, this.props.targetsInPotentialArea),
+            // TODO 2018.01.28 | pass actual displayData
+            isInPotentialTargetArea: this.props.abilityTargetDisplayDataById[unit.id] && Boolean(this.props.abilityTargetDisplayDataById[unit.id].targetType),
             isTargetOfActiveEffect: unitInArray(unit, this.props.activeEffectUnits),
             hoveredActionPointExpenditure: this.props.hoveredAbility &&
               this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
