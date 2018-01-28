@@ -32,10 +32,19 @@ export function mergeAbilityTargetDisplayDataById(...toMerge: AbilityTargetDispl
   {
     for (let unitId in data)
     {
-      // undefined | x === 0 | x
-      // use 0 anyway for clarity
-      merged[unitId].targetEffect = (merged[unitId].targetEffect || 0) | data[unitId].targetEffect;
-      merged[unitId].targetType =   (merged[unitId].targetType   || 0) | data[unitId].targetType;
+      if (!merged[unitId])
+      {
+        merged[unitId] =
+        {
+          targetEffect: data[unitId].targetEffect,
+          targetType: data[unitId].targetType,
+        };
+      }
+      else
+      {
+        merged[unitId].targetEffect = merged[unitId].targetEffect | data[unitId].targetEffect;
+        merged[unitId].targetType = merged[unitId].targetType | data[unitId].targetType;
+      }
     }
   });
 
