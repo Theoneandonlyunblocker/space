@@ -20,7 +20,10 @@ export function getAbilityTargetDisplayData(
   const abilityEffects: AbilityEffectTemplate[] = [ability.mainEffect];
   if (ability.secondaryEffects)
   {
-    abilityEffects.push(...ability.secondaryEffects);
+    abilityEffects.push(...ability.secondaryEffects.filter(secondaryEffect =>
+    {
+      return Boolean(secondaryEffect.getDisplayDataForTarget);
+    }));
   }
 
   const allDisplayDataById = abilityEffects.map(abilityEffect =>

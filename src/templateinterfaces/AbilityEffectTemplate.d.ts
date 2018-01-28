@@ -30,13 +30,13 @@ export declare interface AbilityEffectTemplate
   id: string;
 
   /**
-   * display purposes only
-   */
-  getDisplayDataForTarget: GetUnitsInAreaFN<AbilityTargetDisplayDataById>;
-  /**
-   * actual targets effect action is executed on
+   * units effect action is executed on
    */
   getUnitsInArea: GetUnitsInAreaFN;
+  /**
+   * display purposes only
+   */
+  getDisplayDataForTarget?: GetUnitsInAreaFN<AbilityTargetDisplayDataById>;
   executeAction: AbilityEffectAction;
 
   trigger?: AbilityEffectTrigger;
@@ -52,4 +52,5 @@ export declare interface AbilityEffectTemplate
 export declare interface AbilityMainEffectTemplate extends AbilityEffectTemplate
 {
   sfx: BattleSFXTemplate;
+  getDisplayDataForTarget: GetUnitsInAreaFN<AbilityTargetDisplayDataById>;
 }
