@@ -122,6 +122,9 @@
     // doesn't actually work
     // https://github.com/palantir/tslint/issues/2430
     // "no-unnecessary-callback-wrapper": true,
+
+    "no-invalid-template-strings": true,
+    "no-sparse-arrays rule" : true
   }
 }
 
