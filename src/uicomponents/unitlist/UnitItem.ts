@@ -70,7 +70,7 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
       }
       default:
       {
-        throw new Error("Couldn't find icon for item tech level " + techLevel);
+        throw new Error(`Couldn't find icon for item tech level ${techLevel}`);
       }
     }
   }

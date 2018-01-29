@@ -109,8 +109,7 @@ export default class ModuleData
   {
     if (!this.Templates[category])
     {
-      console.warn("Tried to copy templates in invalid category \"" + category +
-        "\". Category must be one of: " + Object.keys(this.Templates).join(", "));
+      console.warn(`Tried to copy templates in invalid category "${category}". Category must be one of: ${Object.keys(this.Templates).join(", ")}`);
 
       return;
     }
@@ -119,7 +118,7 @@ export default class ModuleData
     {
       if (this.Templates[category][templateType])
       {
-        console.warn("Duplicate template identifier for " + templateType + " in " + category);
+        console.warn(`Duplicate template identifier for ${templateType} in ${category}`);
         continue;
       }
       // TODO 2017.02.05 | bad typing

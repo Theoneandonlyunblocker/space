@@ -103,7 +103,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
           upgradeElements.push(React.DOM.tr(
           {
             className: "list-spacer",
-            key: "spacer" + i + j,
+            key: `spacer${i}${j}`,
           },
             React.DOM.td(
             {

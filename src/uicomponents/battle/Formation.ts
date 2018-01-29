@@ -150,7 +150,10 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
         }
 
         unitElements.push(
-          UnitWrapper({key: ("unit_wrapper_" + i) + j},
+          UnitWrapper(
+          {
+            key: `unit_wrapper_${i}${j}`,
+          },
             EmptyUnit(
             {
               facesLeft: this.props.facesLeft,

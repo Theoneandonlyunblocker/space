@@ -179,7 +179,10 @@ export default class MCTreeNode
       for (let i = 0; i < abilities.length; i++)
       {
         const priority = isFinite(abilities[i].AIEvaluationPriority) ? abilities[i].AIEvaluationPriority : 1;
-        prioritiesByAbilityAndTarget["" + targetId + ":" + abilities[i].type] = priority;
+        // TODO 2018.01.29 | unify this with whereever the index string comes from
+        const indexString = `${targetId}:${abilities[i].type}`;
+        prioritiesByAbilityAndTarget[indexString] = priority;
+
       }
     }
 

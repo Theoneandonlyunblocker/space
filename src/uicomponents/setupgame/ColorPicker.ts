@@ -274,7 +274,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   }
   private makeHsvInputs(type: "hue" | "sat" | "val")
   {
-    const label = "" + type[0].toUpperCase() + ":";
+    const label = `${type[0].toUpperCase()}:`;
 
     const max = type === "hue" ? 360 : 100;
     const updateFunctions =

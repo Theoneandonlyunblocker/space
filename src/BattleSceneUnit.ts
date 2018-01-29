@@ -166,7 +166,7 @@ export default class BattleSceneUnit
     }
     else
     {
-      console.warn("called exitUnitSprite with unintended animation state " + this.unitState);
+      console.warn(`called exitUnitSprite with unintended animation state ${this.unitState}`);
     }
   }
 

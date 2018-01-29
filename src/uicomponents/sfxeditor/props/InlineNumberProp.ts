@@ -39,7 +39,7 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
           className: "sfx-fragment-prop-inline-number-label",
           htmlFor: baseId,
         },
-          this.props.label + ":",
+          `${this.props.label}:`,
         ),
         NumericTextInput(
         {

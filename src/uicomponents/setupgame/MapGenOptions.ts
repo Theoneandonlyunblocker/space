@@ -160,7 +160,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
         const optionValue = this.getOptionValue(optionName);
         if (!isFinite(optionValue))
         {
-          throw new Error("Value " + optionValue + " for option " + optionName + " is invalid.");
+          throw new Error(`Value ${optionValue} for option ${optionName} is invalid.`);
         }
 
         optionValues[groupName][optionName] = optionValue;

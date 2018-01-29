@@ -178,7 +178,7 @@ class Options implements OptionsValues
         {
           if (optionsToResetIfSetEarlierThan[key] && dateOptionsWereSaved <= optionsToResetIfSetEarlierThan[key])
           {
-            console.log("Reset option: " + key);
+            console.log(`Reset option: ${key}`);
           }
           else
           {

@@ -38,7 +38,7 @@ export default class ModuleLoader
   {
     if (this.moduleFilesByKey[moduleFile.key])
     {
-      throw new Error("Duplicate module key " + moduleFile.key);
+      throw new Error(`Duplicate module key ${moduleFile.key}`);
     }
 
     this.moduleFilesByKey[moduleFile.key] = moduleFile;
@@ -74,7 +74,7 @@ export default class ModuleLoader
     {
       return;
     }
-    console.log("start loading module '", moduleFile.key, "'");
+    console.log(`Start loading module "${moduleFile.key}"`);
 
     this.moduleLoadStart[moduleFile.key] = Date.now();
     // TODO 2017.07.29 | keep track of what's already been loaded
@@ -170,8 +170,9 @@ export default class ModuleLoader
   {
     this.hasLoaded[moduleFile.key] = true;
     this.constructModuleFile(moduleFile);
+
     const loadTime = Date.now() - this.moduleLoadStart[moduleFile.key];
-    console.log("Module '" + moduleFile.key + "' finished loading in " + loadTime + "ms");
+    console.log(`Module "${moduleFile.key}" finished loading in ${loadTime}ms`);
 
     while (this.moduleLoadFinishCallbacks[moduleFile.key].length > 0)
     {

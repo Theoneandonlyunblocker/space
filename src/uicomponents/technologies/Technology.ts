@@ -113,7 +113,7 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
           {
             className: "technology-progress-bar-value",
           },
-            "" + progressForLevel.toFixed(1) + " / " + Math.ceil(neededToProgressLevel),
+            `${progressForLevel.toFixed(1)} / ${Math.ceil(neededToProgressLevel)}`,
           ),
           TechnologyPrioritySlider(
           {

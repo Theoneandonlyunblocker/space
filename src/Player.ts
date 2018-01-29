@@ -160,7 +160,7 @@ export default class Player
     }
     else
     {
-      this.name = new Name("Player " + this.id);
+      this.name = new Name(`Player ${this.id}`);
     }
 
     if (props.color)
@@ -830,7 +830,7 @@ export default class Player
     const index = this.items.indexOf(item);
     if (index === -1)
     {
-      throw new Error("Player " + this.name + " has no item " + item.id);
+      throw new Error(`Player ${this.name} has no item ${item.id}`);
     }
 
     this.items.splice(index, 1);

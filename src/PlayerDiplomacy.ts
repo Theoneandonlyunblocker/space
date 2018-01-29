@@ -110,7 +110,7 @@ export default class PlayerDiplomacy
     if (this.statusByPlayer.get(targetPlayer) >= DiplomacyState.War)
     {
       // TODO 2017.07.25 | default ai module does this sometimes
-      console.error("Players " + this.player.id + " and " + targetPlayer.id + " are already at war");
+      console.error(`Players ${this.player.id} and ${targetPlayer.id} are already at war`);
 
       return;
     }
@@ -123,15 +123,15 @@ export default class PlayerDiplomacy
       script(this.player, targetPlayer);
     });
   }
-  public makePeaceWith(player: Player): void
+  public makePeaceWith(targetPlayer: Player): void
   {
-    if (!this.canMakePeaceWith(player))
+    if (!this.canMakePeaceWith(targetPlayer))
     {
-      throw new Error("Players " + this.player.id + " and " + player.id + " can't delcare peace.");
+      console.error(`Players ${this.player.id} and ${targetPlayer.id} can't delcare peace`);
     }
 
-    this.statusByPlayer.set(player, DiplomacyState.Peace);
-    player.diplomacy.statusByPlayer.set(this.player, DiplomacyState.Peace);
+    this.statusByPlayer.set(targetPlayer, DiplomacyState.Peace);
+    targetPlayer.diplomacy.statusByPlayer.set(this.player, DiplomacyState.Peace);
   }
   public canAttackFleetOfPlayer(player: Player): boolean
   {

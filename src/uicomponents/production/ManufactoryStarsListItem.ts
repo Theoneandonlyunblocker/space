@@ -63,7 +63,7 @@ export class ManufactoryStarsListItemComponent extends React.Component<PropTypes
         {
           className: "manufactory-stars-list-item-capacity" + (!hasCapacity ? " no-capacity" : ""),
         },
-          "" + this.props.usedCapacity + "/" + this.props.totalCapacity,
+          `${this.props.usedCapacity}/${this.props.totalCapacity}`,
         ),
       )
     );

@@ -97,7 +97,7 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
             {
               className: "fleet-info-strength-max",
             },
-              isNotDetected ? "/???" : "/" + totalMaxHealth,
+              `/${isNotDetected ? "???" : totalMaxHealth}`,
             ),
           ),
           FleetControls(

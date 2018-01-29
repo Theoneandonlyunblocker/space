@@ -20,7 +20,7 @@ export default class BattleTurnOrder
   {
     if (this.hasUnit(unit))
     {
-      throw new Error("Unit " + unit.name + " is already part of turn order");
+      throw new Error(`Unit ${unit.name} is already part of turn order.`);
     }
 
     this.allUnits.push(unit);

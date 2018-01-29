@@ -176,7 +176,7 @@ export function getBorderingHalfEdges(stars: Star[])
     }
   }
 
-  throw new Error("getHalfEdgesConnectingStars got stuck in infinite loop when star id = " + star.id);
+  throw new Error(`getHalfEdgesConnectingStars got stuck in infinite loop when star id = ${star.id}`);
 }
 export function joinPointsWithin(points: Point[], maxDistance: number)
 {

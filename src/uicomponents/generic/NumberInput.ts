@@ -100,7 +100,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
   private getDecimalPlacesInStep(): number
   {
     // step is specified in code, so assume no precision issues
-    const split = ("" + this.getStep()).split(".");
+    const split = `${this.getStep()}`.split(".");
 
     return split[1] ? split[1].length : 0;
   }

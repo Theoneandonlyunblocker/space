@@ -160,7 +160,7 @@ class App
     {
       this.reactUI.switchScene(initialScene);
 
-      console.log("Init in " + (Date.now() - startTime) + " ms");
+      console.log(`Init app in ${Date.now() - startTime}ms`);
     };
 
     if (initialScene === "galaxyMap")

@@ -58,7 +58,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
     {
       if (!range[prop])
       {
-        throw new Error("No property " + prop +" specified on map gen option " + this.props.id);
+        throw new Error(`No property ${prop} specified on map gen option ${this.props.id}`);
       }
     });
 

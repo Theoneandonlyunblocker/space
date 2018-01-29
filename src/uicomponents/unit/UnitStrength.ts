@@ -146,7 +146,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
         className: "unit-strength-bar-value",
         style:
         {
-          width: "" + relativeHealth * 100 + "%",
+          width: `${relativeHealth * 100}%`,
         },
       }),
     );

@@ -605,7 +605,7 @@ export default class Unit
     const index = this.battleStats.statusEffects.indexOf(statusEffect);
     if (index === -1)
     {
-      throw new Error("Tried to remove status effect not active on unit " + this.name);
+      throw new Error(`Tried to remove status effect not active on unit ${this.name}`);
     }
 
     this.battleStats.statusEffects.splice(index, 1);

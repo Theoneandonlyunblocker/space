@@ -29,7 +29,7 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
   render()
   {
     const evaluationPercentage = 50 + this.props.evaluation * 50;
-    const transitionDurationString = "" + this.props.animationDuration + "ms";
+    const transitionDurationString = `${this.props.animationDuration}ms`;
 
     return(
       React.DOM.div(
@@ -64,7 +64,7 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
               className: "battle-score-bar-value battle-score-bar-side1",
               style:
               {
-                width: "" + evaluationPercentage + "%",
+                width: `${evaluationPercentage}%`,
                 backgroundColor: "#" + this.props.player1.color.getHexString(),
                 borderColor: "#" + this.props.player1.secondaryColor.getHexString(),
                 transitionDuration: transitionDurationString,
@@ -75,7 +75,7 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
               className: "battle-score-bar-value battle-score-bar-side2",
               style:
               {
-                width: "" + (100 - evaluationPercentage) + "%",
+                width: `${100 - evaluationPercentage}%`,
                 backgroundColor: "#" + this.props.player2.color.getHexString(),
                 borderColor: "#" + this.props.player2.secondaryColor.getHexString(),
                 transitionDuration: transitionDurationString,

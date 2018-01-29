@@ -46,13 +46,13 @@ export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes
         const polarityString = changeIsPositive ? "positive" : "negative";
         const polaritySign = changeIsPositive ? " +" : " ";
 
-        const imageSrc = "img/icons/statusEffect_" + polarityString + "_" + attributeType + ".png";
+        const imageSrc = `img/icons/statusEffect_${polaritySign}_${attributeType}.png`;
 
-        const titleString = "" + attributeType + polaritySign + amountChanged;
+        const titleString = `${attributeType}${polarityString}${amountChanged}`;
 
         attributeElements.push(React.DOM.img(
         {
-          className: "attribute-change-icon" + " attribute-change-icon-" + attributeType,
+          className: "attribute-change-icon" + "attribute-change-icon-" + "attributeType",
           src: imageSrc,
           key: attributeType,
           title: titleString,

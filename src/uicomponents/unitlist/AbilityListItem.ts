@@ -44,7 +44,7 @@ export class AbilityListItemComponent extends React.Component<PropTypes, StateTy
         title: this.props.title,
         onClick: this.props.onClick,
       },
-        "[" + this.props.displayName + "]",
+        `[${this.props.displayName}]`,
       )
     );
   }

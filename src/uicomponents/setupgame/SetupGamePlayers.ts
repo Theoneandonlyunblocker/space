@@ -185,7 +185,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
         removePlayers: this.removePlayers,
         setActiveSetterComponent: this.setActiveColorSetter,
         // TODO 2017.07.18 | missing localization
-        initialName: "Player " + playerId,
+        initialName: `Player ${playerId}`,
         isHuman: i === 0,
         setHuman: this.setHumanPlayer,
       }));

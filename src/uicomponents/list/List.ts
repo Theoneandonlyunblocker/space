@@ -233,7 +233,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      throw new Error("Invalid list order: " + order);
+      throw new Error(`Invalid list order: ${order}`);
     }
   }
   private getSortingOrderForColumnKeyWithColumnReversed(columnToReverse: ListColumn<any>)

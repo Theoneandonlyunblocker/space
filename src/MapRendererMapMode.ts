@@ -20,7 +20,7 @@ export default class MapRendererMapMode
   {
     if (this.hasLayer(layer))
     {
-      throw new Error("Tried to add duplicate layer " + layer.template.key);
+      throw new Error(`Tried to add duplicate layer ${layer.template.key}`);
     }
 
     this.layers.push(layer);
@@ -43,7 +43,7 @@ export default class MapRendererMapMode
       if (this.layers[i] === layer) return index;
     }
 
-    throw new Error("Map mode doesn't have layer " + layer.template.key);
+    throw new Error(`Map mode doesn't have layer ${layer.template.key}`);
   }
   toggleLayer(layer: MapRendererLayer)
   {

@@ -88,7 +88,7 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
         {
           className: "technology-progress-bar-predicted-research",
         },
-          "+" + (this.props.researchPoints * this.state.priority).toFixed(1),
+          `+${(this.props.researchPoints * this.state.priority).toFixed(1)}`,
         ),
         React.DOM.input(
         {

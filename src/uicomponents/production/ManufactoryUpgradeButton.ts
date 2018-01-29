@@ -73,8 +73,7 @@ export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes
         {
           className: "manufactory-upgrade-button-level",
         },
-          "" + this.props.currentLevel.toFixed(this.props.levelDecimalPoints) + "/" +
-            this.props.maxLevel.toFixed(this.props.levelDecimalPoints),
+          `${this.props.currentLevel.toFixed(this.props.levelDecimalPoints)} / ${this.props.maxLevel.toFixed(this.props.levelDecimalPoints)}`,
         ),
         React.DOM.span(
         {

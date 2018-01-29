@@ -101,7 +101,7 @@ export default class Star implements Point
     this.y = props.y;
 
     this.id = isFinite(props.id) ? props.id : idGenerators.star++;
-    this.name = props.name || "Star " + this.id;
+    this.name = props.name || `Star ${this.id}`;
 
     this.race = props.race;
     this.terrain = props.terrain;
@@ -610,7 +610,7 @@ export default class Star implements Point
   {
     if (!this.hasLink(linkTo))
     {
-      throw new Error("Tried to remove nonexistant link between stars: " + this.id + " <-> " + linkTo.id);
+      throw new Error(`Tried to remove nonexistant link between stars: ${this.id} <-> ${linkTo.id}`);
     }
 
     const toIndex = this.linksTo.indexOf(linkTo);

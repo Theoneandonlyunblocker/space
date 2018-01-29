@@ -357,7 +357,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.abilityUseEffectQueue.addEffects(abilityUseEffects);
 
-    // TODO
+    // TODO 2018.01.29 |
     // if (wasByPlayer && this.MCTree)
     // {
     //   this.MCTree.advanceMove(
