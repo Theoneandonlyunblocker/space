@@ -63,7 +63,7 @@ export default class Battle
    */
   public evaluationAdjustment: number = 0;
 
-  public afterFinishCallbacks: {(): void}[] = [];
+  public afterFinishCallbacks: (() => void)[] = [];
 
   private startHealth:
   {

@@ -16,7 +16,7 @@ export default class BattlePrep
   public enemyFormation: BattlePrepFormation;
   public humanUnits: Unit[];
   public enemyUnits: Unit[];
-  public afterBattleFinishCallbacks: {(): void}[] = [];
+  public afterBattleFinishCallbacks: (() => void)[] = [];
   public minDefenders: number;
 
   private attackerUnits: Unit[];

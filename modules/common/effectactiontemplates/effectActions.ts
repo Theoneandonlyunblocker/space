@@ -23,16 +23,13 @@ import
 } from "../../../src/utility";
 
 
-interface UnboundEffectAction<T>
-{
-  (
-    data: T,
-    user: Unit,
-    target: Unit,
-    battle: Battle,
-    executedEffectsResult: ExecutedEffectsResult
-  ): void;
-}
+type UnboundEffectAction<T> = (
+  data: T,
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+  executedEffectsResult: ExecutedEffectsResult
+) => void;
 
 // so we preserve typing for bound data
 // https://github.com/Microsoft/TypeScript/issues/212

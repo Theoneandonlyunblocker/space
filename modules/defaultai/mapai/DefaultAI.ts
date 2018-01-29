@@ -30,7 +30,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
 
   public readonly personality: Personality;
 
-  private turnProcessingQueue: {(afterFinishedCallback: () => void): void}[] = [];
+  private turnProcessingQueue: ((afterFinishedCallback: () => void) => void)[] = [];
   private afterTurnHasProcessed: () => void;
 
   private readonly player: Player;
@@ -183,9 +183,9 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     return undefined;
   }
 
-  private constructTurnProcessingQueue(): {(afterFinishedCallback: () => void): void}[]
+  private constructTurnProcessingQueue(): ((afterFinishedCallback: () => void) => void)[]
   {
-    const queue: {(afterFinishedCallback: () => void): void}[] = [];
+    const queue: ((afterFinishedCallback: () => void) => void)[] = [];
 
 
     queue.push(triggerFinish =>

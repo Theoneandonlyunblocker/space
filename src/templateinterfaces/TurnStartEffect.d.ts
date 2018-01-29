@@ -1,8 +1,5 @@
 import Unit from "../Unit";
 
-declare interface TurnStartEffect
-{
-  (unit: Unit): void;
-}
+declare type TurnStartEffect = (unit: Unit) => void;
 
 export default TurnStartEffect;

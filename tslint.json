@@ -87,8 +87,7 @@
     "no-string-throw": true,
     // having empty interfaces for stuff like react component state can be cleaner
     // "no-empty-interface": true,
-    // this warns for {(): void}[] which is annoying
-    // "callable-types": true,
+    "callable-types": true,
 
     "space-before-function-paren": [true, "never"],
     // we use newlines
@@ -124,7 +123,10 @@
     // "no-unnecessary-callback-wrapper": true,
 
     "no-invalid-template-strings": true,
-    "no-sparse-arrays rule" : true
+    "no-sparse-arrays rule" : true,
+
+    "no-irregular-whitespace": true,
+    "prefer-switch": true
   }
 }
 
@@ -140,3 +142,5 @@
 // "strict-type-predicates": true,
 // "no-use-before-declare": true,
 // "return-undefined": true,
+
+// "no-unnecessary-type-assertion": true

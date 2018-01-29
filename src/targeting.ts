@@ -14,10 +14,7 @@ import
 } from "./utility";
 
 //------TARGETING
-export interface GetBattleTargetsFN
-{
-  (user: Unit, battle: Battle): Unit[];
-}
+export type GetBattleTargetsFN = (user: Unit, battle: Battle) => Unit[];
 export const targetSelf: GetBattleTargetsFN = function(user: Unit, battle: Battle)
 {
   return [user];
@@ -46,10 +43,11 @@ export const targetAll: GetBattleTargetsFN = function(user: Unit, battle: Battle
 
 //------AREAS
 // TODO 2018.01.13 | rename
-export interface GetUnitsInAreaFN<T = (Unit | null)[]>
-{
-  (user: Unit, target: Unit, battle: Battle): T;
-}
+export type GetUnitsInAreaFN<T = (Unit | null)[]> = (
+  user: Unit,
+  target: Unit,
+  battle: Battle,
+) => T;
 //**
 //**
 //X*
