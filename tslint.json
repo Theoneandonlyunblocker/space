@@ -1,4 +1,5 @@
 {
+  "defaultSeverity": "off",
   "rules":
   {
     "member-access": true,
@@ -48,8 +49,7 @@
     "no-shadowed-variable": true,
     "no-string-literal": true,
     "no-unsafe-finally": true,
-    "no-unused-new": true,
-    "no-use-before-declare": true,
+    "no-unused-expression": true,
     "no-var-keyword": true,
     "triple-equals": true,
     "use-isnan": true,
@@ -90,7 +90,7 @@
     // this warns for {(): void}[] which is annoying
     // "callable-types": true,
 
-    "space-before-function-paren": "never",
+    "space-before-function-paren": [true, "never"],
     // we use newlines
     // "import-spacing": true,
     "unified-signatures": true,
@@ -116,7 +116,25 @@
       ["Number", "Avoid using the `Number` type. Did you mean `number`?"],
       ["String", "Avoid using the `String` type. Did you mean `string`?"],
       ["Symbol", "Avoid using the `Symbol` type. Did you mean `symbol`?"]
-    ]
+    ],
+
+    "prefer-template":
+    {
+      "options": [true],
+      "severity": "error"
+    },
+    "no-reference-import":
+    {
+      "options": [true],
+      "severity": "error"
+    }
+    // doesn't actually work
+    // https://github.com/palantir/tslint/issues/2430
+    // "no-unnecessary-callback-wrapper":
+    // {
+    //   "options": [true],
+    //   "severity": "error"
+    // }
   }
 }
 
@@ -130,3 +148,5 @@
 // "await-promise": true,
 // "no-floating-promises": true,
 // "strict-type-predicates": true,
+// "no-use-before-declare": true,
+// "return-undefined": true,
