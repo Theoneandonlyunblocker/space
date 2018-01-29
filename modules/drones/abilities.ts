@@ -2,12 +2,17 @@ import {ExecutedEffectsResult} from "../../src/templateinterfaces/AbilityEffectA
 import AbilityTemplate from "../../src/templateinterfaces/AbilityTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
+import
+{
+  AbilityTargetEffect,
+  AbilityTargetType,
+} from "../../src/AbilityTargetDisplayData";
 import DamageType from "../../src/DamageType";
 import
 {
   areaAll,
   areaSingle,
-
+  makeGetAbilityTargetDisplayDataFN,
   targetAllies,
   targetEnemies,
 } from "../../src/targeting";
@@ -39,17 +44,30 @@ export const assimilate: AbilityTemplate =
       damageType: DamageType.Physical,
     }),
     getUnitsInArea: areaSingle,
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+    {
+      areaFN: areaSingle,
+      targetType: AbilityTargetType.Primary,
+      targetEffect: AbilityTargetEffect.Negative,
+    }),
     sfx: placeholderSFX,
     attachedEffects:
     [
       {
         id: "increaseUserHealth",
         getUnitsInArea: user => [user],
+        getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+        {
+          areaFN: user => [user],
+          targetType: AbilityTargetType.Primary,
+          targetEffect: AbilityTargetEffect.Positive,
+        }),
         executeAction: bindEffectActionData(EffectActions.adjustCurrentAndMaxHealth,
         {
           executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
           {
             const damageDealt = executedEffectsResult[resultType.HealthChanged] || 0;
+
             return damageDealt * -0.1;
           },
         }),
@@ -73,6 +91,12 @@ export const merge: AbilityTemplate =
       maxHealthPercentage: -0.25,
     }),
     getUnitsInArea: user => [user],
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+    {
+      areaFN: user => [user],
+      targetType: AbilityTargetType.Primary,
+      targetEffect: AbilityTargetEffect.Negative,
+    }),
     sfx: placeholderSFX,
   },
   secondaryEffects:
@@ -80,6 +104,12 @@ export const merge: AbilityTemplate =
     {
       id: "addStatusEffect",
       getUnitsInArea: areaSingle,
+      getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+      {
+        areaFN: areaSingle,
+        targetType: AbilityTargetType.Primary,
+        targetEffect: AbilityTargetEffect.Positive,
+      }),
       trigger: (user, target, battle, executedEffectsResult) =>
       {
         return Boolean(executedEffectsResult[resultType.HealthChanged]);
@@ -89,24 +119,21 @@ export const merge: AbilityTemplate =
         duration: -1,
         template: DroneStatusEffects.merge,
       }),
-      attachedEffects:
-      [
+    },
+    {
+      id: "addTargetHealth",
+      getUnitsInArea: areaSingle,
+      trigger: (user, target, battle, executedEffectsResult) =>
+      {
+        return Boolean(executedEffectsResult[resultType.HealthChanged]);
+      },
+      executeAction: bindEffectActionData(EffectActions.adjustHealth,
+      {
+        executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
         {
-          id: "addTargetHealth",
-          getUnitsInArea: areaSingle,
-          trigger: (user, target, battle, executedEffectsResult) =>
-          {
-            return Boolean(executedEffectsResult[resultType.HealthChanged]);
-          },
-          executeAction: bindEffectActionData(EffectActions.adjustHealth,
-          {
-            executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
-            {
-              return -executedEffectsResult[resultType.HealthChanged];
-            },
-          }),
+          return -executedEffectsResult[resultType.HealthChanged];
         },
-      ],
+      }),
     },
   ],
 };
@@ -122,6 +149,12 @@ export const infest: AbilityTemplate =
   {
     id: "addStatusEffect",
     getUnitsInArea: areaSingle,
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+    {
+      areaFN: areaSingle,
+      targetType: AbilityTargetType.Primary,
+      targetEffect: AbilityTargetEffect.Negative,
+    }),
     executeAction: bindEffectActionData(EffectActions.addStatusEffect,
     {
       duration: 3,
@@ -153,6 +186,12 @@ export const repair: AbilityTemplate =
   {
     id: "heal",
     getUnitsInArea: areaSingle,
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+    {
+      areaFN: areaSingle,
+      targetType: AbilityTargetType.Primary,
+      targetEffect: AbilityTargetEffect.Positive,
+    }),
     executeAction: bindEffectActionData(EffectActions.adjustHealth,
     {
       perUserUnit: 0.5,
@@ -171,7 +210,19 @@ export const massRepair: AbilityTemplate =
   mainEffect:
   {
     id: "heal",
-    getUnitsInArea: areaAll,
+    getUnitsInArea: (user, target, battle) =>
+    {
+      return areaAll(user, target, battle).filter(unit => unit.battleStats.side === user.battleStats.side);
+    },
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+    {
+      areaFN: (user, target, battle) =>
+      {
+        return areaAll(user, target, battle).filter(unit => unit.battleStats.side === user.battleStats.side);
+      },
+      targetType: AbilityTargetType.Primary,
+      targetEffect: AbilityTargetEffect.Positive,
+    }),
     executeAction: bindEffectActionData(EffectActions.adjustHealth,
     {
       perUserUnit: 0.33,

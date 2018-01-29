@@ -1,5 +1,10 @@
 import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate";
 
+import
+{
+  AbilityTargetEffect,
+  AbilityTargetType,
+} from "../../../src/AbilityTargetDisplayData";
 import DamageType from "../../../src/DamageType";
 import GuardCoverage from "../../../src/GuardCoverage";
 import {UnitAttribute} from "../../../src/UnitAttributes";
@@ -7,9 +12,11 @@ import
 {
   areaColumn,
   areaOrthogonalNeighbors,
+  areaRow,
   areaRowNeighbors,
   areaSingle,
-
+  GetUnitsInAreaFN,
+  makeGetAbilityTargetDisplayDataFN,
   targetAll,
   targetEnemies,
   targetNextRow,
@@ -34,7 +41,7 @@ export const closeAttack: AbilityTemplate =
   {
     return targetNextRow(user, battle).filter(unit =>
     {
-      unit.battleStats.side !== user.battleStats.side;
+      return unit.battleStats.side !== user.battleStats.side;
     });
   },
   mainEffect:
@@ -46,6 +53,12 @@ export const closeAttack: AbilityTemplate =
       damageType: DamageType.Physical,
     }),
     getUnitsInArea: areaRowNeighbors,
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+    {
+      areaFN: areaRowNeighbors,
+      targetType: AbilityTargetType.Primary,
+      targetEffect: AbilityTargetEffect.Negative,
+    }),
     sfx: BattleSFX.rocketAttack,
   },
 };
@@ -66,12 +79,25 @@ export const beamAttack: AbilityTemplate =
       damageType: DamageType.Magical,
     }),
     getUnitsInArea: areaColumn,
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+    {
+      areaFN: areaColumn,
+      targetType: AbilityTargetType.Primary,
+      targetEffect: AbilityTargetEffect.Negative,
+    }),
     sfx: BattleSFX.beam,
   },
 
   targetCannotBeDiverted: true,
 };
 
+const bombAttackAreaFN: GetUnitsInAreaFN = (user, target, battle) =>
+{
+  return areaOrthogonalNeighbors(user, target, battle).filter(unit =>
+    {
+      return unit && unit.battleStats.side !== user.battleStats.side;
+    });
+};
 export const bombAttack: AbilityTemplate =
 {
   type: "bombAttack",
@@ -88,13 +114,13 @@ export const bombAttack: AbilityTemplate =
       baseDamage: 0.5,
       damageType: DamageType.Physical,
     }),
-    getUnitsInArea: (user, target, battle) =>
+    getUnitsInArea: bombAttackAreaFN,
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
     {
-      return areaOrthogonalNeighbors(user, target, battle).filter(unit =>
-      {
-        return !unit || unit.battleStats.side !== user.battleStats.side;
-      });
-    },
+      areaFN: bombAttackAreaFN,
+      targetType: AbilityTargetType.Primary,
+      targetEffect: AbilityTargetEffect.Negative,
+    }),
     sfx: BattleSFX.rocketAttack,
   },
 };
@@ -118,6 +144,12 @@ export const guardRow: AbilityTemplate =
       coverage: GuardCoverage.Row,
     }),
     getUnitsInArea: areaSingle,
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+      {
+        areaFN: areaRow,
+        targetType: AbilityTargetType.Primary,
+        targetEffect: AbilityTargetEffect.Positive,
+      }),
     sfx: BattleSFX.guard,
   },
 
@@ -140,6 +172,12 @@ export const boardingHook: AbilityTemplate =
       damageType: DamageType.Physical,
     }),
     getUnitsInArea: areaSingle,
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+    {
+      areaFN: areaSingle,
+      targetType: AbilityTargetType.Primary,
+      targetEffect: AbilityTargetEffect.Negative,
+    }),
     sfx: BattleSFX.rocketAttack,
     attachedEffects:
     [
@@ -175,6 +213,12 @@ export const debugAbility: AbilityTemplate =
   {
     id: "debugAbility",
     getUnitsInArea: areaSingle,
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+    {
+      areaFN: areaSingle,
+      targetType: AbilityTargetType.Primary,
+      targetEffect: AbilityTargetEffect.Positive,
+    }),
     executeAction: () => {},
     sfx: BattleSFX.guard,
   },
@@ -197,6 +241,12 @@ export const rangedAttack: AbilityTemplate =
       damageType: DamageType.Physical,
     }),
     getUnitsInArea: areaSingle,
+    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+      {
+        areaFN: areaSingle,
+        targetType: AbilityTargetType.Primary,
+        targetEffect: AbilityTargetEffect.Negative,
+      }),
     sfx: BattleSFX.rocketAttack,
     attachedEffects:
     [
@@ -251,6 +301,12 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
         damageType: DamageType.Physical,
       }),
       getUnitsInArea: areaSingle,
+      getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+      {
+        areaFN: areaSingle,
+        targetType: AbilityTargetType.Primary,
+        targetEffect: AbilityTargetEffect.Negative,
+      }),
       sfx: BattleSFX[key],
       attachedEffects:
       [
@@ -284,6 +340,8 @@ export const standBy: AbilityTemplate =
   {
     id: "standBy",
     getUnitsInArea: areaSingle,
+    // TODO 2018.01.28 | tslint
+    getDisplayDataForTarget: () => {return {};},
     executeAction: () => {},
     sfx:
     {

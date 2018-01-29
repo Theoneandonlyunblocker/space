@@ -1,3 +1,9 @@
+import
+{
+  AbilityTargetDisplayDataById,
+  AbilityTargetEffect,
+  AbilityTargetType,
+} from "./AbilityTargetDisplayData";
 import Battle from "./Battle";
 import Unit from "./Unit";
 import
@@ -120,4 +126,31 @@ export const areaOrthogonalNeighbors: GetUnitsInAreaFN = function(user: Unit, ta
   targetLocations.push([x, y+1]);
 
   return getFrom2dArray(allRows, targetLocations);
+};
+
+
+export function makeGetAbilityTargetDisplayDataFN(props:
+{
+  areaFN: GetUnitsInAreaFN,
+  targetType: AbilityTargetType,
+  targetEffect: AbilityTargetEffect,
+}): GetUnitsInAreaFN<AbilityTargetDisplayDataById>
+{
+  return (user: Unit, target: Unit, battle: Battle) =>
+  {
+    const unitsInArea = props.areaFN(user, target, battle);
+
+    const displayDataById: AbilityTargetDisplayDataById = {};
+
+    unitsInArea.forEach(unit =>
+    {
+      displayDataById[unit.id] =
+      {
+        targetType: props.targetType,
+        targetEffect: props.targetEffect,
+      };
+    });
+
+    return displayDataById;
+  };
 };
