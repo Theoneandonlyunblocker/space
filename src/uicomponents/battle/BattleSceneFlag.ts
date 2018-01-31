@@ -79,7 +79,7 @@ export class BattleSceneFlagComponent extends React.Component<PropTypes, StateTy
 
         return `${colorString} ${Math.round(stopData.stop * 100)}%`;
       }).join(", ") +
-    `)`;
+    ")";
   }
 }
 

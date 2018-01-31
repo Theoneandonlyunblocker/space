@@ -254,7 +254,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     {
       case "hue":
       {
-        return `linear-gradient(to right, #FF0000 0%, #FFFF00 17%, #00FF00 33%, #00FFFF 50%, #0000FF 67%, #FF00FF 83%, #FF0000 100%)`;
+        return "linear-gradient(to right, #FF0000 0%, #FFFF00 17%, #00FF00 33%, #00FFFF 50%, #0000FF 67%, #FF00FF 83%, #FF0000 100%)";
       }
       case "sat":
       {

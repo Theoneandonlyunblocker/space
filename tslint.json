@@ -72,7 +72,7 @@
     "object-literal-key-quotes": [true, "as-needed"],
     "one-variable-per-declaration": [true],
     "ordered-imports": [true, {"import-sources-order": "lowercase-last", "named-imports-order": "case-insensitive"}],
-    "quotemark": [true, "double", "avoid-escape"],
+    "quotemark": [true, "double", "avoid-escape", "avoid-template"],
     "semicolon": [true, "always"],
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
 
@@ -126,7 +126,10 @@
     "no-sparse-arrays rule" : true,
 
     "no-irregular-whitespace": true,
-    "prefer-switch": true
+    "prefer-switch": true,
+
+    "prefer-object-spread": true,
+    "encoding": true
   }
 }
 

@@ -162,7 +162,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     {
       if (!isFinite(min) || !isFinite(max))
       {
-        throw new Error(`NumberInput component with wrapping enabled must specify min and max values.`);
+        throw new Error("NumberInput component with wrapping enabled must specify min and max values.");
       }
 
       if (roundedValue < min)
