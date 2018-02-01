@@ -26,7 +26,7 @@ function bindFunctionIfExists(functionToBind: Function | undefined, valueToBind:
   else
   {
     return(
-      () => {functionToBind(valueToBind);}
+      () => {functionToBind(valueToBind)}
     );
   }
 }

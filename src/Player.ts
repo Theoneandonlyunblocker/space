@@ -411,7 +411,7 @@ export default class Player
 
     this.resources[resource.type] += amount;
   }
-  getResourceIncome(): {[resourceType: string]: {resource: ResourceTemplate; amount: number;}}
+  getResourceIncome(): {[resourceType: string]: {resource: ResourceTemplate; amount: number}}
   {
     const incomeByResource:
     {
@@ -1014,9 +1014,9 @@ export default class Player
       isAI: this.isAI,
       resources: extendObject(this.resources),
 
-      fleets: this.fleets.map(function(fleet){return fleet.serialize();}),
+      fleets: this.fleets.map(fleet => fleet.serialize()),
       money: this.money,
-      controlledLocationIds: this.controlledLocations.map(function(star){return star.id;}),
+      controlledLocationIds: this.controlledLocations.map(star => star.id),
 
       itemIds: this.items.map(item => item.id),
       unitIds: this.units.map(unit => unit.id),

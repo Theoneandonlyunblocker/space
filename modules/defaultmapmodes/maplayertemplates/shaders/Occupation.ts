@@ -5,11 +5,11 @@
 
 interface UniformData
 {
-  angle: {type: "float"; value: number;};
-  offset: {type: "vec2"; value: number[];};
-  scale: {type: "float"; value: number;};
-  stripeColor: {type: "vec4"; value: number[];};
-  stripeSize: {type: "float"; value: number;};
+  angle: {type: "float"; value: number};
+  offset: {type: "vec2"; value: number[]};
+  scale: {type: "float"; value: number};
+  stripeColor: {type: "vec4"; value: number[]};
+  stripeSize: {type: "float"; value: number};
 }
 
 type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};

@@ -5,21 +5,21 @@
 
 interface UniformData
 {
-  aspectRatio: {type: "float"; value: number;};
-  beamColor: {type: "vec4"; value: number[];};
-  beamYPosition: {type: "float"; value: number;};
-  bulgeIntensity: {type: "float"; value: number;};
-  bulgeSharpness: {type: "float"; value: number;};
-  bulgeSize: {type: "vec2"; value: number[];};
-  bulgeXPosition: {type: "float"; value: number;};
-  lineIntensity: {type: "float"; value: number;};
-  lineXSharpness: {type: "float"; value: number;};
-  lineXSize: {type: "vec2"; value: number[];};
-  lineYSharpness: {type: "float"; value: number;};
-  lineYSize: {type: "float"; value: number;};
-  noiseAmplitude: {type: "float"; value: number;};
-  seed: {type: "float"; value: number;};
-  time: {type: "float"; value: number;};
+  aspectRatio: {type: "float"; value: number};
+  beamColor: {type: "vec4"; value: number[]};
+  beamYPosition: {type: "float"; value: number};
+  bulgeIntensity: {type: "float"; value: number};
+  bulgeSharpness: {type: "float"; value: number};
+  bulgeSize: {type: "vec2"; value: number[]};
+  bulgeXPosition: {type: "float"; value: number};
+  lineIntensity: {type: "float"; value: number};
+  lineXSharpness: {type: "float"; value: number};
+  lineXSize: {type: "vec2"; value: number[]};
+  lineYSharpness: {type: "float"; value: number};
+  lineYSize: {type: "float"; value: number};
+  noiseAmplitude: {type: "float"; value: number};
+  seed: {type: "float"; value: number};
+  time: {type: "float"; value: number};
 }
 
 type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};

@@ -5,13 +5,13 @@
 
 interface UniformData
 {
-  blockAlpha: {type: "float"; value: number;};
-  blockSize: {type: "float"; value: number;};
-  blockWidth: {type: "float"; value: number;};
-  frontier: {type: "float"; value: number;};
-  lineAlpha: {type: "float"; value: number;};
-  seed: {type: "float"; value: number;};
-  trailDistance: {type: "float"; value: number;};
+  blockAlpha: {type: "float"; value: number};
+  blockSize: {type: "float"; value: number};
+  blockWidth: {type: "float"; value: number};
+  frontier: {type: "float"; value: number};
+  lineAlpha: {type: "float"; value: number};
+  seed: {type: "float"; value: number};
+  trailDistance: {type: "float"; value: number};
 }
 
 type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};

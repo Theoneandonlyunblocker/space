@@ -126,7 +126,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
 
     for (let i = 1; i < selectedFleets.length; i++)
     {
-      if (selectedFleets[i].location !== selectedFleets[i-1].location)
+      if (selectedFleets[i].location !== selectedFleets[i - 1].location)
       {
         allFleetsInSameLocation = false;
         break;

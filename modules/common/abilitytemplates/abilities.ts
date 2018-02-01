@@ -341,7 +341,7 @@ export const standBy: AbilityTemplate =
     id: "standBy",
     getUnitsInArea: areaSingle,
     // TODO 2018.01.28 | tslint
-    getDisplayDataForTarget: () => {return {};},
+    getDisplayDataForTarget: () => {return {}},
     executeAction: () => {},
     sfx:
     {

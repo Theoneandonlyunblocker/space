@@ -84,7 +84,7 @@ export class IdDictionary<K extends ObjectWithId, V>
 
     return filtered;
   }
-  public zip<T extends {[keyName: string]: K | V;}>(
+  public zip<T extends {[keyName: string]: K | V}>(
     keyName: string, valueName: string): T[]
   {
     const zipped: T[] = [];
@@ -97,7 +97,7 @@ export class IdDictionary<K extends ObjectWithId, V>
         [valueName]: this.valuesById[id],
       };
 
-      zipped.push(<T>zippedPair);
+      zipped.push(<T> zippedPair);
     }
 
     return zipped;

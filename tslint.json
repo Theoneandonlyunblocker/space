@@ -135,7 +135,21 @@
 
     "no-duplicate-imports": true,
     "no-submodule-imports": true,
-    "space-within-parens": false
+
+    "no-parameter-reassignment": true,
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      // "check-module",
+      "check-separator",
+      "check-rest-spread",
+      "check-type",
+      "check-typecast",
+      "check-type-operator",
+      "check-preblock"
+    ]
   }
 }
 

@@ -5,9 +5,9 @@
 
 interface UniformData
 {
-  highlightIntensity: {type: "float"; value: number;};
-  spikeColor: {type: "vec4"; value: number[];};
-  spikeIntensity: {type: "float"; value: number;};
+  highlightIntensity: {type: "float"; value: number};
+  spikeColor: {type: "vec4"; value: number[]};
+  spikeIntensity: {type: "float"; value: number};
 }
 
 type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};

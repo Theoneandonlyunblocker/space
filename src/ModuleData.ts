@@ -122,7 +122,7 @@ export default class ModuleData
         continue;
       }
       // TODO 2017.02.05 | bad typing
-      this.Templates[category][templateType] = <any>source[templateType];
+      this.Templates[category][templateType] = <any> source[templateType];
     }
   }
   public copyAllTemplates(source: Templates): void
@@ -131,7 +131,7 @@ export default class ModuleData
     {
       if (source[category])
       {
-        this.copyTemplates(source[category], <keyof Templates>category);
+        this.copyTemplates(source[category], <keyof Templates> category);
       }
     }
   }

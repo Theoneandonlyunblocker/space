@@ -103,7 +103,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
       default:
       {
         cellContent = this.props[type];
-        if (isFinite(<number>cellContent))
+        if (isFinite(<number> cellContent))
         {
           cellProps.className += " center-text";
         }
@@ -143,7 +143,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
     {
       className: "item-list-item",
       onClick : this.props.handleClick,
-      key: this.props.keyTODO,/*TODO react*/
+      key: this.props.keyTODO, /*TODO react*/
     };
 
     if (this.dragPositioner)

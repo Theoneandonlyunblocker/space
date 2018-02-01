@@ -5,21 +5,21 @@
 
 interface UniformData
 {
-  baseColor: {type: "vec3"; value: number[];};
-  cloudLightness: {type: "float"; value: number;};
-  coverage: {type: "float"; value: number;};
-  diffusion: {type: "float"; value: number;};
-  highlightA: {type: "float"; value: number;};
-  highlightB: {type: "float"; value: number;};
-  highlightColor: {type: "vec3"; value: number[];};
-  nebulaStarConcentration: {type: "float"; value: number;};
-  overlayColor: {type: "vec3"; value: number[];};
-  scale: {type: "float"; value: number;};
-  seed: {type: "vec2"; value: number[];};
-  starBrightness: {type: "float"; value: number;};
-  starDensity: {type: "float"; value: number;};
-  streakLightness: {type: "float"; value: number;};
-  streakiness: {type: "float"; value: number;};
+  baseColor: {type: "vec3"; value: number[]};
+  cloudLightness: {type: "float"; value: number};
+  coverage: {type: "float"; value: number};
+  diffusion: {type: "float"; value: number};
+  highlightA: {type: "float"; value: number};
+  highlightB: {type: "float"; value: number};
+  highlightColor: {type: "vec3"; value: number[]};
+  nebulaStarConcentration: {type: "float"; value: number};
+  overlayColor: {type: "vec3"; value: number[]};
+  scale: {type: "float"; value: number};
+  seed: {type: "vec2"; value: number[]};
+  starBrightness: {type: "float"; value: number};
+  starDensity: {type: "float"; value: number};
+  streakLightness: {type: "float"; value: number};
+  streakiness: {type: "float"; value: number};
 }
 
 type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};

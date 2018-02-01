@@ -65,7 +65,7 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
             },
               TechnologyUnlocksForType(
               {
-                unlockType: <UnlockType>unlockType,
+                unlockType: <UnlockType> unlockType,
                 unlocks: unlockableThingsByType[unlockType],
               }),
             );

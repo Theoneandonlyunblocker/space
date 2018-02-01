@@ -101,7 +101,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
         React.DOM.label(
         {
           className: "notification-filter-list-item-label",
-          htmlFor: this.props.keyTODO,/*TODO react*/
+          htmlFor: this.props.keyTODO, /*TODO react*/
         },
           this.props.displayName,
         ),

@@ -205,7 +205,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       this.setState(
       {
         UIState: BattleUIState.Idle,
-      },() =>
+      }, () =>
       {
         this.battleScene.activeUnit = this.props.battle.activeUnit;
         this.battleScene.updateUnits();
@@ -276,7 +276,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     const tooltipElement = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_abilityTooltip);
 
-    if(
+    if (
       toElement !== this.state.abilityTooltip.parentElement &&
       (this.ref_TODO_abilityTooltip && toElement !== tooltipElement) &&
       toElement.parentElement !== tooltipElement
@@ -749,7 +749,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             }),
             abilityTooltip,
             this.state.playingBattleEffect ?
-              React.DOM.div({className: "battle-formations-darken"}, null):
+              React.DOM.div({className: "battle-formations-darken"}, null) :
               null,
           ),
         ),

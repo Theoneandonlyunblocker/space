@@ -128,7 +128,7 @@ export default class Unit
 
     battleStats?: UnitBattleStats;
 
-    maxItemSlots: {[slot: string]: number;};
+    maxItemSlots: {[slot: string]: number};
     items: Item[];
 
     portrait?: PortraitTemplate;

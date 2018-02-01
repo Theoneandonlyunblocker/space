@@ -164,7 +164,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     {
       if (this.state[popupType])
       {
-        popups.push(this.makePopup(<PopupType>popupType));
+        popups.push(this.makePopup(<PopupType> popupType));
       }
     }
 

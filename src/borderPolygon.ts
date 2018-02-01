@@ -185,8 +185,8 @@ export function joinPointsWithin(points: Point[], maxDistance: number)
     const x1 = points[i].x;
     const y1 = points[i].y;
 
-    const x2 = points[i+1].x;
-    const y2 = points[i+1].y;
+    const x2 = points[i + 1].x;
+    const y2 = points[i + 1].y;
 
     if (Math.abs(x1 - x2) + Math.abs(y1 - y2) < maxDistance)
     {

@@ -134,8 +134,7 @@ export default class PlayerTechnology
   {
     const overflow = this.tempOverflowedResearchAmount;
     this.tempOverflowedResearchAmount = 0;
-    this.allocateResearchPoints(overflow, ++iteration);
-
+    this.allocateResearchPoints(overflow, iteration + 1);
   }
   getResearchNeededForTechnologyLevel(level: number): number
   {
@@ -221,8 +220,9 @@ export default class PlayerTechnology
 
     return this.technologies[technology.key].priority / totalOpenPriority;
   }
-  setTechnologyPriority(technology: TechnologyTemplate, priority: number, force: boolean = false)
+  setTechnologyPriority(technology: TechnologyTemplate, desiredPriority: number, force: boolean = false)
   {
+    let priority = desiredPriority;
     let remainingPriority = 1;
 
     let totalOtherPriority: number = 0;

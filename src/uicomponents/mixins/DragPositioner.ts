@@ -108,7 +108,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       // DOM node
       else
       {
-        this.containerElement = <HTMLElement>this.containerElementDescriptor;
+        this.containerElement = <HTMLElement> this.containerElementDescriptor;
       }
     }
     else

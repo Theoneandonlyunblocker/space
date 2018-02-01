@@ -5,13 +5,13 @@
 
 interface UniformData
 {
-  centerBloomStrength: {type: "float"; value: number;};
-  centerSize: {type: "float"; value: number;};
-  rayColor: {type: "vec4"; value: number[];};
-  raySharpness: {type: "float"; value: number;};
-  rayStrength: {type: "float"; value: number;};
-  rotation: {type: "float"; value: number;};
-  seed: {type: "vec2"; value: number[];};
+  centerBloomStrength: {type: "float"; value: number};
+  centerSize: {type: "float"; value: number};
+  rayColor: {type: "vec4"; value: number[]};
+  raySharpness: {type: "float"; value: number};
+  rayStrength: {type: "float"; value: number};
+  rotation: {type: "float"; value: number};
+  seed: {type: "vec2"; value: number[]};
 }
 
 type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};

@@ -95,26 +95,26 @@ function getPolygonCentroid(vertices: Point[]): Point
   {
     x0 = vertices[i].x;
     y0 = vertices[i].y;
-    x1 = vertices[i+1].x;
-    y1 = vertices[i+1].y;
-    a = x0*y1 - x1*y0;
+    x1 = vertices[i + 1].x;
+    y1 = vertices[i + 1].y;
+    a = x0 * y1 - x1 * y0;
     signedArea += a;
-    x += (x0 + x1)*a;
-    y += (y0 + y1)*a;
+    x += (x0 + x1) * a;
+    y += (y0 + y1) * a;
   }
 
   x0 = vertices[i].x;
   y0 = vertices[i].y;
   x1 = vertices[0].x;
   y1 = vertices[0].y;
-  a = x0*y1 - x1*y0;
+  a = x0 * y1 - x1 * y0;
   signedArea += a;
-  x += (x0 + x1)*a;
-  y += (y0 + y1)*a;
+  x += (x0 + x1) * a;
+  y += (y0 + y1) * a;
 
   signedArea *= 0.5;
-  x /= (6.0*signedArea);
-  y /= (6.0*signedArea);
+  x /= (6.0 * signedArea);
+  y /= (6.0 * signedArea);
 
   return(
   {

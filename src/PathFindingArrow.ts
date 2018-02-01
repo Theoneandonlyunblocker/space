@@ -425,7 +425,7 @@ export default class PathfindingArrow
     for (let i = points.length - 1; i >= 0; i -= 2)
     {
       const y = points[i];
-      const x = points[i-1];
+      const x = points[i - 1];
       const distance = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
 
       if (distance >= headLength + 10)

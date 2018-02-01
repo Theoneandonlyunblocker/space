@@ -260,7 +260,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 app.reactUI.switchScene("battle");
               }.bind(this),
             }, localize("startBattle")()),
-            !Options.debug.enabled ? null: React.DOM.button(
+            !Options.debug.enabled ? null : React.DOM.button(
             {
               className: "battle-prep-controls-button",
               onClick: function()

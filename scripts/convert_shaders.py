@@ -99,7 +99,7 @@ def getUniformsLines(uniformTypes):
     glslType = uniformTypes[uniformName]
     pixiType = pixiTypes[glslType]
     typeScriptType = typeScriptTypes[glslType]
-    lines.append('  {0}: {{type: "{1}"; value: {2};}};\n'.format(uniformName, pixiType, typeScriptType))
+    lines.append('  {0}: {{type: "{1}"; value: {2}}};\n'.format(uniformName, pixiType, typeScriptType))
 
   lines.append('}\n\n')
 

@@ -328,7 +328,7 @@ export default class Star implements Point
   {
     return this.getEffectWithBuildingsEffect(this.baseIncome, "income");
   }
-  getResourceIncome(): {resource: ResourceTemplate; amount: number;}
+  getResourceIncome(): {resource: ResourceTemplate; amount: number}
   {
     if (!this.resource) return null;
 
@@ -719,7 +719,7 @@ export default class Star implements Point
       current = frontier.slice(0);
       if (current.length <= 0) break;
       frontier = [];
-      visitedByRange[i+1] = [];
+      visitedByRange[i + 1] = [];
 
       for (let j = 0; j < current.length; j++)
       {
@@ -730,7 +730,7 @@ export default class Star implements Point
           if (visited[neighbors[k].id]) continue;
 
           visited[neighbors[k].id] = neighbors[k];
-          visitedByRange[i+1].push(neighbors[k]);
+          visitedByRange[i + 1].push(neighbors[k]);
           frontier.push(neighbors[k]);
           this.indexedDistanceToStar[neighbors[k].id] = i;
         }
@@ -932,8 +932,8 @@ export default class Star implements Point
       name: this.name,
       ownerId: this.owner ? this.owner.id : null,
 
-      linksToIds: this.linksTo.map(function(star){return star.id;}),
-      linksFromIds: this.linksFrom.map(function(star){return star.id;}),
+      linksToIds: this.linksTo.map(star => star.id),
+      linksFromIds: this.linksFrom.map(star => star.id),
 
       seed: this.seed,
 

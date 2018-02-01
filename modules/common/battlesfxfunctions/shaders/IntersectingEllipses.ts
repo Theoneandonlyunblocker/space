@@ -5,13 +5,13 @@
 
 interface UniformData
 {
-  intersectingEllipseCenter: {type: "vec2"; value: number[];};
-  intersectingEllipseSharpness: {type: "float"; value: number;};
-  intersectingEllipseSize: {type: "vec2"; value: number[];};
-  mainAlpha: {type: "float"; value: number;};
-  mainColor: {type: "vec4"; value: number[];};
-  mainEllipseSharpness: {type: "float"; value: number;};
-  mainEllipseSize: {type: "vec2"; value: number[];};
+  intersectingEllipseCenter: {type: "vec2"; value: number[]};
+  intersectingEllipseSharpness: {type: "float"; value: number};
+  intersectingEllipseSize: {type: "vec2"; value: number[]};
+  mainAlpha: {type: "float"; value: number};
+  mainColor: {type: "vec4"; value: number[]};
+  mainEllipseSharpness: {type: "float"; value: number};
+  mainEllipseSize: {type: "vec2"; value: number[]};
 }
 
 type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};

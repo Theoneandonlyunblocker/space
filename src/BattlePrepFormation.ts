@@ -97,7 +97,7 @@ export default class BattlePrepFormation
     this.displayDataIsDirty = true;
   }
   // end human formation stuff
-  public getFormationValidity(): {isValid: boolean; description: string;}
+  public getFormationValidity(): {isValid: boolean; description: string}
   {
     let amountOfUnitsPlaced = 0;
     this.forEachUnitInFormation(unit => amountOfUnitsPlaced += 1);

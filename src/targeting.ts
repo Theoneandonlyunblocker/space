@@ -117,11 +117,11 @@ export const areaOrthogonalNeighbors: GetUnitsInAreaFN = function(user: Unit, ta
 
   const targetLocations: number[][] = [];
 
-  targetLocations.push([x, y]);
-  targetLocations.push([x-1, y]);
-  targetLocations.push([x+1, y]);
-  targetLocations.push([x, y-1]);
-  targetLocations.push([x, y+1]);
+  targetLocations.push([x,     y    ]);
+  targetLocations.push([x - 1, y    ]);
+  targetLocations.push([x + 1, y    ]);
+  targetLocations.push([x,     y - 1]);
+  targetLocations.push([x,     y + 1]);
 
   return getFrom2dArray(allRows, targetLocations);
 };

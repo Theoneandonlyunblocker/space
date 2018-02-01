@@ -142,7 +142,7 @@ export default class PlayerControl
 
     for (let i = 1; i < this.selectedFleets.length; i++)
     {
-      if (this.selectedFleets[i].location !== this.selectedFleets[i-1].location)
+      if (this.selectedFleets[i].location !== this.selectedFleets[i - 1].location)
       {
         return false;
       }

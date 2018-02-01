@@ -198,7 +198,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
       if (!this.props.mapGenTemplate.options[groupName]) continue;
 
 
-      const options: {key: string; content: React.ReactElement<any>;}[] = [];
+      const options: {key: string; content: React.ReactElement<any>}[] = [];
 
       for (let optionName in this.props.mapGenTemplate.options[groupName])
       {

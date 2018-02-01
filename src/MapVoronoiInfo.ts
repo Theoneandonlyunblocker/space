@@ -39,7 +39,7 @@ export default class MapVoronoiInfo
     }
     else
     {
-      const ids: number[] = visibleStars.map(function(star){return star.id;});
+      const ids: number[] = visibleStars.map(star => star.id);
       ids.sort();
 
       indexString = ids.join();
@@ -48,8 +48,7 @@ export default class MapVoronoiInfo
     if (!this.nonFillerLines[indexString] ||
       this.nonFillerLines[indexString].length <= 0)
     {
-      this.nonFillerLines[indexString] =
-        this.diagram.edges.filter(function(edge)
+      this.nonFillerLines[indexString] = this.diagram.edges.filter(edge =>
       {
         const adjacentSites = [edge.lSite, edge.rSite];
         let adjacentFillerSites = 0;

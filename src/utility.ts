@@ -42,7 +42,7 @@ export function getSeededRandomArrayItem<T>(array: T[], rng: any): T
   const _rnd = Math.floor(rng.uniform() * array.length);
   return array[_rnd];
 }
-export function getRandomKey<T>(target: {[props: string]: T;}): string
+export function getRandomKey<T>(target: {[props: string]: T}): string
 {
   const _targetKeys = Object.keys(target);
   const _rnd = Math.floor(Math.random() * (_targetKeys.length));
@@ -92,7 +92,7 @@ export function sortObjectsByProperty(objects:
   });
 }
 
-export function getRandomProperty<T>(target: {[props: string]: T;}): T
+export function getRandomProperty<T>(target: {[props: string]: T}): T
 {
   const _rndProp = target[getRandomKey(target)];
   return _rndProp;
@@ -272,7 +272,7 @@ export function sortByManufactoryCapacityFN(a: Star, b: Star)
   else if (_a < _b) return -1;
   else return 0;
 }
-export function rectContains(rect:{x1: number, x2: number, y1: number, y2: number}, point: Point)
+export function rectContains(rect: {x1: number, x2: number, y1: number, y2: number}, point: Point)
 {
   const x = point.x;
   const y = point.y;
@@ -290,18 +290,15 @@ export function rectContains(rect:{x1: number, x2: number, y1: number, y2: numbe
 
 export function hexToString(hex: number)
 {
-  hex = Math.round(hex);
-  const converted = hex.toString(16);
+  const rounded = Math.round(hex);
+  const converted = rounded.toString(16);
   return "000000".substr(0, 6 - converted.length) + converted;
 }
 export function stringToHex(text: string)
 {
-  if (text.charAt(0) === "#")
-  {
-    text = text.substring(1, 7);
-  }
+  const toParse = text.charAt(0) === "#" ? text.substring(1, 7) : text;
 
-  return parseInt(text, 16);
+  return parseInt(toParse, 16);
 }
 export function drawElementToCanvas(toClone: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): HTMLCanvasElement
 {
@@ -535,7 +532,7 @@ export function prettifyDate(date: Date)
       [
         date.getDate(),
         date.getMonth() + 1,
-        date.getFullYear().toString().slice(2,4),
+        date.getFullYear().toString().slice(2, 4),
       ].join("/"),
       [
         date.getHours(),
@@ -673,11 +670,11 @@ export function onDOMLoaded(onLoaded: () => void)
 }
 function probabilityDistributionsAreWeighted<T>(distributions: ProbabilityDistributions<T>): distributions is WeightedProbabilityDistribution<T>[]
 {
-  return Boolean((<WeightedProbabilityDistribution<T>[]>distributions)[0].weight);
+  return Boolean((<WeightedProbabilityDistribution<T>[]> distributions)[0].weight);
 }
 function probabilityItemsAreTerminal<T>(items: ProbabilityItems<T>): items is T[]
 {
-  const firstItem = (<NonTerminalProbabilityDistribution<T>>items[0]);
+  const firstItem = (<NonTerminalProbabilityDistribution<T>> items[0]);
 
   return !firstItem.probabilityItems;
 }

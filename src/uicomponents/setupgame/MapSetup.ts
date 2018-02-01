@@ -12,7 +12,7 @@ import {localize} from "../../../localization/localize";
 
 export interface PropTypes extends React.Props<any>
 {
-  setPlayerLimits: (limits: {min: number; max: number;}) => void;
+  setPlayerLimits: (limits: {min: number; max: number}) => void;
 }
 
 interface StateType

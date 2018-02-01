@@ -92,7 +92,7 @@ export default class MCTree
         this.rootNode.possibleMoves = this.rootNode.getPossibleMoves();
       }
 
-      if(this.rootNode.possibleMoves.length === 0)
+      if (this.rootNode.possibleMoves.length === 0)
       {
         return true;
       }

@@ -81,7 +81,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
     for (let key in messages)
     {
       const messagesForKey = Array.isArray(messages[key]) ?
-        messages[key] as string[]:
+        messages[key] as string[] :
         [messages[key] as string];
 
       if (!this.messagesByLanguageCode[language.code][key])

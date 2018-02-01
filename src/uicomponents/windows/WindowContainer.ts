@@ -44,7 +44,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   public id: number;
   public dragPositioner: DragPositioner<WindowContainerComponent>;
 
-  private resizeStartQuadrant: {left: boolean; top: boolean;};
+  private resizeStartQuadrant: {left: boolean; top: boolean};
   private resizeStartPosition: Rect =
   {
     top   : undefined,
