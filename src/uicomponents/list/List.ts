@@ -88,26 +88,24 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   componentDidMount()
   {
-    const self = this;
-
     window.addEventListener("resize", this.setDesiredHeight, false);
     // TODO 2017.07.04 | do this some other way
     eventManager.addEventListener("popupResized", this.setDesiredHeight);
 
     if (this.props.keyboardSelect)
     {
-      ReactDOM.findDOMNode(this).addEventListener("keydown", function(event: KeyboardEvent)
+      ReactDOM.findDOMNode(this).addEventListener("keydown", (event: KeyboardEvent) =>
       {
         switch (event.keyCode)
         {
           case 40:
           {
-            self.shiftSelection(1);
+            this.shiftSelection(1);
             break;
           }
           case 38:
           {
-            self.shiftSelection(-1);
+            this.shiftSelection(-1);
             break;
           }
           default:

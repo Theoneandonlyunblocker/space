@@ -88,23 +88,21 @@ export default class PathfindingArrow
   }
   addEventListeners()
   {
-    const self = this;
-
-    this.addEventListener("startPotentialMove", function()
+    this.addEventListener("startPotentialMove", () =>
     {
-      self.startMove();
+      this.startMove();
     });
-    this.addEventListener("setPotentialMoveTarget", function(star: Star)
+    this.addEventListener("setPotentialMoveTarget", (star: Star) =>
     {
-      self.setTarget(star);
+      this.setTarget(star);
     });
-    this.addEventListener("clearPotentialMoveTarget", function()
+    this.addEventListener("clearPotentialMoveTarget", () =>
     {
-      self.clearTarget();
+      this.clearTarget();
     });
-    this.addEventListener("endPotentialMove", function()
+    this.addEventListener("endPotentialMove", () =>
     {
-      self.endMove();
+      this.endMove();
     });
   }
 
@@ -146,19 +144,16 @@ export default class PathfindingArrow
     {
       return;
     }
-
-    const self = this;
-
     if (this.clearTargetTimeout)
     {
       window.clearTimeout(this.clearTargetTimeout);
     }
 
-    this.clearTargetTimeout = window.setTimeout(function()
+    this.clearTargetTimeout = window.setTimeout(() =>
     {
-      self.currentTarget = null;
-      self.clearArrows();
-      self.clearTargetTimeout = null;
+      this.currentTarget = null;
+      this.clearArrows();
+      this.clearTargetTimeout = null;
     }, 10);
   }
 

@@ -96,23 +96,21 @@ export default class Battle
   // Separate from constructor because cloned battles (for ai simulation) don't need to call this.
   public init(): void
   {
-    const self = this;
-
     UnitBattleSides.forEach(sideId =>
     {
-      const side = self[sideId];
+      const side = this[sideId];
       for (let i = 0; i < side.length; i++)
       {
         for (let j = 0; j < side[i].length; j++)
         {
           if (side[i][j])
           {
-            self.unitsById[side[i][j].id] = side[i][j];
-            self.unitsBySide[sideId].push(side[i][j]);
+            this.unitsById[side[i][j].id] = side[i][j];
+            this.unitsBySide[sideId].push(side[i][j]);
 
             const pos = Battle.getAbsolutePositionFromSidePosition([i, j], sideId);
 
-            self.initUnit(side[i][j], sideId, pos);
+            this.initUnit(side[i][j], sideId, pos);
           }
         }
       }

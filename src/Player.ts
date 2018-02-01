@@ -837,10 +837,9 @@ export default class Player
   }
   getNearestOwnedStarTo(star: Star): Star
   {
-    const self = this;
-    const isOwnedByThisFN = function(star: Star)
+    const isOwnedByThisFN = (star: Star) =>
     {
-      return star.owner === self;
+      return star.owner === this;
     };
 
     return star.getNearestStarForQualifier(isOwnedByThisFN);

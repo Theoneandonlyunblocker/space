@@ -77,11 +77,10 @@ export default class MapRenderer
   }
   addEventListeners()
   {
-    const self = this;
     this.listeners["renderMap"] =
       eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
     this.listeners["renderLayer"] =
-      eventManager.addEventListener("renderLayer", function(layerName: string, star?: Star)
+      eventManager.addEventListener("renderLayer", (layerName: string, star?: Star) =>
     {
       let passesStarVisibilityCheck: boolean = true;
       if (star)
@@ -90,12 +89,12 @@ export default class MapRenderer
         {
           case "fleets":
           {
-            passesStarVisibilityCheck = self.player.starIsVisible(star);
+            passesStarVisibilityCheck = this.player.starIsVisible(star);
             break;
           }
           default:
           {
-            passesStarVisibilityCheck = self.player.starIsRevealed(star);
+            passesStarVisibilityCheck = this.player.starIsRevealed(star);
             break;
           }
         }
@@ -103,7 +102,7 @@ export default class MapRenderer
 
       if (passesStarVisibilityCheck || Options.debug.enabled)
       {
-        self.setLayerAsDirty(layerName);
+        this.setLayerAsDirty(layerName);
       }
     });
   }

@@ -65,10 +65,9 @@ export default class MapRendererMapMode
   }
   getActiveLayers(): MapRendererLayer[]
   {
-    const self = this;
-    return(this.layers.filter(function(layer: MapRendererLayer)
+    return(this.layers.filter(layer =>
     {
-      return self.activeLayers[layer.template.key];
+      return this.activeLayers[layer.template.key];
     }));
   }
   resetLayers()

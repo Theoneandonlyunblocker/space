@@ -36,7 +36,7 @@
     //   }
     // ]
 
-    "curly": true,
+    "curly": [true, "as-needed"],
     "label-position": true,
     "no-arg": true,
     "no-bitwise": true,
@@ -129,7 +129,9 @@
     "prefer-switch": true,
 
     "prefer-object-spread": true,
-    "encoding": true
+    "encoding": true,
+
+    "no-this-assignment": true
   }
 }
 
@@ -146,4 +148,6 @@
 // "no-use-before-declare": true,
 // "return-undefined": true,
 
-// "no-unnecessary-type-assertion": true
+// "no-unnecessary-type-assertion": true,
+
+// "use-default-type-parameter": true

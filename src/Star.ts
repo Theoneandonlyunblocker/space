@@ -385,8 +385,6 @@ export default class Star implements Point
       [buildingId: number]: BuildingUpgradeData[];
     } = {};
 
-    const self = this;
-
     const ownerBuildings = this.getBuildingsForPlayer(this.owner);
 
     for (let i = 0; i < ownerBuildings.length; i++)
@@ -394,7 +392,7 @@ export default class Star implements Point
       const building = ownerBuildings[i];
       let upgrades = building.getPossibleUpgrades();
 
-      upgrades = upgrades.filter(function(upgradeData: BuildingUpgradeData)
+      upgrades = upgrades.filter(upgradeData =>
       {
         const parent = upgradeData.parentBuilding.template;
         const template = upgradeData.template;
@@ -410,7 +408,7 @@ export default class Star implements Point
           {
             maxAllowed += 1;
           }
-          const alreadyBuilt = self.getBuildingsInFamilyOfTemplate(template);
+          const alreadyBuilt = this.getBuildingsInFamilyOfTemplate(template);
           return alreadyBuilt.length < maxAllowed;
         }
       });

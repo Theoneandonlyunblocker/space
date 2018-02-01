@@ -61,66 +61,63 @@ export default class PlayerControl
   }
   addEventListeners(): void
   {
-    const self = this;
-
-    this.addEventListener("updateSelection", function()
+    this.addEventListener("updateSelection", () =>
     {
-      self.updateSelection();
+      this.updateSelection();
     });
 
-    this.addEventListener("selectFleets", function(fleets: Fleet[])
+    this.addEventListener("selectFleets", (fleets: Fleet[]) =>
     {
-      self.selectFleets(fleets);
+      this.selectFleets(fleets);
     });
-    this.addEventListener("deselectFleet", function(fleet: Fleet)
+    this.addEventListener("deselectFleet", (fleet: Fleet) =>
     {
-      self.deselectFleet(fleet);
+      this.deselectFleet(fleet);
     });
-    this.addEventListener("mergeFleets", function()
+    this.addEventListener("mergeFleets", () =>
     {
-      self.mergeFleets();
-    });
-
-    this.addEventListener("splitFleet", function(fleet: Fleet)
-    {
-      self.splitFleet(fleet);
-    });
-    this.addEventListener("startReorganizingFleets", function(fleets: Fleet[])
-    {
-      self.startReorganizingFleets(fleets);
-    });
-    this.addEventListener("endReorganizingFleets", function()
-    {
-      self.endReorganizingFleets();
+      this.mergeFleets();
     });
 
-    this.addEventListener("starClick", function(star: Star)
+    this.addEventListener("splitFleet", (fleet: Fleet) =>
     {
-      self.selectStar(star);
+      this.splitFleet(fleet);
     });
-    this.addEventListener("moveFleets", function(star: Star)
+    this.addEventListener("startReorganizingFleets", (fleets: Fleet[]) =>
     {
-      self.moveFleets(star);
+      this.startReorganizingFleets(fleets);
+    });
+    this.addEventListener("endReorganizingFleets", () =>
+    {
+      this.endReorganizingFleets();
     });
 
-    this.addEventListener("setRectangleSelectTargetFN", function(rectangleSelect: RectangleSelect)
+    this.addEventListener("starClick", (star: Star) =>
+    {
+      this.selectStar(star);
+    });
+    this.addEventListener("moveFleets", (star: Star) =>
+    {
+      this.moveFleets(star);
+    });
+
+    this.addEventListener("setRectangleSelectTargetFN", (rectangleSelect: RectangleSelect) =>
     {
       rectangleSelect.getSelectionTargetsFN =
-        self.player.getFleetsWithPositions.bind(self.player);
+        this.player.getFleetsWithPositions.bind(this.player);
     });
 
-    this.addEventListener("attackTarget", function(target: FleetAttackTarget)
+    this.addEventListener("attackTarget", (target: FleetAttackTarget) =>
     {
-      self.attackTarget(target);
+      this.attackTarget(target);
     });
   }
   preventGhost(delay: number): void
   {
     this.preventingGhost = true;
-    const self = this;
-    const timeout = window.setTimeout(function()
+    const timeout = window.setTimeout(() =>
     {
-      self.preventingGhost = false;
+      this.preventingGhost = false;
       window.clearTimeout(timeout);
     }, delay);
   }

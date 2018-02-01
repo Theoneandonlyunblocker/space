@@ -82,7 +82,6 @@ export default class Building
   }
   getPossibleUpgrades()
   {
-    const self = this;
     let upgrades: BuildingUpgradeData[] = [];
 
     if (this.upgradeLevel < this.template.maxUpgradeLevel)
@@ -97,7 +96,7 @@ export default class Building
     }
     else if (this.template.upgradeInto && this.template.upgradeInto.length > 0)
     {
-      const templatedUpgrades = this.template.upgradeInto.map(function(upgradeData)
+      const templatedUpgrades = this.template.upgradeInto.map(upgradeData =>
       {
         const template = activeModuleData.Templates.Buildings[upgradeData.templateType];
         return(
@@ -105,11 +104,11 @@ export default class Building
           level: upgradeData.level,
           template: template,
           cost: template.buildCost,
-          parentBuilding: self,
+          parentBuilding: this,
         });
       });
 
-      upgrades = upgrades.concat(templatedUpgrades);
+      upgrades.push(...templatedUpgrades);
     }
 
     return upgrades;
