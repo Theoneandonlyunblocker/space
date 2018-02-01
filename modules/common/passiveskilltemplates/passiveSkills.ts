@@ -7,8 +7,9 @@ import Unit from "../../../src/Unit";
 import autoHealStatusEffect from "../uniteffecttemplates/autoHeal";
 import poisonedStatusEffect from "../uniteffecttemplates/poisoned";
 
+import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
 import * as EffectActions from "../effectactiontemplates/effectActions";
-import {bindEffectActionData} from "../effectactiontemplates/effectActions";
+
 
 export const autoHeal: PassiveSkillTemplate =
 {

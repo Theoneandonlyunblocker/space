@@ -19,11 +19,8 @@ import
 
 import {placeholder as placeholderSFX} from "../common/battlesfxtemplates/battleSFX";
 import * as EffectActions from "../common/effectactiontemplates/effectActions";
-import
-{
-  bindEffectActionData,
-  resultType,
-} from "../common/effectactiontemplates/effectActions";
+import {bindEffectActionData} from "../common/effectactiontemplates/effectActionBinding";
+import {ResultType} from "../common/effectactiontemplates/ResultType";
 
 import * as DroneStatusEffects from "./unitEffects";
 
@@ -66,7 +63,7 @@ export const assimilate: AbilityTemplate =
         {
           executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
           {
-            const damageDealt = executedEffectsResult[resultType.HealthChanged] || 0;
+            const damageDealt = executedEffectsResult[ResultType.HealthChanged] || 0;
 
             return damageDealt * -0.1;
           },
@@ -112,7 +109,7 @@ export const merge: AbilityTemplate =
       }),
       trigger: (user, target, battle, executedEffectsResult) =>
       {
-        return Boolean(executedEffectsResult[resultType.HealthChanged]);
+        return Boolean(executedEffectsResult[ResultType.HealthChanged]);
       },
       executeAction: bindEffectActionData(EffectActions.addStatusEffect,
       {
@@ -125,13 +122,13 @@ export const merge: AbilityTemplate =
       getUnitsInArea: areaSingle,
       trigger: (user, target, battle, executedEffectsResult) =>
       {
-        return Boolean(executedEffectsResult[resultType.HealthChanged]);
+        return Boolean(executedEffectsResult[ResultType.HealthChanged]);
       },
       executeAction: bindEffectActionData(EffectActions.adjustHealth,
       {
         executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
         {
-          return -executedEffectsResult[resultType.HealthChanged];
+          return -executedEffectsResult[ResultType.HealthChanged];
         },
       }),
     },

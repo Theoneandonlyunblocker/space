@@ -94,8 +94,8 @@ export default class MouseEventHandler
     return(
     {
       pan       : Boolean(buttonChanges & MouseButtons.Middle),
-      select    : Boolean(buttonChanges & MouseButtons.Left  ),
-      fleetMove : Boolean(buttonChanges & MouseButtons.Right ),
+      select    : Boolean(buttonChanges & MouseButtons.Left),
+      fleetMove : Boolean(buttonChanges & MouseButtons.Right),
     });
   }
 

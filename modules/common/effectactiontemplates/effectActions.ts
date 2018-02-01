@@ -1,8 +1,17 @@
 import
 {
+  UnboundEffectAction
+} from "./effectActionBinding";
+import
+{
   getAdjustedDamage,
-  getAttackDamageIncrease,
-} from "./damageAdjustments";
+} from "./damageAdjustment";
+import
+{
+  calculateHealthAdjustment,
+  HealthAdjustment,
+} from "./healthAdjustment";
+import {ResultType} from "./ResultType";
 
 import Battle from "../../../src/Battle";
 import DamageType from "../../../src/DamageType";
@@ -13,7 +22,6 @@ import Unit from "../../../src/Unit";
 import {UnitAttributeAdjustments} from "../../../src/UnitAttributes";
 import
 {
-  AbilityEffectAction,
   ExecutedEffectsResult,
 } from "../../../src/templateinterfaces/AbilityEffectAction";
 import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
@@ -21,23 +29,6 @@ import
 {
   clamp,
 } from "../../../src/utility";
-
-
-type UnboundEffectAction<T> = (
-  data: T,
-  user: Unit,
-  target: Unit,
-  battle: Battle,
-  executedEffectsResult: ExecutedEffectsResult
-) => void;
-
-// so we preserve typing for bound data
-// https://github.com/Microsoft/TypeScript/issues/212
-export function bindEffectActionData<T>(toBind: UnboundEffectAction<T>, data: T): AbilityEffectAction
-{
-  return toBind.bind(null, data);
-}
-
 
 interface DamageWithType
 {
@@ -56,38 +47,9 @@ interface GuardCoverageObj
   coverage: GuardCoverage;
 }
 
-interface HealthAdjustment
-{
-  flat?: number;
-  maxHealthPercentage?: number;
-  perUserUnit?: number;
-}
-const calculateHealthAdjustment = (user: Unit, target: Unit, data: HealthAdjustment) =>
-{
-  let healAmount = 0;
-  if (data.flat)
-  {
-    healAmount += data.flat;
-  }
-  if (data.maxHealthPercentage)
-  {
-    healAmount += target.maxHealth * data.maxHealthPercentage;
-  }
-  if (data.perUserUnit)
-  {
-    healAmount += data.perUserUnit * getAttackDamageIncrease(user, DamageType.Magical);
-  }
-
-  return healAmount;
-};
-
 interface ExecutedEffectsResultAdjustment
 {
   executedEffectsResultAdjustment?: (executedEffectsResult: ExecutedEffectsResult) => number;
-}
-export enum resultType
-{
-  HealthChanged,
 }
 
 
@@ -101,11 +63,11 @@ export const inflictDamage: UnboundEffectAction<DamageWithType> = function(
 {
   const adjustedDamage = getAdjustedDamage(user, target, data.baseDamage, data.damageType);
 
-  if (!executedEffectsResult[resultType.HealthChanged])
+  if (!executedEffectsResult[ResultType.HealthChanged])
   {
-    executedEffectsResult[resultType.HealthChanged] = 0;
+    executedEffectsResult[ResultType.HealthChanged] = 0;
   }
-  executedEffectsResult[resultType.HealthChanged] -= adjustedDamage;
+  executedEffectsResult[ResultType.HealthChanged] -= adjustedDamage;
 
   target.receiveDamage(adjustedDamage);
 };
@@ -200,11 +162,11 @@ export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment &
   const maxAdjustment = target.maxHealth - target.currentHealth;
   const clamped = clamp(healAmount, minAdjustment, maxAdjustment);
 
-  if (!executedEffectsResult[resultType.HealthChanged])
+  if (!executedEffectsResult[ResultType.HealthChanged])
   {
-    executedEffectsResult[resultType.HealthChanged] = 0;
+    executedEffectsResult[ResultType.HealthChanged] = 0;
   }
-  executedEffectsResult[resultType.HealthChanged] += clamped;
+  executedEffectsResult[ResultType.HealthChanged] += clamped;
 
   target.addHealth(clamped);
 };

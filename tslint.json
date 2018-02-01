@@ -131,7 +131,11 @@
     "prefer-object-spread": true,
     "encoding": true,
 
-    "no-this-assignment": true
+    "no-this-assignment": true,
+
+    "no-duplicate-imports": true,
+    "no-submodule-imports": true,
+    "space-within-parens": false
   }
 }
 

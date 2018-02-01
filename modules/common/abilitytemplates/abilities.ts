@@ -26,7 +26,7 @@ import
 import * as BattleSFX from "../battlesfxtemplates/battleSFX";
 
 import * as EffectActions from "../effectactiontemplates/effectActions";
-import {bindEffectActionData} from "../effectactiontemplates/effectActions";
+import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
 
 import * as SnipeStatusEffects from "../uniteffecttemplates/snipe";
 

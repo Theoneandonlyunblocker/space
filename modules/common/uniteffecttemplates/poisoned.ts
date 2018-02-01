@@ -1,7 +1,8 @@
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
 import {adjustHealth} from "../effectactiontemplates/effectActions";
-import {bindEffectActionData} from "../effectactiontemplates/effectActions";
+import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
+
 
 const poisoned: UnitEffectTemplate =
 {

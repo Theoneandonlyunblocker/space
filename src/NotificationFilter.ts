@@ -148,7 +148,7 @@ export default class NotificationFilter
     const baseString = "NotificationFilter.";
 
     let parsedData: any;
-    if (slot !== undefined )
+    if (slot !== undefined)
     {
       const savedData = localStorage.getItem(baseString + slot);
 
