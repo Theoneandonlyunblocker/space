@@ -40,7 +40,7 @@ export function mergeTechnologyValues(...valuesToMerge: RaceTechnologyValue[][])
 
   const mergedValues: RaceTechnologyValue[] = [];
 
-  for (let key in valuesByTechKey)
+  for (const key in valuesByTechKey)
   {
     mergedValues.push(valuesByTechKey[key]);
   }

@@ -27,7 +27,7 @@ class IdGenerator implements IdGeneratorValues
   }
   public setValues(newValues: IdGeneratorValues)
   {
-    for (let key in newValues)
+    for (const key in newValues)
     {
       this[key] = newValues[key];
     }

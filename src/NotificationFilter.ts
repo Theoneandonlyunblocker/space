@@ -27,7 +27,7 @@ export default class NotificationFilter
   {
     const notifications = activeModuleData.Templates.Notifications;
 
-    for (let key in notifications)
+    for (const key in notifications)
     {
       const notificationTemplate = notifications[key];
       this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
@@ -112,7 +112,7 @@ export default class NotificationFilter
     } = {};
     const notifications = activeModuleData.Templates.Notifications;
 
-    for (let key in this.filters)
+    for (const key in this.filters)
     {
       const notificationTemplate = notifications[key];
       if (notificationTemplate)

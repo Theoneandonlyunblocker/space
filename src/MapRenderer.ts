@@ -51,7 +51,7 @@ export default class MapRenderer
     this.preventRender = true;
     this.container.renderable = false;
 
-    for (let name in this.listeners)
+    for (const name in this.listeners)
     {
       eventManager.removeEventListener(name, this.listeners[name]);
     }
@@ -63,7 +63,7 @@ export default class MapRenderer
     this.container = null;
     this.parent = null;
 
-    for (let layerName in this.layers)
+    for (const layerName in this.layers)
     {
       this.layers[layerName].destroy();
     }
@@ -113,7 +113,7 @@ export default class MapRenderer
   }
   initLayers()
   {
-    for (let layerKey in activeModuleData.Templates.MapRendererLayers)
+    for (const layerKey in activeModuleData.Templates.MapRendererLayers)
     {
       const template = activeModuleData.Templates.MapRendererLayers[layerKey];
       const layer = new MapRendererLayer(template);
@@ -124,7 +124,7 @@ export default class MapRenderer
   {
     const buildMapMode = (mapModeKey: string, template: MapRendererMapModeTemplate) =>
     {
-      const alreadyAdded :
+      const alreadyAdded:
       {
         [layerKey: string]: boolean;
       } = {};
@@ -136,7 +136,7 @@ export default class MapRenderer
         mapMode.addLayer(this.layers[layer.key], true);
         alreadyAdded[layer.key] = true;
       }
-      for (let layerKey in this.layers)
+      for (const layerKey in this.layers)
       {
         if (!alreadyAdded[layerKey])
         {
@@ -147,7 +147,7 @@ export default class MapRenderer
       this.mapModes[mapModeKey] = mapMode;
     };
 
-    for (let mapModeKey in activeModuleData.Templates.MapRendererMapModes)
+    for (const mapModeKey in activeModuleData.Templates.MapRendererMapModes)
     {
       const template = activeModuleData.Templates.MapRendererMapModes[mapModeKey];
       buildMapMode(mapModeKey, template);

@@ -48,7 +48,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   {
     const mapGenTemplates: MapGenTemplate[] = [];
 
-    for (let template in activeModuleData.Templates.MapGen)
+    for (const template in activeModuleData.Templates.MapGen)
     {
       if (activeModuleData.Templates.MapGen[template].key)
       {

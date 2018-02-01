@@ -48,7 +48,7 @@ export default class PlayerControl
   }
   removeEventListeners(): void
   {
-    for (let name in this.listeners)
+    for (const name in this.listeners)
     {
       this.removeEventListener(name);
     }

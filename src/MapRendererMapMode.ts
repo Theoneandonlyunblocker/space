@@ -99,7 +99,7 @@ export default class MapRendererMapMode
       delete layersByKey[layerTemplate.key];
     }
 
-    for (let key in layersByKey)
+    for (const key in layersByKey)
     {
       const layer = layersByKey[key];
       newLayers.push(layer);

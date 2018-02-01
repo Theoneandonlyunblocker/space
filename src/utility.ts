@@ -100,7 +100,7 @@ export function getRandomProperty<T>(target: {[props: string]: T}): T
 export function getAllPropertiesWithKey<T>(target: {[props: string]: T}, keyToFind: string): T[]
 {
   const matchingProperties: T[] = [];
-  for (let key in target)
+  for (const key in target)
   {
     if (target[key][keyToFind])
     {
@@ -132,13 +132,13 @@ export function getRandomPropertyWithKey<T>(target: {[props: string]: T}, keyToF
 export function getRandomKeyWithWeights(target: {[prop: string]: number}): string
 {
   let totalWeight: number = 0;
-  for (let prop in target)
+  for (const prop in target)
   {
     totalWeight += target[prop];
   }
 
   let selection = randRange(0, totalWeight);
-  for (let prop in target)
+  for (const prop in target)
   {
     selection -= target[prop];
     if (selection <= 0)
@@ -181,7 +181,7 @@ export function findItemWithKey<T>(source: {[key: string]: any},
     }
   };
 
-  for (let key in source)
+  for (const key in source)
   {
     if (key === parentKey)
     {
@@ -360,7 +360,7 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
   to = to || new from.constructor();
   const toIterateOver = onlyExtendAlreadyPresent ? to : from;
 
-  for (let name in toIterateOver)
+  for (const name in toIterateOver)
   {
     if (!onlyExtendAlreadyPresent || from.hasOwnProperty(name))
     {
@@ -389,7 +389,7 @@ export function shallowExtend<T>(...sources: any[]): T
 
   sources.forEach(source =>
   {
-    for (let key in source)
+    for (const key in source)
     {
       merged[key] = source[key];
     }
@@ -474,7 +474,7 @@ export function deletePropertiesNotSharedWithTarget(source: {[key: string]: any}
 {
   const dst: any = {};
 
-  for (let key in target)
+  for (const key in target)
   {
     if (typeof target[key] !== "object" || !target[key])
     {
@@ -620,7 +620,7 @@ export function getRelativeWeightsFromObject(byCount: {[prop: string]: number}, 
     return Math.max(maxWeight, itemWeight);
   }, min);
 
-  for (let prop in byCount)
+  for (const prop in byCount)
   {
     const count = byCount[prop];
     relativeWeights[prop] = getRelativeValue(count, min, max);
@@ -776,7 +776,7 @@ export function makeRandomPersonality(): Personality
 {
   const unitCompositionPreference: ArchetypeValues = {};
 
-  for (let archetype in activeModuleData.Templates.UnitArchetypes)
+  for (const archetype in activeModuleData.Templates.UnitArchetypes)
   {
     unitCompositionPreference[archetype] = Math.random();
   }

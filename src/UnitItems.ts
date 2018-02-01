@@ -55,7 +55,7 @@ export default class UnitItems
 
     const itemsBySlotWithEmptySlots: ItemsBySlot = {};
 
-    for (let slot in this.itemSlots)
+    for (const slot in this.itemSlots)
     {
       itemsBySlotWithEmptySlots[slot] = itemsBySlot[slot] || [];
     }

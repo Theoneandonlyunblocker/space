@@ -114,7 +114,7 @@ export default class ModuleData
       return;
     }
 
-    for (let templateType in source)
+    for (const templateType in source)
     {
       if (this.Templates[category][templateType])
       {
@@ -127,7 +127,7 @@ export default class ModuleData
   }
   public copyAllTemplates(source: Templates): void
   {
-    for (let category in this.Templates)
+    for (const category in this.Templates)
     {
       if (source[category])
       {

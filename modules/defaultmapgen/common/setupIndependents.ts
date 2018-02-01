@@ -45,7 +45,7 @@ export default function setupIndependents(props:
   {
     let maxDistance = 0;
 
-    for (let starId in props.mapGenDataByStarId)
+    for (const starId in props.mapGenDataByStarId)
     {
       const distance = props.mapGenDataByStarId[starId].distanceFromPlayerOwnedLocation;
       maxDistance = Math.max(maxDistance, distance);

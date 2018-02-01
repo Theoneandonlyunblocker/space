@@ -114,8 +114,8 @@ export function partiallySeverLinks(
 export function getStarConnectedness(star: Star, maxRange: number): number
 {
   let connectedness: number = 0;
-  let linkedByRange = star.getLinkedInRange(maxRange).byRange;
-  for (let rangeString in linkedByRange)
+  const linkedByRange = star.getLinkedInRange(maxRange).byRange;
+  for (const rangeString in linkedByRange)
   {
     const range = parseInt(rangeString);
     connectedness += linkedByRange[rangeString].length / range;
@@ -360,7 +360,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
     },
   } = {};
 
-  for (let distributionGroup in distributablesByDistributionGroup)
+  for (const distributionGroup in distributablesByDistributionGroup)
   {
     const distributables = distributablesByDistributionGroup[distributionGroup];
     distributables.forEach(distributable =>

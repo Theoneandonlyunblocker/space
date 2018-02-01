@@ -732,7 +732,7 @@ export default class Unit
       {
         return false;
       }
-      for (let key of relevantTemplateKeys)
+      for (const key of relevantTemplateKeys)
       {
         if (passiveEffect[key])
         {

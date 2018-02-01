@@ -28,7 +28,7 @@ const fogOfWar: MapRendererLayerTemplate =
   initialAlpha: 0.35,
   destroy: function()
   {
-    for (let starId in fogOfWarSpriteByStarId)
+    for (const starId in fogOfWarSpriteByStarId)
     {
       fogOfWarSpriteByStarId[starId].renderable = false;
       fogOfWarSpriteByStarId[starId].texture.destroy(true);

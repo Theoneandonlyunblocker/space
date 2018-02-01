@@ -33,7 +33,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
   //   };
 
 
-  //   for (let prop in newProps)
+  //   for (const prop in newProps)
   //   {
   //     if (!targetedProps[prop] && prop !== "position")
   //     {
@@ -43,7 +43,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
   //       }
   //     }
   //   }
-  //   for (let prop in targetedProps)
+  //   for (const prop in targetedProps)
   //   {
   //     const unit = newProps.unit;
   //     const oldValue = this.props[prop];

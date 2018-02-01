@@ -47,7 +47,7 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
     const researchSpeed = playerTechnology.getResearchSpeed();
     const rows: React.ReactElement<any>[] = [];
 
-    for (let key in playerTechnology.technologies)
+    for (const key in playerTechnology.technologies)
     {
       rows.push(Technology(
       {

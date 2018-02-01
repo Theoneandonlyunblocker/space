@@ -29,7 +29,7 @@ export class AbilityUseEffectQueue
   {
     this.battleScene = battleScene;
 
-    for (let key in callbacks)
+    for (const key in callbacks)
     {
       this[key] = callbacks[key];
     }

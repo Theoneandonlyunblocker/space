@@ -9,7 +9,7 @@ export function evaluateValueOfTrade(trade: Trade): number
 {
   let value = 0;
 
-  for (let key in trade.stagedItems)
+  for (const key in trade.stagedItems)
   {
     const item = trade.stagedItems[key];
 

@@ -112,7 +112,7 @@ export default class ModuleScripts implements AllModuleScripts
   {
     const accessorObject = <ScriptsCollection<S>> {};
 
-    for (let scriptKey in scriptsWithData)
+    for (const scriptKey in scriptsWithData)
     {
       Object.defineProperty(accessorObject, scriptKey,
       {
@@ -127,9 +127,9 @@ export default class ModuleScripts implements AllModuleScripts
   {
     allScriptData.forEach(toAdd =>
     {
-      for (let category in toAdd)
+      for (const category in toAdd)
       {
-        for (let scriptKey in toAdd[category])
+        for (const scriptKey in toAdd[category])
         {
           this.scriptsWithData[category][scriptKey].push(...toAdd[category][scriptKey]);
         }
@@ -138,9 +138,9 @@ export default class ModuleScripts implements AllModuleScripts
   }
   public remove(toRemove: PartialModuleScriptsWithData): void
   {
-    for (let category in toRemove)
+    for (const category in toRemove)
     {
-      for (let scriptKey in toRemove[category])
+      for (const scriptKey in toRemove[category])
       {
         this.scriptsWithData[category][scriptKey] =
           this.scriptsWithData[category][scriptKey].filter((scriptData: ModuleScriptData<any>) =>

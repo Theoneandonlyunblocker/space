@@ -28,6 +28,7 @@ export default function snipe(type: UnitAttribute, params: SFXParams): void
   {
     loadSnipe(type, () =>
     {
+      hasLoaded = true;
       playSnipe(type, params);
     });
   }
@@ -41,7 +42,7 @@ const colors =
   [UnitAttribute.Speed]: Color.fromHexString("12FE9E"),
 };
 
-for (let attribute in colors)
+for (const attribute in colors)
 {
   const color = colors[attribute];
 

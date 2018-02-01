@@ -105,7 +105,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   public componentWillReceiveProps(newProps: PropTypes): void
   {
     const propsToCheck: (keyof PropTypes)[] = ["minWidth", "minHeight", "maxWidth", "maxHeight"];
-    for (let prop of propsToCheck)
+    for (const prop of propsToCheck)
     {
       if (this.props[prop] !== newProps[prop])
       {

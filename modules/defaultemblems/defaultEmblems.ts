@@ -23,7 +23,7 @@ const defaultEmblems: ModuleFile =
   {
     const loader = new PIXI.loaders.Loader();
 
-    for (let templateKey in SubEmblemTemplates)
+    for (const templateKey in SubEmblemTemplates)
     {
       const template = SubEmblemTemplates[templateKey];
       loader.add(
@@ -35,7 +35,7 @@ const defaultEmblems: ModuleFile =
 
     loader.load(() =>
     {
-      for (let templateKey in SubEmblemTemplates)
+      for (const templateKey in SubEmblemTemplates)
       {
         const template = SubEmblemTemplates[templateKey];
         const response = <XMLDocument> loader.resources[template.src].data;

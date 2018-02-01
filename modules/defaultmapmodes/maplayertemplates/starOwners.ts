@@ -24,7 +24,7 @@ const starOwners: MapRendererLayerTemplate =
   initialAlpha: 0.5,
   destroy: function()
   {
-    for (let key in occupationShaders)
+    for (const key in occupationShaders)
     {
       delete occupationShaders[key];
     }
@@ -116,9 +116,9 @@ function getOccupationShader(owner: Player, occupier: Player)
 }
 function forEachOccupationShader(cb: (shader: OccupationShader) => void)
 {
-  for (let ownerId in occupationShaders)
+  for (const ownerId in occupationShaders)
   {
-    for (let occupierId in occupationShaders[ownerId])
+    for (const occupierId in occupationShaders[ownerId])
     {
       cb(occupationShaders[ownerId][occupierId]);
     }

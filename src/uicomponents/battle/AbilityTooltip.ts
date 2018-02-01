@@ -25,7 +25,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
 
   shouldComponentUpdate(newProps: PropTypes)
   {
-    for (let prop in newProps)
+    for (const prop in newProps)
     {
       if (prop !== "activeTargets")
       {

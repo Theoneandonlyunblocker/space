@@ -245,7 +245,7 @@ export default class Player
 
     this.AIController = null;
 
-    for (let key in this.listeners)
+    for (const key in this.listeners)
     {
       eventManager.removeEventListener(key, this.listeners[key]);
     }
@@ -475,7 +475,7 @@ export default class Player
 
     const allStars: Star[] = [];
 
-    for (let id in stars)
+    for (const id in stars)
     {
       allStars.push(stars[id]);
     }
@@ -539,7 +539,7 @@ export default class Player
   {
     const presentPlayersByVisibility = star.getPresentPlayersByVisibility();
 
-    for (let playerId in presentPlayersByVisibility[visibility])
+    for (const playerId in presentPlayersByVisibility[visibility])
     {
       const player = presentPlayersByVisibility[visibility][playerId];
       this.diplomacy.meetPlayerIfNeeded(player);
@@ -661,7 +661,7 @@ export default class Player
 
     const visible: Star[] = [];
 
-    for (let id in this.visibleStars)
+    for (const id in this.visibleStars)
     {
       const star = this.visibleStars[id];
       visible.push(star);
@@ -682,7 +682,7 @@ export default class Player
 
     const toReturn: Star[] = [];
 
-    for (let id in this.revealedStars)
+    for (const id in this.revealedStars)
     {
       toReturn.push(this.revealedStars[id]);
     }
@@ -698,7 +698,7 @@ export default class Player
 
     const toReturn: Star[] = [];
 
-    for (let id in this.revealedStars)
+    for (const id in this.revealedStars)
     {
       if (!this.visibleStars[id])
       {
@@ -721,7 +721,7 @@ export default class Player
 
     const toReturn: Star[] = [];
 
-    for (let id in this.detectedStars)
+    for (const id in this.detectedStars)
     {
       toReturn.push(this.detectedStars[id]);
     }
@@ -764,7 +764,7 @@ export default class Player
 
     const linksBySourceStar = new ValuesByStar<Star[]>();
 
-    for (let starId in this.revealedStars)
+    for (const starId in this.revealedStars)
     {
       const star = this.revealedStars[starId];
       const links = star.getAllLinks();
@@ -936,7 +936,7 @@ export default class Player
     // TODO manufactory
     const itemTypes: ItemTemplate[] = [];
 
-    for (let key in activeModuleData.Templates.Items)
+    for (const key in activeModuleData.Templates.Items)
     {
       itemTypes.push(activeModuleData.Templates.Items[key]);
     }
@@ -992,13 +992,13 @@ export default class Player
   {
 
     const revealedStarIds: number[] = [];
-    for (let id in this.revealedStars)
+    for (const id in this.revealedStars)
     {
       revealedStarIds.push(this.revealedStars[id].id);
     }
 
     const identifiedUnitIds: number[] = [];
-    for (let id in this.identifiedUnits)
+    for (const id in this.identifiedUnits)
     {
       identifiedUnitIds.push(this.identifiedUnits[id].id);
     }

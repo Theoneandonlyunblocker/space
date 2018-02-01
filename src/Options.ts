@@ -172,7 +172,7 @@ class Options implements OptionsValues
 
       const dateOptionsWereSaved = Date.parse(parsedData.date);
 
-      for (let key in parsedData.options)
+      for (const key in parsedData.options)
       {
         if (parsedOptions[key] !== undefined)
         {

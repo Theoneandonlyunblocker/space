@@ -132,7 +132,7 @@ def getSetUniformValuesLines(indentationLevel):
   lines = [
     'public setUniforms(uniforms: Partial<Uniforms>): void\n',
     '{\n',
-    '  for (let key in uniforms)\n',
+    '  for (const key in uniforms)\n',
     '  {\n',
     '    this.uniforms[key] = uniforms[key];\n',
     '  }\n',

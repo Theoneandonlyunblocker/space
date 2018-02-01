@@ -40,7 +40,7 @@ export default class ProtonWrapper
   {
     this.pixiRenderer = null;
 
-    for (let key in this.emitters)
+    for (const key in this.emitters)
     {
       this.removeEmitterWithKey(key);
     }

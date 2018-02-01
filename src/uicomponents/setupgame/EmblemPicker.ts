@@ -35,7 +35,7 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
   {
     const emblemElements: React.ReactHTMLElement<any>[] = [];
 
-    for (let emblemType in activeModuleData.Templates.SubEmblems)
+    for (const emblemType in activeModuleData.Templates.SubEmblems)
     {
       const template = activeModuleData.Templates.SubEmblems[emblemType];
 

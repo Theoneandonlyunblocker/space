@@ -65,7 +65,7 @@ export class IdDictionary<K extends ObjectWithId, V>
   }
   public forEach(callback: (key: K, value: V) => void): void
   {
-    for (let id in this.keysById)
+    for (const id in this.keysById)
     {
       callback(this.keysById[id], this.valuesById[id]);
     }
@@ -89,7 +89,7 @@ export class IdDictionary<K extends ObjectWithId, V>
   {
     const zipped: T[] = [];
 
-    for (let id in this.keysById)
+    for (const id in this.keysById)
     {
       const zippedPair =
       {
@@ -109,7 +109,7 @@ export class IdDictionary<K extends ObjectWithId, V>
   public sort(sortingFN: (a: V, b: V) => number): K[]
   {
     const keys: K[] = [];
-    for (let id in this.keysById)
+    for (const id in this.keysById)
     {
       keys.push(this.keysById[id]);
     }
@@ -167,7 +167,7 @@ export class IdDictionary<K extends ObjectWithId, V>
   }
   public find(filterFN: (key: K, value: V) => boolean): K | null
   {
-    for (let id in this.keysById)
+    for (const id in this.keysById)
     {
       if (filterFN(this.keysById[id], this.valuesById[id]))
       {

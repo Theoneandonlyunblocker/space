@@ -78,7 +78,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
       this.initLanguage(language);
     }
 
-    for (let key in messages)
+    for (const key in messages)
     {
       const messagesForKey = Array.isArray(messages[key]) ?
         messages[key] as string[] :
@@ -138,7 +138,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
   }
   private clearMessages(messages: Partial<Messages>, language: Language): void
   {
-    for (let key in messages)
+    for (const key in messages)
     {
       this.messagesByLanguageCode[language.code][key] = [];
       this.compiledMessagesByLanguageCode[language.code][key] = [];

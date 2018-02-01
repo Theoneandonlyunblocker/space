@@ -101,11 +101,11 @@ export default class MouseEventHandler
 
   public destroy(): void
   {
-    for (let name in this.listeners)
+    for (const name in this.listeners)
     {
       eventManager.removeEventListener(name, this.listeners[name]);
     }
-    for (let name in this.pixiCanvasListeners)
+    for (const name in this.pixiCanvasListeners)
     {
       this.pixiCanvas.removeEventListener(name, this.pixiCanvasListeners[name]);
     }
@@ -216,7 +216,7 @@ export default class MouseEventHandler
       this.pressedButtons = newPressedButtons;
       const changedActions = MouseEventHandler.getActionsInButtonChanges(changedButtons);
 
-      for (let key in changedActions)
+      for (const key in changedActions)
       {
         if (changedActions[key])
         {

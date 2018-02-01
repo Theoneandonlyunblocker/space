@@ -17,7 +17,7 @@ const fleets: MapRendererLayerTemplate =
   isUsedForCameraBounds: false,
   destroy: function()
   {
-    for (let fleetSize in fleetTextTextureCache)
+    for (const fleetSize in fleetTextTextureCache)
     {
       fleetTextTextureCache[fleetSize].destroy(true);
       fleetTextTextureCache[fleetSize] = null;

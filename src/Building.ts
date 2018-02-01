@@ -50,7 +50,7 @@ export default class Building
       this.template.effectMultiplierFN(this.upgradeLevel) :
       this.upgradeLevel;
 
-    for (let key in this.template.effect)
+    for (const key in this.template.effect)
     {
       const prop = this.template.effect[key];
       if (isFinite(prop))
@@ -67,7 +67,7 @@ export default class Building
         {
           effect[key] = {};
         }
-        for (let key2 in prop)
+        for (const key2 in prop)
         {
           if (!effect[key][key2])
           {
@@ -82,7 +82,7 @@ export default class Building
   }
   getPossibleUpgrades()
   {
-    let upgrades: BuildingUpgradeData[] = [];
+    const upgrades: BuildingUpgradeData[] = [];
 
     if (this.upgradeLevel < this.template.maxUpgradeLevel)
     {

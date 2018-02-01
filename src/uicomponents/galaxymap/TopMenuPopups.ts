@@ -160,7 +160,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   public render()
   {
     const popups: React.ReactElement<any>[] = [];
-    for (let popupType in this.state)
+    for (const popupType in this.state)
     {
       if (this.state[popupType])
       {

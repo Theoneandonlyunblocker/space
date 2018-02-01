@@ -69,7 +69,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
     const filtersByCategory = filter.getFiltersByCategory();
     const filterGroupElements: React.ReactElement<any>[] = [];
 
-    for (let category in filtersByCategory)
+    for (const category in filtersByCategory)
     {
       const filtersForCategory = filtersByCategory[category];
       const filterElementsForCategory:

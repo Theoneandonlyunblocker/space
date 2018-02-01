@@ -140,7 +140,7 @@ export default class Battle
   }
   public forEachUnit(callBack: (unit: Unit) => void): void
   {
-    for (let id in this.unitsById)
+    for (const id in this.unitsById)
     {
        callBack(this.unitsById[id]);
     }

@@ -4,8 +4,6 @@
   {
     "member-access": true,
     "member-ordering": [true, { "order": "fields-first" }],
-    // should allow this after fixing existing lazy use cases.
-    // anything handling generics probably wants to use 'any'
     "no-any": true,
     "no-internal-module": true,
     "no-namespace": [true, "allow-declarations"],
@@ -13,38 +11,35 @@
     // "no-reference": true,
     "no-var-requires": true,
     "only-arrow-functions": [true, "allow-declarations"],
-    // not sure if this is needed. requires def for string literals etc.
-    // "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
-    // tslint doesn't currently recognize newlines which we use after declaration
-    // https://github.com/palantir/tslint/pull/1531
-    // "typedef-whitespace":
-    // [
-    //   true,
-    //   {
-    //     "call-signature": "nospace",
-    //     "index-signature": "nospace",
-    //     "parameter": "nospace",
-    //     "property-declaration": "nospace",
-    //     "variable-declaration": "nospace"
-    //   },
-    //   {
-    //     "call-signature": "onespace",
-    //     "index-signature": "onespace",
-    //     "parameter": "onespace",
-    //     "property-declaration": "onespace",
-    //     "variable-declaration": "onespace"
-    //   }
-    // ]
+    "typedef-whitespace":
+    {
+      // might want to use spaces for alignment
+      "severity": "warn",
+      "options": [
+        {
+          "call-signature": "nospace",
+          "index-signature": "nospace",
+          "parameter": "nospace",
+          "property-declaration": "nospace",
+          "variable-declaration": "nospace"
+        },
+        {
+          "call-signature": "onespace",
+          "index-signature": "onespace",
+          "parameter": "onespace",
+          "property-declaration": "onespace",
+          "variable-declaration": "onespace"
+        }
+      ]
+    },
 
-    "curly": [true, "as-needed"],
+    "curly": [true],
     "label-position": true,
     "no-arg": true,
     "no-bitwise": true,
     "no-conditional-assignment": true,
     "no-construct": true,
     "no-eval": true,
-    // https://github.com/palantir/tslint/issues/1445
-    // "no-for-in-array": true,
     "no-invalid-this": true,
     "no-shadowed-variable": true,
     "no-string-literal": true,
@@ -81,17 +76,10 @@
     "semicolon": [true, "always"],
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
 
-    // lots of problems. for (let i = 0, n = a.length) etc...
-    // "prefer-const": true,
-    // might be good for later
-    // "strict-boolean-expressions": ,
+    "prefer-const": true,
     // too strict. means we can't do stuff like randInt(2, 5)
     // "no-magic-numbers": true,
-    // probably not
-    // "import-blacklist": ,
     "no-string-throw": true,
-    // having empty interfaces for stuff like react component state can be cleaner
-    // "no-empty-interface": true,
     "callable-types": true,
 
     "space-before-function-paren": [true, "never"],
@@ -99,15 +87,9 @@
     // "import-spacing": true,
     "unified-signatures": true,
     "arrow-return-shorthand": [true],
-    // maybe later
-    // "no-boolean-literal-compare": ,
     "no-unnecessary-initializer": true,
     "no-misused-new": true,
-    // maybe later
-    // "prefer-method-signature": ,
-    // whines about abstract methods etc.
-    // "prefer-function-over-method": true,
-
+    "prefer-function-over-method": {"severity": "warn", "options": [true]},
 
     "no-import-side-effect": true,
     "no-duplicate-super": true,
@@ -147,7 +129,6 @@
       "check-branch",
       "check-decl",
       "check-operator",
-      // "check-module",
       "check-separator",
       "check-rest-spread",
       "check-type",
@@ -160,7 +141,9 @@
     "no-duplicate-switch-case": true,
     "no-unnecessary-class": true,
     "ban-comma-operator": true,
-    "object-literal-shorthand": [true, "never"]
+    "object-literal-shorthand": [true, "never"],
+
+    "no-dynamic-delete": true
   }
 }
 
@@ -179,4 +162,8 @@
 
 // "no-unnecessary-type-assertion": true,
 
-// "use-default-type-parameter": true
+// "use-default-type-parameter": true,
+
+// "prefer-readonly": true,
+// "no-for-in-array": true,
+// "no-boolean-literal-compare": true,

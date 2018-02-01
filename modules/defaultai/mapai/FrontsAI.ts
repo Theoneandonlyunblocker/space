@@ -72,7 +72,7 @@ export default class FrontsAI
 
     const removeUnit = (unit: Unit) =>
     {
-      for (let frontId in unitScoresByFront)
+      for (const frontId in unitScoresByFront)
       {
         unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(score =>
         {

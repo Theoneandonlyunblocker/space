@@ -36,7 +36,7 @@ export default class Occupation extends PIXI.Filter<Uniforms>
 
   public setUniforms(uniforms: Partial<Uniforms>): void
   {
-    for (let key in uniforms)
+    for (const key in uniforms)
     {
       this.uniforms[key] = uniforms[key];
     }

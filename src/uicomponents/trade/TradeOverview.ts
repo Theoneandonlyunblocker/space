@@ -76,7 +76,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
     // TODO 2017.04.25 | smarter way to do this for human player
     const willingnessToTradeItems: {[key: string]: number} = {};
-    for (let key in ownTrade.allItems)
+    for (const key in ownTrade.allItems)
     {
       willingnessToTradeItems[key] = 1;
     }

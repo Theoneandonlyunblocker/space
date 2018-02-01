@@ -61,7 +61,7 @@ class TemplateIndexes
 
   public clear(): void
   {
-    for (let key in this.builtIndexes)
+    for (const key in this.builtIndexes)
     {
       this.builtIndexes[key] = null;
     }
@@ -81,7 +81,7 @@ class TemplateIndexes
   {
     const byGroup: DistributablesByDistributionGroup<T> = {};
 
-    for (let key in allDistributables)
+    for (const key in allDistributables)
     {
       const distributable = allDistributables[key];
       distributable.distributionData.distributionGroups.forEach(group =>
@@ -112,7 +112,7 @@ class TemplateIndexes
   //     distributableType: string
   //   ): void
   //   {
-  //     for (let key in distributables)
+  //     for (const key in distributables)
   //     {
   //       const distributable = distributables[key];
   //       for (let i = 0; i < distributable.distributionGroups.length; i++)
@@ -143,7 +143,7 @@ class TemplateIndexes
     {
       [techLevel: number]: ItemTemplate[];
     } = {};
-    for (let itemName in activeModuleData.Templates.Items)
+    for (const itemName in activeModuleData.Templates.Items)
     {
       const item = activeModuleData.Templates.Items[itemName];
 

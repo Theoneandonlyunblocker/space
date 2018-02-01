@@ -57,7 +57,7 @@ export default class Star implements Point
 
   fleets:
   {
-    [playerId: string] : Fleet[];
+    [playerId: string]: Fleet[];
   } = {};
 
   public buildings: Building[] = [];
@@ -168,7 +168,7 @@ export default class Star implements Point
     }
 
     const island: Star[] = [];
-    for (let starId in connected)
+    for (const starId in connected)
     {
       island.push(connected[starId]);
     }
@@ -201,7 +201,7 @@ export default class Star implements Point
 
     if (this.owner === activePlayer)
     {
-      for (let key in building.template.effect)
+      for (const key in building.template.effect)
       {
         eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
       }
@@ -358,7 +358,7 @@ export default class Star implements Point
   getBuildableBuildings(): BuildingTemplate[]
   {
     const canBuild: BuildingTemplate[] = [];
-    for (let buildingType in activeModuleData.Templates.Buildings)
+    for (const buildingType in activeModuleData.Templates.Buildings)
     {
       const template: BuildingTemplate = activeModuleData.Templates.Buildings[buildingType];
       let alreadyBuilt: Building[];
@@ -427,7 +427,7 @@ export default class Star implements Point
   {
     const allFleets: Fleet[] = [];
 
-    for (let playerId in this.fleets)
+    for (const playerId in this.fleets)
     {
       const playerFleets = this.fleets[playerId];
       if (playerFleets.length > 0)
@@ -458,7 +458,7 @@ export default class Star implements Point
   {
     const fleetOwners: Player[] = [];
 
-    for (let playerId in this.fleets)
+    for (const playerId in this.fleets)
     {
       if (this.fleets[playerId].length > 0)
       {
@@ -738,7 +738,7 @@ export default class Star implements Point
     }
     const allVisited: Star[] = [];
 
-    for (let id in visited)
+    for (const id in visited)
     {
       allVisited.push(visited[id]);
     }
@@ -812,7 +812,7 @@ export default class Star implements Point
       }
       else
       {
-        for (let id in a.cost)
+        for (const id in a.cost)
         {
           this.indexedDistanceToStar[id] = a.cost[id];
         }
@@ -878,7 +878,7 @@ export default class Star implements Point
       byVisibilityAndId.visible[secondaryController.id] = secondaryController;
     }
 
-    for (let playerId in this.fleets)
+    for (const playerId in this.fleets)
     {
       const fleets = this.fleets[playerId];
       for (let i = 0; i < fleets.length; i++)

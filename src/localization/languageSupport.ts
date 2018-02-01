@@ -16,7 +16,7 @@ export function getLanguageSupportLevelForModuleFiles(...moduleFiles: ModuleFile
 
   const modulesGroupedByLanguageSupport = groupModuleFilesByLanguageSupport(...moduleFiles);
 
-  for (let languageCode in modulesGroupedByLanguageSupport)
+  for (const languageCode in modulesGroupedByLanguageSupport)
   {
     const supportedModulesCount = modulesGroupedByLanguageSupport[languageCode].length;
     if (supportedModulesCount < totalModulesCount)
@@ -90,7 +90,7 @@ function groupModuleFilesByLanguageSupport(...moduleFiles: ModuleFile[]): Module
     return moduleFile.supportedLanguages === "all";
   });
 
-  for (let code in moduleFilesByLanguageSupport)
+  for (const code in moduleFilesByLanguageSupport)
   {
     moduleFilesByLanguageSupport[code].push(...universalModuleFiles);
   }

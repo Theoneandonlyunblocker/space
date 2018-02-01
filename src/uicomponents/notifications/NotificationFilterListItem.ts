@@ -72,7 +72,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
     const inputElements: React.ReactHTMLElement<any>[] = [];
     const filterState = this.state.filterState;
 
-    for (let state in NotificationFilterState)
+    for (const state in NotificationFilterState)
     {
       const numericState = parseInt(state);
       if (!isFinite(numericState)) continue;

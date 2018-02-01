@@ -39,7 +39,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
       battleState: true,
     };
 
-    for (let key in newProps)
+    for (const key in newProps)
     {
       if (propsThatShouldTriggerUpdate[key] && newProps[key] !== this.props[key])
       {

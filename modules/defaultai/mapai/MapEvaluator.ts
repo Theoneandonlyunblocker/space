@@ -113,7 +113,7 @@ export default class MapEvaluator
     // neighboring other player stars --
     // neighboring other player with low trust stars --- TODO ai
     const nearbyStars = star.getLinkedInRange(2).byRange;
-    for (let rangeString in nearbyStars)
+    for (const rangeString in nearbyStars)
     {
       const distanceMultiplier = 1 / parseInt(rangeString);
       const starsInRange = nearbyStars[rangeString];
@@ -179,7 +179,7 @@ export default class MapEvaluator
     };
     const inRange = star.getLinkedInRange(range).byRange;
 
-    for (let distanceString in inRange)
+    for (const distanceString in inRange)
     {
       const stars = inRange[distanceString];
       const distanceFalloff = getDistanceFalloff(parseInt(distanceString));
@@ -362,7 +362,7 @@ export default class MapEvaluator
 
       inFleetRange[0] = [location];
 
-      for (let distance in inFleetRange)
+      for (const distance in inFleetRange)
       {
         const numericDistance = parseInt(distance);
         let turnsToReach = Math.floor((numericDistance - 1) / range);

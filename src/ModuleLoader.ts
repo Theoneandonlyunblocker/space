@@ -130,7 +130,7 @@ export default class ModuleLoader
   public loadAll(afterLoaded: () => void)
   {
     const allModuleFiles: ModuleFile[] = [];
-    for (let key in this.moduleFilesByKey)
+    for (const key in this.moduleFilesByKey)
     {
       allModuleFiles.push(this.moduleFilesByKey[key]);
     }
@@ -146,7 +146,7 @@ export default class ModuleLoader
   {
     const moduleFilesNeededForPhase: ModuleFile[] = [];
 
-    for (let keyString in this.moduleFilesByPhase)
+    for (const keyString in this.moduleFilesByPhase)
     {
       if (parseInt(keyString) <= phase)
       {

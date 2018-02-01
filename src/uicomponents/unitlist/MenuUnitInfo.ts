@@ -52,7 +52,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
     const itemGroups: React.ReactElement<any>[] = [];
     const itemsBySlot = unit.items.getItemsBySlot();
 
-    for (let slot in unit.items.itemSlots)
+    for (const slot in unit.items.itemSlots)
     {
       itemGroups.push(UnitItemGroup(
       {

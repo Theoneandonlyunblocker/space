@@ -75,7 +75,7 @@ export default class PathfindingArrow
   }
   removeEventListeners()
   {
-    for (let name in this.listeners)
+    for (const name in this.listeners)
     {
       this.removeEventListener(name);
     }

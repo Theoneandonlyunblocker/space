@@ -22,7 +22,7 @@ interface SpriteSheetData
 function processSpriteSheet(sheetData: SpriteSheetData, sheetImg: HTMLImageElement,
   processFrameFN: (sheetImg: HTMLImageElement, frame: SpriteSheetFrame, spriteName?: string) => void)
 {
-  for (let spriteName in sheetData.frames)
+  for (const spriteName in sheetData.frames)
   {
     processFrameFN(sheetImg, sheetData.frames[spriteName].frame, spriteName);
   }

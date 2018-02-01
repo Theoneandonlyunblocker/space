@@ -126,7 +126,7 @@ export class EconomicAI
     // TODO 2017.04.25 | unimplemented
     const willingnessPerItem: {[key: string]: number} = {};
 
-    for (let key in ownTrade.allItems)
+    for (const key in ownTrade.allItems)
     {
       willingnessPerItem[key] = 1;
     }

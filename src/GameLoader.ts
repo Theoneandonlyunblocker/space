@@ -346,12 +346,12 @@ export default class GameLoader
   }
   private deserializePlayerDiplomacy(player: Player, data: PlayerDiplomacySaveData): void
   {
-    for (let playerId in data.statusByPlayer)
+    for (const playerId in data.statusByPlayer)
     {
       player.diplomacy.statusByPlayer.set(this.playersById[playerId], data.statusByPlayer[playerId]);
     }
 
-    for (let playerId in data.attitudeModifiersByPlayer)
+    for (const playerId in data.attitudeModifiersByPlayer)
     {
       const modifiers = data.attitudeModifiersByPlayer[playerId];
 

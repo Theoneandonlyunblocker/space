@@ -74,7 +74,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       {
         containerElement: "containerElementDescriptor",
       };
-      for (let key in props)
+      for (const key in props)
       {
         if (propKeysMap[key])
         {

@@ -46,7 +46,7 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
     const resourceIncome = player.getResourceIncome();
     const resourceTypes: string[] = Object.keys(player.resources);
 
-    for (let resourceType in resourceIncome)
+    for (const resourceType in resourceIncome)
     {
       if (resourceTypes.indexOf(resourceType) === -1)
       {

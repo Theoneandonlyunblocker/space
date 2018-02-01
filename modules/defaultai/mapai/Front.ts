@@ -105,7 +105,7 @@ export class Front
 
     const allFleets: Fleet[] = [];
 
-    for (let fleetId in fleetsById)
+    for (const fleetId in fleetsById)
     {
       allFleets.push(fleetsById[fleetId]);
     }
@@ -163,7 +163,7 @@ export class Front
     const pureFleetsByLocation = this.getFleetsByLocation(pureFleets);
     const impureUnitsByLocation = this.getUnitsByLocation(unitsInImpureFleets);
 
-    for (let locationId in impureUnitsByLocation)
+    for (const locationId in impureUnitsByLocation)
     {
       if (pureFleetsByLocation[locationId])
       {
@@ -184,7 +184,7 @@ export class Front
     }
 
     // create new pure fleets from impure units
-    for (let locationId in impureUnitsByLocation)
+    for (const locationId in impureUnitsByLocation)
     {
       const units = impureUnitsByLocation[locationId];
       const player = units[0].fleet.player;
@@ -215,7 +215,7 @@ export class Front
   {
     const fleetsByLocationId = this.getFleetsByLocation(fleetsToMerge);
 
-    for (let locationId in fleetsByLocationId)
+    for (const locationId in fleetsByLocationId)
     {
       const fleetsAtLocation = fleetsByLocationId[locationId].sort(Fleet.sortByImportance);
 

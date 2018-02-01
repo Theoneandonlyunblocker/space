@@ -55,7 +55,7 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
   render()
   {
 
-    let activeSelectionElements: React.ReactElement<any>[] = [];
+    const activeSelectionElements: React.ReactElement<any>[] = [];
 
     switch (this.state.activeTab)
     {

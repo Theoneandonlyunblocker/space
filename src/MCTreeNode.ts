@@ -64,7 +64,7 @@ export default class MCTreeNode
 
     const actions: Move[] = [];
 
-    for (let id in targets)
+    for (const id in targets)
     {
       const targetActions = targets[id];
       for (let i = 0; i < targetActions.length; i++)
@@ -173,7 +173,7 @@ export default class MCTreeNode
     {
       [targetIdAndAbilityType: string]: number;
     } = {};
-    for (let targetId in actions)
+    for (const targetId in actions)
     {
       const abilities = actions[targetId];
       for (let i = 0; i < abilities.length; i++)

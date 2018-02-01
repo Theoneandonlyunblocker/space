@@ -28,7 +28,7 @@ export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes
 
     if (this.props.attributeChanges)
     {
-      for (let attributeType in this.props.attributeChanges)
+      for (const attributeType in this.props.attributeChanges)
       {
         if (attributeType === "maxActionPoints")
         {

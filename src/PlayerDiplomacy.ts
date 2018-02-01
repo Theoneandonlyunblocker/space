@@ -40,7 +40,7 @@ export default class PlayerDiplomacy
 
   public destroy(): void
   {
-    for (let key in this.listeners)
+    for (const key in this.listeners)
     {
       for (let i = 0; i < this.listeners[key].length; i++)
       {
@@ -219,7 +219,7 @@ export default class PlayerDiplomacy
     // add it and mark as active
     //
     // if modifier is active, set strength based on evaluation
-    for (let modifierType in allModifiers)
+    for (const modifierType in allModifiers)
     {
       const template = allModifiers[modifierType];
 

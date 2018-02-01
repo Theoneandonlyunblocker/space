@@ -139,7 +139,7 @@ export default class MCTree
       };
       consoleRows.push(row);
     }
-    const _ : any = window;
+    const _: any = window;
 
     if (_.console.table)
     {

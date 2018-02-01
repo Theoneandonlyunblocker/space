@@ -50,7 +50,7 @@ export class UnitAttributes implements UnitAttributesObject
 
   constructor(initialAttributes: UnitAttributesObject)
   {
-    for (let key in initialAttributes)
+    for (const key in initialAttributes)
     {
       this[key] = initialAttributes[key];
     }
@@ -73,7 +73,7 @@ export class UnitAttributes implements UnitAttributesObject
 
     toSquash.forEach(adjustment =>
     {
-      for (let attribute in adjustment)
+      for (const attribute in adjustment)
       {
         if (!squashed[attribute])
         {
@@ -110,7 +110,7 @@ export class UnitAttributes implements UnitAttributesObject
   }
   public applyAdjustment(adjustment: UnitAttributeAdjustments): UnitAttributes
   {
-    for (let attribute in adjustment)
+    for (const attribute in adjustment)
     {
       if (adjustment[attribute].flat)
       {
@@ -169,7 +169,7 @@ export class UnitAttributes implements UnitAttributesObject
     let totalFlat = base;
     let totalMultiplier = 1;
 
-    for (let attribute in modifierPerStat)
+    for (const attribute in modifierPerStat)
     {
       const flatAdjustment = modifierPerStat[attribute].flat || 0;
       totalFlat += flatAdjustment * this[attribute];

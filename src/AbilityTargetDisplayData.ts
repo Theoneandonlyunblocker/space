@@ -30,7 +30,7 @@ export function mergeAbilityTargetDisplayDataById(...toMerge: AbilityTargetDispl
 
   toMerge.forEach(data =>
   {
-    for (let unitId in data)
+    for (const unitId in data)
     {
       if (!merged[unitId])
       {

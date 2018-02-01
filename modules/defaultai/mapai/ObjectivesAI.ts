@@ -180,7 +180,7 @@ export class ObjectivesAI
     const objectivesByType = ObjectivesAI.groupObjectivesByType(objectives);
     const relativeScores = new IdDictionary<Objective, number>();
 
-    for (let type in objectivesByType)
+    for (const type in objectivesByType)
     {
       let min: number;
       let max: number;

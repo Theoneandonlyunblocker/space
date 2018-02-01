@@ -52,7 +52,7 @@ abstract class SFXFragment<P>
 
   public setDefaultProps(): void
   {
-    for (let key in this.propInfo)
+    for (const key in this.propInfo)
     {
       this.props[key] = this.propInfo[key].getDefaultValue();
     }
@@ -88,7 +88,7 @@ abstract class SFXFragment<P>
 
   private setProps(props: Partial<P>): void
   {
-    for (let key in props)
+    for (const key in props)
     {
       this.props[key] = this.propInfo[key].copyValue(props[key]);
     }

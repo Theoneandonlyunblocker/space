@@ -42,7 +42,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   public componentWillReceiveProps(newProps: PropTypes)
   {
     const propsToCheck = ["getBlurArea", "backgroundSeed", "backgroundDrawingFunction"];
-    for (let prop of propsToCheck)
+    for (const prop of propsToCheck)
     {
       if (this.props[prop] !== newProps[prop])
       {

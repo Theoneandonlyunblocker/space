@@ -4,7 +4,7 @@ import TemplateCollection from "./templateinterfaces/TemplateCollection";
 
 export function setAttitudeModifierOverride(attitudeModifiers: TemplateCollection<AttitudeModifierTemplate>)
 {
-  for (let modifierType in attitudeModifiers)
+  for (const modifierType in attitudeModifiers)
   {
     const modifier = attitudeModifiers[modifierType];
     if (modifier.canBeOverriddenBy)
@@ -23,10 +23,10 @@ export function setAttitudeModifierOverride(attitudeModifiers: TemplateCollectio
 }
 export function setTechnologyRequirements(technologyTemplates: TemplateCollection<TechnologyTemplate>)
 {
-  for (let technologyKey in technologyTemplates)
+  for (const technologyKey in technologyTemplates)
   {
     const technology = technologyTemplates[technologyKey];
-    for (let level in technology.unlocksPerLevel)
+    for (const level in technology.unlocksPerLevel)
     {
       const unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
       unlockedTemplatesForLevel.forEach(template =>

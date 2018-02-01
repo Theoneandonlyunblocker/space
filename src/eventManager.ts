@@ -2,7 +2,7 @@
 
 /// <reference path="../lib/pixi.d.ts" />
 
-let eventEmitter = new PIXI.utils.EventEmitter();
+const eventEmitter = new PIXI.utils.EventEmitter();
 const eventManager =
 {
   dispatchEvent: eventEmitter.emit.bind(eventEmitter),

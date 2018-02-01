@@ -204,7 +204,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     const majorityRegions = sector.getMajorityRegions(regions);
     majorityRegions.forEach(region =>
     {
-      for (let keyWord in distributionFlagsByKeyWord)
+      for (const keyWord in distributionFlagsByKeyWord)
       {
         if (region.id.indexOf(keyWord) !== -1)
         {

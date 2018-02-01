@@ -37,7 +37,7 @@ export class Trade
       return false;
     }
 
-    for (let key in t1)
+    for (const key in t1)
     {
       if (!t2[key] || t1[key].amount !== t2[key].amount)
       {
@@ -92,7 +92,7 @@ export class Trade
   {
     const available: TradeableItems = {};
 
-    for (let key in this.allItems)
+    for (const key in this.allItems)
     {
       const stagedAmount = this.stagedItems[key] ? this.stagedItems[key].amount : 0;
       available[key] =
@@ -111,7 +111,7 @@ export class Trade
   }
   public removeAllStagedItems()
   {
-    for (let key in this.stagedItems)
+    for (const key in this.stagedItems)
     {
       this.removeStagedItem(key);
     }
@@ -158,7 +158,7 @@ export class Trade
   }
   private executeAllStagedTrades(targetPlayer: Player)
   {
-    for (let key in this.stagedItems)
+    for (const key in this.stagedItems)
     {
       this.handleTradeOfItem(key, this.stagedItems[key].amount, targetPlayer);
     }
@@ -170,7 +170,7 @@ export class Trade
   }
   private copyStagedItemsFrom(toCopyFrom: Trade): void
   {
-    for (let key in toCopyFrom.stagedItems)
+    for (const key in toCopyFrom.stagedItems)
     {
       this.stagedItems[key] =
       {

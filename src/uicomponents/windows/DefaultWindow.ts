@@ -147,7 +147,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
       const titleBarHeight = this.titleBarElement!.getBoundingClientRect().height;
 
 
-      for (let prop in this.state.sizeBounds)
+      for (const prop in this.state.sizeBounds)
       {
         const prefixedPropName = prefixedCssPropertyMap[prop];
         const valueString = contentElementStyle.getPropertyValue(prefixedPropName);

@@ -65,7 +65,7 @@ export default class PlayerTechnology
     let priorityToAllocate: number = 1;
     const techsToInit: TechnologyTemplate[] = [];
 
-    for (let key in this.technologies)
+    for (const key in this.technologies)
     {
       const techData = this.technologies[key];
       if (techData.priority === undefined)
@@ -101,13 +101,13 @@ export default class PlayerTechnology
     // probably not needed as priority should always add up to 1 anyway,
     // but this is cheap and infrequently called so this is here as a safeguard at least for now
     let totalPriority: number = 0;
-    for (let key in this.technologies)
+    for (const key in this.technologies)
     {
       totalPriority += this.technologies[key].priority;
     }
 
 
-    for (let key in this.technologies)
+    for (const key in this.technologies)
     {
       const techData = this.technologies[key];
       const relativePriority = techData.priority / totalPriority;
@@ -199,7 +199,7 @@ export default class PlayerTechnology
   {
     let openPriority = 0;
 
-    for (let key in this.technologies)
+    for (const key in this.technologies)
     {
       const techData = this.technologies[key];
       if (!techData.priorityIsLocked)
@@ -228,7 +228,7 @@ export default class PlayerTechnology
     let totalOtherPriority: number = 0;
     let totalOtherPriorityWasZero: boolean = false;
     let totalOthersCount: number = 0;
-    for (let key in this.technologies)
+    for (const key in this.technologies)
     {
       if (key !== technology.key)
       {
@@ -277,7 +277,7 @@ export default class PlayerTechnology
       totalOtherPriorityWasZero = true;
     }
 
-    for (let key in this.technologies)
+    for (const key in this.technologies)
     {
       if (key !== technology.key && !this.technologies[key].priorityIsLocked)
       {
@@ -311,7 +311,7 @@ export default class PlayerTechnology
   {
     let overflowPriority: number = 0;
 
-    for (let key in this.technologies)
+    for (const key in this.technologies)
     {
       const techData = this.technologies[key];
 
@@ -329,7 +329,7 @@ export default class PlayerTechnology
   {
     const data: PlayerTechnologySaveData = {};
 
-    for (let key in this.technologies)
+    for (const key in this.technologies)
     {
       data[key] =
       {

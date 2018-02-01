@@ -132,7 +132,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
   private cleanSetupComponentsById(): void
   {
-    for (let playerId in this.playerSetupComponentsById)
+    for (const playerId in this.playerSetupComponentsById)
     {
       if (!this.playerSetupComponentsById[playerId])
       {
@@ -153,7 +153,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
   randomizeAllPlayers()
   {
-    for (let id in this.playerSetupComponentsById)
+    for (const id in this.playerSetupComponentsById)
     {
       const player = this.playerSetupComponentsById[id];
 

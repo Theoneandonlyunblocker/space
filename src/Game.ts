@@ -148,7 +148,7 @@ export default class Game
       player.money += player.getIncome();
 
       const allResourceIncomeData = player.getResourceIncome();
-      for (let resourceType in allResourceIncomeData)
+      for (const resourceType in allResourceIncomeData)
       {
         const resourceData = allResourceIncomeData[resourceType];
         player.addResource(resourceData.resource, resourceData.amount);

@@ -287,7 +287,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
     const SFXTemplateSelectOptions: React.ReactHTMLElement<any>[] = [];
 
-    for (let key in activeModuleData.Templates.BattleSFX)
+    for (const key in activeModuleData.Templates.BattleSFX)
     {
       SFXTemplateSelectOptions.push(React.DOM.option(
       {
