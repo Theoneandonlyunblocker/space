@@ -15,7 +15,8 @@
     {
       // might want to use spaces for alignment
       "severity": "warn",
-      "options": [
+      "options":
+      [
         {
           "call-signature": "nospace",
           "index-signature": "nospace",
@@ -66,8 +67,10 @@
     "new-parens": true,
     "object-literal-key-quotes": [true, "as-needed"],
     "one-variable-per-declaration": [true],
-    "ordered-imports": [true,
-    {
+    "ordered-imports":
+    [
+      true,
+      {
       "import-sources-order": "lowercase-last",
       "named-imports-order": "case-insensitive",
       "grouped-imports": true
@@ -86,6 +89,7 @@
     // we use newlines
     // "import-spacing": true,
     "unified-signatures": true,
+    // complains about () => {return {}}; which is annoying
     "arrow-return-shorthand": [true],
     "no-unnecessary-initializer": true,
     "no-misused-new": true,
@@ -94,7 +98,8 @@
     "no-import-side-effect": true,
     "no-duplicate-super": true,
     "newline-before-return": true,
-    "ban-types": [
+    "ban-types":
+    [
       true,
       ["Object", "Avoid using the `Object` type. Did you mean `object`?"],
       ["Function", "Avoid using the `Function` type. Prefer a specific function type, like `() => void`."],
@@ -124,7 +129,8 @@
     "no-submodule-imports": true,
 
     "no-parameter-reassignment": true,
-    "whitespace": [
+    "whitespace":
+    [
       true,
       "check-branch",
       "check-decl",
