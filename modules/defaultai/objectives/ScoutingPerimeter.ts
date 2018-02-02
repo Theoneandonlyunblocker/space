@@ -1,6 +1,6 @@
 import {Objective} from "./common/Objective";
 import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
-import {movePriority} from "./common/movePriority";
+import {MovePriority} from "./common/MovePriority";
 
 import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
@@ -18,7 +18,7 @@ export class ScoutingPerimeter extends TargetedFrontObjective
   public static readonly type = "ScoutingPerimeter";
   public readonly type = "ScoutingPerimeter";
 
-  public readonly movePriority = movePriority.ScoutingPerimeter;
+  public readonly movePriority = MovePriority.ScoutingPerimeter;
 
   protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {

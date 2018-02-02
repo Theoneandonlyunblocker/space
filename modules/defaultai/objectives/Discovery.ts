@@ -1,6 +1,6 @@
 import {Objective} from "./common/Objective";
 import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
-import {movePriority} from "./common/movePriority";
+import {MovePriority} from "./common/MovePriority";
 
 import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
@@ -17,7 +17,7 @@ export class Discovery extends TargetedFrontObjective
   public static readonly type = "Discovery";
   public readonly type = "Discovery";
 
-  public readonly movePriority = movePriority.Discovery;
+  public readonly movePriority = MovePriority.Discovery;
 
   protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {

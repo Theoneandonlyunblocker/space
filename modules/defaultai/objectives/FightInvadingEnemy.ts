@@ -1,6 +1,6 @@
 import {Objective} from "./common/Objective";
 import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
-import {movePriority} from "./common/movePriority";
+import {MovePriority} from "./common/MovePriority";
 
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
@@ -15,7 +15,7 @@ export class FightInvadingEnemy extends TargetedFrontObjective
   public static readonly type = "FightInvadingEnemy";
   public readonly type = "FightInvadingEnemy";
 
-  public readonly movePriority = movePriority.FightInvadingEnemy;
+  public readonly movePriority = MovePriority.FightInvadingEnemy;
 
   protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {

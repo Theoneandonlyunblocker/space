@@ -1,6 +1,6 @@
 import {FrontObjective} from "./common/FrontObjective";
 import {Objective} from "./common/Objective";
-import {movePriority} from "./common/movePriority";
+import {MovePriority} from "./common/MovePriority";
 
 import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
@@ -16,7 +16,7 @@ export class Heal extends FrontObjective
   public static readonly type = "Heal";
   public readonly type = "Heal";
 
-  public readonly movePriority = movePriority.Heal;
+  public readonly movePriority = MovePriority.Heal;
 
   protected constructor(score: number, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {

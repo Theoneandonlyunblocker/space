@@ -1,6 +1,6 @@
 import {Objective} from "./common/Objective";
 import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
-import {movePriority} from "./common/movePriority";
+import {MovePriority} from "./common/MovePriority";
 
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
@@ -15,7 +15,7 @@ export class CleanUpPirates extends TargetedFrontObjective
   public static readonly type = "CleanUpPirates";
   public readonly type = "CleanUpPirates";
 
-  public readonly movePriority = movePriority.CleanUpPirates;
+  public readonly movePriority = MovePriority.CleanUpPirates;
 
   protected constructor(score: number, target: Star, mapEvaluator: MapEvaluator, unitEvaluator: UnitEvaluator)
   {

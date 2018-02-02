@@ -1,4 +1,4 @@
-export enum movePriority
+export enum MovePriority
 {
   Discovery = 999,
   ScoutingPerimeter = 8,
