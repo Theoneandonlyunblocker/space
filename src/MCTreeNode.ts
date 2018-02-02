@@ -167,42 +167,49 @@ export default class MCTreeNode
 
     if (this.parent) this.parent.updateResult(result);
   }
-  pickRandomAbilityAndTarget(actions: {[targetId: number]: AbilityTemplate[]})
+  private pickRandomMove(actions: {[targetId: number]: AbilityTemplate[]}): Move
   {
-    const prioritiesByAbilityAndTarget:
+    let key = 0;
+
+    const prioritiesByKey:
     {
-      [targetIdAndAbilityType: string]: number;
+      [key: number]: number;
     } = {};
+    const movesByKey:
+    {
+      [key: number]: Move;
+    } = {};
+
     for (const targetId in actions)
     {
       const abilities = actions[targetId];
-      for (let i = 0; i < abilities.length; i++)
+      abilities.forEach(ability =>
       {
-        const priority = isFinite(abilities[i].AIEvaluationPriority) ? abilities[i].AIEvaluationPriority : 1;
-        // TODO 2018.01.29 | unify this with whereever the index string comes from
-        const indexString = `${targetId}:${abilities[i].type}`;
-        prioritiesByAbilityAndTarget[indexString] = priority;
+        const priority = isFinite(ability.AIEvaluationPriority) ? ability.AIEvaluationPriority : 1;
 
-      }
+        prioritiesByKey[key] = priority;
+        movesByKey[key] =
+        {
+          targetId: parseInt(targetId),
+          ability: ability,
+        };
+
+        key++;
+      });
     }
 
-    const selected = getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
-    const separatorIndex = selected.indexOf(":");
+    const selectedKey = getRandomKeyWithWeights(prioritiesByKey);
 
-    return(
-    {
-      targetId: parseInt(selected.slice(0, separatorIndex)),
-      abilityType: selected.slice(separatorIndex + 1),
-    });
+    return movesByKey[selectedKey];
   }
   simulateOnce(battle: Battle): void
   {
     const actions = getTargetsForAllAbilities(battle, battle.activeUnit);
 
-    const targetData = this.pickRandomAbilityAndTarget(actions);
+    const selectedMove = this.pickRandomMove(actions);
 
-    const ability = activeModuleData.Templates.Abilities[targetData.abilityType];
-    const target = battle.unitsById[targetData.targetId];
+    const ability = selectedMove.ability;
+    const target = battle.unitsById[selectedMove.targetId];
 
     useAbility(battle, ability, battle.activeUnit, target);
     battle.endTurn();
