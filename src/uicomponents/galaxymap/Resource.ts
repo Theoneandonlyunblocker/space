@@ -2,6 +2,9 @@ import * as React from "react";
 
 import ResourceTemplate from "../../templateinterfaces/ResourceTemplate";
 
+import {localize} from "../../../localization/localize";
+
+
 export interface PropTypes extends React.Props<any>
 {
   resource: ResourceTemplate;
@@ -26,6 +29,7 @@ export class ResourceComponent extends React.Component<PropTypes, StateType>
   render()
   {
     const sign = this.props.income < 0 ? "" : "+";
+
     return(
       React.DOM.div(
       {
@@ -43,8 +47,7 @@ export class ResourceComponent extends React.Component<PropTypes, StateType>
         {
           className: "resource-amount",
         },
-          // TODO 2018.01.29 | localize
-          `${this.props.amount} (${sign}${this.props.income} per turn)`,
+          `${this.props.amount} (${sign}${this.props.income} ${localize("perTurn")()})`,
         ),
       )
     );
