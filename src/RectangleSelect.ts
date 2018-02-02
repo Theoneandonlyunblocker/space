@@ -3,6 +3,7 @@
 import Point from "./Point";
 import eventManager from "./eventManager";
 
+
 export default class RectangleSelect
 {
   public getSelectionTargetsFN: () => {position: Point; data: any}[];

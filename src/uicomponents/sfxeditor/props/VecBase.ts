@@ -4,6 +4,7 @@ import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragme
 
 import InlineNumberProp from "./InlineNumberProp";
 
+
 export interface VecProp
 {
   key: string;

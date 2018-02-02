@@ -15,6 +15,7 @@ import
 import {default as DragPositioner} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
+
 export interface PropTypes extends React.Props<any>
 {
   containingAreaElement: HTMLElement;

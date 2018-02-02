@@ -3,6 +3,7 @@ import {WindowContainerComponent} from "./WindowContainer";
 import {IdDictionary} from "../../IdDictionary";
 import {Rect} from "../../Rect";
 
+
 const baseZIndex = 10000;
 const windowCascadeMargin = 20;
 

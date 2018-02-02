@@ -2,6 +2,7 @@ import * as React from "react";
 
 import MixinBase from "./MixinBase";
 
+
 type LifeCycleFunction = "componentWillMount" | "componentDidMount" |
   "componentWillReceiveProps" | "componentWillUpdate" |
   "componentDidUpdate" | "componentWillUnmount";

@@ -6,6 +6,7 @@ import
   pointsEqual,
 } from "../../../src/utility";
 
+
 export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>[]
 {
   const triangles: Triangle<Point>[] = [];

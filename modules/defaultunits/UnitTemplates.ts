@@ -10,6 +10,7 @@ import scout from  "./templates/scout";
 import shieldBoat from  "./templates/shieldBoat";
 import stealthShip from  "./templates/stealthShip";
 
+
 const UnitTemplates: TemplateCollection<UnitTemplate> =
 {
   [battleCruiser.type]: battleCruiser,

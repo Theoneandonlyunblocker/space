@@ -9,6 +9,7 @@ import
 } from "../../utility";
 import AttitudeModifierList from "./AttitudeModifierList";
 
+
 export interface PropTypes extends React.Props<any>
 {
   attitudeModifiers: AttitudeModifier[];

@@ -2,6 +2,7 @@ import MapRendererMapModeTemplate from "../../../src/templateinterfaces/MapRende
 
 import * as MapLayers from "../allMapLayerTemplates";
 
+
 export const defaultMapMode: MapRendererMapModeTemplate =
 {
   key: "defaultMapMode",

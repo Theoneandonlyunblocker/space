@@ -6,6 +6,7 @@ import Color from "../../../Color";
 
 import ColorSetter from "../../setupgame/ColorSetter";
 
+
 interface PropTypes extends React.Props<any>
 {
   propName: string;

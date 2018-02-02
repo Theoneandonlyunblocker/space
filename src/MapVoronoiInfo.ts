@@ -5,6 +5,7 @@ import Point from "./Point";
 import Star from "./Star";
 import VoronoiCell from "./VoronoiCell";
 
+
 export default class MapVoronoiInfo
 {
   treeMap: BoundsQuadTree<VoronoiCell<Star>>;

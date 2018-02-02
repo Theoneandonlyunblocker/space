@@ -10,6 +10,7 @@ import
   makePolygonFromPoints,
 } from "../../../src/pixiWrapperFunctions";
 
+
 const starIncome: MapRendererLayerTemplate =
 {
   key: "starIncome",

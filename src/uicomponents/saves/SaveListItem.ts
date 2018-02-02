@@ -2,6 +2,7 @@ import * as React from "react";
 
 import ListItemProps from "../list/ListItemProps";
 
+
 export interface PropTypes extends ListItemProps, React.Props<any>
 {
   isMarkedForDeletion: boolean;

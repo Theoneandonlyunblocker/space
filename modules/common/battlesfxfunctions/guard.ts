@@ -6,6 +6,7 @@ import
   getRelativeValue,
 } from "../../../src/utility";
 
+
 export default function guard(props: SFXParams)
 {
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(

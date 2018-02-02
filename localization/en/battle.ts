@@ -2,6 +2,7 @@ import {noOther} from "./_helpers";
 
 import GuardCoverage from "../../src/GuardCoverage";
 
+
 export const battle =
 {
   preparing_statusText: "Preparing",

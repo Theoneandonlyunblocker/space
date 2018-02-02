@@ -4,6 +4,7 @@ import PlayerDiplomacy from "../../../src/PlayerDiplomacy";
 
 import MapEvaluator from "./MapEvaluator";
 
+
 export default class DiplomacyAI
 {
   private game: Game;

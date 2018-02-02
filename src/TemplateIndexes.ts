@@ -5,6 +5,7 @@ import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 
+
 interface DistributablesByKey<T extends Distributable>
 {
   [key: string]: T;

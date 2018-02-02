@@ -9,6 +9,7 @@ import {unitEffectTemplates} from  "./uniteffecttemplates/unitEffectTemplates";
 
 import {attachedUnitDataScripts} from "./attachedUnitData";
 
+
 export default function addCommonToModuleData(moduleData: ModuleData)
 {
   // TODO 2017.06.13 | none of these have supported languages set

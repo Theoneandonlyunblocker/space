@@ -2,6 +2,7 @@ import {ScriptsWithData} from "../../../src/ModuleScriptData";
 
 import {UnitScripts} from "../../../src/modulescriptinterfaces/UnitScripts";
 
+
 export const unitScripts: Partial<ScriptsWithData<UnitScripts>> =
 {
   onCapture:

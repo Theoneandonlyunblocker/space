@@ -7,6 +7,7 @@ import
   flatten2dArray,
 } from "./utility";
 
+
 export default class BattlePrepFormation
 {
   public formation: Unit[][];

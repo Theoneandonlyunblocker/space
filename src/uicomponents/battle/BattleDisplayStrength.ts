@@ -1,6 +1,7 @@
 /// <reference path="../../../lib/tween.js.d.ts" />
 import * as React from "react";
 
+
 export interface PropTypes extends React.Props<any>
 {
   animationDuration: number;

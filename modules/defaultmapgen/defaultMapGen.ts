@@ -10,6 +10,7 @@ import tinierSpiralGalaxy from "./templates/tinierSpiralGalaxy";
 
 import * as Languages from "../../localization/defaultLanguages";
 
+
 const Templates: TemplateCollection<MapGenTemplate> =
 {
   [spiralGalaxy.key]: spiralGalaxy,

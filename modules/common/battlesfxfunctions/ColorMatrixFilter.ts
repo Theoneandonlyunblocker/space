@@ -2,6 +2,7 @@
 
 import Color from "../../../src/Color";
 
+
 export default class ColorMatrixFilter extends PIXI.filters.ColorMatrixFilter
 {
   constructor()

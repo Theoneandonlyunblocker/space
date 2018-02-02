@@ -6,6 +6,7 @@ import
   clamp,
 } from "../../utility";
 
+
 export interface PropTypes extends React.Props<any>
 {
   value: number;

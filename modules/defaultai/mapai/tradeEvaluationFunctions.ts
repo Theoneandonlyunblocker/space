@@ -5,6 +5,7 @@ import
   TradeableItemType,
 } from "../../../src/Trade";
 
+
 export function evaluateValueOfTrade(trade: Trade): number
 {
   let value = 0;

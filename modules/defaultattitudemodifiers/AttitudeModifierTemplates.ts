@@ -4,6 +4,7 @@ import TemplateCollection from "../../src/templateinterfaces/TemplateCollection"
 import DiplomacyEvaluation from "../../src/DiplomacyEvaluation";
 import DiplomacyState from "../../src/DiplomacyState";
 
+
 export const neighborStars: AttitudeModifierTemplate =
 {
   type: "neighborStars",

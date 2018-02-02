@@ -8,6 +8,7 @@ import {UnitEvaluator} from "../../mapai/UnitEvaluator";
 import Star from "../../../../src/Star";
 import Unit from "../../../../src/Unit";
 
+
 let frontIdGenerator = 0;
 
 export abstract class FrontObjective extends Objective

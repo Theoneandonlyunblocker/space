@@ -13,6 +13,7 @@ import
   reverseSide,
 } from "./utility";
 
+
 //------TARGETING
 export type GetBattleTargetsFN = (user: Unit, battle: Battle) => Unit[];
 export const targetSelf: GetBattleTargetsFN = function(user: Unit, battle: Battle)

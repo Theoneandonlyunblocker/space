@@ -14,6 +14,7 @@ import
   makeShaderSprite,
 } from "../../../../src/pixiWrapperFunctions";
 
+
 interface ShockWaveProps
 {
   size: Point;

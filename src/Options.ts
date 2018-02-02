@@ -6,6 +6,7 @@ import
   shallowCopy,
 } from "./utility";
 
+
 type OptionsCategory = "battleAnimationTiming" | "debug" | "ui" | "display";
 const OptionsCategories: OptionsCategory[] =
 [

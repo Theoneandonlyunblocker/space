@@ -3,6 +3,7 @@ import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 
 import Unit from "../../src/Unit";
 
+
 export const combat: UnitArchetype =
 {
   type: "combat",

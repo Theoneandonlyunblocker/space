@@ -4,6 +4,7 @@ import Unit from "../../../src/Unit";
 
 import attachedUnitData from "../../common/attachedUnitData";
 
+
 export class Front
 {
   public id: number;

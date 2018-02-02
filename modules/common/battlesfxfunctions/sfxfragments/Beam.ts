@@ -19,6 +19,7 @@ import
   getRelativeValue,
 } from "../../../../src/utility";
 
+
 interface BeamProps
 {
   size: Point;

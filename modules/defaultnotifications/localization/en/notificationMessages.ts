@@ -1,5 +1,6 @@
 import {wasWere} from "../../../../localization/en/_helpers";
 
+
 const battleFinish =
 {
   attackSuccessful: "{attackerName} successfully attacked {locationName}.",

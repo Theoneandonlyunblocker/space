@@ -8,6 +8,7 @@ import ListItemProps from "../list/ListItemProps";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
+
 export interface PropTypes extends ListItemProps, React.Props<any>
 {
   typeName: string;

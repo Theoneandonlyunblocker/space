@@ -2,6 +2,7 @@ import * as React from "react";
 
 import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 
+
 export interface PropTypes extends React.Props<any>
 {
   template: ManufacturableThing;

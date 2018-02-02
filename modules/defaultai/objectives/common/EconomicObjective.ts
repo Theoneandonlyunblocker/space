@@ -1,6 +1,7 @@
 import {Objective} from "./Objective";
 import {ObjectiveFamily} from "./ObjectiveFamily";
 
+
 export abstract class EconomicObjective extends Objective
 {
   public static readonly family = ObjectiveFamily.Economic;

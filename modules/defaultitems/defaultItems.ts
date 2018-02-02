@@ -8,6 +8,7 @@ import ItemTemplate from "../../src/templateinterfaces/ItemTemplate";
 
 import * as Languages from "../../localization/defaultLanguages";
 
+
 const defaultItems: ModuleFile =
 {
   key: "defaultItems",

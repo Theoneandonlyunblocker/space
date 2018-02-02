@@ -2,6 +2,7 @@ import * as React from "react";
 
 import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
 
+
 interface PropTypes extends React.Props<any>
 {
   hasDraggingFragment: boolean;

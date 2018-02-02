@@ -9,6 +9,7 @@ import Options from "./Options";
 import Unit from "./Unit";
 import UnitBattleSide from "./UnitBattleSide";
 
+
 // TODO performance
 // BattleScene.render() shouldn't be called unless there's something new to render
 //

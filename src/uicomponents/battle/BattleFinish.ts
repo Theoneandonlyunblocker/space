@@ -1,5 +1,8 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
+
+
 export interface PropTypes extends React.Props<any>
 {
   humanPlayerWonBattle: boolean;
@@ -8,8 +11,6 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
 }
-
-import {localize} from "../../../localization/localize";
 
 export class BattleFinishComponent extends React.PureComponent<PropTypes, StateType>
 {

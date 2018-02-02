@@ -4,6 +4,7 @@ import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPosi
 import applyMixins from "../mixins/applyMixins";
 import TradeableItemProps from "./TradeableItemProps";
 
+
 export interface PropTypes extends TradeableItemProps, React.Props<any>
 {
   keyTODO: string;

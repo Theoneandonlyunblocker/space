@@ -2,6 +2,7 @@ import * as React from "react";
 
 import {default as TurnCounter, PropTypes as TurnCounterProps} from "./TurnCounter";
 
+
 export interface PropTypes extends React.Props<any>
 {
   turnsLeft: number;

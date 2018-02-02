@@ -2,6 +2,7 @@ import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeT
 
 import MapRendererLayer from "./MapRendererLayer";
 
+
 export default class MapRendererMapMode
 {
   template: MapRendererMapModeTemplate;

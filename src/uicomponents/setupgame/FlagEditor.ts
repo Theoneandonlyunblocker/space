@@ -17,6 +17,7 @@ import
 } from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 
+
 type EmblemPropsWithId = (EmblemProps & {id: number});
 
 const maxEmblems = 4;

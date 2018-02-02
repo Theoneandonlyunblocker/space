@@ -36,6 +36,7 @@ import UnitArchetype from "./templateinterfaces/UnitArchetype";
 import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
+
 // tslint:disable:no-any
 interface Templates
 {

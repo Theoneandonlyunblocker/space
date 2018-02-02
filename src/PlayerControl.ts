@@ -5,6 +5,7 @@ import RectangleSelect from "./RectangleSelect";
 import Star from "./Star";
 import eventManager from "./eventManager";
 
+
 export default class PlayerControl
 {
   player: Player;

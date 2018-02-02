@@ -42,6 +42,7 @@ import Formation from "./Formation";
 import TurnCounterList from "./TurnCounterList";
 import TurnOrder from "./TurnOrder";
 
+
 export interface PropTypes extends React.Props<any>
 {
   battle: Battle;

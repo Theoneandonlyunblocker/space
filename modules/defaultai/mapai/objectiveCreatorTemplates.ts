@@ -11,6 +11,7 @@ import {ScoutingPerimeter as ScoutingPerimeter} from "../objectives/ScoutingPeri
 
 import {ObjectiveCreatorTemplate} from "../objectives/common/ObjectiveCreatorTemplate";
 
+
 export const objectiveCreatorTemplates: ObjectiveCreatorTemplate[] =
 [
   BuildUnitsForFront.makeCreatorTemplate(),

@@ -12,6 +12,7 @@ import MapRendererMapModeTemplate from "../../src/templateinterfaces/MapRenderer
 
 import * as Languages from "../../localization/defaultLanguages";
 
+
 const defaultMapModes: ModuleFile =
 {
   key: "defaultMapModes",

@@ -7,6 +7,7 @@ import {svgCache} from "../../src/svgCache";
 
 import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
 
+
 const defaultEmblems: ModuleFile =
 {
   key: "defaultEmblems",

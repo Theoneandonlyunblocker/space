@@ -12,6 +12,7 @@ import ManufacturableThings from "./ManufacturableThings";
 import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
 import applyMixins from "../mixins/applyMixins";
 
+
 export interface PropTypes extends React.Props<any>
 {
   player: Player;

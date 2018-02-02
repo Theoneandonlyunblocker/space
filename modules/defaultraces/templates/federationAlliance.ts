@@ -20,6 +20,7 @@ import
   mergeTechnologyValues,
 } from "../common";
 
+
 const federationAlliance: RaceTemplate =
 {
   type: "federationAlliance",

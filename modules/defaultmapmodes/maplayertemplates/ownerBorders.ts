@@ -11,6 +11,7 @@ import
   makePolygonFromPoints,
 } from "../../../src/pixiWrapperFunctions";
 
+
 const ownerBorders: MapRendererLayerTemplate =
 {
   key: "ownerBorders",

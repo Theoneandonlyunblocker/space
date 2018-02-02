@@ -19,6 +19,7 @@ import
   reverseSide,
 } from "./utility";
 
+
 export default class Battle
 {
   public unitsById:

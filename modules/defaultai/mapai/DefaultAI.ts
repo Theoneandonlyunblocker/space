@@ -23,6 +23,7 @@ import
   makeRandomPersonality,
 } from "../../../src/utility";
 
+
 export default class DefaultAI implements AITemplate<DefaultAISaveData>
 {
   public static readonly type: string = "DefaultAI";

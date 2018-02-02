@@ -3,6 +3,7 @@ import Star from "../../../../../src/Star";
 
 import {Front} from "../../../mapai/Front";
 
+
 export function moveToTarget(
   front: Front,
   afterDoneCallback: () => void,

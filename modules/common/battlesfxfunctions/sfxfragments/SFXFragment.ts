@@ -2,6 +2,7 @@
 
 import {PropInfo} from "./props/PropInfo";
 
+
 let idGenerator = 0;
 
 abstract class SFXFragment<P>

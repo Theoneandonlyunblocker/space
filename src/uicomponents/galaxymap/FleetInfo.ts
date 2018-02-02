@@ -18,6 +18,7 @@ interface StateType
 
 import {localize} from "../../../localization/localize";
 
+
 export class FleetInfoComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "FleetInfo";

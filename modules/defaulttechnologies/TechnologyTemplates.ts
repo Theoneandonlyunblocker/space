@@ -2,6 +2,7 @@ import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate"
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 import stealthShip from "../defaultunits/templates/stealthShip";
 
+
 export const stealth: TechnologyTemplate =
 {
   key: "stealth",

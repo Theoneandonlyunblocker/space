@@ -8,6 +8,7 @@ import Point from "./Point";
 import Star from "./Star";
 import eventManager from "./eventManager";
 
+
 interface PathFindingArrowCurveStyle
 {
   color: Color;

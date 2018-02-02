@@ -1,5 +1,6 @@
 import {PropInfoType} from "./PropInfoType";
 
+
 export abstract class PropInfo<T>
 {
   // should be abstract and static, but not currently possible in typescript

@@ -15,6 +15,7 @@ import
 
 import {activeModuleData} from "../activeModuleData";
 
+
 export interface PropTypes extends React.Props<any>
 {
 }

@@ -9,6 +9,7 @@ import
   shallowExtend,
 } from "../utility";
 
+
 export interface EmblemProps
 {
   colors: Color[];

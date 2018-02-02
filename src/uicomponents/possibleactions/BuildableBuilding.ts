@@ -7,6 +7,7 @@ import ListItemProps from "../list/ListItemProps";
 import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
 import applyMixins from "../mixins/applyMixins";
 
+
 export interface PropTypes extends ListItemProps, React.Props<any>
 {
   typeName: string;

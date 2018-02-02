@@ -12,6 +12,7 @@ import
   getAbilityEffectDataByPhase,
 } from "./battleAbilityProcessing";
 
+
 export interface AbilityUseEffect
 {
   effectId: string;

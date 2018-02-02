@@ -6,6 +6,7 @@ import Personality from "./Personality";
 import {TradeOffer} from "./TradeOffer";
 import Unit from "./Unit";
 
+
 export class AIController<SaveData>
 {
   public personality: Personality;

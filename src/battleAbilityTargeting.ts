@@ -4,6 +4,7 @@ import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import Battle from "./Battle";
 import Unit from "./Unit";
 
+
 export function getTargetsForAllAbilities(battle: Battle, user: Unit)
 {
   // does this ever happen?

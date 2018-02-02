@@ -7,6 +7,7 @@ import PlayerFlag from "../PlayerFlag";
 import ListItemProps from "../list/ListItemProps";
 import Opinion from "./Opinion";
 
+
 export interface PropTypes extends ListItemProps, React.Props<any>
 {
   player: Player;

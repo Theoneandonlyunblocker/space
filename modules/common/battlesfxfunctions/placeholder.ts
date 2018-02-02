@@ -2,6 +2,7 @@
 
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
+
 export function placeholder(params: SFXParams): void
 {
   const container = new PIXI.Container();

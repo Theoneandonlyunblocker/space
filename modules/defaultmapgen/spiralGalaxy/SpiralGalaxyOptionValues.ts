@@ -1,5 +1,6 @@
 import MapGenOptionValues from "../../../src/templateinterfaces/MapGenOptionValues";
 
+
 declare interface SpiralGalaxyOptionValues extends MapGenOptionValues
 {
   basicOptions:

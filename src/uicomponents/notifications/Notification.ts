@@ -4,6 +4,7 @@ import Notification from "../../Notification";
 
 import {localize} from "../../../localization/localize";
 
+
 export interface PropTypes extends React.Props<any>
 {
   markAsRead: (notification: Notification<any, any>) => void;

@@ -1,6 +1,7 @@
 import {activeModuleData} from "./activeModuleData";
 import Unit from "./Unit";
 
+
 export default function getNullFormation(): Unit[][]
 {
   const nullFormation: Unit[][] = [];

@@ -9,6 +9,7 @@ import FleetAttackTarget from "../../../../src/FleetAttackTarget";
 import Star from "../../../../src/Star";
 import Unit from "../../../../src/Unit";
 
+
 export abstract class TargetedFrontObjective extends FrontObjective
 {
   public readonly target: Star;

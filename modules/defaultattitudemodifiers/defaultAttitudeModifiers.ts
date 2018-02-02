@@ -10,6 +10,7 @@ import AttitudeModifierTemplate from "../../src/templateinterfaces/AttitudeModif
 
 import * as Languages from "../../localization/defaultLanguages";
 
+
 const defaultAttitudeModifiers: ModuleFile =
 {
   key: "defaultAttitudeModifiers",

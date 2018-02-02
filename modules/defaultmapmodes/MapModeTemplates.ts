@@ -3,6 +3,7 @@ import TemplateCollection from "../../src/templateinterfaces/TemplateCollection"
 
 import * as MapModes from "./mapmodetemplates/mapModes";
 
+
 const MapModeTemplates: TemplateCollection<MapRendererMapModeTemplate> =
 {
   [MapModes.defaultMapMode.key]: MapModes.defaultMapMode,

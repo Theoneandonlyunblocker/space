@@ -36,6 +36,7 @@ import {setActiveLanguageCode} from "./localization/activeLanguage";
 
 import addCommonToModuleData from "../modules/common/addCommonToModuleData";
 
+
 class App
 {
   // TODO refactor | most (all?) of these should be private or moved

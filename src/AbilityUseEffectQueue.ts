@@ -5,6 +5,7 @@ import
   shallowExtend,
 } from "./utility";
 
+
 export class AbilityUseEffectQueue
 {
   private onEffectStart: (effect: AbilityUseEffect) => void;

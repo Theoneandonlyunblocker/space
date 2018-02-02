@@ -6,6 +6,7 @@ import
 import DefaultAI from "./DefaultAI";
 import DefaultAISaveData from "./DefaultAISaveData";
 
+
 const DefaultAIConstructor: AITemplateConstructor<DefaultAISaveData> =
 {
   type: DefaultAI.type,

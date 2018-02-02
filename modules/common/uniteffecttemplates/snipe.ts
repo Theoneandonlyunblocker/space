@@ -2,6 +2,7 @@ import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTempla
 
 import {UnitAttribute} from "../../../src/UnitAttributes";
 
+
 function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
 {
   const attributeName = UnitAttribute[attribute];

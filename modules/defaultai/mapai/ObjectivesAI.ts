@@ -55,6 +55,7 @@ import
   getRelativeValue,
 } from "../../../src/utility";
 
+
 export class ObjectivesAI
 {
   private ongoingObjectives: Objective[] = [];

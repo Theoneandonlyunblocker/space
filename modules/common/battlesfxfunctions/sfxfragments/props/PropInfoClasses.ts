@@ -11,6 +11,7 @@ import RampingValueType from "../RampingValue";
 import ColorType from "../../../../../src/Color";
 import PointType from "../../../../../src/Point";
 
+
 export class Boolean extends Primitive<boolean>
 {
   public readonly type: PropInfoType.Boolean;

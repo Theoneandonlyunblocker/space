@@ -15,6 +15,7 @@ import
   setVoronoiCells,
 } from "./voronoi";
 
+
 export default class MapGenResult
 {
   stars: Star[];

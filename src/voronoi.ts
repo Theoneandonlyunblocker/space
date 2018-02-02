@@ -5,6 +5,7 @@ import Point from "./Point";
 import Star from "./Star";
 import VoronoiCell from "./VoronoiCell";
 
+
 export function makeVoronoi<T extends Point>(points: T[], width: number, height: number)
 {
   const boundingBox =

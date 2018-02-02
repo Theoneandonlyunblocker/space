@@ -8,6 +8,7 @@ import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import {localize} from "../../../localization/localize";
 
+
 export interface PropTypes extends React.Props<any>
 {
   closePopup?: () => void;

@@ -2,6 +2,7 @@ import VoronoiCell from "./VoronoiCell";
 
 import Point from "./Point";
 
+
 export default class FillerPoint implements Point
 {
   x: number;

@@ -4,6 +4,7 @@ import defaultUnits from "../defaultunits/UnitTemplates";
 
 import RaceTechnologyValue from "../../src/templateinterfaces/RaceTechnologyValue";
 
+
 export const defaultRaceTechnologyValues: RaceTechnologyValue[] =
 [
   {

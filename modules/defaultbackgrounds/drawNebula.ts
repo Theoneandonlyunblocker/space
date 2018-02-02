@@ -15,6 +15,7 @@ import
   randRange,
 } from "../../src/utility";
 
+
 const drawNebula: BackgroundDrawingFunction = function(
   seed: string, size: PIXI.Rectangle, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
 {

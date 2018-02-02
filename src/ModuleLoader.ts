@@ -4,6 +4,7 @@ import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
 
 import eventManager from "./eventManager";
 
+
 export default class ModuleLoader
 {
   moduleData: ModuleData;

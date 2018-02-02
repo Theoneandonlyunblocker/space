@@ -12,6 +12,7 @@ import
   shallowCopy,
 } from "../../utility";
 
+
 export interface PropTypes extends React.Props<any>
 {
   initialColumns: ListColumn<any>[];

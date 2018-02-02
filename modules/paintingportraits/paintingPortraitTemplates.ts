@@ -1,6 +1,7 @@
 import PortraitTemplate from "../../src/templateinterfaces/PortraitTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
+
 export const paintingPortraitTemplates: TemplateCollection<PortraitTemplate> =
 {
   adelaide_hanscom1:

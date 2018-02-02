@@ -7,6 +7,7 @@ import ManufacturableThingsList from "./ManufacturableThingsList";
 
 import {localize} from "../../../localization/localize";
 
+
 export interface PropTypes extends React.Props<any>
 {
   manufactory: Manufactory;

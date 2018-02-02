@@ -4,6 +4,7 @@ import TemplateCollection from "../../src/templateinterfaces/TemplateCollection"
 import federationAlliance from "./templates/federationAlliance";
 import wormThings from "./templates/wormThings";
 
+
 const RaceTemplates: TemplateCollection<RaceTemplate> =
 {
   [federationAlliance.type]: federationAlliance,

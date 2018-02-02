@@ -13,6 +13,7 @@ import
   randRange,
 } from "../../../src/utility";
 
+
 export default function setupIndependents(props:
 {
   player: Player;

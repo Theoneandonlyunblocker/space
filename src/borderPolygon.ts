@@ -11,6 +11,7 @@ import
   pointsEqual,
 } from "./utility";
 
+
 // some problems with this as well as pixi polygon rendering can lead to silly behavior sometimes.
 // overlapping lines, acute angles etc etc.
 // probably have to make a shader based version later but this could still be useful for canvas fallback.

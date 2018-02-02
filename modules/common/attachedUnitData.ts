@@ -9,6 +9,7 @@ import
 
 import {Front} from "../defaultai/mapai/Front";
 
+
 interface AttachedUnitData
 {
   front?: Front;

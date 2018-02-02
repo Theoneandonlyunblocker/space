@@ -2,6 +2,7 @@ import * as React from "react";
 
 import NumericTextInput from "../../generic/NumericTextInput";
 
+
 interface PropTypes extends React.Props<any>
 {
   propName: string;

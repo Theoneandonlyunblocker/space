@@ -2,6 +2,7 @@ import MapGenTemplate from "../../../src/templateinterfaces/MapGenTemplate";
 
 import spiralGalaxyGeneration from "../spiralGalaxy/spiralGalaxyGeneration";
 
+
 const tinierSpiralGalaxy: MapGenTemplate =
 {
   key: "tinierSpiralGalaxy",

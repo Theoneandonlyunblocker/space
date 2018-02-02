@@ -4,6 +4,7 @@ import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
 import Unit from "./Unit";
 import idGenerators from "./idGenerators";
 
+
 export default class StatusEffect
 {
   public id: number;

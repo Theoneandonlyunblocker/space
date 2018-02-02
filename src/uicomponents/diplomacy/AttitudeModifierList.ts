@@ -13,6 +13,7 @@ import applyMixins from "../mixins/applyMixins";
 
 import {localize} from "../../../localization/localize";
 
+
 export interface PropTypes extends React.Props<any>
 {
   attitudeModifiers: AttitudeModifier[];

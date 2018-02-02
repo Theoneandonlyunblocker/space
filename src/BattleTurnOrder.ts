@@ -1,6 +1,7 @@
 import TurnOrderDisplayData from "./TurnOrderDisplayData";
 import Unit from "./Unit";
 
+
 export default class BattleTurnOrder
 {
   private allUnits: Unit[] = [];

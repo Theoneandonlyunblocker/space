@@ -10,6 +10,7 @@ import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
 import Player from "./Player";
 import Star from "./Star";
 
+
 export default class Building
 {
   template: BuildingTemplate;

@@ -4,6 +4,7 @@ import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
 
 import {default as Player} from "./Player";
 
+
 export default class Notification<P, D>
 {
   template: NotificationTemplate<P, D>;

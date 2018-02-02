@@ -6,6 +6,7 @@ import MapRendererLayer from "../../MapRendererLayer";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
+
 export interface PropTypes extends React.Props<any>
 {
   listItemIsDragging: boolean;

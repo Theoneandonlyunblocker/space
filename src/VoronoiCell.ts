@@ -2,6 +2,7 @@
 
 import Point from "./Point";
 
+
 export default class VoronoiCell<T extends Point> extends Voronoi.prototype.Cell
 {
   public vertices: Voronoi.Vertex[];

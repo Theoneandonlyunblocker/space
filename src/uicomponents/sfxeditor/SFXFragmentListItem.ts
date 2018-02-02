@@ -7,6 +7,7 @@ import SFXFragmentConstructor from "./SFXFragmentConstructor";
 import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
+
 type Fragment = SFXFragment<any> | SFXFragmentConstructor;
 
 interface PropTypes<P extends Fragment> extends React.Props<any>

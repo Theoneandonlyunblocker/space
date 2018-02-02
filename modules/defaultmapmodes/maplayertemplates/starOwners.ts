@@ -15,6 +15,7 @@ import
 
 import OccupationShader from "./shaders/Occupation";
 
+
 const starOwners: MapRendererLayerTemplate =
 {
   key: "starOwners",

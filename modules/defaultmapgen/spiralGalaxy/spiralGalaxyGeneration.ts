@@ -40,6 +40,7 @@ import setupIndependents from "../common/setupIndependents";
 import SpiralGalaxyOptionValues from "./SpiralGalaxyOptionValues";
 import generateSpiralPoints from "./generateSpiralPoints";
 
+
 const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOptionValues,
   players: Player[]): MapGenResult
 {

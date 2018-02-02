@@ -6,6 +6,7 @@ import {generateMainColor, generateSecondaryColor} from "./colorGeneration";
 
 import FlagSaveData from "./savedata/FlagSaveData";
 
+
 export class Flag
 {
   public backgroundColor: Color | null;

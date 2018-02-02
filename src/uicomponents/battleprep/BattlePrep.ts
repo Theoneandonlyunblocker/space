@@ -21,6 +21,7 @@ import BattleInfo from "./BattleInfo";
 
 import {localize} from "../../../localization/localize";
 
+
 export interface PropTypes extends React.Props<any>
 {
   battlePrep: BattlePrep;

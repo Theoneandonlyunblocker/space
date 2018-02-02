@@ -13,6 +13,7 @@ import
   transformMat3,
 } from "../../src/utility";
 
+
 const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   unit: Unit,
   SFXParams: SFXParams,

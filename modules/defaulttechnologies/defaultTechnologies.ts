@@ -9,6 +9,7 @@ import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate"
 
 import * as Languages from "../../localization/defaultLanguages";
 
+
 const defaultTechnologies: ModuleFile =
 {
   key: "defaultTechnologies",

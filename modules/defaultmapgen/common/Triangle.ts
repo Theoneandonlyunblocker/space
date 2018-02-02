@@ -1,5 +1,6 @@
 import Point from "../../../src/Point";
 
+
 export default class Triangle<T extends Point>
 {
   public a: T;

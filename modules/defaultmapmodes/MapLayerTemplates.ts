@@ -3,6 +3,7 @@ import TemplateCollection from "../../src/templateinterfaces/TemplateCollection"
 
 import * as MapLayers from "./allMapLayerTemplates";
 
+
 const MapLayerTemplates: TemplateCollection<MapRendererLayerTemplate> =
 {
   [MapLayers.nonFillerStars.key]: MapLayers.nonFillerStars,

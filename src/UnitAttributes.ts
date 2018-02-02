@@ -4,6 +4,7 @@ import
   clamp,
 } from "./utility";
 
+
 export enum UnitAttribute
 {
   Attack,

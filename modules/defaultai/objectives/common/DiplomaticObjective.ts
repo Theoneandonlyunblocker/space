@@ -3,6 +3,7 @@ import {ObjectiveFamily} from "./ObjectiveFamily";
 
 import PlayerDiplomacy from "../../../../src/PlayerDiplomacy";
 
+
 export abstract class DiplomaticObjective extends Objective
 {
   public static readonly family = ObjectiveFamily.Diplomatic;

@@ -8,6 +8,7 @@ import
 
 import {placeholder as placeholderSFX} from "../common/battlesfxtemplates/battleSFX";
 
+
 export const infest: UnitEffectTemplate =
 {
   type: "infest",

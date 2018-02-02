@@ -13,6 +13,7 @@ import Star from "./Star";
 import Unit from "./Unit";
 import eventManager from "./eventManager";
 
+
 interface ManufacturableThingWithType
 {
   type: string;

@@ -5,6 +5,7 @@ import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTempl
 import GalaxyMap from "./GalaxyMap";
 import MapRenderer from "./MapRenderer";
 
+
 export default class MapRendererLayer
 {
   public template: MapRendererLayerTemplate;

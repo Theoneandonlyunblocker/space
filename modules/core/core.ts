@@ -7,6 +7,7 @@ import * as Languages from "../../localization/defaultLanguages";
 
 import {allScripts} from "./modulescripts/allScripts";
 
+
 // TODO 2017.07.27 | move core gameplay stuff here
 const core: ModuleFile =
 {

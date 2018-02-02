@@ -11,6 +11,7 @@ import Personality from "../../../src/Personality";
 import Player from "../../../src/Player";
 import Unit from "../../../src/Unit";
 
+
 interface FrontUnitScore
 {
   unit: Unit;

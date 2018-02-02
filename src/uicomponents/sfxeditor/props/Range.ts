@@ -4,6 +4,7 @@ import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragme
 
 import SFXFragmentPropVecBase from "./VecBase";
 
+
 interface PropTypes extends React.Props<any>
 {
   propName: string;

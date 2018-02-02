@@ -6,6 +6,7 @@ import
   getRelativeValue,
 } from "./utility";
 
+
 export class AttitudeModifier
 {
   public template: AttitudeModifierTemplate;

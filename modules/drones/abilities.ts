@@ -24,6 +24,7 @@ import {ResultType} from "../common/effectactiontemplates/ResultType";
 
 import * as DroneStatusEffects from "./unitEffects";
 
+
 export const assimilate: AbilityTemplate =
 {
   type: "assimilate",

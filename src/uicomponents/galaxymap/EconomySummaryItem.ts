@@ -3,6 +3,7 @@ import * as React from "react";
 import Star from "../../Star";
 import ListItemProps from "../list/ListItemProps";
 
+
 export interface PropTypes extends ListItemProps, React.Props<any>
 {
   // isSelected: boolean;

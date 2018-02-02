@@ -11,6 +11,7 @@ import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate";
 
 import * as Languages from "../../localization/defaultLanguages";
 
+
 const defaultBuildings: ModuleFile =
 {
   key: "defaultBuildings",

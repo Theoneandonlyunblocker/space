@@ -14,6 +14,7 @@ import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
 
 import {distributionGroups} from "./distributionGroups";
 
+
 type UnitRole = "normal" |
   "elite" |
   "leader";

@@ -11,6 +11,7 @@ import
   getMatchingLocalstorageItemsByDate,
 } from "./utility";
 
+
 export default class NotificationFilter
 {
   filters:

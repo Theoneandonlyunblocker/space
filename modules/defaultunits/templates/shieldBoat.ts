@@ -17,6 +17,7 @@ import
   initialGuard,
 } from "../../common/passiveskilltemplates/passiveSkills";
 
+
 const shieldBoat: UnitTemplate =
 {
   type: "shieldBoat",

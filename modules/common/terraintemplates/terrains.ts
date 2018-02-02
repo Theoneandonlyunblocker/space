@@ -1,5 +1,6 @@
 import {TerrainTemplate} from "../../../src/templateinterfaces/TerrainTemplate";
 
+
 export const noneTerrain: TerrainTemplate =
 {
   type: "noneTerrain",

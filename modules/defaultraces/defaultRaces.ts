@@ -8,6 +8,7 @@ import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
 
 import * as Languages from "../../localization/defaultLanguages";
 
+
 const defaultRaces: ModuleFile =
 {
   key: "defaultRaces",

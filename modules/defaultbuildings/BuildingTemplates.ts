@@ -3,6 +3,7 @@ import TemplateCollection from "../../src/templateinterfaces/TemplateCollection"
 
 import * as Templates from "./templates/Templates";
 
+
 const BuildingTemplates: TemplateCollection<BuildingTemplate> =
 {
   [Templates.sectorCommand.type]: Templates.sectorCommand,

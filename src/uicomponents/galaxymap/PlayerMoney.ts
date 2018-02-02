@@ -5,6 +5,7 @@ import eventManager from "../../eventManager";
 
 import {localize} from "../../../localization/localize";
 
+
 export interface PropTypes extends React.Props<any>
 {
   player?: Player;

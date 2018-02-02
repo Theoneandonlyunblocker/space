@@ -6,6 +6,7 @@ import
   generateTextureWithBounds,
 } from "./pixiWrapperFunctions";
 
+
 export default class BackgroundDrawer
 {
   public drawBackgroundFN: BackgroundDrawingFunction;

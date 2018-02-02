@@ -13,6 +13,7 @@ import
   makeShaderSprite,
 } from "../../../../src/pixiWrapperFunctions";
 
+
 interface LightBurstProps
 {
   size: Point;

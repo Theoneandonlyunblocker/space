@@ -13,6 +13,7 @@ import
   getRelativeValue,
 } from "../../../src/utility";
 
+
 export const defaultEvaluationParameters =
 {
   starDesirability:

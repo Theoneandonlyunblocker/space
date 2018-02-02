@@ -5,6 +5,7 @@ import
   getRandomArrayItem,
 } from "../utility";
 
+
 export interface Distributable
 {
   type: string;

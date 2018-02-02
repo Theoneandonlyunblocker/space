@@ -11,6 +11,7 @@ import
   snipeSpeed,
 } from "./snipe";
 
+
 export const unitEffectTemplates: TemplateCollection<UnitEffectTemplate> =
 {
   [autoHeal.type]: autoHeal,

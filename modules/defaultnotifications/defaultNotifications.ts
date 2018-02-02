@@ -10,6 +10,7 @@ import
 
 import * as Languages from "../../localization/defaultLanguages";
 
+
 const defaultNotifications: ModuleFile =
 {
   key: "defaultNotifications",

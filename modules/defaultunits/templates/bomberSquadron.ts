@@ -12,6 +12,7 @@ import
 import {distributionGroups} from "../../common/distributionGroups";
 import itemSlot from "../../common/itemSlot";
 
+
 const bomberSquadron: UnitTemplate =
 {
   type: "bomberSquadron",

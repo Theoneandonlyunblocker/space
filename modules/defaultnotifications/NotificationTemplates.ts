@@ -17,6 +17,7 @@ import
   warDeclarationNotificationCreationScripts,
 } from "./notifications/warDeclarationNotification";
 
+
 // tslint:disable-next-line:no-any
 export const notificationTemplates: TemplateCollection<NotificationTemplate<any, any>> =
 {

@@ -3,6 +3,7 @@ import * as React from "react";
 import Building from "../../Building";
 import DefenceBuilding from "./DefenceBuilding";
 
+
 export interface PropTypes extends React.Props<any>
 {
   buildings: Building[];

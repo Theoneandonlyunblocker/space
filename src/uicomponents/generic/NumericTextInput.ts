@@ -5,6 +5,7 @@ import
   mergeReactAttributes,
 } from "../../utility";
 
+
 interface PropTypes extends React.Props<any>
 {
   value: number;

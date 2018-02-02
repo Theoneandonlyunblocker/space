@@ -13,6 +13,7 @@ import Renderer from "../../Renderer";
 
 import {Language} from "../../localization/Language";
 
+
 export interface PropTypes extends React.Props<any>
 {
   player: Player;

@@ -1,5 +1,6 @@
 import {Objective} from "../objectives/common/Objective";
 
+
 export class ObjectiveQueue
 {
   private objectivesToExecute: Objective[] = [];

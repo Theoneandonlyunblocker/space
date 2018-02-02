@@ -2,6 +2,7 @@ import * as React from "react";
 
 import NormalizedEvent from "./NormalizedEvent";
 
+
 // TODO performance | performance might be pretty bad
 // we should be able to use native event and fetch some flags
 // using methods like wasTouchEvent(e) & didHaveButtonPressed(e)

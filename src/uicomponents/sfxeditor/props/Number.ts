@@ -4,6 +4,7 @@ import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragme
 
 import NumericTextInput from "../../generic/NumericTextInput";
 
+
 interface PropTypes extends React.Props<any>
 {
   propName: string;

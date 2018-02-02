@@ -8,6 +8,7 @@ import
   clamp,
 } from "./utility";
 
+
 export default class Camera
 {
   public getBoundsObjectBoundsFN: () => PIXI.Rectangle;

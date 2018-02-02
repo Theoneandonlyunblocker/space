@@ -9,6 +9,7 @@ import
   getRelativeValue,
 } from "../../../src/utility";
 
+
 export class GrandStrategyAI
 {
   public desireForConsolidation: number;

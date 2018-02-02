@@ -2,6 +2,7 @@ import * as React from "react";
 
 import {default as NumberInput} from "../generic/NumberInput";
 
+
 export interface PropTypes extends React.Props<any>
 {
   onChange: (value: number) => void;

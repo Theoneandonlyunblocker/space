@@ -16,6 +16,7 @@ import
   getRandomKeyWithWeights,
 } from "./utility";
 
+
 export interface Move
 {
   ability: AbilityTemplate;

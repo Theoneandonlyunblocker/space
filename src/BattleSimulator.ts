@@ -9,6 +9,7 @@ import
   useAbility,
 } from "./battleAbilityUsage";
 
+
 export default class BattleSimulator
 {
   battle: Battle;

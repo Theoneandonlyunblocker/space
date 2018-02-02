@@ -5,6 +5,7 @@ import BackgroundDrawer from "../../BackgroundDrawer";
 import BackgroundDrawingFunction from "../../BackgroundDrawingFunction";
 import {convertClientRectToPixiRect} from "../../pixiWrapperFunctions";
 
+
 export interface PropTypes extends React.Props<any>
 {
   getBlurArea: () => ClientRect;

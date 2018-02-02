@@ -2,6 +2,7 @@
 
 import ColorSaveData from "./savedata/ColorSaveData";
 
+
 export default class Color
 {
   // 0.0-1.0

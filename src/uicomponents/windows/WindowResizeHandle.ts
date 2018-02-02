@@ -5,6 +5,7 @@ import applyMixins from "../mixins/applyMixins";
 
 import {Direction} from "../../Direction";
 
+
 type DirectionRestriction = "horizontal" | "vertical" | "free";
 
 export interface PropTypes extends React.Props<any>

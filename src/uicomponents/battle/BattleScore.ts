@@ -3,6 +3,7 @@ import * as React from "react";
 import Player from "../../Player";
 import PlayerFlag from "../PlayerFlag";
 
+
 export interface PropTypes extends React.Props<any>
 {
   evaluation: number;

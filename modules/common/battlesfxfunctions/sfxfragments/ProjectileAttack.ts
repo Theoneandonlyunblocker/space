@@ -10,6 +10,7 @@ import
   randInt,
 } from "../../../../src/utility";
 
+
 type impactFN = (projectile: Projectile, container: PIXI.Container, time: number) => void;
 type makeProjectileSpriteFN = (projectileNumber: number) => PIXI.Sprite;
 type animateProjectileFN = (projectile: Projectile, time: number) => void;

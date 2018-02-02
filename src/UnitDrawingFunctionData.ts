@@ -2,6 +2,7 @@
 
 import Point from "./Point";
 
+
 function mirrorRectangle(rect: PIXI.Rectangle, midX: number): PIXI.Rectangle
 {
   return new PIXI.Rectangle(

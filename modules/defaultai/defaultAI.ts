@@ -8,6 +8,7 @@ import DefaultAIConstructor from "./mapai/DefaultAIConstructor";
 
 import * as Languages from "../../localization/defaultLanguages";
 
+
 const defaultAI: ModuleFile =
 {
   key: "defaultAI",

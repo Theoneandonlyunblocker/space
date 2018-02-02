@@ -1,5 +1,6 @@
 import Star from "./Star";
 
+
 interface regionWithStars
 {
   region: Region;

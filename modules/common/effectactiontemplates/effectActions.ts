@@ -30,6 +30,7 @@ import
   clamp,
 } from "../../../src/utility";
 
+
 interface DamageWithType
 {
   baseDamage: number;

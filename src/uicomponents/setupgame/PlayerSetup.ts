@@ -20,6 +20,7 @@ import {ColorSetterComponent, default as ColorSetter} from "./ColorSetter";
 import {default as FlagSetter, FlagSetterComponent} from "./FlagSetter";
 import RacePicker from "./RacePicker";
 
+
 export interface PropTypes extends React.Props<any>
 {
   setActiveSetterComponent: (setter: ColorSetterComponent | FlagSetterComponent) => void;

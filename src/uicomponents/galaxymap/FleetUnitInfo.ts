@@ -7,6 +7,7 @@ import FleetUnitInfoName from "./FleetUnitInfoName";
 import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
+
 export interface PropTypes extends React.Props<any>
 {
   unit?: Unit;

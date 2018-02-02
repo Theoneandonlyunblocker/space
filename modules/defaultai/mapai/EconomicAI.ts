@@ -11,6 +11,7 @@ import
 } from "../../../src/Trade";
 import {TradeOffer} from "../../../src/TradeOffer";
 
+
 export class EconomicAI
 {
   public respondToTradeOffer(

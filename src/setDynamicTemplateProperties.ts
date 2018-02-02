@@ -2,6 +2,7 @@ import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTempl
 import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
 import TemplateCollection from "./templateinterfaces/TemplateCollection";
 
+
 export function setAttitudeModifierOverride(attitudeModifiers: TemplateCollection<AttitudeModifierTemplate>)
 {
   for (const modifierType in attitudeModifiers)

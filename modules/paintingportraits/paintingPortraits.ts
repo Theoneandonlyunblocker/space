@@ -4,6 +4,7 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import {paintingPortraitTemplates} from "./paintingPortraitTemplates";
 
+
 const paintingPortraits: ModuleFile =
 {
   key: "paintingPortraits",

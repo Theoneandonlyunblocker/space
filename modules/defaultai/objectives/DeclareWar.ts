@@ -7,6 +7,7 @@ import MapEvaluator from "../mapai/MapEvaluator";
 import Player from "../../../src/Player";
 import PlayerDiplomacy from "../../../src/PlayerDiplomacy";
 
+
 export class DeclareWar extends DiplomaticObjective
 {
   public static readonly type = "DeclareWar";

@@ -6,6 +6,7 @@ import SFXParams from "./templateinterfaces/SFXParams";
 import Options from "./Options";
 import Unit from "./Unit";
 
+
 export default class BattleSceneUnitOverlay
 {
   container: PIXI.Container;

@@ -8,6 +8,7 @@ import Manufactory from "../../../src/Manufactory";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 
+
 export class ExpandManufactoryCapacity extends EconomicObjective
 {
   public static readonly type = "ExpandManufactoryCapacity";

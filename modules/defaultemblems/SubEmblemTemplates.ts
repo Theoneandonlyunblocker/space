@@ -1,6 +1,7 @@
 import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
+
 // tslint:disable:variable-name
 export const Aguila_explayada_2: SubEmblemTemplate =
 {

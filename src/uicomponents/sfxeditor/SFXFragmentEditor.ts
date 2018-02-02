@@ -4,6 +4,7 @@ import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments
 
 import SFXFragmentPropsList from "./SFXFragmentPropsList";
 
+
 interface PropTypes extends React.Props<any>
 {
   fragment: SFXFragment<any>;

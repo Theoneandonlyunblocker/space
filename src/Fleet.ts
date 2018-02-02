@@ -16,6 +16,7 @@ import
 
 import FleetSaveData from "./savedata/FleetSaveData";
 
+
 export class Fleet
 {
   public id: number;

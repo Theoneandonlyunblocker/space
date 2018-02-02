@@ -17,6 +17,7 @@ import {getActiveLanguage} from "./localization/activeLanguage";
 
 import Stage from "./uicomponents/Stage";
 
+
 const moduleLoadingPhaseByScene:
 {
   [key in ReactUIScene]: ModuleFileLoadingPhase;

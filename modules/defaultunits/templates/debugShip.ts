@@ -27,6 +27,7 @@ import
   warpJammer,
 } from "../../common/passiveskilltemplates/passiveSkills";
 
+
 const debugShip: UnitTemplate =
 {
   type: "debugShip",
