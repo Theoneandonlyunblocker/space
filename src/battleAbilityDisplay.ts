@@ -38,5 +38,5 @@ export function getAbilityTargetDisplayData(
 
 export
 {
-  getTargetsForAllAbilities
+  getTargetsForAllAbilities,
 } from "./battleAbilityTargeting";

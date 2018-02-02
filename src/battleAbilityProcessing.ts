@@ -79,17 +79,6 @@ export function getAbilityEffectDataByPhase(
     afterUse: afterUse,
   });
 }
-export function getUnitsInEffectArea(
-  effect: AbilityEffectTemplate,
-  battle: Battle,
-  user: Unit,
-  target: Unit,
-): Unit[]
-{
-  const inArea = effect.getUnitsInArea(user, target, battle);
-
-  return inArea.filter(activeUnitsFilterFN);
-}
 
 function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData): Unit
 {
@@ -156,11 +145,6 @@ function getGuarders(battle: Battle, abilityUseData: AbilityUseData): Unit[]
   return guarders;
 }
 
-// TODO 2018.01.13 | should let abilities themselves handle this
-function activeUnitsFilterFN(unit: Unit | null): unit is Unit
-{
-  return Boolean(unit) && unit!.isActiveInBattle();
-}
 function getAbilityEffectDataFromEffectTemplate(
   battle: Battle,
   abilityUseData: AbilityUseData,
@@ -171,8 +155,7 @@ function getAbilityEffectDataFromEffectTemplate(
 {
   const effectData: AbilityEffectData[] = [];
 
-  const unitsInEffectArea = getUnitsInEffectArea(effectTemplate, battle,
-    abilityUseData.user, target);
+  const unitsInEffectArea = effectTemplate.getUnitsInArea(abilityUseData.user, target, battle);
 
   unitsInEffectArea.forEach(unitInEffectArea =>
   {

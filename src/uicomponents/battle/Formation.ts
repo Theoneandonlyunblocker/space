@@ -31,19 +31,6 @@ function bindFunctionIfExists(functionToBind: Function | undefined, valueToBind:
   }
 }
 
-// TODO 2018.01.28 | unneeded. should pass empty arrays instead of undefined to props
-function unitInArray(unitToCheck: Unit, arr: Unit[] | undefined): boolean
-{
-  if (!arr)
-  {
-    return false;
-  }
-  else
-  {
-    return arr.some(unit => unit === unitToCheck);
-  }
-}
-
 export interface PropTypes extends React.Props<any>
 {
   formation: Unit[][];
@@ -129,15 +116,15 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
           };
           const displayProps: UnitDisplayStatus =
           {
-            wasDestroyed: unitInArray(unit, this.props.destroyedUnits),
-            wasCaptured: unitInArray(unit, this.props.capturedUnits),
+            wasDestroyed: this.props.destroyedUnits ? this.props.destroyedUnits.some(toCheck => toCheck === unit) : false,
+            wasCaptured: this.props.capturedUnits ? this.props.capturedUnits.some(toCheck => toCheck === unit) : false,
 
             isInBattlePrep: this.props.isInBattlePrep,
             isActiveUnit: this.props.activeUnit === unit,
             isHovered: this.props.hoveredUnit === unit,
             // TODO 2018.01.28 | pass actual displayData
             isInPotentialTargetArea: this.props.abilityTargetDisplayDataById[unit.id] && Boolean(this.props.abilityTargetDisplayDataById[unit.id].targetType),
-            isTargetOfActiveEffect: unitInArray(unit, this.props.activeEffectUnits),
+            isTargetOfActiveEffect: this.props.activeEffectUnits ? this.props.activeEffectUnits.some(toCheck => toCheck === unit) : false,
             hoveredActionPointExpenditure: this.props.hoveredAbility &&
               this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
           };

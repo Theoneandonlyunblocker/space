@@ -209,13 +209,19 @@ export const massRepair: AbilityTemplate =
     id: "heal",
     getUnitsInArea: (user, target, battle) =>
     {
-      return areaAll(user, target, battle).filter(unit => unit.battleStats.side === user.battleStats.side);
+      return areaAll(user, target, battle).filter(unit =>
+      {
+        return unit && unit.isActiveInBattle && unit.battleStats.side === user.battleStats.side;
+      });
     },
     getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
     {
       areaFN: (user, target, battle) =>
       {
-        return areaAll(user, target, battle).filter(unit => unit.battleStats.side === user.battleStats.side);
+        return areaAll(user, target, battle).filter(unit =>
+        {
+          return unit && unit.isActiveInBattle && unit.battleStats.side === user.battleStats.side;
+        });
       },
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Positive,

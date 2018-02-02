@@ -7,6 +7,7 @@ import
 } from "../../../src/AbilityTargetDisplayData";
 import DamageType from "../../../src/DamageType";
 import GuardCoverage from "../../../src/GuardCoverage";
+import Unit from "../../../src/Unit";
 import {UnitAttribute} from "../../../src/UnitAttributes";
 import
 {
@@ -25,10 +26,27 @@ import
 
 import * as BattleSFX from "../battlesfxtemplates/battleSFX";
 
-import * as EffectActions from "../effectactiontemplates/effectActions";
 import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
+import * as EffectActions from "../effectactiontemplates/effectActions";
 
 import * as SnipeStatusEffects from "../uniteffecttemplates/snipe";
+
+
+// tslint:disable:no-any
+function makeFilteringUnitSelectFN<T extends (...args: any[]) => Unit[]>(baseFN: T, filterFN: (unit: Unit | null) => boolean): T
+function makeFilteringUnitSelectFN(baseFN: ((...args: any[]) => Unit[]), filterFN: (unit: Unit | null) => boolean)
+{
+  return (...args: any[]) =>
+  {
+    return baseFN(...args).filter(filterFN);
+  };
+}
+// tslint:enable:no-any
+
+function activeUnitsFilter(unit: Unit | null): unit is Unit
+{
+  return unit && unit.isActiveInBattle();
+}
 
 export const closeAttack: AbilityTemplate =
 {
@@ -52,10 +70,10 @@ export const closeAttack: AbilityTemplate =
       baseDamage: 0.66,
       damageType: DamageType.Physical,
     }),
-    getUnitsInArea: areaRowNeighbors,
+    getUnitsInArea: makeFilteringUnitSelectFN(areaRowNeighbors, activeUnitsFilter),
     getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
     {
-      areaFN: areaRowNeighbors,
+      areaFN: makeFilteringUnitSelectFN(areaRowNeighbors, activeUnitsFilter),
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
@@ -78,10 +96,10 @@ export const beamAttack: AbilityTemplate =
       baseDamage: 0.75,
       damageType: DamageType.Magical,
     }),
-    getUnitsInArea: areaColumn,
+    getUnitsInArea: makeFilteringUnitSelectFN(areaColumn, activeUnitsFilter),
     getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
     {
-      areaFN: areaColumn,
+      areaFN: makeFilteringUnitSelectFN(areaColumn, activeUnitsFilter),
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
@@ -114,10 +132,10 @@ export const bombAttack: AbilityTemplate =
       baseDamage: 0.5,
       damageType: DamageType.Physical,
     }),
-    getUnitsInArea: bombAttackAreaFN,
+    getUnitsInArea: makeFilteringUnitSelectFN(bombAttackAreaFN, activeUnitsFilter),
     getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
     {
-      areaFN: bombAttackAreaFN,
+      areaFN: makeFilteringUnitSelectFN(bombAttackAreaFN, activeUnitsFilter),
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
@@ -146,7 +164,7 @@ export const guardRow: AbilityTemplate =
     getUnitsInArea: areaSingle,
     getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
       {
-        areaFN: areaRow,
+        areaFN: makeFilteringUnitSelectFN(areaRow, activeUnitsFilter),
         targetType: AbilityTargetType.Primary,
         targetEffect: AbilityTargetEffect.Positive,
       }),
@@ -340,7 +358,7 @@ export const standBy: AbilityTemplate =
   {
     id: "standBy",
     getUnitsInArea: areaSingle,
-    // TODO 2018.01.28 | tslint
+    // tslint:disable-next-line
     getDisplayDataForTarget: () => {return {}},
     executeAction: () => {},
     sfx:
