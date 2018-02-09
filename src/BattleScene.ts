@@ -494,7 +494,7 @@ export default class BattleScene
       }
     }
   }
-  private render(timeStamp?: number)
+  private render()
   {
     if (this.isPaused)
     {

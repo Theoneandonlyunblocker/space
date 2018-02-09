@@ -239,7 +239,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       },
       getInitialPosition: !this.cachedPopupPositions[popupType] ?
         undefined :
-        (ownRect, container) =>
+        () =>
         {
           return this.cachedPopupPositions[popupType];
         },

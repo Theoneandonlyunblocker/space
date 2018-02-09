@@ -354,12 +354,12 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
     if (this.isDragging)
     {
-      this.handleDragEnd(e);
+      this.handleDragEnd();
     }
 
     this.removeEventListeners();
   }
-  private handleDragEnd(e: NormalizedEvent)
+  private handleDragEnd()
   {
     if (this.cloneElement)
     {

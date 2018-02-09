@@ -12,7 +12,6 @@ import SFXParams from "./templateinterfaces/SFXParams";
 import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
-import Battle from "./Battle";
 import {Fleet} from "./Fleet";
 import GuardCoverage from "./GuardCoverage";
 import Item from "./Item";
@@ -384,7 +383,7 @@ export default class Unit
     this.attributesAreDirty = true;
     this.uiDisplayIsDirty = true;
   }
-  public setBattlePosition(battle: Battle, side: UnitBattleSide, position: number[])
+  public setBattlePosition(side: UnitBattleSide, position: number[])
   {
     this.battleStats.side = side;
     this.battleStats.position = position;

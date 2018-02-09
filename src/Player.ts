@@ -230,7 +230,7 @@ export default class Player
         generateIndependentPlayer: () => null,
         generateIndependentFleets: () => null,
 
-        getAITemplateConstructor: player => null,
+        getAITemplateConstructor: () => null,
       },
       money: 0,
     });

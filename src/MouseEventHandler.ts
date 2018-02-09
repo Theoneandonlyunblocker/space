@@ -313,7 +313,7 @@ export default class MouseEventHandler
         }
         else
         {
-          this.completeSelection(e);
+          this.completeSelection();
         }
 
         break;
@@ -375,7 +375,7 @@ export default class MouseEventHandler
   {
     this.rectangleSelect.moveSelection(e.data.global);
   }
-  private completeSelection(e: PIXI.interaction.InteractionEvent): void
+  private completeSelection(): void
   {
     this.rectangleSelect.endSelection();
 

@@ -605,7 +605,7 @@ export function getRelativeValue(value: number, min: number, max: number, invers
     }
   }
 }
-export function getRelativeWeightsFromObject(byCount: {[prop: string]: number}, inverse?: boolean)
+export function getRelativeWeightsFromObject(byCount: {[prop: string]: number})
 {
   const relativeWeights:
   {

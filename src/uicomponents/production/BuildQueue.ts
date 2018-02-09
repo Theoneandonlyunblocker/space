@@ -23,7 +23,7 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BuildQueue";
 
-
+  // TODO 2018.02.09 | is first param removable?
   removeItem(template: ManufacturableThing, parentIndex: number)
   {
     const manufactory = this.props.manufactory;

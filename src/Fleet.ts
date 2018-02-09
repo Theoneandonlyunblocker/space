@@ -113,10 +113,10 @@ export class Fleet
     for (let i = this.units.length - 1; i >= 0; i--)
     {
       const unit = this.units[i];
-      this.transferUnit(fleetToMergeWith, unit);
+      this.transferUnit(fleetToMergeWith, unit, shouldRender);
     }
 
-    this.deleteFleet();
+    this.deleteFleet(shouldRender);
   }
   public addUnit(unit: Unit): void
   {

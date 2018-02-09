@@ -100,8 +100,7 @@ export default class BattlePrepFormation
   // end human formation stuff
   public getFormationValidity(): {isValid: boolean; description: string}
   {
-    let amountOfUnitsPlaced = 0;
-    this.forEachUnitInFormation(unit => amountOfUnitsPlaced += 1);
+    const amountOfUnitsPlaced = this.getPlacedUnits().length;
 
     if (this.isAttacker && amountOfUnitsPlaced < 1)
     {

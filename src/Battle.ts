@@ -177,7 +177,7 @@ export default class Battle
   private initUnit(unit: Unit, side: UnitBattleSide, position: number[]): void
   {
     unit.resetBattleStats();
-    unit.setBattlePosition(this, side, position);
+    unit.setBattlePosition(side, position);
     this.turnOrder.addUnit(unit);
 
     const isAttacking = this.battleData.attacker.units.indexOf(unit) !== -1;
@@ -630,7 +630,7 @@ export default class Battle
 
         if (unit)
         {
-          unit.setBattlePosition(this, side, pos);
+          unit.setBattlePosition(side, pos);
         }
       }
     }
