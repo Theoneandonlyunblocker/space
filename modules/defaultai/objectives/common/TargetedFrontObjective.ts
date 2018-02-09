@@ -10,6 +10,7 @@ import Star from "../../../../src/Star";
 import Unit from "../../../../src/Unit";
 
 
+// @ts-ignore 2417
 export abstract class TargetedFrontObjective extends FrontObjective
 {
   public readonly target: Star;

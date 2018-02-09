@@ -137,6 +137,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
       },
         manufactoryUpgradeButtons,
         ManufacturableThingsList(
+        // @ts-ignore 2345
         {
           manufacturableThings: this.props.manufacturableThings,
           onClick: (this.props.canBuild ? this.addUnitToBuildQueue : null),

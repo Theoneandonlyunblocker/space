@@ -73,6 +73,7 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
         break;
       case "fragmentConstructors":
         activeSelectionElements.push(SFXFragmentList(
+        // @ts-ignore 2345
         {
           key: "fragmentConstructors",
           fragments: this.props.availableFragmentConstructors,
@@ -83,6 +84,8 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
         break;
     }
 
+    const tabTypes: SelectionTabType[] = ["fragmentConstructors", "placedFragments"];
+
     return(
       React.DOM.div(
       {
@@ -92,7 +95,7 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
         {
           className: "sfx-editor-selection-tabs-container",
         },
-          ["fragmentConstructors", "placedFragments"].map((tabType: SelectionTabType) =>
+          tabTypes.map(tabType =>
           {
             return SFXEditorSelectionTab(
             {

@@ -6,7 +6,7 @@ import MixinBase from "./MixinBase";
 type LifeCycleFunction = "componentWillMount" | "componentDidMount" |
   "componentWillReceiveProps" | "componentWillUpdate" |
   "componentDidUpdate" | "componentWillUnmount";
-const lifeCycleFunctions =
+const lifeCycleFunctions: LifeCycleFunction[] =
 [
   "componentWillMount" , "componentDidMount" ,
   "componentWillReceiveProps" , "componentWillUpdate" ,

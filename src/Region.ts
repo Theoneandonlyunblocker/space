@@ -222,10 +222,12 @@ export default class Region
     {
       const neighborPoints = star.getNeighbors();
 
-      return <Star[]> neighborPoints.filter((neighbor: Star) =>
+      return neighborPoints.filter((neighbor): neighbor is Star =>
       {
-        const isFillerPoint = !isFinite(neighbor.id);
-        return !isFillerPoint && !this.hasStar(neighbor);
+        return isFinite((neighbor as Star).id);
+      }).filter(neighborStar =>
+      {
+        return !this.hasStar(neighborStar);
       });
     });
   }

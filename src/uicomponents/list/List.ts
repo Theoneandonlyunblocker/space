@@ -95,7 +95,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.keyboardSelect)
     {
-      ReactDOM.findDOMNode(this).addEventListener("keydown", (event: KeyboardEvent) =>
+      ReactDOM.findDOMNode<HTMLDivElement>(this).addEventListener("keydown", (event: KeyboardEvent) =>
       {
         switch (event.keyCode)
         {

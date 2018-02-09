@@ -50,6 +50,7 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
     {
       case "money":
       {
+        // @ts-ignore TS2322
         return(
         {
           key: "money",

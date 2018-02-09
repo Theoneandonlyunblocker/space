@@ -42,7 +42,8 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
     this.handleDragStart = this.handleDragStart.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
-    this.handleSelectRow = this.handleSelectRow.bind(this);
+    this.handleSelectItemListRow = this.handleSelectItemListRow.bind(this);
+    this.handleSelectUnitListRow = this.handleSelectUnitListRow.bind(this);
     this.equipItemOnSelectedUnit = this.equipItemOnSelectedUnit.bind(this);
   }
 
@@ -70,7 +71,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
             isDraggable: true,
             onDragStart: this.handleDragStart,
             onDragEnd: this.handleDragEnd,
-            onRowChange: this.handleSelectRow,
+            onRowChange: this.handleSelectItemListRow,
           }),
         ),
 
@@ -81,7 +82,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
           reservedUnits: [],
           unavailableUnits: player.units.filter(unit => !unit.canFightOffensiveBattle()),
           isDraggable: false,
-          onRowChange: this.handleSelectRow,
+          onRowChange: this.handleSelectUnitListRow,
           autoSelect: true,
           onMouseUp: this.equipItemOnSelectedUnit,
         }),
@@ -89,13 +90,18 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
     );
   }
 
-  private handleSelectRow(row: ListItem<UnitListItemProps | ItemListItemProps>)
+  private handleSelectItemListRow(row: ListItem<ItemListItemProps>): void
   {
-    if (!row.content.props.unit)
+    if (row.content.props.unit)
     {
-      return;
+      this.setState(
+      {
+        selectedUnit: row.content.props.unit,
+      });
     }
-
+  }
+  private handleSelectUnitListRow(row: ListItem<UnitListItemProps>): void
+  {
     this.setState(
     {
       selectedUnit: row.content.props.unit,

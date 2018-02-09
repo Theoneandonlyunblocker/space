@@ -28,10 +28,13 @@ export function starsOnlyShareNarrowBorder(a: Star, b: Star)
 
   if (edgeLength < minBorderWidth)
   {
-    const sharedNeighbors = a.getSharedNeighborsWith(b);
-    const sharedOwnedNeighbors = sharedNeighbors.filter(function(sharedNeighbor: Star)
+    const sharedNeighborPoints = a.getSharedNeighborsWith(b);
+    const sharedOwnedNeighbors = sharedNeighborPoints.filter((sharedNeighborPoint): sharedNeighborPoint is Star =>
     {
-      return sharedNeighbor.owner === a.owner;
+      return Boolean((sharedNeighborPoint as Star).owner);
+    }).filter(sharedNeighborStar =>
+    {
+      return sharedNeighborStar.owner === a.owner;
     });
 
     return sharedOwnedNeighbors.length === 0;

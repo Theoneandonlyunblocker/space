@@ -8,6 +8,7 @@ import Player from "../../../src/Player";
 import PlayerDiplomacy from "../../../src/PlayerDiplomacy";
 
 
+// @ts-ignore 2417
 export class DeclareWar extends DiplomaticObjective
 {
   public static readonly type = "DeclareWar";

@@ -68,7 +68,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     this.handleMouseLeaveUnit = this.handleMouseLeaveUnit.bind(this);
     this.clearSelectedUnit = this.clearSelectedUnit.bind(this);
     this.autoMakeFormation = this.autoMakeFormation.bind(this);
-    this.handleSelectRow = this.handleSelectRow.bind(this);
+    this.handleSelectUnitListRow = this.handleSelectUnitListRow.bind(this);
+    this.handleSelectItemListRow = this.handleSelectItemListRow.bind(this);
     this.handleDragStart = this.handleDragStart.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.getBackgroundBlurArea = this.getBackgroundBlurArea.bind(this);
@@ -183,7 +184,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           isDraggable: true,
           onDragStart: this.handleItemDragStart,
           onDragEnd: this.handleItemDragEnd,
-          onRowChange: this.handleSelectRow,
+          onRowChange: this.handleSelectItemListRow,
         });
         break;
       }
@@ -290,7 +291,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           onDragStart: this.handleDragStart,
           onDragEnd: this.handleDragEnd,
 
-          onRowChange: this.handleSelectRow,
+          onRowChange: this.handleSelectUnitListRow,
 
           onMouseEnterUnit: this.handleMouseEnterUnit,
           onMouseLeaveUnit: this.handleMouseLeaveUnit,
@@ -308,14 +309,16 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     this.setLeftLowerElement("playerFormation");
     this.forceUpdate();
   }
-  private handleSelectRow(row: ListItem<UnitListItemPropTypes | ItemListItemPropTypes>)
+  private handleSelectUnitListRow(row: ListItem<UnitListItemPropTypes>): void
   {
-    if (!row.content.props.unit)
-    {
-      return;
-    }
-
     this.setSelectedUnit(row.content.props.unit);
+  }
+  private handleSelectItemListRow(row: ListItem<ItemListItemPropTypes>): void
+  {
+    if (row.content.props.unit)
+    {
+      this.setSelectedUnit(row.content.props.unit);
+    }
   }
   private clearSelectedUnit()
   {

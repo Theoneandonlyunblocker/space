@@ -41,8 +41,8 @@ import SpiralGalaxyOptionValues from "./SpiralGalaxyOptionValues";
 import generateSpiralPoints from "./generateSpiralPoints";
 
 
-const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOptionValues,
-  players: Player[]): MapGenResult
+// @ts-ignore 2322
+const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValues, players: Player[]) =>
 {
   // seed
   const seed = "" + Math.random();
@@ -139,12 +139,10 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   // link all adjacent stars
   stars.forEach(star =>
   {
-    star.getNeighbors().filter(neighbor =>
+    star.getNeighbors().filter((point): point is Star =>
     {
-      const castedPoint = <Star> neighbor;
-      const isFiller = !isFinite(castedPoint.id);
-      return !isFiller;
-    }).forEach((neighbor: Star) =>
+      return isFinite((point as Star).id);
+    }).forEach(neighbor =>
     {
       star.addLink(neighbor);
     });

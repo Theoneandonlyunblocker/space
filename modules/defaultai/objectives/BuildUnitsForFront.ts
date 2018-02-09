@@ -13,6 +13,9 @@ import
 } from "../../../src/utility";
 
 
+// TODO 2018.02.10 | can't actually ignore specific errors
+// https://github.com/Microsoft/TypeScript/issues/19139
+// @ts-ignore 2417
 export class BuildUnitsForFront extends EconomicObjective
 {
   public static readonly type = "BuildUnitsForFront";

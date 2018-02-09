@@ -11,6 +11,7 @@ import {UnitEvaluator} from "../mapai/UnitEvaluator";
 import Unit from "../../../src/Unit";
 
 
+// @ts-ignore 2417
 export class Heal extends FrontObjective
 {
   public static readonly type = "Heal";

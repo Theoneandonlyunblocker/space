@@ -7,13 +7,15 @@ import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPosi
 import applyMixins from "../mixins/applyMixins";
 
 
+type HoverPosition = "top" | "bottom";
+
 export interface PropTypes extends React.Props<any>
 {
   listItemIsDragging: boolean;
   isActive: boolean;
   layer: MapRendererLayer;
-  setHoverPosition: (layer: MapRendererLayer, position: string) => void;
-  hoverSide: "top" | "bottom" | null;
+  setHoverPosition: (layer: MapRendererLayer, position: HoverPosition) => void;
+  hoverSide: HoverPosition | null;
   toggleActive: () => void;
   updateLayer: (layer: MapRendererLayer) => void;
   layerName: string;
@@ -135,7 +137,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
     const midPoint = rect.top + rect.height / 2;
 
     const isAbove = e.clientY < midPoint;
-    const hoverSide: "top" | "bottom" = isAbove ? "top" : "bottom";
+    const hoverSide = isAbove ? "top" : "bottom";
 
     this.setState(
     {

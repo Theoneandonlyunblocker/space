@@ -17,7 +17,7 @@ declare interface ModuleFile
   metaData: ModuleMetaData;
   needsToBeLoadedBefore: ModuleFileLoadingPhase;
   supportedLanguages: Language[] | "all";
-  loadAssets?: (callback: Function) => void;
+  loadAssets?: (callback: () => void) => void;
   constructModule?: (ModuleData: ModuleData) => void;
 }
 

@@ -44,6 +44,7 @@ export class SFXFragmentListComponent<P extends Fragment> extends React.Componen
         this.props.fragments.map(fragment =>
         {
           return SFXFragmentListItem(
+          // @ts-ignore 2345
           {
             key: fragment.key,
             fragment: fragment,

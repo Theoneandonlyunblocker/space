@@ -188,13 +188,7 @@ export class UnitAttributes implements UnitAttributesObject
 
   private forEachAttribute(cb: (attribute: keyof UnitAttributesObject) => void): void
   {
-    [
-      "maxActionPoints",
-      "attack",
-      "defence",
-      "intelligence",
-      "speed",
-    ].forEach((attribute: keyof UnitAttributesObject) =>
+    this.getAttributesTypesSortedForDisplay().forEach(attribute =>
     {
       cb(attribute);
     });

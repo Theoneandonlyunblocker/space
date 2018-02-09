@@ -30,8 +30,9 @@
 
         // requires prefixing intentionally unused params with _
         // much cleaner to define consistent params for all functions of type for module templates etc.
-        // annoying to keep on, but probably worth checking manually every once in a while
-        "noUnusedParameters": false
+        // too annoying to keep on, but probably worth checking manually every once in a while
+        "noUnusedParameters": false,
+        "strictFunctionTypes": true
     },
     "files": [
       "src/App.ts"

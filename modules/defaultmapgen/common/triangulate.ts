@@ -16,7 +16,7 @@ export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>
 
   for (let i = 0; i < vertices.length; i++)
   {
-    const vertex: Point = vertices[i];
+    const vertex = vertices[i];
     const edgeBuffer: Point[][] = [];
 
     for (let j = 0; j < triangles.length; j++)
@@ -31,7 +31,11 @@ export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>
         j--;
       }
     }
-    if (i >= vertices.length) continue;
+
+    if (i >= vertices.length)
+    {
+      continue;
+    }
 
     for (let j = edgeBuffer.length - 2; j >= 0; j--)
     {
@@ -65,7 +69,7 @@ export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>
       triangles.splice(i, 1);
     }
   }
-  const trianglesWithoutSuperTriangle = <Triangle<T>[]> triangles.filter((triangle: Triangle<T>) =>
+  const trianglesWithoutSuperTriangle = <Triangle<T>[]> triangles.filter(triangle =>
   {
     const verticesSharedWithSuperTriangle = triangle.getAmountOfSharedVerticesWith(superTriangle);
 

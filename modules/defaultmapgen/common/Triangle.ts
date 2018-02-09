@@ -83,7 +83,7 @@ export default class Triangle<T extends Point>
 
     return(contains);
   }
-  public getEdges()
+  public getEdges(): T[][]
   {
     const edges =
     [

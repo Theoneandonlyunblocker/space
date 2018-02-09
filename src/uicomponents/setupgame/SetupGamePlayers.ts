@@ -175,6 +175,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     this.state.playerKeys.forEach((playerId, i) =>
     {
       playerSetups.push(PlayerSetup(
+      // @ts-ignore 2345
       {
         key: playerId,
         keyTODO: playerId,
