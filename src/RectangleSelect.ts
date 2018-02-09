@@ -9,7 +9,6 @@ export default class RectangleSelect
   public getSelectionTargetsFN: () => {position: Point; data: any}[];
 
   private graphics: PIXI.Graphics;
-  private selecting: boolean;
 
   private startLocal: PIXI.Point | null;
   private currentGlobal: Point | null;
@@ -40,7 +39,6 @@ export default class RectangleSelect
   }
   public startSelection(point: Point): void
   {
-    this.selecting = true;
     this.startLocal = this.targetLayer.worldTransform.applyInverse(new PIXI.Point(point.x, point.y));
     this.currentGlobal = {x: point.x, y: point.y};
 
@@ -67,7 +65,6 @@ export default class RectangleSelect
   }
   public clearSelection(): void
   {
-    this.selecting = false;
     this.graphics.clear();
     this.startLocal = null;
     this.currentGlobal = null;

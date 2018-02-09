@@ -281,7 +281,6 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     const topBar = <HTMLElement> document.getElementsByClassName("top-bar-info")[0];
     const topBarRect = topBar.getBoundingClientRect();
 
-    let rightmostElement = topBar;
     let rightmostRect = topBarRect;
 
     const fleetContainer = <HTMLElement> document.getElementsByClassName("fleet-selection")[0];
@@ -306,7 +305,6 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
         if (fleetRect.top < topMenuHeight && fleetRect.right > topBarRect.right)
         {
-          rightmostElement = fleetElementToCheckAgainst;
           rightmostRect = fleetRect;
         }
       }

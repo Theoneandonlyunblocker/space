@@ -3,7 +3,6 @@
 
 export default class ProtonWrapper
 {
-  private pixiRenderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
   private container: PIXI.Container;
 
   private proton: Proton;
@@ -27,10 +26,9 @@ export default class ProtonWrapper
     [emitterKey: string]: (particle: Proton.Particle) => void;
   } = {};
 
-  public constructor(renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, container: PIXI.Container)
+  public constructor(container: PIXI.Container)
   {
     this.proton = new Proton();
-    this.pixiRenderer = renderer;
     this.container = container;
 
     this.initProtonRenderer();
@@ -38,7 +36,6 @@ export default class ProtonWrapper
 
   public destroy()
   {
-    this.pixiRenderer = null;
 
     for (const key in this.emitters)
     {

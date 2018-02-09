@@ -19,22 +19,17 @@ import EmblemSaveData from "./savedata/EmblemSaveData";
 import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
 
 
-let id = 0;
-
 export default class Emblem
 {
   alpha: number;
   colors: Color[];
   template: SubEmblemTemplate;
 
-  private id: number;
-
   constructor(colors: Color[], template: SubEmblemTemplate, alpha: number = 1)
   {
     this.colors = colors;
     this.alpha = alpha;
     this.template = template;
-    this.id = id++;
   }
   public static generateRandom(backgroundColor?: Color, colors: Color[] = [], minAlpha: number = 1, seed?: string): Emblem
   {

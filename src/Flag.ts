@@ -11,7 +11,6 @@ export class Flag
 {
   public backgroundColor: Color | null;
   public emblems: Emblem[] = [];
-  private seed: string;
 
   constructor(backgroundColor: Color | null, emblems?: Emblem[])
   {
@@ -30,7 +29,6 @@ export class Flag
   {
 
     const flag = new Flag(backgroundColor);
-    flag.seed = seed;
     flag.addRandomEmblem(secondaryColor, seed);
 
     return flag;

@@ -1,13 +1,9 @@
 import {Front} from "./Front";
-import MapEvaluator from "./MapEvaluator";
 import {ObjectivesAI} from "./ObjectivesAI";
 
 import {FrontObjective} from "../objectives/common/FrontObjective";
 
-import GalaxyMap from "../../../src/GalaxyMap";
-import Game from "../../../src/Game";
 import {IdDictionary} from "../../../src/IdDictionary";
-import Personality from "../../../src/Personality";
 import Player from "../../../src/Player";
 import Unit from "../../../src/Unit";
 
@@ -21,27 +17,17 @@ interface FrontUnitScore
 export default class FrontsAI
 {
   private player: Player;
-  private map: GalaxyMap;
-  private game: Game;
-  private mapEvaluator: MapEvaluator;
   private objectivesAI: ObjectivesAI;
-  private personality: Personality;
 
   private fronts: Front[] = [];
 
   constructor(
-    mapEvaluator: MapEvaluator,
+    player: Player,
     objectivesAI: ObjectivesAI,
-    personality: Personality,
-    game: Game,
   )
   {
-    this.mapEvaluator = mapEvaluator;
-    this.map = mapEvaluator.map;
-    this.player = mapEvaluator.player;
+    this.player = player;
     this.objectivesAI = objectivesAI;
-    this.personality = personality;
-    this.game = game;
   }
 
   public assignUnits(): void

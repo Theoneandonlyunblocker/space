@@ -62,7 +62,7 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
 
     this.grandStrategyAI = new GrandStrategyAI(this.personality, this.mapEvaluator, this.game);
     this.objectivesAI = new ObjectivesAI(this.mapEvaluator, this.grandStrategyAI);
-    this.frontsAI = new FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality, this.game);
+    this.frontsAI = new FrontsAI(this.player, this.objectivesAI);
 
     this.diplomacyAI = new DiplomacyAI(this.mapEvaluator, this.game);
     this.economicAI = new EconomicAI();

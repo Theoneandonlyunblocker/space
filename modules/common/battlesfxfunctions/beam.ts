@@ -59,7 +59,7 @@ export default function beam(props: SFXParams)
   const particleContainer = new PIXI.Container();
   // particleContainer.alpha = 0.1;
   mainContainer.addChild(particleContainer);
-  const protonWrapper = new ProtonWrapper(props.renderer, particleContainer);
+  const protonWrapper = new ProtonWrapper(particleContainer);
 
   const particleShaderColor =
   {

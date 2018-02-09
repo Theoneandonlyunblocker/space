@@ -8,7 +8,6 @@ export class FixedRateTicker
   private readonly onTick: (tickCount: number) => void;
 
   private accumulatedTime: number = 0;
-  private startTime: number;
 
   constructor(onTick: (tickCount: number) => void, tickRate: number)
   {
@@ -22,7 +21,6 @@ export class FixedRateTicker
   public start(): void
   {
     this.accumulatedTime = 0;
-    this.startTime = performance.now();
     this.ticker.start();
   }
   public stop(): void

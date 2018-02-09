@@ -45,7 +45,6 @@ export default class BattleScene
   private afterUnitsHaveFinishedUpdatingCallback: (() => void) | null;
 
   private beforeUseDelayHasFinishedCallback: (() => void) | null;
-  private activeSFXHasFinishedCallback: () => void;
   private afterUseDelayHasFinishedCallback: (() => void) | null;
   private abilityUseHasFinishedCallback: (() => void) | null;
 
@@ -133,7 +132,6 @@ export default class BattleScene
 
     this.onSFXStartCallback = props.onSFXStartCallback;
     this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
-    this.activeSFXHasFinishedCallback = this.handleActiveSFXEnd.bind(this);
 
     this.triggerEffectCallback = props.triggerEffectCallback;
     this.beforeUseDelayHasFinishedCallback = this.playSFX.bind(this);
@@ -336,18 +334,6 @@ export default class BattleScene
       temp();
     }
   }
-  // unused
-  // private executeActiveSFXHasFinishedCallback()
-  // {
-  //   if (!this.activeSFXHasFinishedCallback)
-  //   {
-  //     throw new Error("No callback set for active SFX finish.");
-  //   }
-
-  //   const temp = this.activeSFXHasFinishedCallback;
-  //   this.activeSFXHasFinishedCallback = null;
-  //   temp();
-  // }
   private executeAfterUseDelayHasFinishedCallback()
   {
     if (!this.afterUseDelayHasFinishedCallback)
@@ -508,21 +494,6 @@ export default class BattleScene
       }
     }
   }
-  // unused
-  // private getBattleSceneUnitOverlay(unit: Unit): BattleSceneUnitOverlay
-  // {
-  //   switch (unit.battleStats.side)
-  //   {
-  //     case "side1":
-  //     {
-  //       return this.side1Overlay;
-  //     }
-  //     case "side2":
-  //     {
-  //       return this.side2Overlay;
-  //     }
-  //   }
-  // }
   private render(timeStamp?: number)
   {
     if (this.isPaused)

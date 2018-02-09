@@ -100,16 +100,6 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
     {
       const manufactory: Manufactory = this.props.selectedStar.manufactory;
       const unitUpgradeCost = manufactory.getUnitUpgradeCost();
-      const canAffordUnitUpgrade = this.props.money >= unitUpgradeCost;
-
-      let unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";
-      let unitUpgradeCostBaseClassName = "manufactory-upgrade-button-cost";
-
-      if (!canAffordUnitUpgrade)
-      {
-        unitUpgradeButtonBaseClassName += " disabled";
-        unitUpgradeCostBaseClassName += " negative";
-      }
 
       manufactoryUpgradeButtons = React.DOM.div(
       {

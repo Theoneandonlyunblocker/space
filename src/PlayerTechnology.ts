@@ -310,8 +310,6 @@ export default class PlayerTechnology
   }
   capTechnologyPrioritiesToMaxNeeded()
   {
-    let overflowPriority: number = 0;
-
     for (const key in this.technologies)
     {
       const techData = this.technologies[key];
@@ -319,8 +317,6 @@ export default class PlayerTechnology
       const maxNeededPriorityForOtherTech = this.getMaxNeededPriority(techData.technology);
       if (techData.priority > maxNeededPriorityForOtherTech)
       {
-        overflowPriority += techData.priority - maxNeededPriorityForOtherTech;
-
         this.setTechnologyPriority(techData.technology, maxNeededPriorityForOtherTech, true);
         break;
       }

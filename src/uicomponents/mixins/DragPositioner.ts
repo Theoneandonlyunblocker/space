@@ -54,7 +54,6 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
   private owner: T;
 
-  private mouseIsDown: boolean = false;
   private dragOffset: Point = {x: 0, y: 0};
   private mouseDownPosition: Point = {x: 0, y: 0};
 
@@ -63,7 +62,6 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   private ownerDOMNode: HTMLElement;
   private containerRect: ClientRect;
   private touchEventTarget: HTMLElement | null;
-  private needsFirstTouchUpdate: boolean;
   private ownerIsMounted: boolean = false;
 
   constructor(owner: T, props?: DragPositionerProps)
@@ -181,7 +179,6 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
     if (e.wasTouchEvent)
     {
-      this.needsFirstTouchUpdate = true;
       this.touchEventTarget = e.target;
     }
 
@@ -193,7 +190,6 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       y: e.clientY - clientRect.top,
     };
 
-    this.mouseIsDown = true;
     this.mouseDownPosition =
     {
       x: e.pageX,
@@ -350,7 +346,6 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     e.stopPropagation();
     e.preventDefault();
 
-    this.mouseIsDown = false;
     this.mouseDownPosition =
     {
       x: 0,

@@ -31,7 +31,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   public displayName: string = "FlagSetter";
   public state: StateType;
 
-  private flagSetterContainer: HTMLElement;
   private playerFlagContainer: PlayerFlagComponent;
 
   constructor(props: PropTypes)
@@ -54,10 +53,6 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       React.DOM.div(
       {
         className: "flag-setter",
-        ref: (component: HTMLElement) =>
-        {
-          this.flagSetterContainer = component;
-        },
       },
         PlayerFlag(
         {

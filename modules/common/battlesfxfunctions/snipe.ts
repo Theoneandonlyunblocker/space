@@ -180,7 +180,7 @@ function playSnipe(type: UnitAttribute, params: SFXParams)
   // ----------PARTICLES
   const particleContainer = new PIXI.Container();
 
-  const protonWrapper = new ProtonWrapper(params.renderer, particleContainer);
+  const protonWrapper = new ProtonWrapper(particleContainer);
   const particlesAmountScale = params.height / 600;
 
   const particleRenderTexture = PIXI.RenderTexture.create(params.width, params.height);

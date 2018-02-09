@@ -1,5 +1,4 @@
 
-import {activeModuleData} from "./activeModuleData";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 
 import Battle from "./Battle";
