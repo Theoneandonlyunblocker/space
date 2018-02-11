@@ -33,6 +33,9 @@
         // too annoying to keep on, but probably worth checking manually every once in a while
         "noUnusedParameters": false,
         "strictFunctionTypes": true
+
+        // does nothing without --strictNullChecks
+        // "strictPropertyInitialization": true
     },
     "files": [
       "src/App.ts"

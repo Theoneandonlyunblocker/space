@@ -43,7 +43,6 @@ export const targetAll: GetBattleTargetsFN = function(user: Unit, battle: Battle
 };
 
 //------AREAS
-// TODO 2018.01.13 | rename
 export type GetUnitsInAreaFN<T = (Unit | null)[]> = (
   user: Unit,
   target: Unit,

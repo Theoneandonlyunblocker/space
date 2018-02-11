@@ -9,6 +9,7 @@ import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 
 
+// @ts-ignore 2417
 export class ExpandManufactoryCapacity extends EconomicObjective
 {
   public static readonly type = "ExpandManufactoryCapacity";

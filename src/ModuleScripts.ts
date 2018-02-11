@@ -81,11 +81,13 @@ export default class ModuleScripts implements AllModuleScripts
     },
   };
 
+  /* tslint:disable:typedef-whitespace */
   public readonly battle    : ScriptsCollection<BattleScripts>    = ModuleScripts.makeAccessorObject(this.scriptsWithData.battle);
   public readonly diplomacy : ScriptsCollection<DiplomacyScripts> = ModuleScripts.makeAccessorObject(this.scriptsWithData.diplomacy);
   public readonly game      : ScriptsCollection<GameScripts>      = ModuleScripts.makeAccessorObject(this.scriptsWithData.game);
   public readonly player    : ScriptsCollection<PlayerScripts>    = ModuleScripts.makeAccessorObject(this.scriptsWithData.player);
   public readonly unit      : ScriptsCollection<UnitScripts>      = ModuleScripts.makeAccessorObject(this.scriptsWithData.unit);
+  /* tslint:enable:typedef-whitespace */
   /* tslint:enable:member-ordering */
 
   constructor()
