@@ -5,6 +5,7 @@ import
 } from "./AttitudeModifierTemplates";
 
 import {AttitudeModifier} from "../../src/AttitudeModifier";
+import Game from "../../src/Game";
 import Player from "../../src/Player";
 
 
@@ -17,7 +18,7 @@ export const attitudeModifierModuleScripts =
       {
         key: "addBaseOpinionAttitudeModifier",
         priority: 0,
-        script: (a: Player, b: Player) =>
+        script: (a: Player, b: Player, game: Game) =>
         {
           const friendliness = a.AIController.personality.friendliness;
 
@@ -26,8 +27,7 @@ export const attitudeModifierModuleScripts =
           const modifier = new AttitudeModifier(
           {
             template: baseOpinion,
-            // TODO 2017.12.19 |
-            startTurn: 0,
+            startTurn: game.turnNumber,
             strength: opinion,
             hasFixedStrength: true,
           });
@@ -41,13 +41,12 @@ export const attitudeModifierModuleScripts =
       {
         key: "addDeclaredWarAttitudeModifier",
         priority: 0,
-        script: (aggressor: Player, defender: Player) =>
+        script: (aggressor: Player, defender: Player, game: Game) =>
         {
           const modifier = new AttitudeModifier(
           {
             template: declaredWar,
-            // TODO 2017.12.19 |
-            startTurn: 0,
+            startTurn: game.turnNumber,
           });
 
           defender.diplomacy.addAttitudeModifier(aggressor, modifier);

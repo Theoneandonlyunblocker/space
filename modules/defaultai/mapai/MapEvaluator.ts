@@ -718,7 +718,7 @@ export default class MapEvaluator
         currentTurn: currentTurn,
         opinion: this.player.diplomacy.getOpinionOf(player),
         neighborStars: neighborStarsByPlayer.get(player),
-        currentStatus: this.player.diplomacy.statusByPlayer.get(player),
+        currentStatus: this.player.diplomacy.getStatusWithPlayer(player),
       });
     });
 

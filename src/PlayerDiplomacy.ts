@@ -38,6 +38,10 @@ export default class PlayerDiplomacy
   {
     return this.statusByPlayer.get(player) || DiplomacyState.Unmet;
   }
+  public setStatusWithPlayer(player: Player, status: DiplomacyState): void
+  {
+    this.statusByPlayer.set(player, status);
+  }
   public getAttitudeModifiersForPlayer(player: Player): AttitudeModifier[]
   {
     return this.attitudeModifiersByPlayer.get(player) || [];
@@ -114,7 +118,7 @@ export default class PlayerDiplomacy
 
     activeModuleData.scripts.diplomacy.onWarDeclaration.forEach(script =>
     {
-      script(this.player, targetPlayer);
+      script(this.player, targetPlayer, this.game);
     });
   }
   public makePeaceWith(targetPlayer: Player): void
@@ -284,7 +288,7 @@ export default class PlayerDiplomacy
     this.statusByPlayer.set(player, DiplomacyState.ColdWar);
     activeModuleData.scripts.diplomacy.onFirstMeeting.forEach(script =>
     {
-      script(this.player, player);
+      script(this.player, player, this.game);
     });
   }
 }

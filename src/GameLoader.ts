@@ -348,7 +348,7 @@ export default class GameLoader
   {
     for (const playerId in data.statusByPlayer)
     {
-      player.diplomacy.statusByPlayer.set(this.playersById[playerId], data.statusByPlayer[playerId]);
+      player.diplomacy.setStatusWithPlayer(this.playersById[playerId], data.statusByPlayer[playerId]);
     }
 
     for (const playerId in data.attitudeModifiersByPlayer)

@@ -51,7 +51,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
 
     const rows: ListItem<DiplomaticStatusPlayerProps>[] = alivePlayers.map(player =>
     {
-      const status = this.props.player.diplomacy.statusByPlayer.get(player)!;
+      const status = this.props.player.diplomacy.getStatusWithPlayer(player)!;
 
       return(
       {
@@ -66,7 +66,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           canInteractWith: this.props.player.diplomacy.canDoDiplomacyWithPlayer(player),
 
           statusSortingNumber: status,
-          attitudeModifiers: player.diplomacy.attitudeModifiersByPlayer.get(this.props.player)!,
+          attitudeModifiers: player.diplomacy.getAttitudeModifiersForPlayer(this.props.player)!,
         }),
       });
     }).concat(deadPlayers.map(player =>
