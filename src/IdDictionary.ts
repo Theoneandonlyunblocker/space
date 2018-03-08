@@ -14,6 +14,11 @@ export class IdDictionary<K extends ObjectWithId, V>
   // prevents accidental assignment. don't think there's a way to prevent access completely
   readonly [id: number]: never;
 
+  public get length(): number
+  {
+    return Object.keys(this.keysById).length;
+  }
+
   private valuesById:
   {
     [id: number]: V;
@@ -34,6 +39,13 @@ export class IdDictionary<K extends ObjectWithId, V>
     }
   }
 
+  public destroy(): void
+  {
+    this.forEach((k, v) =>
+    {
+      this.delete(k);
+    });
+  }
   public has(key: K): boolean
   {
     return Boolean(this.valuesById[key.id]);

@@ -1,9 +1,9 @@
 import {activeModuleData} from "./activeModuleData";
-import eventManager from "./eventManager";
 
 import {AttitudeModifier} from "./AttitudeModifier";
 import DiplomacyEvaluation from "./DiplomacyEvaluation";
 import DiplomacyState from "./DiplomacyState";
+import Game from "./Game";
 import Player from "./Player";
 import {default as ValuesByPlayer} from "./ValuesByPlayer";
 
@@ -13,44 +13,38 @@ import PlayerDiplomacySaveData from "./savedata/PlayerDiplomacySaveData";
 
 export default class PlayerDiplomacy
 {
-  public readonly statusByPlayer: ValuesByPlayer<DiplomacyState>;
-  public readonly attitudeModifiersByPlayer: ValuesByPlayer<AttitudeModifier[]>;
+  private readonly attitudeModifiersByPlayer: ValuesByPlayer<AttitudeModifier[]>;
+  private readonly statusByPlayer: ValuesByPlayer<DiplomacyState>;
 
+  private readonly game: Game;
   private readonly player: Player;
-  private listeners:
-  {
-    [name: string]: Function[];
-  } = {};
 
-  constructor(player: Player, allPlayersInGame: Player[])
+  constructor(player: Player, game: Game)
   {
     this.player = player;
+    this.game = game;
 
-    const validPlayers = allPlayersInGame.filter(gamePlayer => this.canDoDiplomacyWithPlayer(gamePlayer));
-
-    this.statusByPlayer = new ValuesByPlayer<DiplomacyState>(validPlayers, () =>
-    {
-      return DiplomacyState.Unmet;
-    });
-    this.attitudeModifiersByPlayer = new ValuesByPlayer<AttitudeModifier[]>(validPlayers, () =>
-    {
-      return [];
-    });
+    this.statusByPlayer = new ValuesByPlayer<DiplomacyState>();
+    this.attitudeModifiersByPlayer = new ValuesByPlayer<AttitudeModifier[]>();
   }
 
   public destroy(): void
   {
-    for (const key in this.listeners)
-    {
-      for (let i = 0; i < this.listeners[key].length; i++)
-      {
-        eventManager.removeEventListener(key, this.listeners[key][i]);
-      }
-    }
+    this.attitudeModifiersByPlayer.destroy();
+    this.statusByPlayer.destroy();
+  }
+
+  public getStatusWithPlayer(player: Player): DiplomacyState
+  {
+    return this.statusByPlayer.get(player) || DiplomacyState.Unmet;
+  }
+  public getAttitudeModifiersForPlayer(player: Player): AttitudeModifier[]
+  {
+    return this.attitudeModifiersByPlayer.get(player) || [];
   }
   public getOpinionOf(player: Player): number
   {
-    const attitudeModifiers = this.attitudeModifiersByPlayer.get(player);
+    const attitudeModifiers = this.getAttitudeModifiersForPlayer(player);
 
     const modifierOpinion = attitudeModifiers.map(modifier =>
     {
@@ -70,7 +64,7 @@ export default class PlayerDiplomacy
   }
   public hasMetPlayer(player: Player): boolean
   {
-    return this.statusByPlayer.get(player) > DiplomacyState.Unmet;
+    return this.getStatusWithPlayer(player) > DiplomacyState.Unmet;
   }
   public meetPlayerIfNeeded(player: Player): void
   {
@@ -92,22 +86,22 @@ export default class PlayerDiplomacy
   }
   public hasAnUnmetPlayer(): boolean
   {
-    return this.statusByPlayer.some((player, state) =>
+    return this.game.players.some(player =>
     {
-      return state === DiplomacyState.Unmet;
-    });
+      return this.getStatusWithPlayer(player) !== DiplomacyState.Unmet;
+    })
   }
   public canDeclareWarOn(player: Player): boolean
   {
-    return this.hasMetPlayer(player) && this.statusByPlayer.get(player) < DiplomacyState.War;
+    return this.hasMetPlayer(player) && this.getStatusWithPlayer(player) < DiplomacyState.War;
   }
   public canMakePeaceWith(player: Player): boolean
   {
-    return this.hasMetPlayer(player) && this.statusByPlayer.get(player) > DiplomacyState.Peace;
+    return this.hasMetPlayer(player) && this.getStatusWithPlayer(player) > DiplomacyState.Peace;
   }
   public declareWarOn(targetPlayer: Player): void
   {
-    if (this.statusByPlayer.get(targetPlayer) >= DiplomacyState.War)
+    if (this.getStatusWithPlayer(targetPlayer) >= DiplomacyState.War)
     {
       // TODO 2017.07.25 | default ai module does this sometimes
       console.error(`Players ${this.player.id} and ${targetPlayer.id} are already at war`);
@@ -140,7 +134,7 @@ export default class PlayerDiplomacy
       return true;
     }
 
-    if (this.statusByPlayer.get(player) >= DiplomacyState.ColdWar)
+    if (this.getStatusWithPlayer(player) >= DiplomacyState.ColdWar)
     {
       return true;
     }
@@ -154,7 +148,7 @@ export default class PlayerDiplomacy
       return true;
     }
 
-    if (this.statusByPlayer.get(player) >= DiplomacyState.War)
+    if (this.getStatusWithPlayer(player) >= DiplomacyState.War)
     {
       return true;
     }
@@ -171,7 +165,14 @@ export default class PlayerDiplomacy
       return;
     }
 
-    this.attitudeModifiersByPlayer.get(player).push(modifier);
+    if (!this.attitudeModifiersByPlayer.has(player))
+    {
+      this.attitudeModifiersByPlayer.set(player, [modifier]);
+    }
+    else
+    {
+      this.attitudeModifiersByPlayer.get(player).push(modifier);
+    }
   }
   public processAttitudeModifiersForPlayer(player: Player, evaluation: DiplomacyEvaluation)
   {
@@ -182,7 +183,7 @@ export default class PlayerDiplomacy
      */
     const allModifiers = activeModuleData.Templates.AttitudeModifiers;
 
-    const modifiersForPlayer = this.attitudeModifiersByPlayer.get(player);
+    const modifiersForPlayer = this.getAttitudeModifiersForPlayer(player);
 
     const activeModifiers:
     {
@@ -214,39 +215,32 @@ export default class PlayerDiplomacy
       }
     }
 
-    // loop through all modifiers
-    // if modifier is not active and should start,
-    // add it and mark as active
-    //
-    // if modifier is active, set strength based on evaluation
     for (const modifierType in allModifiers)
     {
       const template = allModifiers[modifierType];
 
-      let modifier: AttitudeModifier;
-      modifier = activeModifiers[template.type];
-      const alreadyHasModifierOfType = Boolean(modifier);
+      const activeModifier = activeModifiers[template.type];
 
-      if (!alreadyHasModifierOfType && template.startCondition)
+      if (!activeModifier && template.startCondition)
       {
         const shouldStart = template.startCondition(evaluation);
 
         if (shouldStart)
         {
-          modifier = new AttitudeModifier(
+          const newModifier = new AttitudeModifier(
           {
             template: template,
             startTurn: evaluation.currentTurn,
             evaluation: evaluation,
           });
 
-          modifiersForPlayer.push(modifier);
-          modifiersAdded[template.type] = modifier;
+          modifiersForPlayer.push(newModifier);
+          modifiersAdded[template.type] = newModifier;
         }
       }
-      else if (modifier)
+      else if (activeModifier)
       {
-        modifier.update(evaluation);
+        activeModifier.update(evaluation);
       }
     }
   }
@@ -273,7 +267,7 @@ export default class PlayerDiplomacy
 
   private getModifierOfSameType(player: Player, modifier: AttitudeModifier): AttitudeModifier | null
   {
-    const modifiers = this.attitudeModifiersByPlayer.get(player);
+    const modifiers = this.getAttitudeModifiersForPlayer(player);
 
     for (let i = 0; i < modifiers.length; i++)
     {

@@ -42,7 +42,7 @@ export default class Game
       return !player.isIndependent && !player.isDead;
     }).forEach(player =>
     {
-      player.diplomacy = new PlayerDiplomacy(player, this.players);
+      player.diplomacy = new PlayerDiplomacy(player, this);
     });
 
     this.turnNumber = 1;
