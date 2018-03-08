@@ -188,7 +188,7 @@ class Options implements OptionsValues
         }
       }
 
-      this.deSerialize(parsedOptions);
+      this.deserialize(parsedOptions);
     }
   }
 
@@ -229,7 +229,7 @@ class Options implements OptionsValues
       display: this.display,
     });
   }
-  private deSerialize(data: OptionsValues)
+  private deserialize(data: OptionsValues)
   {
     this.battleAnimationTiming = deepMerge<any>(this.battleAnimationTiming, data.battleAnimationTiming, true);
     this.debug = deepMerge<any>(this.debug, data.debug, true);

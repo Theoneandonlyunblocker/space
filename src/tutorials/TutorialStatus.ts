@@ -41,7 +41,7 @@ class TutorialStatus implements TutorialStatusValues
     }
 
     const parsedData: TutorialStatusValues = JSON.parse(tutorialStatusData);
-    this.deSerialize(parsedData);
+    this.deserialize(parsedData);
   }
   public reset(): void
   {
@@ -64,7 +64,7 @@ class TutorialStatus implements TutorialStatusValues
       introTutorial: this.introTutorial,
     });
   }
-  private deSerialize(data: TutorialStatusValues): void
+  private deserialize(data: TutorialStatusValues): void
   {
     this.introTutorial = TutorialStatus.getDeserializedState(data.introTutorial);
 

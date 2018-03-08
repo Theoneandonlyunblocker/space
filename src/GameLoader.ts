@@ -290,8 +290,8 @@ export default class GameLoader
       name: Name.fromData(data.name),
       color:
       {
-        main: Color.deSerialize(data.color),
-        secondary: Color.deSerialize(data.secondaryColor),
+        main: Color.deserialize(data.color),
+        secondary: Color.deserialize(data.secondaryColor),
         alpha: data.colorAlpha,
       },
 
@@ -376,7 +376,7 @@ export default class GameLoader
   private deserializeEmblem(emblemData: EmblemSaveData): Emblem
   {
     return new Emblem(
-      emblemData.colors.map(colorData => Color.deSerialize(colorData)),
+      emblemData.colors.map(colorData => Color.deserialize(colorData)),
       activeModuleData.Templates.SubEmblems[emblemData.templateKey],
       emblemData.alpha,
     );
@@ -388,7 +388,7 @@ export default class GameLoader
       return this.deserializeEmblem(emblemSaveData);
     });
 
-    const flag = new Flag(Color.deSerialize(data.mainColor), emblems);
+    const flag = new Flag(Color.deserialize(data.mainColor), emblems);
 
     return flag;
   }

@@ -212,12 +212,12 @@ export default class Color
   {
     return this.getRGB();
   }
-  public static deSerialize(saveData: ColorSaveData): Color
+  public static deserialize(saveData: ColorSaveData): Color
   {
     return new Color(saveData[0], saveData[1], saveData[2]);
   }
   public clone(): Color
   {
-    return Color.deSerialize(this.serialize());
+    return Color.deserialize(this.serialize());
   }
 }
