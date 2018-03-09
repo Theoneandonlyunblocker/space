@@ -143,9 +143,6 @@ export default class MCTreeNode
     }
 
     return null;
-    // const currId = this.battle.activeUnit.id;
-    // throw new Error("Tried to fetch child node for impossible move " +
-    //   currId + ": " + move.ability.type + " -> " + move.targetId);
   }
   updateResult(result: number): void
   {
@@ -251,9 +248,8 @@ export default class MCTreeNode
       return;
     }
 
-    //this.uctEvaluation = this.winRate + Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
     this.uctEvaluation = this.getCombinedScore() + Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
-    if (this.move.ability.AIEvaluationPriority)
+    if (isFinite(this.move.ability.AIEvaluationPriority))
     {
       this.uctEvaluation *= this.move.ability.AIEvaluationPriority;
     }
