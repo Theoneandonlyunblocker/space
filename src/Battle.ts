@@ -52,7 +52,10 @@ export default class Battle
   public isVirtual: boolean = false; // true when a clone made by battle ai
   public isSimulated: boolean = false; // true when battle is between two ai players
 
-  public ended: boolean = false;
+  public get ended(): boolean
+  {
+    return this._ended;
+  }
   public victor: Player;
   public loser: Player;
   public capturedUnits: Unit[];
@@ -76,6 +79,7 @@ export default class Battle
   {
     [turnNumber: number]: number;
   } = {};
+  private _ended: boolean = false;
 
   constructor(props:
   {
@@ -522,7 +526,7 @@ export default class Battle
   }
   private endBattle(): void
   {
-    this.ended = true;
+    this._ended = true;
 
     if (this.isVirtual)
     {

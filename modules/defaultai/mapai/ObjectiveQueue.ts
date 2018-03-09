@@ -32,7 +32,6 @@ export class ObjectiveQueue
   {
     this.currentObjective = this.objectivesToExecute.shift();
 
-    console.log("execute", this.currentObjective);
     this.clearExecutionFailureTimeout();
 
     if (!this.currentObjective)

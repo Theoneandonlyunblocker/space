@@ -1,7 +1,8 @@
-
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 
 import Battle from "./Battle";
+import {Move, MoveCollection} from "./Move";
+import UnitBattleSide from "./UnitBattleSide";
 import
 {
   getTargetsForAllAbilities,
@@ -16,117 +17,59 @@ import
 } from "./utility";
 
 
-export interface Move
-{
-  ability: AbilityTemplate;
-  targetId: number;
-}
+
 export default class MCTreeNode
 {
-  public readonly battle: Battle;
-  public readonly sideId: string;
+  // move that resulted in this action
+  // TODO 2018.03.12 | check this is actually used properly. also maybe rename to clarify
   public readonly move: Move | null;
   public readonly depth: number = 0;
 
   public visits: number = 0;
   public winRate: number = 0;
   public averageScore: number = 0;
-  public currentScore: number;
+  public timesMoveWasPossible: number = 0;
 
-  public readonly children: MCTreeNode[] = [];
-  // TODO 2018.03.09 | ??? we have getPossibleMoves
-  public possibleMoves: Move[];
+  public get uctEvaluation(): number
+  {
+    return this._uctEvaluation;
+  }
 
-  public uctEvaluation: number;
 
-
+  private readonly sideId: UnitBattleSide;
   private readonly parent: MCTreeNode;
   private readonly isBetweenAI: boolean;
+
+  private readonly children: MoveCollection<MCTreeNode>;
 
   private wins: number = 0;
   private totalScore: number = 0;
 
+  private _uctEvaluation: number;
   private uctIsDirty: boolean = true;
 
-  constructor(battle: Battle, move: Move | null, depth: number, parent: MCTreeNode | null)
+  // battle represents state before associated move is played
+  constructor(props:
   {
-    this.battle = battle;
-    this.sideId = battle.activeUnit.battleStats.side;
-    this.move = move;
-    this.depth = depth;
-    this.parent = parent;
-    this.isBetweenAI = battle.side1Player.isAI && battle.side2Player.isAI;
+    sideId: UnitBattleSide,
+    move: Move | null,
+    depth: number,
+    parent: MCTreeNode | null,
+    isBetweenAI: boolean,
+  })
+  {
+    this.sideId = props.sideId;
+    this.move = props.move;
+    this.depth = props.depth;
+    this.parent = props.parent;
+    this.isBetweenAI = props.isBetweenAI;
 
-    this.currentScore = battle.getEvaluation();
+    this.children = new MoveCollection<MCTreeNode>();
   }
 
-  public getPossibleMoves(): Move[]
+  public getChildForMove(move: Move): MCTreeNode | null
   {
-    if (!this.battle.activeUnit)
-    {
-      return [];
-    }
-    const targets = getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
-
-    const actions: Move[] = [];
-
-    for (const id in targets)
-    {
-      const targetActions = targets[id];
-      for (let i = 0; i < targetActions.length; i++)
-      {
-        if (!this.isBetweenAI || !targetActions[i].disableInAIBattles)
-        {
-          actions.push(
-          {
-            targetId: parseInt(id),
-            ability: targetActions[i],
-          });
-        }
-      }
-    }
-
-    return actions;
-  }
-  public getChildForMove(move: Move): MCTreeNode
-  {
-    for (let i = 0; i < this.children.length; i++)
-    {
-      const child = this.children[i];
-      if (child.move.targetId === move.targetId &&
-        child.move.ability.type === move.ability.type)
-      {
-        return child;
-      }
-    }
-
-    if (!this.possibleMoves)
-    {
-      this.possibleMoves = this.getPossibleMoves();
-    }
-
-    for (let i = 0; i < this.possibleMoves.length; i++)
-    {
-      const possibleMove = this.possibleMoves[i];
-      if (possibleMove.targetId === move.targetId &&
-        possibleMove.ability.type === move.ability.type)
-      {
-        return this.addChild(i);
-      }
-    }
-
-    return null;
-  }
-  public simulateToEnd(): void
-  {
-    const battle = this.battle.makeVirtualClone();
-
-    while (!battle.ended)
-    {
-      this.simulateOnce(battle);
-    }
-
-    this.updateResult(battle.getEvaluation());
+    return this.children.get(move);
   }
   public getCombinedScore(): number
   {
@@ -136,42 +79,112 @@ export default class MCTreeNode
     const winRate = this.winRate;
     const aiAdjust = this.move.ability.AIScoreAdjust || 0;
 
-    return (baseScore + winRate) + aiAdjust * 1.5;
+    return baseScore + winRate + aiAdjust;
   }
-  public getRecursiveBestUctChild(): MCTreeNode
+  public getAllChildren(): MCTreeNode[]
+  {
+    return this.children.flatten();
+  }
+  public simulateToEnd(battle: Battle): void
+  {
+    while (!battle.ended)
+    {
+      this.playRandomMove(battle);
+    }
+
+    this.updateResult(battle.getEvaluation());
+  }
+  public getBestNodeToSimulateFrom(battle: Battle): MCTreeNode
   {
     // terminal
-    if (this.battle.ended)
+    if (battle.ended)
     {
       return this;
     }
 
-    if (!this.possibleMoves)
+    const possibleMoves = this.getPossibleMoves(battle);
+    const unexploredChildNodes: MCTreeNode[] = [];
+
+    possibleMoves.forEach(move =>
     {
-      this.possibleMoves = this.getPossibleMoves();
-    }
+      let childForMove = this.getChildForMove(move);
+
+      if (!childForMove)
+      {
+        childForMove = this.addChild(move, battle.activeUnit.battleStats.side);
+      }
+
+      if (childForMove.visits === 0)
+      {
+        unexploredChildNodes.push(childForMove);
+      }
+
+      childForMove.timesMoveWasPossible += 1;
+    });
 
     // not fully expanded
-    if (this.possibleMoves && this.possibleMoves.length > 0)
+    if (unexploredChildNodes.length > 0)
     {
-      return this.addChild();
-    }
-    // only 1 choice
-    else if (this.children.length === 1)
-    {
-      return this.children[0];
+      unexploredChildNodes.sort((a, b) =>
+      {
+        const aPriority = isFinite(a.move.ability.AIEvaluationPriority) ? a.move.ability.AIEvaluationPriority : 0;
+        const bPriority = isFinite(b.move.ability.AIEvaluationPriority) ? b.move.ability.AIEvaluationPriority : 0;
+
+        return bPriority - aPriority;
+      });
+
+      unexploredChildNodes[0].playAssociatedMove(battle);
+
+      return unexploredChildNodes[0];
     }
     // expanded and not terminal, actually fetch child with highest score
-    else if (this.children.length > 1)
+    else if (this.children.length > 0)
     {
-      return this.getHighestUctChild().getRecursiveBestUctChild();
+      const child = this.getHighestUctChild(possibleMoves);
+
+      child.playAssociatedMove(battle);
+
+      return child.getBestNodeToSimulateFrom(battle);
     }
     else
     {
-      throw new Error("MCTreeNode has no children despite battle not having ended");
+      throw new Error("AI simulation couldn't find a move despite battle not having ended");
     }
   }
 
+  private getPossibleMoves(battle: Battle): Move[]
+  {
+    if (!battle.activeUnit)
+    {
+      return [];
+    }
+    const targets = getTargetsForAllAbilities(battle, battle.activeUnit);
+
+    const possibleMoves: Move[] = [];
+
+    for (const id in targets)
+    {
+      const targetActions = targets[id];
+      for (let i = 0; i < targetActions.length; i++)
+      {
+        if (targetActions[i].disableInAIBattles && this.isBetweenAI)
+        {
+
+        }
+        else
+        {
+          possibleMoves.push(
+          {
+            userId: battle.activeUnit.id,
+            targetId: parseInt(id),
+            ability: targetActions[i],
+          });
+        }
+      }
+    }
+
+    return possibleMoves;
+  }
   private updateResult(result: number): void
   {
     this.visits++;
@@ -201,7 +214,10 @@ export default class MCTreeNode
       this.parent.updateResult(result);
     }
   }
-  private pickRandomMoveFromPossibleActions(actions: {[targetId: number]: AbilityTemplate[]}): Move
+  private pickRandomMoveFromPossibleActions(
+    actions: {[targetId: number]: AbilityTemplate[]},
+    userId: number,
+  ): Move
   {
     let key = 0;
 
@@ -224,6 +240,7 @@ export default class MCTreeNode
         prioritiesByKey[key] = priority;
         movesByKey[key] =
         {
+          userId: userId,
           targetId: parseInt(targetId),
           ability: ability,
         };
@@ -236,46 +253,39 @@ export default class MCTreeNode
 
     return movesByKey[selectedKey];
   }
-  private simulateOnce(battle: Battle): void
+  private playAssociatedMove(battle: Battle): void
+  {
+    const user = battle.unitsById[this.move.userId];
+    const target = battle.unitsById[this.move.targetId];
+
+    useAbility(battle, this.move.ability, user, target);
+    battle.endTurn();
+  }
+  private playRandomMove(battle: Battle): void
   {
     const actions = getTargetsForAllAbilities(battle, battle.activeUnit);
 
-    const selectedMove = this.pickRandomMoveFromPossibleActions(actions);
+    const selectedMove = this.pickRandomMoveFromPossibleActions(actions, battle.activeUnit.id);
 
     const ability = selectedMove.ability;
+    const user = battle.unitsById[selectedMove.userId];
     const target = battle.unitsById[selectedMove.targetId];
 
-    useAbility(battle, ability, battle.activeUnit, target);
+    useAbility(battle, ability, user, target);
     battle.endTurn();
   }
-  private addChild(possibleMovesIndex?: number): MCTreeNode
+  private addChild(move: Move, side: UnitBattleSide): MCTreeNode
   {
-    if (!this.possibleMoves)
+    const child = new MCTreeNode(
     {
-      this.possibleMoves = this.getPossibleMoves();
-    }
+      sideId: side,
+      move: move,
+      depth: this.depth + 1,
+      parent: this,
+      isBetweenAI: this.isBetweenAI,
+    });
 
-    let move: Move;
-
-    if (isFinite(possibleMovesIndex))
-    {
-      move = this.possibleMoves.splice(possibleMovesIndex, 1)[0];
-    }
-    else
-    {
-      move = this.possibleMoves.pop();
-    }
-
-    const battle = this.battle.makeVirtualClone();
-
-    const child = new MCTreeNode(battle, move, this.depth + 1, this);
-    this.children.push(child);
-
-    useAbility(battle, move.ability, battle.activeUnit, battle.unitsById[move.targetId]);
-
-    child.currentScore = battle.getEvaluation();
-
-    battle.endTurn();
+    this.children.set(move, child);
 
     return child;
   }
@@ -283,37 +293,56 @@ export default class MCTreeNode
   {
     if (!this.parent)
     {
-      this.uctEvaluation = -1;
-      this.uctIsDirty = false;
-
-      return;
+      this._uctEvaluation = -1;
     }
-
-    this.uctEvaluation = this.getCombinedScore() + Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
-    if (isFinite(this.move.ability.AIEvaluationPriority))
+    else
     {
-      this.uctEvaluation *= this.move.ability.AIEvaluationPriority;
+      const explorationBias = 2;
+      // TODO 2018.03.19 | tweak this. currently not based on anything
+      const availabilityBias = 0.2;
+
+      this._uctEvaluation = this.getCombinedScore() +
+      Math.sqrt(explorationBias * Math.log(this.parent.visits) / this.visits) +
+      // TODO 2018.03.19 | same here
+      Math.sqrt(availabilityBias * (this.parent.visits / this.timesMoveWasPossible));
+
+      if (isFinite(this.move.ability.AIEvaluationPriority))
+      {
+        this._uctEvaluation *= this.move.ability.AIEvaluationPriority;
+      }
     }
 
+    if (!isFinite(this.uctEvaluation))
+    {
+      debugger;
+    }
     this.uctIsDirty = false;
   }
-  private getHighestUctChild(): MCTreeNode
+  private getHighestUctChild(possibleMoves: Move[]): MCTreeNode
   {
-    let highest = this.children[0];
-    for (let i = 0; i < this.children.length; i++)
+    const candidateChildren = possibleMoves.filter(move =>
     {
-      const child = this.children[i];
+      return this.children.has(move);
+    }).map(move =>
+    {
+      return this.children.get(move);
+    });
+
+    return candidateChildren.reduce((previousHighest, child) =>
+    {
       if (child.uctIsDirty)
       {
         child.setUct();
       }
 
-      if (child.uctEvaluation > highest.uctEvaluation)
+      if (!previousHighest || child.uctEvaluation > previousHighest.uctEvaluation)
       {
-        highest = child;
+        return child;
       }
-    }
-
-    return highest;
+      else
+      {
+        return previousHighest;
+      }
+    }, null); // first child is skipped without initial value
   }
 }

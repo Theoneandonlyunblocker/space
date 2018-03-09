@@ -54,8 +54,8 @@ declare interface AbilityTemplate extends AbilityBase
    */
   AIScoreAdjust?: number;
   /**
-   * prevent from being used in AI vs AI battles. helps when simulation depth is too low
-   * to let AIScoreAdjust kick in
+   * prevent from being used in AI vs AI battles.
+   * helps when simulation depth is too low to let AIScoreAdjust kick in
    */
   disableInAIBattles?: boolean;
 }

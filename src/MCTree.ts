@@ -1,129 +1,34 @@
 import Battle from "./Battle";
-import
-{
-  default as MCTreeNode,
-  Move,
-} from "./MCTreeNode";
+import MCTreeNode from "./MCTreeNode";
+import {Move} from "./Move";
 
 
 export default class MCTree
 {
-  rootNode: MCTreeNode;
-  actualBattle: Battle;
-  sideId: string;
-  countVisitsAsIterations: boolean;
+  private rootNode: MCTreeNode;
+  private readonly battle: Battle;
+  private readonly countVisitsAsIterations: boolean;
 
   constructor(battle: Battle, sideId: string, fastMode: boolean = false)
   {
-    const cloned = battle.makeVirtualClone();
-    this.rootNode = new MCTreeNode(cloned, null, 0, null);
+    this.battle = battle;
 
-    this.actualBattle = battle;
-    this.sideId = sideId;
+    this.remakeRootNode();
+
     if (fastMode)
     {
       this.countVisitsAsIterations = true;
     }
   }
-  sortByWinRateFN(a: MCTreeNode, b: MCTreeNode): number
+
+  private static sortByCombinedScoreFN(a: MCTreeNode, b: MCTreeNode): number
   {
-    return b.winRate - a.winRate;
-  }
-  sortByCombinedScoreFN(a: MCTreeNode, b: MCTreeNode): number
-  {
-    if (a.sideId !== b.sideId) debugger;
     return b.getCombinedScore() - a.getCombinedScore();
   }
-  evaluate(iterations: number): MCTreeNode
-  {
-    let root = this.rootNode;
-    if (!root.possibleMoves) root.possibleMoves = root.getPossibleMoves();
-
-    if (this.rootSimulationNeedsToBeRemade())
-    {
-      this.remakeSimulation();
-      root = this.rootNode;
-    }
-
-    const iterationStart = this.countVisitsAsIterations ? Math.min(iterations - 1, root.visits - root.depth) : 0;
-    for (let i = iterationStart; i < iterations; i++)
-    {
-      // select & expand
-      const toSimulateFrom = root.getRecursiveBestUctChild();
-
-
-      // simulate & backpropagate
-      toSimulateFrom.simulateToEnd();
-    }
-
-    const sortedMoves = root.children.sort(this.sortByCombinedScoreFN.bind(this));
-
-    //this.printToConsole(sortedMoves);
-
-    const best = sortedMoves[0];
-
-    if (!best)
-    {
-      debugger;
-    }
-
-    return best;
-  }
-  getChildForMove(move: Move): MCTreeNode
-  {
-    return this.rootNode.getChildForMove(move);
-  }
-  rootSimulationNeedsToBeRemade(): boolean
-  {
-    const scoreVariationTolerance = 0.1;
-    const scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
-
-    if (scoreVariance > scoreVariationTolerance)
-    {
-      return true;
-    }
-    else if (this.actualBattle.activeUnit !== this.rootNode.battle.activeUnit)
-    {
-      return true;
-    }
-    else if (this.rootNode.children.length === 0)
-    {
-      if (!this.rootNode.possibleMoves)
-      {
-        this.rootNode.possibleMoves = this.rootNode.getPossibleMoves();
-      }
-
-      if (this.rootNode.possibleMoves.length === 0)
-      {
-        return true;
-      }
-    }
-
-    return false;
-  }
-  remakeSimulation()
-  {
-    this.rootNode = new MCTreeNode(this.actualBattle.makeVirtualClone(), null, 0, null);
-    return this.rootNode;
-  }
-  advanceMove(move: Move)
-  {
-    this.rootNode = this.getChildForMove(move);
-    if (!this.rootNode)
-    {
-      this.remakeSimulation();
-    }
-  }
-  getBestMoveAndAdvance(iterations: number): Move
-  {
-    const best = this.evaluate(iterations);
-    this.rootNode = best;
-
-    return best.move;
-  }
-  printToConsole(nodes: MCTreeNode[]): void
+  private static printChoicesToConsole(nodes: MCTreeNode[]): void
   {
     const consoleRows: any[] = [];
+
     for (let i = 0; i < nodes.length; i++)
     {
       const node = nodes[i];
@@ -132,21 +37,106 @@ export default class MCTree
         visits: node.visits,
         uctEvaluation: node.uctEvaluation,
         winRate: node.winRate,
-        currentScore: node.currentScore,
         averageScore: node.averageScore,
         finalScore: node.getCombinedScore(),
-        abilityName: node.move.ability.displayName,
-        targetId: node.move.targetId,
+        timesMoveWasPossible: node.timesMoveWasPossible,
+        move: `${node.move.userId}: ${node.move.ability.displayName} => ${node.move.targetId}`,
       };
       consoleRows.push(row);
     }
-    const _: any = window;
 
-    if (_.console.table)
+    if (console.table)
     {
-      _.console.table(consoleRows);
+      console.table(consoleRows);
+    }
+  }
+
+  public advanceMove(move: Move)
+  {
+    this.rootNode = this.getChildForMove(move);
+    if (!this.rootNode)
+    {
+      this.remakeRootNode();
+    }
+  }
+  public getBestMoveAndAdvance(iterations: number): Move
+  {
+    const best = this.evaluate(iterations);
+    this.rootNode = best;
+
+    return best.move;
+  }
+
+  private evaluate(iterations: number): MCTreeNode
+  {
+    let root = this.rootNode;
+    // if (!root.possibleMoves)
+    // {
+    //   root.possibleMoves = root.getPossibleMoves();
+    // }
+
+    // if (this.rootNodeNeedsToBeRemade())
+    // {
+    //   this.remakeRootNode();
+    //   root = this.rootNode;
+    // }
+
+    const iterationStart = this.countVisitsAsIterations ? Math.min(iterations - 1, root.visits - root.depth) : 0;
+    for (let i = iterationStart; i < iterations; i++)
+    {
+      const battle = this.battle.makeVirtualClone();
+
+      // select & expand
+      const toSimulateFrom = root.getBestNodeToSimulateFrom(battle);
+
+      // simulate & backpropagate
+      toSimulateFrom.simulateToEnd(battle);
     }
 
-    console.log(nodes);
+    const sortedMoves = root.getAllChildren().sort(MCTree.sortByCombinedScoreFN);
+
+    MCTree.printChoicesToConsole(sortedMoves);
+
+    const best = sortedMoves[0];
+
+    return best;
+  }
+  private getChildForMove(move: Move): MCTreeNode
+  {
+    return this.rootNode.getChildForMove(move);
+  }
+  // private rootNodeNeedsToBeRemade(): boolean
+  // {
+  //   const scoreVariationTolerance = 0.1;
+  //   const scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
+
+  //   if (scoreVariance > scoreVariationTolerance)
+  //   {
+  //     return true;
+  //   }
+  //   else if (this.actualBattle.activeUnit !== this.rootNode.battle.activeUnit)
+  //   {
+  //     return true;
+  //   }
+  //   else if (this.rootNode.children.length === 0)
+  //   {
+  //     if (this.rootNode.getUnexploredMoves().length === 0)
+  //     {
+  //       return true;
+  //     }
+  //   }
+
+  //   return false;
+  // }
+  private remakeRootNode()
+  {
+    this.rootNode = new MCTreeNode(
+    {
+      sideId: this.battle.activeUnit.battleStats.side,
+      move: null,
+      depth: 0,
+      parent: null,
+      isBetweenAI: this.battle.side1Player.isAI && this.battle.side2Player.isAI,
+    });
   }
 }
