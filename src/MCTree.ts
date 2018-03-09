@@ -16,7 +16,7 @@ export default class MCTree
   constructor(battle: Battle, sideId: string, fastMode: boolean = false)
   {
     const cloned = battle.makeVirtualClone();
-    this.rootNode = new MCTreeNode(cloned);
+    this.rootNode = new MCTreeNode(cloned, null, 0, null);
 
     this.actualBattle = battle;
     this.sideId = sideId;
@@ -103,7 +103,7 @@ export default class MCTree
   }
   remakeSimulation()
   {
-    this.rootNode = new MCTreeNode(this.actualBattle.makeVirtualClone());
+    this.rootNode = new MCTreeNode(this.actualBattle.makeVirtualClone(), null, 0, null);
     return this.rootNode;
   }
   advanceMove(move: Move)
