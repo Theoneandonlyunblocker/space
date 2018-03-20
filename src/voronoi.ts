@@ -46,10 +46,10 @@ export function relaxVoronoi<T extends Point>(
     const centroid = getPolygonCentroid(vertices);
     if (getRelaxAmountFN)
     {
-      const dampeningValue = getRelaxAmountFN(point);
+      const dampingValue = getRelaxAmountFN(point);
 
-      const xDelta = (centroid.x - point.x) * dampeningValue;
-      const yDelta = (centroid.y - point.y) * dampeningValue;
+      const xDelta = (centroid.x - point.x) * dampingValue;
+      const yDelta = (centroid.y - point.y) * dampingValue;
 
       point.x = point.x + xDelta;
       point.y = point.y + yDelta;

@@ -102,7 +102,7 @@ export const areaRowNeighbors: GetUnitsInAreaFN = function(user: Unit, target: U
   const y1 = Math.max(y - 1, 0);
   const y2 = Math.min(y + 1, row.length - 1);
 
-  return row.slice(y1, y2);
+  return row.slice(y1, y2 + 1);
 };
 
 //**
