@@ -17,15 +17,15 @@ import
 } from "./utility";
 
 
-
+// TODO 2018.03.20 | rename all utc stuff
 export default class MCTreeNode
 {
   // move that resulted in this action
-  // TODO 2018.03.12 | check this is actually used properly. also maybe rename to clarify
   public readonly move: Move | null;
-  public readonly depth: number = 0;
 
   public visits: number = 0;
+  public wins: number = 0;
+  public totalScore: number = 0;
   public timesMoveWasPossible: number = 0;
 
   public get uctEvaluation(): number
@@ -34,19 +34,17 @@ export default class MCTreeNode
   }
 
 
+  private depth: number = 0;
   private readonly sideId: UnitBattleSide;
   private readonly parent: MCTreeNode;
   private readonly isBetweenAI: boolean;
 
-  private readonly children: MoveCollection<MCTreeNode>;
-
-  private wins: number = 0;
-  private totalScore: number = 0;
+  private children: MoveCollection<MCTreeNode>;
 
   private _uctEvaluation: number;
   private uctIsDirty: boolean = true;
 
-  // battle represents state before associated move is played
+
   constructor(props:
   {
     sideId: UnitBattleSide,
@@ -148,6 +146,35 @@ export default class MCTreeNode
     else
     {
       throw new Error("AI simulation couldn't find a move despite battle not having ended");
+    }
+  }
+  public recursivelyAdjustConfidence(confidencePersistence: number): void
+  {
+    this.depth = this.depth - 1;
+    this.uctIsDirty = true;
+
+    if (confidencePersistence === 1)
+    {
+      return;
+    }
+    else
+    {
+      this.visits               = Math.round(this.visits               * confidencePersistence);
+      this.timesMoveWasPossible = Math.round(this.timesMoveWasPossible * confidencePersistence);
+      this.wins                 = Math.round(this.wins                 * confidencePersistence);
+      this.totalScore *= confidencePersistence;
+
+      if (confidencePersistence === 0)
+      {
+        this.children = new MoveCollection<MCTreeNode>();
+      }
+      else
+      {
+        this.children.forEach(child =>
+        {
+          child.recursivelyAdjustConfidence(confidencePersistence);
+        });
+      }
     }
   }
 
@@ -301,7 +328,7 @@ export default class MCTreeNode
       this._uctEvaluation = this.getCombinedScore() +
       Math.sqrt(explorationBias * Math.log(this.parent.visits) / this.visits) +
       // TODO 2018.03.19 | same here
-      Math.sqrt(availabilityBias * (this.parent.visits / this.timesMoveWasPossible));
+      availabilityBias * (this.parent.visits / this.timesMoveWasPossible);
 
       if (isFinite(this.move.ability.AIEvaluationPriority))
       {
@@ -309,10 +336,6 @@ export default class MCTreeNode
       }
     }
 
-    if (!isFinite(this.uctEvaluation))
-    {
-      debugger;
-    }
     this.uctIsDirty = false;
   }
   private getHighestUctChild(possibleMoves: Move[]): MCTreeNode

@@ -23,7 +23,7 @@ export default class BattleSimulator
 
     if (!battle.ended)
     {
-      this.tree = new MCTree(this.battle, this.battle.activeUnit.battleStats.side, true);
+      this.tree = new MCTree(this.battle, this.battle.activeUnit.battleStats.side);
     }
   }
 
@@ -41,11 +41,23 @@ export default class BattleSimulator
       throw new Error("Simulated battle already ended");
     }
 
-    const move = this.tree.getBestMoveAndAdvance(Options.debug.battleSimulationDepth);
+    const rootVisitsUnderSimulationDepth = Math.min(
+      Options.debug.AIVsAIBattleSimulationDepth - this.tree.rootNode.visits,
+      0,
+    );
+
+    const iterations = Math.max(
+      rootVisitsUnderSimulationDepth,
+      Options.debug.AIVsAIBattleSimulationDepth / 2,
+    );
+
+    const move = this.tree.getBestMoveAndAdvance(
+      iterations,
+      1.0,
+    );
     const target = this.battle.unitsById[move.targetId];
 
     this.simulateAbility(move.ability, target);
-
     this.battle.endTurn();
   }
   simulateAbility(ability: AbilityTemplate, target: Unit)

@@ -349,6 +349,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private handleAbilityUse(ability: AbilityTemplate, target: Unit, wasByPlayer: boolean)
   {
+    const user = this.props.battle.activeUnit;
+
     const abilityUseEffects = useAbilityAndGetUseEffects(
       this.props.battle,
       ability,
@@ -358,15 +360,15 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.abilityUseEffectQueue.addEffects(abilityUseEffects);
 
-    // TODO 2018.01.29 |
-    // if (wasByPlayer && this.MCTree)
-    // {
-    //   this.MCTree.advanceMove(
-    //   {
-    //     ability: ability,
-    //     targetId: abilityData.actualTarget.id
-    //   });
-    // }
+    if (wasByPlayer && this.MCTree)
+    {
+      this.MCTree.advanceMove(
+      {
+        ability: ability,
+        userId: user.id,
+        targetId: target.id,
+      }, 0.25);
+    }
 
 
     this.playQueuedBattleEffects();
@@ -489,10 +491,12 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    if (!this.MCTree) this.MCTree = new MCTree(this.props.battle,
-      this.props.battle.activeUnit.battleStats.side, false);
+    if (!this.MCTree)
+    {
+      this.MCTree = new MCTree(this.props.battle, this.props.battle.activeUnit.battleStats.side);
+    }
 
-    const move = this.MCTree.getBestMoveAndAdvance(1000);
+    const move = this.MCTree.getBestMoveAndAdvance(1000, 0.25);
 
     const target = this.props.battle.unitsById[move.targetId];
 
