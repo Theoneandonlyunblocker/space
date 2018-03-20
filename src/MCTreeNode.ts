@@ -26,8 +26,6 @@ export default class MCTreeNode
   public readonly depth: number = 0;
 
   public visits: number = 0;
-  public winRate: number = 0;
-  public averageScore: number = 0;
   public timesMoveWasPossible: number = 0;
 
   public get uctEvaluation(): number
@@ -75,8 +73,9 @@ export default class MCTreeNode
   {
     const sign = this.sideId === "side1" ? 1 : -1;
 
-    const baseScore = this.averageScore * sign / 2;
-    const winRate = this.winRate;
+    const averageScore = this.totalScore / this.visits;
+    const baseScore = averageScore * sign / 2;
+    const winRate = this.wins / this.visits;
     const aiAdjust = this.move.ability.AIScoreAdjust || 0;
 
     return baseScore + winRate + aiAdjust;
@@ -205,8 +204,6 @@ export default class MCTreeNode
       }
     }
 
-    this.averageScore = this.totalScore / this.visits;
-    this.winRate = this.wins / this.visits;
     this.uctIsDirty = true;
 
     if (this.parent)

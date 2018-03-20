@@ -36,8 +36,8 @@ export default class MCTree
       {
         visits: node.visits,
         uctEvaluation: node.uctEvaluation,
-        winRate: node.winRate,
-        averageScore: node.averageScore,
+        winRate: node.wins / node.visits,
+        averageScore: node.totalScore / node.visits,
         finalScore: node.getCombinedScore(),
         timesMoveWasPossible: node.timesMoveWasPossible,
         move: `${node.move.userId}: ${node.move.ability.displayName} => ${node.move.targetId}`,
