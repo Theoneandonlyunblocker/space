@@ -178,22 +178,22 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     {
       debugOptions.push(
       {
-        key: "battleSimulationDepth",
+        key: "AIVsAIBattleSimulationDepth",
         content: React.DOM.div(
         {
 
         },
           OptionsNumericField(
           {
-            label: localize("aiVsAiBattleSimulationDepth")(),
-            id: "battle-simulation-depth-input",
-            value: Options.debug.battleSimulationDepth,
+            label: localize("AIVsAIBattleSimulationDepth")(),
+            id: "ai-battle-simulation-depth-input",
+            value: Options.debug.AIVsAIBattleSimulationDepth,
             min: 1,
             max: 500,
             step: 1,
             onChange: value =>
             {
-              Options.debug.battleSimulationDepth = value;
+              Options.debug.AIVsAIBattleSimulationDepth = value;
               this.forceUpdate();
             },
           }),
