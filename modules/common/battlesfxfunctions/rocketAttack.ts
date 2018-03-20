@@ -16,6 +16,7 @@ export default function rocketAttack(params: SFXParams): void
   {
     loadRocketAttack(() =>
     {
+      hasLoaded = true;
       playRocketAttack(params);
     });
   }
