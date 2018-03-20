@@ -12,6 +12,8 @@ import applyMixins from "../mixins/applyMixins";
 
 import {localize} from "../../../localization/localize";
 
+import Options from "../../../src/Options";
+
 
 export interface ComponentPropTypes extends React.Props<any>
 {
@@ -165,6 +167,11 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     {
       wrapperProps.className += " active-effect-unit";
     }
+    if (Options.debug.enabled)
+    {
+      wrapperProps.title = `id: ${this.props.id}`;
+    }
+
     const bodyElements =
     [
       React.DOM.div(
