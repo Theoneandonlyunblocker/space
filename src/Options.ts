@@ -15,31 +15,31 @@ const OptionsCategories: OptionsCategory[] =
 
 interface OptionsValues
 {
-  battleAnimationTiming?:
+  battleAnimationTiming:
   {
-    before?: number;
-    effectDuration?: number;
-    after?: number;
-    unitEnter?: number;
-    unitExit?: number;
-    turnTransition?: number;
+    before: number;
+    effectDuration: number;
+    after: number;
+    unitEnter: number;
+    unitExit: number;
+    turnTransition: number;
   };
-  debug?:
+  debug:
   {
-    enabled?: boolean;
     battleSimulationDepth?: number;
+    enabled: boolean;
   };
-  ui?:
+  ui:
   {
-    noHamburger?: boolean;
+    noHamburger: boolean;
   };
-  display?:
+  display:
   {
-    borderWidth?: number;
+    borderWidth: number;
   };
 }
 
-const defaultOptionsValues =
+const defaultOptionsValues: OptionsValues =
 {
   battleAnimationTiming:
   {
