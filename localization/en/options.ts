@@ -14,6 +14,7 @@ export const options =
   turnTransition: "Turn transition",
   debug: "Debug",
   debugMode: "Debug mode",
+  AIVsPlayerBattleSimulationDepth: "AI vs. Player battle simulation depth",
   AIVsAIBattleSimulationDepth: "AI vs. AI battle simulation depth",
   ui: "UI",
   alwaysExpandTopRightMenuOnLowResolution: "Always expand top right menu on low resolution",

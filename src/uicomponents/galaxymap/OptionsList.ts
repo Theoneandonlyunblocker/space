@@ -198,6 +198,28 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
             },
           }),
         ),
+      },
+      {
+        key: "AIVsPlayerBattleSimulationDepth",
+        content: React.DOM.div(
+        {
+
+        },
+          OptionsNumericField(
+          {
+            label: localize("AIVsPlayerBattleSimulationDepth")(),
+            id: "player-battle-simulation-depth-input",
+            value: Options.debug.AIVsPlayerBattleSimulationDepth,
+            min: 1,
+            max: 10000,
+            step: 1,
+            onChange: value =>
+            {
+              Options.debug.AIVsPlayerBattleSimulationDepth = value;
+              this.forceUpdate();
+            },
+          }),
+        ),
       });
     }
 

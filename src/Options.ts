@@ -27,6 +27,7 @@ interface OptionsValues
   debug:
   {
     enabled: boolean;
+    AIVsPlayerBattleSimulationDepth: number;
     AIVsAIBattleSimulationDepth: number;
   };
   ui:
@@ -53,6 +54,7 @@ const defaultOptionsValues: OptionsValues =
   debug:
   {
     enabled: false,
+    AIVsPlayerBattleSimulationDepth: 1000,
     AIVsAIBattleSimulationDepth: 20,
   },
   ui:
@@ -79,6 +81,7 @@ class Options implements OptionsValues
   debug:
   {
     enabled: boolean;
+    AIVsPlayerBattleSimulationDepth: number;
     AIVsAIBattleSimulationDepth: number;
   };
   ui:
