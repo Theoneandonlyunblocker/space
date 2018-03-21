@@ -496,7 +496,12 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       this.MCTree = new MCTree(this.props.battle, this.props.battle.activeUnit.battleStats.side);
     }
 
-    const move = this.MCTree.getBestMoveAndAdvance(1000, 0.25);
+    const iterations = Math.max(
+      Options.debug.AIVsPlayerBattleSimulationDepth,
+      this.MCTree.rootNode.children.length * Math.sqrt(Options.debug.AIVsPlayerBattleSimulationDepth),
+    );
+
+    const move = this.MCTree.getBestMoveAndAdvance(iterations, 0.25);
 
     const target = this.props.battle.unitsById[move.targetId];
 
