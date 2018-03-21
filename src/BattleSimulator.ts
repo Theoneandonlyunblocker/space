@@ -48,6 +48,7 @@ export default class BattleSimulator
 
     const iterations = Math.max(
       rootVisitsUnderSimulationDepth,
+      this.tree.rootNode.children.length * Math.log(Options.debug.AIVsPlayerBattleSimulationDepth),
       Options.debug.AIVsAIBattleSimulationDepth / 2,
     );
 
