@@ -168,8 +168,7 @@ export default class MCTreeNode
       }
     }
   }
-
-  private getPossibleMoves(battle: Battle): Move[]
+  public getPossibleMoves(battle: Battle): Move[]
   {
     if (!battle.activeUnit)
     {
@@ -202,6 +201,7 @@ export default class MCTreeNode
 
     return possibleMoves;
   }
+
   private updateResult(result: number): void
   {
     this.visits++;

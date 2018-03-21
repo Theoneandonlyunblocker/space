@@ -498,7 +498,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     const iterations = Math.max(
       Options.debug.AIVsPlayerBattleSimulationDepth,
-      this.MCTree.rootNode.children.length * Math.sqrt(Options.debug.AIVsPlayerBattleSimulationDepth),
+      this.MCTree.rootNode.getPossibleMoves(this.props.battle).length * Math.sqrt(Options.debug.AIVsPlayerBattleSimulationDepth),
     );
 
     const move = this.MCTree.getBestMoveAndAdvance(iterations, 0.25);
