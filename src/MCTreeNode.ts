@@ -22,6 +22,7 @@ export default class MCTreeNode
 {
   // move that resulted in this action
   public readonly move: Move | null;
+  public children: MoveCollection<MCTreeNode>;
 
   public visits: number = 0;
   public wins: number = 0;
@@ -38,8 +39,6 @@ export default class MCTreeNode
   private readonly sideId: UnitBattleSide;
   private readonly parent: MCTreeNode;
   private readonly isBetweenAI: boolean;
-
-  private children: MoveCollection<MCTreeNode>;
 
   private _uctEvaluation: number;
   private uctIsDirty: boolean = true;
@@ -63,10 +62,6 @@ export default class MCTreeNode
     this.children = new MoveCollection<MCTreeNode>();
   }
 
-  public getChildForMove(move: Move): MCTreeNode | null
-  {
-    return this.children.get(move);
-  }
   public getCombinedScore(): number
   {
     const sign = this.sideId === "side1" ? 1 : -1;
@@ -77,10 +72,6 @@ export default class MCTreeNode
     const aiAdjust = this.move.ability.AIScoreAdjust || 0;
 
     return baseScore + winRate + aiAdjust;
-  }
-  public getAllChildren(): MCTreeNode[]
-  {
-    return this.children.flatten();
   }
   public simulateToEnd(battle: Battle): void
   {
@@ -104,7 +95,7 @@ export default class MCTreeNode
 
     possibleMoves.forEach(move =>
     {
-      let childForMove = this.getChildForMove(move);
+      let childForMove = this.children.get(move);
 
       if (!childForMove)
       {

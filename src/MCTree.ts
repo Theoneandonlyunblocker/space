@@ -53,7 +53,7 @@ export default class MCTree
 
   public advanceMove(move: Move, confidencePersistence: number)
   {
-    this._rootNode = this._rootNode.getChildForMove(move);
+    this._rootNode = this._rootNode.children.get(move);
     if (!this._rootNode)
     {
       this.remakeRootNode();
@@ -83,7 +83,7 @@ export default class MCTree
       toSimulateFrom.simulateToEnd(battle);
     }
 
-    const sortedMoves = this._rootNode.getAllChildren().sort(MCTree.sortByCombinedScoreFN);
+    const sortedMoves = this._rootNode.children.flatten().sort(MCTree.sortByCombinedScoreFN);
 
     MCTree.printChoicesToConsole(sortedMoves);
 
