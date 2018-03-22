@@ -17,7 +17,6 @@ import
 } from "./utility";
 
 
-// TODO 2018.03.20 | rename all utc stuff
 export default class MCTreeNode
 {
   // move that resulted in this action
@@ -29,9 +28,9 @@ export default class MCTreeNode
   public totalScore: number = 0;
   public timesMoveWasPossible: number = 0;
 
-  public get uctEvaluation(): number
+  public get evaluationWeight(): number
   {
-    return this._uctEvaluation;
+    return this._evaluationWeight;
   }
 
 
@@ -40,8 +39,8 @@ export default class MCTreeNode
   private readonly parent: MCTreeNode;
   private readonly isBetweenAI: boolean;
 
-  private _uctEvaluation: number;
-  private uctIsDirty: boolean = true;
+  private _evaluationWeight: number;
+  private evaluationWeightIsDirty: boolean = true;
 
 
   constructor(props:
@@ -125,10 +124,10 @@ export default class MCTreeNode
 
       return unexploredChildNodes[0];
     }
-    // expanded and not terminal, actually fetch child with highest score
+    // expanded and not terminal, actually fetch child with highest evaluation weight
     else if (this.children.length > 0)
     {
-      const child = this.getHighestUctChild(possibleMoves);
+      const child = this.getHighestEvaluationWeightChild(possibleMoves);
 
       child.playAssociatedMove(battle);
 
@@ -142,7 +141,7 @@ export default class MCTreeNode
   public recursivelyAdjustConfidence(confidencePersistence: number): void
   {
     this.depth = this.depth - 1;
-    this.uctIsDirty = true;
+    this.evaluationWeightIsDirty = true;
 
     if (confidencePersistence === 1)
     {
@@ -222,7 +221,7 @@ export default class MCTreeNode
       }
     }
 
-    this.uctIsDirty = true;
+    this.evaluationWeightIsDirty = true;
 
     if (this.parent)
     {
@@ -304,32 +303,24 @@ export default class MCTreeNode
 
     return child;
   }
-  private setUct(): void
+  private setEvaluationWeight(): void
   {
-    if (!this.parent)
-    {
-      this._uctEvaluation = -1;
-    }
-    else
-    {
-      const explorationBias = 2;
-      // TODO 2018.03.19 | tweak this. currently not based on anything
-      const availabilityBias = 0.2;
+    // TODO 2018.03.19 | tweak these. currently not based on much anything
+    const explorationBias = 2;
+    const availabilityBias = 0.2;
 
-      this._uctEvaluation = this.getCombinedScore() +
+    this._evaluationWeight = this.getCombinedScore() +
       Math.sqrt(explorationBias * Math.log(this.parent.visits) / this.visits) +
-      // TODO 2018.03.19 | same here
       availabilityBias * (this.parent.visits / this.timesMoveWasPossible);
 
-      if (isFinite(this.move.ability.AIEvaluationPriority))
-      {
-        this._uctEvaluation *= this.move.ability.AIEvaluationPriority;
-      }
+    if (isFinite(this.move.ability.AIEvaluationPriority))
+    {
+      this._evaluationWeight *= this.move.ability.AIEvaluationPriority;
     }
 
-    this.uctIsDirty = false;
+    this.evaluationWeightIsDirty = false;
   }
-  private getHighestUctChild(possibleMoves: Move[]): MCTreeNode
+  private getHighestEvaluationWeightChild(possibleMoves: Move[]): MCTreeNode
   {
     const candidateChildren = possibleMoves.filter(move =>
     {
@@ -341,12 +332,12 @@ export default class MCTreeNode
 
     return candidateChildren.reduce((previousHighest, child) =>
     {
-      if (child.uctIsDirty)
+      if (child.evaluationWeightIsDirty)
       {
-        child.setUct();
+        child.setEvaluationWeight();
       }
 
-      if (!previousHighest || child.uctEvaluation > previousHighest.uctEvaluation)
+      if (!previousHighest || child.evaluationWeight > previousHighest.evaluationWeight)
       {
         return child;
       }

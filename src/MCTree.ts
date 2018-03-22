@@ -34,11 +34,11 @@ export default class MCTree
       const node = nodes[i];
       const row =
       {
+        finalScore: node.getCombinedScore(),
         visits: node.visits,
-        uctEvaluation: node.uctEvaluation,
+        evaluationWeight: node.evaluationWeight,
         winRate: node.wins / node.visits,
         averageScore: node.totalScore / node.visits,
-        finalScore: node.getCombinedScore(),
         timesMoveWasPossible: node.timesMoveWasPossible,
         move: `${node.move.userId}: ${node.move.ability.displayName} => ${node.move.targetId}`,
       };
