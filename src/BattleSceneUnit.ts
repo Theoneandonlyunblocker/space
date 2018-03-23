@@ -45,7 +45,7 @@ export default class BattleSceneUnit
     this.container.addChild(this.spriteContainer);
   }
 
-  public changeActiveUnit(unit: Unit | null, afterChangedCallback?: () => void)
+  public setActiveUnit(unit: Unit | null, afterChangedCallback?: () => void)
   {
     if (this.hasSFXSprite)
     {

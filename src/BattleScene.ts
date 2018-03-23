@@ -161,10 +161,10 @@ export default class BattleScene
     const activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
     const activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
 
-    this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
+    this.side1Unit.setActiveUnit(activeSide1Unit, boundAfterFinishFN1);
     this.side1Overlay.activeUnit = activeSide1Unit;
 
-    this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
+    this.side2Unit.setActiveUnit(activeSide2Unit, boundAfterFinishFN2);
     this.side2Overlay.activeUnit = activeSide2Unit;
   }
   public renderOnce()
