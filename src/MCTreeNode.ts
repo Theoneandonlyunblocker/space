@@ -305,11 +305,16 @@ export default class MCTreeNode
   }
   private setEvaluationWeight(): void
   {
+    const winRate = this.wins / this.visits;
+
     // TODO 2018.03.19 | tweak these. currently not based on much anything
     const explorationBias = 2;
     const availabilityBias = 0.2;
+    // if outcome seems certain, put less weight on exploring strictly optimal moves
+    // should help with both exploiting and avoiding blunders
+    const decidedness = Math.pow(Math.abs(0.5 - winRate) * 2, 6);
 
-    this._evaluationWeight = this.getCombinedScore() +
+    this._evaluationWeight = this.getCombinedScore() * (1 - decidedness) +
       Math.sqrt(explorationBias * Math.log(this.parent.visits) / this.visits) +
       availabilityBias * (this.parent.visits / this.timesMoveWasPossible);
 
