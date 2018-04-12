@@ -24,22 +24,17 @@ export default class MCTreeNode
   public children: MoveCollection<MCTreeNode>;
 
   public visits: number = 0;
-  public wins: number = 0;
-  public totalScore: number = 0;
-  public timesMoveWasPossible: number = 0;
 
-  public get evaluationWeight(): number
-  {
-    return this._evaluationWeight;
-  }
-
+  private wins: number = 0;
+  private totalEndScore: number = 0;
+  private timesMoveWasPossible: number = 0;
 
   private depth: number = 0;
   private readonly sideId: UnitBattleSide;
   private readonly parent: MCTreeNode;
   private readonly isBetweenAI: boolean;
 
-  private _evaluationWeight: number;
+  private evaluationWeight: number;
   private evaluationWeightIsDirty: boolean = true;
 
 
@@ -152,7 +147,7 @@ export default class MCTreeNode
       this.visits               = Math.round(this.visits               * confidencePersistence);
       this.timesMoveWasPossible = Math.round(this.timesMoveWasPossible * confidencePersistence);
       this.wins                 = Math.round(this.wins                 * confidencePersistence);
-      this.totalScore *= confidencePersistence;
+      this.totalEndScore *= confidencePersistence;
 
       if (confidencePersistence === 0)
       {
@@ -200,11 +195,24 @@ export default class MCTreeNode
 
     return possibleMoves;
   }
+  public getDebugInformation()
+  {
+    return(
+    {
+      combinedScore: this.getCombinedScore(),
+      visits: this.visits,
+      evaluationWeight: this.evaluationWeight,
+      winRate: this.wins / this.visits,
+      averageEndScore: this.totalEndScore / this.visits,
+      timesMoveWasPossible: this.timesMoveWasPossible,
+      move: `${this.move.userId}: ${this.move.ability.displayName} => ${this.move.targetId}`,
+    });
+  }
 
   private updateResult(result: number): void
   {
     this.visits++;
-    this.totalScore += result;
+    this.totalEndScore += result;
 
     if (this.sideId === "side1")
     {

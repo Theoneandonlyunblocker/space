@@ -1,7 +1,7 @@
 import Battle from "./Battle";
+import * as debug from "./debug";
 import MCTreeNode from "./MCTreeNode";
 import {Move} from "./Move";
-import Options from "./Options";
 
 
 export default class MCTree
@@ -24,31 +24,6 @@ export default class MCTree
   private static sortByCombinedScoreFN(a: MCTreeNode, b: MCTreeNode): number
   {
     return b.getCombinedScore() - a.getCombinedScore();
-  }
-  private static printChoicesToConsole(nodes: MCTreeNode[]): void
-  {
-    const consoleRows: any[] = [];
-
-    for (let i = 0; i < nodes.length; i++)
-    {
-      const node = nodes[i];
-      const row =
-      {
-        finalScore: node.getCombinedScore(),
-        visits: node.visits,
-        evaluationWeight: node.evaluationWeight,
-        winRate: node.wins / node.visits,
-        averageScore: node.totalScore / node.visits,
-        timesMoveWasPossible: node.timesMoveWasPossible,
-        move: `${node.move.userId}: ${node.move.ability.displayName} => ${node.move.targetId}`,
-      };
-      consoleRows.push(row);
-    }
-
-    if (Options.debug.enabled && console.table)
-    {
-      console.table(consoleRows);
-    }
   }
 
   public advanceMove(move: Move, confidencePersistence: number)
@@ -85,7 +60,10 @@ export default class MCTree
 
     const sortedMoves = this._rootNode.children.flatten().sort(MCTree.sortByCombinedScoreFN);
 
-    MCTree.printChoicesToConsole(sortedMoves);
+    if (debug.shouldLog("ai"))
+    {
+      debug.table("ai", "AI move evaluation", sortedMoves.map(node => node.getDebugInformation()));
+    }
 
     const best = sortedMoves[0];
 
