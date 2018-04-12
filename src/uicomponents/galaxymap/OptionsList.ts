@@ -160,18 +160,17 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     debugOptions.push(
     {
       key: "debugMode",
-      content:
-        OptionsCheckbox(
+      content: OptionsCheckbox(
+      {
+        isChecked: Options.debug.enabled,
+        label: localize("debugMode")(),
+        onChangeFN: () =>
         {
-          isChecked: Options.debug.enabled,
-          label: localize("debugMode")(),
-          onChangeFN: () =>
-          {
-            Options.debug.enabled = !Options.debug.enabled;
-            this.forceUpdate();
-            eventManager.dispatchEvent("renderUI");
-          },
-        }),
+          Options.debug.enabled = !Options.debug.enabled;
+          this.forceUpdate();
+          eventManager.dispatchEvent("renderUI");
+        },
+      }),
     });
 
     if (Options.debug.enabled)
@@ -220,6 +219,38 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
             },
           }),
         ),
+      },
+      {
+        key: "loggingOptions",
+        content: OptionsGroup(
+        {
+          key: "loggingOptions",
+          header: localize("logging")(),
+          options: Object.keys(Options.debug.logging).map(category =>
+          {
+            const key = `${category}Logging`;
+
+            return(
+            {
+              key: key,
+              content: OptionsCheckbox(
+              {
+                isChecked: Options.debug.logging[category],
+                label: localize(key)(),
+                onChangeFN: () =>
+                {
+                  Options.debug.logging[category] = !Options.debug.logging[category];
+                  this.forceUpdate();
+                },
+              }),
+            });
+          }),
+          resetFN: () =>
+          {
+            Options.setDefaultForCategory("debug.logging");
+            this.forceUpdate();
+          },
+        }),
       });
     }
 

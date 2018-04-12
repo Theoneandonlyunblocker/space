@@ -8,6 +8,7 @@ import
 
 
 type OptionsCategory = "battleAnimationTiming" | "debug" | "ui" | "display";
+type OptionsSubCatgory = "debug.logging";
 const OptionsCategories: OptionsCategory[] =
 [
   "battleAnimationTiming", "debug", "ui", "display",
@@ -29,6 +30,11 @@ interface OptionsValues
     enabled: boolean;
     AIVsPlayerBattleSimulationDepth: number;
     AIVsAIBattleSimulationDepth: number;
+    logging:
+    {
+      ai: boolean;
+      graphics: boolean;
+    }
   };
   ui:
   {
@@ -56,6 +62,11 @@ const defaultOptionsValues: OptionsValues =
     enabled: false,
     AIVsPlayerBattleSimulationDepth: 1000,
     AIVsAIBattleSimulationDepth: 20,
+    logging:
+    {
+      ai: true,
+      graphics: true,
+    },
   },
   ui:
   {
@@ -83,6 +94,11 @@ class Options implements OptionsValues
     enabled: boolean;
     AIVsPlayerBattleSimulationDepth: number;
     AIVsAIBattleSimulationDepth: number;
+    logging:
+    {
+      ai: boolean;
+      graphics: boolean;
+    };
   };
   ui:
   {
@@ -97,7 +113,7 @@ class Options implements OptionsValues
   {
     this.setDefaults();
   }
-  public setDefaultForCategory(category: OptionsCategory)
+  public setDefaultForCategory(category: OptionsCategory | OptionsSubCatgory)
   {
     let shouldReRenderUI = false;
     let shouldReRenderMap = false;
@@ -105,10 +121,13 @@ class Options implements OptionsValues
     switch (category)
     {
       case "battleAnimationTiming":
+      {
         this.battleAnimationTiming = shallowCopy(defaultOptionsValues.battleAnimationTiming);
-        break;
 
+        break;
+      }
       case "debug":
+      {
         this.debug = shallowCopy(defaultOptionsValues.debug);
 
         if (this.debug.enabled !== defaultOptionsValues.debug.enabled)
@@ -116,20 +135,32 @@ class Options implements OptionsValues
           shouldReRenderUI = true;
           shouldReRenderMap = true;
         }
-        break;
 
+        break;
+      }
+      case "debug.logging":
+      {
+        this.debug.logging = shallowCopy(defaultOptionsValues.debug.logging);
+
+        break;
+      }
       case "ui":
+      {
         this.ui = shallowCopy(defaultOptionsValues.ui);
-        break;
 
+        break;
+      }
       case "display":
+      {
         this.display = shallowCopy(defaultOptionsValues.display);
 
         if (this.display.borderWidth !== defaultOptionsValues.display.borderWidth)
         {
           shouldReRenderMap = true;
         }
+
         break;
+      }
     }
 
     if (shouldReRenderUI)
