@@ -605,6 +605,10 @@ export function getRelativeValue(value: number, min: number, max: number, invers
     }
   }
 }
+export function smoothStep(value: number, min: number, max: number, inverse: boolean = false): number
+{
+  return clamp(getRelativeValue(value, min, max, inverse), 0.0, 1.0);
+}
 export function getRelativeWeightsFromObject(byCount: {[prop: string]: number})
 {
   const relativeWeights:

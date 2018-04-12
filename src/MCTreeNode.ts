@@ -14,6 +14,7 @@ import
 import
 {
   getRandomKeyWithWeights,
+  smoothStep,
 } from "./utility";
 
 
@@ -320,22 +321,22 @@ export default class MCTreeNode
   }
   private setEvaluationWeight(): void
   {
-    const winRate = this.wins / this.visits;
-
     // TODO 2018.03.19 | tweak these. currently not based on much anything
     const explorationBias = 2;
     const availabilityBias = 0.2;
-    // if outcome seems certain, put less weight on exploring strictly optimal moves
-    // should help with both exploiting and avoiding blunders
-    const decidedness = Math.pow(Math.abs(0.5 - winRate) * 2, 6);
 
-    this._evaluationWeight = this.getCombinedScore() * (1 - decidedness) +
+    // if victory seems certain, put less weight on exploring strictly optimal moves
+    // should help with both exploiting and avoiding blunders
+    const winRate = this.wins / this.visits;
+    const decidedness = Math.pow(smoothStep(winRate, 0.925, 1.0), 3) / 2;
+
+    this.evaluationWeight = this.getCombinedScore() * (1 - decidedness) +
       Math.sqrt(explorationBias * Math.log(this.parent.visits) / this.visits) +
       availabilityBias * (this.parent.visits / this.timesMoveWasPossible);
 
     if (isFinite(this.move.ability.AIEvaluationPriority))
     {
-      this._evaluationWeight *= this.move.ability.AIEvaluationPriority;
+      this.evaluationWeight *= this.move.ability.AIEvaluationPriority;
     }
 
     this.evaluationWeightIsDirty = false;
