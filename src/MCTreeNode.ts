@@ -144,9 +144,9 @@ export default class MCTreeNode
     }
     else
     {
-      this.visits               = Math.round(this.visits               * confidencePersistence);
-      this.timesMoveWasPossible = Math.round(this.timesMoveWasPossible * confidencePersistence);
-      this.wins                 = Math.round(this.wins                 * confidencePersistence);
+      this.visits *= confidencePersistence;
+      this.timesMoveWasPossible *= confidencePersistence;
+      this.wins *= confidencePersistence;
       this.totalEndScore *= confidencePersistence;
 
       if (confidencePersistence === 0)
