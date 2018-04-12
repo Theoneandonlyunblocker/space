@@ -56,16 +56,23 @@ export default class MCTreeNode
     this.children = new MoveCollection<MCTreeNode>();
   }
 
-  public getCombinedScore(): number
+  public getCombinedScore(): number // 0...1
   {
+    const winRateWeight = 1;
+    const endScoreWeight = 0.5;
+
     const sign = this.sideId === "side1" ? 1 : -1;
 
-    const averageScore = this.totalScore / this.visits;
-    const baseScore = averageScore * sign / 2;
+    const averageEndScore = this.totalEndScore / this.visits;
+    const baseEndScore = averageEndScore * sign; // -1...1
+    const normalizedEndScore = (baseEndScore + 1) / 2; // 0...1
     const winRate = this.wins / this.visits;
-    const aiAdjust = this.move.ability.AIScoreAdjust || 0;
+    const aiAdjust = this.move.ability.AIScoreMultiplier || 1;
 
-    return baseScore + winRate + aiAdjust;
+    const combinedScore = (normalizedEndScore * endScoreWeight + winRate * winRateWeight) * aiAdjust;
+    const normalizedCombinedScore = combinedScore / (winRateWeight + endScoreWeight);
+
+    return normalizedCombinedScore;
   }
   public simulateToEnd(battle: Battle): void
   {

@@ -49,15 +49,15 @@ declare interface AbilityTemplate extends AbilityBase
    */
   AIEvaluationPriority?: number;
   /**
-   * adjusts the final score of this ability. AI picks move with highest score.
-   * used to penalize moves that might be optimal but boring, such as doing nothing
-   */
-  AIScoreAdjust?: number;
-  /**
    * prevent from being used in AI vs AI battles.
-   * helps when simulation depth is too low to let AIScoreAdjust kick in
+   * helps when simulation depth is too low to let AIEvaluationPriority kick in
    */
   disableInAIBattles?: boolean;
+  /**
+   * adjusts the final score of this ability. AI picks move with highest score.
+   * to penalize moves that might be optimal but boring (e.g. skip turn) or otherwise unpleasant for the player
+   */
+  AIScoreMultiplier?: number;
 }
 
 export default AbilityTemplate;

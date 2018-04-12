@@ -369,6 +369,6 @@ export const standBy: AbilityTemplate =
 
   doesNotRemoveUserGuard: true,
   AIEvaluationPriority: 0.6,
-  AIScoreAdjust: -0.1,
+  AIScoreMultiplier: 0.6,
   disableInAIBattles: true,
 };
