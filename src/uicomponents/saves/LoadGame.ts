@@ -19,7 +19,7 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   saveKeysToDelete: string[];
-  selectedSaveKey: string;
+  selectedSaveKey: string | null;
   hasConfirmDeleteSavePopup: boolean;
 }
 
@@ -158,7 +158,13 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       localStorage.removeItem(key);
     });
 
-    this.setState({saveKeysToDelete: []}, () =>
+    this.setState(
+    {
+      selectedSaveKey: this.state.saveKeysToDelete.indexOf(this.state.selectedSaveKey) !== -1 ?
+        null :
+        this.state.selectedSaveKey,
+      saveKeysToDelete: [],
+    }, () =>
     {
       if (this.afterConfirmDeleteCallback)
       {
