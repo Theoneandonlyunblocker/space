@@ -5,6 +5,7 @@ import SFXParams from "./templateinterfaces/SFXParams";
 
 import BattleSceneUnit from "./BattleSceneUnit";
 import BattleSceneUnitOverlay from "./BattleSceneUnitOverlay";
+import * as debug from "./debug";
 import Options from "./Options";
 import Unit from "./Unit";
 import UnitBattleSide from "./UnitBattleSide";
@@ -145,6 +146,8 @@ export default class BattleScene
   }
   public updateUnits(afterFinishedUpdatingCallback?: () => void)
   {
+    debug.log("graphics", "updateUnits");
+
     let boundAfterFinishFN1: (() => void) | undefined;
     let boundAfterFinishFN2: (() => void) | undefined;
     if (afterFinishedUpdatingCallback)
@@ -294,6 +297,8 @@ export default class BattleScene
   }
   private finishUpdatingUnit(side: UnitBattleSide)
   {
+    debug.log("graphics", "finishUpdatingUnit", side);
+
     if (side === "side1")
     {
       this.side1UnitHasFinishedUpdating = true;

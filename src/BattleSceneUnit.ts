@@ -4,6 +4,7 @@
 import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 import SFXParams from "./templateinterfaces/SFXParams";
 
+import * as debug from "./debug";
 import Options from "./Options";
 import Unit from "./Unit";
 import UnitBattleSide from "./UnitBattleSide";
@@ -47,6 +48,8 @@ export default class BattleSceneUnit
 
   public setActiveUnit(unit: Unit | null, afterChangedCallback?: () => void)
   {
+    debug.log("graphics", "setActiveUnit", this.side, unit ? unit.id : unit);
+
     if (this.hasSFXSprite)
     {
       if (unit)
@@ -170,9 +173,10 @@ export default class BattleSceneUnit
       console.warn(`called exitUnitSprite with unintended animation state ${this.unitState}`);
     }
   }
-
   private startUnitSpriteEnter(unit: Unit)
   {
+    debug.log("graphics", "startUnitSpriteEnter", this.side, unit.id);
+
     const enterAnimationDuration = Options.battleAnimationTiming.unitEnter;
     if (enterAnimationDuration <= 0)
     {
@@ -191,17 +195,23 @@ export default class BattleSceneUnit
   }
   private finishUnitSpriteEnter()
   {
+    debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "finishUnitSpriteEnter");
+
     this.unitState = BattleSceneUnitState.Stationary;
     this.clearTween();
 
     if (this.onFinishEnter)
     {
+      debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "onFinishEnter");
+
       this.onFinishEnter();
       this.onFinishEnter = undefined;
     }
   }
   private startUnitSpriteExit()
   {
+    debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "startUnitSpriteExit");
+
     const exitAnimationDuration = Options.battleAnimationTiming.unitExit;
     if (exitAnimationDuration <= 0)
     {
@@ -218,6 +228,8 @@ export default class BattleSceneUnit
   }
   private finishUnitSpriteExit()
   {
+    debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "finishUnitSpriteExit");
+
     this.clearUnit();
     this.clearUnitSprite();
 
@@ -316,6 +328,8 @@ export default class BattleSceneUnit
   {
     if (this.tween)
     {
+      debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "clearTween");
+
       this.tween.stop();
       TWEEN.remove(this.tween);
       this.tween = null;
