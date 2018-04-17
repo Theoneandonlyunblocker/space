@@ -229,7 +229,7 @@ export default class MCTreeNode
         this.wins++;
       }
     }
-    if (this.sideId === "side2")
+    else if (this.sideId === "side2")
     {
       if (result < 0)
       {

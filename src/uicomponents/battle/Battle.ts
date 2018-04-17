@@ -90,10 +90,11 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   private abilityUseEffectQueue: AbilityUseEffectQueue;
 
   // set as a property of the class instead of its state
-  // as its not used for trigger updates
+  // as its not used to trigger updates
   // and needs to be changed synchronously
   private tempHoveredUnit: Unit = null;
 
+  // TODO 2018.04.14 | really doesn't belong in ui class
   private MCTree: MCTree = null;
 
   private SFXStartTime: number;
@@ -433,6 +434,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
     this.props.battle.endTurn();
+    // TODO 2018.04.14 | should start calculating next ai move here
 
     this.setState(
     {

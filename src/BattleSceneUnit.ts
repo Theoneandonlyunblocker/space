@@ -109,7 +109,6 @@ export default class BattleSceneUnit
     }
   }
 
-  // enter without animation
   private enterUnitSpriteWithoutAnimation(unit: Unit)
   {
     this.setUnit(unit);
@@ -117,14 +116,10 @@ export default class BattleSceneUnit
 
     this.finishUnitSpriteEnter();
   }
-
-  // exit without animation
   private exitUnitSpriteWithoutAnimation()
   {
     this.finishUnitSpriteExit();
   }
-
-  // enter with animation
   private enterUnitSprite(unit: Unit)
   {
     if (this.unitState === BattleSceneUnitState.Stationary)
@@ -153,7 +148,6 @@ export default class BattleSceneUnit
     // this.clearUnitSprite();
     // this.startUnitSpriteEnter(unit);
   }
-  // exit with animation
   private exitUnitSprite()
   {
     if (this.unitState === BattleSceneUnitState.Entering)

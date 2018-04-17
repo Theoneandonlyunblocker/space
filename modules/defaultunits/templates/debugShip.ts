@@ -64,6 +64,7 @@ const debugShip: UnitTemplate =
       [
         debugAbility,
         rangedAttack,
+        bombAttack,
         standBy,
       ],
     },
