@@ -155,9 +155,12 @@ export class AbilityUseEffectQueue
   }
   private handleEndOfQueue(): void
   {
-    if (this.onAllFinished)
+    this.battleScene.updateUnits(() =>
     {
-      this.onAllFinished();
-    }
+      if (this.onAllFinished)
+      {
+        this.onAllFinished();
+      }
+    });
   }
 }

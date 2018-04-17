@@ -423,7 +423,7 @@ export default class BattleScene
     this.afterUseDelayHasFinishedCallback = () =>
     {
       this.clearActiveSFX();
-      this.updateUnits(this.executeAbilityUseHasFinishedCallback.bind(this));
+      this.executeAbilityUseHasFinishedCallback();
     };
 
     if (afterUseDelay >= 0)

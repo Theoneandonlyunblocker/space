@@ -131,8 +131,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.usePreparedAbility = this.usePreparedAbility.bind(this);
     this.useAIAbility = this.useAIAbility.bind(this);
     this.handleMouseLeaveAbility = this.handleMouseLeaveAbility.bind(this);
-    this.startTurnTransition = this.startTurnTransition.bind(this);
-    this.handleTurnEnd = this.handleTurnEnd.bind(this);
+    this.endTurn = this.endTurn.bind(this);
+    this.startTurn = this.startTurn.bind(this);
+    this.handleTurnStart = this.handleTurnStart.bind(this);
     this.handleMouseLeaveUnit = this.handleMouseLeaveUnit.bind(this);
     this.usePlayerAbility = this.usePlayerAbility.bind(this);
     this.endBattleStart = this.endBattleStart.bind(this);
@@ -424,9 +425,12 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       playingBattleEffect: false,
       battleEffectDuration: undefined,
       battleEffectDurationAfterTrigger: undefined,
-    }, this.startTurnTransition);
+    }, () =>
+    {
+      this.endTurn(this.startTurn);
+    });
   }
-  private startTurnTransition()
+  private endTurn(cb: () => void): void
   {
     if (!this.state.hoveredUnit || !this.state.hoveredUnit.isTargetable())
     {
@@ -436,15 +440,22 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.props.battle.endTurn();
     // TODO 2018.04.14 | should start calculating next ai move here
 
-    this.setState(
+    this.battleScene.activeUnit = null;
+    this.battleScene.updateUnits(() =>
     {
-      UIState: BattleUIState.TransitioningTurn,
-    }, () =>
-    {
-      window.setTimeout(this.handleTurnEnd, Options.battleAnimationTiming.turnTransition);
+
+      window.setTimeout(cb, Options.battleAnimationTiming.turnTransition);
     });
   }
-  private handleTurnEnd()
+  private startTurn(): void
+  {
+    this.battleScene.activeUnit = this.props.battle.activeUnit;
+    this.battleScene.updateUnits(() =>
+    {
+      this.handleTurnStart();
+    });
+  }
+  private handleTurnStart(): void
   {
     if (this.props.battle.ended)
     {
