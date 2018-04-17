@@ -55,7 +55,7 @@ const defaultOptionsValues: OptionsValues =
     after: 1500,
     unitEnter: 200,
     unitExit: 100,
-    turnTransition: 1000,
+    turnTransition: 500,
   },
   debug:
   {
