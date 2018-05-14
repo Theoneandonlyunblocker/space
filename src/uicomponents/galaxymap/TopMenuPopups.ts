@@ -27,6 +27,8 @@ import OptionsList from "./OptionsList";
 import {localize} from "../../../localization/localize";
 
 
+const windowPositionStorageKey = "Rance.WindowPositions";
+
 interface ValuesByPopup<T>
 {
   production: T;
@@ -140,6 +142,16 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     this.state = this.getInitialStateTODO();
 
     this.bindMethods();
+
+    const storedWindowPositions = localStorage.getItem(windowPositionStorageKey);
+    if (storedWindowPositions)
+    {
+      const parsed = JSON.parse(storedWindowPositions);
+      for (const key in parsed)
+      {
+        this.cachedPopupPositions[key] = parsed[key];
+      }
+    }
   }
 
   public togglePopup(popupType: PopupType)
@@ -156,6 +168,16 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   public bringPopupToFront(popupType: PopupType): void
   {
     this.popupComponents[popupType].windowContainerComponent.bringToTop();
+  }
+  public componentWillMount(): void
+  {
+    window.addEventListener("unload", this.storeAllWindowPositions);
+  }
+  public componentWillUnmount(): void
+  {
+    window.removeEventListener("unload", this.storeAllWindowPositions);
+
+    this.storeAllWindowPositions();
   }
   public render()
   {
@@ -184,6 +206,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     this.closePopup = this.closePopup.bind(this);
     this.togglePopup = this.togglePopup.bind(this);
     this.bringPopupToFront = this.bringPopupToFront.bind(this);
+    this.storeAllWindowPositions = this.storeAllWindowPositions.bind(this);
   }
   private getInitialStateTODO(): StateType
   {
@@ -246,6 +269,15 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     },
       constructData.makeContent(),
     );
+  }
+  private storeAllWindowPositions(): void
+  {
+    for (const key in this.popupComponents)
+    {
+      this.cachedPopupPositions[key] = this.popupComponents[key].windowContainerComponent.getPosition();
+    }
+
+    localStorage.setItem(windowPositionStorageKey, JSON.stringify(this.cachedPopupPositions));
   }
 }
 
