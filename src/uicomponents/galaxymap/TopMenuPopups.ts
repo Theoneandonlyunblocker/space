@@ -233,6 +233,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     }
 
     this.popupComponents[popupType] = null;
+
     const stateObj: StateType = {};
     stateObj[popupType] = false;
     this.setState(stateObj);
@@ -274,7 +275,10 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   {
     for (const key in this.popupComponents)
     {
-      this.cachedPopupPositions[key] = this.popupComponents[key].windowContainerComponent.getPosition();
+      if (this.popupComponents[key])
+      {
+        this.cachedPopupPositions[key] = this.popupComponents[key].windowContainerComponent.getPosition();
+      }
     }
 
     localStorage.setItem(windowPositionStorageKey, JSON.stringify(this.cachedPopupPositions));
