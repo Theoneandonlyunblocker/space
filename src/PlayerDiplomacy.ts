@@ -92,8 +92,8 @@ export default class PlayerDiplomacy
   {
     return this.game.players.some(player =>
     {
-      return this.getStatusWithPlayer(player) !== DiplomacyState.Unmet;
-    })
+      return this.getStatusWithPlayer(player) === DiplomacyState.Unmet;
+    });
   }
   public canDeclareWarOn(player: Player): boolean
   {
