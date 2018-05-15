@@ -1,3 +1,5 @@
+import {localize} from "../localization/localize";
+
 import Player from "./Player";
 import Unit from "./Unit";
 import UnitDisplayData from "./UnitDisplayData";
@@ -36,9 +38,9 @@ export default class BattlePrepFormation
     this.player = player;
     this.units = units;
     this.hasScouted = hasScouted;
-    this.minUnits = minUnits;
     this.isAttacker = isAttacker;
 
+    this.minUnits = Math.min(minUnits, this.getAvailableUnits().length);
     this.formation = getNullFormation();
   }
 
@@ -102,32 +104,25 @@ export default class BattlePrepFormation
   {
     const amountOfUnitsPlaced = this.getPlacedUnits().length;
 
-    if (this.isAttacker && amountOfUnitsPlaced < 1)
+    if (amountOfUnitsPlaced < this.minUnits)
     {
       return(
       {
         isValid: false,
-        description: "Attacker must place at least 1 unit.",
-      });
-    }
-
-    const availableUnits = this.getAvailableUnits();
-    const hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
-
-    if (amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits)
-    {
-      return(
-      {
-        isValid: true,
-        description: "",
+        // TODO 2018.05.15 | localization doesn't belong here
+        // TODO 2018.05.15 | should give reason why more units need to be placed
+        description: localize("notEnoughUnitsPlaced")(
+        {
+          minUnits: this.minUnits,
+        }),
       });
     }
     else
     {
       return(
       {
-        isValid: false,
-        description: `Must place at least ${this.minUnits} units or all available units.`,
+        isValid: true,
+        description: "",
       });
     }
   }

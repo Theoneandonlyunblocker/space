@@ -32,4 +32,10 @@ export const battle =
   ownFormation: "Own",
   attacking: "Attacking",
   defending: "Defending",
+
+  notEnoughUnitsPlaced: "Must place at least {minUnits} " +
+    "{minUnits, plural," +
+      "  one {unit}" +
+      "other {units}" +
+    "}.",
 };
