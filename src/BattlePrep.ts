@@ -72,13 +72,6 @@ export default class BattlePrep
     this.attackerUnits.forEach(f);
     this.defenderUnits.forEach(f);
   }
-  public isLocationNeutral(): boolean
-  {
-    return(
-      this.battleData.location.owner !== this.attacker &&
-      this.battleData.location.owner !== this.defender
-    );
-  }
   public makeBattle(): Battle
   {
     const side1Formation = this.humanFormation || this.attackerFormation;
@@ -151,13 +144,15 @@ export default class BattlePrep
   }
   private getInitialMinDefenders(): number
   {
-    if (this.isLocationNeutral())
+    const isBeingFoughtOverTerritory = Boolean(this.battleData.building);
+
+    if (isBeingFoughtOverTerritory)
     {
-      return 1;
+      return 0;
     }
     else
     {
-      return 0;
+      return 1;
     }
   }
 }

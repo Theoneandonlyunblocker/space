@@ -6,7 +6,7 @@ import Unit from "./Unit";
 declare interface BattleData
 {
   location: Star;
-  building: Building;
+  building?: Building;
   attacker:
   {
     player: Player;

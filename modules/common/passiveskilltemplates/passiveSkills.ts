@@ -104,13 +104,16 @@ export const warpJammer: PassiveSkillTemplate =
 {
   type: "warpJammer",
   displayName: "Warp Jammer",
-  description: "Forces an extra unit to defend in neutral territory",
+  description: "Forces an extra unit to defend when not fighting over territory",
 
   inBattlePrep:
   [
-    function(user: Unit, battlePrep: BattlePrep)
+    (user: Unit, battlePrep: BattlePrep) =>
     {
-      if (battlePrep.isLocationNeutral() && user.fleet.player === battlePrep.attacker)
+      const isAttacker = user.fleet.player === battlePrep.attacker;
+      const isBeingFoughtOverTerritory = Boolean(battlePrep.battleData.building);
+
+      if (isAttacker && !isBeingFoughtOverTerritory)
       {
         battlePrep.minDefenders += 1;
       }
