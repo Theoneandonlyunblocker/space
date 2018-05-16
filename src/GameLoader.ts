@@ -157,6 +157,7 @@ export default class GameLoader
 
       const notification = new Notification(
       {
+        id: notificationData.id,
         template: activeModuleData.Templates.Notifications[notificationData.templateKey],
         props: template.deserializeProps(notificationData.props, this),
         turn: notificationData.turn,

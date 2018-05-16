@@ -37,6 +37,7 @@ export default class NotificationLog
   {
     const notification = new Notification(
     {
+      id: undefined,
       template: args.template,
       props: args.props,
       involvedPlayers: args.involvedPlayers,

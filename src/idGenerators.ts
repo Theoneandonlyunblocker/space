@@ -8,6 +8,7 @@ export interface IdGeneratorValues
   building: number;
   objective: number;
   statusEffect: number;
+  notification: number;
 }
 
 class IdGenerator implements IdGeneratorValues
@@ -20,6 +21,7 @@ class IdGenerator implements IdGeneratorValues
   public building: number = 0;
   public objective: number = 0;
   public statusEffect: number = 0;
+  public notification: number = 0;
 
   constructor()
   {
@@ -44,6 +46,7 @@ class IdGenerator implements IdGeneratorValues
       building: this.building,
       objective: this.objective,
       statusEffect: this.statusEffect,
+      notification: this.notification,
     });
   }
 }

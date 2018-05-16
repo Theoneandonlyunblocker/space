@@ -1,5 +1,6 @@
 declare interface NotificationSaveData<P>
 {
+  id: number;
   templateKey: string;
   hasBeenRead: boolean;
   turn: number;
