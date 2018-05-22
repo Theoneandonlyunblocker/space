@@ -1,15 +1,15 @@
 import * as React from "react";
 
-import Notification from "../../Notification";
+import {Notification} from "../../notifications/Notification";
 
 import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  markAsRead: (notification: Notification<any, any>) => void;
-  notification: Notification<any, any>;
-  togglePopup: (notification: Notification<any, any>) => void;
+  markAsRead: (notification: Notification) => void;
+  notification: Notification;
+  togglePopup: (notification: Notification) => void;
 }
 
 interface StateType

@@ -3,6 +3,7 @@ import ColorSaveData from "./ColorSaveData";
 import PlayerDiplomacySaveData from "./PlayerDiplomacySaveData";
 import FlagSaveData from "./FlagSaveData";
 import FleetSaveData from "./FleetSaveData";
+import {NotificationSubscriberSaveData} from "./NotificationSubscriberSaveData";
 import NameSaveData from "./NameSaveData";
 import PlayerTechnologySaveData from "./PlayerTechnologySaveData";
 
@@ -35,6 +36,8 @@ declare interface PlayerSaveData
 
   isAI: boolean;
   AIController?: AIControllerSaveData<any>;
+
+  notificationLog: NotificationSubscriberSaveData | null;
 }
 
 export default PlayerSaveData;

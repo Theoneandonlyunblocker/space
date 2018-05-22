@@ -1,12 +1,13 @@
 /// <reference path="../lib/rng.d.ts" />
 
+import addCommonToModuleData from "../modules/common/addCommonToModuleData";
+
 import GalaxyMap from "./GalaxyMap";
 import Game from "./Game";
 import GameLoader from "./GameLoader";
 import MapRenderer from "./MapRenderer";
 import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
 import ModuleLoader from "./ModuleLoader";
-import NotificationLog from "./NotificationLog";
 import Options from "./Options";
 import Player from "./Player";
 import PlayerControl from "./PlayerControl";
@@ -14,7 +15,6 @@ import ReactUI from "./ReactUI";
 import ReactUIScene from "./ReactUIScene";
 import Renderer from "./Renderer";
 import {activeModuleData} from "./activeModuleData";
-import {activeNotificationLog, setActiveNotificationLog} from "./activeNotificationLog";
 import {activePlayer, setActivePlayer} from "./activePlayer";
 import {centerCameraOnPosition} from "./centerCameraOnPosition";
 import {defaultModuleData} from "./defaultModuleData";
@@ -25,6 +25,9 @@ import
   onDOMLoaded,
 } from "./utility";
 
+import {NotificationStore} from "./notifications/NotificationStore";
+import {activeNotificationStore, setActiveNotificationStore} from "./notifications/activeNotificationStore";
+
 import TutorialStatus from "./tutorials/TutorialStatus";
 
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
@@ -33,8 +36,7 @@ import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import FullSaveData from "./savedata/FullSaveData";
 
 import {setActiveLanguageCode} from "./localization/activeLanguage";
-
-import addCommonToModuleData from "../modules/common/addCommonToModuleData";
+import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
 
 
 class App
@@ -287,6 +289,12 @@ class App
       throw new Error("App tried to init game without having one specified");
     }
 
+    if (!activeNotificationStore)
+    {
+      setActiveNotificationStore(new NotificationStore());
+      activeNotificationStore.currentTurn = this.game.turnNumber;
+    }
+
     setActivePlayer(this.game.players[0]);
     activePlayer.isAI = false;
 
@@ -297,24 +305,26 @@ class App
 
     this.playerControl = new PlayerControl(activePlayer);
 
-    if (!activeNotificationLog)
-    {
-      const playersToSubscribe = this.game.getLiveMajorPlayers();
-      setActiveNotificationLog(new NotificationLog(playersToSubscribe));
-      activeNotificationLog.currentTurn = this.game.turnNumber;
-    }
-
-    activeModuleData.scripts.game.afterInit.forEach(script =>
-    {
-      script(this.game);
-    });
-
     this.game.players.forEach(player =>
     {
+      if (!player.isIndependent)
+      {
+        if (!player.notificationLog)
+        {
+          player.notificationLog = new PlayerNotificationSubscriber(player);
+        }
+        player.notificationLog.registerToNotificationStore(activeNotificationStore);
+      }
+
       if (!player.AIController)
       {
         player.AIController = player.makeRandomAIController(this.game);
       }
+    });
+
+    activeModuleData.scripts.game.afterInit.forEach(script =>
+    {
+      script(this.game);
     });
   }
   private initDisplay()

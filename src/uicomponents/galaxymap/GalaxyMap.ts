@@ -6,12 +6,14 @@ import GameOverScreen from "./GameOverScreen";
 
 import Game from "../../Game";
 import MapRenderer from "../../MapRenderer";
-import NotificationLog from "../../NotificationLog";
 import Player from "../../Player";
 import PlayerControl from "../../PlayerControl";
 import Renderer from "../../Renderer";
 
 import {Language} from "../../localization/Language";
+
+import { Notification } from "../../notifications/Notification";
+import { NotificationSubscriber } from "../../notifications/NotificationSubscriber";
 
 
 export interface PropTypes extends React.Props<any>
@@ -22,7 +24,8 @@ export interface PropTypes extends React.Props<any>
   mapRenderer: MapRenderer;
   renderer: Renderer;
   activeLanguage: Language;
-  notificationLog: NotificationLog;
+  notifications: Notification[];
+  notificationLog: NotificationSubscriber;
 }
 
 interface StateType
@@ -61,13 +64,14 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
             GameOverScreen() :
             GalaxyMapUI(
             {
+              key: "galaxyMapUI",
               playerControl: this.props.playerControl,
               player: this.props.player,
               game: this.props.game,
               mapRenderer: this.props.mapRenderer,
               activeLanguage: this.props.activeLanguage,
+              notifications: this.props.notifications,
               notificationLog: this.props.notificationLog,
-              key: "galaxyMapUI",
             }),
         ),
         //,

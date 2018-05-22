@@ -5,7 +5,6 @@ import {Fleet} from "../../Fleet";
 import FleetAttackTarget from "../../FleetAttackTarget";
 import Game from "../../Game";
 import MapRenderer from "../../MapRenderer";
-import NotificationLog from "../../NotificationLog";
 import Player from "../../Player";
 import PlayerControl from "../../PlayerControl";
 import Star from "../../Star";
@@ -16,7 +15,7 @@ import {Language} from "../../localization/Language";
 
 import MapModeSettings from "../mapmodes/MapModeSettings";
 
-import Notifications from "../notifications/Notifications";
+import NotificationLog from "../notifications/NotificationLog";
 
 import PossibleActions from "../possibleactions/PossibleActions";
 
@@ -29,6 +28,9 @@ import TopMenu from "./TopMenu";
 
 import {localize} from "../../../localization/localize";
 
+import { Notification } from "../../notifications/Notification";
+import { NotificationSubscriber } from "../../notifications/NotificationSubscriber";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -37,7 +39,8 @@ export interface PropTypes extends React.Props<any>
   player: Player;
   playerControl: PlayerControl;
   activeLanguage: Language;
-  notificationLog: NotificationLog;
+  notifications: Notification[];
+  notificationLog: NotificationSubscriber;
 }
 
 interface StateType
@@ -237,7 +240,6 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             player: this.props.player,
             game: this.props.game,
             activeLanguage: this.props.activeLanguage,
-            notificationLog: this.props.notificationLog,
             // currentTurn: this.props.game.turnNumber
           }),
           React.DOM.div(
@@ -311,11 +313,12 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
           },
             localize("mapMode")(),
           ),
-          Notifications(
+          NotificationLog(
           {
-            log: this.props.notificationLog,
-            currentTurn: this.props.game.turnNumber,
             key: "notifications",
+            currentTurn: this.props.game.turnNumber,
+            notifications: this.props.notifications,
+            notificationLog: this.props.notificationLog,
           }),
           React.DOM.button(endTurnButtonProps, localize("endTurn")()),
         ),

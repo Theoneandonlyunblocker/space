@@ -6,11 +6,11 @@ import NotificationTemplate from "../../../src/templateinterfaces/NotificationTe
 
 import Battle from "../../../src/Battle";
 import GameLoader from "../../../src/GameLoader";
-import NotificationFilterState from "../../../src/NotificationFilterState";
-import {NotificationWitnessCriterion} from "../../../src/NotificationWitnessCriterion";
+import {NotificationFilterState} from "../../../src/notifications/NotificationFilterState";
+import {NotificationWitnessCriterion} from "../../../src/notifications/NotificationWitnessCriterion";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
-import {activeNotificationLog} from "../../../src/activeNotificationLog";
+import {activeNotificationStore} from "../../../src/notifications/activeNotificationStore";
 
 
 export interface PropTypes
@@ -89,7 +89,7 @@ export const battleFinishNotificationCreationScripts =
         priority: 0,
         script: (battle: Battle) =>
         {
-          activeNotificationLog.makeNotification<PropTypes, SerializedPropTypes>(
+          activeNotificationStore.makeNotification<PropTypes, SerializedPropTypes>(
           {
             template: battleFinishNotification,
             props:

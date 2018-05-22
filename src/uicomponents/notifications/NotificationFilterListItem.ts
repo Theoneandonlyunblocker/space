@@ -1,8 +1,9 @@
 import * as React from "react";
 
 
-import NotificationFilter from "../../NotificationFilter";
-import NotificationFilterState from "../../NotificationFilterState";
+import {NotificationFilter} from "../../notifications/NotificationFilter";
+import {NotificationFilterState} from "../../notifications/NotificationFilterState";
+
 import eventManager from "../../eventManager";
 
 

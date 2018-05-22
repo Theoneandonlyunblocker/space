@@ -1,7 +1,5 @@
 import * as React from "react";
 
-import NotificationFilter from "../../NotificationFilter";
-
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import NotificationFilterList from "./NotificationFilterList";
@@ -11,7 +9,6 @@ import {localize} from "../../../localization/localize";
 
 export interface PropTypes extends React.Props<any>
 {
-  filter: NotificationFilter;
   text: string;
   highlightedOptionKey?: string;
 }
@@ -60,7 +57,6 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
           },
             NotificationFilterList(
             {
-              filter: this.props.filter,
               highlightedOptionKey: this.props.highlightedOptionKey,
             }),
           ),

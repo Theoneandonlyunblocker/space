@@ -2,7 +2,7 @@ import * as React from "react";
 
 import {localize} from "../../localization/localize";
 
-import Notification from "../../../../src/Notification";
+import {Notification} from "../../../../src/notifications/Notification";
 
 import
 {

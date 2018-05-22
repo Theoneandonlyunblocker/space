@@ -1,5 +1,6 @@
 import * as ReactDOM from "react-dom";
 
+import {activePlayer} from "./activePlayer";
 import Battle from "./Battle";
 import BattlePrep from "./BattlePrep";
 import Game from "./Game";
@@ -10,7 +11,6 @@ import Player from "./Player";
 import PlayerControl from "./PlayerControl";
 import ReactUIScene from "./ReactUIScene";
 import Renderer from "./Renderer";
-import {activeNotificationLog} from "./activeNotificationLog";
 import eventManager from "./eventManager";
 
 import {getActiveLanguage} from "./localization/activeLanguage";
@@ -84,7 +84,8 @@ export default class ReactUI
         player: this.player,
         game: this.game,
         activeLanguage: getActiveLanguage(),
-        notificationLog: activeNotificationLog,
+        notifications: [...activePlayer.notificationLog.unreadNotifications],
+        notificationLog: activePlayer.notificationLog,
       }),
       this.container,
     );

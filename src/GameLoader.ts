@@ -1,7 +1,7 @@
 
 import {AIController} from "./AIController";
 import {activeModuleData} from "./activeModuleData";
-import {setActiveNotificationLog} from "./activeNotificationLog";
+import {setActiveNotificationStore} from "./notifications/activeNotificationStore";
 import {AttitudeModifier} from "./AttitudeModifier";
 import Building from "./Building";
 import Color from "./Color";
@@ -15,12 +15,13 @@ import Item from "./Item";
 import Manufactory from "./Manufactory";
 import MapGenResult from "./MapGenResult";
 import Name from "./Name";
-import Notification from "./Notification";
-import NotificationLog from "./NotificationLog";
 import Player from "./Player";
 import Star from "./Star";
 import StatusEffect from "./StatusEffect";
 import Unit from "./Unit";
+
+import {Notification} from "./notifications//Notification";
+import {NotificationStore} from "./notifications//NotificationStore";
 
 import AIControllerSaveData from "./savedata/AIControllerSaveData";
 import BuildingSaveData from "./savedata/BuildingSaveData";
@@ -31,11 +32,14 @@ import FleetSaveData from "./savedata/FleetSaveData";
 import GalaxyMapSaveData from "./savedata/GalaxyMapSaveData";
 import GameSaveData from "./savedata/GameSaveData";
 import ItemSaveData from "./savedata/ItemSaveData";
-import NotificationLogSaveData from "./savedata/NotificationLogSaveData";
+import NotificationStoreSaveData from "./savedata/NotificationStoreSaveData";
 import PlayerSaveData from "./savedata/PlayerSaveData";
 import StarSaveData from "./savedata/StarSaveData";
 import {StatusEffectSaveData} from "./savedata/StatusEffectSaveData";
 import UnitSaveData from "./savedata/UnitSaveData";
+import { NotificationSubscriberSaveData } from "./savedata/NotificationSubscriberSaveData";
+import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
+import { NotificationSubscriber } from "./notifications/NotificationSubscriber";
 
 
 export default class GameLoader
@@ -123,11 +127,22 @@ export default class GameLoader
       }
     });
 
-    // notification log
-    if (data.notificationLog)
+    // notification store
+    const notificationStore = this.deserializeNotificationStore(data.notificationStore);
+    setActiveNotificationStore(notificationStore);
+
+    // notification subscribers
+    data.players.filter(playerData => playerData.notificationLog).forEach(playerData =>
     {
-      setActiveNotificationLog(this.deserializeNotificationLog(data.notificationLog));
-    }
+      const player = this.playersById[playerData.id];
+      const subscriber = new PlayerNotificationSubscriber(player);
+
+      player.notificationLog = this.deserializeNotificationSubscriber(
+        playerData.notificationLog,
+        subscriber,
+        notificationStore,
+      );
+    });
 
     // ai controllers
     data.players.forEach(playerData =>
@@ -147,9 +162,9 @@ export default class GameLoader
     return game;
   }
 
-  private deserializeNotificationLog(data: NotificationLogSaveData): NotificationLog
+  private deserializeNotificationStore(data: NotificationStoreSaveData): NotificationStore
   {
-    const notificationLog = new NotificationLog(this.game.getLiveMajorPlayers());
+    const notificationStore = new NotificationStore();
 
     data.notifications.forEach(notificationData =>
     {
@@ -162,15 +177,35 @@ export default class GameLoader
         props: template.deserializeProps(notificationData.props, this),
         turn: notificationData.turn,
         involvedPlayers: notificationData.involvedPlayerIds.map(id => this.playersById[id]),
-        witnessingPlayers: notificationData.witnessingPlayerIds.map(id => this.playersById[id]),
+        location: isFinite(notificationData.locationId) ? this.starsById[notificationData.locationId] : undefined,
       });
 
-      notification.hasBeenRead = notificationData.hasBeenRead;
-
-      notificationLog.notifications.push(notification);
+      notificationStore.notificationsById[notification.id] = notification;
     });
 
-    return notificationLog;
+    return notificationStore;
+  }
+  private deserializeNotificationSubscriber<T extends NotificationSubscriber>(
+    data: NotificationSubscriberSaveData,
+    liveSubscriber: T,
+    liveStore: NotificationStore,
+  ): T
+  {
+    data.allReceivedNotificationIds.forEach(id =>
+    {
+      const notification = liveStore.notificationsById[id];
+
+      liveSubscriber.allReceivedNotifications.push(notification);
+    });
+
+    data.unreadNotificationIds.forEach(id =>
+    {
+      const notification = liveStore.notificationsById[id];
+
+      liveSubscriber.unreadNotifications.push(notification);
+    });
+
+    return liveSubscriber;
   }
   private deserializeMap(data: GalaxyMapSaveData): GalaxyMap
   {

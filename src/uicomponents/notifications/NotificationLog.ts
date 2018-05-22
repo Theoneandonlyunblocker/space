@@ -2,8 +2,10 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 
-import Notification from "../../Notification";
-import NotificationLog from "../../NotificationLog";
+import {Notification} from "../../notifications/Notification";
+import {globalNotificationFilter, NotificationFilter} from "../../notifications/NotificationFilter";
+import {NotificationSubscriber} from "../../notifications/NotificationSubscriber";
+
 import eventManager from "../../eventManager";
 
 import {default as DialogBox} from "../windows/DialogBox";
@@ -16,21 +18,31 @@ import {localize} from "../../../localization/localize";
 
 export interface PropTypes extends React.Props<any>
 {
-  log: NotificationLog;
+  notifications: Notification[];
+  notificationLog: NotificationSubscriber;
+  notificationFilter?: NotificationFilter;
   currentTurn: number;
 }
 
 interface StateType
 {
-  notificationsWithActivePopup: Notification<any, any>[];
+  notificationsWithActivePopup: Notification[];
 }
 
 export class NotificationLogComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "NotificationLog";
-  updateListener: Function;
-
   public state: StateType;
+
+  private updateListener: () => void;
+
+  static get defaultProps(): Partial<PropTypes>
+  {
+    return(
+    {
+      notificationFilter: globalNotificationFilter,
+    });
+  }
 
   constructor(props: PropTypes)
   {
@@ -56,11 +68,11 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   }
   public render()
   {
-    const log = this.props.log;
-    const notifications: Notification<any, any>[] = log.filterNotifications(log.notifications.filter(notification =>
+    const log = this.props.notificationLog;
+    const notifications = log.unreadNotifications.filter(notification =>
     {
-      return !notification.hasBeenRead;
-    }));
+      return this.props.notificationFilter.shouldDisplayNotification(notification);
+    });
 
     const items: React.ReactElement<any>[] = [];
 
@@ -108,7 +120,6 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
               NotificationFilterButton(
               {
                 key: "notificationFilter",
-                filter: log.notificationFilter,
                 text: localize("notificationFilterButton")(),
                 highlightedOptionKey: notification.template.key,
               }),
@@ -124,7 +135,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
     );
   }
 
-  private bindMethods()
+  private bindMethods(): void
   {
     this.closePopup = this.closePopup.bind(this);
     this.getNotificationKey = this.getNotificationKey.bind(this);
@@ -138,13 +149,13 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
       notificationsWithActivePopup: [],
     });
   }
-  private getNotificationKey(notification: Notification<any, any>)
+  private getNotificationKey(notification: Notification): string
   {
-    return `${notification.turn}_${this.props.log.notifications.indexOf(notification)}`;
+    return "" + notification.id;
   }
-  private handleMarkAsRead(notification: Notification<any, any>)
+  private handleMarkAsRead(notification: Notification): void
   {
-    notification.hasBeenRead = true;
+    this.props.notificationLog.markNotificationAsRead(notification);
 
     if (this.hasPopup(notification))
     {
@@ -155,14 +166,14 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
       this.forceUpdate();
     }
   }
-  private openPopup(notification: Notification<any, any>): void
+  private openPopup(notification: Notification): void
   {
     this.setState(
     {
       notificationsWithActivePopup: this.state.notificationsWithActivePopup.concat(notification),
     });
   }
-  private closePopup(notificationToRemove: Notification<any, any>): void
+  private closePopup(notificationToRemove: Notification): void
   {
     this.setState(
     {
@@ -172,11 +183,11 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
       }),
     });
   }
-  private hasPopup(notification: Notification<any, any>): boolean
+  private hasPopup(notification: Notification): boolean
   {
     return this.state.notificationsWithActivePopup.indexOf(notification) >= 0;
   }
-  private togglePopup(notification: Notification<any, any>): void
+  private togglePopup(notification: Notification): void
   {
     if (this.hasPopup(notification))
     {

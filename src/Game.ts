@@ -2,7 +2,7 @@ import app from "./App"; // TODO global
 import GalaxyMap from "./GalaxyMap";
 import Player from "./Player";
 import {default as PlayerDiplomacy} from "./PlayerDiplomacy";
-import {activeNotificationLog} from "./activeNotificationLog";
+import {activeNotificationStore} from "./notifications/activeNotificationStore";
 import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";
 import idGenerators from "./idGenerators";
@@ -171,7 +171,7 @@ export default class Game
   private processNewRoundOfPlayStart(): void
   {
     this.turnNumber++;
-    activeNotificationLog.currentTurn = this.turnNumber;
+    activeNotificationStore.currentTurn = this.turnNumber;
   }
   private setNextPlayer()
   {
@@ -194,7 +194,7 @@ export default class Game
         return player.serialize();
       }),
       // TODO 2017.07.14 | does this belong here?
-      notificationLog: activeNotificationLog.serialize(),
+      notificationStore: activeNotificationStore.serialize(),
       units: this.players.map(player =>
       {
         return player.units.map(unit =>

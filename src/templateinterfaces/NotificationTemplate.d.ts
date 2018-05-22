@@ -1,8 +1,9 @@
 import * as React from "react";
 
 import GameLoader from "../GameLoader";
-import NotificationFilterState from "../NotificationFilterState";
-import {NotificationWitnessCriterion} from "../NotificationWitnessCriterion";
+
+import {NotificationFilterState} from "../notifications/NotificationFilterState";
+import {NotificationWitnessCriterion} from "../notifications/NotificationWitnessCriterion";
 
 
 declare interface NotificationTemplate<P, D>

@@ -32,6 +32,8 @@ import
   makeRandomPersonality,
 } from "./utility";
 
+import {PlayerNotificationSubscriber} from "./notifications/PlayerNotificationSubscriber";
+
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
@@ -63,11 +65,12 @@ export default class Player
 
   public isAI: boolean = false;
   public AIController: AIController<any>;
-  // TODO 2017.07.24 | rename independent => minor
   public isIndependent: boolean = false;
   public isDead: boolean = false;
 
   public diplomacy: PlayerDiplomacy;
+
+  public notificationLog: PlayerNotificationSubscriber;
 
   private _money: number;
   get money(): number
@@ -1030,6 +1033,8 @@ export default class Player
       researchByTechnology: this.playerTechnology ? this.playerTechnology.serialize() : null,
       flag: this.flag ? this.flag.serialize() : null,
       AIController: this.AIController ? this.AIController.serialize() : null,
+
+      notificationLog: this.notificationLog ? this.notificationLog.serialize() : null,
     };
 
     return data;

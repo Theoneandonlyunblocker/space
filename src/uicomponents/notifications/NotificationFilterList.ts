@@ -1,20 +1,20 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import {globalNotificationFilter, NotificationFilter} from "../../notifications/NotificationFilter";
 
-import NotificationFilter from "../../NotificationFilter";
+import {localize} from "../../../localization/localize";
+
 import eventManager from "../../eventManager";
 
 import OptionsGroup from "../galaxymap/OptionsGroup";
 
 import NotificationFilterListItem from "./NotificationFilterListItem";
 
-import {localize} from "../../../localization/localize";
-
 
 export interface PropTypes extends React.Props<any>
 {
-  filter: NotificationFilter;
+  filter?: NotificationFilter;
   highlightedOptionKey?: string;
 }
 
@@ -27,6 +27,14 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   public displayName = "NotificationFilterList";
   public state: StateType;
   ref_TODO_body: HTMLElement;
+
+  static get defaultProps(): Partial<PropTypes>
+  {
+    return(
+    {
+      filter: globalNotificationFilter,
+    });
+  }
 
   constructor(props: PropTypes)
   {

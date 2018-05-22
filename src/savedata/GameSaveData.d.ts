@@ -1,6 +1,6 @@
 import GalaxyMapSaveData from "./GalaxyMapSaveData";
 import ItemSaveData from "./ItemSaveData";
-import NotificationLogSaveData from "./NotificationLogSaveData";
+import NotificationStoreSaveData from "./NotificationStoreSaveData";
 import PlayerSaveData from "./PlayerSaveData";
 import UnitSaveData from "./UnitSaveData";
 
@@ -11,7 +11,7 @@ declare interface GameSaveData
   players: PlayerSaveData[];
   units: UnitSaveData[];
   items: ItemSaveData[];
-  notificationLog: NotificationLogSaveData;
+  notificationStore: NotificationStoreSaveData;
 }
 
 export default GameSaveData;

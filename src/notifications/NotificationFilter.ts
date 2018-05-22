@@ -1,20 +1,21 @@
-import {activeModuleData} from "./activeModuleData";
-import {activePlayer} from "./activePlayer";
-import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
-
-import Notification from "./Notification";
-import NotificationFilterState from "./NotificationFilterState";
-
+import {activeModuleData} from "../activeModuleData";
+import {activePlayer} from "../activePlayer";
+import NotificationTemplate from "../templateinterfaces/NotificationTemplate";
 import
 {
   extendObject,
   getMatchingLocalstorageItemsByDate,
-} from "./utility";
+} from "../utility";
+
+import {Notification} from "./Notification";
+import {NotificationFilterState} from "./NotificationFilterState";
 
 
-export default class NotificationFilter
+const baseString = "NotificationFilter.";
+
+export class NotificationFilter
 {
-  filters:
+  public filters:
   {
     [notificationKey: string]: NotificationFilterState[];
   } = {};
@@ -34,7 +35,7 @@ export default class NotificationFilter
       this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
     }
   }
-  shouldDisplayNotification(notification: Notification<any, any>)
+  shouldDisplayNotification(notification: Notification)
   {
     const filterStates = this.filters[notification.template.key];
     if (filterStates.indexOf(NotificationFilterState.AlwaysShow) !== -1)
@@ -146,8 +147,6 @@ export default class NotificationFilter
   }
   load(slot?: number)
   {
-    const baseString = "NotificationFilter.";
-
     let parsedData: any;
     if (slot !== undefined)
     {
@@ -178,6 +177,8 @@ export default class NotificationFilter
       date: new Date(),
     });
 
-    localStorage.setItem("NotificationFilter." + slot, data);
+    localStorage.setItem(baseString + slot, data);
   }
 }
+
+export const globalNotificationFilter = new NotificationFilter();

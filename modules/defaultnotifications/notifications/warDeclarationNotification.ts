@@ -5,10 +5,10 @@ import {localize} from "../localization/localize";
 import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
 
 import GameLoader from "../../../src/GameLoader";
-import NotificationFilterState from "../../../src/NotificationFilterState";
-import {NotificationWitnessCriterion} from "../../../src/NotificationWitnessCriterion";
+import {NotificationFilterState} from "../../../src/notifications/NotificationFilterState";
+import {NotificationWitnessCriterion} from "../../../src/notifications/NotificationWitnessCriterion";
 import Player from "../../../src/Player";
-import {activeNotificationLog} from "../../../src/activeNotificationLog";
+import {activeNotificationStore} from "../../../src/notifications/activeNotificationStore";
 
 
 export interface PropTypes
@@ -74,7 +74,7 @@ export const warDeclarationNotificationCreationScripts =
         priority: 0,
         script: (aggressor: Player, defender: Player) =>
         {
-          activeNotificationLog.makeNotification<PropTypes, SerializedPropTypes>(
+          activeNotificationStore.makeNotification<PropTypes, SerializedPropTypes>(
           {
             template: warDeclarationNotification,
             props:

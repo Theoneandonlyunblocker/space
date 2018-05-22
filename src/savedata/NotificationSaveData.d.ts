@@ -1,11 +1,10 @@
-declare interface NotificationSaveData<P>
+declare interface NotificationSaveData<P = any>
 {
   id: number;
   templateKey: string;
-  hasBeenRead: boolean;
   turn: number;
   involvedPlayerIds: number[];
-  witnessingPlayerIds: number[];
+  locationId: number | undefined;
 
   props: P;
 }

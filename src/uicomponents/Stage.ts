@@ -12,13 +12,14 @@ import Battle from "../Battle";
 import BattlePrep from "../BattlePrep";
 import Game from "../Game";
 import MapRenderer from "../MapRenderer";
-import NotificationLog from "../NotificationLog";
 import Player from "../Player";
 import PlayerControl from "../PlayerControl";
 import ReactUIScene from "../ReactUIScene";
 import Renderer from "../Renderer";
 
 import {Language} from "../localization/Language";
+import { Notification } from "../notifications/Notification";
+import { NotificationSubscriber } from "../notifications/NotificationSubscriber";
 
 
 export interface PropTypes extends React.Props<any>
@@ -32,7 +33,8 @@ export interface PropTypes extends React.Props<any>
   sceneToRender: ReactUIScene;
   renderer: Renderer;
   activeLanguage: Language;
-  notificationLog: NotificationLog;
+  notifications: Notification[];
+  notificationLog: NotificationSubscriber;
 }
 
 interface StateType
@@ -60,9 +62,9 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           BattleComponentFactory(
           {
+            key: "battle",
             battle: this.props.battle,
             humanPlayer: this.props.player,
-            key: "battle",
           }),
         );
         break;
@@ -72,8 +74,8 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           BattlePrepComponentFactory(
           {
-            battlePrep: this.props.battlePrep,
             key: "battlePrep",
+            battlePrep: this.props.battlePrep,
           }),
         );
         break;
@@ -83,14 +85,15 @@ export class StageComponent extends React.Component<PropTypes, StateType>
         elementsToRender.push(
           GalaxyMap(
           {
+            key: "galaxyMap",
             renderer: this.props.renderer,
             mapRenderer: this.props.mapRenderer,
             playerControl: this.props.playerControl,
             player: this.props.player,
             game: this.props.game,
             activeLanguage: this.props.activeLanguage,
+            notifications: this.props.notifications,
             notificationLog: this.props.notificationLog,
-            key: "galaxyMap",
           }),
         );
         break;

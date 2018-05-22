@@ -1,22 +1,20 @@
-import NotificationSaveData from "./savedata/NotificationSaveData";
+import NotificationSaveData from "../savedata/NotificationSaveData";
 
-import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
+import NotificationTemplate from "../templateinterfaces/NotificationTemplate";
 
-import {default as Player} from "./Player";
-import idGenerators from "./idGenerators";
+import {default as Player} from "../Player";
+import {default as Star} from "../Star";
+import idGenerators from "../idGenerators";
 
 
-export default class Notification<P, D>
+export class Notification<P = any, D = any>
 {
   public readonly id: number;
-  template: NotificationTemplate<P, D>;
+  public readonly template: NotificationTemplate<P, D>;
   props: P;
   turn: number;
-  involvedPlayers: Player[];
-  witnessingPlayers: Player[];
-
-  // TODO 2017.07.14 | should keep track of this per player if we want to allow multiple players
-  hasBeenRead: boolean = false;
+  public readonly involvedPlayers: Player[];
+  public readonly location: Star | undefined;
 
   constructor(args:
   {
@@ -25,7 +23,7 @@ export default class Notification<P, D>
     props: P,
     turn: number,
     involvedPlayers: Player[],
-    witnessingPlayers: Player[],
+    location: Star | undefined,
   })
   {
     this.id = isFinite(args.id) ? args.id : idGenerators.notification++;
@@ -33,7 +31,7 @@ export default class Notification<P, D>
     this.props = args.props;
     this.turn = args.turn;
     this.involvedPlayers = args.involvedPlayers;
-    this.witnessingPlayers = args.witnessingPlayers;
+    this.location = args.location;
   }
   public makeMessage(): string
   {
@@ -49,10 +47,9 @@ export default class Notification<P, D>
     {
       id: this.id,
       templateKey: this.template.key,
-      hasBeenRead: this.hasBeenRead,
       turn: this.turn,
       involvedPlayerIds: this.involvedPlayers.map(player => player.id),
-      witnessingPlayerIds: this.witnessingPlayers.map(player => player.id),
+      locationId: this.location ? this.location.id : undefined,
 
       props: this.template.serializeProps(this.props),
     };

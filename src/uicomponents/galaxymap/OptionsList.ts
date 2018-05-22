@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import NotificationLog from "../../NotificationLog";
 import Options from "../../Options";
 import eventManager from "../../eventManager";
 import TutorialStatus from "../../tutorials/TutorialStatus";
@@ -22,7 +21,6 @@ import {localize} from "../../../localization/localize";
 
 export interface PropTypes extends React.Props<any>
 {
-  log: NotificationLog;
   activeLanguage: Language;
 }
 
@@ -290,7 +288,6 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       key: "notificationLogFilter",
       content: NotificationFilterButton(
       {
-        filter: this.props.log.notificationFilter,
         text: localize("messageSettings")(),
         highlightedOptionKey: null,
       }),
