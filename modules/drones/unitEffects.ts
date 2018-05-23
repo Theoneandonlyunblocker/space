@@ -21,11 +21,13 @@ export const infest: UnitEffectTemplate =
       getUnitsInArea: user => [user],
       executeAction: (user, target, battle, executedEffectsResult, sourceStatusEffect) =>
       {
+        const healthReductionForLastTick = 0.5;
+
         const tick = sourceStatusEffect.turnsHasBeenActiveFor + 1;
         const relativeTick = tick / sourceStatusEffect.turnsToStayActiveFor;
-        const damageDealtThisTurn = 0.5 / relativeTick;
+        const healthToReduceThisTurn = healthReductionForLastTick / relativeTick;
 
-        adjustHealth({maxHealthPercentage: -damageDealtThisTurn},
+        adjustHealth({maxHealthPercentage: -healthToReduceThisTurn},
           user, target, battle, executedEffectsResult);
       },
       sfx: placeholderSFX,
