@@ -96,43 +96,19 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
 
   getManufacturableThings(key: TabKey)
   {
-    let manufacturableThings: ManufacturableThing[];
-    const selectedStar = this.props.selectedStar;
-    const player = this.props.player;
+    const star = this.props.selectedStar;
 
-    switch (key)
+    switch(key)
     {
-      case "units":
-      {
-        const buildableUnits = player.getGloballyBuildableUnits();
-        if (selectedStar)
-        {
-          if (selectedStar.manufactory)
-          {
-            buildableUnits.push(...selectedStar.manufactory.getUniqueLocalUnitTypes(buildableUnits));
-          }
-        }
-
-        manufacturableThings = buildableUnits;
-        break;
-      }
       case "items":
       {
-        const buildableItems = player.getGloballyBuildableItems();
-        if (selectedStar)
-        {
-          if (selectedStar.manufactory)
-          {
-            buildableItems.push(...selectedStar.manufactory.getUniqueLocalItemTypes(buildableItems));
-          }
-        }
-
-        manufacturableThings = buildableItems;
-        break;
+        return star.manufactory.getManufacturableThingsForType("item");
+      }
+      case "units":
+      {
+        return star.manufactory.getManufacturableThingsForType("unit");
       }
     }
-
-    return manufacturableThings!;
   }
 
   makeTab(key: TabKey)

@@ -838,3 +838,15 @@ export function mergeReactAttributes<T>(
 
   return merged;
 }
+export function getUniqueArrayKeys<T>(source: T[], getIdentifier: ((v: T) => string)): T[]
+{
+  const uniqueKeysById: {[id: string]: T} = {};
+
+  source.forEach(key =>
+  {
+    const id = getIdentifier(key);
+    uniqueKeysById[id] = key;
+  });
+
+  return Object.keys(uniqueKeysById).map(type => uniqueKeysById[type]);
+}

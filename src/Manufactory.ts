@@ -12,6 +12,10 @@ import Player from "./Player";
 import Star from "./Star";
 import Unit from "./Unit";
 import eventManager from "./eventManager";
+import
+{
+  getUniqueArrayKeys,
+} from "./utility";
 
 
 interface ManufacturableThingWithType
@@ -159,49 +163,27 @@ export default class Manufactory
 
     return [];
   }
-  public getUniqueLocalUnitTypes(alreadyAdded: UnitTemplate[] = []): UnitTemplate[]
+  // TODO 2018.05.23 | https://github.com/Microsoft/TypeScript/wiki/What's-new-in-TypeScript#conditional-types
+  // TODO 2018.05.23 | thingType => thingKind
+  getManufacturableThingsForType<T extends ManufacturableThing = ManufacturableThing>(thingType: "item" | "unit"): T[]
   {
-    return this.getUniqueLocalManufacturableThings(alreadyAdded, "unit");
-  }
-  public getUniqueLocalItemTypes(alreadyAdded: ItemTemplate[] = []): ItemTemplate[]
-  {
-    return this.getUniqueLocalManufacturableThings(alreadyAdded, "item");
-  }
-  private getUniqueLocalManufacturableThings<T extends ManufacturableThing>(
-    alreadyAdded: T[],
-    type: "item" | "unit",
-    ): T[]
-  {
-    const alreadyAddedTypes:
-    {
-      [type: string]: boolean;
-    } = {};
+    let allManufacturableThings: T[];
 
-    alreadyAdded.forEach(manufacturableThing =>
-    {
-      alreadyAddedTypes[manufacturableThing.type] = true;
-    });
-
-    const localManufacturableThings = <T[]> this.getManufacturableThingsForType(type);
-
-    return localManufacturableThings.filter(manufacturableThing =>
-    {
-      return !alreadyAddedTypes[manufacturableThing.type];
-    });
-  }
-  getManufacturableThingsForType(type: "item" | "unit"): ManufacturableThing[]
-  {
-    switch (type)
+    switch (thingType)
     {
       case "item":
       {
-        return this.getLocalItemTypes();
+        allManufacturableThings = <any> [...this.player.getGloballyBuildableItems(), ...this.getLocalItemTypes()];
+        break;
       }
       case "unit":
       {
-        return this.getLocalUnitTypes();
+        allManufacturableThings = <any> [...this.player.getGloballyBuildableUnits(), ...this.getLocalUnitTypes()];
+        break;
       }
     }
+
+    return getUniqueArrayKeys(allManufacturableThings, thing => thing.type);
   }
   canManufactureThing(template: ManufacturableThing, type: "item" | "unit")
   {
