@@ -132,7 +132,7 @@ export default class Battle
       side2: this.getTotalCurrentHealthForSide("side2"),
     };
 
-    if (this.shouldBattleEnd())
+    if (this.shouldEnd())
     {
       this.endBattle();
     }
@@ -156,7 +156,7 @@ export default class Battle
     this.turnsLeft--;
     this.updateTurnOrder();
 
-    const shouldEnd = this.shouldBattleEnd();
+    const shouldEnd = this.shouldEnd();
     if (shouldEnd)
     {
       this.endBattle();
@@ -504,7 +504,7 @@ export default class Battle
 
     return (enemySideValue / ownSideValue) * 10;
   }
-  private shouldBattleEnd(): boolean
+  private shouldEnd(): boolean
   {
     if (!this.activeUnit)
     {
@@ -763,7 +763,7 @@ export default class Battle
     clone.updateTurnOrder();
 
 
-    if (clone.shouldBattleEnd())
+    if (clone.shouldEnd())
     {
       clone.endBattle();
     }
