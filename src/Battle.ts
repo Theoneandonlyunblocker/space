@@ -516,8 +516,11 @@ export default class Battle
       return true;
     }
 
-    if (this.getTotalCurrentHealthForSide("side1") <= 0 ||
-      this.getTotalCurrentHealthForSide("side2") <= 0)
+    const oneSideHasNoActiveUnits = UnitBattleSides.some(side =>
+    {
+      return this.getUnitsForSide(side).every(unit => !unit.isActiveInBattle());
+    });
+    if (oneSideHasNoActiveUnits)
     {
       return true;
     }
