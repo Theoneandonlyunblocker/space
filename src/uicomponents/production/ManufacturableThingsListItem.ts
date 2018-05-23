@@ -7,7 +7,7 @@ export interface PropTypes extends React.Props<any>
 {
   template: ManufacturableThing;
   parentIndex: number;
-  onClick?: (template: ManufacturableThing, parentIndex: number) => void;
+  onClick?: (template: ManufacturableThing, parentIndex?: number) => void;
   showCost: boolean;
   money: number;
 }

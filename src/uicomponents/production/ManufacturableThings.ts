@@ -94,7 +94,8 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     );
   }
 
-  getManufacturableThings(key: TabKey)
+  // TODO 2018.05.23 | use src/Manufactory method instead
+  getManufacturableThings(key: TabKey): ManufacturableThing[]
   {
     const star = this.props.selectedStar;
 
