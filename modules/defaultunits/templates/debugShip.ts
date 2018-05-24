@@ -42,7 +42,7 @@ const debugShip: UnitTemplate =
   },
   isSquadron: false,
   buildCost: 0,
-  unlockType: "unit",
+  kind: "unit",
   icon: "modules/defaultunits/img/icons/f.png",
   maxHealthLevel: 1,
   maxMovePoints: 999,

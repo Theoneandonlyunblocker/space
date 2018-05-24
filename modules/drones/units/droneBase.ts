@@ -27,7 +27,7 @@ export const droneBase: UnitTemplate =
 
   isSquadron: false,
   buildCost: 500,
-  unlockType: "unit",
+  kind: "unit",
 
   maxHealthLevel: 1.0,
   maxMovePoints: 1,

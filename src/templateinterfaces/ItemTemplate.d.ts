@@ -16,7 +16,7 @@ declare interface ItemTemplate extends ManufacturableThing
   slot: string; // low, mid, high
 
   buildCost: number;
-  unlockType: "item";
+  kind: "item";
 
   ability?: AbilityTemplate;
   passiveSkill?: PassiveSkillTemplate;

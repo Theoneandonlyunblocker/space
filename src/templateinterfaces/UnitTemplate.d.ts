@@ -17,7 +17,7 @@ declare interface UnitTemplate extends ManufacturableThing
   sprite: SpriteTemplate;
   isSquadron: boolean;
   buildCost: number;
-  unlockType: "unit";
+  kind: "unit";
   icon: string;
   /**
    * relative to other unit types. base value is determined in ruleset

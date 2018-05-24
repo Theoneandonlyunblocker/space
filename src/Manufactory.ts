@@ -3,6 +3,7 @@ import {activeModuleData} from "./activeModuleData";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
+import {UnlockableThingKind} from "./templateinterfaces/UnlockableThing";
 
 import ManufactorySaveData from "./savedata/ManufactorySaveData";
 
@@ -18,25 +19,23 @@ import
 } from "./utility";
 
 
-interface ManufacturableThingWithType
+interface ManufacturableThingWithKind
 {
-  type: string;
+  kind: UnlockableThingKind;
   template: ManufacturableThing;
 }
 export default class Manufactory
 {
-  buildQueue: ManufacturableThingWithType[] = [];
+  public star: Star;
+  public buildQueue: ManufacturableThingWithKind[] = [];
+  public capacity: number;
+  public maxCapacity: number;
+  public unitStatsModifier: number = 1;
+  public unitHealthModifier: number = 1;
 
-  player: Player;
-  star: Star;
+  private player: Player;
 
-  capacity: number;
-  maxCapacity: number;
-
-  unitStatsModifier: number = 1;
-  unitHealthModifier: number = 1;
-
-  constructor(star: Star, serializedData?: any)
+  constructor(star: Star, serializedData?: ManufactorySaveData)
   {
     this.star = star;
     this.player = star.owner;
@@ -55,17 +54,17 @@ export default class Manufactory
   {
     return activeModuleData.ruleSet.manufactory.buildCost;
   }
-  makeFromData(data: any)
+  public makeFromData(data: ManufactorySaveData): void
   {
     this.capacity = data.capacity;
     this.maxCapacity = data.maxCapacity;
     this.unitStatsModifier = data.unitStatsModifier;
     this.unitHealthModifier = data.unitHealthModifier;
 
-    this.buildQueue = data.buildQueue.map(function(savedThing: any)
+    this.buildQueue = data.buildQueue.map(savedThing =>
     {
       let templatesString: string;
-      switch (savedThing.type)
+      switch (savedThing.kind)
       {
         case "unit":
         {
@@ -80,27 +79,27 @@ export default class Manufactory
 
       return(
       {
-        type: savedThing.type,
+        kind: savedThing.kind,
         template: activeModuleData.Templates[templatesString][savedThing.templateType],
       });
     });
   }
-  queueIsFull()
+  public queueIsFull(): boolean
   {
     return this.buildQueue.length >= this.capacity;
   }
-  addThingToQueue(template: ManufacturableThing, type: string)
+  public addThingToQueue(template: ManufacturableThing, kind: UnlockableThingKind): void
   {
-    this.buildQueue.push({type: type, template: template});
+    this.buildQueue.push({kind: kind, template: template});
     this.player.money -= template.buildCost;
   }
-  removeThingAtIndex(index: number)
+  public removeThingAtIndex(index: number): void
   {
     const template = this.buildQueue[index].template;
     this.player.money += template.buildCost;
     this.buildQueue.splice(index, 1);
   }
-  buildAllThings()
+  public buildAllThings(): void
   {
     const units: Unit[] = [];
 
@@ -110,7 +109,7 @@ export default class Manufactory
     while (toBuild.length > 0)
     {
       const thingData = toBuild.pop();
-      switch (thingData.type)
+      switch (thingData.kind)
       {
         case "unit":
         {
@@ -153,84 +152,67 @@ export default class Manufactory
       eventManager.dispatchEvent("playerManufactoryBuiltThings");
     }
   }
-  getLocalUnitTypes(): UnitTemplate[]
+  public getManufacturableUnits(): UnitTemplate[]
   {
-    return this.star.race.getBuildableUnitTypes(this.player);
-  }
-  getLocalItemTypes(): ItemTemplate[]
-  {
-    // currently no local item types exist
+    const allManufacturableUnits = [...this.player.getGloballyBuildableUnits(), ...this.getLocalUnitTypes()];;
+    const uniqueManufacturableUnits = getUniqueArrayKeys(allManufacturableUnits, unit => unit.type);
 
-    return [];
+    return uniqueManufacturableUnits;
   }
-  // TODO 2018.05.23 | https://github.com/Microsoft/TypeScript/wiki/What's-new-in-TypeScript#conditional-types
-  // TODO 2018.05.23 | thingType => thingKind
-  getManufacturableThingsForType<T extends ManufacturableThing = ManufacturableThing>(thingType: "item" | "unit"): T[]
+  public getManufacturableItems(): ItemTemplate[]
   {
-    let allManufacturableThings: T[];
+    const allManufacturableItems = [...this.player.getGloballyBuildableItems(), ...this.getLocalItemTypes()];
+    const uniqueManufacturableItems = getUniqueArrayKeys(allManufacturableItems, item => item.type);
 
-    switch (thingType)
-    {
-      case "item":
-      {
-        allManufacturableThings = <any> [...this.player.getGloballyBuildableItems(), ...this.getLocalItemTypes()];
-        break;
-      }
-      case "unit":
-      {
-        allManufacturableThings = <any> [...this.player.getGloballyBuildableUnits(), ...this.getLocalUnitTypes()];
-        break;
-      }
-    }
-
-    return getUniqueArrayKeys(allManufacturableThings, thing => thing.type);
+    return uniqueManufacturableItems;
   }
-  canManufactureThing(template: ManufacturableThing, type: "item" | "unit")
+  public canManufactureThing<T extends ManufacturableThing>(template: T): boolean
   {
-    const manufacturableThings = this.getManufacturableThingsForType(type);
-    return manufacturableThings.indexOf(template) !== -1;
+    const allManufacturableThings: ManufacturableThing[] = [...this.getManufacturableUnits(), ...this.getManufacturableItems()];
+
+    return allManufacturableThings.indexOf(template) !== -1;
   }
-  handleOwnerChange()
+  public handleOwnerChange(): void
   {
     while (this.buildQueue.length > 0)
     {
       this.removeThingAtIndex(this.buildQueue.length - 1);
     }
     this.player = this.star.owner;
-    this.capacity = Math.max(1, this.capacity - 1);
   }
-  getCapacityUpgradeCost()
+  public getCapacityUpgradeCost(): number
   {
     return activeModuleData.ruleSet.manufactory.buildCost * this.capacity;
   }
-  upgradeCapacity(amount: number)
+  public upgradeCapacity(amount: number): void
   {
     // TODO 2017.02.24 | don't think money should get substracted here
     this.player.money -= this.getCapacityUpgradeCost();
     this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
   }
-  getUnitUpgradeCost()
+  public getUnitUpgradeCost(): number
   {
     const totalUpgrades = (this.unitStatsModifier + this.unitHealthModifier - 2) / 0.1;
+
     return Math.round((totalUpgrades + 1) * 100);
   }
-  upgradeUnitStatsModifier(amount: number)
+  public upgradeUnitStatsModifier(amount: number): void
   {
     this.player.money -= this.getUnitUpgradeCost();
     this.unitStatsModifier += amount;
   }
-  upgradeUnitHealthModifier(amount: number)
+  public upgradeUnitHealthModifier(amount: number): void
   {
     this.player.money -= this.getUnitUpgradeCost();
     this.unitHealthModifier += amount;
   }
-  serialize(): ManufactorySaveData
+  public serialize(): ManufactorySaveData
   {
-    const buildQueue = this.buildQueue.map(function(thingData: ManufacturableThingWithType)
+    const buildQueue = this.buildQueue.map(thingData =>
     {
       return(
       {
-        type: thingData.type,
+        kind: thingData.kind,
         templateType: thingData.template.type,
       });
     });
@@ -243,5 +225,16 @@ export default class Manufactory
       unitHealthModifier: this.unitHealthModifier,
       buildQueue: buildQueue,
     });
+  }
+
+  private getLocalUnitTypes(): UnitTemplate[]
+  {
+    return this.star.race.getBuildableUnitTypes(this.player);
+  }
+  private getLocalItemTypes(): ItemTemplate[]
+  {
+    // not implemented
+
+    return [];
   }
 }

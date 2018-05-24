@@ -26,7 +26,7 @@ const scout: UnitTemplate =
   },
   isSquadron: true,
   buildCost: 200,
-  unlockType: "unit",
+  kind: "unit",
   icon: "modules/defaultunits/img/icons/sc.png",
   maxHealthLevel: 0.6,
   maxMovePoints: 2,

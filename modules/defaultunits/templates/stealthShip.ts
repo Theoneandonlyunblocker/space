@@ -26,7 +26,7 @@ const stealthShip: UnitTemplate =
   },
   isSquadron: true,
   buildCost: 500,
-  unlockType: "unit",
+  kind: "unit",
   icon: "modules/defaultunits/img/icons/sc.png",
   maxHealthLevel: 0.6,
   maxMovePoints: 1,

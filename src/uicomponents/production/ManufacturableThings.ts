@@ -103,11 +103,11 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     {
       case "items":
       {
-        return star.manufactory.getManufacturableThingsForType("item");
+        return star.manufactory.getManufacturableItems();
       }
       case "units":
       {
-        return star.manufactory.getManufacturableThingsForType("unit");
+        return star.manufactory.getManufacturableUnits();
       }
     }
   }

@@ -27,7 +27,7 @@ const fighterSquadron: UnitTemplate =
   },
   isSquadron: true,
   buildCost: 100,
-  unlockType: "unit",
+  kind: "unit",
   icon: "modules/defaultunits/img/icons/fa.png",
   maxHealthLevel: 0.7,
   maxMovePoints: 2,

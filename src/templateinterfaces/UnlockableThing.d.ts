@@ -1,7 +1,7 @@
 import TechnologyRequirement from "./TechnologyRequirement";
 
 
-type UnlockType = "unit" | "item";
+export type UnlockableThingKind = "unit" | "item";
 
 export interface UnlockableThing
 {
@@ -9,7 +9,7 @@ export interface UnlockableThing
   displayName: string;
   description: string;
 
-  unlockType: UnlockType;
+  kind: UnlockableThingKind;
 
   // set dynamically from technology templates
   technologyRequirements?: TechnologyRequirement[];

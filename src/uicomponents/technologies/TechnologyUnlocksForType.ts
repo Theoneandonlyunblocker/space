@@ -2,14 +2,14 @@ import * as React from "react";
 
 import {localize} from "../../../localization/localize";
 
-import {UnlockableThing, UnlockType} from "../../templateinterfaces/UnlockableThing";
+import {UnlockableThing, UnlockableThingKind} from "../../templateinterfaces/UnlockableThing";
 
 import {TechnologyUnlock} from "./TechnologyUnlock";
 
 
 interface PropTypes extends React.Props<any>
 {
-  unlockType: UnlockType;
+  kind: UnlockableThingKind;
   unlocks: UnlockableThing[];
 }
 
@@ -37,7 +37,7 @@ export class TechnologyUnlocksForTypeComponent extends React.Component<PropTypes
       {
         className: "technology-unlocks-for-type-header",
       },
-        this.props.unlockType === "item" ?
+        this.props.kind === "item" ?
           localize("techUnlock_items")() :
           localize("techUnlock_units")(),
       ),

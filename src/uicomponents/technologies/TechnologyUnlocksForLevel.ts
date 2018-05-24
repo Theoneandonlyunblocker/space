@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import {UnlockableThing, UnlockType} from "../../templateinterfaces/UnlockableThing";
+import {UnlockableThing, UnlockableThingKind} from "../../templateinterfaces/UnlockableThing";
 
 import {localize} from "../../../localization/localize";
 
@@ -29,16 +29,16 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
 
   public render()
   {
-    const unlockableThingsByType: {[unlockType in UnlockType]?: UnlockableThing[]} = {};
+    const unlockableThingsByType: {[kind in UnlockableThingKind]?: UnlockableThing[]} = {};
 
     this.props.unlocks.forEach(unlockableThing =>
     {
-      if (!unlockableThingsByType[unlockableThing.unlockType])
+      if (!unlockableThingsByType[unlockableThing.kind])
       {
-        unlockableThingsByType[unlockableThing.unlockType] = [];
+        unlockableThingsByType[unlockableThing.kind] = [];
       }
 
-      unlockableThingsByType[unlockableThing.unlockType]!.push(unlockableThing);
+      unlockableThingsByType[unlockableThing.kind]!.push(unlockableThing);
     });
 
     return(
@@ -56,17 +56,17 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
         {
           className: "technology-unlocks-for-level-list",
         },
-          Object.keys(unlockableThingsByType).sort().map(unlockType =>
+          Object.keys(unlockableThingsByType).sort().map(kind =>
           {
             return React.DOM.li(
             {
-              key: unlockType,
+              key: kind,
               className: "technology-unlocks-for-level-list-item",
             },
               TechnologyUnlocksForType(
               {
-                unlockType: <UnlockType> unlockType,
-                unlocks: unlockableThingsByType[unlockType],
+                kind: <UnlockableThingKind> kind,
+                unlocks: unlockableThingsByType[kind],
               }),
             );
           }),

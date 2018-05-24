@@ -1,3 +1,5 @@
+import { UnlockableThingKind } from "../templateinterfaces/UnlockableThing";
+
 declare interface ManufactorySaveData
 {
   capacity: number;
@@ -6,7 +8,7 @@ declare interface ManufactorySaveData
   unitHealthModifier: number;
   buildQueue:
   {
-    type: string;
+    kind: UnlockableThingKind;
     templateType: string;
   }[];
 }

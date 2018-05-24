@@ -976,7 +976,7 @@ export default class Player
     {
       const manufactory = manufactories[i];
       const isBuildable = !manufactory.queueIsFull() &&
-        (isGloballyBuildable || manufactory.canManufactureThing(template, type));
+        (isGloballyBuildable || manufactory.canManufactureThing(template));
       if (isBuildable)
       {
         const capacity = manufactory.capacity - manufactory.buildQueue.length;
