@@ -2,7 +2,6 @@ import * as React from "react";
 
 import Player from "../../Player";
 import Star from "../../Star";
-import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 import ManufacturableItems from "./ManufacturableItems";
 import ManufacturableUnits from "./ManufacturableUnits";
 
@@ -42,7 +41,6 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
   private bindMethods()
   {
     this.makeTabButton = this.makeTabButton.bind(this);
-    this.getManufacturableThings = this.getManufacturableThings.bind(this);
     this.selectTab = this.selectTab.bind(this);
     this.makeTab = this.makeTab.bind(this);
   }
@@ -94,31 +92,15 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     );
   }
 
-  // TODO 2018.05.23 | use src/Manufactory method instead
-  getManufacturableThings(key: TabKey): ManufacturableThing[]
-  {
-    const star = this.props.selectedStar;
-
-    switch(key)
-    {
-      case "items":
-      {
-        return star.manufactory.getManufacturableItems();
-      }
-      case "units":
-      {
-        return star.manufactory.getManufacturableUnits();
-      }
-    }
-  }
-
   makeTab(key: TabKey)
   {
     const props =
     {
       key: key,
       selectedStar: this.props.selectedStar,
-      manufacturableThings: this.getManufacturableThings(key),
+      manufacturableThings: key === "items" ?
+        this.props.selectedStar.manufactory.getManufacturableItems() :
+        this.props.selectedStar.manufactory.getManufacturableUnits(),
       consolidateLocations: false,
       triggerUpdate: this.props.triggerUpdate,
       canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
