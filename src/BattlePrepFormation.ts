@@ -1,4 +1,5 @@
 import {localize} from "../localization/localize";
+import { BaseBattlePrepEffect } from "./templateinterfaces/BattlePrepEffect";
 
 import Player from "./Player";
 import Unit from "./Unit";
@@ -27,6 +28,8 @@ export class BattlePrepFormation
   private cachedDisplayData: {[unitId: number]: UnitDisplayData};
   private displayDataIsDirty: boolean = true;
 
+  private triggerBattlePrepEffect: (effect: BaseBattlePrepEffect, unit: Unit) => void;
+
   constructor(props:
   {
     player: Player,
@@ -34,6 +37,7 @@ export class BattlePrepFormation
     hasScouted: boolean,
     minUnits: number,
     isAttacker: boolean,
+    triggerBattlePrepEffect: (effect: BaseBattlePrepEffect, unit: Unit) => void,
   })
   {
     this.player = props.player;
@@ -42,6 +46,8 @@ export class BattlePrepFormation
     this.isAttacker = props.isAttacker;
 
     this.minUnits = Math.min(minUnits, this.getAvailableUnits().length);
+    this.triggerBattlePrepEffect = props.triggerBattlePrepEffect;
+
     this.formation = getNullFormation();
   }
 
@@ -87,6 +93,7 @@ export class BattlePrepFormation
     {
       this.placedUnitPositionsById[unit.id] = pos;
     });
+
     this.displayDataIsDirty = true;
   }
   // human formation stuff
@@ -98,6 +105,7 @@ export class BattlePrepFormation
   {
     this.placedUnitPositionsById = {};
     this.formation = getNullFormation();
+
     this.displayDataIsDirty = true;
   }
   // end human formation stuff
@@ -161,6 +169,9 @@ export class BattlePrepFormation
 
     this.formation[position[0]][position[1]] = null;
     delete this.placedUnitPositionsById[unit.id];
+
+    this.triggerPassiveSkillsForUnit("onRemove", unit);
+
     this.displayDataIsDirty = true;
   }
 
@@ -178,6 +189,8 @@ export class BattlePrepFormation
   private addNewUnit(unit: Unit, position: number[]): void
   {
     this.setUnitPosition(unit, position);
+
+    this.triggerPassiveSkillsForUnit("onAdd", unit);
 
     this.displayDataIsDirty = true;
   }
@@ -211,5 +224,27 @@ export class BattlePrepFormation
     return this.isAttacker ?
       this.units.filter(unit => unit.canFightOffensiveBattle()) :
       this.units.slice();
+  }
+  private triggerPassiveSkillsForUnit(stateChange: "onAdd" | "onRemove", unit: Unit): void
+  {
+    const skills = unit.getPassiveSkillsByPhase().inBattlePrep;
+    let didTriggerASkill = false;
+
+    skills.forEach(skill =>
+    {
+      skill.inBattlePrep.forEach(effectPair =>
+      {
+        const effectToTrigger = effectPair[stateChange];
+
+        this.triggerBattlePrepEffect(effectToTrigger, unit);
+
+        didTriggerASkill = true;
+      });
+    });
+
+    if (didTriggerASkill)
+    {
+      this.displayDataIsDirty = true;
+    }
   }
 }

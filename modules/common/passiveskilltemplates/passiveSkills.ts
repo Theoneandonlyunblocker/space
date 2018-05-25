@@ -49,6 +49,8 @@ export const overdrive: PassiveSkillTemplate =
     },
   ],
 };
+
+const initialGuardStrength = 50;
 export const initialGuard: PassiveSkillTemplate =
 {
   type: "initialGuard",
@@ -64,20 +66,26 @@ export const initialGuard: PassiveSkillTemplate =
       executeAction: bindEffectActionData(EffectActions.addGuard,
       {
         coverage: GuardCoverage.Row,
-        flat: 50,
+        flat: initialGuardStrength,
       }),
     },
   ],
   inBattlePrep:
   [
-    function(user: Unit, battlePrep: BattlePrep)
     {
-      EffectActions.addGuard(
+      onAdd: (user: Unit, battlePrep: BattlePrep) =>
       {
-        coverage: GuardCoverage.Row,
-        flat: 50,
+        EffectActions.addGuard(
+        {
+          coverage: GuardCoverage.Row,
+          flat: initialGuardStrength,
+        },
+        user, user, null, {});
       },
-      user, user, null, {});
+      onRemove: (user: Unit, battlePrep: BattlePrep) =>
+      {
+        user.removeGuard(initialGuardStrength);
+      },
     },
   ],
 };
