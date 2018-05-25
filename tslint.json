@@ -75,7 +75,7 @@
       "named-imports-order": "case-insensitive",
       "grouped-imports": true
     }],
-    "quotemark": [true, "double", "avoid-escape", "avoid-template"],
+    "quotemark": [true, "double", "avoid-escape"],
     "semicolon": [true, "always"],
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
 
