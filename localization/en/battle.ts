@@ -37,7 +37,7 @@ export const battle =
       "other {units}" +
     "}.",
 
-  battlePrepValidityModifierEffect_minUnits: "Minimum units placed {{0}, signedNumber}",
+  battlePrepValidityModifierEffect_minUnits: "Minimum units placed {minUnits, signedNumber}",
 
   battlePrepValidityModifierSource_offensiveBattle: "due to fighting offensive battle.",
   battlePrepValidityModifierSource_attackedInEnemyTerritory: "due to being attacked in hostile territory.",

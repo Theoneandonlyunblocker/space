@@ -473,7 +473,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
       {
         return localize("notEnoughUnitsPlaced")(
         {
-          minUnits: formation.getValidityRestriction(),
+          minUnits: formation.getValidityRestriction().minUnits,
         });
       }
     }
@@ -496,7 +496,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
       {
         case "minUnits":
         {
-          return localize("battlePrepValidityModifierEffect_minUnits")(effect.minUnits)
+          return localize("battlePrepValidityModifierEffect_minUnits")({minUnits: effect.minUnits});
         }
       }
     }).join(localize("listItemSeparator")());
