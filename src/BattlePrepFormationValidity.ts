@@ -2,13 +2,14 @@ import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
 
 import Unit from "./Unit";
 
-// tslint:disable:no-bitwise
 export enum FormationValidityReason
+
+// can't use binary operator as it clobbers the enum type
+// https://github.com/Microsoft/TypeScript/issues/22709
 {
-  Valid          = 1 << 0,
-  NotEnoughUnits = 1 << 1,
+  Valid          = 0,
+  NotEnoughUnits = 1,
 }
-// tslint:enable:no-bitwise
 
 export enum FormationValidityModifierSourceType
 {
