@@ -2,6 +2,11 @@
 import Battle from "./Battle";
 import BattleData from "./BattleData";
 import {BattlePrepFormation} from "./BattlePrepFormation";
+import
+{
+  FormationValidityModifier,
+  FormationValidityModifierSourceType,
+} from "./BattlePrepFormationValidity";
 import Player from "./Player";
 import Unit from "./Unit";
 
@@ -57,6 +62,7 @@ export default class BattlePrep
       units: this.defenderUnits,
       hasScouted: defenderHasScouted,
       isAttacker: false,
+      validityModifiers: this.getDefenderFormationValidityModifiers(),
       triggerBattlePrepEffect: (effect, unit) =>
       {
         effect(unit, this, this.defenderFormation, this.attackerFormation);
@@ -65,22 +71,15 @@ export default class BattlePrep
 
     this.resetBattleStats();
 
-    this.minDefenders = this.getInitialMinDefenders();
-
     this.setHumanAndEnemy();
 
     if (this.enemyFormation)
     {
       this.enemyFormation.setAutoFormation(this.humanUnits);
-
-      this.defenderFormation.minUnits = this.minDefenders;
     }
     else
     {
       this.attackerFormation.setAutoFormation(this.defenderUnits);
-
-      this.defenderFormation.minUnits = this.minDefenders;
-
       this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
     }
   }
@@ -142,20 +141,38 @@ export default class BattlePrep
       unit.resetBattleStats();
     });
   }
+  private getAttackerFormationValidityModifiers(): FormationValidityModifier[]
   {
-    });
-  }
-  private getInitialMinDefenders(): number
-  {
-    const isBeingFoughtOverTerritory = Boolean(this.battleData.building);
+    const allModifiers: FormationValidityModifier[] = [];
 
-    if (isBeingFoughtOverTerritory)
+    allModifiers.push({
+      sourceType: FormationValidityModifierSourceType.OffensiveBattle,
+      effect: {minUnits: 1},
+    });
+
+    return allModifiers;
+  }
+  private getDefenderFormationValidityModifiers(): FormationValidityModifier[]
+  {
+    const allModifiers: FormationValidityModifier[] = [];
+
+    if (this.attacker === this.battleData.location.owner)
     {
-      return 0;
+      allModifiers.push({
+        sourceType: FormationValidityModifierSourceType.AttackedInEnemyTerritory,
+
+        effect: {minUnits: 1},
+      });
     }
-    else
+    else if (this.defender !== this.battleData.location.owner)
     {
-      return 1;
+      allModifiers.push({
+        sourceType: FormationValidityModifierSourceType.AttackedInNeutralTerritory,
+
+        effect: {minUnits: 1},
+      });
     }
+
+    return allModifiers;
   }
 }

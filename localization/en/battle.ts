@@ -8,12 +8,12 @@ export const battle =
   preparing_statusText: "Preparing",
   preparing_tooltip: "Unit is preparing to use ability",
   guard_statusText: "Guard",
-  guard_chanceToProtect: `{protChance}% chance to protect ` +
-    `{guardCoverage, select,` +
+  guard_chanceToProtect: "{protChance}% chance to protect " +
+    "{guardCoverage, select," +
       `${GuardCoverage.Row} {units in same row.}` +
       `${GuardCoverage.All} {all units.}` +
       noOther("guardCoverage") +
-    `}`,
+    "}",
   reducedPhysicalDamage: "This unit takes {damageReduction}% reduced damage from physical attacks.",
   destroyed_statusText: "Destroyed",
   captured_statusText: "Captured",
@@ -38,4 +38,12 @@ export const battle =
       "  one {unit}" +
       "other {units}" +
     "}.",
+
+  battlePrepValidityModifierEffect_minUnits: "Minimum units placed {{0}, signedNumber}",
+
+  battlePrepValidityModifierSource_offensiveBattle: "due to fighting offensive battle.",
+  battlePrepValidityModifierSource_attackedInEnemyTerritory: "due to being attacked in hostile territory.",
+  battlePrepValidityModifierSource_attackedInNeutralTerritory: "due to being attacked in neutral territory.",
+  battlePrepValidityModifierSource_passiveAbility_unknown: "due to an unkown enemy ability.",
+  battlePrepValidityModifierSource_passiveAbility_known: "due to ability {abilityName} on unit {unitName}.",
 };

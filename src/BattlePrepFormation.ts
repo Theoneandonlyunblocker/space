@@ -1,6 +1,14 @@
-import {localize} from "../localization/localize";
 import { BaseBattlePrepEffect } from "./templateinterfaces/BattlePrepEffect";
 
+import
+{
+  FormationValidity,
+  FormationValidityModifier,
+  FormationValidityReason,
+  validityModifiersAreEqual,
+  FormationValidityModifierEffect,
+  squashValidityModifierEffects,
+} from "./BattlePrepFormationValidity";
 import Player from "./Player";
 import Unit from "./Unit";
 import UnitDisplayData from "./UnitDisplayData";
@@ -15,7 +23,6 @@ export class BattlePrepFormation
 {
   public formation: Unit[][];
   public units: Unit[];
-  public minUnits: number;
   public hasScouted: boolean;
   public placedUnitPositionsById:
   {
@@ -24,6 +31,8 @@ export class BattlePrepFormation
 
   private player: Player;
   private isAttacker: boolean;
+
+  private readonly validityModifiers: FormationValidityModifier[] = [];
 
   private cachedDisplayData: {[unitId: number]: UnitDisplayData};
   private displayDataIsDirty: boolean = true;
@@ -35,8 +44,8 @@ export class BattlePrepFormation
     player: Player,
     units: Unit[],
     hasScouted: boolean,
-    minUnits: number,
     isAttacker: boolean,
+    validityModifiers?: FormationValidityModifier[],
     triggerBattlePrepEffect: (effect: BaseBattlePrepEffect, unit: Unit) => void,
   })
   {
@@ -45,7 +54,7 @@ export class BattlePrepFormation
     this.hasScouted = props.hasScouted;
     this.isAttacker = props.isAttacker;
 
-    this.minUnits = Math.min(minUnits, this.getAvailableUnits().length);
+    this.validityModifiers.push(...props.validityModifiers);
     this.triggerBattlePrepEffect = props.triggerBattlePrepEffect;
 
     this.formation = getNullFormation();
@@ -109,31 +118,33 @@ export class BattlePrepFormation
     this.displayDataIsDirty = true;
   }
   // end human formation stuff
-  public getFormationValidity(): {isValid: boolean; description: string}
+  public getValidityRestriction(): FormationValidityModifierEffect
   {
+    const allEffects = this.validityModifiers.map(modifier => modifier.effect);
+
+    return squashValidityModifierEffects(...allEffects);
+  }
+  public getFormationValidity(): FormationValidity
+  {
+    // tslint:disable:no-bitwise
+    const validity =
+    {
+      isValid: true,
+      reasons: FormationValidityReason.Valid,
+      modifiers: this.validityModifiers,
+    };
+
+    const validityRestriction = this.getValidityRestriction();
     const amountOfUnitsPlaced = this.getPlacedUnits().length;
 
-    if (amountOfUnitsPlaced < this.minUnits)
+    if (amountOfUnitsPlaced < validityRestriction.minUnits)
     {
-      return(
-      {
-        isValid: false,
-        // TODO 2018.05.15 | localization doesn't belong here
-        // TODO 2018.05.15 | should give reason why more units need to be placed
-        description: localize("notEnoughUnitsPlaced")(
-        {
-          minUnits: this.minUnits,
-        }),
-      });
+      validity.isValid = false;
+      validity.reasons |= FormationValidityReason.NotEnoughUnits;
     }
-    else
-    {
-      return(
-      {
-        isValid: true,
-        description: "",
-      });
-    }
+
+    return validity;
+    // tslint:enable:no-bitwise
   }
   public assignUnit(unit: Unit, position: number[]): void
   {
@@ -173,6 +184,36 @@ export class BattlePrepFormation
     this.triggerPassiveSkillsForUnit("onRemove", unit);
 
     this.displayDataIsDirty = true;
+
+  }
+  public getValidityModifierIndex(modifier: FormationValidityModifier): number
+  {
+    for (let i = 0; i < this.validityModifiers.length; i++)
+    {
+      if (validityModifiersAreEqual(modifier, this.validityModifiers[i]))
+      {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+  public addValidityModifier(modifier: FormationValidityModifier): void
+  {
+    this.validityModifiers.push(modifier);
+  }
+  public removeValidityModifier(modifier: FormationValidityModifier): void
+  {
+    const index = this.getValidityModifierIndex(modifier);
+
+    if (index === -1)
+    {
+      throw new Error("");
+    }
+    else
+    {
+      this.validityModifiers.splice(index, 1);
+    }
   }
 
   private getUnitAtPosition(position: number[]): Unit

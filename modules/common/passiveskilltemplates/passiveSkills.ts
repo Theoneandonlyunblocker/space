@@ -9,6 +9,7 @@ import poisonedStatusEffect from "../uniteffecttemplates/poisoned";
 
 import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
 import * as EffectActions from "../effectactiontemplates/effectActions";
+import { FormationValidityModifierSourceType } from "../../../src/BattlePrepFormationValidity";
 
 
 export const autoHeal: PassiveSkillTemplate =
@@ -108,23 +109,49 @@ export const medic: PassiveSkillTemplate =
     },
   ],
 };
+function makeWarpJammerValidityModifier(user: Unit)
+{
+  return {
+    sourceType: FormationValidityModifierSourceType.PassiveAbility,
+    effect:
+    {
+      minUnits: 1,
+    },
+    sourcePassiveAbility:
+    {
+      unit: user,
+      abilityTemplate: warpJammer,
+    },
+  };
+}
+
 export const warpJammer: PassiveSkillTemplate =
 {
   type: "warpJammer",
   displayName: "Warp Jammer",
-  description: "Forces an extra unit to defend when not fighting over territory",
+  description: "Forces an extra unit to defend when starting a battle",
 
   inBattlePrep:
   [
-    (user: Unit, battlePrep: BattlePrep) =>
     {
-      const isAttacker = user.fleet.player === battlePrep.attacker;
-      const isBeingFoughtOverTerritory = Boolean(battlePrep.battleData.building);
-
-      if (isAttacker && !isBeingFoughtOverTerritory)
+      onAdd: (user: Unit, battlePrep: BattlePrep) =>
       {
-        battlePrep.minDefenders += 1;
-      }
+        const isAttackingSide = user.fleet.player === battlePrep.attacker;
+
+        if (isAttackingSide)
+        {
+          battlePrep.defenderFormation.addValidityModifier(makeWarpJammerValidityModifier(user));
+        }
+      },
+      onRemove: (user: Unit, battlePrep: BattlePrep) =>
+      {
+        const isAttackingSide = user.fleet.player === battlePrep.attacker;
+
+        if (isAttackingSide)
+        {
+          battlePrep.defenderFormation.removeValidityModifier(makeWarpJammerValidityModifier(user));
+        }
+      },
     },
   ],
   canUpgradeInto: [medic],

@@ -5,6 +5,15 @@ import app from "../../App"; // TODO global
 import {activeModuleData} from "../../activeModuleData";
 
 import BattlePrep from "../../BattlePrep";
+import
+{
+  FormationValidity,
+  FormationValidityModifier,
+  FormationValidityReason,
+  FormationValidityModifierSourceType,
+  extractFormationValidityReasons,
+  FormationValidityModifierEffect,
+} from "../../BattlePrepFormationValidity";
 import BattleSimulator from "../../BattleSimulator";
 import Item from "../../Item";
 import Options from "../../Options";
@@ -20,6 +29,7 @@ import {PropTypes as UnitListItemPropTypes} from "../unitlist/UnitListItem";
 import BattleInfo from "./BattleInfo";
 
 import {localize} from "../../../localization/localize";
+import { BattlePrepFormation } from "../../BattlePrepFormation";
 
 
 export interface PropTypes extends React.Props<any>
@@ -192,7 +202,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
     const playerIsDefending = player === battlePrep.defender;
     const humanFormationValidity = battlePrep.humanFormation.getFormationValidity();
-    const canScout = player.starIsDetected(battlePrep.battleData.location);
+    const canInspectEnemyFormation = this.canInspectEnemyFormation();
 
     return(
       React.DOM.div({className: "battle-prep"},
@@ -233,8 +243,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
             {
               className: "battle-prep-controls-button",
               onClick: this.setLeftLowerElement.bind(this, "enemyFormation"),
-              disabled: this.state.leftLowerElement === "enemyFormation" || !canScout,
-              title: canScout ?
+              disabled: this.state.leftLowerElement === "enemyFormation" || !canInspectEnemyFormation,
+              title: canInspectEnemyFormation ?
                 undefined :
                 localize("cantInspectEnemyFormationAsStarIsNotInDetectionRadius")(),
             }, localize("enemy")()),
@@ -254,7 +264,10 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
             {
               className: "battle-prep-controls-button",
               disabled: !humanFormationValidity.isValid,
-              title: humanFormationValidity.description,
+              title: humanFormationValidity.isValid ? "" : this.localizeInvalidFormationExplanation(
+                battlePrep.humanFormation,
+                humanFormationValidity,
+              ),
               onClick: function()
               {
                 const battle = battlePrep.makeBattle();
@@ -300,6 +313,12 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     );
   }
 
+  private canInspectEnemyFormation(): boolean
+  {
+    const player = this.props.battlePrep.humanPlayer;
+
+    return player.starIsDetected(this.props.battlePrep.battleData.location);
+  }
   private autoMakeFormation()
   {
     this.props.battlePrep.humanFormation.clearFormation();
@@ -382,7 +401,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     const battlePrep = this.props.battlePrep;
     if (this.state.currentDragUnit)
     {
-      battlePrep.humanFormation.setUnit(this.state.currentDragUnit, position);
+      battlePrep.humanFormation.assignUnit(this.state.currentDragUnit, position);
     }
 
     this.handleDragEnd(true);
@@ -445,6 +464,107 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     }
 
     return ReactDOM.findDOMNode(backgroundElement).getBoundingClientRect();
+  }
+  private localizeFormationValidityReason(formation: BattlePrepFormation, reason: FormationValidityReason): string
+  {
+    switch (reason)
+    {
+      case FormationValidityReason.NotEnoughUnits:
+      {
+        return localize("notEnoughUnitsPlaced")(
+        {
+          minUnits: formation.getValidityRestriction(),
+        });
+      }
+    }
+  }
+  private localizeModifierEffect(effect: FormationValidityModifierEffect): string
+  {
+    const sortOrder: Required<{[K in keyof FormationValidityModifierEffect]: number}> =
+    {
+      minUnits: 0,
+    };
+
+    const allKeys = <(keyof FormationValidityModifierEffect)[]> Object.keys(effect);
+
+    return allKeys.sort((a, b) =>
+    {
+      return sortOrder[a] - sortOrder[b];
+    }).map(prop =>
+    {
+      switch (prop)
+      {
+        case "minUnits":
+        {
+          return localize("battlePrepValidityModifierEffect_minUnits")(effect.minUnits)
+        }
+      }
+    }).join(localize("listItemSeparator")());
+  }
+  private localizeFormationValidityModifierSource(
+    formation: BattlePrepFormation,
+    modifier: FormationValidityModifier,
+  ): string
+  {
+    switch (modifier.sourceType)
+    {
+      case FormationValidityModifierSourceType.OffensiveBattle:
+      {
+        return localize("battlePrepValidityModifierSource_offensiveBattle")();
+      }
+      case FormationValidityModifierSourceType.AttackedInEnemyTerritory:
+      {
+        return localize("battlePrepValidityModifierSource_attackedInEnemyTerritory")();
+      }
+      case FormationValidityModifierSourceType.AttackedInNeutralTerritory:
+      {
+        return localize("battlePrepValidityModifierSource_attackedInNeutralTerritory")();
+      }
+      case FormationValidityModifierSourceType.PassiveAbility:
+      {
+        const humanPlayer = this.props.battlePrep.humanPlayer;
+
+        const sourceAbility = modifier.sourcePassiveAbility.abilityTemplate;
+        const sourceUnit = modifier.sourcePassiveAbility.unit;
+        const sourceUnitIsKnown = sourceUnit.fleet.player === humanPlayer || this.canInspectEnemyFormation();
+
+        if (sourceUnitIsKnown)
+        {
+          return localize("battlePrepValidityModifierSource_passiveAbility_known")(
+          {
+            abilityName: sourceAbility.displayName,
+            unitName: sourceUnit.name,
+          });
+        }
+        else
+        {
+          return localize("battlePrepValidityModifierSource_passiveAbility_unknown")();
+        }
+      }
+    }
+  }
+  private localizeInvalidFormationExplanation(formation: BattlePrepFormation, validity: FormationValidity): string
+  {
+    const allReasons = extractFormationValidityReasons(validity.reasons);
+
+    const reasonString = allReasons.map(reason =>
+    {
+      return this.localizeFormationValidityReason(formation, reason);
+    }).join("\n");
+
+    const modifiersString = validity.modifiers.map(modifier =>
+    {
+      const modifierEffectString = this.localizeModifierEffect(modifier.effect);
+
+      const modifierSourceString = this.localizeFormationValidityModifierSource(
+        formation,
+        modifier,
+      );
+
+      return `${modifierEffectString} ${modifierSourceString}`;
+    }).join("\n");
+
+    return `${reasonString}\n\n${modifiersString}`;
   }
 }
 

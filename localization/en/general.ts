@@ -19,4 +19,5 @@ export const general =
   displayName: "Name",
   ability: "Ability",
   type: "Type",
+  listItemSeparator: ", ",
 };
