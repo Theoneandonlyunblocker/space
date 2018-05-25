@@ -772,6 +772,28 @@ export function findEasingFunctionHighPoint(easingFunction: (x: number) => numbe
   );
 }
 
+export function shallowEqual<T extends object>(a: T, b: T): boolean
+{
+  const aProps = Object.getOwnPropertyNames(a);
+  const bProps = Object.getOwnPropertyNames(b);
+
+  const hasSameAmountOfProperties = aProps.length === bProps.length;
+  if (!hasSameAmountOfProperties)
+  {
+    return false;
+  }
+
+  const allPropertyValuesMatch = aProps.every(prop =>
+  {
+    return a[prop] === b[prop];
+  });
+  if (!allPropertyValuesMatch)
+  {
+    return false;
+  }
+
+  return true;
+}
 export function pointsEqual(p1: Point, p2: Point)
 {
   return (p1.x === p2.x && p1.y === p2.y);

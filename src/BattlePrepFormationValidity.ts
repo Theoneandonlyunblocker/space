@@ -62,9 +62,11 @@ export function extractFormationValidityReasons(reasons: FormationValidityReason
 }
 // tslint:enable:no-bitwise
 
-export function squashValidityModifierEffects(...effects: FormationValidityModifierEffect[]): FormationValidityModifierEffect
+export function squashValidityModifierEffects(
+  ...effects: FormationValidityModifierEffect[],
+): Required<FormationValidityModifierEffect>
 {
-  const squashed: FormationValidityModifierEffect =
+  const squashed: Required<FormationValidityModifierEffect> =
   {
     minUnits: 0,
   };
@@ -96,35 +98,17 @@ export function validityModifiersAreEqual(a: FormationValidityModifier, b: Forma
     return false;
   }
 
-  const effectsMatch = validityModifierEffectsAreEqual(a, b);
+  const effectsMatch = shallowEqual(a.effect, b.effect);
   if (!effectsMatch)
   {
     return false;
   }
 
-  const sourcePassiveAbilitiesMatch = a.sourcePassiveAbility === b.sourcePassiveAbility;
+  const sourcePassiveAbilitiesMatch = shallowEqual(a.sourcePassiveAbility, b.sourcePassiveAbility);
   if (!sourcePassiveAbilitiesMatch)
   {
     return false;
   }
 
   return true;
-}
-
-function validityModifierEffectsAreEqual(a: FormationValidityModifier, b: FormationValidityModifier): boolean
-{
-  const effectCountsMatch = Object.keys(a.effect).length === Object.keys(b.effect).length;
-  if (!effectCountsMatch)
-  {
-    return false;
-  }
-  else
-  {
-    const effectsMatch = Object.keys(a.effect).some(effectType =>
-    {
-      return a.effect[effectType] !== b.effect[effectType];
-    });
-
-    return effectsMatch;
-  }
 }
