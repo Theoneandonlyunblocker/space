@@ -21,7 +21,7 @@ import
 
 export class BattlePrepFormation
 {
-  public formation: Unit[][];
+  public readonly formation: Unit[][];
   public units: Unit[];
   public hasScouted: boolean;
   public placedUnitPositionsById:
@@ -92,33 +92,33 @@ export class BattlePrepFormation
   {
     this.clearFormation();
 
-    this.formation = this.player.AIController.createBattleFormation(
+    const newFormation = this.player.AIController.createBattleFormation(
       this.getAvailableUnits(),
       this.hasScouted,
       enemyUnits,
       enemyFormation,
     );
-    this.forEachUnitInFormation((unit, pos) =>
-    {
-      this.placedUnitPositionsById[unit.id] = pos;
-    });
 
-    this.displayDataIsDirty = true;
+    newFormation.forEach((row, i) =>
+    {
+      row.forEach((unitAtCell, j) =>
+      {
+        if (unitAtCell)
+        {
+          this.addNewUnit(unitAtCell, [i, j]);
+        }
+      });
+    });
   }
-  // human formation stuff
-  public getUnitPosition(unit: Unit): number[]
+  public hasUnit(unit: Unit): boolean
   {
-    return this.placedUnitPositionsById[unit.id];
+    return Boolean(this.placedUnitPositionsById[unit.id]);
   }
   public clearFormation(): void
   {
-    this.placedUnitPositionsById = {};
-    this.formation = getNullFormation();
-
-    this.displayDataIsDirty = true;
+    this.forEachUnitInFormation(unit => this.removeUnit(unit));
   }
-  // end human formation stuff
-  public getValidityRestriction(): FormationValidityModifierEffect
+  public getValidityRestriction(): Required<FormationValidityModifierEffect>
   {
     const allEffects = this.validityModifiers.map(modifier => modifier.effect);
 
@@ -152,13 +152,18 @@ export class BattlePrepFormation
 
     if (unitInTargetPosition)
     {
-      this.swapUnits(unit, unitInTargetPosition);
+      if (unitInTargetPosition === unit)
+      {
+        // pass
+      }
+      else
+      {
+        this.swapUnits(unit, unitInTargetPosition);
+      }
     }
     else
     {
-      const alreadyHasUnit = Boolean(this.getUnitPosition(unit));
-
-      if (alreadyHasUnit)
+      if (this.hasUnit(unit))
       {
         this.setUnitPosition(unit, position);
       }
@@ -170,16 +175,12 @@ export class BattlePrepFormation
   }
   public removeUnit(unit: Unit): void
   {
-    const position = this.getUnitPosition(unit);
-    const isPartOfFormation = Boolean(position);
-    if (!isPartOfFormation)
+    if (!this.hasUnit(unit))
     {
-      // TODO 2018.05.24 | does this happen?
-      throw new Error();
+      throw new Error("Tried to remove unit not part of the formation.");
     }
 
-    this.formation[position[0]][position[1]] = null;
-    delete this.placedUnitPositionsById[unit.id];
+    this.cleanUpUnitPosition(unit);
 
     this.triggerPassiveSkillsForUnit("onRemove", unit);
 
@@ -216,12 +217,30 @@ export class BattlePrepFormation
     }
   }
 
+  private getUnitPosition(unit: Unit): number[]
+  {
+    return this.placedUnitPositionsById[unit.id];
+  }
   private getUnitAtPosition(position: number[]): Unit
   {
     return this.formation[position[0]][position[1]];
   }
+  private cleanUpUnitPosition(unit: Unit): void
+  {
+    if (!this.hasUnit(unit))
+    {
+      return;
+    }
+
+    const position = this.getUnitPosition(unit);
+
+    this.formation[position[0]][position[1]] = null;
+    delete this.placedUnitPositionsById[unit.id];
+  }
   private setUnitPosition(unit: Unit, position: number[]): void
   {
+    this.cleanUpUnitPosition(unit);
+
     this.formation[position[0]][position[1]] = unit;
     this.placedUnitPositionsById[unit.id] = position;
 
@@ -239,12 +258,14 @@ export class BattlePrepFormation
   {
     if (unit1 === unit2)
     {
-      // TODO 2018.05.24 | does this happen?
-      throw new Error();
+      throw new Error("Tried to swap unit position with itself.");
     }
 
     const new1Pos = this.getUnitPosition(unit2);
     const new2Pos = this.getUnitPosition(unit1);
+
+    this.cleanUpUnitPosition(unit1);
+    this.cleanUpUnitPosition(unit2);
 
     this.setUnitPosition(unit1, new1Pos);
     this.setUnitPosition(unit2, new2Pos);
