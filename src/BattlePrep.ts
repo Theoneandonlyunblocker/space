@@ -1,7 +1,7 @@
 
 import Battle from "./Battle";
 import BattleData from "./BattleData";
-import BattlePrepFormation from "./BattlePrepFormation";
+import {BattlePrepFormation} from "./BattlePrepFormation";
 import Player from "./Player";
 import Unit from "./Unit";
 
@@ -9,22 +9,22 @@ import Unit from "./Unit";
 export default class BattlePrep
 {
   public battleData: BattleData;
+
   public attacker: Player;
   public defender: Player;
+  public attackerFormation: BattlePrepFormation;
+  public defenderFormation: BattlePrepFormation;
+  public attackerUnits: Unit[];
+  public defenderUnits: Unit[];
+
   public humanPlayer: Player;
   public enemyPlayer: Player;
   public humanFormation: BattlePrepFormation;
   public enemyFormation: BattlePrepFormation;
   public humanUnits: Unit[];
   public enemyUnits: Unit[];
+
   public afterBattleFinishCallbacks: (() => void)[] = [];
-  public minDefenders: number;
-
-  private attackerUnits: Unit[];
-  private defenderUnits: Unit[];
-
-  private attackerFormation: BattlePrepFormation;
-  private defenderFormation: BattlePrepFormation;
 
 
   constructor(battleData: BattleData)
@@ -37,11 +37,26 @@ export default class BattlePrep
 
     const attackerHasScouted = this.attacker.starIsDetected(battleData.location);
     this.attackerFormation = new BattlePrepFormation(
-      this.attacker, this.attackerUnits, attackerHasScouted, 1, true);
+    {
+      player: this.attacker,
+      units: this.attackerUnits,
+      hasScouted: attackerHasScouted,
+      isAttacker: true,
+      validityModifiers: this.getAttackerFormationValidityModifiers(),
+      triggerBattlePrepEffect: (effect, unit) =>
+      {
+        effect(unit, this, this.attackerFormation, this.defenderFormation);
+      },
+    });
 
     const defenderHasScouted = this.defender.starIsDetected(battleData.location);
+
     this.defenderFormation = new BattlePrepFormation(
-      this.defender, this.defenderUnits, defenderHasScouted, 0, false);
+    {
+      player: this.defender,
+      units: this.defenderUnits,
+      hasScouted: defenderHasScouted,
+      isAttacker: false,
 
     this.resetBattleStats();
 

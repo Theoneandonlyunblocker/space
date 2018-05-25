@@ -10,7 +10,7 @@ import
 } from "./utility";
 
 
-export default class BattlePrepFormation
+export class BattlePrepFormation
 {
   public formation: Unit[][];
   public units: Unit[];
@@ -27,18 +27,19 @@ export default class BattlePrepFormation
   private cachedDisplayData: {[unitId: number]: UnitDisplayData};
   private displayDataIsDirty: boolean = true;
 
-  constructor(
+  constructor(props:
+  {
     player: Player,
     units: Unit[],
     hasScouted: boolean,
     minUnits: number,
     isAttacker: boolean,
-  )
+  })
   {
-    this.player = player;
-    this.units = units;
-    this.hasScouted = hasScouted;
-    this.isAttacker = isAttacker;
+    this.player = props.player;
+    this.units = props.units;
+    this.hasScouted = props.hasScouted;
+    this.isAttacker = props.isAttacker;
 
     this.minUnits = Math.min(minUnits, this.getAvailableUnits().length);
     this.formation = getNullFormation();

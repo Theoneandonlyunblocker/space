@@ -1,5 +1,5 @@
 import {AbilityEffectTemplate} from "./AbilityEffectTemplate";
-import BattlePrepEffect from "./BattlePrepEffect";
+import {BattlePrepEffect} from "./BattlePrepEffect";
 import TurnStartEffect from "./TurnStartEffect";
 
 import {UnitAttributeAdjustments} from "../UnitAttributes";
@@ -14,7 +14,6 @@ declare interface UnitEffectTemplate
 
   attributes?: UnitAttributeAdjustments;
 
-  // should just be used for display purposes
   inBattlePrep?: BattlePrepEffect[];
   atBattleStart?: AbilityEffectTemplate[];
   beforeAbilityUse?: AbilityEffectTemplate[];
