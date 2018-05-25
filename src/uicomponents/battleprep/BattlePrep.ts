@@ -385,7 +385,10 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   {
     if (!dropSuccessful && this.state.currentDragUnit)
     {
-      this.props.battlePrep.humanFormation.removeUnit(this.state.currentDragUnit);
+      if (this.props.battlePrep.humanFormation.hasUnit(this.state.currentDragUnit))
+      {
+        this.props.battlePrep.humanFormation.removeUnit(this.state.currentDragUnit);
+      }
     }
 
     this.setState(
