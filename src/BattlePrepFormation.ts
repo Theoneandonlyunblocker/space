@@ -126,28 +126,36 @@ export default class BattlePrepFormation
       });
     }
   }
-  public setUnit(unit: Unit, position: number[]): void
+  public assignUnit(unit: Unit, position: number[]): void
   {
     const unitInTargetPosition = this.getUnitAtPosition(position);
+
     if (unitInTargetPosition)
     {
       this.swapUnits(unit, unitInTargetPosition);
     }
     else
     {
-      this.removeUnit(unit);
+      const alreadyHasUnit = Boolean(this.getUnitPosition(unit));
 
-      this.formation[position[0]][position[1]] = unit;
-      this.placedUnitPositionsById[unit.id] = position;
-      this.displayDataIsDirty = true;
+      if (alreadyHasUnit)
+      {
+        this.setUnitPosition(unit, position);
+      }
+      else
+      {
+        this.addNewUnit(unit, position);
+      }
     }
   }
   public removeUnit(unit: Unit): void
   {
     const position = this.getUnitPosition(unit);
-    if (!position)
+    const isPartOfFormation = Boolean(position);
+    if (!isPartOfFormation)
     {
-      return;
+      // TODO 2018.05.24 | does this happen?
+      throw new Error();
     }
 
     this.formation[position[0]][position[1]] = null;
@@ -159,21 +167,32 @@ export default class BattlePrepFormation
   {
     return this.formation[position[0]][position[1]];
   }
+  private setUnitPosition(unit: Unit, position: number[]): void
+  {
+    this.formation[position[0]][position[1]] = unit;
+    this.placedUnitPositionsById[unit.id] = position;
+
+    this.displayDataIsDirty = true;
+  }
+  private addNewUnit(unit: Unit, position: number[]): void
+  {
+    this.setUnitPosition(unit, position);
+
+    this.displayDataIsDirty = true;
+  }
   private swapUnits(unit1: Unit, unit2: Unit): void
   {
     if (unit1 === unit2)
     {
-      return;
+      // TODO 2018.05.24 | does this happen?
+      throw new Error();
     }
 
     const new1Pos = this.getUnitPosition(unit2);
     const new2Pos = this.getUnitPosition(unit1);
 
-    this.removeUnit(unit1);
-    this.removeUnit(unit2);
-
-    this.setUnit(unit1, new1Pos);
-    this.setUnit(unit2, new2Pos);
+    this.setUnitPosition(unit1, new1Pos);
+    this.setUnitPosition(unit2, new2Pos);
   }
   private getFormationDisplayData()
   {
