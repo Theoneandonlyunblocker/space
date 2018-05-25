@@ -1,11 +1,12 @@
 import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
 
 import Unit from "./Unit";
+import { shallowEqual } from "./utility";
 
-export enum FormationValidityReason
 
 // can't use binary operator as it clobbers the enum type
 // https://github.com/Microsoft/TypeScript/issues/22709
+export enum FormationInvalidityReason
 {
   Valid          = 0,
   NotEnoughUnits = 1,
@@ -38,16 +39,16 @@ export interface FormationValidityModifier
 export interface FormationValidity
 {
   isValid: boolean;
-  reasons: FormationValidityReason;
+  reasons: FormationInvalidityReason;
   modifiers: FormationValidityModifier[];
 }
 
 // tslint:disable:no-bitwise
-export function extractFormationValidityReasons(reasons: FormationValidityReason): FormationValidityReason[]
+export function extractFormationInvalidityReasons(reasons: FormationInvalidityReason): FormationInvalidityReason[]
 {
-  const allPresentReasons = Object.keys(FormationValidityReason).map(key =>
+  const allPresentReasons = Object.keys(FormationInvalidityReason).map(key =>
   {
-    return FormationValidityReason[key];
+    return FormationInvalidityReason[key];
   }).filter(reason =>
   {
     const reasonIsPresent = reasons & reason;

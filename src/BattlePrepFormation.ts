@@ -4,7 +4,7 @@ import
 {
   FormationValidity,
   FormationValidityModifier,
-  FormationValidityReason,
+  FormationInvalidityReason,
   validityModifiersAreEqual,
   FormationValidityModifierEffect,
   squashValidityModifierEffects,
@@ -130,7 +130,7 @@ export class BattlePrepFormation
     const validity =
     {
       isValid: true,
-      reasons: FormationValidityReason.Valid,
+      reasons: FormationInvalidityReason.Valid,
       modifiers: this.validityModifiers,
     };
 
@@ -140,7 +140,7 @@ export class BattlePrepFormation
     if (amountOfUnitsPlaced < validityRestriction.minUnits)
     {
       validity.isValid = false;
-      validity.reasons |= FormationValidityReason.NotEnoughUnits;
+      validity.reasons |= FormationInvalidityReason.NotEnoughUnits;
     }
 
     return validity;

@@ -9,9 +9,9 @@ import
 {
   FormationValidity,
   FormationValidityModifier,
-  FormationValidityReason,
+  FormationInvalidityReason,
   FormationValidityModifierSourceType,
-  extractFormationValidityReasons,
+  extractFormationInvalidityReasons,
   FormationValidityModifierEffect,
 } from "../../BattlePrepFormationValidity";
 import BattleSimulator from "../../BattleSimulator";
@@ -468,11 +468,15 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
     return ReactDOM.findDOMNode(backgroundElement).getBoundingClientRect();
   }
-  private localizeFormationValidityReason(formation: BattlePrepFormation, reason: FormationValidityReason): string
+  private localizeFormationInvalidityReason(formation: BattlePrepFormation, reason: FormationInvalidityReason): string
   {
     switch (reason)
     {
-      case FormationValidityReason.NotEnoughUnits:
+      case FormationInvalidityReason.Valid:
+      {
+        throw new Error("Tried to display reason for formation invalidity when formation wasn't invalid.");
+      }
+      case FormationInvalidityReason.NotEnoughUnits:
       {
         return localize("notEnoughUnitsPlaced")(
         {
@@ -548,11 +552,11 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
   private localizeInvalidFormationExplanation(formation: BattlePrepFormation, validity: FormationValidity): string
   {
-    const allReasons = extractFormationValidityReasons(validity.reasons);
+    const allReasons = extractFormationInvalidityReasons(validity.reasons);
 
     const reasonString = allReasons.map(reason =>
     {
-      return this.localizeFormationValidityReason(formation, reason);
+      return this.localizeFormationInvalidityReason(formation, reason);
     }).join("\n");
 
     const modifiersString = validity.modifiers.map(modifier =>
