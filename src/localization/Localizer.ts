@@ -2,7 +2,7 @@
 
 import {Language} from "./Language";
 import {getActiveLanguage} from "./activeLanguage";
-import {transformers} from "./transformers";
+import {formatters} from "formatters";
 
 import
 {
@@ -132,7 +132,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
     this.messagesByLanguageCode[language.code] = <{[K in keyof Messages]: string[]}> {};
 
     this.messageFormattersByLanguageCode[language.code] = new MessageFormat(language.code);
-    this.messageFormattersByLanguageCode[language.code].addFormatters(transformers);
+    this.messageFormattersByLanguageCode[language.code].addFormatters(formatters);
     // tslint:disable-next-line:no-any
     this.compiledMessagesByLanguageCode[language.code] = <{[K in keyof Messages]: MessageFunction<any>[]}> {};
   }
