@@ -33,6 +33,7 @@ import
 {
   clamp,
   getItemsFromProbabilityDistributions,
+  getUniqueArrayKeys,
   randInt,
 } from "./utility";
 
@@ -661,16 +662,19 @@ export default class Unit
   // }
   public getAllAbilities(): AbilityTemplate[]
   {
-    return this.abilities.concat(this.items.getAbilities());
+    const allAbilities = [...this.abilities, ...this.items.getAbilities()];
+
+    const allUniqueAbilities = getUniqueArrayKeys(allAbilities, template => template.type);
+
+    return allUniqueAbilities;
   }
   public getAllPassiveSkills(): PassiveSkillTemplate[]
   {
-    let allSkills: PassiveSkillTemplate[] = [];
+    const allPassiveSkills = [...this.passiveSkills, ...this.items.getPassiveSkills()];
 
-    allSkills = allSkills.concat(this.passiveSkills);
-    allSkills = allSkills.concat(this.items.getPassiveSkills());
+    const allUniquePassiveSkills = getUniqueArrayKeys(allPassiveSkills, template => template.type);
 
-    return allSkills;
+    return allUniquePassiveSkills;
   }
   private updatePassiveSkillsByPhase(): void
   {
