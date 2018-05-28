@@ -11,6 +11,7 @@ import {Language} from "../../localization/Language";
 import {default as TopMenuPopups, PopupType, TopMenuPopupsComponent} from "./TopMenuPopups";
 
 import {localize} from "../../../localization/localize";
+import Star from "../../Star";
 
 
 export interface PropTypes extends React.Props<any>
@@ -18,6 +19,7 @@ export interface PropTypes extends React.Props<any>
   player: Player;
   game: Game;
   activeLanguage: Language;
+  selectedStar: Star | null;
 }
 
 interface StateType
@@ -223,6 +225,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
           player: this.props.player,
           game: this.props.game,
           activeLanguage: this.props.activeLanguage,
+          selectedStar: this.props.selectedStar,
         }),
       )
     );

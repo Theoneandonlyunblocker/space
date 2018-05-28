@@ -24,6 +24,7 @@ import EconomySummary from "./EconomySummary";
 import OptionsList from "./OptionsList";
 
 import {localize} from "../../../localization/localize";
+import Star from "../../Star";
 
 
 const windowPositionStorageKey = "Rance.WindowPositions";
@@ -53,6 +54,7 @@ export interface PropTypes extends React.Props<any>
   player: Player;
   game: Game;
   activeLanguage: Language;
+  selectedStar: Star;
 }
 
 type StateType = Partial<ValuesByPopup<boolean>>;
@@ -71,6 +73,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       makeContent: () => ProductionOverview(
       {
         player: this.props.player,
+        selectedStar: this.props.selectedStar,
       }),
       title: localize("production")(),
     },

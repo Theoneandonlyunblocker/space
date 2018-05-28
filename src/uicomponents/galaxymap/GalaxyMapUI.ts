@@ -240,7 +240,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             player: this.props.player,
             game: this.props.game,
             activeLanguage: this.props.activeLanguage,
-            // currentTurn: this.props.game.turnNumber
+            selectedStar: this.state.selectedStar,
           }),
           React.DOM.div(
           {

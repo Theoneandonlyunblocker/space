@@ -16,6 +16,7 @@ import applyMixins from "../mixins/applyMixins";
 export interface PropTypes extends React.Props<any>
 {
   player: Player;
+  selectedStar: Star | null;
 }
 
 interface StateType
@@ -50,27 +51,29 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
   private getInitialStateTODO(): StateType
   {
-    let initialSelected: Star | null = null;
-    const player = this.props.player;
+    let initialSelectedStar: Star | null = this.props.selectedStar;
 
-    const starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
+    if (!initialSelectedStar)
+    {
+      const starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
 
-    if (starsByManufactoryPresence.withManufactories.length > 0)
-    {
-      starsByManufactoryPresence.withManufactories.sort(sortByManufactoryCapacityFN);
-      initialSelected = starsByManufactoryPresence.withManufactories[0];
-    }
-    else if (starsByManufactoryPresence.withoutManufactories.length > 0)
-    {
-      starsByManufactoryPresence.withoutManufactories.sort(sortByManufactoryCapacityFN);
-      initialSelected = starsByManufactoryPresence.withoutManufactories[0];
+      if (starsByManufactoryPresence.withManufactories.length > 0)
+      {
+        starsByManufactoryPresence.withManufactories.sort(sortByManufactoryCapacityFN);
+        initialSelectedStar = starsByManufactoryPresence.withManufactories[0];
+      }
+      else if (starsByManufactoryPresence.withoutManufactories.length > 0)
+      {
+        starsByManufactoryPresence.withoutManufactories.sort(sortByManufactoryCapacityFN);
+        initialSelectedStar = starsByManufactoryPresence.withoutManufactories[0];
+      }
     }
 
     return(
     {
-      selectedStar: initialSelected,
-      highlightedStars: initialSelected ? [initialSelected] : [],
-      money: player.money,
+      selectedStar: initialSelectedStar,
+      highlightedStars: initialSelectedStar ? [initialSelectedStar] : [],
+      money: this.props.player.money,
     });
   }
 
@@ -87,6 +90,14 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   componentWillUnmount()
   {
     eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+  }
+
+  public componentWillReceiveProps(newProps: PropTypes): void
+  {
+    if (newProps.selectedStar !== this.state.selectedStar)
+    {
+      this.handleStarSelect(newProps.selectedStar);
+    }
   }
 
   getStarsWithAndWithoutManufactories()
@@ -118,18 +129,11 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
   handleStarSelect(star: Star)
   {
-    if (this.state.selectedStar === star)
+    this.setState(
     {
-      this.clearSelection();
-    }
-    else
-    {
-      this.setState(
-      {
-        selectedStar: star,
-        highlightedStars: [star],
-      });
-    }
+      selectedStar: star,
+      highlightedStars: [star],
+    });
   }
 
   clearSelection()
