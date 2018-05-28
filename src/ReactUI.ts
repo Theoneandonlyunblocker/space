@@ -104,7 +104,6 @@ export default class ReactUI
       {
         return BattleComponentFactory(
         {
-          key: "battle",
           battle: this.battle,
           humanPlayer: this.player,
         });
@@ -113,7 +112,6 @@ export default class ReactUI
       {
         return BattlePrepComponentFactory(
         {
-          key: "battlePrep",
           battlePrep: this.battlePrep,
         });
       }
@@ -121,7 +119,6 @@ export default class ReactUI
       {
         return GalaxyMap(
         {
-          key: "galaxyMap",
           renderer: this.renderer,
           mapRenderer: this.mapRenderer,
           playerControl: this.playerControl,
@@ -134,31 +131,19 @@ export default class ReactUI
       }
       case "flagMaker":
       {
-        return FlagMaker(
-        {
-          key: "flagMaker",
-        });
+        return FlagMaker();
       }
       case "setupGame":
       {
-        return SetupGame(
-        {
-          key: "setupGame",
-        });
+        return SetupGame();
       }
       case "battleSceneTester":
       {
-        return BattleSceneTester(
-        {
-          key: "battleSceneTester",
-        });
+        return BattleSceneTester();
       }
       case "SFXEditor":
       {
-        return SFXEditor(
-        {
-          key: "SFXEditor",
-        });
+        return SFXEditor();
       }
     }
   }
