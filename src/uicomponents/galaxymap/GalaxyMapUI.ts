@@ -80,6 +80,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     this.toggleMapModeSettingsExpanded = this.toggleMapModeSettingsExpanded.bind(this);
     this.updateSelection = this.updateSelection.bind(this);
     this.setPlayerTurn = this.setPlayerTurn.bind(this);
+    this.setSelectedStar = this.setSelectedStar.bind(this);
   }
 
   private getInitialStateTODO(): StateType
@@ -241,6 +242,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             game: this.props.game,
             activeLanguage: this.props.activeLanguage,
             selectedStar: this.state.selectedStar,
+            setSelectedStar: this.setSelectedStar,
           }),
           React.DOM.div(
           {
@@ -324,6 +326,11 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
         ),
       )
     );
+  }
+
+  private setSelectedStar(star: Star | null): void
+  {
+    this.props.playerControl.selectStar(star);
   }
 }
 

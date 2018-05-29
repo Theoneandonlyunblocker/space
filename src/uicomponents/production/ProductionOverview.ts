@@ -16,14 +16,14 @@ import applyMixins from "../mixins/applyMixins";
 export interface PropTypes extends React.Props<any>
 {
   player: Player;
-  selectedStar: Star | null;
+  globalSelectedStar: Star | null;
+  setSelectedStar: (star: Star | null) => void;
 }
 
 interface StateType
 {
-  highlightedStars: Star[];
-  money: number;
   selectedStar: Star | null;
+  money: number;
 }
 
 export class ProductionOverviewComponent extends React.Component<PropTypes, StateType>
@@ -36,116 +36,35 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state = {
+      selectedStar: this.getInitialSelectedStar(),
+      money: this.props.player.money,
+    };
 
-    this.bindMethods();
+    this.getStarsWithAndWithoutManufactories = this.getStarsWithAndWithoutManufactories.bind(this);
+    this.triggerUpdate = this.triggerUpdate.bind(this);
+
     applyMixins(this, new UpdateWhenMoneyChanges(this));
   }
-  private bindMethods()
-  {
-    this.clearSelection = this.clearSelection.bind(this);
-    this.getStarsWithAndWithoutManufactories = this.getStarsWithAndWithoutManufactories.bind(this);
-    this.handleStarSelect = this.handleStarSelect.bind(this);
-    this.triggerUpdate = this.triggerUpdate.bind(this);
-  }
 
-  private getInitialStateTODO(): StateType
-  {
-    let initialSelectedStar: Star | null = this.props.selectedStar;
-
-    if (!initialSelectedStar)
-    {
-      const starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
-
-      if (starsByManufactoryPresence.withManufactories.length > 0)
-      {
-        starsByManufactoryPresence.withManufactories.sort(sortByManufactoryCapacityFN);
-        initialSelectedStar = starsByManufactoryPresence.withManufactories[0];
-      }
-      else if (starsByManufactoryPresence.withoutManufactories.length > 0)
-      {
-        starsByManufactoryPresence.withoutManufactories.sort(sortByManufactoryCapacityFN);
-        initialSelectedStar = starsByManufactoryPresence.withoutManufactories[0];
-      }
-    }
-
-    return(
-    {
-      selectedStar: initialSelectedStar,
-      highlightedStars: initialSelectedStar ? [initialSelectedStar] : [],
-      money: this.props.player.money,
-    });
-  }
-
-  triggerUpdate()
-  {
-    this.forceUpdate();
-  }
-
-  componentDidMount()
+  public componentDidMount()
   {
     eventManager.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
   }
-
-  componentWillUnmount()
+  public componentWillUnmount()
   {
     eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
   }
-
   public componentWillReceiveProps(newProps: PropTypes): void
   {
-    if (newProps.selectedStar !== this.state.selectedStar)
+    if (newProps.globalSelectedStar && this.canAccessManufacturingAtStar(newProps.globalSelectedStar))
     {
-      this.handleStarSelect(newProps.selectedStar);
+      this.setState({
+        selectedStar: newProps.globalSelectedStar,
+      });
     }
   }
-
-  getStarsWithAndWithoutManufactories()
-  {
-    const player = this.props.player;
-
-    const starsWithManufactories: Star[] = [];
-    const starsWithoutManufactories: Star[] = [];
-
-    for (let i = 0; i < player.controlledLocations.length; i++)
-    {
-      const star = player.controlledLocations[i];
-      if (star.manufactory)
-      {
-        starsWithManufactories.push(star);
-      }
-      else
-      {
-        starsWithoutManufactories.push(star);
-      }
-    }
-
-    return(
-    {
-      withManufactories: starsWithManufactories,
-      withoutManufactories: starsWithoutManufactories,
-    });
-  }
-
-  handleStarSelect(star: Star)
-  {
-    this.setState(
-    {
-      selectedStar: star,
-      highlightedStars: [star],
-    });
-  }
-
-  clearSelection()
-  {
-    this.setState(
-    {
-      selectedStar: undefined,
-      highlightedStars: [],
-    });
-  }
-
-  render()
+  public render()
   {
     const player = this.props.player;
     const selectedStar = this.state.selectedStar;
@@ -153,7 +72,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     const starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
 
     let queueElement: React.ReactElement<any> = null;
-    if (selectedStar)
+    if (selectedStar && this.canAccessManufacturingAtStar(selectedStar))
     {
       if (selectedStar.manufactory)
       {
@@ -185,24 +104,74 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
         {
           starsWithManufactories: starsByManufactoryPresence.withManufactories,
           starsWithoutManufactories: starsByManufactoryPresence.withoutManufactories,
-          highlightedStars: this.state.highlightedStars,
-          handleStarSelect: this.handleStarSelect,
+          highlightedStars: [selectedStar],
+          setSelectedStar: this.props.setSelectedStar,
         }),
         React.DOM.div(
         {
           className: "production-overview-contents",
         },
           queueElement,
-          ManufacturableThings(
+          selectedStar && this.canAccessManufacturingAtStar ? ManufacturableThings(
           {
             selectedStar: selectedStar,
             player: player,
             money: this.state.money,
             triggerUpdate: this.triggerUpdate,
-          }),
+          }) : null,
         ),
       )
     );
+  }
+
+  private getInitialSelectedStar(): Star | null
+  {
+    if (this.props.globalSelectedStar && this.canAccessManufacturingAtStar(this.props.globalSelectedStar))
+    {
+      return this.props.globalSelectedStar;
+    }
+    else if (this.props.player.controlledLocations.length === 1)
+    {
+      return this.props.player.controlledLocations[0];
+    }
+    else
+    {
+      return null;
+    }
+  }
+  private triggerUpdate()
+  {
+    this.forceUpdate();
+  }
+  private getStarsWithAndWithoutManufactories()
+  {
+    const player = this.props.player;
+
+    const starsWithManufactories: Star[] = [];
+    const starsWithoutManufactories: Star[] = [];
+
+    for (let i = 0; i < player.controlledLocations.length; i++)
+    {
+      const star = player.controlledLocations[i];
+      if (star.manufactory)
+      {
+        starsWithManufactories.push(star);
+      }
+      else
+      {
+        starsWithoutManufactories.push(star);
+      }
+    }
+
+    return(
+    {
+      withManufactories: starsWithManufactories,
+      withoutManufactories: starsWithoutManufactories,
+    });
+  }
+  private canAccessManufacturingAtStar(star: Star): boolean
+  {
+    return star.owner === this.props.player;
   }
 }
 

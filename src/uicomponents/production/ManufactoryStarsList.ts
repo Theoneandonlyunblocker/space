@@ -10,7 +10,7 @@ export interface PropTypes extends React.Props<any>
   starsWithManufactories: Star[];
   starsWithoutManufactories: Star[];
   highlightedStars: Star[];
-  handleStarSelect: (star: Star) => void;
+  setSelectedStar: (star: Star) => void;
 }
 
 interface StateType
@@ -49,7 +49,7 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
         usedCapacity: manufactory.buildQueue.length,
         totalCapacity: manufactory.capacity,
 
-        onClick: this.props.handleStarSelect,
+        onClick: this.props.setSelectedStar,
       }));
     }
     for (let i = 0; i < this.props.starsWithoutManufactories.length; i++)
@@ -65,7 +65,7 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
         usedCapacity: 0,
         totalCapacity: 0,
 
-        onClick: this.props.handleStarSelect,
+        onClick: this.props.setSelectedStar,
       }));
     }
 

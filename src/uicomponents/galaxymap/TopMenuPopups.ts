@@ -55,6 +55,7 @@ export interface PropTypes extends React.Props<any>
   game: Game;
   activeLanguage: Language;
   selectedStar: Star;
+  setSelectedStar: (star: Star | null) => void;
 }
 
 type StateType = Partial<ValuesByPopup<boolean>>;
@@ -73,7 +74,8 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       makeContent: () => ProductionOverview(
       {
         player: this.props.player,
-        selectedStar: this.props.selectedStar,
+        globalSelectedStar: this.props.selectedStar,
+        setSelectedStar: this.props.setSelectedStar,
       }),
       title: localize("production")(),
     },

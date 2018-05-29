@@ -20,6 +20,7 @@ export interface PropTypes extends React.Props<any>
   game: Game;
   activeLanguage: Language;
   selectedStar: Star | null;
+  setSelectedStar: (star: Star | null) => void;
 }
 
 interface StateType
@@ -226,6 +227,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
           game: this.props.game,
           activeLanguage: this.props.activeLanguage,
           selectedStar: this.props.selectedStar,
+          setSelectedStar: this.props.setSelectedStar,
         }),
       )
     );
