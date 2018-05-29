@@ -3,7 +3,6 @@ import * as React from "react";
 import Player from "../../Player";
 import Star from "../../Star";
 import eventManager from "../../eventManager";
-import {sortByManufactoryCapacityFN} from "../../utility";
 import BuildQueue from "./BuildQueue";
 import ConstructManufactory from "./ConstructManufactory";
 import ManufactoryStarsList from "./ManufactoryStarsList";
