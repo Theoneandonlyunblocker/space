@@ -49,12 +49,12 @@ export default class Region
   public getBorderLengthWithStars(stars: Star[]): number
   {
     const sharedHalfEdges = this.getSharedHalfEdgesWithStars(stars);
-    const borderLength = sharedHalfEdges.reduce((borderLength, halfEdge) =>
+    const borderLength = sharedHalfEdges.reduce((totalLength, halfEdge) =>
     {
       const edge = halfEdge.edge;
       const edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
 
-      return edgeLength;
+      return totalLength + edgeLength;
     }, 0);
 
     return borderLength;
