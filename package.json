@@ -20,8 +20,8 @@
 
     "build": "tsc && lessc ./css/main.less ./dist/main.css",
     "copy-dependencies": "ncp node_modules/pixi.js/dist/pixi.js dist/pixi.js",
-    "lint": "tslint \"src/**/*.ts\" && tslint \"modules/**/*.ts\"",
-    "lintfix": "tslint \"src/**/*.ts\" --fix && tslint \"modules/**/*.ts\" --fix"
+    "lint": "tslint \"{src,modules,localization}/**/*.ts\"",
+    "lintfix": "tslint \"{src,modules,localization}/**/*.ts\" --fix"
   },
   "repository": {
     "type": "git",
