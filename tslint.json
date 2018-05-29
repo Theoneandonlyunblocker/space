@@ -11,29 +11,6 @@
     // "no-reference": true,
     "no-var-requires": true,
     "only-arrow-functions": [true, "allow-declarations"],
-    "typedef-whitespace":
-    {
-      // might want to use spaces for alignment
-      "severity": "warn",
-      "options":
-      [
-        {
-          "call-signature": "nospace",
-          "index-signature": "nospace",
-          "parameter": "nospace",
-          "property-declaration": "nospace",
-          "variable-declaration": "nospace"
-        },
-        {
-          "call-signature": "onespace",
-          "index-signature": "onespace",
-          "parameter": "onespace",
-          "property-declaration": "onespace",
-          "variable-declaration": "onespace"
-        }
-      ]
-    },
-
     "curly": [true],
     "label-position": true,
     "no-arg": true,
@@ -50,21 +27,15 @@
     "triple-equals": true,
     "use-isnan": true,
 
-    "eofline": true,
     // should enable this later. isn't there a way to automatically fix these?
     // "no-default-export": true,
     "no-mergeable-namespace": true,
     "no-require-imports": true,
-    "no-trailing-whitespace": true,
-    "trailing-comma": [true, {"multiline": "always", "singleline": "never"}],
 
-    "align": [true, "parameters", "statements"],
-    "arrow-parens": [true, "ban-single-arg-parens"],
     "class-name": true,
     "comment-format": [true, "check-space"],
     "interface-name": [true, "never-prefix"],
     "jsdoc-format": true,
-    "new-parens": true,
     "object-literal-key-quotes": [true, "as-needed"],
     "one-variable-per-declaration": [true],
     "ordered-imports":
@@ -75,8 +46,6 @@
       "named-imports-order": "case-insensitive",
       "grouped-imports": true
     }],
-    "quotemark": [true, "double", "avoid-escape"],
-    "semicolon": [true, "always"],
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
 
     "prefer-const": true,
@@ -85,9 +54,6 @@
     "no-string-throw": true,
     "callable-types": true,
 
-    "space-before-function-paren": [true, "never"],
-    // we use newlines
-    // "import-spacing": true,
     "unified-signatures": true,
     // complains about () => {return {}}; which is annoying
     "arrow-return-shorthand": [true],
@@ -117,7 +83,6 @@
     "no-invalid-template-strings": true,
     "no-sparse-arrays": true,
 
-    "no-irregular-whitespace": true,
     "prefer-switch": true,
 
     "prefer-object-spread": true,
@@ -129,19 +94,6 @@
     "no-submodule-imports": true,
 
     "no-parameter-reassignment": true,
-    "whitespace":
-    [
-      true,
-      "check-branch",
-      "check-decl",
-      "check-operator",
-      "check-separator",
-      "check-rest-spread",
-      "check-type",
-      "check-typecast",
-      "check-type-operator",
-      "check-preblock"
-    ],
 
     "no-return-await": true,
     "no-duplicate-switch-case": true,
