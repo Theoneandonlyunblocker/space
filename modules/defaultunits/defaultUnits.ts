@@ -33,7 +33,7 @@ const defaultUnits: ModuleFile =
 
     loader.add(spriteSheetKey, "modules/defaultunits/img/sprites/units.json");
 
-    loader.load(function(loader: PIXI.loaders.Loader)
+    loader.load(function()
     {
       const json = loader.resources[spriteSheetKey].data;
       const image = loader.resources[spriteSheetKey + "_image"].data;

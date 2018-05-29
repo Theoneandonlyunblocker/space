@@ -283,9 +283,9 @@ export function makeSectors(
       {
         const sectorLinkedStars = sector.getLinkedStars();
 
-        const unclaimedSectorLinkedStars = sectorLinkedStars.filter(star =>
+        const unclaimedSectorLinkedStars = sectorLinkedStars.filter(linkedStar =>
         {
-          return !sectorsByStarId[star.id];
+          return !sectorsByStarId[linkedStar.id];
         });
 
         unclaimedNeighborsPerSector[sector.id] = unclaimedSectorLinkedStars.length;

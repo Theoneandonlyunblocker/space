@@ -1,7 +1,7 @@
 import Star from "./Star";
 
 
-interface regionWithStars
+interface RegionWithStars
 {
   region: Region;
   stars: Star[];
@@ -153,7 +153,7 @@ export default class Region
 
     return sharedHalfEdges;
   }
-  private getLinkedStarsWithRegions(regionsToCheck: Region[]): regionWithStars[]
+  private getLinkedStarsWithRegions(regionsToCheck: Region[]): RegionWithStars[]
   {
     return Region.getRegionsWithStarsForQualifier(
       regionsToCheck,
@@ -161,7 +161,7 @@ export default class Region
       (region: Region, star: Star) => region.hasStar(star),
     );
   }
-  private getOverlappingStarsWithRegions(regionsToCheck: Region[]): regionWithStars[]
+  private getOverlappingStarsWithRegions(regionsToCheck: Region[]): RegionWithStars[]
   {
     return Region.getRegionsWithStarsForQualifier(
       regionsToCheck,
@@ -169,7 +169,7 @@ export default class Region
       (region: Region, star: Star) => region.hasStar(star),
     );
   }
-  private getNeighboringStarsWithRegions(regionsToCheck: Region[]): regionWithStars[]
+  private getNeighboringStarsWithRegions(regionsToCheck: Region[]): RegionWithStars[]
   {
     return Region.getRegionsWithStarsForQualifier(
       regionsToCheck,
@@ -182,9 +182,9 @@ export default class Region
     regionsToCheck: Region[],
     starsToCheck: Star[],
     qualifierFN: (region: Region, star: Star) => boolean,
-  ): regionWithStars[]
+  ): RegionWithStars[]
   {
-    const regionsWithStarsForQualifier: regionWithStars[] = regionsToCheck.map(region =>
+    const regionsWithStarsForQualifier: RegionWithStars[] = regionsToCheck.map(region =>
     {
       const starsThatPassQualifier = starsToCheck.filter(star =>
       {
@@ -231,6 +231,7 @@ export default class Region
       });
     });
   }
+  // TODO 2018.05.29 | could probably remove this. just confusing
   private getUniqueStarsFromCallback(callbackFN: (star: Star) => Star[]): Star[]
   {
     const resultStars: Star[] = [];
@@ -239,18 +240,18 @@ export default class Region
       [starId: number]: boolean;
     } = {};
 
-    this.stars.forEach(star =>
+    this.stars.forEach(sourceStar =>
     {
-      const starsFromCallback = callbackFN(star);
+      const starsFromCallback = callbackFN(sourceStar);
       const newStarsFromCallback = starsFromCallback.filter(star =>
       {
         return !alreadyAdded[star.id];
       });
 
-      newStarsFromCallback.forEach(star =>
+      newStarsFromCallback.forEach(newStar =>
       {
-        alreadyAdded[star.id] = true;
-        resultStars.push(star);
+        alreadyAdded[newStar.id] = true;
+        resultStars.push(newStar);
       });
     });
 

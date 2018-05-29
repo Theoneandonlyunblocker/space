@@ -68,10 +68,6 @@ export class EconomicAI
     const valueRatioDifference = Math.abs(1 - valueRatio);
 
     const willingToAccept = isFavourable || valueRatioDifference < 0.04;
-    const message = willingToAccept ?
-      localize("willingToAcceptOffer")() :
-      localize("notWillingToAcceptOffer")();
-
 
     return(
     {
@@ -80,7 +76,9 @@ export class EconomicAI
 
       willingnessToTradeItems: this.getWillingnessToTradeItems(tradeBeingDemanded),
 
-      message: message,
+      message: willingToAccept ?
+      localize("willingToAcceptOffer")() :
+      localize("notWillingToAcceptOffer")(),
       willingToAccept: willingToAccept,
       willingToKeepNegotiating: true,
     });

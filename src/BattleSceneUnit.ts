@@ -293,9 +293,9 @@ export default class BattleSceneUnit
     this.clearTween();
   }
 
-  private makeUnitSprite(unit: Unit, SFXParams: SFXParams)
+  private makeUnitSprite(unit: Unit, sfxParams: SFXParams)
   {
-    return unit.drawBattleScene(SFXParams);
+    return unit.drawBattleScene(sfxParams);
   }
   private addUnitSprite(sprite: PIXI.DisplayObject)
   {
@@ -309,13 +309,13 @@ export default class BattleSceneUnit
   private setUnitSprite(unit: Unit)
   {
     this.clearUnitSprite();
-    const SFXParams = this.getSFXParams(
+    const sfxParams = this.getSFXParams(
     {
       unit: unit,
       triggerStart: this.addUnitSprite.bind(this),
     });
 
-    this.makeUnitSprite(unit, SFXParams);
+    this.makeUnitSprite(unit, sfxParams);
   }
 
   private clearTween()
@@ -367,7 +367,7 @@ export default class BattleSceneUnit
   private setSFXSprite(spriteDrawingFN: (props: SFXParams) => void, duration: number)
   {
     this.clearUnitSprite();
-    const SFXParams = this.getSFXParams(
+    const sfxParams = this.getSFXParams(
     {
       unit: this.activeUnit,
       duration: duration,
@@ -375,6 +375,6 @@ export default class BattleSceneUnit
     });
 
     this.hasSFXSprite = true;
-    spriteDrawingFN(SFXParams);
+    spriteDrawingFN(sfxParams);
   }
 }

@@ -528,7 +528,7 @@ export default class Star implements Point
         type: "building",
         enemy: buildingTarget.controller,
         building: buildingTarget,
-        units: this.getUnits(player => player === buildingTarget.controller),
+        units: this.getUnits(unitOwner => unitOwner === buildingTarget.controller),
       });
     }
 
@@ -553,7 +553,7 @@ export default class Star implements Point
           type: "fleet",
           enemy: hostileFleetOwners[i],
           building: null,
-          units: this.getUnits(player => player === hostileFleetOwners[i]),
+          units: this.getUnits(unitOwner => unitOwner === hostileFleetOwners[i]),
         });
       }
     }

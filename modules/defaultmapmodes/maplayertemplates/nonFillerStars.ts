@@ -56,13 +56,13 @@ const nonFillerStars: MapRendererLayerTemplate =
       gfx.interactive = true;
       gfx.hitArea = makePolygonFromPoints(star.voronoiCell.vertices);
 
-      const gfxClickFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
+      const gfxClickFN = (event: PIXI.interaction.InteractionEvent) =>
       {
         const originalEvent = <MouseEvent> event.data.originalEvent;
         if (originalEvent.button) return;
 
         onClickFN(star);
-      }.bind(null, star);
+      };
 
       gfx.on("click", gfxClickFN);
       gfx.on("mouseover", mouseOverFN.bind(gfx, star));

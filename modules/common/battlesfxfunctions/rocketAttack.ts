@@ -83,7 +83,7 @@ function playRocketAttack(params: SFXParams)
 
     removeAfterImpact: true,
     impactRate: 0.8,
-    onImpact: (projectile, container, time) =>
+    onImpact: (projectile, impactContainer, time) =>
     {
       if (!impactHasOccurred)
       {
@@ -106,9 +106,9 @@ function playRocketAttack(params: SFXParams)
       explosionClip.loop = false;
       explosionClip.position.copy(projectile.sprite.position);
       explosionClip.position.x += projectile.sprite.width;
-      container.addChild(explosionClip);
+      impactContainer.addChild(explosionClip);
     },
-    animateImpact: (projectile, container, time) =>
+    animateImpact: (projectile, impactContainer, time) =>
     {
       const explosion = explosionsById[projectile.id];
       const relativeTimePlayed = time - explosion.startTime;

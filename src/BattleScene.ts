@@ -462,13 +462,13 @@ export default class BattleScene
     }
     else
     {
-      const SFXParams = this.getSFXParams(
+      const sfxParams = this.getSFXParams(
       {
         triggerStart: this.addBattleOverlay.bind(this),
         triggerEnd: afterFinishedCallback,
       });
 
-      this.activeSFX.battleOverlay(SFXParams);
+      this.activeSFX.battleOverlay(sfxParams);
     }
   }
   private addBattleOverlay(overlay: PIXI.DisplayObject)

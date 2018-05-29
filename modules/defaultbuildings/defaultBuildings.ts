@@ -29,7 +29,7 @@ const defaultBuildings: ModuleFile =
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "buildings";
     loader.add(spriteSheetKey, "modules/defaultbuildings/img/buildings.json");
-    loader.load(function(loader: PIXI.loaders.Loader)
+    loader.load(function()
     {
       const json = loader.resources[spriteSheetKey].data;
       const image = loader.resources[spriteSheetKey + "_image"].data;

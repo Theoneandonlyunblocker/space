@@ -838,14 +838,14 @@ export default class Player
 
     this.items.splice(index, 1);
   }
-  getNearestOwnedStarTo(star: Star): Star
+  getNearestOwnedStarTo(targetStar: Star): Star
   {
     const isOwnedByThisFN = (star: Star) =>
     {
       return star.owner === this;
     };
 
-    return star.getNearestStarForQualifier(isOwnedByThisFN);
+    return targetStar.getNearestStarForQualifier(isOwnedByThisFN);
   }
   attackTarget(location: Star, target: FleetAttackTarget, battleFinishCallback?: () => void): void
   {

@@ -53,21 +53,18 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
   const points: MapGenPoint[] = generateSpiralPoints(options);
 
   // make and relax voronoi to adjust point locations
-  const voronoiRegularity = options.basicOptions.starSizeRegularity / 100;
-  const centerDensity = options.basicOptions.centerDensity / 100;
-  const inverseCenterDensity = 1 - centerDensity;
-  const getRelaxAmountFN = (point: MapGenPoint) =>
-  {
-    return (inverseCenterDensity + centerDensity * point.mapGenData.mapGenDistance) * voronoiRegularity;
-  };
+  const diagramToRelax = makeVoronoi(
+    points,
+    options.defaultOptions.width,
+    options.defaultOptions.height
+  );
 
-  for (let i = 0; i < 2; i++)
+  applyVoronoiRelaxationToPoints(diagramToRelax,
   {
-    const diagram = makeVoronoi(points, options.defaultOptions.width,
-      options.defaultOptions.height);
-
-    relaxVoronoi(diagram, getRelaxAmountFN);
-  }
+    areaRegularity: options.basicOptions.starSizeRegularity / 100,
+    centerDensity: options.basicOptions.centerDensity / 100,
+    iterations: 2,
+  });
 
   // convert to stars and filler points
   const starsWithMapGenPoints:
@@ -220,8 +217,8 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
     });
   });
 
-    // set players
-  //   get start regions
+  // set players
+  // get start regions
   const startRegions: Region[] = (function setStartingRegions()
   {
     const availableStartRegions: Region[] = regions.filter(region =>
@@ -234,45 +231,37 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
 
     const playerArmStep = armCount / playersInArmsCount;
 
-    const startRegions: Region[] = [];
-
+    const armStartingRegions: Region[] = [];
     for (let i = 0; i < playersInArmsCount; i++)
     {
       const regionNumber = Math.floor(i * playerArmStep);
       const regionToAdd = availableStartRegions[regionNumber];
 
-      startRegions.push(regionToAdd);
+      armStartingRegions.push(regionToAdd);
     }
 
+    const centerStartingRegions: Region[] = [];
     const leftOverPlayerCount = playersInArmsCount - armCount;
     for (let i = 0; i < leftOverPlayerCount; i++)
     {
-      startRegions.push(regionsById["center"]);
+      centerStartingRegions.push(regionsById["center"]);
     }
 
-    return startRegions;
+    return [...armStartingRegions, ...centerStartingRegions];
   })();
 
-  //   get start positions in start regions
-  const startPositions: Star[] = (function getStartPoints(regions: Region[])
+  // get start positions in start regions
+  const startPositions = startRegions.map(startRegion =>
   {
-    const startPositions: Star[] = [];
-
-    for (let i = 0; i < regions.length; i++)
+    const starsByDistanceFromCenter = startRegion.stars.slice(0).sort(function(a: Star, b: Star)
     {
-      const region = regions[i];
+      return mapGenDataByStarId[b.id].mapGenDistance - mapGenDataByStarId[a.id].mapGenDistance;
+    });
 
-      const starsByDistance = region.stars.slice(0).sort(function(a: Star, b: Star)
-      {
-        return mapGenDataByStarId[b.id].mapGenDistance - mapGenDataByStarId[a.id].mapGenDistance;
-      });
+    const starFurthestAwayFromCenter = starsByDistanceFromCenter[0];
 
-      const star = starsByDistance[0];
-      startPositions.push(star);
-    }
-
-    return startPositions;
-  })(startRegions);
+    return starFurthestAwayFromCenter;
+  });
 
   // add star to player and construct initial buildings
   for (let i = 0; i < startPositions.length; i++)
@@ -388,3 +377,25 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
 };
 
 export default spiralGalaxyGeneration;
+
+function applyVoronoiRelaxationToPoints(
+  diagram: Voronoi.Result<MapGenPoint>,
+  props:
+  {
+    areaRegularity: number;
+    centerDensity: number;
+    iterations: number;
+  },
+): void
+{
+  const inverseCenterDensity = 1 - props.centerDensity;
+  const getRelaxAmountFN = (point: MapGenPoint) =>
+  {
+    return (inverseCenterDensity + props.centerDensity * point.mapGenData.mapGenDistance) * props.areaRegularity;
+  };
+
+  for (let i = 0; i < props.iterations; i++)
+  {
+    relaxVoronoi(diagram, getRelaxAmountFN);
+  }
+}

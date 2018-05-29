@@ -16,7 +16,7 @@ import
 
 const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   unit: Unit,
-  SFXParams: SFXParams,
+  sfxParams: SFXParams,
 )
 {
   var spriteTemplate = unit.template.sprite;
@@ -75,8 +75,8 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
 
   var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
 
-  var yPadding = Math.min(SFXParams.height * 0.1, 30);
-  var desiredHeight = SFXParams.height - yPadding;
+  var yPadding = Math.min(sfxParams.height * 0.1, 30);
+  var desiredHeight = sfxParams.height - yPadding;
 
   var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
   var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
@@ -199,7 +199,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     sequentialAttackOriginPoints: sequentialAttackOriginPoints,
   });
 
-  SFXParams.triggerStart(container);
+  sfxParams.triggerStart(container);
 };
 
 export default defaultUnitDrawingFunction;

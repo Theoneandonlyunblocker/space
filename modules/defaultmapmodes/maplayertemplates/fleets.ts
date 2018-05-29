@@ -9,7 +9,7 @@ import Player from "../../../src/Player";
 import eventManager from "../../../src/eventManager";
 
 
-const fleets: MapRendererLayerTemplate =
+const fleetsLayerTemplate: MapRendererLayerTemplate =
 {
   key: "fleets",
   displayName: "Fleets",
@@ -113,7 +113,7 @@ const fleets: MapRendererLayerTemplate =
   },
 };
 
-export default fleets;
+export default fleetsLayerTemplate;
 
 const fleetTextTextureCache:
 {

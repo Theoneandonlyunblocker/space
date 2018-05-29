@@ -72,9 +72,9 @@ export default class BattleSceneUnitOverlay
     }
 
     this.activeUnit = unit;
-    const SFXParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
+    const sfxParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
 
-    overlayFN(SFXParams);
+    overlayFN(sfxParams);
   }
   clearOverlay()
   {
