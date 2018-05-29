@@ -10,6 +10,7 @@
     "tslint": "5.9.x",
     "ncp": "2.0.x",
     "mkdirp": "0.5.x",
+    "prettier": "1.13.2",
 
     "@types/react": "15.x",
     "@types/react-dom": "15.x",
@@ -21,7 +22,8 @@
     "build": "tsc && lessc ./css/main.less ./dist/main.css",
     "copy-dependencies": "ncp node_modules/pixi.js/dist/pixi.js dist/pixi.js",
     "lint": "tslint \"{src,modules,localization}/**/*.ts\"",
-    "lintfix": "tslint \"{src,modules,localization}/**/*.ts\" --fix"
+    "lintfix": "tslint \"{src,modules,localization}/**/*.ts\" --fix",
+    "format": "prettier --write \"{src,modules,localization}/**/*.ts\""
   },
   "repository": {
     "type": "git",
