@@ -1,15 +1,13 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import app from "../../App"; // TODO global
 import ModuleFileLoadingPhase from "../../ModuleFileLoadingPhase";
 import eventManager from "../../eventManager";
-
 import MapGenFunction from "../../templateinterfaces/MapGenFunction";
 
 import {default as MapSetup, MapSetupComponent} from "./MapSetup";
 import {default as SetupGamePlayers, SetupGamePlayersComponent} from "./SetupGamePlayers";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

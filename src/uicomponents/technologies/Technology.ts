@@ -1,15 +1,12 @@
 import * as React from "react";
 
-import {DefaultWindow} from "../windows/DefaultWindow";
-
+import {localize} from "../../../localization/localize";
 import PlayerTechnology from "../../PlayerTechnology";
-
 import TechnologyTemplate from "../../templateinterfaces/TechnologyTemplate";
+import {DefaultWindow} from "../windows/DefaultWindow";
 
 import {TechnologyUnlocks} from "./TechnologyUnlocks";
 import TechnologyPrioritySlider from "./technologyPrioritySlider";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import {localize} from "../../../localization/localize";
 import {Fleet} from "../../Fleet";
 import FleetAttackTarget from "../../FleetAttackTarget";
 import Game from "../../Game";
@@ -10,26 +11,18 @@ import PlayerControl from "../../PlayerControl";
 import Star from "../../Star";
 import {activePlayer} from "../../activePlayer";
 import eventManager from "../../eventManager";
-
 import {Language} from "../../localization/Language";
-
+import { Notification } from "../../notifications/Notification";
+import { NotificationSubscriber } from "../../notifications/NotificationSubscriber";
 import MapModeSettings from "../mapmodes/MapModeSettings";
-
 import NotificationLog from "../notifications/NotificationLog";
-
 import PossibleActions from "../possibleactions/PossibleActions";
-
 import IntroTutorial from "../tutorials/IntroTutorial";
 
 import FleetSelection from "./FleetSelection";
 import StarInfo from "./StarInfo";
 import TopBar from "./TopBar";
 import TopMenu from "./TopMenu";
-
-import {localize} from "../../../localization/localize";
-
-import { Notification } from "../../notifications/Notification";
-import { NotificationSubscriber } from "../../notifications/NotificationSubscriber";
 
 
 export interface PropTypes extends React.Props<any>

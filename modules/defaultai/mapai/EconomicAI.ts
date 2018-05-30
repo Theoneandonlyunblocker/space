@@ -1,15 +1,14 @@
 import
 {
-  evaluateValueOfTrade,
-} from "./tradeEvaluationFunctions";
-
+  Trade,
+} from "../../../src/Trade";
+import {TradeOffer} from "../../../src/TradeOffer";
 import {localize} from "../localization/localize";
 
 import
 {
-  Trade,
-} from "../../../src/Trade";
-import {TradeOffer} from "../../../src/TradeOffer";
+  evaluateValueOfTrade,
+} from "./tradeEvaluationFunctions";
 
 
 export class EconomicAI

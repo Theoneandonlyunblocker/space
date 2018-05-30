@@ -1,15 +1,15 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import {localize} from "../../../localization/localize";
 import {Fleet} from "../../Fleet";
 import Player from "../../Player";
 import Star from "../../Star";
 import eventManager from "../../eventManager";
+
 import FleetContents from "./FleetContents";
 import FleetInfo from "./FleetInfo";
 import FleetReorganization from "./FleetReorganization";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

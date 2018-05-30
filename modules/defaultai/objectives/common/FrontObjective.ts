@@ -1,12 +1,11 @@
-import {Objective} from "./Objective";
-import {ObjectiveFamily} from "./ObjectiveFamily";
-
+import Star from "../../../../src/Star";
+import Unit from "../../../../src/Unit";
 import {Front} from "../../mapai/Front";
 import MapEvaluator from "../../mapai/MapEvaluator";
 import {UnitEvaluator} from "../../mapai/UnitEvaluator";
 
-import Star from "../../../../src/Star";
-import Unit from "../../../../src/Unit";
+import {Objective} from "./Objective";
+import {ObjectiveFamily} from "./ObjectiveFamily";
 
 
 let frontIdGenerator = 0;

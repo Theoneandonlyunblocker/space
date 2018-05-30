@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import {activeModuleData} from "../../activeModuleData";
 import Player from "../../Player";
 import Star from "../../Star";
+import {activeModuleData} from "../../activeModuleData";
 
 import {localize} from "../../../localization/localize";
 

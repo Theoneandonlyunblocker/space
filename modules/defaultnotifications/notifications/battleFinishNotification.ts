@@ -1,16 +1,14 @@
-import UIComponent from "./uicomponents/BattleFinishNotification";
-
-import {localize} from "../localization/localize";
-
-import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
-
 import Battle from "../../../src/Battle";
 import GameLoader from "../../../src/GameLoader";
-import {NotificationFilterState} from "../../../src/notifications/NotificationFilterState";
-import {NotificationWitnessCriterion} from "../../../src/notifications/NotificationWitnessCriterion";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
+import {NotificationFilterState} from "../../../src/notifications/NotificationFilterState";
+import {NotificationWitnessCriterion} from "../../../src/notifications/NotificationWitnessCriterion";
 import {activeNotificationStore} from "../../../src/notifications/activeNotificationStore";
+import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
+import {localize} from "../localization/localize";
+
+import UIComponent from "./uicomponents/BattleFinishNotification";
 
 
 export interface PropTypes

@@ -1,12 +1,12 @@
 /// <reference path="../../../lib/rng.d.ts" />
 
-import {activeModuleData} from "../../../src/activeModuleData";
 import FillerPoint from "../../../src/FillerPoint";
 import MapGenResult from "../../../src/MapGenResult";
 import Player from "../../../src/Player";
 import Region from "../../../src/Region";
 import Star from "../../../src/Star";
 import TemplateIndexes from "../../../src/TemplateIndexes";
+import {activeModuleData} from "../../../src/activeModuleData";
 import
 {
   randInt,
@@ -38,7 +38,7 @@ import
 import setupIndependents from "../common/setupIndependents";
 
 import SpiralGalaxyOptionValues from "./SpiralGalaxyOptionValues";
-import {generateSpiralPoints, centerRegionTag} from "./generateSpiralPoints";
+import {centerRegionTag, generateSpiralPoints} from "./generateSpiralPoints";
 
 
 // @ts-ignore 2322

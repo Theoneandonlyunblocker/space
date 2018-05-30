@@ -1,16 +1,15 @@
-import {EconomicObjective} from "./common/EconomicObjective";
-import {FrontObjective} from "./common/FrontObjective";
-import {Objective} from "./common/Objective";
-import {ObjectiveFamily} from "./common/ObjectiveFamily";
-
-import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
-import MapEvaluator from "../mapai/MapEvaluator";
-
 import Player from "../../../src/Player";
 import
 {
   getRandomArrayItem,
 } from "../../../src/utility";
+import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
+import MapEvaluator from "../mapai/MapEvaluator";
+
+import {EconomicObjective} from "./common/EconomicObjective";
+import {FrontObjective} from "./common/FrontObjective";
+import {Objective} from "./common/Objective";
+import {ObjectiveFamily} from "./common/ObjectiveFamily";
 
 
 // TODO 2018.02.10 | can't actually ignore specific errors

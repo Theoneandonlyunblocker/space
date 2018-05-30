@@ -1,15 +1,13 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-import MapLayerTemplates from "./MapLayerTemplates";
-import MapModeTemplates from "./MapModeTemplates";
-
+import * as Languages from "../../localization/defaultLanguages";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
-
 import MapRendererLayerTemplate from "../../src/templateinterfaces/MapRendererLayerTemplate";
 import MapRendererMapModeTemplate from "../../src/templateinterfaces/MapRendererMapModeTemplate";
 
-import * as Languages from "../../localization/defaultLanguages";
+import MapLayerTemplates from "./MapLayerTemplates";
+import MapModeTemplates from "./MapModeTemplates";
 
 
 const defaultMapModes: ModuleFile =

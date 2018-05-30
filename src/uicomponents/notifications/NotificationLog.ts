@@ -1,19 +1,15 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-
+import {localize} from "../../../localization/localize";
+import eventManager from "../../eventManager";
 import {Notification} from "../../notifications/Notification";
 import {globalNotificationFilter, NotificationFilter} from "../../notifications/NotificationFilter";
 import {NotificationSubscriber} from "../../notifications/NotificationSubscriber";
-
-import eventManager from "../../eventManager";
-
 import {default as DialogBox} from "../windows/DialogBox";
 
 import NotificationComponentFactory from "./Notification";
 import NotificationFilterButton from "./NotificationFilterButton";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

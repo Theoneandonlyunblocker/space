@@ -1,15 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import {localize} from "../../../localization/localize";
 import Color from "../../Color";
 import {Flag} from "../../Flag";
-
 import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
-import FlagEditor from "./FlagEditor";
-
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 
-import {localize} from "../../../localization/localize";
+import FlagEditor from "./FlagEditor";
 
 
 export interface PropTypes extends React.Props<any>

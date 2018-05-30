@@ -1,9 +1,10 @@
 import * as React from "react";
 
 import IntroTutorial from "../../tutorials/IntroTutorial";
-import TutorialVisibility from "../../tutorials/TutorialVisibility";
 import TutorialStatus from "../../tutorials/TutorialStatus";
+import TutorialVisibility from "../../tutorials/TutorialVisibility";
 import {default as DefaultWindow} from "../windows/DefaultWindow";
+
 import Tutorial from "./Tutorial";
 
 

@@ -1,16 +1,13 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
+import Item from "../../Item";
+import AbilityBase from "../../templateinterfaces/AbilityBase";
 import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
 
 import {default as ItemListItem, PropTypes as ItemListItemProps} from "./ItemListItem";
-
-import Item from "../../Item";
-
-import AbilityBase from "../../templateinterfaces/AbilityBase";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

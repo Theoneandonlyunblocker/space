@@ -1,4 +1,5 @@
 import Point from "../Point";
+
 import StarSaveData from "./StarSaveData";
 
 declare interface GalaxyMapSaveData

@@ -1,9 +1,9 @@
-import {PropInfo} from "./PropInfo";
-
 import
 {
   shallowCopy,
 } from "../../../../../src/utility";
+
+import {PropInfo} from "./PropInfo";
 
 
 export abstract class Primitive<T> extends PropInfo<T>

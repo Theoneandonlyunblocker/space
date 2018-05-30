@@ -1,4 +1,5 @@
 import DiplomacyState from "../DiplomacyState";
+
 import AttitudeModifierSaveData from "./AttitudeModifierSaveData";
 
 declare interface PlayerDiplomacySaveData

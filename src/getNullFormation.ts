@@ -1,5 +1,5 @@
-import {activeModuleData} from "./activeModuleData";
 import Unit from "./Unit";
+import {activeModuleData} from "./activeModuleData";
 
 
 export default function getNullFormation(): Unit[][]

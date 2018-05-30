@@ -2,10 +2,9 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import Color from "../../Color";
+import {AutoPositionerPosition} from "../mixins/AutoPositioner";
 
 import ColorPicker from "./ColorPicker";
-
-import {AutoPositionerPosition} from "../mixins/AutoPositioner";
 
 
 export interface PropTypes extends React.Props<any>

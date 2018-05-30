@@ -1,8 +1,7 @@
-import {tradeMessages as en_tradeMessages} from "./en/tradeMessages";
-
+import * as Languages from "../../../localization/defaultLanguages";
 import {Localizer} from "../../../src/localization/Localizer";
 
-import * as Languages from "../../../localization/defaultLanguages";
+import {tradeMessages as en_tradeMessages} from "./en/tradeMessages";
 
 
 export const localizer = new Localizer<typeof en_tradeMessages>("tradeMessages");

@@ -1,16 +1,15 @@
 import * as React from "react";
 
+import Item from "../../Item";
+import Player from "../../Player";
+import Unit from "../../Unit";
+import ListItem from "../list/ListItem";
+
 import ItemList from "./ItemList";
 import {PropTypes as ItemListItemProps} from "./ItemListItem";
 import MenuUnitInfo from "./MenuUnitInfo";
 import UnitList from "./UnitList";
 import {PropTypes as UnitListItemProps} from "./UnitListItem";
-
-import ListItem from "../list/ListItem";
-
-import Item from "../../Item";
-import Player from "../../Player";
-import Unit from "../../Unit";
 
 
 export interface PropTypes extends React.Props<any>

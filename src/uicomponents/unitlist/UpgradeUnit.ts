@@ -1,11 +1,10 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import Unit from "../../Unit";
 
 import UpgradeAbilities from "./UpgradeAbilities";
 import UpgradeAttributes from "./UpgradeAttributes";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

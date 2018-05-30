@@ -1,6 +1,5 @@
 import {AIController} from "./AIController";
 import app from "./App"; // TODO global
-import {activeModuleData} from "./activeModuleData";
 import BattleData from "./BattleData";
 import BattlePrep from "./BattlePrep";
 import BattleSimulator from "./BattleSimulator";
@@ -19,6 +18,7 @@ import Point from "./Point";
 import Star from "./Star";
 import Unit from "./Unit";
 import ValuesByStar from "./ValuesByStar";
+import {activeModuleData} from "./activeModuleData";
 import
 {
   generateColorScheme,

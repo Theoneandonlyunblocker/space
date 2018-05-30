@@ -18,9 +18,9 @@ import
 } from "../../src/targeting";
 
 import {placeholder as placeholderSFX} from "../common/battlesfxtemplates/battleSFX";
-import * as EffectActions from "../common/effectactiontemplates/effectActions";
-import {bindEffectActionData} from "../common/effectactiontemplates/effectActionBinding";
 import {ResultType} from "../common/effectactiontemplates/ResultType";
+import {bindEffectActionData} from "../common/effectactiontemplates/effectActionBinding";
+import * as EffectActions from "../common/effectactiontemplates/effectActions";
 
 import * as DroneStatusEffects from "./unitEffects";
 

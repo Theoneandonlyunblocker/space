@@ -1,3 +1,16 @@
+import Building from "../../../src/Building";
+import Region from "../../../src/Region";
+import Star from "../../../src/Star";
+import
+{
+  aStar,
+} from "../../../src/pathFinding";
+import {Distributable} from "../../../src/templateinterfaces/Distributable";
+import
+{
+  getRandomKeyWithWeights,
+  getRelativeWeightsFromObject,
+} from "../../../src/utility";
 import
 {
   sectorCommand,
@@ -6,21 +19,6 @@ import
 
 import MapGenDataByStarId from "./MapGenDataByStarId";
 import triangulate from "./triangulate";
-
-import Building from "../../../src/Building";
-import Region from "../../../src/Region";
-import Star from "../../../src/Star";
-import
-{
-  aStar,
-} from "../../../src/pathFinding";
-import
-{
-  getRandomKeyWithWeights,
-  getRelativeWeightsFromObject,
-} from "../../../src/utility";
-
-import {Distributable} from "../../../src/templateinterfaces/Distributable";
 
 
 export function linkStarsByTriangulation(stars: Star[]): void

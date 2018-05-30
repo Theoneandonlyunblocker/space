@@ -1,10 +1,10 @@
 import Point from "../../../src/Point";
-import Triangle from "./Triangle";
-
 import
 {
   pointsEqual,
 } from "../../../src/utility";
+
+import Triangle from "./Triangle";
 
 
 export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>[]

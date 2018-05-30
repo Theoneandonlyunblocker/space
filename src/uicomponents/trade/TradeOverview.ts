@@ -1,7 +1,6 @@
 import * as React from "react";
 
-import TradeableItemsComponentFactory from "./TradeableItems";
-
+import {localize} from "../../../localization/localize";
 import Player from "../../Player";
 import {Trade} from "../../Trade";
 import
@@ -11,7 +10,7 @@ import
   TradeOffer,
 } from "../../TradeOffer";
 
-import {localize} from "../../../localization/localize";
+import TradeableItemsComponentFactory from "./TradeableItems";
 
 
 export interface PropTypes extends React.Props<any>

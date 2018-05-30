@@ -5,6 +5,7 @@ import {Flag} from "../../Flag";
 import Player from "../../Player";
 import PlayerFlag from "../PlayerFlag";
 import ListItemProps from "../list/ListItemProps";
+
 import Opinion from "./Opinion";
 
 

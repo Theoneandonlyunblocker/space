@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import Star from "../../Star";
-import DefenceBuildingList from "./DefenceBuildingList";
-
 import {localize} from "../../../localization/localize";
+import Star from "../../Star";
+
+import DefenceBuildingList from "./DefenceBuildingList";
 
 
 export interface PropTypes extends React.Props<any>

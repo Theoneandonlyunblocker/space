@@ -1,12 +1,9 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import Color from "../../Color";
-
-import {default as ColorPickerSlider} from "./ColorPickerSlider";
-
 import NumberInput from "../generic/NumberInput";
 import NumericTextInput from "../generic/NumericTextInput";
-
 import
 {
   AutoPositionerProps,
@@ -14,7 +11,7 @@ import
 } from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-import {localize} from "../../../localization/localize";
+import {default as ColorPickerSlider} from "./ColorPickerSlider";
 
 
 export interface PropTypes extends React.Props<any>

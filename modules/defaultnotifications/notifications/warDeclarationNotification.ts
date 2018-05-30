@@ -1,14 +1,12 @@
-import UIComponent from "./uicomponents/WarDeclarationNotification";
-
-import {localize} from "../localization/localize";
-
-import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
-
 import GameLoader from "../../../src/GameLoader";
+import Player from "../../../src/Player";
 import {NotificationFilterState} from "../../../src/notifications/NotificationFilterState";
 import {NotificationWitnessCriterion} from "../../../src/notifications/NotificationWitnessCriterion";
-import Player from "../../../src/Player";
 import {activeNotificationStore} from "../../../src/notifications/activeNotificationStore";
+import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
+import {localize} from "../localization/localize";
+
+import UIComponent from "./uicomponents/WarDeclarationNotification";
 
 
 export interface PropTypes

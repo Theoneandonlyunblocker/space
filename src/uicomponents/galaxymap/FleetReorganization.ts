@@ -1,12 +1,11 @@
 import * as React from "react";
 
-
+import {localize} from "../../../localization/localize";
 import {Fleet} from "../../Fleet";
 import Unit from "../../Unit";
 import eventManager from "../../eventManager";
-import FleetContents from "./FleetContents";
 
-import {localize} from "../../../localization/localize";
+import FleetContents from "./FleetContents";
 
 
 export interface PropTypes extends React.Props<any>

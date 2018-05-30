@@ -1,14 +1,12 @@
 import * as React from "react";
 
-import {default as EconomySummaryItem, PropTypes as EconomySummaryItemProps} from "./EconomySummaryItem";
-
+import {localize} from "../../../localization/localize";
+import Player from "../../Player";
 import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
 
-import Player from "../../Player";
-
-import {localize} from "../../../localization/localize";
+import {default as EconomySummaryItem, PropTypes as EconomySummaryItemProps} from "./EconomySummaryItem";
 
 
 export interface PropTypes extends React.Props<any>

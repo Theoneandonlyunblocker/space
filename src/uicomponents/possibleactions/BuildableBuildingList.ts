@@ -1,6 +1,6 @@
 import * as React from "react";
 
-
+import {localize} from "../../../localization/localize";
 import Building from "../../Building";
 import Player from "../../Player";
 import Star from "../../Star";
@@ -8,9 +8,8 @@ import BuildingTemplate from "../../templateinterfaces/BuildingTemplate";
 import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
-import {default as BuildableBuilding, PropTypes as BuildableBuildingProps} from "./BuildableBuilding";
 
-import {localize} from "../../../localization/localize";
+import {default as BuildableBuilding, PropTypes as BuildableBuildingProps} from "./BuildableBuilding";
 
 
 export interface PropTypes extends React.Props<any>

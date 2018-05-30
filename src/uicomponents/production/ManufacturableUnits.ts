@@ -1,13 +1,13 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import Manufactory from "../../Manufactory";
 import Star from "../../Star";
 import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 import UnitTemplate from "../../templateinterfaces/UnitTemplate";
+
 import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
 import ManufacturableThingsList from "./ManufacturableThingsList";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

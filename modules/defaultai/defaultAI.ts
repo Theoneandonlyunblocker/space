@@ -1,11 +1,9 @@
+import * as Languages from "../../localization/defaultLanguages";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
-
 import AITemplateConstructor from "../../src/templateinterfaces/AITemplateConstructor";
 
 import DefaultAIConstructor from "./mapai/DefaultAIConstructor";
-
-import * as Languages from "../../localization/defaultLanguages";
 
 
 const defaultAI: ModuleFile =

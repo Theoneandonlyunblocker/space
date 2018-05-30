@@ -1,18 +1,16 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
+import Options from "../../../src/Options";
 import UnitDisplayData from "../../UnitDisplayData";
+import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import applyMixins from "../mixins/applyMixins";
+
 import UnitAttributeChanges from "./UnitAttributeChanges";
 import UnitIconContainer from "./UnitIconContainer";
 import UnitInfo from "./UnitInfo";
 import UnitPassiveEffects from "./UnitPassiveEffects";
 import UnitPortrait from "./UnitPortrait";
-
-import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
-
-import {localize} from "../../../localization/localize";
-
-import Options from "../../../src/Options";
 
 
 export interface ComponentPropTypes extends React.Props<any>

@@ -1,15 +1,13 @@
 import * as React from "react";
 
-import TradeMoney from "./TradeMoney";
-import TradeableItemProps from "./TradeableItemProps";
-
+import {localize} from "../../../localization/localize";
+import {TradeableItem, TradeableItems} from "../../Trade";
 import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
 
-import {TradeableItem, TradeableItems} from "../../Trade";
-
-import {localize} from "../../../localization/localize";
+import TradeMoney from "./TradeMoney";
+import TradeableItemProps from "./TradeableItemProps";
 
 
 export interface PropTypes extends React.Props<any>

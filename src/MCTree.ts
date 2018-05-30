@@ -1,7 +1,7 @@
 import Battle from "./Battle";
-import * as debug from "./debug";
 import MCTreeNode from "./MCTreeNode";
 import {Move} from "./Move";
+import * as debug from "./debug";
 
 
 export default class MCTree

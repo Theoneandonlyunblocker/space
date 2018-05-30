@@ -1,8 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import MixinBase from "./MixinBase";
-
 import Point from "../../Point";
 import {Rect} from "../../Rect";
 import
@@ -10,6 +8,8 @@ import
   recursiveRemoveAttribute,
   shallowCopy,
 } from "../../utility";
+
+import MixinBase from "./MixinBase";
 import NormalizedEvent from "./NormalizedEvent";
 import normalizeEvent from "./normalizeEvent";
 

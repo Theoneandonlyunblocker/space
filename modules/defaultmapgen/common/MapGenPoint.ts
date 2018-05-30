@@ -1,4 +1,5 @@
 import Point from "../../../src/Point";
+
 import MapGenData from "./MapGenData";
 
 

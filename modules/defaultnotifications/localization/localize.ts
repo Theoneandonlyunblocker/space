@@ -1,8 +1,7 @@
-import {notificationMessages} from "./en/notificationMessages";
-
+import * as Languages from "../../../localization/defaultLanguages";
 import {Localizer} from "../../../src/localization/Localizer";
 
-import * as Languages from "../../../localization/defaultLanguages";
+import {notificationMessages} from "./en/notificationMessages";
 
 
 export const localizer = new Localizer<typeof notificationMessages>("notificationMessages");

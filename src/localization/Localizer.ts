@@ -1,13 +1,14 @@
 /// <reference path="../../lib/messageformat.d.ts" />
 
-import {Language} from "./Language";
-import {getActiveLanguage} from "./activeLanguage";
 import {formatters} from "formatters";
 
 import
 {
   getRandomArrayItem,
 } from "../utility";
+
+import {Language} from "./Language";
+import {getActiveLanguage} from "./activeLanguage";
 
 
 // messageformat.js requires positional arguments to be wrapped in an array.

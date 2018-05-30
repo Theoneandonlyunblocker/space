@@ -1,15 +1,14 @@
 import * as React from "react";
 
-
+import {localize} from "../../../localization/localize";
 import FleetAttackTarget from "../../FleetAttackTarget";
 import Player from "../../Player";
 import Star from "../../Star";
 import eventManager from "../../eventManager";
+
 import AttackTarget from "./AttackTarget";
 import BuildableBuildingList from "./BuildableBuildingList";
 import BuildingUpgradeList from "./BuildingUpgradeList";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

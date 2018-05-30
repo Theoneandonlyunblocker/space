@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import ProjectileAttack from "./sfxfragments/ProjectileAttack";
-
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
+
+import ProjectileAttack from "./sfxfragments/ProjectileAttack";
 
 
 let hasLoaded: boolean = false;

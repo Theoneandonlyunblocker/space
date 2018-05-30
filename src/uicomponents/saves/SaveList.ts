@@ -1,14 +1,12 @@
 import * as React from "react";
 
-import {default as SaveListItem, PropTypes as SaveListItemProps} from "./SaveListItem";
-
+import {localize} from "../../../localization/localize";
+import {prettifyDate} from "../../utility";
 import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
 
-import {prettifyDate} from "../../utility";
-
-import {localize} from "../../../localization/localize";
+import {default as SaveListItem, PropTypes as SaveListItemProps} from "./SaveListItem";
 
 
 export interface PropTypes extends React.Props<any>

@@ -1,11 +1,10 @@
 import * as React from "react";
 
-
+import {localize} from "../../../localization/localize";
 import PlayerTechnology from "../../PlayerTechnology";
 import eventManager from "../../eventManager";
-import Technology from "./Technology";
 
-import {localize} from "../../../localization/localize";
+import Technology from "./Technology";
 
 
 export interface PropTypes extends React.Props<any>

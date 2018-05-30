@@ -1,13 +1,12 @@
-import {Objective} from "./common/Objective";
-import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
-import {MovePriority} from "./common/MovePriority";
-
+import Star from "../../../src/Star";
+import Unit from "../../../src/Unit";
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 import {UnitEvaluator} from "../mapai/UnitEvaluator";
 
-import Star from "../../../src/Star";
-import Unit from "../../../src/Unit";
+import {MovePriority} from "./common/MovePriority";
+import {Objective} from "./common/Objective";
+import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 
 
 export class Expansion extends TargetedFrontObjective

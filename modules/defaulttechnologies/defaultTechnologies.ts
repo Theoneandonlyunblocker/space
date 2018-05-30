@@ -1,12 +1,10 @@
-import TechnologyTemplates from "./TechnologyTemplates";
-
+import * as Languages from "../../localization/defaultLanguages";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import {setTechnologyRequirements} from "../../src/setDynamicTemplateProperties";
-
 import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate";
 
-import * as Languages from "../../localization/defaultLanguages";
+import TechnologyTemplates from "./TechnologyTemplates";
 
 
 const defaultTechnologies: ModuleFile =

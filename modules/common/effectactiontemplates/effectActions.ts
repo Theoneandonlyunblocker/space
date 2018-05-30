@@ -1,18 +1,3 @@
-import
-{
-  UnboundEffectAction
-} from "./effectActionBinding";
-import
-{
-  getAdjustedDamage,
-} from "./damageAdjustment";
-import
-{
-  calculateHealthAdjustment,
-  HealthAdjustment,
-} from "./healthAdjustment";
-import {ResultType} from "./ResultType";
-
 import Battle from "../../../src/Battle";
 import DamageType from "../../../src/DamageType";
 import FlatAndMultiplierAdjustment from "../../../src/FlatAndMultiplierAdjustment";
@@ -29,6 +14,21 @@ import
 {
   clamp,
 } from "../../../src/utility";
+
+import {ResultType} from "./ResultType";
+import
+{
+  getAdjustedDamage,
+} from "./damageAdjustment";
+import
+{
+  UnboundEffectAction
+} from "./effectActionBinding";
+import
+{
+  calculateHealthAdjustment,
+  HealthAdjustment,
+} from "./healthAdjustment";
 
 
 interface DamageWithType

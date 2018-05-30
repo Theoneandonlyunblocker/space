@@ -1,17 +1,15 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import {localize} from "../../../localization/localize";
 import Game from "../../Game";
 import Options from "../../Options";
 import Player from "../../Player";
+import Star from "../../Star";
 import eventManager from "../../eventManager";
-
 import {Language} from "../../localization/Language";
 
 import {default as TopMenuPopups, PopupType, TopMenuPopupsComponent} from "./TopMenuPopups";
-
-import {localize} from "../../../localization/localize";
-import Star from "../../Star";
 
 
 export interface PropTypes extends React.Props<any>

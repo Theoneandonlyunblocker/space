@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import BattleFinish from "./BattleFinish";
-import BattleSceneFlag from "./BattleSceneFlag";
-
 import BattleScene from "../../BattleScene";
 import {Flag} from "../../Flag";
+
+import BattleFinish from "./BattleFinish";
+import BattleSceneFlag from "./BattleSceneFlag";
 
 
 export interface PropTypes extends React.Props<any>

@@ -1,10 +1,3 @@
-import RampingValue from "./RampingValue";
-import SFXFragment from "./SFXFragment";
-
-import * as PropInfo from "./props/PropInfoClasses";
-
-import Beam from "./Beam";
-
 import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
@@ -12,6 +5,11 @@ import
   clamp,
   getRelativeValue,
 } from "../../../../src/utility";
+
+import Beam from "./Beam";
+import RampingValue from "./RampingValue";
+import SFXFragment from "./SFXFragment";
+import * as PropInfo from "./props/PropInfoClasses";
 
 
 interface FocusingBeamProps

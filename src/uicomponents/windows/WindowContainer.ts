@@ -1,9 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import {default as WindowResizeHandle, PropTypes as WindowResizeHandleProps} from "./WindowResizeHandle";
-import * as windowManager from "./windowManager";
-
 import {Direction} from "../../Direction";
 import {Rect} from "../../Rect";
 import
@@ -11,9 +8,11 @@ import
   clamp,
   shallowExtend,
 } from "../../utility";
-
 import {default as DragPositioner} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
+
+import {default as WindowResizeHandle, PropTypes as WindowResizeHandleProps} from "./WindowResizeHandle";
+import * as windowManager from "./windowManager";
 
 
 export interface PropTypes extends React.Props<any>

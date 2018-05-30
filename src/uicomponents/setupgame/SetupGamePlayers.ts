@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import {localize} from "../../../localization/localize";
+
 import {ColorSetterComponent} from "./ColorSetter";
 import {default as PlayerSetup, PlayerSetupComponent} from "./PlayerSetup";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

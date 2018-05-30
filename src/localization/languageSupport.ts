@@ -1,6 +1,6 @@
-import {Language} from "./Language";
-
 import ModuleFile from "../ModuleFile";
+
+import {Language} from "./Language";
 
 
 export enum LanguageSupportLevel

@@ -1,14 +1,14 @@
+import
+{
+  GetBattleTargetsFN,
+} from "../targeting";
+
 import AbilityBase from "./AbilityBase";
 import
 {
   AbilityEffectTemplate,
   AbilityMainEffectTemplate,
 } from "./AbilityEffectTemplate";
-
-import
-{
-  GetBattleTargetsFN,
-} from "../targeting";
 
 declare interface AbilityTemplate extends AbilityBase
 {

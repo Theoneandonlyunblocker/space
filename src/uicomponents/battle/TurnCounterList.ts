@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
+
 import {default as TurnCounter, PropTypes as TurnCounterProps} from "./TurnCounter";
 
 
@@ -13,9 +15,6 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
 }
-
-import {localize} from "../../../localization/localize";
-
 
 export class TurnCounterListComponent extends React.PureComponent<PropTypes, StateType>
 {

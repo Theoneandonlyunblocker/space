@@ -1,30 +1,22 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import Game from "../../Game";
 import Options from "../../Options";
 import Player from "../../Player";
 import {Rect} from "../../Rect";
-
+import Star from "../../Star";
 import {Language} from "../../localization/Language";
-
-import {default as DefaultWindow, DefaultWindowComponent} from "../windows/DefaultWindow";
-
 import DiplomacyOverview from "../diplomacy/DiplomacyOverview";
-
 import ProductionOverview from "../production/ProductionOverview";
-
 import LoadGame from "../saves/LoadGame";
 import SaveGame from "../saves/SaveGame";
-
 import TechnologiesList from "../technologies/TechnologiesList";
-
 import ItemEquip from "../unitlist/ItemEquip";
+import {default as DefaultWindow, DefaultWindowComponent} from "../windows/DefaultWindow";
 
 import EconomySummary from "./EconomySummary";
 import OptionsList from "./OptionsList";
-
-import {localize} from "../../../localization/localize";
-import Star from "../../Star";
 
 
 const windowPositionStorageKey = "Rance.WindowPositions";

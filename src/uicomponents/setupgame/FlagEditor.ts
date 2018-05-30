@@ -3,19 +3,17 @@ import * as React from "react";
 import Color from "../../Color";
 import Emblem from "../../Emblem";
 import {Flag} from "../../Flag";
-
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
-
 import {EmblemProps} from "../Emblem";
-import EmblemEditor from "./EmblemEditor";
-import EmblemSetterList from "./EmblemSetterList";
-
 import
 {
   AutoPositionerProps,
   default as AutoPositioner,
 } from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
+
+import EmblemEditor from "./EmblemEditor";
+import EmblemSetterList from "./EmblemSetterList";
 
 
 type EmblemPropsWithId = (EmblemProps & {id: number});

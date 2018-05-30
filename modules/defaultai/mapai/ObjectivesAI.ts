@@ -39,21 +39,20 @@ diplo
 econ
 */
 
-import {GrandStrategyAI} from "./GrandStrategyAI";
-import MapEvaluator from "./MapEvaluator";
-import {ObjectiveQueue} from "./ObjectiveQueue";
-import {objectiveCreatorTemplates} from "./objectiveCreatorTemplates";
-
-import {FrontObjective} from "../objectives/common/FrontObjective";
-import {Objective} from "../objectives/common/Objective";
-import {ObjectiveCreatorTemplate} from "../objectives/common/ObjectiveCreatorTemplate";
-import {ObjectiveFamily} from "../objectives/common/ObjectiveFamily";
-
 import {IdDictionary} from "../../../src/IdDictionary";
 import
 {
   getRelativeValue,
 } from "../../../src/utility";
+import {FrontObjective} from "../objectives/common/FrontObjective";
+import {Objective} from "../objectives/common/Objective";
+import {ObjectiveCreatorTemplate} from "../objectives/common/ObjectiveCreatorTemplate";
+import {ObjectiveFamily} from "../objectives/common/ObjectiveFamily";
+
+import {GrandStrategyAI} from "./GrandStrategyAI";
+import MapEvaluator from "./MapEvaluator";
+import {ObjectiveQueue} from "./ObjectiveQueue";
+import {objectiveCreatorTemplates} from "./objectiveCreatorTemplates";
 
 
 export class ObjectivesAI

@@ -1,11 +1,10 @@
 import * as React from "react";
 
-
+import {localize} from "../../../localization/localize";
 import MapRenderer from "../../MapRenderer";
+
 import MapModeSelector from "./MapModeSelector";
 import {default as MapRendererLayersList, MapRendererLayersListComponent} from "./MapRendererLayersList";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

@@ -1,15 +1,6 @@
 /// <reference path="../../../lib/tween.js.d.ts" />
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import SFXParams from "../../../src/templateinterfaces/SFXParams";
-
-import ShinyParticleFilter from "./shaders/ShinyParticle";
-
-import Beam from "./sfxfragments/Beam";
-import LightBurst from "./sfxfragments/LightBurst";
-import RampingValue from "./sfxfragments/RampingValue";
-import ShockWave from "./sfxfragments/ShockWave";
-
 import Color from "../../../src/Color";
 import
 {
@@ -17,8 +8,14 @@ import
   generateTextureWithBounds,
   getDummyTextureForShader,
 } from "../../../src/pixiWrapperFunctions";
+import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
 import ProtonWrapper from "./ProtonWrapper";
+import Beam from "./sfxfragments/Beam";
+import LightBurst from "./sfxfragments/LightBurst";
+import RampingValue from "./sfxfragments/RampingValue";
+import ShockWave from "./sfxfragments/ShockWave";
+import ShinyParticleFilter from "./shaders/ShinyParticle";
 
 
 export default function beam(props: SFXParams)

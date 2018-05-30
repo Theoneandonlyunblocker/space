@@ -1,17 +1,17 @@
+import Player from "../../../src/Player";
+import Region from "../../../src/Region";
+import Star from "../../../src/Star";
+import {activeModuleData} from "../../../src/activeModuleData";
+import
+{
+  randRange,
+} from "../../../src/utility";
+
 import MapGenDataByStarId from "./MapGenDataByStarId";
 import
 {
   addDefenceBuildings,
 } from "./mapGenUtils";
-
-import {activeModuleData} from "../../../src/activeModuleData";
-import Player from "../../../src/Player";
-import Region from "../../../src/Region";
-import Star from "../../../src/Star";
-import
-{
-  randRange,
-} from "../../../src/utility";
 
 
 export default function setupIndependents(props:

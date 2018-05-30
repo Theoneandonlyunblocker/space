@@ -1,17 +1,15 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
-import SFXFragment from "./SFXFragment";
-
-import * as PropInfo from "./props/PropInfoClasses";
-
-import LightBurstFilter from "../shaders/LightBurst";
-
 import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
 {
   makeShaderSprite,
 } from "../../../../src/pixiWrapperFunctions";
+import LightBurstFilter from "../shaders/LightBurst";
+
+import SFXFragment from "./SFXFragment";
+import * as PropInfo from "./props/PropInfoClasses";
 
 
 interface LightBurstProps

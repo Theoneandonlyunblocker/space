@@ -1,12 +1,5 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
-import RampingValue from "./RampingValue";
-import SFXFragment from "./SFXFragment";
-
-import * as PropInfo from "./props/PropInfoClasses";
-
-import BeamFilter from "../shaders/Beam";
-
 import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
@@ -18,6 +11,11 @@ import
   clamp,
   getRelativeValue,
 } from "../../../../src/utility";
+import BeamFilter from "../shaders/Beam";
+
+import RampingValue from "./RampingValue";
+import SFXFragment from "./SFXFragment";
+import * as PropInfo from "./props/PropInfoClasses";
 
 
 interface BeamProps

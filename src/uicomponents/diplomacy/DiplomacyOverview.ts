@@ -1,18 +1,15 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
+import DiplomacyState from "../../DiplomacyState";
+import Player from "../../Player";
 import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
+import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import DiplomacyActions from "./DiplomacyActions";
 import {default as DiplomaticStatusPlayer, PropTypes as DiplomaticStatusPlayerProps} from "./DiplomaticStatusPlayer";
-
-import {default as DefaultWindow} from "../windows/DefaultWindow";
-
-import DiplomacyState from "../../DiplomacyState";
-import Player from "../../Player";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

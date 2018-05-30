@@ -1,5 +1,6 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
+import * as Languages from "../../localization/defaultLanguages";
 import app from "../../src/App"; // TODO global
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
@@ -9,8 +10,6 @@ import {abilityTemplates} from "./abilities";
 import {raceTemplates} from "./raceTemplate";
 import {unitEffectTemplates} from "./unitEffects";
 import {unitTemplates} from "./unitTemplates";
-
-import * as Languages from "../../localization/defaultLanguages";
 
 
 export const drones: ModuleFile =

@@ -1,8 +1,6 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 
-import NebulaFilter from "./Nebula";
-
 import BackgroundDrawingFunction from "../../src/BackgroundDrawingFunction";
 import {generateColorScheme} from "../../src/colorGeneration";
 import
@@ -14,6 +12,8 @@ import
 {
   randRange,
 } from "../../src/utility";
+
+import NebulaFilter from "./Nebula";
 
 
 const drawNebula: BackgroundDrawingFunction = (

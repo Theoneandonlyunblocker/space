@@ -1,12 +1,11 @@
 import * as React from "react";
 
-
+import {localize} from "../../../localization/localize";
 import GuardCoverage from "../../GuardCoverage";
+
 import UnitActions from "./UnitActions";
 import UnitStatus from "./UnitStatus";
 import UnitStrength from "./UnitStrength";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

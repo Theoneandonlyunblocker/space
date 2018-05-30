@@ -1,5 +1,6 @@
 import Personality from "../src/Personality";
 import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
+
 import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
 import ModuleFile from "./ModuleFile";
 import ModuleScripts from "./ModuleScripts";
@@ -8,13 +9,6 @@ import
   PartialRuleSetValues,
   RuleSetValues,
 } from "./RuleSetValues";
-
-import
-{
-  deepMerge,
-  getRandomProperty,
-} from "./utility";
-
 import AITemplateConstructor from "./templateinterfaces/AITemplateConstructor";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
@@ -35,6 +29,11 @@ import {TerrainTemplate} from "./templateinterfaces/TerrainTemplate";
 import UnitArchetype from "./templateinterfaces/UnitArchetype";
 import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
+import
+{
+  deepMerge,
+  getRandomProperty,
+} from "./utility";
 
 
 // tslint:disable:no-any

@@ -1,24 +1,19 @@
+import Name from "../../src/Name";
 import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
-
-import Name from "../../src/Name";
-
 import
 {
   getRandomProperty,
   randInt,
 } from "../../src/utility";
-
-
 import {distributionGroups} from "../common/distributionGroups";
 import {generateIndependentFleets} from "../common/generateIndependentFleets";
 import {generateIndependentPlayer} from "../common/generateIndependentPlayer";
+import DefaultAIConstructor from "../defaultai/mapai/DefaultAIConstructor";
 
 import {droneBase} from  "./units/droneBase";
 import {droneCommander} from  "./units/droneCommander";
 import {droneSwarm} from  "./units/droneSwarm";
-
-import DefaultAIConstructor from "../defaultai/mapai/DefaultAIConstructor";
 
 
 export const drones: RaceTemplate =

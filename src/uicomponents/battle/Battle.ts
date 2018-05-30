@@ -3,7 +3,6 @@ import * as ReactDOM from "react-dom";
 
 import {AbilityTargetDisplayDataById} from "../../AbilityTargetDisplayData";
 import {AbilityUseEffectQueue} from "../../AbilityUseEffectQueue";
-import {activeModuleData} from "../../activeModuleData";
 import Battle from "../../Battle";
 import BattleScene from "../../BattleScene";
 import MCTree from "../../MCTree";
@@ -11,10 +10,11 @@ import Options from "../../Options";
 import Player from "../../Player";
 import Unit from "../../Unit";
 import UnitDisplayData from "../../UnitDisplayData";
+import {activeModuleData} from "../../activeModuleData";
 import
 {
-  getTargetsForAllAbilities,
   getAbilityTargetDisplayData,
+  getTargetsForAllAbilities,
 } from "../../battleAbilityDisplay";
 import
 {
@@ -27,6 +27,7 @@ import
   shallowCopy,
   shallowExtend,
 } from "../../utility";
+
 import
 {
   AbilityTooltipComponent,

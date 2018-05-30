@@ -1,11 +1,10 @@
-import SubEmblemTemplates from "./SubEmblemTemplates";
-
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import {svgCache} from "../../src/svgCache";
-
 import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
+
+import SubEmblemTemplates from "./SubEmblemTemplates";
 
 
 const defaultEmblems: ModuleFile =

@@ -1,3 +1,4 @@
+import * as Languages from "../../localization/defaultLanguages";
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
@@ -7,8 +8,6 @@ import
   notificationCreationScripts,
   notificationTemplates,
 } from "./NotificationTemplates";
-
-import * as Languages from "../../localization/defaultLanguages";
 
 
 const defaultNotifications: ModuleFile =

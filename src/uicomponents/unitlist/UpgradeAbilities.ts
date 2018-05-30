@@ -1,16 +1,13 @@
 import * as React from "react";
 
-import AbilityList from "./AbilityList";
-import {AbilityListItem} from "./AbilityListItem";
-
-import {default as DefaultWindow} from "../windows/DefaultWindow";
-
 import {localize} from "../../../localization/localize";
-
 import Unit from "../../Unit";
 import {UpgradableAbilitiesData} from "../../UpgradableAbilitiesData";
-
 import AbilityBase from "../../templateinterfaces/AbilityBase";
+import {default as DefaultWindow} from "../windows/DefaultWindow";
+
+import AbilityList from "./AbilityList";
+import {AbilityListItem} from "./AbilityListItem";
 
 
 export interface PropTypes extends React.Props<any>

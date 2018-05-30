@@ -1,16 +1,14 @@
-import {Objective} from "./common/Objective";
-import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
-import {MovePriority} from "./common/MovePriority";
-
-import {moveToTarget} from "./common/moveroutines/moveToTarget";
-
+import Star from "../../../src/Star";
+import Unit from "../../../src/Unit";
+import ValuesByStar from "../../../src/ValuesByStar";
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 import {UnitEvaluator} from "../mapai/UnitEvaluator";
 
-import Star from "../../../src/Star";
-import Unit from "../../../src/Unit";
-import ValuesByStar from "../../../src/ValuesByStar";
+import {MovePriority} from "./common/MovePriority";
+import {Objective} from "./common/Objective";
+import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
+import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
 
 export class ScoutingPerimeter extends TargetedFrontObjective

@@ -1,3 +1,7 @@
+import ColorType from "../../../../../src/Color";
+import PointType from "../../../../../src/Point";
+import RampingValueType from "../RampingValue";
+
 import
 {
   Clonable,
@@ -5,11 +9,6 @@ import
   ShallowObject,
 } from "./BasePropInfoClasses";
 import {PropInfoType} from "./PropInfoType";
-
-import RampingValueType from "../RampingValue";
-
-import ColorType from "../../../../../src/Color";
-import PointType from "../../../../../src/Point";
 
 
 export class Boolean extends Primitive<boolean>

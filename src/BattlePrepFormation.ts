@@ -2,12 +2,12 @@ import { BaseBattlePrepEffect } from "./templateinterfaces/BattlePrepEffect";
 
 import
 {
+  FormationInvalidityReason,
   FormationValidity,
   FormationValidityModifier,
-  FormationInvalidityReason,
-  validityModifiersAreEqual,
   FormationValidityModifierEffect,
   squashValidityModifierEffects,
+  validityModifiersAreEqual,
 } from "./BattlePrepFormationValidity";
 import Player from "./Player";
 import Unit from "./Unit";

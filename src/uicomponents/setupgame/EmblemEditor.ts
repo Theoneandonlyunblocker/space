@@ -1,12 +1,11 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import Color from "../../Color";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 import {EmblemColorPicker} from "./EmblemColorPicker";
 import EmblemPicker from "./EmblemPicker";
-
-import {localize} from "../../../localization/localize";
 
 
 interface PropTypes extends React.Props<any>

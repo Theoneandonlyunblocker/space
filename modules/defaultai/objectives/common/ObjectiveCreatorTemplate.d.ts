@@ -1,8 +1,8 @@
-import {Objective} from "./Objective";
-import {ObjectiveFamily} from "./ObjectiveFamily";
-
 import {GrandStrategyAI} from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
+
+import {Objective} from "./Objective";
+import {ObjectiveFamily} from "./ObjectiveFamily";
 
 export interface ObjectiveCreatorTemplate
 {

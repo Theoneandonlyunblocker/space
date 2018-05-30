@@ -1,12 +1,12 @@
 import * as React from "react";
 
-import {default as Spinner} from "./Spinner";
-
 import
 {
   clamp,
   mergeReactAttributes,
 } from "../../utility";
+
+import {default as Spinner} from "./Spinner";
 
 
 interface PropTypes extends React.Props<any>

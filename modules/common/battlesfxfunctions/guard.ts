@@ -1,10 +1,10 @@
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
-import GuardFilter from "./shaders/Guard";
-
 import
 {
   getRelativeValue,
 } from "../../../src/utility";
+
+import GuardFilter from "./shaders/Guard";
 
 
 export default function guard(props: SFXParams)

@@ -1,12 +1,12 @@
 import * as React from "react";
+
+import {localize} from "../../../localization/localize";
+import Unit from "../../Unit";
+import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
 
-import Unit from "../../Unit";
-import List from "../list/List";
 import {default as UnitListItem, PropTypes as UnitListItemProps} from "./UnitListItem";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

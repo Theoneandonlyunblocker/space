@@ -1,8 +1,8 @@
+import {UnitAttributeAdjustments} from "../UnitAttributes";
+
 import {AbilityEffectTemplate} from "./AbilityEffectTemplate";
 import {BattlePrepEffect} from "./BattlePrepEffect";
 import TurnStartEffect from "./TurnStartEffect";
-
-import {UnitAttributeAdjustments} from "../UnitAttributes";
 
 
 declare interface UnitEffectTemplate

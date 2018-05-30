@@ -1,13 +1,11 @@
-import AttitudeModifierTemplates from "./AttitudeModifierTemplates";
-import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";
-
+import * as Languages from "../../localization/defaultLanguages";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import {setAttitudeModifierOverride} from "../../src/setDynamicTemplateProperties";
-
 import AttitudeModifierTemplate from "../../src/templateinterfaces/AttitudeModifierTemplate";
 
-import * as Languages from "../../localization/defaultLanguages";
+import AttitudeModifierTemplates from "./AttitudeModifierTemplates";
+import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";
 
 
 const defaultAttitudeModifiers: ModuleFile =

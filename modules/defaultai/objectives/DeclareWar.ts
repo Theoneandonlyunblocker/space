@@ -1,11 +1,10 @@
-import {DiplomaticObjective} from "./common/DiplomaticObjective";
-import {Objective} from "./common/Objective";
-
+import Player from "../../../src/Player";
+import PlayerDiplomacy from "../../../src/PlayerDiplomacy";
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 
-import Player from "../../../src/Player";
-import PlayerDiplomacy from "../../../src/PlayerDiplomacy";
+import {DiplomaticObjective} from "./common/DiplomaticObjective";
+import {Objective} from "./common/Objective";
 
 
 // @ts-ignore 2417

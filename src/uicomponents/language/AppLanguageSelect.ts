@@ -1,10 +1,7 @@
 import * as React from "react";
 
-import {default as LanguageSelect} from "./LanguageSelect";
-
 import app from "../../App"; // TODO global
 import {activeModuleData} from "../../activeModuleData";
-
 import {Language} from "../../localization/Language";
 import
 {
@@ -15,6 +12,8 @@ import
   getLanguagesByCode,
   getLanguageSupportLevelForModuleFiles,
 } from "../../localization/languageSupport";
+
+import {default as LanguageSelect} from "./LanguageSelect";
 
 
 interface PropTypes extends React.Props<any>

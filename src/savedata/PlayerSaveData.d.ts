@@ -1,10 +1,10 @@
 import AIControllerSaveData from "./AIControllerSaveData";
 import ColorSaveData from "./ColorSaveData";
-import PlayerDiplomacySaveData from "./PlayerDiplomacySaveData";
 import FlagSaveData from "./FlagSaveData";
 import FleetSaveData from "./FleetSaveData";
-import {NotificationSubscriberSaveData} from "./NotificationSubscriberSaveData";
 import NameSaveData from "./NameSaveData";
+import {NotificationSubscriberSaveData} from "./NotificationSubscriberSaveData";
+import PlayerDiplomacySaveData from "./PlayerDiplomacySaveData";
 import PlayerTechnologySaveData from "./PlayerTechnologySaveData";
 
 declare interface PlayerSaveData

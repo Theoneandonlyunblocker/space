@@ -1,7 +1,7 @@
 
 
-import {activeModuleData} from "./activeModuleData";
 import BuildingUpgradeData from "./BuildingUpgradeData";
+import {activeModuleData} from "./activeModuleData";
 import idGenerators from "./idGenerators";
 import BuildingSaveData from "./savedata/BuildingSaveData";
 import BuildingEffect from "./templateinterfaces/BuildingEffect";

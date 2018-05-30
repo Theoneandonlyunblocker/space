@@ -1,16 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import {localize} from "../../../localization/localize";
 import app from "../../App"; // TODO global
+import ListItem from "../list/ListItem";
+import {default as DialogBox} from "../windows/DialogBox";
 
 import SaveList from "./SaveList";
 import {PropTypes as SaveListItemProps} from "./SaveListItem";
-
-import ListItem from "../list/ListItem";
-
-import {default as DialogBox} from "../windows/DialogBox";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

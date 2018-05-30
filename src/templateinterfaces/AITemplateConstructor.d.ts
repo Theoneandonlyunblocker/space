@@ -1,8 +1,8 @@
-import AITemplate from "./AITemplate";
-
 import Game from "../Game";
 import Personality from "../Personality";
 import Player from "../Player";
+
+import AITemplate from "./AITemplate";
 
 export interface AITemplateConstructorProps<SaveData>
 {

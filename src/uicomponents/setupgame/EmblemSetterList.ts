@@ -1,11 +1,10 @@
 import * as React from "react";
 
-import Color from "../../Color";
-
-import {EmblemProps} from "../Emblem";
-import EmblemSetter from "./EmblemSetter";
-
 import {localize} from "../../../localization/localize";
+import Color from "../../Color";
+import {EmblemProps} from "../Emblem";
+
+import EmblemSetter from "./EmblemSetter";
 
 
 interface PropTypes extends React.Props<any>

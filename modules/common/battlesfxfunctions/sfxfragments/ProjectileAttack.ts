@@ -1,14 +1,13 @@
 /// <reference path="../../../../lib/pixi.d.ts" />
 
-import SFXFragment from "./SFXFragment";
-
-import * as PropInfo from "./props/PropInfoClasses";
-
 import UnitDrawingFunctionData from "../../../../src/UnitDrawingFunctionData";
 import
 {
   randInt,
 } from "../../../../src/utility";
+
+import SFXFragment from "./SFXFragment";
+import * as PropInfo from "./props/PropInfoClasses";
 
 
 type impactFN = (projectile: Projectile, container: PIXI.Container, time: number) => void;

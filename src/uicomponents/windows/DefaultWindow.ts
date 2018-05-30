@@ -1,12 +1,12 @@
 import * as React from "react";
 
+import {Rect} from "../../Rect";
+
 import
 {
   default as WindowContainer,
   WindowContainerComponent,
 } from "./WindowContainer";
-
-import {Rect} from "../../Rect";
 
 
 const cssPropertyPrefix = "--rance-window-";

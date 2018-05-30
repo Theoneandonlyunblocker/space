@@ -5,10 +5,10 @@ import SFXParams from "./templateinterfaces/SFXParams";
 
 import BattleSceneUnit from "./BattleSceneUnit";
 import BattleSceneUnitOverlay from "./BattleSceneUnitOverlay";
-import * as debug from "./debug";
 import Options from "./Options";
 import Unit from "./Unit";
 import UnitBattleSide from "./UnitBattleSide";
+import * as debug from "./debug";
 
 
 // TODO performance

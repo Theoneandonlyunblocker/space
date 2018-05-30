@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import {default as DefaultWindow} from "./DefaultWindow";
-
 import {localize} from "../../../localization/localize";
+
+import {default as DefaultWindow} from "./DefaultWindow";
 
 
 interface PropTypes extends React.Props<any>

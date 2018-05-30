@@ -1,5 +1,5 @@
-import UnitEffectTemplate from "../../src/templateinterfaces/UnitEffectTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
+import UnitEffectTemplate from "../../src/templateinterfaces/UnitEffectTemplate";
 
 import
 {

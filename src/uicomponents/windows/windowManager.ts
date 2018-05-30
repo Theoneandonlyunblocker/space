@@ -1,7 +1,7 @@
-import {WindowContainerComponent} from "./WindowContainer";
-
 import {IdDictionary} from "../../IdDictionary";
 import {Rect} from "../../Rect";
+
+import {WindowContainerComponent} from "./WindowContainer";
 
 
 const baseZIndex = 10000;

@@ -1,10 +1,9 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import NotificationFilterList from "./NotificationFilterList";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

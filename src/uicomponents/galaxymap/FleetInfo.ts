@@ -1,6 +1,8 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import {Fleet} from "../../Fleet";
+
 import FleetControls from "./FleetControls";
 
 
@@ -15,9 +17,6 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
 }
-
-import {localize} from "../../../localization/localize";
-
 
 export class FleetInfoComponent extends React.Component<PropTypes, StateType>
 {

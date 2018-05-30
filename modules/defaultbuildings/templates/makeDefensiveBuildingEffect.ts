@@ -1,10 +1,10 @@
 import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
 
+import {bindEffectActionData} from "../../common/effectactiontemplates/effectActionBinding";;
 import
 {
   adjustDefenderBattleEvaluationAdjustment,
 } from "../../common/effectactiontemplates/effectActions";
-import {bindEffectActionData} from "../../common/effectactiontemplates/effectActionBinding";;
 
 
 export function makeDefensiveBuildingEffect(amount: number): UnitEffectTemplate

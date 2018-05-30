@@ -4,10 +4,10 @@
 import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 import SFXParams from "./templateinterfaces/SFXParams";
 
-import * as debug from "./debug";
 import Options from "./Options";
 import Unit from "./Unit";
 import UnitBattleSide from "./UnitBattleSide";
+import * as debug from "./debug";
 
 
 const enum BattleSceneUnitState

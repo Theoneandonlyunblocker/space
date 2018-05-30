@@ -1,14 +1,14 @@
 import * as React from "react";
 
-
 import {TutorialPage} from "../../tutorials/Tutorial";
-import TutorialVisibility from "../../tutorials/TutorialVisibility";
 import TutorialStatus from "../../tutorials/TutorialStatus";
+import TutorialVisibility from "../../tutorials/TutorialVisibility";
 import
 {
   clamp,
   splitMultilineText,
 } from "../../utility";
+
 import DontShowAgain from "./DontShowAgain";
 
 

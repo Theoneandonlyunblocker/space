@@ -1,3 +1,18 @@
+import ArchetypeValues from "../../../src/ArchetypeValues";
+import GalaxyMap from "../../../src/GalaxyMap";
+import Game from "../../../src/Game";
+import Personality from "../../../src/Personality";
+import Player from "../../../src/Player";
+import {TradeOffer} from "../../../src/TradeOffer";
+import Unit from "../../../src/Unit";
+import {activeModuleData} from "../../../src/activeModuleData";
+import getNullFormation from "../../../src/getNullFormation";
+import AITemplate from "../../../src/templateinterfaces/AITemplate";
+import
+{
+  makeRandomPersonality,
+} from "../../../src/utility";
+
 import DefaultAISaveData from "./DefaultAISaveData";
 import DiplomacyAI from "./DiplomacyAI";
 import {EconomicAI} from "./EconomicAI";
@@ -6,22 +21,6 @@ import {GrandStrategyAI} from "./GrandStrategyAI";
 import MapEvaluator from "./MapEvaluator";
 import {ObjectivesAI} from "./ObjectivesAI";
 import {UnitEvaluator} from "./UnitEvaluator";
-
-import AITemplate from "../../../src/templateinterfaces/AITemplate";
-
-import {activeModuleData} from "../../../src/activeModuleData";
-import ArchetypeValues from "../../../src/ArchetypeValues";
-import GalaxyMap from "../../../src/GalaxyMap";
-import Game from "../../../src/Game";
-import Personality from "../../../src/Personality";
-import Player from "../../../src/Player";
-import {TradeOffer} from "../../../src/TradeOffer";
-import Unit from "../../../src/Unit";
-import getNullFormation from "../../../src/getNullFormation";
-import
-{
-  makeRandomPersonality,
-} from "../../../src/utility";
 
 
 export default class DefaultAI implements AITemplate<DefaultAISaveData>

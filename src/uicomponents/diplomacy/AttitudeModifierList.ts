@@ -1,17 +1,14 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import {AttitudeModifier} from "../../AttitudeModifier";
-
 import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
-
-import {default as AttitudeModifierInfo, PropTypes as AttitudeModifierInfoProps} from "./AttitudeModifierInfo";
-
 import {AutoPositionerProps, default as AutoPositioner} from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-import {localize} from "../../../localization/localize";
+import {default as AttitudeModifierInfo, PropTypes as AttitudeModifierInfoProps} from "./AttitudeModifierInfo";
 
 
 export interface PropTypes extends React.Props<any>

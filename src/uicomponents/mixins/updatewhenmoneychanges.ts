@@ -2,9 +2,9 @@
 
 import * as React from "react";
 
-import MixinBase from "./MixinBase";
-
 import eventManager from "../../eventManager";
+
+import MixinBase from "./MixinBase";
 
 
 export default class UpdateWhenMoneyChanges<T extends React.Component<any, any>> implements MixinBase<T>

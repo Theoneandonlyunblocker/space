@@ -7,6 +7,7 @@ import
   clamp,
   getRelativeValue,
 } from "../../utility";
+
 import AttitudeModifierList from "./AttitudeModifierList";
 
 

@@ -1,22 +1,17 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import Options from "../../Options";
 import eventManager from "../../eventManager";
-import TutorialStatus from "../../tutorials/TutorialStatus";
-
 import {Language} from "../../localization/Language";
-
-import NotificationFilterButton from "../notifications/NotificationFilterButton";
-
-import {default as DialogBox} from "../windows/DialogBox";
-
+import TutorialStatus from "../../tutorials/TutorialStatus";
 import {default as AppLanguageSelect} from "../language/AppLanguageSelect";
+import NotificationFilterButton from "../notifications/NotificationFilterButton";
+import {default as DialogBox} from "../windows/DialogBox";
 
 import OptionsCheckbox from "./OptionsCheckbox";
 import OptionsGroup from "./OptionsGroup";
 import OptionsNumericField from "./OptionsNumericField";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

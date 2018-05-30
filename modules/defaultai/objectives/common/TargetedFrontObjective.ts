@@ -1,13 +1,12 @@
-import {FrontObjective} from "./FrontObjective";
-import {Objective} from "./Objective";
-
+import FleetAttackTarget from "../../../../src/FleetAttackTarget";
+import Star from "../../../../src/Star";
+import Unit from "../../../../src/Unit";
 import {Front} from "../../mapai/Front";
 import MapEvaluator from "../../mapai/MapEvaluator";
 import {UnitEvaluator} from "../../mapai/UnitEvaluator";
 
-import FleetAttackTarget from "../../../../src/FleetAttackTarget";
-import Star from "../../../../src/Star";
-import Unit from "../../../../src/Unit";
+import {FrontObjective} from "./FrontObjective";
+import {Objective} from "./Objective";
 
 
 // @ts-ignore 2417

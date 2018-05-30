@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import {activeModuleData} from "../../activeModuleData";
 import Color from "../../Color";
 import {Flag} from "../../Flag";
 import Player from "../../Player";
+import {activeModuleData} from "../../activeModuleData";
 import
 {
   generateMainColor,

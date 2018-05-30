@@ -1,11 +1,10 @@
-import {Front} from "./Front";
-import {ObjectivesAI} from "./ObjectivesAI";
-
-import {FrontObjective} from "../objectives/common/FrontObjective";
-
 import {IdDictionary} from "../../../src/IdDictionary";
 import Player from "../../../src/Player";
 import Unit from "../../../src/Unit";
+import {FrontObjective} from "../objectives/common/FrontObjective";
+
+import {Front} from "./Front";
+import {ObjectivesAI} from "./ObjectivesAI";
 
 
 interface FrontUnitScore

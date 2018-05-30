@@ -7,9 +7,9 @@ import Unit from "../../../src/Unit";
 import autoHealStatusEffect from "../uniteffecttemplates/autoHeal";
 import poisonedStatusEffect from "../uniteffecttemplates/poisoned";
 
+import { FormationValidityModifierSourceType } from "../../../src/BattlePrepFormationValidity";
 import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
 import * as EffectActions from "../effectactiontemplates/effectActions";
-import { FormationValidityModifierSourceType } from "../../../src/BattlePrepFormationValidity";
 
 
 export const autoHeal: PassiveSkillTemplate =

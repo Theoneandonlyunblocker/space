@@ -1,12 +1,10 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import Unit from "../../Unit";
-
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import UpgradeUnit from "./UpgradeUnit";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

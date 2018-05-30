@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import TutorialVisibility from "../../tutorials/TutorialVisibility";
 import TutorialStatus from "../../tutorials/TutorialStatus";
+import TutorialVisibility from "../../tutorials/TutorialVisibility";
 
 import {localize} from "../../../localization/localize";
 

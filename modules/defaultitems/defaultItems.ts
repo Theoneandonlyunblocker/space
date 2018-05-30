@@ -1,11 +1,9 @@
-import ItemTemplates from "./ItemTemplates";
-
+import * as Languages from "../../localization/defaultLanguages";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
-
 import ItemTemplate from "../../src/templateinterfaces/ItemTemplate";
 
-import * as Languages from "../../localization/defaultLanguages";
+import ItemTemplates from "./ItemTemplates";
 
 
 const defaultItems: ModuleFile =

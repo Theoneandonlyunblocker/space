@@ -1,13 +1,10 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import {activeModuleData} from "../../activeModuleData";
-
 import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
 
-
 import {default as MapGenOptions, MapGenOptionsComponent} from "./MapGenOptions";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

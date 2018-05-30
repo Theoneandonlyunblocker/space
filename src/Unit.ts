@@ -1,7 +1,7 @@
 
 
-import {activeModuleData} from "./activeModuleData";
 import UnitDrawingFunctionData from "./UnitDrawingFunctionData";
+import {activeModuleData} from "./activeModuleData";
 import idGenerators from "./idGenerators";
 import AbilityBase from "./templateinterfaces/AbilityBase";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";

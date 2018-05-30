@@ -1,9 +1,9 @@
 import * as React from "react";
 
 import {AbilityTargetDisplayDataById} from "../../AbilityTargetDisplayData";
-import {activeModuleData} from "../../activeModuleData";
 import Unit from "../../Unit";
 import UnitDisplayData from "../../UnitDisplayData";
+import {activeModuleData} from "../../activeModuleData";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 import {shallowExtend} from "../../utility";
 import EmptyUnit from "../unit/EmptyUnit";

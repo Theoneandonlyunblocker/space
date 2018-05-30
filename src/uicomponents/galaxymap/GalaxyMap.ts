@@ -1,19 +1,17 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import GalaxyMapUI from "./GalaxyMapUI";
-import GameOverScreen from "./GameOverScreen";
-
 import Game from "../../Game";
 import MapRenderer from "../../MapRenderer";
 import Player from "../../Player";
 import PlayerControl from "../../PlayerControl";
 import Renderer from "../../Renderer";
-
 import {Language} from "../../localization/Language";
-
 import { Notification } from "../../notifications/Notification";
 import { NotificationSubscriber } from "../../notifications/NotificationSubscriber";
+
+import GalaxyMapUI from "./GalaxyMapUI";
+import GameOverScreen from "./GameOverScreen";
 
 
 export interface PropTypes extends React.Props<any>

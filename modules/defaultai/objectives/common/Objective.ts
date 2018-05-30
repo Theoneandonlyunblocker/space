@@ -1,11 +1,10 @@
-import {ObjectiveCreatorTemplate} from "./ObjectiveCreatorTemplate";
-import {ObjectiveFamily} from "./ObjectiveFamily";
-
+import {IdDictionary} from "../../../../src/IdDictionary";
+import idGenerators from "../../../../src/idGenerators";
 import {GrandStrategyAI} from "../../mapai/GrandStrategyAI";
 import MapEvaluator from "../../mapai/MapEvaluator";
 
-import {IdDictionary} from "../../../../src/IdDictionary";
-import idGenerators from "../../../../src/idGenerators";
+import {ObjectiveCreatorTemplate} from "./ObjectiveCreatorTemplate";
+import {ObjectiveFamily} from "./ObjectiveFamily";
 
 
 export abstract class Objective

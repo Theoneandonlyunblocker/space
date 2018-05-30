@@ -1,18 +1,16 @@
 /// <reference path="../../../../lib/tween.js.d.ts" />
 
-import RampingValue from "./RampingValue";
-import SFXFragment from "./SFXFragment";
-
-import * as PropInfo from "./props/PropInfoClasses";
-
-import IntersectingEllipsesFilter from "../shaders/IntersectingEllipses";
-
 import Color from "../../../../src/Color";
 import Point from "../../../../src/Point";
 import
 {
   makeShaderSprite,
 } from "../../../../src/pixiWrapperFunctions";
+import IntersectingEllipsesFilter from "../shaders/IntersectingEllipses";
+
+import RampingValue from "./RampingValue";
+import SFXFragment from "./SFXFragment";
+import * as PropInfo from "./props/PropInfoClasses";
 
 
 interface ShockWaveProps

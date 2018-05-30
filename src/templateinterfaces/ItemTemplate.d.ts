@@ -1,8 +1,8 @@
+import {UnitAttributeAdjustments} from "../UnitAttributes";
+
 import AbilityTemplate from "./AbilityTemplate";
 import ManufacturableThing from "./ManufacturableThing";
 import PassiveSkillTemplate from "./PassiveSkillTemplate";
-
-import {UnitAttributeAdjustments} from "../UnitAttributes";
 
 declare interface ItemTemplate extends ManufacturableThing
 {

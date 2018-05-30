@@ -1,5 +1,3 @@
-import {UnitEvaluator} from "./UnitEvaluator";
-
 import DiplomacyEvaluation from "../../../src/DiplomacyEvaluation";
 import {Fleet} from "../../../src/Fleet";
 import GalaxyMap from "../../../src/GalaxyMap";
@@ -12,6 +10,8 @@ import
 {
   getRelativeValue,
 } from "../../../src/utility";
+
+import {UnitEvaluator} from "./UnitEvaluator";
 
 
 export const defaultEvaluationParameters =

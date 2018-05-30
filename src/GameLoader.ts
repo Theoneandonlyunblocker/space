@@ -1,7 +1,5 @@
 
 import {AIController} from "./AIController";
-import {activeModuleData} from "./activeModuleData";
-import {setActiveNotificationStore} from "./notifications/activeNotificationStore";
 import {AttitudeModifier} from "./AttitudeModifier";
 import Building from "./Building";
 import Color from "./Color";
@@ -19,13 +17,16 @@ import Player from "./Player";
 import Star from "./Star";
 import StatusEffect from "./StatusEffect";
 import Unit from "./Unit";
+import {activeModuleData} from "./activeModuleData";
+import {setActiveNotificationStore} from "./notifications/activeNotificationStore";
 
 import {Notification} from "./notifications//Notification";
 import {NotificationStore} from "./notifications//NotificationStore";
 
+import { NotificationSubscriber } from "./notifications/NotificationSubscriber";
+import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
 import AIControllerSaveData from "./savedata/AIControllerSaveData";
 import BuildingSaveData from "./savedata/BuildingSaveData";
-import PlayerDiplomacySaveData from "./savedata/PlayerDiplomacySaveData";
 import EmblemSaveData from "./savedata/EmblemSaveData";
 import FlagSaveData from "./savedata/FlagSaveData";
 import FleetSaveData from "./savedata/FleetSaveData";
@@ -33,13 +34,12 @@ import GalaxyMapSaveData from "./savedata/GalaxyMapSaveData";
 import GameSaveData from "./savedata/GameSaveData";
 import ItemSaveData from "./savedata/ItemSaveData";
 import NotificationStoreSaveData from "./savedata/NotificationStoreSaveData";
+import { NotificationSubscriberSaveData } from "./savedata/NotificationSubscriberSaveData";
+import PlayerDiplomacySaveData from "./savedata/PlayerDiplomacySaveData";
 import PlayerSaveData from "./savedata/PlayerSaveData";
 import StarSaveData from "./savedata/StarSaveData";
 import {StatusEffectSaveData} from "./savedata/StatusEffectSaveData";
 import UnitSaveData from "./savedata/UnitSaveData";
-import { NotificationSubscriberSaveData } from "./savedata/NotificationSubscriberSaveData";
-import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
-import { NotificationSubscriber } from "./notifications/NotificationSubscriber";
 
 
 export default class GameLoader

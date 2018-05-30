@@ -1,16 +1,14 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-import UnitArchetypes from "./UnitArchetypes";
-import UnitTemplates from "./UnitTemplates";
-
+import * as Languages from "../../localization/defaultLanguages";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
-
 import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
 
-import * as Languages from "../../localization/defaultLanguages";
+import UnitArchetypes from "./UnitArchetypes";
+import UnitTemplates from "./UnitTemplates";
 
 
 const defaultUnits: ModuleFile =

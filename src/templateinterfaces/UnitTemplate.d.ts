@@ -3,10 +3,10 @@ import AbilityTemplate from "./AbilityTemplate";
 import {DistributionData} from "./DistributionData";
 import ManufacturableThing from "./ManufacturableThing";
 import PassiveSkillTemplate from "./PassiveSkillTemplate";
+import {ProbabilityDistributions} from "./ProbabilityDistribution";
 import SpriteTemplate from "./SpriteTemplate";
 import UnitArchetype from "./UnitArchetype";
 import UnitDrawingFunction from "./UnitDrawingFunction";
-import {ProbabilityDistributions} from "./ProbabilityDistribution";
 
 
 declare interface UnitTemplate extends ManufacturableThing

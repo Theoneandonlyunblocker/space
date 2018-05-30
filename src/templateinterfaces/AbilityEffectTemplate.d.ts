@@ -1,12 +1,5 @@
 import
 {
-  AbilityEffectAction,
-  ExecutedEffectsResult,
-} from "./AbilityEffectAction";
-import BattleSFXTemplate from "./BattleSFXTemplate";
-
-import
-{
   AbilityTargetDisplayDataById,
 } from "../AbilityTargetDisplayData";
 import Battle from "../Battle";
@@ -16,6 +9,13 @@ import
 {
   GetUnitsInAreaFN,
 } from "../targeting";
+
+import
+{
+  AbilityEffectAction,
+  ExecutedEffectsResult,
+} from "./AbilityEffectAction";
+import BattleSFXTemplate from "./BattleSFXTemplate";
 
 export type AbilityEffectTrigger = (
   user: Unit,

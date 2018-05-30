@@ -1,11 +1,10 @@
 import * as React from "react";
 
 import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
-
-import SFXFragmentConstructor from "./SFXFragmentConstructor";
-
 import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
+
+import SFXFragmentConstructor from "./SFXFragmentConstructor";
 
 
 type Fragment = SFXFragment<any> | SFXFragmentConstructor;

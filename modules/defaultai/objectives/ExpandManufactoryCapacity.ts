@@ -1,12 +1,11 @@
-import {EconomicObjective} from "./common/EconomicObjective";
-import {Objective} from "./common/Objective";
-
-import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
-import MapEvaluator from "../mapai/MapEvaluator";
-
 import Manufactory from "../../../src/Manufactory";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
+import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
+import MapEvaluator from "../mapai/MapEvaluator";
+
+import {EconomicObjective} from "./common/EconomicObjective";
+import {Objective} from "./common/Objective";
 
 
 // @ts-ignore 2417

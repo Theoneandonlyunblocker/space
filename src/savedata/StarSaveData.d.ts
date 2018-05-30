@@ -1,5 +1,5 @@
-import ManufactorySaveData from "./ManufactorySaveData";
 import BuildingSaveData from "./BuildingSaveData";
+import ManufactorySaveData from "./ManufactorySaveData";
 
 declare interface StarSaveData
 {

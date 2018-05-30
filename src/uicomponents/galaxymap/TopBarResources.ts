@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import {activeModuleData} from "../../activeModuleData";
-
 import Player from "../../Player";
+import {activeModuleData} from "../../activeModuleData";
 import eventManager from "../../eventManager";
+
 import Resource from "./Resource";
 
 

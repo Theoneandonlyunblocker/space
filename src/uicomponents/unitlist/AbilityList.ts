@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import {AbilityListItem, AbilityListItemType} from "./AbilityListItem";
-
 import AbilityBase from "../../templateinterfaces/AbilityBase";
+
+import {AbilityListItem, AbilityListItemType} from "./AbilityListItem";
 
 
 export interface PropTypes extends React.Props<any>

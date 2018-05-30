@@ -1,9 +1,9 @@
-import {DistributionData} from "./DistributionData";
-
 import
 {
   getRandomArrayItem,
 } from "../utility";
+
+import {DistributionData} from "./DistributionData";
 
 
 export interface Distributable

@@ -2,10 +2,10 @@ import app from "./App"; // TODO global
 import GalaxyMap from "./GalaxyMap";
 import Player from "./Player";
 import {default as PlayerDiplomacy} from "./PlayerDiplomacy";
-import {activeNotificationStore} from "./notifications/activeNotificationStore";
 import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";
 import idGenerators from "./idGenerators";
+import {activeNotificationStore} from "./notifications/activeNotificationStore";
 
 import FullSaveData from "./savedata/FullSaveData";
 import GameSaveData from "./savedata/GameSaveData";

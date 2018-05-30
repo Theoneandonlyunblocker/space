@@ -2,6 +2,7 @@ import * as React from "react";
 
 import Star from "../../Star";
 import {sortByManufactoryCapacityFN} from "../../utility";
+
 import ManufactoryStarsListItem from "./ManufactoryStarsListItem";
 
 

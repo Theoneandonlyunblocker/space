@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import Building from "../../Building";
+
 import DefenceBuilding from "./DefenceBuilding";
 
 

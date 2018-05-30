@@ -1,14 +1,12 @@
-import {FrontObjective} from "./common/FrontObjective";
-import {Objective} from "./common/Objective";
-import {MovePriority} from "./common/MovePriority";
-
-import {moveToTarget} from "./common/moveroutines/moveToTarget";
-
+import Unit from "../../../src/Unit";
 import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
 import MapEvaluator from "../mapai/MapEvaluator";
 import {UnitEvaluator} from "../mapai/UnitEvaluator";
 
-import Unit from "../../../src/Unit";
+import {FrontObjective} from "./common/FrontObjective";
+import {MovePriority} from "./common/MovePriority";
+import {Objective} from "./common/Objective";
+import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
 
 // @ts-ignore 2417

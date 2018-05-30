@@ -3,13 +3,13 @@ import * as React from "react";
 import Player from "../../Player";
 import Star from "../../Star";
 import eventManager from "../../eventManager";
+import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
+import applyMixins from "../mixins/applyMixins";
+
 import BuildQueue from "./BuildQueue";
 import ConstructManufactory from "./ConstructManufactory";
 import ManufactoryStarsList from "./ManufactoryStarsList";
 import ManufacturableThings from "./ManufacturableThings";
-
-import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
-import applyMixins from "../mixins/applyMixins";
 
 
 export interface PropTypes extends React.Props<any>

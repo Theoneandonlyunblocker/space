@@ -1,6 +1,6 @@
 import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
-import {adjustHealth} from "../effectactiontemplates/effectActions";
 import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
+import {adjustHealth} from "../effectactiontemplates/effectActions";
 
 
 const autoHeal: UnitEffectTemplate =

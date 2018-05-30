@@ -1,23 +1,24 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import {localize} from "../../../localization/localize";
 import app from "../../App"; // TODO global
-import {activeModuleData} from "../../activeModuleData";
-
 import BattlePrep from "../../BattlePrep";
+import { BattlePrepFormation } from "../../BattlePrepFormation";
 import
 {
+  extractFormationInvalidityReasons,
+  FormationInvalidityReason,
   FormationValidity,
   FormationValidityModifier,
-  FormationInvalidityReason,
-  FormationValidityModifierSourceType,
-  extractFormationInvalidityReasons,
   FormationValidityModifierEffect,
+  FormationValidityModifierSourceType,
 } from "../../BattlePrepFormationValidity";
 import BattleSimulator from "../../BattleSimulator";
 import Item from "../../Item";
 import Options from "../../Options";
 import Unit from "../../Unit";
+import {activeModuleData} from "../../activeModuleData";
 import {BattleBackgroundComponent, default as BattleBackground} from "../battle/BattleBackground";
 import Formation from "../battle/Formation";
 import ListItem from "../list/ListItem";
@@ -26,10 +27,8 @@ import {PropTypes as ItemListItemPropTypes} from "../unitlist/ItemListItem";
 import MenuUnitInfo from "../unitlist/MenuUnitInfo";
 import UnitList from "../unitlist/UnitList";
 import {PropTypes as UnitListItemPropTypes} from "../unitlist/UnitListItem";
-import BattleInfo from "./BattleInfo";
 
-import {localize} from "../../../localization/localize";
-import { BattlePrepFormation } from "../../BattlePrepFormation";
+import BattleInfo from "./BattleInfo";
 
 
 export interface PropTypes extends React.Props<any>

@@ -1,7 +1,10 @@
 import * as React from "react";
 
-
+import {localize} from "../../../localization/localize";
 import Range from "../../Range";
+import MapGenOptionValues from "../../templateinterfaces/MapGenOptionValues";
+import MapGenOptions from "../../templateinterfaces/MapGenOptions";
+import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
 import
 {
   clamp,
@@ -10,16 +13,9 @@ import
   randInt,
   roundToNearestMultiple,
 } from "../../utility";
-
-import MapGenOptionValues from "../../templateinterfaces/MapGenOptionValues";
-import MapGenOptions from "../../templateinterfaces/MapGenOptions";
-import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
-
 import OptionsGroup from "../galaxymap/OptionsGroup";
 
 import MapGenOption from "./MapGenOption";
-
-import {localize} from "../../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

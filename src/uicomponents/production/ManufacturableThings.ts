@@ -1,13 +1,13 @@
 import * as React from "react";
 
+import {localize} from "../../../localization/localize";
 import Player from "../../Player";
 import Star from "../../Star";
-import ManufacturableItems from "./ManufacturableItems";
-import ManufacturableUnits from "./ManufacturableUnits";
-
-import {localize} from "../../../localization/localize";
 import ItemTemplate from "../../templateinterfaces/ItemTemplate";
 import UnitTemplate from "../../templateinterfaces/UnitTemplate";
+
+import ManufacturableItems from "./ManufacturableItems";
+import ManufacturableUnits from "./ManufacturableUnits";
 
 
 type TabKey = "units" | "items";

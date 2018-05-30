@@ -2,15 +2,14 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import eventManager from "../../eventManager";
-
-import ListColumn from "./ListColumn";
-import ListItem from "./ListItem";
-import ListOrder from "./ListOrder";
-
 import
 {
   shallowCopy,
 } from "../../utility";
+
+import ListColumn from "./ListColumn";
+import ListItem from "./ListItem";
+import ListOrder from "./ListOrder";
 
 
 export interface PropTypes extends React.Props<any>

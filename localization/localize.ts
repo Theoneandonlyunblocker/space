@@ -1,7 +1,10 @@
-import * as Languages from "./defaultLanguages";
-
 import {Localizer} from "../src/localization/Localizer";
+import
+{
+  shallowExtend,
+} from "../src/utility";
 
+import * as Languages from "./defaultLanguages";
 import {battle as en_battle} from "./en/battle";
 import {diplomacy as en_diplomacy} from "./en/diplomacy";
 import {fleet as en_fleet} from "./en/fleet";
@@ -18,12 +21,6 @@ import {setupGame as en_setupGame} from "./en/setupGame";
 import {trade as en_trade} from "./en/trade";
 import {unit as en_unit} from "./en/unit";
 import {unitUpgrade as en_unitUpgrade} from "./en/unitUpgrade";
-
-
-import
-{
-  shallowExtend,
-} from "../src/utility";
 
 
 type AllMessages =
