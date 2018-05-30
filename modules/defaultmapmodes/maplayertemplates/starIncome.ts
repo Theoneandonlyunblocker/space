@@ -1,8 +1,6 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
 import Color from "../../../src/Color";
-import GalaxyMap from "../../../src/GalaxyMap";
-import Player from "../../../src/Player";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 import

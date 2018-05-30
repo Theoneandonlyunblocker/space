@@ -1,6 +1,5 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import GalaxyMap from "../../../src/GalaxyMap";
 import Options from "../../../src/Options";
 import Player from "../../../src/Player";
 import {getRevealedBorderEdges} from "../../../src/borderPolygon";
