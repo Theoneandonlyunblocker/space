@@ -57,7 +57,7 @@ const nonFillerStars: MapRendererLayerTemplate =
       const gfxClickFN = (event: PIXI.interaction.InteractionEvent) =>
       {
         const originalEvent = <MouseEvent> event.data.originalEvent;
-        if (originalEvent.button) return;
+        if (originalEvent.button) { return; }
 
         onClickFN(star);
       };

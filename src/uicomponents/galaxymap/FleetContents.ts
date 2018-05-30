@@ -39,7 +39,7 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
 
   handleMouseUp()
   {
-    if (!this.props.onMouseUp) return;
+    if (!this.props.onMouseUp) { return; }
 
     this.props.onMouseUp(this.props.fleet);
   }

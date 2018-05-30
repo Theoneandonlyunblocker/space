@@ -796,7 +796,7 @@ export default class Unit
   public removeGuard(amount: number)
   {
     this.battleStats.guardAmount -= amount;
-    if (this.battleStats.guardAmount < 0) this.removeAllGuard();
+    if (this.battleStats.guardAmount < 0) { this.removeAllGuard(); }
 
     this.uiDisplayIsDirty = true;
   }

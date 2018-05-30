@@ -18,7 +18,7 @@ const resources: MapRendererLayerTemplate =
     for (let i = 0; i < points.length; i++)
     {
       const star = points[i];
-      if (!star.resource) continue;
+      if (!star.resource) { continue; }
 
       const text = new PIXI.Text(star.resource.displayName,
       {

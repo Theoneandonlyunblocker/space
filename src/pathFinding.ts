@@ -24,7 +24,7 @@ export function backTrace(graph: {[starId: number]: PathNode}, target: Star): Pa
 {
   let parent = graph[target.id];
 
-  if (!parent) return [];
+  if (!parent) { return []; }
 
   const path =
   [
@@ -83,7 +83,7 @@ export function aStar(start: Star, target: Star): AStarGraph | null
     for (let i = 0; i < neighbors.length; i++)
     {
       const neigh = neighbors[i];
-      if (!neigh) continue;
+      if (!neigh) { continue; }
 
       const moveCost = 1;
 

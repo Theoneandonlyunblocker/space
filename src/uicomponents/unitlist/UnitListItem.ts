@@ -82,7 +82,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 
   componentDidMount()
   {
-    if (!this.props.isDraggable) return;
+    if (!this.props.isDraggable) { return; }
 
     const container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
 

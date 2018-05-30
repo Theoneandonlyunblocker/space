@@ -20,7 +20,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
   public displayName = "UpgradeAttributes";
   upgradeAttribute(attribute: string, e: MouseEvent)
   {
-    if (e.button) return;
+    if (e.button) { return; }
     this.props.handleClick(attribute);
   }
   public state: StateType;

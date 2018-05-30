@@ -37,18 +37,18 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
 
     abilities.sort((_a, _b) =>
     {
-      if (_a.mainEffect && !_b.mainEffect) return -1;
-      else if (_b.mainEffect && !_a.mainEffect) return 1;
+      if (_a.mainEffect && !_b.mainEffect) { return -1; }
+      else if (_b.mainEffect && !_a.mainEffect) { return 1; }
 
-      if (_a.type === "learnable") return 1;
-      else if (_b.type === "learnable") return -1;
+      if (_a.type === "learnable") { return 1; }
+      else if (_b.type === "learnable") { return -1; }
 
       const a = _a.displayName.toLowerCase();
       const b = _b.displayName.toLowerCase();
 
-      if (a > b) return 1;
-      else if (a < b) return -1;
-      else return 0;
+      if (a > b) { return 1; }
+      else if (a < b) { return -1; }
+      else { return 0; }
     });
 
     for (let i = 0; i < abilities.length; i++)

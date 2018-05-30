@@ -41,7 +41,7 @@ export default class MapRendererMapMode
       {
         index++;
       }
-      if (this.layers[i] === layer) return index;
+      if (this.layers[i] === layer) { return index; }
     }
 
     throw new Error(`Map mode doesn't have layer ${layer.template.key}`);

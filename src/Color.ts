@@ -73,11 +73,11 @@ export default class Color
     function hue2rgb(p: number, q: number, t: number): number
     {
       let t2 = t;
-      if (t2 < 0) t2 += 1;
-      if (t2 > 1) t2 -= 1;
-      if (t2 < 1 / 6) return p + (q - p) * 6 * t2;
-      if (t2 < 1 / 2) return q;
-      if (t2 < 2 / 3) return p + (q - p) * (2 / 3 - t2) * 6;
+      if (t2 < 0) { t2 += 1; }
+      if (t2 > 1) { t2 -= 1; }
+      if (t2 < 1 / 6) { return p + (q - p) * 6 * t2; }
+      if (t2 < 1 / 2) { return q; }
+      if (t2 < 2 / 3) { return p + (q - p) * (2 / 3 - t2) * 6; }
       return p;
     }
 

@@ -130,7 +130,7 @@ export default class PlayerControl
   }
   updateSelection(endReorganizingFleets: boolean = true): void
   {
-    if (endReorganizingFleets) this.endReorganizingFleets();
+    if (endReorganizingFleets) { this.endReorganizingFleets(); }
     this.currentAttackTargets = this.getCurrentAttackTargets();
 
     eventManager.dispatchEvent("playerControlUpdated", null);
@@ -139,7 +139,7 @@ export default class PlayerControl
 
   areAllFleetsInSameLocation(): boolean
   {
-    if (this.selectedFleets.length <= 0) return false;
+    if (this.selectedFleets.length <= 0) { return false; }
 
     for (let i = 1; i < this.selectedFleets.length; i++)
     {
@@ -194,7 +194,7 @@ export default class PlayerControl
     {
       if (fleets[i].units.length < 1)
       {
-        if (this.currentlyReorganizing.indexOf(fleets[i]) >= 0) continue;
+        if (this.currentlyReorganizing.indexOf(fleets[i]) >= 0) { continue; }
         fleets[i].deleteFleet();
         fleets.splice(i, 1);
       }
@@ -211,7 +211,7 @@ export default class PlayerControl
     const fleetsContainer = this.selectedFleets.length > 0 ? this.selectedFleets : this.inspectedFleets;
     const fleetIndex = fleetsContainer.indexOf(fleet);
 
-    if (fleetIndex < 0) return;
+    if (fleetIndex < 0) { return; }
 
     fleetsContainer.splice(fleetIndex, 1);
 
@@ -228,7 +228,7 @@ export default class PlayerControl
   }
   mergeFleetsOfSameType(fleets: Fleet[]): Fleet[]
   {
-    if (fleets.length === 0) return [];
+    if (fleets.length === 0) { return []; }
 
     const master = this.getMasterFleetForMerge(fleets);
 
@@ -267,7 +267,7 @@ export default class PlayerControl
   }
   selectStar(star: Star): void
   {
-    if (this.preventingGhost || this.selectedStar === star) return;
+    if (this.preventingGhost || this.selectedStar === star) { return; }
     this.clearSelection();
 
     this.selectedStar = star;
@@ -283,7 +283,7 @@ export default class PlayerControl
   }
   splitFleet(fleet: Fleet): void
   {
-    if (fleet.units.length <= 0) return;
+    if (fleet.units.length <= 0) { return; }
     this.endReorganizingFleets();
     const newFleet = fleet.split();
 
@@ -327,8 +327,8 @@ export default class PlayerControl
   }
   getCurrentAttackTargets(): FleetAttackTarget[]
   {
-    if (this.selectedFleets.length < 1) return [];
-    if (!this.areAllFleetsInSameLocation()) return [];
+    if (this.selectedFleets.length < 1) { return []; }
+    if (!this.areAllFleetsInSameLocation()) { return []; }
 
     const location = this.selectedFleets[0].location;
     const possibleTargets = location.getTargetsForPlayer(this.player);

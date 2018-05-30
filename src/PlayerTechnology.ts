@@ -139,8 +139,8 @@ export default class PlayerTechnology
   }
   getResearchNeededForTechnologyLevel(level: number): number
   {
-    if (level <= 0) return 0;
-    if (level === 1) return 40;
+    if (level <= 0) { return 0; }
+    if (level === 1) { return 40; }
 
     let a = 20;
     let b = 40;

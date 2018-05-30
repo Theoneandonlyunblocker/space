@@ -45,7 +45,7 @@ export default class Building
   }
   getEffect(effect: BuildingEffect = {})
   {
-    if (!this.template.effect) return {};
+    if (!this.template.effect) { return {}; }
 
     const multiplier = this.template.effectMultiplierFN ?
       this.template.effectMultiplierFN(this.upgradeLevel) :
@@ -121,7 +121,7 @@ export default class Building
   setController(newController: Player)
   {
     const oldController = this.controller;
-    if (oldController === newController) return;
+    if (oldController === newController) { return; }
 
 
     this.controller = newController;

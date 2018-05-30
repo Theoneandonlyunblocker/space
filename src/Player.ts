@@ -431,7 +431,7 @@ export default class Player
 
       const starIncome = star.getResourceIncome();
 
-      if (!starIncome) continue;
+      if (!starIncome) { continue; }
 
       if (!incomeByResource[starIncome.resource.type])
       {
@@ -733,7 +733,7 @@ export default class Player
   }
   starIsVisible(star: Star): boolean
   {
-    if (!this.isAI && Options.debug.enabled) return true;
+    if (!this.isAI && Options.debug.enabled) { return true; }
     if (this.visionIsDirty)
     {
       this.updateVisibleStars();
@@ -742,7 +742,7 @@ export default class Player
   }
   starIsRevealed(star: Star): boolean
   {
-    if (!this.isAI && Options.debug.enabled) return true;
+    if (!this.isAI && Options.debug.enabled) { return true; }
     if (this.visionIsDirty)
     {
       this.updateVisibleStars();
@@ -751,7 +751,7 @@ export default class Player
   }
   starIsDetected(star: Star): boolean
   {
-    if (!this.isAI && Options.debug.enabled) return true;
+    if (!this.isAI && Options.debug.enabled) { return true; }
     if (this.visionIsDirty)
     {
       this.updateVisibleStars();

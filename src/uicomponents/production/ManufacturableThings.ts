@@ -81,7 +81,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
 
   private selectTab(key: TabKey): void
   {
-    if (this.state.activeTab === key) return;
+    if (this.state.activeTab === key) { return; }
     this.setState(
     {
       activeTab: key,

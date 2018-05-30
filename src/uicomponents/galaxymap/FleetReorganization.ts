@@ -91,7 +91,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
 
   componentWillUnmount()
   {
-    if (this.hasClosed) return;
+    if (this.hasClosed) { return; }
 
     eventManager.dispatchEvent("endReorganizingFleets");
   }

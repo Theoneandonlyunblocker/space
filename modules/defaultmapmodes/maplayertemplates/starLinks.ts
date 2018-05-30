@@ -27,7 +27,7 @@ const starLinks: MapRendererLayerTemplate =
     for (let i = 0; i < points.length; i++)
     {
       const star = points[i];
-      if (starsFullyConnected[star.id]) continue;
+      if (starsFullyConnected[star.id]) { continue; }
 
       starsFullyConnected[star.id] = true;
 

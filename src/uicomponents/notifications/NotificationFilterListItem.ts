@@ -76,7 +76,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
     for (const state in NotificationFilterState)
     {
       const numericState = parseInt(state);
-      if (!isFinite(numericState)) continue;
+      if (!isFinite(numericState)) { continue; }
 
       const stateIsActive = filterState.indexOf(numericState) !== -1;
       inputElements.push(React.DOM.input(

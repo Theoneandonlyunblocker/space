@@ -294,14 +294,14 @@ export function makeSectors(
       candidateSectors.sort((a, b) =>
       {
         const sizeSort = a.stars.length - b.stars.length;
-        if (sizeSort) return sizeSort;
+        if (sizeSort) { return sizeSort; }
 
         const unclaimedSort = unclaimedNeighborsPerSector[b.id] -
           unclaimedNeighborsPerSector[a.id];
-        if (sizeSort) return unclaimedSort;
+        if (sizeSort) { return unclaimedSort; }
 
         const perimeterSort = b.getBorderLengthWithStars([star]) - a.getBorderLengthWithStars([star]);
-        if (perimeterSort) return perimeterSort;
+        if (perimeterSort) { return perimeterSort; }
 
         return a.id.localeCompare(b.id);
       });

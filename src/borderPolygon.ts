@@ -337,7 +337,7 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
   {
     const polyLine = polyLines[i];
     const isClosed = pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
-    if (isClosed) polyLine.pop();
+    if (isClosed) { polyLine.pop(); }
     for (let j = 0; j < polyLine.length; j++)
     {
       // stupid hack to fix pixi bug with drawing polygons

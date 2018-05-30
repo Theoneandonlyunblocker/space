@@ -39,8 +39,8 @@ const starIncome: MapRendererLayerTemplate =
     {
       if (!colorIndexes[value])
       {
-        if (value < 0) value = 0;
-        else if (value > 1) value = 1;
+        if (value < 0) { value = 0; }
+        else if (value > 1) { value = 1; }
 
         const deviation = Math.abs(0.5 - value) * 2;
 

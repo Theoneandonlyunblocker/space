@@ -124,7 +124,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
 
   clampExpandedActionElement()
   {
-    if (!this.state.expandedActionElement) return;
+    if (!this.state.expandedActionElement) { return; }
 
     const maxHeight = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_leftColumnContent).getBoundingClientRect().height;
     const listElement = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_expandedActionElementContainer).firstChild.firstChild;
@@ -162,7 +162,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     const pc = this.props.playerControl;
 
     let star: Star = null;
-    if (pc.selectedStar) star = pc.selectedStar;
+    if (pc.selectedStar) { star = pc.selectedStar; }
     else if (pc.areAllFleetsInSameLocation())
     {
       star = pc.selectedFleets[0].location;

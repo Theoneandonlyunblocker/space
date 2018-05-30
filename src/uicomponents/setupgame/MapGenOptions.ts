@@ -77,7 +77,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
     ["defaultOptions", "basicOptions", "advancedOptions"].forEach(optionGroup =>
     {
       const options: MapGenOptions = mapGenTemplate.options[optionGroup];
-      if (!options) return;
+      if (!options) { return; }
 
       for (const optionName in options)
       {
@@ -86,11 +86,11 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 
         if (unsetOnly && this.state && isFinite(this.getOptionValue(optionName)))
         {
-          if (!this.props.mapGenTemplate.options[optionGroup]) continue;
+          if (!this.props.mapGenTemplate.options[optionGroup]) { continue; }
 
           const oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
 
-          if (!oldOption) continue;
+          if (!oldOption) { continue; }
 
           const oldValuePercentage = getRelativeValue(
             this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
@@ -195,7 +195,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 
     for (const groupName in optionGroupsInfo)
     {
-      if (!this.props.mapGenTemplate.options[groupName]) continue;
+      if (!this.props.mapGenTemplate.options[groupName]) { continue; }
 
 
       const options: {key: string; content: React.ReactElement<any>}[] = [];

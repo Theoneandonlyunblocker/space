@@ -58,7 +58,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
 
   setElementPosition()
   {
-    if (!this.ref_TODO_selected) return;
+    if (!this.ref_TODO_selected) { return; }
     const domNode = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_selected);
 
     if (!this.props.selectedStar)

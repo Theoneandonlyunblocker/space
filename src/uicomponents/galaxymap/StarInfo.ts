@@ -32,7 +32,7 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
   render()
   {
     const star = this.props.selectedStar;
-    if (!star) return null;
+    if (!star) { return null; }
 
     return(
       React.DOM.div(

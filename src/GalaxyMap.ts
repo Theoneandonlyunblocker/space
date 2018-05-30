@@ -39,11 +39,11 @@ export default class GalaxyMap
     {
       const star = this.stars[i];
       const income = star.getIncome();
-      if (!min) min = max = income;
+      if (!min) { min = max = income; }
       else
       {
-        if (income < min) min = income;
-        else if (income > max) max = income;
+        if (income < min) { min = income; }
+        else if (income > max) { max = income; }
       }
     }
 

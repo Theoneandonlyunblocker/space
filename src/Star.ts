@@ -332,7 +332,7 @@ export default class Star implements Point
   }
   getResourceIncome(): {resource: ResourceTemplate; amount: number}
   {
-    if (!this.resource) return null;
+    if (!this.resource) { return null; }
 
     return(
     {
@@ -472,7 +472,7 @@ export default class Star implements Point
   }
   getFleetIndex(fleet: Fleet): number
   {
-    if (!this.fleets[fleet.player.id]) return -1;
+    if (!this.fleets[fleet.player.id]) { return -1; }
 
     return this.fleets[fleet.player.id].indexOf(fleet);
   }
@@ -601,7 +601,7 @@ export default class Star implements Point
   // could maybe use adding / removing links as a gameplay mechanic
   addLink(linkTo: Star): void
   {
-    if (this.hasLink(linkTo)) return;
+    if (this.hasLink(linkTo)) { return; }
 
     this.linksTo.push(linkTo);
     linkTo.linksFrom.push(this);
@@ -719,7 +719,7 @@ export default class Star implements Point
     for (let i = 0; i < range; i++)
     {
       current = frontier.slice(0);
-      if (current.length <= 0) break;
+      if (current.length <= 0) { break; }
       frontier = [];
       visitedByRange[i + 1] = [];
 
@@ -729,7 +729,7 @@ export default class Star implements Point
 
         for (let k = 0; k < neighbors.length; k++)
         {
-          if (visited[neighbors[k].id]) continue;
+          if (visited[neighbors[k].id]) { continue; }
 
           visited[neighbors[k].id] = neighbors[k];
           visitedByRange[i + 1].push(neighbors[k]);
@@ -759,7 +759,7 @@ export default class Star implements Point
   }
   getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star
   {
-    if (qualifier(this)) return this;
+    if (qualifier(this)) { return this; }
 
 
     const visited:
@@ -779,7 +779,7 @@ export default class Star implements Point
       for (let i = 0; i < neighbors.length; i++)
       {
         const neighbor = neighbors[i];
-        if (visited[neighbor.id]) continue;
+        if (visited[neighbor.id]) { continue; }
 
         visited[neighbor.id] = true;
 

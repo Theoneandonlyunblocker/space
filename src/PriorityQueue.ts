@@ -13,8 +13,8 @@ export default class PriorityQueue
 
   isEmpty()
   {
-    if (Object.keys(this.items).length > 0) return false;
-    else return true;
+    if (Object.keys(this.items).length > 0) { return false; }
+    else { return true; }
   }
 
   push(priority: number, data: any)

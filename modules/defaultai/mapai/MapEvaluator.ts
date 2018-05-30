@@ -359,7 +359,7 @@ export default class MapEvaluator
       {
         const numericDistance = parseInt(distance);
         let turnsToReach = Math.floor((numericDistance - 1) / range);
-        if (turnsToReach < 0) turnsToReach = 0;
+        if (turnsToReach < 0) { turnsToReach = 0; }
         const distanceFalloff = 1 / (turnsToReach + 1);
         const adjustedStrength = strength * distanceFalloff;
 

@@ -225,7 +225,7 @@ export default class PathfindingArrow
     {
       const fleet = this.selectedFleets[i];
 
-      if (fleet.location.id === this.currentTarget.id) continue;
+      if (fleet.location.id === this.currentTarget.id) { continue; }
 
       const path = fleet.getPathTo(this.currentTarget);
 

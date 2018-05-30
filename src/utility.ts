@@ -61,7 +61,7 @@ export function getObjectKeysSortedByValue(obj:
     {
       return obj[a] - obj[b];
     }
-    else return obj[b] - obj[a];
+    else { return obj[b] - obj[a]; }
   });
 }
 export function getObjectKeysSortedByValueOfProp(obj:
@@ -75,7 +75,7 @@ export function getObjectKeysSortedByValueOfProp(obj:
     {
       return obj[a][prop] - obj[b][prop];
     }
-    else return obj[b][prop] - obj[a][prop];
+    else { return obj[b][prop] - obj[a][prop]; }
   });
 }
 export function sortObjectsByProperty(objects:
@@ -89,7 +89,7 @@ export function sortObjectsByProperty(objects:
     {
       return a[prop] - b[prop];
     }
-    else return b[prop] - a[prop];
+    else { return b[prop] - a[prop]; }
   });
 }
 
@@ -269,9 +269,9 @@ export function sortByManufactoryCapacityFN(a: Star, b: Star)
   const _a: string = a.name.toLowerCase();
   const _b: string = b.name.toLowerCase();
 
-  if (_a > _b) return 1;
-  else if (_a < _b) return -1;
-  else return 0;
+  if (_a > _b) { return 1; }
+  else if (_a < _b) { return -1; }
+  else { return 0; }
 }
 export function rectContains(rect: {x1: number, x2: number, y1: number, y2: number}, point: Point)
 {
@@ -352,11 +352,12 @@ export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
 // so calling the constructor with "new" is needed
 export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: boolean = false)
 {
-  if (from == null || typeof from != "object") return from;
-  if (from.constructor != Object && from.constructor != Array) return from;
+  if (from == null || typeof from != "object") { return from; }
+  if (from.constructor != Object && from.constructor != Array) { return from; }
   if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function ||
-    from.constructor == String || from.constructor == Number || from.constructor == Boolean)
+    from.constructor == String || from.constructor == Number || from.constructor == Boolean) {
     return new from.constructor(from);
+  }
 
   to = to || new from.constructor();
   const toIterateOver = onlyExtendAlreadyPresent ? to : from;
@@ -503,9 +504,9 @@ export function recursiveRemoveAttribute(parent: HTMLElement, attribute: string)
 
 export function clamp(value: number, min: number, max: number)
 {
-  if (value < min) return min;
-  else if (value > max) return max;
-  else return value;
+  if (value < min) { return min; }
+  else if (value > max) { return max; }
+  else { return value; }
 }
 // http://stackoverflow.com/a/3254334
 export function roundToNearestMultiple(value: number, multiple: number)
@@ -590,7 +591,7 @@ export function getRelativeValue(value: number, min: number, max: number, invers
 {
   if (inverse)
   {
-    if (min === max) return 0;
+    if (min === max) { return 0; }
     else
     {
       return 1 - ((value - min) / (max - min));
@@ -598,7 +599,7 @@ export function getRelativeValue(value: number, min: number, max: number, invers
   }
   else
   {
-    if (min === max) return 1;
+    if (min === max) { return 1; }
     else
     {
       return (value - min) / (max - min);

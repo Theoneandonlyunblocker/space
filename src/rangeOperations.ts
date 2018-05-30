@@ -109,8 +109,8 @@ export function randomSelectFromRanges(ranges: Range[]): number
   for (let i = 0; i < ranges.length; i++)
   {
     const range = ranges[i];
-    if (!isFinite(range.max)) range.max = 1;
-    if (!isFinite(range.min)) range.min = 0;
+    if (!isFinite(range.max)) { range.max = 1; }
+    if (!isFinite(range.min)) { range.min = 0; }
     const weight = range.max - range.min;
 
     totalWeight += weight;
@@ -119,7 +119,7 @@ export function randomSelectFromRanges(ranges: Range[]): number
   {
     const range = ranges[i];
     let relativeWeight = (range.max - range.min) / totalWeight;
-    if (totalWeight === 0) relativeWeight = 1;
+    if (totalWeight === 0) { relativeWeight = 1; }
     currentRelativeWeight += relativeWeight;
     rangesByRelativeWeight[currentRelativeWeight] = range;
   }

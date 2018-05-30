@@ -289,7 +289,7 @@ export default class MapRenderer
   }
   render()
   {
-    if (this.preventRender || !this.isDirty) return;
+    if (this.preventRender || !this.isDirty) { return; }
 
     const layerData = this.currentMapMode.getActiveLayers();
     for (let i = 0; i < layerData.length; i++)

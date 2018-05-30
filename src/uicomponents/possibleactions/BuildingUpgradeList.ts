@@ -73,7 +73,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
 
   render()
   {
-    if (!this.hasAvailableUpgrades()) return null;
+    if (!this.hasAvailableUpgrades()) { return null; }
 
     const upgradeGroups: React.ReactHTMLElement<any>[] = [];
 
@@ -83,9 +83,9 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
       const a = possibleUpgrades[aId][0].parentBuilding.template.displayName;
       const b = possibleUpgrades[bId][0].parentBuilding.template.displayName;
 
-      if (a < b) return -1;
-      else if (a > b) return 1;
-      else return 0;
+      if (a < b) { return -1; }
+      else if (a > b) { return 1; }
+      else { return 0; }
     });
 
     for (let i = 0; i < sortedParentBuildings.length; i++)

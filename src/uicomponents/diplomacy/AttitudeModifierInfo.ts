@@ -78,7 +78,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
 
         const hue = 110 * relativeValue;
         let saturation = 0 + 50 * deviation;
-        if (deviation > 0.3) saturation += 40;
+        if (deviation > 0.3) { saturation += 40; }
         const lightness = 70 - 20 * deviation;
 
         cellProps.style =

@@ -41,7 +41,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
     {
       return 1;
     }
-    else return 0;
+    else { return 0; }
   }
 
   public state: StateType;

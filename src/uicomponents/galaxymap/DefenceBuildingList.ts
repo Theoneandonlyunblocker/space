@@ -21,12 +21,12 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
   {
     const newBuildings = newProps.buildings;
     const oldBuildings = this.props.buildings;
-    if (newBuildings.length !== oldBuildings.length) return true;
+    if (newBuildings.length !== oldBuildings.length) { return true; }
     else
     {
       for (let i = 0; i < newBuildings.length; i++)
       {
-        if (oldBuildings.indexOf(newBuildings[i]) === -1) return true;
+        if (oldBuildings.indexOf(newBuildings[i]) === -1) { return true; }
       }
     }
 

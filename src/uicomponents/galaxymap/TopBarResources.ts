@@ -59,7 +59,7 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
       const resourceType = resourceTypes[i];
       const amount = player.resources[resourceType] || 0;
       const income = resourceIncome[resourceType].amount || 0;
-      if (amount === 0 && income === 0) continue;
+      if (amount === 0 && income === 0) { continue; }
 
       const resourceData =
       {
