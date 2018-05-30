@@ -302,6 +302,7 @@ function makeSelfAbilityEffectData(
     effectTemplate:
     {
       id: name,
+      // tslint:disable-next-line:arrow-return-shorthand
       getDisplayDataForTarget: () => {return {}},
       getUnitsInArea: areaSingle,
       executeAction: actionFN,
