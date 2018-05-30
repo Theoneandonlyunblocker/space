@@ -74,7 +74,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
               notificationLog: this.props.notificationLog,
             }),
         ),
-        //,
+        // ,
         // !Options.debug.enabled ? null : React.DOM.div(
         // {
         //   className: "galaxy-map-debug debug"

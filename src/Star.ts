@@ -225,7 +225,9 @@ export default class Star implements Point
       return building.template.category === "defence";
     }).sort((a, b) =>
     {
-      if (a.template.maxPerType === 1) //hq
+      // TODO 2018.05.30 | more explicit way of checking this
+      // headquarters
+      if (a.template.maxPerType === 1)
       {
         return -1;
       }

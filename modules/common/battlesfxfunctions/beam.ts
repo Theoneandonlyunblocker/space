@@ -23,7 +23,7 @@ import ProtonWrapper from "./ProtonWrapper";
 
 export default function beam(props: SFXParams)
 {
-  //----------INIT GENERAL
+  // ----------INIT GENERAL
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(
     props.userOffset, props.width, "user");
 
@@ -55,7 +55,7 @@ export default function beam(props: SFXParams)
     1.0,
   ];
 
-  //----------INIT PARTICLES
+  // ----------INIT PARTICLES
   const particleContainer = new PIXI.Container();
   // particleContainer.alpha = 0.1;
   mainContainer.addChild(particleContainer);
@@ -86,7 +86,7 @@ export default function beam(props: SFXParams)
 
   const particlesAmountScale = props.width / 700;
 
-  //----------INIT BEAM
+  // ----------INIT BEAM
   const beamFragment = new Beam(
   {
     color: new Color(finalColor[0], finalColor[1], finalColor[2]),
@@ -113,7 +113,7 @@ export default function beam(props: SFXParams)
   beamFragment.draw();
   mainContainer.addChild(beamFragment.displayObject);
 
-  //----------EMITTERS COMMON
+  // ----------EMITTERS COMMON
   const onParticleUpdateFN = (particle: Proton.Particle) =>
   {
     const sprite = <PIXI.DisplayObject> particle.sprite;
@@ -124,7 +124,7 @@ export default function beam(props: SFXParams)
     sprite.scale.x = particle.scale;
     sprite.scale.y = particle.scale;
   };
-  //----------INIT SMALL EMITTER
+  // ----------INIT SMALL EMITTER
   const smallEmitter = new Proton.BehaviourEmitter();
   smallEmitter.p.x = beamOrigin.x + 50;
   smallEmitter.p.y = beamOrigin.y;
@@ -193,7 +193,7 @@ export default function beam(props: SFXParams)
     sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
   };
 
-  //----------INIT SHINY EMITTER
+  // ----------INIT SHINY EMITTER
   const shinyEmitter = new Proton.BehaviourEmitter();
   shinyEmitter.p.x = beamOrigin.x;
   shinyEmitter.p.y = beamOrigin.y;
@@ -245,7 +245,7 @@ export default function beam(props: SFXParams)
   shinyEmitter.emit("once");
 
 
-  //----------INIT SHOCKWAVE
+  // ----------INIT SHOCKWAVE
   const shockWaveSize =
   {
     x: props.width * 3.0,
@@ -279,7 +279,7 @@ export default function beam(props: SFXParams)
 
   mainContainer.addChild(shockWaveFragment.displayObject);
 
-  //----------INIT LIGHTBURST
+  // ----------INIT LIGHTBURST
   const lightBurstSize =
   {
     x: props.height * 1.5,
@@ -304,7 +304,7 @@ export default function beam(props: SFXParams)
 
   mainContainer.addChild(lightBurstFragment.displayObject);
 
-  //----------ANIMATE
+  // ----------ANIMATE
 
   function animate()
   {

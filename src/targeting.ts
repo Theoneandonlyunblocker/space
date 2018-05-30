@@ -14,7 +14,7 @@ import
 } from "./utility";
 
 
-//------TARGETING
+// ------TARGETING
 export type GetBattleTargetsFN = (user: Unit, battle: Battle) => Unit[];
 export const targetSelf: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 {
@@ -42,34 +42,34 @@ export const targetAll: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
   return flatten2dArray(battle.side1.concat(battle.side2)).filter(unit => unit !== null);
 };
 
-//------AREAS
+// ------AREAS
 export type GetUnitsInAreaFN<T = (Unit | null)[]> = (
   user: Unit,
   target: Unit,
   battle: Battle,
 ) => T;
-//**
-//**
-//X*
-//**
+// **
+// **
+// X*
+// **
 export const areaSingle: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   return [target];
 };
 
-//XX
-//XX
-//XX
-//XX
+// XX
+// XX
+// XX
+// XX
 export const areaAll: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   return flatten2dArray(battle.side1.concat(battle.side2));
 };
 
-//**
-//**
-//XX
-//**
+// **
+// **
+// XX
+// **
 export const areaColumn: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   const allRows = battle.side1.concat(battle.side2);
@@ -78,10 +78,10 @@ export const areaColumn: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: B
   return allRows.map(row => row[y]);
 };
 
-//X*
-//X*
-//X*
-//X*
+// X*
+// X*
+// X*
+// X*
 export const areaRow: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   const allRows = battle.side1.concat(battle.side2);
@@ -90,10 +90,10 @@ export const areaRow: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Batt
   return allRows[x];
 };
 
-//**
-//X*
-//X*
-//X*
+// **
+// X*
+// X*
+// X*
 export const areaRowNeighbors: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   const row = areaRow(user, target, battle);
@@ -105,10 +105,10 @@ export const areaRowNeighbors: GetUnitsInAreaFN = (user: Unit, target: Unit, bat
   return row.slice(y1, y2 + 1);
 };
 
-//**
-//X*
-//XX
-//X*
+// **
+// X*
+// XX
+// X*
 export const areaOrthogonalNeighbors: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   const allRows = battle.side1.concat(battle.side2);

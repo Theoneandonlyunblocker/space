@@ -62,7 +62,7 @@ export default class MapVoronoiInfo
           if (!site)
           {
             // draw all border edges
-            //return true;
+            // return true;
 
             // draw all non filler border edges
             maxAllowedFillerSites--;

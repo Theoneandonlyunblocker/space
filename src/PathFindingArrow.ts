@@ -136,7 +136,7 @@ export default class PathfindingArrow
 
     this.currentTarget = star;
     window.setTimeout(this.drawAllCurrentCurves.bind(this), 10);
-    //this.drawAllCurrentCurves();
+    // this.drawAllCurrentCurves();
   }
 
   clearTarget()

@@ -10,7 +10,7 @@ declare interface BattleSFXTemplate
   enemySprite?: (props: SFXParams) => void;
   userOverlay?: (props: SFXParams) => void;
   enemyOverlay?: (props: SFXParams) => void;
-  //emptySpaceOverlay?: (props: SFXParams) => void;
+  // emptySpaceOverlay?: (props: SFXParams) => void;
   battleOverlay?: (props: SFXParams) => void;
 }
 
