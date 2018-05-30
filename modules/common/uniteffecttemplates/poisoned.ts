@@ -1,4 +1,3 @@
-import SFXParams from "../../../src/templateinterfaces/SFXParams";
 import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
 import {adjustHealth} from "../effectactiontemplates/effectActions";
 import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
@@ -36,11 +35,11 @@ const poisoned: UnitEffectTemplate =
       sfx:
       {
         duration: 1200,
-        userOverlay: function(props: SFXParams)
+        userOverlay: (params) =>
         {
           const canvas = <HTMLCanvasElement> document.createElement("canvas");
-          canvas.width = props.width;
-          canvas.height = props.height;
+          canvas.width = params.width;
+          canvas.height = params.height;
           const ctx = canvas.getContext("2d");
           if (!ctx)
           {

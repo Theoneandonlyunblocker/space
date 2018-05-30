@@ -690,7 +690,7 @@ export default class Unit
     for (let i = 0; i < allSkills.length; i++)
     {
       const skill = allSkills[i];
-      ["atBattleStart", "atTurnStart", "inBattlePrep"].forEach(function(phase)
+      ["atBattleStart", "atTurnStart", "inBattlePrep"].forEach(phase =>
       {
         if (skill[phase])
         {
@@ -1068,10 +1068,7 @@ export default class Unit
       guardAmount: this.battleStats.guardAmount,
       guardCoverage: this.battleStats.guardCoverage,
       captureChance: this.battleStats.captureChance,
-      statusEffects: this.battleStats.statusEffects.map(function(statusEffect)
-      {
-        return statusEffect.serialize();
-      }),
+      statusEffects: this.battleStats.statusEffects.map(statusEffect => statusEffect.serialize()),
       queuedAction: !this.battleStats.queuedAction ? null :
       {
         abilityTemplateKey: this.battleStats.queuedAction.ability.type,
@@ -1097,15 +1094,8 @@ export default class Unit
       offensiveBattlesFoughtThisTurn: this.offensiveBattlesFoughtThisTurn,
 
       baseAttributes: this.baseAttributes.serialize(),
-      abilityTemplateTypes: this.abilities.map(function(ability: AbilityTemplate)
-      {
-        return ability.type;
-      }),
-      passiveSkillTemplateTypes: this.passiveSkills.map(function(
-        passiveSkill: PassiveSkillTemplate)
-      {
-        return passiveSkill.type;
-      }),
+      abilityTemplateTypes: this.abilities.map(abilityTemplate => abilityTemplate.type),
+      passiveSkillTemplateTypes: this.passiveSkills.map(passiveSkillTemplate => passiveSkillTemplate.type),
 
       experienceForCurrentLevel: this.experienceForCurrentLevel,
       level: this.level,

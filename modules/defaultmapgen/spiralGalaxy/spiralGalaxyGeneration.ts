@@ -253,7 +253,7 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
   // get start positions in start regions
   const startPositions = startRegions.map(startRegion =>
   {
-    const starsByDistanceFromCenter = startRegion.stars.slice(0).sort(function(a: Star, b: Star)
+    const starsByDistanceFromCenter = startRegion.stars.slice(0).sort((a, b) =>
     {
       return mapGenDataByStarId[b.id].mapGenDistance - mapGenDataByStarId[a.id].mapGenDistance;
     });
@@ -276,24 +276,20 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
     star.buildManufactory();
   }
 
-  // set star distance from player
-  (function setDistanceFromPlayer()
+  const starIsPlayerOwned = ((star: Star) =>
   {
-    const isPlayerOwnedFN = ((star: Star) =>
-    {
-      return star.owner && !star.owner.isIndependent;
-    });
+    return star.owner && !star.owner.isIndependent;
+  });
 
-    stars.forEach(star =>
-    {
-      const nearestPlayerStar = star.getNearestStarForQualifier(isPlayerOwnedFN);
-      const distanceToPlayer = star.getDistanceToStar(nearestPlayerStar);
-      mapGenDataByStarId[star.id].distanceFromPlayerOwnedLocation = distanceToPlayer;
-    });
-  })();
+  stars.forEach(star =>
+  {
+    const nearestPlayerStar = star.getNearestStarForQualifier(starIsPlayerOwned);
+    const distanceToPlayer = star.getDistanceToStar(nearestPlayerStar);
+    mapGenDataByStarId[star.id].distanceFromPlayerOwnedLocation = distanceToPlayer;
+  });
 
   // set races
-  const racePlacerFN = function(sector: Region, race: RaceTemplate)
+  const racePlacerFN = (sector: Region, race: RaceTemplate) =>
   {
     const existingStarsWithRace = sector.stars.filter(star => Boolean(star.race));
     const existingRaceInSector = existingStarsWithRace.length > 0 ? existingStarsWithRace[0].race : null;
@@ -312,7 +308,7 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
   );
 
   // set resources
-  const resourcePlacerFN = function(sector: Region, resource: ResourceTemplate)
+  const resourcePlacerFN = (sector: Region, resource: ResourceTemplate) =>
   {
     sector.stars[0].setResource(resource);
   };

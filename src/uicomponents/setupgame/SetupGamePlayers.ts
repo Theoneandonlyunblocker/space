@@ -120,10 +120,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
     this.setState(
     {
-      playerKeys: this.state.playerKeys.filter(function(playerId: number)
-      {
-        return toRemove.indexOf(playerId) === -1;
-      }),
+      playerKeys: this.state.playerKeys.filter(playerId => toRemove.indexOf(playerId) === -1),
     }, () =>
     {
       this.cleanSetupComponentsById();

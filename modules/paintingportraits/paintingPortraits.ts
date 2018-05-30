@@ -1,4 +1,3 @@
-import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
@@ -17,7 +16,7 @@ const paintingPortraits: ModuleFile =
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
   supportedLanguages: "all",
-  constructModule: function(moduleData: ModuleData)
+  constructModule: (moduleData) =>
   {
     moduleData.copyTemplates(paintingPortraitTemplates, "Portraits");
 

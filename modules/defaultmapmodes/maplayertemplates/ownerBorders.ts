@@ -19,7 +19,7 @@ const ownerBorders: MapRendererLayerTemplate =
   interactive: false,
   isUsedForCameraBounds: true,
   initialAlpha: 0.7,
-  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
+  drawingFunction: (map, perspectivePlayer) =>
   {
     const doc = new PIXI.Container();
     if (Options.display.borderWidth <= 0)

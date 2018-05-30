@@ -16,11 +16,11 @@ import
 
 //------TARGETING
 export type GetBattleTargetsFN = (user: Unit, battle: Battle) => Unit[];
-export const targetSelf: GetBattleTargetsFN = function(user: Unit, battle: Battle)
+export const targetSelf: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 {
   return [user];
 };
-export const targetNextRow: GetBattleTargetsFN = function(user: Unit, battle: Battle)
+export const targetNextRow: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 {
   const ownPosition = user.battleStats.position;
   const increment = user.battleStats.side === "side1" ? 1 : -1;
@@ -29,15 +29,15 @@ export const targetNextRow: GetBattleTargetsFN = function(user: Unit, battle: Ba
 
   return fullFormation[ownPosition[0] + increment].filter(unit => unit !== null);
 };
-export const targetAllies: GetBattleTargetsFN = function(user: Unit, battle: Battle)
+export const targetAllies: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 {
   return battle.getUnitsForSide(user.battleStats.side);
 };
-export const targetEnemies: GetBattleTargetsFN = function(user: Unit, battle: Battle)
+export const targetEnemies: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 {
   return battle.getUnitsForSide(reverseSide(user.battleStats.side));
 };
-export const targetAll: GetBattleTargetsFN = function(user: Unit, battle: Battle)
+export const targetAll: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 {
   return flatten2dArray(battle.side1.concat(battle.side2)).filter(unit => unit !== null);
 };
@@ -52,7 +52,7 @@ export type GetUnitsInAreaFN<T = (Unit | null)[]> = (
 //**
 //X*
 //**
-export const areaSingle: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
+export const areaSingle: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   return [target];
 };
@@ -61,7 +61,7 @@ export const areaSingle: GetUnitsInAreaFN = function(user: Unit, target: Unit, b
 //XX
 //XX
 //XX
-export const areaAll: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
+export const areaAll: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   return flatten2dArray(battle.side1.concat(battle.side2));
 };
@@ -70,7 +70,7 @@ export const areaAll: GetUnitsInAreaFN = function(user: Unit, target: Unit, batt
 //**
 //XX
 //**
-export const areaColumn: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
+export const areaColumn: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   const allRows = battle.side1.concat(battle.side2);
   const y = target.battleStats.position[1];
@@ -82,7 +82,7 @@ export const areaColumn: GetUnitsInAreaFN = function(user: Unit, target: Unit, b
 //X*
 //X*
 //X*
-export const areaRow: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
+export const areaRow: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   const allRows = battle.side1.concat(battle.side2);
   const x = target.battleStats.position[0];
@@ -94,7 +94,7 @@ export const areaRow: GetUnitsInAreaFN = function(user: Unit, target: Unit, batt
 //X*
 //X*
 //X*
-export const areaRowNeighbors: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
+export const areaRowNeighbors: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   const row = areaRow(user, target, battle);
 
@@ -109,7 +109,7 @@ export const areaRowNeighbors: GetUnitsInAreaFN = function(user: Unit, target: U
 //X*
 //XX
 //X*
-export const areaOrthogonalNeighbors: GetUnitsInAreaFN = function(user: Unit, target: Unit, battle: Battle)
+export const areaOrthogonalNeighbors: GetUnitsInAreaFN = (user: Unit, target: Unit, battle: Battle) =>
 {
   const allRows = battle.side1.concat(battle.side2);
   const x = target.battleStats.position[0];

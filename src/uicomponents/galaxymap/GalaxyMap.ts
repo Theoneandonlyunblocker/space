@@ -101,7 +101,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
         //   React.DOM.button(
         //   {
         //     className: "debug",
-        //     onClick: function(e: React.FormEvent)
+        //     onClick: (e: React.FormEvent) =>
         //     {
         //       const target = e.currentTarget;
 

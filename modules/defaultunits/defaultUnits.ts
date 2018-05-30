@@ -3,7 +3,6 @@
 import UnitArchetypes from "./UnitArchetypes";
 import UnitTemplates from "./UnitTemplates";
 
-import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
@@ -26,14 +25,14 @@ const defaultUnits: ModuleFile =
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
   supportedLanguages: [Languages.en],
-  loadAssets: function(onLoaded: () => void)
+  loadAssets: (onLoaded) =>
   {
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "units";
 
     loader.add(spriteSheetKey, "modules/defaultunits/img/sprites/units.json");
 
-    loader.load(function()
+    loader.load(() =>
     {
       const json = loader.resources[spriteSheetKey].data;
       const image = loader.resources[spriteSheetKey + "_image"].data;
@@ -42,7 +41,7 @@ const defaultUnits: ModuleFile =
       onLoaded();
     });
   },
-  constructModule: function(moduleData: ModuleData)
+  constructModule: (moduleData) =>
   {
     moduleData.copyTemplates<UnitTemplate>(UnitTemplates, "Units");
     moduleData.copyTemplates<UnitArchetype>(UnitArchetypes, "UnitArchetypes");

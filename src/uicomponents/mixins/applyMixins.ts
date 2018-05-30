@@ -18,12 +18,13 @@ function wrapLifeCycleFunction(base: React.Component<any, any>, functionName: Li
   const originalFunction = base[functionName];
   const mixinsWithFunction = mixins.filter(mixin => Boolean(mixin[functionName]));
 
-  base[functionName] = function(...args: any[])
+  base[functionName] = (...args: any[]) =>
   {
     mixinsWithFunction.forEach(mixin =>
     {
       mixin[functionName].apply(mixin, args);
     });
+
     if (originalFunction)
     {
       originalFunction.apply(base, args);
@@ -35,12 +36,13 @@ function wrapRenderFunction(base: React.Component<any, any>, mixins: MixinBase<a
   const originalFunction = base.render;
   const mixinsWithFunction = mixins.filter(mixin => Boolean(mixin.onRender));
 
-  base.render = function(...args: any[])
+  base.render = (...args: any[]) =>
   {
     mixinsWithFunction.forEach(mixin =>
     {
       mixin.onRender!.call(mixin);
     });
+
     return originalFunction.apply(base, args);
   };
 }

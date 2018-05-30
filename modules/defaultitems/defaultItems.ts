@@ -1,6 +1,5 @@
 import ItemTemplates from "./ItemTemplates";
 
-import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
@@ -21,7 +20,7 @@ const defaultItems: ModuleFile =
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
   supportedLanguages: [Languages.en],
-  constructModule: function(moduleData: ModuleData)
+  constructModule: (moduleData) =>
   {
     moduleData.copyTemplates<ItemTemplate>(ItemTemplates, "Items");
 

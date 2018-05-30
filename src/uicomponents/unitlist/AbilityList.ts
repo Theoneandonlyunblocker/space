@@ -35,7 +35,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
       [abilityType: string]: number;
     } = {};
 
-    abilities.sort(function(_a, _b)
+    abilities.sort((_a, _b) =>
     {
       if (_a.mainEffect && !_b.mainEffect) return -1;
       else if (_b.mainEffect && !_a.mainEffect) return 1;

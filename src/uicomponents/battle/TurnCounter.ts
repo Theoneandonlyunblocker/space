@@ -4,7 +4,6 @@ import * as ReactTransitionGroup from "react-transition-group";
 
 const ReactCSSTransitionGroup = React.createFactory(ReactTransitionGroup.CSSTransitionGroup);
 
-
 const FirstChild = React.createClass(
 {
   render: function(this: any)

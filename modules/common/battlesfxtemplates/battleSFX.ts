@@ -53,7 +53,7 @@ export const videoTest: BattleSFXTemplate =
 {
   duration: 1000,
   battleOverlay: makeSFXFromVideo.bind(null, "img/bushiAttack.webm",
-    function(sprite: PIXI.Sprite)
+    (sprite: PIXI.Sprite) =>
     {
       sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
       attachShaderToSprite(sprite, new BlackToAlphaFilter());

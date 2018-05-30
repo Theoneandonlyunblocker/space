@@ -134,10 +134,7 @@ export default class ProtonWrapper
   }
   public addInitializeToExistingParticles(emitter: Proton.Emitter, initialize: Proton.Initialize)
   {
-    emitter.particles.forEach(function(particle: Proton.Particle)
-    {
-      initialize.initialize(particle);
-    });
+    emitter.particles.forEach(particle => initialize.initialize(particle));
 
     emitter.addInitialize(initialize);
   }

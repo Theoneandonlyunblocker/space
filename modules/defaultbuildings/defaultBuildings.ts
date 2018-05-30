@@ -2,7 +2,6 @@
 
 import BuildingTemplates from "./BuildingTemplates";
 
-import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
@@ -24,12 +23,12 @@ const defaultBuildings: ModuleFile =
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
   supportedLanguages: [Languages.en],
-  loadAssets: function(onLoaded: () => void)
+  loadAssets: (onLoaded) =>
   {
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "buildings";
     loader.add(spriteSheetKey, "modules/defaultbuildings/img/buildings.json");
-    loader.load(function()
+    loader.load(() =>
     {
       const json = loader.resources[spriteSheetKey].data;
       const image = loader.resources[spriteSheetKey + "_image"].data;
@@ -38,7 +37,7 @@ const defaultBuildings: ModuleFile =
       onLoaded();
     });
   },
-  constructModule: function(moduleData: ModuleData)
+  constructModule: (moduleData) =>
   {
     moduleData.copyTemplates<BuildingTemplate>(BuildingTemplates, "Buildings");
 

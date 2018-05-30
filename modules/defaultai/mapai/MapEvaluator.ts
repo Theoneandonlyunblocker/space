@@ -174,16 +174,13 @@ export default class MapEvaluator
   {
     let evaluation = 0;
 
-    const getDistanceFalloff = function(distance: number)
-    {
-      return 1 / (distance + 1);
-    };
     const inRange = star.getLinkedInRange(range).byRange;
 
     for (const distanceString in inRange)
     {
       const stars = inRange[distanceString];
-      const distanceFalloff = getDistanceFalloff(parseInt(distanceString));
+      const distance = parseInt(distanceString);
+      const distanceFalloff = 1 / (distance + 1);
 
       for (let i = 0; i < stars.length; i++)
       {
@@ -345,11 +342,6 @@ export default class MapEvaluator
 
     const fleets = this.getVisibleFleetsOfPlayer(player);
 
-    function getDistanceFalloff(distance: number)
-    {
-      return 1 / (distance + 1);
-    }
-
     for (let i = 0; i < fleets.length; i++)
     {
       const fleet = fleets[i];
@@ -368,7 +360,7 @@ export default class MapEvaluator
         const numericDistance = parseInt(distance);
         let turnsToReach = Math.floor((numericDistance - 1) / range);
         if (turnsToReach < 0) turnsToReach = 0;
-        const distanceFalloff = getDistanceFalloff(turnsToReach);
+        const distanceFalloff = 1 / (turnsToReach + 1);
         const adjustedStrength = strength * distanceFalloff;
 
         for (let j = 0; j < inFleetRange[distance].length; j++)
@@ -414,7 +406,7 @@ export default class MapEvaluator
   }
   getVisibleStarsOfPlayer(player: Player): Star[]
   {
-    return this.player.getVisibleStars().filter(function(star: Star)
+    return this.player.getVisibleStars().filter(star =>
     {
       return star.owner === player;
     });
@@ -565,13 +557,10 @@ export default class MapEvaluator
       [starId: number]: Star;
     } = {};
 
-    const revealedStarsOfPlayer: Star[] = this.player.getRevealedStars().filter(function(star: Star)
-    {
-      return star.owner === player;
-    });
+    const revealedStarsOfPlayer: Star[] = this.player.getRevealedStars().filter(star => star.owner === player);
     const visibleFleetsOfPlayer: Fleet[] = this.getVisibleFleetsOfPlayer(player);
 
-    const processDetectionSource = function(source: Star, detectionRange: number, visionRange: number)
+    const processDetectionSource = (source: Star, detectionRange: number, visionRange: number) =>
     {
       const detected = source.getLinkedInRange(detectionRange).all;
       for (let i = 0; i < detected.length; i++)

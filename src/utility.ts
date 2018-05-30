@@ -55,7 +55,7 @@ export function getObjectKeysSortedByValue(obj:
   [key: string]: number;
 }, order: string)
 {
-  return Object.keys(obj).sort(function(a, b)
+  return Object.keys(obj).sort((a, b) =>
   {
     if (order === "asc")
     {
@@ -69,7 +69,7 @@ export function getObjectKeysSortedByValueOfProp(obj:
   [key: string]: any;
 }, prop: string, order: string)
 {
-  return Object.keys(obj).sort(function(a, b)
+  return Object.keys(obj).sort((a, b) =>
   {
     if (order === "asc")
     {
@@ -83,7 +83,7 @@ export function sortObjectsByProperty(objects:
   [key: string]: any;
 }[], prop: string, order: string)
 {
-  return objects.sort(function(a, b)
+  return objects.sort((a, b) =>
   {
     if (order === "asc")
     {
@@ -418,7 +418,7 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
   {
     target = target || [];
     dst = dst.concat(target);
-    src.forEach(function(e: any, i: any)
+    (<any[]>src).forEach((e, i) =>
     {
       if (typeof dst[i] === "undefined")
       {
@@ -441,12 +441,12 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
   {
     if (target && typeof target === "object")
     {
-      Object.keys(target).forEach(function (key)
+      Object.keys(target).forEach(key =>
       {
         dst[key] = target[key];
       });
     }
-    Object.keys(src).forEach(function (key)
+    Object.keys(src).forEach(key =>
     {
       if (typeof src[key] !== "object" || !src[key])
       {
@@ -561,7 +561,7 @@ export function getMatchingLocalstorageItemsByDate(stringToMatch: string)
     }
   }
 
-  matchingItems.sort(function(a, b)
+  matchingItems.sort((a, b) =>
   {
     return Date.parse(b.date) - Date.parse(a.date);
   });

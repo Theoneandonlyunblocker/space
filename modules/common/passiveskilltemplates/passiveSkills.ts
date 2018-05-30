@@ -98,7 +98,7 @@ export const medic: PassiveSkillTemplate =
 
   atTurnStart:
   [
-    function(user: Unit)
+    (user) =>
     {
       const star = user.fleet.location;
       const allFriendlyUnits = star.getUnits(player => player === user.fleet.player);

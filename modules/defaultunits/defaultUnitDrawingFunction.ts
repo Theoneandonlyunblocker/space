@@ -1,11 +1,9 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-import SFXParams from "../../src/templateinterfaces/SFXParams";
 import UnitDrawingFunction from "../../src/templateinterfaces/UnitDrawingFunction";
 
 
 import app from "../../src/App"; // TODO global
-import Unit from "../../src/Unit";
 import UnitDrawingFunctionData from "../../src/UnitDrawingFunctionData";
 import
 {
@@ -14,17 +12,14 @@ import
 } from "../../src/utility";
 
 
-const defaultUnitDrawingFunction: UnitDrawingFunction = function(
-  unit: Unit,
-  sfxParams: SFXParams,
-)
+const defaultUnitDrawingFunction: UnitDrawingFunction = (unit, sfxParams) =>
 {
-  var spriteTemplate = unit.template.sprite;
-  var texture = PIXI.Texture.fromFrame(spriteTemplate.imageSrc);
+  const spriteTemplate = unit.template.sprite;
+  const texture = PIXI.Texture.fromFrame(spriteTemplate.imageSrc);
 
-  var container = new PIXI.Container;
+  const container = new PIXI.Container;
 
-  var props =
+  const props =
   {
     zDistance: 8,
     xDistance: 5,
@@ -34,27 +29,27 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     scalingFactor: 0.04,
   };
 
-  var maxUnitsPerColumn = props.maxUnitsPerColumn;
+  let maxUnitsPerColumn = props.maxUnitsPerColumn;
   const maxColumns = 3;
   const isConvex = props.curvature >= 0;
   const curvature = Math.abs(props.curvature);
 
-  var image = app.images[spriteTemplate.imageSrc];
+  const image = app.images[spriteTemplate.imageSrc];
 
-  var zDistance: number = props.zDistance;
-  var xDistance: number = props.xDistance;
-  var unitsToDraw: number;
+  let zDistance: number = props.zDistance;
+  const xDistance: number = props.xDistance;
+  let unitsToDraw: number;
   if (!unit.template.isSquadron)
   {
     unitsToDraw = 1;
   }
   else
   {
-    var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
+    const lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
     unit.lastHealthDrawnAt = unit.currentHealth;
     unitsToDraw = Math.round(lastHealthDrawnAt * 0.04);
-    var heightRatio = 25 / image.height;
-    heightRatio = Math.min(heightRatio, 1.25);
+    const desiredHeightRatio = 25 / image.height;
+    const heightRatio = Math.min(desiredHeightRatio, 1.25);
     maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
     unitsToDraw = Math.round(unitsToDraw * heightRatio);
     zDistance *= (1 / heightRatio);
@@ -62,24 +57,24 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
     unitsToDraw = clamp(unitsToDraw, 1, maxUnitsPerColumn * maxColumns);
   }
 
-  var rotationAngle = Math.PI / 180 * props.rotationAngle;
-  var sA = Math.sin(rotationAngle);
-  var cA = Math.cos(rotationAngle);
+  const rotationAngle = Math.PI / 180 * props.rotationAngle;
+  const sA = Math.sin(rotationAngle);
+  const cA = Math.cos(rotationAngle);
 
-  var rotationMatrix =
+  const rotationMatrix =
   [
     1, 0, 0,
     0, cA, -sA,
     0, sA, cA,
   ];
 
-  var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
+  const minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
 
-  var yPadding = Math.min(sfxParams.height * 0.1, 30);
-  var desiredHeight = sfxParams.height - yPadding;
+  const yPadding = Math.min(sfxParams.height * 0.1, 30);
+  const desiredHeight = sfxParams.height - yPadding;
 
-  var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
-  var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
+  const averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
+  const spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
   zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
 
   const boundingBox:

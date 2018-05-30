@@ -11,7 +11,7 @@ const starLinks: MapRendererLayerTemplate =
   displayName: "Links",
   interactive: false,
   isUsedForCameraBounds: false,
-  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
+  drawingFunction: (map, perspectivePlayer) =>
   {
     const doc = new PIXI.Container();
 

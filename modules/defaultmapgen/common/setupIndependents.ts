@@ -42,7 +42,7 @@ export default function setupIndependents(props:
   const starsAtMaxDistance = starsByDistance[maxDistanceFromPlayer];
   const commanderStar = getMostSuitableCommanderStarFromStars(starsAtMaxDistance, props.mapGenDataByStarId);
 
-  const globalMaxDistanceFromPlayer: number = (function()
+  const globalMaxDistanceFromPlayer: number = (() =>
   {
     let maxDistance = 0;
 

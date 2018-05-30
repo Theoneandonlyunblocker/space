@@ -254,7 +254,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
             }, localize("autoFormation")()),
             React.DOM.button(
             {
-              onClick: function()
+              onClick: () =>
               {
                 app.reactUI.switchScene("galaxyMap");
               },
@@ -268,24 +268,24 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 battlePrep.humanFormation,
                 humanFormationValidity,
               ),
-              onClick: function()
+              onClick: () =>
               {
                 const battle = battlePrep.makeBattle();
                 app.reactUI.battle = battle;
                 app.reactUI.switchScene("battle");
-              }.bind(this),
+              },
             }, localize("startBattle")()),
             !Options.debug.enabled ? null : React.DOM.button(
             {
               className: "battle-prep-controls-button",
-              onClick: function()
+              onClick: () =>
               {
                 const battle = battlePrep.makeBattle();
                 const simulator = new BattleSimulator(battle);
                 simulator.simulateBattle();
                 battle.isSimulated = false;
                 simulator.finishBattle();
-              }.bind(this),
+              },
             }, localize("simulateBattle")()),
           ),
           React.DOM.div({className: "battle-prep-left-lower"}, leftLowerElement),

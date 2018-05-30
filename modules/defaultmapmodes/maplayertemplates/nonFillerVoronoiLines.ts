@@ -11,7 +11,7 @@ const nonFillerVoronoiLines: MapRendererLayerTemplate =
   displayName: "Star borders",
   interactive: false,
   isUsedForCameraBounds: true,
-  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
+  drawingFunction: (map, perspectivePlayer) =>
   {
     const doc = new PIXI.Container();
 

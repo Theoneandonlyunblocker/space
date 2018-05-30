@@ -18,21 +18,21 @@ const nonFillerStars: MapRendererLayerTemplate =
   displayName: "Stars",
   interactive: true,
   isUsedForCameraBounds: false,
-  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
+  drawingFunction: (map, perspectivePlayer) =>
   {
     const doc = new PIXI.Container();
 
     const points = perspectivePlayer ? perspectivePlayer.getRevealedStars() : map.stars;
 
-    const onClickFN = function(star: Star)
+    const onClickFN = (star: Star) =>
     {
       eventManager.dispatchEvent("starClick", star);
     };
-    const mouseOverFN = function(star: Star)
+    const mouseOverFN = (star: Star) =>
     {
       eventManager.dispatchEvent("hoverStar", star);
     };
-    const mouseOutFN = function(event: PIXI.interaction.InteractionEvent)
+    const mouseOutFN = (event: PIXI.interaction.InteractionEvent) =>
     {
       eventManager.dispatchEvent("clearHover");
     };
@@ -76,7 +76,7 @@ const nonFillerStars: MapRendererLayerTemplate =
 
     // cant be set on gfx as touchmove and touchend only register
     // on the object that had touchstart called on it
-    doc.on("touchmove", function(event: PIXI.interaction.InteractionEvent)
+    doc.on("touchmove", (event: PIXI.interaction.InteractionEvent) =>
     {
       const local = event.data.getLocalPosition(doc);
       const starAtLocal = map.voronoi.getStarAtPoint(local);

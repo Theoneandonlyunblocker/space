@@ -44,10 +44,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
 
     const allKeys = Object.keys(localStorage);
 
-    const saveKeys = allKeys.filter(function(key)
-    {
-      return (key.indexOf("Save") > -1);
-    });
+    const saveKeys = allKeys.filter(key => key.indexOf("Save") !== -1);
 
     for (let i = 0; i < saveKeys.length; i++)
     {

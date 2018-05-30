@@ -4,7 +4,6 @@ import FillerPoint from "./FillerPoint";
 import GalaxyMap from "./GalaxyMap";
 import MapVoronoiInfo from "./MapVoronoiInfo";
 import Player from "./Player";
-import Point from "./Point";
 import Star from "./Star";
 import VoronoiCell from "./VoronoiCell";
 
@@ -87,10 +86,10 @@ export default class MapGenResult
       star.basisY = star.y;
     }
 
-    relaxVoronoi(voronoiInfo.diagram, function(point: Point)
+    relaxVoronoi(voronoiInfo.diagram, point =>
     {
-      const castedPoint = <Star> point;
-      const isFiller = !isFinite(castedPoint.id);
+      const isFiller = !isFinite((<Star>point).id);
+
       // dont move filler points
       return isFiller ? 0 : 1;
     });

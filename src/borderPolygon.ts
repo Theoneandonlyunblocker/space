@@ -210,9 +210,10 @@ export function convertHalfEdgeDataToOffset(halfEdgeData:
   halfEdge: any;
 }[])
 {
-  const convertedToPoints = halfEdgeData.map(function(data)
+  const convertedToPoints = halfEdgeData.map(data =>
   {
     const v1 = data.halfEdge.getStartpoint();
+
     return(
     {
       x: v1.x,

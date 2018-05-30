@@ -23,14 +23,14 @@ const starOwners: MapRendererLayerTemplate =
   interactive: false,
   isUsedForCameraBounds: true,
   initialAlpha: 0.5,
-  destroy: function()
+  destroy: () =>
   {
     for (const key in occupationShaders)
     {
       delete occupationShaders[key];
     }
   },
-  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
+  drawingFunction: (map, perspectivePlayer) =>
   {
     const doc = new PIXI.Container();
     const points = perspectivePlayer ? perspectivePlayer.getRevealedStars() : map.stars;

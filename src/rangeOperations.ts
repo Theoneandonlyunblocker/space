@@ -126,10 +126,7 @@ export function randomSelectFromRanges(ranges: Range[]): number
 
   const rand = Math.random();
 
-  const sortedWeights = Object.keys(rangesByRelativeWeight).map(function(w)
-  {
-    return parseFloat(w);
-  }).sort();
+  const sortedWeights = Object.keys(rangesByRelativeWeight).map(weight => parseFloat(weight)).sort();
 
   for (let i = 0; i < sortedWeights.length; i++)
   {

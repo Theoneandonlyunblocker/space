@@ -4,8 +4,6 @@ import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendere
 
 import app from "../../../src/App";
 import {Fleet} from "../../../src/Fleet";
-import GalaxyMap from "../../../src/GalaxyMap";
-import Player from "../../../src/Player";
 import eventManager from "../../../src/eventManager";
 
 
@@ -15,7 +13,7 @@ const fleetsLayerTemplate: MapRendererLayerTemplate =
   displayName: "Fleets",
   interactive: true,
   isUsedForCameraBounds: false,
-  destroy: function()
+  destroy: () =>
   {
     for (const fleetSize in fleetTextTextureCache)
     {
@@ -24,17 +22,17 @@ const fleetsLayerTemplate: MapRendererLayerTemplate =
       delete fleetTextTextureCache[fleetSize];
     }
   },
-  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
+  drawingFunction: (map, perspectivePlayer) =>
   {
     const doc = new PIXI.Container();
 
     const points = perspectivePlayer ? perspectivePlayer.getVisibleStars() : map.stars;
 
-    const mouseOverFN = function(fleet: Fleet)
+    const mouseOverFN = (fleet: Fleet) =>
     {
       eventManager.dispatchEvent("hoverStar", fleet.location);
     };
-    const fleetClickFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
+    const fleetClickFN = (fleet: Fleet, event: PIXI.interaction.InteractionEvent) =>
     {
       const originalEvent = <MouseEvent> event.data.originalEvent;;
       if (originalEvent.button === 0)
@@ -137,7 +135,7 @@ function getFleetTextTexture(fleet: Fleet)
     text.getBounds();
 
     fleetTextTextureCache[fleetSize] = app.renderer.renderer.generateTexture(text);
-    window.setTimeout(function()
+    window.setTimeout(() =>
     {
       text.texture.destroy(true);
     }, 0);

@@ -3,7 +3,6 @@
 import MapLayerTemplates from "./MapLayerTemplates";
 import MapModeTemplates from "./MapModeTemplates";
 
-import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
@@ -25,14 +24,14 @@ const defaultMapModes: ModuleFile =
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.Game,
   supportedLanguages: [Languages.en],
-  loadAssets: function(onLoaded: () => void)
+  loadAssets: (onLoaded) =>
   {
     const loader = new PIXI.loaders.Loader();
 
     loader.add("modules/defaultmapmodes/img/fowTexture.png");
     loader.load(onLoaded);
   },
-  constructModule: function(moduleData: ModuleData)
+  constructModule: (moduleData) =>
   {
     moduleData.copyTemplates<MapRendererLayerTemplate>(MapLayerTemplates, "MapRendererLayers");
     moduleData.copyTemplates<MapRendererMapModeTemplate>(MapModeTemplates, "MapRendererMapModes");

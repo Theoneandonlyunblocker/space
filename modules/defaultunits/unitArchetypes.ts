@@ -1,8 +1,6 @@
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 
-import Unit from "../../src/Unit";
-
 
 export const combat: UnitArchetype =
 {
@@ -47,9 +45,9 @@ export const defence: UnitArchetype =
     ROW_FRONT: 1,
     ROW_BACK: 0.5,
   },
-  scoreMultiplierForRowFN: function(row: string, rowUnits: Unit[], enemyUnits: Unit[])
+  scoreMultiplierForRowFN: (row, rowUnits, enemyUnits, enemyFormation) =>
   {
-    var multiplier = (row === "ROW_BACK" ? 0.7 : 1);
+    const multiplier = (row === "ROW_BACK" ? 0.7 : 1);
 
     const unitDefenceThreshhold = 6;
     const totalDefenceUnderThreshhold = rowUnits.filter(unit => Boolean(unit)).map(unit =>

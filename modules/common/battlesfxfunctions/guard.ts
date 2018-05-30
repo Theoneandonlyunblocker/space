@@ -32,7 +32,7 @@ export default function guard(props: SFXParams)
   const travelTime = 0.3;
   let hasTriggeredEffect = false;
 
-  const syncUniformsFN = function(time: number)
+  const syncUniformsFN = (time: number) =>
   {
     if (time < travelTime)
     {

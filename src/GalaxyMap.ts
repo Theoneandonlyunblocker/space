@@ -57,15 +57,9 @@ export default class GalaxyMap
   {
     const data: GalaxyMapSaveData =
     {
-      stars: this.stars.map(function(star)
-      {
-        return star.serialize();
-      }),
+      stars: this.stars.map(star => star.serialize()),
 
-      fillerPoints: this.fillerPoints.map(function(fillerPoint)
-      {
-        return fillerPoint.serialize();
-      }),
+      fillerPoints: this.fillerPoints.map(fillerPoint => fillerPoint.serialize()),
 
       width: this.width,
       height: this.height,

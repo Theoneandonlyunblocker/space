@@ -220,7 +220,7 @@ export function makeSectors(
             frontierSortScores[star.id] = borderScore - connectedness;
           });
 
-          frontier.sort(function(a: Star, b: Star)
+          frontier.sort((a, b) =>
           {
             return frontierSortScores[b.id] - frontierSortScores[a.id];
           });

@@ -1,7 +1,6 @@
 import AttitudeModifierTemplates from "./AttitudeModifierTemplates";
 import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";
 
-import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import {setAttitudeModifierOverride} from "../../src/setDynamicTemplateProperties";
@@ -23,7 +22,7 @@ const defaultAttitudeModifiers: ModuleFile =
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
   supportedLanguages: [Languages.en],
-  constructModule: function(moduleData: ModuleData)
+  constructModule: (moduleData) =>
   {
     setAttitudeModifierOverride(AttitudeModifierTemplates);
     moduleData.copyTemplates<AttitudeModifierTemplate>(AttitudeModifierTemplates, "AttitudeModifiers");

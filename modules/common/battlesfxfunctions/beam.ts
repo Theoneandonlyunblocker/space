@@ -114,7 +114,7 @@ export default function beam(props: SFXParams)
   mainContainer.addChild(beamFragment.displayObject);
 
   //----------EMITTERS COMMON
-  const onParticleUpdateFN = function(particle: Proton.Particle)
+  const onParticleUpdateFN = (particle: Proton.Particle) =>
   {
     const sprite = <PIXI.DisplayObject> particle.sprite;
 
@@ -174,7 +174,7 @@ export default function beam(props: SFXParams)
   protonWrapper.addEmitter(smallEmitter, "smallParticles");
 
   const smallParticleFilter = new ShinyParticleFilter();
-  const syncSmallParticleUniforms = function(time: number)
+  const syncSmallParticleUniforms = (time: number) =>
   {
     const lifeLeft = 1.0 - time;
 
@@ -187,7 +187,7 @@ export default function beam(props: SFXParams)
   };
 
   protonWrapper.onParticleUpdated["smallParticles"] = onParticleUpdateFN;
-  protonWrapper.onSpriteCreated["smallParticles"] = function(sprite: PIXI.Sprite)
+  protonWrapper.onSpriteCreated["smallParticles"] = (sprite) =>
   {
     attachShaderToSprite(sprite, smallParticleFilter);
     sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
@@ -219,7 +219,7 @@ export default function beam(props: SFXParams)
   protonWrapper.addEmitter(shinyEmitter, "shinyParticles");
 
   const shinyParticleFilter = new ShinyParticleFilter();
-  const syncShinyParticleUniforms = function(time: number)
+  const syncShinyParticleUniforms = (time: number) =>
   {
     const lifeLeft = 1.0 - time;
 
@@ -232,7 +232,7 @@ export default function beam(props: SFXParams)
   };
 
   protonWrapper.onParticleUpdated["shinyParticles"] = onParticleUpdateFN;
-  protonWrapper.onSpriteCreated["shinyParticles"] = function(sprite: PIXI.Sprite)
+  protonWrapper.onSpriteCreated["shinyParticles"] = (sprite) =>
   {
     attachShaderToSprite(sprite, shinyParticleFilter);
     sprite.blendMode = PIXI.BLEND_MODES.SCREEN;

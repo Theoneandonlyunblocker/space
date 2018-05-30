@@ -16,8 +16,8 @@ import
 } from "../../src/utility";
 
 
-const drawNebula: BackgroundDrawingFunction = function(
-  seed: string, size: PIXI.Rectangle, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
+const drawNebula: BackgroundDrawingFunction = (
+  seed: string, size: PIXI.Rectangle, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) =>
 {
   const oldRng = Math.random;
   Math.random = RNG.prototype.uniform.bind(new RNG(seed));

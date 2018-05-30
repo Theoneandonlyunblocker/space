@@ -78,7 +78,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
     const upgradeGroups: React.ReactHTMLElement<any>[] = [];
 
     const possibleUpgrades = this.props.star.getBuildingUpgrades();
-    const sortedParentBuildings = Object.keys(possibleUpgrades).sort(function(aId: string, bId: string)
+    const sortedParentBuildings = Object.keys(possibleUpgrades).sort((aId, bId) =>
     {
       const a = possibleUpgrades[aId][0].parentBuilding.template.displayName;
       const b = possibleUpgrades[bId][0].parentBuilding.template.displayName;

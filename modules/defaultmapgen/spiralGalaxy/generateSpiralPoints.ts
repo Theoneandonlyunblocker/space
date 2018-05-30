@@ -12,12 +12,12 @@ export default function generateSpiralPoints(options: SpiralGalaxyOptionValues):
 {
   const sg = convertMapGenOptionValues(options);
 
-  const makePoint = function(
+  const makePoint = (
     distanceMin: number,
     distanceMax: number,
     arm: number,
     maxOffset: number,
-  ): MapGenPoint
+  ): MapGenPoint =>
   {
     const distance = randRange(distanceMin, distanceMax);
     let offset = Math.random() * maxOffset - maxOffset / 2;

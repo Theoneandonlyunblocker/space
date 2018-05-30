@@ -1,8 +1,6 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
 import app from "../../../src/App";
-import GalaxyMap from "../../../src/GalaxyMap";
-import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 
@@ -26,7 +24,7 @@ const fogOfWar: MapRendererLayerTemplate =
   interactive: false,
   isUsedForCameraBounds: false,
   initialAlpha: 0.35,
-  destroy: function()
+  destroy: () =>
   {
     for (const starId in fogOfWarSpriteByStarId)
     {
@@ -35,7 +33,7 @@ const fogOfWar: MapRendererLayerTemplate =
       delete fogOfWarSpriteByStarId[starId];
     }
   },
-  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
+  drawingFunction: (map, perspectivePlayer) =>
   {
     const doc = new PIXI.Container();
     if (perspectivePlayer)
