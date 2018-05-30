@@ -8,7 +8,9 @@ import
 } from "../../../src/utility";
 
 
-export default function generateSpiralPoints(options: SpiralGalaxyOptionValues): MapGenPoint[]
+export const centerRegionTag = "center";
+
+export function generateSpiralPoints(options: SpiralGalaxyOptionValues): MapGenPoint[]
 {
   const sg = convertMapGenOptionValues(options);
 
@@ -72,11 +74,7 @@ export default function generateSpiralPoints(options: SpiralGalaxyOptionValues):
     {
       const point = makePoint(0, sg.centerSize, i, maxOffsetForThisArm);
       points.push(point);
-      point.mapGenData.tags = ["center"];
-      // if (!currentArmIsFiller)
-      // {
-      //   point.mapGenData.tags.push("arm_" + i);
-      // }
+      point.mapGenData.tags = [centerRegionTag];
       point.mapGenData.isFiller = false;
     }
   }

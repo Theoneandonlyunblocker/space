@@ -38,7 +38,7 @@ import
 import setupIndependents from "../common/setupIndependents";
 
 import SpiralGalaxyOptionValues from "./SpiralGalaxyOptionValues";
-import generateSpiralPoints from "./generateSpiralPoints";
+import {generateSpiralPoints, centerRegionTag} from "./generateSpiralPoints";
 
 
 // @ts-ignore 2322
@@ -149,11 +149,11 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
   //   sever links between arms
   const armRegions = regions.filter(region =>
   {
-    return region !== regionsById["center"];
+    return region !== regionsById[centerRegionTag];
   });
   armRegions.forEach(region =>
   {
-    region.severLinksToRegionsExcept([region, regionsById["center"]]);
+    region.severLinksToRegionsExcept([region, regionsById[centerRegionTag]]);
   });
 
 
@@ -221,9 +221,9 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
   // get start regions
   const startRegions: Region[] = (function setStartingRegions()
   {
-    const availableStartRegions: Region[] = regions.filter(region =>
+    const nonCenterRegions: Region[] = regions.filter(region =>
     {
-      return region.id.indexOf("center") === -1;
+      return region.id.indexOf(centerRegionTag) === -1;
     });
 
     const armCount = options.basicOptions.arms;
@@ -235,7 +235,7 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
     for (let i = 0; i < playersInArmsCount; i++)
     {
       const regionNumber = Math.floor(i * playerArmStep);
-      const regionToAdd = availableStartRegions[regionNumber];
+      const regionToAdd = nonCenterRegions[regionNumber];
 
       armStartingRegions.push(regionToAdd);
     }
@@ -244,7 +244,7 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
     const leftOverPlayerCount = playersInArmsCount - armCount;
     for (let i = 0; i < leftOverPlayerCount; i++)
     {
-      centerStartingRegions.push(regionsById["center"]);
+      centerStartingRegions.push(regionsById[centerRegionTag]);
     }
 
     return [...armStartingRegions, ...centerStartingRegions];
