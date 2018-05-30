@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
 import Color from "../../../Color";
 
@@ -10,7 +10,7 @@ import ColorSetter from "../../setupgame/ColorSetter";
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  fragment: SFXFragment<any>;
+  fragment: SfxFragment<any>;
   onValueChange: () => void;
 
   color: Color;
@@ -20,9 +20,9 @@ interface StateType
 {
 }
 
-export class SFXFragmentPropColorComponent extends React.Component<PropTypes, StateType>
+export class SfxFragmentPropColorComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SFXFragmentPropColor";
+  public displayName = "SfxFragmentPropColor";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -56,5 +56,5 @@ export class SFXFragmentPropColorComponent extends React.Component<PropTypes, St
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentPropColorComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropColorComponent);
+export default factory;

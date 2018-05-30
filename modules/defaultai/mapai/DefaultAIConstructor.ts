@@ -1,19 +1,19 @@
 import
 {
-  AITemplateConstructor,
+  AiTemplateConstructor,
 } from "../../../src/templateinterfaces/AITemplateConstructor";
 
-import DefaultAI from "./DefaultAI";
-import DefaultAISaveData from "./DefaultAISaveData";
+import DefaultAi from "./DefaultAi";
+import DefaultAiSaveData from "./DefaultAiSaveData";
 
 
-const DefaultAIConstructor: AITemplateConstructor<DefaultAISaveData> =
+const defaultAiConstructor: AiTemplateConstructor<DefaultAiSaveData> =
 {
-  type: DefaultAI.type,
+  type: DefaultAi.type,
   construct: props =>
   {
-    return new DefaultAI(props.player, props.game, props.personality);
+    return new DefaultAi(props.player, props.game, props.personality);
   },
 };
 
-export default DefaultAIConstructor;
+export default defaultAiConstructor;

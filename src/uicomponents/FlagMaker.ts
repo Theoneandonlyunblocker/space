@@ -20,7 +20,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
   setStateTimeoutHandle: number = undefined;
   sizeValue: number = 46;
   public state: StateType;
-  ref_TODO_flags: HTMLElement;
+  flagsElement: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -95,7 +95,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
           className: "flags",
           ref: (component: HTMLElement) =>
           {
-            this.ref_TODO_flags = component;
+            this.flagsElement = component;
           },
         },
           flagElements,
@@ -115,5 +115,5 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FlagMakerComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(FlagMakerComponent);
+export default factory;

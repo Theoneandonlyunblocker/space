@@ -111,5 +111,5 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(EmblemEditorComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(EmblemEditorComponent);
+export default factory;

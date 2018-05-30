@@ -73,5 +73,5 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleInfoComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(BattleInfoComponent);
+export default factory;

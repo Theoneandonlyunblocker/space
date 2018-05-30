@@ -93,23 +93,6 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     };
   }
 
-  // componentDidUpdate()
-  // {
-  //   if (this.dragPositioner.needsFirstTouchUpdate && this.ref_TODO_dragClone)
-  //   {
-  //     const node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
-  //     node.classList.add("draggable");
-  //     node.classList.add("dragging");
-
-  //     const container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
-
-  //     node.style.width = "" + container.offsetWidth + "px";
-  //     node.style.height = "" + container.offsetHeight + "px";
-
-  //     this.dragPositioner.needsFirstTouchUpdate = false;
-  //   }
-  // }
-
   onDragStart()
   {
     if (!this.props.onDragStart)
@@ -145,28 +128,6 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 
     return renderedElement;
   }
-  // onDragMove(x: number, y: number)
-  // {
-  //   if (!this.ref_TODO_dragClone) return;
-
-  //   const node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
-  //   node.classList.add("draggable");
-  //   node.classList.add("dragging");
-  //   node.style.left = "" + x + "px";
-  //   node.style.top = "" + y + "px";
-
-  //   const container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
-
-  //   node.style.width = "" + container.offsetWidth + "px";
-  //   node.style.height = "" + container.offsetHeight + "px";
-
-
-  //   this.dragPositioner.forcedDragOffset =
-  //   {
-  //     x: container.offsetWidth / 2,
-  //     y: container.offsetHeight / 2
-  //   }
-  // }
 
   onDragEnd()
   {
@@ -303,5 +264,5 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitListItemComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(UnitListItemComponent);
+export default factory;

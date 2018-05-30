@@ -6,7 +6,7 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate";
 
-import BuildingTemplates from "./BuildingTemplates";
+import buildingTemplates from "./BuildingTemplates";
 
 
 const defaultBuildings: ModuleFile =
@@ -37,7 +37,7 @@ const defaultBuildings: ModuleFile =
   },
   constructModule: (moduleData) =>
   {
-    moduleData.copyTemplates<BuildingTemplate>(BuildingTemplates, "Buildings");
+    moduleData.copyTemplates<BuildingTemplate>(buildingTemplates, "Buildings");
 
     return moduleData;
   },

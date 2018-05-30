@@ -2,7 +2,7 @@ import Personality from "../Personality";
 import {TradeOffer} from "../TradeOffer";
 import Unit from "../Unit";
 
-export interface AITemplate<SaveData>
+export interface AiTemplate<SaveData>
 {
   type: string;
   personality: Personality;
@@ -21,4 +21,4 @@ export interface AITemplate<SaveData>
   serialize(): SaveData;
 }
 
-export default AITemplate;
+export default AiTemplate;

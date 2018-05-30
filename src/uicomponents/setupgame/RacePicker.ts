@@ -63,5 +63,5 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(RacePickerComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(RacePickerComponent);
+export default factory;

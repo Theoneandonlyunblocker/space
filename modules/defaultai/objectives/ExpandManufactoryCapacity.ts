@@ -1,7 +1,7 @@
 import Manufactory from "../../../src/Manufactory";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
-import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
+import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
 import MapEvaluator from "../mapai/MapEvaluator";
 
 import {EconomicObjective} from "./common/EconomicObjective";
@@ -47,10 +47,10 @@ export class ExpandManufactoryCapacity extends EconomicObjective
       return new ExpandManufactoryCapacity(score, mapEvaluator.player, star);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     // TODO 2017.02.25 | manufacturing demand / manufacturing capacity
-    return grandStrategyAI.desireForConsolidation;
+    return grandStrategyAi.desireForConsolidation;
   }
   protected static updateOngoingObjectivesList(
     allOngoingObjectives: Objective[],

@@ -138,5 +138,5 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(GameOverScreenComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(GameOverScreenComponent);
+export default factory;

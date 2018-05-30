@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
 
 interface PropTypes extends React.Props<any>
@@ -13,9 +13,9 @@ interface StateType
 {
 }
 
-export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateType>
+export class SfxEditorDisplayComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SFXEditorDisplay";
+  public displayName = "SfxEditorDisplay";
   public state: StateType;
 
   public containerDiv: HTMLDivElement | null;
@@ -23,7 +23,7 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
   stage: PIXI.Container;
   fragmentContainer: PIXI.Container;
-  fragments: SFXFragment<any>[] = [];
+  fragments: SfxFragment<any>[] = [];
 
   constructor(props: PropTypes)
   {
@@ -68,13 +68,13 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
     this.handleResize();
   }
 
-  public addFragment(fragment: SFXFragment<any>): void
+  public addFragment(fragment: SfxFragment<any>): void
   {
     this.fragmentContainer.addChild(fragment.displayObject);
     this.fragments.push(fragment);
     this.updateRenderer();
   }
-  public removeFragment(fragment: SFXFragment<any>): void
+  public removeFragment(fragment: SfxFragment<any>): void
   {
     this.fragmentContainer.removeChild(fragment.displayObject);
     this.fragments.splice(this.fragments.indexOf(fragment), 1);
@@ -112,5 +112,5 @@ export class SFXEditorDisplayComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXEditorDisplayComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SfxEditorDisplayComponent);
+export default factory;

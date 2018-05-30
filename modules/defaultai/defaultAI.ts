@@ -1,14 +1,14 @@
 import * as Languages from "../../localization/defaultLanguages";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
-import AITemplateConstructor from "../../src/templateinterfaces/AITemplateConstructor";
+import AiTemplateConstructor from "../../src/templateinterfaces/AITemplateConstructor";
 
-import DefaultAIConstructor from "./mapai/DefaultAIConstructor";
+import defaultAiConstructor from "./mapai/DefaultAiConstructor";
 
 
-const defaultAI: ModuleFile =
+const defaultAi: ModuleFile =
 {
-  key: "defaultAI",
+  key: "defaultAi",
   metaData:
   {
     name: "Default AI",
@@ -20,13 +20,13 @@ const defaultAI: ModuleFile =
   supportedLanguages: [Languages.en],
   constructModule: (moduleData) =>
   {
-    moduleData.copyTemplates<AITemplateConstructor<any>>(
+    moduleData.copyTemplates<AiTemplateConstructor<any>>(
     {
-      [DefaultAIConstructor.type]: DefaultAIConstructor,
-    }, "AITemplateConstructors");
+      [defaultAiConstructor.type]: defaultAiConstructor,
+    }, "AiTemplateConstructors");
 
     return moduleData;
   },
 };
 
-export default defaultAI;
+export default defaultAi;

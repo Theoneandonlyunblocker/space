@@ -4,7 +4,7 @@ import TemplateCollection from "../../src/templateinterfaces/TemplateCollection"
 import * as MapModes from "./mapmodetemplates/mapModes";
 
 
-const MapModeTemplates: TemplateCollection<MapRendererMapModeTemplate> =
+const mapModeTemplates: TemplateCollection<MapRendererMapModeTemplate> =
 {
   [MapModes.defaultMapMode.key]: MapModes.defaultMapMode,
   [MapModes.noStatic.key]: MapModes.noStatic,
@@ -12,4 +12,4 @@ const MapModeTemplates: TemplateCollection<MapRendererMapModeTemplate> =
   [MapModes.resources.key]: MapModes.resources,
 };
 
-export default MapModeTemplates;
+export default mapModeTemplates;

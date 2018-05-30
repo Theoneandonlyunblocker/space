@@ -8,7 +8,7 @@ import
 
 import Beam from "./Beam";
 import RampingValue from "./RampingValue";
-import SFXFragment from "./SFXFragment";
+import SfxFragment from "./SfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
 
 
@@ -29,7 +29,7 @@ interface FocusingBeamProps
   beamSize: RampingValue;
 }
 
-export default class FocusingBeam extends SFXFragment<FocusingBeamProps>
+export default class FocusingBeam extends SfxFragment<FocusingBeamProps>
 {
   public displayName = "FocusingBeam";
   public key = "focusingBeam";

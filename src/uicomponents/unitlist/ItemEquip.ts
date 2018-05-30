@@ -164,5 +164,5 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ItemEquipComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(ItemEquipComponent);
+export default factory;

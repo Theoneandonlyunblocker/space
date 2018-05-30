@@ -5,7 +5,7 @@ import Player from "../Player";
 import Star from "../Star";
 import Unit from "../Unit";
 
-import AITemplateConstructor from "./AITemplateConstructor";
+import AiTemplateConstructor from "./AITemplateConstructor";
 import BuildingTemplate from "./BuildingTemplate";
 import {DistributionData} from "./DistributionData";
 import ItemTemplate from "./ItemTemplate";
@@ -55,5 +55,5 @@ export declare interface RaceTemplate
   ): Fleet[];
 
   technologies: RaceTechnologyValue[];
-  getAITemplateConstructor: (player: Player) => AITemplateConstructor<any>;
+  getAiTemplateConstructor: (player: Player) => AiTemplateConstructor<any>;
 }

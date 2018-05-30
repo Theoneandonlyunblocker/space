@@ -1,12 +1,12 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import SFXParams from "../../../src/templateinterfaces/SFXParams";
+import SfxParams from "../../../src/templateinterfaces/SfxParams";
 
 import ProjectileAttack from "./sfxfragments/ProjectileAttack";
 
 
 let hasLoaded: boolean = false;
-export default function rocketAttack(params: SFXParams): void
+export default function rocketAttack(params: SfxParams): void
 {
   if (hasLoaded)
   {
@@ -24,11 +24,11 @@ export default function rocketAttack(params: SFXParams): void
 
 const rocketUrl = "modules/common/battlesfxfunctions/img/rocket.png";
 
-function playRocketAttack(params: SFXParams)
+function playRocketAttack(params: SfxParams)
 {
-  const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSFX(
+  const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSfx(
     params.targetOffset, params.width, "target");
-  const offsetUserData = params.user.drawingFunctionData.normalizeForBattleSFX(
+  const offsetUserData = params.user.drawingFunctionData.normalizeForBattleSfx(
     params.userOffset, params.width, "user");
 
   const container = new PIXI.Container();

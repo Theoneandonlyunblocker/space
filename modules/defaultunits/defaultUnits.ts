@@ -7,8 +7,8 @@ import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
 
-import UnitArchetypes from "./UnitArchetypes";
-import UnitTemplates from "./UnitTemplates";
+import unitArchetypes from "./UnitArchetypes";
+import unitTemplates from "./UnitTemplates";
 
 
 const defaultUnits: ModuleFile =
@@ -41,8 +41,8 @@ const defaultUnits: ModuleFile =
   },
   constructModule: (moduleData) =>
   {
-    moduleData.copyTemplates<UnitTemplate>(UnitTemplates, "Units");
-    moduleData.copyTemplates<UnitArchetype>(UnitArchetypes, "UnitArchetypes");
+    moduleData.copyTemplates<UnitTemplate>(unitTemplates, "Units");
+    moduleData.copyTemplates<UnitArchetype>(unitArchetypes, "UnitArchetypes");
 
     return moduleData;
   },

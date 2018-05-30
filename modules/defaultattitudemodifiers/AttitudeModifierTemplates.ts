@@ -55,7 +55,7 @@ export const declaredWar: AttitudeModifierTemplate =
 };
 
 
-const AttitudeModifierTemplates: TemplateCollection<AttitudeModifierTemplate> =
+const attitudeModifierTemplates: TemplateCollection<AttitudeModifierTemplate> =
 {
   [neighborStars.type]: neighborStars,
   [atWar.type]: atWar,
@@ -63,4 +63,4 @@ const AttitudeModifierTemplates: TemplateCollection<AttitudeModifierTemplate> =
   [baseOpinion.type]: baseOpinion,
 };
 
-export default AttitudeModifierTemplates;
+export default attitudeModifierTemplates;

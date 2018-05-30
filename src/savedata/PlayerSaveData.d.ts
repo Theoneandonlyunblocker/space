@@ -1,4 +1,4 @@
-import AIControllerSaveData from "./AIControllerSaveData";
+import AiControllerSaveData from "./AIControllerSaveData";
 import ColorSaveData from "./ColorSaveData";
 import FlagSaveData from "./FlagSaveData";
 import FleetSaveData from "./FleetSaveData";
@@ -34,8 +34,8 @@ declare interface PlayerSaveData
   raceKey: string;
   isDead: boolean;
 
-  isAI: boolean;
-  AIController?: AIControllerSaveData<any>;
+  isAi: boolean;
+  AiController?: AiControllerSaveData<any>;
 
   notificationLog: NotificationSubscriberSaveData | null;
 }

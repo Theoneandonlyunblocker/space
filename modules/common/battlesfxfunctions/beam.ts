@@ -8,7 +8,7 @@ import
   generateTextureWithBounds,
   getDummyTextureForShader,
 } from "../../../src/pixiWrapperFunctions";
-import SFXParams from "../../../src/templateinterfaces/SFXParams";
+import SfxParams from "../../../src/templateinterfaces/SfxParams";
 
 import ProtonWrapper from "./ProtonWrapper";
 import Beam from "./sfxfragments/Beam";
@@ -18,10 +18,10 @@ import ShockWave from "./sfxfragments/ShockWave";
 import ShinyParticleFilter from "./shaders/ShinyParticle";
 
 
-export default function beam(props: SFXParams)
+export default function beam(props: SfxParams)
 {
   // ----------INIT GENERAL
-  const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(
+  const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSfx(
     props.userOffset, props.width, "user");
 
   const mainContainer = new PIXI.Container();

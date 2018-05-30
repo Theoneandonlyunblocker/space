@@ -48,5 +48,5 @@ export class BattleFinishComponent extends React.PureComponent<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleFinishComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(BattleFinishComponent);
+export default factory;

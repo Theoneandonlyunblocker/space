@@ -22,9 +22,9 @@ interface StateType
 {
 }
 
-export class SFXEditorSelectionTabComponent extends React.Component<PropTypes, StateType>
+export class SfxEditorSelectionTabComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SFXEditorSelectionTab";
+  public displayName = "SfxEditorSelectionTab";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -55,5 +55,5 @@ export class SFXEditorSelectionTabComponent extends React.Component<PropTypes, S
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXEditorSelectionTabComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SfxEditorSelectionTabComponent);
+export default factory;

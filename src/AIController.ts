@@ -1,19 +1,19 @@
-import AITemplate from "./templateinterfaces/AITemplate";
+import AiTemplate from "./templateinterfaces/AITemplate";
 
-import AIControllerSaveData from "./savedata/AIControllerSaveData";
+import AiControllerSaveData from "./savedata/AIControllerSaveData";
 
 import Personality from "./Personality";
 import {TradeOffer} from "./TradeOffer";
 import Unit from "./Unit";
 
 
-export class AIController<SaveData>
+export class AiController<SaveData>
 {
   public personality: Personality;
 
-  private template: AITemplate<SaveData>;
+  private template: AiTemplate<SaveData>;
 
-  constructor(template: AITemplate<SaveData>)
+  constructor(template: AiTemplate<SaveData>)
   {
     this.template = template;
     this.personality = template.personality;
@@ -41,7 +41,7 @@ export class AIController<SaveData>
   {
     return this.template.respondToTradeOffer(receivedOffer);
   }
-  public serialize(): AIControllerSaveData<SaveData>
+  public serialize(): AiControllerSaveData<SaveData>
   {
     return(
     {

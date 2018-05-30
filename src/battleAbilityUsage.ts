@@ -1,6 +1,6 @@
 import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
-import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
+import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
 
 import Battle from "./Battle";
 import Unit from "./Unit";
@@ -17,7 +17,7 @@ export interface AbilityUseEffect
 {
   effectId: string;
   changedUnitDisplayDataById: {[unitId: number]: UnitDisplayData};
-  sfx: BattleSFXTemplate;
+  sfx: BattleSfxTemplate;
   sfxUser: Unit;
   sfxTarget: Unit;
   newEvaluation: number;

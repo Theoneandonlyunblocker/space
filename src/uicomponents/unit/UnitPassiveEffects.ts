@@ -40,5 +40,5 @@ export class UnitPassiveEffectsComponent extends React.PureComponent<PropTypes, 
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitPassiveEffectsComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(UnitPassiveEffectsComponent);
+export default factory;

@@ -9,7 +9,7 @@ import
 export class AbilityUseEffectQueue
 {
   private onEffectStart: (effect: AbilityUseEffect) => void;
-  private onSFXStart: () => void;
+  private onSfxStart: () => void;
   private onCurrentFinished: () => void;
   private onAllFinished: () => void;
   private onEffectTrigger: (abilityUseEffect: AbilityUseEffect) => void;
@@ -22,7 +22,7 @@ export class AbilityUseEffectQueue
   constructor(battleScene: BattleScene, callbacks:
   {
     onEffectStart?: (effect: AbilityUseEffect) => void;
-    onSFXStart?: () => void;
+    onSfxStart?: () => void;
     onCurrentFinished?: () => void;
     onAllFinished?: () => void;
     onEffectTrigger?: (abilityUseEffect: AbilityUseEffect) => void;
@@ -69,7 +69,7 @@ export class AbilityUseEffectQueue
       return squashedEffect;
     }
   }
-  private static squashEffectsWithoutSFX(sourceEffects: AbilityUseEffect[]): AbilityUseEffect[]
+  private static squashEffectsWithoutSfx(sourceEffects: AbilityUseEffect[]): AbilityUseEffect[]
   {
     const squashed: AbilityUseEffect[] = [];
     let effectsToSquash: AbilityUseEffect[] = [];
@@ -98,8 +98,8 @@ export class AbilityUseEffectQueue
 
     if (effectsToSquash.length > 0)
     {
-      const lastEffectWithSFX = squashed.pop()!;
-      squashed.push(AbilityUseEffectQueue.squashEffects(lastEffectWithSFX, effectsToSquash, true));
+      const lastEffectWithSfx = squashed.pop()!;
+      squashed.push(AbilityUseEffectQueue.squashEffects(lastEffectWithSfx, effectsToSquash, true));
     }
 
     squashed.reverse();
@@ -109,7 +109,7 @@ export class AbilityUseEffectQueue
 
   public addEffects(effects: AbilityUseEffect[]): void
   {
-    this.queue.push(...AbilityUseEffectQueue.squashEffectsWithoutSFX(effects));
+    this.queue.push(...AbilityUseEffectQueue.squashEffectsWithoutSfx(effects));
   }
   public playOnce(): void
   {
@@ -129,11 +129,11 @@ export class AbilityUseEffectQueue
 
     this.battleScene.handleAbilityUse(
     {
-      SFXTemplate: this.currentEffect.sfx,
+      sfxTemplate: this.currentEffect.sfx,
       user: this.currentEffect.sfxUser,
       target: this.currentEffect.sfxTarget,
       triggerEffectCallback: this.triggerEffect,
-      onSFXStartCallback: this.onSFXStart,
+      onSfxStartCallback: this.onSfxStart,
       afterFinishedCallback: this.finishEffect,
     });
   }

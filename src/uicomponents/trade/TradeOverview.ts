@@ -49,7 +49,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     else
     {
       const initialHumanOffer = TradeOverviewComponent.makeInitialHumanTradeOffer(props.selfPlayer, props.otherPlayer);
-      const initialResponse = this.props.otherPlayer.AIController.respondToTradeOffer(initialHumanOffer);
+      const initialResponse = this.props.otherPlayer.aiController.respondToTradeOffer(initialHumanOffer);
 
       activeOffer = initialResponse;
     }
@@ -355,7 +355,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.state.activeOffer.ownTrade.executeTrade(this.state.activeOffer.otherTrade);
     this.state.activeOffer.tradeWasAccepted = true;
 
-    const response = this.props.otherPlayer.AIController.respondToTradeOffer(this.state.activeOffer);
+    const response = this.props.otherPlayer.aiController.respondToTradeOffer(this.state.activeOffer);
     flipTradeOffer(response);
 
     this.setState(
@@ -367,7 +367,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   }
   private proposeTrade(): void
   {
-    const response = this.props.otherPlayer.AIController.respondToTradeOffer(this.state.activeOffer);
+    const response = this.props.otherPlayer.aiController.respondToTradeOffer(this.state.activeOffer);
     flipTradeOffer(response);
 
     this.setState(
@@ -384,5 +384,5 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TradeOverviewComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(TradeOverviewComponent);
+export default factory;

@@ -7,26 +7,26 @@ import {TradeOffer} from "../../../src/TradeOffer";
 import Unit from "../../../src/Unit";
 import {activeModuleData} from "../../../src/activeModuleData";
 import getNullFormation from "../../../src/getNullFormation";
-import AITemplate from "../../../src/templateinterfaces/AITemplate";
+import AiTemplate from "../../../src/templateinterfaces/AITemplate";
 import
 {
   makeRandomPersonality,
 } from "../../../src/utility";
 
-import DefaultAISaveData from "./DefaultAISaveData";
-import DiplomacyAI from "./DiplomacyAI";
-import {EconomicAI} from "./EconomicAI";
-import FrontsAI from "./FrontsAI";
-import {GrandStrategyAI} from "./GrandStrategyAI";
+import DefaultAiSaveData from "./DefaultAiSaveData";
+import DiplomacyAi from "./DiplomacyAi";
+import {EconomicAi} from "./EconomicAi";
+import FrontsAi from "./FrontsAi";
+import {GrandStrategyAi} from "./GrandStrategyAi";
 import MapEvaluator from "./MapEvaluator";
-import {ObjectivesAI} from "./ObjectivesAI";
+import {ObjectivesAi} from "./ObjectivesAi";
 import {UnitEvaluator} from "./UnitEvaluator";
 
 
-export default class DefaultAI implements AITemplate<DefaultAISaveData>
+export default class DefaultAi implements AiTemplate<DefaultAiSaveData>
 {
-  public static readonly type: string = "DefaultAI";
-  public readonly type: string = "DefaultAI";
+  public static readonly type: string = "DefaultAi";
+  public readonly type: string = "DefaultAi";
 
   public readonly personality: Personality;
 
@@ -41,11 +41,11 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
   private readonly mapEvaluator: MapEvaluator;
   private readonly unitEvaluator: UnitEvaluator;
 
-  private readonly grandStrategyAI: GrandStrategyAI;
-  private readonly objectivesAI: ObjectivesAI;
-  private readonly frontsAI: FrontsAI;
-  private readonly diplomacyAI: DiplomacyAI;
-  private readonly economicAI: EconomicAI;
+  private readonly grandStrategyAi: GrandStrategyAi;
+  private readonly objectivesAi: ObjectivesAi;
+  private readonly frontsAi: FrontsAi;
+  private readonly diplomacyAi: DiplomacyAi;
+  private readonly economicAi: EconomicAi;
 
   constructor(player: Player, game: Game, personality?: Personality)
   {
@@ -59,12 +59,12 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     this.unitEvaluator = new UnitEvaluator();
     this.mapEvaluator = new MapEvaluator(this.map, this.player, this.unitEvaluator);
 
-    this.grandStrategyAI = new GrandStrategyAI(this.personality, this.mapEvaluator, this.game);
-    this.objectivesAI = new ObjectivesAI(this.mapEvaluator, this.grandStrategyAI);
-    this.frontsAI = new FrontsAI(this.player, this.objectivesAI);
+    this.grandStrategyAi = new GrandStrategyAi(this.personality, this.mapEvaluator, this.game);
+    this.objectivesAi = new ObjectivesAi(this.mapEvaluator, this.grandStrategyAi);
+    this.frontsAi = new FrontsAi(this.player, this.objectivesAi);
 
-    this.diplomacyAI = new DiplomacyAI(this.mapEvaluator, this.game);
-    this.economicAI = new EconomicAI();
+    this.diplomacyAi = new DiplomacyAi(this.mapEvaluator, this.game);
+    this.economicAi = new EconomicAi();
   }
 
   public processTurn(afterFinishedCallback: () => void)
@@ -175,9 +175,9 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     receivedOffer: TradeOffer,
   ): TradeOffer
   {
-    return this.economicAI.respondToTradeOffer(receivedOffer);
+    return this.economicAi.respondToTradeOffer(receivedOffer);
   }
-  public serialize(): DefaultAISaveData
+  public serialize(): DefaultAiSaveData
   {
     // TODO
     return undefined;
@@ -191,63 +191,63 @@ export default class DefaultAI implements AITemplate<DefaultAISaveData>
     queue.push(triggerFinish =>
     {
       // evaluate grand strategy
-      this.grandStrategyAI.setDesires();
+      this.grandStrategyAi.setDesires();
 
       // set attitude
-      this.diplomacyAI.setAttitudes();
+      this.diplomacyAi.setAttitudes();
 
       // process diplo objectives
-      this.objectivesAI.processDiplomaticObjectives(triggerFinish);
+      this.objectivesAi.processDiplomaticObjectives(triggerFinish);
     });
 
 
     queue.push(triggerFinish =>
     {
       // create front objectives
-      this.objectivesAI.createFrontObjectives();
+      this.objectivesAi.createFrontObjectives();
 
       // form fronts
-      this.frontsAI.formFronts();
+      this.frontsAi.formFronts();
 
       // assign units
-      this.frontsAI.assignUnits();
+      this.frontsAi.assignUnits();
 
       // process economic objectives
-      this.objectivesAI.processEconomicObjectives(triggerFinish);
+      this.objectivesAi.processEconomicObjectives(triggerFinish);
     });
 
     queue.push(triggerFinish =>
     {
       // organize fleets
-      this.frontsAI.organizeFleets();
+      this.frontsAi.organizeFleets();
 
       // execute front objectives
-      this.objectivesAI.executeFrontObjectives(triggerFinish);
+      this.objectivesAi.executeFrontObjectives(triggerFinish);
     });
 
     queue.push(triggerFinish =>
     {
       // organize fleets
-      this.frontsAI.organizeFleets();
+      this.frontsAi.organizeFleets();
       triggerFinish();
 
       // // evaluate grand strategy
-      // this.grandStrategyAI.setDesires();
+      // this.grandStrategyAi.setDesires();
 
       // // set attitude
-      // this.diplomacyAI.setAttitudes();
+      // this.diplomacyAi.setAttitudes();
 
       // // diplo
       // // TODO 2017.04.03 | should do separate things to pre-turn diplo
       // // don't want to declare war here for example
-      // this.objectivesAI.processDiplomaticObjectives(triggerFinish);
+      // this.objectivesAi.processDiplomaticObjectives(triggerFinish);
     });
 
     // queue.push(triggerFinish =>
     // {
     //   // econ
     //   // same here. no point building stuff that can't be used yet
-    //   this.objectivesAI.processEconomicObjectives(triggerFinish);
+    //   this.objectivesAi.processEconomicObjectives(triggerFinish);
     // });
 
 

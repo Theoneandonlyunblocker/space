@@ -50,8 +50,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   public displayName = "BattlePrep";
   public state: StateType;
 
-  private ref_TODO_background: BattleBackgroundComponent;
-  private ref_TODO_upper: HTMLElement | null;
+  private backgroundComponent: BattleBackgroundComponent;
+  private upperElement: HTMLElement | null;
 
   constructor(props: PropTypes)
   {
@@ -86,7 +86,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
   public componentDidMount()
   {
-    this.ref_TODO_background.handleResize();
+    this.backgroundComponent.handleResize();
   }
   public render()
   {
@@ -208,7 +208,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
         React.DOM.div({className: "battle-prep-left"},
           React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: component =>
           {
-            this.ref_TODO_upper = component;
+            this.upperElement = component;
           }},
             BattleBackground(
             {
@@ -217,7 +217,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               backgroundDrawingFunction: activeModuleData.starBackgroundDrawingFunction,
               ref: (component: BattleBackgroundComponent) =>
               {
-                this.ref_TODO_background = component;
+                this.backgroundComponent = component;
               },
             },
               React.DOM.div({className: "battle-prep-left-upper-inner"},
@@ -459,7 +459,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
   private getBackgroundBlurArea()
   {
-    const backgroundElement = this.ref_TODO_upper;
+    const backgroundElement = this.upperElement;
     if (!backgroundElement)
     {
       throw new Error("Battle prep background element hasn't mounted yet");
@@ -574,5 +574,5 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattlePrepComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(BattlePrepComponent);
+export default factory;

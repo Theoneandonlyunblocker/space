@@ -72,5 +72,5 @@ export class UnitItemGroupComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitItemGroupComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(UnitItemGroupComponent);
+export default factory;

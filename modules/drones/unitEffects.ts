@@ -6,7 +6,7 @@ import
   adjustHealth,
 } from "../common/effectactiontemplates/effectActions";
 
-import {placeholder as placeholderSFX} from "../common/battlesfxtemplates/battleSFX";
+import {placeholder as placeholderSfx} from "../common/battlesfxtemplates/battleSfx";
 
 
 export const infest: UnitEffectTemplate =
@@ -30,7 +30,7 @@ export const infest: UnitEffectTemplate =
         adjustHealth({maxHealthPercentage: -healthToReduceThisTurn},
           user, target, battle, executedEffectsResult);
       },
-      sfx: placeholderSFX,
+      sfx: placeholderSfx,
     },
   ],
 };

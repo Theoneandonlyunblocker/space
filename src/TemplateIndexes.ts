@@ -72,8 +72,8 @@ class TemplateIndexes
   {
     return(
     {
-      resources: TemplateIndexes.getDistributablesByGroup(activeModuleData.Templates.Resources),
-      races: TemplateIndexes.getDistributablesByGroup(activeModuleData.Templates.Races),
+      resources: TemplateIndexes.getDistributablesByGroup(activeModuleData.templates.Resources),
+      races: TemplateIndexes.getDistributablesByGroup(activeModuleData.templates.Races),
     });
   }
   private static getDistributablesByGroup<T extends Distributable>(
@@ -144,9 +144,9 @@ class TemplateIndexes
     {
       [techLevel: number]: ItemTemplate[];
     } = {};
-    for (const itemName in activeModuleData.Templates.Items)
+    for (const itemName in activeModuleData.templates.Items)
     {
-      const item = activeModuleData.Templates.Items[itemName];
+      const item = activeModuleData.templates.Items[itemName];
 
       if (!itemsByTechLevel[item.techLevel])
       {

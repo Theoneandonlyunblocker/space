@@ -60,5 +60,5 @@ export class UnitIconContainerComponent extends React.PureComponent<PropTypes, S
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitIconContainerComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(UnitIconContainerComponent);
+export default factory;

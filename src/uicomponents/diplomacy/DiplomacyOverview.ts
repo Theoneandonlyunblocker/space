@@ -189,5 +189,5 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(DiplomacyOverviewComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(DiplomacyOverviewComponent);
+export default factory;

@@ -27,7 +27,7 @@ export class NotificationFilter
   }
   setDefaultFilterStates()
   {
-    const notifications = activeModuleData.Templates.Notifications;
+    const notifications = activeModuleData.templates.Notifications;
 
     for (const key in notifications)
     {
@@ -112,7 +112,7 @@ export class NotificationFilter
         filterState: NotificationFilterState[];
       }[],
     } = {};
-    const notifications = activeModuleData.Templates.Notifications;
+    const notifications = activeModuleData.templates.Notifications;
 
     for (const key in this.filters)
     {

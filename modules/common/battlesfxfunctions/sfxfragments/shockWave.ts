@@ -9,7 +9,7 @@ import
 import IntersectingEllipsesFilter from "../shaders/IntersectingEllipses";
 
 import RampingValue from "./RampingValue";
-import SFXFragment from "./SFXFragment";
+import SfxFragment from "./SfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
 
 
@@ -32,7 +32,7 @@ interface ShockWaveProps
   delay: number;
 }
 
-export default class ShockWave extends SFXFragment<ShockWaveProps>
+export default class ShockWave extends SfxFragment<ShockWaveProps>
 {
   public displayName = "ShockWave";
   public key = "shockWave";

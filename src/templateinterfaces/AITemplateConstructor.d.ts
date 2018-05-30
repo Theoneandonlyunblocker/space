@@ -2,9 +2,9 @@ import Game from "../Game";
 import Personality from "../Personality";
 import Player from "../Player";
 
-import AITemplate from "./AITemplate";
+import AiTemplate from "./AITemplate";
 
-export interface AITemplateConstructorProps<SaveData>
+export interface AiTemplateConstructorProps<SaveData>
 {
   game: Game;
   player: Player;
@@ -12,11 +12,11 @@ export interface AITemplateConstructorProps<SaveData>
   saveData?: SaveData;
 }
 
-export interface AITemplateConstructor<SaveData>
+export interface AiTemplateConstructor<SaveData>
 {
   type: string;
 
-  construct(props: AITemplateConstructorProps<SaveData>): AITemplate<SaveData>;
+  construct(props: AiTemplateConstructorProps<SaveData>): AiTemplate<SaveData>;
 }
 
-export default AITemplateConstructor;
+export default AiTemplateConstructor;

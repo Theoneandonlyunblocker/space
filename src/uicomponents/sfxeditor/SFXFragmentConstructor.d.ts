@@ -1,16 +1,16 @@
-import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
 interface Constructor<T>
 {
   new (...args: any[]): T;
 }
-type SFXFragmentConstructorFunction = Constructor<SFXFragment<any>>;
+type SfxFragmentConstructorFunction = Constructor<SfxFragment<any>>;
 
-declare interface SFXFragmentConstructor
+declare interface SfxFragmentConstructor
 {
   key: string;
   displayName: string;
-  constructorFN: SFXFragmentConstructorFunction;
+  constructorFN: SfxFragmentConstructorFunction;
 }
 
-export default SFXFragmentConstructor;
+export default SfxFragmentConstructor;

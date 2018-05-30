@@ -64,5 +64,5 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(OptionsNumericFieldComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(OptionsNumericFieldComponent);
+export default factory;

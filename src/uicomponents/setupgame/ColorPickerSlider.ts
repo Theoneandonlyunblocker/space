@@ -62,5 +62,5 @@ export class ColorPickerSliderComponent extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ColorPickerSliderComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(ColorPickerSliderComponent);
+export default factory;

@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import RampingValue from "../../../../modules/common/battlesfxfunctions/sfxfragments/RampingValue";
-import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 import
 {
   PropInfoType,
@@ -11,18 +11,18 @@ import Color from "../../../Color";
 import Point from "../../../Point";
 import Range from "../../../Range";
 
-import SFXFragmentPropColor from "./Color";
-import SFXFragmentPropNumber from "./Number";
-import SFXFragmentPropPoint from "./Point";
-import SFXFragmentPropRampingValue from "./RampingValue";
-import SFXFragmentPropRange from "./Range";
+import SfxFragmentPropColor from "./Color";
+import SfxFragmentPropNumber from "./Number";
+import SfxFragmentPropPoint from "./Point";
+import SfxFragmentPropRampingValue from "./RampingValue";
+import SfxFragmentPropRange from "./Range";
 
 
 interface PropTypes extends React.Props<any>
 {
   propName: string;
   propType: PropInfoType;
-  fragment: SFXFragment<any>;
+  fragment: SfxFragment<any>;
   onPropValueChange: () => void;
 }
 
@@ -31,9 +31,9 @@ interface StateType
   isCollapsed: boolean;
 }
 
-export class SFXFragmentPropComponent extends React.Component<PropTypes, StateType>
+export class SfxFragmentPropComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SFXFragmentProp";
+  public displayName = "SfxFragmentProp";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -67,7 +67,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
       {
         const propValue: number = this.props.fragment.props[this.props.propName];
 
-        propValuesElement = SFXFragmentPropNumber(
+        propValuesElement = SfxFragmentPropNumber(
         {
           value: propValue,
           propName: this.props.propName,
@@ -80,7 +80,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
       {
         const propValue: Point = this.props.fragment.props[this.props.propName];
 
-        propValuesElement = SFXFragmentPropPoint(
+        propValuesElement = SfxFragmentPropPoint(
         {
           x: propValue.x,
           y: propValue.y,
@@ -95,7 +95,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
       {
         const propValue: Color = this.props.fragment.props[this.props.propName];
 
-        propValuesElement = SFXFragmentPropColor(
+        propValuesElement = SfxFragmentPropColor(
         {
           color: propValue,
 
@@ -109,7 +109,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
       {
         const propValue: Range = this.props.fragment.props[this.props.propName];
 
-        propValuesElement = SFXFragmentPropRange(
+        propValuesElement = SfxFragmentPropRange(
         {
           min: propValue.min,
           max: propValue.max,
@@ -124,7 +124,7 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
       {
         const propValue: RampingValue = this.props.fragment.props[this.props.propName];
 
-        propValuesElement = SFXFragmentPropRampingValue(
+        propValuesElement = SfxFragmentPropRampingValue(
         {
           base: propValue.base,
           up: propValue.up,
@@ -166,5 +166,5 @@ export class SFXFragmentPropComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentPropComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropComponent);
+export default factory;

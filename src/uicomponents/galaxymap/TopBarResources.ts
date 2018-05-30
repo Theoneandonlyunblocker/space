@@ -63,7 +63,7 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
 
       const resourceData =
       {
-        resource: activeModuleData.Templates.Resources[resourceType],
+        resource: activeModuleData.templates.Resources[resourceType],
         amount: amount,
         income: income,
         key: resourceType,
@@ -82,5 +82,5 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TopBarResourcesComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(TopBarResourcesComponent);
+export default factory;

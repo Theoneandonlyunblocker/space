@@ -126,5 +126,5 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(DiplomaticStatusPlayerComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(DiplomaticStatusPlayerComponent);
+export default factory;

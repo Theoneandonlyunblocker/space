@@ -4,7 +4,7 @@ import Unit from "../../../src/Unit";
 import {FrontObjective} from "../objectives/common/FrontObjective";
 
 import {Front} from "./Front";
-import {ObjectivesAI} from "./ObjectivesAI";
+import {ObjectivesAi} from "./ObjectivesAi";
 
 
 interface FrontUnitScore
@@ -13,20 +13,20 @@ interface FrontUnitScore
   front: Front;
   score: number;
 }
-export default class FrontsAI
+export default class FrontsAi
 {
   private player: Player;
-  private objectivesAI: ObjectivesAI;
+  private objectivesAi: ObjectivesAi;
 
   private fronts: Front[] = [];
 
   constructor(
     player: Player,
-    objectivesAI: ObjectivesAI,
+    objectivesAi: ObjectivesAi,
   )
   {
     this.player = player;
-    this.objectivesAI = objectivesAI;
+    this.objectivesAi = objectivesAi;
   }
 
   public assignUnits(): void
@@ -40,7 +40,7 @@ export default class FrontsAI
     } = {};
 
     const objectivesByFront = new IdDictionary<Front, FrontObjective>();
-    this.objectivesAI.getFrontObjectives().forEach(objective =>
+    this.objectivesAi.getFrontObjectives().forEach(objective =>
     {
       objectivesByFront.set(objective.front, objective);
     });
@@ -114,7 +114,7 @@ export default class FrontsAI
   {
     this.destroyInactiveFronts();
 
-    this.fronts = this.objectivesAI.getFrontObjectives().map(objective => objective.front);
+    this.fronts = this.objectivesAi.getFrontObjectives().map(objective => objective.front);
   }
 
   private getUnitScoresForFront(units: Unit[], front: Front): FrontUnitScore[]
@@ -122,7 +122,7 @@ export default class FrontsAI
     const scores: FrontUnitScore[] = [];
 
     // TODO 2017.04.06 | this is really stupid
-    const activeObjectives = this.objectivesAI.getFrontObjectives();
+    const activeObjectives = this.objectivesAi.getFrontObjectives();
     let objective: FrontObjective;
 
     for (let i = 0; i < activeObjectives.length; i++)
@@ -148,7 +148,7 @@ export default class FrontsAI
   }
   private destroyInactiveFronts(): void
   {
-    const activeObjectives = this.objectivesAI.getFrontObjectives();
+    const activeObjectives = this.objectivesAi.getFrontObjectives();
 
     const activeFrontsWithObjective = new IdDictionary<Front, FrontObjective>();
 

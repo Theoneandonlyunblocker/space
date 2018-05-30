@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
 import NumericTextInput from "../../generic/NumericTextInput";
 
@@ -8,7 +8,7 @@ import NumericTextInput from "../../generic/NumericTextInput";
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  fragment: SFXFragment<any>;
+  fragment: SfxFragment<any>;
   onValueChange: () => void;
 
   value: number;
@@ -18,9 +18,9 @@ interface StateType
 {
 }
 
-export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, StateType>
+export class SfxFragmentPropNumberComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SFXFragmentPropNumber";
+  public displayName = "SfxFragmentPropNumber";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -71,5 +71,5 @@ export class SFXFragmentPropNumberComponent extends React.Component<PropTypes, S
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentPropNumberComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropNumberComponent);
+export default factory;

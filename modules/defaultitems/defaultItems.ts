@@ -3,7 +3,7 @@ import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import ItemTemplate from "../../src/templateinterfaces/ItemTemplate";
 
-import ItemTemplates from "./ItemTemplates";
+import itemTemplates from "./ItemTemplates";
 
 
 const defaultItems: ModuleFile =
@@ -20,7 +20,7 @@ const defaultItems: ModuleFile =
   supportedLanguages: [Languages.en],
   constructModule: (moduleData) =>
   {
-    moduleData.copyTemplates<ItemTemplate>(ItemTemplates, "Items");
+    moduleData.copyTemplates<ItemTemplate>(itemTemplates, "Items");
 
     return moduleData;
   },

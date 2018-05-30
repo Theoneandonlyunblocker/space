@@ -113,5 +113,5 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitStatusComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(UnitStatusComponent);
+export default factory;

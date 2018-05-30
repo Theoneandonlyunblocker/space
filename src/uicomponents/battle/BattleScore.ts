@@ -97,5 +97,5 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleScoreComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(BattleScoreComponent);
+export default factory;

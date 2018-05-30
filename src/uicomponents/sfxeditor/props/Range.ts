@@ -1,14 +1,14 @@
 import * as React from "react";
 
-import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
-import SFXFragmentPropVecBase from "./VecBase";
+import SfxFragmentPropVecBase from "./VecBase";
 
 
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  fragment: SFXFragment<any>;
+  fragment: SfxFragment<any>;
   onValueChange: () => void;
 
   min: number;
@@ -19,9 +19,9 @@ interface StateType
 {
 }
 
-export class SFXFragmentPropRangeComponent extends React.Component<PropTypes, StateType>
+export class SfxFragmentPropRangeComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SFXFragmentPropRange";
+  public displayName = "SfxFragmentPropRange";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -36,7 +36,7 @@ export class SFXFragmentPropRangeComponent extends React.Component<PropTypes, St
       {
         className: "sfx-fragment-prop-range",
       },
-        SFXFragmentPropVecBase(
+        SfxFragmentPropVecBase(
         {
           propName: this.props.propName,
           fragment: this.props.fragment,
@@ -61,6 +61,6 @@ export class SFXFragmentPropRangeComponent extends React.Component<PropTypes, St
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentPropRangeComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropRangeComponent);
+export default factory;
 

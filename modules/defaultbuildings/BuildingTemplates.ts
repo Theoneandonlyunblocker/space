@@ -4,7 +4,7 @@ import TemplateCollection from "../../src/templateinterfaces/TemplateCollection"
 import * as Templates from "./templates/Templates";
 
 
-const BuildingTemplates: TemplateCollection<BuildingTemplate> =
+const buildingTemplates: TemplateCollection<BuildingTemplate> =
 {
   [Templates.sectorCommand.type]: Templates.sectorCommand,
   [Templates.sectorCommand1.type]: Templates.sectorCommand1,
@@ -16,4 +16,4 @@ const BuildingTemplates: TemplateCollection<BuildingTemplate> =
   [Templates.reserachLab.type]: Templates.reserachLab,
 };
 
-export default BuildingTemplates;
+export default buildingTemplates;

@@ -8,7 +8,7 @@ import
 } from "../../../../src/pixiWrapperFunctions";
 import LightBurstFilter from "../shaders/LightBurst";
 
-import SFXFragment from "./SFXFragment";
+import SfxFragment from "./SfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
 
 
@@ -22,7 +22,7 @@ interface LightBurstProps
   rayStrength: number;
 }
 
-export default class LightBurst extends SFXFragment<LightBurstProps>
+export default class LightBurst extends SfxFragment<LightBurstProps>
 {
   public displayName = "LightBurst";
   public key = "lightBurst";

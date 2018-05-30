@@ -18,7 +18,7 @@ declare interface ModuleFile
   needsToBeLoadedBefore: ModuleFileLoadingPhase;
   supportedLanguages: Language[] | "all";
   loadAssets?: (callback: () => void) => void;
-  constructModule?: (ModuleData: ModuleData) => void;
+  constructModule?: (moduleData: ModuleData) => void;
 }
 
 export default ModuleFile;

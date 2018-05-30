@@ -1,11 +1,11 @@
 import {UnitAttribute} from "../../../src/UnitAttributes";
-import BattleSFXTemplate from "../../../src/templateinterfaces/BattleSFXTemplate";
+import BattleSfxTemplate from "../../../src/templateinterfaces/BattleSfxTemplate";
 
 import BlackToAlphaFilter from "../battlesfxfunctions/shaders/BlackToAlpha";
 
 import beamDrawingFunction from "../battlesfxfunctions/beam";
 import guardDrawingFunction from "../battlesfxfunctions/guard";
-import makeSFXFromVideo from "../battlesfxfunctions/makeSFXFromVideo";
+import makeSfxFromVideo from "../battlesfxfunctions/makeSfxFromVideo";
 import {placeholder as placeholderFunction} from "../battlesfxfunctions/placeholder";
 import rocketAttackDrawingFunction from "../battlesfxfunctions/rocketAttack";
 import snipeDrawingFunction from "../battlesfxfunctions/snipe";
@@ -16,32 +16,32 @@ import
 } from "../../../src/pixiWrapperFunctions";
 
 
-export const rocketAttack: BattleSFXTemplate =
+export const rocketAttack: BattleSfxTemplate =
 {
   duration: 1500,
   battleOverlay: rocketAttackDrawingFunction,
-  SFXWillTriggerEffect: true,
+  sfxWillTriggerEffect: true,
 };
-export const guard: BattleSFXTemplate =
+export const guard: BattleSfxTemplate =
 {
   duration: 750,
   battleOverlay: guardDrawingFunction,
-  SFXWillTriggerEffect: true,
+  sfxWillTriggerEffect: true,
 };
-export const beam: BattleSFXTemplate =
+export const beam: BattleSfxTemplate =
 {
   duration: 3500,
   battleOverlay: beamDrawingFunction,
-  SFXWillTriggerEffect: true,
+  sfxWillTriggerEffect: true,
 };
 
-function makeSnipeTemplate(attribute: UnitAttribute): BattleSFXTemplate
+function makeSnipeTemplate(attribute: UnitAttribute): BattleSfxTemplate
 {
   return(
   {
     duration: 3000,
     battleOverlay: snipeDrawingFunction.bind(null, attribute),
-    SFXWillTriggerEffect: true,
+    sfxWillTriggerEffect: true,
   });
 }
 export const snipeAttack = makeSnipeTemplate(UnitAttribute.Attack);
@@ -49,21 +49,21 @@ export const snipeDefence = makeSnipeTemplate(UnitAttribute.Defence);
 export const snipeIntelligence = makeSnipeTemplate(UnitAttribute.Intelligence);
 export const snipeSpeed = makeSnipeTemplate(UnitAttribute.Speed);
 
-export const videoTest: BattleSFXTemplate =
+export const videoTest: BattleSfxTemplate =
 {
   duration: 1000,
-  battleOverlay: makeSFXFromVideo.bind(null, "img/bushiAttack.webm",
+  battleOverlay: makeSfxFromVideo.bind(null, "img/bushiAttack.webm",
     (sprite: PIXI.Sprite) =>
     {
       sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
       attachShaderToSprite(sprite, new BlackToAlphaFilter());
     }),
-  SFXWillTriggerEffect: false,
+  sfxWillTriggerEffect: false,
 };
 
-export const placeholder: BattleSFXTemplate =
+export const placeholder: BattleSfxTemplate =
 {
   duration: 1000,
   battleOverlay: placeholderFunction,
-  SFXWillTriggerEffect: false,
+  sfxWillTriggerEffect: false,
 };

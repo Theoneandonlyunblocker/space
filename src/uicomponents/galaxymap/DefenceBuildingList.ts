@@ -73,5 +73,5 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(DefenceBuildingListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(DefenceBuildingListComponent);
+export default factory;

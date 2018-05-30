@@ -56,5 +56,5 @@ export class TurnCounterListComponent extends React.PureComponent<PropTypes, Sta
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TurnCounterListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(TurnCounterListComponent);
+export default factory;

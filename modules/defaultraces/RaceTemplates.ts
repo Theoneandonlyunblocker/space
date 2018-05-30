@@ -5,10 +5,10 @@ import federationAlliance from "./templates/federationAlliance";
 import wormThings from "./templates/wormThings";
 
 
-const RaceTemplates: TemplateCollection<RaceTemplate> =
+const raceTemplates: TemplateCollection<RaceTemplate> =
 {
   [federationAlliance.type]: federationAlliance,
   [wormThings.type]: wormThings,
 };
 
-export default RaceTemplates;
+export default raceTemplates;

@@ -77,5 +77,5 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(NotificationComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(NotificationComponent);
+export default factory;

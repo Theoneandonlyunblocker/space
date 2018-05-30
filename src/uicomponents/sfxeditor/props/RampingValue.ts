@@ -1,14 +1,14 @@
 import * as React from "react";
 
-import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
-import SFXFragmentPropVecBase from "./VecBase";
+import SfxFragmentPropVecBase from "./VecBase";
 
 
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  fragment: SFXFragment<any>;
+  fragment: SfxFragment<any>;
   onValueChange: () => void;
 
   base: number;
@@ -20,9 +20,9 @@ interface StateType
 {
 }
 
-export class SFXFragmentPropRampingValueComponent extends React.Component<PropTypes, StateType>
+export class SfxFragmentPropRampingValueComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SFXFragmentPropRampingValue";
+  public displayName = "SfxFragmentPropRampingValue";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -37,7 +37,7 @@ export class SFXFragmentPropRampingValueComponent extends React.Component<PropTy
       {
         className: "sfx-fragment-prop-ramping-value",
       },
-        SFXFragmentPropVecBase(
+        SfxFragmentPropVecBase(
         {
           propName: this.props.propName,
           fragment: this.props.fragment,
@@ -67,6 +67,6 @@ export class SFXFragmentPropRampingValueComponent extends React.Component<PropTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentPropRampingValueComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropRampingValueComponent);
+export default factory;
 

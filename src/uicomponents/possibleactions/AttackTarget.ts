@@ -71,5 +71,5 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(AttackTargetComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(AttackTargetComponent);
+export default factory;

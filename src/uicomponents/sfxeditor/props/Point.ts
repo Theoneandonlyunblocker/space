@@ -1,14 +1,14 @@
 import * as React from "react";
 
-import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
-import SFXFragmentPropVecBase from "./VecBase";
+import SfxFragmentPropVecBase from "./VecBase";
 
 
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  fragment: SFXFragment<any>;
+  fragment: SfxFragment<any>;
   onValueChange: () => void;
 
   x: number;
@@ -19,9 +19,9 @@ interface StateType
 {
 }
 
-export class SFXFragmentPropPointComponent extends React.Component<PropTypes, StateType>
+export class SfxFragmentPropPointComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SFXFragmentPropPoint";
+  public displayName = "SfxFragmentPropPoint";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -36,7 +36,7 @@ export class SFXFragmentPropPointComponent extends React.Component<PropTypes, St
       {
         className: "sfx-fragment-prop-point",
       },
-        SFXFragmentPropVecBase(
+        SfxFragmentPropVecBase(
         {
           propName: this.props.propName,
           fragment: this.props.fragment,
@@ -61,6 +61,6 @@ export class SFXFragmentPropPointComponent extends React.Component<PropTypes, St
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentPropPointComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropPointComponent);
+export default factory;
 

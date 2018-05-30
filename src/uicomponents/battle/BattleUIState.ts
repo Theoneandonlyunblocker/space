@@ -7,7 +7,7 @@ enum BattleUIState
   // user & target unit | blinking border around target
   FocusingUnit,
   // user & target unit | darken formations
-  PlayingSFX,
+  PlayingSfx,
   // animate turn counter | animate turn order | add annihilated overlay
   TransitioningTurn,
   // no control

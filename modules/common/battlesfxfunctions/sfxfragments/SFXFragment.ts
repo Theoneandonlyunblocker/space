@@ -5,7 +5,7 @@ import {PropInfo} from "./props/PropInfo";
 
 let idGenerator = 0;
 
-abstract class SFXFragment<P>
+abstract class SfxFragment<P>
 {
   public id: number;
   public abstract key: string;
@@ -96,4 +96,4 @@ abstract class SFXFragment<P>
   }
 }
 
-export default SFXFragment;
+export default SfxFragment;

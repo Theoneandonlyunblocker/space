@@ -47,7 +47,7 @@ export const test2: TechnologyTemplate =
   unlocksPerLevel: {},
 };
 
-const TechnologyTemplates: TemplateCollection<TechnologyTemplate> =
+const technologyTemplates: TemplateCollection<TechnologyTemplate> =
 {
   [stealth.key]: stealth,
   [lasers.key]: lasers,
@@ -56,4 +56,4 @@ const TechnologyTemplates: TemplateCollection<TechnologyTemplate> =
   [test2.key]: test2,
 };
 
-export default TechnologyTemplates;
+export default technologyTemplates;

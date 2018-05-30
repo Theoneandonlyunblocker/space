@@ -109,5 +109,5 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(AttitudeModifierListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(AttitudeModifierListComponent);
+export default factory;

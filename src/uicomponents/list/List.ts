@@ -41,8 +41,8 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   sortedItems: ListItem<any>[];
   public state: StateType;
 
-  ref_TODO_header: HTMLElement;
-  ref_TODO_inner: HTMLElement;
+  private headerElement: HTMLElement;
+  private innerElement: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -144,7 +144,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   setDesiredHeight()
   {
     const ownNode = ReactDOM.findDOMNode<HTMLElement>(this);
-    const innerNode = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_inner);
+    const innerNode = ReactDOM.findDOMNode<HTMLElement>(this.innerElement);
 
     ownNode.style.height = "auto";
     innerNode.style.height = "auto";
@@ -171,7 +171,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   {
     // scrolls header to match list contents
     const target = e.currentTarget;
-    const header = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_header);
+    const header = ReactDOM.findDOMNode<HTMLElement>(this.headerElement);
     const titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
 
     const marginString = "-" + target.scrollLeft + "px";
@@ -482,7 +482,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
           className: "fixed-table-container-inner",
           ref: (component: HTMLElement) =>
           {
-            this.ref_TODO_inner = component;
+            this.innerElement = component;
           },
           onScroll: this.handleScroll,
         },
@@ -496,7 +496,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
             React.DOM.thead({className: "fixed-table-actual-header", ref: (component: HTMLElement) =>
             {
-              this.ref_TODO_header = component;
+              this.headerElement = component;
             }},
               React.DOM.tr(null,
                 headerLabels,
@@ -520,5 +520,5 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(ListComponent);
+export default factory;

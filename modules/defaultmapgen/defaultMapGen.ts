@@ -9,7 +9,7 @@ import spiralGalaxy from "./templates/spiralGalaxy";
 import tinierSpiralGalaxy from "./templates/tinierSpiralGalaxy";
 
 
-const Templates: TemplateCollection<MapGenTemplate> =
+const templates: TemplateCollection<MapGenTemplate> =
 {
   [spiralGalaxy.key]: spiralGalaxy,
   [tinierSpiralGalaxy.key]: tinierSpiralGalaxy,
@@ -29,7 +29,7 @@ const defaultMapGen: ModuleFile =
   supportedLanguages: [Languages.en],
   constructModule: (moduleData: ModuleData) =>
   {
-    moduleData.copyTemplates<MapGenTemplate>(Templates, "MapGen");
+    moduleData.copyTemplates<MapGenTemplate>(templates, "MapGen");
 
     if (!moduleData.defaultMap)
     {

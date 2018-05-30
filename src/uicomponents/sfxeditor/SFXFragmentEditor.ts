@@ -1,13 +1,13 @@
 import * as React from "react";
 
-import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
-import SFXFragmentPropsList from "./SFXFragmentPropsList";
+import SfxFragmentPropsList from "./SfxFragmentPropsList";
 
 
 interface PropTypes extends React.Props<any>
 {
-  fragment: SFXFragment<any>;
+  fragment: SfxFragment<any>;
   onActiveFragmentPropValueChange: () => void;
 }
 
@@ -15,9 +15,9 @@ interface StateType
 {
 }
 
-export class SFXFragmentEditorComponent extends React.Component<PropTypes, StateType>
+export class SfxFragmentEditorComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SFXFragmentEditor";
+  public displayName = "SfxFragmentEditor";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -47,7 +47,7 @@ export class SFXFragmentEditorComponent extends React.Component<PropTypes, State
         },
           "Reset",
         ),
-        SFXFragmentPropsList(
+        SfxFragmentPropsList(
         {
           fragment: this.props.fragment,
           onPropValueChange: this.props.onActiveFragmentPropValueChange,
@@ -57,5 +57,5 @@ export class SFXFragmentEditorComponent extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentEditorComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentEditorComponent);
+export default factory;

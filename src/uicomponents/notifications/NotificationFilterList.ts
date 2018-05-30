@@ -26,7 +26,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
 {
   public displayName = "NotificationFilterList";
   public state: StateType;
-  ref_TODO_body: HTMLElement;
+  private bodyElement: HTMLElement;
 
   static get defaultProps(): Partial<PropTypes>
   {
@@ -60,7 +60,8 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   {
     if (this.props.highlightedOptionKey)
     {
-      const bodyNode = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_body);
+      // TODO 2018.05.30 | isn't finddomnode unneeded here?
+      const bodyNode = <HTMLElement> ReactDOM.findDOMNode(this.bodyElement);
       const highlightedNode = <HTMLElement> bodyNode.getElementsByClassName("highlighted")[0];
       bodyNode.scrollTop = highlightedNode.offsetTop - bodyNode.offsetHeight / 3;
     }
@@ -142,7 +143,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
           className: "notification-filter-list-body",
           ref: (component: HTMLElement) =>
           {
-            this.ref_TODO_body = component;
+            this.bodyElement = component;
           },
         },
           filterGroupElements,
@@ -152,5 +153,5 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterListComponent);
+export default factory;

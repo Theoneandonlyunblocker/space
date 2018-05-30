@@ -62,5 +62,5 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(EmblemSetterComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(EmblemSetterComponent);
+export default factory;

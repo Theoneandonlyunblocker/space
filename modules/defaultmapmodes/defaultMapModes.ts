@@ -6,8 +6,8 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import MapRendererLayerTemplate from "../../src/templateinterfaces/MapRendererLayerTemplate";
 import MapRendererMapModeTemplate from "../../src/templateinterfaces/MapRendererMapModeTemplate";
 
-import MapLayerTemplates from "./MapLayerTemplates";
-import MapModeTemplates from "./MapModeTemplates";
+import mapLayerTemplates from "./MapLayerTemplates";
+import mapModeTemplates from "./MapModeTemplates";
 
 
 const defaultMapModes: ModuleFile =
@@ -31,8 +31,8 @@ const defaultMapModes: ModuleFile =
   },
   constructModule: (moduleData) =>
   {
-    moduleData.copyTemplates<MapRendererLayerTemplate>(MapLayerTemplates, "MapRendererLayers");
-    moduleData.copyTemplates<MapRendererMapModeTemplate>(MapModeTemplates, "MapRendererMapModes");
+    moduleData.copyTemplates<MapRendererLayerTemplate>(mapLayerTemplates, "MapRendererLayers");
+    moduleData.copyTemplates<MapRendererMapModeTemplate>(mapModeTemplates, "MapRendererMapModes");
 
     return moduleData;
   },

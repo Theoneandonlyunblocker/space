@@ -240,5 +240,5 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FlagEditorComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(FlagEditorComponent);
+export default factory;

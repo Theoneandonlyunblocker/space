@@ -31,8 +31,8 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
   public displayName = "FleetSelection";
   public state: StateType;
 
-  ref_TODO_main: HTMLElement;
-  ref_TODO_selected: HTMLElement;
+  private mainElement: HTMLElement;
+  private selectedElement: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -58,8 +58,8 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
 
   setElementPosition()
   {
-    if (!this.ref_TODO_selected) { return; }
-    const domNode = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_selected);
+    if (!this.selectedElement) { return; }
+    const domNode = <HTMLElement> ReactDOM.findDOMNode(this.selectedElement);
 
     if (!this.props.selectedStar)
     {
@@ -76,7 +76,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       const rightMostRect = rightMostNode.getBoundingClientRect();
       const ownBottom = domNode.getBoundingClientRect().bottom;
 
-      const first = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_main).firstChild;
+      const first = <HTMLElement> ReactDOM.findDOMNode(this.mainElement).firstChild;
 
       if (ownBottom > actionsRect.top)
       {
@@ -225,7 +225,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         className: "fleet-selection",
         ref: (component: HTMLElement) =>
         {
-          this.ref_TODO_main = component;
+          this.mainElement = component;
         },
       },
         fleetSelectionControls,
@@ -239,7 +239,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
             className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : ""),
             ref: (component: HTMLElement) =>
             {
-              this.ref_TODO_selected = component;
+              this.selectedElement = component;
             },
           },
             hasMultipleSelected ? fleetInfos : null,
@@ -253,5 +253,5 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FleetSelectionComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(FleetSelectionComponent);
+export default factory;

@@ -11,7 +11,7 @@ import shieldBoat from  "./templates/shieldBoat";
 import stealthShip from  "./templates/stealthShip";
 
 
-const UnitTemplates: TemplateCollection<UnitTemplate> =
+const unitTemplates: TemplateCollection<UnitTemplate> =
 {
   [battleCruiser.type]: battleCruiser,
   [commandShip.type]: commandShip,
@@ -23,4 +23,4 @@ const UnitTemplates: TemplateCollection<UnitTemplate> =
   [shieldBoat.type]: shieldBoat,
 };
 
-export default UnitTemplates;
+export default unitTemplates;

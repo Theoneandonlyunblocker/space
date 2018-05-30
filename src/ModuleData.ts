@@ -9,10 +9,10 @@ import
   PartialRuleSetValues,
   RuleSetValues,
 } from "./RuleSetValues";
-import AITemplateConstructor from "./templateinterfaces/AITemplateConstructor";
+import AiTemplateConstructor from "./templateinterfaces/AITemplateConstructor";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
-import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
+import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
 import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import MapGenTemplate from "./templateinterfaces/MapGenTemplate";
@@ -40,9 +40,9 @@ import
 interface Templates
 {
   Abilities: TemplateCollection<AbilityTemplate>;
-  AITemplateConstructors: TemplateCollection<AITemplateConstructor<any>>;
+  AiTemplateConstructors: TemplateCollection<AiTemplateConstructor<any>>;
   AttitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
-  BattleSFX: TemplateCollection<BattleSFXTemplate>;
+  BattleSfx: TemplateCollection<BattleSfxTemplate>;
   Buildings: TemplateCollection<BuildingTemplate>;
   Items: TemplateCollection<ItemTemplate>;
   MapGen: TemplateCollection<MapGenTemplate>;
@@ -70,12 +70,12 @@ export default class ModuleData
   public mapBackgroundDrawingFunction: BackgroundDrawingFunction;
   public starBackgroundDrawingFunction: BackgroundDrawingFunction;
 
-  public Templates: Templates =
+  public templates: Templates =
   {
     Abilities: {},
-    AITemplateConstructors: {},
+    AiTemplateConstructors: {},
     AttitudeModifiers: {},
-    BattleSFX: {},
+    BattleSfx: {},
     Buildings: {},
     Items: {},
     MapGen: {},
@@ -107,27 +107,27 @@ export default class ModuleData
   }
   public copyTemplates<T>(source: TemplateCollection<T>, category: keyof Templates): void
   {
-    if (!this.Templates[category])
+    if (!this.templates[category])
     {
-      console.warn(`Tried to copy templates in invalid category "${category}". Category must be one of: ${Object.keys(this.Templates).join(", ")}`);
+      console.warn(`Tried to copy templates in invalid category "${category}". Category must be one of: ${Object.keys(this.templates).join(", ")}`);
 
       return;
     }
 
     for (const templateType in source)
     {
-      if (this.Templates[category][templateType])
+      if (this.templates[category][templateType])
       {
         console.warn(`Duplicate template identifier for ${templateType} in ${category}`);
         continue;
       }
       // TODO 2017.02.05 | bad typing
-      this.Templates[category][templateType] = <any> source[templateType];
+      this.templates[category][templateType] = <any> source[templateType];
     }
   }
   public copyAllTemplates(source: Templates): void
   {
-    for (const category in this.Templates)
+    for (const category in this.templates)
     {
       if (source[category])
       {
@@ -145,9 +145,9 @@ export default class ModuleData
     {
       return this.defaultMap;
     }
-    else if (Object.keys(this.Templates.MapGen).length > 0)
+    else if (Object.keys(this.templates.MapGen).length > 0)
     {
-      return getRandomProperty(this.Templates.MapGen);
+      return getRandomProperty(this.templates.MapGen);
     }
     else
     {

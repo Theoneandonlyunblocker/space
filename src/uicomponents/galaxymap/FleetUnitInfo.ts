@@ -121,5 +121,5 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FleetUnitInfoComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(FleetUnitInfoComponent);
+export default factory;

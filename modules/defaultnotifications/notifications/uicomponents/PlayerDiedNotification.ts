@@ -49,6 +49,5 @@ class PlayerDiedNotification extends React.Component<PropTypes, {}>
   }
 }
 
-// tslint:disable-next-line:variable-name
-const Factory = React.createFactory(PlayerDiedNotification);
-export default Factory;
+const factory = React.createFactory(PlayerDiedNotification);
+export default factory;

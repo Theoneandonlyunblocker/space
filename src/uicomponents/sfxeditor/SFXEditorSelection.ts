@@ -1,25 +1,25 @@
 import * as React from "react";
 
-import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
 import
 {
-  default as SFXEditorSelectionTab,
+  default as SfxEditorSelectionTab,
   SelectionTabType,
-} from "./SFXEditorSelectionTab";
-import SFXFragmentConstructor from "./SFXFragmentConstructor";
-import SFXFragmentEditor from "./SFXFragmentEditor";
-import SFXFragmentList from "./SFXFragmentList";
+} from "./SfxEditorSelectionTab";
+import SfxFragmentConstructor from "./SfxFragmentConstructor";
+import SfxFragmentEditor from "./SfxFragmentEditor";
+import SfxFragmentList from "./SfxFragmentList";
 
 
 interface PropTypes extends React.Props<any>
 {
-  availableFragmentConstructors: SFXFragmentConstructor[];
-  selectedFragment: SFXFragment<any>;
+  availableFragmentConstructors: SfxFragmentConstructor[];
+  selectedFragment: SfxFragment<any>;
   onSelectedFragmentPropValueChange: () => void;
-  selectFragment: (fragment: SFXFragment<any>) => void;
+  selectFragment: (fragment: SfxFragment<any>) => void;
 
-  onFragmentListDragStart: (fragmentConstructor: SFXFragmentConstructor) => void;
+  onFragmentListDragStart: (fragmentConstructor: SfxFragmentConstructor) => void;
   onFragmentListDragEnd: () => void;
 }
 
@@ -28,9 +28,9 @@ interface StateType
   activeTab: SelectionTabType;
 }
 
-export class SFXEditorSelectionComponent extends React.Component<PropTypes, StateType>
+export class SfxEditorSelectionComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SFXEditorSelection";
+  public displayName = "SfxEditorSelection";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -63,7 +63,7 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
       case "placedFragments":
         if (this.props.selectedFragment)
         {
-          activeSelectionElements.push(SFXFragmentEditor(
+          activeSelectionElements.push(SfxFragmentEditor(
           {
             key: "fragmentEditor",
             fragment: this.props.selectedFragment,
@@ -72,7 +72,7 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
         }
         break;
       case "fragmentConstructors":
-        activeSelectionElements.push(SFXFragmentList(
+        activeSelectionElements.push(SfxFragmentList(
         // @ts-ignore 2345
         {
           key: "fragmentConstructors",
@@ -97,7 +97,7 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
         },
           tabTypes.map(tabType =>
           {
-            return SFXEditorSelectionTab(
+            return SfxEditorSelectionTab(
             {
               key: tabType,
               type: tabType,
@@ -117,5 +117,5 @@ export class SFXEditorSelectionComponent extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXEditorSelectionComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SfxEditorSelectionComponent);
+export default factory;

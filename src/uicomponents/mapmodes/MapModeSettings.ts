@@ -21,7 +21,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
   public displayName = "MapModeSettings";
 
   public state: StateType;
-  ref_TODO_layersList: MapRendererLayersListComponent;
+  private layersListComponent: MapRendererLayersListComponent;
 
   constructor(props: PropTypes)
   {
@@ -40,7 +40,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
     mapRenderer.currentMapMode.resetLayers();
     mapRenderer.resetMapModeLayersPosition();
     mapRenderer.setAllLayersAsDirty();
-    this.ref_TODO_layersList.forceUpdate();
+    this.layersListComponent.forceUpdate();
   }
 
   render()
@@ -56,7 +56,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
           currentMapMode: this.props.mapRenderer.currentMapMode,
           ref: (component: MapRendererLayersListComponent) =>
           {
-            this.ref_TODO_layersList = component;
+            this.layersListComponent = component;
           },
         }),
         MapModeSelector(
@@ -76,5 +76,5 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(MapModeSettingsComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(MapModeSettingsComponent);
+export default factory;

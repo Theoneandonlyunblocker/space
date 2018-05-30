@@ -3,7 +3,7 @@ import
 {
   getRandomArrayItem,
 } from "../../../src/utility";
-import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
+import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
 import MapEvaluator from "../mapai/MapEvaluator";
 
 import {EconomicObjective} from "./common/EconomicObjective";
@@ -50,7 +50,7 @@ export class BuildUnitsForFront extends EconomicObjective
       return new BuildUnitsForFront(objective, mapEvaluator.player);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     // todo
     return 0.66;

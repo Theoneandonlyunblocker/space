@@ -8,7 +8,7 @@ import Unit from "./Unit";
 import
 {
   default as UnitBattleSide,
-  UnitBattleSides,
+  unitBattleSides,
 } from "./UnitBattleSide";
 import {centerCameraOnPosition} from "./centerCameraOnPosition";
 import eventManager from "./eventManager";
@@ -101,7 +101,7 @@ export default class Battle
   // Separate from constructor because cloned battles (for ai simulation) don't need to call this.
   public init(): void
   {
-    UnitBattleSides.forEach(sideId =>
+    unitBattleSides.forEach(sideId =>
     {
       const side = this[sideId];
       for (let i = 0; i < side.length; i++)
@@ -443,7 +443,7 @@ export default class Battle
     {
       deathChance = activeModuleData.ruleSet.battle.independentUnitDeathChance;
     }
-    else if (player.isAI)
+    else if (player.isAi)
     {
       deathChance = activeModuleData.ruleSet.battle.aiUnitDeathChance;
     }
@@ -516,7 +516,7 @@ export default class Battle
       return true;
     }
 
-    const oneSideHasNoActiveUnits = UnitBattleSides.some(side =>
+    const oneSideHasNoActiveUnits = unitBattleSides.some(side =>
     {
       return this.getUnitsForSide(side).every(unit => !unit.isActiveInBattle());
     });
@@ -550,7 +550,7 @@ export default class Battle
   {
     let evaluation = 0;
 
-    UnitBattleSides.forEach(side =>
+    unitBattleSides.forEach(side =>
     {
       // positive * sign === good, negative * sign === bad
       const sign = side === "side1" ? 1 : -1; // positive = side1 advantage

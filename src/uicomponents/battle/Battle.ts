@@ -83,9 +83,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   public displayName: string = "Battle";
   public state: StateType;
 
-  private ref_TODO_formationsContainer: HTMLElement;
-  private ref_TODO_abilityTooltip: AbilityTooltipComponent;
-  private ref_TODO_background: BattleBackgroundComponent;
+  private formationsContainer: HTMLElement;
+  private abilityTooltip: AbilityTooltipComponent;
+  private background: BattleBackgroundComponent;
 
   private battleScene: BattleScene;
   private abilityUseEffectQueue: AbilityUseEffectQueue;
@@ -96,9 +96,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   private tempHoveredUnit: Unit = null;
 
   // TODO 2018.04.14 | really doesn't belong in ui class
-  private MCTree: MCTree = null;
+  private mcTree: MCTree = null;
 
-  private SFXStartTime: number;
+  private sfxStartTime: number;
   private battleStartStartTime: number;
   private battleEndStartTime: number;
 
@@ -114,9 +114,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.abilityUseEffectQueue = new AbilityUseEffectQueue(this.battleScene,
     {
       onEffectStart: this.setStateForBattleEffect,
-      onSFXStart: () =>
+      onSfxStart: () =>
       {
-        this.SFXStartTime = Date.now();
+        this.sfxStartTime = Date.now();
       },
       onEffectTrigger: this.onBattleEffectTrigger,
       onCurrentFinished: this.playQueuedBattleEffects,
@@ -130,7 +130,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.handleMouseEnterUnit = this.handleMouseEnterUnit.bind(this);
     this.handleMouseEnterAbility = this.handleMouseEnterAbility.bind(this);
     this.usePreparedAbility = this.usePreparedAbility.bind(this);
-    this.useAIAbility = this.useAIAbility.bind(this);
+    this.useAiAbility = this.useAiAbility.bind(this);
     this.handleMouseLeaveAbility = this.handleMouseLeaveAbility.bind(this);
     this.endTurn = this.endTurn.bind(this);
     this.startTurn = this.startTurn.bind(this);
@@ -188,7 +188,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   componentDidMount()
   {
     this.battleStartStartTime = Date.now();
-    this.ref_TODO_background.handleResize();
+    this.background.handleResize();
   }
 
   private endBattleStart()
@@ -219,7 +219,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         }
         if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
         {
-          this.useAIAbility();
+          this.useAiAbility();
         }
       });
     }
@@ -228,7 +228,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private getBlurArea()
   {
-    return ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_formationsContainer).getBoundingClientRect();
+    return ReactDOM.findDOMNode<HTMLElement>(this.formationsContainer).getBoundingClientRect();
   }
   private clearHoveredUnit()
   {
@@ -271,18 +271,18 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    if (!this.ref_TODO_abilityTooltip)
+    if (!this.abilityTooltip)
     {
       this.clearHoveredUnit();
       return;
     }
 
 
-    const tooltipElement = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_abilityTooltip);
+    const tooltipElement = ReactDOM.findDOMNode<HTMLElement>(this.abilityTooltip);
 
     if (
       toElement !== this.state.abilityTooltip.parentElement &&
-      (this.ref_TODO_abilityTooltip && toElement !== tooltipElement) &&
+      (this.abilityTooltip && toElement !== tooltipElement) &&
       toElement.parentElement !== tooltipElement
     )
     {
@@ -363,9 +363,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.abilityUseEffectQueue.addEffects(abilityUseEffects);
 
-    if (wasByPlayer && this.MCTree)
+    if (wasByPlayer && this.mcTree)
     {
-      this.MCTree.advanceMove(
+      this.mcTree.advanceMove(
       {
         ability: ability,
         userId: user.id,
@@ -397,7 +397,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleSceneUnit1: units.side1,
       battleSceneUnit2: units.side2,
       playingBattleEffect: true,
-      UIState: BattleUIState.PlayingSFX,
+      UIState: BattleUIState.PlayingSfx,
       battleEffectDuration: effect.sfx.duration * Options.battleAnimationTiming.effectDuration,
     }, this.clearHoveredUnit);
   }
@@ -414,7 +414,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         this.state.unitDisplayDataById, effect.changedUnitDisplayDataById),
       battleEvaluation: effect.newEvaluation,
       battleEffectDurationAfterTrigger: this.state.battleEffectDuration -
-        (Date.now() - this.SFXStartTime),
+        (Date.now() - this.sfxStartTime),
     });
   }
   private finishPlayingQueuedBattleEffects()
@@ -471,7 +471,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
     else if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
     {
-      this.useAIAbility();
+      this.useAiAbility();
     }
     else
     {
@@ -498,24 +498,24 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     this.handleAbilityUse(ability, target, true);
   }
-  private useAIAbility()
+  private useAiAbility()
   {
     if (!this.props.battle.activeUnit || this.props.battle.ended)
     {
       return;
     }
 
-    if (!this.MCTree)
+    if (!this.mcTree)
     {
-      this.MCTree = new MCTree(this.props.battle, this.props.battle.activeUnit.battleStats.side);
+      this.mcTree = new MCTree(this.props.battle, this.props.battle.activeUnit.battleStats.side);
     }
 
     const iterations = Math.max(
-      Options.debug.AIVsPlayerBattleSimulationDepth,
-      this.MCTree.rootNode.getPossibleMoves(this.props.battle).length * Math.sqrt(Options.debug.AIVsPlayerBattleSimulationDepth),
+      Options.debug.aiVsPlayerBattleSimulationDepth,
+      this.mcTree.rootNode.getPossibleMoves(this.props.battle).length * Math.sqrt(Options.debug.aiVsPlayerBattleSimulationDepth),
     );
 
-    const move = this.MCTree.getBestMoveAndAdvance(iterations, 0.25);
+    const move = this.mcTree.getBestMoveAndAdvance(iterations, 0.25);
 
     const target = this.props.battle.unitsById[move.targetId];
 
@@ -559,7 +559,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         activeTargets: activeTargets,
         ref: (component: AbilityTooltipComponent) =>
         {
-          this.ref_TODO_abilityTooltip = component;
+          this.abilityTooltip = component;
         },
         key: this.state.hoveredUnit.id,
       });
@@ -691,7 +691,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         getBlurArea: this.getBlurArea,
         ref: (component: BattleBackgroundComponent) =>
         {
-          this.ref_TODO_background = component;
+          this.background = component;
         },
       },
         React.DOM.div(containerProps,
@@ -722,7 +722,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             className: "formations-container",
             ref: (container: HTMLElement) =>
             {
-              this.ref_TODO_formationsContainer = container;
+              this.formationsContainer = container;
             },
           },
             Formation(
@@ -782,5 +782,5 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(BattleComponent);
+export default factory;

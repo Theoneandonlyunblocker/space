@@ -53,8 +53,8 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   public displayName = "GalaxyMapUI";
 
   public state: StateType;
-  ref_TODO_leftColumnContent: HTMLElement;
-  ref_TODO_expandedActionElementContainer: HTMLElement;
+  leftColumnContent: HTMLElement;
+  expandedActionElementContainer: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -119,8 +119,8 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.state.expandedActionElement) { return; }
 
-    const maxHeight = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_leftColumnContent).getBoundingClientRect().height;
-    const listElement = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_expandedActionElementContainer).firstChild.firstChild;
+    const maxHeight = ReactDOM.findDOMNode<HTMLElement>(this.leftColumnContent).getBoundingClientRect().height;
+    const listElement = <HTMLElement> ReactDOM.findDOMNode(this.expandedActionElementContainer).firstChild.firstChild;
     listElement.style.maxHeight = "" + (maxHeight - 10) + "px";
   }
 
@@ -133,7 +133,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      isPlayerTurn: !this.props.game.playerToAct.isAI,
+      isPlayerTurn: !this.props.game.playerToAct.isAi,
     });
   }
 
@@ -207,7 +207,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
         className: "galaxy-map-ui-bottom-left-column",
         ref: (component: HTMLElement) =>
         {
-          this.ref_TODO_expandedActionElementContainer = component;
+          this.expandedActionElementContainer = component;
         },
       },
         this.state.expandedActionElement,
@@ -269,7 +269,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
               className: "galaxy-map-ui-bottom-left-leftmost-column-wrapper",
               ref: (component: HTMLElement) =>
               {
-                this.ref_TODO_leftColumnContent = component;
+                this.leftColumnContent = component;
               },
               key: "leftColumnContent",
             },
@@ -327,5 +327,5 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(GalaxyMapUIComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(GalaxyMapUIComponent);
+export default factory;

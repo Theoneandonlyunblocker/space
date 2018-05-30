@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import IntroTutorial from "../../tutorials/IntroTutorial";
+import introTutorial from "../../tutorials/IntroTutorial";
 import TutorialStatus from "../../tutorials/TutorialStatus";
 import TutorialVisibility from "../../tutorials/TutorialVisibility";
 import {default as DefaultWindow} from "../windows/DefaultWindow";
@@ -52,7 +52,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
       },
         Tutorial(
         {
-          pages: IntroTutorial.pages,
+          pages: introTutorial.pages,
           tutorialId: "introTutorial",
         }),
       )
@@ -60,5 +60,5 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(IntroTutorialComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(IntroTutorialComponent);
+export default factory;

@@ -8,7 +8,7 @@ import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
 import PortraitTemplate from "./templateinterfaces/PortraitTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
-import SFXParams from "./templateinterfaces/SFXParams";
+import SfxParams from "./templateinterfaces/SfxParams";
 import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
@@ -258,7 +258,7 @@ export default class Unit
       maxItemSlots: template.itemSlots,
       items: [],
 
-      portrait: race.getUnitPortrait(template, activeModuleData.Templates.Portraits),
+      portrait: race.getUnitPortrait(template, activeModuleData.templates.Portraits),
       race: race,
     });
 
@@ -268,7 +268,7 @@ export default class Unit
   {
     const unit = new Unit(
     {
-      template: activeModuleData.Templates.Units[data.templateType],
+      template: activeModuleData.templates.Units[data.templateType],
 
       id: data.id,
       name: data.name,
@@ -284,11 +284,11 @@ export default class Unit
 
       abilities: data.abilityTemplateTypes.map(templateType =>
       {
-        return activeModuleData.Templates.Abilities[templateType];
+        return activeModuleData.templates.Abilities[templateType];
       }),
       passiveSkills: data.passiveSkillTemplateTypes.map(templateType =>
       {
-        return activeModuleData.Templates.PassiveSkills[templateType];
+        return activeModuleData.templates.PassiveSkills[templateType];
       }),
 
       level: data.level,
@@ -310,7 +310,7 @@ export default class Unit
          statusEffects: [],
          queuedAction:  data.battleStats.queuedAction ?
           {
-            ability: activeModuleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
+            ability: activeModuleData.templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
             targetId: data.battleStats.queuedAction.targetId,
             turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
             timesInterrupted: data.battleStats.queuedAction.timesInterrupted,
@@ -322,10 +322,10 @@ export default class Unit
       items: [],
 
       portrait: data.portraitKey ?
-        activeModuleData.Templates.Portraits[data.portraitKey] :
+        activeModuleData.templates.Portraits[data.portraitKey] :
         undefined,
       race: data.raceKey ?
-        activeModuleData.Templates.Races[data.raceKey] :
+        activeModuleData.templates.Races[data.raceKey] :
         undefined,
     });
 
@@ -1029,7 +1029,7 @@ export default class Unit
       this.abilities.push(<AbilityTemplate> newAbility);
     }
   }
-  public drawBattleScene(params: SFXParams)
+  public drawBattleScene(params: SfxParams)
   {
     this.template.unitDrawingFN(this, params);
   }

@@ -38,9 +38,9 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
   private cachedButtonWidths: number[] = [];
   private cachedMenuButtonWidth: number = 37;
 
-  private ref_TODO_topMenu: HTMLElement;
-  private ref_TODO_popups: TopMenuPopupsComponent;
-  private ref_TODO_topMenuItems: HTMLElement;
+  private topMenuElement: HTMLElement;
+  private popupsComponent: TopMenuPopupsComponent;
+  private topMenuItemsElement: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -200,7 +200,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
           className: "top-menu",
           ref: (component: HTMLElement) =>
           {
-            this.ref_TODO_topMenu = component;
+            this.topMenuElement = component;
           },
         },
           React.DOM.div(
@@ -208,7 +208,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
             className: "top-menu-items",
             ref: (component: HTMLElement) =>
             {
-              this.ref_TODO_topMenuItems = component;
+              this.topMenuItemsElement = component;
             },
           },
             topMenuItems,
@@ -219,7 +219,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         {
           ref: (component: TopMenuPopupsComponent) =>
           {
-            this.ref_TODO_popups = component;
+            this.popupsComponent = component;
           },
           player: this.props.player,
           game: this.props.game,
@@ -263,9 +263,9 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
   {
     if (!this.cachedTopMenuWidth)
     {
-      this.cachedTopMenuWidth = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_topMenu).getBoundingClientRect().width;
+      this.cachedTopMenuWidth = ReactDOM.findDOMNode<HTMLElement>(this.topMenuElement).getBoundingClientRect().width;
 
-      const buttons = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_topMenuItems).children;
+      const buttons = ReactDOM.findDOMNode<HTMLElement>(this.topMenuItemsElement).children;
 
       const margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
 
@@ -349,13 +349,13 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
   }
   private openOrBringPopupToTop(popupType: PopupType): void
   {
-    if (this.ref_TODO_popups.state[popupType])
+    if (this.popupsComponent.state[popupType])
     {
-      this.ref_TODO_popups.bringPopupToFront(popupType);
+      this.popupsComponent.bringPopupToFront(popupType);
     }
     else
     {
-      this.ref_TODO_popups.togglePopup(popupType);
+      this.popupsComponent.togglePopup(popupType);
     }
   }
   private closePopup(popupType: PopupType, e: React.MouseEvent<HTMLButtonElement>): void
@@ -363,9 +363,9 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     e.preventDefault();
     e.stopPropagation();
 
-    if (this.ref_TODO_popups.state[popupType])
+    if (this.popupsComponent.state[popupType])
     {
-      this.ref_TODO_popups.togglePopup(popupType)
+      this.popupsComponent.togglePopup(popupType)
     }
   }
   private toggleCondensedMenu()
@@ -379,5 +379,5 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TopMenuComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(TopMenuComponent);
+export default factory;

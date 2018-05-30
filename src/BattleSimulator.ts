@@ -42,14 +42,14 @@ export default class BattleSimulator
     }
 
     const rootVisitsUnderSimulationDepth = Math.min(
-      Options.debug.AIVsAIBattleSimulationDepth - this.tree.rootNode.visits,
+      Options.debug.aiVsAiBattleSimulationDepth - this.tree.rootNode.visits,
       0,
     );
 
     const iterations = Math.max(
       rootVisitsUnderSimulationDepth,
-      this.tree.rootNode.getPossibleMoves(this.battle).length * Math.log(Options.debug.AIVsPlayerBattleSimulationDepth),
-      Options.debug.AIVsAIBattleSimulationDepth / 2,
+      this.tree.rootNode.getPossibleMoves(this.battle).length * Math.log(Options.debug.aiVsPlayerBattleSimulationDepth),
+      Options.debug.aiVsAiBattleSimulationDepth / 2,
     );
 
     const move = this.tree.getBestMoveAndAdvance(

@@ -174,5 +174,5 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ItemListItemComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(ItemListItemComponent);
+export default factory;

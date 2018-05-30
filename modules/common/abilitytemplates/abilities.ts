@@ -24,7 +24,7 @@ import
   targetSelf,
 } from "../../../src/targeting";
 
-import * as BattleSFX from "../battlesfxtemplates/battleSFX";
+import * as BattleSfx from "../battlesfxtemplates/battleSfx";
 
 import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
 import * as EffectActions from "../effectactiontemplates/effectActions";
@@ -77,7 +77,7 @@ export const closeAttack: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
-    sfx: BattleSFX.rocketAttack,
+    sfx: BattleSfx.rocketAttack,
   },
 };
 export const beamAttack: AbilityTemplate =
@@ -103,7 +103,7 @@ export const beamAttack: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
-    sfx: BattleSFX.beam,
+    sfx: BattleSfx.beam,
   },
 
   targetCannotBeDiverted: true,
@@ -139,7 +139,7 @@ export const bombAttack: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
-    sfx: BattleSFX.rocketAttack,
+    sfx: BattleSfx.rocketAttack,
   },
 };
 export const guardRow: AbilityTemplate =
@@ -168,7 +168,7 @@ export const guardRow: AbilityTemplate =
         targetType: AbilityTargetType.Primary,
         targetEffect: AbilityTargetEffect.Positive,
       }),
-    sfx: BattleSFX.guard,
+    sfx: BattleSfx.guard,
   },
 
   doesNotRemoveUserGuard: true,
@@ -196,7 +196,7 @@ export const boardingHook: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
-    sfx: BattleSFX.rocketAttack,
+    sfx: BattleSfx.rocketAttack,
     attachedEffects:
     [
       {
@@ -238,7 +238,7 @@ export const debugAbility: AbilityTemplate =
       targetEffect: AbilityTargetEffect.Positive,
     }),
     executeAction: () => {},
-    sfx: BattleSFX.guard,
+    sfx: BattleSfx.guard,
   },
 };
 
@@ -265,7 +265,7 @@ export const rangedAttack: AbilityTemplate =
         targetType: AbilityTargetType.Primary,
         targetEffect: AbilityTargetEffect.Negative,
       }),
-    sfx: BattleSFX.rocketAttack,
+    sfx: BattleSfx.rocketAttack,
     attachedEffects:
     [
       {
@@ -325,7 +325,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
         targetType: AbilityTargetType.Primary,
         targetEffect: AbilityTargetEffect.Negative,
       }),
-      sfx: BattleSFX[key],
+      sfx: BattleSfx[key],
       attachedEffects:
       [
         {
@@ -368,7 +368,7 @@ export const standBy: AbilityTemplate =
   },
 
   doesNotRemoveUserGuard: true,
-  AIEvaluationPriority: 0.6,
-  AIScoreMultiplier: 0.6,
-  disableInAIBattles: true,
+  AiEvaluationPriority: 0.6,
+  AiScoreMultiplier: 0.6,
+  disableInAiBattles: true,
 };

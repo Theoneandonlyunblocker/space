@@ -76,5 +76,5 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PlayerFlagComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(PlayerFlagComponent);
+export default factory;

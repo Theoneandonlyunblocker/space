@@ -198,5 +198,5 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(NotificationLogComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(NotificationLogComponent);
+export default factory;

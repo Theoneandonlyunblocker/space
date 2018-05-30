@@ -1,4 +1,4 @@
-import SFXParams from "../../../src/templateinterfaces/SFXParams";
+import SfxParams from "../../../src/templateinterfaces/SfxParams";
 import
 {
   getRelativeValue,
@@ -7,9 +7,9 @@ import
 import GuardFilter from "./shaders/Guard";
 
 
-export default function guard(props: SFXParams)
+export default function guard(props: SfxParams)
 {
-  const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSFX(
+  const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSfx(
     props.userOffset, props.width, "user");
   const userX2 = offsetUserData.boundingBox.x + offsetUserData.boundingBox.width;
   const maxFrontier = Math.min(userX2 + 75, props.width / 2.2);

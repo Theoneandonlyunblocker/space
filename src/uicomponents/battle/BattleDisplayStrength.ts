@@ -140,5 +140,5 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleDisplayStrengthComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(BattleDisplayStrengthComponent);
+export default factory;

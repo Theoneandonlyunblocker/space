@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import SFXParams from "../../../src/templateinterfaces/SFXParams";
+import SfxParams from "../../../src/templateinterfaces/SfxParams";
 
 
-export default function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: PIXI.Sprite) => void,
-  props: SFXParams)
+export default function makeSfxFromVideo(videoSrc: string, onStartFN: (sprite: PIXI.Sprite) => void,
+  props: SfxParams)
 {
   function clearBaseTextureListeners()
   {

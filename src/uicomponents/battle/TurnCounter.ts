@@ -2,8 +2,10 @@ import * as React from "react";
 import * as ReactTransitionGroup from "react-transition-group";
 
 
+// tslint:disable-next-line:variable-name
 const ReactCSSTransitionGroup = React.createFactory(ReactTransitionGroup.CSSTransitionGroup);
 
+// tslint:disable-next-line:variable-name
 const FirstChild = React.createClass(
 {
   render: function(this: any)
@@ -74,5 +76,5 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TurnCounterComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(TurnCounterComponent);
+export default factory;

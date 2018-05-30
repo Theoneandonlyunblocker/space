@@ -41,5 +41,5 @@ export class UnitPortraitComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitPortraitComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(UnitPortraitComponent);
+export default factory;

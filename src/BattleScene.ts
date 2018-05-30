@@ -1,7 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
-import SFXParams from "./templateinterfaces/SFXParams";
+import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
+import SfxParams from "./templateinterfaces/SfxParams";
 
 import BattleSceneUnit from "./BattleSceneUnit";
 import BattleSceneUnitOverlay from "./BattleSceneUnitOverlay";
@@ -39,7 +39,7 @@ export default class BattleScene
   private side1Overlay: BattleSceneUnitOverlay;
   private side2Overlay: BattleSceneUnitOverlay;
 
-  private activeSFX: BattleSFXTemplate | null;
+  private activeSfx: BattleSfxTemplate | null;
 
   private side1UnitHasFinishedUpdating: boolean = false;
   private side2UnitHasFinishedUpdating: boolean = false;
@@ -49,7 +49,7 @@ export default class BattleScene
   private afterUseDelayHasFinishedCallback: (() => void) | null;
   private abilityUseHasFinishedCallback: (() => void) | null;
 
-  private onSFXStartCallback: (() => void) | null;
+  private onSfxStartCallback: (() => void) | null;
   private triggerEffectCallback: (() => void) | null;
 
   private isPaused: boolean = false;
@@ -117,31 +117,31 @@ export default class BattleScene
   }
   public handleAbilityUse(props:
   {
-    SFXTemplate: BattleSFXTemplate;
+    sfxTemplate: BattleSfxTemplate;
     triggerEffectCallback: () => void;
-    onSFXStartCallback: () => void;
+    onSfxStartCallback: () => void;
     user: Unit;
     target: Unit;
     afterFinishedCallback: () => void;
   })
   {
-    this.clearActiveSFX();
+    this.clearActiveSfx();
 
     this.userUnit = props.user;
     this.targetUnit = props.target;
-    this.activeSFX = props.SFXTemplate;
+    this.activeSfx = props.sfxTemplate;
 
-    this.onSFXStartCallback = props.onSFXStartCallback;
+    this.onSfxStartCallback = props.onSfxStartCallback;
     this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
 
     this.triggerEffectCallback = props.triggerEffectCallback;
-    this.beforeUseDelayHasFinishedCallback = this.playSFX.bind(this);
-    this.prepareSFX();
+    this.beforeUseDelayHasFinishedCallback = this.playSfx.bind(this);
+    this.prepareSfx();
 
-    // this.prepareSFX();
-    // this.playSFX();
+    // this.prepareSfx();
+    // this.playSfx();
     // props.triggerEffectCallback();
-    // this.handleActiveSFXEnd();
+    // this.handleActiveSfxEnd();
     // props.afterFinishedCallback();
   }
   public updateUnits(afterFinishedUpdatingCallback?: () => void)
@@ -229,14 +229,14 @@ export default class BattleScene
       height: this.renderer.height,
     });
   }
-  private getSFXParams(props:
+  private getSfxParams(props:
   {
     triggerStart: (container: PIXI.DisplayObject) => void;
     triggerEnd?: () => void;
-  }): SFXParams
+  }): SfxParams
   {
     const bounds = this.getSceneBounds();
-    const duration = this.activeSFX.duration * Options.battleAnimationTiming.effectDuration;
+    const duration = this.activeSfx.duration * Options.battleAnimationTiming.effectDuration;
 
     return(
     {
@@ -258,7 +258,7 @@ export default class BattleScene
   {
     const units: (Unit | null)[] = [];
 
-    if (this.activeSFX)
+    if (this.activeSfx)
     {
       units.push(this.targetUnit, this.userUnit);
     }
@@ -321,12 +321,12 @@ export default class BattleScene
     this.beforeUseDelayHasFinishedCallback = null;
     temp();
   }
-  private executeOnSFXStartCallback()
+  private executeOnSfxStartCallback()
   {
-    if (this.onSFXStartCallback)
+    if (this.onSfxStartCallback)
     {
-      const temp = this.onSFXStartCallback;
-      this.onSFXStartCallback = null;
+      const temp = this.onSfxStartCallback;
+      this.onSfxStartCallback = null;
       temp();
     }
   }
@@ -362,7 +362,7 @@ export default class BattleScene
     temp();
   }
 
-  private prepareSFX()
+  private prepareSfx()
   {
     const beforeUseDelay = Options.battleAnimationTiming.before;
 
@@ -381,34 +381,34 @@ export default class BattleScene
 
     this.updateUnits(afterUnitsHaveFinishedUpdatingCallback);
   }
-  private playSFX()
+  private playSfx()
   {
-    const SFXDuration = Options.battleAnimationTiming.effectDuration * this.activeSFX!.duration;
+    const sfxDuration = Options.battleAnimationTiming.effectDuration * this.activeSfx!.duration;
 
-    this.executeOnSFXStartCallback();
+    this.executeOnSfxStartCallback();
 
-    if (!this.activeSFX!.SFXWillTriggerEffect || SFXDuration <= 0)
+    if (!this.activeSfx!.sfxWillTriggerEffect || sfxDuration <= 0)
     {
       this.executeTriggerEffectCallback();
     }
 
-    if (SFXDuration <= 0)
+    if (sfxDuration <= 0)
     {
-      this.handleActiveSFXEnd();
+      this.handleActiveSfxEnd();
     }
     else
     {
-      this.triggerSFXStart(
-        this.activeSFX!,
+      this.triggerSfxStart(
+        this.activeSfx!,
         this.userUnit,
         this.targetUnit,
-        this.handleActiveSFXEnd.bind(this)
+        this.handleActiveSfxEnd.bind(this)
       );
     }
   }
-  private clearActiveSFX()
+  private clearActiveSfx()
   {
-    this.activeSFX = null;
+    this.activeSfx = null;
 
     this.userUnit = null;
     this.targetUnit = null;
@@ -416,13 +416,13 @@ export default class BattleScene
     this.clearBattleOverlay();
     this.clearUnitOverlays();
   }
-  private handleActiveSFXEnd()
+  private handleActiveSfxEnd()
   {
     const afterUseDelay = Options.battleAnimationTiming.after;
 
     this.afterUseDelayHasFinishedCallback = () =>
     {
-      this.clearActiveSFX();
+      this.clearActiveSfx();
       this.executeAbilityUseHasFinishedCallback();
     };
 
@@ -435,40 +435,40 @@ export default class BattleScene
       this.executeAfterUseDelayHasFinishedCallback();
     }
   }
-  private triggerSFXStart(
-    SFXTemplate: BattleSFXTemplate,
+  private triggerSfxStart(
+    sfxTemplate: BattleSfxTemplate,
     user: Unit,
     target: Unit,
     afterFinishedCallback: () => void,
   )
   {
-    this.activeSFX = SFXTemplate;
-    this.side1Unit.setSFX(SFXTemplate, user, target);
-    this.side2Unit.setSFX(SFXTemplate, user, target);
-    this.side1Overlay.setSFX(SFXTemplate, user, target);
-    this.side2Overlay.setSFX(SFXTemplate, user, target);
+    this.activeSfx = sfxTemplate;
+    this.side1Unit.setSfx(sfxTemplate, user, target);
+    this.side2Unit.setSfx(sfxTemplate, user, target);
+    this.side1Overlay.setSfx(sfxTemplate, user, target);
+    this.side2Overlay.setSfx(sfxTemplate, user, target);
     this.makeBattleOverlay(afterFinishedCallback);
   }
   private makeBattleOverlay(afterFinishedCallback: () => void)
   {
-    if (!this.activeSFX)
+    if (!this.activeSfx)
     {
-      throw new Error("Tried to make battle overlay without active SFX");
+      throw new Error("Tried to make battle overlay without active Sfx");
     }
 
-    if (!this.activeSFX.battleOverlay)
+    if (!this.activeSfx.battleOverlay)
     {
       afterFinishedCallback();
     }
     else
     {
-      const sfxParams = this.getSFXParams(
+      const sfxParams = this.getSfxParams(
       {
         triggerStart: this.addBattleOverlay.bind(this),
         triggerEnd: afterFinishedCallback,
       });
 
-      this.activeSFX.battleOverlay(sfxParams);
+      this.activeSfx.battleOverlay(sfxParams);
     }
   }
   private addBattleOverlay(overlay: PIXI.DisplayObject)

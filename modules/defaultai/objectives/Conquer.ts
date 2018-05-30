@@ -1,6 +1,6 @@
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
-import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
+import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
 import MapEvaluator from "../mapai/MapEvaluator";
 import {UnitEvaluator} from "../mapai/UnitEvaluator";
 
@@ -53,9 +53,9 @@ export class Conquer extends TargetedFrontObjective
       return new Conquer(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
-    return grandStrategyAI.desireForExpansion;
+    return grandStrategyAi.desireForExpansion;
   }
 
   public execute(afterDoneCallback: () => void): void

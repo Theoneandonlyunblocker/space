@@ -4,7 +4,7 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import {setAttitudeModifierOverride} from "../../src/setDynamicTemplateProperties";
 import AttitudeModifierTemplate from "../../src/templateinterfaces/AttitudeModifierTemplate";
 
-import AttitudeModifierTemplates from "./AttitudeModifierTemplates";
+import attitudeModifierTemplates from "./AttitudeModifierTemplates";
 import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";
 
 
@@ -22,8 +22,8 @@ const defaultAttitudeModifiers: ModuleFile =
   supportedLanguages: [Languages.en],
   constructModule: (moduleData) =>
   {
-    setAttitudeModifierOverride(AttitudeModifierTemplates);
-    moduleData.copyTemplates<AttitudeModifierTemplate>(AttitudeModifierTemplates, "AttitudeModifiers");
+    setAttitudeModifierOverride(attitudeModifierTemplates);
+    moduleData.copyTemplates<AttitudeModifierTemplate>(attitudeModifierTemplates, "AttitudeModifiers");
 
     moduleData.scripts.add(attitudeModifierModuleScripts);
 

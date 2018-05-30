@@ -9,7 +9,7 @@ import
 import {distributionGroups} from "../common/distributionGroups";
 import {generateIndependentFleets} from "../common/generateIndependentFleets";
 import {generateIndependentPlayer} from "../common/generateIndependentPlayer";
-import DefaultAIConstructor from "../defaultai/mapai/DefaultAIConstructor";
+import defaultAiConstructor from "../defaultai/mapai/DefaultAiConstructor";
 
 import {droneBase} from  "./units/droneBase";
 import {droneCommander} from  "./units/droneCommander";
@@ -59,7 +59,7 @@ export const drones: RaceTemplate =
   },
 
   technologies: [],
-  getAITemplateConstructor: player => DefaultAIConstructor,
+  getAiTemplateConstructor: player => defaultAiConstructor,
 };
 
 export const raceTemplates: TemplateCollection<RaceTemplate> =

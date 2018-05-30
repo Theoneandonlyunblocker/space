@@ -1,5 +1,5 @@
 import core from "../modules/core/core";
-import defaultAI from "../modules/defaultai/defaultAI";
+import defaultAi from "../modules/defaultai/defaultAi";
 import defaultAttitudemodifiers from "../modules/defaultattitudemodifiers/defaultAttitudemodifiers";
 import defaultBackgrounds from "../modules/defaultbackgrounds/defaultBackgrounds";
 import defaultBuildings from "../modules/defaultbuildings/defaultBuildings";
@@ -29,7 +29,7 @@ export const defaultModuleData:
 
     defaultEmblems,
     defaultRuleset,
-    defaultAI,
+    defaultAi,
     defaultItems,
     defaultTechnologies,
     defaultAttitudemodifiers,

@@ -49,5 +49,5 @@ export class OptionsCheckboxComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(OptionsCheckboxComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(OptionsCheckboxComponent);
+export default factory;

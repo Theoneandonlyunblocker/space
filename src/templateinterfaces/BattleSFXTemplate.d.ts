@@ -1,17 +1,17 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-import SFXParams from "./SFXParams";
+import SfxParams from "./SfxParams";
 
-declare interface BattleSFXTemplate
+declare interface BattleSfxTemplate
 {
   duration: number;
-  SFXWillTriggerEffect?: boolean; // true if one of the sfx functions calls SFXParams.triggerEffect()
-  userSprite?: (props: SFXParams) => void;
-  enemySprite?: (props: SFXParams) => void;
-  userOverlay?: (props: SFXParams) => void;
-  enemyOverlay?: (props: SFXParams) => void;
-  // emptySpaceOverlay?: (props: SFXParams) => void;
-  battleOverlay?: (props: SFXParams) => void;
+  sfxWillTriggerEffect?: boolean; // true if one of the sfx functions calls SfxParams.triggerEffect()
+  userSprite?: (props: SfxParams) => void;
+  enemySprite?: (props: SfxParams) => void;
+  userOverlay?: (props: SfxParams) => void;
+  enemyOverlay?: (props: SfxParams) => void;
+  // emptySpaceOverlay?: (props: SfxParams) => void;
+  battleOverlay?: (props: SfxParams) => void;
 }
 
-export default BattleSFXTemplate;
+export default BattleSfxTemplate;

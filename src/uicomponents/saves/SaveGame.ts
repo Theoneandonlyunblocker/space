@@ -173,5 +173,5 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SaveGameComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SaveGameComponent);
+export default factory;

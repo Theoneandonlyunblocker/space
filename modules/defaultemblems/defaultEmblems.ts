@@ -4,7 +4,7 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import {svgCache} from "../../src/svgCache";
 import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
 
-import SubEmblemTemplates from "./SubEmblemTemplates";
+import subEmblemTemplates from "./SubEmblemTemplates";
 
 
 const defaultEmblems: ModuleFile =
@@ -23,9 +23,9 @@ const defaultEmblems: ModuleFile =
   {
     const loader = new PIXI.loaders.Loader();
 
-    for (const templateKey in SubEmblemTemplates)
+    for (const templateKey in subEmblemTemplates)
     {
-      const template = SubEmblemTemplates[templateKey];
+      const template = subEmblemTemplates[templateKey];
       loader.add(
       {
         url: template.src,
@@ -35,9 +35,9 @@ const defaultEmblems: ModuleFile =
 
     loader.load(() =>
     {
-      for (const templateKey in SubEmblemTemplates)
+      for (const templateKey in subEmblemTemplates)
       {
-        const template = SubEmblemTemplates[templateKey];
+        const template = subEmblemTemplates[templateKey];
         const response = <XMLDocument> loader.resources[template.src].data;
         const svgDoc = <SVGElement> response.children[0];
         svgCache[template.src] = svgDoc;
@@ -48,7 +48,7 @@ const defaultEmblems: ModuleFile =
   },
   constructModule: (moduleData: ModuleData) =>
   {
-    moduleData.copyTemplates<SubEmblemTemplate>(SubEmblemTemplates, "SubEmblems");
+    moduleData.copyTemplates<SubEmblemTemplate>(subEmblemTemplates, "SubEmblems");
 
     return moduleData;
   },

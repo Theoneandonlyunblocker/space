@@ -47,17 +47,17 @@ declare interface AbilityTemplate extends AbilityBase
    * in the right direction
    * default = 1
    */
-  AIEvaluationPriority?: number;
+  AiEvaluationPriority?: number;
   /**
    * prevent from being used in AI vs AI battles.
-   * helps when simulation depth is too low to let AIEvaluationPriority kick in
+   * helps when simulation depth is too low to let AiEvaluationPriority kick in
    */
-  disableInAIBattles?: boolean;
+  disableInAiBattles?: boolean;
   /**
    * adjusts the final score of this ability. AI picks move with highest score.
    * to penalize moves that might be optimal but boring (e.g. skip turn) or otherwise unpleasant for the player
    */
-  AIScoreMultiplier?: number;
+  AiScoreMultiplier?: number;
 }
 
 export default AbilityTemplate;

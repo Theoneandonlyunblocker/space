@@ -1,4 +1,4 @@
-import {GrandStrategyAI} from "../../mapai/GrandStrategyAI";
+import {GrandStrategyAi} from "../../mapai/GrandStrategyAi";
 import MapEvaluator from "../../mapai/MapEvaluator";
 
 import {Objective} from "./Objective";
@@ -10,5 +10,5 @@ export interface ObjectiveCreatorTemplate
   family: ObjectiveFamily;
 
   getUpdatedObjectivesList: (mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]) => Objective[];
-  evaluatePriority: (mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI) => number;
+  evaluatePriority: (mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi) => number;
 }

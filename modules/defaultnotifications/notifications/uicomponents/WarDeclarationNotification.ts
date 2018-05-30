@@ -44,6 +44,5 @@ class WarDeclarationNotification extends React.Component<PropTypes, {}>
   }
 }
 
-// tslint:disable-next-line:variable-name
-const Factory = React.createFactory(WarDeclarationNotification);
-export default Factory;
+const factory = React.createFactory(WarDeclarationNotification);
+export default factory;

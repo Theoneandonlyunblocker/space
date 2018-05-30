@@ -1,6 +1,6 @@
 import Star from "../../../src/Star";
 import Unit from "../../../src/Unit";
-import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
+import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
 import MapEvaluator from "../mapai/MapEvaluator";
 import {UnitEvaluator} from "../mapai/UnitEvaluator";
 
@@ -43,9 +43,9 @@ export class CleanUpPirates extends TargetedFrontObjective
       return new CleanUpPirates(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
-    return grandStrategyAI.desireForConsolidation;
+    return grandStrategyAi.desireForConsolidation;
   }
 
   public execute(afterDoneCallback: () => void): void

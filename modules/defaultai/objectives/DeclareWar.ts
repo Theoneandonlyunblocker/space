@@ -1,6 +1,6 @@
 import Player from "../../../src/Player";
 import PlayerDiplomacy from "../../../src/PlayerDiplomacy";
-import {GrandStrategyAI} from "../mapai/GrandStrategyAI";
+import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
 import MapEvaluator from "../mapai/MapEvaluator";
 
 import {DiplomaticObjective} from "./common/DiplomaticObjective";
@@ -41,9 +41,9 @@ export class DeclareWar extends DiplomaticObjective
       return new DeclareWar(score, player, mapEvaluator.player.diplomacy);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI): number
+  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
-    return grandStrategyAI.desireForWar;
+    return grandStrategyAi.desireForWar;
   }
   protected static updateOngoingObjectivesList(
     allOngoingObjectives: Objective[],

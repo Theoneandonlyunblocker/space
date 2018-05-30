@@ -57,4 +57,5 @@ export class TechnologyUnlocksComponent extends React.Component<PropTypes, State
   }
 }
 
+// tslint:disable-next-line:variable-name
 export const TechnologyUnlocks: React.Factory<PropTypes> = React.createFactory(TechnologyUnlocksComponent);

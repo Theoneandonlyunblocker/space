@@ -122,5 +122,5 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BuildableBuildingComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(BuildableBuildingComponent);
+export default factory;

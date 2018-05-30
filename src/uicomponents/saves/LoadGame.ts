@@ -199,5 +199,5 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(LoadGameComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(LoadGameComponent);
+export default factory;

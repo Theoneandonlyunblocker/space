@@ -1,7 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
-import SFXParams from "./templateinterfaces/SFXParams";
+import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
+import SfxParams from "./templateinterfaces/SfxParams";
 
 import Options from "./Options";
 import Unit from "./Unit";
@@ -36,18 +36,18 @@ export default class BattleSceneUnitOverlay
     this.overlayContainer = new PIXI.Container;
     this.container.addChild(this.overlayContainer);
   }
-  setSFX(SFXTemplate: BattleSFXTemplate, user: Unit, target: Unit)
+  setSfx(sfxTemplate: BattleSfxTemplate, user: Unit, target: Unit)
   {
     if (this.activeUnit)
     {
-      const duration = SFXTemplate.duration * Options.battleAnimationTiming.effectDuration;
-      if (this.activeUnit === user && SFXTemplate.userOverlay)
+      const duration = sfxTemplate.duration * Options.battleAnimationTiming.effectDuration;
+      if (this.activeUnit === user && sfxTemplate.userOverlay)
       {
-        this.setOverlay(SFXTemplate.userOverlay, user, duration);
+        this.setOverlay(sfxTemplate.userOverlay, user, duration);
       }
-      else if (this.activeUnit === target && SFXTemplate.enemyOverlay)
+      else if (this.activeUnit === target && sfxTemplate.enemyOverlay)
       {
-        this.setOverlay(SFXTemplate.enemyOverlay, target, duration);
+        this.setOverlay(sfxTemplate.enemyOverlay, target, duration);
       }
       else
       {
@@ -59,7 +59,7 @@ export default class BattleSceneUnitOverlay
 
     }
   }
-  setOverlay(overlayFN: (props: SFXParams) => void, unit: Unit, duration: number)
+  setOverlay(overlayFN: (props: SfxParams) => void, unit: Unit, duration: number)
   {
     this.clearOverlay();
     if (duration <= 0)
@@ -72,7 +72,7 @@ export default class BattleSceneUnitOverlay
     }
 
     this.activeUnit = unit;
-    const sfxParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
+    const sfxParams = this.getSfxParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
 
     overlayFN(sfxParams);
   }
@@ -84,9 +84,9 @@ export default class BattleSceneUnitOverlay
     this.activeUnit = null;
     this.overlayContainer.removeChildren();
   }
-  private getSFXParams(duration: number,
+  private getSfxParams(duration: number,
     triggerStart: (container: PIXI.DisplayObject) => void,
-    triggerEnd?: () => void): SFXParams
+    triggerEnd?: () => void): SfxParams
   {
     const bounds = this.getSceneBounds();
 

@@ -20,7 +20,7 @@ export const attitudeModifierModuleScripts =
         priority: 0,
         script: (a: Player, b: Player, game: Game) =>
         {
-          const friendliness = a.AIController.personality.friendliness;
+          const friendliness = a.aiController.personality.friendliness;
 
           const opinion = Math.round((friendliness - 0.5) * 10);
 

@@ -70,5 +70,5 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(EmblemSetterListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(EmblemSetterListComponent);
+export default factory;

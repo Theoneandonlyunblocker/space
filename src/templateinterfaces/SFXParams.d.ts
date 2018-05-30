@@ -3,7 +3,7 @@
 import Point from "../Point";
 import Unit from "../Unit";
 
-declare interface SFXParams
+declare interface SfxParams
 {
   user: Unit;
   target?: Unit;
@@ -19,4 +19,4 @@ declare interface SFXParams
   triggerEnd: () => void;
 }
 
-export default SFXParams;
+export default SfxParams;

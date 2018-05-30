@@ -10,7 +10,7 @@ import
 import MapEvaluator from "./MapEvaluator";
 
 
-export class GrandStrategyAI
+export class GrandStrategyAi
 {
   public desireForConsolidation: number;
   public desireForExpansion: number;
@@ -123,7 +123,7 @@ export class GrandStrategyAI
       fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
     }
 
-    // TODO ai | penalize for lots of ongoing objectives (maybe in objectivesAI instead)
+    // TODO ai | penalize for lots of ongoing objectives (maybe in objectivesAi instead)
 
     const desire = fromAggressiveness + fromExpansiveness;
 

@@ -79,5 +79,5 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TechnologiesListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(TechnologiesListComponent);
+export default factory;

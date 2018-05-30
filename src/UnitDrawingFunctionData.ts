@@ -59,7 +59,7 @@ export default class UnitDrawingFunctionData
     this.sequentialAttackOriginPoints = props.sequentialAttackOriginPoints;
   }
 
-  public normalizeForBattleSFX(offset: Point, sceneWidth: number, side: "user" | "target"): UnitDrawingFunctionData
+  public normalizeForBattleSfx(offset: Point, sceneWidth: number, side: "user" | "target"): UnitDrawingFunctionData
   {
     const cloned = this.clone();
     const padding = 25;  // TODO 2017.06.19 | as defined in src/battlescenunit

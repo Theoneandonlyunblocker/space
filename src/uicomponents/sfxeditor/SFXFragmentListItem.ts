@@ -1,13 +1,13 @@
 import * as React from "react";
 
-import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-import SFXFragmentConstructor from "./SFXFragmentConstructor";
+import SfxFragmentConstructor from "./SfxFragmentConstructor";
 
 
-type Fragment = SFXFragment<any> | SFXFragmentConstructor;
+type Fragment = SfxFragment<any> | SfxFragmentConstructor;
 
 interface PropTypes<P extends Fragment> extends React.Props<any>
 {
@@ -24,12 +24,12 @@ interface StateType
 {
 }
 
-export class SFXFragmentListItemComponent<P extends Fragment> extends React.Component<PropTypes<P>, StateType>
+export class SfxFragmentListItemComponent<P extends Fragment> extends React.Component<PropTypes<P>, StateType>
 {
-  public displayName = "SFXFragmentListItem";
+  public displayName = "SfxFragmentListItem";
   public state: StateType;
 
-  dragPositioner: DragPositioner<SFXFragmentListItemComponent<P>>;
+  dragPositioner: DragPositioner<SfxFragmentListItemComponent<P>>;
 
   constructor(props: PropTypes<P>)
   {
@@ -93,5 +93,5 @@ export class SFXFragmentListItemComponent<P extends Fragment> extends React.Comp
   }
 }
 
-const Factory: React.Factory<PropTypes<Fragment>> = React.createFactory(SFXFragmentListItemComponent);
-export default Factory;
+const factory: React.Factory<PropTypes<Fragment>> = React.createFactory(SfxFragmentListItemComponent);
+export default factory;

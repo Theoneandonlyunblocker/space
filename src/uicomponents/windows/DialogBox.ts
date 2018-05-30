@@ -86,5 +86,5 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(DialogBoxComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(DialogBoxComponent);
+export default factory;

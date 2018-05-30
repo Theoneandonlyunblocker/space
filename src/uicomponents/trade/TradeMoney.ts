@@ -149,5 +149,5 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TradeMoneyComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(TradeMoneyComponent);
+export default factory;

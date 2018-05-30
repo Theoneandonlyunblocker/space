@@ -230,9 +230,9 @@ class App
   private makePlayers()
   {
     const players: Player[] = [];
-    const candidateRaces = <RaceTemplate[]> Object.keys(activeModuleData.Templates.Races).map(raceKey =>
+    const candidateRaces = <RaceTemplate[]> Object.keys(activeModuleData.templates.Races).map(raceKey =>
     {
-      return activeModuleData.Templates.Races[raceKey];
+      return activeModuleData.templates.Races[raceKey];
     }).filter(raceTemplate =>
     {
       return !raceTemplate.isNotPlayable;
@@ -242,7 +242,7 @@ class App
     {
       players.push(new Player(
       {
-        isAI: i > 0,
+        isAi: i > 0,
         isIndependent: false,
 
         race: getRandomArrayItem(candidateRaces),
@@ -296,7 +296,7 @@ class App
     }
 
     setActivePlayer(this.game.players[0]);
-    activePlayer.isAI = false;
+    activePlayer.isAi = false;
 
     if (this.playerControl)
     {
@@ -316,9 +316,9 @@ class App
         player.notificationLog.registerToNotificationStore(activeNotificationStore);
       }
 
-      if (!player.AIController)
+      if (!player.aiController)
       {
-        player.AIController = player.makeRandomAIController(this.game);
+        player.aiController = player.makeRandomAiController(this.game);
       }
     });
 

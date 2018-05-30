@@ -76,4 +76,5 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
   }
 }
 
+// tslint:disable-next-line:variable-name
 export const TechnologyUnlocksForLevel: React.Factory<PropTypes> = React.createFactory(TechnologyUnlocksForLevelComponent);

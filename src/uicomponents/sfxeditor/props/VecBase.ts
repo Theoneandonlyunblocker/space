@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import SFXFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
 import InlineNumberProp from "./InlineNumberProp";
 
@@ -15,7 +15,7 @@ export interface VecProp
 interface PropTypes extends React.Props<any>
 {
   propName: string;
-  fragment: SFXFragment<any>;
+  fragment: SfxFragment<any>;
   onValueChange: () => void;
 
   propProps: VecProp[];
@@ -25,9 +25,9 @@ interface StateType
 {
 }
 
-export class SFXFragmentPropVecBaseComponent extends React.Component<PropTypes, StateType>
+export class SfxFragmentPropVecBaseComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SFXFragmentPropVecBase";
+  public displayName = "SfxFragmentPropVecBase";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -73,5 +73,5 @@ export class SFXFragmentPropVecBaseComponent extends React.Component<PropTypes, 
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SFXFragmentPropVecBaseComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropVecBaseComponent);
+export default factory;

@@ -92,7 +92,7 @@ export class BattlePrepFormation
   {
     this.clearFormation();
 
-    const newFormation = this.player.AIController.createBattleFormation(
+    const newFormation = this.player.aiController.createBattleFormation(
       this.getAvailableUnits(),
       this.hasScouted,
       enemyUnits,

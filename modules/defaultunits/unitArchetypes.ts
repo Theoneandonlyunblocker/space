@@ -64,7 +64,7 @@ export const defence: UnitArchetype =
   },
 };
 
-const UnitArchetypes: TemplateCollection<UnitArchetype> =
+const unitArchetypes: TemplateCollection<UnitArchetype> =
 {
   [combat.type]: combat,
   [utility.type]: utility,
@@ -72,4 +72,4 @@ const UnitArchetypes: TemplateCollection<UnitArchetype> =
   [defence.type]: defence,
 };
 
-export default UnitArchetypes;
+export default unitArchetypes;

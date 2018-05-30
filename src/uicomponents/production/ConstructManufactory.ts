@@ -95,5 +95,5 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ConstructManufactoryComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(ConstructManufactoryComponent);
+export default factory;

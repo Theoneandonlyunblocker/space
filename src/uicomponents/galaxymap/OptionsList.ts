@@ -170,44 +170,44 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     {
       debugOptions.push(
       {
-        key: "AIVsAIBattleSimulationDepth",
+        key: "aiVsAiBattleSimulationDepth",
         content: React.DOM.div(
         {
 
         },
           OptionsNumericField(
           {
-            label: localize("AIVsAIBattleSimulationDepth")(),
+            label: localize("aiVsAiBattleSimulationDepth")(),
             id: "ai-battle-simulation-depth-input",
-            value: Options.debug.AIVsAIBattleSimulationDepth,
+            value: Options.debug.aiVsAiBattleSimulationDepth,
             min: 1,
             max: 500,
             step: 1,
             onChange: value =>
             {
-              Options.debug.AIVsAIBattleSimulationDepth = value;
+              Options.debug.aiVsAiBattleSimulationDepth = value;
               this.forceUpdate();
             },
           }),
         ),
       },
       {
-        key: "AIVsPlayerBattleSimulationDepth",
+        key: "aiVsPlayerBattleSimulationDepth",
         content: React.DOM.div(
         {
 
         },
           OptionsNumericField(
           {
-            label: localize("AIVsPlayerBattleSimulationDepth")(),
+            label: localize("aiVsPlayerBattleSimulationDepth")(),
             id: "player-battle-simulation-depth-input",
-            value: Options.debug.AIVsPlayerBattleSimulationDepth,
+            value: Options.debug.aiVsPlayerBattleSimulationDepth,
             min: 1,
             max: 10000,
             step: 1,
             onChange: value =>
             {
-              Options.debug.AIVsPlayerBattleSimulationDepth = value;
+              Options.debug.aiVsPlayerBattleSimulationDepth = value;
               this.forceUpdate();
             },
           }),
@@ -400,5 +400,5 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(OptionsListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(OptionsListComponent);
+export default factory;

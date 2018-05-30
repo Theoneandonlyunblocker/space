@@ -35,9 +35,9 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
   {
     const emblemElements: React.ReactHTMLElement<any>[] = [];
 
-    for (const emblemType in activeModuleData.Templates.SubEmblems)
+    for (const emblemType in activeModuleData.templates.SubEmblems)
     {
-      const template = activeModuleData.Templates.SubEmblems[emblemType];
+      const template = activeModuleData.templates.SubEmblems[emblemType];
 
       let className = "emblem-picker-image";
 
@@ -96,5 +96,5 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(EmblemEditorComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(EmblemEditorComponent);
+export default factory;

@@ -24,7 +24,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 
   public state: StateType;
 
-  ref_TODO_mapGenOptions: MapGenOptionsComponent;
+  public mapGenOptionsComponent: MapGenOptionsComponent;
 
   constructor(props: PropTypes)
   {
@@ -45,11 +45,11 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   {
     const mapGenTemplates: MapGenTemplate[] = [];
 
-    for (const template in activeModuleData.Templates.MapGen)
+    for (const template in activeModuleData.templates.MapGen)
     {
-      if (activeModuleData.Templates.MapGen[template].key)
+      if (activeModuleData.templates.MapGen[template].key)
       {
-        mapGenTemplates.push(activeModuleData.Templates.MapGen[template]);
+        mapGenTemplates.push(activeModuleData.templates.MapGen[template]);
       }
     }
 
@@ -80,7 +80,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     const target = e.currentTarget;
     this.setState(
     {
-      selectedTemplate: activeModuleData.Templates.MapGen[target.value],
+      selectedTemplate: activeModuleData.templates.MapGen[target.value],
     }, this.updatePlayerLimits);
   }
 
@@ -89,7 +89,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     return(
     {
       template: this.state.selectedTemplate,
-      optionValues: this.ref_TODO_mapGenOptions.getOptionValuesForTemplate(),
+      optionValues: this.mapGenOptionsComponent.getOptionValuesForTemplate(),
     });
   }
 
@@ -146,7 +146,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
           mapGenTemplate: this.state.selectedTemplate,
           ref: (component: MapGenOptionsComponent) =>
           {
-            this.ref_TODO_mapGenOptions = component;
+            this.mapGenOptionsComponent = component;
           },
         }),
       )
@@ -154,5 +154,5 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(MapSetupComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(MapSetupComponent);
+export default factory;

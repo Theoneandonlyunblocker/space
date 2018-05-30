@@ -149,5 +149,5 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ManufacturableUnitsComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(ManufacturableUnitsComponent);
+export default factory;

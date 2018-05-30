@@ -1,6 +1,6 @@
 import {IdDictionary} from "../../../../src/IdDictionary";
 import idGenerators from "../../../../src/idGenerators";
-import {GrandStrategyAI} from "../../mapai/GrandStrategyAI";
+import {GrandStrategyAi} from "../../mapai/GrandStrategyAi";
 import MapEvaluator from "../../mapai/MapEvaluator";
 
 import {ObjectiveCreatorTemplate} from "./ObjectiveCreatorTemplate";
@@ -30,7 +30,7 @@ export abstract class Objective
   /**
    * should return player's current priority for this type of objetive. 0-1
    */
-  protected static evaluatePriority: (mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI) => number;
+  protected static evaluatePriority: (mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi) => number;
 
   public abstract readonly type: string;
   public abstract readonly family: ObjectiveFamily;

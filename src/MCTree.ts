@@ -77,7 +77,7 @@ export default class MCTree
       move: null,
       depth: 0,
       parent: null,
-      isBetweenAI: this.battle.side1Player.isAI && this.battle.side2Player.isAI,
+      isBetweenAi: this.battle.side1Player.isAi && this.battle.side2Player.isAi,
     });
   }
 }

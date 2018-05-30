@@ -35,8 +35,8 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   public displayName = "GalaxyMap";
   public state: StateType;
 
-  ref_TODO_pixiContainer: HTMLElement;
-  ref_TODO_sceneSelector: HTMLElement;
+  private pixiContainer: HTMLElement;
+  // private sceneSelector: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -54,7 +54,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
         {
           ref: (component: HTMLElement) =>
           {
-            this.ref_TODO_pixiContainer = component;
+            this.pixiContainer = component;
           },
           id: "pixi-container",
         },
@@ -82,7 +82,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
         //       className: "reactui-selector debug",
         //       ref: (component: HTMLElement) =>
         //       {
-        //         this.ref_TODO_sceneSelector = component;
+        //         this.sceneSelector = component;
         //       },
         //       value: app.reactUI.currentScene,
               // onChange: (e: React.FormEvent) =>
@@ -129,7 +129,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
 
   componentDidMount()
   {
-    this.props.renderer.bindRendererView(ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_pixiContainer));
+    this.props.renderer.bindRendererView(ReactDOM.findDOMNode<HTMLElement>(this.pixiContainer));
     this.props.mapRenderer.setMapModeByKey("defaultMapMode");
 
     this.props.renderer.camera.getBoundsObjectBoundsFN = this.props.mapRenderer.getMapBoundsForCamera.bind(this.props.mapRenderer);
@@ -146,5 +146,5 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(GalaxyMapComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(GalaxyMapComponent);
+export default factory;

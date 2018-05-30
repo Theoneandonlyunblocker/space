@@ -2,9 +2,9 @@
 
 import Unit from "../Unit";
 
-import SFXParams from "./SFXParams";
+import SfxParams from "./SfxParams";
 
 // needs to set unit.drawingFunctionData and call params.triggerStart()
-declare type UnitDrawingFunction = (unit: Unit, params: SFXParams) => void;
+declare type UnitDrawingFunction = (unit: Unit, params: SfxParams) => void;
 
 export default UnitDrawingFunction;

@@ -436,8 +436,9 @@ export const threeHorns: SubEmblemTemplate =
     },
   ],
 };
+// tslint:enable:variable-name
 
-const SubEmblemTemplates: TemplateCollection<SubEmblemTemplate> =
+const subEmblemTemplates: TemplateCollection<SubEmblemTemplate> =
 {
   [Aguila_explayada_2.key]: Aguila_explayada_2,
   [Berliner_Baer.key]: Berliner_Baer,
@@ -462,4 +463,4 @@ const SubEmblemTemplates: TemplateCollection<SubEmblemTemplate> =
   [threeHorns.key]: threeHorns,
 };
 
-export default SubEmblemTemplates;
+export default subEmblemTemplates;

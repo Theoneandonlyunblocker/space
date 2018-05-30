@@ -250,5 +250,5 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(UnitComponent);
+export default factory;

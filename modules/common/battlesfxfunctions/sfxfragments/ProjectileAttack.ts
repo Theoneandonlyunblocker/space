@@ -6,7 +6,7 @@ import
   randInt,
 } from "../../../../src/utility";
 
-import SFXFragment from "./SFXFragment";
+import SfxFragment from "./SfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
 
 
@@ -168,7 +168,7 @@ class Projectile
   }
 }
 
-export default class ProjectileAttack extends SFXFragment<ProjectileAttackProps>
+export default class ProjectileAttack extends SfxFragment<ProjectileAttackProps>
 {
   public displayName = "ProjectileAttack";
   public key = "projectileAttack";

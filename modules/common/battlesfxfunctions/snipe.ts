@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import SFXParams from "../../../src/templateinterfaces/SFXParams";
+import SfxParams from "../../../src/templateinterfaces/SfxParams";
 
 import Color from "../../../src/Color";
 import {UnitAttribute} from "../../../src/UnitAttributes";
@@ -18,7 +18,7 @@ import ProtonWrapper from "./ProtonWrapper";
 
 
 let hasLoaded: boolean = false;
-export default function snipe(type: UnitAttribute, params: SFXParams): void
+export default function snipe(type: UnitAttribute, params: SfxParams): void
 {
   if (hasLoaded)
   {
@@ -54,14 +54,14 @@ for (const attribute in colors)
 
 const projectileURL = "modules/common/battlesfxfunctions/img/ellipse.png";
 
-function playSnipe(type: UnitAttribute, params: SFXParams)
+function playSnipe(type: UnitAttribute, params: SfxParams)
 {
   // ----------INIT
   const mainContainer = new PIXI.Container();
 
-  const offsetUserData = params.user.drawingFunctionData.normalizeForBattleSFX(
+  const offsetUserData = params.user.drawingFunctionData.normalizeForBattleSfx(
     params.userOffset, params.width, "user");
-  const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSFX(
+  const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSfx(
     params.targetOffset, params.width, "target");
 
   const renderTexture = PIXI.RenderTexture.create(params.width, params.height);

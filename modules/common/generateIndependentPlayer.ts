@@ -10,7 +10,7 @@ export function generateIndependentPlayer(
 {
   const player = new Player(
   {
-    isAI: true,
+    isAi: true,
     isIndependent: true,
 
     race: race,

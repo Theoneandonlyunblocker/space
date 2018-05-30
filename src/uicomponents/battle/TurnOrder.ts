@@ -388,5 +388,5 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TurnOrderComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(TurnOrderComponent);
+export default factory;

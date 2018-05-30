@@ -41,9 +41,9 @@ interface StateType
 
 function getRandomPlayerRaceTemplate(): RaceTemplate
 {
-  const candidateRaces = Object.keys(activeModuleData.Templates.Races).map(raceKey =>
+  const candidateRaces = Object.keys(activeModuleData.templates.Races).map(raceKey =>
   {
-    return activeModuleData.Templates.Races[raceKey];
+    return activeModuleData.templates.Races[raceKey];
   }).filter(raceTemplate =>
   {
     return !raceTemplate.isNotPlayable;
@@ -176,7 +176,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
 
     const player = new Player(
     {
-      isAI: !this.props.isHuman,
+      isAi: !this.props.isHuman,
       isIndependent: false,
 
       race: this.state.race,
@@ -224,9 +224,9 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         }),
         RacePicker(
         {
-          availableRaces: Object.keys(activeModuleData.Templates.Races).map(raceKey =>
+          availableRaces: Object.keys(activeModuleData.templates.Races).map(raceKey =>
           {
-            return activeModuleData.Templates.Races[raceKey];
+            return activeModuleData.templates.Races[raceKey];
           }).filter(race =>
           {
             return !race.isNotPlayable;
@@ -270,5 +270,5 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PlayerSetupComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(PlayerSetupComponent);
+export default factory;

@@ -360,9 +360,9 @@ export default class Star implements Point
   getBuildableBuildings(): BuildingTemplate[]
   {
     const canBuild: BuildingTemplate[] = [];
-    for (const buildingType in activeModuleData.Templates.Buildings)
+    for (const buildingType in activeModuleData.templates.Buildings)
     {
-      const template: BuildingTemplate = activeModuleData.Templates.Buildings[buildingType];
+      const template: BuildingTemplate = activeModuleData.templates.Buildings[buildingType];
       let alreadyBuilt: Building[];
 
       if (template.category === "mine" && !this.resource)

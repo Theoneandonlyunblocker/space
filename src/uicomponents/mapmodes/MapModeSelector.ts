@@ -83,5 +83,5 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(MapModeSelectorComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(MapModeSelectorComponent);
+export default factory;

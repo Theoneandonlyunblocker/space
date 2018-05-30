@@ -93,5 +93,5 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ManufacturableThingsListItemComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(ManufacturableThingsListItemComponent);
+export default factory;

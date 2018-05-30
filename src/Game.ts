@@ -85,9 +85,9 @@ export default class Game
     eventManager.dispatchEvent("endTurn", null);
     eventManager.dispatchEvent("updateSelection", null);
 
-    if (this.playerToAct.isAI)
+    if (this.playerToAct.isAi)
     {
-      this.playerToAct.AIController.processTurn(this.endTurn.bind(this));
+      this.playerToAct.aiController.processTurn(this.endTurn.bind(this));
     }
   }
   public save(name: string)

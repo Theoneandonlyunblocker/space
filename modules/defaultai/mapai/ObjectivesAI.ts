@@ -49,26 +49,26 @@ import {Objective} from "../objectives/common/Objective";
 import {ObjectiveCreatorTemplate} from "../objectives/common/ObjectiveCreatorTemplate";
 import {ObjectiveFamily} from "../objectives/common/ObjectiveFamily";
 
-import {GrandStrategyAI} from "./GrandStrategyAI";
+import {GrandStrategyAi} from "./GrandStrategyAi";
 import MapEvaluator from "./MapEvaluator";
 import {ObjectiveQueue} from "./ObjectiveQueue";
 import {objectiveCreatorTemplates} from "./objectiveCreatorTemplates";
 
 
-export class ObjectivesAI
+export class ObjectivesAi
 {
   private ongoingObjectives: Objective[] = [];
 
-  private readonly grandStrategyAI: GrandStrategyAI;
+  private readonly grandStrategyAi: GrandStrategyAi;
   private readonly mapEvaluator: MapEvaluator;
 
   constructor(
     mapEvaluator: MapEvaluator,
-    grandStrategyAI: GrandStrategyAI,
+    grandStrategyAi: GrandStrategyAi,
   )
   {
     this.mapEvaluator = mapEvaluator;
-    this.grandStrategyAI = grandStrategyAI;
+    this.grandStrategyAi = grandStrategyAi;
   }
 
   private static diplomaticFilter(toFilter: Objective | ObjectiveCreatorTemplate)
@@ -105,20 +105,20 @@ export class ObjectivesAI
 
   public processDiplomaticObjectives(onAllFinished: () => void): void
   {
-    this.updateAndExecuteObjectives(ObjectivesAI.diplomaticFilter, onAllFinished);
+    this.updateAndExecuteObjectives(ObjectivesAi.diplomaticFilter, onAllFinished);
   }
   public processEconomicObjectives(onAllFinished: () => void): void
   {
-    this.updateAndExecuteObjectives(ObjectivesAI.economicFilter, onAllFinished);
+    this.updateAndExecuteObjectives(ObjectivesAi.economicFilter, onAllFinished);
   }
   public createFrontObjectives(): void
   {
-    this.updateObjectivesForFilter(ObjectivesAI.frontFilter);
-    this.calculateFinalPrioritiesForObjectivesMatchingFilter(ObjectivesAI.frontFilter);
+    this.updateObjectivesForFilter(ObjectivesAi.frontFilter);
+    this.calculateFinalPrioritiesForObjectivesMatchingFilter(ObjectivesAi.frontFilter);
   }
   public getFrontObjectives(): FrontObjective[]
   {
-    return <FrontObjective[]> this.ongoingObjectives.filter(ObjectivesAI.frontFilter);
+    return <FrontObjective[]> this.ongoingObjectives.filter(ObjectivesAi.frontFilter);
   }
   public executeFrontObjectives(onAllFinished: () => void): void
   {
@@ -177,7 +177,7 @@ export class ObjectivesAI
   }
   private getRelativeScoresForObjectives(objectives: Objective[]): IdDictionary<Objective, number>
   {
-    const objectivesByType = ObjectivesAI.groupObjectivesByType(objectives);
+    const objectivesByType = ObjectivesAi.groupObjectivesByType(objectives);
     const relativeScores = new IdDictionary<Objective, number>();
 
     for (const type in objectivesByType)
@@ -210,7 +210,7 @@ export class ObjectivesAI
     const priorities: {[type: string]: number} = {};
     objectiveCreatorTemplates.filter(filterFN).forEach(template =>
     {
-      priorities[template.type] = template.evaluatePriority(this.mapEvaluator, this.grandStrategyAI);
+      priorities[template.type] = template.evaluatePriority(this.mapEvaluator, this.grandStrategyAi);
     });
 
     // calculate relative scores

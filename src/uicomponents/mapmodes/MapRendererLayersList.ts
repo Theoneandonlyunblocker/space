@@ -136,5 +136,5 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(MapRendererLayersListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(MapRendererLayersListComponent);
+export default factory;

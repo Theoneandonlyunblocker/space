@@ -258,5 +258,5 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SetupGamePlayersComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SetupGamePlayersComponent);
+export default factory;

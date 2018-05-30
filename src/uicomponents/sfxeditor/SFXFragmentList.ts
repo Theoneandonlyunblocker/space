@@ -1,13 +1,13 @@
 import * as React from "react";
 
-import SFXFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SFXFragment";
+import SfxFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
-import SFXFragmentConstructor from "./SFXFragmentConstructor";
+import SfxFragmentConstructor from "./SfxFragmentConstructor";
 
-import SFXFragmentListItem from "./SFXFragmentListItem";
+import SfxFragmentListItem from "./SfxFragmentListItem";
 
 
-type Fragment = SFXFragment<any> | SFXFragmentConstructor;
+type Fragment = SfxFragment<any> | SfxFragmentConstructor;
 
 interface PropTypes<P extends Fragment> extends React.Props<any>
 {
@@ -24,9 +24,9 @@ interface StateType
 {
 }
 
-export class SFXFragmentListComponent<P extends Fragment> extends React.Component<PropTypes<P>, StateType>
+export class SfxFragmentListComponent<P extends Fragment> extends React.Component<PropTypes<P>, StateType>
 {
-  public displayName = "SFXFragmentList";
+  public displayName = "SfxFragmentList";
   public state: StateType;
 
   constructor(props: PropTypes<P>)
@@ -43,7 +43,7 @@ export class SFXFragmentListComponent<P extends Fragment> extends React.Componen
       },
         this.props.fragments.map(fragment =>
         {
-          return SFXFragmentListItem(
+          return SfxFragmentListItem(
           // @ts-ignore 2345
           {
             key: fragment.key,
@@ -59,5 +59,5 @@ export class SFXFragmentListComponent<P extends Fragment> extends React.Componen
   }
 }
 
-const Factory: React.Factory<PropTypes<Fragment>> = React.createFactory(SFXFragmentListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes<Fragment>> = React.createFactory(SfxFragmentListComponent);
+export default factory;

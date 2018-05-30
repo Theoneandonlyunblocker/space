@@ -25,8 +25,8 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   public displayName = "SetupGame";
 
   public state: StateType;
-  ref_TODO_players: SetupGamePlayersComponent;
-  ref_TODO_mapSetup: MapSetupComponent;
+  private setupPlayersComponent: SetupGamePlayersComponent;
+  private mapSetupComponent: MapSetupComponent;
 
   constructor(props: PropTypes)
   {
@@ -67,9 +67,9 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   {
     eventManager.dispatchEvent("loadModulesNeededForPhase", ModuleFileLoadingPhase.MapGen, () =>
     {
-      const players = this.ref_TODO_players.makeAllPlayers();
+      const players = this.setupPlayersComponent.makeAllPlayers();
 
-      const mapSetupInfo = this.ref_TODO_mapSetup.getMapSetupInfo();
+      const mapSetupInfo = this.mapSetupComponent.getMapSetupInfo();
       const mapGenFunction: MapGenFunction = mapSetupInfo.template.mapGenFunction;
 
       const mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
@@ -80,8 +80,8 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   }
   private randomize()
   {
-    this.ref_TODO_players.randomizeAllPlayers();
-    this.ref_TODO_mapSetup.ref_TODO_mapGenOptions.randomizeOptions();
+    this.setupPlayersComponent.randomizeAllPlayers();
+    this.mapSetupComponent.mapGenOptionsComponent.randomizeOptions();
   }
 
   render()
@@ -103,7 +103,7 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
             {
               ref: (component: SetupGamePlayersComponent) =>
               {
-                this.ref_TODO_players = component;
+                this.setupPlayersComponent = component;
               },
               minPlayers: this.state.minPlayers,
               maxPlayers: this.state.maxPlayers,
@@ -113,7 +113,7 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
               setPlayerLimits: this.setPlayerLimits,
               ref: (component: MapSetupComponent) =>
               {
-                this.ref_TODO_mapSetup = component;
+                this.mapSetupComponent = component;
               },
             }),
           ),
@@ -138,5 +138,5 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SetupGameComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SetupGameComponent);
+export default factory;

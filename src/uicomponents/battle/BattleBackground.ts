@@ -93,5 +93,5 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleBackgroundComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(BattleBackgroundComponent);
+export default factory;

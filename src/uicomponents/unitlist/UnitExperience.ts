@@ -162,5 +162,5 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
 }
 
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitExperienceComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(UnitExperienceComponent);
+export default factory;

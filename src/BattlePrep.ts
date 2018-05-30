@@ -115,7 +115,7 @@ export default class BattlePrep
 
   private setHumanAndEnemy(): void
   {
-    if (!this.attacker.isAI)
+    if (!this.attacker.isAi)
     {
       this.humanPlayer = this.attacker;
       this.enemyPlayer = this.defender;
@@ -124,7 +124,7 @@ export default class BattlePrep
       this.humanFormation = this.attackerFormation;
       this.enemyFormation = this.defenderFormation;
     }
-    else if (!this.defender.isAI)
+    else if (!this.defender.isAi)
     {
       this.humanPlayer = this.defender;
       this.enemyPlayer = this.attacker;

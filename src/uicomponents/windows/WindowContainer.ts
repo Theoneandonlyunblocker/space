@@ -354,6 +354,6 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(WindowContainerComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(WindowContainerComponent);
+export default factory;
 

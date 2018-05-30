@@ -60,5 +60,5 @@ export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(EmptyUnitComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(EmptyUnitComponent);
+export default factory;

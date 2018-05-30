@@ -33,7 +33,7 @@ export default class MCTreeNode
   private depth: number = 0;
   private readonly sideId: UnitBattleSide;
   private readonly parent: MCTreeNode;
-  private readonly isBetweenAI: boolean;
+  private readonly isBetweenAi: boolean;
 
   private evaluationWeight: number;
   private evaluationWeightIsDirty: boolean = true;
@@ -45,14 +45,14 @@ export default class MCTreeNode
     move: Move | null,
     depth: number,
     parent: MCTreeNode | null,
-    isBetweenAI: boolean,
+    isBetweenAi: boolean,
   })
   {
     this.sideId = props.sideId;
     this.move = props.move;
     this.depth = props.depth;
     this.parent = props.parent;
-    this.isBetweenAI = props.isBetweenAI;
+    this.isBetweenAi = props.isBetweenAi;
 
     this.children = new MoveCollection<MCTreeNode>();
   }
@@ -68,7 +68,7 @@ export default class MCTreeNode
     const baseEndScore = averageEndScore * sign; // -1...1
     const normalizedEndScore = (baseEndScore + 1) / 2; // 0...1
     const winRate = this.wins / this.visits;
-    const aiAdjust = this.move.ability.AIScoreMultiplier || 1;
+    const aiAdjust = this.move.ability.AiScoreMultiplier || 1;
 
     const combinedScore = (normalizedEndScore * endScoreWeight + winRate * winRateWeight) * aiAdjust;
     const normalizedCombinedScore = combinedScore / (winRateWeight + endScoreWeight);
@@ -117,8 +117,8 @@ export default class MCTreeNode
     {
       unexploredChildNodes.sort((a, b) =>
       {
-        const aPriority = isFinite(a.move.ability.AIEvaluationPriority) ? a.move.ability.AIEvaluationPriority : 0;
-        const bPriority = isFinite(b.move.ability.AIEvaluationPriority) ? b.move.ability.AIEvaluationPriority : 0;
+        const aPriority = isFinite(a.move.ability.AiEvaluationPriority) ? a.move.ability.AiEvaluationPriority : 0;
+        const bPriority = isFinite(b.move.ability.AiEvaluationPriority) ? b.move.ability.AiEvaluationPriority : 0;
 
         return bPriority - aPriority;
       });
@@ -185,7 +185,7 @@ export default class MCTreeNode
       const targetActions = targets[id];
       for (let i = 0; i < targetActions.length; i++)
       {
-        if (targetActions[i].disableInAIBattles && this.isBetweenAI)
+        if (targetActions[i].disableInAiBattles && this.isBetweenAi)
         {
 
         }
@@ -265,7 +265,7 @@ export default class MCTreeNode
       const abilities = actions[targetId];
       abilities.forEach(ability =>
       {
-        const priority = isFinite(ability.AIEvaluationPriority) ? ability.AIEvaluationPriority : 1;
+        const priority = isFinite(ability.AiEvaluationPriority) ? ability.AiEvaluationPriority : 1;
 
         prioritiesByKey[key] = priority;
         movesByKey[key] =
@@ -312,7 +312,7 @@ export default class MCTreeNode
       move: move,
       depth: this.depth + 1,
       parent: this,
-      isBetweenAI: this.isBetweenAI,
+      isBetweenAi: this.isBetweenAi,
     });
 
     this.children.set(move, child);
@@ -334,9 +334,9 @@ export default class MCTreeNode
       Math.sqrt(explorationBias * Math.log(this.parent.visits) / this.visits) +
       availabilityBias * (this.parent.visits / this.timesMoveWasPossible);
 
-    if (isFinite(this.move.ability.AIEvaluationPriority))
+    if (isFinite(this.move.ability.AiEvaluationPriority))
     {
-      this.evaluationWeight *= this.move.ability.AIEvaluationPriority;
+      this.evaluationWeight *= this.move.ability.AiEvaluationPriority;
     }
 
     this.evaluationWeightIsDirty = false;

@@ -59,6 +59,5 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
   }
 }
 
-// tslint:disable-next-line:variable-name
-const Factory = React.createFactory(BattleFinishNotification);
-export default Factory;
+const factory = React.createFactory(BattleFinishNotification);
+export default factory;

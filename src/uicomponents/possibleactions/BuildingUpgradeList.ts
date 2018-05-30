@@ -160,5 +160,5 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BuildingUpgradeListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(BuildingUpgradeListComponent);
+export default factory;

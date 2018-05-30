@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import SFXParams from "../../../src/templateinterfaces/SFXParams";
+import SfxParams from "../../../src/templateinterfaces/SfxParams";
 
 
-export function placeholder(params: SFXParams): void
+export function placeholder(params: SfxParams): void
 {
   const container = new PIXI.Container();
   const sprite = PIXI.Sprite.fromImage("img/placeholder.png");

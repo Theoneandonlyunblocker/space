@@ -174,5 +174,5 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ProductionOverviewComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(ProductionOverviewComponent);
+export default factory;

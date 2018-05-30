@@ -1,4 +1,4 @@
-import {AIController} from "./AIController";
+import {AiController} from "./AIController";
 import app from "./App"; // TODO global
 import BattleData from "./BattleData";
 import BattlePrep from "./BattlePrep";
@@ -63,8 +63,8 @@ export default class Player
   fleets: Fleet[] = [];
   items: Item[] = [];
 
-  public isAI: boolean = false;
-  public AIController: AIController<any>;
+  public isAi: boolean = false;
+  public aiController: AiController<any>;
   public isIndependent: boolean = false;
   public isDead: boolean = false;
 
@@ -80,7 +80,7 @@ export default class Player
   set money(amount: number)
   {
     this._money = amount;
-    if (!this.isAI)
+    if (!this.isAi)
     {
       eventManager.dispatchEvent("playerMoneyUpdated");
     }
@@ -115,7 +115,7 @@ export default class Player
 
   constructor(props:
   {
-    isAI: boolean;
+    isAi: boolean;
     isIndependent: boolean;
     isDead?: boolean;
 
@@ -139,7 +139,7 @@ export default class Player
 
   })
   {
-    this.isAI = props.isAI;
+    this.isAi = props.isAi;
     this.isIndependent = props.isIndependent;
     this.isDead = props.isDead || false;
 
@@ -209,7 +209,7 @@ export default class Player
   {
     return new Player(
     {
-      isAI: false,
+      isAi: false,
       isIndependent: false,
       id: -9999,
       name: "Dummy",
@@ -233,7 +233,7 @@ export default class Player
         generateIndependentPlayer: () => null,
         generateIndependentFleets: () => null,
 
-        getAITemplateConstructor: () => null,
+        getAiTemplateConstructor: () => null,
       },
       money: 0,
     });
@@ -246,7 +246,7 @@ export default class Player
       this.diplomacy = null;
     }
 
-    this.AIController = null;
+    this.aiController = null;
 
     for (const key in this.listeners)
     {
@@ -294,10 +294,10 @@ export default class Player
 
     return flag;
   }
-  public makeRandomAIController(game: Game): AIController<any>
+  public makeRandomAiController(game: Game): AiController<any>
   {
     const race = this.race;
-    const templateConstructor = race.getAITemplateConstructor(this);
+    const templateConstructor = race.getAiTemplateConstructor(this);
     const template = templateConstructor.construct(
     {
       player: this,
@@ -305,7 +305,7 @@ export default class Player
       personality: makeRandomPersonality(),
     });
 
-    return new AIController(template);
+    return new AiController(template);
   }
   addUnit(unit: Unit): void
   {
@@ -626,11 +626,11 @@ export default class Player
       this.updateDetectionInStar(newDetectedStars[i]);
     }
 
-    if (visibilityHasChanged && !this.isAI)
+    if (visibilityHasChanged && !this.isAi)
     {
       eventManager.dispatchEvent("renderMap");
     }
-    if (detectionHasChanged && !this.isAI)
+    if (detectionHasChanged && !this.isAi)
     {
       eventManager.dispatchEvent("renderLayer", "fleets");
     }
@@ -653,7 +653,7 @@ export default class Player
   }
   getVisibleStars(): Star[]
   {
-    if (!this.isAI && Options.debug.enabled)
+    if (!this.isAi && Options.debug.enabled)
     {
       return this.getDebugVisibleStars();
     }
@@ -674,7 +674,7 @@ export default class Player
   }
   getRevealedStars(): Star[]
   {
-    if (!this.isAI && Options.debug.enabled)
+    if (!this.isAi && Options.debug.enabled)
     {
       return this.getDebugVisibleStars();
     }
@@ -713,7 +713,7 @@ export default class Player
   }
   getDetectedStars(): Star[]
   {
-    if (!this.isAI && Options.debug.enabled)
+    if (!this.isAi && Options.debug.enabled)
     {
       return this.getDebugVisibleStars();
     }
@@ -733,7 +733,7 @@ export default class Player
   }
   starIsVisible(star: Star): boolean
   {
-    if (!this.isAI && Options.debug.enabled) { return true; }
+    if (!this.isAi && Options.debug.enabled) { return true; }
     if (this.visionIsDirty)
     {
       this.updateVisibleStars();
@@ -742,7 +742,7 @@ export default class Player
   }
   starIsRevealed(star: Star): boolean
   {
-    if (!this.isAI && Options.debug.enabled) { return true; }
+    if (!this.isAi && Options.debug.enabled) { return true; }
     if (this.visionIsDirty)
     {
       this.updateVisibleStars();
@@ -751,7 +751,7 @@ export default class Player
   }
   starIsDetected(star: Star): boolean
   {
-    if (!this.isAI && Options.debug.enabled) { return true; }
+    if (!this.isAi && Options.debug.enabled) { return true; }
     if (this.visionIsDirty)
     {
       this.updateVisibleStars();
@@ -799,7 +799,7 @@ export default class Player
   }
   unitIsIdentified(unit: Unit): boolean
   {
-    if (Options.debug.enabled && !this.isAI)
+    if (Options.debug.enabled && !this.isAi)
     {
       return true;
     }
@@ -810,7 +810,7 @@ export default class Player
   }
   fleetIsFullyIdentified(fleet: Fleet): boolean
   {
-    if (Options.debug.enabled && !this.isAI)
+    if (Options.debug.enabled && !this.isAi)
     {
       return true;
     }
@@ -939,9 +939,9 @@ export default class Player
     // TODO manufactory
     const itemTypes: ItemTemplate[] = [];
 
-    for (const key in activeModuleData.Templates.Items)
+    for (const key in activeModuleData.templates.Items)
     {
-      itemTypes.push(activeModuleData.Templates.Items[key]);
+      itemTypes.push(activeModuleData.templates.Items[key]);
     }
 
     return itemTypes;
@@ -1014,7 +1014,7 @@ export default class Player
       colorAlpha: this.colorAlpha,
       secondaryColor: this.secondaryColor.serialize(),
       isIndependent: this.isIndependent,
-      isAI: this.isAI,
+      isAi: this.isAi,
       resources: extendObject(this.resources),
 
       fleets: this.fleets.map(fleet => fleet.serialize()),
@@ -1032,7 +1032,7 @@ export default class Player
       diplomacyData: this.diplomacy ? this.diplomacy.serialize() : null,
       researchByTechnology: this.playerTechnology ? this.playerTechnology.serialize() : null,
       flag: this.flag ? this.flag.serialize() : null,
-      AIController: this.AIController ? this.AIController.serialize() : null,
+      AiController: this.aiController ? this.aiController.serialize() : null,
 
       notificationLog: this.notificationLog ? this.notificationLog.serialize() : null,
     };

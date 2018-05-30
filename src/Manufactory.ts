@@ -80,7 +80,7 @@ export default class Manufactory
       return(
       {
         kind: savedThing.kind,
-        template: activeModuleData.Templates[templatesString][savedThing.templateType],
+        template: activeModuleData.templates[templatesString][savedThing.templateType],
       });
     });
   }
@@ -147,7 +147,7 @@ export default class Manufactory
       });
     }
 
-    if (!this.player.isAI)
+    if (!this.player.isAi)
     {
       eventManager.dispatchEvent("playerManufactoryBuiltThings");
     }

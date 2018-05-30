@@ -14,7 +14,7 @@ import
 import BeamFilter from "../shaders/Beam";
 
 import RampingValue from "./RampingValue";
-import SFXFragment from "./SFXFragment";
+import SfxFragment from "./SfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
 
 
@@ -36,7 +36,7 @@ interface BeamProps
   lineYSharpness: RampingValue;
 }
 
-export default class Beam extends SFXFragment<BeamProps>
+export default class Beam extends SfxFragment<BeamProps>
 {
   public displayName = "Beam";
   public key = "beam";

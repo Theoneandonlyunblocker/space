@@ -9,7 +9,7 @@ import
 
 type OptionsCategory = "battleAnimationTiming" | "debug" | "ui" | "display";
 type OptionsSubCatgory = "debug.logging";
-const OptionsCategories: OptionsCategory[] =
+const optionsCategories: OptionsCategory[] =
 [
   "battleAnimationTiming", "debug", "ui", "display",
 ];
@@ -28,8 +28,8 @@ interface OptionsValues
   debug:
   {
     enabled: boolean;
-    AIVsPlayerBattleSimulationDepth: number;
-    AIVsAIBattleSimulationDepth: number;
+    aiVsPlayerBattleSimulationDepth: number;
+    aiVsAiBattleSimulationDepth: number;
     logging:
     {
       ai: boolean;
@@ -60,8 +60,8 @@ const defaultOptionsValues: OptionsValues =
   debug:
   {
     enabled: false,
-    AIVsPlayerBattleSimulationDepth: 1000,
-    AIVsAIBattleSimulationDepth: 20,
+    aiVsPlayerBattleSimulationDepth: 1000,
+    aiVsAiBattleSimulationDepth: 20,
     logging:
     {
       ai: true,
@@ -92,8 +92,8 @@ class Options implements OptionsValues
   debug:
   {
     enabled: boolean;
-    AIVsPlayerBattleSimulationDepth: number;
-    AIVsAIBattleSimulationDepth: number;
+    aiVsPlayerBattleSimulationDepth: number;
+    aiVsAiBattleSimulationDepth: number;
     logging:
     {
       ai: boolean;
@@ -174,7 +174,7 @@ class Options implements OptionsValues
   }
   public setDefaults()
   {
-    OptionsCategories.forEach(category =>
+    optionsCategories.forEach(category =>
     {
       this.setDefaultForCategory(category);
     });

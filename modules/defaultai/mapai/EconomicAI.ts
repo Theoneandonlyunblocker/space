@@ -11,7 +11,7 @@ import
 } from "./tradeEvaluationFunctions";
 
 
-export class EconomicAI
+export class EconomicAi
 {
   public respondToTradeOffer(
     incomingOffer: TradeOffer,

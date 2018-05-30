@@ -4,7 +4,7 @@ import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
 
-import RaceTemplates from "./RaceTemplates";
+import raceTemplates from "./RaceTemplates";
 
 
 const defaultRaces: ModuleFile =
@@ -21,7 +21,7 @@ const defaultRaces: ModuleFile =
   supportedLanguages: [Languages.en],
   constructModule: (moduleData: ModuleData) =>
   {
-    moduleData.copyTemplates<RaceTemplate>(RaceTemplates, "Races");
+    moduleData.copyTemplates<RaceTemplate>(raceTemplates, "Races");
 
     return moduleData;
   },

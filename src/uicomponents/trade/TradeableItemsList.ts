@@ -120,5 +120,5 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TradeableItemsListComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(TradeableItemsListComponent);
+export default factory;

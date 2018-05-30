@@ -140,5 +140,5 @@ export class SpinnerComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SpinnerComponent);
-export default Factory;
+const factory: React.Factory<PropTypes> = React.createFactory(SpinnerComponent);
+export default factory;

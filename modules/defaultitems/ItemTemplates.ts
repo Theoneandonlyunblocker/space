@@ -178,7 +178,7 @@ const shieldPlating3: ItemTemplate =
   ability: guardRow,
 };
 
-const ItemTemplates: TemplateCollection<ItemTemplate> =
+const itemTemplates: TemplateCollection<ItemTemplate> =
 {
 
   [bombLauncher1.type]: bombLauncher1,
@@ -192,4 +192,4 @@ const ItemTemplates: TemplateCollection<ItemTemplate> =
   [shieldPlating3.type]: shieldPlating3,
 };
 
-export default ItemTemplates;
+export default itemTemplates;
