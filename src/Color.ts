@@ -178,9 +178,10 @@ export default class Color
     const b = this.b;
 
     const max = Math.max(r, g, b), min = Math.min(r, g, b);
-    let h: number, s: number, v: number = max;
+    let h, s = max;
+    const v = max;
 
-    const d: number = max - min;
+    const d = max - min;
     s = max == 0 ? 0 : d / max;
 
     if (max == min)
