@@ -342,7 +342,7 @@ export default class PathfindingArrow
     abababa.push(points[points.length - 1]);
 
 
-    for (let i = 3, n = abababa.length; i < n; i++)
+    for (let i = 3; i < abababa.length; i++)
     {
 
       const p0 = abababa[i - 3];

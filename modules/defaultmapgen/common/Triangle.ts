@@ -28,10 +28,14 @@ export default class Triangle<T extends Point>
     const pB = this.b;
     const pC = this.c;
 
-    let m1: number, m2: number;
-    let mx1: number, mx2: number;
-    let my1: number, my2: number;
-    let cX: number, cY: number;
+    let m1: number;
+    let m2: number;
+    let mx1: number;
+    let mx2: number;
+    let my1: number;
+    let my2: number;
+    let cX: number;
+    let cY: number;
 
     if (Math.abs(pB.y - pA.y) < tolerance)
     {

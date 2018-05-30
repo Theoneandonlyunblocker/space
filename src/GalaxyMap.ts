@@ -33,7 +33,8 @@ export default class GalaxyMap
   }
   getIncomeBounds()
   {
-    let min: number, max: number;
+    let min: number;
+    let max: number;
 
     for (let i = 0; i < this.stars.length; i++)
     {

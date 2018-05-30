@@ -44,7 +44,14 @@ export default class Color
    */
   public static fromHSV(h: number, s: number, v: number): Color
   {
-    let r: number, g: number, b: number, i: number, f: number, p: number, q: number, t: number;
+    let r: number;
+    let g: number;
+    let b: number;
+    let i: number;
+    let f: number;
+    let p: number;
+    let q: number;
+    let t: number;
 
     i = Math.floor(h * 6);
     f = h * 6 - i;
@@ -69,7 +76,10 @@ export default class Color
    */
   public static fromHSL(h: number, s: number, l: number): Color
   {
-    let r: number, g: number, b: number;
+    let r: number;
+    let g: number;
+    let b: number;
+
     function hue2rgb(p: number, q: number, t: number): number
     {
       let t2 = t;
@@ -177,12 +187,13 @@ export default class Color
     const g = this.g;
     const b = this.b;
 
-    const max = Math.max(r, g, b), min = Math.min(r, g, b);
-    let h, s = max;
-    const v = max;
-
+    const min = Math.min(r, g, b);
+    const max = Math.max(r, g, b)
     const d = max - min;
-    s = max == 0 ? 0 : d / max;
+
+    let h: number;
+    const s = max == 0 ? 0 : d / max;
+    const v = max;
 
     if (max == min)
     {

@@ -483,7 +483,8 @@ export default class MapEvaluator
     const byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
     const relative = new ValuesByPlayer<number>();
 
-    let min: number, max: number;
+    let min: number;
+    let max: number;
 
     byPlayer.forEach((player, threat) =>
     {
