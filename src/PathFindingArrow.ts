@@ -13,6 +13,14 @@ interface PathFindingArrowCurveStyle
 {
   color: Color;
 }
+
+// cp = control point, dp = destination point
+/**
+ *                    cp1.x,  cp1.y,  cp2.x,  cp2.y,   dp.x,   dp.y
+ */
+type CurveSegment = [number, number, number, number, number, number];
+
+// TODO 2018.05.30 | curve calculation stuff should be in a different module
 export default class PathfindingArrow
 {
   parentContainer: PIXI.Container;
@@ -246,7 +254,7 @@ export default class PathfindingArrow
     const curves:
     {
       style: string;
-      curveData: number[][];
+      segments: CurveSegment[];
     }[] = [];
 
     const totalPathsPerStar:
@@ -308,12 +316,12 @@ export default class PathfindingArrow
         }
       }
 
-      const curveData = this.getCurveData(curvePoints);
+      const segments = this.getSplineThroughPoints(curvePoints);
 
       curves.push(
       {
         style: style,
-        curveData: curveData,
+        segments: segments
       });
     }
 
@@ -328,29 +336,29 @@ export default class PathfindingArrow
 
     for (let i = 0; i < curves.length; i++)
     {
-      const curve = this.drawCurve(curves[i].curveData, this.curveStyles[curves[i].style]);
+      const curve = this.drawCurve(curves[i].segments, this.curveStyles[curves[i].style]);
 
       this.container.addChild(curve);
     }
   }
 
-  getCurveData(points: Point[]): number[][]
+  getSplineThroughPoints(points: Point[]): CurveSegment[]
   {
     const i6 = 1.0 / 6.0;
-    const path: number[][] = [];
-    const abababa = [points[0]].concat(points);
-    abababa.push(points[points.length - 1]);
+    const segments: CurveSegment[] = [];
+    // duplicate terminal points so that curve extends to them
+    const startPoint = points[0];
+    const endPoint = points[points.length - 1];
+    const path = [startPoint, ...points, endPoint];
 
-
-    for (let i = 3; i < abababa.length; i++)
+    for (let i = 3; i < path.length; i++)
     {
+      const p0 = path[i - 3];
+      const p1 = path[i - 2];
+      const p2 = path[i - 1];
+      const p3 = path[i];
 
-      const p0 = abababa[i - 3];
-      const p1 = abababa[i - 2];
-      const p2 = abababa[i - 1];
-      const p3 = abababa[i];
-
-      path.push(
+      segments.push(
       [
         p2.x * i6 + p1.x - p0.x * i6,
         p2.y * i6 + p1.y - p0.y * i6,
@@ -361,22 +369,23 @@ export default class PathfindingArrow
       ]);
     }
 
-    path[0][0] = points[0].x;
-    path[0][1] = points[0].y;
+    // snap curve starting point to original starting point
+    segments[0][0] = points[0].x;
+    segments[0][1] = points[0].y;
 
-    return path;
+    return segments;
   }
 
-  private drawCurve(points: number[][], style: PathFindingArrowCurveStyle)
+  private drawCurve(segments: CurveSegment[], style: PathFindingArrowCurveStyle)
   {
     const gfx = new PIXI.Graphics();
 
     gfx.lineStyle(12, style.color.getHex(), 0.7);
-    gfx.moveTo(points[0][0], points[0][1]);
+    gfx.moveTo(segments[0][0], segments[0][1]);
 
-    for (let i = 0; i < points.length; i++)
+    for (let i = 0; i < segments.length; i++)
     {
-      gfx.bezierCurveTo.apply(gfx, points[i]);
+      gfx.bezierCurveTo.apply(gfx, segments[i]);
     }
 
     const curveShape = <PIXI.Polygon> gfx.currentPath.shape;
