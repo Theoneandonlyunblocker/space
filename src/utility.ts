@@ -365,6 +365,7 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
     return new from.constructor(from);
   }
 
+  // tslint:disable-next-line:no-parameter-reassignment
   to = to || new from.constructor();
   const toIterateOver = onlyExtendAlreadyPresent ? to : from;
 
@@ -424,6 +425,7 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
 
   if (array)
   {
+    // tslint:disable-next-line:no-parameter-reassignment
     target = target || [];
     dst = dst.concat(target);
     (<any[]>src).forEach((e, i) =>

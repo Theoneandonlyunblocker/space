@@ -7,6 +7,7 @@ import
 {
   makePolygonFromPoints,
 } from "../../../src/pixiWrapperFunctions";
+import { clamp } from "../../../src/utility";
 
 
 const starIncome: MapRendererLayerTemplate =
@@ -21,11 +22,10 @@ const starIncome: MapRendererLayerTemplate =
     const points = perspectivePlayer ? perspectivePlayer.getRevealedStars() : map.stars;
     const incomeBounds = map.getIncomeBounds();
 
-    function getRelativeValue(min: number, max: number, value: number)
+    function getRelativeValueWithSteps(min: number, max: number, value: number, steps: number)
     {
       const difference = Math.max(max - min, 1);
-      // clamps to n different colors
-      const threshhold = Math.max(difference / 10, 1);
+      const threshhold = Math.max(difference / steps, 1);
       const relative = (Math.round(value/threshhold) * threshhold - min) / (difference);
 
       return relative;
@@ -36,13 +36,12 @@ const starIncome: MapRendererLayerTemplate =
       [value: number]: number;
     } = {};
 
-    function getRelativeColor(min: number, max: number, value: number)
+    function getColorForRelativeValue(min: number, max: number, relativeValue: number)
     {
+      const value = clamp(relativeValue, 0, 1);
+
       if (!colorIndexes[value])
       {
-        if (value < 0) { value = 0; }
-        else if (value > 1) { value = 1; }
-
         const deviation = Math.abs(0.5 - value) * 2;
 
         const hue = 110 * value;
@@ -59,8 +58,8 @@ const starIncome: MapRendererLayerTemplate =
     {
       const star = points[i];
       const income = star.getIncome();
-      const relativeIncome = getRelativeValue(incomeBounds.min, incomeBounds.max, income);
-      const color = getRelativeColor(incomeBounds.min, incomeBounds.max, relativeIncome);
+      const relativeIncome = getRelativeValueWithSteps(incomeBounds.min, incomeBounds.max, income, 10);
+      const color = getColorForRelativeValue(incomeBounds.min, incomeBounds.max, relativeIncome);
 
       const poly = makePolygonFromPoints(star.voronoiCell.vertices);
       const gfx = new PIXI.Graphics();
