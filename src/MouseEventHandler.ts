@@ -44,7 +44,7 @@ export default class MouseEventHandler
     select: false,
     fleetMove: false,
   };
-  private currentActionHasBeenCanceled: boolean = false;
+  private preventMoveAndSelectForCurrentGesture: boolean = false;
   private actionHasStarted: boolean = false;
 
   private preventingGhost: PreventGhostHandles =
@@ -196,7 +196,7 @@ export default class MouseEventHandler
 
   private onPointerDown(e: PIXI.interaction.InteractionEvent): void
   {
-    this.currentActionHasBeenCanceled = false;
+    this.preventMoveAndSelectForCurrentGesture = false;
     this.actionHasStarted = true;
     this.makeUITransparent();
     this.onPointerChange(e);
@@ -208,7 +208,7 @@ export default class MouseEventHandler
       return;
     }
 
-    const shouldNullifyLeftAndRightButtons = this.currentActionHasBeenCanceled;
+    const shouldNullifyLeftAndRightButtons = this.preventMoveAndSelectForCurrentGesture;
 
     // tslint:disable:no-bitwise
     const validPressedButtons = shouldNullifyLeftAndRightButtons ?
@@ -299,6 +299,12 @@ export default class MouseEventHandler
       {
         if (!this.currentActions.pan)
         {
+          const wasFirstActionInGesture = !this.currentActions.fleetMove && !this.currentActions.select;
+          if (wasFirstActionInGesture)
+          {
+            this.preventMoveAndSelectForCurrentGesture = true;
+          }
+
           this.handlePanStart(e);
         }
         else
@@ -348,7 +354,7 @@ export default class MouseEventHandler
   private cancelCurrentAction(): void
   {
     // TODO 2018.06.04 | trigger ui transparency change
-    this.currentActionHasBeenCanceled = true;
+    this.preventMoveAndSelectForCurrentGesture = true;
 
     if (this.currentActions.fleetMove)
     {
