@@ -15,7 +15,6 @@ import ArchetypeValues from "./ArchetypeValues";
 import Personality from "./Personality";
 import Player from "./Player";
 import Point from "./Point";
-import Star from "./Star";
 import UnitBattleSide from "./UnitBattleSide";
 
 
@@ -52,87 +51,11 @@ export function getRandomKey<T>(target: {[props: string]: T}): string
 
   return _targetKeys[_rnd];
 }
-
-export function getObjectKeysSortedByValue(obj:
-{
-  [key: string]: number;
-}, order: string)
-{
-  return Object.keys(obj).sort((a, b) =>
-  {
-    if (order === "asc")
-    {
-      return obj[a] - obj[b];
-    }
-    else { return obj[b] - obj[a]; }
-  });
-}
-export function getObjectKeysSortedByValueOfProp(obj:
-{
-  [key: string]: any;
-}, prop: string, order: string)
-{
-  return Object.keys(obj).sort((a, b) =>
-  {
-    if (order === "asc")
-    {
-      return obj[a][prop] - obj[b][prop];
-    }
-    else { return obj[b][prop] - obj[a][prop]; }
-  });
-}
-export function sortObjectsByProperty(objects:
-{
-  [key: string]: any;
-}[], prop: string, order: string)
-{
-  return objects.sort((a, b) =>
-  {
-    if (order === "asc")
-    {
-      return a[prop] - b[prop];
-    }
-    else { return b[prop] - a[prop]; }
-  });
-}
-
 export function getRandomProperty<T>(target: {[props: string]: T}): T
 {
   const _rndProp = target[getRandomKey(target)];
 
   return _rndProp;
-}
-export function getAllPropertiesWithKey<T>(target: {[props: string]: T}, keyToFind: string): T[]
-{
-  const matchingProperties: T[] = [];
-  for (const key in target)
-  {
-    if (target[key][keyToFind])
-    {
-      matchingProperties.push(target[key]);
-    }
-  }
-
-  return matchingProperties;
-}
-export function getRandomPropertyWithKey<T>(target: {[props: string]: T}, keyToFind: string): T | null
-{
-  const keys = Object.keys(target);
-  while (keys.length > 0)
-  {
-    const key = getRandomArrayItem(keys);
-    const prop = target[key];
-    if (prop[keyToFind])
-    {
-      return prop;
-    }
-    else
-    {
-      keys.splice(keys.indexOf(key), 1);
-    }
-  }
-
-  return null;
 }
 export function getRandomKeyWithWeights(target: {[prop: string]: number}): string
 {
@@ -173,39 +96,6 @@ export function getRandomArrayItemWithWeights<T extends {weight: number}>(arr: T
   }
 
   throw new Error();
-}
-export function findItemWithKey<T>(source: {[key: string]: any},
-  keyToFind: string, parentKey?: string, _hasParentKey: boolean = false): T | null
-{
-  let hasParentKey = _hasParentKey;
-  if (source[keyToFind])
-  {
-    if (!parentKey || hasParentKey)
-    {
-      return source[keyToFind];
-    }
-  };
-
-  for (const key in source)
-  {
-    if (key === parentKey)
-    {
-      hasParentKey = true;
-    }
-    if (source[key][keyToFind])
-    {
-      if (!parentKey || hasParentKey)
-      {
-        return source[key][keyToFind];
-      }
-    }
-    else if (typeof source[key] === "object")
-    {
-      return findItemWithKey<T>(source[key], keyToFind, parentKey, hasParentKey);
-    }
-  }
-
-  return null;
 }
 export function getFrom2dArray<T>(target: T[][], arr: number[][]): (T | null)[]
 {
@@ -260,23 +150,6 @@ export function reverseSide(side: UnitBattleSide): UnitBattleSide
     }
   }
 }
-export function sortByManufactoryCapacityFN(a: Star, b: Star)
-{
-  const aLevel = (a.manufactory ? a.manufactory.capacity : -1);
-  const bLevel = (b.manufactory ? b.manufactory.capacity : -1);
-
-  if (bLevel !== aLevel)
-  {
-    return bLevel - aLevel;
-  }
-
-  const _a: string = a.name.toLowerCase();
-  const _b: string = b.name.toLowerCase();
-
-  if (_a > _b) { return 1; }
-  else if (_a < _b) { return -1; }
-  else { return 0; }
-}
 export function rectContains(rect: {x1: number, x2: number, y1: number, y2: number}, point: Point)
 {
   const x = point.x;
@@ -306,24 +179,7 @@ export function stringToHex(text: string)
 
   return parseInt(toParse, 16);
 }
-export function drawElementToCanvas(toClone: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): HTMLCanvasElement
-{
-  const canvas = document.createElement("canvas");
-  canvas.width = toClone.width;
-  canvas.height = toClone.height;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx)
-  {
-    throw new Error("Couldn't get canvas context");
-  }
-  else
-  {
-    ctx.drawImage(toClone, 0, 0);
-  }
-
-  return canvas;
-}
+// TODO 2018.06.04 | can't we use svg for this?
 export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
 {
   const canvas = document.createElement("canvas");
@@ -530,13 +386,6 @@ export function roundToNearestMultiple(value: number, multiple: number)
     return value + multiple - resto;
   }
 }
-export function getAngleBetweenDegrees(degA: number, degB: number)
-{
-  const angle = Math.abs(degB - degA) % 360;
-  const distance = Math.min(360 - angle, angle);
-
-  return distance;
-}
 export function prettifyDate(date: Date)
 {
   return(
@@ -578,25 +427,6 @@ export function getMatchingLocalstorageItemsByDate(stringToMatch: string)
   });
 
   return matchingItems;
-}
-export function shuffleArray(toShuffle: any[], seed?: any)
-{
-  const rng = new RNG(seed);
-  const resultArray = toShuffle.slice(0);
-
-  let i = resultArray.length;
-
-  while (i > 0)
-  {
-    i--;
-    const n = rng.random(0, i);
-
-    const temp = resultArray[i];
-    resultArray[i] = resultArray[n];
-    resultArray[n] = temp;
-  }
-
-  return resultArray;
 }
 export function getRelativeValue(value: number, min: number, max: number, inverse: boolean = false)
 {
@@ -748,40 +578,6 @@ export function transformMat3(a: Point, m: number[])
   const y = m[1] * a.x + m[4] * a.y + m[7];
 
   return {x: x, y: y};
-}
-
-
-export function findEasingFunctionHighPoint(easingFunction: (x: number) => number,
-  resolution: number = 10, maxIterations: number = 4,
-  startIndex: number = 0, endIndex: number = 1, iteration: number = 0): number
-{
-  if (iteration >= maxIterations)
-  {
-    return (startIndex + endIndex) / 2;
-  }
-
-  let highestValue: number | undefined;
-  let highestValueIndex: number | undefined;
-
-  const step = (endIndex - startIndex) / resolution;
-  for (let i = 0; i < resolution; i++)
-  {
-    const currentIndex = startIndex + i * step;
-    const currentValue = easingFunction(currentIndex);
-
-    if (highestValue === undefined || currentValue > highestValue)
-    {
-      highestValue = currentValue;
-      highestValueIndex = currentIndex;
-    }
-  }
-
-  return findEasingFunctionHighPoint(easingFunction,
-    resolution, maxIterations,
-    highestValueIndex! - step / 2,
-    highestValueIndex! + step / 2,
-    iteration + 1,
-  );
 }
 
 export function shallowEqual<T extends object>(a: T, b: T): boolean

@@ -1,10 +1,31 @@
 import * as React from "react";
 
 import Star from "../../Star";
-import {sortByManufactoryCapacityFN} from "../../utility";
 
 import ManufactoryStarsListItem from "./ManufactoryStarsListItem";
 
+
+export function sortByManufactoryCapacityFN(a: Star, b: Star)
+{
+  const aCapacity = (a.manufactory ? a.manufactory.capacity : -1);
+  const bCapacity = (b.manufactory ? b.manufactory.capacity : -1);
+
+  const capacitySort = bCapacity - aCapacity;
+  if (capacitySort)
+  {
+    return capacitySort;
+  }
+
+  const nameSort = a.name.localeCompare(b.name);
+  if (nameSort)
+  {
+    return nameSort;
+  }
+
+  const idSort = a.id - b.id
+
+  return idSort;
+}
 
 export interface PropTypes extends React.Props<any>
 {
