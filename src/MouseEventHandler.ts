@@ -198,7 +198,6 @@ export default class MouseEventHandler
   {
     this.preventMoveAndSelectForCurrentGesture = false;
     this.actionHasStarted = true;
-    this.makeUITransparent();
     this.onPointerChange(e);
   }
   private onPointerChange(e: PIXI.interaction.InteractionEvent): void
@@ -350,12 +349,18 @@ export default class MouseEventHandler
         break;
       }
     }
+
+    if (this.hasActiveAction())
+    {
+      this.makeUITransparent();
+    }
+    else
+    {
+      this.makeUIOpaque();
+    }
   }
   private cancelCurrentAction(): void
   {
-    // TODO 2018.06.04 | trigger ui transparency change
-    this.preventMoveAndSelectForCurrentGesture = true;
-
     if (this.currentActions.fleetMove)
     {
       this.handleFleetMoveStop();
@@ -364,6 +369,13 @@ export default class MouseEventHandler
     {
       this.handleSelectionStop();
     }
+  }
+  private hasActiveAction(): boolean
+  {
+    return Object.keys(this.currentActions).some(key =>
+    {
+      return this.currentActions[key];
+    })
   }
 
   private handlePanStart(e: PIXI.interaction.InteractionEvent): void
