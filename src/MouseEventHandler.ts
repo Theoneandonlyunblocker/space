@@ -45,7 +45,7 @@ export default class MouseEventHandler
     fleetMove: false,
   };
   private preventMoveAndSelectForCurrentGesture: boolean = false;
-  private actionHasStarted: boolean = false;
+  private gestureHasStarted: boolean = false;
 
   private preventingGhost: PreventGhostHandles =
   {
@@ -197,12 +197,12 @@ export default class MouseEventHandler
   private onPointerDown(e: PIXI.interaction.InteractionEvent): void
   {
     this.preventMoveAndSelectForCurrentGesture = false;
-    this.actionHasStarted = true;
+    this.gestureHasStarted = true;
     this.onPointerChange(e);
   }
   private onPointerChange(e: PIXI.interaction.InteractionEvent): void
   {
-    if (!this.actionHasStarted)
+    if (!this.gestureHasStarted)
     {
       return;
     }
@@ -247,8 +247,7 @@ export default class MouseEventHandler
   {
     this.onPointerChange(e);
 
-    this.actionHasStarted = false;
-    this.makeUIOpaque();
+    this.gestureHasStarted = false;
   }
 
   private handleContextMenu(e: PointerEvent): void
@@ -411,7 +410,9 @@ export default class MouseEventHandler
   private handleSelectionStop(): void
   {
     this.rectangleSelect.clearSelection();
+
     this.currentActions.select = false;
+    this.preventMoveAndSelectForCurrentGesture = true;
   }
 
   private setFleetMoveTarget(star: Star): void
@@ -447,5 +448,6 @@ export default class MouseEventHandler
     eventManager.dispatchEvent("endPotentialMove");
 
     this.currentActions.fleetMove = false;
+    this.preventMoveAndSelectForCurrentGesture = true;
   }
 }
