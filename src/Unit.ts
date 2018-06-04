@@ -589,6 +589,7 @@ export default class Unit
     else if (statusEffect.turnsToStayActiveFor === 0)
     {
       console.warn("Tried to add status effect", statusEffect, "with 0 duration");
+
       return;
     }
 
@@ -742,6 +743,7 @@ export default class Unit
           return true;
         }
       }
+
       return false;
     };
 
@@ -878,7 +880,9 @@ export default class Unit
         return distance / this.currentMovePoints;
       }
     }
+
     distance -= this.currentMovePoints; // current turn
+
     return distance / this.maxMovePoints; // future turns
   }
   public getExperienceToNextLevel()

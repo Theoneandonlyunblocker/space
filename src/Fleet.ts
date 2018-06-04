@@ -226,6 +226,7 @@ export class Fleet
         {
           afterMove();
         }
+
         return;
 
       }

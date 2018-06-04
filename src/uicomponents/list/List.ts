@@ -324,6 +324,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       {
         sortingFunctions[column.key] = makeSortingFunction(column);
       }
+
       return sortingFunctions[column.key];
     }
 

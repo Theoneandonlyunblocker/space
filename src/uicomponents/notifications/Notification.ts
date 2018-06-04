@@ -53,6 +53,7 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
   render()
   {
     const notification = this.props.notification;
+
     return(
       React.DOM.li(
       {

@@ -71,6 +71,7 @@ export default class Color
       case 5: r = v, g = p, b = q; break;
       // tslint:enable:ban-comma-operator
     }
+
     return new Color(r, g, b);
   }
   /**
@@ -90,6 +91,7 @@ export default class Color
       if (t2 < 1 / 6) { return p + (q - p) * 6 * t2; }
       if (t2 < 1 / 2) { return q; }
       if (t2 < 2 / 3) { return p + (q - p) * (2 / 3 - t2) * 6; }
+
       return p;
     }
 
@@ -114,6 +116,7 @@ export default class Color
   public static fromHUSL(h: number, s: number, l: number): Color
   {
     const RGB = HUSL.toRGB(h * 360, s * 100, l * 100);
+
     return new Color(RGB[0], RGB[1], RGB[2]);
   }
 
@@ -169,6 +172,7 @@ export default class Color
   {
     const hex = Math.round(this.getHex());
     const converted = hex.toString(16);
+
     return "000000".substr(0, 6 - converted.length) + converted;
   }
 
@@ -178,6 +182,7 @@ export default class Color
   public getHUSL(): number[]
   {
     const husl = HUSL.fromRGB(this.r, this.g, this.b);
+
     return [husl[0] / 360, husl[1] / 100, husl[2] / 100];
   }
 
@@ -220,6 +225,7 @@ export default class Color
   {
     const husl = this.getHUSL();
     husl[1] += amount;
+
     return Color.fromHUSL.apply(null, husl);
   }
 

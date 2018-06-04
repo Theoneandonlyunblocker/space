@@ -69,6 +69,7 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
       splitButtonProps.className += " disabled";
       splitButtonProps.disabled = true;
     }
+
     return(
       React.DOM.div(
       {

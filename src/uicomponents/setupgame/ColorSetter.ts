@@ -135,6 +135,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   {
     const ownNode: HTMLElement = <HTMLElement> ReactDOM.findDOMNode(this);
     const firstChild: HTMLElement = <HTMLElement> ownNode.firstChild;
+
     return firstChild.getBoundingClientRect();
   }
 }

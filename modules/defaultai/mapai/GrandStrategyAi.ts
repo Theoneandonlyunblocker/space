@@ -96,6 +96,7 @@ export class GrandStrategyAi
       this.mapEvaluator.player.controlledLocations, null, (parent, candidate) =>
     {
       const nearestOwnedStar = this.mapEvaluator.player.getNearestOwnedStarTo(candidate);
+
       return candidate.getDistanceToStar(nearestOwnedStar) <= 2;
     });
 

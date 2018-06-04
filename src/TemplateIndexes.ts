@@ -44,6 +44,7 @@ class TemplateIndexes
       this.builtIndexes.distributablesByTypeAndDistributionGroup =
         TemplateIndexes.getDistributablesByTypeAndDistributionGroup();
     }
+
     return this.builtIndexes.distributablesByTypeAndDistributionGroup;
   }
   public get itemsByTechLevel()
@@ -52,6 +53,7 @@ class TemplateIndexes
     {
       this.builtIndexes.itemsByTechLevel = TemplateIndexes.getItemsByTechLevel();
     }
+
     return this.builtIndexes.itemsByTechLevel;
   }
 

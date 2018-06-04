@@ -316,7 +316,6 @@ export default class MouseEventHandler
       {
         if (this.currentActions.fleetMove)
         {
-          // TODO 2018.06.04 | trigger cancel action when button change is detected, not here
           this.cancelCurrentAction();
         }
         else if (!this.currentActions.select)

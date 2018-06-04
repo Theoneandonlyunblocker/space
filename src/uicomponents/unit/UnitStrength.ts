@@ -87,6 +87,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
       if (stopped)
       {
         cancelAnimationFrame(this.animationFrameHandle);
+
         return;
       }
 

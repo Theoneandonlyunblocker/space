@@ -262,6 +262,7 @@ export default class MapEvaluator
     const independentNeighborStars = this.player.getNeighboringStars().filter(star =>
     {
       const secondaryController = star.getSecondaryController();
+
       return star.owner.isIndependent && (!secondaryController || secondaryController === this.player);
     });
 
@@ -273,6 +274,7 @@ export default class MapEvaluator
     const islandQualifierFN = (a: Star, b: Star) =>
     {
       const secondaryController = b.getSecondaryController();
+
       return b.owner.isIndependent && (!secondaryController || secondaryController === this.player);
     };
 
@@ -294,6 +296,7 @@ export default class MapEvaluator
   public getIndependentStrengthAtStar(star: Star): number
   {
     const independentUnits = star.getUnits(player => player.isIndependent);
+
     return this.unitEvaluator.evaluateMapStrength(...independentUnits);
   }
   getDefenceBuildingStrengthAtStarByPlayer(star: Star)
@@ -337,6 +340,7 @@ export default class MapEvaluator
     const influence = new ValuesByStar<number>(stars, star =>
     {
       const defenceBuildingStrength = this.getDefenceBuildingStrengthAtStarByPlayer(star);
+
       return defenceBuildingStrength.get(player) || 0;
     });
 

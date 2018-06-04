@@ -258,6 +258,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     if (!this.state.hoveredUnit || this.state.playingBattleEffect)
     {
       this.tempHoveredUnit = null;
+
       return;
     }
 
@@ -268,12 +269,14 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     if (!toElement)
     {
       this.clearHoveredUnit();
+
       return;
     }
 
     if (!this.abilityTooltip)
     {
       this.clearHoveredUnit();
+
       return;
     }
 

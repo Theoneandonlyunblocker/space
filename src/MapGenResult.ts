@@ -60,6 +60,7 @@ export default class MapGenResult
   private getAllPoints(): (Star | FillerPoint)[]
   {
     const castedFillerPoints: (Star | FillerPoint)[] = this.fillerPoints;
+
     return castedFillerPoints.concat(this.stars);
   }
   private makeVoronoiInfo(): MapVoronoiInfo

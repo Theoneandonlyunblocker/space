@@ -88,6 +88,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
         },
       }));
     }
+
     return(
       React.DOM.div(null,
         React.DOM.div(

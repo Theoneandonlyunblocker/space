@@ -157,6 +157,7 @@ export default class PlayerControl
     {
       this.clearSelection();
       this.updateSelection();
+
       return;
     }
 

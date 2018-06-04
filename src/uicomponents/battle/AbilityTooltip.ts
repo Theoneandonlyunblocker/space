@@ -36,6 +36,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
         }
       }
     }
+
     return false;
   }
   public state: StateType;

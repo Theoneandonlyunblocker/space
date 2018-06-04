@@ -350,6 +350,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     if (unit === this.state.selectedUnit)
     {
       this.clearSelectedUnit();
+
       return;
     }
 

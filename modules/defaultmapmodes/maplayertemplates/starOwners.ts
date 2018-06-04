@@ -73,6 +73,7 @@ const starOwners: MapRendererLayerTemplate =
 
       doc.addChild(gfx);
     }
+
     return doc;
   },
 };

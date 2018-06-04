@@ -100,6 +100,7 @@ export default class Building
       const templatedUpgrades = this.template.upgradeInto.map(upgradeData =>
       {
         const template = activeModuleData.templates.Buildings[upgradeData.templateType];
+
         return(
         {
           level: upgradeData.level,

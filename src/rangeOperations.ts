@@ -39,6 +39,7 @@ export function getIntersectingRanges(ranges: Range[], toIntersectWith: Range): 
 
     intersecting.push(range);
   }
+
   return intersecting;
 }
 
@@ -133,6 +134,7 @@ export function randomSelectFromRanges(ranges: Range[]): number
     if (rand < sortedWeights[i])
     {
       const selectedRange = rangesByRelativeWeight[sortedWeights[i]];
+
       return randRange(selectedRange.min, selectedRange.max);
     }
   }

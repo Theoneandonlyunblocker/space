@@ -411,6 +411,7 @@ export default class Star implements Point
             maxAllowed += 1;
           }
           const alreadyBuilt = this.getBuildingsInFamilyOfTemplate(template);
+
           return alreadyBuilt.length < maxAllowed;
         }
       });
@@ -802,6 +803,7 @@ export default class Star implements Point
     if (!app.game)
     {
       const a = aStar(this, target);
+
       return a.cost[target.id];
     }
 

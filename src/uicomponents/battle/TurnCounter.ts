@@ -11,6 +11,7 @@ const FirstChild = React.createClass(
   render: function(this: any)
   {
     const child = <React.ReactElement<any>> React.Children.toArray(this.props.children)[0];
+
     return child || null;
   },
 });

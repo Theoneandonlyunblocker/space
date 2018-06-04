@@ -42,6 +42,7 @@ const starLinks: MapRendererLayerTemplate =
         gfx.lineTo(star.x, star.y);
       }
     }
+
     return doc;
   },
 };

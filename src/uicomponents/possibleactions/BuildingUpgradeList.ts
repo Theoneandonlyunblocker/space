@@ -41,6 +41,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
   hasAvailableUpgrades()
   {
     const possibleUpgrades = this.props.star.getBuildingUpgrades();
+
     return Object.keys(possibleUpgrades).length > 0;
   }
 

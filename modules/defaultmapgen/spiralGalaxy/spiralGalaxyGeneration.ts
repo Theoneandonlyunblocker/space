@@ -163,6 +163,7 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
   if (!entireMapIsConnected)
   {
     console.log("Regenerated map due to insufficient connections");
+
     return spiralGalaxyGeneration(options, players);
   }
 

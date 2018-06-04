@@ -644,6 +644,7 @@ export default class Player
     else if (Object.keys(this.revealedStars).length > 0)
     {
       const initialStar: Star = this.revealedStars[Object.keys(this.revealedStars)[0]];
+
       return initialStar.getAllLinkedStars();
     }
     else
@@ -738,6 +739,7 @@ export default class Player
     {
       this.updateVisibleStars();
     }
+
     return Boolean(this.visibleStars[star.id]);
   }
   starIsRevealed(star: Star): boolean
@@ -747,6 +749,7 @@ export default class Player
     {
       this.updateVisibleStars();
     }
+
     return Boolean(this.revealedStars[star.id]);
   }
   starIsDetected(star: Star): boolean
@@ -756,6 +759,7 @@ export default class Player
     {
       this.updateVisibleStars();
     }
+
     return Boolean(this.detectedStars[star.id]);
   }
   getLinksToUnRevealedStars(): ValuesByStar<Star[]>

@@ -27,6 +27,7 @@ const starIncome: MapRendererLayerTemplate =
       // clamps to n different colors
       const threshhold = Math.max(difference / 10, 1);
       const relative = (Math.round(value/threshhold) * threshhold - min) / (difference);
+
       return relative;
     }
 
@@ -50,6 +51,7 @@ const starIncome: MapRendererLayerTemplate =
 
         colorIndexes[value] = Color.fromHSL(hue / 360, saturation, lightness / 2).getHex();
       }
+
       return colorIndexes[value];
     }
 
@@ -67,6 +69,7 @@ const starIncome: MapRendererLayerTemplate =
       gfx.endFill();
       doc.addChild(gfx);
     }
+
     return doc;
   },
 };

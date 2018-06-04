@@ -15,6 +15,7 @@ export function moveToTarget(
   if (fleets.length <= 0)
   {
     afterDoneCallback();
+
     return;
   }
 

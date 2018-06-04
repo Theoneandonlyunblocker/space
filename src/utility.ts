@@ -36,17 +36,20 @@ export function getRandomArrayKey<T>(target: T[]): number
 export function getRandomArrayItem<T>(target: T[]): T
 {
   const _rnd = Math.floor(Math.random() * (target.length));
+
   return target[_rnd];
 }
 export function getSeededRandomArrayItem<T>(array: T[], rng: any): T
 {
   const _rnd = Math.floor(rng.uniform() * array.length);
+
   return array[_rnd];
 }
 export function getRandomKey<T>(target: {[props: string]: T}): string
 {
   const _targetKeys = Object.keys(target);
   const _rnd = Math.floor(Math.random() * (_targetKeys.length));
+
   return _targetKeys[_rnd];
 }
 
@@ -96,6 +99,7 @@ export function sortObjectsByProperty(objects:
 export function getRandomProperty<T>(target: {[props: string]: T}): T
 {
   const _rndProp = target[getRandomKey(target)];
+
   return _rndProp;
 }
 export function getAllPropertiesWithKey<T>(target: {[props: string]: T}, keyToFind: string): T[]
@@ -293,6 +297,7 @@ export function hexToString(hex: number)
 {
   const rounded = Math.round(hex);
   const converted = rounded.toString(16);
+
   return "000000".substr(0, 6 - converted.length) + converted;
 }
 export function stringToHex(text: string)
@@ -409,6 +414,7 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
   if (excludeKeysNotInTarget)
   {
     const merged = deepMerge(target, src, false);
+
     return deletePropertiesNotSharedWithTarget(merged, target);
   }
 
@@ -525,6 +531,7 @@ export function getAngleBetweenDegrees(degA: number, degB: number)
 {
   const angle = Math.abs(degB - degA) % 360;
   const distance = Math.min(360 - angle, angle);
+
   return distance;
 }
 export function prettifyDate(date: Date)
@@ -585,6 +592,7 @@ export function shuffleArray(toShuffle: any[], seed?: any)
     resultArray[i] = resultArray[n];
     resultArray[n] = temp;
   }
+
   return resultArray;
 }
 export function getRelativeValue(value: number, min: number, max: number, inverse: boolean = false)
@@ -831,6 +839,7 @@ export function splitMultilineText(text: string | React.ReactFragment): string |
         key: "" + i,
       }));
     }
+
     return returnArr;
   }
   else

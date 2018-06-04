@@ -62,6 +62,7 @@ export default class ModuleLoader
     if (this.hasLoaded[moduleFile.key])
     {
       afterLoaded();
+
       return;
     }
 

@@ -198,6 +198,7 @@ export function makeSectors(
         const frontier = discoveryStarLinkedNeighbors.filter(star =>
         {
           const starHasSector = Boolean(sectorsByStarId[star.id]);
+
           return !starHasSector;
         });
 
@@ -425,6 +426,7 @@ export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCom
   if (!star.owner)
   {
     console.warn("Tried to add defence buildings to star without owner.");
+
     return;
   }
   if (buildingsToAdd < 1)

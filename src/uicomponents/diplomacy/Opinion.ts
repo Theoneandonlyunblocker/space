@@ -65,6 +65,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
   getOpinionTextNodeRect()
   {
     const firstChild = <HTMLElement> ReactDOM.findDOMNode<HTMLElement>(this).firstChild;
+
     return firstChild.getBoundingClientRect();
   }
 
@@ -107,6 +108,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
         },
       });
     }
+
     return(
       React.DOM.div(
       {

@@ -230,6 +230,7 @@ export default class BackgroundDrawer
   {
     const w = this.containerElement.clientWidth;
     const h = this.containerElement.clientHeight;
+
     return new PIXI.Rectangle(0, 0, w, h);
   }
   private isRectBiggerThanCachedBackground(toCheck: PIXI.Rectangle): boolean

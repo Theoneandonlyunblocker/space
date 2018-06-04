@@ -92,6 +92,7 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
       if (stopped)
       {
         cancelAnimationFrame(this.animationFrameHandle);
+
         return;
       }
 

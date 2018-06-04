@@ -109,6 +109,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   makeUnit()
   {
     const template = getRandomProperty(activeModuleData.templates.Units);
+
     return Unit.fromTemplate(
     {
       template: template,
