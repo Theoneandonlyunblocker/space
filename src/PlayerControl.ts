@@ -54,7 +54,7 @@ export default class PlayerControl
       this.removeEventListener(name);
     }
   }
-  addEventListener(name: string, handler: Function): void
+  addEventListener(name: string, handler: (...args: any[]) => void): void
   {
     this.listeners[name] = handler;
 

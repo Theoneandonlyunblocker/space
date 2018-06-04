@@ -110,7 +110,7 @@ export default class Player
 
   private listeners:
   {
-    [key: string]: Function;
+    [key: string]: (...args: any[]) => void;
   } = {};
 
   constructor(props:

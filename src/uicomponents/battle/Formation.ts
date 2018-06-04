@@ -17,6 +17,7 @@ import
 import UnitWrapper from "../unit/UnitWrapper";
 
 
+// tslint:disable-next-line:ban-types
 function bindFunctionIfExists(functionToBind: Function | undefined, valueToBind: any): (() => void) | null
 {
   if (!functionToBind)

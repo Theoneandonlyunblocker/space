@@ -89,7 +89,7 @@ export default class PathfindingArrow
       this.removeEventListener(name);
     }
   }
-  addEventListener(name: string, handler: Function)
+  addEventListener(name: string, handler: (...args: any[]) => void)
   {
     this.listeners[name] = handler;
 

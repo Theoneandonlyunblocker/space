@@ -35,7 +35,7 @@ export default class MapRenderer
 
   listeners:
   {
-    [name: string]: Function;
+    [name: string]: (...args: any[]) => void;
   } = {};
 
 

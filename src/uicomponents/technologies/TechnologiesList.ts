@@ -19,7 +19,7 @@ interface StateType
 export class TechnologiesListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TechnologiesList";
-  updateListener: Function;
+  private updateListener: () => void;
 
 
   public state: StateType;

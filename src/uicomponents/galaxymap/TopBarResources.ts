@@ -19,7 +19,7 @@ interface StateType
 export class TopBarResourcesComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TopBarResources";
-  updateListener: Function = undefined;
+  private updateListener: () => void;
 
   public state: StateType;
 
