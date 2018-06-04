@@ -93,7 +93,7 @@ export default class Color
       return p;
     }
 
-    if (s == 0)
+    if (s === 0)
     {
       r = g = b = l; // achromatic
     }
@@ -195,10 +195,10 @@ export default class Color
     const d = max - min;
 
     let h: number;
-    const s = max == 0 ? 0 : d / max;
+    const s = max === 0 ? 0 : d / max;
     const v = max;
 
-    if (max == min)
+    if (max === min)
     {
       h = 0; // achromatic
     }

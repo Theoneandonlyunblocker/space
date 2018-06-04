@@ -345,17 +345,17 @@ export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
   return canvas.toDataURL();
 }
 
-// http://stackoverflow.com/a/1042676
+// TODO 2018.05.31 | many calls to this can be replaced with spread operator I think
 // extends 'from' object with members from 'to'. If 'to' is null, a deep clone of 'from' is returned
 //
-// to[prop] = from[prop] seems to add a reference instead of actually copying value
+// to[prop] = from[prop] adds a reference instead of actually copying value
 // so calling the constructor with "new" is needed
 export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: boolean = false)
 {
-  if (from == null || typeof from != "object") { return from; }
-  if (from.constructor != Object && from.constructor != Array) { return from; }
-  if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function ||
-    from.constructor == String || from.constructor == Number || from.constructor == Boolean) {
+  if (from === null || typeof from !== "object") { return from; }
+  if (from.constructor !== Object && from.constructor !== Array) { return from; }
+  if (from.constructor === Date || from.constructor === RegExp || from.constructor === Function ||
+    from.constructor === String || from.constructor === Number || from.constructor === Boolean) {
     return new from.constructor(from);
   }
 
