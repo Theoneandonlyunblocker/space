@@ -150,21 +150,27 @@ export default class BattleSceneUnit
   }
   private exitUnitSprite()
   {
-    if (this.unitState === BattleSceneUnitState.Entering)
+    switch (this.unitState)
     {
-      this.finishUnitSpriteExit();
-    }
-    else if (this.unitState === BattleSceneUnitState.Stationary)
-    {
-      this.startUnitSpriteExit();
-    }
-    else if (this.unitState === BattleSceneUnitState.Exiting)
-    {
-      this.onFinishExit = undefined;
-    }
-    else
-    {
-      console.warn(`called exitUnitSprite with unintended animation state ${this.unitState}`);
+      case BattleSceneUnitState.Entering:
+      {
+        this.finishUnitSpriteExit();
+        break;
+      }
+      case BattleSceneUnitState.Stationary:
+      {
+        this.startUnitSpriteExit();
+        break;
+      }
+      case BattleSceneUnitState.Exiting:
+      {
+        this.onFinishExit = undefined;
+        break;
+      }
+      default:
+      {
+        console.warn(`called exitUnitSprite with unintended animation state ${this.unitState}`);
+      }
     }
   }
   private startUnitSpriteEnter(unit: Unit)

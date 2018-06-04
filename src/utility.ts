@@ -359,6 +359,7 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
 {
   if (from === null || typeof from !== "object") { return from; }
   if (from.constructor !== Object && from.constructor !== Array) { return from; }
+  // tslint:disable-next-line:prefer-switch
   if (from.constructor === Date || from.constructor === RegExp || from.constructor === Function ||
     from.constructor === String || from.constructor === Number || from.constructor === Boolean) {
     return new from.constructor(from);
