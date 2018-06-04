@@ -99,7 +99,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
           {
             displayName: notificationTemplate.displayName,
             filter: filter,
-            filterState: filtersForCategory[i].filterState,
+            initialFilterState: filtersForCategory[i].filterState,
             keyTODO: notificationTemplate.key,
             isHighlighted: isHighlighted,
           }),

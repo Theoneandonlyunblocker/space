@@ -10,7 +10,7 @@ import eventManager from "../../eventManager";
 export interface PropTypes extends React.Props<any>
 {
   displayName: string;
-  filterState: NotificationFilterState[];
+  initialFilterState: NotificationFilterState[];
   keyTODO: string;
   filter: NotificationFilter;
   isHighlighted: boolean;
@@ -44,7 +44,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
   {
     return(
     {
-      filterState: this.props.filterState,
+      filterState: this.props.initialFilterState,
     });
   }
 
@@ -52,7 +52,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
   {
     this.setState(
     {
-      filterState: newProps.filterState,
+      filterState: newProps.initialFilterState,
     });
   }
 

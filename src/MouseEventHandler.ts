@@ -44,7 +44,7 @@ export default class MouseEventHandler
     select: false,
     fleetMove: false,
   };
-  private currentActionIsCanceled: boolean = false;
+  private currentActionHasBeenCanceled: boolean = false;
   private actionHasStarted: boolean = false;
 
   private preventingGhost: PreventGhostHandles =
@@ -196,7 +196,7 @@ export default class MouseEventHandler
 
   private onPointerDown(e: PIXI.interaction.InteractionEvent): void
   {
-    this.currentActionIsCanceled = false;
+    this.currentActionHasBeenCanceled = false;
     this.actionHasStarted = true;
     this.makeUITransparent();
     this.onPointerChange(e);
@@ -312,6 +312,7 @@ export default class MouseEventHandler
       {
         if (this.currentActions.fleetMove)
         {
+          // TODO 2018.06.04 | trigger cancel action when button change is detected, not here
           this.cancelCurrentAction();
         }
         else if (!this.currentActions.select)
@@ -346,7 +347,8 @@ export default class MouseEventHandler
   }
   private cancelCurrentAction(): void
   {
-    this.currentActionIsCanceled = true;
+    // TODO 2018.06.04 | trigger ui transparency change
+    this.currentActionHasBeenCanceled = true;
 
     if (this.currentActions.fleetMove)
     {

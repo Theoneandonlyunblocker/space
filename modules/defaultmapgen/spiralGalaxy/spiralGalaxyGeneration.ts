@@ -41,6 +41,7 @@ import SpiralGalaxyOptionValues from "./SpiralGalaxyOptionValues";
 import {centerRegionTag, generateSpiralPoints} from "./generateSpiralPoints";
 
 
+// TODO 2018.05.30 | needs to be broken into multiple functions bad
 // @ts-ignore 2322
 const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValues, players: Player[]) =>
 {
@@ -219,7 +220,7 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
 
   // set players
   // get start regions
-  const startRegions: Region[] = (function setStartingRegions()
+  const getStartingRegions = () =>
   {
     const nonCenterRegions: Region[] = regions.filter(region =>
     {
@@ -248,7 +249,8 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
     }
 
     return [...armStartingRegions, ...centerStartingRegions];
-  })();
+  };
+  const startRegions = getStartingRegions();
 
   // get start positions in start regions
   const startPositions = startRegions.map(startRegion =>
