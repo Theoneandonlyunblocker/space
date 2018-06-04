@@ -19,11 +19,13 @@ export default class Color
   // 0x000000-0xFFFFFF
   public static fromHex(hex: number): Color
   {
+    // tslint:disable:no-bitwise
     return new Color(
       (hex >> 16 & 0xFF) / 255,
       (hex >> 8 & 0xFF) / 255,
       (hex & 0xFF) / 255,
     );
+    // tslint:enable:no-bitwise
   }
   public static fromHexString(hexString: string): Color
   {
@@ -157,6 +159,7 @@ export default class Color
    */
   public getHex(): number
   {
+    // tslint:disable-next-line:no-bitwise
     return (this.r * 255 << 16) + (this.g * 255 << 8) + this.b * 255;
   }
   /**

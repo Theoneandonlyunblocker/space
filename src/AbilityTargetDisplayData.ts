@@ -1,16 +1,17 @@
-// tslint:disable:no-bitwise
+// can't use binary operators in assignment as it clobbers the enum type
+// https://github.com/Microsoft/TypeScript/issues/22709
 export enum AbilityTargetType
 {
-  Primary   = 1 << 0,
-  Secondary = 1 << 1,
-  Random    = 1 << 2,
+  Primary   = 1,
+  Secondary = 2,
+  Random    = 4,
 }
 
 export enum AbilityTargetEffect
 {
-  Positive  = 1 << 0,
-  Negative  = 1 << 1,
-  Random    = 1 << 2,
+  Positive  = 1,
+  Negative  = 2,
+  Random    = 4,
 }
 
 export interface AbilityTargetDisplayData
@@ -42,8 +43,10 @@ export function mergeAbilityTargetDisplayDataById(...toMerge: AbilityTargetDispl
       }
       else
       {
+        // tslint:disable:no-bitwise
         merged[unitId].targetEffect = merged[unitId].targetEffect | data[unitId].targetEffect;
         merged[unitId].targetType = merged[unitId].targetType | data[unitId].targetType;
+        // tslint:enable:no-bitwise
       }
     }
   });

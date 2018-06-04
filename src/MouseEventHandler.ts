@@ -16,13 +16,14 @@ type MouseActions =
   fleetMove: boolean;
 };
 
-// tslint:disable:no-bitwise
+// can't use binary operators in assignment as it clobbers the enum type
+// https://github.com/Microsoft/TypeScript/issues/22709
 enum MouseButtons
 {
   None   = 0,
-  Left   = 1 << 0,
-  Right  = 1 << 1,
-  Middle = 1 << 2,
+  Left   = 1,
+  Right  = 2,
+  Middle = 4,
 }
 
 
@@ -87,15 +88,18 @@ export default class MouseEventHandler
 
   private static getButtonChanges(oldButtons: MouseButtons, newButtons: MouseButtons): MouseButtons
   {
+    // tslint:disable-next-line:no-bitwise
     return oldButtons ^ newButtons;
   }
   private static getActionsInButtonChanges(buttonChanges: MouseButtons): MouseActions
   {
     return(
     {
+      // tslint:disable:no-bitwise
       pan       : Boolean(buttonChanges & MouseButtons.Middle),
       select    : Boolean(buttonChanges & MouseButtons.Left),
       fleetMove : Boolean(buttonChanges & MouseButtons.Right),
+      // tslint:enable:no-bitwise
     });
   }
 
@@ -204,16 +208,19 @@ export default class MouseEventHandler
       return;
     }
 
-    const newPressedButtons = this.currentActionIsCanceled ?
-      // nullify left & right button
+    const shouldNullifyLeftAndRightButtons = this.currentActionHasBeenCanceled;
+
+    // tslint:disable:no-bitwise
+    const validPressedButtons = shouldNullifyLeftAndRightButtons ?
       e.data.buttons & ~MouseButtons.Left & ~MouseButtons.Right :
       e.data.buttons;
+    // tslint:enable:no-bitwise
 
-    const changedButtons = MouseEventHandler.getButtonChanges(this.pressedButtons, newPressedButtons);
+    const changedButtons = MouseEventHandler.getButtonChanges(this.pressedButtons, validPressedButtons);
 
     if (changedButtons)
     {
-      this.pressedButtons = newPressedButtons;
+      this.pressedButtons = validPressedButtons;
       const changedActions = MouseEventHandler.getActionsInButtonChanges(changedButtons);
 
       for (const key in changedActions)

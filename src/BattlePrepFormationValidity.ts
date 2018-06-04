@@ -4,7 +4,7 @@ import Unit from "./Unit";
 import { shallowEqual } from "./utility";
 
 
-// can't use binary operator as it clobbers the enum type
+// can't use binary operators in assignment as it clobbers the enum type
 // https://github.com/Microsoft/TypeScript/issues/22709
 export enum FormationInvalidityReason
 {
@@ -42,26 +42,6 @@ export interface FormationValidity
   reasons: FormationInvalidityReason;
   modifiers: FormationValidityModifier[];
 }
-
-// tslint:disable:no-bitwise
-export function extractFormationInvalidityReasons(reasons: FormationInvalidityReason): FormationInvalidityReason[]
-{
-  const allPresentReasons = Object.keys(FormationInvalidityReason).map(key =>
-  {
-    return FormationInvalidityReason[key];
-  }).filter(reason =>
-  {
-    const reasonIsPresent = reasons & reason;
-
-    return reasonIsPresent;
-  }).sort((a, b) =>
-  {
-    return a - b;
-  });
-
-  return allPresentReasons;
-}
-// tslint:enable:no-bitwise
 
 export function squashValidityModifierEffects(
   ...effects: FormationValidityModifierEffect[],

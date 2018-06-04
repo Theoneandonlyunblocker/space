@@ -873,3 +873,30 @@ export function getUniqueArrayKeys<T>(source: T[], getIdentifier: ((v: T) => str
 
   return Object.keys(uniqueKeysById).map(type => uniqueKeysById[type]);
 }
+// tslint:disable:no-bitwise
+export function extractFlagsFromFlagWord<F extends number, E extends {[K in keyof E]: F}>(flagWord: F, allFlags: E): F[]
+{
+  if (flagWord === 0)
+  {
+    const hasExplicitZeroFlag = isFinite(allFlags[0]);
+    if (hasExplicitZeroFlag)
+    {
+      return [allFlags[0]];
+    }
+    else
+    {
+      return [];
+    }
+  }
+
+  const allPresentFlags = Object.keys(allFlags).map(key =>
+  {
+    return allFlags[key];
+  }).filter(flag =>
+  {
+    return Boolean(flagWord & flag);
+  });
+
+  return allPresentFlags;
+}
+// tslint:enable:no-bitwise

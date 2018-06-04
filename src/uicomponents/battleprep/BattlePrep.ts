@@ -7,7 +7,6 @@ import BattlePrep from "../../BattlePrep";
 import { BattlePrepFormation } from "../../BattlePrepFormation";
 import
 {
-  extractFormationInvalidityReasons,
   FormationInvalidityReason,
   FormationValidity,
   FormationValidityModifier,
@@ -19,6 +18,7 @@ import Item from "../../Item";
 import Options from "../../Options";
 import Unit from "../../Unit";
 import {activeModuleData} from "../../activeModuleData";
+import { extractFlagsFromFlagWord } from "../../utility";
 import {BattleBackgroundComponent, default as BattleBackground} from "../battle/BattleBackground";
 import Formation from "../battle/Formation";
 import ListItem from "../list/ListItem";
@@ -551,9 +551,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
   private localizeInvalidFormationExplanation(formation: BattlePrepFormation, validity: FormationValidity): string
   {
-    const allReasons = extractFormationInvalidityReasons(validity.reasons);
+    const allReasons = extractFlagsFromFlagWord(validity.reasons, FormationInvalidityReason);
 
-    const reasonString = allReasons.map(reason =>
+    const reasonString = allReasons.sort().map(reason =>
     {
       return this.localizeFormationInvalidityReason(formation, reason);
     }).join("\n");
