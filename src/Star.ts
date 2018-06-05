@@ -655,7 +655,7 @@ export default class Star implements Point
     const ownNeighbors = this.getNeighbors();
     const neighborNeighbors = neighbor.getNeighbors();
 
-    const sharedNeighbors: Array<Star | FillerPoint> = [];
+    const sharedNeighbors: (Star | FillerPoint)[] = [];
 
     for (let i = 0; i < ownNeighbors.length; i++)
     {

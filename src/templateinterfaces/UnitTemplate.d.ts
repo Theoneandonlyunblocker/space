@@ -61,10 +61,10 @@ declare interface UnitTemplate extends ManufacturableThing
    */
   specialAbilityUpgrades?: AbilityBase[];
   /**
-   * only one of the abilities in a nested array can be learned f.ex.
+   * only one of the abilities in a nested array can be learned
    * [canAlwaysLearn, canAlwaysLearn, [#1cantLearnIfHas#2, #2cantLearnIfHas#1]]
    */
-  learnableAbilities?: Array<AbilityBase | AbilityBase[]>;
+  learnableAbilities?: (AbilityBase | AbilityBase[])[];
 
   itemSlots:
   {
