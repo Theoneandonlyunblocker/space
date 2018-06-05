@@ -17,7 +17,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = (unit, sfxParams) =>
   const spriteTemplate = unit.template.sprite;
   const texture = PIXI.Texture.fromFrame(spriteTemplate.imageSrc);
 
-  const container = new PIXI.Container;
+  const container = new PIXI.Container();
 
   const props =
   {

@@ -33,7 +33,7 @@ export default class BattleSceneUnitOverlay
   }
   private initLayers()
   {
-    this.overlayContainer = new PIXI.Container;
+    this.overlayContainer = new PIXI.Container();
     this.container.addChild(this.overlayContainer);
   }
   setSfx(sfxTemplate: BattleSfxTemplate, user: Unit, target: Unit)
