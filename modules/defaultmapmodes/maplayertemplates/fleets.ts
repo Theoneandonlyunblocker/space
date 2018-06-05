@@ -34,7 +34,7 @@ const fleetsLayerTemplate: MapRendererLayerTemplate =
     };
     const fleetClickFN = (fleet: Fleet, event: PIXI.interaction.InteractionEvent) =>
     {
-      const originalEvent = <MouseEvent> event.data.originalEvent;;
+      const originalEvent = <MouseEvent> event.data.originalEvent;
       if (originalEvent.button === 0)
       {
         eventManager.dispatchEvent("selectFleets", [fleet]);

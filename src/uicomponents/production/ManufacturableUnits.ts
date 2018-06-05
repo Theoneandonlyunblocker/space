@@ -127,7 +127,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
           onClick: this.upgradeStats,
           title: localize("increaseBaseStatsOfUnitsBuiltHere")(),
         }),
-      )
+      );
     }
 
     return(

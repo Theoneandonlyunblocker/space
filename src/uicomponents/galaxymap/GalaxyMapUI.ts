@@ -159,7 +159,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     else if (pc.areAllFleetsInSameLocation())
     {
       star = pc.selectedFleets[0].location;
-    };
+    }
 
     this.setState(
     {

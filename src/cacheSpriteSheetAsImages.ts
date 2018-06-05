@@ -18,7 +18,7 @@ interface SpriteSheetData
     },
   };
   meta: any;
-};
+}
 
 function addImageToApp(name: string, image: HTMLImageElement)
 {

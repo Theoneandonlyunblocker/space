@@ -1022,7 +1022,7 @@ export default class Unit
   }
   public learnAbility(newAbility: AbilityBase): void
   {
-    const newAbilityIsPassiveSkill = !newAbility.mainEffect
+    const newAbilityIsPassiveSkill = !newAbility.mainEffect;
 
     if (newAbilityIsPassiveSkill)
     {

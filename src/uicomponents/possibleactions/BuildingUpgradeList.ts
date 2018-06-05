@@ -114,7 +114,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
               null,
             ),
           ));
-        };
+        }
 
         upgradeElements.push(BuildingUpgradeListItem(
         {

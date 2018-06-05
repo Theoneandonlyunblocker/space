@@ -71,7 +71,7 @@ export default class MapVoronoiInfo
               return false;
             }
             continue;
-          };
+          }
 
 
           if (visibleStars && visibleStars.indexOf(<Star> site) < 0)
@@ -82,7 +82,7 @@ export default class MapVoronoiInfo
               return false;
             }
             continue;
-          };
+          }
 
           const castedSite = <Star> site;
           const isFiller = !isFinite(castedSite.id);
@@ -93,7 +93,7 @@ export default class MapVoronoiInfo
             {
               return false;
             }
-          };
+          }
         }
 
         return true;

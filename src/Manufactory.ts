@@ -154,7 +154,7 @@ export default class Manufactory
   }
   public getManufacturableUnits(): UnitTemplate[]
   {
-    const allManufacturableUnits = [...this.player.getGloballyBuildableUnits(), ...this.getLocalUnitTypes()];;
+    const allManufacturableUnits = [...this.player.getGloballyBuildableUnits(), ...this.getLocalUnitTypes()];
     const uniqueManufacturableUnits = getUniqueArrayKeys(allManufacturableUnits, unit => unit.type);
 
     return uniqueManufacturableUnits;

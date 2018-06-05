@@ -14,4 +14,4 @@ export type BattlePrepEffect =
 {
   onAdd: BaseBattlePrepEffect;
   onRemove: BaseBattlePrepEffect;
-}
+};

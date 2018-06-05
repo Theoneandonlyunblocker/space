@@ -115,7 +115,7 @@ export function getFrom2dArray<T>(target: T[][], arr: number[][]): (T | null)[]
     {
       result.push(null);
     }
-  };
+  }
 
   return result;
 }
@@ -463,7 +463,7 @@ export function getRelativeWeightsFromObject(byCount: {[prop: string]: number})
   const min = 0;
   const max = Object.keys(byCount).map(key =>
   {
-    return byCount[key]
+    return byCount[key];
   }).reduce((maxWeight, itemWeight) =>
   {
     return Math.max(maxWeight, itemWeight);

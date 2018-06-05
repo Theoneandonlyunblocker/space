@@ -1,6 +1,6 @@
 import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
 
-import {bindEffectActionData} from "../../common/effectactiontemplates/effectActionBinding";;
+import {bindEffectActionData} from "../../common/effectactiontemplates/effectActionBinding";
 import
 {
   adjustDefenderBattleEvaluationAdjustment,
@@ -25,5 +25,5 @@ export function makeDefensiveBuildingEffect(amount: number): UnitEffectTemplate
         }),
       },
     ],
-  })
-};
+  });
+}

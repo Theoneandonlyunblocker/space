@@ -39,4 +39,4 @@ export interface RuleSetValues
 export type PartialRuleSetValues =
 {
   [category in keyof RuleSetValues]?: Partial<RuleSetValues[category]>;
-}
+};

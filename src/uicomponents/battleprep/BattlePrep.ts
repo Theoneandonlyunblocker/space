@@ -197,7 +197,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
         });
         break;
       }
-    };
+    }
 
     const playerIsDefending = player === battlePrep.defender;
     const humanFormationValidity = battlePrep.humanFormation.getFormationValidity();

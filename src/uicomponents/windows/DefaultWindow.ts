@@ -16,7 +16,7 @@ const prefixedCssPropertyMap =
   minHeight: cssPropertyPrefix + "min-height",
   maxWidth: cssPropertyPrefix + "max-width",
   maxHeight: cssPropertyPrefix + "max-height",
-}
+};
 
 type SizeBounds =
 {

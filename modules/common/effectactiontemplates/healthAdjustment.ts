@@ -31,4 +31,4 @@ export function calculateHealthAdjustment(user: Unit, target: Unit, data: Health
   }
 
   return healAmount;
-};
+}

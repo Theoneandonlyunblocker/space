@@ -403,7 +403,7 @@ export default class Player
     return this.controlledLocations.reduce((total, star) =>
     {
       return total + star.getIncome();
-    }, 0)
+    }, 0);
   }
   addResource(resource: ResourceTemplate, amount: number): void
   {

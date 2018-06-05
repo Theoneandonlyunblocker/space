@@ -25,7 +25,7 @@ function wrapMessageFunction(messageFN: MessageFunction<any>): MessageFunction<a
     {
       return messageFN(args);
     }
-  }
+  };
 }
 
 export class Localizer<Messages extends {[K in keyof Messages]: (string | string[])}>

@@ -240,9 +240,9 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       user: user,
       target: target,
       sfxTemplate: sfxTemplate,
-      triggerEffectCallback: () => {console.log("triggerEffect")},
-      onSfxStartCallback: () => {console.log("onSfxStart")},
-      afterFinishedCallback: () => {console.log("afterFinishedCallback")},
+      triggerEffectCallback: () => {console.log("triggerEffect");},
+      onSfxStartCallback: () => {console.log("onSfxStart");},
+      afterFinishedCallback: () => {console.log("afterFinishedCallback");},
     });
   }
 

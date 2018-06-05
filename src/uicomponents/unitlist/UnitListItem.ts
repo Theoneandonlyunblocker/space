@@ -232,7 +232,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     if (this.props.isSelected)
     {
       rowProps.className += " selected-unit";
-    };
+    }
     if (this.props.isReserved)
     {
       rowProps.className += " reserved-unit";

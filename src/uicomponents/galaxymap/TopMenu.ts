@@ -188,7 +188,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       },
         leftoverButtons,
       );
-    };
+    }
 
     return(
       React.DOM.div(
@@ -365,7 +365,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
     if (this.popupsComponent.state[popupType])
     {
-      this.popupsComponent.togglePopup(popupType)
+      this.popupsComponent.togglePopup(popupType);
     }
   }
   private toggleCondensedMenu()

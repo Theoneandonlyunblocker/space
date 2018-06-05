@@ -115,7 +115,6 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
   }
   private handleDragEnd(dropSuccessful: boolean = false)
   {
-    console.log("handledragend " + dropSuccessful)
     if (!dropSuccessful && this.state.currentDragItem && this.state.selectedUnit)
     {
       const item = this.state.currentDragItem;
@@ -133,7 +132,6 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
   }
   private handleDrop(index: number)
   {
-    console.log("handledrop")
     const item = this.state.currentDragItem;
     const unit = this.state.selectedUnit;
     if (unit && item)

@@ -373,7 +373,7 @@ export default class MouseEventHandler
     return Object.keys(this.currentActions).some(key =>
     {
       return this.currentActions[key];
-    })
+    });
   }
 
   private handlePanStart(e: PIXI.interaction.InteractionEvent): void

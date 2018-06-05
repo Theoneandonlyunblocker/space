@@ -135,7 +135,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
       {
         delete this.playerSetupComponentsById[playerId];
       }
-    };
+    }
   }
 
   setActiveColorSetter(colorSetter: ColorSetterComponent)

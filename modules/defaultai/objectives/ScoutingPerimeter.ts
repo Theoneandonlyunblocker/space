@@ -64,7 +64,7 @@ export class ScoutingPerimeter extends TargetedFrontObjective
   }
   public evaluateUnitFit(unit: Unit): number
   {
-    const scoutingScore = this.unitEvaluator.evaluateUnitScoutingAbility(unit);;
+    const scoutingScore = this.unitEvaluator.evaluateUnitScoutingAbility(unit);
 
     return scoutingScore * this.evaluateDefaultUnitFit(unit, this.front, 0, 0, 2);
   }

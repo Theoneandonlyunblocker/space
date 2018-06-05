@@ -14,9 +14,7 @@ export interface AiTemplate<SaveData>
     enemyUnits?: Unit[],
     enemyFormation?: Unit[][],
   ): Unit[][];
-  respondToTradeOffer(
-    receivedOffer: TradeOffer,
-  ): TradeOffer
+  respondToTradeOffer(receivedOffer: TradeOffer): TradeOffer;
 
   serialize(): SaveData;
 }

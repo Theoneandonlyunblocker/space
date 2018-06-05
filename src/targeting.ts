@@ -151,4 +151,4 @@ export function makeGetAbilityTargetDisplayDataFN(props:
 
     return displayDataById;
   };
-};
+}

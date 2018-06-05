@@ -566,7 +566,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         },
         key: this.state.hoveredUnit.id,
       });
-    };
+    }
 
     let activeEffectUnits: Unit[] = [];
     if (this.state.playingBattleEffect)

@@ -66,7 +66,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     {
       className: "number-input-container",
     };
-    ;
+
     const customAttributes = this.props.attributes || {};
     const attributes = mergeReactAttributes(defaultAttributes, customAttributes);
 

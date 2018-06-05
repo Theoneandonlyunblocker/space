@@ -369,7 +369,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     for (let i = 0; i < this.sortedItems.length; i++)
     {
       reverseIndexes[this.sortedItems[i].key] = i;
-    };
+    }
     const currSelectedIndex = reverseIndexes[this.state.selected.key];
     let nextIndex = (currSelectedIndex + amountToShift) % this.sortedItems.length;
     if (nextIndex < 0)

@@ -26,7 +26,7 @@ export default class Game
   constructor(map: GalaxyMap, players: Player[])
   {
     this.galaxyMap = map;
-    this.players = [...players]
+    this.players = [...players];
     this.playerToAct = players[0];
 
     // TODO 2017.07.24 | this seems kinda weird

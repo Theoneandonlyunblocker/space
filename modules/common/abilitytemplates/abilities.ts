@@ -33,7 +33,7 @@ import * as SnipeStatusEffects from "../uniteffecttemplates/snipe";
 
 
 // tslint:disable:no-any
-function makeFilteringUnitSelectFN<T extends (...args: any[]) => Unit[]>(baseFN: T, filterFN: (unit: Unit | null) => boolean): T
+function makeFilteringUnitSelectFN<T extends (...args: any[]) => Unit[]>(baseFN: T, filterFN: (unit: Unit | null) => boolean): T;
 function makeFilteringUnitSelectFN(baseFN: ((...args: any[]) => Unit[]), filterFN: (unit: Unit | null) => boolean)
 {
   return (...args: any[]) =>

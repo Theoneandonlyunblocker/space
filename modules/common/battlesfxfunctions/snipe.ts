@@ -125,7 +125,7 @@ function playSnipe(type: UnitAttribute, params: SfxParams)
       const sprite = new PIXI.Sprite(PIXI.Texture.fromFrame(projectileURL));
       sprite.height = 6;
       sprite.width = 32;
-      sprite.filters = [projectileColorMatrixFilter]
+      sprite.filters = [projectileColorMatrixFilter];
 
       return sprite;
     },

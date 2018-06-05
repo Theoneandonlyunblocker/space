@@ -22,7 +22,7 @@ export function sortByManufactoryCapacityFN(a: Star, b: Star)
     return nameSort;
   }
 
-  const idSort = a.id - b.id
+  const idSort = a.id - b.id;
 
   return idSort;
 }

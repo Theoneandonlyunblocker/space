@@ -55,7 +55,7 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
     if (this.props.onMouseUp)
     {
       wrapperProps.onMouseUp = this.handleMouseUp;
-    };
+    }
 
     if (this.props.currentDragItem)
     {
