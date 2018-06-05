@@ -2,16 +2,21 @@
   "defaultSeverity": "warn",
   "rules":
   {
+    // try to follow these while writing new code
     "member-access": true,
-    "member-ordering": [true, { "order": "fields-first" }],
+    "member-ordering": [true, {"order": "fields-first"}],
     "no-any": true,
+    "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
+    "prefer-function-over-method": {"severity": "warn", "options": [true]},
+
     "no-internal-module": true,
     "no-namespace": [true, "allow-declarations"],
+
     // currently using references for libraries. might be dumb?
     // "no-reference": true,
     "no-var-requires": true,
-    "only-arrow-functions": [true, "allow-declarations"],
-    "curly": [true],
+    "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
+    "curly": true,
     "label-position": true,
     "no-arg": true,
     "no-bitwise": true,
@@ -30,39 +35,17 @@
     // "no-default-export": true,
     "no-mergeable-namespace": true,
     "no-require-imports": true,
-
-    "class-name": true,
-    "comment-format": [true, "check-space"],
-    "interface-name": [true, "never-prefix"],
-    "jsdoc-format": true,
-    "object-literal-key-quotes": [true, "as-needed"],
-    "one-variable-per-declaration": [true],
-    "ordered-imports":
-    [
-      true,
-      {
-      "import-sources-order": "lowercase-last",
-      "named-imports-order": "case-insensitive",
-      "grouped-imports": true
-    }],
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
-
     "prefer-const": true,
+
     // too strict. means we can't do stuff like randInt(2, 5)
     // "no-magic-numbers": true,
     "no-string-throw": true,
     "callable-types": true,
-
     "unified-signatures": true,
-    // complains about () => {return {}}; which is annoying
-    "arrow-return-shorthand": [true],
-    "no-unnecessary-initializer": true,
     "no-misused-new": true,
-    "prefer-function-over-method": {"severity": "warn", "options": [true]},
-
     "no-import-side-effect": true,
     "no-duplicate-super": true,
-    "newline-before-return": true,
     "ban-types":
     [
       true,
@@ -73,56 +56,77 @@
       ["String", "Avoid using the `String` type. Did you mean `string`?"],
       ["Symbol", "Avoid using the `Symbol` type. Did you mean `symbol`?"]
     ],
-
-    "no-reference-import": true,
-    // doesn't actually work
-    // https://github.com/palantir/tslint/issues/2430
-    // "no-unnecessary-callback-wrapper": true,
-
     "no-invalid-template-strings": true,
     "no-sparse-arrays": true,
-
-    "prefer-switch": true,
-
     "prefer-object-spread": true,
-    "encoding": true,
-
     "no-this-assignment": true,
-
     "no-duplicate-imports": true,
     "no-submodule-imports": true,
-
     "no-parameter-reassignment": true,
-
     "no-return-await": true,
     "no-duplicate-switch-case": true,
     "no-unnecessary-class": true,
     "ban-comma-operator": true,
+    "typedef-whitespace":
+    [
+      true,
+      {
+        "call-signature": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-declaration": "nospace",
+        "variable-declaration": "nospace"
+      },
+      {
+        "call-signature": "onespace",
+        "index-signature": "onespace",
+        "parameter": "onespace",
+        "property-declaration": "onespace",
+        "variable-declaration": "onespace"
+      }
+    ],
+
+
+    ////////////////// STYLE //////////////////
+
+    "align": [true, "parameters", "statements", "members", "elements"],
+    "array-type": [true, "array"],
+
+    // complains about () => {return {}}; which is annoying
+    "arrow-return-shorthand": [true],
+    "class-name": true,
+    "comment-format": [true, "check-space"],
+    "encoding": true,
+    "interface-name": [true, "never-prefix"],
+    "jsdoc-format": true,
+    "newline-before-return": true,
+    "new-parens": true,
+    "no-irregular-whitespace": true,
+    "no-parameter-properties": true,
+    "no-reference-import": true,
+
+    // https://github.com/palantir/tslint/issues/2430
+    // "no-unnecessary-callback-wrapper": true,
+    "no-unnecessary-initializer": true,
+    "object-literal-key-quotes": [true, "as-needed"],
     "object-literal-shorthand": [true, "never"],
+    "one-variable-per-declaration": [true],
 
-    "no-dynamic-delete": true,
-
-    "prefer-while": true
+    // tsc auto imports don't order themselves and are too convenient not to use
+    // "ordered-imports":
+    // [
+    //   true,
+    //   {
+    //   "import-sources-order": "lowercase-last",
+    //   "named-imports-order": "case-insensitive",
+    //   "grouped-imports": true
+    // }],
+    "prefer-switch": true,
+    "prefer-while": true,
+    "quotemark": [true, "double", "avoid-escape"],
+    "semicolon": [true, "always"],
+    "space-before-function-paren": [true, "never"],
+    "space-within-parens": [true, 0],
+    "type-literal-delimiter": true
   }
 }
-
-// requires typechecking
-// "promise-function-async": true,
-// "no-inferred-empty-object-type": true,
-// "no-void-expression": true,
-// "no-unbound-method": true,
-// "no-unsafe-any": true,
-// "no-unnecessary-qualifier": true,
-// "await-promise": true,
-// "no-floating-promises": true,
-// "strict-type-predicates": true,
-// "no-use-before-declare": true,
-// "return-undefined": true,
-
-// "no-unnecessary-type-assertion": true,
-
-// "use-default-type-parameter": true,
-
-// "prefer-readonly": true,
-// "no-for-in-array": true,
-// "no-boolean-literal-compare": true,
