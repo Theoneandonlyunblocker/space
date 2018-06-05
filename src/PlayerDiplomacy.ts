@@ -191,17 +191,17 @@ export default class PlayerDiplomacy
 
     const activeModifiers:
     {
-      [modifierType: string]: AttitudeModifier,
+      [modifierType: string]: AttitudeModifier;
     } = {};
 
     // debugging
     const modifiersAdded:
     {
-      [modifierType: string]: AttitudeModifier,
+      [modifierType: string]: AttitudeModifier;
     } = {};
     const modifiersRemoved:
     {
-      [modifierType: string]: AttitudeModifier,
+      [modifierType: string]: AttitudeModifier;
     } = {};
 
     // remove modifiers & build active modifiers index

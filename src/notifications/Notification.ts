@@ -18,12 +18,12 @@ export class Notification<P = any, D = any>
 
   constructor(args:
   {
-    id: number | undefined,
-    template: NotificationTemplate<P, D>,
-    props: P,
-    turn: number,
-    involvedPlayers: Player[],
-    location: Star | undefined,
+    id: number | undefined;
+    template: NotificationTemplate<P, D>;
+    props: P;
+    turn: number;
+    involvedPlayers: Player[];
+    location: Star | undefined;
   })
   {
     this.id = isFinite(args.id) ? args.id : idGenerators.notification++;

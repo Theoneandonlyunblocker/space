@@ -41,12 +41,12 @@ export class BattlePrepFormation
 
   constructor(props:
   {
-    player: Player,
-    units: Unit[],
-    hasScouted: boolean,
-    isAttacker: boolean,
-    validityModifiers?: FormationValidityModifier[],
-    triggerBattlePrepEffect: (effect: BaseBattlePrepEffect, unit: Unit) => void,
+    player: Player;
+    units: Unit[];
+    hasScouted: boolean;
+    isAttacker: boolean;
+    validityModifiers?: FormationValidityModifier[];
+    triggerBattlePrepEffect: (effect: BaseBattlePrepEffect, unit: Unit) => void;
   })
   {
     this.player = props.player;

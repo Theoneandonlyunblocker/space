@@ -45,7 +45,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
       style?:
       {
         color: string;
-      }
+      };
     } =
     {
       key: type,

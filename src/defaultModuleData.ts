@@ -20,7 +20,7 @@ import {default as ModuleFile} from "./ModuleFile";
 
 export const defaultModuleData:
 {
-  moduleFiles: ModuleFile[],
+  moduleFiles: ModuleFile[];
 } =
 {
   moduleFiles:

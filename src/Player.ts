@@ -344,7 +344,7 @@ export default class Player
     this.fleets.splice(fleetIndex, 1);
     this.visionIsDirty = true;
   }
-  getFleetsWithPositions(): {position: Point, data: Fleet}[]
+  getFleetsWithPositions(): {position: Point; data: Fleet}[]
   {
     const positions:
     {

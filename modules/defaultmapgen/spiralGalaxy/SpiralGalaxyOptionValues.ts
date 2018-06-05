@@ -8,7 +8,7 @@ declare interface SpiralGalaxyOptionValues extends MapGenOptionValues
     [optionName: string]: number;
     arms: number;
     starSizeRegularity: number;
-    centerDensity: number
+    centerDensity: number;
   };
 }
 

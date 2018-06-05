@@ -206,7 +206,7 @@ export function makeSectors(
         {
           const frontierSortScores:
           {
-            [starId: number]: number,
+            [starId: number]: number;
           } = {};
 
           frontier.forEach(star =>
@@ -356,7 +356,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
     [regionId: string]:
     {
       [distributableName: string]: boolean;
-    },
+    };
   } = {};
 
   for (const distributionGroup in distributablesByDistributionGroup)

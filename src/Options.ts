@@ -34,7 +34,7 @@ interface OptionsValues
     {
       ai: boolean;
       graphics: boolean;
-    }
+    };
   };
   ui:
   {

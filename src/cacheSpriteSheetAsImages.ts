@@ -15,7 +15,7 @@ interface SpriteSheetData
     [id: string]:
     {
       frame: SpriteSheetFrame;
-    },
+    };
   };
   meta: any;
 }

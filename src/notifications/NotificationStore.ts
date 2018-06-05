@@ -20,10 +20,10 @@ export class NotificationStore
 
   public makeNotification<P, D>(args:
   {
-    template: NotificationTemplate<P, D>,
-    props: P,
-    involvedPlayers: Player[],
-    location: Star | null,
+    template: NotificationTemplate<P, D>;
+    props: P;
+    involvedPlayers: Player[];
+    location: Star | null;
   })
   {
     const notification = new Notification(

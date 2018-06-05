@@ -87,7 +87,7 @@ export class ObjectivesAi
   {
     const grouped:
     {
-      [type: string]: Objective[],
+      [type: string]: Objective[];
     } = {};
 
     objectives.forEach(objective =>

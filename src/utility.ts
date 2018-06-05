@@ -150,7 +150,7 @@ export function reverseSide(side: UnitBattleSide): UnitBattleSide
     }
   }
 }
-export function rectContains(rect: {x1: number, x2: number, y1: number, y2: number}, point: Point)
+export function rectContains(rect: {x1: number; x2: number; y1: number; y2: number}, point: Point)
 {
   const x = point.x;
   const y = point.y;

@@ -32,7 +32,7 @@ export interface FormationValidityModifier
   sourcePassiveAbility?:
   {
     unit: Unit;
-    abilityTemplate: PassiveSkillTemplate,
+    abilityTemplate: PassiveSkillTemplate;
   };
 }
 

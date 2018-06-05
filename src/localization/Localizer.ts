@@ -46,7 +46,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
     {
       // tslint:disable-next-line:no-any
       [K in keyof Messages]: MessageFunction<any>[];
-    },
+    };
   } = {};
 
   private readonly warningMessagesOutputted:

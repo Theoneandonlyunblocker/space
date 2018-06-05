@@ -25,8 +25,8 @@ export class MoveCollection<T>
       {
         [abilityType: string]:
         {
-          value: T,
-          move: Move,
+          value: T;
+          move: Move;
         };
       };
     };

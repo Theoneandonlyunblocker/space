@@ -26,7 +26,7 @@ const unitRoleData:
     health: number;
     attributes: number;
     filterCandidates: (candidates: UnitTemplate[]) => UnitTemplate[];
-  },
+  };
 } =
 {
   normal:

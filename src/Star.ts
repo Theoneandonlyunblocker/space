@@ -859,15 +859,15 @@ export default class Star implements Point
       visible:
       {
         [playerId: number]: Player;
-      }
+      };
       stealthy:
       {
         [playerId: number]: Player;
-      }
+      };
       all:
       {
         [playerId: number]: Player;
-      },
+      };
     } =
     {
       visible: {},

@@ -129,8 +129,8 @@ export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustm
   }
 };
 
-export const addStatusEffect: UnboundEffectAction<{template: UnitEffectTemplate, duration: number}> = (
-  data: {template: UnitEffectTemplate, duration: number},
+export const addStatusEffect: UnboundEffectAction<{template: UnitEffectTemplate; duration: number}> = (
+  data: {template: UnitEffectTemplate; duration: number},
   user: Unit,
   target: Unit,
   battle: Battle,

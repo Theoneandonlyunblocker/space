@@ -30,7 +30,7 @@ export class Point extends ShallowObject<PointType>
 {
   public readonly type: PropInfoType.Point;
 }
-export class Range extends ShallowObject<{min: number, max: number}>
+export class Range extends ShallowObject<{min: number; max: number}>
 {
   public readonly type: PropInfoType.Range;
 }

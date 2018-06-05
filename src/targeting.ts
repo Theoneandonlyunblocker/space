@@ -129,9 +129,9 @@ export const areaOrthogonalNeighbors: GetUnitsInAreaFN = (user: Unit, target: Un
 
 export function makeGetAbilityTargetDisplayDataFN(props:
 {
-  areaFN: GetUnitsInAreaFN,
-  targetType: AbilityTargetType,
-  targetEffect: AbilityTargetEffect,
+  areaFN: GetUnitsInAreaFN;
+  targetType: AbilityTargetType;
+  targetEffect: AbilityTargetEffect;
 }): GetUnitsInAreaFN<AbilityTargetDisplayDataById>
 {
   return (user: Unit, target: Unit, battle: Battle) =>

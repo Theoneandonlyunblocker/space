@@ -41,11 +41,11 @@ export default class MCTreeNode
 
   constructor(props:
   {
-    sideId: UnitBattleSide,
-    move: Move | null,
-    depth: number,
-    parent: MCTreeNode | null,
-    isBetweenAi: boolean,
+    sideId: UnitBattleSide;
+    move: Move | null;
+    depth: number;
+    parent: MCTreeNode | null;
+    isBetweenAi: boolean;
   })
   {
     this.sideId = props.sideId;

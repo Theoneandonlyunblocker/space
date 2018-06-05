@@ -110,7 +110,7 @@ export class NotificationFilter
       {
         notificationTemplate: NotificationTemplate<any, any>;
         filterState: NotificationFilterState[];
-      }[],
+      }[];
     } = {};
     const notifications = activeModuleData.templates.Notifications;
 

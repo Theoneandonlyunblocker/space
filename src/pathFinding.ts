@@ -58,9 +58,9 @@ export function aStar(start: Star, target: Star): AStarGraph | null
   {
     [starId: number]:
     {
-      star: Star,
-      cost: number,
-    },
+      star: Star;
+      cost: number;
+    };
   } = {};
   const costSoFar:
   {

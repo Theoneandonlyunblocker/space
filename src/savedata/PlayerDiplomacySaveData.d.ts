@@ -6,7 +6,7 @@ declare interface PlayerDiplomacySaveData
 {
   statusByPlayer:
   {
-    [playerId: number]: DiplomacyState,
+    [playerId: number]: DiplomacyState;
   };
   attitudeModifiersByPlayer:
   {

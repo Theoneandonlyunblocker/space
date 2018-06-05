@@ -18,7 +18,7 @@ export default class PlayerTechnology
       maxLevel: number;
       priority: number;
       priorityIsLocked: boolean;
-    },
+    };
   };
   tempOverflowedResearchAmount: number = 0;
   getResearchSpeed: () => number;

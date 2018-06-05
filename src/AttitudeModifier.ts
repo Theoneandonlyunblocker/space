@@ -25,7 +25,7 @@ export class AttitudeModifier
     endTurn?: number;
     strength?: number;
     hasFixedStrength?: boolean;
-    evaluation?: DiplomacyEvaluation,
+    evaluation?: DiplomacyEvaluation;
   })
   {
     this.template = props.template;

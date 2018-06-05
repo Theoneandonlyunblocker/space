@@ -140,7 +140,7 @@ function makeContrastingColor(
       h?: number;
       // s?: number;
       // l?: number;
-    }
+    };
 }): Color
 {
   const props = colorGenProps || {};

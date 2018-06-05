@@ -58,7 +58,7 @@ function playRocketAttack(params: SfxParams)
       clip: PIXI.extras.AnimatedSprite;
       startTime: number;
       relativeTimePerFrame: number;
-    },
+    };
   } = {};
 
   const relativeTimePerSecond = 1000 / params.duration;
