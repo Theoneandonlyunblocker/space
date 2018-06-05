@@ -267,7 +267,7 @@ export function shallowExtend<T>(...sources: any[]): T
 // The MIT License (MIT)
 //
 // Copyright (c) 2012 Nicholas Fisher
-export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: boolean = false): T
+export function deepMerge<T extends S, S>(target: T, src: S, excludeKeysNotInTarget: boolean = false): T
 {
   if (excludeKeysNotInTarget)
   {
@@ -282,9 +282,9 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
   if (array)
   {
     // tslint:disable-next-line:no-parameter-reassignment
-    target = target || [];
+    target = <any>target || [];
     dst = dst.concat(target);
-    (<any[]>src).forEach((e, i) =>
+    (<any[]><any>src).forEach((e, i) =>
     {
       if (typeof dst[i] === "undefined")
       {
@@ -296,7 +296,7 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
       }
       else
       {
-        if (target.indexOf(e) === -1)
+        if ((<any>target).indexOf(e) === -1)
         {
           dst.push(e);
         }

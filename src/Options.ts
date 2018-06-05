@@ -217,7 +217,7 @@ class Options implements OptionsValues
           }
           else
           {
-            parsedOptions[key] = deepMerge<any>(parsedOptions[key], parsedData.options[key]);
+            parsedOptions[key] = deepMerge(parsedOptions[key], parsedData.options[key]);
           }
         }
       }
@@ -265,10 +265,10 @@ class Options implements OptionsValues
   }
   private deserialize(data: OptionsValues)
   {
-    this.battleAnimationTiming = deepMerge<any>(this.battleAnimationTiming, data.battleAnimationTiming, true);
-    this.debug = deepMerge<any>(this.debug, data.debug, true);
-    this.ui = deepMerge<any>(this.ui, data.ui, true);
-    this.display = deepMerge<any>(this.display, data.display, true);
+    this.battleAnimationTiming = deepMerge(this.battleAnimationTiming, data.battleAnimationTiming, true);
+    this.debug = deepMerge(this.debug, data.debug, true);
+    this.ui = deepMerge(this.ui, data.ui, true);
+    this.display = deepMerge(this.display, data.display, true);
   }
 }
 
