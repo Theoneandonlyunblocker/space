@@ -118,7 +118,7 @@ export class IdDictionary<K extends ObjectWithId, V>
   {
     return shallowCopy(this.valuesById);
   }
-  public sort(sortingFN: (a: V, b: V) => number): K[]
+  public sort(sortingFN: (a: V, b: V) => number): V[]
   {
     const keys: K[] = [];
     for (const id in this.keysById)
@@ -139,7 +139,9 @@ export class IdDictionary<K extends ObjectWithId, V>
       }
     });
 
-    return keys;
+    const values = keys.map(key => this.valuesById[key.id]);
+
+    return values;
   }
   public mapToArray<T>(mapFN: (key: K, value: V) => T): T[]
   {
