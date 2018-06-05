@@ -23,8 +23,11 @@ export default class PlayerTechnology
   tempOverflowedResearchAmount: number = 0;
   getResearchSpeed: () => number;
 
-  constructor(getResearchSpeed: () => number, raceTechnologyValues: RaceTechnologyValue[],
-    savedData?: PlayerTechnologySaveData)
+  constructor(
+    getResearchSpeed: () => number,
+    raceTechnologyValues: RaceTechnologyValue[],
+    savedData?: PlayerTechnologySaveData,
+  )
   {
     this.getResearchSpeed = getResearchSpeed;
 

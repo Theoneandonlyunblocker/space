@@ -336,8 +336,10 @@ export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: bool
 }
 
 
-export function deletePropertiesNotSharedWithTarget(source: {[key: string]: any},
-  target: {[key: string]: any})
+function deletePropertiesNotSharedWithTarget(
+  source: {[key: string]: any},
+  target: {[key: string]: any},
+)
 {
   const dst: any = {};
 

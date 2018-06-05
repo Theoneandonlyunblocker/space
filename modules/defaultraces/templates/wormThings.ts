@@ -31,7 +31,6 @@ const wormThings: RaceTemplate =
     weight: 0,
     distributionGroups: [],
   },
-
   getBuildableUnitTypes: player =>
   {
     return getDefaultUnits().filter(unitTemplate =>
@@ -40,7 +39,6 @@ const wormThings: RaceTemplate =
         player.meetsTechnologyRequirements(unitTemplate.technologyRequirements);
     });
   },
-
   getUnitName: unitTemplate =>
   {
     return `Infested ${unitTemplate.displayName}`;
@@ -49,7 +47,6 @@ const wormThings: RaceTemplate =
   {
     return getRandomProperty(allTemplates);
   },
-
   generateIndependentPlayer: emblemTemplates =>
   {
     return generateIndependentPlayer(wormThings);
@@ -60,8 +57,6 @@ const wormThings: RaceTemplate =
     return generateIndependentFleets(wormThings, player, location,
       globalStrength, localStrength, maxUnitsPerSideInBattle);
   },
-
-
   technologies: mergeTechnologyValues(defaultRaceTechnologyValues,
   [
     {

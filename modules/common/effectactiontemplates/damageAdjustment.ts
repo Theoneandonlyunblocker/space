@@ -84,8 +84,12 @@ export function getReducedDamageFactor(unit: Unit, damageType: DamageType): numb
   return damageReduction;
 }
 
-export function getAdjustedDamage(user: Unit, target: Unit,
-  baseDamage: number, damageType: DamageType): number
+export function getAdjustedDamage(
+  user: Unit,
+  target: Unit,
+  baseDamage: number,
+  damageType: DamageType,
+): number
 {
   const dealtDamage = baseDamage * getAttackDamageIncrease(user, damageType);
   const reducedDamage = dealtDamage * getReducedDamageFactor(target, damageType);

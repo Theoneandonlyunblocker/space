@@ -84,9 +84,11 @@ export default class BattleSceneUnitOverlay
     this.activeUnit = null;
     this.overlayContainer.removeChildren();
   }
-  private getSfxParams(duration: number,
+  private getSfxParams(
+    duration: number,
     triggerStart: (container: PIXI.DisplayObject) => void,
-    triggerEnd?: () => void): SfxParams
+    triggerEnd?: () => void,
+  ): SfxParams
   {
     const bounds = this.getSceneBounds();
 

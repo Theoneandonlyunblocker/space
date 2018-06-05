@@ -39,8 +39,11 @@ export class AbilityUseEffectQueue
     this.finishEffect = this.finishEffect.bind(this);
   }
 
-    private static squashEffects(
-    parent: AbilityUseEffect, toSquash: AbilityUseEffect[], parentIsMostRecent: boolean = false): AbilityUseEffect
+  private static squashEffects(
+    parent: AbilityUseEffect,
+    toSquash: AbilityUseEffect[],
+    parentIsMostRecent: boolean = false,
+  ): AbilityUseEffect
   {
     const squashedChangedUnitDisplayDataById = shallowExtend(
       {},

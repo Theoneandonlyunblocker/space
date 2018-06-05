@@ -452,8 +452,13 @@ export default class PathfindingArrow
     }
   }
 
-  getTargetOffset(target: Point, sourcePoint: Point, i: number,
-    totalPaths: number, offsetPerOrbit: number)
+  getTargetOffset(
+    target: Point,
+    sourcePoint: Point,
+    i: number,
+    totalPaths: number,
+    offsetPerOrbit: number,
+  )
   {
     const maxPerOrbit = 6;
 

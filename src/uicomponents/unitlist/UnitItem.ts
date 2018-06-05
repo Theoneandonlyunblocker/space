@@ -79,13 +79,13 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.props.item)
     {
-      return(
-        React.DOM.div(
-        {className: "empty-unit-item",
+      return React.DOM.div(
+      {
+        className: "empty-unit-item",
         title: localize("itemSlot")(this.props.slot),
-      }));
-
+      });
     }
+
     const item = this.props.item;
 
     const divProps: React.HTMLAttributes<HTMLDivElement> =

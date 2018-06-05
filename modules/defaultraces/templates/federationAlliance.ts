@@ -31,7 +31,6 @@ const federationAlliance: RaceTemplate =
     weight: 0,
     distributionGroups: [],
   },
-
   getBuildableUnitTypes: player =>
   {
     return getDefaultUnits().filter(unitTemplate =>
@@ -40,7 +39,6 @@ const federationAlliance: RaceTemplate =
         player.meetsTechnologyRequirements(unitTemplate.technologyRequirements);
     });
   },
-
   getUnitName: unitTemplate =>
   {
     return `Federation ${unitTemplate.displayName}`;
@@ -49,7 +47,6 @@ const federationAlliance: RaceTemplate =
   {
     return getRandomProperty(allTemplates);
   },
-
   generateIndependentPlayer: emblemTemplates =>
   {
     const player = generateIndependentPlayer(federationAlliance);
@@ -64,7 +61,6 @@ const federationAlliance: RaceTemplate =
     return generateIndependentFleets(federationAlliance, player, location,
       globalStrength, localStrength, maxUnitsPerSideInBattle);
   },
-
   technologies: mergeTechnologyValues(defaultRaceTechnologyValues,
   [
     {
@@ -73,7 +69,6 @@ const federationAlliance: RaceTemplate =
       maxLevel: 5,
     },
   ]),
-
   getAiTemplateConstructor: player => defaultAiConstructor,
 };
 

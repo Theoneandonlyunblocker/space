@@ -26,7 +26,6 @@ export const drones: RaceTemplate =
     weight: 1,
     distributionGroups: [distributionGroups.common, distributionGroups.rare],
   },
-
   isNotPlayable: true,
   getBuildableUnitTypes: player =>
   {
@@ -37,7 +36,6 @@ export const drones: RaceTemplate =
       droneBase,
     ]);
   },
-
   getUnitName: unitTemplate =>
   {
     return `${unitTemplate.displayName} #${randInt(0, 20000)}`;
@@ -46,7 +44,6 @@ export const drones: RaceTemplate =
   {
     return getRandomProperty(allTemplates);
   },
-
   generateIndependentPlayer: emblemTemplates =>
   {
     return generateIndependentPlayer(drones);
@@ -57,7 +54,6 @@ export const drones: RaceTemplate =
     return generateIndependentFleets(drones, player, location,
       globalStrength, localStrength, maxUnitsPerSideInBattle);
   },
-
   technologies: [],
   getAiTemplateConstructor: player => defaultAiConstructor,
 };

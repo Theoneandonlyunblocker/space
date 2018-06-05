@@ -3,8 +3,11 @@
 import SfxParams from "../../../src/templateinterfaces/SfxParams";
 
 
-export default function makeSfxFromVideo(videoSrc: string, onStartFN: (sprite: PIXI.Sprite) => void,
-  props: SfxParams)
+export default function makeSfxFromVideo(
+  videoSrc: string,
+  onStartFN: (sprite: PIXI.Sprite) => void,
+  props: SfxParams,
+)
 {
   function clearBaseTextureListeners()
   {
@@ -70,6 +73,5 @@ export default function makeSfxFromVideo(videoSrc: string, onStartFN: (sprite: P
       sprite.parent.removeChild(sprite);
       sprite.destroy({texture: true, baseTexture: true});
     }
-
   }
 }
