@@ -33,6 +33,7 @@ export default class Star implements Point
   id: number;
   x: number;
   y: number;
+  public readonly seed: string;
 
   // position voronoi cell is calculated from
   // after voronoi is calculated, star is moved to the centroid of its cell
@@ -47,7 +48,6 @@ export default class Star implements Point
 
   voronoiCell: VoronoiCell<Star>;
 
-  seed: string;
 
   name: string;
   owner: Player;
@@ -91,6 +91,7 @@ export default class Star implements Point
     y: number;
 
     id?: number;
+    seed?: string;
     name?: string;
 
     race?: RaceTemplate;
@@ -101,6 +102,7 @@ export default class Star implements Point
     this.y = props.y;
 
     this.id = isFinite(props.id) ? props.id : idGenerators.star++;
+    this.seed = props.seed || this.generateSeedString();
     this.name = props.name || `Star ${this.id}`;
 
     this.race = props.race;
@@ -906,18 +908,9 @@ export default class Star implements Point
 
     return byVisibilityAndId;
   }
-  getSeed(): string
+  private generateSeedString(): string
   {
-    if (!this.seed)
-    {
-      let bgString = "";
-      bgString += Math.round(this.x);
-      bgString += Math.round(this.y);
-      bgString += new Date().getTime();
-      this.seed = bgString;
-    }
-
-    return this.seed;
+    return `${Math.round(this.x)}${Math.round(this.y)}${new Date().getTime()}`;
   }
   buildManufactory(): void
   {

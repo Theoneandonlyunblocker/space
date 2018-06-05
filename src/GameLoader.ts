@@ -260,12 +260,12 @@ export default class GameLoader
       x: data.x,
       y: data.y,
       id: data.id,
+      seed: data.seed,
       name: data.name,
       race: activeModuleData.templates.Races[data.raceType],
       terrain: activeModuleData.templates.Terrains[data.terrainType],
     });
     star.baseIncome = data.baseIncome;
-    star.seed = data.seed;
 
     if (data.resourceType)
     {
