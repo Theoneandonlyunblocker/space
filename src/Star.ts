@@ -30,42 +30,45 @@ import StarSaveData from "./savedata/StarSaveData";
 // represents single location in game world. see Region for a grouping of these locations
 export default class Star implements Point
 {
-  id: number;
-  x: number;
-  y: number;
+  public readonly id: number;
   public readonly seed: string;
+  public readonly x: number;
+  public readonly y: number;
 
   // position voronoi cell is calculated from
   // after voronoi is calculated, star is moved to the centroid of its cell
   // these are stored to calculate voronoi after loading map
-  basisX: number;
-  basisY: number;
+  public basisX: number;
+  public basisY: number;
 
   // separated so we can iterate through star[].linksTo to only get each connection once
   // use star.getAllLinks() for individual star connections
-  linksTo: Star[] = [];
-  linksFrom: Star[] = [];
+  public readonly linksTo: Star[] = [];
+  public readonly linksFrom: Star[] = [];
 
-  voronoiCell: VoronoiCell<Star>;
+  public voronoiCell: VoronoiCell<Star>;
 
 
-  name: string;
-  owner: Player;
+  public name: string;
+  public owner: Player;
+  public baseIncome: number;
+  public resource: ResourceTemplate;
+  public race: RaceTemplate;
+  public terrain: TerrainTemplate;
 
-  baseIncome: number;
-  resource: ResourceTemplate;
-
-  fleets:
+  public readonly fleets:
   {
     [playerId: string]: Fleet[];
   } = {};
 
-  public buildings: Building[] = [];
-  buildingsEffect: BuildingEffect;
-  buildingsEffectIsDirty: boolean = true;
+  public readonly buildings: Building[] = [];
+  public manufactory: Manufactory;
 
 
-  indexedNeighborsInRange:
+  private buildingsEffect: BuildingEffect;
+  private buildingsEffectIsDirty: boolean = true;
+
+  private readonly indexedNeighborsInRange:
   {
     [range: number]:
     {
@@ -76,14 +79,10 @@ export default class Star implements Point
       };
     };
   } = {};
-  indexedDistanceToStar:
+  private readonly indexedDistanceToStar:
   {
     [id: number]: number;
   } = {};
-
-  manufactory: Manufactory;
-  public race: RaceTemplate;
-  public terrain: TerrainTemplate;
 
   constructor(props:
   {
