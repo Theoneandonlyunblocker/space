@@ -135,7 +135,7 @@ export class IdDictionary<K extends ObjectWithId, V>
       }
       else
       {
-        return b.id - a.id;
+        return a.id - b.id;
       }
     });
 
