@@ -1,6 +1,6 @@
 import Battle from "../../../src/Battle";
 import DamageType from "../../../src/DamageType";
-import FlatAndMultiplierAdjustment from "../../../src/FlatAndMultiplierAdjustment";
+import {FlatAndMultiplierAdjustment, applyFlatAndMultiplierAdjustments} from "../../../src/FlatAndMultiplierAdjustment";
 import GuardCoverage from "../../../src/GuardCoverage";
 import StatusEffect from "../../../src/StatusEffect";
 import Unit from "../../../src/Unit";
@@ -119,14 +119,9 @@ export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustm
   executedEffectsResult: ExecutedEffectsResult,
 ) =>
 {
-  if (data.flat)
-  {
-    target.battleStats.captureChance += data.flat;
-  }
-  if (isFinite(data.multiplier))
-  {
-    target.battleStats.captureChance *= data.multiplier;
-  }
+  const baseCaptureChance = target.battleStats.captureChance;
+
+  target.battleStats.captureChance = applyFlatAndMultiplierAdjustments(baseCaptureChance, data);
 };
 
 export const addStatusEffect: UnboundEffectAction<{template: UnitEffectTemplate; duration: number}> = (

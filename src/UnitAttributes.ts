@@ -1,10 +1,11 @@
-import FlatAndMultiplierAdjustment from "./FlatAndMultiplierAdjustment";
+import {FlatAndMultiplierAdjustment, squashAdjustmentsObjects} from "./FlatAndMultiplierAdjustment";
 import
 {
   clamp,
 } from "./utility";
 
 
+// TODO 2018.06.05 | why does maxActionPoints belong in this module?
 export enum UnitAttribute
 {
   Attack,
@@ -70,39 +71,7 @@ export class UnitAttributes implements UnitAttributesObject
   }
   public static squashAdjustments(...toSquash: UnitAttributeAdjustments[]): UnitAttributeAdjustments
   {
-    const squashed: UnitAttributeAdjustments = {};
-
-    toSquash.forEach(adjustment =>
-    {
-      for (const attribute in adjustment)
-      {
-        if (!squashed[attribute])
-        {
-          squashed[attribute] = {};
-        }
-
-        if (adjustment[attribute].flat)
-        {
-          if (!isFinite(squashed[attribute].flat))
-          {
-            squashed[attribute].flat = 0;
-          }
-
-          squashed[attribute].flat += adjustment[attribute].flat;
-        }
-        if (isFinite(adjustment[attribute].multiplier))
-        {
-          if (!isFinite(squashed[attribute].multiplier))
-          {
-            squashed[attribute].multiplier = 0;
-          }
-
-          squashed[attribute].multiplier += adjustment[attribute].multiplier;
-        }
-      }
-    });
-
-    return squashed;
+    return squashAdjustmentsObjects(...toSquash);
   }
 
   public clone(): UnitAttributes
