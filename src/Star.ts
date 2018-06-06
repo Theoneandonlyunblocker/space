@@ -1,13 +1,14 @@
 import app from "./App"; // TODO global
 import {activeModuleData} from "./activeModuleData";
 import {activePlayer} from "./activePlayer";
-import BuildingEffect from "./templateinterfaces/BuildingEffect";
+import {BuildingEffect} from "./BuildingEffect";
 import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import {TerrainTemplate} from "./templateinterfaces/TerrainTemplate";
 
-import Building from "./Building";
+import {Building} from "./Building";
+import {BuildingCollection} from "./BuildingCollection";
 import BuildingUpgradeData from "./BuildingUpgradeData";
 import FillerPoint from "./FillerPoint";
 import {Fleet} from "./Fleet";
@@ -25,6 +26,7 @@ import
 } from "./pathFinding";
 
 import StarSaveData from "./savedata/StarSaveData";
+import { applyFlatAndMultiplierAdjustments } from "./FlatAndMultiplierAdjustment";
 
 
 // represents single location in game world. see Region for a grouping of these locations
@@ -61,12 +63,8 @@ export default class Star implements Point
     [playerId: string]: Fleet[];
   } = {};
 
-  public readonly buildings: Building[] = [];
+  public readonly buildings: BuildingCollection;
   public manufactory: Manufactory;
-
-
-  private buildingsEffect: BuildingEffect;
-  private buildingsEffectIsDirty: boolean = true;
 
   private readonly indexedNeighborsInRange:
   {
@@ -106,6 +104,29 @@ export default class Star implements Point
 
     this.race = props.race;
     this.terrain = props.terrain;
+
+    this.buildings = new BuildingCollection(building =>
+    {
+      // TODO 2018.06.05 | move or remove this shit
+      if (building.template.category === "defence")
+      {
+        eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
+      }
+      if (building.template.category === "vision")
+      {
+        this.owner.updateVisibleStars();
+      }
+
+      if (this.owner === activePlayer)
+      {
+        const effect = building.getEffect();
+        for (const key in effect)
+        {
+          eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
+        }
+        eventManager.dispatchEvent("humanPlayerBuiltBuilding");
+      }
+    });
   }
   // TODO 2017.02.27 | move this somewhere else
   /**
@@ -176,79 +197,11 @@ export default class Star implements Point
 
     return island;
   }
-  // BUILDINGS
-  hasBuilding(building: Building): boolean
+
+
+  public getSecondaryController(): Player | null
   {
-    return this.buildings.indexOf(building) !== -1;
-  }
-  addBuilding(building: Building): void
-  {
-    if (this.hasBuilding(building))
-    {
-      throw new Error("Already has building");
-    }
-
-    this.buildings.push(building);
-    this.buildingsEffectIsDirty = true;
-
-    if (building.template.category === "defence")
-    {
-      eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
-    }
-    if (building.template.category === "vision")
-    {
-      this.owner.updateVisibleStars();
-    }
-
-    if (this.owner === activePlayer)
-    {
-      for (const key in building.template.effect)
-      {
-        eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
-      }
-      eventManager.dispatchEvent("humanPlayerBuiltBuilding");
-    }
-  }
-  removeBuilding(building: Building): void
-  {
-    if (!this.hasBuilding(building))
-    {
-      throw new Error("Location doesn't have building");
-    }
-
-    this.buildings.splice(this.buildings.indexOf(building), 1);
-    this.buildingsEffectIsDirty = true;
-  }
-  public getDefenceBuildings(): Building[]
-  {
-    return this.buildings.filter(building =>
-    {
-      return building.template.category === "defence";
-    }).sort((a, b) =>
-    {
-      // TODO 2018.05.30 | more explicit way of checking this
-      // headquarters
-      if (a.template.maxPerType === 1)
-      {
-        return -1;
-      }
-      else if (b.template.maxPerType === 1)
-      {
-        return 1;
-      }
-
-      if (a.upgradeLevel !== b.upgradeLevel)
-      {
-        return b.upgradeLevel - a.upgradeLevel;
-      }
-
-      return a.id - b.id;
-    });
-  }
-
-  getSecondaryController(): Player | null
-  {
-    const defenceBuildings = this.getDefenceBuildings();
+    const defenceBuildings = this.getTerritoryBuildings();
     for (let i = 0; i < defenceBuildings.length; i++)
     {
       if (defenceBuildings[i].controller !== this.owner)
@@ -259,9 +212,9 @@ export default class Star implements Point
 
     return null;
   }
-  updateController(): void
+  public updateController(): void
   {
-    const defenceBuildings = this.getDefenceBuildings();
+    const defenceBuildings = this.getTerritoryBuildings();
 
     const oldOwner = this.owner;
     const newOwner = defenceBuildings[0].controller;
@@ -289,143 +242,42 @@ export default class Star implements Point
     eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
     // TODO display | update starOwners if secondary controller changes
   }
-  updateBuildingsEffect(): void
+  // // TODO 2018.06.05 | baleet
+  // private getEffectWithBuildingsEffect(base: number, effectType: string): number
+  // {
+  //   let effect = base;
+  //   const buildingsEffect = this.getBuildingsEffect()[effectType];
+
+  //   if (isFinite(buildingsEffect))
+  //   {
+  //     return effect + buildingsEffect;
+  //   }
+  //   else if (buildingsEffect)
+  //   {
+  //     effect += (buildingsEffect.flat || 0);
+  //     effect *= (isFinite(buildingsEffect.multiplier) ? 1 + buildingsEffect.multiplier : 1);
+  //   }
+
+  //   return effect;
+  // }
+  public getIncome(): number
   {
-    let effect: BuildingEffect = {};
+    const buildingsEffect = this.buildings.getEffects().income;
 
-    this.buildings.forEach(building =>
-    {
-      effect = building.getEffect(effect);
-    });
-
-    this.buildingsEffect = effect;
-    this.buildingsEffectIsDirty = false;
+    return applyFlatAndMultiplierAdjustments(this.baseIncome, buildingsEffect);
   }
-  getBuildingsEffect(): BuildingEffect
+  public getResearchPoints(): number
   {
-    if (this.buildingsEffectIsDirty)
-    {
-      this.updateBuildingsEffect();
-    }
+    const basePoints = activeModuleData.ruleSet.research.baseResearchPointsPerStar;
+    const buildingsEffect = this.buildings.getEffects().researchPoints;
 
-    return this.buildingsEffect;
+    return applyFlatAndMultiplierAdjustments(basePoints, buildingsEffect);
   }
-  getEffectWithBuildingsEffect(base: number, effectType: string): number
+  public getResourceIncome(): {resource: ResourceTemplate; amount: number}[]
   {
-    let effect = base;
-    const buildingsEffect = this.getBuildingsEffect()[effectType];
-
-    if (isFinite(buildingsEffect))
-    {
-      return effect + buildingsEffect;
-    }
-    else if (buildingsEffect)
-    {
-      effect += (buildingsEffect.flat || 0);
-      effect *= (isFinite(buildingsEffect.multiplier) ? 1 + buildingsEffect.multiplier : 1);
-    }
-
-    return effect;
+    // TODO 2018.06.06 |
   }
-  getIncome(): number
-  {
-    return this.getEffectWithBuildingsEffect(this.baseIncome, "income");
-  }
-  getResourceIncome(): {resource: ResourceTemplate; amount: number}
-  {
-    if (!this.resource) { return null; }
 
-    return(
-    {
-      resource: this.resource,
-      amount: this.getEffectWithBuildingsEffect(0, "resourceIncome"),
-    });
-  }
-  getResearchPoints(): number
-  {
-    return this.getEffectWithBuildingsEffect(0, "research");
-  }
-  getBuildingsForPlayer(player: Player): Building[]
-  {
-    return this.buildings.filter(building => building.controller === player);
-  }
-  getBuildingsInFamilyOfTemplate(buildingTemplate: BuildingTemplate): Building[]
-  {
-    const propToCheck = buildingTemplate.family ? "family" : "type";
-
-    return this.buildings.filter(building =>
-    {
-      return building.template[propToCheck] === buildingTemplate[propToCheck];
-    });
-  }
-  getBuildableBuildings(): BuildingTemplate[]
-  {
-    const canBuild: BuildingTemplate[] = [];
-    for (const buildingType in activeModuleData.templates.Buildings)
-    {
-      const template: BuildingTemplate = activeModuleData.templates.Buildings[buildingType];
-      let alreadyBuilt: Building[];
-
-      if (template.category === "mine" && !this.resource)
-      {
-        continue;
-      }
-
-      alreadyBuilt = this.getBuildingsInFamilyOfTemplate(template);
-
-      if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly)
-      {
-        canBuild.push(template);
-      }
-    }
-
-    return canBuild;
-  }
-  getBuildingUpgrades(): {[buildingId: number]: BuildingUpgradeData[]}
-  {
-    const allUpgrades:
-    {
-      [buildingId: number]: BuildingUpgradeData[];
-    } = {};
-
-    const ownerBuildings = this.getBuildingsForPlayer(this.owner);
-
-    for (let i = 0; i < ownerBuildings.length; i++)
-    {
-      const building = ownerBuildings[i];
-      let upgrades = building.getPossibleUpgrades();
-
-      upgrades = upgrades.filter(upgradeData =>
-      {
-        const parent = upgradeData.parentBuilding.template;
-        const template = upgradeData.template;
-        if (parent.type === template.type)
-        {
-          return true;
-        }
-        else
-        {
-          const isSameFamily = (template.family && parent.family === template.family);
-          let maxAllowed = template.maxPerType;
-          if (isSameFamily)
-          {
-            maxAllowed += 1;
-          }
-          const alreadyBuilt = this.getBuildingsInFamilyOfTemplate(template);
-
-          return alreadyBuilt.length < maxAllowed;
-        }
-      });
-
-      if (upgrades.length > 0)
-      {
-        allUpgrades[building.id] = upgrades;
-      }
-
-    }
-
-    return allUpgrades;
-  }
   // FLEETS
   public getFleets(playerFilter?: (player: Player) => boolean): Fleet[]
   {
@@ -472,17 +324,17 @@ export default class Star implements Point
 
     return fleetOwners;
   }
-  getFleetIndex(fleet: Fleet): number
+  private getFleetIndex(fleet: Fleet): number
   {
     if (!this.fleets[fleet.player.id]) { return -1; }
 
     return this.fleets[fleet.player.id].indexOf(fleet);
   }
-  hasFleet(fleet: Fleet): boolean
+  private hasFleet(fleet: Fleet): boolean
   {
-    return this.getFleetIndex(fleet) >= 0;
+    return this.getFleetIndex(fleet) !== -1;
   }
-  addFleet(fleet: Fleet): void
+  public addFleet(fleet: Fleet): void
   {
     if (!this.fleets[fleet.player.id])
     {
@@ -497,7 +349,7 @@ export default class Star implements Point
     fleet.location = this;
     this.fleets[fleet.player.id].push(fleet);
   }
-  removeFleet(fleet: Fleet): void
+  public removeFleet(fleet: Fleet): void
   {
     const fleetIndex = this.getFleetIndex(fleet);
 
@@ -513,7 +365,7 @@ export default class Star implements Point
       delete this.fleets[fleet.player.id];
     }
   }
-  getTargetsForPlayer(player: Player): FleetAttackTarget[]
+  public getTargetsForPlayer(player: Player): FleetAttackTarget[]
   {
     const buildingTarget = this.getFirstEnemyDefenceBuilding(player);
     const buildingController = buildingTarget ? buildingTarget.controller : null;
@@ -571,9 +423,9 @@ export default class Star implements Point
       return target.type === "building";
     });
   }
-  getFirstEnemyDefenceBuilding(player: Player): Building
+  private getFirstEnemyDefenceBuilding(player: Player): Building
   {
-    const defenceBuildings = this.getDefenceBuildings();
+    const defenceBuildings = this.getTerritoryBuildings();
 
     if (this.owner === player)
     {
@@ -596,19 +448,19 @@ export default class Star implements Point
   {
     this.resource = resource;
   }
-  hasLink(linkTo: Star): boolean
+  public hasLink(linkTo: Star): boolean
   {
     return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;
   }
   // could maybe use adding / removing links as a gameplay mechanic
-  addLink(linkTo: Star): void
+  public addLink(linkTo: Star): void
   {
     if (this.hasLink(linkTo)) { return; }
 
     this.linksTo.push(linkTo);
     linkTo.linksFrom.push(this);
   }
-  removeLink(linkTo: Star, removeOpposite: boolean = true): void
+  public removeLink(linkTo: Star, removeOpposite: boolean = true): void
   {
     if (!this.hasLink(linkTo))
     {
@@ -630,11 +482,11 @@ export default class Star implements Point
       linkTo.removeLink(this, false);
     }
   }
-  getAllLinks(): Star[]
+  public getAllLinks(): Star[]
   {
     return this.linksTo.concat(this.linksFrom);
   }
-  getEdgeWith(neighbor: Star): Voronoi.Edge<Star>
+  public getEdgeWith(neighbor: Star): Voronoi.Edge<Star>
   {
     for (let i = 0; i < this.voronoiCell.halfedges.length; i++)
     {
@@ -651,7 +503,7 @@ export default class Star implements Point
 
     return null;
   }
-  getSharedNeighborsWith(neighbor: Star): (Star | FillerPoint)[]
+  public getSharedNeighborsWith(neighbor: Star): (Star | FillerPoint)[]
   {
     const ownNeighbors = this.getNeighbors();
     const neighborNeighbors = neighbor.getNeighbors();
@@ -669,8 +521,8 @@ export default class Star implements Point
 
     return sharedNeighbors;
   }
-  // return adjacent stars whether they're linked to this or not
-  getNeighbors(): (Star | FillerPoint)[]
+  // return adjacent points whether they're linked to this or not
+  public getNeighbors(): (Star | FillerPoint)[]
   {
     const neighbors: (Star | FillerPoint)[] = [];
 
@@ -694,7 +546,7 @@ export default class Star implements Point
   {
     return this.getLinkedInRange(99999).all;
   }
-  getLinkedInRange(range: number)
+  public getLinkedInRange(range: number)
   {
     if (this.indexedNeighborsInRange[range])
     {
@@ -759,7 +611,7 @@ export default class Star implements Point
       byRange: visitedByRange,
     });
   }
-  getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star
+  public getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star
   {
     if (qualifier(this)) { return this; }
 
@@ -798,7 +650,7 @@ export default class Star implements Point
 
     return null;
   }
-  getDistanceToStar(target: Star): number
+  public getDistanceToStar(target: Star): number
   {
     // don't index distance while generating map as distance can change
     if (!app.game)
@@ -826,23 +678,29 @@ export default class Star implements Point
 
     return this.indexedDistanceToStar[target.id];
   }
-  getVisionRange(): number
+  public getVisionRange(): number
   {
-    return this.getEffectWithBuildingsEffect(1, "vision");
+    const baseRange = activeModuleData.ruleSet.vision.baseStarVisionRange;
+    const buildingsEffect = this.buildings.getEffects().vision;
+
+    return applyFlatAndMultiplierAdjustments(baseRange, buildingsEffect);
   }
-  getVision(): Star[]
+  public getVision(): Star[]
   {
     return this.getLinkedInRange(this.getVisionRange()).all;
   }
-  getDetectionRange(): number
+  public getDetectionRange(): number
   {
-    return this.getEffectWithBuildingsEffect(0, "detection");
+    const baseRange = activeModuleData.ruleSet.vision.baseStarDetectionRange;
+    const buildingsEffect = this.buildings.getEffects().detection;
+
+    return applyFlatAndMultiplierAdjustments(baseRange, buildingsEffect);
   }
-  getDetection(): Star[]
+  public getDetection(): Star[]
   {
     return this.getLinkedInRange(this.getDetectionRange()).all;
   }
-  getHealingFactor(player: Player): number
+  public getHealingFactor(player: Player): number
   {
     let factor = 0;
 
@@ -853,7 +711,7 @@ export default class Star implements Point
 
     return factor;
   }
-  getPresentPlayersByVisibility()
+  public getPresentPlayersByVisibility()
   {
     const byVisibilityAndId:
     {
@@ -911,11 +769,11 @@ export default class Star implements Point
   {
     return `${Math.round(this.x)}${Math.round(this.y)}${new Date().getTime()}`;
   }
-  buildManufactory(): void
+  public buildManufactory(): void
   {
     this.manufactory = new Manufactory(this);
   }
-  serialize(): StarSaveData
+  public serialize(): StarSaveData
   {
     const data: StarSaveData =
     {
@@ -933,7 +791,7 @@ export default class Star implements Point
 
       seed: this.seed,
 
-      buildings: this.buildings.map(building => building.serialize()),
+      buildings: this.buildings.serialize(),
 
       raceType: this.race.type,
       terrainType: this.terrain.type,
@@ -950,5 +808,93 @@ export default class Star implements Point
     }
 
     return data;
+  }
+
+
+  public getTerritoryBuildings(): Building[]
+  {
+    // TODO 2018.06.06 |
+    return this.territoryBuildings.buildings;
+  }
+  private getBuildingsForPlayer(player: Player): Building[]
+  {
+    return this.buildings.filter(building => building.controller === player);
+  }
+  private getBuildingsInFamilyOfTemplate(buildingTemplate: BuildingTemplate): Building[]
+  {
+    const propToCheck = buildingTemplate.family ? "family" : "type";
+
+    return this.buildings.filter(building =>
+    {
+      return building.template[propToCheck] === buildingTemplate[propToCheck];
+    });
+  }
+  public getBuildableBuildings(): BuildingTemplate[]
+  {
+    const canBuild: BuildingTemplate[] = [];
+    for (const buildingType in activeModuleData.templates.Buildings)
+    {
+      const template: BuildingTemplate = activeModuleData.templates.Buildings[buildingType];
+      let alreadyBuilt: Building[];
+
+      if (template.category === "mine" && !this.resource)
+      {
+        continue;
+      }
+
+      alreadyBuilt = this.getBuildingsInFamilyOfTemplate(template);
+
+      if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly)
+      {
+        canBuild.push(template);
+      }
+    }
+
+    return canBuild;
+  }
+  public getBuildingUpgrades(): {[buildingId: number]: BuildingUpgradeData[]}
+  {
+    const allUpgrades:
+    {
+      [buildingId: number]: BuildingUpgradeData[];
+    } = {};
+
+    const ownerBuildings = this.getBuildingsForPlayer(this.owner);
+
+    for (let i = 0; i < ownerBuildings.length; i++)
+    {
+      const building = ownerBuildings[i];
+      let upgrades = building.getPossibleUpgrades();
+
+      upgrades = upgrades.filter(upgradeData =>
+      {
+        const parent = upgradeData.parentBuilding.template;
+        const template = upgradeData.template;
+        if (parent.type === template.type)
+        {
+          return true;
+        }
+        else
+        {
+          const isSameFamily = (template.family && parent.family === template.family);
+          let maxAllowed = template.maxPerType;
+          if (isSameFamily)
+          {
+            maxAllowed += 1;
+          }
+          const alreadyBuilt = this.getBuildingsInFamilyOfTemplate(template);
+
+          return alreadyBuilt.length < maxAllowed;
+        }
+      });
+
+      if (upgrades.length > 0)
+      {
+        allUpgrades[building.id] = upgrades;
+      }
+
+    }
+
+    return allUpgrades;
   }
 }

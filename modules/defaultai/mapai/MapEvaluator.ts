@@ -591,6 +591,7 @@ export default class MapEvaluator
     for (let i = 0; i < revealedStarsOfPlayer.length; i++)
     {
       const star = revealedStarsOfPlayer[i];
+      // TODO 2018.06.05 | use ruleset
       const detectionRange = this.player.starIsDetected(star) ? star.getDetectionRange() : 0;
       const visionRange = this.player.starIsDetected(star) ? star.getVisionRange() : 1;
       processDetectionSource(star, detectionRange, visionRange);

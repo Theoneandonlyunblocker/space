@@ -4,23 +4,23 @@ import BuildingUpgradeData from "./BuildingUpgradeData";
 import {activeModuleData} from "./activeModuleData";
 import idGenerators from "./idGenerators";
 import BuildingSaveData from "./savedata/BuildingSaveData";
-import BuildingEffect from "./templateinterfaces/BuildingEffect";
+import {BuildingEffect} from "./BuildingEffect";
 import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
 
 import Player from "./Player";
 import Star from "./Star";
 
 
-export default class Building
+export class Building
 {
-  template: BuildingTemplate;
-  id: number;
+  public template: BuildingTemplate;
+  public id: number;
 
-  location: Star;
-  controller: Player;
+  public location: Star;
+  public controller: Player;
 
-  upgradeLevel: number;
-  totalCost: number;
+  public upgradeLevel: number;
+  public totalCost: number;
 
   constructor(props:
   {
@@ -36,52 +36,23 @@ export default class Building
   })
   {
     this.template = props.template;
-    this.id = (props.id && isFinite(props.id)) ?
-      props.id : idGenerators.building++;
+    this.id = (props.id && isFinite(props.id)) ? props.id : idGenerators.building++;
     this.location = props.location;
     this.controller = props.controller || this.location.owner;
     this.upgradeLevel = props.upgradeLevel || 1;
     this.totalCost = props.totalCost || this.template.buildCost || 0;
   }
-  getEffect(effect: BuildingEffect = {})
+
+  public getEffect(): Partial<BuildingEffect>
   {
-    if (!this.template.effect) { return {}; }
-
-    const multiplier = this.template.effectMultiplierFN ?
-      this.template.effectMultiplierFN(this.upgradeLevel) :
-      this.upgradeLevel;
-
-    for (const key in this.template.effect)
+    if (!this.template.getEffect)
     {
-      const prop = this.template.effect[key];
-      if (isFinite(prop))
-      {
-        if (!effect[key])
-        {
-          effect[key] = 0;
-        }
-        effect[key] += prop * multiplier;
-      }
-      else
-      {
-        if (!effect[key])
-        {
-          effect[key] = {};
-        }
-        for (const key2 in prop)
-        {
-          if (!effect[key][key2])
-          {
-            effect[key][key2] = 0;
-          }
-          effect[key][key2] += prop[key2] * multiplier;
-        }
-      }
+      return {};
     }
 
-    return effect;
+    return this.template.getEffect(this.upgradeLevel);
   }
-  getPossibleUpgrades()
+  public getPossibleUpgrades(): BuildingUpgradeData[]
   {
     const upgrades: BuildingUpgradeData[] = [];
 
@@ -115,11 +86,11 @@ export default class Building
 
     return upgrades;
   }
-  upgrade()
+  public upgrade(): void
   {
 
   }
-  setController(newController: Player)
+  public setController(newController: Player): void
   {
     const oldController = this.controller;
     if (oldController === newController) { return; }
@@ -128,9 +99,9 @@ export default class Building
     this.controller = newController;
     this.location.updateController();
   }
-  serialize()
+  public serialize(): BuildingSaveData
   {
-    const data: BuildingSaveData =
+    return(
     {
       templateType: this.template.type,
       id: this.id,
@@ -140,8 +111,6 @@ export default class Building
 
       upgradeLevel: this.upgradeLevel,
       totalCost: this.totalCost,
-    };
-
-    return data;
+    });
   }
 }

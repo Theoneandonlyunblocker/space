@@ -1,4 +1,4 @@
-import BuildingEffect from "./BuildingEffect";
+import {BuildingEffect} from "../BuildingEffect";
 import UnitEffectTemplate from "./UnitEffectTemplate";
 
 declare interface BuildingTemplate
@@ -14,11 +14,11 @@ declare interface BuildingTemplate
   family?: string; // all buildings in same family count towards maxPerType
   maxPerType: number;
 
-  effect?: BuildingEffect;
-  // if not specified, upgradeLevel is used as multiplier instead
-  effectMultiplierFN?: (upgradeLevel: number) => number;
+  getEffect?: (upgradeLevel: number) => Partial<BuildingEffect>;
 
   maxUpgradeLevel: number;
+  // TODO 2018.06.05 | split into canBeBuilt & canBeUpgraded or something
+  // why not use same system for buildability as units?
   upgradeOnly?: boolean;
   upgradeInto?:
   {
