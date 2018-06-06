@@ -12,6 +12,7 @@ import
 } from "../../../src/utility";
 
 import {UnitEvaluator} from "./UnitEvaluator";
+import { activeModuleData } from "../../../src/activeModuleData";
 
 
 export const defaultEvaluationParameters =
@@ -591,9 +592,17 @@ export default class MapEvaluator
     for (let i = 0; i < revealedStarsOfPlayer.length; i++)
     {
       const star = revealedStarsOfPlayer[i];
-      // TODO 2018.06.05 | use ruleset
-      const detectionRange = this.player.starIsDetected(star) ? star.getDetectionRange() : 0;
-      const visionRange = this.player.starIsDetected(star) ? star.getVisionRange() : 1;
+
+      const assumedDetectionRange = activeModuleData.ruleSet.vision.baseStarDetectionRange;
+      const detectionRange = this.player.starIsDetected(star) ?
+        star.getDetectionRange() :
+        assumedDetectionRange;
+
+      const assumedVisionRange = activeModuleData.ruleSet.vision.baseStarVisionRange;
+      const visionRange = this.player.starIsDetected(star) ?
+        star.getVisionRange() :
+        assumedVisionRange;
+
       processDetectionSource(star, detectionRange, visionRange);
     }
     for (let i = 0; i < visibleFleetsOfPlayer.length; i++)

@@ -34,6 +34,11 @@ export interface RuleSetValues
     independentUnitDeathChance: number;
     loserUnitExtraDeathChance: number;
   };
+  vision:
+  {
+    baseStarDetectionRange: number;
+    baseStarVisionRange: number;
+  }
 }
 
 export type PartialRuleSetValues =

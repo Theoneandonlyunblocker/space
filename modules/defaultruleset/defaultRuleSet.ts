@@ -52,6 +52,11 @@ const defaultRuleSet: ModuleFile =
         independentUnitDeathChance: 1.0,
         loserUnitExtraDeathChance: 0.35,
       },
+      vision:
+      {
+        baseStarVisionRange: 1,
+        baseStarDetectionRange: 0,
+      }
     };
   },
 };
