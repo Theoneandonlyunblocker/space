@@ -15,7 +15,7 @@ export interface RuleSetValues
   };
   research:
   {
-    baseResearchSpeed: number;
+    baseResearchPoints: number;
   };
   battle:
   {

@@ -892,7 +892,7 @@ export default class Player
   getResearchSpeed(): number
   {
     let research = 0;
-    research += activeModuleData.ruleSet.research.baseResearchSpeed;
+    research += activeModuleData.ruleSet.research.baseResearchPoints;
 
     for (let i = 0; i < this.controlledLocations.length; i++)
     {

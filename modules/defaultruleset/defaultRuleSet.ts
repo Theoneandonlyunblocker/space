@@ -33,7 +33,7 @@ const defaultRuleSet: ModuleFile =
       },
       research:
       {
-        baseResearchSpeed: 3000,
+        baseResearchPoints: 3000,
       },
       battle:
       {
