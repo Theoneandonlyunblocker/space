@@ -444,10 +444,6 @@ export default class Star implements Point
   }
 
   // MAP GEN
-  setResource(resource: ResourceTemplate): void
-  {
-    this.resource = resource;
-  }
   public hasLink(linkTo: Star): boolean
   {
     return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;

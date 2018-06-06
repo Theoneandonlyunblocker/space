@@ -269,7 +269,7 @@ export default class GameLoader
 
     if (data.resourceType)
     {
-      star.setResource(activeModuleData.templates.Resources[data.resourceType]);
+      star.resource = activeModuleData.templates.Resources[data.resourceType];
     }
 
     return star;

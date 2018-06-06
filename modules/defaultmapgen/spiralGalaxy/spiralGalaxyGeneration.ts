@@ -313,7 +313,7 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
   // set resources
   const resourcePlacerFN = (sector: Region, resource: ResourceTemplate) =>
   {
-    sector.stars[0].setResource(resource);
+    sector.stars[0].resource = resource;
   };
   distributeDistributablesPerSector(
     sectors,
