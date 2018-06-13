@@ -55,8 +55,7 @@ export function squashFlatAndMultiplierAdjustments(
     }
 
     return squashed;
-
-  }, getBaseAdjustment());
+  });
 }
 
 export function squashAdjustmentsObjects<T extends AdjustmentsObject<T>>(
@@ -82,7 +81,7 @@ export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
       }
       else
       {
-        squashed[key] = squashFlatAndMultiplierAdjustments(toSquash[key]);
+        squashed[key] = squashFlatAndMultiplierAdjustments(getBaseAdjustment(), toSquash[key]);
       }
     }
 
