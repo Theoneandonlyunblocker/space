@@ -6,15 +6,16 @@ import BuildingUpgradeData from "./BuildingUpgradeData";
 import BuildingSaveData from "./savedata/BuildingSaveData";
 
 
-export class BuildingCollection<T extends Building = Building>
+// TODO 2018.06.13 |
+export class BuildingCollection<T extends Building>
 {
   private readonly buildings: T[] = [];
   private cachedEffects: BuildingEffect;
   private cachedEffectsAreDirty: boolean = true;
 
-  private readonly onAddBuilding: (building: T) => void;
+  private readonly onAddBuilding: ((building: T) => void) | undefined;
 
-  constructor(onAddBuilding: (building: T) => void)
+  constructor(onAddBuilding?: (building: T) => void)
   {
     this.onAddBuilding = onAddBuilding;
   }
@@ -31,7 +32,10 @@ export class BuildingCollection<T extends Building = Building>
     }
 
     this.buildings.push(building);
-    this.onAddBuilding(building);
+    if (this.onAddBuilding)
+    {
+      this.onAddBuilding(building);
+    }
   }
   public remove(building: T): void
   {
@@ -43,6 +47,18 @@ export class BuildingCollection<T extends Building = Building>
     }
 
     this.buildings.splice(index, 1);
+  }
+  public forEach(callbackFn: (building: T) => void): void
+  {
+    this.buildings.forEach(callbackFn);
+  }
+  public map<R>(callbackFn: (building: T) => R): R[]
+  {
+    return this.buildings.map(callbackFn);
+  }
+  public filter(filterFn: (building: T) => boolean): T[]
+  {
+    return this.buildings.filter(filterFn);
   }
   public getEffects(): BuildingEffect
   {

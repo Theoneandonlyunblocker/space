@@ -10,7 +10,7 @@ import
 import MapGenDataByStarId from "./MapGenDataByStarId";
 import
 {
-  addDefenceBuildings,
+  addTerritoryBuildings,
 } from "./mapGenUtils";
 
 
@@ -32,7 +32,7 @@ export default function setupIndependents(props:
   independentStars.forEach(star =>
   {
     props.player.addStar(star);
-    addDefenceBuildings(star, 1, false);
+    addTerritoryBuildings(star, 1, false);
   });
 
   // add units

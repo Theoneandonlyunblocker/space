@@ -1,4 +1,4 @@
-import Building from "../../../src/Building";
+import {Building} from "../../../src/Building";
 import Region from "../../../src/Region";
 import Star from "../../../src/Star";
 import
@@ -15,7 +15,7 @@ import
 {
   sectorCommand,
   starBase,
-} from "../../defaultbuildings/templates/Templates";
+} from "../../defaultbuildings/templates/territoryBuildings";
 
 import MapGenDataByStarId from "./MapGenDataByStarId";
 import triangulate from "./triangulate";
@@ -420,7 +420,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
     addedDistributablesByRegionId[sector.id][selectedKey] = true;
   });
 }
-export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCommand: boolean = true)
+export function addTerritoryBuildings(star: Star, amount: number = 1, addSectorCommand: boolean = true)
 {
   let buildingsToAdd = amount;
   if (!star.owner)
@@ -436,7 +436,7 @@ export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCom
 
   if (addSectorCommand)
   {
-    star.addBuilding(new Building(
+    star.territoryBuildings.add(new Building(
     {
       template: sectorCommand,
       location: star,
@@ -447,7 +447,7 @@ export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCom
 
   for (let i = 0; i < buildingsToAdd; i++)
   {
-    star.addBuilding(new Building(
+    star.territoryBuildings.add(new Building(
     {
       template: starBase,
       location: star,

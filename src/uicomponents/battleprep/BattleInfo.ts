@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import PlayerFlag from "../PlayerFlag";
-import DefenceBuildingList from "../galaxymap/DefenceBuildingList";
+import TerritoryBuildingList from "../galaxymap/TerritoryBuildingList";
 
 import BattlePrep from "../../BattlePrep";
 
@@ -63,9 +63,9 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
         },
           `${star.name}: ${isAttacker ? localize("attacking")() : localize("defending")()}`
         ),
-        DefenceBuildingList(
+        TerritoryBuildingList(
         {
-          buildings: star.getDefenceBuildings(),
+          buildings: star.getTerritoryBuildings(),
           reverse: isAttacker,
         }),
       )

@@ -16,6 +16,7 @@ export interface RuleSetValues
   research:
   {
     baseResearchPoints: number;
+    baseResearchPointsPerStar: number;
   };
   battle:
   {

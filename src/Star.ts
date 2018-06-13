@@ -1,13 +1,12 @@
 import app from "./App"; // TODO global
 import {activeModuleData} from "./activeModuleData";
 import {activePlayer} from "./activePlayer";
-import {BuildingEffect} from "./BuildingEffect";
-import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
+import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import {TerrainTemplate} from "./templateinterfaces/TerrainTemplate";
 
-import {Building} from "./Building";
+import {Building, TerritoryBuilding} from "./Building";
 import {BuildingCollection} from "./BuildingCollection";
 import BuildingUpgradeData from "./BuildingUpgradeData";
 import FillerPoint from "./FillerPoint";
@@ -63,7 +62,8 @@ export default class Star implements Point
     [playerId: string]: Fleet[];
   } = {};
 
-  public readonly buildings: BuildingCollection;
+  public readonly buildings: BuildingCollection<Building>;
+  public readonly territoryBuildings: BuildingCollection<TerritoryBuilding>;
   public manufactory: Manufactory;
 
   private readonly indexedNeighborsInRange:
@@ -105,13 +105,13 @@ export default class Star implements Point
     this.race = props.race;
     this.terrain = props.terrain;
 
+    this.territoryBuildings = new BuildingCollection(building =>
+    {
+      eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
+    });
     this.buildings = new BuildingCollection(building =>
     {
       // TODO 2018.06.05 | move or remove this shit
-      if (building.template.category === "defence")
-      {
-        eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
-      }
       if (building.template.category === "vision")
       {
         this.owner.updateVisibleStars();
@@ -201,12 +201,12 @@ export default class Star implements Point
 
   public getSecondaryController(): Player | null
   {
-    const defenceBuildings = this.getTerritoryBuildings();
-    for (let i = 0; i < defenceBuildings.length; i++)
+    const territoryBuildings = this.getTerritoryBuildings();
+    for (let i = 0; i < territoryBuildings.length; i++)
     {
-      if (defenceBuildings[i].controller !== this.owner)
+      if (territoryBuildings[i].controller !== this.owner)
       {
-        return defenceBuildings[i].controller;
+        return territoryBuildings[i].controller;
       }
     }
 
@@ -214,10 +214,10 @@ export default class Star implements Point
   }
   public updateController(): void
   {
-    const defenceBuildings = this.getTerritoryBuildings();
+    const territoryBuildings = this.getTerritoryBuildings();
 
     const oldOwner = this.owner;
-    const newOwner = defenceBuildings[0].controller;
+    const newOwner = territoryBuildings[0].controller;
 
     if (oldOwner)
     {
@@ -273,9 +273,23 @@ export default class Star implements Point
 
     return applyFlatAndMultiplierAdjustments(basePoints, buildingsEffect);
   }
-  public getResourceIncome(): {resource: ResourceTemplate; amount: number}[]
+  public getResourceIncome(): {resource: ResourceTemplate; amount: number} | null
   {
-    // TODO 2018.06.06 |
+    if (!this.resource)
+    {
+      return null;
+    }
+
+    const baseAmount = 0;
+    const buildingsEffect = this.buildings.getEffects().resourceIncome;
+
+    const finalAmount = applyFlatAndMultiplierAdjustments(baseAmount, buildingsEffect)
+
+    return(
+    {
+      resource: this.resource,
+      amount: finalAmount,
+    });
   }
 
   // FLEETS
@@ -367,17 +381,12 @@ export default class Star implements Point
   }
   public getTargetsForPlayer(player: Player): FleetAttackTarget[]
   {
-    const buildingTarget = this.getFirstEnemyDefenceBuilding(player);
+    const buildingTarget = this.getFirstEnemyTerritoryBuilding(player);
     const buildingController = buildingTarget ? buildingTarget.controller : null;
 
     const targets: FleetAttackTarget[] = [];
 
-    if (buildingTarget &&
-      (
-        player === this.owner ||
-        player.diplomacy.canAttackBuildingOfPlayer(buildingTarget.controller)
-      )
-    )
+    if (buildingTarget && player.diplomacy.canAttackBuildingOfPlayer(buildingTarget.controller))
     {
       targets.push(
       {
@@ -423,20 +432,20 @@ export default class Star implements Point
       return target.type === "building";
     });
   }
-  private getFirstEnemyDefenceBuilding(player: Player): Building
+  private getFirstEnemyTerritoryBuilding(player: Player): TerritoryBuilding
   {
-    const defenceBuildings = this.getTerritoryBuildings();
+    const territoryBuildings = this.getTerritoryBuildings();
 
     if (this.owner === player)
     {
-      defenceBuildings.reverse();
+      territoryBuildings.reverse();
     }
 
-    for (let i = defenceBuildings.length - 1; i >= 0; i--)
+    for (let i = territoryBuildings.length - 1; i >= 0; i--)
     {
-      if (defenceBuildings[i].controller.id !== player.id)
+      if (territoryBuildings[i].controller.id !== player.id)
       {
-        return defenceBuildings[i];
+        return territoryBuildings[i];
       }
     }
 
@@ -788,6 +797,7 @@ export default class Star implements Point
       seed: this.seed,
 
       buildings: this.buildings.serialize(),
+      territoryBuildings: this.territoryBuildings.serialize(),
 
       raceType: this.race.type,
       terrainType: this.terrain.type,
@@ -807,10 +817,34 @@ export default class Star implements Point
   }
 
 
-  public getTerritoryBuildings(): Building[]
+  public getTerritoryBuildings(): TerritoryBuilding[]
   {
     // TODO 2018.06.06 |
     return this.territoryBuildings.buildings;
+
+    // return this.buildings.filter(building =>
+    // {
+    //   return building.template.category === "defence";
+    // }).sort((a, b) =>
+    // {
+    //   // TODO 2018.05.30 | more explicit way of checking this
+    //   // headquarters
+    //   if (a.template.maxPerType === 1)
+    //   {
+    //     return -1;
+    //   }
+    //   else if (b.template.maxPerType === 1)
+    //   {
+    //     return 1;
+    //   }
+
+    //   if (a.upgradeLevel !== b.upgradeLevel)
+    //   {
+    //     return b.upgradeLevel - a.upgradeLevel;
+    //   }
+
+    //   return a.id - b.id;
+    // });
   }
   private getBuildingsForPlayer(player: Player): Building[]
   {

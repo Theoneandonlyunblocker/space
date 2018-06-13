@@ -1,13 +1,13 @@
 import * as React from "react";
 
-import Building from "../../Building";
+import {TerritoryBuilding} from "../../Building";
 
-import DefenceBuilding from "./DefenceBuilding";
+import {default as TerritoryBuildingComponent} from "./TerritoryBuilding";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  buildings: Building[];
+  buildings: TerritoryBuilding[];
   reverse?: boolean;
 }
 
@@ -15,9 +15,9 @@ interface StateType
 {
 }
 
-export class DefenceBuildingListComponent extends React.Component<PropTypes, StateType>
+export class TerritoryBuildingListComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "DefenceBuildingList";
+  public displayName = "TerritoryBuildingList";
   shouldComponentUpdate(newProps: PropTypes)
   {
     const newBuildings = newProps.buildings;
@@ -49,7 +49,7 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
 
     const buildings = this.props.buildings.map(building =>
     {
-      return DefenceBuilding(
+      return TerritoryBuildingComponent(
       {
         key: building.id,
         building: building,
@@ -64,7 +64,7 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
     return(
       React.DOM.div(
       {
-        className: "defence-building-list",
+        className: "territory-building-list",
       },
         buildings,
       )
@@ -73,5 +73,5 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
 
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(DefenceBuildingListComponent);
+const factory: React.Factory<PropTypes> = React.createFactory(TerritoryBuildingListComponent);
 export default factory;

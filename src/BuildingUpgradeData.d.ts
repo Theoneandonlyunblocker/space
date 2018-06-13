@@ -1,5 +1,5 @@
-import Building from "./Building";
-import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
+import {Building} from "./Building";
+import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
 
 declare interface BuildingUpgradeData
 {

@@ -3,7 +3,7 @@ import * as React from "react";
 import {localize} from "../../../localization/localize";
 import Star from "../../Star";
 
-import DefenceBuildingList from "./DefenceBuildingList";
+import TerritoryBuildingList from "./TerritoryBuildingList";
 
 
 export interface PropTypes extends React.Props<any>
@@ -69,9 +69,9 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         },
           `${localize("income")()}: ${star.getIncome()}`,
         ),
-        DefenceBuildingList(
+        TerritoryBuildingList(
         {
-          buildings: star.getDefenceBuildings(),
+          buildings: star.getTerritoryBuildings(),
         }),
 
       )

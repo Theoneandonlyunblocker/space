@@ -34,6 +34,7 @@ const defaultRuleSet: ModuleFile =
       research:
       {
         baseResearchPoints: 3000,
+        baseResearchPointsPerStar: 0,
       },
       battle:
       {

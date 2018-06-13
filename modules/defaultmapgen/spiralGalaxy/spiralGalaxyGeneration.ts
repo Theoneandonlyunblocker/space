@@ -29,7 +29,7 @@ import MapGenDataByStarId from "../common/MapGenDataByStarId";
 import MapGenPoint from "../common/MapGenPoint";
 import
 {
-  addDefenceBuildings,
+  addTerritoryBuildings,
   distributeDistributablesPerSector,
   getStarConnectedness,
   makeSectors,
@@ -275,7 +275,7 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
     player.addStar(star);
     star.race = player.race;
 
-    addDefenceBuildings(star, 2);
+    addTerritoryBuildings(star, 2);
     star.buildManufactory();
   }
 

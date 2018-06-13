@@ -300,11 +300,12 @@ export default class MapEvaluator
 
     return this.unitEvaluator.evaluateMapStrength(...independentUnits);
   }
-  getDefenceBuildingStrengthAtStarByPlayer(star: Star)
+  // TODO 2018.06.13 | calculate first territory building & buildings that contribute to battle instead
+  private getDefenceBuildingStrengthAtStarByPlayer(star: Star): ValuesByPlayer<number>
   {
     const byPlayer = new ValuesByPlayer<number>();
 
-    star.getDefenceBuildings().forEach(building =>
+    star.getTerritoryBuildings().forEach(building =>
     {
       const previousValue = byPlayer.get(building.controller) || 0;
       byPlayer.set(building.controller, previousValue + building.totalCost);

@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import Player from "../../Player";
-import BuildingTemplate from "../../templateinterfaces/BuildingTemplate";
+import {BuildingTemplate} from "../../templateinterfaces/BuildingTemplate";
 import ListItemProps from "../list/ListItemProps";
 
 import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";

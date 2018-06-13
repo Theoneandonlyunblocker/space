@@ -1,7 +1,7 @@
 
 import {AiController} from "./AIController";
 import {AttitudeModifier} from "./AttitudeModifier";
-import Building from "./Building";
+import {Building, TerritoryBuilding} from "./Building";
 import Color from "./Color";
 import Emblem from "./Emblem";
 import FillerPoint from "./FillerPoint";
@@ -285,7 +285,13 @@ export default class GameLoader
       {
         const building = this.deserializeBuilding(buildingData);
 
-        star.addBuilding(building);
+        star.buildings.add(building);
+      });
+      starData.territoryBuildings.forEach(buildingData =>
+      {
+        const building = this.deserializeBuilding<TerritoryBuilding>(buildingData);
+
+        star.territoryBuildings.add(building);
       });
 
 
@@ -295,7 +301,7 @@ export default class GameLoader
       }
     }
   }
-  private deserializeBuilding(data: BuildingSaveData): Building
+  private deserializeBuilding<T extends Building>(data: BuildingSaveData): T
   {
     const template = activeModuleData.templates.Buildings[data.templateType];
     const building = new Building(
@@ -309,7 +315,7 @@ export default class GameLoader
       id: data.id,
     });
 
-    return building;
+    return <T>building;
   }
   private deserializePlayer(data: PlayerSaveData): Player
   {

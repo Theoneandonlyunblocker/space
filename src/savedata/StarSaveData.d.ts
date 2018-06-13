@@ -18,6 +18,7 @@ declare interface StarSaveData
   manufactory?: ManufactorySaveData;
 
   buildings: BuildingSaveData[];
+  territoryBuildings: BuildingSaveData[];
 
   raceType: string;
   terrainType: string;

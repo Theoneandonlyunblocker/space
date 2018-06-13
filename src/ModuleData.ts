@@ -13,7 +13,7 @@ import AiTemplateConstructor from "./templateinterfaces/AITemplateConstructor";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
-import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
+import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import MapGenTemplate from "./templateinterfaces/MapGenTemplate";
 import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTemplate";

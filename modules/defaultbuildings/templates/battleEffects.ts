@@ -7,17 +7,17 @@ import
 } from "../../common/effectactiontemplates/effectActions";
 
 
-export function makeDefensiveBuildingEffect(amount: number): UnitEffectTemplate
+export function makeDefenderAdvantageEffect(amount: number): UnitEffectTemplate
 {
   return(
   {
-    type: "defensiveBuildingAdvantage",
+    type: "defenderAdvantage",
     isHidden: true,
 
     atBattleStart:
     [
       {
-        id: "defensiveBuildingAdvantage",
+        id: "defenderAdvantage",
         getUnitsInArea: () => [],
         executeAction: bindEffectActionData(adjustDefenderBattleEvaluationAdjustment,
         {

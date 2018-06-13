@@ -1,4 +1,4 @@
-import Building from "./Building";
+import {TerritoryBuilding} from "./Building";
 import Player from "./Player";
 import Star from "./Star";
 import Unit from "./Unit";
@@ -6,7 +6,7 @@ import Unit from "./Unit";
 declare interface BattleData
 {
   location: Star;
-  building?: Building;
+  building?: TerritoryBuilding;
   attacker:
   {
     player: Player;

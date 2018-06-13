@@ -1,14 +1,12 @@
 import {BuildingEffect} from "../BuildingEffect";
 import UnitEffectTemplate from "./UnitEffectTemplate";
 
-declare interface BuildingTemplate
+export declare interface BuildingTemplate
 {
   type: string;
-  category: string;
   displayName: string;
   description: string;
 
-  iconSrc: string;
   buildCost: number;
 
   family?: string; // all buildings in same family count towards maxPerType
@@ -28,5 +26,3 @@ declare interface BuildingTemplate
 
   battleEffects?: UnitEffectTemplate[];
 }
-
-export default BuildingTemplate;

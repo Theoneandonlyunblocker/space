@@ -1,19 +1,20 @@
-import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate";
+import {BuildingTemplate} from "../../src/templateinterfaces/BuildingTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
-import * as Templates from "./templates/Templates";
+import * as otherBuildings from "./templates/otherBuildings";
+import * as territoryBuildings from "./templates/territoryBuildings";
 
 
 const buildingTemplates: TemplateCollection<BuildingTemplate> =
 {
-  [Templates.sectorCommand.type]: Templates.sectorCommand,
-  [Templates.sectorCommand1.type]: Templates.sectorCommand1,
-  [Templates.sectorCommand2.type]: Templates.sectorCommand2,
-  [Templates.starBase.type]: Templates.starBase,
-  [Templates.commercialPort.type]: Templates.commercialPort,
-  [Templates.deepSpaceRadar.type]: Templates.deepSpaceRadar,
-  [Templates.resourceMine.type]: Templates.resourceMine,
-  [Templates.reserachLab.type]: Templates.reserachLab,
+  [territoryBuildings.sectorCommand.type]: territoryBuildings.sectorCommand,
+  [territoryBuildings.sectorCommand1.type]: territoryBuildings.sectorCommand1,
+  [territoryBuildings.sectorCommand2.type]: territoryBuildings.sectorCommand2,
+  [territoryBuildings.starBase.type]: territoryBuildings.starBase,
+  [otherBuildings.commercialPort.type]: otherBuildings.commercialPort,
+  [otherBuildings.deepSpaceRadar.type]: otherBuildings.deepSpaceRadar,
+  [otherBuildings.resourceMine.type]: otherBuildings.resourceMine,
+  [otherBuildings.reserachLab.type]: otherBuildings.reserachLab,
 };
 
 export default buildingTemplates;

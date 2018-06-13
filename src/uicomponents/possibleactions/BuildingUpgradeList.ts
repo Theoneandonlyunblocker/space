@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import Building from "../../Building";
+import {Building} from "../../Building";
 import BuildingUpgradeData from "../../BuildingUpgradeData";
 import Player from "../../Player";
 import Star from "../../Star";
@@ -45,6 +45,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
     return Object.keys(possibleUpgrades).length > 0;
   }
 
+  // TODO 2018.06.07 | does this belong here?
   upgradeBuilding(upgradeData: BuildingUpgradeData)
   {
     const star = upgradeData.parentBuilding.location;
@@ -58,8 +59,8 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
       totalCost: upgradeData.parentBuilding.totalCost + upgradeData.cost,
     });
 
-    star.removeBuilding(upgradeData.parentBuilding);
-    star.addBuilding(newBuilding);
+    star.buildings.add(upgradeData.parentBuilding);
+    star.buildings.remove(newBuilding);
 
     upgradeData.parentBuilding.controller.money -= upgradeData.cost;
 

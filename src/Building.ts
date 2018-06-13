@@ -5,15 +5,18 @@ import {activeModuleData} from "./activeModuleData";
 import idGenerators from "./idGenerators";
 import BuildingSaveData from "./savedata/BuildingSaveData";
 import {BuildingEffect} from "./BuildingEffect";
-import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
+import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
 
 import Player from "./Player";
 import Star from "./Star";
+import { TerritoryBuildingTemplate } from "./templateinterfaces/TerritoryBuildingTemplate";
 
 
-export class Building
+export type TerritoryBuilding = Building<TerritoryBuildingTemplate>;
+
+export class Building<T extends BuildingTemplate = BuildingTemplate>
 {
-  public template: BuildingTemplate;
+  public template: T;
   public id: number;
 
   public location: Star;
@@ -24,7 +27,7 @@ export class Building
 
   constructor(props:
   {
-    template: BuildingTemplate;
+    template: T;
 
     location: Star;
     controller?: Player;
@@ -43,7 +46,7 @@ export class Building
     this.totalCost = props.totalCost || this.template.buildCost || 0;
   }
 
-  public getEffect(): Partial<BuildingEffect>
+  public getEffect(): BuildingEffect
   {
     if (!this.template.getEffect)
     {

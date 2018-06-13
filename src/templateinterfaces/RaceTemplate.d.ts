@@ -6,7 +6,7 @@ import Star from "../Star";
 import Unit from "../Unit";
 
 import AiTemplateConstructor from "./AITemplateConstructor";
-import BuildingTemplate from "./BuildingTemplate";
+import {BuildingTemplate} from "./BuildingTemplate";
 import {DistributionData} from "./DistributionData";
 import ItemTemplate from "./ItemTemplate";
 import PortraitTemplate from "./PortraitTemplate";

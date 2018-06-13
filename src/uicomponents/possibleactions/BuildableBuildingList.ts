@@ -1,10 +1,10 @@
 import * as React from "react";
 
 import {localize} from "../../../localization/localize";
-import Building from "../../Building";
+import {Building} from "../../Building";
 import Player from "../../Player";
 import Star from "../../Star";
-import BuildingTemplate from "../../templateinterfaces/BuildingTemplate";
+import {BuildingTemplate} from "../../templateinterfaces/BuildingTemplate";
 import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
@@ -80,7 +80,8 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
       building.controller = this.props.player;
     }
 
-    this.props.star.addBuilding(building);
+    this.props.star.buildings.add(building);
+    // TODO 2018.06.06 | why is this done here?
     building.controller.money -= template.buildCost;
     this.updateBuildings();
   }
