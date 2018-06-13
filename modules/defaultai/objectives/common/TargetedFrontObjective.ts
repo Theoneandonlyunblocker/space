@@ -112,6 +112,11 @@ export abstract class TargetedFrontObjective extends FrontObjective
           attackTargets.filter(targetFilter)[0] :
           attackTargets[0];
 
+        if (!targetToAttack)
+        {
+          throw new Error("Targeted objective couldn't find target to attack.");
+        }
+
         player.attackTarget(targetLocation, targetToAttack, afterMoveCallback);
       }
       else

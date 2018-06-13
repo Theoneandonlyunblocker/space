@@ -17,6 +17,7 @@ function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
     displayName: displayName,
     attributes:
     {
+      // TODO 2018.06.05 | this isn't type safe
       [attributeName]:
       {
         multiplier: -0.5,
