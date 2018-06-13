@@ -1,11 +1,17 @@
-import {FlatAndMultiplierAdjustment, squashAdjustmentsObjects} from "./FlatAndMultiplierAdjustment";
+// TODO 2018.06.05 | why does maxActionPoints belong in this module?
+import
+{
+  FlatAndMultiplierAdjustment,
+  squashAdjustmentsObjects,
+  getBaseAdjustment,
+  applyFlatAndMultiplierAdjustments,
+} from "./FlatAndMultiplierAdjustment";
 import
 {
   clamp,
 } from "./utility";
 
 
-// TODO 2018.06.05 | why does maxActionPoints belong in this module?
 export enum UnitAttribute
 {
   Attack,
@@ -22,7 +28,6 @@ export interface UnitAttributeAdjustments
   intelligence?: FlatAndMultiplierAdjustment;
   speed?: FlatAndMultiplierAdjustment;
 }
-
 export interface UnitAttributesObject
 {
   maxActionPoints: number;
@@ -59,30 +64,21 @@ export class UnitAttributes implements UnitAttributesObject
       speed: 0,
     });
   }
-  public static squashAdjustments(...toSquash: UnitAttributeAdjustments[]): UnitAttributeAdjustments
+  private static getBaseAdjustmentsObject(): UnitAttributeAdjustments
   {
-    return squashAdjustmentsObjects(...toSquash);
+    return(
+    {
+      maxActionPoints: getBaseAdjustment(),
+      attack: getBaseAdjustment(),
+      defence: getBaseAdjustment(),
+      intelligence: getBaseAdjustment(),
+      speed: getBaseAdjustment(),
+    });
   }
 
   public clone(): UnitAttributes
   {
     return new UnitAttributes(this);
-  }
-  public applyAdjustment(adjustment: UnitAttributeAdjustments): UnitAttributes
-  {
-    for (const attribute in adjustment)
-    {
-      if (adjustment[attribute].flat)
-      {
-        this[attribute] += adjustment[attribute].flat;
-      }
-      if (isFinite(adjustment[attribute].multiplier))
-      {
-        this[attribute] *= 1 + adjustment[attribute].multiplier;
-      }
-    }
-
-    return this;
   }
   public clamp(min: number, max: number): UnitAttributes
   {
@@ -95,12 +91,41 @@ export class UnitAttributes implements UnitAttributesObject
   }
   public getAdjustedAttributes(...adjustments: UnitAttributeAdjustments[]): UnitAttributes
   {
-    const squashedAdjustments = UnitAttributes.squashAdjustments(...adjustments);
+    const baseAdjustments = UnitAttributes.getBaseAdjustmentsObject();
+    const squashedAdjustments = squashAdjustmentsObjects(baseAdjustments, ...adjustments);
 
     const cloned = this.clone();
-    cloned.applyAdjustment(squashedAdjustments);
+    cloned.applyAdjustments(squashedAdjustments);
 
     return cloned;
+  }
+  public modifyValueByAttributes(
+    baseValue: number,
+    attributeAdjustments: UnitAttributeAdjustments,
+  ): number
+  {
+    const totalAdjustment = getBaseAdjustment();
+
+    for (const attributeName in attributeAdjustments)
+    {
+      const adjustment = attributeAdjustments[<keyof UnitAttributeAdjustments>attributeName];
+      const attributeValue = this[<keyof UnitAttributeAdjustments>attributeName];
+
+      if (adjustment.flat)
+      {
+        totalAdjustment.flat += adjustment.flat * attributeValue;
+      }
+      if (adjustment.additiveMultiplier)
+      {
+        totalAdjustment.additiveMultiplier += adjustment.additiveMultiplier * attributeValue;
+      }
+      if (isFinite(adjustment.multiplicativeMultiplier))
+      {
+        totalAdjustment.multiplicativeMultiplier *= adjustment.multiplicativeMultiplier * attributeValue;
+      }
+    }
+
+    return applyFlatAndMultiplierAdjustments(baseValue, totalAdjustment);
   }
   public getDifferenceBetween(toCompare: UnitAttributes): UnitAttributes
   {
@@ -124,27 +149,20 @@ export class UnitAttributes implements UnitAttributesObject
       "speed",
     ]);
   }
-  public modifyValueByAttributes(base: number = 0, modifierPerStat: UnitAttributeAdjustments = {}): number
-  {
-    let totalFlat = base;
-    let totalMultiplier = 1;
-
-    for (const attribute in modifierPerStat)
-    {
-      const flatAdjustment = modifierPerStat[attribute].flat || 0;
-      totalFlat += flatAdjustment * this[attribute];
-
-      const multiplier = modifierPerStat[attribute].multiplier || 0;
-      totalMultiplier += multiplier * this[attribute];
-    }
-
-    return totalFlat * totalMultiplier;
-  }
   public serialize(): UnitAttributesObject
   {
     return JSON.parse(JSON.stringify(this));
   }
 
+  private applyAdjustments(adjustments: UnitAttributeAdjustments): UnitAttributes
+  {
+    for (const attribute in adjustments)
+    {
+      this[attribute] = applyFlatAndMultiplierAdjustments(this[attribute], adjustments[attribute]);
+    }
+
+    return this;
+  }
   private forEachAttribute(cb: (attribute: keyof UnitAttributesObject) => void): void
   {
     this.getAttributesTypesSortedForDisplay().forEach(attribute =>

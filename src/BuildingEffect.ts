@@ -4,14 +4,15 @@ import
   FlatAndMultiplierAdjustment,
 } from "./FlatAndMultiplierAdjustment";
 
-export declare interface BuildingEffect
+
+export interface BuildingEffect
 {
-  vision: FlatAndMultiplierAdjustment;
-  detection: FlatAndMultiplierAdjustment;
+  vision?: FlatAndMultiplierAdjustment;
+  detection?: FlatAndMultiplierAdjustment;
   // TODO 2018.06.06 | can't all income be handled together somehow?
-  income: FlatAndMultiplierAdjustment;
-  resourceIncome: FlatAndMultiplierAdjustment;
-  researchPoints: FlatAndMultiplierAdjustment;
+  income?: FlatAndMultiplierAdjustment;
+  resourceIncome?: FlatAndMultiplierAdjustment;
+  researchPoints?: FlatAndMultiplierAdjustment;
 }
 
 export function getBaseBuildingEffect(): BuildingEffect

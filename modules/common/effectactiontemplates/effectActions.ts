@@ -37,7 +37,7 @@ interface DamageWithType
   damageType: DamageType;
 }
 
-interface Adjustment
+interface FlatAndPerAttributeAdjustment
 {
   flat?: number;
   perAttribute?: UnitAttributeAdjustments;
@@ -73,8 +73,8 @@ export const inflictDamage: UnboundEffectAction<DamageWithType> = (
   target.receiveDamage(adjustedDamage);
 };
 
-export const addGuard: UnboundEffectAction<Adjustment & GuardCoverageObj> = (
-  data: Adjustment & GuardCoverageObj,
+export const addGuard: UnboundEffectAction<FlatAndPerAttributeAdjustment & GuardCoverageObj> = (
+  data: FlatAndPerAttributeAdjustment & GuardCoverageObj,
   user: Unit,
   target: Unit,
   battle: Battle,
@@ -186,8 +186,8 @@ export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResul
   target.addHealth(healAmount);
 };
 
-export const adjustBattleEvaluationAdjustment: UnboundEffectAction<Adjustment> = (
-  data: Adjustment,
+export const adjustBattleEvaluationAdjustment: UnboundEffectAction<FlatAndPerAttributeAdjustment> = (
+  data: FlatAndPerAttributeAdjustment,
   user: Unit,
   target: Unit,
   battle: Battle,

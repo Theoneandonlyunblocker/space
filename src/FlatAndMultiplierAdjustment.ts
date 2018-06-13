@@ -1,20 +1,28 @@
-export declare interface FlatAndMultiplierAdjustment
+export interface FlatAndMultiplierAdjustment
 {
-  flat: number;
-  additiveMultiplier: number;
-  multiplicativeMultiplier: number;
+  flat?: number;
+  additiveMultiplier?: number;
+  multiplicativeMultiplier?: number;
 }
 
-const baseAdjustment =
+export type AdjustmentsObject<T> =
 {
-  flat: 0,
-  additiveMultiplier: 1,
-  multiplicativeMultiplier: 1,
+  [K in keyof T]: FlatAndMultiplierAdjustment;
+};
+
+export type PartialAdjustmentsObject<T> =
+{
+  [K in keyof T]?: Partial<FlatAndMultiplierAdjustment>;
 };
 
 export function getBaseAdjustment(): FlatAndMultiplierAdjustment
 {
-  return {...baseAdjustment};
+  return(
+  {
+    flat: 0,
+    additiveMultiplier: 1,
+    multiplicativeMultiplier: 1,
+  });
 }
 
 export function applyFlatAndMultiplierAdjustments(
@@ -48,17 +56,21 @@ export function squashFlatAndMultiplierAdjustments(
 
     return squashed;
 
-  }, baseAdjustment);
+  }, getBaseAdjustment());
 }
 
-type PartialAdjustmentsObject<T> = {[K in keyof T]: Partial<FlatAndMultiplierAdjustment>};
-
-export function squashAdjustmentsObjects<T extends {[K in keyof T]: FlatAndMultiplierAdjustment}>(
-  baseAdjustmentsObject: Required<T>,
+export function squashAdjustmentsObjects<T extends AdjustmentsObject<T>>(
+  baseAdjustmentsObject: T,
   ...adjustmentObjectsToSquash: PartialAdjustmentsObject<T>[],
-): Required<T>
+): T;
+export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
+  ...adjustmentObjectsToSquash: T[],
+): T;
+export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
+  ...adjustmentObjectsToSquash: T[],
+): T
 {
-  return <Required<T>>adjustmentObjectsToSquash.reduce((squashed, toSquash) =>
+  return adjustmentObjectsToSquash.reduce((squashed, toSquash) =>
   {
     for (const key in toSquash)
     {
@@ -75,5 +87,5 @@ export function squashAdjustmentsObjects<T extends {[K in keyof T]: FlatAndMulti
     }
 
     return squashed;
-  }, baseAdjustmentsObject);
+  });
 }
