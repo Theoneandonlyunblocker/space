@@ -1,5 +1,5 @@
 import GuardCoverage from "./GuardCoverage";
-import {PartialUnitAttributes} from "./UnitAttributes";
+import {UnitAttributesObject} from "./UnitAttributes";
 import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
 
 interface UnitDisplayData
@@ -17,7 +17,7 @@ interface UnitDisplayData
   isAnnihilated: boolean;
   isSquadron: boolean;
 
-  attributeChanges?: PartialUnitAttributes;
+  attributeChanges?: Partial<UnitAttributesObject>;
   passiveEffects?: UnitEffectTemplate[];
 
   portraitSrc: string; // could also allow other portrait elements

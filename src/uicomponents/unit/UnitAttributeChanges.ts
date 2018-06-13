@@ -1,11 +1,11 @@
 import * as React from "react";
 
-import {PartialUnitAttributes} from "../../UnitAttributes";
+import {UnitAttributesObject} from "../../UnitAttributes";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  attributeChanges?: PartialUnitAttributes;
+  attributeChanges?: Partial<UnitAttributesObject>;
 }
 
 interface StateType

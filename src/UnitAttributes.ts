@@ -14,16 +14,6 @@ export enum UnitAttribute
   Speed,
 }
 
-// TODO 2017.02.06 | can't we use the actual class instead of this?
-export interface PartialUnitAttributes
-{
-  maxActionPoints?: number;
-  attack?: number;
-  defence?: number;
-  intelligence?: number;
-  speed?: number;
-}
-
 export interface UnitAttributeAdjustments
 {
   maxActionPoints?: FlatAndMultiplierAdjustment;
