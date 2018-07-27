@@ -1,6 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import * as UnitArchetypes from "../UnitArchetypes";
+import * as unitArchetypes from "../unitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import
@@ -17,7 +17,7 @@ const scout: UnitTemplate =
   type: "scout",
   displayName: "Scout",
   description: "Weak in combat, but has high vision and can reveal stealthy units and details of units in same star",
-  archetype: UnitArchetypes.scouting,
+  archetype: unitArchetypes.scouting,
   sprite:
   {
     imageSrc: "scout.png",

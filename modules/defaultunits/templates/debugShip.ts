@@ -1,6 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import * as UnitArchetypes from "../UnitArchetypes";
+import * as unitArchetypes from "../unitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import
@@ -33,7 +33,7 @@ const debugShip: UnitTemplate =
   type: "debugShip",
   displayName: "Debug Ship",
   description: "debug",
-  archetype: UnitArchetypes.combat,
+  archetype: unitArchetypes.combat,
   sprite:
   {
     imageSrc: "debugShip.png",

@@ -1,6 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import * as UnitArchetypes from "../UnitArchetypes";
+import * as unitArchetypes from "../unitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import
@@ -18,7 +18,7 @@ const bomberSquadron: UnitTemplate =
   type: "bomberSquadron",
   displayName: "Bomber Squadron",
   description: "Can damage multiple targets with special bomb attack",
-  archetype: UnitArchetypes.combat,
+  archetype: unitArchetypes.combat,
   sprite:
   {
     imageSrc: "bomber.png",

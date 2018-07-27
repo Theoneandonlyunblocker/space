@@ -1,6 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import * as UnitArchetypes from "../UnitArchetypes";
+import * as unitArchetypes from "../unitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import
@@ -22,7 +22,7 @@ const commandShip: UnitTemplate =
   type: "commandShip",
   displayName: "Command Ship",
   description: "todo",
-  archetype: UnitArchetypes.utility,
+  archetype: unitArchetypes.utility,
   sprite:
   {
     imageSrc: "shieldBoat.png",

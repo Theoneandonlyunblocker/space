@@ -1,6 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import * as UnitArchetypes from "../UnitArchetypes";
+import * as unitArchetypes from "../unitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import
@@ -18,7 +18,7 @@ const battleCruiser: UnitTemplate =
   type: "battleCruiser",
   displayName: "Battlecruiser",
   description: "Strong combat ship with low speed",
-  archetype: UnitArchetypes.combat,
+  archetype: unitArchetypes.combat,
   sprite:
   {
     imageSrc: "battleCruiser.png",

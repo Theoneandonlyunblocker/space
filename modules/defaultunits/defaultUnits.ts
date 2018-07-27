@@ -7,8 +7,8 @@ import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
 
-import unitArchetypes from "./UnitArchetypes";
-import unitTemplates from "./UnitTemplates";
+import unitArchetypes from "./unitArchetypes";
+import unitTemplates from "./unitTemplates";
 
 
 const defaultUnits: ModuleFile =

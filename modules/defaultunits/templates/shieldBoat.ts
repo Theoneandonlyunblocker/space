@@ -1,6 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import * as UnitArchetypes from "../UnitArchetypes";
+import * as unitArchetypes from "../unitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import
@@ -23,7 +23,7 @@ const shieldBoat: UnitTemplate =
   type: "shieldBoat",
   displayName: "Shield Boat",
   description: "Great defence and ability to protect allies in same row",
-  archetype: UnitArchetypes.defence,
+  archetype: unitArchetypes.defence,
   sprite:
   {
     imageSrc: "shieldBoat.png",

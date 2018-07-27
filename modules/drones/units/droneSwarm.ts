@@ -1,6 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import * as UnitArchetypes from "../../defaultunits/UnitArchetypes";
+import * as unitArchetypes from "../../defaultunits/unitArchetypes";
 import defaultUnitDrawingFunction from "../../defaultunits/defaultUnitDrawingFunction";
 
 import * as CommonAbility from "../../common/abilitytemplates/abilities";
@@ -15,7 +15,7 @@ export const droneSwarm: UnitTemplate =
   displayName: "Drone Swarm",
   description: "Swarm o drones",
 
-  archetype: UnitArchetypes.combat,
+  archetype: unitArchetypes.combat,
   sprite:
   {
     imageSrc: "img/placeholder.png",

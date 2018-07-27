@@ -1,6 +1,6 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import * as UnitArchetypes from "../UnitArchetypes";
+import * as unitArchetypes from "../unitArchetypes";
 import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import
@@ -18,7 +18,7 @@ const fighterSquadron: UnitTemplate =
   type: "fighterSquadron",
   displayName: "Fighter Squadron",
   description: "Fast and cheap unit with good attack and speed but low defence",
-  archetype: UnitArchetypes.combat,
+  archetype: unitArchetypes.combat,
   sprite:
   {
     imageSrc: "fighter.png",
