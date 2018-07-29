@@ -12,13 +12,10 @@ import {generateIndependentPlayer} from "../../common/generateIndependentPlayer"
 import defaultAiConstructor from "../../defaultai/mapai/DefaultAiConstructor";
 import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
 
-
-import
-{
-  defaultRaceTechnologyValues,
-  getDefaultUnits,
-  mergeTechnologyValues,
-} from "../common";
+import {getDefaultBuildableBuildings} from "../common/getDefaultBuildableBuildings";
+import {getDefaultBuildableUnits} from "../common/getDefaultBuildableUnits";
+import {defaultRaceTechnologyValues} from "../common/defaultRaceTechnologyValues";
+import {mergeTechnologyValues} from "../common/utility";
 
 
 const federationAlliance: RaceTemplate =
@@ -31,9 +28,13 @@ const federationAlliance: RaceTemplate =
     weight: 0,
     distributionGroups: [],
   },
+  getBuildableBuildings: star =>
+  {
+    return getDefaultBuildableBuildings();
+  },
   getBuildableUnitTypes: player =>
   {
-    return getDefaultUnits().filter(unitTemplate =>
+    return getDefaultBuildableUnits().filter(unitTemplate =>
     {
       return !unitTemplate.technologyRequirements ||
         player.meetsTechnologyRequirements(unitTemplate.technologyRequirements);

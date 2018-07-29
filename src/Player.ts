@@ -227,6 +227,7 @@ export default class Player
           distributionGroups: [],
         },
 
+        getBuildableBuildings: () => [],
         getBuildableUnitTypes: () => [],
         getUnitName: () => "",
         getUnitPortrait: () => null,

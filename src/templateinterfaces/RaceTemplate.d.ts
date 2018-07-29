@@ -23,11 +23,10 @@ export declare interface RaceTemplate
   isNotPlayable?: boolean;
   distributionData: DistributionData;
 
-  // TODO 2016.10.11 | implement this stuff
+  // TODO 2018.06.13 | implement this stuff
   getBuildableUnitTypes(player: Player): UnitTemplate[];
   // getBuildableItemTypes(player: Player): ItemTemplate[];
-
-  // getBuildableBuildings(star: Star): BuildingTemplate[];
+  getBuildableBuildings(star: Star): BuildingTemplate[];
   // getBuildingUpgrades(star: Star): BuildingUpgradeData[];
 
   // TODO 2016.10.19 | return Name instead
