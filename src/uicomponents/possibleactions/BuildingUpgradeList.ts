@@ -45,23 +45,11 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
     return Object.keys(possibleUpgrades).length > 0;
   }
 
-  // TODO 2018.06.07 | does this belong here?
   upgradeBuilding(upgradeData: BuildingUpgradeData)
   {
-    const star = upgradeData.parentBuilding.location;
+    upgradeData.parentBuilding.upgrade(upgradeData);
 
-    const newBuilding = new Building(
-    {
-      template: upgradeData.template,
-      location: star,
-      controller: upgradeData.parentBuilding.controller,
-      upgradeLevel: upgradeData.level,
-      totalCost: upgradeData.parentBuilding.totalCost + upgradeData.cost,
-    });
-
-    star.buildings.add(upgradeData.parentBuilding);
-    star.buildings.remove(newBuilding);
-
+    // TODO 2018.06.07 | does this belong here?
     upgradeData.parentBuilding.controller.money -= upgradeData.cost;
 
     if (!this.hasAvailableUpgrades())

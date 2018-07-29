@@ -1,9 +1,9 @@
 import {Building} from "./Building";
 import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
 
-declare interface BuildingUpgradeData
+declare interface BuildingUpgradeData<T extends BuildingTemplate = BuildingTemplate>
 {
-  template: BuildingTemplate;
+  template: T;
   level: number;
   cost: number;
   parentBuilding: Building;

@@ -6,7 +6,6 @@ import BuildingUpgradeData from "./BuildingUpgradeData";
 import BuildingSaveData from "./savedata/BuildingSaveData";
 
 
-// TODO 2018.06.13 |
 export class BuildingCollection<T extends Building>
 {
   private readonly buildings: T[] = [];
@@ -83,6 +82,10 @@ export class BuildingCollection<T extends Building>
 
 
     return allUpgrades;
+  }
+  public handleBuidlingUpgrade(): void
+  {
+    this.cachedEffectsAreDirty = true;
   }
   public serialize(): BuildingSaveData[]
   {
