@@ -49,7 +49,6 @@ export default class Star implements Point
 
   public voronoiCell: VoronoiCell<Star>;
 
-
   public name: string;
   public owner: Player;
   public baseIncome: number;
@@ -850,6 +849,7 @@ export default class Star implements Point
   {
     return this.buildings.filter(building => building.controller === player);
   }
+  // TODO 2018.07.30 | remove
   private getBuildingsInFamilyOfTemplate(buildingTemplate: BuildingTemplate): Building[]
   {
     const propToCheck = buildingTemplate.family ? "family" : "type";
@@ -861,27 +861,34 @@ export default class Star implements Point
   }
   public getBuildableBuildings(): BuildingTemplate[]
   {
-    const canBuild: BuildingTemplate[] = [];
-    for (const buildingType in activeModuleData.templates.Buildings)
+    // doesn't check ownership. don't think we want to
+    const buildingsByFamily = this.buildings.getBuildingsByFamily();
+
+    return this.owner.getGloballyBuildableBuildings(this).filter(buildingTemplate =>
     {
-      const template: BuildingTemplate = activeModuleData.templates.Buildings[buildingType];
-      let alreadyBuilt: Building[];
+      const family = buildingTemplate.family || buildingTemplate.type;
 
-      if (template.category === "mine" && !this.resource)
+      const hasGlobalLimit = isFinite(buildingTemplate.maxBuiltGlobally);
+      if (hasGlobalLimit)
       {
-        continue;
+        const globalAmountBuilt = this.galaxyMap.globallyLimitedBuildingsByFamily[family] ?
+          this.galaxyMap.globallyLimitedBuildingsByFamily[family].length :
+          0;
+        const isUnderGlobalLimit = globalAmountBuilt < buildingTemplate.maxBuiltGlobally;
+
+        if (!isUnderGlobalLimit)
+        {
+          return false;
+        }
       }
 
-      alreadyBuilt = this.getBuildingsInFamilyOfTemplate(template);
+      const localAmountBuilt = buildingsByFamily[family].length;
+      const isUnderLocalLimit = localAmountBuilt < buildingTemplate.maxBuiltAtLocation;
 
-      if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly)
-      {
-        canBuild.push(template);
-      }
-    }
-
-    return canBuild;
+      return isUnderLocalLimit;
+    });
   }
+  // TODO 2018.07.30 | move to buildingcollection
   public getBuildingUpgrades(): {[buildingId: number]: BuildingUpgradeData[]}
   {
     const allUpgrades:
@@ -907,7 +914,7 @@ export default class Star implements Point
         else
         {
           const isSameFamily = (template.family && parent.family === template.family);
-          let maxAllowed = template.maxPerType;
+          let maxAllowed = template.maxBuiltAtLocation;
           if (isSameFamily)
           {
             maxAllowed += 1;

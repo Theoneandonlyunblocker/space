@@ -55,6 +55,28 @@ export class BuildingCollection<T extends Building>
   {
     return this.buildings.map(callbackFn);
   }
+  public toDict(getKeyFn: (building: T) => string): {[key: string]: T[]}
+  {
+    const dict: {[key: string]: T[]} = {};
+
+    this.forEach(building =>
+    {
+      const key = getKeyFn(building);
+
+      if (!dict[key])
+      {
+        dict[key] = [];
+      }
+
+      dict[key].push(building);
+    });
+
+    return dict;
+  }
+  public getBuildingsByFamily(): {[key: string]: T[]}
+  {
+    return this.toDict(building => building.template.family || building.template.type);
+  }
   public filter(filterFn: (building: T) => boolean): T[]
   {
     return this.buildings.filter(filterFn);

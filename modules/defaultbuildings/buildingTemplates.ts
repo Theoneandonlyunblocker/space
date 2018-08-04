@@ -1,11 +1,8 @@
-import {BuildingTemplate} from "../../src/templateinterfaces/BuildingTemplate";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
-
 import * as otherBuildings from "./templates/otherBuildings";
 import * as territoryBuildings from "./templates/territoryBuildings";
 
 
-const buildingTemplates: TemplateCollection<BuildingTemplate> =
+const buildingTemplates =
 {
   [territoryBuildings.sectorCommand.type]: territoryBuildings.sectorCommand,
   [territoryBuildings.sectorCommand1.type]: territoryBuildings.sectorCommand1,

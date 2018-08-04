@@ -8,7 +8,7 @@ export const commercialPort: BuildingTemplate =
   description: "Increase star income by 20",
 
   buildCost: 200,
-  maxPerType: 1,
+  maxBuiltAtLocation: 1,
   maxUpgradeLevel: 4,
 
   getEffect: (upgradeLevel) =>
@@ -30,7 +30,7 @@ export const deepSpaceRadar: BuildingTemplate =
 
   buildCost: 200,
 
-  maxPerType: 1,
+  maxBuiltAtLocation: 1,
   maxUpgradeLevel: 2,
 
   getEffect: (upgradeLevel) =>
@@ -52,8 +52,12 @@ export const resourceMine: BuildingTemplate =
 
   buildCost: 500,
 
-  maxPerType: 1,
+  maxBuiltAtLocation: 1,
   maxUpgradeLevel: 3,
+  canBeBuiltInLocation: (star) =>
+  {
+    return Boolean(star.resource);
+  },
 
   getEffect: (upgradeLevel) =>
   {
@@ -74,7 +78,7 @@ export const reserachLab: BuildingTemplate =
 
   buildCost: 300,
 
-  maxPerType: 1,
+  maxBuiltAtLocation: 1,
   maxUpgradeLevel: 3,
 
   getEffect: (upgradeLevel) =>

@@ -43,6 +43,7 @@ import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
 import PlayerSaveData from "./savedata/PlayerSaveData";
 import PlayerTechnologySaveData from "./savedata/PlayerTechnologySaveData";
+import { BuildingTemplate } from "./templateinterfaces/BuildingTemplate";
 
 
 // TODO 2017.07.26 | probably should split minor & major players into subclasses
@@ -934,6 +935,10 @@ export default class Player
     }
 
     return true;
+  }
+  public getGloballyBuildableBuildings(location: Star): BuildingTemplate[]
+  {
+    return this.race.getBuildableBuildings(location);
   }
   public getGloballyBuildableUnits(): UnitTemplate[]
   {

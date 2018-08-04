@@ -1,5 +1,6 @@
 import {BuildingEffect} from "../BuildingEffect";
 import UnitEffectTemplate from "./UnitEffectTemplate";
+import {default as Star} from "../Star";
 
 export declare interface BuildingTemplate
 {
@@ -9,15 +10,18 @@ export declare interface BuildingTemplate
 
   buildCost: number;
 
-  family?: string; // all buildings in same family count towards maxPerType
-  maxPerType: number;
+  // buildings with same family count towards maxBuilt limit
+  // if not specified, type is used instead
+  family?: string;
+  maxBuiltAtLocation: number;
+  // TODO 2018.07.30 | implement
+  // maxBuiltForPlayer?: number;
+  maxBuiltGlobally?: number;
+  canBeBuiltInLocation?: (star: Star) => boolean;
 
   getEffect?: (upgradeLevel: number) => BuildingEffect;
 
   maxUpgradeLevel: number;
-  // TODO 2018.06.05 | rename into canBeBuilt or something
-  // why not use same system for buildability as units?
-  upgradeOnly?: boolean;
   upgradeInto?:
   {
     templateType: string;

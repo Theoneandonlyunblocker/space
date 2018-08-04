@@ -15,7 +15,7 @@ export const sectorCommand: TerritoryBuildingTemplate =
   iconSrc: "sectorCommand.png",
   buildCost: 200,
 
-  maxPerType: 1,
+  maxBuiltAtLocation: 1,
 
   maxUpgradeLevel: 1,
 
@@ -43,10 +43,9 @@ export const sectorCommand1: TerritoryBuildingTemplate =
   iconSrc: "sectorCommand.png",
   buildCost: 100,
 
-  maxPerType: 1,
+  maxBuiltAtLocation: 1,
 
   maxUpgradeLevel: 1,
-  upgradeOnly: true,
   battleEffects: [makeDefenderAdvantageEffect(0.3)],
 };
 export const sectorCommand2: TerritoryBuildingTemplate =
@@ -60,10 +59,9 @@ export const sectorCommand2: TerritoryBuildingTemplate =
   iconSrc: "sectorCommand.png",
   buildCost: 200,
 
-  maxPerType: 1,
+  maxBuiltAtLocation: 1,
 
   maxUpgradeLevel: 1,
-  upgradeOnly: true,
   battleEffects: [makeDefenderAdvantageEffect(0.3)],
 };
 export const starBase: TerritoryBuildingTemplate =
@@ -77,7 +75,7 @@ export const starBase: TerritoryBuildingTemplate =
   iconSrc: "starBase.png",
   buildCost: 200,
 
-  maxPerType: 3,
+  maxBuiltAtLocation: 3,
 
   maxUpgradeLevel: 1,
   battleEffects: [makeDefenderAdvantageEffect(0.1)],
