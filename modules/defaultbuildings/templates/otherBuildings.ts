@@ -89,3 +89,15 @@ export const reserachLab: BuildingTemplate =
     });
   },
 };
+export const thePyramids: BuildingTemplate =
+{
+  type: "thePyramids",
+  displayName: "The Pyramids",
+  description: "",
+
+  buildCost: 100,
+
+  maxBuiltAtLocation: 1,
+  maxUpgradeLevel: 1,
+  maxBuiltGlobally: 1,
+};

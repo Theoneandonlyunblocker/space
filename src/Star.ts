@@ -26,6 +26,7 @@ import
 
 import StarSaveData from "./savedata/StarSaveData";
 import { applyFlatAndMultiplierAdjustments } from "./FlatAndMultiplierAdjustment";
+import GalaxyMap from "./GalaxyMap";
 
 
 // represents single location in game world. see Region for a grouping of these locations
@@ -61,6 +62,7 @@ export default class Star implements Point
     [playerId: string]: Fleet[];
   } = {};
 
+  public readonly galaxyMap: GalaxyMap;
   public readonly buildings: BuildingCollection<Building>;
   public readonly territoryBuildings: BuildingCollection<TerritoryBuilding>;
   public manufactory: Manufactory;
@@ -106,10 +108,21 @@ export default class Star implements Point
 
     this.territoryBuildings = new BuildingCollection(building =>
     {
+      if (isFinite(building.template.maxBuiltGlobally))
+      {
+        this.galaxyMap.registerGloballyLimitedBuilding(building);
+      }
+
       eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
     });
+
     this.buildings = new BuildingCollection(building =>
     {
+      if (isFinite(building.template.maxBuiltGlobally))
+      {
+        this.galaxyMap.registerGloballyLimitedBuilding(building);
+      }
+
       // TODO 2018.06.05 | move or remove this shit
       if (building.template.category === "vision")
       {
