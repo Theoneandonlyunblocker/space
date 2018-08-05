@@ -12,6 +12,7 @@ const buildingTemplates =
   [otherBuildings.deepSpaceRadar.type]: otherBuildings.deepSpaceRadar,
   [otherBuildings.resourceMine.type]: otherBuildings.resourceMine,
   [otherBuildings.reserachLab.type]: otherBuildings.reserachLab,
+  [otherBuildings.thePyramids.type]: otherBuildings.thePyramids,
 };
 
 export default buildingTemplates;

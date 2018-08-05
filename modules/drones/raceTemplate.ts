@@ -27,6 +27,10 @@ export const drones: RaceTemplate =
     distributionGroups: [distributionGroups.common, distributionGroups.rare],
   },
   isNotPlayable: true,
+  getBuildableBuildings: star =>
+  {
+    return [];
+  },
   getBuildableUnitTypes: player =>
   {
     return(

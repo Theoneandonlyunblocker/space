@@ -32,6 +32,8 @@ export default class GalaxyMap
     this.fillerPoints = mapGen.fillerPoints;
     this.independents = mapGen.independents;
     this.voronoi = mapGen.voronoiInfo;
+
+    this.stars.forEach(star => star.galaxyMap = this)
   }
   public getIncomeBounds()
   {

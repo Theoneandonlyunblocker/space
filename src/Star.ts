@@ -62,7 +62,7 @@ export default class Star implements Point
     [playerId: string]: Fleet[];
   } = {};
 
-  public readonly galaxyMap: GalaxyMap;
+  public galaxyMap: GalaxyMap;
   public readonly buildings: BuildingCollection<Building>;
   public readonly territoryBuildings: BuildingCollection<TerritoryBuilding>;
   public manufactory: Manufactory;
@@ -827,8 +827,6 @@ export default class Star implements Point
 
     return data;
   }
-
-
   public getTerritoryBuildings(): TerritoryBuilding[]
   {
     // TODO 2018.06.06 |
@@ -862,16 +860,6 @@ export default class Star implements Point
   {
     return this.buildings.filter(building => building.controller === player);
   }
-  // TODO 2018.07.30 | remove
-  private getBuildingsInFamilyOfTemplate(buildingTemplate: BuildingTemplate): Building[]
-  {
-    const propToCheck = buildingTemplate.family ? "family" : "type";
-
-    return this.buildings.filter(building =>
-    {
-      return building.template[propToCheck] === buildingTemplate[propToCheck];
-    });
-  }
   public getBuildableBuildings(): BuildingTemplate[]
   {
     // doesn't check ownership. don't think we want to
@@ -895,7 +883,7 @@ export default class Star implements Point
         }
       }
 
-      const localAmountBuilt = buildingsByFamily[family].length;
+      const localAmountBuilt = buildingsByFamily[family] ? buildingsByFamily[family].length : 0;
       const isUnderLocalLimit = localAmountBuilt < buildingTemplate.maxBuiltAtLocation;
 
       return isUnderLocalLimit;
@@ -919,22 +907,26 @@ export default class Star implements Point
       upgrades = upgrades.filter(upgradeData =>
       {
         const parent = upgradeData.parentBuilding.template;
-        const template = upgradeData.template;
-        if (parent.type === template.type)
+        const upgrade = upgradeData.template;
+        if (parent.type === upgrade.type)
         {
           return true;
         }
         else
         {
-          const isSameFamily = (template.family && parent.family === template.family);
-          let maxAllowed = template.maxBuiltAtLocation;
+          const isSameFamily = (upgrade.family && parent.family === upgrade.family);
           if (isSameFamily)
           {
-            maxAllowed += 1;
+            return true;
           }
-          const alreadyBuilt = this.getBuildingsInFamilyOfTemplate(template);
 
-          return alreadyBuilt.length < maxAllowed;
+          const maxAllowed = upgrade.maxBuiltAtLocation;
+          const alreadyBuilt = this.buildings.filter(built =>
+          {
+            return built.template.family === upgrade.family;
+          }).length;
+
+          return alreadyBuilt < maxAllowed;
         }
       });
 

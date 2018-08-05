@@ -12,5 +12,6 @@ export function getDefaultBuildableBuildings(): BuildingTemplate[]
     otherBuildings.deepSpaceRadar,
     otherBuildings.reserachLab,
     otherBuildings.resourceMine,
+    otherBuildings.thePyramids,
   ];
 }
