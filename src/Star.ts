@@ -123,15 +123,17 @@ export default class Star implements Point
         this.galaxyMap.registerGloballyLimitedBuilding(building);
       }
 
-      // TODO 2018.06.05 | move or remove this shit
-      if (building.template.category === "vision")
+      const effect = building.getEffect();
+
+      const buildingChangesVision = effect.vision || effect.detection;
+      if (buildingChangesVision)
       {
         this.owner.updateVisibleStars();
       }
 
       if (this.owner === activePlayer)
       {
-        const effect = building.getEffect();
+
         for (const key in effect)
         {
           eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
