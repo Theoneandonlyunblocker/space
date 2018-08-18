@@ -37,7 +37,7 @@ const nonFillerStars: MapRendererLayerTemplate =
     for (let i = 0; i < points.length; i++)
     {
       const star = points[i];
-      const territoryBuildingsCount = star.getTerritoryBuildings().length;
+      const territoryBuildingsCount = star.territoryBuildings.length;
 
       const starSize = 1 + territoryBuildingsCount * 2;
 

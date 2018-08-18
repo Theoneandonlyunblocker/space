@@ -436,7 +436,7 @@ export function addTerritoryBuildings(star: Star, amount: number = 1, addSectorC
 
   if (addSectorCommand)
   {
-    star.territoryBuildings.add(new Building(
+    star.buildings.add(new Building(
     {
       template: sectorCommand,
       location: star,
@@ -447,7 +447,7 @@ export function addTerritoryBuildings(star: Star, amount: number = 1, addSectorC
 
   for (let i = 0; i < buildingsToAdd; i++)
   {
-    star.territoryBuildings.add(new Building(
+    star.buildings.add(new Building(
     {
       template: starBase,
       location: star,

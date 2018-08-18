@@ -97,7 +97,6 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
 
     // TODO 2018.06.13 | better way to do this?
     this.location.buildings.handleBuidlingUpgrade();
-    this.location.territoryBuildings.handleBuidlingUpgrade();
   }
   public setController(newController: Player): void
   {

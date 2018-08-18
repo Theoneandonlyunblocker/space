@@ -65,7 +65,7 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
         ),
         TerritoryBuildingList(
         {
-          buildings: star.getTerritoryBuildings(),
+          buildings: star.territoryBuildings,
           reverse: isAttacker,
         }),
       )

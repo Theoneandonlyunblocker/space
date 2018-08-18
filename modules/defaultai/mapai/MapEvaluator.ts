@@ -305,7 +305,7 @@ export default class MapEvaluator
   {
     const byPlayer = new ValuesByPlayer<number>();
 
-    star.getTerritoryBuildings().forEach(building =>
+    star.territoryBuildings.forEach(building =>
     {
       const previousValue = byPlayer.get(building.controller) || 0;
       byPlayer.set(building.controller, previousValue + building.totalCost);

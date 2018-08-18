@@ -64,7 +64,15 @@ export default class Star implements Point
 
   public galaxyMap: GalaxyMap;
   public readonly buildings: BuildingCollection<Building>;
-  public readonly territoryBuildings: BuildingCollection<TerritoryBuilding>;
+  // TODO 2018.08.18 | why is this a type error? old tsc ver?
+  public get territoryBuildings(): TerritoryBuilding[]
+  {
+    // TODO 2018.08.18 | do we need to sort this?
+    return this.buildings.filter((building): building is TerritoryBuilding =>
+    {
+      return (<TerritoryBuilding>building).template.isTerritoryBuilding;
+    });
+  }
   public manufactory: Manufactory;
 
   private readonly indexedNeighborsInRange:
@@ -106,15 +114,16 @@ export default class Star implements Point
     this.race = props.race;
     this.terrain = props.terrain;
 
-    this.territoryBuildings = new BuildingCollection(building =>
-    {
-      if (isFinite(building.template.maxBuiltGlobally))
-      {
-        this.galaxyMap.registerGloballyLimitedBuilding(building);
-      }
+    // TODO 2018.08.18 | todo
+    // this.territoryBuildings = new BuildingCollection(building =>
+    // {
+    //   if (isFinite(building.template.maxBuiltGlobally))
+    //   {
+    //     this.galaxyMap.globallyLimitedBuildings.add(building);
+    //   }
 
-      eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
-    });
+    //   eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
+    // });
 
     this.buildings = new BuildingCollection(building =>
     {
@@ -215,7 +224,7 @@ export default class Star implements Point
 
   public getSecondaryController(): Player | null
   {
-    const territoryBuildings = this.getTerritoryBuildings();
+    const territoryBuildings = this.territoryBuildings;
     for (let i = 0; i < territoryBuildings.length; i++)
     {
       if (territoryBuildings[i].controller !== this.owner)
@@ -228,7 +237,7 @@ export default class Star implements Point
   }
   public updateController(): void
   {
-    const territoryBuildings = this.getTerritoryBuildings();
+    const territoryBuildings = this.territoryBuildings;
 
     const oldOwner = this.owner;
     const newOwner = territoryBuildings[0].controller;
@@ -448,7 +457,7 @@ export default class Star implements Point
   }
   private getFirstEnemyTerritoryBuilding(player: Player): TerritoryBuilding
   {
-    const territoryBuildings = this.getTerritoryBuildings();
+    const territoryBuildings = this.territoryBuildings;
 
     if (this.owner === player)
     {
@@ -811,7 +820,6 @@ export default class Star implements Point
       seed: this.seed,
 
       buildings: this.buildings.serialize(),
-      territoryBuildings: this.territoryBuildings.serialize(),
 
       raceType: this.race.type,
       terrainType: this.terrain.type,
@@ -828,35 +836,6 @@ export default class Star implements Point
     }
 
     return data;
-  }
-  public getTerritoryBuildings(): TerritoryBuilding[]
-  {
-    // TODO 2018.06.06 |
-    return this.territoryBuildings.buildings;
-
-    // return this.buildings.filter(building =>
-    // {
-    //   return building.template.category === "defence";
-    // }).sort((a, b) =>
-    // {
-    //   // TODO 2018.05.30 | more explicit way of checking this
-    //   // headquarters
-    //   if (a.template.maxPerType === 1)
-    //   {
-    //     return -1;
-    //   }
-    //   else if (b.template.maxPerType === 1)
-    //   {
-    //     return 1;
-    //   }
-
-    //   if (a.upgradeLevel !== b.upgradeLevel)
-    //   {
-    //     return b.upgradeLevel - a.upgradeLevel;
-    //   }
-
-    //   return a.id - b.id;
-    // });
   }
   private getBuildingsForPlayer(player: Player): Building[]
   {

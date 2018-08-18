@@ -71,7 +71,7 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         ),
         TerritoryBuildingList(
         {
-          buildings: star.getTerritoryBuildings(),
+          buildings: star.territoryBuildings,
         }),
 
       )

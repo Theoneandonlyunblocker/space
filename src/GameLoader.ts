@@ -287,13 +287,6 @@ export default class GameLoader
 
         star.buildings.add(building);
       });
-      starData.territoryBuildings.forEach(buildingData =>
-      {
-        const building = this.deserializeBuilding<TerritoryBuilding>(buildingData);
-
-        star.territoryBuildings.add(building);
-      });
-
 
       if (starData.manufactory)
       {
