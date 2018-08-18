@@ -6,6 +6,7 @@ import MapVoronoiInfo from "./MapVoronoiInfo";
 import Player from "./Player";
 import Star from "./Star";
 import {Building} from "./Building";
+import { BuildingCollection } from "./BuildingCollection";
 
 
 export default class GalaxyMap
@@ -15,10 +16,7 @@ export default class GalaxyMap
   width: number;
   height: number;
   seed: string;
-  public readonly globallyLimitedBuildingsByFamily:
-  {
-    [family: string]: Building[];
-  } = {};
+  public readonly globallyLimitedBuildings: BuildingCollection<Building>;
 
   independents: Player[];
   voronoi: MapVoronoiInfo;
@@ -33,7 +31,8 @@ export default class GalaxyMap
     this.independents = mapGen.independents;
     this.voronoi = mapGen.voronoiInfo;
 
-    this.stars.forEach(star => star.galaxyMap = this)
+    this.globallyLimitedBuildings = new BuildingCollection<Building>();
+    this.stars.forEach(star => star.galaxyMap = this);
   }
   public getIncomeBounds()
   {
@@ -57,17 +56,6 @@ export default class GalaxyMap
       min: min,
       max: max,
     });
-  }
-  public registerGloballyLimitedBuilding(building: Building): void
-  {
-    const family = building.template.family || building.template.type;
-
-    if (!this.globallyLimitedBuildingsByFamily[family])
-    {
-      this.globallyLimitedBuildingsByFamily[family] = [];
-    }
-
-    this.globallyLimitedBuildingsByFamily[family].push(building);
   }
   public serialize(): GalaxyMapSaveData
   {

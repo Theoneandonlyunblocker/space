@@ -129,7 +129,7 @@ export default class Star implements Point
     {
       if (isFinite(building.template.maxBuiltGlobally))
       {
-        this.galaxyMap.registerGloballyLimitedBuilding(building);
+        this.galaxyMap.globallyLimitedBuildings.add(building);
       }
 
       const effect = building.getEffect();
@@ -853,9 +853,14 @@ export default class Star implements Point
       const hasGlobalLimit = isFinite(buildingTemplate.maxBuiltGlobally);
       if (hasGlobalLimit)
       {
-        const globalAmountBuilt = this.galaxyMap.globallyLimitedBuildingsByFamily[family] ?
-          this.galaxyMap.globallyLimitedBuildingsByFamily[family].length :
-          0;
+        const globalMatchingBuildingsBuilt = this.galaxyMap.globallyLimitedBuildings.filter(builtBuilding =>
+        {
+          const builtBuildingFamily = builtBuilding.template.family || builtBuilding.template.type;
+
+          return builtBuildingFamily === family;
+        });
+
+        const globalAmountBuilt = globalMatchingBuildingsBuilt.length;
         const isUnderGlobalLimit = globalAmountBuilt < buildingTemplate.maxBuiltGlobally;
 
         if (!isUnderGlobalLimit)
