@@ -5,7 +5,7 @@
     "pixi.js": "4.5.3"
   },
   "devDependencies": {
-    "typescript": "2.8.x",
+    "typescript": "3.0.x",
     "less": "2.6.x",
     "tslint": "5.10.x",
     "ncp": "2.0.x",
