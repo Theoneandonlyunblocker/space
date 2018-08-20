@@ -64,7 +64,6 @@ export default class Star implements Point
 
   public galaxyMap: GalaxyMap;
   public readonly buildings: BuildingCollection<Building>;
-  // TODO 2018.08.18 | why is this a type error? old tsc ver?
   public get territoryBuildings(): TerritoryBuilding[]
   {
     // TODO 2018.08.18 | do we need to sort this?

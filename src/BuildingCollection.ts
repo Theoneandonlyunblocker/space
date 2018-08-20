@@ -77,6 +77,8 @@ export class BuildingCollection<T extends Building>
   {
     return this.toDict(building => building.template.family || building.template.type);
   }
+  public filter<S extends T>(filterFn: (building: T) => building is S): S[];
+  public filter(filterFn: (building: T) => boolean): T[];
   public filter(filterFn: (building: T) => boolean): T[]
   {
     return this.buildings.filter(filterFn);
