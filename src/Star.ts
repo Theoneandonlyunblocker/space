@@ -843,7 +843,7 @@ export default class Star implements Point
   public getBuildableBuildings(): BuildingTemplate[]
   {
     // doesn't check ownership. don't think we want to
-    const buildingsByFamily = this.buildings.getBuildingsByFamily();
+    const localBuildingsByFamily = this.buildings.getBuildingsByFamily();
 
     return this.owner.getGloballyBuildableBuildings(this).filter(buildingTemplate =>
     {
@@ -856,7 +856,6 @@ export default class Star implements Point
           return false;
         }
       }
-
 
       const family = buildingTemplate.family || buildingTemplate.type;
 
@@ -871,18 +870,21 @@ export default class Star implements Point
         });
 
         const globalAmountBuilt = globalMatchingBuildingsBuilt.length;
-        const isUnderGlobalLimit = globalAmountBuilt < buildingTemplate.maxBuiltGlobally;
-
-        if (!isUnderGlobalLimit)
+        const isOverGlobalLimit = globalAmountBuilt >= buildingTemplate.maxBuiltGlobally;
+        if (isOverGlobalLimit)
         {
           return false;
         }
       }
 
-      const localAmountBuilt = buildingsByFamily[family] ? buildingsByFamily[family].length : 0;
-      const isUnderLocalLimit = localAmountBuilt < buildingTemplate.maxBuiltAtLocation;
+      const localAmountBuilt = localBuildingsByFamily[family] ? localBuildingsByFamily[family].length : 0;
+      const isOverLocalLimit = localAmountBuilt >= buildingTemplate.maxBuiltAtLocation;
+      if (isOverLocalLimit)
+      {
+        return false;
+      }
 
-      return isUnderLocalLimit;
+      return true;
     });
   }
   // TODO 2018.07.30 | move to buildingcollection
