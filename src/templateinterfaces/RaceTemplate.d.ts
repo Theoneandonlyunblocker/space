@@ -26,7 +26,7 @@ export declare interface RaceTemplate
   // TODO 2018.06.13 | implement this stuff
   getBuildableUnitTypes(player: Player): UnitTemplate[];
   // getBuildableItemTypes(player: Player): ItemTemplate[];
-  getBuildableBuildings(star: Star): BuildingTemplate[];
+  getBuildableBuildings(): BuildingTemplate[];
   // getBuildingUpgrades(star: Star): BuildingUpgradeData[];
 
   // TODO 2016.10.19 | return Name instead

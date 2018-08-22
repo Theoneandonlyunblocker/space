@@ -936,9 +936,9 @@ export default class Player
 
     return true;
   }
-  public getGloballyBuildableBuildings(location: Star): BuildingTemplate[]
+  public getBuildableBuildings(): BuildingTemplate[]
   {
-    return this.race.getBuildableBuildings(location);
+    return this.race.getBuildableBuildings();
   }
   public getGloballyBuildableUnits(): UnitTemplate[]
   {

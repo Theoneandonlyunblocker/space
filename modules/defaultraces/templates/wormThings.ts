@@ -28,7 +28,7 @@ const wormThings: RaceTemplate =
     weight: 0,
     distributionGroups: [],
   },
-  getBuildableBuildings: star =>
+  getBuildableBuildings: () =>
   {
     return getDefaultBuildableBuildings();
   },

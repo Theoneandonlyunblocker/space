@@ -845,7 +845,7 @@ export default class Star implements Point
     // doesn't check ownership. don't think we want to
     const localBuildingsByFamily = this.buildings.getBuildingsByFamily();
 
-    return this.owner.getGloballyBuildableBuildings(this).filter(buildingTemplate =>
+    return this.owner.getBuildableBuildings().filter(buildingTemplate =>
     {
       const hasBuildingRestriction = Boolean(buildingTemplate.canBeBuiltInLocation);
       if (hasBuildingRestriction)
