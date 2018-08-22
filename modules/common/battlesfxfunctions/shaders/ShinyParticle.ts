@@ -17,7 +17,7 @@ export default class ShinyParticle extends PIXI.Filter<Uniforms>
   constructor(initialUniformValues?: Partial<Uniforms>)
   {
     const uniformData = ShinyParticle.makeUniformDataObject(initialUniformValues);
-    super(null, sourceLines.join("\n"), uniformData);
+    super(undefined, sourceLines.join("\n"), uniformData);
   }
 
   private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData

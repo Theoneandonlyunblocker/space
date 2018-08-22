@@ -21,7 +21,7 @@ export default class Guard extends PIXI.Filter<Uniforms>
   constructor(initialUniformValues?: Partial<Uniforms>)
   {
     const uniformData = Guard.makeUniformDataObject(initialUniformValues);
-    super(null, sourceLines.join("\n"), uniformData);
+    super(undefined, sourceLines.join("\n"), uniformData);
   }
 
   private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
