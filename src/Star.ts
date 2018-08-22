@@ -847,6 +847,17 @@ export default class Star implements Point
 
     return this.owner.getGloballyBuildableBuildings(this).filter(buildingTemplate =>
     {
+      const hasBuildingRestriction = Boolean(buildingTemplate.canBeBuiltInLocation);
+      if (hasBuildingRestriction)
+      {
+        const canBeBuiltHere = buildingTemplate.canBeBuiltInLocation(this);
+        if (!canBeBuiltHere)
+        {
+          return false;
+        }
+      }
+
+
       const family = buildingTemplate.family || buildingTemplate.type;
 
       const hasGlobalLimit = isFinite(buildingTemplate.maxBuiltGlobally);
