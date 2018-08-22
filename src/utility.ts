@@ -650,7 +650,7 @@ export function splitMultilineText(text: string | React.ReactFragment): string |
 }
 // TODO 2017.07.11 | this should be in a base class for ui components instead
 export function mergeReactAttributes<T>(
-  ...toMerge: React.HTMLAttributes<T>[],
+  ...toMerge: React.HTMLAttributes<T>[]
 ): React.HTMLAttributes<T>
 {
   const merged = shallowExtend({}, ...toMerge);

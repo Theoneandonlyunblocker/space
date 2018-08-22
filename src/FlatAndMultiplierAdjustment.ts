@@ -36,7 +36,7 @@ export function applyFlatAndMultiplierAdjustments(
 }
 
 export function squashFlatAndMultiplierAdjustments(
-  ...allAdjustments: Partial<FlatAndMultiplierAdjustment>[],
+  ...allAdjustments: Partial<FlatAndMultiplierAdjustment>[]
 ): FlatAndMultiplierAdjustment
 {
   return allAdjustments.reduce((squashed: FlatAndMultiplierAdjustment, toSquash) =>
@@ -60,13 +60,13 @@ export function squashFlatAndMultiplierAdjustments(
 
 export function squashAdjustmentsObjects<T extends AdjustmentsObject<T>>(
   baseAdjustmentsObject: T,
-  ...adjustmentObjectsToSquash: PartialAdjustmentsObject<T>[],
+  ...adjustmentObjectsToSquash: PartialAdjustmentsObject<T>[]
 ): T;
 export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
-  ...adjustmentObjectsToSquash: T[],
+  ...adjustmentObjectsToSquash: T[]
 ): T;
 export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
-  ...adjustmentObjectsToSquash: T[],
+  ...adjustmentObjectsToSquash: T[]
 ): T
 {
   return adjustmentObjectsToSquash.reduce((squashed, toSquash) =>

@@ -44,7 +44,7 @@ export interface FormationValidity
 }
 
 export function squashValidityModifierEffects(
-  ...effects: FormationValidityModifierEffect[],
+  ...effects: FormationValidityModifierEffect[]
 ): Required<FormationValidityModifierEffect>
 {
   const squashed: Required<FormationValidityModifierEffect> =
