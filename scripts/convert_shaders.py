@@ -103,7 +103,10 @@ def getUniformsLines(uniformTypes):
 
   lines.append('}\n\n')
 
-  lines.append('type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};\n\n')
+  if len(uniformTypes) is not 0:
+    lines.append('type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};\n\n')
+  else:
+    lines.append('type Uniforms = {}\n\n')
 
   return lines
 

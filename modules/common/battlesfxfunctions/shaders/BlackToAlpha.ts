@@ -7,7 +7,7 @@ interface UniformData
 {
 }
 
-type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};
+type Uniforms = {}
 
 export default class BlackToAlpha extends PIXI.Filter<Uniforms>
 {
