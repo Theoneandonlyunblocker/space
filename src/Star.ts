@@ -305,7 +305,7 @@ export default class Star implements Point
     const baseAmount = 0;
     const buildingsEffect = this.buildings.getEffects().resourceIncome;
 
-    const finalAmount = applyFlatAndMultiplierAdjustments(baseAmount, buildingsEffect)
+    const finalAmount = applyFlatAndMultiplierAdjustments(baseAmount, buildingsEffect);
 
     return(
     {

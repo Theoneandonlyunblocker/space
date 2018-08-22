@@ -1,7 +1,7 @@
 
 import {AiController} from "./AIController";
 import {AttitudeModifier} from "./AttitudeModifier";
-import {Building, TerritoryBuilding} from "./Building";
+import {Building} from "./Building";
 import Color from "./Color";
 import Emblem from "./Emblem";
 import FillerPoint from "./FillerPoint";

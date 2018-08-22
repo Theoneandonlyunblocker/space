@@ -36,6 +36,7 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     totalCost?: number;
 
     id?: number;
+
   })
   {
     this.template = props.template;

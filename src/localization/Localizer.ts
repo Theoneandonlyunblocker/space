@@ -72,7 +72,9 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
     }
     this.appendMessages(messages, language);
   }
-  public appendMessages(messages: Partial<Messages>, language: Language): void
+  // public appendMessages(messages: Partial<Messages>, language: Language): void
+  // ^^^ why is this an error?
+  public appendMessages(messages: {[K in Extract<keyof Messages, string>]?: Messages[K]}, language: Language): void
   {
     if (!this.languageHasBeenInit(language))
     {

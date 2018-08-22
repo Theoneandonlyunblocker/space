@@ -684,7 +684,7 @@ export function getUniqueArrayKeys<T>(source: T[], getIdentifier: ((v: T) => str
   return Object.keys(uniqueKeysById).map(type => uniqueKeysById[type]);
 }
 // tslint:disable:no-bitwise
-export function extractFlagsFromFlagWord<F extends number, E extends {[K in keyof E]: F}>(flagWord: F, allFlags: E): F[]
+export function extractFlagsFromFlagWord<F extends number, E extends {[K in Extract<keyof E, string>]: F}>(flagWord: F, allFlags: E): F[]
 {
   if (flagWord === 0)
   {

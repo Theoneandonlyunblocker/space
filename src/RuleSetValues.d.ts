@@ -39,7 +39,7 @@ export interface RuleSetValues
   {
     baseStarDetectionRange: number;
     baseStarVisionRange: number;
-  }
+  };
 }
 
 export type PartialRuleSetValues =

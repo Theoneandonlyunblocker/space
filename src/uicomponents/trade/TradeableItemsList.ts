@@ -48,10 +48,10 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
     {
       case "money":
       {
-        // @ts-ignore TS2322
         return(
         {
           key: "money",
+          // @ts-ignore 2322
           content: TradeMoney(
           {
             keyTODO: "money",

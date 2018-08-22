@@ -101,7 +101,7 @@ export class BuildingCollection<T extends Building>
       [buildingId: number]: BuildingUpgradeData[];
     } = {};
 
-    // TODO 2018.06.05 |
+    // TODO 2018.06.05 | move Star.getBuildingUpgrades here
     const upgradableBuildings = this.buildings.filter(filterFN);
 
 
