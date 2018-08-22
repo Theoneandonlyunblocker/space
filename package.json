@@ -7,7 +7,7 @@
   "devDependencies": {
     "typescript": "3.0.x",
     "less": "2.6.x",
-    "tslint": "5.10.x",
+    "tslint": "5.11.x",
     "ncp": "2.0.x",
     "mkdirp": "0.5.x",
 
