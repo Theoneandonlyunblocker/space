@@ -46,7 +46,6 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     this.upgradeLevel = props.upgradeLevel || 1;
     this.totalCost = props.totalCost || this.template.buildCost || 0;
   }
-
   public getEffect(): BuildingEffect
   {
     if (!this.template.getEffect)

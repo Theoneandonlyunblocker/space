@@ -35,7 +35,6 @@ export const deepSpaceRadar: BuildingTemplate =
 
   getEffect: (upgradeLevel) =>
   {
-
     return(
     {
       vision: {flat: 1},
@@ -95,7 +94,12 @@ export const thePyramids: BuildingTemplate =
   displayName: "The Pyramids",
   description: "",
 
-  buildCost: 100,
+  onBuild: (star, player) =>
+  {
+    player.money += 1000;
+  },
+
+  buildCost: 0,
 
   maxBuiltAtLocation: 1,
   maxUpgradeLevel: 1,

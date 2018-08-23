@@ -1,6 +1,7 @@
 import {BuildingEffect} from "../BuildingEffect";
 import UnitEffectTemplate from "./UnitEffectTemplate";
 import {default as Star} from "../Star";
+import Player from "../Player";
 
 export declare interface BuildingTemplate
 {
@@ -19,6 +20,7 @@ export declare interface BuildingTemplate
   maxBuiltGlobally?: number;
   canBeBuiltInLocation?: (star: Star) => boolean;
 
+  onBuild?: (location: Star, player: Player) => void;
   getEffect?: (upgradeLevel: number) => BuildingEffect;
 
   maxUpgradeLevel: number;

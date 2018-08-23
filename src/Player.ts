@@ -903,6 +903,11 @@ export default class Player
 
     location.buildings.add(building);
     this.money -= building.template.buildCost;
+
+    if (template.onBuild)
+    {
+      template.onBuild(location, this);
+    }
   }
   public upgradeBuilding(upgradeData: BuildingUpgradeData): void
   {
