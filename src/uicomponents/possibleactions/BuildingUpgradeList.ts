@@ -47,10 +47,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
 
   upgradeBuilding(upgradeData: BuildingUpgradeData)
   {
-    upgradeData.parentBuilding.upgrade(upgradeData);
-
-    // TODO 2018.06.07 | does this belong here?
-    upgradeData.parentBuilding.controller.money -= upgradeData.cost;
+    this.props.player.upgradeBuilding(upgradeData);
 
     if (!this.hasAvailableUpgrades())
     {

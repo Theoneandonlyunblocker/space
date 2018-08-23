@@ -44,6 +44,8 @@ import UnitTemplate from "./templateinterfaces/UnitTemplate";
 import PlayerSaveData from "./savedata/PlayerSaveData";
 import PlayerTechnologySaveData from "./savedata/PlayerTechnologySaveData";
 import { BuildingTemplate } from "./templateinterfaces/BuildingTemplate";
+import { Building } from "./Building";
+import BuildingUpgradeData from "./BuildingUpgradeData";
 
 
 // TODO 2017.07.26 | probably should split minor & major players into subclasses
@@ -890,7 +892,23 @@ export default class Player
       simulator.finishBattle();
     }
   }
-  // research and technology
+  public buildBuilding(template: BuildingTemplate, location: Star): void
+  {
+    const building = new Building(
+    {
+      template: template,
+      location: location,
+    });
+    building.controller = this;
+
+    location.buildings.add(building);
+    this.money -= building.template.buildCost;
+  }
+  public upgradeBuilding(upgradeData: BuildingUpgradeData): void
+  {
+    upgradeData.parentBuilding.upgrade(upgradeData);
+    this.money -= upgradeData.cost;
+  }
   getResearchSpeed(): number
   {
     let research = 0;
@@ -903,7 +921,6 @@ export default class Player
 
     return research;
   }
-  // MANUFACTORIES
   getAllManufactories(): Manufactory[]
   {
     const manufactories: Manufactory[] = [];

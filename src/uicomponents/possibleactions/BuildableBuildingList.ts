@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import {localize} from "../../../localization/localize";
-import {Building} from "../../Building";
 import Player from "../../Player";
 import Star from "../../Star";
 import {BuildingTemplate} from "../../templateinterfaces/BuildingTemplate";
@@ -68,21 +67,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
   buildBuilding(rowItem: ListItem<BuildableBuildingProps>)
   {
     const template = rowItem.content.props.template;
-
-    const building = new Building(
-    {
-      template: template,
-      location: this.props.star,
-    });
-
-    if (!building.controller)
-    {
-      building.controller = this.props.player;
-    }
-
-    this.props.star.buildings.add(building);
-    // TODO 2018.06.06 | why is this done here?
-    building.controller.money -= template.buildCost;
+    this.props.player.buildBuilding(template, this.props.star);
     this.updateBuildings();
   }
 
