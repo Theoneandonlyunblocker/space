@@ -303,7 +303,6 @@ export default class GameLoader
       location: this.starsById[data.locationId],
       controller: this.playersById[data.controllerId],
 
-      upgradeLevel: data.upgradeLevel,
       totalCost: data.totalCost,
       id: data.id,
     });

@@ -24,22 +24,22 @@ export declare interface RaceTemplate
   distributionData: DistributionData;
 
   // TODO 2018.06.13 | implement this stuff
-  getBuildableUnitTypes(player: Player): UnitTemplate[];
+  getBuildableUnitTypes: (player: Player) => UnitTemplate[];
   // getBuildableItemTypes(player: Player): ItemTemplate[];
-  getBuildableBuildings(): BuildingTemplate[];
-  // getBuildingUpgrades(star: Star): BuildingUpgradeData[];
+  getBuildableBuildings: () => BuildingTemplate[];
+  getSpecialBuildingUpgrades?: (location: Star, player: Player) => BuildingUpgradeData[];
 
   // TODO 2016.10.19 | return Name instead
-  getUnitName(unitTemplate: UnitTemplate): string;
-  getUnitPortrait(
+  getUnitName: (unitTemplate: UnitTemplate) => string;
+  getUnitPortrait: (
     unitTemplate: UnitTemplate,
     allPortraitTemplates: TemplateCollection<PortraitTemplate>,
-  ): PortraitTemplate;
+  ) => PortraitTemplate;
 
-  generateIndependentPlayer(
+  generateIndependentPlayer: (
     allEmblemTemplates: TemplateCollection<SubEmblemTemplate>,
-  ): Player;
-  generateIndependentFleets(
+  ) => Player;
+  generateIndependentFleets: (
     player: Player,
     location: Star,
     /**
@@ -51,7 +51,7 @@ export declare interface RaceTemplate
      */
     localStrength: number,
     maxUnitsPerSideInBattle: number,
-  ): Fleet[];
+  ) => Fleet[];
 
   technologies: RaceTechnologyValue[];
   getAiTemplateConstructor: (player: Player) => AiTemplateConstructor<any>;

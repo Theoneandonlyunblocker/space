@@ -21,14 +21,10 @@ export declare interface BuildingTemplate
   canBeBuiltInLocation?: (star: Star) => boolean;
 
   onBuild?: (location: Star, player: Player) => void;
-  getEffect?: (upgradeLevel: number) => BuildingEffect;
+  getEffect?: () => BuildingEffect;
 
-  maxUpgradeLevel: number;
-  upgradeInto?:
-  {
-    templateType: string;
-    level: number;
-  }[];
+  // player race can define their own special upgrades as well
+  getPossibleUpgradeTargets?: (location: Star) => BuildingTemplate[];
 
   battleEffects?: UnitEffectTemplate[];
 }

@@ -9,15 +9,12 @@ export const commercialPort: BuildingTemplate =
 
   buildCost: 200,
   maxBuiltAtLocation: 1,
-  maxUpgradeLevel: 4,
 
-  getEffect: (upgradeLevel) =>
+  getEffect: () =>
   {
-    const incomePerLevel = 20;
-
     return(
     {
-      income: {flat: incomePerLevel * upgradeLevel},
+      income: {flat: 20},
     });
   },
 
@@ -26,14 +23,13 @@ export const deepSpaceRadar: BuildingTemplate =
 {
   type: "deepSpaceRadar",
   displayName: "Deep Space Radar",
-  description: "Increase star vision and detection radius",
+  description: "Increase star vision and detection radius by 1",
 
   buildCost: 200,
 
   maxBuiltAtLocation: 1,
-  maxUpgradeLevel: 2,
 
-  getEffect: (upgradeLevel) =>
+  getEffect: () =>
   {
     return(
     {
@@ -47,18 +43,17 @@ export const resourceMine: BuildingTemplate =
 {
   type: "resourceMine",
   displayName: "Mine",
-  description: "Gathers resources from current star",
+  description: "Gathers 1 resource per turn from current star",
 
   buildCost: 500,
 
   maxBuiltAtLocation: 1,
-  maxUpgradeLevel: 3,
   canBeBuiltInLocation: (star) =>
   {
     return Boolean(star.resource);
   },
 
-  getEffect: (upgradeLevel) =>
+  getEffect: () =>
   {
     return(
     {
@@ -73,14 +68,13 @@ export const reserachLab: BuildingTemplate =
 {
   type: "reserachLab",
   displayName: "Research Lab",
-  description: "Increase research speed",
+  description: "Increase research speed by 10",
 
   buildCost: 300,
 
   maxBuiltAtLocation: 1,
-  maxUpgradeLevel: 3,
 
-  getEffect: (upgradeLevel) =>
+  getEffect: () =>
   {
     return(
     {
@@ -102,6 +96,5 @@ export const thePyramids: BuildingTemplate =
   buildCost: 0,
 
   maxBuiltAtLocation: 1,
-  maxUpgradeLevel: 1,
   maxBuiltGlobally: 1,
 };

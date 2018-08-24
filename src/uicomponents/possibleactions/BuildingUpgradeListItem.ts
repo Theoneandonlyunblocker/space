@@ -94,7 +94,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
           key: "name",
           className: "building-upgrade-list-item-name",
         },
-          `${upgradeData.template.displayName} ${upgradeData.level > 1 ? upgradeData.level : ""}`,
+          upgradeData.template.displayName,
         ),
         React.DOM.td(costProps, upgradeData.cost),
       )

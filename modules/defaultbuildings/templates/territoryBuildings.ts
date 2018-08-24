@@ -17,18 +17,10 @@ export const sectorCommand: TerritoryBuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  maxUpgradeLevel: 1,
-
-  upgradeInto:
+  getPossibleUpgradeTargets: () =>
   [
-    {
-      templateType: "sectorCommand1",
-      level: 1,
-    },
-    {
-      templateType: "sectorCommand2",
-      level: 1,
-    },
+    sectorCommand1,
+    sectorCommand2,
   ],
   battleEffects: [makeDefenderAdvantageEffect(0.2)],
 };
@@ -45,7 +37,6 @@ export const sectorCommand1: TerritoryBuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  maxUpgradeLevel: 1,
   battleEffects: [makeDefenderAdvantageEffect(0.3)],
 };
 export const sectorCommand2: TerritoryBuildingTemplate =
@@ -61,7 +52,6 @@ export const sectorCommand2: TerritoryBuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  maxUpgradeLevel: 1,
   battleEffects: [makeDefenderAdvantageEffect(0.3)],
 };
 export const starBase: TerritoryBuildingTemplate =
@@ -77,13 +67,9 @@ export const starBase: TerritoryBuildingTemplate =
 
   maxBuiltAtLocation: 3,
 
-  maxUpgradeLevel: 1,
   battleEffects: [makeDefenderAdvantageEffect(0.1)],
-  upgradeInto:
+  getPossibleUpgradeTargets: () =>
   [
-    {
-      templateType: "sectorCommand",
-      level: 1,
-    },
+    sectorCommand,
   ],
 };

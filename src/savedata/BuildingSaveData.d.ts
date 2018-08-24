@@ -6,7 +6,6 @@ declare interface BuildingSaveData
   locationId: number;
   controllerId: number;
 
-  upgradeLevel: number;
   totalCost: number;
 }
 
