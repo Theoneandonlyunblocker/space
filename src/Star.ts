@@ -113,17 +113,6 @@ export default class Star implements Point
     this.race = props.race;
     this.terrain = props.terrain;
 
-    // TODO 2018.08.18 | todo
-    // this.territoryBuildings = new BuildingCollection(building =>
-    // {
-    //   if (isFinite(building.template.maxBuiltGlobally))
-    //   {
-    //     this.galaxyMap.globallyLimitedBuildings.add(building);
-    //   }
-
-    //   eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
-    // });
-
     this.buildings = new BuildingCollection(building =>
     {
       if (isFinite(building.template.maxBuiltGlobally))
@@ -139,9 +128,15 @@ export default class Star implements Point
         this.owner.updateVisibleStars();
       }
 
+      const isTerritoryBuilding = (<TerritoryBuilding>building).template.isTerritoryBuilding;
+      if (isTerritoryBuilding)
+      {
+        // TODO 2018.08.24 | trigger ui update
+        eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
+      }
+
       if (this.owner === activePlayer)
       {
-
         for (const key in effect)
         {
           eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
