@@ -835,6 +835,47 @@ export default class Star implements Point
   {
     return this.buildings.filter(building => building.controller === player);
   }
+  private canBuildBuilding(
+    buildingTemplate: BuildingTemplate,
+    localBuildingsByFamily = this.buildings.getBuildingsByFamily(),
+  ): boolean
+  {
+    const hasBuildingRestriction = Boolean(buildingTemplate.canBeBuiltInLocation);
+    if (hasBuildingRestriction)
+    {
+      if (!buildingTemplate.canBeBuiltInLocation(this))
+      {
+        return false;
+      }
+    }
+
+    const family = buildingTemplate.family || buildingTemplate.type;
+
+    const hasGlobalLimit = isFinite(buildingTemplate.maxBuiltGlobally);
+    if (hasGlobalLimit)
+    {
+      const globalMatchingBuildingsBuilt = this.galaxyMap.globallyLimitedBuildings.filter(builtBuilding =>
+      {
+        const builtBuildingFamily = builtBuilding.template.family || builtBuilding.template.type;
+
+        return builtBuildingFamily === family;
+      });
+
+      const globalAmountBuilt = globalMatchingBuildingsBuilt.length;
+      if (globalAmountBuilt >= buildingTemplate.maxBuiltGlobally)
+      {
+        return false;
+      }
+    }
+
+    const localAmountBuilt = localBuildingsByFamily[family] ? localBuildingsByFamily[family].length : 0;
+    if (localAmountBuilt >= buildingTemplate.maxBuiltAtLocation)
+    {
+      return false;
+    }
+
+    return true;
+  }
   public getBuildableBuildings(): BuildingTemplate[]
   {
     // doesn't check ownership. don't think we want to
@@ -842,94 +883,65 @@ export default class Star implements Point
 
     return this.owner.getBuildableBuildings().filter(buildingTemplate =>
     {
-      const hasBuildingRestriction = Boolean(buildingTemplate.canBeBuiltInLocation);
-      if (hasBuildingRestriction)
-      {
-        const canBeBuiltHere = buildingTemplate.canBeBuiltInLocation(this);
-        if (!canBeBuiltHere)
-        {
-          return false;
-        }
-      }
-
-      const family = buildingTemplate.family || buildingTemplate.type;
-
-      const hasGlobalLimit = isFinite(buildingTemplate.maxBuiltGlobally);
-      if (hasGlobalLimit)
-      {
-        const globalMatchingBuildingsBuilt = this.galaxyMap.globallyLimitedBuildings.filter(builtBuilding =>
-        {
-          const builtBuildingFamily = builtBuilding.template.family || builtBuilding.template.type;
-
-          return builtBuildingFamily === family;
-        });
-
-        const globalAmountBuilt = globalMatchingBuildingsBuilt.length;
-        const isOverGlobalLimit = globalAmountBuilt >= buildingTemplate.maxBuiltGlobally;
-        if (isOverGlobalLimit)
-        {
-          return false;
-        }
-      }
-
-      const localAmountBuilt = localBuildingsByFamily[family] ? localBuildingsByFamily[family].length : 0;
-      const isOverLocalLimit = localAmountBuilt >= buildingTemplate.maxBuiltAtLocation;
-      if (isOverLocalLimit)
-      {
-        return false;
-      }
-
-      return true;
+      return this.canBuildBuilding(buildingTemplate, localBuildingsByFamily);
     });
   }
-  // TODO 2018.07.30 | move to buildingcollection
   public getBuildingUpgrades(): {[buildingId: number]: BuildingUpgradeData[]}
   {
-    const allUpgrades:
+    const ownerBuildings = this.getBuildingsForPlayer(this.owner);
+    const specialUpgrades: BuildingUpgradeData[] = [];
+
+    if (this.owner.race.getSpecialBuildingUpgrades)
+    {
+      specialUpgrades.push(...this.owner.race.getSpecialBuildingUpgrades(
+        ownerBuildings,
+        this,
+        this.owner,
+      ));
+    }
+
+    const standardUpgrades: BuildingUpgradeData[] = [];
+    ownerBuildings.forEach(parentBuilding =>
+    {
+      standardUpgrades.push(...parentBuilding.getStandardUpgrades());
+    });
+
+    const allUpgrades = specialUpgrades.concat(standardUpgrades);
+    const validUpgrades = allUpgrades.filter(upgradeData =>
+    {
+      const parentTemplate = upgradeData.parentBuilding.template;
+      const upgradeTemplate = upgradeData.template;
+
+      if (parentTemplate.type === upgradeTemplate.type)
+      {
+        return true;
+      }
+      else if (upgradeTemplate.family && parentTemplate.family === upgradeTemplate.family)
+      {
+        return true;
+      }
+
+      return this.canBuildBuilding(upgradeTemplate);
+    });
+
+
+    const upgradeDataByParentId:
     {
       [buildingId: number]: BuildingUpgradeData[];
     } = {};
 
-    const ownerBuildings = this.getBuildingsForPlayer(this.owner);
-
-    for (let i = 0; i < ownerBuildings.length; i++)
+    validUpgrades.forEach(upgradeData =>
     {
-      const building = ownerBuildings[i];
-      let upgrades = building.getPossibleUpgrades();
+      const parent = upgradeData.parentBuilding;
 
-      upgrades = upgrades.filter(upgradeData =>
+      if (!upgradeDataByParentId[parent.id])
       {
-        const parent = upgradeData.parentBuilding.template;
-        const upgrade = upgradeData.template;
-        if (parent.type === upgrade.type)
-        {
-          return true;
-        }
-        else
-        {
-          const isSameFamily = (upgrade.family && parent.family === upgrade.family);
-          if (isSameFamily)
-          {
-            return true;
-          }
-
-          const maxAllowed = upgrade.maxBuiltAtLocation;
-          const alreadyBuilt = this.buildings.filter(built =>
-          {
-            return built.template.family === upgrade.family;
-          }).length;
-
-          return alreadyBuilt < maxAllowed;
-        }
-      });
-
-      if (upgrades.length > 0)
-      {
-        allUpgrades[building.id] = upgrades;
+        upgradeDataByParentId[parent.id] = [];
       }
 
-    }
+      upgradeDataByParentId[parent.id].push(upgradeData);
+    });
 
-    return allUpgrades;
+    return upgradeDataByParentId;
   }
 }

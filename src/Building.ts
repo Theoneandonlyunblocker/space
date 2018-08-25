@@ -51,13 +51,13 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
 
     return this.template.getEffect();
   }
-  public getPossibleUpgrades(): BuildingUpgradeData[]
+  public getStandardUpgrades(): BuildingUpgradeData[]
   {
     const upgrades: BuildingUpgradeData[] = [];
 
-    if (this.template.getPossibleUpgradeTargets)
+    if (this.template.getStandardUpgradeTargets)
     {
-      const possibleUpgradeTargets = this.template.getPossibleUpgradeTargets(this.location);
+      const possibleUpgradeTargets = this.template.getStandardUpgradeTargets(this.location);
       possibleUpgradeTargets.forEach(upgradeTarget =>
       {
         upgrades.push(

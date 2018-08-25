@@ -2,7 +2,6 @@ import {BuildingEffect, getBaseBuildingEffect} from "./BuildingEffect";
 
 import {Building} from "./Building";
 import {squashAdjustmentsObjects} from "./FlatAndMultiplierAdjustment";
-import BuildingUpgradeData from "./BuildingUpgradeData";
 import BuildingSaveData from "./savedata/BuildingSaveData";
 
 
@@ -12,6 +11,11 @@ export class BuildingCollection<T extends Building>
   private cachedEffects: BuildingEffect;
   private cachedEffectsAreDirty: boolean = true;
 
+  /**
+   * should be used for non-specific effects
+   * eg. vision increasing buildings triggering vision update
+   * effects specific to certain building type should be defined in building template
+   */
   private readonly onAddBuilding: ((building: T) => void) | undefined;
 
   constructor(onAddBuilding?: (building: T) => void)
@@ -91,21 +95,6 @@ export class BuildingCollection<T extends Building>
     }
 
     return this.cachedEffects;
-  }
-  public getBuildingUpgrades(
-    filterFN: (building: T) => boolean,
-  ): {[buildingId: number]: BuildingUpgradeData[]}
-  {
-    const allUpgrades:
-    {
-      [buildingId: number]: BuildingUpgradeData[];
-    } = {};
-
-    // TODO 2018.06.05 | move Star.getBuildingUpgrades here
-    const upgradableBuildings = this.buildings.filter(filterFN);
-
-
-    return allUpgrades;
   }
   public handleBuidlingUpgrade(): void
   {

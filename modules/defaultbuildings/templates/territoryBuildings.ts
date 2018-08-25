@@ -17,7 +17,7 @@ export const sectorCommand: TerritoryBuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  getPossibleUpgradeTargets: () =>
+  getStandardUpgradeTargets: () =>
   [
     sectorCommand1,
     sectorCommand2,
@@ -68,7 +68,7 @@ export const starBase: TerritoryBuildingTemplate =
   maxBuiltAtLocation: 3,
 
   battleEffects: [makeDefenderAdvantageEffect(0.1)],
-  getPossibleUpgradeTargets: () =>
+  getStandardUpgradeTargets: () =>
   [
     sectorCommand,
   ],

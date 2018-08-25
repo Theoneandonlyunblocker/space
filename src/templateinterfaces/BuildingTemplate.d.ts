@@ -24,7 +24,7 @@ export declare interface BuildingTemplate
   getEffect?: () => BuildingEffect;
 
   // player race can define their own special upgrades as well
-  getPossibleUpgradeTargets?: (location: Star) => BuildingTemplate[];
+  getStandardUpgradeTargets?: (location: Star) => BuildingTemplate[];
 
   battleEffects?: UnitEffectTemplate[];
 }
