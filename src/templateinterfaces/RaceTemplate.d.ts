@@ -14,6 +14,7 @@ import RaceTechnologyValue from "./RaceTechnologyValue";
 import SubEmblemTemplate from "./SubEmblemTemplate";
 import TemplateCollection from "./TemplateCollection";
 import UnitTemplate from "./UnitTemplate";
+import { Building } from "../Building";
 
 export declare interface RaceTemplate
 {
@@ -27,7 +28,7 @@ export declare interface RaceTemplate
   getBuildableUnitTypes: (player: Player) => UnitTemplate[];
   // getBuildableItemTypes(player: Player): ItemTemplate[];
   getBuildableBuildings: () => BuildingTemplate[];
-  getSpecialBuildingUpgrades?: (location: Star, player: Player) => BuildingUpgradeData[];
+  getSpecialBuildingUpgrades?: (buildings: Building[], location: Star, player: Player) => BuildingUpgradeData[];
 
   // TODO 2016.10.19 | return Name instead
   getUnitName: (unitTemplate: UnitTemplate) => string;
