@@ -28,7 +28,7 @@ const federationAlliance: RaceTemplate =
     weight: 0,
     distributionGroups: [],
   },
-  getBuildableBuildings: () =>
+  getBuildableBuildings: player =>
   {
     return getDefaultBuildableBuildings();
   },

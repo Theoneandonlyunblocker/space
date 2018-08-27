@@ -3,7 +3,7 @@ import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import ItemTemplate from "../../src/templateinterfaces/ItemTemplate";
 
-import itemTemplates from "./ItemTemplates";
+import {itemTemplates} from "./itemTemplates";
 
 
 const defaultItems: ModuleFile =

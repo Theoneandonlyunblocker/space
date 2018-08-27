@@ -12,7 +12,7 @@ import
 } from "../common/passiveskilltemplates/passiveSkills";
 
 
-const bombLauncher1: ItemTemplate =
+export const bombLauncher1: ItemTemplate =
 {
   type: "bombLauncher1",
   displayName: "Bomb Launcher 1",
@@ -26,7 +26,7 @@ const bombLauncher1: ItemTemplate =
   slot: "high",
   ability: bombAttack,
 };
-const bombLauncher2: ItemTemplate =
+export const bombLauncher2: ItemTemplate =
 {
   type: "bombLauncher2",
   displayName: "Bomb Launcher 2",
@@ -45,7 +45,7 @@ const bombLauncher2: ItemTemplate =
   slot: "high",
   ability: bombAttack,
 };
-const bombLauncher3: ItemTemplate =
+export const bombLauncher3: ItemTemplate =
 {
   type: "bombLauncher3",
   displayName: "Bomb Launcher 3",
@@ -65,7 +65,7 @@ const bombLauncher3: ItemTemplate =
   ability: bombAttack,
 };
 
-const afterBurner1: ItemTemplate =
+export const afterBurner1: ItemTemplate =
 {
   type: "afterBurner1",
   displayName: "Afterburner 1",
@@ -84,7 +84,7 @@ const afterBurner1: ItemTemplate =
   slot: "mid",
   passiveSkill: overdrive,
 };
-const afterBurner2: ItemTemplate =
+export const afterBurner2: ItemTemplate =
 {
   type: "afterBurner2",
   displayName: "Afterburner 2",
@@ -102,7 +102,7 @@ const afterBurner2: ItemTemplate =
 
   slot: "mid",
 };
-const afterBurner3: ItemTemplate =
+export const afterBurner3: ItemTemplate =
 {
   type: "afterBurner3",
   displayName: "Afterburner 3",
@@ -121,7 +121,7 @@ const afterBurner3: ItemTemplate =
 
   slot: "mid",
 };
-const shieldPlating1: ItemTemplate =
+export const shieldPlating1: ItemTemplate =
 {
   type: "shieldPlating1",
   displayName: "Shield Plating 1",
@@ -139,7 +139,7 @@ const shieldPlating1: ItemTemplate =
 
   slot: "low",
 };
-const shieldPlating2: ItemTemplate =
+export const shieldPlating2: ItemTemplate =
 {
   type: "shieldPlating2",
   displayName: "Shield Plating 2",
@@ -157,7 +157,7 @@ const shieldPlating2: ItemTemplate =
 
   slot: "low",
 };
-const shieldPlating3: ItemTemplate =
+export const shieldPlating3: ItemTemplate =
 {
   type: "shieldPlating3",
   displayName: "Shield Plating 3",
@@ -178,9 +178,8 @@ const shieldPlating3: ItemTemplate =
   ability: guardRow,
 };
 
-const itemTemplates: TemplateCollection<ItemTemplate> =
+export const itemTemplates: TemplateCollection<ItemTemplate> =
 {
-
   [bombLauncher1.type]: bombLauncher1,
   [bombLauncher2.type]: bombLauncher2,
   [bombLauncher3.type]: bombLauncher3,
@@ -191,5 +190,3 @@ const itemTemplates: TemplateCollection<ItemTemplate> =
   [shieldPlating2.type]: shieldPlating2,
   [shieldPlating3.type]: shieldPlating3,
 };
-
-export default itemTemplates;

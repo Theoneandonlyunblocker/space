@@ -977,7 +977,7 @@ export default class Player
   }
   public getBuildableBuildings(): BuildingTemplate[]
   {
-    return this.race.getBuildableBuildings();
+    return this.race.getBuildableBuildings(this);
   }
   public getGloballyBuildableUnits(): UnitTemplate[]
   {
