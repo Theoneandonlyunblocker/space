@@ -133,7 +133,6 @@ export default class Star implements Point
         const isTerritoryBuilding = (<TerritoryBuilding>building).template.isTerritoryBuilding;
         if (isTerritoryBuilding)
         {
-          // TODO 2018.08.24 | trigger ui update
           eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
         }
 
@@ -143,6 +142,7 @@ export default class Star implements Point
           {
             eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
           }
+
           eventManager.dispatchEvent("humanPlayerBuiltBuilding");
         }
       },

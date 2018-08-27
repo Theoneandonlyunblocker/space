@@ -4,6 +4,7 @@ import {localize} from "../../../localization/localize";
 import Star from "../../Star";
 
 import TerritoryBuildingList from "./TerritoryBuildingList";
+import eventManager from "../../eventManager";
 
 
 export interface PropTypes extends React.Props<any>
@@ -27,9 +28,19 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
+
+    this.handlePlayerBuiltBuilding = this.handlePlayerBuiltBuilding.bind(this);
   }
 
-  render()
+  public componentDidMount(): void
+  {
+    eventManager.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
+  }
+  public componentWillUnmount(): void
+  {
+    eventManager.removeEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
+  }
+  public render()
   {
     const star = this.props.selectedStar;
     if (!star) { return null; }
@@ -76,6 +87,11 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
 
       )
     );
+  }
+
+  private handlePlayerBuiltBuilding(): void
+  {
+    this.forceUpdate();
   }
 }
 
