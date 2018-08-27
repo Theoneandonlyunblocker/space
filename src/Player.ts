@@ -232,6 +232,7 @@ export default class Player
 
         getBuildableBuildings: () => [],
         getBuildableUnitTypes: () => [],
+        getBuildableItemTypes: () => [],
         getUnitName: () => "",
         getUnitPortrait: () => null,
         generateIndependentPlayer: () => null,
@@ -983,17 +984,9 @@ export default class Player
   {
     return this.race.getBuildableUnitTypes(this);
   }
-  getGloballyBuildableItems(): ItemTemplate[]
+  public getGloballyBuildableItems(): ItemTemplate[]
   {
-    // TODO manufactory
-    const itemTypes: ItemTemplate[] = [];
-
-    for (const key in activeModuleData.templates.Items)
-    {
-      itemTypes.push(activeModuleData.templates.Items[key]);
-    }
-
-    return itemTypes;
+    return this.race.getBuildableItemTypes(this);
   }
   getManufacturingCapacityFor(template: ManufacturableThing, type: "item" | "unit"): number
   {

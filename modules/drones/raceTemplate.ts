@@ -28,6 +28,7 @@ export const drones: RaceTemplate =
   },
   isNotPlayable: true,
   getBuildableBuildings: player => [],
+  getBuildableItemTypes: player => [],
   getBuildableUnitTypes: player =>
   {
     return(

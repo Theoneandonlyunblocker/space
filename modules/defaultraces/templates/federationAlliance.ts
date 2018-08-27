@@ -11,8 +11,10 @@ import {generateIndependentFleets} from "../../common/generateIndependentFleets"
 import {generateIndependentPlayer} from "../../common/generateIndependentPlayer";
 import defaultAiConstructor from "../../defaultai/mapai/DefaultAiConstructor";
 import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
+import * as items from "../../defaultitems/itemTemplates";
 
 import {getDefaultBuildableBuildings} from "../common/getDefaultBuildableBuildings";
+import {getDefaultBuildableItems} from "../common/getDefaultBuildableItems";
 import {getDefaultBuildableUnits} from "../common/getDefaultBuildableUnits";
 import {defaultRaceTechnologyValues} from "../common/defaultRaceTechnologyValues";
 import {mergeTechnologyValues} from "../common/utility";
@@ -28,9 +30,17 @@ const federationAlliance: RaceTemplate =
     weight: 0,
     distributionGroups: [],
   },
+  // TODO 2018.08.27 | buildings & items should check tech level
   getBuildableBuildings: player =>
   {
     return getDefaultBuildableBuildings();
+  },
+  getBuildableItemTypes: player =>
+  {
+    return [
+      ...getDefaultBuildableItems(),
+      items.bombLauncher3,
+    ];
   },
   getBuildableUnitTypes: player =>
   {
