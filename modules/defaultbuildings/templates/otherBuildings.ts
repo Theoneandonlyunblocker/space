@@ -98,3 +98,19 @@ export const thePyramids: BuildingTemplate =
   maxBuiltAtLocation: 1,
   maxBuiltGlobally: 1,
 };
+export const nationalEpic: BuildingTemplate =
+{
+  type: "nationalEpic",
+  displayName: "National Epic",
+  description: "",
+
+  onBuild: (star, player) =>
+  {
+    player.money += 999;
+  },
+
+  buildCost: 0,
+
+  maxBuiltAtLocation: 1,
+  maxBuiltForPlayer: 1,
+};

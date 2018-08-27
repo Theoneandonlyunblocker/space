@@ -15,8 +15,7 @@ export declare interface BuildingTemplate
   // if not specified, type is used instead
   family?: string;
   maxBuiltAtLocation: number;
-  // TODO 2018.07.30 | implement
-  // maxBuiltForPlayer?: number;
+  maxBuiltForPlayer?: number;
   maxBuiltGlobally?: number;
   canBeBuiltInLocation?: (star: Star) => boolean;
 

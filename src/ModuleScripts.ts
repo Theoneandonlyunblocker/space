@@ -2,6 +2,7 @@ import {BattleScripts} from "./modulescriptinterfaces/BattleScripts";
 import {DiplomacyScripts} from "./modulescriptinterfaces/DiplomacyScripts";
 import {GameScripts} from "./modulescriptinterfaces/GameScripts";
 import {PlayerScripts} from "./modulescriptinterfaces/PlayerScripts";
+import {StarScripts} from "./modulescriptinterfaces/StarScripts";
 import {UnitScripts} from "./modulescriptinterfaces/UnitScripts";
 
 import {ModuleScriptData, ScriptsWithData} from "./ModuleScriptData";
@@ -13,6 +14,7 @@ type AllModuleScriptTypes =
   diplomacy: DiplomacyScripts;
   game: GameScripts;
   player: PlayerScripts;
+  star: StarScripts;
   unit: UnitScripts;
 };
 
@@ -74,6 +76,10 @@ export default class ModuleScripts implements AllModuleScripts
     {
       onDeath: [],
     },
+    star:
+    {
+      onOwnerChange: [],
+    },
     unit:
     {
       removeFromPlayer: [],
@@ -86,6 +92,7 @@ export default class ModuleScripts implements AllModuleScripts
   public readonly diplomacy : ScriptsCollection<DiplomacyScripts> = ModuleScripts.makeAccessorObject(this.scriptsWithData.diplomacy);
   public readonly game      : ScriptsCollection<GameScripts>      = ModuleScripts.makeAccessorObject(this.scriptsWithData.game);
   public readonly player    : ScriptsCollection<PlayerScripts>    = ModuleScripts.makeAccessorObject(this.scriptsWithData.player);
+  public readonly star      : ScriptsCollection<StarScripts>      = ModuleScripts.makeAccessorObject(this.scriptsWithData.star);
   public readonly unit      : ScriptsCollection<UnitScripts>      = ModuleScripts.makeAccessorObject(this.scriptsWithData.unit);
   /* tslint:enable:typedef-whitespace */
   /* tslint:enable:member-ordering */

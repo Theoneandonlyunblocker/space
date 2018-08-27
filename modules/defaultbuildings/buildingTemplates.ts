@@ -13,6 +13,7 @@ const buildingTemplates =
   [otherBuildings.resourceMine.type]: otherBuildings.resourceMine,
   [otherBuildings.reserachLab.type]: otherBuildings.reserachLab,
   [otherBuildings.thePyramids.type]: otherBuildings.thePyramids,
+  [otherBuildings.nationalEpic.type]: otherBuildings.nationalEpic,
 };
 
 export default buildingTemplates;

@@ -13,5 +13,6 @@ export function getDefaultBuildableBuildings(): BuildingTemplate[]
     otherBuildings.reserachLab,
     otherBuildings.resourceMine,
     otherBuildings.thePyramids,
+    otherBuildings.nationalEpic,
   ];
 }

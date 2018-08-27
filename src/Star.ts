@@ -66,7 +66,7 @@ export default class Star implements Point
   public readonly buildings: BuildingCollection<Building>;
   public get territoryBuildings(): TerritoryBuilding[]
   {
-    // TODO 2018.08.18 | do we need to sort this?
+    // do we need to sort this?
     return this.buildings.filter((building): building is TerritoryBuilding =>
     {
       return (<TerritoryBuilding>building).template.isTerritoryBuilding;
@@ -113,35 +113,45 @@ export default class Star implements Point
     this.race = props.race;
     this.terrain = props.terrain;
 
-    this.buildings = new BuildingCollection(building =>
+    this.buildings = new BuildingCollection(
     {
-      if (isFinite(building.template.maxBuiltGlobally))
+      onAddBuilding: building =>
       {
-        this.galaxyMap.globallyLimitedBuildings.add(building);
-      }
-
-      const effect = building.getEffect();
-
-      const buildingChangesVision = effect.vision || effect.detection;
-      if (buildingChangesVision)
-      {
-        this.owner.updateVisibleStars();
-      }
-
-      const isTerritoryBuilding = (<TerritoryBuilding>building).template.isTerritoryBuilding;
-      if (isTerritoryBuilding)
-      {
-        // TODO 2018.08.24 | trigger ui update
-        eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
-      }
-
-      if (this.owner === activePlayer)
-      {
-        for (const key in effect)
+        if (isFinite(building.template.maxBuiltGlobally))
         {
-          eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
+          this.galaxyMap.globallyLimitedBuildings.add(building);
         }
-        eventManager.dispatchEvent("humanPlayerBuiltBuilding");
+
+        const effect = building.getEffect();
+
+        const buildingChangesVision = effect.vision || effect.detection;
+        if (buildingChangesVision)
+        {
+          this.owner.updateVisibleStars();
+        }
+
+        const isTerritoryBuilding = (<TerritoryBuilding>building).template.isTerritoryBuilding;
+        if (isTerritoryBuilding)
+        {
+          // TODO 2018.08.24 | trigger ui update
+          eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
+        }
+
+        if (this.owner === activePlayer)
+        {
+          for (const key in effect)
+          {
+            eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
+          }
+          eventManager.dispatchEvent("humanPlayerBuiltBuilding");
+        }
+      },
+      onRemoveBuilding: building =>
+      {
+        if (isFinite(building.template.maxBuiltGlobally))
+        {
+          this.galaxyMap.globallyLimitedBuildings.remove(building);
+        }
       }
     });
   }
@@ -231,52 +241,36 @@ export default class Star implements Point
   }
   public updateController(): void
   {
-    const territoryBuildings = this.territoryBuildings;
-
     const oldOwner = this.owner;
-    const newOwner = territoryBuildings[0].controller;
+    const newOwner = this.territoryBuildings[0].controller;
 
-    if (oldOwner)
+    if (oldOwner && oldOwner !== newOwner)
     {
-      if (oldOwner === newOwner)
-      {
-        return;
-      }
-      else
-      {
-        oldOwner.removeStar(this);
-      }
+      this.changeOwner(newOwner);
     }
+    // TODO display | update starOwners if secondary controller changes
+  }
+  public changeOwner(newOwner: Player): void
+  {
+    const oldOwner = this.owner;
 
+    oldOwner.removeStar(this);
     newOwner.addStar(this);
+
     if (this.manufactory)
     {
       this.manufactory.handleOwnerChange();
     }
 
+    activeModuleData.scripts.star.onOwnerChange.forEach(script =>
+    {
+      script(this, oldOwner, newOwner);
+    });
+
     eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
     eventManager.dispatchEvent("renderLayer", "starOwners", this);
     eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
-    // TODO display | update starOwners if secondary controller changes
   }
-  // // TODO 2018.06.05 | baleet
-  // private getEffectWithBuildingsEffect(base: number, effectType: string): number
-  // {
-  //   let effect = base;
-  //   const buildingsEffect = this.getBuildingsEffect()[effectType];
-
-  //   if (isFinite(buildingsEffect))
-  //   {
-  //     return effect + buildingsEffect;
-  //   }
-  //   else if (buildingsEffect)
-  //   {
-  //     effect += (buildingsEffect.flat || 0);
-  //     effect *= (isFinite(buildingsEffect.multiplier) ? 1 + buildingsEffect.multiplier : 1);
-  //   }
-
-  //   return effect;
-  // }
   public getIncome(): number
   {
     const buildingsEffect = this.buildings.getEffects().income;
@@ -831,10 +825,6 @@ export default class Star implements Point
 
     return data;
   }
-  private getBuildingsForPlayer(player: Player): Building[]
-  {
-    return this.buildings.filter(building => building.controller === player);
-  }
   private canBuildBuilding(
     buildingTemplate: BuildingTemplate,
     localBuildingsByFamily = this.buildings.getBuildingsByFamily(),
@@ -854,15 +844,32 @@ export default class Star implements Point
     const hasGlobalLimit = isFinite(buildingTemplate.maxBuiltGlobally);
     if (hasGlobalLimit)
     {
-      const globalMatchingBuildingsBuilt = this.galaxyMap.globallyLimitedBuildings.filter(builtBuilding =>
+      const globalMatchingBuildings = this.galaxyMap.globallyLimitedBuildings.filter(globalBuilding =>
       {
-        const builtBuildingFamily = builtBuilding.template.family || builtBuilding.template.type;
+        const playerBuildingFamily = globalBuilding.template.family || globalBuilding.template.type;
 
-        return builtBuildingFamily === family;
+        return playerBuildingFamily === family;
       });
 
-      const globalAmountBuilt = globalMatchingBuildingsBuilt.length;
+      const globalAmountBuilt = globalMatchingBuildings.length;
       if (globalAmountBuilt >= buildingTemplate.maxBuiltGlobally)
+      {
+        return false;
+      }
+    }
+
+    const hasPerPlayerLimit = isFinite(buildingTemplate.maxBuiltForPlayer);
+    if (hasPerPlayerLimit)
+    {
+      const playerMatchingBuildings = this.owner.getAllBuildings().filter(playerBuilding =>
+      {
+        const playerBuildingFamily = playerBuilding.template.family || playerBuilding.template.type;
+
+        return playerBuildingFamily === family;
+      });
+
+      const amountPlayerAlreadyHas = playerMatchingBuildings.length;
+      if (amountPlayerAlreadyHas >= buildingTemplate.maxBuiltForPlayer)
       {
         return false;
       }
@@ -888,7 +895,10 @@ export default class Star implements Point
   }
   public getBuildingUpgrades(): {[buildingId: number]: BuildingUpgradeData[]}
   {
-    const ownerBuildings = this.getBuildingsForPlayer(this.owner);
+    const ownerBuildings = this.buildings.filter(building =>
+    {
+      return building.controller === this.owner;
+    });
     const specialUpgrades: BuildingUpgradeData[] = [];
 
     if (this.owner.race.getSpecialBuildingUpgrades)

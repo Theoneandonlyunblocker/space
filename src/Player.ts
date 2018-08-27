@@ -899,6 +899,7 @@ export default class Player
       template: template,
       location: location,
     });
+
     building.controller = this;
 
     location.buildings.add(building);
@@ -925,6 +926,22 @@ export default class Player
     }
 
     return research;
+  }
+  public getAllBuildings(): Building[]
+  {
+    const allBuildings: Building[] = [];
+
+    this.controlledLocations.forEach(location =>
+    {
+      const ownedBuildingsAtLocation = location.buildings.filter(building =>
+      {
+        return building.controller === this;
+      });
+
+      allBuildings.push(...ownedBuildingsAtLocation);
+    });
+
+    return allBuildings;
   }
   getAllManufactories(): Manufactory[]
   {

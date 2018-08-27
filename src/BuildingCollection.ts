@@ -14,13 +14,19 @@ export class BuildingCollection<T extends Building>
   /**
    * should be used for non-specific effects
    * eg. vision increasing buildings triggering vision update
-   * effects specific to certain building type should be defined in building template
+   * effects specific to certain buildings should be defined in building template
    */
   private readonly onAddBuilding: ((building: T) => void) | undefined;
+  private readonly onRemoveBuilding: ((building: T) => void) | undefined;
 
-  constructor(onAddBuilding?: (building: T) => void)
+  constructor(props:
   {
-    this.onAddBuilding = onAddBuilding;
+    onAddBuilding?: (building: T) => void;
+    onRemoveBuilding?: (building: T) => void;
+  } = {})
+  {
+    this.onAddBuilding = props.onAddBuilding;
+    this.onRemoveBuilding = props.onRemoveBuilding;
   }
 
   public has(building: T): boolean
@@ -50,6 +56,10 @@ export class BuildingCollection<T extends Building>
     }
 
     this.buildings.splice(index, 1);
+    if (this.onRemoveBuilding)
+    {
+      this.onRemoveBuilding(building);
+    }
   }
   public forEach(callbackFn: (building: T) => void): void
   {
