@@ -12,6 +12,7 @@ import {generateIndependentPlayer} from "../../common/generateIndependentPlayer"
 import defaultAiConstructor from "../../defaultai/mapai/DefaultAiConstructor";
 import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
 import * as items from "../../defaultitems/itemTemplates";
+import {unitTemplates as units} from "../../defaultunits/unitTemplates";
 
 import {getDefaultBuildableBuildings} from "../common/getDefaultBuildableBuildings";
 import {getDefaultBuildableItems} from "../common/getDefaultBuildableItems";
@@ -30,24 +31,23 @@ const wormThings: RaceTemplate =
     weight: 0,
     distributionGroups: [],
   },
-  getBuildableBuildings: player =>
+  getBuildableBuildings: () =>
   {
     return getDefaultBuildableBuildings();
   },
-  getBuildableItemTypes: player =>
+  getBuildableItems: () =>
   {
     return [
       ...getDefaultBuildableItems(),
       items.shieldPlating3,
     ];
   },
-  getBuildableUnitTypes: player =>
+  getBuildableUnits: () =>
   {
-    return getDefaultBuildableUnits().filter(unitTemplate =>
-    {
-      return !unitTemplate.technologyRequirements ||
-        player.meetsTechnologyRequirements(unitTemplate.technologyRequirements);
-    });
+    return [
+      ...getDefaultBuildableUnits(),
+      units.fighterSquadron,
+    ];
   },
   getUnitName: unitTemplate =>
   {

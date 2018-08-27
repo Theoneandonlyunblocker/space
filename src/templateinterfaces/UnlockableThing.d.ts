@@ -1,4 +1,4 @@
-import TechnologyRequirement from "./TechnologyRequirement";
+import TechRequirement from "./TechRequirement";
 
 
 export type UnlockableThingKind = "unit" | "item";
@@ -12,5 +12,5 @@ export interface UnlockableThing
   kind: UnlockableThingKind;
 
   // set dynamically from technology templates
-  technologyRequirements?: TechnologyRequirement[];
+  techRequirements?: TechRequirement[];
 }

@@ -81,7 +81,7 @@ export function generateIndependentFleets(
 {
   const locationHasLeader = localStrength > 0.8;
 
-  const allBuildableUnitTypes = race.getBuildableUnitTypes(player);
+  const allBuildableUnitTypes = race.getBuildableUnits();
 
   const unitCountFromGlobalStrength = maxUnitsPerSideInBattle * 0.34 + maxUnitsPerSideInBattle * 0.66 * globalStrength;
   const unitCountFromLocalStrength = locationHasLeader ? 1 : 0;

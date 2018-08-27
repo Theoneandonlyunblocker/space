@@ -8,7 +8,8 @@ declare interface TechnologyTemplate
 
   maxLevel: number;
 
-  // used to dynamically set unlockable thing tech requirements
+  // used to dynamically set tech requirements for unlockable things
+  // TODO 2018.08.28 | maybe other way around?
   unlocksPerLevel:
   {
     [level: number]: UnlockableThing[];

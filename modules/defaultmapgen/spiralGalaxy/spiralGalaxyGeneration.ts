@@ -273,7 +273,7 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
     const player = players[i];
 
     player.addStar(star);
-    star.race = player.race;
+    star.localRace = player.race;
 
     addTerritoryBuildings(star, 2);
     star.buildManufactory();
@@ -294,12 +294,12 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
   // set races
   const racePlacerFN = (sector: Region, race: RaceTemplate) =>
   {
-    const existingStarsWithRace = sector.stars.filter(star => Boolean(star.race));
-    const existingRaceInSector = existingStarsWithRace.length > 0 ? existingStarsWithRace[0].race : null;
+    const existingStarsWithRace = sector.stars.filter(star => Boolean(star.localRace));
+    const existingRaceInSector = existingStarsWithRace.length > 0 ? existingStarsWithRace[0].localRace : null;
 
     sector.stars.forEach(star =>
     {
-      star.race = existingRaceInSector || race;
+      star.localRace = existingRaceInSector || race;
     });
   };
 
@@ -340,7 +340,7 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
 
   sectors.forEach(sector =>
   {
-    const sectorRace = sector.stars[0].race;
+    const sectorRace = sector.stars[0].localRace;
 
     const sectorIndependents = sectorRace.generateIndependentPlayer(activeModuleData.templates.SubEmblems);
     independents.push(sectorIndependents);

@@ -54,7 +54,7 @@ export default class Star implements Point
   public owner: Player;
   public baseIncome: number;
   public resource: ResourceTemplate;
-  public race: RaceTemplate;
+  public localRace: RaceTemplate;
   public terrain: TerrainTemplate;
 
   public readonly fleets:
@@ -110,7 +110,7 @@ export default class Star implements Point
     this.seed = props.seed || this.generateSeedString();
     this.name = props.name || `Star ${this.id}`;
 
-    this.race = props.race;
+    this.localRace = props.race;
     this.terrain = props.terrain;
 
     this.buildings = new BuildingCollection(
@@ -809,7 +809,7 @@ export default class Star implements Point
 
       buildings: this.buildings.serialize(),
 
-      raceType: this.race.type,
+      raceType: this.localRace.type,
       terrainType: this.terrain.type,
     };
 
@@ -888,7 +888,7 @@ export default class Star implements Point
     // doesn't check ownership. don't think we want to
     const localBuildingsByFamily = this.buildings.getBuildingsByFamily();
 
-    return this.owner.getBuildableBuildings().filter(buildingTemplate =>
+    return this.owner.race.getBuildableBuildings().filter(buildingTemplate =>
     {
       return this.canBuildBuilding(buildingTemplate, localBuildingsByFamily);
     });

@@ -34,12 +34,9 @@ import
 
 import {PlayerNotificationSubscriber} from "./notifications/PlayerNotificationSubscriber";
 
-import ItemTemplate from "./templateinterfaces/ItemTemplate";
-import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
-import TechnologyRequirement from "./templateinterfaces/TechnologyRequirement";
-import UnitTemplate from "./templateinterfaces/UnitTemplate";
+import TechRequirement from "./templateinterfaces/TechRequirement";
 
 import PlayerSaveData from "./savedata/PlayerSaveData";
 import PlayerTechnologySaveData from "./savedata/PlayerTechnologySaveData";
@@ -231,8 +228,8 @@ export default class Player
         },
 
         getBuildableBuildings: () => [],
-        getBuildableUnitTypes: () => [],
-        getBuildableItemTypes: () => [],
+        getBuildableUnits: () => [],
+        getBuildableItems: () => [],
         getUnitName: () => "",
         getUnitPortrait: () => null,
         generateIndependentPlayer: () => null,
@@ -958,7 +955,7 @@ export default class Player
 
     return manufactories;
   }
-  meetsTechnologyRequirements(requirements: TechnologyRequirement[]): boolean
+  meetsTechRequirements(requirements: TechRequirement[]): boolean
   {
     if (!this.playerTechnology)
     {
@@ -976,66 +973,8 @@ export default class Player
 
     return true;
   }
-  public getBuildableBuildings(): BuildingTemplate[]
-  {
-    return this.race.getBuildableBuildings(this);
-  }
-  public getGloballyBuildableUnits(): UnitTemplate[]
-  {
-    return this.race.getBuildableUnitTypes(this);
-  }
-  public getGloballyBuildableItems(): ItemTemplate[]
-  {
-    return this.race.getBuildableItemTypes(this);
-  }
-  getManufacturingCapacityFor(template: ManufacturableThing, type: "item" | "unit"): number
-  {
-    let totalCapacity = 0;
-    const capacityByStar:
-    {
-      star: Star;
-      capacity: number;
-    }[] = [];
-    let isGloballyBuildable: boolean;
-    switch (type)
-    {
-      case "item":
-      {
-        const globallyBuildableItems = <ManufacturableThing[]> this.getGloballyBuildableItems();
-        isGloballyBuildable = globallyBuildableItems.indexOf(template) !== -1;
-        break;
-      }
-      case "unit":
-      {
-        const globallyBuildableUnits = <ManufacturableThing[]> this.getGloballyBuildableUnits();
-        isGloballyBuildable = globallyBuildableUnits.indexOf(template) !== -1;
-        break;
-      }
-    }
-    const manufactories = this.getAllManufactories();
-
-    for (let i = 0; i < manufactories.length; i++)
-    {
-      const manufactory = manufactories[i];
-      const isBuildable = !manufactory.queueIsFull() &&
-        (isGloballyBuildable || manufactory.canManufactureThing(template));
-      if (isBuildable)
-      {
-        const capacity = manufactory.capacity - manufactory.buildQueue.length;
-        totalCapacity += capacity;
-        capacityByStar.push(
-        {
-          star: manufactory.star,
-          capacity: capacity,
-        });
-      }
-    }
-
-    return totalCapacity;
-  }
   serialize(): PlayerSaveData
   {
-
     const revealedStarIds: number[] = [];
     for (const id in this.revealedStars)
     {

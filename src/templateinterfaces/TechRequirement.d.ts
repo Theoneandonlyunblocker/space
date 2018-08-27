@@ -1,9 +1,9 @@
 import TechnologyTemplate from "./TechnologyTemplate";
 
-declare interface TechnologyRequirement
+declare interface TechRequirement
 {
   technology: TechnologyTemplate;
   level: number;
 }
 
-export default TechnologyRequirement;
+export default TechRequirement;

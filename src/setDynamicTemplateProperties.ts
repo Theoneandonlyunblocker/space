@@ -32,11 +32,11 @@ export function setTechnologyRequirements(technologyTemplates: TemplateCollectio
       const unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
       unlockedTemplatesForLevel.forEach(template =>
       {
-        if (!template.technologyRequirements)
+        if (!template.techRequirements)
         {
-          template.technologyRequirements = [];
+          template.techRequirements = [];
         }
-        template.technologyRequirements.push(
+        template.techRequirements.push(
         {
           technology: technology,
           level: parseInt(level),

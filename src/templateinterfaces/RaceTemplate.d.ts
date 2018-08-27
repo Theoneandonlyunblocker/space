@@ -24,9 +24,9 @@ export declare interface RaceTemplate
   isNotPlayable?: boolean;
   distributionData: DistributionData;
 
-  getBuildableUnitTypes: (player: Player) => UnitTemplate[];
-  getBuildableItemTypes: (player: Player) => ItemTemplate[];
-  getBuildableBuildings: (player: Player) => BuildingTemplate[];
+  getBuildableUnits: () => UnitTemplate[];
+  getBuildableItems: () => ItemTemplate[];
+  getBuildableBuildings: () => BuildingTemplate[];
   getSpecialBuildingUpgrades?: (buildings: Building[], location: Star, player: Player) => BuildingUpgradeData[];
 
   // TODO 2016.10.19 | return Name instead

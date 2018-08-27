@@ -8,7 +8,7 @@ import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
 
 import unitArchetypes from "./unitArchetypes";
-import unitTemplates from "./unitTemplates";
+import {unitTemplates} from "./unitTemplates";
 
 
 const defaultUnits: ModuleFile =
