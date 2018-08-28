@@ -34,6 +34,7 @@ import
   deepMerge,
   getRandomProperty,
 } from "./utility";
+import { UnlockableThing } from "./templateinterfaces/UnlockableThing";
 
 
 // tslint:disable:no-any
@@ -62,6 +63,14 @@ interface Templates
   Units: TemplateCollection<UnitTemplate>;
 }
 // tslint:enable:no-any
+
+type TechnologyUnlocks =
+{
+  [technologyKey: string]:
+  {
+    [techLevel: number]: UnlockableThing[];
+  };
+};
 
 export default class ModuleData
 {
@@ -96,10 +105,21 @@ export default class ModuleData
   };
 
   public ruleSet: RuleSetValues;
-
   public scripts: ModuleScripts;
-
   public defaultMap: MapGenTemplate;
+
+  public get technologyUnlocks(): TechnologyUnlocks
+  {
+    if (this.technologyUnlocksAreDirty)
+    {
+      this.cachedTechnologyUnlocks = this.getAllTechnologyUnlocks();
+    }
+
+    return this.cachedTechnologyUnlocks;
+  }
+
+  private technologyUnlocksAreDirty: boolean = true;
+  private cachedTechnologyUnlocks: TechnologyUnlocks = {};
 
   constructor()
   {
@@ -124,6 +144,8 @@ export default class ModuleData
       // TODO 2017.02.05 | bad typing
       this.templates[category][templateType] = <any> source[templateType];
     }
+
+    this.technologyUnlocksAreDirty = true;
   }
   public copyAllTemplates(source: Templates): void
   {
@@ -162,5 +184,55 @@ export default class ModuleData
     }
 
     this.ruleSet = deepMerge(this.ruleSet, valuesToAppend);
+  }
+
+  private getAllTechnologyUnlocks(): TechnologyUnlocks
+  {
+    const technologyUnlocks: TechnologyUnlocks = {};
+
+    const allUnlockableTemplateCollections =
+    [
+      // TODO 2018.08.28 | buildings aren't unlockable yet
+      // this.templates.Buildings,
+      this.templates.Items,
+      this.templates.Units,
+    ];
+
+    const allUnlockableThings = allUnlockableTemplateCollections.map(templateCollection =>
+    {
+      return Object.keys(templateCollection).map(key =>
+      {
+        return templateCollection[key];
+      });
+    }).reduce((allUnlockables, unlockablesOfType) =>
+    {
+      return allUnlockables.concat(unlockablesOfType);
+    }, []);
+
+    const unlockableThingsWithTechRequirements = allUnlockableThings.filter(unlockableThing =>
+    {
+      return Boolean(unlockableThing.techRequirements);
+    });
+
+    unlockableThingsWithTechRequirements.forEach(unlockableThing =>
+    {
+      unlockableThing.techRequirements.forEach(techRequirement =>
+      {
+        const tech = techRequirement.technology;
+        if (!technologyUnlocks[tech.key])
+        {
+          technologyUnlocks[tech.key] = {};
+        }
+
+        if (!technologyUnlocks[tech.key][techRequirement.level])
+        {
+          technologyUnlocks[tech.key][techRequirement.level] = [];
+        }
+
+        technologyUnlocks[tech.key][techRequirement.level].push(unlockableThing);
+      });
+    });
+
+    return technologyUnlocks;
   }
 }

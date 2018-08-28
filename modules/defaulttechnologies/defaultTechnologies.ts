@@ -1,7 +1,6 @@
 import * as Languages from "../../localization/defaultLanguages";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
-import {setTechnologyRequirements} from "../../src/setDynamicTemplateProperties";
 import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate";
 
 import technologyTemplates from "./technologyTemplates";
@@ -21,8 +20,6 @@ const defaultTechnologies: ModuleFile =
   supportedLanguages: [Languages.en],
   constructModule: (moduleData) =>
   {
-    setTechnologyRequirements(technologyTemplates);
-
     moduleData.copyTemplates<TechnologyTemplate>(technologyTemplates, "Technologies");
 
     return moduleData;

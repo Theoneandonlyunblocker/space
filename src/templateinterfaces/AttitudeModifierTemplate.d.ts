@@ -12,17 +12,12 @@ declare interface AttitudeModifierTemplate
   canBeOverriddenBy?: AttitudeModifierTemplate[];
 
   startCondition?: (evaluation: DiplomacyEvaluation) => boolean;
-  // if endCondition is not defined and duration is infinite, the opposite of startCondition is used
-  // to determine when to end modifier
+  // if endCondition is not defined and duration is infinite, modifier will be removed once startcondition no longer applies
   endCondition?: (evaluation: DiplomacyEvaluation) => boolean;
 
   baseEffect?: number;
   getEffectFromEvaluation?: (evaluation: DiplomacyEvaluation) => number;
   decayRate?: number;
-
-
-  // set dynamically
-  canOverride?: AttitudeModifierTemplate[];
 }
 
 export default AttitudeModifierTemplate;

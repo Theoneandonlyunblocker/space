@@ -7,6 +7,7 @@ import {DefaultWindow} from "../windows/DefaultWindow";
 
 import {TechnologyUnlocks} from "./TechnologyUnlocks";
 import TechnologyPrioritySlider from "./technologyPrioritySlider";
+import { activeModuleData } from "../../activeModuleData";
 
 
 export interface PropTypes extends React.Props<any>
@@ -142,7 +143,7 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
           TechnologyUnlocks(
           {
             technologyDisplayName: this.props.technology.displayName,
-            unlocksPerLevel: this.props.technology.unlocksPerLevel,
+            unlocksPerLevel: activeModuleData.technologyUnlocks[this.props.technology.key],
           }),
         ),
       )
