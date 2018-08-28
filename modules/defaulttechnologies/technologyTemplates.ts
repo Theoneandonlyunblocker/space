@@ -1,6 +1,5 @@
 import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
-import stealthShip from "../defaultunits/templates/stealthShip";
 
 
 export const stealth: TechnologyTemplate =
@@ -9,10 +8,6 @@ export const stealth: TechnologyTemplate =
   displayName: "Stealth",
   description: "stealthy stuff",
   maxLevel: 9,
-  unlocksPerLevel:
-  {
-    1: [stealthShip],
-  },
 };
 export const lasers: TechnologyTemplate =
 {
@@ -20,7 +15,6 @@ export const lasers: TechnologyTemplate =
   displayName: "Lasers",
   description: "pew pew",
   maxLevel: 9,
-  unlocksPerLevel: {},
 };
 export const missiles: TechnologyTemplate =
 {
@@ -28,7 +22,6 @@ export const missiles: TechnologyTemplate =
   displayName: "Missiles",
   description: "boom",
   maxLevel: 9,
-  unlocksPerLevel: {},
 };
 export const test1: TechnologyTemplate =
 {
@@ -36,7 +29,6 @@ export const test1: TechnologyTemplate =
   displayName: "test1",
   description: "test1",
   maxLevel: 1,
-  unlocksPerLevel: {},
 };
 export const test2: TechnologyTemplate =
 {
@@ -44,7 +36,6 @@ export const test2: TechnologyTemplate =
   displayName: "test2",
   description: "test2",
   maxLevel: 2,
-  unlocksPerLevel: {},
 };
 
 const technologyTemplates: TemplateCollection<TechnologyTemplate> =

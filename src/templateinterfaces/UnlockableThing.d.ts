@@ -11,6 +11,5 @@ export interface UnlockableThing
 
   kind: UnlockableThingKind;
 
-  // set dynamically from technology templates
   techRequirements?: TechRequirement[];
 }

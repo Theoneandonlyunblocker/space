@@ -11,6 +11,8 @@ import
 import {distributionGroups} from "../../common/distributionGroups";
 import itemSlot from "../../common/itemSlot";
 
+import * as technologies from "../../defaulttechnologies/technologyTemplates";
+
 
 const stealthShip: UnitTemplate =
 {
@@ -60,6 +62,13 @@ const stealthShip: UnitTemplate =
     [itemSlot.high]: 1,
   },
   unitDrawingFN: defaultUnitDrawingFunction,
+  techRequirements:
+  [
+    {
+      technology: technologies.stealth,
+      level: 1,
+    }
+  ],
   distributionData:
   {
     weight: 1,
