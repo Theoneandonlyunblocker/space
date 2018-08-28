@@ -4,7 +4,7 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import {setTechnologyRequirements} from "../../src/setDynamicTemplateProperties";
 import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate";
 
-import technologyTemplates from "./TechnologyTemplates";
+import technologyTemplates from "./technologyTemplates";
 
 
 const defaultTechnologies: ModuleFile =

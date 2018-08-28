@@ -10,7 +10,7 @@ import
 import {generateIndependentFleets} from "../../common/generateIndependentFleets";
 import {generateIndependentPlayer} from "../../common/generateIndependentPlayer";
 import defaultAiConstructor from "../../defaultai/mapai/DefaultAiConstructor";
-import * as TechnologyTemplates from "../../defaulttechnologies/TechnologyTemplates";
+import * as TechnologyTemplates from "../../defaulttechnologies/technologyTemplates";
 import * as items from "../../defaultitems/itemTemplates";
 import {unitTemplates as units} from "../../defaultunits/unitTemplates";
 
