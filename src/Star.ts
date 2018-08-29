@@ -27,6 +27,7 @@ import
 import StarSaveData from "./savedata/StarSaveData";
 import { applyFlatAndMultiplierAdjustments } from "./FlatAndMultiplierAdjustment";
 import GalaxyMap from "./GalaxyMap";
+import { getUniqueArrayKeys } from "./utility";
 
 
 // represents single location in game world. see Region for a grouping of these locations
@@ -825,7 +826,7 @@ export default class Star implements Point
 
     return data;
   }
-  private canBuildBuilding(
+  private canBuildBuildingHere(
     buildingTemplate: BuildingTemplate,
     localBuildingsByFamily = this.buildings.getBuildingsByFamily(),
   ): boolean
@@ -861,7 +862,7 @@ export default class Star implements Point
     const hasPerPlayerLimit = isFinite(buildingTemplate.maxBuiltForPlayer);
     if (hasPerPlayerLimit)
     {
-      const playerMatchingBuildings = this.owner.getAllBuildings().filter(playerBuilding =>
+      const playerMatchingBuildings = this.owner.getAllOwnedBuildings().filter(playerBuilding =>
       {
         const playerBuildingFamily = playerBuilding.template.family || playerBuilding.template.type;
 
@@ -888,10 +889,32 @@ export default class Star implements Point
     // doesn't check ownership. don't think we want to
     const localBuildingsByFamily = this.buildings.getBuildingsByFamily();
 
-    return this.owner.race.getBuildableBuildings().filter(buildingTemplate =>
+    const allBuildings =
+    [
+      ...this.owner.race.getBuildableBuildings(),
+      ...this.localRace.getBuildableBuildings(),
+    ];
+    const uniqueBuildings = getUniqueArrayKeys(allBuildings, template => template.type);
+
+    const buildableBuildings = uniqueBuildings.filter(buildingTemplate =>
     {
-      return this.canBuildBuilding(buildingTemplate, localBuildingsByFamily);
+      const canBuildHere = this.canBuildBuildingHere(buildingTemplate, localBuildingsByFamily);
+      if (!canBuildHere)
+      {
+        return false;
+      }
+
+      const isWithinOwnerTechLevel = !buildingTemplate.techRequirements ||
+        this.owner.meetsTechRequirements(buildingTemplate.techRequirements);
+      if (!isWithinOwnerTechLevel)
+      {
+        return false;
+      }
+
+      return true;
     });
+
+    return buildableBuildings;
   }
   public getBuildingUpgrades(): {[buildingId: number]: BuildingUpgradeData[]}
   {
@@ -931,7 +954,7 @@ export default class Star implements Point
         return true;
       }
 
-      return this.canBuildBuilding(upgradeTemplate);
+      return this.canBuildBuildingHere(upgradeTemplate);
     });
 
 

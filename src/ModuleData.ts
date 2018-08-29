@@ -192,8 +192,7 @@ export default class ModuleData
 
     const allUnlockableTemplateCollections =
     [
-      // TODO 2018.08.28 | buildings aren't unlockable yet
-      // this.templates.Buildings,
+      this.templates.Buildings,
       this.templates.Items,
       this.templates.Units,
     ];

@@ -1,9 +1,12 @@
 import {BuildingTemplate} from "../../../src/templateinterfaces/BuildingTemplate";
 
+import * as technologies from "../../defaulttechnologies/technologyTemplates";
+
 
 export const commercialPort: BuildingTemplate =
 {
   type: "commercialPort",
+  kind: "building",
   displayName: "Commercial Spaceport",
   description: "Increase star income by 20",
 
@@ -17,11 +20,11 @@ export const commercialPort: BuildingTemplate =
       income: {flat: 20},
     });
   },
-
 };
 export const deepSpaceRadar: BuildingTemplate =
 {
   type: "deepSpaceRadar",
+  kind: "building",
   displayName: "Deep Space Radar",
   description: "Increase star vision and detection radius by 1",
 
@@ -37,11 +40,18 @@ export const deepSpaceRadar: BuildingTemplate =
       detection: {flat: 1},
     });
   },
-
+  techRequirements:
+  [
+    {
+      technology: technologies.stealth,
+      level: 1,
+    }
+  ]
 };
 export const resourceMine: BuildingTemplate =
 {
   type: "resourceMine",
+  kind: "building",
   displayName: "Mine",
   description: "Gathers 1 resource per turn from current star",
 
@@ -67,6 +77,7 @@ export const resourceMine: BuildingTemplate =
 export const reserachLab: BuildingTemplate =
 {
   type: "reserachLab",
+  kind: "building",
   displayName: "Research Lab",
   description: "Increase research speed by 10",
 
@@ -85,6 +96,7 @@ export const reserachLab: BuildingTemplate =
 export const thePyramids: BuildingTemplate =
 {
   type: "thePyramids",
+  kind: "building",
   displayName: "The Pyramids",
   description: "",
 
@@ -101,6 +113,7 @@ export const thePyramids: BuildingTemplate =
 export const nationalEpic: BuildingTemplate =
 {
   type: "nationalEpic",
+  kind: "building",
   displayName: "National Epic",
   description: "",
 

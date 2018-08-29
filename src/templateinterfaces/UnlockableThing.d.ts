@@ -1,7 +1,7 @@
 import TechRequirement from "./TechRequirement";
 
 
-export type UnlockableThingKind = "unit" | "item";
+export type UnlockableThingKind = "unit" | "item" | "building";
 
 export interface UnlockableThing
 {

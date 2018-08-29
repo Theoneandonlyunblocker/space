@@ -24,6 +24,11 @@ export declare interface RaceTemplate
   isNotPlayable?: boolean;
   distributionData: DistributionData;
 
+  // these 4 are available
+  //   globally to player of this race
+  //   locally in any star with this race as the local race
+  // if you want to limit something to only players of a certain race,
+  // add a tech requirement only available to that race
   getBuildableUnits: () => UnitTemplate[];
   getBuildableItems: () => ItemTemplate[];
   getBuildableBuildings: () => BuildingTemplate[];

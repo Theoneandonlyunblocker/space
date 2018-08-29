@@ -7,6 +7,16 @@ import {UnlockableThing, UnlockableThingKind} from "../../templateinterfaces/Unl
 import {TechnologyUnlock} from "./TechnologyUnlock";
 
 
+const localizationKeyForUnlockableThingKind:
+{
+  [K in UnlockableThingKind]: string;
+} =
+{
+  building: "techUnlock_buildings",
+  item: "techUnlock_items",
+  unit: "techUnlock_units",
+};
+
 interface PropTypes extends React.Props<any>
 {
   kind: UnlockableThingKind;
@@ -29,6 +39,8 @@ export class TechnologyUnlocksForTypeComponent extends React.Component<PropTypes
 
   public render()
   {
+    const localizationKey = localizationKeyForUnlockableThingKind[this.props.kind];
+
     return React.DOM.div(
     {
       className: "technology-unlocks-for-type",
@@ -37,9 +49,7 @@ export class TechnologyUnlocksForTypeComponent extends React.Component<PropTypes
       {
         className: "technology-unlocks-for-type-header",
       },
-        this.props.kind === "item" ?
-          localize("techUnlock_items")() :
-          localize("techUnlock_units")(),
+        localize(localizationKey)(),
       ),
       React.DOM.ol(
       {

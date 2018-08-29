@@ -925,7 +925,7 @@ export default class Player
 
     return research;
   }
-  public getAllBuildings(): Building[]
+  public getAllOwnedBuildings(): Building[]
   {
     const allBuildings: Building[] = [];
 

@@ -66,7 +66,7 @@ const stealthShip: UnitTemplate =
   [
     {
       technology: technologies.stealth,
-      level: 1,
+      level: 2,
     }
   ],
   distributionData:
