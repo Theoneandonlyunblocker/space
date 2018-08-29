@@ -18,15 +18,18 @@ export class BuildingCollection<T extends Building>
    */
   private readonly onAddBuilding: ((building: T) => void) | undefined;
   private readonly onRemoveBuilding: ((building: T) => void) | undefined;
+  private readonly onUpgradeBuilding: ((building: T, oldTemplate: T["template"]) => void) | undefined;
 
   constructor(props:
   {
     onAddBuilding?: (building: T) => void;
     onRemoveBuilding?: (building: T) => void;
+    onUpgradeBuilding?: (building: T, oldTemplate: T["template"]) => void;
   } = {})
   {
     this.onAddBuilding = props.onAddBuilding;
     this.onRemoveBuilding = props.onRemoveBuilding;
+    this.onUpgradeBuilding = props.onUpgradeBuilding;
   }
 
   public has(building: T): boolean
@@ -106,9 +109,13 @@ export class BuildingCollection<T extends Building>
 
     return this.cachedEffects;
   }
-  public handleBuidlingUpgrade(): void
+  public handleBuidlingUpgrade(building: T, oldTemplate: T["template"]): void
   {
     this.cachedEffectsAreDirty = true;
+    if (this.onUpgradeBuilding)
+    {
+      this.onUpgradeBuilding(building, oldTemplate);
+    }
   }
   public serialize(): BuildingSaveData[]
   {

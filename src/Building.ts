@@ -73,11 +73,13 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
   }
   public upgrade(upgradeData: BuildingUpgradeData<T>): void
   {
+    const oldTemplate = this.template;
+
     this.template = upgradeData.template;
     this.totalCost += upgradeData.cost;
 
     // TODO 2018.06.13 | better way to do this?
-    this.location.buildings.handleBuidlingUpgrade();
+    this.location.buildings.handleBuidlingUpgrade(this, oldTemplate);
   }
   public setController(newController: Player): void
   {

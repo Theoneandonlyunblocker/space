@@ -153,6 +153,20 @@ export default class Star implements Point
         {
           this.galaxyMap.globallyLimitedBuildings.remove(building);
         }
+      },
+      onUpgradeBuilding: (building, oldTemplate) =>
+      {
+        const effect = building.getEffect();
+
+        if (this.owner === activePlayer)
+        {
+          for (const key in effect)
+          {
+            eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
+          }
+
+          eventManager.dispatchEvent("humanPlayerBuiltBuilding");
+        }
       }
     });
   }
