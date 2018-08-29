@@ -52,6 +52,8 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
     let incomeClass = "top-bar-money-income";
     if (income < 0) { incomeClass += " negative"; }
 
+    const incomeSign = income < 0 ? "" : "+";
+
     return(
       React.DOM.div(
       {
@@ -92,7 +94,7 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
             {
               className: incomeClass,
             },
-              `(+${player.getIncome()})`,
+              `(${incomeSign}${player.getIncome()})`,
             ),
           ),
           TopBarResources(
