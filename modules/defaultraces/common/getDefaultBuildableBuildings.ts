@@ -8,9 +8,9 @@ export function getDefaultBuildableBuildings(): BuildingTemplate[]
     territoryBuildings.sectorCommand,
     territoryBuildings.starBase,
 
-    otherBuildings.commercialPort,
+    // otherBuildings.commercialPort,
     otherBuildings.deepSpaceRadar,
-    otherBuildings.reserachLab,
+    // otherBuildings.reserachLab,
     otherBuildings.resourceMine,
     otherBuildings.thePyramids,
     otherBuildings.nationalEpic,

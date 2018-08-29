@@ -13,6 +13,7 @@ import defaultAiConstructor from "../../defaultai/mapai/DefaultAiConstructor";
 import * as TechnologyTemplates from "../../defaulttechnologies/technologyTemplates";
 import * as items from "../../defaultitems/itemTemplates";
 import {unitTemplates as units} from "../../defaultunits/unitTemplates";
+import * as buildings from "../../defaultbuildings/templates/otherBuildings";
 
 import {getDefaultBuildableBuildings} from "../common/getDefaultBuildableBuildings";
 import {getDefaultBuildableItems} from "../common/getDefaultBuildableItems";
@@ -33,7 +34,10 @@ const wormThings: RaceTemplate =
   },
   getBuildableBuildings: () =>
   {
-    return getDefaultBuildableBuildings();
+    return [
+      ...getDefaultBuildableBuildings(),
+      buildings.reserachLab,
+    ];
   },
   getBuildableItems: () =>
   {
