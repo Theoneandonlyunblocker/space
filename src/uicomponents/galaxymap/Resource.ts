@@ -2,8 +2,6 @@ import * as React from "react";
 
 import ResourceTemplate from "../../templateinterfaces/ResourceTemplate";
 
-import {localize} from "../../../localization/localize";
-
 
 export interface PropTypes extends React.Props<any>
 {
@@ -47,8 +45,14 @@ export class ResourceComponent extends React.Component<PropTypes, StateType>
         {
           className: "resource-amount",
         },
-          `${this.props.amount} (${sign}${this.props.income} ${localize("perTurn")()})`,
+          `${this.props.amount}`,
         ),
+        React.DOM.div(
+        {
+          className: "resource-income",
+        },
+          `(${sign}${this.props.income})`,
+        )
       )
     );
   }
