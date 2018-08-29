@@ -201,8 +201,7 @@ export default class Manufactory
     this.owner.money -= this.getCapacityUpgradeCost();
     this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
   }
-  // TODO 2018.08.28 | rename. unitUpgrade is confusing
-  public getUnitUpgradeCost(): number
+  public getUnitModifierUpgradeCost(): number
   {
     const totalUpgrades = (this.unitStatsModifier + this.unitHealthModifier - 2) / 0.1;
 
@@ -210,12 +209,12 @@ export default class Manufactory
   }
   public upgradeUnitStatsModifier(amount: number): void
   {
-    this.owner.money -= this.getUnitUpgradeCost();
+    this.owner.money -= this.getUnitModifierUpgradeCost();
     this.unitStatsModifier += amount;
   }
   public upgradeUnitHealthModifier(amount: number): void
   {
-    this.owner.money -= this.getUnitUpgradeCost();
+    this.owner.money -= this.getUnitModifierUpgradeCost();
     this.unitHealthModifier += amount;
   }
   public serialize(): ManufactorySaveData

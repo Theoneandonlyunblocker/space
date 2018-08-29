@@ -126,7 +126,7 @@ function getMostSuitableCommanderStarFromStars(
     }
     else
     {
-      return mapGenDataByStarId[b.id].mapGenDistance - mapGenDataByStarId[a.id].mapGenDistance;
+      return mapGenDataByStarId[b.id].distanceFromCenter - mapGenDataByStarId[a.id].distanceFromCenter;
     }
   })[0];
 }

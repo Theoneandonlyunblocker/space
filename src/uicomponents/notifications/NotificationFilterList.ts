@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 
 import {globalNotificationFilter, NotificationFilter} from "../../notifications/NotificationFilter";
 
@@ -60,10 +59,8 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   {
     if (this.props.highlightedOptionKey)
     {
-      // TODO 2018.05.30 | isn't finddomnode unneeded here?
-      const bodyNode = <HTMLElement> ReactDOM.findDOMNode(this.bodyElement);
-      const highlightedNode = <HTMLElement> bodyNode.getElementsByClassName("highlighted")[0];
-      bodyNode.scrollTop = highlightedNode.offsetTop - bodyNode.offsetHeight / 3;
+      const highlightedNode = <HTMLElement> this.bodyElement.getElementsByClassName("highlighted")[0];
+      this.bodyElement.scrollTop = highlightedNode.offsetTop - this.bodyElement.offsetHeight / 3;
     }
   }
   public parentPopupDidMount(): void

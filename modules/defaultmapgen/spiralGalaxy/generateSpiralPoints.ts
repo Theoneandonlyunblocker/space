@@ -44,7 +44,7 @@ export function generateSpiralPoints(options: SpiralGalaxyOptionValues): MapGenP
 
     const point = new MapGenPoint(x, y);
 
-    point.mapGenData.mapGenDistance = distance;
+    point.mapGenData.distanceFromCenter = distance;
 
     return point;
   };

@@ -258,7 +258,7 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
   {
     const starsByDistanceFromCenter = startRegion.stars.slice(0).sort((a, b) =>
     {
-      return mapGenDataByStarId[b.id].mapGenDistance - mapGenDataByStarId[a.id].mapGenDistance;
+      return mapGenDataByStarId[b.id].distanceFromCenter - mapGenDataByStarId[a.id].distanceFromCenter;
     });
 
     const starFurthestAwayFromCenter = starsByDistanceFromCenter[0];
@@ -390,7 +390,7 @@ function applyVoronoiRelaxationToPoints(
   const inverseCenterDensity = 1 - props.centerDensity;
   const getRelaxAmountFN = (point: MapGenPoint) =>
   {
-    return (inverseCenterDensity + props.centerDensity * point.mapGenData.mapGenDistance) * props.areaRegularity;
+    return (inverseCenterDensity + props.centerDensity * point.mapGenData.distanceFromCenter) * props.areaRegularity;
   };
 
   for (let i = 0; i < props.iterations; i++)

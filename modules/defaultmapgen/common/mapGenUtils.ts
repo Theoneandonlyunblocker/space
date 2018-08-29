@@ -57,7 +57,7 @@ export function partiallySeverLinks(
     let cutsDone = 0;
 
     const neighbors = star.getAllLinks();
-    const mapGenDistance = mapGenDataByStarId[star.id].mapGenDistance;
+    const distanceFromCenter = mapGenDataByStarId[star.id].distanceFromCenter;
 
     if (neighbors.length > minConnectionsToKeep)
     {
@@ -76,7 +76,7 @@ export function partiallySeverLinks(
 
           const totalLinks = neighbors.length + neighborLinks.length;
 
-          let cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnectionsToKeep) * (1 - mapGenDistance);
+          let cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnectionsToKeep) * (1 - distanceFromCenter);
           const minMultipleCutThreshhold = 0.15;
           if (cutThreshhold > 0)
           {

@@ -99,7 +99,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
     if (selectedStarHasManufactory)
     {
       const manufactory: Manufactory = this.props.selectedStar.manufactory;
-      const unitUpgradeCost = manufactory.getUnitUpgradeCost();
+      const unitUpgradeCost = manufactory.getUnitModifierUpgradeCost();
 
       manufactoryUpgradeButtons = React.DOM.div(
       {
