@@ -2367,45 +2367,17 @@ ul, ol
   }
 }
 
-.fleet-selection-container
-{
-  position: relative;
-  top: 0;
-  left: 0;
-  display: inline-flex;
-  flex-flow: row;
-  pointer-events: none;
-
-  color: @text-color;
-
-  &.reorganizing
-  {
-    @media(max-height: 520px)
-    {
-      top: -4px;
-      .fleet-selection-controls
-      {
-        display: none;
-      }
-    }
-  }
-}
-
 .fleet-selection
 {
   display: inline-flex;
   flex-flow: column;
-  @media(max-height: 660px)
-  {
-    //flex-flow: row;
-  }
   pointer-events: none;
   >*
   {
     pointer-events: auto;
   }
 
-  :first-child
+  >:first-child
   {
     position: relative;
   }
@@ -2419,7 +2391,7 @@ ul, ol
 
 .fleet-selection-controls
 {
-  flex: 0 auto;
+  flex: 0 0 auto;
 
   background-color: @bg-color;
   display: inline-table;
@@ -2432,49 +2404,18 @@ ul, ol
     margin: 1px 2px;
     .button-style;
   }
-
-  &.fleet-selection-displaced
-  {
-    border-left-width: 2px;
-  }
-}
-
-.fleet-selection-selected-wrapper
-{
-  display: flex;
-  pointer-events: none;
-  >*
-  {
-    pointer-events: auto;
-  }
 }
 
 .fleet-selection-selected
 {
   position: relative;
+  flex: 0 1 auto;
   display: inline-flex;
   flex-flow: column;
   overflow-y: scroll;
   overflow-x: hidden;
   max-height: 15em;
   width: 100%;
-  height: 100%;
-
-
-  &.reorganizing
-  {
-    left: auto;
-    width: auto;
-    overflow-y: auto;
-    .fleet-info
-    {
-      border-right-width: 0;
-    }
-    @media(max-width: 1000px)
-    {
-      display: none;
-    }
-  }
 }
 
 .fleet-controls
@@ -2509,11 +2450,6 @@ ul, ol
   +.fleet-info
   {
     border-top-width: 0;
-  }
-
-  &.fleet-selection-displaced
-  {
-    border-left-width: 3px !important;
   }
 
   &.stealthy
@@ -2632,9 +2568,7 @@ ul, ol
   display: inline-flex;
   flex-flow: column;
   background-color: @bg-color;
-  z-index: 1;
-
-  .full-border(5px);
+  box-sizing: border-box;
 
   button
   {
@@ -2642,16 +2576,12 @@ ul, ol
   }
 }
 
-.fleet-reorganization-header
-{
-  text-align: center;
-}
-
 .fleet-reorganization-subheader
 {
   display: inline-flex;
   flex-flow: row;
   justify-content: space-between;
+  flex: 0 0 auto;
 }
 
 .fleet-reorganization-subheader-fleet-name
@@ -2660,7 +2590,6 @@ ul, ol
   border: 1px solid @ui-border-color1;
   border-bottom-width: 0;
   padding: 0 10px;
-  background-color: @bg-color2;
 }
 .fleet-reorganization-subheader-fleet-name-left
 {
@@ -2682,8 +2611,9 @@ ul, ol
   flex-flow: row;
   padding: 8px 0;
   background-color: @bg-color;
+  flex: 1 1 auto;
 
-  .horizontal-border(3px, 3px);
+  .horizontal-border(3px, 0);
 
   .fleet-contents
   {
@@ -2709,15 +2639,57 @@ ul, ol
   justify-content: center;
 }
 
-.galaxy-map-ui-bottom-left
+.galaxy-map-ui-left
 {
   position: absolute;
-  z-index: -1;
+  top: @top-bar-height;
   bottom: 0;
   left: 0;
-  display: flex;
-  flex-flow: row;
   pointer-events: none;
+
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+
+  &.no-docking
+  {
+    justify-content: flex-end;
+  }
+}
+
+.galaxy-map-ui-top-left
+{
+  @min-amount-visible: 20px;
+
+  color: @text-color;
+  flex: 1 1 auto;
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  max-height: 100%;
+  min-height: @min-amount-visible;
+
+  &.no-docking
+  {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-bottom: @min-amount-visible;
+  }
+}
+
+.galaxy-map-ui-bottom-left
+{
+  flex: 0 0 auto;
+  pointer-events: none;
+  >*
+  {
+    pointer-events: all;
+  }
+  display: flex;
+  margin-top: -3px;
+  z-index: -1;
 }
 
 .galaxy-map-ui-bottom-left-column
@@ -2877,19 +2849,17 @@ ul, ol
 {
   position: relative;
   bottom: -3px;
-  display: inline-block;
-  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-flow: column;
 
   .full-border(5px);
 
   border-width: 5px 5px 5px 0;
   background-color: @bg-color;
   padding: 6px 10px;
-
-  &.has-expanded-action
-  {
-    display: block;
-  }
 }
 
 .possible-actions
@@ -2914,7 +2884,7 @@ ul, ol
 .expanded-action
 {
   position: relative;
-  width: 100%;
+  height: 100%;
   left: -3px;
   top: 3px;
   background-color: @bg-color2;

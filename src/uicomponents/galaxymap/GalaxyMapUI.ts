@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
 import {Fleet} from "../../Fleet";
@@ -16,11 +15,9 @@ import { Notification } from "../../notifications/Notification";
 import { NotificationSubscriber } from "../../notifications/NotificationSubscriber";
 import MapModeSettings from "../mapmodes/MapModeSettings";
 import NotificationLog from "../notifications/NotificationLog";
-import PossibleActions from "../possibleactions/PossibleActions";
 import IntroTutorial from "../tutorials/IntroTutorial";
 
-import FleetSelection from "./FleetSelection";
-import StarInfo from "./StarInfo";
+import {GalaxyMapUILeft} from "./GalaxyMapUILeft";
 import TopBar from "./TopBar";
 import TopMenu from "./TopMenu";
 
@@ -44,7 +41,6 @@ interface StateType
   selectedFleets: Fleet[];
   inspectedFleets: Fleet[];
   isPlayerTurn: boolean;
-  expandedActionElement: React.ReactElement<any>;
   selectedStar: Star;
 }
 
@@ -53,8 +49,6 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   public displayName = "GalaxyMapUI";
 
   public state: StateType;
-  leftColumnContent: HTMLElement;
-  expandedActionElementContainer: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -66,8 +60,6 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    this.clampExpandedActionElement = this.clampExpandedActionElement.bind(this);
-    this.setExpandedActionElement = this.setExpandedActionElement.bind(this);
     this.closeReorganization = this.closeReorganization.bind(this);
     this.endTurn = this.endTurn.bind(this);
     this.toggleMapModeSettingsExpanded = this.toggleMapModeSettingsExpanded.bind(this);
@@ -88,7 +80,6 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
       selectedStar: pc.selectedStar,
       attackTargets: pc.currentAttackTargets,
       isPlayerTurn: this.props.game.playerToAct === activePlayer,
-      expandedActionElement: null,
       hasMapModeSettingsExpanded: false,
     });
   }
@@ -110,20 +101,6 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
       this.setPlayerTurn);
   }
 
-  componentDidUpdate()
-  {
-    this.clampExpandedActionElement();
-  }
-
-  clampExpandedActionElement()
-  {
-    if (!this.state.expandedActionElement) { return; }
-
-    const maxHeight = ReactDOM.findDOMNode<HTMLElement>(this.leftColumnContent).getBoundingClientRect().height;
-    const listElement = <HTMLElement> ReactDOM.findDOMNode(this.expandedActionElementContainer).firstChild.firstChild;
-    listElement.style.maxHeight = "" + (maxHeight - 10) + "px";
-  }
-
   endTurn()
   {
     this.props.game.endTurn();
@@ -137,15 +114,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  setExpandedActionElement(element: React.ReactElement<any>)
-  {
-    this.setState(
-    {
-      expandedActionElement: element,
-    });
-  }
-
-  toggleMapModeSettingsExpanded()
+  private toggleMapModeSettingsExpanded(): void
   {
     this.setState({hasMapModeSettingsExpanded: !this.state.hasMapModeSettingsExpanded});
   }
@@ -185,34 +154,14 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
       onClick: this.endTurn,
       tabIndex: -1,
     };
+
     if (!this.state.isPlayerTurn)
     {
       endTurnButtonProps.className += " disabled";
       endTurnButtonProps.disabled = true;
     }
 
-    let selectionContainerClassName = "fleet-selection-container";
-    if (this.state.currentlyReorganizing.length > 0)
-    {
-      selectionContainerClassName += " reorganizing";
-    }
-
     const isInspecting = this.state.inspectedFleets.length > 0;
-
-    let expandedActionElement: React.ReactHTMLElement<any> = null;
-    if (this.state.expandedActionElement)
-    {
-      expandedActionElement = React.DOM.div(
-      {
-        className: "galaxy-map-ui-bottom-left-column",
-        ref: (component: HTMLElement) =>
-        {
-          this.expandedActionElementContainer = component;
-        },
-      },
-        this.state.expandedActionElement,
-      );
-    }
 
     return(
       React.DOM.div(
@@ -237,59 +186,20 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             selectedStar: this.state.selectedStar,
             setSelectedStar: this.setSelectedStar,
           }),
-          React.DOM.div(
-          {
-            className: selectionContainerClassName,
-          },
-            FleetSelection(
-            {
-              selectedFleets: (isInspecting ?
-                this.state.inspectedFleets : this.state.selectedFleets),
-              isInspecting: isInspecting,
-              selectedStar: this.state.selectedStar,
-              currentlyReorganizing: this.state.currentlyReorganizing,
-              closeReorganization: this.closeReorganization,
-              player: this.props.player,
-            }),
-          ),
         ),
-
-        React.DOM.div(
+        GalaxyMapUILeft(
         {
-          className: "galaxy-map-ui-bottom-left",
-          key: "bottomLeft",
-        },
-          React.DOM.div(
-          {
-            className: "galaxy-map-ui-bottom-left-column align-bottom",
-            key: "bottomLeftColumn",
-          },
-            React.DOM.div(
-            {
-              className: "galaxy-map-ui-bottom-left-leftmost-column-wrapper",
-              ref: (component: HTMLElement) =>
-              {
-                this.leftColumnContent = component;
-              },
-              key: "leftColumnContent",
-            },
-              PossibleActions(
-              {
-                attackTargets: this.state.attackTargets,
-                selectedStar: this.state.selectedStar,
-                player: this.props.player,
-                setExpandedActionElementOnParent: this.setExpandedActionElement,
-                key: "possibleActions",
-              }),
-              StarInfo(
-              {
-                selectedStar: this.state.selectedStar,
-                key: "starInfo",
-              }),
-            ),
-          ),
-          expandedActionElement,
-        ),
+          isInspecting: isInspecting,
+          selectedFleets: (isInspecting ?
+            this.state.inspectedFleets :
+            this.state.selectedFleets),
+          selectedStar: this.state.selectedStar,
+          currentlyReorganizing: this.state.currentlyReorganizing,
+          closeReorganization: this.closeReorganization,
+          player: this.props.player,
+
+          attackTargets: this.state.attackTargets,
+        }),
         React.DOM.div(
         {
           className: "galaxy-map-ui-bottom-right",

@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
 import {Fleet} from "../../Fleet";
@@ -10,6 +9,7 @@ import eventManager from "../../eventManager";
 import FleetContents from "./FleetContents";
 import FleetInfo from "./FleetInfo";
 import FleetReorganization from "./FleetReorganization";
+import { DefaultWindow } from "../windows/DefaultWindow";
 
 
 export interface PropTypes extends React.Props<any>
@@ -31,89 +31,26 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
   public displayName = "FleetSelection";
   public state: StateType;
 
-  private mainElement: HTMLElement;
-  private selectedElement: HTMLElement;
+  public contentsElement: HTMLDivElement;
 
   constructor(props: PropTypes)
   {
     super(props);
 
     this.bindMethods();
+
+    this.state =
+    {
+      isCompacted: false,
+      compactionIsOverridden: false,
+    };
   }
   private bindMethods()
   {
     this.reorganizeFleets = this.reorganizeFleets.bind(this);
     this.mergeFleets = this.mergeFleets.bind(this);
-    this.setElementPosition = this.setElementPosition.bind(this);
   }
-
-  mergeFleets()
-  {
-    eventManager.dispatchEvent("mergeFleets", null);
-  }
-  reorganizeFleets()
-  {
-    eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
-  }
-
-  setElementPosition()
-  {
-    if (!this.selectedElement) { return; }
-    const domNode = <HTMLElement> ReactDOM.findDOMNode(this.selectedElement);
-
-    if (!this.props.selectedStar)
-    {
-      domNode.style.left = "0";
-    }
-    else
-    {
-      const containerNode = <HTMLElement> document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
-      const actionsNode = <HTMLElement> containerNode.firstChild.firstChild;
-      const actionsRect = actionsNode.getBoundingClientRect();
-      const rightMostNode = <HTMLElement> (containerNode.childElementCount > 1 ?
-        containerNode.lastChild.lastChild :
-        containerNode.lastChild);
-      const rightMostRect = rightMostNode.getBoundingClientRect();
-      const ownBottom = domNode.getBoundingClientRect().bottom;
-
-      const first = <HTMLElement> ReactDOM.findDOMNode(this.mainElement).firstChild;
-
-      if (ownBottom > actionsRect.top)
-      {
-        const styleString = "" + (rightMostRect.right) + "px";
-        domNode.style.left = styleString;
-        first.style.left = styleString;
-        first.classList.add("fleet-selection-displaced");
-      }
-      else
-      {
-        domNode.style.left = "0";
-        first.style.left = "0";
-        first.classList.remove("fleet-selection-displaced");
-      }
-    }
-  }
-
-  componentDidMount()
-  {
-    this.setElementPosition();
-
-    eventManager.addEventListener("possibleActionsUpdated", this.setElementPosition);
-    window.addEventListener("resize", this.setElementPosition, false);
-  }
-
-  componentDidUpdate()
-  {
-    this.setElementPosition();
-  }
-
-  componentWillUnmount()
-  {
-    eventManager.removeEventListener("possibleActionsUpdated", this.setElementPosition);
-    window.removeEventListener("resize", this.setElementPosition);
-  }
-
-  render()
+  public render()
   {
     const selectedFleets: Fleet[] = this.props.selectedFleets;
     if (!selectedFleets || selectedFleets.length <= 0)
@@ -159,6 +96,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       {
         className: "fleet-selection-controls-merge",
       };
+
       if (allFleetsInSameLocation && !this.props.isInspecting && !fleetStealthsAreClashing)
       {
         mergeProps.onClick = this.mergeFleets;
@@ -209,48 +147,51 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
     }
 
     const isReorganizing = this.props.currentlyReorganizing.length > 0;
-    let reorganizeElement: React.ReactElement<any> = null;
-    if (isReorganizing)
-    {
-      reorganizeElement = FleetReorganization(
-      {
-        fleets: this.props.currentlyReorganizing,
-        closeReorganization: this.props.closeReorganization,
-      });
-    }
 
     return(
       React.DOM.div(
       {
         className: "fleet-selection",
-        ref: (component: HTMLElement) =>
-        {
-          this.mainElement = component;
-        },
       },
         fleetSelectionControls,
         hasMultipleSelected ? null : fleetInfos,
         React.DOM.div(
         {
-          className: "fleet-selection-selected-wrapper",
-        },
-          React.DOM.div(
+          className: "fleet-selection-selected",
+          ref: (element) =>
           {
-            className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : ""),
-            ref: (component: HTMLElement) =>
-            {
-              this.selectedElement = component;
-            },
-          },
-            hasMultipleSelected ? fleetInfos : null,
-            fleetContents,
-          ),
-          reorganizeElement,
+            this.contentsElement = element;
+          }
+        },
+          hasMultipleSelected ? fleetInfos : null,
+          fleetContents,
         ),
-      )
+        !isReorganizing ? null :
+          DefaultWindow(
+          {
+            title: localize("reorganizeFleets")(),
+            handleClose: this.props.closeReorganization,
+            isResizable: false,
+          },
+            FleetReorganization(
+            {
+              fleets: this.props.currentlyReorganizing,
+              closeReorganization: this.props.closeReorganization,
+            }),
+          ),
+        )
     );
   }
 
+  private mergeFleets(): void
+  {
+    eventManager.dispatchEvent("endReorganizingFleets");
+    eventManager.dispatchEvent("mergeFleets", null);
+  }
+  private reorganizeFleets(): void
+  {
+    eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
+  }
 }
 
 const factory: React.Factory<PropTypes> = React.createFactory(FleetSelectionComponent);

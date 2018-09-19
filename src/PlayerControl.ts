@@ -18,7 +18,7 @@ export default class PlayerControl
     [fleetId: number]: boolean;
   } = {};
 
-  currentAttackTargets: FleetAttackTarget[];
+  currentAttackTargets: FleetAttackTarget[] = [];
 
   selectedStar: Star;
 
@@ -130,11 +130,14 @@ export default class PlayerControl
   }
   updateSelection(endReorganizingFleets: boolean = true): void
   {
-    if (endReorganizingFleets) { this.endReorganizingFleets(); }
+    if (endReorganizingFleets)
+    {
+      this.endReorganizingFleets();
+    }
     this.currentAttackTargets = this.getCurrentAttackTargets();
 
     eventManager.dispatchEvent("playerControlUpdated", null);
-    eventManager.dispatchEvent("clearPossibleActions", null);
+    // eventManager.dispatchEvent("clearPossibleActions", null);
   }
 
   areAllFleetsInSameLocation(): boolean

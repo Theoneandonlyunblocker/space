@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import {localize} from "../../../localization/localize";
 import {Fleet} from "../../Fleet";
 import Unit from "../../Unit";
 import eventManager from "../../eventManager";
@@ -110,10 +109,6 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
       },
         React.DOM.div(
         {
-          className: "fleet-reorganization-header",
-        }, localize("reorganizeFleets")()),
-        React.DOM.div(
-        {
           className: "fleet-reorganization-subheader",
         },
           React.DOM.div(
@@ -157,16 +152,6 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
             onDragEnd: this.handleDragEnd,
             player: selectedFleets[0].player,
           }),
-        ),
-        React.DOM.div(
-        {
-          className: "fleet-reorganization-footer",
-        },
-          React.DOM.button(
-          {
-            className: "close-reorganization",
-            onClick: this.handleClose,
-          }, localize("close")()),
         ),
       )
     );
