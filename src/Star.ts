@@ -118,7 +118,12 @@ export default class Star implements Point
     {
       onAddBuilding: building =>
       {
-        if (isFinite(building.template.maxBuiltGlobally))
+        if (isFinite(building.template.maxBuiltGlobally) ||
+          building.template.families.some(family =>
+          {
+            return isFinite(family.maxBuiltGlobally);
+          })
+        )
         {
           this.galaxyMap.globallyLimitedBuildings.add(building);
         }
@@ -149,7 +154,12 @@ export default class Star implements Point
       },
       onRemoveBuilding: building =>
       {
-        if (isFinite(building.template.maxBuiltGlobally))
+        if (isFinite(building.template.maxBuiltGlobally) ||
+          building.template.families.some(family =>
+          {
+            return isFinite(family.maxBuiltGlobally);
+          })
+        )
         {
           this.galaxyMap.globallyLimitedBuildings.remove(building);
         }
@@ -841,57 +851,137 @@ export default class Star implements Point
     return data;
   }
   private canBuildBuildingHere(
-    buildingTemplate: BuildingTemplate,
+    templateToBuild: BuildingTemplate,
+    parentBuilding?: Building,
     localBuildingsByFamily = this.buildings.getBuildingsByFamily(),
   ): boolean
   {
-    const hasBuildingRestriction = Boolean(buildingTemplate.canBeBuiltInLocation);
+    const hasBuildingRestriction = Boolean(templateToBuild.canBeBuiltInLocation);
     if (hasBuildingRestriction)
     {
-      if (!buildingTemplate.canBeBuiltInLocation(this))
+      if (!templateToBuild.canBeBuiltInLocation(this))
       {
         return false;
       }
     }
 
-    const family = buildingTemplate.family || buildingTemplate.type;
-
-    const hasGlobalLimit = isFinite(buildingTemplate.maxBuiltGlobally);
-    if (hasGlobalLimit)
+    // TODO 2018.09.27 | can we reduce the duplication here?
+    const globalLimit = templateToBuild.maxBuiltGlobally || Infinity;
+    if (isFinite(globalLimit))
     {
-      const globalMatchingBuildings = this.galaxyMap.globallyLimitedBuildings.filter(globalBuilding =>
+      const globalBuilt = this.galaxyMap.globallyLimitedBuildings.filter(globalBuilding =>
       {
-        const playerBuildingFamily = globalBuilding.template.family || globalBuilding.template.type;
+        return globalBuilding.template === templateToBuild;
+      }).length;
 
-        return playerBuildingFamily === family;
-      });
-
-      const globalAmountBuilt = globalMatchingBuildings.length;
-      if (globalAmountBuilt >= buildingTemplate.maxBuiltGlobally)
+      if (globalBuilt >= globalLimit)
       {
         return false;
       }
     }
 
-    const hasPerPlayerLimit = isFinite(buildingTemplate.maxBuiltForPlayer);
-    if (hasPerPlayerLimit)
+    const allPlayerBuildings = this.owner.getAllOwnedBuildings();
+
+    const perPlayerLimit = templateToBuild.maxBuiltForPlayer || Infinity;
+    if (isFinite(perPlayerLimit))
     {
-      const playerMatchingBuildings = this.owner.getAllOwnedBuildings().filter(playerBuilding =>
+      const ownedByPlayer = allPlayerBuildings.filter(playerBuilding =>
       {
-        const playerBuildingFamily = playerBuilding.template.family || playerBuilding.template.type;
+        return playerBuilding.template === templateToBuild;
+      }).length;
 
-        return playerBuildingFamily === family;
-      });
-
-      const amountPlayerAlreadyHas = playerMatchingBuildings.length;
-      if (amountPlayerAlreadyHas >= buildingTemplate.maxBuiltForPlayer)
+      if (ownedByPlayer >= perPlayerLimit)
       {
         return false;
       }
     }
 
-    const localAmountBuilt = localBuildingsByFamily[family] ? localBuildingsByFamily[family].length : 0;
-    if (localAmountBuilt >= buildingTemplate.maxBuiltAtLocation)
+    const localLimit = templateToBuild.maxBuiltAtLocation || Infinity;
+    if (isFinite(localLimit))
+    {
+      const localBuilt = this.buildings.filter(localBuilding =>
+      {
+        return localBuilding.template === templateToBuild;
+      }).length;
+
+      if (localBuilt >= localLimit)
+      {
+        return false;
+      }
+    }
+
+
+    const isGloballyLimitedByFamily = templateToBuild.families.some(templateFamily =>
+    {
+      const familyGlobalLimit = templateFamily.maxBuiltGlobally || Infinity;
+      if (isFinite(familyGlobalLimit))
+      {
+        const familyGlobalBuilt = this.galaxyMap.globallyLimitedBuildings.filter(globalBuilding =>
+        {
+          return globalBuilding.isOfFamily(templateFamily);
+        }).length;
+
+        const familyLimitModifier = parentBuilding && parentBuilding.isOfFamily(templateFamily) ? 1 : 0;
+
+        if (familyGlobalBuilt >= familyGlobalLimit + familyLimitModifier)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    if (isGloballyLimitedByFamily)
+    {
+      return false;
+    }
+
+    const isPlayerLimitedByFamily = templateToBuild.families.some(templateFamily =>
+    {
+      const familyPerPlayerLimit = templateFamily.maxBuiltForPlayer || Infinity;
+      if (isFinite(familyPerPlayerLimit))
+      {
+        const familyOwnedByPlayer = allPlayerBuildings.filter(playerBuilding =>
+        {
+          return playerBuilding.isOfFamily(templateFamily);
+        }).length;
+
+        const familyLimitModifier = parentBuilding && parentBuilding.isOfFamily(templateFamily) ? 1 : 0;
+
+        if (familyOwnedByPlayer >= familyPerPlayerLimit + familyLimitModifier)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    if (isPlayerLimitedByFamily)
+    {
+      return false;
+    }
+
+    const isLocallyLimitedByFamily = templateToBuild.families.some(templateFamily =>
+    {
+      const familyLocalLimit = templateFamily.maxBuiltAtLocation || Infinity;
+      if (isFinite(familyLocalLimit))
+      {
+        const familyLocalBuilt = localBuildingsByFamily[templateFamily.type].length;
+
+        const familyLimitModifier = parentBuilding && parentBuilding.isOfFamily(templateFamily) ? 1 : 0;
+
+        if (familyLocalBuilt >= familyLocalLimit + familyLimitModifier)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    if (isLocallyLimitedByFamily)
     {
       return false;
     }
@@ -912,7 +1002,7 @@ export default class Star implements Point
 
     const buildableBuildings = uniqueBuildings.filter(buildingTemplate =>
     {
-      const canBuildHere = this.canBuildBuildingHere(buildingTemplate, localBuildingsByFamily);
+      const canBuildHere = this.canBuildBuildingHere(buildingTemplate, null, localBuildingsByFamily);
       if (!canBuildHere)
       {
         return false;
@@ -956,19 +1046,7 @@ export default class Star implements Point
     const allUpgrades = specialUpgrades.concat(standardUpgrades);
     const validUpgrades = allUpgrades.filter(upgradeData =>
     {
-      const parentTemplate = upgradeData.parentBuilding.template;
-      const upgradeTemplate = upgradeData.template;
-
-      if (parentTemplate.type === upgradeTemplate.type)
-      {
-        return true;
-      }
-      else if (upgradeTemplate.family && parentTemplate.family === upgradeTemplate.family)
-      {
-        return true;
-      }
-
-      return this.canBuildBuildingHere(upgradeTemplate);
+      return this.canBuildBuildingHere(upgradeData.template, upgradeData.parentBuilding);
     });
 
 

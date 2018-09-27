@@ -9,6 +9,7 @@ export const commercialPort: BuildingTemplate =
   kind: "building",
   displayName: "Commercial Spaceport",
   description: "Increase star income by 20",
+  families: [],
 
   buildCost: 200,
   maxBuiltAtLocation: 1,
@@ -27,6 +28,7 @@ export const deepSpaceRadar: BuildingTemplate =
   kind: "building",
   displayName: "Deep Space Radar",
   description: "Increase star vision and detection radius by 1",
+  families: [],
 
   buildCost: 200,
 
@@ -54,6 +56,7 @@ export const resourceMine: BuildingTemplate =
   kind: "building",
   displayName: "Mine",
   description: "Gathers 1 resource per turn from current star",
+  families: [],
 
   buildCost: 500,
 
@@ -80,6 +83,7 @@ export const reserachLab: BuildingTemplate =
   kind: "building",
   displayName: "Research Lab",
   description: "Increase research speed by 10",
+  families: [],
 
   buildCost: 300,
 
@@ -99,6 +103,7 @@ export const thePyramids: BuildingTemplate =
   kind: "building",
   displayName: "The Pyramids",
   description: "",
+  families: [],
 
   onBuild: (star, player) =>
   {
@@ -116,6 +121,7 @@ export const nationalEpic: BuildingTemplate =
   kind: "building",
   displayName: "National Epic",
   description: "",
+  families: [],
 
   onBuild: (star, player) =>
   {

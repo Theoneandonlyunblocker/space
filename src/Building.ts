@@ -9,6 +9,7 @@ import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
 import Player from "./Player";
 import Star from "./Star";
 import { TerritoryBuildingTemplate } from "./templateinterfaces/TerritoryBuildingTemplate";
+import { BuildingFamily } from "./templateinterfaces/BuildingFamily";
 
 
 export type TerritoryBuilding = Building<TerritoryBuildingTemplate>;
@@ -89,6 +90,13 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
 
     this.controller = newController;
     this.location.updateController();
+  }
+  public isOfFamily(familyToCheck: BuildingFamily): boolean
+  {
+    return this.template.families.some(templateFamily =>
+    {
+      return templateFamily === familyToCheck;
+    });
   }
   public serialize(): BuildingSaveData
   {

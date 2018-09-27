@@ -1,6 +1,10 @@
 import {TerritoryBuildingTemplate} from "../../../src/templateinterfaces/TerritoryBuildingTemplate";
 
 import {makeDefenderAdvantageEffect} from "./battleEffects";
+import
+{
+  territoryBuildings, sectorCommandFamily,
+} from "./buildingFamilies";
 
 
 export const sectorCommand: TerritoryBuildingTemplate =
@@ -8,7 +12,7 @@ export const sectorCommand: TerritoryBuildingTemplate =
   type: "sectorCommand",
   isTerritoryBuilding: true,
   kind: "building",
-  family: "sectorCommand",
+  families: [territoryBuildings, sectorCommandFamily],
   displayName: "Sector Command",
   description: "Defence building with slight defender advantage. (All defence buildings must " +
     "be captured to gain control of area)",
@@ -30,7 +34,7 @@ export const sectorCommand1: TerritoryBuildingTemplate =
   type: "sectorCommand1",
   isTerritoryBuilding: true,
   kind: "building",
-  family: "sectorCommand",
+  families: [territoryBuildings, sectorCommandFamily],
   displayName: "Sector Command1",
   description: "just testing upgrade paths",
 
@@ -46,7 +50,7 @@ export const sectorCommand2: TerritoryBuildingTemplate =
   type: "sectorCommand2",
   isTerritoryBuilding: true,
   kind: "building",
-  family: "sectorCommand",
+  families: [territoryBuildings, sectorCommandFamily],
   displayName: "Sector Command2",
   description: "just testing upgrade paths",
 
@@ -62,14 +66,13 @@ export const starBase: TerritoryBuildingTemplate =
   type: "starBase",
   isTerritoryBuilding: true,
   kind: "building",
+  families: [territoryBuildings],
   displayName: "Starbase",
   description: "Defence building with no defender advantage. (All defence buildings must " +
     "be captured to gain control of area)",
 
   iconSrc: "starBase.png",
   buildCost: 200,
-
-  maxBuiltAtLocation: 3,
 
   battleEffects: [makeDefenderAdvantageEffect(0.1)],
   getStandardUpgradeTargets: () =>

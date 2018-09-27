@@ -14,7 +14,11 @@ export const starScripts: Partial<ScriptsWithData<StarScripts>> =
       {
         star.buildings.filter((building) =>
         {
-          return isFinite(building.template.maxBuiltForPlayer);
+          return isFinite(building.template.maxBuiltForPlayer) ||
+            building.template.families.some(family =>
+            {
+              return isFinite(family.maxBuiltForPlayer);
+            });
         }).forEach(building =>
         {
           star.buildings.remove(building);
