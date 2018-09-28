@@ -968,7 +968,9 @@ export default class Star implements Point
       const familyLocalLimit = templateFamily.maxBuiltAtLocation || Infinity;
       if (isFinite(familyLocalLimit))
       {
-        const familyLocalBuilt = localBuildingsByFamily[templateFamily.type].length;
+        const familyLocalBuilt = localBuildingsByFamily[templateFamily.type] ?
+          localBuildingsByFamily[templateFamily.type].length :
+          0;
 
         const familyLimitModifier = parentBuilding && parentBuilding.isOfFamily(templateFamily) ? 1 : 0;
 
