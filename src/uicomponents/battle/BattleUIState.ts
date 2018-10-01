@@ -1,17 +1,17 @@
 enum BattleUIState
 {
   // no control
-  Starting,
-  // hovered & active unit
+  BattleStarting,
+  // display hovered & active unit
   Idle,
-  // user & target unit | blinking border around target
+  // display user & target unit | blinking border around target
   FocusingUnit,
-  // user & target unit | darken formations
+  // display user & target unit | darken formations
   PlayingSfx,
   // animate turn counter | animate turn order | add annihilated overlay
   TransitioningTurn,
   // no control
-  Ending,
+  BattleEnding,
 }
 
 export default BattleUIState;

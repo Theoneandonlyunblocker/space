@@ -158,7 +158,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     return(
     {
-      UIState: BattleUIState.Starting,
+      UIState: BattleUIState.BattleStarting,
 
       highlightedUnit: null,
       hoveredUnit: null,
@@ -201,7 +201,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     {
       this.setState(
       {
-        UIState: BattleUIState.Ending,
+        UIState: BattleUIState.BattleEnding,
       });
     }
     else
@@ -465,7 +465,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     {
       this.setState(
       {
-        UIState: BattleUIState.Ending,
+        UIState: BattleUIState.BattleEnding,
       });
     }
     else if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction)
@@ -575,7 +575,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
     let upperFooterElement: React.ReactElement<any>;
-    if (this.state.UIState === BattleUIState.Starting)
+    if (this.state.UIState === BattleUIState.BattleStarting)
     {
       upperFooterElement = null;
     }
@@ -653,7 +653,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       className: "battle-container",
     };
     let playerWonBattle: boolean = null;
-    if (this.state.UIState === BattleUIState.Starting)
+    if (this.state.UIState === BattleUIState.BattleStarting)
     {
       containerProps.className += " battle-start-overlay";
       containerProps.onClick = this.endBattleStart;
@@ -671,13 +671,14 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       playerWonBattle = this.props.humanPlayer === battle.getVictor();
     }
 
+    // TODO 2018.10.01 | vvv why?
     // TODO refactor
     let battleState: "start" | "active" | "finish";
-    if (this.state.UIState === BattleUIState.Starting)
+    if (this.state.UIState === BattleUIState.BattleStarting)
     {
       battleState = "start";
     }
-    else if (this.state.UIState === BattleUIState.Ending)
+    else if (this.state.UIState === BattleUIState.BattleEnding)
     {
       battleState = "finish";
     }
