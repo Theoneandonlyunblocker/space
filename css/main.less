@@ -1114,11 +1114,15 @@ ul, ol
 
 .unit-wrapper
 {
+  @margin-size: 5px;
+  @padding-size: 2px;
+
   display: block;
   position: relative;
   height: 5em;
-  margin: 5px;
-  padding: 2px;
+  margin: @margin-size;
+  padding: @padding-size;
+  margin-right: @margin-size + 2 * @padding-size;
 }
 
 .unit
