@@ -1960,6 +1960,8 @@ ul, ol
   .item-list
   {
     .sort-icons(1100px);
+    width: 100%;
+    height: 100%;
     overflow-y: hidden;
   }
 
@@ -2081,10 +2083,14 @@ ul, ol
 
 .battle-prep-left-lower
 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex: 1 1 0%;
   background-color: @bg-color;
   .default-border(1px 1px 0 0);
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .unavailable-unit
