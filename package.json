@@ -3,9 +3,8 @@
   "version": "0.1.0",
   "dependencies": {
     "pixi.js": "4.5.3",
-    "react": "15.4.x",
-    "react-dom": "15.4.x",
-    "react-transition-group": "1.2.0"
+    "react": "15.5.x",
+    "react-dom": "15.5.x"
   },
   "devDependencies": {
     "typescript": "3.0.x",
@@ -15,8 +14,7 @@
     "mkdirp": "0.5.x",
 
     "@types/react": "15.x",
-    "@types/react-dom": "15.x",
-    "@types/react-transition-group": "1.x"
+    "@types/react-dom": "15.x"
   },
   "scripts": {
     "postinstall": "npm run copy-dependencies",

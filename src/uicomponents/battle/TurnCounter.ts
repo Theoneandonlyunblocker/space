@@ -1,20 +1,5 @@
 import * as React from "react";
-import * as ReactTransitionGroup from "react-transition-group";
 
-
-// tslint:disable-next-line:variable-name
-const ReactCSSTransitionGroup = React.createFactory(ReactTransitionGroup.CSSTransitionGroup);
-
-// tslint:disable-next-line:variable-name
-const FirstChild = React.createClass(
-{
-  render: function(this: any)
-  {
-    const child = <React.ReactElement<any>> React.Children.toArray(this.props.children)[0];
-
-    return child || null;
-  },
-});
 
 export interface PropTypes extends React.Props<any>
 {
@@ -24,28 +9,57 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
+  isExiting: boolean;
 }
 
 export class TurnCounterComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "TurnCounter";
   public state: StateType;
-  inner: HTMLDivElement | null;
+
+  private inner: HTMLDivElement | null;
+  private animationTimeoutHandle: number;
 
   constructor(props: PropTypes)
   {
     super(props);
+
+    this.state =
+    {
+      isExiting: false,
+    };
+
+    this.finishFadeOutAnimation = this.finishFadeOutAnimation.bind(this);
   }
 
-  componentDidMount()
+  public componentDidMount(): void
   {
     if (this.inner)
     {
       this.inner.style.animationDuration = "" + this.props.animationDuration + "ms";
     }
   }
-
-  render()
+  public componentWillReceiveProps(newProps: PropTypes): void
+  {
+    if (!this.props.isEmpty && newProps.isEmpty)
+    {
+      this.setState(
+      {
+        isExiting: true,
+      }, () =>
+      {
+        window.setTimeout(this.finishFadeOutAnimation, this.props.animationDuration);
+      });
+    }
+  }
+  public componentWillUnmount(): void
+  {
+    if (this.animationTimeoutHandle)
+    {
+      window.clearTimeout(this.animationTimeoutHandle);
+    }
+  }
+  public render()
   {
     return(
       React.DOM.div(
@@ -53,27 +67,25 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
         className: "turn-counter" +
           (!this.props.isEmpty ? " turn-counter-available-border" : ""),
       },
-        ReactCSSTransitionGroup(
+        this.props.isEmpty && !this.state.isExiting ? null : React.DOM.div(
         {
-          transitionName: "available-turn",
-          transitionAppear: false,
-          transitionEnter: false,
-          transitionLeave: true,
-          transitionLeaveTimeout: this.props.animationDuration,
-          component: FirstChild,
-        },
-          this.props.isEmpty ? null : React.DOM.div(
+          key: "inner",
+          className: "available-turn" + (this.state.isExiting ? " available-turn-leave-active" : ""),
+          ref: element =>
           {
-            key: "inner",
-            className: "available-turn",
-            ref: element =>
-            {
-              this.inner = element;
-            },
-          }),
-        ),
+            this.inner = element;
+          },
+        }),
       )
     );
+  }
+  private finishFadeOutAnimation(): void
+  {
+    window.clearTimeout(this.animationTimeoutHandle);
+    this.setState(
+    {
+      isExiting: false,
+    });
   }
 }
 
