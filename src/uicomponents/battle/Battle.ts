@@ -602,7 +602,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         onMouseLeaveUnit: this.handleMouseLeaveUnit,
 
         turnIsTransitioning: this.state.UIState === BattleUIState.TransitioningTurn,
-        turnTransitionDuration: Options.battleAnimationTiming.turnTransition,
+        transitionDuration: Options.battleAnimationTiming.turnTransition / 2,
       });
     }
     else

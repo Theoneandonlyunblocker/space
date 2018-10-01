@@ -14,6 +14,17 @@ export enum AnimationState
   Idle,
 }
 
+const containerClassForAnimationState =
+{
+  [AnimationState.RemoveDeadUnit]: "remove-dead-unit",
+  [AnimationState.FillSpaceLeftByDeadUnits]: "fill-space-left-by-dead-unit",
+  [AnimationState.RemoveUnit]: "remove-unit",
+  [AnimationState.ClearSpaceForUnit]: "clear-space-for-unit",
+  [AnimationState.InsertUnit]: "insert-unit",
+  [AnimationState.PushUnit]: "push-unit",
+  [AnimationState.Idle]: "",
+};
+
 interface PropTypes extends React.Props<any>
 {
   unitName: string;
@@ -36,16 +47,6 @@ export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, State
 {
   public displayName = "TurnOrderUnit";
   public state: StateType;
-  containerClassForAnimationState =
-  {
-    [AnimationState.RemoveDeadUnit]: "remove-dead-unit",
-    [AnimationState.FillSpaceLeftByDeadUnits]: "fill-space-left-by-dead-unit",
-    [AnimationState.RemoveUnit]: "remove-unit",
-    [AnimationState.ClearSpaceForUnit]: "clear-space-for-unit",
-    [AnimationState.InsertUnit]: "insert-unit",
-    [AnimationState.PushUnit]: "push-unit",
-    [AnimationState.Idle]: "",
-  };
 
   constructor(props: PropTypes)
   {
@@ -72,7 +73,7 @@ export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, State
       React.DOM.div(
       {
         className: "turn-order-unit-container" + " " +
-          this.containerClassForAnimationState[this.props.animationState],
+          containerClassForAnimationState[this.props.animationState],
         style:
         {
           animationDuration: "" + this.props.transitionDuration + "ms",

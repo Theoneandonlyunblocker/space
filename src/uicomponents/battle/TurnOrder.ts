@@ -23,7 +23,7 @@ export interface PropTypes extends React.Props<any>
   hoveredGhostIndex: number;
 
   turnIsTransitioning: boolean;
-  turnTransitionDuration: number;
+  transitionDuration: number;
 
   onMouseLeaveUnit: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseEnterUnit: (unit: Unit) => void;
@@ -79,13 +79,13 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.Idle,
     });
   }
-  componentDidMount()
+  public componentDidMount(): void
   {
     this.setMaxUnits();
 
     window.addEventListener("resize", this.setMaxUnits);
   }
-  componentWillUnmount()
+  public componentWillUnmount(): void
   {
     window.removeEventListener("resize", this.setMaxUnits);
     if (isFinite(this.timeoutHandle))
@@ -93,18 +93,18 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       window.clearTimeout(this.timeoutHandle);
     }
   }
-  componentWillReceiveProps(newProps: PropTypes)
+  public componentWillReceiveProps(newProps: PropTypes): void
   {
     if (newProps.turnIsTransitioning && !this.props.turnIsTransitioning)
     {
       const removedUnit = this.state.currentDisplayData[0].unit;
 
-      let newRemovedUnitIndex: number;
+      let removedUnitNewIndex: number;
       for (let i = 0; i < newProps.turnOrderDisplayData.length; i++)
       {
         if (newProps.turnOrderDisplayData[i].unit === removedUnit)
         {
-          newRemovedUnitIndex = i;
+          removedUnitNewIndex = i;
           break;
         }
       }
@@ -123,14 +123,14 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       });
 
       const unitsToRender = Math.min(newProps.turnOrderDisplayData.length, this.state.maxUnits);
-      const shouldInsertRemovedUnit = newRemovedUnitIndex < unitsToRender - 1;
+      const shouldInsertRemovedUnit = removedUnitNewIndex < unitsToRender - 1;
 
       this.setState(
       {
         pendingDisplayData: newProps.turnOrderDisplayData,
         pendingDeadUnitsById: pendingDeadUnitsById,
 
-        insertIndex: shouldInsertRemovedUnit ? newRemovedUnitIndex : undefined,
+        insertIndex: shouldInsertRemovedUnit ? removedUnitNewIndex : undefined,
       }, () =>
       {
         this.removeDeadUnits();
@@ -138,10 +138,6 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  private getTransitionDuration()
-  {
-    return this.props.turnTransitionDuration / 4;
-  }
   private setFinishAnimatingTimeout()
   {
     this.timeoutHandle = window.setTimeout(() =>
@@ -149,9 +145,8 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       this.setState(
       {
         animationState: AnimationState.Idle,
-
       });
-    }, this.getTransitionDuration());
+    }, this.props.transitionDuration);
   }
   private removeDeadUnits()
   {
@@ -176,7 +171,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         this.timeoutHandle = window.setTimeout(() =>
         {
           this.fillSpaceLeftByDeadUnits();
-        }, this.getTransitionDuration());
+        }, this.props.transitionDuration);
       });
     }
     else
@@ -203,7 +198,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         {
           this.removeUnit();
         });
-      }, this.getTransitionDuration());
+      }, this.props.transitionDuration);
     });
   }
   private removeUnit()
@@ -228,7 +223,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         {
           this.pushUnit();
         }
-      }, this.getTransitionDuration());
+      }, this.props.transitionDuration);
     });
   }
   private clearSpaceForUnit()
@@ -241,7 +236,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       this.timeoutHandle = window.setTimeout(() =>
       {
         this.insertUnit();
-      }, this.getTransitionDuration());
+      }, this.props.transitionDuration);
     });
   }
   private insertUnit()
@@ -293,7 +288,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
     const toRender: React.ReactElement<any>[] = [];
 
     const unitsToRender = Math.min(this.state.currentDisplayData.length, this.state.maxUnits);
-    const transitionDuration = this.getTransitionDuration();
+    const transitionDuration = this.props.transitionDuration;
 
     for (let i = 0; i < unitsToRender; i++)
     {
