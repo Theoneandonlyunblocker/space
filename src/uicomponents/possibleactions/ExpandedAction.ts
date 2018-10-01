@@ -5,6 +5,8 @@ import Star from "../../Star";
 
 import BuildableBuildingList from "./BuildableBuildingList";
 import BuildingUpgradeList from "./BuildingUpgradeList";
+import { BuildingTemplate } from "../../templateinterfaces/BuildingTemplate";
+import BuildingUpgradeData from "../../BuildingUpgradeData";
 
 
 export enum ExpandedActionKind
@@ -20,7 +22,9 @@ interface PropTypes extends React.Props<any>
   action: ExpandedActionKind;
   player: Player;
   selectedStar: Star;
-  clearExpandedAction: () => void;
+
+  buildableBuildings: BuildingTemplate[];
+  buildingUpgrades: {[buildingId: number]: BuildingUpgradeData[]};
 }
 
 interface StateType
@@ -39,9 +43,54 @@ export class ExpandedActionComponent extends React.Component<PropTypes, StateTyp
 
   public render()
   {
-    if (this.props.action === ExpandedActionKind.None)
+    let innerElement: React.ReactElement<any>;
+
+    switch (this.props.action)
     {
-      return null;
+      case ExpandedActionKind.None:
+      {
+        return null;
+      }
+      case ExpandedActionKind.BuildBuildings:
+      {
+        if (this.props.buildableBuildings.length > 0)
+        {
+          innerElement = BuildableBuildingList(
+          {
+            player: this.props.player,
+            star: this.props.selectedStar,
+            buildableBuildings: this.props.buildableBuildings,
+          });
+
+          break;
+        }
+        else
+        {
+          return null;
+        }
+      }
+      case ExpandedActionKind.UpgradeBuildings:
+      {
+        if (Object.keys(this.props.buildingUpgrades).length > 0)
+        {
+          innerElement = BuildingUpgradeList(
+          {
+            player: this.props.player,
+            star: this.props.selectedStar,
+            buildingUpgrades: this.props.buildingUpgrades,
+          });
+
+          break;
+        }
+        else
+        {
+          return null;
+        }
+      }
+      default:
+      {
+        throw new Error(`Invalid expanded action kind: ${this.props.action}`);
+      }
     }
 
     return(
@@ -49,38 +98,9 @@ export class ExpandedActionComponent extends React.Component<PropTypes, StateTyp
       {
         className: "expanded-action"
       },
-        this.getExpandedActionElementForAction(this.props.action),
+        innerElement,
       )
     );
-  }
-
-  private getExpandedActionElementForAction(action: ExpandedActionKind): React.ReactElement<any>
-  {
-    switch (action)
-    {
-      case ExpandedActionKind.BuildBuildings:
-      {
-        return BuildableBuildingList(
-        {
-          player: this.props.player,
-          star: this.props.selectedStar,
-          clearExpandedAction: this.props.clearExpandedAction,
-        });
-      }
-      case ExpandedActionKind.UpgradeBuildings:
-      {
-        return BuildingUpgradeList(
-        {
-          player: this.props.player,
-          star: this.props.selectedStar,
-          clearExpandedAction: this.props.clearExpandedAction,
-        });
-      }
-      default:
-      {
-        throw new Error(`Invalid expanded action kind: ${action}`);
-      }
-    }
   }
 }
 

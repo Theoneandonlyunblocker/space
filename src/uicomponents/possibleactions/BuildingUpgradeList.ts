@@ -12,7 +12,7 @@ export interface PropTypes extends React.Props<any>
 {
   star: Star;
   player: Player;
-  clearExpandedAction: () => void;
+  buildingUpgrades: {[buildingId: number]: BuildingUpgradeData[]};
 }
 
 interface StateType
@@ -38,38 +38,28 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
     this.upgradeBuilding = this.upgradeBuilding.bind(this);
   }
 
-  hasAvailableUpgrades()
+  private hasAvailableUpgrades(): boolean
   {
     const possibleUpgrades = this.props.star.getBuildingUpgrades();
 
     return Object.keys(possibleUpgrades).length > 0;
   }
 
-  upgradeBuilding(upgradeData: BuildingUpgradeData)
+  private upgradeBuilding(upgradeData: BuildingUpgradeData): void
   {
     this.props.player.upgradeBuilding(upgradeData);
 
-    if (!this.hasAvailableUpgrades())
-    {
-      this.props.clearExpandedAction();
-    }
-    else
-    {
-      this.forceUpdate();
-    }
+    this.forceUpdate();
   }
 
-  render()
+  public render()
   {
-    if (!this.hasAvailableUpgrades()) { return null; }
-
     const upgradeGroups: React.ReactHTMLElement<any>[] = [];
 
-    const possibleUpgrades = this.props.star.getBuildingUpgrades();
-    const sortedParentBuildings = Object.keys(possibleUpgrades).sort((aId, bId) =>
+    const sortedParentBuildings = Object.keys(this.props.buildingUpgrades).sort((aId, bId) =>
     {
-      const a = possibleUpgrades[aId][0].parentBuilding.template.displayName;
-      const b = possibleUpgrades[bId][0].parentBuilding.template.displayName;
+      const a = this.props.buildingUpgrades[aId][0].parentBuilding.template.displayName;
+      const b = this.props.buildingUpgrades[bId][0].parentBuilding.template.displayName;
 
       if (a < b) { return -1; }
       else if (a > b) { return 1; }
@@ -79,7 +69,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
     for (let i = 0; i < sortedParentBuildings.length; i++)
     {
       const parentBuildingId = sortedParentBuildings[i];
-      const upgrades = possibleUpgrades[parentBuildingId];
+      const upgrades = this.props.buildingUpgrades[parentBuildingId];
       const parentBuilding: Building = upgrades[0].parentBuilding;
 
       const upgradeElements: React.ReactElement<any>[] = [];

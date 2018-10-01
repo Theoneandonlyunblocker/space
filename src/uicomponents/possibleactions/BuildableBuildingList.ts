@@ -13,14 +13,13 @@ import {default as BuildableBuilding, PropTypes as BuildableBuildingProps} from 
 
 export interface PropTypes extends React.Props<any>
 {
-  clearExpandedAction: () => void;
+  buildableBuildings: BuildingTemplate[];
   star: Star;
   player: Player;
 }
 
 interface StateType
 {
-  buildingTemplates: BuildingTemplate[];
 }
 
 export class BuildableBuildingListComponent extends React.Component<PropTypes, StateType>
@@ -32,53 +31,31 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state = {};
 
     this.bindMethods();
   }
   private bindMethods()
   {
     this.buildBuilding = this.buildBuilding.bind(this);
-    this.updateBuildings = this.updateBuildings.bind(this);
-  }
-
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      buildingTemplates: this.props.star.getBuildableBuildings(),
-    });
-  }
-
-  updateBuildings()
-  {
-    const buildingTemplates = this.props.star.getBuildableBuildings();
-    this.setState(
-    {
-      buildingTemplates: buildingTemplates,
-    });
-
-    if (buildingTemplates.length < 1)
-    {
-      this.props.clearExpandedAction();
-    }
   }
 
   buildBuilding(rowItem: ListItem<BuildableBuildingProps>)
   {
     const template = rowItem.content.props.template;
     this.props.player.buildBuilding(template, this.props.star);
-    this.updateBuildings();
+    this.forceUpdate();
   }
 
   render()
   {
-    if (this.state.buildingTemplates.length < 1) { return null; }
+    const buildableBuildings = this.props.buildableBuildings;
+
     const rows: ListItem<BuildableBuildingProps>[] = [];
 
-    for (let i = 0; i < this.state.buildingTemplates.length; i++)
+    for (let i = 0; i < buildableBuildings.length; i++)
     {
-      const template: BuildingTemplate = this.state.buildingTemplates[i];
+      const template: BuildingTemplate = buildableBuildings[i];
 
       rows.push(
       {

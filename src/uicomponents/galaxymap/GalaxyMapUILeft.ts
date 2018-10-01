@@ -17,6 +17,8 @@ import Star from "../../Star";
 import Player from "../../Player";
 import FleetAttackTarget from "../../FleetAttackTarget";
 import eventManager from "../../eventManager";
+import { BuildingTemplate } from "../../templateinterfaces/BuildingTemplate";
+import BuildingUpgradeData from "../../BuildingUpgradeData";
 
 
 // tslint:disable-next-line:no-any
@@ -24,7 +26,7 @@ interface PropTypes extends React.Props<any>
 {
   isInspecting: boolean;
   selectedFleets: Fleet[];
-  selectedStar: Star;
+  selectedStar: Star | undefined;
   currentlyReorganizing: Fleet[];
   closeReorganization: () => void;
   player: Player;
@@ -142,7 +144,9 @@ export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateTy
             action: this.state.expandedAction,
             player: this.props.player,
             selectedStar: this.props.selectedStar,
-            clearExpandedAction: this.clearExpandedAction,
+
+            buildableBuildings: this.getBuildableBuildings(),
+            buildingUpgrades: this.getBuildingUpgrades(),
           }),
         ),
       )
@@ -178,6 +182,18 @@ export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateTy
   private handlePlayerBuiltBuilding(): void
   {
     this.forceUpdate();
+  }
+  private getBuildableBuildings(): BuildingTemplate[]
+  {
+    return this.props.selectedStar && this.props.selectedStar.owner === this.props.player ?
+      this.props.selectedStar.getBuildableBuildings() :
+      [];
+  }
+  private getBuildingUpgrades(): {[buildingId: number]: BuildingUpgradeData[]}
+  {
+    return this.props.selectedStar && this.props.selectedStar.owner === this.props.player ?
+      this.props.selectedStar.getBuildingUpgrades() :
+      {};
   }
 }
 
