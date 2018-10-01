@@ -154,7 +154,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           unitStrengthAnimateDuration: undefined,
 
           isDraggable: true,
-          onDragStart: this.handleDragStart,
+          onDragStart: this.handleDragStart.bind(null, false),
           onDragEnd: this.handleDragEnd,
         });
         break;
@@ -300,7 +300,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           hoveredUnit: this.state.hoveredUnit,
 
           isDraggable: this.state.leftLowerElement === "playerFormation",
-          onDragStart: this.handleDragStart,
+          onDragStart: this.handleDragStart.bind(null, true),
           onDragEnd: this.handleDragEnd,
 
           onRowChange: this.handleSelectUnitListRow,
@@ -374,8 +374,13 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
       hoveredUnit: null,
     });
   }
-  private handleDragStart(unit: Unit)
+  private handleDragStart(cameFromUnitList: boolean, unit: Unit)
   {
+    if (cameFromUnitList && this.props.battlePrep.humanFormation.hasUnit(unit))
+    {
+      this.props.battlePrep.humanFormation.removeUnit(unit);
+    }
+
     this.setState(
     {
       currentDragUnit: unit,
