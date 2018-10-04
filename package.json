@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "dependencies": {
     "pixi.js": "4.5.3",
-    "react": "15.5.x",
-    "react-dom": "15.5.x"
+    "react": "15.6.x",
+    "react-dom": "15.6.x"
   },
   "devDependencies": {
     "typescript": "3.0.x",
@@ -17,9 +17,7 @@
     "@types/react-dom": "15.x"
   },
   "scripts": {
-    "postinstall": "npm run copy-dependencies",
-
-    "build": "tsc && lessc ./css/main.less ./dist/main.css",
+    "build": "tsc && lessc ./css/main.less ./dist/main.css && npm run copy-dependencies",
     "copy-dependencies": "mkdirp dist && node ./scripts/tasks/copy_dependencies.js",
     "lint": "tslint \"{src,modules,localization}/**/*.ts\"",
     "lintfix": "tslint \"{src,modules,localization}/**/*.ts\" --fix"
