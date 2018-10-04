@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import PlayerTechnology from "../../PlayerTechnology";
@@ -71,34 +72,34 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "technology-listing",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "technology-listing-label",
           onClick: this.toggleUnlocksPopup,
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "technology-name",
             title: technology.displayName,
           },
             technology.displayName,
           ),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "technology-level",
           },
             localize("technologyLevel")(techData.level),
           ),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "technology-progress-bar-container",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "technology-progress-bar" +
               (isAtMaxLevel ? " technology-progress-bar-max-level" : ""),
@@ -107,7 +108,7 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
               width: "" + (relativeProgress * 100) + "%",
             },
           }),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "technology-progress-bar-value",
           },
@@ -120,7 +121,7 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
             researchPoints: this.props.researchPoints,
           }),
         ),
-        React.DOM.button(
+        ReactDOMElements.button(
         {
           className: "technology-toggle-priority-lock" + (techData.priorityIsLocked ? " locked" : " unlocked"),
           onClick: this.togglePriorityLock,

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 import {NotificationFilter} from "../../notifications/NotificationFilter";
@@ -79,7 +80,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
       if (!isFinite(numericState)) { continue; }
 
       const stateIsActive = filterState.indexOf(numericState) !== -1;
-      inputElements.push(React.DOM.input(
+      inputElements.push(ReactDOMElements.input(
       {
         className: "notification-filter-list-item-filter",
         // could use radio buttons for now as filter states don't overlap currently
@@ -95,18 +96,18 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "notification-filter-list-item" + (this.props.isHighlighted ? " highlighted" : ""),
       },
-        React.DOM.label(
+        ReactDOMElements.label(
         {
           className: "notification-filter-list-item-label",
           htmlFor: this.props.keyTODO, /*TODO react*/
         },
           this.props.displayName,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "notification-filter-list-item-filters",
         },

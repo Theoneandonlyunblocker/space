@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 export interface PropTypes extends React.Props<any>
@@ -33,7 +34,7 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
     const availableCount = this.props.currentActionPoints - (this.props.hoveredActionPointExpenditure || 0);
     for (let i = 0; i < availableCount; i++)
     {
-      icons.push(React.DOM.img(
+      icons.push(ReactDOMElements.img(
         {
           src: availableSrc,
           className: "unit-action-point available-action-point",
@@ -46,7 +47,7 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
 
     for (let i = 0; i < hoveredCount; i++)
     {
-      icons.push(React.DOM.img(
+      icons.push(ReactDOMElements.img(
         {
           src: hoveredSrc,
           className: "unit-action-point hovered-action-point",
@@ -58,7 +59,7 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
     const spentCount = this.props.maxActionPoints - this.props.currentActionPoints;
     for (let i = 0; i < spentCount; i++)
     {
-      icons.push(React.DOM.img(
+      icons.push(ReactDOMElements.img(
         {
           src: spentSrc,
           className: "unit-action-point spent-action-point",
@@ -68,7 +69,7 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
     }
 
     return(
-      React.DOM.div({className: "unit-action-points"},
+      ReactDOMElements.div({className: "unit-action-points"},
         icons,
       )
     );

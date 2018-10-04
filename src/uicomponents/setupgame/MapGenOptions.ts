@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Range from "../../Range";
@@ -224,28 +225,28 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "map-gen-options",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "map-gen-options-option-groups",
         },
           optionGroups,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "map-gen-options-buttons",
         },
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "map-gen-options-button",
             onClick: this.randomizeOptions,
           },
             localize("randomize")(),
           ),
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "map-gen-options-button",
             onClick: this.resetValuesToDefault,

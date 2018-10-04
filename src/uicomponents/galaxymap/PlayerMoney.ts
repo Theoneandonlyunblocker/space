@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Player from "../../Player";
 import eventManager from "../../eventManager";
@@ -57,7 +58,7 @@ export class PlayerMoneyComponent extends React.Component<PropTypes, StateType>
     this.lastAmountRendered = this.props.player.money;
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "player-money",
       },

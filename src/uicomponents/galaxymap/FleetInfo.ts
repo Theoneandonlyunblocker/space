@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import {Fleet} from "../../Fleet";
@@ -68,32 +69,32 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "fleet-info" + (fleet.isStealthy ? " stealthy" : ""),
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "fleet-info-header",
         },
-          React.DOM.input(
+          ReactDOMElements.input(
           {
             className: "fleet-info-name",
             value: isNotDetected ? "Unidentified fleet" : fleet.name.fullName,
             onChange: isNotDetected ? null : this.setFleetName,
             readOnly: isNotDetected,
           }),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "fleet-info-strength",
           },
-            React.DOM.span(
+            ReactDOMElements.span(
             {
               className: "fleet-info-strength-current" + healthStatus,
             },
               isNotDetected ? "???" : totalCurrentHealth,
             ),
-            React.DOM.span(
+            ReactDOMElements.span(
             {
               className: "fleet-info-strength-max",
             },
@@ -107,7 +108,7 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
             isInspecting: this.props.isInspecting,
           }),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "fleet-info-move-points",
         },

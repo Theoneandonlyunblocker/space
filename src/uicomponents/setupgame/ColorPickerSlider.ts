@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 interface PropTypes extends React.Props<any>
@@ -29,7 +30,7 @@ export class ColorPickerSliderComponent extends React.Component<PropTypes, State
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "color-picker-slider-background",
         style:
@@ -37,7 +38,7 @@ export class ColorPickerSliderComponent extends React.Component<PropTypes, State
           background: this.props.backgroundStyle,
         },
       },
-        React.DOM.input(
+        ReactDOMElements.input(
         {
           className: "color-picker-slider",
           type: "range",

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {Fleet} from "../../Fleet";
 import Player from "../../Player";
@@ -71,7 +72,7 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
 
     if (hasDraggableContent)
     {
-      fleetUnitInfos.push(React.DOM.div(
+      fleetUnitInfos.push(ReactDOMElements.div(
       {
         className: "fleet-contents-dummy-unit",
         key: "dummy",
@@ -79,7 +80,7 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "fleet-contents",
         onMouseUp: this.handleMouseUp,

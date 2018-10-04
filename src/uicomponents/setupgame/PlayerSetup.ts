@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Color from "../../Color";
 import {Flag} from "../../Flag";
@@ -205,18 +206,18 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "player-setup" + (this.props.isHuman ? " human-player-setup" : ""),
       },
-        React.DOM.input(
+        ReactDOMElements.input(
         {
           className: "player-setup-is-human",
           type: "checkbox",
           checked: this.props.isHuman,
           onChange: this.handleSetHuman,
         }),
-        React.DOM.input(
+        ReactDOMElements.input(
         {
           className: "player-setup-name",
           value: this.state.name,
@@ -260,7 +261,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
             this.forceUpdate();
           },
         }),
-        React.DOM.button(
+        ReactDOMElements.button(
         {
           className: "player-setup-remove-player",
           onClick: this.handleRemove,

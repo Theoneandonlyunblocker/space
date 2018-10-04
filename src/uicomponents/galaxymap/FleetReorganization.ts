@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {Fleet} from "../../Fleet";
 import Unit from "../../Unit";
@@ -103,30 +104,30 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "fleet-reorganization",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "fleet-reorganization-subheader",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "fleet-reorganization-subheader-fleet-name" +
               " fleet-reorganization-subheader-fleet-name-left",
           }, selectedFleets[0].name.fullName),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "fleet-reorganization-subheader-center",
           }, null),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "fleet-reorganization-subheader-fleet-name" +
               " fleet-reorganization-subheader-fleet-name-right",
           }, selectedFleets[1].name.fullName),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "fleet-reorganization-contents",
         },
@@ -139,7 +140,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
             onDragEnd: this.handleDragEnd,
             player: selectedFleets[0].player,
           }),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "fleet-reorganization-contents-divider",
           }, null),

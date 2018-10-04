@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import NumericTextInput from "../../generic/NumericTextInput";
 
@@ -31,11 +32,11 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
     const baseId = "sfx-fragment-prop-inline-number-" + this.props.propName + "-" + this.props.label;
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "sfx-fragment-prop-inline-number-wrapper",
       },
-        React.DOM.label(
+        ReactDOMElements.label(
         {
           className: "sfx-fragment-prop-inline-number-label",
           htmlFor: baseId,

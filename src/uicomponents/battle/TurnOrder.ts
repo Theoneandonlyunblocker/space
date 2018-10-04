@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import TurnOrderDisplayData from "../../TurnOrderDisplayData";
@@ -368,7 +369,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
     if (isFinite(this.props.hoveredGhostIndex))
     {
-      toRender.splice(this.props.hoveredGhostIndex, 0, React.DOM.div(
+      toRender.splice(this.props.hoveredGhostIndex, 0, ReactDOMElements.div(
       {
         className: "turn-order-arrow",
         key: "ghost",
@@ -376,7 +377,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div({className: "turn-order-container"},
+      ReactDOMElements.div({className: "turn-order-container"},
         toRender,
       )
     );

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import RampingValue from "../../../../modules/common/battlesfxfunctions/sfxfragments/RampingValue";
 import SfxFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
@@ -139,23 +140,23 @@ export class SfxFragmentPropComponent extends React.Component<PropTypes, StateTy
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: `sfx-fragment-prop sfx-fragment-prop-${this.props.propType}`,
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "sfx-fragment-prop-name-container" + (this.state.isCollapsed ? " collapsed" : " collapsible"),
           onClick: this.toggleCollapsed,
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "sfx-fragment-prop-name",
           },
             this.props.propName,
           ),
         ),
-        this.state.isCollapsed ? null : React.DOM.div(
+        this.state.isCollapsed ? null : ReactDOMElements.div(
         {
           className: "sfx-fragment-prop-value",
         },

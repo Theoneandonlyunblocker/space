@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import {TradeableItem, TradeableItems} from "../../Trade";
@@ -104,7 +105,7 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
     ];
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "tradeable-items-list fixed-table-parent",
       },

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 
@@ -45,7 +46,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
       {
         const option = this.props.options[i];
 
-        rows.push(React.DOM.div(
+        rows.push(ReactDOMElements.div(
         {
           className: "option-container",
           key: option.key,
@@ -58,7 +59,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
     let resetButton: React.ReactHTMLElement<any> = null;
     if (this.props.resetFN)
     {
-      resetButton = React.DOM.button(
+      resetButton = ReactDOMElements.button(
       {
         className: "reset-options-button",
         onClick: this.props.resetFN,
@@ -68,11 +69,11 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
     }
 
     const header = this.props.header || resetButton ?
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "option-group-header",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "option-group-header-title" + (this.state.isCollapsed ? " collapsed" : " collapsible"),
           onClick: this.toggleCollapse,
@@ -84,7 +85,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
       null;
 
     return(
-      React.DOM.div({className: "option-group"},
+      ReactDOMElements.div({className: "option-group"},
         header,
         rows,
       )

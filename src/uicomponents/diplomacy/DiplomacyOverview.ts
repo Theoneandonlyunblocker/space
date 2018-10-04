@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import DiplomacyState from "../../DiplomacyState";
@@ -112,7 +113,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
     ];
 
     return(
-      React.DOM.div({className: "diplomacy-overview"},
+      ReactDOMElements.div({className: "diplomacy-overview"},
         this.state.playersWithOpenedDiplomacyActionsPopup.map(targetPlayer =>
         {
           return DefaultWindow(
@@ -131,7 +132,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
             }),
           );
         }),
-        React.DOM.div({className: "diplomacy-status-list fixed-table-parent"},
+        ReactDOMElements.div({className: "diplomacy-status-list fixed-table-parent"},
           List(
           {
             listItems: rows,

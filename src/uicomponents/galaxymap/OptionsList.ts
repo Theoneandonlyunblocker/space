@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Options from "../../Options";
@@ -171,7 +172,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       debugOptions.push(
       {
         key: "aiVsAiBattleSimulationDepth",
-        content: React.DOM.div(
+        content: ReactDOMElements.div(
         {
 
         },
@@ -193,7 +194,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       },
       {
         key: "aiVsPlayerBattleSimulationDepth",
-        content: React.DOM.div(
+        content: ReactDOMElements.div(
         {
 
         },
@@ -291,7 +292,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     uiOptions.push(
     {
       key: "resetTutorials",
-      content: React.DOM.button(
+      content: ReactDOMElements.button(
       {
         className: "reset-tutorials-button",
         onClick: TutorialStatus.reset,
@@ -346,7 +347,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     }));
 
     return(
-      React.DOM.div({className: "options"},
+      ReactDOMElements.div({className: "options"},
 
         !this.state.hasConfirmResetAllDialog ? null :
           DialogBox(
@@ -365,8 +366,8 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
           localize("areYouSureYouWantToResetAllOptions")(),
         ),
 
-        React.DOM.div({className: "options-header"},
-          React.DOM.button(
+        ReactDOMElements.div({className: "options-header"},
+          ReactDOMElements.button(
           {
             className: "reset-options-button reset-all-options-button",
             onClick: this.openResetAllOptionsDialog,

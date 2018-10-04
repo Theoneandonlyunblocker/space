@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {UnlockableThing, UnlockableThingKind} from "../../templateinterfaces/UnlockableThing";
 
@@ -42,23 +43,23 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
     });
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "technology-unlocks-for-level",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "technology-unlocks-for-level-header",
         },
           localize("technologyLevel")(this.props.level),
         ),
-        React.DOM.ol(
+        ReactDOMElements.ol(
         {
           className: "technology-unlocks-for-level-list",
         },
           Object.keys(unlockableThingsByType).sort().map(kind =>
           {
-            return React.DOM.li(
+            return ReactDOMElements.li(
             {
               key: kind,
               className: "technology-unlocks-for-level-list-item",

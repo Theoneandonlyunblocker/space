@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 
@@ -30,7 +31,7 @@ class WarDeclarationNotification extends React.Component<PropTypes, {}>
     const notification = this.props.notification;
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "war-declaration-notification",
       },

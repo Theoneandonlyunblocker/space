@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Star from "../../Star";
 
@@ -46,20 +47,20 @@ export class ManufactoryStarsListItemComponent extends React.Component<PropTypes
     const hasCapacity = hasManufactory && this.props.usedCapacity < this.props.totalCapacity;
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "manufactory-stars-list-item" +
           (!hasManufactory ? " no-manufactory" : "") +
           (this.props.isHighlighted ? " highlighted" : ""),
         onClick: this.handleClick,
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "manufactory-stars-list-item-star-name",
         },
           this.props.star.name,
         ),
-        !hasManufactory ? null : React.DOM.div(
+        !hasManufactory ? null : ReactDOMElements.div(
         {
           className: "manufactory-stars-list-item-capacity" + (!hasCapacity ? " no-capacity" : ""),
         },

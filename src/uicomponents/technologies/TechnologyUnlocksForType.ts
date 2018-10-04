@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 
@@ -41,23 +42,23 @@ export class TechnologyUnlocksForTypeComponent extends React.Component<PropTypes
   {
     const localizationKey = localizationKeyForUnlockableThingKind[this.props.kind];
 
-    return React.DOM.div(
+    return ReactDOMElements.div(
     {
       className: "technology-unlocks-for-type",
     },
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "technology-unlocks-for-type-header",
       },
         localize(localizationKey)(),
       ),
-      React.DOM.ol(
+      ReactDOMElements.ol(
       {
         className: "technology-unlocks-for-type-list",
       },
         this.props.unlocks.map(unlockableThing =>
         {
-          return React.DOM.li(
+          return ReactDOMElements.li(
           {
             key: unlockableThing.type,
             className: "technology-unlocks-for-type-list-item",

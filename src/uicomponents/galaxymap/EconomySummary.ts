@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Player from "../../Player";
@@ -71,7 +72,7 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
     ];
 
     return(
-      React.DOM.div({className: "economy-summary-list fixed-table-parent"},
+      ReactDOMElements.div({className: "economy-summary-list fixed-table-parent"},
         List(
         {
           listItems: rows,

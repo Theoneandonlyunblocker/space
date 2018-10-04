@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Options from "../../../src/Options";
@@ -172,7 +173,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
 
     const bodyElements =
     [
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "unit-portrait-container",
         key: "portraitContainer",
@@ -218,7 +219,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     if (this.props.isAnnihilated)
     {
       bodyElements.push(
-        React.DOM.div({key: "overlay", className: "unit-annihilated-overlay"},
+        ReactDOMElements.div({key: "overlay", className: "unit-annihilated-overlay"},
           localize("unitAnnihilated")(),
         ),
       );
@@ -226,7 +227,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
 
     const innerElements =
     [
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "unit-body",
         id: "unit-id_" + this.props.id,
@@ -243,7 +244,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     ];
 
     return(
-      React.DOM.div(wrapperProps,
+      ReactDOMElements.div(wrapperProps,
         this.props.facesLeft ? innerElements.reverse() : innerElements,
       )
     );

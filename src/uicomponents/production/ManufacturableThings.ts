@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Player from "../../Player";
@@ -44,18 +45,18 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "manufacturable-things",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "manufacturable-things-tab-buttons",
         },
           this.makeTabButton("units"),
           this.makeTabButton("items"),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "manufacturable-things-active-tab",
         },
@@ -105,7 +106,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     }
 
     return(
-      React.DOM.button(
+      ReactDOMElements.button(
       {
         key: key,
         className: "manufacturable-things-tab-button" +

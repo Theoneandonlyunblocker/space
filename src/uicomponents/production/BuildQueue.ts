@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Manufactory from "../../Manufactory";
@@ -56,11 +57,11 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "build-queue",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "manufactory-upgrade-buttons-container",
         },

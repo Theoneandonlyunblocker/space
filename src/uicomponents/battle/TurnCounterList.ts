@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 
@@ -45,7 +46,7 @@ export class TurnCounterListComponent extends React.PureComponent<PropTypes, Sta
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "turns-container",
         title: localize("turnsLeft_tooltip")(this.props.turnsLeft),

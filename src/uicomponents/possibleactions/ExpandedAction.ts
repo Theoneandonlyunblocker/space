@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Player from "../../Player";
 import Star from "../../Star";
@@ -94,7 +95,7 @@ export class ExpandedActionComponent extends React.Component<PropTypes, StateTyp
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "expanded-action"
       },

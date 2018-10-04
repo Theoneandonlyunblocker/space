@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import PlayerTechnology from "../../PlayerTechnology";
@@ -58,17 +59,17 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "technologies-list-container",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "technologies-list",
         },
           rows,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "technologies-list-research-speed",
         },

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {AttitudeModifier} from "../../AttitudeModifier";
 import {Flag} from "../../Flag";
@@ -82,7 +83,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
     }
 
     return(
-      React.DOM.td(
+      ReactDOMElements.td(
       {
         key: type,
         className: className,
@@ -119,7 +120,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
     }
 
     return(
-      React.DOM.tr(rowProps,
+      ReactDOMElements.tr(rowProps,
         cells,
       )
     );

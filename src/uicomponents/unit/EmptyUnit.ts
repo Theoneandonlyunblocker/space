@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 import UnitIconContainer from "./UnitIconContainer";
@@ -28,7 +29,7 @@ export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType
   {
     const innerElements =
     [
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "unit-body",
         key: "body",
@@ -49,7 +50,7 @@ export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "unit empty-unit" + (this.props.facesLeft ? " enemy-unit" : " friendly-unit"),
         onMouseUp: this.props.onMouseUp,

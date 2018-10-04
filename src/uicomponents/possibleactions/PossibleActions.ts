@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import FleetAttackTarget from "../../FleetAttackTarget";
@@ -51,7 +52,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "possible-actions-container",
       },
@@ -64,7 +65,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
             });
         }),
         !canBuildBuildings ? null :
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "possible-action",
             onClick: () =>
@@ -76,7 +77,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
             localize("constructBuilding")(),
           ),
         !canUpgradeBuildings ? null :
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "possible-action",
             onClick: () =>

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import PlayerTechnology from "../../PlayerTechnology";
 import eventManager from "../../eventManager";
@@ -80,17 +81,17 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "technology-progress-bar-priority-container",
       },
-        React.DOM.span(
+        ReactDOMElements.span(
         {
           className: "technology-progress-bar-predicted-research",
         },
           `+${(this.props.researchPoints * this.state.priority).toFixed(1)}`,
         ),
-        React.DOM.input(
+        ReactDOMElements.input(
         {
           className: "technology-progress-bar-priority",
           type: "range",

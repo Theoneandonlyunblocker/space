@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {RaceTemplate} from "../../templateinterfaces/RaceTemplate";
 
@@ -40,7 +41,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
   render()
   {
     return(
-      React.DOM.select(
+      ReactDOMElements.select(
       {
         className: "race-picker",
         value: this.props.selectedRace.type,
@@ -49,7 +50,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
       },
         this.props.availableRaces.map(race =>
         {
-          return React.DOM.option(
+          return ReactDOMElements.option(
           {
             key: race.type,
             value: race.type,

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import Color from "../../Color";
@@ -51,13 +52,13 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   public render()
   {
     const displayElement = !this.props.color ?
-      React.DOM.img(
+      ReactDOMElements.img(
       {
         className: "color-setter-display",
         src: "img/icons/nullcolor.png",
         onClick: this.toggleActive,
       }) :
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "color-setter-display",
         style:
@@ -68,7 +69,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
       });
 
     return(
-      React.DOM.div({className: "color-setter", ref: (component: HTMLElement) =>
+      ReactDOMElements.div({className: "color-setter", ref: (component: HTMLElement) =>
       {
         this.ownNode = component;
       }},

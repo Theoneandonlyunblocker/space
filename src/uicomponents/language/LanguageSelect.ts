@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {Language} from "../../localization/Language";
 import {LanguageSupportLevel} from "../../localization/languageSupport";
@@ -56,7 +57,7 @@ export class LanguageSelectComponent extends React.Component<PropTypes, StateTyp
     {
       const supportLevel = this.props.languageSupportLevelByCode[language.code];
 
-      return React.DOM.option(
+      return ReactDOMElements.option(
       {
         className: "language-select-option" + (supportLevel === LanguageSupportLevel.Full ?
           " full-language-support" :
@@ -72,7 +73,7 @@ export class LanguageSelectComponent extends React.Component<PropTypes, StateTyp
     });
 
     return(
-      React.DOM.select(
+      ReactDOMElements.select(
       {
         className: "language-select",
         value: this.props.activeLanguage.code,

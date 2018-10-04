@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Player from "../../Player";
 import Star from "../../Star";
@@ -66,23 +67,23 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "construct-manufactory-container",
       },
-        React.DOM.button(
+        ReactDOMElements.button(
         {
           className: "construct-manufactory-button" + (this.state.canAfford ? "" : " disabled"),
           onClick: this.state.canAfford ? this.handleConstruct : null,
           disabled: !this.state.canAfford,
         },
-          React.DOM.span(
+          ReactDOMElements.span(
           {
             className: "construct-manufactory-action",
           },
             localize("constructManufactory")(),
           ),
-          React.DOM.span(
+          ReactDOMElements.span(
           {
             className: "construct-manufactory-cost money-style" +
               (this.state.canAfford ? "" : " negative"),

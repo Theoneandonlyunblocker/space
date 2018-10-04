@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 
@@ -263,7 +264,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
         style.backgroundColor = "yellow";
       }
 
-      unitElements.push(React.DOM.div(
+      unitElements.push(ReactDOMElements.div(
       {
         className: "battle-scene-test-controls-units-unit",
         onMouseEnter: this.handleUnitHover.bind(this, unit),
@@ -291,7 +292,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
     for (const key in activeModuleData.templates.BattleSfx)
     {
-      sfxTemplateSelectOptions.push(React.DOM.option(
+      sfxTemplateSelectOptions.push(ReactDOMElements.option(
       {
         value: key,
         key: key,
@@ -301,11 +302,11 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "battle-scene-test",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "battle-scene-test-pixi-container",
           ref: (component: HTMLElement) =>
@@ -315,35 +316,35 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
         },
           null,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "battle-scene-test-controls",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "battle-scene-test-controls-units",
           },
-            React.DOM.div(
+            ReactDOMElements.div(
             {
               className: "battle-scene-test-controls-units-side1",
             },
               side1UnitElements,
             ),
-            React.DOM.div(
+            ReactDOMElements.div(
             {
               className: "battle-scene-test-controls-units-side2",
             },
               side2UnitElements,
             ),
           ),
-          React.DOM.select(
+          ReactDOMElements.select(
           {
             value: this.state.selectedSfxTemplateKey,
             onChange: this.handleSelectSfxTemplate,
           },
             sfxTemplateSelectOptions,
           ),
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "battle-scene-test-ability2",
             onClick: this.useSelectedAbility,
@@ -351,7 +352,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
           },
             "use ability",
           ),
-          React.DOM.input(
+          ReactDOMElements.input(
           {
             type: "number",
             step: 100,

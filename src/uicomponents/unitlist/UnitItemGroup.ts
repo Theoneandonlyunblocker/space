@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Item from "../../Item";
 
@@ -62,7 +63,7 @@ export class UnitItemGroupComponent extends React.Component<PropTypes, StateType
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "unit-item-group unit-item-group-" + this.props.slotName,
       },

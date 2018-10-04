@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 import MapRenderer from "../../MapRenderer";
@@ -53,7 +54,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
     for (const key in mapRenderer.mapModes)
     {
       const mapMode = mapRenderer.mapModes[key];
-      options.push(React.DOM.option(
+      options.push(ReactDOMElements.option(
       {
         value: key,
         key: key,
@@ -71,7 +72,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
     const mapRenderer = this.props.mapRenderer;
 
     return(
-      React.DOM.select(
+      ReactDOMElements.select(
       {
         className: "map-mode-selector",
         value: mapRenderer.currentMapMode.template.key,

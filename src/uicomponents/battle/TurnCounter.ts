@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 export interface PropTypes extends React.Props<any>
@@ -62,12 +63,12 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "turn-counter" +
           (!this.props.isEmpty ? " turn-counter-available-border" : ""),
       },
-        this.props.isEmpty && !this.state.isExiting ? null : React.DOM.div(
+        this.props.isEmpty && !this.state.isExiting ? null : ReactDOMElements.div(
         {
           key: "inner",
           className: "available-turn" + (this.state.isExiting ? " available-turn-leave-active" : ""),

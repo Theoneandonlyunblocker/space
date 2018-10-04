@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
@@ -84,11 +85,11 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "notification-log-container",
       },
-        React.DOM.ol(
+        ReactDOMElements.ol(
         {
           className: "notification-log",
         },

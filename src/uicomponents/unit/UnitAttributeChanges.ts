@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {UnitAttributesObject} from "../../UnitAttributes";
 
@@ -50,7 +51,7 @@ export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes
 
         const titleString = `${attributeType}${polarityString}${amountChanged}`;
 
-        attributeElements.push(React.DOM.img(
+        attributeElements.push(ReactDOMElements.img(
         {
           className: "attribute-change-icon" + "attribute-change-icon-" + "attributeType",
           src: imageSrc,
@@ -61,7 +62,7 @@ export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "unit-attribute-changes",
       },

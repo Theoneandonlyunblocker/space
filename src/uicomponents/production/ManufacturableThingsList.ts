@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 
@@ -59,7 +60,7 @@ export class ManufacturableThingsListComponent extends React.PureComponent<PropT
     });
 
     return(
-      React.DOM.ol(
+      ReactDOMElements.ol(
       {
         className: "manufacturable-things-list",
       },

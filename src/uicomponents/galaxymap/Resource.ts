@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import ResourceTemplate from "../../templateinterfaces/ResourceTemplate";
 
@@ -29,25 +30,25 @@ export class ResourceComponent extends React.Component<PropTypes, StateType>
     const sign = this.props.income < 0 ? "" : "+";
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "resource",
         title: this.props.resource.displayName + "",
       },
-        React.DOM.img(
+        ReactDOMElements.img(
         {
           className: "resource-icon",
           src: this.props.resource.icon,
         },
           null,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "resource-amount",
         },
           `${this.props.amount}`,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "resource-income",
         },

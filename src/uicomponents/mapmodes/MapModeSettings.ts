@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import MapRenderer from "../../MapRenderer";
@@ -46,7 +47,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "map-mode-settings",
       },
@@ -64,7 +65,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
           mapRenderer: this.props.mapRenderer,
           onUpdate: this.forceUpdate.bind(this),
         }),
-        React.DOM.button(
+        ReactDOMElements.button(
         {
           className: "reset-map-mode-button",
           onClick: this.handleReset,

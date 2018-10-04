@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
@@ -193,58 +194,58 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     const canAddPlayers = this.state.playerKeys.length < this.props.maxPlayers;
 
     return(
-      React.DOM.div({className: "setup-game-players"},
-        React.DOM.div(
+      ReactDOMElements.div({className: "setup-game-players"},
+        ReactDOMElements.div(
         {
           className: "player-setup setup-game-players-header",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "player-setup-is-human",
           }),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "player-setup-name",
           }, localize("playerName")()),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "player-setup-race-picker",
           }, localize("race")()),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "color-setter",
           }, localize("color_1")()),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "color-setter",
           }, localize("color_2")()),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "flag-setter",
           }, localize("flag")()),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "player-setup-remove-player",
           }, localize("remove")()),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "player-setup-players-list",
         },
           playerSetups,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "setup-game-players-buttons",
         },
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "setup-game-button",
             onClick: this.randomizeAllPlayers,
           },
             localize("randomize")(),
           ),
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "setup-game-players-add-new" + (canAddPlayers ? "" : " disabled"),
             onClick: this.makeNewPlayers.bind(this, 1),

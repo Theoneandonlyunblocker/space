@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Unit from "../../Unit";
 
@@ -50,7 +51,7 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
   render()
   {
     return(
-      React.DOM.input(
+      ReactDOMElements.input(
       {
         className: "fleet-unit-info-name",
         value: this.props.isNotDetected ? localize("unidentifiedShip")() : this.state.inputElementValue,

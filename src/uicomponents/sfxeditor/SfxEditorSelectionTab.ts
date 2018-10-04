@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 export type SelectionTabType = "fragmentConstructors" |
@@ -42,7 +43,7 @@ export class SfxEditorSelectionTabComponent extends React.Component<PropTypes, S
   render()
   {
     return(
-      React.DOM.button(
+      ReactDOMElements.button(
       {
         className: "sfx-editor-selection-tab" +
           " sfx-editor-selection-tab-" + this.props.type,

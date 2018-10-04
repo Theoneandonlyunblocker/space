@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {default as NumberInput} from "../generic/NumberInput";
 
@@ -33,7 +34,7 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
     const inputId = "" + this.props.id + "-input";
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "options-numeric-field-container",
         id: this.props.id,
@@ -52,7 +53,7 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
           max: this.props.max,
           step: this.props.step,
         }),
-        React.DOM.label(
+        ReactDOMElements.label(
         {
           className: "options-numeric-field-label",
           htmlFor: inputId,

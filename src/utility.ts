@@ -1,5 +1,6 @@
 /// <reference path="../lib/pixi.d.ts" />
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {activeModuleData} from "./activeModuleData";
 
@@ -635,7 +636,7 @@ export function splitMultilineText(text: string | React.ReactFragment): string |
     for (let i = 0; i < text.length; i++)
     {
       returnArr.push(text[i]);
-      returnArr.push(React.DOM.br(
+      returnArr.push(ReactDOMElements.br(
       {
         key: "" + i,
       }));

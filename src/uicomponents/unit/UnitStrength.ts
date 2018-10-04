@@ -1,5 +1,6 @@
 /// <reference path="../../../lib/tween.js.d.ts" />
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 export interface PropTypes extends React.Props<any>
@@ -127,7 +128,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
   makeSquadronInfo()
   {
     return(
-      React.DOM.div({className: "unit-strength-container"},
+      ReactDOMElements.div({className: "unit-strength-container"},
         this.makeStrengthText(),
       )
     );
@@ -138,11 +139,11 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
 
     const relativeHealth = this.state.displayedStrength / this.props.maxHealth;
 
-    const bar = React.DOM.div(
+    const bar = ReactDOMElements.div(
     {
       className: "unit-strength-bar",
     },
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "unit-strength-bar-value",
         style:
@@ -153,7 +154,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
     );
 
     return(
-      React.DOM.div({className: "unit-strength-container"},
+      ReactDOMElements.div({className: "unit-strength-container"},
         text,
         bar,
       )
@@ -188,9 +189,9 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
     const max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
 
     return(
-      React.DOM.div(containerProps,
-        React.DOM.span(currentStyle, displayed),
-        React.DOM.span({className: "unit-strength-max"}, "/" + max),
+      ReactDOMElements.div(containerProps,
+        ReactDOMElements.span(currentStyle, displayed),
+        ReactDOMElements.span({className: "unit-strength-max"}, "/" + max),
       )
     );
   }

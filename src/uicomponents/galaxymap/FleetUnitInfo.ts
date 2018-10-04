@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Unit from "../../Unit";
 import DragPositioner from "../mixins/DragPositioner";
@@ -81,18 +82,18 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
     }
 
     return(
-      React.DOM.div(divProps,
-        React.DOM.div(
+      ReactDOMElements.div(divProps,
+        ReactDOMElements.div(
         {
           className: "fleet-unit-info-icon-container",
         },
-          React.DOM.img(
+          ReactDOMElements.img(
           {
             className: "fleet-unit-info-icon",
             src: isNotDetected ? "img/icons/unDetected.png" : unit.template.icon,
           }),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "fleet-unit-info-info",
         },
@@ -101,7 +102,7 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
             unit: unit,
             isNotDetected: isNotDetected,
           }),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "fleet-unit-info-type",
           },

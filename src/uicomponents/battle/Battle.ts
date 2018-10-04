@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {AbilityTargetDisplayDataById} from "../../AbilityTargetDisplayData";
@@ -607,12 +608,12 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      upperFooterElement = React.DOM.div(
+      upperFooterElement = ReactDOMElements.div(
       {
         key: "battleDisplayStrength",
         className: "battle-display-strength-container",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "battle-display-strength battle-display-strength-side1",
         },
@@ -624,7 +625,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             to: this.state.unitDisplayDataById[this.state.battleSceneUnit1.id].currentHealth,
           }) : null,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "battle-display-strength battle-display-strength-side2",
         },
@@ -701,8 +702,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           this.background = component;
         },
       },
-        React.DOM.div(containerProps,
-          React.DOM.div(
+        ReactDOMElements.div(containerProps,
+          ReactDOMElements.div(
           {
             className: "battle-upper",
           },
@@ -724,7 +725,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
               flag2: battle.side2Player.flag,
             }),
           ),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "formations-container",
             ref: (container: HTMLElement) =>
@@ -780,7 +781,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             }),
             abilityTooltip,
             this.state.playingBattleEffect ?
-              React.DOM.div({className: "battle-formations-darken"}, null) :
+              ReactDOMElements.div({className: "battle-formations-darken"}, null) :
               null,
           ),
         ),

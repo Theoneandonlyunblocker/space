@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Game from "../../Game";
@@ -55,15 +56,15 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
     const incomeSign = income < 0 ? "" : "+";
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "top-bar",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "top-bar-info",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "top-bar-player",
           },
@@ -75,14 +76,14 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
               },
               flag: player.flag,
             }),
-            React.DOM.div(
+            ReactDOMElements.div(
             {
               className: "top-bar-turn-number",
             },
               `${localize("turnCounter")()} ${this.props.game.turnNumber}`,
             ),
           ),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "top-bar-money",
           },
@@ -90,7 +91,7 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
             {
               player: player,
             }),
-            React.DOM.div(
+            ReactDOMElements.div(
             {
               className: incomeClass,
             },

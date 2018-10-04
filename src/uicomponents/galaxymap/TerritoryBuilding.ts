@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import app from "../../App"; // TODO global
 
@@ -36,11 +37,11 @@ export class TerritoryBuildingComponent extends React.Component<PropTypes, State
     const image = app.images[building.template.iconSrc];
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "territory-building",
       },
-        React.DOM.img(
+        ReactDOMElements.img(
         {
           className: "territory-building-icon",
           src: colorImageInPlayerColor(image, building.controller),

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Player from "../../Player";
@@ -103,11 +104,11 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     const ableToAcceptTrade = this.state.hasActiveProposal && this.state.activeOffer.willingToAccept;
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "trade-overview",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "tradeable-items-container available-items-container",
         },
@@ -132,7 +133,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             onItemClick: this.handleStageItem.bind(this, "other"),
           }),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "tradeable-items-container trade-staging-areas-container",
         },
@@ -159,11 +160,11 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "other"),
           }),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "trade-buttons-container tradeable-items-reset-buttons-container",
         },
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "trade-button tradeable-items-reset-button",
             disabled: this.state.activeOffer.ownTrade.isEqualWith(this.state.lastOfferByPlayer.ownTrade),
@@ -171,7 +172,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
           },
             localize("reset")(),
           ),
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "trade-button tradeable-items-reset-button",
             disabled: this.state.activeOffer.otherTrade.isEqualWith(this.state.lastOfferByPlayer.otherTrade),
@@ -180,17 +181,17 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             localize("reset")(),
           ),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "trade-message",
         },
           this.state.activeOffer.message,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "trade-buttons-container trade-controls-container",
         },
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "trade-button trade-control-button",
             disabled: !ableToAcceptTrade,
@@ -199,7 +200,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             localize("reject")(),
           ),
           this.state.hasActiveProposal ?
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "trade-button trade-control-button",
               disabled: !ableToAcceptTrade,
@@ -207,7 +208,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             },
               localize("accept")(),
             ) :
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "trade-button trade-control-button",
               disabled: !this.state.activeOffer.willingToKeepNegotiating,

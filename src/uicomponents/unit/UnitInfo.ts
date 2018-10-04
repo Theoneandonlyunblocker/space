@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import GuardCoverage from "../../GuardCoverage";
@@ -45,11 +46,11 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
     let battleEndStatus: React.ReactHTMLElement<any> = null;
     if (this.props.wasDestroyed)
     {
-      battleEndStatus = React.DOM.div(
+      battleEndStatus = ReactDOMElements.div(
       {
         className: "unit-battle-end-status-container",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "unit-battle-end-status unit-battle-end-status-dead",
         },
@@ -59,11 +60,11 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
     }
     else if (this.props.wasCaptured)
     {
-      battleEndStatus = React.DOM.div(
+      battleEndStatus = ReactDOMElements.div(
       {
         className: "unit-battle-end-status-container",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "unit-battle-end-status unit-battle-end-status-captured",
         },
@@ -73,11 +74,11 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div({className: "unit-info"},
-        React.DOM.div({className: "unit-info-name"},
+      ReactDOMElements.div({className: "unit-info"},
+        ReactDOMElements.div({className: "unit-info-name"},
           this.props.name,
         ),
-        React.DOM.div({className: "unit-info-inner"},
+        ReactDOMElements.div({className: "unit-info-inner"},
           UnitStatus(
           {
             guardAmount: this.props.guardAmount,

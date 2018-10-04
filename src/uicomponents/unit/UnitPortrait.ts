@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 export interface PropTypes extends React.Props<any>
@@ -34,7 +35,7 @@ export class UnitPortraitComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div(props,
+      ReactDOMElements.div(props,
         null,
       )
     );

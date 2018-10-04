@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Item from "../../Item";
 import Unit from "../../Unit";
@@ -114,7 +115,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.td(cellProps, cellContent)
+      ReactDOMElements.td(cellProps, cellContent)
     );
   }
 
@@ -167,7 +168,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
 
     return(
-      React.DOM.tr(rowProps,
+      ReactDOMElements.tr(rowProps,
         cells,
       )
     );

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 
@@ -25,11 +26,11 @@ export class ConfirmDeleteSavesContentComponent extends React.PureComponent<Prop
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "confirm-delete-saves-content",
       },
-        React.DOM.span(
+        ReactDOMElements.span(
         {
           className: "confirm-delete-saves-content-title",
         },
@@ -38,14 +39,14 @@ export class ConfirmDeleteSavesContentComponent extends React.PureComponent<Prop
             count: this.props.saveNames.length
           }),
         ),
-        React.DOM.ol(
+        ReactDOMElements.ol(
         {
           className: "confirm-delete-saves-content-saves-list",
         },
           this.props.saveNames.map(saveName =>
           {
             return(
-              React.DOM.li(
+              ReactDOMElements.li(
               {
                 className: "confirm-delete-saves-content-save-name",
                 key: saveName,

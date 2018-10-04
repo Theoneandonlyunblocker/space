@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import {Fleet} from "../../Fleet";
@@ -164,12 +165,12 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     const isInspecting = this.state.inspectedFleets.length > 0;
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "galaxy-map-ui",
       },
         IntroTutorial(),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "galaxy-map-ui-top",
         },
@@ -200,7 +201,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
 
           attackTargets: this.state.attackTargets,
         }),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "galaxy-map-ui-bottom-right",
           key: "bottomRight",
@@ -210,7 +211,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             mapRenderer: this.props.mapRenderer,
             key: "mapRendererLayersList",
           }),
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "toggle-map-mode-settings-button",
             tabIndex: -1,
@@ -225,7 +226,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             notifications: this.props.notifications,
             notificationLog: this.props.notificationLog,
           }),
-          React.DOM.button(endTurnButtonProps, localize("endTurn")()),
+          ReactDOMElements.button(endTurnButtonProps, localize("endTurn")()),
         ),
       )
     );

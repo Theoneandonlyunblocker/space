@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {TerritoryBuilding} from "../../Building";
 
@@ -62,7 +63,7 @@ export class TerritoryBuildingListComponent extends React.Component<PropTypes, S
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "territory-building-list",
       },

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import app from "../../App"; // TODO global
@@ -87,15 +88,15 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "setup-game-wrapper",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "setup-game",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "setup-game-options",
           },
@@ -117,16 +118,16 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
               },
             }),
           ),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "setup-game-buttons",
           },
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "setup-game-button setup-game-button-randomize",
               onClick: this.randomize,
             }, localize("randomize")()),
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "setup-game-button setup-game-button-start",
               onClick: this.startGame,

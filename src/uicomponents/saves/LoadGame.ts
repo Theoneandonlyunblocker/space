@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
@@ -50,7 +51,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "save-game",
       },
@@ -86,13 +87,13 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           saveKeysToDelete: this.state.saveKeysToDelete,
           onDoubleClick: this.handleLoad,
         }),
-        React.DOM.form(
+        ReactDOMElements.form(
         {
           className: "save-game-form",
           onSubmit: this.handleLoad,
           action: "javascript:void(0);",
         },
-          React.DOM.input(
+          ReactDOMElements.input(
           {
             className: "save-game-name",
             type: "text",
@@ -100,11 +101,11 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
             readOnly: true,
           }),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "save-game-buttons-container",
         },
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "save-game-button",
             onClick: this.handleLoad,
@@ -113,12 +114,12 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
               this.loadButtonElement = component;
             },
           }, localize("load_action")()),
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "save-game-button",
             onClick: this.handleClose.bind(this, true, null),
           }, localize("cancel")()),
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "save-game-button",
             onClick: this.openConfirmDeleteSavesPopup,

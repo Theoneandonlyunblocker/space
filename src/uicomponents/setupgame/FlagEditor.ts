@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Color from "../../Color";
 import Emblem from "../../Emblem";
@@ -113,7 +114,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
     const activeEmblemData = this.getActiveEmblemData();
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "flag-editor",
       },

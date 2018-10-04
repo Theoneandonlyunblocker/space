@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import MapGenOption from "../../templateinterfaces/MapGenOption";
 import
@@ -66,11 +67,11 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
     // console.log(this.props.id, this.props.value);
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "map-gen-option",
       },
-        React.DOM.label(
+        ReactDOMElements.label(
         {
           className: "map-gen-option-label",
           title: option.displayName,
@@ -78,7 +79,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
         },
           option.displayName,
         ),
-        React.DOM.input(
+        ReactDOMElements.input(
         {
           className: "map-gen-option-slider",
           id: id,
@@ -89,7 +90,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
           value: "" + this.props.value,
           onChange: this.handleChange,
         }),
-        React.DOM.input(
+        ReactDOMElements.input(
         {
           className: "map-gen-option-value",
           title: option.displayName,

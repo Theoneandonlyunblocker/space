@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 /// <reference path="../../../lib/pixi.d.ts" />
 
 import Beam from "../../../modules/common/battlesfxfunctions/sfxfragments/Beam";
@@ -261,11 +262,11 @@ export class SfxEditorComponent extends React.Component<PropTypes, StateType>
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "sfx-editor",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "sfx-editor-main",
         },
@@ -278,7 +279,7 @@ export class SfxEditorComponent extends React.Component<PropTypes, StateType>
               this.display = component;
             },
           }),
-          React.DOM.input(
+          ReactDOMElements.input(
           {
             className: "sfx-editor-time-control",
             type: "range",
@@ -291,11 +292,11 @@ export class SfxEditorComponent extends React.Component<PropTypes, StateType>
           },
 
           ),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "sfx-editor-play-wrapper",
           },
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "sfx-editor-play-button",
               onClick: this.togglePlay,
@@ -304,14 +305,14 @@ export class SfxEditorComponent extends React.Component<PropTypes, StateType>
                 "Pause" :
                 "Play",
             ),
-            React.DOM.label(
+            ReactDOMElements.label(
             {
               className: "sfx-editor-duration-label",
               htmlFor: "sfx-editor-duration",
             },
               "Sfx Duration (ms)",
             ),
-            React.DOM.input(
+            ReactDOMElements.input(
             {
               className: "sfx-editor-duration",
               id: "sfx-editor-duration",

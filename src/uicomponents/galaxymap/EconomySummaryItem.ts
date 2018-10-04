@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Star from "../../Star";
 import ListItemProps from "../list/ListItemProps";
@@ -64,7 +65,7 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
     }
 
     return(
-      React.DOM.td(cellProps, cellContent)
+      ReactDOMElements.td(cellProps, cellContent)
     );
   }
 
@@ -93,7 +94,7 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
     // };
 
     return(
-      React.DOM.tr(rowProps,
+      ReactDOMElements.tr(rowProps,
         cells,
       )
     );

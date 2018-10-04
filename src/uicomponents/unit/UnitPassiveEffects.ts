@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import UnitEffectTemplate from "../../templateinterfaces/UnitEffectTemplate";
 
@@ -26,7 +27,7 @@ export class UnitPassiveEffectsComponent extends React.PureComponent<PropTypes, 
   {
     return(
       (this.props.passiveEffects && this.props.passiveEffects.length > 0) ?
-        React.DOM.img(
+        ReactDOMElements.img(
         {
           className: "unit-passive-effects-icon",
           src: "img/icons/availableAction.png",

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Game from "../../Game";
@@ -185,7 +186,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "top-menu-popups-wrapper",
       },

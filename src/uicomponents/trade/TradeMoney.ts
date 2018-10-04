@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
@@ -120,11 +121,11 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
         onTouchStart: this.captureEvent,
       };
 
-      moneyElement = React.DOM.input(moneyProps);
+      moneyElement = ReactDOMElements.input(moneyProps);
     }
     else
     {
-      moneyElement = React.DOM.span(
+      moneyElement = ReactDOMElements.span(
       {
         className: "trade-money-money-available",
       },
@@ -134,9 +135,9 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
 
     return(
-      React.DOM.tr(rowProps,
-        React.DOM.td(null,
-          React.DOM.span(
+      ReactDOMElements.tr(rowProps,
+        ReactDOMElements.td(null,
+          ReactDOMElements.span(
           {
             className: "trade-money-title",
           },

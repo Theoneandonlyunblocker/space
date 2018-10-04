@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {AttitudeModifier} from "../../AttitudeModifier";
@@ -110,13 +111,13 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "player-opinion",
         onMouseEnter: this.setTooltip,
         onMouseLeave: this.clearTooltip,
       },
-        React.DOM.span(
+        ReactDOMElements.span(
         {
           style:
           {

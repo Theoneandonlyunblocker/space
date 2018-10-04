@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {Notification} from "../../notifications/Notification";
 
@@ -55,19 +56,19 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
     const notification = this.props.notification;
 
     return(
-      React.DOM.li(
+      ReactDOMElements.li(
       {
         className: "notification",
         onClick: this.handleClick,
         onContextMenu: this.handleRightClick,
         title: localize("notificationToolTip")(),
       },
-        React.DOM.img(
+        ReactDOMElements.img(
         {
           className: "notification-image",
           src: notification.template.iconSrc,
         }),
-        React.DOM.span(
+        ReactDOMElements.span(
         {
           className: "notification-message",
         },

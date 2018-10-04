@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 export interface PropTypes extends React.Props<any>
@@ -27,18 +28,18 @@ export class OptionsCheckboxComponent extends React.Component<PropTypes, StateTy
     const checkboxId = "options-checkbox-" + this.props.label;
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "options-checkbox-container",
       },
-        React.DOM.input(
+        ReactDOMElements.input(
         {
           type: "checkbox",
           id: checkboxId,
           checked: this.props.isChecked,
           onChange: this.props.onChangeFN,
         }),
-        React.DOM.label(
+        ReactDOMElements.label(
         {
           htmlFor: checkboxId,
         },

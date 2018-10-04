@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {UnlockableThing} from "../../templateinterfaces/UnlockableThing";
 
@@ -28,7 +29,7 @@ export class TechnologyUnlocksComponent extends React.Component<PropTypes, State
   public render()
   {
     return(
-      React.DOM.ol(
+      ReactDOMElements.ol(
       {
         className: "technology-unlocks",
       },
@@ -40,7 +41,7 @@ export class TechnologyUnlocksComponent extends React.Component<PropTypes, State
           return a - b;
         }).map(level =>
         {
-          return React.DOM.li(
+          return ReactDOMElements.li(
           {
             key: level,
             className: "technology-unlocks-list-item",

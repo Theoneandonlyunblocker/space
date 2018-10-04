@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Item from "../../Item";
@@ -140,7 +141,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
 
 
     return(
-      React.DOM.div({className: "item-list fixed-table-parent"},
+      ReactDOMElements.div({className: "item-list fixed-table-parent"},
         List(
         {
           listItems: rows,

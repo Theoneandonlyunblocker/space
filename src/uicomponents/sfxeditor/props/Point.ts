@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import SfxFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
@@ -32,7 +33,7 @@ export class SfxFragmentPropPointComponent extends React.Component<PropTypes, St
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "sfx-fragment-prop-point",
       },

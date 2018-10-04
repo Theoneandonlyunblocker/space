@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import GuardCoverage from "../../GuardCoverage";
 import
@@ -51,11 +52,11 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
       const guardText = `${protectString}` +
         `\n${damageReductionString}`;
 
-      statusElement = React.DOM.div(
+      statusElement = ReactDOMElements.div(
       {
         className: "status-container guard-meter-container",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "guard-meter-value",
           style:
@@ -63,20 +64,20 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
             width: "" + clamp(guard, 0, 100) + "%",
           },
         }),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "status-inner-wrapper",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "guard-text-container status-inner",
             title: guardText,
           },
-            React.DOM.div(
+            ReactDOMElements.div(
             {
               className: "guard-text status-text",
             }, localize("guard_statusText")()),
-            React.DOM.div(
+            ReactDOMElements.div(
             {
               className: "guard-text-value status-text",
             }, "" + guard + "%"),
@@ -86,15 +87,15 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
     }
     else if (this.props.isPreparing)
     {
-      statusElement = React.DOM.div(
+      statusElement = ReactDOMElements.div(
       {
         className: "status-container preparation-container",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "status-inner-wrapper",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "preparation-text-container status-inner",
             title: localize("preparing_tooltip")(),
@@ -106,7 +107,7 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div({className: "unit-status"},
+      ReactDOMElements.div({className: "unit-status"},
         statusElement,
       )
     );

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import SfxFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 import DragPositioner from "../mixins/DragPositioner";
@@ -86,7 +87,7 @@ export class SfxFragmentListItemComponent<P extends Fragment> extends React.Comp
     }
 
     return(
-      React.DOM.li(listItemProps,
+      ReactDOMElements.li(listItemProps,
         this.props.fragment.displayName,
       )
     );

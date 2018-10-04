@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 
@@ -69,19 +70,19 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
     const isDisabled = !Boolean(this.props.onClick) || (this.props.showCost && !canAfford);
 
     return(
-      React.DOM.li(
+      ReactDOMElements.li(
       {
         className: "manufacturable-things-list-item" + (isDisabled ? " disabled" : ""),
         onClick: (isDisabled ? null : this.handleClick),
         title: this.props.template.description,
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "manufacturable-things-list-item-name",
         },
           this.props.template.displayName,
         ),
-        !this.props.showCost ? null : React.DOM.div(
+        !this.props.showCost ? null : ReactDOMElements.div(
         {
           className: "manufacturable-things-list-item-cost money-style" +
             (canAfford ? "" : " negative"),

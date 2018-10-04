@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import SfxFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
@@ -37,7 +38,7 @@ export class SfxFragmentListComponent<P extends Fragment> extends React.Componen
   render()
   {
     return(
-      React.DOM.ol(
+      ReactDOMElements.ol(
       {
         className: "sfx-fragment-list",
       },

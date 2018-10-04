@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {Fleet} from "../../Fleet";
 import eventManager from "../../eventManager";
@@ -71,21 +72,21 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "fleet-controls",
       },
-        React.DOM.button(splitButtonProps,
+        ReactDOMElements.button(splitButtonProps,
           localize("split_fleet")(),
         ),
-        React.DOM.button(
+        ReactDOMElements.button(
         {
           className: "fleet-controls-deselect",
           onClick: this.deselectFleet,
         },
           localize("deselect_fleet")(),
         ),
-        !this.props.hasMultipleSelected ? null : React.DOM.button(
+        !this.props.hasMultipleSelected ? null : ReactDOMElements.button(
         {
           className: "fleet-controls-select",
           onClick: this.selectFleet,

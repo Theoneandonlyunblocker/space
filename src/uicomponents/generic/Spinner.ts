@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {FixedRateTicker} from "../../FixedRateTicker";
 
@@ -56,18 +57,18 @@ export class SpinnerComponent extends React.Component<PropTypes, StateType>
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "spinner",
       },
-        React.DOM.button(
+        ReactDOMElements.button(
         {
           className: "spinner-arrow spinner-arrow-up",
           onClick: this.stepUp,
           onMouseDown: this.startSpinUp,
           onTouchStart: this.startSpinUp,
         }),
-        React.DOM.button(
+        ReactDOMElements.button(
         {
           className: "spinner-arrow spinner-arrow-down",
           onClick: this.stepDown,

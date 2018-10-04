@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import
 {
@@ -71,8 +72,8 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     const attributes = mergeReactAttributes(defaultAttributes, customAttributes);
 
     return(
-      React.DOM.div(attributes,
-        React.DOM.input(
+      ReactDOMElements.div(attributes,
+        ReactDOMElements.input(
         {
           className: "number-input",
           type: "text",

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import SfxFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
@@ -96,7 +97,7 @@ export class SfxEditorDisplayComponent extends React.Component<PropTypes, StateT
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "sfx-editor-display",
         ref: element =>

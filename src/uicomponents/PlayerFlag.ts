@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {Flag} from "../Flag";
@@ -51,7 +52,7 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
     });
 
     return(
-      React.DOM.div(props,
+      ReactDOMElements.div(props,
         null,
       )
     );

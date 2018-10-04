@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {AbilityTargetDisplayDataById} from "../../AbilityTargetDisplayData";
 import Unit from "../../Unit";
@@ -154,7 +155,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
         );
       }
 
-      formationRowElements.push(React.DOM.div(
+      formationRowElements.push(ReactDOMElements.div(
       {
         className: "battle-formation-row",
         key: "row_" + i,
@@ -164,7 +165,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div({className: "battle-formation"},
+      ReactDOMElements.div({className: "battle-formation"},
         formationRowElements,
       )
     );

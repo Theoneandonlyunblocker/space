@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import {activeModuleData} from "../../activeModuleData";
@@ -101,7 +102,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
       const template = this.state.templates[i];
 
       mapGenTemplateOptions.push(
-        React.DOM.option(
+        ReactDOMElements.option(
           {
             value: template.key,
             key: template.key,
@@ -113,11 +114,11 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "map-setup",
       },
-        React.DOM.select(
+        ReactDOMElements.select(
         {
           className: "map-setup-template-selector",
           value: this.state.selectedTemplate.key,
@@ -125,7 +126,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
         },
           mapGenTemplateOptions,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "map-setup-player-limit",
         },
@@ -135,7 +136,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
             max: this.state.selectedTemplate.maxPlayers,
           }),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "map-setup-description",
         },

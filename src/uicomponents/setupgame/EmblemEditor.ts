@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Color from "../../Color";
@@ -47,11 +48,11 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "emblem-editor",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "flag-picker-title"  + (this.state.colorPickerIsCollapsed ? " collapsed" : " collapsible"),
           onClick: this.toggleColorPickerCollapse,
@@ -60,7 +61,7 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
         ),
         this.state.colorPickerIsCollapsed ?
           null :
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "emblem-color-pickers-container",
           },
@@ -76,7 +77,7 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
               });
             }),
           ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "flag-picker-title" + (this.state.emblemPickerIsCollapsed ? " collapsed" : " collapsible"),
           onClick: this.toggleEmblemPickerCollapse,

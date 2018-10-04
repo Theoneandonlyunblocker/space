@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import {default as DefaultWindow} from "../windows/DefaultWindow";
@@ -37,11 +38,11 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "notification-filter-button-container",
       },
-        React.DOM.button(
+        ReactDOMElements.button(
         {
           className: "notification-filter-button",
           onClick: this.togglePopup,

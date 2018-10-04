@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import MapRenderer from "../../MapRenderer";
 import MapRendererLayer from "../../MapRendererLayer";
@@ -105,7 +106,7 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
     }
 
     return(
-      React.DOM.ol(
+      ReactDOMElements.ol(
       {
         className: "map-renderer-layers-list",
       },

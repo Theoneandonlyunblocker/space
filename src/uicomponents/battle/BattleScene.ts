@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import BattleScene from "../../BattleScene";
@@ -71,7 +72,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
     {
       case "start":
       {
-        componentToRender = React.DOM.div(
+        componentToRender = ReactDOMElements.div(
         {
           className: "battle-scene-flags-container",
         },
@@ -104,7 +105,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "battle-scene",
       },

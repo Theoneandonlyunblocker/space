@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Manufactory from "../../Manufactory";
@@ -84,11 +85,11 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "manufacturable-items",
       },
-        (!this.props.selectedStar || !this.props.selectedStar.manufactory) ? null : React.DOM.div(
+        (!this.props.selectedStar || !this.props.selectedStar.manufactory) ? null : ReactDOMElements.div(
         {
           className: "manufactory-upgrade-buttons-container",
         },

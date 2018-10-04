@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Item from "../../Item";
 import Unit from "../../Unit";
@@ -47,7 +48,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
   {
     const unit = this.props.unit;
     if (!unit) { return(
-      React.DOM.div({className: "menu-unit-info"})
+      ReactDOMElements.div({className: "menu-unit-info"})
     );
     }
 
@@ -76,19 +77,19 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
     unitAbilities = unitAbilities.concat(unit.getAllPassiveSkills());
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "menu-unit-info",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "menu-unit-info-left",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "menu-unit-info-name",
           }, unit.name),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "menu-unit-info-abilities",
           },
@@ -105,7 +106,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
             onUnitUpgrade: this.handleUnitUpgrade,
           }),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "menu-unit-info-items-wrapper",
         },

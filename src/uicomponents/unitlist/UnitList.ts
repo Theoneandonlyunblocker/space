@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Unit from "../../Unit";
@@ -135,7 +136,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
     ];
 
     return(
-      React.DOM.div({className: "unit-list fixed-table-parent"},
+      ReactDOMElements.div({className: "unit-list fixed-table-parent"},
         List(
         {
           listItems: rows,

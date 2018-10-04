@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Color from "../../Color";
@@ -58,22 +59,22 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   public render()
   {
     return(
-      React.DOM.div({className: "color-picker"},
-        React.DOM.div({className: "color-picker-hsv"},
+      ReactDOMElements.div({className: "color-picker"},
+        ReactDOMElements.div({className: "color-picker-hsv"},
           this.makeHsvInputs("hue"),
           this.makeHsvInputs("sat"),
           this.makeHsvInputs("val"),
         ),
-        React.DOM.div({className: "color-picker-input-container", key: "hex"},
-          React.DOM.label({className: "color-picker-label"}, "Hex:"),
+        ReactDOMElements.div({className: "color-picker-input-container", key: "hex"},
+          ReactDOMElements.label({className: "color-picker-label"}, "Hex:"),
           !this.props.generateColor ? null :
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "color-picker-button",
               onClick: this.autoGenerateColor,
             }, localize("auto")()),
           !this.props.isNullable ? null :
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "color-picker-button",
               onClick: this.nullifyColor,
@@ -282,8 +283,8 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     };
 
     return(
-      React.DOM.div({className: "color-picker-input-container", key: type},
-        React.DOM.label({className: "color-picker-label"}, label),
+      ReactDOMElements.div({className: "color-picker-input-container", key: type},
+        ReactDOMElements.label({className: "color-picker-label"}, label),
         ColorPickerSlider(
         {
           value: this.state[type],

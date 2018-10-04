@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Item from "../../Item";
 
@@ -72,7 +73,7 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
     }
 
     return(
-      React.DOM.div(wrapperProps,
+      ReactDOMElements.div(wrapperProps,
         UnitItem(
         {
           item: this.props.item,

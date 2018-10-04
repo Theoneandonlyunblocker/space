@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Color from "../Color";
 import Emblem from "../Emblem";
@@ -78,7 +79,7 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
     });
 
     return(
-      React.DOM.div(containerProps,
+      ReactDOMElements.div(containerProps,
         null,
       )
     );

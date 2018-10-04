@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import
 {
@@ -75,12 +76,12 @@ export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateTy
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "galaxy-map-ui-left" +
           (this.state.topAndBottomShouldOverlap ? " no-docking" : ""),
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "galaxy-map-ui-top-left" +
             (this.state.topAndBottomShouldOverlap ? " no-docking" : ""),
@@ -110,7 +111,7 @@ export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateTy
             },
           }),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "galaxy-map-ui-bottom-left" +
             (this.state.topAndBottomShouldOverlap ? " no-docking" : ""),
@@ -119,7 +120,7 @@ export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateTy
 
           },
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "galaxy-map-ui-bottom-left-column align-bottom",
             onClick: () =>

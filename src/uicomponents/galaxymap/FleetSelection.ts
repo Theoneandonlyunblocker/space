@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import {Fleet} from "../../Fleet";
@@ -122,14 +123,14 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         reorganizeProps.className += " disabled";
       }
 
-      fleetSelectionControls = React.DOM.div(
+      fleetSelectionControls = ReactDOMElements.div(
       {
         className: "fleet-selection-controls",
       },
-        React.DOM.button(reorganizeProps,
+        ReactDOMElements.button(reorganizeProps,
           localize("reorganize")(),
         ),
-        React.DOM.button(mergeProps,
+        ReactDOMElements.button(mergeProps,
           localize("merge")(),
         ),
       );
@@ -149,13 +150,13 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
     const isReorganizing = this.props.currentlyReorganizing.length > 0;
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "fleet-selection",
       },
         fleetSelectionControls,
         hasMultipleSelected ? null : fleetInfos,
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "fleet-selection-selected",
           ref: (element) =>

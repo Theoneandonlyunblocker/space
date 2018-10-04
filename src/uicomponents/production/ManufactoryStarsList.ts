@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Star from "../../Star";
 
@@ -92,7 +93,7 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "manufactory-stars-list",
       },

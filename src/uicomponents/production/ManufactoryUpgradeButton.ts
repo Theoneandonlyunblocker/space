@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 export interface PropTypes extends React.Props<any>
@@ -56,27 +57,27 @@ export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes
     }
 
     return(
-      React.DOM.button(
+      ReactDOMElements.button(
       {
         className: unitUpgradeButtonBaseClassName + " manufactory-units-upgrade-health-button",
         onClick: (isDisabled ? null : this.props.onClick),
         disabled: isDisabled,
         title: this.props.title,
       },
-        React.DOM.span(
+        ReactDOMElements.span(
         {
           className: "manufactory-upgrade-button-action",
         },
           this.props.actionString,
         ),
-        React.DOM.br(),
-        React.DOM.span(
+        ReactDOMElements.br(),
+        ReactDOMElements.span(
         {
           className: "manufactory-upgrade-button-level",
         },
           `${this.props.currentLevel.toFixed(this.props.levelDecimalPoints)} / ${this.props.maxLevel.toFixed(this.props.levelDecimalPoints)}`,
         ),
-        React.DOM.span(
+        ReactDOMElements.span(
         {
           className: unitUpgradeCostBaseClassName,
         },

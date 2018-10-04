@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Star from "../../Star";
@@ -46,35 +47,35 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
     if (!star) { return null; }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "star-info",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "star-info-name",
         },
           star.name,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "star-info-owner",
         },
           star.owner ? star.owner.name.fullName : null,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "star-info-location",
         },
           `x:${star.x.toFixed()} y:${star.y.toFixed()}`,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "star-info-terrain",
         },
           `Terrain: ${star.terrain.displayName}`,
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "star-info-income",
         },

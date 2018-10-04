@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Player from "../../Player";
 import Star from "../../Star";
@@ -95,7 +96,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "production-overview",
       },
@@ -106,7 +107,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
           highlightedStars: [selectedStar],
           setSelectedStar: this.props.setSelectedStar,
         }),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "production-overview-contents",
         },

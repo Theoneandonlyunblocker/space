@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import PlayerFlag from "../PlayerFlag";
 import TerritoryBuildingList from "../galaxymap/TerritoryBuildingList";
@@ -34,11 +35,11 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
     const isAttacker = battlePrep.humanPlayer === battlePrep.attacker;
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "battle-info",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "battle-info-opponent",
         },
@@ -50,14 +51,14 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
               className: "battle-info-opponent-icon",
             },
           }),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "battle-info-opponent-name",
           },
             battlePrep.enemyPlayer.name.fullName,
           ),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "battle-info-summary",
         },

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import TutorialStatus from "../../tutorials/TutorialStatus";
 import TutorialVisibility from "../../tutorials/TutorialVisibility";
@@ -72,12 +73,12 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "dont-show-again-wrapper",
       },
-        React.DOM.label(null,
-          React.DOM.input(
+        ReactDOMElements.label(null,
+          ReactDOMElements.input(
           {
             type: "checkBox",
             className: "dont-show-again",

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import FleetAttackTarget from "../../FleetAttackTarget";
 import eventManager from "../../eventManager";
@@ -42,7 +43,7 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
     const target = this.props.attackTarget;
 
     return(
-      React.DOM.button(
+      ReactDOMElements.button(
       {
         className: "attack-target-button possible-action",
         onClick: this.handleAttack,
@@ -52,7 +53,7 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
           targetType: target.type,
         }),
       },
-        React.DOM.span(
+        ReactDOMElements.span(
         {
           className: "possible-action-title",
         },

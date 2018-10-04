@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import BuildingUpgradeData from "../../BuildingUpgradeData";
 import Player from "../../Player";
@@ -88,15 +89,15 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
     }
 
     return(
-      React.DOM.tr(rowProps,
-        React.DOM.td(
+      ReactDOMElements.tr(rowProps,
+        ReactDOMElements.td(
         {
           key: "name",
           className: "building-upgrade-list-item-name",
         },
           upgradeData.template.displayName,
         ),
-        React.DOM.td(costProps, upgradeData.cost),
+        ReactDOMElements.td(costProps, upgradeData.cost),
       )
     );
   }

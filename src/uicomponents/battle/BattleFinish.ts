@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 
@@ -25,11 +26,11 @@ export class BattleFinishComponent extends React.PureComponent<PropTypes, StateT
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "battle-scene-finish-container",
       },
-        React.DOM.h1(
+        ReactDOMElements.h1(
         {
           className: "battle-scene-finish-header",
         },
@@ -37,7 +38,7 @@ export class BattleFinishComponent extends React.PureComponent<PropTypes, StateT
             localize("battleFinish_victory")() :
             localize("battleFinish_loss")(),
         ),
-        React.DOM.h3(
+        ReactDOMElements.h3(
         {
           className: "battle-scene-finish-subheader",
         },

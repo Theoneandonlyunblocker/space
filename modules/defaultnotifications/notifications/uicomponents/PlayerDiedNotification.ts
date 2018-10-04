@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 
@@ -30,7 +31,7 @@ class PlayerDiedNotification extends React.Component<PropTypes, {}>
     const notification = this.props.notification;
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "player-died-notification",
       },
@@ -38,8 +39,8 @@ class PlayerDiedNotification extends React.Component<PropTypes, {}>
         {
           playerName: notification.props.deadPlayerName,
         }),
-        React.DOM.br(null),
-        React.DOM.br(null),
+        ReactDOMElements.br(null),
+        ReactDOMElements.br(null),
         localize("playerDiedTextBottom")(
         {
           playerPronoun: "He", // TODO 2017.10.14 | need to do this stuff better

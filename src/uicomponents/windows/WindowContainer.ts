@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {Direction} from "../../Direction";
@@ -134,7 +135,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     const attributes = shallowExtend(customAttributes, defaultAttributes);
 
     return(
-      React.DOM.div(attributes,
+      ReactDOMElements.div(attributes,
         this.props.children,
         !this.props.isResizable ? null : this.makeResizeHandles(),
       )

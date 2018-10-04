@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {Notification} from "../../../../src/notifications/Notification";
 
@@ -44,7 +45,7 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
       "battleFinishText_attackerLost";
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "battle-finish-notification",
       },

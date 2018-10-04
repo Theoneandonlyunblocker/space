@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {Building} from "../../Building";
 import BuildingUpgradeData from "../../BuildingUpgradeData";
@@ -78,12 +79,12 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
       {
         if (j > 0)
         {
-          upgradeElements.push(React.DOM.tr(
+          upgradeElements.push(ReactDOMElements.tr(
           {
             className: "list-spacer",
             key: `spacer${i}${j}`,
           },
-            React.DOM.td(
+            ReactDOMElements.td(
             {
               colSpan: 20,
             },
@@ -101,20 +102,20 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
         }));
       }
 
-      const parentElement = React.DOM.div(
+      const parentElement = ReactDOMElements.div(
       {
         key: "" + parentBuilding.id,
         className: "building-upgrade-group",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "building-upgrade-group-header",
         }, parentBuilding.template.displayName),
-        React.DOM.table(
+        ReactDOMElements.table(
         {
           className: "buildable-item-list",
         },
-          React.DOM.tbody(
+          ReactDOMElements.tbody(
           {
 
           },
@@ -127,7 +128,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
     }
 
     return(
-      React.DOM.ul(
+      ReactDOMElements.ul(
       {
         className: "building-upgrade-list",
       },

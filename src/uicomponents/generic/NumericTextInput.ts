@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import
 {
@@ -67,7 +68,7 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
     const attributes = mergeReactAttributes(defaultAttributes, customAttributes);
 
     return(
-      React.DOM.input(attributes)
+      ReactDOMElements.input(attributes)
     );
   }
 

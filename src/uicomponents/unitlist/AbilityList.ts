@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 
@@ -80,7 +81,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.ol(
+      ReactDOMElements.ol(
       {
         className: "ability-list",
       },

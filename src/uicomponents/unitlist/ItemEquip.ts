@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Item from "../../Item";
 import Player from "../../Player";
@@ -51,8 +52,8 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
     const player = this.props.player;
 
     return(
-      React.DOM.div({className: "item-equip"},
-        React.DOM.div({className: "item-equip-left"},
+      ReactDOMElements.div({className: "item-equip"},
+        ReactDOMElements.div({className: "item-equip-left"},
 
           MenuUnitInfo(
           {

@@ -1,5 +1,6 @@
 /// <reference path="../../../lib/tween.js.d.ts" />
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 export interface PropTypes extends React.Props<any>
@@ -134,7 +135,7 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
   render()
   {
     return(
-      React.DOM.div({className: "unit-strength-battle-display"},
+      ReactDOMElements.div({className: "unit-strength-battle-display"},
         Math.ceil(this.state.displayedStrength),
       )
     );

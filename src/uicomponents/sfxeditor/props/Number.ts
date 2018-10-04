@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import SfxFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 
@@ -50,7 +51,7 @@ export class SfxFragmentPropNumberComponent extends React.Component<PropTypes, S
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "sfx-fragment-prop-number-input",
       },

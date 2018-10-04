@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {Rect} from "../../Rect";
 
@@ -94,30 +95,30 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
           this.windowContainerComponent = component;
         },
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "window",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "window-title-bar draggable",
             onMouseDown: this.handleTitleBarMouseDown,
             onTouchStart: this.handleTitleBarMouseDown,
             ref: element => this.titleBarElement = element,
           },
-            React.DOM.div(
+            ReactDOMElements.div(
             {
               className: "window-title",
             },
               this.props.title,
             ),
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "window-close-button",
               onClick: this.props.handleClose,
             }),
           ),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "window-content",
             ref: element => this.contentContainerElement = element,

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {Flag} from "../Flag";
 import {generateColorScheme} from "../colorGeneration";
@@ -90,8 +91,8 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div(null,
-        React.DOM.div(
+      ReactDOMElements.div(null,
+        ReactDOMElements.div(
         {
           className: "flags",
           ref: (component: HTMLElement) =>
@@ -101,11 +102,11 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
         },
           flagElements,
         ),
-        React.DOM.button(
+        ReactDOMElements.button(
         {
           onClick: this.makeFlags,
         }, "make flags"),
-        React.DOM.input(
+        ReactDOMElements.input(
         {
           onChange: this.handleSizeChange,
           defaultValue: "" + this.sizeValue,

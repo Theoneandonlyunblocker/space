@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {globalNotificationFilter, NotificationFilter} from "../../notifications/NotificationFilter";
 
@@ -112,21 +113,21 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "notification-filter-list",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "notification-filter-list-header",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "notification-filter-list-item-label",
           },
             localize("show")(),
           ),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "notification-filter-list-item-filters",
           },
@@ -135,7 +136,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
             localize("neverShow_short")(),
           ),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "notification-filter-list-body",
           ref: (component: HTMLElement) =>

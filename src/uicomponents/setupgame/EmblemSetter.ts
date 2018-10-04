@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Color from "../../Color";
 
@@ -32,7 +33,7 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "emblem-setter",
       },

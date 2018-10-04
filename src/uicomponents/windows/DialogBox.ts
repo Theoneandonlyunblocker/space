@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
@@ -50,21 +51,21 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
         handleClose: this.props.handleCancel,
         isResizable: false,
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "dialog-box",
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "dialog-box-content",
           },
             this.props.children,
           ),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "dialog-box-buttons",
           },
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "dialog-box-button ok-button",
               onClick: this.props.handleOk,
@@ -74,7 +75,7 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
               },
             }, this.props.okText || localize("ok")()),
             this.props.extraButtons,
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "dialog-box-button cancel-button",
               onClick: this.props.handleCancel,

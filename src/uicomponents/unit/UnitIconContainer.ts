@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 export interface PropTypes extends React.Props<any>
@@ -46,15 +47,15 @@ export class UnitIconContainerComponent extends React.PureComponent<PropTypes, S
 
     const iconElement = React.Children.count(this.props.children) === 1 ?
       React.Children.only(this.props.children) :
-      React.DOM.img({src: this.props.iconSrc});
+      ReactDOMElements.img({src: this.props.iconSrc});
 
     return(
-      React.DOM.div({className: "unit-icon-wrapper"},
-        React.DOM.div(fillerProps),
-        React.DOM.div(containerProps,
+      ReactDOMElements.div({className: "unit-icon-wrapper"},
+        ReactDOMElements.div(fillerProps),
+        ReactDOMElements.div(containerProps,
           iconElement,
         ),
-        React.DOM.div(fillerProps),
+        ReactDOMElements.div(fillerProps),
       )
     );
   }

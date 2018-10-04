@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import ListItemProps from "../list/ListItemProps";
 
@@ -94,7 +95,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
     }
 
     return(
-      React.DOM.td(cellProps, cellContent)
+      ReactDOMElements.td(cellProps, cellContent)
     );
   }
 
@@ -112,7 +113,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
     }
 
     return(
-      React.DOM.tr(
+      ReactDOMElements.tr(
       {
         className: "attitude-modifier-info",
         onClick : this.props.handleClick,

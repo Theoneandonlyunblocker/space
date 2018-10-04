@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
@@ -79,7 +80,7 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.props.item)
     {
-      return React.DOM.div(
+      return ReactDOMElements.div(
       {
         className: "empty-unit-item",
         title: localize("itemSlot")(this.props.slot),
@@ -109,17 +110,17 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
 
 
     return(
-      React.DOM.div(divProps,
-        React.DOM.div(
+      ReactDOMElements.div(divProps,
+        ReactDOMElements.div(
         {
           className: "item-icon-container",
         },
-          React.DOM.img(
+          ReactDOMElements.img(
           {
             className: "item-icon-base",
             src: item.template.icon,
           }),
-          item.template.techLevel > 1 ? React.DOM.img(
+          item.template.techLevel > 1 ? ReactDOMElements.img(
           {
             className: "item-icon-tech-level",
             src: this.getTechIcon(item.template.techLevel),

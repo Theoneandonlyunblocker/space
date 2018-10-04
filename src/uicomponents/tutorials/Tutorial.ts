@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {TutorialPage} from "../../tutorials/Tutorial";
 import TutorialStatus from "../../tutorials/TutorialStatus";
@@ -119,7 +120,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
     let backElement: React.ReactHTMLElement<any>;
     if (hasBackArrow)
     {
-      backElement = React.DOM.div(
+      backElement = ReactDOMElements.div(
       {
         className: "tutorial-flip-page tutorial-flip-page-back",
         onClick: this.flipPage.bind(this, -1),
@@ -127,7 +128,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      backElement = React.DOM.div(
+      backElement = ReactDOMElements.div(
       {
         className: "tutorial-flip-page disabled",
       });
@@ -137,7 +138,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
     let forwardElement: React.ReactHTMLElement<any>;
     if (hasForwardArrow)
     {
-      forwardElement = React.DOM.div(
+      forwardElement = ReactDOMElements.div(
       {
         className: "tutorial-flip-page tutorial-flip-page-forward",
         onClick: this.flipPage.bind(this, 1),
@@ -145,24 +146,24 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      forwardElement = React.DOM.div(
+      forwardElement = ReactDOMElements.div(
       {
         className: "tutorial-flip-page disabled",
       });
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "tutorial",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "tutorial-inner",
         },
           backElement,
 
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "tutorial-content",
           }, splitMultilineText(this.props.pages[this.state.currentPageIndex].content)),

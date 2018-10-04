@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
@@ -54,7 +55,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "save-game",
       },
@@ -77,13 +78,13 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           autoSelect: false,
           onDoubleClick: this.saveGame,
         }),
-        React.DOM.form(
+        ReactDOMElements.form(
         {
           className: "save-game-form",
           onSubmit: this.handleSave,
           action: "javascript:void(0);",
         },
-          React.DOM.input(
+          ReactDOMElements.input(
           {
             className: "save-game-name",
             ref: (component: HTMLElement | null) =>
@@ -96,11 +97,11 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
             maxLength: 64,
           }),
         ),
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "save-game-buttons-container",
         },
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "save-game-button",
             onClick: this.handleSave,
@@ -109,7 +110,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
               this.okButtonElement = component;
             },
           }, localize("save_action")()),
-          React.DOM.button(
+          ReactDOMElements.button(
           {
             className: "save-game-button",
             onClick: this.handleClose,

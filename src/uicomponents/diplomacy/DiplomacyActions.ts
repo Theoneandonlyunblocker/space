@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Player from "../../Player";
 
@@ -77,17 +78,17 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "diplomacy-actions",
       },
-        React.DOM.button(declareWarProps,
+        ReactDOMElements.button(declareWarProps,
           localize("declareWar")(),
         ),
-        React.DOM.button(makePeaceProps,
+        ReactDOMElements.button(makePeaceProps,
           localize("makePeace")(),
         ),
-        React.DOM.button(
+        ReactDOMElements.button(
         {
           className: "diplomacy-action-button",
           onClick: this.toggleTradePopup,

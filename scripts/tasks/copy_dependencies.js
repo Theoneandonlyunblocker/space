@@ -6,17 +6,17 @@ process.on('unhandledRejection', err => {
 
 const ncp = require('ncp').ncp;
 
-const sources =
-[
-  "node_modules/pixi.js/dist/pixi.js",
-  "node_modules/react/dist/react-with-addons.js",
-  "node_modules/react-dom/dist/react-dom.js"
-];
-
-sources.forEach(source =>
+const filesToCopyWithDestination =
 {
-  const split = source.split("/");
-  const destination = "dist/" + split[split.length - 1];
+  "node_modules/pixi.js/dist/pixi.js": "dist/pixi.js",
+  "node_modules/react/dist/react-with-addons.js": "dist/react-with-addons.js",
+  "node_modules/react-dom/dist/react-dom.js": "dist/react-dom.js",
+  "node_modules/react-dom-factories/index.js": "dist/react-dom-factories.js",
+};
+
+Object.keys(filesToCopyWithDestination).forEach(source =>
+{
+  const destination = filesToCopyWithDestination[source];
 
   ncp(source, destination, err =>
   {

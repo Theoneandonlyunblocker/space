@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import MapRendererLayer from "../../MapRendererLayer";
@@ -87,21 +88,21 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
 
 
     return(
-      React.DOM.li(divProps,
-        React.DOM.input(
+      ReactDOMElements.li(divProps,
+        ReactDOMElements.input(
         {
           type: "checkbox",
           className: "map-renderer-layers-list-item-checkbox",
           checked: this.props.isActive,
           onChange: this.props.toggleActive,
         }),
-        React.DOM.span(
+        ReactDOMElements.span(
         {
           className: "map-renderer-layers-list-item-name draggable",
         },
           this.props.layerName,
         ),
-        React.DOM.input(
+        ReactDOMElements.input(
         {
           className: "map-renderer-layers-list-item-alpha",
           type: "number",

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Player from "../../Player";
 import {BuildingTemplate} from "../../templateinterfaces/BuildingTemplate";
@@ -85,7 +86,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     }
 
     return(
-      React.DOM.td(cellProps, cellContent)
+      ReactDOMElements.td(cellProps, cellContent)
     );
   }
 
@@ -115,7 +116,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     }
 
     return(
-      React.DOM.tr(props,
+      ReactDOMElements.tr(props,
       cells,
       )
     );

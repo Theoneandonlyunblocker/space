@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Color from "../../Color";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
@@ -36,11 +37,11 @@ export class EmblemColorPickerComponent extends React.Component<PropTypes, State
     const colorMappingData = this.props.emblemTemplate.colorMappings[this.props.colorIndex];
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "emblem-color-picker",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "emblem-color-picker-title",
         },

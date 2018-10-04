@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Color from "../../Color";
@@ -38,7 +39,7 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
     const canAddNewEmblem = this.props.emblems.length < this.props.maxEmblems;
 
     return(
-      React.DOM.ol(
+      ReactDOMElements.ol(
       {
         className: "emblem-setter-list",
       },
@@ -57,7 +58,7 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
             backgroundColor: this.props.backgroundColor,
           });
         }),
-        React.DOM.button(
+        ReactDOMElements.button(
         {
           className: "add-new-emblem-button",
           onClick: this.props.addEmblem,

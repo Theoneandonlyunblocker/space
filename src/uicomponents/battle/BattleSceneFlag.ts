@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {Flag} from "../../Flag";
 import {svgCache} from "../../svgCache";
@@ -31,7 +32,7 @@ export class BattleSceneFlagComponent extends React.Component<PropTypes, StateTy
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "battle-scene-flag-container" + (this.props.facingRight ? " facing-right" : " facing-left"),
       },

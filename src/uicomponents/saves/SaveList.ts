@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import {prettifyDate} from "../../utility";
@@ -111,7 +112,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div({className: "save-list fixed-table-parent"},
+      ReactDOMElements.div({className: "save-list fixed-table-parent"},
         List(
         {
           listItems: rows,

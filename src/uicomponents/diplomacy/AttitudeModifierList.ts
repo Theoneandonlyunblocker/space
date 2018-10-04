@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import {AttitudeModifier} from "../../AttitudeModifier";
@@ -97,7 +98,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
     ];
 
     return(
-      React.DOM.div({className: "attitude-modifier-list auto-position fixed-table-parent"},
+      ReactDOMElements.div({className: "attitude-modifier-list auto-position fixed-table-parent"},
         List(
         {
           listItems: rows,

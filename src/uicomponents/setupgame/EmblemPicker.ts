@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Color from "../../Color";
 import {activeModuleData} from "../../activeModuleData";
@@ -48,7 +49,7 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
       }
 
       emblemElements.push(
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "emblem-picker-container",
           key: template.key,
@@ -72,11 +73,11 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "emblem-picker",
       },
-        React.DOM.div({className: "emblem-picker-emblem-list"},
+        ReactDOMElements.div({className: "emblem-picker-emblem-list"},
           emblemElements,
         ),
       )

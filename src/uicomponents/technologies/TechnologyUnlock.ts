@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 interface PropTypes extends React.Props<any>
@@ -24,7 +25,7 @@ export class TechnologyUnlockComponent extends React.Component<PropTypes, StateT
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "technology-unlock",
         title: this.props.description,

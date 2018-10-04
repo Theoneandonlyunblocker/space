@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Player from "../../Player";
 import PlayerFlag from "../PlayerFlag";
@@ -33,15 +34,15 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
     const transitionDurationString = `${this.props.animationDuration}ms`;
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "battle-score-wrapper",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "battle-score-container",
         },
-          React.DOM.img(
+          ReactDOMElements.img(
           {
             className: "battle-score-mid-point",
             src: "img/icons/battleScoreMidPoint.png",
@@ -56,11 +57,11 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
             },
             flag: this.props.player1.flag,
           }),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "battle-score-bar-container",
           },
-            React.DOM.div(
+            ReactDOMElements.div(
             {
               className: "battle-score-bar-value battle-score-bar-side1",
               style:
@@ -71,7 +72,7 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
                 transitionDuration: transitionDurationString,
               },
             }),
-            React.DOM.div(
+            ReactDOMElements.div(
             {
               className: "battle-score-bar-value battle-score-bar-side2",
               style:

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import eventManager from "../../eventManager";
@@ -397,7 +398,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       }
 
       columns.push(
-        React.DOM.col(colProps),
+        ReactDOMElements.col(colProps),
       );
 
       let sortStatus: string = "";
@@ -417,15 +418,15 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       }
 
       headerLabels.push(
-        React.DOM.th(
+        ReactDOMElements.th(
           {
             key: column.key,
           },
-          React.DOM.div(
+          ReactDOMElements.div(
             {
               className: "fixed-table-th-inner",
             },
-            React.DOM.div(
+            ReactDOMElements.div(
             {
               className: "fixed-table-th-content" + sortStatus,
               title: column.title || colProps.title || null,
@@ -454,12 +455,12 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
       if (this.props.addSpacer && i < this.sortedItems.length - 1)
       {
-        rows.push(React.DOM.tr(
+        rows.push(ReactDOMElements.tr(
         {
           className: "list-spacer",
           key: "spacer" + i,
         },
-          React.DOM.td(
+          ReactDOMElements.td(
           {
             colSpan: 20,
           },
@@ -472,13 +473,13 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
         {
           className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
           tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1,
         },
-        React.DOM.div({className: "fixed-table-header-background"}),
-        React.DOM.div(
+        ReactDOMElements.div({className: "fixed-table-header-background"}),
+        ReactDOMElements.div(
         {
           className: "fixed-table-container-inner",
           ref: (component: HTMLElement) =>
@@ -487,30 +488,30 @@ export class ListComponent extends React.Component<PropTypes, StateType>
           },
           onScroll: this.handleScroll,
         },
-          React.DOM.table(
+          ReactDOMElements.table(
           {
             className: "react-list",
           },
-            React.DOM.colgroup(null,
+            ReactDOMElements.colgroup(null,
               columns,
             ),
 
-            React.DOM.thead({className: "fixed-table-actual-header", ref: (component: HTMLElement) =>
+            ReactDOMElements.thead({className: "fixed-table-actual-header", ref: (component: HTMLElement) =>
             {
               this.headerElement = component;
             }},
-              React.DOM.tr(null,
+              ReactDOMElements.tr(null,
                 headerLabels,
               ),
             ),
 
-            React.DOM.thead({className: "fixed-table-hidden-header"},
-              React.DOM.tr(null,
+            ReactDOMElements.thead({className: "fixed-table-hidden-header"},
+              ReactDOMElements.tr(null,
                 headerLabels,
               ),
             ),
 
-            React.DOM.tbody(null,
+            ReactDOMElements.tbody(null,
               rows,
             ),
           ),

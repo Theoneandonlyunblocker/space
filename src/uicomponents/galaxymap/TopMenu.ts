@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
@@ -72,7 +73,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
     const topMenuButtons =
     [
-      React.DOM.button(
+      ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-production",
         key: "production",
@@ -82,7 +83,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onContextMenu: this.closePopup.bind(this, "production"),
         tabIndex: menuItemTabIndex,
       }, localize("production")()),
-      React.DOM.button(
+      ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-equip",
         key: "equipItems",
@@ -92,7 +93,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onContextMenu: this.closePopup.bind(this, "equipItems"),
         tabIndex: menuItemTabIndex,
       }, localize("equip")()),
-      // React.DOM.button(
+      // ReactDOMElements.button(
       // {
       //   className: "top-menu-items-button top-menu-items-button-economy",
       //   key: "economySummary",
@@ -102,7 +103,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       //   onContextMenu: this.closePopup.bind(this, "economySummary"),
       //   tabIndex: menuItemTabIndex,
       // }, localize("economy")()),
-      React.DOM.button(
+      ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-diplomacy",
         key: "diplomacy",
@@ -112,7 +113,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onContextMenu: this.closePopup.bind(this, "diplomacy"),
         tabIndex: menuItemTabIndex,
       }, localize("diplomacy")()),
-      React.DOM.button(
+      ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-technology",
         key: "technologies",
@@ -122,7 +123,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onContextMenu: this.closePopup.bind(this, "technologies"),
         tabIndex: menuItemTabIndex,
       }, localize("technology")()),
-      React.DOM.button(
+      ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-load",
         key: "loadGame",
@@ -132,7 +133,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onContextMenu: this.closePopup.bind(this, "loadGame"),
         tabIndex: menuItemTabIndex,
       }, localize("load_action")()),
-      React.DOM.button(
+      ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-save",
         key: "saveGame",
@@ -142,7 +143,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         onContextMenu: this.closePopup.bind(this, "saveGame"),
         tabIndex: menuItemTabIndex,
       }, localize("save_action")()),
-      React.DOM.button(
+      ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-options",
         key: "options",
@@ -159,7 +160,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
     if (this.state.hasCondensedMenu && !Options.ui.noHamburger)
     {
-      topMenuItems.push(React.DOM.button(
+      topMenuItems.push(ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-open-condensed-button",
         key: "openCondensedMenu",
@@ -182,7 +183,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     let openedCondensedMenu: React.ReactHTMLElement<any> = null;
     if ((this.state.condensedMenuOpened || Options.ui.noHamburger) && leftoverButtons.length > 0)
     {
-      openedCondensedMenu = React.DOM.div(
+      openedCondensedMenu = ReactDOMElements.div(
       {
         className: "top-menu-opened-condensed-menu",
       },
@@ -191,11 +192,11 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "top-menu-wrapper",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "top-menu",
           ref: (component: HTMLElement) =>
@@ -203,7 +204,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
             this.topMenuElement = component;
           },
         },
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "top-menu-items",
             ref: (component: HTMLElement) =>

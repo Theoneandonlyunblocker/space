@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Unit from "../../Unit";
@@ -68,12 +69,12 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
         bgProps.className += " empty";
       }
 
-      rows.push(React.DOM.div(
+      rows.push(ReactDOMElements.div(
       {
         className: "unit-experience-bar-point",
         key: "" + i,
       },
-        React.DOM.div(bgProps,
+        ReactDOMElements.div(bgProps,
           null,
         ),
       ));
@@ -101,7 +102,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "unit-experience-wrapper",
       },
@@ -118,11 +119,11 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
             onUnitUpgrade: this.handleUnitUpgrade,
           }),
         ),
-        React.DOM.div(containerProps,
-          React.DOM.div(barProps,
+        ReactDOMElements.div(containerProps,
+          ReactDOMElements.div(barProps,
             rows,
           ),
-          !isReadyToLevelUp ? null : React.DOM.span(
+          !isReadyToLevelUp ? null : ReactDOMElements.span(
           {
             className: "ready-to-level-up-message",
           },

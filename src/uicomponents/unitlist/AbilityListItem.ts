@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 export type AbilityListItemType = "active" | "passive" | "redundant" | "learnable";
@@ -38,7 +39,7 @@ export class AbilityListItemComponent extends React.Component<PropTypes, StateTy
   public render()
   {
     return(
-      React.DOM.li(
+      ReactDOMElements.li(
       {
         className: "unit-info-ability " + classNameMap[this.props.type],
         title: this.props.title,

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 
 export interface PropTypes extends React.Props<any>
@@ -95,7 +96,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
     //   wrapperProps.onMouseUp = wrapperProps.onTouchEnd = this.handleMouseUp
     // };
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "unit-wrapper",
       },

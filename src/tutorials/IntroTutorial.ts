@@ -60,9 +60,9 @@ const introTutorial: Tutorial =
     //   }
     // },
     // {
-    //   content: React.DOM.div(null,
-    //     React.DOM.div(null, "Works with"),
-    //     React.DOM.button(null, "react elements too")
+    //   content: ReactDOMElements.div(null,
+    //     ReactDOMElements.div(null, "Works with"),
+    //     ReactDOMElements.button(null, "react elements too")
     //   )
     // }
   ],

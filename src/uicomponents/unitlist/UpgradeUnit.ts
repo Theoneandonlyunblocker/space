@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Unit from "../../Unit";
@@ -32,11 +33,11 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "upgrade-unit",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "upgrade-unit-header",
         },

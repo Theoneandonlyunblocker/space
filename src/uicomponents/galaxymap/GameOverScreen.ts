@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 import {default as DialogBox} from "../windows/DialogBox";
@@ -43,32 +44,32 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "game-over-screen",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "game-over-screen-inner",
         },
-          React.DOM.h1(
+          ReactDOMElements.h1(
           {
             className: "game-over-header",
           },
             localize("gameOver")(),
           ),
-          React.DOM.div(
+          ReactDOMElements.div(
           {
             className: "game-over-buttons",
           },
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "game-over-buttons-button",
               onClick: this.toggleLoadPopup,
             },
               localize("load_action")(),
             ),
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "game-over-buttons-button",
               onClick: this.toggleNewGamePopup,

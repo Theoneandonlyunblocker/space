@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
@@ -71,7 +72,7 @@ export class WindowResizeHandleComponent extends React.Component<PropTypes, Stat
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "window-resize-handle" + ` window-resize-handle-${this.props.direction}`,
         onTouchStart: this.dragPositioner.handleReactDownEvent,

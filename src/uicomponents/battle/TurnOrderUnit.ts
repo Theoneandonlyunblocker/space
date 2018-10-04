@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 
@@ -70,7 +71,7 @@ export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, State
     }
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "turn-order-unit-container" + " " +
           containerClassForAnimationState[this.props.animationState],
@@ -79,7 +80,7 @@ export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, State
           animationDuration: "" + this.props.transitionDuration + "ms",
         },
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "turn-order-unit" + additionalUnitClasses,
           style:

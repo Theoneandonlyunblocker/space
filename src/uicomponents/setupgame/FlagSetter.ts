@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
@@ -48,7 +49,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   public render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "flag-setter",
       },
@@ -66,7 +67,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
           },
         }),
         !this.state.isActive ? null :
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "popup-container",
         },

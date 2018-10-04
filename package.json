@@ -4,7 +4,8 @@
   "dependencies": {
     "pixi.js": "4.5.3",
     "react": "15.6.x",
-    "react-dom": "15.6.x"
+    "react-dom": "15.6.x",
+    "react-dom-factories": "1.0.x"
   },
   "devDependencies": {
     "typescript": "3.0.x",
@@ -14,7 +15,8 @@
     "mkdirp": "0.5.x",
 
     "@types/react": "15.x",
-    "@types/react-dom": "15.x"
+    "@types/react-dom": "15.x",
+    "@types/react-dom-factories": "1.x"
   },
   "scripts": {
     "build": "tsc && lessc ./css/main.less ./dist/main.css && npm run copy-dependencies",

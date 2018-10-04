@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import Game from "../../Game";
@@ -46,11 +47,11 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   render()
   {
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "galaxy-map",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           ref: (component: HTMLElement) =>
           {
@@ -73,11 +74,11 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
             }),
         ),
         // ,
-        // !Options.debug.enabled ? null : React.DOM.div(
+        // !Options.debug.enabled ? null : ReactDOMElements.div(
         // {
         //   className: "galaxy-map-debug debug"
         // },
-        //   React.DOM.select(
+        //   ReactDOMElements.select(
         //     {
         //       className: "reactui-selector debug",
         //       ref: (component: HTMLElement) =>
@@ -91,12 +92,12 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
               //   app.reactUI.switchScene(target.value);
               // }
         //     },
-        //     React.DOM.option({value: "galaxyMap"}, "map"),
-        //     React.DOM.option({value: "flagMaker"}, "make flags"),
-        //     React.DOM.option({value: "setupGame"}, "setup game"),
-        //     React.DOM.option({value: "battleSceneTester"}, "battle scene test")
+        //     ReactDOMElements.option({value: "galaxyMap"}, "map"),
+        //     ReactDOMElements.option({value: "flagMaker"}, "make flags"),
+        //     ReactDOMElements.option({value: "setupGame"}, "setup game"),
+        //     ReactDOMElements.option({value: "battleSceneTester"}, "battle scene test")
         //   ),
-        //   React.DOM.button(
+        //   ReactDOMElements.button(
         //   {
         //     className: "debug",
         //     onClick: (e: React.FormEvent) =>

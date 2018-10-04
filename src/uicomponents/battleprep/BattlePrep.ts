@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
@@ -204,9 +205,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     const canInspectEnemyFormation = this.canInspectEnemyFormation();
 
     return(
-      React.DOM.div({className: "battle-prep"},
-        React.DOM.div({className: "battle-prep-left"},
-          React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: component =>
+      ReactDOMElements.div({className: "battle-prep"},
+        ReactDOMElements.div({className: "battle-prep-left"},
+          ReactDOMElements.div({className: "battle-prep-left-upper-wrapper", ref: component =>
           {
             this.upperElement = component;
           }},
@@ -220,25 +221,25 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 this.backgroundComponent = component;
               },
             },
-              React.DOM.div({className: "battle-prep-left-upper-inner"},
+              ReactDOMElements.div({className: "battle-prep-left-upper-inner"},
                 leftUpperElement,
               ),
             ),
           ),
-          React.DOM.div({className: "battle-prep-left-controls"},
-            React.DOM.button(
+          ReactDOMElements.div({className: "battle-prep-left-controls"},
+            ReactDOMElements.button(
             {
               className: "battle-prep-controls-button",
               onClick: this.setLeftLowerElement.bind(this, "itemEquip"),
               disabled: this.state.leftLowerElement === "itemEquip",
             }, localize("equip")()),
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "battle-prep-controls-button",
               onClick: this.setLeftLowerElement.bind(this, "playerFormation"),
               disabled: this.state.leftLowerElement === "playerFormation",
             }, localize("ownFormation")()),
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "battle-prep-controls-button",
               onClick: this.setLeftLowerElement.bind(this, "enemyFormation"),
@@ -247,11 +248,11 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 undefined :
                 localize("cantInspectEnemyFormationAsStarIsNotInDetectionRadius")(),
             }, localize("enemy")()),
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               onClick: this.autoMakeFormation,
             }, localize("autoFormation")()),
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               onClick: () =>
               {
@@ -259,7 +260,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               },
               disabled: playerIsDefending,
             }, localize("cancel")()),
-            React.DOM.button(
+            ReactDOMElements.button(
             {
               className: "battle-prep-controls-button",
               disabled: !humanFormationValidity.isValid,
@@ -274,7 +275,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 app.reactUI.switchScene("battle");
               },
             }, localize("startBattle")()),
-            !Options.debug.enabled ? null : React.DOM.button(
+            !Options.debug.enabled ? null : ReactDOMElements.button(
             {
               className: "battle-prep-controls-button",
               onClick: () =>
@@ -287,7 +288,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               },
             }, localize("simulateBattle")()),
           ),
-          React.DOM.div({className: "battle-prep-left-lower"}, leftLowerElement),
+          ReactDOMElements.div({className: "battle-prep-left-lower"}, leftLowerElement),
         ),
         UnitList(
         {

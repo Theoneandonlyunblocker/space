@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Unit from "../../Unit";
 
@@ -48,7 +49,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
       const maxAttribute = attribute === "maxActionPoints" ? 6 : 9;
       if (unit.baseAttributes[attribute] < maxAttribute)
       {
-        rows.push(React.DOM.li(
+        rows.push(ReactDOMElements.li(
         {
           className: "upgrade-attributes-attribute",
           onClick: this.upgradeAttribute.bind(this, attribute),
@@ -65,17 +66,17 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
     });
 
     return(
-      React.DOM.div(
+      ReactDOMElements.div(
       {
         className: "upgrade-attributes",
       },
-        React.DOM.div(
+        ReactDOMElements.div(
         {
           className: "upgrade-attributes-header",
         },
           localize("upgradeStats")(),
         ),
-        React.DOM.ol(
+        ReactDOMElements.ol(
         {
           className: "upgrade-attributes-list",
         },

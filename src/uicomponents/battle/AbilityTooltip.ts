@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import Unit from "../../Unit";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
@@ -96,7 +97,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
       }
 
       abilityElements.push(
-        React.DOM.div(data,
+        ReactDOMElements.div(data,
           ability.displayName,
         ),
       );
@@ -104,7 +105,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
 
 
     return(
-      React.DOM.div(containerProps,
+      ReactDOMElements.div(containerProps,
         abilityElements,
       )
     );

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {TradeableItems} from "../../Trade";
 
@@ -61,8 +62,8 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
     }
 
     return(
-      React.DOM.div(divProps,
-        !this.props.header ? null : React.DOM.div(
+      ReactDOMElements.div(divProps,
+        !this.props.header ? null : ReactDOMElements.div(
         {
           className: "tradeable-items-header",
         },

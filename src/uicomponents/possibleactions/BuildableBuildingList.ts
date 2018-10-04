@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import Player from "../../Player";
@@ -87,7 +88,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
     ];
 
     return(
-      React.DOM.div({className: "buildable-item-list buildable-building-list fixed-table-parent"},
+      ReactDOMElements.div({className: "buildable-item-list buildable-building-list fixed-table-parent"},
         List(
         {
           listItems: rows,
