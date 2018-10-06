@@ -1,6 +1,6 @@
 /// <reference path="../../lib/messageformat.d.ts" />
 
-import {formatters} from "formatters";
+import {formatters} from "./formatters";
 
 import
 {
