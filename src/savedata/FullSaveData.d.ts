@@ -9,7 +9,7 @@ declare interface FullSaveData
   date: Date;
   gameData: GameSaveData;
   idGenerators: IdGeneratorValues;
-  cameraLocation: Point;
+  cameraLocation: Point | undefined;
 }
 
 export default FullSaveData;

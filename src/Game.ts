@@ -90,11 +90,8 @@ export default class Game
       this.playerToAct.aiController.processTurn(this.endTurn.bind(this));
     }
   }
-  public save(name: string)
+  public getSaveData(): string
   {
-    const saveString = "Rance.Save." + name;
-    this.gameStorageKey = saveString;
-
     const date = new Date();
     const gameData = this.serialize();
 
@@ -104,12 +101,19 @@ export default class Game
       date: date,
       gameData: gameData,
       idGenerators: idGenerators.serialize(),
-      cameraLocation: app.renderer.camera.getCenterPosition(),
+      cameraLocation: app.renderer && app.renderer.camera ?
+        app.renderer.camera.getCenterPosition() :
+        undefined,
     };
 
-    const stringified = JSON.stringify(fullSaveData);
+    return JSON.stringify(fullSaveData);
+  }
+  public save(name: string, saveData: string = this.getSaveData()): void
+  {
+    const saveString = "Rance.Save." + name;
+    this.gameStorageKey = saveString;
 
-    localStorage.setItem(saveString, stringified);
+    localStorage.setItem(saveString, saveData);
   }
   public getLiveMajorPlayers(): Player[]
   {

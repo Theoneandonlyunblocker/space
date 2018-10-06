@@ -30,6 +30,14 @@ export class ErrorBoundaryComponent extends React.Component<PropTypes, StateType
     };
   }
 
+  public clearError(): void
+  {
+    this.setState(
+    {
+      error: null,
+      errorInfo: null,
+    });
+  }
   public componentDidCatch(error: Error, info: React.ErrorInfo): void
   {
     this.setState(
@@ -49,6 +57,7 @@ export class ErrorBoundaryComponent extends React.Component<PropTypes, StateType
       return this.props.children;
     }
   }
+
 }
 
 // tslint:disable-next-line:variable-name

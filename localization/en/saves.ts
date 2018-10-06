@@ -10,4 +10,11 @@ export const saves =
       "other {saves}" +
     "}?",
   loadGame: "Load game",
+  saveSuccessful: "Succesfully saved game as '{saveName}'",
+  saveFailure: "Couldn't save game",
+  saveData: "Save data",
+  // TODO 2018.10.06 | actually implement importing
+  // saveDataCopyPrompt: "You can copy the save data for the active game below. This data can be used to import the game in the load menu after refreshing this page.",
+  saveDataCopyPrompt: "You can copy the save data for the active game below. This data can be loaded back into the game by manually editing localStorage.",
+  activeGameUnserializable: "The active game is corrupt and can't be serialized. Try loading an earlier save.",
 };
