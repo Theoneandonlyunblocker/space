@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "dependencies": {
     "pixi.js": "4.5.3",
-    "react": "15.6.x",
-    "react-dom": "15.6.x",
+    "react": "16.0.x",
+    "react-dom": "16.0.x",
     "react-dom-factories": "1.0.x"
   },
   "devDependencies": {
@@ -14,8 +14,8 @@
     "ncp": "2.0.x",
     "mkdirp": "0.5.x",
 
-    "@types/react": "15.x",
-    "@types/react-dom": "15.x",
+    "@types/react": "16.x",
+    "@types/react-dom": "16.x",
     "@types/react-dom-factories": "1.x"
   },
   "scripts": {
