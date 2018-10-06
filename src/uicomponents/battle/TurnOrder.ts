@@ -271,7 +271,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   {
     const minUnits = 7;
 
-    const containerElement = ReactDOM.findDOMNode(this);
+    const containerElement = (<HTMLElement>ReactDOM.findDOMNode(this));
 
     const containerWidth = containerElement.getBoundingClientRect().width - 30;
     const unitElementWidth = 160;

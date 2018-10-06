@@ -86,7 +86,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
 
   public componentDidMount(): void
   {
-    this.ownDOMNode = ReactDOM.findDOMNode(this);
+    this.ownDOMNode = (<HTMLDivElement>ReactDOM.findDOMNode(this));
     this.setInitialPosition();
     windowManager.handleMount(this);
 

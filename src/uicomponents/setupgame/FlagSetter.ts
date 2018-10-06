@@ -127,7 +127,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   }
   private getClientRect(): ClientRect
   {
-    const ownNode = <HTMLElement> ReactDOM.findDOMNode<HTMLElement>(this.playerFlagContainer);
+    const ownNode = <HTMLElement> (<HTMLElement>ReactDOM.findDOMNode(this.playerFlagContainer));
 
     return ownNode.getBoundingClientRect();
   }

@@ -101,7 +101,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   componentDidMount()
   {
-    const battleScene = this.battleScene = new BattleScene(ReactDOM.findDOMNode<HTMLElement>(this.battleSceneContainer));
+    const battleScene = this.battleScene = new BattleScene((<HTMLElement>ReactDOM.findDOMNode(this.battleSceneContainer)));
     battleScene.resume();
     battleScene.activeUnit = this.state.selectedSide1Unit;
     battleScene.updateUnits();

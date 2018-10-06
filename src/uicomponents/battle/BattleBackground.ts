@@ -64,7 +64,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   }
   public componentDidMount()
   {
-    const containerElement = ReactDOM.findDOMNode<HTMLElement>(this.pixiContainer);
+    const containerElement = (<HTMLElement>ReactDOM.findDOMNode(this.pixiContainer));
 
     this.backgroundDrawer.bindRendererView(containerElement);
 

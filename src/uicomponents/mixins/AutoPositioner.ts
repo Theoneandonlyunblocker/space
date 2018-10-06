@@ -128,7 +128,7 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
   private setAutoPosition()
   {
     const parentRect = this.props.getParentClientRect();
-    const ownNode = ReactDOM.findDOMNode<HTMLElement>(this.owner);
+    const ownNode = (<HTMLElement>ReactDOM.findDOMNode(this.owner));
     const ownRect = ownNode.getBoundingClientRect();
 
     const ySide = this.props.ySide;

@@ -95,7 +95,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.keyboardSelect)
     {
-      ReactDOM.findDOMNode<HTMLDivElement>(this).addEventListener("keydown", (event: KeyboardEvent) =>
+      (<HTMLDivElement>ReactDOM.findDOMNode(this)).addEventListener("keydown", (event: KeyboardEvent) =>
       {
         switch (event.keyCode)
         {
@@ -123,7 +123,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     else if (this.props.autoSelect)
     {
       this.handleSelectRow(this.sortedItems[0]);
-      ReactDOM.findDOMNode<HTMLElement>(this).focus();
+      (<HTMLElement>ReactDOM.findDOMNode(this)).focus();
     }
     else
     {
@@ -144,8 +144,8 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   setDesiredHeight()
   {
-    const ownNode = ReactDOM.findDOMNode<HTMLElement>(this);
-    const innerNode = ReactDOM.findDOMNode<HTMLElement>(this.innerElement);
+    const ownNode = (<HTMLElement>ReactDOM.findDOMNode(this));
+    const innerNode = (<HTMLElement>ReactDOM.findDOMNode(this.innerElement));
 
     ownNode.style.height = "auto";
     innerNode.style.height = "auto";
@@ -172,7 +172,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   {
     // scrolls header to match list contents
     const target = e.currentTarget;
-    const header = ReactDOM.findDOMNode<HTMLElement>(this.headerElement);
+    const header = (<HTMLElement>ReactDOM.findDOMNode(this.headerElement));
     const titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
 
     const marginString = "-" + target.scrollLeft + "px";

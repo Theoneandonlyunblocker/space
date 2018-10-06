@@ -60,7 +60,7 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
 
   private renderFlagElement(): void
   {
-    const containerNode = ReactDOM.findDOMNode<HTMLElement>(this.containerElement);
+    const containerNode = (<HTMLElement>ReactDOM.findDOMNode(this.containerElement));
     if (containerNode.firstChild)
     {
       containerNode.removeChild(containerNode.firstChild);

@@ -130,7 +130,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
 
   componentDidMount()
   {
-    this.props.renderer.bindRendererView(ReactDOM.findDOMNode<HTMLElement>(this.pixiContainer));
+    this.props.renderer.bindRendererView((<HTMLElement>ReactDOM.findDOMNode(this.pixiContainer)));
     this.props.mapRenderer.setMapModeByKey("defaultMapMode");
 
     this.props.renderer.camera.getBoundsObjectBoundsFN = this.props.mapRenderer.getMapBoundsForCamera.bind(this.props.mapRenderer);

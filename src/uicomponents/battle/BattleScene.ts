@@ -55,7 +55,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
   {
     if (this.props.battleState === "start" && newProps.battleState === "active")
     {
-      this.props.battleScene.bindRendererView(ReactDOM.findDOMNode<HTMLElement>(this));
+      this.props.battleScene.bindRendererView((<HTMLElement>ReactDOM.findDOMNode(this)));
       this.props.battleScene.resume();
     }
     else if (this.props.battleState === "active" && newProps.battleState === "finish")

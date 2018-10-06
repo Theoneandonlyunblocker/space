@@ -105,7 +105,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
 
   private handleClick(e: MouseEvent)
   {
-    const node = ReactDOM.findDOMNode<HTMLElement>(this.ownNode);
+    const node = (<HTMLElement>ReactDOM.findDOMNode(this.ownNode));
     const target = <HTMLElement> e.target;
     if (target === node || node.contains(target))
     {

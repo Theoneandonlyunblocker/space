@@ -46,7 +46,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
 
   public componentDidMount()
   {
-    ReactDOM.findDOMNode<HTMLElement>(this.loadButtonElement).focus();
+    (<HTMLElement>ReactDOM.findDOMNode(this.loadButtonElement)).focus();
   }
   public render()
   {

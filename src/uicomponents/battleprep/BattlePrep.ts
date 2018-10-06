@@ -472,7 +472,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
       throw new Error("Battle prep background element hasn't mounted yet");
     }
 
-    return ReactDOM.findDOMNode(backgroundElement).getBoundingClientRect();
+    return (<HTMLElement>ReactDOM.findDOMNode(backgroundElement)).getBoundingClientRect();
   }
   private localizeFormationInvalidityReason(formation: BattlePrepFormation, reason: FormationInvalidityReason): string
   {

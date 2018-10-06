@@ -60,7 +60,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   }
   public componentDidUpdate()
   {
-    const domNode = ReactDOM.findDOMNode(this);
+    const domNode = (<HTMLElement>ReactDOM.findDOMNode(this));
     domNode.scrollTop = domNode.scrollHeight;
   }
   public render()

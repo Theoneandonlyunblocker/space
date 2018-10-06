@@ -229,7 +229,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private getBlurArea()
   {
-    return ReactDOM.findDOMNode<HTMLElement>(this.formationsContainer).getBoundingClientRect();
+    return (<HTMLElement>ReactDOM.findDOMNode(this.formationsContainer)).getBoundingClientRect();
   }
   private clearHoveredUnit()
   {
@@ -282,7 +282,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
 
-    const tooltipElement = ReactDOM.findDOMNode<HTMLElement>(this.abilityTooltip);
+    const tooltipElement = (<HTMLElement>ReactDOM.findDOMNode(this.abilityTooltip));
 
     if (
       toElement !== this.state.abilityTooltip.parentElement &&

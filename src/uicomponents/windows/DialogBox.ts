@@ -40,7 +40,7 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
 
   public componentDidMount()
   {
-    ReactDOM.findDOMNode<HTMLElement>(this.okButtonElement!).focus();
+    (<HTMLElement>ReactDOM.findDOMNode(this.okButtonElement!)).focus();
   }
   public render()
   {
