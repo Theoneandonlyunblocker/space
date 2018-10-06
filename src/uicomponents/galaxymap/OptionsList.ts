@@ -222,7 +222,13 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
           header: localize("logging")(),
           options: Object.keys(Options.debug.logging).map(category =>
           {
-            const key = `${category}Logging`;
+            const keyForCategory =
+            {
+              ai: "aiLogging",
+              graphics: "graphicsLogging",
+            };
+
+            const key = keyForCategory[category];
 
             return(
             {

@@ -8,4 +8,4 @@ export const localizer = new Localizer<typeof notificationMessages>("notificatio
 
 localizer.setAllMessages(notificationMessages, Languages.en);
 
-export const localize = localizer.localize.bind(localizer);
+export const localize = <typeof localizer.localize> localizer.localize.bind(localizer);

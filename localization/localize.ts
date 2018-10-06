@@ -7,6 +7,7 @@ import
 import * as Languages from "./defaultLanguages";
 import {battle as en_battle} from "./en/battle";
 import {diplomacy as en_diplomacy} from "./en/diplomacy";
+import {errors as en_errors} from "./en/errors";
 import {fleet as en_fleet} from "./en/fleet";
 import {galaxyMapUI as en_galaxyMapUI} from "./en/galaxyMapUI";
 import {gameOver as en_gameOver} from "./en/gameOver";
@@ -23,9 +24,10 @@ import {unit as en_unit} from "./en/unit";
 import {unitUpgrade as en_unitUpgrade} from "./en/unitUpgrade";
 
 
-type AllMessages =
+export type AllMessages =
   typeof en_battle &
   typeof en_diplomacy &
+  typeof en_errors &
   typeof en_fleet &
   typeof en_galaxyMapUI &
   typeof en_gameOver &
@@ -46,6 +48,7 @@ export const localizer = new Localizer<AllMessages>("ui");
 const mergedMessages = shallowExtend<AllMessages>(
   en_battle,
   en_diplomacy,
+  en_errors,
   en_fleet,
   en_galaxyMapUI,
   en_gameOver,
@@ -64,4 +67,4 @@ const mergedMessages = shallowExtend<AllMessages>(
 
 localizer.setAllMessages(mergedMessages, Languages.en);
 
-export const localize = localizer.localize.bind(localizer);
+export const localize = <typeof localizer.localize> localizer.localize.bind(localizer);

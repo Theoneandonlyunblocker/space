@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
+import {AllMessages, localize} from "../../../localization/localize";
 
 import {UnlockableThing, UnlockableThingKind} from "../../templateinterfaces/UnlockableThing";
 
@@ -10,7 +10,7 @@ import {TechnologyUnlock} from "./TechnologyUnlock";
 
 const localizationKeyForUnlockableThingKind:
 {
-  [K in UnlockableThingKind]: string;
+  [K in UnlockableThingKind]: keyof AllMessages;
 } =
 {
   building: "techUnlock_buildings",
