@@ -15,6 +15,7 @@ import eventManager from "./eventManager";
 
 import {getActiveLanguage} from "./localization/activeLanguage";
 
+import {ErrorBoundaryWithSaveRecovery} from "./uicomponents/errors/ErrorBoundaryWithSaveRecovery";
 import BattleSceneTester from "./uicomponents/BattleSceneTester";
 import FlagMaker from "./uicomponents/FlagMaker";
 import BattleComponentFactory from "./uicomponents/battle/Battle";
@@ -81,7 +82,12 @@ export default class ReactUI
     const elementToRender = this.getElementToRender();
 
     ReactDOM.render(
-      elementToRender,
+      ErrorBoundaryWithSaveRecovery(
+      {
+        game: this.game,
+      },
+        elementToRender,
+      ),
       this.container,
     );
   }
