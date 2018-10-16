@@ -17,7 +17,7 @@ export const drones: ModuleFile =
   key: "drones",
   metaData:
   {
-    name: "Drones",
+    key: "Drones",
     version: "0.1.0",
     author: "giraluna",
     description: "",

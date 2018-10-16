@@ -12,7 +12,7 @@ const defaultEmblems: ModuleFile =
   key: "defaultEmblems",
   metaData:
   {
-    name: "Default Emblems",
+    key: "Default Emblems",
     version: "0.1.0",
     author: "giraluna",
     description: "",

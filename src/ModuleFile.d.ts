@@ -5,7 +5,7 @@ import {Language} from "./localization/Language";
 
 interface ModuleMetaData
 {
-  name: string;
+  key: string;
   version: string;
   author: string;
   description: string;

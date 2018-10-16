@@ -11,7 +11,7 @@ const defaultTechnologies: ModuleFile =
   key: "defaultTechnologies",
   metaData:
   {
-    name: "Default technologies",
+    key: "Default technologies",
     version: "0.1.0",
     author: "giraluna",
     description: "",

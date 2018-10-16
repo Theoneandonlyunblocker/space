@@ -14,7 +14,7 @@ const core: ModuleFile =
   key: "core",
   metaData:
   {
-    name: "core",
+    key: "core",
     version: "0.1.0",
     author: "giraluna",
     description: "Core gameplay functionality",

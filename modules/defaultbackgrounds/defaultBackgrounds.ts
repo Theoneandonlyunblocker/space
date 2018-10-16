@@ -10,7 +10,7 @@ const defaultBackgrounds: ModuleFile =
   key: "defaultBackgrounds",
   metaData:
   {
-    name: "Default backgrounds",
+    key: "Default backgrounds",
     version: "0.1.0",
     author: "giraluna",
     description: "",

@@ -11,7 +11,7 @@ const defaultAi: ModuleFile =
   key: "defaultAi",
   metaData:
   {
-    name: "Default AI",
+    key: "Default AI",
     version: "0.1.0",
     author: "giraluna",
     description: "",

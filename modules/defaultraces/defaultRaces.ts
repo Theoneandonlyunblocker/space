@@ -12,7 +12,7 @@ const defaultRaces: ModuleFile =
   key: "defaultRaces",
   metaData:
   {
-    name: "Default Races",
+    key: "Default Races",
     version: "0.1.0",
     author: "giraluna",
     description: "",

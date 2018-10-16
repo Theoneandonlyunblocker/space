@@ -12,7 +12,7 @@ const defaultAttitudeModifiers: ModuleFile =
   key: "defaultAttitudeModifiers",
   metaData:
   {
-    name: "Default attitude modifiers",
+    key: "Default attitude modifiers",
     version: "0.1.0",
     author: "giraluna",
     description: "",

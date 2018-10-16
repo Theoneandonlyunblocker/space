@@ -20,7 +20,7 @@ const defaultMapGen: ModuleFile =
   key: "defaultMapGen",
   metaData:
   {
-    name: "Default map gen",
+    key: "Default map gen",
     version: "0.1.0",
     author: "giraluna",
     description: "",

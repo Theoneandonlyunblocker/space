@@ -15,7 +15,7 @@ const defaultNotifications: ModuleFile =
   key: "defaultNotifications",
   metaData:
   {
-    name: "Default Notifications",
+    key: "Default Notifications",
     version: "0.1.0",
     author: "giraluna",
     description: "",

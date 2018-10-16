@@ -11,7 +11,7 @@ const defaultItems: ModuleFile =
   key: "defaultItems",
   metaData:
   {
-    name: "Default items",
+    key: "Default items",
     version: "0.1.0",
     author: "giraluna",
     description: "",

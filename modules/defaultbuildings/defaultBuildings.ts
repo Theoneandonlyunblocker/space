@@ -14,7 +14,7 @@ const defaultBuildings: ModuleFile =
   key: "defaultBuildings",
   metaData:
   {
-    name: "Default Buildings",
+    key: "Default Buildings",
     version: "0.1.0",
     author: "giraluna",
     description: "",

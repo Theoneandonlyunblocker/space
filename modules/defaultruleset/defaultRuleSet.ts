@@ -7,7 +7,7 @@ const defaultRuleSet: ModuleFile =
   key: "defaultRuleSet",
   metaData:
   {
-    name: "Default Ruleset",
+    key: "Default Ruleset",
     version: "0.1.0",
     author: "giraluna",
     description: "",

@@ -15,7 +15,7 @@ const defaultMapModes: ModuleFile =
   key: "defaultMapModes",
   metaData:
   {
-    name: "Default map modes",
+    key: "Default map modes",
     version: "0.1.0",
     author: "giraluna",
     description: "",

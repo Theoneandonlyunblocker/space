@@ -9,7 +9,7 @@ const paintingPortraits: ModuleFile =
   key: "paintingPortraits",
   metaData:
   {
-    name: "Painting portraits",
+    key: "Painting portraits",
     version: "0.1.0",
     author: "various artists",
     description: "old ppl",

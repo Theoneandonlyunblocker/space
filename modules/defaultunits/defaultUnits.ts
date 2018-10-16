@@ -16,7 +16,7 @@ const defaultUnits: ModuleFile =
   key: "defaultUnits",
   metaData:
   {
-    name: "Default units",
+    key: "Default units",
     version: "0.1.0",
     author: "giraluna",
     description: "",
