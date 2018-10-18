@@ -9,6 +9,7 @@ import {activeNotificationStore} from "./notifications/activeNotificationStore";
 
 import FullSaveData from "./savedata/FullSaveData";
 import GameSaveData from "./savedata/GameSaveData";
+import { activeModuleData } from "./activeModuleData";
 
 
 export default class Game
@@ -99,11 +100,13 @@ export default class Game
     {
       name: name,
       date: date,
+      appVersion: app.version,
       gameData: gameData,
       idGenerators: idGenerators.serialize(),
       cameraLocation: app.renderer && app.renderer.camera ?
         app.renderer.camera.getCenterPosition() :
         undefined,
+      moduleData: activeModuleData.serialize(),
     };
 
     return JSON.stringify(fullSaveData);

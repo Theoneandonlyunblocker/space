@@ -2,7 +2,7 @@ import Personality from "../src/Personality";
 import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
 
 import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
-import ModuleFile from "./ModuleFile";
+import ModuleFile, { ModuleFileSaveData } from "./ModuleFile";
 import ModuleScripts from "./ModuleScripts";
 import
 {
@@ -222,6 +222,17 @@ export default class ModuleData
       throw new Error("Please define a default language for your module configuration if " +
         "it doesn't load the English language support module.");
     }
+  }
+  public serialize(): ModuleFileSaveData[]
+  {
+    return this.moduleFiles.map(moduleFile =>
+    {
+      return(
+      {
+        metaData: moduleFile.metaData,
+        moduleSaveData: moduleFile.serialize ? moduleFile.serialize : null,
+      });
+    });
   }
 
   private getAllTechnologyUnlocks(): TechnologyUnlocks

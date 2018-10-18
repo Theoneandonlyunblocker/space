@@ -50,6 +50,8 @@ class App
     [id: string]: HTMLImageElement;
   } = {};
 
+  public readonly version: string = "0.1.0";
+
   private seed: string;
   private mapRenderer: MapRenderer;
   private moduleLoader: ModuleLoader;

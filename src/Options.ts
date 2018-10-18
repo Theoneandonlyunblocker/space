@@ -75,6 +75,13 @@ type SerializedOptionsValues = BaseOptionsValues &
   };
 };
 
+type OptionsSaveData =
+{
+  options: SerializedOptionsValues;
+  date: Date;
+  appVersion: string;
+};
+
 const defaultOptionsValues: OptionsValues =
 {
   battle:
@@ -232,15 +239,16 @@ class Options implements OptionsValues
   }
   public save(slot: number = 0)
   {
-    const data = JSON.stringify(
+    const data: OptionsSaveData =
     {
       options: this.serialize(),
       date: new Date(),
-    });
+      appVersion: app.version,
+    };
 
     const saveName = "Rance.Options." + slot;
 
-    localStorage.setItem(saveName, data);
+    localStorage.setItem(saveName, JSON.stringify(data));
   }
   public load(slot?: number)
   {
@@ -277,49 +285,56 @@ class Options implements OptionsValues
     }
   }
 
-  private getParsedDataForSlot(slot?: number)
+  private getParsedDataForSlot(slot?: number): OptionsSaveData
   {
     const baseString = "Rance.Options.";
 
-    let parsedData:
-    {
-      date: string;
-      options: OptionsValues;
-    };
+    let parsedData: OptionsSaveData;
     if (slot !== undefined)
     {
       const savedData = localStorage.getItem(baseString + slot);
 
       if (!savedData)
       {
-        throw new Error("No options saved in that slot");
+        throw new Error(`No such localStorage key: ${baseString + slot}`);
       }
 
       parsedData = JSON.parse(savedData);
     }
     else
     {
-      parsedData = getMatchingLocalstorageItemsByDate(baseString)[0];
+      parsedData = getMatchingLocalStorageItemsSortedByDate<OptionsSaveData>(baseString)[0];
     }
 
     return parsedData;
   }
-  private serialize(): OptionsValues
+  private serialize(): SerializedOptionsValues
   {
     return(
     {
-      battleAnimationTiming: this.battleAnimationTiming,
+      battle: this.battle,
       debug: this.debug,
-      ui: this.ui,
-      display: this.display,
+      display:
+      {
+        languageCode: this.display.language.code,
+        noHamburger: this.display.noHamburger,
+        borderWidth: this.display.borderWidth,
+      },
+      system: this.system,
     });
   }
-  private deserialize(data: OptionsValues)
+  private deserialize(data: SerializedOptionsValues): void
   {
-    this.battleAnimationTiming = deepMerge(this.battleAnimationTiming, data.battleAnimationTiming, true);
+    this.battle = deepMerge(this.battle, data.battle, true);
     this.debug = deepMerge(this.debug, data.debug, true);
-    this.ui = deepMerge(this.ui, data.ui, true);
-    this.display = deepMerge(this.display, data.display, true);
+    this.display =
+    {
+      language: activeModuleData.fetchLanguageForCode(data.display.languageCode),
+      noHamburger: data.display.noHamburger,
+      borderWidth: data.display.borderWidth,
+    };
+    this.system = deepMerge(this.system, data.system, true);
+  }
   }
 }
 

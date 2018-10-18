@@ -3,21 +3,30 @@ import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
 
 import {Language} from "./localization/Language";
 
-interface ModuleMetaData
+
+export interface ModuleMetaData
 {
   key: string;
   version: string;
-  author: string;
-  description: string;
+  author?: string;
+  description?: string;
 }
 
-declare interface ModuleFile
+export interface ModuleFileSaveData<S = any>
+{
+  metaData: ModuleMetaData;
+  moduleSaveData: S;
+}
+
+declare interface ModuleFile<S = any>
 {
   metaData: ModuleMetaData;
   needsToBeLoadedBefore: ModuleFileLoadingPhase;
   supportedLanguages: Language[] | "all";
   loadAssets?: (callback: () => void) => void;
   constructModule?: (moduleData: ModuleData) => void;
+  serialize?: () => S;
+  deserialize?: (saveData: S) => void;
 }
 
 export default ModuleFile;
