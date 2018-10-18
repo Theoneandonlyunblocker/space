@@ -83,7 +83,10 @@ class App
       // this timeout allows constructor to finish and variable to be assigned
       window.setTimeout(() =>
       {
-        this.makeApp();
+        this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.Init, () =>
+        {
+          this.makeApp();
+        });
       }, 0);
     });
   }

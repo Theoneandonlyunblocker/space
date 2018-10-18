@@ -1,6 +1,7 @@
 enum ModuleFileLoadingPhase
 {
-  Setup,
+  Init,
+  Setup, // game setup. map & players etc.
   MapGen,
   Game,
   BattlePrep,
