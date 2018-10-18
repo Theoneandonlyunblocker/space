@@ -11,7 +11,7 @@ import {Notification} from "./Notification";
 import {NotificationFilterState} from "./NotificationFilterState";
 
 
-const baseString = "NotificationFilter.";
+const baseString = "Rance.NotificationFilter.";
 
 export class NotificationFilter
 {
