@@ -13,7 +13,6 @@ interface ModuleMetaData
 
 declare interface ModuleFile
 {
-  key: string;
   metaData: ModuleMetaData;
   needsToBeLoadedBefore: ModuleFileLoadingPhase;
   supportedLanguages: Language[] | "all";

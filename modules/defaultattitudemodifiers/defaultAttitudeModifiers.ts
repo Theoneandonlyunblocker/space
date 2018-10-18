@@ -9,10 +9,9 @@ import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";
 
 const defaultAttitudeModifiers: ModuleFile =
 {
-  key: "defaultAttitudeModifiers",
   metaData:
   {
-    key: "Default attitude modifiers",
+    key: "defaultAttitudeModifiers",
     version: "0.1.0",
     author: "giraluna",
     description: "",

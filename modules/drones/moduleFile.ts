@@ -14,10 +14,9 @@ import {unitTemplates} from "./unitTemplates";
 
 export const drones: ModuleFile =
 {
-  key: "drones",
   metaData:
   {
-    key: "Drones",
+    key: "drones",
     version: "0.1.0",
     author: "giraluna",
     description: "",

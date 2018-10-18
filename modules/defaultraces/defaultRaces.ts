@@ -9,10 +9,9 @@ import raceTemplates from "./RaceTemplates";
 
 const defaultRaces: ModuleFile =
 {
-  key: "defaultRaces",
   metaData:
   {
-    key: "Default Races",
+    key: "defaultRaces",
     version: "0.1.0",
     author: "giraluna",
     description: "",

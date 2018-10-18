@@ -4,10 +4,9 @@ import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 const defaultRuleSet: ModuleFile =
 {
-  key: "defaultRuleSet",
   metaData:
   {
-    key: "Default Ruleset",
+    key: "defaultRuleSet",
     version: "0.1.0",
     author: "giraluna",
     description: "",

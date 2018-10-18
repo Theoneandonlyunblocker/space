@@ -11,7 +11,6 @@ import {allScripts} from "./modulescripts/allScripts";
 // TODO 2017.07.27 | move core gameplay stuff here
 const core: ModuleFile =
 {
-  key: "core",
   metaData:
   {
     key: "core",

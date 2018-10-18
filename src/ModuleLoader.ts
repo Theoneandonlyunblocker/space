@@ -37,13 +37,13 @@ export default class ModuleLoader
 
   public addModuleFile(moduleFile: ModuleFile)
   {
-    if (this.moduleFilesByKey[moduleFile.key])
+    if (this.moduleFilesByKey[moduleFile.metaData.key])
     {
-      throw new Error(`Duplicate module key ${moduleFile.key}`);
+      throw new Error(`Duplicate module key ${moduleFile.metaData.key}`);
     }
 
-    this.moduleFilesByKey[moduleFile.key] = moduleFile;
-    this.hasLoaded[moduleFile.key] = false;
+    this.moduleFilesByKey[moduleFile.metaData.key] = moduleFile;
+    this.hasLoaded[moduleFile.metaData.key] = false;
 
     if (!this.moduleFilesByPhase[moduleFile.needsToBeLoadedBefore])
     {
@@ -54,31 +54,31 @@ export default class ModuleLoader
   }
   public loadModuleFile(moduleFile: ModuleFile, afterLoaded: () => void)
   {
-    if (!this.moduleFilesByKey[moduleFile.key])
+    if (!this.moduleFilesByKey[moduleFile.metaData.key])
     {
       this.addModuleFile(moduleFile);
     }
 
-    if (this.hasLoaded[moduleFile.key])
+    if (this.hasLoaded[moduleFile.metaData.key])
     {
       afterLoaded();
 
       return;
     }
 
-    if (!this.moduleLoadFinishCallbacks[moduleFile.key])
+    if (!this.moduleLoadFinishCallbacks[moduleFile.metaData.key])
     {
-      this.moduleLoadFinishCallbacks[moduleFile.key] = [];
+      this.moduleLoadFinishCallbacks[moduleFile.metaData.key] = [];
     }
-    this.moduleLoadFinishCallbacks[moduleFile.key].push(afterLoaded);
+    this.moduleLoadFinishCallbacks[moduleFile.metaData.key].push(afterLoaded);
 
-    if (isFinite(this.moduleLoadStart[moduleFile.key]))
+    if (isFinite(this.moduleLoadStart[moduleFile.metaData.key]))
     {
       return;
     }
-    console.log(`Start loading module "${moduleFile.key}"`);
+    console.log(`Start loading module "${moduleFile.metaData.key}"`);
 
-    this.moduleLoadStart[moduleFile.key] = Date.now();
+    this.moduleLoadStart[moduleFile.metaData.key] = Date.now();
     // TODO 2017.07.29 | keep track of what's already been loaded
     if (moduleFile.loadAssets)
     {
@@ -170,15 +170,15 @@ export default class ModuleLoader
   }
   private finishLoadingModuleFile(moduleFile: ModuleFile)
   {
-    this.hasLoaded[moduleFile.key] = true;
+    this.hasLoaded[moduleFile.metaData.key] = true;
     this.constructModuleFile(moduleFile);
 
-    const loadTime = Date.now() - this.moduleLoadStart[moduleFile.key];
-    console.log(`Module "${moduleFile.key}" finished loading in ${loadTime}ms`);
+    const loadTime = Date.now() - this.moduleLoadStart[moduleFile.metaData.key];
+    console.log(`Module "${moduleFile.metaData.key}" finished loading in ${loadTime}ms`);
 
-    while (this.moduleLoadFinishCallbacks[moduleFile.key].length > 0)
+    while (this.moduleLoadFinishCallbacks[moduleFile.metaData.key].length > 0)
     {
-      const afterLoadedCallback = this.moduleLoadFinishCallbacks[moduleFile.key].pop()!;
+      const afterLoadedCallback = this.moduleLoadFinishCallbacks[moduleFile.metaData.key].pop()!;
       afterLoadedCallback();
     }
   }

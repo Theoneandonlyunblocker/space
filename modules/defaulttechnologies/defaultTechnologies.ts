@@ -8,10 +8,9 @@ import technologyTemplates from "./technologyTemplates";
 
 const defaultTechnologies: ModuleFile =
 {
-  key: "defaultTechnologies",
   metaData:
   {
-    key: "Default technologies",
+    key: "defaultTechnologies",
     version: "0.1.0",
     author: "giraluna",
     description: "",

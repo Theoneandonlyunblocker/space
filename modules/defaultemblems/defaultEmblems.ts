@@ -9,10 +9,9 @@ import subEmblemTemplates from "./SubEmblemTemplates";
 
 const defaultEmblems: ModuleFile =
 {
-  key: "defaultEmblems",
   metaData:
   {
-    key: "Default Emblems",
+    key: "defaultEmblems",
     version: "0.1.0",
     author: "giraluna",
     description: "",

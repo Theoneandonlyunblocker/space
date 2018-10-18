@@ -8,10 +8,9 @@ import {itemTemplates} from "./itemTemplates";
 
 const defaultItems: ModuleFile =
 {
-  key: "defaultItems",
   metaData:
   {
-    key: "Default items",
+    key: "defaultItems",
     version: "0.1.0",
     author: "giraluna",
     description: "",

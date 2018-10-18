@@ -12,10 +12,9 @@ import mapModeTemplates from "./MapModeTemplates";
 
 const defaultMapModes: ModuleFile =
 {
-  key: "defaultMapModes",
   metaData:
   {
-    key: "Default map modes",
+    key: "defaultMapModes",
     version: "0.1.0",
     author: "giraluna",
     description: "",

@@ -7,10 +7,9 @@ import drawNebula from "./drawNebula";
 
 const defaultBackgrounds: ModuleFile =
 {
-  key: "defaultBackgrounds",
   metaData:
   {
-    key: "Default backgrounds",
+    key: "defaultBackgrounds",
     version: "0.1.0",
     author: "giraluna",
     description: "",

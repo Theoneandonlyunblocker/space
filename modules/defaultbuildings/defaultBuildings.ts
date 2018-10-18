@@ -11,10 +11,9 @@ import buildingTemplates from "./BuildingTemplates";
 
 const defaultBuildings: ModuleFile =
 {
-  key: "defaultBuildings",
   metaData:
   {
-    key: "Default Buildings",
+    key: "defaultBuildings",
     version: "0.1.0",
     author: "giraluna",
     description: "",

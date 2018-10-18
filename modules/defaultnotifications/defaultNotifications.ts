@@ -12,10 +12,9 @@ import
 
 const defaultNotifications: ModuleFile =
 {
-  key: "defaultNotifications",
   metaData:
   {
-    key: "Default Notifications",
+    key: "defaultNotifications",
     version: "0.1.0",
     author: "giraluna",
     description: "",
