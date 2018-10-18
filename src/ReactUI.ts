@@ -12,8 +12,7 @@ import ReactUIScene from "./ReactUIScene";
 import Renderer from "./Renderer";
 import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";
-
-import {getActiveLanguage} from "./localization/activeLanguage";
+import Options from "./Options";
 
 import {ErrorBoundaryWithSaveRecovery} from "./uicomponents/errors/ErrorBoundaryWithSaveRecovery";
 import BattleSceneTester from "./uicomponents/BattleSceneTester";
@@ -130,7 +129,7 @@ export default class ReactUI
           playerControl: this.playerControl,
           player: this.player,
           game: this.game,
-          activeLanguage: getActiveLanguage(),
+          activeLanguage: Options.display.language,
           notifications: [...activePlayer.notificationLog.unreadNotifications],
           notificationLog: activePlayer.notificationLog,
         });

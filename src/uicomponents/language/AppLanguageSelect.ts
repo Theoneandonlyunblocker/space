@@ -2,14 +2,11 @@ import * as React from "react";
 
 import app from "../../App"; // TODO global
 import {activeModuleData} from "../../activeModuleData";
+import Options from "../../Options";
 import {Language} from "../../localization/Language";
 import
 {
-  setActiveLanguageCode,
-} from "../../localization/activeLanguage";
-import
-{
-  getLanguagesByCode,
+  getLanguagesByCodeFromModuleFiles,
   getLanguageSupportLevelForModuleFiles,
 } from "../../localization/languageSupport";
 
@@ -44,7 +41,7 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
       LanguageSelect(
       {
         activeLanguage: this.props.activeLanguage,
-        availableLanguagesByCode: getLanguagesByCode(...activeModuleData.moduleFiles),
+        availableLanguagesByCode: getLanguagesByCodeFromModuleFiles(...activeModuleData.moduleFiles),
         languageSupportLevelByCode: getLanguageSupportLevelForModuleFiles(...activeModuleData.moduleFiles),
         onChange: this.handleLanguageChange,
       })
@@ -53,8 +50,14 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
 
   private handleLanguageChange(newLanguage: Language): void
   {
-    setActiveLanguageCode(newLanguage.code);
-    localStorage.setItem("Rance.language", newLanguage.code);
+    Options.display.language = newLanguage;
+    Options.save();
+
+    if (this.props.onChange)
+    {
+      this.props.onChange();
+    }
+
     app.reactUI.render();
   }
 }

@@ -5,6 +5,8 @@ import
   getMatchingLocalstorageItemsByDate,
   shallowCopy,
 } from "./utility";
+import { Language } from "./localization/Language";
+import { activeModuleData } from "./activeModuleData";
 
 
 type OptionsCategory = "battleAnimationTiming" | "debug" | "ui" | "display";
@@ -14,7 +16,8 @@ const optionsCategories: OptionsCategory[] =
   "battleAnimationTiming", "debug", "ui", "display",
 ];
 
-interface OptionsValues
+
+type BaseOptionsValues =
 {
   battleAnimationTiming:
   {
@@ -40,11 +43,21 @@ interface OptionsValues
   {
     noHamburger: boolean;
   };
+type OptionsValues = BaseOptionsValues &
+{
   display:
   {
-    borderWidth: number;
+    language: Language;
   };
-}
+};
+
+type SerializedOptionsValues = BaseOptionsValues &
+{
+  display:
+  {
+    languageCode: string;
+  };
+};
 
 const defaultOptionsValues: OptionsValues =
 {
@@ -69,7 +82,9 @@ const defaultOptionsValues: OptionsValues =
     },
   },
   ui:
+  display:
   {
+    language: undefined,
     noHamburger: false,
   },
   display:
@@ -101,7 +116,9 @@ class Options implements OptionsValues
     };
   };
   ui:
+  display:
   {
+    language: Language;
     noHamburger: boolean;
   };
   display:
@@ -152,7 +169,10 @@ class Options implements OptionsValues
       }
       case "display":
       {
-        this.display = shallowCopy(defaultOptionsValues.display);
+        const previouslySetLanguage = this.display ? this.display.language : undefined;
+
+        this.display = extendObject(defaultOptionsValues.display);
+        this.display.language = previouslySetLanguage;
 
         if (this.display.borderWidth !== defaultOptionsValues.display.borderWidth)
         {
