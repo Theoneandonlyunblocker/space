@@ -254,34 +254,15 @@ class Options implements OptionsValues
   {
     this.setDefaults();
     const parsedData = this.getParsedDataForSlot(slot);
-    const parsedOptions: OptionsValues = this.serialize();
 
     if (parsedData)
     {
-      // month goes 0-11
-      const optionsToResetIfSetEarlierThan =
-      {
-
-      };
-
-      const dateOptionsWereSaved = Date.parse(parsedData.date);
-
-      for (const key in parsedData.options)
-      {
-        if (parsedOptions[key] !== undefined)
-        {
-          if (optionsToResetIfSetEarlierThan[key] && dateOptionsWereSaved <= optionsToResetIfSetEarlierThan[key])
-          {
-            console.log(`Reset option: ${key}`);
-          }
-          else
-          {
-            parsedOptions[key] = deepMerge(parsedOptions[key], parsedData.options[key]);
-          }
-        }
-      }
-
-      this.deserialize(parsedOptions);
+      const revivedData = this.reviveOptionsSaveData(parsedData);
+      this.deserialize(revivedData.options);
+    }
+    else
+    {
+      throw new Error(`Couldn't find any options saved in localStorage`);
     }
   }
 
@@ -335,6 +316,44 @@ class Options implements OptionsValues
     };
     this.system = deepMerge(this.system, data.system, true);
   }
+  private reviveOptionsSaveData(toRevive: any): OptionsSaveData
+  {
+    const revived: OptionsSaveData = {...toRevive};
+
+    const reviversByOptionsVersion: ReviversByVersion =
+    {
+      "0.0.0":
+      [
+        (data) =>
+        {
+          data.appVersion = "0.0.0";
+        },
+        (data) =>
+        {
+          data.options.battle = {};
+          data.options.battle.animationTiming = {...data.options.battleAnimationTiming};
+          delete data.options.battleAnimationTiming;
+
+          data.options.display.noHamburger = data.options.ui.noHamburger;
+          delete data.options.ui;
+
+          data.options.system = {};
+        }
+      ],
+    };
+
+    const reviversToExecute = fetchNeededReviversForData(
+      revived.appVersion,
+      app.version,
+      reviversByOptionsVersion,
+    );
+
+    reviversToExecute.forEach(reviverFN =>
+    {
+      reviverFN(revived);
+    });
+
+    return revived;
   }
 }
 

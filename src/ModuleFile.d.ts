@@ -26,6 +26,7 @@ declare interface ModuleFile<S = any>
   loadAssets?: (callback: () => void) => void;
   constructModule?: (moduleData: ModuleData) => void;
   serialize?: () => S;
+  reviveSaveData?: (oldSaveData: ModuleFileSaveData<any>) => void;
   deserialize?: (saveData: S) => void;
 }
 

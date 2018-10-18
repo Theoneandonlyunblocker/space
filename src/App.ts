@@ -21,20 +21,20 @@ import {defaultModuleData} from "./defaultModuleData";
 import idGenerators from "./idGenerators";
 import
 {
+  reviveSaveData,
+  ReviversByVersion,
+  fetchNeededReviversForData,
+} from "./reviveSaveData";
   getRandomArrayItem,
   onDOMLoaded,
 } from "./utility";
 
 import {NotificationStore} from "./notifications/NotificationStore";
 import {activeNotificationStore, setActiveNotificationStore} from "./notifications/activeNotificationStore";
-
 import TutorialStatus from "./tutorials/TutorialStatus";
-
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
-
 import FullSaveData from "./savedata/FullSaveData";
-
 import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
 
 
@@ -113,31 +113,31 @@ class App
   }
   public load(saveKey: string)
   {
-    const data = localStorage.getItem(saveKey);
-    if (!data)
+    const rawData = localStorage.getItem(saveKey);
+    if (!rawData)
     {
-      return;
+      throw new Error(`Couldn't fetch save data with key ${saveKey}`);
     }
 
-    const parsed: FullSaveData = JSON.parse(data);
+    const parsedData: FullSaveData = JSON.parse(rawData);
+    const data = reviveSaveData(parsedData, this.version);
 
-    idGenerators.setValues(parsed.idGenerators);
+    idGenerators.setValues(data.idGenerators);
 
     this.destroy();
-
     this.initUI();
 
     this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.Game, () =>
     {
-      this.game = new GameLoader().deserializeGame(parsed.gameData);
+      this.game = new GameLoader().deserializeGame(data.gameData);
       this.game.gameStorageKey = saveKey;
       this.initGame();
 
       this.initDisplay();
       this.hookUI();
-      if (parsed.cameraLocation)
+      if (data.cameraLocation)
       {
-        centerCameraOnPosition(parsed.cameraLocation);
+        centerCameraOnPosition(data.cameraLocation);
       }
 
       this.reactUI.switchScene("galaxyMap");
