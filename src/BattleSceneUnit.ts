@@ -82,7 +82,7 @@ export default class BattleSceneUnit
   {
     if (this.activeUnit)
     {
-      const duration = sfxTemplate.duration * Options.battleAnimationTiming.effectDuration;
+      const duration = sfxTemplate.duration * Options.battle.animationTiming.effectDuration;
       if (this.activeUnit === user && sfxTemplate.userSprite)
       {
         this.setSfxSprite(sfxTemplate.userSprite, duration);
@@ -177,7 +177,7 @@ export default class BattleSceneUnit
   {
     debug.log("graphics", "startUnitSpriteEnter", this.side, unit.id);
 
-    const enterAnimationDuration = Options.battleAnimationTiming.unitEnter;
+    const enterAnimationDuration = Options.battle.animationTiming.unitEnter;
     if (enterAnimationDuration <= 0)
     {
       this.enterUnitSpriteWithoutAnimation(unit);
@@ -212,7 +212,7 @@ export default class BattleSceneUnit
   {
     debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "startUnitSpriteExit");
 
-    const exitAnimationDuration = Options.battleAnimationTiming.unitExit;
+    const exitAnimationDuration = Options.battle.animationTiming.unitExit;
     if (exitAnimationDuration <= 0)
     {
       this.exitUnitSpriteWithoutAnimation();

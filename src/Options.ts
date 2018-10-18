@@ -2,31 +2,40 @@ import eventManager from "./eventManager";
 import
 {
   deepMerge,
-  getMatchingLocalstorageItemsByDate,
-  shallowCopy,
+  extendObject,
+  getMatchingLocalStorageItemsSortedByDate,
 } from "./utility";
 import { Language } from "./localization/Language";
+import app from "./App";
+import
+{
+  ReviversByVersion,
+  fetchNeededReviversForData,
+} from "./reviveSaveData";
 import { activeModuleData } from "./activeModuleData";
 
 
-type OptionsCategory = "battleAnimationTiming" | "debug" | "ui" | "display";
-type OptionsSubCatgory = "debug.logging";
+type OptionsCategory = "battle" | "debug" | "display" | "system";
+type OptionsSubCatgory = "battle.animationTiming" | "debug.logging";
 const optionsCategories: OptionsCategory[] =
 [
-  "battleAnimationTiming", "debug", "ui", "display",
+  "battle", "debug", "display", "system",
 ];
 
 
 type BaseOptionsValues =
 {
-  battleAnimationTiming:
+  battle:
   {
-    before: number;
-    effectDuration: number;
-    after: number;
-    unitEnter: number;
-    unitExit: number;
-    turnTransition: number;
+    animationTiming:
+    {
+      before: number;
+      effectDuration: number;
+      after: number;
+      unitEnter: number;
+      unitExit: number;
+      turnTransition: number;
+    };
   };
   debug:
   {
@@ -39,10 +48,17 @@ type BaseOptionsValues =
       graphics: boolean;
     };
   };
-  ui:
+  display:
   {
+    borderWidth: number;
     noHamburger: boolean;
   };
+  system:
+  {
+    errorReporting: "ignore" | "alert" | "panic";
+  };
+};
+
 type OptionsValues = BaseOptionsValues &
 {
   display:
@@ -61,14 +77,17 @@ type SerializedOptionsValues = BaseOptionsValues &
 
 const defaultOptionsValues: OptionsValues =
 {
-  battleAnimationTiming:
+  battle:
   {
-    before: 750,
-    effectDuration: 1,
-    after: 1500,
-    unitEnter: 200,
-    unitExit: 100,
-    turnTransition: 500,
+    animationTiming:
+    {
+      before: 750,
+      effectDuration: 1,
+      after: 1500,
+      unitEnter: 200,
+      unitExit: 100,
+      turnTransition: 500,
+    },
   },
   debug:
   {
@@ -81,28 +100,31 @@ const defaultOptionsValues: OptionsValues =
       graphics: true,
     },
   },
-  ui:
   display:
   {
     language: undefined,
     noHamburger: false,
-  },
-  display:
-  {
     borderWidth: 8,
+  },
+  system:
+  {
+    errorReporting: "alert",
   },
 };
 
 class Options implements OptionsValues
 {
-  battleAnimationTiming:
+  battle:
   {
-    before: number;
-    effectDuration: number;
-    after: number;
-    unitEnter: number;
-    unitExit: number;
-    turnTransition: number;
+    animationTiming:
+    {
+      before: number;
+      effectDuration: number;
+      after: number;
+      unitEnter: number;
+      unitExit: number;
+      turnTransition: number;
+    };
   };
   debug:
   {
@@ -115,21 +137,22 @@ class Options implements OptionsValues
       graphics: boolean;
     };
   };
-  ui:
   display:
   {
     language: Language;
+    borderWidth: number;
     noHamburger: boolean;
   };
-  display:
+  system:
   {
-    borderWidth: number;
+    errorReporting: "ignore" | "alert" | "panic";
   };
 
   constructor()
   {
     this.setDefaults();
   }
+
   public setDefaultForCategory(category: OptionsCategory | OptionsSubCatgory)
   {
     let shouldReRenderUI = false;
@@ -137,15 +160,21 @@ class Options implements OptionsValues
 
     switch (category)
     {
-      case "battleAnimationTiming":
+      case "battle":
       {
-        this.battleAnimationTiming = shallowCopy(defaultOptionsValues.battleAnimationTiming);
+        this.battle = extendObject(defaultOptionsValues.battle);
+
+        break;
+      }
+      case "battle.animationTiming":
+      {
+        this.battle.animationTiming = extendObject(defaultOptionsValues.battle.animationTiming);
 
         break;
       }
       case "debug":
       {
-        this.debug = shallowCopy(defaultOptionsValues.debug);
+        this.debug = extendObject(defaultOptionsValues.debug);
 
         if (this.debug.enabled !== defaultOptionsValues.debug.enabled)
         {
@@ -157,13 +186,7 @@ class Options implements OptionsValues
       }
       case "debug.logging":
       {
-        this.debug.logging = shallowCopy(defaultOptionsValues.debug.logging);
-
-        break;
-      }
-      case "ui":
-      {
-        this.ui = shallowCopy(defaultOptionsValues.ui);
+        this.debug.logging = extendObject(defaultOptionsValues.debug.logging);
 
         break;
       }
@@ -178,8 +201,16 @@ class Options implements OptionsValues
         {
           shouldReRenderMap = true;
         }
+        if (this.display.noHamburger !== defaultOptionsValues.display.noHamburger)
+        {
+          shouldReRenderUI = true;
+        }
 
         break;
+      }
+      case "system":
+      {
+        this.system = extendObject(defaultOptionsValues.system);
       }
     }
 

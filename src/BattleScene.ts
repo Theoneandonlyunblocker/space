@@ -236,7 +236,7 @@ export default class BattleScene
   }): SfxParams
   {
     const bounds = this.getSceneBounds();
-    const duration = this.activeSfx.duration * Options.battleAnimationTiming.effectDuration;
+    const duration = this.activeSfx.duration * Options.battle.animationTiming.effectDuration;
 
     return(
     {
@@ -364,7 +364,7 @@ export default class BattleScene
 
   private prepareSfx()
   {
-    const beforeUseDelay = Options.battleAnimationTiming.before;
+    const beforeUseDelay = Options.battle.animationTiming.before;
 
     const afterUnitsHaveFinishedUpdatingCallback = () =>
     {
@@ -383,7 +383,7 @@ export default class BattleScene
   }
   private playSfx()
   {
-    const sfxDuration = Options.battleAnimationTiming.effectDuration * this.activeSfx!.duration;
+    const sfxDuration = Options.battle.animationTiming.effectDuration * this.activeSfx!.duration;
 
     this.executeOnSfxStartCallback();
 
@@ -418,7 +418,7 @@ export default class BattleScene
   }
   private handleActiveSfxEnd()
   {
-    const afterUseDelay = Options.battleAnimationTiming.after;
+    const afterUseDelay = Options.battle.animationTiming.after;
 
     this.afterUseDelayHasFinishedCallback = () =>
     {

@@ -402,7 +402,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleSceneUnit2: units.side2,
       playingBattleEffect: true,
       UIState: BattleUIState.PlayingSfx,
-      battleEffectDuration: effect.sfx.duration * Options.battleAnimationTiming.effectDuration,
+      battleEffectDuration: effect.sfx.duration * Options.battle.animationTiming.effectDuration,
     }, this.clearHoveredUnit);
   }
   private playQueuedBattleEffects()
@@ -448,7 +448,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.battleScene.activeUnit = null;
     this.battleScene.updateUnits(() =>
     {
-      window.setTimeout(cb, Options.battleAnimationTiming.turnTransition);
+      window.setTimeout(cb, Options.battle.animationTiming.turnTransition);
       this.setState(
       {
         UIState: BattleUIState.TransitioningTurn,
@@ -603,7 +603,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         onMouseLeaveUnit: this.handleMouseLeaveUnit,
 
         turnIsTransitioning: this.state.UIState === BattleUIState.TransitioningTurn,
-        transitionDuration: Options.battleAnimationTiming.turnTransition / 2,
+        transitionDuration: Options.battle.animationTiming.turnTransition / 2,
       });
     }
     else

@@ -40,7 +40,7 @@ export default class BattleSceneUnitOverlay
   {
     if (this.activeUnit)
     {
-      const duration = sfxTemplate.duration * Options.battleAnimationTiming.effectDuration;
+      const duration = sfxTemplate.duration * Options.battle.animationTiming.effectDuration;
       if (this.activeUnit === user && sfxTemplate.userOverlay)
       {
         this.setOverlay(sfxTemplate.userOverlay, user, duration);

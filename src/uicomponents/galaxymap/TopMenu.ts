@@ -158,7 +158,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     const topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
     const leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
 
-    if (this.state.hasCondensedMenu && !Options.ui.noHamburger)
+    if (this.state.hasCondensedMenu && !Options.display.noHamburger)
     {
       topMenuItems.push(ReactDOMElements.button(
       {
@@ -181,7 +181,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     }
 
     let openedCondensedMenu: React.ReactHTMLElement<any> = null;
-    if ((this.state.condensedMenuOpened || Options.ui.noHamburger) && leftoverButtons.length > 0)
+    if ((this.state.condensedMenuOpened || Options.display.noHamburger) && leftoverButtons.length > 0)
     {
       openedCondensedMenu = ReactDOMElements.div(
       {
@@ -248,7 +248,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       hasCondensedMenu: false,
       opened: false,
       buttonsToPlace: 999,
-      condensedMenuOpened: Options.ui.noHamburger,
+      condensedMenuOpened: Options.display.noHamburger,
     });
   }
   private handleToggleHamburger()
@@ -317,7 +317,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
     if (hasCondensedMenu)
     {
-      if (!Options.ui.noHamburger)
+      if (!Options.display.noHamburger)
       {
         spaceAvailable -= this.cachedMenuButtonWidth;
       }
