@@ -4,7 +4,7 @@ import NotificationTemplate from "../templateinterfaces/NotificationTemplate";
 import
 {
   extendObject,
-  getMatchingLocalstorageItemsByDate,
+  getMatchingLocalStorageItemsSortedByDate,
 } from "../utility";
 
 import {Notification} from "./Notification";
@@ -154,14 +154,14 @@ export class NotificationFilter
 
       if (!savedData)
       {
-        throw new Error("No options saved in that slot");
+        throw new Error(`No such localStorage key: ${baseString + slot}`);
       }
 
       parsedData = JSON.parse(savedData);
     }
     else
     {
-      parsedData = getMatchingLocalstorageItemsByDate(baseString)[0];
+      parsedData = getMatchingLocalStorageItemsSortedByDate(baseString)[0];
     }
 
     if (parsedData)

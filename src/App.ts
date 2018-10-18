@@ -25,8 +25,11 @@ import
   ReviversByVersion,
   fetchNeededReviversForData,
 } from "./reviveSaveData";
+import
+{
   getRandomArrayItem,
   onDOMLoaded,
+  getMatchingLocalStorageKeys,
 } from "./utility";
 
 import {NotificationStore} from "./notifications/NotificationStore";
@@ -65,6 +68,8 @@ class App
       this.initUI();
       this.makeApp();
     };
+
+    this.cleanUpLocalStorageKeys();
 
     this.seed = "" + Math.random();
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
@@ -379,9 +384,37 @@ class App
       return "setupGame";
     }
   }
+  private cleanUpLocalStorageKeys(): void
   {
+    const reviversByAppVersion: ReviversByVersion =
     {
+      "0.0.0":
+      [
+        () =>
+        {
+          localStorage.removeItem("Rance.language");
+        },
+        () =>
+        {
+          const notificationFilterOptionsToDelete = getMatchingLocalStorageKeys(/^NotificationFilter\./);
+          notificationFilterOptionsToDelete.forEach(storageKey =>
+          {
+            localStorage.removeItem(storageKey);
+          });
+        },
+      ],
+    };
+
+    const reviversToExecute = fetchNeededReviversForData(
+      "",
+      this.version,
+      reviversByAppVersion,
+    );
+
+    reviversToExecute.forEach(reviverFN =>
     {
+      reviverFN();
+    });
   }
 }
 

@@ -405,24 +405,20 @@ export function prettifyDate(date: Date)
     ].join(" ")
   );
 }
-export function getMatchingLocalstorageItemsByDate(stringToMatch: string)
+export function getMatchingLocalStorageKeys(toMatch: string | RegExp): string[]
 {
-  const allKeys = Object.keys(localStorage);
-  const matchingItems: any[] = [];
+  const filterFN = (typeof toMatch === "string") ?
+    (key: string) => key.indexOf(toMatch) !== -1 :
+    (key: string) => key.search(toMatch) !== -1;
 
-
-  for (let i = 0; i < allKeys.length; i++)
+  return Object.keys(localStorage).filter(filterFN);
+}
+export function getMatchingLocalStorageItemsSortedByDate<T>(toMatch: string | RegExp): T[]
+{
+  const matchingItems = getMatchingLocalStorageKeys(toMatch).map(storageKey =>
   {
-    if (allKeys[i].indexOf(stringToMatch) !== -1)
-    {
-      const item = localStorage.getItem(allKeys[i]);
-      const parsed = JSON.parse(item!);
-      if (parsed.date)
-      {
-        matchingItems.push(parsed);
-      }
-    }
-  }
+    return JSON.parse(localStorage.getItem(storageKey));
+  });
 
   matchingItems.sort((a, b) =>
   {
