@@ -4,7 +4,8 @@ import
   shallowExtend,
 } from "../src/utility";
 
-import * as Languages from "./defaultLanguages";
+import {englishLanguage} from "../modules/englishlanguage/englishLanguage";
+
 import {battle as en_battle} from "./en/battle";
 import {diplomacy as en_diplomacy} from "./en/diplomacy";
 import {errors as en_errors} from "./en/errors";
@@ -65,6 +66,6 @@ const mergedMessages = shallowExtend<AllMessages>(
   en_unitUpgrade,
 );
 
-localizer.setAllMessages(mergedMessages, Languages.en);
+localizer.setAllMessages(mergedMessages, englishLanguage);
 
 export const localize = <typeof localizer.localize> localizer.localize.bind(localizer);

@@ -1,4 +1,4 @@
-import * as Languages from "../../localization/defaultLanguages";
+import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
@@ -17,7 +17,7 @@ const defaultRaces: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
-  supportedLanguages: [Languages.en],
+  supportedLanguages: [englishLanguage],
   constructModule: (moduleData: ModuleData) =>
   {
     moduleData.copyTemplates<RaceTemplate>(raceTemplates, "Races");

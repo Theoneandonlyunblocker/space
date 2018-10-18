@@ -1,6 +1,6 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-import * as Languages from "../../localization/defaultLanguages";
+import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
@@ -21,7 +21,7 @@ const defaultUnits: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
-  supportedLanguages: [Languages.en],
+  supportedLanguages: [englishLanguage],
   loadAssets: (onLoaded) =>
   {
     const loader = new PIXI.loaders.Loader();

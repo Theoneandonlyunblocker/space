@@ -35,7 +35,6 @@ import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 
 import FullSaveData from "./savedata/FullSaveData";
 
-import {setActiveLanguageCode} from "./localization/activeLanguage";
 import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
 
 
@@ -147,9 +146,6 @@ class App
 
     Options.load();
     TutorialStatus.load();
-
-    const initialLanguageCode = this.getInitialLanguageCode();
-    setActiveLanguageCode(initialLanguageCode);
 
     // don't preload modules in debug mode to ensure loading phases work correctly
     if (!Options.debug.enabled)
@@ -378,17 +374,9 @@ class App
       return "setupGame";
     }
   }
-  private getInitialLanguageCode(): string
   {
-    const storedLanguageCode = localStorage.getItem("Rance.language");
-    if (storedLanguageCode)
     {
-      return storedLanguageCode;
-    }
-    else
     {
-      return "en";
-    }
   }
 }
 

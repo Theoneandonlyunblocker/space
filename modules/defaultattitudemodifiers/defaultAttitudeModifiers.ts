@@ -1,4 +1,4 @@
-import * as Languages from "../../localization/defaultLanguages";
+import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import AttitudeModifierTemplate from "../../src/templateinterfaces/AttitudeModifierTemplate";
@@ -17,7 +17,7 @@ const defaultAttitudeModifiers: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
-  supportedLanguages: [Languages.en],
+  supportedLanguages: [englishLanguage],
   constructModule: (moduleData) =>
   {
     moduleData.copyTemplates<AttitudeModifierTemplate>(attitudeModifierTemplates, "AttitudeModifiers");

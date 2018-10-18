@@ -1,6 +1,6 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-import * as Languages from "../../localization/defaultLanguages";
+import {englishLanguage} from "../englishlanguage/englishLanguage";
 import app from "../../src/App"; // TODO global
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
@@ -22,7 +22,7 @@ export const drones: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
-  supportedLanguages: [Languages.en],
+  supportedLanguages: [englishLanguage],
   loadAssets: onLoaded =>
   {
     const placeHolderResourceName = "placeHolder";

@@ -3,7 +3,7 @@ import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import {svgCache} from "../../src/svgCache";
 
-import * as Languages from "../../localization/defaultLanguages";
+import {englishLanguage} from "../englishlanguage/englishLanguage";
 
 import {allScripts} from "./modulescripts/allScripts";
 
@@ -19,7 +19,7 @@ const core: ModuleFile =
     description: "Core gameplay functionality",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
-  supportedLanguages: [Languages.en],
+  supportedLanguages: [englishLanguage],
   loadAssets: (onLoaded: () => void) =>
   {
     const loader = new PIXI.loaders.Loader();

@@ -1,4 +1,4 @@
-import * as Languages from "../../localization/defaultLanguages";
+import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import AiTemplateConstructor from "../../src/templateinterfaces/AITemplateConstructor";
@@ -16,7 +16,7 @@ const defaultAi: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.Game,
-  supportedLanguages: [Languages.en],
+  supportedLanguages: [englishLanguage],
   constructModule: (moduleData) =>
   {
     moduleData.copyTemplates<AiTemplateConstructor<any>>(

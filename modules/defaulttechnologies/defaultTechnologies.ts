@@ -1,4 +1,4 @@
-import * as Languages from "../../localization/defaultLanguages";
+import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate";
@@ -16,7 +16,7 @@ const defaultTechnologies: ModuleFile =
     description: "",
   },
   needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
-  supportedLanguages: [Languages.en],
+  supportedLanguages: [englishLanguage],
   constructModule: (moduleData) =>
   {
     moduleData.copyTemplates<TechnologyTemplate>(technologyTemplates, "Technologies");

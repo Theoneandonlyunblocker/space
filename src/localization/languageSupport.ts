@@ -33,7 +33,7 @@ export function getLanguageSupportLevelForModuleFiles(...moduleFiles: ModuleFile
   return languageSupportLevelByCode;
 }
 
-export function getLanguagesByCode(...moduleFiles: ModuleFile[]): LanguagesByCode
+export function getLanguagesByCodeFromModuleFiles(...moduleFiles: ModuleFile[]): LanguagesByCode
 {
   const languagesByCode: LanguagesByCode = {};
 

@@ -14,6 +14,8 @@ import defaultTechnologies from "../modules/defaulttechnologies/defaultTechnolog
 import defaultUnits from "../modules/defaultunits/defaultUnits";
 import {drones} from "../modules/drones/moduleFile";
 import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
+import {englishLanguageSupport} from "../modules/englishlanguage/englishLanguageSupport";
+
 
 import {default as ModuleFile} from "./ModuleFile";
 
@@ -26,6 +28,7 @@ export const defaultModuleData:
   moduleFiles:
   [
     core,
+    englishLanguageSupport,
 
     defaultEmblems,
     defaultRuleset,

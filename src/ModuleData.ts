@@ -15,6 +15,7 @@ import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTempl
 import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
 import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
+import {Language} from "./localization/Language";
 import MapGenTemplate from "./templateinterfaces/MapGenTemplate";
 import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTemplate";
 import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate";
@@ -46,6 +47,7 @@ interface Templates
   BattleSfx: TemplateCollection<BattleSfxTemplate>;
   Buildings: TemplateCollection<BuildingTemplate>;
   Items: TemplateCollection<ItemTemplate>;
+  Languages: TemplateCollection<Language>;
   MapGen: TemplateCollection<MapGenTemplate>;
   MapRendererLayers: TemplateCollection<MapRendererLayerTemplate>;
   MapRendererMapModes: TemplateCollection<MapRendererMapModeTemplate>;
@@ -87,6 +89,7 @@ export default class ModuleData
     BattleSfx: {},
     Buildings: {},
     Items: {},
+    Languages: {},
     MapGen: {},
     MapRendererLayers: {},
     MapRendererMapModes: {},
@@ -107,6 +110,7 @@ export default class ModuleData
   public ruleSet: RuleSetValues;
   public scripts: ModuleScripts;
   public defaultMap: MapGenTemplate;
+  public defaultLanguage: Language;
 
   public get technologyUnlocks(): TechnologyUnlocks
   {
@@ -184,6 +188,40 @@ export default class ModuleData
     }
 
     this.ruleSet = deepMerge(this.ruleSet, valuesToAppend);
+  }
+  public fetchLanguageForCode(languageCode: string): Language
+  {
+    const language = this.templates.Languages[languageCode];
+
+    if (language)
+    {
+      return language;
+    }
+    else
+    {
+      const defaultLanguage = this.getDefaultLanguage();
+
+      console.warn(`Desired language (code '${languageCode}') is not loaded. ` +
+      `Falling back on default language '${defaultLanguage.code}'`);
+
+      return defaultLanguage;
+    }
+  }
+  public getDefaultLanguage(): Language
+  {
+    if (this.defaultLanguage)
+    {
+      return this.defaultLanguage;
+    }
+    else if (this.templates.Languages["en"])
+    {
+      return this.templates.Languages["en"];
+    }
+    else
+    {
+      throw new Error("Please define a default language for your module configuration if " +
+        "it doesn't load the English language support module.");
+    }
   }
 
   private getAllTechnologyUnlocks(): TechnologyUnlocks
