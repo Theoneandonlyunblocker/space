@@ -60,7 +60,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     allOptions.push(OptionsGroup(
     {
       key: "language",
-      header: localize("language")(),
+      headerTitle: localize("language")(),
       options: languageOptions,
     }));
 
@@ -123,13 +123,13 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
           {
             label: props.displayName,
             id: "options-battle-animation-" + stage,
-            value: Options.battleAnimationTiming[stage],
+            value: Options.battle.animationTiming[stage],
             min: props.min,
             max: props.max,
             step: props.step,
             onChange: (value: number) =>
             {
-              Options.battleAnimationTiming[stage] = value;
+              Options.battle.animationTiming[stage] = value;
               this.forceUpdate();
             },
           }),
@@ -141,7 +141,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     allOptions.push(OptionsGroup(
     {
       key: "battleAnimationOptions",
-      header: localize("battleAnimationTiming")(),
+      headerTitle: localize("battleAnimationTiming")(),
       options: battleAnimationOptions,
       resetFN: () =>
       {
@@ -219,7 +219,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         content: OptionsGroup(
         {
           key: "loggingOptions",
-          header: localize("logging")(),
+          headerTitle: localize("logging")(),
           options: Object.keys(Options.debug.logging).map(category =>
           {
             const keyForCategory =
@@ -258,7 +258,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     allOptions.push(OptionsGroup(
     {
       key: "debug",
-      header: localize("debug")(),
+      headerTitle: localize("debug")(),
       options: debugOptions,
       resetFN: () =>
       {
@@ -274,11 +274,11 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       content:
         OptionsCheckbox(
         {
-          isChecked: Options.ui.noHamburger,
+          isChecked: Options.display.noHamburger,
           label: localize("alwaysExpandTopRightMenuOnLowResolution")(),
           onChangeFN: () =>
           {
-            Options.ui.noHamburger = !Options.ui.noHamburger;
+            Options.display.noHamburger = !Options.display.noHamburger;
             eventManager.dispatchEvent("updateHamburgerMenu");
             this.forceUpdate();
           },
@@ -310,7 +310,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     allOptions.push(OptionsGroup(
     {
       key: "ui",
-      header: localize("ui")(),
+      headerTitle: localize("ui")(),
       options: uiOptions,
       resetFN: () =>
       {
@@ -343,7 +343,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
     allOptions.push(OptionsGroup(
     {
       key: "display",
-      header: localize("display")(),
+      headerTitle: localize("display")(),
       options: displayOptions,
       resetFN: () =>
       {

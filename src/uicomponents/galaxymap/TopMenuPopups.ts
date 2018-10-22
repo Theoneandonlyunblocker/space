@@ -17,7 +17,7 @@ import ItemEquip from "../unitlist/ItemEquip";
 import {default as DefaultWindow, DefaultWindowComponent} from "../windows/DefaultWindow";
 
 import EconomySummary from "./EconomySummary";
-import OptionsList from "./OptionsList";
+import OptionsList from "../options/OptionsList";
 
 
 const windowPositionStorageKey = "Rance.WindowPositions";

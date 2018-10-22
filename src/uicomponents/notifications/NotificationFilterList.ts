@@ -7,7 +7,7 @@ import {localize} from "../../../localization/localize";
 
 import eventManager from "../../eventManager";
 
-import OptionsGroup from "../galaxymap/OptionsGroup";
+import OptionsGroup from "../options/OptionsGroup";
 
 import NotificationFilterListItem from "./NotificationFilterListItem";
 

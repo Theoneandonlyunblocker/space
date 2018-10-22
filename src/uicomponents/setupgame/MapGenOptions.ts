@@ -14,7 +14,7 @@ import
   randInt,
   roundToNearestMultiple,
 } from "../../utility";
-import OptionsGroup from "../galaxymap/OptionsGroup";
+import OptionsGroup from "../options/OptionsGroup";
 
 import MapGenOption from "./MapGenOption";
 
