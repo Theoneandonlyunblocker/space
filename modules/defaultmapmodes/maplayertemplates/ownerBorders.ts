@@ -1,8 +1,7 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import Options from "../../../src/Options";
 import Player from "../../../src/Player";
-import {getRevealedBorderEdges} from "../../../src/borderPolygon";
+import {getRevealedBorderEdges, borderWidth} from "../../../src/borderPolygon";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 import
@@ -21,7 +20,7 @@ const ownerBorders: MapRendererLayerTemplate =
   drawingFunction: (map, perspectivePlayer) =>
   {
     const doc = new PIXI.Container();
-    if (Options.display.borderWidth <= 0)
+    if (borderWidth <= 0)
     {
       return doc;
     }
@@ -35,7 +34,7 @@ const ownerBorders: MapRendererLayerTemplate =
       doc.addChild(gfx);
       const polyLineData = borderEdges[i];
       const player: Player = polyLineData.points[0].star.owner;
-      gfx.lineStyle(Options.display.borderWidth, player.secondaryColor.getHex(), 1);
+      gfx.lineStyle(borderWidth, player.secondaryColor.getHex(), 1);
 
       if (polyLineData.isClosed)
       {

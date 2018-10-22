@@ -1,7 +1,6 @@
 /// <reference path="../lib/offset.d.ts" />
 
 import MapVoronoiInfo from "./MapVoronoiInfo";
-import Options from "./Options";
 import Point from "./Point";
 import Star from "./Star";
 
@@ -12,13 +11,15 @@ import
 } from "./utility";
 
 
+export const borderWidth = 8;
+
 // some problems with this as well as pixi polygon rendering can lead to silly behavior sometimes.
 // overlapping lines, acute angles etc etc.
 // probably have to make a shader based version later but this could still be useful for canvas fallback.
 
 export function starsOnlyShareNarrowBorder(a: Star, b: Star)
 {
-  const minBorderWidth = Options.display.borderWidth * 2;
+  const minBorderWidth = borderWidth * 2;
   const edge = a.getEdgeWith(b);
   if (!edge)
   {
@@ -221,11 +222,11 @@ export function convertHalfEdgeDataToOffset(halfEdgeData:
     });
   });
 
-  joinPointsWithin(convertedToPoints, Options.display.borderWidth / 2);
+  joinPointsWithin(convertedToPoints, borderWidth / 2);
 
   const offset = new Offset();
   offset.arcSegments(0);
-  const convertedToOffset = offset.data(convertedToPoints).padding(Options.display.borderWidth / 2);
+  const convertedToOffset = offset.data(convertedToPoints).padding(borderWidth / 2);
 
   return convertedToOffset;
 }

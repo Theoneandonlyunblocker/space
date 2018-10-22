@@ -50,7 +50,6 @@ type BaseOptionsValues =
   };
   display:
   {
-    borderWidth: number;
     noHamburger: boolean;
   };
   system:
@@ -111,7 +110,6 @@ const defaultOptionsValues: OptionsValues =
   {
     language: undefined,
     noHamburger: false,
-    borderWidth: 8,
   },
   system:
   {
@@ -147,7 +145,6 @@ class Options implements OptionsValues
   display:
   {
     language: Language;
-    borderWidth: number;
     noHamburger: boolean;
   };
   system:
@@ -204,10 +201,6 @@ class Options implements OptionsValues
         this.display = extendObject(defaultOptionsValues.display);
         this.display.language = previouslySetLanguage;
 
-        if (this.display.borderWidth !== defaultOptionsValues.display.borderWidth)
-        {
-          shouldReRenderMap = true;
-        }
         if (this.display.noHamburger !== defaultOptionsValues.display.noHamburger)
         {
           shouldReRenderUI = true;
@@ -299,7 +292,6 @@ class Options implements OptionsValues
       {
         languageCode: this.display.language.code,
         noHamburger: this.display.noHamburger,
-        borderWidth: this.display.borderWidth,
       },
       system: this.system,
     });
@@ -312,7 +304,6 @@ class Options implements OptionsValues
     {
       language: activeModuleData.fetchLanguageForCode(data.display.languageCode),
       noHamburger: data.display.noHamburger,
-      borderWidth: data.display.borderWidth,
     };
     this.system = deepMerge(this.system, data.system, true);
   }
@@ -336,6 +327,7 @@ class Options implements OptionsValues
 
           data.options.display.noHamburger = data.options.ui.noHamburger;
           delete data.options.ui;
+          delete data.options.display.borderWidth;
 
           data.options.system = {};
         }
