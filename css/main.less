@@ -3801,37 +3801,6 @@ ul, ol
   }
 }
 
-.option-group-header
-{
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-
-  width: 100%;
-  font-size: 1.33em;
-  margin-bottom: 0.33em;
-
-  button
-  {
-    font-size: initial;
-  }
-}
-
-.option-group-header-title
-{
-  // collapse arrow
-  &::after
-  {
-    color: #666;
-    font-size: 0.8em;
-
-    position: relative;
-    right: auto;
-    margin-left: 1em;
-  }
-}
-
 .reset-options-button
 {
   .button-style;
@@ -4385,24 +4354,47 @@ button.player-setup-remove-player
   width: 65px;
 }
 
-.collapsible
+.collapsible-header
 {
-  cursor: pointer;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 
-  &::after
+  width: 100%;
+  font-size: 1.33em;
+  margin-bottom: 0.33em;
+
+  button
   {
-    .fa("\f077");
+    font-size: initial;
   }
 }
 
-.collapsed
+.collapsible-header-title
 {
   cursor: pointer;
 
+  // collapse arrow
   &::after
   {
-    .fa("\f078");
+    color: #666;
+    font-size: 0.8em;
+
+    position: relative;
+    right: auto;
+    margin-left: 1em;
   }
+}
+
+.collapsible .collapsible-header-title::after
+{
+  .fa("\f077");
+}
+
+.collapsed .collapsible-header-title::after
+{
+  .fa("\f078");
 }
 
 .map-gen-options-buttons

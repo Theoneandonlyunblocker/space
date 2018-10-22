@@ -218,7 +218,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
       optionGroups.push(OptionsGroup(
       {
         key: groupName,
-        header: optionGroupsInfo[groupName].title,
+        headerTitle: optionGroupsInfo[groupName].title,
         options: options,
         isCollapsedInitially: optionGroupsInfo[groupName].isCollapsedInitially,
       }));

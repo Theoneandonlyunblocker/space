@@ -105,7 +105,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
       }
       filterGroupElements.push(OptionsGroup(
       {
-        header: category,
+        headerTitle: category,
         options: filterElementsForCategory,
         key: category,
         resetFN: this.handleResetCategory.bind(this, category),
