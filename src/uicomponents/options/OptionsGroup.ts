@@ -6,16 +6,18 @@ import {localize} from "../../../localization/localize";
 import {Collapsible} from "../generic/Collapsible";
 
 
+export interface OptionsGroupItem
+{
+  key: string;
+  content: React.ReactNode;
+}
+
 export interface PropTypes extends React.Props<any>
 {
   isCollapsedInitially?: boolean;
   resetFN?: () => void;
   headerTitle?: string;
-  options:
-  {
-    key: string;
-    content: React.ReactElement<any>;
-  }[];
+  options: OptionsGroupItem[];
 }
 
 interface StateType

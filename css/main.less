@@ -186,6 +186,22 @@ ul, ol
   background-size: 100% 2px;
   pointer-events: none;
 }
+.civ-splitter-for-all-children(@height: 2px)
+{
+  >*
+  {
+    padding: @height 0px;
+    position: relative;
+  }
+
+  >:not(:last-child)
+  {
+    &::after
+    {
+      .civ-splitter-horizontal(@height);
+    }
+  }
+}
 
 .base-fancy-table-style(@padding, @min-width)
 {
@@ -3761,8 +3777,15 @@ ul, ol
 {
   padding: 0px 8px;
   overflow: auto;
-
   .window-size(300px, 300px);
+
+  @splitter-height: 10px;
+  .civ-splitter-for-all-children(@splitter-height);
+
+  >:not(:first-child)
+  {
+    .civ-splitter-for-all-children(@splitter-height);
+  }
 }
 
 .options-header
@@ -3771,29 +3794,11 @@ ul, ol
   display: flex;
   flex-flow: row;
   justify-content: flex-end;
-
-  @ver-padding: 10px;
-  padding: @ver-padding 0px;
-  &::after
-  {
-    .civ-splitter-horizontal(@ver-padding);
-    bottom: 0;
-  }
 }
 
 .option-group
 {
   position: relative;
-  @ver-padding: 10px;
-  padding: @ver-padding 0px;
-  &::after
-  {
-    .civ-splitter-horizontal(@ver-padding);
-  }
-  &:last-child::after
-  {
-    content: none;
-  }
 
   label
   {
@@ -4257,14 +4262,6 @@ button.player-setup-remove-player
   padding: 5px;
 }
 
-.map-gen-options-option-groups
-{
-  .option-group:last-child::after
-  {
-    content: none;
-  }
-}
-
 .map-gen-options-group-header
 {
   width: 100%;
@@ -4395,6 +4392,13 @@ button.player-setup-remove-player
 .collapsed .collapsible-header-title::after
 {
   .fa("\f078");
+}
+
+.map-gen-options-option-groups
+{
+  @splitter-height: 10px;
+
+  .civ-splitter-for-all-children(@splitter-height);
 }
 
 .map-gen-options-buttons

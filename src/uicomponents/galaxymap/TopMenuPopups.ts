@@ -17,7 +17,7 @@ import ItemEquip from "../unitlist/ItemEquip";
 import {default as DefaultWindow, DefaultWindowComponent} from "../windows/DefaultWindow";
 
 import EconomySummary from "./EconomySummary";
-import OptionsList from "../options/OptionsList";
+import FullOptionsList from "../options/FullOptionsList";
 
 
 const windowPositionStorageKey = "Rance.WindowPositions";
@@ -106,7 +106,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     },
     options:
     {
-      makeContent: () => OptionsList(
+      makeContent: () => FullOptionsList(
       {
         activeLanguage: this.props.activeLanguage,
       }),
