@@ -19,6 +19,7 @@ import {activePlayer, setActivePlayer} from "./activePlayer";
 import {centerCameraOnPosition} from "./centerCameraOnPosition";
 import {defaultModuleData} from "./defaultModuleData";
 import idGenerators from "./idGenerators";
+import {handleError} from "./handleError";
 import
 {
   reviveSaveData,
@@ -73,6 +74,7 @@ class App
 
     this.seed = "" + Math.random();
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
+    window.onerror = handleError;
 
     this.moduleLoader = new ModuleLoader(activeModuleData);
     this.initUI();

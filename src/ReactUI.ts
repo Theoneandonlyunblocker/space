@@ -14,7 +14,8 @@ import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";
 import Options from "./Options";
 
-import {ErrorBoundaryWithSaveRecovery} from "./uicomponents/errors/ErrorBoundaryWithSaveRecovery";
+import {ErrorBoundary} from "./uicomponents/errors/ErrorBoundary";
+import {SaveRecoveryWithDetails} from "./uicomponents/errors/SaveRecoveryWithDetails";
 import BattleSceneTester from "./uicomponents/BattleSceneTester";
 import FlagMaker from "./uicomponents/FlagMaker";
 import BattleComponentFactory from "./uicomponents/battle/Battle";
@@ -22,6 +23,8 @@ import BattlePrepComponentFactory from "./uicomponents/battleprep/BattlePrep";
 import GalaxyMap from "./uicomponents/galaxymap/GalaxyMap";
 import SetupGame from "./uicomponents/setupgame/SetupGame";
 import SfxEditor from "./uicomponents/sfxeditor/SfxEditor";
+
+import {localize} from "../localization/localize";
 
 
 const moduleLoadingPhaseByScene:
@@ -33,6 +36,7 @@ const moduleLoadingPhaseByScene:
   battlePrep: ModuleFileLoadingPhase.BattlePrep,
   galaxyMap: ModuleFileLoadingPhase.Game,
   setupGame: ModuleFileLoadingPhase.Setup,
+  errorRecovery: ModuleFileLoadingPhase.Init,
 
   flagMaker: ModuleFileLoadingPhase.Setup,
   battleSceneTester: ModuleFileLoadingPhase.Battle,
@@ -49,6 +53,8 @@ export default class ReactUI
   public playerControl: PlayerControl;
   public player: Player;
   public game: Game;
+
+  public error: Error | undefined;
 
   private container: HTMLElement;
   private moduleLoader: ModuleLoader;
@@ -81,9 +87,24 @@ export default class ReactUI
     const elementToRender = this.getElementToRender();
 
     ReactDOM.render(
-      ErrorBoundaryWithSaveRecovery(
+      ErrorBoundary(
       {
-        game: this.game,
+        renderError: (error, info) =>
+        {
+          // TODO 2018.10.30 | doesn't respect user error handling preference.
+          // react doesn't let us ignore errors in rendering I think
+
+          const customErrorMessage = Options.system.errorReporting !== "panic" ?
+            localize("UIErrorPanicDespiteUserPreference")(Options.system.errorReporting) :
+            null;
+
+          return SaveRecoveryWithDetails(
+          {
+            game: this.game,
+            error: error,
+            customMessage: customErrorMessage,
+          });
+        },
       },
         elementToRender,
       ),
@@ -132,6 +153,14 @@ export default class ReactUI
           activeLanguage: Options.display.language,
           notifications: [...activePlayer.notificationLog.unreadNotifications],
           notificationLog: activePlayer.notificationLog,
+        });
+      }
+      case "errorRecovery":
+      {
+        return SaveRecoveryWithDetails(
+        {
+          game: this.game,
+          error: this.error,
         });
       }
       case "flagMaker":

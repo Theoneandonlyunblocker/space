@@ -1,3 +1,5 @@
+// TODO 2018.10.23 | why can't this & OptionsCheckBox be generic?
+
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 

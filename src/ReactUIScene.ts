@@ -3,6 +3,7 @@ type ReactUIScene =
   "battlePrep" |
   "galaxyMap" |
   "setupGame" |
+  "errorRecovery" |
 
   // debug
   "flagMaker" |

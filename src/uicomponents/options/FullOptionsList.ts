@@ -9,6 +9,7 @@ import {default as DialogBox} from "../windows/DialogBox";
 import {BattleOptions} from "./BattleOptions";
 import {DebugOptions} from "./DebugOptions";
 import {DisplayOptions} from "./DisplayOptions";
+import {SystemOptions} from "./SystemOptions";
 
 
 export interface PropTypes extends React.Props<any>
@@ -40,8 +41,6 @@ export class FullOptionsListComponent extends React.Component<PropTypes, StateTy
 
   public render()
   {
-    // TODO 2018.10.22 | SYSTEM
-
     return(
       ReactDOMElements.div({className: "options"},
 
@@ -73,6 +72,7 @@ export class FullOptionsListComponent extends React.Component<PropTypes, StateTy
         ),
         DisplayOptions({activeLanguage: this.props.activeLanguage}),
         BattleOptions(),
+        SystemOptions(),
         DebugOptions(),
       )
     );

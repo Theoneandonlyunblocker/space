@@ -1,29 +1,28 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import { ErrorBoundary, ErrorBoundaryComponent } from "./ErrorBoundary";
 import {localize} from "../../../localization/localize";
-import { ErrorDetails } from "./ErrorDetails";
-import Game from "../../Game";
+import { EmergencySaveGame } from "../saves/EmergencySaveGame";
+import { ErrorBoundary, ErrorBoundaryComponent } from "./ErrorBoundary";
 import { default as LoadGame } from "../saves/LoadGame";
 import { default as SaveGame } from "../saves/SaveGame";
-import { EmergencySaveGame } from "../saves/EmergencySaveGame";
 
 
 // tslint:disable-next-line:no-any
 interface PropTypes extends React.Props<any>
 {
-  game: Game | undefined;
+
 }
 
 interface StateType
 {
   expandedElementType: "save" | "load" | null;
+
 }
 
-export class ErrorBoundaryWithSaveRecoveryComponent extends React.Component<PropTypes, StateType>
+export class SaveRecoveryComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "ErrorBoundaryWithSaveRecovery";
+  public displayName = "SaveRecovery";
   public state: StateType;
 
   private saveRecoveryErrorBoundary = React.createRef<ErrorBoundaryComponent>();
@@ -37,39 +36,10 @@ export class ErrorBoundaryWithSaveRecoveryComponent extends React.Component<Prop
       expandedElementType: null,
     };
 
-    this.renderError = this.renderError.bind(this);
     this.handleExpandButtonClick = this.handleExpandButtonClick.bind(this);
   }
 
   public render()
-  {
-    return(
-      ErrorBoundary(
-      {
-        renderError: this.renderError.bind(false),
-      },
-        this.props.children
-      )
-    );
-  }
-
-  private renderError(error: Error, info: React.ErrorInfo): React.ReactNode
-  {
-    return(
-      ReactDOMElements.div(
-      {
-        className: "error-with-saves",
-      },
-        ErrorDetails(
-        {
-          error: error,
-          errorInfo: info,
-        }),
-        this.props.game ? this.renderSaveRecovery() : null,
-      )
-    );
-  }
-  private renderSaveRecovery(): React.ReactNode
   {
     return(
       ReactDOMElements.div(
@@ -127,6 +97,7 @@ export class ErrorBoundaryWithSaveRecoveryComponent extends React.Component<Prop
       )
     );
   }
+
   private renderExpandedElement(): React.ReactNode | null
   {
     switch (this.state.expandedElementType)
@@ -155,4 +126,4 @@ export class ErrorBoundaryWithSaveRecoveryComponent extends React.Component<Prop
 }
 
 // tslint:disable-next-line:variable-name
-export const ErrorBoundaryWithSaveRecovery: React.Factory<PropTypes> = React.createFactory(ErrorBoundaryWithSaveRecoveryComponent);
+export const SaveRecovery: React.Factory<PropTypes> = React.createFactory(SaveRecoveryComponent);

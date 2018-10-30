@@ -13,6 +13,7 @@ import
   fetchNeededReviversForData,
 } from "./reviveSaveData";
 import { activeModuleData } from "./activeModuleData";
+import { ErrorReportingMode } from "./handleError";
 
 
 type OptionsCategory = "battle" | "debug" | "display" | "system";
@@ -54,7 +55,7 @@ type BaseOptionsValues =
   };
   system:
   {
-    errorReporting: "ignore" | "alert" | "panic";
+    errorReporting: ErrorReportingMode;
   };
 };
 
@@ -113,7 +114,7 @@ const defaultOptionsValues: OptionsValues =
   },
   system:
   {
-    errorReporting: "alert",
+    errorReporting: "alertOnce",
   },
 };
 
@@ -149,7 +150,7 @@ class Options implements OptionsValues
   };
   system:
   {
-    errorReporting: "ignore" | "alert" | "panic";
+    errorReporting: ErrorReportingMode;
   };
 
   constructor()

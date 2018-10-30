@@ -7,7 +7,7 @@ import {localize} from "../../../localization/localize";
 interface PropTypes extends React.Props<any>
 {
   error: Error;
-  errorInfo: React.ErrorInfo;
+  customMessage?: string;
 }
 
 interface StateType
@@ -31,27 +31,34 @@ export class ErrorDetailsComponent extends React.Component<PropTypes, StateType>
       {
         className: "error-details",
       },
-      ReactDOMElements.h1(
+        ReactDOMElements.h1(
         {
-          className: "ui-error-header"
+          className: "error-header"
         },
-          localize("UIError")(),
+          localize("genericError")(),
         ),
         ReactDOMElements.h2(
         {
-          className: "ui-error-description",
+          className: "error-description",
         },
-          localize("UIErrorDescription")(),
+          localize("genericErrorDescription")(),
         ),
         ReactDOMElements.h3(
         {
-          className: "ui-error-cause-description",
+          className: "error-cause-description",
         },
-          localize("UIErrorCauseDescription")(),
+          localize("genericErrorCauseDescription")(),
         ),
+        !this.props.customMessage ? null :
+          ReactDOMElements.h3(
+          {
+            className: "error-custom-message"
+          },
+            this.props.customMessage,
+          ),
         ReactDOMElements.p(
         {
-          className: "ui-error-instructions",
+          className: "error-instructions",
         },
           `${localize("checkConsolePrompt")()} (${localize("openConsoleInstructions")()})`,
         )
