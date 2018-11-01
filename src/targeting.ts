@@ -48,6 +48,7 @@ export type GetUnitsInAreaFN<T = (Unit | null)[]> = (
   target: Unit,
   battle: Battle,
 ) => T;
+
 // **
 // **
 // X*

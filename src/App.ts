@@ -86,7 +86,7 @@ class App
         this.moduleInitializer.addModuleFile(moduleFile);
       });
 
-      addCommonToModuleData(this.moduleInitializer.moduleData);
+      addCommonToModuleData(activeModuleData);
 
       // some things called in this.makeApp() rely on global app variable
       // this timeout allows constructor to finish and variable to be assigned

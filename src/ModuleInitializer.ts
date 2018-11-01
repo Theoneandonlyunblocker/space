@@ -7,27 +7,28 @@ import eventManager from "./eventManager";
 
 export default class ModuleInitializer
 {
-  moduleData: ModuleData;
-  moduleFilesByKey:
+  private readonly moduleData: ModuleData;
+  private readonly moduleFilesByKey:
   {
     [key: string]: ModuleFile;
   } = {};
-  moduleFilesByPhase:
+  private readonly moduleFilesByPhase:
   {
     [phase: number]: ModuleFile[];
   } = {};
-  hasInitialized:
+  private readonly hasInitialized:
   {
     [key: string]: boolean;
   } = {};
-  moduleInitalizationStart:
+  private readonly moduleInitalizationStart:
   {
     [key: string]: number;
   } = {};
-  moduleInitializationFinishCallbacks:
+  private readonly moduleInitializationFinishCallbacks:
   {
     [key: string]: (() => void)[];
   } = {};
+
   constructor(moduleData: ModuleData)
   {
     this.moduleData = moduleData;
