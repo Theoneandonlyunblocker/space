@@ -92,7 +92,7 @@ class App
       // this timeout allows constructor to finish and variable to be assigned
       window.setTimeout(() =>
       {
-        this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.Init, () =>
+        this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.AppInit, () =>
         {
           this.makeApp();
         });
@@ -106,7 +106,7 @@ class App
 
     this.initUI();
 
-    this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.Game, () =>
+    this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart, () =>
     {
       this.game = new Game(map, players);
       this.initGame();
@@ -134,7 +134,7 @@ class App
     this.destroy();
     this.initUI();
 
-    this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.Game, () =>
+    this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart, () =>
     {
       this.game = new GameLoader().deserializeGame(data.gameData);
       this.game.gameStorageKey = saveKey;
@@ -176,7 +176,7 @@ class App
 
     if (initialScene === "galaxyMap")
     {
-      this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.Game, () =>
+      this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart, () =>
       {
         this.game = this.makeGame();
         this.initGame();

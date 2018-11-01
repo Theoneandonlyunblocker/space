@@ -15,7 +15,7 @@ const defaultAi: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.Game,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
   constructModule: (moduleData) =>
   {

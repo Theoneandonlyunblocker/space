@@ -19,7 +19,7 @@ const defaultMapModes: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.Game,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
   initialize: (onLoaded) =>
   {

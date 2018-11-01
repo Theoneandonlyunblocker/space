@@ -13,7 +13,7 @@ export const englishLanguageSupport: ModuleFile =
     author: "giraluna",
     description: "Adds English to the list of available languages",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.Init,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.AppInit,
   supportedLanguages: "all",
   constructModule: (moduleData) =>
   {

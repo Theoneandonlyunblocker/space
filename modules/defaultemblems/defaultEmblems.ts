@@ -16,7 +16,7 @@ const defaultEmblems: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.Setup,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: "all",
   initialize: (onLoaded: () => void) =>
   {

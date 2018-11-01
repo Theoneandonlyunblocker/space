@@ -16,7 +16,7 @@ const defaultRaces: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.Setup,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   constructModule: (moduleData: ModuleData) =>
   {

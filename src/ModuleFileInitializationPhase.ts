@@ -1,11 +1,11 @@
 enum ModuleFileInitializationPhase
 {
-  Init,
-  Setup, // game setup. map & players etc.
+  AppInit,
+  GameSetup,
   MapGen,
-  Game,
+  GameStart,
   BattlePrep,
-  Battle,
+  BattleStart,
 }
 
 export default ModuleFileInitializationPhase;

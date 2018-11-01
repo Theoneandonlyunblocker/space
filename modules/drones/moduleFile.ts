@@ -21,7 +21,7 @@ export const drones: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.Setup,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   initialize: onLoaded =>
   {

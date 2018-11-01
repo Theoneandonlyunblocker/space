@@ -32,15 +32,15 @@ const moduleInitializationPhaseByScene:
   [key in ReactUIScene]: ModuleFileInitializationPhase;
 } =
 {
-  battle: ModuleFileInitializationPhase.Battle,
+  battle: ModuleFileInitializationPhase.BattleStart,
   battlePrep: ModuleFileInitializationPhase.BattlePrep,
-  galaxyMap: ModuleFileInitializationPhase.Game,
-  setupGame: ModuleFileInitializationPhase.Setup,
-  errorRecovery: ModuleFileInitializationPhase.Init,
+  galaxyMap: ModuleFileInitializationPhase.GameStart,
+  setupGame: ModuleFileInitializationPhase.GameSetup,
+  errorRecovery: ModuleFileInitializationPhase.AppInit,
 
-  flagMaker: ModuleFileInitializationPhase.Setup,
-  battleSceneTester: ModuleFileInitializationPhase.Battle,
-  sfxEditor: ModuleFileInitializationPhase.Battle,
+  flagMaker: ModuleFileInitializationPhase.GameSetup,
+  battleSceneTester: ModuleFileInitializationPhase.BattleStart,
+  sfxEditor: ModuleFileInitializationPhase.BattleStart,
 };
 
 export default class ReactUI
