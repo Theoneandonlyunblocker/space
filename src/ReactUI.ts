@@ -4,8 +4,8 @@ import Battle from "./Battle";
 import BattlePrep from "./BattlePrep";
 import Game from "./Game";
 import MapRenderer from "./MapRenderer";
-import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
-import ModuleLoader from "./ModuleLoader";
+import ModuleFileInitializationPhase from "./ModuleFileInitializationPhase";
+import ModuleInitializer from "./ModuleInitializer";
 import Player from "./Player";
 import PlayerControl from "./PlayerControl";
 import ReactUIScene from "./ReactUIScene";
@@ -27,20 +27,20 @@ import SfxEditor from "./uicomponents/sfxeditor/SfxEditor";
 import {localize} from "../localization/localize";
 
 
-const moduleLoadingPhaseByScene:
+const moduleInitializationPhaseByScene:
 {
-  [key in ReactUIScene]: ModuleFileLoadingPhase;
+  [key in ReactUIScene]: ModuleFileInitializationPhase;
 } =
 {
-  battle: ModuleFileLoadingPhase.Battle,
-  battlePrep: ModuleFileLoadingPhase.BattlePrep,
-  galaxyMap: ModuleFileLoadingPhase.Game,
-  setupGame: ModuleFileLoadingPhase.Setup,
-  errorRecovery: ModuleFileLoadingPhase.Init,
+  battle: ModuleFileInitializationPhase.Battle,
+  battlePrep: ModuleFileInitializationPhase.BattlePrep,
+  galaxyMap: ModuleFileInitializationPhase.Game,
+  setupGame: ModuleFileInitializationPhase.Setup,
+  errorRecovery: ModuleFileInitializationPhase.Init,
 
-  flagMaker: ModuleFileLoadingPhase.Setup,
-  battleSceneTester: ModuleFileLoadingPhase.Battle,
-  sfxEditor: ModuleFileLoadingPhase.Battle,
+  flagMaker: ModuleFileInitializationPhase.Setup,
+  battleSceneTester: ModuleFileInitializationPhase.Battle,
+  sfxEditor: ModuleFileInitializationPhase.Battle,
 };
 
 export default class ReactUI
@@ -57,12 +57,12 @@ export default class ReactUI
   public error: Error | undefined;
 
   private container: HTMLElement;
-  private moduleLoader: ModuleLoader;
+  private moduleInitializer: ModuleInitializer;
 
-  constructor(container: HTMLElement, moduleLoader: ModuleLoader)
+  constructor(container: HTMLElement, moduleInitializer: ModuleInitializer)
   {
     this.container = container;
-    this.moduleLoader = moduleLoader;
+    this.moduleInitializer = moduleInitializer;
 
     this.addEventListeners();
   }
@@ -70,7 +70,7 @@ export default class ReactUI
   public switchScene(newScene: ReactUIScene)
   {
     this.currentScene = newScene;
-    this.loadModulesNeededForCurrentScene(() =>
+    this.initializeModulesNeededForCurrentScene(() =>
     {
       this.render();
     });
@@ -117,10 +117,10 @@ export default class ReactUI
     eventManager.addEventListener("switchScene", this.switchScene.bind(this));
     eventManager.addEventListener("renderUI", this.render.bind(this));
   }
-  private loadModulesNeededForCurrentScene(afterLoaded: () => void): void
+  private initializeModulesNeededForCurrentScene(afterLoaded: () => void): void
   {
-    const phase = moduleLoadingPhaseByScene[this.currentScene];
-    this.moduleLoader.loadModulesNeededForPhase(phase, afterLoaded);
+    const phase = moduleInitializationPhaseByScene[this.currentScene];
+    this.moduleInitializer.initModulesNeededForPhase(phase, afterLoaded);
   }
   private getElementToRender(): React.ReactElement<any>
   {

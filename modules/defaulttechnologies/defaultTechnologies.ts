@@ -1,6 +1,6 @@
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate";
 
 import technologyTemplates from "./technologyTemplates";
@@ -15,7 +15,7 @@ const defaultTechnologies: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
   constructModule: (moduleData) =>
   {

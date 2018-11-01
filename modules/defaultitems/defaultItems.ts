@@ -1,6 +1,6 @@
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 import ItemTemplate from "../../src/templateinterfaces/ItemTemplate";
 
 import {itemTemplates} from "./itemTemplates";
@@ -15,7 +15,7 @@ const defaultItems: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
   constructModule: (moduleData) =>
   {

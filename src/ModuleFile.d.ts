@@ -1,5 +1,5 @@
 import ModuleData from "./ModuleData";
-import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "./ModuleFileInitializationPhase";
 
 import {Language} from "./localization/Language";
 
@@ -21,9 +21,9 @@ export interface ModuleFileSaveData<S = any>
 declare interface ModuleFile<S = any>
 {
   metaData: ModuleMetaData;
-  needsToBeLoadedBefore: ModuleFileLoadingPhase;
+  needsToBeInitializedBefore: ModuleFileInitializationPhase;
   supportedLanguages: Language[] | "all";
-  loadAssets?: (callback: () => void) => void;
+  initialize?: (callback: () => void) => void;
   constructModule?: (moduleData: ModuleData) => void;
   serialize?: () => S;
   reviveSaveData?: (oldSaveData: ModuleFileSaveData<any>) => void;

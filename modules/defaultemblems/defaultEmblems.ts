@@ -1,6 +1,6 @@
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 import {svgCache} from "../../src/svgCache";
 import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
 
@@ -16,9 +16,9 @@ const defaultEmblems: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.Setup,
   supportedLanguages: "all",
-  loadAssets: (onLoaded: () => void) =>
+  initialize: (onLoaded: () => void) =>
   {
     const loader = new PIXI.loaders.Loader();
 

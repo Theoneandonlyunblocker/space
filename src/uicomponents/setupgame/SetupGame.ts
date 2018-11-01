@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import app from "../../App"; // TODO global
-import ModuleFileLoadingPhase from "../../ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../ModuleFileInitializationPhase";
 import eventManager from "../../eventManager";
 import MapGenFunction from "../../templateinterfaces/MapGenFunction";
 
@@ -66,7 +66,7 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   }
   private startGame()
   {
-    eventManager.dispatchEvent("loadModulesNeededForPhase", ModuleFileLoadingPhase.MapGen, () =>
+    eventManager.dispatchEvent("initModulesNeededForPhase", ModuleFileInitializationPhase.MapGen, () =>
     {
       const players = this.setupPlayersComponent.makeAllPlayers();
 

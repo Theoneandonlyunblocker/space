@@ -1,5 +1,5 @@
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 
 
 const defaultRuleSet: ModuleFile =
@@ -11,7 +11,7 @@ const defaultRuleSet: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: "all",
   constructModule: (moduleData) =>
   {

@@ -1,6 +1,6 @@
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 
 import drawNebula from "./drawNebula";
 
@@ -14,7 +14,7 @@ const defaultBackgrounds: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.Game,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.Game,
   supportedLanguages: "all",
   constructModule: (moduleData: ModuleData) =>
   {

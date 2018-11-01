@@ -1,6 +1,6 @@
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 import {svgCache} from "../../src/svgCache";
 
 import {englishLanguage} from "../englishlanguage/englishLanguage";
@@ -18,9 +18,9 @@ const core: ModuleFile =
     author: "giraluna",
     description: "Core gameplay functionality",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.Setup,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.Setup,
   supportedLanguages: [englishLanguage],
-  loadAssets: (onLoaded: () => void) =>
+  initialize: (onLoaded: () => void) =>
   {
     const loader = new PIXI.loaders.Loader();
 

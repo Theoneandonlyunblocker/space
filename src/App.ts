@@ -6,8 +6,8 @@ import GalaxyMap from "./GalaxyMap";
 import Game from "./Game";
 import GameLoader from "./GameLoader";
 import MapRenderer from "./MapRenderer";
-import ModuleFileLoadingPhase from "./ModuleFileLoadingPhase";
-import ModuleLoader from "./ModuleLoader";
+import ModuleFileInitializationPhase from "./ModuleFileInitializationPhase";
+import ModuleInitializer from "./ModuleInitializer";
 import Options from "./Options";
 import Player from "./Player";
 import PlayerControl from "./PlayerControl";
@@ -58,7 +58,7 @@ class App
 
   private seed: string;
   private mapRenderer: MapRenderer;
-  private moduleLoader: ModuleLoader;
+  private moduleInitializer: ModuleInitializer;
 
   constructor()
   {
@@ -76,23 +76,23 @@ class App
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
     window.onerror = handleError;
 
-    this.moduleLoader = new ModuleLoader(activeModuleData);
+    this.moduleInitializer = new ModuleInitializer(activeModuleData);
     this.initUI();
 
     onDOMLoaded(() =>
     {
       defaultModuleData.moduleFiles.forEach(moduleFile =>
       {
-        this.moduleLoader.addModuleFile(moduleFile);
+        this.moduleInitializer.addModuleFile(moduleFile);
       });
 
-      addCommonToModuleData(this.moduleLoader.moduleData);
+      addCommonToModuleData(this.moduleInitializer.moduleData);
 
       // some things called in this.makeApp() rely on global app variable
       // this timeout allows constructor to finish and variable to be assigned
       window.setTimeout(() =>
       {
-        this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.Init, () =>
+        this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.Init, () =>
         {
           this.makeApp();
         });
@@ -106,7 +106,7 @@ class App
 
     this.initUI();
 
-    this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.Game, () =>
+    this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.Game, () =>
     {
       this.game = new Game(map, players);
       this.initGame();
@@ -134,7 +134,7 @@ class App
     this.destroy();
     this.initUI();
 
-    this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.Game, () =>
+    this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.Game, () =>
     {
       this.game = new GameLoader().deserializeGame(data.gameData);
       this.game.gameStorageKey = saveKey;
@@ -162,7 +162,7 @@ class App
     // don't preload modules in debug mode to ensure loading phases work correctly
     if (!Options.debug.enabled)
     {
-      this.moduleLoader.progressivelyLoadModulesByPhase(0);
+      this.moduleInitializer.progressivelyInitModulesByPhase(0);
     }
 
     const initialScene = this.getInitialScene();
@@ -176,7 +176,7 @@ class App
 
     if (initialScene === "galaxyMap")
     {
-      this.moduleLoader.loadModulesNeededForPhase(ModuleFileLoadingPhase.Game, () =>
+      this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.Game, () =>
       {
         this.game = this.makeGame();
         this.initGame();
@@ -360,7 +360,7 @@ class App
 
     this.reactUI = new ReactUI(
       reactContainer,
-      this.moduleLoader,
+      this.moduleInitializer,
     );
   }
   private hookUI()

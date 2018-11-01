@@ -2,7 +2,7 @@
 
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 import MapRendererLayerTemplate from "../../src/templateinterfaces/MapRendererLayerTemplate";
 import MapRendererMapModeTemplate from "../../src/templateinterfaces/MapRendererMapModeTemplate";
 
@@ -19,9 +19,9 @@ const defaultMapModes: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.Game,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.Game,
   supportedLanguages: [englishLanguage],
-  loadAssets: (onLoaded) =>
+  initialize: (onLoaded) =>
   {
     const loader = new PIXI.loaders.Loader();
 

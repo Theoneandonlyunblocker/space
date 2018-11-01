@@ -1,6 +1,6 @@
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 import AttitudeModifierTemplate from "../../src/templateinterfaces/AttitudeModifierTemplate";
 
 import attitudeModifierTemplates from "./AttitudeModifierTemplates";
@@ -16,7 +16,7 @@ const defaultAttitudeModifiers: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
   constructModule: (moduleData) =>
   {

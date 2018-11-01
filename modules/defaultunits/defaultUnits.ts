@@ -2,7 +2,7 @@
 
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
@@ -20,9 +20,9 @@ const defaultUnits: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
-  loadAssets: (onLoaded) =>
+  initialize: (onLoaded) =>
   {
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "units";

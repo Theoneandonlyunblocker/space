@@ -1,5 +1,5 @@
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 
 import {paintingPortraitTemplates} from "./paintingPortraitTemplates";
 
@@ -13,7 +13,7 @@ const paintingPortraits: ModuleFile =
     author: "various artists",
     description: "old ppl",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: "all",
   constructModule: (moduleData) =>
   {

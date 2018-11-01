@@ -2,7 +2,7 @@
 
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 import {BuildingTemplate} from "../../src/templateinterfaces/BuildingTemplate";
 
@@ -18,9 +18,9 @@ const defaultBuildings: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.MapGen,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
-  loadAssets: (onLoaded) =>
+  initialize: (onLoaded) =>
   {
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "buildings";

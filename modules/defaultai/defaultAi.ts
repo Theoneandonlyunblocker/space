@@ -1,6 +1,6 @@
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
-import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
+import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 import AiTemplateConstructor from "../../src/templateinterfaces/AITemplateConstructor";
 
 import defaultAiConstructor from "./mapai/DefaultAiConstructor";
@@ -15,7 +15,7 @@ const defaultAi: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.Game,
+  needsToBeInitializedBefore: ModuleFileInitializationPhase.Game,
   supportedLanguages: [englishLanguage],
   constructModule: (moduleData) =>
   {

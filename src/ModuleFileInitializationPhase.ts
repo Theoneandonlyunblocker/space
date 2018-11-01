@@ -1,4 +1,4 @@
-enum ModuleFileLoadingPhase
+enum ModuleFileInitializationPhase
 {
   Init,
   Setup, // game setup. map & players etc.
@@ -8,4 +8,4 @@ enum ModuleFileLoadingPhase
   Battle,
 }
 
-export default ModuleFileLoadingPhase;
+export default ModuleFileInitializationPhase;
