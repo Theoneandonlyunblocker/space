@@ -16,7 +16,7 @@ const defaultBackgrounds: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: "all",
-  constructModule: (moduleData: ModuleData) =>
+  addToModuleData: (moduleData: ModuleData) =>
   {
     if (!moduleData.mapBackgroundDrawingFunction)
     {

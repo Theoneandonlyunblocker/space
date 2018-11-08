@@ -45,7 +45,7 @@ const defaultEmblems: ModuleFile =
       onLoaded();
     });
   },
-  constructModule: (moduleData: ModuleData) =>
+  addToModuleData: (moduleData: ModuleData) =>
   {
     moduleData.copyTemplates<SubEmblemTemplate>(subEmblemTemplates, "SubEmblems");
 

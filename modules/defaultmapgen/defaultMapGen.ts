@@ -26,7 +26,7 @@ const defaultMapGen: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
-  constructModule: (moduleData: ModuleData) =>
+  addToModuleData: (moduleData: ModuleData) =>
   {
     moduleData.copyTemplates<MapGenTemplate>(templates, "MapGen");
 

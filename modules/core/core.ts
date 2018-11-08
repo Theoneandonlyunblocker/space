@@ -40,7 +40,7 @@ const core: ModuleFile =
       onLoaded();
     });
   },
-  constructModule: (moduleData: ModuleData) =>
+  addToModuleData: (moduleData: ModuleData) =>
   {
     moduleData.scripts.add(allScripts);
 

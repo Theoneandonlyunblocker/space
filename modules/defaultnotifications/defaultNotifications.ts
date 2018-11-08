@@ -21,7 +21,7 @@ const defaultNotifications: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
-  constructModule: (moduleData: ModuleData) =>
+  addToModuleData: (moduleData: ModuleData) =>
   {
     moduleData.copyTemplates(notificationTemplates, "Notifications");
     moduleData.scripts.add(...notificationCreationScripts);

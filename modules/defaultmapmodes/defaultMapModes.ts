@@ -28,7 +28,7 @@ const defaultMapModes: ModuleFile =
     loader.add("modules/defaultmapmodes/img/fowTexture.png");
     loader.load(onLoaded);
   },
-  constructModule: (moduleData) =>
+  addToModuleData: (moduleData) =>
   {
     moduleData.copyTemplates<MapRendererLayerTemplate>(mapLayerTemplates, "MapRendererLayers");
     moduleData.copyTemplates<MapRendererMapModeTemplate>(mapModeTemplates, "MapRendererMapModes");

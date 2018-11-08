@@ -17,7 +17,7 @@ const defaultItems: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
-  constructModule: (moduleData) =>
+  addToModuleData: (moduleData) =>
   {
     moduleData.copyTemplates<ItemTemplate>(itemTemplates, "Items");
 

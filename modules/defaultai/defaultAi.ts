@@ -17,7 +17,7 @@ const defaultAi: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
-  constructModule: (moduleData) =>
+  addToModuleData: (moduleData) =>
   {
     moduleData.copyTemplates<AiTemplateConstructor<any>>(
     {

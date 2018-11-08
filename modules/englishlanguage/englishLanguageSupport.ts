@@ -15,7 +15,7 @@ export const englishLanguageSupport: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.AppInit,
   supportedLanguages: "all",
-  constructModule: (moduleData) =>
+  addToModuleData: (moduleData) =>
   {
     moduleData.copyTemplates(
     {

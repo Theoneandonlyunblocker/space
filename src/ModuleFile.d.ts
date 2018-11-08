@@ -24,7 +24,7 @@ declare interface ModuleFile<S = any>
   needsToBeInitializedBefore: ModuleFileInitializationPhase;
   supportedLanguages: Language[] | "all";
   initialize?: (callback: () => void) => void;
-  constructModule?: (moduleData: ModuleData) => void;
+  addToModuleData?: (moduleData: ModuleData) => void;
   serialize?: () => S;
   reviveSaveData?: (oldSaveData: ModuleFileSaveData<any>) => void;
   deserialize?: (saveData: S) => void;

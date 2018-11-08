@@ -18,7 +18,7 @@ const defaultRaces: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
-  constructModule: (moduleData: ModuleData) =>
+  addToModuleData: (moduleData: ModuleData) =>
   {
     moduleData.copyTemplates<RaceTemplate>(raceTemplates, "Races");
 

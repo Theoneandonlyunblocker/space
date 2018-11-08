@@ -183,9 +183,9 @@ export default class ModuleInitializer
   }
   private constructModuleFile(moduleFile: ModuleFile)
   {
-    if (moduleFile.constructModule)
+    if (moduleFile.addToModuleData)
     {
-      moduleFile.constructModule(this.moduleData);
+      moduleFile.addToModuleData(this.moduleData);
     }
 
     this.moduleData.addSubModule(moduleFile);

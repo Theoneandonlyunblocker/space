@@ -17,7 +17,7 @@ const defaultTechnologies: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
-  constructModule: (moduleData) =>
+  addToModuleData: (moduleData) =>
   {
     moduleData.copyTemplates<TechnologyTemplate>(technologyTemplates, "Technologies");
 

@@ -37,7 +37,7 @@ export const drones: ModuleFile =
       onLoaded();
     });
   },
-  constructModule: (moduleData: ModuleData) =>
+  addToModuleData: (moduleData: ModuleData) =>
   {
     moduleData.copyTemplates(abilityTemplates, "Abilities");
     moduleData.copyTemplates(raceTemplates, "Races");

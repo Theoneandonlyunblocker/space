@@ -34,7 +34,7 @@ const defaultBuildings: ModuleFile =
       onLoaded();
     });
   },
-  constructModule: (moduleData) =>
+  addToModuleData: (moduleData) =>
   {
     moduleData.copyTemplates<BuildingTemplate>(buildingTemplates, "Buildings");
 

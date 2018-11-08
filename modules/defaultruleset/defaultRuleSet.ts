@@ -13,7 +13,7 @@ const defaultRuleSet: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: "all",
-  constructModule: (moduleData) =>
+  addToModuleData: (moduleData) =>
   {
     moduleData.ruleSet =
     {

@@ -38,7 +38,7 @@ const defaultUnits: ModuleFile =
       onLoaded();
     });
   },
-  constructModule: (moduleData) =>
+  addToModuleData: (moduleData) =>
   {
     moduleData.copyTemplates<UnitTemplate>(unitTemplates, "Units");
     moduleData.copyTemplates<UnitArchetype>(unitArchetypes, "UnitArchetypes");

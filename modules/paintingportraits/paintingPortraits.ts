@@ -15,7 +15,7 @@ const paintingPortraits: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: "all",
-  constructModule: (moduleData) =>
+  addToModuleData: (moduleData) =>
   {
     moduleData.copyTemplates(paintingPortraitTemplates, "Portraits");
 
