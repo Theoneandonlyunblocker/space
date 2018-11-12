@@ -686,3 +686,10 @@ export function extractFlagsFromFlagWord<F extends number, E extends {[K in Extr
   return allPresentFlags;
 }
 // tslint:enable:no-bitwise
+// tslint:disable-next-line:ban-types
+export function getFunctionName(f: Function): string
+{
+  const result = /^function\s+([\w\$]+)\s*\(/.exec(f.toString());
+
+  return result ? result[1] : "anonymous";
+}

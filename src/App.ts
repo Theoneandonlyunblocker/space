@@ -21,6 +21,7 @@ import {centerCameraOnPosition} from "./centerCameraOnPosition";
 import {defaultModuleData} from "./defaultModuleData";
 import idGenerators from "./idGenerators";
 import {handleError} from "./handleError";
+import * as debug from "./debug";
 import
 {
   reviveSaveData,
@@ -31,6 +32,7 @@ import
 {
   getRandomArrayItem,
   onDOMLoaded,
+  getFunctionName,
 } from "./utility";
 
 import {NotificationStore} from "./notifications/NotificationStore";
@@ -436,7 +438,7 @@ class App
 
       reviversToExecute.forEach(reviverFN =>
       {
-        console.log(`Cleaning up outdated stored data with function '${getFunctionName(reviverFN)}'`);
+        debug.log("saves", `Cleaning up outdated stored data with function '${getFunctionName(reviverFN)}'`);
         reviverFN();
       });
 

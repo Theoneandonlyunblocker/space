@@ -1,7 +1,7 @@
 import Options from "./Options";
 
 
-type LoggingCategory = "ai" | "graphics";
+type LoggingCategory = "ai" | "graphics" | "saves";
 
 export function shouldLog(category: LoggingCategory): boolean
 {

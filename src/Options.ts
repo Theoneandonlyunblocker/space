@@ -5,6 +5,7 @@ import
 {
   deepMerge,
   extendObject,
+  getFunctionName,
 } from "./utility";
 import { Language } from "./localization/Language";
 import app from "./App";
@@ -16,6 +17,7 @@ import
 import { activeModuleData } from "./activeModuleData";
 import { ErrorReportingMode } from "./handleError";
 import { storageStrings } from "./storageStrings";
+import * as debug from "./debug";
 
 
 type OptionsCategory = "battle" | "debug" | "display" | "system";
@@ -49,6 +51,7 @@ type BaseOptionsValues =
     {
       ai: boolean;
       graphics: boolean;
+      saves: boolean;
     };
   };
   display:
@@ -107,6 +110,7 @@ const defaultOptionsValues: OptionsValues =
     {
       ai: true,
       graphics: true,
+      saves: true,
     },
   },
   display:
@@ -143,6 +147,7 @@ class Options implements OptionsValues
     {
       ai: boolean;
       graphics: boolean;
+      saves: boolean;
     };
   };
   display:
@@ -320,6 +325,7 @@ class Options implements OptionsValues
 
     reviversToExecute.forEach(reviverFN =>
     {
+      debug.log("saves", `Executing stored options reviver function '${getFunctionName(reviverFN)}'`);
       reviverFN(revived);
     });
 

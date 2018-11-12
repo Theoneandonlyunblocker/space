@@ -1,9 +1,11 @@
-// for core data only (everything under /src/savedata)
+// for core data only (everything under /src)
 // modules should handle save compability on their own
 
 import FullSaveData from "./savedata/FullSaveData";
 import ModuleFile from "./ModuleFile";
 import * as semver from "./versions";
+import * as debug from "./debug";
+import { getFunctionName } from "./utility";
 
 
 // data is cloned at start of reviving process
@@ -40,7 +42,7 @@ export function fetchNeededReviversForData(
   return neededRevivers;
 }
 
-type OutdatedFullSaveData = FullSaveData; // not really
+type OutdatedFullSaveData = FullSaveData; // useful to keep them nominally distinct
 export function reviveSaveData(data: OutdatedFullSaveData, liveAppVersion: string): FullSaveData
 {
   const clonedData = {...data};
@@ -84,6 +86,7 @@ function reviveCoreSaveData(data: OutdatedFullSaveData, liveAppVersion: string):
 
   reviversToExecute.forEach(reviverFN =>
   {
+    debug.log("saves", `Executing stored core save data reviver function '${getFunctionName(reviverFN)}'`);
     reviverFN(data);
   });
 }
