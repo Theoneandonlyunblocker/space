@@ -5,7 +5,8 @@
     "pixi.js": "4.5.3",
     "react": "16.4.x",
     "react-dom": "16.4.x",
-    "react-dom-factories": "1.0.x"
+    "react-dom-factories": "1.0.x",
+    "localforage": "1.7.x"
   },
   "devDependencies": {
     "typescript": "3.0.x",
