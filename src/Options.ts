@@ -80,7 +80,7 @@ type SerializedOptionsValues = BaseOptionsValues &
 type OptionsSaveData =
 {
   options: SerializedOptionsValues;
-  date: Date;
+  date: string;
   appVersion: string;
 };
 
@@ -238,7 +238,7 @@ class Options implements OptionsValues
     const data: OptionsSaveData =
     {
       options: this.serialize(),
-      date: new Date(),
+      date: new Date().toISOString(),
       appVersion: app.version,
     };
 
@@ -251,8 +251,12 @@ class Options implements OptionsValues
     return localForage.getItem<string>(storageStrings.options).then(savedData =>
     {
       const parsedData = JSON.parse(savedData);
-      const revivedData = this.reviveOptionsSaveData(parsedData);
-      this.deserialize(revivedData.options);
+
+      if (parsedData)
+      {
+        const revivedData = this.reviveOptionsSaveData(parsedData);
+        this.deserialize(revivedData.options);
+      }
     });
   }
 

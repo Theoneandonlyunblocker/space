@@ -1,3 +1,5 @@
+import * as localForage from "localforage";
+
 import app from "./App"; // TODO global
 import GalaxyMap from "./GalaxyMap";
 import Player from "./Player";
@@ -94,13 +96,12 @@ export default class Game
   }
   public getSaveData(): string
   {
-    const date = new Date();
     const gameData = this.serialize();
 
     const fullSaveData: FullSaveData =
     {
       name: name,
-      date: date,
+      date: new Date().toISOString(),
       appVersion: app.version,
       gameData: gameData,
       idGenerators: idGenerators.serialize(),
@@ -112,12 +113,12 @@ export default class Game
 
     return JSON.stringify(fullSaveData);
   }
-  public save(name: string, saveData: string = this.getSaveData()): void
+  public save(name: string, saveData: string = this.getSaveData()): Promise<string>
   {
     const saveString = storageStrings.savePrefix + name;
     this.gameStorageKey = saveString;
 
-    localStorage.setItem(saveString, saveData);
+    return localForage.setItem(saveString, saveData);
   }
   public getLiveMajorPlayers(): Player[]
   {

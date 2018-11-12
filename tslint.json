@@ -2,6 +2,11 @@
   "defaultSeverity": "warn",
   "rules":
   {
+    "ban": [
+      true,
+      "localStorage"
+    ],
+
     // try to follow these while writing new code
     "member-access": true,
     "member-ordering": [true, {"order": "fields-first"}],

@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
+import * as localForage from "localforage";
 
 import {localize} from "../../../localization/localize";
 import app from "../../App"; // TODO global
@@ -155,7 +156,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   {
     this.state.saveKeysToDelete.forEach(key =>
     {
-      localStorage.removeItem(key);
+      localForage.removeItem(key);
     });
 
     this.setState(

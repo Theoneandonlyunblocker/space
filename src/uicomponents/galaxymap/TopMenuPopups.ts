@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
+import * as localForage from "localforage";
 
 import {localize} from "../../../localization/localize";
 import Game from "../../Game";
@@ -137,15 +138,17 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
 
     this.bindMethods();
 
-    const storedWindowPositions = localStorage.getItem(storageStrings.windowPositions);
-    if (storedWindowPositions)
+    localForage.getItem<string>(storageStrings.windowPositions).then(storedWindowPositions =>
     {
-      const parsed = JSON.parse(storedWindowPositions);
-      for (const key in parsed)
+      if (storedWindowPositions)
       {
-        this.cachedPopupPositions[key] = parsed[key];
+        const parsed = JSON.parse(storedWindowPositions);
+        for (const key in parsed)
+        {
+          this.cachedPopupPositions[key] = parsed[key];
+        }
       }
-    }
+    });
   }
 
   public togglePopup(popupType: PopupType)
@@ -275,7 +278,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       }
     }
 
-    localStorage.setItem(storageStrings.windowPositions, JSON.stringify(this.cachedPopupPositions));
+    localForage.setItem(storageStrings.windowPositions, JSON.stringify(this.cachedPopupPositions));
   }
 }
 

@@ -1,12 +1,17 @@
+const basePrefix = "Rance.";
+
 export const storageStrings =
 {
-  savePrefix: "Rance.Save.",
-  // TODO 2018.11.12 | what's the point of having multiple slots for these honestly
-  optionsPrefix: "Rance.Options",
-  notificationFilterPrefix: "Rance.NotificationFilter.",
+  basePrefix: basePrefix,
+  savePrefix: `${basePrefix}Save.`,
 
-  windowPositions: "Rance.WindowPositions",
-  tutorialStatus: "Rance.TutorialStatus",
+  appVersion: `${basePrefix}AppVersion`,
+  options: `${basePrefix}Options`,
+  notificationFilter: `${basePrefix}NotificationFilter`,
+  windowPositions: `${basePrefix}WindowPositions`,
+  tutorialStatus: `${basePrefix}TutorialStatus`,
 
-  deprecated_language: "Rance.language"
+  deprecated_language: `${basePrefix}language`,
+  deprecated_options: `${basePrefix}Options.0`,
+  deprecated_notificationFilter: `${basePrefix}NotificationFilter.0`,
 };

@@ -1,3 +1,5 @@
+import * as localForage from "localforage";
+
 import TutorialVisibility from "./TutorialVisibility";
 import { storageStrings } from "../storageStrings";
 
@@ -28,26 +30,27 @@ class TutorialStatus implements TutorialStatusValues
 
   public save(): void
   {
-    localStorage.setItem(storageStrings.tutorialStatus, JSON.stringify(this.serialize()));
+    localForage.setItem(storageStrings.tutorialStatus, JSON.stringify(this.serialize()));
   }
-  public load(): void
+  public load(): Promise<void>
   {
     this.setDefaultValues();
 
-    const tutorialStatusData = localStorage.getItem(storageStrings.tutorialStatus);
-
-    if (!tutorialStatusData)
+    return localForage.getItem<string>(storageStrings.tutorialStatus).then(tutorialStatusData =>
     {
-      return;
-    }
-
-    const parsedData: TutorialStatusValues = JSON.parse(tutorialStatusData);
-    this.deserialize(parsedData);
+      if (tutorialStatusData)
+      {
+        const parsedData: TutorialStatusValues = JSON.parse(tutorialStatusData);
+        this.deserialize(parsedData);
+      }
+    });
   }
-  public reset(): void
+  public reset(): Promise<void>
   {
-    localStorage.removeItem(storageStrings.tutorialStatus);
-    this.setDefaultValues();
+    return localForage.removeItem(storageStrings.tutorialStatus).then(() =>
+    {
+      this.setDefaultValues();
+    });
   }
 
   private setDefaultValues(): void

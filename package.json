@@ -1,6 +1,6 @@
 {
   "name": "spacegame",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "dependencies": {
     "pixi.js": "4.5.3",
     "react": "16.4.x",

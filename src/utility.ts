@@ -1,6 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
+import * as localForage from "localforage";
 
 import {activeModuleData} from "./activeModuleData";
 
@@ -404,28 +405,6 @@ export function prettifyDate(date: Date)
       ].join(":"),
     ].join(" ")
   );
-}
-export function getMatchingLocalStorageKeys(toMatch: string | RegExp): string[]
-{
-  const filterFN = (typeof toMatch === "string") ?
-    (key: string) => key.indexOf(toMatch) !== -1 :
-    (key: string) => key.search(toMatch) !== -1;
-
-  return Object.keys(localStorage).filter(filterFN);
-}
-export function getMatchingLocalStorageItemsSortedByDate<T>(toMatch: string | RegExp): T[]
-{
-  const matchingItems = getMatchingLocalStorageKeys(toMatch).map(storageKey =>
-  {
-    return JSON.parse(localStorage.getItem(storageKey));
-  });
-
-  matchingItems.sort((a, b) =>
-  {
-    return Date.parse(b.date) - Date.parse(a.date);
-  });
-
-  return matchingItems;
 }
 export function getRelativeValue(value: number, min: number, max: number, inverse: boolean = false)
 {

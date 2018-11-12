@@ -1,4 +1,5 @@
 /// <reference path="../lib/rng.d.ts" />
+import * as localForage from "localforage";
 
 import addCommonToModuleData from "../modules/common/addCommonToModuleData";
 
@@ -30,7 +31,6 @@ import
 {
   getRandomArrayItem,
   onDOMLoaded,
-  getMatchingLocalStorageKeys,
 } from "./utility";
 
 import {NotificationStore} from "./notifications/NotificationStore";
@@ -45,7 +45,6 @@ import { storageStrings } from "./storageStrings";
 
 class App
 {
-  // TODO refactor | most (all?) of these should be private or moved
   public renderer: Renderer;
   public game: Game;
   public playerControl: PlayerControl;
@@ -55,7 +54,7 @@ class App
     [id: string]: HTMLImageElement;
   } = {};
 
-  public readonly version: string = "0.1.0";
+  public readonly version: string = "0.2.0";
 
   private seed: string;
   private mapRenderer: MapRenderer;
@@ -64,14 +63,15 @@ class App
   constructor()
   {
     PIXI.utils.skipHello();
+
+    this.cleanUpStorage();
+
     window.onhashchange = () =>
     {
       this.destroy();
       this.initUI();
       this.makeApp();
     };
-
-    this.cleanUpLocalStorageKeys();
 
     this.seed = "" + Math.random();
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
@@ -119,38 +119,39 @@ class App
       this.reactUI.switchScene("galaxyMap");
     });
   }
-  public load(saveKey: string)
+  public load(saveKey: string): Promise<void>
   {
-    const rawData = localStorage.getItem(saveKey);
-    if (!rawData)
+    return localForage.getItem<string>(saveKey).then(rawData =>
     {
-      throw new Error(`Couldn't fetch save data with key ${saveKey}`);
-    }
-
-    const parsedData: FullSaveData = JSON.parse(rawData);
-    const data = reviveSaveData(parsedData, this.version);
-
-    idGenerators.setValues(data.idGenerators);
-
-    this.destroy();
-    this.initUI();
-
-    this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart, () =>
-    {
-      this.game = new GameLoader().deserializeGame(data.gameData);
-      this.game.gameStorageKey = saveKey;
-      this.initGame();
-
-      this.initDisplay();
-      this.hookUI();
-      if (data.cameraLocation)
+      if (!rawData)
       {
-        centerCameraOnPosition(data.cameraLocation);
+        throw new Error(`Couldn't fetch save data with key ${saveKey}`);
       }
 
-      this.reactUI.switchScene("galaxyMap");
-    });
+      const parsedData: FullSaveData = JSON.parse(rawData);
+      const data = reviveSaveData(parsedData, this.version);
 
+      idGenerators.setValues(data.idGenerators);
+
+      this.destroy();
+      this.initUI();
+
+      this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart, () =>
+      {
+        this.game = new GameLoader().deserializeGame(data.gameData);
+        this.game.gameStorageKey = saveKey;
+        this.initGame();
+
+        this.initDisplay();
+        this.hookUI();
+        if (data.cameraLocation)
+        {
+          centerCameraOnPosition(data.cameraLocation);
+        }
+
+        this.reactUI.switchScene("galaxyMap");
+      });
+    });
   }
 
   private makeApp()
@@ -387,36 +388,59 @@ class App
       return "setupGame";
     }
   }
-  private cleanUpLocalStorageKeys(): void
+  private cleanUpStorage(): void
   {
-    const reviversByAppVersion: ReviversByVersion =
+    localForage.getItem<string>(storageStrings.appVersion).then(storedAppVersion =>
     {
-      "0.0.0":
-      [
-        () =>
-        {
-          localStorage.removeItem(storageStrings.deprecated_language);
-        },
-        () =>
-        {
-          const notificationFilterOptionsToDelete = getMatchingLocalStorageKeys(/^NotificationFilter\./);
-          notificationFilterOptionsToDelete.forEach(storageKey =>
+      const reviversByAppVersion: ReviversByVersion =
+      {
+        "0.0.0":
+        [
+          function removeSeparatelyStoredLanguageSetting()
           {
-            localStorage.removeItem(storageKey);
-          });
-        },
-      ],
-    };
+            localStorage.removeItem(storageStrings.deprecated_language);
+          },
+        ],
+        "0.1.0":
+        [
+          function onlyUseOneSlotForStoredOptions()
+          {
+            const storedOptions = localStorage.getItem(storageStrings.deprecated_options);
+            localStorage.setItem(storageStrings.options, storedOptions);
+            localStorage.removeItem(storageStrings.deprecated_options);
+          },
+          function onlyUseOneSlotForStoredNotificationFilterSettings()
+          {
+            const storedNotificationFilter = localStorage.getItem(storageStrings.deprecated_notificationFilter);
+            localStorage.setItem(storageStrings.notificationFilter, storedNotificationFilter);
+            localStorage.removeItem(storageStrings.deprecated_notificationFilter);
+          },
+          function moveStoredDataFromLocalStorageToLocalForage()
+          {
+            Object.keys(localStorage).filter(key => key.indexOf(storageStrings.basePrefix) !== -1).forEach(key =>
+            {
+              localForage.setItem(key, localStorage.getItem(key)).then(() =>
+              {
+                localStorage.removeItem(key);
+              });
+            });
+          }
+        ]
+      };
 
-    const reviversToExecute = fetchNeededReviversForData(
-      "",
-      this.version,
-      reviversByAppVersion,
-    );
+      const reviversToExecute = fetchNeededReviversForData(
+        storedAppVersion || "",
+        this.version,
+        reviversByAppVersion,
+      );
 
-    reviversToExecute.forEach(reviverFN =>
-    {
-      reviverFN();
+      reviversToExecute.forEach(reviverFN =>
+      {
+        console.log(`Cleaning up outdated stored data with function '${getFunctionName(reviverFN)}'`);
+        reviverFN();
+      });
+
+      localForage.setItem(storageStrings.appVersion, this.version);
     });
   }
 }

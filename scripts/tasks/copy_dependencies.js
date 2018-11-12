@@ -12,6 +12,7 @@ const filesToCopyWithDestination =
   "node_modules/react/umd/react.development.js": "dist/react.js",
   "node_modules/react-dom/umd/react-dom.development.js": "dist/react-dom.js",
   "node_modules/react-dom-factories/index.js": "dist/react-dom-factories.js",
+  "node_modules/localforage/dist/localforage.js": "dist/localforage.js",
 };
 
 Object.keys(filesToCopyWithDestination).forEach(source =>

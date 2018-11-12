@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
+import * as localForage from "localforage";
 
 import {localize} from "../../../localization/localize";
 import {prettifyDate} from "../../utility";
@@ -9,7 +10,15 @@ import ListItem from "../list/ListItem";
 
 import {default as SaveListItem, PropTypes as SaveListItemProps} from "./SaveListItem";
 import { storageStrings } from "../../storageStrings";
+import FullSaveData from "../../savedata/FullSaveData";
 
+
+interface SaveDataForDisplay
+{
+  key: string;
+  name: string;
+  date: Date;
+}
 
 export interface PropTypes extends React.Props<any>
 {
@@ -25,6 +34,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
+  saveKeys: SaveDataForDisplay[];
 }
 
 export class SaveListComponent extends React.Component<PropTypes, StateType>
@@ -35,56 +45,71 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
+
+    this.state =
+    {
+      saveKeys: [],
+    };
   }
 
-  render()
+  public componentDidMount()
+  {
+    const allSaveDataForDisplay: SaveDataForDisplay[] = [];
+
+    localForage.iterate((value: string, key) =>
+    {
+      if (key.indexOf(storageStrings.savePrefix))
+      {
+        const parsed: FullSaveData = JSON.parse(value);
+
+        allSaveDataForDisplay.push(
+        {
+          key: key,
+          name: parsed.name,
+          date: new Date(parsed.date),
+        });
+      }
+    }).then(() =>
+    {
+      this.setState({saveKeys: allSaveDataForDisplay});
+    });
+  }
+  public render()
   {
     const rows: ListItem<SaveListItemProps>[] = [];
     let selected: ListItem<SaveListItemProps> | null = null;
 
-    const allKeys = Object.keys(localStorage);
-
-    const saveKeys = allKeys.filter(key => key.indexOf(storageStrings.savePrefix) !== -1);
-
-    for (let i = 0; i < saveKeys.length; i++)
+    this.state.saveKeys.forEach(parsedData =>
     {
-      const saveData = JSON.parse(localStorage.getItem(saveKeys[i])!);
-      const date = new Date(saveData.date);
-      let isMarkedForDeletion = false;
-      if (this.props.saveKeysToDelete)
-      {
-        if (this.props.saveKeysToDelete.indexOf(saveKeys[i]) !== -1)
-        {
-          isMarkedForDeletion = true;
-        }
-      }
+      const isMarkedForDeletion = this.props.saveKeysToDelete &&
+        this.props.saveKeysToDelete.indexOf(parsedData.key) !== -1;
 
       const row: ListItem<SaveListItemProps> =
       {
-        key: saveKeys[i],
+        key: parsedData.key,
         content: SaveListItem(
         {
-          storageKey: saveKeys[i],
-          name: saveData.name,
-          date: prettifyDate(date),
-          accurateDate: saveData.date,
+          storageKey: parsedData.key,
+          name: parsedData.name,
+          date: prettifyDate(parsedData.date),
+          accurateDate: parsedData.date.toISOString(),
           isMarkedForDeletion: isMarkedForDeletion,
           handleDelete: this.props.onDelete ?
-            this.props.onDelete.bind(null, saveKeys[i]) :
+            this.props.onDelete.bind(null, parsedData.key) :
             null,
           handleUndoDelete: this.props.onUndoDelete ?
-            this.props.onUndoDelete.bind(null, saveKeys[i]) :
+            this.props.onUndoDelete.bind(null, parsedData.key) :
             null,
           onDoubleClick: this.props.onDoubleClick,
         }),
       };
 
       rows.push(row);
-      if (this.props.selectedKey === saveKeys[i])
+      if (this.props.selectedKey === parsedData.key)
       {
         selected = row;
       }
-    }
+    });
 
     const columns: ListColumn<SaveListItemProps>[] =
     [

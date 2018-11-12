@@ -7,7 +7,7 @@ import GameSaveData from "./GameSaveData";
 declare interface FullSaveData
 {
   name: string;
-  date: Date;
+  date: string;
   appVersion: string;
   gameData: GameSaveData;
   idGenerators: IdGeneratorValues;

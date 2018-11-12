@@ -22,7 +22,6 @@ export class NotificationFilter
 
   constructor()
   {
-    this.setDefaultFilterStates();
     this.load();
   }
   setDefaultFilterStates()
@@ -147,11 +146,16 @@ export class NotificationFilter
   }
   load(): Promise<void>
   {
+    this.setDefaultFilterStates();
+
     return localForage.getItem<string>(storageStrings.notificationFilter).then(savedData =>
     {
       const parsedData = JSON.parse(savedData);
 
-      this.filters = extendObject(parsedData.filters, this.filters, false);
+      if (parsedData)
+      {
+        this.filters = extendObject(parsedData.filters, this.filters, false);
+      }
     });
   }
   save(): Promise<string>

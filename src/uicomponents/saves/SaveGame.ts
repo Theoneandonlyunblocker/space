@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
+import * as localForage from "localforage";
 
 import {localize} from "../../../localization/localize";
 import app from "../../App"; // TODO global
@@ -150,15 +151,19 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   private handleSave()
   {
     const saveName = this.state.saveName;
-    if (localStorage[saveKey])
-    {
-      this.setState({hasConfirmOverwritePopup: true});
-    }
-    else
     const saveKey = storageStrings.savePrefix + saveName;
+
+    localForage.getItem(saveKey).then(item =>
     {
-      this.saveGame();
-    }
+      if (item)
+      {
+        this.setState({hasConfirmOverwritePopup: true});
+      }
+      else
+      {
+        this.saveGame();
+      }
+    });
   }
   private closeConfirmOverwritePopup(): void
   {
