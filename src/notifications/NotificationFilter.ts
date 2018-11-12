@@ -1,10 +1,11 @@
+import * as localForage from "localforage";
+
 import {activeModuleData} from "../activeModuleData";
 import {activePlayer} from "../activePlayer";
 import NotificationTemplate from "../templateinterfaces/NotificationTemplate";
 import
 {
   extendObject,
-  getMatchingLocalStorageItemsSortedByDate,
 } from "../utility";
 
 import {Notification} from "./Notification";
@@ -144,31 +145,16 @@ export class NotificationFilter
       this.filters[template.key] = template.defaultFilterState.slice(0);
     }
   }
-  load(slot?: number)
+  load(): Promise<void>
   {
-    let parsedData: any;
-    if (slot !== undefined)
+    return localForage.getItem<string>(storageStrings.notificationFilter).then(savedData =>
     {
-      const savedData = localStorage.getItem(storageStrings.notificationFilterPrefix + slot);
+      const parsedData = JSON.parse(savedData);
 
-      if (!savedData)
-      {
-        throw new Error(`No such localStorage key: ${storageStrings.notificationFilterPrefix + slot}`);
-      }
-
-      parsedData = JSON.parse(savedData);
-    }
-    else
-    {
-      parsedData = getMatchingStorageItemsSortedByDate(storageStrings.notificationFilterPrefix)[0];
-    }
-
-    if (parsedData)
-    {
       this.filters = extendObject(parsedData.filters, this.filters, false);
-    }
+    });
   }
-  save(slot: number = 0)
+  save(): Promise<string>
   {
     const data = JSON.stringify(
     {
@@ -176,7 +162,7 @@ export class NotificationFilter
       date: new Date(),
     });
 
-    localStorage.setItem(storageStrings.notificationFilterPrefix + slot, data);
+    return localForage.setItem(storageStrings.notificationFilter, data);
   }
 }
 

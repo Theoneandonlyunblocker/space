@@ -1,9 +1,10 @@
+import * as localForage from "localforage";
+
 import eventManager from "./eventManager";
 import
 {
   deepMerge,
   extendObject,
-  getMatchingLocalStorageItemsSortedByDate,
 } from "./utility";
 import { Language } from "./localization/Language";
 import app from "./App";
@@ -232,7 +233,7 @@ class Options implements OptionsValues
       this.setDefaultForCategory(category);
     });
   }
-  public save(slot: number = 0)
+  public save(): Promise<string>
   {
     const data: OptionsSaveData =
     {
@@ -241,47 +242,20 @@ class Options implements OptionsValues
       appVersion: app.version,
     };
 
-    const saveName = storageStrings.optionsPrefix + slot;
-
-    localStorage.setItem(saveName, JSON.stringify(data));
+    return localForage.setItem(storageStrings.options, JSON.stringify(data));
   }
-  public load(slot?: number)
+  public load(): Promise<void>
   {
     this.setDefaults();
-    const parsedData = this.getParsedDataForSlot(slot);
 
-    if (parsedData)
+    return localForage.getItem<string>(storageStrings.options).then(savedData =>
     {
+      const parsedData = JSON.parse(savedData);
       const revivedData = this.reviveOptionsSaveData(parsedData);
       this.deserialize(revivedData.options);
-    }
-    else
-    {
-      throw new Error(`Couldn't find any options saved in localStorage`);
-    }
+    });
   }
 
-  private getParsedDataForSlot(slot?: number): OptionsSaveData
-  {
-    let parsedData: OptionsSaveData;
-    if (slot !== undefined)
-    {
-      const savedData = localStorage.getItem(storageStrings.optionsPrefix + slot);
-
-      if (!savedData)
-      {
-        throw new Error(`No such localStorage key: ${storageStrings.optionsPrefix + slot}`);
-      }
-
-      parsedData = JSON.parse(savedData);
-    }
-    else
-    {
-      parsedData = getMatchingStorageItemsSortedByDate<OptionsSaveData>(storageStrings.optionsPrefix)[0];
-    }
-
-    return parsedData;
-  }
   private serialize(): SerializedOptionsValues
   {
     return(
