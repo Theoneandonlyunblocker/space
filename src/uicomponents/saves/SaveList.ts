@@ -8,6 +8,7 @@ import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";
 
 import {default as SaveListItem, PropTypes as SaveListItemProps} from "./SaveListItem";
+import { storageStrings } from "../../storageStrings";
 
 
 export interface PropTypes extends React.Props<any>
@@ -43,7 +44,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
 
     const allKeys = Object.keys(localStorage);
 
-    const saveKeys = allKeys.filter(key => key.indexOf("Save") !== -1);
+    const saveKeys = allKeys.filter(key => key.indexOf(storageStrings.savePrefix) !== -1);
 
     for (let i = 0; i < saveKeys.length; i++)
     {

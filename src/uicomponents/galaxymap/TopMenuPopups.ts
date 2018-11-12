@@ -18,9 +18,8 @@ import {default as DefaultWindow, DefaultWindowComponent} from "../windows/Defau
 
 import EconomySummary from "./EconomySummary";
 import FullOptionsList from "../options/FullOptionsList";
+import { storageStrings } from "../../storageStrings";
 
-
-const windowPositionStorageKey = "Rance.WindowPositions";
 
 interface ValuesByPopup<T>
 {
@@ -138,7 +137,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
 
     this.bindMethods();
 
-    const storedWindowPositions = localStorage.getItem(windowPositionStorageKey);
+    const storedWindowPositions = localStorage.getItem(storageStrings.windowPositions);
     if (storedWindowPositions)
     {
       const parsed = JSON.parse(storedWindowPositions);
@@ -276,7 +275,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       }
     }
 
-    localStorage.setItem(windowPositionStorageKey, JSON.stringify(this.cachedPopupPositions));
+    localStorage.setItem(storageStrings.windowPositions, JSON.stringify(this.cachedPopupPositions));
   }
 }
 

@@ -1,4 +1,5 @@
 import TutorialVisibility from "./TutorialVisibility";
+import { storageStrings } from "../storageStrings";
 
 
 interface TutorialStatusValues
@@ -27,13 +28,13 @@ class TutorialStatus implements TutorialStatusValues
 
   public save(): void
   {
-    localStorage.setItem("Rance.TutorialStatus", JSON.stringify(this.serialize()));
+    localStorage.setItem(storageStrings.tutorialStatus, JSON.stringify(this.serialize()));
   }
   public load(): void
   {
     this.setDefaultValues();
 
-    const tutorialStatusData = localStorage.getItem("Rance.TutorialStatus");
+    const tutorialStatusData = localStorage.getItem(storageStrings.tutorialStatus);
 
     if (!tutorialStatusData)
     {
@@ -45,7 +46,7 @@ class TutorialStatus implements TutorialStatusValues
   }
   public reset(): void
   {
-    localStorage.removeItem("Rance.TutorialStatus");
+    localStorage.removeItem(storageStrings.tutorialStatus);
     this.setDefaultValues();
   }
 

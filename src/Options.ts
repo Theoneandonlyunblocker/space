@@ -14,6 +14,7 @@ import
 } from "./reviveSaveData";
 import { activeModuleData } from "./activeModuleData";
 import { ErrorReportingMode } from "./handleError";
+import { storageStrings } from "./storageStrings";
 
 
 type OptionsCategory = "battle" | "debug" | "display" | "system";
@@ -240,7 +241,7 @@ class Options implements OptionsValues
       appVersion: app.version,
     };
 
-    const saveName = "Rance.Options." + slot;
+    const saveName = storageStrings.optionsPrefix + slot;
 
     localStorage.setItem(saveName, JSON.stringify(data));
   }
@@ -262,23 +263,21 @@ class Options implements OptionsValues
 
   private getParsedDataForSlot(slot?: number): OptionsSaveData
   {
-    const baseString = "Rance.Options.";
-
     let parsedData: OptionsSaveData;
     if (slot !== undefined)
     {
-      const savedData = localStorage.getItem(baseString + slot);
+      const savedData = localStorage.getItem(storageStrings.optionsPrefix + slot);
 
       if (!savedData)
       {
-        throw new Error(`No such localStorage key: ${baseString + slot}`);
+        throw new Error(`No such localStorage key: ${storageStrings.optionsPrefix + slot}`);
       }
 
       parsedData = JSON.parse(savedData);
     }
     else
     {
-      parsedData = getMatchingLocalStorageItemsSortedByDate<OptionsSaveData>(baseString)[0];
+      parsedData = getMatchingStorageItemsSortedByDate<OptionsSaveData>(storageStrings.optionsPrefix)[0];
     }
 
     return parsedData;

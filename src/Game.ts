@@ -10,6 +10,7 @@ import {activeNotificationStore} from "./notifications/activeNotificationStore";
 import FullSaveData from "./savedata/FullSaveData";
 import GameSaveData from "./savedata/GameSaveData";
 import { activeModuleData } from "./activeModuleData";
+import { storageStrings } from "./storageStrings";
 
 
 export default class Game
@@ -113,7 +114,7 @@ export default class Game
   }
   public save(name: string, saveData: string = this.getSaveData()): void
   {
-    const saveString = "Rance.Save." + name;
+    const saveString = storageStrings.savePrefix + name;
     this.gameStorageKey = saveString;
 
     localStorage.setItem(saveString, saveData);

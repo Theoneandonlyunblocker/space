@@ -40,6 +40,7 @@ import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import FullSaveData from "./savedata/FullSaveData";
 import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
+import { storageStrings } from "./storageStrings";
 
 
 class App
@@ -394,7 +395,7 @@ class App
       [
         () =>
         {
-          localStorage.removeItem("Rance.language");
+          localStorage.removeItem(storageStrings.deprecated_language);
         },
         () =>
         {

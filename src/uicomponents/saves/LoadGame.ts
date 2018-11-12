@@ -8,6 +8,7 @@ import {default as DialogBox} from "../windows/DialogBox";
 
 import ConfirmDeleteSavesContent from "./ConfirmDeleteSavesContent";
 import SaveList from "./SaveList";
+import { storageStrings } from "../../storageStrings";
 
 
 export interface PropTypes extends React.Props<any>
@@ -97,7 +98,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           {
             className: "save-game-name",
             type: "text",
-            value: this.state.selectedSaveKey ? this.state.selectedSaveKey.replace("Rance.Save.", "") : "",
+            value: this.state.selectedSaveKey ? this.state.selectedSaveKey.replace(storageStrings.savePrefix, "") : "",
             readOnly: true,
           }),
         ),

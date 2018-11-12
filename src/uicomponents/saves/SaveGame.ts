@@ -4,6 +4,7 @@ import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
 import app from "../../App"; // TODO global
+import {storageStrings} from "../../storageStrings";
 import ListItem from "../list/ListItem";
 import {default as DialogBox} from "../windows/DialogBox";
 
@@ -68,7 +69,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           },
             localize("promptOverwrite")(
             {
-              toOverWrite: this.state.saveName.replace("Rance.Save.", "")
+              toOverWrite: this.state.saveName.replace(storageStrings.savePrefix, "")
             }),
           ),
         SaveList(
@@ -149,12 +150,12 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   private handleSave()
   {
     const saveName = this.state.saveName;
-    const saveKey = "Rance.Save." + saveName;
     if (localStorage[saveKey])
     {
       this.setState({hasConfirmOverwritePopup: true});
     }
     else
+    const saveKey = storageStrings.savePrefix + saveName;
     {
       this.saveGame();
     }

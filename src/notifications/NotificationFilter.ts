@@ -9,9 +9,8 @@ import
 
 import {Notification} from "./Notification";
 import {NotificationFilterState} from "./NotificationFilterState";
+import { storageStrings } from "../storageStrings";
 
-
-const baseString = "Rance.NotificationFilter.";
 
 export class NotificationFilter
 {
@@ -150,18 +149,18 @@ export class NotificationFilter
     let parsedData: any;
     if (slot !== undefined)
     {
-      const savedData = localStorage.getItem(baseString + slot);
+      const savedData = localStorage.getItem(storageStrings.notificationFilterPrefix + slot);
 
       if (!savedData)
       {
-        throw new Error(`No such localStorage key: ${baseString + slot}`);
+        throw new Error(`No such localStorage key: ${storageStrings.notificationFilterPrefix + slot}`);
       }
 
       parsedData = JSON.parse(savedData);
     }
     else
     {
-      parsedData = getMatchingLocalStorageItemsSortedByDate(baseString)[0];
+      parsedData = getMatchingStorageItemsSortedByDate(storageStrings.notificationFilterPrefix)[0];
     }
 
     if (parsedData)
@@ -177,7 +176,7 @@ export class NotificationFilter
       date: new Date(),
     });
 
-    localStorage.setItem(baseString + slot, data);
+    localStorage.setItem(storageStrings.notificationFilterPrefix + slot, data);
   }
 }
 
