@@ -58,7 +58,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
 
     localForage.iterate((value: string, key) =>
     {
-      if (key.indexOf(storageStrings.savePrefix))
+      if (key.indexOf(storageStrings.savePrefix) !== -1)
       {
         const parsed: FullSaveData = JSON.parse(value);
 
