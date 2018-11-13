@@ -18,7 +18,7 @@ import Renderer from "./Renderer";
 import {activeModuleData} from "./activeModuleData";
 import {activePlayer, setActivePlayer} from "./activePlayer";
 import {centerCameraOnPosition} from "./centerCameraOnPosition";
-import {defaultModuleData} from "./defaultModuleData";
+import {defaultModules} from "./defaultModules";
 import idGenerators from "./idGenerators";
 import {handleError} from "./handleError";
 import * as debug from "./debug";
@@ -87,7 +87,7 @@ class App
     {
       debug.log("init", "DOM loaded");
 
-      defaultModuleData.moduleFiles.forEach(moduleFile =>
+      defaultModules.forEach(moduleFile =>
       {
         this.moduleInitializer.addModuleFile(moduleFile);
       });

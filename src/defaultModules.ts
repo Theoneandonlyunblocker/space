@@ -17,33 +17,24 @@ import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
 import {englishLanguageSupport} from "../modules/englishlanguage/englishLanguageSupport";
 
 
-import {default as ModuleFile} from "./ModuleFile";
+export const defaultModules =
+[
+  core,
+  englishLanguageSupport,
 
-
-export const defaultModuleData:
-{
-  moduleFiles: ModuleFile[];
-} =
-{
-  moduleFiles:
-  [
-    core,
-    englishLanguageSupport,
-
-    defaultEmblems,
-    defaultRuleset,
-    defaultAi,
-    defaultItems,
-    defaultTechnologies,
-    defaultAttitudemodifiers,
-    defaultMapgen,
-    defaultUnits,
-    defaultBackgrounds,
-    defaultMapmodes,
-    paintingPortraits,
-    defaultBuildings,
-    defaultNotifications,
-    defaultRaces,
-    drones,
-  ],
-};
+  defaultEmblems,
+  defaultRuleset,
+  defaultAi,
+  defaultItems,
+  defaultTechnologies,
+  defaultAttitudemodifiers,
+  defaultMapgen,
+  defaultUnits,
+  defaultBackgrounds,
+  defaultMapmodes,
+  paintingPortraits,
+  defaultBuildings,
+  defaultNotifications,
+  defaultRaces,
+  drones,
+];
