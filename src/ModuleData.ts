@@ -2,7 +2,7 @@ import Personality from "../src/Personality";
 import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
 
 import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
-import ModuleFile, { ModuleFileSaveData } from "./ModuleFile";
+import ModuleFile, { ModuleFileGameSaveData } from "./ModuleFile";
 import ModuleScripts from "./ModuleScripts";
 import
 {
@@ -228,14 +228,14 @@ export default class ModuleData
 
     return chosenLanguage;
   }
-  public serialize(): ModuleFileSaveData[]
+  public serialize(): ModuleFileGameSaveData[]
   {
     return this.moduleFiles.map(moduleFile =>
     {
       return(
       {
         metaData: moduleFile.metaData,
-        moduleSaveData: moduleFile.serialize ? moduleFile.serialize : null,
+        moduleSaveData: moduleFile.serializeGameSpecificData ? moduleFile.serializeGameSpecificData : null,
       });
     });
   }

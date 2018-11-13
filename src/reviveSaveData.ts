@@ -73,7 +73,7 @@ function reviveModuleSaveData(data: OutdatedFullSaveData): void
   {
     const moduleFile = liveModuleFiles[moduleData.metaData.key];
 
-    return moduleFile.reviveSaveData(moduleData);
+    return moduleFile.reviveGameSpecificData(moduleData);
   });
 }
 function reviveCoreSaveData(data: OutdatedFullSaveData, liveAppVersion: string): void

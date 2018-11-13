@@ -12,22 +12,22 @@ export interface ModuleMetaData
   description?: string;
 }
 
-export interface ModuleFileSaveData<S = any>
+export interface ModuleFileGameSaveData<S = any>
 {
   metaData: ModuleMetaData;
   moduleSaveData: S;
 }
 
-declare interface ModuleFile<S = any>
+declare interface ModuleFile<SaveData = any>
 {
   metaData: ModuleMetaData;
   needsToBeInitializedBefore: ModuleFileInitializationPhase;
   supportedLanguages: Language[] | "all";
   initialize?: (callback: () => void) => void;
   addToModuleData?: (moduleData: ModuleData) => void;
-  serialize?: () => S;
-  reviveSaveData?: (oldSaveData: ModuleFileSaveData<any>) => void;
-  deserialize?: (saveData: S) => void;
+  serializeGameSpecificData?: () => SaveData;
+  deserializeGameSpecificData?: (saveData: SaveData) => void;
+  reviveGameSpecificData?: (oldSaveData: ModuleFileGameSaveData<any>) => void;
 }
 
 export default ModuleFile;
