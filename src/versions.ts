@@ -39,11 +39,14 @@ export function compare(a: string, b: string): number
   return 0;
 }
 
+export function gt(a: string, b: string): boolean
+{
+  return compare(a, b) > 0;
+}
 export function gte(a: string, b: string): boolean
 {
   return compare(a, b) >= 0;
 }
-
 export function lt(a: string, b: string): boolean
 {
   return compare(a, b) < 0;

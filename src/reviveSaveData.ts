@@ -2,10 +2,10 @@
 // modules should handle save compability on their own
 
 import FullSaveData from "./savedata/FullSaveData";
-import ModuleFile from "./ModuleFile";
 import * as semver from "./versions";
 import * as debug from "./debug";
 import { getFunctionName } from "./utility";
+import {activeModuleStore} from "./ModuleStore";
 
 
 // data is cloned at start of reviving process
@@ -43,14 +43,19 @@ export function fetchNeededReviversForData(
 }
 
 type OutdatedFullSaveData = FullSaveData; // useful to keep them nominally distinct
-export function reviveSaveData(data: OutdatedFullSaveData, liveAppVersion: string): FullSaveData
+
+export function reviveSaveData(data: OutdatedFullSaveData, liveAppVersion: string): Promise<FullSaveData>
 {
   const clonedData = {...data};
 
-  reviveCoreSaveData(clonedData, liveAppVersion);
-  reviveModuleSaveData(clonedData);
-
-  return clonedData;
+  return new Promise(resolve =>
+  {
+    reviveCoreSaveData(clonedData, liveAppVersion);
+    reviveModuleSaveData(clonedData).then(() =>
+    {
+      resolve(clonedData);
+    });
+  });
 }
 
 const coreSaveDataRevivers: ReviversByVersion =
@@ -64,17 +69,18 @@ const coreSaveDataRevivers: ReviversByVersion =
   ],
 };
 
-function reviveModuleSaveData(data: OutdatedFullSaveData): void
+function reviveModuleSaveData(data: OutdatedFullSaveData): Promise<void[]>
 {
-  // TODO 2018.10.16 | load module files associated with savedata
-  const liveModuleFiles: {[key: string]: ModuleFile} = {};
-
-  data.moduleData.forEach(moduleData =>
+  return Promise.all(data.moduleData.map(moduleData =>
   {
-    const moduleFile = liveModuleFiles[moduleData.metaData.key];
-
-    return moduleFile.reviveGameSpecificData(moduleData);
-  });
+    return activeModuleStore.load(moduleData.metaData).then(moduleFile =>
+    {
+      if (moduleFile.reviveGameSpecificData)
+      {
+        moduleFile.reviveGameSpecificData(moduleData);
+      }
+    });
+  }));
 }
 function reviveCoreSaveData(data: OutdatedFullSaveData, liveAppVersion: string): void
 {

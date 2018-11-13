@@ -21,6 +21,7 @@ import {centerCameraOnPosition} from "./centerCameraOnPosition";
 import {defaultModules} from "./defaultModules";
 import idGenerators from "./idGenerators";
 import {handleError} from "./handleError";
+import {activeModuleStore} from "./ModuleStore";
 import * as debug from "./debug";
 import
 {
@@ -89,6 +90,7 @@ class App
 
       defaultModules.forEach(moduleFile =>
       {
+        activeModuleStore.add(moduleFile);
         this.moduleInitializer.addModuleFile(moduleFile);
       });
 
@@ -144,27 +146,28 @@ class App
       }
 
       const parsedData: FullSaveData = JSON.parse(rawData);
-      const data = reviveSaveData(parsedData, this.version);
-
-      idGenerators.setValues(data.idGenerators);
-
-      this.destroy();
-      this.initUI();
-
-      this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
+      reviveSaveData(parsedData, this.version).then(data =>
       {
-        this.game = new GameLoader().deserializeGame(data.gameData);
-        this.game.gameStorageKey = saveKey;
-        this.initGame();
+        idGenerators.setValues(data.idGenerators);
 
-        this.initDisplay();
-        this.hookUI();
-        if (data.cameraLocation)
+        this.destroy();
+        this.initUI();
+
+        this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
         {
-          centerCameraOnPosition(data.cameraLocation);
-        }
+          this.game = new GameLoader().deserializeGame(data.gameData);
+          this.game.gameStorageKey = saveKey;
+          this.initGame();
 
-        this.reactUI.switchScene("galaxyMap");
+          this.initDisplay();
+          this.hookUI();
+          if (data.cameraLocation)
+          {
+            centerCameraOnPosition(data.cameraLocation);
+          }
+
+          this.reactUI.switchScene("galaxyMap");
+        });
       });
     });
   }
