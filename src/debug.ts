@@ -5,9 +5,14 @@ type LoggingCategory = "ai" | "graphics" | "saves" | "init" | "modules";
 
 export function shouldLog(category: LoggingCategory): boolean
 {
+  if (!Options || !Options.debug)
+  {
+    return true;
+  }
+
   // don't check if debug mode itself is enabled
   // user needs to open dev console to see these anyway
-  // could have smarter checks, different enviroments etc
+  // could use different enviroments etc instead
   return Options.debug.logging[category];
 }
 
