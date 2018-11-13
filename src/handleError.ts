@@ -44,6 +44,12 @@ function getErrorHandler(): ErrorEventHandler
     {
       return panicOnError;
     }
+    default:
+    {
+      // TODO 2018.11.13 | could do custom error here
+
+      return panicOnError;
+    }
   }
 }
 const createErrorAlert: ErrorEventHandler = (message, source, lineno, colno, error) =>
