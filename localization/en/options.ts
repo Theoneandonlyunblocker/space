@@ -20,6 +20,8 @@ export const options =
   aiVsAiBattleSimulationDepth: "AI vs. AI battle simulation depth",
   aiLogging: "AI",
   graphicsLogging: "Graphics",
+  savesLogging: "Saves",
+  modulesLogging: "Modules",
   alwaysExpandTopRightMenuOnLowResolution: "Always expand top right menu on low resolution",
   messageSettings: "Message settings",
   resetTutorials: "Reset tutorials",

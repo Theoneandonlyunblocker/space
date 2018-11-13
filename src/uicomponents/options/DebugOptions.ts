@@ -140,6 +140,8 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
       {
         ai: "aiLogging",
         graphics: "graphicsLogging",
+        saves: "savesLogging",
+        modules: "modulesLogging",
       };
 
       const key = keyForCategory[category];
