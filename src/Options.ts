@@ -52,7 +52,6 @@ type BaseOptionsValues =
       ai: boolean;
       graphics: boolean;
       saves: boolean;
-      init: boolean;
       modules: boolean;
     };
   };
@@ -113,7 +112,6 @@ const defaultOptionsValues: OptionsValues =
       ai: false,
       graphics: false,
       saves: true,
-      init: true,
       modules: true,
     },
   },
@@ -152,7 +150,6 @@ class Options implements OptionsValues
       ai: boolean;
       graphics: boolean;
       saves: boolean;
-      init: boolean;
       modules: boolean;
     };
   };
