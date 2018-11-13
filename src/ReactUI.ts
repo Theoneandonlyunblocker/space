@@ -70,7 +70,7 @@ export default class ReactUI
   public switchScene(newScene: ReactUIScene)
   {
     this.currentScene = newScene;
-    this.initializeModulesNeededForCurrentScene(() =>
+    this.initializeModulesNeededForCurrentScene().then(() =>
     {
       this.render();
     });
@@ -117,10 +117,11 @@ export default class ReactUI
     eventManager.addEventListener("switchScene", this.switchScene.bind(this));
     eventManager.addEventListener("renderUI", this.render.bind(this));
   }
-  private initializeModulesNeededForCurrentScene(afterLoaded: () => void): void
+  private initializeModulesNeededForCurrentScene(): Promise<void[]>
   {
     const phase = moduleInitializationPhaseByScene[this.currentScene];
-    this.moduleInitializer.initModulesNeededForPhase(phase, afterLoaded);
+
+    return this.moduleInitializer.initModulesNeededForPhase(phase);
   }
   private getElementToRender(): React.ReactElement<any>
   {

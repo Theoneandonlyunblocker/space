@@ -162,7 +162,7 @@ class Options implements OptionsValues
 
   constructor()
   {
-    this.setDefaults();
+
   }
 
   public setDefaultForCategory(category: OptionsCategory | OptionsSubCatgory)
@@ -208,6 +208,11 @@ class Options implements OptionsValues
 
         this.display = extendObject(defaultOptionsValues.display);
         this.display.language = previouslySetLanguage;
+
+        if (!this.display.language)
+        {
+          this.display.language = activeModuleData.getDefaultLanguage();
+        }
 
         if (this.display.noHamburger !== defaultOptionsValues.display.noHamburger)
         {

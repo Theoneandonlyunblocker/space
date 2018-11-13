@@ -51,6 +51,7 @@ class App
   public game: Game;
   public playerControl: PlayerControl;
   public reactUI: ReactUI;
+  public moduleInitializer: ModuleInitializer;
   public images:
   {
     [id: string]: HTMLImageElement;
@@ -60,7 +61,6 @@ class App
 
   private seed: string;
   private mapRenderer: MapRenderer;
-  private moduleInitializer: ModuleInitializer;
 
   constructor()
   {
@@ -80,6 +80,7 @@ class App
     window.onerror = handleError;
 
     this.moduleInitializer = new ModuleInitializer(activeModuleData);
+
     this.initUI();
 
     onDOMLoaded(() =>
@@ -93,9 +94,17 @@ class App
 
       // some things called in this.makeApp() rely on global app variable
       // this timeout allows constructor to finish and variable to be assigned
+      // still necessary with promise, as Promise.all may be synchronous
       window.setTimeout(() =>
       {
-        this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.AppInit, () =>
+        return this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.AppInit).then(() =>
+        {
+          return Promise.all(
+          [
+            Options.load(),
+            TutorialStatus.load(),
+          ]);
+        }).then(() =>
         {
           this.makeApp();
         });
@@ -109,7 +118,7 @@ class App
 
     this.initUI();
 
-    this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart, () =>
+    this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
     {
       this.game = new Game(map, players);
       this.initGame();
@@ -138,7 +147,7 @@ class App
       this.destroy();
       this.initUI();
 
-      this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart, () =>
+      this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
       {
         this.game = new GameLoader().deserializeGame(data.gameData);
         this.game.gameStorageKey = saveKey;
@@ -160,18 +169,11 @@ class App
   {
     const startTime = Date.now();
 
-    Options.load();
-    TutorialStatus.load();
-
-    // don't preload modules in debug mode to ensure loading phases work correctly
-    if (!Options.debug.enabled)
-    {
-      this.moduleInitializer.progressivelyInitModulesByPhase(0);
-    }
+    this.moduleInitializer.progressivelyInitModulesByPhase(ModuleFileInitializationPhase.AppInit + 1);
 
     const initialScene = this.getInitialScene();
 
-    const switchSceneFN = () =>
+    const finalizeMakingApp = () =>
     {
       this.reactUI.switchScene(initialScene);
 
@@ -180,7 +182,7 @@ class App
 
     if (initialScene === "galaxyMap")
     {
-      this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart, () =>
+      this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
       {
         this.game = this.makeGame();
         this.initGame();
@@ -189,12 +191,12 @@ class App
         this.hookUI();
         centerCameraOnPosition(activePlayer.controlledLocations[0]);
 
-        switchSceneFN();
+        finalizeMakingApp();
       });
     }
     else
     {
-      switchSceneFN();
+      finalizeMakingApp();
     }
   }
   private destroy()

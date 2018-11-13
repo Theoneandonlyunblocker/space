@@ -1,7 +1,6 @@
 /// <reference path="../lib/pixi.d.ts" />
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as localForage from "localforage";
 
 import {activeModuleData} from "./activeModuleData";
 

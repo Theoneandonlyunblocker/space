@@ -201,27 +201,32 @@ export default class ModuleData
     {
       const defaultLanguage = this.getDefaultLanguage();
 
-      console.warn(`Desired language (code '${languageCode}') is not loaded. ` +
-      `Falling back on default language '${defaultLanguage.code}'`);
+      console.warn(`Desired language (code '${languageCode}') is not loaded.`);
 
       return defaultLanguage;
     }
   }
   public getDefaultLanguage(): Language
   {
+    let chosenLanguage: Language;
+
     if (this.defaultLanguage)
     {
-      return this.defaultLanguage;
+      chosenLanguage = this.defaultLanguage;
     }
     else if (this.templates.Languages["en"])
     {
-      return this.templates.Languages["en"];
+      chosenLanguage = this.templates.Languages["en"];
     }
     else
     {
       throw new Error("Please define a default language for your module configuration if " +
-        "it doesn't load the English language support module.");
+        "it doesn't include English language support.");
     }
+
+    console.warn(`Falling back on default language '${chosenLanguage.code}'`);
+
+    return chosenLanguage;
   }
   public serialize(): ModuleFileSaveData[]
   {

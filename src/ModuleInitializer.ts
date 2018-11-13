@@ -1,8 +1,10 @@
 import ModuleData from "./ModuleData";
 import ModuleFile from "./ModuleFile";
-import ModuleFileInitializationPhase from "./ModuleFileInitializationPhase";
-
-import eventManager from "./eventManager";
+import
+{
+  default as ModuleFileInitializationPhase,
+  allModuleFileInitializationPhases,
+} from "./ModuleFileInitializationPhase";
 
 
 export default class ModuleInitializer
@@ -16,24 +18,23 @@ export default class ModuleInitializer
   {
     [phase: number]: ModuleFile[];
   } = {};
-  private readonly hasInitialized:
+  private readonly moduleInitializationPromises:
   {
-    [key: string]: boolean;
+    [key: string]: Promise<void>;
   } = {};
   private readonly moduleInitalizationStart:
   {
     [key: string]: number;
-  } = {};
-  private readonly moduleInitializationFinishCallbacks:
-  {
-    [key: string]: (() => void)[];
   } = {};
 
   constructor(moduleData: ModuleData)
   {
     this.moduleData = moduleData;
 
-    eventManager.addEventListener("initModulesNeededForPhase", this.initModulesNeededForPhase.bind(this));
+    allModuleFileInitializationPhases.forEach(phase =>
+    {
+      this.moduleFilesByPhase[phase] = [];
+    });
   }
 
   public addModuleFile(moduleFile: ModuleFile)
@@ -44,142 +45,112 @@ export default class ModuleInitializer
     }
 
     this.moduleFilesByKey[moduleFile.metaData.key] = moduleFile;
-    this.hasInitialized[moduleFile.metaData.key] = false;
-
-    if (!this.moduleFilesByPhase[moduleFile.needsToBeInitializedBefore])
-    {
-      this.moduleFilesByPhase[moduleFile.needsToBeInitializedBefore] = [];
-    }
+    this.moduleInitalizationStart[moduleFile.metaData.key] = undefined;
+    delete this.moduleInitalizationStart[moduleFile.metaData.key];
 
     this.moduleFilesByPhase[moduleFile.needsToBeInitializedBefore].push(moduleFile);
   }
-  public initModuleFile(moduleFile: ModuleFile, afterInit: () => void)
+  public initModulesNeededForPhase(phaseToInitUpTo: ModuleFileInitializationPhase): Promise<void[]>
+  {
+    const phasesNeeded: ModuleFileInitializationPhase[] = Object.keys(this.moduleFilesByPhase).map(phaseString =>
+    {
+      return Number(phaseString);
+    }).filter(phase =>
+    {
+      return phase <= phaseToInitUpTo;
+    }).sort();
+
+    const allPromises = phasesNeeded.map(phase => this.initModulesForPhase(phase));
+
+    return Promise.all(allPromises);
+  }
+  public progressivelyInitModulesByPhase(startingPhase: ModuleFileInitializationPhase): void
+  {
+    this.initModulesForPhase(startingPhase).then(() =>
+    {
+      const nextPhase = startingPhase + 1;
+      if (this.moduleFilesByPhase[nextPhase])
+      {
+        this.progressivelyInitModulesByPhase(nextPhase);
+      }
+    });
+  }
+
+  private initModuleFile(moduleFile: ModuleFile): Promise<void>
   {
     if (!this.moduleFilesByKey[moduleFile.metaData.key])
     {
       this.addModuleFile(moduleFile);
     }
 
-    if (this.hasInitialized[moduleFile.metaData.key])
+    if (this.moduleInitializationPromises[moduleFile.metaData.key])
     {
-      afterInit();
-
-      return;
+      return this.moduleInitializationPromises[moduleFile.metaData.key];
     }
 
-    if (!this.moduleInitializationFinishCallbacks[moduleFile.metaData.key])
-    {
-      this.moduleInitializationFinishCallbacks[moduleFile.metaData.key] = [];
-    }
-    this.moduleInitializationFinishCallbacks[moduleFile.metaData.key].push(afterInit);
-
-    if (isFinite(this.moduleInitalizationStart[moduleFile.metaData.key]))
-    {
-      return;
-    }
-    console.log(`Start initializing module "${moduleFile.metaData.key}"`);
-
+    debug.log("modules", `Start initializing module "${moduleFile.metaData.key}"`);
     this.moduleInitalizationStart[moduleFile.metaData.key] = Date.now();
-    // TODO 2017.07.29 | keep track of what's already been loaded
-    if (moduleFile.initialize)
+
+    const promise = new Promise<void>(resolve =>
     {
-      moduleFile.initialize(() =>
+      if (moduleFile.initialize)
+      {
+        moduleFile.initialize(() =>
+        {
+          this.finishInitializingModuleFile(moduleFile);
+          resolve();
+        });
+      }
+      else
       {
         this.finishInitializingModuleFile(moduleFile);
-      });
-    }
-    else
-    {
-      this.finishInitializingModuleFile(moduleFile);
-    }
-  }
-  public initModuleFiles(moduleFiles: ModuleFile[], afterInit?: () => void): void
-  {
-    if (!moduleFiles || moduleFiles.length < 1)
-    {
-      if (afterInit)
-      {
-        afterInit();
+        resolve();
       }
-
-      return;
-    }
-
-    const initializedModuleFiles: ModuleFile[] = [];
-
-    const executeIfAllDone = () =>
-    {
-      if (initializedModuleFiles.length === moduleFiles.length)
-      {
-        if (afterInit)
-        {
-          afterInit();
-        }
-      }
-    };
-
-    moduleFiles.forEach(moduleFile =>
-    {
-      this.initModuleFile(moduleFile, () =>
-      {
-        initializedModuleFiles.push(moduleFile);
-        if (afterInit)
-        {
-          executeIfAllDone();
-        }
-      });
     });
+
+    this.moduleInitializationPromises[moduleFile.metaData.key] = promise;
+
+    return promise;
   }
-  public initializeAll(afterInit: () => void)
+  private initModuleFiles(moduleFiles: ModuleFile[]): Promise<void[]>
   {
-    const allModuleFiles: ModuleFile[] = [];
-    for (const key in this.moduleFilesByKey)
+    return Promise.all(moduleFiles.map(moduleFile =>
     {
-      allModuleFiles.push(this.moduleFilesByKey[key]);
+      return this.initModuleFile(moduleFile);
+    }));
+  }
+  private initModulesForPhase(phase: ModuleFileInitializationPhase): Promise<void>
+  {
+    if (this.hasStartedInitializingAllModulesForPhase(phase))
+    {
+      return Promise.resolve();
     }
 
-    this.initModuleFiles(allModuleFiles, afterInit);
-  }
-  public initModulesForPhase(phase: ModuleFileInitializationPhase, afterInitialized?: () => void): void
-  {
+    const startTime = Date.now();
     const moduleFilesToInit = this.moduleFilesByPhase[phase];
-    this.initModuleFiles(moduleFilesToInit, afterInitialized);
-  }
-  public initModulesNeededForPhase(phaseToInitUpTo: ModuleFileInitializationPhase, afterInitialized?: () => void): void
-  {
-    const phasesNeeded: ModuleFileInitializationPhase[] = Object.keys(this.moduleFilesByPhase).map(phaseString =>
-    {
-      return <ModuleFileInitializationPhase> ModuleFileInitializationPhase[phaseString];
-    }).filter(phase =>
-    {
-      return phase <= phaseToInitUpTo;
-    }).sort();
 
-    phasesNeeded.forEach(phase => this.initModulesForPhase(phase));
-  }
-  public progressivelyInitModulesByPhase(startingPhase: ModuleFileInitializationPhase): void
-  {
-    this.initModulesForPhase(startingPhase, () =>
+    debug.log("init", `Start initializing modules needed for ${ModuleFileInitializationPhase[phase]}`);
+
+    return this.initModuleFiles(moduleFilesToInit).then(() =>
     {
-      if (ModuleFileInitializationPhase[startingPhase + 1])
-      {
-        this.progressivelyInitModulesByPhase(startingPhase + 1);
-      }
+      const timeTaken = Date.now() - startTime;
+
+      debug.log("init", `Finish initializing modules needed for ${ModuleFileInitializationPhase[phase]} in ${timeTaken}ms`);
     });
   }
   private finishInitializingModuleFile(moduleFile: ModuleFile)
   {
-    this.hasInitialized[moduleFile.metaData.key] = true;
     this.constructModuleFile(moduleFile);
 
-    const initTime = Date.now() - this.moduleInitalizationStart[moduleFile.metaData.key];
-    console.log(`Module "${moduleFile.metaData.key}" finished loading in ${initTime}ms`);
-
-    while (this.moduleInitializationFinishCallbacks[moduleFile.metaData.key].length > 0)
+    const timeTaken = Date.now() - this.moduleInitalizationStart[moduleFile.metaData.key];
+    debug.log("modules", `Finish initializing module '${moduleFile.metaData.key}'  in ${timeTaken}ms`);
+  }
+  private hasStartedInitializingAllModulesForPhase(phase: ModuleFileInitializationPhase): boolean
+  {
+    return this.moduleFilesByPhase[phase].every(moduleFile =>
     {
-      const afterInitCallback = this.moduleInitializationFinishCallbacks[moduleFile.metaData.key].pop()!;
-      afterInitCallback();
-    }
+      return isFinite(this.moduleInitalizationStart[moduleFile.metaData.key]);
+    });
   }
   private constructModuleFile(moduleFile: ModuleFile)
   {
