@@ -85,6 +85,8 @@ class App
 
     onDOMLoaded(() =>
     {
+      debug.log("init", "DOM loaded");
+
       defaultModuleData.moduleFiles.forEach(moduleFile =>
       {
         this.moduleInitializer.addModuleFile(moduleFile);
@@ -106,6 +108,8 @@ class App
           ]);
         }).then(() =>
         {
+          debug.log("init", "Finish loading data needed to init app");
+
           this.makeApp();
         });
       }, 0);
@@ -177,7 +181,7 @@ class App
     {
       this.reactUI.switchScene(initialScene);
 
-      console.log(`Init app in ${Date.now() - startTime}ms`);
+      debug.log("init", `Init app in ${Date.now() - startTime}ms`);
     };
 
     if (initialScene === "galaxyMap")

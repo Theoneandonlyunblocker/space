@@ -52,6 +52,8 @@ type BaseOptionsValues =
       ai: boolean;
       graphics: boolean;
       saves: boolean;
+      init: boolean;
+      modules: boolean;
     };
   };
   display:
@@ -108,9 +110,11 @@ const defaultOptionsValues: OptionsValues =
     aiVsAiBattleSimulationDepth: 20,
     logging:
     {
-      ai: true,
-      graphics: true,
+      ai: false,
+      graphics: false,
       saves: true,
+      init: true,
+      modules: true,
     },
   },
   display:
@@ -148,6 +152,8 @@ class Options implements OptionsValues
       ai: boolean;
       graphics: boolean;
       saves: boolean;
+      init: boolean;
+      modules: boolean;
     };
   };
   display:
@@ -256,6 +262,8 @@ class Options implements OptionsValues
   }
   public load(): Promise<void>
   {
+    debug.log("init", "Start loading options");
+
     this.setDefaults();
 
     return localForage.getItem<string>(storageStrings.options).then(savedData =>
@@ -267,6 +275,8 @@ class Options implements OptionsValues
         const revivedData = this.reviveOptionsSaveData(parsedData);
         this.deserialize(revivedData.options);
       }
+
+      debug.log("init", "Finish loading options");
     });
   }
 

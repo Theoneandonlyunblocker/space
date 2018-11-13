@@ -5,6 +5,7 @@ import
   default as ModuleFileInitializationPhase,
   allModuleFileInitializationPhases,
 } from "./ModuleFileInitializationPhase";
+import * as debug from "./debug";
 
 
 export default class ModuleInitializer

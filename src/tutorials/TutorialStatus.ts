@@ -1,6 +1,7 @@
 import * as localForage from "localforage";
 
 import TutorialVisibility from "./TutorialVisibility";
+import * as debug from "../debug";
 import { storageStrings } from "../storageStrings";
 
 
@@ -34,6 +35,7 @@ class TutorialStatus implements TutorialStatusValues
   }
   public load(): Promise<void>
   {
+    debug.log("init", "Start loading tutorial status");
     this.setDefaultValues();
 
     return localForage.getItem<string>(storageStrings.tutorialStatus).then(tutorialStatusData =>
@@ -43,6 +45,8 @@ class TutorialStatus implements TutorialStatusValues
         const parsedData: TutorialStatusValues = JSON.parse(tutorialStatusData);
         this.deserialize(parsedData);
       }
+
+      debug.log("init", "Finish loading tutorial status");
     });
   }
   public reset(): Promise<void>
