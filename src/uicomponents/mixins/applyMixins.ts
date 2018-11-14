@@ -3,12 +3,12 @@ import * as React from "react";
 import MixinBase from "./MixinBase";
 
 
-type LifeCycleFunction = "componentWillMount" | "componentDidMount" |
+type LifeCycleFunction = "componentDidMount" |
   "componentWillReceiveProps" | "componentWillUpdate" |
   "componentDidUpdate" | "componentWillUnmount";
 const lifeCycleFunctions: LifeCycleFunction[] =
 [
-  "componentWillMount" , "componentDidMount" ,
+  "componentDidMount" ,
   "componentWillReceiveProps" , "componentWillUpdate" ,
   "componentDidUpdate" , "componentWillUnmount",
 ];

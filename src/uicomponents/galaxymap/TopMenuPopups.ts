@@ -166,7 +166,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   {
     this.popupComponents[popupType].windowContainerComponent.bringToTop();
   }
-  public componentWillMount(): void
+  public componentDidMount(): void
   {
     window.addEventListener("unload", this.storeAllWindowPositions);
   }

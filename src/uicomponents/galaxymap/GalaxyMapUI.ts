@@ -85,7 +85,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  componentWillMount()
+  componentDidMount()
   {
     eventManager.addEventListener("playerControlUpdated",
       this.updateSelection);
