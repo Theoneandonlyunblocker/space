@@ -30,7 +30,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   public displayName: string = "FlagSetter";
   public state: StateType;
 
-  private playerFlagContainer: PlayerFlagComponent;
+  private playerFlagContainer = React.createRef<PlayerFlagComponent>();
 
   constructor(props: PropTypes)
   {
@@ -61,10 +61,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
             className: "flag-setter-display",
             onClick: this.toggleActive,
           },
-          ref: (component: PlayerFlagComponent) =>
-          {
-            this.playerFlagContainer = component;
-          },
+          ref: this.playerFlagContainer,
         }),
         !this.state.isActive ? null :
         ReactDOMElements.div(
@@ -127,7 +124,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   }
   private getClientRect(): ClientRect
   {
-    const ownNode = <HTMLElement> (<HTMLElement>ReactDOM.findDOMNode(this.playerFlagContainer));
+    const ownNode = (<HTMLElement>ReactDOM.findDOMNode(this.playerFlagContainer.current));
 
     return ownNode.getBoundingClientRect();
   }

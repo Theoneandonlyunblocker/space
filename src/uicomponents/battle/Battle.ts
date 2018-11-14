@@ -84,9 +84,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   public displayName: string = "Battle";
   public state: StateType;
 
-  private formationsContainer: HTMLElement;
-  private abilityTooltip: AbilityTooltipComponent;
-  private background: BattleBackgroundComponent;
+  private formationsContainer = React.createRef<HTMLDivElement>();
+  private abilityTooltip = React.createRef<AbilityTooltipComponent>();
+  private background = React.createRef<BattleBackgroundComponent>();
 
   private battleScene: BattleScene;
   private abilityUseEffectQueue: AbilityUseEffectQueue;
@@ -189,7 +189,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   componentDidMount()
   {
     this.battleStartStartTime = Date.now();
-    this.background.handleResize();
+    this.background.current.handleResize();
   }
 
   private endBattleStart()
@@ -229,7 +229,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private getBlurArea()
   {
-    return (<HTMLElement>ReactDOM.findDOMNode(this.formationsContainer)).getBoundingClientRect();
+    return this.formationsContainer.current.getBoundingClientRect();
   }
   private clearHoveredUnit()
   {
@@ -282,7 +282,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
 
-    const tooltipElement = (<HTMLElement>ReactDOM.findDOMNode(this.abilityTooltip));
+    const tooltipElement = (<HTMLElement>ReactDOM.findDOMNode(this.abilityTooltip.current));
 
     if (
       toElement !== this.state.abilityTooltip.parentElement &&
@@ -564,10 +564,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         parentElement: this.state.abilityTooltip.parentElement,
         facesLeft: this.state.abilityTooltip.facesLeft,
         activeTargets: activeTargets,
-        ref: (component: AbilityTooltipComponent) =>
-        {
-          this.abilityTooltip = component;
-        },
+        ref: this.abilityTooltip,
         key: this.state.hoveredUnit.id,
       });
     }
@@ -697,10 +694,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         backgroundSeed: this.props.battle.battleData.location.seed,
         backgroundDrawingFunction: activeModuleData.starBackgroundDrawingFunction,
         getBlurArea: this.getBlurArea,
-        ref: (component: BattleBackgroundComponent) =>
-        {
-          this.background = component;
-        },
+        ref: this.background,
       },
         ReactDOMElements.div(containerProps,
           ReactDOMElements.div(
@@ -728,10 +722,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           ReactDOMElements.div(
           {
             className: "formations-container",
-            ref: (container: HTMLElement) =>
-            {
-              this.formationsContainer = container;
-            },
+            ref: this.formationsContainer,
           },
             Formation(
             {

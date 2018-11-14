@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import {Flag} from "../Flag";
 import
@@ -26,7 +25,7 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
   public displayName: string = "PlayerFlag";
   public state: StateType;
 
-  private containerElement: HTMLElement;
+  private containerElement = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -45,10 +44,7 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
   {
     const props = shallowExtend(this.props.props,
     {
-      ref: (component: HTMLElement) =>
-      {
-        this.containerElement = component;
-      },
+      ref: this.containerElement,
     });
 
     return(
@@ -60,7 +56,7 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
 
   private renderFlagElement(): void
   {
-    const containerNode = (<HTMLElement>ReactDOM.findDOMNode(this.containerElement));
+    const containerNode = this.containerElement.current;
     if (containerNode.firstChild)
     {
       containerNode.removeChild(containerNode.firstChild);

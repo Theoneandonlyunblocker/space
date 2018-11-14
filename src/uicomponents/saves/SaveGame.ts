@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 import * as localForage from "localforage";
 
 import {localize} from "../../../localization/localize";
@@ -33,8 +32,8 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
     hasConfirmOverwritePopup: false,
   };
 
-  private okButtonElement: HTMLElement | null;
-  private saveNameElement: HTMLElement | null;
+  private okButtonElement = React.createRef<HTMLButtonElement>();
+  private saveNameElement = React.createRef<HTMLInputElement>();
 
   constructor(props: PropTypes)
   {
@@ -47,11 +46,11 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   {
     if (app.game.gameStorageKey)
     {
-      (<HTMLElement>ReactDOM.findDOMNode(this.okButtonElement!)).focus();
+      this.okButtonElement.current.focus();
     }
     else
     {
-      (<HTMLElement>ReactDOM.findDOMNode(this.saveNameElement!)).focus();
+      this.saveNameElement.current.focus();
     }
   }
   public render()
@@ -89,10 +88,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           ReactDOMElements.input(
           {
             className: "save-game-name",
-            ref: (component: HTMLElement | null) =>
-            {
-              this.saveNameElement = component;
-            },
+            ref: this.saveNameElement,
             type: "text",
             value: this.state.saveName,
             onChange: this.handleSaveNameInput,
@@ -107,10 +103,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           {
             className: "save-game-button",
             onClick: this.handleSave,
-            ref: (component: HTMLElement | null) =>
-            {
-              this.okButtonElement = component;
-            },
+            ref: this.okButtonElement,
           }, localize("save_action")()),
           ReactDOMElements.button(
           {

@@ -45,9 +45,9 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
   public displayName = "DefaultWindow";
   public state: StateType;
 
-  public windowContainerComponent: WindowContainerComponent;
-  private contentContainerElement: HTMLDivElement | null;
-  private titleBarElement: HTMLDivElement | null;
+  public windowContainerComponent = React.createRef<WindowContainerComponent>();
+  private contentContainerElement = React.createRef<HTMLDivElement>();
+  private titleBarElement = React.createRef<HTMLDivElement>();
 
 
   constructor(props: PropTypes)
@@ -90,10 +90,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
         maxWidth: this.state.sizeBounds.maxWidth,
         maxHeight: this.state.sizeBounds.maxHeight,
 
-        ref: (component: WindowContainerComponent) =>
-        {
-          this.windowContainerComponent = component;
-        },
+        ref: this.windowContainerComponent,
       },
         ReactDOMElements.div(
         {
@@ -104,7 +101,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
             className: "window-title-bar draggable",
             onMouseDown: this.handleTitleBarMouseDown,
             onTouchStart: this.handleTitleBarMouseDown,
-            ref: element => this.titleBarElement = element,
+            ref: this.titleBarElement,
           },
             ReactDOMElements.div(
             {
@@ -121,7 +118,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
           ReactDOMElements.div(
           {
             className: "window-content",
-            ref: element => this.contentContainerElement = element,
+            ref: this.contentContainerElement,
           },
             this.props.children,
           ),
@@ -132,20 +129,20 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
 
   private handleTitleBarMouseDown(e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>): void
   {
-    this.windowContainerComponent.onMouseDown(e);
+    this.windowContainerComponent.current.onMouseDown(e);
   }
   private getContentSizeBounds(): Partial<SizeBounds>
   {
     const bounds: Partial<SizeBounds> = {};
 
-    const contentElements = this.contentContainerElement!.children;
+    const contentElements = this.contentContainerElement.current.children;
 
     for (let i = 0; i < contentElements.length; i++)
     {
       const contentElement = contentElements[i];
 
       const contentElementStyle = window.getComputedStyle(contentElement);
-      const titleBarHeight = this.titleBarElement!.getBoundingClientRect().height;
+      const titleBarHeight = this.titleBarElement.current.getBoundingClientRect().height;
 
 
       for (const prop in this.state.sizeBounds)

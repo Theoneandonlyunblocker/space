@@ -26,7 +26,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
 {
   public displayName = "NotificationFilterList";
   public state: StateType;
-  private bodyElement: HTMLElement;
+  private bodyElement = React.createRef<HTMLDivElement>();
 
   static get defaultProps(): Partial<PropTypes>
   {
@@ -60,8 +60,8 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   {
     if (this.props.highlightedOptionKey)
     {
-      const highlightedNode = <HTMLElement> this.bodyElement.getElementsByClassName("highlighted")[0];
-      this.bodyElement.scrollTop = highlightedNode.offsetTop - this.bodyElement.offsetHeight / 3;
+      const highlightedNode = <HTMLElement> this.bodyElement.current.getElementsByClassName("highlighted")[0];
+      this.bodyElement.current.scrollTop = highlightedNode.offsetTop - this.bodyElement.current.offsetHeight / 3;
     }
   }
   public parentPopupDidMount(): void
@@ -139,10 +139,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
         ReactDOMElements.div(
         {
           className: "notification-filter-list-body",
-          ref: (component: HTMLElement) =>
-          {
-            this.bodyElement = component;
-          },
+          ref: this.bodyElement,
         },
           filterGroupElements,
         ),

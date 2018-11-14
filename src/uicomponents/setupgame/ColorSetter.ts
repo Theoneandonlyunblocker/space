@@ -28,7 +28,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   public displayName = "ColorSetter";
   public state: StateType;
 
-  private ownNode: HTMLElement;
+  private ownNode = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -69,10 +69,11 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
       });
 
     return(
-      ReactDOMElements.div({className: "color-setter", ref: (component: HTMLElement) =>
+      ReactDOMElements.div(
       {
-        this.ownNode = component;
-      }},
+        className: "color-setter",
+        ref: this.ownNode,
+      },
         displayElement,
         this.state.isActive ?
           ColorPicker(
@@ -105,7 +106,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
 
   private handleClick(e: MouseEvent)
   {
-    const node = (<HTMLElement>ReactDOM.findDOMNode(this.ownNode));
+    const node = this.ownNode.current;
     const target = <HTMLElement> e.target;
     if (target === node || node.contains(target))
     {

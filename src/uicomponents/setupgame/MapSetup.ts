@@ -25,7 +25,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 
   public state: StateType;
 
-  public mapGenOptionsComponent: MapGenOptionsComponent;
+  public mapGenOptionsComponent = React.createRef<MapGenOptionsComponent>();
 
   constructor(props: PropTypes)
   {
@@ -90,7 +90,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     return(
     {
       template: this.state.selectedTemplate,
-      optionValues: this.mapGenOptionsComponent.getOptionValuesForTemplate(),
+      optionValues: this.mapGenOptionsComponent.current.getOptionValuesForTemplate(),
     });
   }
 
@@ -145,10 +145,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
         MapGenOptions(
         {
           mapGenTemplate: this.state.selectedTemplate,
-          ref: (component: MapGenOptionsComponent) =>
-          {
-            this.mapGenOptionsComponent = component;
-          },
+          ref: this.mapGenOptionsComponent,
         }),
       )
     );

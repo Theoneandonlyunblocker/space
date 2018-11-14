@@ -32,7 +32,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
   public displayName = "FleetSelection";
   public state: StateType;
 
-  public contentsElement: HTMLDivElement;
+  public contentsElement = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -159,10 +159,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         ReactDOMElements.div(
         {
           className: "fleet-selection-selected",
-          ref: (element) =>
-          {
-            this.contentsElement = element;
-          }
+          ref: this.contentsElement,
         },
           hasMultipleSelected ? fleetInfos : null,
           fleetContents,

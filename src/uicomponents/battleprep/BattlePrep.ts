@@ -51,7 +51,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   public displayName = "BattlePrep";
   public state: StateType;
 
-  private backgroundComponent: BattleBackgroundComponent;
+  private backgroundComponent = React.createRef<BattleBackgroundComponent>();
   private upperElement: HTMLElement | null;
 
   constructor(props: PropTypes)
@@ -87,7 +87,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
   public componentDidMount()
   {
-    this.backgroundComponent.handleResize();
+    this.backgroundComponent.current.handleResize();
   }
   public render()
   {
@@ -216,10 +216,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
               getBlurArea: this.getBackgroundBlurArea,
               backgroundSeed: battlePrep.battleData.location.seed,
               backgroundDrawingFunction: activeModuleData.starBackgroundDrawingFunction,
-              ref: (component: BattleBackgroundComponent) =>
-              {
-                this.backgroundComponent = component;
-              },
+              ref: this.backgroundComponent,
             },
               ReactDOMElements.div({className: "battle-prep-left-upper-inner"},
                 leftUpperElement,

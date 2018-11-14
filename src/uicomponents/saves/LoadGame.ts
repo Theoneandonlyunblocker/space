@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 import * as localForage from "localforage";
 
 import {localize} from "../../../localization/localize";
@@ -29,7 +28,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   public displayName: string = "LoadGame";
   public state: StateType;
 
-  private loadButtonElement: HTMLElement;
+  private loadButtonElement = React.createRef<HTMLButtonElement>();
   private afterConfirmDeleteCallback: () => void;
 
   constructor(props: PropTypes)
@@ -48,7 +47,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
 
   public componentDidMount()
   {
-    (<HTMLElement>ReactDOM.findDOMNode(this.loadButtonElement)).focus();
+    this.loadButtonElement.current.focus();
   }
   public render()
   {
@@ -111,10 +110,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           {
             className: "save-game-button",
             onClick: this.handleLoad,
-            ref: (component: HTMLElement) =>
-            {
-              this.loadButtonElement = component;
-            },
+            ref: this.loadButtonElement,
           }, localize("load_action")()),
           ReactDOMElements.button(
           {

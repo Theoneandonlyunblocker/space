@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import BackgroundDrawer from "../../BackgroundDrawer";
 import BackgroundDrawingFunction from "../../BackgroundDrawingFunction";
@@ -23,7 +22,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   public displayName = "BattleBackground";
   public state: StateType;
 
-  pixiContainer: HTMLElement;
+  pixiContainer = React.createRef<HTMLDivElement>();
   backgroundDrawer: BackgroundDrawer;
 
   constructor(props: PropTypes)
@@ -64,9 +63,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   }
   public componentDidMount()
   {
-    const containerElement = (<HTMLElement>ReactDOM.findDOMNode(this.pixiContainer));
-
-    this.backgroundDrawer.bindRendererView(containerElement);
+    this.backgroundDrawer.bindRendererView(this.pixiContainer.current);
 
     window.addEventListener("resize", this.handleResize, false);
   }
@@ -83,10 +80,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
       ReactDOMElements.div(
       {
         className: "battle-pixi-container",
-        ref: (component: HTMLElement) =>
-        {
-          this.pixiContainer = component;
-        },
+        ref: this.pixiContainer,
       },
         this.props.children,
       )

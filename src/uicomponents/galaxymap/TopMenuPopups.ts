@@ -58,7 +58,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   public displayName: string = "TopMenuPopups";
   public state: StateType;
 
-  private popupComponents: Partial<ValuesByPopup<DefaultWindowComponent>> = {};
+  private popupComponents: Partial<ValuesByPopup<React.RefObject<DefaultWindowComponent>>> = {};
   private cachedPopupPositions: Partial<ValuesByPopup<Rect>> = {};
   private popupConstructData: ValuesByPopup<PopupConstructData> =
   {
@@ -164,7 +164,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   }
   public bringPopupToFront(popupType: PopupType): void
   {
-    this.popupComponents[popupType].windowContainerComponent.bringToTop();
+    this.popupComponents[popupType].current.windowContainerComponent.current.bringToTop();
   }
   public componentDidMount(): void
   {
@@ -221,8 +221,8 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   }
   private closePopup(popupType: PopupType)
   {
-    const popupComponent = this.popupComponents[popupType];
-    this.cachedPopupPositions[popupType] = popupComponent.windowContainerComponent.getPosition();
+    const popupComponent = this.popupComponents[popupType].current;
+    this.cachedPopupPositions[popupType] = popupComponent.windowContainerComponent.current.getPosition();
 
     if (popupType === "options")
     {
@@ -245,13 +245,15 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   {
     const constructData = this.popupConstructData[popupType];
 
+    if (!this.popupComponents[popupType])
+      {
+        this.popupComponents[popupType] = React.createRef<DefaultWindowComponent>();
+      }
+
     return DefaultWindow(
     {
       key: popupType,
-      ref: (component: DefaultWindowComponent) =>
-      {
-        this.popupComponents[popupType] = component;
-      },
+      ref: this.popupComponents[popupType],
 
       title: constructData.title,
       handleClose: () =>

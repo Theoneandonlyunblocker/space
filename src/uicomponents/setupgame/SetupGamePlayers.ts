@@ -177,10 +177,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
       {
         key: playerId,
         keyTODO: playerId,
-        ref: (component: PlayerSetupComponent) =>
-        {
-          this.playerSetupComponentsById[playerId] = component;
-        },
+        ref: this.playerSetupComponentsById[playerId],
         removePlayers: this.removePlayers,
         setActiveSetterComponent: this.setActiveColorSetter,
         // TODO 2017.07.18 | missing localization

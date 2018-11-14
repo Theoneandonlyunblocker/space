@@ -42,8 +42,8 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   sortedItems: ListItem<any>[];
   public state: StateType;
 
-  private headerElement: HTMLElement;
-  private innerElement: HTMLElement;
+  private headerElement = React.createRef<HTMLTableSectionElement>();
+  private innerElement = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -145,7 +145,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   setDesiredHeight()
   {
     const ownNode = (<HTMLElement>ReactDOM.findDOMNode(this));
-    const innerNode = (<HTMLElement>ReactDOM.findDOMNode(this.innerElement));
+    const innerNode = this.innerElement.current;
 
     ownNode.style.height = "auto";
     innerNode.style.height = "auto";
@@ -172,7 +172,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   {
     // scrolls header to match list contents
     const target = e.currentTarget;
-    const header = (<HTMLElement>ReactDOM.findDOMNode(this.headerElement));
+    const header = this.headerElement.current;
     const titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
 
     const marginString = "-" + target.scrollLeft + "px";
@@ -482,10 +482,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
         ReactDOMElements.div(
         {
           className: "fixed-table-container-inner",
-          ref: (component: HTMLElement) =>
-          {
-            this.innerElement = component;
-          },
+          ref: this.innerElement,
           onScroll: this.handleScroll,
         },
           ReactDOMElements.table(
@@ -496,10 +493,11 @@ export class ListComponent extends React.Component<PropTypes, StateType>
               columns,
             ),
 
-            ReactDOMElements.thead({className: "fixed-table-actual-header", ref: (component: HTMLElement) =>
+            ReactDOMElements.thead(
             {
-              this.headerElement = component;
-            }},
+              className: "fixed-table-actual-header",
+              ref: this.headerElement,
+            },
               ReactDOMElements.tr(null,
                 headerLabels,
               ),

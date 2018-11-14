@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 
 import Battle from "../Battle";
@@ -38,7 +37,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   public state: StateType;
 
-  battleSceneContainer: HTMLElement;
+  private battleSceneContainer = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -101,7 +100,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   componentDidMount()
   {
-    const battleScene = this.battleScene = new BattleScene((<HTMLElement>ReactDOM.findDOMNode(this.battleSceneContainer)));
+    const battleScene = this.battleScene = new BattleScene(this.battleSceneContainer.current);
     battleScene.resume();
     battleScene.activeUnit = this.state.selectedSide1Unit;
     battleScene.updateUnits();
@@ -309,10 +308,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
         ReactDOMElements.div(
         {
           className: "battle-scene-test-pixi-container",
-          ref: (component: HTMLElement) =>
-          {
-            this.battleSceneContainer = component;
-          },
+          ref: this.battleSceneContainer,
         },
           null,
         ),

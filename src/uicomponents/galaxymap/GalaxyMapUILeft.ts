@@ -47,7 +47,7 @@ export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateTy
   public displayName = "GalaxyMapUILeft";
   public state: StateType;
 
-  private fleetSelectionComponent: FleetSelectionComponent;
+  private fleetSelectionComponent = React.createRef<FleetSelectionComponent>();
 
   constructor(props: PropTypes)
   {
@@ -105,10 +105,7 @@ export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateTy
             closeReorganization: this.props.closeReorganization,
             player: this.props.player,
 
-            ref: (component) =>
-            {
-              this.fleetSelectionComponent = component;
-            },
+            ref: this.fleetSelectionComponent,
           }),
         ),
         ReactDOMElements.div(
@@ -176,7 +173,7 @@ export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateTy
       return false;
     }
 
-    const contentsElement = this.fleetSelectionComponent.contentsElement;
+    const contentsElement = this.fleetSelectionComponent.current.contentsElement.current;
 
     return contentsElement.scrollHeight !== contentsElement.offsetHeight;
   }

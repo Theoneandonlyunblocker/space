@@ -23,10 +23,10 @@ interface StateType
 export class SetupGameComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SetupGame";
-
   public state: StateType;
-  private setupPlayersComponent: SetupGamePlayersComponent;
-  private mapSetupComponent: MapSetupComponent;
+
+  private setupPlayersComponent = React.createRef<SetupGamePlayersComponent>();
+  private mapSetupComponent = React.createRef<MapSetupComponent>();
 
   constructor(props: PropTypes)
   {
@@ -67,9 +67,9 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   {
     app.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.MapGen).then(() =>
     {
-      const players = this.setupPlayersComponent.makeAllPlayers();
+      const players = this.setupPlayersComponent.current.makeAllPlayers();
 
-      const mapSetupInfo = this.mapSetupComponent.getMapSetupInfo();
+      const mapSetupInfo = this.mapSetupComponent.current.getMapSetupInfo();
       const mapGenFunction: MapGenFunction = mapSetupInfo.template.mapGenFunction;
 
       const mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
@@ -80,8 +80,8 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   }
   private randomize()
   {
-    this.setupPlayersComponent.randomizeAllPlayers();
-    this.mapSetupComponent.mapGenOptionsComponent.randomizeOptions();
+    this.setupPlayersComponent.current.randomizeAllPlayers();
+    this.mapSetupComponent.current.mapGenOptionsComponent.current.randomizeOptions();
   }
 
   render()
@@ -101,20 +101,14 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
           },
             SetupGamePlayers(
             {
-              ref: (component: SetupGamePlayersComponent) =>
-              {
-                this.setupPlayersComponent = component;
-              },
+              ref: this.setupPlayersComponent,
               minPlayers: this.state.minPlayers,
               maxPlayers: this.state.maxPlayers,
             }),
             MapSetup(
             {
               setPlayerLimits: this.setPlayerLimits,
-              ref: (component: MapSetupComponent) =>
-              {
-                this.mapSetupComponent = component;
-              },
+              ref: this.mapSetupComponent,
             }),
           ),
           ReactDOMElements.div(

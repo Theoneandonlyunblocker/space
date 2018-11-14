@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import Game from "../../Game";
 import MapRenderer from "../../MapRenderer";
@@ -36,8 +35,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   public displayName = "GalaxyMap";
   public state: StateType;
 
-  private pixiContainer: HTMLElement;
-  // private sceneSelector: HTMLElement;
+  private pixiContainer = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -53,11 +51,8 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
       },
         ReactDOMElements.div(
         {
-          ref: (component: HTMLElement) =>
-          {
-            this.pixiContainer = component;
-          },
           id: "pixi-container",
+          ref: this.pixiContainer,
         },
           this.props.game.hasEnded ?
             GameOverScreen() :
@@ -73,56 +68,6 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
               notificationLog: this.props.notificationLog,
             }),
         ),
-        // ,
-        // !Options.debug.enabled ? null : ReactDOMElements.div(
-        // {
-        //   className: "galaxy-map-debug debug"
-        // },
-        //   ReactDOMElements.select(
-        //     {
-        //       className: "reactui-selector debug",
-        //       ref: (component: HTMLElement) =>
-        //       {
-        //         this.sceneSelector = component;
-        //       },
-        //       value: app.reactUI.currentScene,
-              // onChange: (e: React.FormEvent) =>
-              // {
-              //   const target = e.currentTarget;
-              //   app.reactUI.switchScene(target.value);
-              // }
-        //     },
-        //     ReactDOMElements.option({value: "galaxyMap"}, "map"),
-        //     ReactDOMElements.option({value: "flagMaker"}, "make flags"),
-        //     ReactDOMElements.option({value: "setupGame"}, "setup game"),
-        //     ReactDOMElements.option({value: "battleSceneTester"}, "battle scene test")
-        //   ),
-        //   ReactDOMElements.button(
-        //   {
-        //     className: "debug",
-        //     onClick: (e: React.FormEvent) =>
-        //     {
-        //       const target = e.currentTarget;
-
-        //       const position = app.renderer.camera.container.position.clone();
-        //       const zoom = app.renderer.camera.currZoom;
-        //       app.destroy();
-
-        //       app.initUI();
-
-        //       app.game = app.makeGame();
-        //       app.initGame();
-
-        //       app.initDisplay();
-        //       app.hookUI();
-        //       app.reactUI.switchScene("galaxyMap");
-        //       app.renderer.camera.zoom(zoom);
-        //       app.renderer.camera.container.position = position;
-        //     }
-        //   },
-        //     "Reset app"
-        //   )
-        // )
       )
     );
   }
@@ -130,7 +75,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
 
   componentDidMount()
   {
-    this.props.renderer.bindRendererView((<HTMLElement>ReactDOM.findDOMNode(this.pixiContainer)));
+    this.props.renderer.bindRendererView(this.pixiContainer.current);
     this.props.mapRenderer.setMapModeByKey("defaultMapMode");
 
     this.props.renderer.camera.getBoundsObjectBoundsFN = this.props.mapRenderer.getMapBoundsForCamera.bind(this.props.mapRenderer);

@@ -31,7 +31,7 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
   public displayName = "Emblem";
   public state: StateType;
 
-  container: HTMLDivElement;
+  private container = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -46,12 +46,12 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
       1,
     );
 
-    if (this.container.firstChild)
+    if (this.container.current.firstChild)
     {
-      this.container.removeChild(this.container.firstChild);
+      this.container.current.removeChild(this.container.current.firstChild);
     }
 
-    this.container.appendChild(emblem.draw());
+    this.container.current.appendChild(emblem.draw());
   }
 
   componentDidMount()
@@ -72,10 +72,7 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
       className: baseClassName + (this.props.containerProps && this.props.containerProps.className ?
         " " + this.props.containerProps.className :
         ""),
-      ref: (component: HTMLDivElement) =>
-      {
-        this.container = component;
-      },
+      ref: this.container,
     });
 
     return(
