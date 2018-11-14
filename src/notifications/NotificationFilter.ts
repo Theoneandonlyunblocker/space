@@ -173,4 +173,4 @@ export class NotificationFilter
   }
 }
 
-export const globalNotificationFilter = new NotificationFilter();
+export const activeNotificationFilter = new NotificationFilter();

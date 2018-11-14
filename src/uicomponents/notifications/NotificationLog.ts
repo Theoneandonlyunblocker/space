@@ -5,7 +5,7 @@ import * as ReactDOM from "react-dom";
 import {localize} from "../../../localization/localize";
 import eventManager from "../../eventManager";
 import {Notification} from "../../notifications/Notification";
-import {globalNotificationFilter, NotificationFilter} from "../../notifications/NotificationFilter";
+import {activeNotificationFilter, NotificationFilter} from "../../notifications/NotificationFilter";
 import {NotificationSubscriber} from "../../notifications/NotificationSubscriber";
 import {default as DialogBox} from "../windows/DialogBox";
 
@@ -37,7 +37,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   {
     return(
     {
-      notificationFilter: globalNotificationFilter,
+      notificationFilter: activeNotificationFilter,
     });
   }
 

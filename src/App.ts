@@ -22,7 +22,7 @@ import {defaultModules} from "./defaultModules";
 import idGenerators from "./idGenerators";
 import {handleError} from "./handleError";
 import {activeModuleStore} from "./ModuleStore";
-import {globalNotificationFilter} from "./notifications/NotificationFilter";
+import {activeNotificationFilter} from "./notifications/NotificationFilter";
 import * as debug from "./debug";
 import
 {
@@ -281,7 +281,7 @@ class App
     });
 
     // notification filter is loaded here as it's dependant on notifications having been loaded
-    return globalNotificationFilter.load().then(() =>
+    return activeNotificationFilter.load().then(() =>
     {
       activeModuleData.scripts.game.afterInit.forEach(script =>
       {

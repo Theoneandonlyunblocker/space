@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {globalNotificationFilter, NotificationFilter} from "../../notifications/NotificationFilter";
+import {activeNotificationFilter, NotificationFilter} from "../../notifications/NotificationFilter";
 
 import {localize} from "../../../localization/localize";
 
@@ -32,7 +32,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   {
     return(
     {
-      filter: globalNotificationFilter,
+      filter: activeNotificationFilter,
     });
   }
 
