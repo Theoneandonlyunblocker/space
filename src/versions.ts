@@ -18,19 +18,19 @@ export function compare(a: string, b: string): number
   const aVer = new Version(a);
   const bVer = new Version(b);
 
-  const majorSort = bVer.major - aVer.major;
+  const majorSort = aVer.major - bVer.major;
   if (majorSort)
   {
     return majorSort;
   }
 
-  const minorSort = bVer.minor - aVer.minor;
+  const minorSort = aVer.minor - bVer.minor;
   if (minorSort)
   {
     return minorSort;
   }
 
-  const patchSort = bVer.patch - aVer.patch;
+  const patchSort = aVer.patch - bVer.patch;
   if (patchSort)
   {
     return patchSort;
