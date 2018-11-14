@@ -6,6 +6,7 @@ import * as semver from "./versions";
 import * as debug from "./debug";
 import { getFunctionName } from "./utility";
 import {activeModuleStore} from "./ModuleStore";
+import { defaultModules } from "./defaultModules";
 
 
 // data is cloned at start of reviving process
@@ -65,6 +66,17 @@ const coreSaveDataRevivers: ReviversByVersion =
     function setAppVersion(saveData)
     {
       saveData.appVersion = "0.0.0";
+    },
+    function addDummyModuleData(saveData)
+    {
+      saveData.moduleData = defaultModules.map(module =>
+      {
+        return(
+        {
+          metaData: {...module.metaData, version: "0.0.0"},
+          moduleSaveData: {},
+        });
+      });
     },
   ],
   "0.1.0":
