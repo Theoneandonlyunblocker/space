@@ -13,6 +13,7 @@ import {NotificationFilterState} from "./NotificationFilterState";
 import { storageStrings } from "../storageStrings";
 
 
+// TODO 2018.11.13 | default filters are initialized at a time modules aren't loaded in yet
 export class NotificationFilter
 {
   public filters:
@@ -22,19 +23,10 @@ export class NotificationFilter
 
   constructor()
   {
-    this.load();
-  }
-  setDefaultFilterStates()
-  {
-    const notifications = activeModuleData.templates.Notifications;
 
-    for (const key in notifications)
-    {
-      const notificationTemplate = notifications[key];
-      this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
-    }
   }
-  shouldDisplayNotification(notification: Notification)
+
+  public shouldDisplayNotification(notification: Notification): boolean
   {
     const filterStates = this.filters[notification.template.key];
     if (filterStates.indexOf(NotificationFilterState.AlwaysShow) !== -1)
@@ -55,25 +47,7 @@ export class NotificationFilter
 
     return false;
   }
-  getCompatibleFilterStates(filterState: NotificationFilterState): NotificationFilterState[]
-  {
-    switch (filterState)
-    {
-      case NotificationFilterState.AlwaysShow:
-      {
-        return [];
-      }
-      case NotificationFilterState.ShowIfInvolved:
-      {
-        return [];
-      }
-      case NotificationFilterState.NeverShow:
-      {
-        return [];
-      }
-    }
-  }
-  handleFilterStateChange(filterKey: string, state: NotificationFilterState)
+  public handleFilterStateChange(filterKey: string, state: NotificationFilterState): void
   {
     const stateIndex = this.filters[filterKey].indexOf(state);
     if (stateIndex !== -1)
@@ -101,7 +75,7 @@ export class NotificationFilter
       this.filters[filterKey] = newState;
     }
   }
-  getFiltersByCategory()
+  public getFiltersByCategory()
   {
     const filtersByCategory:
     {
@@ -133,7 +107,7 @@ export class NotificationFilter
 
     return filtersByCategory;
   }
-  setDefaultFilterStatesForCategory(category: string)
+  public setDefaultFilterStatesForCategory(category: string): void
   {
     const byCategory = this.getFiltersByCategory();
     const forSelectedCategory = byCategory[category];
@@ -144,7 +118,17 @@ export class NotificationFilter
       this.filters[template.key] = template.defaultFilterState.slice(0);
     }
   }
-  load(): Promise<void>
+  public save(): Promise<string>
+  {
+    const data = JSON.stringify(
+    {
+      filters: this.filters,
+      date: new Date(),
+    });
+
+    return localForage.setItem(storageStrings.notificationFilter, data);
+  }
+  public load(): Promise<void>
   {
     this.setDefaultFilterStates();
 
@@ -158,15 +142,34 @@ export class NotificationFilter
       }
     });
   }
-  save(): Promise<string>
-  {
-    const data = JSON.stringify(
-    {
-      filters: this.filters,
-      date: new Date(),
-    });
 
-    return localForage.setItem(storageStrings.notificationFilter, data);
+  private setDefaultFilterStates(): void
+  {
+    const notifications = activeModuleData.templates.Notifications;
+
+    for (const key in notifications)
+    {
+      const notificationTemplate = notifications[key];
+      this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
+    }
+  }
+  private getCompatibleFilterStates(filterState: NotificationFilterState): NotificationFilterState[]
+  {
+    switch (filterState)
+    {
+      case NotificationFilterState.AlwaysShow:
+      {
+        return [];
+      }
+      case NotificationFilterState.ShowIfInvolved:
+      {
+        return [];
+      }
+      case NotificationFilterState.NeverShow:
+      {
+        return [];
+      }
+    }
   }
 }
 

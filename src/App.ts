@@ -22,6 +22,7 @@ import {defaultModules} from "./defaultModules";
 import idGenerators from "./idGenerators";
 import {handleError} from "./handleError";
 import {activeModuleStore} from "./ModuleStore";
+import {globalNotificationFilter} from "./notifications/NotificationFilter";
 import * as debug from "./debug";
 import
 {
@@ -126,14 +127,11 @@ class App
 
     this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
     {
-      this.game = new Game(map, players);
-      this.initGame();
+      this.initGame(new Game(map, players)).then(() =>
+      {
+        this.reactUI.switchScene("galaxyMap");
+      });
 
-      this.initDisplay();
-      this.hookUI();
-      centerCameraOnPosition(activePlayer.controlledLocations[0]);
-
-      this.reactUI.switchScene("galaxyMap");
     });
   }
   public load(saveKey: string): Promise<void>
@@ -155,24 +153,20 @@ class App
 
         this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
         {
-          this.game = new GameLoader().deserializeGame(data.gameData);
-          this.game.gameStorageKey = saveKey;
-          this.initGame();
+          const game = new GameLoader().deserializeGame(data.gameData);
+          game.gameStorageKey = saveKey;
 
-          this.initDisplay();
-          this.hookUI();
-          if (data.cameraLocation)
+          this.initGame(game, data.cameraLocation).then(() =>
           {
-            centerCameraOnPosition(data.cameraLocation);
-          }
+            this.reactUI.switchScene("galaxyMap");
+          });
 
-          this.reactUI.switchScene("galaxyMap");
         });
       });
     });
   }
 
-  private makeApp()
+  private makeApp(): void
   {
     const startTime = Date.now();
 
@@ -191,14 +185,11 @@ class App
     {
       this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
       {
-        this.game = this.makeGame();
-        this.initGame();
+        this.initGame(this.makeGame()).then(() =>
+        {
+          finalizeMakingApp();
+        });
 
-        this.initDisplay();
-        this.hookUI();
-        centerCameraOnPosition(activePlayer.controlledLocations[0]);
-
-        finalizeMakingApp();
       });
     }
     else
@@ -206,7 +197,7 @@ class App
       finalizeMakingApp();
     }
   }
-  private destroy()
+  private destroy(): void
   {
     if (this.game)
     {
@@ -238,7 +229,122 @@ class App
       this.reactUI = null;
     }
   }
-  private makeGame()
+  private initUI(): void
+  {
+    const reactContainer = document.getElementById("react-container");
+
+    if (!reactContainer)
+    {
+      throw new Error("Couldn't get react container");
+    }
+
+    this.reactUI = new ReactUI(
+      reactContainer,
+      this.moduleInitializer,
+    );
+  }
+  private initGame(game: Game, initialCameraPosition?: Point): Promise<void>
+  {
+    this.game = game;
+
+    if (!activeNotificationStore)
+    {
+      setActiveNotificationStore(new NotificationStore());
+      activeNotificationStore.currentTurn = game.turnNumber;
+    }
+
+    setActivePlayer(game.players[0]);
+    activePlayer.isAi = false;
+
+    if (this.playerControl)
+    {
+      this.playerControl.removeEventListeners();
+    }
+
+    this.playerControl = new PlayerControl(activePlayer);
+
+    game.players.forEach(player =>
+    {
+      if (!player.isIndependent)
+      {
+        if (!player.notificationLog)
+        {
+          player.notificationLog = new PlayerNotificationSubscriber(player);
+        }
+        player.notificationLog.registerToNotificationStore(activeNotificationStore);
+      }
+
+      if (!player.aiController)
+      {
+        player.aiController = player.makeRandomAiController(game);
+      }
+    });
+
+    // notification filter is loaded here as it's dependant on notifications having been loaded
+    return globalNotificationFilter.load().then(() =>
+    {
+      activeModuleData.scripts.game.afterInit.forEach(script =>
+      {
+        script(game);
+      });
+
+      this.initDisplay(game, activePlayer);
+      this.hookUI(
+        game,
+        activePlayer,
+        this.playerControl,
+        this.renderer,
+        this.mapRenderer,
+      );
+
+      const pointToCenterCameraOn = initialCameraPosition || activePlayer.controlledLocations[0];
+      centerCameraOnPosition(pointToCenterCameraOn);
+    });
+  }
+  private initDisplay(game: Game, player: Player): void
+  {
+    this.renderer = new Renderer(
+      game.galaxyMap.seed,
+      activeModuleData.mapBackgroundDrawingFunction,
+    );
+
+    this.mapRenderer = new MapRenderer(game.galaxyMap, player);
+    this.mapRenderer.setParent(this.renderer.layers.map);
+    this.mapRenderer.init();
+
+    // some initialization is done when the react component owning the
+    // renderer mounts, such as in uicomponents/galaxymap/galaxymap.ts
+  }
+  private hookUI(
+    game: Game,
+    player: Player,
+    playerControl: PlayerControl,
+    renderer: Renderer,
+    mapRenderer: MapRenderer,
+  ): void
+  {
+    this.reactUI.game = game;
+    this.reactUI.player = player;
+    this.reactUI.playerControl = playerControl;
+    this.reactUI.renderer = renderer;
+    this.reactUI.mapRenderer = mapRenderer;
+  }
+  private getInitialScene(): ReactUIScene
+  {
+    const urlParser = document.createElement("a");
+    urlParser.href = document.URL;
+    const hash = urlParser.hash;
+
+    if (hash)
+    {
+      return <ReactUIScene> hash.slice(1);
+    }
+    else
+    {
+      return "setupGame";
+    }
+  }
+  private makeGame(): Game
   {
     const playerData = this.makePlayers();
     const players = playerData.players;
@@ -276,7 +382,7 @@ class App
       players: players,
     });
   }
-  private makeMap(playerData: {players: Player[]})
+  private makeMap(playerData: {players: Player[]}): GalaxyMap
   {
     const optionValues: MapGenOptionValues =
     {
@@ -302,102 +408,6 @@ class App
     const galaxyMap = mapGenResult.makeMap();
 
     return galaxyMap;
-  }
-  private initGame()
-  {
-    if (!this.game)
-    {
-      throw new Error("App tried to init game without having one specified");
-    }
-
-    if (!activeNotificationStore)
-    {
-      setActiveNotificationStore(new NotificationStore());
-      activeNotificationStore.currentTurn = this.game.turnNumber;
-    }
-
-    setActivePlayer(this.game.players[0]);
-    activePlayer.isAi = false;
-
-    if (this.playerControl)
-    {
-      this.playerControl.removeEventListeners();
-    }
-
-    this.playerControl = new PlayerControl(activePlayer);
-
-    this.game.players.forEach(player =>
-    {
-      if (!player.isIndependent)
-      {
-        if (!player.notificationLog)
-        {
-          player.notificationLog = new PlayerNotificationSubscriber(player);
-        }
-        player.notificationLog.registerToNotificationStore(activeNotificationStore);
-      }
-
-      if (!player.aiController)
-      {
-        player.aiController = player.makeRandomAiController(this.game);
-      }
-    });
-
-    activeModuleData.scripts.game.afterInit.forEach(script =>
-    {
-      script(this.game);
-    });
-  }
-  private initDisplay()
-  {
-    this.renderer = new Renderer(
-      this.game.galaxyMap.seed,
-      activeModuleData.mapBackgroundDrawingFunction,
-    );
-
-    this.mapRenderer = new MapRenderer(this.game.galaxyMap, activePlayer);
-    this.mapRenderer.setParent(this.renderer.layers.map);
-    this.mapRenderer.init();
-
-    // some initialization is done when the react component owning the
-    // renderer mounts, such as in uicomponents/galaxymap/galaxymap.ts
-  }
-  private initUI()
-  {
-    const reactContainer = document.getElementById("react-container");
-
-    if (!reactContainer)
-    {
-      throw new Error("Couldn't get react container");
-    }
-
-    this.reactUI = new ReactUI(
-      reactContainer,
-      this.moduleInitializer,
-    );
-  }
-  private hookUI()
-  {
-    this.reactUI.game = this.game;
-    this.reactUI.player = activePlayer;
-    this.reactUI.playerControl = this.playerControl;
-    this.reactUI.renderer = this.renderer;
-    this.reactUI.mapRenderer = this.mapRenderer;
-  }
-  private getInitialScene(): ReactUIScene
-  {
-    const urlParser = document.createElement("a");
-    urlParser.href = document.URL;
-    const hash = urlParser.hash;
-
-    if (hash)
-    {
-      return <ReactUIScene> hash.slice(1);
-    }
-    else
-    {
-      return "setupGame";
-    }
   }
   private cleanUpStorage(): void
   {
