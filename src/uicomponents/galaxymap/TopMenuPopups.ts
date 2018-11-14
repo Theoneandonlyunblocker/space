@@ -276,7 +276,8 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     {
       if (this.popupComponents[key])
       {
-        this.cachedPopupPositions[key] = this.popupComponents[key].windowContainerComponent.getPosition();
+        const popupComponent: DefaultWindowComponent = this.popupComponents[key].current;
+        this.cachedPopupPositions[key] = popupComponent.windowContainerComponent.current.getPosition();
       }
     }
 
