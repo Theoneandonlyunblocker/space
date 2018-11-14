@@ -14,8 +14,8 @@ declare interface UnitSaveData
   maxMovePoints: number;
   offensiveBattlesFoughtThisTurn: number;
   baseAttributes: UnitAttributesObject;
-  abilityTemplateTypes: string[];
-  passiveSkillTemplateTypes: string[];
+  abilityTypes: string[];
+  passiveSkillTypes: string[];
   experienceForCurrentLevel: number;
   level: number;
   items: UnitItemsSaveData;

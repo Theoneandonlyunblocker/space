@@ -62,9 +62,20 @@ const coreSaveDataRevivers: ReviversByVersion =
 {
   "0.0.0":
   [
-    (saveData) =>
+    function setAppVersion(saveData)
     {
       saveData.appVersion = "0.0.0";
+    },
+  ],
+  "0.1.0":
+  [
+    function renameUnitSaveDataAbilityKeys(saveData)
+    {
+      saveData.gameData.units.forEach((unitData: any) =>
+      {
+        unitData.abilityTypes = unitData.abilityTemplateTypes;
+        unitData.passiveSkillTypes = unitData.passiveSkillTemplateTypes;
+      });
     },
   ],
 };

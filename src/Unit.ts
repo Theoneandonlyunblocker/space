@@ -282,11 +282,11 @@ export default class Unit
       maxMovePoints: data.maxMovePoints,
       offensiveBattlesFoughtThisTurn: data.offensiveBattlesFoughtThisTurn,
 
-      abilities: data.abilityTemplateTypes.map(templateType =>
+      abilities: data.abilityTypes.map(templateType =>
       {
         return activeModuleData.templates.Abilities[templateType];
       }),
-      passiveSkills: data.passiveSkillTemplateTypes.map(templateType =>
+      passiveSkills: data.passiveSkillTypes.map(templateType =>
       {
         return activeModuleData.templates.PassiveSkills[templateType];
       }),
@@ -1098,8 +1098,8 @@ export default class Unit
       offensiveBattlesFoughtThisTurn: this.offensiveBattlesFoughtThisTurn,
 
       baseAttributes: this.baseAttributes.serialize(),
-      abilityTemplateTypes: this.abilities.map(abilityTemplate => abilityTemplate.type),
-      passiveSkillTemplateTypes: this.passiveSkills.map(passiveSkillTemplate => passiveSkillTemplate.type),
+      abilityTypes: this.abilities.map(abilityTemplate => abilityTemplate.type),
+      passiveSkillTypes: this.passiveSkills.map(passiveSkillTemplate => passiveSkillTemplate.type),
 
       experienceForCurrentLevel: this.experienceForCurrentLevel,
       level: this.level,
