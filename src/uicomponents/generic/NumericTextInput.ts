@@ -34,24 +34,40 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
 
     this.state =
     {
-      valueString: this.getValueString(this.props.value),
+      valueString: NumericTextInputComponent.getValueString(this.props.value, this.props.stylizeValue),
     };
 
     this.handleValueChange = this.handleValueChange.bind(this);
-    this.getValueString = this.getValueString.bind(this);
   }
 
-  public componentWillReceiveProps(newProps: PropTypes): void
+  public static getDerivedStateFromProps(props: PropTypes, state: StateType): StateType
   {
-    const didChange = newProps.value !== this.props.getValueFromValueString(this.state.valueString);
+    const didChange = props.value !== props.getValueFromValueString(state.valueString);
+
     if (didChange)
     {
-      this.setState(
-      {
-        valueString: this.getValueString(newProps.value),
-      });
+      return {valueString: NumericTextInputComponent.getValueString(props.value, props.stylizeValue)};
+    }
+    else
+    {
+      return null;
     }
   }
+  private static getValueString(
+    value: number,
+    stylizeFN: ((value: number) => string) | undefined,
+  ): string
+  {
+    if (stylizeFN)
+    {
+      return stylizeFN(value);
+    }
+    else
+    {
+      return "" + value;
+    }
+  }
+
   public render()
   {
     const valueStringIsValid = this.props.valueStringIsValid(this.state.valueString);
@@ -72,17 +88,6 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
     );
   }
 
-  private getValueString(value: number): string
-  {
-    if (this.props.stylizeValue)
-    {
-      return this.props.stylizeValue(value);
-    }
-    else
-    {
-      return "" + value;
-    }
-  }
   private handleValueChange(e: React.FormEvent<HTMLInputElement> | React.ClipboardEvent<HTMLInputElement>): void
   {
     e.stopPropagation();

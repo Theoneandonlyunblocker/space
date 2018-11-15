@@ -47,6 +47,20 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     applyMixins(this, new UpdateWhenMoneyChanges(this));
   }
 
+  public static getDerivedStateFromProps(props: PropTypes): Partial<StateType>
+  {
+    if (props.globalSelectedStar && props.player.canAccessManufactoringAtLocation(props.globalSelectedStar))
+    {
+      return({
+        selectedStar: props.globalSelectedStar,
+      });
+    }
+    else
+    {
+      return null;
+    }
+  }
+
   public componentDidMount()
   {
     eventManager.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
@@ -54,15 +68,6 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   public componentWillUnmount()
   {
     eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
-  }
-  public componentWillReceiveProps(newProps: PropTypes): void
-  {
-    if (newProps.globalSelectedStar && this.canAccessManufacturingAtStar(newProps.globalSelectedStar))
-    {
-      this.setState({
-        selectedStar: newProps.globalSelectedStar,
-      });
-    }
   }
   public render()
   {
@@ -72,7 +77,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     const starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
 
     let queueElement: React.ReactElement<any> = null;
-    if (selectedStar && this.canAccessManufacturingAtStar(selectedStar))
+    if (selectedStar && this.props.player.canAccessManufactoringAtLocation(selectedStar))
     {
       if (selectedStar.manufactory)
       {
@@ -112,7 +117,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
           className: "production-overview-contents",
         },
           queueElement,
-          selectedStar && this.canAccessManufacturingAtStar ? ManufacturableThings(
+          selectedStar && this.props.player.canAccessManufactoringAtLocation ? ManufacturableThings(
           {
             selectedStar: selectedStar,
             player: player,
@@ -126,7 +131,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
   private getInitialSelectedStar(): Star | null
   {
-    if (this.props.globalSelectedStar && this.canAccessManufacturingAtStar(this.props.globalSelectedStar))
+    if (this.props.globalSelectedStar && this.props.player.canAccessManufactoringAtLocation(this.props.globalSelectedStar))
     {
       return this.props.globalSelectedStar;
     }
@@ -168,10 +173,6 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
       withManufactories: starsWithManufactories,
       withoutManufactories: starsWithoutManufactories,
     });
-  }
-  private canAccessManufacturingAtStar(star: Star): boolean
-  {
-    return star.owner === this.props.player;
   }
 }
 

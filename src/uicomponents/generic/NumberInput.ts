@@ -17,7 +17,7 @@ interface PropTypes extends React.Props<any>
 
   min?: number;
   max?: number;
-  step?: number;
+  step: number;
   canWrap?: boolean;
 
   attributes?: React.HTMLAttributes<HTMLDivElement>;
@@ -39,7 +39,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
 
     this.state =
     {
-      displayedValue: "" + this.roundValue(this.props.value),
+      displayedValue: "" + NumberInputComponent.roundValue(this.props.value, this.props.step),
     };
 
     this.handleValueChange = this.handleValueChange.bind(this);
@@ -47,15 +47,12 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     this.handleBlur = this.handleBlur.bind(this);
   }
 
-  public componentWillReceiveProps(newProps: PropTypes): void
+  public static getDerivedStateFromProps(props: PropTypes): StateType
   {
-    if ("" + newProps.value !== this.state.displayedValue)
+    return(
     {
-      this.setState(
-      {
-        displayedValue: "" + this.roundValue(newProps.value),
-      });
-    }
+      displayedValue: "" + NumberInputComponent.roundValue(props.value, props.step),
+    });
   }
   public componentWillUnmount(): void
   {
@@ -84,7 +81,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
         Spinner(
         {
           value: this.props.value,
-          step: this.getStep(),
+          step: this.props.step,
           onChange: this.changeValue,
 
           min: this.props.canWrap ? -Infinity : this.props.min,
@@ -94,20 +91,16 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     );
   }
 
-  private getStep(): number
-  {
-    return this.props.step || 1;
-  }
-  private getDecimalPlacesInStep(): number
+  private static getDecimalPlacesInStep(step: number): number
   {
     // step is specified in code, so assume no precision issues
-    const split = `${this.getStep()}`.split(".");
+    const split = `${step}`.split(".");
 
     return split[1] ? split[1].length : 0;
   }
-  private roundValue(value: number): number
+  private static roundValue(value: number, step: number): number
   {
-    const precision = this.getDecimalPlacesInStep();
+    const precision = NumberInputComponent.getDecimalPlacesInStep(step);
 
     return parseFloat(value.toFixed(precision));
   }
@@ -154,7 +147,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    const roundedValue = this.roundValue(value);
+    const roundedValue = NumberInputComponent.roundValue(value, this.props.step);
 
     const min = isFinite(this.props.min) ? this.props.min : -Infinity;
     const max = isFinite(this.props.max) ? this.props.max : Infinity;

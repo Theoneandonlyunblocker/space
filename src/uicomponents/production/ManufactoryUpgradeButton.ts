@@ -28,15 +28,6 @@ export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes
     super(props);
   }
 
-  componentWillReceiveProps(newProps: PropTypes)
-  {
-    this.setState(
-    {
-      canAffordUpgrade: newProps.money >= newProps.upgradeCost,
-      isDisabled: newProps.currentLevel >= newProps.maxLevel,
-    });
-  }
-
   render()
   {
     let unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";

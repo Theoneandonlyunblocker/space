@@ -103,14 +103,14 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       window.cancelAnimationFrame(this.onDocumentWindowResizeTimeoutHandle);
     }
   }
-  public componentWillReceiveProps(newProps: PropTypes): void
+  public componentDidUpdate(prevProps: PropTypes): void
   {
     const propsToCheck: (keyof PropTypes)[] = ["minWidth", "minHeight", "maxWidth", "maxHeight"];
     for (const prop of propsToCheck)
     {
-      if (this.props[prop] !== newProps[prop])
+      if (prevProps[prop] !== this.props[prop])
       {
-        this.setDimensionBounds(newProps);
+        this.setDimensionBounds(this.props);
         break;
       }
     }

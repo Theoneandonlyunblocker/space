@@ -18,7 +18,6 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  canAfford: boolean;
 }
 
 export class ConstructManufactoryComponent extends React.PureComponent<PropTypes, StateType>
@@ -30,29 +29,13 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state = {};
 
     this.bindMethods();
   }
   private bindMethods()
   {
     this.handleConstruct = this.handleConstruct.bind(this);
-  }
-
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      canAfford: this.props.money >= activeModuleData.ruleSet.manufactory.buildCost,
-    });
-  }
-
-  componentWillReceiveProps(newProps: PropTypes)
-  {
-    this.setState(
-    {
-      canAfford: newProps.money >= activeModuleData.ruleSet.manufactory.buildCost,
-    });
   }
 
   handleConstruct()
@@ -66,6 +49,8 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
 
   render()
   {
+    const canAfford = this.props.money >= activeModuleData.ruleSet.manufactory.buildCost;
+
     return(
       ReactDOMElements.div(
       {
@@ -73,9 +58,9 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
       },
         ReactDOMElements.button(
         {
-          className: "construct-manufactory-button" + (this.state.canAfford ? "" : " disabled"),
-          onClick: this.state.canAfford ? this.handleConstruct : null,
-          disabled: !this.state.canAfford,
+          className: "construct-manufactory-button" + (canAfford ? "" : " disabled"),
+          onClick: canAfford ? this.handleConstruct : null,
+          disabled: !canAfford,
         },
           ReactDOMElements.span(
           {
@@ -86,7 +71,7 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
           ReactDOMElements.span(
           {
             className: "construct-manufactory-cost money-style" +
-              (this.state.canAfford ? "" : " negative"),
+              (canAfford ? "" : " negative"),
           },
             activeModuleData.ruleSet.manufactory.buildCost,
           ),

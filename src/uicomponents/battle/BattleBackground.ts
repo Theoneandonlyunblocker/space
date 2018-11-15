@@ -40,12 +40,12 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   {
     this.handleResize = this.handleResize.bind(this);
   }
-  public componentWillReceiveProps(newProps: PropTypes)
+  public componentDidUpdate(prevProps: PropTypes)
   {
     const propsToCheck = ["getBlurArea", "backgroundSeed", "backgroundDrawingFunction"];
     for (const prop of propsToCheck)
     {
-      if (this.props[prop] !== newProps[prop])
+      if (this.props[prop] !== prevProps[prop])
       {
         this.handleResize();
         break;

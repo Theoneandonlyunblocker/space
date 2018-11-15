@@ -94,16 +94,16 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       window.clearTimeout(this.timeoutHandle);
     }
   }
-  public componentWillReceiveProps(newProps: PropTypes): void
+  public componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
   {
-    if (newProps.turnIsTransitioning && !this.props.turnIsTransitioning)
+    if (this.props.turnIsTransitioning && !prevProps.turnIsTransitioning)
     {
-      const removedUnit = this.state.currentDisplayData[0].unit;
+      const removedUnit = prevState.currentDisplayData[0].unit;
 
       let removedUnitNewIndex: number;
-      for (let i = 0; i < newProps.turnOrderDisplayData.length; i++)
+      for (let i = 0; i < this.props.turnOrderDisplayData.length; i++)
       {
-        if (newProps.turnOrderDisplayData[i].unit === removedUnit)
+        if (this.props.turnOrderDisplayData[i].unit === removedUnit)
         {
           removedUnitNewIndex = i;
           break;
@@ -111,10 +111,10 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       }
 
       const pendingDeadUnitsById: {[id: number]: boolean} = {};
-      this.props.turnOrderDisplayData.forEach(currentDisplayData =>
+      prevProps.turnOrderDisplayData.forEach(currentDisplayData =>
       {
         const unit = currentDisplayData.unit;
-        if (!newProps.turnOrderDisplayData.some(newDisplayData =>
+        if (!this.props.turnOrderDisplayData.some(newDisplayData =>
         {
           return newDisplayData.unit === unit;
         }))
@@ -123,12 +123,12 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         }
       });
 
-      const unitsToRender = Math.min(newProps.turnOrderDisplayData.length, this.state.maxUnits);
+      const unitsToRender = Math.min(this.props.turnOrderDisplayData.length, prevState.maxUnits);
       const shouldInsertRemovedUnit = removedUnitNewIndex < unitsToRender - 1;
 
       this.setState(
       {
-        pendingDisplayData: newProps.turnOrderDisplayData,
+        pendingDisplayData: this.props.turnOrderDisplayData,
         pendingDeadUnitsById: pendingDeadUnitsById,
 
         insertIndex: shouldInsertRemovedUnit ? removedUnitNewIndex : undefined,

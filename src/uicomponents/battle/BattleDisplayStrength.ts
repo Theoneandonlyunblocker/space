@@ -48,9 +48,9 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
   {
     this.animateDisplayedStrengthIfNeeded(this.props);
   }
-  componentWillReceiveProps(newProps: PropTypes)
+  componentDidUpdate()
   {
-    this.animateDisplayedStrengthIfNeeded(newProps);
+    this.animateDisplayedStrengthIfNeeded(this.props);
   }
   componentWillUnmount()
   {

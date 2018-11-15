@@ -55,9 +55,9 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
     applyMixins(this, this.dragPositioner);
   }
 
-  public componentWillReceiveProps(newProps: PropTypes): void
+  public componentDidUpdate(prevProps: PropTypes): void
   {
-    if (newProps.listItemIsDragging !== this.props.listItemIsDragging)
+    if (prevProps.listItemIsDragging !== this.props.listItemIsDragging)
     {
       this.clearHover();
     }

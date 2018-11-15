@@ -40,9 +40,9 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
       this.inner.style.animationDuration = "" + this.props.animationDuration + "ms";
     }
   }
-  public componentWillReceiveProps(newProps: PropTypes): void
+  public componentDidUpdate(prevProps: PropTypes): void
   {
-    if (!this.props.isEmpty && newProps.isEmpty)
+    if (!prevProps.isEmpty && this.props.isEmpty)
     {
       this.setState(
       {

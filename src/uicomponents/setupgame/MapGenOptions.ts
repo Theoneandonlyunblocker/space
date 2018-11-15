@@ -59,11 +59,11 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
     return this.getDefaultValues(this.props.mapGenTemplate);
   }
 
-  componentWillReceiveProps(newProps: PropTypes)
+  public componentDidUpdate(prevProps: PropTypes): void
   {
-    if (newProps.mapGenTemplate.key !== this.props.mapGenTemplate.key)
+    if (prevProps.mapGenTemplate.key !== this.props.mapGenTemplate.key)
     {
-      this.setState(this.getDefaultValues(newProps.mapGenTemplate));
+      this.setState(this.getDefaultValues(this.props.mapGenTemplate));
     }
   }
 

@@ -955,6 +955,10 @@ export default class Player
 
     return manufactories;
   }
+  public canAccessManufactoringAtLocation(location: Star): boolean
+  {
+    return this === location.owner;
+  }
   meetsTechRequirements(requirements: TechRequirement[]): boolean
   {
     if (!this.playerTechnology)

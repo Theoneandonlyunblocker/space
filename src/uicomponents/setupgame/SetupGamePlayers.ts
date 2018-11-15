@@ -64,16 +64,16 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     });
   }
 
-  componentWillReceiveProps(newProps: PropTypes)
+  public componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
   {
-    if (newProps.minPlayers > this.state.playerKeys.length)
+    if (this.props.minPlayers > prevState.playerKeys.length)
     {
-      this.makeNewPlayers(newProps.minPlayers - this.state.playerKeys.length);
+      this.makeNewPlayers(this.props.minPlayers - prevState.playerKeys.length);
     }
-    else if (newProps.maxPlayers < this.state.playerKeys.length)
+    else if (this.props.maxPlayers < prevState.playerKeys.length)
     {
-      const overflowCount = this.state.playerKeys.length - newProps.maxPlayers;
-      this.removePlayers(this.state.playerKeys.slice(-overflowCount));
+      const overflowCount = prevState.playerKeys.length - this.props.maxPlayers;
+      this.removePlayers(prevState.playerKeys.slice(-overflowCount));
     }
   }
 

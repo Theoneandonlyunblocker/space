@@ -28,31 +28,13 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state = {};
 
     this.bindMethods();
   }
   private bindMethods()
   {
     this.handleClick = this.handleClick.bind(this);
-  }
-
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      canAfford: this.props.money >= this.props.template.buildCost,
-      isDisabled: !this.props.onClick,
-    });
-  }
-
-  componentWillReceiveProps(newProps: PropTypes)
-  {
-    this.setState(
-    {
-      canAfford: newProps.money >= newProps.template.buildCost,
-      isDisabled: !newProps.onClick,
-    });
   }
 
 

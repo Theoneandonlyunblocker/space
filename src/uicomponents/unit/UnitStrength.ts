@@ -49,20 +49,20 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
       displayedStrength: this.props.currentHealth,
     });
   }
-  componentWillReceiveProps(newProps: PropTypes)
+  public componentDidUpdate(prevProps: PropTypes): void
   {
-    if (newProps.animateStrength &&
-      newProps.currentHealth !== this.props.currentHealth &&
-      (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)
+    if (this.props.animateStrength &&
+      this.props.currentHealth !== prevProps.currentHealth &&
+      (!this.props.maxHealth || this.props.maxHealth === prevProps.maxHealth)
       )
     {
-      const animateDuration = Math.max(newProps.animateDuration || 0, 0);
+      const animateDuration = Math.max(this.props.animateDuration || 0, 0);
       this.animateDisplayedStrength(
-        newProps.currentHealth, animateDuration);
+        this.props.currentHealth, animateDuration);
     }
     else
     {
-      this.updateDisplayStrength(newProps.currentHealth);
+      this.updateDisplayStrength(this.props.currentHealth);
     }
   }
   componentWillUnmount()

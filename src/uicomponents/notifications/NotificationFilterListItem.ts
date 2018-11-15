@@ -49,14 +49,6 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
     });
   }
 
-  componentWillReceiveProps(newProps: PropTypes)
-  {
-    this.setState(
-    {
-      filterState: newProps.initialFilterState,
-    });
-  }
-
   handleChangeState(state: NotificationFilterState)
   {
     const filter = this.props.filter;
