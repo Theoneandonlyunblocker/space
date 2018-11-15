@@ -1,3 +1,4 @@
+import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import Battle from "./Battle";
@@ -87,26 +88,28 @@ export default class ReactUI
     const elementToRender = this.getElementToRender();
 
     ReactDOM.render(
-      ErrorBoundary(
-      {
-        renderError: (error, info) =>
+      React.createElement(React.StrictMode, null,
+        ErrorBoundary(
         {
-          // TODO 2018.10.30 | doesn't respect user error handling preference.
-          // react doesn't let us ignore errors in rendering I think
-
-          const customErrorMessage = Options.system.errorReporting !== "panic" ?
-            localize("UIErrorPanicDespiteUserPreference")(Options.system.errorReporting) :
-            null;
-
-          return SaveRecoveryWithDetails(
+          renderError: (error, info) =>
           {
-            game: this.game,
-            error: error,
-            customMessage: customErrorMessage,
-          });
+            // TODO 2018.10.30 | doesn't respect user error handling preference.
+            // react doesn't let us ignore errors in rendering I think
+
+            const customErrorMessage = Options.system.errorReporting !== "panic" ?
+              localize("UIErrorPanicDespiteUserPreference")(Options.system.errorReporting) :
+              null;
+
+            return SaveRecoveryWithDetails(
+            {
+              game: this.game,
+              error: error,
+              customMessage: customErrorMessage,
+            });
+          },
         },
-      },
-        elementToRender,
+          elementToRender,
+        ),
       ),
       this.container,
     );
