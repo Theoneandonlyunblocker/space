@@ -4,12 +4,12 @@ import MixinBase from "./MixinBase";
 
 
 type LifeCycleFunction = "componentDidMount" |
-  "componentWillReceiveProps" | "componentWillUpdate" |
+  "componentWillReceiveProps" |
   "componentDidUpdate" | "componentWillUnmount";
 const lifeCycleFunctions: LifeCycleFunction[] =
 [
   "componentDidMount" ,
-  "componentWillReceiveProps" , "componentWillUpdate" ,
+  "componentWillReceiveProps" ,
   "componentDidUpdate" , "componentWillUnmount",
 ];
 
