@@ -1,6 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
+import * as ReactMotion from "react-motion";
 
 import {activeModuleData} from "./activeModuleData";
 
@@ -691,4 +692,24 @@ export function getFunctionName(f: Function): string
   const result = /^function\s+([\w\$]+)\s*\(/.exec(f.toString());
 
   return result ? result[1] : "anonymous";
+}
+// https://github.com/chenglou/react-motion/issues/265#issuecomment-184697874
+export function fixedDurationSpring(
+  value: number,
+  duration: number,
+  overshoot: number = 0,
+): ReactMotion.OpaqueConfig
+{
+  const w = duration / 1000;
+  const o = overshoot;
+
+  const s = o <= 0
+    ? 1 - o
+    : 1 / Math.sqrt(1 + Math.pow(2 * Math.PI / Math.log(1 / (o * o)), 2));
+
+  const ks = (2 * Math.PI / w) / Math.max(Math.sqrt(1 - s * s), 0.5);
+  const c = 2 * ks * s;
+
+  return ReactMotion.spring(value, {stiffness: ks * ks, damping: c});
+  // return [ks * ks, c];
 }

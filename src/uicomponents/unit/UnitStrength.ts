@@ -1,129 +1,31 @@
-/// <reference path="../../../lib/tween.js.d.ts" />
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 
 export interface PropTypes extends React.Props<any>
 {
+  isSquadron: boolean;
   isNotDetected?: boolean;
   currentHealth: number;
-  isSquadron: boolean;
   maxHealth: number;
-  animateStrength?: boolean;
-  animateDuration?: number;
 }
 
 interface StateType
 {
-  displayedStrength: number;
 }
 
 export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitStrength";
   public state: StateType;
-  activeTween: TWEEN.Tween;
-  animationFrameHandle: number;
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
-
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.updateDisplayStrength = this.updateDisplayStrength.bind(this);
     this.makeSquadronInfo = this.makeSquadronInfo.bind(this);
-    this.animateDisplayedStrength = this.animateDisplayedStrength.bind(this);
     this.makeStrengthText = this.makeStrengthText.bind(this);
     this.makeCapitalInfo = this.makeCapitalInfo.bind(this);
-  }
-
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      displayedStrength: this.props.currentHealth,
-    });
-  }
-  public componentDidUpdate(prevProps: PropTypes): void
-  {
-    if (this.props.animateStrength &&
-      this.props.currentHealth !== prevProps.currentHealth &&
-      (!this.props.maxHealth || this.props.maxHealth === prevProps.maxHealth)
-      )
-    {
-      const animateDuration = Math.max(this.props.animateDuration || 0, 0);
-      this.animateDisplayedStrength(
-        this.props.currentHealth, animateDuration);
-    }
-    else
-    {
-      this.updateDisplayStrength(this.props.currentHealth);
-    }
-  }
-  componentWillUnmount()
-  {
-    if (this.activeTween)
-    {
-      this.activeTween.stop();
-    }
-  }
-  updateDisplayStrength(newAmount: number)
-  {
-    this.setState(
-    {
-      displayedStrength: newAmount,
-    });
-  }
-  animateDisplayedStrength(newAmount: number, time: number)
-  {
-    let stopped = false;
-
-    const animateTween = () =>
-    {
-      if (stopped)
-      {
-        cancelAnimationFrame(this.animationFrameHandle);
-
-        return;
-      }
-
-      TWEEN.update();
-      this.animationFrameHandle = window.requestAnimationFrame(animateTween);
-    };
-
-    const tweeningHealthObject =
-    {
-      health: this.state.displayedStrength,
-    };
-
-    const tween = new TWEEN.Tween(tweeningHealthObject).to(
-    {
-      health: newAmount,
-    }, time);
-
-    tween.onUpdate(() =>
-    {
-      this.setState(
-      {
-        displayedStrength: tweeningHealthObject.health,
-      });
-    }).easing(TWEEN.Easing.Sinusoidal.Out);
-
-    tween.onStop(() =>
-    {
-      stopped = true;
-      TWEEN.remove(tween);
-    });
-
-    this.activeTween = tween;
-
-    tween.start();
-    animateTween();
   }
   makeSquadronInfo()
   {
@@ -137,7 +39,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
   {
     const text = this.makeStrengthText();
 
-    const relativeHealth = this.state.displayedStrength / this.props.maxHealth;
+    const relativeHealth = this.props.currentHealth / this.props.maxHealth;
 
     const bar = ReactDOMElements.div(
     {
@@ -168,13 +70,13 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
       className: "unit-strength-current",
     };
 
-    const healthRatio = this.state.displayedStrength / this.props.maxHealth;
+    const healthRatio = this.props.currentHealth / this.props.maxHealth;
 
     if (!this.props.isNotDetected && healthRatio <= critThreshhold)
     {
       currentStyle.className += " critical";
     }
-    else if (!this.props.isNotDetected && this.state.displayedStrength < this.props.maxHealth)
+    else if (!this.props.isNotDetected && this.props.currentHealth < this.props.maxHealth)
     {
       currentStyle.className += " wounded";
     }
@@ -185,7 +87,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
         "unit-strength-amount-capital"),
     };
 
-    const displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.state.displayedStrength);
+    const displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.props.currentHealth);
     const max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
 
     return(

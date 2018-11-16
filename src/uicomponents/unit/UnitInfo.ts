@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
+import * as ReactMotion from "react-motion";
 
 import {localize} from "../../../localization/localize";
 import GuardCoverage from "../../GuardCoverage";
@@ -7,6 +8,7 @@ import GuardCoverage from "../../GuardCoverage";
 import UnitActions from "./UnitActions";
 import UnitStatus from "./UnitStatus";
 import UnitStrength from "./UnitStrength";
+import { fixedDurationSpring } from "../../utility";
 
 
 export interface PropTypes extends React.Props<any>
@@ -85,14 +87,27 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
             guardCoverage: this.props.guardType,
             isPreparing: this.props.isPreparing,
           }),
-          UnitStrength(
+          React.createElement(ReactMotion.Motion,
           {
-            maxHealth: this.props.maxHealth,
-            currentHealth: this.props.currentHealth,
-            isSquadron: this.props.isSquadron,
-            animateStrength: true,
-            animateDuration: this.props.animateDuration,
-          }),
+            style:
+            {
+              health: fixedDurationSpring(this.props.currentHealth, this.props.animateDuration),
+            },
+            defaultStyle:
+            {
+              health: this.props.currentHealth,
+            }
+          },
+            (interpolatedStyle: {health: number}) =>
+            {
+              return UnitStrength(
+              {
+                maxHealth: this.props.maxHealth,
+                currentHealth: interpolatedStyle.health,
+                isSquadron: this.props.isSquadron,
+              });
+            }
+          ),
           UnitActions(
           {
             maxActionPoints: this.props.maxActionPoints,
