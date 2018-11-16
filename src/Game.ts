@@ -94,7 +94,7 @@ export default class Game
       this.playerToAct.aiController.processTurn(this.endTurn.bind(this));
     }
   }
-  public getSaveData(): string
+  public getSaveData(name: string): string
   {
     const gameData = this.serialize();
 
@@ -113,8 +113,10 @@ export default class Game
 
     return JSON.stringify(fullSaveData);
   }
-  public save(name: string, saveData: string = this.getSaveData()): Promise<string>
+  public save(name: string): Promise<string>
   {
+    const saveData = this.getSaveData(name);
+
     const saveString = storageStrings.savePrefix + name;
     this.gameStorageKey = saveString;
 

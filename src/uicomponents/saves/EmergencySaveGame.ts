@@ -3,6 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import app from "../../App"; // TODO global
+import { storageStrings } from "../../storageStrings";
 
 
 // tslint:disable-next-line:no-any
@@ -40,7 +41,7 @@ export class EmergencySaveGameComponent extends React.Component<PropTypes, State
 
     try
     {
-      this.state.saveData = app.game.getSaveData();
+      this.state.saveData = app.game.getSaveData(storageStrings.panicSave);
       this.state.saveDataStatusMessage = localize("saveDataCopyPrompt")();
     }
     catch (e)

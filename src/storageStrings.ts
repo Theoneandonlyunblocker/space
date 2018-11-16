@@ -11,6 +11,8 @@ export const storageStrings =
   windowPositions: `${basePrefix}WindowPositions`,
   tutorialStatus: `${basePrefix}TutorialStatus`,
 
+  panicSave: "panicSave",
+
   deprecated_language: `${basePrefix}language`,
   deprecated_options: `${basePrefix}Options.0`,
   deprecated_notificationFilter: `${basePrefix}NotificationFilter.0`,
