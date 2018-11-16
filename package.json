@@ -2,11 +2,12 @@
   "name": "spacegame",
   "version": "0.2.0",
   "dependencies": {
+    "localforage": "1.7.x",
     "pixi.js": "4.5.3",
     "react": "16.4.x",
     "react-dom": "16.4.x",
     "react-dom-factories": "1.0.x",
-    "localforage": "1.7.x"
+    "react-motion": "0.5.x"
   },
   "devDependencies": {
     "typescript": "3.0.x",
@@ -17,7 +18,9 @@
 
     "@types/react": "16.x",
     "@types/react-dom": "16.x",
-    "@types/react-dom-factories": "1.x"
+    "@types/react-dom-factories": "1.x",
+    "@types/react-motion": "0.0.x"
+
   },
   "scripts": {
     "build": "tsc && lessc ./css/main.less ./dist/main.css && npm run copy-dependencies",
