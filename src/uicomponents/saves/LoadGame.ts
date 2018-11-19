@@ -7,7 +7,7 @@ import app from "../../App"; // TODO global
 import {default as DialogBox} from "../windows/DialogBox";
 
 import ConfirmDeleteSavesContent from "./ConfirmDeleteSavesContent";
-import SaveList from "./SaveList";
+import SaveList, { SaveListComponent } from "./SaveList";
 import { storageStrings } from "../../storageStrings";
 
 
@@ -28,6 +28,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   public displayName: string = "LoadGame";
   public state: StateType;
 
+  private saveList = React.createRef<SaveListComponent>();
   private loadButtonElement = React.createRef<HTMLButtonElement>();
   private afterConfirmDeleteCallback: () => void;
 
@@ -64,6 +65,8 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
             {
               this.deleteSelectedKeys();
               this.closeConfirmDeleteSavesPopup();
+
+              this.saveList.current.updateAvailableSaves();
             },
             handleCancel: this.closeConfirmDeleteSavesPopup,
           },
@@ -74,6 +77,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           ),
         SaveList(
         {
+          ref: this.saveList,
           onRowChange: row =>
           {
             this.setState({selectedSaveKey: row.content.props.storageKey});
@@ -82,10 +86,10 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           },
           autoSelect: !Boolean(app.game.gameStorageKey),
           selectedKey: app.game.gameStorageKey,
-          allowDelete: true,
-          onDelete: this.handleMarkForDeletion,
-          onUndoDelete: this.handleUndoMarkForDeletion,
-          saveKeysToDelete: this.state.saveKeysToDelete,
+          allowDeletion: true,
+          onMarkForDeletion: this.handleMarkForDeletion,
+          onUndoMarkForDeletion: this.handleUndoMarkForDeletion,
+          saveKeysMarkedForDeletion: this.state.saveKeysToDelete,
           onDoubleClick: this.handleLoad,
         }),
         ReactDOMElements.form(

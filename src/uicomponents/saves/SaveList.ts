@@ -23,12 +23,12 @@ interface SaveDataForDisplay
 export interface PropTypes extends React.Props<any>
 {
   onRowChange: (row: ListItem<SaveListItemProps>) => void;
-  saveKeysToDelete?: string[];
+  saveKeysMarkedForDeletion?: string[];
   selectedKey: string;
   autoSelect: boolean;
-  allowDelete?: boolean;
-  onUndoDelete?: (saveKey: string, callBack?: () => void) => void;
-  onDelete?: (saveKey: string) => void;
+  allowDeletion?: boolean;
+  onUndoMarkForDeletion?: (saveKey: string, callBack?: () => void) => void;
+  onMarkForDeletion?: (saveKey: string) => void;
   onDoubleClick?: () => void;
 }
 
@@ -52,7 +52,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
     };
   }
 
-  public componentDidMount()
+  public updateAvailableSaves(): void
   {
     const allSaveDataForDisplay: SaveDataForDisplay[] = [];
 
@@ -74,6 +74,10 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
       this.setState({saveKeys: allSaveDataForDisplay});
     });
   }
+  public componentDidMount()
+  {
+    this.updateAvailableSaves();
+  }
   public render()
   {
     const rows: ListItem<SaveListItemProps>[] = [];
@@ -81,8 +85,8 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
 
     this.state.saveKeys.forEach(parsedData =>
     {
-      const isMarkedForDeletion = this.props.saveKeysToDelete &&
-        this.props.saveKeysToDelete.indexOf(parsedData.key) !== -1;
+      const isMarkedForDeletion = this.props.saveKeysMarkedForDeletion &&
+        this.props.saveKeysMarkedForDeletion.indexOf(parsedData.key) !== -1;
 
       const row: ListItem<SaveListItemProps> =
       {
@@ -94,11 +98,11 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
           date: prettifyDate(parsedData.date),
           accurateDate: parsedData.date.toISOString(),
           isMarkedForDeletion: isMarkedForDeletion,
-          handleDelete: this.props.onDelete ?
-            this.props.onDelete.bind(null, parsedData.key) :
+          onMarkForDeletion: this.props.onMarkForDeletion ?
+            this.props.onMarkForDeletion.bind(null, parsedData.key) :
             null,
-          handleUndoDelete: this.props.onUndoDelete ?
-            this.props.onUndoDelete.bind(null, parsedData.key) :
+          onUndoMarkForDeletion: this.props.onUndoMarkForDeletion ?
+            this.props.onUndoMarkForDeletion.bind(null, parsedData.key) :
             null,
           onDoubleClick: this.props.onDoubleClick,
         }),
@@ -126,7 +130,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
       },
     ];
 
-    if (this.props.allowDelete)
+    if (this.props.allowDeletion)
     {
       columns.push(
       {

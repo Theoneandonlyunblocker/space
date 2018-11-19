@@ -7,8 +7,8 @@ import ListItemProps from "../list/ListItemProps";
 export interface PropTypes extends ListItemProps, React.Props<any>
 {
   isMarkedForDeletion: boolean;
-  handleUndoDelete: (callback?: () => void) => void;
-  handleDelete: () => void;
+  onUndoMarkForDeletion: (callback?: () => void) => void;
+  onMarkForDeletion: () => void;
   onDoubleClick?: () => void;
   storageKey: string;
   name: string;
@@ -34,20 +34,20 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    this.handleUndoDelete = this.handleUndoDelete.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
+    this.handleUndoMarkForDeletion = this.handleUndoMarkForDeletion.bind(this);
+    this.handleMarkForDeletion = this.handleMarkForDeletion.bind(this);
     this.makeCell = this.makeCell.bind(this);
   }
 
-  handleDelete(e: React.MouseEvent<HTMLTableCellElement>)
+  handleMarkForDeletion(e: React.MouseEvent<HTMLTableCellElement>)
   {
     e.stopPropagation();
-    this.props.handleDelete();
+    this.props.onMarkForDeletion();
   }
-  handleUndoDelete(e: React.MouseEvent<HTMLTableCellElement>)
+  handleUndoMarkForDeletion(e: React.MouseEvent<HTMLTableCellElement>)
   {
     e.stopPropagation();
-    this.props.handleUndoDelete();
+    this.props.onUndoMarkForDeletion();
   }
   private static preventDefault(e: React.SyntheticEvent<any>)
   {
@@ -72,11 +72,11 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
         if (this.props.isMarkedForDeletion)
         {
           cellProps.className += " undo-delete-button";
-          cellProps.onClick = this.handleUndoDelete;
+          cellProps.onClick = this.handleUndoMarkForDeletion;
         }
         else
         {
-          cellProps.onClick = this.handleDelete;
+          cellProps.onClick = this.handleMarkForDeletion;
         }
         break;
       }
