@@ -279,10 +279,16 @@ export const rangedAttack: AbilityTemplate =
     ],
   },
 
-  canUpgradeInto:
+  defaultUpgrades:
   [
-    bombAttack,
-    boardingHook,
+    {
+      weight: 1,
+      probabilityItems: [bombAttack],
+    },
+    {
+      weight: 1,
+      probabilityItems: [boardingHook],
+    },
   ],
 };
 function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate

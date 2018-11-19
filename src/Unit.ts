@@ -39,6 +39,7 @@ import
 
 import UnitBattleStatsSaveData from "./savedata/UnitBattleStatsSaveData";
 import UnitSaveData from "./savedata/UnitSaveData";
+import { ProbabilityDistributions } from "./templateinterfaces/ProbabilityDistribution";
 
 
 type PassiveSkillsByPhase =
@@ -83,8 +84,11 @@ export default class Unit
   public battleStats: UnitBattleStats;
   public drawingFunctionData: UnitDrawingFunctionData;
 
-  private abilities: AbilityTemplate[] = [];
-  private passiveSkills: PassiveSkillTemplate[] = [];
+  private readonly abilities: AbilityTemplate[] = [];
+  private readonly passiveSkills: PassiveSkillTemplate[] = [];
+
+  private readonly learnableAbilities: AbilityBase[] = [];
+  private readonly abilityUpgrades: UpgradableAbilitiesData = {};
 
   public experienceForCurrentLevel: number;
   public level: number;
@@ -123,6 +127,9 @@ export default class Unit
     abilities: AbilityTemplate[];
     passiveSkills: PassiveSkillTemplate[];
 
+    learnableAbilities: AbilityBase[];
+    abilityUpgrades: UpgradableAbilitiesData;
+
     level: number;
     experienceForCurrentLevel: number;
 
@@ -152,6 +159,9 @@ export default class Unit
 
     this.abilities = props.abilities.slice(0);
     this.passiveSkills = props.passiveSkills.slice(0);
+
+    this.learnableAbilities = props.learnableAbilities;
+    this.abilityUpgrades = props.abilityUpgrades;
 
     this.level = props.level;
     this.experienceForCurrentLevel = props.experienceForCurrentLevel;
@@ -230,6 +240,14 @@ export default class Unit
     const baseHealth = baseHealthValue * template.maxHealthLevel;
     const health = randInt(baseHealth - healthVariance, baseHealth + healthVariance);
 
+    const abilities = getItemsFromProbabilityDistributions(template.possibleAbilities);
+    const passiveSkills = template.possiblePassiveSkills ?
+      getItemsFromProbabilityDistributions(template.possiblePassiveSkills) :
+      [];
+    const learnableAbilities = template.possibleLearnableAbilities ?
+      getItemsFromProbabilityDistributions(template.possibleLearnableAbilities) :
+      [];
+
     const unit = new Unit(
     {
       template: template,
@@ -247,10 +265,14 @@ export default class Unit
 
       offensiveBattlesFoughtThisTurn: 0,
 
-      abilities: getItemsFromProbabilityDistributions(template.possibleAbilities),
-      passiveSkills: template.possiblePassiveSkills ?
-        getItemsFromProbabilityDistributions(template.possiblePassiveSkills) :
-        [],
+      abilities: abilities,
+      passiveSkills: passiveSkills,
+
+      learnableAbilities: learnableAbilities,
+      abilityUpgrades: Unit.getAbilityUpgradesData(
+        template,
+        [...abilities, ...passiveSkills, ...learnableAbilities]
+      ),
 
       level: 1,
       experienceForCurrentLevel: 0,
@@ -289,6 +311,37 @@ export default class Unit
       passiveSkills: data.passiveSkillTypes.map(templateType =>
       {
         return activeModuleData.templates.PassiveSkills[templateType];
+      }),
+      abilityUpgrades: data.abilityUpgrades.reduce((allUpgradeData, currentUpgradeData) =>
+      {
+        const allAbilitiesAndPassiveSkills =
+        {
+          ...activeModuleData.templates.Abilities,
+          ...activeModuleData.templates.PassiveSkills,
+        };
+        const source = allAbilitiesAndPassiveSkills[currentUpgradeData.source];
+        const upgrades = currentUpgradeData.possibleUpgrades.map(templateType =>
+        {
+          return allAbilitiesAndPassiveSkills[templateType];
+        });
+
+        allUpgradeData[source.type] =
+        {
+          source: source,
+          possibleUpgrades: upgrades,
+        };
+
+        return allUpgradeData;
+      }, {}),
+      learnableAbilities: data.learnableAbilities.map(templateType =>
+      {
+        const allAbilitiesAndPassiveSkills =
+        {
+          ...activeModuleData.templates.Abilities,
+          ...activeModuleData.templates.PassiveSkills,
+        };
+
+        return allAbilitiesAndPassiveSkills[templateType];
       }),
 
       level: data.level,
@@ -356,6 +409,7 @@ export default class Unit
       maxActionPoints: randInt(3, 5),
     });
   }
+
   private getBaseMoveDelay()
   {
     return 30 - this.attributes.speed;
@@ -651,16 +705,6 @@ export default class Unit
     this.cachedAttributes = this.getAttributesWithItemsAndEffects();
     this.attributesAreDirty = false;
   }
-  // public removeItemAtSlot(slot: string)
-  // {
-  //   if (this.items[slot])
-  //   {
-  //     this.removeItem(this.items[slot]);
-  //     return true;
-  //   }
-
-  //   return false;
-  // }
   public getAllAbilities(): AbilityTemplate[]
   {
     const allAbilities = [...this.abilities, ...this.items.getAbilities()];
@@ -902,110 +946,97 @@ export default class Unit
     this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
     this.level++;
   }
-  private hasAbility(
-    ability: AbilityBase,
-    allAbilities: AbilityBase[] = [...this.getAllAbilities(), ...this.getAllPassiveSkills()],
-  ): boolean
+  // private hasAbility(
+  //   ability: AbilityBase,
+  //   allAbilities: AbilityBase[] = [...this.getAllAbilities(), ...this.getAllPassiveSkills()],
+  // ): boolean
+  // public getLearnableAbilities(): AbilityBase[]
+  // private canUpgradeIntoAbility(ability: AbilityBase, allAbilities: AbilityBase[])
+  // public getUpgradableAbilitiesData(): UpgradableAbilitiesData
+  public getCurrentLearnableAbilities(): AbilityBase[]
   {
-    for (let i = 0; i < allAbilities.length; i++)
-    {
-      if (allAbilities[i].type === ability.type)
-      {
-        return true;
-      }
-    }
+    const currentlyKnownAbilities = [...this.abilities, ...this.passiveSkills];
 
-    return false;
+    const unknownLearnableAbilities = this.learnableAbilities.filter(ability =>
+    {
+      return currentlyKnownAbilities.indexOf(ability) === -1;
+    });
+
+    return unknownLearnableAbilities;
   }
-  public getLearnableAbilities(
-    allAbilities: AbilityBase[] = [...this.getAllAbilities(), ...this.getAllPassiveSkills()],
-  ): AbilityBase[]
+  public getCurrentUpgradableAbilitiesData(): UpgradableAbilitiesData
   {
-    const learnableAbilities: AbilityBase[] = [];
-
-    if (!this.template.learnableAbilities)
+    const upgradeDataForCurrentAbilities: UpgradableAbilitiesData = {};
+    [...this.abilities, ...this.passiveSkills].forEach(ability =>
     {
-      return learnableAbilities;
+      if (this.abilityUpgrades[ability.type])
+      {
+        upgradeDataForCurrentAbilities[ability.type] = this.abilityUpgrades[ability.type];
+      }
+    });
+
+    return upgradeDataForCurrentAbilities;
+  }
+
+  // TODO 2018.11.19 | rename to getUpgradableAbilitiesData
+  private static getAbilityUpgradesData(
+    template: UnitTemplate,
+    upgradeCandidates: AbilityBase[],
+    fullUpgradeData: UpgradableAbilitiesData = {},
+  ): UpgradableAbilitiesData
+  {
+    if (upgradeCandidates.length === 0)
+    {
+      return fullUpgradeData;
     }
 
-    this.template.learnableAbilities.forEach(learnable =>
-    {
-      if (Array.isArray(learnable))
-      {
-        const learnableAbilityGroup = learnable;
-        const hasAbilityFromGroup = learnableAbilityGroup.some(ability =>
-        {
-          return this.hasAbility(ability, allAbilities);
-        });
+    const newUpgradeCandidates: AbilityBase[] = [];
 
-        if (!hasAbilityFromGroup)
-        {
-          learnableAbilities.push(...learnableAbilityGroup);
-        }
+    upgradeCandidates.forEach(sourceAbility =>
+    {
+      let probabilityDistributions: ProbabilityDistributions<AbilityBase>;
+      if (template.possibleAbilityUpgrades && template.possibleAbilityUpgrades[sourceAbility.type])
+      {
+        probabilityDistributions = template.possibleAbilityUpgrades[sourceAbility.type](sourceAbility);
+      }
+      else if (sourceAbility.defaultUpgrades)
+      {
+        probabilityDistributions = sourceAbility.defaultUpgrades;
       }
       else
       {
-        const learnableAbility = learnable;
+        probabilityDistributions = [];
+      }
 
-        if (!this.hasAbility(learnable, allAbilities))
+      const chosenUpgrades = getItemsFromProbabilityDistributions(probabilityDistributions);
+
+      if (chosenUpgrades.length !== 0)
+      {
+        if (!fullUpgradeData[sourceAbility.type])
         {
-          learnableAbilities.push(learnableAbility);
+          fullUpgradeData[sourceAbility.type] =
+          {
+            source: sourceAbility,
+            possibleUpgrades: [],
+          };
         }
       }
-    });
 
-    return learnableAbilities;
-  }
-  private canUpgradeIntoAbility(ability: AbilityBase, allAbilities: AbilityBase[])
-  {
-    if (ability.onlyAllowExplicitUpgrade)
-    {
-      if (!this.template.specialAbilityUpgrades || this.template.specialAbilityUpgrades.indexOf(ability) === -1)
+      chosenUpgrades.forEach(abilityToUpgradeInto =>
       {
-        return false;
-      }
-    }
-    if (this.hasAbility(ability, allAbilities))
-    {
-      return false;
-    }
+        fullUpgradeData[sourceAbility.type].possibleUpgrades.push(abilityToUpgradeInto);
 
-    return true;
-  }
-  public getUpgradableAbilitiesData(): UpgradableAbilitiesData
-  {
-    const data: UpgradableAbilitiesData = {};
-
-    const allAbilities = [...this.getAllAbilities(), ...this.getAllPassiveSkills()];
-
-    const upgradableAbilities = allAbilities.filter(abilityTemplate =>
-    {
-      return abilityTemplate.canUpgradeInto && abilityTemplate.canUpgradeInto.length > 0;
-    });
-
-    upgradableAbilities.forEach(parentAbility =>
-      {
-        parentAbility.canUpgradeInto!.forEach(childAbility =>
+        if (!fullUpgradeData[abilityToUpgradeInto.type])
         {
-          if (this.canUpgradeIntoAbility(childAbility, allAbilities))
-          {
-            if (!data[parentAbility.type])
-            {
-              data[parentAbility.type] =
-              {
-                source: parentAbility,
-                possibleUpgrades: [],
-              };
-            }
-
-            data[parentAbility.type].possibleUpgrades.push(childAbility);
-          }
-        });
+          newUpgradeCandidates.push(abilityToUpgradeInto);
+        }
       });
+    });
 
-    return data;
+    return Unit.getAbilityUpgradesData(template, newUpgradeCandidates, fullUpgradeData);
   }
-  public upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
+
+  public upgradeAbility(source: AbilityBase, newAbility: AbilityBase): void
   {
     const sourceIsPassiveSkill = !source.mainEffect;
 
@@ -1018,9 +1049,13 @@ export default class Unit
       this.abilities.splice(this.abilities.indexOf(<AbilityTemplate> source), 1);
     }
 
-    this.learnAbility(newAbility);
+    this.addAbility(newAbility);
   }
   public learnAbility(newAbility: AbilityBase): void
+  {
+    this.addAbility(newAbility);
+  }
+  private addAbility(newAbility: AbilityBase): void
   {
     const newAbilityIsPassiveSkill = !newAbility.mainEffect;
 
@@ -1101,6 +1136,19 @@ export default class Unit
       abilityTypes: this.abilities.map(abilityTemplate => abilityTemplate.type),
       passiveSkillTypes: this.passiveSkills.map(passiveSkillTemplate => passiveSkillTemplate.type),
 
+      abilityUpgrades: Object.keys(this.abilityUpgrades).map(sourceAbilityType =>
+      {
+        return (
+        {
+          source: sourceAbilityType,
+          possibleUpgrades: this.abilityUpgrades[sourceAbilityType].possibleUpgrades.map(ability =>
+          {
+            return ability.type;
+          }),
+        });
+      }),
+      learnableAbilities: this.learnableAbilities.map(abilityTemplate => abilityTemplate.type),
+
       experienceForCurrentLevel: this.experienceForCurrentLevel,
       level: this.level,
 
@@ -1133,6 +1181,8 @@ export default class Unit
       offensiveBattlesFoughtThisTurn: this.offensiveBattlesFoughtThisTurn,
       abilities: this.abilities,
       passiveSkills: this.passiveSkills,
+      abilityUpgrades: this.abilityUpgrades,
+      learnableAbilities: this.learnableAbilities,
       level: this.level,
       experienceForCurrentLevel: this.experienceForCurrentLevel,
 

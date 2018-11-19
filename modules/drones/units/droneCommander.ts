@@ -57,9 +57,12 @@ export const droneCommander: UnitTemplate =
       probabilityItems: [DroneAbility.infest],
     },
   ],
-  learnableAbilities:
+  possibleLearnableAbilities:
   [
-    DroneAbility.infest,
+    {
+      flatProbability: 1,
+      probabilityItems: [DroneAbility.infest],
+    },
   ],
   itemSlots: {},
   distributionData:

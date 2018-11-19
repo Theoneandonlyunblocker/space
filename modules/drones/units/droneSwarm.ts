@@ -56,9 +56,12 @@ export const droneSwarm: UnitTemplate =
       probabilityItems: [DroneAbility.merge],
     },
   ],
-  learnableAbilities:
+  possibleLearnableAbilities:
   [
-    DroneAbility.merge,
+    {
+      flatProbability: 1,
+      probabilityItems: [DroneAbility.merge],
+    },
   ],
   itemSlots: {},
   distributionData:

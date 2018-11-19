@@ -1,10 +1,12 @@
 import {AbilityEffectTemplate} from "./AbilityEffectTemplate";
+import { ProbabilityDistributions } from "./ProbabilityDistribution";
 
 /**
  * base interface for abilities and passive skills
  */
 declare interface AbilityBase
 {
+  // should be unique, even between abilities & passive skills
   type: string;
   displayName: string;
   description: string;
@@ -12,14 +14,8 @@ declare interface AbilityBase
   // used to check if it's a passive ability or not
   mainEffect?: AbilityEffectTemplate;
 
-  /**
-   * list of ability types this ability can be upgraded into
-   */
-  canUpgradeInto?: AbilityBase[];
-  /**
-   * if true, can only be upgraded when unit has this ability in it's specialAbilityUpgrades
-   */
-  onlyAllowExplicitUpgrade?: boolean;
+  // can be overridden in unit template
+  defaultUpgrades?: ProbabilityDistributions<AbilityBase>;
 }
 
 export default AbilityBase;

@@ -154,5 +154,12 @@ export const warpJammer: PassiveSkillTemplate =
       },
     },
   ],
-  canUpgradeInto: [medic],
+
+  defaultUpgrades:
+  [
+    {
+      flatProbability: 1,
+      probabilityItems: [medic],
+    },
+  ],
 };

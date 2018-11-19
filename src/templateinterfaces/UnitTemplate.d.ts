@@ -56,15 +56,12 @@ declare interface UnitTemplate extends ManufacturableThing
 
   possibleAbilities: ProbabilityDistributions<AbilityTemplate>;
   possiblePassiveSkills?: ProbabilityDistributions<PassiveSkillTemplate>;
-  /**
-   * List of abilities that can be upgraded into even if ability has 'onlyAllowExplicitUpgrade' flag
-   */
-  specialAbilityUpgrades?: AbilityBase[];
-  /**
-   * only one of the abilities in a nested array can be learned
-   * [canAlwaysLearn, canAlwaysLearn, [#1cantLearnIfHas#2, #2cantLearnIfHas#1]]
-   */
-  learnableAbilities?: (AbilityBase | AbilityBase[])[];
+  // will fall back on AbilityBase.defaultUpgrades if not specified for an ability
+  possibleAbilityUpgrades?:
+  {
+    [abilityType: string]: (beingUpgraded: AbilityBase) => ProbabilityDistributions<AbilityBase>,
+  };
+  possibleLearnableAbilities?: ProbabilityDistributions<AbilityBase>;
 
   itemSlots:
   {

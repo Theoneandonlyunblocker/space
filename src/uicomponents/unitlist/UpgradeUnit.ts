@@ -51,8 +51,8 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
         UpgradeAbilities(
         {
           unit: this.props.unit,
-          upgradableAbilitiesData: this.props.unit.getUpgradableAbilitiesData(),
-          learnableAbilities: this.props.unit.getLearnableAbilities(),
+          upgradableAbilitiesData: this.props.unit.getCurrentUpgradableAbilitiesData(),
+          learnableAbilities: this.props.unit.getCurrentLearnableAbilities(),
           onUpgrade: this.props.onUnitUpgrade,
         }),
         UpgradeAttributes(

@@ -118,10 +118,12 @@ const debugShip: UnitTemplate =
       ],
     },
   ],
-  learnableAbilities:
+  possibleLearnableAbilities:
   [
-    guardRow,
-    closeAttack,
+    {
+      flatProbability: 1,
+      probabilityItems: [guardRow, closeAttack],
+    },
   ],
   itemSlots:
   {
