@@ -140,11 +140,21 @@ export default class ModuleData
 
     for (const templateType in source)
     {
-      if (this.templates[category][templateType])
+      let hasDuplicate = Boolean(this.templates[category][templateType]);
+
+      if (category === "Abilities" || category === "PassiveSkills")
       {
-        console.warn(`Duplicate template identifier for ${templateType} in ${category}`);
-        continue;
+        if (this.templates.Abilities[templateType] || this.templates.PassiveSkills[templateType])
+        {
+          hasDuplicate = true;
+        }
       }
+
+      if (hasDuplicate)
+      {
+        throw new Error(`Duplicate template identifier for ${templateType} in ${category}`);
+      }
+
       // TODO 2017.02.05 | bad typing
       this.templates[category][templateType] = <any> source[templateType];
     }

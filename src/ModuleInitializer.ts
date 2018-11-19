@@ -144,7 +144,7 @@ export default class ModuleInitializer
     this.constructModuleFile(moduleFile);
 
     const timeTaken = Date.now() - this.moduleInitalizationStart[moduleFile.metaData.key];
-    debug.log("modules", `Finish initializing module '${moduleFile.metaData.key}'  in ${timeTaken}ms`);
+    debug.log("modules", `Finish initializing module '${moduleFile.metaData.key}' in ${timeTaken}ms`);
   }
   private hasStartedInitializingAllModulesForPhase(phase: ModuleFileInitializationPhase): boolean
   {
