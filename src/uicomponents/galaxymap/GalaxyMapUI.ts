@@ -167,7 +167,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     return(
       ReactDOMElements.div(
       {
-        className: "galaxy-map-ui",
+        className: "galaxy-map-ui hide-when-user-interacts-with-map",
       },
         IntroTutorial(),
         ReactDOMElements.div(

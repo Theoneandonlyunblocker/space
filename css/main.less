@@ -2114,7 +2114,6 @@ ul, ol
 .galaxy-map-ui
 {
   z-index: 100;
-  transition: opacity 0.5s;
   .prevent-user-select;
   pointer-events: none;
   >*
@@ -2160,15 +2159,15 @@ ul, ol
   }
 }
 
-.mouse-event-active-ui
+.hide-when-user-interacts-with-map
 {
-  opacity: 0.06;
-  transition-delay: 0.6s;
+  transition: opacity 0.6s;
 
-  .prevent-pointer-events;
-}
-
+  &.being-hidden
   {
+    transition-delay: 0.8s;
+    opacity: 0.06;
+    .prevent-pointer-events;
   }
 }
 

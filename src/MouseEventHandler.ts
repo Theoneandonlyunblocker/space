@@ -179,18 +179,18 @@ export default class MouseEventHandler
   }
   private makeUITransparent(): void
   {
-    const ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-    if (ui)
+    const elementsToHide = document.getElementsByClassName("hide-when-user-interacts-with-map");
+    for (let i = 0; i < elementsToHide.length; i++)
     {
-      ui.classList.add("mouse-event-active-ui");
+      elementsToHide[i].classList.add("being-hidden");
     }
   }
   private makeUIOpaque(): void
   {
-    const ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-    if (ui)
+    const elementsToHide = document.getElementsByClassName("hide-when-user-interacts-with-map");
+    for (let i = 0; i < elementsToHide.length; i++)
     {
-      ui.classList.remove("mouse-event-active-ui");
+      elementsToHide[i].classList.remove("being-hidden");
     }
   }
 
