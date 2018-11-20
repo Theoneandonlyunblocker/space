@@ -166,15 +166,10 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   {
     this.popupComponents[popupType].current.windowContainerComponent.current.bringToTop();
   }
-  public componentDidMount(): void
-  {
-    window.addEventListener("unload", this.storeAllWindowPositions);
-  }
   public componentWillUnmount(): void
   {
-    window.removeEventListener("unload", this.storeAllWindowPositions);
-
-    this.storeAllWindowPositions();
+    this.cacheAllWindowPositions();
+    this.storeWindowPositions();
   }
   public render()
   {
@@ -203,7 +198,9 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     this.closePopup = this.closePopup.bind(this);
     this.togglePopup = this.togglePopup.bind(this);
     this.bringPopupToFront = this.bringPopupToFront.bind(this);
-    this.storeAllWindowPositions = this.storeAllWindowPositions.bind(this);
+    this.cacheWindowPosition = this.cacheWindowPosition.bind(this);
+    this.cacheAllWindowPositions = this.cacheAllWindowPositions.bind(this);
+    this.storeWindowPositions = this.storeWindowPositions.bind(this);
   }
   private getInitialStateTODO(): StateType
   {
@@ -221,8 +218,8 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   }
   private closePopup(popupType: PopupType)
   {
-    const popupComponent = this.popupComponents[popupType].current;
-    this.cachedPopupPositions[popupType] = popupComponent.windowContainerComponent.current.getPosition();
+    this.cacheWindowPosition(popupType);
+    this.storeWindowPositions();
 
     if (popupType === "options")
     {
@@ -270,17 +267,23 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       constructData.makeContent(),
     );
   }
-  private storeAllWindowPositions(): void
+  private cacheWindowPosition(key: PopupType): void
+  {
+    if (this.popupComponents[key])
+    {
+      const popupComponent: DefaultWindowComponent = this.popupComponents[key].current;
+      this.cachedPopupPositions[key] = popupComponent.windowContainerComponent.current.getPosition();
+    }
+  }
+  private cacheAllWindowPositions(): void
   {
     for (const key in this.popupComponents)
     {
-      if (this.popupComponents[key])
-      {
-        const popupComponent: DefaultWindowComponent = this.popupComponents[key].current;
-        this.cachedPopupPositions[key] = popupComponent.windowContainerComponent.current.getPosition();
-      }
+      this.cacheWindowPosition(<PopupType>key);
     }
-
+  }
+  private storeWindowPositions(): void
+  {
     localForage.setItem(storageStrings.windowPositions, JSON.stringify(this.cachedPopupPositions));
   }
 }
