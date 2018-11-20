@@ -33,6 +33,7 @@ interface PropTypes extends React.Props<any>
   handleClose: () => void;
   isResizable?: boolean;
   getInitialPosition?: (ownRect: Rect, container: HTMLElement) => Rect;
+  attributes?: React.HTMLAttributes<HTMLDivElement>;
 }
 
 interface StateType
@@ -84,6 +85,7 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
         containingAreaElement: document.body,
         getInitialPosition: this.props.getInitialPosition,
         isResizable: this.props.isResizable === false ? false : true,
+        attributes: this.props.attributes,
 
         minWidth: this.state.sizeBounds.minWidth,
         minHeight: this.state.sizeBounds.minHeight,

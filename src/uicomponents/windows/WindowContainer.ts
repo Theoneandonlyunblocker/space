@@ -7,7 +7,7 @@ import {Rect} from "../../Rect";
 import
 {
   clamp,
-  shallowExtend,
+  mergeReactAttributes,
 } from "../../utility";
 import {default as DragPositioner} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
@@ -21,6 +21,7 @@ export interface PropTypes extends React.Props<any>
   containingAreaElement: HTMLElement;
   getInitialPosition?: (ownRect: Rect, container: HTMLElement) => Rect;
   isResizable: boolean;
+  attributes?: React.HTMLAttributes<HTMLDivElement>;
 
   minWidth: number;
   minHeight: number;
@@ -120,11 +121,9 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   }
   public render()
   {
-    // const customAttributes = this.props.attributes ? shallowCopy(this.props.attributes) : {};
-    const customAttributes = {};
     const defaultAttributes: React.HTMLAttributes<HTMLDivElement> =
     {
-      className: "window-container",
+      className: "window-container hide-when-user-interacts-with-map",
       style:
       {
         top: this.dragPositioner.position.top,
@@ -135,7 +134,8 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       },
     };
 
-    const attributes = shallowExtend(customAttributes, defaultAttributes);
+    const customAttributes = this.props.attributes || {};
+    const attributes = mergeReactAttributes(defaultAttributes, customAttributes);
 
     return(
       ReactDOM.createPortal(

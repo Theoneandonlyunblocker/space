@@ -45,6 +45,10 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
       DefaultWindow(
       {
         title: "Tutorial",
+        attributes:
+        {
+          className: "never-hide-when-user-interacts-with-map"
+        },
         handleClose: () =>
         {
           this.setState({shouldShow: false});
