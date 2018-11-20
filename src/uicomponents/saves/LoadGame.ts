@@ -114,6 +114,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           {
             className: "save-game-button",
             onClick: this.handleLoad,
+            disabled: !this.state.selectedSaveKey,
             ref: this.loadButtonElement,
           }, localize("load_action")()),
           ReactDOMElements.button(

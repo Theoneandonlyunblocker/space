@@ -105,6 +105,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           {
             className: "save-game-button",
             onClick: this.handleSave,
+            disabled: !this.state.saveName,
             ref: this.okButtonElement,
           }, localize("save_action")()),
           ReactDOMElements.button(
