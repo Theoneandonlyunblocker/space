@@ -1,0 +1,16 @@
+@import (once) "./common.less";
+
+
+// bit confusing with WindowContainer
+// WindowContainer: container for an individual window
+// WindowsContainer: container for all windows
+
+#windows-container
+{
+  .prevent-user-select;
+  pointer-events: none;
+  >*
+  {
+    pointer-events: auto;
+  }
+}

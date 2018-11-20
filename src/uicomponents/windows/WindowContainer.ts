@@ -60,6 +60,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   private maxHeight: number;
 
   private ownDOMNode: HTMLDivElement;
+  private readonly parentContainer: HTMLDivElement;
   private onDocumentWindowResizeTimeoutHandle: number | undefined;
 
 
@@ -69,6 +70,8 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
 
     this.id = id++;
     this.bindMethods();
+
+    this.parentContainer = <HTMLDivElement>document.getElementById("windows-container");
 
     this.state =
     {
@@ -135,9 +138,12 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     const attributes = shallowExtend(customAttributes, defaultAttributes);
 
     return(
-      ReactDOMElements.div(attributes,
-        this.props.children,
-        !this.props.isResizable ? null : this.makeResizeHandles(),
+      ReactDOM.createPortal(
+        ReactDOMElements.div(attributes,
+          this.props.children,
+          !this.props.isResizable ? null : this.makeResizeHandles(),
+        ),
+        this.parentContainer,
       )
     );
   }

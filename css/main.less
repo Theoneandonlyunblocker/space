@@ -1,3 +1,6 @@
+@import (once) "./common.less";
+
+
 html,
 body {
   height: 100%;
@@ -1920,42 +1923,6 @@ ul, ol
   border-image-outset: 3px;
 }
 
-.draggable-cursor
-{
-  cursor: move;
-}
-
-.dragging-cursor
-{
-  cursor: move;
-}
-
-.draggable
-{
-  .draggable-cursor !important;
-  .prevent-user-select;
-}
-
-.dragging
-{
-  position: fixed !important;
-  pointer-events: none;
-  .dragging-cursor !important;
-  z-index: 999;
-}
-
-.prevent-user-select
-{
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: -moz-none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  cursor: default;
-}
-
 // BATTLE PREP
 
 .battle-prep
@@ -2201,12 +2168,7 @@ ul, ol
   .prevent-pointer-events;
 }
 
-.prevent-pointer-events
-{
-  pointer-events: none !important;
-  *
   {
-    pointer-events: none !important;
   }
 }
 
@@ -3647,6 +3609,7 @@ ul, ol
   color: darken(@text-color, 20%) !important;
 }
 
+@import (once) "./windows/WindowsContainer.less";
 @import (once) "./windows/DefaultWindow.less";
 @import (once) "./windows/DialogBox.less";
 @import (once) "./windows/WindowContainer.less";
