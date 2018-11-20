@@ -72,7 +72,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           },
             ConfirmDeleteSavesContent(
             {
-              saveNames: this.state.saveKeysToDelete,
+              saveNames: this.state.saveKeysToDelete.map(key => key.replace(storageStrings.savePrefix, "")),
             }),
           ),
         SaveList(
