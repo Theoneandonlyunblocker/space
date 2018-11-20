@@ -28,7 +28,9 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   public displayName: string = "SaveGame";
   public state: StateType =
   {
-    saveName: "",
+    saveName: app.game.gameStorageKey ?
+      app.game.gameStorageKey.replace(storageStrings.savePrefix, "") :
+      "",
     hasConfirmOverwritePopup: false,
   };
 
@@ -44,7 +46,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
 
   public componentDidMount()
   {
-    if (app.game.gameStorageKey)
+    if (this.state.saveName)
     {
       this.okButtonElement.current.focus();
     }
@@ -69,7 +71,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           },
             localize("promptOverwrite")(
             {
-              toOverWrite: this.state.saveName.replace(storageStrings.savePrefix, "")
+              toOverWrite: this.state.saveName,
             }),
           ),
         SaveList(

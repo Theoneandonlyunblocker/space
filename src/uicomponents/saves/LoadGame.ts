@@ -39,7 +39,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
     this.state =
     {
       saveKeysToDelete: [],
-      selectedSaveKey: null,
+      selectedSaveKey: app.game.gameStorageKey,
       hasConfirmDeleteSavePopup: false,
     };
 
