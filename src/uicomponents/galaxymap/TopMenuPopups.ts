@@ -166,6 +166,25 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   {
     this.popupComponents[popupType].current.windowContainerComponent.current.bringToTop();
   }
+  public toggleOrBringPopupToFront(popupType: PopupType): void
+  {
+    if (this.state[popupType])
+    {
+      const isTopMost = this.popupComponents[popupType].current.windowContainerComponent.current.isTopMostWindow();
+      if (isTopMost)
+      {
+        this.closePopup(popupType);
+      }
+      else
+      {
+        this.bringPopupToFront(popupType);
+      }
+    }
+    else
+    {
+      this.openPopup(popupType);
+    }
+  }
   public componentWillUnmount(): void
   {
     this.cacheAllWindowPositions();
@@ -198,6 +217,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     this.closePopup = this.closePopup.bind(this);
     this.togglePopup = this.togglePopup.bind(this);
     this.bringPopupToFront = this.bringPopupToFront.bind(this);
+    this.toggleOrBringPopupToFront = this.toggleOrBringPopupToFront.bind(this);
     this.cacheWindowPosition = this.cacheWindowPosition.bind(this);
     this.cacheAllWindowPositions = this.cacheAllWindowPositions.bind(this);
     this.storeWindowPositions = this.storeWindowPositions.bind(this);

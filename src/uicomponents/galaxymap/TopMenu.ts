@@ -77,8 +77,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         className: "top-menu-items-button top-menu-items-button-production",
         key: "production",
         title: menuItemTitle,
-        onClick: this.openOrBringPopupToTop.bind(this, "production"),
-        onDoubleClick: this.closePopup.bind(this, "production"),
+        onClick: this.toggleOrBringPopupToTop.bind(this, "production"),
         onContextMenu: this.closePopup.bind(this, "production"),
         tabIndex: menuItemTabIndex,
       }, localize("production")()),
@@ -87,8 +86,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         className: "top-menu-items-button top-menu-items-button-equip",
         key: "equipItems",
         title: menuItemTitle,
-        onClick: this.openOrBringPopupToTop.bind(this, "equipItems"),
-        onDoubleClick: this.closePopup.bind(this, "equipItems"),
+        onClick: this.toggleOrBringPopupToTop.bind(this, "equipItems"),
         onContextMenu: this.closePopup.bind(this, "equipItems"),
         tabIndex: menuItemTabIndex,
       }, localize("equip")()),
@@ -98,7 +96,6 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       //   key: "economySummary",
       //   title: menuItemTitle,
       //   onClick: this.openOrBringPopupToTop.bind(this, "economySummary"),
-      //   onDoubleClick: this.closePopup.bind(this, "economySummary"),
       //   onContextMenu: this.closePopup.bind(this, "economySummary"),
       //   tabIndex: menuItemTabIndex,
       // }, localize("economy")()),
@@ -107,8 +104,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         className: "top-menu-items-button top-menu-items-button-diplomacy",
         key: "diplomacy",
         title: menuItemTitle,
-        onClick: this.openOrBringPopupToTop.bind(this, "diplomacy"),
-        onDoubleClick: this.closePopup.bind(this, "diplomacy"),
+        onClick: this.toggleOrBringPopupToTop.bind(this, "diplomacy"),
         onContextMenu: this.closePopup.bind(this, "diplomacy"),
         tabIndex: menuItemTabIndex,
       }, localize("diplomacy")()),
@@ -117,8 +113,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         className: "top-menu-items-button top-menu-items-button-technology",
         key: "technologies",
         title: menuItemTitle,
-        onClick: this.openOrBringPopupToTop.bind(this, "technologies"),
-        onDoubleClick: this.closePopup.bind(this, "technologies"),
+        onClick: this.toggleOrBringPopupToTop.bind(this, "technologies"),
         onContextMenu: this.closePopup.bind(this, "technologies"),
         tabIndex: menuItemTabIndex,
       }, localize("technology")()),
@@ -127,8 +122,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         className: "top-menu-items-button top-menu-items-button-load",
         key: "loadGame",
         title: menuItemTitle,
-        onClick: this.openOrBringPopupToTop.bind(this, "loadGame"),
-        onDoubleClick: this.closePopup.bind(this, "loadGame"),
+        onClick: this.toggleOrBringPopupToTop.bind(this, "loadGame"),
         onContextMenu: this.closePopup.bind(this, "loadGame"),
         tabIndex: menuItemTabIndex,
       }, localize("load_action")()),
@@ -137,8 +131,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         className: "top-menu-items-button top-menu-items-button-save",
         key: "saveGame",
         title: menuItemTitle,
-        onClick: this.openOrBringPopupToTop.bind(this, "saveGame"),
-        onDoubleClick: this.closePopup.bind(this, "saveGame"),
+        onClick: this.toggleOrBringPopupToTop.bind(this, "saveGame"),
         onContextMenu: this.closePopup.bind(this, "saveGame"),
         tabIndex: menuItemTabIndex,
       }, localize("save_action")()),
@@ -147,8 +140,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
         className: "top-menu-items-button top-menu-items-button-options",
         key: "options",
         title: menuItemTitle,
-        onClick: this.openOrBringPopupToTop.bind(this, "options"),
-        onDoubleClick: this.closePopup.bind(this, "options"),
+        onClick: this.toggleOrBringPopupToTop.bind(this, "options"),
         onContextMenu: this.closePopup.bind(this, "options"),
         tabIndex: menuItemTabIndex,
       }, localize("options")()),
@@ -225,7 +217,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
   private bindMethods()
   {
     this.handleResize = this.handleResize.bind(this);
-    this.openOrBringPopupToTop = this.openOrBringPopupToTop.bind(this);
+    this.toggleOrBringPopupToTop = this.toggleOrBringPopupToTop.bind(this);
     this.closePopup = this.closePopup.bind(this);
     this.toggleCondensedMenu = this.toggleCondensedMenu.bind(this);
     this.handleToggleHamburger = this.handleToggleHamburger.bind(this);
@@ -338,16 +330,9 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       buttonsToPlace: amountOfButtonsToPlace,
     });
   }
-  private openOrBringPopupToTop(popupType: PopupType): void
+  private toggleOrBringPopupToTop(popupType: PopupType): void
   {
-    if (this.popupsComponent.current.state[popupType])
-    {
-      this.popupsComponent.current.bringPopupToFront(popupType);
-    }
-    else
-    {
-      this.popupsComponent.current.togglePopup(popupType);
-    }
+    this.popupsComponent.current.toggleOrBringPopupToFront(popupType);
   }
   private closePopup(popupType: PopupType, e: React.MouseEvent<HTMLButtonElement>): void
   {
