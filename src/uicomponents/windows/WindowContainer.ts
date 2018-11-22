@@ -227,44 +227,56 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       this.ownDOMNode.style.paddingBottom = "" + verticalPadding + "px";
     }
   }
-  private handleResizeMove(rawDeltaX: number, rawDeltaY: number): void
+  private handleResizeMove(rawX: number, rawY: number): void
   {
-    if (this.resizeStartQuadrant.left)
+    if (isFinite(rawX))
     {
-      const deltaX = clamp(
-        rawDeltaX,
-        this.resizeStartPosition.width - this.maxWidth,
-        this.resizeStartPosition.width - this.minWidth,
-      );
+      if (this.resizeStartQuadrant.left)
+      {
+        const right = this.resizeStartPosition.left + this.resizeStartPosition.width;
 
-      this.dragPositioner.position.width = this.resizeStartPosition.width - deltaX;
-      this.dragPositioner.position.left = this.resizeStartPosition.left + deltaX;
+        const minX = right - this.maxWidth;
+        const maxX = right - this.minWidth;
+
+        const x = clamp(rawX, minX, maxX);
+
+        this.dragPositioner.position.width = right - x;
+        this.dragPositioner.position.left = x;
+      }
+      else
+      {
+        const minX = this.resizeStartPosition.left + this.minWidth;
+        const maxX = this.resizeStartPosition.left + this.maxWidth;
+
+        const x = clamp(rawX, minX, maxX);
+
+        this.dragPositioner.position.width = x - this.resizeStartPosition.left;
+      }
     }
-    else
+
+    if (isFinite(rawY))
     {
-      const deltaX = rawDeltaX;
+      if (this.resizeStartQuadrant.top)
+      {
+        const bottom = this.resizeStartPosition.top + this.resizeStartPosition.height;
 
-      this.dragPositioner.position.width = this.resizeStartPosition.width + deltaX;
-      this.dragPositioner.position.width = clamp(this.dragPositioner.position.width, this.minWidth, this.maxWidth);
-    }
+        const minY = bottom - this.maxHeight;
+        const maxY = bottom - this.minHeight;
 
-    if (this.resizeStartQuadrant.top)
-    {
-      const deltaY = clamp(
-        rawDeltaY,
-        this.resizeStartPosition.height - this.maxHeight,
-        this.resizeStartPosition.height - this.minHeight,
-      );
+        const y = clamp(rawY, minY, maxY);
 
-      this.dragPositioner.position.top = this.resizeStartPosition.top + deltaY;
-      this.dragPositioner.position.height = this.resizeStartPosition.height - deltaY;
-    }
-    else
-    {
-      const deltaY = rawDeltaY;
+        this.dragPositioner.position.height = bottom - y;
+        this.dragPositioner.position.top = y;
+      }
+      else
+      {
+        const minY = this.resizeStartPosition.top + this.minHeight;
+        const maxY = this.resizeStartPosition.top + this.maxHeight;
 
-      this.dragPositioner.position.height = this.resizeStartPosition.height + deltaY;
-      this.dragPositioner.position.height = clamp(this.dragPositioner.position.height, this.minHeight, this.maxHeight);
+        const y = clamp(rawY, minY, maxY);
+
+        this.dragPositioner.position.height = y - this.resizeStartPosition.top;
+      }
     }
 
     this.dragPositioner.updateDOMNodeStyle();

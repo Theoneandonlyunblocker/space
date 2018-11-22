@@ -66,6 +66,15 @@ export class WindowResizeHandleComponent extends React.Component<PropTypes, Stat
     this.dragPositioner.onDragMove = this.onDragMove;
     this.dragPositioner.onDragStart = this.onDragStart;
     this.dragPositioner.forcedDragOffset = {x: 0, y: 0};
+    // so that actual handle width isn't used to limit available area
+    this.dragPositioner.makeDragClone = () =>
+    {
+      const div = document.createElement("div");
+
+      div.classList.add("draggable", "dragging");
+
+      return div;
+    };
     applyMixins(this, this.dragPositioner);
   }
 
@@ -87,12 +96,9 @@ export class WindowResizeHandleComponent extends React.Component<PropTypes, Stat
   }
   protected onDragMove(x: number, y: number): void
   {
-    const deltaX = x - this.dragPositioner.originPosition.x;
-    const deltaY = y - this.dragPositioner.originPosition.y;
-
     this.props.handleResizeMove(
-      this.directionRestriction === "vertical" ? 0 : deltaX,
-      this.directionRestriction === "horizontal" ? 0 : deltaY,
+      this.directionRestriction === "vertical"   ? undefined : x,
+      this.directionRestriction === "horizontal" ? undefined : y,
     );
   }
 
