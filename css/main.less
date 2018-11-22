@@ -4404,7 +4404,7 @@ button.player-setup-remove-player
   overflow-x: auto;
   overflow-y: hidden;
 
-  .window-size(550px, 250px);
+  .window-size(620px, 250px);
 }
 
 .manufactory-stars-list
@@ -4456,7 +4456,7 @@ button.player-setup-remove-player
 {
   display: flex;
   flex-flow: column;
-  flex: 0 0 auto;
+  flex: 0 0 200px;
   border: 1px solid @ui-border-color1;
   border-right-width: 0;
   box-sizing: border-box;
@@ -4465,7 +4465,6 @@ button.player-setup-remove-player
 
   .manufactory-upgrade-button
   {
-    flex: 0 0 auto;
     border: none;
   }
 
@@ -4478,16 +4477,6 @@ button.player-setup-remove-player
   {
     flex: 1 1 auto;
     overflow-y: scroll;
-  }
-
-  .manufacturable-things-list-item
-  {
-    padding: 0 0.5em;
-  }
-  .manufacturable-things-list-item-name
-  {
-    max-width: 10em;
-    .prevent-text-overflow;
   }
 }
 
@@ -4555,11 +4544,6 @@ button.player-setup-remove-player
     border: 1px solid @ui-border-color1;
     border-top-width: 0;
   }
-
-  .manufacturable-things-list-item
-  {
-    padding: 0 0.5em;
-  }
 }
 
 .manufactory-upgrade-buttons-container
@@ -4612,7 +4596,7 @@ button.player-setup-remove-player
 .manufacturable-things-list-item
 {
   position: relative;
-  padding: 2px 0;
+  padding: 0 0.5em;
   display: flex;
   flex-flow: row;
   justify-content: space-between;
@@ -4629,6 +4613,11 @@ button.player-setup-remove-player
   border-image: url("../img/listSeparator.png") 2 0 stretch;
   border-style: solid;
   border-width: 0 0 2px 0;
+}
+.manufacturable-things-list-item-name
+{
+  max-width: 10em;
+  .prevent-text-overflow;
 }
 
 .trade-overview
