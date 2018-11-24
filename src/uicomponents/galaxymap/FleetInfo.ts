@@ -80,7 +80,8 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
           ReactDOMElements.input(
           {
             className: "fleet-info-name",
-            value: isNotDetected ? "Unidentified fleet" : fleet.name.fullName,
+            value: isNotDetected ? localize("unidentifiedFleet")() : fleet.name.fullName,
+            title: isNotDetected ? localize("unidentifiedFleet")() : fleet.name.fullName,
             onChange: isNotDetected ? null : this.setFleetName,
             readOnly: isNotDetected,
           }),

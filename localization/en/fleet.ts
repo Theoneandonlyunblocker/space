@@ -1,6 +1,7 @@
 export const fleet =
 {
   unidentifiedShip: "Unidentified ship",
+  unidentifiedFleet: "Unidentified fleet",
   merge: "merge",
   reorganize: "reorganize",
   reorganizeFleets: "Reorganize fleets",
