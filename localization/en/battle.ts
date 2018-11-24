@@ -42,6 +42,6 @@ export const battle =
   battlePrepValidityModifierSource_offensiveBattle: "due to fighting offensive battle.",
   battlePrepValidityModifierSource_attackedInEnemyTerritory: "due to being attacked in hostile territory.",
   battlePrepValidityModifierSource_attackedInNeutralTerritory: "due to being attacked in neutral territory.",
-  battlePrepValidityModifierSource_passiveAbility_unknown: "due to an unkown enemy ability.",
+  battlePrepValidityModifierSource_passiveAbility_unknown: "due to an unknown enemy ability.",
   battlePrepValidityModifierSource_passiveAbility_known: "due to ability {abilityName} on unit {unitName}.",
 };
