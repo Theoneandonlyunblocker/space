@@ -73,6 +73,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
             title: localize("editFlag")(),
             handleClose: this.setAsInactive,
             isResizable: false,
+            attributes: {className: "force-auto-dimensions"},
             getInitialPosition: popupRect =>
             {
               const parentRect = this.getClientRect();
