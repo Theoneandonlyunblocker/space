@@ -28,7 +28,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   newPlayerId: number = 0;
   playerSetupComponentsById:
   {
-    [playerId: number]: PlayerSetupComponent;
+    [playerId: number]: React.RefObject<PlayerSetupComponent>;
   } = {};
 
   constructor(props: PropTypes)
@@ -132,7 +132,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   {
     for (const playerId in this.playerSetupComponentsById)
     {
-      if (!this.playerSetupComponentsById[playerId])
+      if (!this.playerSetupComponentsById[playerId].current)
       {
         delete this.playerSetupComponentsById[playerId];
       }
@@ -153,7 +153,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   {
     for (const id in this.playerSetupComponentsById)
     {
-      const player = this.playerSetupComponentsById[id];
+      const player = this.playerSetupComponentsById[id].current;
 
       player.randomize();
     }
@@ -163,7 +163,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   {
     return this.state.playerKeys.map(id =>
     {
-      return this.playerSetupComponentsById[id].makePlayer();
+      return this.playerSetupComponentsById[id].current.makePlayer();
     });
   }
 
@@ -172,6 +172,11 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     const playerSetups: React.ReactElement<any>[] = [];
     this.state.playerKeys.forEach((playerId, i) =>
     {
+      if (!this.playerSetupComponentsById[playerId])
+      {
+        this.playerSetupComponentsById[playerId] = React.createRef<PlayerSetupComponent>();
+      }
+
       playerSetups.push(PlayerSetup(
       // @ts-ignore 2345
       {
