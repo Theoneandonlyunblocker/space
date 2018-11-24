@@ -39,8 +39,8 @@ interface DamageWithType
 
 interface FlatAndPerAttributeAdjustment
 {
-  flat?: number;
-  perAttribute?: UnitAttributeAdjustments;
+  flat: number;
+  perAttribute: UnitAttributeAdjustments;
 }
 
 interface GuardCoverageObj
@@ -73,15 +73,18 @@ export const inflictDamage: UnboundEffectAction<DamageWithType> = (
   target.receiveDamage(adjustedDamage);
 };
 
-export const addGuard: UnboundEffectAction<FlatAndPerAttributeAdjustment & GuardCoverageObj> = (
-  data: FlatAndPerAttributeAdjustment & GuardCoverageObj,
+export const addGuard: UnboundEffectAction<Partial<FlatAndPerAttributeAdjustment> & GuardCoverageObj> = (
+  data: Partial<FlatAndPerAttributeAdjustment> & GuardCoverageObj,
   user: Unit,
   target: Unit,
   battle: Battle,
   executedEffectsResult: ExecutedEffectsResult,
 ) =>
 {
-  const guardAmount = user.attributes.modifyValueByAttributes(data.flat, data.perAttribute);
+  const flat = data.flat || 0;
+  const perAttribute = data.perAttribute || {};
+
+  const guardAmount = user.attributes.modifyValueByAttributes(flat, perAttribute);
   target.addGuard(guardAmount, data.coverage);
 };
 
