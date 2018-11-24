@@ -41,9 +41,10 @@ interface StateType
 export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "ItemListItem";
-
   public state: StateType;
+
   dragPositioner: DragPositioner<ItemListItemComponent>;
+  private readonly ownDOMNode = React.createRef<HTMLTableRowElement>();
 
   constructor(props: PropTypes)
   {
@@ -53,7 +54,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.isDraggable)
     {
-      this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+      this.dragPositioner = new DragPositioner(this, this.ownDOMNode, this.props.dragPositionerProps);
       this.dragPositioner.onDragStart = this.onDragStart;
       this.dragPositioner.onDragEnd = this.onDragEnd;
       this.dragPositioner.makeDragClone = this.makeDragClone;
@@ -141,11 +142,12 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
       cells.push(cell);
     }
 
-    const rowProps: React.HTMLProps<HTMLTableRowElement> =
+    const rowProps: React.HTMLProps<HTMLTableRowElement> & React.ClassAttributes<HTMLTableRowElement> =
     {
       className: "item-list-item",
       onClick : this.props.handleClick,
       key: this.props.keyTODO, /*TODO react*/
+      ref: this.ownDOMNode,
     };
 
     if (this.dragPositioner)

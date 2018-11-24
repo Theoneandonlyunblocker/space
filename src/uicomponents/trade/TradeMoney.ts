@@ -29,7 +29,9 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TradeMoney";
   public state: StateType;
+
   dragPositioner: DragPositioner<TradeMoneyComponent>;
+  private readonly ownDOMNode = React.createRef<HTMLTableRowElement>();
 
   constructor(props: PropTypes)
   {
@@ -37,7 +39,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
     this.bindMethods();
 
-    this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+    this.dragPositioner = new DragPositioner(this, this.ownDOMNode, this.props.dragPositionerProps);
     this.dragPositioner.onDragStart = this.onDragStart;
     this.dragPositioner.onDragEnd = this.onDragEnd;
     applyMixins(this, this.dragPositioner);
@@ -81,9 +83,10 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    const rowProps: React.HTMLAttributes<HTMLTableRowElement> =
+    const rowProps: React.HTMLAttributes<HTMLTableRowElement> & React.ClassAttributes<HTMLTableRowElement> =
     {
       className: "tradeable-items-list-item",
+      ref: this.ownDOMNode,
     };
 
     if (this.props.onDragStart)

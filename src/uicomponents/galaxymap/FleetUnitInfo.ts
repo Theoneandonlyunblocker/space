@@ -28,6 +28,7 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
   public state: StateType;
 
   dragPositioner: DragPositioner<FleetUnitInfoComponent>;
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -37,7 +38,7 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
 
     if (this.props.isDraggable)
     {
-      this.dragPositioner = new DragPositioner(this);
+      this.dragPositioner = new DragPositioner(this, this.ownDOMNode);
       this.dragPositioner.onDragStart = this.onDragStart;
       this.dragPositioner.onDragEnd = this.onDragEnd;
       applyMixins(this, this.dragPositioner);
@@ -63,9 +64,10 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
     const unit = this.props.unit;
     const isNotDetected = !this.props.isIdentified;
 
-    const divProps: React.HTMLAttributes<HTMLDivElement> =
+    const divProps: React.HTMLAttributes<HTMLDivElement> & React.ClassAttributes<HTMLDivElement> =
     {
       className: "fleet-unit-info",
+      ref: this.ownDOMNode,
     };
 
     if (this.props.isDraggable)

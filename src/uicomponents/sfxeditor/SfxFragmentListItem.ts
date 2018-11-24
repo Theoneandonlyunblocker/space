@@ -31,6 +31,7 @@ export class SfxFragmentListItemComponent<P extends Fragment> extends React.Comp
   public state: StateType;
 
   dragPositioner: DragPositioner<SfxFragmentListItemComponent<P>>;
+  private readonly ownDOMNode = React.createRef<HTMLLIElement>();
 
   constructor(props: PropTypes<P>)
   {
@@ -43,7 +44,7 @@ export class SfxFragmentListItemComponent<P extends Fragment> extends React.Comp
 
     if (this.props.isDraggable)
     {
-      this.dragPositioner = new DragPositioner(this,
+      this.dragPositioner = new DragPositioner(this, this.ownDOMNode,
       {
 
       });
@@ -69,9 +70,10 @@ export class SfxFragmentListItemComponent<P extends Fragment> extends React.Comp
 
   render()
   {
-    const listItemProps: React.HTMLProps<HTMLLIElement> =
+    const listItemProps: React.HTMLProps<HTMLLIElement> & React.ClassAttributes<HTMLLIElement> =
     {
       className: "sfx-fragment-list-item",
+      ref: this.ownDOMNode,
     };
 
     if (this.props.isDraggable)

@@ -25,7 +25,7 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
   public displayName: string = "PlayerFlag";
   public state: StateType;
 
-  private containerElement = React.createRef<HTMLDivElement>();
+  public readonly containerElement = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {

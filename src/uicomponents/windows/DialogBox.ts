@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
 
@@ -31,7 +30,7 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
   public displayName = "DialogBox";
   public state: StateType;
 
-  private okButtonElement: HTMLElement | null;
+  private readonly okButtonElement = React.createRef<HTMLButtonElement>();
 
   constructor(props: PropTypes)
   {
@@ -40,7 +39,7 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
 
   public componentDidMount()
   {
-    (<HTMLElement>ReactDOM.findDOMNode(this.okButtonElement!)).focus();
+    this.okButtonElement.current.focus();
   }
   public render()
   {
@@ -69,10 +68,7 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
             {
               className: "dialog-box-button ok-button",
               onClick: this.props.handleOk,
-              ref: component =>
-              {
-                this.okButtonElement = component;
-              },
+              ref: this.okButtonElement,
             }, this.props.okText || localize("ok")()),
             this.props.extraButtons,
             ReactDOMElements.button(

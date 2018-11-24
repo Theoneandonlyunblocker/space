@@ -63,6 +63,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
   public state: StateType;
 
   dragPositioner: DragPositioner<UnitComponent>;
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -73,7 +74,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     this.bindMethods();
     if (this.props.isDraggable)
     {
-      this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+      this.dragPositioner = new DragPositioner(this, this.ownDOMNode, this.props.dragPositionerProps);
       this.dragPositioner.onDragStart = this.onDragStart;
       this.dragPositioner.onDragEnd = this.onDragEnd;
       applyMixins(this, this.dragPositioner);
@@ -121,13 +122,14 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
 
   render()
   {
-    const wrapperProps: React.HTMLAttributes<HTMLDivElement> =
+    const wrapperProps: React.HTMLAttributes<HTMLDivElement> & React.ClassAttributes<HTMLDivElement> =
     {
       className: "unit",
       onMouseEnter: this.props.handleMouseEnterUnit ? this.handleMouseEnter : null,
       onMouseLeave: this.props.handleMouseLeaveUnit ? this.handleMouseLeave : null,
       onClick: this.props.onUnitClick ? this.handleClick : null,
       onMouseUp: this.props.onMouseUp,
+      ref: this.ownDOMNode,
     };
 
     if (this.props.isDraggable)

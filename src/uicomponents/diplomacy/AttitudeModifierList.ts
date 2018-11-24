@@ -26,15 +26,16 @@ interface StateType
 export class AttitudeModifierListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "AttitudeModifierList";
-
   public state: StateType;
+
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
     super(props);
     if (this.props.autoPositionerProps)
     {
-      applyMixins(this, new AutoPositioner(this));
+      applyMixins(this, new AutoPositioner(this, this.ownDOMNode));
     }
   }
 
@@ -98,7 +99,11 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
     ];
 
     return(
-      ReactDOMElements.div({className: "attitude-modifier-list auto-position fixed-table-parent"},
+      ReactDOMElements.div(
+      {
+        className: "attitude-modifier-list auto-position fixed-table-parent",
+        ref: this.ownDOMNode,
+      },
         List(
         {
           listItems: rows,

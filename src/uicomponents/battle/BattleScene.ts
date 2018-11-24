@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import BattleScene from "../../BattleScene";
 import {Flag} from "../../Flag";
@@ -27,6 +26,8 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BattleScene";
   public state: StateType;
+
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -55,7 +56,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
   {
     if (prevProps.battleState === "start" && this.props.battleState === "active")
     {
-      this.props.battleScene.bindRendererView((<HTMLElement>ReactDOM.findDOMNode(this)));
+      this.props.battleScene.bindRendererView(this.ownDOMNode.current);
       this.props.battleScene.resume();
     }
     else if (prevProps.battleState === "active" && this.props.battleState === "finish")
@@ -108,6 +109,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
       ReactDOMElements.div(
       {
         className: "battle-scene",
+        ref: this.ownDOMNode,
       },
         componentToRender,
       )

@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import eventManager from "../../eventManager";
 import
@@ -42,6 +41,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   sortedItems: ListItem<any>[];
   public state: StateType;
 
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
   private headerElement = React.createRef<HTMLTableSectionElement>();
   private innerElement = React.createRef<HTMLDivElement>();
 
@@ -95,7 +95,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.keyboardSelect)
     {
-      (<HTMLDivElement>ReactDOM.findDOMNode(this)).addEventListener("keydown", (event: KeyboardEvent) =>
+      this.ownDOMNode.current.addEventListener("keydown", (event: KeyboardEvent) =>
       {
         switch (event.keyCode)
         {
@@ -123,7 +123,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     else if (this.props.autoSelect)
     {
       this.handleSelectRow(this.sortedItems[0]);
-      (<HTMLElement>ReactDOM.findDOMNode(this)).focus();
+      this.ownDOMNode.current.focus();
     }
     else
     {
@@ -144,7 +144,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   setDesiredHeight()
   {
-    const ownNode = (<HTMLElement>ReactDOM.findDOMNode(this));
+    const ownNode = this.ownDOMNode.current;
     const innerNode = this.innerElement.current;
 
     ownNode.style.height = "auto";
@@ -477,6 +477,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
         {
           className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
           tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1,
+          ref: this.ownDOMNode,
         },
         ReactDOMElements.div({className: "fixed-table-header-background"}),
         ReactDOMElements.div(

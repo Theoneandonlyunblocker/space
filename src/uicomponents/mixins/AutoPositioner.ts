@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 
 import MixinBase from "./MixinBase";
 
@@ -23,15 +22,17 @@ export interface AutoPositionerProps extends AutoPositionerPosition
 export default class AutoPositioner<T extends React.Component<any, any>> implements MixinBase<T>
 {
   private owner: T;
+  private ownerElementRef: React.RefObject<HTMLElement>;
   private get props(): AutoPositionerProps
   {
     return this.owner.props.autoPositionerProps;
   }
   private hasResizeListener: boolean = false;
 
-  constructor(owner: T)
+  constructor(owner: T, ownerRef: React.RefObject<HTMLElement>)
   {
     this.owner = owner;
+    this.ownerElementRef = ownerRef;
 
     this.setAutoPosition = this.setAutoPosition.bind(this);
   }
@@ -128,7 +129,7 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
   private setAutoPosition()
   {
     const parentRect = this.props.getParentClientRect();
-    const ownNode = (<HTMLElement>ReactDOM.findDOMNode(this.owner));
+    const ownNode = this.ownerElementRef.current;
     const ownRect = ownNode.getBoundingClientRect();
 
     const ySide = this.props.ySide;

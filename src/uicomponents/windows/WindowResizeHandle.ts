@@ -27,6 +27,7 @@ export class WindowResizeHandleComponent extends React.Component<PropTypes, Stat
 
   private dragPositioner: DragPositioner<WindowResizeHandleComponent>;
   private directionRestriction: DirectionRestriction;
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -62,7 +63,7 @@ export class WindowResizeHandleComponent extends React.Component<PropTypes, Stat
       }
     }
 
-    this.dragPositioner = new DragPositioner(this);
+    this.dragPositioner = new DragPositioner(this, this.ownDOMNode);
     this.dragPositioner.onDragMove = this.onDragMove;
     this.dragPositioner.onDragStart = this.onDragStart;
     this.dragPositioner.forcedDragOffset = {x: 0, y: 0};
@@ -84,6 +85,7 @@ export class WindowResizeHandleComponent extends React.Component<PropTypes, Stat
       ReactDOMElements.div(
       {
         className: "window-resize-handle" + ` window-resize-handle-${this.props.direction}`,
+        ref: this.ownDOMNode,
         onTouchStart: this.dragPositioner.handleReactDownEvent,
         onMouseDown: this.dragPositioner.handleReactDownEvent,
       })

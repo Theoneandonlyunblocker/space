@@ -40,6 +40,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   public state: StateType;
 
   private onChangeTimeoutHandle: number = null;
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -47,7 +48,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.autoPositionerProps)
     {
-      applyMixins(this, new AutoPositioner(this));
+      applyMixins(this, new AutoPositioner(this, this.ownDOMNode));
     }
 
     const initialColor = this.props.initialColor || new Color(1, 1, 1);
@@ -59,7 +60,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   public render()
   {
     return(
-      ReactDOMElements.div({className: "color-picker"},
+      ReactDOMElements.div({className: "color-picker", ref: this.ownDOMNode},
         ReactDOMElements.div({className: "color-picker-hsv"},
           this.makeHsvInputs("hue"),
           this.makeHsvInputs("sat"),

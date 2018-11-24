@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 
 import Point from "../../Point";
 import {Rect} from "../../Rect";
@@ -16,7 +15,7 @@ import normalizeEvent from "./normalizeEvent";
 
 export interface DragPositionerProps
 {
-  containerElement?: HTMLElement | React.Component<any, any>;
+  containerElementDescriptor?: React.RefObject<HTMLElement>;
   // doesn't start dragging unless event target has class "draggable"
   startOnHandleElementOnly?: boolean;
   forcedDragOffset?: Point;
@@ -29,7 +28,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 {
   public isDragging: boolean = false;
 
-  public containerElementDescriptor: HTMLElement | React.Component<any, any>;
+  public containerElementDescriptor: React.RefObject<HTMLElement>;
   public startOnHandleElementOnly: boolean = false;
   public forcedDragOffset: Point;
   public dragThreshhold: number = 5;
@@ -53,6 +52,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
 
   private owner: T;
+  private ownerElementRef: React.RefObject<HTMLElement>;
 
   private dragOffset: Point = {x: 0, y: 0};
   private mouseDownPosition: Point = {x: 0, y: 0};
@@ -64,25 +64,16 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   private touchEventTarget: HTMLElement | null;
   private ownerIsMounted: boolean = false;
 
-  constructor(owner: T, props?: DragPositionerProps)
+  constructor(owner: T, ownerElementRef: React.RefObject<HTMLElement>, props?: DragPositionerProps)
   {
     this.owner = owner;
+    this.ownerElementRef = ownerElementRef;
+
     if (props)
     {
-      const propKeysMap =
-      {
-        containerElement: "containerElementDescriptor",
-      };
       for (const key in props)
       {
-        if (propKeysMap[key])
-        {
-          this[propKeysMap[key]] = props[key];
-        }
-        else
-        {
-          this[key] = props[key];
-        }
+        this[key] = props[key];
       }
     }
 
@@ -96,19 +87,11 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public componentDidMount()
   {
     this.ownerIsMounted = true;
-    this.ownerDOMNode = (<HTMLElement>ReactDOM.findDOMNode(this.owner));
+    this.ownerDOMNode = this.ownerElementRef.current;
+
     if (this.containerElementDescriptor)
     {
-      if (this.containerElementDescriptor instanceof React.Component)
-      {
-        // React element
-        this.containerElement = (<HTMLElement>ReactDOM.findDOMNode(this.containerElementDescriptor));
-      }
-      // DOM node
-      else
-      {
-        this.containerElement = <HTMLElement> this.containerElementDescriptor;
-      }
+      this.containerElement = this.containerElementDescriptor.current;
     }
     else
     {

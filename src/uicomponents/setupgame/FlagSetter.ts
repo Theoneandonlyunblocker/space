@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
 import Color from "../../Color";
@@ -125,9 +124,9 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   }
   private getClientRect(): ClientRect
   {
-    const ownNode = (<HTMLElement>ReactDOM.findDOMNode(this.playerFlagContainer.current));
+    const flagDisplayElement = this.playerFlagContainer.current.containerElement.current;
 
-    return ownNode.getBoundingClientRect();
+    return flagDisplayElement.getBoundingClientRect();
   }
 }
 

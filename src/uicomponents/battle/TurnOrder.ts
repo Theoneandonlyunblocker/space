@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import TurnOrderDisplayData from "../../TurnOrderDisplayData";
 import Unit from "../../Unit";
@@ -49,7 +48,8 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   public displayName = "TurnOrder";
   public state: StateType;
 
-  timeoutHandle: number;
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
+  private timeoutHandle: number;
 
   constructor(props: PropTypes)
   {
@@ -271,7 +271,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   {
     const minUnits = 7;
 
-    const containerElement = (<HTMLElement>ReactDOM.findDOMNode(this));
+    const containerElement = this.ownDOMNode.current;
 
     const containerWidth = containerElement.getBoundingClientRect().width - 30;
     const unitElementWidth = 160;
@@ -377,7 +377,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      ReactDOMElements.div({className: "turn-order-container"},
+      ReactDOMElements.div({className: "turn-order-container", ref: this.ownDOMNode},
         toRender,
       )
     );

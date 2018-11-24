@@ -26,6 +26,8 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
   public displayName: string = "MapRendererLayersList";
   public state: StateType;
 
+  private readonly ownDOMNode = React.createRef<HTMLOListElement>();
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -99,7 +101,7 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
         updateLayer: this.updateLayer,
         dragPositionerProps:
         {
-          containerElement: this,
+          containerElementDescriptor: this.ownDOMNode,
           startOnHandleElementOnly: true,
         },
       }));
@@ -109,6 +111,7 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
       ReactDOMElements.ol(
       {
         className: "map-renderer-layers-list",
+        ref: this.ownDOMNode,
       },
         listItems,
       )

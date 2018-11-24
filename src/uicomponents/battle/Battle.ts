@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import {AbilityTargetDisplayDataById} from "../../AbilityTargetDisplayData";
 import {AbilityUseEffectQueue} from "../../AbilityUseEffectQueue";
@@ -282,7 +281,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
 
-    const tooltipElement = (<HTMLElement>ReactDOM.findDOMNode(this.abilityTooltip.current));
+    const tooltipElement = this.abilityTooltip.current.ownDOMNode.current;
 
     if (
       toElement !== this.state.abilityTooltip.parentElement &&

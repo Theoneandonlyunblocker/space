@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import {AttitudeModifier} from "../../AttitudeModifier";
 import
@@ -26,8 +25,9 @@ interface StateType
 export class OpinionComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "Opinion";
-
   public state: StateType;
+
+  private readonly opinionTextNode = React.createRef<HTMLSpanElement>();
 
   constructor(props: PropTypes)
   {
@@ -65,9 +65,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
 
   getOpinionTextNodeRect()
   {
-    const firstChild = <HTMLElement> (<HTMLElement>ReactDOM.findDOMNode(this)).firstChild;
-
-    return firstChild.getBoundingClientRect();
+    return this.opinionTextNode.current.getBoundingClientRect();
   }
 
   getColor()
@@ -119,6 +117,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
       },
         ReactDOMElements.span(
         {
+          ref: this.opinionTextNode,
           style:
           {
             color: this.getColor(),

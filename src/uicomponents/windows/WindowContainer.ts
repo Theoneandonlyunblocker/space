@@ -60,7 +60,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   private maxWidth : number;
   private maxHeight: number;
 
-  private ownDOMNode: HTMLDivElement;
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
   private readonly parentContainer: HTMLDivElement;
   private onDocumentWindowResizeTimeoutHandle: number | undefined;
 
@@ -79,7 +79,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       zIndex: windowManager.getNewZIndex(this),
     };
 
-    this.dragPositioner = new DragPositioner(this,
+    this.dragPositioner = new DragPositioner(this, this.ownDOMNode,
     {
       preventAutoResize: true,
       startOnHandleElementOnly: true,
@@ -90,7 +90,6 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
 
   public componentDidMount(): void
   {
-    this.ownDOMNode = (<HTMLDivElement>ReactDOM.findDOMNode(this));
     this.setInitialPosition();
     windowManager.handleMount(this);
 
@@ -121,9 +120,10 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   }
   public render()
   {
-    const defaultAttributes: React.HTMLAttributes<HTMLDivElement> =
+    const defaultAttributes: React.HTMLAttributes<HTMLDivElement> & React.ClassAttributes<HTMLDivElement> =
     {
       className: "window-container hide-when-user-interacts-with-map",
+      ref: this.ownDOMNode,
       style:
       {
         top: this.dragPositioner.position.top,
@@ -191,7 +191,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   {
     this.setDimensionBounds();
 
-    const initialRect = this.ownDOMNode.getBoundingClientRect();
+    const initialRect = this.ownDOMNode.current.getBoundingClientRect();
     const position: Rect =
     {
       top: initialRect.top,
@@ -213,18 +213,18 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     this.dragPositioner.position = position;
     this.dragPositioner.updateDOMNodeStyle();
 
-    const firstChildElement = this.ownDOMNode.firstElementChild;
+    const firstChildElement = this.ownDOMNode.current.firstElementChild;
     if (firstChildElement)
     {
       const firstChildRect = firstChildElement.getBoundingClientRect();
       // needs to be updated since we called this.dragPositioner.updateDOMNodeStyle()
-      const ownRect = this.ownDOMNode.getBoundingClientRect();
+      const ownRect = this.ownDOMNode.current.getBoundingClientRect();
 
       const horizontalPadding = firstChildRect.width - ownRect.width;
       const verticalPadding = firstChildRect.height - ownRect.height;
 
-      this.ownDOMNode.style.paddingRight = "" + horizontalPadding + "px";
-      this.ownDOMNode.style.paddingBottom = "" + verticalPadding + "px";
+      this.ownDOMNode.current.style.paddingRight = "" + horizontalPadding + "px";
+      this.ownDOMNode.current.style.paddingBottom = "" + verticalPadding + "px";
     }
   }
   private handleResizeMove(rawX: number, rawY: number): void
@@ -283,7 +283,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   }
   private handleResizeStart(x: number, y: number): void
   {
-    const rect = this.ownDOMNode.getBoundingClientRect();
+    const rect = this.ownDOMNode.current.getBoundingClientRect();
     const midX = rect.left + rect.width / 2;
     const midY = rect.top + rect.height / 2;
 
@@ -321,10 +321,10 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     this.maxWidth  = Math.min(props.maxWidth , containerRect.width);
     this.maxHeight = Math.min(props.maxHeight, containerRect.height);
 
-    this.ownDOMNode.style.minWidth = "" + this.minWidth + "px";
-    this.ownDOMNode.style.minHeight = "" + this.minHeight + "px";
-    this.ownDOMNode.style.maxWidth = "" + this.maxWidth + "px";
-    this.ownDOMNode.style.maxHeight = "" + this.maxHeight + "px";
+    this.ownDOMNode.current.style.minWidth = "" + this.minWidth + "px";
+    this.ownDOMNode.current.style.minHeight = "" + this.minHeight + "px";
+    this.ownDOMNode.current.style.maxWidth = "" + this.maxWidth + "px";
+    this.ownDOMNode.current.style.maxHeight = "" + this.maxHeight + "px";
   }
   private onDocumentWindowResize(): void
   {

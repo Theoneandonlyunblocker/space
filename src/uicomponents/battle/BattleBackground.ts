@@ -22,7 +22,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   public displayName = "BattleBackground";
   public state: StateType;
 
-  pixiContainer = React.createRef<HTMLDivElement>();
+  public pixiContainer = React.createRef<HTMLDivElement>();
   backgroundDrawer: BackgroundDrawer;
 
   constructor(props: PropTypes)

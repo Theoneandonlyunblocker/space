@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import MapRendererLayer from "../../MapRendererLayer";
 
@@ -36,6 +35,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
   public state: StateType;
 
   private dragPositioner: DragPositioner<MapRendererLayersListItemComponent>;
+  private readonly ownDOMNode = React.createRef<HTMLLIElement>();
 
   constructor(props: PropTypes)
   {
@@ -48,7 +48,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
     this.clearHover = this.clearHover.bind(this);
     this.setLayerAlpha = this.setLayerAlpha.bind(this);
 
-    this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+    this.dragPositioner = new DragPositioner(this, this.ownDOMNode, this.props.dragPositionerProps);
     this.dragPositioner.onDragStart = this.onDragStart;
     this.dragPositioner.onDragMove = this.onDragMove;
     this.dragPositioner.onDragEnd = this.onDragEnd;
@@ -64,31 +64,32 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
   }
   public render(): React.ReactHTMLElement<HTMLLIElement>
   {
-    const divProps: React.HTMLAttributes<HTMLLIElement> =
+    const liProps: React.HTMLAttributes<HTMLLIElement> & React.ClassAttributes<HTMLLIElement> =
     {
       className: "map-renderer-layers-list-item draggable",
       onMouseDown: this.dragPositioner.handleReactDownEvent,
       onTouchStart: this.dragPositioner.handleReactDownEvent,
+      ref: this.ownDOMNode,
     };
 
     if (this.dragPositioner.isDragging)
     {
-      divProps.style = this.dragPositioner.getStyleAttributes();
-      divProps.className += " dragging";
+      liProps.style = this.dragPositioner.getStyleAttributes();
+      liProps.className += " dragging";
     }
     if (this.props.listItemIsDragging)
     {
-      divProps.onMouseMove = this.handleHover;
-      divProps.onMouseLeave = this.clearHover;
+      liProps.onMouseMove = this.handleHover;
+      liProps.onMouseLeave = this.clearHover;
       if (this.props.hoverSide)
       {
-        divProps.className += " insert-" + this.props.hoverSide;
+        liProps.className += " insert-" + this.props.hoverSide;
       }
     }
 
 
     return(
-      ReactDOMElements.li(divProps,
+      ReactDOMElements.li(liProps,
         ReactDOMElements.input(
         {
           type: "checkbox",
@@ -134,7 +135,7 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
 
   private handleHover(e: React.MouseEvent<HTMLLIElement>): void
   {
-    const rect = (<HTMLElement>ReactDOM.findDOMNode(this)).getBoundingClientRect();
+    const rect = this.ownDOMNode.current.getBoundingClientRect();
     const midPoint = rect.top + rect.height / 2;
 
     const isAbove = e.clientY < midPoint;

@@ -28,7 +28,9 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitItem";
   public state: StateType;
+
   dragPositioner: DragPositioner<UnitItemComponent>;
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -37,7 +39,7 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
     this.bindMethods();
 
 
-    this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+    this.dragPositioner = new DragPositioner(this, this.ownDOMNode, this.props.dragPositionerProps);
     this.dragPositioner.onDragStart = this.onDragStart;
     this.dragPositioner.onDragEnd = this.onDragEnd;
     applyMixins(this, this.dragPositioner);
@@ -84,15 +86,17 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
       {
         className: "empty-unit-item",
         title: localize("itemSlot")(this.props.slot),
+        ref: this.ownDOMNode,
       });
     }
 
     const item = this.props.item;
 
-    const divProps: React.HTMLAttributes<HTMLDivElement> =
+    const divProps: React.HTMLAttributes<HTMLDivElement> & React.ClassAttributes<HTMLDivElement> =
     {
       className: "unit-item",
       title: item.template.displayName,
+      ref: this.ownDOMNode,
     };
 
     if (this.props.isDraggable)

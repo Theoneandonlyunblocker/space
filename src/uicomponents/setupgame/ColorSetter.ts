@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import Color from "../../Color";
 import {AutoPositionerPosition} from "../mixins/AutoPositioner";
@@ -135,8 +134,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   }
   private getClientRect()
   {
-    const ownNode: HTMLElement = <HTMLElement> ReactDOM.findDOMNode(this);
-    const firstChild: HTMLElement = <HTMLElement> ownNode.firstChild;
+    const firstChild = <HTMLElement> this.ownNode.current.firstChild;
 
     return firstChild.getBoundingClientRect();
   }

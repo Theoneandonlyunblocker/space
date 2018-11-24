@@ -24,6 +24,7 @@ interface StateType
 export class AbilityTooltipComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "AbilityTooltip";
+  public ownDOMNode = React.createRef<HTMLDivElement>();
 
   shouldComponentUpdate(newProps: PropTypes)
   {
@@ -51,12 +52,13 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
   {
     const abilities = this.props.activeTargets[this.props.targetUnit.id];
 
-    const abilityElements: React.ReactElement<any>[] = [];
+    const abilityElements: React.ReactHTMLElement<HTMLDivElement>[] = [];
 
-    const containerProps: any =
+    const containerProps: React.HTMLAttributes<HTMLDivElement> & React.ClassAttributes<HTMLDivElement> =
     {
       className: "ability-tooltip",
       onMouseLeave: this.props.handleMouseLeave,
+      ref: this.ownDOMNode,
     };
 
     const parentRect = this.props.parentElement.getBoundingClientRect();
@@ -82,10 +84,10 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
     for (let i = 0; i < abilities.length; i++)
     {
       const ability = abilities[i];
-      const data: any = {};
+      const data: React.HTMLAttributes<HTMLDivElement> & React.Attributes = {};
 
       data.className = "ability-tooltip-ability";
-      data.key = i;
+      data.key = ability.type;
       data.onClick = this.props.handleAbilityUse.bind(null, ability, this.props.targetUnit);
 
       data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);

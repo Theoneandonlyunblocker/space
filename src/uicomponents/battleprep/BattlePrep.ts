@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
 import app from "../../App"; // TODO global
@@ -52,7 +51,6 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   public state: StateType;
 
   private backgroundComponent = React.createRef<BattleBackgroundComponent>();
-  private upperElement: HTMLElement | null;
 
   constructor(props: PropTypes)
   {
@@ -207,10 +205,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     return(
       ReactDOMElements.div({className: "battle-prep"},
         ReactDOMElements.div({className: "battle-prep-left"},
-          ReactDOMElements.div({className: "battle-prep-left-upper-wrapper", ref: component =>
-          {
-            this.upperElement = component;
-          }},
+          ReactDOMElements.div({className: "battle-prep-left-upper-wrapper"},
             BattleBackground(
             {
               getBlurArea: this.getBackgroundBlurArea,
@@ -463,13 +458,12 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
   private getBackgroundBlurArea()
   {
-    const backgroundElement = this.upperElement;
-    if (!backgroundElement)
+    if (!this.backgroundComponent.current)
     {
       throw new Error("Battle prep background element hasn't mounted yet");
     }
 
-    return (<HTMLElement>ReactDOM.findDOMNode(backgroundElement)).getBoundingClientRect();
+    return this.backgroundComponent.current.pixiContainer.current.getBoundingClientRect();
   }
   private localizeFormationInvalidityReason(formation: BattlePrepFormation, reason: FormationInvalidityReason): string
   {

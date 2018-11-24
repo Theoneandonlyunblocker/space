@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
 
@@ -23,10 +22,11 @@ interface StateType
 export class SetupGamePlayersComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SetupGamePlayers";
-
   public state: StateType;
-  newPlayerId: number = 0;
-  playerSetupComponentsById:
+
+  private newPlayerId: number = 0;
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
+  private readonly playerSetupComponentsById:
   {
     [playerId: number]: React.RefObject<PlayerSetupComponent>;
   } = {};
@@ -96,7 +96,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
       playerKeys: this.state.playerKeys.concat(newIds),
     }, () =>
     {
-      const ownDOMNode = (<HTMLElement>ReactDOM.findDOMNode(this));
+      const ownDOMNode = this.ownDOMNode.current;
       ownDOMNode.scrollTop = ownDOMNode.scrollHeight;
     });
   }
@@ -196,7 +196,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     const canAddPlayers = this.state.playerKeys.length < this.props.maxPlayers;
 
     return(
-      ReactDOMElements.div({className: "setup-game-players"},
+      ReactDOMElements.div({className: "setup-game-players", ref: this.ownDOMNode},
         ReactDOMElements.div(
         {
           className: "player-setup setup-game-players-header",

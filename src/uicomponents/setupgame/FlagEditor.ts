@@ -43,7 +43,8 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
   public displayName = "FlagEditor";
   public state: StateType;
 
-  idGenerator = 0;
+  private idGenerator = 0;
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
@@ -57,7 +58,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
 
     if (this.props.autoPositionerProps)
     {
-      applyMixins(this, new AutoPositioner(this));
+      applyMixins(this, new AutoPositioner(this, this.ownDOMNode));
     }
 
     this.randomize = this.randomize.bind(this);
@@ -117,6 +118,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
       ReactDOMElements.div(
       {
         className: "flag-editor",
+        ref: this.ownDOMNode,
       },
         EmblemSetterList(
         {

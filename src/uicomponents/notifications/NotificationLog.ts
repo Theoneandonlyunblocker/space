@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as ReactDOM from "react-dom";
 
 import {localize} from "../../../localization/localize";
 import eventManager from "../../eventManager";
@@ -32,6 +31,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   public state: StateType;
 
   private updateListener: () => void;
+  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
   static get defaultProps(): Partial<PropTypes>
   {
@@ -60,7 +60,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
   }
   public componentDidUpdate()
   {
-    const domNode = (<HTMLElement>ReactDOM.findDOMNode(this));
+    const domNode = this.ownDOMNode.current;
     domNode.scrollTop = domNode.scrollHeight;
   }
   public render()
@@ -88,6 +88,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
       ReactDOMElements.div(
       {
         className: "notification-log-container",
+        ref: this.ownDOMNode,
       },
         ReactDOMElements.ol(
         {
