@@ -20,7 +20,7 @@ const tinierSpiralGalaxy: MapGenTemplate =
     {
       height:
       {
-        displayName: "height",
+        displayName: "Height",
         range:
         {
           min: 500,
@@ -30,7 +30,7 @@ const tinierSpiralGalaxy: MapGenTemplate =
       },
       width:
       {
-        displayName: "width",
+        displayName: "Width",
         range:
         {
           min: 500,
@@ -40,7 +40,7 @@ const tinierSpiralGalaxy: MapGenTemplate =
       },
       starCount:
       {
-        displayName: "starCount",
+        displayName: "Star count",
         range:
         {
           min: 15,
@@ -54,7 +54,7 @@ const tinierSpiralGalaxy: MapGenTemplate =
     {
       arms:
       {
-        displayName: "arms",
+        displayName: "Arms",
         range:
         {
           min: 2,
@@ -65,7 +65,7 @@ const tinierSpiralGalaxy: MapGenTemplate =
       },
       starSizeRegularity:
       {
-        displayName: "starSizeRegularity",
+        displayName: "Star size regularity",
         range:
         {
           min: 1,
@@ -76,7 +76,7 @@ const tinierSpiralGalaxy: MapGenTemplate =
       },
       centerDensity:
       {
-        displayName: "centerDensity",
+        displayName: "Center density",
         range:
         {
           min: 1,
