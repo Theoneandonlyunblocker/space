@@ -95,9 +95,12 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
       race: getRandomPlayerRaceTemplate(),
     });
   }
-  componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
+  // bit of a hack
+  getSnapshotBeforeUpdate(prevProps: PropTypes, prevState: StateType): void
   {
     this.flag.backgroundColor = this.state.mainColor;
+
+    return null;
   }
   generateMainColor(subColor = this.state.secondaryColor)
   {
