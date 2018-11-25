@@ -1,6 +1,7 @@
 {
   "name": "spacegame",
   "version": "0.2.0",
+  "private": true,
   "dependencies": {
     "localforage": "1.7.x",
     "pixi.js": "4.5.3",
@@ -10,17 +11,18 @@
     "react-motion": "0.5.x"
   },
   "devDependencies": {
-    "typescript": "3.0.x",
-    "less": "2.7.x",
-    "tslint": "5.11.x",
-    "ncp": "2.0.x",
-    "mkdirp": "0.5.x",
-
     "@types/react": "16.x",
     "@types/react-dom": "16.x",
     "@types/react-dom-factories": "1.x",
-    "@types/react-motion": "0.0.x"
-
+    "@types/react-motion": "0.0.x",
+    "less": "2.7.x",
+    "mkdirp": "0.5.x",
+    "ncp": "2.0.x",
+    "ts-loader": "5.3.x",
+    "tslint": "5.11.x",
+    "typescript": "3.0.x",
+    "webpack": "4.26.x",
+    "webpack-cli": "3.1.x"
   },
   "scripts": {
     "build": "tsc && lessc ./css/main.less ./dist/main.css && npm run copy-dependencies",

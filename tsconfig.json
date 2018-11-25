@@ -7,9 +7,9 @@
           "es2015.promise",
           "scripthost"
         ],
-        "module": "amd",
+        "module": "es6",
         "moduleResolution": "node",
-        "outFile": "dist/main.js",
+        // "outFile": "dist/main.js",
         "sourceMap": true,
 
         "noImplicitAny": true,
