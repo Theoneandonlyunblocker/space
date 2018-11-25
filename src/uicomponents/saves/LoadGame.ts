@@ -28,8 +28,8 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   public displayName: string = "LoadGame";
   public state: StateType;
 
-  private saveList = React.createRef<SaveListComponent>();
-  private loadButtonElement = React.createRef<HTMLButtonElement>();
+  private readonly saveList = React.createRef<SaveListComponent>();
+  private readonly loadButtonElement = React.createRef<HTMLButtonElement>();
   private afterConfirmDeleteCallback: () => void;
 
   constructor(props: PropTypes)

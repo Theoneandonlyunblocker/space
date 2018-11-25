@@ -83,9 +83,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   public displayName: string = "Battle";
   public state: StateType;
 
-  private formationsContainer = React.createRef<HTMLDivElement>();
-  private abilityTooltip = React.createRef<AbilityTooltipComponent>();
-  private background = React.createRef<BattleBackgroundComponent>();
+  private readonly formationsContainer = React.createRef<HTMLDivElement>();
+  private readonly abilityTooltip = React.createRef<AbilityTooltipComponent>();
+  private readonly background = React.createRef<BattleBackgroundComponent>();
 
   private battleScene: BattleScene;
   private abilityUseEffectQueue: AbilityUseEffectQueue;

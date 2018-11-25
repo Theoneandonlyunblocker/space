@@ -34,8 +34,8 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
     hasConfirmOverwritePopup: false,
   };
 
-  private okButtonElement = React.createRef<HTMLButtonElement>();
-  private saveNameElement = React.createRef<HTMLInputElement>();
+  private readonly okButtonElement = React.createRef<HTMLButtonElement>();
+  private readonly saveNameElement = React.createRef<HTMLInputElement>();
 
   constructor(props: PropTypes)
   {

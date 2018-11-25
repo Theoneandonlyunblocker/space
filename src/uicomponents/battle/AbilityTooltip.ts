@@ -24,7 +24,7 @@ interface StateType
 export class AbilityTooltipComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "AbilityTooltip";
-  public ownDOMNode = React.createRef<HTMLDivElement>();
+  public readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
   shouldComponentUpdate(newProps: PropTypes)
   {

@@ -21,7 +21,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
   setStateTimeoutHandle: number = undefined;
   sizeValue: number = 46;
   public state: StateType;
-  private flagsElement = React.createRef<HTMLDivElement>();
+  private readonly flagsElement = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {

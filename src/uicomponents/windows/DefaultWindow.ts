@@ -46,9 +46,9 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
   public displayName = "DefaultWindow";
   public state: StateType;
 
-  public windowContainerComponent = React.createRef<WindowContainerComponent>();
-  private contentContainerElement = React.createRef<HTMLDivElement>();
-  private titleBarElement = React.createRef<HTMLDivElement>();
+  public readonly windowContainerComponent = React.createRef<WindowContainerComponent>();
+  private readonly contentContainerElement = React.createRef<HTMLDivElement>();
+  private readonly titleBarElement = React.createRef<HTMLDivElement>();
 
 
   constructor(props: PropTypes)

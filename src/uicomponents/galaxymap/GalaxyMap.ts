@@ -35,7 +35,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   public displayName = "GalaxyMap";
   public state: StateType;
 
-  private pixiContainer = React.createRef<HTMLDivElement>();
+  private readonly pixiContainer = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {

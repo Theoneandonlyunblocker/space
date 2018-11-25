@@ -37,7 +37,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   public state: StateType;
 
-  private battleSceneContainer = React.createRef<HTMLDivElement>();
+  private readonly battleSceneContainer = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {

@@ -31,7 +31,7 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
   public displayName = "Emblem";
   public state: StateType;
 
-  private container = React.createRef<HTMLDivElement>();
+  private readonly container = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {

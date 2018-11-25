@@ -27,7 +27,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   public displayName = "ColorSetter";
   public state: StateType;
 
-  private ownNode = React.createRef<HTMLDivElement>();
+  private readonly ownNode = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {

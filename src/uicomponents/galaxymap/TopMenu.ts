@@ -38,9 +38,9 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
   private cachedButtonWidths: number[] = [];
   private cachedMenuButtonWidth: number = 37;
 
-  private topMenuElement = React.createRef<HTMLDivElement>();
-  private popupsComponent = React.createRef<TopMenuPopupsComponent>();
-  private topMenuItemsElement = React.createRef<HTMLDivElement>();
+  private readonly topMenuElement = React.createRef<HTMLDivElement>();
+  private readonly popupsComponent = React.createRef<TopMenuPopupsComponent>();
+  private readonly topMenuItemsElement = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {

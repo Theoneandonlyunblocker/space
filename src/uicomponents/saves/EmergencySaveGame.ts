@@ -25,7 +25,7 @@ export class EmergencySaveGameComponent extends React.Component<PropTypes, State
   public displayName = "EmergencySaveGame";
   public state: StateType;
 
-  private saveNameElement = React.createRef<HTMLInputElement>();
+  private readonly saveNameElement = React.createRef<HTMLInputElement>();
 
   constructor(props: PropTypes)
   {

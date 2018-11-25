@@ -25,7 +25,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 
   public state: StateType;
 
-  public mapGenOptionsComponent = React.createRef<MapGenOptionsComponent>();
+  public readonly mapGenOptionsComponent = React.createRef<MapGenOptionsComponent>();
 
   constructor(props: PropTypes)
   {

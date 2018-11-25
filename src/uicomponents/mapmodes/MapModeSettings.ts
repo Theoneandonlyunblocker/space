@@ -22,7 +22,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
   public displayName = "MapModeSettings";
 
   public state: StateType;
-  private layersListComponent = React.createRef<MapRendererLayersListComponent>();
+  private readonly layersListComponent = React.createRef<MapRendererLayersListComponent>();
 
   constructor(props: PropTypes)
   {

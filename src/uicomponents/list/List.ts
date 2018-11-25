@@ -42,8 +42,8 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   public state: StateType;
 
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
-  private headerElement = React.createRef<HTMLTableSectionElement>();
-  private innerElement = React.createRef<HTMLDivElement>();
+  private readonly headerElement = React.createRef<HTMLTableSectionElement>();
+  private readonly innerElement = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {

@@ -29,7 +29,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   public displayName: string = "FlagSetter";
   public state: StateType;
 
-  private playerFlagContainer = React.createRef<PlayerFlagComponent>();
+  private readonly playerFlagContainer = React.createRef<PlayerFlagComponent>();
 
   constructor(props: PropTypes)
   {

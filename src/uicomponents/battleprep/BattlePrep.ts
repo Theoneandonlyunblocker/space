@@ -50,7 +50,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   public displayName = "BattlePrep";
   public state: StateType;
 
-  private backgroundComponent = React.createRef<BattleBackgroundComponent>();
+  private readonly backgroundComponent = React.createRef<BattleBackgroundComponent>();
 
   constructor(props: PropTypes)
   {

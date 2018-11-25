@@ -32,7 +32,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
   public displayName = "FleetSelection";
   public state: StateType;
 
-  public contentsElement = React.createRef<HTMLDivElement>();
+  public readonly contentsElement = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {

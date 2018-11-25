@@ -25,7 +25,7 @@ export class SaveRecoveryComponent extends React.Component<PropTypes, StateType>
   public displayName = "SaveRecovery";
   public state: StateType;
 
-  private saveRecoveryErrorBoundary = React.createRef<ErrorBoundaryComponent>();
+  private readonly saveRecoveryErrorBoundary = React.createRef<ErrorBoundaryComponent>();
 
   constructor(props: PropTypes)
   {

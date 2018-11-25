@@ -26,7 +26,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
 {
   public displayName = "NotificationFilterList";
   public state: StateType;
-  private bodyElement = React.createRef<HTMLDivElement>();
+  private readonly bodyElement = React.createRef<HTMLDivElement>();
 
   static get defaultProps(): Partial<PropTypes>
   {

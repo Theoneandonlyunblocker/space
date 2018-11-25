@@ -47,7 +47,7 @@ export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateTy
   public displayName = "GalaxyMapUILeft";
   public state: StateType;
 
-  private fleetSelectionComponent = React.createRef<FleetSelectionComponent>();
+  private readonly fleetSelectionComponent = React.createRef<FleetSelectionComponent>();
 
   constructor(props: PropTypes)
   {

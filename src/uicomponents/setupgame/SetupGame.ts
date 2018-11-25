@@ -25,8 +25,8 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   public displayName = "SetupGame";
   public state: StateType;
 
-  private setupPlayersComponent = React.createRef<SetupGamePlayersComponent>();
-  private mapSetupComponent = React.createRef<MapSetupComponent>();
+  private readonly setupPlayersComponent = React.createRef<SetupGamePlayersComponent>();
+  private readonly mapSetupComponent = React.createRef<MapSetupComponent>();
 
   constructor(props: PropTypes)
   {
