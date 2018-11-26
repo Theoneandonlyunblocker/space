@@ -1,8 +1,7 @@
 const path = require("path");
 
 module.exports = {
-  cache: true,
-  context: path.resolve(__dirname),
+  context: path.resolve(__dirname, "../../"),
   entry:
   {
     main: "./src/App.ts",
@@ -15,8 +14,6 @@ module.exports = {
       "react-motion",
     ],
   },
-  devtool: 'inline-source-map',
-  mode: "development",
   module: {
     rules: [
       {
@@ -30,7 +27,7 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "../../dist"),
     filename: "[name].js",
     chunkFilename: "[chunkhash].js",
   },

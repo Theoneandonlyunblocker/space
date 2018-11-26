@@ -22,11 +22,13 @@
     "tslint": "5.11.x",
     "typescript": "3.0.x",
     "webpack": "4.26.x",
-    "webpack-cli": "3.1.x"
+    "webpack-cli": "3.1.x",
+    "webpack-merge": "^4.1.4"
   },
   "scripts": {
-    "build": "tsc && lessc ./css/main.less ./dist/main.css && npm run copy-dependencies",
-    "copy-dependencies": "mkdirp dist && node ./scripts/tasks/copy_dependencies.js",
+    "build": "npm run build-prod && npm run build-dev",
+    "build-prod": "webpack --config ./scripts/webpack/prod.config.js",
+    "build-dev": "webpack --config ./scripts/webpack/dev.config.js",
     "lint": "tslint \"{src,modules,localization}/**/*.ts\"",
     "lintfix": "tslint \"{src,modules,localization}/**/*.ts\" --fix"
   },
