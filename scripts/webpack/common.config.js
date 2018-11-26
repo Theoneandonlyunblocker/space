@@ -8,12 +8,15 @@ module.exports = {
     main: "./src/main.ts",
     vendor: [
       "localforage",
-      "pixi.js",
+      // "pixi.js",
       "react",
       "react-dom",
       "react-dom-factories",
       "react-motion",
     ],
+  },
+  externals: {
+    PIXI: "PIXI",
   },
   module: {
     rules: [
