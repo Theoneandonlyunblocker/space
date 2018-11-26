@@ -26,12 +26,6 @@
 
         "removeComments": true,
 
-        "types": [
-          "react",
-          "react-dom",
-          "react-transition-group"
-        ],
-
         "strictNullChecks": false,
 
         // requires prefixing intentionally unused params with _
