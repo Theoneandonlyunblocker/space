@@ -1,4 +1,5 @@
 const path = require("path");
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
   context: path.resolve(__dirname, "../../"),
@@ -18,14 +19,23 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: "ts-loader",
         exclude: /node_modules/,
+        use: [{
+          loader: 'ts-loader',
+          options: {
+              transpileOnly: true,
+              experimentalWatchApi: true,
+          },
+        }],
       },
     ],
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
+  plugins: [
+    new ForkTsCheckerWebpackPlugin(),
+  ],
   output: {
     path: path.resolve(__dirname, "../../dist"),
     filename: "[name].js",

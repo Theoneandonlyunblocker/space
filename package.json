@@ -15,6 +15,7 @@
     "@types/react-dom": "16.x",
     "@types/react-dom-factories": "1.x",
     "@types/react-motion": "0.0.x",
+    "fork-ts-checker-webpack-plugin": "^0.5.0",
     "less": "2.7.x",
     "mkdirp": "0.5.x",
     "ncp": "2.0.x",
@@ -23,9 +24,11 @@
     "typescript": "3.0.x",
     "webpack": "4.26.x",
     "webpack-cli": "3.1.x",
+    "webpack-dev-server": "^3.1.10",
     "webpack-merge": "^4.1.4"
   },
   "scripts": {
+    "dev-server": "webpack-dev-server --config ./scripts/webpack/dev.config.js --progress",
     "build": "npm run build-prod && npm run build-dev",
     "build-prod": "webpack --config ./scripts/webpack/prod.config.js",
     "build-dev": "webpack --config ./scripts/webpack/dev.config.js",
