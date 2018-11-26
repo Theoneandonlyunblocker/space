@@ -4,7 +4,7 @@ module.exports = {
   context: path.resolve(__dirname, "../../"),
   entry:
   {
-    main: "./src/App.ts",
+    main: "./src/main.ts",
     vendor: [
       "localforage",
       "pixi.js",
