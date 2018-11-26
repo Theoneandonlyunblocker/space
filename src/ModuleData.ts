@@ -4,6 +4,7 @@ import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
 import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
 import ModuleFile, { ModuleFileGameSaveData } from "./ModuleFile";
 import ModuleScripts from "./ModuleScripts";
+import * as debug from "./debug";
 import
 {
   PartialRuleSetValues,
@@ -234,7 +235,7 @@ export default class ModuleData
         "it doesn't include English language support.");
     }
 
-    console.warn(`Falling back on default language '${chosenLanguage.code}'`);
+    debug.log("init", `Falling back on default language '${chosenLanguage.code}'`);
 
     return chosenLanguage;
   }
