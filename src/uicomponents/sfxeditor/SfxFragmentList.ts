@@ -45,13 +45,14 @@ export class SfxFragmentListComponent<P extends Fragment> extends React.Componen
         this.props.fragments.map(fragment =>
         {
           return SfxFragmentListItem(
-          // @ts-ignore 2345
           {
             key: fragment.key,
             fragment: fragment,
             isDraggable: this.props.isDraggable,
+            // @ts-ignore 2322
             onDragStart: this.props.onDragStart,
             onDragEnd: this.props.onDragEnd,
+            // @ts-ignore 2322
             onClick: this.props.onClick,
           });
         }),

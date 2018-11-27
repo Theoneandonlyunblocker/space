@@ -74,11 +74,11 @@ export class SfxEditorSelectionComponent extends React.Component<PropTypes, Stat
         break;
       case "fragmentConstructors":
         activeSelectionElements.push(SfxFragmentList(
-        // @ts-ignore 2345
         {
           key: "fragmentConstructors",
           fragments: this.props.availableFragmentConstructors,
           isDraggable: true,
+          // @ts-ignore 2322
           onDragStart: this.props.onFragmentListDragStart,
           onDragEnd: this.props.onFragmentListDragEnd,
         }));

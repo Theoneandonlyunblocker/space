@@ -105,9 +105,9 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
           }),
         ),
         ManufacturableThingsList(
-        // @ts-ignore 2345
         {
           manufacturableThings: this.props.manufacturableThings,
+          // @ts-ignore 2322
           onClick: (this.props.canBuild ? this.addItemToBuildQueue : undefined),
           showCost: true,
           money: this.props.money,
