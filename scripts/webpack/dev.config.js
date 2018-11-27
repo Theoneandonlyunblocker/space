@@ -1,14 +1,16 @@
 const merge = require("webpack-merge");
+const path = require("path");
 
 const common = require("./common.config.js");
 
 module.exports = merge(common,
 {
   mode: "development",
-  devtool: "source-map",
+  devtool: "inline-source-map",
   devServer:
   {
     contentBase: "./",
+    publicPath: "/dist/",
     port: 9001,
     watchOptions: {
       ignored: /node_modules/,
@@ -21,7 +23,6 @@ module.exports = merge(common,
   },
   output:
   {
-    filename: "[name].js",
-    chunkFilename: "[name].js",
+    pathinfo: false,
   },
 });

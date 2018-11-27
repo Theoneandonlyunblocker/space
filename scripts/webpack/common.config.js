@@ -39,9 +39,10 @@ module.exports = {
   plugins: [
     new ForkTsCheckerWebpackPlugin(),
   ],
-  output: {
-    path: path.resolve(__dirname, "../../dist"),
+  output:
+  {
+    path: path.resolve(__dirname, "../../dist/"),
     filename: "[name].js",
-    chunkFilename: "[chunkhash].js",
+    chunkFilename: "[name].js",
   },
 };
