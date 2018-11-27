@@ -137,7 +137,7 @@ export default class MouseEventHandler
     this.pixiCanvas.addEventListener("contextmenu", this.handleContextMenu);
 
     this.pixiCanvasListeners.mousewheel = this.handleMouseWheel;
-    this.pixiCanvas.addEventListener("mousewheel", this.handleMouseWheel);
+    this.pixiCanvas.addEventListener("wheel", this.handleMouseWheel);
 
     this.listeners.hoverStar = eventManager.addEventListener("hoverStar",
       (star: Star) =>
@@ -250,7 +250,7 @@ export default class MouseEventHandler
     this.gestureHasStarted = false;
   }
 
-  private handleContextMenu(e: PointerEvent): void
+  private handleContextMenu(e: MouseEvent): void
   {
     e.stopPropagation();
     e.preventDefault();
