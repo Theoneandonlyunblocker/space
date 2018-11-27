@@ -8,6 +8,7 @@ import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 
 import FlagEditor from "./FlagEditor";
+import {SetterComponentBase} from "./SetterComponentBase";
 
 
 export interface PropTypes extends React.Props<any>
@@ -15,7 +16,7 @@ export interface PropTypes extends React.Props<any>
   flag: Flag;
   mainColor: Color;
   secondaryColor: Color;
-  setAsActive: (setterComponent: FlagSetterComponent) => void;
+  setAsActive: (setterComponent: SetterComponentBase) => void;
   updateParentFlag: (flag: Flag) => void;
 }
 
@@ -24,7 +25,7 @@ interface StateType
   isActive: boolean;
 }
 
-export class FlagSetterComponent extends React.Component<PropTypes, StateType>
+export class FlagSetterComponent extends React.Component<PropTypes, StateType> implements SetterComponentBase
 {
   public displayName: string = "FlagSetter";
   public state: StateType;
@@ -115,7 +116,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       this.setState({isActive: true});
     }
   }
-  private setAsInactive(): void
+  public setAsInactive(): void
   {
     if (this.state.isActive)
     {

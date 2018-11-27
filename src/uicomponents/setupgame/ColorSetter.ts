@@ -5,11 +5,12 @@ import Color from "../../Color";
 import {AutoPositionerPosition} from "../mixins/AutoPositioner";
 
 import ColorPicker from "./ColorPicker";
+import {SetterComponentBase} from "./SetterComponentBase";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  setAsActive?: (colorSetter: ColorSetterComponent) => void;
+  setAsActive?: (setter: SetterComponentBase) => void;
   generateColor?: (toContrastWith?: Color) => Color;
   color: Color;
   onChange: (color: Color, isNull: boolean) => void;
@@ -22,7 +23,7 @@ interface StateType
   isActive: boolean;
 }
 
-export class ColorSetterComponent extends React.Component<PropTypes, StateType>
+export class ColorSetterComponent extends React.Component<PropTypes, StateType> implements SetterComponentBase
 {
   public displayName = "ColorSetter";
   public state: StateType;

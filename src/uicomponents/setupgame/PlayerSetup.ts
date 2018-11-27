@@ -17,14 +17,15 @@ import
 
 import {RaceTemplate} from "../../templateinterfaces/RaceTemplate";
 
-import {ColorSetterComponent, default as ColorSetter} from "./ColorSetter";
-import {default as FlagSetter, FlagSetterComponent} from "./FlagSetter";
+import {default as ColorSetter} from "./ColorSetter";
+import {default as FlagSetter} from "./FlagSetter";
+import {SetterComponentBase} from "./SetterComponentBase";
 import RacePicker from "./RacePicker";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  setActiveSetterComponent: (setter: ColorSetterComponent | FlagSetterComponent) => void;
+  setActiveSetterComponent: (setter: SetterComponentBase) => void;
   setHuman: (playerId: number) => void;
   removePlayers: (playerIdsToRemove: number[]) => void;
   initialName: string;

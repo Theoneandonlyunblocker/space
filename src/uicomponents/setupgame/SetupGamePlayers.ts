@@ -3,8 +3,8 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 
-import {ColorSetterComponent} from "./ColorSetter";
 import {default as PlayerSetup, PlayerSetupComponent} from "./PlayerSetup";
+import {SetterComponentBase} from "./SetterComponentBase";
 
 
 export interface PropTypes extends React.Props<any>
@@ -15,7 +15,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  activeColorSetter: ColorSetterComponent;
+  activeSetterComponent: SetterComponentBase;
   playerKeys: number[];
 }
 
@@ -43,7 +43,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   {
     this.makeNewPlayers = this.makeNewPlayers.bind(this);
     this.makeAllPlayers = this.makeAllPlayers.bind(this);
-    this.setActiveColorSetter = this.setActiveColorSetter.bind(this);
+    this.setActiveSetterComponent = this.setActiveSetterComponent.bind(this);
     this.setHumanPlayer = this.setHumanPlayer.bind(this);
     this.randomizeAllPlayers = this.randomizeAllPlayers.bind(this);
     this.removePlayers = this.removePlayers.bind(this);
@@ -60,7 +60,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     return(
     {
       playerKeys: players,
-      activeColorSetter: null,
+      activeSetterComponent: null,
     });
   }
 
@@ -139,14 +139,14 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     }
   }
 
-  setActiveColorSetter(colorSetter: ColorSetterComponent)
+  private setActiveSetterComponent(setter: SetterComponentBase): void
   {
-    if (this.state.activeColorSetter)
+    if (this.state.activeSetterComponent)
     {
-      this.state.activeColorSetter.setAsInactive();
+      this.state.activeSetterComponent.setAsInactive();
     }
 
-    this.setState({activeColorSetter: colorSetter});
+    this.setState({activeSetterComponent: setter});
   }
 
   randomizeAllPlayers()
@@ -178,13 +178,12 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
       }
 
       playerSetups.push(PlayerSetup(
-      // @ts-ignore 2345
       {
         key: playerId,
         keyTODO: playerId,
         ref: this.playerSetupComponentsById[playerId],
         removePlayers: this.removePlayers,
-        setActiveSetterComponent: this.setActiveColorSetter,
+        setActiveSetterComponent: this.setActiveSetterComponent,
         // TODO 2017.07.18 | missing localization
         initialName: `Player ${playerId}`,
         isHuman: i === 0,
