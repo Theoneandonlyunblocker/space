@@ -21,11 +21,11 @@
     "ncp": "2.0.x",
     "ts-loader": "5.3.x",
     "tslint": "5.11.x",
-    "typescript": "3.0.x",
-    "webpack": "4.26.x",
-    "webpack-cli": "3.1.x",
-    "webpack-dev-server": "^3.1.10",
-    "webpack-merge": "^4.1.4"
+    "typescript": "3.1.x",
+    "webpack": "4.26.0",
+    "webpack-cli": "3.1.2",
+    "webpack-dev-server": "3.1.10",
+    "webpack-merge": "4.1.4"
   },
   "scripts": {
     "dev-server": "webpack-dev-server --config ./scripts/webpack/dev.config.js --progress",
