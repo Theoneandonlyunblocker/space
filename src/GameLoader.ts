@@ -68,8 +68,6 @@ export default class GameLoader
     [id: number]: Item;
   } = {};
 
-  private game: Game;
-
   constructor()
   {
 
@@ -114,7 +112,7 @@ export default class GameLoader
     this.deserializeBuildings(data.galaxyMap);
 
     // create game
-    const game = this.game = new Game(this.map, this.players);
+    const game = new Game(this.map, this.players);
     game.turnNumber = data.turnNumber;
 
     // player diplomacy status. dependant on other players & game
