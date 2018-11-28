@@ -29,9 +29,7 @@
   },
   "scripts": {
     "dev-server": "webpack-dev-server --config ./scripts/webpack/dev.config.js --progress",
-    "build": "npm run build-prod && npm run build-dev",
-    "build-prod": "webpack --config ./scripts/webpack/prod.config.js",
-    "build-dev": "webpack --config ./scripts/webpack/dev.config.js",
+    "build": "webpack --config ./scripts/webpack/prod.config.js && lessc ./css/main.less ./dist/main.css",
     "lint": "tslint \"{src,modules,localization}/**/*.ts\"",
     "lintfix": "tslint \"{src,modules,localization}/**/*.ts\" --fix"
   },
