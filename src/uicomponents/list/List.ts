@@ -173,7 +173,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     // scrolls header to match list contents
     const target = e.currentTarget;
     const header = this.headerElement.current;
-    const titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
+    const titles = <NodeListOf<HTMLElement>><unknown> header.getElementsByClassName("fixed-table-th-inner");
 
     const marginString = "-" + target.scrollLeft + "px";
 
