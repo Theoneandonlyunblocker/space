@@ -7,9 +7,9 @@
           "es2015.promise",
           "scripthost"
         ],
-        "module": "es6",
+        "module": "esnext",
         "moduleResolution": "node",
-        // "outFile": "dist/main.js",
+        "outDir": "dist/",
         "sourceMap": true,
 
         "noImplicitAny": true,
