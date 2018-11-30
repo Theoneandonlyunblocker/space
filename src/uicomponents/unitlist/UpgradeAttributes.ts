@@ -19,11 +19,6 @@ interface StateType
 export class UpgradeAttributesComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UpgradeAttributes";
-  upgradeAttribute(attribute: string, e: MouseEvent)
-  {
-    if (e.button) { return; }
-    this.props.handleClick(attribute);
-  }
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -84,6 +79,12 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
         ),
       )
     );
+  }
+
+  private upgradeAttribute(attribute: string, e: React.MouseEvent<HTMLLIElement>)
+  {
+    if (e.button) { return; }
+    this.props.handleClick(attribute);
   }
 }
 
