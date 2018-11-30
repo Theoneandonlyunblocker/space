@@ -83,11 +83,11 @@ class App
 
     this.moduleInitializer = new ModuleInitializer(activeModuleData);
 
-    this.initUI();
 
     onDOMLoaded(() =>
     {
       debug.log("init", "DOM loaded");
+      this.initUI();
 
       defaultModules.forEach(moduleFile =>
       {
