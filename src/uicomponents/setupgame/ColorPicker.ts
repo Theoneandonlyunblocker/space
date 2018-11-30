@@ -166,7 +166,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    const color: Color = Color.fromHSV.apply(null, Color.convertDegreesToScalars([hue, sat, val]));
+    const color = Color.fromHSV(...Color.convertDegreesToScalars([hue, sat, val]));
 
     this.setState(
     {
@@ -237,9 +237,9 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       max + " 100%)"
     );
   }
-  private makeHexStringFromHSVDegreeArray(hsv: number[])
+  private makeHexStringFromHSVDegreeArray(hsv: [number, number, number])
   {
-    const color: Color = Color.fromHSV.apply(null, Color.convertDegreesToScalars(hsv));
+    const color = Color.fromHSV(...Color.convertDegreesToScalars(hsv));
 
     return color.getHexString();
   }

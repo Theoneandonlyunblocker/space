@@ -20,11 +20,13 @@ function wrapLifeCycleFunction(base: React.Component<any, any>, functionName: Li
   {
     mixinsWithFunction.forEach(mixin =>
     {
+      // @ts-ignore 2345
       mixin[functionName].apply(mixin, args);
     });
 
     if (originalFunction)
     {
+      // @ts-ignore 2684
       originalFunction.apply(base, args);
     }
   };
@@ -41,6 +43,7 @@ function wrapRenderFunction(base: React.Component<any, any>, mixins: MixinBase<a
       mixin.onRender!.call(mixin);
     });
 
+    // @ts-ignore 2345
     return originalFunction.apply(base, args);
   };
 }

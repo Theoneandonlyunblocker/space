@@ -123,14 +123,14 @@ export default class Color
   /**
    * 0-1 -> 0-360, 0-100, 0-100
    */
-  public static convertScalarsToDegrees(s: number[])
+  public static convertScalarsToDegrees(s: [number, number, number])
   {
     return [s[0] * 360, s[1] * 100, s[2] * 100];
   }
   /**
    * 0-360, 0-100, 0-100 -> 0-1
    */
-  public static convertDegreesToScalars(d: number[])
+  public static convertDegreesToScalars(d: [number, number, number]): [number, number, number]
   {
     return [d[0] / 360, d[1] / 100, d[2] / 100];
   }
@@ -138,23 +138,23 @@ export default class Color
   /**
    * 0-1
    */
-  public getRGB(): number[]
+  public getRGB(): [number, number, number]
   {
     return [this.r, this.g, this.b];
   }
   /**
    * 0-1
    */
-  public getRGBA(alpha: number): number[]
+  public getRGBA(alpha: number): [number, number, number, number]
   {
     return [this.r, this.g, this.b, alpha];
   }
   /**
    * 0-255
    */
-  public get8BitRGB(): number[]
+  public get8BitRGB(): [number, number, number]
   {
-    return this.getRGB().map(x => Math.round(x * 255));
+    return <[number, number, number]>this.getRGB().map(x => Math.round(x * 255));
   }
 
   /**
@@ -179,7 +179,7 @@ export default class Color
   /**
    * 0-1
    */
-  public getHUSL(): number[]
+  public getHUSL(): [number, number, number]
   {
     const husl = HUSL.fromRGB(this.r, this.g, this.b);
 
@@ -189,7 +189,7 @@ export default class Color
   /**
    * 0-1
    */
-  public getHSV(): number[]
+  public getHSV(): [number, number, number]
   {
     const r = this.r;
     const g = this.g;

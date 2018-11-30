@@ -44,12 +44,12 @@ const colors =
 
 for (const attribute in colors)
 {
-  const color = colors[attribute];
+  const color: Color = colors[attribute];
 
   const hsv = color.getHSV();
   hsv[1] = 0.6;
 
-  colors[attribute] = Color.fromHSV.apply(null, hsv);
+  colors[attribute] = Color.fromHSV(...hsv);
 }
 
 const projectileURL = "modules/common/battlesfxfunctions/img/ellipse.png";
