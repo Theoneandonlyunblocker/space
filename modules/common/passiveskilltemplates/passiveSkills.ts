@@ -8,7 +8,6 @@ import autoHealStatusEffect from "../uniteffecttemplates/autoHeal";
 import poisonedStatusEffect from "../uniteffecttemplates/poisoned";
 
 import { FormationValidityModifierSourceType } from "../../../src/BattlePrepFormationValidity";
-import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
 import * as EffectActions from "../effectactiontemplates/effectActions";
 
 
@@ -23,7 +22,7 @@ export const autoHeal: PassiveSkillTemplate =
     {
       id: "addStatusEffect",
       getUnitsInArea: user => [user],
-      executeAction: bindEffectActionData(EffectActions.addStatusEffect,
+      executeAction: EffectActions.addStatusEffect.bind(null,
       {
         duration: -1,
         template: autoHealStatusEffect,
@@ -42,7 +41,7 @@ export const overdrive: PassiveSkillTemplate =
     {
       id: "addStatusEffect",
       getUnitsInArea: user => [user],
-      executeAction: bindEffectActionData(EffectActions.addStatusEffect,
+      executeAction: EffectActions.addStatusEffect.bind(null,
       {
         duration: 2,
         template: poisonedStatusEffect,
@@ -64,7 +63,7 @@ export const initialGuard: PassiveSkillTemplate =
     {
       id: "addStatusEffect",
       getUnitsInArea: user => [user],
-      executeAction: bindEffectActionData(EffectActions.addGuard,
+      executeAction: EffectActions.addGuard.bind(null,
       {
         coverage: GuardCoverage.Row,
         flat: initialGuardStrength,

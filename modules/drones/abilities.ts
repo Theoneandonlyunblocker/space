@@ -19,7 +19,6 @@ import
 
 import {placeholder as placeholderSfx} from "../common/battlesfxtemplates/battleSfx";
 import {ResultType} from "../common/effectactiontemplates/ResultType";
-import {bindEffectActionData} from "../common/effectactiontemplates/effectActionBinding";
 import * as EffectActions from "../common/effectactiontemplates/effectActions";
 
 import * as DroneStatusEffects from "./unitEffects";
@@ -36,7 +35,7 @@ export const assimilate: AbilityTemplate =
   mainEffect:
   {
     id: "damage",
-    executeAction: bindEffectActionData(EffectActions.inflictDamage,
+    executeAction: EffectActions.inflictDamage.bind(null,
     {
       baseDamage: 0.8,
       damageType: DamageType.Physical,
@@ -60,7 +59,7 @@ export const assimilate: AbilityTemplate =
           targetType: AbilityTargetType.Primary,
           targetEffect: AbilityTargetEffect.Positive,
         }),
-        executeAction: bindEffectActionData(EffectActions.adjustCurrentAndMaxHealth,
+        executeAction: EffectActions.adjustCurrentAndMaxHealth.bind(null,
         {
           executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
           {
@@ -84,7 +83,7 @@ export const merge: AbilityTemplate =
   mainEffect:
   {
     id: "removeOwnHealth",
-    executeAction: bindEffectActionData(EffectActions.adjustHealth,
+    executeAction: EffectActions.adjustHealth.bind(null,
     {
       maxHealthPercentage: -0.25,
     }),
@@ -112,7 +111,7 @@ export const merge: AbilityTemplate =
       {
         return Boolean(executedEffectsResult[ResultType.HealthChanged]);
       },
-      executeAction: bindEffectActionData(EffectActions.addStatusEffect,
+      executeAction: EffectActions.addStatusEffect.bind(null,
       {
         duration: -1,
         template: DroneStatusEffects.merge,
@@ -125,7 +124,7 @@ export const merge: AbilityTemplate =
       {
         return Boolean(executedEffectsResult[ResultType.HealthChanged]);
       },
-      executeAction: bindEffectActionData(EffectActions.adjustHealth,
+      executeAction: EffectActions.adjustHealth.bind(null,
       {
         executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
         {
@@ -153,7 +152,7 @@ export const infest: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
-    executeAction: bindEffectActionData(EffectActions.addStatusEffect,
+    executeAction: EffectActions.addStatusEffect.bind(null,
     {
       duration: 3,
       template: DroneStatusEffects.infest,
@@ -164,7 +163,7 @@ export const infest: AbilityTemplate =
       {
         id: "increaseCaptureChance",
         getUnitsInArea: areaSingle,
-        executeAction: bindEffectActionData(EffectActions.increaseCaptureChance,
+        executeAction: EffectActions.increaseCaptureChance.bind(null,
         {
           flat: 0.4,
         }),
@@ -190,7 +189,7 @@ export const repair: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Positive,
     }),
-    executeAction: bindEffectActionData(EffectActions.adjustHealth,
+    executeAction: EffectActions.adjustHealth.bind(null,
     {
       perUserUnit: 0.5,
     }),
@@ -227,7 +226,7 @@ export const massRepair: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Positive,
     }),
-    executeAction: bindEffectActionData(EffectActions.adjustHealth,
+    executeAction: EffectActions.adjustHealth.bind(null,
     {
       perUserUnit: 0.33,
     }),

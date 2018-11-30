@@ -1,6 +1,5 @@
 import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
 
-import {bindEffectActionData} from "../../common/effectactiontemplates/effectActionBinding";
 import
 {
   adjustDefenderBattleEvaluationAdjustment,
@@ -19,7 +18,7 @@ export function makeDefenderAdvantageEffect(amount: number): UnitEffectTemplate
       {
         id: "defenderAdvantage",
         getUnitsInArea: () => [],
-        executeAction: bindEffectActionData(adjustDefenderBattleEvaluationAdjustment,
+        executeAction: adjustDefenderBattleEvaluationAdjustment.bind(null,
         {
           amount: amount,
         }),

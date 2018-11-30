@@ -1,5 +1,4 @@
 import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
-import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
 import {adjustHealth} from "../effectactiontemplates/effectActions";
 
 
@@ -14,7 +13,7 @@ const autoHeal: UnitEffectTemplate =
     {
       id: "heal",
       getUnitsInArea: user => [user],
-      executeAction: bindEffectActionData(adjustHealth,
+      executeAction: adjustHealth.bind(null,
       {
         flat: 50,
       }),

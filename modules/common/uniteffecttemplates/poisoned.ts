@@ -1,5 +1,4 @@
 import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
-import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
 import {adjustHealth} from "../effectactiontemplates/effectActions";
 
 
@@ -28,7 +27,7 @@ const poisoned: UnitEffectTemplate =
     {
       id: "removeHealth",
       getUnitsInArea: (user, target, battle) => [user],
-      executeAction: bindEffectActionData(adjustHealth,
+      executeAction: adjustHealth.bind(null,
       {
         maxHealthPercentage: -0.1,
       }),

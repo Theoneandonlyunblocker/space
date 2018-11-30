@@ -22,8 +22,8 @@ import
 } from "./damageAdjustment";
 import
 {
-  UnboundEffectAction
-} from "./effectActionBinding";
+  AbilityEffectActionWithData
+} from "./AbilityEffectActionWithData";
 import
 {
   calculateHealthAdjustment,
@@ -54,7 +54,7 @@ interface ExecutedEffectsResultAdjustment
 }
 
 
-export const inflictDamage: UnboundEffectAction<DamageWithType> = (
+export const inflictDamage: AbilityEffectActionWithData<DamageWithType> = (
   data: DamageWithType,
   user: Unit,
   target: Unit,
@@ -73,7 +73,7 @@ export const inflictDamage: UnboundEffectAction<DamageWithType> = (
   target.receiveDamage(adjustedDamage);
 };
 
-export const addGuard: UnboundEffectAction<Partial<FlatAndPerAttributeAdjustment> & GuardCoverageObj> = (
+export const addGuard: AbilityEffectActionWithData<Partial<FlatAndPerAttributeAdjustment> & GuardCoverageObj> = (
   data: Partial<FlatAndPerAttributeAdjustment> & GuardCoverageObj,
   user: Unit,
   target: Unit,
@@ -88,7 +88,7 @@ export const addGuard: UnboundEffectAction<Partial<FlatAndPerAttributeAdjustment
   target.addGuard(guardAmount, data.coverage);
 };
 
-export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = (
+export const receiveCounterAttack: AbilityEffectActionWithData<{baseDamage: number}> = (
   data: {baseDamage: number},
   user: Unit,
   target: Unit,
@@ -114,7 +114,7 @@ export const receiveCounterAttack: UnboundEffectAction<{baseDamage: number}> = (
 };
 
 
-export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustment> =(
+export const increaseCaptureChance: AbilityEffectActionWithData<FlatAndMultiplierAdjustment> =(
   data: FlatAndMultiplierAdjustment,
   user: Unit,
   target: Unit,
@@ -127,7 +127,7 @@ export const increaseCaptureChance: UnboundEffectAction<FlatAndMultiplierAdjustm
   target.battleStats.captureChance = applyFlatAndMultiplierAdjustments(baseCaptureChance, data);
 };
 
-export const addStatusEffect: UnboundEffectAction<{template: UnitEffectTemplate; duration: number}> = (
+export const addStatusEffect: AbilityEffectActionWithData<{template: UnitEffectTemplate; duration: number}> = (
   data: {template: UnitEffectTemplate; duration: number},
   user: Unit,
   target: Unit,
@@ -143,7 +143,7 @@ export const addStatusEffect: UnboundEffectAction<{template: UnitEffectTemplate;
   }));
 };
 
-export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> =(
+export const adjustHealth: AbilityEffectActionWithData<ExecutedEffectsResultAdjustment & HealthAdjustment> =(
   data: ExecutedEffectsResultAdjustment & HealthAdjustment,
   user: Unit,
   target: Unit,
@@ -170,7 +170,7 @@ export const adjustHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment &
   target.addHealth(clamped);
 };
 
-export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResultAdjustment & HealthAdjustment> =(
+export const adjustCurrentAndMaxHealth: AbilityEffectActionWithData<ExecutedEffectsResultAdjustment & HealthAdjustment> =(
   data: ExecutedEffectsResultAdjustment & HealthAdjustment,
   user: Unit,
   target: Unit,
@@ -189,7 +189,7 @@ export const adjustCurrentAndMaxHealth: UnboundEffectAction<ExecutedEffectsResul
   target.addHealth(healAmount);
 };
 
-export const adjustBattleEvaluationAdjustment: UnboundEffectAction<FlatAndPerAttributeAdjustment> = (
+export const adjustBattleEvaluationAdjustment: AbilityEffectActionWithData<FlatAndPerAttributeAdjustment> = (
   data: FlatAndPerAttributeAdjustment,
   user: Unit,
   target: Unit,
@@ -203,7 +203,7 @@ export const adjustBattleEvaluationAdjustment: UnboundEffectAction<FlatAndPerAtt
   battle.evaluationAdjustment += adjustment * sign;
 };
 
-export const adjustDefenderBattleEvaluationAdjustment: UnboundEffectAction<{amount: number}> = (
+export const adjustDefenderBattleEvaluationAdjustment: AbilityEffectActionWithData<{amount: number}> = (
   data: {amount: number},
   user: Unit,
   target: Unit,

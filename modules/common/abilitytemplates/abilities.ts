@@ -26,7 +26,6 @@ import
 
 import * as BattleSfx from "../battlesfxtemplates/battleSfx";
 
-import {bindEffectActionData} from "../effectactiontemplates/effectActionBinding";
 import * as EffectActions from "../effectactiontemplates/effectActions";
 
 import * as SnipeStatusEffects from "../uniteffecttemplates/snipe";
@@ -65,7 +64,7 @@ export const closeAttack: AbilityTemplate =
   mainEffect:
   {
     id: "damage",
-    executeAction: bindEffectActionData(EffectActions.inflictDamage,
+    executeAction: EffectActions.inflictDamage.bind(null,
     {
       baseDamage: 0.66,
       damageType: DamageType.Physical,
@@ -91,7 +90,7 @@ export const beamAttack: AbilityTemplate =
   mainEffect:
   {
     id: "damage",
-    executeAction: bindEffectActionData(EffectActions.inflictDamage,
+    executeAction: EffectActions.inflictDamage.bind(null,
     {
       baseDamage: 0.75,
       damageType: DamageType.Magical,
@@ -127,7 +126,7 @@ export const bombAttack: AbilityTemplate =
   mainEffect:
   {
     id: "damage",
-    executeAction: bindEffectActionData(EffectActions.inflictDamage,
+    executeAction: EffectActions.inflictDamage.bind(null,
     {
       baseDamage: 0.5,
       damageType: DamageType.Physical,
@@ -153,7 +152,7 @@ export const guardRow: AbilityTemplate =
   mainEffect:
   {
     id: "addGuard",
-    executeAction: bindEffectActionData(EffectActions.addGuard,
+    executeAction: EffectActions.addGuard.bind(null,
     {
       perAttribute:
       {
@@ -184,7 +183,7 @@ export const boardingHook: AbilityTemplate =
   mainEffect:
   {
     id: "damage",
-    executeAction: bindEffectActionData(EffectActions.inflictDamage,
+    executeAction: EffectActions.inflictDamage.bind(null,
     {
       baseDamage: 0.8,
       damageType: DamageType.Physical,
@@ -202,7 +201,7 @@ export const boardingHook: AbilityTemplate =
       {
         id: "captureChance",
         getUnitsInArea: areaSingle,
-        executeAction: bindEffectActionData(EffectActions.increaseCaptureChance,
+        executeAction: EffectActions.increaseCaptureChance.bind(null,
         {
           flat: 0.5,
         }),
@@ -210,7 +209,7 @@ export const boardingHook: AbilityTemplate =
       {
         id: "counter",
         getUnitsInArea: areaSingle,
-        executeAction: bindEffectActionData(EffectActions.receiveCounterAttack,
+        executeAction: EffectActions.receiveCounterAttack.bind(null,
         {
           baseDamage: 0.5,
         }),
@@ -253,7 +252,7 @@ export const rangedAttack: AbilityTemplate =
   mainEffect:
   {
     id: "damage",
-    executeAction: bindEffectActionData(EffectActions.inflictDamage,
+    executeAction: EffectActions.inflictDamage.bind(null,
     {
       baseDamage: 1,
       damageType: DamageType.Physical,
@@ -270,7 +269,7 @@ export const rangedAttack: AbilityTemplate =
     [
       {
         id: "counter",
-        executeAction: bindEffectActionData(EffectActions.receiveCounterAttack,
+        executeAction: EffectActions.receiveCounterAttack.bind(null,
         {
           baseDamage: 0.5,
         }),
@@ -319,7 +318,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
     mainEffect:
     {
       id: "damage",
-      executeAction: bindEffectActionData(EffectActions.inflictDamage,
+      executeAction: EffectActions.inflictDamage.bind(null,
       {
         baseDamage: 0.6,
         damageType: DamageType.Physical,
@@ -336,7 +335,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
       [
         {
           id: "statusEffect",
-          executeAction: bindEffectActionData(EffectActions.addStatusEffect,
+          executeAction: EffectActions.addStatusEffect.bind(null,
           {
             template: statusEffectTemplateByAttribute[attribute],
             duration: -1,
