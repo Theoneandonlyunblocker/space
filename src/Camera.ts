@@ -77,7 +77,7 @@ export default class Camera
       return;
     }
     // const scaledDelta = absDelta + scale / absDelta;
-    const direction = delta < 0 ? "out" : "in";
+    const direction = delta < 0 ? "in" : "out";
     const adjDelta = 1 + Math.abs(delta) * scale;
     if (direction === "out")
     {

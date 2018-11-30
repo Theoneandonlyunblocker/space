@@ -2,7 +2,7 @@ import * as React from "react";
 
 export declare interface TutorialPage
 {
-  content: React.ReactType | React.ReactType[];
+  content: React.ReactNode | React.ReactNode[];
   onOpen?: () => void;
   onClose?: () => void;
   desiredSize?:

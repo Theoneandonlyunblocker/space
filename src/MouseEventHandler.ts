@@ -257,7 +257,7 @@ export default class MouseEventHandler
   }
   private handleMouseWheel(e: WheelEvent): void
   {
-    this.camera.deltaZoom(e.wheelDelta / 40, 0.05);
+    this.camera.deltaZoom(e.deltaY / 40, 0.05);
     this.rectangleSelect.handleTargetLayerShift();
   }
 
