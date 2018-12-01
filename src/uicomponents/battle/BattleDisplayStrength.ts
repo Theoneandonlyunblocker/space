@@ -6,7 +6,7 @@ import { fixedDurationSpring } from "../../utility";
 
 export interface PropTypes extends React.Props<any>
 {
-  animationDuration: number;
+  animationDuration: number | null;
   from: number;
   to: number;
 }
@@ -15,7 +15,7 @@ interface StateType
 {
 }
 
-export class BattleDisplayStrengthComponent extends React.Component<PropTypes, StateType>
+export class BattleDisplayStrengthComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "BattleDisplayStrength";
   public state: StateType;
@@ -30,7 +30,12 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
     return(
       React.createElement(ReactMotion.Motion,
       {
-        style: {health: fixedDurationSpring(this.props.to, this.props.animationDuration)},
+        style:
+        {
+          health: this.props.animationDuration ?
+            fixedDurationSpring(this.props.to, this.props.animationDuration) :
+            this.props.to,
+        },
         defaultStyle: {health: this.props.from},
       },
         (interpolatedStyle: {health: number}) =>

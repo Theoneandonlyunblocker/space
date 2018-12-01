@@ -26,7 +26,7 @@ export interface PropTypes extends React.Props<any>
   guardType: GuardCoverage | null;
 
   isPreparing: boolean;
-  animateDuration?: number;
+  animateDuration: number | null;
 }
 
 interface StateType
@@ -91,7 +91,9 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
           {
             style:
             {
-              health: fixedDurationSpring(this.props.currentHealth, this.props.animateDuration),
+              health: this.props.animateDuration ?
+                fixedDurationSpring(this.props.currentHealth, this.props.animateDuration) :
+                this.props.currentHealth,
             },
             defaultStyle:
             {
@@ -116,7 +118,6 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
           }),
           battleEndStatus,
         ),
-
       )
     );
   }

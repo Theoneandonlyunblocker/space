@@ -8,6 +8,7 @@ import PlayerFlag from "../PlayerFlag";
 export interface PropTypes extends React.Props<any>
 {
   evaluation: number;
+  // TODO 2018.11.30 | use react motion
   animationDuration: number;
 
   player1: Player;
