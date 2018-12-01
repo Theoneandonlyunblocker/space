@@ -696,11 +696,11 @@ export function getFunctionName(f: Function): string
 // https://github.com/chenglou/react-motion/issues/265#issuecomment-184697874
 export function fixedDurationSpring(
   value: number,
-  duration: number,
+  duration: number, // in ms
   overshoot: number = 0,
 ): ReactMotion.OpaqueConfig
 {
-  const w = duration / 1000;
+  const w = duration / 1000; // in s
   const o = overshoot;
 
   const s = o <= 0
@@ -708,8 +708,10 @@ export function fixedDurationSpring(
     : 1 / Math.sqrt(1 + Math.pow(2 * Math.PI / Math.log(1 / (o * o)), 2));
 
   const ks = (2 * Math.PI / w) / Math.max(Math.sqrt(1 - s * s), 0.5);
-  const c = 2 * ks * s;
 
-  return ReactMotion.spring(value, {stiffness: ks * ks, damping: c});
-  // return [ks * ks, c];
+  // animations break apart if set too high, these should be fast enough for the eye
+  const damping = Math.min(2 * ks * s, 100);
+  const stiffness = Math.min(ks * ks, 1000);
+
+  return ReactMotion.spring(value, {stiffness: stiffness, damping: damping});
 }
