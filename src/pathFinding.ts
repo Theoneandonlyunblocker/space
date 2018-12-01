@@ -51,7 +51,7 @@ export function backTrace(graph: {[starId: number]: PathNode}, target: Star): Pa
 
 export function aStar(start: Star, target: Star): AStarGraph | null
 {
-  const frontier = new PriorityQueue();
+  const frontier = new PriorityQueue<Star>();
   frontier.push(0, start);
 
   const cameFrom:

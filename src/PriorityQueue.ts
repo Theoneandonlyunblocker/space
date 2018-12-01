@@ -1,9 +1,9 @@
 // TODO performance | not very efficient. probably doesn't matter though
-export default class PriorityQueue
+export default class PriorityQueue<T>
 {
   items:
   {
-    [priority: number]: any[];
+    [priority: number]: T[];
   };
 
   constructor()
@@ -11,13 +11,13 @@ export default class PriorityQueue
     this.items = {};
   }
 
-  isEmpty()
+  public isEmpty(): boolean
   {
     if (Object.keys(this.items).length > 0) { return false; }
     else { return true; }
   }
 
-  push(priority: number, data: any)
+  public push(priority: number, data: T): void
   {
     if (!this.items[priority])
     {
@@ -26,7 +26,7 @@ export default class PriorityQueue
 
     this.items[priority].push(data);
   }
-  pop()
+  public pop(): T
   {
     const highestPriorityValue = this.getHighestPriorityValue();
 
@@ -38,13 +38,12 @@ export default class PriorityQueue
 
     return toReturn;
   }
-  peek()
+  public peek(): T
   {
     const highestPriorityValue = this.getHighestPriorityValue();
-    const toReturn = this.items[highestPriorityValue][0];
+    const items = this.items[highestPriorityValue];
 
-    // TODO 2018.11.30 | .mapPosition = wtf?
-    return [highestPriorityValue, toReturn.mapPosition[1], toReturn.mapPosition[2]];
+    return items[items.length - 1];
   }
 
   private getHighestPriorityValue(): number
