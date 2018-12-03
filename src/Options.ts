@@ -18,7 +18,8 @@ import { activeModuleData } from "./activeModuleData";
 import { ErrorReportingMode } from "./handleError";
 import { storageStrings } from "./storageStrings";
 import * as debug from "./debug";
-
+// tslint:disable-next-line:no-duplicate-imports
+import {LoggingCategory} from "./debug"; // throws errors if used as debug.LoggingCategory
 
 type OptionsCategory = "battle" | "debug" | "display" | "system";
 type OptionsSubCatgory = "battle.animationTiming" | "debug.logging";
@@ -47,13 +48,7 @@ type BaseOptionsValues =
     enabled: boolean;
     aiVsPlayerBattleSimulationDepth: number;
     aiVsAiBattleSimulationDepth: number;
-    logging:
-    {
-      ai: boolean;
-      graphics: boolean;
-      saves: boolean;
-      modules: boolean;
-    };
+    logging: {[k in LoggingCategory]: boolean};
   };
   display:
   {
@@ -113,6 +108,7 @@ const defaultOptionsValues: OptionsValues =
       graphics: false,
       saves: true,
       modules: true,
+      init: true,
     },
   },
   display:
@@ -145,13 +141,7 @@ class Options implements OptionsValues
     enabled: boolean;
     aiVsPlayerBattleSimulationDepth: number;
     aiVsAiBattleSimulationDepth: number;
-    logging:
-    {
-      ai: boolean;
-      graphics: boolean;
-      saves: boolean;
-      modules: boolean;
-    };
+    logging: {[k in LoggingCategory]: boolean};
   };
   display:
   {
