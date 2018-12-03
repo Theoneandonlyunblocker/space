@@ -1,7 +1,10 @@
 import Options from "./Options";
 
 
-type LoggingCategory = "ai" | "graphics" | "saves" | "init" | "modules";
+type LogFn = (message?: any, ...optionalParams: any[]) => void;
+type DebugLogFn = (category: LoggingCategory, message?: any, ...optionalParams: any[]) => void;
+
+export type LoggingCategory = "ai" | "graphics" | "saves" | "init" | "modules";
 
 export function shouldLog(category: LoggingCategory): boolean
 {
@@ -15,15 +18,8 @@ export function shouldLog(category: LoggingCategory): boolean
   // could use different enviroments etc instead
   return Options.debug.logging[category];
 }
-
-export function log(category: LoggingCategory, message?: any, ...optionalParams: any[]): void
-{
-  if (shouldLog(category))
-  {
-    console.log(`[${category.toUpperCase()}]`, Date.now(), message, ...optionalParams);
-  }
-}
-
+export const log = createWrappedLogLikeFunction(console.log);
+export const warn = createWrappedLogLikeFunction(console.warn);
 export function table(category: LoggingCategory, header: string, rows: any[]): void
 {
   if (shouldLog(category))
@@ -32,4 +28,15 @@ export function table(category: LoggingCategory, header: string, rows: any[]): v
   }
 
   console.table(rows);
+}
+
+function createWrappedLogLikeFunction(toWrap: LogFn): DebugLogFn
+{
+  return (category: LoggingCategory, message?: any, ...optionalParams: any[]) =>
+  {
+    if (shouldLog(category))
+    {
+      toWrap(`[${category.toUpperCase()}]`, Date.now(), message, ...optionalParams);
+    }
+  };
 }
