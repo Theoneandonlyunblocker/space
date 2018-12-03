@@ -40,7 +40,8 @@
         "strictBindCallApply": true
     },
     "files": [
-      "src/App.ts"
+      "src/lib.extend.d.ts",
+      "src/App.ts",
     ],
     "compileOnSave": false,
     "buildOnSave": false
