@@ -1,4 +1,3 @@
-import * as PIXI from "pixi.js";
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactMotion from "react-motion";
@@ -209,7 +208,8 @@ export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
 }
 
 // TODO 2018.05.31 | many calls to this can be replaced with spread operator I think
-// extends 'from' object with members from 'to'. If 'to' is null, a deep clone of 'from' is returned
+//
+// extends 'from' object with members of 'to'. If 'to' is null, a deep clone of 'from' is returned
 //
 // to[prop] = from[prop] adds a reference instead of actually copying value
 // so calling the constructor with "new" is needed

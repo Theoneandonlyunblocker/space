@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import * as PIXI from "pixi.js";
 
 import Beam from "../../../modules/common/battlesfxfunctions/sfxfragments/Beam";
 import FocusingBeam from "../../../modules/common/battlesfxfunctions/sfxfragments/FocusingBeam";
@@ -8,8 +7,6 @@ import LightBurst from "../../../modules/common/battlesfxfunctions/sfxfragments/
 import SfxFragment from "../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
 import ShockWave from "../../../modules/common/battlesfxfunctions/sfxfragments/ShockWave";
 
-
-// import UnitTemplate from "../../templateinterfaces/UnitTemplate";
 import
 {
   clamp,
