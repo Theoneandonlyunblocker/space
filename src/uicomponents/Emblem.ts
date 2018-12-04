@@ -5,11 +5,6 @@ import Color from "../Color";
 import Emblem from "../Emblem";
 import SubEmblemTemplate from "../templateinterfaces/SubEmblemTemplate";
 
-import
-{
-  shallowExtend,
-} from "../utility";
-
 
 export interface EmblemProps
 {
@@ -66,14 +61,19 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
   render()
   {
     const baseClassName = "standalone-emblem";
+    const hasSpecifiedTitle = this.props.containerProps && this.props.containerProps.title;
 
-    const containerProps = shallowExtend(this.props.containerProps,
+    const containerProps =
     {
+      ...this.props.containerProps,
       className: baseClassName + (this.props.containerProps && this.props.containerProps.className ?
         " " + this.props.containerProps.className :
         ""),
       ref: this.container,
-    });
+      title: hasSpecifiedTitle ?
+        this.props.containerProps.title :
+        this.props.template.key,
+    };
 
     return(
       ReactDOMElements.div(containerProps,
