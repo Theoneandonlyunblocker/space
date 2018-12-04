@@ -3833,7 +3833,7 @@ ul, ol
 {
   display: flex;
   flex-flow: row;
-  flex: 1 1 auto;
+  flex: 1 1 400px;
   justify-content: space-between;
   overflow-y: hidden;
   background-color: @bg-color;
@@ -4226,11 +4226,27 @@ button.player-setup-remove-player
   overflow-y: auto;
   margin-left: -1px;
   padding: 5px;
+  display: flex;
+  flex-flow: column;
+}
+
+.map-setup-template-selector
+{
+  align-self: flex-start;
+  flex: 0 0 auto;
 }
 
 .map-gen-options-group-header
 {
   width: 100%;
+}
+
+.map-gen-options
+{
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+  justify-content: space-between;
 }
 
 .map-gen-option
