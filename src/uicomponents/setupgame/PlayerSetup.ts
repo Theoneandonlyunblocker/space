@@ -97,11 +97,15 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     });
   }
   // bit of a hack
-  getSnapshotBeforeUpdate(prevProps: PropTypes, prevState: StateType): void
+  public getSnapshotBeforeUpdate(prevProps: PropTypes, prevState: StateType): void
   {
     this.flag.backgroundColor = this.state.mainColor;
 
     return null;
+  }
+  public componentDidUpdate(): void
+  {
+    // just to supress error. see ^^^
   }
   generateMainColor(subColor = this.state.secondaryColor)
   {
