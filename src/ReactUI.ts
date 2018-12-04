@@ -68,10 +68,11 @@ export default class ReactUI
     this.addEventListeners();
   }
 
-  public switchScene(newScene: ReactUIScene)
+  public switchScene(newScene: ReactUIScene): Promise<void>
   {
     this.currentScene = newScene;
-    this.initializeModulesNeededForCurrentScene().then(() =>
+
+    return this.initializeModulesNeededForCurrentScene().then(() =>
     {
       this.render();
     });

@@ -131,10 +131,9 @@ class App
       {
         this.reactUI.switchScene("galaxyMap");
       });
-
     });
   }
-  public load(saveKey: string): Promise<void>
+  public load(saveKey: string, remakeUi: boolean = true): Promise<void>
   {
     return localForage.getItem<string>(saveKey).then(rawData =>
     {
@@ -144,23 +143,26 @@ class App
       }
 
       const parsedData: FullSaveData = JSON.parse(rawData);
-      reviveSaveData(parsedData, this.version).then(data =>
+
+      return reviveSaveData(parsedData, this.version).then(data =>
       {
         idGenerators.setValues(data.idGenerators);
 
-        this.destroy();
-        this.initUI();
+        if (remakeUi)
+        {
+          this.destroy();
+          this.initUI();
+        }
 
-        this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
+        return this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
         {
           const game = new GameLoader().deserializeGame(data.gameData);
           game.gameStorageKey = saveKey;
 
-          this.initGame(game, data.cameraLocation).then(() =>
+          return this.initGame(game, data.cameraLocation).then(() =>
           {
             this.reactUI.switchScene("galaxyMap");
           });
-
         });
       });
     });
@@ -172,29 +174,39 @@ class App
 
     this.moduleInitializer.progressivelyInitModulesByPhase(ModuleFileInitializationPhase.AppInit + 1);
 
-    const initialScene = this.getInitialScene();
+    const optionsInUrl = this.getOptionsInUrl();
+    const initialScene = optionsInUrl.initialScene;
 
-    const finalizeMakingApp = () =>
+    const finalizeMakingApp = (scene: ReactUIScene) =>
     {
-      this.reactUI.switchScene(initialScene);
-
-      debug.log("init", `Init app in ${Date.now() - startTime}ms`);
+      this.reactUI.switchScene(scene).then(() =>
+      {
+        debug.log("init", `Init app in ${Date.now() - startTime}ms`);
+      });
     };
 
-    if (initialScene === "galaxyMap")
+    if (initialScene === "galaxyMap" || optionsInUrl.params.save)
     {
       this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
       {
-        this.initGame(this.makeGame()).then(() =>
+        if (optionsInUrl.params.save)
         {
-          finalizeMakingApp();
-        });
+          const saveKey = storageStrings.savePrefix + optionsInUrl.params.save;
 
+          return this.load(saveKey, false);
+        }
+        else
+        {
+          return this.initGame(this.makeGame());
+        }
+      }).then(() =>
+      {
+        finalizeMakingApp("galaxyMap");
       });
     }
     else
     {
-      finalizeMakingApp();
+      finalizeMakingApp(initialScene);
     }
   }
   private destroy(): void
@@ -329,20 +341,32 @@ class App
     this.reactUI.renderer = renderer;
     this.reactUI.mapRenderer = mapRenderer;
   }
-  private getInitialScene(): ReactUIScene
+  private getOptionsInUrl(): {
+    initialScene: ReactUIScene;
+    params:
+    {
+      save?: string;
+    };
+  }
   {
     const urlParser = document.createElement("a");
     urlParser.href = document.URL;
     const hash = urlParser.hash;
 
-    if (hash)
+    const initialScene = hash ?
+      <ReactUIScene> hash.slice(1) :
+      "setupGame";
+
+    const params = new URLSearchParams(urlParser.search.slice(1));
+
+    return(
     {
-      return <ReactUIScene> hash.slice(1);
-    }
-    else
-    {
-      return "setupGame";
-    }
+      initialScene: initialScene,
+      params:
+      {
+        save: params.get("save"),
+      },
+    });
   }
   private makeGame(): Game
   {
