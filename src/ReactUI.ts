@@ -120,7 +120,7 @@ export default class ReactUI
     eventManager.addEventListener("switchScene", this.switchScene.bind(this));
     eventManager.addEventListener("renderUI", this.render.bind(this));
   }
-  private initializeModulesNeededForCurrentScene(): Promise<void[]>
+  private initializeModulesNeededForCurrentScene(): Promise<void>
   {
     const phase = moduleInitializationPhaseByScene[this.currentScene];
 

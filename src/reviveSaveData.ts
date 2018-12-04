@@ -92,7 +92,7 @@ const coreSaveDataRevivers: ReviversByVersion =
   ],
 };
 
-function reviveModuleSaveData(data: OutdatedFullSaveData): Promise<void[]>
+function reviveModuleSaveData(data: OutdatedFullSaveData): Promise<void>
 {
   return Promise.all(data.moduleData.map(moduleData =>
   {
