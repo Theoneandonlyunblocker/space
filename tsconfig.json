@@ -41,7 +41,7 @@
     },
     "files": [
       "lib/pixi.d.ts",
-      "src/lib.extend.d.ts",
+      "lib/lib.extend.d.ts",
       "src/App.ts",
     ],
     "compileOnSave": false,
