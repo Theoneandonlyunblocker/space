@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/pixi.d.ts" />
+import * as PIXI from "pixi.js";
 
 import Player from "../../../src/Player";
 import {getRevealedBorderEdges, borderWidth} from "../../../src/borderPolygon";

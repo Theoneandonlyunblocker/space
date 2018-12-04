@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-/// <reference path="../../../lib/pixi.d.ts" />
+import * as PIXI from "pixi.js";
 
 import Beam from "../../../modules/common/battlesfxfunctions/sfxfragments/Beam";
 import FocusingBeam from "../../../modules/common/battlesfxfunctions/sfxfragments/FocusingBeam";

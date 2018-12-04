@@ -1,5 +1,5 @@
 /// <reference path="../../../lib/proton.d.ts" />
-/// <reference path="../../../lib/pixi.d.ts" />
+import * as PIXI from "pixi.js";
 
 export default class ProtonWrapper
 {

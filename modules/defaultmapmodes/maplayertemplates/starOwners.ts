@@ -1,7 +1,7 @@
 // TODO performance | TODO PIXI4 | rework occupation
 // probably generate texture for tiling sprite + use masks
 
-/// <reference path="../../../lib/pixi.d.ts" />
+import * as PIXI from "pixi.js";
 
 import Player from "../../../src/Player";
 import eventManager from "../../../src/eventManager";

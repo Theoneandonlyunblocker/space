@@ -1,4 +1,4 @@
-/// <reference path="../lib/pixi.d.ts" />
+import * as PIXI from "pixi.js";
 
 import BackgroundDrawer from "./BackgroundDrawer";
 import BackgroundDrawingFunction from "./BackgroundDrawingFunction";

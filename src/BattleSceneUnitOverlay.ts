@@ -1,4 +1,4 @@
-/// <reference path="../lib/pixi.d.ts" />
+import * as PIXI from "pixi.js";
 
 import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
 import SfxParams from "./templateinterfaces/SfxParams";

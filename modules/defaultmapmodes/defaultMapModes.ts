@@ -1,4 +1,4 @@
-/// <reference path="../../lib/pixi.d.ts" />
+import * as PIXI from "pixi.js";
 
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";

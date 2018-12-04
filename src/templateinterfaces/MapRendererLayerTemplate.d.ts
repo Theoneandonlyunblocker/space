@@ -1,4 +1,4 @@
-/// <reference path="../../lib/pixi.d.ts" />
+import * as PIXI from "pixi.js";
 
 import GalaxyMap from "../GalaxyMap";
 import Player from "../Player";

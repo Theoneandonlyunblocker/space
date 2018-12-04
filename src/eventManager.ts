@@ -1,6 +1,6 @@
 // should be used as little as possible. old code using this should be refactored
 
-/// <reference path="../lib/pixi.d.ts" />
+import * as PIXI from "pixi.js";
 
 const eventEmitter = new PIXI.utils.EventEmitter();
 const eventManager =

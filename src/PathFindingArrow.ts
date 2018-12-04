@@ -1,4 +1,4 @@
-/// <reference path="../lib/pixi.d.ts" />
+import * as PIXI from "pixi.js";
 
 import app from "./App"; // TODO global
 
