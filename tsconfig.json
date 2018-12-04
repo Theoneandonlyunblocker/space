@@ -40,7 +40,6 @@
         "strictBindCallApply": true
     },
     "files": [
-      "lib/pixi.d.ts",
       "lib/lib.extend.d.ts",
       "src/App.ts",
     ],
