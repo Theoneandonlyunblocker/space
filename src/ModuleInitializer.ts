@@ -28,7 +28,7 @@ export default class ModuleInitializer
     [key: string]: number;
   } = {};
 
-  constructor(moduleData: ModuleData)
+  constructor(moduleData: ModuleData, moduleFiles: ModuleFile[])
   {
     this.moduleData = moduleData;
 
@@ -36,22 +36,11 @@ export default class ModuleInitializer
     {
       this.moduleFilesByPhase[phase] = [];
     });
+
+    moduleFiles.forEach(moduleFile => this.addModuleFile(moduleFile));
   }
 
-  public addModuleFile(moduleFile: ModuleFile)
-  {
-    if (this.moduleFilesByKey[moduleFile.metaData.key])
-    {
-      throw new Error(`Duplicate module key ${moduleFile.metaData.key}`);
-    }
-
-    this.moduleFilesByKey[moduleFile.metaData.key] = moduleFile;
-    this.moduleInitalizationStart[moduleFile.metaData.key] = undefined;
-    delete this.moduleInitalizationStart[moduleFile.metaData.key];
-
-    this.moduleFilesByPhase[moduleFile.needsToBeInitializedBefore].push(moduleFile);
-  }
-  public initModulesNeededForPhase(phaseToInitUpTo: ModuleFileInitializationPhase): Promise<void[]>
+  public initModulesNeededForPhase(phaseToInitUpTo: ModuleFileInitializationPhase): Promise<void>
   {
     const phasesNeeded: ModuleFileInitializationPhase[] = Object.keys(this.moduleFilesByPhase).map(phaseString =>
     {
@@ -77,13 +66,19 @@ export default class ModuleInitializer
     });
   }
 
-  private initModuleFile(moduleFile: ModuleFile): Promise<void>
+  private addModuleFile(moduleFile: ModuleFile)
   {
-    if (!this.moduleFilesByKey[moduleFile.metaData.key])
+    if (this.moduleFilesByKey[moduleFile.metaData.key])
     {
-      this.addModuleFile(moduleFile);
+      throw new Error(`Duplicate module key ${moduleFile.metaData.key}`);
     }
 
+    this.moduleFilesByKey[moduleFile.metaData.key] = moduleFile;
+
+    this.moduleFilesByPhase[moduleFile.needsToBeInitializedBefore].push(moduleFile);
+  }
+  private initModuleFile(moduleFile: ModuleFile): Promise<void>
+  {
     if (this.moduleInitializationPromises[moduleFile.metaData.key])
     {
       return this.moduleInitializationPromises[moduleFile.metaData.key];
@@ -113,7 +108,7 @@ export default class ModuleInitializer
 
     return promise;
   }
-  private initModuleFiles(moduleFiles: ModuleFile[]): Promise<void[]>
+  private initModuleFiles(moduleFiles: ModuleFile[]): Promise<void>
   {
     return Promise.all(moduleFiles.map(moduleFile =>
     {
@@ -124,7 +119,7 @@ export default class ModuleInitializer
   {
     if (this.hasStartedInitializingAllModulesForPhase(phase))
     {
-      return Promise.resolve();
+      return Promise.all(this.getModuleInitializationPromisesForPhase(phase));
     }
 
     const startTime = Date.now();
@@ -151,6 +146,13 @@ export default class ModuleInitializer
     return this.moduleFilesByPhase[phase].every(moduleFile =>
     {
       return isFinite(this.moduleInitalizationStart[moduleFile.metaData.key]);
+    });
+  }
+  private getModuleInitializationPromisesForPhase(phase: ModuleFileInitializationPhase): Promise<void>[]
+  {
+    return this.moduleFilesByPhase[phase].map(moduleFile =>
+    {
+      return this.moduleInitializationPromises[moduleFile.metaData.key];
     });
   }
   private constructModuleFile(moduleFile: ModuleFile)

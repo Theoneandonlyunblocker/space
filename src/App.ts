@@ -81,21 +81,15 @@ class App
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
     window.onerror = handleError;
 
-    this.moduleInitializer = new ModuleInitializer(activeModuleData);
+    defaultModules.forEach(moduleFile => activeModuleStore.add(moduleFile));
+    addCommonToModuleData(activeModuleData);
 
+    this.moduleInitializer = new ModuleInitializer(activeModuleData, defaultModules);
 
     onDOMLoaded(() =>
     {
       debug.log("init", "DOM loaded");
       this.initUI();
-
-      defaultModules.forEach(moduleFile =>
-      {
-        activeModuleStore.add(moduleFile);
-        this.moduleInitializer.addModuleFile(moduleFile);
-      });
-
-      addCommonToModuleData(activeModuleData);
 
       // some things called in this.makeApp() rely on global app variable
       // this timeout allows constructor to finish and variable to be assigned
