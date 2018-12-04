@@ -142,6 +142,7 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
         graphics: "graphicsLogging",
         saves: "savesLogging",
         modules: "modulesLogging",
+        init: "initLogging",
       };
 
       const key = keyForCategory[category];

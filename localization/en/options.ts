@@ -22,6 +22,7 @@ export const options =
   graphicsLogging: "Graphics",
   savesLogging: "Saves",
   modulesLogging: "Modules",
+  initLogging: "Init",
   alwaysExpandTopRightMenuOnLowResolution: "Always expand top right menu on low resolution",
   messageSettings: "Message settings",
   resetTutorials: "Reset tutorials",
