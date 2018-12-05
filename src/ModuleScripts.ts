@@ -47,9 +47,9 @@ type InnerPartial<T> =
 
 
 
-type AllModuleScriptsWithData = _dummy_<AllModuleScriptTypes>;
+export type AllModuleScriptsWithData = _dummy_<AllModuleScriptTypes>;
 
-type PartialModuleScriptsWithData = Partial<InnerPartial<AllModuleScriptsWithData>>;
+export type PartialModuleScriptsWithData = Partial<InnerPartial<AllModuleScriptsWithData>>;
 
 type ScriptsCollection<S extends {[C in keyof S]: (...args: any[]) => void}> =
 {
@@ -81,6 +81,7 @@ export default class ModuleScripts implements AllModuleScripts
     game:
     {
       afterInit: [],
+      beforePlayerTurnEnd: [],
     },
     player:
     {

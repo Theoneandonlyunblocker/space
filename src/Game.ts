@@ -61,6 +61,14 @@ export default class Game
   }
   public endTurn()
   {
+    if (!this.playerToAct.isAi)
+    {
+      activeModuleData.scripts.game.beforePlayerTurnEnd.forEach(script =>
+      {
+        script(this);
+      });
+    }
+
     this.processPlayerEndTurn(this.playerToAct);
 
     this.setNextPlayer();
