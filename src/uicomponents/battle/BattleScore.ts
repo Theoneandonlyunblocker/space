@@ -1,14 +1,15 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
+import * as ReactMotion from "react-motion";
 
 import Player from "../../Player";
 import PlayerFlag from "../PlayerFlag";
+import { fixedDurationSpring } from "../../utility";
 
 
 export interface PropTypes extends React.Props<any>
 {
   evaluation: number;
-  // TODO 2018.11.30 | use react motion
   animationDuration: number;
 
   player1: Player;
@@ -22,7 +23,6 @@ interface StateType
 export class BattleScoreComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "BattleScore";
-  lastEvaluation: number;
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -32,7 +32,11 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
   render()
   {
     const evaluationPercentage = 50 + this.props.evaluation * 50;
-    const transitionDurationString = `${this.props.animationDuration}ms`;
+
+    const p1MainColorString = "#" + this.props.player1.color.getHexString();
+    const p1SubColorString = "#" + this.props.player1.secondaryColor.getHexString();
+    const p2MainColorString = "#" + this.props.player2.color.getHexString();
+    const p2SubColorString = "#" + this.props.player2.secondaryColor.getHexString();
 
     return(
       ReactDOMElements.div(
@@ -58,32 +62,44 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
             },
             flag: this.props.player1.flag,
           }),
-          ReactDOMElements.div(
+          React.createElement(ReactMotion.Motion,
           {
-            className: "battle-score-bar-container",
+            style:
+            {
+              evaluationPercentage: this.props.animationDuration ?
+                fixedDurationSpring(evaluationPercentage, this.props.animationDuration) :
+                evaluationPercentage,
+            },
+            defaultStyle: {evaluationPercentage: evaluationPercentage},
           },
-            ReactDOMElements.div(
+            (interpolatedStyle: {evaluationPercentage: number}) =>
             {
-              className: "battle-score-bar-value battle-score-bar-side1",
-              style:
+              return ReactDOMElements.div(
               {
-                width: `${evaluationPercentage}%`,
-                backgroundColor: "#" + this.props.player1.color.getHexString(),
-                borderColor: "#" + this.props.player1.secondaryColor.getHexString(),
-                transitionDuration: transitionDurationString,
+                className: "battle-score-bar-container",
               },
-            }),
-            ReactDOMElements.div(
-            {
-              className: "battle-score-bar-value battle-score-bar-side2",
-              style:
-              {
-                width: `${100 - evaluationPercentage}%`,
-                backgroundColor: "#" + this.props.player2.color.getHexString(),
-                borderColor: "#" + this.props.player2.secondaryColor.getHexString(),
-                transitionDuration: transitionDurationString,
-              },
-            }),
+                ReactDOMElements.div(
+                {
+                  className: "battle-score-bar-value battle-score-bar-side1",
+                  style:
+                  {
+                    width: `${interpolatedStyle.evaluationPercentage}%`,
+                    backgroundColor: p1MainColorString,
+                    borderColor: p1SubColorString,
+                  },
+                }),
+                ReactDOMElements.div(
+                {
+                  className: "battle-score-bar-value battle-score-bar-side2",
+                  style:
+                  {
+                    width: `${100 - interpolatedStyle.evaluationPercentage}%`,
+                    backgroundColor: p2MainColorString,
+                    borderColor: p2SubColorString,
+                  },
+                }),
+              );
+            },
           ),
           PlayerFlag(
           {
