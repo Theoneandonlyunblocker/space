@@ -15,7 +15,7 @@ import normalizeEvent from "./normalizeEvent";
 
 export interface DragPositionerProps
 {
-  containerElementDescriptor?: React.RefObject<HTMLElement>;
+  getContainingElement?: () => HTMLElement;
   // doesn't start dragging unless event target has class "draggable"
   startOnHandleElementOnly?: boolean;
   forcedDragOffset?: Point;
@@ -28,7 +28,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 {
   public isDragging: boolean = false;
 
-  public containerElementDescriptor: React.RefObject<HTMLElement>;
+  public getContainingElement: () => HTMLElement = () => document.body;
   public startOnHandleElementOnly: boolean = false;
   public forcedDragOffset: Point;
   public dragThreshhold: number = 5;
@@ -48,7 +48,6 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     height: undefined,
   };
   public originPosition: Point = {x: 0, y: 0};
-  public containerElement: HTMLElement; // set in componentDidMount
 
 
   private owner: T;
@@ -60,7 +59,6 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   private cloneElement: HTMLElement | null = null;
 
   private ownerDOMNode: HTMLElement;
-  private containerRect: ClientRect;
   private touchEventTarget: HTMLElement | null;
   private ownerIsMounted: boolean = false;
 
@@ -77,8 +75,6 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       }
     }
 
-    this.setContainerRect = this.setContainerRect.bind(this);
-
     this.handleNativeMoveEvent = this.handleNativeMoveEvent.bind(this);
     this.handleNativeUpEvent = this.handleNativeUpEvent.bind(this);
     this.handleReactDownEvent = this.handleReactDownEvent.bind(this);
@@ -88,24 +84,11 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   {
     this.ownerIsMounted = true;
     this.ownerDOMNode = this.ownerElementRef.current;
-
-    if (this.containerElementDescriptor)
-    {
-      this.containerElement = this.containerElementDescriptor.current;
-    }
-    else
-    {
-      this.containerElement = document.body;
-    }
-
-    this.setContainerRect();
-    window.addEventListener("resize", this.setContainerRect, false);
   }
   public componentWillUnmount()
   {
     this.ownerIsMounted = false;
     this.removeEventListeners();
-    window.removeEventListener("resize", this.setContainerRect);
   }
   public getStyleAttributes(): Partial<Rect>
   {
@@ -271,10 +254,12 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       domHeight = this.ownerDOMNode.offsetHeight;
     }
 
-    const minX = this.containerRect.left;
-    const maxX = this.containerRect.right;
-    const minY = this.containerRect.top;
-    const maxY = this.containerRect.bottom;
+    const containerRect = this.getContainerRect();
+
+    const minX = containerRect.left;
+    const maxX = containerRect.right;
+    const minY = containerRect.top;
+    const maxY = containerRect.bottom;
 
     let x = e.pageX - this.dragOffset.x;
     let y = e.pageY - this.dragOffset.y;
@@ -367,9 +352,9 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       this.owner.forceUpdate();
     }
   }
-  private setContainerRect()
+  private getContainerRect()
   {
-    this.containerRect = this.containerElement.getBoundingClientRect();
+    return this.getContainingElement().getBoundingClientRect();
   }
   private handleNativeMoveEvent(e: MouseEvent | TouchEvent)
   {

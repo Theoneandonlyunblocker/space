@@ -101,7 +101,7 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
         updateLayer: this.updateLayer,
         dragPositionerProps:
         {
-          containerElementDescriptor: this.ownDOMNode,
+          getContainingElement: () => this.ownDOMNode.current,
           startOnHandleElementOnly: true,
         },
       }));
