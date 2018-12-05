@@ -13,7 +13,6 @@ import {NotificationFilterState} from "./NotificationFilterState";
 import { storageStrings } from "../storageStrings";
 
 
-// TODO 2018.11.13 | default filters are initialized at a time modules aren't loaded in yet
 export class NotificationFilter
 {
   public filters:
