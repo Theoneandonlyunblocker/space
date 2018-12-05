@@ -269,7 +269,7 @@ export default class Unit
       passiveSkills: passiveSkills,
 
       learnableAbilities: learnableAbilities,
-      abilityUpgrades: Unit.getAbilityUpgradesData(
+      abilityUpgrades: Unit.getUpgradableAbilitiesData(
         template,
         [...abilities, ...passiveSkills, ...learnableAbilities]
       ),
@@ -946,13 +946,6 @@ export default class Unit
     this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
     this.level++;
   }
-  // private hasAbility(
-  //   ability: AbilityBase,
-  //   allAbilities: AbilityBase[] = [...this.getAllAbilities(), ...this.getAllPassiveSkills()],
-  // ): boolean
-  // public getLearnableAbilities(): AbilityBase[]
-  // private canUpgradeIntoAbility(ability: AbilityBase, allAbilities: AbilityBase[])
-  // public getUpgradableAbilitiesData(): UpgradableAbilitiesData
   public getCurrentLearnableAbilities(): AbilityBase[]
   {
     const currentlyKnownAbilities = [...this.abilities, ...this.passiveSkills];
@@ -978,8 +971,7 @@ export default class Unit
     return upgradeDataForCurrentAbilities;
   }
 
-  // TODO 2018.11.19 | rename to getUpgradableAbilitiesData
-  private static getAbilityUpgradesData(
+  private static getUpgradableAbilitiesData(
     template: UnitTemplate,
     upgradeCandidates: AbilityBase[],
     fullUpgradeData: UpgradableAbilitiesData = {},
@@ -1033,7 +1025,7 @@ export default class Unit
       });
     });
 
-    return Unit.getAbilityUpgradesData(template, newUpgradeCandidates, fullUpgradeData);
+    return Unit.getUpgradableAbilitiesData(template, newUpgradeCandidates, fullUpgradeData);
   }
 
   public upgradeAbility(source: AbilityBase, newAbility: AbilityBase): void
