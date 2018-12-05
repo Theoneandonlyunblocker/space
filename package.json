@@ -4,14 +4,14 @@
   "private": true,
   "dependencies": {
     "localforage": "1.7.x",
-    "pixi.js": "4.7.3",
+    "pixi.js": "4.8.2",
     "react": "16.4.x",
     "react-dom": "16.4.x",
     "react-dom-factories": "1.0.x",
     "react-motion": "0.5.x"
   },
   "devDependencies": {
-    "@types/pixi.js": "4.7.3",
+    "@types/pixi.js": "4.8.2",
     "@types/react": "16.x",
     "@types/react-dom": "16.x",
     "@types/react-dom-factories": "1.x",
