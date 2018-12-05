@@ -1,29 +1,30 @@
-import {ScriptsWithData} from "../../../src/ModuleScriptData";
-
-import {StarScripts} from "../../../src/modulescriptinterfaces/StarScripts";
+import { PartialModuleScriptsWithData } from "../../../src/ModuleScripts";
 
 
-export const starScripts: Partial<ScriptsWithData<StarScripts>> =
+export const starScripts: PartialModuleScriptsWithData =
 {
-  onOwnerChange:
-  [
-    {
-      key: "destroyPerPlayerLimitedBuildings",
-      priority: 0,
-      script: (star, oldOwner, newOwner) =>
+  star:
+  {
+    onOwnerChange:
+    [
       {
-        star.buildings.filter((building) =>
+        key: "destroyPerPlayerLimitedBuildings",
+        priority: 0,
+        script: (star, oldOwner, newOwner) =>
         {
-          return isFinite(building.template.maxBuiltForPlayer) ||
-            building.template.families.some(family =>
-            {
-              return isFinite(family.maxBuiltForPlayer);
-            });
-        }).forEach(building =>
-        {
-          star.buildings.remove(building);
-        });
-      }
-    }
-  ]
+          star.buildings.filter((building) =>
+          {
+            return isFinite(building.template.maxBuiltForPlayer) ||
+              building.template.families.some(family =>
+              {
+                return isFinite(family.maxBuiltForPlayer);
+              });
+          }).forEach(building =>
+          {
+            star.buildings.remove(building);
+          });
+        },
+      },
+    ],
+  },
 };

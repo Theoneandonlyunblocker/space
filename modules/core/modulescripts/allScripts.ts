@@ -1,9 +1,35 @@
 import {unitScripts} from "./unitScripts";
 import {starScripts} from "./starScripts";
+import { PartialModuleScriptsWithData } from "../../../src/ModuleScripts";
 
+const scriptsToMerge: PartialModuleScriptsWithData[] =
+[
+  starScripts,
+  unitScripts,
+];
 
-export const allScripts =
+export const allScripts: PartialModuleScriptsWithData = scriptsToMerge.reduce((
+  merged: PartialModuleScriptsWithData,
+  toMerge: PartialModuleScriptsWithData,
+) =>
 {
-  star: starScripts,
-  unit: unitScripts,
-};
+  for (const category in toMerge)
+  {
+    if (!merged[category])
+    {
+      merged[category] = {};
+    }
+
+    for (const scriptType in toMerge[category])
+    {
+      if (!merged[category][scriptType])
+      {
+        merged[category][scriptType] = [];
+      }
+
+      merged[category][scriptType].push(...toMerge[category][scriptType]);
+    }
+  }
+
+  return toMerge;
+}, {});

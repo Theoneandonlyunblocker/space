@@ -5,8 +5,6 @@ import {PlayerScripts} from "./modulescriptinterfaces/PlayerScripts";
 import {StarScripts} from "./modulescriptinterfaces/StarScripts";
 import {UnitScripts} from "./modulescriptinterfaces/UnitScripts";
 
-import {ModuleScriptData, ScriptsWithData} from "./ModuleScriptData";
-
 
 type AllModuleScriptTypes =
 {
@@ -16,6 +14,18 @@ type AllModuleScriptTypes =
   player: PlayerScripts;
   star: StarScripts;
   unit: UnitScripts;
+};
+
+interface ModuleScriptData<T extends (...args: any[]) => void>
+{
+  key: string;
+  priority: number; // 0 should be considered default
+  script: T;
+}
+
+type ScriptsWithData<Scripts extends {[T in keyof Scripts]: (...args: any[]) => void}> =
+{
+  [T in keyof Scripts]: ModuleScriptData<Scripts[T]>[];
 };
 
 // why doesn't this work directly?
