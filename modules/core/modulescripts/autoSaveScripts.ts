@@ -12,7 +12,7 @@ export const autoSaveScripts: PartialModuleScriptsWithData =
         priority: 0,
         script: (game) =>
         {
-          game.save("autosave");
+          game.save("autosave", false);
         }
       },
     ],

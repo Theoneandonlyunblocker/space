@@ -121,12 +121,16 @@ export default class Game
 
     return JSON.stringify(fullSaveData);
   }
-  public save(name: string): Promise<string>
+  public save(name: string, wasManuallyTriggered: boolean = true): Promise<string>
   {
     const saveData = this.getSaveData(name);
 
     const saveString = storageStrings.savePrefix + name;
-    this.gameStorageKey = saveString;
+
+    if (wasManuallyTriggered)
+    {
+      this.gameStorageKey = saveString;
+    }
 
     return localForage.setItem(saveString, saveData);
   }
