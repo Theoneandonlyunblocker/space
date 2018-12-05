@@ -50,10 +50,7 @@ const drawNebula: BackgroundDrawingFunction = (
     seed: [Math.random() * 100, Math.random() * 100],
   });
 
-  // TODO PIXI4 | directly calling sprite.generateTexture() doesn't seem to work properly
-  const container = new PIXI.Container();
   const shaderSprite = makeShaderSprite(filter, 0, 0, size.width, size.height);
-  container.addChild(shaderSprite);
 
   // still relevant?
   // TODO performance | need to destroy or reuse texture from filterContainer.generateTexture()
@@ -62,7 +59,7 @@ const drawNebula: BackgroundDrawingFunction = (
 
   const texture = generateTextureWithBounds(
     renderer,
-    container,
+    shaderSprite,
     PIXI.settings.SCALE_MODE,
     1,
     size,
@@ -70,7 +67,6 @@ const drawNebula: BackgroundDrawingFunction = (
 
   const sprite = new PIXI.Sprite(texture);
 
-  container.removeChildren();
   shaderSprite.destroy({texture: true, baseTexture: true});
 
   Math.random = oldRng;
