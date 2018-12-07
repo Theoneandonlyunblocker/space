@@ -1,6 +1,7 @@
 import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
 
 import {UnitAttribute} from "../../../src/UnitAttributes";
+import { FlatAndMultiplierAdjustment } from "../../../src/FlatAndMultiplierAdjustment";
 
 
 function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
@@ -11,17 +12,18 @@ function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
   const key = `snipe${capitalizedAttributeName}`;
   const displayName = `Snipe: ${capitalizedAttributeName}`;
 
+  const attributeAdjustment: FlatAndMultiplierAdjustment =
+  {
+    multiplicativeMultiplier: -0.5,
+  };
+
   return(
   {
     type: key,
     displayName: displayName,
     attributes:
     {
-      // TODO 2018.06.05 | this isn't type safe
-      [attributeName]:
-      {
-        multiplier: -0.5,
-      },
+      [attributeName]: attributeAdjustment,
     },
   });
 }
