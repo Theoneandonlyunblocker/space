@@ -671,8 +671,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       playerWonBattle = this.props.humanPlayer === battle.getVictor();
     }
 
-    // TODO 2018.10.01 | vvv why?
-    // TODO refactor
     let battleState: "start" | "active" | "finish";
     if (this.state.UIState === BattleUIState.BattleStarting)
     {

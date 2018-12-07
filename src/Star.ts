@@ -865,7 +865,6 @@ export default class Star implements Point
       }
     }
 
-    // TODO 2018.09.27 | can we reduce the duplication here?
     const globalLimit = templateToBuild.maxBuiltGlobally || Infinity;
     if (isFinite(globalLimit))
     {
