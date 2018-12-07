@@ -4,9 +4,9 @@ import UnitEffectTemplate from "../../src/templateinterfaces/UnitEffectTemplate"
 import
 {
   adjustHealth,
-} from "../common/effectactiontemplates/effectActions";
+} from "../space/effectactions/effectActions";
 
-import {placeholder as placeholderSfx} from "../common/battlesfxtemplates/battleSfx";
+import {placeholder as placeholderSfx} from "../space/battlesfx/templates/battleSfx";
 
 
 export const infest: UnitEffectTemplate =

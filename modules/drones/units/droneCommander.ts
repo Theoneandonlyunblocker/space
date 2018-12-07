@@ -1,9 +1,9 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import * as unitArchetypes from "../../defaultunits/unitArchetypes";
-import defaultUnitDrawingFunction from "../../defaultunits/defaultUnitDrawingFunction";
+import * as unitArchetypes from "../../common/unitArchetypes";
+import defaultUnitDrawingFunction from "../../space/units/defaultUnitDrawingFunction";
 
-import * as CommonAbility from "../../common/abilitytemplates/abilities";
+import * as CommonAbility from "../../space/abilities/abilities";
 import {distributionGroups} from "../../common/distributionGroups";
 
 import * as DroneAbility from "../abilities";

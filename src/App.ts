@@ -1,8 +1,6 @@
 /// <reference path="../lib/rng.d.ts" />
 import * as localForage from "localforage";
 
-import addCommonToModuleData from "../modules/common/addCommonToModuleData";
-
 import GalaxyMap from "./GalaxyMap";
 import Game from "./Game";
 import GameLoader from "./GameLoader";
@@ -82,7 +80,6 @@ class App
     window.onerror = handleError;
 
     defaultModules.forEach(moduleFile => activeModuleStore.add(moduleFile));
-    addCommonToModuleData(activeModuleData);
 
     this.moduleInitializer = new ModuleInitializer(activeModuleData, defaultModules);
 

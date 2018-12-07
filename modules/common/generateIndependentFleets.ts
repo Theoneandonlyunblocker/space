@@ -79,12 +79,12 @@ export function generateIndependentFleets(
   maxUnitsPerSideInBattle: number,
 ): Fleet[]
 {
-  const locationHasLeader = localStrength > 0.8;
+  const locationShouldHaveLeader = localStrength > 0.8;
 
   const allBuildableUnitTypes = race.getBuildableUnits();
 
   const unitCountFromGlobalStrength = maxUnitsPerSideInBattle * 0.34 + maxUnitsPerSideInBattle * 0.66 * globalStrength;
-  const unitCountFromLocalStrength = locationHasLeader ? 1 : 0;
+  const unitCountFromLocalStrength = locationShouldHaveLeader ? 1 : 0;
 
   const unitCount = Math.min(
     Math.round(unitCountFromGlobalStrength + unitCountFromLocalStrength),
@@ -97,7 +97,7 @@ export function generateIndependentFleets(
   for (let i = 0; i < unitCount; i++)
   {
     let unitRole: UnitRole;
-    if (locationHasLeader && i === 0)
+    if (locationShouldHaveLeader && i === 0)
     {
       unitRole = "leader";
     }

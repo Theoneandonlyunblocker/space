@@ -60,6 +60,7 @@ const attachedUnitData = new AttachedUnitDataManager();
 
 export default attachedUnitData;
 
+// TODO 2018.12.07 | belongs in ai module
 export const attachedUnitDataScripts =
 {
   unit:

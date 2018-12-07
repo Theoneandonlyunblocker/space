@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import RampingValue from "../../../../modules/common/battlesfxfunctions/sfxfragments/RampingValue";
-import SfxFragment from "../../../../modules/common/battlesfxfunctions/sfxfragments/SfxFragment";
+import RampingValue from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/RampingValue";
+import SfxFragment from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 import
 {
   PropInfoType,
-} from "../../../../modules/common/battlesfxfunctions/sfxfragments/props/PropInfoType";
+} from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/props/PropInfoType";
 
 import Color from "../../../Color";
 import Point from "../../../Point";

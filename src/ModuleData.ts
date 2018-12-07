@@ -129,7 +129,7 @@ export default class ModuleData
   {
     this.scripts = new ModuleScripts();
   }
-  public copyTemplates<T>(source: TemplateCollection<T>, category: keyof Templates): void
+  public copyTemplates<T extends keyof Templates>(source: Templates[T], category: T): void
   {
     if (!this.templates[category])
     {
@@ -192,6 +192,7 @@ export default class ModuleData
   }
   public appendRuleSet(valuesToAppend: PartialRuleSetValues): void
   {
+    // TODO 2018.12.09 | kinda weird we can't just call this as the default
     if (!this.ruleSet)
     {
       throw new Error("Set ModuleData.ruleSet first");
