@@ -1,9 +1,9 @@
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
-import AiTemplateConstructor from "../../src/templateinterfaces/AITemplateConstructor";
 
 import defaultAiConstructor from "./mapai/DefaultAiConstructor";
+import {attachedUnitDataScripts} from "./attachedUnitData";
 
 
 const defaultAi: ModuleFile =
@@ -19,10 +19,12 @@ const defaultAi: ModuleFile =
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates<AiTemplateConstructor<any>>(
+    moduleData.copyTemplates(
     {
       [defaultAiConstructor.type]: defaultAiConstructor,
     }, "AiTemplateConstructors");
+
+    moduleData.scripts.add(attachedUnitDataScripts);
 
     return moduleData;
   },

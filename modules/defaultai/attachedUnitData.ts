@@ -7,7 +7,7 @@ import
   shallowExtend,
 } from "../../src/utility";
 
-import {Front} from "../defaultai/mapai/Front";
+import {Front} from "./mapai/Front";
 
 
 interface AttachedUnitData
