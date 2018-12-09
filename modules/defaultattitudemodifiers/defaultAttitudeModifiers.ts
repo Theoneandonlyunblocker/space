@@ -1,7 +1,6 @@
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
-import AttitudeModifierTemplate from "../../src/templateinterfaces/AttitudeModifierTemplate";
 
 import attitudeModifierTemplates from "./AttitudeModifierTemplates";
 import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";
@@ -20,7 +19,7 @@ const defaultAttitudeModifiers: ModuleFile =
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates<AttitudeModifierTemplate>(attitudeModifierTemplates, "AttitudeModifiers");
+    moduleData.copyTemplates(attitudeModifierTemplates, "AttitudeModifiers");
 
     moduleData.scripts.add(attitudeModifierModuleScripts);
 

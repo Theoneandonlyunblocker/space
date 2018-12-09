@@ -4,8 +4,6 @@ import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
 import cacheSpriteSheetAsImages from "../../../src/cacheSpriteSheetAsImages";
-import UnitArchetype from "../../../src/templateinterfaces/UnitArchetype";
-import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
 import unitArchetypes from "../../common/unitArchetypes";
 import {unitTemplates} from "./unitTemplates";
@@ -40,8 +38,8 @@ const defaultUnits: ModuleFile =
   },
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates<UnitTemplate>(unitTemplates, "Units");
-    moduleData.copyTemplates<UnitArchetype>(unitArchetypes, "UnitArchetypes");
+    moduleData.copyTemplates(unitTemplates, "Units");
+    moduleData.copyTemplates(unitArchetypes, "UnitArchetypes");
 
     return moduleData;
   },

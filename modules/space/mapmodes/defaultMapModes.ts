@@ -3,8 +3,6 @@ import * as PIXI from "pixi.js";
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
-import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
-import MapRendererMapModeTemplate from "../../../src/templateinterfaces/MapRendererMapModeTemplate";
 
 import mapLayerTemplates from "./MapLayerTemplates";
 import mapModeTemplates from "./MapModeTemplates";
@@ -30,8 +28,8 @@ const defaultMapModes: ModuleFile =
   },
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates<MapRendererLayerTemplate>(mapLayerTemplates, "MapRendererLayers");
-    moduleData.copyTemplates<MapRendererMapModeTemplate>(mapModeTemplates, "MapRendererMapModes");
+    moduleData.copyTemplates(mapLayerTemplates, "MapRendererLayers");
+    moduleData.copyTemplates(mapModeTemplates, "MapRendererMapModes");
 
     return moduleData;
   },

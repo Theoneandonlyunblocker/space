@@ -4,7 +4,6 @@ import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
 import cacheSpriteSheetAsImages from "../../../src/cacheSpriteSheetAsImages";
-import {BuildingTemplate} from "../../../src/templateinterfaces/BuildingTemplate";
 
 import buildingTemplates from "./BuildingTemplates";
 
@@ -36,7 +35,7 @@ const defaultBuildings: ModuleFile =
   },
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates<BuildingTemplate>(buildingTemplates, "Buildings");
+    moduleData.copyTemplates(buildingTemplates, "Buildings");
 
     return moduleData;
   },

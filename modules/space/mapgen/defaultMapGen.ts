@@ -28,7 +28,7 @@ const defaultMapGen: ModuleFile =
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>
   {
-    moduleData.copyTemplates<MapGenTemplate>(templates, "MapGen");
+    moduleData.copyTemplates(templates, "MapGen");
 
     if (!moduleData.defaultMap)
     {

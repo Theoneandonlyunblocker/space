@@ -2,7 +2,6 @@ import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 import {svgCache} from "../../src/svgCache";
-import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
 
 import subEmblemTemplates from "./SubEmblemTemplates";
 
@@ -47,7 +46,7 @@ const defaultEmblems: ModuleFile =
   },
   addToModuleData: (moduleData: ModuleData) =>
   {
-    moduleData.copyTemplates<SubEmblemTemplate>(subEmblemTemplates, "SubEmblems");
+    moduleData.copyTemplates(subEmblemTemplates, "SubEmblems");
 
     return moduleData;
   },

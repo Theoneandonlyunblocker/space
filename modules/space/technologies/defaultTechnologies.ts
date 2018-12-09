@@ -1,7 +1,6 @@
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
-import TechnologyTemplate from "../../../src/templateinterfaces/TechnologyTemplate";
 
 import technologyTemplates from "./technologyTemplates";
 
@@ -19,7 +18,7 @@ const defaultTechnologies: ModuleFile =
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates<TechnologyTemplate>(technologyTemplates, "Technologies");
+    moduleData.copyTemplates(technologyTemplates, "Technologies");
 
     return moduleData;
   },
