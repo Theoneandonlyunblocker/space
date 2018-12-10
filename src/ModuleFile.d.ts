@@ -23,8 +23,9 @@ declare interface ModuleFile<SaveData = any>
   metaData: ModuleMetaData;
   needsToBeInitializedBefore: ModuleFileInitializationPhase;
   supportedLanguages: Language[] | "all";
+  // initialized after main module
   subModules?: ModuleFile[];
-  initialize?: (callback: () => void) => void;
+  initialize?: () => Promise<void>;
   addToModuleData?: (moduleData: ModuleData) => void;
   serializeGameSpecificData?: () => SaveData;
   deserializeGameSpecificData?: (saveData: SaveData) => void;

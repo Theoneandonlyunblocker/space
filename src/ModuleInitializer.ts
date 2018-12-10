@@ -87,21 +87,22 @@ export default class ModuleInitializer
     debug.log("modules", `Start initializing module "${moduleFile.metaData.key}"`);
     this.moduleInitalizationStart[moduleFile.metaData.key] = Date.now();
 
-    const promise = new Promise<void>(resolve =>
+    const promise = new Promise(resolve =>
     {
       if (moduleFile.initialize)
       {
-        moduleFile.initialize(() =>
+        moduleFile.initialize().then(() =>
         {
-          this.finishInitializingModuleFile(moduleFile);
           resolve();
         });
       }
       else
       {
-        this.finishInitializingModuleFile(moduleFile);
         resolve();
       }
+    }).then(() =>
+    {
+      this.finishInitializingModuleFile(moduleFile);
     });
 
     this.moduleInitializationPromises[moduleFile.metaData.key] = promise;

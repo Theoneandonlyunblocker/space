@@ -10,6 +10,15 @@ import * as ResourceTemplates from  "./resources/resources";
 import * as TerrainTemplates from  "./terrains/terrains";
 import {unitEffectTemplates} from  "./uniteffects/unitEffectTemplates";
 
+import defaultBackgrounds from "./backgrounds/defaultBackgrounds";
+import defaultBuildings from "./buildings/defaultBuildings";
+import defaultItems from "./items/defaultItems";
+import defaultMapgen from "./mapgen/defaultMapgen";
+import defaultMapmodes from "./mapmodes/defaultMapmodes";
+import defaultRaces from "./races/defaultRaces";
+import defaultTechnologies from "./technologies/defaultTechnologies";
+import defaultUnits from "./units/defaultUnits";
+
 export const space: ModuleFile =
 {
   metaData:
@@ -32,10 +41,11 @@ export const space: ModuleFile =
     defaultTechnologies,
     defaultUnits,
   ],
-  initialize: onLoaded =>
-  {
+  // TODO 2018.12.10 |
+  // initialize: () =>
+  // {
 
-  },
+  // },
   addToModuleData: moduleData =>
   {
     moduleData.copyTemplates(AbilityTemplates, "Abilities");

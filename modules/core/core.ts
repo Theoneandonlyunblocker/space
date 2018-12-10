@@ -20,7 +20,7 @@ const core: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
-  initialize: (onLoaded: () => void) =>
+  initialize: () =>
   {
     const loader = new PIXI.loaders.Loader();
 
@@ -31,13 +31,16 @@ const core: ModuleFile =
       loadType: 1, // XML
     });
 
-    loader.load(() =>
+    return new Promise(resolve =>
     {
-      const response = <XMLDocument> loader.resources[battleSceneFlagFadeUrl].data;
-      const svgDoc = <SVGElement> response.children[0];
-      svgCache[battleSceneFlagFadeUrl] = svgDoc;
+      loader.load(() =>
+      {
+        const response = <XMLDocument> loader.resources[battleSceneFlagFadeUrl].data;
+        const svgDoc = <SVGElement> response.children[0];
+        svgCache[battleSceneFlagFadeUrl] = svgDoc;
 
-      onLoaded();
+        resolve();
+      });
     });
   },
   addToModuleData: (moduleData: ModuleData) =>

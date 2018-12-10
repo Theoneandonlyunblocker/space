@@ -23,18 +23,23 @@ export const drones: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
-  initialize: onLoaded =>
+  initialize: () =>
   {
     const placeHolderResourceName = "placeHolder";
     const placeHolderURL = "img/placeholder.png";
 
     const loader = new PIXI.loaders.Loader();
     loader.add(placeHolderResourceName, placeHolderURL);
-    loader.load(() =>
+
+    return new Promise(resolve =>
     {
-      const image = loader.resources[placeHolderResourceName].data;
-      app.images[placeHolderURL] = image;
-      onLoaded();
+      loader.load(() =>
+      {
+        const image = loader.resources[placeHolderResourceName].data;
+        app.images[placeHolderURL] = image;
+
+        resolve();
+      });
     });
   },
   addToModuleData: (moduleData: ModuleData) =>

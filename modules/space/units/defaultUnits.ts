@@ -20,20 +20,23 @@ const defaultUnits: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
-  initialize: (onLoaded) =>
+  initialize: () =>
   {
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "units";
 
     loader.add(spriteSheetKey, "modules/defaultunits/img/sprites/units.json");
 
-    loader.load(() =>
+    return new Promise(resolve =>
     {
-      const json = loader.resources[spriteSheetKey].data;
-      const image = loader.resources[spriteSheetKey + "_image"].data;
-      cacheSpriteSheetAsImages(json, image);
+      loader.load(() =>
+      {
+        const json = loader.resources[spriteSheetKey].data;
+        const image = loader.resources[spriteSheetKey + "_image"].data;
+        cacheSpriteSheetAsImages(json, image);
 
-      onLoaded();
+        resolve();
+      });
     });
   },
   addToModuleData: (moduleData) =>

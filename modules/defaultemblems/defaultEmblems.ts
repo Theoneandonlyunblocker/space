@@ -17,7 +17,7 @@ const defaultEmblems: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: "all",
-  initialize: (onLoaded: () => void) =>
+  initialize: () =>
   {
     const loader = new PIXI.loaders.Loader();
 
@@ -31,17 +31,20 @@ const defaultEmblems: ModuleFile =
       });
     }
 
-    loader.load(() =>
+    return new Promise(resolve =>
     {
-      for (const templateKey in subEmblemTemplates)
+      loader.load(() =>
       {
-        const template = subEmblemTemplates[templateKey];
-        const response = <XMLDocument> loader.resources[template.src].data;
-        const svgDoc = <SVGElement> response.children[0];
-        svgCache[template.src] = svgDoc;
-      }
+        for (const templateKey in subEmblemTemplates)
+        {
+          const template = subEmblemTemplates[templateKey];
+          const response = <XMLDocument> loader.resources[template.src].data;
+          const svgDoc = <SVGElement> response.children[0];
+          svgCache[template.src] = svgDoc;
+        }
 
-      onLoaded();
+        resolve();
+      });
     });
   },
   addToModuleData: (moduleData: ModuleData) =>

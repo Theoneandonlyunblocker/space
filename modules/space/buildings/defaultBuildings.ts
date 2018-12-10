@@ -19,18 +19,22 @@ const defaultBuildings: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
-  initialize: (onLoaded) =>
+  initialize: () =>
   {
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "buildings";
     loader.add(spriteSheetKey, "modules/defaultbuildings/img/buildings.json");
-    loader.load(() =>
-    {
-      const json = loader.resources[spriteSheetKey].data;
-      const image = loader.resources[spriteSheetKey + "_image"].data;
-      cacheSpriteSheetAsImages(json, image);
 
-      onLoaded();
+    return new Promise(resolve =>
+    {
+      loader.load(() =>
+      {
+        const json = loader.resources[spriteSheetKey].data;
+        const image = loader.resources[spriteSheetKey + "_image"].data;
+        cacheSpriteSheetAsImages(json, image);
+
+        resolve();
+      });
     });
   },
   addToModuleData: (moduleData) =>

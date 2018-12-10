@@ -19,12 +19,16 @@ const defaultMapModes: ModuleFile =
   },
   needsToBeInitializedBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
-  initialize: (onLoaded) =>
+  initialize: () =>
   {
     const loader = new PIXI.loaders.Loader();
 
     loader.add("modules/defaultmapmodes/img/fowTexture.png");
-    loader.load(onLoaded);
+
+    return new Promise(resolve =>
+    {
+      loader.load(resolve);
+    });
   },
   addToModuleData: (moduleData) =>
   {
