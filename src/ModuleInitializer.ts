@@ -75,7 +75,7 @@ export default class ModuleInitializer
 
     this.moduleFilesByKey[moduleFile.metaData.key] = moduleFile;
 
-    this.moduleFilesByPhase[moduleFile.needsToBeInitializedBefore].push(moduleFile);
+    this.moduleFilesByPhase[moduleFile.phaseToInitializeBefore].push(moduleFile);
   }
   private initModuleFile(moduleFile: ModuleFile): Promise<void>
   {

@@ -24,7 +24,7 @@ const defaultMapGen: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.GameSetup,
+  phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>
   {

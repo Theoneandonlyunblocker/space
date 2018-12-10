@@ -13,7 +13,7 @@ const paintingPortraits: ModuleFile =
     author: "various artists",
     description: "old ppl",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
+  phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: "all",
   addToModuleData: (moduleData) =>
   {

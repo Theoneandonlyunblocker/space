@@ -18,7 +18,7 @@ const defaultBuildings: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
+  phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
   initialize: () =>
   {

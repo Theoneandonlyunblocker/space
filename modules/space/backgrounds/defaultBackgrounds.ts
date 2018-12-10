@@ -14,7 +14,7 @@ const spaceBackgrounds: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.GameStart,
+  phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: "all",
   addToModuleData: (moduleData: ModuleData) =>
   {

@@ -19,7 +19,7 @@ const defaultNotifications: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.GameStart,
+  phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>
   {

@@ -28,7 +28,7 @@ export const space: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.GameSetup,
+  phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   subModules:
   [

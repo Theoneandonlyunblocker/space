@@ -15,7 +15,7 @@ const defaultAttitudeModifiers: ModuleFile =
     author: "giraluna",
     description: "",
   },
-  needsToBeInitializedBefore: ModuleFileInitializationPhase.MapGen,
+  phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>
   {
