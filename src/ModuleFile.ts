@@ -7,9 +7,12 @@ import {Language} from "./localization/Language";
 export interface ModuleMetaData
 {
   key: string;
+  // name: string;
   version: string;
   author?: string;
   description?: string;
+  modsToLoadBefore?: string[];
+  modsToLoadAfter?: string[];
 }
 
 export interface ModuleFileGameSaveData<S = any>
@@ -18,10 +21,10 @@ export interface ModuleFileGameSaveData<S = any>
   moduleSaveData: S;
 }
 
-declare interface ModuleFile<SaveData = any>
+interface ModuleFile<SaveData = any>
 {
   metaData: ModuleMetaData;
-  needsToBeInitializedBefore: ModuleFileInitializationPhase;
+  phaseToInitializeBefore: ModuleFileInitializationPhase;
   supportedLanguages: Language[] | "all";
   // initialized after main module
   subModules?: ModuleFile[];

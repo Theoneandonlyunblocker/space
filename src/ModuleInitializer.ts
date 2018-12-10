@@ -70,7 +70,7 @@ export default class ModuleInitializer
   {
     if (this.moduleFilesByKey[moduleFile.metaData.key])
     {
-      throw new Error(`Duplicate module key ${moduleFile.metaData.key}`);
+      return;
     }
 
     this.moduleFilesByKey[moduleFile.metaData.key] = moduleFile;
@@ -100,6 +100,14 @@ export default class ModuleInitializer
       {
         resolve();
       }
+    }).then(() =>
+    {
+      const subModules = moduleFile.subModules || [];
+
+      return Promise.all(subModules.map(subModuleFile =>
+      {
+        this.initModuleFile(subModuleFile);
+      }));
     }).then(() =>
     {
       this.finishInitializingModuleFile(moduleFile);
@@ -163,6 +171,6 @@ export default class ModuleInitializer
       moduleFile.addToModuleData(this.moduleData);
     }
 
-    this.moduleData.addSubModule(moduleFile);
+    this.moduleData.addModuleFile(moduleFile);
   }
 }

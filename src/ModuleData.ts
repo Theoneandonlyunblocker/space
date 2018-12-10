@@ -171,7 +171,7 @@ export default class ModuleData
       }
     }
   }
-  public addSubModule(moduleFile: ModuleFile): void
+  public addModuleFile(moduleFile: ModuleFile): void
   {
     this.moduleFiles.push(moduleFile);
   }
