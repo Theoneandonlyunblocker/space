@@ -28,7 +28,7 @@ const bomberSquadron: UnitTemplate =
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
-  icon: "modules/defaultunits/img/icons/fb.png",
+  icon: "modules/space/units/img/icons/fb.png",
   maxHealthLevel: 0.5,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

@@ -25,7 +25,7 @@ const defaultUnits: ModuleFile =
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "units";
 
-    loader.add(spriteSheetKey, "modules/defaultunits/img/sprites/units.json");
+    loader.add(spriteSheetKey, "modules/space/units/img/sprites/units.json");
 
     return new Promise(resolve =>
     {

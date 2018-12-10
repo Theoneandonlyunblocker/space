@@ -29,7 +29,8 @@ const stealthShip: UnitTemplate =
   isSquadron: true,
   buildCost: 500,
   kind: "unit",
-  icon: "modules/defaultunits/img/icons/sc.png",
+  // TODO 2018.12.10 | figure out how to make these relative to module. probably need to compile the modules separately (which we want to do anyway)
+  icon: "modules/space/units/img/icons/sc.png",
   maxHealthLevel: 0.6,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

@@ -33,7 +33,7 @@ const shieldBoat: UnitTemplate =
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
-  icon: "modules/defaultunits/img/icons/sh.png",
+  icon: "modules/space/units/img/icons/sh.png",
   maxHealthLevel: 0.9,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

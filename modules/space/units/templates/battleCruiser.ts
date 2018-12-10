@@ -28,7 +28,7 @@ const battleCruiser: UnitTemplate =
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
-  icon: "modules/defaultunits/img/icons/bc.png",
+  icon: "modules/space/units/img/icons/bc.png",
   maxHealthLevel: 1,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

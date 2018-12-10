@@ -8,6 +8,7 @@ import cacheSpriteSheetAsImages from "../../../src/cacheSpriteSheetAsImages";
 import buildingTemplates from "./BuildingTemplates";
 
 
+// TODO 2018.12.10 | change keys for these
 const defaultBuildings: ModuleFile =
 {
   metaData:
@@ -23,7 +24,7 @@ const defaultBuildings: ModuleFile =
   {
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "buildings";
-    loader.add(spriteSheetKey, "modules/defaultbuildings/img/buildings.json");
+    loader.add(spriteSheetKey, "modules/space/buildings/img/buildings.json");
 
     return new Promise(resolve =>
     {

@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/rng.d.ts" />
+/// <reference path="../../../../lib/rng.d.ts" />
 
 import FillerPoint from "../../../../src/FillerPoint";
 import MapGenResult from "../../../../src/MapGenResult";

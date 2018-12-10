@@ -22,7 +22,7 @@ export default function rocketAttack(params: SfxParams): void
   }
 }
 
-const rocketUrl = "modules/common/battlesfxfunctions/img/rocket.png";
+const rocketUrl = "modules/space/battlesfx/img/rocket.png";
 
 function playRocketAttack(params: SfxParams)
 {
@@ -162,7 +162,7 @@ function loadRocketAttack(callback: () => void)
 {
   const loader = new PIXI.loaders.Loader();
 
-  loader.add("explosion", "modules/common/battlesfxfunctions/img/explosion.json");
+  loader.add("explosion", "modules/space/battlesfx/img/explosion.json");
   loader.add(rocketUrl);
 
   loader.load(callback);

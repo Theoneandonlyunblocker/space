@@ -32,7 +32,7 @@ const commandShip: UnitTemplate =
   isSquadron: false,
   buildCost: 300,
   kind: "unit",
-  icon: "modules/defaultunits/img/icons/sh.png",
+  icon: "modules/space/units/img/icons/sh.png",
   maxHealthLevel: 0.7,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

@@ -32,7 +32,7 @@ export const warDeclarationNotification: NotificationTemplate<PropTypes, Seriali
     [NotificationWitnessCriterion.IsInvolved],
     [NotificationWitnessCriterion.MetAllInvolvedPlayers],
   ],
-  iconSrc: "modules/common/resourcetemplates/img/test2.png",
+  iconSrc: "modules/space/resources/img/test2.png",
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {

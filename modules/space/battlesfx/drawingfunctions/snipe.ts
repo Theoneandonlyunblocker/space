@@ -52,7 +52,7 @@ for (const attribute in colors)
   colors[attribute] = Color.fromHSV(...hsv);
 }
 
-const projectileURL = "modules/common/battlesfxfunctions/img/ellipse.png";
+const projectileURL = "modules/space/battlesfx/img/ellipse.png";
 
 function playSnipe(type: UnitAttribute, params: SfxParams)
 {

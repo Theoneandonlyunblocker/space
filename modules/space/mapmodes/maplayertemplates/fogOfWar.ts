@@ -60,7 +60,7 @@ function getfogOfWarTilingSprite(width: number, height: number)
 {
   if (!fogOfWarTilingSprite)
   {
-    const fowTexture = PIXI.Texture.fromFrame("modules/defaultmapmodes/img/fowTexture.png");
+    const fowTexture = PIXI.Texture.fromFrame("modules/space/mapmodes/img/fowTexture.png");
     fogOfWarTilingSprite = new PIXI.extras.TilingSprite(fowTexture, width, height);
   }
 

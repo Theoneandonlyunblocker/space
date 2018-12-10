@@ -40,7 +40,7 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
     [NotificationWitnessCriterion.IsInvolved],
     [NotificationWitnessCriterion.LocationIsVisible],
   ],
-  iconSrc: "modules/common/resourcetemplates/img/test1.png",
+  iconSrc: "modules/space/resources/img/test1.png",
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
