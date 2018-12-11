@@ -11,7 +11,7 @@ import {unitTemplates} from "./unitTemplates";
 
 const defaultUnits: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "defaultUnits",
     version: "0.1.0",

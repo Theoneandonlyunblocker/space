@@ -6,7 +6,7 @@ import {paintingPortraitTemplates} from "./paintingPortraitTemplates";
 
 const paintingPortraits: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "paintingPortraits",
     version: "0.1.0",

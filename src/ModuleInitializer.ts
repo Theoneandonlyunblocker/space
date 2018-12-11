@@ -68,24 +68,24 @@ export default class ModuleInitializer
 
   private addModuleFile(moduleFile: ModuleFile)
   {
-    if (this.moduleFilesByKey[moduleFile.metaData.key])
+    if (this.moduleFilesByKey[moduleFile.info.key])
     {
       return;
     }
 
-    this.moduleFilesByKey[moduleFile.metaData.key] = moduleFile;
+    this.moduleFilesByKey[moduleFile.info.key] = moduleFile;
 
     this.moduleFilesByPhase[moduleFile.phaseToInitializeBefore].push(moduleFile);
   }
   private initModuleFile(moduleFile: ModuleFile): Promise<void>
   {
-    if (this.moduleInitializationPromises[moduleFile.metaData.key])
+    if (this.moduleInitializationPromises[moduleFile.info.key])
     {
-      return this.moduleInitializationPromises[moduleFile.metaData.key];
+      return this.moduleInitializationPromises[moduleFile.info.key];
     }
 
-    debug.log("modules", `Start initializing module "${moduleFile.metaData.key}"`);
-    this.moduleInitalizationStart[moduleFile.metaData.key] = Date.now();
+    debug.log("modules", `Start initializing module "${moduleFile.info.key}"`);
+    this.moduleInitalizationStart[moduleFile.info.key] = Date.now();
 
     const promise = new Promise(resolve =>
     {
@@ -113,7 +113,7 @@ export default class ModuleInitializer
       this.finishInitializingModuleFile(moduleFile);
     });
 
-    this.moduleInitializationPromises[moduleFile.metaData.key] = promise;
+    this.moduleInitializationPromises[moduleFile.info.key] = promise;
 
     return promise;
   }
@@ -147,21 +147,21 @@ export default class ModuleInitializer
   {
     this.constructModuleFile(moduleFile);
 
-    const timeTaken = Date.now() - this.moduleInitalizationStart[moduleFile.metaData.key];
-    debug.log("modules", `Finish initializing module '${moduleFile.metaData.key}' in ${timeTaken}ms`);
+    const timeTaken = Date.now() - this.moduleInitalizationStart[moduleFile.info.key];
+    debug.log("modules", `Finish initializing module '${moduleFile.info.key}' in ${timeTaken}ms`);
   }
   private hasStartedInitializingAllModulesForPhase(phase: ModuleFileInitializationPhase): boolean
   {
     return this.moduleFilesByPhase[phase].every(moduleFile =>
     {
-      return isFinite(this.moduleInitalizationStart[moduleFile.metaData.key]);
+      return isFinite(this.moduleInitalizationStart[moduleFile.info.key]);
     });
   }
   private getModuleInitializationPromisesForPhase(phase: ModuleFileInitializationPhase): Promise<void>[]
   {
     return this.moduleFilesByPhase[phase].map(moduleFile =>
     {
-      return this.moduleInitializationPromises[moduleFile.metaData.key];
+      return this.moduleInitializationPromises[moduleFile.info.key];
     });
   }
   private constructModuleFile(moduleFile: ModuleFile)

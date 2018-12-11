@@ -248,8 +248,8 @@ export default class ModuleData
     {
       return(
       {
-        metaData: moduleFile.metaData,
-        moduleSaveData: moduleFile.serializeGameSpecificData ? moduleFile.serializeGameSpecificData : null,
+        info: moduleFile.info,
+        moduleSaveData: moduleFile.serializeModuleSpecificData ? moduleFile.serializeModuleSpecificData : null,
       });
     });
   }

@@ -7,7 +7,7 @@ import technologyTemplates from "./technologyTemplates";
 
 const defaultTechnologies: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "defaultTechnologies",
     version: "0.1.0",

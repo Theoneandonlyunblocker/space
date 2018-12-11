@@ -7,7 +7,7 @@ import {itemTemplates} from "./itemTemplates";
 
 const defaultItems: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "defaultItems",
     version: "0.1.0",

@@ -11,7 +11,7 @@ import buildingTemplates from "./BuildingTemplates";
 // TODO 2018.12.10 | change keys for these
 const defaultBuildings: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "defaultBuildings",
     version: "0.1.0",

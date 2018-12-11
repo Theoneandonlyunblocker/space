@@ -17,7 +17,7 @@ const templates: TemplateCollection<MapGenTemplate> =
 
 const defaultMapGen: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "defaultMapGen",
     version: "0.1.0",

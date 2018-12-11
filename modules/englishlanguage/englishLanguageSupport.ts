@@ -6,7 +6,7 @@ import {englishLanguage} from "./englishLanguage";
 
 export const englishLanguageSupport: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "englishLanguageSupport",
     version: "0.1.0",

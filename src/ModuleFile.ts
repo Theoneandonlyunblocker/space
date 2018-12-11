@@ -4,7 +4,7 @@ import ModuleFileInitializationPhase from "./ModuleFileInitializationPhase";
 import {Language} from "./localization/Language";
 
 
-export interface ModuleMetaData
+export interface ModuleInfo
 {
   key: string;
   // name: string;
@@ -17,13 +17,14 @@ export interface ModuleMetaData
 
 export interface ModuleFileGameSaveData<S = any>
 {
-  metaData: ModuleMetaData;
+  info: ModuleInfo;
   moduleSaveData: S;
 }
 
 interface ModuleFile<SaveData = any>
 {
-  metaData: ModuleMetaData;
+  // TODO 2018.12.11 | replace instances of 'metaData'
+  info: ModuleInfo;
   phaseToInitializeBefore: ModuleFileInitializationPhase;
   supportedLanguages: Language[] | "all";
   // initialized after main module

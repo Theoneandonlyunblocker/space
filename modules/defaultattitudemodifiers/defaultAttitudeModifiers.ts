@@ -8,7 +8,7 @@ import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";
 
 const defaultAttitudeModifiers: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "defaultAttitudeModifiers",
     version: "0.1.0",

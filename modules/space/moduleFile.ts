@@ -21,7 +21,7 @@ import defaultUnits from "./units/defaultUnits";
 
 export const space: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "space",
     version: "0.1.0",

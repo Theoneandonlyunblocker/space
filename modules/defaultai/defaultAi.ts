@@ -8,7 +8,7 @@ import {attachedUnitDataScripts} from "./attachedUnitData";
 
 const defaultAi: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "defaultAi",
     version: "0.1.0",

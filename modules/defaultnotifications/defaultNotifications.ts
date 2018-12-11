@@ -12,7 +12,7 @@ import
 
 const defaultNotifications: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "defaultNotifications",
     version: "0.1.0",

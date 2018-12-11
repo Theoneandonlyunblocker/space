@@ -69,11 +69,11 @@ const coreSaveDataRevivers: ReviversByVersion =
     },
     function addDummyModuleData(saveData)
     {
-      saveData.moduleData = defaultModules.map(module =>
+      saveData.moduleData = defaultModules.map(moduleFile =>
       {
         return(
         {
-          metaData: {...module.metaData, version: "0.0.0"},
+          metaData: {...moduleFile.info, version: "0.0.0"},
           moduleSaveData: {},
         });
       });
@@ -90,6 +90,16 @@ const coreSaveDataRevivers: ReviversByVersion =
       });
     },
   ],
+  "0.2.0":
+  [
+    function renameModuleMetaDataToModuleInfo(saveData)
+    {
+      saveData.moduleData.forEach((moduleSaveData: any) =>
+      {
+        moduleSaveData.info = moduleSaveData.metaData;
+      });
+    },
+  ]
 };
 
 function reviveModuleSaveData(data: OutdatedFullSaveData): Promise<void>

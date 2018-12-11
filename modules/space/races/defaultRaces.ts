@@ -8,7 +8,7 @@ import raceTemplates from "./RaceTemplates";
 
 const defaultRaces: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "defaultRaces",
     version: "0.1.0",

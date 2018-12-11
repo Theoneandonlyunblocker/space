@@ -7,7 +7,7 @@ import drawNebula from "./drawNebula";
 
 const spaceBackgrounds: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "spaceBackgrounds",
     version: "0.1.0",

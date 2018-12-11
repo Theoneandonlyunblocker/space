@@ -8,7 +8,7 @@ import subEmblemTemplates from "./SubEmblemTemplates";
 
 const defaultEmblems: ModuleFile =
 {
-  metaData:
+  info:
   {
     key: "defaultEmblems",
     version: "0.1.0",
