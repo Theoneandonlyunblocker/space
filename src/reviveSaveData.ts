@@ -104,16 +104,21 @@ const coreSaveDataRevivers: ReviversByVersion =
 
 function reviveModuleSaveData(data: OutdatedFullSaveData): Promise<void>
 {
-  return Promise.all(data.moduleData.map(moduleData =>
+  return new Promise(resolve =>
   {
-    return activeModuleStore.load(moduleData.metaData).then(moduleFile =>
+    const modulesInData = data.moduleData.map(moduleData => moduleData.info);
+
+    activeModuleStore.getModules(...modulesInData).then(moduleFiles =>
     {
-      if (moduleFile.reviveGameSpecificData)
+      moduleFiles.forEach(moduleFile =>
       {
-        moduleFile.reviveGameSpecificData(moduleData);
-      }
-    });
-  }));
+        if (moduleFile.reviveGameData)
+        {
+          moduleFile.reviveGameData(data);
+        }
+      });
+    }).then(resolve);
+  });
 }
 function reviveCoreSaveData(data: OutdatedFullSaveData, liveAppVersion: string): void
 {
