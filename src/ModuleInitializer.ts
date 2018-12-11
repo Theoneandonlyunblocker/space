@@ -76,6 +76,11 @@ export default class ModuleInitializer
     this.moduleFilesByKey[moduleFile.info.key] = moduleFile;
 
     this.moduleFilesByPhase[moduleFile.phaseToInitializeBefore].push(moduleFile);
+
+    if (moduleFile.subModules)
+    {
+      moduleFile.subModules.forEach(subModule => this.addModuleFile(subModule));
+    }
   }
   private initModuleFile(moduleFile: ModuleFile): Promise<void>
   {
@@ -100,14 +105,6 @@ export default class ModuleInitializer
       {
         resolve();
       }
-    }).then(() =>
-    {
-      const subModules = moduleFile.subModules || [];
-
-      return Promise.all(subModules.map(subModuleFile =>
-      {
-        this.initModuleFile(subModuleFile);
-      }));
     }).then(() =>
     {
       this.finishInitializingModuleFile(moduleFile);
