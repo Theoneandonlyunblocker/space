@@ -2,26 +2,27 @@ import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
 
-import {itemTemplates} from "./itemTemplates";
+import technologyTemplates from "./technologyTemplates";
 
 
-const defaultItems: ModuleFile =
+const spaceTechnologies: ModuleFile =
 {
   info:
   {
-    key: "defaultItems",
+    key: "spaceTechnologies",
     version: "0.1.0",
     author: "giraluna",
     description: "",
+    modsToReplace: ["defaultTechnologies"],
   },
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates(itemTemplates, "Items");
+    moduleData.copyTemplates(technologyTemplates, "Technologies");
 
     return moduleData;
   },
 };
 
-export default defaultItems;
+export default spaceTechnologies;

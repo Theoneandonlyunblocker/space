@@ -8,14 +8,15 @@ import mapLayerTemplates from "./MapLayerTemplates";
 import mapModeTemplates from "./MapModeTemplates";
 
 
-const defaultMapModes: ModuleFile =
+const spaceMapModes: ModuleFile =
 {
   info:
   {
-    key: "defaultMapModes",
+    key: "spaceMapModes",
     version: "0.1.0",
     author: "giraluna",
     description: "",
+    modsToReplace: ["defaultMapModes"],
   },
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
@@ -39,4 +40,4 @@ const defaultMapModes: ModuleFile =
   },
 };
 
-export default defaultMapModes;
+export default spaceMapModes;

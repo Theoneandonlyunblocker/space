@@ -15,14 +15,15 @@ const templates: TemplateCollection<MapGenTemplate> =
   [tinierSpiralGalaxy.key]: tinierSpiralGalaxy,
 };
 
-const defaultMapGen: ModuleFile =
+const spaceMapGen: ModuleFile =
 {
   info:
   {
-    key: "defaultMapGen",
+    key: "spaceMapGen",
     version: "0.1.0",
     author: "giraluna",
     description: "",
+    modsToReplace: ["defaultMapGen"],
   },
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
@@ -39,4 +40,4 @@ const defaultMapGen: ModuleFile =
   },
 };
 
-export default defaultMapGen;
+export default spaceMapGen;

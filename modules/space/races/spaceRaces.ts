@@ -6,14 +6,15 @@ import ModuleFileInitializationPhase from "../../../src/ModuleFileInitialization
 import raceTemplates from "./RaceTemplates";
 
 
-const defaultRaces: ModuleFile =
+const spaceRaces: ModuleFile =
 {
   info:
   {
-    key: "defaultRaces",
+    key: "spaceRaces",
     version: "0.1.0",
     author: "giraluna",
     description: "",
+    modsToReplace: ["defaultRaces"],
   },
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
@@ -25,4 +26,4 @@ const defaultRaces: ModuleFile =
   },
 };
 
-export default defaultRaces;
+export default spaceRaces;

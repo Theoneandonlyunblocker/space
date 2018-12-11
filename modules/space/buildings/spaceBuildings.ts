@@ -8,15 +8,15 @@ import cacheSpriteSheetAsImages from "../../../src/cacheSpriteSheetAsImages";
 import buildingTemplates from "./BuildingTemplates";
 
 
-// TODO 2018.12.10 | change keys for these
-const defaultBuildings: ModuleFile =
+const spaceBuildings: ModuleFile =
 {
   info:
   {
-    key: "defaultBuildings",
+    key: "spaceBuildings",
     version: "0.1.0",
     author: "giraluna",
     description: "",
+    modsToReplace: ["defaultBuildings"],
   },
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
@@ -46,4 +46,4 @@ const defaultBuildings: ModuleFile =
   },
 };
 
-export default defaultBuildings;
+export default spaceBuildings;

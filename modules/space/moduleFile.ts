@@ -10,14 +10,14 @@ import * as ResourceTemplates from  "./resources/resources";
 import * as TerrainTemplates from  "./terrains/terrains";
 import {unitEffectTemplates} from  "./uniteffects/unitEffectTemplates";
 
-import defaultBackgrounds from "./backgrounds/defaultBackgrounds";
-import defaultBuildings from "./buildings/defaultBuildings";
-import defaultItems from "./items/defaultItems";
-import defaultMapgen from "./mapgen/defaultMapgen";
-import defaultMapmodes from "./mapmodes/defaultMapmodes";
-import defaultRaces from "./races/defaultRaces";
-import defaultTechnologies from "./technologies/defaultTechnologies";
-import defaultUnits from "./units/defaultUnits";
+import spaceBackgrounds from "./backgrounds/spaceBackgrounds";
+import spaceBuildings from "./buildings/spaceBuildings";
+import spaceItems from "./items/spaceItems";
+import spaceMapgen from "./mapgen/spaceMapgen";
+import spaceMapmodes from "./mapmodes/spaceMapmodes";
+import spaceRaces from "./races/spaceRaces";
+import spaceTechnologies from "./technologies/spaceTechnologies";
+import spaceUnits from "./units/spaceUnits";
 
 export const space: ModuleFile =
 {
@@ -33,14 +33,14 @@ export const space: ModuleFile =
   supportedLanguages: [englishLanguage],
   subModules:
   [
-    defaultBackgrounds,
-    defaultBuildings,
-    defaultItems,
-    defaultMapgen,
-    defaultMapmodes,
-    defaultRaces,
-    defaultTechnologies,
-    defaultUnits,
+    spaceBackgrounds,
+    spaceBuildings,
+    spaceItems,
+    spaceMapgen,
+    spaceMapmodes,
+    spaceRaces,
+    spaceTechnologies,
+    spaceUnits,
   ],
   // TODO 2018.12.10 |
   // initialize: () =>

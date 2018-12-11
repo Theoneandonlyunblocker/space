@@ -9,14 +9,15 @@ import unitArchetypes from "../../common/unitArchetypes";
 import {unitTemplates} from "./unitTemplates";
 
 
-const defaultUnits: ModuleFile =
+const spaceUnits: ModuleFile =
 {
   info:
   {
-    key: "defaultUnits",
+    key: "spaceUnits",
     version: "0.1.0",
     author: "giraluna",
     description: "",
+    modsToReplace: ["defaultUnits"],
   },
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
@@ -48,4 +49,4 @@ const defaultUnits: ModuleFile =
   },
 };
 
-export default defaultUnits;
+export default spaceUnits;
