@@ -13,6 +13,7 @@ const spaceBackgrounds: ModuleFile =
     version: "0.1.0",
     author: "giraluna",
     description: "",
+    modsToReplace: ["defaultBackgrounds"],
   },
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: "all",

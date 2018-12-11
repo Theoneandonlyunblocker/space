@@ -13,6 +13,8 @@ export interface ModuleInfo
   description?: string;
   modsToLoadBefore?: string[];
   modsToLoadAfter?: string[];
+  // should be used very, very sparingly. only if this mod completely replaces another's functionality
+  modsToReplace?: string[];
 }
 
 export interface ModuleSaveData<S = any>

@@ -27,6 +27,7 @@ export const space: ModuleFile =
     version: "0.1.0",
     author: "giraluna",
     description: "",
+    modsToReplace: ["defaultRuleSet"],
   },
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
