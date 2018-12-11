@@ -7,7 +7,7 @@ import {Language} from "./localization/Language";
 export interface ModuleInfo
 {
   key: string;
-  // name: string;
+  // displayName: string;
   version: string;
   author?: string;
   description?: string;
@@ -25,7 +25,6 @@ export interface ModuleSaveData<S = any>
 
 interface ModuleFile<SaveData = any>
 {
-  // TODO 2018.12.11 | replace instances of 'metaData'
   info: ModuleInfo;
   phaseToInitializeBefore: ModuleFileInitializationPhase;
   supportedLanguages: Language[] | "all";
