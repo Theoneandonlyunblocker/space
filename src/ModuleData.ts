@@ -2,7 +2,7 @@ import Personality from "../src/Personality";
 import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
 
 import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
-import ModuleFile, { ModuleFileGameSaveData } from "./ModuleFile";
+import ModuleFile, { ModuleSaveData } from "./ModuleFile";
 import ModuleScripts from "./ModuleScripts";
 import
 {
@@ -242,7 +242,7 @@ export default class ModuleData
 
     return chosenLanguage;
   }
-  public serialize(): ModuleFileGameSaveData[]
+  public serialize(): ModuleSaveData[]
   {
     return this.moduleFiles.map(moduleFile =>
     {

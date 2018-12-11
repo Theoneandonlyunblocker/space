@@ -15,7 +15,7 @@ export interface ModuleInfo
   modsToLoadAfter?: string[];
 }
 
-export interface ModuleFileGameSaveData<S = any>
+export interface ModuleSaveData<S = any>
 {
   info: ModuleInfo;
   moduleSaveData: S;
@@ -31,9 +31,9 @@ interface ModuleFile<SaveData = any>
   subModules?: ModuleFile[];
   initialize?: () => Promise<void>;
   addToModuleData?: (moduleData: ModuleData) => void;
-  serializeGameSpecificData?: () => SaveData;
-  deserializeGameSpecificData?: (saveData: SaveData) => void;
-  reviveGameSpecificData?: (oldSaveData: ModuleFileGameSaveData<any>) => void;
+  serializeModuleSpecificData?: () => SaveData;
+  deserializeModuleSpecificData?: (saveData: SaveData) => void;
+  reviveGameData?: (saveData: any) => void;
 }
 
 export default ModuleFile;
