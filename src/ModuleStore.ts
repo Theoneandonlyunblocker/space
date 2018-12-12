@@ -1,6 +1,6 @@
 import {default as ModuleFile, ModuleInfo} from "./ModuleFile";
 import * as semver from "./versions";
-import { DependencyGraph } from "./DependencyGraph";
+import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
 import * as debug from "./debug";
 
 export class ModuleStore
@@ -71,35 +71,9 @@ export class ModuleStore
   }
   private getModuleLoadOrder(...modules: ModuleInfo[]): ModuleInfo[]
   {
-    const dependencyGraph = new DependencyGraph();
+    const dependencyGraph = new ModuleDependencyGraph(modules);
 
-    modules.forEach(moduleInfo =>
-    {
-      dependencyGraph.addNode(moduleInfo.key);
-
-      if (moduleInfo.modsToLoadAfter)
-      {
-        moduleInfo.modsToLoadAfter.forEach(child =>
-        {
-          dependencyGraph.addDependency(moduleInfo.key, child);
-        });
-      }
-
-      if (moduleInfo.modsToLoadBefore)
-      {
-        moduleInfo.modsToLoadBefore.forEach(child =>
-        {
-          dependencyGraph.addDependency(child, moduleInfo.key);
-        });
-      }
-    });
-
-    const orderedKeys = dependencyGraph.getOrderedNodes();
-
-    const modsByKey: {[key: string]: ModuleInfo} = {};
-    modules.forEach(moduleInfo => modsByKey[moduleInfo.key] = moduleInfo);
-
-    return orderedKeys.map(key => modsByKey[key]);
+    return dependencyGraph.getOrderedNodes();
   }
   private getModulesWithReplacements(
     ...requestedModules: ModuleInfo[]
