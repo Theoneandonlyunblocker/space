@@ -6,6 +6,7 @@ import
   allModuleFileInitializationPhases,
 } from "./ModuleFileInitializationPhase";
 import * as debug from "./debug";
+import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
 
 
 export default class ModuleInitializer
@@ -27,10 +28,12 @@ export default class ModuleInitializer
   {
     [key: string]: number;
   } = {};
+  private readonly dependencyGraph: ModuleDependencyGraph;
 
   constructor(moduleData: ModuleData, moduleFiles: ModuleFile[])
   {
     this.moduleData = moduleData;
+    this.dependencyGraph = new ModuleDependencyGraph();
 
     allModuleFileInitializationPhases.forEach(phase =>
     {
@@ -76,6 +79,7 @@ export default class ModuleInitializer
     this.moduleFilesByKey[moduleFile.info.key] = moduleFile;
 
     this.moduleFilesByPhase[moduleFile.phaseToInitializeBefore].push(moduleFile);
+    this.dependencyGraph.addModule(moduleFile.info);
 
     if (moduleFile.subModules)
     {
@@ -89,21 +93,18 @@ export default class ModuleInitializer
       return this.moduleInitializationPromises[moduleFile.info.key];
     }
 
-    debug.log("modules", `Start initializing module "${moduleFile.info.key}"`);
-    this.moduleInitalizationStart[moduleFile.info.key] = Date.now();
-
-    const promise = new Promise(resolve =>
+    const promise = this.initModuleFileParents(moduleFile).then(() =>
     {
+      debug.log("modules", `Start initializing module "${moduleFile.info.key}"`);
+      this.moduleInitalizationStart[moduleFile.info.key] = Date.now();
+
       if (moduleFile.initialize)
       {
-        moduleFile.initialize().then(() =>
-        {
-          resolve();
-        });
+        return moduleFile.initialize();
       }
       else
       {
-        resolve();
+        return Promise.resolve();
       }
     }).then(() =>
     {
@@ -139,6 +140,20 @@ export default class ModuleInitializer
 
       debug.log("init", `Finish initializing modules needed for ${ModuleFileInitializationPhase[phase]} in ${timeTaken}ms`);
     });
+  }
+  private initModuleFileParents(moduleFile: ModuleFile): Promise<void>
+  {
+    const parents = this.dependencyGraph.getImmediateParentsOf(moduleFile.info.key).map(parentInfo =>
+    {
+      return this.moduleFilesByKey[parentInfo.key];
+    });
+
+    const parentInitPromises = parents.map(parentModule =>
+    {
+      return this.initModuleFile(parentModule);
+    });
+
+    return Promise.all(parentInitPromises);
   }
   private finishInitializingModuleFile(moduleFile: ModuleFile)
   {

@@ -28,9 +28,8 @@ interface ModuleFile<SaveData = any>
   info: ModuleInfo;
   phaseToInitializeBefore: ModuleFileInitializationPhase;
   supportedLanguages: Language[] | "all";
-  // not guaranteed to be initialized after main module. use ModuleFile.info.modsToLoadBefore/After to set order
+  // not guaranteed to be loaded after main module. use ModuleFile.info.modsToLoadBefore/After to set order
   subModules?: ModuleFile[];
-  // TODO 2018.12.10 | doesn't actually respect module order. should check dependant mods whether to block or not
   initialize?: () => Promise<void>;
   addToModuleData?: (moduleData: ModuleData) => void;
   serializeModuleSpecificData?: () => SaveData;

@@ -4,7 +4,7 @@ type Nodes<T> = {[key: string]: T};
 
 class DependencyGraph<T>
 {
-  private readonly nodes: Nodes<T> = {};
+  private readonly _nodes: Nodes<T> = {}; // use #getNode() instead
   private readonly children: {[key: string]: Nodes<boolean>} = {};
   private readonly parents: {[key: string]: Nodes<boolean>} = {};
 
@@ -15,39 +15,24 @@ class DependencyGraph<T>
 
   public addNode(key: string, node: T): void
   {
-    this.nodes[key] = node;
+    this._nodes[key] = node;
 
-    if (!this.parents[key])
-    {
-      this.parents[key] = {};
-    }
-    if (!this.children[key])
-    {
-      this.children[key] = {};
-    }
+    this.initKeyIfNeeded(key);
   }
   public addDependency(parentKey: string, childKey: string): void
   {
-    this.parents[childKey][parentKey] = true;
-    this.children[parentKey][childKey] = true;
-
     [childKey, parentKey].forEach(nodeKey =>
     {
-      if (!this.nodes[nodeKey])
-      {
-        Object.defineProperty(this.nodes, nodeKey,
-        {
-          get: () =>
-          {
-            throw new Error(`'${nodeKey}' was listed as a dependency in dependency graph, but no node with the key '${nodeKey}' was provided.`);
-          }
-        });
-      }
+      this.initKeyIfNeeded(nodeKey);
     });
+
+
+    this.parents[childKey][parentKey] = true;
+    this.children[parentKey][childKey] = true;
   }
   public getOrderedNodes(): T[]
   {
-    const startNodes = this.getIndependentNodes();
+    const startNodes = this.getIndependentNodeKeys();
 
     const ordered: T[] = [];
     const traversed: Nodes<boolean> = {};
@@ -67,7 +52,7 @@ class DependencyGraph<T>
       });
 
       traversed[currentNodeKey] = true;
-      ordered.unshift(this.nodes[currentNodeKey]);
+      ordered.unshift(this.getNode(currentNodeKey));
     };
 
     startNodes.forEach(startNode => DFS(startNode));
@@ -76,11 +61,35 @@ class DependencyGraph<T>
   }
   public getImmediateParentsOf(nodeKey: string): T[]
   {
-    return Object.keys(this.parents[nodeKey]).map(parentKey => this.nodes[parentKey]);
+    return Object.keys(this.parents[nodeKey]).map(parentKey => this.getNode(parentKey));
   }
-  public getIndependentNodes(): string[]
+
+  private hasKey(key: string): boolean
   {
-    return Object.keys(this.nodes).filter(node => Object.keys(this.parents[node]).length === 0);
+    return Boolean(this.parents[key] || this.children[key]);
+  }
+  private initKeyIfNeeded(key: string): void
+  {
+    if (!this.hasKey(key))
+    {
+      this.parents[key] = {};
+      this.children[key] = {};
+    }
+  }
+  private getIndependentNodeKeys(): string[]
+  {
+    return Object.keys(this._nodes).filter(node => Object.keys(this.parents[node]).length === 0);
+  }
+  private getNode(key: string): T
+  {
+    const node = this._nodes[key];
+
+    if (!node)
+    {
+      throw new Error(`'${key}' was listed as a dependency in dependency graph, but no node with the key '${key}' was provided.`);
+    }
+
+    return node;
   }
 }
 
