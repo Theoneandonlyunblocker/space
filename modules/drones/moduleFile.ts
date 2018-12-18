@@ -28,16 +28,13 @@ export const drones: ModuleFile =
     const placeHolderURL = "img/placeholder.png";
 
     const loader = new PIXI.loaders.Loader();
+    // also adds to pixi texture cache when loaded which is all we want to do. kinda opaque
     loader.add(placeHolderResourceName, placeHolderURL);
 
     return new Promise(resolve =>
     {
       loader.load(() =>
       {
-        // TODO 2018.12.17 |
-        // const image = loader.resources[placeHolderResourceName].data;
-        // app.images[placeHolderURL] = image;
-
         resolve();
       });
     });
