@@ -14,7 +14,6 @@ import
 
 import ArchetypeValues from "./ArchetypeValues";
 import Personality from "./Personality";
-import Player from "./Player";
 import Point from "./Point";
 import UnitBattleSide from "./UnitBattleSide";
 
@@ -180,33 +179,6 @@ export function stringToHex(text: string)
 
   return parseInt(toParse, 16);
 }
-// TODO 2018.12.17 | can't we use svg for this?
-export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
-{
-  const canvas = document.createElement("canvas");
-
-  canvas.width = image.width;
-  canvas.height = image.height;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx)
-  {
-
-  }
-  else
-  {
-    ctx.drawImage(image, 0, 0, image.width, image.height);
-
-    ctx.globalCompositeOperation = "source-in";
-
-    ctx.fillStyle = "#" + player.color.getHexString();
-    ctx.fillRect(0, 0, image.width, image.height);
-  }
-
-
-  return canvas.toDataURL();
-}
-
 // TODO 2018.05.31 | many calls to this can be replaced with spread operator I think
 //
 // extends 'from' object with members of 'to'. If 'to' is null, a deep clone of 'from' is returned

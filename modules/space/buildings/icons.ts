@@ -15,7 +15,12 @@ export function createIconElement(key: keyof typeof iconSources, color: Color): 
 
   clone.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
-  // TODO 2018.12.18 | apply color
+  const toFill = clone.querySelectorAll(".building-main");
+  for (let i = 0; i < toFill.length; i++)
+  {
+    const match = <SVGElement> toFill[i];
+    match.setAttribute("fill", `#${color.getHexString()}`);
+  }
 
   return clone;
 }

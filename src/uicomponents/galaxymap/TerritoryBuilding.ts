@@ -45,8 +45,6 @@ export class TerritoryBuildingComponent extends React.PureComponent<PropTypes, S
         {
           className: "territory-building-icon",
           ref: this.iconContainer,
-          // TODO 2018.12.17 | implement alternative
-          // src: colorImageInPlayerColor(image, building.controller),
           title: this.props.building.template.displayName,
         }),
         PlayerFlag(
