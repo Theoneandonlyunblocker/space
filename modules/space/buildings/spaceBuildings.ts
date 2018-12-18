@@ -3,10 +3,9 @@ import * as PIXI from "pixi.js";
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
-// TODO 2018.12.17 |
-// import cacheSpriteSheetAsImages from "../../../src/ImageCache";
 
 import buildingTemplates from "./BuildingTemplates";
+import {iconSources, svgCache} from "./icons";
 
 
 const spaceBuildings: ModuleFile =
@@ -24,16 +23,26 @@ const spaceBuildings: ModuleFile =
   initialize: () =>
   {
     const loader = new PIXI.loaders.Loader();
-    const spriteSheetKey = "buildings";
-    loader.add(spriteSheetKey, "modules/space/buildings/img/buildings.json");
+
+    for (const key in iconSources)
+    {
+      loader.add(
+      {
+        url: iconSources[key],
+        loadType: 1, // XML
+      });
+    }
 
     return new Promise(resolve =>
     {
       loader.load(() =>
       {
-        // const json = loader.resources[spriteSheetKey].data;
-        // const image = loader.resources[spriteSheetKey + "_image"].data;
-        // cacheSpriteSheetAsImages(json, image);
+        for (const key in iconSources)
+        {
+          const response = <XMLDocument> loader.resources[iconSources[key]].data;
+          const svgDoc = <SVGElement> response.children[0];
+          svgCache[key] = svgDoc;
+        }
 
         resolve();
       });

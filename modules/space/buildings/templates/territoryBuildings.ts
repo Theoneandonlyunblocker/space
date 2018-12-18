@@ -1,5 +1,6 @@
 import {TerritoryBuildingTemplate} from "../../../../src/templateinterfaces/TerritoryBuildingTemplate";
 
+import {createIconElement} from "../icons";
 import {makeDefenderAdvantageEffect} from "./battleEffects";
 import
 {
@@ -17,7 +18,7 @@ export const sectorCommand: TerritoryBuildingTemplate =
   description: "Defence building with slight defender advantage. (All defence buildings must " +
     "be captured to gain control of area)",
 
-  iconSrc: "sectorCommand.png",
+  createIconElement: createIconElement.bind(null, "sectorCommand"),
   buildCost: 200,
 
   maxBuiltAtLocation: 1,
@@ -38,7 +39,7 @@ export const sectorCommand1: TerritoryBuildingTemplate =
   displayName: "Sector Command1",
   description: "just testing upgrade paths",
 
-  iconSrc: "sectorCommand.png",
+  createIconElement: createIconElement.bind(null, "sectorCommand"),
   buildCost: 100,
 
   maxBuiltAtLocation: 1,
@@ -54,7 +55,7 @@ export const sectorCommand2: TerritoryBuildingTemplate =
   displayName: "Sector Command2",
   description: "just testing upgrade paths",
 
-  iconSrc: "sectorCommand.png",
+  createIconElement: createIconElement.bind(null, "sectorCommand"),
   buildCost: 200,
 
   maxBuiltAtLocation: 1,
@@ -71,7 +72,7 @@ export const starBase: TerritoryBuildingTemplate =
   description: "Defence building with no defender advantage. (All defence buildings must " +
     "be captured to gain control of area)",
 
-  iconSrc: "starBase.png",
+  createIconElement: createIconElement.bind(null, "starBase"),
   buildCost: 200,
 
   battleEffects: [makeDefenderAdvantageEffect(0.1)],

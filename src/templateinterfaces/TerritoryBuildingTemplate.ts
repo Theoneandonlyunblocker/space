@@ -1,8 +1,9 @@
 import {BuildingTemplate} from "./BuildingTemplate";
+import Color from "../Color";
 
 export interface TerritoryBuildingTemplate extends BuildingTemplate
 {
   isTerritoryBuilding: true;
 
-  iconSrc: string;
+  createIconElement(mainColor: Color): Node;
 }

@@ -1,10 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import app from "../../App"; // TODO global
-
 import {TerritoryBuilding} from "../../Building";
-import {colorImageInPlayerColor} from "../../utility";
 import PlayerFlag from "../PlayerFlag";
 
 
@@ -17,50 +14,65 @@ interface StateType
 {
 }
 
-export class TerritoryBuildingComponent extends React.Component<PropTypes, StateType>
+export class TerritoryBuildingComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "TerritoryBuilding";
-  shouldComponentUpdate(newProps: PropTypes)
-  {
-    return newProps.building !== this.props.building;
-  }
   public state: StateType;
+
+  private iconContainer = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public componentDidMount(): void
   {
-    const building = this.props.building;
-    const image = app.images[building.template.iconSrc];
-
+    this.setIconContent();
+  }
+  public componentDidUpdate(): void
+  {
+    this.setIconContent();
+  }
+  public render()
+  {
     return(
       ReactDOMElements.div(
       {
         className: "territory-building",
       },
-        ReactDOMElements.img(
+        ReactDOMElements.div(
         {
           className: "territory-building-icon",
-          src: colorImageInPlayerColor(image, building.controller),
-          title: building.template.displayName,
+          ref: this.iconContainer,
+          // TODO 2018.12.17 | implement alternative
+          // src: colorImageInPlayerColor(image, building.controller),
+          title: this.props.building.template.displayName,
         }),
         PlayerFlag(
         {
           props:
           {
             className: "territory-building-controller",
-            title: building.controller.name.fullName,
+            title: this.props.building.controller.name.fullName,
           },
           key: "flag",
-          flag: building.controller.flag,
+          flag: this.props.building.controller.flag,
         }),
       )
     );
   }
 
+  private setIconContent(): void
+  {
+    const container = this.iconContainer.current;
+    while (container.firstChild)
+    {
+      container.removeChild(container.firstChild);
+    }
+
+    container.appendChild(this.props.building.template.createIconElement(this.props.building.controller.color));
+  }
 }
 
 const factory: React.Factory<PropTypes> = React.createFactory(TerritoryBuildingComponent);
