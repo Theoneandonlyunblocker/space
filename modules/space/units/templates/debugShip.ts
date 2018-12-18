@@ -1,7 +1,7 @@
 import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../../common/unitArchetypes";
-import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
+import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
 
 import
 {
@@ -34,12 +34,13 @@ const debugShip: UnitTemplate =
   displayName: "Debug Ship",
   description: "debug",
   archetype: unitArchetypes.combat,
-  sprite:
+  unitDrawingFN: makeDefaultUnitDrawingFunction(
   {
-    imageSrc: "debugShip.png",
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
+    "debugShip.png",
+  ),
   isSquadron: false,
   buildCost: 0,
   kind: "unit",
@@ -131,7 +132,6 @@ const debugShip: UnitTemplate =
     [itemSlot.mid]: 1,
     [itemSlot.high]: 1,
   },
-  unitDrawingFN: defaultUnitDrawingFunction,
   distributionData:
   {
     weight: 0,

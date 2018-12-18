@@ -4,7 +4,6 @@ import {DistributionData} from "./DistributionData";
 import ManufacturableThing from "./ManufacturableThing";
 import PassiveSkillTemplate from "./PassiveSkillTemplate";
 import {ProbabilityDistributions} from "./ProbabilityDistribution";
-import SpriteTemplate from "./SpriteTemplate";
 import UnitArchetype from "./UnitArchetype";
 import UnitDrawingFunction from "./UnitDrawingFunction";
 
@@ -14,7 +13,6 @@ declare interface UnitTemplate extends ManufacturableThing
   type: string;
   displayName: string;
   description: string;
-  sprite: SpriteTemplate;
   isSquadron: boolean;
   buildCost: number;
   kind: "unit";

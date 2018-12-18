@@ -1,7 +1,7 @@
 import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../common/unitArchetypes";
-import defaultUnitDrawingFunction from "../../space/units/defaultUnitDrawingFunction";
+import {makeDefaultUnitDrawingFunction} from "../../space/units/defaultUnitDrawingFunction";
 
 import * as CommonAbility from "../../space/abilities/abilities";
 import {distributionGroups} from "../../common/distributionGroups";
@@ -16,14 +16,14 @@ export const droneCommander: UnitTemplate =
   description: "Commander o drones",
 
   archetype: unitArchetypes.utility,
-  sprite:
+  icon: "img/placeholder.png",
+  unitDrawingFN: makeDefaultUnitDrawingFunction(
   {
-    imageSrc: "img/placeholder.png",
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
-  icon: "img/placeholder.png",
-  unitDrawingFN: defaultUnitDrawingFunction,
+    "img/placeholder.png"
+  ),
 
   isSquadron: false,
   buildCost: 200,

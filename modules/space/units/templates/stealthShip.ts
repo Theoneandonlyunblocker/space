@@ -1,7 +1,7 @@
 import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../../common/unitArchetypes";
-import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
+import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
 
 import
 {
@@ -20,12 +20,13 @@ const stealthShip: UnitTemplate =
   displayName: "Stealth Ship",
   description: "Weak ship that is undetectable by regular vision",
   archetype: unitArchetypes.scouting,
-  sprite:
+  unitDrawingFN: makeDefaultUnitDrawingFunction(
   {
-    imageSrc: "scout.png",
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
+    "scout.png",
+  ),
   isSquadron: true,
   buildCost: 500,
   kind: "unit",
@@ -62,7 +63,6 @@ const stealthShip: UnitTemplate =
     [itemSlot.mid]: 1,
     [itemSlot.high]: 1,
   },
-  unitDrawingFN: defaultUnitDrawingFunction,
   techRequirements:
   [
     {

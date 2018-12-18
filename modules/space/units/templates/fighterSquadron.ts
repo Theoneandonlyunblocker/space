@@ -1,7 +1,7 @@
 import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../../common/unitArchetypes";
-import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
+import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
 
 import
 {
@@ -19,12 +19,13 @@ const fighterSquadron: UnitTemplate =
   displayName: "Fighter Squadron",
   description: "Fast and cheap unit with good attack and speed but low defence",
   archetype: unitArchetypes.combat,
-  sprite:
+  unitDrawingFN: makeDefaultUnitDrawingFunction(
   {
-    imageSrc: "fighter.png",
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
+    "fighter.png",
+  ),
   isSquadron: true,
   buildCost: 100,
   kind: "unit",
@@ -59,7 +60,6 @@ const fighterSquadron: UnitTemplate =
     [itemSlot.mid]: 3,
     [itemSlot.high]: 2,
   },
-  unitDrawingFN: defaultUnitDrawingFunction,
   distributionData:
   {
     weight: 1,

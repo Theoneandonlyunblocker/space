@@ -3,21 +3,32 @@ import * as PIXI from "pixi.js";
 import UnitDrawingFunction from "../../../src/templateinterfaces/UnitDrawingFunction";
 
 
-import app from "../../../src/App"; // TODO global
 import UnitDrawingFunctionData from "../../../src/UnitDrawingFunctionData";
+import Point from "../../../src/Point";
 import
 {
   clamp,
   transformMat3,
 } from "../../../src/utility";
+import Unit from "../../../src/Unit";
+import SfxParams from "../../../src/templateinterfaces/SfxParams";
 
 
-const defaultUnitDrawingFunction: UnitDrawingFunction = (unit, sfxParams) =>
+export interface UnitSpriteData
 {
-  const spriteTemplate = unit.template.sprite;
-  const texture = PIXI.Texture.fromFrame(spriteTemplate.imageSrc);
+  anchor: Point;
+  attackOriginPoint: Point;
+}
 
+export function makeDefaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string): UnitDrawingFunction
+{
+  return defaultUnitDrawingFunction.bind(null, spriteData, imageSrc);
+}
+
+function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string, unit: Unit, sfxParams: SfxParams)
+{
   const container = new PIXI.Container();
+  const texture = PIXI.Texture.fromFrame(imageSrc);
 
   const props =
   {
@@ -34,8 +45,6 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = (unit, sfxParams) =>
   const isConvex = props.curvature >= 0;
   const curvature = Math.abs(props.curvature);
 
-  const image = app.images[spriteTemplate.imageSrc];
-
   let zDistance: number = props.zDistance;
   const xDistance: number = props.xDistance;
   let unitsToDraw: number;
@@ -48,7 +57,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = (unit, sfxParams) =>
     const lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
     unit.lastHealthDrawnAt = unit.currentHealth;
     unitsToDraw = Math.round(lastHealthDrawnAt * 0.04);
-    const desiredHeightRatio = 25 / image.height;
+    const desiredHeightRatio = 25 / texture.height;
     const heightRatio = Math.min(desiredHeightRatio, 1.25);
     maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
     unitsToDraw = Math.round(unitsToDraw * heightRatio);
@@ -73,7 +82,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = (unit, sfxParams) =>
   const yPadding = Math.min(sfxParams.height * 0.1, 30);
   const desiredHeight = sfxParams.height - yPadding;
 
-  const averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
+  const averageHeight = texture.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
   const spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
   zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
 
@@ -132,8 +141,8 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = (unit, sfxParams) =>
     xOffset -= minXOffset;
 
     const scale = 1 - zPos * props.scalingFactor;
-    const scaledWidth = image.width * scale;
-    const scaledHeight = image.height * scale;
+    const scaledWidth = texture.width * scale;
+    const scaledHeight = texture.height * scale;
 
 
     let x = xOffset * scaledWidth * curvature + columnFromRight * (scaledWidth + xDistance * scale);
@@ -147,8 +156,8 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = (unit, sfxParams) =>
 
     const attackOriginPoint =
     {
-      x: x + scaledWidth * spriteTemplate.attackOriginPoint.x,
-      y: y + scaledHeight * spriteTemplate.attackOriginPoint.y,
+      x: x + scaledWidth * spriteData.attackOriginPoint.x,
+      y: y + scaledHeight * spriteData.attackOriginPoint.y,
     };
 
     sequentialAttackOriginPoints.push(attackOriginPoint);
@@ -195,6 +204,4 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = (unit, sfxParams) =>
   });
 
   sfxParams.triggerStart(container);
-};
-
-export default defaultUnitDrawingFunction;
+}

@@ -1,7 +1,7 @@
 import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../../common/unitArchetypes";
-import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
+import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
 
 import
 {
@@ -19,12 +19,13 @@ const battleCruiser: UnitTemplate =
   displayName: "Battlecruiser",
   description: "Strong combat ship with low speed",
   archetype: unitArchetypes.combat,
-  sprite:
+  unitDrawingFN: makeDefaultUnitDrawingFunction(
   {
-    imageSrc: "battleCruiser.png",
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
+    "battleCruiser.png",
+  ),
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
@@ -59,7 +60,6 @@ const battleCruiser: UnitTemplate =
     [itemSlot.mid]: 1,
     [itemSlot.high]: 2,
   },
-  unitDrawingFN: defaultUnitDrawingFunction,
   distributionData:
   {
     weight: 1,

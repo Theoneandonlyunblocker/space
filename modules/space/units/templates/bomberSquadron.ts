@@ -1,7 +1,7 @@
 import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../../common/unitArchetypes";
-import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
+import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
 
 import
 {
@@ -19,12 +19,13 @@ const bomberSquadron: UnitTemplate =
   displayName: "Bomber Squadron",
   description: "Can damage multiple targets with special bomb attack",
   archetype: unitArchetypes.combat,
-  sprite:
+  unitDrawingFN: makeDefaultUnitDrawingFunction(
   {
-    imageSrc: "bomber.png",
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
+    "bomber.png",
+  ),
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
@@ -59,7 +60,6 @@ const bomberSquadron: UnitTemplate =
     [itemSlot.mid]: 1,
     [itemSlot.high]: 1,
   },
-  unitDrawingFN: defaultUnitDrawingFunction,
   distributionData:
   {
     weight: 1,

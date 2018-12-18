@@ -1,7 +1,7 @@
 import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../../common/unitArchetypes";
-import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
+import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
 
 import
 {
@@ -18,12 +18,13 @@ const scout: UnitTemplate =
   displayName: "Scout",
   description: "Weak in combat, but has high vision and can reveal stealthy units and details of units in same star",
   archetype: unitArchetypes.scouting,
-  sprite:
+  unitDrawingFN: makeDefaultUnitDrawingFunction(
   {
-    imageSrc: "scout.png",
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
+    "scout.png",
+  ),
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
@@ -57,7 +58,6 @@ const scout: UnitTemplate =
     [itemSlot.mid]: 1,
     [itemSlot.high]: 1,
   },
-  unitDrawingFN: defaultUnitDrawingFunction,
   distributionData:
   {
     weight: 1,

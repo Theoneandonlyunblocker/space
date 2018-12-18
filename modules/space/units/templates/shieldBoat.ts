@@ -1,7 +1,7 @@
 import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../../common/unitArchetypes";
-import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
+import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
 
 import
 {
@@ -24,12 +24,13 @@ const shieldBoat: UnitTemplate =
   displayName: "Shield Boat",
   description: "Great defence and ability to protect allies in same row",
   archetype: unitArchetypes.defence,
-  sprite:
+  unitDrawingFN: makeDefaultUnitDrawingFunction(
   {
-    imageSrc: "shieldBoat.png",
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
+    "shieldBoat.png",
+  ),
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
@@ -74,7 +75,6 @@ const shieldBoat: UnitTemplate =
     [itemSlot.mid]: 1,
     [itemSlot.high]: 1,
   },
-  unitDrawingFN: defaultUnitDrawingFunction,
   distributionData:
   {
     weight: 1,
