@@ -3,7 +3,8 @@ import * as PIXI from "pixi.js";
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
-import cacheSpriteSheetAsImages from "../../../src/cacheSpriteSheetAsImages";
+// TODO 2018.12.17 |
+// import cacheSpriteSheetAsImages from "../../../src/ImageCache";
 
 import buildingTemplates from "./BuildingTemplates";
 
@@ -30,9 +31,9 @@ const spaceBuildings: ModuleFile =
     {
       loader.load(() =>
       {
-        const json = loader.resources[spriteSheetKey].data;
-        const image = loader.resources[spriteSheetKey + "_image"].data;
-        cacheSpriteSheetAsImages(json, image);
+        // const json = loader.resources[spriteSheetKey].data;
+        // const image = loader.resources[spriteSheetKey + "_image"].data;
+        // cacheSpriteSheetAsImages(json, image);
 
         resolve();
       });

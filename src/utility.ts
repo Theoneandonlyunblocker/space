@@ -180,7 +180,7 @@ export function stringToHex(text: string)
 
   return parseInt(toParse, 16);
 }
-// TODO 2018.06.04 | can't we use svg for this?
+// TODO 2018.12.17 | can't we use svg for this?
 export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
 {
   const canvas = document.createElement("canvas");

@@ -52,10 +52,6 @@ class App
   public playerControl: PlayerControl;
   public reactUI: ReactUI;
   public moduleInitializer: ModuleInitializer;
-  public images:
-  {
-    [id: string]: HTMLImageElement;
-  } = {};
 
   public readonly version: string = "0.3.0";
 

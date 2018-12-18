@@ -1,7 +1,6 @@
 import * as PIXI from "pixi.js";
 
 import {englishLanguage} from "../englishlanguage/englishLanguage";
-import app from "../../src/App"; // TODO global
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
@@ -35,8 +34,9 @@ export const drones: ModuleFile =
     {
       loader.load(() =>
       {
-        const image = loader.resources[placeHolderResourceName].data;
-        app.images[placeHolderURL] = image;
+        // TODO 2018.12.17 |
+        // const image = loader.resources[placeHolderResourceName].data;
+        // app.images[placeHolderURL] = image;
 
         resolve();
       });
