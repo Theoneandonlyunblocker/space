@@ -1,1 +1,1 @@
-kind of an example/test on authoring self-contained modules
+test / eventual example on authoring self-contained modules

@@ -31,6 +31,11 @@ const core: ModuleFile =
       loadType: 1, // XML
     });
 
+    const placeHolderResourceName = "placeHolder";
+    const placeHolderURL = "img/placeholder.png";
+    // also adds to pixi texture cache when loaded which is all we want to do. kinda opaque
+    loader.add(placeHolderResourceName, placeHolderURL);
+
     return new Promise(resolve =>
     {
       loader.load(() =>
