@@ -53,7 +53,7 @@ export class Flag
   }
   public generateRandomEmblem(secondaryColor?: Color, seed?: string): Emblem
   {
-    return Emblem.generateRandom(this.backgroundColor, [secondaryColor], 1, seed);
+    return Emblem.generateRandom(this.backgroundColor, [secondaryColor], seed);
   }
   public addRandomEmblem(secondaryColor?: Color, seed?: string): void
   {

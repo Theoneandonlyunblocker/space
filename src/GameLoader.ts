@@ -410,7 +410,6 @@ export default class GameLoader
     return new Emblem(
       emblemData.colors.map(colorData => Color.deserialize(colorData)),
       activeModuleData.templates.SubEmblems[emblemData.templateKey],
-      emblemData.alpha,
     );
   }
   private deserializeFlag(data: FlagSaveData): Flag

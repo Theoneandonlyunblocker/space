@@ -42,11 +42,6 @@ export const space: ModuleFile =
     spaceTechnologies,
     spaceUnits,
   ],
-  // TODO 2018.12.10 |
-  // initialize: () =>
-  // {
-
-  // },
   addToModuleData: moduleData =>
   {
     moduleData.copyTemplates(AbilityTemplates, "Abilities");

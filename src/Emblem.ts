@@ -11,7 +11,6 @@ import {svgCache} from "./svgCache";
 import
 {
   getSeededRandomArrayItem,
-  randRange,
 } from "./utility";
 
 import EmblemSaveData from "./savedata/EmblemSaveData";
@@ -21,17 +20,15 @@ import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
 
 export default class Emblem
 {
-  alpha: number;
-  colors: Color[];
-  template: SubEmblemTemplate;
+  public colors: Color[];
+  public template: SubEmblemTemplate;
 
-  constructor(colors: Color[], template: SubEmblemTemplate, alpha: number = 1)
+  constructor(colors: Color[], template: SubEmblemTemplate)
   {
     this.colors = colors;
-    this.alpha = alpha;
     this.template = template;
   }
-  public static generateRandom(backgroundColor?: Color, colors: Color[] = [], minAlpha: number = 1, seed?: string): Emblem
+  public static generateRandom(backgroundColor?: Color, colors: Color[] = [], seed?: string): Emblem
   {
     const _rng = new RNG(seed);
 
@@ -62,12 +59,9 @@ export default class Emblem
       }
     }
 
-    const alpha = randRange(minAlpha, 1);
-
     return new Emblem(
       _colors,
       template,
-      alpha,
     );
   }
   private static getAvailableTemplatesForRandomGeneration(): SubEmblemTemplate[]
@@ -110,7 +104,6 @@ export default class Emblem
   {
     const data: EmblemSaveData =
     {
-      alpha: this.alpha,
       colors: this.colors.map(color => color.serialize()),
       templateKey: this.template.key,
     };

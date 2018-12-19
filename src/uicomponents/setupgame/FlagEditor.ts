@@ -77,7 +77,6 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
     return new Emblem(
       emblemData.colors,
       emblemData.template,
-      1,
     );
   }
   private static emblemToEmblemData(emblem: Emblem, id: number): EmblemPropsWithId

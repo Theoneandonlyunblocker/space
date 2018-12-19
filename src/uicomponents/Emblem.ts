@@ -38,7 +38,6 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
     const emblem = new Emblem(
       this.props.colors,
       this.props.template,
-      1,
     );
 
     if (this.container.current.firstChild)
