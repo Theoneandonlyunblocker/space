@@ -4,17 +4,12 @@ import ModuleFileInitializationPhase from "../../../src/ModuleFileInitialization
 
 import technologyTemplates from "./technologyTemplates";
 
+import * as moduleInfo from "./moduleInfo.json";
+
 
 const spaceTechnologies: ModuleFile =
 {
-  info:
-  {
-    key: "spaceTechnologies",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-    modsToReplace: ["defaultTechnologies"],
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>

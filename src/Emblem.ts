@@ -7,7 +7,6 @@ import
   generateMainColor,
   generateSecondaryColor,
 } from "./colorGeneration";
-import {svgCache} from "./svgCache";
 import
 {
   getSeededRandomArrayItem,
@@ -113,9 +112,6 @@ export default class Emblem
 
   private createElementClone(): SVGElement
   {
-    const sourceElement = svgCache.emblems[this.template.src];
-    const clone = <SVGElement> sourceElement.cloneNode(true);
-
-    return clone;
+    return this.template.getSvgElementClone();
   }
 }

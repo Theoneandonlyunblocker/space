@@ -8,19 +8,22 @@ import
   notificationCreationScripts,
   notificationTemplates,
 } from "./NotificationTemplates";
+import {setBaseUrl as setAssetBaseUrl} from "./assets";
+
+import * as moduleInfo from "./moduleInfo.json";
 
 
 const defaultNotifications: ModuleFile =
 {
-  info:
-  {
-    key: "defaultNotifications",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
+  initialize: (baseUrl) =>
+  {
+    setAssetBaseUrl(baseUrl);
+
+    return Promise.resolve();
+  },
   addToModuleData: (moduleData: ModuleData) =>
   {
     moduleData.copyTemplates(notificationTemplates, "Notifications");

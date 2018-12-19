@@ -11,6 +11,7 @@ import
 } from "../../abilities/abilities";
 import {distributionGroups} from "../../../common/distributionGroups";
 import itemSlot from "../../items/itemSlot";
+import {getIconSrc} from "../resources";
 
 
 const bomberSquadron: UnitTemplate =
@@ -29,7 +30,7 @@ const bomberSquadron: UnitTemplate =
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
-  icon: "modules/space/units/img/icons/fb.png",
+  getIconSrc: getIconSrc.bind(null, "fb"),
   maxHealthLevel: 0.5,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

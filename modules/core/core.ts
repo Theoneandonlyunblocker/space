@@ -7,24 +7,20 @@ import {englishLanguage} from "../englishlanguage/englishLanguage";
 
 import {allScripts} from "./modulescripts/allScripts";
 
+import * as moduleInfo from "./moduleInfo.json";
+
 
 // TODO 2017.07.27 | move core gameplay stuff here
 const core: ModuleFile =
 {
-  info:
-  {
-    key: "core",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "Core gameplay functionality",
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
-  initialize: () =>
+  initialize: (baseUrl) =>
   {
     const loader = new PIXI.loaders.Loader();
 
-    const battleSceneFlagFadeUrl = "img/battleSceneFlagFade.svg";
+    const battleSceneFlagFadeUrl = baseUrl + "img/battleSceneFlagFade.svg";
     loader.add(
     {
       url: battleSceneFlagFadeUrl,
@@ -32,9 +28,10 @@ const core: ModuleFile =
     });
 
     const placeHolderResourceName = "placeHolder";
-    const placeHolderURL = "img/placeholder.png";
+    const placeHolderUrl = baseUrl + "img/placeholder.png";
     // also adds to pixi texture cache when loaded which is all we want to do. kinda opaque
-    loader.add(placeHolderResourceName, placeHolderURL);
+    // TODO 2018.12.19 | actually cache this somewhere. currently being referred by absolute path all over the place
+    loader.add(placeHolderResourceName, placeHolderUrl);
 
     return new Promise(resolve =>
     {

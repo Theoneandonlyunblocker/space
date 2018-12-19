@@ -5,17 +5,12 @@ import ModuleFileInitializationPhase from "../../../src/ModuleFileInitialization
 
 import raceTemplates from "./RaceTemplates";
 
+import * as moduleInfo from "./moduleInfo.json";
+
 
 const spaceRaces: ModuleFile =
 {
-  info:
-  {
-    key: "spaceRaces",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-    modsToReplace: ["defaultRaces"],
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>

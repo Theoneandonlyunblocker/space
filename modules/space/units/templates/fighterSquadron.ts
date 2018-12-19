@@ -11,6 +11,7 @@ import
 } from "../../abilities/abilities";
 import {distributionGroups} from "../../../common/distributionGroups";
 import itemSlot from "../../items/itemSlot";
+import {getIconSrc} from "../resources";
 
 
 const fighterSquadron: UnitTemplate =
@@ -29,7 +30,7 @@ const fighterSquadron: UnitTemplate =
   isSquadron: true,
   buildCost: 100,
   kind: "unit",
-  icon: "modules/space/units/img/icons/fa.png",
+  getIconSrc: getIconSrc.bind(null, "fa"),
   maxHealthLevel: 0.7,
   maxMovePoints: 2,
   maxOffensiveBattlesPerTurn: 1,

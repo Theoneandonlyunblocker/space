@@ -1,5 +1,3 @@
-import * as PIXI from "pixi.js";
-
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
@@ -10,16 +8,12 @@ import {raceTemplates} from "./raceTemplate";
 import {unitEffectTemplates} from "./unitEffects";
 import {unitTemplates} from "./unitTemplates";
 
+import * as moduleInfo from "./moduleInfo.json";
+
 
 export const drones: ModuleFile =
 {
-  info:
-  {
-    key: "drones",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>

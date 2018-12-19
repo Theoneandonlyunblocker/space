@@ -7,28 +7,30 @@ import ModuleFileInitializationPhase from "../../../src/ModuleFileInitialization
 import mapLayerTemplates from "./MapLayerTemplates";
 import mapModeTemplates from "./MapModeTemplates";
 
+import * as moduleInfo from "./moduleInfo.json";
+
 
 const spaceMapModes: ModuleFile =
 {
-  info:
-  {
-    key: "spaceMapModes",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-    modsToReplace: ["defaultMapModes"],
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
-  initialize: () =>
+  initialize: (baseUrl) =>
   {
     const loader = new PIXI.loaders.Loader();
 
-    loader.add("modules/space/mapmodes/img/fowTexture.png");
+    const fowTextureUrl = baseUrl + "./img/fowTexture.png";
+
+    loader.add("fowTexture", fowTextureUrl);
 
     return new Promise(resolve =>
     {
-      loader.load(resolve);
+      loader.load(() =>
+      {
+        // TODO 2018.12.20 | store fowTexture in resources
+
+        resolve();
+      });
     });
   },
   addToModuleData: (moduleData) =>

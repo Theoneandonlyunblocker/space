@@ -4,17 +4,12 @@ import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPha
 
 import defaultAiConstructor from "./mapai/DefaultAiConstructor";
 import {attachedUnitDataScripts} from "./attachedUnitData";
+import * as moduleInfo from "./moduleInfo.json";
 
 
 const defaultAi: ModuleFile =
 {
-  info:
-  {
-    key: "defaultAi",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>

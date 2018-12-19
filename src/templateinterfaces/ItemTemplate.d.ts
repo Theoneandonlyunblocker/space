@@ -9,7 +9,8 @@ declare interface ItemTemplate extends ManufacturableThing
   type: string;
   displayName: string;
   description: string;
-  icon: string;
+  // TODO 2018.12.19 | return element instead
+  getIconSrc: () => string;
 
   techLevel: number;
 

@@ -9,6 +9,7 @@ import {NotificationWitnessCriterion} from "../../../src/notifications/Notificat
 import {activeNotificationStore} from "../../../src/notifications/activeNotificationStore";
 
 import UIComponent from "./uicomponents/PlayerDiedNotification";
+import {getIconSrc} from "../assets";
 
 
 export interface PropTypes
@@ -28,7 +29,7 @@ export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedP
   category: "game",
   defaultFilterState: [NotificationFilterState.AlwaysShow],
   witnessCriteria: [[NotificationWitnessCriterion.MetOneInvolvedPlayer]],
-  iconSrc: "modules/space/resources/img/test3.png",
+  getIconSrc: getIconSrc.bind(null, "test3"),
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {

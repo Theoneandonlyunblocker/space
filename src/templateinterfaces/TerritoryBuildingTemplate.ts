@@ -5,5 +5,5 @@ export interface TerritoryBuildingTemplate extends BuildingTemplate
 {
   isTerritoryBuilding: true;
 
-  createIconElement(mainColor: Color): Node;
+  getIconElement: (mainColor: Color) => HTMLElement | SVGElement;
 }

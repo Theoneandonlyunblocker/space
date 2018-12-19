@@ -9,6 +9,7 @@ import NotificationTemplate from "../../../src/templateinterfaces/NotificationTe
 import {localize} from "../localization/localize";
 
 import UIComponent from "./uicomponents/BattleFinishNotification";
+import {getIconSrc} from "../assets";
 
 
 export interface PropTypes
@@ -40,7 +41,7 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
     [NotificationWitnessCriterion.IsInvolved],
     [NotificationWitnessCriterion.LocationIsVisible],
   ],
-  iconSrc: "modules/space/resources/img/test1.png",
+  getIconSrc: getIconSrc.bind(null, "test1"),
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {

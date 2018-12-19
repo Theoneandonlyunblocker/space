@@ -122,7 +122,7 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
           ReactDOMElements.img(
           {
             className: "item-icon-base",
-            src: item.template.icon,
+            src: item.template.getIconSrc(),
           }),
           item.template.techLevel > 1 ? ReactDOMElements.img(
           {

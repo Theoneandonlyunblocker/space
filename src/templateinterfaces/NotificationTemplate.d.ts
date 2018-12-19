@@ -19,7 +19,8 @@ declare interface NotificationTemplate<P, D>
       [[isInvolved, locationIsVisible]] => involved AND visible
   */
   witnessCriteria: NotificationWitnessCriterion[][];
-  iconSrc: string;
+  // TODO 2018.12.20 | return element instead
+  getIconSrc: () => string;
   contentConstructor: React.Factory<any>;
   messageConstructor: (props: P) => string;
   getTitle: (props: P) => string;

@@ -1,0 +1,8 @@
+{
+  "key": "spaceMapModes",
+  "version": "0.1.0",
+  "author": "giraluna",
+  "description": "",
+  "modsToReplace": ["defaultMapModes"],
+  "moduleFileUrl": "./spaceMapModes"
+}

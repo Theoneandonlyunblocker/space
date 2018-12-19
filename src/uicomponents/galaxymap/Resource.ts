@@ -38,7 +38,7 @@ export class ResourceComponent extends React.Component<PropTypes, StateType>
         ReactDOMElements.img(
         {
           className: "resource-icon",
-          src: this.props.resource.icon,
+          src: this.props.resource.getIconSrc(),
         },
           null,
         ),

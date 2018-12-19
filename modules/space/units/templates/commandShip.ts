@@ -15,6 +15,7 @@ import
 {
   initialGuard,
 } from "../../passiveskills/passiveSkills";
+import {getIconSrc} from "../resources";
 
 
 const commandShip: UnitTemplate =
@@ -33,7 +34,7 @@ const commandShip: UnitTemplate =
   isSquadron: false,
   buildCost: 300,
   kind: "unit",
-  icon: "modules/space/units/img/icons/sh.png",
+  getIconSrc: getIconSrc.bind(null, "sh"),
   maxHealthLevel: 0.7,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

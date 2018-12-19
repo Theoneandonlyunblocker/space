@@ -1,14 +1,15 @@
 import Color from "../../../src/Color";
 
+
 export const iconSources =
 {
-  starBase: "modules/space/buildings/img/starBase.svg",
-  sectorCommand: "modules/space/buildings/img/sectorCommand.svg",
+  starBase:      "./img/starBase.svg",
+  sectorCommand: "./img/sectorCommand.svg",
 };
 
-export const svgCache: {[key: string]: SVGElement} = {};
+export const svgCache: {[K in keyof typeof iconSources]?: SVGElement} = {};
 
-export function createIconElement(key: keyof typeof iconSources, color: Color): SVGElement
+export function getIconElement(key: keyof typeof iconSources, color: Color): SVGElement
 {
   const sourceElement = svgCache[key];
   const clone = <SVGElement> sourceElement.cloneNode(true);

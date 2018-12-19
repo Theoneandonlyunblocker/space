@@ -5,22 +5,17 @@ import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
 
 import buildingTemplates from "./BuildingTemplates";
-import {iconSources, svgCache} from "./icons";
+import {iconSources, svgCache} from "./resources";
+
+import * as moduleInfo from "./moduleInfo.json";
 
 
 const spaceBuildings: ModuleFile =
 {
-  info:
-  {
-    key: "spaceBuildings",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-    modsToReplace: ["defaultBuildings"],
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
-  initialize: () =>
+  initialize: (baseUrl) =>
   {
     const loader = new PIXI.loaders.Loader();
 
@@ -28,7 +23,7 @@ const spaceBuildings: ModuleFile =
     {
       loader.add(
       {
-        url: iconSources[key],
+        url: baseUrl + iconSources[key],
         loadType: 1, // XML
       });
     }

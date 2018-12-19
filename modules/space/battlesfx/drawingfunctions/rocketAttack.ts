@@ -3,28 +3,10 @@ import * as PIXI from "pixi.js";
 import SfxParams from "../../../../src/templateinterfaces/SfxParams";
 
 import ProjectileAttack from "./sfxfragments/ProjectileAttack";
+import {resources} from "../resources";
 
 
-let hasLoaded: boolean = false;
-export default function rocketAttack(params: SfxParams): void
-{
-  if (hasLoaded)
-  {
-    playRocketAttack(params);
-  }
-  else
-  {
-    loadRocketAttack(() =>
-    {
-      hasLoaded = true;
-      playRocketAttack(params);
-    });
-  }
-}
-
-const rocketUrl = "modules/space/battlesfx/img/rocket.png";
-
-function playRocketAttack(params: SfxParams)
+export default function rocketAttack(params: SfxParams)
 {
   const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSfx(
     params.targetOffset, params.width, "target");
@@ -68,7 +50,7 @@ function playRocketAttack(params: SfxParams)
   {
     makeProjectileSprite: i =>
     {
-      return new PIXI.Sprite(PIXI.Texture.fromFrame(rocketUrl));
+      return new PIXI.Sprite(PIXI.Texture.fromFrame(resources.rocketProjectile));
     },
 
     maxSpeed: maxSpeed,
@@ -156,15 +138,5 @@ function playRocketAttack(params: SfxParams)
   params.triggerStart(container);
 
   animate();
-}
-
-function loadRocketAttack(callback: () => void)
-{
-  const loader = new PIXI.loaders.Loader();
-
-  loader.add("explosion", "modules/space/battlesfx/img/explosion.json");
-  loader.add(rocketUrl);
-
-  loader.load(callback);
 }
 

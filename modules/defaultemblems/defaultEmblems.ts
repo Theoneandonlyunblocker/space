@@ -1,32 +1,27 @@
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
-import {svgCache} from "../../src/svgCache";
+import {emblemSources, svgCache} from "./assets";
 
 import subEmblemTemplates from "./SubEmblemTemplates";
+
+import * as moduleInfo from "./moduleInfo.json";
 
 
 const defaultEmblems: ModuleFile =
 {
-  info:
-  {
-    key: "defaultEmblems",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: "all",
-  initialize: () =>
+  initialize: (baseUrl) =>
   {
     const loader = new PIXI.loaders.Loader();
 
-    for (const templateKey in subEmblemTemplates)
+    for (const key in emblemSources)
     {
-      const template = subEmblemTemplates[templateKey];
       loader.add(
       {
-        url: template.src,
+        url: baseUrl + emblemSources[key],
         loadType: 1, // XML
       });
     }
@@ -35,12 +30,11 @@ const defaultEmblems: ModuleFile =
     {
       loader.load(() =>
       {
-        for (const templateKey in subEmblemTemplates)
+        for (const key in emblemSources)
         {
-          const template = subEmblemTemplates[templateKey];
-          const response = <XMLDocument> loader.resources[template.src].data;
+          const response = <XMLDocument> loader.resources[emblemSources[key]].data;
           const svgDoc = <SVGElement> response.children[0];
-          svgCache.emblems[template.src] = svgDoc;
+          svgCache[key] = svgDoc;
         }
 
         resolve();

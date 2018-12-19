@@ -3,16 +3,12 @@ import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPha
 
 import {englishLanguage} from "./englishLanguage";
 
+import * as moduleInfo from "./moduleInfo.json";
+
 
 export const englishLanguageSupport: ModuleFile =
 {
-  info:
-  {
-    key: "englishLanguageSupport",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "Adds English to the list of available languages",
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.AppInit,
   supportedLanguages: "all",
   addToModuleData: (moduleData) =>

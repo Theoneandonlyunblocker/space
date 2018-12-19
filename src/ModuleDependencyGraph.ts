@@ -1,4 +1,4 @@
-import { ModuleInfo } from "./ModuleFile";
+import { ModuleInfo } from "./ModuleInfo";
 
 type Nodes<T> = {[key: string]: T};
 

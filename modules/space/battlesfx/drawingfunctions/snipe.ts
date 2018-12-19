@@ -15,24 +15,8 @@ import RampingValue from "./sfxfragments/RampingValue";
 
 import ColorMatrixFilter from "./ColorMatrixFilter";
 import ProtonWrapper from "./ProtonWrapper";
+import {resources} from "../resources";
 
-
-let hasLoaded: boolean = false;
-export default function snipe(type: UnitAttribute, params: SfxParams): void
-{
-  if (hasLoaded)
-  {
-    playSnipe(type, params);
-  }
-  else
-  {
-    loadSnipe(type, () =>
-    {
-      hasLoaded = true;
-      playSnipe(type, params);
-    });
-  }
-}
 
 const colors =
 {
@@ -52,9 +36,7 @@ for (const attribute in colors)
   colors[attribute] = Color.fromHSV(...hsv);
 }
 
-const projectileURL = "modules/space/battlesfx/img/ellipse.png";
-
-function playSnipe(type: UnitAttribute, params: SfxParams)
+export default function snipe(type: UnitAttribute, params: SfxParams)
 {
   // ----------INIT
   const mainContainer = new PIXI.Container();
@@ -122,7 +104,7 @@ function playSnipe(type: UnitAttribute, params: SfxParams)
   {
     makeProjectileSprite: i =>
     {
-      const sprite = new PIXI.Sprite(PIXI.Texture.fromFrame(projectileURL));
+      const sprite = new PIXI.Sprite(PIXI.Texture.fromFrame(resources.snipeProjectile));
       sprite.height = 6;
       sprite.width = 32;
       sprite.filters = [projectileColorMatrixFilter];
@@ -295,13 +277,4 @@ function playSnipe(type: UnitAttribute, params: SfxParams)
   params.triggerStart(renderedSprite);
   const startTime = Date.now();
   animate();
-}
-
-function loadSnipe(type: UnitAttribute, callback: () => void)
-{
-  const loader = new PIXI.loaders.Loader();
-
-  loader.add(projectileURL);
-
-  loader.load(callback);
 }

@@ -1,0 +1,7 @@
+{
+  "key": "defaultAttitudeModifiers",
+  "version": "0.1.0",
+  "author": "giraluna",
+  "description": "",
+  "moduleFileUrl": "./defaultAttitudeModifiers.ts"
+}

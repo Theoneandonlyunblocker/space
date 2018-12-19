@@ -1,0 +1,8 @@
+{
+  "key": "spaceBuildings",
+  "version": "0.1.0",
+  "author": "giraluna",
+  "description": "",
+  "modsToReplace": ["defaultBuildings"],
+  "moduleFileUrl": "./spaceBuildings.ts"
+}

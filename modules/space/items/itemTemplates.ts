@@ -11,13 +11,15 @@ import
   overdrive,
 } from "../passiveskills/passiveSkills";
 
+import {getIconSrc} from "./resources";
+
 
 export const bombLauncher1: ItemTemplate =
 {
   type: "bombLauncher1",
   displayName: "Bomb Launcher 1",
   description: "",
-  icon: "modules/space/items/img/cannon.png",
+  getIconSrc: getIconSrc.bind(null, "cannon"),
 
   techLevel: 1,
   buildCost: 100,
@@ -31,7 +33,7 @@ export const bombLauncher2: ItemTemplate =
   type: "bombLauncher2",
   displayName: "Bomb Launcher 2",
   description: "",
-  icon: "modules/space/items/img/cannon.png",
+  getIconSrc: getIconSrc.bind(null, "cannon"),
 
   techLevel: 2,
   buildCost: 200,
@@ -50,7 +52,7 @@ export const bombLauncher3: ItemTemplate =
   type: "bombLauncher3",
   displayName: "Bomb Launcher 3",
   description: "",
-  icon: "modules/space/items/img/cannon.png",
+  getIconSrc: getIconSrc.bind(null, "cannon"),
 
   techLevel: 3,
   buildCost: 300,
@@ -70,7 +72,7 @@ export const afterBurner1: ItemTemplate =
   type: "afterBurner1",
   displayName: "Afterburner 1",
   description: "",
-  icon: "modules/space/items/img/blueThing.png",
+  getIconSrc: getIconSrc.bind(null, "blueThing"),
 
   techLevel: 1,
   buildCost: 100,
@@ -89,7 +91,7 @@ export const afterBurner2: ItemTemplate =
   type: "afterBurner2",
   displayName: "Afterburner 2",
   description: "",
-  icon: "modules/space/items/img/blueThing.png",
+  getIconSrc: getIconSrc.bind(null, "blueThing"),
 
   techLevel: 2,
   buildCost: 200,
@@ -107,7 +109,7 @@ export const afterBurner3: ItemTemplate =
   type: "afterBurner3",
   displayName: "Afterburner 3",
   description: "",
-  icon: "modules/space/items/img/blueThing.png",
+  getIconSrc: getIconSrc.bind(null, "blueThing"),
 
   techLevel: 3,
   buildCost: 300,
@@ -126,7 +128,7 @@ export const shieldPlating1: ItemTemplate =
   type: "shieldPlating1",
   displayName: "Shield Plating 1",
   description: "",
-  icon: "modules/space/items/img/armor1.png",
+  getIconSrc: getIconSrc.bind(null, "armor"),
 
   techLevel: 1,
   buildCost: 100,
@@ -144,7 +146,7 @@ export const shieldPlating2: ItemTemplate =
   type: "shieldPlating2",
   displayName: "Shield Plating 2",
   description: "",
-  icon: "modules/space/items/img/armor1.png",
+  getIconSrc: getIconSrc.bind(null, "armor"),
 
   techLevel: 2,
   buildCost: 200,
@@ -162,7 +164,7 @@ export const shieldPlating3: ItemTemplate =
   type: "shieldPlating3",
   displayName: "Shield Plating 3",
   description: "",
-  icon: "modules/space/items/img/armor1.png",
+  getIconSrc: getIconSrc.bind(null, "armor"),
 
   techLevel: 3,
   buildCost: 300,

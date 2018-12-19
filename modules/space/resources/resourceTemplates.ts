@@ -1,11 +1,12 @@
 import ResourceTemplate from "../../../src/templateinterfaces/ResourceTemplate";
+import { getIconSrc } from "./graphicsResources";
 
 
 export const testResource1: ResourceTemplate =
 {
   type: "testResource1",
   displayName: "Test Resource 1",
-  icon: "modules/space/resources/img/test1.png",
+  getIconSrc: getIconSrc.bind(null, "test1"),
   distributionData:
   {
     weight: 1,
@@ -16,7 +17,7 @@ export const testResource2: ResourceTemplate =
 {
   type: "testResource2",
   displayName: "Test Resource 2",
-  icon: "modules/space/resources/img/test2.png",
+  getIconSrc: getIconSrc.bind(null, "test2"),
   distributionData:
   {
     weight: 1,
@@ -27,7 +28,7 @@ export const testResource3: ResourceTemplate =
 {
   type: "testResource3",
   displayName: "Test Resource 3",
-  icon: "modules/space/resources/img/test3.png",
+  getIconSrc: getIconSrc.bind(null, "test3"),
   distributionData:
   {
     weight: 1,
@@ -38,7 +39,7 @@ export const testResource4: ResourceTemplate =
 {
   type: "testResource4",
   displayName: "Test Resource 4",
-  icon: "modules/space/resources/img/test4.png",
+  getIconSrc: getIconSrc.bind(null, "test4"),
   distributionData:
   {
     weight: 1,
@@ -49,7 +50,7 @@ export const testResource5: ResourceTemplate =
 {
   type: "testResource5",
   displayName: "Test Resource 5",
-  icon: "modules/space/resources/img/test5.png",
+  getIconSrc: getIconSrc.bind(null, "test5"),
   distributionData:
   {
     weight: 1,

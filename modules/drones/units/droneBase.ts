@@ -16,7 +16,7 @@ export const droneBase: UnitTemplate =
   description: "Base o drones",
 
   archetype: unitArchetypes.utility,
-  icon: "img/placeholder.png",
+  getIconSrc: () => "img/placeholder.png",
   unitDrawingFN: makeDefaultUnitDrawingFunction(
   {
     anchor: {x: 0.5, y: 0.5},

@@ -1,7 +1,11 @@
-import {default as ModuleFile, ModuleInfo} from "./ModuleFile";
+/// <reference path="../node_modules/@types/requirejs/index.d.ts" />
+
+import ModuleFile from "./ModuleFile";
+import {ModuleInfo} from "./ModuleInfo";
 import * as semver from "./versions";
 import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
 import * as debug from "./debug";
+
 
 export class ModuleStore
 {
@@ -58,15 +62,57 @@ export class ModuleStore
   // should eventually fetch module files from a server / local file system
   private load(moduleInfo: ModuleInfo): Promise<ModuleFile>
   {
+    if (this.loadedModules[moduleInfo.key])
+    {
+      return Promise.resolve(this.loadedModules[moduleInfo.key]);
+    }
+
+    // local
+    // remote
+    return this.loadRemote(moduleInfo);
+
     // temp
     if (!this.loadedModules[moduleInfo.key])
     {
       throw new Error(`Couldn't load module '${moduleInfo.key}'.`);
     }
+  }
+  private loadLocal(moduleInfo: ModuleInfo): Promise<ModuleFile>
+  {
 
-    return new Promise(resolve =>
+  }
+  private loadRemote(moduleInfo: ModuleInfo): Promise<ModuleFile>
+  {
+    if (!moduleInfo.remoteModuleInfoUrl)
     {
-      resolve(this.loadedModules[moduleInfo.key]);
+      throw new Error(`Module '${moduleInfo.key}' has no URL specified for remote loading.`);
+    }
+
+    let url = new URL(moduleInfo.moduleFileUrl, moduleInfo.remoteModuleInfoUrl).toString();
+    if (url.substring(url.length - 3, url.length) !== ".js")
+    {
+      throw new Error(`Module file URL must end in '.js'.` +
+      ` Module ${moduleInfo.key} specifies URL as ${url}`);
+    }
+
+    // strip file extension, as it's added by onNodeCreated hook
+    // otherwise requirejs doesn't know how to handle relative paths in file loaded via absolute path
+    url = url.slice(0, url.length - 3);
+
+    return new Promise((resolve, reject) =>
+    {
+      requirejs([url], (a: any) =>
+      {
+        const moduleFile = a[moduleInfo.moduleFileVariableName];
+
+        resolve(moduleFile);
+      }, (error: any) =>
+      {
+        // TODO 2019.04.02 | what do we do here?
+        console.error(`require ${url} failed`);
+
+        reject();
+      });
     });
   }
   private getModuleLoadOrder(...modules: ModuleInfo[]): ModuleInfo[]

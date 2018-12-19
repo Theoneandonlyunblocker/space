@@ -26,6 +26,7 @@ import
   medic,
   warpJammer,
 } from "../../passiveskills/passiveSkills";
+import {getIconSrc} from "../resources";
 
 
 const debugShip: UnitTemplate =
@@ -44,7 +45,7 @@ const debugShip: UnitTemplate =
   isSquadron: false,
   buildCost: 0,
   kind: "unit",
-  icon: "modules/space/units/img/icons/f.png",
+  getIconSrc: getIconSrc.bind(null, "f"),
   maxHealthLevel: 1,
   maxMovePoints: 999,
   maxOffensiveBattlesPerTurn: 999,

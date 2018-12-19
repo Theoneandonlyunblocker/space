@@ -66,7 +66,7 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
         ReactDOMElements.img(
         {
           className: "notification-image",
-          src: notification.template.iconSrc,
+          src: notification.template.getIconSrc(),
         }),
         ReactDOMElements.span(
         {

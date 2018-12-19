@@ -1,0 +1,7 @@
+{
+  "key": "englishLanguageSupport",
+  "version": "0.1.0",
+  "author": "giraluna",
+  "description": "Adds English to the list of available languages",
+  "moduleFileUrl": "./englishLanguageSupport.ts"
+}

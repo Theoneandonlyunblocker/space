@@ -16,7 +16,7 @@ export const droneSwarm: UnitTemplate =
   description: "Swarm o drones",
 
   archetype: unitArchetypes.combat,
-  icon: "img/placeholder.png",
+  getIconSrc: () => "img/placeholder.png",
   unitDrawingFN: makeDefaultUnitDrawingFunction(
   {
     anchor: {x: 0.5, y: 0.5},

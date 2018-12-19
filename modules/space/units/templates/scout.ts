@@ -10,6 +10,7 @@ import
 } from "../../abilities/abilities";
 import {distributionGroups} from "../../../common/distributionGroups";
 import itemSlot from "../../items/itemSlot";
+import {getIconSrc} from "../resources";
 
 
 const scout: UnitTemplate =
@@ -28,7 +29,7 @@ const scout: UnitTemplate =
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
-  icon: "modules/space/units/img/icons/sc.png",
+  getIconSrc: getIconSrc.bind(null, "sc"),
   maxHealthLevel: 0.6,
   maxMovePoints: 2,
   maxOffensiveBattlesPerTurn: 1,

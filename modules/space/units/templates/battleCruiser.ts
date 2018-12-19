@@ -11,6 +11,7 @@ import
 } from "../../abilities/abilities";
 import {distributionGroups} from "../../../common/distributionGroups";
 import itemSlot from "../../items/itemSlot";
+import {getIconSrc} from "../resources";
 
 
 const battleCruiser: UnitTemplate =
@@ -29,7 +30,7 @@ const battleCruiser: UnitTemplate =
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
-  icon: "modules/space/units/img/icons/bc.png",
+  getIconSrc: getIconSrc.bind(null, "bc"),
   maxHealthLevel: 1,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

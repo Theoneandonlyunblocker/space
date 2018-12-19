@@ -100,7 +100,10 @@ export default class ModuleInitializer
 
       if (moduleFile.initialize)
       {
-        return moduleFile.initialize();
+        // TODO 2018.12.20 |
+        const baseUrl = "";
+
+        return moduleFile.initialize(baseUrl);
       }
       else
       {

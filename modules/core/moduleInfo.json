@@ -1,0 +1,7 @@
+{
+  "key":           "core",
+  "version":       "0.1.0",
+  "author":        "giraluna",
+  "description":   "Core gameplay functionality",
+  "moduleFileUrl": "./core.ts"
+}

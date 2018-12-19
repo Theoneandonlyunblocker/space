@@ -5,16 +5,11 @@ import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPha
 import attitudeModifierTemplates from "./AttitudeModifierTemplates";
 import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";
 
+import * as moduleInfo from "./moduleInfo.json";
 
 const defaultAttitudeModifiers: ModuleFile =
 {
-  info:
-  {
-    key: "defaultAttitudeModifiers",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>

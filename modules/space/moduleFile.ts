@@ -6,7 +6,7 @@ import {ruleSet} from "./ruleSet";
 import * as AbilityTemplates from  "./abilities/abilities";
 import * as BattleSfxTemplates from  "./battlesfx/templates/battleSfx";
 import * as PassiveSkillTemplates from  "./passiveskills/passiveSkills";
-import * as ResourceTemplates from  "./resources/resources";
+import * as ResourceTemplates from  "./resources/resourceTemplates";
 import * as TerrainTemplates from  "./terrains/terrains";
 import {unitEffectTemplates} from  "./uniteffects/unitEffectTemplates";
 
@@ -18,17 +18,14 @@ import spaceMapmodes from "./mapmodes/spaceMapmodes";
 import spaceRaces from "./races/spaceRaces";
 import spaceTechnologies from "./technologies/spaceTechnologies";
 import spaceUnits from "./units/spaceUnits";
+import {spaceResources} from "./resources/spaceResources";
+
+import * as moduleInfo from "./moduleInfo.json";
+
 
 export const space: ModuleFile =
 {
-  info:
-  {
-    key: "space",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-    modsToReplace: ["defaultRuleSet"],
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   subModules:
@@ -41,7 +38,12 @@ export const space: ModuleFile =
     spaceRaces,
     spaceTechnologies,
     spaceUnits,
+    spaceResources,
   ],
+  // initialize: baseUrl =>
+  // {
+
+  // },
   addToModuleData: moduleData =>
   {
     moduleData.copyTemplates(AbilityTemplates, "Abilities");

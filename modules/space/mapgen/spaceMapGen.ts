@@ -8,6 +8,8 @@ import TemplateCollection from "../../../src/templateinterfaces/TemplateCollecti
 import spiralGalaxy from "./templates/spiralGalaxy";
 import tinierSpiralGalaxy from "./templates/tinierSpiralGalaxy";
 
+import * as moduleInfo from "./moduleInfo.json";
+
 
 const templates: TemplateCollection<MapGenTemplate> =
 {
@@ -17,14 +19,7 @@ const templates: TemplateCollection<MapGenTemplate> =
 
 const spaceMapGen: ModuleFile =
 {
-  info:
-  {
-    key: "spaceMapGen",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-    modsToReplace: ["defaultMapGen"],
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>

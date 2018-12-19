@@ -7,6 +7,7 @@ import NotificationTemplate from "../../../src/templateinterfaces/NotificationTe
 import {localize} from "../localization/localize";
 
 import UIComponent from "./uicomponents/WarDeclarationNotification";
+import {getIconSrc} from "../assets";
 
 
 export interface PropTypes
@@ -32,7 +33,7 @@ export const warDeclarationNotification: NotificationTemplate<PropTypes, Seriali
     [NotificationWitnessCriterion.IsInvolved],
     [NotificationWitnessCriterion.MetAllInvolvedPlayers],
   ],
-  iconSrc: "modules/space/resources/img/test2.png",
+  getIconSrc: getIconSrc.bind(null, "test2"),
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {

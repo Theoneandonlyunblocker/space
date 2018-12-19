@@ -15,8 +15,8 @@ declare interface UnitTemplate extends ManufacturableThing
   description: string;
   isSquadron: boolean;
   buildCost: number;
-  kind: "unit";
-  icon: string;
+  // TODO 2018.12.20 | return element instead
+  getIconSrc: () => string;
   /**
    * relative to other unit types. base value is determined in ruleset
    */

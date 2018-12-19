@@ -123,7 +123,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
   private makeDragClone()
   {
     const clone = new Image();
-    clone.src = this.props.item.template.icon;
+    clone.src = this.props.item.template.getIconSrc();
     clone.className = "item-icon-base draggable dragging";
 
     return clone;

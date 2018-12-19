@@ -1081,8 +1081,8 @@ export default class Unit
       isAnnihilated: this.battleStats.isAnnihilated,
       isSquadron: this.template.isSquadron,
 
-      portraitSrc: this.portrait.imageSrc,
-      iconSrc: this.template.icon,
+      portraitSrc: this.portrait.getImageSrc(),
+      iconSrc: this.template.getIconSrc(),
 
       attributeChanges: this.getAttributesWithEffectsDifference().serialize(),
       passiveEffects: this.getPassiveEffectsForScene(scene),

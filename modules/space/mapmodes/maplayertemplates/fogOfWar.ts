@@ -10,6 +10,8 @@ import
   makePolygonFromPoints,
 } from "../../../../src/pixiWrapperFunctions";
 
+import {resources} from "../resources";
+
 
 const fogOfWarSpriteByStarId:
 {
@@ -60,7 +62,7 @@ function getfogOfWarTilingSprite(width: number, height: number)
 {
   if (!fogOfWarTilingSprite)
   {
-    const fowTexture = PIXI.Texture.fromFrame("modules/space/mapmodes/img/fowTexture.png");
+    const fowTexture = resources.fogOfWarTexture;
     fogOfWarTilingSprite = new PIXI.extras.TilingSprite(fowTexture, width, height);
   }
 

@@ -69,7 +69,7 @@ export class TerritoryBuildingComponent extends React.PureComponent<PropTypes, S
       container.removeChild(container.firstChild);
     }
 
-    container.appendChild(this.props.building.template.createIconElement(this.props.building.controller.color));
+    container.appendChild(this.props.building.template.getIconElement(this.props.building.controller.color));
   }
 }
 

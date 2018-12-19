@@ -4,17 +4,12 @@ import ModuleFileInitializationPhase from "../../../src/ModuleFileInitialization
 
 import drawNebula from "./drawNebula";
 
+import * as moduleInfo from "./moduleInfo.json";
+
 
 const spaceBackgrounds: ModuleFile =
 {
-  info:
-  {
-    key: "spaceBackgrounds",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-    modsToReplace: ["defaultBackgrounds"],
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
   supportedLanguages: "all",
   addToModuleData: (moduleData: ModuleData) =>

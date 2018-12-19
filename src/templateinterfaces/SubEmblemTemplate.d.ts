@@ -3,10 +3,7 @@ import Color from "../Color";
 declare interface SubEmblemTemplate
 {
   key: string;
-  /**
-   * should point to .svg file
-   */
-  src: string;
+  getSvgElementClone: () => SVGElement;
 
   // Probably should put most important stuff first for ease of customization.
   colorMappings:

@@ -1,21 +1,9 @@
 import ModuleData from "./ModuleData";
+import {ModuleInfo} from "./ModuleInfo";
 import ModuleFileInitializationPhase from "./ModuleFileInitializationPhase";
 
 import {Language} from "./localization/Language";
 
-
-export interface ModuleInfo
-{
-  key: string;
-  // displayName: string;
-  version: string;
-  author?: string;
-  description?: string;
-  modsToLoadBefore?: string[];
-  modsToLoadAfter?: string[];
-  // should be used very, very sparingly. only if this mod completely replaces another's functionality
-  modsToReplace?: string[];
-}
 
 export interface ModuleSaveData<S = any>
 {
@@ -30,7 +18,10 @@ interface ModuleFile<SaveData = any>
   supportedLanguages: Language[] | "all";
   // not guaranteed to be loaded after main module. use ModuleFile.info.modsToLoadBefore/After to set order
   subModules?: ModuleFile[];
-  initialize?: () => Promise<void>;
+  /**
+   * @param baseUrl base url of module file
+   */
+  initialize?: (baseUrl: string) => Promise<void>;
   addToModuleData?: (moduleData: ModuleData) => void;
   serializeModuleSpecificData?: () => SaveData;
   deserializeModuleSpecificData?: (saveData: SaveData) => void;

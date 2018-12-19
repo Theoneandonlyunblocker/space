@@ -1,12 +1,13 @@
 import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
+import {getSvgElementClone} from "./assets";
 
 
 // tslint:disable:variable-name
 export const Aguila_explayada_2: SubEmblemTemplate =
 {
   key: "Aguila_explayada_2",
-  src: "modules/defaultemblems/img/Aguila_explayada_2.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Aguila_explayada_2.svg"),
 
   colorMappings:
   [
@@ -16,7 +17,7 @@ export const Aguila_explayada_2: SubEmblemTemplate =
 export const Berliner_Baer: SubEmblemTemplate =
 {
   key: "Berliner_Baer",
-  src: "modules/defaultemblems/img/Berliner_Baer.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Berliner_Baer.svg"),
 
   colorMappings:
   [
@@ -26,7 +27,7 @@ export const Berliner_Baer: SubEmblemTemplate =
 export const Cles_en_sautoir: SubEmblemTemplate =
 {
   key: "Cles_en_sautoir",
-  src: "modules/defaultemblems/img/Cles_en_sautoir.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Cles_en_sautoir.svg"),
 
   colorMappings:
   [
@@ -55,7 +56,7 @@ export const Cles_en_sautoir: SubEmblemTemplate =
 export const Coa_Illustration_Cross_Bowen_3: SubEmblemTemplate =
 {
   key: "Coa_Illustration_Cross_Bowen_3",
-  src: "modules/defaultemblems/img/Coa_Illustration_Cross_Bowen_3.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Coa_Illustration_Cross_Bowen_3.svg"),
 
   colorMappings:
   [
@@ -84,7 +85,7 @@ export const Coa_Illustration_Cross_Bowen_3: SubEmblemTemplate =
 export const Coa_Illustration_Cross_Malte_1: SubEmblemTemplate =
 {
   key: "Coa_Illustration_Cross_Malte_1",
-  src: "modules/defaultemblems/img/Coa_Illustration_Cross_Malte_1.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Coa_Illustration_Cross_Malte_1.svg"),
 
   colorMappings:
   [
@@ -113,7 +114,7 @@ export const Coa_Illustration_Cross_Malte_1: SubEmblemTemplate =
 export const Coa_Illustration_Elements_Planet_Moon: SubEmblemTemplate =
 {
   key: "Coa_Illustration_Elements_Planet_Moon",
-  src: "modules/defaultemblems/img/Coa_Illustration_Elements_Planet_Moon.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Coa_Illustration_Elements_Planet_Moon.svg"),
 
   colorMappings:
   [
@@ -142,7 +143,7 @@ export const Coa_Illustration_Elements_Planet_Moon: SubEmblemTemplate =
 export const Couronne_heraldique_svg: SubEmblemTemplate =
 {
   key: "Couronne_heraldique_svg",
-  src: "modules/defaultemblems/img/Couronne_heraldique_svg.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Couronne_heraldique_svg.svg"),
 
   colorMappings:
   [
@@ -171,7 +172,7 @@ export const Couronne_heraldique_svg: SubEmblemTemplate =
 export const Flag_of_Edward_England: SubEmblemTemplate =
 {
   key: "Flag_of_Edward_England",
-  src: "modules/defaultemblems/img/Flag_of_Edward_England.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Flag_of_Edward_England.svg"),
   disallowRandomGeneration: true,
 
   colorMappings:
@@ -191,7 +192,7 @@ export const Flag_of_Edward_England: SubEmblemTemplate =
 export const Gomaisasa: SubEmblemTemplate =
 {
   key: "Gomaisasa",
-  src: "modules/defaultemblems/img/Gomaisasa.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Gomaisasa.svg"),
 
   colorMappings:
   [
@@ -210,7 +211,7 @@ export const Gomaisasa: SubEmblemTemplate =
 export const Gryphon_Segreant: SubEmblemTemplate =
 {
   key: "Gryphon_Segreant",
-  src: "modules/defaultemblems/img/Gryphon_Segreant.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Gryphon_Segreant.svg"),
 
   colorMappings:
   [
@@ -220,7 +221,7 @@ export const Gryphon_Segreant: SubEmblemTemplate =
 export const Heraldic_pentacle: SubEmblemTemplate =
 {
   key: "Heraldic_pentacle",
-  src: "modules/defaultemblems/img/Heraldic_pentacle.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Heraldic_pentacle.svg"),
 
   colorMappings:
   [
@@ -239,7 +240,7 @@ export const Heraldic_pentacle: SubEmblemTemplate =
 export const Japanese_Crest_Futatsudomoe_1: SubEmblemTemplate =
 {
   key: "Japanese_Crest_Futatsudomoe_1",
-  src: "modules/defaultemblems/img/Japanese_Crest_Futatsudomoe_1.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Japanese_Crest_Futatsudomoe_1.svg"),
 
   colorMappings:
   [
@@ -258,7 +259,7 @@ export const Japanese_Crest_Futatsudomoe_1: SubEmblemTemplate =
 export const Japanese_Crest_Hana_Hisi: SubEmblemTemplate =
 {
   key: "Japanese_Crest_Hana_Hisi",
-  src: "modules/defaultemblems/img/Japanese_Crest_Hana_Hisi.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Japanese_Crest_Hana_Hisi.svg"),
 
   colorMappings:
   [
@@ -277,7 +278,7 @@ export const Japanese_Crest_Hana_Hisi: SubEmblemTemplate =
 export const Japanese_Crest_Mitsumori_Janome: SubEmblemTemplate =
 {
   key: "Japanese_Crest_Mitsumori_Janome",
-  src: "modules/defaultemblems/img/Japanese_Crest_Mitsumori_Janome.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Japanese_Crest_Mitsumori_Janome.svg"),
 
   colorMappings:
   [
@@ -296,7 +297,7 @@ export const Japanese_Crest_Mitsumori_Janome: SubEmblemTemplate =
 export const Japanese_Crest_Oda_ka: SubEmblemTemplate =
 {
   key: "Japanese_Crest_Oda_ka",
-  src: "modules/defaultemblems/img/Japanese_Crest_Oda_ka.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Japanese_Crest_Oda_ka.svg"),
 
   colorMappings:
   [
@@ -315,7 +316,7 @@ export const Japanese_Crest_Oda_ka: SubEmblemTemplate =
 export const Japanese_crest_Tsuki_ni_Hoshi: SubEmblemTemplate =
 {
   key: "Japanese_crest_Tsuki_ni_Hoshi",
-  src: "modules/defaultemblems/img/Japanese_crest_Tsuki_ni_Hoshi.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Japanese_crest_Tsuki_ni_Hoshi.svg"),
 
   colorMappings:
   [
@@ -334,7 +335,7 @@ export const Japanese_crest_Tsuki_ni_Hoshi: SubEmblemTemplate =
 export const Japanese_Crest_Ume: SubEmblemTemplate =
 {
   key: "Japanese_Crest_Ume",
-  src: "modules/defaultemblems/img/Japanese_Crest_Ume.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Japanese_Crest_Ume.svg"),
 
   colorMappings:
   [
@@ -353,7 +354,7 @@ export const Japanese_Crest_Ume: SubEmblemTemplate =
 export const Mitsuuroko: SubEmblemTemplate =
 {
   key: "Mitsuuroko",
-  src: "modules/defaultemblems/img/Mitsuuroko.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Mitsuuroko.svg"),
 
   colorMappings:
   [
@@ -372,7 +373,7 @@ export const Mitsuuroko: SubEmblemTemplate =
 export const Musubikashiwa: SubEmblemTemplate =
 {
   key: "Musubikashiwa",
-  src: "modules/defaultemblems/img/Musubi-kashiwa.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Musubi-kashiwa.svg"),
 
   colorMappings:
   [
@@ -391,7 +392,7 @@ export const Musubikashiwa: SubEmblemTemplate =
 export const Takeda_mon: SubEmblemTemplate =
 {
   key: "Takeda_mon",
-  src: "modules/defaultemblems/img/Takeda_mon.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "Takeda_mon.svg"),
 
   colorMappings:
   [
@@ -410,7 +411,7 @@ export const Takeda_mon: SubEmblemTemplate =
 export const threeHorns: SubEmblemTemplate =
 {
   key: "threeHorns",
-  src: "modules/defaultemblems/img/threeHorns.svg",
+  getSvgElementClone: getSvgElementClone.bind(null, "threeHorns.svg"),
 
   colorMappings:
   [

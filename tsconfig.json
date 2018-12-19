@@ -38,7 +38,9 @@
         // does nothing without --strictNullChecks
         // "strictPropertyInitialization": true,
 
-        "strictBindCallApply": true
+        "strictBindCallApply": true,
+
+        "resolveJsonModule": true,
     },
     "files": [
       "lib/lib.extend.d.ts",

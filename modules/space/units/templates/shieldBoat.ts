@@ -16,6 +16,7 @@ import
 {
   initialGuard,
 } from "../../passiveskills/passiveSkills";
+import {getIconSrc} from "../resources";
 
 
 const shieldBoat: UnitTemplate =
@@ -34,7 +35,7 @@ const shieldBoat: UnitTemplate =
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
-  icon: "modules/space/units/img/icons/sh.png",
+  getIconSrc: getIconSrc.bind(null, "sh"),
   maxHealthLevel: 0.9,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

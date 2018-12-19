@@ -3,20 +3,22 @@ import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
 
 import {itemTemplates} from "./itemTemplates";
+import {setBaseUrl as setBaseResourceUrl} from "./resources";
+
+import * as moduleInfo from "./moduleInfo.json";
 
 
 const spaceItems: ModuleFile =
 {
-  info:
-  {
-    key: "spaceItems",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-    modsToReplace: ["defaultItems"]
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
+  initialize: (baseUrl) =>
+  {
+    setBaseResourceUrl(baseUrl);
+
+    return Promise.resolve();
+  },
   addToModuleData: (moduleData) =>
   {
     moduleData.copyTemplates(itemTemplates, "Items");

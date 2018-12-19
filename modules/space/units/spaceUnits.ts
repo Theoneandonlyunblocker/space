@@ -6,27 +6,26 @@ import ModuleFileInitializationPhase from "../../../src/ModuleFileInitialization
 
 import unitArchetypes from "../../common/unitArchetypes";
 import {unitTemplates} from "./unitTemplates";
+import {setBaseUrl as setResourceBaseUrl} from "./resources";
+
+import * as moduleInfo from "./moduleInfo.json";
 
 
 const spaceUnits: ModuleFile =
 {
-  info:
-  {
-    key: "spaceUnits",
-    version: "0.1.0",
-    author: "giraluna",
-    description: "",
-    modsToReplace: ["defaultUnits"],
-  },
+  info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
-  initialize: () =>
+  initialize: (baseUrl) =>
   {
+    setResourceBaseUrl(baseUrl);
+
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "units";
+    const spriteSheetUrl = baseUrl + "./img/sprites/units.json";
 
     // also adds to pixi texture cache when loaded which is all we want to do. kinda opaque
-    loader.add(spriteSheetKey, "modules/space/units/img/sprites/units.json");
+    loader.add(spriteSheetKey, spriteSheetUrl);
 
     return new Promise(resolve =>
     {

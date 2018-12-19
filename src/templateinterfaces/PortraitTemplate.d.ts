@@ -2,7 +2,8 @@
 declare interface PortraitTemplate
 {
   key: string;
-  imageSrc: string;
+  // TODO 2018.12.20 | return element instead
+  getImageSrc: () => string;
   randomGenerationTags?: string[];
 }
 
