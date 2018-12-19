@@ -40,7 +40,7 @@ const defaultEmblems: ModuleFile =
           const template = subEmblemTemplates[templateKey];
           const response = <XMLDocument> loader.resources[template.src].data;
           const svgDoc = <SVGElement> response.children[0];
-          svgCache[template.src] = svgDoc;
+          svgCache.emblems[template.src] = svgDoc;
         }
 
         resolve();

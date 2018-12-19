@@ -57,7 +57,7 @@ export class BattleSceneFlagComponent extends React.Component<PropTypes, StateTy
     flagElement.style.backgroundColor = undefined;
     flagElement.style.background = gradientString;
 
-    const fadeDocument = svgCache["img/battleSceneFlagFade.svg"];
+    const fadeDocument = svgCache.battleSceneFlagFade;
     flagElement.insertBefore(fadeDocument, flagElement.firstChild);
     flagElement.classList.add(maskId);
   }

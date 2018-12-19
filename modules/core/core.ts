@@ -37,7 +37,7 @@ const core: ModuleFile =
       {
         const response = <XMLDocument> loader.resources[battleSceneFlagFadeUrl].data;
         const svgDoc = <SVGElement> response.children[0];
-        svgCache[battleSceneFlagFadeUrl] = svgDoc;
+        svgCache.battleSceneFlagFade = svgDoc;
 
         resolve();
       });

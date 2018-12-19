@@ -120,7 +120,7 @@ export default class Emblem
 
   private createElementClone(): SVGElement
   {
-    const sourceElement = svgCache[this.template.src];
+    const sourceElement = svgCache.emblems[this.template.src];
     const clone = <SVGElement> sourceElement.cloneNode(true);
 
     return clone;
