@@ -75,13 +75,14 @@ export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
     {
       const squashedAlreadyHasAdjustment = Boolean(squashed[key]);
 
+      // not sure the type assertions here are right
       if (squashedAlreadyHasAdjustment)
       {
-        squashed[key] = squashFlatAndMultiplierAdjustments(squashed[key], toSquash[key]);
+        (squashed[key] as FlatAndMultiplierAdjustment) = squashFlatAndMultiplierAdjustments(squashed[key], toSquash[key]);
       }
       else
       {
-        squashed[key] = squashFlatAndMultiplierAdjustments(getBaseAdjustment(), toSquash[key]);
+        (squashed[key] as Partial<FlatAndMultiplierAdjustment>) = squashFlatAndMultiplierAdjustments(getBaseAdjustment(), toSquash[key]);
       }
     }
 

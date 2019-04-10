@@ -12,7 +12,7 @@ export const errorReportingModes: ErrorReportingMode[] =
   "panic",
 ];
 
-export const handleError: ErrorEventHandler = (message, source, lineno, colno, error) =>
+export const handleError: OnErrorEventHandlerNonNull = (message, source, lineno, colno, error) =>
 {
   const handler = getErrorHandler();
 
@@ -21,7 +21,7 @@ export const handleError: ErrorEventHandler = (message, source, lineno, colno, e
   return returnValue;
 };
 
-function getErrorHandler(): ErrorEventHandler
+function getErrorHandler(): OnErrorEventHandlerNonNull
 {
   switch (Options.system.errorReporting)
   {
@@ -52,18 +52,18 @@ function getErrorHandler(): ErrorEventHandler
     }
   }
 }
-const createErrorAlert: ErrorEventHandler = (message, source, lineno, colno, error) =>
+const createErrorAlert: OnErrorEventHandlerNonNull = (message, source, lineno, colno, error) =>
 {
   // TODO 2018.10.23 | implement
 
 
   hasAlertedOfError = true;
 };
-const ignoreError: ErrorEventHandler = () =>
+const ignoreError: OnErrorEventHandlerNonNull = () =>
 {
   return true;
 };
-const panicOnError: ErrorEventHandler = (message, source, lineno, colno, error) =>
+const panicOnError: OnErrorEventHandlerNonNull = (message, source, lineno, colno, error) =>
 {
   app.reactUI.error = error;
   app.reactUI.switchScene("errorRecovery");
