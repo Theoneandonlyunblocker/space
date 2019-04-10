@@ -17,7 +17,7 @@
     "@types/react-dom": "16.x",
     "@types/react-dom-factories": "1.x",
     "@types/react-motion": "0.0.x",
-    "@types/requirejs": "2.3.x",
+    "@types/requirejs": "^2.1.31",
     "fork-ts-checker-webpack-plugin": "0.5.0",
     "less": "2.7.x",
     "ts-loader": "5.3.x",
