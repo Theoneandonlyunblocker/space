@@ -3,5 +3,6 @@
   "version": "0.1.0",
   "author": "giraluna",
   "description": "",
-  "moduleFileUrl": "./spaceResources.ts"
+  "moduleFileUrl": "./spaceResources.ts",
+  "moduleFileVariableName": "spaceResources"
 }

@@ -4,5 +4,6 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultRuleSet"],
-  "moduleFileUrl": "./moduleFile.ts"
+  "moduleFileUrl": "./moduleFile.ts",
+  "moduleFileVariableName": "space"
 }

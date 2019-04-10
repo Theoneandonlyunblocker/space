@@ -4,5 +4,6 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultRaces"],
-  "moduleFileUrl": "./spaceRaces.ts"
+  "moduleFileUrl": "./spaceRaces.ts",
+  "moduleFileVariableName": "spaceRaces"
 }

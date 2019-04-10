@@ -4,5 +4,6 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultItems"],
-  "moduleFileUrl": "./spaceItems.ts"
+  "moduleFileUrl": "./spaceItems.ts",
+  "moduleFileVariableName": "spaceItems"
 }

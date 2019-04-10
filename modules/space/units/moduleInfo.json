@@ -4,5 +4,6 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultUnits"],
-  "moduleFileUrl": "./spaceUnits.ts"
+  "moduleFileUrl": "./spaceUnits.ts",
+  "moduleFileVariableName": "spaceUnits"
 }

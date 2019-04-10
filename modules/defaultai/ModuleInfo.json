@@ -3,5 +3,6 @@
   "version": "0.1.0",
   "author": "giraluna",
   "description": "",
-  "moduleFileUrl": "./defaultAi.ts"
+  "moduleFileUrl": "./defaultAi.ts",
+  "moduleFileVariableName": "defaultAi"
 }

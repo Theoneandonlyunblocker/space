@@ -4,5 +4,6 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultTechnologies"],
-  "moduleFileUrl": "./spaceTechnologies.ts"
+  "moduleFileUrl": "./spaceTechnologies.ts",
+  "moduleFileVariableName": "spaceTechnologies"
 }
