@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+      "target": "es5",
+      "lib": [
+        "dom",
+        "es5",
+        "es2015.promise",
+        "scripthost"
+      ],
+
+      "moduleResolution": "node",
+      "sourceMap": true,
+      "types": [], // disables automatic global inclusion of @types
+
+      "noImplicitAny": true,
+      "suppressImplicitAnyIndexErrors": true,
+
+      "declaration": false,
+      "experimentalDecorators": false,
+      "emitDecoratorMetadata": false,
+      "forceConsistentCasingInFileNames": true,
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitReturns": true,
+      "noImplicitThis": true,
+      "noUnusedLocals": true,
+
+      "removeComments": true,
+
+      "strictNullChecks": false,
+
+      // requires prefixing intentionally unused params with _
+      // much cleaner to define consistent params for all functions of type for module templates etc.
+      // too annoying to keep on, but probably worth checking manually every once in a while
+      "noUnusedParameters": false,
+      "strictFunctionTypes": true,
+
+      // does nothing without --strictNullChecks
+      // "strictPropertyInitialization": true,
+
+      "strictBindCallApply": true,
+
+      "resolveJsonModule": true,
+  },
+
+  "compileOnSave": false,
+  "buildOnSave": false
+}
