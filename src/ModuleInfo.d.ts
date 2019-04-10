@@ -11,10 +11,11 @@ export interface ModuleInfo
   // should be used very, very sparingly
   // if this mod replaces another's functionality, replace old name after this mod has been renamed, etc.
   modsToReplace?: string[];
+  // TODO 2019.04.10 | use string[] for the two below vvvvvv
   /**
-   * should point to an address that can serve a 'moduleInfo.json' file
+   * should point to a http url that will serve a 'moduleInfo.json' file
    * leaving this blank will only allow local loading
-   * if loaded locally, 'mods\/**\/moduleInfo.json' is used instead
+   * used to check version, fetch mods for savegame etc. after mod info has already otherwise been loaded in app
    */
   remoteModuleInfoUrl?: string;
   /**

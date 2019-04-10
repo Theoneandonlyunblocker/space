@@ -7,6 +7,7 @@ import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
 import * as debug from "./debug";
 
 
+
 export class ModuleStore
 {
   private readonly allModuleInfo: {[key: string]: ModuleInfo} = {};
@@ -55,12 +56,12 @@ export class ModuleStore
 
     const ordered = this.getModuleLoadOrder(...replaced);
 
-    return Promise.all(ordered.map(moduleInfo =>  this.load(moduleInfo)));
+    return Promise.all(ordered.map(moduleInfo =>  this.fetch(moduleInfo)));
   }
 
   // doesn't make much sense right now, as no module loading functionality has been implemented yet
   // should eventually fetch module files from a server / local file system
-  private load(moduleInfo: ModuleInfo): Promise<ModuleFile>
+  private fetch(moduleInfo: ModuleInfo): Promise<ModuleFile>
   {
     if (this.loadedModules[moduleInfo.key])
     {
@@ -69,19 +70,21 @@ export class ModuleStore
 
     // local
     // remote
-    return this.loadRemote(moduleInfo);
-
-    // temp
-    if (!this.loadedModules[moduleInfo.key])
+    return this.fetchRemote(moduleInfo).then(moduleFile =>
     {
-      throw new Error(`Couldn't load module '${moduleInfo.key}'.`);
-    }
-  }
-  private loadLocal(moduleInfo: ModuleInfo): Promise<ModuleFile>
-  {
+      this.add(moduleFile);
 
+      return moduleFile;
+    }).catch(reason =>
+    {
+      throw new Error(`Couldn't load module '${moduleInfo.key}'.\n${reason}`);
+    });
   }
-  private loadRemote(moduleInfo: ModuleInfo): Promise<ModuleFile>
+  // private fetchLocal(moduleInfo: ModuleInfo): Promise<ModuleFile>
+  // {
+
+  // }
+  private fetchRemote(moduleInfo: ModuleInfo): Promise<ModuleFile>
   {
     if (!moduleInfo.remoteModuleInfoUrl)
     {
@@ -108,10 +111,7 @@ export class ModuleStore
         resolve(moduleFile);
       }, (error: any) =>
       {
-        // TODO 2019.04.02 | what do we do here?
-        console.error(`require ${url} failed`);
-
-        reject();
+        reject(error);
       });
     });
   }

@@ -17,6 +17,8 @@ const defaultEmblems: ModuleFile =
   {
     const loader = new PIXI.loaders.Loader();
 
+    console.log(baseUrl)
+
     for (const key in emblemSources)
     {
       loader.add(

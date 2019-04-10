@@ -100,8 +100,8 @@ export default class ModuleInitializer
 
       if (moduleFile.initialize)
       {
-        // TODO 2018.12.20 |
-        const baseUrl = "";
+        console.log(moduleFile.info.moduleFileUrl)
+        const baseUrl = new URL("./", moduleFile.info.moduleFileUrl).toString();
 
         return moduleFile.initialize(baseUrl);
       }
