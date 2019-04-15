@@ -18,5 +18,5 @@ export function setBaseUrl(newUrl: string): void
 
 export function getIconSrc(type: keyof typeof iconSources): string
 {
-  return baseUrl + iconSources[type];
+  return new URL(iconSources[type], baseUrl).toString();
 }

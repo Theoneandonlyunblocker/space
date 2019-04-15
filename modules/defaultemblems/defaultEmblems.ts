@@ -15,15 +15,13 @@ const defaultEmblems: ModuleFile =
   supportedLanguages: "all",
   initialize: (baseUrl) =>
   {
-    const loader = new PIXI.loaders.Loader();
-
-    console.log(baseUrl)
+    const loader = new PIXI.loaders.Loader(baseUrl);
 
     for (const key in emblemSources)
     {
       loader.add(
       {
-        url: baseUrl + emblemSources[key],
+        url: emblemSources[key],
         loadType: 1, // XML
       });
     }

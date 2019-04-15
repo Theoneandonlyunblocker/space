@@ -20,7 +20,8 @@ const core: ModuleFile =
   {
     const loader = new PIXI.loaders.Loader();
 
-    const battleSceneFlagFadeUrl = baseUrl + "img/battleSceneFlagFade.svg";
+    // TODO 2019.04.10 | move these from base img folder to somewhere else?
+    const battleSceneFlagFadeUrl = "img/battleSceneFlagFade.svg";
     loader.add(
     {
       url: battleSceneFlagFadeUrl,
@@ -28,7 +29,7 @@ const core: ModuleFile =
     });
 
     const placeHolderResourceName = "placeHolder";
-    const placeHolderUrl = baseUrl + "img/placeholder.png";
+    const placeHolderUrl = "img/placeholder.png";
     // also adds to pixi texture cache when loaded which is all we want to do. kinda opaque
     // TODO 2018.12.19 | actually cache this somewhere. currently being referred by absolute path all over the place
     loader.add(placeHolderResourceName, placeHolderUrl);

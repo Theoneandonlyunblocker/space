@@ -17,13 +17,13 @@ const spaceBuildings: ModuleFile =
   supportedLanguages: [englishLanguage],
   initialize: (baseUrl) =>
   {
-    const loader = new PIXI.loaders.Loader();
+    const loader = new PIXI.loaders.Loader(baseUrl);
 
     for (const key in iconSources)
     {
       loader.add(
       {
-        url: baseUrl + iconSources[key],
+        url: iconSources[key],
         loadType: 1, // XML
       });
     }

@@ -93,5 +93,5 @@ export function setBaseUrl(newUrl: string): void
 
 export function getImageSrc(type: keyof typeof imageSources): string
 {
-  return baseUrl + imageSources[type];
+  return new URL(imageSources[type], baseUrl).toString();
 }

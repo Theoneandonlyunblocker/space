@@ -14,13 +14,11 @@ export const spaceBattleSfx: ModuleFile =
   supportedLanguages: "all",
   initialize: (baseUrl) =>
   {
-    const loader = new PIXI.loaders.Loader();
+    const loader = new PIXI.loaders.Loader(baseUrl);
 
     for (const key in battleSfxResources.toLoad)
     {
-      const url = baseUrl + battleSfxResources.toLoad[key];
-
-      loader.add(key, url);
+      loader.add(key, battleSfxResources.toLoad[key]);
     }
 
     return new Promise(resolve =>

@@ -20,12 +20,10 @@ const spaceUnits: ModuleFile =
   {
     setResourceBaseUrl(baseUrl);
 
-    const loader = new PIXI.loaders.Loader();
-    const spriteSheetKey = "units";
-    const spriteSheetUrl = baseUrl + "./img/sprites/units.json";
+    const loader = new PIXI.loaders.Loader(baseUrl);
 
     // also adds to pixi texture cache when loaded which is all we want to do. kinda opaque
-    loader.add(spriteSheetKey, spriteSheetUrl);
+    loader.add("units", "./img/sprites/units.json");
 
     return new Promise(resolve =>
     {
