@@ -6,7 +6,7 @@ import ModuleFileInitializationPhase from "../../../src/ModuleFileInitialization
 
 import unitArchetypes from "../../common/unitArchetypes";
 import {unitTemplates} from "./unitTemplates";
-import {setBaseUrl as setResourceBaseUrl} from "./resources";
+import {setBaseUrl as setAssetBaseUrl} from "./resources";
 
 import * as moduleInfo from "./moduleInfo.json";
 
@@ -18,7 +18,7 @@ const spaceUnits: ModuleFile =
   supportedLanguages: [englishLanguage],
   initialize: (baseUrl) =>
   {
-    setResourceBaseUrl(baseUrl);
+    setAssetBaseUrl(baseUrl);
 
     const loader = new PIXI.loaders.Loader(baseUrl);
 

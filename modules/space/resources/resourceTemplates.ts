@@ -1,5 +1,5 @@
 import ResourceTemplate from "../../../src/templateinterfaces/ResourceTemplate";
-import { getIconSrc } from "./graphicsResources";
+import { getIconSrc } from "./assets";
 
 
 export const testResource1: ResourceTemplate =

@@ -3,7 +3,7 @@ import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
 
 import {itemTemplates} from "./itemTemplates";
-import {setBaseUrl as setBaseResourceUrl} from "./resources";
+import {setBaseUrl as setAssetBaseUrl} from "./resources";
 
 import * as moduleInfo from "./moduleInfo.json";
 
@@ -15,7 +15,7 @@ const spaceItems: ModuleFile =
   supportedLanguages: [englishLanguage],
   initialize: (baseUrl) =>
   {
-    setBaseResourceUrl(baseUrl);
+    setAssetBaseUrl(baseUrl);
 
     return Promise.resolve();
   },

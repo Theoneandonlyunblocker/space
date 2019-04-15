@@ -4,7 +4,7 @@ import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
 
 import * as ResourceTemplates from  "./resourceTemplates";
-import {setBaseUrl as setResourceBaseUrl} from "./graphicsResources";
+import {setBaseUrl as setAssetBaseUrl} from "./assets";
 
 import * as moduleInfo from "./moduleInfo.json";
 
@@ -16,7 +16,7 @@ export const spaceResources: ModuleFile =
   supportedLanguages: [englishLanguage],
   initialize: (baseUrl) =>
   {
-    setResourceBaseUrl(baseUrl);
+    setAssetBaseUrl(baseUrl);
 
     return Promise.resolve();
   },
