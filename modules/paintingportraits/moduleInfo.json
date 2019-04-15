@@ -3,6 +3,6 @@
   "version": "0.1.0",
   "author": "various artists",
   "description": "old ppl",
-  "moduleFileUrl": "./paintingPortraits.ts",
+  "moduleFileUrl":  "http://127.0.0.1:9001/modules/paintingportraits/index.js",
   "moduleFileVariableName": "paintingPortraits"
 }

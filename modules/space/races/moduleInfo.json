@@ -4,6 +4,6 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultRaces"],
-  "moduleFileUrl": "./spaceRaces.ts",
+  "moduleFileUrl":  "http://127.0.0.1:9001/modules/space/races/index.js",
   "moduleFileVariableName": "spaceRaces"
 }

@@ -4,6 +4,6 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultBuildings"],
-  "moduleFileUrl": "./spaceBuildings.ts",
+  "moduleFileUrl":  "http://127.0.0.1:9001/modules/space/buildings/index.js",
   "moduleFileVariableName": "spaceBuildings"
 }

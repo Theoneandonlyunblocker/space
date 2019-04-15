@@ -3,6 +3,6 @@
   "version": "0.1.0",
   "author": "giraluna",
   "description": "",
-  "moduleFileUrl": "./moduleFile.ts",
+  "moduleFileUrl":  "http://127.0.0.1:9001/modules/drones/index.js",
   "moduleFileVariableName": "drones"
 }
