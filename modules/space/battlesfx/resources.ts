@@ -5,7 +5,8 @@ export const toLoad =
   rocketExplosion: "./img/explosion.json",
 };
 
-export const resources: {[K in keyof typeof toLoad]?: string} =
+export const resources: {[K in keyof typeof toLoad]?: K} =
 {
-
+  snipeProjectile: "snipeProjectile",
+  rocketProjectile: "rocketProjectile",
 };

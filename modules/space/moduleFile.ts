@@ -4,13 +4,13 @@ import { englishLanguage } from "../englishlanguage/englishLanguage";
 import {ruleSet} from "./ruleSet";
 
 import * as AbilityTemplates from  "./abilities/abilities";
-import * as BattleSfxTemplates from  "./battlesfx/templates/battleSfx";
 import * as PassiveSkillTemplates from  "./passiveskills/passiveSkills";
 import * as ResourceTemplates from  "./resources/resourceTemplates";
 import * as TerrainTemplates from  "./terrains/terrains";
 import {unitEffectTemplates} from  "./uniteffects/unitEffectTemplates";
 
 import spaceBackgrounds from "./backgrounds/spaceBackgrounds";
+import {spaceBattleSfx} from "./battlesfx/spaceBattleSfx";
 import spaceBuildings from "./buildings/spaceBuildings";
 import spaceItems from "./items/spaceItems";
 import spaceMapgen from "./mapgen/spaceMapgen";
@@ -31,6 +31,7 @@ export const space: ModuleFile =
   subModules:
   [
     spaceBackgrounds,
+    spaceBattleSfx,
     spaceBuildings,
     spaceItems,
     spaceMapgen,
@@ -48,7 +49,6 @@ export const space: ModuleFile =
   {
     moduleData.copyTemplates(AbilityTemplates, "Abilities");
     moduleData.copyTemplates(ResourceTemplates, "Resources");
-    moduleData.copyTemplates(BattleSfxTemplates, "BattleSfx");
     moduleData.copyTemplates(PassiveSkillTemplates, "PassiveSkills");
     moduleData.copyTemplates(TerrainTemplates, "Terrains");
     moduleData.copyTemplates(unitEffectTemplates, "UnitEffects");

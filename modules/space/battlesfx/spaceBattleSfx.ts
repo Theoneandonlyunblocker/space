@@ -3,6 +3,7 @@ import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
 
 import * as battleSfxResources from "./resources";
+import * as BattleSfxTemplates from  "./templates/battleSfx";
 
 import * as moduleInfo from "./moduleInfo.json";
 
@@ -26,4 +27,8 @@ export const spaceBattleSfx: ModuleFile =
       loader.load(resolve);
     });
   },
+  addToModuleData: (moduleData) =>
+  {
+    moduleData.copyTemplates(BattleSfxTemplates, "BattleSfx");
+  }
 };
