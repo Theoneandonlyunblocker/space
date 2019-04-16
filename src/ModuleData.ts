@@ -152,7 +152,7 @@ export default class ModuleData
 
       if (hasDuplicate)
       {
-        throw new Error(`Duplicate template identifier for ${templateType} in ${category}`);
+        throw new Error(`Duplicate '${category}' template '${templateType}'`);
       }
 
       // TODO 2017.02.05 | bad typing

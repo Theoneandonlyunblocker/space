@@ -100,7 +100,6 @@ export default class ModuleInitializer
 
       if (moduleFile.initialize)
       {
-        console.log(moduleFile.info.moduleFileUrl)
         const baseUrl = new URL("./", moduleFile.info.moduleFileUrl).toString();
 
         return moduleFile.initialize(baseUrl);
