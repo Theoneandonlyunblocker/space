@@ -5,7 +5,6 @@ import {ruleSet} from "./ruleSet";
 
 import * as AbilityTemplates from  "./abilities/abilities";
 import * as PassiveSkillTemplates from  "./passiveskills/passiveSkills";
-import * as ResourceTemplates from  "./resources/resourceTemplates";
 import * as TerrainTemplates from  "./terrains/terrains";
 import {unitEffectTemplates} from  "./uniteffects/unitEffectTemplates";
 
@@ -48,7 +47,6 @@ export const space: ModuleFile =
   addToModuleData: moduleData =>
   {
     moduleData.copyTemplates(AbilityTemplates, "Abilities");
-    moduleData.copyTemplates(ResourceTemplates, "Resources");
     moduleData.copyTemplates(PassiveSkillTemplates, "PassiveSkills");
     moduleData.copyTemplates(TerrainTemplates, "Terrains");
     moduleData.copyTemplates(unitEffectTemplates, "UnitEffects");
