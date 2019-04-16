@@ -8,6 +8,9 @@
         "scripthost"
       ],
 
+      "composite": true,
+      "rootDir": ".",
+
       "moduleResolution": "node",
       "sourceMap": true,
       "types": [], // disables automatic global inclusion of @types
@@ -15,7 +18,7 @@
       "noImplicitAny": true,
       "suppressImplicitAnyIndexErrors": true,
 
-      "declaration": false,
+      "declaration": true,
       "experimentalDecorators": false,
       "emitDecoratorMetadata": false,
       "forceConsistentCasingInFileNames": true,

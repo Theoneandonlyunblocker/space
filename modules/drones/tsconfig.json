@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outFile": "./index.js",
+    "rootDir": ".",
+  },
+  "references": [
+    {"path": "../../src"}
+  ]
+}
