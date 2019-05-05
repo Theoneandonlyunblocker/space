@@ -1,11 +1,6 @@
 {
-  "extends": "./tsconfig-base.json",
-  "compilerOptions": {
-    "module": "amd",
-    "outFile": "dist/main.js",
-  },
-  "files": [
-    "lib/lib.extend.d.ts",
-    "src/App.ts",
-  ],
+  "references": [
+    {"path": "./src"},
+    {"path": "./modules/drones"},
+  ]
 }
