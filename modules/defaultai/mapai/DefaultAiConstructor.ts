@@ -1,7 +1,7 @@
 import
 {
   AiTemplateConstructor,
-} from "../../../src/templateinterfaces/AITemplateConstructor";
+} from "../../../src/templateinterfaces/AiTemplateConstructor";
 
 import DefaultAi from "./DefaultAi";
 import DefaultAiSaveData from "./DefaultAiSaveData";

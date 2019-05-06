@@ -9,7 +9,7 @@ import Star from "./Star";
 import eventManager from "./eventManager";
 
 
-interface PathFindingArrowCurveStyle
+interface PathfindingArrowCurveStyle
 {
   color: Color;
 }
@@ -46,11 +46,11 @@ export default class PathfindingArrow
 
   private curveStyles =
   {
-    reachable: <PathFindingArrowCurveStyle>
+    reachable: <PathfindingArrowCurveStyle>
     {
       color: Color.fromHex(0xFFFFF0),
     },
-    unreachable: <PathFindingArrowCurveStyle>
+    unreachable: <PathfindingArrowCurveStyle>
     {
       color: Color.fromHex(0xFF0000),
     },
@@ -376,7 +376,7 @@ export default class PathfindingArrow
     return segments;
   }
 
-  private drawCurve(segments: CurveSegment[], style: PathFindingArrowCurveStyle)
+  private drawCurve(segments: CurveSegment[], style: PathfindingArrowCurveStyle)
   {
     const gfx = new PIXI.Graphics();
 

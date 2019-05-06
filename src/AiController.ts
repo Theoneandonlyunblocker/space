@@ -1,6 +1,6 @@
-import AiTemplate from "./templateinterfaces/AITemplate";
+import AiTemplate from "./templateinterfaces/AiTemplate";
 
-import AiControllerSaveData from "./savedata/AIControllerSaveData";
+import AiControllerSaveData from "./savedata/AiControllerSaveData";
 
 import Personality from "./Personality";
 import {TradeOffer} from "./TradeOffer";

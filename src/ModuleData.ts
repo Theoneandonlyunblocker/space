@@ -9,7 +9,7 @@ import
   PartialRuleSetValues,
   RuleSetValues,
 } from "./RuleSetValues";
-import AiTemplateConstructor from "./templateinterfaces/AITemplateConstructor";
+import AiTemplateConstructor from "./templateinterfaces/AiTemplateConstructor";
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
 import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";

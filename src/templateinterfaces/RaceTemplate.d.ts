@@ -5,7 +5,7 @@ import Player from "../Player";
 import Star from "../Star";
 import Unit from "../Unit";
 
-import AiTemplateConstructor from "./AITemplateConstructor";
+import AiTemplateConstructor from "./AiTemplateConstructor";
 import {BuildingTemplate} from "./BuildingTemplate";
 import {DistributionData} from "./DistributionData";
 import ItemTemplate from "./ItemTemplate";

@@ -1,5 +1,5 @@
 
-import {AiController} from "./AIController";
+import {AiController} from "./AiController";
 import {AttitudeModifier} from "./AttitudeModifier";
 import {Building} from "./Building";
 import Color from "./Color";
@@ -25,7 +25,7 @@ import {NotificationStore} from "./notifications//NotificationStore";
 
 import { NotificationSubscriber } from "./notifications/NotificationSubscriber";
 import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
-import AiControllerSaveData from "./savedata/AIControllerSaveData";
+import AiControllerSaveData from "./savedata/AiControllerSaveData";
 import BuildingSaveData from "./savedata/BuildingSaveData";
 import EmblemSaveData from "./savedata/EmblemSaveData";
 import FlagSaveData from "./savedata/FlagSaveData";

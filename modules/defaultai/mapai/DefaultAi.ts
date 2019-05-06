@@ -7,7 +7,7 @@ import {TradeOffer} from "../../../src/TradeOffer";
 import Unit from "../../../src/Unit";
 import {activeModuleData} from "../../../src/activeModuleData";
 import getNullFormation from "../../../src/getNullFormation";
-import AiTemplate from "../../../src/templateinterfaces/AITemplate";
+import AiTemplate from "../../../src/templateinterfaces/AiTemplate";
 import
 {
   makeRandomPersonality,
