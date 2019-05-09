@@ -16,7 +16,6 @@ import Renderer from "./Renderer";
 import {activeModuleData} from "./activeModuleData";
 import {activePlayer, setActivePlayer} from "./activePlayer";
 import {centerCameraOnPosition} from "./centerCameraOnPosition";
-import {defaultModules} from "./defaultModules";
 import idGenerators from "./idGenerators";
 import {handleError} from "./handleError";
 import {activeModuleStore} from "./ModuleStore";
@@ -44,6 +43,7 @@ import FullSaveData from "./savedata/FullSaveData";
 import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
 import { storageStrings } from "./storageStrings";
 
+const defaultModules = (<any>window).defaultModules;
 
 class App
 {
