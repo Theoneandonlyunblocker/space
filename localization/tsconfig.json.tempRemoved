@@ -2,11 +2,10 @@
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
     // "outFile": "./index.js",
-    "outDir": "projectDist/src",
+    "outDir": "projectDist/localization",
     "rootDir": ".",
   },
-  "include": [
-    "**/*",
-    "../localization/**/*",
+  "references": [
+    {"path": "../src"}
   ]
 }
