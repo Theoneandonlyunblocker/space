@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-      "target": "es5",
       "lib": [
         "dom",
         "es5",
@@ -9,40 +8,38 @@
       ],
 
       "composite": true,
-
-      "moduleResolution": "node",
+      "target": "es5",
       "module": "amd",
       "sourceMap": true,
+      "declaration": true,
+      "moduleResolution": "node",
       "types": [], // disables automatic global inclusion of @types
 
       "noImplicitAny": true,
       "suppressImplicitAnyIndexErrors": true,
-
-      "declaration": true,
-      "experimentalDecorators": false,
-      "emitDecoratorMetadata": false,
       "forceConsistentCasingInFileNames": true,
       "noFallthroughCasesInSwitch": true,
       "noImplicitReturns": true,
       "noImplicitThis": true,
       "noUnusedLocals": true,
+      "strictFunctionTypes": true,
+      "strictBindCallApply": true,
+
 
       "removeComments": true,
+      "resolveJsonModule": true,
 
+      // why?
+      // probably laziness
       "strictNullChecks": false,
 
       // requires prefixing intentionally unused params with _
-      // much cleaner to define consistent params for all functions of type for module templates etc.
+      // much cleaner to define consistent params for all functions of type
       // too annoying to keep on, but probably worth checking manually every once in a while
-      "noUnusedParameters": false,
-      "strictFunctionTypes": true,
+      // "noUnusedParameters": true,
 
       // does nothing without --strictNullChecks
       // "strictPropertyInitialization": true,
-
-      "strictBindCallApply": true,
-
-      "resolveJsonModule": true,
   },
 
   "compileOnSave": false,
