@@ -59,7 +59,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
     this.key = key;
   }
 
-  // for checking all messages are present
+  // when you want to ensure all messages are present
   public setAllMessages(messages: Messages, language: Language): void
   {
     this.setMessages(messages, language);
