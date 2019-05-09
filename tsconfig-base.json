@@ -9,9 +9,9 @@
       ],
 
       "composite": true,
-      "rootDir": ".",
 
       "moduleResolution": "node",
+      "module": "amd",
       "sourceMap": true,
       "types": [], // disables automatic global inclusion of @types
 
