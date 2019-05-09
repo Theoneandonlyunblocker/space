@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import SfxFragment from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import SfxFragment from "../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
 import SfxFragmentPropVecBase from "./VecBase";
 
@@ -12,17 +12,17 @@ interface PropTypes extends React.Props<any>
   fragment: SfxFragment<any>;
   onValueChange: () => void;
 
-  min: number;
-  max: number;
+  x: number;
+  y: number;
 }
 
 interface StateType
 {
 }
 
-export class SfxFragmentPropRangeComponent extends React.Component<PropTypes, StateType>
+export class SfxFragmentPropPointComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SfxFragmentPropRange";
+  public displayName = "SfxFragmentPropPoint";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -35,7 +35,7 @@ export class SfxFragmentPropRangeComponent extends React.Component<PropTypes, St
     return(
       ReactDOMElements.div(
       {
-        className: "sfx-fragment-prop-range",
+        className: "sfx-fragment-prop-point",
       },
         SfxFragmentPropVecBase(
         {
@@ -46,14 +46,14 @@ export class SfxFragmentPropRangeComponent extends React.Component<PropTypes, St
           propProps:
           [
             {
-              key: "min",
-              label: "Min",
-              value: this.props.min,
+              key: "x",
+              label: "X",
+              value: this.props.x,
             },
             {
-              key: "max",
-              label: "Max",
-              value: this.props.max,
+              key: "y",
+              label: "Y",
+              value: this.props.y,
             },
           ],
         }),
@@ -62,6 +62,6 @@ export class SfxFragmentPropRangeComponent extends React.Component<PropTypes, St
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropRangeComponent);
+const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropPointComponent);
 export default factory;
 

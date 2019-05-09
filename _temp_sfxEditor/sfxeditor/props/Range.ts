@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import SfxFragment from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import SfxFragment from "../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
 import SfxFragmentPropVecBase from "./VecBase";
 
@@ -12,18 +12,17 @@ interface PropTypes extends React.Props<any>
   fragment: SfxFragment<any>;
   onValueChange: () => void;
 
-  base: number;
-  up: number;
-  down: number;
+  min: number;
+  max: number;
 }
 
 interface StateType
 {
 }
 
-export class SfxFragmentPropRampingValueComponent extends React.Component<PropTypes, StateType>
+export class SfxFragmentPropRangeComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "SfxFragmentPropRampingValue";
+  public displayName = "SfxFragmentPropRange";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -36,7 +35,7 @@ export class SfxFragmentPropRampingValueComponent extends React.Component<PropTy
     return(
       ReactDOMElements.div(
       {
-        className: "sfx-fragment-prop-ramping-value",
+        className: "sfx-fragment-prop-range",
       },
         SfxFragmentPropVecBase(
         {
@@ -47,19 +46,14 @@ export class SfxFragmentPropRampingValueComponent extends React.Component<PropTy
           propProps:
           [
             {
-              key: "base",
-              label: "base",
-              value: this.props.base,
+              key: "min",
+              label: "Min",
+              value: this.props.min,
             },
             {
-              key: "up",
-              label: "up",
-              value: this.props.up,
-            },
-            {
-              key: "down",
-              label: "down",
-              value: this.props.down,
+              key: "max",
+              label: "Max",
+              value: this.props.max,
             },
           ],
         }),
@@ -68,6 +62,6 @@ export class SfxFragmentPropRampingValueComponent extends React.Component<PropTy
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropRampingValueComponent);
+const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropRangeComponent);
 export default factory;
 

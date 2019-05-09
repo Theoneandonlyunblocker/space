@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import SfxFragment from "../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
-import DragPositioner from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
+import SfxFragment from "../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import DragPositioner from "../../src/uicomponents/mixins/DragPositioner";
+import applyMixins from "../../src/uicomponents/mixins/applyMixins";
 
 import SfxFragmentConstructor from "./SfxFragmentConstructor";
 

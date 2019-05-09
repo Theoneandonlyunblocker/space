@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import SfxFragment from "../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import SfxFragment from "../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
 
 interface PropTypes extends React.Props<any>

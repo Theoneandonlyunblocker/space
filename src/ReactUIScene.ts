@@ -7,7 +7,7 @@ type ReactUIScene =
 
   // debug
   "flagMaker" |
-  "battleSceneTester" |
-  "sfxEditor";
+  // "sfxEditor" |
+  "battleSceneTester";
 
 export default ReactUIScene;

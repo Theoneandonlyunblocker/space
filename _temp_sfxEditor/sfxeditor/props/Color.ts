@@ -1,10 +1,10 @@
 import * as React from "react";
 
-import SfxFragment from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import SfxFragment from "../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
-import Color from "../../../Color";
+import Color from "../../../src/Color";
 
-import ColorSetter from "../../setupgame/ColorSetter";
+import ColorSetter from "../../../src/uicomponents/setupgame/ColorSetter";
 
 
 interface PropTypes extends React.Props<any>

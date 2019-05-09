@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import NumericTextInput from "../../generic/NumericTextInput";
+import NumericTextInput from "../../../src/uicomponents/generic/NumericTextInput";
 
 
 interface PropTypes extends React.Props<any>

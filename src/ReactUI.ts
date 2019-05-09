@@ -23,7 +23,7 @@ import BattleComponentFactory from "./uicomponents/battle/Battle";
 import BattlePrepComponentFactory from "./uicomponents/battleprep/BattlePrep";
 import GalaxyMap from "./uicomponents/galaxymap/GalaxyMap";
 import SetupGame from "./uicomponents/setupgame/SetupGame";
-import SfxEditor from "./uicomponents/sfxeditor/SfxEditor";
+// import SfxEditor from "../_temp_sfxEditor/sfxeditor/SfxEditor";
 
 import {localize} from "../localization/localize";
 
@@ -41,7 +41,7 @@ const moduleInitializationPhaseByScene:
 
   flagMaker: ModuleFileInitializationPhase.GameSetup,
   battleSceneTester: ModuleFileInitializationPhase.BattleStart,
-  sfxEditor: ModuleFileInitializationPhase.BattleStart,
+  // sfxEditor: ModuleFileInitializationPhase.BattleStart,
 };
 
 export default class ReactUI
@@ -180,10 +180,10 @@ export default class ReactUI
       {
         return BattleSceneTester();
       }
-      case "sfxEditor":
-      {
-        return SfxEditor();
-      }
+      // case "sfxEditor":
+      // {
+      //   return SfxEditor();
+      // }
     }
   }
 }

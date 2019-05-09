@@ -1,4 +1,4 @@
-import SfxFragment from "../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import SfxFragment from "../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
 interface Constructor<T>
 {
