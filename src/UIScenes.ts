@@ -12,7 +12,7 @@ export type UIScenes = {
 
   // debug
   flagMaker: React.Factory<any>;
-  // sfxEditor: React.Factory<any>;
+  sfxEditor: React.Factory<any>;
   battleSceneTester: React.Factory<any>;
 };
 // tslint:enable:no-any

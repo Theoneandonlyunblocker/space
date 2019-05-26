@@ -38,7 +38,7 @@ const moduleInitializationPhaseByScene:
 
   flagMaker: ModuleFileInitializationPhase.GameSetup,
   battleSceneTester: ModuleFileInitializationPhase.BattleStart,
-  // sfxEditor: ModuleFileInitializationPhase.BattleStart,
+  sfxEditor: ModuleFileInitializationPhase.BattleStart,
 };
 
 export default class ReactUI
