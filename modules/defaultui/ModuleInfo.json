@@ -1,0 +1,8 @@
+{
+  "key": "defaultUi",
+  "version": "0.1.0",
+  "author": "giraluna",
+  "description": "",
+  "moduleFileUrl": "./defaultUi.ts",
+  "moduleFileVariableName": "defaultUi"
+}
