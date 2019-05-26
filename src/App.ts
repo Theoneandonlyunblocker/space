@@ -11,7 +11,7 @@ import Options from "./Options";
 import Player from "./Player";
 import PlayerControl from "./PlayerControl";
 import ReactUI from "./ReactUI";
-import {ReactUIScene} from "./uiScenes";
+import {ReactUIScene} from "./UIScenes";
 import Renderer from "./Renderer";
 import {activeModuleData} from "./activeModuleData";
 import {activePlayer, setActivePlayer} from "./activePlayer";

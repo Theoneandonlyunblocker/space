@@ -9,7 +9,7 @@ import ModuleFileInitializationPhase from "./ModuleFileInitializationPhase";
 import ModuleInitializer from "./ModuleInitializer";
 import Player from "./Player";
 import PlayerControl from "./PlayerControl";
-import {ReactUIScene} from "./uiSCenes";
+import {ReactUIScene} from "./UIScenes";
 import Renderer from "./Renderer";
 import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";

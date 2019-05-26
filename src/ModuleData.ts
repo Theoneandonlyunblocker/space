@@ -37,6 +37,8 @@ import
 } from "./utility";
 import { UnlockableThing } from "./templateinterfaces/UnlockableThing";
 
+import {UIScenes} from "./UIScenes";
+
 
 // tslint:disable:no-any
 interface Templates
@@ -111,6 +113,10 @@ export default class ModuleData
   public scripts: ModuleScripts;
   public defaultMap: MapGenTemplate;
   public defaultLanguage: Language;
+  public uiScenes: Partial<UIScenes> =
+  {
+
+  };
 
   public get technologyUnlocks(): TechnologyUnlocks
   {
