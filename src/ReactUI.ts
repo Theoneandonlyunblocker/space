@@ -15,17 +15,14 @@ import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";
 import Options from "./Options";
 
+// TODO 2019.05.26 | remove vvv
 import {ErrorBoundary} from "./uicomponents/errors/ErrorBoundary";
 import {SaveRecoveryWithDetails} from "./uicomponents/errors/SaveRecoveryWithDetails";
-import BattleSceneTester from "./uicomponents/BattleSceneTester";
-import FlagMaker from "./uicomponents/FlagMaker";
-import BattleComponentFactory from "./uicomponents/battle/Battle";
-import BattlePrepComponentFactory from "./uicomponents/battleprep/BattlePrep";
-import GalaxyMap from "./uicomponents/galaxymap/GalaxyMap";
-import SetupGame from "./uicomponents/setupgame/SetupGame";
-// import SfxEditor from "../_temp_sfxEditor/sfxeditor/SfxEditor";
 
 import {localize} from "../localization/localize";
+// TODO 2019.05.26 | remove ^^^
+
+import {activeModuleData} from "./activeModuleData";
 
 
 const moduleInitializationPhaseByScene:
@@ -90,6 +87,7 @@ export default class ReactUI
 
     ReactDOM.render(
       React.createElement(React.StrictMode, null,
+        // TODO 2019.05.26 | offload this to modules
         ErrorBoundary(
         {
           renderError: (error, info) =>
@@ -133,7 +131,7 @@ export default class ReactUI
     {
       case "battle":
       {
-        return BattleComponentFactory(
+        return activeModuleData.uiScenes.battle(
         {
           battle: this.battle,
           humanPlayer: this.player,
@@ -141,14 +139,14 @@ export default class ReactUI
       }
       case "battlePrep":
       {
-        return BattlePrepComponentFactory(
+        return activeModuleData.uiScenes.battlePrep(
         {
           battlePrep: this.battlePrep,
         });
       }
       case "galaxyMap":
       {
-        return GalaxyMap(
+        return activeModuleData.uiScenes.galaxyMap(
         {
           renderer: this.renderer,
           mapRenderer: this.mapRenderer,
@@ -160,30 +158,32 @@ export default class ReactUI
           notificationLog: activePlayer.notificationLog,
         });
       }
+      case "setupGame":
+      {
+        return activeModuleData.uiScenes.setupGame();
+      }
       case "errorRecovery":
       {
-        return SaveRecoveryWithDetails(
+        return activeModuleData.uiScenes.errorRecovery(
         {
           game: this.game,
           error: this.error,
         });
       }
+
+      // debug scenes
       case "flagMaker":
       {
-        return FlagMaker();
-      }
-      case "setupGame":
-      {
-        return SetupGame();
+        return activeModuleData.uiScenes.flagMaker();
       }
       case "battleSceneTester":
       {
-        return BattleSceneTester();
+        return activeModuleData.uiScenes.battleSceneTester();
       }
-      // case "sfxEditor":
-      // {
-      //   return SfxEditor();
-      // }
+      case "sfxEditor":
+      {
+        return activeModuleData.uiScenes.sfxEditor();
+      }
     }
   }
 }
