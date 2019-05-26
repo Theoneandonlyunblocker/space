@@ -29,7 +29,7 @@ export default function makeSfxFromVideo(
     props.triggerStart(sprite);
     animate();
   }
-  function onVideoError()
+  function onVideoError(): void
   {
     clearBaseTextureListeners();
 

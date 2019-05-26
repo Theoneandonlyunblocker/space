@@ -16,7 +16,7 @@ interface StateType
 
 export class ErrorBoundaryComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "ErrorBoundary";
+  public displayName: string = "ErrorBoundary";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -46,7 +46,7 @@ export class ErrorBoundaryComponent extends React.Component<PropTypes, StateType
       errorInfo: info,
     });
   }
-  public render()
+  public render(): React.ReactNode
   {
     if (this.state.error)
     {

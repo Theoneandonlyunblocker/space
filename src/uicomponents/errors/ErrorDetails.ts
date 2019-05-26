@@ -16,7 +16,7 @@ interface StateType
 
 export class ErrorDetailsComponent extends React.Component<PropTypes, StateType>
 {
-  public displayName = "ErrorDetails";
+  public displayName: string = "ErrorDetails";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -24,7 +24,7 @@ export class ErrorDetailsComponent extends React.Component<PropTypes, StateType>
     super(props);
   }
 
-  public render()
+  public render(): React.DetailedReactHTMLElement<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
   {
     return(
       ReactDOMElements.div(
