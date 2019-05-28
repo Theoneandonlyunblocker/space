@@ -15,13 +15,6 @@ import {activePlayer} from "./activePlayer";
 import eventManager from "./eventManager";
 import Options from "./Options";
 
-// TODO 2019.05.26 | remove vvv
-import {ErrorBoundary} from "./uicomponents/errors/ErrorBoundary";
-import {SaveRecoveryWithDetails} from "./uicomponents/errors/SaveRecoveryWithDetails";
-
-import {localize} from "../localization/localize";
-// TODO 2019.05.26 | remove ^^^
-
 import {activeModuleData} from "./activeModuleData";
 
 
@@ -35,6 +28,7 @@ const moduleInitializationPhaseByScene:
   galaxyMap: ModuleFileInitializationPhase.GameStart,
   setupGame: ModuleFileInitializationPhase.GameSetup,
   errorRecovery: ModuleFileInitializationPhase.AppInit,
+  topLevelErrorBoundary: ModuleFileInitializationPhase.AppInit,
 
   flagMaker: ModuleFileInitializationPhase.GameSetup,
   battleSceneTester: ModuleFileInitializationPhase.BattleStart,
@@ -87,25 +81,9 @@ export default class ReactUI
 
     ReactDOM.render(
       React.createElement(React.StrictMode, null,
-        // TODO 2019.05.26 | offload this to modules
-        ErrorBoundary(
+        activeModuleData.uiScenes.topLevelErrorBoundary(
         {
-          renderError: (error, info) =>
-          {
-            // TODO 2018.10.30 | doesn't respect user error handling preference.
-            // react doesn't let us ignore errors in rendering I think
-
-            const customErrorMessage = Options.system.errorReporting !== "panic" ?
-              localize("UIErrorPanicDespiteUserPreference")(Options.system.errorReporting) :
-              null;
-
-            return SaveRecoveryWithDetails(
-            {
-              game: this.game,
-              error: error,
-              customMessage: customErrorMessage,
-            });
-          },
+          errorReportingMode: Options.system.errorReporting,
         },
           elementToRender,
         ),

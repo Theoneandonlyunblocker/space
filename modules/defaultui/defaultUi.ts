@@ -8,6 +8,7 @@ import BattleComponentFactory from "../../src/uicomponents/battle/Battle";
 import BattlePrepComponentFactory from "../../src/uicomponents/battleprep/BattlePrep";
 import GalaxyMap from "../../src/uicomponents/galaxymap/GalaxyMap";
 import SetupGame from "../../src/uicomponents/setupgame/SetupGame";
+import {SaveRecoveryWithDetails} from "../../src/uicomponents/errors/SaveRecoveryWithDetails";
 import SfxEditor from "../../_temp_sfxEditor/sfxeditor/SfxEditor";
 
 import * as moduleInfo from "./moduleInfo.json";
