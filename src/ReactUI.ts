@@ -28,7 +28,6 @@ const moduleInitializationPhaseByScene:
   galaxyMap: ModuleFileInitializationPhase.GameStart,
   setupGame: ModuleFileInitializationPhase.GameSetup,
   errorRecovery: ModuleFileInitializationPhase.AppInit,
-  topLevelErrorBoundary: ModuleFileInitializationPhase.AppInit,
 
   flagMaker: ModuleFileInitializationPhase.GameSetup,
   battleSceneTester: ModuleFileInitializationPhase.BattleStart,

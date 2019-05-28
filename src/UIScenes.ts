@@ -18,4 +18,6 @@ export type UIScenes = {
 };
 // tslint:enable:no-any
 
-export type ReactUIScene = keyof UIScenes;
+export type ReactUIScene = Exclude<keyof UIScenes,
+  "topLevelErrorBoundary"
+>;
