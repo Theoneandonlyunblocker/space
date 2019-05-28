@@ -3,7 +3,7 @@
   "compilerOptions": {
     // "outFile": "./index.js",
     "outDir": "projectDist/src",
-    "rootDir": ".",
+    "rootDir": "../",
   },
   "include": [
     "**/*",

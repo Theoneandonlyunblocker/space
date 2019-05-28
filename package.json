@@ -30,7 +30,7 @@
   },
   "scripts": {
     "dev-server": "webpack-dev-server --config ./scripts/webpack/dev.config.js --progress",
-    "build": "tsc -b --verbose",
+    "build": "tsc -b ./src --verbose",
     "__build-webpack": "webpack --config ./scripts/webpack/prod.config.js && lessc ./css/main.less ./dist/main.css",
     "lint": "tslint \"{src,modules,localization}/**/*.ts\"",
     "lintfix": "tslint \"{src,modules,localization}/**/*.ts\" --fix"

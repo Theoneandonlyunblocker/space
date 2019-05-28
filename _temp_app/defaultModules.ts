@@ -23,4 +23,5 @@ export const defaultModules =
   drones,
 ];
 
+// TODO 2019.05.28 |
 (<any>window).defaultModules = defaultModules;

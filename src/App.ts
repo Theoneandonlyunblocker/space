@@ -43,6 +43,7 @@ import FullSaveData from "./savedata/FullSaveData";
 import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
 import { storageStrings } from "./storageStrings";
 
+// TODO 2019.05.28 |
 const defaultModules = (<any>window).defaultModules;
 
 class App
