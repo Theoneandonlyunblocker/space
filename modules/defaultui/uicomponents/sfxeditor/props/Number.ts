@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import SfxFragment from "../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import SfxFragment from "../../../../space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
-import NumericTextInput from "../../../src/uicomponents/generic/NumericTextInput";
+import NumericTextInput from "../../generic/NumericTextInput";
 
 
 interface PropTypes extends React.Props<any>
