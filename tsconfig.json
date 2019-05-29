@@ -2,7 +2,6 @@
   "references": [
     {"path": "./_temp_app"},
     {"path": "./src"},
-    // {"path": "./localization"},
     {"path": "./modules"},
     // {"path": "./modules/drones"},
   ]
