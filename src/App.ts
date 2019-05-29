@@ -44,7 +44,8 @@ import { PlayerNotificationSubscriber } from "./notifications/PlayerNotification
 import { storageStrings } from "./storageStrings";
 
 // TODO 2019.05.28 |
-const defaultModules = (<any>window).defaultModules;
+import ModuleFile from "./ModuleFile";
+const defaultModules: ModuleFile[] = (<any>window).defaultModules;
 
 class App
 {

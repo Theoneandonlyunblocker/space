@@ -6,8 +6,11 @@ import * as semver from "./versions";
 import * as debug from "./debug";
 import { getFunctionName } from "./utility";
 import {activeModuleStore} from "./ModuleStore";
-import { defaultModules } from "./defaultModules";
 
+
+// TODO 2019.05.28 |
+import ModuleFile from "./ModuleFile";
+const defaultModules: ModuleFile[] = (<any>window).defaultModules;
 
 // data is cloned at start of reviving process
 // all revivers act on the same cloned data and are destructive
