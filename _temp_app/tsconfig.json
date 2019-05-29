@@ -2,11 +2,11 @@
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
     // "outFile": "./index.js",
-    "outDir": "projectDist/_temp_app",
-    "rootDir": ".",
+    "outDir": "../projectDist",
+    "rootDir": "..",
   },
   "references": [
-    {"path": "../modules"},
-    {"path": "../src"},
+    {"path": "./modules"},
+    {"path": "./src"},
   ]
 }
