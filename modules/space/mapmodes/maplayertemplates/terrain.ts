@@ -7,6 +7,7 @@ import triangulate from "../../mapgen/common/triangulate";
 
 import GalaxyMap from "../../../../src/GalaxyMap";
 import Player from "../../../../src/Player";
+import Point from "../../../../src/Point";
 import
 {
   getRandomArrayItemWithWeights,
