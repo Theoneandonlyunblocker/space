@@ -5,7 +5,7 @@
     "outFile": "dist/main.js",
   },
   "files": [
-    "lib/lib.extend.d.ts",
+    "lib/_lib.extend.d.ts",
     "src/App.ts",
   ],
 }

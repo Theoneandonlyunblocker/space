@@ -9,6 +9,6 @@
     "**/*",
   ],
   "files": [
-    "../lib/lib.extend.d.ts"
+    "../lib/_lib.extend.d.ts",
   ]
 }
