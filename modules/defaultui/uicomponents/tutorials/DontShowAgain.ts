@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import TutorialStatus from "../../../../src/tutorials/TutorialStatus";
 import TutorialVisibility from "../../../../src/tutorials/TutorialVisibility";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

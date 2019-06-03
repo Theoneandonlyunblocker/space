@@ -6,7 +6,7 @@ import TerritoryBuildingList from "../galaxymap/TerritoryBuildingList";
 
 import BattlePrep from "../../../../src/BattlePrep";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

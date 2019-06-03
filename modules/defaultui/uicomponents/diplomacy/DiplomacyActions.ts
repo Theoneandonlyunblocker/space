@@ -7,7 +7,7 @@ import TradeOverview from "../trade/TradeOverview";
 
 import {default as DefaultWindow} from "../windows/DefaultWindow";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

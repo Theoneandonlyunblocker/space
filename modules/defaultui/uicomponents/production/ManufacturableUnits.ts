@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 import Manufactory from "../../../../src/Manufactory";
 import Star from "../../../../src/Star";
 import ManufacturableThing from "../../../../src/templateinterfaces/ManufacturableThing";

@@ -5,7 +5,7 @@ import Color from "../../../../src/Color";
 
 import {default as EmblemComponent, EmblemProps} from "../Emblem";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 
 interface PropTypes extends React.Props<any>

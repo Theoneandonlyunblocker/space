@@ -3,7 +3,7 @@ import { ErrorReportingMode } from "../../../../src/handleError";
 import {ErrorBoundary} from "./ErrorBoundary";
 import {SaveRecoveryWithDetails} from "./SaveRecoveryWithDetails";
 import Game from "../../../../src/Game";
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 
 // tslint:disable-next-line:no-any

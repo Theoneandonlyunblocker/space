@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {UnlockableThing, UnlockableThingKind} from "../../../../src/templateinterfaces/UnlockableThing";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 import {TechnologyUnlocksForType} from "./TechnologyUnlocksForType";
 

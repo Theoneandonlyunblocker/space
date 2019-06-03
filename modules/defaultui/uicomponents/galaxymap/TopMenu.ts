@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 import Game from "../../../../src/Game";
 import Options from "../../../../src/Options";
 import Player from "../../../../src/Player";

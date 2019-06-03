@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {Notification} from "../../../../src/notifications/Notification";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

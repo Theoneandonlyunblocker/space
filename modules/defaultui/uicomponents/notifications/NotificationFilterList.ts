@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {activeNotificationFilter, NotificationFilter} from "../../../../src/notifications/NotificationFilter";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 import eventManager from "../../../../src/eventManager";
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactMotion from "react-motion";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 import GuardCoverage from "../../../../src/GuardCoverage";
 
 import UnitActions from "./UnitActions";

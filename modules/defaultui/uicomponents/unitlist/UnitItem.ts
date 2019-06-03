@@ -6,7 +6,7 @@ import applyMixins from "../mixins/applyMixins";
 
 import Item from "../../../../src/Item";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

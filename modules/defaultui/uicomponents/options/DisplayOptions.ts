@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 import eventManager from "../../../../src/eventManager";
 import Options from "../../../../src/Options";
 import {default as OptionsGroup, OptionsGroupItem} from "./OptionsGroup";

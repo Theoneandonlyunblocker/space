@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 import Unit from "../../../../src/Unit";
 import List from "../list/List";
 import ListColumn from "../list/ListColumn";

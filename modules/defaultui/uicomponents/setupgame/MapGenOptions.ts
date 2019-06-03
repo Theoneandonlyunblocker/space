@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 import Range from "../../../../src/Range";
 import MapGenOptionValues from "../../../../src/templateinterfaces/MapGenOptionValues";
 import MapGenOptions from "../../../../src/templateinterfaces/MapGenOptions";

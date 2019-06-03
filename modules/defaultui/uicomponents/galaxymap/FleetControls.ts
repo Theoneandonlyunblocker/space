@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {Fleet} from "../../../../src/Fleet";
 import eventManager from "../../../../src/eventManager";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

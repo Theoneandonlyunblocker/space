@@ -6,7 +6,7 @@ import {default as DialogBox} from "../windows/DialogBox";
 
 import LoadGame from "../saves/LoadGame";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 
 interface PropTypes extends React.Props<any>

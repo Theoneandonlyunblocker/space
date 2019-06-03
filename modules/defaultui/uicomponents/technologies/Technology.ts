@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 import PlayerTechnology from "../../../../src/PlayerTechnology";
 import TechnologyTemplate from "../../../../src/templateinterfaces/TechnologyTemplate";
 import {DefaultWindow} from "../windows/DefaultWindow";

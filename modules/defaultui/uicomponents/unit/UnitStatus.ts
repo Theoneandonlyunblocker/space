@@ -7,7 +7,7 @@ import
   clamp,
 } from "../../../../src/utility";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

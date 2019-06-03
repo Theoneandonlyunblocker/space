@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {AllMessages, localize} from "../../../localization/localize";
+import {AllMessages, localize} from "../../localization/localize";
 
 import {UnlockableThing, UnlockableThingKind} from "../../../../src/templateinterfaces/UnlockableThing";
 

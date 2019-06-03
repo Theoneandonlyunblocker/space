@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 import {Fleet} from "../../../../src/Fleet";
 
 import FleetControls from "./FleetControls";

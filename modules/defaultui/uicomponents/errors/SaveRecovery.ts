@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 import { EmergencySaveGame } from "../saves/EmergencySaveGame";
 import { ErrorBoundary, ErrorBoundaryComponent } from "./ErrorBoundary";
 import { default as LoadGame } from "../saves/LoadGame";

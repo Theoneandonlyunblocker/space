@@ -5,7 +5,7 @@ import Player from "../../../../src/Player";
 import Star from "../../../../src/Star";
 import {activeModuleData} from "../../../../src/activeModuleData";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>

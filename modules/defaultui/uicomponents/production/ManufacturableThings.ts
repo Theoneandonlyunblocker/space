@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
+import {localize} from "../../localization/localize";
 import Player from "../../../../src/Player";
 import Star from "../../../../src/Star";
 import ItemTemplate from "../../../../src/templateinterfaces/ItemTemplate";
