@@ -7,5 +7,12 @@
   },
   "references": [
     {"path": "../src"},
+  ],
+  "include": [
+    "**/*",
+    "**/*.json",
+  ],
+  "exclude": [
+    "./defaultui/**/*"
   ]
 }
