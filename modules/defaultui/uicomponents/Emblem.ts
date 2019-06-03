@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Color from "../Color";
-import Emblem from "../Emblem";
-import SubEmblemTemplate from "../templateinterfaces/SubEmblemTemplate";
+import Color from "../../../src/Color";
+import Emblem from "../../../src/Emblem";
+import SubEmblemTemplate from "../../../src/templateinterfaces/SubEmblemTemplate";
 
 
 export interface EmblemProps

@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Flag} from "../Flag";
+import {Flag} from "../../../src/Flag";
 import
 {
   shallowExtend,
-} from "../utility";
+} from "../../../src/utility";
 
 
 export interface PropTypes extends React.Props<any>

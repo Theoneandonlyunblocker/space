@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Options from "../../../src/Options";
+import Options from "../../../../src/Options";
 import UnitDisplayData from "../../../../src/UnitDisplayData";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
