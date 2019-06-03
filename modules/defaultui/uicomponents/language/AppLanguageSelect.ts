@@ -1,14 +1,14 @@
 import * as React from "react";
 
-import app from "../../App"; // TODO global
-import {activeModuleData} from "../../activeModuleData";
-import Options from "../../Options";
-import {Language} from "../../localization/Language";
+import app from "../../../../src/App"; // TODO global
+import {activeModuleData} from "../../../../src/activeModuleData";
+import Options from "../../../../src/Options";
+import {Language} from "../../../../src/localization/Language";
 import
 {
   getLanguagesByCodeFromModuleFiles,
   getLanguageSupportLevelForModuleFiles,
-} from "../../localization/languageSupport";
+} from "../../../../src/localization/languageSupport";
 
 import {default as LanguageSelect} from "./LanguageSelect";
 

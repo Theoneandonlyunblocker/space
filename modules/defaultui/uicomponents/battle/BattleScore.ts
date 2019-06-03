@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactMotion from "react-motion";
 
-import Player from "../../Player";
+import Player from "../../../../src/Player";
 import PlayerFlag from "../PlayerFlag";
-import { fixedDurationSpring } from "../../utility";
+import { fixedDurationSpring } from "../../../../src/utility";
 
 
 export interface PropTypes extends React.Props<any>

@@ -2,14 +2,14 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import Player from "../../Player";
-import {Trade} from "../../Trade";
+import Player from "../../../../src/Player";
+import {Trade} from "../../../../src/Trade";
 import
 {
   cloneTradeOffer,
   flipTradeOffer,
   TradeOffer,
-} from "../../TradeOffer";
+} from "../../../../src/TradeOffer";
 
 import TradeableItemsComponentFactory from "./TradeableItems";
 

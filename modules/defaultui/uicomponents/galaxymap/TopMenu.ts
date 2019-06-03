@@ -2,12 +2,12 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import Game from "../../Game";
-import Options from "../../Options";
-import Player from "../../Player";
-import Star from "../../Star";
-import eventManager from "../../eventManager";
-import {Language} from "../../localization/Language";
+import Game from "../../../../src/Game";
+import Options from "../../../../src/Options";
+import Player from "../../../../src/Player";
+import Star from "../../../../src/Star";
+import eventManager from "../../../../src/eventManager";
+import {Language} from "../../../../src/localization/Language";
 
 import {default as TopMenuPopups, PopupType, TopMenuPopupsComponent} from "./TopMenuPopups";
 

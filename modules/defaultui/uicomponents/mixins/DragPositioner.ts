@@ -1,12 +1,12 @@
 import * as React from "react";
 
-import Point from "../../Point";
-import {Rect} from "../../Rect";
+import Point from "../../../../src/Point";
+import {Rect} from "../../../../src/Rect";
 import
 {
   recursiveRemoveAttribute,
   shallowCopy,
-} from "../../utility";
+} from "../../../../src/utility";
 
 import MixinBase from "./MixinBase";
 import NormalizedEvent from "./NormalizedEvent";

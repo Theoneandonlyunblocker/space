@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import eventManager from "../../eventManager";
+import eventManager from "../../../../src/eventManager";
 
 import MixinBase from "./MixinBase";
 

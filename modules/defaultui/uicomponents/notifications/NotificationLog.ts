@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import eventManager from "../../eventManager";
-import {Notification} from "../../notifications/Notification";
-import {activeNotificationFilter, NotificationFilter} from "../../notifications/NotificationFilter";
-import {NotificationSubscriber} from "../../notifications/NotificationSubscriber";
+import eventManager from "../../../../src/eventManager";
+import {Notification} from "../../../../src/notifications/Notification";
+import {activeNotificationFilter, NotificationFilter} from "../../../../src/notifications/NotificationFilter";
+import {NotificationSubscriber} from "../../../../src/notifications/NotificationSubscriber";
 import {default as DialogBox} from "../windows/DialogBox";
 
 import NotificationComponentFactory from "./Notification";

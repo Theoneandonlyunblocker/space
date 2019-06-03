@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import MapRenderer from "../../MapRenderer";
-import MapRendererLayer from "../../MapRendererLayer";
-import MapRendererMapMode from "../../MapRendererMapMode";
+import MapRenderer from "../../../../src/MapRenderer";
+import MapRendererLayer from "../../../../src/MapRendererLayer";
+import MapRendererMapMode from "../../../../src/MapRendererMapMode";
 
 import MapRendererLayersListItem from "./MapRendererLayersListItem";
 

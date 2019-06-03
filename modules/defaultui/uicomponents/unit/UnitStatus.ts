@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import GuardCoverage from "../../GuardCoverage";
+import GuardCoverage from "../../../../src/GuardCoverage";
 import
 {
   clamp,
-} from "../../utility";
+} from "../../../../src/utility";
 
 import {localize} from "../../../localization/localize";
 

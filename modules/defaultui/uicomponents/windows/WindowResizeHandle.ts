@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import DragPositioner from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-import {Direction} from "../../Direction";
+import {Direction} from "../../../../src/Direction";
 
 
 type DirectionRestriction = "horizontal" | "vertical" | "free";

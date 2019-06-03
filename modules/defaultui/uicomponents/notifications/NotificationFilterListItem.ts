@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 
-import {NotificationFilter} from "../../notifications/NotificationFilter";
-import {NotificationFilterState} from "../../notifications/NotificationFilterState";
+import {NotificationFilter} from "../../../../src/notifications/NotificationFilter";
+import {NotificationFilterState} from "../../../../src/notifications/NotificationFilterState";
 
-import eventManager from "../../eventManager";
+import eventManager from "../../../../src/eventManager";
 
 
 export interface PropTypes extends React.Props<any>

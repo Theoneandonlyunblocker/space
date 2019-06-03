@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Flag} from "../../Flag";
-import {svgCache} from "../../svgCache";
+import {Flag} from "../../../../src/Flag";
+import {svgCache} from "../../../../src/svgCache";
 
 import PlayerFlag from "../PlayerFlag";
 

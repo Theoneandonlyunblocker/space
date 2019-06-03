@@ -5,7 +5,7 @@ import
 {
   clamp,
   mergeReactAttributes,
-} from "../../utility";
+} from "../../../../src/utility";
 
 import {default as Spinner} from "./Spinner";
 

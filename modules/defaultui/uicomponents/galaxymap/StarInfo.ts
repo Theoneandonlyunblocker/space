@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import Star from "../../Star";
+import Star from "../../../../src/Star";
 
 import TerritoryBuildingList from "./TerritoryBuildingList";
-import eventManager from "../../eventManager";
+import eventManager from "../../../../src/eventManager";
 
 
 export interface PropTypes extends React.Props<any>

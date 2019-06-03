@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import Manufactory from "../../Manufactory";
-import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
+import Manufactory from "../../../../src/Manufactory";
+import ManufacturableThing from "../../../../src/templateinterfaces/ManufacturableThing";
 
 import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
 import ManufacturableThingsList from "./ManufacturableThingsList";

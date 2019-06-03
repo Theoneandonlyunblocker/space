@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Rect} from "../../Rect";
+import {Rect} from "../../../../src/Rect";
 
 import
 {

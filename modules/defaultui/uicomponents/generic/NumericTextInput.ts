@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import
 {
   mergeReactAttributes,
-} from "../../utility";
+} from "../../../../src/utility";
 
 
 interface PropTypes extends React.Props<any>

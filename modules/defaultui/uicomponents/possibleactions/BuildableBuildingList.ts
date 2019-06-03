@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import Player from "../../Player";
-import Star from "../../Star";
-import {BuildingTemplate} from "../../templateinterfaces/BuildingTemplate";
+import Player from "../../../../src/Player";
+import Star from "../../../../src/Star";
+import {BuildingTemplate} from "../../../../src/templateinterfaces/BuildingTemplate";
 import List from "../list/List";
 import ListColumn from "../list/ListColumn";
 import ListItem from "../list/ListItem";

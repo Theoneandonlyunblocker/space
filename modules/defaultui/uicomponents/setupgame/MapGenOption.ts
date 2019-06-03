@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import MapGenOption from "../../templateinterfaces/MapGenOption";
+import MapGenOption from "../../../../src/templateinterfaces/MapGenOption";
 import
 {
   clamp,
-} from "../../utility";
+} from "../../../../src/utility";
 
 
 export interface PropTypes extends React.Props<any>

@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Fleet} from "../../Fleet";
-import eventManager from "../../eventManager";
+import {Fleet} from "../../../../src/Fleet";
+import eventManager from "../../../../src/eventManager";
 
 import {localize} from "../../../localization/localize";
 

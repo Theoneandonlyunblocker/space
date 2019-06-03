@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import eventManager from "../../eventManager";
-import Options from "../../Options";
+import eventManager from "../../../../src/eventManager";
+import Options from "../../../../src/Options";
 import {default as OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
 import OptionsNumericField from "./OptionsNumericField";
 import OptionsCheckbox from "./OptionsCheckbox";

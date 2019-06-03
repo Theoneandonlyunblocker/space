@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {FixedRateTicker} from "../../FixedRateTicker";
+import {FixedRateTicker} from "../../../../src/FixedRateTicker";
 
 import
 {
   clamp,
   roundToNearestMultiple,
-} from "../../utility";
+} from "../../../../src/utility";
 
 
 interface PropTypes extends React.Props<any>

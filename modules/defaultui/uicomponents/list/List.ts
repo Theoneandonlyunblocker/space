@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import eventManager from "../../eventManager";
+import eventManager from "../../../../src/eventManager";
 import
 {
   shallowCopy,
-} from "../../utility";
+} from "../../../../src/utility";
 
 import ListColumn from "./ListColumn";
 import ListItem from "./ListItem";

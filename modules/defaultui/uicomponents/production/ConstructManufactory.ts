@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Player from "../../Player";
-import Star from "../../Star";
-import {activeModuleData} from "../../activeModuleData";
+import Player from "../../../../src/Player";
+import Star from "../../../../src/Star";
+import {activeModuleData} from "../../../../src/activeModuleData";
 
 import {localize} from "../../../localization/localize";
 

@@ -2,13 +2,13 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import PlayerTechnology from "../../PlayerTechnology";
-import TechnologyTemplate from "../../templateinterfaces/TechnologyTemplate";
+import PlayerTechnology from "../../../../src/PlayerTechnology";
+import TechnologyTemplate from "../../../../src/templateinterfaces/TechnologyTemplate";
 import {DefaultWindow} from "../windows/DefaultWindow";
 
 import {TechnologyUnlocks} from "./TechnologyUnlocks";
 import TechnologyPrioritySlider from "./technologyPrioritySlider";
-import { activeModuleData } from "../../activeModuleData";
+import { activeModuleData } from "../../../../src/activeModuleData";
 
 
 export interface PropTypes extends React.Props<any>

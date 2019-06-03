@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {RaceTemplate} from "../../templateinterfaces/RaceTemplate";
+import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
 
 
 interface PropTypes extends React.Props<any>

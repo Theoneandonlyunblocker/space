@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {UnitAttributesObject} from "../../UnitAttributes";
+import {UnitAttributesObject} from "../../../../src/UnitAttributes";
 
 
 export interface PropTypes extends React.Props<any>

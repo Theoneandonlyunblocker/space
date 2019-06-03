@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
-import Unit from "../../Unit";
-import {shallowExtend} from "../../utility";
+import Unit from "../../../../src/Unit";
+import {shallowExtend} from "../../../../src/utility";
 import ListItemProps from "../list/ListItemProps";
 import {default as UnitComponentFactory} from "../unit/Unit";
 import UnitStrength from "../unit/UnitStrength";

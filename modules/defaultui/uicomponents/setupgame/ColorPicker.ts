@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import Color from "../../Color";
+import Color from "../../../../src/Color";
 import NumberInput from "../generic/NumberInput";
 import NumericTextInput from "../generic/NumericTextInput";
 import

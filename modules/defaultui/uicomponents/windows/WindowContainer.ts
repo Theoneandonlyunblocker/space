@@ -2,13 +2,13 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
-import {Direction} from "../../Direction";
-import {Rect} from "../../Rect";
+import {Direction} from "../../../../src/Direction";
+import {Rect} from "../../../../src/Rect";
 import
 {
   clamp,
   mergeReactAttributes,
-} from "../../utility";
+} from "../../../../src/utility";
 import {default as DragPositioner} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 

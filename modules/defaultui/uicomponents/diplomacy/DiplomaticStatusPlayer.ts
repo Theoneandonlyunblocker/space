@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {AttitudeModifier} from "../../AttitudeModifier";
-import {Flag} from "../../Flag";
-import Player from "../../Player";
+import {AttitudeModifier} from "../../../../src/AttitudeModifier";
+import {Flag} from "../../../../src/Flag";
+import Player from "../../../../src/Player";
 import PlayerFlag from "../PlayerFlag";
 import ListItemProps from "../list/ListItemProps";
 

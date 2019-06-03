@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Color from "../../Color";
+import Color from "../../../../src/Color";
 
 import {default as EmblemComponent, EmblemProps} from "../Emblem";
 

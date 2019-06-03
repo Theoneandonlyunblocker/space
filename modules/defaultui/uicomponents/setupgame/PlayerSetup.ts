@@ -1,21 +1,21 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Color from "../../Color";
-import {Flag} from "../../Flag";
-import Player from "../../Player";
-import {activeModuleData} from "../../activeModuleData";
+import Color from "../../../../src/Color";
+import {Flag} from "../../../../src/Flag";
+import Player from "../../../../src/Player";
+import {activeModuleData} from "../../../../src/activeModuleData";
 import
 {
   generateMainColor,
   generateSecondaryColor,
-} from "../../colorGeneration";
+} from "../../../../src/colorGeneration";
 import
 {
   getRandomArrayItem,
-} from "../../utility";
+} from "../../../../src/utility";
 
-import {RaceTemplate} from "../../templateinterfaces/RaceTemplate";
+import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
 
 import {default as ColorSetter} from "./ColorSetter";
 import {default as FlagSetter} from "./FlagSetter";

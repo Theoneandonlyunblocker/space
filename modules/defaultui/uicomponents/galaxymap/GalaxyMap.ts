@@ -1,14 +1,14 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Game from "../../Game";
-import MapRenderer from "../../MapRenderer";
-import Player from "../../Player";
-import PlayerControl from "../../PlayerControl";
-import Renderer from "../../Renderer";
-import {Language} from "../../localization/Language";
-import { Notification } from "../../notifications/Notification";
-import { NotificationSubscriber } from "../../notifications/NotificationSubscriber";
+import Game from "../../../../src/Game";
+import MapRenderer from "../../../../src/MapRenderer";
+import Player from "../../../../src/Player";
+import PlayerControl from "../../../../src/PlayerControl";
+import Renderer from "../../../../src/Renderer";
+import {Language} from "../../../../src/localization/Language";
+import { Notification } from "../../../../src/notifications/Notification";
+import { NotificationSubscriber } from "../../../../src/notifications/NotificationSubscriber";
 
 import GalaxyMapUI from "./GalaxyMapUI";
 import GameOverScreen from "./GameOverScreen";

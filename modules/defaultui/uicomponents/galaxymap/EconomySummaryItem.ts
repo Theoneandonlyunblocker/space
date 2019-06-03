@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Star from "../../Star";
+import Star from "../../../../src/Star";
 import ListItemProps from "../list/ListItemProps";
 
 

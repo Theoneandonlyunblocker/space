@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Item from "../../Item";
-import Unit from "../../Unit";
-import AbilityBase from "../../templateinterfaces/AbilityBase";
+import Item from "../../../../src/Item";
+import Unit from "../../../../src/Unit";
+import AbilityBase from "../../../../src/templateinterfaces/AbilityBase";
 import ListItemProps from "../list/ListItemProps";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";

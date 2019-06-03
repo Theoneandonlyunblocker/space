@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import app from "../../App"; // TODO global
-import BattlePrep from "../../BattlePrep";
-import { BattlePrepFormation } from "../../BattlePrepFormation";
+import app from "../../../../src/App"; // TODO global
+import BattlePrep from "../../../../src/BattlePrep";
+import { BattlePrepFormation } from "../../../../src/BattlePrepFormation";
 import
 {
   FormationInvalidityReason,
@@ -12,13 +12,13 @@ import
   FormationValidityModifier,
   FormationValidityModifierEffect,
   FormationValidityModifierSourceType,
-} from "../../BattlePrepFormationValidity";
-import BattleSimulator from "../../BattleSimulator";
-import Item from "../../Item";
-import Options from "../../Options";
-import Unit from "../../Unit";
-import {activeModuleData} from "../../activeModuleData";
-import { extractFlagsFromFlagWord } from "../../utility";
+} from "../../../../src/BattlePrepFormationValidity";
+import BattleSimulator from "../../../../src/BattleSimulator";
+import Item from "../../../../src/Item";
+import Options from "../../../../src/Options";
+import Unit from "../../../../src/Unit";
+import {activeModuleData} from "../../../../src/activeModuleData";
+import { extractFlagsFromFlagWord } from "../../../../src/utility";
 import {BattleBackgroundComponent, default as BattleBackground} from "../battle/BattleBackground";
 import Formation from "../battle/Formation";
 import ListItem from "../list/ListItem";

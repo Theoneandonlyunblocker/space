@@ -1,5 +1,5 @@
-import {IdDictionary} from "../../IdDictionary";
-import {Rect} from "../../Rect";
+import {IdDictionary} from "../../../../src/IdDictionary";
+import {Rect} from "../../../../src/Rect";
 
 import {WindowContainerComponent} from "./WindowContainer";
 

@@ -3,12 +3,12 @@ import * as ReactDOMElements from "react-dom-factories";
 import * as localForage from "localforage";
 
 import {localize} from "../../../localization/localize";
-import app from "../../App"; // TODO global
+import app from "../../../../src/App"; // TODO global
 import {default as DialogBox} from "../windows/DialogBox";
 
 import ConfirmDeleteSavesContent from "./ConfirmDeleteSavesContent";
 import SaveList, { SaveListComponent } from "./SaveList";
-import { storageStrings } from "../../storageStrings";
+import { storageStrings } from "../../../../src/storageStrings";
 
 
 export interface PropTypes extends React.Props<any>

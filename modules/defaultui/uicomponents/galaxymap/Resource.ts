@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import ResourceTemplate from "../../templateinterfaces/ResourceTemplate";
+import ResourceTemplate from "../../../../src/templateinterfaces/ResourceTemplate";
 
 
 export interface PropTypes extends React.Props<any>

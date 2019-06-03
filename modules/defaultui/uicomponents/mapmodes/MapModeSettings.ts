@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import MapRenderer from "../../MapRenderer";
+import MapRenderer from "../../../../src/MapRenderer";
 
 import MapModeSelector from "./MapModeSelector";
 import {default as MapRendererLayersList, MapRendererLayersListComponent} from "./MapRendererLayersList";

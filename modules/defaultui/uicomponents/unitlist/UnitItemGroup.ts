@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Item from "../../Item";
+import Item from "../../../../src/Item";
 
 import UnitItemWrapper from "./UnitItemWrapper";
 

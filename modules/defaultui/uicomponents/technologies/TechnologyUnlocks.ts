@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {UnlockableThing} from "../../templateinterfaces/UnlockableThing";
+import {UnlockableThing} from "../../../../src/templateinterfaces/UnlockableThing";
 
 import {TechnologyUnlocksForLevel} from "./TechnologyUnlocksForLevel";
 

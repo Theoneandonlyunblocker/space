@@ -3,12 +3,12 @@ import * as ReactDOMElements from "react-dom-factories";
 import * as localForage from "localforage";
 
 import {localize} from "../../../localization/localize";
-import Game from "../../Game";
-import Options from "../../Options";
-import Player from "../../Player";
-import {Rect} from "../../Rect";
-import Star from "../../Star";
-import {Language} from "../../localization/Language";
+import Game from "../../../../src/Game";
+import Options from "../../../../src/Options";
+import Player from "../../../../src/Player";
+import {Rect} from "../../../../src/Rect";
+import Star from "../../../../src/Star";
+import {Language} from "../../../../src/localization/Language";
 import DiplomacyOverview from "../diplomacy/DiplomacyOverview";
 import ProductionOverview from "../production/ProductionOverview";
 import LoadGame from "../saves/LoadGame";
@@ -19,7 +19,7 @@ import {default as DefaultWindow, DefaultWindowComponent} from "../windows/Defau
 
 import EconomySummary from "./EconomySummary";
 import FullOptionsList from "../options/FullOptionsList";
-import { storageStrings } from "../../storageStrings";
+import { storageStrings } from "../../../../src/storageStrings";
 
 
 interface ValuesByPopup<T>

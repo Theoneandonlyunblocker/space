@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Item from "../../Item";
-import Player from "../../Player";
-import Unit from "../../Unit";
+import Item from "../../../../src/Item";
+import Player from "../../../../src/Player";
+import Unit from "../../../../src/Unit";
 import ListItem from "../list/ListItem";
 
 import ItemList from "./ItemList";

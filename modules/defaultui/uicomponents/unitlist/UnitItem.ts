@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-import Item from "../../Item";
+import Item from "../../../../src/Item";
 
 import {localize} from "../../../localization/localize";
 

@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import BattleScene from "../../BattleScene";
-import {Flag} from "../../Flag";
+import BattleScene from "../../../../src/BattleScene";
+import {Flag} from "../../../../src/Flag";
 
 import BattleFinish from "./BattleFinish";
 import BattleSceneFlag from "./BattleSceneFlag";

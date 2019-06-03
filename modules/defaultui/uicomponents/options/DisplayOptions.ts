@@ -2,13 +2,13 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import eventManager from "../../eventManager";
-import Options from "../../Options";
+import eventManager from "../../../../src/eventManager";
+import Options from "../../../../src/Options";
 import {default as OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
 import OptionsCheckbox from "./OptionsCheckbox";
 import NotificationFilterButton from "../notifications/NotificationFilterButton";
-import TutorialStatus from "../../tutorials/TutorialStatus";
-import { Language } from "../../localization/Language";
+import TutorialStatus from "../../../../src/tutorials/TutorialStatus";
+import { Language } from "../../../../src/localization/Language";
 import {default as AppLanguageSelect} from "../language/AppLanguageSelect";
 
 

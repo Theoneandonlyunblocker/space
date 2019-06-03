@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import Options from "../../Options";
-import {Language} from "../../localization/Language";
+import Options from "../../../../src/Options";
+import {Language} from "../../../../src/localization/Language";
 import {default as DialogBox} from "../windows/DialogBox";
 
 import {BattleOptions} from "./BattleOptions";

@@ -13,13 +13,13 @@ import
   ExpandedAction,
   ExpandedActionKind
 } from "../possibleactions/ExpandedAction";
-import { Fleet } from "../../Fleet";
-import Star from "../../Star";
-import Player from "../../Player";
-import FleetAttackTarget from "../../FleetAttackTarget";
-import eventManager from "../../eventManager";
-import { BuildingTemplate } from "../../templateinterfaces/BuildingTemplate";
-import BuildingUpgradeData from "../../BuildingUpgradeData";
+import { Fleet } from "../../../../src/Fleet";
+import Star from "../../../../src/Star";
+import Player from "../../../../src/Player";
+import FleetAttackTarget from "../../../../src/FleetAttackTarget";
+import eventManager from "../../../../src/eventManager";
+import { BuildingTemplate } from "../../../../src/templateinterfaces/BuildingTemplate";
+import BuildingUpgradeData from "../../../../src/BuildingUpgradeData";
 
 
 // tslint:disable-next-line:no-any

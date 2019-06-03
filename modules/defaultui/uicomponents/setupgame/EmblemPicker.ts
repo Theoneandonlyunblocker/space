@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Color from "../../Color";
-import {activeModuleData} from "../../activeModuleData";
+import Color from "../../../../src/Color";
+import {activeModuleData} from "../../../../src/activeModuleData";
 
-import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
+import SubEmblemTemplate from "../../../../src/templateinterfaces/SubEmblemTemplate";
 
 import EmblemComponent from "../Emblem";
 

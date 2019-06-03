@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import {activeModuleData} from "../../activeModuleData";
-import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
+import {activeModuleData} from "../../../../src/activeModuleData";
+import MapGenTemplate from "../../../../src/templateinterfaces/MapGenTemplate";
 
 import {default as MapGenOptions, MapGenOptionsComponent} from "./MapGenOptions";
 

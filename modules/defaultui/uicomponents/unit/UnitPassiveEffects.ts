@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import UnitEffectTemplate from "../../templateinterfaces/UnitEffectTemplate";
+import UnitEffectTemplate from "../../../../src/templateinterfaces/UnitEffectTemplate";
 
 
 export interface PropTypes extends React.Props<any>

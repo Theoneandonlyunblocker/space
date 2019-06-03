@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {TerritoryBuilding} from "../../Building";
+import {TerritoryBuilding} from "../../../../src/Building";
 import PlayerFlag from "../PlayerFlag";
 
 
