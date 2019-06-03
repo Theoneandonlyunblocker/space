@@ -26,7 +26,7 @@ const containerClassForAnimationState =
   [AnimationState.Idle]: "",
 };
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   unitName: string;
   delay: number;

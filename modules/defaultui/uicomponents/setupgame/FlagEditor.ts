@@ -21,7 +21,7 @@ type EmblemPropsWithId = (EmblemProps & {id: number});
 
 const maxEmblems = 4;
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   parentFlag: Flag | null;
   backgroundColor: Color | null;

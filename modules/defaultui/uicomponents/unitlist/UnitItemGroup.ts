@@ -6,7 +6,7 @@ import Item from "../../../../src/Item";
 import UnitItemWrapper from "./UnitItemWrapper";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   slotName: string;
   maxItems: number;

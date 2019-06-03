@@ -9,7 +9,7 @@ import SubEmblemTemplate from "../../../../src/templateinterfaces/SubEmblemTempl
 import EmblemComponent from "../Emblem";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   colors: Color[];
   backgroundColor: Color | null;

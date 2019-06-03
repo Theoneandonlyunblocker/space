@@ -6,7 +6,7 @@ import SfxFragment from "../../../../space/battlesfx/drawingfunctions/sfxfragmen
 import SfxFragmentPropVecBase from "./VecBase";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   propName: string;
   fragment: SfxFragment<any>;

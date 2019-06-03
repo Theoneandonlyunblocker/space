@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   availableRaces: RaceTemplate[];
   selectedRace: RaceTemplate;

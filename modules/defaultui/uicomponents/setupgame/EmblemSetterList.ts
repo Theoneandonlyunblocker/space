@@ -8,7 +8,7 @@ import {EmblemProps} from "../Emblem";
 import EmblemSetter from "./EmblemSetter";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   backgroundColor: Color;
   emblems: (EmblemProps & {id: number})[];

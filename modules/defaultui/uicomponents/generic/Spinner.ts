@@ -10,7 +10,7 @@ import
 } from "../../../../src/utility";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   value: number;
   step: number;

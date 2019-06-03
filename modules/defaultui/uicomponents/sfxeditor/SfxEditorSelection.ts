@@ -13,7 +13,7 @@ import SfxFragmentEditor from "./SfxFragmentEditor";
 import SfxFragmentList from "./SfxFragmentList";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   availableFragmentConstructors: SfxFragmentConstructor[];
   selectedFragment: SfxFragment<any>;

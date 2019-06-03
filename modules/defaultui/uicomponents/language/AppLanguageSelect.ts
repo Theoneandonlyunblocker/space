@@ -13,7 +13,7 @@ import
 import {default as LanguageSelect} from "./LanguageSelect";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   activeLanguage: Language;
   onChange?: () => void;

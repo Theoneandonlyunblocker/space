@@ -71,7 +71,7 @@ availableFragmentConstructors.sort((a, b) =>
   return AlphabeticallyByProp(a, b, ["displayName", "key"]);
 });
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   // availableUnitTemplates: UnitTemplate[];
 }

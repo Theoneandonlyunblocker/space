@@ -10,7 +10,7 @@ import
 import {default as Spinner} from "./Spinner";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   value: number;
   onChange: (value: number) => void;

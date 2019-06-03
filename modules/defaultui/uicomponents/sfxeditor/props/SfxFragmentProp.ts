@@ -19,7 +19,7 @@ import SfxFragmentPropRampingValue from "./RampingValue";
 import SfxFragmentPropRange from "./Range";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   propName: string;
   propType: PropInfoType;

@@ -7,7 +7,7 @@ import {LanguageSupportLevel} from "../../../../src/localization/languageSupport
 import {localize} from "../../localization/localize";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   activeLanguage: Language;
   availableLanguagesByCode: {[languageCode: string]: Language};

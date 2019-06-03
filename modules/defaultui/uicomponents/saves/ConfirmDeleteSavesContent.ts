@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {localize} from "../../localization/localize";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   saveNames: string[];
 }

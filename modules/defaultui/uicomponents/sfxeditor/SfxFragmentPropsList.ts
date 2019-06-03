@@ -6,7 +6,7 @@ import SfxFragment from "../../../../modules/space/battlesfx/drawingfunctions/sf
 import SfxFragmentProp from "./props/SfxFragmentProp";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   fragment: SfxFragment<any>;
   onPropValueChange: () => void;

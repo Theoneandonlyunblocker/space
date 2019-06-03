@@ -8,7 +8,7 @@ import {localize} from "../../localization/localize";
 import {TechnologyUnlocksForType} from "./TechnologyUnlocksForType";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   level: number;
   unlocks: UnlockableThing[];

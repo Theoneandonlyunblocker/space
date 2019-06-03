@@ -12,7 +12,7 @@ export interface EmblemProps
   template: SubEmblemTemplate | null;
 }
 
-interface PropTypes extends React.Props<any>, EmblemProps
+export interface PropTypes extends React.Props<any>, EmblemProps
 {
   containerProps?: React.HTMLAttributes<HTMLDivElement>;
 }

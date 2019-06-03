@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import SfxFragment from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   hasDraggingFragment: boolean;
   moveDraggingFragment: (e: React.MouseEvent<HTMLDivElement>) => void;

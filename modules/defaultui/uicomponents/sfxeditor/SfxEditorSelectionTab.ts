@@ -11,7 +11,7 @@ const displayString =
   placedFragments: "Placed",
 };
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   type: SelectionTabType;
 

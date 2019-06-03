@@ -7,7 +7,7 @@ import Color from "../../../../../src/Color";
 import ColorSetter from "../../setupgame/ColorSetter";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   propName: string;
   fragment: SfxFragment<any>;

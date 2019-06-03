@@ -8,7 +8,7 @@ import {default as EmblemComponent, EmblemProps} from "../Emblem";
 import {localize} from "../../localization/localize";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   toggleActive: () => void;
   remove: () => void;

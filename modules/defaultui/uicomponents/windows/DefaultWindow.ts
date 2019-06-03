@@ -27,7 +27,7 @@ type SizeBounds =
   maxHeight: number;
 };
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   title: string;
   handleClose: () => void;

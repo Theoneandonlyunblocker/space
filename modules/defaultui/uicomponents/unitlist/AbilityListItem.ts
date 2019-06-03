@@ -13,7 +13,7 @@ const classNameMap: {[k in AbilityListItemType]: string} =
 };
 
 // tslint:disable-next-line:no-any
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   type: AbilityListItemType;
   displayName: string;

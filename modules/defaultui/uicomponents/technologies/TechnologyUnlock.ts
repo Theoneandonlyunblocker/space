@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   displayName: string;
   description: string;

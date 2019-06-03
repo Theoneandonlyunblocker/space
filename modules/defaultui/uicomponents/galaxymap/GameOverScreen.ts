@@ -9,7 +9,7 @@ import LoadGame from "../saves/LoadGame";
 import {localize} from "../../localization/localize";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
 
 }

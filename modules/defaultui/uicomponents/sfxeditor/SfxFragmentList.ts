@@ -10,7 +10,7 @@ import SfxFragmentListItem from "./SfxFragmentListItem";
 
 type Fragment = SfxFragment<any> | SfxFragmentConstructor;
 
-interface PropTypes<P extends Fragment> extends React.Props<any>
+export interface PropTypes<P extends Fragment> extends React.Props<any>
 {
   fragments: P[];
 

@@ -6,7 +6,7 @@ import {localize} from "../../localization/localize";
 import {default as DefaultWindow} from "./DefaultWindow";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   title: string;
   handleOk: () => void;

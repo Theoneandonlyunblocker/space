@@ -6,7 +6,7 @@ import {UnlockableThing} from "../../../../src/templateinterfaces/UnlockableThin
 import {TechnologyUnlocksForLevel} from "./TechnologyUnlocksForLevel";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   technologyDisplayName: string;
   unlocksPerLevel: {[level: number]: UnlockableThing[]};

@@ -9,7 +9,7 @@ import {EmblemColorPicker} from "./EmblemColorPicker";
 import EmblemPicker from "./EmblemPicker";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   colors: (Color | null)[];
   backgroundColor: Color | null;

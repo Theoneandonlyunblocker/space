@@ -7,7 +7,7 @@ import { storageStrings } from "../../../../src/storageStrings";
 
 
 // tslint:disable-next-line:no-any
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
 
 }

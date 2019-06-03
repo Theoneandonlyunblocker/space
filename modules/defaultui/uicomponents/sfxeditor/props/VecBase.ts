@@ -13,7 +13,7 @@ export interface VecProp
   value: number;
 }
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   propName: string;
   fragment: SfxFragment<any>;

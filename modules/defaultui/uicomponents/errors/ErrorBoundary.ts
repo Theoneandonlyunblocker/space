@@ -2,7 +2,7 @@ import * as React from "react";
 
 
 // tslint:disable-next-line:no-any
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   handleError?: (error: Error, info: React.ErrorInfo) => void;
   renderError: (error: Error, info: React.ErrorInfo) => React.ReactNode;
