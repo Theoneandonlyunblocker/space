@@ -3,7 +3,7 @@ import ModuleData from "../../../src/ModuleData";
 import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
 
-import raceTemplates from "./RaceTemplates";
+import raceTemplates from "./raceTemplates";
 
 import * as moduleInfo from "./moduleInfo.json";
 

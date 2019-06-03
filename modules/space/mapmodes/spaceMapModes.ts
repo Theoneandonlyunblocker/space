@@ -4,8 +4,8 @@ import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
 
-import mapLayerTemplates from "./MapLayerTemplates";
-import mapModeTemplates from "./MapModeTemplates";
+import mapLayerTemplates from "./mapLayerTemplates";
+import mapModeTemplates from "./mapModeTemplates";
 
 import * as moduleInfo from "./moduleInfo.json";
 

@@ -12,8 +12,8 @@ import spaceBackgrounds from "./backgrounds/spaceBackgrounds";
 import {spaceBattleSfx} from "./battlesfx/spaceBattleSfx";
 import spaceBuildings from "./buildings/spaceBuildings";
 import spaceItems from "./items/spaceItems";
-import spaceMapgen from "./mapgen/spaceMapgen";
-import spaceMapmodes from "./mapmodes/spaceMapmodes";
+import spaceMapgen from "./mapgen/spaceMapGen";
+import spaceMapModes from "./mapmodes/spaceMapModes";
 import spaceRaces from "./races/spaceRaces";
 import spaceTechnologies from "./technologies/spaceTechnologies";
 import spaceUnits from "./units/spaceUnits";
@@ -34,7 +34,7 @@ export const space: ModuleFile =
     spaceBuildings,
     spaceItems,
     spaceMapgen,
-    spaceMapmodes,
+    spaceMapModes,
     spaceRaces,
     spaceTechnologies,
     spaceUnits,

@@ -3,7 +3,7 @@ import ModuleFile from "../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 import {emblemSources, svgCache} from "./assets";
 
-import subEmblemTemplates from "./SubEmblemTemplates";
+import subEmblemTemplates from "./subEmblemTemplates";
 
 import * as moduleInfo from "./moduleInfo.json";
 

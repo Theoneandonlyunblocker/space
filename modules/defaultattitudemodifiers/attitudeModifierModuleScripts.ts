@@ -6,7 +6,7 @@ import
 {
   baseOpinion,
   declaredWar,
-} from "./AttitudeModifierTemplates";
+} from "./attitudeModifierTemplates";
 
 
 export const attitudeModifierModuleScripts =

@@ -4,7 +4,7 @@ import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import ModuleFile from "../../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
 
-import buildingTemplates from "./BuildingTemplates";
+import buildingTemplates from "./buildingTemplates";
 import {iconSources, svgCache} from "./resources";
 
 import * as moduleInfo from "./moduleInfo.json";

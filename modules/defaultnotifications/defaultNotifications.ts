@@ -7,7 +7,7 @@ import
 {
   notificationCreationScripts,
   notificationTemplates,
-} from "./NotificationTemplates";
+} from "./notificationTemplates";
 import {setBaseUrl as setAssetBaseUrl} from "./assets";
 
 import * as moduleInfo from "./moduleInfo.json";
