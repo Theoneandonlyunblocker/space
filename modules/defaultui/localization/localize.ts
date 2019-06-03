@@ -1,12 +1,10 @@
-// TODO 2019.05.29 | move to modules/defaultui
-
-import {Localizer} from "../src/localization/Localizer";
+import {Localizer} from "../../../src/localization/Localizer";
 import
 {
   shallowExtend,
-} from "../src/utility";
+} from "../../../src/utility";
 
-import {englishLanguage} from "../modules/englishlanguage/englishLanguage";
+import {englishLanguage} from "../../englishlanguage/englishLanguage";
 
 import {battle as en_battle} from "./en/battle";
 import {diplomacy as en_diplomacy} from "./en/diplomacy";
