@@ -1,4 +1,5 @@
-/// <reference path="../../lib/messageformat.d.ts" />
+// TODO global ref
+// /// <reference path="../../lib/messageformat.d.ts" />
 
 import {formatters} from "./formatters";
 

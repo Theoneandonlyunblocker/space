@@ -1,4 +1,5 @@
-/// <reference path="../lib/voronoi.d.ts" />
+// TODO global ref
+// /// <reference path="../lib/voronoi.d.ts" />
 
 import FillerPoint from "./FillerPoint";
 import Point from "./Point";

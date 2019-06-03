@@ -1,4 +1,5 @@
-/// <reference path="../lib/offset.d.ts" />
+// TODO global ref
+// /// <reference path="../lib/offset.d.ts" />
 
 import MapVoronoiInfo from "./MapVoronoiInfo";
 import Point from "./Point";

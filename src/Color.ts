@@ -1,4 +1,5 @@
-/// <reference path="../lib/husl.d.ts" />
+// TODO global ref
+// /// <reference path="../lib/husl.d.ts" />
 
 import ColorSaveData from "./savedata/ColorSaveData";
 

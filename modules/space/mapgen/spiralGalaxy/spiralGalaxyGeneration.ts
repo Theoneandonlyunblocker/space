@@ -1,4 +1,5 @@
-/// <reference path="../../../../lib/rng.d.ts" />
+// TODO global ref
+// /// <reference path="../../../../lib/rng.d.ts" />
 
 import FillerPoint from "../../../../src/FillerPoint";
 import MapGenResult from "../../../../src/MapGenResult";

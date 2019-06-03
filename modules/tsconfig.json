@@ -14,6 +14,7 @@
   ],
   "files": [
     "../lib/_lib.extend.d.ts",
+    "../lib/_globals.d.ts",
   ],
   "exclude": [
     "./defaultui/**/*"

@@ -1,4 +1,5 @@
-/// <reference path="../lib/rng.d.ts" />
+// TODO global ref
+// /// <reference path="../lib/rng.d.ts" />
 import * as localForage from "localforage";
 
 import GalaxyMap from "./GalaxyMap";

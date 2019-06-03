@@ -1,4 +1,5 @@
-/// <reference path="../../../../lib/proton.d.ts" />
+// TODO global ref
+// /// <reference path="../../../../lib/proton.d.ts" />
 import * as PIXI from "pixi.js";
 
 export default class ProtonWrapper

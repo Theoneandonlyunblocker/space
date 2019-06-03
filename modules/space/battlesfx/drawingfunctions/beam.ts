@@ -1,4 +1,5 @@
-/// <reference path="../../../../lib/tween.js.d.ts" />
+// TODO global ref
+// /// <reference path="../../../../lib/tween.js.d.ts" />
 import * as PIXI from "pixi.js";
 
 import Color from "../../../../src/Color";

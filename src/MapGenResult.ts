@@ -1,4 +1,5 @@
-/// <reference path="../lib/quadtree.d.ts" />
+// TODO global ref
+// /// <reference path="../lib/quadtree.d.ts" />
 
 import FillerPoint from "./FillerPoint";
 import GalaxyMap from "./GalaxyMap";
