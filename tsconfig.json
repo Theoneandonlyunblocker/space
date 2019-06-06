@@ -1,8 +1,10 @@
 {
+  "files": [],
+  "include": [],
   "references": [
-    {"path": "./_temp_app"},
     {"path": "./src"},
     {"path": "./modules"},
-    // {"path": "./modules/drones"},
+    {"path": "./modules/defaultui"},
+    {"path": "./_temp_app"},
   ]
 }

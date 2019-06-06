@@ -1,12 +1,18 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    // "outFile": "./index.js",
-    "outDir": "../projectDist/_temp_app",
-    "rootDir": ".",
+    // "outFile": "../projectDist/_temp_app.js",
+    "outDir": "../projectDist",
+    "rootDir": "..",
   },
   "references": [
     {"path": "../modules"},
-    {"path": "../src"},
+  ],
+  "include": [
+    "**/*",
+  ],
+  "files": [
+    "../lib/_lib.extend.d.ts",
+    "../lib/_globals.d.ts",
   ]
 }

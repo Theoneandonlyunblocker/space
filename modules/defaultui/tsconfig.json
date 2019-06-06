@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    // "outFile": "../../projectDist/modules/defaultui.js",
+    "outDir": "../../projectDist",
+    "rootDir": "../..",
+  },
+  "references": [
+    {"path": "../../src"},
+    {"path": "../../modules"},
+  ],
+  "include": [
+    "**/*",
+    "**/*.json",
+  ],
+  "files": [
+    "../../lib/_lib.extend.d.ts",
+    "../../lib/_globals.d.ts",
+  ]
+}
