@@ -20,8 +20,8 @@ import Unit from "./Unit";
 import {activeModuleData} from "./activeModuleData";
 import {setActiveNotificationStore} from "./notifications/activeNotificationStore";
 
-import {Notification} from "./notifications//Notification";
-import {NotificationStore} from "./notifications//NotificationStore";
+import {Notification} from "./notifications/Notification";
+import {NotificationStore} from "./notifications/NotificationStore";
 
 import { NotificationSubscriber } from "./notifications/NotificationSubscriber";
 import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
