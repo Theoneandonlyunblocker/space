@@ -9,13 +9,13 @@ export interface ModuleInfo
   modsToLoadBefore?: string[];
   modsToLoadAfter?: string[];
   // should be used very, very sparingly
-  // if this mod replaces another's functionality, replace old name after this mod has been renamed, etc.
+  // if this mod replaces another's functionality, this mod has been renamed, etc.
   modsToReplace?: string[];
-  // TODO 2019.04.10 | use string[] for the two below vvvvvv
+  // TODO 2019.04.10 | use string[] for the two below to allow fallbacks
   /**
    * should point to a http url that will serve a 'moduleInfo.json' file
    * leaving this blank will only allow local loading
-   * used to check version, fetch mods for savegame etc. after mod info has already otherwise been loaded in app
+   * used to check version, fetch mods for savegame etc after mod info has already otherwise been loaded in app
    */
   remoteModuleInfoUrl?: string;
   /**

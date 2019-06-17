@@ -13,7 +13,6 @@
     "**/*.json",
   ],
   "exclude": [
-    "defaultui/**/*",
   ],
   "files": [
     "../lib/_lib.extend.d.ts",
