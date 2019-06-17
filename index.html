@@ -37,11 +37,12 @@
         json: "node_modules/requirejs-plugins/src/json",
       },
     });
-    require(["./dist/main.js"], function()
+
+    require(["./projectDist/_temp_app/defaultModules.js"], (m) =>
     {
-      require(["./src/App"], function(app)
+      require(["./projectDist/src/App.js"], (app) =>
       {
-        window.app = app.default;
+        window.app = app.createApp(...window.defaultModules);
       });
     });
   </script>
