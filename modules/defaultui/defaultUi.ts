@@ -18,7 +18,7 @@ import * as moduleInfo from "./moduleInfo.json";
 export const defaultUi: ModuleFile =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
+  phaseToInitializeBefore: ModuleFileInitializationPhase.AppInit,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>
   {
