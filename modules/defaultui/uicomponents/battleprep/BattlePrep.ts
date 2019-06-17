@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import app from "../../../../src/App"; // TODO global
+import {app} from "../../../../src/App"; // TODO global
 import BattlePrep from "../../../../src/BattlePrep";
 import { BattlePrepFormation } from "../../../../src/BattlePrepFormation";
 import

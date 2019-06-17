@@ -1,5 +1,5 @@
 import {AiController} from "./AiController";
-import app from "./App"; // TODO global
+import {app} from "./App"; // TODO global
 import BattleData from "./BattleData";
 import BattlePrep from "./BattlePrep";
 import BattleSimulator from "./BattleSimulator";

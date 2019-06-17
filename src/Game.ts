@@ -1,6 +1,6 @@
 import * as localForage from "localforage";
 
-import app from "./App"; // TODO global
+import {app} from "./App"; // TODO global
 import GalaxyMap from "./GalaxyMap";
 import Player from "./Player";
 import {default as PlayerDiplomacy} from "./PlayerDiplomacy";

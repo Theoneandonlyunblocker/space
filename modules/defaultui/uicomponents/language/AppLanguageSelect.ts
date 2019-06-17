@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import app from "../../../../src/App"; // TODO global
+import {app} from "../../../../src/App"; // TODO global
 import {activeModuleData} from "../../../../src/activeModuleData";
 import Options from "../../../../src/Options";
 import {Language} from "../../../../src/localization/Language";

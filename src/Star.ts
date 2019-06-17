@@ -1,4 +1,4 @@
-import app from "./App"; // TODO global
+import {app} from "./App"; // TODO global
 import {activeModuleData} from "./activeModuleData";
 import {activePlayer} from "./activePlayer";
 import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";

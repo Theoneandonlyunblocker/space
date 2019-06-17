@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 
 import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
-import app from "../../../../src/App";
+import {app} from "../../../../src/App";
 import {Fleet} from "../../../../src/Fleet";
 import eventManager from "../../../../src/eventManager";
 

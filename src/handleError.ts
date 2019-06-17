@@ -1,4 +1,4 @@
-import app from "./App"; // TODO global
+import {app} from "./App"; // TODO global
 import {default as Options} from "./Options";
 
 

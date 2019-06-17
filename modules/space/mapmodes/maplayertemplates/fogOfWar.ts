@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import app from "../../../../src/App";
+import {app} from "../../../../src/App";
 import Star from "../../../../src/Star";
 import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 

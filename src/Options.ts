@@ -8,7 +8,7 @@ import
   getFunctionName,
 } from "./utility";
 import { Language } from "./localization/Language";
-import app from "./App";
+import {app} from "./App";
 import
 {
   ReviversByVersion,

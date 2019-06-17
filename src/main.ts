@@ -1,4 +1,4 @@
-import app from "./App";
+import {app} from "./App";
 
 
 (<any>window).app = app;

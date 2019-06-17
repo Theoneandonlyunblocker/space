@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import * as localForage from "localforage";
 
 import {localize} from "../../localization/localize";
-import app from "../../../../src/App"; // TODO global
+import {app} from "../../../../src/App"; // TODO global
 import {storageStrings} from "../../../../src/storageStrings";
 import ListItem from "../list/ListItem";
 import {default as DialogBox} from "../windows/DialogBox";

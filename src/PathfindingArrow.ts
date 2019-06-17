@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import app from "./App"; // TODO global
+import {app} from "./App"; // TODO global
 
 import Color from "./Color";
 import {Fleet} from "./Fleet";
