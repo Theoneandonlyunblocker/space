@@ -6,6 +6,7 @@ import ModuleFileInitializationPhase from "../../../src/ModuleFileInitialization
 
 import mapLayerTemplates from "./mapLayerTemplates";
 import mapModeTemplates from "./mapModeTemplates";
+import {resources} from "./resources";
 
 import * as moduleInfo from "./moduleInfo.json";
 
@@ -25,7 +26,7 @@ const spaceMapModes: ModuleFile =
     {
       loader.load(() =>
       {
-        // TODO 2018.12.20 | store fowTexture in resources
+        resources.fogOfWarTexture = loader.resources.fowTexture.texture;
 
         resolve();
       });
