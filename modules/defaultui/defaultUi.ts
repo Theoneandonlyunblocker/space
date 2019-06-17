@@ -15,7 +15,7 @@ import SfxEditor from "./uicomponents/sfxeditor/SfxEditor";
 import * as moduleInfo from "./moduleInfo.json";
 
 
-const defaultUi: ModuleFile =
+export const defaultUi: ModuleFile =
 {
   info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
@@ -33,7 +33,5 @@ const defaultUi: ModuleFile =
     moduleData.uiScenes.battleSceneTester = BattleSceneTester;
 
     return moduleData;
-    },
+  },
 };
-
-export default defaultUi;

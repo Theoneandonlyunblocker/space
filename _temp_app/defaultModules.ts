@@ -7,6 +7,7 @@ import {drones} from "../modules/drones/moduleFile";
 import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
 import {englishLanguageSupport} from "../modules/englishlanguage/englishLanguageSupport";
 import {space} from "../modules/space/moduleFile";
+import {defaultUi} from "../modules/defaultui/defaultUi";
 
 
 export const defaultModules =
@@ -14,6 +15,7 @@ export const defaultModules =
   core,
   englishLanguageSupport,
 
+  defaultUi,
   defaultEmblems,
   defaultAi,
   space,
