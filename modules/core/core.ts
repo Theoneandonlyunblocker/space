@@ -1,7 +1,8 @@
+import * as PIXI from "pixi.js";
+
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
-import {svgCache} from "../../src/svgCache";
 
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 
@@ -20,14 +21,6 @@ const core: ModuleFile =
   {
     const loader = new PIXI.loaders.Loader();
 
-    // TODO 2019.04.10 | move these from base img folder to somewhere else?
-    const battleSceneFlagFadeUrl = "img/battleSceneFlagFade.svg";
-    loader.add(
-    {
-      url: battleSceneFlagFadeUrl,
-      loadType: 1, // XML
-    });
-
     const placeHolderResourceName = "placeHolder";
     const placeHolderUrl = "img/placeholder.png";
     // also adds to pixi texture cache when loaded which is all we want to do. kinda opaque
@@ -36,14 +29,7 @@ const core: ModuleFile =
 
     return new Promise(resolve =>
     {
-      loader.load(() =>
-      {
-        const response = <XMLDocument> loader.resources[battleSceneFlagFadeUrl].data;
-        const svgDoc = <SVGElement> response.children[0];
-        svgCache.battleSceneFlagFade = svgDoc;
-
-        resolve();
-      });
+      loader.load(resolve);
     });
   },
   addToModuleData: (moduleData: ModuleData) =>
