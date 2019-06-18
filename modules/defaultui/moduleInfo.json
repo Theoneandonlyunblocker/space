@@ -3,6 +3,6 @@
   "version": "0.1.0",
   "author": "giraluna",
   "description": "",
-  "moduleFileUrl": "./defaultUi.ts",
+  "moduleFileUrl": "http://127.0.0.1:9001/modules/defaultui/index.js",
   "moduleFileVariableName": "defaultUi"
 }
