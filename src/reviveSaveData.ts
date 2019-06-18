@@ -8,7 +8,7 @@ import { getFunctionName } from "./utility";
 import {activeModuleStore} from "./ModuleStore";
 
 
-// TODO 2019.05.28 |
+// TODO 2019.05.28 | global defaultModules
 import ModuleFile from "./ModuleFile";
 const defaultModules: ModuleFile[] = (<any>window).defaultModules;
 

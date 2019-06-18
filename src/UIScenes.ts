@@ -1,7 +1,6 @@
 import * as React from "react";
 
 
-// TODO 2019.05.26 | should be "React.ComponentFactory<PropTypes, IComponent>" i think
 // tslint:disable:no-any
 export type UIScenes = {
   battle: React.Factory<any>;

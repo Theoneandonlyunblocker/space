@@ -241,11 +241,6 @@ export default class ModuleData
         "it doesn't include English language support.");
     }
 
-    // using debug.log here causes the whole game to break apart
-    // not even sure how, as debug doesn't import anything new to the dependencies here
-    // whole thing held together with gum i guess
-    console.warn(`Falling back on default language '${chosenLanguage.code}'`);
-
     return chosenLanguage;
   }
   public serialize(): ModuleSaveData[]
