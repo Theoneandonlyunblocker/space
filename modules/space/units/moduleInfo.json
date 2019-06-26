@@ -4,6 +4,6 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultUnits"],
-  "moduleFileUrl":  "http://127.0.0.1:9001/modules/space/units/index.js",
+  "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/space/units/index.js",
   "moduleFileVariableName": "spaceUnits"
 }

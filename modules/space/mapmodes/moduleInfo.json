@@ -4,6 +4,6 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultMapModes"],
-  "moduleFileUrl":  "http://127.0.0.1:9001/modules/space/mapmodes/index.js",
+  "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/space/mapmodes/index.js",
   "moduleFileVariableName": "spaceMapModes"
 }

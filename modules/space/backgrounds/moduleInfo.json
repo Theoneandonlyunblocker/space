@@ -4,6 +4,6 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultBackgrounds"],
-  "moduleFileUrl":  "http://127.0.0.1:9001/modules/space/backgrounds/index.js",
+  "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/space/backgrounds/index.js",
   "moduleFileVariableName": "spaceBackgrounds"
 }

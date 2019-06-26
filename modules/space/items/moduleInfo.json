@@ -4,6 +4,6 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultItems"],
-  "moduleFileUrl":  "http://127.0.0.1:9001/modules/space/items/index.js",
+  "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/space/items/index.js",
   "moduleFileVariableName": "spaceItems"
 }
