@@ -20,14 +20,18 @@
     "@types/react-motion": "0.0.x",
     "@types/requirejs": "^2.1.31",
     "less": "2.7.x",
+    "mkdirp": "0.5.x",
+    "ncp": "2.0.x",
     "ts-loader": "5.3.x",
     "tslint": "5.11.x",
     "typescript": "3.4.x"
   },
   "scripts": {
-    "build": "tsc -b --verbose && python scripts/prefix_json_amd_imports.py",
+    "build": "tsc -b --verbose && python scripts/prefix_json_amd_imports.py && npm run copy-libs && npm run build-ui-module-extras",
     "build-ui-module-extras": "lessc modules/defaultui/css/main.less dist/modules/defaultui/css/main.css && npm run copy-ui-assets",
+    "copy-libs": "node scripts/copy_libs.js",
     "copy-ui-assets": "node scripts/copy_ui_assets.js",
+
     "lint": "tslint \"{src,modules}/**/*.ts\"",
     "lintfix": "tslint \"{src,modules}/**/*.ts\" --fix"
   },
