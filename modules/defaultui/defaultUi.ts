@@ -18,6 +18,16 @@ import SfxEditor from "./uicomponents/sfxeditor/SfxEditor";
 import * as moduleInfo from "./moduleInfo.json";
 
 
+function loadCss(url: string, baseUrl: string): void
+{
+  const link = document.createElement("link");
+  link.href = new URL(url, baseUrl).toString();
+  link.type = "text/css";
+  link.rel = "stylesheet";
+
+  document.getElementsByTagName("head")[0].appendChild(link);
+}
+
 export const defaultUi: ModuleFile =
 {
   info: moduleInfo,
@@ -25,9 +35,11 @@ export const defaultUi: ModuleFile =
   supportedLanguages: [englishLanguage],
   initialize: (baseUrl) =>
   {
+    loadCss("./css/main.css", baseUrl);
+
     const loader = new PIXI.loaders.Loader(baseUrl);
 
-    const battleSceneFlagFadeUrl = "img/battleSceneFlagFade.svg";
+    const battleSceneFlagFadeUrl = "./img/battleSceneFlagFade.svg";
     loader.add(
     {
       url: battleSceneFlagFadeUrl,

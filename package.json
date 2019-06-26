@@ -33,6 +33,8 @@
     "dev-server": "webpack-dev-server --config ./scripts/webpack/dev.config.js --progress",
     "build": "tsc -b --verbose && python scripts/prefix_json_amd_imports.py",
     "__build-webpack": "webpack --config ./scripts/webpack/prod.config.js && lessc ./css/main.less ./dist/main.css",
+    "build-ui-module-extras": "lessc modules/defaultui/css/main.less dist/modules/defaultui/css/main.css && npm run copy-ui-assets",
+    "copy-ui-assets": "node scripts/copy_ui_assets.js",
     "lint": "tslint \"{src,modules}/**/*.ts\"",
     "lintfix": "tslint \"{src,modules}/**/*.ts\" --fix"
   },
