@@ -38,9 +38,9 @@
       },
     });
 
-    require(["./projectDist/_temp_app/defaultModules.js"], (m) =>
+    require(["./dist/_temp_app/defaultModules.js"], (m) =>
     {
-      require(["./projectDist/src/App.js"], (app) =>
+      require(["./dist/src/App.js"], (app) =>
       {
         window.app = app.createApp(...window.defaultModules);
       });

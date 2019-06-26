@@ -19,7 +19,7 @@ def processFile(inFile, fileName):
 
 matchesFound = 0
 
-for root, dirs, files in os.walk("./projectDist/modules/", topdown=False):
+for root, dirs, files in os.walk("./dist/modules/", topdown=False):
   for fileName in files:
     if fileName.endswith(".js"):
       hasMatch = False

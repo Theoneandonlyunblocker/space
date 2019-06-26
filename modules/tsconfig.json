@@ -1,8 +1,8 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    // "outFile": "../projectDist/modules.js",
-    "outDir": "../projectDist",
+    // "outFile": "../dist/modules.js",
+    "outDir": "../dist",
     "rootDir": "..",
   },
   "references": [
