@@ -19,20 +19,13 @@
     "@types/react-dom-factories": "1.x",
     "@types/react-motion": "0.0.x",
     "@types/requirejs": "^2.1.31",
-    "fork-ts-checker-webpack-plugin": "0.5.0",
     "less": "2.7.x",
     "ts-loader": "5.3.x",
     "tslint": "5.11.x",
-    "typescript": "3.4.x",
-    "webpack": "4.26.0",
-    "webpack-cli": "3.1.2",
-    "webpack-dev-server": "3.1.10",
-    "webpack-merge": "4.1.4"
+    "typescript": "3.4.x"
   },
   "scripts": {
-    "dev-server": "webpack-dev-server --config ./scripts/webpack/dev.config.js --progress",
     "build": "tsc -b --verbose && python scripts/prefix_json_amd_imports.py",
-    "__build-webpack": "webpack --config ./scripts/webpack/prod.config.js && lessc ./css/main.less ./dist/main.css",
     "build-ui-module-extras": "lessc modules/defaultui/css/main.less dist/modules/defaultui/css/main.css && npm run copy-ui-assets",
     "copy-ui-assets": "node scripts/copy_ui_assets.js",
     "lint": "tslint \"{src,modules}/**/*.ts\"",
