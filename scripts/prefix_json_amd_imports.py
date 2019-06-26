@@ -9,7 +9,7 @@ def processFile(inFile, fileName):
   for line in inFile:
     replacedLine = line
 
-    if "./moduleInfo.json" in line:
+    if '"./moduleInfo.json' in line:
       replacedLine = line.replace("./moduleInfo.json", "json!./moduleInfo.json")
       hasMatch = True
 
