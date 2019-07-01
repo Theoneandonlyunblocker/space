@@ -1,49 +1,49 @@
 {
   "compilerOptions": {
-      "lib": [
-        "dom",
-        "es5",
-        "es2015.promise",
-        "scripthost"
-      ],
+    "lib": [
+      "dom",
+      "es5",
+      "es2015.promise",
+      "scripthost"
+    ],
 
-      "composite": true,
-      "target": "es5",
-      "module": "amd",
-      "sourceMap": true,
-      "declaration": true,
-      "moduleResolution": "node",
-      "types": [], // disables automatic global inclusion of @types
+    "composite": true,
+    "target": "es5",
+    "module": "amd",
+    "sourceMap": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "types": ["pixi.js"], // disables automatic global inclusion of @types
 
-      "noImplicitAny": true,
-      "suppressImplicitAnyIndexErrors": true,
-      "forceConsistentCasingInFileNames": true,
-      "noFallthroughCasesInSwitch": true,
-      "noImplicitReturns": true,
-      "noImplicitThis": true,
-      "noUnusedLocals": true,
-      "strictFunctionTypes": true,
-      "strictBindCallApply": true,
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
 
 
-      "removeComments": true,
-      "resolveJsonModule": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
 
-      // why?
-      // probably laziness
-      "strictNullChecks": false,
+    // why?
+    // probably laziness
+    "strictNullChecks": false,
 
-      // requires prefixing intentionally unused params with _
-      // much cleaner to define consistent params for all functions of type
-      // too annoying to keep on, but probably worth checking manually every once in a while
-      // "noUnusedParameters": true,
+    // requires prefixing intentionally unused params with _
+    // much cleaner to define consistent params for all functions of type
+    // too annoying to keep on, but probably worth checking manually every once in a while
+    // "noUnusedParameters": true,
 
-      // does nothing without --strictNullChecks
-      // "strictPropertyInitialization": true,
+    // does nothing without --strictNullChecks
+    // "strictPropertyInitialization": true,
   },
-
   "files": [
     "lib/_lib.extend.d.ts",
+    "lib/_pixi_defs.extend.d.ts",
     "lib/_globals.d.ts",
   ],
   "compileOnSave": false,
