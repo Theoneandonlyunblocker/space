@@ -19,6 +19,7 @@
     "@types/react-dom-factories": "1.x",
     "@types/react-motion": "0.0.x",
     "@types/requirejs": "^2.1.31",
+    "http-server": "0.11.x",
     "less": "2.7.x",
     "mkdirp": "0.5.x",
     "ncp": "2.0.x",
@@ -47,6 +48,7 @@
     "copy-space-resources-assets": "mkdirp dist/modules/space/resources/img && ncp modules/space/resources/img dist/modules/space/resources/img",
     "copy-space-units-assets": "mkdirp dist/modules/space/units/img && ncp modules/space/units/img dist/modules/space/units/img",
 
+    "start": "http-server --port 9001 -o http://127.0.0.1:9001/",
 
     "lint": "tslint \"{src,modules}/**/*.ts\"",
     "lintfix": "tslint \"{src,modules}/**/*.ts\" --fix"

@@ -15,15 +15,12 @@ git clone https://github.com/giraluna/spacegame.git
 cd spacegame
 npm install
 ```
-Compile Typescript and .less files.
+Compile Typescript files.
 ```bash
 npm run build
 ```
 
-To run the game locally you need to host it on a http server.
-
-Simple http server using node:
+Run the game on a local http server.
 ```bash
-npm install -g http-server
-http-server
+npm start
 ```
