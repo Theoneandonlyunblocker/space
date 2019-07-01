@@ -4,7 +4,6 @@
   "references": [
     {"path": "./src"},
     {"path": "./modules"},
-    {"path": "./modules/defaultui"},
     {"path": "./_temp_app"},
   ]
 }

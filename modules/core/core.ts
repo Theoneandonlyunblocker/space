@@ -4,8 +4,6 @@ import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
 
-import {englishLanguage} from "../englishlanguage/englishLanguage";
-
 import {allScripts} from "./modulescripts/allScripts";
 
 import * as moduleInfo from "./moduleInfo.json";
@@ -16,7 +14,7 @@ const core: ModuleFile =
 {
   info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
-  supportedLanguages: [englishLanguage],
+  supportedLanguages: "all",
   initialize: (baseUrl) =>
   {
     const loader = new PIXI.loaders.Loader();

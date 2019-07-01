@@ -1,21 +1,17 @@
 {
-  "extends": "../tsconfig-base.json",
-  "compilerOptions": {
-    // "outFile": "../dist/modules.js",
-    "outDir": "../dist",
-    "rootDir": "..",
-  },
+  "files": [],
+  "include": [],
   "references": [
-    {"path": "../src"},
-  ],
-  "include": [
-    "**/*",
-    "**/*.json",
-  ],
-  "exclude": [
-  ],
-  "files": [
-    "../lib/_lib.extend.d.ts",
-    "../lib/_globals.d.ts",
+    {"path": "./common"},
+    {"path": "./core"},
+    {"path": "./defaultai"},
+    {"path": "./defaultattitudemodifiers"},
+    {"path": "./defaultemblems"},
+    {"path": "./defaultnotifications"},
+    {"path": "./defaultui"},
+    {"path": "./drones"},
+    {"path": "./englishlanguage"},
+    {"path": "./paintingportraits"},
+    {"path": "./space"},
   ]
 }

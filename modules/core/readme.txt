@@ -1,1 +1,1 @@
-core gameplay functionality. don't remove / modify unless you know what you're doing
+core gameplay functionality. don't overwrite unless you know what you're doing

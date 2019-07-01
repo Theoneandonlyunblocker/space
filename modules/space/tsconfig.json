@@ -1,14 +1,15 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    // "outFile": "../../dist/modules/defaultui.js",
+    // "outFile": "../../dist/modules/space.js",
     "outDir": "../../dist",
     "rootDir": "../..",
   },
   "references": [
     {"path": "../../src"},
+    {"path": "../../modules/common"},
+    {"path": "../../modules/defaultai"},
     {"path": "../../modules/englishlanguage"},
-    {"path": "../../modules/space"}, // for battlesfx editor
   ],
   "include": [
     "**/*",
