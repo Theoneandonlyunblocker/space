@@ -24,7 +24,7 @@ export default class BackgroundDrawer
     width: 15,
     height: 15,
   };
-  private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer;
+  private renderer: PIXI.Renderer;
   private hasExternalRenderer: boolean;
   private blurFilter: PIXI.filters.BlurFilter;
   private destroyBackgroundFN: () => void;
@@ -41,7 +41,7 @@ export default class BackgroundDrawer
     seed: string;
     // if specified, this class won't create it's own renderer.
     // actions like resizing and binding the renderer view are also skipped
-    renderer?: PIXI.CanvasRenderer | PIXI.WebGLRenderer;
+    renderer?: PIXI.Renderer;
   })
   {
     this.drawBackgroundFN = props.drawBackgroundFN;
@@ -56,7 +56,7 @@ export default class BackgroundDrawer
       this.setExternalRenderer(props.renderer);
     }
   }
-  public setExternalRenderer(renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer)
+  public setExternalRenderer(renderer: PIXI.Renderer)
   {
     this.renderer = renderer;
     this.hasExternalRenderer = Boolean(renderer);
@@ -195,13 +195,13 @@ export default class BackgroundDrawer
       this.destroyBackgroundFN = null;
     }
   }
-  private createRenderer(): PIXI.CanvasRenderer | PIXI.WebGLRenderer
+  private createRenderer(): PIXI.Renderer
   {
-    const renderer = PIXI.autoDetectRenderer(
-      this.containerElement.clientWidth,
-      this.containerElement.clientHeight,
+    const renderer = new PIXI.Renderer(
       {
-        autoResize: false,
+        width: this.containerElement.clientWidth,
+        height: this.containerElement.clientHeight,
+        autoDensity: false,
         resolution: window.devicePixelRatio,
       },
     );

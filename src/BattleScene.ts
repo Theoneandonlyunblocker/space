@@ -25,7 +25,7 @@ export default class BattleScene
 
 
   private container: PIXI.Container;
-  private renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+  private renderer: PIXI.Renderer;
   private containerElement: HTMLElement;
 
   private layers:
@@ -63,11 +63,11 @@ export default class BattleScene
   {
     this.container = new PIXI.Container();
 
-    this.renderer = PIXI.autoDetectRenderer(
-      2, // set in this.bindRendererView()
-      2, // set in this.bindRendererView()
+    this.renderer = new PIXI.Renderer(
       {
-        autoResize: false,
+        width: 2, // set in this.bindRendererView()
+        height: 2, // set in this.bindRendererView()
+        autoDensity: false,
         antialias: true,
         transparent: true,
       },

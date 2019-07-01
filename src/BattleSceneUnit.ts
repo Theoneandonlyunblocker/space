@@ -25,7 +25,7 @@ export default class BattleSceneUnit
   public getSceneBounds: () => {width: number; height: number};
 
   private container: PIXI.Container;
-  private renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+  private renderer: PIXI.Renderer;
 
   private side: UnitBattleSide;
   private activeUnit: Unit | null;
@@ -37,7 +37,7 @@ export default class BattleSceneUnit
   private hasSfxSprite: boolean = false;
 
 
-  constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, side: UnitBattleSide)
+  constructor(container: PIXI.Container, renderer: PIXI.Renderer, side: UnitBattleSide)
   {
     this.container = container;
     this.renderer = renderer;

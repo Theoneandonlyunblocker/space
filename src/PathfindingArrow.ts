@@ -181,7 +181,7 @@ export default class PathfindingArrow
 
   makeLabel(style: string, distance: number)
   {
-    let textStyle: PIXI.TextStyleOptions;
+    let textStyle: Partial<PIXI.TextStyle>;
 
     switch (style)
     {
@@ -388,9 +388,10 @@ export default class PathfindingArrow
       gfx.bezierCurveTo.apply(gfx, segments[i]);
     }
 
-    const curveShape = <PIXI.Polygon> gfx.currentPath.shape;
-    // TODO 2016.11.04 | still relevant?
-    curveShape.closed = false; // PIXI 3.0.7 bug
+    // TODO 2019.07.01 | still relevant?
+    // PIXI 3.0.7 bug
+    // const curveShape = <PIXI.Polygon> gfx.currentPath.shape;
+    // curveShape.closed = false;
 
     this.drawArrowHead(gfx, style.color.getHex());
 

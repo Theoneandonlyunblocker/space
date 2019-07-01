@@ -21,7 +21,7 @@ export class SfxEditorDisplayComponent extends React.Component<PropTypes, StateT
 
   public containerDiv: HTMLDivElement | null;
 
-  renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+  renderer: PIXI.Renderer;
   stage: PIXI.Container;
   fragmentContainer: PIXI.Container;
   fragments: SfxFragment<any>[] = [];
@@ -30,9 +30,11 @@ export class SfxEditorDisplayComponent extends React.Component<PropTypes, StateT
   {
     super(props);
 
-    this.renderer = PIXI.autoDetectRenderer(0, 0,
+    this.renderer = new PIXI.Renderer(
     {
-      autoResize: false,
+      width: 0,
+      height: 0,
+      autoDensity: false,
     });
 
     this.stage = new PIXI.Container();

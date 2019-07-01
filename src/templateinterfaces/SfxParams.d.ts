@@ -13,7 +13,7 @@ declare interface SfxParams
   height: number;
   duration: number; // in milliseconds
   facingRight: boolean;
-  renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+  renderer: PIXI.Renderer;
   triggerStart: (displayObject: PIXI.DisplayObject) => void;
   triggerEffect: () => void;
   triggerEnd: () => void;

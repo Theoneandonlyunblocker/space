@@ -5,7 +5,7 @@ import Background from "./Background";
 declare type BackgroundDrawingFunction = (
   seed: string,
   size: PIXI.Rectangle,
-  renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer,
+  renderer: PIXI.Renderer,
 ) => Background;
 
 export default BackgroundDrawingFunction;

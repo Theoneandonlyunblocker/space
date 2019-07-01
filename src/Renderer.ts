@@ -9,7 +9,7 @@ import PathfindingArrow from "./PathfindingArrow";
 
 export default class Renderer
 {
-  public renderer: PIXI.WebGLRenderer;
+  public renderer: PIXI.Renderer;
   public layers:
   {
     background: PIXI.Container;
@@ -90,14 +90,13 @@ export default class Renderer
     if (!this.renderer)
     {
       const containerStyle = window.getComputedStyle(this.pixiContainer);
-      this.renderer = new PIXI.WebGLRenderer(
-        parseInt(containerStyle.width),
-        parseInt(containerStyle.height),
-        {
-          autoResize: false,
-          antialias: true,
-        },
-      );
+      this.renderer = new PIXI.Renderer(
+      {
+        width: parseInt(containerStyle.width),
+        height: parseInt(containerStyle.height),
+        autoDensity: false,
+        antialias: true,
+      });
 
       this.backgroundDrawer.setExternalRenderer(this.renderer);
     }

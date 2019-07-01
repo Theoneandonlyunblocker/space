@@ -18,7 +18,7 @@ import NebulaFilter from "./Nebula";
 
 
 const drawNebula: BackgroundDrawingFunction = (
-  seed: string, size: PIXI.Rectangle, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) =>
+  seed: string, size: PIXI.Rectangle, renderer: PIXI.Renderer) =>
 {
   const oldRng = Math.random;
   Math.random = RNG.prototype.uniform.bind(new RNG(seed));

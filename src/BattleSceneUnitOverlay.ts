@@ -10,7 +10,7 @@ import Unit from "./Unit";
 export default class BattleSceneUnitOverlay
 {
   container: PIXI.Container;
-  renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+  renderer: PIXI.Renderer;
 
   overlayContainer: PIXI.Container;
 
@@ -21,7 +21,7 @@ export default class BattleSceneUnitOverlay
   onAnimationFinish: () => void;
 
 
-  constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
+  constructor(container: PIXI.Container, renderer: PIXI.Renderer)
   {
     this.container = container;
     this.renderer = renderer;
