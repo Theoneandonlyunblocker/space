@@ -27,10 +27,25 @@
     "typescript": "3.4.x"
   },
   "scripts": {
-    "build": "tsc -b --verbose && python scripts/prefix_json_amd_imports.py && npm run copy-libs && npm run build-ui-module-extras",
+    "build": "tsc -b --verbose && python scripts/prefix_json_amd_imports.py && npm run copy-libs && npm run build-ui-module-extras && npm run build-misc-module-extras && npm run build-space-module-extras",
+
     "build-ui-module-extras": "lessc modules/defaultui/css/main.less dist/modules/defaultui/css/main.css && npm run copy-ui-assets",
-    "copy-libs": "node scripts/copy_libs.js",
     "copy-ui-assets": "node scripts/copy_ui_assets.js",
+
+    "build-misc-module-extras": "npm run copy-emblems-assets && npm run copy-painting-portraits-assets",
+    "copy-emblems-assets": "ncp modules/defaultemblems/img dist/modules/defaultemblems/img",
+    "copy-painting-portraits-assets": "node scripts/copy_painting_portraits_assets.js",
+
+    "build-space-module-extras": "npm run copy-space-battlesfx-assets && npm run copy-space-buildings-assets && npm run copy-space-items-assets && npm run copy-space-mapmodes-assets && npm run copy-space-resources-assets && npm run copy-space-units-assets",
+    "copy-space-battlesfx-assets": "ncp modules/space/battlesfx/img dist/modules/space/battlesfx/img",
+    "copy-space-buildings-assets": "ncp modules/space/buildings/img dist/modules/space/buildings/img",
+    "copy-space-items-assets": "ncp modules/space/items/img dist/modules/space/items/img",
+    "copy-space-mapmodes-assets": "ncp modules/space/mapmodes/img dist/modules/space/mapmodes/img",
+    "copy-space-resources-assets": "ncp modules/space/resources/img dist/modules/space/resources/img",
+    "copy-space-units-assets": "ncp modules/space/units/img dist/modules/space/units/img",
+
+    "copy-libs": "node scripts/copy_libs.js",
+
 
     "lint": "tslint \"{src,modules}/**/*.ts\"",
     "lintfix": "tslint \"{src,modules}/**/*.ts\" --fix"
