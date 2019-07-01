@@ -5,6 +5,7 @@ process.on("unhandledRejection", err => {
 });
 
 const ncp = require("ncp").ncp;
+const mkdirp = require("mkdirp").mkdirp;
 
 
 let count = 0
@@ -24,12 +25,17 @@ const options =
   }
 };
 
-ncp("modules/defaultui/img", "dist/modules/defaultui/img", options, (err) =>
+mkdirp("dist/modules/defaultui/img", err =>
 {
-  if (err)
-  {
-    throw err;
-  }
+  if (err) {throw err};
 
-  console.log(`Copied ${count} UI assets to dist/`);
+  ncp("modules/defaultui/img", "dist/modules/defaultui/img", options, (err) =>
+  {
+    if (err)
+    {
+      throw err;
+    }
+
+    console.log(`Copied ${count} UI assets to dist/`);
+  });
 });

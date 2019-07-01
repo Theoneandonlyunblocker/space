@@ -5,7 +5,7 @@ process.on("unhandledRejection", err => {
 });
 
 const ncp = require("ncp").ncp;
-
+const mkdirp = require("mkdirp").mkdirp;
 
 let count = 0
 
@@ -24,12 +24,15 @@ const options =
   }
 };
 
-ncp("modules/paintingportraits/img", "dist/modules/paintingportraits/img", options, (err) =>
+mkdirp("dist/modules/paintingportraits/img", err =>
 {
-  if (err)
+  ncp("modules/paintingportraits/img", "dist/modules/paintingportraits/img", options, (err) =>
   {
-    throw err;
-  }
+    if (err)
+    {
+      throw err;
+    }
 
-  console.log(`Copied ${count} painting portraits to dist/`);
+    console.log(`Copied ${count} painting portraits to dist/`);
+  });
 });
