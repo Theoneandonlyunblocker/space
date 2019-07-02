@@ -3,35 +3,20 @@
 import * as PIXI from "pixi.js";
 
 
-interface UniformData
+interface Uniforms
 {
-  angle: {type: "float"; value: number};
-  offset: {type: "vec2"; value: number[]};
-  scale: {type: "float"; value: number};
-  stripeColor: {type: "vec4"; value: number[]};
-  stripeSize: {type: "float"; value: number};
+  angle: number;
+  offset: number[];
+  scale: number;
+  stripeColor: number[];
+  stripeSize: number;
 }
 
-type Uniforms = {[K in keyof UniformData]: UniformData[K]["value"]};
-
-export default class Occupation extends PIXI.Filter<Uniforms>
+export class Occupation extends PIXI.Filter<Uniforms>
 {
   constructor(initialUniformValues?: Partial<Uniforms>)
   {
-    const uniformData = Occupation.makeUniformDataObject(initialUniformValues);
-    super(undefined, sourceLines.join("\n"), uniformData);
-  }
-
-  private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
-  {
-    return(
-    {
-      angle: {type: "float", value: initialValues.angle},
-      offset: {type: "vec2", value: initialValues.offset},
-      scale: {type: "float", value: initialValues.scale},
-      stripeColor: {type: "vec4", value: initialValues.stripeColor},
-      stripeSize: {type: "float", value: initialValues.stripeSize},
-    });
+    super(undefined, source, initialUniformValues);
   }
 
   public setUniforms(uniforms: Partial<Uniforms>): void
@@ -43,34 +28,32 @@ export default class Occupation extends PIXI.Filter<Uniforms>
   }
 }
 
-const sourceLines =
-[
-  "precision mediump float;",
-  "",
-  "varying vec2 vTextureCoord;",
-  "uniform sampler2D uSampler;",
-  "",
-  "uniform vec2 offset;",
-  "uniform float scale;",
-  "uniform float angle;",
-  "uniform vec4 stripeColor;",
-  "uniform float stripeSize;",
-  "",
-  "void main()",
-  "{",
-  "  vec4 color = texture2D(uSampler, vTextureCoord);",
-  "",
-  "  vec2 pos = gl_FragCoord.xy + offset;",
-  "",
-  "  vec2 q;",
-  "  q.x = cos(angle) * pos.x - sin(angle) * pos.y;",
-  "  q.y = sin(angle) * pos.x + cos(angle) * pos.y;",
-  "",
-  "  q /= scale;",
-  "",
-  "  float stripeIntensity = sin(q.x) / 2.0 + 0.5;",
-  "  stripeIntensity = step(stripeIntensity, stripeSize);",
-  "",
-  "  gl_FragColor = mix(color, stripeColor * color.a, stripeIntensity);",
-  "}",
-];
+const source = `precision mediump float;
+
+varying vec2 vTextureCoord;
+uniform sampler2D uSampler;
+
+uniform vec2 offset;
+uniform float scale;
+uniform float angle;
+uniform vec4 stripeColor;
+uniform float stripeSize;
+
+void main()
+{
+  vec4 color = texture2D(uSampler, vTextureCoord);
+  
+  vec2 pos = gl_FragCoord.xy + offset;
+  
+  vec2 q;
+  q.x = cos(angle) * pos.x - sin(angle) * pos.y;
+  q.y = sin(angle) * pos.x + cos(angle) * pos.y;
+  
+  q /= scale;
+  
+  float stripeIntensity = sin(q.x) / 2.0 + 0.5;
+  stripeIntensity = step(stripeIntensity, stripeSize);
+  
+  gl_FragColor = mix(color, stripeColor * color.a, stripeIntensity);
+}
+`;

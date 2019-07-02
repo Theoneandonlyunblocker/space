@@ -11,7 +11,7 @@ declare namespace PIXI {
     currentPath: PIXI.Polygon;
   }
   class Filter<U extends object> {
-    constructor(vertexSrc?: string, fragmentSrc?: string, uniforms?: U);
+    constructor(vertexSrc?: string, fragmentSrc?: string, uniforms?: Partial<U>);
     uniforms: U;
   }
 }

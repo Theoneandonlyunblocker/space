@@ -3,25 +3,16 @@
 import * as PIXI from "pixi.js";
 
 
-interface UniformData
+interface Uniforms
 {
+
 }
 
-type Uniforms = {}
-
-export default class BlackToAlpha extends PIXI.Filter<Uniforms>
+export class BlackToAlpha extends PIXI.Filter<Uniforms>
 {
   constructor(initialUniformValues?: Partial<Uniforms>)
   {
-    const uniformData = BlackToAlpha.makeUniformDataObject(initialUniformValues);
-    super(undefined, sourceLines.join("\n"), uniformData);
-  }
-
-  private static makeUniformDataObject(initialValues: Partial<Uniforms> = {}): UniformData
-  {
-    return(
-    {
-    });
+    super(undefined, source, initialUniformValues);
   }
 
   public setUniforms(uniforms: Partial<Uniforms>): void
@@ -33,18 +24,16 @@ export default class BlackToAlpha extends PIXI.Filter<Uniforms>
   }
 }
 
-const sourceLines =
-[
-  "precision mediump float;",
-  "",
-  "varying vec2 vTextureCoord;",
-  "uniform sampler2D uSampler;",
-  "",
-  "void main()",
-  "{",
-  "  vec4 color = texture2D(uSampler, vTextureCoord);",
-  "  color.a = (color.r + color.g + color.b) / 3.0;",
-  "",
-  "  gl_FragColor = color;",
-  "}",
-];
+const source = `precision mediump float;
+
+varying vec2 vTextureCoord;
+uniform sampler2D uSampler;
+
+void main()
+{
+  vec4 color = texture2D(uSampler, vTextureCoord);
+  color.a = (color.r + color.g + color.b) / 3.0;
+
+  gl_FragColor = color;
+}
+`;
