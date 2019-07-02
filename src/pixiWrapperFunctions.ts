@@ -31,7 +31,7 @@ export function getDummyTextureForShader()
   canvas.width = 1;
   canvas.height = 1;
 
-  return PIXI.Texture.fromCanvas(canvas);
+  return PIXI.Texture.from(canvas);
 }
 export function makeShaderSprite(
   shader: PIXI.Filter<any>,
@@ -67,7 +67,7 @@ export function convertClientRectToPixiRect(rect: ClientRect): PIXI.Rectangle
   );
 }
 export function generateTextureWithBounds(
-  renderer: PIXI.SystemRenderer,
+  renderer: PIXI.Renderer,
   displayObject: PIXI.DisplayObject,
   scaleMode: number,
   resolution: number,
@@ -77,11 +77,12 @@ export function generateTextureWithBounds(
   const bounds = customBounds;
 
   const renderTexture = PIXI.RenderTexture.create(
-    bounds.width || 0,
-    bounds.height || 0,
-    scaleMode,
-    resolution,
-  );
+  {
+    width: bounds.width || 0,
+    height: bounds.height || 0,
+    scaleMode: scaleMode,
+    resolution: resolution,
+  });
 
   const tempMatrix = new PIXI.Matrix();
   tempMatrix.tx = -bounds.x;

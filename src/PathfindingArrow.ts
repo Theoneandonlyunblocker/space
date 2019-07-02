@@ -399,8 +399,10 @@ export default class PathfindingArrow
   }
   drawArrowHead(gfx: PIXI.Graphics, color: number)
   {
-    const curveShape = <PIXI.Polygon> gfx.currentPath.shape;
-    const points = curveShape.points;
+    // TODO 2019.07.02 | does this work in pixi5?
+    // const curveShape = <PIXI.Polygon> gfx.currentPath.shape;
+    // const points = curveShape.points;
+    const points = gfx.currentPath.points;
 
     const x1 = points[points.length - 12];
     const y1 = points[points.length - 11];

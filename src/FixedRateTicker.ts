@@ -4,7 +4,7 @@ export class FixedRateTicker
 {
   public tickRate: number;
 
-  private readonly ticker: PIXI.ticker.Ticker;
+  private readonly ticker: PIXI.Ticker;
   private readonly onTick: (tickCount: number) => void;
 
   private accumulatedTime: number = 0;
@@ -14,7 +14,7 @@ export class FixedRateTicker
     this.tickRate = tickRate;
     this.onTick = onTick;
 
-    this.ticker = new PIXI.ticker.Ticker();
+    this.ticker = new PIXI.Ticker();
     this.ticker.add(this.onTickerUpdate, this);
   }
 
