@@ -16,7 +16,7 @@ import Beam from "./sfxfragments/Beam";
 import LightBurst from "./sfxfragments/LightBurst";
 import RampingValue from "./sfxfragments/RampingValue";
 import ShockWave from "./sfxfragments/ShockWave";
-import ShinyParticleFilter from "./shaders/ShinyParticle";
+import {ShinyParticle as ShinyParticleFilter} from "./shaders/ShinyParticle";
 
 
 export default function beam(props: SfxParams)

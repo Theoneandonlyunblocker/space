@@ -7,7 +7,7 @@ import
 {
   makeShaderSprite,
 } from "../../../../../src/pixiWrapperFunctions";
-import IntersectingEllipsesFilter from "../shaders/IntersectingEllipses";
+import {IntersectingEllipses as IntersectingEllipsesFilter} from "../shaders/IntersectingEllipses";
 
 import RampingValue from "./RampingValue";
 import SfxFragment from "./SfxFragment";

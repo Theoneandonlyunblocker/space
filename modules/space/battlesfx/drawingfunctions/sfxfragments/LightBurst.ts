@@ -6,7 +6,7 @@ import
 {
   makeShaderSprite,
 } from "../../../../../src/pixiWrapperFunctions";
-import LightBurstFilter from "../shaders/LightBurst";
+import {LightBurst as LightBurstFilter} from "../shaders/LightBurst";
 
 import SfxFragment from "./SfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";

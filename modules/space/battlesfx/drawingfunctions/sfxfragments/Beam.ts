@@ -11,7 +11,7 @@ import
   clamp,
   getRelativeValue,
 } from "../../../../../src/utility";
-import BeamFilter from "../shaders/Beam";
+import {Beam as BeamFilter} from "../shaders/Beam";
 
 import RampingValue from "./RampingValue";
 import SfxFragment from "./SfxFragment";

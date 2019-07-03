@@ -12,7 +12,7 @@ import
   makePolygonFromPoints,
 } from "../../../../src/pixiWrapperFunctions";
 
-import OccupationShader from "./shaders/Occupation";
+import {Occupation as OccupationShader} from "./shaders/Occupation";
 
 
 const starOwners: MapRendererLayerTemplate =

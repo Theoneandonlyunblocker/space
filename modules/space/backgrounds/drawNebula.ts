@@ -14,7 +14,7 @@ import
   randRange,
 } from "../../../src/utility";
 
-import NebulaFilter from "./Nebula";
+import {Nebula as NebulaFilter} from "./Nebula";
 
 
 const drawNebula: BackgroundDrawingFunction = (

@@ -4,7 +4,7 @@ import
   getRelativeValue,
 } from "../../../../src/utility";
 
-import GuardFilter from "./shaders/Guard";
+import {Guard as GuardFilter} from "./shaders/Guard";
 
 
 export default function guard(props: SfxParams)
