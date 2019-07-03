@@ -37,7 +37,7 @@ export default function rocketAttack(params: SfxParams)
   {
     [id: number]:
     {
-      clip: PIXI.extras.AnimatedSprite;
+      clip: PIXI.AnimatedSprite;
       startTime: number;
       relativeTimePerFrame: number;
     };
@@ -78,7 +78,7 @@ export default function rocketAttack(params: SfxParams)
 
       explosionsById[projectile.id] =
       {
-        clip: new PIXI.extras.AnimatedSprite(explosionTextures),
+        clip: new PIXI.AnimatedSprite(explosionTextures),
         startTime: time,
         relativeTimePerFrame: Math.min(relativeTimePerExplosionFrame, remainingTimePerFrame),
       };

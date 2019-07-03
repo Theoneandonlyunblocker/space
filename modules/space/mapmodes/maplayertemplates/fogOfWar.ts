@@ -57,13 +57,13 @@ const fogOfWar: MapRendererLayerTemplate =
 
 export default fogOfWar;
 
-let fogOfWarTilingSprite: PIXI.extras.TilingSprite;
+let fogOfWarTilingSprite: PIXI.TilingSprite;
 function getfogOfWarTilingSprite(width: number, height: number)
 {
   if (!fogOfWarTilingSprite)
   {
     const fowTexture = resources.fogOfWarTexture;
-    fogOfWarTilingSprite = new PIXI.extras.TilingSprite(fowTexture, width, height);
+    fogOfWarTilingSprite = new PIXI.TilingSprite(fowTexture, width, height);
   }
 
   return fogOfWarTilingSprite;
