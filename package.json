@@ -28,13 +28,15 @@
     "typescript": "3.4.x"
   },
   "scripts": {
-    "postinstall": "npm run copy-libs && npm run copy-assets && npm run build-ui-module-css",
+    "postinstall": "npm run copy-libs && npm run copy-assets && npm run build-ui-module-css && npm run replace-pixi-typedefs",
 
     "build": "tsc -b --verbose && node scripts/prefix_json_amd_imports.js",
     "build-ui-module-css": "lessc modules/defaultui/css/main.less dist/modules/defaultui/css/main.css",
 
     "copy-libs": "node scripts/copy_libs.js",
     "copy-assets": "npm run copy-ui-assets && npm run copy-emblems-assets && npm run copy-painting-portraits-assets && npm run copy-space-assets",
+
+    "replace-pixi-typedefs": "node scripts/replace_pixi_typedefs.js",
 
     "copy-ui-assets": "node scripts/copy_ui_assets.js",
     "copy-emblems-assets": "mkdirp dist/modules/defaultemblems/img && ncp modules/defaultemblems/img dist/modules/defaultemblems/img",
