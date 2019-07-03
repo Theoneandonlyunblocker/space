@@ -20,7 +20,7 @@ const spaceUnits: ModuleFile =
   {
     setAssetBaseUrl(baseUrl);
 
-    const loader = new PIXI.loaders.Loader(baseUrl);
+    const loader = new PIXI.Loader(baseUrl);
 
     // also adds to pixi texture cache when loaded which is all we want to do. kinda opaque
     loader.add("units", "./img/sprites/units.json");

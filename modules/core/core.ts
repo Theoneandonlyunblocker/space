@@ -17,7 +17,7 @@ const core: ModuleFile =
   supportedLanguages: "all",
   initialize: (baseUrl) =>
   {
-    const loader = new PIXI.loaders.Loader();
+    const loader = new PIXI.Loader();
 
     const placeHolderResourceName = "placeHolder";
     const placeHolderUrl = "img/placeholder.png";

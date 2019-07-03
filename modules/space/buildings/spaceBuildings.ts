@@ -17,7 +17,7 @@ const spaceBuildings: ModuleFile =
   supportedLanguages: [englishLanguage],
   initialize: (baseUrl) =>
   {
-    const loader = new PIXI.loaders.Loader(baseUrl);
+    const loader = new PIXI.Loader(baseUrl);
 
     for (const key in iconSources)
     {

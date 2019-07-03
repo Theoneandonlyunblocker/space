@@ -37,7 +37,7 @@ export const defaultUi: ModuleFile =
   {
     loadCss("./css/main.css", baseUrl);
 
-    const loader = new PIXI.loaders.Loader(baseUrl);
+    const loader = new PIXI.Loader(baseUrl);
 
     const battleSceneFlagFadeUrl = "./img/battleSceneFlagFade.svg";
     loader.add(

@@ -18,7 +18,7 @@ const spaceMapModes: ModuleFile =
   supportedLanguages: [englishLanguage],
   initialize: (baseUrl) =>
   {
-    const loader = new PIXI.loaders.Loader(baseUrl);
+    const loader = new PIXI.Loader(baseUrl);
 
     loader.add("fowTexture", "./img/fowTexture.png");
 
