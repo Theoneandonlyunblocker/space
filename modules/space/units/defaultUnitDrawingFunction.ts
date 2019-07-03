@@ -28,7 +28,7 @@ export function makeDefaultUnitDrawingFunction(spriteData: UnitSpriteData, image
 function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string, unit: Unit, sfxParams: SfxParams)
 {
   const container = new PIXI.Container();
-  const texture = PIXI.Texture.fromFrame(imageSrc);
+  const texture = PIXI.Texture.from(imageSrc);
 
   const props =
   {

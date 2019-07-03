@@ -104,7 +104,7 @@ export default function snipe(type: UnitAttribute, params: SfxParams)
   {
     makeProjectileSprite: i =>
     {
-      const sprite = new PIXI.Sprite(PIXI.Texture.fromFrame(resources.snipeProjectile));
+      const sprite = new PIXI.Sprite(PIXI.Texture.from(resources.snipeProjectile));
       sprite.height = 6;
       sprite.width = 32;
       sprite.filters = [projectileColorMatrixFilter];

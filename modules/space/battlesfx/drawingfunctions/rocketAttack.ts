@@ -30,8 +30,8 @@ export default function rocketAttack(params: SfxParams)
   const explosionTextures: PIXI.Texture[] = [];
   for (let i = 0; i < 26; i++)
   {
-     const explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + ".png");
-     explosionTextures.push(explosionTexture);
+    const explosionTexture = PIXI.Texture.from("Explosion_Sequence_A " + (i+1) + ".png");
+    explosionTextures.push(explosionTexture);
   }
   const explosionsById:
   {
@@ -50,7 +50,7 @@ export default function rocketAttack(params: SfxParams)
   {
     makeProjectileSprite: i =>
     {
-      return new PIXI.Sprite(PIXI.Texture.fromFrame(resources.rocketProjectile));
+      return new PIXI.Sprite(PIXI.Texture.from(resources.rocketProjectile));
     },
 
     maxSpeed: maxSpeed,

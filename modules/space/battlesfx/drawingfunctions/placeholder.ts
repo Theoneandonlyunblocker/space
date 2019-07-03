@@ -6,7 +6,7 @@ import SfxParams from "../../../../src/templateinterfaces/SfxParams";
 export function placeholder(params: SfxParams): void
 {
   const container = new PIXI.Container();
-  const sprite = PIXI.Sprite.fromImage("img/placeholder.png");
+  const sprite = PIXI.Sprite.from("img/placeholder.png");
   sprite.anchor.set(0.5, 0.5);
   sprite.x = params.width / 2;
   sprite.y = params.height / 2;
