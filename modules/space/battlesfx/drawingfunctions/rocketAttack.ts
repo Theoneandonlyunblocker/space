@@ -86,7 +86,7 @@ export default function rocketAttack(params: SfxParams)
       const explosionClip = explosionsById[projectile.id].clip;
       explosionClip.anchor.set(0.5, 0.5);
       explosionClip.loop = false;
-      explosionClip.position.copy(projectile.sprite.position);
+      explosionClip.position.copyFrom(projectile.sprite.position);
       explosionClip.position.x += projectile.sprite.width;
       impactContainer.addChild(explosionClip);
     },

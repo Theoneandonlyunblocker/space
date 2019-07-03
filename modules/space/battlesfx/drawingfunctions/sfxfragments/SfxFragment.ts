@@ -73,7 +73,7 @@ abstract class SfxFragment<P>
     const oldDisplayObject = this.displayObject;
     if (oldDisplayObject)
     {
-      newDisplayObject.position.copy(oldDisplayObject.position);
+      newDisplayObject.position.copyFrom(oldDisplayObject.position);
 
       const parent = oldDisplayObject.parent;
       if (parent)
