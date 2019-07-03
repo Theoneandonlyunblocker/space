@@ -9,28 +9,43 @@ const glob = require("glob");
 const path = require("path")
 
 
+const toSearch = `"\./moduleInfo\.json`;
+const toReplaceWith = `"json!./moduleInfo.json`;
+
 glob("dist/modules/**/*.js", (err, fileNames) =>
 {
   if (err) {throw err};
 
   let count = 0;
 
-  fileNames.forEach(fileName =>
+  Promise.all(fileNames.map(fileName =>
   {
-    fs.readFile(fileName, "utf-8", (err, source) =>
+    return new Promise(resolve =>
     {
-      if (err) {throw err};
-
-      const outData = source.replace(new RegExp(`"\./moduleInfo\.json`, `g`), `"json!./moduleInfo.json`)
-
-      fs.writeFile(outFileName, outData, (err) =>
+      fs.readFile(fileName, "utf-8", (err, source) =>
       {
         if (err) {throw err};
 
-        count += 1;
+        if (source.includes(toSearch))
+        {
+          const outData = source.replace(new RegExp(toSearch, `g`), toReplaceWith)
+
+          fs.writeFile(fileName, outData, (err) =>
+          {
+            if (err) {throw err};
+
+            count += 1;
+            resolve();
+          });
+        }
+        else
+        {
+          resolve();
+        }
       });
     });
+  })).then(() =>
+  {
+    console.log(`Prefixed JSON import in ${count} file${count === 1 ? "" : "s"}\n`);
   });
-
-  console.log(`Prefixed JSON import in ${count} files\n`);
 });
