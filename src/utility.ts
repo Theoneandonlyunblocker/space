@@ -281,12 +281,12 @@ export function deepMerge<T extends S, S>(target: T, src: S, excludeKeysNotInTar
   {
     if (target && typeof target === "object")
     {
-      Object.keys(target).forEach(key =>
+      Object.keys(<object><unknown>target).forEach(key =>
       {
         dst[key] = target[key];
       });
     }
-    Object.keys(src).forEach(key =>
+    Object.keys(<object><unknown>src).forEach(key =>
     {
       if (typeof src[key] !== "object" || !src[key])
       {

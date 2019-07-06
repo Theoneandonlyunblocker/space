@@ -12,18 +12,18 @@ import ListItem from "./ListItem";
 import ListOrder from "./ListOrder";
 
 
-export interface PropTypes extends React.Props<any>
+export interface PropTypes<I> extends React.Props<any>
 {
-  initialColumns: ListColumn<any>[];
-  listItems: ListItem<any>[];
-  initialSortOrder?: ListColumn<any>[];
+  initialColumns: ListColumn<I>[];
+  listItems: ListItem<I>[];
+  initialSortOrder?: ListColumn<I>[];
   keyboardSelect?: boolean; // boolean = false
-  initialSelected?: ListItem<any> | null;
+  initialSelected?: ListItem<I> | null;
   tabIndex?: number; // number = 1
   noHeader?: boolean; // boolean = false
   addSpacer?: boolean; // boolean = false
-  onRowChange?: (row: ListItem<any>) => void;
-  colStylingFN?: (column: ListColumn<any>, props: React.HTMLProps<HTMLTableColElement>) => React.HTMLProps<HTMLTableColElement>;
+  onRowChange?: (row: ListItem<I>) => void;
+  colStylingFN?: (column: ListColumn<I>, props: React.HTMLProps<HTMLTableColElement>) => React.HTMLProps<HTMLTableColElement>;
   autoSelect?: boolean;
 }
 
@@ -36,7 +36,7 @@ interface StateType
   selected: ListItem<any> | null;
 }
 
-export class ListComponent extends React.Component<PropTypes, StateType>
+export class ListComponent extends React.Component<PropTypes<any>, StateType>
 {
   sortedItems: ListItem<any>[];
   public state: StateType;
@@ -45,7 +45,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   private readonly headerElement = React.createRef<HTMLTableSectionElement>();
   private readonly innerElement = React.createRef<HTMLDivElement>();
 
-  constructor(props: PropTypes)
+  constructor(props: PropTypes<any>)
   {
     super(props);
 
@@ -521,5 +521,9 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ListComponent);
-export default factory;
+const factory: any = React.createFactory(ListComponent);
+function typedFactory<I>(props?: React.Attributes & PropTypes<I>, ...children: React.ReactNode[]): React.ReactElement<PropTypes<I>>
+{
+  return factory(props, ...children);
+}
+export default typedFactory;

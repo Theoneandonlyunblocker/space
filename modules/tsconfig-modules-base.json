@@ -1,0 +1,8 @@
+{
+  "extends": "../tsconfig-base.json",
+  "files": [
+    "../lib/_globals.d.ts",
+    "../lib/_lib.extend.d.ts",
+  ],
+  "include": [],
+}

@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig-base.json",
+  "extends": "../tsconfig-modules-base.json",
   "compilerOptions": {
     // "outFile": "../../dist/modules/defaultemblems.js",
     "outDir": "../../dist",

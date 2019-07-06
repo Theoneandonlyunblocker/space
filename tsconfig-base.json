@@ -4,6 +4,7 @@
       "dom",
       "es5",
       "es2015.promise",
+      "es2015.iterable", //https://github.com/microsoft/TypeScript/issues/31722
       "scripthost"
     ],
 
@@ -42,8 +43,8 @@
     // "strictPropertyInitialization": true,
   },
   "files": [
-    "lib/_lib.extend.d.ts",
     "lib/_globals.d.ts",
+    "lib/_lib.extend.d.ts",
   ],
   "compileOnSave": false,
   "buildOnSave": false
