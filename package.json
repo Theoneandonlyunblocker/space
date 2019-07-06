@@ -25,7 +25,7 @@
     "ncp": "2.0.x",
     "ts-loader": "5.3.x",
     "tslint": "5.11.x",
-    "typescript": "3.4.x"
+    "typescript": "3.5.x"
   },
   "scripts": {
     "postinstall": "npm run copy-libs && npm run copy-assets && npm run build-ui-module-css && npm run replace-pixi-typedefs",
