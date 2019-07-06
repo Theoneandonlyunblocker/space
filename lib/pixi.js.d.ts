@@ -2599,8 +2599,8 @@ declare namespace PIXI {
      * @memberof PIXI
      * @extends PIXI.Shader
      */
-    class Filter extends PIXI.Shader {
-        constructor(vertexSrc?: string, fragmentSrc?: string, uniforms?: any);
+    class Filter<U = any> extends PIXI.Shader {
+        constructor(vertexSrc?: string, fragmentSrc?: string, uniforms?: Partial<U>);
         /**
          * The padding of the filter. Some filters require extra space to breath such as a blur.
          * Increasing this will add extra width and height to the bounds of the object that the
@@ -2688,7 +2688,7 @@ declare namespace PIXI {
          * @readonly
          * @member {object}
          */
-        readonly uniforms: any;
+        readonly uniforms: U;
     }
     /**
      * This handles a Sprite acting as a mask, as opposed to a Graphic.
@@ -7417,7 +7417,7 @@ declare namespace PIXI {
              * @member {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|SVGElement} PIXI.resources.BaseImageResource#source
              * @readonly
              */
-            readonly source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | SVGElement;
+            readonly source: HTMLVideoElement;
             /**
              * Upload the texture to the GPU.
              * @param {PIXI.Renderer} renderer Upload to the renderer
@@ -7919,7 +7919,7 @@ declare namespace PIXI {
          * @param {boolean} [options.baseTexture=false] - Only used for child Sprites if options.children is set to true
          *  Should it destroy the base texture of the child sprite
          */
-        destroy(options?: {
+        destroy(options?: boolean | {
             children?: boolean;
             texture?: boolean;
             baseTexture?: boolean;
@@ -8950,7 +8950,7 @@ declare namespace PIXI {
          * @member {PIXI.Polygon} PIXI.Graphics#currentPath
          * @protected
          */
-        protected currentPath: PIXI.Polygon;
+        public currentPath: PIXI.Polygon;
         /**
          * When cacheAsBitmap is set to true the graphics object will be rendered as if it was a sprite.
          * This is useful if your graphics element does not change often, as it will speed up the rendering

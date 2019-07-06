@@ -37,7 +37,11 @@ export default function beam(props: SfxParams)
     y: beamOrigin.y / props.height,
   };
 
-  const renderTexture = PIXI.RenderTexture.create(props.width, props.height);
+  const renderTexture = PIXI.RenderTexture.create(
+  {
+    width: props.width,
+    height: props.height,
+  });
   const renderedSprite = new PIXI.Sprite(renderTexture);
   if (!props.facingRight)
   {

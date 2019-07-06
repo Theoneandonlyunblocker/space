@@ -46,7 +46,11 @@ export default function snipe(type: UnitAttribute, params: SfxParams)
   const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSfx(
     params.targetOffset, params.width, "target");
 
-  const renderTexture = PIXI.RenderTexture.create(params.width, params.height);
+  const renderTexture = PIXI.RenderTexture.create(
+  {
+    width: params.width,
+    height: params.height,
+  });
   const renderedSprite = new PIXI.Sprite(renderTexture);
   if (!params.facingRight)
   {
@@ -165,11 +169,19 @@ export default function snipe(type: UnitAttribute, params: SfxParams)
   const protonWrapper = new ProtonWrapper(particleContainer);
   const particlesAmountScale = params.height / 600;
 
-  const particleRenderTexture = PIXI.RenderTexture.create(params.width, params.height);
+  const particleRenderTexture = PIXI.RenderTexture.create(
+  {
+    width: params.width,
+    height: params.height,
+  });
   const particleRenderSprite = new PIXI.Sprite(particleRenderTexture);
   mainContainer.addChild(particleRenderSprite);
 
-  const particleBufferTexture = PIXI.RenderTexture.create(params.width, params.height);
+  const particleBufferTexture = PIXI.RenderTexture.create(
+  {
+    width: params.width,
+    height: params.height,
+  });
   const particleBufferSprite = new PIXI.Sprite(particleBufferTexture);
   particleBufferSprite.alpha *= 0.9;
 

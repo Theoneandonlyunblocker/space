@@ -77,7 +77,8 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number): PI
   {
     const poly = makePolygonFromPoints(star.voronoiCell.vertices);
     const gfx = new PIXI.Graphics();
-    gfx.isMask = true;
+    // TODO 2019.07.03 | pixi5 | don't think this needs to be set
+    // gfx.isMask = true;
     gfx.beginFill(0);
     gfx.drawShape(poly);
     gfx.endFill();

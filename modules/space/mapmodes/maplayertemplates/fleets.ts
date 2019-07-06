@@ -130,7 +130,11 @@ function getFleetTextTexture(fleet: Fleet)
       strokeThickness: 3,
     });
 
-    fleetTextTextureCache[fleetSize] = app.renderer.renderer.generateTexture(text);
+    fleetTextTextureCache[fleetSize] = app.renderer.renderer.generateTexture(
+      text,
+      PIXI.settings.SCALE_MODE,
+      1,
+    );
     window.setTimeout(() =>
     {
       text.texture.destroy(true);

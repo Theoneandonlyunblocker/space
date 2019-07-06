@@ -18,8 +18,7 @@ export default function makeSfxFromVideo(
   {
     clearBaseTextureListeners();
 
-    baseTexture.autoUpdate = false;
-    sprite.y = props.height - baseTexture.source.videoHeight;
+    sprite.y = props.height - videoResource.height;
 
     if (onStartFN)
     {
@@ -36,7 +35,10 @@ export default function makeSfxFromVideo(
     throw new Error("Video " + videoSrc + " failed to load.");
   }
 
-  const baseTexture = PIXI.VideoBaseTexture.fromUrl(videoSrc);
+  const videoResource = new PIXI.resources.VideoResource(videoSrc);
+  videoResource.autoUpdate = false;
+
+  const baseTexture = new PIXI.BaseTexture(videoResource);
   const texture = new PIXI.Texture(baseTexture);
   const sprite = new PIXI.Sprite(texture);
 
@@ -46,24 +48,31 @@ export default function makeSfxFromVideo(
     sprite.scale.x = -1;
   }
 
-  if (baseTexture.hasLoaded)
+  if (videoResource.valid)
   {
     onVideoLoaded();
   }
-  else if (baseTexture.isLoading)
+  else
   {
     baseTexture.on("loaded", onVideoLoaded);
     baseTexture.on("error", onVideoError);
   }
-  else
-  {
-    onVideoError();
-  }
+  // TODO 2019.07.03 | pixi5
+  // else if (baseTexture.isLoading)
+  // {
+  //   baseTexture.on("loaded", onVideoLoaded);
+  //   baseTexture.on("error", onVideoError);
+  // }
+  // else
+  // {
+  //   onVideoError();
+  // }
+
 
   function animate()
   {
-    baseTexture.update();
-    if (!baseTexture.source.paused && !baseTexture.source.ended)
+    videoResource.update();
+    if (!videoResource.source.paused && !videoResource.source.ended)
     {
       requestAnimationFrame(animate);
     }

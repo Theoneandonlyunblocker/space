@@ -42,7 +42,7 @@ const ownerBorders: MapRendererLayerTemplate =
       }
 
       const polygon = makePolygonFromPoints(polyLineData.points);
-      polygon.closed = polyLineData.isClosed;
+      polygon.closeStroke = polyLineData.isClosed;
       gfx.drawShape(polygon);
     }
 
