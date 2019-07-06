@@ -1,4 +1,4 @@
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
+import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
 
 export interface Move
 {

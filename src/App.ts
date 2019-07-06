@@ -2,22 +2,22 @@
 // /// <reference path="../lib/rng.d.ts" />
 import * as localForage from "localforage";
 
-import GalaxyMap from "./GalaxyMap";
-import Game from "./Game";
-import GameLoader from "./GameLoader";
-import MapRenderer from "./MapRenderer";
-import ModuleFileInitializationPhase from "./ModuleFileInitializationPhase";
-import ModuleInitializer from "./ModuleInitializer";
-import Options from "./Options";
-import Player from "./Player";
-import PlayerControl from "./PlayerControl";
-import ReactUI from "./ReactUI";
+import {GalaxyMap} from "./GalaxyMap";
+import {Game} from "./Game";
+import {GameLoader} from "./GameLoader";
+import {MapRenderer} from "./MapRenderer";
+import {ModuleFileInitializationPhase} from "./ModuleFileInitializationPhase";
+import {ModuleInitializer} from "./ModuleInitializer";
+import {Options} from "./Options";
+import {Player} from "./Player";
+import {PlayerControl} from "./PlayerControl";
+import {ReactUI} from "./ReactUI";
 import {ReactUIScene} from "./UIScenes";
-import Renderer from "./Renderer";
+import {Renderer} from "./Renderer";
 import {activeModuleData} from "./activeModuleData";
 import {activePlayer, setActivePlayer} from "./activePlayer";
 import {centerCameraOnPosition} from "./centerCameraOnPosition";
-import idGenerators from "./idGenerators";
+import {idGenerators} from "./idGenerators";
 import {handleError} from "./handleError";
 import {activeModuleStore} from "./ModuleStore";
 import {activeNotificationFilter} from "./notifications/NotificationFilter";
@@ -37,13 +37,13 @@ import
 
 import {NotificationStore} from "./notifications/NotificationStore";
 import {activeNotificationStore, setActiveNotificationStore} from "./notifications/activeNotificationStore";
-import TutorialStatus from "./tutorials/TutorialStatus";
-import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
+import {TutorialStatus} from "./tutorials/TutorialStatus";
+import {MapGenOptionValues} from "./templateinterfaces/MapGenOptionValues";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
-import FullSaveData from "./savedata/FullSaveData";
+import {FullSaveData} from "./savedata/FullSaveData";
 import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
 import { storageStrings } from "./storageStrings";
-import ModuleFile from "./ModuleFile";
+import {ModuleFile} from "./ModuleFile";
 
 class App
 {

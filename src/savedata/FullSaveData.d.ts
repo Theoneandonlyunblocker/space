@@ -1,10 +1,10 @@
-import Point from "../Point";
+import {Point} from "../Point";
 import {IdGeneratorValues} from "../idGenerators";
 import {ModuleSaveData} from "../ModuleFile";
 
-import GameSaveData from "./GameSaveData";
+import {GameSaveData} from "./GameSaveData";
 
-declare interface FullSaveData
+export interface FullSaveData
 {
   name: string;
   date: string;
@@ -14,5 +14,3 @@ declare interface FullSaveData
   cameraLocation: Point | undefined;
   moduleData: ModuleSaveData[];
 }
-
-export default FullSaveData;

@@ -1,17 +1,17 @@
 import {activeModuleData} from "./activeModuleData";
 import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
 
-import BattleData from "./BattleData";
-import BattleTurnOrder from "./BattleTurnOrder";
-import Player from "./Player";
-import Unit from "./Unit";
+import {BattleData} from "./BattleData";
+import {BattleTurnOrder} from "./BattleTurnOrder";
+import {Player} from "./Player";
+import {Unit} from "./Unit";
 import
 {
-  default as UnitBattleSide,
+  UnitBattleSide,
   unitBattleSides,
 } from "./UnitBattleSide";
 import {centerCameraOnPosition} from "./centerCameraOnPosition";
-import eventManager from "./eventManager";
+import {eventManager} from "./eventManager";
 import
 {
   clamp,
@@ -20,7 +20,7 @@ import
 } from "./utility";
 
 
-export default class Battle
+export class Battle
 {
   public unitsById:
   {

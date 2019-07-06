@@ -9,7 +9,7 @@ import
 } from "../utility";
 
 import {Language} from "./Language";
-import Options from "../Options";
+import {Options} from "../Options";
 
 
 // messageformat.js requires positional arguments to be wrapped in an array.

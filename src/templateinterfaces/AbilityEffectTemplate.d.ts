@@ -2,9 +2,9 @@ import
 {
   AbilityTargetDisplayDataById,
 } from "../AbilityTargetDisplayData";
-import Battle from "../Battle";
-import StatusEffect from "../StatusEffect";
-import Unit from "../Unit";
+import {Battle} from "../Battle";
+import {StatusEffect} from "../StatusEffect";
+import {Unit} from "../Unit";
 import
 {
   GetUnitsInAreaFN,
@@ -15,7 +15,7 @@ import
   AbilityEffectAction,
   ExecutedEffectsResult,
 } from "./AbilityEffectAction";
-import BattleSfxTemplate from "./BattleSfxTemplate";
+import {BattleSfxTemplate} from "./BattleSfxTemplate";
 
 export type AbilityEffectTrigger = (
   user: Unit,
@@ -25,7 +25,7 @@ export type AbilityEffectTrigger = (
   sourceStatusEffect: StatusEffect | null,
 ) => boolean;
 
-export declare interface AbilityEffectTemplate
+export interface AbilityEffectTemplate
 {
   id: string;
 
@@ -49,7 +49,7 @@ export declare interface AbilityEffectTemplate
   attachedEffects?: AbilityEffectTemplate[];
 }
 
-export declare interface AbilityMainEffectTemplate extends AbilityEffectTemplate
+export interface AbilityMainEffectTemplate extends AbilityEffectTemplate
 {
   sfx: BattleSfxTemplate;
   getDisplayDataForTarget: GetUnitsInAreaFN<AbilityTargetDisplayDataById>;

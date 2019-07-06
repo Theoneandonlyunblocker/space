@@ -2,7 +2,7 @@ import {BuildingEffect, getBaseBuildingEffect} from "./BuildingEffect";
 
 import {Building} from "./Building";
 import {squashAdjustmentsObjects} from "./FlatAndMultiplierAdjustment";
-import BuildingSaveData from "./savedata/BuildingSaveData";
+import {BuildingSaveData} from "./savedata/BuildingSaveData";
 
 
 export class BuildingCollection<T extends Building>

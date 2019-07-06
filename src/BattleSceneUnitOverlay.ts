@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 
-import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
-import SfxParams from "./templateinterfaces/SfxParams";
+import {BattleSfxTemplate} from "./templateinterfaces/BattleSfxTemplate";
+import {SfxParams} from "./templateinterfaces/SfxParams";
 
-import Options from "./Options";
-import Unit from "./Unit";
+import {Options} from "./Options";
+import {Unit} from "./Unit";
 
 
-export default class BattleSceneUnitOverlay
+export class BattleSceneUnitOverlay
 {
   container: PIXI.Container;
   renderer: PIXI.Renderer;

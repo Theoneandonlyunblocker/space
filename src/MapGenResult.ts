@@ -1,12 +1,12 @@
 // TODO global ref
 // /// <reference path="../lib/quadtree.d.ts" />
 
-import FillerPoint from "./FillerPoint";
-import GalaxyMap from "./GalaxyMap";
-import MapVoronoiInfo from "./MapVoronoiInfo";
-import Player from "./Player";
-import Star from "./Star";
-import VoronoiCell from "./VoronoiCell";
+import {FillerPoint} from "./FillerPoint";
+import {GalaxyMap} from "./GalaxyMap";
+import {MapVoronoiInfo} from "./MapVoronoiInfo";
+import {Player} from "./Player";
+import {Star} from "./Star";
+import {VoronoiCell} from "./VoronoiCell";
 
 import
 {
@@ -16,7 +16,7 @@ import
 } from "./voronoi";
 
 
-export default class MapGenResult
+export class MapGenResult
 {
   stars: Star[];
   fillerPoints: FillerPoint[];

@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 
-import GalaxyMap from "../GalaxyMap";
-import Player from "../Player";
+import {GalaxyMap} from "../GalaxyMap";
+import {Player} from "../Player";
 
-declare interface MapRendererLayerTemplate
+export interface MapRendererLayerTemplate
 {
   key: string;
   displayName: string;
@@ -13,5 +13,3 @@ declare interface MapRendererLayerTemplate
   initialAlpha?: number; // default = 1
   destroy?: () => void;
 }
-
-export default MapRendererLayerTemplate;

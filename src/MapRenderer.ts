@@ -2,18 +2,18 @@ import * as PIXI from "pixi.js";
 
 import {activeModuleData} from "./activeModuleData";
 
-import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate";
+import {MapRendererMapModeTemplate} from "./templateinterfaces/MapRendererMapModeTemplate";
 
-import GalaxyMap from "./GalaxyMap";
-import MapRendererLayer from "./MapRendererLayer";
-import MapRendererMapMode from "./MapRendererMapMode";
-import Options from "./Options";
-import Player from "./Player";
-import Star from "./Star";
-import eventManager from "./eventManager";
+import {GalaxyMap} from "./GalaxyMap";
+import {MapRendererLayer} from "./MapRendererLayer";
+import {MapRendererMapMode} from "./MapRendererMapMode";
+import {Options} from "./Options";
+import {Player} from "./Player";
+import {Star} from "./Star";
+import {eventManager} from "./eventManager";
 
 
-export default class MapRenderer
+export class MapRenderer
 {
   container: PIXI.Container;
   parent: PIXI.Container;

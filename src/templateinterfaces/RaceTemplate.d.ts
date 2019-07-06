@@ -1,22 +1,22 @@
-import BuildingUpgradeData from "../BuildingUpgradeData";
+import {BuildingUpgradeData} from "../BuildingUpgradeData";
 import {Fleet} from "../Fleet";
-import Name from "../Name";
-import Player from "../Player";
-import Star from "../Star";
-import Unit from "../Unit";
+import {Name} from "../Name";
+import {Player} from "../Player";
+import {Star} from "../Star";
+import {Unit} from "../Unit";
 
-import AiTemplateConstructor from "./AiTemplateConstructor";
+import {AiTemplateConstructor} from "./AiTemplateConstructor";
 import {BuildingTemplate} from "./BuildingTemplate";
 import {DistributionData} from "./DistributionData";
-import ItemTemplate from "./ItemTemplate";
-import PortraitTemplate from "./PortraitTemplate";
-import RaceTechnologyValue from "./RaceTechnologyValue";
-import SubEmblemTemplate from "./SubEmblemTemplate";
-import TemplateCollection from "./TemplateCollection";
-import UnitTemplate from "./UnitTemplate";
+import {ItemTemplate} from "./ItemTemplate";
+import {PortraitTemplate} from "./PortraitTemplate";
+import {RaceTechnologyValue} from "./RaceTechnologyValue";
+import {SubEmblemTemplate} from "./SubEmblemTemplate";
+import {TemplateCollection} from "./TemplateCollection";
+import {UnitTemplate} from "./UnitTemplate";
 import { Building } from "../Building";
 
-export declare interface RaceTemplate
+export interface RaceTemplate
 {
   type: string;
   displayName: Name;

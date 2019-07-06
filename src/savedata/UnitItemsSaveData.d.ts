@@ -1,6 +1,6 @@
-import ItemSaveData from "./ItemSaveData";
+import {ItemSaveData} from "./ItemSaveData";
 
-declare interface UnitItemsSaveData
+export interface UnitItemsSaveData
 {
   maxItemSlots:
   {
@@ -8,5 +8,3 @@ declare interface UnitItemsSaveData
   };
   itemIds: number[];
 }
-
-export default UnitItemsSaveData;

@@ -1,9 +1,8 @@
-import ColorSaveData from "./ColorSaveData";
+import {ColorSaveData} from "./ColorSaveData";
 
-declare interface EmblemSaveData
+
+export interface EmblemSaveData
 {
   colors: ColorSaveData[];
   templateKey: string;
 }
-
-export default EmblemSaveData;

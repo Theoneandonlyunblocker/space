@@ -1,6 +1,6 @@
-import Unit from "../Unit";
+import {Unit} from "../Unit";
 
-declare interface UnitArchetype
+export interface UnitArchetype
 {
   type: string;
   idealWeightInFleet: number; // relative to others
@@ -14,5 +14,3 @@ declare interface UnitArchetype
   }; // TODO enum
   scoreMultiplierForRowFN?: (row: string, rowUnits: Unit[], enemyUnits?: Unit[], enemyFormation?: Unit[][]) => number;
 }
-
-export default UnitArchetype;

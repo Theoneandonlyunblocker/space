@@ -1,12 +1,10 @@
-import DiplomacyState from "./DiplomacyState";
-import {default as Star} from "./Star";
+import {DiplomacyState} from "./DiplomacyState";
+import {Star} from "./Star";
 
-declare interface DiplomacyEvaluation
+export interface DiplomacyEvaluation
 {
   currentTurn: number;
   currentStatus: DiplomacyState;
   neighborStars: Star[];
   opinion: number;
 }
-
-export default DiplomacyEvaluation;

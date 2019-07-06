@@ -1,5 +1,3 @@
-import Unit from "../Unit";
+import {Unit} from "../Unit";
 
-declare type TurnStartEffect = (unit: Unit) => void;
-
-export default TurnStartEffect;
+export declare type TurnStartEffect = (unit: Unit) => void;

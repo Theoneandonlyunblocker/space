@@ -3,14 +3,14 @@ import
   GetBattleTargetsFN,
 } from "../targeting";
 
-import AbilityBase from "./AbilityBase";
+import {AbilityBase} from "./AbilityBase";
 import
 {
   AbilityEffectTemplate,
   AbilityMainEffectTemplate,
 } from "./AbilityEffectTemplate";
 
-declare interface AbilityTemplate extends AbilityBase
+export interface AbilityTemplate extends AbilityBase
 {
   type: string;
   displayName: string;
@@ -59,5 +59,3 @@ declare interface AbilityTemplate extends AbilityBase
    */
   AiScoreMultiplier?: number;
 }
-
-export default AbilityTemplate;

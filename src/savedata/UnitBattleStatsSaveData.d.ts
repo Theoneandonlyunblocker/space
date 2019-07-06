@@ -1,10 +1,10 @@
-import GuardCoverage from "../GuardCoverage";
-import UnitBattleSide from "../UnitBattleSide";
+import {GuardCoverage} from "../GuardCoverage";
+import {UnitBattleSide} from "../UnitBattleSide";
 
-import QueuedActionSaveData from "./QueuedActionSaveData";
+import {QueuedActionSaveData} from "./QueuedActionSaveData";
 import {StatusEffectSaveData} from "./StatusEffectSaveData";
 
-declare interface UnitBattleStatsSaveData
+export interface UnitBattleStatsSaveData
 {
   moveDelay: number;
   side: UnitBattleSide | null;
@@ -17,5 +17,3 @@ declare interface UnitBattleStatsSaveData
   queuedAction: QueuedActionSaveData | null;
   isAnnihilated: boolean;
 }
-
-export default UnitBattleStatsSaveData;

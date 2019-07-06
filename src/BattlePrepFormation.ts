@@ -9,10 +9,10 @@ import
   squashValidityModifierEffects,
   validityModifiersAreEqual,
 } from "./BattlePrepFormationValidity";
-import Player from "./Player";
-import Unit from "./Unit";
-import UnitDisplayData from "./UnitDisplayData";
-import getNullFormation from "./getNullFormation";
+import {Player} from "./Player";
+import {Unit} from "./Unit";
+import {UnitDisplayData} from "./UnitDisplayData";
+import {getNullFormation} from "./getNullFormation";
 import
 {
   flatten2dArray,

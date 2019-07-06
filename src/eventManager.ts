@@ -3,7 +3,7 @@
 import * as PIXI from "pixi.js";
 
 const eventEmitter = new PIXI.utils.EventEmitter();
-const eventManager =
+export const eventManager =
 {
   dispatchEvent: eventEmitter.emit.bind(eventEmitter),
   removeEventListener: eventEmitter.removeListener.bind(eventEmitter),
@@ -15,5 +15,3 @@ const eventManager =
     return listener;
   },
 };
-
-export default eventManager;

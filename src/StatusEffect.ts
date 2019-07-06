@@ -1,11 +1,11 @@
 import {StatusEffectSaveData} from "./savedata/StatusEffectSaveData";
-import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "./templateinterfaces/UnitEffectTemplate";
 
-import Unit from "./Unit";
-import idGenerators from "./idGenerators";
+import {Unit} from "./Unit";
+import {idGenerators} from "./idGenerators";
 
 
-export default class StatusEffect
+export class StatusEffect
 {
   public id: number;
   public template: UnitEffectTemplate;

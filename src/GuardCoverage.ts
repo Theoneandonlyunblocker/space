@@ -1,7 +1,5 @@
-const enum GuardCoverage
+export const enum GuardCoverage
 {
   Row,
   All,
 }
-
-export default GuardCoverage;

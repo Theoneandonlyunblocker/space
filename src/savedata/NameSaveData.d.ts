@@ -1,8 +1,6 @@
-declare interface NameSaveData
+export interface NameSaveData
 {
   fullName: string;
   isPlural: boolean;
   hasBeenCustomized: boolean;
 }
-
-export default NameSaveData;

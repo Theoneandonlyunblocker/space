@@ -1,7 +1,7 @@
 // for core data only (everything under /src)
 // modules should handle save compability on their own
 
-import FullSaveData from "./savedata/FullSaveData";
+import {FullSaveData} from "./savedata/FullSaveData";
 import * as semver from "./versions";
 import * as debug from "./debug";
 import { getFunctionName } from "./utility";
@@ -9,7 +9,7 @@ import {activeModuleStore} from "./ModuleStore";
 
 
 // TODO 2019.05.28 | global defaultModules
-import ModuleFile from "./ModuleFile";
+import {ModuleFile} from "./ModuleFile";
 const defaultModules: ModuleFile[] = (<any>window).defaultModules;
 
 // data is cloned at start of reviving process

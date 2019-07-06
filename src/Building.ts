@@ -1,13 +1,13 @@
 
 
-import BuildingUpgradeData from "./BuildingUpgradeData";
-import idGenerators from "./idGenerators";
-import BuildingSaveData from "./savedata/BuildingSaveData";
+import {BuildingUpgradeData} from "./BuildingUpgradeData";
+import {idGenerators} from "./idGenerators";
+import {BuildingSaveData} from "./savedata/BuildingSaveData";
 import {BuildingEffect} from "./BuildingEffect";
 import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
 
-import Player from "./Player";
-import Star from "./Star";
+import {Player} from "./Player";
+import {Star} from "./Star";
 import { TerritoryBuildingTemplate } from "./templateinterfaces/TerritoryBuildingTemplate";
 import { BuildingFamily } from "./templateinterfaces/BuildingFamily";
 

@@ -1,10 +1,10 @@
-import Battle from "./Battle";
-import MCTreeNode from "./MCTreeNode";
+import {Battle} from "./Battle";
+import {MCTreeNode} from "./MCTreeNode";
 import {Move} from "./Move";
 import * as debug from "./debug";
 
 
-export default class MCTree
+export class MCTree
 {
   public get rootNode(): MCTreeNode
   {

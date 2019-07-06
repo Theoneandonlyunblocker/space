@@ -1,16 +1,16 @@
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
+import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
 
-import Battle from "./Battle";
-import MCTree from "./MCTree";
-import Options from "./Options";
-import Unit from "./Unit";
+import {Battle} from "./Battle";
+import {MCTree} from "./MCTree";
+import {Options} from "./Options";
+import {Unit} from "./Unit";
 import
 {
   useAbility,
 } from "./battleAbilityUsage";
 
 
-export default class BattleSimulator
+export class BattleSimulator
 {
   battle: Battle;
   tree: MCTree;

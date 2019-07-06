@@ -3,11 +3,11 @@ import
   AbilityTargetDisplayDataById,
   mergeAbilityTargetDisplayDataById,
 } from "./AbilityTargetDisplayData";
-import Battle from "./Battle";
-import Unit from "./Unit";
+import {Battle} from "./Battle";
+import {Unit} from "./Unit";
 
 import {AbilityEffectTemplate} from "./templateinterfaces/AbilityEffectTemplate";
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
+import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
 
 
 export function getAbilityTargetDisplayData(

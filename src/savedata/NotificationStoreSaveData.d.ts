@@ -1,8 +1,6 @@
-import NotificationSaveData from "./NotificationSaveData";
+import {NotificationSaveData} from "./NotificationSaveData";
 
-declare interface NotificationStoreSaveData
+export interface NotificationStoreSaveData
 {
   notifications: NotificationSaveData[];
 }
-
-export default NotificationStoreSaveData;

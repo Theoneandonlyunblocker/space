@@ -1,4 +1,4 @@
-import Star from "./Star";
+import {Star} from "./Star";
 
 
 interface RegionWithStars
@@ -7,7 +7,7 @@ interface RegionWithStars
   stars: Star[];
 }
 
-export default class Region
+export class Region
 {
   id: string;
   stars: Star[] = [];

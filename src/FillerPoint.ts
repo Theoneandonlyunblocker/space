@@ -1,9 +1,9 @@
-import VoronoiCell from "./VoronoiCell";
+import {VoronoiCell} from "./VoronoiCell";
 
-import Point from "./Point";
+import {Point} from "./Point";
 
 
-export default class FillerPoint implements Point
+export class FillerPoint implements Point
 {
   x: number;
   y: number;

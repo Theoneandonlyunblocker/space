@@ -1,7 +1,7 @@
-import MapGenFunction from "./MapGenFunction";
-import MapGenOptions from "./MapGenOptions";
+import {MapGenFunction} from "./MapGenFunction";
+import {MapGenOptions} from "./MapGenOptions";
 
-declare interface MapGenTemplate
+export interface MapGenTemplate
 {
   key: string;
   displayName: string;
@@ -14,5 +14,3 @@ declare interface MapGenTemplate
 
   mapGenFunction: MapGenFunction;
 }
-
-export default MapGenTemplate;

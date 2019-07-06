@@ -1,8 +1,8 @@
-import GuardCoverage from "./GuardCoverage";
+import {GuardCoverage} from "./GuardCoverage";
 import {UnitAttributesObject} from "./UnitAttributes";
-import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "./templateinterfaces/UnitEffectTemplate";
 
-interface UnitDisplayData
+export interface UnitDisplayData
 {
   facesLeft: boolean;
   name: string;
@@ -34,5 +34,3 @@ interface UnitDisplayData
   // isTargetOfActiveEffect?: boolean;
   // hoveredActionPointExpenditure?: number;
 }
-
-export default UnitDisplayData;

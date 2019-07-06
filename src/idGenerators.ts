@@ -51,5 +51,4 @@ class IdGenerator implements IdGeneratorValues
   }
 }
 
-const idGenerators = new IdGenerator();
-export default idGenerators;
+export const idGenerators = new IdGenerator();

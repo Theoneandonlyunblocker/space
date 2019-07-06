@@ -1,7 +1,7 @@
-import Tutorial from "./Tutorial";
+import {Tutorial} from "./Tutorial";
 
 
-const introTutorial: Tutorial =
+export const introTutorial: Tutorial =
 {
   pages:
   [
@@ -67,5 +67,3 @@ const introTutorial: Tutorial =
     // }
   ],
 };
-
-export default introTutorial;

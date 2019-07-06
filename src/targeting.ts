@@ -4,8 +4,8 @@ import
   AbilityTargetEffect,
   AbilityTargetType,
 } from "./AbilityTargetDisplayData";
-import Battle from "./Battle";
-import Unit from "./Unit";
+import {Battle} from "./Battle";
+import {Unit} from "./Unit";
 import
 {
   flatten2dArray,

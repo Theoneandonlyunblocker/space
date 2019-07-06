@@ -1,4 +1,4 @@
-declare interface AttitudeModifierSaveData
+export interface AttitudeModifierSaveData
 {
   templateType: string;
   startTurn: number;
@@ -6,5 +6,3 @@ declare interface AttitudeModifierSaveData
   strength: number;
   hasFixedStrength: boolean;
 }
-
-export default AttitudeModifierSaveData;

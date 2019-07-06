@@ -64,7 +64,7 @@ type AllModuleScripts =
   }
 };
 
-export default class ModuleScripts implements AllModuleScripts
+export class ModuleScripts implements AllModuleScripts
 {
   /* tslint:disable:member-ordering */
   private readonly scriptsWithData: AllModuleScriptsWithData =

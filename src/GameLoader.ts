@@ -2,21 +2,21 @@
 import {AiController} from "./AiController";
 import {AttitudeModifier} from "./AttitudeModifier";
 import {Building} from "./Building";
-import Color from "./Color";
-import Emblem from "./Emblem";
-import FillerPoint from "./FillerPoint";
+import {Color} from "./Color";
+import {Emblem} from "./Emblem";
+import {FillerPoint} from "./FillerPoint";
 import {Flag} from "./Flag";
 import {Fleet} from "./Fleet";
-import GalaxyMap from "./GalaxyMap";
-import Game from "./Game";
-import Item from "./Item";
-import Manufactory from "./Manufactory";
-import MapGenResult from "./MapGenResult";
-import Name from "./Name";
-import Player from "./Player";
-import Star from "./Star";
-import StatusEffect from "./StatusEffect";
-import Unit from "./Unit";
+import {GalaxyMap} from "./GalaxyMap";
+import {Game} from "./Game";
+import {Item} from "./Item";
+import {Manufactory} from "./Manufactory";
+import {MapGenResult} from "./MapGenResult";
+import {Name} from "./Name";
+import {Player} from "./Player";
+import {Star} from "./Star";
+import {StatusEffect} from "./StatusEffect";
+import {Unit} from "./Unit";
 import {activeModuleData} from "./activeModuleData";
 import {setActiveNotificationStore} from "./notifications/activeNotificationStore";
 
@@ -25,24 +25,24 @@ import {NotificationStore} from "./notifications/NotificationStore";
 
 import { NotificationSubscriber } from "./notifications/NotificationSubscriber";
 import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
-import AiControllerSaveData from "./savedata/AiControllerSaveData";
-import BuildingSaveData from "./savedata/BuildingSaveData";
-import EmblemSaveData from "./savedata/EmblemSaveData";
-import FlagSaveData from "./savedata/FlagSaveData";
-import FleetSaveData from "./savedata/FleetSaveData";
-import GalaxyMapSaveData from "./savedata/GalaxyMapSaveData";
-import GameSaveData from "./savedata/GameSaveData";
-import ItemSaveData from "./savedata/ItemSaveData";
-import NotificationStoreSaveData from "./savedata/NotificationStoreSaveData";
+import {AiControllerSaveData} from "./savedata/AiControllerSaveData";
+import {BuildingSaveData} from "./savedata/BuildingSaveData";
+import {EmblemSaveData} from "./savedata/EmblemSaveData";
+import {FlagSaveData} from "./savedata/FlagSaveData";
+import {FleetSaveData} from "./savedata/FleetSaveData";
+import {GalaxyMapSaveData} from "./savedata/GalaxyMapSaveData";
+import {GameSaveData} from "./savedata/GameSaveData";
+import {ItemSaveData} from "./savedata/ItemSaveData";
+import {NotificationStoreSaveData} from "./savedata/NotificationStoreSaveData";
 import { NotificationSubscriberSaveData } from "./savedata/NotificationSubscriberSaveData";
-import PlayerDiplomacySaveData from "./savedata/PlayerDiplomacySaveData";
-import PlayerSaveData from "./savedata/PlayerSaveData";
-import StarSaveData from "./savedata/StarSaveData";
+import {PlayerDiplomacySaveData} from "./savedata/PlayerDiplomacySaveData";
+import {PlayerSaveData} from "./savedata/PlayerSaveData";
+import {StarSaveData} from "./savedata/StarSaveData";
 import {StatusEffectSaveData} from "./savedata/StatusEffectSaveData";
-import UnitSaveData from "./savedata/UnitSaveData";
+import {UnitSaveData} from "./savedata/UnitSaveData";
 
 
-export default class GameLoader
+export class GameLoader
 {
   // these are public as GameLoader objects can get passed around to deserializing functions which might want access
   public map: GalaxyMap;

@@ -1,10 +1,10 @@
-import Item from "./Item";
+import {Item} from "./Item";
 import {UnitAttributeAdjustments} from "./UnitAttributes";
 
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
-import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
+import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
+import {PassiveSkillTemplate} from "./templateinterfaces/PassiveSkillTemplate";
 
-import UnitItemsSaveData from "./savedata/UnitItemsSaveData";
+import {UnitItemsSaveData} from "./savedata/UnitItemsSaveData";
 
 
 interface ItemsBySlot
@@ -16,7 +16,7 @@ interface CountBySlot
   [slot: string]: number;
 }
 
-export default class UnitItems
+export class UnitItems
 {
   public items: Item[] = [];
   public itemSlots: CountBySlot;

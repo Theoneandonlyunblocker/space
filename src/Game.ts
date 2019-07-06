@@ -1,21 +1,21 @@
 import * as localForage from "localforage";
 
 import {app} from "./App"; // TODO global
-import GalaxyMap from "./GalaxyMap";
-import Player from "./Player";
-import {default as PlayerDiplomacy} from "./PlayerDiplomacy";
+import {GalaxyMap} from "./GalaxyMap";
+import {Player} from "./Player";
+import {PlayerDiplomacy} from "./PlayerDiplomacy";
 import {activePlayer} from "./activePlayer";
-import eventManager from "./eventManager";
-import idGenerators from "./idGenerators";
+import {eventManager} from "./eventManager";
+import {idGenerators} from "./idGenerators";
 import {activeNotificationStore} from "./notifications/activeNotificationStore";
 
-import FullSaveData from "./savedata/FullSaveData";
-import GameSaveData from "./savedata/GameSaveData";
+import {FullSaveData} from "./savedata/FullSaveData";
+import {GameSaveData} from "./savedata/GameSaveData";
 import { activeModuleData } from "./activeModuleData";
 import { storageStrings } from "./storageStrings";
 
 
-export default class Game
+export class Game
 {
   public turnNumber: number;
   public readonly players: Player[] = [];

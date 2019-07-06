@@ -1,10 +1,10 @@
 import {UnitAttributeAdjustments} from "../UnitAttributes";
 
-import AbilityTemplate from "./AbilityTemplate";
-import ManufacturableThing from "./ManufacturableThing";
-import PassiveSkillTemplate from "./PassiveSkillTemplate";
+import {AbilityTemplate} from "./AbilityTemplate";
+import {ManufacturableThing} from "./ManufacturableThing";
+import {PassiveSkillTemplate} from "./PassiveSkillTemplate";
 
-declare interface ItemTemplate extends ManufacturableThing
+export interface ItemTemplate extends ManufacturableThing
 {
   type: string;
   displayName: string;
@@ -23,5 +23,3 @@ declare interface ItemTemplate extends ManufacturableThing
   passiveSkill?: PassiveSkillTemplate;
   attributeAdjustments?: UnitAttributeAdjustments;
 }
-
-export default ItemTemplate;

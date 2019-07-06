@@ -12,10 +12,10 @@ import
   WeightedProbabilityDistribution,
 } from "./templateinterfaces/ProbabilityDistribution";
 
-import ArchetypeValues from "./ArchetypeValues";
-import Personality from "./Personality";
-import Point from "./Point";
-import UnitBattleSide from "./UnitBattleSide";
+import {ArchetypeValues} from "./ArchetypeValues";
+import {Personality} from "./Personality";
+import {Point} from "./Point";
+import {UnitBattleSide} from "./UnitBattleSide";
 
 
 // TODO refactor | clean these up

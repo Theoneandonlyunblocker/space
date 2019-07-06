@@ -1,8 +1,8 @@
-import Point from "../Point";
+import {Point} from "../Point";
 
-import StarSaveData from "./StarSaveData";
+import {StarSaveData} from "./StarSaveData";
 
-declare interface GalaxyMapSaveData
+export interface GalaxyMapSaveData
 {
   width: number;
   height: number;
@@ -10,5 +10,3 @@ declare interface GalaxyMapSaveData
   stars: StarSaveData[];
   fillerPoints: Point[];
 }
-
-export default GalaxyMapSaveData;

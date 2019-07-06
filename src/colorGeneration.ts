@@ -1,5 +1,5 @@
-import Color from "./Color";
-import Range from "./Range";
+import {Color} from "./Color";
+import {Range} from "./Range";
 import
 {
   excludeFromRange,

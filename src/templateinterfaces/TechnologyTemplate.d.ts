@@ -1,6 +1,6 @@
 import {UnlockableThing} from "./UnlockableThing";
 
-declare interface TechnologyTemplate
+export interface TechnologyTemplate
 {
   key: string;
   displayName: string;
@@ -8,5 +8,3 @@ declare interface TechnologyTemplate
 
   maxLevel: number;
 }
-
-export default TechnologyTemplate;

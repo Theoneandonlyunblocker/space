@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import Point from "./Point";
+import {Point} from "./Point";
 
 
 function mirrorRectangle(rect: PIXI.Rectangle, midX: number): PIXI.Rectangle
@@ -38,7 +38,7 @@ function offsetPoint(point: Point, offset: Point): Point
   });
 }
 
-export default class UnitDrawingFunctionData
+export class UnitDrawingFunctionData
 {
   public boundingBox: PIXI.Rectangle;
   public individualUnitBoundingBoxes: PIXI.Rectangle[];

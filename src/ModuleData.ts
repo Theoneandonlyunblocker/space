@@ -1,35 +1,35 @@
-import Personality from "../src/Personality";
-import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
+import {Personality} from "../src/Personality";
+import {TemplateCollection} from "../src/templateinterfaces/TemplateCollection";
 
-import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
-import ModuleFile, { ModuleSaveData } from "./ModuleFile";
-import ModuleScripts from "./ModuleScripts";
+import {BackgroundDrawingFunction} from "./BackgroundDrawingFunction";
+import {ModuleFile, ModuleSaveData } from "./ModuleFile";
+import {ModuleScripts} from "./ModuleScripts";
 import
 {
   PartialRuleSetValues,
   RuleSetValues,
 } from "./RuleSetValues";
-import AiTemplateConstructor from "./templateinterfaces/AiTemplateConstructor";
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
-import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
-import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
+import {AiTemplateConstructor} from "./templateinterfaces/AiTemplateConstructor";
+import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
+import {AttitudeModifierTemplate} from "./templateinterfaces/AttitudeModifierTemplate";
+import {BattleSfxTemplate} from "./templateinterfaces/BattleSfxTemplate";
 import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
-import ItemTemplate from "./templateinterfaces/ItemTemplate";
+import {ItemTemplate} from "./templateinterfaces/ItemTemplate";
 import {Language} from "./localization/Language";
-import MapGenTemplate from "./templateinterfaces/MapGenTemplate";
-import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTemplate";
-import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate";
-import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
-import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
-import PortraitTemplate from "./templateinterfaces/PortraitTemplate";
+import {MapGenTemplate} from "./templateinterfaces/MapGenTemplate";
+import {MapRendererLayerTemplate} from "./templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererMapModeTemplate} from "./templateinterfaces/MapRendererMapModeTemplate";
+import {NotificationTemplate} from "./templateinterfaces/NotificationTemplate";
+import {PassiveSkillTemplate} from "./templateinterfaces/PassiveSkillTemplate";
+import {PortraitTemplate} from "./templateinterfaces/PortraitTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
-import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
-import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
-import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
+import {ResourceTemplate} from "./templateinterfaces/ResourceTemplate";
+import {SubEmblemTemplate} from "./templateinterfaces/SubEmblemTemplate";
+import {TechnologyTemplate} from "./templateinterfaces/TechnologyTemplate";
 import {TerrainTemplate} from "./templateinterfaces/TerrainTemplate";
-import UnitArchetype from "./templateinterfaces/UnitArchetype";
-import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
-import UnitTemplate from "./templateinterfaces/UnitTemplate";
+import {UnitArchetype} from "./templateinterfaces/UnitArchetype";
+import {UnitEffectTemplate} from "./templateinterfaces/UnitEffectTemplate";
+import {UnitTemplate} from "./templateinterfaces/UnitTemplate";
 import
 {
   deepMerge,
@@ -76,7 +76,7 @@ type TechnologyUnlocks =
   };
 };
 
-export default class ModuleData
+export class ModuleData
 {
   public moduleFiles: ModuleFile[] = [];
 

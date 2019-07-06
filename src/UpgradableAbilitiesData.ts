@@ -1,4 +1,4 @@
-import AbilityBase from "./templateinterfaces/AbilityBase";
+import {AbilityBase} from "./templateinterfaces/AbilityBase";
 
 export interface AbilityUpgradeSaveData
 {

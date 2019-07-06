@@ -1,8 +1,8 @@
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
+import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
 
-import Battle from "./Battle";
+import {Battle} from "./Battle";
 import {Move, MoveCollection} from "./Move";
-import UnitBattleSide from "./UnitBattleSide";
+import {UnitBattleSide} from "./UnitBattleSide";
 import
 {
   getTargetsForAllAbilities,
@@ -18,7 +18,7 @@ import
 } from "./utility";
 
 
-export default class MCTreeNode
+export class MCTreeNode
 {
   // move that resulted in this action
   public readonly move: Move | null;

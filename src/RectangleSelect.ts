@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js";
 
-import Point from "./Point";
-import eventManager from "./eventManager";
+import {Point} from "./Point";
+import {eventManager} from "./eventManager";
 
 
-export default class RectangleSelect
+export class RectangleSelect
 {
   public getSelectionTargetsFN: () => {position: Point; data: any}[];
 

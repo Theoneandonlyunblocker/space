@@ -1,14 +1,14 @@
-import AbilityBase from "./AbilityBase";
-import AbilityTemplate from "./AbilityTemplate";
+import {AbilityBase} from "./AbilityBase";
+import {AbilityTemplate} from "./AbilityTemplate";
 import {DistributionData} from "./DistributionData";
-import ManufacturableThing from "./ManufacturableThing";
-import PassiveSkillTemplate from "./PassiveSkillTemplate";
+import {ManufacturableThing} from "./ManufacturableThing";
+import {PassiveSkillTemplate} from "./PassiveSkillTemplate";
 import {ProbabilityDistributions} from "./ProbabilityDistribution";
-import UnitArchetype from "./UnitArchetype";
-import UnitDrawingFunction from "./UnitDrawingFunction";
+import {UnitArchetype} from "./UnitArchetype";
+import {UnitDrawingFunction} from "./UnitDrawingFunction";
 
 
-declare interface UnitTemplate extends ManufacturableThing
+export interface UnitTemplate extends ManufacturableThing
 {
   type: string;
   displayName: string;
@@ -69,5 +69,3 @@ declare interface UnitTemplate extends ManufacturableThing
   unitDrawingFN: UnitDrawingFunction;
   distributionData: DistributionData;
 }
-
-export default UnitTemplate;

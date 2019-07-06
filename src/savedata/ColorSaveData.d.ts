@@ -1,3 +1,1 @@
-declare type ColorSaveData = number[];
-
-export default ColorSaveData;
+export type ColorSaveData = number[];

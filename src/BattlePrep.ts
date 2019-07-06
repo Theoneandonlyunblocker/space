@@ -1,17 +1,17 @@
 
-import Battle from "./Battle";
-import BattleData from "./BattleData";
+import {Battle} from "./Battle";
+import {BattleData} from "./BattleData";
 import {BattlePrepFormation} from "./BattlePrepFormation";
 import
 {
   FormationValidityModifier,
   FormationValidityModifierSourceType,
 } from "./BattlePrepFormationValidity";
-import Player from "./Player";
-import Unit from "./Unit";
+import {Player} from "./Player";
+import {Unit} from "./Unit";
 
 
-export default class BattlePrep
+export class BattlePrep
 {
   public battleData: BattleData;
 

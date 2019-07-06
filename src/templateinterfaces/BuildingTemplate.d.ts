@@ -1,7 +1,7 @@
 import {BuildingEffect} from "../BuildingEffect";
-import UnitEffectTemplate from "./UnitEffectTemplate";
-import {default as Star} from "../Star";
-import Player from "../Player";
+import {UnitEffectTemplate} from "./UnitEffectTemplate";
+import {Star} from "../Star";
+import {Player} from "../Player";
 import { UnlockableThing } from "./UnlockableThing";
 import { BuildingFamily } from "./BuildingFamily";
 

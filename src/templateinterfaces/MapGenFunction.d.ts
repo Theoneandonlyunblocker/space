@@ -1,8 +1,6 @@
-import MapGenResult from "../MapGenResult";
-import Player from "../Player";
+import {MapGenResult} from "../MapGenResult";
+import {Player} from "../Player";
 
-import MapGenOptionValues from "./MapGenOptionValues";
+import {MapGenOptionValues} from "./MapGenOptionValues";
 
-declare type MapGenFunction = (options: MapGenOptionValues, players: Player[]) => MapGenResult;
-
-export default MapGenFunction;
+export declare type MapGenFunction = (options: MapGenOptionValues, players: Player[]) => MapGenResult;

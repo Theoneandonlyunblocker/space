@@ -2,21 +2,21 @@
 // /// <reference path="../lib/tween.js.d.ts" />
 import * as PIXI from "pixi.js";
 
-import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
-import SfxParams from "./templateinterfaces/SfxParams";
+import {BattleSfxTemplate} from "./templateinterfaces/BattleSfxTemplate";
+import {SfxParams} from "./templateinterfaces/SfxParams";
 
-import BattleSceneUnit from "./BattleSceneUnit";
-import BattleSceneUnitOverlay from "./BattleSceneUnitOverlay";
-import Options from "./Options";
-import Unit from "./Unit";
-import UnitBattleSide from "./UnitBattleSide";
+import {BattleSceneUnit} from "./BattleSceneUnit";
+import {BattleSceneUnitOverlay} from "./BattleSceneUnitOverlay";
+import {Options} from "./Options";
+import {Unit} from "./Unit";
+import {UnitBattleSide} from "./UnitBattleSide";
 import * as debug from "./debug";
 
 
 // TODO performance
 // BattleScene.render() shouldn't be called unless there's something new to render
 //
-export default class BattleScene
+export class BattleScene
 {
   public targetUnit : Unit | null; // being targeted by ability      | priority
   public userUnit   : Unit | null; // using an ability               |

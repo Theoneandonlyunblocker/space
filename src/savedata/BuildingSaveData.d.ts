@@ -1,4 +1,4 @@
-declare interface BuildingSaveData
+export interface BuildingSaveData
 {
   templateType: string;
   id: number;
@@ -8,5 +8,3 @@ declare interface BuildingSaveData
 
   totalCost: number;
 }
-
-export default BuildingSaveData;

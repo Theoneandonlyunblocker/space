@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 
-import Point from "../Point";
-import Unit from "../Unit";
+import {Point} from "../Point";
+import {Unit} from "../Unit";
 
-declare interface SfxParams
+export interface SfxParams
 {
   user: Unit;
   target?: Unit;
@@ -18,5 +18,3 @@ declare interface SfxParams
   triggerEffect: () => void;
   triggerEnd: () => void;
 }
-
-export default SfxParams;

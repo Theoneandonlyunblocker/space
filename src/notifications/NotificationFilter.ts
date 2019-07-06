@@ -2,7 +2,7 @@ import * as localForage from "localforage";
 
 import {activeModuleData} from "../activeModuleData";
 import {activePlayer} from "../activePlayer";
-import NotificationTemplate from "../templateinterfaces/NotificationTemplate";
+import {NotificationTemplate} from "../templateinterfaces/NotificationTemplate";
 import
 {
   extendObject,

@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 
-import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
+import {BackgroundDrawingFunction} from "./BackgroundDrawingFunction";
 import
 {
   generateTextureWithBounds,
 } from "./pixiWrapperFunctions";
 
 
-export default class BackgroundDrawer
+export class BackgroundDrawer
 {
   public drawBackgroundFN: BackgroundDrawingFunction;
   public seed: string;

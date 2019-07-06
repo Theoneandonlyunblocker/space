@@ -1,6 +1,6 @@
-import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
+import {PassiveSkillTemplate} from "./templateinterfaces/PassiveSkillTemplate";
 
-import Unit from "./Unit";
+import {Unit} from "./Unit";
 import { shallowEqual } from "./utility";
 
 

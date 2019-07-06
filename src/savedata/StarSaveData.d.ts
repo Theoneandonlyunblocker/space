@@ -1,7 +1,7 @@
-import BuildingSaveData from "./BuildingSaveData";
-import ManufactorySaveData from "./ManufactorySaveData";
+import {BuildingSaveData} from "./BuildingSaveData";
+import {ManufactorySaveData} from "./ManufactorySaveData";
 
-declare interface StarSaveData
+export interface StarSaveData
 {
   id: number;
   x: number;
@@ -22,5 +22,3 @@ declare interface StarSaveData
   raceType: string;
   terrainType: string;
 }
-
-export default StarSaveData;

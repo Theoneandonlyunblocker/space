@@ -1,11 +1,9 @@
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
+import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
 
-declare interface QueuedActionData
+export interface QueuedActionData
 {
   ability: AbilityTemplate;
   targetId: number;
   turnsPrepared: number;
   timesInterrupted: number;
 }
-
-export default QueuedActionData;

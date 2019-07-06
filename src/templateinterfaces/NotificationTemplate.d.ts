@@ -1,12 +1,12 @@
 import * as React from "react";
 
-import GameLoader from "../GameLoader";
+import {GameLoader} from "../GameLoader";
 
 import {NotificationFilterState} from "../notifications/NotificationFilterState";
 import {NotificationWitnessCriterion} from "../notifications/NotificationWitnessCriterion";
 
 
-declare interface NotificationTemplate<P, D>
+export interface NotificationTemplate<P, D>
 {
   key: string;
   displayName: string;
@@ -28,5 +28,3 @@ declare interface NotificationTemplate<P, D>
   serializeProps: (props: P) => D;
   deserializeProps: (dataProps: D, gameLoader: GameLoader) => P;
 }
-
-export default NotificationTemplate;

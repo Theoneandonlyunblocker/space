@@ -1,33 +1,33 @@
 
 
-import UnitDrawingFunctionData from "./UnitDrawingFunctionData";
+import {UnitDrawingFunctionData} from "./UnitDrawingFunctionData";
 import {activeModuleData} from "./activeModuleData";
-import idGenerators from "./idGenerators";
-import AbilityBase from "./templateinterfaces/AbilityBase";
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
-import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
-import PortraitTemplate from "./templateinterfaces/PortraitTemplate";
+import {idGenerators} from "./idGenerators";
+import {AbilityBase} from "./templateinterfaces/AbilityBase";
+import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
+import {PassiveSkillTemplate} from "./templateinterfaces/PassiveSkillTemplate";
+import {PortraitTemplate} from "./templateinterfaces/PortraitTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
-import SfxParams from "./templateinterfaces/SfxParams";
-import UnitEffectTemplate from "./templateinterfaces/UnitEffectTemplate";
-import UnitTemplate from "./templateinterfaces/UnitTemplate";
+import {SfxParams} from "./templateinterfaces/SfxParams";
+import {UnitEffectTemplate} from "./templateinterfaces/UnitEffectTemplate";
+import {UnitTemplate} from "./templateinterfaces/UnitTemplate";
 
 import {Fleet} from "./Fleet";
-import GuardCoverage from "./GuardCoverage";
-import Item from "./Item";
-import Player from "./Player";
-import Star from "./Star";
-import StatusEffect from "./StatusEffect";
+import {GuardCoverage} from "./GuardCoverage";
+import {Item} from "./Item";
+import {Player} from "./Player";
+import {Star} from "./Star";
+import {StatusEffect} from "./StatusEffect";
 import
 {
   UnitAttributeAdjustments,
   UnitAttributes,
   UnitAttributesObject,
 } from "./UnitAttributes";
-import UnitBattleSide from "./UnitBattleSide";
-import UnitBattleStats from "./UnitBattleStats";
-import UnitDisplayData from "./UnitDisplayData";
-import UnitItems from "./UnitItems";
+import {UnitBattleSide} from "./UnitBattleSide";
+import {UnitBattleStats} from "./UnitBattleStats";
+import {UnitDisplayData} from "./UnitDisplayData";
+import {UnitItems} from "./UnitItems";
 import {UpgradableAbilitiesData} from "./UpgradableAbilitiesData";
 import
 {
@@ -37,8 +37,8 @@ import
   randInt,
 } from "./utility";
 
-import UnitBattleStatsSaveData from "./savedata/UnitBattleStatsSaveData";
-import UnitSaveData from "./savedata/UnitSaveData";
+import {UnitBattleStatsSaveData} from "./savedata/UnitBattleStatsSaveData";
+import {UnitSaveData} from "./savedata/UnitSaveData";
 import { ProbabilityDistributions } from "./templateinterfaces/ProbabilityDistribution";
 
 
@@ -50,7 +50,7 @@ type PassiveSkillsByPhase =
 };
 
 
-export default class Unit
+export class Unit
 {
   public template: UnitTemplate;
 

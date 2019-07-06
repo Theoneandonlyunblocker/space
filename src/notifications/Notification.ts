@@ -1,10 +1,10 @@
-import NotificationSaveData from "../savedata/NotificationSaveData";
+import {NotificationSaveData} from "../savedata/NotificationSaveData";
 
-import NotificationTemplate from "../templateinterfaces/NotificationTemplate";
+import {NotificationTemplate} from "../templateinterfaces/NotificationTemplate";
 
-import {default as Player} from "../Player";
-import {default as Star} from "../Star";
-import idGenerators from "../idGenerators";
+import {Player} from "../Player";
+import {Star} from "../Star";
+import {idGenerators} from "../idGenerators";
 
 
 export class Notification<P = any, D = any>

@@ -1,19 +1,19 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import Battle from "./Battle";
-import BattlePrep from "./BattlePrep";
-import Game from "./Game";
-import MapRenderer from "./MapRenderer";
-import ModuleFileInitializationPhase from "./ModuleFileInitializationPhase";
-import ModuleInitializer from "./ModuleInitializer";
-import Player from "./Player";
-import PlayerControl from "./PlayerControl";
+import {Battle} from "./Battle";
+import {BattlePrep} from "./BattlePrep";
+import {Game} from "./Game";
+import {MapRenderer} from "./MapRenderer";
+import {ModuleFileInitializationPhase} from "./ModuleFileInitializationPhase";
+import {ModuleInitializer} from "./ModuleInitializer";
+import {Player} from "./Player";
+import {PlayerControl} from "./PlayerControl";
 import {ReactUIScene} from "./UIScenes";
-import Renderer from "./Renderer";
+import {Renderer} from "./Renderer";
 import {activePlayer} from "./activePlayer";
-import eventManager from "./eventManager";
-import Options from "./Options";
+import {eventManager} from "./eventManager";
+import {Options} from "./Options";
 
 import {activeModuleData} from "./activeModuleData";
 
@@ -34,7 +34,7 @@ const moduleInitializationPhaseByScene:
   sfxEditor: ModuleFileInitializationPhase.BattleStart,
 };
 
-export default class ReactUI
+export class ReactUI
 {
   public currentScene: ReactUIScene;
   public battle: Battle;

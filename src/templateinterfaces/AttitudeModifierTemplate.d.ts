@@ -1,6 +1,6 @@
-import DiplomacyEvaluation from "../DiplomacyEvaluation";
+import {DiplomacyEvaluation} from "../DiplomacyEvaluation";
 
-declare interface AttitudeModifierTemplate
+export interface AttitudeModifierTemplate
 {
   type: string;
   displayName: string;
@@ -19,5 +19,3 @@ declare interface AttitudeModifierTemplate
   getEffectFromEvaluation?: (evaluation: DiplomacyEvaluation) => number;
   decayRate?: number;
 }
-
-export default AttitudeModifierTemplate;

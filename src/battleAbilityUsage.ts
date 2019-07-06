@@ -1,10 +1,10 @@
 import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
-import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
+import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
+import {BattleSfxTemplate} from "./templateinterfaces/BattleSfxTemplate";
 
-import Battle from "./Battle";
-import Unit from "./Unit";
-import UnitDisplayData from "./UnitDisplayData";
+import {Battle} from "./Battle";
+import {Unit} from "./Unit";
+import {UnitDisplayData} from "./UnitDisplayData";
 import
 {
   AbilityEffectData,

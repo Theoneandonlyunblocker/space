@@ -1,8 +1,8 @@
-import NameSaveData from "./savedata/NameSaveData";
+import {NameSaveData} from "./savedata/NameSaveData";
 
 
 // TODO 2017.11.29 | rework
-export default class Name
+export class Name
 {
   public fullName: string;
   public isPlural: boolean = false;

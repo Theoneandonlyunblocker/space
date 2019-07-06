@@ -1,17 +1,17 @@
 import {activeModuleData} from "./activeModuleData";
 
 import {AttitudeModifier} from "./AttitudeModifier";
-import DiplomacyEvaluation from "./DiplomacyEvaluation";
-import DiplomacyState from "./DiplomacyState";
-import Game from "./Game";
-import Player from "./Player";
-import {default as ValuesByPlayer} from "./ValuesByPlayer";
+import {DiplomacyEvaluation} from "./DiplomacyEvaluation";
+import {DiplomacyState} from "./DiplomacyState";
+import {Game} from "./Game";
+import {Player} from "./Player";
+import {ValuesByPlayer} from "./ValuesByPlayer";
 
-import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData";
-import PlayerDiplomacySaveData from "./savedata/PlayerDiplomacySaveData";
+import {AttitudeModifierSaveData} from "./savedata/AttitudeModifierSaveData";
+import {PlayerDiplomacySaveData} from "./savedata/PlayerDiplomacySaveData";
 
 
-export default class PlayerDiplomacy
+export class PlayerDiplomacy
 {
   private readonly attitudeModifiersByPlayer: ValuesByPlayer<AttitudeModifier[]>;
   private readonly statusByPlayer: ValuesByPlayer<DiplomacyState>;

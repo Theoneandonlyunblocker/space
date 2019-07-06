@@ -1,6 +1,6 @@
 import { UnlockableThingKind } from "../templateinterfaces/UnlockableThing";
 
-declare interface ManufactorySaveData
+export interface ManufactorySaveData
 {
   capacity: number;
   maxCapacity: number;
@@ -12,5 +12,3 @@ declare interface ManufactorySaveData
     templateType: string;
   }[];
 }
-
-export default ManufactorySaveData;

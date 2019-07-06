@@ -1,5 +1,5 @@
-import Camera from "./Camera";
-import Point from "./Point";
+import {Camera} from "./Camera";
+import {Point} from "./Point";
 
 
 let activeCamera: Camera | null;

@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import Point from "./Point";
+import {Point} from "./Point";
 
 
 export function createDummySpriteForShader(x?: number, y?: number, width?: number, height?: number)

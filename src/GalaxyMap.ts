@@ -1,15 +1,15 @@
-import GalaxyMapSaveData from "./savedata/GalaxyMapSaveData";
+import {GalaxyMapSaveData} from "./savedata/GalaxyMapSaveData";
 
-import FillerPoint from "./FillerPoint";
-import MapGenResult from "./MapGenResult";
-import MapVoronoiInfo from "./MapVoronoiInfo";
-import Player from "./Player";
-import Star from "./Star";
+import {FillerPoint} from "./FillerPoint";
+import {MapGenResult} from "./MapGenResult";
+import {MapVoronoiInfo} from "./MapVoronoiInfo";
+import {Player} from "./Player";
+import {Star} from "./Star";
 import {Building} from "./Building";
 import { BuildingCollection } from "./BuildingCollection";
 
 
-export default class GalaxyMap
+export class GalaxyMap
 {
   stars: Star[];
   fillerPoints: FillerPoint[];

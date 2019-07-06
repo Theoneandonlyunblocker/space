@@ -1,10 +1,8 @@
-import ColorSaveData from "./ColorSaveData";
-import EmblemSaveData from "./EmblemSaveData";
+import {ColorSaveData} from "./ColorSaveData";
+import {EmblemSaveData} from "./EmblemSaveData";
 
-declare interface FlagSaveData
+export interface FlagSaveData
 {
   mainColor: ColorSaveData;
   emblems: EmblemSaveData[];
 }
-
-export default FlagSaveData;

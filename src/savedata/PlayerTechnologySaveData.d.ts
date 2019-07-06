@@ -1,4 +1,4 @@
-interface PlayerTechnologySaveData
+export interface PlayerTechnologySaveData
 {
   [technologyKey: string]:
   {
@@ -7,5 +7,3 @@ interface PlayerTechnologySaveData
     priorityIsLocked: boolean;
   };
 }
-
-export default PlayerTechnologySaveData;

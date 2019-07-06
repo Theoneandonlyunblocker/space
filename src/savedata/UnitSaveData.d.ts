@@ -1,10 +1,10 @@
 import {UnitAttributesObject} from "../UnitAttributes";
 
-import UnitBattleStatsSaveData from "./UnitBattleStatsSaveData";
-import UnitItemsSaveData from "./UnitItemsSaveData";
+import {UnitBattleStatsSaveData} from "./UnitBattleStatsSaveData";
+import {UnitItemsSaveData} from "./UnitItemsSaveData";
 import { AbilityUpgradeSaveData } from "../UpgradableAbilitiesData";
 
-declare interface UnitSaveData
+export interface UnitSaveData
 {
   templateType: string;
   id: number;
@@ -28,5 +28,3 @@ declare interface UnitSaveData
   portraitKey?: string;
   raceKey?: string;
 }
-
-export default UnitSaveData;

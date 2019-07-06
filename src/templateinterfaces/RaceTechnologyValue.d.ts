@@ -1,10 +1,8 @@
-import TechnologyTemplate from "./TechnologyTemplate";
+import {TechnologyTemplate} from "./TechnologyTemplate";
 
-declare interface RaceTechnologyValue
+export interface RaceTechnologyValue
 {
   tech: TechnologyTemplate;
   startingLevel: number;
   maxLevel: number;
 }
-
-export default RaceTechnologyValue;

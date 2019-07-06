@@ -1,6 +1,6 @@
-import ModuleData from "./ModuleData";
+import {ModuleData} from "./ModuleData";
 import {ModuleInfo} from "./ModuleInfo";
-import ModuleFileInitializationPhase from "./ModuleFileInitializationPhase";
+import {ModuleFileInitializationPhase} from "./ModuleFileInitializationPhase";
 
 import {Language} from "./localization/Language";
 
@@ -11,7 +11,7 @@ export interface ModuleSaveData<S = any>
   moduleSaveData: S;
 }
 
-interface ModuleFile<SaveData = any>
+export interface ModuleFile<SaveData = any>
 {
   info: ModuleInfo;
   phaseToInitializeBefore: ModuleFileInitializationPhase;
@@ -27,5 +27,3 @@ interface ModuleFile<SaveData = any>
   deserializeModuleSpecificData?: (saveData: SaveData) => void;
   reviveGameData?: (saveData: any) => void;
 }
-
-export default ModuleFile;

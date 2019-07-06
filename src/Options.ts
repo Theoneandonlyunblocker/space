@@ -1,6 +1,6 @@
 import * as localForage from "localforage";
 
-import eventManager from "./eventManager";
+import {eventManager} from "./eventManager";
 import
 {
   deepMerge,
@@ -122,7 +122,8 @@ const defaultOptionsValues: OptionsValues =
   },
 };
 
-class Options implements OptionsValues
+// TODO 2019.07.06 |
+class _Options implements OptionsValues
 {
   battle:
   {
@@ -335,5 +336,5 @@ class Options implements OptionsValues
   }
 }
 
-const options = new Options();
-export default options;
+// TODO 2019.07.06 |
+export const Options = new _Options();

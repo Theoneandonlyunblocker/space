@@ -1,7 +1,5 @@
-const enum DamageType
+export const enum DamageType
 {
   Physical,
   Magical,
 }
-
-export default DamageType;

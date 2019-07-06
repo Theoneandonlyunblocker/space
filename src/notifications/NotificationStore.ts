@@ -1,9 +1,9 @@
-import NotificationTemplate from "../templateinterfaces/NotificationTemplate";
+import {NotificationTemplate} from "../templateinterfaces/NotificationTemplate";
 
-import NotificationStoreSaveData from "../savedata/NotificationStoreSaveData";
+import {NotificationStoreSaveData} from "../savedata/NotificationStoreSaveData";
 
-import Player from "../Player";
-import Star from "../Star";
+import {Player} from "../Player";
+import {Star} from "../Star";
 
 import {Notification} from "./Notification";
 

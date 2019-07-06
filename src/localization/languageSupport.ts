@@ -1,4 +1,4 @@
-import ModuleFile from "../ModuleFile";
+import {ModuleFile} from "../ModuleFile";
 
 import {Language} from "./Language";
 

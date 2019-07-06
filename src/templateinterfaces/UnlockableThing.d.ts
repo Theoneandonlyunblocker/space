@@ -1,4 +1,4 @@
-import TechRequirement from "./TechRequirement";
+import {TechRequirement} from "./TechRequirement";
 
 
 export type UnlockableThingKind = "unit" | "item" | "building";

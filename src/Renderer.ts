@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 
-import BackgroundDrawer from "./BackgroundDrawer";
-import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
-import Camera from "./Camera";
-import MouseEventHandler from "./MouseEventHandler";
-import PathfindingArrow from "./PathfindingArrow";
+import {BackgroundDrawer} from "./BackgroundDrawer";
+import {BackgroundDrawingFunction} from "./BackgroundDrawingFunction";
+import {Camera} from "./Camera";
+import {MouseEventHandler} from "./MouseEventHandler";
+import {PathfindingArrow} from "./PathfindingArrow";
 
 
-export default class Renderer
+export class Renderer
 {
   public renderer: PIXI.Renderer;
   public layers:

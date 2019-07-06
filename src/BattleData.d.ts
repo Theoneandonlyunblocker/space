@@ -1,9 +1,9 @@
 import {TerritoryBuilding} from "./Building";
-import Player from "./Player";
-import Star from "./Star";
-import Unit from "./Unit";
+import {Player} from "./Player";
+import {Star} from "./Star";
+import {Unit} from "./Unit";
 
-declare interface BattleData
+export interface BattleData
 {
   location: Star;
   building?: TerritoryBuilding;
@@ -18,5 +18,3 @@ declare interface BattleData
     units: Unit[];
   };
 }
-
-export default BattleData;

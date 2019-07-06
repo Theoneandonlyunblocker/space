@@ -1,13 +1,13 @@
-import AiControllerSaveData from "./AiControllerSaveData";
-import ColorSaveData from "./ColorSaveData";
-import FlagSaveData from "./FlagSaveData";
-import FleetSaveData from "./FleetSaveData";
-import NameSaveData from "./NameSaveData";
+import {AiControllerSaveData} from "./AiControllerSaveData";
+import {ColorSaveData} from "./ColorSaveData";
+import {FlagSaveData} from "./FlagSaveData";
+import {FleetSaveData} from "./FleetSaveData";
+import {NameSaveData} from "./NameSaveData";
 import {NotificationSubscriberSaveData} from "./NotificationSubscriberSaveData";
-import PlayerDiplomacySaveData from "./PlayerDiplomacySaveData";
-import PlayerTechnologySaveData from "./PlayerTechnologySaveData";
+import {PlayerDiplomacySaveData} from "./PlayerDiplomacySaveData";
+import {PlayerTechnologySaveData} from "./PlayerTechnologySaveData";
 
-declare interface PlayerSaveData
+export interface PlayerSaveData
 {
   id: number;
   name: NameSaveData;
@@ -39,5 +39,3 @@ declare interface PlayerSaveData
 
   notificationLog: NotificationSubscriberSaveData | null;
 }
-
-export default PlayerSaveData;

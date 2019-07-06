@@ -1,5 +1,5 @@
 import {app} from "./App"; // TODO global
-import {default as Options} from "./Options";
+import {Options} from "./Options";
 
 
 let hasAlertedOfError: boolean = false;

@@ -1,4 +1,4 @@
-import Options from "./Options";
+import {Options} from "./Options";
 
 
 type LogFn = (message?: any, ...optionalParams: any[]) => void;

@@ -1,4 +1,4 @@
-import {default as Battle} from "../Battle";
+import {Battle} from "../Battle";
 
 export interface BattleScripts
 {

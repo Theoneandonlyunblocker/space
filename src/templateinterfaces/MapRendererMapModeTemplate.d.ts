@@ -1,10 +1,8 @@
-import MapRendererLayerTemplate from "./MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "./MapRendererLayerTemplate";
 
-export declare interface MapRendererMapModeTemplate
+export interface MapRendererMapModeTemplate
 {
   key: string;
   displayName: string;
   layers: MapRendererLayerTemplate[];
 }
-
-export default MapRendererMapModeTemplate;

@@ -2,11 +2,11 @@ import * as PIXI from "pixi.js";
 
 import {app} from "./App"; // TODO global
 
-import Color from "./Color";
+import {Color} from "./Color";
 import {Fleet} from "./Fleet";
-import Point from "./Point";
-import Star from "./Star";
-import eventManager from "./eventManager";
+import {Point} from "./Point";
+import {Star} from "./Star";
+import {eventManager} from "./eventManager";
 
 
 interface PathfindingArrowCurveStyle
@@ -21,7 +21,7 @@ interface PathfindingArrowCurveStyle
 type CurveSegment = [number, number, number, number, number, number];
 
 // TODO 2018.05.30 | curve calculation stuff should be in a different module
-export default class PathfindingArrow
+export class PathfindingArrow
 {
   parentContainer: PIXI.Container;
   container: PIXI.Container;

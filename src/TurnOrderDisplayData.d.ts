@@ -1,11 +1,9 @@
-import Unit from "./Unit";
+import {Unit} from "./Unit";
 
-declare interface TurnOrderDisplayData
+export interface TurnOrderDisplayData
 {
   moveDelay: number;
 
   unit: Unit;
   displayName: string;
 }
-
-export default TurnOrderDisplayData;

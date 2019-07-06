@@ -1,8 +1,8 @@
-import Game from "../Game";
-import Personality from "../Personality";
-import Player from "../Player";
+import {Game} from "../Game";
+import {Personality} from "../Personality";
+import {Player} from "../Player";
 
-import AiTemplate from "./AiTemplate";
+import {AiTemplate} from "./AiTemplate";
 
 export interface AiTemplateConstructorProps<SaveData>
 {
@@ -18,5 +18,3 @@ export interface AiTemplateConstructor<SaveData>
 
   construct(props: AiTemplateConstructorProps<SaveData>): AiTemplate<SaveData>;
 }
-
-export default AiTemplateConstructor;

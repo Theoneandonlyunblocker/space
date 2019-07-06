@@ -1,4 +1,4 @@
-import ArchetypeValues from "./ArchetypeValues";
+import {ArchetypeValues} from "./ArchetypeValues";
 
 export interface Personality
 {
@@ -8,5 +8,3 @@ export interface Personality
 
   unitCompositionPreference: ArchetypeValues;
 }
-
-export default Personality;

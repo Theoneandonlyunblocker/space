@@ -1,13 +1,13 @@
 // TODO global ref
 // /// <reference path="../lib/voronoi.d.ts" />
 
-import FillerPoint from "./FillerPoint";
-import Point from "./Point";
-import Star from "./Star";
-import VoronoiCell from "./VoronoiCell";
+import {FillerPoint} from "./FillerPoint";
+import {Point} from "./Point";
+import {Star} from "./Star";
+import {VoronoiCell} from "./VoronoiCell";
 
 
-export default class MapVoronoiInfo
+export class MapVoronoiInfo
 {
   treeMap: BoundsQuadTree<VoronoiCell<Star>>;
   diagram: Voronoi.Result<Star | FillerPoint>;

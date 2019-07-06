@@ -1,12 +1,12 @@
 
-import Unit from "./Unit";
-import idGenerators from "./idGenerators";
-import ItemTemplate from "./templateinterfaces/ItemTemplate";
+import {Unit} from "./Unit";
+import {idGenerators} from "./idGenerators";
+import {ItemTemplate} from "./templateinterfaces/ItemTemplate";
 
-import ItemSaveData from "./savedata/ItemSaveData";
+import {ItemSaveData} from "./savedata/ItemSaveData";
 
 
-export default class Item
+export class Item
 {
   public id: number;
   public template: ItemTemplate;

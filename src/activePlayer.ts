@@ -1,4 +1,4 @@
-import {default as Player} from "./Player";
+import {Player} from "./Player";
 
 
 // player from whose perspective the game is currently being played

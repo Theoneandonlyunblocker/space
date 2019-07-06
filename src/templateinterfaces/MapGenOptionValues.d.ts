@@ -1,4 +1,4 @@
-declare interface MapGenOptionValues
+export interface MapGenOptionValues
 {
   defaultOptions:
   {
@@ -15,5 +15,3 @@ declare interface MapGenOptionValues
     [optionName: string]: number;
   };
 }
-
-export default MapGenOptionValues;

@@ -1,6 +1,6 @@
 import {DistributionData} from "./DistributionData";
 
-declare interface ResourceTemplate
+export interface ResourceTemplate
 {
   type: string;
   displayName: string;
@@ -9,5 +9,3 @@ declare interface ResourceTemplate
 
   distributionData: DistributionData;
 }
-
-export default ResourceTemplate;

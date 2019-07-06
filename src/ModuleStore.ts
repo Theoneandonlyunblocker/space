@@ -1,6 +1,6 @@
 /// <reference path="../node_modules/@types/requirejs/index.d.ts" />
 
-import ModuleFile from "./ModuleFile";
+import {ModuleFile} from "./ModuleFile";
 import {ModuleInfo} from "./ModuleInfo";
 import * as semver from "./versions";
 import { ModuleDependencyGraph } from "./ModuleDependencyGraph";

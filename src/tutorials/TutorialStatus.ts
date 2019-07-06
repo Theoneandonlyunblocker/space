@@ -1,6 +1,6 @@
 import * as localForage from "localforage";
 
-import TutorialVisibility from "./TutorialVisibility";
+import {TutorialVisibility} from "./TutorialVisibility";
 import * as debug from "../debug";
 import { storageStrings } from "../storageStrings";
 
@@ -15,7 +15,8 @@ const defaultTutorialStatus: TutorialStatusValues =
   introTutorial: TutorialVisibility.Show,
 };
 
-class TutorialStatus implements TutorialStatusValues
+// TODO 2019.07.06 |
+class _TutorialStatus implements TutorialStatusValues
 {
   public introTutorial: TutorialVisibility;
 
@@ -74,11 +75,11 @@ class TutorialStatus implements TutorialStatusValues
   }
   private deserialize(data: TutorialStatusValues): void
   {
-    this.introTutorial = TutorialStatus.getDeserializedState(data.introTutorial);
+    this.introTutorial = _TutorialStatus.getDeserializedState(data.introTutorial);
 
     this.setDefaultValuesForUndefined();
   }
 }
 
-const tutorialStatus = new TutorialStatus();
-export default tutorialStatus;
+// TODO 2019.07.06 |
+export const TutorialStatus = new _TutorialStatus();

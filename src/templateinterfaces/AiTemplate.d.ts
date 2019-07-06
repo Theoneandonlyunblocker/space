@@ -1,6 +1,6 @@
-import Personality from "../Personality";
+import {Personality} from "../Personality";
 import {TradeOffer} from "../TradeOffer";
-import Unit from "../Unit";
+import {Unit} from "../Unit";
 
 export interface AiTemplate<SaveData>
 {
@@ -18,5 +18,3 @@ export interface AiTemplate<SaveData>
 
   serialize(): SaveData;
 }
-
-export default AiTemplate;

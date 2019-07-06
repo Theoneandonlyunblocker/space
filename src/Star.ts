@@ -3,35 +3,35 @@ import {activeModuleData} from "./activeModuleData";
 import {activePlayer} from "./activePlayer";
 import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
-import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
+import {ResourceTemplate} from "./templateinterfaces/ResourceTemplate";
 import {TerrainTemplate} from "./templateinterfaces/TerrainTemplate";
 
 import {Building, TerritoryBuilding} from "./Building";
 import {BuildingCollection} from "./BuildingCollection";
-import BuildingUpgradeData from "./BuildingUpgradeData";
-import FillerPoint from "./FillerPoint";
+import {BuildingUpgradeData} from "./BuildingUpgradeData";
+import {FillerPoint} from "./FillerPoint";
 import {Fleet} from "./Fleet";
-import FleetAttackTarget from "./FleetAttackTarget";
-import Manufactory from "./Manufactory";
-import Player from "./Player";
-import Point from "./Point";
-import Unit from "./Unit";
-import VoronoiCell from "./VoronoiCell";
-import eventManager from "./eventManager";
-import idGenerators from "./idGenerators";
+import {FleetAttackTarget} from "./FleetAttackTarget";
+import {Manufactory} from "./Manufactory";
+import {Player} from "./Player";
+import {Point} from "./Point";
+import {Unit} from "./Unit";
+import {VoronoiCell} from "./VoronoiCell";
+import {eventManager} from "./eventManager";
+import {idGenerators} from "./idGenerators";
 import
 {
   aStar,
 } from "./pathFinding";
 
-import StarSaveData from "./savedata/StarSaveData";
+import {StarSaveData} from "./savedata/StarSaveData";
 import { applyFlatAndMultiplierAdjustments } from "./FlatAndMultiplierAdjustment";
-import GalaxyMap from "./GalaxyMap";
+import {GalaxyMap} from "./GalaxyMap";
 import { getUniqueArrayKeys } from "./utility";
 
 
 // represents single location in game world. see Region for a grouping of these locations
-export default class Star implements Point
+export class Star implements Point
 {
   public readonly id: number;
   public readonly seed: string;

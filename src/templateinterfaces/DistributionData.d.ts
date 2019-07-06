@@ -1,4 +1,4 @@
-export declare interface DistributionData
+export interface DistributionData
 {
   /**
    * relative probability distributable is picked from pool of available distributables

@@ -1,9 +1,9 @@
 
 import {activeModuleData} from "./activeModuleData";
 import {Distributable} from "./templateinterfaces/Distributable";
-import ItemTemplate from "./templateinterfaces/ItemTemplate";
+import {ItemTemplate} from "./templateinterfaces/ItemTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
-import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
+import {ResourceTemplate} from "./templateinterfaces/ResourceTemplate";
 
 
 interface DistributablesByKey<T extends Distributable>
@@ -162,6 +162,5 @@ class TemplateIndexes
   }
 }
 
-const indexes = new TemplateIndexes();
-export default indexes;
+export const indexes = new TemplateIndexes();
 

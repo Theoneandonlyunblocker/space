@@ -1,6 +1,6 @@
-import Color from "../Color";
+import {Color} from "../Color";
 
-declare interface SubEmblemTemplate
+export interface SubEmblemTemplate
 {
   key: string;
   getSvgElementClone: () => SVGElement;
@@ -20,5 +20,3 @@ declare interface SubEmblemTemplate
 
   disallowRandomGeneration?: boolean;
 }
-
-export default SubEmblemTemplate;

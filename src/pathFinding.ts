@@ -1,5 +1,5 @@
-import PriorityQueue from "./PriorityQueue";
-import Star from "./Star";
+import {PriorityQueue} from "./PriorityQueue";
+import {Star} from "./Star";
 
 
 export interface AStarGraph

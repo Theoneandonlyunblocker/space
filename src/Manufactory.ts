@@ -1,18 +1,18 @@
 
 import {activeModuleData} from "./activeModuleData";
-import ItemTemplate from "./templateinterfaces/ItemTemplate";
-import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
-import UnitTemplate from "./templateinterfaces/UnitTemplate";
+import {ItemTemplate} from "./templateinterfaces/ItemTemplate";
+import {ManufacturableThing} from "./templateinterfaces/ManufacturableThing";
+import {UnitTemplate} from "./templateinterfaces/UnitTemplate";
 import {UnlockableThingKind} from "./templateinterfaces/UnlockableThing";
 
-import ManufactorySaveData from "./savedata/ManufactorySaveData";
+import {ManufactorySaveData} from "./savedata/ManufactorySaveData";
 
 import {Fleet} from "./Fleet";
-import Item from "./Item";
-import Player from "./Player";
-import Star from "./Star";
-import Unit from "./Unit";
-import eventManager from "./eventManager";
+import {Item} from "./Item";
+import {Player} from "./Player";
+import {Star} from "./Star";
+import {Unit} from "./Unit";
+import {eventManager} from "./eventManager";
 import
 {
   getUniqueArrayKeys,
@@ -24,7 +24,7 @@ interface ManufacturableThingWithKind
   kind: UnlockableThingKind;
   template: ManufacturableThing;
 }
-export default class Manufactory
+export class Manufactory
 {
   public star: Star;
   public buildQueue: ManufacturableThingWithKind[] = [];

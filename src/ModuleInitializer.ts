@@ -1,15 +1,15 @@
-import ModuleData from "./ModuleData";
-import ModuleFile from "./ModuleFile";
+import {ModuleData} from "./ModuleData";
+import {ModuleFile} from "./ModuleFile";
 import
 {
-  default as ModuleFileInitializationPhase,
+  ModuleFileInitializationPhase,
   allModuleFileInitializationPhases,
 } from "./ModuleFileInitializationPhase";
 import * as debug from "./debug";
 import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
 
 
-export default class ModuleInitializer
+export class ModuleInitializer
 {
   private readonly moduleData: ModuleData;
   private readonly moduleFilesByKey:

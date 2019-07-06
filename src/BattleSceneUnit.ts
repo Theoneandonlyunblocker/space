@@ -2,12 +2,12 @@
 // /// <reference path="../lib/tween.js.d.ts" />
 import * as PIXI from "pixi.js";
 
-import BattleSfxTemplate from "./templateinterfaces/BattleSfxTemplate";
-import SfxParams from "./templateinterfaces/SfxParams";
+import {BattleSfxTemplate} from "./templateinterfaces/BattleSfxTemplate";
+import {SfxParams} from "./templateinterfaces/SfxParams";
 
-import Options from "./Options";
-import Unit from "./Unit";
-import UnitBattleSide from "./UnitBattleSide";
+import {Options} from "./Options";
+import {Unit} from "./Unit";
+import {UnitBattleSide} from "./UnitBattleSide";
 import * as debug from "./debug";
 
 
@@ -19,7 +19,7 @@ const enum BattleSceneUnitState
   Removed,
 }
 
-export default class BattleSceneUnit
+export class BattleSceneUnit
 {
   public spriteContainer: PIXI.Container;
   public getSceneBounds: () => {width: number; height: number};

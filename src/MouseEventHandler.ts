@@ -1,7 +1,7 @@
-import Camera from "./Camera";
-import RectangleSelect from "./RectangleSelect";
-import Star from "./Star";
-import eventManager from "./eventManager";
+import {Camera} from "./Camera";
+import {RectangleSelect} from "./RectangleSelect";
+import {Star} from "./Star";
+import {eventManager} from "./eventManager";
 
 
 type PreventGhostHandles =
@@ -27,7 +27,7 @@ enum MouseButtons
 }
 
 
-export default class MouseEventHandler
+export class MouseEventHandler
 {
   private interactionManager: PIXI.interaction.InteractionManager;
   private camera: Camera;

@@ -1,4 +1,4 @@
-declare interface NotificationSaveData<P = any>
+export interface NotificationSaveData<P = any>
 {
   id: number;
   templateKey: string;
@@ -8,5 +8,3 @@ declare interface NotificationSaveData<P = any>
 
   props: P;
 }
-
-export default NotificationSaveData;

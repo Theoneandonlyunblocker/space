@@ -1,5 +1,5 @@
 // TODO performance | not very efficient. probably doesn't matter though
-export default class PriorityQueue<T>
+export class PriorityQueue<T>
 {
   items:
   {

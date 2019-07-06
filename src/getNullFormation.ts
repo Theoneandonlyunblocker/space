@@ -1,8 +1,8 @@
-import Unit from "./Unit";
+import {Unit} from "./Unit";
 import {activeModuleData} from "./activeModuleData";
 
 
-export default function getNullFormation(): Unit[][]
+export function getNullFormation(): Unit[][]
 {
   const nullFormation: Unit[][] = [];
 

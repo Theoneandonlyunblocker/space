@@ -1,10 +1,10 @@
 // TODO global ref
 // /// <reference path="../lib/husl.d.ts" />
 
-import ColorSaveData from "./savedata/ColorSaveData";
+import {ColorSaveData} from "./savedata/ColorSaveData";
 
 
-export default class Color
+export class Color
 {
   // 0.0-1.0
   private r: number;

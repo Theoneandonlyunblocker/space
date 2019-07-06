@@ -1,11 +1,11 @@
 import {app} from "./App"; // TODO global
 
-import Name from "./Name";
-import Player from "./Player";
-import Star from "./Star";
-import Unit from "./Unit";
-import eventManager from "./eventManager";
-import idGenerators from "./idGenerators";
+import {Name} from "./Name";
+import {Player} from "./Player";
+import {Star} from "./Star";
+import {Unit} from "./Unit";
+import {eventManager} from "./eventManager";
+import {idGenerators} from "./idGenerators";
 
 import
 {
@@ -14,7 +14,7 @@ import
   PathNode,
 } from "./pathFinding";
 
-import FleetSaveData from "./savedata/FleetSaveData";
+import {FleetSaveData} from "./savedata/FleetSaveData";
 
 
 export class Fleet

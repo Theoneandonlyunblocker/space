@@ -1,15 +1,15 @@
 import * as PIXI from "pixi.js";
 
-import Point from "./Point";
+import {Point} from "./Point";
 import {registerActiveCamera} from "./centerCameraOnPosition";
-import eventManager from "./eventManager";
+import {eventManager} from "./eventManager";
 import
 {
   clamp,
 } from "./utility";
 
 
-export default class Camera
+export class Camera
 {
   public getBoundsObjectBoundsFN: () => PIXI.Rectangle;
 

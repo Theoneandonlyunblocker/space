@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export declare interface TutorialPage
+export interface TutorialPage
 {
   content: React.ReactNode | React.ReactNode[];
   onOpen?: () => void;
@@ -12,9 +12,7 @@ export declare interface TutorialPage
   };
 }
 
-declare interface Tutorial
+export interface Tutorial
 {
   pages: TutorialPage[];
 }
-
-export default Tutorial;

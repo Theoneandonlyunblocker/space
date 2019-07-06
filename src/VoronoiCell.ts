@@ -1,10 +1,10 @@
 // TODO global ref
 // /// <reference path="../lib/voronoi.d.ts" />
 
-import Point from "./Point";
+import {Point} from "./Point";
 
 
-export default class VoronoiCell<T extends Point> extends Voronoi.prototype.Cell
+export class VoronoiCell<T extends Point> extends Voronoi.prototype.Cell
 {
   public vertices: Voronoi.Vertex[];
 

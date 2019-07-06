@@ -1,9 +1,9 @@
-import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate";
+import {MapRendererMapModeTemplate} from "./templateinterfaces/MapRendererMapModeTemplate";
 
-import MapRendererLayer from "./MapRendererLayer";
+import {MapRendererLayer} from "./MapRendererLayer";
 
 
-export default class MapRendererMapMode
+export class MapRendererMapMode
 {
   template: MapRendererMapModeTemplate;
   displayName: string;

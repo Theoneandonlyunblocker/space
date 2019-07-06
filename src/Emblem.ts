@@ -1,7 +1,7 @@
 // TODO global ref
 // /// <reference path="../lib/rng.d.ts" />
 
-import Color from "./Color";
+import {Color} from "./Color";
 import {activeModuleData} from "./activeModuleData";
 import
 {
@@ -13,12 +13,12 @@ import
   getSeededRandomArrayItem,
 } from "./utility";
 
-import EmblemSaveData from "./savedata/EmblemSaveData";
+import {EmblemSaveData} from "./savedata/EmblemSaveData";
 
-import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
+import {SubEmblemTemplate} from "./templateinterfaces/SubEmblemTemplate";
 
 
-export default class Emblem
+export class Emblem
 {
   public colors: Color[];
   public template: SubEmblemTemplate;

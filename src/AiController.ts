@@ -1,10 +1,10 @@
-import AiTemplate from "./templateinterfaces/AiTemplate";
+import {AiTemplate} from "./templateinterfaces/AiTemplate";
 
-import AiControllerSaveData from "./savedata/AiControllerSaveData";
+import {AiControllerSaveData} from "./savedata/AiControllerSaveData";
 
-import Personality from "./Personality";
+import {Personality} from "./Personality";
 import {TradeOffer} from "./TradeOffer";
-import Unit from "./Unit";
+import {Unit} from "./Unit";
 
 
 export class AiController<SaveData>

@@ -1,6 +1,6 @@
-import NameSaveData from "./NameSaveData";
+import {NameSaveData} from "./NameSaveData";
 
-declare interface FleetSaveData
+export interface FleetSaveData
 {
   id: number;
   name: NameSaveData;
@@ -8,5 +8,3 @@ declare interface FleetSaveData
   playerId: number;
   unitIds: number[];
 }
-
-export default FleetSaveData;

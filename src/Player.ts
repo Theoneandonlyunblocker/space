@@ -1,31 +1,31 @@
 import {AiController} from "./AiController";
 import {app} from "./App"; // TODO global
-import BattleData from "./BattleData";
-import BattlePrep from "./BattlePrep";
-import BattleSimulator from "./BattleSimulator";
-import Color from "./Color";
+import {BattleData} from "./BattleData";
+import {BattlePrep} from "./BattlePrep";
+import {BattleSimulator} from "./BattleSimulator";
+import {Color} from "./Color";
 import {Flag} from "./Flag";
 import {Fleet} from "./Fleet";
-import FleetAttackTarget from "./FleetAttackTarget";
-import Game from "./Game";
-import Item from "./Item";
-import Manufactory from "./Manufactory";
-import Name from "./Name";
-import Options from "./Options";
-import PlayerDiplomacy from "./PlayerDiplomacy";
-import PlayerTechnology from "./PlayerTechnology";
-import Point from "./Point";
-import Star from "./Star";
-import Unit from "./Unit";
-import ValuesByStar from "./ValuesByStar";
+import {FleetAttackTarget} from "./FleetAttackTarget";
+import {Game} from "./Game";
+import {Item} from "./Item";
+import {Manufactory} from "./Manufactory";
+import {Name} from "./Name";
+import {Options} from "./Options";
+import {PlayerDiplomacy} from "./PlayerDiplomacy";
+import {PlayerTechnology} from "./PlayerTechnology";
+import {Point} from "./Point";
+import {Star} from "./Star";
+import {Unit} from "./Unit";
+import {ValuesByStar} from "./ValuesByStar";
 import {activeModuleData} from "./activeModuleData";
 import
 {
   generateColorScheme,
   generateSecondaryColor,
 } from "./colorGeneration";
-import eventManager from "./eventManager";
-import idGenerators from "./idGenerators";
+import {eventManager} from "./eventManager";
+import {idGenerators} from "./idGenerators";
 import
 {
   extendObject,
@@ -35,18 +35,18 @@ import
 import {PlayerNotificationSubscriber} from "./notifications/PlayerNotificationSubscriber";
 
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
-import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
-import TechRequirement from "./templateinterfaces/TechRequirement";
+import {ResourceTemplate} from "./templateinterfaces/ResourceTemplate";
+import {TechRequirement} from "./templateinterfaces/TechRequirement";
 
-import PlayerSaveData from "./savedata/PlayerSaveData";
-import PlayerTechnologySaveData from "./savedata/PlayerTechnologySaveData";
+import {PlayerSaveData} from "./savedata/PlayerSaveData";
+import {PlayerTechnologySaveData} from "./savedata/PlayerTechnologySaveData";
 import { BuildingTemplate } from "./templateinterfaces/BuildingTemplate";
 import { Building } from "./Building";
-import BuildingUpgradeData from "./BuildingUpgradeData";
+import {BuildingUpgradeData} from "./BuildingUpgradeData";
 
 
 // TODO 2017.07.26 | probably should split minor & major players into subclasses
-export default class Player
+export class Player
 {
   id: number;
   name: Name;

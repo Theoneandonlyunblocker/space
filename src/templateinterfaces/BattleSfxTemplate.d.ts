@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
-import SfxParams from "./SfxParams";
+import {SfxParams} from "./SfxParams";
 
-declare interface BattleSfxTemplate
+export interface BattleSfxTemplate
 {
   duration: number;
   sfxWillTriggerEffect?: boolean; // true if one of the sfx functions calls SfxParams.triggerEffect()
@@ -13,5 +13,3 @@ declare interface BattleSfxTemplate
   // emptySpaceOverlay?: (props: SfxParams) => void;
   battleOverlay?: (props: SfxParams) => void;
 }
-
-export default BattleSfxTemplate;

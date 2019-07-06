@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js";
 
-import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "./templateinterfaces/MapRendererLayerTemplate";
 
-import GalaxyMap from "./GalaxyMap";
-import MapRenderer from "./MapRenderer";
+import {GalaxyMap} from "./GalaxyMap";
+import {MapRenderer} from "./MapRenderer";
 
 
-export default class MapRendererLayer
+export class MapRendererLayer
 {
   public template: MapRendererLayerTemplate;
   public container: PIXI.Container;

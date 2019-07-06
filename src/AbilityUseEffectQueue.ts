@@ -1,4 +1,4 @@
-import BattleScene from "./BattleScene";
+import {BattleScene} from "./BattleScene";
 import {AbilityUseEffect} from "./battleAbilityUsage";
 import
 {
