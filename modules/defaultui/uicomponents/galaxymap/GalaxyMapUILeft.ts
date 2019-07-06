@@ -3,23 +3,23 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import
 {
-  default as FleetSelection,
+  FleetSelection,
   FleetSelectionComponent,
 } from "./FleetSelection";
-import StarInfo from "./StarInfo";
-import PossibleActions from "../possibleactions/PossibleActions";
+import {StarInfo} from "./StarInfo";
+import {PossibleActions} from "../possibleactions/PossibleActions";
 import
 {
   ExpandedAction,
   ExpandedActionKind
 } from "../possibleactions/ExpandedAction";
 import { Fleet } from "../../../../src/Fleet";
-import Star from "../../../../src/Star";
-import Player from "../../../../src/Player";
-import FleetAttackTarget from "../../../../src/FleetAttackTarget";
-import eventManager from "../../../../src/eventManager";
+import {Star} from "../../../../src/Star";
+import {Player} from "../../../../src/Player";
+import {FleetAttackTarget} from "../../../../src/FleetAttackTarget";
+import {eventManager} from "../../../../src/eventManager";
 import { BuildingTemplate } from "../../../../src/templateinterfaces/BuildingTemplate";
-import BuildingUpgradeData from "../../../../src/BuildingUpgradeData";
+import {BuildingUpgradeData} from "../../../../src/BuildingUpgradeData";
 
 
 // tslint:disable-next-line:no-any

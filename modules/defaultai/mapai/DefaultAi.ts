@@ -1,29 +1,29 @@
-import ArchetypeValues from "../../../src/ArchetypeValues";
-import GalaxyMap from "../../../src/GalaxyMap";
-import Game from "../../../src/Game";
-import Personality from "../../../src/Personality";
-import Player from "../../../src/Player";
+import {ArchetypeValues} from "../../../src/ArchetypeValues";
+import {GalaxyMap} from "../../../src/GalaxyMap";
+import {Game} from "../../../src/Game";
+import {Personality} from "../../../src/Personality";
+import {Player} from "../../../src/Player";
 import {TradeOffer} from "../../../src/TradeOffer";
-import Unit from "../../../src/Unit";
+import {Unit} from "../../../src/Unit";
 import {activeModuleData} from "../../../src/activeModuleData";
-import getNullFormation from "../../../src/getNullFormation";
-import AiTemplate from "../../../src/templateinterfaces/AiTemplate";
+import {getNullFormation} from "../../../src/getNullFormation";
+import {AiTemplate} from "../../../src/templateinterfaces/AiTemplate";
 import
 {
   makeRandomPersonality,
 } from "../../../src/utility";
 
-import DefaultAiSaveData from "./DefaultAiSaveData";
-import DiplomacyAi from "./DiplomacyAi";
+import {DefaultAiSaveData} from "./DefaultAiSaveData";
+import {DiplomacyAi} from "./DiplomacyAi";
 import {EconomicAi} from "./EconomicAi";
-import FrontsAi from "./FrontsAi";
+import {FrontsAi} from "./FrontsAi";
 import {GrandStrategyAi} from "./GrandStrategyAi";
-import MapEvaluator from "./MapEvaluator";
+import {MapEvaluator} from "./MapEvaluator";
 import {ObjectivesAi} from "./ObjectivesAi";
 import {UnitEvaluator} from "./UnitEvaluator";
 
 
-export default class DefaultAi implements AiTemplate<DefaultAiSaveData>
+export class DefaultAi implements AiTemplate<DefaultAiSaveData>
 {
   public static readonly type: string = "DefaultAi";
   public readonly type: string = "DefaultAi";

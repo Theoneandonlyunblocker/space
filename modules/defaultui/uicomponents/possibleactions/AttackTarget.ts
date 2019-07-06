@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import FleetAttackTarget from "../../../../src/FleetAttackTarget";
-import eventManager from "../../../../src/eventManager";
-import PlayerFlag from "../PlayerFlag";
+import {FleetAttackTarget} from "../../../../src/FleetAttackTarget";
+import {eventManager} from "../../../../src/eventManager";
+import {PlayerFlag} from "../PlayerFlag";
 
 import {localize} from "../../localization/localize";
 
@@ -72,5 +72,4 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(AttackTargetComponent);
-export default factory;
+export const AttackTarget: React.Factory<PropTypes> = React.createFactory(AttackTargetComponent);

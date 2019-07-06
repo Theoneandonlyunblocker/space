@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import MixinBase from "./MixinBase";
+import {MixinBase} from "./MixinBase";
 
 
 type LifeCycleFunction = "componentDidMount" |
@@ -48,7 +48,7 @@ function wrapRenderFunction(base: React.Component<any, any>, mixins: MixinBase<a
   };
 }
 
-export default function applyMixins(base: React.Component<any, any>, ...mixins: MixinBase<any>[])
+export function applyMixins(base: React.Component<any, any>, ...mixins: MixinBase<any>[])
 {
   lifeCycleFunctions.forEach((functionName: LifeCycleFunction) =>
   {

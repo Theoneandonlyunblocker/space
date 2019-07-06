@@ -8,7 +8,7 @@ import
   getRelativeValue,
 } from "../../../../src/utility";
 
-import AttitudeModifierList from "./AttitudeModifierList";
+import {AttitudeModifierList} from "./AttitudeModifierList";
 
 
 export interface PropTypes extends React.Props<any>
@@ -131,5 +131,4 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(OpinionComponent);
-export default factory;
+export const Opinion: React.Factory<PropTypes> = React.createFactory(OpinionComponent);

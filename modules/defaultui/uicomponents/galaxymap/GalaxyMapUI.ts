@@ -3,24 +3,24 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 import {Fleet} from "../../../../src/Fleet";
-import FleetAttackTarget from "../../../../src/FleetAttackTarget";
-import Game from "../../../../src/Game";
-import MapRenderer from "../../../../src/MapRenderer";
-import Player from "../../../../src/Player";
-import PlayerControl from "../../../../src/PlayerControl";
-import Star from "../../../../src/Star";
+import {FleetAttackTarget} from "../../../../src/FleetAttackTarget";
+import {Game} from "../../../../src/Game";
+import {MapRenderer} from "../../../../src/MapRenderer";
+import {Player} from "../../../../src/Player";
+import {PlayerControl} from "../../../../src/PlayerControl";
+import {Star} from "../../../../src/Star";
 import {activePlayer} from "../../../../src/activePlayer";
-import eventManager from "../../../../src/eventManager";
+import {eventManager} from "../../../../src/eventManager";
 import {Language} from "../../../../src/localization/Language";
 import { Notification } from "../../../../src/notifications/Notification";
 import { NotificationSubscriber } from "../../../../src/notifications/NotificationSubscriber";
-import MapModeSettings from "../mapmodes/MapModeSettings";
-import NotificationLog from "../notifications/NotificationLog";
-import IntroTutorial from "../tutorials/IntroTutorial";
+import {MapModeSettings} from "../mapmodes/MapModeSettings";
+import {NotificationLog} from "../notifications/NotificationLog";
+import {IntroTutorial} from "../tutorials/IntroTutorial";
 
 import {GalaxyMapUILeft} from "./GalaxyMapUILeft";
-import TopBar from "./TopBar";
-import TopMenu from "./TopMenu";
+import {TopBar} from "./TopBar";
+import {TopMenu} from "./TopMenu";
 
 
 export interface PropTypes extends React.Props<any>
@@ -238,5 +238,4 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(GalaxyMapUIComponent);
-export default factory;
+export const GalaxyMapUI: React.Factory<PropTypes> = React.createFactory(GalaxyMapUIComponent);

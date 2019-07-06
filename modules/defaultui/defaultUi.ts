@@ -1,19 +1,19 @@
 import * as PIXI from "pixi.js";
 
 import {englishLanguage} from "../englishlanguage/englishLanguage";
-import ModuleFile from "../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
+import {ModuleFile} from "../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
 import {svgCache} from "../../src/svgCache";
 
-import BattleSceneTester from "./uicomponents/BattleSceneTester";
-import FlagMaker from "./uicomponents/FlagMaker";
-import BattleComponentFactory from "./uicomponents/battle/Battle";
-import BattlePrepComponentFactory from "./uicomponents/battleprep/BattlePrep";
-import GalaxyMap from "./uicomponents/galaxymap/GalaxyMap";
-import SetupGame from "./uicomponents/setupgame/SetupGame";
+import {BattleSceneTester} from "./uicomponents/BattleSceneTester";
+import {FlagMaker} from "./uicomponents/FlagMaker";
+import {Battle} from "./uicomponents/battle/Battle";
+import {BattlePrep} from "./uicomponents/battleprep/BattlePrep";
+import {GalaxyMap} from "./uicomponents/galaxymap/GalaxyMap";
+import {SetupGame} from "./uicomponents/setupgame/SetupGame";
 import {SaveRecoveryWithDetails} from "./uicomponents/errors/SaveRecoveryWithDetails";
 import {TopLevelErrorBoundary} from "./uicomponents/errors/TopLevelErrorBoundary";
-import SfxEditor from "./uicomponents/sfxeditor/SfxEditor";
+import {SfxEditor} from "./uicomponents/sfxeditor/SfxEditor";
 
 import * as moduleInfo from "./moduleInfo.json";
 
@@ -60,8 +60,8 @@ export const defaultUi: ModuleFile =
   },
   addToModuleData: (moduleData) =>
   {
-    moduleData.uiScenes.battle = BattleComponentFactory;
-    moduleData.uiScenes.battlePrep = BattlePrepComponentFactory;
+    moduleData.uiScenes.battle = Battle;
+    moduleData.uiScenes.battlePrep = BattlePrep;
     moduleData.uiScenes.galaxyMap = GalaxyMap;
     moduleData.uiScenes.setupGame = SetupGame;
     moduleData.uiScenes.errorRecovery = SaveRecoveryWithDetails;

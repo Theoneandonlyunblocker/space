@@ -3,11 +3,11 @@ import
   AiTemplateConstructor,
 } from "../../../src/templateinterfaces/AiTemplateConstructor";
 
-import DefaultAi from "./DefaultAi";
-import DefaultAiSaveData from "./DefaultAiSaveData";
+import {DefaultAi} from "./DefaultAi";
+import {DefaultAiSaveData} from "./DefaultAiSaveData";
 
 
-const defaultAiConstructor: AiTemplateConstructor<DefaultAiSaveData> =
+export const defaultAiConstructor: AiTemplateConstructor<DefaultAiSaveData> =
 {
   type: DefaultAi.type,
   construct: props =>
@@ -15,5 +15,3 @@ const defaultAiConstructor: AiTemplateConstructor<DefaultAiSaveData> =
     return new DefaultAi(props.player, props.game, props.personality);
   },
 };
-
-export default defaultAiConstructor;

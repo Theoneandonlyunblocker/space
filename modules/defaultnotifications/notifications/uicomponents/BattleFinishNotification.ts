@@ -17,7 +17,7 @@ interface PropTypes
   notification: Notification<NotificationProps, SerializedNotificationProps>;
 }
 
-class BattleFinishNotification extends React.Component<PropTypes, {}>
+class BattleFinishNotificationComponent extends React.Component<PropTypes, {}>
 {
   public displayName = "BattleFinishNotification";
 
@@ -60,5 +60,4 @@ class BattleFinishNotification extends React.Component<PropTypes, {}>
   }
 }
 
-const factory = React.createFactory(BattleFinishNotification);
-export default factory;
+export const BattleFinishNotification = React.createFactory(BattleFinishNotificationComponent);

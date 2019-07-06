@@ -2,12 +2,12 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Color from "../../../../src/Color";
+import {Color} from "../../../../src/Color";
 import {Flag} from "../../../../src/Flag";
-import {default as PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
-import {default as DefaultWindow} from "../windows/DefaultWindow";
+import {PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
+import {DefaultWindow} from "../windows/DefaultWindow";
 
-import FlagEditor from "./FlagEditor";
+import {FlagEditor} from "./FlagEditor";
 import {SetterComponentBase} from "./SetterComponentBase";
 
 
@@ -131,5 +131,4 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType> i
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(FlagSetterComponent);
-export default factory;
+export const FlagSetter: React.Factory<PropTypes> = React.createFactory(FlagSetterComponent);

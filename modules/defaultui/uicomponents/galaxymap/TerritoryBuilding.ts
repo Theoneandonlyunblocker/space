@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {TerritoryBuilding} from "../../../../src/Building";
-import PlayerFlag from "../PlayerFlag";
+import {TerritoryBuilding as TerritoryBuildingObj} from "../../../../src/Building";
+import {PlayerFlag} from "../PlayerFlag";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  building: TerritoryBuilding;
+  building: TerritoryBuildingObj;
 }
 
 interface StateType
@@ -73,5 +73,4 @@ export class TerritoryBuildingComponent extends React.PureComponent<PropTypes, S
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TerritoryBuildingComponent);
-export default factory;
+export const TerritoryBuilding: React.Factory<PropTypes> = React.createFactory(TerritoryBuildingComponent);

@@ -2,12 +2,12 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import PlayerTechnology from "../../../../src/PlayerTechnology";
-import TechnologyTemplate from "../../../../src/templateinterfaces/TechnologyTemplate";
+import {PlayerTechnology} from "../../../../src/PlayerTechnology";
+import {TechnologyTemplate} from "../../../../src/templateinterfaces/TechnologyTemplate";
 import {DefaultWindow} from "../windows/DefaultWindow";
 
 import {TechnologyUnlocks} from "./TechnologyUnlocks";
-import TechnologyPrioritySlider from "./technologyPrioritySlider";
+import {TechnologyPrioritySlider} from "./technologyPrioritySlider";
 import { activeModuleData } from "../../../../src/activeModuleData";
 
 
@@ -180,5 +180,4 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TechnologyComponent);
-export default factory;
+export const Technology: React.Factory<PropTypes> = React.createFactory(TechnologyComponent);

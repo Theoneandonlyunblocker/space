@@ -1,5 +1,5 @@
-import Battle from "../../../src/Battle";
-import Unit from "../../../src/Unit";
+import {Battle} from "../../../src/Battle";
+import {Unit} from "../../../src/Unit";
 
 import
 {

@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
+import {DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import {applyMixins} from "../mixins/applyMixins";
 
-import TradeableItemProps from "./TradeableItemProps";
+import {TradeableItemProps} from "./TradeableItemProps";
 
 
 export interface PropTypes extends TradeableItemProps, React.Props<any>
@@ -153,5 +153,4 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TradeMoneyComponent);
-export default factory;
+export const TradeMoney: React.Factory<PropTypes> = React.createFactory(TradeMoneyComponent);

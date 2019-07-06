@@ -1,4 +1,4 @@
-import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
+import {UnitTemplate} from "../../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../../common/unitArchetypes";
 import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
@@ -10,11 +10,11 @@ import
   standBy,
 } from "../../abilities/abilities";
 import {distributionGroups} from "../../../common/distributionGroups";
-import itemSlot from "../../items/itemSlot";
+import {itemSlot} from "../../items/itemSlot";
 import {getIconSrc} from "../resources";
 
 
-const fighterSquadron: UnitTemplate =
+export const fighterSquadron: UnitTemplate =
 {
   type: "fighterSquadron",
   displayName: "Fighter Squadron",
@@ -71,5 +71,3 @@ const fighterSquadron: UnitTemplate =
     ],
   },
 };
-
-export default fighterSquadron;

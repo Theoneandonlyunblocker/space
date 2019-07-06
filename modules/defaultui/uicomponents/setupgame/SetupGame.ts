@@ -3,11 +3,11 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 import {app} from "../../../../src/App"; // TODO global
-import ModuleFileInitializationPhase from "../../../../src/ModuleFileInitializationPhase";
-import MapGenFunction from "../../../../src/templateinterfaces/MapGenFunction";
+import {ModuleFileInitializationPhase} from "../../../../src/ModuleFileInitializationPhase";
+import {MapGenFunction} from "../../../../src/templateinterfaces/MapGenFunction";
 
-import {default as MapSetup, MapSetupComponent} from "./MapSetup";
-import {default as SetupGamePlayers, SetupGamePlayersComponent} from "./SetupGamePlayers";
+import {MapSetup, MapSetupComponent} from "./MapSetup";
+import {SetupGamePlayers, SetupGamePlayersComponent} from "./SetupGamePlayers";
 
 
 export interface PropTypes extends React.Props<any>
@@ -132,5 +132,4 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SetupGameComponent);
-export default factory;
+export const SetupGame: React.Factory<PropTypes> = React.createFactory(SetupGameComponent);

@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import DragPositioner from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
+import {DragPositioner} from "../mixins/DragPositioner";
+import {applyMixins} from "../mixins/applyMixins";
 
 import {Direction} from "../../../../src/Direction";
 
@@ -111,5 +111,4 @@ export class WindowResizeHandleComponent extends React.Component<PropTypes, Stat
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(WindowResizeHandleComponent);
-export default factory;
+export const WindowResizeHandle: React.Factory<PropTypes> = React.createFactory(WindowResizeHandleComponent);

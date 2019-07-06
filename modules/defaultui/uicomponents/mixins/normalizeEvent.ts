@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import NormalizedEvent from "./NormalizedEvent";
+import {NormalizedEvent} from "./NormalizedEvent";
 
 
 // TODO performance | performance might be pretty bad
@@ -52,7 +52,7 @@ function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEv
   });
 }
 
-export default function normalizeEvent(sourceEvent: MouseEvent | TouchEvent | React.MouseEvent<any> | React.TouchEvent<any>): NormalizedEvent
+export function normalizeEvent(sourceEvent: MouseEvent | TouchEvent | React.MouseEvent<any> | React.TouchEvent<any>): NormalizedEvent
 {
   const castedEvent = <any> sourceEvent;
   const isReactEvent = Boolean(castedEvent.nativeEvent);

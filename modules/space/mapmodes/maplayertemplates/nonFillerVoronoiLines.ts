@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 
-import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 
-const nonFillerVoronoiLines: MapRendererLayerTemplate =
+export const nonFillerVoronoiLines: MapRendererLayerTemplate =
 {
   key: "nonFillerVoronoiLines",
   displayName: "Star borders",
@@ -31,5 +31,3 @@ const nonFillerVoronoiLines: MapRendererLayerTemplate =
     return doc;
   },
 };
-
-export default nonFillerVoronoiLines;

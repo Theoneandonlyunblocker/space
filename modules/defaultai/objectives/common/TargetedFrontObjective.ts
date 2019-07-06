@@ -1,8 +1,8 @@
-import FleetAttackTarget from "../../../../src/FleetAttackTarget";
-import Star from "../../../../src/Star";
-import Unit from "../../../../src/Unit";
+import {FleetAttackTarget} from "../../../../src/FleetAttackTarget";
+import {Star} from "../../../../src/Star";
+import {Unit} from "../../../../src/Unit";
 import {Front} from "../../mapai/Front";
-import MapEvaluator from "../../mapai/MapEvaluator";
+import {MapEvaluator} from "../../mapai/MapEvaluator";
 import {UnitEvaluator} from "../../mapai/UnitEvaluator";
 
 import {FrontObjective} from "./FrontObjective";

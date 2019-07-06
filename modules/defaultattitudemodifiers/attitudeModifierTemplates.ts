@@ -1,8 +1,8 @@
-import AttitudeModifierTemplate from "../../src/templateinterfaces/AttitudeModifierTemplate";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
+import {AttitudeModifierTemplate} from "../../src/templateinterfaces/AttitudeModifierTemplate";
+import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
 
-import DiplomacyEvaluation from "../../src/DiplomacyEvaluation";
-import DiplomacyState from "../../src/DiplomacyState";
+import {DiplomacyEvaluation} from "../../src/DiplomacyEvaluation";
+import {DiplomacyState} from "../../src/DiplomacyState";
 
 
 export const neighborStars: AttitudeModifierTemplate =
@@ -55,12 +55,10 @@ export const declaredWar: AttitudeModifierTemplate =
 };
 
 
-const attitudeModifierTemplates: TemplateCollection<AttitudeModifierTemplate> =
+export const attitudeModifierTemplates: TemplateCollection<AttitudeModifierTemplate> =
 {
   [neighborStars.type]: neighborStars,
   [atWar.type]: atWar,
   [declaredWar.type]: declaredWar,
   [baseOpinion.type]: baseOpinion,
 };
-
-export default attitudeModifierTemplates;

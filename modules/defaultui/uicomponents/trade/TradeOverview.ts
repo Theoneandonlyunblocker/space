@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Player from "../../../../src/Player";
+import {Player} from "../../../../src/Player";
 import {Trade} from "../../../../src/Trade";
 import
 {
@@ -11,7 +11,7 @@ import
   TradeOffer,
 } from "../../../../src/TradeOffer";
 
-import TradeableItemsComponentFactory from "./TradeableItems";
+import {TradeableItems} from "./TradeableItems";
 
 
 export interface PropTypes extends React.Props<any>
@@ -112,7 +112,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
         {
           className: "tradeable-items-container available-items-container",
         },
-          TradeableItemsComponentFactory(
+          TradeableItems(
           {
             header: this.props.selfPlayer.name.fullName,
             tradeableItems: selfAvailableItems,
@@ -122,7 +122,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             onMouseUp: this.handleAvailableMouseUp,
             onItemClick: this.handleStageItem.bind(this, "self"),
           }),
-          TradeableItemsComponentFactory(
+          TradeableItems(
           {
             header: this.props.otherPlayer.name.fullName,
             tradeableItems: otherAvailableItems,
@@ -137,7 +137,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
         {
           className: "tradeable-items-container trade-staging-areas-container",
         },
-          TradeableItemsComponentFactory(
+          TradeableItems(
           {
             tradeableItems: this.state.activeOffer.ownTrade.stagedItems,
             availableItems: this.state.activeOffer.ownTrade.allItems,
@@ -148,7 +148,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             onItemClick: this.handleRemoveStagedItem.bind(this, "self"),
             adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "self"),
           }),
-          TradeableItemsComponentFactory(
+          TradeableItems(
           {
             tradeableItems: this.state.activeOffer.otherTrade.stagedItems,
             availableItems: this.state.activeOffer.otherTrade.allItems,
@@ -385,5 +385,4 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TradeOverviewComponent);
-export default factory;
+export const TradeOverview: React.Factory<PropTypes> = React.createFactory(TradeOverviewComponent);

@@ -1,9 +1,7 @@
-import ListColumn from "./ListColumn";
+import {ListColumn} from "./ListColumn";
 
-declare interface ListItemProps
+export declare interface ListItemProps
 {
   handleClick?: () => void;
   activeColumns?: ListColumn<any>[];
 }
-
-export default ListItemProps;

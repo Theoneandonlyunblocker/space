@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {localize} from "../../localization/localize";
 import {Fleet} from "../../../../src/Fleet";
 
-import FleetControls from "./FleetControls";
+import {FleetControls} from "./FleetControls";
 
 
 export interface PropTypes extends React.Props<any>
@@ -123,5 +123,4 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(FleetInfoComponent);
-export default factory;
+export const FleetInfo: React.Factory<PropTypes> = React.createFactory(FleetInfoComponent);

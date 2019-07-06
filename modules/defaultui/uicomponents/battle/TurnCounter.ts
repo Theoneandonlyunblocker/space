@@ -90,5 +90,4 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TurnCounterComponent);
-export default factory;
+export const TurnCounter: React.Factory<PropTypes> = React.createFactory(TurnCounterComponent);

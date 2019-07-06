@@ -1,17 +1,17 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Game from "../../../../src/Game";
-import MapRenderer from "../../../../src/MapRenderer";
-import Player from "../../../../src/Player";
-import PlayerControl from "../../../../src/PlayerControl";
-import Renderer from "../../../../src/Renderer";
+import {Game} from "../../../../src/Game";
+import {MapRenderer} from "../../../../src/MapRenderer";
+import {Player} from "../../../../src/Player";
+import {PlayerControl} from "../../../../src/PlayerControl";
+import {Renderer} from "../../../../src/Renderer";
 import {Language} from "../../../../src/localization/Language";
 import { Notification } from "../../../../src/notifications/Notification";
 import { NotificationSubscriber } from "../../../../src/notifications/NotificationSubscriber";
 
-import GalaxyMapUI from "./GalaxyMapUI";
-import GameOverScreen from "./GameOverScreen";
+import {GalaxyMapUI} from "./GalaxyMapUI";
+import {GameOverScreen} from "./GameOverScreen";
 
 
 export interface PropTypes extends React.Props<any>
@@ -92,5 +92,4 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(GalaxyMapComponent);
-export default factory;
+export const GalaxyMap: React.Factory<PropTypes> = React.createFactory(GalaxyMapComponent);

@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import ManufacturableThing from "../../../../src/templateinterfaces/ManufacturableThing";
+import {ManufacturableThing} from "../../../../src/templateinterfaces/ManufacturableThing";
 
-import ManufacturableThingsListItem from "./ManufacturableThingsListItem";
+import {ManufacturableThingsListItem} from "./ManufacturableThingsListItem";
 
 
 export interface PropTypes extends React.Props<any>
@@ -70,5 +70,4 @@ export class ManufacturableThingsListComponent extends React.PureComponent<PropT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ManufacturableThingsListComponent);
-export default factory;
+export const ManufacturableThingsList: React.Factory<PropTypes> = React.createFactory(ManufacturableThingsListComponent);

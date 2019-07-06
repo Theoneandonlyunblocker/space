@@ -1,17 +1,17 @@
 import * as PIXI from "pixi.js";
 
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import ModuleFile from "../../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
+import {ModuleFile} from "../../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
 
-import unitArchetypes from "../../common/unitArchetypes";
+import {unitArchetypes} from "../../common/unitArchetypes";
 import {unitTemplates} from "./unitTemplates";
 import {setBaseUrl as setAssetBaseUrl} from "./resources";
 
 import * as moduleInfo from "./moduleInfo.json";
 
 
-const spaceUnits: ModuleFile =
+export const spaceUnits: ModuleFile =
 {
   info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
@@ -41,5 +41,3 @@ const spaceUnits: ModuleFile =
     return moduleData;
   },
 };
-
-export default spaceUnits;

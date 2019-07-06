@@ -1,20 +1,20 @@
-import Player from "../../../../src/Player";
-import Region from "../../../../src/Region";
-import Star from "../../../../src/Star";
+import {Player} from "../../../../src/Player";
+import {Region} from "../../../../src/Region";
+import {Star} from "../../../../src/Star";
 import {activeModuleData} from "../../../../src/activeModuleData";
 import
 {
   randRange,
 } from "../../../../src/utility";
 
-import MapGenDataByStarId from "./MapGenDataByStarId";
+import {MapGenDataByStarId} from "./MapGenDataByStarId";
 import
 {
   addTerritoryBuildings,
 } from "./mapGenUtils";
 
 
-export default function setupIndependents(props:
+export function setupIndependents(props:
 {
   player: Player;
   region: Region;

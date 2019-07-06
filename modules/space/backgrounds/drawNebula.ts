@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 // TODO global ref
 // /// <reference path="../../lib/rng.d.ts" />
 
-import BackgroundDrawingFunction from "../../../src/BackgroundDrawingFunction";
+import {BackgroundDrawingFunction} from "../../../src/BackgroundDrawingFunction";
 import {generateColorScheme} from "../../../src/colorGeneration";
 import
 {
@@ -17,7 +17,7 @@ import
 import {Nebula as NebulaFilter} from "./Nebula";
 
 
-const drawNebula: BackgroundDrawingFunction = (
+export const drawNebula: BackgroundDrawingFunction = (
   seed: string, size: PIXI.Rectangle, renderer: PIXI.Renderer) =>
 {
   const oldRng = Math.random;
@@ -78,5 +78,3 @@ const drawNebula: BackgroundDrawingFunction = (
     destroy: texture.destroy.bind(texture),
   });
 };
-
-export default drawNebula;

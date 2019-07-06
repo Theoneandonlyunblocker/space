@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Item from "../../../../src/Item";
-import Unit from "../../../../src/Unit";
-import AbilityBase from "../../../../src/templateinterfaces/AbilityBase";
+import {Item} from "../../../../src/Item";
+import {Unit} from "../../../../src/Unit";
+import {AbilityBase} from "../../../../src/templateinterfaces/AbilityBase";
 
-import AbilityList from "./AbilityList";
-import UnitExperience from "./UnitExperience";
-import UnitItemGroup from "./UnitItemGroup";
+import {AbilityList} from "./AbilityList";
+import {UnitExperience} from "./UnitExperience";
+import {UnitItemGroup} from "./UnitItemGroup";
 
 
 export interface PropTypes extends React.Props<any>
@@ -117,5 +117,4 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(MenuUnitInfoComponent);
-export default factory;
+export const MenuUnitInfo: React.Factory<PropTypes> = React.createFactory(MenuUnitInfoComponent);

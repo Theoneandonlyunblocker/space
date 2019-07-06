@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 
-import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 import {app} from "../../../../src/App";
 import {Fleet} from "../../../../src/Fleet";
-import eventManager from "../../../../src/eventManager";
+import {eventManager} from "../../../../src/eventManager";
 
 
-const fleetsLayerTemplate: MapRendererLayerTemplate =
+export const fleets: MapRendererLayerTemplate =
 {
   key: "fleets",
   displayName: "Fleets",
@@ -110,8 +110,6 @@ const fleetsLayerTemplate: MapRendererLayerTemplate =
     return doc;
   },
 };
-
-export default fleetsLayerTemplate;
 
 const fleetTextTextureCache:
 {

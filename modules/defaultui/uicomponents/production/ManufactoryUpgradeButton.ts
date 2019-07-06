@@ -79,5 +79,4 @@ export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ManufactoryUpgradeButtonComponent);
-export default factory;
+export const ManufactoryUpgradeButton: React.Factory<PropTypes> = React.createFactory(ManufactoryUpgradeButtonComponent);

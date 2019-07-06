@@ -3,13 +3,13 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {AbilityTargetDisplayDataById} from "../../../../src/AbilityTargetDisplayData";
 import {AbilityUseEffectQueue} from "../../../../src/AbilityUseEffectQueue";
-import Battle from "../../../../src/Battle";
-import BattleScene from "../../../../src/BattleScene";
-import MCTree from "../../../../src/MCTree";
-import Options from "../../../../src/Options";
-import Player from "../../../../src/Player";
-import Unit from "../../../../src/Unit";
-import UnitDisplayData from "../../../../src/UnitDisplayData";
+import {Battle as BattleObj} from "../../../../src/Battle";
+import {BattleScene as BattleSceneObj} from "../../../../src/BattleScene";
+import {MCTree} from "../../../../src/MCTree";
+import {Options} from "../../../../src/Options";
+import {Player} from "../../../../src/Player";
+import {Unit} from "../../../../src/Unit";
+import {UnitDisplayData} from "../../../../src/UnitDisplayData";
 import {activeModuleData} from "../../../../src/activeModuleData";
 import
 {
@@ -21,7 +21,7 @@ import
   AbilityUseEffect,
   useAbilityAndGetUseEffects,
 } from "../../../../src/battleAbilityUsage";
-import AbilityTemplate from "../../../../src/templateinterfaces/AbilityTemplate";
+import {AbilityTemplate} from "../../../../src/templateinterfaces/AbilityTemplate";
 import
 {
   shallowCopy,
@@ -31,22 +31,22 @@ import
 import
 {
   AbilityTooltipComponent,
-  default as AbilityTooltip,
+  AbilityTooltip,
   PropTypes as AbilityTooltipProps,
 } from "./AbilityTooltip";
-import {BattleBackgroundComponent, default as BattleBackground} from "./BattleBackground";
-import BattleDisplayStrength from "./BattleDisplayStrength";
-import BattleSceneComponentFactory from "./BattleScene";
-import BattleScore from "./BattleScore";
-import BattleUIState from "./BattleUIState";
-import Formation from "./Formation";
-import TurnCounterList from "./TurnCounterList";
-import TurnOrder from "./TurnOrder";
+import {BattleBackgroundComponent, BattleBackground} from "./BattleBackground";
+import {BattleDisplayStrength} from "./BattleDisplayStrength";
+import {BattleScene} from "./BattleScene";
+import {BattleScore} from "./BattleScore";
+import {BattleUIState} from "./BattleUIState";
+import {Formation} from "./Formation";
+import {TurnCounterList} from "./TurnCounterList";
+import {TurnOrder} from "./TurnOrder";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  battle: Battle;
+  battle: BattleObj;
   humanPlayer: Player;
 }
 
@@ -87,7 +87,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   private readonly abilityTooltip = React.createRef<AbilityTooltipComponent>();
   private readonly background = React.createRef<BattleBackgroundComponent>();
 
-  private battleScene: BattleScene;
+  private battleScene: BattleSceneObj;
   private abilityUseEffectQueue: AbilityUseEffectQueue;
 
   // set as a property of the class instead of its state
@@ -109,7 +109,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.state = this.getInitialStateTODO();
     this.bindMethods();
 
-    this.battleScene = new BattleScene();
+    this.battleScene = new BattleSceneObj();
 
     this.abilityUseEffectQueue = new AbilityUseEffectQueue(this.battleScene,
     {
@@ -706,7 +706,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
               animationDuration: this.state.battleEffectDurationAfterTrigger,
             }),
             upperFooter,
-            BattleSceneComponentFactory(
+            BattleScene(
             {
               battleState: battleState,
               battleScene: this.battleScene,
@@ -778,5 +778,4 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BattleComponent);
-export default factory;
+export const Battle: React.Factory<PropTypes> = React.createFactory(BattleComponent);

@@ -1,6 +1,6 @@
 import {IdDictionary} from "../../../src/IdDictionary";
-import Player from "../../../src/Player";
-import Unit from "../../../src/Unit";
+import {Player} from "../../../src/Player";
+import {Unit} from "../../../src/Unit";
 import {FrontObjective} from "../objectives/common/FrontObjective";
 
 import {Front} from "./Front";
@@ -13,7 +13,7 @@ interface FrontUnitScore
   front: Front;
   score: number;
 }
-export default class FrontsAi
+export class FrontsAi
 {
   private player: Player;
   private objectivesAi: ObjectivesAi;

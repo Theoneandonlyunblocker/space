@@ -1,11 +1,11 @@
-import DiplomacyEvaluation from "../../../src/DiplomacyEvaluation";
+import {DiplomacyEvaluation} from "../../../src/DiplomacyEvaluation";
 import {Fleet} from "../../../src/Fleet";
-import GalaxyMap from "../../../src/GalaxyMap";
-import Player from "../../../src/Player";
-import Star from "../../../src/Star";
-import Unit from "../../../src/Unit";
-import ValuesByPlayer from "../../../src/ValuesByPlayer";
-import ValuesByStar from "../../../src/ValuesByStar";
+import {GalaxyMap} from "../../../src/GalaxyMap";
+import {Player} from "../../../src/Player";
+import {Star} from "../../../src/Star";
+import {Unit} from "../../../src/Unit";
+import {ValuesByPlayer} from "../../../src/ValuesByPlayer";
+import {ValuesByStar} from "../../../src/ValuesByStar";
 import
 {
   getRelativeValue,
@@ -41,7 +41,7 @@ interface StarTargetEvaluation
 type InfluenceMap = ValuesByStar<number>;
 
 // TODO refactor | split into multiple classes eg vision, influence maps etc.
-export default class MapEvaluator
+export class MapEvaluator
 {
   map: GalaxyMap;
   player: Player;

@@ -1,6 +1,4 @@
-declare interface TradeableItemProps
+export declare interface TradeableItemProps
 {
   keyTODO: string;
 }
-
-export default TradeableItemProps;

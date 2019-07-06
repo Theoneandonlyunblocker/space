@@ -2,7 +2,7 @@ import * as React from "react";
 
 import {app} from "../../../../src/App"; // TODO global
 import {activeModuleData} from "../../../../src/activeModuleData";
-import Options from "../../../../src/Options";
+import {Options} from "../../../../src/Options";
 import {Language} from "../../../../src/localization/Language";
 import
 {
@@ -10,7 +10,7 @@ import
   getLanguageSupportLevelForModuleFiles,
 } from "../../../../src/localization/languageSupport";
 
-import {default as LanguageSelect} from "./LanguageSelect";
+import {LanguageSelect} from "./LanguageSelect";
 
 
 export interface PropTypes extends React.Props<any>
@@ -62,5 +62,4 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(AppLanguageSelectComponent);
-export default factory;
+export const AppLanguageSelect: React.Factory<PropTypes> = React.createFactory(AppLanguageSelectComponent);

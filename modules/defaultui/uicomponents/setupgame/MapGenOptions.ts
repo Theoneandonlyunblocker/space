@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Range from "../../../../src/Range";
-import MapGenOptionValues from "../../../../src/templateinterfaces/MapGenOptionValues";
-import MapGenOptions from "../../../../src/templateinterfaces/MapGenOptions";
-import MapGenTemplate from "../../../../src/templateinterfaces/MapGenTemplate";
+import {Range} from "../../../../src/Range";
+import {MapGenOptionValues} from "../../../../src/templateinterfaces/MapGenOptionValues";
+import {MapGenOptions as MapGenOptionsObj} from "../../../../src/templateinterfaces/MapGenOptions";
+import {MapGenTemplate} from "../../../../src/templateinterfaces/MapGenTemplate";
 import
 {
   clamp,
@@ -14,9 +14,9 @@ import
   randInt,
   roundToNearestMultiple,
 } from "../../../../src/utility";
-import OptionsGroup from "../options/OptionsGroup";
+import {OptionsGroup} from "../options/OptionsGroup";
 
-import MapGenOption from "./MapGenOption";
+import {MapGenOption} from "./MapGenOption";
 
 
 export interface PropTypes extends React.Props<any>
@@ -73,7 +73,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 
     ["defaultOptions", "basicOptions", "advancedOptions"].forEach(optionGroup =>
     {
-      const options: MapGenOptions = mapGenTemplate.options[optionGroup];
+      const options: MapGenOptionsObj = mapGenTemplate.options[optionGroup];
       if (!options) { return; }
 
       for (const optionName in options)
@@ -128,7 +128,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
   {
     const newValues: StateType = {};
 
-    const optionGroups: MapGenOptions = this.props.mapGenTemplate.options;
+    const optionGroups: MapGenOptionsObj = this.props.mapGenTemplate.options;
     for (const optionGroupName in optionGroups)
     {
       const optionGroup = optionGroups[optionGroupName];
@@ -259,5 +259,4 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(MapGenOptionsComponent);
-export default factory;
+export const MapGenOptions: React.Factory<PropTypes> = React.createFactory(MapGenOptionsComponent);

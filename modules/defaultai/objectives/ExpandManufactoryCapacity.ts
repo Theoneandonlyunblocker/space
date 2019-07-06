@@ -1,8 +1,8 @@
-import Manufactory from "../../../src/Manufactory";
-import Player from "../../../src/Player";
-import Star from "../../../src/Star";
+import {Manufactory} from "../../../src/Manufactory";
+import {Player} from "../../../src/Player";
+import {Star} from "../../../src/Star";
 import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
-import MapEvaluator from "../mapai/MapEvaluator";
+import {MapEvaluator} from "../mapai/MapEvaluator";
 
 import {EconomicObjective} from "./common/EconomicObjective";
 import {Objective} from "./common/Objective";

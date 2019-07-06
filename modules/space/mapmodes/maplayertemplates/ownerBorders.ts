@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
-import Player from "../../../../src/Player";
+import {Player} from "../../../../src/Player";
 import {getRevealedBorderEdges, borderWidth} from "../../../../src/borderPolygon";
-import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {
@@ -10,7 +10,7 @@ import
 } from "../../../../src/pixiWrapperFunctions";
 
 
-const ownerBorders: MapRendererLayerTemplate =
+export const ownerBorders: MapRendererLayerTemplate =
 {
   key: "ownerBorders",
   displayName: "Owner borders",
@@ -49,5 +49,3 @@ const ownerBorders: MapRendererLayerTemplate =
     return doc;
   },
 };
-
-export default ownerBorders;

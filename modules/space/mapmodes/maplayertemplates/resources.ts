@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 
-import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 
-const resources: MapRendererLayerTemplate =
+export const resources: MapRendererLayerTemplate =
 {
   key: "resources",
   displayName: "Resources",
@@ -37,5 +37,3 @@ const resources: MapRendererLayerTemplate =
     return doc;
   },
 };
-
-export default resources;

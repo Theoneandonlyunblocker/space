@@ -1,5 +1,5 @@
-import NotificationTemplate from "../../src/templateinterfaces/NotificationTemplate";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
+import {NotificationTemplate} from "../../src/templateinterfaces/NotificationTemplate";
+import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
 
 import
 {

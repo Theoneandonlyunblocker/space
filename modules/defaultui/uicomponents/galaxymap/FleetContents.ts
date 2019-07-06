@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {Fleet} from "../../../../src/Fleet";
-import Player from "../../../../src/Player";
-import Unit from "../../../../src/Unit";
+import {Player} from "../../../../src/Player";
+import {Unit} from "../../../../src/Unit";
 
-import FleetUnitInfo from "./FleetUnitInfo";
+import {FleetUnitInfo} from "./FleetUnitInfo";
 
 
 export interface PropTypes extends React.Props<any>
@@ -92,5 +92,4 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
 
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(FleetContentsComponent);
-export default factory;
+export const FleetContents: React.Factory<PropTypes> = React.createFactory(FleetContentsComponent);

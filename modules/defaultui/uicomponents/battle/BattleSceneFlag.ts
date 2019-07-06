@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {Flag} from "../../../../src/Flag";
 import {svgCache} from "../../../../src/svgCache";
 
-import PlayerFlag from "../PlayerFlag";
+import {PlayerFlag} from "../PlayerFlag";
 
 
 export interface PropTypes extends React.Props<any>
@@ -84,5 +84,4 @@ export class BattleSceneFlagComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BattleSceneFlagComponent);
-export default factory;
+export const BattleSceneFlag: React.Factory<PropTypes> = React.createFactory(BattleSceneFlagComponent);

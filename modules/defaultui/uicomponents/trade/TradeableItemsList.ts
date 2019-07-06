@@ -3,12 +3,12 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 import {TradeableItem, TradeableItems} from "../../../../src/Trade";
-import List from "../list/List";
-import ListColumn from "../list/ListColumn";
-import ListItem from "../list/ListItem";
+import {List} from "../list/List";
+import {ListColumn} from "../list/ListColumn";
+import {ListItem} from "../list/ListItem";
 
-import TradeMoney from "./TradeMoney";
-import TradeableItemProps from "./TradeableItemProps";
+import {TradeMoney} from "./TradeMoney";
+import {TradeableItemProps} from "./TradeableItemProps";
 
 
 export interface PropTypes extends React.Props<any>
@@ -121,5 +121,4 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TradeableItemsListComponent);
-export default factory;
+export const TradeableItemsList: React.Factory<PropTypes> = React.createFactory(TradeableItemsListComponent);

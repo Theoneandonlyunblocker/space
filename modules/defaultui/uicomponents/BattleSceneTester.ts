@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 
-import Battle from "../../../src/Battle";
-import BattleScene from "../../../src/BattleScene";
-import Player from "../../../src/Player";
-import Unit from "../../../src/Unit";
+import {Battle} from "../../../src/Battle";
+import {BattleScene} from "../../../src/BattleScene";
+import {Player} from "../../../src/Player";
+import {Unit} from "../../../src/Unit";
 import
 {
   extendObject,
@@ -366,5 +366,4 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BattleSceneTesterComponent);
-export default factory;
+export const BattleSceneTester: React.Factory<PropTypes> = React.createFactory(BattleSceneTesterComponent);

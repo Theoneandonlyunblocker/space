@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import TutorialStatus from "../../../../src/tutorials/TutorialStatus";
-import TutorialVisibility from "../../../../src/tutorials/TutorialVisibility";
+import {TutorialStatus} from "../../../../src/tutorials/TutorialStatus";
+import {TutorialVisibility} from "../../../../src/tutorials/TutorialVisibility";
 
 import {localize} from "../../localization/localize";
 
@@ -92,5 +92,4 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(DontShowAgainComponent);
-export default factory;
+export const DontShowAgain: React.Factory<PropTypes> = React.createFactory(DontShowAgainComponent);

@@ -1,6 +1,6 @@
-import Name from "../../src/Name";
+import {Name} from "../../src/Name";
 import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
+import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
 import
 {
   getRandomProperty,
@@ -9,7 +9,7 @@ import
 import {distributionGroups} from "../common/distributionGroups";
 import {generateIndependentFleets} from "../common/generateIndependentFleets";
 import {generateIndependentPlayer} from "../common/generateIndependentPlayer";
-import defaultAiConstructor from "../defaultai/mapai/DefaultAiConstructor";
+import {defaultAiConstructor} from "../defaultai/mapai/DefaultAiConstructor";
 
 import {droneBase} from  "./units/droneBase";
 import {droneCommander} from  "./units/droneCommander";

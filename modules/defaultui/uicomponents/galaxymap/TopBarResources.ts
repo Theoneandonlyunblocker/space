@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Player from "../../../../src/Player";
+import {Player} from "../../../../src/Player";
 import {activeModuleData} from "../../../../src/activeModuleData";
-import eventManager from "../../../../src/eventManager";
+import {eventManager} from "../../../../src/eventManager";
 
-import Resource from "./Resource";
+import {Resource} from "./Resource";
 
 
 export interface PropTypes extends React.Props<any>
@@ -83,5 +83,4 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TopBarResourcesComponent);
-export default factory;
+export const TopBarResources: React.Factory<PropTypes> = React.createFactory(TopBarResourcesComponent);

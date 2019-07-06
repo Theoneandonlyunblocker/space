@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Player from "../../../../src/Player";
+import {Player} from "../../../../src/Player";
 
-import TradeOverview from "../trade/TradeOverview";
+import {TradeOverview} from "../trade/TradeOverview";
 
-import {default as DefaultWindow} from "../windows/DefaultWindow";
+import {DefaultWindow} from "../windows/DefaultWindow";
 
 import {localize} from "../../localization/localize";
 
@@ -150,5 +150,4 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(DiplomacyActionsComponent);
-export default factory;
+export const DiplomacyActions: React.Factory<PropTypes> = React.createFactory(DiplomacyActionsComponent);

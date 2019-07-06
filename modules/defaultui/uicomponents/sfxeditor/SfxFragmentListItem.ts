@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import SfxFragment from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
-import DragPositioner from "../../../../modules/defaultui/uicomponents/mixins/DragPositioner";
-import applyMixins from "../../../../modules/defaultui/uicomponents/mixins/applyMixins";
+import {SfxFragment} from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import {DragPositioner} from "../../../../modules/defaultui/uicomponents/mixins/DragPositioner";
+import {applyMixins} from "../../../../modules/defaultui/uicomponents/mixins/applyMixins";
 
-import SfxFragmentConstructor from "./SfxFragmentConstructor";
+import {SfxFragmentConstructor} from "./SfxFragmentConstructor";
 
 
 type Fragment = SfxFragment<any> | SfxFragmentConstructor;
@@ -96,5 +96,4 @@ export class SfxFragmentListItemComponent<P extends Fragment> extends React.Comp
   }
 }
 
-const factory: React.Factory<PropTypes<Fragment>> = React.createFactory(SfxFragmentListItemComponent);
-export default factory;
+export const SfxFragmentListItem: React.Factory<PropTypes<Fragment>> = React.createFactory(SfxFragmentListItemComponent);

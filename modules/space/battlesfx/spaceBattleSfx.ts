@@ -1,6 +1,6 @@
 // TODO 2019.04.10 | unused, why?
-import ModuleFile from "../../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
+import {ModuleFile} from "../../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
 
 import * as battleSfxResources from "./resources";
 import * as BattleSfxTemplates from  "./templates/battleSfx";

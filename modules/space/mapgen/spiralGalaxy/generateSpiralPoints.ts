@@ -2,9 +2,9 @@ import
 {
   randRange,
 } from "../../../../src/utility";
-import MapGenPoint from "../common/MapGenPoint";
+import {MapGenPoint} from "../common/MapGenPoint";
 
-import SpiralGalaxyOptionValues from "./SpiralGalaxyOptionValues";
+import {SpiralGalaxyOptionValues} from "./SpiralGalaxyOptionValues";
 
 
 export const centerRegionTag = "center";

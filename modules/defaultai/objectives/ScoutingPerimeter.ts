@@ -1,8 +1,8 @@
-import Star from "../../../src/Star";
-import Unit from "../../../src/Unit";
-import ValuesByStar from "../../../src/ValuesByStar";
+import {Star} from "../../../src/Star";
+import {Unit} from "../../../src/Unit";
+import {ValuesByStar} from "../../../src/ValuesByStar";
 import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
-import MapEvaluator from "../mapai/MapEvaluator";
+import {MapEvaluator} from "../mapai/MapEvaluator";
 import {UnitEvaluator} from "../mapai/UnitEvaluator";
 
 import {MovePriority} from "./common/MovePriority";

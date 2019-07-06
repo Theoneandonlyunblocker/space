@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import UnitEffectTemplate from "../../../../src/templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "../../../../src/templateinterfaces/UnitEffectTemplate";
 
 
 export interface PropTypes extends React.Props<any>
@@ -41,5 +41,4 @@ export class UnitPassiveEffectsComponent extends React.PureComponent<PropTypes, 
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(UnitPassiveEffectsComponent);
-export default factory;
+export const UnitPassiveEffects: React.Factory<PropTypes> = React.createFactory(UnitPassiveEffectsComponent);

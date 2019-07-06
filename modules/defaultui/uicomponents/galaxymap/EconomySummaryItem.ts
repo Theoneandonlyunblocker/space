@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Star from "../../../../src/Star";
-import ListItemProps from "../list/ListItemProps";
+import {Star} from "../../../../src/Star";
+import {ListItemProps} from "../list/ListItemProps";
 
 
 export interface PropTypes extends ListItemProps, React.Props<any>
@@ -101,5 +101,4 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(EconomySummaryItemComponent);
-export default factory;
+export const EconomySummaryItem: React.Factory<PropTypes> = React.createFactory(EconomySummaryItemComponent);

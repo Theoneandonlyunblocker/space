@@ -1,3 +1,4 @@
+// TODO 2019.07.07 | indexes isn't the right word here. bit confusing
 
 import {activeModuleData} from "./activeModuleData";
 import {Distributable} from "./templateinterfaces/Distributable";
@@ -25,7 +26,8 @@ interface ItemsByTechLevel
   [techLevel: number]: ItemTemplate[];
 }
 
-class TemplateIndexes
+// TODO 2019.07.06 |
+class _TemplateIndexes
 {
   private builtIndexes:
   {
@@ -42,7 +44,7 @@ class TemplateIndexes
     if (!this.builtIndexes.distributablesByTypeAndDistributionGroup)
     {
       this.builtIndexes.distributablesByTypeAndDistributionGroup =
-        TemplateIndexes.getDistributablesByTypeAndDistributionGroup();
+        _TemplateIndexes.getDistributablesByTypeAndDistributionGroup();
     }
 
     return this.builtIndexes.distributablesByTypeAndDistributionGroup;
@@ -51,7 +53,7 @@ class TemplateIndexes
   {
     if (!this.builtIndexes.itemsByTechLevel)
     {
-      this.builtIndexes.itemsByTechLevel = TemplateIndexes.getItemsByTechLevel();
+      this.builtIndexes.itemsByTechLevel = _TemplateIndexes.getItemsByTechLevel();
     }
 
     return this.builtIndexes.itemsByTechLevel;
@@ -74,8 +76,8 @@ class TemplateIndexes
   {
     return(
     {
-      resources: TemplateIndexes.getDistributablesByGroup(activeModuleData.templates.Resources),
-      races: TemplateIndexes.getDistributablesByGroup(activeModuleData.templates.Races),
+      resources: _TemplateIndexes.getDistributablesByGroup(activeModuleData.templates.Resources),
+      races: _TemplateIndexes.getDistributablesByGroup(activeModuleData.templates.Races),
     });
   }
   private static getDistributablesByGroup<T extends Distributable>(
@@ -162,5 +164,6 @@ class TemplateIndexes
   }
 }
 
-export const indexes = new TemplateIndexes();
+// TODO 2019.07.06 |
+export const TemplateIndexes = new _TemplateIndexes();
 

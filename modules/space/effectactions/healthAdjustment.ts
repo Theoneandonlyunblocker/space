@@ -1,5 +1,5 @@
-import DamageType from "../../../src/DamageType";
-import Unit from "../../../src/Unit";
+import {DamageType} from "../../../src/DamageType";
+import {Unit} from "../../../src/Unit";
 
 import
 {

@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Unit from "../../../../src/Unit";
-import DragPositioner from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
-import UnitStrength from "../unit/UnitStrength";
+import {Unit} from "../../../../src/Unit";
+import {DragPositioner} from "../mixins/DragPositioner";
+import {applyMixins} from "../mixins/applyMixins";
+import {UnitStrength} from "../unit/UnitStrength";
 
-import FleetUnitInfoName from "./FleetUnitInfoName";
+import {FleetUnitInfoName} from "./FleetUnitInfoName";
 
 
 export interface PropTypes extends React.Props<any>
@@ -124,5 +124,4 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(FleetUnitInfoComponent);
-export default factory;
+export const FleetUnitInfo: React.Factory<PropTypes> = React.createFactory(FleetUnitInfoComponent);

@@ -1,13 +1,13 @@
 import {englishLanguage} from "../englishlanguage/englishLanguage";
-import ModuleFile from "../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
+import {ModuleFile} from "../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
 
-import attitudeModifierTemplates from "./attitudeModifierTemplates";
+import {attitudeModifierTemplates} from "./attitudeModifierTemplates";
 import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";
 
 import * as moduleInfo from "./moduleInfo.json";
 
-const defaultAttitudeModifiers: ModuleFile =
+export const defaultAttitudeModifiers: ModuleFile =
 {
   info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
@@ -21,5 +21,3 @@ const defaultAttitudeModifiers: ModuleFile =
     return moduleData;
   },
 };
-
-export default defaultAttitudeModifiers;

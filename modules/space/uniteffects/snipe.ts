@@ -1,4 +1,4 @@
-import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
 
 import {UnitAttribute} from "../../../src/UnitAttributes";
 import { FlatAndMultiplierAdjustment } from "../../../src/FlatAndMultiplierAdjustment";

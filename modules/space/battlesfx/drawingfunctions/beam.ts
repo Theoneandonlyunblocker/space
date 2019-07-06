@@ -2,24 +2,24 @@
 // /// <reference path="../../../../lib/tween.js.d.ts" />
 import * as PIXI from "pixi.js";
 
-import Color from "../../../../src/Color";
+import {Color} from "../../../../src/Color";
 import
 {
   attachShaderToSprite,
   generateTextureWithBounds,
   getDummyTextureForShader,
 } from "../../../../src/pixiWrapperFunctions";
-import SfxParams from "../../../../src/templateinterfaces/SfxParams";
+import {SfxParams} from "../../../../src/templateinterfaces/SfxParams";
 
-import ProtonWrapper from "./ProtonWrapper";
-import Beam from "./sfxfragments/Beam";
-import LightBurst from "./sfxfragments/LightBurst";
-import RampingValue from "./sfxfragments/RampingValue";
-import ShockWave from "./sfxfragments/ShockWave";
+import {ProtonWrapper} from "./ProtonWrapper";
+import {Beam} from "./sfxfragments/Beam";
+import {LightBurst} from "./sfxfragments/LightBurst";
+import {RampingValue} from "./sfxfragments/RampingValue";
+import {ShockWave} from "./sfxfragments/ShockWave";
 import {ShinyParticle as ShinyParticleFilter} from "./shaders/ShinyParticle";
 
 
-export default function beam(props: SfxParams)
+export function beam(props: SfxParams)
 {
   // ----------INIT GENERAL
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSfx(

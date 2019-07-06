@@ -1,4 +1,4 @@
-declare interface NormalizedEvent
+export declare interface NormalizedEvent
 {
   wasTouchEvent: boolean;
   clientX: number;
@@ -12,5 +12,3 @@ declare interface NormalizedEvent
   preventDefault: () => void;
   stopPropagation: () => void;
 }
-
-export default NormalizedEvent;

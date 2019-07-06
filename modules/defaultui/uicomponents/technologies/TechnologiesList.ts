@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import PlayerTechnology from "../../../../src/PlayerTechnology";
-import eventManager from "../../../../src/eventManager";
+import {PlayerTechnology} from "../../../../src/PlayerTechnology";
+import {eventManager} from "../../../../src/eventManager";
 
-import Technology from "./Technology";
+import {Technology} from "./Technology";
 
 
 export interface PropTypes extends React.Props<any>
@@ -80,5 +80,4 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TechnologiesListComponent);
-export default factory;
+export const TechnologiesList: React.Factory<PropTypes> = React.createFactory(TechnologiesListComponent);

@@ -1,7 +1,7 @@
-import Player from "../../../src/Player";
-import PlayerDiplomacy from "../../../src/PlayerDiplomacy";
+import {Player} from "../../../src/Player";
+import {PlayerDiplomacy} from "../../../src/PlayerDiplomacy";
 import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
-import MapEvaluator from "../mapai/MapEvaluator";
+import {MapEvaluator} from "../mapai/MapEvaluator";
 
 import {DiplomaticObjective} from "./common/DiplomaticObjective";
 import {Objective} from "./common/Objective";

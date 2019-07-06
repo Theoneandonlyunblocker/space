@@ -2,13 +2,13 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Game from "../../../../src/Game";
-import Player from "../../../../src/Player";
-import eventManager from "../../../../src/eventManager";
-import PlayerFlag from "../PlayerFlag";
+import {Game} from "../../../../src/Game";
+import {Player} from "../../../../src/Player";
+import {eventManager} from "../../../../src/eventManager";
+import {PlayerFlag} from "../PlayerFlag";
 
-import PlayerMoney from "./PlayerMoney";
-import TopBarResources from "./TopBarResources";
+import {PlayerMoney} from "./PlayerMoney";
+import {TopBarResources} from "./TopBarResources";
 
 
 export interface PropTypes extends React.Props<any>
@@ -108,5 +108,4 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TopBarComponent);
-export default factory;
+export const TopBar: React.Factory<PropTypes> = React.createFactory(TopBarComponent);

@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
-import Star from "../../../../src/Star";
-import eventManager from "../../../../src/eventManager";
-import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {Star} from "../../../../src/Star";
+import {eventManager} from "../../../../src/eventManager";
+import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {
@@ -10,7 +10,7 @@ import
 } from "../../../../src/pixiWrapperFunctions";
 
 
-const nonFillerStars: MapRendererLayerTemplate =
+export const nonFillerStars: MapRendererLayerTemplate =
 {
   key: "nonFillerStars",
   displayName: "Stars",
@@ -87,5 +87,3 @@ const nonFillerStars: MapRendererLayerTemplate =
     return doc;
   },
 };
-
-export default nonFillerStars;

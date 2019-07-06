@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Color from "../../../../src/Color";
+import {Color} from "../../../../src/Color";
 
-import {default as EmblemComponent, EmblemProps} from "../Emblem";
+import {Emblem, EmblemProps} from "../Emblem";
 
 import {localize} from "../../localization/localize";
 
@@ -37,7 +37,7 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
       {
         className: "emblem-setter",
       },
-        EmblemComponent(
+        Emblem(
         {
           key: "emblem",
           template: this.props.emblem.template,
@@ -63,5 +63,4 @@ export class EmblemSetterComponent extends React.PureComponent<PropTypes, StateT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(EmblemSetterComponent);
-export default factory;
+export const EmblemSetter: React.Factory<PropTypes> = React.createFactory(EmblemSetterComponent);

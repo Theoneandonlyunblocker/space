@@ -72,5 +72,4 @@ export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(UnitAttributeChangesComponent);
-export default factory;
+export const UnitAttributeChanges: React.Factory<PropTypes> = React.createFactory(UnitAttributeChangesComponent);

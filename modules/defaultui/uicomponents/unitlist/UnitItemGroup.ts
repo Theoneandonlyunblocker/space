@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Item from "../../../../src/Item";
+import {Item} from "../../../../src/Item";
 
-import UnitItemWrapper from "./UnitItemWrapper";
+import {UnitItemWrapper} from "./UnitItemWrapper";
 
 
 export interface PropTypes extends React.Props<any>
@@ -73,5 +73,4 @@ export class UnitItemGroupComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(UnitItemGroupComponent);
-export default factory;
+export const UnitItemGroup: React.Factory<PropTypes> = React.createFactory(UnitItemGroupComponent);

@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
-import Color from "../../../../src/Color";
-import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {Color} from "../../../../src/Color";
+import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {
@@ -10,7 +10,7 @@ import
 import { clamp } from "../../../../src/utility";
 
 
-const starIncome: MapRendererLayerTemplate =
+export const starIncome: MapRendererLayerTemplate =
 {
   key: "starIncome",
   displayName: "Income",
@@ -72,5 +72,3 @@ const starIncome: MapRendererLayerTemplate =
     return doc;
   },
 };
-
-export default starIncome;

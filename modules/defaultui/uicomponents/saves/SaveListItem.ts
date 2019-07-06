@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import ListItemProps from "../list/ListItemProps";
+import {ListItemProps} from "../list/ListItemProps";
 
 
 export interface PropTypes extends ListItemProps, React.Props<any>
@@ -125,5 +125,4 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SaveListItemComponent);
-export default factory;
+export const SaveListItem: React.Factory<PropTypes> = React.createFactory(SaveListItemComponent);

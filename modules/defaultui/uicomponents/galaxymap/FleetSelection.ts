@@ -3,13 +3,13 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 import {Fleet} from "../../../../src/Fleet";
-import Player from "../../../../src/Player";
-import Star from "../../../../src/Star";
-import eventManager from "../../../../src/eventManager";
+import {Player} from "../../../../src/Player";
+import {Star} from "../../../../src/Star";
+import {eventManager} from "../../../../src/eventManager";
 
-import FleetContents from "./FleetContents";
-import FleetInfo from "./FleetInfo";
-import FleetReorganization from "./FleetReorganization";
+import {FleetContents} from "./FleetContents";
+import {FleetInfo} from "./FleetInfo";
+import {FleetReorganization} from "./FleetReorganization";
 import { DefaultWindow } from "../windows/DefaultWindow";
 
 
@@ -192,5 +192,4 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(FleetSelectionComponent);
-export default factory;
+export const FleetSelection: React.Factory<PropTypes> = React.createFactory(FleetSelectionComponent);

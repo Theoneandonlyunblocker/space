@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import ListItemProps from "../list/ListItemProps";
+import {ListItemProps} from "../list/ListItemProps";
 
 import
 {
@@ -124,5 +124,4 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(AttitudeModifierInfoComponent);
-export default factory;
+export const AttitudeModifierInfo: React.Factory<PropTypes> = React.createFactory(AttitudeModifierInfoComponent);

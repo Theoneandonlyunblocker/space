@@ -1,6 +1,6 @@
 import {Building} from "../../../../src/Building";
-import Region from "../../../../src/Region";
-import Star from "../../../../src/Star";
+import {Region} from "../../../../src/Region";
+import {Star} from "../../../../src/Star";
 import
 {
   aStar,
@@ -17,8 +17,8 @@ import
   starBase,
 } from "../../buildings/templates/territoryBuildings";
 
-import MapGenDataByStarId from "./MapGenDataByStarId";
-import triangulate from "./triangulate";
+import {MapGenDataByStarId} from "./MapGenDataByStarId";
+import {triangulate} from "./triangulate";
 
 
 export function linkStarsByTriangulation(stars: Star[]): void

@@ -3,11 +3,11 @@ import * as ReactDOMElements from "react-dom-factories";
 import * as ReactMotion from "react-motion";
 
 import {localize} from "../../localization/localize";
-import GuardCoverage from "../../../../src/GuardCoverage";
+import {GuardCoverage} from "../../../../src/GuardCoverage";
 
-import UnitActions from "./UnitActions";
-import UnitStatus from "./UnitStatus";
-import UnitStrength from "./UnitStrength";
+import {UnitActions} from "./UnitActions";
+import {UnitStatus} from "./UnitStatus";
+import {UnitStrength} from "./UnitStrength";
 import { fixedDurationSpring } from "../../../../src/utility";
 
 
@@ -123,5 +123,4 @@ export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(UnitInfoComponent);
-export default factory;
+export const UnitInfo: React.Factory<PropTypes> = React.createFactory(UnitInfoComponent);

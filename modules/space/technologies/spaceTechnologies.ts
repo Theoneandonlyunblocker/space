@@ -1,13 +1,13 @@
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import ModuleFile from "../../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
+import {ModuleFile} from "../../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
 
-import technologyTemplates from "./technologyTemplates";
+import {technologyTemplates} from "./technologyTemplates";
 
 import * as moduleInfo from "./moduleInfo.json";
 
 
-const spaceTechnologies: ModuleFile =
+export const spaceTechnologies: ModuleFile =
 {
   info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
@@ -19,5 +19,3 @@ const spaceTechnologies: ModuleFile =
     return moduleData;
   },
 };
-
-export default spaceTechnologies;

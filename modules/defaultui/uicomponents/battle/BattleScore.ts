@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactMotion from "react-motion";
 
-import Player from "../../../../src/Player";
-import PlayerFlag from "../PlayerFlag";
+import {Player} from "../../../../src/Player";
+import {PlayerFlag} from "../PlayerFlag";
 import { fixedDurationSpring } from "../../../../src/utility";
 
 
@@ -115,5 +115,4 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BattleScoreComponent);
-export default factory;
+export const BattleScore: React.Factory<PropTypes> = React.createFactory(BattleScoreComponent);

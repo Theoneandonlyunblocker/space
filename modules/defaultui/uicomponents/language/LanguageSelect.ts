@@ -100,5 +100,4 @@ export class LanguageSelectComponent extends React.Component<PropTypes, StateTyp
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(LanguageSelectComponent);
-export default factory;
+export const LanguageSelect: React.Factory<PropTypes> = React.createFactory(LanguageSelectComponent);

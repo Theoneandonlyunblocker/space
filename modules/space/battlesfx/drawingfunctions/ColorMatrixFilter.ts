@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 
-import Color from "../../../../src/Color";
+import {Color} from "../../../../src/Color";
 
 
-export default class ColorMatrixFilter extends PIXI.filters.ColorMatrixFilter
+export class ColorMatrixFilter extends PIXI.filters.ColorMatrixFilter
 {
   constructor()
   {

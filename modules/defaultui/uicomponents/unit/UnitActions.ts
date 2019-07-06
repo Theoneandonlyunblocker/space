@@ -76,5 +76,4 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(UnitActionsComponent);
-export default factory;
+export const UnitActions: React.Factory<PropTypes> = React.createFactory(UnitActionsComponent);

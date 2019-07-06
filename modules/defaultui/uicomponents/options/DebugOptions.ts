@@ -2,11 +2,11 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import eventManager from "../../../../src/eventManager";
-import Options from "../../../../src/Options";
-import {default as OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
-import OptionsNumericField from "./OptionsNumericField";
-import OptionsCheckbox from "./OptionsCheckbox";
+import {eventManager} from "../../../../src/eventManager";
+import {Options} from "../../../../src/Options";
+import {OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
+import {OptionsNumericField} from "./OptionsNumericField";
+import {OptionsCheckbox} from "./OptionsCheckbox";
 
 
 // tslint:disable-next-line:no-any

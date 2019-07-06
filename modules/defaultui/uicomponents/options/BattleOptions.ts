@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Options from "../../../../src/Options";
-import OptionsGroup from "./OptionsGroup";
-import OptionsNumericField from "./OptionsNumericField";
+import {Options} from "../../../../src/Options";
+import {OptionsGroup} from "./OptionsGroup";
+import {OptionsNumericField} from "./OptionsNumericField";
 
 
 // tslint:disable-next-line:no-any

@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 
-import MapRenderer from "../../../../src/MapRenderer";
+import {MapRenderer} from "../../../../src/MapRenderer";
 
 
 export interface PropTypes extends React.Props<any>
@@ -84,5 +84,4 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(MapModeSelectorComponent);
-export default factory;
+export const MapModeSelector: React.Factory<PropTypes> = React.createFactory(MapModeSelectorComponent);

@@ -1,14 +1,14 @@
-import Color from "../../../../../src/Color";
-import Point from "../../../../../src/Point";
+import {Color} from "../../../../../src/Color";
+import {Point} from "../../../../../src/Point";
 import
 {
   clamp,
   getRelativeValue,
 } from "../../../../../src/utility";
 
-import Beam from "./Beam";
-import RampingValue from "./RampingValue";
-import SfxFragment from "./SfxFragment";
+import {Beam} from "./Beam";
+import {RampingValue} from "./RampingValue";
+import {SfxFragment} from "./SfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
 
 
@@ -29,7 +29,7 @@ interface FocusingBeamProps
   beamSize: RampingValue;
 }
 
-export default class FocusingBeam extends SfxFragment<FocusingBeamProps>
+export class FocusingBeam extends SfxFragment<FocusingBeamProps>
 {
   public displayName = "FocusingBeam";
   public key = "focusingBeam";

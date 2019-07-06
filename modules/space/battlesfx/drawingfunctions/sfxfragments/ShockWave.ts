@@ -1,16 +1,16 @@
 // TODO global ref
 // /// <reference path="../../../../../lib/tween.js.d.ts" />
 
-import Color from "../../../../../src/Color";
-import Point from "../../../../../src/Point";
+import {Color} from "../../../../../src/Color";
+import {Point} from "../../../../../src/Point";
 import
 {
   makeShaderSprite,
 } from "../../../../../src/pixiWrapperFunctions";
 import {IntersectingEllipses as IntersectingEllipsesFilter} from "../shaders/IntersectingEllipses";
 
-import RampingValue from "./RampingValue";
-import SfxFragment from "./SfxFragment";
+import {RampingValue} from "./RampingValue";
+import {SfxFragment} from "./SfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
 
 
@@ -33,7 +33,7 @@ interface ShockWaveProps
   delay: number;
 }
 
-export default class ShockWave extends SfxFragment<ShockWaveProps>
+export class ShockWave extends SfxFragment<ShockWaveProps>
 {
   public displayName = "ShockWave";
   public key = "shockWave";

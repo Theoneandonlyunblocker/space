@@ -9,10 +9,10 @@ import
   clamp,
   mergeReactAttributes,
 } from "../../../../src/utility";
-import {default as DragPositioner} from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
+import {DragPositioner} from "../mixins/DragPositioner";
+import {applyMixins} from "../mixins/applyMixins";
 
-import {default as WindowResizeHandle, PropTypes as WindowResizeHandleProps} from "./WindowResizeHandle";
+import {WindowResizeHandle, PropTypes as WindowResizeHandleProps} from "./WindowResizeHandle";
 import * as windowManager from "./windowManager";
 
 
@@ -373,6 +373,5 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(WindowContainerComponent);
-export default factory;
+export const WindowContainer: React.Factory<PropTypes> = React.createFactory(WindowContainerComponent);
 

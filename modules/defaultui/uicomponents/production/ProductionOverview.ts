@@ -1,16 +1,16 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Player from "../../../../src/Player";
-import Star from "../../../../src/Star";
-import eventManager from "../../../../src/eventManager";
-import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
-import applyMixins from "../mixins/applyMixins";
+import {Player} from "../../../../src/Player";
+import {Star} from "../../../../src/Star";
+import {eventManager} from "../../../../src/eventManager";
+import {UpdateWhenMoneyChanges} from "../mixins/UpdateWhenMoneyChanges";
+import {applyMixins} from "../mixins/applyMixins";
 
-import BuildQueue from "./BuildQueue";
-import ConstructManufactory from "./ConstructManufactory";
-import ManufactoryStarsList from "./ManufactoryStarsList";
-import ManufacturableThings from "./ManufacturableThings";
+import {BuildQueue} from "./BuildQueue";
+import {ConstructManufactory} from "./ConstructManufactory";
+import {ManufactoryStarsList} from "./ManufactoryStarsList";
+import {ManufacturableThings} from "./ManufacturableThings";
 
 
 export interface PropTypes extends React.Props<any>
@@ -176,5 +176,4 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ProductionOverviewComponent);
-export default factory;
+export const ProductionOverview: React.Factory<PropTypes> = React.createFactory(ProductionOverviewComponent);

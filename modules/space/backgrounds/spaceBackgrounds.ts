@@ -1,13 +1,13 @@
-import ModuleData from "../../../src/ModuleData";
-import ModuleFile from "../../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
+import {ModuleData} from "../../../src/ModuleData";
+import {ModuleFile} from "../../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
 
-import drawNebula from "./drawNebula";
+import {drawNebula} from "./drawNebula";
 
 import * as moduleInfo from "./moduleInfo.json";
 
 
-const spaceBackgrounds: ModuleFile =
+export const spaceBackgrounds: ModuleFile =
 {
   info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
@@ -26,5 +26,3 @@ const spaceBackgrounds: ModuleFile =
     return moduleData;
   },
 };
-
-export default spaceBackgrounds;

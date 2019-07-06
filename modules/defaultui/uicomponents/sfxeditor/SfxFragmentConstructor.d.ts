@@ -1,4 +1,4 @@
-import SfxFragment from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import {SfxFragment} from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
 interface Constructor<T>
 {
@@ -6,11 +6,9 @@ interface Constructor<T>
 }
 type SfxFragmentConstructorFunction = Constructor<SfxFragment<any>>;
 
-declare interface SfxFragmentConstructor
+export declare interface SfxFragmentConstructor
 {
   key: string;
   displayName: string;
   constructorFN: SfxFragmentConstructorFunction;
 }
-
-export default SfxFragmentConstructor;

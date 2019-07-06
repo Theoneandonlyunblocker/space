@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Star from "../../../../src/Star";
+import {Star} from "../../../../src/Star";
 
 
 export interface PropTypes extends React.Props<any>
@@ -71,5 +71,4 @@ export class ManufactoryStarsListItemComponent extends React.Component<PropTypes
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ManufactoryStarsListItemComponent);
-export default factory;
+export const ManufactoryStarsListItem: React.Factory<PropTypes> = React.createFactory(ManufactoryStarsListItemComponent);

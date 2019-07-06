@@ -1,4 +1,4 @@
-import RaceTechnologyValue from "../../../../src/templateinterfaces/RaceTechnologyValue";
+import {RaceTechnologyValue} from "../../../../src/templateinterfaces/RaceTechnologyValue";
 
 
 export function mergeTechnologyValues(...valuesToMerge: RaceTechnologyValue[][]): RaceTechnologyValue[]

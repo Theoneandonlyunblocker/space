@@ -2,17 +2,17 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Color from "../../../../src/Color";
-import NumberInput from "../generic/NumberInput";
-import NumericTextInput from "../generic/NumericTextInput";
+import {Color} from "../../../../src/Color";
+import {NumberInput} from "../generic/NumberInput";
+import {NumericTextInput} from "../generic/NumericTextInput";
 import
 {
   AutoPositionerProps,
-  default as AutoPositioner,
+  AutoPositioner,
 } from "../mixins/AutoPositioner";
-import applyMixins from "../mixins/applyMixins";
+import {applyMixins} from "../mixins/applyMixins";
 
-import {default as ColorPickerSlider} from "./ColorPickerSlider";
+import {ColorPickerSlider} from "./ColorPickerSlider";
 
 
 export interface PropTypes extends React.Props<any>
@@ -313,5 +313,4 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ColorPickerComponent);
-export default factory;
+export const ColorPicker: React.Factory<PropTypes> = React.createFactory(ColorPickerComponent);

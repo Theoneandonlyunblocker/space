@@ -1,20 +1,20 @@
 import * as PIXI from "pixi.js";
 
-import SfxParams from "../../../../src/templateinterfaces/SfxParams";
+import {SfxParams} from "../../../../src/templateinterfaces/SfxParams";
 
-import Color from "../../../../src/Color";
+import {Color} from "../../../../src/Color";
 import {UnitAttribute} from "../../../../src/UnitAttributes";
 import
 {
   generateTextureWithBounds,
 } from "../../../../src/pixiWrapperFunctions";
 
-import FocusingBeam from "./sfxfragments/FocusingBeam";
-import ProjectileAttack from "./sfxfragments/ProjectileAttack";
-import RampingValue from "./sfxfragments/RampingValue";
+import {FocusingBeam} from "./sfxfragments/FocusingBeam";
+import {ProjectileAttack} from "./sfxfragments/ProjectileAttack";
+import {RampingValue} from "./sfxfragments/RampingValue";
 
-import ColorMatrixFilter from "./ColorMatrixFilter";
-import ProtonWrapper from "./ProtonWrapper";
+import {ColorMatrixFilter} from "./ColorMatrixFilter";
+import {ProtonWrapper} from "./ProtonWrapper";
 import {resources} from "../resources";
 
 
@@ -36,7 +36,7 @@ for (const attribute in colors)
   colors[attribute] = Color.fromHSV(...hsv);
 }
 
-export default function snipe(type: UnitAttribute, params: SfxParams)
+export function snipe(type: UnitAttribute, params: SfxParams)
 {
   // ----------INIT
   const mainContainer = new PIXI.Container();

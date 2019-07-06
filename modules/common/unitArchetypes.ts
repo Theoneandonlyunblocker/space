@@ -1,5 +1,5 @@
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
-import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
+import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
+import {UnitArchetype} from "../../src/templateinterfaces/UnitArchetype";
 
 
 export const combat: UnitArchetype =
@@ -64,12 +64,10 @@ export const defence: UnitArchetype =
   },
 };
 
-const unitArchetypes: TemplateCollection<UnitArchetype> =
+export const unitArchetypes: TemplateCollection<UnitArchetype> =
 {
   [combat.type]: combat,
   [utility.type]: utility,
   [scouting.type]: scouting,
   [defence.type]: defence,
 };
-
-export default unitArchetypes;

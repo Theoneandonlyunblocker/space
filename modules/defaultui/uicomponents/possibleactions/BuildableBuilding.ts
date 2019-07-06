@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Player from "../../../../src/Player";
+import {Player} from "../../../../src/Player";
 import {BuildingTemplate} from "../../../../src/templateinterfaces/BuildingTemplate";
-import ListItemProps from "../list/ListItemProps";
+import {ListItemProps} from "../list/ListItemProps";
 
-import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
-import applyMixins from "../mixins/applyMixins";
+import {UpdateWhenMoneyChanges} from "../mixins/UpdateWhenMoneyChanges";
+import {applyMixins} from "../mixins/applyMixins";
 
 
 export interface PropTypes extends ListItemProps, React.Props<any>
@@ -123,5 +123,4 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BuildableBuildingComponent);
-export default factory;
+export const BuildableBuilding: React.Factory<PropTypes> = React.createFactory(BuildableBuildingComponent);

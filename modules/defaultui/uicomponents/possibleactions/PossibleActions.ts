@@ -2,11 +2,11 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import FleetAttackTarget from "../../../../src/FleetAttackTarget";
-import Player from "../../../../src/Player";
-import Star from "../../../../src/Star";
+import {FleetAttackTarget} from "../../../../src/FleetAttackTarget";
+import {Player} from "../../../../src/Player";
+import {Star} from "../../../../src/Star";
 
-import AttackTarget from "./AttackTarget";
+import {AttackTarget} from "./AttackTarget";
 import {ExpandedActionKind} from "./ExpandedAction";
 
 
@@ -93,5 +93,4 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(PossibleActionsComponent);
-export default factory;
+export const PossibleActions: React.Factory<PropTypes> = React.createFactory(PossibleActionsComponent);

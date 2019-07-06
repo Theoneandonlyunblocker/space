@@ -1,5 +1,5 @@
-import ModuleFile from "../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
+import {ModuleFile} from "../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
 import { englishLanguage } from "../englishlanguage/englishLanguage";
 import {ruleSet} from "./ruleSet";
 
@@ -8,15 +8,15 @@ import * as PassiveSkillTemplates from  "./passiveskills/passiveSkills";
 import * as TerrainTemplates from  "./terrains/terrains";
 import {unitEffectTemplates} from  "./uniteffects/unitEffectTemplates";
 
-import spaceBackgrounds from "./backgrounds/spaceBackgrounds";
+import {spaceBackgrounds} from "./backgrounds/spaceBackgrounds";
 import {spaceBattleSfx} from "./battlesfx/spaceBattleSfx";
-import spaceBuildings from "./buildings/spaceBuildings";
-import spaceItems from "./items/spaceItems";
-import spaceMapgen from "./mapgen/spaceMapGen";
-import spaceMapModes from "./mapmodes/spaceMapModes";
-import spaceRaces from "./races/spaceRaces";
-import spaceTechnologies from "./technologies/spaceTechnologies";
-import spaceUnits from "./units/spaceUnits";
+import {spaceBuildings} from "./buildings/spaceBuildings";
+import {spaceItems} from "./items/spaceItems";
+import {spaceMapGen} from "./mapgen/spaceMapGen";
+import {spaceMapModes} from "./mapmodes/spaceMapModes";
+import {spaceRaces} from "./races/spaceRaces";
+import {spaceTechnologies} from "./technologies/spaceTechnologies";
+import {spaceUnits} from "./units/spaceUnits";
 import {spaceResources} from "./resources/spaceResources";
 
 import * as moduleInfo from "./moduleInfo.json";
@@ -33,7 +33,7 @@ export const space: ModuleFile =
     spaceBattleSfx,
     spaceBuildings,
     spaceItems,
-    spaceMapgen,
+    spaceMapGen,
     spaceMapModes,
     spaceRaces,
     spaceTechnologies,

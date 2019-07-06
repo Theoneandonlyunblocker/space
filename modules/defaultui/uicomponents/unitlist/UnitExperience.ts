@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Unit from "../../../../src/Unit";
-import {default as DefaultWindow} from "../windows/DefaultWindow";
+import {Unit} from "../../../../src/Unit";
+import {DefaultWindow} from "../windows/DefaultWindow";
 
-import UpgradeUnit from "./UpgradeUnit";
+import {UpgradeUnit} from "./UpgradeUnit";
 
 
 export interface PropTypes extends React.Props<any>
@@ -163,5 +163,4 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
 }
 
 
-const factory: React.Factory<PropTypes> = React.createFactory(UnitExperienceComponent);
-export default factory;
+export const UnitExperience: React.Factory<PropTypes> = React.createFactory(UnitExperienceComponent);

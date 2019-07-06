@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import ResourceTemplate from "../../../../src/templateinterfaces/ResourceTemplate";
+import {ResourceTemplate} from "../../../../src/templateinterfaces/ResourceTemplate";
 
 
 export interface PropTypes extends React.Props<any>
@@ -59,5 +59,4 @@ export class ResourceComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ResourceComponent);
-export default factory;
+export const Resource: React.Factory<PropTypes> = React.createFactory(ResourceComponent);

@@ -1,16 +1,16 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Notification} from "../../../../src/notifications/Notification";
+import {Notification as NotificationObj} from "../../../../src/notifications/Notification";
 
 import {localize} from "../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  markAsRead: (notification: Notification) => void;
-  notification: Notification;
-  togglePopup: (notification: Notification) => void;
+  markAsRead: (notification: NotificationObj) => void;
+  notification: NotificationObj;
+  togglePopup: (notification: NotificationObj) => void;
 }
 
 interface StateType
@@ -79,5 +79,4 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(NotificationComponent);
-export default factory;
+export const Notification: React.Factory<PropTypes> = React.createFactory(NotificationComponent);

@@ -1,10 +1,10 @@
-import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
-import TemplateCollection from "../../../src/templateinterfaces/TemplateCollection";
+import {MapRendererLayerTemplate} from "../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {TemplateCollection} from "../../../src/templateinterfaces/TemplateCollection";
 
 import * as MapLayers from "./allMapLayerTemplates";
 
 
-const mapLayerTemplates: TemplateCollection<MapRendererLayerTemplate> =
+export const mapLayerTemplates: TemplateCollection<MapRendererLayerTemplate> =
 {
   [MapLayers.nonFillerStars.key]: MapLayers.nonFillerStars,
   [MapLayers.starLinks.key]: MapLayers.starLinks,
@@ -17,5 +17,3 @@ const mapLayerTemplates: TemplateCollection<MapRendererLayerTemplate> =
   [MapLayers.starIncome.key]: MapLayers.starIncome,
   [MapLayers.terrain.key]: MapLayers.terrain,
 };
-
-export default mapLayerTemplates;

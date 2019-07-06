@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {default as DefaultWindow} from "../windows/DefaultWindow";
-import {default as DialogBox} from "../windows/DialogBox";
+import {DefaultWindow} from "../windows/DefaultWindow";
+import {DialogBox} from "../windows/DialogBox";
 
-import LoadGame from "../saves/LoadGame";
+import {LoadGame} from "../saves/LoadGame";
 
 import {localize} from "../../localization/localize";
 
@@ -139,5 +139,4 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
 
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(GameOverScreenComponent);
-export default factory;
+export const GameOverScreen: React.Factory<PropTypes> = React.createFactory(GameOverScreenComponent);

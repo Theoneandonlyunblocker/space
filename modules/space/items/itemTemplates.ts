@@ -1,5 +1,5 @@
-import ItemTemplate from "../../../src/templateinterfaces/ItemTemplate";
-import TemplateCollection from "../../../src/templateinterfaces/TemplateCollection";
+import {ItemTemplate} from "../../../src/templateinterfaces/ItemTemplate";
+import {TemplateCollection} from "../../../src/templateinterfaces/TemplateCollection";
 
 import
 {

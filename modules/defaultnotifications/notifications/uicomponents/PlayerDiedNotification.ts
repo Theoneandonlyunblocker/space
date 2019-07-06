@@ -17,7 +17,7 @@ interface PropTypes
   notification: Notification<NotificationProps, SerializedNotificationProps>;
 }
 
-class PlayerDiedNotification extends React.Component<PropTypes, {}>
+class PlayerDiedNotificationComponent extends React.Component<PropTypes, {}>
 {
   public displayName = "PlayerDiedNotification";
 
@@ -50,5 +50,4 @@ class PlayerDiedNotification extends React.Component<PropTypes, {}>
   }
 }
 
-const factory = React.createFactory(PlayerDiedNotification);
-export default factory;
+export const PlayerDiedNotification = React.createFactory(PlayerDiedNotificationComponent);

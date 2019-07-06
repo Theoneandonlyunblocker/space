@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import TurnOrderDisplayData from "../../../../src/TurnOrderDisplayData";
-import Unit from "../../../../src/Unit";
+import {TurnOrderDisplayData} from "../../../../src/TurnOrderDisplayData";
+import {Unit} from "../../../../src/Unit";
 
 import
 {
   AnimationState,
-  default as TurnOrderUnit,
+  TurnOrderUnit,
 } from "./TurnOrderUnit";
 
 
@@ -384,5 +384,4 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TurnOrderComponent);
-export default factory;
+export const TurnOrder: React.Factory<PropTypes> = React.createFactory(TurnOrderComponent);

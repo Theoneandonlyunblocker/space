@@ -3,11 +3,11 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {AttitudeModifier} from "../../../../src/AttitudeModifier";
 import {Flag} from "../../../../src/Flag";
-import Player from "../../../../src/Player";
-import PlayerFlag from "../PlayerFlag";
-import ListItemProps from "../list/ListItemProps";
+import {Player} from "../../../../src/Player";
+import {PlayerFlag} from "../PlayerFlag";
+import {ListItemProps} from "../list/ListItemProps";
 
-import Opinion from "./Opinion";
+import {Opinion} from "./Opinion";
 
 
 export interface PropTypes extends ListItemProps, React.Props<any>
@@ -127,5 +127,4 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(DiplomaticStatusPlayerComponent);
-export default factory;
+export const DiplomaticStatusPlayer: React.Factory<PropTypes> = React.createFactory(DiplomaticStatusPlayerComponent);

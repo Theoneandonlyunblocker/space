@@ -1,4 +1,4 @@
-import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
+import {UnitTemplate} from "../../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../../common/unitArchetypes";
 import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
@@ -10,11 +10,11 @@ import
   standBy,
 } from "../../abilities/abilities";
 import {distributionGroups} from "../../../common/distributionGroups";
-import itemSlot from "../../items/itemSlot";
+import {itemSlot} from "../../items/itemSlot";
 import {getIconSrc} from "../resources";
 
 
-const battleCruiser: UnitTemplate =
+export const battleCruiser: UnitTemplate =
 {
   type: "battleCruiser",
   displayName: "Battlecruiser",
@@ -72,5 +72,3 @@ const battleCruiser: UnitTemplate =
     ],
   },
 };
-
-export default battleCruiser;

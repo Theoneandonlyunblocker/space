@@ -4,8 +4,8 @@ import * as ReactDOMElements from "react-dom-factories";
 import {localize} from "../../localization/localize";
 import { EmergencySaveGame } from "../saves/EmergencySaveGame";
 import { ErrorBoundary, ErrorBoundaryComponent } from "./ErrorBoundary";
-import { default as LoadGame } from "../saves/LoadGame";
-import { default as SaveGame } from "../saves/SaveGame";
+import { LoadGame } from "../saves/LoadGame";
+import { SaveGame } from "../saves/SaveGame";
 
 
 // tslint:disable-next-line:no-any

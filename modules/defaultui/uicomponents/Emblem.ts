@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Color from "../../../src/Color";
-import Emblem from "../../../src/Emblem";
-import SubEmblemTemplate from "../../../src/templateinterfaces/SubEmblemTemplate";
+import {Color} from "../../../src/Color";
+import {Emblem as EmblemObj} from "../../../src/Emblem";
+import {SubEmblemTemplate} from "../../../src/templateinterfaces/SubEmblemTemplate";
 
 
 export interface EmblemProps
@@ -35,7 +35,7 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
 
   private renderEmblemCanvas(): void
   {
-    const emblem = new Emblem(
+    const emblem = new EmblemObj(
       this.props.colors,
       this.props.template,
     );
@@ -82,5 +82,4 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(EmblemComponent);
-export default factory;
+export const Emblem: React.Factory<PropTypes> = React.createFactory(EmblemComponent);

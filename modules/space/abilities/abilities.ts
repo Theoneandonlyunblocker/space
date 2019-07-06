@@ -1,13 +1,13 @@
-import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate";
+import {AbilityTemplate} from "../../../src/templateinterfaces/AbilityTemplate";
 
 import
 {
   AbilityTargetEffect,
   AbilityTargetType,
 } from "../../../src/AbilityTargetDisplayData";
-import DamageType from "../../../src/DamageType";
-import GuardCoverage from "../../../src/GuardCoverage";
-import Unit from "../../../src/Unit";
+import {DamageType} from "../../../src/DamageType";
+import {GuardCoverage} from "../../../src/GuardCoverage";
+import {Unit} from "../../../src/Unit";
 import {UnitAttribute} from "../../../src/UnitAttributes";
 import
 {

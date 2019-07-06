@@ -56,5 +56,4 @@ export class SfxEditorSelectionTabComponent extends React.Component<PropTypes, S
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SfxEditorSelectionTabComponent);
-export default factory;
+export const SfxEditorSelectionTab: React.Factory<PropTypes> = React.createFactory(SfxEditorSelectionTabComponent);

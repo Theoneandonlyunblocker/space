@@ -1,9 +1,9 @@
-import MapGenTemplate from "../../../../src/templateinterfaces/MapGenTemplate";
+import {MapGenTemplate} from "../../../../src/templateinterfaces/MapGenTemplate";
 
-import spiralGalaxyGeneration from "../spiralGalaxy/spiralGalaxyGeneration";
+import {spiralGalaxyGeneration} from "../spiralGalaxy/spiralGalaxyGeneration";
 
 
-const tinierSpiralGalaxy: MapGenTemplate =
+export const tinierSpiralGalaxy: MapGenTemplate =
 {
   key: "tinierSpiralGalaxy",
   displayName: "Tinier Spiral galaxy",
@@ -88,5 +88,3 @@ const tinierSpiralGalaxy: MapGenTemplate =
     },
   },
 };
-
-export default tinierSpiralGalaxy;

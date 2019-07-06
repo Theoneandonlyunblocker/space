@@ -1,5 +1,5 @@
-import ModuleFile from "../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
+import {ModuleFile} from "../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
 
 import {englishLanguage} from "./englishLanguage";
 

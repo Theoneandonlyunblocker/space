@@ -50,7 +50,7 @@ import {ObjectiveCreatorTemplate} from "../objectives/common/ObjectiveCreatorTem
 import {ObjectiveFamily} from "../objectives/common/ObjectiveFamily";
 
 import {GrandStrategyAi} from "./GrandStrategyAi";
-import MapEvaluator from "./MapEvaluator";
+import {MapEvaluator} from "./MapEvaluator";
 import {ObjectiveQueue} from "./ObjectiveQueue";
 import {objectiveCreatorTemplates} from "./objectiveCreatorTemplates";
 

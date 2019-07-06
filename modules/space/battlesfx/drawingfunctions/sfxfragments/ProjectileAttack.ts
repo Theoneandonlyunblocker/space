@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js";
 
-import UnitDrawingFunctionData from "../../../../../src/UnitDrawingFunctionData";
+import {UnitDrawingFunctionData} from "../../../../../src/UnitDrawingFunctionData";
 import
 {
   randInt,
 } from "../../../../../src/utility";
 
-import SfxFragment from "./SfxFragment";
+import {SfxFragment} from "./SfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
 
 
@@ -168,7 +168,7 @@ class Projectile
   }
 }
 
-export default class ProjectileAttack extends SfxFragment<ProjectileAttackProps>
+export class ProjectileAttack extends SfxFragment<ProjectileAttackProps>
 {
   public displayName = "ProjectileAttack";
   public key = "projectileAttack";

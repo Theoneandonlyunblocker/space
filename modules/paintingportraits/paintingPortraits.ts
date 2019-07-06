@@ -1,5 +1,5 @@
-import ModuleFile from "../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
+import {ModuleFile} from "../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
 
 import {paintingPortraitTemplates} from "./paintingPortraitTemplates";
 import {setBaseUrl as setAssetBaseUrl} from "./assets";
@@ -7,7 +7,7 @@ import {setBaseUrl as setAssetBaseUrl} from "./assets";
 import * as moduleInfo from "./moduleInfo.json";
 
 
-const paintingPortraits: ModuleFile =
+export const paintingPortraits: ModuleFile =
 {
   info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
@@ -25,5 +25,3 @@ const paintingPortraits: ModuleFile =
     return moduleData;
   },
 };
-
-export default paintingPortraits;

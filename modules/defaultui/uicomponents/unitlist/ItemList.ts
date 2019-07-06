@@ -2,13 +2,13 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Item from "../../../../src/Item";
-import AbilityBase from "../../../../src/templateinterfaces/AbilityBase";
-import List from "../list/List";
-import ListColumn from "../list/ListColumn";
-import ListItem from "../list/ListItem";
+import {Item} from "../../../../src/Item";
+import {AbilityBase} from "../../../../src/templateinterfaces/AbilityBase";
+import {List} from "../list/List";
+import {ListColumn} from "../list/ListColumn";
+import {ListItem} from "../list/ListItem";
 
-import {default as ItemListItem, PropTypes as ItemListItemProps} from "./ItemListItem";
+import {ItemListItem, PropTypes as ItemListItemProps} from "./ItemListItem";
 
 
 export interface PropTypes extends React.Props<any>
@@ -156,5 +156,4 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ItemListComponent);
-export default factory;
+export const ItemList: React.Factory<PropTypes> = React.createFactory(ItemListComponent);

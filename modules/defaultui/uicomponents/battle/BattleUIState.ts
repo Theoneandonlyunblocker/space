@@ -1,4 +1,4 @@
-enum BattleUIState
+export enum BattleUIState
 {
   // no control
   BattleStarting,
@@ -13,5 +13,3 @@ enum BattleUIState
   // no control
   BattleEnding,
 }
-
-export default BattleUIState;

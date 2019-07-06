@@ -2,11 +2,11 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {Building} from "../../../../src/Building";
-import BuildingUpgradeData from "../../../../src/BuildingUpgradeData";
-import Player from "../../../../src/Player";
-import Star from "../../../../src/Star";
+import {BuildingUpgradeData} from "../../../../src/BuildingUpgradeData";
+import {Player} from "../../../../src/Player";
+import {Star} from "../../../../src/Star";
 
-import BuildingUpgradeListItem from "./BuildingUpgradeListItem";
+import {BuildingUpgradeListItem} from "./BuildingUpgradeListItem";
 
 
 export interface PropTypes extends React.Props<any>
@@ -138,5 +138,4 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BuildingUpgradeListComponent);
-export default factory;
+export const BuildingUpgradeList: React.Factory<PropTypes> = React.createFactory(BuildingUpgradeListComponent);

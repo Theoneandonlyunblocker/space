@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Star from "../../../../src/Star";
+import {Star} from "../../../../src/Star";
 
-import TerritoryBuildingList from "./TerritoryBuildingList";
-import eventManager from "../../../../src/eventManager";
+import {TerritoryBuildingList} from "./TerritoryBuildingList";
+import {eventManager} from "../../../../src/eventManager";
 
 
 export interface PropTypes extends React.Props<any>
@@ -96,5 +96,4 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(StarInfoComponent);
-export default factory;
+export const StarInfo: React.Factory<PropTypes> = React.createFactory(StarInfoComponent);

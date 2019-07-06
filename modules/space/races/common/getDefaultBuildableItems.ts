@@ -1,5 +1,5 @@
 import * as items from "../../items/itemTemplates";
-import ItemTemplate from "../../../../src/templateinterfaces/ItemTemplate";
+import {ItemTemplate} from "../../../../src/templateinterfaces/ItemTemplate";
 
 export function getDefaultBuildableItems(): ItemTemplate[]
 {

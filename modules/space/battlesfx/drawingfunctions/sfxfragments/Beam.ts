@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
-import Color from "../../../../../src/Color";
-import Point from "../../../../../src/Point";
+import {Color} from "../../../../../src/Color";
+import {Point} from "../../../../../src/Point";
 import
 {
   makeShaderSprite,
@@ -13,8 +13,8 @@ import
 } from "../../../../../src/utility";
 import {Beam as BeamFilter} from "../shaders/Beam";
 
-import RampingValue from "./RampingValue";
-import SfxFragment from "./SfxFragment";
+import {RampingValue} from "./RampingValue";
+import {SfxFragment} from "./SfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
 
 
@@ -36,7 +36,7 @@ interface BeamProps
   lineYSharpness: RampingValue;
 }
 
-export default class Beam extends SfxFragment<BeamProps>
+export class Beam extends SfxFragment<BeamProps>
 {
   public displayName = "Beam";
   public key = "beam";

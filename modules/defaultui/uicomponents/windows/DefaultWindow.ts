@@ -5,7 +5,7 @@ import {Rect} from "../../../../src/Rect";
 
 import
 {
-  default as WindowContainer,
+  WindowContainer,
   WindowContainerComponent,
 } from "./WindowContainer";
 
@@ -182,4 +182,3 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
 
 // tslint:disable-next-line:variable-name
 export const DefaultWindow: React.Factory<PropTypes> = React.createFactory(DefaultWindowComponent);
-export default DefaultWindow;

@@ -2,14 +2,14 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
-import Unit from "../../../../src/Unit";
+import {Unit} from "../../../../src/Unit";
 import {shallowExtend} from "../../../../src/utility";
-import ListItemProps from "../list/ListItemProps";
-import {default as UnitComponentFactory} from "../unit/Unit";
-import UnitStrength from "../unit/UnitStrength";
+import {ListItemProps} from "../list/ListItemProps";
+import {Unit as UnitComponentFactory} from "../unit/Unit";
+import {UnitStrength} from "../unit/UnitStrength";
 
-import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
+import {DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import {applyMixins} from "../mixins/applyMixins";
 
 
 export interface PropTypes extends ListItemProps, React.Props<any>
@@ -267,5 +267,4 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(UnitListItemComponent);
-export default factory;
+export const UnitListItem: React.Factory<PropTypes> = React.createFactory(UnitListItemComponent);

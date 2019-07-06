@@ -1,7 +1,7 @@
-import Star from "../../../../src/Star";
-import Unit from "../../../../src/Unit";
+import {Star} from "../../../../src/Star";
+import {Unit} from "../../../../src/Unit";
 import {Front} from "../../mapai/Front";
-import MapEvaluator from "../../mapai/MapEvaluator";
+import {MapEvaluator} from "../../mapai/MapEvaluator";
 import {UnitEvaluator} from "../../mapai/UnitEvaluator";
 
 import {Objective} from "./Objective";

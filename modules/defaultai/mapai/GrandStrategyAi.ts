@@ -1,13 +1,13 @@
-import Game from "../../../src/Game";
-import Personality from "../../../src/Personality";
-import Star from "../../../src/Star";
+import {Game} from "../../../src/Game";
+import {Personality} from "../../../src/Personality";
+import {Star} from "../../../src/Star";
 import
 {
   clamp,
   getRelativeValue,
 } from "../../../src/utility";
 
-import MapEvaluator from "./MapEvaluator";
+import {MapEvaluator} from "./MapEvaluator";
 
 
 export class GrandStrategyAi

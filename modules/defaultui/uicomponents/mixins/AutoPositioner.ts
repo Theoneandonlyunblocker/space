@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import MixinBase from "./MixinBase";
+import {MixinBase} from "./MixinBase";
 
 
 export interface AutoPositionerPosition
@@ -19,7 +19,7 @@ export interface AutoPositionerProps extends AutoPositionerPosition
   positionOnResize?: boolean;
 }
 
-export default class AutoPositioner<T extends React.Component<any, any>> implements MixinBase<T>
+export class AutoPositioner<T extends React.Component<any, any>> implements MixinBase<T>
 {
   private owner: T;
   private ownerElementRef: React.RefObject<HTMLElement>;

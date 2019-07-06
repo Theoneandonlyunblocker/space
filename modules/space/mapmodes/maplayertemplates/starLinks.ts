@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 
-import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 
-const starLinks: MapRendererLayerTemplate =
+export const starLinks: MapRendererLayerTemplate =
 {
   key: "starLinks",
   displayName: "Links",
@@ -46,5 +46,3 @@ const starLinks: MapRendererLayerTemplate =
     return doc;
   },
 };
-
-export default starLinks;

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-declare interface MixinBase<T extends React.Component<any, any>>
+export declare interface MixinBase<T extends React.Component<any, any>>
 {
   componentDidMount?: () => void;
   componentDidUpdate?: () => void;
@@ -8,5 +8,3 @@ declare interface MixinBase<T extends React.Component<any, any>>
 
   onRender?: () => void;
 }
-
-export default MixinBase;

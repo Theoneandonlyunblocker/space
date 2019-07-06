@@ -1,14 +1,14 @@
 import {UnitAttribute} from "../../../../src/UnitAttributes";
-import BattleSfxTemplate from "../../../../src/templateinterfaces/BattleSfxTemplate";
+import {BattleSfxTemplate} from "../../../../src/templateinterfaces/BattleSfxTemplate";
 
 import {BlackToAlpha as BlackToAlphaFilter} from "../drawingfunctions/shaders/BlackToAlpha";
 
-import beamDrawingFunction from "../drawingfunctions/beam";
-import guardDrawingFunction from "../drawingfunctions/guard";
-import makeSfxFromVideo from "../drawingfunctions/makeSfxFromVideo";
+import {beam as beamDrawingFunction} from "../drawingfunctions/beam";
+import {guard as guardDrawingFunction} from "../drawingfunctions/guard";
+import {makeSfxFromVideo} from "../drawingfunctions/makeSfxFromVideo";
 import {placeholder as placeholderFunction} from "../drawingfunctions/placeholder";
-import rocketAttackDrawingFunction from "../drawingfunctions/rocketAttack";
-import snipeDrawingFunction from "../drawingfunctions/snipe";
+import {rocketAttack as rocketAttackDrawingFunction} from "../drawingfunctions/rocketAttack";
+import {snipe as snipeDrawingFunction} from "../drawingfunctions/snipe";
 
 import
 {

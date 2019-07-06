@@ -1,16 +1,16 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {TradeableItems} from "../../../../src/Trade";
+import {TradeableItems as TradeableItemsObj} from "../../../../src/Trade";
 
-import TradeableItemsList from "./TradeableItemsList";
+import {TradeableItemsList} from "./TradeableItemsList";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  tradeableItems: TradeableItems;
+  tradeableItems: TradeableItemsObj;
 
-  availableItems?: TradeableItems;
+  availableItems?: TradeableItemsObj;
   header?: string;
   onMouseUp: () => void;
   onDragStart: (tradeableItemKey: string) => void;
@@ -83,5 +83,4 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TradeableItemsComponent);
-export default factory;
+export const TradeableItems: React.Factory<PropTypes> = React.createFactory(TradeableItemsComponent);

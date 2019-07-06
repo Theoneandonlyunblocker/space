@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Color from "../../../../src/Color";
+import {Color} from "../../../../src/Color";
 import {activeModuleData} from "../../../../src/activeModuleData";
 
-import SubEmblemTemplate from "../../../../src/templateinterfaces/SubEmblemTemplate";
+import {SubEmblemTemplate} from "../../../../src/templateinterfaces/SubEmblemTemplate";
 
-import EmblemComponent from "../Emblem";
+import {Emblem} from "../Emblem";
 
 
 export interface PropTypes extends React.Props<any>
@@ -22,9 +22,9 @@ interface StateType
 {
 }
 
-export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateType>
+export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateType>
 {
-  public displayName = "EmblemEditor";
+  public displayName = "EmblemPicker";
   public state: StateType;
 
   constructor(props: PropTypes)
@@ -59,7 +59,7 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
             backgroundColor: "#" + this.props.backgroundColor.getHexString(),
           },
         },
-          EmblemComponent(
+          Emblem(
           {
             template: template,
             colors: this.props.colors,
@@ -97,5 +97,4 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(EmblemEditorComponent);
-export default factory;
+export const EmblemPicker: React.Factory<PropTypes> = React.createFactory(EmblemPickerComponent);

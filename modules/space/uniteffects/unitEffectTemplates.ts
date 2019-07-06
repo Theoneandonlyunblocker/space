@@ -1,8 +1,8 @@
-import TemplateCollection from "../../../src/templateinterfaces/TemplateCollection";
-import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
+import {TemplateCollection} from "../../../src/templateinterfaces/TemplateCollection";
+import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
 
-import autoHeal from "./autoHeal";
-import poisoned from "./poisoned";
+import {autoHeal} from "./autoHeal";
+import {poisoned} from "./poisoned";
 import
 {
   snipeAttack,

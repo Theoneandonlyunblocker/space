@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import PlayerTechnology from "../../../../src/PlayerTechnology";
-import eventManager from "../../../../src/eventManager";
-import TechnologyTemplate from "../../../../src/templateinterfaces/TechnologyTemplate";
+import {PlayerTechnology} from "../../../../src/PlayerTechnology";
+import {eventManager} from "../../../../src/eventManager";
+import {TechnologyTemplate} from "../../../../src/templateinterfaces/TechnologyTemplate";
 
 
 export interface PropTypes extends React.Props<any>
@@ -107,5 +107,4 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TechnologyPrioritySliderComponent);
-export default factory;
+export const TechnologyPrioritySlider: React.Factory<PropTypes> = React.createFactory(TechnologyPrioritySliderComponent);

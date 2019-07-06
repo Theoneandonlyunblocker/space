@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Color from "../../../../src/Color";
+import {Color} from "../../../../src/Color";
 import {EmblemProps} from "../Emblem";
 
-import EmblemSetter from "./EmblemSetter";
+import {EmblemSetter} from "./EmblemSetter";
 
 
 export interface PropTypes extends React.Props<any>
@@ -71,5 +71,4 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(EmblemSetterListComponent);
-export default factory;
+export const EmblemSetterList: React.Factory<PropTypes> = React.createFactory(EmblemSetterListComponent);

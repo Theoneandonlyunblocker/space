@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize, AllMessages as LocalizationKeys} from "../../localization/localize";
-import Options from "../../../../src/Options";
-import {default as OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
+import {Options} from "../../../../src/Options";
+import {OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
 import { errorReportingModes, ErrorReportingMode } from "../../../../src/handleError";
 
 

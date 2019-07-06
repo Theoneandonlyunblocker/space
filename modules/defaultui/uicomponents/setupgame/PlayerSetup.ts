@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Color from "../../../../src/Color";
+import {Color} from "../../../../src/Color";
 import {Flag} from "../../../../src/Flag";
-import Player from "../../../../src/Player";
+import {Player} from "../../../../src/Player";
 import {activeModuleData} from "../../../../src/activeModuleData";
 import
 {
@@ -17,10 +17,10 @@ import
 
 import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
 
-import {default as ColorSetter} from "./ColorSetter";
-import {default as FlagSetter} from "./FlagSetter";
+import {ColorSetter} from "./ColorSetter";
+import {FlagSetter} from "./FlagSetter";
 import {SetterComponentBase} from "./SetterComponentBase";
-import RacePicker from "./RacePicker";
+import {RacePicker} from "./RacePicker";
 
 
 export interface PropTypes extends React.Props<any>
@@ -279,5 +279,4 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(PlayerSetupComponent);
-export default factory;
+export const PlayerSetup: React.Factory<PropTypes> = React.createFactory(PlayerSetupComponent);

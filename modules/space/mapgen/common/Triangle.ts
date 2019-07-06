@@ -1,7 +1,7 @@
-import Point from "../../../../src/Point";
+import {Point} from "../../../../src/Point";
 
 
-export default class Triangle<T extends Point>
+export class Triangle<T extends Point>
 {
   public a: T;
   public b: T;

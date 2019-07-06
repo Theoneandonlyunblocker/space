@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import BackgroundDrawer from "../../../../src/BackgroundDrawer";
-import BackgroundDrawingFunction from "../../../../src/BackgroundDrawingFunction";
+import {BackgroundDrawer} from "../../../../src/BackgroundDrawer";
+import {BackgroundDrawingFunction} from "../../../../src/BackgroundDrawingFunction";
 import {convertClientRectToPixiRect} from "../../../../src/pixiWrapperFunctions";
 
 
@@ -88,5 +88,4 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BattleBackgroundComponent);
-export default factory;
+export const BattleBackground: React.Factory<PropTypes> = React.createFactory(BattleBackgroundComponent);

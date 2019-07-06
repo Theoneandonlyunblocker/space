@@ -1,4 +1,4 @@
-export default class RampingValue
+export class RampingValue
 {
   public base: number;
   public up: number;

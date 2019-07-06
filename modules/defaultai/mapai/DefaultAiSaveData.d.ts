@@ -1,6 +1,4 @@
-declare interface DefaultAiSaveData
+export declare interface DefaultAiSaveData
 {
 
 }
-
-export default DefaultAiSaveData;

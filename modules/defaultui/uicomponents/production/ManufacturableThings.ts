@@ -2,13 +2,13 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Player from "../../../../src/Player";
-import Star from "../../../../src/Star";
-import ItemTemplate from "../../../../src/templateinterfaces/ItemTemplate";
-import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
+import {Player} from "../../../../src/Player";
+import {Star} from "../../../../src/Star";
+import {ItemTemplate} from "../../../../src/templateinterfaces/ItemTemplate";
+import {UnitTemplate} from "../../../../src/templateinterfaces/UnitTemplate";
 
-import ManufacturableItems from "./ManufacturableItems";
-import ManufacturableUnits from "./ManufacturableUnits";
+import {ManufacturableItems} from "./ManufacturableItems";
+import {ManufacturableUnits} from "./ManufacturableUnits";
 
 
 type TabKey = "units" | "items";
@@ -165,5 +165,4 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ManufacturableThingsComponent);
-export default factory;
+export const ManufacturableThings: React.Factory<PropTypes> = React.createFactory(ManufacturableThingsComponent);

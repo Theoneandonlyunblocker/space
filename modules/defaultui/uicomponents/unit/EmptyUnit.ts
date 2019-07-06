@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 
-import UnitIconContainer from "./UnitIconContainer";
+import {UnitIconContainer} from "./UnitIconContainer";
 
 
 export interface PropTypes extends React.Props<any>
@@ -61,5 +61,4 @@ export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(EmptyUnitComponent);
-export default factory;
+export const EmptyUnit: React.Factory<PropTypes> = React.createFactory(EmptyUnitComponent);

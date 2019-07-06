@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {Flag} from "../../../src/Flag";
 import {generateColorScheme} from "../../../src/colorGeneration";
 
-import PlayerFlag from "./PlayerFlag";
+import {PlayerFlag} from "./PlayerFlag";
 
 
 export interface PropTypes extends React.Props<any>
@@ -114,5 +114,4 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(FlagMakerComponent);
-export default factory;
+export const FlagMaker: React.Factory<PropTypes> = React.createFactory(FlagMakerComponent);

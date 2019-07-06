@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Options from "../../../../src/Options";
+import {Options} from "../../../../src/Options";
 import {Language} from "../../../../src/localization/Language";
-import {default as DialogBox} from "../windows/DialogBox";
+import {DialogBox} from "../windows/DialogBox";
 
 import {BattleOptions} from "./BattleOptions";
 import {DebugOptions} from "./DebugOptions";
@@ -100,5 +100,4 @@ export class FullOptionsListComponent extends React.Component<PropTypes, StateTy
 }
 
 // tslint:disable-next-line:variable-name
-const FullOptionsList: React.Factory<PropTypes> = React.createFactory(FullOptionsListComponent);
-export default FullOptionsList;
+export const FullOptionsList: React.Factory<PropTypes> = React.createFactory(FullOptionsListComponent);

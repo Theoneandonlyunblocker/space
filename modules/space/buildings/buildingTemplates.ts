@@ -2,7 +2,7 @@ import * as otherBuildings from "./templates/otherBuildings";
 import * as territoryBuildings from "./templates/territoryBuildings";
 
 
-const buildingTemplates =
+export const buildingTemplates =
 {
   [territoryBuildings.sectorCommand.type]: territoryBuildings.sectorCommand,
   [territoryBuildings.sectorCommand1.type]: territoryBuildings.sectorCommand1,
@@ -15,5 +15,3 @@ const buildingTemplates =
   [otherBuildings.thePyramids.type]: otherBuildings.thePyramids,
   [otherBuildings.nationalEpic.type]: otherBuildings.nationalEpic,
 };
-
-export default buildingTemplates;

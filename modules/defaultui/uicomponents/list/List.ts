@@ -1,15 +1,15 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import eventManager from "../../../../src/eventManager";
+import {eventManager} from "../../../../src/eventManager";
 import
 {
   shallowCopy,
 } from "../../../../src/utility";
 
-import ListColumn from "./ListColumn";
-import ListItem from "./ListItem";
-import ListOrder from "./ListOrder";
+import {ListColumn} from "./ListColumn";
+import {ListItem} from "./ListItem";
+import {ListOrder} from "./ListOrder";
 
 
 export interface PropTypes<I> extends React.Props<any>
@@ -522,8 +522,7 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
 }
 
 const factory: any = React.createFactory(ListComponent);
-function typedFactory<I>(props?: React.Attributes & PropTypes<I>, ...children: React.ReactNode[]): React.ReactElement<PropTypes<I>>
+export function List<I>(props?: React.Attributes & PropTypes<I>, ...children: React.ReactNode[]): React.ReactElement<PropTypes<I>>
 {
   return factory(props, ...children);
 }
-export default typedFactory;

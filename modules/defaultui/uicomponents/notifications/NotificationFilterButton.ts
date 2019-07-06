@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {default as DefaultWindow} from "../windows/DefaultWindow";
+import {DefaultWindow} from "../windows/DefaultWindow";
 
-import NotificationFilterList from "./NotificationFilterList";
+import {NotificationFilterList} from "./NotificationFilterList";
 
 
 export interface PropTypes extends React.Props<any>
@@ -97,5 +97,4 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterButtonComponent);
-export default factory;
+export const NotificationFilterButton: React.Factory<PropTypes> = React.createFactory(NotificationFilterButtonComponent);

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import MapGenOption from "../../../../src/templateinterfaces/MapGenOption";
+import {MapGenOption as MapGenOptionObj} from "../../../../src/templateinterfaces/MapGenOption";
 import
 {
   clamp,
@@ -12,7 +12,7 @@ export interface PropTypes extends React.Props<any>
 {
   value: number;
   id: string;
-  option: MapGenOption;
+  option: MapGenOptionObj;
   onChange: (optionName: string, newValue: number) => void;
 }
 
@@ -106,5 +106,4 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(MapGenOptionComponent);
-export default factory;
+export const MapGenOption: React.Factory<PropTypes> = React.createFactory(MapGenOptionComponent);

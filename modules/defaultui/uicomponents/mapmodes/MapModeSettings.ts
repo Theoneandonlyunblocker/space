@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import MapRenderer from "../../../../src/MapRenderer";
+import {MapRenderer} from "../../../../src/MapRenderer";
 
-import MapModeSelector from "./MapModeSelector";
-import {default as MapRendererLayersList, MapRendererLayersListComponent} from "./MapRendererLayersList";
+import {MapModeSelector} from "./MapModeSelector";
+import {MapRendererLayersList, MapRendererLayersListComponent} from "./MapRendererLayersList";
 
 
 export interface PropTypes extends React.Props<any>
@@ -74,5 +74,4 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(MapModeSettingsComponent);
-export default factory;
+export const MapModeSettings: React.Factory<PropTypes> = React.createFactory(MapModeSettingsComponent);

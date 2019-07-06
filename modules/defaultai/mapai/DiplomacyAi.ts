@@ -1,11 +1,11 @@
-import Game from "../../../src/Game";
-import Player from "../../../src/Player";
-import PlayerDiplomacy from "../../../src/PlayerDiplomacy";
+import {Game} from "../../../src/Game";
+import {Player} from "../../../src/Player";
+import {PlayerDiplomacy} from "../../../src/PlayerDiplomacy";
 
-import MapEvaluator from "./MapEvaluator";
+import {MapEvaluator} from "./MapEvaluator";
 
 
-export default class DiplomacyAi
+export class DiplomacyAi
 {
   private game: Game;
 

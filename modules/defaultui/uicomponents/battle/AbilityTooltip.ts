@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Unit from "../../../../src/Unit";
-import AbilityTemplate from "../../../../src/templateinterfaces/AbilityTemplate";
+import {Unit} from "../../../../src/Unit";
+import {AbilityTemplate} from "../../../../src/templateinterfaces/AbilityTemplate";
 
 
 export interface PropTypes extends React.Props<any>
@@ -114,5 +114,4 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(AbilityTooltipComponent);
-export default factory;
+export const AbilityTooltip: React.Factory<PropTypes> = React.createFactory(AbilityTooltipComponent);

@@ -1,5 +1,5 @@
-import TechnologyTemplate from "../../../src/templateinterfaces/TechnologyTemplate";
-import TemplateCollection from "../../../src/templateinterfaces/TemplateCollection";
+import {TechnologyTemplate} from "../../../src/templateinterfaces/TechnologyTemplate";
+import {TemplateCollection} from "../../../src/templateinterfaces/TemplateCollection";
 
 
 export const stealth: TechnologyTemplate =
@@ -38,7 +38,7 @@ export const test2: TechnologyTemplate =
   maxLevel: 2,
 };
 
-const technologyTemplates: TemplateCollection<TechnologyTemplate> =
+export const technologyTemplates: TemplateCollection<TechnologyTemplate> =
 {
   [stealth.key]: stealth,
   [lasers.key]: lasers,
@@ -46,5 +46,3 @@ const technologyTemplates: TemplateCollection<TechnologyTemplate> =
   [test1.key]: test1,
   [test2.key]: test2,
 };
-
-export default technologyTemplates;

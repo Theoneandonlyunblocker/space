@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 
-import {default as PlayerSetup, PlayerSetupComponent} from "./PlayerSetup";
+import {PlayerSetup, PlayerSetupComponent} from "./PlayerSetup";
 import {SetterComponentBase} from "./SetterComponentBase";
 
 
@@ -260,5 +260,4 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SetupGamePlayersComponent);
-export default factory;
+export const SetupGamePlayers: React.Factory<PropTypes> = React.createFactory(SetupGamePlayersComponent);

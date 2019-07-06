@@ -1,10 +1,10 @@
-import Player from "../../../src/Player";
+import {Player} from "../../../src/Player";
 import
 {
   getRandomArrayItem,
 } from "../../../src/utility";
 import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
-import MapEvaluator from "../mapai/MapEvaluator";
+import {MapEvaluator} from "../mapai/MapEvaluator";
 
 import {EconomicObjective} from "./common/EconomicObjective";
 import {FrontObjective} from "./common/FrontObjective";

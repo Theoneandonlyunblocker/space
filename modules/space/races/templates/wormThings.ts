@@ -1,6 +1,6 @@
 import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
 
-import Name from "../../../../src/Name";
+import {Name} from "../../../../src/Name";
 
 import
 {
@@ -9,7 +9,7 @@ import
 
 import {generateIndependentFleets} from "../../../common/generateIndependentFleets";
 import {generateIndependentPlayer} from "../../../common/generateIndependentPlayer";
-import defaultAiConstructor from "../../../defaultai/mapai/DefaultAiConstructor";
+import {defaultAiConstructor} from "../../../defaultai/mapai/DefaultAiConstructor";
 import * as TechnologyTemplates from "../../technologies/technologyTemplates";
 import * as items from "../../items/itemTemplates";
 import {unitTemplates as units} from "../../units/unitTemplates";
@@ -22,7 +22,7 @@ import {defaultRaceTechnologyValues} from "../common/defaultRaceTechnologyValues
 import {mergeTechnologyValues} from "../common/utility";
 
 
-const wormThings: RaceTemplate =
+export const wormThings: RaceTemplate =
 {
   type: "wormThings",
   displayName: new Name("Worm Things", true),
@@ -82,5 +82,3 @@ const wormThings: RaceTemplate =
 
   getAiTemplateConstructor: player => defaultAiConstructor,
 };
-
-export default wormThings;

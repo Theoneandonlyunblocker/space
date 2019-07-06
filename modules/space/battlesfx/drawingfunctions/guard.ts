@@ -1,4 +1,4 @@
-import SfxParams from "../../../../src/templateinterfaces/SfxParams";
+import {SfxParams} from "../../../../src/templateinterfaces/SfxParams";
 import
 {
   getRelativeValue,
@@ -7,7 +7,7 @@ import
 import {Guard as GuardFilter} from "./shaders/Guard";
 
 
-export default function guard(props: SfxParams)
+export function guard(props: SfxParams)
 {
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleSfx(
     props.userOffset, props.width, "user");

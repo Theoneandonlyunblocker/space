@@ -1,7 +1,7 @@
 import {IdDictionary} from "../../../../src/IdDictionary";
-import idGenerators from "../../../../src/idGenerators";
+import {idGenerators} from "../../../../src/idGenerators";
 import {GrandStrategyAi} from "../../mapai/GrandStrategyAi";
-import MapEvaluator from "../../mapai/MapEvaluator";
+import {MapEvaluator} from "../../mapai/MapEvaluator";
 
 import {ObjectiveCreatorTemplate} from "./ObjectiveCreatorTemplate";
 import {ObjectiveFamily} from "./ObjectiveFamily";

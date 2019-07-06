@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {default as NumberInput} from "../generic/NumberInput";
+import {NumberInput} from "../generic/NumberInput";
 
 
 export interface PropTypes extends React.Props<any>
@@ -67,5 +67,4 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(OptionsNumericFieldComponent);
-export default factory;
+export const OptionsNumericField: React.Factory<PropTypes> = React.createFactory(OptionsNumericFieldComponent);

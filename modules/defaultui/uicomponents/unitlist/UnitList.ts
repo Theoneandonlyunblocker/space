@@ -2,12 +2,12 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Unit from "../../../../src/Unit";
-import List from "../list/List";
-import ListColumn from "../list/ListColumn";
-import ListItem from "../list/ListItem";
+import {Unit} from "../../../../src/Unit";
+import {List} from "../list/List";
+import {ListColumn} from "../list/ListColumn";
+import {ListItem} from "../list/ListItem";
 
-import {default as UnitListItem, PropTypes as UnitListItemProps} from "./UnitListItem";
+import {UnitListItem, PropTypes as UnitListItemProps} from "./UnitListItem";
 
 
 export interface PropTypes extends React.Props<any>
@@ -150,5 +150,4 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(UnitListComponent);
-export default factory;
+export const UnitList: React.Factory<PropTypes> = React.createFactory(UnitListComponent);

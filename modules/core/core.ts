@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
-import ModuleData from "../../src/ModuleData";
-import ModuleFile from "../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
+import {ModuleData} from "../../src/ModuleData";
+import {ModuleFile} from "../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
 
 import {allScripts} from "./modulescripts/allScripts";
 
@@ -10,7 +10,7 @@ import * as moduleInfo from "./moduleInfo.json";
 
 
 // TODO 2017.07.27 | move core gameplay stuff here
-const core: ModuleFile =
+export const core: ModuleFile =
 {
   info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
@@ -37,5 +37,3 @@ const core: ModuleFile =
     return moduleData;
   },
 };
-
-export default core;

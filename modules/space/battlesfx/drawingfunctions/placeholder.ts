@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import SfxParams from "../../../../src/templateinterfaces/SfxParams";
+import {SfxParams} from "../../../../src/templateinterfaces/SfxParams";
 
 
 export function placeholder(params: SfxParams): void

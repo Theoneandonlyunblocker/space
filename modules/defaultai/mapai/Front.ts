@@ -1,8 +1,8 @@
-import ArchetypeValues from "../../../src/ArchetypeValues";
+import {ArchetypeValues} from "../../../src/ArchetypeValues";
 import {Fleet} from "../../../src/Fleet";
-import Unit from "../../../src/Unit";
+import {Unit} from "../../../src/Unit";
 
-import attachedUnitData from "../attachedUnitData";
+import {attachedUnitData} from "../attachedUnitData";
 
 
 export class Front

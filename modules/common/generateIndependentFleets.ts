@@ -1,8 +1,8 @@
 import {Fleet} from "../../src/Fleet";
-import Name from "../../src/Name";
-import Player from "../../src/Player";
-import Star from "../../src/Star";
-import Unit from "../../src/Unit";
+import {Name} from "../../src/Name";
+import {Player} from "../../src/Player";
+import {Star} from "../../src/Star";
+import {Unit} from "../../src/Unit";
 
 import
 {
@@ -10,7 +10,7 @@ import
   getRandomWeightedDistributable,
 } from "../../src/templateinterfaces/Distributable";
 import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
-import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
+import {UnitTemplate} from "../../src/templateinterfaces/UnitTemplate";
 
 import {distributionGroups} from "./distributionGroups";
 

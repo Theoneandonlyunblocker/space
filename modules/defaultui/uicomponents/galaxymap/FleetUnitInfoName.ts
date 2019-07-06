@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Unit from "../../../../src/Unit";
+import {Unit} from "../../../../src/Unit";
 
 import {localize} from "../../localization/localize";
 
@@ -62,5 +62,4 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(FleetUnitInfoNameComponent);
-export default factory;
+export const FleetUnitInfoName: React.Factory<PropTypes> = React.createFactory(FleetUnitInfoNameComponent);

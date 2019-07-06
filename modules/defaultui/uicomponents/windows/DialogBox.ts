@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 
-import {default as DefaultWindow} from "./DefaultWindow";
+import {DefaultWindow} from "./DefaultWindow";
 
 
 export interface PropTypes extends React.Props<any>
@@ -83,5 +83,4 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(DialogBoxComponent);
-export default factory;
+export const DialogBox: React.Factory<PropTypes> = React.createFactory(DialogBoxComponent);

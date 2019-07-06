@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import BuildingUpgradeData from "../../../../src/BuildingUpgradeData";
-import Player from "../../../../src/Player";
+import {BuildingUpgradeData} from "../../../../src/BuildingUpgradeData";
+import {Player} from "../../../../src/Player";
 
-import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
-import applyMixins from "../mixins/applyMixins";
+import {UpdateWhenMoneyChanges} from "../mixins/UpdateWhenMoneyChanges";
+import {applyMixins} from "../mixins/applyMixins";
 
 
 export interface PropTypes extends React.Props<any>
@@ -103,5 +103,4 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BuildingUpgradeListItemComponent);
-export default factory;
+export const BuildingUpgradeListItem: React.Factory<PropTypes> = React.createFactory(BuildingUpgradeListItemComponent);

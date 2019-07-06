@@ -4,13 +4,13 @@ import * as localForage from "localforage";
 
 import {localize} from "../../localization/localize";
 import {prettifyDate} from "../../../../src/utility";
-import List from "../list/List";
-import ListColumn from "../list/ListColumn";
-import ListItem from "../list/ListItem";
+import {List} from "../list/List";
+import {ListColumn} from "../list/ListColumn";
+import {ListItem} from "../list/ListItem";
 
-import {default as SaveListItem, PropTypes as SaveListItemProps} from "./SaveListItem";
+import {SaveListItem, PropTypes as SaveListItemProps} from "./SaveListItem";
 import { storageStrings } from "../../../../src/storageStrings";
-import FullSaveData from "../../../../src/savedata/FullSaveData";
+import {FullSaveData} from "../../../../src/savedata/FullSaveData";
 
 
 interface SaveDataForDisplay
@@ -159,5 +159,4 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SaveListComponent);
-export default factory;
+export const SaveList: React.Factory<PropTypes> = React.createFactory(SaveListComponent);

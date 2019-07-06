@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import SfxFragment from "../../../../space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import {SfxFragment} from "../../../../space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
-import InlineNumberProp from "./InlineNumberProp";
+import {InlineNumberProp} from "./InlineNumberProp";
 
 
 export interface VecProp
@@ -74,5 +74,4 @@ export class SfxFragmentPropVecBaseComponent extends React.Component<PropTypes, 
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropVecBaseComponent);
-export default factory;
+export const SfxFragmentPropVecBase: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropVecBaseComponent);

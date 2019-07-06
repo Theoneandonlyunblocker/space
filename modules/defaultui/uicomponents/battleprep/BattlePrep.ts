@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 import {app} from "../../../../src/App"; // TODO global
-import BattlePrep from "../../../../src/BattlePrep";
+import {BattlePrep as BattlePrepObj} from "../../../../src/BattlePrep";
 import { BattlePrepFormation } from "../../../../src/BattlePrepFormation";
 import
 {
@@ -13,27 +13,27 @@ import
   FormationValidityModifierEffect,
   FormationValidityModifierSourceType,
 } from "../../../../src/BattlePrepFormationValidity";
-import BattleSimulator from "../../../../src/BattleSimulator";
-import Item from "../../../../src/Item";
-import Options from "../../../../src/Options";
-import Unit from "../../../../src/Unit";
+import {BattleSimulator} from "../../../../src/BattleSimulator";
+import {Item} from "../../../../src/Item";
+import {Options} from "../../../../src/Options";
+import {Unit} from "../../../../src/Unit";
 import {activeModuleData} from "../../../../src/activeModuleData";
 import { extractFlagsFromFlagWord } from "../../../../src/utility";
-import {BattleBackgroundComponent, default as BattleBackground} from "../battle/BattleBackground";
-import Formation from "../battle/Formation";
-import ListItem from "../list/ListItem";
-import ItemList from "../unitlist/ItemList";
+import {BattleBackgroundComponent, BattleBackground} from "../battle/BattleBackground";
+import {Formation} from "../battle/Formation";
+import {ListItem} from "../list/ListItem";
+import {ItemList} from "../unitlist/ItemList";
 import {PropTypes as ItemListItemPropTypes} from "../unitlist/ItemListItem";
-import MenuUnitInfo from "../unitlist/MenuUnitInfo";
-import UnitList from "../unitlist/UnitList";
+import {MenuUnitInfo} from "../unitlist/MenuUnitInfo";
+import {UnitList} from "../unitlist/UnitList";
 import {PropTypes as UnitListItemPropTypes} from "../unitlist/UnitListItem";
 
-import BattleInfo from "./BattleInfo";
+import {BattleInfo} from "./BattleInfo";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  battlePrep: BattlePrep;
+  battlePrep: BattlePrepObj;
 }
 
 interface StateType
@@ -572,5 +572,4 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BattlePrepComponent);
-export default factory;
+export const BattlePrep: React.Factory<PropTypes> = React.createFactory(BattlePrepComponent);

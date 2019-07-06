@@ -1,15 +1,15 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Item from "../../../../src/Item";
-import Player from "../../../../src/Player";
-import Unit from "../../../../src/Unit";
-import ListItem from "../list/ListItem";
+import {Item} from "../../../../src/Item";
+import {Player} from "../../../../src/Player";
+import {Unit} from "../../../../src/Unit";
+import {ListItem} from "../list/ListItem";
 
-import ItemList from "./ItemList";
+import {ItemList} from "./ItemList";
 import {PropTypes as ItemListItemProps} from "./ItemListItem";
-import MenuUnitInfo from "./MenuUnitInfo";
-import UnitList from "./UnitList";
+import {MenuUnitInfo} from "./MenuUnitInfo";
+import {UnitList} from "./UnitList";
 import {PropTypes as UnitListItemProps} from "./UnitListItem";
 
 
@@ -163,5 +163,4 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ItemEquipComponent);
-export default factory;
+export const ItemEquip: React.Factory<PropTypes> = React.createFactory(ItemEquipComponent);

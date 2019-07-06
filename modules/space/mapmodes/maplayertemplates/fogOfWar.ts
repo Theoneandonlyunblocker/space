@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
 import {app} from "../../../../src/App";
-import Star from "../../../../src/Star";
-import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {Star} from "../../../../src/Star";
+import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {
@@ -19,7 +19,7 @@ const fogOfWarSpriteByStarId:
 } = {};
 
 
-const fogOfWar: MapRendererLayerTemplate =
+export const fogOfWar: MapRendererLayerTemplate =
 {
   key: "fogOfWar",
   displayName: "Fog of war",
@@ -54,8 +54,6 @@ const fogOfWar: MapRendererLayerTemplate =
     return doc;
   },
 };
-
-export default fogOfWar;
 
 let fogOfWarTilingSprite: PIXI.TilingSprite;
 function getfogOfWarTilingSprite(width: number, height: number)

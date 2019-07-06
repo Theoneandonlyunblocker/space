@@ -1,8 +1,8 @@
-import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
 import {adjustHealth} from "../effectactions/effectActions";
 
 
-const poisoned: UnitEffectTemplate =
+export const poisoned: UnitEffectTemplate =
 {
   type: "poisoned",
   displayName: "Poisoned",
@@ -56,5 +56,3 @@ const poisoned: UnitEffectTemplate =
     },
   ],
 };
-
-export default poisoned;

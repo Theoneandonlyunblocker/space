@@ -17,7 +17,7 @@ interface PropTypes
   notification: Notification<NotificationProps, SerializedNotificationProps>;
 }
 
-class WarDeclarationNotification extends React.Component<PropTypes, {}>
+class WarDeclarationNotificationComponent extends React.Component<PropTypes, {}>
 {
   public displayName = "WarDeclarationNotification";
 
@@ -45,5 +45,4 @@ class WarDeclarationNotification extends React.Component<PropTypes, {}>
   }
 }
 
-const factory = React.createFactory(WarDeclarationNotification);
-export default factory;
+export const WarDeclarationNotification = React.createFactory(WarDeclarationNotificationComponent);

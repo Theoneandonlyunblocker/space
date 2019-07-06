@@ -1,4 +1,4 @@
-import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
+import {UnitTemplate} from "../../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../../common/unitArchetypes";
 import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
@@ -9,7 +9,7 @@ import
   standBy,
 } from "../../abilities/abilities";
 import {distributionGroups} from "../../../common/distributionGroups";
-import itemSlot from "../../items/itemSlot";
+import {itemSlot} from "../../items/itemSlot";
 
 import
 {
@@ -18,7 +18,7 @@ import
 import {getIconSrc} from "../resources";
 
 
-const commandShip: UnitTemplate =
+export const commandShip: UnitTemplate =
 {
   type: "commandShip",
   displayName: "Command Ship",
@@ -84,5 +84,3 @@ const commandShip: UnitTemplate =
     ],
   },
 };
-
-export default commandShip;

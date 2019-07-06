@@ -3,13 +3,13 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 import {AttitudeModifier} from "../../../../src/AttitudeModifier";
-import List from "../list/List";
-import ListColumn from "../list/ListColumn";
-import ListItem from "../list/ListItem";
-import {AutoPositionerProps, default as AutoPositioner} from "../mixins/AutoPositioner";
-import applyMixins from "../mixins/applyMixins";
+import {List} from "../list/List";
+import {ListColumn} from "../list/ListColumn";
+import {ListItem} from "../list/ListItem";
+import {AutoPositionerProps, AutoPositioner} from "../mixins/AutoPositioner";
+import {applyMixins} from "../mixins/applyMixins";
 
-import {default as AttitudeModifierInfo, PropTypes as AttitudeModifierInfoProps} from "./AttitudeModifierInfo";
+import {AttitudeModifierInfo, PropTypes as AttitudeModifierInfoProps} from "./AttitudeModifierInfo";
 
 
 export interface PropTypes extends React.Props<any>
@@ -115,5 +115,4 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(AttitudeModifierListComponent);
-export default factory;
+export const AttitudeModifierList: React.Factory<PropTypes> = React.createFactory(AttitudeModifierListComponent);

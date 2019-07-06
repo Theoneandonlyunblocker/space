@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import GuardCoverage from "../../../../src/GuardCoverage";
+import {GuardCoverage} from "../../../../src/GuardCoverage";
 import
 {
   clamp,
@@ -114,5 +114,4 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(UnitStatusComponent);
-export default factory;
+export const UnitStatus: React.Factory<PropTypes> = React.createFactory(UnitStatusComponent);

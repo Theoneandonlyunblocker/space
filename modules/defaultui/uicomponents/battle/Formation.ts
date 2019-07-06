@@ -2,20 +2,20 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {AbilityTargetDisplayDataById} from "../../../../src/AbilityTargetDisplayData";
-import Unit from "../../../../src/Unit";
-import UnitDisplayData from "../../../../src/UnitDisplayData";
+import {Unit as UnitObj} from "../../../../src/Unit";
+import {UnitDisplayData} from "../../../../src/UnitDisplayData";
 import {activeModuleData} from "../../../../src/activeModuleData";
-import AbilityTemplate from "../../../../src/templateinterfaces/AbilityTemplate";
+import {AbilityTemplate} from "../../../../src/templateinterfaces/AbilityTemplate";
 import {shallowExtend} from "../../../../src/utility";
-import EmptyUnit from "../unit/EmptyUnit";
+import {EmptyUnit} from "../unit/EmptyUnit";
 import
 {
   ComponentPropTypes as UnitComponentPropTypes,
-  default as UnitComponentFactory,
+  Unit,
   DisplayStatus as UnitDisplayStatus,
   PropTypes as UnitPropTypes,
 } from "../unit/Unit";
-import UnitWrapper from "../unit/UnitWrapper";
+import {UnitWrapper} from "../unit/UnitWrapper";
 
 
 // tslint:disable-next-line:ban-types
@@ -35,7 +35,7 @@ function bindFunctionIfExists(functionToBind: Function | undefined, valueToBind:
 
 export interface PropTypes extends React.Props<any>
 {
-  formation: Unit[][];
+  formation: UnitObj[][];
   facesLeft: boolean;
   unitStrengthAnimateDuration: number | undefined;
   unitDisplayDataById:
@@ -45,22 +45,22 @@ export interface PropTypes extends React.Props<any>
 
   onMouseUp?: (position: number[]) => void;
 
-  onUnitClick?: (unit: Unit) => void;
+  onUnitClick?: (unit: UnitObj) => void;
   handleMouseLeaveUnit?: (e: React.MouseEvent<HTMLDivElement>) => void;
-  handleMouseEnterUnit?: (unit: Unit) => void;
+  handleMouseEnterUnit?: (unit: UnitObj) => void;
 
   isDraggable?: boolean;
-  onDragStart?: (unit: Unit) => void;
+  onDragStart?: (unit: UnitObj) => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
 
   isInBattlePrep?: boolean;
-  hoveredUnit: Unit | null;
-  activeUnit: Unit | null;
+  hoveredUnit: UnitObj | null;
+  activeUnit: UnitObj | null;
   abilityTargetDisplayDataById: AbilityTargetDisplayDataById;
-  activeEffectUnits?: Unit[];
+  activeEffectUnits?: UnitObj[];
   hoveredAbility?: AbilityTemplate;
-  capturedUnits?: Unit[];
-  destroyedUnits?: Unit[];
+  capturedUnits?: UnitObj[];
+  destroyedUnits?: UnitObj[];
 }
 
 interface StateType
@@ -148,7 +148,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
               facesLeft: this.props.facesLeft,
               onMouseUp: onMouseUp,
             }),
-            !unit ? null : UnitComponentFactory(
+            !unit ? null : Unit(
               unitProps,
             ),
           ),
@@ -172,5 +172,4 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(FormationComponent);
-export default factory;
+export const Formation: React.Factory<PropTypes> = React.createFactory(FormationComponent);

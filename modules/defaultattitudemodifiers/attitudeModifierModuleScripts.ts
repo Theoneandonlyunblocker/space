@@ -1,6 +1,6 @@
 import {AttitudeModifier} from "../../src/AttitudeModifier";
-import Game from "../../src/Game";
-import Player from "../../src/Player";
+import {Game} from "../../src/Game";
+import {Player} from "../../src/Player";
 
 import
 {

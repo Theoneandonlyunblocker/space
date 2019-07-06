@@ -111,5 +111,4 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(NumericTextInputComponent);
-export default factory;
+export const NumericTextInput: React.Factory<PropTypes> = React.createFactory(NumericTextInputComponent);

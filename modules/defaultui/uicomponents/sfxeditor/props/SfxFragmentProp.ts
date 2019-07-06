@@ -1,22 +1,22 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import RampingValue from "../../../../space/battlesfx/drawingfunctions/sfxfragments/RampingValue";
-import SfxFragment from "../../../../space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import {RampingValue} from "../../../../space/battlesfx/drawingfunctions/sfxfragments/RampingValue";
+import {SfxFragment} from "../../../../space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 import
 {
   PropInfoType,
 } from "../../../../space/battlesfx/drawingfunctions/sfxfragments/props/PropInfoType";
 
-import Color from "../../../../../src/Color";
-import Point from "../../../../../src/Point";
-import Range from "../../../../../src/Range";
+import {Color} from "../../../../../src/Color";
+import {Point} from "../../../../../src/Point";
+import {Range} from "../../../../../src/Range";
 
-import SfxFragmentPropColor from "./Color";
-import SfxFragmentPropNumber from "./Number";
-import SfxFragmentPropPoint from "./Point";
-import SfxFragmentPropRampingValue from "./RampingValue";
-import SfxFragmentPropRange from "./Range";
+import {SfxFragmentPropColor} from "./Color";
+import {SfxFragmentPropNumber} from "./Number";
+import {SfxFragmentPropPoint} from "./Point";
+import {SfxFragmentPropRampingValue} from "./RampingValue";
+import {SfxFragmentPropRange} from "./Range";
 
 
 export interface PropTypes extends React.Props<any>
@@ -167,5 +167,4 @@ export class SfxFragmentPropComponent extends React.Component<PropTypes, StateTy
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropComponent);
-export default factory;
+export const SfxFragmentProp: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropComponent);

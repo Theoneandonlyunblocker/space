@@ -7,7 +7,7 @@ import
   mergeReactAttributes,
 } from "../../../../src/utility";
 
-import {default as Spinner} from "./Spinner";
+import {Spinner} from "./Spinner";
 
 
 export interface PropTypes extends React.Props<any>
@@ -201,5 +201,4 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(NumberInputComponent);
-export default factory;
+export const NumberInput: React.Factory<PropTypes> = React.createFactory(NumberInputComponent);

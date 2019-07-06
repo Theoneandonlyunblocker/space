@@ -2,15 +2,15 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import DiplomacyState from "../../../../src/DiplomacyState";
-import Player from "../../../../src/Player";
-import List from "../list/List";
-import ListColumn from "../list/ListColumn";
-import ListItem from "../list/ListItem";
-import {default as DefaultWindow} from "../windows/DefaultWindow";
+import {DiplomacyState} from "../../../../src/DiplomacyState";
+import {Player} from "../../../../src/Player";
+import {List} from "../list/List";
+import {ListColumn} from "../list/ListColumn";
+import {ListItem} from "../list/ListItem";
+import {DefaultWindow} from "../windows/DefaultWindow";
 
-import DiplomacyActions from "./DiplomacyActions";
-import {default as DiplomaticStatusPlayer, PropTypes as DiplomaticStatusPlayerProps} from "./DiplomaticStatusPlayer";
+import {DiplomacyActions} from "./DiplomacyActions";
+import {DiplomaticStatusPlayer, PropTypes as DiplomaticStatusPlayerProps} from "./DiplomaticStatusPlayer";
 
 
 export interface PropTypes extends React.Props<any>
@@ -190,5 +190,4 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(DiplomacyOverviewComponent);
-export default factory;
+export const DiplomacyOverview: React.Factory<PropTypes> = React.createFactory(DiplomacyOverviewComponent);

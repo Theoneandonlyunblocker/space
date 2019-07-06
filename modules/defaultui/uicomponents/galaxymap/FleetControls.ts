@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {Fleet} from "../../../../src/Fleet";
-import eventManager from "../../../../src/eventManager";
+import {eventManager} from "../../../../src/eventManager";
 
 import {localize} from "../../localization/localize";
 
@@ -98,5 +98,4 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(FleetControlsComponent);
-export default factory;
+export const FleetControls: React.Factory<PropTypes> = React.createFactory(FleetControlsComponent);

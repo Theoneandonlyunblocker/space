@@ -1,16 +1,16 @@
 import * as PIXI from "pixi.js";
 
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import ModuleFile from "../../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
+import {ModuleFile} from "../../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
 
-import buildingTemplates from "./buildingTemplates";
+import {buildingTemplates} from "./buildingTemplates";
 import {iconSources, svgCache} from "./resources";
 
 import * as moduleInfo from "./moduleInfo.json";
 
 
-const spaceBuildings: ModuleFile =
+export const spaceBuildings: ModuleFile =
 {
   info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
@@ -50,5 +50,3 @@ const spaceBuildings: ModuleFile =
     return moduleData;
   },
 };
-
-export default spaceBuildings;

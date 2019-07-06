@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 
-import {default as TurnCounter, PropTypes as TurnCounterProps} from "./TurnCounter";
+import {TurnCounter, PropTypes as TurnCounterProps} from "./TurnCounter";
 
 
 export interface PropTypes extends React.Props<any>
@@ -57,5 +57,4 @@ export class TurnCounterListComponent extends React.PureComponent<PropTypes, Sta
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TurnCounterListComponent);
-export default factory;
+export const TurnCounterList: React.Factory<PropTypes> = React.createFactory(TurnCounterListComponent);

@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {Fleet} from "../../../../src/Fleet";
-import Unit from "../../../../src/Unit";
-import eventManager from "../../../../src/eventManager";
+import {Unit} from "../../../../src/Unit";
+import {eventManager} from "../../../../src/eventManager";
 
-import FleetContents from "./FleetContents";
+import {FleetContents} from "./FleetContents";
 
 
 export interface PropTypes extends React.Props<any>
@@ -160,5 +160,4 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
 
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(FleetReorganizationComponent);
-export default factory;
+export const FleetReorganization: React.Factory<PropTypes> = React.createFactory(FleetReorganizationComponent);

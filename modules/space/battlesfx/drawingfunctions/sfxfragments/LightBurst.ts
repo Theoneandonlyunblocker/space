@@ -1,14 +1,14 @@
 import * as PIXI from "pixi.js";
 
-import Color from "../../../../../src/Color";
-import Point from "../../../../../src/Point";
+import {Color} from "../../../../../src/Color";
+import {Point} from "../../../../../src/Point";
 import
 {
   makeShaderSprite,
 } from "../../../../../src/pixiWrapperFunctions";
 import {LightBurst as LightBurstFilter} from "../shaders/LightBurst";
 
-import SfxFragment from "./SfxFragment";
+import {SfxFragment} from "./SfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
 
 
@@ -22,7 +22,7 @@ interface LightBurstProps
   rayStrength: number;
 }
 
-export default class LightBurst extends SfxFragment<LightBurstProps>
+export class LightBurst extends SfxFragment<LightBurstProps>
 {
   public displayName = "LightBurst";
   public key = "lightBurst";

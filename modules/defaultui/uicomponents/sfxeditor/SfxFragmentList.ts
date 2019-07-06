@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import SfxFragment from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import {SfxFragment} from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
-import SfxFragmentConstructor from "./SfxFragmentConstructor";
+import {SfxFragmentConstructor} from "./SfxFragmentConstructor";
 
-import SfxFragmentListItem from "./SfxFragmentListItem";
+import {SfxFragmentListItem} from "./SfxFragmentListItem";
 
 
 type Fragment = SfxFragment<any> | SfxFragmentConstructor;
@@ -61,5 +61,4 @@ export class SfxFragmentListComponent<P extends Fragment> extends React.Componen
   }
 }
 
-const factory: React.Factory<PropTypes<Fragment>> = React.createFactory(SfxFragmentListComponent);
-export default factory;
+export const SfxFragmentList: React.Factory<PropTypes<Fragment>> = React.createFactory(SfxFragmentListComponent);

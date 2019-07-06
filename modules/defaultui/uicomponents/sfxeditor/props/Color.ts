@@ -1,10 +1,10 @@
 import * as React from "react";
 
-import SfxFragment from "../../../../space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import {SfxFragment} from "../../../../space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
-import Color from "../../../../../src/Color";
+import {Color} from "../../../../../src/Color";
 
-import ColorSetter from "../../setupgame/ColorSetter";
+import {ColorSetter} from "../../setupgame/ColorSetter";
 
 
 export interface PropTypes extends React.Props<any>
@@ -56,5 +56,4 @@ export class SfxFragmentPropColorComponent extends React.Component<PropTypes, St
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropColorComponent);
-export default factory;
+export const SfxFragmentPropColor: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropColorComponent);

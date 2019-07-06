@@ -61,5 +61,4 @@ export class ConfirmDeleteSavesContentComponent extends React.PureComponent<Prop
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ConfirmDeleteSavesContentComponent);
-export default factory;
+export const ConfirmDeleteSavesContent: React.Factory<PropTypes> = React.createFactory(ConfirmDeleteSavesContentComponent);

@@ -2,11 +2,11 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Color from "../../../../src/Color";
-import SubEmblemTemplate from "../../../../src/templateinterfaces/SubEmblemTemplate";
+import {Color} from "../../../../src/Color";
+import {SubEmblemTemplate} from "../../../../src/templateinterfaces/SubEmblemTemplate";
 
 import {EmblemColorPicker} from "./EmblemColorPicker";
-import EmblemPicker from "./EmblemPicker";
+import {EmblemPicker} from "./EmblemPicker";
 
 
 export interface PropTypes extends React.Props<any>
@@ -112,5 +112,4 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(EmblemEditorComponent);
-export default factory;
+export const EmblemEditor: React.Factory<PropTypes> = React.createFactory(EmblemEditorComponent);

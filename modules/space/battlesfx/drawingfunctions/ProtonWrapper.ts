@@ -2,7 +2,7 @@
 // /// <reference path="../../../../lib/proton.d.ts" />
 import * as PIXI from "pixi.js";
 
-export default class ProtonWrapper
+export class ProtonWrapper
 {
   private container: PIXI.Container;
 

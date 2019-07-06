@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
+import {DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import {applyMixins} from "../mixins/applyMixins";
 
-import Item from "../../../../src/Item";
+import {Item} from "../../../../src/Item";
 
 import {localize} from "../../localization/localize";
 
@@ -135,5 +135,4 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(UnitItemComponent);
-export default factory;
+export const UnitItem: React.Factory<PropTypes> = React.createFactory(UnitItemComponent);

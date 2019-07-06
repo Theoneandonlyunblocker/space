@@ -5,7 +5,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {NotificationFilter} from "../../../../src/notifications/NotificationFilter";
 import {NotificationFilterState} from "../../../../src/notifications/NotificationFilterState";
 
-import eventManager from "../../../../src/eventManager";
+import {eventManager} from "../../../../src/eventManager";
 
 
 export interface PropTypes extends React.Props<any>
@@ -110,5 +110,4 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterListItemComponent);
-export default factory;
+export const NotificationFilterListItem: React.Factory<PropTypes> = React.createFactory(NotificationFilterListItemComponent);

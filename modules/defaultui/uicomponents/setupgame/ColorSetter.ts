@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Color from "../../../../src/Color";
+import {Color} from "../../../../src/Color";
 import {AutoPositionerPosition} from "../mixins/AutoPositioner";
 
-import ColorPicker from "./ColorPicker";
+import {ColorPicker} from "./ColorPicker";
 import {SetterComponentBase} from "./SetterComponentBase";
 
 
@@ -141,5 +141,4 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType> 
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ColorSetterComponent);
-export default factory;
+export const ColorSetter: React.Factory<PropTypes> = React.createFactory(ColorSetterComponent);

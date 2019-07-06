@@ -1,20 +1,20 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Color from "../../../../src/Color";
-import Emblem from "../../../../src/Emblem";
+import {Color} from "../../../../src/Color";
+import {Emblem} from "../../../../src/Emblem";
 import {Flag} from "../../../../src/Flag";
-import SubEmblemTemplate from "../../../../src/templateinterfaces/SubEmblemTemplate";
+import {SubEmblemTemplate} from "../../../../src/templateinterfaces/SubEmblemTemplate";
 import {EmblemProps} from "../Emblem";
 import
 {
   AutoPositionerProps,
-  default as AutoPositioner,
+  AutoPositioner,
 } from "../mixins/AutoPositioner";
-import applyMixins from "../mixins/applyMixins";
+import {applyMixins} from "../mixins/applyMixins";
 
-import EmblemEditor from "./EmblemEditor";
-import EmblemSetterList from "./EmblemSetterList";
+import {EmblemEditor} from "./EmblemEditor";
+import {EmblemSetterList} from "./EmblemSetterList";
 
 
 type EmblemPropsWithId = (EmblemProps & {id: number});
@@ -242,5 +242,4 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(FlagEditorComponent);
-export default factory;
+export const FlagEditor: React.Factory<PropTypes> = React.createFactory(FlagEditorComponent);

@@ -1,21 +1,21 @@
 // TODO global ref
 // /// <reference path="../../../../lib/rng.d.ts" />
 
-import FillerPoint from "../../../../src/FillerPoint";
-import MapGenResult from "../../../../src/MapGenResult";
-import Player from "../../../../src/Player";
-import Region from "../../../../src/Region";
-import Star from "../../../../src/Star";
-import TemplateIndexes from "../../../../src/TemplateIndexes";
+import {FillerPoint} from "../../../../src/FillerPoint";
+import {MapGenResult} from "../../../../src/MapGenResult";
+import {Player} from "../../../../src/Player";
+import {Region} from "../../../../src/Region";
+import {Star} from "../../../../src/Star";
+import {TemplateIndexes} from "../../../../src/TemplateIndexes";
 import {activeModuleData} from "../../../../src/activeModuleData";
 import
 {
   randInt,
 } from "../../../../src/utility";
 
-import MapGenFunction from "../../../../src/templateinterfaces/MapGenFunction";
+import {MapGenFunction} from "../../../../src/templateinterfaces/MapGenFunction";
 import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
-import ResourceTemplate from "../../../../src/templateinterfaces/ResourceTemplate";
+import {ResourceTemplate} from "../../../../src/templateinterfaces/ResourceTemplate";
 
 import
 {
@@ -26,8 +26,8 @@ import
 
 import * as Terrains from "../../terrains/terrains";
 
-import MapGenDataByStarId from "../common/MapGenDataByStarId";
-import MapGenPoint from "../common/MapGenPoint";
+import {MapGenDataByStarId} from "../common/MapGenDataByStarId";
+import {MapGenPoint} from "../common/MapGenPoint";
 import
 {
   addTerritoryBuildings,
@@ -36,15 +36,15 @@ import
   makeSectors,
   partiallySeverLinks,
 } from "../common/mapGenUtils";
-import setupIndependents from "../common/setupIndependents";
+import {setupIndependents} from "../common/setupIndependents";
 
-import SpiralGalaxyOptionValues from "./SpiralGalaxyOptionValues";
+import {SpiralGalaxyOptionValues} from "./SpiralGalaxyOptionValues";
 import {centerRegionTag, generateSpiralPoints} from "./generateSpiralPoints";
 
 
 // TODO 2018.05.30 | needs to be broken into multiple functions bad
 // @ts-ignore 2322
-const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValues, players: Player[]) =>
+export const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValues, players: Player[]) =>
 {
   // seed
   const seed = "" + Math.random();
@@ -375,8 +375,6 @@ const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOptionValue
     independents: independents,
   });
 };
-
-export default spiralGalaxyGeneration;
 
 function applyVoronoiRelaxationToPoints(
   diagram: Voronoi.Result<MapGenPoint>,

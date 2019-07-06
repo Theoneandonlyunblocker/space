@@ -5,11 +5,11 @@ import {activeNotificationFilter, NotificationFilter} from "../../../../src/noti
 
 import {localize} from "../../localization/localize";
 
-import eventManager from "../../../../src/eventManager";
+import {eventManager} from "../../../../src/eventManager";
 
-import OptionsGroup from "../options/OptionsGroup";
+import {OptionsGroup} from "../options/OptionsGroup";
 
-import NotificationFilterListItem from "./NotificationFilterListItem";
+import {NotificationFilterListItem} from "./NotificationFilterListItem";
 
 
 export interface PropTypes extends React.Props<any>
@@ -148,5 +148,4 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterListComponent);
-export default factory;
+export const NotificationFilterList: React.Factory<PropTypes> = React.createFactory(NotificationFilterListComponent);

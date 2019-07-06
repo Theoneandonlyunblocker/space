@@ -1,5 +1,5 @@
 import {GrandStrategyAi} from "../../mapai/GrandStrategyAi";
-import MapEvaluator from "../../mapai/MapEvaluator";
+import {MapEvaluator} from "../../mapai/MapEvaluator";
 
 import {Objective} from "./Objective";
 import {ObjectiveFamily} from "./ObjectiveFamily";

@@ -1,8 +1,8 @@
-import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
 import {adjustHealth} from "../effectactions/effectActions";
 
 
-const autoHeal: UnitEffectTemplate =
+export const autoHeal: UnitEffectTemplate =
 {
   type: "autoHeal",
   displayName: "Auto heal",
@@ -21,5 +21,3 @@ const autoHeal: UnitEffectTemplate =
     },
   ],
 };
-
-export default autoHeal;

@@ -1,17 +1,17 @@
 import * as PIXI from "pixi.js";
 
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import ModuleFile from "../../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../../src/ModuleFileInitializationPhase";
+import {ModuleFile} from "../../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
 
-import mapLayerTemplates from "./mapLayerTemplates";
-import mapModeTemplates from "./mapModeTemplates";
+import {mapLayerTemplates} from "./mapLayerTemplates";
+import {mapModeTemplates} from "./mapModeTemplates";
 import {resources} from "./resources";
 
 import * as moduleInfo from "./moduleInfo.json";
 
 
-const spaceMapModes: ModuleFile =
+export const spaceMapModes: ModuleFile =
 {
   info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
@@ -40,5 +40,3 @@ const spaceMapModes: ModuleFile =
     return moduleData;
   },
 };
-
-export default spaceMapModes;

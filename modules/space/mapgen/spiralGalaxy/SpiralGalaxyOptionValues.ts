@@ -1,7 +1,7 @@
-import MapGenOptionValues from "../../../../src/templateinterfaces/MapGenOptionValues";
+import {MapGenOptionValues} from "../../../../src/templateinterfaces/MapGenOptionValues";
 
 
-declare interface SpiralGalaxyOptionValues extends MapGenOptionValues
+export declare interface SpiralGalaxyOptionValues extends MapGenOptionValues
 {
   basicOptions:
   {
@@ -11,5 +11,3 @@ declare interface SpiralGalaxyOptionValues extends MapGenOptionValues
     centerDensity: number;
   };
 }
-
-export default SpiralGalaxyOptionValues;

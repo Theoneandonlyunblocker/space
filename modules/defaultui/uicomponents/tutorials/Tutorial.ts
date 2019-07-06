@@ -2,15 +2,15 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {TutorialPage} from "../../../../src/tutorials/Tutorial";
-import TutorialStatus from "../../../../src/tutorials/TutorialStatus";
-import TutorialVisibility from "../../../../src/tutorials/TutorialVisibility";
+import {TutorialStatus} from "../../../../src/tutorials/TutorialStatus";
+import {TutorialVisibility} from "../../../../src/tutorials/TutorialVisibility";
 import
 {
   clamp,
   splitMultilineText,
 } from "../../../../src/utility";
 
-import DontShowAgain from "./DontShowAgain";
+import {DontShowAgain} from "./DontShowAgain";
 
 
 export interface PropTypes extends React.Props<any>
@@ -179,5 +179,4 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TutorialComponent);
-export default factory;
+export const Tutorial: React.Factory<PropTypes> = React.createFactory(TutorialComponent);

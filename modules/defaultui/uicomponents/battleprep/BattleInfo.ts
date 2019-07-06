@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import PlayerFlag from "../PlayerFlag";
-import TerritoryBuildingList from "../galaxymap/TerritoryBuildingList";
+import {PlayerFlag} from "../PlayerFlag";
+import {TerritoryBuildingList} from "../galaxymap/TerritoryBuildingList";
 
-import BattlePrep from "../../../../src/BattlePrep";
+import {BattlePrep} from "../../../../src/BattlePrep";
 
 import {localize} from "../../localization/localize";
 
@@ -74,5 +74,4 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BattleInfoComponent);
-export default factory;
+export const BattleInfo: React.Factory<PropTypes> = React.createFactory(BattleInfoComponent);

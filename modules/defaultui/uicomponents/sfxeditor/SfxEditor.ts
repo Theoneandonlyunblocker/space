@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Beam from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/Beam";
-import FocusingBeam from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/FocusingBeam";
-import LightBurst from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/LightBurst";
-import SfxFragment from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
-import ShockWave from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/ShockWave";
+import {Beam} from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/Beam";
+import {FocusingBeam} from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/FocusingBeam";
+import {LightBurst} from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/LightBurst";
+import {SfxFragment} from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import {ShockWave} from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/ShockWave";
 
 import
 {
@@ -14,11 +14,11 @@ import
 
 import
 {
-  default as SfxEditorDisplay,
+  SfxEditorDisplay,
   SfxEditorDisplayComponent,
 } from "./SfxEditorDisplay";
-import SfxEditorSelection from "./SfxEditorSelection";
-import SfxFragmentConstructor from "./SfxFragmentConstructor";
+import {SfxEditorSelection} from "./SfxEditorSelection";
+import {SfxFragmentConstructor} from "./SfxFragmentConstructor";
 
 
 const availableFragmentConstructors: SfxFragmentConstructor[] =
@@ -337,5 +337,4 @@ export class SfxEditorComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SfxEditorComponent);
-export default factory;
+export const SfxEditor: React.Factory<PropTypes> = React.createFactory(SfxEditorComponent);

@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Player from "../../../../src/Player";
-import Star from "../../../../src/Star";
+import {Player} from "../../../../src/Player";
+import {Star} from "../../../../src/Star";
 
-import BuildableBuildingList from "./BuildableBuildingList";
-import BuildingUpgradeList from "./BuildingUpgradeList";
+import {BuildableBuildingList} from "./BuildableBuildingList";
+import {BuildingUpgradeList} from "./BuildingUpgradeList";
 import { BuildingTemplate } from "../../../../src/templateinterfaces/BuildingTemplate";
-import BuildingUpgradeData from "../../../../src/BuildingUpgradeData";
+import {BuildingUpgradeData} from "../../../../src/BuildingUpgradeData";
 
 
 export enum ExpandedActionKind

@@ -1,14 +1,14 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {TerritoryBuilding} from "../../../../src/Building";
+import {TerritoryBuilding as TerritoryBuildingObj} from "../../../../src/Building";
 
-import {default as TerritoryBuildingComponent} from "./TerritoryBuilding";
+import {TerritoryBuilding} from "./TerritoryBuilding";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  buildings: TerritoryBuilding[];
+  buildings: TerritoryBuildingObj[];
   reverse?: boolean;
 }
 
@@ -50,7 +50,7 @@ export class TerritoryBuildingListComponent extends React.Component<PropTypes, S
 
     const buildings = this.props.buildings.map(building =>
     {
-      return TerritoryBuildingComponent(
+      return TerritoryBuilding(
       {
         key: building.id,
         building: building,
@@ -74,5 +74,4 @@ export class TerritoryBuildingListComponent extends React.Component<PropTypes, S
 
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TerritoryBuildingListComponent);
-export default factory;
+export const TerritoryBuildingList: React.Factory<PropTypes> = React.createFactory(TerritoryBuildingListComponent);

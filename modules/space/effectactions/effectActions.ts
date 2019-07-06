@@ -1,15 +1,15 @@
-import Battle from "../../../src/Battle";
-import DamageType from "../../../src/DamageType";
+import {Battle} from "../../../src/Battle";
+import {DamageType} from "../../../src/DamageType";
 import {FlatAndMultiplierAdjustment, applyFlatAndMultiplierAdjustments} from "../../../src/FlatAndMultiplierAdjustment";
-import GuardCoverage from "../../../src/GuardCoverage";
-import StatusEffect from "../../../src/StatusEffect";
-import Unit from "../../../src/Unit";
+import {GuardCoverage} from "../../../src/GuardCoverage";
+import {StatusEffect} from "../../../src/StatusEffect";
+import {Unit} from "../../../src/Unit";
 import {UnitAttributeAdjustments} from "../../../src/UnitAttributes";
 import
 {
   ExecutedEffectsResult,
 } from "../../../src/templateinterfaces/AbilityEffectAction";
-import UnitEffectTemplate from "../../../src/templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
 import
 {
   clamp,

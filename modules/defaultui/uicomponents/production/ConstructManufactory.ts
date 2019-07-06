@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Player from "../../../../src/Player";
-import Star from "../../../../src/Star";
+import {Player} from "../../../../src/Player";
+import {Star} from "../../../../src/Star";
 import {activeModuleData} from "../../../../src/activeModuleData";
 
 import {localize} from "../../localization/localize";
@@ -81,5 +81,4 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ConstructManufactoryComponent);
-export default factory;
+export const ConstructManufactory: React.Factory<PropTypes> = React.createFactory(ConstructManufactoryComponent);

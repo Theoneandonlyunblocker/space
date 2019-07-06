@@ -1,16 +1,16 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import SfxFragment from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import {SfxFragment} from "../../../../modules/space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
 import
 {
-  default as SfxEditorSelectionTab,
+  SfxEditorSelectionTab,
   SelectionTabType,
 } from "./SfxEditorSelectionTab";
-import SfxFragmentConstructor from "./SfxFragmentConstructor";
-import SfxFragmentEditor from "./SfxFragmentEditor";
-import SfxFragmentList from "./SfxFragmentList";
+import {SfxFragmentConstructor} from "./SfxFragmentConstructor";
+import {SfxFragmentEditor} from "./SfxFragmentEditor";
+import {SfxFragmentList} from "./SfxFragmentList";
 
 
 export interface PropTypes extends React.Props<any>
@@ -118,5 +118,4 @@ export class SfxEditorSelectionComponent extends React.Component<PropTypes, Stat
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SfxEditorSelectionComponent);
-export default factory;
+export const SfxEditorSelection: React.Factory<PropTypes> = React.createFactory(SfxEditorSelectionComponent);

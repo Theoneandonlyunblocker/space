@@ -2,11 +2,11 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Manufactory from "../../../../src/Manufactory";
-import ManufacturableThing from "../../../../src/templateinterfaces/ManufacturableThing";
+import {Manufactory} from "../../../../src/Manufactory";
+import {ManufacturableThing} from "../../../../src/templateinterfaces/ManufacturableThing";
 
-import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
-import ManufacturableThingsList from "./ManufacturableThingsList";
+import {ManufactoryUpgradeButton} from "./ManufactoryUpgradeButton";
+import {ManufacturableThingsList} from "./ManufacturableThingsList";
 
 
 export interface PropTypes extends React.Props<any>
@@ -96,5 +96,4 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BuildQueueComponent);
-export default factory;
+export const BuildQueue: React.Factory<PropTypes> = React.createFactory(BuildQueueComponent);

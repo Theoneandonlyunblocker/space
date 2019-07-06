@@ -1,13 +1,13 @@
 import {ExecutedEffectsResult} from "../../src/templateinterfaces/AbilityEffectAction";
-import AbilityTemplate from "../../src/templateinterfaces/AbilityTemplate";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
+import {AbilityTemplate} from "../../src/templateinterfaces/AbilityTemplate";
+import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
 
 import
 {
   AbilityTargetEffect,
   AbilityTargetType,
 } from "../../src/AbilityTargetDisplayData";
-import DamageType from "../../src/DamageType";
+import {DamageType} from "../../src/DamageType";
 import
 {
   areaAll,

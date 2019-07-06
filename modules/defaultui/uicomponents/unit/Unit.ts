@@ -2,16 +2,16 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Options from "../../../../src/Options";
-import UnitDisplayData from "../../../../src/UnitDisplayData";
-import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
+import {Options} from "../../../../src/Options";
+import {UnitDisplayData} from "../../../../src/UnitDisplayData";
+import {DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import {applyMixins} from "../mixins/applyMixins";
 
-import UnitAttributeChanges from "./UnitAttributeChanges";
-import UnitIconContainer from "./UnitIconContainer";
-import UnitInfo from "./UnitInfo";
-import UnitPassiveEffects from "./UnitPassiveEffects";
-import UnitPortrait from "./UnitPortrait";
+import {UnitAttributeChanges} from "./UnitAttributeChanges";
+import {UnitIconContainer} from "./UnitIconContainer";
+import {UnitInfo} from "./UnitInfo";
+import {UnitPassiveEffects} from "./UnitPassiveEffects";
+import {UnitPortrait} from "./UnitPortrait";
 
 
 export interface ComponentPropTypes extends React.Props<any>
@@ -253,5 +253,4 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(UnitComponent);
-export default factory;
+export const Unit: React.Factory<PropTypes> = React.createFactory(UnitComponent);

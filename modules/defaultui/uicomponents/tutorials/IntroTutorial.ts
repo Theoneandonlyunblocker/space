@@ -1,11 +1,11 @@
 import * as React from "react";
 
-import introTutorial from "../../../../src/tutorials/IntroTutorial";
-import TutorialStatus from "../../../../src/tutorials/TutorialStatus";
-import TutorialVisibility from "../../../../src/tutorials/TutorialVisibility";
-import {default as DefaultWindow} from "../windows/DefaultWindow";
+import {introTutorial} from "../../../../src/tutorials/IntroTutorial";
+import {TutorialStatus} from "../../../../src/tutorials/TutorialStatus";
+import {TutorialVisibility} from "../../../../src/tutorials/TutorialVisibility";
+import {DefaultWindow} from "../windows/DefaultWindow";
 
-import Tutorial from "./Tutorial";
+import {Tutorial} from "./Tutorial";
 
 
 export interface PropTypes extends React.Props<any>
@@ -64,5 +64,4 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(IntroTutorialComponent);
-export default factory;
+export const IntroTutorial: React.Factory<PropTypes> = React.createFactory(IntroTutorialComponent);

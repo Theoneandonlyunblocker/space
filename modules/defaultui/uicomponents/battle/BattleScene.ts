@@ -1,17 +1,17 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import BattleScene from "../../../../src/BattleScene";
+import {BattleScene as BattleSceneObj} from "../../../../src/BattleScene";
 import {Flag} from "../../../../src/Flag";
 
-import BattleFinish from "./BattleFinish";
-import BattleSceneFlag from "./BattleSceneFlag";
+import {BattleFinish} from "./BattleFinish";
+import {BattleSceneFlag} from "./BattleSceneFlag";
 
 
 export interface PropTypes extends React.Props<any>
 {
   battleState: "start" | "active" | "finish";
-  battleScene: BattleScene;
+  battleScene: BattleSceneObj;
   humanPlayerWonBattle: boolean;
 
   flag1: Flag;
@@ -117,5 +117,4 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BattleSceneComponent);
-export default factory;
+export const BattleScene: React.Factory<PropTypes> = React.createFactory(BattleSceneComponent);

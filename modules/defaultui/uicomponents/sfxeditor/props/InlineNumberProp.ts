@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import NumericTextInput from "../../generic/NumericTextInput";
+import {NumericTextInput} from "../../generic/NumericTextInput";
 
 
 export interface PropTypes extends React.Props<any>
@@ -55,5 +55,4 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(InlineNumberPropComponent);
-export default factory;
+export const InlineNumberProp: React.Factory<PropTypes> = React.createFactory(InlineNumberPropComponent);

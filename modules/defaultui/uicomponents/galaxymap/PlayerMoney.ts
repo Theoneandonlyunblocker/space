@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Player from "../../../../src/Player";
-import eventManager from "../../../../src/eventManager";
+import {Player} from "../../../../src/Player";
+import {eventManager} from "../../../../src/eventManager";
 
 import {localize} from "../../localization/localize";
 
@@ -68,5 +68,4 @@ export class PlayerMoneyComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(PlayerMoneyComponent);
-export default factory;
+export const PlayerMoney: React.Factory<PropTypes> = React.createFactory(PlayerMoneyComponent);

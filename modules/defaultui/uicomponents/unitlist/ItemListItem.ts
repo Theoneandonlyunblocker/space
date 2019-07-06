@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Item from "../../../../src/Item";
-import Unit from "../../../../src/Unit";
-import AbilityBase from "../../../../src/templateinterfaces/AbilityBase";
-import ListItemProps from "../list/ListItemProps";
+import {Item} from "../../../../src/Item";
+import {Unit} from "../../../../src/Unit";
+import {AbilityBase} from "../../../../src/templateinterfaces/AbilityBase";
+import {ListItemProps} from "../list/ListItemProps";
 
-import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
+import {DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import {applyMixins} from "../mixins/applyMixins";
 
 
 export interface PropTypes extends ListItemProps, React.Props<any>
@@ -177,5 +177,4 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ItemListItemComponent);
-export default factory;
+export const ItemListItem: React.Factory<PropTypes> = React.createFactory(ItemListItemComponent);

@@ -2,12 +2,12 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Unit from "../../../../src/Unit";
+import {Unit} from "../../../../src/Unit";
 import {UpgradableAbilitiesData} from "../../../../src/UpgradableAbilitiesData";
-import AbilityBase from "../../../../src/templateinterfaces/AbilityBase";
-import {default as DefaultWindow} from "../windows/DefaultWindow";
+import {AbilityBase} from "../../../../src/templateinterfaces/AbilityBase";
+import {DefaultWindow} from "../windows/DefaultWindow";
 
-import AbilityList from "./AbilityList";
+import {AbilityList} from "./AbilityList";
 import {AbilityListItem} from "./AbilityListItem";
 
 
@@ -168,5 +168,4 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(UpgradeAbilitiesComponent);
-export default factory;
+export const UpgradeAbilities: React.Factory<PropTypes> = React.createFactory(UpgradeAbilitiesComponent);

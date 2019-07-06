@@ -1,5 +1,5 @@
-import Name from "../../src/Name";
-import Player from "../../src/Player";
+import {Name} from "../../src/Name";
+import {Player} from "../../src/Player";
 
 import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
 

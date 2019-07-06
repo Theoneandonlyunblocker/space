@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import Point from "../../../../src/Point";
+import {Point} from "../../../../src/Point";
 import {Rect} from "../../../../src/Rect";
 import
 {
@@ -8,9 +8,9 @@ import
   shallowCopy,
 } from "../../../../src/utility";
 
-import MixinBase from "./MixinBase";
-import NormalizedEvent from "./NormalizedEvent";
-import normalizeEvent from "./normalizeEvent";
+import {MixinBase} from "./MixinBase";
+import {NormalizedEvent} from "./NormalizedEvent";
+import {normalizeEvent} from "./normalizeEvent";
 
 
 export interface DragPositionerProps
@@ -24,7 +24,7 @@ export interface DragPositionerProps
   shouldMakeClone?: boolean;
 }
 
-export default class DragPositioner<T extends React.Component<any, any>> implements MixinBase<T>
+export class DragPositioner<T extends React.Component<any, any>> implements MixinBase<T>
 {
   public isDragging: boolean = false;
 

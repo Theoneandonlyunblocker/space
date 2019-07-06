@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js";
 
-import SfxParams from "../../../../src/templateinterfaces/SfxParams";
+import {SfxParams} from "../../../../src/templateinterfaces/SfxParams";
 
-import ProjectileAttack from "./sfxfragments/ProjectileAttack";
+import {ProjectileAttack} from "./sfxfragments/ProjectileAttack";
 import {resources} from "../resources";
 
 
-export default function rocketAttack(params: SfxParams)
+export function rocketAttack(params: SfxParams)
 {
   const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleSfx(
     params.targetOffset, params.width, "target");

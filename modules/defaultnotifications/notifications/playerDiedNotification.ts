@@ -1,14 +1,14 @@
 import {localize} from "../localization/localize";
 
-import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate";
+import {NotificationTemplate} from "../../../src/templateinterfaces/NotificationTemplate";
 
-import GameLoader from "../../../src/GameLoader";
-import Player from "../../../src/Player";
+import {GameLoader} from "../../../src/GameLoader";
+import {Player} from "../../../src/Player";
 import {NotificationFilterState} from "../../../src/notifications/NotificationFilterState";
 import {NotificationWitnessCriterion} from "../../../src/notifications/NotificationWitnessCriterion";
 import {activeNotificationStore} from "../../../src/notifications/activeNotificationStore";
 
-import UIComponent from "./uicomponents/PlayerDiedNotification";
+import {PlayerDiedNotification as UIComponent} from "./uicomponents/PlayerDiedNotification";
 import {getIconSrc} from "../assets";
 
 

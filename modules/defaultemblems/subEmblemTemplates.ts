@@ -1,5 +1,5 @@
-import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
+import {SubEmblemTemplate} from "../../src/templateinterfaces/SubEmblemTemplate";
+import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
 import {getSvgElementClone} from "./assets";
 
 
@@ -439,7 +439,7 @@ export const threeHorns: SubEmblemTemplate =
 };
 // tslint:enable:variable-name
 
-const subEmblemTemplates: TemplateCollection<SubEmblemTemplate> =
+export const subEmblemTemplates: TemplateCollection<SubEmblemTemplate> =
 {
   [Aguila_explayada_2.key]: Aguila_explayada_2,
   [Berliner_Baer.key]: Berliner_Baer,
@@ -463,5 +463,3 @@ const subEmblemTemplates: TemplateCollection<SubEmblemTemplate> =
   [Takeda_mon.key]: Takeda_mon,
   [threeHorns.key]: threeHorns,
 };
-
-export default subEmblemTemplates;

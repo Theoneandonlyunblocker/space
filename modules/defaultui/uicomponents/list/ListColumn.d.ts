@@ -1,7 +1,7 @@
-import ListItem from "./ListItem";
-import ListOrder from "./ListOrder";
+import {ListItem} from "./ListItem";
+import {ListOrder} from "./ListOrder";
 
-declare interface ListColumn<T>
+export declare interface ListColumn<T>
 {
   key: string;
   label: string;
@@ -13,5 +13,3 @@ declare interface ListColumn<T>
   propToSortBy?: string;                                  // sort(a.sortingProps[propToSortBy], b.sortingProps[propToSortBy])
                                                           // sort(a.key, b.key)
 }
-
-export default ListColumn;

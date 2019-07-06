@@ -1,14 +1,14 @@
-import ModuleData from "../../src/ModuleData";
-import ModuleFile from "../../src/ModuleFile";
-import ModuleFileInitializationPhase from "../../src/ModuleFileInitializationPhase";
+import {ModuleData} from "../../src/ModuleData";
+import {ModuleFile} from "../../src/ModuleFile";
+import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
 import {emblemSources, svgCache} from "./assets";
 
-import subEmblemTemplates from "./subEmblemTemplates";
+import {subEmblemTemplates} from "./subEmblemTemplates";
 
 import * as moduleInfo from "./moduleInfo.json";
 
 
-const defaultEmblems: ModuleFile =
+export const defaultEmblems: ModuleFile =
 {
   info: moduleInfo,
   phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
@@ -48,5 +48,3 @@ const defaultEmblems: ModuleFile =
     return moduleData;
   },
 };
-
-export default defaultEmblems;

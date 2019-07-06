@@ -4,10 +4,10 @@ import * as localForage from "localforage";
 
 import {localize} from "../../localization/localize";
 import {app} from "../../../../src/App"; // TODO global
-import {default as DialogBox} from "../windows/DialogBox";
+import {DialogBox} from "../windows/DialogBox";
 
-import ConfirmDeleteSavesContent from "./ConfirmDeleteSavesContent";
-import SaveList, { SaveListComponent } from "./SaveList";
+import {ConfirmDeleteSavesContent} from "./ConfirmDeleteSavesContent";
+import {SaveList, SaveListComponent} from "./SaveList";
 import { storageStrings } from "../../../../src/storageStrings";
 
 
@@ -203,5 +203,4 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(LoadGameComponent);
-export default factory;
+export const LoadGame: React.Factory<PropTypes> = React.createFactory(LoadGameComponent);

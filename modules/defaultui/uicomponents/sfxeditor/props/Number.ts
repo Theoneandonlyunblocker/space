@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import SfxFragment from "../../../../space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import {SfxFragment} from "../../../../space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
-import NumericTextInput from "../../generic/NumericTextInput";
+import {NumericTextInput} from "../../generic/NumericTextInput";
 
 
 export interface PropTypes extends React.Props<any>
@@ -72,5 +72,4 @@ export class SfxFragmentPropNumberComponent extends React.Component<PropTypes, S
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropNumberComponent);
-export default factory;
+export const SfxFragmentPropNumber: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropNumberComponent);

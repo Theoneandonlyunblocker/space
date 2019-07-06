@@ -1,4 +1,4 @@
-import UnitTemplate from "../../../../src/templateinterfaces/UnitTemplate";
+import {UnitTemplate} from "../../../../src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "../../../common/unitArchetypes";
 import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
@@ -9,13 +9,13 @@ import
   standBy,
 } from "../../abilities/abilities";
 import {distributionGroups} from "../../../common/distributionGroups";
-import itemSlot from "../../items/itemSlot";
+import {itemSlot} from "../../items/itemSlot";
 
 import * as technologies from "../../technologies/technologyTemplates";
 import {getIconSrc} from "../resources";
 
 
-const stealthShip: UnitTemplate =
+export const stealthShip: UnitTemplate =
 {
   type: "stealthShip",
   displayName: "Stealth Ship",
@@ -81,5 +81,3 @@ const stealthShip: UnitTemplate =
     ],
   },
 };
-
-export default stealthShip;

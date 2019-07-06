@@ -2,14 +2,14 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Game from "../../../../src/Game";
-import Options from "../../../../src/Options";
-import Player from "../../../../src/Player";
-import Star from "../../../../src/Star";
-import eventManager from "../../../../src/eventManager";
+import {Game} from "../../../../src/Game";
+import {Options} from "../../../../src/Options";
+import {Player} from "../../../../src/Player";
+import {Star} from "../../../../src/Star";
+import {eventManager} from "../../../../src/eventManager";
 import {Language} from "../../../../src/localization/Language";
 
-import {default as TopMenuPopups, PopupType, TopMenuPopupsComponent} from "./TopMenuPopups";
+import {TopMenuPopups, PopupType, TopMenuPopupsComponent} from "./TopMenuPopups";
 
 
 export interface PropTypes extends React.Props<any>
@@ -355,5 +355,4 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(TopMenuComponent);
-export default factory;
+export const TopMenu: React.Factory<PropTypes> = React.createFactory(TopMenuComponent);

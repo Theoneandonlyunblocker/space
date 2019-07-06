@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import SfxFragment from "../../../../space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
+import {SfxFragment} from "../../../../space/battlesfx/drawingfunctions/sfxfragments/SfxFragment";
 
-import SfxFragmentPropVecBase from "./VecBase";
+import {SfxFragmentPropVecBase} from "./VecBase";
 
 
 export interface PropTypes extends React.Props<any>
@@ -62,6 +62,5 @@ export class SfxFragmentPropPointComponent extends React.Component<PropTypes, St
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropPointComponent);
-export default factory;
+export const SfxFragmentPropPoint: React.Factory<PropTypes> = React.createFactory(SfxFragmentPropPointComponent);
 

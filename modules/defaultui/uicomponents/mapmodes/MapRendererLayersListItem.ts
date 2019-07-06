@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import MapRendererLayer from "../../../../src/MapRendererLayer";
+import {MapRendererLayer} from "../../../../src/MapRendererLayer";
 
-import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
-import applyMixins from "../mixins/applyMixins";
+import {DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import {applyMixins} from "../mixins/applyMixins";
 
 
 type HoverPosition = "top" | "bottom";
@@ -170,5 +170,4 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(MapRendererLayersListItemComponent);
-export default factory;
+export const MapRendererLayersListItem: React.Factory<PropTypes> = React.createFactory(MapRendererLayersListItemComponent);

@@ -3,9 +3,9 @@
 
 import * as PIXI from "pixi.js";
 
-import Player from "../../../../src/Player";
-import eventManager from "../../../../src/eventManager";
-import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {Player} from "../../../../src/Player";
+import {eventManager} from "../../../../src/eventManager";
+import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {
@@ -15,7 +15,7 @@ import
 import {Occupation as OccupationShader} from "./shaders/Occupation";
 
 
-const starOwners: MapRendererLayerTemplate =
+export const starOwners: MapRendererLayerTemplate =
 {
   key: "starOwners",
   displayName: "Star owners",
@@ -77,8 +77,6 @@ const starOwners: MapRendererLayerTemplate =
     return doc;
   },
 };
-
-export default starOwners;
 
 const occupationShaders:
 {

@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 
-import SfxParams from "../../../../src/templateinterfaces/SfxParams";
+import {SfxParams} from "../../../../src/templateinterfaces/SfxParams";
 
 
-export default function makeSfxFromVideo(
+export function makeSfxFromVideo(
   videoSrc: string,
   onStartFN: (sprite: PIXI.Sprite) => void,
   props: SfxParams,

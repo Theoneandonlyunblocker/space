@@ -1,4 +1,4 @@
-declare interface MapGenData
+export declare interface MapGenData
 {
   connectedness?: number;
   distanceFromCenter?: number;
@@ -6,5 +6,3 @@ declare interface MapGenData
   tags?: string[];
   isFiller?: boolean;
 }
-
-export default MapGenData;

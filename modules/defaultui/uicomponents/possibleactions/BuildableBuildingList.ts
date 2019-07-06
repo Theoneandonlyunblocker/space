@@ -2,14 +2,14 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import Player from "../../../../src/Player";
-import Star from "../../../../src/Star";
+import {Player} from "../../../../src/Player";
+import {Star} from "../../../../src/Star";
 import {BuildingTemplate} from "../../../../src/templateinterfaces/BuildingTemplate";
-import List from "../list/List";
-import ListColumn from "../list/ListColumn";
-import ListItem from "../list/ListItem";
+import {List} from "../list/List";
+import {ListColumn} from "../list/ListColumn";
+import {ListItem} from "../list/ListItem";
 
-import {default as BuildableBuilding, PropTypes as BuildableBuildingProps} from "./BuildableBuilding";
+import {BuildableBuilding, PropTypes as BuildableBuildingProps} from "./BuildableBuilding";
 
 
 export interface PropTypes extends React.Props<any>
@@ -101,5 +101,4 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(BuildableBuildingListComponent);
-export default factory;
+export const BuildableBuildingList: React.Factory<PropTypes> = React.createFactory(BuildableBuildingListComponent);

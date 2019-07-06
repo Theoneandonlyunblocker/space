@@ -4,18 +4,18 @@ import * as PIXI from "pixi.js";
 
 import * as Terrains from "../../terrains/terrains";
 
-import triangulate from "../../mapgen/common/triangulate";
+import {triangulate} from "../../mapgen/common/triangulate";
 
-import GalaxyMap from "../../../../src/GalaxyMap";
-import Player from "../../../../src/Player";
-import Point from "../../../../src/Point";
+import {GalaxyMap} from "../../../../src/GalaxyMap";
+import {Player} from "../../../../src/Player";
+import {Point} from "../../../../src/Point";
 import
 {
   getRandomArrayItemWithWeights,
   randInt,
 } from "../../../../src/utility";
 
-import MapRendererLayerTemplate from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 
 // TODO 2017.08.18 | doesn't belong here

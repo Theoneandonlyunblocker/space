@@ -2,19 +2,19 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import eventManager from "../../../../src/eventManager";
-import {Notification} from "../../../../src/notifications/Notification";
+import {eventManager} from "../../../../src/eventManager";
+import {Notification as NotificationObj} from "../../../../src/notifications/Notification";
 import {activeNotificationFilter, NotificationFilter} from "../../../../src/notifications/NotificationFilter";
 import {NotificationSubscriber} from "../../../../src/notifications/NotificationSubscriber";
-import {default as DialogBox} from "../windows/DialogBox";
+import {DialogBox} from "../windows/DialogBox";
 
-import NotificationComponentFactory from "./Notification";
-import NotificationFilterButton from "./NotificationFilterButton";
+import {Notification} from "./Notification";
+import {NotificationFilterButton} from "./NotificationFilterButton";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  notifications: Notification[];
+  notifications: NotificationObj[];
   notificationLog: NotificationSubscriber;
   notificationFilter?: NotificationFilter;
   currentTurn: number;
@@ -22,7 +22,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  notificationsWithActivePopup: Notification[];
+  notificationsWithActivePopup: NotificationObj[];
 }
 
 export class NotificationLogComponent extends React.PureComponent<PropTypes, StateType>
@@ -75,7 +75,7 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
 
     for (let i = 0; i < notifications.length; i++)
     {
-      items.push(NotificationComponentFactory(
+      items.push(Notification(
       {
         notification: notifications[i],
         key: this.getNotificationKey(notifications[i]),
@@ -147,11 +147,11 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
       notificationsWithActivePopup: [],
     });
   }
-  private getNotificationKey(notification: Notification): string
+  private getNotificationKey(notification: NotificationObj): string
   {
     return "" + notification.id;
   }
-  private handleMarkAsRead(notification: Notification): void
+  private handleMarkAsRead(notification: NotificationObj): void
   {
     this.props.notificationLog.markNotificationAsRead(notification);
 
@@ -164,14 +164,14 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
       this.forceUpdate();
     }
   }
-  private openPopup(notification: Notification): void
+  private openPopup(notification: NotificationObj): void
   {
     this.setState(
     {
       notificationsWithActivePopup: this.state.notificationsWithActivePopup.concat(notification),
     });
   }
-  private closePopup(notificationToRemove: Notification): void
+  private closePopup(notificationToRemove: NotificationObj): void
   {
     this.setState(
     {
@@ -181,11 +181,11 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
       }),
     });
   }
-  private hasPopup(notification: Notification): boolean
+  private hasPopup(notification: NotificationObj): boolean
   {
     return this.state.notificationsWithActivePopup.indexOf(notification) >= 0;
   }
-  private togglePopup(notification: Notification): void
+  private togglePopup(notification: NotificationObj): void
   {
     if (this.hasPopup(notification))
     {
@@ -200,5 +200,4 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
 
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(NotificationLogComponent);
-export default factory;
+export const NotificationLog: React.Factory<PropTypes> = React.createFactory(NotificationLogComponent);

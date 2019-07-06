@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import Star from "../../../../src/Star";
+import {Star} from "../../../../src/Star";
 
-import ManufactoryStarsListItem from "./ManufactoryStarsListItem";
+import {ManufactoryStarsListItem} from "./ManufactoryStarsListItem";
 
 
 export function sortByManufactoryCapacityFN(a: Star, b: Star)
@@ -103,5 +103,4 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(ManufactoryStarsListComponent);
-export default factory;
+export const ManufactoryStarsList: React.Factory<PropTypes> = React.createFactory(ManufactoryStarsListComponent);

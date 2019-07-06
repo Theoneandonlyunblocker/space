@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import MapRenderer from "../../../../src/MapRenderer";
-import MapRendererLayer from "../../../../src/MapRendererLayer";
-import MapRendererMapMode from "../../../../src/MapRendererMapMode";
+import {MapRenderer} from "../../../../src/MapRenderer";
+import {MapRendererLayer} from "../../../../src/MapRendererLayer";
+import {MapRendererMapMode} from "../../../../src/MapRendererMapMode";
 
-import MapRendererLayersListItem from "./MapRendererLayersListItem";
+import {MapRendererLayersListItem} from "./MapRendererLayersListItem";
 
 
 export interface PropTypes extends React.Props<any>
@@ -140,5 +140,4 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
   }
 }
 
-const factory: React.Factory<PropTypes> = React.createFactory(MapRendererLayersListComponent);
-export default factory;
+export const MapRendererLayersList: React.Factory<PropTypes> = React.createFactory(MapRendererLayersListComponent);

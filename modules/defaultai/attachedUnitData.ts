@@ -1,7 +1,7 @@
 // Used for storing unit properties not needed by core game
 
-import Unit from "../../src/Unit";
-import ValuesByUnit from "../../src/ValuesByUnit";
+import {Unit} from "../../src/Unit";
+import {ValuesByUnit} from "../../src/ValuesByUnit";
 import
 {
   shallowExtend,
@@ -56,9 +56,7 @@ class AttachedUnitDataManager
   }
 }
 
-const attachedUnitData = new AttachedUnitDataManager();
-
-export default attachedUnitData;
+export const attachedUnitData = new AttachedUnitDataManager();
 
 // TODO 2018.12.07 | belongs in ai module
 export const attachedUnitDataScripts =
