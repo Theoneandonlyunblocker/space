@@ -59,16 +59,14 @@ export class ModuleStore
     return Promise.all(ordered.map(moduleInfo =>  this.fetch(moduleInfo)));
   }
 
-  // doesn't make much sense right now, as no module loading functionality has been implemented yet
-  // should eventually fetch module files from a server / local file system
   private fetch(moduleInfo: ModuleInfo): Promise<ModuleFile>
   {
+    // in memory
     if (this.loadedModules[moduleInfo.key])
     {
       return Promise.resolve(this.loadedModules[moduleInfo.key]);
     }
 
-    // local
     // remote
     return this.fetchRemote(moduleInfo).then(moduleFile =>
     {
@@ -80,18 +78,9 @@ export class ModuleStore
       throw new Error(`Couldn't load module '${moduleInfo.key}'.\n${reason}`);
     });
   }
-  // private fetchLocal(moduleInfo: ModuleInfo): Promise<ModuleFile>
-  // {
-
-  // }
   private fetchRemote(moduleInfo: ModuleInfo): Promise<ModuleFile>
   {
-    if (!moduleInfo.remoteModuleInfoUrl)
-    {
-      throw new Error(`Module '${moduleInfo.key}' has no URL specified for remote loading.`);
-    }
-
-    let url = new URL(moduleInfo.moduleFileUrl, moduleInfo.remoteModuleInfoUrl).toString();
+    let url = new URL(moduleInfo.moduleFileUrl).toString();
     if (url.substring(url.length - 3, url.length) !== ".js")
     {
       throw new Error(`Module file URL must end in '.js'.` +

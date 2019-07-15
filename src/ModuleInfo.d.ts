@@ -11,17 +11,17 @@ export interface ModuleInfo
   // should be used very, very sparingly
   // if this mod replaces another's functionality, this mod has been renamed, etc.
   modsToReplace?: string[];
-  // TODO 2019.04.10 | use string[] for the two below to allow fallbacks
+  // TODO 2019.04.10 | use string[] to allow for fallbacks
   /**
-   * should point to a http url that will serve a 'moduleInfo.json' file
-   * leaving this blank will only allow local loading
-   * used to check version, fetch mods for savegame etc after mod info has already otherwise been loaded in app
-   */
-  remoteModuleInfoUrl?: string;
-  /**
-   * url of the actual module file relative to 'moduleInfo.json'
+   * url of the built module file
    */
   moduleFileUrl: string;
-  // TODO 2019.04.02 | rename
+  /**
+  // TODO 2019.07.15 | rename moduleObjVariableName
+  /**
+   * export const {{{THIS BIT HERE}}}: ModuleFile =
+   * {
+   *   info: moduleInfo,
+   */
   moduleFileVariableName: string;
 }
