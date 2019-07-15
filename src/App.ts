@@ -31,7 +31,7 @@ import
 import
 {
   getRandomArrayItem,
-  onDOMLoaded,
+  loadDom,
   getFunctionName,
 } from "./utility";
 
@@ -75,11 +75,12 @@ class App
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
     window.onerror = handleError;
 
-
-    onDOMLoaded(() =>
     activeModuleStore.getModules(...initialModules).then((moduleFiles) =>
     {
       this.moduleInitializer = new ModuleInitializer(activeModuleData, moduleFiles);
+    }).then(() =>
+    {
+      return loadDom();
     }).then(() =>
     {
       debug.log("init", "DOM loaded");

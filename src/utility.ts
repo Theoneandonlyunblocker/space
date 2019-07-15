@@ -454,15 +454,18 @@ export function getDropTargetAtLocation(x: number, y: number)
 
   return null;
 }
-export function onDOMLoaded(onLoaded: () => void)
+export function loadDom(): Promise<void>
 {
   if (document.readyState === "interactive" || document.readyState === "complete")
   {
-    onLoaded();
+    return Promise.resolve();
   }
   else
   {
-    document.addEventListener("DOMContentLoaded", onLoaded);
+    return new Promise((resolve) =>
+    {
+      document.addEventListener("DOMContentLoaded", () => {resolve()});
+    });
   }
 }
 function probabilityDistributionsAreWeighted<T>(distributions: ProbabilityDistributions<T>): distributions is WeightedProbabilityDistribution<T>[]
