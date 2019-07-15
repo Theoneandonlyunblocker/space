@@ -1,16 +1,18 @@
-import {core} from "../modules/core/core";
-import {defaultAi} from "../modules/defaultai/defaultAi";
-import {defaultAttitudeModifiers} from "../modules/defaultattitudemodifiers/defaultAttitudeModifiers";
-import {defaultEmblems} from "../modules/defaultemblems/defaultEmblems";
-import {defaultNotifications} from "../modules/defaultnotifications/defaultNotifications";
-import {drones} from "../modules/drones/moduleFile";
-import {paintingPortraits} from "../modules/paintingportraits/paintingPortraits";
-import {englishLanguageSupport} from "../modules/englishlanguage/englishLanguageSupport";
-import {space} from "../modules/space/moduleFile";
-import {defaultUi} from "../modules/defaultui/defaultUi";
+import * as core from "../modules/core/moduleInfo.json";
+import * as defaultAi from "../modules/defaultai/moduleInfo.json";
+import * as defaultAttitudeModifiers from "../modules/defaultattitudemodifiers/moduleInfo.json";
+import * as defaultEmblems from "../modules/defaultemblems/moduleInfo.json";
+import * as defaultNotifications from "../modules/defaultnotifications/moduleInfo.json";
+import * as drones from "../modules/drones/moduleInfo.json";
+import * as paintingPortraits from "../modules/paintingportraits/moduleInfo.json";
+import * as englishLanguageSupport from "../modules/englishlanguage/moduleInfo.json";
+import * as space from "../modules/space/moduleInfo.json";
+import * as defaultUi from "../modules/defaultui/moduleInfo.json";
+
+import {ModuleInfo} from "../src/ModuleInfo";
 
 
-export const defaultModules =
+export const defaultModules: ModuleInfo[] =
 [
   core,
   englishLanguageSupport,

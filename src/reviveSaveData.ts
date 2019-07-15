@@ -9,8 +9,8 @@ import {activeModuleStore} from "./ModuleStore";
 
 
 // TODO 2019.05.28 | global defaultModules
-import {ModuleFile} from "./ModuleFile";
-const defaultModules: ModuleFile[] = (<any>window).defaultModules;
+import {ModuleInfo} from "./ModuleInfo";
+const defaultModules: ModuleInfo[] = (<any>window).defaultModules;
 
 // data is cloned at start of reviving process
 // all revivers act on the same cloned data and are destructive
@@ -76,7 +76,7 @@ const coreSaveDataRevivers: ReviversByVersion =
       {
         return(
         {
-          metaData: {...moduleFile.info, version: "0.0.0"},
+          metaData: {...moduleFile, version: "0.0.0"},
           moduleSaveData: {},
         });
       });

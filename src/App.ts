@@ -43,7 +43,7 @@ import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import {FullSaveData} from "./savedata/FullSaveData";
 import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
 import { storageStrings } from "./storageStrings";
-import {ModuleFile} from "./ModuleFile";
+import {ModuleInfo} from "./ModuleInfo";
 
 class App
 {
@@ -58,7 +58,7 @@ class App
   private seed: string;
   private mapRenderer: MapRenderer;
 
-  constructor(...initialModules: ModuleFile[])
+  constructor(...initialModules: ModuleInfo[])
   {
     PIXI.utils.skipHello();
 
@@ -75,11 +75,12 @@ class App
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
     window.onerror = handleError;
 
-    initialModules.forEach(moduleFile => activeModuleStore.add(moduleFile));
-
-    this.moduleInitializer = new ModuleInitializer(activeModuleData, initialModules);
 
     onDOMLoaded(() =>
+    activeModuleStore.getModules(...initialModules).then((moduleFiles) =>
+    {
+      this.moduleInitializer = new ModuleInitializer(activeModuleData, moduleFiles);
+    }).then(() =>
     {
       debug.log("init", "DOM loaded");
       this.initUI();
@@ -478,7 +479,7 @@ class App
 }
 
 export let app: App;
-export function createApp(...initialModules: ModuleFile[]): App
+export function createApp(...initialModules: ModuleInfo[]): App
 {
   app = new App(...initialModules);
 
