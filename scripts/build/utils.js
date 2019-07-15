@@ -10,12 +10,11 @@ const {spawn} = require("child_process");
 
 exports.prefixJsonAmdImports = (source) =>
 {
-  const toSearch = new RegExp(`"\\./moduleInfo\\.json`, `g`);
-  const toReplaceWith = `"json!./moduleInfo.json`;
+  const toSearch = /"([^"!]+?)\.json"/g;
+  const toReplaceWith = `"json!$1.json"`;
 
   if (source.match(toSearch))
   {
-    console.log("match");
     return(
     {
       data: source.replace(toSearch, toReplaceWith),
@@ -46,7 +45,7 @@ exports.nameAmdModules = (source, fileName) =>
     const projectRoot = path.resolve(__dirname, "../../");
     process.chdir(projectRoot);
 
-    let data = source.replace(toSearch, toReplaceWith);
+    let data = source;
 
     const defineArgsMatch = data.match(/define\(.*?\[(.+?)\]/);
     const defineArgs = defineArgsMatch[1];
@@ -67,7 +66,11 @@ exports.nameAmdModules = (source, fileName) =>
       }
     }).join(", ");
 
+    // imports
     data = data.replace(defineArgs, defineArgsWithResolvedPaths);
+
+    // exports
+    data = source.replace(toSearch, toReplaceWith);
 
     process.chdir(oldCwd);
 
@@ -156,11 +159,14 @@ exports.compileTscProject = (projectDir) =>
     });
   });
 }
-exports.writeFile = async (fileToWrite, data, cb) =>
+exports.writeFile = (fileToWrite, data, cb) =>
 {
   const dirName = path.dirname(fileToWrite);
 
-  await mkdirp(dirName);
+  mkdirp(dirName, (err) =>
+  {
+    if (err) {cb(err)};
 
-  fs.writeFile(fileToWrite, data, cb);
+    fs.writeFile(fileToWrite, data, cb);
+  });
 }
