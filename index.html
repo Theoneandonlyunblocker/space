@@ -20,6 +20,7 @@
   <script src="dist/lib/pixi.js"></script>
 
   <script src="lib/require.js"></script>
+  <script src="dist/src2.js"></script>
 
   <script type="text/javascript">
     require.config(
@@ -43,9 +44,9 @@
       return PIXI;
     });
 
-    require(["./dist/_temp_app/defaultModules.js"], (m) =>
+    require(["dist/_temp_app/index.js"], (m) =>
     {
-      require(["./dist/src/App.js"], (app) =>
+      require(["./dist/src/index.js"], (src) =>
       {
         window.app = app.createApp(...window.defaultModules);
       });

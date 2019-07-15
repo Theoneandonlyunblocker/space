@@ -1,8 +1,8 @@
 {
   "extends": "../tsconfig-modules-base.json",
   "compilerOptions": {
-    // "outFile": "../../dist/modules/defaultnotifications.js",
-    "outDir": "../../dist",
+    // "outFile": "../../build/modules/defaultnotifications.js",
+    "outDir": "../../build",
     "rootDir": "../..",
   },
   "references": [

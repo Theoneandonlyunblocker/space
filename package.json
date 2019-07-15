@@ -18,6 +18,7 @@
     "@types/react-dom-factories": "1.x",
     "@types/react-motion": "0.0.x",
     "@types/requirejs": "^2.1.31",
+    "concat-with-sourcemaps": "1.1.x",
     "glob": "7.1.x",
     "http-server": "0.11.x",
     "less": "2.7.x",
@@ -28,10 +29,12 @@
     "typescript": "3.5.x"
   },
   "scripts": {
-    "postinstall": "npm run copy-libs && npm run copy-assets && npm run build-ui-module-css && npm run replace-pixi-typedefs",
+    "postinstall": "npm run copy-libs && npm run copy-assets && npm run compile-ui-module-css && npm run replace-pixi-typedefs",
 
-    "build": "tsc -b --verbose && node scripts/prefix_json_amd_imports.js",
-    "build-ui-module-css": "lessc modules/defaultui/css/main.less dist/modules/defaultui/css/main.css",
+    "build": "npm run compile-typescript && node scripts/build/bundleDefaultModules",
+
+    "compile-typescript": "tsc -b --verbose",
+    "compile-ui-module-css": "lessc modules/defaultui/css/main.less dist/modules/defaultui/css/main.css",
 
     "copy-libs": "node scripts/copy_libs.js",
     "copy-assets": "npm run copy-ui-assets && npm run copy-emblems-assets && npm run copy-painting-portraits-assets && npm run copy-space-assets",
