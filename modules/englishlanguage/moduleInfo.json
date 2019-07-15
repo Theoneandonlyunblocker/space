@@ -4,5 +4,6 @@
   "author": "giraluna",
   "description": "Adds English to the list of available languages",
   "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/englishlanguage/index.js",
+  "moduleObjRequireJsName": "modules/englishlanguage/englishLanguageSupport",
   "moduleFileVariableName": "englishLanguageSupport"
 }

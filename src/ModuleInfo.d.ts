@@ -17,6 +17,9 @@ export interface ModuleInfo
    */
   moduleFileUrl: string;
   /**
+   * define("{{{THIS BIT HERE}}}", ["require", "exports",
+   */
+  moduleObjRequireJsName: string;
   // TODO 2019.07.15 | rename moduleObjVariableName
   /**
    * export const {{{THIS BIT HERE}}}: ModuleFile =

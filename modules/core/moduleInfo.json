@@ -4,5 +4,6 @@
   "author":        "giraluna",
   "description":   "Core gameplay functionality",
   "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/core/index.js",
+  "moduleObjRequireJsName": "modules/core/core",
   "moduleFileVariableName": "core"
 }

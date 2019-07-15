@@ -5,5 +5,6 @@
   "description": "",
   "modsToReplace": ["defaultTechnologies"],
   "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/space/technologies/index.js",
+  "moduleObjRequireJsName": "modules/space/technologies/spaceTechnologies",
   "moduleFileVariableName": "spaceTechnologies"
 }

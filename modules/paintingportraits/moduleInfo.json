@@ -4,5 +4,6 @@
   "author": "various artists",
   "description": "old ppl",
   "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/paintingportraits/index.js",
+  "moduleObjRequireJsName": "modules/paintingportraits/paintingPortraits",
   "moduleFileVariableName": "paintingPortraits"
 }

@@ -3,6 +3,6 @@
   "version": "0.1.0",
   "author": "giraluna",
   "description": "",
-  "moduleFileUrl": "http://127.0.0.1:9001/dist/modules/defaultai/index.js",
+  "moduleFileUrl": "http://127.0.0.1:9001/dist/modules/defaultai/defaultAi.js",
   "moduleFileVariableName": "defaultAi"
 }

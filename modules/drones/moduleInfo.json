@@ -4,5 +4,6 @@
   "author": "giraluna",
   "description": "",
   "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/drones/index.js",
+  "moduleObjRequireJsName": "modules/drones/moduleFile",
   "moduleFileVariableName": "drones"
 }
