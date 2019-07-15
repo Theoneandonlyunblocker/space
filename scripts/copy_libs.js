@@ -4,7 +4,7 @@ process.on("unhandledRejection", err => {
   throw err;
 });
 
-const ncp = require("ncp").ncp;
+const cpr = require("cpr").cpr;
 const mkdirp = require("mkdirp").mkdirp;
 
 
@@ -26,7 +26,7 @@ mkdirp("dist/lib", err =>
   {
     const destination = filesToCopyWithDestination[source];
 
-    ncp(source, destination, err =>
+    cpr(source, destination, {overwrite: true}, err =>
     {
       if (err) {throw err};
     });

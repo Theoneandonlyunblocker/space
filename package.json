@@ -19,11 +19,11 @@
     "@types/react-motion": "0.0.x",
     "@types/requirejs": "^2.1.31",
     "concat-with-sourcemaps": "1.1.x",
+    "cpr": "3.0.x",
     "glob": "7.1.x",
     "http-server": "0.11.x",
     "less": "2.7.x",
     "mkdirp": "0.5.x",
-    "ncp": "2.0.x",
     "ts-loader": "5.3.x",
     "tslint": "5.11.x",
     "typescript": "3.5.x"
@@ -42,16 +42,16 @@
     "replace-pixi-typedefs": "node scripts/replace_pixi_typedefs.js",
 
     "copy-ui-assets": "node scripts/copy_ui_assets.js",
-    "copy-emblems-assets": "mkdirp dist/modules/defaultemblems/img && ncp modules/defaultemblems/img dist/modules/defaultemblems/img",
+    "copy-emblems-assets": "mkdirp dist/modules/defaultemblems/img && cpr modules/defaultemblems/img dist/modules/defaultemblems/img -o",
     "copy-painting-portraits-assets": "node scripts/copy_painting_portraits_assets.js",
 
     "copy-space-assets": "npm run copy-space-battlesfx-assets && npm run copy-space-buildings-assets && npm run copy-space-items-assets && npm run copy-space-mapmodes-assets && npm run copy-space-resources-assets && npm run copy-space-units-assets",
-    "copy-space-battlesfx-assets": "mkdirp dist/modules/space/battlesfx/img && ncp modules/space/battlesfx/img dist/modules/space/battlesfx/img",
-    "copy-space-buildings-assets": "mkdirp dist/modules/space/buildings/img && ncp modules/space/buildings/img dist/modules/space/buildings/img",
-    "copy-space-items-assets": "mkdirp dist/modules/space/items/img && ncp modules/space/items/img dist/modules/space/items/img",
-    "copy-space-mapmodes-assets": "mkdirp dist/modules/space/mapmodes/img && ncp modules/space/mapmodes/img dist/modules/space/mapmodes/img",
-    "copy-space-resources-assets": "mkdirp dist/modules/space/resources/img && ncp modules/space/resources/img dist/modules/space/resources/img",
-    "copy-space-units-assets": "mkdirp dist/modules/space/units/img && ncp modules/space/units/img dist/modules/space/units/img",
+    "copy-space-battlesfx-assets": "mkdirp dist/modules/space/battlesfx/img && cpr modules/space/battlesfx/img dist/modules/space/battlesfx/img -o",
+    "copy-space-buildings-assets": "mkdirp dist/modules/space/buildings/img && cpr modules/space/buildings/img dist/modules/space/buildings/img -o",
+    "copy-space-items-assets": "mkdirp dist/modules/space/items/img && cpr modules/space/items/img dist/modules/space/items/img -o",
+    "copy-space-mapmodes-assets": "mkdirp dist/modules/space/mapmodes/img && cpr modules/space/mapmodes/img dist/modules/space/mapmodes/img -o",
+    "copy-space-resources-assets": "mkdirp dist/modules/space/resources/img && cpr modules/space/resources/img dist/modules/space/resources/img -o",
+    "copy-space-units-assets": "mkdirp dist/modules/space/units/img && cpr modules/space/units/img dist/modules/space/units/img -o",
 
     "start": "http-server --port 9001 -o http://127.0.0.1:9001/",
 

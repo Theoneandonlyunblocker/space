@@ -4,7 +4,7 @@ process.on("unhandledRejection", err => {
   throw err;
 });
 
-const ncp = require("ncp").ncp;
+const cpr = require("cpr").cpr;
 const mkdirp = require("mkdirp").mkdirp;
 
 let count = 0
@@ -21,12 +21,13 @@ const options =
     count += 1;
 
     return true;
-  }
+  },
+  overwrite: true,
 };
 
 mkdirp("dist/modules/paintingportraits/img", err =>
 {
-  ncp("modules/paintingportraits/img", "dist/modules/paintingportraits/img", options, (err) =>
+  cpr("modules/paintingportraits/img", "dist/modules/paintingportraits/img", options, (err) =>
   {
     if (err)
     {

@@ -5,7 +5,7 @@ process.on("unhandledRejection", err => {
 });
 
 const fs = require("fs");
-const ncp = require("ncp").ncp;
+const cpr = require("cpr").cpr;
 
 
 const origDefsPath = "node_modules/pixi.js/pixi.js.d.ts";
@@ -20,7 +20,7 @@ if (!origCopyExists)
   console.log(`${origDefsPath} => ${origDefsCopyPath}`);
 }
 
-ncp(customDefsPath, origDefsPath, (err) =>
+cpr(customDefsPath, origDefsPath, {overwrite: true}, (err) =>
 {
   if (err) {throw err;};
 });

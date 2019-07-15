@@ -4,7 +4,7 @@ process.on("unhandledRejection", err => {
   throw err;
 });
 
-const ncp = require("ncp").ncp;
+const cpr = require("cpr").cpr;
 const mkdirp = require("mkdirp").mkdirp;
 
 
@@ -22,14 +22,15 @@ const options =
     count += 1;
 
     return true;
-  }
+  },
+  overwrite: true,
 };
 
 mkdirp("dist/modules/defaultui/img", err =>
 {
   if (err) {throw err};
 
-  ncp("modules/defaultui/img", "dist/modules/defaultui/img", options, (err) =>
+  cpr("modules/defaultui/img", "dist/modules/defaultui/img", options, (err) =>
   {
     if (err)
     {
