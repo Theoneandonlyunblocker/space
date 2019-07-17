@@ -100,7 +100,7 @@ export class ModuleInitializer
 
       if (moduleFile.initialize)
       {
-        const baseUrl = new URL(moduleFile.info.moduleFileUrl).toString();
+        const baseUrl = new URL("./", moduleFile.info.moduleFileUrl).toString();
 
         return moduleFile.initialize(baseUrl);
       }
