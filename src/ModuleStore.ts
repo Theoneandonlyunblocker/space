@@ -10,8 +10,7 @@ import * as debug from "./debug";
 
 export class ModuleStore
 {
-  private readonly allModuleInfo: {[key: string]: ModuleInfo} = {};
-  private readonly loadedModules: {[key: string]: GameModule} = {};
+  private readonly loadedModules: {[key: string]: ModuleInfo} = {};
 
   constructor()
   {
@@ -20,14 +19,14 @@ export class ModuleStore
 
   public add(toAdd: GameModule): void
   {
-    const existingModuleWithSameKey = this.allModuleInfo[toAdd.info.key];
+    const existingModuleWithSameKey = this.loadedModules[toAdd.info.key];
     if (existingModuleWithSameKey)
     {
-      const moduleVersionToUse = this.getModuleVersionWithPriority(existingModuleWithSameKey, toAdd.info);
+      const moduleVersionToUse = this.getModuleWithPriority(existingModuleWithSameKey, toAdd.info);
 
       if (moduleVersionToUse !== existingModuleWithSameKey)
       {
-        console.log(`Replacing stored module '${toAdd.info.key}@${toAdd.info.version}' with newer version '${existingModuleWithSameKey.version}'`);
+        debug.log("modules", `Replacing stored module '${toAdd.info.key}@${toAdd.info.version}' with newer version '${existingModuleWithSameKey.version}'`);
       }
       else
       {
@@ -35,8 +34,7 @@ export class ModuleStore
       }
     }
 
-    this.allModuleInfo[toAdd.info.key] = toAdd.info;
-    this.loadedModules[toAdd.info.key] = toAdd;
+    this.loadedModules[toAdd.info.key] = toAdd.info;
 
     if (toAdd.subModules)
     {
@@ -45,16 +43,8 @@ export class ModuleStore
   }
   public getModules(...requestedModules: ModuleInfo[]): Promise<GameModule[]>
   {
-    const {result: replaced, replacements} = this.getModulesWithReplacements(...requestedModules);
-
-    Object.keys(replacements).sort().forEach(wasReplaced =>
-    {
-      const didReplace = replacements[wasReplaced];
-
-      debug.log("modules", `Replacing module '${wasReplaced}' with module '${didReplace}'`);
-    });
-
-    const ordered = this.getModuleLoadOrder(...replaced);
+    const modulesToGet = this.resolveRequestedModules(...requestedModules);
+    const ordered = this.getModuleLoadOrder(...modulesToGet);
 
     return this.requireModules(...ordered);
   }
@@ -73,6 +63,7 @@ export class ModuleStore
         require([moduleInfo.moduleObjRequireJsName], (importedModule: any) =>
         {
           const gameModule: GameModule = importedModule[moduleInfo.gameModuleVariableName];
+          this.add(gameModule);
 
           resolve(gameModule);
         });
@@ -83,10 +74,17 @@ export class ModuleStore
   }
   private fetchBundle(moduleInfo: ModuleInfo): Promise<void>
   {
-    // already in memory
-    if (this.loadedModules[moduleInfo.key])
+    const loadedModule = this.loadedModules[moduleInfo.key];
+
+    if (loadedModule)
     {
-      return Promise.resolve();
+      const loadedModuleHasPriority =
+        this.getModuleWithPriority(loadedModule, moduleInfo) === loadedModule;
+
+      if (loadedModuleHasPriority)
+      {
+        return Promise.resolve();
+      }
     }
 
     // remote
@@ -121,25 +119,25 @@ export class ModuleStore
 
     return dependencyGraph.getOrderedNodes();
   }
-  private getModulesWithReplacements(
-    ...requestedModules: ModuleInfo[]
-  ): {result: ModuleInfo[]; replacements: {[toBeReplacedKey: string]: string}}
+  private resolveRequestedModules(...requestedModules: ModuleInfo[]): ModuleInfo[]
   {
-    const allModules = {...this.allModuleInfo};
-    requestedModules.forEach(moduleInfo =>
+    const allModules = {...this.loadedModules};
+    const replacements: {[toBeReplacedKey: string]: string} = {};
+
+    requestedModules.forEach(requestedModule =>
     {
-      const existingModuleWithSameKey = allModules[moduleInfo.key];
-      if (existingModuleWithSameKey)
+      const storedModule = allModules[requestedModule.key];
+      if (storedModule)
       {
-        allModules[moduleInfo.key] = this.getModuleVersionWithPriority(existingModuleWithSameKey, moduleInfo);
-      }
-      else
-      {
-        allModules[moduleInfo.key] = moduleInfo;
+        const versionWithPriority = this.getModuleWithPriority(storedModule, requestedModule);
+        if (versionWithPriority === storedModule)
+        {
+          replacements[requestedModule.key] = storedModule.key;
+          debug.log("modules", `Replacing module ${requestedModule.key}@${requestedModule.version} with ${storedModule.key}@${storedModule.version}`);
+        }
       }
     });
 
-    const replacements: {[toBeReplacedKey: string]: string} = {};
     Object.keys(allModules).forEach(moduleKey =>
     {
       const moduleInfo = allModules[moduleKey];
@@ -154,11 +152,13 @@ export class ModuleStore
           }
 
           replacements[toBeReplacedKey] = moduleInfo.key;
+
+          debug.log("modules", `Replacing module '${toBeReplacedKey}' with module '${moduleInfo.key}'`);
         });
       }
     });
 
-    const replaced = requestedModules.map(moduleInfo =>
+    const resolved = requestedModules.map(moduleInfo =>
     {
       const replacingModuleInfo = allModules[replacements[moduleInfo.key]];
 
@@ -172,25 +172,21 @@ export class ModuleStore
       }
     });
 
-    return(
-    {
-      result: replaced,
-      replacements: replacements,
-    });
+    return resolved;
   }
-  private getModuleVersionWithPriority(a: ModuleInfo, b: ModuleInfo): ModuleInfo
+  private getModuleWithPriority(a: ModuleInfo, b: ModuleInfo): ModuleInfo
   {
     // could check which matches game version here
 
     const getModuleToReturn = (sortResult: number) =>
     {
-      if (sortResult === 1)
-      {
-        return b;
-      }
-      else if (sortResult === -1)
+      if (sortResult > 0)
       {
         return a;
+      }
+      else if (sortResult < 0)
+      {
+        return b;
       }
       else
       {
