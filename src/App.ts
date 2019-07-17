@@ -54,6 +54,7 @@ class App
   public moduleInitializer: ModuleInitializer;
 
   public readonly version: string = "0.3.0";
+  public readonly initialModules: ModuleInfo[] = [];
 
   private seed: string;
   private mapRenderer: MapRenderer;
@@ -75,6 +76,7 @@ class App
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
     window.onerror = handleError;
 
+    this.initialModules = initialModules;
     activeModuleStore.getModules(...initialModules).then((gameModules) =>
     {
       this.moduleInitializer = new ModuleInitializer(activeModuleData, gameModules);

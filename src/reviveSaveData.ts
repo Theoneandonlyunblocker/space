@@ -1,16 +1,13 @@
 // for core data only (everything under /src)
 // modules should handle save compability on their own
 
+import {app} from "./App"; // TODO global
 import {FullSaveData} from "./savedata/FullSaveData";
 import * as semver from "./versions";
 import * as debug from "./debug";
 import { getFunctionName } from "./utility";
 import {activeModuleStore} from "./ModuleStore";
 
-
-// TODO 2019.05.28 | global defaultModules
-import {ModuleInfo} from "./ModuleInfo";
-const defaultModules: ModuleInfo[] = (<any>window).defaultModules;
 
 // data is cloned at start of reviving process
 // all revivers act on the same cloned data and are destructive
@@ -72,11 +69,11 @@ const coreSaveDataRevivers: ReviversByVersion =
     },
     function addDummyModuleData(saveData)
     {
-      saveData.moduleData = defaultModules.map(gameModule =>
+      saveData.moduleData = app.initialModules.map(moduleInfo =>
       {
         return(
         {
-          metaData: {...gameModule, version: "0.0.0"},
+          metaData: {...moduleInfo, version: "0.0.0"},
           moduleSaveData: {},
         });
       });

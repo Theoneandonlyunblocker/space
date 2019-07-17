@@ -46,6 +46,3 @@ export const defaultModules: ModuleInfo[] =
   spaceUnits,
   drones,
 ];
-
-// TODO 2019.05.28 | global defaultModules
-(<any>window).defaultModules = defaultModules;

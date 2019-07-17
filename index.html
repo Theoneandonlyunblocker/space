@@ -55,11 +55,9 @@
     {
       require(["_temp_app/defaultModules"], function(defaultModules)
       {
-        window.defaultModules = defaultModules.defaultModules;
-
         require(["src/App"], function(app)
         {
-          window.app = app.createApp.apply(null, window.defaultModules);
+          window.app = app.createApp.apply(null, defaultModules.defaultModules);
         });
       });
     });
