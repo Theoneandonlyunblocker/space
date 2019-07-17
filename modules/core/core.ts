@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
 import {ModuleData} from "../../src/ModuleData";
-import {ModuleFile} from "../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../src/GameModuleInitializationPhase";
 
 import {allScripts} from "./modulescripts/allScripts";
 
@@ -10,10 +10,10 @@ import * as moduleInfo from "./moduleInfo.json";
 
 
 // TODO 2017.07.27 | move core gameplay stuff here
-export const core: ModuleFile =
+export const core: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
+  phaseToInitializeBefore: GameModuleInitializationPhase.GameSetup,
   supportedLanguages: "all",
   initialize: (baseUrl) =>
   {

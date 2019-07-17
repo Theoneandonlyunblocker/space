@@ -1,6 +1,6 @@
 import {Point} from "../Point";
 import {IdGeneratorValues} from "../idGenerators";
-import {ModuleSaveData} from "../ModuleFile";
+import {ModuleSaveData} from "../GameModule";
 
 import {GameSaveData} from "./GameSaveData";
 

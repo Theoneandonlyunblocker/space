@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import {ModuleFile} from "../../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../../src/GameModuleInitializationPhase";
 
 import {unitArchetypes} from "../../common/unitArchetypes";
 import {unitTemplates} from "./unitTemplates";
@@ -11,10 +11,10 @@ import {setBaseUrl as setAssetBaseUrl} from "./resources";
 import * as moduleInfo from "./moduleInfo.json";
 
 
-export const spaceUnits: ModuleFile =
+export const spaceUnits: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
+  phaseToInitializeBefore: GameModuleInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
   initialize: (baseUrl) =>
   {

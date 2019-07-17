@@ -1,16 +1,16 @@
 import {englishLanguage} from "../englishlanguage/englishLanguage";
-import {ModuleFile} from "../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../src/GameModuleInitializationPhase";
 
 import {defaultAiConstructor} from "./mapai/DefaultAiConstructor";
 import {attachedUnitDataScripts} from "./attachedUnitData";
 import * as moduleInfo from "./moduleInfo.json";
 
 
-export const defaultAi: ModuleFile =
+export const defaultAi: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
+  phaseToInitializeBefore: GameModuleInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>
   {

@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import {ModuleFile} from "../../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../../src/GameModuleInitializationPhase";
 
 import {mapLayerTemplates} from "./mapLayerTemplates";
 import {mapModeTemplates} from "./mapModeTemplates";
@@ -11,10 +11,10 @@ import {resources} from "./resources";
 import * as moduleInfo from "./moduleInfo.json";
 
 
-export const spaceMapModes: ModuleFile =
+export const spaceMapModes: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
+  phaseToInitializeBefore: GameModuleInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
   initialize: (baseUrl) =>
   {

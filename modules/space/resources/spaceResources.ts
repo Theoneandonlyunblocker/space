@@ -1,7 +1,7 @@
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import {ModuleData} from "../../../src/ModuleData";
-import {ModuleFile} from "../../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../../src/GameModuleInitializationPhase";
 
 import * as ResourceTemplates from  "./resourceTemplates";
 import {setBaseUrl as setAssetBaseUrl} from "./assets";
@@ -9,10 +9,10 @@ import {setBaseUrl as setAssetBaseUrl} from "./assets";
 import * as moduleInfo from "./moduleInfo.json";
 
 
-export const spaceResources: ModuleFile =
+export const spaceResources: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
+  phaseToInitializeBefore: GameModuleInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
   initialize: (baseUrl) =>
   {

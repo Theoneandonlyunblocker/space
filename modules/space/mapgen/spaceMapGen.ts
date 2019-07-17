@@ -1,7 +1,7 @@
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import {ModuleData} from "../../../src/ModuleData";
-import {ModuleFile} from "../../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../../src/GameModuleInitializationPhase";
 import {MapGenTemplate} from "../../../src/templateinterfaces/MapGenTemplate";
 import {TemplateCollection} from "../../../src/templateinterfaces/TemplateCollection";
 
@@ -17,10 +17,10 @@ const templates: TemplateCollection<MapGenTemplate> =
   [tinierSpiralGalaxy.key]: tinierSpiralGalaxy,
 };
 
-export const spaceMapGen: ModuleFile =
+export const spaceMapGen: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
+  phaseToInitializeBefore: GameModuleInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>
   {

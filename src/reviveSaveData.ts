@@ -72,11 +72,11 @@ const coreSaveDataRevivers: ReviversByVersion =
     },
     function addDummyModuleData(saveData)
     {
-      saveData.moduleData = defaultModules.map(moduleFile =>
+      saveData.moduleData = defaultModules.map(gameModule =>
       {
         return(
         {
-          metaData: {...moduleFile, version: "0.0.0"},
+          metaData: {...gameModule, version: "0.0.0"},
           moduleSaveData: {},
         });
       });
@@ -111,13 +111,13 @@ function reviveModuleSaveData(data: OutdatedFullSaveData): Promise<void>
   {
     const modulesInData = data.moduleData.map(moduleData => moduleData.info);
 
-    activeModuleStore.getModules(...modulesInData).then(moduleFiles =>
+    activeModuleStore.getModules(...modulesInData).then(gameModules =>
     {
-      moduleFiles.forEach(moduleFile =>
+      gameModules.forEach(gameModule =>
       {
-        if (moduleFile.reviveGameData)
+        if (gameModule.reviveGameData)
         {
-          moduleFile.reviveGameData(data);
+          gameModule.reviveGameData(data);
         }
       });
     }).then(resolve);

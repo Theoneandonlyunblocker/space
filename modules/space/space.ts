@@ -1,5 +1,5 @@
-import {ModuleFile} from "../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../src/GameModuleInitializationPhase";
 import { englishLanguage } from "../englishlanguage/englishLanguage";
 import {ruleSet} from "./ruleSet";
 
@@ -22,10 +22,10 @@ import {spaceResources} from "./resources/spaceResources";
 import * as moduleInfo from "./moduleInfo.json";
 
 
-export const space: ModuleFile =
+export const space: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
+  phaseToInitializeBefore: GameModuleInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   subModules:
   [

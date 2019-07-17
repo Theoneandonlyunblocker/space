@@ -5,7 +5,7 @@ import {Battle} from "./Battle";
 import {BattlePrep} from "./BattlePrep";
 import {Game} from "./Game";
 import {MapRenderer} from "./MapRenderer";
-import {ModuleFileInitializationPhase} from "./ModuleFileInitializationPhase";
+import {GameModuleInitializationPhase} from "./GameModuleInitializationPhase";
 import {ModuleInitializer} from "./ModuleInitializer";
 import {Player} from "./Player";
 import {PlayerControl} from "./PlayerControl";
@@ -20,18 +20,18 @@ import {activeModuleData} from "./activeModuleData";
 
 const moduleInitializationPhaseByScene:
 {
-  [key in ReactUIScene]: ModuleFileInitializationPhase;
+  [key in ReactUIScene]: GameModuleInitializationPhase;
 } =
 {
-  battle: ModuleFileInitializationPhase.BattleStart,
-  battlePrep: ModuleFileInitializationPhase.BattlePrep,
-  galaxyMap: ModuleFileInitializationPhase.GameStart,
-  setupGame: ModuleFileInitializationPhase.GameSetup,
-  errorRecovery: ModuleFileInitializationPhase.AppInit,
+  battle: GameModuleInitializationPhase.BattleStart,
+  battlePrep: GameModuleInitializationPhase.BattlePrep,
+  galaxyMap: GameModuleInitializationPhase.GameStart,
+  setupGame: GameModuleInitializationPhase.GameSetup,
+  errorRecovery: GameModuleInitializationPhase.AppInit,
 
-  flagMaker: ModuleFileInitializationPhase.GameSetup,
-  battleSceneTester: ModuleFileInitializationPhase.BattleStart,
-  sfxEditor: ModuleFileInitializationPhase.BattleStart,
+  flagMaker: GameModuleInitializationPhase.GameSetup,
+  battleSceneTester: GameModuleInitializationPhase.BattleStart,
+  sfxEditor: GameModuleInitializationPhase.BattleStart,
 };
 
 export class ReactUI

@@ -1,10 +1,10 @@
 import {ModuleData} from "./ModuleData";
-import {ModuleFile} from "./ModuleFile";
+import {GameModule} from "./GameModule";
 import
 {
-  ModuleFileInitializationPhase,
-  allModuleFileInitializationPhases,
-} from "./ModuleFileInitializationPhase";
+  GameModuleInitializationPhase,
+  allGameModuleInitializationPhases,
+} from "./GameModuleInitializationPhase";
 import * as debug from "./debug";
 import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
 
@@ -12,13 +12,13 @@ import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
 export class ModuleInitializer
 {
   private readonly moduleData: ModuleData;
-  private readonly moduleFilesByKey:
+  private readonly gameModulesByKey:
   {
-    [key: string]: ModuleFile;
+    [key: string]: GameModule;
   } = {};
-  private readonly moduleFilesByPhase:
+  private readonly gameModulesByPhase:
   {
-    [phase: number]: ModuleFile[];
+    [phase: number]: GameModule[];
   } = {};
   private readonly moduleInitializationPromises:
   {
@@ -30,22 +30,22 @@ export class ModuleInitializer
   } = {};
   private readonly dependencyGraph: ModuleDependencyGraph;
 
-  constructor(moduleData: ModuleData, moduleFiles: ModuleFile[])
+  constructor(moduleData: ModuleData, gameModules: GameModule[])
   {
     this.moduleData = moduleData;
     this.dependencyGraph = new ModuleDependencyGraph();
 
-    allModuleFileInitializationPhases.forEach(phase =>
+    allGameModuleInitializationPhases.forEach(phase =>
     {
-      this.moduleFilesByPhase[phase] = [];
+      this.gameModulesByPhase[phase] = [];
     });
 
-    moduleFiles.forEach(moduleFile => this.addModuleFile(moduleFile));
+    gameModules.forEach(gameModule => this.addGameModule(gameModule));
   }
 
-  public initModulesNeededForPhase(phaseToInitUpTo: ModuleFileInitializationPhase): Promise<void>
+  public initModulesNeededForPhase(phaseToInitUpTo: GameModuleInitializationPhase): Promise<void>
   {
-    const phasesNeeded: ModuleFileInitializationPhase[] = Object.keys(this.moduleFilesByPhase).map(phaseString =>
+    const phasesNeeded: GameModuleInitializationPhase[] = Object.keys(this.gameModulesByPhase).map(phaseString =>
     {
       return Number(phaseString);
     }).filter(phase =>
@@ -57,52 +57,52 @@ export class ModuleInitializer
 
     return Promise.all(allPromises);
   }
-  public progressivelyInitModulesByPhase(startingPhase: ModuleFileInitializationPhase): void
+  public progressivelyInitModulesByPhase(startingPhase: GameModuleInitializationPhase): void
   {
     this.initModulesForPhase(startingPhase).then(() =>
     {
       const nextPhase = startingPhase + 1;
-      if (this.moduleFilesByPhase[nextPhase])
+      if (this.gameModulesByPhase[nextPhase])
       {
         this.progressivelyInitModulesByPhase(nextPhase);
       }
     });
   }
 
-  private addModuleFile(moduleFile: ModuleFile)
+  private addGameModule(gameModule: GameModule)
   {
-    if (this.moduleFilesByKey[moduleFile.info.key])
+    if (this.gameModulesByKey[gameModule.info.key])
     {
       return;
     }
 
-    this.moduleFilesByKey[moduleFile.info.key] = moduleFile;
+    this.gameModulesByKey[gameModule.info.key] = gameModule;
 
-    this.moduleFilesByPhase[moduleFile.phaseToInitializeBefore].push(moduleFile);
-    this.dependencyGraph.addModule(moduleFile.info);
+    this.gameModulesByPhase[gameModule.phaseToInitializeBefore].push(gameModule);
+    this.dependencyGraph.addModule(gameModule.info);
 
-    if (moduleFile.subModules)
+    if (gameModule.subModules)
     {
-      moduleFile.subModules.forEach(subModule => this.addModuleFile(subModule));
+      gameModule.subModules.forEach(subModule => this.addGameModule(subModule));
     }
   }
-  private initModuleFile(moduleFile: ModuleFile): Promise<void>
+  private initGameModule(gameModule: GameModule): Promise<void>
   {
-    if (this.moduleInitializationPromises[moduleFile.info.key])
+    if (this.moduleInitializationPromises[gameModule.info.key])
     {
-      return this.moduleInitializationPromises[moduleFile.info.key];
+      return this.moduleInitializationPromises[gameModule.info.key];
     }
 
-    const promise = this.initModuleFileParents(moduleFile).then(() =>
+    const promise = this.initGameModuleParents(gameModule).then(() =>
     {
-      debug.log("modules", `Start initializing module "${moduleFile.info.key}"`);
-      this.moduleInitalizationStart[moduleFile.info.key] = Date.now();
+      debug.log("modules", `Start initializing module "${gameModule.info.key}"`);
+      this.moduleInitalizationStart[gameModule.info.key] = Date.now();
 
-      if (moduleFile.initialize)
+      if (gameModule.initialize)
       {
-        const baseUrl = new URL("./", moduleFile.info.moduleFileUrl).toString();
+        const baseUrl = new URL("./", gameModule.info.moduleBundleUrl).toString();
 
-        return moduleFile.initialize(baseUrl);
+        return gameModule.initialize(baseUrl);
       }
       else
       {
@@ -110,21 +110,21 @@ export class ModuleInitializer
       }
     }).then(() =>
     {
-      this.finishInitializingModuleFile(moduleFile);
+      this.finishInitializingGameModule(gameModule);
     });
 
-    this.moduleInitializationPromises[moduleFile.info.key] = promise;
+    this.moduleInitializationPromises[gameModule.info.key] = promise;
 
     return promise;
   }
-  private initModuleFiles(moduleFiles: ModuleFile[]): Promise<void>
+  private initGameModules(gameModules: GameModule[]): Promise<void>
   {
-    return Promise.all(moduleFiles.map(moduleFile =>
+    return Promise.all(gameModules.map(gameModule =>
     {
-      return this.initModuleFile(moduleFile);
+      return this.initGameModule(gameModule);
     }));
   }
-  private initModulesForPhase(phase: ModuleFileInitializationPhase): Promise<void>
+  private initModulesForPhase(phase: GameModuleInitializationPhase): Promise<void>
   {
     if (this.hasStartedInitializingAllModulesForPhase(phase))
     {
@@ -132,59 +132,59 @@ export class ModuleInitializer
     }
 
     const startTime = Date.now();
-    const moduleFilesToInit = this.moduleFilesByPhase[phase];
+    const gameModulesToInit = this.gameModulesByPhase[phase];
 
-    debug.log("init", `Start initializing modules needed for ${ModuleFileInitializationPhase[phase]}`);
+    debug.log("init", `Start initializing modules needed for ${GameModuleInitializationPhase[phase]}`);
 
-    return this.initModuleFiles(moduleFilesToInit).then(() =>
+    return this.initGameModules(gameModulesToInit).then(() =>
     {
       const timeTaken = Date.now() - startTime;
 
-      debug.log("init", `Finish initializing modules needed for ${ModuleFileInitializationPhase[phase]} in ${timeTaken}ms`);
+      debug.log("init", `Finish initializing modules needed for ${GameModuleInitializationPhase[phase]} in ${timeTaken}ms`);
     });
   }
-  private initModuleFileParents(moduleFile: ModuleFile): Promise<void>
+  private initGameModuleParents(gameModule: GameModule): Promise<void>
   {
-    const parents = this.dependencyGraph.getImmediateParentsOf(moduleFile.info.key).map(parentInfo =>
+    const parents = this.dependencyGraph.getImmediateParentsOf(gameModule.info.key).map(parentInfo =>
     {
-      return this.moduleFilesByKey[parentInfo.key];
+      return this.gameModulesByKey[parentInfo.key];
     });
 
     const parentInitPromises = parents.map(parentModule =>
     {
-      return this.initModuleFile(parentModule);
+      return this.initGameModule(parentModule);
     });
 
     return Promise.all(parentInitPromises);
   }
-  private finishInitializingModuleFile(moduleFile: ModuleFile)
+  private finishInitializingGameModule(gameModule: GameModule)
   {
-    this.constructModuleFile(moduleFile);
+    this.constructGameModule(gameModule);
 
-    const timeTaken = Date.now() - this.moduleInitalizationStart[moduleFile.info.key];
-    debug.log("modules", `Finish initializing module '${moduleFile.info.key}' in ${timeTaken}ms`);
+    const timeTaken = Date.now() - this.moduleInitalizationStart[gameModule.info.key];
+    debug.log("modules", `Finish initializing module '${gameModule.info.key}' in ${timeTaken}ms`);
   }
-  private hasStartedInitializingAllModulesForPhase(phase: ModuleFileInitializationPhase): boolean
+  private hasStartedInitializingAllModulesForPhase(phase: GameModuleInitializationPhase): boolean
   {
-    return this.moduleFilesByPhase[phase].every(moduleFile =>
+    return this.gameModulesByPhase[phase].every(gameModule =>
     {
-      return isFinite(this.moduleInitalizationStart[moduleFile.info.key]);
+      return isFinite(this.moduleInitalizationStart[gameModule.info.key]);
     });
   }
-  private getModuleInitializationPromisesForPhase(phase: ModuleFileInitializationPhase): Promise<void>[]
+  private getModuleInitializationPromisesForPhase(phase: GameModuleInitializationPhase): Promise<void>[]
   {
-    return this.moduleFilesByPhase[phase].map(moduleFile =>
+    return this.gameModulesByPhase[phase].map(gameModule =>
     {
-      return this.moduleInitializationPromises[moduleFile.info.key];
+      return this.moduleInitializationPromises[gameModule.info.key];
     });
   }
-  private constructModuleFile(moduleFile: ModuleFile)
+  private constructGameModule(gameModule: GameModule)
   {
-    if (moduleFile.addToModuleData)
+    if (gameModule.addToModuleData)
     {
-      moduleFile.addToModuleData(this.moduleData);
+      gameModule.addToModuleData(this.moduleData);
     }
 
-    this.moduleData.addModuleFile(moduleFile);
+    this.moduleData.addGameModule(gameModule);
   }
 }

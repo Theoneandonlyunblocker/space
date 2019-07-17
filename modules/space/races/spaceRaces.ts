@@ -1,17 +1,17 @@
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import {ModuleData} from "../../../src/ModuleData";
-import {ModuleFile} from "../../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../../src/GameModuleInitializationPhase";
 
 import {raceTemplates} from "./raceTemplates";
 
 import * as moduleInfo from "./moduleInfo.json";
 
 
-export const spaceRaces: ModuleFile =
+export const spaceRaces: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
+  phaseToInitializeBefore: GameModuleInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>
   {

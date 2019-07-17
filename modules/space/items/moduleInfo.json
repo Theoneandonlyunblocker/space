@@ -4,7 +4,7 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultItems"],
-  "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/space/items/index.js",
+  "moduleBundleUrl":  "http://127.0.0.1:9001/dist/modules/space/items/index.js",
   "moduleObjRequireJsName": "modules/space/items/spaceItems",
-  "moduleFileVariableName": "spaceItems"
+  "gameModuleVariableName": "spaceItems"
 }

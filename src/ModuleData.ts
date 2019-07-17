@@ -2,7 +2,7 @@ import {Personality} from "../src/Personality";
 import {TemplateCollection} from "../src/templateinterfaces/TemplateCollection";
 
 import {BackgroundDrawingFunction} from "./BackgroundDrawingFunction";
-import {ModuleFile, ModuleSaveData } from "./ModuleFile";
+import {GameModule, ModuleSaveData } from "./GameModule";
 import {ModuleScripts} from "./ModuleScripts";
 import
 {
@@ -78,7 +78,7 @@ type TechnologyUnlocks =
 
 export class ModuleData
 {
-  public moduleFiles: ModuleFile[] = [];
+  public gameModules: GameModule[] = [];
 
   public mapBackgroundDrawingFunction: BackgroundDrawingFunction;
   public starBackgroundDrawingFunction: BackgroundDrawingFunction;
@@ -177,9 +177,9 @@ export class ModuleData
       }
     }
   }
-  public addModuleFile(moduleFile: ModuleFile): void
+  public addGameModule(gameModule: GameModule): void
   {
-    this.moduleFiles.push(moduleFile);
+    this.gameModules.push(gameModule);
   }
   public getDefaultMap(): MapGenTemplate
   {
@@ -245,12 +245,12 @@ export class ModuleData
   }
   public serialize(): ModuleSaveData[]
   {
-    return this.moduleFiles.map(moduleFile =>
+    return this.gameModules.map(gameModule =>
     {
       return(
       {
-        info: moduleFile.info,
-        moduleSaveData: moduleFile.serializeModuleSpecificData ? moduleFile.serializeModuleSpecificData : null,
+        info: gameModule.info,
+        moduleSaveData: gameModule.serializeModuleSpecificData ? gameModule.serializeModuleSpecificData : null,
       });
     });
   }

@@ -1,16 +1,16 @@
 import {englishLanguage} from "../englishlanguage/englishLanguage";
-import {ModuleFile} from "../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../src/GameModuleInitializationPhase";
 
 import {attitudeModifierTemplates} from "./attitudeModifierTemplates";
 import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";
 
 import * as moduleInfo from "./moduleInfo.json";
 
-export const defaultAttitudeModifiers: ModuleFile =
+export const defaultAttitudeModifiers: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
+  phaseToInitializeBefore: GameModuleInitializationPhase.MapGen,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>
   {

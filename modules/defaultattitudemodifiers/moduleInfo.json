@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "author": "giraluna",
   "description": "",
-  "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/defaultattitudemodifiers/index.js",
+  "moduleBundleUrl":  "http://127.0.0.1:9001/dist/modules/defaultattitudemodifiers/index.js",
   "moduleObjRequireJsName": "modules/defaultattitudemodifiers/defaultAttitudeModifiers",
-  "moduleFileVariableName": "defaultAttitudeModifiers"
+  "gameModuleVariableName": "defaultAttitudeModifiers"
 }

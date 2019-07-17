@@ -1,7 +1,7 @@
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import {ModuleData} from "../../src/ModuleData";
-import {ModuleFile} from "../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../src/GameModuleInitializationPhase";
 
 import {abilityTemplates} from "./abilities";
 import {raceTemplates} from "./raceTemplate";
@@ -11,10 +11,10 @@ import {unitTemplates} from "./unitTemplates";
 import * as moduleInfo from "./moduleInfo.json";
 
 
-export const drones: ModuleFile =
+export const drones: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.GameSetup,
+  phaseToInitializeBefore: GameModuleInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>
   {

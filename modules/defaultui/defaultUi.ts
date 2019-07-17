@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
 import {englishLanguage} from "../englishlanguage/englishLanguage";
-import {ModuleFile} from "../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../src/GameModuleInitializationPhase";
 import {svgCache} from "../../src/svgCache";
 
 import {BattleSceneTester} from "./uicomponents/BattleSceneTester";
@@ -28,10 +28,10 @@ function loadCss(url: string, baseUrl: string): void
   document.getElementsByTagName("head")[0].appendChild(link);
 }
 
-export const defaultUi: ModuleFile =
+export const defaultUi: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.AppInit,
+  phaseToInitializeBefore: GameModuleInitializationPhase.AppInit,
   supportedLanguages: [englishLanguage],
   initialize: (baseUrl) =>
   {

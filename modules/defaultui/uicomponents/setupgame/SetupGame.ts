@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 import {app} from "../../../../src/App"; // TODO global
-import {ModuleFileInitializationPhase} from "../../../../src/ModuleFileInitializationPhase";
+import {GameModuleInitializationPhase} from "../../../../src/GameModuleInitializationPhase";
 import {MapGenFunction} from "../../../../src/templateinterfaces/MapGenFunction";
 
 import {MapSetup, MapSetupComponent} from "./MapSetup";
@@ -65,7 +65,7 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   }
   private startGame()
   {
-    app.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.MapGen).then(() =>
+    app.moduleInitializer.initModulesNeededForPhase(GameModuleInitializationPhase.MapGen).then(() =>
     {
       const players = this.setupPlayersComponent.current.makeAllPlayers();
 

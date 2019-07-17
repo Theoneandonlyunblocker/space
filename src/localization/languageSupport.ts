@@ -1,4 +1,4 @@
-import {ModuleFile} from "../ModuleFile";
+import {GameModule} from "../GameModule";
 
 import {Language} from "./Language";
 
@@ -10,12 +10,12 @@ export enum LanguageSupportLevel
   Full,
 }
 
-export function getLanguageSupportLevelForModuleFiles(...moduleFiles: ModuleFile[]): LanguageSupportLevelByCode
+export function getLanguageSupportLevelForGameModules(...gameModules: GameModule[]): LanguageSupportLevelByCode
 {
-  const totalModulesCount = moduleFiles.length;
+  const totalModulesCount = gameModules.length;
   const languageSupportLevelByCode: LanguageSupportLevelByCode = {};
 
-  const modulesGroupedByLanguageSupport = groupModuleFilesByLanguageSupport(...moduleFiles);
+  const modulesGroupedByLanguageSupport = groupGameModulesByLanguageSupport(...gameModules);
 
   for (const languageCode in modulesGroupedByLanguageSupport)
   {
@@ -33,15 +33,15 @@ export function getLanguageSupportLevelForModuleFiles(...moduleFiles: ModuleFile
   return languageSupportLevelByCode;
 }
 
-export function getLanguagesByCodeFromModuleFiles(...moduleFiles: ModuleFile[]): LanguagesByCode
+export function getLanguagesByCodeFromGameModules(...gameModules: GameModule[]): LanguagesByCode
 {
   const languagesByCode: LanguagesByCode = {};
 
-  moduleFiles.forEach(moduleFile =>
+  gameModules.forEach(gameModule =>
   {
-    if (moduleFile.supportedLanguages !== "all")
+    if (gameModule.supportedLanguages !== "all")
     {
-      moduleFile.supportedLanguages.forEach(language =>
+      gameModule.supportedLanguages.forEach(language =>
       {
         languagesByCode[language.code] = language;
       });
@@ -56,9 +56,9 @@ interface LanguageSupportLevelByCode
   [languageCode: string]: LanguageSupportLevel;
 }
 
-interface ModuleFilesByLanguageCode
+interface GameModulesByLanguageCode
 {
-  [languageCode: string]: ModuleFile[];
+  [languageCode: string]: GameModule[];
 }
 
 interface LanguagesByCode
@@ -66,35 +66,35 @@ interface LanguagesByCode
   [languageCode: string]: Language;
 }
 
-function groupModuleFilesByLanguageSupport(...moduleFiles: ModuleFile[]): ModuleFilesByLanguageCode
+function groupGameModulesByLanguageSupport(...gameModules: GameModule[]): GameModulesByLanguageCode
 {
-  const moduleFilesByLanguageSupport: ModuleFilesByLanguageCode = {};
+  const gameModulesByLanguageSupport: GameModulesByLanguageCode = {};
 
-  moduleFiles.forEach(moduleFile =>
+  gameModules.forEach(gameModule =>
   {
-    if (moduleFile.supportedLanguages !== "all")
+    if (gameModule.supportedLanguages !== "all")
     {
-      moduleFile.supportedLanguages.forEach(language =>
+      gameModule.supportedLanguages.forEach(language =>
       {
-        if (!moduleFilesByLanguageSupport[language.code])
+        if (!gameModulesByLanguageSupport[language.code])
         {
-          moduleFilesByLanguageSupport[language.code] = [];
+          gameModulesByLanguageSupport[language.code] = [];
         }
 
-        moduleFilesByLanguageSupport[language.code].push(moduleFile);
+        gameModulesByLanguageSupport[language.code].push(gameModule);
       });
     }
   });
 
-  const universalModuleFiles = moduleFiles.filter(moduleFile =>
+  const universalGameModules = gameModules.filter(gameModule =>
   {
-    return moduleFile.supportedLanguages === "all";
+    return gameModule.supportedLanguages === "all";
   });
 
-  for (const code in moduleFilesByLanguageSupport)
+  for (const code in gameModulesByLanguageSupport)
   {
-    moduleFilesByLanguageSupport[code].push(...universalModuleFiles);
+    gameModulesByLanguageSupport[code].push(...universalGameModules);
   }
 
-  return moduleFilesByLanguageSupport;
+  return gameModulesByLanguageSupport;
 }

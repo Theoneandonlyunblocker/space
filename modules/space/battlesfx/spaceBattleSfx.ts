@@ -1,6 +1,6 @@
 // TODO 2019.04.10 | unused, why?
-import {ModuleFile} from "../../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../../src/GameModuleInitializationPhase";
 
 import * as battleSfxResources from "./resources";
 import * as BattleSfxTemplates from  "./templates/battleSfx";
@@ -8,10 +8,10 @@ import * as BattleSfxTemplates from  "./templates/battleSfx";
 import * as moduleInfo from "./moduleInfo.json";
 
 
-export const spaceBattleSfx: ModuleFile =
+export const spaceBattleSfx: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.BattleStart,
+  phaseToInitializeBefore: GameModuleInitializationPhase.BattleStart,
   supportedLanguages: "all",
   initialize: (baseUrl) =>
   {

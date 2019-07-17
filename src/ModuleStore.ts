@@ -1,6 +1,6 @@
 /// <reference path="../node_modules/@types/requirejs/index.d.ts" />
 
-import {ModuleFile} from "./ModuleFile";
+import {GameModule} from "./GameModule";
 import {ModuleInfo} from "./ModuleInfo";
 import * as semver from "./versions";
 import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
@@ -11,14 +11,14 @@ import * as debug from "./debug";
 export class ModuleStore
 {
   private readonly allModuleInfo: {[key: string]: ModuleInfo} = {};
-  private readonly loadedModules: {[key: string]: ModuleFile} = {};
+  private readonly loadedModules: {[key: string]: GameModule} = {};
 
   constructor()
   {
 
   }
 
-  public add(toAdd: ModuleFile): void
+  public add(toAdd: GameModule): void
   {
     const existingModuleWithSameKey = this.allModuleInfo[toAdd.info.key];
     if (existingModuleWithSameKey)
@@ -43,7 +43,7 @@ export class ModuleStore
       toAdd.subModules.forEach(subModule => this.add(subModule));
     }
   }
-  public getModules(...requestedModules: ModuleInfo[]): Promise<ModuleFile[]>
+  public getModules(...requestedModules: ModuleInfo[]): Promise<GameModule[]>
   {
     const {result: replaced, replacements} = this.getModulesWithReplacements(...requestedModules);
 
@@ -59,7 +59,7 @@ export class ModuleStore
     return this.requireModules(...ordered);
   }
 
-  private async requireModules(...modules: ModuleInfo[]): Promise<ModuleFile[]>
+  private async requireModules(...modules: ModuleInfo[]): Promise<GameModule[]>
   {
     await Promise.all(modules.map(moduleInfo =>
     {
@@ -68,13 +68,13 @@ export class ModuleStore
 
     return Promise.all(modules.map(moduleInfo =>
     {
-      const promise: Promise<ModuleFile> = new Promise(resolve =>
+      const promise: Promise<GameModule> = new Promise(resolve =>
       {
         require([moduleInfo.moduleObjRequireJsName], (importedModule: any) =>
         {
-          const moduleFile: ModuleFile = importedModule[moduleInfo.moduleFileVariableName];
+          const gameModule: GameModule = importedModule[moduleInfo.gameModuleVariableName];
 
-          resolve(moduleFile);
+          resolve(gameModule);
         });
       });
 
@@ -97,7 +97,7 @@ export class ModuleStore
   }
   private fetchRemoteBundle(moduleInfo: ModuleInfo): Promise<void>
   {
-    const url = new URL(moduleInfo.moduleFileUrl).toString();
+    const url = new URL(moduleInfo.moduleBundleUrl).toString();
     if (url.substring(url.length - 3, url.length) !== ".js")
     {
       throw new Error(`Module file URL must end in '.js'.` +

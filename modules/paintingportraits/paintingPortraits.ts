@@ -1,5 +1,5 @@
-import {ModuleFile} from "../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../src/GameModuleInitializationPhase";
 
 import {paintingPortraitTemplates} from "./paintingPortraitTemplates";
 import {setBaseUrl as setAssetBaseUrl} from "./assets";
@@ -7,10 +7,10 @@ import {setBaseUrl as setAssetBaseUrl} from "./assets";
 import * as moduleInfo from "./moduleInfo.json";
 
 
-export const paintingPortraits: ModuleFile =
+export const paintingPortraits: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.MapGen,
+  phaseToInitializeBefore: GameModuleInitializationPhase.MapGen,
   supportedLanguages: "all",
   initialize: (baseUrl) =>
   {

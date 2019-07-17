@@ -1,16 +1,16 @@
 import {ModuleData} from "../../../src/ModuleData";
-import {ModuleFile} from "../../../src/ModuleFile";
-import {ModuleFileInitializationPhase} from "../../../src/ModuleFileInitializationPhase";
+import {GameModule} from "../../../src/GameModule";
+import {GameModuleInitializationPhase} from "../../../src/GameModuleInitializationPhase";
 
 import {drawNebula} from "./drawNebula";
 
 import * as moduleInfo from "./moduleInfo.json";
 
 
-export const spaceBackgrounds: ModuleFile =
+export const spaceBackgrounds: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: ModuleFileInitializationPhase.GameStart,
+  phaseToInitializeBefore: GameModuleInitializationPhase.GameStart,
   supportedLanguages: "all",
   addToModuleData: (moduleData: ModuleData) =>
   {

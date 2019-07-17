@@ -6,7 +6,7 @@ import {GalaxyMap} from "./GalaxyMap";
 import {Game} from "./Game";
 import {GameLoader} from "./GameLoader";
 import {MapRenderer} from "./MapRenderer";
-import {ModuleFileInitializationPhase} from "./ModuleFileInitializationPhase";
+import {GameModuleInitializationPhase} from "./GameModuleInitializationPhase";
 import {ModuleInitializer} from "./ModuleInitializer";
 import {Options} from "./Options";
 import {Player} from "./Player";
@@ -75,9 +75,9 @@ class App
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
     window.onerror = handleError;
 
-    activeModuleStore.getModules(...initialModules).then((moduleFiles) =>
+    activeModuleStore.getModules(...initialModules).then((gameModules) =>
     {
-      this.moduleInitializer = new ModuleInitializer(activeModuleData, moduleFiles);
+      this.moduleInitializer = new ModuleInitializer(activeModuleData, gameModules);
     }).then(() =>
     {
       return loadDom();
@@ -91,7 +91,7 @@ class App
       // still necessary with promise, as Promise.all may be synchronous
       window.setTimeout(() =>
       {
-        return this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.AppInit).then(() =>
+        return this.moduleInitializer.initModulesNeededForPhase(GameModuleInitializationPhase.AppInit).then(() =>
         {
           return Promise.all(
           [
@@ -114,7 +114,7 @@ class App
 
     this.initUI();
 
-    this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
+    this.moduleInitializer.initModulesNeededForPhase(GameModuleInitializationPhase.GameStart).then(() =>
     {
       this.initGame(new Game(map, players)).then(() =>
       {
@@ -143,7 +143,7 @@ class App
           this.initUI();
         }
 
-        return this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
+        return this.moduleInitializer.initModulesNeededForPhase(GameModuleInitializationPhase.GameStart).then(() =>
         {
           const game = new GameLoader().deserializeGame(data.gameData);
           game.gameStorageKey = saveKey;
@@ -161,7 +161,7 @@ class App
   {
     const startTime = Date.now();
 
-    this.moduleInitializer.progressivelyInitModulesByPhase(ModuleFileInitializationPhase.AppInit + 1);
+    this.moduleInitializer.progressivelyInitModulesByPhase(GameModuleInitializationPhase.AppInit + 1);
 
     const optionsInUrl = this.getOptionsInUrl();
     const initialScene = optionsInUrl.initialScene;
@@ -176,7 +176,7 @@ class App
 
     if (initialScene === "galaxyMap" || optionsInUrl.params.save)
     {
-      this.moduleInitializer.initModulesNeededForPhase(ModuleFileInitializationPhase.GameStart).then(() =>
+      this.moduleInitializer.initModulesNeededForPhase(GameModuleInitializationPhase.GameStart).then(() =>
       {
         if (optionsInUrl.params.save)
         {

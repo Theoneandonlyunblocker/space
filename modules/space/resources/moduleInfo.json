@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "author": "giraluna",
   "description": "",
-  "moduleFileUrl":  "http://127.0.0.1:9001/dist/modules/space/resources/index.js",
+  "moduleBundleUrl":  "http://127.0.0.1:9001/dist/modules/space/resources/index.js",
   "moduleObjRequireJsName": "modules/space/resources/spaceResources",
-  "moduleFileVariableName": "spaceResources"
+  "gameModuleVariableName": "spaceResources"
 }
