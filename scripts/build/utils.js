@@ -10,14 +10,17 @@ const {spawn} = require("child_process");
 
 exports.prefixJsonAmdImports = (source) =>
 {
+  const defineBlock = source.match(/define\((.+?)\)/)[1];
   const toSearch = /"([^"!]+?)\.json"/g;
   const toReplaceWith = `"json!$1.json"`;
 
-  if (source.match(toSearch))
+  if (defineBlock.match(toSearch))
   {
+    const prefixedDefineBlock = defineBlock.replace(toSearch, toReplaceWith);
+
     return(
     {
-      data: source.replace(toSearch, toReplaceWith),
+      data: source.replace(defineBlock, prefixedDefineBlock),
       didChange: true,
     });
   }
@@ -70,7 +73,7 @@ exports.nameAmdModules = (source, fileName) =>
     data = data.replace(defineArgs, defineArgsWithResolvedPaths);
 
     // exports
-    data = source.replace(toSearch, toReplaceWith);
+    data = data.replace(toSearch, toReplaceWith);
 
     process.chdir(oldCwd);
 
@@ -114,11 +117,11 @@ exports.removeSourceMappingUrl = (source) =>
     });
   }
 }
-exports.getJsFilesInDir = (dir) =>
+exports.glob = (pattern) =>
 {
   return new Promise(resolve =>
   {
-    glob(path.posix.join(dir, "/**/*.js"), (err, fileNames) =>
+    glob(pattern, (err, fileNames) =>
     {
       if (err)
       {
