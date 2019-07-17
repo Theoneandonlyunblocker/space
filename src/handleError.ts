@@ -1,5 +1,5 @@
 import {app} from "./App"; // TODO global
-import {Options} from "./Options";
+import {options} from "./Options";
 
 
 let hasAlertedOfError: boolean = false;
@@ -23,7 +23,7 @@ export const handleError: OnErrorEventHandlerNonNull = (message, source, lineno,
 
 function getErrorHandler(): OnErrorEventHandlerNonNull
 {
-  switch (Options.system.errorReporting)
+  switch (options.system.errorReporting)
   {
     case "ignore":
     {

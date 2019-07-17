@@ -2,7 +2,7 @@ import * as React from "react";
 
 import {app} from "../../../../src/App"; // TODO global
 import {activeModuleData} from "../../../../src/activeModuleData";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {Language} from "../../../../src/localization/Language";
 import
 {
@@ -50,8 +50,8 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
 
   private handleLanguageChange(newLanguage: Language): void
   {
-    Options.display.language = newLanguage;
-    Options.save();
+    options.display.language = newLanguage;
+    options.save();
 
     if (this.props.onChange)
     {

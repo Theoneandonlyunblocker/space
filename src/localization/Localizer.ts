@@ -9,7 +9,7 @@ import
 } from "../utility";
 
 import {Language} from "./Language";
-import {Options} from "../Options";
+import {options} from "../Options";
 
 
 // messageformat.js requires positional arguments to be wrapped in an array.
@@ -108,7 +108,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
   // tslint:disable-next-line:no-any
   public localize(key: keyof Messages): MessageFunction<any>
   {
-    const activeLanguage = Options.display.language;
+    const activeLanguage = options.display.language;
 
     const compiledMessagesForLanguage = this.compiledMessagesByLanguageCode[activeLanguage.code];
     if (compiledMessagesForLanguage)

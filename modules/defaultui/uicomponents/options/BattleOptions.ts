@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {OptionsGroup} from "./OptionsGroup";
 import {OptionsNumericField} from "./OptionsNumericField";
 
@@ -97,13 +97,13 @@ export class BattleOptionsComponent extends React.Component<PropTypes, StateType
               {
                 label: stage.displayName,
                 id: "options-battle-animation-" + key,
-                value: Options.battle.animationTiming[key],
+                value: options.battle.animationTiming[key],
                 min: stage.min,
                 max: stage.max,
                 step: stage.step,
                 onChange: (value: number) =>
                 {
-                  Options.battle.animationTiming[key] = value;
+                  options.battle.animationTiming[key] = value;
                   this.forceUpdate();
                 },
               }),
@@ -111,7 +111,7 @@ export class BattleOptionsComponent extends React.Component<PropTypes, StateType
           }),
           resetFN: () =>
           {
-            Options.setDefaultForCategory("battle.animationTiming");
+            options.setDefaultForCategory("battle.animationTiming");
             this.forceUpdate();
           },
         }),

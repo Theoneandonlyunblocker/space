@@ -7,7 +7,7 @@ import {SfxParams} from "./templateinterfaces/SfxParams";
 
 import {BattleSceneUnit} from "./BattleSceneUnit";
 import {BattleSceneUnitOverlay} from "./BattleSceneUnitOverlay";
-import {Options} from "./Options";
+import {options} from "./Options";
 import {Unit} from "./Unit";
 import {UnitBattleSide} from "./UnitBattleSide";
 import * as debug from "./debug";
@@ -238,7 +238,7 @@ export class BattleScene
   }): SfxParams
   {
     const bounds = this.getSceneBounds();
-    const duration = this.activeSfx.duration * Options.battle.animationTiming.effectDuration;
+    const duration = this.activeSfx.duration * options.battle.animationTiming.effectDuration;
 
     return(
     {
@@ -366,7 +366,7 @@ export class BattleScene
 
   private prepareSfx()
   {
-    const beforeUseDelay = Options.battle.animationTiming.before;
+    const beforeUseDelay = options.battle.animationTiming.before;
 
     const afterUnitsHaveFinishedUpdatingCallback = () =>
     {
@@ -385,7 +385,7 @@ export class BattleScene
   }
   private playSfx()
   {
-    const sfxDuration = Options.battle.animationTiming.effectDuration * this.activeSfx!.duration;
+    const sfxDuration = options.battle.animationTiming.effectDuration * this.activeSfx!.duration;
 
     this.executeOnSfxStartCallback();
 
@@ -420,7 +420,7 @@ export class BattleScene
   }
   private handleActiveSfxEnd()
   {
-    const afterUseDelay = Options.battle.animationTiming.after;
+    const afterUseDelay = options.battle.animationTiming.after;
 
     this.afterUseDelayHasFinishedCallback = () =>
     {

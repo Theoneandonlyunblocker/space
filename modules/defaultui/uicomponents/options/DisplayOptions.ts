@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 import {eventManager} from "../../../../src/eventManager";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
 import {OptionsCheckbox} from "./OptionsCheckbox";
 import {NotificationFilterButton} from "../notifications/NotificationFilterButton";
@@ -61,7 +61,7 @@ export class DisplayOptionsComponent extends React.Component<PropTypes, StateTyp
           options: this.getUIOptions(),
           resetFN: () =>
           {
-            Options.setDefaultForCategory("display");
+            options.setDefaultForCategory("display");
             this.forceUpdate();
           },
         })
@@ -77,11 +77,11 @@ export class DisplayOptionsComponent extends React.Component<PropTypes, StateTyp
         key: "noHamburger",
         content: OptionsCheckbox(
         {
-          isChecked: Options.display.noHamburger,
+          isChecked: options.display.noHamburger,
           label: localize("alwaysExpandTopRightMenuOnLowResolution")(),
           onChangeFN: () =>
           {
-            Options.display.noHamburger = !Options.display.noHamburger;
+            options.display.noHamburger = !options.display.noHamburger;
             eventManager.dispatchEvent("updateHamburgerMenu");
             this.forceUpdate();
           },

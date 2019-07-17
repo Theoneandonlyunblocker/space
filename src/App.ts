@@ -8,7 +8,7 @@ import {GameLoader} from "./GameLoader";
 import {MapRenderer} from "./MapRenderer";
 import {GameModuleInitializationPhase} from "./GameModuleInitializationPhase";
 import {ModuleInitializer} from "./ModuleInitializer";
-import {Options} from "./Options";
+import {options} from "./Options";
 import {Player} from "./Player";
 import {PlayerControl} from "./PlayerControl";
 import {ReactUI} from "./ReactUI";
@@ -95,7 +95,7 @@ class App
         {
           return Promise.all(
           [
-            Options.load(),
+            options.load(),
             TutorialStatus.load(),
           ]);
         }).then(() =>

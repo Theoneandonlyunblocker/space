@@ -1,6 +1,6 @@
 import {unitTemplates as units} from "../../units/unitTemplates";
 import {debugShip} from "../../units/templates/debugShip";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {UnitTemplate} from "../../../../src/templateinterfaces/UnitTemplate";
 
 
@@ -16,7 +16,7 @@ export function getDefaultBuildableUnits(): UnitTemplate[]
     units.shieldBoat,
   ];
 
-  if (Options.debug.enabled)
+  if (options.debug.enabled)
   {
     availableUnits.push(debugShip);
   }

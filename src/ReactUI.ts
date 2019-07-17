@@ -13,7 +13,7 @@ import {ReactUIScene} from "./UIScenes";
 import {Renderer} from "./Renderer";
 import {activePlayer} from "./activePlayer";
 import {eventManager} from "./eventManager";
-import {Options} from "./Options";
+import {options} from "./Options";
 
 import {activeModuleData} from "./activeModuleData";
 
@@ -82,7 +82,7 @@ export class ReactUI
       React.createElement(React.StrictMode, null,
         activeModuleData.uiScenes.topLevelErrorBoundary(
         {
-          errorReportingMode: Options.system.errorReporting,
+          errorReportingMode: options.system.errorReporting,
         },
           elementToRender,
         ),
@@ -130,7 +130,7 @@ export class ReactUI
           playerControl: this.playerControl,
           player: this.player,
           game: this.game,
-          activeLanguage: Options.display.language,
+          activeLanguage: options.display.language,
           notifications: [...activePlayer.notificationLog.unreadNotifications],
           notificationLog: activePlayer.notificationLog,
         });

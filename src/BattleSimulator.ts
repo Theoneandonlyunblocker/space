@@ -2,7 +2,7 @@ import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
 
 import {Battle} from "./Battle";
 import {MCTree} from "./MCTree";
-import {Options} from "./Options";
+import {options} from "./Options";
 import {Unit} from "./Unit";
 import
 {
@@ -42,14 +42,14 @@ export class BattleSimulator
     }
 
     const rootVisitsUnderSimulationDepth = Math.min(
-      Options.debug.aiVsAiBattleSimulationDepth - this.tree.rootNode.visits,
+      options.debug.aiVsAiBattleSimulationDepth - this.tree.rootNode.visits,
       0,
     );
 
     const iterations = Math.max(
       rootVisitsUnderSimulationDepth,
-      this.tree.rootNode.getPossibleMoves(this.battle).length * Math.log(Options.debug.aiVsPlayerBattleSimulationDepth),
-      Options.debug.aiVsAiBattleSimulationDepth / 2,
+      this.tree.rootNode.getPossibleMoves(this.battle).length * Math.log(options.debug.aiVsPlayerBattleSimulationDepth),
+      options.debug.aiVsAiBattleSimulationDepth / 2,
     );
 
     const move = this.tree.getBestMoveAndAdvance(

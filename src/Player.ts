@@ -11,7 +11,7 @@ import {Game} from "./Game";
 import {Item} from "./Item";
 import {Manufactory} from "./Manufactory";
 import {Name} from "./Name";
-import {Options} from "./Options";
+import {options} from "./Options";
 import {PlayerDiplomacy} from "./PlayerDiplomacy";
 import {PlayerTechnology} from "./PlayerTechnology";
 import {Point} from "./Point";
@@ -656,7 +656,7 @@ export class Player
   }
   getVisibleStars(): Star[]
   {
-    if (!this.isAi && Options.debug.enabled)
+    if (!this.isAi && options.debug.enabled)
     {
       return this.getDebugVisibleStars();
     }
@@ -677,7 +677,7 @@ export class Player
   }
   getRevealedStars(): Star[]
   {
-    if (!this.isAi && Options.debug.enabled)
+    if (!this.isAi && options.debug.enabled)
     {
       return this.getDebugVisibleStars();
     }
@@ -716,7 +716,7 @@ export class Player
   }
   getDetectedStars(): Star[]
   {
-    if (!this.isAi && Options.debug.enabled)
+    if (!this.isAi && options.debug.enabled)
     {
       return this.getDebugVisibleStars();
     }
@@ -736,7 +736,7 @@ export class Player
   }
   starIsVisible(star: Star): boolean
   {
-    if (!this.isAi && Options.debug.enabled) { return true; }
+    if (!this.isAi && options.debug.enabled) { return true; }
     if (this.visionIsDirty)
     {
       this.updateVisibleStars();
@@ -746,7 +746,7 @@ export class Player
   }
   starIsRevealed(star: Star): boolean
   {
-    if (!this.isAi && Options.debug.enabled) { return true; }
+    if (!this.isAi && options.debug.enabled) { return true; }
     if (this.visionIsDirty)
     {
       this.updateVisibleStars();
@@ -756,7 +756,7 @@ export class Player
   }
   starIsDetected(star: Star): boolean
   {
-    if (!this.isAi && Options.debug.enabled) { return true; }
+    if (!this.isAi && options.debug.enabled) { return true; }
     if (this.visionIsDirty)
     {
       this.updateVisibleStars();
@@ -805,7 +805,7 @@ export class Player
   }
   unitIsIdentified(unit: Unit): boolean
   {
-    if (Options.debug.enabled && !this.isAi)
+    if (options.debug.enabled && !this.isAi)
     {
       return true;
     }
@@ -816,7 +816,7 @@ export class Player
   }
   fleetIsFullyIdentified(fleet: Fleet): boolean
   {
-    if (Options.debug.enabled && !this.isAi)
+    if (options.debug.enabled && !this.isAi)
     {
       return true;
     }

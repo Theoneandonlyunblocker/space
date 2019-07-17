@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {Language} from "../../../../src/localization/Language";
 import {DialogBox} from "../windows/DialogBox";
 
@@ -50,7 +50,7 @@ export class FullOptionsListComponent extends React.Component<PropTypes, StateTy
             title: localize("resetAllOptions")(),
             handleOk: () =>
             {
-              Options.setDefaults();
+              options.setDefaults();
               this.closeResetAllOptionsDialog();
             },
             handleCancel: () =>

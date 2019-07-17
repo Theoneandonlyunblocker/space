@@ -5,7 +5,7 @@ import * as PIXI from "pixi.js";
 import {BattleSfxTemplate} from "./templateinterfaces/BattleSfxTemplate";
 import {SfxParams} from "./templateinterfaces/SfxParams";
 
-import {Options} from "./Options";
+import {options} from "./Options";
 import {Unit} from "./Unit";
 import {UnitBattleSide} from "./UnitBattleSide";
 import * as debug from "./debug";
@@ -83,7 +83,7 @@ export class BattleSceneUnit
   {
     if (this.activeUnit)
     {
-      const duration = sfxTemplate.duration * Options.battle.animationTiming.effectDuration;
+      const duration = sfxTemplate.duration * options.battle.animationTiming.effectDuration;
       if (this.activeUnit === user && sfxTemplate.userSprite)
       {
         this.setSfxSprite(sfxTemplate.userSprite, duration);
@@ -178,7 +178,7 @@ export class BattleSceneUnit
   {
     debug.log("graphics", "startUnitSpriteEnter", this.side, unit.id);
 
-    const enterAnimationDuration = Options.battle.animationTiming.unitEnter;
+    const enterAnimationDuration = options.battle.animationTiming.unitEnter;
     if (enterAnimationDuration <= 0)
     {
       this.enterUnitSpriteWithoutAnimation(unit);
@@ -213,7 +213,7 @@ export class BattleSceneUnit
   {
     debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "startUnitSpriteExit");
 
-    const exitAnimationDuration = Options.battle.animationTiming.unitExit;
+    const exitAnimationDuration = options.battle.animationTiming.unitExit;
     if (exitAnimationDuration <= 0)
     {
       this.exitUnitSpriteWithoutAnimation();

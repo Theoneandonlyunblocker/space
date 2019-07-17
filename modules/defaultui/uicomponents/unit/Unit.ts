@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {UnitDisplayData} from "../../../../src/UnitDisplayData";
 import {DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import {applyMixins} from "../mixins/applyMixins";
@@ -168,7 +168,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     {
       wrapperProps.className += " active-effect-unit";
     }
-    if (Options.debug.enabled)
+    if (options.debug.enabled)
     {
       wrapperProps.title = `id: ${this.props.id}`;
     }

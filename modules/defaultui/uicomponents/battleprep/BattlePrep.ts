@@ -15,7 +15,7 @@ import
 } from "../../../../src/BattlePrepFormationValidity";
 import {BattleSimulator} from "../../../../src/BattleSimulator";
 import {Item} from "../../../../src/Item";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {Unit} from "../../../../src/Unit";
 import {activeModuleData} from "../../../../src/activeModuleData";
 import { extractFlagsFromFlagWord } from "../../../../src/utility";
@@ -267,7 +267,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
                 app.reactUI.switchScene("battle");
               },
             }, localize("startBattle")()),
-            !Options.debug.enabled ? null : ReactDOMElements.button(
+            !options.debug.enabled ? null : ReactDOMElements.button(
             {
               className: "battle-prep-controls-button",
               onClick: () =>

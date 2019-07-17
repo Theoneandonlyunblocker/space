@@ -6,7 +6,7 @@ import {AbilityUseEffectQueue} from "../../../../src/AbilityUseEffectQueue";
 import {Battle as BattleObj} from "../../../../src/Battle";
 import {BattleScene as BattleSceneObj} from "../../../../src/BattleScene";
 import {MCTree} from "../../../../src/MCTree";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {Player} from "../../../../src/Player";
 import {Unit} from "../../../../src/Unit";
 import {UnitDisplayData} from "../../../../src/UnitDisplayData";
@@ -401,7 +401,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleSceneUnit2: units.side2,
       playingBattleEffect: true,
       UIState: BattleUIState.PlayingSfx,
-      battleEffectDuration: effect.sfx.duration * Options.battle.animationTiming.effectDuration,
+      battleEffectDuration: effect.sfx.duration * options.battle.animationTiming.effectDuration,
     }, this.clearHoveredUnit);
   }
   private playQueuedBattleEffects()
@@ -447,7 +447,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.battleScene.activeUnit = null;
     this.battleScene.updateUnits(() =>
     {
-      window.setTimeout(cb, Options.battle.animationTiming.turnTransition);
+      window.setTimeout(cb, options.battle.animationTiming.turnTransition);
       this.setState(
       {
         UIState: BattleUIState.TransitioningTurn,
@@ -517,8 +517,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
     const iterations = Math.max(
-      Options.debug.aiVsPlayerBattleSimulationDepth,
-      this.mcTree.rootNode.getPossibleMoves(this.props.battle).length * Math.sqrt(Options.debug.aiVsPlayerBattleSimulationDepth),
+      options.debug.aiVsPlayerBattleSimulationDepth,
+      this.mcTree.rootNode.getPossibleMoves(this.props.battle).length * Math.sqrt(options.debug.aiVsPlayerBattleSimulationDepth),
     );
 
     const move = this.mcTree.getBestMoveAndAdvance(iterations, 0.25);
@@ -599,7 +599,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         onMouseLeaveUnit: this.handleMouseLeaveUnit,
 
         turnIsTransitioning: this.state.UIState === BattleUIState.TransitioningTurn,
-        transitionDuration: Options.battle.animationTiming.turnTransition / 2,
+        transitionDuration: options.battle.animationTiming.turnTransition / 2,
       });
     }
     else

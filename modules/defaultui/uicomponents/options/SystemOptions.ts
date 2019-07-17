@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize, AllMessages as LocalizationKeys} from "../../localization/localize";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
 import { errorReportingModes, ErrorReportingMode } from "../../../../src/handleError";
 
@@ -60,7 +60,7 @@ export class SystemOptionsComponent extends React.Component<PropTypes, StateType
           options: this.getOptions(),
           resetFN: () =>
           {
-            Options.setDefaultForCategory("system");
+            options.setDefaultForCategory("system");
             this.forceUpdate();
           },
         }),
@@ -82,14 +82,14 @@ export class SystemOptionsComponent extends React.Component<PropTypes, StateType
           {
             className: "error-reporting-mode-select",
             id: "system-options-error-reporting-mode-select",
-            value: Options.system.errorReporting,
-            title: localize(localizationKeyForErrorReportingModeDescription[Options.system.errorReporting])(),
+            value: options.system.errorReporting,
+            title: localize(localizationKeyForErrorReportingModeDescription[options.system.errorReporting])(),
             onChange: (e) =>
             {
               const target = e.currentTarget;
               const selectedMode = <ErrorReportingMode> target.value;
 
-              Options.system.errorReporting = selectedMode;
+              options.system.errorReporting = selectedMode;
 
               this.forceUpdate();
             }

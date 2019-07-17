@@ -1,5 +1,3 @@
-// TODO 2019.07.07 | indexes isn't the right word here. bit confusing
-
 import {activeModuleData} from "./activeModuleData";
 import {Distributable} from "./templateinterfaces/Distributable";
 import {ItemTemplate} from "./templateinterfaces/ItemTemplate";

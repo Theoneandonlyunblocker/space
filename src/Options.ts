@@ -122,8 +122,7 @@ const defaultOptionsValues: OptionsValues =
   },
 };
 
-// TODO 2019.07.06 |
-class _Options implements OptionsValues
+class Options implements OptionsValues
 {
   battle:
   {
@@ -336,5 +335,4 @@ class _Options implements OptionsValues
   }
 }
 
-// TODO 2019.07.06 |
-export const Options = new _Options();
+export const options = new Options();

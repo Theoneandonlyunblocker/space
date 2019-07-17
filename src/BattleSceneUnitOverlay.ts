@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 import {BattleSfxTemplate} from "./templateinterfaces/BattleSfxTemplate";
 import {SfxParams} from "./templateinterfaces/SfxParams";
 
-import {Options} from "./Options";
+import {options} from "./Options";
 import {Unit} from "./Unit";
 
 
@@ -40,7 +40,7 @@ export class BattleSceneUnitOverlay
   {
     if (this.activeUnit)
     {
-      const duration = sfxTemplate.duration * Options.battle.animationTiming.effectDuration;
+      const duration = sfxTemplate.duration * options.battle.animationTiming.effectDuration;
       if (this.activeUnit === user && sfxTemplate.userOverlay)
       {
         this.setOverlay(sfxTemplate.userOverlay, user, duration);

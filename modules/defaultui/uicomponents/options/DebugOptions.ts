@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 import {eventManager} from "../../../../src/eventManager";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
 import {OptionsNumericField} from "./OptionsNumericField";
 import {OptionsCheckbox} from "./OptionsCheckbox";
@@ -42,18 +42,18 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
           options: this.getDebugOptions(),
           resetFN: () =>
           {
-            Options.setDefaultForCategory("debug");
+            options.setDefaultForCategory("debug");
             this.forceUpdate();
           },
         }),
-        !Options.debug.enabled ? null : OptionsGroup(
+        !options.debug.enabled ? null : OptionsGroup(
         {
           key: "loggingOptions",
           headerTitle: localize("logging")(),
           options: this.getLoggingOptions(),
           resetFN: () =>
           {
-            Options.setDefaultForCategory("debug.logging");
+            options.setDefaultForCategory("debug.logging");
             this.forceUpdate();
           },
         })
@@ -65,7 +65,7 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
   {
     const allOptions: OptionsGroupItem[] = this.getAlwaysVisibleDebugOptions();
 
-    if (Options.debug.enabled)
+    if (options.debug.enabled)
     {
       allOptions.push(...this.getDebugModeOnlyDebugOptions());
     }
@@ -80,11 +80,11 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
         key: "debugMode",
         content: OptionsCheckbox(
         {
-          isChecked: Options.debug.enabled,
+          isChecked: options.debug.enabled,
           label: localize("debugMode")(),
           onChangeFN: () =>
           {
-            Options.debug.enabled = !Options.debug.enabled;
+            options.debug.enabled = !options.debug.enabled;
             this.forceUpdate();
             eventManager.dispatchEvent("renderUI");
           },
@@ -102,13 +102,13 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
         {
           label: localize("aiVsAiBattleSimulationDepth")(),
           id: "ai-battle-simulation-depth-input",
-          value: Options.debug.aiVsAiBattleSimulationDepth,
+          value: options.debug.aiVsAiBattleSimulationDepth,
           min: 1,
           max: 500,
           step: 1,
           onChange: value =>
           {
-            Options.debug.aiVsAiBattleSimulationDepth = value;
+            options.debug.aiVsAiBattleSimulationDepth = value;
             this.forceUpdate();
           },
         }),
@@ -119,13 +119,13 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
         {
           label: localize("aiVsPlayerBattleSimulationDepth")(),
           id: "player-battle-simulation-depth-input",
-          value: Options.debug.aiVsPlayerBattleSimulationDepth,
+          value: options.debug.aiVsPlayerBattleSimulationDepth,
           min: 1,
           max: 10000,
           step: 1,
           onChange: value =>
           {
-            Options.debug.aiVsPlayerBattleSimulationDepth = value;
+            options.debug.aiVsPlayerBattleSimulationDepth = value;
             this.forceUpdate();
           },
         }),
@@ -134,7 +134,7 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
   }
   private getLoggingOptions(): OptionsGroupItem[]
   {
-    return Object.keys(Options.debug.logging).map(category =>
+    return Object.keys(options.debug.logging).map(category =>
     {
       const keyForCategory =
       {
@@ -152,11 +152,11 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
         key: key,
         content: OptionsCheckbox(
         {
-          isChecked: Options.debug.logging[category],
+          isChecked: options.debug.logging[category],
           label: localize(key)(),
           onChangeFN: () =>
           {
-            Options.debug.logging[category] = !Options.debug.logging[category];
+            options.debug.logging[category] = !options.debug.logging[category];
             this.forceUpdate();
           },
         }),

@@ -11,7 +11,6 @@ export interface ModuleSaveData<S = any>
   moduleSaveData: S;
 }
 
-// TODO 2019.07.15 | this really should be named moduleobject or something
 export interface GameModule<SaveData = any>
 {
   info: ModuleInfo;

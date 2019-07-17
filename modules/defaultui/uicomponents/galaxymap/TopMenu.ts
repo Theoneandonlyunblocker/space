@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 import {Game} from "../../../../src/Game";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {Player} from "../../../../src/Player";
 import {Star} from "../../../../src/Star";
 import {eventManager} from "../../../../src/eventManager";
@@ -149,7 +149,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     const topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
     const leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
 
-    if (this.state.hasCondensedMenu && !Options.display.noHamburger)
+    if (this.state.hasCondensedMenu && !options.display.noHamburger)
     {
       topMenuItems.push(ReactDOMElements.button(
       {
@@ -172,7 +172,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     }
 
     let openedCondensedMenu: React.ReactHTMLElement<any> = null;
-    if ((this.state.condensedMenuOpened || Options.display.noHamburger) && leftoverButtons.length > 0)
+    if ((this.state.condensedMenuOpened || options.display.noHamburger) && leftoverButtons.length > 0)
     {
       openedCondensedMenu = ReactDOMElements.div(
       {
@@ -230,7 +230,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       hasCondensedMenu: false,
       opened: false,
       buttonsToPlace: 999,
-      condensedMenuOpened: Options.display.noHamburger,
+      condensedMenuOpened: options.display.noHamburger,
     });
   }
   private handleToggleHamburger()
@@ -299,7 +299,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
     if (hasCondensedMenu)
     {
-      if (!Options.display.noHamburger)
+      if (!options.display.noHamburger)
       {
         spaceAvailable -= this.cachedMenuButtonWidth;
       }

@@ -4,7 +4,7 @@ import * as localForage from "localforage";
 
 import {localize} from "../../localization/localize";
 import {Game} from "../../../../src/Game";
-import {Options} from "../../../../src/Options";
+import {options} from "../../../../src/Options";
 import {Player} from "../../../../src/Player";
 import {Rect} from "../../../../src/Rect";
 import {Star} from "../../../../src/Star";
@@ -243,7 +243,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
 
     if (popupType === "options")
     {
-      Options.save();
+      options.save();
     }
 
     this.popupComponents[popupType] = null;

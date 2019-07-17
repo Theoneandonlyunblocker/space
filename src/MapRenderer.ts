@@ -7,7 +7,7 @@ import {MapRendererMapModeTemplate} from "./templateinterfaces/MapRendererMapMod
 import {GalaxyMap} from "./GalaxyMap";
 import {MapRendererLayer} from "./MapRendererLayer";
 import {MapRendererMapMode} from "./MapRendererMapMode";
-import {Options} from "./Options";
+import {options} from "./Options";
 import {Player} from "./Player";
 import {Star} from "./Star";
 import {eventManager} from "./eventManager";
@@ -100,7 +100,7 @@ export class MapRenderer
         }
       }
 
-      if (passesStarVisibilityCheck || Options.debug.enabled)
+      if (passesStarVisibilityCheck || options.debug.enabled)
       {
         this.setLayerAsDirty(layerName);
       }
