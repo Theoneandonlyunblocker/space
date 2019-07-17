@@ -51,15 +51,15 @@
       return PIXI;
     });
 
-    require(["./dist/_temp_app/index.js", "./dist/src/index.js", "./dist/modules/common/index.js"], () =>
+    require(["./dist/_temp_app/index.js", "./dist/src/index.js", "./dist/modules/common/index.js"], function()
     {
-      require(["_temp_app/defaultModules"], (defaultModules) =>
+      require(["_temp_app/defaultModules"], function(defaultModules)
       {
         window.defaultModules = defaultModules.defaultModules;
 
-        require(["src/App"], (app) =>
+        require(["src/App"], function(app)
         {
-          window.app = app.createApp(...window.defaultModules);
+          window.app = app.createApp.apply(null, window.defaultModules);
         });
       });
     });
