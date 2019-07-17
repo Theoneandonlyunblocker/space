@@ -56,48 +56,59 @@ export class ModuleStore
 
     const ordered = this.getModuleLoadOrder(...replaced);
 
-    return Promise.all(ordered.map(moduleInfo =>  this.fetch(moduleInfo)));
+    return this.requireModules(...ordered);
   }
 
-  private fetch(moduleInfo: ModuleInfo): Promise<ModuleFile>
+  private async requireModules(...modules: ModuleInfo[]): Promise<ModuleFile[]>
   {
-    // in memory
+    await Promise.all(modules.map(moduleInfo =>
+    {
+      return this.fetchBundle(moduleInfo);
+    }));
+
+    return Promise.all(modules.map(moduleInfo =>
+    {
+      const promise: Promise<ModuleFile> = new Promise(resolve =>
+      {
+        require([moduleInfo.moduleObjRequireJsName], (importedModule: any) =>
+        {
+          const moduleFile: ModuleFile = importedModule[moduleInfo.moduleFileVariableName];
+
+          resolve(moduleFile);
+        });
+      });
+
+      return promise;
+    }));
+  }
+  private fetchBundle(moduleInfo: ModuleInfo): Promise<void>
+  {
+    // already in memory
     if (this.loadedModules[moduleInfo.key])
     {
-      return Promise.resolve(this.loadedModules[moduleInfo.key]);
+      return Promise.resolve();
     }
 
     // remote
-    return this.fetchRemote(moduleInfo).then(moduleFile =>
+    return this.fetchRemoteBundle(moduleInfo).catch(reason =>
     {
-      this.add(moduleFile);
-
-      return moduleFile;
-    }).catch(reason =>
-    {
-      throw new Error(`Couldn't load module '${moduleInfo.key}'.\n${reason}`);
+      throw new Error(`Couldn't fetch module '${moduleInfo.key}'.\n${reason}`);
     });
   }
-  private fetchRemote(moduleInfo: ModuleInfo): Promise<ModuleFile>
+  private fetchRemoteBundle(moduleInfo: ModuleInfo): Promise<void>
   {
-    let url = new URL(moduleInfo.moduleFileUrl).toString();
+    const url = new URL(moduleInfo.moduleFileUrl).toString();
     if (url.substring(url.length - 3, url.length) !== ".js")
     {
       throw new Error(`Module file URL must end in '.js'.` +
-      ` Module ${moduleInfo.key} specifies URL as ${url}`);
+      ` Module '${moduleInfo.key}' specifies URL as ${url}`);
     }
-
-    // strip file extension, as it's added by onNodeCreated hook
-    // otherwise requirejs doesn't know how to handle relative paths in file loaded via absolute path
-    url = url.slice(0, url.length - 3);
 
     return new Promise((resolve, reject) =>
     {
-      requirejs([url], (a: any) =>
+      require([url], (definesBundle: any) =>
       {
-        const moduleFile = a[moduleInfo.moduleFileVariableName];
-
-        resolve(moduleFile);
+        resolve();
       }, (error: any) =>
       {
         reject(error);
@@ -201,7 +212,6 @@ export class ModuleStore
     // modules have equal version
     return a;
   }
-
 }
 
 export const activeModuleStore = new ModuleStore();

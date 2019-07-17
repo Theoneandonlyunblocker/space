@@ -25,6 +25,14 @@
     require.config(
     {
       nodeIdCompat: true,
+      onNodeCreated: (node, config, name, path) =>
+      {
+        // requirejs strips this somehow
+        if (path.startsWith("http://") && !path.endsWith(".js"))
+        {
+          node.src += ".js";
+        }
+      },
       paths:
       {
         "react": "dist/lib/react",
@@ -43,11 +51,18 @@
       return PIXI;
     });
 
-    require(["dist/_temp_app/index.js"], (m) =>
+    require(["./dist/_temp_app/index.js"], () =>
     {
-      require(["./dist/src/index.js"], (src) =>
+      require(["_temp_app/defaultModules"], (defaultModules) =>
       {
-        window.app = app.createApp(...window.defaultModules);
+        window.defaultModules = defaultModules.defaultModules;
+      });
+      require(["./dist/src/index.js", "./dist/modules/common/index.js"], () =>
+      {
+        require(["src/App"], (app) =>
+        {
+          window.app = app.createApp(...window.defaultModules);
+        });
       });
     });
   </script>
@@ -59,4 +74,3 @@
   <div id="react-container"></div>
   <div id="windows-container"></div>
 </body>
-
