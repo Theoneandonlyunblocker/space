@@ -6,7 +6,7 @@ import {MapGenResult} from "../../../../src/MapGenResult";
 import {Player} from "../../../../src/Player";
 import {Region} from "../../../../src/Region";
 import {Star} from "../../../../src/Star";
-import {TemplateIndexes} from "../../../../src/TemplateIndexes";
+import {templateIndexes} from "../../../../src/TemplateIndexes";
 import {activeModuleData} from "../../../../src/activeModuleData";
 import
 {
@@ -307,7 +307,7 @@ export const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOpti
   distributeDistributablesPerSector(
     sectors,
     distributionFlagsBySectorId,
-    TemplateIndexes.distributablesByDistributionGroup.races,
+    templateIndexes.distributablesByDistributionGroup.races,
     racePlacerFN,
   );
 
@@ -319,7 +319,7 @@ export const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOpti
   distributeDistributablesPerSector(
     sectors,
     distributionFlagsBySectorId,
-    TemplateIndexes.distributablesByDistributionGroup.resources,
+    templateIndexes.distributablesByDistributionGroup.resources,
     resourcePlacerFN,
   );
 
