@@ -57,7 +57,7 @@ export function makeSfxFromVideo(
     baseTexture.on("loaded", onVideoLoaded);
     baseTexture.on("error", onVideoError);
   }
-  // TODO 2019.07.03 | pixi5
+  // TODO 2019.07.03 | implement for pixi5
   // else if (baseTexture.isLoading)
   // {
   //   baseTexture.on("loaded", onVideoLoaded);

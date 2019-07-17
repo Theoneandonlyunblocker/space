@@ -388,20 +388,12 @@ export class PathfindingArrow
       gfx.bezierCurveTo.apply(gfx, segments[i]);
     }
 
-    // TODO 2019.07.01 | still relevant?
-    // PIXI 3.0.7 bug
-    // const curveShape = <PIXI.Polygon> gfx.currentPath.shape;
-    // curveShape.closed = false;
-
     this.drawArrowHead(gfx, style.color.getHex());
 
     return gfx;
   }
   drawArrowHead(gfx: PIXI.Graphics, color: number)
   {
-    // TODO 2019.07.02 | does this work in pixi5?
-    // const curveShape = <PIXI.Polygon> gfx.currentPath.shape;
-    // const points = curveShape.points;
     const points = gfx.currentPath.points;
 
     const x1 = points[points.length - 12];

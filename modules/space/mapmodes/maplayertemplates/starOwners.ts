@@ -1,4 +1,4 @@
-// TODO performance | TODO PIXI4 | rework occupation
+// TODO performance | rework occupation
 // probably generate texture for tiling sprite + use masks
 
 import * as PIXI from "pixi.js";

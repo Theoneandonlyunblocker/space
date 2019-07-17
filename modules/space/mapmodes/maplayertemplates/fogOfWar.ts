@@ -75,8 +75,6 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number): PI
   {
     const poly = makePolygonFromPoints(star.voronoiCell.vertices);
     const gfx = new PIXI.Graphics();
-    // TODO 2019.07.03 | pixi5 | don't think this needs to be set
-    // gfx.isMask = true;
     gfx.beginFill(0);
     gfx.drawShape(poly);
     gfx.endFill();
@@ -86,10 +84,7 @@ function getFogOfWarSpriteForStar(star: Star, width: number, height: number): PI
     tiled.mask = gfx;
     tiled.addChild(gfx);
 
-    // triggers bounds update that gets skipped if we just call generateTexture()
-    // TODO 2016.11.02 | PIXI4 | still relevant?
     const bounds = tiled.getBounds();
-
     const rendered = generateTextureWithBounds(app.renderer.renderer, tiled, PIXI.settings.SCALE_MODE, 1, bounds);
 
     const sprite = new PIXI.Sprite(rendered);
