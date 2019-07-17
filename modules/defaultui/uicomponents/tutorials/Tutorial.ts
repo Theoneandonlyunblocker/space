@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {TutorialPage} from "../../../../src/tutorials/Tutorial";
-import {TutorialStatus} from "../../../../src/tutorials/TutorialStatus";
+import {tutorialStatus} from "../../../../src/tutorials/TutorialStatus";
 import {TutorialVisibility} from "../../../../src/tutorials/TutorialVisibility";
 import
 {
@@ -108,9 +108,9 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
 
   handleClose()
   {
-    if (TutorialStatus[this.props.tutorialId] === TutorialVisibility.Show)
+    if (tutorialStatus[this.props.tutorialId] === TutorialVisibility.Show)
     {
-      TutorialStatus[this.props.tutorialId] = TutorialVisibility.DontShowThisSession;
+      tutorialStatus[this.props.tutorialId] = TutorialVisibility.DontShowThisSession;
     }
   }
 

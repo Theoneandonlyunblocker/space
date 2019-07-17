@@ -7,7 +7,7 @@ import {options} from "../../../../src/Options";
 import {OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
 import {OptionsCheckbox} from "./OptionsCheckbox";
 import {NotificationFilterButton} from "../notifications/NotificationFilterButton";
-import {TutorialStatus} from "../../../../src/tutorials/TutorialStatus";
+import {tutorialStatus} from "../../../../src/tutorials/TutorialStatus";
 import { Language } from "../../../../src/localization/Language";
 import {AppLanguageSelect} from "../language/AppLanguageSelect";
 
@@ -100,7 +100,7 @@ export class DisplayOptionsComponent extends React.Component<PropTypes, StateTyp
         content: ReactDOMElements.button(
         {
           className: "reset-tutorials-button",
-          onClick: TutorialStatus.reset,
+          onClick: tutorialStatus.reset,
         },
           localize("resetTutorials")(),
         ),

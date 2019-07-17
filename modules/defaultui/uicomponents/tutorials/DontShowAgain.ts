@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {TutorialStatus} from "../../../../src/tutorials/TutorialStatus";
+import {tutorialStatus} from "../../../../src/tutorials/TutorialStatus";
 import {TutorialVisibility} from "../../../../src/tutorials/TutorialVisibility";
 
 import {localize} from "../../localization/localize";
@@ -48,21 +48,21 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
 
   getTutorialVisibility()
   {
-    return TutorialStatus[this.props.tutorialId];
+    return tutorialStatus[this.props.tutorialId];
   }
 
   toggleState()
   {
     if (this.state.isChecked)
     {
-      TutorialStatus[this.props.tutorialId] = TutorialVisibility.Show;
+      tutorialStatus[this.props.tutorialId] = TutorialVisibility.Show;
     }
     else
     {
-      TutorialStatus[this.props.tutorialId] = TutorialVisibility.NeverShow;
+      tutorialStatus[this.props.tutorialId] = TutorialVisibility.NeverShow;
     }
 
-    TutorialStatus.save();
+    tutorialStatus.save();
 
     this.setState(
     {

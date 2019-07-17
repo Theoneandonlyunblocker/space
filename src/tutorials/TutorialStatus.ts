@@ -15,8 +15,7 @@ const defaultTutorialStatus: TutorialStatusValues =
   introTutorial: TutorialVisibility.Show,
 };
 
-// TODO 2019.07.06 |
-class _TutorialStatus implements TutorialStatusValues
+class TutorialStatus implements TutorialStatusValues
 {
   public introTutorial: TutorialVisibility;
 
@@ -75,11 +74,10 @@ class _TutorialStatus implements TutorialStatusValues
   }
   private deserialize(data: TutorialStatusValues): void
   {
-    this.introTutorial = _TutorialStatus.getDeserializedState(data.introTutorial);
+    this.introTutorial = TutorialStatus.getDeserializedState(data.introTutorial);
 
     this.setDefaultValuesForUndefined();
   }
 }
 
-// TODO 2019.07.06 |
-export const TutorialStatus = new _TutorialStatus();
+export const tutorialStatus = new TutorialStatus();

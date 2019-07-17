@@ -37,7 +37,7 @@ import
 
 import {NotificationStore} from "./notifications/NotificationStore";
 import {activeNotificationStore, setActiveNotificationStore} from "./notifications/activeNotificationStore";
-import {TutorialStatus} from "./tutorials/TutorialStatus";
+import {tutorialStatus} from "./tutorials/TutorialStatus";
 import {MapGenOptionValues} from "./templateinterfaces/MapGenOptionValues";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
 import {FullSaveData} from "./savedata/FullSaveData";
@@ -96,7 +96,7 @@ class App
           return Promise.all(
           [
             options.load(),
-            TutorialStatus.load(),
+            tutorialStatus.load(),
           ]);
         }).then(() =>
         {
