@@ -1,6 +1,6 @@
 {
   "key":           "core",
-  "version":       "0.1.0",
+  "version":       "0.4.0",
   "author":        "giraluna",
   "description":   "Core gameplay functionality",
   "moduleBundleUrl":  "http://127.0.0.1:9001/dist/modules/core/index.js",

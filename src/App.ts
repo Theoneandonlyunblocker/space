@@ -53,7 +53,7 @@ class App
   public reactUI: ReactUI;
   public moduleInitializer: ModuleInitializer;
 
-  public readonly version: string = "0.3.0";
+  public readonly version: string = "0.4.0";
   public readonly initialModules: ModuleInfo[] = [];
 
   private seed: string;
