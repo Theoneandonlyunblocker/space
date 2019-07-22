@@ -20,13 +20,17 @@ export function makeVfxFromVideo(
 
     sprite.y = props.height - videoResource.height;
 
-    if (onStartFN)
+    videoResource.source.play().then(() =>
     {
-      onStartFN(sprite);
-    }
+      if (onStartFN)
+      {
+        onStartFN(sprite);
+      }
 
-    props.triggerStart(sprite);
-    animate();
+      props.triggerStart(sprite);
+      animate();
+    });
+
   }
   function onVideoError(): void
   {
@@ -35,7 +39,11 @@ export function makeVfxFromVideo(
     throw new Error("Video " + videoSrc + " failed to load.");
   }
 
-  const videoResource = new PIXI.resources.VideoResource(videoSrc);
+  const videoResource = new PIXI.resources.VideoResource(videoSrc,
+  {
+    autoLoad: true,
+    autoPlay: true,
+  });
   videoResource.autoUpdate = false;
 
   const baseTexture = new PIXI.BaseTexture(videoResource);
@@ -57,16 +65,6 @@ export function makeVfxFromVideo(
     baseTexture.on("loaded", onVideoLoaded);
     baseTexture.on("error", onVideoError);
   }
-  // TODO 2019.07.03 | implement for pixi5
-  // else if (baseTexture.isLoading)
-  // {
-  //   baseTexture.on("loaded", onVideoLoaded);
-  //   baseTexture.on("error", onVideoError);
-  // }
-  // else
-  // {
-  //   onVideoError();
-  // }
 
 
   function animate()
