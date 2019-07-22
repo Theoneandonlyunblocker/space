@@ -2599,7 +2599,7 @@ declare namespace PIXI {
      * @memberof PIXI
      * @extends PIXI.Shader
      */
-    class Filter<U = any> extends PIXI.Shader {
+    class Filter<U = any> extends PIXI.Shader<U> {
         constructor(vertexSrc?: string, fragmentSrc?: string, uniforms?: Partial<U>);
         /**
          * The padding of the filter. Some filters require extra space to breath such as a blur.
@@ -2918,7 +2918,7 @@ declare namespace PIXI {
      * @memberof PIXI
      */
     class Geometry {
-        constructor(buffers?: PIXI.Buffer[], attributes?: any);
+        constructor(buffers?: PIXI.Buffer[] | number[], attributes?: any);
         /**
          * A map of renderer IDs to webgl VAOs
          *
@@ -2945,7 +2945,7 @@ declare namespace PIXI {
          *
          * @return {PIXI.Geometry} returns self, useful for chaining.
          */
-        addAttribute(id: string, buffer?: PIXI.Buffer, size?: number, normalized?: boolean, type?: number, stride?: number, start?: number): PIXI.Geometry;
+        addAttribute(id: string, buffer?: PIXI.Buffer | number[], size?: number, normalized?: boolean, type?: number, stride?: number, start?: number): PIXI.Geometry;
         /**
          * returns the requested attribute
          *
@@ -2968,7 +2968,7 @@ declare namespace PIXI {
          * @param {PIXI.Buffer} [buffer] the buffer that holds the data of the index buffer. You can also provide an Array and a buffer will be created from it.
          * @return {PIXI.Geometry} returns self, useful for chaining.
          */
-        addIndex(buffer?: PIXI.Buffer): PIXI.Geometry;
+        addIndex(buffer?: PIXI.Buffer | number[]): PIXI.Geometry;
         /**
          * returns the index buffer
          *
@@ -3676,14 +3676,14 @@ declare namespace PIXI {
      * @class
      * @memberof PIXI
      */
-    class Shader {
-        constructor(program?: PIXI.Program, uniforms?: any);
+    class Shader<U = any> {
+        constructor(program?: PIXI.Program, uniforms?: Partial<U>);
         /**
          * Shader uniform values, shortcut for `uniformGroup.uniforms`
          * @readonly
          * @member {object}
          */
-        readonly uniforms: any;
+        readonly uniforms: U;
         /**
          * A short hand function to create a shader based of a vertex and fragment shader
          *
@@ -3693,7 +3693,7 @@ declare namespace PIXI {
          *
          * @returns {PIXI.Shader} an shiny new Pixi shader!
          */
-        static from(vertexSrc?: string, fragmentSrc?: string, uniforms?: any): PIXI.Shader;
+        static from<U = any>(vertexSrc?: string, fragmentSrc?: string, uniforms?: U): PIXI.Shader<U>;
     }
     /**
      * Uniform group holds uniform map and some ID's for work
@@ -7586,7 +7586,7 @@ declare namespace PIXI {
      * @class
      * @memberof PIXI
      */
-    class Quad {
+    class Quad extends PIXI.Geometry {
         constructor();
     }
     /**
@@ -7595,7 +7595,7 @@ declare namespace PIXI {
      * @class
      * @memberof PIXI
      */
-    class QuadUv {
+    class QuadUv extends PIXI.Geometry {
         constructor();
         /**
          * An array of vertices
