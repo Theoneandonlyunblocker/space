@@ -19,7 +19,7 @@ precision mediump float;
 
   uniform float highlightA;
   uniform float highlightB;
-  
+
   uniform float starDensity;
   uniform float nebulaStarConcentration;
   uniform float starBrightness;
@@ -43,7 +43,7 @@ precision mediump float;
 
   const float highlightA = 0.9;
   const float highlightB = 2.2;
-  
+
   const float starDensity = 0.0008;
   const float nebulaStarConcentration = 0.01;
   const float starBrightness = 0.6;
@@ -124,10 +124,10 @@ vec3 nebula(vec2 pos, out float volume)
 float star(vec2 pos, float volume)
 {
   float h = hash(pos);
-  
+
   float intensityCutoff = (1.0 - starDensity) - (volume * nebulaStarConcentration);
   float starIntensity = smoothstep(intensityCutoff, 1.0, h);
-  
+
   return starIntensity * starBrightness;
 }
 

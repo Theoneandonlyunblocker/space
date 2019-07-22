@@ -47,15 +47,15 @@ float hash(in vec2 p, in float scale)
 float noise(in vec2 p, in float scale)
 {
   vec2 f;
-  
+
   p *= scale;
 
-  
+
   f = fract(p);   // Separate integer from fractional
     p = floor(p);
-  
+
     f = f*f*(3.0-2.0*f);  // Cosine interpolation approximation
-  
+
     float res = mix(mix(hash(p,          scale),
             hash(p + vec2(1.0, 0.0), scale), f.x),
           mix(hash(p + vec2(0.0, 1.0), scale),
@@ -69,7 +69,7 @@ float fbm(in vec2 p)
   // Change starting scale to any integer value...
   float scale = 20.0;
   float amp   = 0.5;
-  
+
   for (int i = 0; i < 5; i++)
   {
     f += noise(p, scale) * amp;
@@ -103,7 +103,7 @@ void main()
   q *= 1.8;
 
   float dist = length(q);
-  
+
   float centerIntensity = pow(1.0 - dist, 8.0);
   centerIntensity = smoothstep(1.0 - centerSize, 1.0, centerIntensity);
 

@@ -8,7 +8,7 @@ precision mediump float;
 
   uniform vec4 mainColor;
   uniform float mainAlpha;
-  
+
   uniform vec2 intersectingEllipseCenter;
   uniform vec2 intersectingEllipseSize;
   uniform float intersectingEllipseSharpness;
@@ -22,7 +22,7 @@ precision mediump float;
 
   const vec4 mainColor = vec4(1.0, 1.0, 1.0, 1.0);
   const float mainAlpha = 1.0;
-  
+
   const vec2 intersectingEllipseCenter = vec2(0.4, 0.0);
   const vec2 intersectingEllipseSize = vec2(0.8, 1.0);
   const float intersectingEllipseSharpness = 0.6;
@@ -54,7 +54,7 @@ void main()
   #endif
 
   vec2 q = -1.0 + 2.0 * uv;
-  
+
   float mainDist = 1.0 - ellipseGradient(q, vec2(0.0, 0.0), mainEllipseSize);
   float mainGradient = smoothstep(0.0, 1.0 - mainEllipseSharpness, mainDist);
   color += mainColor * mainGradient;

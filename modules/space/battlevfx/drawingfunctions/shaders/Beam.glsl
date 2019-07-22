@@ -27,7 +27,7 @@ precision mediump float;
 
   uniform float lineYSize;
   uniform float lineYSharpness;
-  
+
 
 #elif DOMAIN == 1
   uniform vec2 resolution;
@@ -39,7 +39,7 @@ precision mediump float;
 
   const vec4 beamColor = vec4(1.0, 0.5, 0.5, 1.0);
   const float beamYPosition = 0.5;
-  
+
   const float bulgeXPosition = 0.4;
   const vec2 bulgeSize = vec2(0.8, 0.4);
   const float bulgeSharpness = 0.4;
@@ -97,7 +97,7 @@ void main()
   vec2 q = vec2(uv.x, (uv.y - beamYPosition) * 2.0);
   float noiseValue = -1.0 + 2.0 * noise(vec2(q.x - time, seed));
   noiseValue *= noiseAmplitude;
-  
+
   float yDistFromCenter = abs(q.y);
   float insideLineY = step(yDistFromCenter, lineYSize);
   float lineYDistanceFromEdge = distance(yDistFromCenter, lineYSize);
