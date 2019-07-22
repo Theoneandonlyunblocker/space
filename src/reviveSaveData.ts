@@ -18,6 +18,8 @@ export type ReviversByVersion =
   [version: string]: Reviver[];
 };
 
+type OutdatedFullSaveData = FullSaveData; // useful to keep them nominally distinct
+
 export function fetchNeededReviversForData(
   dataVersion: string,
   liveVersion: string,
@@ -42,9 +44,6 @@ export function fetchNeededReviversForData(
 
   return neededRevivers;
 }
-
-type OutdatedFullSaveData = FullSaveData; // useful to keep them nominally distinct
-
 export function reviveSaveData(data: OutdatedFullSaveData, liveAppVersion: string): Promise<FullSaveData>
 {
   const clonedData = {...data};
@@ -92,6 +91,7 @@ const coreSaveDataRevivers: ReviversByVersion =
   ],
   "0.2.0":
   [
+    // not actually needed as we should just use more recent ModuleInfo anyway
     function renameModuleMetaDataToModuleInfo(saveData)
     {
       saveData.moduleData.forEach((moduleSaveData: any) =>
@@ -99,6 +99,18 @@ const coreSaveDataRevivers: ReviversByVersion =
         moduleSaveData.info = moduleSaveData.metaData;
       });
     },
+  ],
+  "0.3.0":
+  [
+    // not actually needed as we should just use more recent ModuleInfo anyway
+    function remapModuleInfoKeys(saveData)
+    {
+      saveData.moduleData.forEach((moduleSaveData: any) =>
+      {
+        moduleSaveData.info.gameModuleVariableName = moduleSaveData.info.moduleFileVariableName;
+        moduleSaveData.info.moduleBundleUrl = moduleSaveData.info.moduleFileUrl;
+      });
+    }
   ]
 };
 
