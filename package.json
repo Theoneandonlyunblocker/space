@@ -44,8 +44,8 @@
     "copy-emblems-assets": "mkdirp dist/modules/defaultemblems/img && cpr modules/defaultemblems/img dist/modules/defaultemblems/img -o",
     "copy-painting-portraits-assets": "node scripts/copy_painting_portraits_assets.js",
 
-    "copy-space-assets": "npm run copy-space-battlesfx-assets && npm run copy-space-buildings-assets && npm run copy-space-items-assets && npm run copy-space-mapmodes-assets && npm run copy-space-resources-assets && npm run copy-space-units-assets",
-    "copy-space-battlesfx-assets": "mkdirp dist/modules/space/battlesfx/img && cpr modules/space/battlesfx/img dist/modules/space/battlesfx/img -o",
+    "copy-space-assets": "npm run copy-space-battlevfx-assets && npm run copy-space-buildings-assets && npm run copy-space-items-assets && npm run copy-space-mapmodes-assets && npm run copy-space-resources-assets && npm run copy-space-units-assets",
+    "copy-space-battlevfx-assets": "mkdirp dist/modules/space/battlevfx/img && cpr modules/space/battlevfx/img dist/modules/space/battlevfx/img -o",
     "copy-space-buildings-assets": "mkdirp dist/modules/space/buildings/img && cpr modules/space/buildings/img dist/modules/space/buildings/img -o",
     "copy-space-items-assets": "mkdirp dist/modules/space/items/img && cpr modules/space/items/img dist/modules/space/items/img -o",
     "copy-space-mapmodes-assets": "mkdirp dist/modules/space/mapmodes/img && cpr modules/space/mapmodes/img dist/modules/space/mapmodes/img -o",

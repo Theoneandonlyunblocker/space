@@ -9,7 +9,7 @@ import * as englishLanguageSupport from "../modules/englishlanguage/moduleInfo.j
 import * as defaultUi from "../modules/defaultui/moduleInfo.json";
 import * as space from "../modules/space/moduleInfo.json";
 import * as spaceBackgrounds from "../modules/space/backgrounds/moduleInfo.json";
-import * as spaceBattleSfx from "../modules/space/battlesfx/moduleInfo.json";
+import * as spaceBattleVfx from "../modules/space/battlevfx/moduleInfo.json";
 import * as spaceBuildings from "../modules/space/buildings/moduleInfo.json";
 import * as spaceItems from "../modules/space/items/moduleInfo.json";
 import * as spaceMapgen from "../modules/space/mapgen/moduleInfo.json";
@@ -35,7 +35,7 @@ export const defaultModules: ModuleInfo[] =
   defaultNotifications,
   space,
   spaceBackgrounds,
-  spaceBattleSfx,
+  spaceBattleVfx,
   spaceBuildings,
   spaceItems,
   spaceMapgen,

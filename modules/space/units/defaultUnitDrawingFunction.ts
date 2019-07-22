@@ -11,7 +11,7 @@ import
   transformMat3,
 } from "../../../src/utility";
 import {Unit} from "../../../src/Unit";
-import {SfxParams} from "../../../src/templateinterfaces/SfxParams";
+import {VfxParams} from "../../../src/templateinterfaces/VfxParams";
 
 
 export interface UnitSpriteData
@@ -25,7 +25,7 @@ export function makeDefaultUnitDrawingFunction(spriteData: UnitSpriteData, image
   return defaultUnitDrawingFunction.bind(null, spriteData, imageSrc);
 }
 
-function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string, unit: Unit, sfxParams: SfxParams)
+function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string, unit: Unit, vfxParams: VfxParams)
 {
   const container = new PIXI.Container();
   const texture = PIXI.Texture.from(imageSrc);
@@ -79,8 +79,8 @@ function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string
 
   const minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
 
-  const yPadding = Math.min(sfxParams.height * 0.1, 30);
-  const desiredHeight = sfxParams.height - yPadding;
+  const yPadding = Math.min(vfxParams.height * 0.1, 30);
+  const desiredHeight = vfxParams.height - yPadding;
 
   const averageHeight = texture.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
   const spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
@@ -203,5 +203,5 @@ function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string
     sequentialAttackOriginPoints: sequentialAttackOriginPoints,
   });
 
-  sfxParams.triggerStart(container);
+  vfxParams.triggerStart(container);
 }

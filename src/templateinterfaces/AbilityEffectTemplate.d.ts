@@ -15,7 +15,7 @@ import
   AbilityEffectAction,
   ExecutedEffectsResult,
 } from "./AbilityEffectAction";
-import {BattleSfxTemplate} from "./BattleSfxTemplate";
+import {BattleVfxTemplate} from "./BattleVfxTemplate";
 
 export type AbilityEffectTrigger = (
   user: Unit,
@@ -40,7 +40,7 @@ export interface AbilityEffectTemplate
   executeAction: AbilityEffectAction;
 
   trigger?: AbilityEffectTrigger;
-  sfx?: BattleSfxTemplate;
+  vfx?: BattleVfxTemplate;
 
   /**
    * called for each unit affected by parent effect
@@ -51,6 +51,6 @@ export interface AbilityEffectTemplate
 
 export interface AbilityMainEffectTemplate extends AbilityEffectTemplate
 {
-  sfx: BattleSfxTemplate;
+  vfx: BattleVfxTemplate;
   getDisplayDataForTarget: GetUnitsInAreaFN<AbilityTargetDisplayDataById>;
 }

@@ -17,7 +17,7 @@ console.log("bundling modules");
   {root: "modules/paintingportraits",        include: "**/*.js"},
   {root: "modules/space",                    include: "{,abilities/**/,effectactions/**/,passiveskills/**/,terrains/**/,uniteffects/**/}*.js"},
   {root: "modules/space/backgrounds",        include: "**/*.js"},
-  {root: "modules/space/battlesfx",          include: "**/*.js"},
+  {root: "modules/space/battlevfx",          include: "**/*.js"},
   {root: "modules/space/buildings",          include: "**/*.js"},
   {root: "modules/space/items",              include: "**/*.js"},
   {root: "modules/space/mapgen",             include: "**/*.js"},

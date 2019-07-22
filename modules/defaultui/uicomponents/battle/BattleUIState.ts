@@ -7,7 +7,7 @@ export enum BattleUIState
   // display user & target unit | blinking border around target
   FocusingUnit,
   // display user & target unit | darken formations
-  PlayingSfx,
+  PlayingVfx,
   // animate turn counter | animate turn order | add annihilated overlay
   TransitioningTurn,
   // no control

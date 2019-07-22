@@ -98,7 +98,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   // TODO 2018.04.14 | really doesn't belong in ui class
   private mcTree: MCTree = null;
 
-  private sfxStartTime: number;
+  private vfxStartTime: number;
   private battleStartStartTime: number;
   private battleEndStartTime: number;
 
@@ -114,9 +114,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.abilityUseEffectQueue = new AbilityUseEffectQueue(this.battleScene,
     {
       onEffectStart: this.setStateForBattleEffect,
-      onSfxStart: () =>
+      onVfxStart: () =>
       {
-        this.sfxStartTime = Date.now();
+        this.vfxStartTime = Date.now();
       },
       onEffectTrigger: this.onBattleEffectTrigger,
       onCurrentFinished: this.playQueuedBattleEffects,
@@ -381,15 +381,15 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private static getUnitsBySideFromEffect(effect: AbilityUseEffect)
   {
-    const userSide = effect.sfxUser.battleStats.side;
-    const targetSide = effect.sfxTarget.battleStats.side;
+    const userSide = effect.vfxUser.battleStats.side;
+    const targetSide = effect.vfxTarget.battleStats.side;
 
     return(
     {
-      side1: (targetSide === "side1" ? effect.sfxTarget :
-        (userSide === "side1" ? effect.sfxUser : null)),
-      side2: (targetSide === "side2" ? effect.sfxTarget :
-        (userSide === "side2" ? effect.sfxUser : null)),
+      side1: (targetSide === "side1" ? effect.vfxTarget :
+        (userSide === "side1" ? effect.vfxUser : null)),
+      side2: (targetSide === "side2" ? effect.vfxTarget :
+        (userSide === "side2" ? effect.vfxUser : null)),
     });
   }
   private setStateForBattleEffect(effect: AbilityUseEffect)
@@ -400,8 +400,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleSceneUnit1: units.side1,
       battleSceneUnit2: units.side2,
       playingBattleEffect: true,
-      UIState: BattleUIState.PlayingSfx,
-      battleEffectDuration: effect.sfx.duration * options.battle.animationTiming.effectDuration,
+      UIState: BattleUIState.PlayingVfx,
+      battleEffectDuration: effect.vfx.duration * options.battle.animationTiming.effectDuration,
     }, this.clearHoveredUnit);
   }
   private playQueuedBattleEffects()
@@ -417,7 +417,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         this.state.unitDisplayDataById, effect.changedUnitDisplayDataById),
       battleEvaluation: effect.newEvaluation,
       battleEffectDurationAfterTrigger: this.state.battleEffectDuration -
-        (Date.now() - this.sfxStartTime),
+        (Date.now() - this.vfxStartTime),
     });
   }
   private finishPlayingQueuedBattleEffects()

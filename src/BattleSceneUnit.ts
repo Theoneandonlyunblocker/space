@@ -2,8 +2,8 @@
 // /// <reference path="../lib/tween.js.d.ts" />
 import * as PIXI from "pixi.js";
 
-import {BattleSfxTemplate} from "./templateinterfaces/BattleSfxTemplate";
-import {SfxParams} from "./templateinterfaces/SfxParams";
+import {BattleVfxTemplate} from "./templateinterfaces/BattleVfxTemplate";
+import {VfxParams} from "./templateinterfaces/VfxParams";
 
 import {options} from "./Options";
 import {Unit} from "./Unit";
@@ -34,7 +34,7 @@ export class BattleSceneUnit
   private onFinishEnter?: () => void;
   private onFinishExit?: () => void;
   private tween: TWEEN.Tween | null;
-  private hasSfxSprite: boolean = false;
+  private hasVfxSprite: boolean = false;
 
 
   constructor(container: PIXI.Container, renderer: PIXI.Renderer, side: UnitBattleSide)
@@ -51,7 +51,7 @@ export class BattleSceneUnit
   {
     debug.log("graphics", "setActiveUnit", this.side, unit ? unit.id : unit);
 
-    if (this.hasSfxSprite)
+    if (this.hasVfxSprite)
     {
       if (unit)
       {
@@ -62,7 +62,7 @@ export class BattleSceneUnit
         this.exitUnitSpriteWithoutAnimation();
       }
 
-      this.hasSfxSprite = false;
+      this.hasVfxSprite = false;
     }
     else if (!unit && this.activeUnit)
     {
@@ -79,18 +79,18 @@ export class BattleSceneUnit
       afterChangedCallback();
     }
   }
-  public setSfx(sfxTemplate: BattleSfxTemplate, user: Unit, target: Unit)
+  public setVfx(vfxTemplate: BattleVfxTemplate, user: Unit, target: Unit)
   {
     if (this.activeUnit)
     {
-      const duration = sfxTemplate.duration * options.battle.animationTiming.effectDuration;
-      if (this.activeUnit === user && sfxTemplate.userSprite)
+      const duration = vfxTemplate.duration * options.battle.animationTiming.effectDuration;
+      if (this.activeUnit === user && vfxTemplate.userSprite)
       {
-        this.setSfxSprite(sfxTemplate.userSprite, duration);
+        this.setVfxSprite(vfxTemplate.userSprite, duration);
       }
-      else if (this.activeUnit === target && sfxTemplate.enemySprite)
+      else if (this.activeUnit === target && vfxTemplate.enemySprite)
       {
-        this.setSfxSprite(sfxTemplate.enemySprite, duration);
+        this.setVfxSprite(vfxTemplate.enemySprite, duration);
       }
       else
       {
@@ -241,13 +241,13 @@ export class BattleSceneUnit
     }
   }
 
-  private getSfxParams(props:
+  private getVfxParams(props:
   {
     unit: Unit;
     duration?: number;
     triggerStart: (container: PIXI.DisplayObject) => void;
     triggerEnd?: () => void;
-  }): SfxParams
+  }): VfxParams
   {
     const bounds = this.getSceneBounds();
 
@@ -300,9 +300,9 @@ export class BattleSceneUnit
     this.clearTween();
   }
 
-  private makeUnitSprite(unit: Unit, sfxParams: SfxParams)
+  private makeUnitSprite(unit: Unit, vfxParams: VfxParams)
   {
-    return unit.drawBattleScene(sfxParams);
+    return unit.drawBattleScene(vfxParams);
   }
   private addUnitSprite(sprite: PIXI.DisplayObject)
   {
@@ -316,13 +316,13 @@ export class BattleSceneUnit
   private setUnitSprite(unit: Unit)
   {
     this.clearUnitSprite();
-    const sfxParams = this.getSfxParams(
+    const vfxParams = this.getVfxParams(
     {
       unit: unit,
       triggerStart: this.addUnitSprite.bind(this),
     });
 
-    this.makeUnitSprite(unit, sfxParams);
+    this.makeUnitSprite(unit, vfxParams);
   }
 
   private clearTween()
@@ -371,17 +371,17 @@ export class BattleSceneUnit
 
     return tween;
   }
-  private setSfxSprite(spriteDrawingFN: (props: SfxParams) => void, duration: number)
+  private setVfxSprite(spriteDrawingFN: (props: VfxParams) => void, duration: number)
   {
     this.clearUnitSprite();
-    const sfxParams = this.getSfxParams(
+    const vfxParams = this.getVfxParams(
     {
       unit: this.activeUnit,
       duration: duration,
       triggerStart: this.addUnitSprite.bind(this),
     });
 
-    this.hasSfxSprite = true;
-    spriteDrawingFN(sfxParams);
+    this.hasVfxSprite = true;
+    spriteDrawingFN(vfxParams);
   }
 }

@@ -9,7 +9,7 @@ import * as TerrainTemplates from  "./terrains/terrains";
 import {unitEffectTemplates} from  "./uniteffects/unitEffectTemplates";
 
 import {spaceBackgrounds} from "./backgrounds/spaceBackgrounds";
-import {spaceBattleSfx} from "./battlesfx/spaceBattleSfx";
+import {spaceBattleVfx} from "./battlevfx/spaceBattleVfx";
 import {spaceBuildings} from "./buildings/spaceBuildings";
 import {spaceItems} from "./items/spaceItems";
 import {spaceMapGen} from "./mapgen/spaceMapGen";
@@ -30,7 +30,7 @@ export const space: GameModule =
   subModules:
   [
     spaceBackgrounds,
-    spaceBattleSfx,
+    spaceBattleVfx,
     spaceBuildings,
     spaceItems,
     spaceMapGen,

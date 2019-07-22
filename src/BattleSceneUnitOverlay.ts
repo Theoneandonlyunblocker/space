@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
-import {BattleSfxTemplate} from "./templateinterfaces/BattleSfxTemplate";
-import {SfxParams} from "./templateinterfaces/SfxParams";
+import {BattleVfxTemplate} from "./templateinterfaces/BattleVfxTemplate";
+import {VfxParams} from "./templateinterfaces/VfxParams";
 
 import {options} from "./Options";
 import {Unit} from "./Unit";
@@ -36,18 +36,18 @@ export class BattleSceneUnitOverlay
     this.overlayContainer = new PIXI.Container();
     this.container.addChild(this.overlayContainer);
   }
-  setSfx(sfxTemplate: BattleSfxTemplate, user: Unit, target: Unit)
+  setVfx(vfxTemplate: BattleVfxTemplate, user: Unit, target: Unit)
   {
     if (this.activeUnit)
     {
-      const duration = sfxTemplate.duration * options.battle.animationTiming.effectDuration;
-      if (this.activeUnit === user && sfxTemplate.userOverlay)
+      const duration = vfxTemplate.duration * options.battle.animationTiming.effectDuration;
+      if (this.activeUnit === user && vfxTemplate.userOverlay)
       {
-        this.setOverlay(sfxTemplate.userOverlay, user, duration);
+        this.setOverlay(vfxTemplate.userOverlay, user, duration);
       }
-      else if (this.activeUnit === target && sfxTemplate.enemyOverlay)
+      else if (this.activeUnit === target && vfxTemplate.enemyOverlay)
       {
-        this.setOverlay(sfxTemplate.enemyOverlay, target, duration);
+        this.setOverlay(vfxTemplate.enemyOverlay, target, duration);
       }
       else
       {
@@ -59,7 +59,7 @@ export class BattleSceneUnitOverlay
 
     }
   }
-  setOverlay(overlayFN: (props: SfxParams) => void, unit: Unit, duration: number)
+  setOverlay(overlayFN: (props: VfxParams) => void, unit: Unit, duration: number)
   {
     this.clearOverlay();
     if (duration <= 0)
@@ -72,9 +72,9 @@ export class BattleSceneUnitOverlay
     }
 
     this.activeUnit = unit;
-    const sfxParams = this.getSfxParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
+    const vfxParams = this.getVfxParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
 
-    overlayFN(sfxParams);
+    overlayFN(vfxParams);
   }
   clearOverlay()
   {
@@ -84,11 +84,11 @@ export class BattleSceneUnitOverlay
     this.activeUnit = null;
     this.overlayContainer.removeChildren();
   }
-  private getSfxParams(
+  private getVfxParams(
     duration: number,
     triggerStart: (container: PIXI.DisplayObject) => void,
     triggerEnd?: () => void,
-  ): SfxParams
+  ): VfxParams
   {
     const bounds = this.getSceneBounds();
 

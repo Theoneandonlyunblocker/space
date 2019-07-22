@@ -31,7 +31,7 @@ const moduleInitializationPhaseByScene:
 
   flagMaker: GameModuleInitializationPhase.GameSetup,
   battleSceneTester: GameModuleInitializationPhase.BattleStart,
-  sfxEditor: GameModuleInitializationPhase.BattleStart,
+  vfxEditor: GameModuleInitializationPhase.BattleStart,
 };
 
 export class ReactUI
@@ -157,9 +157,9 @@ export class ReactUI
       {
         return activeModuleData.uiScenes.battleSceneTester();
       }
-      case "sfxEditor":
+      case "vfxEditor":
       {
-        return activeModuleData.uiScenes.sfxEditor();
+        return activeModuleData.uiScenes.vfxEditor();
       }
     }
   }

@@ -1,6 +1,6 @@
 import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
 import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
-import {BattleSfxTemplate} from "./templateinterfaces/BattleSfxTemplate";
+import {BattleVfxTemplate} from "./templateinterfaces/BattleVfxTemplate";
 
 import {Battle} from "./Battle";
 import {Unit} from "./Unit";
@@ -17,9 +17,9 @@ export interface AbilityUseEffect
 {
   effectId: string;
   changedUnitDisplayDataById: {[unitId: number]: UnitDisplayData};
-  sfx: BattleSfxTemplate;
-  sfxUser: Unit;
-  sfxTarget: Unit;
+  vfx: BattleVfxTemplate;
+  vfxUser: Unit;
+  vfxTarget: Unit;
   newEvaluation: number;
 }
 
@@ -173,9 +173,9 @@ function executeAbilityEffectDataAndGetUseEffect(
   {
     effectId: getIdForAbilityUseEffect(abilityEffectData),
     changedUnitDisplayDataById: unitDisplayData,
-    sfx: abilityEffectData.effectTemplate.sfx,
-    sfxUser: abilityEffectData.user,
-    sfxTarget: abilityEffectData.target,
+    vfx: abilityEffectData.effectTemplate.vfx,
+    vfxUser: abilityEffectData.user,
+    vfxTarget: abilityEffectData.target,
     newEvaluation: battle.getEvaluation(),
   });
 }

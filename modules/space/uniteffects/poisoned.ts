@@ -31,7 +31,7 @@ export const poisoned: UnitEffectTemplate =
       {
         maxHealthPercentage: -0.1,
       }),
-      sfx:
+      vfx:
       {
         duration: 1200,
         userOverlay: (params) =>

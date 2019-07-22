@@ -12,7 +12,7 @@ import
 import {AiTemplateConstructor} from "./templateinterfaces/AiTemplateConstructor";
 import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
 import {AttitudeModifierTemplate} from "./templateinterfaces/AttitudeModifierTemplate";
-import {BattleSfxTemplate} from "./templateinterfaces/BattleSfxTemplate";
+import {BattleVfxTemplate} from "./templateinterfaces/BattleVfxTemplate";
 import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
 import {ItemTemplate} from "./templateinterfaces/ItemTemplate";
 import {Language} from "./localization/Language";
@@ -46,7 +46,7 @@ interface Templates
   Abilities: TemplateCollection<AbilityTemplate>;
   AiTemplateConstructors: TemplateCollection<AiTemplateConstructor<any>>;
   AttitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
-  BattleSfx: TemplateCollection<BattleSfxTemplate>;
+  BattleVfx: TemplateCollection<BattleVfxTemplate>;
   Buildings: TemplateCollection<BuildingTemplate>;
   Items: TemplateCollection<ItemTemplate>;
   Languages: TemplateCollection<Language>;
@@ -88,7 +88,7 @@ export class ModuleData
     Abilities: {},
     AiTemplateConstructors: {},
     AttitudeModifiers: {},
-    BattleSfx: {},
+    BattleVfx: {},
     Buildings: {},
     Items: {},
     Languages: {},

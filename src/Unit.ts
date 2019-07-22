@@ -8,7 +8,7 @@ import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
 import {PassiveSkillTemplate} from "./templateinterfaces/PassiveSkillTemplate";
 import {PortraitTemplate} from "./templateinterfaces/PortraitTemplate";
 import {RaceTemplate} from "./templateinterfaces/RaceTemplate";
-import {SfxParams} from "./templateinterfaces/SfxParams";
+import {VfxParams} from "./templateinterfaces/VfxParams";
 import {UnitEffectTemplate} from "./templateinterfaces/UnitEffectTemplate";
 import {UnitTemplate} from "./templateinterfaces/UnitTemplate";
 
@@ -1060,7 +1060,7 @@ export class Unit
       this.abilities.push(<AbilityTemplate> newAbility);
     }
   }
-  public drawBattleScene(params: SfxParams)
+  public drawBattleScene(params: VfxParams)
   {
     this.template.unitDrawingFN(this, params);
   }

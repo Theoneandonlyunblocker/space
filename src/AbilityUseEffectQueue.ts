@@ -9,7 +9,7 @@ import
 export class AbilityUseEffectQueue
 {
   private onEffectStart: (effect: AbilityUseEffect) => void;
-  private onSfxStart: () => void;
+  private onVfxStart: () => void;
   private onCurrentFinished: () => void;
   private onAllFinished: () => void;
   private onEffectTrigger: (abilityUseEffect: AbilityUseEffect) => void;
@@ -22,7 +22,7 @@ export class AbilityUseEffectQueue
   constructor(battleScene: BattleScene, callbacks:
   {
     onEffectStart?: (effect: AbilityUseEffect) => void;
-    onSfxStart?: () => void;
+    onVfxStart?: () => void;
     onCurrentFinished?: () => void;
     onAllFinished?: () => void;
     onEffectTrigger?: (abilityUseEffect: AbilityUseEffect) => void;
@@ -72,14 +72,14 @@ export class AbilityUseEffectQueue
       return squashedEffect;
     }
   }
-  private static squashEffectsWithoutSfx(sourceEffects: AbilityUseEffect[]): AbilityUseEffect[]
+  private static squashEffectsWithoutVfx(sourceEffects: AbilityUseEffect[]): AbilityUseEffect[]
   {
     const squashed: AbilityUseEffect[] = [];
     let effectsToSquash: AbilityUseEffect[] = [];
     for (let i = sourceEffects.length - 1; i >= 0; i--)
     {
       const effect = sourceEffects[i];
-      if (effect.sfx)
+      if (effect.vfx)
       {
         if (effectsToSquash.length > 0)
         {
@@ -101,8 +101,8 @@ export class AbilityUseEffectQueue
 
     if (effectsToSquash.length > 0)
     {
-      const lastEffectWithSfx = squashed.pop()!;
-      squashed.push(AbilityUseEffectQueue.squashEffects(lastEffectWithSfx, effectsToSquash, true));
+      const lastEffectWithVfx = squashed.pop()!;
+      squashed.push(AbilityUseEffectQueue.squashEffects(lastEffectWithVfx, effectsToSquash, true));
     }
 
     squashed.reverse();
@@ -112,7 +112,7 @@ export class AbilityUseEffectQueue
 
   public addEffects(effects: AbilityUseEffect[]): void
   {
-    this.queue.push(...AbilityUseEffectQueue.squashEffectsWithoutSfx(effects));
+    this.queue.push(...AbilityUseEffectQueue.squashEffectsWithoutVfx(effects));
   }
   public playOnce(): void
   {
@@ -132,11 +132,11 @@ export class AbilityUseEffectQueue
 
     this.battleScene.handleAbilityUse(
     {
-      sfxTemplate: this.currentEffect.sfx,
-      user: this.currentEffect.sfxUser,
-      target: this.currentEffect.sfxTarget,
+      vfxTemplate: this.currentEffect.vfx,
+      user: this.currentEffect.vfxUser,
+      target: this.currentEffect.vfxTarget,
       triggerEffectCallback: this.triggerEffect,
-      onSfxStartCallback: this.onSfxStart,
+      onVfxStartCallback: this.onVfxStart,
       afterFinishedCallback: this.finishEffect,
     });
   }

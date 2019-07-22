@@ -23,7 +23,7 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   selectedSide1Unit: Unit;
-  selectedSfxTemplateKey: string;
+  selectedVfxTemplateKey: string;
   activeUnit: Unit;
   selectedSide2Unit: Unit;
   duration: number;
@@ -58,7 +58,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     this.handleUnitHover = this.handleUnitHover.bind(this);
     this.handleClearHover = this.handleClearHover.bind(this);
     this.handleChangeDuration = this.handleChangeDuration.bind(this);
-    this.handleSelectSfxTemplate = this.handleSelectSfxTemplate.bind(this);
+    this.handleSelectVfxTemplate = this.handleSelectVfxTemplate.bind(this);
   }
 
   private getInitialStateTODO(): StateType
@@ -84,17 +84,17 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
     battle.init();
 
-    const initialSfxTemplateKey = "rocketAttack";
-    const initialSfxTemplate = activeModuleData.templates.BattleSfx[initialSfxTemplateKey];
+    const initialVfxTemplateKey = "rocketAttack";
+    const initialVfxTemplate = activeModuleData.templates.BattleVfx[initialVfxTemplateKey];
 
     return(
     {
       activeUnit: side1Units[0],
       selectedSide1Unit: side1Units[0],
       selectedSide2Unit: side2Units[0],
-      selectedSfxTemplateKey: initialSfxTemplateKey,
+      selectedVfxTemplateKey: initialVfxTemplateKey,
 
-      duration: initialSfxTemplate.duration,
+      duration: initialVfxTemplate.duration,
     });
   }
 
@@ -201,15 +201,15 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     this.battleScene.updateUnits();
   }
 
-  handleSelectSfxTemplate(e: React.FormEvent<HTMLSelectElement>)
+  handleSelectVfxTemplate(e: React.FormEvent<HTMLSelectElement>)
   {
     const target = e.currentTarget;
-    const sfxTemplate = activeModuleData.templates.BattleSfx[target.value];
+    const vfxTemplate = activeModuleData.templates.BattleVfx[target.value];
 
     this.setState(
     {
-      selectedSfxTemplateKey: target.value,
-      duration: sfxTemplate.duration,
+      selectedVfxTemplateKey: target.value,
+      duration: vfxTemplate.duration,
     });
   }
 
@@ -228,20 +228,20 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     const target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
     const bs: BattleScene = this.battleScene;
-    const sfxTemplate = extendObject(activeModuleData.templates.BattleSfx[this.state.selectedSfxTemplateKey]);
+    const vfxTemplate = extendObject(activeModuleData.templates.BattleVfx[this.state.selectedVfxTemplateKey]);
 
     if (this.state.duration)
     {
-      sfxTemplate.duration = this.state.duration;
+      vfxTemplate.duration = this.state.duration;
     }
 
     bs.handleAbilityUse(
     {
       user: user,
       target: target,
-      sfxTemplate: sfxTemplate,
+      vfxTemplate: vfxTemplate,
       triggerEffectCallback: () => {console.log("triggerEffect");},
-      onSfxStartCallback: () => {console.log("onSfxStart");},
+      onVfxStartCallback: () => {console.log("onVfxStart");},
       afterFinishedCallback: () => {console.log("afterFinishedCallback");},
     });
   }
@@ -287,11 +287,11 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     const side1UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.getUnitsForSide("side1"));
     const side2UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.getUnitsForSide("side2"));
 
-    const sfxTemplateSelectOptions: React.ReactHTMLElement<any>[] = [];
+    const vfxTemplateSelectOptions: React.ReactHTMLElement<any>[] = [];
 
-    for (const key in activeModuleData.templates.BattleSfx)
+    for (const key in activeModuleData.templates.BattleVfx)
     {
-      sfxTemplateSelectOptions.push(ReactDOMElements.option(
+      vfxTemplateSelectOptions.push(ReactDOMElements.option(
       {
         value: key,
         key: key,
@@ -335,16 +335,16 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
           ),
           ReactDOMElements.select(
           {
-            value: this.state.selectedSfxTemplateKey,
-            onChange: this.handleSelectSfxTemplate,
+            value: this.state.selectedVfxTemplateKey,
+            onChange: this.handleSelectVfxTemplate,
           },
-            sfxTemplateSelectOptions,
+            vfxTemplateSelectOptions,
           ),
           ReactDOMElements.button(
           {
             className: "battle-scene-test-ability2",
             onClick: this.useSelectedAbility,
-            disabled: !this.state.selectedSfxTemplateKey || !(this.state.selectedSide1Unit && this.state.selectedSide2Unit),
+            disabled: !this.state.selectedVfxTemplateKey || !(this.state.selectedSide1Unit && this.state.selectedSide2Unit),
           },
             "use ability",
           ),

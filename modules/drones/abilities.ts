@@ -17,7 +17,7 @@ import
   targetEnemies,
 } from "../../src/targeting";
 
-import {placeholder as placeholderSfx} from "../space/battlesfx/templates/battleSfx";
+import {placeholder as placeholderVfx} from "../space/battlevfx/templates/battleVfx";
 import {ResultType} from "../space/effectactions/ResultType";
 import * as EffectActions from "../space/effectactions/effectActions";
 
@@ -47,7 +47,7 @@ export const assimilate: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
-    sfx: placeholderSfx,
+    vfx: placeholderVfx,
     attachedEffects:
     [
       {
@@ -94,7 +94,7 @@ export const merge: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
-    sfx: placeholderSfx,
+    vfx: placeholderVfx,
   },
   secondaryEffects:
   [
@@ -157,7 +157,7 @@ export const infest: AbilityTemplate =
       duration: 3,
       template: DroneStatusEffects.infest,
     }),
-    sfx: placeholderSfx,
+    vfx: placeholderVfx,
     attachedEffects:
     [
       {
@@ -193,7 +193,7 @@ export const repair: AbilityTemplate =
     {
       perUserUnit: 0.5,
     }),
-    sfx: placeholderSfx,
+    vfx: placeholderVfx,
   },
 };
 export const massRepair: AbilityTemplate =
@@ -230,7 +230,7 @@ export const massRepair: AbilityTemplate =
     {
       perUserUnit: 0.33,
     }),
-    sfx: placeholderSfx,
+    vfx: placeholderVfx,
   },
 };
 

@@ -1,0 +1,10 @@
+{
+  "key": "spaceBattleVfx",
+  "version": "0.4.0",
+  "author": "giraluna",
+  "description": "",
+  "modsToReplace": ["spaceBattleSfx"],
+  "moduleBundleUrl":  "http://127.0.0.1:9001/dist/modules/space/battlevfx/index.js",
+  "moduleObjRequireJsName": "modules/space/battlevfx/spaceBattleVfx",
+  "gameModuleVariableName": "spaceBattleVfx"
+}
