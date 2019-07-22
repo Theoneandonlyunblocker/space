@@ -53,11 +53,6 @@ export const drawNebula: BackgroundDrawingFunction = (
 
   const shaderSprite = makeShaderSprite(filter, 0, 0, size.width, size.height);
 
-  // still relevant?
-  // TODO performance | need to destroy or reuse texture from filterContainer.generateTexture()
-  // creates a new PIXI.FilterManager() every time that doesn't get cleaned up anywhere
-  // balloons up gpu memory
-
   const texture = generateTextureWithBounds(
     renderer,
     shaderSprite,
@@ -69,7 +64,6 @@ export const drawNebula: BackgroundDrawingFunction = (
   const sprite = new PIXI.Sprite(texture);
 
   shaderSprite.destroy({children: true});
-
   Math.random = oldRng;
 
   return(

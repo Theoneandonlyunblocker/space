@@ -79,7 +79,6 @@ export function generateTextureWithBounds(
   renderer.render(displayObject, renderTexture, false, tempMatrix, false);
 
   return renderTexture;
-
 }
 export function makePolygonFromPoints(
   points: Point[],
