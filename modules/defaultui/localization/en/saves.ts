@@ -15,6 +15,6 @@ export const saves =
   saveData: "Save data",
   // TODO 2018.10.06 | actually implement importing
   // saveDataCopyPrompt: "You can copy the save data for the active game below. This data can be used to import the game in the load menu after refreshing this page.",
-  saveDataCopyPrompt: "You can copy the save data for the active game below. This data can be loaded back into the game by manually editing localStorage.",
+  saveDataCopyPrompt: "You can copy the save data for the active game below. This data can be loaded back into the game by manually editing indexedDB.",
   activeGameUnserializable: "The active game is corrupt and can't be serialized. Try loading an earlier save.",
 };

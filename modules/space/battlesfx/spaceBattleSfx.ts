@@ -1,4 +1,3 @@
-// TODO 2019.04.10 | unused, why?
 import {GameModule} from "../../../src/GameModule";
 import {GameModuleInitializationPhase} from "../../../src/GameModuleInitializationPhase";
 

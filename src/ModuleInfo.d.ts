@@ -11,7 +11,7 @@ export interface ModuleInfo
   // should be used very, very sparingly
   // if this mod replaces another's functionality, this mod has been renamed, etc.
   modsToReplace?: string[];
-  // TODO 2019.04.10 | use string[] to allow for fallbacks
+  // TODO | use string[] to allow for fallbacks
   moduleBundleUrl: string;
   /**
    * define("{{{THIS BIT HERE}}}", ["require", "exports",
