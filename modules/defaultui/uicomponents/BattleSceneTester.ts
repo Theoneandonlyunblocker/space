@@ -5,6 +5,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {Battle} from "../../../src/Battle";
 import {BattleScene} from "../../../src/BattleScene";
 import {Player} from "../../../src/Player";
+import {Star} from "../../../src/Star";
 import {Unit} from "../../../src/Unit";
 import
 {
@@ -149,7 +150,11 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     {
       battleData:
       {
-        location: null,
+        location: new Star(
+        {
+          x: 69,
+          y: 420,
+        }),
         building: null,
         attacker:
         {
