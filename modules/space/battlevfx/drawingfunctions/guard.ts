@@ -1,4 +1,5 @@
 import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
+import { makeShaderSprite } from "../../../../src/pixiWrapperFunctions";
 import
 {
   getRelativeValue,
@@ -63,10 +64,13 @@ export function guard(props: VfxParams)
     }
   };
 
-  const container = new PIXI.Container();
-
-  container.filters = [guardFilter];
-  container.filterArea = new PIXI.Rectangle(0, 0, maxFrontier + 20, props.height);
+  const mesh = makeShaderSprite(
+    guardFilter,
+    0,
+    0,
+    maxFrontier + 20,
+    props.height,
+  );
 
   const renderTexture = PIXI.RenderTexture.create(
   {
@@ -86,7 +90,7 @@ export function guard(props: VfxParams)
     const relativeTime = elapsedTime / props.duration;
     syncUniformsFN(relativeTime);
 
-    props.renderer.render(container, renderTexture, true);
+    props.renderer.render(mesh, renderTexture, true);
 
     if (elapsedTime < props.duration)
     {

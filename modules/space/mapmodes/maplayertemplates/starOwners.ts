@@ -68,7 +68,8 @@ export const starOwners: MapRendererLayerTemplate =
         // container.addChild(gfx);
         // container.addChild(mask);
         // container.mask = mask;
-        gfx.filters = [getOccupationShader(star.owner, occupier)];
+        // TODO 2019.07.22 | reimplement
+        // gfx.filters = [getOccupationShader(star.owner, occupier)];
       }
 
       doc.addChild(gfx);
@@ -87,7 +88,8 @@ const occupationShaders:
 } = {};
 
 const hasAddedEventListeners = false;
-function getOccupationShader(owner: Player, occupier: Player)
+// TODO 2019.07.22 | reimplement  remove export
+export function getOccupationShader(owner: Player, occupier: Player)
 {
   if (!hasAddedEventListeners)
   {

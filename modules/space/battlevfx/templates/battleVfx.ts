@@ -10,11 +10,6 @@ import {placeholder as placeholderFunction} from "../drawingfunctions/placeholde
 import {rocketAttack as rocketAttackDrawingFunction} from "../drawingfunctions/rocketAttack";
 import {snipe as snipeDrawingFunction} from "../drawingfunctions/snipe";
 
-import
-{
-  attachShaderToSprite,
-} from "../../../../src/pixiWrapperFunctions";
-
 
 export const rocketAttack: BattleVfxTemplate =
 {
@@ -56,7 +51,7 @@ export const videoTest: BattleVfxTemplate =
     (sprite: PIXI.Sprite) =>
     {
       sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-      attachShaderToSprite(sprite, new BlackToAlphaFilter());
+      sprite.filters = [new BlackToAlphaFilter()];
     }),
   vfxWillTriggerEffect: false,
 };

@@ -5,9 +5,9 @@ import * as PIXI from "pixi.js";
 import {Color} from "../../../../src/Color";
 import
 {
-  attachShaderToSprite,
   generateTextureWithBounds,
-  getDummyTextureForShader,
+  // TODO 2019.07.22 | reimplement
+  // getDummyTextureForShader,
 } from "../../../../src/pixiWrapperFunctions";
 import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
 
@@ -191,7 +191,8 @@ export function beam(props: VfxParams)
   protonWrapper.onParticleUpdated["smallParticles"] = onParticleUpdateFN;
   protonWrapper.onSpriteCreated["smallParticles"] = (sprite) =>
   {
-    attachShaderToSprite(sprite, smallParticleFilter);
+    // TODO 2019.07.22 | reimplement
+    // attachShaderToSprite(sprite, smallParticleFilter);
     sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
   };
 
@@ -200,8 +201,9 @@ export function beam(props: VfxParams)
   shinyEmitter.p.x = beamOrigin.x;
   shinyEmitter.p.y = beamOrigin.y;
 
-  const shinyParticleTexture = getDummyTextureForShader();
-  shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
+  // TODO 2019.07.22 | reimplement
+  // const shinyParticleTexture = getDummyTextureForShader();
+  // shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
 
   const shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
   shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
@@ -236,7 +238,8 @@ export function beam(props: VfxParams)
   protonWrapper.onParticleUpdated["shinyParticles"] = onParticleUpdateFN;
   protonWrapper.onSpriteCreated["shinyParticles"] = (sprite) =>
   {
-    attachShaderToSprite(sprite, shinyParticleFilter);
+    // TODO 2019.07.22 | reimplement
+    // attachShaderToSprite(sprite, shinyParticleFilter);
     sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
   };
 

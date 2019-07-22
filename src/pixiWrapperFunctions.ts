@@ -3,50 +3,38 @@ import * as PIXI from "pixi.js";
 import {Point} from "./Point";
 
 
-export function createDummySpriteForShader(x?: number, y?: number, width?: number, height?: number)
+// export function getDummyTextureForShader()
+// {
+//   const canvas = document.createElement("canvas");
+//   // pixi will reuse basetexture with this set
+//   (<HTMLCanvasElement & {_pixiId: string}> canvas)._pixiId = "dummyShaderTexture";
+//   canvas.width = 1;
+//   canvas.height = 1;
+
+//   return PIXI.Texture.from(canvas);
+// }
+export function makeShaderSprite<U>(
+  shader: PIXI.Shader<U>,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+): PIXI.Mesh
 {
-  const texture = getDummyTextureForShader();
 
-  const sprite = new PIXI.Sprite(texture);
-  if (x || y)
-  {
-    sprite.position = new PIXI.Point(x || 0, y || 0);
-  }
-  if (width)
-  {
-    sprite.width = width;
-  }
-  if (height)
-  {
-    sprite.height = height;
-  }
+  const geometry = new PIXI.Quad();
+  geometry.addAttribute("aTextureCoord", [0, 0, 1, 0, 1, 1, 0, 1], 2);
+  geometry.addIndex([0, 1, 2, 0, 2, 3]);
 
-  return sprite;
+  const mesh = new PIXI.Mesh(geometry, shader);
+
+  mesh.position.set(x, y);
+  mesh.width = width;
+  mesh.height = height;
+
+  return mesh;
 }
-export function getDummyTextureForShader()
-{
-  const canvas = document.createElement("canvas");
-  // pixi will reuse basetexture with this set
-  (<HTMLCanvasElement & {_pixiId: string}> canvas)._pixiId = "dummyShaderTexture";
-  canvas.width = 1;
-  canvas.height = 1;
-
-  return PIXI.Texture.from(canvas);
-}
-export function makeShaderSprite(
-  shader: PIXI.Filter<any>,
-  x?: number,
-  y?: number,
-  width?: number,
-  height?: number,
-): PIXI.Sprite
-{
-  const sprite = createDummySpriteForShader(x, y, width, height);
-
-  attachShaderToSprite(sprite, shader);
-
-  return sprite;
-}
+// TODO 2019.07.22 | probably can be removed
 export function attachShaderToSprite(
   sprite: PIXI.Sprite,
   shader: PIXI.Filter<any>

@@ -68,7 +68,7 @@ export const drawNebula: BackgroundDrawingFunction = (
 
   const sprite = new PIXI.Sprite(texture);
 
-  shaderSprite.destroy({texture: true, baseTexture: true});
+  shaderSprite.destroy({children: true});
 
   Math.random = oldRng;
 
