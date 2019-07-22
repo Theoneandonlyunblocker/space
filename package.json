@@ -29,11 +29,12 @@
     "typescript": "3.5.x"
   },
   "scripts": {
-    "postinstall": "npm run copy-libs && npm run copy-assets && npm run compile-ui-module-css && npm run replace-pixi-typedefs",
+    "postinstall": "npm run copy-libs && npm run copy-assets && npm run compile-ui-module-css && npm run replace-pixi-typedefs && npm run copy-shaders",
 
     "build": "tsc -b --verbose && node scripts/build/bundleDefaultModules",
 
     "compile-ui-module-css": "lessc modules/defaultui/css/main.less dist/modules/defaultui/css/main.css",
+    "convert-shaders": "node scripts/convert_shaders",
 
     "copy-libs": "node scripts/copy_libs.js",
     "copy-assets": "npm run copy-ui-assets && npm run copy-emblems-assets && npm run copy-painting-portraits-assets && npm run copy-space-assets",
