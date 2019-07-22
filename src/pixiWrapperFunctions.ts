@@ -76,7 +76,7 @@ export function generateTextureWithBounds(
   tempMatrix.tx = -bounds.x;
   tempMatrix.ty = -bounds.y;
 
-  renderer.render(displayObject, renderTexture, false, tempMatrix, true);
+  renderer.render(displayObject, renderTexture, false, tempMatrix, false);
 
   return renderTexture;
 
