@@ -2,17 +2,15 @@ import * as PIXI from "pixi.js";
 
 import {Point} from "./Point";
 
+const dummyShaderTexture = (() =>
+{
+  const canvas = document.createElement("canvas");
+  (<HTMLCanvasElement & {_pixiId: string}> canvas)._pixiId = "dummyShaderTexture";
+  canvas.width = 1;
+  canvas.height = 1;
 
-// export function getDummyTextureForShader()
-// {
-//   const canvas = document.createElement("canvas");
-//   // pixi will reuse basetexture with this set
-//   (<HTMLCanvasElement & {_pixiId: string}> canvas)._pixiId = "dummyShaderTexture";
-//   canvas.width = 1;
-//   canvas.height = 1;
-
-//   return PIXI.Texture.from(canvas);
-// }
+  return PIXI.Texture.from(canvas);
+})();
 export function makeShaderSprite<U>(
   shader: PIXI.Shader<U>,
   x: number,
@@ -21,6 +19,7 @@ export function makeShaderSprite<U>(
   height: number,
 ): PIXI.Mesh
 {
+  shader.uniforms["uSampler"] = dummyShaderTexture;
 
   const geometry = new PIXI.Quad();
   geometry.addAttribute("aTextureCoord", [0, 0, 1, 0, 1, 1, 0, 1], 2);
