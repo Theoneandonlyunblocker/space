@@ -57,7 +57,7 @@ declare module Proton
     // doesn't actually count times emitted, just time since emission start
     // like life, but for emitting particles. only difference is, if life expires emitter gets destroyed
     // if this fills it just stops emitting particles. also has a few special values
-    // 
+    //
     // lots of overlap with Emitter.life
     emitTotalTimes: number | "once" | "none";
 
@@ -96,7 +96,7 @@ declare module Proton
   }
   export class ImageTarget extends Initialize
   {
-    constructor(target: any); // used by renderer
+    constructor(target: any); // used by renderer, consumed by ProtonWrapper
   }
   export class Life extends Initialize
   {

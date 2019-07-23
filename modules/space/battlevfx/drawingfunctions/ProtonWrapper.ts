@@ -4,6 +4,15 @@ import * as PIXI from "pixi.js";
 
 export class ProtonWrapper
 {
+  public onSpriteCreated:
+  {
+    [emitterKey: string]: (sprite: PIXI.Sprite) => void;
+  } = {};
+  public onParticleUpdated:
+  {
+    [emitterKey: string]: (particle: Proton.Particle) => void;
+  } = {};
+
   private container: PIXI.Container;
 
   private proton: Proton;
@@ -18,16 +27,7 @@ export class ProtonWrapper
     [emitterId: string]: string;
   } = {};
 
-  public onSpriteCreated:
-  {
-    [emitterKey: string]: (sprite: PIXI.Sprite) => void;
-  } = {};
-  public onParticleUpdated:
-  {
-    [emitterKey: string]: (particle: Proton.Particle) => void;
-  } = {};
-
-  public constructor(container: PIXI.Container)
+  constructor(container: PIXI.Container)
   {
     this.proton = new Proton();
     this.container = container;
@@ -35,9 +35,8 @@ export class ProtonWrapper
     this.initProtonRenderer();
   }
 
-  public destroy()
+  public destroy(): void
   {
-
     for (const key in this.emitters)
     {
       this.removeEmitterWithKey(key);
@@ -49,8 +48,41 @@ export class ProtonWrapper
     this.proton.destroy();
     this.proton = null;
   }
+  public addEmitter(emitter: Proton.Emitter, key: string): void
+  {
+    this.emitters[key] = emitter;
+    this.emitterKeysById[emitter.id] = key;
 
-  private initProtonRenderer()
+    this.proton.addEmitter(emitter);
+  }
+  public removeEmitterWithKey(key: string): void
+  {
+    const emitter = this.emitters[key];
+
+    this.destroyEmitter(emitter);
+
+    this.emitterKeysById[emitter.id] = null;
+    delete this.emitterKeysById[emitter.id];
+
+    this.emitters[key] = null;
+    delete this.emitters[key];
+  }
+  public removeEmitter(emitter: Proton.Emitter): void
+  {
+    this.removeEmitterWithKey(this.getEmitterKey(emitter));
+  }
+  public addInitializeToExistingParticles(emitter: Proton.Emitter, initialize: Proton.Initialize): void
+  {
+    emitter.particles.forEach(particle => initialize.initialize(particle));
+
+    emitter.addInitialize(initialize);
+  }
+  public update(): void
+  {
+    this.proton.update();
+  }
+
+  private initProtonRenderer(): void
   {
     const renderer = this.protonRenderer = new Proton.Renderer("other", this.proton);
 
@@ -60,8 +92,7 @@ export class ProtonWrapper
 
     renderer.start(); // start() initializes renderer, stop() destroys it
   }
-
-  private onProtonParticleCreated(particle: Proton.Particle)
+  private onProtonParticleCreated(particle: Proton.Particle): void
   {
     const sprite = new PIXI.Sprite(particle.target);
     sprite.anchor.x = 0.5;
@@ -76,8 +107,7 @@ export class ProtonWrapper
 
     this.container.addChild(sprite);
   }
-
-  private onProtonParticleUpdated(particle: Proton.Particle)
+  private onProtonParticleUpdated(particle: Proton.Particle): void
   {
     if (particle.parent)
     {
@@ -89,58 +119,22 @@ export class ProtonWrapper
       }
     }
   }
-
-  private onProtonParticleDead(particle: Proton.Particle)
+  private onProtonParticleDead(particle: Proton.Particle): void
   {
     this.container.removeChild(particle.sprite);
   }
-
-  private destroyEmitter(emitter: Proton.Emitter)
+  private destroyEmitter(emitter: Proton.Emitter): void
   {
     emitter.stopEmit();
     emitter.removeAllParticles();
     emitter.destroy();
   }
-
-  public addEmitter(emitter: Proton.Emitter, key: string)
-  {
-    this.emitters[key] = emitter;
-    this.emitterKeysById[emitter.id] = key;
-
-    this.proton.addEmitter(emitter);
-  }
-  private getEmitterKeyWithId(id: string)
+  private getEmitterKeyWithId(id: string): string
   {
     return this.emitterKeysById[id];
   }
-  private getEmitterKey(emitter: Proton.Emitter)
+  private getEmitterKey(emitter: Proton.Emitter): string
   {
     return this.getEmitterKeyWithId(emitter.id) || null;
-  }
-  public removeEmitterWithKey(key: string)
-  {
-    const emitter = this.emitters[key];
-
-    this.destroyEmitter(emitter);
-
-    this.emitterKeysById[emitter.id] = null;
-    delete this.emitterKeysById[emitter.id];
-
-    this.emitters[key] = null;
-    delete this.emitters[key];
-  }
-  public removeEmitter(emitter: Proton.Emitter)
-  {
-    this.removeEmitterWithKey(this.getEmitterKey(emitter));
-  }
-  public addInitializeToExistingParticles(emitter: Proton.Emitter, initialize: Proton.Initialize)
-  {
-    emitter.particles.forEach(particle => initialize.initialize(particle));
-
-    emitter.addInitialize(initialize);
-  }
-  public update()
-  {
-    this.proton.update();
   }
 }
