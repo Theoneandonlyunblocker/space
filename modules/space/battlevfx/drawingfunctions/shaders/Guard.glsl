@@ -1,3 +1,5 @@
+/// tsBuildTargets: shader
+
 precision mediump float;
 
 uniform float frontier;

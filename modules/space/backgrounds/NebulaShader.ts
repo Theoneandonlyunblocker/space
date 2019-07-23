@@ -23,7 +23,7 @@ interface Uniforms
   streakiness: number;
 }
 
-export class Nebula extends PIXI.Shader<Uniforms>
+export class NebulaShader extends PIXI.Shader<Uniforms>
 {
   constructor(initialUniformValues?: Partial<Uniforms>)
   {
@@ -45,7 +45,9 @@ export class Nebula extends PIXI.Shader<Uniforms>
   }
 }
 
-const fragmentSource = `precision mediump float;
+const fragmentSource = `/// tsBuildTargets: shader
+
+precision mediump float;
 
 uniform vec3 baseColor;
 uniform vec3 overlayColor;

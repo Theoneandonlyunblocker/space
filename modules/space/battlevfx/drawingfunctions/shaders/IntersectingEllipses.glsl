@@ -1,3 +1,5 @@
+/// tsBuildTargets: shader
+
 precision mediump float;
 
 #define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com

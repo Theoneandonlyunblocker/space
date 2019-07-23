@@ -15,7 +15,7 @@ interface Uniforms
   trailDistance: number;
 }
 
-export class Guard extends PIXI.Shader<Uniforms>
+export class GuardShader extends PIXI.Shader<Uniforms>
 {
   constructor(initialUniformValues?: Partial<Uniforms>)
   {
@@ -37,7 +37,9 @@ export class Guard extends PIXI.Shader<Uniforms>
   }
 }
 
-const fragmentSource = `precision mediump float;
+const fragmentSource = `/// tsBuildTargets: shader
+
+precision mediump float;
 
 uniform float frontier;
 uniform float trailDistance;

@@ -1,3 +1,5 @@
+/// tsBuildTargets: filter
+
 precision mediump float;
 
 varying vec2 vTextureCoord;

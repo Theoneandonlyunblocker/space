@@ -13,9 +13,10 @@ interface Uniforms
   mainColor: number[];
   mainEllipseSharpness: number;
   mainEllipseSize: number[];
+  uSampler: PIXI.Texture;
 }
 
-export class IntersectingEllipses extends PIXI.Shader<Uniforms>
+export class IntersectingEllipsesShader extends PIXI.Shader<Uniforms>
 {
   constructor(initialUniformValues?: Partial<Uniforms>)
   {
@@ -37,7 +38,9 @@ export class IntersectingEllipses extends PIXI.Shader<Uniforms>
   }
 }
 
-const fragmentSource = `precision mediump float;
+const fragmentSource = `/// tsBuildTargets: shader
+
+precision mediump float;
 
 varying vec2 vTextureCoord;
 uniform sampler2D uSampler;

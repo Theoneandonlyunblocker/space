@@ -13,9 +13,10 @@ interface Uniforms
   rayStrength: number;
   rotation: number;
   seed: number[];
+  uSampler: PIXI.Texture;
 }
 
-export class LightBurst extends PIXI.Shader<Uniforms>
+export class LightBurstShader extends PIXI.Shader<Uniforms>
 {
   constructor(initialUniformValues?: Partial<Uniforms>)
   {
@@ -37,8 +38,9 @@ export class LightBurst extends PIXI.Shader<Uniforms>
   }
 }
 
-const fragmentSource = `precision mediump float;
+const fragmentSource = `/// tsBuildTargets: shader
 
+precision mediump float;
 
 #define PI 3.14159265359
 varying vec2 vTextureCoord;

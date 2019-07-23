@@ -1,5 +1,6 @@
-precision mediump float;
+/// tsBuildTargets: shader
 
+precision mediump float;
 
 #define PI 3.14159265359
 #define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com

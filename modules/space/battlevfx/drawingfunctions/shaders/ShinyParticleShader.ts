@@ -9,9 +9,10 @@ interface Uniforms
   highlightIntensity: number;
   spikeColor: number[];
   spikeIntensity: number;
+  uSampler: PIXI.Texture;
 }
 
-export class ShinyParticle extends PIXI.Shader<Uniforms>
+export class ShinyParticleShader extends PIXI.Shader<Uniforms>
 {
   constructor(initialUniformValues?: Partial<Uniforms>)
   {
@@ -33,7 +34,9 @@ export class ShinyParticle extends PIXI.Shader<Uniforms>
   }
 }
 
-const fragmentSource = `precision mediump float;
+const fragmentSource = `/// tsBuildTargets: filter shader
+
+precision mediump float;
 
 varying vec2 vTextureCoord;
 uniform sampler2D uSampler;

@@ -21,9 +21,10 @@ interface Uniforms
   noiseAmplitude: number;
   seed: number;
   time: number;
+  uSampler: PIXI.Texture;
 }
 
-export class Beam extends PIXI.Shader<Uniforms>
+export class BeamShader extends PIXI.Shader<Uniforms>
 {
   constructor(initialUniformValues?: Partial<Uniforms>)
   {
@@ -45,7 +46,9 @@ export class Beam extends PIXI.Shader<Uniforms>
   }
 }
 
-const fragmentSource = `precision mediump float;
+const fragmentSource = `/// tsBuildTargets: shader
+
+precision mediump float;
 
 varying vec2 vTextureCoord;
 uniform sampler2D uSampler;
