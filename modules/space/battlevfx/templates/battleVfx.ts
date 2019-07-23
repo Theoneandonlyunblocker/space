@@ -1,7 +1,7 @@
 import {UnitAttribute} from "../../../../src/UnitAttributes";
 import {BattleVfxTemplate} from "../../../../src/templateinterfaces/BattleVfxTemplate";
 
-import {BlackToAlpha as BlackToAlphaFilter} from "../drawingfunctions/shaders/BlackToAlpha";
+import {BlackToAlphaFilter} from "../drawingfunctions/shaders/BlackToAlphaFilter";
 
 import {beam as beamDrawingFunction} from "../drawingfunctions/beam";
 import {guard as guardDrawingFunction} from "../drawingfunctions/guard";

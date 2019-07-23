@@ -5,7 +5,7 @@ import
   getRelativeValue,
 } from "../../../../src/utility";
 
-import {Guard as GuardFilter} from "./shaders/Guard";
+import {GuardShader} from "./shaders/GuardShader";
 
 
 export function guard(props: VfxParams)
@@ -19,7 +19,7 @@ export function guard(props: VfxParams)
   const trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
   const maxBlockWidth = maxFrontier * 2;
 
-  const guardFilter = new GuardFilter(
+  const guardShader = new GuardShader(
   {
     frontier: 0,
     trailDistance: baseTrailDistance,
@@ -38,7 +38,7 @@ export function guard(props: VfxParams)
     if (time < travelTime)
     {
       const adjustedtime = time / travelTime;
-      guardFilter.setUniforms(
+      guardShader.setUniforms(
       {
         frontier: maxFrontier * adjustedtime,
       });
@@ -54,7 +54,7 @@ export function guard(props: VfxParams)
       const adjustedtime = Math.pow(relativeTime, 4);
       const relativeDistance = getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
 
-      guardFilter.setUniforms(
+      guardShader.setUniforms(
       {
         trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
         blockWidth: adjustedtime * maxBlockWidth,
@@ -65,7 +65,7 @@ export function guard(props: VfxParams)
   };
 
   const mesh = makeShaderSprite(
-    guardFilter,
+    guardShader,
     0,
     0,
     maxFrontier + 20,

@@ -6,7 +6,7 @@ import
 {
   makeShaderSprite,
 } from "../../../../../src/pixiWrapperFunctions";
-import {LightBurst as LightBurstFilter} from "../shaders/LightBurst";
+import {LightBurstShader} from "../shaders/LightBurstShader";
 
 import {VfxFragment} from "./VfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
@@ -37,7 +37,7 @@ export class LightBurst extends VfxFragment<LightBurstProps>
     rayStrength: new PropInfo.Number(1.0),
   };
 
-  private lightBurstFilter: LightBurstFilter;
+  private lightBurstShader: LightBurstShader;
   private seed: number[] = [Math.random() * 69, Math.random() * 420];
 
   constructor(props: LightBurstProps)
@@ -55,7 +55,7 @@ export class LightBurst extends VfxFragment<LightBurstProps>
 
     const lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
 
-    this.lightBurstFilter.setUniforms(
+    this.lightBurstShader.setUniforms(
     {
       centerSize: Math.pow(lightBurstIntensity, 2.0) * this.props.centerSize,
       centerBloomStrength: Math.pow(lightBurstIntensity, 2.0) * 5.0,
@@ -64,7 +64,7 @@ export class LightBurst extends VfxFragment<LightBurstProps>
   }
   public draw(): void
   {
-    this.lightBurstFilter = new LightBurstFilter(
+    this.lightBurstShader = new LightBurstShader(
     {
       seed: this.seed,
       rotation: 0,
@@ -73,7 +73,7 @@ export class LightBurst extends VfxFragment<LightBurstProps>
     });
 
     const lightBurstSprite = makeShaderSprite(
-      this.lightBurstFilter,
+      this.lightBurstShader,
       0,
       0,
       this.props.size.x,

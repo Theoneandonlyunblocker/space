@@ -7,7 +7,7 @@ import
 {
   makeShaderSprite,
 } from "../../../../../src/pixiWrapperFunctions";
-import {IntersectingEllipses as IntersectingEllipsesFilter} from "../shaders/IntersectingEllipses";
+import {IntersectingEllipsesShader} from "../shaders/IntersectingEllipsesShader";
 
 import {RampingValue} from "./RampingValue";
 import {VfxFragment} from "./VfxFragment";
@@ -57,7 +57,7 @@ export class ShockWave extends VfxFragment<ShockWaveProps>
     delay: new PropInfo.Number(0.3),
   };
 
-  private shockWaveFilter: IntersectingEllipsesFilter;
+  private shockWaveShader: IntersectingEllipsesShader;
 
   constructor(props: ShockWaveProps)
   {
@@ -79,7 +79,7 @@ export class ShockWave extends VfxFragment<ShockWaveProps>
 
     const shockWaveTime = TWEEN.Easing.Quintic.Out(burstX);
 
-    this.shockWaveFilter.setUniforms(
+    this.shockWaveShader.setUniforms(
     {
       mainEllipseSize:
       [
@@ -103,13 +103,13 @@ export class ShockWave extends VfxFragment<ShockWaveProps>
   }
   public draw(): void
   {
-    const shockWaveFilter = this.shockWaveFilter = new IntersectingEllipsesFilter(
+    const shockWaveShader = this.shockWaveShader = new IntersectingEllipsesShader(
     {
       mainColor: this.props.color.getRGBA(1.0),
     });
 
     const shockWaveSprite = makeShaderSprite(
-      shockWaveFilter,
+      shockWaveShader,
       0,
       0,
       this.props.size.x,

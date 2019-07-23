@@ -14,7 +14,7 @@ import
   randRange,
 } from "../../../src/utility";
 
-import {Nebula as NebulaFilter} from "./Nebula";
+import {NebulaShader} from "./NebulaShader";
 
 
 export const drawNebula: BackgroundDrawingFunction = (
@@ -25,7 +25,7 @@ export const drawNebula: BackgroundDrawingFunction = (
 
   const nebulaColorScheme = generateColorScheme();
 
-  const filter = new NebulaFilter(
+  const shader = new NebulaShader(
   {
     baseColor: nebulaColorScheme.main.getRGB(),
     overlayColor: nebulaColorScheme.secondary.getRGB(),
@@ -51,7 +51,7 @@ export const drawNebula: BackgroundDrawingFunction = (
     seed: [Math.random() * 100, Math.random() * 100],
   });
 
-  const shaderSprite = makeShaderSprite(filter, 0, 0, size.width, size.height);
+  const shaderSprite = makeShaderSprite(shader, 0, 0, size.width, size.height);
 
   const texture = generateTextureWithBounds(
     renderer,

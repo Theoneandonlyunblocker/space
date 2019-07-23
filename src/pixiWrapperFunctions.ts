@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 
 import {Point} from "./Point";
 
-const dummyShaderTexture = (() =>
+export const dummyShaderTexture = (() =>
 {
   const canvas = document.createElement("canvas");
   (<HTMLCanvasElement & {_pixiId: string}> canvas)._pixiId = "dummyShaderTexture";
@@ -32,17 +32,6 @@ export function makeShaderSprite<U>(
   mesh.height = height;
 
   return mesh;
-}
-// TODO 2019.07.22 | probably can be removed
-export function attachShaderToSprite(
-  sprite: PIXI.Sprite,
-  shader: PIXI.Filter<any>
-)
-{
-  // sprite.shader = shader;
-  // TODO 2017.07.24 | really just a temporary workaround
-  sprite.filters = [shader];
-  sprite.filterArea = sprite.getBounds();
 }
 export function convertClientRectToPixiRect(rect: ClientRect): PIXI.Rectangle
 {

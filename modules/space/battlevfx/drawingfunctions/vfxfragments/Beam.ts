@@ -11,7 +11,7 @@ import
   clamp,
   getRelativeValue,
 } from "../../../../../src/utility";
-import {Beam as BeamFilter} from "../shaders/Beam";
+import {BeamShader} from "../shaders/BeamShader";
 
 import {RampingValue} from "./RampingValue";
 import {VfxFragment} from "./VfxFragment";
@@ -59,7 +59,7 @@ export class Beam extends VfxFragment<BeamProps>
     lineYSharpness: new PropInfo.RampingValue(new RampingValue(0.99, -0.15, 0.16)),
   };
 
-  private beamFilter: BeamFilter;
+  private beamShader: BeamShader;
   private seed: number = Math.random() * 100;
 
   constructor(props: BeamProps)
@@ -82,7 +82,7 @@ export class Beam extends VfxFragment<BeamProps>
   }
   public animateFromRampValues(time: number, rampUpValue: number, rampDownValue: number): void
   {
-    this.beamFilter.setUniforms(
+    this.beamShader.setUniforms(
     {
       time: time * this.props.timeScale,
       noiseAmplitude: this.props.noiseAmplitude.getValue(rampUpValue, rampDownValue),
@@ -109,7 +109,7 @@ export class Beam extends VfxFragment<BeamProps>
   }
   public draw(): void
   {
-    this.beamFilter = new BeamFilter(
+    this.beamShader = new BeamShader(
     {
       seed: this.seed,
       beamColor: this.props.color.getRGBA(1.0),
@@ -119,7 +119,7 @@ export class Beam extends VfxFragment<BeamProps>
     });
 
     const beamSprite = makeShaderSprite(
-      this.beamFilter,
+      this.beamShader,
       0,
       0,
       this.props.size.x,

@@ -1,5 +1,4 @@
-// TODO performance | rework occupation
-// probably generate texture for tiling sprite + use masks
+// TODO 2019.07.23 | rework
 
 import * as PIXI from "pixi.js";
 
@@ -12,7 +11,7 @@ import
   makePolygonFromPoints,
 } from "../../../../src/pixiWrapperFunctions";
 
-import {Occupation as OccupationShader} from "./shaders/Occupation";
+import {OccupationFilter} from "./shaders/OccupationFilter";
 
 
 export const starOwners: MapRendererLayerTemplate =
@@ -24,9 +23,9 @@ export const starOwners: MapRendererLayerTemplate =
   initialAlpha: 0.5,
   destroy: () =>
   {
-    for (const key in occupationShaders)
+    for (const key in occupationFilters)
     {
-      delete occupationShaders[key];
+      delete occupationFilters[key];
     }
   },
   drawingFunction: (map, perspectivePlayer) =>
@@ -56,20 +55,20 @@ export const starOwners: MapRendererLayerTemplate =
 
       if (occupier)
       {
-        // const container = new PIXI.Container();
-        // doc.addChild(container);
+        const container = new PIXI.Container();
+        doc.addChild(container);
 
-        // const mask = new PIXI.Graphics();
+        const mask = new PIXI.Graphics();
+        // TODO 2019.07.23 | what's this?
         // mask.isMask = true;
-        // mask.beginFill(0);
-        // mask.drawShape(poly);
-        // mask.endFill();
+        mask.beginFill(0);
+        mask.drawShape(poly);
+        mask.endFill();
 
-        // container.addChild(gfx);
-        // container.addChild(mask);
-        // container.mask = mask;
-        // TODO 2019.07.22 | reimplement
-        // gfx.filters = [getOccupationShader(star.owner, occupier)];
+        container.addChild(gfx);
+        container.addChild(mask);
+        container.mask = mask;
+        gfx.filters = [getOccupationFilter(star.owner, occupier)];
       }
 
       doc.addChild(gfx);
@@ -79,31 +78,31 @@ export const starOwners: MapRendererLayerTemplate =
   },
 };
 
-const occupationShaders:
+const occupationFilters:
 {
   [ownerId: string]:
   {
-    [occupierId: string]: OccupationShader;
+    [occupierId: string]: OccupationFilter;
   };
 } = {};
 
 const hasAddedEventListeners = false;
-// TODO 2019.07.22 | reimplement  remove export
-export function getOccupationShader(owner: Player, occupier: Player)
+
+function getOccupationFilter(owner: Player, occupier: Player)
 {
   if (!hasAddedEventListeners)
   {
-    eventManager.addEventListener("cameraZoomed", updateShaderZoom);
-    eventManager.addEventListener("cameraMoved", updateShaderOffset);
+    eventManager.addEventListener("cameraZoomed", updateFilterZoom);
+    eventManager.addEventListener("cameraMoved", updateFilterOffset);
   }
-  if (!occupationShaders[owner.id])
+  if (!occupationFilters[owner.id])
   {
-    occupationShaders[owner.id] = {};
+    occupationFilters[owner.id] = {};
   }
 
-  if (!occupationShaders[owner.id][occupier.id])
+  if (!occupationFilters[owner.id][occupier.id])
   {
-    occupationShaders[owner.id][occupier.id] = new OccupationShader(
+    occupationFilters[owner.id][occupier.id] = new OccupationFilter(
     {
       stripeColor: occupier.color.getRGBA(1.0),
       stripeSize: 0.33,
@@ -113,29 +112,29 @@ export function getOccupationShader(owner: Player, occupier: Player)
     });
   }
 
-  return occupationShaders[owner.id][occupier.id];
+  return occupationFilters[owner.id][occupier.id];
 }
-function forEachOccupationShader(cb: (shader: OccupationShader) => void)
+function forEachOccupationFilter(cb: (filter: OccupationFilter) => void)
 {
-  for (const ownerId in occupationShaders)
+  for (const ownerId in occupationFilters)
   {
-    for (const occupierId in occupationShaders[ownerId])
+    for (const occupierId in occupationFilters[ownerId])
     {
-      cb(occupationShaders[ownerId][occupierId]);
+      cb(occupationFilters[ownerId][occupierId]);
     }
   }
 }
-function updateShaderOffset(x: number, y: number)
+function updateFilterOffset(x: number, y: number)
 {
-  forEachOccupationShader(shader =>
+  forEachOccupationFilter(filter =>
   {
-    shader.uniforms.offset = [-x, y];
+    filter.uniforms.offset = [-x, y];
   });
 }
-function updateShaderZoom(zoom: number)
+function updateFilterZoom(zoom: number)
 {
-  forEachOccupationShader(shader =>
+  forEachOccupationFilter(filter =>
   {
-    shader.uniforms.scale = zoom * 8.0;
+    filter.uniforms.scale = zoom * 8.0;
   });
 }

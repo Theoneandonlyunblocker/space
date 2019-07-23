@@ -6,8 +6,7 @@ import {Color} from "../../../../src/Color";
 import
 {
   generateTextureWithBounds,
-  // TODO 2019.07.22 | reimplement
-  // getDummyTextureForShader,
+  dummyShaderTexture,
 } from "../../../../src/pixiWrapperFunctions";
 import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
 
@@ -16,7 +15,7 @@ import {Beam} from "./vfxfragments/Beam";
 import {LightBurst} from "./vfxfragments/LightBurst";
 import {RampingValue} from "./vfxfragments/RampingValue";
 import {ShockWave} from "./vfxfragments/ShockWave";
-import {ShinyParticle as ShinyParticleFilter} from "./shaders/ShinyParticle";
+import {ShinyParticleFilter} from "./shaders/ShinyParticleFilter";
 
 
 export function beam(props: VfxParams)
@@ -191,8 +190,7 @@ export function beam(props: VfxParams)
   protonWrapper.onParticleUpdated["smallParticles"] = onParticleUpdateFN;
   protonWrapper.onSpriteCreated["smallParticles"] = (sprite) =>
   {
-    // TODO 2019.07.22 | reimplement
-    // attachShaderToSprite(sprite, smallParticleFilter);
+    sprite.filters = [smallParticleFilter];
     sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
   };
 
@@ -201,9 +199,8 @@ export function beam(props: VfxParams)
   shinyEmitter.p.x = beamOrigin.x;
   shinyEmitter.p.y = beamOrigin.y;
 
-  // TODO 2019.07.22 | reimplement
-  // const shinyParticleTexture = getDummyTextureForShader();
-  // shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
+  const shinyParticleTexture = dummyShaderTexture;
+  shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
 
   const shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
   shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
@@ -238,8 +235,7 @@ export function beam(props: VfxParams)
   protonWrapper.onParticleUpdated["shinyParticles"] = onParticleUpdateFN;
   protonWrapper.onSpriteCreated["shinyParticles"] = (sprite) =>
   {
-    // TODO 2019.07.22 | reimplement
-    // attachShaderToSprite(sprite, shinyParticleFilter);
+    sprite.filters = [shinyParticleFilter];
     sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
   };
 
