@@ -9,7 +9,28 @@
 
     // try to follow these while writing new code
     "member-access": true,
-    "member-ordering": [true, {"order": "fields-first"}],
+    "member-ordering": [true, {"order": [
+      "public-static-field",
+      "protected-static-field",
+      "private-static-field",
+
+      "public-instance-field",
+      "protected-instance-field",
+      "private-instance-field",
+
+      "public-constructor",
+      "protected-constructor",
+      "private-constructor",
+
+      "public-static-method",
+      "protected-static-method",
+
+      "public-instance-method",
+      "protected-instance-method",
+      "private-instance-method",
+
+      "private-static-method",
+    ]}],
     "no-any": true,
     "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
     "prefer-function-over-method": {"severity": "warn", "options": [true]},
