@@ -1,6 +1,7 @@
 // TODO global ref
 // /// <reference path="../../../../lib/tween.js.d.ts" />
 import * as PIXI from "pixi.js";
+import * as Proton from "proton-js";
 
 import {Color} from "../../../../src/Color";
 import
