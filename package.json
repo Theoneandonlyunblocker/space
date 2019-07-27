@@ -30,7 +30,7 @@
     "typescript": "3.5.x"
   },
   "scripts": {
-    "postinstall": "npm run copy-libs && npm run copy-assets && npm run compile-ui-module-css && npm run replace-pixi-typedefs && npm run copy-shaders",
+    "postinstall": "npm run copy-libs && npm run copy-assets && npm run compile-ui-module-css && npm run replace-pixi-typedefs && npm run convert-shaders",
 
     "build": "tsc -b --verbose && node scripts/build/bundleDefaultModules",
 
