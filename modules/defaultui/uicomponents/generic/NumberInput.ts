@@ -3,8 +3,8 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import
 {
-  clamp,
   mergeReactAttributes,
+  stringIsSignedFloat,
 } from "../../../../src/utility";
 
 import {Spinner} from "./Spinner";
@@ -17,10 +17,15 @@ export interface PropTypes extends React.Props<any>
 
   min?: number;
   max?: number;
-  step: number;
+  step?: number;
   canWrap?: boolean;
 
-  attributes?: React.HTMLAttributes<HTMLDivElement>;
+  valueStringIsValid?: (valueString: string) => boolean;
+  getValueFromValueString?: (valueString: string) => number;
+
+  noSpinner?: boolean;
+  stylizeValue?: (value: number) => string;
+  attributes?: React.HTMLAttributes<HTMLInputElement>;
 }
 
 interface StateType
@@ -38,16 +43,16 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
 
-    const value = NumberInputComponent.roundValue(this.props.value, this.props.step);
+    const value = NumberInputComponent.roundValue(props.value, props.step);
 
     this.state =
     {
-      displayedValue: "" + value,
+      displayedValue: NumberInputComponent.getValueString(value, props.stylizeValue),
       lastValidValue: value,
     };
 
-    this.handleValueChange = this.handleValueChange.bind(this);
-    this.changeValue = this.changeValue.bind(this);
+    this.handleValueInput = this.handleValueInput.bind(this);
+    this.handleSetValue = this.handleSetValue.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
   }
 
@@ -55,12 +60,14 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
   {
     const thereWasExternalChange = props.value !== state.lastValidValue;
 
+    const value = NumberInputComponent.roundValue(props.value, props.step);
+
     if (thereWasExternalChange)
     {
       return(
       {
-        displayedValue: "" + NumberInputComponent.roundValue(props.value, props.step),
-        lastValidValue: props.value,
+        displayedValue: NumberInputComponent.getValueString(value, props.stylizeValue),
+        lastValidValue: value,
       });
     }
     else
@@ -68,13 +75,19 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
       return null;
     }
   }
+
   public componentWillUnmount(): void
   {
     this.handleBlur();
   }
   public render()
   {
-    const defaultAttributes: React.HTMLAttributes<HTMLDivElement> =
+    const valueStringIsValid = NumberInputComponent.valueStringIsValid(
+      this.state.displayedValue,
+      this.props.valueStringIsValid,
+    );
+
+    const defaultAttributes: React.Attributes & React.InputHTMLAttributes<HTMLInputElement> =
     {
       className: "number-input-container",
     };
@@ -86,17 +99,18 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
       ReactDOMElements.div(attributes,
         ReactDOMElements.input(
         {
-          className: "number-input",
+          className: "number-input" + (valueStringIsValid ? "" : " invalid-value"),
           type: "text",
           value: this.state.displayedValue,
-          onChange: this.handleValueChange,
+          spellCheck: false,
+          onChange: this.handleValueInput,
           onBlur: this.handleBlur,
         }),
-        Spinner(
+        this.props.noSpinner ? null : Spinner(
         {
           value: this.props.value,
           step: this.props.step,
-          onChange: this.changeValue,
+          onChange: this.handleSetValue,
 
           min: this.props.canWrap ? -Infinity : this.props.min,
           max: this.props.canWrap ? Infinity : this.props.max,
@@ -105,31 +119,11 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     );
   }
 
-  private static getDecimalPlacesInStep(step: number): number
-  {
-    // step is specified in code, so assume no precision issues
-    const split = `${step}`.split(".");
-
-    return split[1] ? split[1].length : 0;
-  }
-  private static roundValue(value: number, step: number): number
-  {
-    const precision = NumberInputComponent.getDecimalPlacesInStep(step);
-
-    return parseFloat(value.toFixed(precision));
-  }
   private handleBlur(): void
   {
-    if (this.valueStringIsValid(this.state.displayedValue))
-    {
-      this.changeValue(parseFloat(this.state.displayedValue));
-    }
-    else
-    {
-      this.setState({displayedValue: "" + this.props.value});
-    }
+    // TODO 2019.07.29 | implement
   }
-  private handleValueChange(e: React.FormEvent<HTMLInputElement> | React.ClipboardEvent<HTMLInputElement>): void
+  private handleValueInput(e: React.FormEvent<HTMLInputElement> | React.ClipboardEvent<HTMLInputElement>): void
   {
     e.stopPropagation();
     e.preventDefault();
@@ -137,82 +131,123 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     const target = e.currentTarget;
     const valueString = target.value;
 
+    const value = NumberInputComponent.getValueFromValueString(valueString, this.props.getValueFromValueString);
+
+    const isWithinBounds = NumberInputComponent.valueIsWithinBounds(value, this.props.min, this.props.max);
+    const isValid = isWithinBounds &&
+      NumberInputComponent.valueStringIsValid(valueString, this.props.valueStringIsValid);
+
     this.setState(
     {
       displayedValue: valueString,
+      lastValidValue: isValid ? value : this.state.lastValidValue,
     }, () =>
     {
-      const value = parseFloat(valueString);
-
-      const isValid = this.valueStringIsValid(valueString);
-      const isWithinBounds = this.valueIsWithinBounds(value);
-
-      if (isValid && isWithinBounds)
+      if (isValid)
       {
-        this.changeValue(value);
+        this.handleSetValue(value);
       }
     });
   }
-  private changeValue(value: number): void
+  private handleSetValue(rawValue: number): void
   {
-    if (value === this.props.value)
-    {
-      this.setState({displayedValue: "" + value});
-
-      return;
-    }
-
-    const roundedValue = NumberInputComponent.roundValue(value, this.props.step);
-
-    const min = isFinite(this.props.min) ? this.props.min : -Infinity;
-    const max = isFinite(this.props.max) ? this.props.max : Infinity;
+    let value = NumberInputComponent.roundValue(rawValue, this.props.step);
 
     if (this.props.canWrap)
     {
-      if (!isFinite(min) || !isFinite(max))
-      {
-        throw new Error("NumberInput component with wrapping enabled must specify min and max values.");
-      }
+      value = NumberInputComponent.getValueWithWrap(value, this.props.min, this.props.max);
+    }
 
-      if (roundedValue < min)
-      {
-        const underMin = min - (roundedValue % max);
-        this.props.onChange(max - underMin);
-      }
-      else
-      {
-        this.props.onChange(roundedValue % max);
-      }
+    this.props.onChange(value);
+  }
+
+  private static getValueString(
+    value: number,
+    stylizeFN: ((value: number) => string) | undefined,
+  ): string
+  {
+    if (stylizeFN)
+    {
+      return stylizeFN(value);
     }
     else
     {
-      const clampedValue = clamp(roundedValue, min, max);
-      this.props.onChange(clampedValue);
+      return "" + value;
     }
   }
-  private valueStringIsValid(valueString: string): boolean
+  private static getValueFromValueString(
+    valueString: string,
+    extractorFN: ((valueString: string) => number) | undefined,
+  ): number
   {
-    // signed float
-    if (!valueString.match(/^(-?(?:0|[1-9]\d*)(?:\.\d+)?)?$/))
+    if (extractorFN)
     {
-      return false;
+      return extractorFN(valueString);
     }
-
-    const value = parseFloat(valueString);
-
-    if (!isFinite(value))
+    else
     {
-      return false;
+      return parseFloat(valueString);
     }
-
-    return true;
   }
-  private valueIsWithinBounds(value: number): boolean
+  private static roundValue(value: number, step: number | undefined): number
   {
-    const min = isFinite(this.props.min) ? this.props.min : -Infinity;
-    const max = isFinite(this.props.max) ? this.props.max : Infinity;
+    if (!step)
+    {
+      return value;
+    }
+    else
+    {
+      const precision = NumberInputComponent.getDecimalPlacesInStep(step);
 
+      return parseFloat(value.toFixed(precision));
+    }
+  }
+  private static valueStringIsValid(
+    valueString: string,
+    validityFN: (valueString: string) => boolean | undefined,
+  ): boolean
+  {
+    if (validityFN)
+    {
+      return validityFN(valueString);
+    }
+    else
+    {
+      return stringIsSignedFloat(valueString);
+    }
+  }
+  private static valueIsWithinBounds(
+    value: number,
+    min: number = Infinity,
+    max: number = Infinity,
+  ): boolean
+  {
     return value >= min && value <= max;
+  }
+  private static getDecimalPlacesInStep(step: number): number
+  {
+    // step is specified in code, so assume no precision issues
+    const split = `${step}`.split(".");
+
+    return split[1] ? split[1].length : 0;
+  }
+  private static getValueWithWrap(value: number, min: number, max: number): number
+  {
+    if (!isFinite(min) || !isFinite(max))
+    {
+      throw new Error("NumberInput component with wrapping enabled must specify min and max values.");
+    }
+
+    if (value < min)
+    {
+      const underMin = min - (value % max);
+
+      return max - underMin;
+    }
+    else
+    {
+      return value % max;
+    }
   }
 }
 

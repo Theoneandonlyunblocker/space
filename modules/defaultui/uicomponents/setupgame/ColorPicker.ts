@@ -4,7 +4,6 @@ import * as ReactDOMElements from "react-dom-factories";
 import {localize} from "../../localization/localize";
 import {Color} from "../../../../src/Color";
 import {NumberInput} from "../generic/NumberInput";
-import {NumericTextInput} from "../generic/NumericTextInput";
 import
 {
   AutoPositionerProps,
@@ -80,8 +79,9 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
               className: "color-picker-button",
               onClick: this.nullifyColor,
             }, localize("clear")()),
-          NumericTextInput(
+          NumberInput(
           {
+            noSpinner: true,
             attributes:
             {
               className: "color-picker-input",
@@ -99,7 +99,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
             {
               return Color.fromHexString(valueString).getHex();
             },
-            onValueChange: value =>
+            onChange: value =>
             {
               this.setState(
               {

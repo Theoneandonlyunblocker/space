@@ -690,3 +690,9 @@ export function fixedDurationSpring(
 
   return ReactMotion.spring(value, {stiffness: stiffness, damping: damping});
 }
+export function stringIsSignedFloat(toCheck: string): boolean
+{
+  const signedFloatRegex = /^(-?(?:0|[1-9]\d*)(?:\.\d+)?)?$/;
+
+  return signedFloatRegex.test(toCheck);
+}

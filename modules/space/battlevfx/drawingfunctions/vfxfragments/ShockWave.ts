@@ -44,8 +44,8 @@ export class ShockWave extends VfxFragment<ShockWaveProps>
     intersectingEllipseDrift: new PropInfo.Point({x: 0.0, y: 0.0}),
 
     alpha: new PropInfo.RampingValue(new RampingValue(1.0, -1.0, 0.0)),
-    mainEllipseScaleX: new PropInfo.RampingValue(new RampingValue(0.0, 0.9, 0.0)),
-    mainEllipseScaleY: new PropInfo.RampingValue(new RampingValue(0.0, 0.9, 0.0)),
+    mainEllipseScaleX: new PropInfo.RampingValue(new RampingValue(0.0, 1.0, 0.0)),
+    mainEllipseScaleY: new PropInfo.RampingValue(new RampingValue(0.0, 1.0, 0.0)),
     mainEllipseSharpness: new PropInfo.RampingValue(new RampingValue(1.0, -0.2, 0.0)),
     intersectingEllipseScaleX: new PropInfo.RampingValue(new RampingValue(0.0, 1.0, 0.0)),
     intersectingEllipseScaleY: new PropInfo.RampingValue(new RampingValue(0.0, 1.0, 0.0)),
@@ -111,8 +111,8 @@ export class ShockWave extends VfxFragment<ShockWaveProps>
       shockWaveShader,
       0,
       0,
-      this.props.size.x,
-      this.props.size.y,
+      this.props.size.x * 1.5,
+      this.props.size.y * 1.5,
     );
 
     this.setDisplayObject(shockWaveSprite);

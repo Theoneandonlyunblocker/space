@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {NumericTextInput} from "../../generic/NumericTextInput";
+import {NumberInput} from "../../generic/NumberInput";
 
 
 export interface PropTypes extends React.Props<any>
@@ -43,12 +43,12 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
         },
           `${this.props.label}:`,
         ),
-        NumericTextInput(
+        NumberInput(
         {
           value: this.props.value,
           valueStringIsValid: valueString => isFinite(Number(valueString)),
           getValueFromValueString: parseFloat,
-          onValueChange: this.props.onValueChange,
+          onChange: this.props.onValueChange,
         }),
       )
     );

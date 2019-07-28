@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {VfxFragment} from "../../../../space/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
 
-import {NumericTextInput} from "../../generic/NumericTextInput";
+import {NumberInput} from "../../generic/NumberInput";
 
 
 export interface PropTypes extends React.Props<any>
@@ -55,12 +55,12 @@ export class VfxFragmentPropNumberComponent extends React.Component<PropTypes, S
       {
         className: "vfx-fragment-prop-number-input",
       },
-        NumericTextInput(
+        NumberInput(
         {
           value: this.props.value,
           valueStringIsValid: valueString => isFinite(Number(valueString)),
           getValueFromValueString: parseFloat,
-          onValueChange: newValue =>
+          onChange: newValue =>
           {
             this.props.fragment.props[this.props.propName] = newValue;
 
