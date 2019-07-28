@@ -19,6 +19,7 @@ const filesToCopyWithDestination =
   "node_modules/react-motion/build/react-motion.js": "dist/lib/react-motion.js",
   "node_modules/@tweenjs/tween.js/src/Tween.js": "dist/lib/Tween.js",
   "node_modules/rng-js/rng.js": "dist/lib/rng.js",
+  "node_modules/voronoi/rhill-voronoi-core.js": "dist/lib/rhill-voronoi-core.js",
 };
 
 mkdirp("dist/lib", err =>

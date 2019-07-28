@@ -1,5 +1,4 @@
-// TODO global ref
-// /// <reference path="../lib/voronoi.d.ts" />
+import * as Voronoi from "voronoi";
 
 import {Point} from "./Point";
 

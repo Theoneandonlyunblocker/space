@@ -17,11 +17,11 @@ declare class Voronoi
 {
   constructor();
   compute<T extends Voronoi.Vertex>(sites: T[], bbox: Bbox): Voronoi.Result<T>;
-  
+
   Cell: Voronoi.CellConstructor<any>;
 }
 
-declare module Voronoi
+declare namespace Voronoi
 {
   export interface Vertex
   {
@@ -33,7 +33,7 @@ declare module Voronoi
     vertices: Vertex[];
     edges: Edge<T>[];
     cells: Cell<T>[];
-    
+
     execTime: number;
   }
   export interface Edge<T extends Vertex>
@@ -62,4 +62,9 @@ declare module Voronoi
     getStartpoint(): Vertex;
     getEndpoint(): Vertex;
   }
+}
+
+declare module "voronoi"
+{
+  export = Voronoi;
 }
