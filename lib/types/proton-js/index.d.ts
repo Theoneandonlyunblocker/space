@@ -1,4 +1,3 @@
-
 declare class Proton
 {
   static USE_CLOCK: boolean;
@@ -523,6 +522,7 @@ declare namespace Proton
   }
 }
 
-declare module "proton-js" {
+declare module "proton-js"
+{
   export = Proton;
 }
