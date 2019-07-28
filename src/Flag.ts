@@ -1,6 +1,3 @@
-// TODO global ref
-// /// <reference path="../lib/rng.d.ts" />
-
 import {Color} from "./Color";
 import {Emblem} from "./Emblem";
 import {generateMainColor, generateSecondaryColor} from "./colorGeneration";

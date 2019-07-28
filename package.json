@@ -12,7 +12,8 @@
     "react-dom-factories": "1.0.x",
     "react-motion": "0.5.x",
     "requirejs": "2.3.x",
-    "requirejs-plugins": "1.0.x"
+    "requirejs-plugins": "1.0.x",
+    "rng-js": "1.0.x"
   },
   "devDependencies": {
     "@types/react": "16.x",

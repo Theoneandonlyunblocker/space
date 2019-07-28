@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
-// TODO global ref
-// /// <reference path="../../lib/rng.d.ts" />
+import * as RNG from "rng-js";
 
 import {BackgroundDrawingFunction} from "../../../src/BackgroundDrawingFunction";
 import {generateColorScheme} from "../../../src/colorGeneration";

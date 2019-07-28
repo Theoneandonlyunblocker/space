@@ -1,5 +1,4 @@
-// TODO global ref
-// /// <reference path="../lib/rng.d.ts" />
+import * as RNG from "rng-js";
 
 import {Color} from "./Color";
 import {activeModuleData} from "./activeModuleData";

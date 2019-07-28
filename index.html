@@ -10,12 +10,12 @@
 
   <script src="lib/rhill-voronoi-core.js"></script>
   <script src="lib/QuadTree.js"></script>
-  <script src="lib/rng.js"></script>
   <script src="lib/offset.js"></script>
   <script src="lib/messageformat.js"></script>
 
   <script src="lib/hsluv-0.0.3.min.js"></script>
   <script src="dist/lib/pixi.js"></script>
+  <script src="dist/lib/rng.js"></script>
 
   <script src="lib/require.js"></script>
 
@@ -53,6 +53,10 @@
     define("hsluv", () =>
     {
       return hsluv;
+    });
+    define("rng-js", () =>
+    {
+      return RNG;
     });
 
     require(["./dist/_temp_app/index.js", "./dist/src/index.js", "./dist/modules/common/index.js"], function()

@@ -18,6 +18,7 @@ const filesToCopyWithDestination =
   "node_modules/proton-js/build/proton.js": "dist/lib/proton.js",
   "node_modules/react-motion/build/react-motion.js": "dist/lib/react-motion.js",
   "node_modules/@tweenjs/tween.js/src/Tween.js": "dist/lib/Tween.js",
+  "node_modules/rng-js/rng.js": "dist/lib/rng.js",
 };
 
 mkdirp("dist/lib", err =>
