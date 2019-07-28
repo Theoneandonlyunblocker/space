@@ -1,7 +1,5 @@
-// TODO global ref
-// /// <reference path="../lib/husl.d.ts" />
-
 import {ColorSaveData} from "./savedata/ColorSaveData";
+import * as hsluv from "hsluv";
 
 
 export class Color
@@ -116,7 +114,7 @@ export class Color
    */
   public static fromHUSL(h: number, s: number, l: number): Color
   {
-    const RGB = HUSL.toRGB(h * 360, s * 100, l * 100);
+    const RGB = hsluv.hsluvToRgb([h * 360, s * 100, l * 100]);
 
     return new Color(RGB[0], RGB[1], RGB[2]);
   }
@@ -182,7 +180,8 @@ export class Color
    */
   public getHUSL(): [number, number, number]
   {
-    const husl = HUSL.fromRGB(this.r, this.g, this.b);
+    // TODO 2019.07.28 | this isn't right, is it?
+    const husl = hsluv.hsluvToRgb([this.r, this.g, this.b]);
 
     return [husl[0] / 360, husl[1] / 100, husl[2] / 100];
   }
