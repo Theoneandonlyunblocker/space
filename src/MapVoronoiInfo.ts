@@ -1,3 +1,4 @@
+import * as QuadTree from "quadtree-lib";
 import * as Voronoi from "voronoi";
 
 import {FillerPoint} from "./FillerPoint";
@@ -8,7 +9,7 @@ import {VoronoiCell} from "./VoronoiCell";
 
 export class MapVoronoiInfo
 {
-  treeMap: BoundsQuadTree<VoronoiCell<Star>>;
+  treeMap: QuadTree<VoronoiCell<Star>>;
   diagram: Voronoi.Result<Star | FillerPoint>;
   nonFillerLines:
   {
@@ -105,7 +106,7 @@ export class MapVoronoiInfo
   // TODO 2017.08.16 | this should be in modules. would allow non-voronoi maps
   public getStarAtPoint(point: Point): Star
   {
-    const items = this.treeMap.retrieve(point);
+    const items = this.treeMap.colliding(point);
     for (let i = 0; i < items.length; i++)
     {
       if (items[i].pointIntersection(point.x, point.y) > -1)

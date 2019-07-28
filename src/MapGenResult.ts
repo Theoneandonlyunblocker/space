@@ -1,5 +1,4 @@
-// TODO global ref
-// /// <reference path="../lib/quadtree.d.ts" />
+import * as QuadTree from "quadtree-lib";
 
 import {FillerPoint} from "./FillerPoint";
 import {GalaxyMap} from "./GalaxyMap";
@@ -98,9 +97,9 @@ export class MapGenResult
 
     return voronoiInfo;
   }
-  private makeVoronoiTreeMap(): BoundsQuadTree<VoronoiCell<Star>>
+  private makeVoronoiTreeMap(): QuadTree<VoronoiCell<Star>>
   {
-    const treeMap = <BoundsQuadTree<VoronoiCell<Star>>> new QuadTree(
+    const treeMap = <QuadTree<VoronoiCell<Star>>> new QuadTree(
     {
       x: 0,
       y: 0,
@@ -110,7 +109,7 @@ export class MapGenResult
 
     this.stars.forEach(star =>
     {
-      treeMap.insert(star.voronoiCell);
+      treeMap.push(star.voronoiCell);
     });
 
     return treeMap;

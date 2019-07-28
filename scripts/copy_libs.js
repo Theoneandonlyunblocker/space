@@ -22,6 +22,7 @@ const filesToCopyWithDestination =
   "node_modules/voronoi/rhill-voronoi-core.js": "dist/lib/rhill-voronoi-core.js",
   "node_modules/polygon-offset/dist/offset.js": "dist/lib/offset.js",
   "node_modules/messageformat/messageformat.js": "dist/lib/messageformat.js",
+  "node_modules/quadtree-lib/build/js/quadtree.js": "dist/lib/quadtree.js",
 };
 
 mkdirp("dist/lib", err =>
