@@ -43,6 +43,7 @@ import {FullSaveData} from "./savedata/FullSaveData";
 import { PlayerNotificationSubscriber } from "./notifications/PlayerNotificationSubscriber";
 import { storageStrings } from "./storageStrings";
 import {ModuleInfo} from "./ModuleInfo";
+import {Point} from "./Point";
 
 class App
 {

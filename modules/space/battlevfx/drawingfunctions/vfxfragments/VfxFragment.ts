@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 
 import {PropInfo} from "./props/PropInfo";
+import {Point} from "../../../../../src/Point";
 
 
 let idGenerator = 0;

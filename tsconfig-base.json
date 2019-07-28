@@ -51,7 +51,6 @@
     // "strictPropertyInitialization": true,
   },
   "files": [
-    "lib/_globals.d.ts",
     "lib/_lib.extend.d.ts",
   ],
   "compileOnSave": false,
