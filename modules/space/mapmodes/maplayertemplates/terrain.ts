@@ -1,5 +1,4 @@
-// TODO global ref
-// /// <reference path="../../../../lib/offset.d.ts" />
+import * as Offset from "polygon-offset";
 import * as PIXI from "pixi.js";
 
 import * as Terrains from "../../terrains/terrains";
