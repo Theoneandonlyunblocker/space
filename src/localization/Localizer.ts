@@ -1,5 +1,4 @@
-// TODO global ref
-// /// <reference path="../../lib/messageformat.d.ts" />
+import * as MessageFormat from "messageformat";
 
 import {formatters} from "./formatters";
 
@@ -14,7 +13,7 @@ import {options} from "../Options";
 
 // messageformat.js requires positional arguments to be wrapped in an array.
 // create wrapper function that packs up args in an array if needed
-function wrapMessageFunction(messageFN: MessageFunction<any>): MessageFunction<any>
+function wrapMessageFunction(messageFN: MessageFormat.MessageFunction<any>): MessageFormat.MessageFunction<any>
 {
   return (...args: any[]) =>
   {
@@ -46,7 +45,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
     [langaugeCode: string]:
     {
       // tslint:disable-next-line:no-any
-      [K in keyof Messages]: MessageFunction<any>[];
+      [K in keyof Messages]: MessageFormat.MessageFunction<any>[];
     };
   } = {};
 
@@ -106,7 +105,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
   }
   // would be nice to have typing here. don't think it's feasible right now
   // tslint:disable-next-line:no-any
-  public localize(key: keyof Messages): MessageFunction<any>
+  public localize(key: keyof Messages): MessageFormat.MessageFunction<any>
   {
     const activeLanguage = options.display.language;
 
@@ -138,7 +137,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
     this.messageFormattersByLanguageCode[language.code] = new MessageFormat(language.code);
     this.messageFormattersByLanguageCode[language.code].addFormatters(formatters);
     // tslint:disable-next-line:no-any
-    this.compiledMessagesByLanguageCode[language.code] = <{[K in keyof Messages]: MessageFunction<any>[]}> {};
+    this.compiledMessagesByLanguageCode[language.code] = <{[K in keyof Messages]: MessageFormat.MessageFunction<any>[]}> {};
   }
   private clearMessages(messages: Partial<Messages>, language: Language): void
   {
@@ -149,7 +148,7 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
     }
   }
   // tslint:disable-next-line:no-any
-  private compileMessage<T = any>(message: string, language: Language): MessageFunction<T>
+  private compileMessage<T = any>(message: string, language: Language): MessageFormat.MessageFunction<T>
   {
     const messageFormatter = this.messageFormattersByLanguageCode[language.code];
 
