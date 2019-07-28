@@ -21,6 +21,7 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   valueString: string;
+  lastValidValue: number;
 }
 
 export class NumericTextInputComponent extends React.Component<PropTypes, StateType>
@@ -34,7 +35,8 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
 
     this.state =
     {
-      valueString: NumericTextInputComponent.getValueString(this.props.value, this.props.stylizeValue),
+      valueString: NumericTextInputComponent.getValueString(props.value, props.stylizeValue),
+      lastValidValue: props.value,
     };
 
     this.handleValueChange = this.handleValueChange.bind(this);
@@ -42,11 +44,15 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
 
   public static getDerivedStateFromProps(props: PropTypes, state: StateType): StateType
   {
-    const didChange = props.value !== props.getValueFromValueString(state.valueString);
+    const thereWasExternalChange = props.value !== state.lastValidValue;
 
-    if (didChange)
+    if (thereWasExternalChange)
     {
-      return {valueString: NumericTextInputComponent.getValueString(props.value, props.stylizeValue)};
+      return(
+      {
+        valueString: NumericTextInputComponent.getValueString(props.value, props.stylizeValue),
+        lastValidValue: props.value,
+      });
     }
     else
     {
@@ -72,13 +78,14 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
   {
     const valueStringIsValid = this.props.valueStringIsValid(this.state.valueString);
 
-    const defaultAttributes: React.InputHTMLAttributes<HTMLInputElement> =
+    const defaultAttributes: React.Attributes & React.InputHTMLAttributes<HTMLInputElement> =
     {
       className: "numeric-text-input" +
         (valueStringIsValid ? "" : " invalid-value"),
       onChange: this.handleValueChange,
       value: this.state.valueString,
       spellCheck: false,
+      key: "asdafs",
     };
     const customAttributes = this.props.attributes || {};
     const attributes = mergeReactAttributes(defaultAttributes, customAttributes);
@@ -102,6 +109,7 @@ export class NumericTextInputComponent extends React.Component<PropTypes, StateT
     }, () =>
     {
       const isValid = this.props.valueStringIsValid(valueString);
+
       if (isValid)
       {
         const value = this.props.getValueFromValueString(valueString);

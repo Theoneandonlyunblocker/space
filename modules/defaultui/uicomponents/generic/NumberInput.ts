@@ -26,6 +26,7 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   displayedValue: string;
+  lastValidValue: number;
 }
 
 export class NumberInputComponent extends React.Component<PropTypes, StateType>
@@ -37,9 +38,12 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
 
+    const value = NumberInputComponent.roundValue(this.props.value, this.props.step);
+
     this.state =
     {
-      displayedValue: "" + NumberInputComponent.roundValue(this.props.value, this.props.step),
+      displayedValue: "" + value,
+      lastValidValue: value,
     };
 
     this.handleValueChange = this.handleValueChange.bind(this);
@@ -47,12 +51,22 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     this.handleBlur = this.handleBlur.bind(this);
   }
 
-  public static getDerivedStateFromProps(props: PropTypes): StateType
+  public static getDerivedStateFromProps(props: PropTypes, state: StateType): StateType
   {
-    return(
+    const thereWasExternalChange = props.value !== state.lastValidValue;
+
+    if (thereWasExternalChange)
     {
-      displayedValue: "" + NumberInputComponent.roundValue(props.value, props.step),
-    });
+      return(
+      {
+        displayedValue: "" + NumberInputComponent.roundValue(props.value, props.step),
+        lastValidValue: props.value,
+      });
+    }
+    else
+    {
+      return null;
+    }
   }
   public componentWillUnmount(): void
   {
@@ -123,20 +137,21 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     const target = e.currentTarget;
     const valueString = target.value;
 
-    const isValid = this.valueStringIsValid(valueString);
-    const isWithinBounds = this.valueIsWithinBounds(parseFloat(valueString));
+    this.setState(
+    {
+      displayedValue: valueString,
+    }, () =>
+    {
+      const value = parseFloat(valueString);
 
-    if (isValid && isWithinBounds)
-    {
-      this.changeValue(parseFloat(valueString));
-    }
-    else
-    {
-      this.setState(
+      const isValid = this.valueStringIsValid(valueString);
+      const isWithinBounds = this.valueIsWithinBounds(value);
+
+      if (isValid && isWithinBounds)
       {
-        displayedValue: valueString,
-      });
-    }
+        this.changeValue(value);
+      }
+    });
   }
   private changeValue(value: number): void
   {
