@@ -180,8 +180,7 @@ export class Color
    */
   public getHUSL(): [number, number, number]
   {
-    // TODO 2019.07.28 | this isn't right, is it?
-    const husl = hsluv.hsluvToRgb([this.r, this.g, this.b]);
+    const husl = hsluv.rgbToHsluv([this.r, this.g, this.b]);
 
     return [husl[0] / 360, husl[1] / 100, husl[2] / 100];
   }
