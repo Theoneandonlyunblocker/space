@@ -94,7 +94,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
       ReactDOMElements.div(null,
         ReactDOMElements.div(
         {
-          className: "flags",
+          className: "flag-maker-flags",
           ref: this.flagsElement,
         },
           flagElements,
