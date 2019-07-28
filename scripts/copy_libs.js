@@ -17,6 +17,7 @@ const filesToCopyWithDestination =
   "node_modules/localforage/dist/localforage.js": "dist/lib/localforage.js",
   "node_modules/proton-js/build/proton.js": "dist/lib/proton.js",
   "node_modules/react-motion/build/react-motion.js": "dist/lib/react-motion.js",
+  "node_modules/@tweenjs/tween.js/src/Tween.js": "dist/lib/Tween.js",
 };
 
 mkdirp("dist/lib", err =>

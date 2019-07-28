@@ -11,7 +11,6 @@
   <script src="lib/rhill-voronoi-core.js"></script>
   <script src="lib/QuadTree.js"></script>
   <script src="lib/rng.js"></script>
-  <script src="lib/tween.min.js"></script>
   <script src="lib/offset.js"></script>
   <script src="lib/messageformat.js"></script>
 
@@ -40,7 +39,7 @@
         "localforage": "dist/lib/localforage",
         "proton-js": "dist/lib/proton",
         "react-motion": "dist/lib/react-motion",
-        "hsluv": "lib/hsluv-0.0.3.min",
+        "@tweenjs/tween": "dist/lib/Tween",
 
         text: "node_modules/requirejs-plugins/lib/text",
         json: "node_modules/requirejs-plugins/src/json",
@@ -54,7 +53,7 @@
     define("hsluv", () =>
     {
       return hsluv;
-    })
+    });
 
     require(["./dist/_temp_app/index.js", "./dist/src/index.js", "./dist/modules/common/index.js"], function()
     {

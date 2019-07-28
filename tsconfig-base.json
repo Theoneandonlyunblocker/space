@@ -19,6 +19,10 @@
     "typeRoots": [
       "lib/types",
     ],
+    "baseUrl": "./",
+    "paths": {
+      "@tweenjs/*": ["node_modules/@types/*"]
+    },
 
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,

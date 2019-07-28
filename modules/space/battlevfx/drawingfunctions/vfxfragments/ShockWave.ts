@@ -1,5 +1,4 @@
-// TODO global ref
-// /// <reference path="../../../../../lib/tween.js.d.ts" />
+import * as TWEEN from "@tweenjs/tween.js";
 
 import {Color} from "../../../../../src/Color";
 import {Point} from "../../../../../src/Point";
