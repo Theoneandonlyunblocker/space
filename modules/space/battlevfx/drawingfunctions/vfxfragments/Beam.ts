@@ -41,6 +41,9 @@ export class Beam extends VfxFragment<BeamProps>
   public displayName = "Beam";
   public key = "beam";
 
+  public rampUpValue: number = 0;
+  public rampDownValue: number = 0;
+
   public readonly propInfo =
   {
     size: new PropInfo.Point({x: 500, y: 500}),
@@ -71,12 +74,12 @@ export class Beam extends VfxFragment<BeamProps>
 
   public animate(time: number): void
   {
-    const rampUpValue = Math.pow(Math.min(time / this.props.relativeImpactTime, 1.0), 7.0);
+    const rampUpValue = this.rampUpValue = Math.pow(Math.min(time / this.props.relativeImpactTime, 1.0), 7.0);
 
     const timeAfterImpact = Math.max(time - this.props.relativeImpactTime, 0.0);
     const relativeTimeAfterImpact = getRelativeValue(timeAfterImpact, 0.0, 1.0 - this.props.relativeImpactTime);
 
-    const rampDownValue = clamp(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 0.0, 1.0);
+    const rampDownValue = this.rampDownValue = clamp(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 0.0, 1.0);
 
     this.animateFromRampValues(time, rampUpValue, rampDownValue);
   }

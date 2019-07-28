@@ -7,17 +7,22 @@ import {Color} from "../../../../src/Color";
 import
 {
   generateTextureWithBounds,
-  dummyShaderTexture,
+  makeCenteredShaderSprite,
 } from "../../../../src/pixiWrapperFunctions";
 import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
 
-import {ProtonWrapper} from "./ProtonWrapper";
 import {Beam} from "./vfxfragments/Beam";
 import {LightBurst} from "./vfxfragments/LightBurst";
 import {RampingValue} from "./vfxfragments/RampingValue";
 import {ShockWave} from "./vfxfragments/ShockWave";
 import {ShinyParticleFilter} from "./shaders/ShinyParticleFilter";
+import { FunctionInitialize } from "./proton/FunctionInitialize";
+import { ShinyParticleShader } from "./shaders/ShinyParticleShader";
+import { PixiRenderer } from "./proton/PixiRenderer";
+import { ProtonEmitter } from "./proton/ProtonEmitter";
 
+
+const relativeImpactTime = 0.18;
 
 export function beam(props: VfxParams)
 {
@@ -28,7 +33,6 @@ export function beam(props: VfxParams)
   const mainContainer = new PIXI.Container();
 
   let impactHasOccurred = false;
-  const relativeImpactTime = 0.18;
 
   const beamOrigin = offsetUserData.singleAttackOriginPoint;
   const relativeBeamOrigin =
@@ -59,9 +63,10 @@ export function beam(props: VfxParams)
 
   // ----------INIT PARTICLES
   const particleContainer = new PIXI.Container();
-  // particleContainer.alpha = 0.1;
   mainContainer.addChild(particleContainer);
-  const protonWrapper = new ProtonWrapper(particleContainer);
+
+  const proton = new Proton();
+  proton.addRenderer(new PixiRenderer(particleContainer));
 
   const particleShaderColor =
   {
@@ -115,23 +120,29 @@ export function beam(props: VfxParams)
   beamFragment.draw();
   mainContainer.addChild(beamFragment.displayObject);
 
-  // ----------EMITTERS COMMON
-  const onParticleUpdateFN = (particle: Proton.Particle) =>
-  {
-    const sprite = <PIXI.DisplayObject> particle.sprite;
-
-    sprite.position.x = particle.p.x;
-    sprite.position.y = particle.p.y;
-
-    sprite.scale.x = particle.scale;
-    sprite.scale.y = particle.scale;
-  };
-  // ----------INIT SMALL EMITTER
-  const smallEmitter = new Proton.BehaviourEmitter();
+  // ----------SMALL EMITTER
+  const smallEmitter = new ProtonEmitter();
   smallEmitter.p.x = beamOrigin.x + 50;
   smallEmitter.p.y = beamOrigin.y;
+  smallEmitter.life = props.duration / 1000 * 0.8;
   smallEmitter.damping = 0.013;
 
+  proton.addEmitter(smallEmitter);
+
+  const smallParticleFilter = new ShinyParticleFilter();
+  const syncSmallParticleUniforms = (time: number) =>
+  {
+    const lifeLeft = 1.0 - time;
+
+    smallParticleFilter.setUniforms(
+    {
+      spikeColor: particleShaderColorArray,
+      spikeIntensity: Math.pow(lifeLeft, 1.5) * 0.4,
+      highlightIntensity: Math.pow(lifeLeft, 1.5),
+    });
+  };
+
+  // ----------TEXTURE
   const smallParticleGraphicsSize =
   {
     x: 4,
@@ -155,77 +166,64 @@ export function beam(props: VfxParams)
     new PIXI.Rectangle(0, 0, smallParticleGraphicsSize.x * 1.5, smallParticleGraphicsSize.y * 1.5),
   );
 
-  smallEmitter.addInitialize(new Proton.ImageTarget(smallParticleTexture));
-  smallEmitter.addInitialize(new Proton.Velocity(new Proton.Span(2.5, 3.5),
-    new Proton.Span(270, 35, true), "polar"));
+  // ----------INITIALIZES
+  smallEmitter.addInitialize(new FunctionInitialize("createSprite", (particle) =>
+  {
+    const sprite = particle.displayObject = new PIXI.Sprite(smallParticleTexture);
+
+    sprite.filters = [smallParticleFilter];
+    sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+  }));
+
+  smallEmitter.addInitialize(new Proton.Velocity(
+    new Proton.Span(2.5, 3.5),
+    new Proton.Span(270, 35, true),
+    "polar",
+  ));
+
   smallEmitter.addInitialize(new Proton.Position(new Proton.RectZone(
     0,
     -30,
     props.width + 100 - smallEmitter.p.x,
-    30,
+    60,
   )));
+
   smallEmitter.addInitialize(new Proton.Life(new Proton.Span(
     props.duration * (1.0 - relativeImpactTime) / 6000,
     props.duration * (1.0 - relativeImpactTime) / 3000,
   )));
 
-  smallEmitter.addBehaviour(new Proton.Scale(new Proton.Span(0.8, 1), 0));
-
+  // ----------BEHAVIOURS
+  smallEmitter.addBehaviour(new Proton.Scale(
+    new Proton.Span(0.8, 1),
+    0,
+    Infinity,
+    (value) =>
+    {
+      return Math.max(value, beamFragment.props.lineYSize.lastValue);
+    },
+  ));
   smallEmitter.addBehaviour(new Proton.RandomDrift(20, 30, props.duration / 2000));
 
-  protonWrapper.addEmitter(smallEmitter, "smallParticles");
-
-  const smallParticleFilter = new ShinyParticleFilter();
-  const syncSmallParticleUniforms = (time: number) =>
-  {
-    const lifeLeft = 1.0 - time;
-
-    smallParticleFilter.setUniforms(
-    {
-      spikeColor: particleShaderColorArray,
-      spikeIntensity: Math.pow(lifeLeft, 1.5) * 0.4,
-      highlightIntensity: Math.pow(lifeLeft, 1.5),
-    });
-  };
-
-  protonWrapper.onParticleUpdated["smallParticles"] = onParticleUpdateFN;
-  protonWrapper.onSpriteCreated["smallParticles"] = (sprite) =>
-  {
-    sprite.filters = [smallParticleFilter];
-    sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-  };
-
-  // ----------INIT SHINY EMITTER
-  const shinyEmitter = new Proton.BehaviourEmitter();
+  // ----------SHINY EMITTER
+  const shinyEmitter = new ProtonEmitter();
   shinyEmitter.p.x = beamOrigin.x;
   shinyEmitter.p.y = beamOrigin.y;
-
-  const shinyParticleTexture = dummyShaderTexture;
-  shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
-
-  const shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
-  shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
   shinyEmitter.damping = 0.009;
-
-  const emitterZone = new Proton.RectZone(
-    0,
-    -5,
-    props.width + 100 - shinyEmitter.p.x,
-    5,
+  shinyEmitter.life = props.duration / 1000 * 0.8;
+  shinyEmitter.rate = new Proton.Rate(
+    150 * particlesAmountScale, // particles per emit
+    0, // time between emits in seconds
   );
-  shinyEmitter.addInitialize(new Proton.Position(emitterZone));
 
-  shinyEmitter.addBehaviour(new Proton.Scale(new Proton.Span(60, 100), 0));
-  // shinyEmitter.addBehaviour(new Proton.RandomDrift(5, 10, 0.3));
+  proton.addEmitter(shinyEmitter);
 
-  protonWrapper.addEmitter(shinyEmitter, "shinyParticles");
-
-  const shinyParticleFilter = new ShinyParticleFilter();
+  const shinyParticleShader = new ShinyParticleShader();
   const syncShinyParticleUniforms = (time: number) =>
   {
     const lifeLeft = 1.0 - time;
 
-    shinyParticleFilter.setUniforms(
+    shinyParticleShader.setUniforms(
     {
       spikeColor: particleShaderColorArray,
       spikeIntensity: 1 - time * 0.1,
@@ -233,17 +231,38 @@ export function beam(props: VfxParams)
     });
   };
 
-  protonWrapper.onParticleUpdated["shinyParticles"] = onParticleUpdateFN;
-  protonWrapper.onSpriteCreated["shinyParticles"] = (sprite) =>
+  // ----------INITIALIZES
+  shinyEmitter.addInitialize(new FunctionInitialize("createMesh", (particle =>
   {
-    sprite.filters = [shinyParticleFilter];
-    sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-  };
+    const mesh = particle.displayObject = makeCenteredShaderSprite(shinyParticleShader);
 
-  shinyEmitter.rate = new Proton.Rate(
-    150 * particlesAmountScale, // particles per emit
-    0, // time between emits in seconds
-  );
+    mesh.blendMode = PIXI.BLEND_MODES.SCREEN;
+  })));
+
+  const shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(
+    props.duration / 3000,
+    props.duration / 1000,
+  ));
+  shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
+
+  shinyEmitter.addInitialize(new Proton.Position(new Proton.RectZone(
+    0,
+    -5,
+    props.width + 100 - shinyEmitter.p.x,
+    10,
+  )));
+
+  // ----------BEHAVIOURS
+  shinyEmitter.addBehaviour(new Proton.Scale(
+    new Proton.Span(60, 100),
+    -20,
+    Infinity,
+    (value) =>
+    {
+      return Math.max(value, beamFragment.props.lineYSize.lastValue);
+    },
+  ));
+
   shinyEmitter.emit("once");
 
 
@@ -312,7 +331,7 @@ export function beam(props: VfxParams)
   {
     const elapsedTime = Date.now() - startTime;
 
-    protonWrapper.update();
+    proton.update();
 
     const tweenTime = window.performance.now();
 
@@ -330,23 +349,30 @@ export function beam(props: VfxParams)
       if (!impactHasOccurred)
       {
         impactHasOccurred = true;
-        const lifeLeftInSeconds = props.duration * lifeLeft / 1000;
-        const emitterLife = lifeLeftInSeconds * 0.8;
+        const lifeLeftSecs = props.duration * lifeLeft / 1000;
 
-        const velocityInitialize = new Proton.Velocity(new Proton.Span(1.5, 3),
-          new Proton.Span(270, 25, true), "polar");
-        protonWrapper.addInitializeToExistingParticles(shinyEmitter, velocityInitialize);
+        const velocityInitialize = new Proton.Velocity(
+          new Proton.Span(1.5, 3),
+          new Proton.Span(270, 25, true),
+          "polar",
+        );
+
+        shinyEmitter.addInitialize(velocityInitialize);
+        shinyEmitter.particles.forEach(particle =>
+        {
+          velocityInitialize.initialize(particle);
+        });
 
         shinyEmitter.removeInitialize(shinyEmitterLifeInitialize);
-        shinyEmitter.addInitialize(new Proton.Life(new Proton.Span(emitterLife / 4, emitterLife / 2.5)));
+        shinyEmitter.addInitialize(new Proton.Life(new Proton.Span(
+          lifeLeftSecs / 5,
+          lifeLeftSecs / 3,
+        )));
 
-        shinyEmitter.rate = new Proton.Rate(4 * particlesAmountScale, 0.02);
-        shinyEmitter.life = emitterLife;
+        shinyEmitter.rate = new Proton.Rate(4 * particlesAmountScale, 0.52);
         shinyEmitter.emit();
 
-
         smallEmitter.rate = new Proton.Rate(6 * particlesAmountScale, 0.02);
-        smallEmitter.life = emitterLife;
         smallEmitter.emit();
 
         props.triggerEffect();
@@ -369,7 +395,7 @@ export function beam(props: VfxParams)
     else
     {
       smallParticleTexture.destroy(true);
-      protonWrapper.destroy();
+      proton.destroy();
       props.triggerEnd();
     }
   }

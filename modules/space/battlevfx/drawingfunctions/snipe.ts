@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import * as Proton from "proton-js";
 
 import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
 
@@ -14,8 +15,10 @@ import {ProjectileAttack} from "./vfxfragments/ProjectileAttack";
 import {RampingValue} from "./vfxfragments/RampingValue";
 
 import {ColorMatrixFilter} from "./ColorMatrixFilter";
-import {ProtonWrapper} from "./ProtonWrapper";
 import {resources} from "../resources";
+import { PixiRenderer } from "./proton/PixiRenderer";
+import { FunctionInitialize } from "./proton/FunctionInitialize";
+import { PixiParticle } from "./proton/PixiParticle";
 
 
 const colors =
@@ -151,7 +154,7 @@ export function snipe(type: UnitAttribute, params: VfxParams)
       params.renderer.render(particleRenderSprite, particleBufferTexture, true);
 
 
-      protonWrapper.update();
+      proton.update();
     },
     impactPosition:
     {
@@ -163,10 +166,12 @@ export function snipe(type: UnitAttribute, params: VfxParams)
   projectileFragment.draw(offsetUserData, offsetTargetData);
   mainContainer.addChild(projectileFragment.displayObject);
 
-  // ----------PARTICLES
+  // ----------INIT PARTICLES
   const particleContainer = new PIXI.Container();
 
-  const protonWrapper = new ProtonWrapper(particleContainer);
+  const proton = new Proton();
+  proton.addRenderer(new PixiRenderer(particleContainer));
+
   const particlesAmountScale = params.height / 600;
 
   const particleRenderTexture = PIXI.RenderTexture.create(
@@ -201,7 +206,7 @@ export function snipe(type: UnitAttribute, params: VfxParams)
     },
   ].map(emitterData =>
   {
-    const emitter = new Proton.BehaviourEmitter();
+    const emitter = new Proton.BehaviourEmitter<PixiParticle>();
     emitter.rate = new Proton.Rate(emitterData.amount * particlesAmountScale, 0.02);
 
     const particleTexture = (() =>
@@ -227,19 +232,22 @@ export function snipe(type: UnitAttribute, params: VfxParams)
       );
     })();
 
-    emitter.addInitialize(new Proton.ImageTarget(particleTexture));
+    emitter.addInitialize(new FunctionInitialize("createSprite", (particle) =>
+    {
+      particle.displayObject = new PIXI.Sprite(particleTexture);
+    }));
     emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 5.0),
-      new Proton.Span(270, 35, true), "polar"));
+      new Proton.Span(270, 20, true), "polar"));
     const emitterArea =
     {
-      x: Math.min(params.target.drawingFunctionData.boundingBox.width, 70),
-      y: Math.min(params.target.drawingFunctionData.boundingBox.height, 70),
+      width: Math.min(params.target.drawingFunctionData.boundingBox.width / 2, 20),
+      height: Math.min(params.target.drawingFunctionData.boundingBox.height / 2, 20),
     };
     emitter.addInitialize(new Proton.Position(new Proton.RectZone(
-      -emitterArea.x / 2,
-      -emitterArea.y / 2,
-      emitterArea.x,
-      emitterArea.y,
+      -emitterArea.width / 2,
+      -emitterArea.height / 2,
+      emitterArea.width,
+      emitterArea.height,
     )));
     emitter.addInitialize(new Proton.Life(new Proton.Span(
       params.duration * (1.0 - impactTime) / 3000,
@@ -248,17 +256,7 @@ export function snipe(type: UnitAttribute, params: VfxParams)
 
     emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.8, 1), 0));
 
-    protonWrapper.addEmitter(emitter, emitterData.name);
-    protonWrapper.onParticleUpdated[emitterData.name] = (particle: Proton.Particle) =>
-    {
-      const sprite = <PIXI.DisplayObject> particle.sprite;
-
-      sprite.position.x = particle.p.x;
-      sprite.position.y = particle.p.y;
-
-      sprite.scale.x = particle.scale;
-      sprite.scale.y = particle.scale;
-    };
+    proton.addEmitter(emitter);
 
     return emitter;
   });

@@ -11,6 +11,7 @@ export const dummyShaderTexture = (() =>
 
   return PIXI.Texture.from(canvas);
 })();
+export function makeShaderSprite<U>(shader: PIXI.Shader<U>): PIXI.Mesh
 export function makeShaderSprite<U>(
   shader: PIXI.Shader<U>,
   x: number,
@@ -18,18 +19,42 @@ export function makeShaderSprite<U>(
   width: number,
   height: number,
 ): PIXI.Mesh
+export function makeShaderSprite<U>(
+  shader: PIXI.Shader<U>,
+  x?: number,
+  y?: number,
+  width?: number,
+  height?: number,
+): PIXI.Mesh
 {
   shader.uniforms["uSampler"] = dummyShaderTexture;
 
-  const geometry = new PIXI.Quad();
+  const geometry = new PIXI.Quad;
   geometry.addAttribute("aTextureCoord", [0, 0, 1, 0, 1, 1, 0, 1], 2);
   geometry.addIndex([0, 1, 2, 0, 2, 3]);
 
   const mesh = new PIXI.Mesh(geometry, shader);
 
-  mesh.position.set(x, y);
-  mesh.width = width;
-  mesh.height = height;
+  if (isFinite(x))
+  {
+    mesh.position.set(x, y);
+
+    mesh.width = width;
+    mesh.height = height;
+  }
+
+  return mesh;
+}
+export function makeCenteredShaderSprite<U>(shader: PIXI.Shader<U>): PIXI.Mesh
+{
+  const mesh = makeShaderSprite(shader);
+  mesh.geometry.addAttribute("aVertexPosition",
+  [
+    -0.5, -0.5,
+     0.5, -0.5,
+     0.5,  0.5,
+    -0.5,  0.5,
+  ]);
 
   return mesh;
 }
