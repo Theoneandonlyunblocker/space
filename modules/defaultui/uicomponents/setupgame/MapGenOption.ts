@@ -6,6 +6,7 @@ import
 {
   clamp,
 } from "../../../../src/utility";
+import { NumberInput } from "../generic/NumberInput";
 
 
 export interface PropTypes extends React.Props<any>
@@ -90,16 +91,19 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
           value: "" + this.props.value,
           onChange: this.handleChange,
         }),
-        ReactDOMElements.input(
+        NumberInput(
         {
-          className: "map-gen-option-value",
-          title: option.displayName,
-          type: "number",
+          attributes:
+          {
+            className: "map-gen-option-value",
+            title: option.displayName,
+          },
+          value: this.props.value,
           min: range.min,
           max: range.max,
           step: range.step,
-          value: "" + this.props.value,
-          onChange: this.handleChange,
+          canWrap: false,
+          onChange: (newValue) => this.props.onChange(this.props.id, newValue),
         }),
       )
     );
