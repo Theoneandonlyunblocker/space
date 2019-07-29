@@ -1,27 +1,152 @@
 import {SubEmblemTemplate} from "../../src/templateinterfaces/SubEmblemTemplate";
 import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
+import {Color} from "../../src/Color";
 import {getSvgElementClone} from "./assets";
-
 
 // tslint:disable:variable-name
 export const Aguila_explayada_2: SubEmblemTemplate =
 {
   key: "Aguila_explayada_2",
   getSvgElementClone: getSvgElementClone.bind(null, "Aguila_explayada_2.svg"),
+  getColors: (background, colors) =>
+  {
+    const defaults =
+    [
+      null,                           // .emblem-body
+      Color.fromHexString("#646464"), // .emblem-body-stroke
+      Color.fromHexString("#eac102"), // .emblem-beakFoot
+      Color.fromHexString("#000"),    // .emblem-beakFoot-stroke
+      Color.fromHexString("#000"),    // .emblem-iris
+      Color.fromHexString("#e3e4e5"), // .emblem-pupil
+    ];
+
+    return defaults.map((defaultColor, i) =>
+    {
+      return colors[i] || defaultColor;
+    });
+  },
 
   colorMappings:
   [
-
+    {
+      displayName: "Body",
+      selectors:
+      [
+        {
+          selector: ".emblem-body",
+          attributeName: "fill",
+        }
+      ]
+    },
+    {
+      displayName: "Body stroke",
+      selectors:
+      [
+        {
+          selector: ".emblem-body-stroke",
+          attributeName: "stroke",
+        }
+      ]
+    },
+    {
+      displayName: "Beak/foot",
+      selectors:
+      [
+        {
+          selector: ".emblem-beakFoot",
+          attributeName: "fill",
+        }
+      ]
+    },
+    {
+      displayName: "Beak/foot stroke",
+      selectors:
+      [
+        {
+          selector: ".emblem-beakFoot-stroke",
+          attributeName: "stroke",
+        }
+      ]
+    },
+    {
+      displayName: "Iris",
+      selectors:
+      [
+        {
+          selector: ".emblem-iris",
+          attributeName: "fill",
+        }
+      ]
+    },
+    {
+      displayName: "Pupil",
+      selectors:
+      [
+        {
+          selector: ".emblem-pupil",
+          attributeName: "fill",
+        }
+      ]
+    },
   ],
 };
 export const Berliner_Baer: SubEmblemTemplate =
 {
   key: "Berliner_Baer",
   getSvgElementClone: getSvgElementClone.bind(null, "Berliner_Baer.svg"),
+  getColors: (backgroundColor, colors) =>
+  {
+    return(
+    [
+      colors[0],                                   // .emblem-main
+      colors[1] || colors[0],                      // .emblem-claws
+      colors[2] || Color.fromHexString("#f33b1d"), // .emblem-tongue
+      colors[3] || Color.fromHexString("#ffffff"), // .emblem-face-details
+    ]);
+  },
 
   colorMappings:
   [
-
+    {
+      displayName: "Fill",
+      selectors:
+      [
+        {
+          selector: ".emblem-main",
+          attributeName: "fill",
+        },
+      ],
+    },
+    {
+      displayName: "Claws",
+      selectors:
+      [
+        {
+          selector: ".emblem-claws",
+          attributeName: "fill",
+        },
+      ],
+    },
+    {
+      displayName: "Tongue",
+      selectors:
+      [
+        {
+          selector: ".emblem-tongue",
+          attributeName: "fill",
+        },
+      ],
+    },
+    {
+      displayName: "Facial features",
+      selectors:
+      [
+        {
+          selector: ".emblem-face-details",
+          attributeName: "fill",
+        },
+      ],
+    },
   ],
 };
 export const Cles_en_sautoir: SubEmblemTemplate =
@@ -212,10 +337,70 @@ export const Gryphon_Segreant: SubEmblemTemplate =
 {
   key: "Gryphon_Segreant",
   getSvgElementClone: getSvgElementClone.bind(null, "Gryphon_Segreant.svg"),
+  getColors: (background, colors) =>
+  {
+    return(
+    [
+      colors[0],                                   // Body
+      colors[1] || Color.fromHexString("#646464"), // Stroke
+      colors[2] || Color.fromHexString("#ffff00"), // Hands/beak
+      colors[3] || Color.fromHexString("#ff0000"), // Claws/tongue
+      colors[4] || Color.fromHexString("#ffffff"), // Eye whites
+    ]);
+  },
 
   colorMappings:
   [
-
+    {
+      displayName: "Body",
+      selectors:
+      [
+        {
+          selector: ".emblem-body",
+          attributeName: "fill",
+        },
+      ],
+    },
+    {
+      displayName: "Stroke",
+      selectors:
+      [
+        {
+          selector: ".emblem-main",
+          attributeName: "stroke",
+        },
+      ],
+    },
+    {
+      displayName: "Hands/beak",
+      selectors:
+      [
+        {
+          selector: ".emblem-handBeak",
+          attributeName: "fill",
+        },
+      ],
+    },
+    {
+      displayName: "Claws/tongue",
+      selectors:
+      [
+        {
+          selector: ".emblem-clawTongue",
+          attributeName: "fill",
+        },
+      ],
+    },
+    {
+      displayName: "Eye whites",
+      selectors:
+      [
+        {
+          selector: ".emblem-eyeWhite",
+          attributeName: "fill",
+        },
+      ],
+    },
   ],
 };
 export const Heraldic_pentacle: SubEmblemTemplate =
