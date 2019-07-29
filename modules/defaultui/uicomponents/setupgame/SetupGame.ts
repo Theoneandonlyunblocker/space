@@ -78,10 +78,10 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
       app.makeGameFromSetup(map, players);
     });
   }
-  private randomize()
+  private async randomize(): Promise<void>
   {
-    this.setupPlayersComponent.current.randomizeAllPlayers();
-    this.mapSetupComponent.current.mapGenOptionsComponent.current.randomizeOptions();
+    await this.mapSetupComponent.current.randomize();
+    await this.setupPlayersComponent.current.randomizeAllPlayers();
   }
 
   render()

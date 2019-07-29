@@ -124,7 +124,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
     return this.state["optionValue_" + optionName];
   }
 
-  randomizeOptions()
+  public randomizeOptions(): Promise<void>
   {
     const newValues: StateType = {};
 
@@ -140,7 +140,10 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
       }
     }
 
-    this.setState(newValues);
+    return new Promise(resolve =>
+    {
+      this.setState(newValues, resolve);
+    });
   }
 
   getOptionValuesForTemplate(): MapGenOptionValues

@@ -4,6 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {localize} from "../../localization/localize";
 import {activeModuleData} from "../../../../src/activeModuleData";
 import {MapGenTemplate} from "../../../../src/templateinterfaces/MapGenTemplate";
+import { getRandomProperty } from "../../../../src/utility";
 
 import {MapGenOptions, MapGenOptionsComponent} from "./MapGenOptions";
 
@@ -37,7 +38,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    this.setTemplate = this.setTemplate.bind(this);
+    this.handleSelectTemplate = this.handleSelectTemplate.bind(this);
     this.getMapSetupInfo = this.getMapSetupInfo.bind(this);
     this.updatePlayerLimits = this.updatePlayerLimits.bind(this);
   }
@@ -76,15 +77,38 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  setTemplate(e: React.FormEvent<HTMLSelectElement>)
+  public async randomize(): Promise<void>
+  {
+    const template = getRandomProperty(activeModuleData.templates.MapGen);
+
+    await this.setTemplate(template);
+
+    await this.mapGenOptionsComponent.current.randomizeOptions();
+
+    return;
+  }
+  private setTemplate(template: MapGenTemplate): Promise<MapGenTemplate>
+  {
+    return new Promise(resolve =>
+    {
+      this.setState(
+      {
+        selectedTemplate: template,
+      }, () =>
+      {
+        this.updatePlayerLimits();
+
+        resolve();
+      });
+    });
+  }
+  private handleSelectTemplate(e: React.FormEvent<HTMLSelectElement>): void
   {
     const target = e.currentTarget;
-    this.setState(
-    {
-      selectedTemplate: activeModuleData.templates.MapGen[target.value],
-    }, this.updatePlayerLimits);
-  }
+    const selectedTemplate = activeModuleData.templates.MapGen[target.value];
 
+    this.setTemplate(selectedTemplate);
+  }
   getMapSetupInfo()
   {
     return(
@@ -122,7 +146,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
         {
           className: "map-setup-template-selector",
           value: this.state.selectedTemplate.key,
-          onChange: this.setTemplate,
+          onChange: this.handleSelectTemplate,
         },
           mapGenTemplateOptions,
         ),

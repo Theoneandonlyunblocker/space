@@ -159,18 +159,21 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
       race: race,
     });
   }
-  public randomize(): void
+  public randomize(): Promise<void>
   {
     const mainColor = generateMainColor();
     const secondaryColor = generateSecondaryColor(mainColor);
 
     this.flag = Flag.generateRandom(mainColor, secondaryColor);
 
-    this.setState(
+    return new Promise(resolve =>
     {
-      mainColor: mainColor,
-      secondaryColor: secondaryColor,
-      race: getRandomPlayerRaceTemplate(),
+      this.setState(
+      {
+        mainColor: mainColor,
+        secondaryColor: secondaryColor,
+        race: getRandomPlayerRaceTemplate(),
+      }, resolve);
     });
   }
   makePlayer()
