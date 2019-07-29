@@ -25,6 +25,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   public state: StateType;
 
   private newPlayerId: number = 0;
+  private desiredPlayerCountFromMax: number = 0;
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
   private readonly playerSetupComponentsById:
   {
@@ -66,22 +67,38 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
   public componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
   {
-    if (this.props.minPlayers > prevState.playerKeys.length)
+    if (this.props.maxPlayers !== prevProps.maxPlayers)
     {
-      this.makeNewPlayers(this.props.minPlayers - prevState.playerKeys.length);
+      const desiredPlayerCount = this.props.maxPlayers + this.desiredPlayerCountFromMax;
+
+      if (this.state.playerKeys.length < desiredPlayerCount)
+      {
+        this.makeNewPlayers(desiredPlayerCount - this.state.playerKeys.length, false);
+      }
+      else if (this.state.playerKeys.length > desiredPlayerCount)
+      {
+        const overflowCount = this.state.playerKeys.length - desiredPlayerCount;
+        this.removePlayers(this.state.playerKeys.slice(-overflowCount), false);
+      }
     }
-    else if (this.props.maxPlayers < prevState.playerKeys.length)
+    else if (this.props.minPlayers > prevState.playerKeys.length)
     {
-      const overflowCount = prevState.playerKeys.length - this.props.maxPlayers;
-      this.removePlayers(prevState.playerKeys.slice(-overflowCount));
+      this.makeNewPlayers(this.props.minPlayers - prevState.playerKeys.length, false);
     }
   }
 
-  makeNewPlayers(amountToMake: number = 1)
+  public makeNewPlayers(amount: number, wasManual: boolean = true): void
   {
-    if (this.state.playerKeys.length >= this.props.maxPlayers)
+    const amountToMake = Math.min(this.props.maxPlayers - this.state.playerKeys.length, amount);
+
+    if (this.state.playerKeys.length + amountToMake > this.props.maxPlayers)
     {
       return;
+    }
+
+    if (wasManual)
+    {
+      this.desiredPlayerCountFromMax += amountToMake;
     }
 
     const newIds: number[] = [];
@@ -100,23 +117,16 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
       ownDOMNode.scrollTop = ownDOMNode.scrollHeight;
     });
   }
-
-  setHumanPlayer(playerId: number)
-  {
-    const index = this.state.playerKeys.indexOf(playerId);
-
-    const newPlayerOrder = this.state.playerKeys.slice(0);
-
-    newPlayerOrder.unshift(newPlayerOrder.splice(index, 1)[0]);
-
-    this.setState({playerKeys: newPlayerOrder});
-  }
-
-  removePlayers(toRemove: number[])
+  private removePlayers(toRemove: number[], wasManual: boolean = true): void
   {
     if (this.state.playerKeys.length <= this.props.minPlayers)
     {
       return;
+    }
+
+    if (wasManual)
+    {
+      this.desiredPlayerCountFromMax -= toRemove.length;
     }
 
     this.setState(
@@ -127,7 +137,16 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
       this.cleanSetupComponentsById();
     });
   }
+  setHumanPlayer(playerId: number)
+  {
+    const index = this.state.playerKeys.indexOf(playerId);
 
+    const newPlayerOrder = this.state.playerKeys.slice(0);
+
+    newPlayerOrder.unshift(newPlayerOrder.splice(index, 1)[0]);
+
+    this.setState({playerKeys: newPlayerOrder});
+  }
   private cleanSetupComponentsById(): void
   {
     for (const playerId in this.playerSetupComponentsById)
@@ -149,14 +168,14 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     this.setState({activeSetterComponent: setter});
   }
 
-  randomizeAllPlayers()
+  public randomizeAllPlayers(): Promise<void[]>
   {
-    for (const id in this.playerSetupComponentsById)
+    return Promise.all(Object.keys(this.playerSetupComponentsById).map(id =>
     {
-      const player = this.playerSetupComponentsById[id].current;
+      const playerSetupComponent = this.playerSetupComponentsById[id].current;
 
-      player.randomize();
-    }
+      return playerSetupComponent.randomize();
+    }));
   }
 
   makeAllPlayers()
@@ -249,7 +268,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
           ReactDOMElements.button(
           {
             className: "setup-game-players-add-new" + (canAddPlayers ? "" : " disabled"),
-            onClick: this.makeNewPlayers.bind(this, 1),
+            onClick: this.makeNewPlayers.bind(this, 1, true),
             disabled: !canAddPlayers,
           },
             localize("addNewPlayer")(),
