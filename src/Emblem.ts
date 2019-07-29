@@ -24,7 +24,7 @@ export class Emblem
 
   constructor(colors: Color[], template: SubEmblemTemplate)
   {
-    this.colors = colors;
+    this.colors = template.getColors ? template.getColors(null, colors) : colors;
     this.template = template;
   }
   public static generateRandom(backgroundColor?: Color, colors: Color[] = [], seed?: string): Emblem
@@ -35,9 +35,9 @@ export class Emblem
     const template = getSeededRandomArrayItem(templates, _rng);
 
     let _colors: Color[];
-    if (template.generateColors)
+    if (template.getColors)
     {
-      _colors = template.generateColors(backgroundColor, colors);
+      _colors = template.getColors(backgroundColor, colors);
     }
     else
     {

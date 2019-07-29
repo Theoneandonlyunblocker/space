@@ -134,7 +134,9 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
         EmblemEditor(
         {
           key: "emblemEditor",
-          colors: activeEmblemData.colors,
+          colors: activeEmblemData.template.getColors ?
+            activeEmblemData.template.getColors(this.props.backgroundColor, activeEmblemData.colors) :
+            activeEmblemData.colors,
           backgroundColor: this.props.backgroundColor,
           selectedEmblemTemplate: activeEmblemData.template,
 

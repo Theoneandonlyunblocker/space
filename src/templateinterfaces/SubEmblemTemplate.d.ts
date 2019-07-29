@@ -5,7 +5,7 @@ export interface SubEmblemTemplate
   key: string;
   getSvgElementClone: () => SVGElement;
 
-  // Probably should put most important stuff first for ease of customization.
+  // Probably should put most significant ones first for ease of customization.
   colorMappings:
   {
     displayName: string;
@@ -16,7 +16,7 @@ export interface SubEmblemTemplate
     }[];
   }[];
 
-  generateColors?(backgroundColor?: Color, colors?: Color[]): Color[];
+  getColors?(backgroundColor?: Color, colors?: Color[]): Color[];
 
   disallowRandomGeneration?: boolean;
 }
