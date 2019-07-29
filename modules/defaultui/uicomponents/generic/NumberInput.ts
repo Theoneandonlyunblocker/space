@@ -47,45 +47,37 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
 
     this.state =
     {
-      displayedValue: NumberInputComponent.getValueString(value, props.stylizeValue),
+      displayedValue: NumberInputComponent.getValueString(value, props),
       lastValidValue: value,
     };
 
     this.handleValueInput = this.handleValueInput.bind(this);
-    this.handleSetValue = this.handleSetValue.bind(this);
+    this.setValue = this.setValue.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
   }
 
-  public static getDerivedStateFromProps(props: PropTypes, state: StateType): StateType
+  public componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
   {
-    const thereWasExternalChange = props.value !== state.lastValidValue;
+    const value = NumberInputComponent.roundValue(this.props.value, this.props.step);
 
-    const value = NumberInputComponent.roundValue(props.value, props.step);
+    const thereWasExternalChange = value !== prevState.lastValidValue;
 
     if (thereWasExternalChange)
     {
-      return(
+      this.setState(
       {
-        displayedValue: NumberInputComponent.getValueString(value, props.stylizeValue),
-        lastValidValue: value,
+        displayedValue: NumberInputComponent.getValueString(value, this.props),
+        lastValidValue: this.props.value,
       });
     }
-    else
-    {
-      return null;
-    }
   }
-
   public componentWillUnmount(): void
   {
     this.handleBlur();
   }
   public render()
   {
-    const valueStringIsValid = NumberInputComponent.valueStringIsValid(
-      this.state.displayedValue,
-      this.props.valueStringIsValid,
-    );
+    const valueStringIsValid = NumberInputComponent.valueStringIsValid(this.state.displayedValue, this.props);
 
     const defaultAttributes: React.Attributes & React.InputHTMLAttributes<HTMLInputElement> =
     {
@@ -110,7 +102,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
         {
           value: this.props.value,
           step: this.props.step,
-          onChange: this.handleSetValue,
+          onChange: this.setValue,
 
           min: this.props.canWrap ? -Infinity : this.props.min,
           max: this.props.canWrap ? Infinity : this.props.max,
@@ -121,7 +113,23 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
 
   private handleBlur(): void
   {
-    // TODO 2019.07.29 | implement
+    const isValid = NumberInputComponent.valueStringIsValid(this.state.displayedValue, this.props);
+
+    if (isValid)
+    {
+      const value = NumberInputComponent.getValueFromValueString(this.state.displayedValue, this.props);
+      if (value !== this.state.lastValidValue)
+      {
+        this.setValue(value);
+      }
+    }
+    else
+    {
+      this.setState(
+      {
+        displayedValue: NumberInputComponent.getValueString(this.props.value, this.props),
+      });
+    }
   }
   private handleValueInput(e: React.FormEvent<HTMLInputElement> | React.ClipboardEvent<HTMLInputElement>): void
   {
@@ -131,11 +139,9 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     const target = e.currentTarget;
     const valueString = target.value;
 
-    const value = NumberInputComponent.getValueFromValueString(valueString, this.props.getValueFromValueString);
+    const value = NumberInputComponent.getValueFromValueString(valueString, this.props);
 
-    const isWithinBounds = NumberInputComponent.valueIsWithinBounds(value, this.props.min, this.props.max);
-    const isValid = isWithinBounds &&
-      NumberInputComponent.valueStringIsValid(valueString, this.props.valueStringIsValid);
+    const isValid = NumberInputComponent.valueStringIsValid(valueString, this.props);
 
     this.setState(
     {
@@ -145,11 +151,11 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     {
       if (isValid)
       {
-        this.handleSetValue(value);
+        this.setValue(value);
       }
     });
   }
-  private handleSetValue(rawValue: number): void
+  private setValue(rawValue: number): void
   {
     let value = NumberInputComponent.roundValue(rawValue, this.props.step);
 
@@ -163,12 +169,12 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
 
   private static getValueString(
     value: number,
-    stylizeFN: ((value: number) => string) | undefined,
+    props: PropTypes,
   ): string
   {
-    if (stylizeFN)
+    if (props.stylizeValue)
     {
-      return stylizeFN(value);
+      return props.stylizeValue(value);
     }
     else
     {
@@ -177,12 +183,12 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
   }
   private static getValueFromValueString(
     valueString: string,
-    extractorFN: ((valueString: string) => number) | undefined,
+    props: PropTypes,
   ): number
   {
-    if (extractorFN)
+    if (props.getValueFromValueString)
     {
-      return extractorFN(valueString);
+      return props.getValueFromValueString(valueString);
     }
     else
     {
@@ -204,24 +210,36 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
   }
   private static valueStringIsValid(
     valueString: string,
-    validityFN: (valueString: string) => boolean | undefined,
+    props: PropTypes,
   ): boolean
   {
-    if (validityFN)
+    if (props.valueStringIsValid)
     {
-      return validityFN(valueString);
+      if (!props.valueStringIsValid(valueString))
+      {
+        return false;
+      }
     }
     else
     {
-      return stringIsSignedFloat(valueString);
+      if (!stringIsSignedFloat(valueString))
+      {
+        return false;
+      }
     }
+
+    const value = NumberInputComponent.getValueFromValueString(valueString, props);
+
+    return NumberInputComponent.valueIsWithinBounds(value, props);
   }
   private static valueIsWithinBounds(
     value: number,
-    min: number = Infinity,
-    max: number = Infinity,
+    props: PropTypes,
   ): boolean
   {
+    const min = isFinite(props.min) ? props.min : -Infinity;
+    const max = isFinite(props.max) ? props.max : Infinity;
+
     return value >= min && value <= max;
   }
   private static getDecimalPlacesInStep(step: number): number
