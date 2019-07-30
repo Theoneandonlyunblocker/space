@@ -32,7 +32,7 @@ declare namespace Proton
 
   }
 
-  export abstract class Behaviour
+  export abstract class Behaviour<T extends Particle = Particle>
   {
     abstract name: string;
     life: number;
@@ -43,11 +43,11 @@ declare namespace Proton
 
     constructor(life?: number, easing?: EasingFN | keyof EasingFunctions)
 
-    abstract applyBehaviour(particle: Particle, time: number, particleIndex: number): void
-    abstract initialize(particle: Particle): void;
+    abstract applyBehaviour(particle: T, time: number, particleIndex: number): void
+    initialize?(particle: T): void;
 
     reset(life: number, easing: EasingFN | keyof EasingFunctions): void;
-    calculate(particle: Particle, time: number, particleIndex: number): void;
+    calculate(particle: T, time: number, particleIndex: number): void;
     destroy(): void;
   }
   export class Alpha extends Behaviour
@@ -67,6 +67,14 @@ declare namespace Proton
   export class Attraction extends Behaviour
   {
     name: "Attraction";
+
+    constructor(
+      targetPosition: Vector2D,
+      force?: number,
+      radius?: number,
+      life?: number,
+      easing?: EasingFN | keyof EasingFunctions,
+    )
 
     applyBehaviour(particle: Particle, time: number, particleIndex: number): void
     initialize(particle: Particle): void;
@@ -95,6 +103,13 @@ declare namespace Proton
   export class CrossZone extends Behaviour
   {
     name: "CrossZone";
+
+    constructor(
+      zone: Zone,
+      crossType: CrossType,
+      life?: number,
+      easing?: EasingFN | keyof EasingFunctions,
+    )
 
     applyBehaviour(particle: Particle, time: number, particleIndex: number): void
     initialize(particle: Particle): void;
@@ -221,6 +236,7 @@ declare namespace Proton
   }
   export class Velocity extends Initialize
   {
+    constructor(x: Span | number, y: Span | number)
     constructor(
       rPan: Span | number[],
       thaPan: Span | number[],
@@ -302,7 +318,7 @@ declare namespace Proton
 
     constructor(
       numPan: number | number[] | Span,
-      timePan: number | number[] | Span,
+      timePan?: number | number[] | Span,
     )
   }
 
@@ -407,11 +423,14 @@ declare namespace Proton
 
   }
 
+  type CrossType = "dead" | // dies on impact
+    "bound" | // bounces on impact
+    "cross"; // loops around on impact
   export abstract class Zone
   {
     vector: Vector2D;
     random: number;
-    crossType: "dead" | "bound" | "cross";
+    crossType: CrossType;
     alert: boolean;
 
     abstract getPosition(): Vector2D;
@@ -430,9 +449,9 @@ declare namespace Proton
   {
     constructor(
       imageData: ImageData,
-      x: number,
-      y: number,
-      d: number,
+      xOffset: number,
+      yOffset: number,
+      samplingFidelity: number,
     )
 
     getPosition(): Vector2D;
@@ -487,6 +506,11 @@ declare namespace Proton
   {
     x: number;
     y: number;
+
+    constructor(x: number, y: number)
+
+    set(x: number, y: number): void;
+    copy(toCopyFrom: {x: number, y: number}): void;
   }
 
 

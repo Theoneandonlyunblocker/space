@@ -22,6 +22,7 @@ import {ResultType} from "../space/effectactions/ResultType";
 import * as EffectActions from "../space/effectactions/effectActions";
 
 import * as DroneStatusEffects from "./unitEffects";
+import * as DroneBattleVfx from "./battlevfx/templates";
 
 
 export const assimilate: AbilityTemplate =
@@ -47,7 +48,7 @@ export const assimilate: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
-    vfx: placeholderVfx,
+    vfx: DroneBattleVfx.assimilate,
     attachedEffects:
     [
       {
