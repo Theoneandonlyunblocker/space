@@ -102,6 +102,7 @@ function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string
   const allUnitBoundingBoxes: PIXI.Rectangle[] = [];
   let primaryAttackOriginPoint: Point;
   const sequentialAttackOriginPoints: Point[] = [];
+  const allSprites: PIXI.Sprite[] = [];
 
   const lastColumn = Math.floor(unitsToDraw / maxUnitsPerColumn);
   const maxUnitsInLastColumn = unitsToDraw % maxUnitsPerColumn;
@@ -174,6 +175,7 @@ function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string
     sprite.y = y;
 
     container.addChild(sprite);
+    allSprites.push(sprite);
 
     const unitBounds = new PIXI.Rectangle(
       x,
@@ -202,5 +204,6 @@ function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string
     individualUnitBoundingBoxes: allUnitBoundingBoxes,
     singleAttackOriginPoint: primaryAttackOriginPoint,
     sequentialAttackOriginPoints: sequentialAttackOriginPoints,
+    individualUnitDisplayObjects: allSprites,
   });
 }

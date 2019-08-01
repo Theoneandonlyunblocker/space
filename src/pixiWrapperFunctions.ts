@@ -11,6 +11,8 @@ export const dummyShaderTexture = (() =>
 
   return PIXI.Texture.from(canvas);
 })();
+
+// TODO 2019.07.31 | rename. not a sprite
 export function makeShaderSprite<U>(shader: PIXI.Shader<U>): PIXI.Mesh
 export function makeShaderSprite<U>(
   shader: PIXI.Shader<U>,
@@ -104,4 +106,60 @@ export function makePolygonFromPoints(
   });
 
   return new PIXI.Polygon(pointPositions);
+}
+
+function isSprite(displayObject: PIXI.DisplayObject): displayObject is PIXI.Sprite
+{
+  return displayObject.isSprite;
+}
+export function copyTransform(source: PIXI.DisplayObject, target: PIXI.DisplayObject): void
+{
+  target.setTransform(
+    source.position.x,
+    source.position.y,
+    source.scale.x,
+    source.scale.y,
+    source.rotation,
+    source.skew.x,
+    source.skew.y,
+    source.pivot.x,
+    source.pivot.y,
+  );
+
+}
+export function cloneMesh(mesh: PIXI.Mesh): PIXI.Mesh
+{
+  return new PIXI.Mesh(mesh.geometry, mesh.shader, mesh.state, mesh.drawMode);
+}
+export function cloneSprite(sprite: PIXI.Sprite): PIXI.Sprite
+{
+  return new PIXI.Sprite(sprite.texture);
+}
+export function cloneDisplayObject(displayObject: PIXI.Sprite | PIXI.Mesh | PIXI.Graphics): PIXI.Sprite | PIXI.Mesh | PIXI.Graphics
+{
+  if (isSprite(displayObject))
+  {
+    const cloned = cloneSprite(displayObject);
+    copyTransform(displayObject, cloned);
+
+    return cloned;
+  }
+  else if (displayObject instanceof PIXI.Mesh)
+  {
+    const cloned = cloneMesh(displayObject);
+    copyTransform(displayObject, cloned);
+
+    return cloned;
+  }
+  else if (displayObject instanceof PIXI.Graphics)
+  {
+    const cloned = displayObject.clone();
+    copyTransform(displayObject, cloned);
+
+    return cloned;
+  }
+  else
+  {
+    throw new Error();
+  }
 }

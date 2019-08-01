@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 
 import {Point} from "./Point";
+import {cloneDisplayObject} from "./pixiWrapperFunctions";
 
 
 function mirrorRectangle(rect: PIXI.Rectangle, midX: number): void
@@ -32,6 +33,7 @@ export class UnitDrawingFunctionData
   public individualUnitBoundingBoxes: PIXI.Rectangle[];
   public singleAttackOriginPoint: Point;
   public sequentialAttackOriginPoints: Point[];
+  public individualUnitDisplayObjects: (PIXI.Sprite | PIXI.Mesh | PIXI.Graphics)[];
 
   constructor(props:
   {
@@ -39,12 +41,14 @@ export class UnitDrawingFunctionData
     individualUnitBoundingBoxes: PIXI.Rectangle[];
     singleAttackOriginPoint: Point;
     sequentialAttackOriginPoints: Point[];
+    individualUnitDisplayObjects: (PIXI.Sprite | PIXI.Mesh | PIXI.Graphics)[];
   })
   {
     this.boundingBox = props.boundingBox;
     this.individualUnitBoundingBoxes = props.individualUnitBoundingBoxes;
     this.singleAttackOriginPoint = props.singleAttackOriginPoint;
     this.sequentialAttackOriginPoints = props.sequentialAttackOriginPoints;
+    this.individualUnitDisplayObjects = props.individualUnitDisplayObjects;
   }
 
   public normalizeForBattleVfx(offset: Point, sceneWidth: number, side: "user" | "target"): UnitDrawingFunctionData
@@ -76,6 +80,11 @@ export class UnitDrawingFunctionData
       {
         return {x: point.x, y: point.y};
       }),
+
+      individualUnitDisplayObjects: this.individualUnitDisplayObjects.map(displayObject =>
+      {
+        return cloneDisplayObject(displayObject);
+      }),
     });
   }
   private offset(offset: Point): void
@@ -86,7 +95,10 @@ export class UnitDrawingFunctionData
     offsetPoint(this.singleAttackOriginPoint, offset);
     this.sequentialAttackOriginPoints.forEach(point => offsetPoint(point, offset));
 
+    this.individualUnitDisplayObjects.forEach(displayObject =>
     {
+      displayObject.x += offset.x;
+      displayObject.y += offset.y;
     });
   }
   private mirror(midX: number): void
@@ -95,5 +107,6 @@ export class UnitDrawingFunctionData
     this.individualUnitBoundingBoxes.forEach(bBox => mirrorRectangle(bBox, midX));
     mirrorPoint(this.singleAttackOriginPoint, midX);
     this.sequentialAttackOriginPoints.forEach(point => mirrorPoint(point, midX));
+    this.individualUnitDisplayObjects.forEach(displayObject => displayObject.scale.x *= -1);
   }
 }
