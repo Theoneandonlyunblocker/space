@@ -163,3 +163,14 @@ export function cloneDisplayObject(displayObject: PIXI.Sprite | PIXI.Mesh | PIXI
     throw new Error();
   }
 }
+export function extractImageData(target: PIXI.DisplayObject, extract: PIXI.extract.Extract): ImageData
+{
+  const wrappingContainer = new PIXI.Container; // otherwise extract doesn't respect target transforms
+  wrappingContainer.addChild(target);
+
+  const pixels = extract.pixels(wrappingContainer);
+  const bounds = target.getBounds();
+  const clampedPixelsArray = Uint8ClampedArray.from(pixels);
+
+  return new ImageData(clampedPixelsArray, bounds.width, bounds.height);
+}

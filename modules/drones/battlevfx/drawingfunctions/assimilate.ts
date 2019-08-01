@@ -18,12 +18,12 @@ export function assimilate(props: VfxParams)
 
   const asborbFragment = new Absorb(
   {
-    getParticleDisplayObject: () =>
+    getParticleDisplayObject: (particle, color) =>
     {
       const graphics = new PIXI.Graphics();
       graphics.lineStyle(0);
-      graphics.beginFill(0xDE3249, 1);
-      graphics.drawCircle(-1, -1, 2);
+      graphics.beginFill(color.getHex(), 1);
+      graphics.drawRect(-2, -2, 4, 4);
       graphics.endFill();
 
       return graphics;
@@ -32,16 +32,20 @@ export function assimilate(props: VfxParams)
     onEnd: end,
   });
 
-  asborbFragment.draw(offsetUserData, offsetTargetData);
+  asborbFragment.draw(offsetUserData, offsetTargetData, props.renderer);
   container.addChild(asborbFragment.displayObject);
 
   let animationHandle: number;
+  let hasEnded: boolean = false;
   function end()
   {
+    hasEnded = true;
     cancelAnimationFrame(animationHandle);
 
     props.triggerEnd();
   }
+
+  const fallbackAnimationStopTime = props.duration * 1.5;
 
   function animate()
   {
@@ -50,11 +54,19 @@ export function assimilate(props: VfxParams)
 
     asborbFragment.animate(relativeTime);
 
-    animationHandle = requestAnimationFrame(animate);
+    if (!hasEnded)
+    {
+      animationHandle = requestAnimationFrame(animate);
+    }
+    else if (elapsedTime > fallbackAnimationStopTime)
+    {
+      end();
+    }
   }
 
   props.triggerStart(container);
+  props.triggerEffect();
   const startTime = Date.now();
 
-  animate();
+  animationHandle = requestAnimationFrame(animate);
 }

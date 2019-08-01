@@ -3,6 +3,9 @@ import * as Proton from "proton-js";
 
 import {UnitDrawingFunctionData} from "../../../../../src/UnitDrawingFunctionData";
 import {solveAcceleration} from "../../../../../src/kinematics";
+import { extractImageData } from "../../../../../src/pixiWrapperFunctions";
+import { Color } from "../../../../../src/Color";
+import { randInt } from "../../../../../src/utility";
 
 import {VfxFragment} from "./VfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
@@ -11,11 +14,12 @@ import { ProtonEmitter } from "../proton/ProtonEmitter";
 import { FunctionInitialize } from "../proton/FunctionInitialize";
 import { FunctionBehaviour } from "../proton/FunctionBehaviour";
 import {ProtonWithTimeScale} from "../proton/ProtonWithTimeScale";
+import { PixiParticle } from "../proton/PixiParticle";
 
 
 interface AbsorbProps
 {
-  getParticleDisplayObject: () => PIXI.DisplayObject;
+  getParticleDisplayObject: (particle: PixiParticle, colorAtTarget: Color) => PIXI.DisplayObject;
   duration: number;
 
   onEnd?: () => void;
@@ -36,7 +40,7 @@ export class Absorb extends VfxFragment<AbsorbProps>
 
     onEnd: new PropInfo.Function(undefined),
     baseParticleCount: new PropInfo.Number(150),
-    baseInitialBurstVelocity: new PropInfo.Number(200),
+    baseInitialBurstVelocity: new PropInfo.Number(150),
   }
 
   private isAnimating: boolean = false;
@@ -83,20 +87,20 @@ export class Absorb extends VfxFragment<AbsorbProps>
 
     this.proton.update();
   }
-  public draw(userData: UnitDrawingFunctionData, targetData: UnitDrawingFunctionData): void
+  public draw(userData: UnitDrawingFunctionData, targetData: UnitDrawingFunctionData, renderer: PIXI.Renderer): void
   {
     const targets = targetData.individualUnitBoundingBoxes.length;
 
     const particlesPerEmitter = this.props.baseParticleCount / targets;
     const particleKillAreaStart = userData.boundingBox.x + userData.boundingBox.width;
-    const particleKillAreaEnd = userData.boundingBox.x;
+    const particleKillAreaEnd = userData.boundingBox.x + userData.boundingBox.width / 2;
 
     // todo
     const initialBurstVelocity = this.props.baseInitialBurstVelocity / (1 + Math.log(targets) / 8) * this.timeScale; // px/s
 
     const damping =
     {
-      x: 1 - 0.004 * this.timeScale,
+      x: 1 - 0.002 * this.timeScale,
       y: 1 - 0.008 * this.timeScale,
     };
 
@@ -105,8 +109,11 @@ export class Absorb extends VfxFragment<AbsorbProps>
 
     let deadEmitters: number = 0;
 
-    targetData.individualUnitBoundingBoxes.forEach(target =>
+    targetData.individualUnitBoundingBoxes.forEach((target, i) =>
     {
+      const targetDisplayObject = targetData.individualUnitDisplayObjects[i];
+      const imageData = extractImageData(targetDisplayObject, renderer.plugins.extract);
+
       const desiredAcceleration = Math.abs(solveAcceleration( // px/s/s
       {
         initialVelocity: initialBurstVelocity,
@@ -114,28 +121,31 @@ export class Absorb extends VfxFragment<AbsorbProps>
         displacement: particleKillAreaStart - (target.x + target.width),
       })) * accelerationMultiplierToCompensateForDamping;
 
-      const emitter = new ProtonEmitter();
+      const emitter = new ProtonEmitter<PixiParticle & {killLine: number}>();
       emitter.p.copy(target);
       emitter.damping = 0.0;
       emitter.rate = new Proton.Rate(particlesPerEmitter);
 
-      emitter.addInitialize(new FunctionInitialize("createDisplayObject", (particle =>
+      const imageZone = new Proton.ImageZone(imageData);
+      emitter.addInitialize(new Proton.Position(imageZone));
+
+      emitter.addInitialize(new FunctionInitialize("createDisplayObject", ((particle) =>
       {
-        particle.displayObject = this.props.getParticleDisplayObject();
+        const color = imageZone.getColor(particle.p.x, particle.p.y);
+        particle.displayObject = this.props.getParticleDisplayObject(particle, new Color(
+          color.r / 255,
+          color.g / 255,
+          color.b / 255,
+        ));
       })));
 
       emitter.addInitialize(new Proton.Mass(1));
       emitter.addInitialize(new Proton.Velocity(
-        new Proton.Span(initialBurstVelocity / 100), // proton multiplies this by 100
+        new Proton.Span(initialBurstVelocity / 200, initialBurstVelocity / 100), // proton multiplies this by 100
         new Proton.Span(0, 360),
         "polar",
       ));
-      emitter.addInitialize(new Proton.Position(new Proton.RectZone(
-        0,
-        0,
-        target.width,
-        target.height,
-      )));
+
 
       emitter.addBehaviour(new Proton.Attraction(
         new Proton.Vector2D(userData.singleAttackOriginPoint.x, userData.singleAttackOriginPoint.y),
@@ -143,36 +153,34 @@ export class Absorb extends VfxFragment<AbsorbProps>
         Infinity,
       ));
 
-      const killBehaviour = new FunctionBehaviour("killBehaviour", (particle, deltaTime, i) =>
+      emitter.addInitialize(new FunctionInitialize("killLineInitialize", (particle =>
       {
-        const v = particle.v.x * deltaTime;
-        const x = particle.p.x + v;
+        particle.killLine = randInt(particleKillAreaEnd, particleKillAreaStart);
+      })));
 
-        if (x < particleKillAreaStart)
+      emitter.addBehaviour(new FunctionBehaviour("killBehaviour", (particle, deltaTime, i) =>
+      {
+        const v2 = particle.v.x * deltaTime / 2;
+        const x = particle.p.x + v2;
+
+        if (x < particle.killLine)
         {
-          const relativePositionInKillArea = (x - particleKillAreaStart) / (particleKillAreaEnd - particleKillAreaStart);
-          const killChance = 0.2 + 0.8 * relativePositionInKillArea * this.timeScale;
+          particle.dead = true;
 
-          if (Math.random() <= killChance)
+          if (emitter.particles.length <= 1)
           {
-            particle.dead = true;
-
-            if (emitter.particles.length <= 1)
+            deadEmitters += 1;
+            if (deadEmitters === this.emitters.length)
             {
-              deadEmitters += 1;
-              if (deadEmitters === this.emitters.length)
+              if (this.props.onEnd)
               {
-                if (this.props.onEnd)
-                {
 
-                  this.props.onEnd();
-                }
+                this.props.onEnd();
               }
             }
           }
         }
-      });
-      emitter.addBehaviour(killBehaviour);
+      }));
 
       const customDampingBehaviour = new FunctionBehaviour("customDampingBehaviour", (particle, deltaTime) =>
       {

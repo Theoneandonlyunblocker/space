@@ -5,7 +5,7 @@ import {assimilate as assimilateDrawingFunction} from "./drawingfunctions/assimi
 
 export const assimilate: BattleVfxTemplate =
 {
-  duration: 1500,
+  duration: 2500,
   vfxWillTriggerEffect: true,
   battleOverlay: assimilateDrawingFunction,
 }

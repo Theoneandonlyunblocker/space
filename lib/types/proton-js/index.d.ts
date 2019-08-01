@@ -257,9 +257,9 @@ declare namespace Proton
     energy: number;
     dead: boolean;
     sleep: boolean;
-    body: any;
-    sprite: any;
-    parent: any;
+    // body: any;
+    // sprite: any;
+    // parent: any;
 
     mass: number;
     radius: number;
@@ -376,8 +376,8 @@ declare namespace Proton
     /**
      * add the Behaviour to particles;
      */
-    addBehaviour(...behaviours: Behaviour[]): void;
-    removeBehaviour(behaviour: Behaviour): void;
+    addBehaviour(...behaviours: Behaviour<P>[]): void;
+    removeBehaviour(behaviour: Behaviour<P>): void;
     removeAllBehaviourrs(): void;
 
     update(time: number): void;
@@ -449,12 +449,13 @@ declare namespace Proton
   {
     constructor(
       imageData: ImageData,
-      xOffset: number,
-      yOffset: number,
-      samplingFidelity: number,
+      xOffset?: number,
+      yOffset?: number,
+      samplingFidelity?: number,
     )
 
     getPosition(): Vector2D;
+    getColor(x: number, y: number): {r: number; g: number; b: number; a: number;}
     crossing(particle: Particle): void
   }
   export class LineZone extends Zone
