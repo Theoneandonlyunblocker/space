@@ -3,39 +3,27 @@ import * as PIXI from "pixi.js";
 import {Point} from "./Point";
 
 
-function mirrorRectangle(rect: PIXI.Rectangle, midX: number): PIXI.Rectangle
+function mirrorRectangle(rect: PIXI.Rectangle, midX: number): void
 {
-  return new PIXI.Rectangle(
-    getMirroredPosition(rect.x, midX) - rect.width,
-    rect.y,
-    rect.width,
-    rect.height,
-  );
+  rect.x = getMirroredPosition(rect.x, midX) - rect.width;
 }
-function mirrorPoint(point: Point, midX: number): Point
+function mirrorPoint(point: Point, midX: number): void
 {
-  return {x: getMirroredPosition(point.x, midX), y: point.y};
+  point.x = getMirroredPosition(point.x, midX);
 }
 function getMirroredPosition(pos: number, mid: number): number
 {
   return pos - (pos - mid) * 2;
 }
-function offsetRectangle(rect: PIXI.Rectangle, offset: Point): PIXI.Rectangle
+function offsetRectangle(rect: PIXI.Rectangle, offset: Point): void
 {
-  return new PIXI.Rectangle(
-    rect.x + offset.x,
-    rect.y + offset.y,
-    rect.width,
-    rect.height,
-  );
+  rect.x += offset.x;
+  rect.y += offset.y;
 }
-function offsetPoint(point: Point, offset: Point): Point
+function offsetPoint(point: Point, offset: Point): void
 {
-  return(
-  {
-    x: point.x + offset.x,
-    y: point.y + offset.y,
-  });
+  point.x += offset.x;
+  point.y += offset.y;
 }
 
 export class UnitDrawingFunctionData
@@ -72,15 +60,17 @@ export class UnitDrawingFunctionData
 
     return cloned;
   }
-  public clone(): UnitDrawingFunctionData
+
+  private clone(): UnitDrawingFunctionData
   {
     return new UnitDrawingFunctionData(
     {
       boundingBox: this.boundingBox.clone(),
-      individualUnitBoundingBoxes: this.individualUnitBoundingBoxes.map(bbox =>
+      individualUnitBoundingBoxes: this.individualUnitBoundingBoxes.map(bBox =>
       {
-        return bbox.clone();
+        return bBox.clone();
       }),
+
       singleAttackOriginPoint: {x: this.singleAttackOriginPoint.x, y: this.singleAttackOriginPoint.y},
       sequentialAttackOriginPoints: this.sequentialAttackOriginPoints.map(point =>
       {
@@ -88,34 +78,22 @@ export class UnitDrawingFunctionData
       }),
     });
   }
-  public offset(offset: Point): UnitDrawingFunctionData
+  private offset(offset: Point): void
   {
-    this.boundingBox = offsetRectangle(this.boundingBox, offset);
-    this.individualUnitBoundingBoxes = this.individualUnitBoundingBoxes.map(bbox =>
-    {
-      return offsetRectangle(bbox, offset);
-    });
-    this.singleAttackOriginPoint = offsetPoint(this.singleAttackOriginPoint, offset);
-    this.sequentialAttackOriginPoints = this.sequentialAttackOriginPoints.map(point =>
-    {
-      return offsetPoint(point, offset);
-    });
+    offsetRectangle(this.boundingBox, offset);
+    this.individualUnitBoundingBoxes.forEach(bBox => offsetRectangle(bBox, offset));
 
-    return this;
+    offsetPoint(this.singleAttackOriginPoint, offset);
+    this.sequentialAttackOriginPoints.forEach(point => offsetPoint(point, offset));
+
+    {
+    });
   }
-  public mirror(midX: number): UnitDrawingFunctionData
+  private mirror(midX: number): void
   {
-    this.boundingBox = mirrorRectangle(this.boundingBox, midX);
-    this.individualUnitBoundingBoxes = this.individualUnitBoundingBoxes.map(bbox =>
-    {
-      return mirrorRectangle(bbox, midX);
-    });
-    this.singleAttackOriginPoint = mirrorPoint(this.singleAttackOriginPoint, midX);
-    this.sequentialAttackOriginPoints = this.sequentialAttackOriginPoints.map(point =>
-    {
-      return mirrorPoint(point, midX);
-    });
-
-    return this;
+    mirrorRectangle(this.boundingBox, midX);
+    this.individualUnitBoundingBoxes.forEach(bBox => mirrorRectangle(bBox, midX));
+    mirrorPoint(this.singleAttackOriginPoint, midX);
+    this.sequentialAttackOriginPoints.forEach(point => mirrorPoint(point, midX));
   }
 }

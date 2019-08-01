@@ -181,7 +181,6 @@ function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string
       scaledWidth,
       scaledHeight,
     );
-
     allUnitBoundingBoxes.push(unitBounds);
 
     boundingBox.x1 = isFinite(boundingBox.x1) ? Math.min(boundingBox.x1, x) : x;
@@ -190,7 +189,9 @@ function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string
     boundingBox.y2 = isFinite(boundingBox.y2) ? Math.max(boundingBox.y2, y + scaledHeight) : y + scaledHeight;
   }
 
-  unit.drawingFunctionData = new UnitDrawingFunctionData(
+  vfxParams.triggerStart(container);
+
+  return new UnitDrawingFunctionData(
   {
     boundingBox: new PIXI.Rectangle(
       boundingBox.x1,
@@ -202,6 +203,4 @@ function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string
     singleAttackOriginPoint: primaryAttackOriginPoint,
     sequentialAttackOriginPoints: sequentialAttackOriginPoints,
   });
-
-  vfxParams.triggerStart(container);
 }

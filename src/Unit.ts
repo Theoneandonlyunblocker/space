@@ -1062,7 +1062,8 @@ export class Unit
   }
   public drawBattleScene(params: VfxParams)
   {
-    this.template.unitDrawingFN(this, params);
+    const data = this.template.unitDrawingFN(this, params);
+    this.drawingFunctionData = data;
   }
   public getDisplayData(scene: "galaxyMap" | "battle" | "battlePrep"): UnitDisplayData
   {
