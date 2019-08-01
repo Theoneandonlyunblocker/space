@@ -59,6 +59,14 @@ export abstract class VfxFragment<P>
       this.props[key] = this.propInfo[key].getDefaultValue();
     }
   }
+  public setCenter(x: number, y: number): void
+  {
+    const bounds = this.displayObject.getBounds();
+    this.position.set(
+      x - bounds.width / 2,
+      y - bounds.height / 2,
+    );
+  }
 
   // not done in constructor as we want derived class parameter initialization to be done first
   protected initializeProps(initialValues?: Partial<P>): void

@@ -229,7 +229,7 @@ export class VfxEditorComponent extends React.Component<PropTypes, StateType>
   }
   private handleFragmentDragMove(e: React.MouseEvent<HTMLDivElement>): void
   {
-    this.state.draggingFragment.position.set(
+    this.state.draggingFragment.setCenter(
       e.clientX,
       e.clientY,
     );

@@ -292,10 +292,7 @@ export function beam(props: VfxParams)
   });
 
   shockWaveFragment.draw();
-  shockWaveFragment.position.set(
-    beamOrigin.x - shockWaveSize.x / 2,
-    beamOrigin.y - shockWaveSize.y / 2,
-  );
+  shockWaveFragment.setCenter(beamOrigin.x, beamOrigin.y);
 
   mainContainer.addChild(shockWaveFragment.displayObject);
 
@@ -317,10 +314,7 @@ export function beam(props: VfxParams)
   });
 
   lightBurstFragment.draw();
-  lightBurstFragment.position.set(
-    beamOrigin.x - lightBurstSize.x / 2,
-    beamOrigin.y - lightBurstSize.y / 2,
-  );
+  lightBurstFragment.setCenter(beamOrigin.x, beamOrigin.y);
 
   mainContainer.addChild(lightBurstFragment.displayObject);
 
