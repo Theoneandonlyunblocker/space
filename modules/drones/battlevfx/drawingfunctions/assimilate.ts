@@ -58,7 +58,8 @@ export function assimilate(props: VfxParams)
     {
       animationHandle = requestAnimationFrame(animate);
     }
-    else if (elapsedTime > fallbackAnimationStopTime)
+
+    if (!hasEnded && elapsedTime > fallbackAnimationStopTime)
     {
       end();
     }
