@@ -273,7 +273,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    if (!this.abilityTooltip)
+    if (!this.abilityTooltip.current)
     {
       this.clearHoveredUnit();
 
