@@ -23,7 +23,7 @@ interface AbsorbProps
   duration: number;
 
   onEnd?: () => void;
-  baseParticleCount?: number;
+  particleCount?: number;
   baseInitialBurstVelocity?: number; // px/s
 }
 
@@ -39,7 +39,7 @@ export class Absorb extends VfxFragment<AbsorbProps>
     duration: new PropInfo.Number(baseDuration),
 
     onEnd: new PropInfo.Function(undefined),
-    baseParticleCount: new PropInfo.Number(150),
+    particleCount: new PropInfo.Number(150),
     baseInitialBurstVelocity: new PropInfo.Number(150),
   }
 
@@ -91,7 +91,7 @@ export class Absorb extends VfxFragment<AbsorbProps>
   {
     const targets = targetData.individualUnitBoundingBoxes.length;
 
-    const particlesPerEmitter = this.props.baseParticleCount / targets;
+    const particlesPerEmitter = this.props.particleCount / targets;
     const particleKillAreaStart = userData.boundingBox.x + userData.boundingBox.width;
     const particleKillAreaEnd = userData.boundingBox.x + userData.boundingBox.width / 2;
 
@@ -174,7 +174,6 @@ export class Absorb extends VfxFragment<AbsorbProps>
             {
               if (this.props.onEnd)
               {
-
                 this.props.onEnd();
               }
             }

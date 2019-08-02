@@ -1,6 +1,17 @@
 import { VfxParams } from "../../../../src/templateinterfaces/VfxParams";
 
 import { Absorb } from "../../../space/battlevfx/drawingfunctions/vfxfragments/Absorb";
+import { ResultType } from "../../../space/effectactions/ResultType";
+
+
+function getParticleCount(props: VfxParams): number
+{
+  const damageDealt = props.abilityUseEffect ?
+    -1 * props.abilityUseEffect.executedEffectsResult[ResultType.HealthChanged] :
+    400;
+
+  return Math.log(damageDealt) * 20;
+}
 
 export function assimilate(props: VfxParams)
 {
@@ -30,6 +41,7 @@ export function assimilate(props: VfxParams)
     },
     duration: props.duration,
     onEnd: end,
+    particleCount: getParticleCount(props),
   });
 
   asborbFragment.draw(offsetUserData, offsetTargetData, props.renderer);
