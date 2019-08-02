@@ -133,6 +133,7 @@ export class AbilityUseEffectQueue
     this.battleScene.handleAbilityUse(
     {
       vfxTemplate: this.currentEffect.vfx,
+      abilityUseEffect: this.currentEffect,
       user: this.currentEffect.vfxUser,
       target: this.currentEffect.vfxTarget,
       triggerEffectCallback: this.triggerEffect,

@@ -9,6 +9,7 @@ import {BattleSceneUnitOverlay} from "./BattleSceneUnitOverlay";
 import {options} from "./Options";
 import {Unit} from "./Unit";
 import {UnitBattleSide} from "./UnitBattleSide";
+import {AbilityUseEffect} from "./battleAbilityUsage";
 import * as debug from "./debug";
 
 
@@ -41,6 +42,7 @@ export class BattleScene
   private side2Overlay: BattleSceneUnitOverlay;
 
   private activeVfx: BattleVfxTemplate | null;
+  private activeAbilityUseEffect: AbilityUseEffect | null;
 
   private side1UnitHasFinishedUpdating: boolean = false;
   private side2UnitHasFinishedUpdating: boolean = false;
@@ -119,6 +121,7 @@ export class BattleScene
   public handleAbilityUse(props:
   {
     vfxTemplate: BattleVfxTemplate;
+    abilityUseEffect: AbilityUseEffect;
     triggerEffectCallback: () => void;
     onVfxStartCallback: () => void;
     user: Unit;
@@ -131,6 +134,7 @@ export class BattleScene
     this.userUnit = props.user;
     this.targetUnit = props.target;
     this.activeVfx = props.vfxTemplate;
+    this.activeAbilityUseEffect = props.abilityUseEffect;
 
     this.onVfxStartCallback = props.onVfxStartCallback;
     this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
@@ -250,6 +254,7 @@ export class BattleScene
       duration: duration,
       facingRight: this.userUnit.battleStats.side === "side1",
       renderer: this.renderer,
+      abilityUseEffect: this.activeAbilityUseEffect,
       triggerStart: props.triggerStart,
       triggerEffect: this.executeTriggerEffectCallback.bind(this),
       triggerEnd: props.triggerEnd,
@@ -410,6 +415,7 @@ export class BattleScene
   private clearActiveVfx()
   {
     this.activeVfx = null;
+    this.activeAbilityUseEffect = null;
 
     this.userUnit = null;
     this.targetUnit = null;

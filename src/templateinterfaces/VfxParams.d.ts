@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 
 import {Point} from "../Point";
 import {Unit} from "../Unit";
+import {AbilityUseEffect} from "../battleAbilityUsage";
 
 export interface VfxParams
 {
@@ -14,6 +15,7 @@ export interface VfxParams
   duration: number; // in milliseconds
   facingRight: boolean;
   renderer: PIXI.Renderer;
+  abilityUseEffect?: AbilityUseEffect;
   triggerStart: (displayObject: PIXI.DisplayObject) => void;
   triggerEffect: () => void;
   triggerEnd: () => void;

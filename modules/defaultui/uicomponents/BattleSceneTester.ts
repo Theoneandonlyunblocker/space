@@ -245,6 +245,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       user: user,
       target: target,
       vfxTemplate: vfxTemplate,
+      abilityUseEffect: null,
       triggerEffectCallback: () => {console.log("triggerEffect");},
       onVfxStartCallback: () => {console.log("onVfxStart");},
       afterFinishedCallback: () => {console.log("afterFinishedCallback");},
