@@ -17,6 +17,7 @@ export interface AbilityUseEffect
 {
   effectId: string;
   changedUnitDisplayData: {[unitId: number]: UnitDisplayData};
+  executedEffectsResult: ExecutedEffectsResult;
   vfx: BattleVfxTemplate;
   vfxUser: Unit;
   vfxTarget: Unit;
@@ -165,14 +166,15 @@ function executeAbilityEffectDataAndGetUseEffect(
     return null;
   }
 
-  const newUnitDisplayData: {[unitId: number]: UnitDisplayData} = {};
-  newUnitDisplayData[abilityEffectData.user.id] = abilityEffectData.user.getDisplayData("battle");
-  newUnitDisplayData[abilityEffectData.target.id] = abilityEffectData.target.getDisplayData("battle");
+  const changedUnitDisplayData: {[unitId: number]: UnitDisplayData} = {};
+  changedUnitDisplayData[abilityEffectData.user.id] = abilityEffectData.user.getDisplayData("battle");
+  changedUnitDisplayData[abilityEffectData.target.id] = abilityEffectData.target.getDisplayData("battle");
 
   return(
   {
     effectId: getIdForAbilityUseEffect(abilityEffectData),
-    changedUnitDisplayData: newUnitDisplayData,
+    changedUnitDisplayData: changedUnitDisplayData,
+    executedEffectsResult: {...executedEffectsResult},
     vfx: abilityEffectData.effectTemplate.vfx,
     vfxUser: abilityEffectData.user,
     vfxTarget: abilityEffectData.target,
