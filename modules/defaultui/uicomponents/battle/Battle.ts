@@ -414,7 +414,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     {
       previousUnitDisplayDataById: shallowCopy(this.state.unitDisplayDataById),
       unitDisplayDataById: shallowExtend(
-        this.state.unitDisplayDataById, effect.changedUnitDisplayDataById),
+        this.state.unitDisplayDataById, effect.changedUnitDisplayData),
       battleEvaluation: effect.newEvaluation,
       battleEffectDurationAfterTrigger: this.state.battleEffectDuration -
         (Date.now() - this.vfxStartTime),
