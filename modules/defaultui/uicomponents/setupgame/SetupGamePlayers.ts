@@ -222,6 +222,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
           ReactDOMElements.div(
           {
             className: "player-setup-is-human",
+            title: localize("setAsHumanPlayer")(),
           }),
           ReactDOMElements.div(
           {

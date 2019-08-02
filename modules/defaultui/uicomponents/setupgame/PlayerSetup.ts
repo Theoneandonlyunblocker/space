@@ -21,6 +21,7 @@ import {ColorSetter} from "./ColorSetter";
 import {FlagSetter} from "./FlagSetter";
 import {SetterComponentBase} from "./SetterComponentBase";
 import {RacePicker} from "./RacePicker";
+import { localize } from "../../localization/localize";
 
 
 export interface PropTypes extends React.Props<any>
@@ -224,6 +225,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         ReactDOMElements.input(
         {
           className: "player-setup-is-human",
+          title: localize("setAsHumanPlayer")(),
           type: "checkbox",
           checked: this.props.isHuman,
           onChange: this.handleSetHuman,

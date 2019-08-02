@@ -15,4 +15,5 @@ export const setupGame =
   emblems: "Emblems",
   emblemColor: "Emblem color",
   allowedPlayerCount: `Players: {min}-{max}`,
+  setAsHumanPlayer: `Set as human player`,
 };
