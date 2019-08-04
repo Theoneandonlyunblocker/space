@@ -17,6 +17,35 @@ export class ModuleStore
 
   }
 
+  // TODO 2019.08.04 | make private
+  public static processModuleBundleUrl(moduleBundleUrl: string): string
+  {
+    const macros:
+    {
+      [macroIdentifier: string]: () => string
+    } =
+    {
+      "{DOCUMENT_PATH}": () =>
+      {
+        const documentUrl = new URL(document.URL);
+        const path = new URL(documentUrl.pathname, documentUrl.origin).toString();
+
+        const pathWithoutTrailingSlash = path.replace(/\/$/, "");
+
+        return pathWithoutTrailingSlash;
+      }
+    };
+
+    let processedUrl = moduleBundleUrl;
+
+    for (const macroIdentifier in macros)
+    {
+      processedUrl = processedUrl.replace(macroIdentifier, macros[macroIdentifier]);
+    }
+
+    return processedUrl;
+  }
+
   public add(toAdd: GameModule): void
   {
     const existingModuleWithSameKey = this.loadedModules[toAdd.info.key];
@@ -95,7 +124,7 @@ export class ModuleStore
   }
   private fetchRemoteBundle(moduleInfo: ModuleInfo): Promise<void>
   {
-    const url = new URL(moduleInfo.moduleBundleUrl).toString();
+    const url = ModuleStore.processModuleBundleUrl(moduleInfo.moduleBundleUrl);
     if (url.substring(url.length - 3, url.length) !== ".js")
     {
       throw new Error(`Module file URL must end in '.js'.` +

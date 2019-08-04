@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "author": "various artists",
   "description": "old ppl",
-  "moduleBundleUrl":  "http://127.0.0.1:9001/dist/modules/paintingportraits/index.js",
+  "moduleBundleUrl":  "{DOCUMENT_PATH}/dist/modules/paintingportraits/index.js",
   "moduleObjRequireJsName": "modules/paintingportraits/paintingPortraits",
   "gameModuleVariableName": "paintingPortraits"
 }

@@ -7,6 +7,7 @@ import
 } from "./GameModuleInitializationPhase";
 import * as debug from "./debug";
 import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
+import { ModuleStore } from "./ModuleStore";
 
 
 export class ModuleInitializer
@@ -100,7 +101,9 @@ export class ModuleInitializer
 
       if (gameModule.initialize)
       {
-        const baseUrl = new URL("./", gameModule.info.moduleBundleUrl).toString();
+        // TODO 2019.08.04 | shouldn't do this here
+        const processedModuleBundleUrl = ModuleStore.processModuleBundleUrl(gameModule.info.moduleBundleUrl);
+        const baseUrl = new URL("./", processedModuleBundleUrl).toString();
 
         return gameModule.initialize(baseUrl);
       }

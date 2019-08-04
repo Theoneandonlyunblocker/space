@@ -4,7 +4,7 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultMapModes"],
-  "moduleBundleUrl":  "http://127.0.0.1:9001/dist/modules/space/mapmodes/index.js",
+  "moduleBundleUrl":  "{DOCUMENT_PATH}/dist/modules/space/mapmodes/index.js",
   "moduleObjRequireJsName": "modules/space/mapmodes/spaceMapModes",
   "gameModuleVariableName": "spaceMapModes"
 }

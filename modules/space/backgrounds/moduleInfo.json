@@ -4,7 +4,7 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultBackgrounds"],
-  "moduleBundleUrl":  "http://127.0.0.1:9001/dist/modules/space/backgrounds/index.js",
+  "moduleBundleUrl":  "{DOCUMENT_PATH}/dist/modules/space/backgrounds/index.js",
   "moduleObjRequireJsName": "modules/space/backgrounds/spaceBackgrounds",
   "gameModuleVariableName": "spaceBackgrounds"
 }

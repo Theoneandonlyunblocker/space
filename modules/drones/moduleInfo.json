@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "author": "giraluna",
   "description": "",
-  "moduleBundleUrl":  "http://127.0.0.1:9001/dist/modules/drones/index.js",
+  "moduleBundleUrl":  "{DOCUMENT_PATH}/dist/modules/drones/index.js",
   "moduleObjRequireJsName": "modules/drones/drones",
   "gameModuleVariableName": "drones"
 }
