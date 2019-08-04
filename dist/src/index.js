@@ -201,7 +201,7 @@ define("src/App", ["require", "exports", "rng-js", "localforage", "src/Game", "s
             window.onerror = handleError_1.handleError;
             this.initialModules = initialModules;
             ModuleStore_1.activeModuleStore.getModules.apply(ModuleStore_1.activeModuleStore, initialModules).then(function (gameModules) {
-                _this.moduleInitializer = new ModuleInitializer_1.ModuleInitializer(activeModuleData_1.activeModuleData, ModuleStore_1.activeModuleStore, gameModules);
+                _this.moduleInitializer = new ModuleInitializer_1.ModuleInitializer(activeModuleData_1.activeModuleData, gameModules);
             }).then(function () {
                 return utility_1.loadDom();
             }).then(function () {
@@ -6188,14 +6188,13 @@ define("src/ModuleInitializer", ["require", "exports", "src/GameModuleInitializa
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var ModuleInitializer = (function () {
-        function ModuleInitializer(moduleData, moduleStore, gameModules) {
+        function ModuleInitializer(moduleData, gameModules) {
             var _this = this;
             this.gameModulesByKey = {};
             this.gameModulesByPhase = {};
             this.moduleInitializationPromises = {};
             this.moduleInitalizationStart = {};
             this.moduleData = moduleData;
-            this.moduleStore = moduleStore;
             this.dependencyGraph = new ModuleDependencyGraph_1.ModuleDependencyGraph();
             GameModuleInitializationPhase_1.allGameModuleInitializationPhases.forEach(function (phase) {
                 _this.gameModulesByPhase[phase] = [];
