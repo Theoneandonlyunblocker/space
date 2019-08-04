@@ -23,6 +23,12 @@ const filesToCopyWithDestination =
   "node_modules/polygon-offset/dist/offset.js": "dist/lib/offset.js",
   "node_modules/messageformat/messageformat.js": "dist/lib/messageformat.js",
   "node_modules/quadtree-lib/build/js/quadtree.js": "dist/lib/quadtree.js",
+  "node_modules/requirejs/require.js": "dist/lib/require.js",
+
+  "node_modules/requirejs-plugins/lib/text.js": "dist/lib/requirejs-text.js",
+  "node_modules/requirejs-plugins/src/json.js": "dist/lib/requirejs-json.js",
+
+  "lib/hsluv-0.0.3.min.js": "dist/lib/hsluv.js",
 };
 
 mkdirp("dist/lib", err =>
