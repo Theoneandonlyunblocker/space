@@ -8,12 +8,12 @@
   <link rel="stylesheet" type="text/css" href="css/font-awesome-4.2.0/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" href="css/normalize.css">
 
-  <script src="lib/hsluv-0.0.3.min.js"></script>
+  <script src="dist/lib/hsluv.js"></script>
   <script src="dist/lib/pixi.js"></script>
   <script src="dist/lib/rng.js"></script>
   <script src="dist/lib/rhill-voronoi-core.js"></script>
 
-  <script src="lib/require.js"></script>
+  <script src="dist/lib/require.js"></script>
 
   <script type="text/javascript">
     require.config(
@@ -41,8 +41,8 @@
         "messageformat": "dist/lib/messageformat",
         "quadtree-lib": "dist/lib/quadtree",
 
-        text: "node_modules/requirejs-plugins/lib/text",
-        json: "node_modules/requirejs-plugins/src/json",
+        text: "dist/lib/requirejs-text",
+        json: "dist/lib/requirejs-json",
       },
     });
 
