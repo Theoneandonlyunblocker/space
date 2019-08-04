@@ -8,4 +8,4 @@ dist/* -diff
 
 lib/* linguist-vendored
 dist/* linguist-vendored
-*.css linguist-vendored
+css/* linguist-vendored

@@ -270,9 +270,11 @@ declare namespace Proton
 
     easing: EasingFN;
 
-    p: Vector2D;
-    v: Vector2D;
-    a: Vector2D;
+    // user-given values for anything to do with v/a are multiplied by Proton.MEASURE (100)
+    // e.g. Proton.Velocity(10, 5) => Particle.v.x = 1000; Particle.v.y = 500
+    p: Vector2D; // px
+    v: Vector2D; // px/s
+    a: Vector2D; // px/s/s
 
     transform:
     {
