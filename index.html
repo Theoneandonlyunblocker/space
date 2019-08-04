@@ -21,9 +21,10 @@
       nodeIdCompat: true,
       onNodeCreated: (node, config, name, path) =>
       {
-        // requirejs strips this somehow
-        if (path.startsWith("http://") && !path.endsWith(".js"))
+        const pathIsAbsolute = /^https?:\/\//.test(path);
+        if (pathIsAbsolute && !path.endsWith(".js"))
         {
+          // requirejs strips this somehow
           node.src += ".js";
         }
       },
