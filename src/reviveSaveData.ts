@@ -28,7 +28,7 @@ export function fetchNeededReviversForData(
 {
   const neededRevivers: Reviver[] = [];
 
-  Object.keys(revivers).sort(semver.compare).reverse().filter(reviverDataVersion =>
+  Object.keys(revivers).sort(semver.compare).filter(reviverDataVersion =>
   {
     // save was made before versions were attached to savedata
     if (!dataVersion)
