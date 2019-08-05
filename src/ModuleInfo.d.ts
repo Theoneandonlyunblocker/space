@@ -14,6 +14,14 @@ export interface ModuleInfo
   // if this mod replaces another's functionality, this mod has been renamed, etc.
   modsToReplace?: string[];
 
+  /**
+   * note: used as baseUrl for relative assets as well
+   *
+   * eg. ["{DOCUMENT_PATH}/dist/modules/example.js", "https://remotehost.org/spacegame/modules/example/index.js"]
+   *
+   * macros:
+   *  {DOCUMENT_PATH} => document.URL.origin + document.URL.pathName (document.URL without hash, querystring)
+   */
   moduleBundleUrls: string[];
 
   /**
