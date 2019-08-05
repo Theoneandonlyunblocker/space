@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "author": "giraluna",
   "description": "",
-  "moduleBundleUrl": "{DOCUMENT_PATH}/dist/modules/defaultui/index.js",
+  "moduleBundleUrls": ["{DOCUMENT_PATH}/dist/modules/defaultui/index.js"],
   "moduleObjRequireJsName": "modules/defaultui/defaultUi",
   "gameModuleVariableName": "defaultUi"
 }

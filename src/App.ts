@@ -79,7 +79,7 @@ class App
     this.initialModules = initialModules;
     activeModuleStore.getModules(...initialModules).then((gameModules) =>
     {
-      this.moduleInitializer = new ModuleInitializer(activeModuleData, gameModules);
+      this.moduleInitializer = new ModuleInitializer(activeModuleData, activeModuleStore, gameModules);
     }).then(() =>
     {
       return loadDom();

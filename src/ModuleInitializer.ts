@@ -13,6 +13,7 @@ import { ModuleStore } from "./ModuleStore";
 export class ModuleInitializer
 {
   private readonly moduleData: ModuleData;
+  private readonly moduleStore: ModuleStore;
   private readonly gameModulesByKey:
   {
     [key: string]: GameModule;
@@ -31,9 +32,10 @@ export class ModuleInitializer
   } = {};
   private readonly dependencyGraph: ModuleDependencyGraph;
 
-  constructor(moduleData: ModuleData, gameModules: GameModule[])
+  constructor(moduleData: ModuleData, moduleStore: ModuleStore, gameModules: GameModule[])
   {
     this.moduleData = moduleData;
+    this.moduleStore = moduleStore;
     this.dependencyGraph = new ModuleDependencyGraph();
 
     allGameModuleInitializationPhases.forEach(phase =>
@@ -101,8 +103,7 @@ export class ModuleInitializer
 
       if (gameModule.initialize)
       {
-        // TODO 2019.08.04 | shouldn't do this here
-        const processedModuleBundleUrl = ModuleStore.processModuleBundleUrl(gameModule.info.moduleBundleUrl);
+        const processedModuleBundleUrl = this.moduleStore.getUsedUrlFor(gameModule.info);
         const baseUrl = new URL("./", processedModuleBundleUrl).toString();
 
         return gameModule.initialize(baseUrl);

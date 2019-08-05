@@ -4,7 +4,7 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultTechnologies"],
-  "moduleBundleUrl":  "{DOCUMENT_PATH}/dist/modules/space/technologies/index.js",
+  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/space/technologies/index.js"],
   "moduleObjRequireJsName": "modules/space/technologies/spaceTechnologies",
   "gameModuleVariableName": "spaceTechnologies"
 }

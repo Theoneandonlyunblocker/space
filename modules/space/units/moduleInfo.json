@@ -4,7 +4,7 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultUnits"],
-  "moduleBundleUrl":  "{DOCUMENT_PATH}/dist/modules/space/units/index.js",
+  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/space/units/index.js"],
   "moduleObjRequireJsName": "modules/space/units/spaceUnits",
   "gameModuleVariableName": "spaceUnits"
 }

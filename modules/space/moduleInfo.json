@@ -4,7 +4,7 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultRuleSet"],
-  "moduleBundleUrl":  "{DOCUMENT_PATH}/dist/modules/space/index.js",
+  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/space/index.js"],
   "moduleObjRequireJsName": "modules/space/space",
   "gameModuleVariableName": "space"
 }

@@ -4,7 +4,7 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultBuildings"],
-  "moduleBundleUrl":  "{DOCUMENT_PATH}/dist/modules/space/buildings/index.js",
+  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/space/buildings/index.js"],
   "moduleObjRequireJsName": "modules/space/buildings/spaceBuildings",
   "gameModuleVariableName": "spaceBuildings"
 }

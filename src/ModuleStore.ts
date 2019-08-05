@@ -11,39 +11,11 @@ import * as debug from "./debug";
 export class ModuleStore
 {
   private readonly loadedModules: {[key: string]: ModuleInfo} = {};
+  private readonly loadedModuleUrls: {[key: string]: string} = {};
 
   constructor()
   {
 
-  }
-
-  // TODO 2019.08.04 | make private
-  public static processModuleBundleUrl(moduleBundleUrl: string): string
-  {
-    const macros:
-    {
-      [macroIdentifier: string]: () => string
-    } =
-    {
-      "{DOCUMENT_PATH}": () =>
-      {
-        const documentUrl = new URL(document.URL);
-        const path = new URL(documentUrl.pathname, documentUrl.origin).toString();
-
-        const pathWithoutTrailingSlash = path.replace(/\/$/, "");
-
-        return pathWithoutTrailingSlash;
-      }
-    };
-
-    let processedUrl = moduleBundleUrl;
-
-    for (const macroIdentifier in macros)
-    {
-      processedUrl = processedUrl.replace(macroIdentifier, macros[macroIdentifier]);
-    }
-
-    return processedUrl;
   }
 
   public add(toAdd: GameModule): void
@@ -76,6 +48,10 @@ export class ModuleStore
     const ordered = this.getModuleLoadOrder(...modulesToGet);
 
     return this.requireModules(...ordered);
+  }
+  public getUsedUrlFor(moduleInfo: ModuleInfo): string | null
+  {
+    return this.loadedModuleUrls[moduleInfo.key];
   }
 
   private async requireModules(...modules: ModuleInfo[]): Promise<GameModule[]>
@@ -116,15 +92,14 @@ export class ModuleStore
       }
     }
 
-    // remote
     return this.fetchRemoteBundle(moduleInfo).catch(reason =>
     {
-      throw new Error(`Couldn't fetch module '${moduleInfo.key}'.\n${reason}`);
+      throw new Error(`Module file '${moduleInfo.key}' failed to load. ${reason}`);
     });
   }
-  private fetchRemoteBundle(moduleInfo: ModuleInfo): Promise<void>
+  private fetchRemoteBundle(moduleInfo: ModuleInfo, urlIndex: number = 0): Promise<void>
   {
-    const url = ModuleStore.processModuleBundleUrl(moduleInfo.moduleBundleUrl);
+    const url = ModuleStore.processModuleBundleUrl(moduleInfo.moduleBundleUrls[urlIndex]);
     if (url.substring(url.length - 3, url.length) !== ".js")
     {
       throw new Error(`Module file URL must end in '.js'.` +
@@ -135,10 +110,22 @@ export class ModuleStore
     {
       require([url], (definesBundle: any) =>
       {
+        this.loadedModuleUrls[moduleInfo.key] = url;
+
         resolve();
       }, (error: any) =>
       {
-        reject(error);
+        const nextUrlToTry = moduleInfo.moduleBundleUrls[urlIndex + 1];
+        if (nextUrlToTry)
+        {
+          console.log(`Module file '${moduleInfo.key}' failed to load from ${url}\nTrying ${ModuleStore.processModuleBundleUrl(nextUrlToTry)}`);
+
+          resolve(this.fetchRemoteBundle(moduleInfo, urlIndex + 1));
+        }
+        else
+        {
+          reject(`None of the urls\n${moduleInfo.moduleBundleUrls.map(rawUrl => ModuleStore.processModuleBundleUrl(rawUrl)).join("\n")}\ncontained valid module files.`);
+        }
       });
     });
   }
@@ -236,6 +223,34 @@ export class ModuleStore
 
     // modules have equal version
     return a;
+  }
+
+  private static processModuleBundleUrl(moduleBundleUrl: string): string
+  {
+    const macros:
+    {
+      [macroIdentifier: string]: () => string
+    } =
+    {
+      "{DOCUMENT_PATH}": () =>
+      {
+        const documentUrl = new URL(document.URL);
+        const path = new URL(documentUrl.pathname, documentUrl.origin).toString();
+
+        const pathWithoutTrailingSlash = path.replace(/\/$/, "");
+
+        return pathWithoutTrailingSlash;
+      }
+    };
+
+    let processedUrl = moduleBundleUrl;
+
+    for (const macroIdentifier in macros)
+    {
+      processedUrl = processedUrl.replace(macroIdentifier, macros[macroIdentifier]);
+    }
+
+    return processedUrl;
   }
 }
 

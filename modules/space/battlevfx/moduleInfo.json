@@ -4,7 +4,7 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["spaceBattleSfx"],
-  "moduleBundleUrl":  "{DOCUMENT_PATH}/dist/modules/space/battlevfx/index.js",
+  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/space/battlevfx/index.js"],
   "moduleObjRequireJsName": "modules/space/battlevfx/spaceBattleVfx",
   "gameModuleVariableName": "spaceBattleVfx"
 }

@@ -4,7 +4,7 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultRaces"],
-  "moduleBundleUrl":  "{DOCUMENT_PATH}/dist/modules/space/races/index.js",
+  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/space/races/index.js"],
   "moduleObjRequireJsName": "modules/space/races/spaceRaces",
   "gameModuleVariableName": "spaceRaces"
 }

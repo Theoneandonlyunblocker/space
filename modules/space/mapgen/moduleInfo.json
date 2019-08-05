@@ -4,7 +4,7 @@
   "author": "giraluna",
   "description": "",
   "modsToReplace": ["defaultMapGen"],
-  "moduleBundleUrl":  "{DOCUMENT_PATH}/dist/modules/space/mapgen/index.js",
+  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/space/mapgen/index.js"],
   "moduleObjRequireJsName": "modules/space/mapgen/spaceMapGen",
   "gameModuleVariableName": "spaceMapGen"
 }
