@@ -236,7 +236,22 @@ export const debugAbility: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Positive,
     }),
-    executeAction: () => {},
+    executeAction: EffectActions.addStatusEffect.bind(null,
+    {
+      duration: -1,
+      template:
+      {
+        type: "debug",
+        displayName: "Debug",
+        attributes:
+        {
+          attack: {flat: 1},
+          defence: {flat: 1},
+          intelligence: {flat: 1},
+          speed: {flat: 1},
+        },
+      }
+    }),
     vfx: BattleVfx.guard,
   },
 };
