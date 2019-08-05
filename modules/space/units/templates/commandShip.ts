@@ -29,7 +29,7 @@ export const commandShip: UnitTemplate =
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
-    "shieldBoat.png",
+    () => "shieldBoat.png",
   ),
   isSquadron: false,
   buildCost: 300,

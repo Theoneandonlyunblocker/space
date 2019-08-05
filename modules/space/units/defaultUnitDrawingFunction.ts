@@ -20,15 +20,15 @@ export interface UnitSpriteData
   attackOriginPoint: Point;
 }
 
-export function makeDefaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string): UnitDrawingFunction
+export function makeDefaultUnitDrawingFunction(spriteData: UnitSpriteData, getImageSrc: () => string): UnitDrawingFunction
 {
-  return defaultUnitDrawingFunction.bind(null, spriteData, imageSrc);
+  return defaultUnitDrawingFunction.bind(null, spriteData, getImageSrc);
 }
 
-function defaultUnitDrawingFunction(spriteData: UnitSpriteData, imageSrc: string, unit: Unit, vfxParams: VfxParams)
+function defaultUnitDrawingFunction(spriteData: UnitSpriteData, getImageSrc: () => string, unit: Unit, vfxParams: VfxParams)
 {
   const container = new PIXI.Container();
-  const texture = PIXI.Texture.from(imageSrc);
+  const texture = PIXI.Texture.from(getImageSrc());
 
   const props =
   {

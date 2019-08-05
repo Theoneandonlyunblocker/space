@@ -24,7 +24,7 @@ export const scout: UnitTemplate =
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
-    "scout.png",
+    () => "scout.png",
   ),
   isSquadron: true,
   buildCost: 200,

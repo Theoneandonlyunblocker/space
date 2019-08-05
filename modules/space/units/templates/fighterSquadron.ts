@@ -25,7 +25,7 @@ export const fighterSquadron: UnitTemplate =
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
-    "fighter.png",
+    () => "fighter.png",
   ),
   isSquadron: true,
   buildCost: 100,
