@@ -12,7 +12,7 @@ exports.prefixJsonAmdImports = (source) =>
 {
   const defineBlock = source.match(/define\((.+?)\)/)[1];
   const toSearch = /"([^"!]+?)\.json"/g;
-  const toReplaceWith = `"json!$1.json"`;
+  const toReplaceWith = `"json!dist/$1.json"`;
 
   if (defineBlock.match(toSearch))
   {

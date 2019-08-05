@@ -37,7 +37,7 @@
     "typescript": "3.5.x"
   },
   "scripts": {
-    "postinstall": "npm run copy-libs && npm run copy-assets && npm run compile-ui-module-css && npm run replace-pixi-typedefs && npm run convert-shaders",
+    "postinstall": "npm run copy-libs && npm run copy-assets && npm run compile-ui-module-css && npm run replace-pixi-typedefs && npm run convert-shaders && npm run copy-moduleinfo-files",
 
     "build": "tsc -b --verbose && node scripts/build/bundleDefaultModules",
 
@@ -45,6 +45,7 @@
     "convert-shaders": "node scripts/convert_shaders",
 
     "copy-libs": "node scripts/copy_libs.js",
+    "copy-moduleinfo-files": "node scripts/copy_moduleinfo_files.js",
     "copy-assets": "npm run copy-ui-assets && npm run copy-emblems-assets && npm run copy-common-assets && npm run copy-painting-portraits-assets && npm run copy-space-assets",
 
     "replace-pixi-typedefs": "node scripts/replace_pixi_typedefs.js",
