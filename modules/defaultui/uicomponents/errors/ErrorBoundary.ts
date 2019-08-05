@@ -4,14 +4,12 @@ import * as React from "react";
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
-  handleError?: (error: Error, info: React.ErrorInfo) => void;
-  renderError: (error: Error, info: React.ErrorInfo) => React.ReactNode;
+  renderError: (errorMessage: string) => React.ReactNode;
 }
 
 interface StateType
 {
-  error: Error | null;
-  errorInfo: React.ErrorInfo | null;
+  errorMessage: string | null;
 }
 
 export class ErrorBoundaryComponent extends React.Component<PropTypes, StateType>
@@ -25,8 +23,7 @@ export class ErrorBoundaryComponent extends React.Component<PropTypes, StateType
 
     this.state =
     {
-      error: null,
-      errorInfo: null,
+      errorMessage: null,
     };
   }
 
@@ -34,23 +31,21 @@ export class ErrorBoundaryComponent extends React.Component<PropTypes, StateType
   {
     this.setState(
     {
-      error: null,
-      errorInfo: null,
+      errorMessage: null,
     });
   }
   public componentDidCatch(error: Error, info: React.ErrorInfo): void
   {
     this.setState(
     {
-      error: error,
-      errorInfo: info,
+      errorMessage: error.message,
     });
   }
   public render(): React.ReactNode
   {
-    if (this.state.error)
+    if (this.state.errorMessage)
     {
-      return this.props.renderError(this.state.error, this.state.errorInfo);
+      return this.props.renderError(this.state.errorMessage);
     }
     else
     {

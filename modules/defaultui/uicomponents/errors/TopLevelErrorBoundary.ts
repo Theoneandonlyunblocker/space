@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ErrorReportingMode } from "../../../../src/handleError";
+import { ErrorReportingMode } from "../../../../src/ErrorReportingMode";
 import {ErrorBoundary} from "./ErrorBoundary";
 import {SaveRecoveryWithDetails} from "./SaveRecoveryWithDetails";
 import {Game} from "../../../../src/Game";
@@ -9,7 +9,7 @@ import {localize} from "../../localization/localize";
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
-  error: Error;
+  errorMessage: string;
   errorReportingMode: ErrorReportingMode;
   game: Game;
 }
@@ -33,7 +33,7 @@ export class TopLevelErrorBoundaryComponent extends React.Component<PropTypes, S
     return(
       ErrorBoundary(
       {
-        renderError: (error, info) =>
+        renderError: (errorMessage) =>
         {
           // TODO 2018.10.30 | doesn't respect user error handling preference.
           // react doesn't let us ignore errors in rendering I think
@@ -45,7 +45,7 @@ export class TopLevelErrorBoundaryComponent extends React.Component<PropTypes, S
           return SaveRecoveryWithDetails(
           {
             game: this.props.game,
-            error: error,
+            errorMessage: errorMessage,
             customMessage: customErrorMessage,
           });
         },

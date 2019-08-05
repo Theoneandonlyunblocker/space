@@ -67,8 +67,11 @@
 
     require(["./dist/_temp_app/index.js", "./dist/src/index.js", "./dist/modules/common/index.js"], function()
     {
-      require(["_temp_app/defaultModules"], function(defaultModules)
+      require(["_temp_app/defaultModules", "_temp_app/handleError"], function(defaultModules, handleError)
       {
+        window.onerror = handleError.handleError;
+        window.onunhandledrejection = handleError.handleRejection;
+
         require(["src/App"], function(app)
         {
           window.app = app.createApp.apply(null, defaultModules.defaultModules);

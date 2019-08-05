@@ -6,7 +6,7 @@ import {localize} from "../../localization/localize";
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
-  error: Error;
+  errorMessage: string;
   customMessage?: string;
 }
 

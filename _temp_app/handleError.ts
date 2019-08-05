@@ -1,29 +1,30 @@
-import {app} from "./App"; // TODO global
-import {options} from "./Options";
+import {app} from "../src/App"; // TODO global
+import {options} from "../src/Options";
 
 
 let hasAlertedOfError: boolean = false;
-
-export type ErrorReportingMode = "ignore" | "alertOnce" | "panic";
-export const errorReportingModes: ErrorReportingMode[] =
-[
-  "ignore",
-  "alertOnce",
-  "panic",
-];
 
 export const handleError: OnErrorEventHandlerNonNull = (message, source, lineno, colno, error) =>
 {
   const handler = getErrorHandler();
 
-  const returnValue = handler(message, source, lineno, colno, error);
+  const returnValue = handler(message.toString());
 
   return returnValue;
 };
 
-function getErrorHandler(): OnErrorEventHandlerNonNull
+export const handleRejection: ((ev: PromiseRejectionEvent) => any) = (ev) =>
 {
-  switch (options.system.errorReporting)
+  return handleError(ev.reason);
+}
+
+function getErrorHandler(): (errorMessage: string) => void
+{
+  const errorReportingMode = options && options.system ?
+    options.system.errorReporting :
+    undefined;
+
+  switch (errorReportingMode)
   {
     case "ignore":
     {
@@ -52,7 +53,7 @@ function getErrorHandler(): OnErrorEventHandlerNonNull
     }
   }
 }
-const createErrorAlert: OnErrorEventHandlerNonNull = (message, source, lineno, colno, error) =>
+const createErrorAlert = (message: string) =>
 {
   // TODO 2018.10.23 | implement
 
@@ -63,8 +64,18 @@ const ignoreError: OnErrorEventHandlerNonNull = () =>
 {
   return true;
 };
-const panicOnError: OnErrorEventHandlerNonNull = (message, source, lineno, colno, error) =>
+const panicOnError = (message: string) =>
 {
-  app.reactUI.error = error;
-  app.reactUI.switchScene("errorRecovery");
+  if (app && app.reactUI)
+  {
+    app.reactUI.triggerError(message);
+  }
+  else
+  {
+    document.body.append(
+      `Uncaught error:`,
+      document.createElement("br"),
+      `${message}`,
+    );
+  }
 };

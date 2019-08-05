@@ -45,10 +45,9 @@ export class ReactUI
   public player: Player;
   public game: Game;
 
-  public error: Error | undefined;
-
   private container: HTMLElement;
   private moduleInitializer: ModuleInitializer;
+  private errorMessage: string | undefined;
 
   constructor(container: HTMLElement, moduleInitializer: ModuleInitializer)
   {
@@ -83,12 +82,18 @@ export class ReactUI
         activeModuleData.uiScenes.topLevelErrorBoundary(
         {
           errorReportingMode: options.system.errorReporting,
+          errorMessage: this.errorMessage,
         },
           elementToRender,
         ),
       ),
       this.container,
     );
+  }
+  public triggerError(message: string): void
+  {
+    this.errorMessage = message;
+    this.switchScene("errorRecovery");
   }
 
   private addEventListeners()
@@ -144,7 +149,7 @@ export class ReactUI
         return activeModuleData.uiScenes.errorRecovery(
         {
           game: this.game,
-          error: this.error,
+          errorMessage: this.errorMessage,
         });
       }
 

@@ -17,7 +17,6 @@ import {activeModuleData} from "./activeModuleData";
 import {activePlayer, setActivePlayer} from "./activePlayer";
 import {centerCameraOnPosition} from "./centerCameraOnPosition";
 import {idGenerators} from "./idGenerators";
-import {handleError} from "./handleError";
 import {activeModuleStore} from "./ModuleStore";
 import {activeNotificationFilter} from "./notifications/NotificationFilter";
 import * as debug from "./debug";
@@ -74,7 +73,6 @@ class App
 
     this.seed = "" + Math.random();
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
-    window.onerror = handleError;
 
     this.initialModules = initialModules;
     activeModuleStore.getModules(...initialModules).then((gameModules) =>

@@ -9,7 +9,7 @@ import {Game} from "../../../../src/Game";
 export interface PropTypes extends React.Props<any>
 {
   game: Game | undefined;
-  error: Error;
+  errorMessage: string;
   customMessage?: string;
 }
 
@@ -36,7 +36,7 @@ export class SaveRecoveryWithDetailsComponent extends React.Component<PropTypes,
       },
       ErrorDetails(
         {
-          error: this.props.error,
+          errorMessage: this.props.errorMessage,
           customMessage: this.props.customMessage,
         }),
         this.props.game ? SaveRecovery() : null,

@@ -15,7 +15,7 @@ import
   fetchNeededReviversForData,
 } from "./reviveSaveData";
 import { activeModuleData } from "./activeModuleData";
-import { ErrorReportingMode } from "./handleError";
+import { ErrorReportingMode } from "./ErrorReportingMode";
 import { storageStrings } from "./storageStrings";
 import * as debug from "./debug";
 // tslint:disable-next-line:no-duplicate-imports
