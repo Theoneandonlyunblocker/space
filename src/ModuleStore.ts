@@ -94,7 +94,7 @@ export class ModuleStore
 
     return this.fetchRemoteBundle(moduleInfo).catch(reason =>
     {
-      throw new Error(`Module file '${moduleInfo.key}' failed to load. ${reason}`);
+      throw new Error(`Module file '${moduleInfo.key}' failed to load. \n${reason}`);
     });
   }
   private fetchRemoteBundle(moduleInfo: ModuleInfo, urlIndex: number = 0): Promise<void>
@@ -124,7 +124,12 @@ export class ModuleStore
         }
         else
         {
-          reject(`None of the urls\n${moduleInfo.moduleBundleUrls.map(rawUrl => ModuleStore.processModuleBundleUrl(rawUrl)).join("\n")}\ncontained valid module files.`);
+          const urlsString = moduleInfo.moduleBundleUrls.map(rawUrl =>
+          {
+            return `'${ModuleStore.processModuleBundleUrl(rawUrl)}'`;
+          }).join(", \n");
+
+          reject(`None of the urls in ${moduleInfo.key}.moduleInfo.moduleBundleUrls \n([${urlsString}]) \ncontained valid module files.`);
         }
       });
     });
