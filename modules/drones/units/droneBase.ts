@@ -5,6 +5,7 @@ import {makeDefaultUnitDrawingFunction} from "../../space/units/defaultUnitDrawi
 
 import * as CommonAbility from "../../space/abilities/abilities";
 import {distributionGroups} from "../../common/distributionGroups";
+import {getAssetSrc} from "../../common/assets";
 
 import * as DroneAbility from "../abilities";
 
@@ -16,13 +17,13 @@ export const droneBase: UnitTemplate =
   description: "Base o drones",
 
   archetype: unitArchetypes.utility,
-  getIconSrc: () => "img/placeholder.png",
-  unitDrawingFN: makeDefaultUnitDrawingFunction(
+  getIconSrc: getAssetSrc.bind(null, "placeHolder"),
+  unitDrawingFN:  makeDefaultUnitDrawingFunction(
   {
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
-    "img/placeholder.png"
+    getAssetSrc.bind(null, "placeHolder"),
   ),
 
   isSquadron: false,

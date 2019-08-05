@@ -45,13 +45,14 @@
     "convert-shaders": "node scripts/convert_shaders",
 
     "copy-libs": "node scripts/copy_libs.js",
-    "copy-assets": "npm run copy-ui-assets && npm run copy-emblems-assets && npm run copy-painting-portraits-assets && npm run copy-space-assets",
+    "copy-assets": "npm run copy-ui-assets && npm run copy-emblems-assets && npm run copy-common-assets && npm run copy-painting-portraits-assets && npm run copy-space-assets",
 
     "replace-pixi-typedefs": "node scripts/replace_pixi_typedefs.js",
 
     "copy-ui-assets": "node scripts/copy_ui_assets.js",
-    "copy-emblems-assets": "mkdirp dist/modules/defaultemblems/img && cpr modules/defaultemblems/img dist/modules/defaultemblems/img -o",
     "copy-painting-portraits-assets": "node scripts/copy_painting_portraits_assets.js",
+    "copy-emblems-assets": "mkdirp dist/modules/defaultemblems/img && cpr modules/defaultemblems/img dist/modules/defaultemblems/img -o",
+    "copy-common-assets": "mkdirp dist/modules/common/img && cpr modules/common/img dist/modules/common/img -o",
 
     "copy-space-assets": "npm run copy-space-battlevfx-assets && npm run copy-space-buildings-assets && npm run copy-space-items-assets && npm run copy-space-mapmodes-assets && npm run copy-space-resources-assets && npm run copy-space-units-assets",
     "copy-space-battlevfx-assets": "mkdirp dist/modules/space/battlevfx/img && cpr modules/space/battlevfx/img dist/modules/space/battlevfx/img -o",

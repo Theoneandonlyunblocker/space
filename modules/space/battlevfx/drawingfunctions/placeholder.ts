@@ -2,11 +2,13 @@ import * as PIXI from "pixi.js";
 
 import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
 
+import {getAssetSrc as getCommonAssetSrc} from "../../../common/assets";
+
 
 export function placeholder(params: VfxParams): void
 {
   const container = new PIXI.Container();
-  const sprite = PIXI.Sprite.from("img/placeholder.png");
+  const sprite = PIXI.Sprite.from(getCommonAssetSrc("placeHolder"));
   sprite.anchor.set(0.5, 0.5);
   sprite.x = params.width / 2;
   sprite.y = params.height / 2;
