@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
+import { getAssetSrc } from "modules/defaultui/assets";
 
 
 export interface PropTypes extends React.Props<any>
@@ -25,10 +26,6 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
 
   render()
   {
-    const availableSrc = "img/icons/availableAction.png";
-    const hoveredSrc = "img/icons/hoveredAction.png";
-    const spentSrc = "img/icons/spentAction.png";
-
     const icons: React.ReactHTMLElement<any>[] = [];
 
     const availableCount = this.props.currentActionPoints - (this.props.hoveredActionPointExpenditure || 0);
@@ -36,7 +33,7 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
     {
       icons.push(ReactDOMElements.img(
         {
-          src: availableSrc,
+          src: getAssetSrc("availableActionPoint"),
           className: "unit-action-point available-action-point",
           key: "available" + i,
         },
@@ -49,7 +46,7 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
     {
       icons.push(ReactDOMElements.img(
         {
-          src: hoveredSrc,
+          src: getAssetSrc("hoveredActionPoint"),
           className: "unit-action-point hovered-action-point",
           key: "hovered" + i,
         },
@@ -61,7 +58,7 @@ export class UnitActionsComponent extends React.PureComponent<PropTypes, StateTy
     {
       icons.push(ReactDOMElements.img(
         {
-          src: spentSrc,
+          src: getAssetSrc("spentActionPoint"),
           className: "unit-action-point spent-action-point",
           key: "spent" + i,
         },

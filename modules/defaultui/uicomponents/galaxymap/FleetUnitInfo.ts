@@ -7,6 +7,7 @@ import {applyMixins} from "../mixins/applyMixins";
 import {UnitStrength} from "../unit/UnitStrength";
 
 import {FleetUnitInfoName} from "./FleetUnitInfoName";
+import { getAssetSrc } from "modules/defaultui/assets";
 
 
 export interface PropTypes extends React.Props<any>
@@ -92,7 +93,9 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
           ReactDOMElements.img(
           {
             className: "fleet-unit-info-icon",
-            src: isNotDetected ? "img/icons/unDetected.png" : unit.template.getIconSrc(),
+            src: isNotDetected ?
+              getAssetSrc("unDetectedUnitIcon") :
+              unit.template.getIconSrc(),
           }),
         ),
         ReactDOMElements.div(

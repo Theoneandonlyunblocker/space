@@ -5,6 +5,7 @@ import * as ReactMotion from "react-motion";
 import {Player} from "../../../../src/Player";
 import {PlayerFlag} from "../PlayerFlag";
 import { fixedDurationSpring } from "../../../../src/utility";
+import { getAssetSrc } from "../../assets";
 
 
 export interface PropTypes extends React.Props<any>
@@ -50,7 +51,7 @@ export class BattleScoreComponent extends React.PureComponent<PropTypes, StateTy
           ReactDOMElements.img(
           {
             className: "battle-score-mid-point",
-            src: "img/icons/battleScoreMidPoint.png",
+            src: getAssetSrc("battleScoreMidPoint"),
           },
             null,
           ),

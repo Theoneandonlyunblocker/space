@@ -3,7 +3,11 @@ import * as PIXI from "pixi.js";
 import {englishLanguage} from "../englishlanguage/englishLanguage";
 import {GameModule} from "../../src/GameModule";
 import {GameModuleInitializationPhase} from "../../src/GameModuleInitializationPhase";
-import {svgCache} from "../../src/svgCache";
+import
+{
+  cachedAssets,
+  setBaseUrl as setAssetBaseUrl,
+} from "./assets";
 
 import {BattleSceneTester} from "./uicomponents/BattleSceneTester";
 import {FlagMaker} from "./uicomponents/FlagMaker";
@@ -36,6 +40,7 @@ export const defaultUi: GameModule =
   initialize: (baseUrl) =>
   {
     loadCss("./css/main.css", baseUrl);
+    setAssetBaseUrl(baseUrl);
 
     const loader = new PIXI.Loader(baseUrl);
 
@@ -52,7 +57,7 @@ export const defaultUi: GameModule =
       {
         const response = <XMLDocument> loader.resources[battleSceneFlagFadeUrl].data;
         const svgDoc = <SVGElement> response.children[0];
-        svgCache.battleSceneFlagFade = svgDoc;
+        cachedAssets.battleSceneFlagFade = svgDoc;
 
         resolve();
       });

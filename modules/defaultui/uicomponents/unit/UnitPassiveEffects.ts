@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {UnitEffectTemplate} from "../../../../src/templateinterfaces/UnitEffectTemplate";
+import { getAssetSrc } from "modules/defaultui/assets";
 
 
 export interface PropTypes extends React.Props<any>
@@ -30,7 +31,7 @@ export class UnitPassiveEffectsComponent extends React.PureComponent<PropTypes, 
         ReactDOMElements.img(
         {
           className: "unit-passive-effects-icon",
-          src: "img/icons/availableAction.png",
+          src: getAssetSrc("availableActionPoint"),
           title: this.props.passiveEffects.reduce((t, e) =>
           {
             return `${t}${e.displayName}: ${e.description}\n`;

@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {Flag} from "../../../../src/Flag";
-import {svgCache} from "../../../../src/svgCache";
 
+import {cachedAssets} from "../../assets";
 import {PlayerFlag} from "../PlayerFlag";
 
 
@@ -57,7 +57,7 @@ export class BattleSceneFlagComponent extends React.Component<PropTypes, StateTy
     flagElement.style.backgroundColor = undefined;
     flagElement.style.background = gradientString;
 
-    const fadeDocument = svgCache.battleSceneFlagFade;
+    const fadeDocument = cachedAssets.battleSceneFlagFade;
     flagElement.insertBefore(fadeDocument, flagElement.firstChild);
     flagElement.classList.add(maskId);
   }

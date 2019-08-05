@@ -6,6 +6,7 @@ import {AutoPositionerPosition} from "../mixins/AutoPositioner";
 
 import {ColorPicker} from "./ColorPicker";
 import {SetterComponentBase} from "./SetterComponentBase";
+import { getAssetSrc } from "modules/defaultui/assets";
 
 
 export interface PropTypes extends React.Props<any>
@@ -55,7 +56,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType> 
       ReactDOMElements.img(
       {
         className: "color-setter-display",
-        src: "img/icons/nullcolor.png",
+        src: getAssetSrc("nullColor"),
         onClick: this.toggleActive,
       }) :
       ReactDOMElements.div(

@@ -7,6 +7,7 @@ import {applyMixins} from "../mixins/applyMixins";
 import {Item} from "../../../../src/Item";
 
 import {localize} from "../../localization/localize";
+import { getAssetSrc } from "modules/defaultui/assets";
 
 
 export interface PropTypes extends React.Props<any>
@@ -65,11 +66,11 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
     {
       case 2:
       {
-        return "img/icons/t2icon.png";
+        return getAssetSrc("tech2Icon");
       }
       case 3:
       {
-        return "img/icons/t3icon.png";
+        return getAssetSrc("tech3Icon");
       }
       default:
       {

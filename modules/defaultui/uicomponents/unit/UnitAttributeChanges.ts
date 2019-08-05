@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {UnitAttributesObject} from "../../../../src/UnitAttributes";
+import { getAssetSrc } from "modules/defaultui/assets";
 
 
 export interface PropTypes extends React.Props<any>
@@ -11,6 +12,30 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
+}
+
+type AttributeType = Exclude<keyof UnitAttributesObject, "maxActionPoints">;
+
+function getIconSrc(attributeType: AttributeType, isPositive: boolean): string
+{
+  if (isPositive)
+  {
+    switch (attributeType)
+    {
+      case "attack": return getAssetSrc("statusEffect_positive_attack");
+      case "defence": return getAssetSrc("statusEffect_positive_defence");
+      case "intelligence": return getAssetSrc("statusEffect_positive_intelligence");
+      case "speed": return getAssetSrc("statusEffect_positive_speed");
+    }
+  }
+  // can't do 'else' here: https://github.com/microsoft/TypeScript/issues/11572
+  switch (attributeType)
+  {
+    case "attack": return getAssetSrc("statusEffect_negative_attack");
+    case "defence": return getAssetSrc("statusEffect_negative_defence");
+    case "intelligence": return getAssetSrc("statusEffect_negative_intelligence");
+    case "speed": return getAssetSrc("statusEffect_negative_speed");
+  }
 }
 
 export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes, StateType>
@@ -44,17 +69,13 @@ export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes
         }
 
         const changeIsPositive = amountChanged > 0;
-        const polarityString = changeIsPositive ? "positive" : "negative";
-        const polaritySign = changeIsPositive ? "+" : "-";
 
-        const imageSrc = `img/icons/statusEffect_${polarityString}_${attributeType}.png`;
-
-        const titleString = `${attributeType} ${polaritySign}${amountChanged}`;
+        const titleString = `${attributeType} ${changeIsPositive ? "+" : "-"}${amountChanged}`;
 
         attributeElements.push(ReactDOMElements.img(
         {
           className: `attribute-change-icon attribute-change-icon-${attributeType}`,
-          src: imageSrc,
+          src: getIconSrc(<AttributeType>attributeType, changeIsPositive),
           key: attributeType,
           title: titleString,
         }));
