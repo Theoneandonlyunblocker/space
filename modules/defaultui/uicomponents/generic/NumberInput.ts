@@ -222,7 +222,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      if (!stringIsSignedFloat(valueString))
+      if (!stringIsSignedFloat(valueString) && valueString !== "Infinity")
       {
         return false;
       }
