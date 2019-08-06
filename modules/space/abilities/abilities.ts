@@ -305,6 +305,14 @@ export const rangedAttack: AbilityTemplate =
     },
   ],
 };
+
+const snipeStatusEffectTemplateByAttribute =
+{
+  [UnitAttribute.Attack]: SnipeStatusEffects.snipeAttack,
+  [UnitAttribute.Defence]: SnipeStatusEffects.snipeDefence,
+  [UnitAttribute.Intelligence]: SnipeStatusEffects.snipeIntelligence,
+  [UnitAttribute.Speed]: SnipeStatusEffects.snipeSpeed,
+};
 function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
 {
   const attributeName = UnitAttribute[attribute];
@@ -313,14 +321,6 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
   const key = `snipe${capitalizedAttributeName}`;
   const displayName = `Snipe: ${capitalizedAttributeName}`;
   const description = `Deals damage and lowers target ${attributeName}`;
-
-  const statusEffectTemplateByAttribute =
-  {
-    [UnitAttribute.Attack]: SnipeStatusEffects.snipeAttack,
-    [UnitAttribute.Defence]: SnipeStatusEffects.snipeDefence,
-    [UnitAttribute.Intelligence]: SnipeStatusEffects.snipeIntelligence,
-    [UnitAttribute.Speed]: SnipeStatusEffects.snipeSpeed,
-  };
 
   return(
   {
@@ -352,7 +352,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
           id: "statusEffect",
           executeAction: EffectActions.addStatusEffect.bind(null,
           {
-            template: statusEffectTemplateByAttribute[attribute],
+            template: snipeStatusEffectTemplateByAttribute[attribute],
             duration: Infinity,
           }),
           getUnitsInArea: areaSingle,

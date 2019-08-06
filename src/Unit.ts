@@ -630,10 +630,6 @@ export class Unit
 
   //   return true;
   // }
-  private getAttributesWithItems()
-  {
-    return this.baseAttributes.getAdjustedAttributes(...this.items.getAttributeAdjustments()).clamp(1, 9);
-  }
   public addStatusEffect(statusEffect: StatusEffect)
   {
     if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1)
@@ -686,19 +682,23 @@ export class Unit
       return statusEffect.template.attributes!;
     });
   }
+  private getAttributesWithItems()
+  {
+    return this.baseAttributes.getAdjustedAttributes(...this.items.getAttributeAdjustments()).clamp(1, 9);
+  }
   private getAttributesWithItemsAndEffects()
   {
-    const itemAdjustments = this.items.getAttributeAdjustments();
+    const attributesWithItems = this.getAttributesWithItems();
     const effectAdjustments = this.getStatusEffectAttributeAdjustments();
 
-    return this.baseAttributes.getAdjustedAttributes(...itemAdjustments, ...effectAdjustments);
+    return attributesWithItems.getAdjustedAttributes(...effectAdjustments);
   }
   private getAttributesWithEffectsDifference(): UnitAttributes
   {
-    const withItems = this.getAttributesWithItems();
-    const withEffects = this.getAttributesWithItemsAndEffects();
+    const attributesWithItems = this.getAttributesWithItems();
+    const attributesWithEffects = this.getAttributesWithItemsAndEffects();
 
-    return withEffects.getDifferenceBetween(withItems);
+    return attributesWithEffects.getDifferenceBetween(attributesWithItems);
   }
   private updateCachedAttributes()
   {

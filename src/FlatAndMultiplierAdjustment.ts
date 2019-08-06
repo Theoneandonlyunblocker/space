@@ -1,8 +1,8 @@
 export interface FlatAndMultiplierAdjustment
 {
-  flat?: number;
-  additiveMultiplier?: number;
-  multiplicativeMultiplier?: number;
+  flat?: number; // -Infinity ... Infinity
+  additiveMultiplier?: number; // -Infinity ... Infinity
+  multiplicativeMultiplier?: number; // 0 ... Infinity
 }
 
 export type AdjustmentsObject<T> =
