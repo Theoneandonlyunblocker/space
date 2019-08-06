@@ -232,7 +232,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private clearHoveredUnit()
   {
-    this.tempHoveredUnit = null;
     this.setState(
     {
       hoveredUnit: null,
@@ -268,6 +267,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     if (!toElement)
     {
+      this.tempHoveredUnit = null;
       this.clearHoveredUnit();
 
       return;
@@ -275,20 +275,22 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     if (!this.abilityTooltip.current)
     {
+      this.tempHoveredUnit = null;
       this.clearHoveredUnit();
 
       return;
     }
 
-
     const tooltipElement = this.abilityTooltip.current.ownDOMNode.current;
+    const movedToTooltipElement = (
+      toElement === this.state.abilityTooltip.parentElement ||
+      (this.abilityTooltip && toElement === tooltipElement) ||
+      toElement.parentElement === tooltipElement
+    );
 
-    if (
-      toElement !== this.state.abilityTooltip.parentElement &&
-      (this.abilityTooltip && toElement !== tooltipElement) &&
-      toElement.parentElement !== tooltipElement
-    )
+    if (!movedToTooltipElement)
     {
+      this.tempHoveredUnit = null;
       this.clearHoveredUnit();
     }
   }
@@ -487,6 +489,12 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       this.setState(
       {
         UIState: BattleUIState.Idle,
+      }, () =>
+      {
+        if (this.tempHoveredUnit)
+        {
+          this.handleMouseEnterUnit(this.tempHoveredUnit);
+        }
       });
     }
   }
