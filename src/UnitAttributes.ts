@@ -37,6 +37,17 @@ export interface UnitAttributesObject
   speed: number;
 }
 
+export function getUnitAttributesObjectKeyForAttribute(attribute: UnitAttribute): Exclude<keyof UnitAttributesObject, "maxActionPoints">
+{
+  switch (attribute)
+  {
+    case UnitAttribute.Attack: return "attack";
+    case UnitAttribute.Defence: return "defence";
+    case UnitAttribute.Intelligence: return "intelligence";
+    case UnitAttribute.Speed: return "speed";
+  }
+}
+
 export class UnitAttributes implements UnitAttributesObject
 {
   public maxActionPoints: number;

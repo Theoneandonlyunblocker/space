@@ -1,6 +1,6 @@
 import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
 
-import {UnitAttribute} from "../../../src/UnitAttributes";
+import {UnitAttribute, getUnitAttributesObjectKeyForAttribute} from "../../../src/UnitAttributes";
 import { FlatAndMultiplierAdjustment } from "../../../src/FlatAndMultiplierAdjustment";
 
 
@@ -14,7 +14,7 @@ function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
 
   const attributeAdjustment: FlatAndMultiplierAdjustment =
   {
-    multiplicativeMultiplier: -0.5,
+    multiplicativeMultiplier: 0.5,
   };
 
   return(
@@ -23,7 +23,7 @@ function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
     displayName: displayName,
     attributes:
     {
-      [attributeName]: attributeAdjustment,
+      [getUnitAttributesObjectKeyForAttribute(attribute)]: attributeAdjustment,
     },
   });
 }
