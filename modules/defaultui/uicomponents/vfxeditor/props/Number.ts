@@ -58,8 +58,6 @@ export class VfxFragmentPropNumberComponent extends React.Component<PropTypes, S
         NumberInput(
         {
           value: this.props.value,
-          valueStringIsValid: valueString => isFinite(Number(valueString)),
-          getValueFromValueString: parseFloat,
           onChange: newValue =>
           {
             this.props.fragment.props[this.props.propName] = newValue;
