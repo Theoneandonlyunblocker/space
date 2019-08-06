@@ -29,11 +29,11 @@
       "protected-instance-method",
       "private-instance-method",
 
-      "private-static-method",
+      "private-static-method"
     ]}],
     "no-any": true,
     "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
-    "prefer-function-over-method": {"severity": "warn", "options": [true]},
+    "prefer-function-over-method": true,
 
     "no-internal-module": true,
     "no-namespace": [true, "allow-declarations"],
