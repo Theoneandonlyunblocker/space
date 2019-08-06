@@ -24,8 +24,7 @@ export const autoHeal: PassiveSkillTemplate =
       getUnitsInArea: user => [user],
       executeAction: EffectActions.addStatusEffect.bind(null,
       {
-        // TODO 2018.12.09 | why is this -1?
-        duration: -1,
+        duration: Infinity,
         template: autoHealStatusEffect,
       }),
     },

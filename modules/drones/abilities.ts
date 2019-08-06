@@ -114,7 +114,7 @@ export const merge: AbilityTemplate =
       },
       executeAction: EffectActions.addStatusEffect.bind(null,
       {
-        duration: -1,
+        duration: Infinity,
         template: DroneStatusEffects.merge,
       }),
     },

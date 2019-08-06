@@ -238,7 +238,7 @@ export const debugAbility: AbilityTemplate =
     }),
     executeAction: EffectActions.addStatusEffect.bind(null,
     {
-      duration: -1,
+      duration: Infinity,
       template:
       {
         type: "debug",
@@ -353,7 +353,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
           executeAction: EffectActions.addStatusEffect.bind(null,
           {
             template: statusEffectTemplateByAttribute[attribute],
-            duration: -1,
+            duration: Infinity,
           }),
           getUnitsInArea: areaSingle,
         },
