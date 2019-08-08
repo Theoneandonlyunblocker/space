@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 
 import {PropInfo} from "./props/PropInfo";
 import {Point} from "../../../../../src/Point";
+import { getRelativeValue, clamp } from "../../../../../src/utility";
 
 
 let idGenerator = 0;
@@ -52,6 +53,12 @@ export abstract class VfxFragment<P>
   public abstract animate(relativeTime: number): void;
   public abstract draw(...args: any[]): void;
 
+  public animateWithinTimeSpan(time: number, start: number, end: number): void
+  {
+    const timeRelativeToTimeSpan = clamp(getRelativeValue(time, start, end), 0, 1);
+
+    this.animate(timeRelativeToTimeSpan);
+  }
   public setDefaultProps(): void
   {
     for (const key in this.propInfo)

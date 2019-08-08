@@ -10,12 +10,13 @@ import {LightBurstShader} from "../shaders/LightBurstShader";
 
 import {VfxFragment} from "./VfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
+import { getRelativeValue } from "../../../../../src/utility";
 
 
 interface LightBurstProps
 {
   size: Point;
-  delay: number;
+  peakTime: number;
   sharpness: number;
   color: Color;
   centerSize: number;
@@ -30,7 +31,7 @@ export class LightBurst extends VfxFragment<LightBurstProps>
   public readonly propInfo =
   {
     size: new PropInfo.Point({x: 200, y: 200}),
-    delay: new PropInfo.Number(0.3),
+    peakTime: new PropInfo.Number(0.3),
     sharpness: new PropInfo.Number(2.0),
     color: new PropInfo.Color(new Color(0.75, 0.75, 0.62)),
     centerSize: new PropInfo.Number(1.0),
@@ -46,12 +47,18 @@ export class LightBurst extends VfxFragment<LightBurstProps>
     this.initializeProps(props);
   }
 
+  public static getRelativePeakTime(peakInParentTime: number, startInParentTime: number, endInParentTime: number): number
+  {
+    return getRelativeValue(peakInParentTime, startInParentTime, endInParentTime);
+  }
+
   public animate(time: number): void
   {
-    const rampUpValue = Math.pow(Math.min(time / this.props.delay, 1.0), 7.0);
+    const relativeTimeToPeak = getRelativeValue(time, 0, this.props.peakTime);
+    const relativeTimeSincePeak = getRelativeValue(time, this.props.peakTime, 1);
 
-    const timeAfterImpact = Math.max(time - this.props.delay, 0.0);
-    const rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
+    const rampUpValue = Math.pow(Math.min(relativeTimeToPeak, 1), 7.0);
+    const rampDownValue = Math.pow(Math.max(relativeTimeSincePeak, 0), 2.0);
 
     const lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
 

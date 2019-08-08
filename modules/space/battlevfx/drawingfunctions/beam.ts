@@ -287,8 +287,6 @@ export function beam(props: VfxParams)
     intersectingEllipseSharpness: new RampingValue(0.8, -0.4, 0.0),
 
     color: new Color(1.0, 1.0, 1.0),
-
-    delay: relativeImpactTime,
   });
 
   shockWaveFragment.draw();
@@ -303,10 +301,13 @@ export function beam(props: VfxParams)
     y: props.height * 3,
   };
 
+  const lightBurstStartTime = relativeImpactTime - 0.1;
+  const lightBurstEndTime = relativeImpactTime + 0.2;
+
   const lightBurstFragment = new LightBurst(
   {
     size: lightBurstSize,
-    delay: relativeImpactTime,
+    peakTime: LightBurst.getRelativePeakTime(relativeImpactTime, lightBurstStartTime, lightBurstEndTime),
     sharpness: 2.0,
     color: new Color(0.75, 0.75, 0.62),
     centerSize: 1.0,
@@ -376,8 +377,12 @@ export function beam(props: VfxParams)
 
     beamFragment.animate(relativeElapsedTime);
     syncShinyParticleUniforms(relativeElapsedTime);
-    shockWaveFragment.animate(relativeElapsedTime);
-    lightBurstFragment.animate(relativeElapsedTime);
+    shockWaveFragment.animateWithinTimeSpan(relativeElapsedTime, relativeImpactTime, 1);
+    lightBurstFragment.animateWithinTimeSpan(
+      relativeElapsedTime,
+      lightBurstStartTime,
+      lightBurstEndTime,
+    );
 
     props.renderer.render(mainContainer, renderTexture, true);
 

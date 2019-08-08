@@ -28,8 +28,6 @@ interface ShockWaveProps
   intersectingEllipseSharpness: RampingValue;
 
   color: Color;
-
-  delay: number;
 }
 
 export class ShockWave extends VfxFragment<ShockWaveProps>
@@ -52,8 +50,6 @@ export class ShockWave extends VfxFragment<ShockWaveProps>
     intersectingEllipseSharpness: new PropInfo.RampingValue(new RampingValue(0.8, -0.4, 0.0)),
 
     color: new PropInfo.Color(new Color(1, 1, 1)),
-
-    delay: new PropInfo.Number(0.3),
   };
 
   private shockWaveShader: IntersectingEllipsesShader;
@@ -72,11 +68,7 @@ export class ShockWave extends VfxFragment<ShockWaveProps>
   {
     const p = this.props;
 
-    const burstX = time < p.delay - 0.02 ?
-      0 :
-      time - (p.delay - 0.02);
-
-    const shockWaveTime = TWEEN.Easing.Quintic.Out(burstX);
+    const shockWaveTime = TWEEN.Easing.Quintic.Out(time);
 
     this.shockWaveShader.setUniforms(
     {
