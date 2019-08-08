@@ -59,13 +59,6 @@ export abstract class VfxFragment<P>
 
     this.animate(timeRelativeToTimeSpan);
   }
-  public setDefaultProps(): void
-  {
-    for (const key in this.propInfo)
-    {
-      this.props[key] = this.propInfo[key].getDefaultValue();
-    }
-  }
   public setCenter(x: number, y: number): void
   {
     const bounds = this.displayObject.getBounds();
@@ -74,15 +67,25 @@ export abstract class VfxFragment<P>
       y - bounds.height / 2,
     );
   }
+  public setDefaultProps(providedProps: Partial<P> = {}): void
+  {
+    for (const key in this.propInfo)
+    {
+      if (providedProps[key] !== undefined)
+      {
+        this.props[key] = this.propInfo[key].copyValue(providedProps[key]);
+      }
+      else
+      {
+        this.props[key] = this.propInfo[key].getDefaultValue();
+      }
+    }
+  }
 
   // not done in constructor as we want derived class parameter initialization to be done first
   protected initializeProps(initialValues?: Partial<P>): void
   {
-    this.setDefaultProps();
-    if (initialValues)
-    {
-      this.setProps(initialValues);
-    }
+    this.setDefaultProps(initialValues);
   }
   protected setDisplayObject(newDisplayObject: PIXI.DisplayObject): void
   {
@@ -101,13 +104,5 @@ export abstract class VfxFragment<P>
     }
 
     this._displayObject = newDisplayObject;
-  }
-
-  private setProps(props: Partial<P>): void
-  {
-    for (const key in props)
-    {
-      this.props[key] = this.propInfo[key].copyValue(props[key]);
-    }
   }
 }
