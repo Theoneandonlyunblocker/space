@@ -6,6 +6,8 @@ import {FocusingBeam} from "../../../../modules/space/battlevfx/drawingfunctions
 import {LightBurst} from "../../../../modules/space/battlevfx/drawingfunctions/vfxfragments/LightBurst";
 import {VfxFragment} from "../../../../modules/space/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
 import {ShockWave} from "../../../../modules/space/battlevfx/drawingfunctions/vfxfragments/ShockWave";
+import {Projectile} from "../../../../modules/space/battlevfx/drawingfunctions/vfxfragments/Projectile";
+import {ProjectileWithImpact} from "../../../../modules/space/battlevfx/drawingfunctions/vfxfragments/ProjectileWithImpact";
 
 import
 {
@@ -43,6 +45,16 @@ const availableFragmentConstructors: VfxFragmentConstructor[] =
     displayName: "FocusingBeam",
     constructorFN: FocusingBeam,
   },
+  {
+    key: "projectile",
+    displayName: "Projectile",
+    constructorFN: Projectile,
+  },
+  {
+    key: "projectileWithImpact",
+    displayName: "ProjectileWithImpact",
+    constructorFN: ProjectileWithImpact,
+  }
 ];
 
 function AlphabeticallyByProp<T>(a2: T, b2: T, props: string[]): number
