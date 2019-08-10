@@ -107,6 +107,7 @@ export function snipe(type: UnitAttribute, params: VfxParams)
   projectileColorMatrixFilter.multiplyByColor(colors[type]);
   projectileColorMatrixFilter.multiplyRGB(3.0);
 
+  // TODO 2019.08.10 | just use projectileWithImpact
   const projectileFragment = new ProjectileAttack(
   {
     makeProjectileSprite: i =>
@@ -129,7 +130,7 @@ export function snipe(type: UnitAttribute, params: VfxParams)
     spawnTimeEnd: 1,
     removeAfterImpact: true,
     impactRate: 1,
-    onImpact: (projectile, container, time) =>
+    onImpact: (projectileIndex, x, y) =>
     {
       if (!impactHasOccurred)
       {
@@ -139,20 +140,19 @@ export function snipe(type: UnitAttribute, params: VfxParams)
 
         emitters.forEach(emitter =>
         {
-          emitter.p.x = projectile.sprite.position.x + projectile.sprite.width;
-          emitter.p.y = projectile.sprite.position.y;
+          emitter.p.x = x;
+          emitter.p.y = y;
 
           emitter.emit("once");
         });
       }
     },
-    animateImpact: (projectile, container, time) =>
+    animateImpact: (projectileIndex, time) =>
     {
       params.renderer.render(particleBufferSprite, particleRenderTexture, true);
       params.renderer.render(particleContainer, particleRenderTexture, false);
 
       params.renderer.render(particleRenderSprite, particleBufferTexture, true);
-
 
       proton.update();
     },

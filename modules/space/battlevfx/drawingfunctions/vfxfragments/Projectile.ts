@@ -72,18 +72,23 @@ export class Projectile<D extends PIXI.DisplayObject = PIXI.Sprite> extends VfxF
       const upperTime = partitionCenter + samplingDistance;
 
       const lowerSample = initialPosition + this.getDisplacement(lowerTime);
+      const centerSample = initialPosition + this.getDisplacement(partitionCenter);
       const upperSample = initialPosition + this.getDisplacement(upperTime);
 
       const lowerSampleError = Math.abs(targetPosition - lowerSample);
+      const centerSampleError = Math.abs(targetPosition - centerSample);
       const upperSampleError = Math.abs(targetPosition - upperSample);
 
-      partitionCenter = lowerSampleError < upperSampleError ?
-        partitionCenter - samplingDistance :
-        partitionCenter + samplingDistance;
+      if (Math.min(lowerSampleError, upperSampleError) < centerSampleError)
+      {
+        partitionCenter = lowerSampleError < upperSampleError ?
+          partitionCenter - samplingDistance :
+          partitionCenter + samplingDistance;
+      }
 
       samplingDistance /= 2;
 
-      if (Math.min(lowerSampleError, upperSampleError) < desiredAccuracy)
+      if (Math.min(lowerSampleError, upperSampleError, centerSampleError) < desiredAccuracy)
       {
         return partitionCenter;
       }

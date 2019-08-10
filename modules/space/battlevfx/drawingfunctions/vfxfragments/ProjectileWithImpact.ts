@@ -9,9 +9,12 @@ import { getRelativeValue } from "../../../../../src/utility";
 interface ProjectileWithImpactProps<D extends PIXI.DisplayObject>
 {
   impactPosition: number;
+  removeAfterImpact: boolean;
   getProjectileFragment: () => Projectile<D>;
-  drawExplosion?: (x: number, y: number) => PIXI.DisplayObject;
-  animateExplosion: (time: number) => void;
+  drawImpact?: (x: number, y: number) => PIXI.DisplayObject;
+  onImpact?: (x: number, y: number, time: number) => void;
+  animateImpact: (time: number) => void;
+  impactDuration: number;
 }
 
 export class ProjectileWithImpact<D extends PIXI.DisplayObject> extends VfxFragment<ProjectileWithImpactProps<D>>
@@ -22,6 +25,7 @@ export class ProjectileWithImpact<D extends PIXI.DisplayObject> extends VfxFragm
   public readonly propInfo =
   {
     impactPosition: new PropInfo.Number(500),
+    removeAfterImpact: new PropInfo.Boolean(true),
     getProjectileFragment: new PropInfo.Function(() =>
     {
       return new Projectile(
@@ -31,14 +35,17 @@ export class ProjectileWithImpact<D extends PIXI.DisplayObject> extends VfxFragm
         initialVelocity: 800,
       });
     }),
-    drawExplosion: new PropInfo.Function(undefined),
-    animateExplosion: new PropInfo.Function((time: number) => {}),
+    drawImpact: new PropInfo.Function(undefined),
+    onImpact: new PropInfo.Function(undefined),
+    animateImpact: new PropInfo.Function((time: number) => {}),
+    impactDuration: new PropInfo.Number(0.2),
   };
 
+  private readonly container: PIXI.Container;
   private projectileFragment: Projectile<D>;
-  private container: PIXI.Container;
   private projectileImpactTime: number;
-  private explosion: PIXI.DisplayObject | undefined;
+  private impactDisplayObject: PIXI.DisplayObject | undefined;
+  private hasTriggeredOnImpact: boolean = false;
 
   constructor(props: ProjectileWithImpactProps<D>)
   {
@@ -56,20 +63,36 @@ export class ProjectileWithImpact<D extends PIXI.DisplayObject> extends VfxFragm
 
     if (hasImpacted)
     {
-      this.projectileFragment.displayObject.visible = false;
-      if (this.explosion)
+      if (this.props.removeAfterImpact)
       {
-        this.explosion.visible = true;
+        this.projectileFragment.displayObject.visible = false;
+      }
+      else
+      {
+        this.projectileFragment.animate(time);
       }
 
-      this.props.animateExplosion(getRelativeValue(time, this.projectileImpactTime, 1));
+      if (this.impactDisplayObject)
+      {
+        this.impactDisplayObject.visible = true;
+      }
+      if (!this.hasTriggeredOnImpact)
+      {
+        this.hasTriggeredOnImpact = true;
+        if (this.props.onImpact)
+        {
+          this.props.onImpact(this.props.impactPosition, this.projectileFragment.props.spawnPosition.y, time);
+        }
+      }
+
+      this.props.animateImpact(getRelativeValue(time, this.projectileImpactTime, this.projectileImpactTime + this.props.impactDuration));
     }
     else
     {
       this.projectileFragment.displayObject.visible = true;
-      if (this.explosion)
+      if (this.impactDisplayObject)
       {
-        this.explosion.visible = false;
+        this.impactDisplayObject.visible = false;
       }
 
       this.projectileFragment.animate(time);
@@ -84,13 +107,13 @@ export class ProjectileWithImpact<D extends PIXI.DisplayObject> extends VfxFragm
     const projectilePositionForImpact = this.props.impactPosition - this.projectileFragment.bounds.width;
     this.projectileImpactTime = this.projectileFragment.getTimeForPosition(projectilePositionForImpact, 0.001);
 
-    if (this.props.drawExplosion)
+    if (this.props.drawImpact)
     {
-      this.explosion = this.props.drawExplosion(
+      this.impactDisplayObject = this.props.drawImpact(
         this.props.impactPosition,
         this.projectileFragment.props.spawnPosition.y,
       );
-      this.container.addChild(this.explosion);
+      this.container.addChild(this.impactDisplayObject);
     }
 
     this.setDisplayObject(this.container);

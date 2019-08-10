@@ -33,24 +33,16 @@ export function rocketAttack(params: VfxParams)
     const explosionTexture = PIXI.Texture.from("Explosion_Sequence_A " + (i+1) + ".png");
     explosionTextures.push(explosionTexture);
   }
-  const explosionsById:
-  {
-    [id: number]:
-    {
-      clip: PIXI.AnimatedSprite;
-      startTime: number;
-      relativeTimePerFrame: number;
-    };
-  } = {};
-
-  const relativeTimePerSecond = 1000 / params.duration;
-  const relativeTimePerExplosionFrame = relativeTimePerSecond / 60;
+  const explosions: PIXI.AnimatedSprite[] = [];
 
   const projectileAttackFragment = new ProjectileAttack(
   {
     makeProjectileSprite: i =>
     {
-      return new PIXI.Sprite(PIXI.Texture.from(resources.rocketProjectile));
+      const sprite = new PIXI.Sprite(PIXI.Texture.from(resources.rocketProjectile));
+      sprite.scale.set(0.5);
+
+      return sprite;
     },
 
     maxSpeed: maxSpeed,
@@ -61,11 +53,12 @@ export function rocketAttack(params: VfxParams)
       8,
 
     spawnTimeStart: 0,
-    spawnTimeEnd: 0.4,
+    spawnTimeEnd: 0.35,
+    impactDuration: 0.2,
 
     removeAfterImpact: true,
     impactRate: 0.8,
-    onImpact: (projectile, impactContainer, time) =>
+    onImpact: (projectileIndex, x, y, time) =>
     {
       if (!impactHasOccurred)
       {
@@ -73,38 +66,27 @@ export function rocketAttack(params: VfxParams)
         impactHasOccurred = true;
       }
 
-      const remainingTime = 1 - time;
-      const remainingTimePerFrame = remainingTime / explosionTextures.length;
-
-      explosionsById[projectile.id] =
-      {
-        clip: new PIXI.AnimatedSprite(explosionTextures),
-        startTime: time,
-        relativeTimePerFrame: Math.min(relativeTimePerExplosionFrame, remainingTimePerFrame),
-      };
-
-      const explosionClip = explosionsById[projectile.id].clip;
-      explosionClip.anchor.set(0.5, 0.5);
-      explosionClip.loop = false;
-      explosionClip.position.copyFrom(projectile.sprite.position);
-      explosionClip.position.x += projectile.sprite.width;
-      impactContainer.addChild(explosionClip);
+      const explosion = explosions[projectileIndex] = new PIXI.AnimatedSprite(explosionTextures);
+      explosion.scale.set(0.5);
+      explosion.anchor.set(0.5, 0.5);
+      explosion.loop = false;
+      explosion.position.set(x, y);
+      container.addChild(explosion);
     },
-    animateImpact: (projectile, impactContainer, time) =>
+    animateImpact: (projectileIndex, relativeExplosionTime) =>
     {
-      const explosion = explosionsById[projectile.id];
-      const relativeTimePlayed = time - explosion.startTime;
-      const targetFrame = Math.round(relativeTimePlayed / explosion.relativeTimePerFrame);
+      const explosion = explosions[projectileIndex];
+      const targetFrame = Math.round(relativeExplosionTime * explosion.totalFrames);
 
       if (targetFrame >= 0 &&
-        targetFrame < explosion.clip.totalFrames)
+        targetFrame < explosion.totalFrames)
       {
-        explosion.clip.gotoAndStop(targetFrame);
-        explosion.clip.visible = true;
+        explosion.visible = true;
+        explosion.gotoAndStop(targetFrame);
       }
       else
       {
-        explosion.clip.visible = false;
+        explosion.visible = false;
       }
     },
     impactPosition:
