@@ -27,7 +27,7 @@ export const targetNextRow: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 
   const fullFormation = battle.side1.concat(battle.side2);
 
-  return fullFormation[ownPosition[0] + increment].filter(unit => unit !== null);
+  return fullFormation[ownPosition[0] + increment];
 };
 export const targetAllies: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 {
@@ -39,7 +39,7 @@ export const targetEnemies: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 };
 export const targetAll: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 {
-  return flatten2dArray(battle.side1.concat(battle.side2)).filter(unit => unit !== null);
+  return flatten2dArray(battle.side1.concat(battle.side2));
 };
 
 // ------AREAS

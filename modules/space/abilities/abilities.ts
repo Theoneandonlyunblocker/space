@@ -58,7 +58,7 @@ export const closeAttack: AbilityTemplate =
   {
     return targetNextRow(user, battle).filter(unit =>
     {
-      return unit.battleStats.side !== user.battleStats.side;
+      return unit !== null && unit.battleStats.side !== user.battleStats.side;
     });
   },
   mainEffect:
