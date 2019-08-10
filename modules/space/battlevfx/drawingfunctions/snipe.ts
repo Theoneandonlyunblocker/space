@@ -11,7 +11,6 @@ import
 } from "../../../../src/pixiWrapperFunctions";
 
 import {FocusingBeam} from "./vfxfragments/FocusingBeam";
-import {ProjectileAttack} from "./vfxfragments/ProjectileAttack";
 import {RampingValue} from "./vfxfragments/RampingValue";
 
 import {ColorMatrixFilter} from "./ColorMatrixFilter";
@@ -19,6 +18,9 @@ import {resources} from "../resources";
 import { PixiRenderer } from "./proton/PixiRenderer";
 import { FunctionInitialize } from "./proton/FunctionInitialize";
 import { PixiParticle } from "./proton/PixiParticle";
+import { ProjectileWithImpact } from "./vfxfragments/ProjectileWithImpact";
+import { Projectile } from "./vfxfragments/Projectile";
+import { getRelativeValue } from "../../../../src/utility";
 
 
 const colors =
@@ -99,38 +101,33 @@ export function snipe(type: UnitAttribute, params: VfxParams)
   mainContainer.addChild(beamFragment.displayObject);
 
   // ----------PROJECTILE
-  const maxSpeedAt1000Duration = params.width * params.duration / 2;
-  const maxSpeed = maxSpeedAt1000Duration * (1000 / params.duration);
-  const acceleration = maxSpeed / 0.5;
+  const projectileDuration = 1 - projectileLaunchTime;
 
   const projectileColorMatrixFilter = new ColorMatrixFilter();
   projectileColorMatrixFilter.multiplyByColor(colors[type]);
   projectileColorMatrixFilter.multiplyRGB(3.0);
 
-  // TODO 2019.08.10 | just use projectileWithImpact
-  const projectileFragment = new ProjectileAttack(
+  const projectileFragment = new ProjectileWithImpact<PIXI.Sprite>(
   {
-    makeProjectileSprite: i =>
-    {
-      const sprite = new PIXI.Sprite(PIXI.Texture.from(resources.snipeProjectile));
-      sprite.height = 6;
-      sprite.width = 32;
-      sprite.filters = [projectileColorMatrixFilter];
-
-      return sprite;
-    },
-
-    maxSpeed: maxSpeed,
-    acceleration: acceleration,
-
-    amountToSpawn: 1,
-    useSequentialAttackOriginPoints: false,
-
-    spawnTimeStart: projectileLaunchTime,
-    spawnTimeEnd: 1,
+    impactPosition: offsetTargetData.boundingBox.x + offsetTargetData.boundingBox.width / 2,
     removeAfterImpact: true,
-    impactRate: 1,
-    onImpact: (projectileIndex, x, y) =>
+    impactDuration: Infinity,
+    getProjectileFragment: () => new Projectile(
+    {
+      getDisplayObject: () =>
+      {
+        const sprite = new PIXI.Sprite(PIXI.Texture.from(resources.snipeProjectile));
+        sprite.height = 6;
+        sprite.width = 32;
+        sprite.filters = [projectileColorMatrixFilter];
+
+        return sprite;
+      },
+      spawnPosition: offsetUserData.singleAttackOriginPoint,
+
+      initialVelocity: params.width / 0.2 / projectileDuration,
+    }),
+    onImpact: (x, y) =>
     {
       if (!impactHasOccurred)
       {
@@ -147,7 +144,7 @@ export function snipe(type: UnitAttribute, params: VfxParams)
         });
       }
     },
-    animateImpact: (projectileIndex, time) =>
+    animateImpact: (time) =>
     {
       params.renderer.render(particleBufferSprite, particleRenderTexture, true);
       params.renderer.render(particleContainer, particleRenderTexture, false);
@@ -156,14 +153,10 @@ export function snipe(type: UnitAttribute, params: VfxParams)
 
       proton.update();
     },
-    impactPosition:
-    {
-      min: offsetTargetData.boundingBox.x + offsetTargetData.boundingBox.width / 2,
-      max: offsetTargetData.boundingBox.x + offsetTargetData.boundingBox.width / 2,
-    },
   });
 
-  projectileFragment.draw(offsetUserData, offsetTargetData);
+  projectileFragment.draw();
+  projectileFragment.displayObject.visible = false;
   mainContainer.addChild(projectileFragment.displayObject);
 
   // ----------INIT PARTICLES
@@ -267,10 +260,17 @@ export function snipe(type: UnitAttribute, params: VfxParams)
   function animate()
   {
     const elapsedTime = Date.now() - startTime;
-    const relativeElapsedTime = elapsedTime / params.duration;
+    const time = elapsedTime / params.duration;
 
-    beamFragment.animate(relativeElapsedTime);
-    projectileFragment.animate(relativeElapsedTime);
+    beamFragment.animate(time);
+
+    if (time >= projectileLaunchTime)
+    {
+      projectileFragment.displayObject.visible = true;
+
+      const projectileTime = getRelativeValue(time, projectileLaunchTime, 1);
+      projectileFragment.animate(projectileTime);
+    }
 
     params.renderer.render(mainContainer, renderTexture, true);
 

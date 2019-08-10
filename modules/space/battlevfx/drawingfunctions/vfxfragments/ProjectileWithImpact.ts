@@ -10,11 +10,13 @@ interface ProjectileWithImpactProps<D extends PIXI.DisplayObject>
 {
   impactPosition: number;
   removeAfterImpact: boolean;
+  // TODO 2019.08.10 | could do it so you define ratio of projectileDuration / impactDuration instead
+  // right now, projectileDuration isnt affected by this
+  impactDuration: number;
   getProjectileFragment: () => Projectile<D>;
+  animateImpact: (time: number) => void;
   drawImpact?: (x: number, y: number) => PIXI.DisplayObject;
   onImpact?: (x: number, y: number, time: number) => void;
-  animateImpact: (time: number) => void;
-  impactDuration: number;
 }
 
 export class ProjectileWithImpact<D extends PIXI.DisplayObject> extends VfxFragment<ProjectileWithImpactProps<D>>
