@@ -59,8 +59,6 @@ export class ProjectileWithImpact<D extends PIXI.DisplayObject> extends VfxFragm
 
   public animate(time: number): void
   {
-    this.projectileFragment.animate(time);
-
     const hasImpacted = time >= this.projectileImpactTime;
 
     if (hasImpacted)
