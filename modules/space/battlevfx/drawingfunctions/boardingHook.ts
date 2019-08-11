@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
-import {TilingRope} from "../../../../src/pixiWrapperFunctions";
 import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
+import { WavyLine } from "./vfxfragments/WavyLine";
 
 
 export function boardingHook(params: VfxParams)
@@ -18,24 +18,19 @@ export function boardingHook(params: VfxParams)
     container.scale.x = -1;
   }
 
-
   const startPosition = offsetUserData.singleAttackOriginPoint;
   const impactX = offsetTargetData.boundingBox.x + offsetTargetData.boundingBox.width / 2;
 
-  const ropeTexture = PIXI.Texture.from("placeHolder");
-  const ropeLength = impactX - startPosition.x;
-  const ropeSegmentsCount = 20;
-  const ropeSegmentsMaxIndex = ropeSegmentsCount - 1;
-  const ropeMaxSway = 10;
-  const ropeSwayTimeScale = 5;
-  const ropePoints: PIXI.Point[] = [];
-  for (let i = 0; i < ropeSegmentsCount; i++)
+  const ropeFragment = new WavyLine(
   {
-    ropePoints.push(new PIXI.Point(startPosition.x, startPosition.y));
-  }
+    getTexture: () => PIXI.Texture.from("placeHolder"),
+    originPoint: startPosition,
+    endPositionX: impactX,
+    timeScale: 2,
+  });
 
-  const rope = new TilingRope(ropeTexture, ropePoints, ropeLength / 2);
-  container.addChild(rope);
+  ropeFragment.draw();
+  container.addChild(ropeFragment.displayObject);
 
   function animate(currentTime: number): void
   {
@@ -44,18 +39,7 @@ export function boardingHook(params: VfxParams)
 
     if (elapsedTime < params.duration)
     {
-      ropePoints.forEach((point, i) =>
-      {
-        const yFromSway = Math.sin((i * 0.5) + relativeTime * ropeSwayTimeScale) * ropeMaxSway;
-
-        const distanceFromCenter = Math.abs(i - ropeSegmentsMaxIndex / 2);
-        const relativeDistanceFromCenter = distanceFromCenter / ropeSegmentsMaxIndex * 2;
-        const closenessToCenter = 1 - relativeDistanceFromCenter;
-        const swayFactor = closenessToCenter * relativeTime;
-
-        point.x = startPosition.x + i * ropeLength / ropeSegmentsMaxIndex * relativeTime;
-        point.y = startPosition.y + yFromSway * swayFactor;
-      });
+      ropeFragment.animate(relativeTime);
 
       requestAnimationFrame(animate);
     }
