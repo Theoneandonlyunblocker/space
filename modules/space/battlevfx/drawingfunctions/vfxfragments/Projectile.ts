@@ -37,6 +37,8 @@ export class Projectile<D extends PIXI.DisplayObject = PIXI.Sprite> extends VfxF
     decelerationAboveTerminalVelocity: new PropInfo.Number(0),
   }
 
+  public displayObject: D;
+
   constructor(props: ProjectileProps<D>)
   {
     super();
@@ -47,6 +49,11 @@ export class Projectile<D extends PIXI.DisplayObject = PIXI.Sprite> extends VfxF
   public animate(time: number): void
   {
     this.displayObject.position.x = this.props.spawnPosition.x + this.getDisplacement(time);
+
+    if (this.props.animateProjectile)
+    {
+      this.props.animateProjectile(this.displayObject, time, this.position.x, this.position.y);
+    }
   }
   public draw(): void
   {
