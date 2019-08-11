@@ -110,7 +110,7 @@ export class Projectile<D extends PIXI.DisplayObject = PIXI.Sprite> extends VfxF
       return this.props.initialVelocity * time;
     }
 
-    const timeForTerminalVelocity = (this.props.terminalVelocity - this.props.initialVelocity) / acceleration;
+    const timeForTerminalVelocity = Math.abs((this.props.terminalVelocity - this.props.initialVelocity) / acceleration);
 
     const timeBeforeTerminalVelocity = Math.min(time, timeForTerminalVelocity);
     const displacementFromVelocity = this.props.initialVelocity * timeBeforeTerminalVelocity;
