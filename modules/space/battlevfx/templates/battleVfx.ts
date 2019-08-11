@@ -9,6 +9,7 @@ import {makeVfxFromVideo} from "../drawingfunctions/makeVfxFromVideo";
 import {placeholder as placeholderFunction} from "../drawingfunctions/placeholder";
 import {rocketAttack as rocketAttackDrawingFunction} from "../drawingfunctions/rocketAttack";
 import {snipe as snipeDrawingFunction} from "../drawingfunctions/snipe";
+import {boardingHook as boardingHookDrawingFunction} from "../drawingfunctions/boardingHook";
 
 
 export const rocketAttack: BattleVfxTemplate =
@@ -44,6 +45,12 @@ export const snipeDefence = makeSnipeTemplate(UnitAttribute.Defence);
 export const snipeIntelligence = makeSnipeTemplate(UnitAttribute.Intelligence);
 export const snipeSpeed = makeSnipeTemplate(UnitAttribute.Speed);
 
+export const boardingHook: BattleVfxTemplate =
+{
+  duration: 2500,
+  battleOverlay: boardingHookDrawingFunction,
+  vfxWillTriggerEffect: true,
+};
 export const videoTest: BattleVfxTemplate =
 {
   duration: 1000,
@@ -55,7 +62,6 @@ export const videoTest: BattleVfxTemplate =
     }),
   vfxWillTriggerEffect: false,
 };
-
 export const placeholder: BattleVfxTemplate =
 {
   duration: 1000,
