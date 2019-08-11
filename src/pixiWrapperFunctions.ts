@@ -165,7 +165,7 @@ export function cloneDisplayObject(displayObject: PIXI.Sprite | PIXI.Mesh | PIXI
 }
 export function extractImageData(target: PIXI.DisplayObject, extract: PIXI.extract.Extract): ImageData
 {
-  const wrappingContainer = new PIXI.Container; // otherwise extract doesn't respect target transforms
+  const wrappingContainer = new PIXI.Container(); // otherwise extract doesn't respect target transforms
   wrappingContainer.addChild(target);
 
   const pixels = extract.pixels(wrappingContainer);
@@ -173,4 +173,59 @@ export function extractImageData(target: PIXI.DisplayObject, extract: PIXI.extra
   const clampedPixelsArray = Uint8ClampedArray.from(pixels);
 
   return new ImageData(clampedPixelsArray, bounds.width, bounds.height);
+}
+// todo PIXI5 | replace once https://github.com/pixijs/pixi.js/pull/5547 is merged
+// this stretches the texture pretty bad
+export class TilingRope extends PIXI.Mesh
+{
+  public autoUpdate: boolean;
+  public shader: PIXI.Shader;
+  public geometry: PIXI.RopeGeometry;
+
+  constructor(texture: PIXI.Texture, points: PIXI.Point[], ropeLength: number)
+  {
+    const textureWidthRatio = texture.width / ropeLength;
+
+    const geometry = new PIXI.RopeGeometry(texture.height, points);
+    const shader = PIXI.Shader.from(
+    undefined,
+    `
+    varying vec2 vTextureCoord;
+
+    uniform sampler2D uSampler;
+    uniform float textureWidthRatio;
+
+    void main(void)
+    {
+      vec2 coord = vec2(mod(vTextureCoord.x / textureWidthRatio, 1.0), vTextureCoord.y);
+      vec4 sample = texture2D(uSampler, coord);
+
+      gl_FragColor = sample;
+    }
+    `,
+    {
+      uSampler: texture,
+      textureWidthRatio: textureWidthRatio,
+    });
+
+    super(geometry, shader);
+
+    this.autoUpdate = true;
+    this.texture = texture;
+  }
+
+  public rebuild(): void
+  {
+    this.geometry.build();
+  }
+  public _render(renderer: PIXI.Renderer): void
+  {
+    if (this.autoUpdate || this.geometry.width !== this.texture.height)
+    {
+      this.geometry.width = this.texture.height;
+      this.geometry.update();
+    }
+
+    super._render(renderer);
+  }
 }

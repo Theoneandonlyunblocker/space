@@ -11940,7 +11940,7 @@ declare namespace PIXI {
          * Standard renderer draw.
          * @protected
          */
-        protected _render(): void;
+        protected _render(renderer: PIXI.Renderer): void;
         /**
          * Standard non-batching way of rendering.
          * @protected
@@ -15786,9 +15786,8 @@ declare namespace PIXI {
         /**
          * The width (i.e., thickness) of the rope.
          * @member {number} PIXI.RopeGeometry#width
-         * @readOnly
          */
-        readonly width: number;
+        width: number;
         /**
          * refreshes vertices of Rope mesh
          */
@@ -15870,6 +15869,8 @@ declare namespace PIXI {
          * @returns {PIXI.Geometry} a new clone of this geometry
          */
         clone(): PIXI.Geometry;
+        update(): void;
+        build(): void;
     }
     /**
      * The ParticleContainer class is a really fast version of the Container built solely for speed,
