@@ -12,7 +12,7 @@ interface WavyLineProps
   originPoint: Point;
   endPositionX: number;
 
-  getLineEndRelativePosition?: (relativeTime: number) => number;
+  getLineEndRelativePosition?: (relativeTime: number, lineLength?: number) => number;
   getSwayFactor?: (relativeTime: number, relativePositionInLine: number) => number;
   maxSway?: number;
   timeScale?: number;
@@ -61,7 +61,7 @@ export class WavyLine extends VfxFragment<WavyLineProps>
 
   public animate(time: number): void
   {
-    const lineEndPosition = this.props.getLineEndRelativePosition(time) * this.ropeLength;
+    const lineEndPosition = this.props.getLineEndRelativePosition(time, this.ropeLength) * this.ropeLength;
     const originX = this.props.originPoint.x;
     const originY = this.props.originPoint.y;
 

@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 
 import {PropInfo} from "./props/PropInfo";
 import {Point} from "../../../../../src/Point";
-import { getRelativeValue, clamp } from "../../../../../src/utility";
+import { smoothStep } from "../../../../../src/utility";
 
 
 let idGenerator = 0;
@@ -55,7 +55,7 @@ export abstract class VfxFragment<P>
 
   public animateWithinTimeSpan(time: number, start: number, end: number): void
   {
-    const timeRelativeToTimeSpan = clamp(getRelativeValue(time, start, end), 0, 1);
+    const timeRelativeToTimeSpan = smoothStep(time, start, end);
 
     this.animate(timeRelativeToTimeSpan);
   }

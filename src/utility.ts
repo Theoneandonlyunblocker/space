@@ -397,6 +397,7 @@ export function getRelativeValue(value: number, min: number, max: number, invers
     }
   }
 }
+// TODO 2019.08.11 | rename linearStep or something. not actually smooth
 export function smoothStep(value: number, min: number, max: number, inverse: boolean = false): number
 {
   return clamp(getRelativeValue(value, min, max, inverse), 0.0, 1.0);
