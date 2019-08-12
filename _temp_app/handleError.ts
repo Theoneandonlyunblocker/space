@@ -30,6 +30,10 @@ function getErrorHandler(): (errorMessage: string) => void
     {
       return ignoreError;
     }
+    case "alert":
+    {
+      return createErrorAlert;
+    }
     case "alertOnce":
     {
       if (hasAlertedOfError)

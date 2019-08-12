@@ -14,7 +14,8 @@ const localizationKeyForErrorReportingMode:
 {
   ignore: "errorReportingMode_ignore",
   panic: "errorReportingMode_panic",
-  alertOnce : "errorReportingMode_alert",
+  alert: "errorReportingMode_alert",
+  alertOnce : "errorReportingMode_alertOnce",
 };
 
 const localizationKeyForErrorReportingModeDescription:
@@ -24,6 +25,7 @@ const localizationKeyForErrorReportingModeDescription:
 {
   ignore: "errorReportingModeDescription_ignore",
   panic: "errorReportingModeDescription_panic",
+  alert: "errorReportingModeDescription_alert",
   alertOnce : "errorReportingModeDescription_alert",
 };
 

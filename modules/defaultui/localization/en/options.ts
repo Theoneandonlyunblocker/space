@@ -32,6 +32,7 @@ export const options =
   errorReportingMode_ignore: "ignore",
   errorReportingModeDescription_ignore: "Silently ignore warnings",
   errorReportingMode_alert: "alert",
+  errorReportingMode_alertOnce: "alert once",
   errorReportingModeDescription_alert: "Alert the user of an error occurring with a popup",
   errorReportingMode_panic: "panic",
   errorReportingModeDescription_panic: "Shut down the game and enter save recovery mode (Also possible from alert popup)",
