@@ -15,7 +15,7 @@ export abstract class VfxFragment<P>
 
   public abstract readonly propInfo:
   {
-    [K in keyof P]: PropInfo<P[K]>;
+    [K in keyof Required<P>]: PropInfo<P[K]>;
   };
   public readonly props: P = <P> {};
 

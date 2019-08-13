@@ -63,6 +63,7 @@ export class ProjectileAttack<ProjD extends PIXI.Sprite = PIXI.Sprite> extends V
 
     spawnTimeStart: new PropInfo.Number(0),
     spawnTimeEnd: new PropInfo.Number(500),
+    impactDuration: new PropInfo.Number(0.2),
   };
 
   private projectiles: (Projectile<ProjD> | ProjectileWithImpact<ProjD>)[];
