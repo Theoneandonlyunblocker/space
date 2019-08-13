@@ -8,12 +8,59 @@ import { solveInitialVelocity, solveAcceleration } from "../../../../src/kinemat
 import { smoothStep } from "../../../../src/utility";
 import { resources } from "../resources";
 
+const impactTime = 0.3;
+const tauteningTime = 0.55;
+const yankTime = 0.7;
+const yankSpriteDisplacementEndTime = 0.8;
 
-export function boardingHook(params: VfxParams)
+let activeYankProjectile: Projectile;
+let hookXAtYankStart: number;
+
+export function boardingHookEnemySprite(params: VfxParams)
 {
-  const impactTime = 0.4;
-  const tauteningTime = 0.6;
-  const yankTime = 0.7;
+  const container = new PIXI.Container();
+
+  let enemiesSprite: PIXI.DisplayObject;
+
+  function animate(currentTime: number): void
+  {
+    const elapsedTime = currentTime - startTime;
+    const relativeTime = elapsedTime / params.duration;
+
+    if (elapsedTime < params.duration)
+    {
+      if (relativeTime >= yankTime && relativeTime < yankSpriteDisplacementEndTime)
+      {
+        enemiesSprite.x = hookXAtYankStart - activeYankProjectile.position.x;
+      }
+
+      requestAnimationFrame(animate);
+    }
+    else
+    {
+      params.triggerEnd();
+    }
+  }
+
+  params.user.drawBattleScene(
+  {
+    ...params,
+    triggerStart: (displayObject) =>
+    {
+      enemiesSprite = displayObject;
+      container.addChild(enemiesSprite);
+
+      params.triggerStart(container);
+    }
+  });
+
+  const startTime = performance.now();
+
+  animate(startTime);
+}
+
+export function boardingHookBattleOverlay(params: VfxParams)
+{
   const launchDecelerationFactor = 4;
   const ropeTimeScale = 40;
 
@@ -60,7 +107,7 @@ export function boardingHook(params: VfxParams)
   let visibleProjectile: Projectile = launchProjectile;
 
 
-  const yankProjectile = new Projectile(
+  const yankProjectile = activeYankProjectile = new Projectile(
   {
     getDisplayObject: makeHookSprite,
     spawnPosition: startPosition,
@@ -88,6 +135,8 @@ export function boardingHook(params: VfxParams)
       yankProjectile.props.spawnPosition.x = launchProjectile.position.x;
       yankProjectile.draw();
       container.addChild(yankProjectile.displayObject);
+
+      hookXAtYankStart = launchProjectile.position.x;
     },
     animateImpact: (time) =>
     {
