@@ -15,6 +15,7 @@ interface ProjectileWithImpactProps<D extends PIXI.DisplayObject>
   impactDuration: number;
   getProjectileFragment: () => Projectile<D>;
   animateImpact: (time: number) => void;
+  projectileImpactZone?: number; // 0: base, 1: tip
   drawImpact?: (x: number, y: number) => PIXI.DisplayObject;
   onImpact?: (x: number, y: number, time: number) => void;
 }
@@ -41,6 +42,7 @@ export class ProjectileWithImpact<D extends PIXI.DisplayObject> extends VfxFragm
     onImpact: new PropInfo.Function(undefined),
     animateImpact: new PropInfo.Function((time: number) => {}),
     impactDuration: new PropInfo.Number(0.2),
+    projectileImpactZone: new PropInfo.Number(1),
   };
 
   private readonly container: PIXI.Container;
@@ -104,7 +106,7 @@ export class ProjectileWithImpact<D extends PIXI.DisplayObject> extends VfxFragm
     this.projectileFragment.draw();
     this.container.addChild(this.projectileFragment.displayObject);
 
-    const projectilePositionForImpact = this.props.impactPosition - this.projectileFragment.bounds.width;
+    const projectilePositionForImpact = this.props.impactPosition - this.projectileFragment.bounds.width * this.props.projectileImpactZone;
     this.projectileImpactTime = this.projectileFragment.getTimeForPosition(projectilePositionForImpact, 0.001);
 
     if (this.props.drawImpact)

@@ -35,10 +35,10 @@ export function boardingHook(params: VfxParams)
   const acceleration = projectileDistance * -launchDecelerationFactor;
 
 
+  const hookSpriteRopePosition = 21;
   const makeHookSprite = () =>
   {
-    const hookSprite = PIXI.Sprite.from("placeHolder");
-    hookSprite.scale.set(2);
+    const hookSprite = PIXI.Sprite.from(resources.harpoon);
 
     return hookSprite;
   };
@@ -79,6 +79,7 @@ export function boardingHook(params: VfxParams)
     impactPosition: impactX,
     removeAfterImpact: true,
     impactDuration: 1 - impactTime,
+    projectileImpactZone: 0.1,
     getProjectileFragment: () => launchProjectile,
     onImpact: (x, y, time) =>
     {
@@ -94,7 +95,6 @@ export function boardingHook(params: VfxParams)
     },
   });
   projectileWithImpact.draw();
-  container.addChild(projectileWithImpact.displayObject);
 
 
   const ropeFragment = new WavyLine(
@@ -102,7 +102,7 @@ export function boardingHook(params: VfxParams)
     getTexture: () => PIXI.Texture.from(resources.rope),
     getLineEndRelativePosition: (time, ropeLength) =>
     {
-      return (visibleProjectile.position.x - startPosition.x) / ropeLength;
+      return (visibleProjectile.position.x - startPosition.x + hookSpriteRopePosition) / ropeLength;
     },
     getSwayFactor: (time, relativePositionInLine) =>
     {
@@ -121,7 +121,10 @@ export function boardingHook(params: VfxParams)
     timeScale: ropeTimeScale,
   });
   ropeFragment.draw();
+
+
   container.addChild(ropeFragment.displayObject);
+  container.addChild(projectileWithImpact.displayObject);
 
 
   function animate(currentTime: number): void
