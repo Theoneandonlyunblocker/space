@@ -16,3 +16,12 @@ export function solveInitialVelocity(p:
 {
   return (p.displacement - 0.5 * p.acceleration * Math.pow(p.duration, 2)) / p.duration;
 }
+export function solveDisplacement(p:
+{
+  acceleration: number;
+  duration: number;
+  initialVelocity: number;
+}): number
+{
+  return p.initialVelocity * p.duration + 0.5 * p.acceleration * Math.pow(p.duration, 2);
+}
