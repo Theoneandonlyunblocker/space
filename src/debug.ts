@@ -36,7 +36,15 @@ function createWrappedLogLikeFunction(toWrap: LogFn): DebugLogFn
   {
     if (shouldLog(category))
     {
-      toWrap(`[${category.toUpperCase()}]`, Date.now(), message, ...optionalParams);
+      toWrap(`[${category.toUpperCase()}]`, printDate(), message, ...optionalParams);
     }
   };
+}
+function printDate(): string
+{
+  const date = new Date();
+
+  const ms = date.getMilliseconds();
+
+  return `${date.toTimeString().slice(0, 8)}.${ms < 100 ? "0" + ms : ms}`;
 }

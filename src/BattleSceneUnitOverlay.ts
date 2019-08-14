@@ -9,16 +9,16 @@ import {Unit} from "./Unit";
 
 export class BattleSceneUnitOverlay
 {
-  container: PIXI.Container;
-  renderer: PIXI.Renderer;
+  public activeUnit: Unit | null;
+  public getSceneBounds: () => {width: number; height: number};
 
-  overlayContainer: PIXI.Container;
+  private container: PIXI.Container;
+  private renderer: PIXI.Renderer;
 
-  activeUnit: Unit | null;
-  getSceneBounds: () => {width: number; height: number};
+  private overlayContainer: PIXI.Container;
 
-  animationIsActive: boolean = false;
-  onAnimationFinish: () => void;
+  private animationIsActive: boolean = false;
+  private onAnimationFinish: () => void;
 
 
   constructor(container: PIXI.Container, renderer: PIXI.Renderer)
@@ -27,16 +27,11 @@ export class BattleSceneUnitOverlay
     this.renderer = renderer;
     this.initLayers();
   }
-  destroy()
+  public destroy(): void
   {
 
   }
-  private initLayers()
-  {
-    this.overlayContainer = new PIXI.Container();
-    this.container.addChild(this.overlayContainer);
-  }
-  setVfx(vfxTemplate: BattleVfxTemplate, user: Unit, target: Unit)
+  public setVfx(vfxTemplate: BattleVfxTemplate, user: Unit, target: Unit): void
   {
     if (this.activeUnit)
     {
@@ -59,7 +54,21 @@ export class BattleSceneUnitOverlay
 
     }
   }
-  setOverlay(overlayFN: (props: VfxParams) => void, unit: Unit, duration: number)
+  public clearOverlay(): void
+  {
+    this.animationIsActive = false;
+    this.onAnimationFinish = null;
+
+    this.activeUnit = null;
+    this.overlayContainer.removeChildren();
+  }
+
+  private initLayers(): void
+  {
+    this.overlayContainer = new PIXI.Container();
+    this.container.addChild(this.overlayContainer);
+  }
+  private setOverlay(overlayFN: (props: VfxParams) => void, unit: Unit, duration: number): void
   {
     this.clearOverlay();
     if (duration <= 0)
@@ -75,14 +84,6 @@ export class BattleSceneUnitOverlay
     const vfxParams = this.getVfxParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
 
     overlayFN(vfxParams);
-  }
-  clearOverlay()
-  {
-    this.animationIsActive = false;
-    this.onAnimationFinish = null;
-
-    this.activeUnit = null;
-    this.overlayContainer.removeChildren();
   }
   private getVfxParams(
     duration: number,
@@ -106,7 +107,7 @@ export class BattleSceneUnitOverlay
       triggerEnd: triggerEnd || (() => {}),
     });
   }
-  private setContainerPosition()
+  private setContainerPosition(): void
   {
     const sceneBounds = this.getSceneBounds();
     const shouldLockToRight = this.activeUnit.battleStats.side === "side2";
@@ -119,13 +120,13 @@ export class BattleSceneUnitOverlay
       this.overlayContainer.x = sceneBounds.width - containerBounds.width;
     }
   }
-  private addOverlay(overlay: PIXI.DisplayObject)
+  private addOverlay(overlay: PIXI.DisplayObject): void
   {
     this.animationIsActive = true;
     this.overlayContainer.addChild(overlay);
     this.setContainerPosition();
   }
-  private finishAnimation()
+  private finishAnimation(): void
   {
     if (this.onAnimationFinish)
     {

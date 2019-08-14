@@ -41,7 +41,7 @@ export class Absorb extends VfxFragment<AbsorbProps>
     onEnd: new PropInfo.Function(undefined),
     particleCount: new PropInfo.Number(150),
     baseInitialBurstVelocity: new PropInfo.Number(150),
-  }
+  };
 
   private isAnimating: boolean = false;
 
@@ -118,7 +118,7 @@ export class Absorb extends VfxFragment<AbsorbProps>
       {
         initialVelocity: initialBurstVelocity,
         duration: this.props.duration / 1000,
-        displacement: particleKillAreaStart - (target.x + target.width),
+        displacement: -Math.abs(particleKillAreaStart - (target.x + target.width)),
       })) * accelerationMultiplierToCompensateForDamping;
 
       const emitter = new ProtonEmitter<PixiParticle & {killLine: number}>();
@@ -158,7 +158,7 @@ export class Absorb extends VfxFragment<AbsorbProps>
         particle.killLine = randInt(particleKillAreaEnd, particleKillAreaStart);
       })));
 
-      emitter.addBehaviour(new FunctionBehaviour("killBehaviour", (particle, deltaTime, i) =>
+      emitter.addBehaviour(new FunctionBehaviour("killBehaviour", (particle, deltaTime) =>
       {
         const v2 = particle.v.x * deltaTime / 2;
         const x = particle.p.x + v2;

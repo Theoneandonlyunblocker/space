@@ -46,7 +46,7 @@ export class BattleSceneUnit
     this.container.addChild(this.spriteContainer);
   }
 
-  public setActiveUnit(unit: Unit | null, afterChangedCallback?: () => void)
+  public setActiveUnit(unit: Unit | null, afterChangedCallback?: () => void): void
   {
     debug.log("graphics", "setActiveUnit", this.side, unit ? unit.id : unit);
 
@@ -78,7 +78,7 @@ export class BattleSceneUnit
       afterChangedCallback();
     }
   }
-  public setVfx(vfxTemplate: BattleVfxTemplate, user: Unit, target: Unit)
+  public setVfx(vfxTemplate: BattleVfxTemplate, user: Unit, target: Unit): void
   {
     if (this.activeUnit)
     {
@@ -101,7 +101,7 @@ export class BattleSceneUnit
 
     }
   }
-  public resize()
+  public resize(): void
   {
     if (this.spriteContainer.children.length > 0)
     {
@@ -109,46 +109,36 @@ export class BattleSceneUnit
     }
   }
 
-  private enterUnitSpriteWithoutAnimation(unit: Unit)
+  private enterUnitSpriteWithoutAnimation(unit: Unit): void
   {
     this.setUnit(unit);
     this.setUnitSprite(unit);
 
     this.finishUnitSpriteEnter();
   }
-  private exitUnitSpriteWithoutAnimation()
+  private exitUnitSpriteWithoutAnimation(): void
   {
     this.finishUnitSpriteExit();
   }
-  private enterUnitSprite(unit: Unit)
+  private enterUnitSprite(unit: Unit): void
   {
     if (this.unitState === BattleSceneUnitState.Stationary)
     {
-      // trigger exit
-      // on exit finish:
-      //    trigger enter
       this.onFinishExit = this.startUnitSpriteEnter.bind(this, unit);
       this.exitUnitSprite();
     }
     else if (this.unitState === BattleSceneUnitState.Exiting)
     {
-      // on exit finish:
-      //    trigger enter
       this.onFinishExit = this.startUnitSpriteEnter.bind(this, unit);
     }
     else
     {
-      // clear
-      // trigger enter
       this.clearUnit();
       this.clearUnitSprite();
       this.startUnitSpriteEnter(unit);
     }
-    // this.clearUnit();
-    // this.clearUnitSprite();
-    // this.startUnitSpriteEnter(unit);
   }
-  private exitUnitSprite()
+  private exitUnitSprite(): void
   {
     switch (this.unitState)
     {
@@ -173,7 +163,7 @@ export class BattleSceneUnit
       }
     }
   }
-  private startUnitSpriteEnter(unit: Unit)
+  private startUnitSpriteEnter(unit: Unit): void
   {
     debug.log("graphics", "startUnitSpriteEnter", this.side, unit.id);
 
@@ -193,24 +183,24 @@ export class BattleSceneUnit
       this.finishUnitSpriteEnter.bind(this));
     this.tween.start();
   }
-  private finishUnitSpriteEnter()
+  private finishUnitSpriteEnter(): void
   {
-    debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "finishUnitSpriteEnter");
+    debug.log("graphics", "finishUnitSpriteEnter", this.side, this.activeUnit ? this.activeUnit.id : null);
 
     this.unitState = BattleSceneUnitState.Stationary;
     this.clearTween();
 
     if (this.onFinishEnter)
     {
-      debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "onFinishEnter");
+      debug.log("graphics", "onFinishEnter", this.side, this.activeUnit ? this.activeUnit.id : null);
 
       this.onFinishEnter();
       this.onFinishEnter = undefined;
     }
   }
-  private startUnitSpriteExit()
+  private startUnitSpriteExit(): void
   {
-    debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "startUnitSpriteExit");
+    debug.log("graphics", "startUnitSpriteExit", this.side, this.activeUnit ? this.activeUnit.id : null);
 
     const exitAnimationDuration = options.battle.animationTiming.unitExit;
     if (exitAnimationDuration <= 0)
@@ -226,9 +216,9 @@ export class BattleSceneUnit
       this.finishUnitSpriteExit.bind(this));
     this.tween.start();
   }
-  private finishUnitSpriteExit()
+  private finishUnitSpriteExit(): void
   {
-    debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "finishUnitSpriteExit");
+    debug.log("graphics", "finishUnitSpriteExit", this.side, this.activeUnit ? this.activeUnit.id : null);
 
     this.clearUnit();
     this.clearUnitSprite();
@@ -264,7 +254,7 @@ export class BattleSceneUnit
       triggerEnd: props.triggerEnd || (() => {}),
     });
   }
-  private setContainerPosition()
+  private setContainerPosition(): void
   {
     // TODO battle scene | This & unit drawing FN rely on overly fiddly positioning.
     // This function might not work properly with other drawing functions.
@@ -287,32 +277,32 @@ export class BattleSceneUnit
       this.spriteContainer.x = Math.round(xPadding);
     }
   }
-  private setUnit(unit: Unit)
+  private setUnit(unit: Unit): void
   {
     this.clearUnit();
     this.activeUnit = unit;
   }
-  private clearUnit()
+  private clearUnit(): void
   {
     this.unitState = BattleSceneUnitState.Removed;
     this.activeUnit = null;
     this.clearTween();
   }
 
-  private makeUnitSprite(unit: Unit, vfxParams: VfxParams)
+  private makeUnitSprite(unit: Unit, vfxParams: VfxParams): void
   {
     return unit.drawBattleScene(vfxParams);
   }
-  private addUnitSprite(sprite: PIXI.DisplayObject)
+  private addUnitSprite(sprite: PIXI.DisplayObject): void
   {
     this.spriteContainer.addChild(sprite);
     this.setContainerPosition();
   }
-  private clearUnitSprite()
+  private clearUnitSprite(): void
   {
     this.spriteContainer.removeChildren();
   }
-  private setUnitSprite(unit: Unit)
+  private setUnitSprite(unit: Unit): void
   {
     this.clearUnitSprite();
     const vfxParams = this.getVfxParams(
@@ -324,18 +314,18 @@ export class BattleSceneUnit
     this.makeUnitSprite(unit, vfxParams);
   }
 
-  private clearTween()
+  private clearTween(): void
   {
     if (this.tween)
     {
-      debug.log("graphics", this.side, this.activeUnit ? this.activeUnit.id : null, "clearTween");
+      debug.log("graphics", "clearTween", this.side, this.activeUnit ? this.activeUnit.id : null);
 
       this.tween.stop();
       TWEEN.remove(this.tween);
       this.tween = null;
     }
   }
-  private makeEnterExitTween(direction: "enter" | "exit", duration: number, onComplete: () => void)
+  private makeEnterExitTween(direction: "enter" | "exit", duration: number, onComplete: () => void): TWEEN.Tween
   {
     const side = this.activeUnit!.battleStats.side;
     const container = this.spriteContainer;
@@ -370,7 +360,7 @@ export class BattleSceneUnit
 
     return tween;
   }
-  private setVfxSprite(spriteDrawingFN: (props: VfxParams) => void, duration: number)
+  private setVfxSprite(spriteDrawingFN: (props: VfxParams) => void, duration: number): void
   {
     this.clearUnitSprite();
     const vfxParams = this.getVfxParams(
