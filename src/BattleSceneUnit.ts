@@ -54,10 +54,12 @@ export class BattleSceneUnit
     {
       if (unit)
       {
+        this.onFinishEnter = afterChangedCallback;
         this.enterUnitSpriteWithoutAnimation(unit);
       }
       else
       {
+        this.onFinishExit = afterChangedCallback;
         this.exitUnitSpriteWithoutAnimation();
       }
 
@@ -111,6 +113,7 @@ export class BattleSceneUnit
 
   private enterUnitSpriteWithoutAnimation(unit: Unit): void
   {
+    debug.log("graphics", "enterUnitSpriteWithoutAnimation", this.side, unit ? unit.id : unit);
     this.setUnit(unit);
     this.setUnitSprite(unit);
 
@@ -118,6 +121,7 @@ export class BattleSceneUnit
   }
   private exitUnitSpriteWithoutAnimation(): void
   {
+    debug.log("graphics", "exitUnitSpriteWithoutAnimation", this.side);
     this.finishUnitSpriteExit();
   }
   private enterUnitSprite(unit: Unit): void
