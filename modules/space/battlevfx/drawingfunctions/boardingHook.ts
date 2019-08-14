@@ -175,6 +175,7 @@ export function boardingHookBattleOverlay(params: VfxParams)
   container.addChild(ropeFragment.displayObject);
   container.addChild(projectileWithImpact.displayObject);
 
+  let hasTriggeredEffect: boolean = false;
 
   function animate(currentTime: number): void
   {
@@ -188,6 +189,12 @@ export function boardingHookBattleOverlay(params: VfxParams)
       if (relativeTime > yankTime)
       {
         yankProjectile.animateWithinTimeSpan(relativeTime, yankTime, 1);
+
+        if (!hasTriggeredEffect)
+        {
+          params.triggerEffect();
+          hasTriggeredEffect = true;
+        }
       }
 
       ropeFragment.animate(relativeTime);
