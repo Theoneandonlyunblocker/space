@@ -86,7 +86,7 @@ export class BattleScene
       this.bindRendererView(containerElement);
     }
   }
-  public destroy()
+  public destroy(): void
   {
     this.container.renderable = false;
     this.pause();
@@ -102,7 +102,7 @@ export class BattleScene
 
     window.removeEventListener("resize", this.resizeListener);
   }
-  public bindRendererView(containerElement: HTMLElement)
+  public bindRendererView(containerElement: HTMLElement): void
   {
     if (this.containerElement)
     {
@@ -149,7 +149,7 @@ export class BattleScene
     // this.handleActiveVfxEnd();
     // props.afterFinishedCallback();
   }
-  public updateUnits(afterFinishedUpdatingCallback?: () => void)
+  public updateUnits(afterFinishedUpdatingCallback?: () => void): void
   {
     debug.log("graphics", "updateUnits");
 
@@ -175,24 +175,24 @@ export class BattleScene
     this.side2Unit.setActiveUnit(activeSide2Unit, boundAfterFinishFN2);
     this.side2Overlay.activeUnit = activeSide2Unit;
   }
-  public renderOnce()
+  public renderOnce(): void
   {
     this.forceFrame = true;
     this.render();
   }
-  public pause()
+  public pause(): void
   {
     this.isPaused = true;
     this.forceFrame = false;
   }
-  public resume()
+  public resume(): void
   {
     this.isPaused = false;
     this.forceFrame = false;
     this.render();
   }
 
-  private initLayers()
+  private initLayers(): void
   {
     this.layers =
     {
@@ -213,7 +213,7 @@ export class BattleScene
     this.container.addChild(this.layers.side2Container);
     this.container.addChild(this.layers.battleOverlay);
   }
-  private handleResize()
+  private handleResize(): void
   {
     if (!this.containerElement)
     {
@@ -226,7 +226,7 @@ export class BattleScene
     this.side1Unit.resize();
     this.side2Unit.resize();
   }
-  private getSceneBounds()
+  private getSceneBounds(): {width: number; height: number}
   {
     return(
     {
@@ -284,11 +284,11 @@ export class BattleScene
 
     return null;
   }
-  private haveBothUnitsFinishedUpdating()
+  private haveBothUnitsFinishedUpdating(): boolean
   {
     return this.side1UnitHasFinishedUpdating && this.side2UnitHasFinishedUpdating;
   }
-  private executeIfBothUnitsHaveFinishedUpdating()
+  private executeIfBothUnitsHaveFinishedUpdating(): void
   {
     if (this.afterUnitsHaveFinishedUpdatingCallback && this.haveBothUnitsFinishedUpdating())
     {
@@ -301,7 +301,7 @@ export class BattleScene
       return;
     }
   }
-  private finishUpdatingUnit(side: UnitBattleSide)
+  private finishUpdatingUnit(side: UnitBattleSide): void
   {
     debug.log("graphics", "finishUpdatingUnit", side);
 
@@ -316,7 +316,7 @@ export class BattleScene
 
     this.executeIfBothUnitsHaveFinishedUpdating();
   }
-  private executeBeforeUseDelayHasFinishedCallback()
+  private executeBeforeUseDelayHasFinishedCallback(): void
   {
     if (!this.beforeUseDelayHasFinishedCallback)
     {
@@ -327,7 +327,7 @@ export class BattleScene
     this.beforeUseDelayHasFinishedCallback = null;
     temp();
   }
-  private executeOnVfxStartCallback()
+  private executeOnVfxStartCallback(): void
   {
     if (this.onVfxStartCallback)
     {
@@ -336,7 +336,7 @@ export class BattleScene
       temp();
     }
   }
-  private executeTriggerEffectCallback()
+  private executeTriggerEffectCallback(): void
   {
     if (this.triggerEffectCallback)
     {
@@ -345,7 +345,7 @@ export class BattleScene
       temp();
     }
   }
-  private executeAfterUseDelayHasFinishedCallback()
+  private executeAfterUseDelayHasFinishedCallback(): void
   {
     if (!this.afterUseDelayHasFinishedCallback)
     {
@@ -356,7 +356,7 @@ export class BattleScene
     this.afterUseDelayHasFinishedCallback = null;
     temp();
   }
-  private executeAbilityUseHasFinishedCallback()
+  private executeAbilityUseHasFinishedCallback(): void
   {
     if (!this.abilityUseHasFinishedCallback)
     {
@@ -368,7 +368,7 @@ export class BattleScene
     temp();
   }
 
-  private prepareVfx()
+  private prepareVfx(): void
   {
     const beforeUseDelay = options.battle.animationTiming.before;
 
@@ -387,7 +387,7 @@ export class BattleScene
 
     this.updateUnits(afterUnitsHaveFinishedUpdatingCallback);
   }
-  private playVfx()
+  private playVfx(): void
   {
     const vfxDuration = options.battle.animationTiming.effectDuration * this.activeVfx!.duration;
 
@@ -412,7 +412,7 @@ export class BattleScene
       );
     }
   }
-  private clearActiveVfx()
+  private clearActiveVfx(): void
   {
     this.activeVfx = null;
     this.activeAbilityUseEffect = null;
@@ -423,7 +423,7 @@ export class BattleScene
     this.clearBattleOverlay();
     this.clearUnitOverlays();
   }
-  private handleActiveVfxEnd()
+  private handleActiveVfxEnd(): void
   {
     const afterUseDelay = options.battle.animationTiming.after;
 
@@ -447,7 +447,7 @@ export class BattleScene
     user: Unit,
     target: Unit,
     afterFinishedCallback: () => void,
-  )
+  ): void
   {
     this.activeVfx = vfxTemplate;
     this.side1Unit.setVfx(vfxTemplate, user, target);
@@ -456,7 +456,7 @@ export class BattleScene
     this.side2Overlay.setVfx(vfxTemplate, user, target);
     this.makeBattleOverlay(afterFinishedCallback);
   }
-  private makeBattleOverlay(afterFinishedCallback: () => void)
+  private makeBattleOverlay(afterFinishedCallback: () => void): void
   {
     if (!this.activeVfx)
     {
@@ -478,15 +478,15 @@ export class BattleScene
       this.activeVfx.battleOverlay(vfxParams);
     }
   }
-  private addBattleOverlay(overlay: PIXI.DisplayObject)
+  private addBattleOverlay(overlay: PIXI.DisplayObject): void
   {
     this.layers.battleOverlay.addChild(overlay);
   }
-  private clearBattleOverlay()
+  private clearBattleOverlay(): void
   {
     this.layers.battleOverlay.removeChildren();
   }
-  private clearUnitOverlays()
+  private clearUnitOverlays(): void
   {
     this.side1Overlay.clearOverlay();
     this.side2Overlay.clearOverlay();
@@ -506,7 +506,7 @@ export class BattleScene
       }
     }
   }
-  private render()
+  private render(): void
   {
     if (this.isPaused)
     {
