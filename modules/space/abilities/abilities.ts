@@ -195,7 +195,7 @@ export const boardingHook: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
-    vfx: BattleVfx.rocketAttack,
+    vfx: BattleVfx.boardingHook,
     attachedEffects:
     [
       {
