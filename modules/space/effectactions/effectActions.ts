@@ -71,6 +71,11 @@ export const inflictDamage: AbilityEffectActionWithData<DamageWithType> = (
   executedEffectsResult[ResultType.HealthChanged] -= adjustedDamage;
 
   target.receiveDamage(adjustedDamage);
+
+  if (target.battleStats.guardAmount > 0)
+  {
+    target.removeGuard(40);
+  }
 };
 
 export const addGuard: AbilityEffectActionWithData<Partial<FlatAndPerAttributeAdjustment> & GuardCoverageObj> = (
