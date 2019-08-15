@@ -53,6 +53,7 @@ export function assimilate(props: VfxParams)
   {
     hasEnded = true;
     cancelAnimationFrame(animationHandle);
+    container.removeChildren();
 
     props.triggerEnd();
   }

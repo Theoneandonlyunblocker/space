@@ -28,7 +28,7 @@ function getIconSrc(attributeType: AttributeType, isPositive: boolean): string
       case "speed": return getAssetSrc("statusEffect_positive_speed");
     }
   }
-  // can't do 'else' here: https://github.com/microsoft/TypeScript/issues/11572
+  // can't do 'else { switch...' here: https://github.com/microsoft/TypeScript/issues/11572
   switch (attributeType)
   {
     case "attack": return getAssetSrc("statusEffect_negative_attack");

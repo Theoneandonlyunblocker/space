@@ -112,6 +112,8 @@ export function rocketAttack(params: VfxParams)
     }
     else
     {
+      container.removeChildren();
+
       params.triggerEnd();
     }
   }

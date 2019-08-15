@@ -203,6 +203,8 @@ export function boardingHookBattleOverlay(params: VfxParams)
     }
     else
     {
+      container.removeChildren();
+
       params.triggerEnd();
     }
   }
