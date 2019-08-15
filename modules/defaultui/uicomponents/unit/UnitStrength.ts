@@ -70,13 +70,13 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
       className: "unit-strength-current",
     };
 
-    const healthRatio = this.props.currentHealth / this.props.maxHealth;
+    const healthRatio = Math.round(this.props.currentHealth) / this.props.maxHealth;
 
     if (!this.props.isNotDetected && healthRatio <= critThreshhold)
     {
       currentStyle.className += " critical";
     }
-    else if (!this.props.isNotDetected && this.props.currentHealth < this.props.maxHealth)
+    else if (!this.props.isNotDetected && healthRatio < 1)
     {
       currentStyle.className += " wounded";
     }
@@ -87,7 +87,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
         "unit-strength-amount-capital"),
     };
 
-    const displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.props.currentHealth);
+    const displayed = this.props.isNotDetected ? "???" : "" + Math.round(this.props.currentHealth);
     const max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
 
     return(

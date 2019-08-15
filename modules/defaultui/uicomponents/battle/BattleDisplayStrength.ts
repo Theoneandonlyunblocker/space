@@ -41,7 +41,7 @@ export class BattleDisplayStrengthComponent extends React.PureComponent<PropType
         (interpolatedStyle: {health: number}) =>
         {
           return ReactDOMElements.div({className: "unit-strength-battle-display"},
-            Math.ceil(interpolatedStyle.health),
+            Math.round(interpolatedStyle.health),
           );
         }
       )
