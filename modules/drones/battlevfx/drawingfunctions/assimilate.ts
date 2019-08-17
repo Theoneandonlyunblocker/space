@@ -1,6 +1,6 @@
 import { VfxParams } from "../../../../src/templateinterfaces/VfxParams";
 
-import { Absorb } from "../../../space/battlevfx/drawingfunctions/vfxfragments/Absorb";
+import { AbsorbParticlesFromTarget } from "../../../space/battlevfx/drawingfunctions/vfxfragments/AbsorbParticlesFromTarget";
 import { ResultType } from "../../../space/effectactions/ResultType";
 
 
@@ -27,7 +27,7 @@ export function assimilate(props: VfxParams)
     container.scale.x = -1;
   }
 
-  const asborbFragment = new Absorb(
+  const asborbFragment = new AbsorbParticlesFromTarget(
   {
     getParticleDisplayObject: (particle, color) =>
     {

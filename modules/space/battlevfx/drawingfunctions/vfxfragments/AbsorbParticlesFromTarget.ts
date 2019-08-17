@@ -17,7 +17,7 @@ import {ProtonWithTimeScale} from "../proton/ProtonWithTimeScale";
 import { PixiParticle } from "../proton/PixiParticle";
 
 
-interface AbsorbProps
+interface AbsorbParticlesFromTargetProps
 {
   getParticleDisplayObject: (particle: PixiParticle, colorAtTarget: Color) => PIXI.DisplayObject;
   duration: number;
@@ -29,10 +29,10 @@ interface AbsorbProps
 
 const baseDuration = 2500;
 
-export class Absorb extends VfxFragment<AbsorbProps>
+export class AbsorbParticlesFromTarget extends VfxFragment<AbsorbParticlesFromTargetProps>
 {
-  public displayName = "Absorb";
-  public key = "absorb";
+  public displayName = "AbsorbParticlesFromTarget";
+  public key = "absorbParticlesFromTarget";
   public readonly propInfo =
   {
     getParticleDisplayObject: new PropInfo.Function(undefined),
@@ -50,7 +50,7 @@ export class Absorb extends VfxFragment<AbsorbProps>
   private readonly emitters: ProtonEmitter[] = [];
   private readonly timeScale: number;
 
-  constructor(props: AbsorbProps)
+  constructor(props: AbsorbParticlesFromTargetProps)
   {
     super();
 
@@ -123,7 +123,7 @@ export class Absorb extends VfxFragment<AbsorbProps>
 
       const emitter = new ProtonEmitter<PixiParticle & {killLine: number}>();
       emitter.p.copy(target);
-      emitter.damping = 0.0;
+      emitter.damping = 0.0; // we do damping in a custom behaviour
       emitter.rate = new Proton.Rate(particlesPerEmitter);
 
       const imageZone = new Proton.ImageZone(imageData);
