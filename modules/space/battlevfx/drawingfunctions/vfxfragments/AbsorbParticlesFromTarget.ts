@@ -1,3 +1,4 @@
+// TODO 2019.08.19 | worht making this use AbsorbParticles ?
 import * as PIXI from "pixi.js";
 import * as Proton from "proton-js";
 

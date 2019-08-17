@@ -2,8 +2,15 @@ declare class Proton
 {
   static USE_CLOCK: boolean;
   static amendChangeTabsBug: boolean;
-  static PROTON_UPDATE: string;
-  static PROTON_UPDATE_AFTER: string;
+
+  static PARTICLE_CREATED:    "PARTICLE_CREATED";
+  static PARTICLE_UPDATE:     "PARTICLE_UPDATE";
+  static PARTICLE_SLEEP:      "PARTICLE_SLEEP";
+  static PARTICLE_DEAD:       "PARTICLE_DEAD";
+  static PROTON_UPDATE:       "PROTON_UPDATE";
+  static PROTON_UPDATE_AFTER: "PROTON_UPDATE_AFTER";
+  static EMITTER_ADDED:       "EMITTER_ADDED";
+  static EMITTER_REMOVED:     "EMITTER_REMOVED";
 
   emitters: Proton.Emitter[];
   renderers: Proton.BaseRenderer[];
@@ -19,7 +26,10 @@ declare class Proton
   destroy(): void;
   update(): void;
 
-  dispatchEvent(event: string): void;
+  addEventListener<P extends Proton.Particle = Proton.Particle>(event: Proton.ParticleEvent, listener: (particle: P) => void): void;
+  addEventListener<P extends Proton.Particle = Proton.Particle>(event: Proton.EmitterEvent, listener: (emitter: Proton.Emitter<P>) => void): void;
+  addEventListener(event: Proton.ProtonEvent, listener: () => void): void;
+  dispatchEvent(event: Proton.Event): void;
   getCount(): void;
   amendChangeTabsBug(): void;
 
@@ -100,7 +110,7 @@ declare namespace Proton
     applyBehaviour(particle: Particle, time: number, particleIndex: number): void
     initialize(particle: Particle): void;
   }
-  export class CrossZone extends Behaviour
+  export class CrossZone<P extends Particle = Particle> extends Behaviour<P>
   {
     name: "CrossZone";
 
@@ -111,8 +121,8 @@ declare namespace Proton
       easing?: EasingFN | keyof EasingFunctions,
     )
 
-    applyBehaviour(particle: Particle, time: number, particleIndex: number): void
-    initialize(particle: Particle): void;
+    applyBehaviour(particle: P, time: number, particleIndex: number): void
+    initialize(particle: P): void;
   }
   export class Force extends Behaviour
   {
@@ -150,10 +160,8 @@ declare namespace Proton
     applyBehaviour(particle: Particle, time: number, particleIndex: number): void
     initialize(particle: Particle): void;
   }
-  export class Repulsion extends Behaviour
+  export class Repulsion extends Attraction
   {
-    name: "Repulsion";
-
     applyBehaviour(particle: Particle, time: number, particleIndex: number): void
     initialize(particle: Particle): void;
   }
@@ -238,7 +246,7 @@ declare namespace Proton
   {
     constructor(x: Span | number, y: Span | number)
     constructor(
-      rPan: Span | number[],
+      rPan: Span | number | number[],
       thaPan: Span | number[],
       type: "vector" | "polar" | "p" | "P",
     )
@@ -250,6 +258,7 @@ declare namespace Proton
   export class Particle
   {
     id: string;
+    parent: Emitter;
 
     life: number;
     age: number;
@@ -336,6 +345,7 @@ declare namespace Proton
 
     /**
 		 * The friction coefficient for all particle emit by This;
+     * @default 0.006
      */
     damping: number;
 
@@ -350,6 +360,8 @@ declare namespace Proton
     rate: Rate;
 
     name: string;
+    // @ts-ignore
+    parent: Proton;
 
 
     constructor(paramsObj?: {[K in keyof Emitter]?: Emitter[K]})
@@ -428,26 +440,31 @@ declare namespace Proton
   type CrossType = "dead" | // dies on impact
     "bound" | // bounces on impact
     "cross"; // loops around on impact
-  export abstract class Zone
+  export abstract class Zone<P extends Particle = Particle>
   {
     vector: Vector2D;
     random: number;
     crossType: CrossType;
     alert: boolean;
+    x: number;
+    y: number;
 
     abstract getPosition(): Vector2D;
-    abstract crossing(particle: Particle): void
+    abstract crossing(particle: P): void
   }
-  export class CircleZone extends Zone
+  export class CircleZone<P extends Particle = Particle> extends Zone<P>
   {
+    radius: number;
+    angle: number;
+
     constructor(x: number, y: number, radius: number)
 
     setCenter(x: number, y: number): void
 
     getPosition(): Vector2D;
-    crossing(particle: Particle): void
+    crossing(particle: P): void
   }
-  export class ImageZone extends Zone
+  export class ImageZone<P extends Particle = Particle> extends Zone<P>
   {
     constructor(
       imageData: ImageData,
@@ -458,9 +475,9 @@ declare namespace Proton
 
     getPosition(): Vector2D;
     getColor(x: number, y: number): {r: number; g: number; b: number; a: number;}
-    crossing(particle: Particle): void
+    crossing(particle: P): void
   }
-  export class LineZone extends Zone
+  export class LineZone<P extends Particle = Particle> extends Zone<P>
   {
     constructor(
       x1: number,
@@ -471,17 +488,20 @@ declare namespace Proton
     )
 
     getPosition(): Vector2D;
-    crossing(particle: Particle): void
+    crossing(particle: P): void
   }
-  export class PointZone extends Zone
+  export class PointZone<P extends Particle = Particle> extends Zone<P>
   {
     constructor(x: number, y: number)
 
     getPosition(): Vector2D;
-    crossing(particle: Particle): void
+    crossing(particle: P): void
   }
-  export class RectZone extends Zone
+  export class RectZone<P extends Particle = Particle> extends Zone<P>
   {
+    width: number;
+    height: number;
+
     constructor(
       x: number,
       y: number,
@@ -490,7 +510,7 @@ declare namespace Proton
     )
 
     getPosition(): Vector2D;
-    crossing(particle: Particle): void
+    crossing(particle: P): void
   }
 
   export interface Stroke
@@ -546,6 +566,38 @@ declare namespace Proton
   export const ease: EasingFunctions &
   {
     getEasing: (ease: EasingFN | keyof EasingFunctions) => EasingFN,
+  }
+
+  export class Polar2D
+  {
+    constructor(r: number, tha: number)
+
+    getX(): number;
+    getY(): number;
+  }
+
+
+  export type ParticleEvent =
+    "PARTICLE_CREATED" |
+    "PARTICLE_UPDATE" |
+    "PARTICLE_SLEEP" |
+    "PARTICLE_DEAD";
+  export type ProtonEvent =
+    "PROTON_UPDATE" |
+    "PROTON_UPDATE_AFTER";
+  export type EmitterEvent =
+    "EMITTER_ADDED" |
+    "EMITTER_REMOVED";
+
+  export type Event = ParticleEvent | ProtonEvent | EmitterEvent;
+
+  export const MathUtils:
+  {
+    PI: number;
+    PIx2: number;
+    PI_2: number;
+    PI_180: number;
+    N180_PI: number;
   }
 }
 
