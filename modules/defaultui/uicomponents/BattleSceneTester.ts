@@ -7,6 +7,7 @@ import {BattleScene} from "../../../src/BattleScene";
 import {Player} from "../../../src/Player";
 import {Star} from "../../../src/Star";
 import {Unit} from "../../../src/Unit";
+import {options} from "../../../src/Options";
 import
 {
   extendObject,
@@ -47,6 +48,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     this.state = this.getInitialStateTODO();
 
     this.bindMethods();
+    this.setOptions();
   }
   private bindMethods()
   {
@@ -369,6 +371,15 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
         ),
       )
     );
+  }
+
+  private setOptions(): void
+  {
+    options.battle.animationTiming.before = 0;
+    options.battle.animationTiming.effectDuration = 1;
+    options.battle.animationTiming.after = 0;
+
+    // no need to reset these since we never save options
   }
 }
 
