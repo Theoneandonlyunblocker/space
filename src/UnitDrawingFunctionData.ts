@@ -12,6 +12,11 @@ function mirrorPoint(point: Point, midX: number): void
 {
   point.x = getMirroredPosition(point.x, midX);
 }
+function mirrorDisplayObject(displayObject: ClonableDisplayObject, midX: number): void
+{
+  displayObject.scale.x *= -1;
+  displayObject.x = getMirroredPosition(displayObject.x, midX);
+}
 function getMirroredPosition(pos: number, mid: number): number
 {
   return pos - (pos - mid) * 2;
@@ -107,6 +112,6 @@ export class UnitDrawingFunctionData
     this.individualUnitBoundingBoxes.forEach(bBox => mirrorRectangle(bBox, midX));
     mirrorPoint(this.singleAttackOriginPoint, midX);
     this.sequentialAttackOriginPoints.forEach(point => mirrorPoint(point, midX));
-    this.individualUnitDisplayObjects.forEach(displayObject => displayObject.scale.x *= -1);
+    this.individualUnitDisplayObjects.forEach(displayObject => mirrorDisplayObject(displayObject, this.boundingBox.width / 2));
   }
 }
