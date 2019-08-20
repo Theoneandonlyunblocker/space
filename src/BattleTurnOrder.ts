@@ -29,9 +29,9 @@ export class BattleTurnOrder
   }
   public update(): void
   {
-    this.orderedUnits = this.allUnits.filter(BattleTurnOrder.turnOrderFilterFN);
+    const unitsThatCanAct = this.allUnits.filter(unit => unit.canAct());
 
-    this.orderedUnits.sort(BattleTurnOrder.turnOrderSortFN);
+    this.orderedUnits = unitsThatCanAct.sort(BattleTurnOrder.turnOrderSortFN);
   }
   public getActiveUnit(): Unit
   {
@@ -64,20 +64,6 @@ export class BattleTurnOrder
   private hasUnit(unit: Unit): boolean
   {
     return this.allUnits.indexOf(unit) !== -1;
-  }
-  private static turnOrderFilterFN(unit: Unit)
-  {
-    if (unit.battleStats.currentActionPoints <= 0)
-    {
-      return false;
-    }
-
-    if (unit.currentHealth <= 0)
-    {
-      return false;
-    }
-
-    return true;
   }
   private static turnOrderSortFN(a: Unit, b: Unit)
   {

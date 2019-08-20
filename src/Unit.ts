@@ -551,13 +551,17 @@ export class Unit
     this.battleStats.queuedAction = null;
     this.uiDisplayIsDirty = true;
   }
-  public isTargetable()
+  public isTargetable(): boolean
   {
     return this.isActiveInBattle();
   }
-  public isActiveInBattle()
+  public isActiveInBattle(): boolean
   {
-    return this.currentHealth > 0 && !this.battleStats.isAnnihilated;
+    return !this.battleStats.isAnnihilated;
+  }
+  public canAct(): boolean
+  {
+    return this.isActiveInBattle() && this.battleStats.currentActionPoints > 0;
   }
 
   private makeUnitItems(itemSlots: {[slot: string]: number})

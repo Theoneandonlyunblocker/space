@@ -424,7 +424,7 @@ export class Battle
       }
 
       const unit = losingUnits[i];
-      if (unit.currentHealth <= 0 &&
+      if (unit.battleStats.isAnnihilated &&
         Math.random() <= unit.battleStats.captureChance)
       {
         capturedUnits.push(unit);
@@ -467,7 +467,7 @@ export class Battle
 
     this.forEachUnit(unit =>
     {
-      if (unit.currentHealth <= 0)
+      if (unit.battleStats.isAnnihilated)
       {
         const wasCaptured = capturedUnits.indexOf(unit) >= 0;
         if (!wasCaptured)
