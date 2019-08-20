@@ -15,4 +15,15 @@ export const galaxyMapUI =
   buildingTypeName: "Name",
   attackTarget_action: "attack",
   attackTargetTooltip: "Attack {enemyName} {targetType}",
+
+  topMenuButtonActionExplanation: "Left click to open. Right click to close",
+  topMenuButtonTooltip_production: "Produce units and items",
+  topMenuButtonTooltip_equip: "Equip & inspect units",
+  topMenuButtonTooltip_economy: "",
+  topMenuButtonTooltip_diplomacy: "Manage diplomacy & trade",
+  topMenuButtonTooltip_technology: "Allocate research & view unlocks",
+  topMenuButtonTooltip_load: "Load game",
+  topMenuButtonTooltip_save: "Save game",
+  topMenuButtonTooltip_options: "Configure options",
+  topMenuButtonTooltip_openCondensedMenu: "Expand menu",
 };

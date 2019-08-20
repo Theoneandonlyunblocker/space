@@ -68,7 +68,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
   public render()
   {
     const menuItemTabIndex = this.state.opened ? -1 : 0;
-    const menuItemTitle = "Left click to open. Right click to close";
+    const buttonActionExplanation = localize("topMenuButtonActionExplanation")();
 
     const topMenuButtons =
     [
@@ -76,7 +76,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       {
         className: "top-menu-items-button top-menu-items-button-production",
         key: "production",
-        title: menuItemTitle,
+        title: `${localize("topMenuButtonTooltip_production")()}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "production"),
         onContextMenu: this.closePopup.bind(this, "production"),
         tabIndex: menuItemTabIndex,
@@ -85,7 +85,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       {
         className: "top-menu-items-button top-menu-items-button-equip",
         key: "equipItems",
-        title: menuItemTitle,
+        title: `${localize("topMenuButtonTooltip_equip")()}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "equipItems"),
         onContextMenu: this.closePopup.bind(this, "equipItems"),
         tabIndex: menuItemTabIndex,
@@ -94,8 +94,8 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       // {
       //   className: "top-menu-items-button top-menu-items-button-economy",
       //   key: "economySummary",
-      //   title: menuItemTitle,
-      //   onClick: this.openOrBringPopupToTop.bind(this, "economySummary"),
+      //   title: `${localize("topMenuButtonTooltip_economy")()}\n\n${buttonActionExplanation}`,
+      //   onClick: this.toggleOrBringPopupToTop.bind(this, "economySummary"),
       //   onContextMenu: this.closePopup.bind(this, "economySummary"),
       //   tabIndex: menuItemTabIndex,
       // }, localize("economy")()),
@@ -103,7 +103,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       {
         className: "top-menu-items-button top-menu-items-button-diplomacy",
         key: "diplomacy",
-        title: menuItemTitle,
+        title: `${localize("topMenuButtonTooltip_diplomacy")()}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "diplomacy"),
         onContextMenu: this.closePopup.bind(this, "diplomacy"),
         tabIndex: menuItemTabIndex,
@@ -112,7 +112,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       {
         className: "top-menu-items-button top-menu-items-button-technology",
         key: "technologies",
-        title: menuItemTitle,
+        title: `${localize("topMenuButtonTooltip_technology")()}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "technologies"),
         onContextMenu: this.closePopup.bind(this, "technologies"),
         tabIndex: menuItemTabIndex,
@@ -121,7 +121,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       {
         className: "top-menu-items-button top-menu-items-button-load",
         key: "loadGame",
-        title: menuItemTitle,
+        title: `${localize("topMenuButtonTooltip_load")()}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "loadGame"),
         onContextMenu: this.closePopup.bind(this, "loadGame"),
         tabIndex: menuItemTabIndex,
@@ -130,7 +130,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       {
         className: "top-menu-items-button top-menu-items-button-save",
         key: "saveGame",
-        title: menuItemTitle,
+        title: `${localize("topMenuButtonTooltip_save")()}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "saveGame"),
         onContextMenu: this.closePopup.bind(this, "saveGame"),
         tabIndex: menuItemTabIndex,
@@ -139,7 +139,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       {
         className: "top-menu-items-button top-menu-items-button-options",
         key: "options",
-        title: menuItemTitle,
+        title: `${localize("topMenuButtonTooltip_options")()}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "options"),
         onContextMenu: this.closePopup.bind(this, "options"),
         tabIndex: menuItemTabIndex,
@@ -155,7 +155,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       {
         className: "top-menu-items-button top-menu-open-condensed-button",
         key: "openCondensedMenu",
-        title: menuItemTitle,
+        title: localize("topMenuButtonTooltip_openCondensedMenu")(),
         onClick: this.toggleCondensedMenu,
         onContextMenu: e =>
         {
