@@ -242,15 +242,27 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       vfxTemplate.duration = this.state.duration;
     }
 
+    let startTime: number;
+
     bs.handleAbilityUse(
     {
       user: user,
       target: target,
       vfxTemplate: vfxTemplate,
       abilityUseEffect: null,
-      triggerEffectCallback: () => {console.log("triggerEffect");},
-      onVfxStartCallback: () => {console.log("onVfxStart");},
-      afterFinishedCallback: () => {console.log("afterFinishedCallback");},
+      triggerEffectCallback: () =>
+      {
+        console.log("triggerEffect");
+      },
+      onVfxStartCallback: () =>
+      {
+        startTime = Date.now();
+        console.log("onVfxStart");
+      },
+      afterFinishedCallback: () =>
+      {
+        console.log("afterFinishedCallback", Date.now() - startTime);
+      },
     });
   }
 
