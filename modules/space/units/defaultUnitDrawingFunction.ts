@@ -13,7 +13,6 @@ import
 import {Unit} from "../../../src/Unit";
 import {VfxParams} from "../../../src/templateinterfaces/VfxParams";
 
-
 export interface UnitSpriteData
 {
   anchor: Point;
@@ -22,13 +21,46 @@ export interface UnitSpriteData
 
 export function makeDefaultUnitDrawingFunction(spriteData: UnitSpriteData, getImageSrc: () => string): UnitDrawingFunction
 {
-  return defaultUnitDrawingFunction.bind(null, spriteData, getImageSrc);
+  return (unit: Unit, vfxParams: VfxParams) =>
+  {
+    const texture = PIXI.Texture.from(getImageSrc());
+
+    return defaultUnitDrawingFunction(spriteData, texture, unit, vfxParams);
+  };
+}
+export function makeDefaultUnitDrawingFunctionForPlaceholder(spriteData: UnitSpriteData, placeholderText: string): UnitDrawingFunction
+{
+  return (unit: Unit, vfxParams: VfxParams) =>
+  {
+    const text = new PIXI.Text(placeholderText,
+    {
+      fontSize: 20,
+      fill: "#FFFFFF",
+      stroke: "#000000",
+      strokeThickness: 3,
+    });
+
+    const wrappingContainer = new PIXI.Container();
+    wrappingContainer.addChild(text);
+
+    if (!vfxParams.facingRight)
+    {
+      text.scale.x *= -1;
+    }
+
+    const texture = vfxParams.renderer.generateTexture(
+      wrappingContainer,
+      PIXI.settings.SCALE_MODE,
+      1,
+    );
+
+    return defaultUnitDrawingFunction(spriteData, texture, unit, vfxParams);
+  };
 }
 
-function defaultUnitDrawingFunction(spriteData: UnitSpriteData, getImageSrc: () => string, unit: Unit, vfxParams: VfxParams)
+function defaultUnitDrawingFunction(spriteData: UnitSpriteData, texture: PIXI.Texture, unit: Unit, vfxParams: VfxParams)
 {
   const container = new PIXI.Container();
-  const texture = PIXI.Texture.from(getImageSrc());
 
   const props =
   {
