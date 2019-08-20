@@ -33,5 +33,5 @@ export const allScripts: PartialModuleScriptsWithData = scriptsToMerge.reduce((
     }
   }
 
-  return toMerge;
+  return merged;
 }, {});
