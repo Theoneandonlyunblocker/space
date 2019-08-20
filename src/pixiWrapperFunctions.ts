@@ -108,6 +108,8 @@ export function makePolygonFromPoints(
   return new PIXI.Polygon(pointPositions);
 }
 
+export type ClonableDisplayObject = PIXI.Sprite | PIXI.Mesh | PIXI.Graphics;
+
 function isSprite(displayObject: PIXI.DisplayObject): displayObject is PIXI.Sprite
 {
   return displayObject.isSprite;
@@ -135,7 +137,7 @@ export function cloneSprite(sprite: PIXI.Sprite): PIXI.Sprite
 {
   return new PIXI.Sprite(sprite.texture);
 }
-export function cloneDisplayObject(displayObject: PIXI.Sprite | PIXI.Mesh | PIXI.Graphics): PIXI.Sprite | PIXI.Mesh | PIXI.Graphics
+export function cloneDisplayObject(displayObject: ClonableDisplayObject): ClonableDisplayObject
 {
   if (isSprite(displayObject))
   {

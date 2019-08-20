@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
 import {Point} from "./Point";
-import {cloneDisplayObject} from "./pixiWrapperFunctions";
+import {cloneDisplayObject, ClonableDisplayObject} from "./pixiWrapperFunctions";
 
 
 function mirrorRectangle(rect: PIXI.Rectangle, midX: number): void
@@ -33,7 +33,7 @@ export class UnitDrawingFunctionData
   public individualUnitBoundingBoxes: PIXI.Rectangle[];
   public singleAttackOriginPoint: Point;
   public sequentialAttackOriginPoints: Point[];
-  public individualUnitDisplayObjects: (PIXI.Sprite | PIXI.Mesh | PIXI.Graphics)[];
+  public individualUnitDisplayObjects: ClonableDisplayObject[];
 
   constructor(props:
   {
@@ -41,7 +41,7 @@ export class UnitDrawingFunctionData
     individualUnitBoundingBoxes: PIXI.Rectangle[];
     singleAttackOriginPoint: Point;
     sequentialAttackOriginPoints: Point[];
-    individualUnitDisplayObjects: (PIXI.Sprite | PIXI.Mesh | PIXI.Graphics)[];
+    individualUnitDisplayObjects: ClonableDisplayObject[];
   })
   {
     this.boundingBox = props.boundingBox;
