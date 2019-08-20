@@ -1,8 +1,8 @@
 export interface FlatAndMultiplierAdjustment
 {
-  flat?: number; // -Infinity ... Infinity
-  additiveMultiplier?: number; // -Infinity ... Infinity
-  multiplicativeMultiplier?: number; // 0 ... Infinity
+  flat: number;
+  additiveMultiplier: number;
+  multiplicativeMultiplier: number;
 }
 
 export type AdjustmentsObject<T> =
@@ -27,15 +27,17 @@ export function getBaseAdjustment(): FlatAndMultiplierAdjustment
 
 export function applyFlatAndMultiplierAdjustments(
   baseValue: number,
+  baseAdjustment: FlatAndMultiplierAdjustment,
   ...adjustments: Partial<FlatAndMultiplierAdjustment>[]
 ): number
 {
-  const adjustment = squashFlatAndMultiplierAdjustments(...adjustments);
+  const adjustment = squashFlatAndMultiplierAdjustments(baseAdjustment, ...adjustments);
 
   return (baseValue + adjustment.flat) * adjustment.additiveMultiplier * adjustment.multiplicativeMultiplier;
 }
 
 export function squashFlatAndMultiplierAdjustments(
+  baseAdjustment: FlatAndMultiplierAdjustment,
   ...allAdjustments: Partial<FlatAndMultiplierAdjustment>[]
 ): FlatAndMultiplierAdjustment
 {
@@ -55,7 +57,7 @@ export function squashFlatAndMultiplierAdjustments(
     }
 
     return squashed;
-  });
+  }, baseAdjustment);
 }
 
 export function squashAdjustmentsObjects<T extends AdjustmentsObject<T>>(
@@ -78,11 +80,11 @@ export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
       // not sure the type assertions here are right
       if (squashedAlreadyHasAdjustment)
       {
-        (squashed[key] as FlatAndMultiplierAdjustment) = squashFlatAndMultiplierAdjustments(squashed[key], toSquash[key]);
+        (squashed[key] as FlatAndMultiplierAdjustment) = squashFlatAndMultiplierAdjustments((squashed[key] as FlatAndMultiplierAdjustment), toSquash[key]);
       }
       else
       {
-        (squashed[key] as Partial<FlatAndMultiplierAdjustment>) = squashFlatAndMultiplierAdjustments(getBaseAdjustment(), toSquash[key]);
+        (squashed[key] as FlatAndMultiplierAdjustment) = squashFlatAndMultiplierAdjustments(getBaseAdjustment(), toSquash[key]);
       }
     }
 

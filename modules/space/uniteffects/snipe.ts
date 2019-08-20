@@ -12,7 +12,7 @@ function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
   const key = `snipe${capitalizedAttributeName}`;
   const displayName = `Snipe: ${capitalizedAttributeName}`;
 
-  const attributeAdjustment: FlatAndMultiplierAdjustment =
+  const attributeAdjustment: Partial<FlatAndMultiplierAdjustment> =
   {
     multiplicativeMultiplier: 0.5,
   };

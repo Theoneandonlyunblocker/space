@@ -1,6 +1,6 @@
 import {Battle} from "../../../src/Battle";
 import {DamageType} from "../../../src/DamageType";
-import {FlatAndMultiplierAdjustment, applyFlatAndMultiplierAdjustments} from "../../../src/FlatAndMultiplierAdjustment";
+import {FlatAndMultiplierAdjustment, applyFlatAndMultiplierAdjustments, getBaseAdjustment} from "../../../src/FlatAndMultiplierAdjustment";
 import {GuardCoverage} from "../../../src/GuardCoverage";
 import {StatusEffect} from "../../../src/StatusEffect";
 import {Unit} from "../../../src/Unit";
@@ -119,8 +119,8 @@ export const receiveCounterAttack: AbilityEffectActionWithData<{baseDamage: numb
 };
 
 
-export const increaseCaptureChance: AbilityEffectActionWithData<FlatAndMultiplierAdjustment> =(
-  data: FlatAndMultiplierAdjustment,
+export const increaseCaptureChance: AbilityEffectActionWithData<Partial<FlatAndMultiplierAdjustment>> =(
+  data: Partial<FlatAndMultiplierAdjustment>,
   user: Unit,
   target: Unit,
   battle: Battle,
@@ -129,7 +129,7 @@ export const increaseCaptureChance: AbilityEffectActionWithData<FlatAndMultiplie
 {
   const baseCaptureChance = target.battleStats.captureChance;
 
-  target.battleStats.captureChance = applyFlatAndMultiplierAdjustments(baseCaptureChance, data);
+  target.battleStats.captureChance = applyFlatAndMultiplierAdjustments(baseCaptureChance, getBaseAdjustment(), data);
 };
 
 export const addStatusEffect: AbilityEffectActionWithData<{template: UnitEffectTemplate; duration: number}> = (

@@ -22,11 +22,11 @@ export enum UnitAttribute
 
 export interface UnitAttributeAdjustments
 {
-  maxActionPoints?: FlatAndMultiplierAdjustment;
-  attack?: FlatAndMultiplierAdjustment;
-  defence?: FlatAndMultiplierAdjustment;
-  intelligence?: FlatAndMultiplierAdjustment;
-  speed?: FlatAndMultiplierAdjustment;
+  maxActionPoints?: Partial<FlatAndMultiplierAdjustment>;
+  attack?: Partial<FlatAndMultiplierAdjustment>;
+  defence?: Partial<FlatAndMultiplierAdjustment>;
+  intelligence?: Partial<FlatAndMultiplierAdjustment>;
+  speed?: Partial<FlatAndMultiplierAdjustment>;
 }
 export interface UnitAttributesObject
 {
