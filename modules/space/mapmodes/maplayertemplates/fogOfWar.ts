@@ -1,21 +1,20 @@
 import * as PIXI from "pixi.js";
 
-import {app} from "../../../../src/App";
 import {Star} from "../../../../src/Star";
 import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
-
 import
 {
-  generateTextureWithBounds,
   makePolygonFromPoints,
 } from "../../../../src/pixiWrapperFunctions";
 
 import {resources} from "../resources";
 
 
-const fogOfWarSpriteByStarId:
+type Asd = PIXI.TilingSprite;
+
+const fogOfWarMeshesByStarId:
 {
-  [starId: number]: PIXI.Sprite;
+  [starId: number]: Asd;
 } = {};
 
 
@@ -25,14 +24,16 @@ export const fogOfWar: MapRendererLayerTemplate =
   displayName: "Fog of war",
   interactive: false,
   isUsedForCameraBounds: false,
-  initialAlpha: 0.35,
+  initialAlpha: 0.6,
   destroy: () =>
   {
-    for (const starId in fogOfWarSpriteByStarId)
+    for (const starId in fogOfWarMeshesByStarId)
     {
-      fogOfWarSpriteByStarId[starId].renderable = false;
-      fogOfWarSpriteByStarId[starId].texture.destroy(true);
-      delete fogOfWarSpriteByStarId[starId];
+      const mesh = fogOfWarMeshesByStarId[starId];
+      mesh.renderable = false;
+      mesh.texture.destroy(true);
+
+      delete fogOfWarMeshesByStarId[starId];
     }
   },
   drawingFunction: (map, perspectivePlayer) =>
@@ -40,58 +41,49 @@ export const fogOfWar: MapRendererLayerTemplate =
     const doc = new PIXI.Container();
     if (perspectivePlayer)
     {
-      const starsInFogOfWar: Star[] = perspectivePlayer.getRevealedButNotVisibleStars();
+      const starsInFogOfWar = perspectivePlayer.getRevealedButNotVisibleStars();
 
-      for (let i = 0; i < starsInFogOfWar.length; i++)
+      starsInFogOfWar.forEach(star =>
       {
-        const star = starsInFogOfWar[i];
-        const sprite = getFogOfWarSpriteForStar(star, map.width, map.height);
+        const mesh = getFogOfWarMeshForStar(star);
 
-        doc.addChild(sprite);
-      }
+        doc.addChild(mesh);
+      });
     }
 
     return doc;
   },
 };
 
-let fogOfWarTilingSprite: PIXI.TilingSprite;
-function getfogOfWarTilingSprite(width: number, height: number)
+function getFogOfWarMeshForStar(star: Star): Asd
 {
-  if (!fogOfWarTilingSprite)
+  if (!fogOfWarMeshesByStarId[star.id])
   {
-    const fowTexture = resources.fogOfWarTexture;
-    fogOfWarTilingSprite = new PIXI.TilingSprite(fowTexture, width, height);
+    fogOfWarMeshesByStarId[star.id] = makeFogOfWarMeshForStar(star);
   }
 
-  return fogOfWarTilingSprite;
+  return fogOfWarMeshesByStarId[star.id]!;
 }
-
-function getFogOfWarSpriteForStar(star: Star, width: number, height: number): PIXI.Sprite
+function makeFogOfWarMeshForStar(star: Star): Asd
 {
-  const tiled = getfogOfWarTilingSprite(width, height);
-  // silly hack to make sure first texture gets created properly
-  if (!fogOfWarSpriteByStarId[star.id] || Object.keys(fogOfWarSpriteByStarId).length < 4)
-  {
-    const poly = makePolygonFromPoints(star.voronoiCell.vertices);
-    const gfx = new PIXI.Graphics();
-    gfx.beginFill(0);
-    gfx.drawShape(poly);
-    gfx.endFill();
+  const bbox = star.voronoiCell.getBbox();
 
-    tiled.removeChildren();
+  const sprite = new PIXI.TilingSprite(
+    resources.fogOfWarTexture,
+    bbox.width,
+    bbox.height,
+  );
+  sprite.position.set(bbox.x, bbox.y);
+  sprite.tilePosition.set(-bbox.x, -bbox.y);
 
-    tiled.mask = gfx;
-    tiled.addChild(gfx);
+  const gfx = new PIXI.Graphics();
+  gfx.beginFill(0xff0000, 1);
+  gfx.drawShape(makePolygonFromPoints(star.voronoiCell.vertices));
+  gfx.endFill();
+  gfx.position.set(-bbox.x, -bbox.y);
 
-    const bounds = tiled.getBounds();
-    const rendered = generateTextureWithBounds(app.renderer.renderer, tiled, PIXI.settings.SCALE_MODE, 1, bounds);
+  sprite.addChild(gfx);
+  sprite.mask = gfx;
 
-    const sprite = new PIXI.Sprite(rendered);
-
-    fogOfWarSpriteByStarId[star.id] = sprite;
-    tiled.mask = null;
-  }
-
-  return fogOfWarSpriteByStarId[star.id]!;
+  return sprite;
 }
