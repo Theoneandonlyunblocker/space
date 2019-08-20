@@ -6,7 +6,6 @@ import {BlackToAlphaFilter} from "../drawingfunctions/shaders/BlackToAlphaFilter
 import {beam as beamDrawingFunction} from "../drawingfunctions/beam";
 import {guard as guardDrawingFunction} from "../drawingfunctions/guard";
 import {makeVfxFromVideo} from "../drawingfunctions/makeVfxFromVideo";
-import {placeholder as placeholderFunction} from "../drawingfunctions/placeholder";
 import {rocketAttack as rocketAttackDrawingFunction} from "../drawingfunctions/rocketAttack";
 import {snipe as snipeDrawingFunction} from "../drawingfunctions/snipe";
 import {boardingHookBattleOverlay as boardingHookDrawingFunction, boardingHookEnemySprite} from "../drawingfunctions/boardingHook";
@@ -61,11 +60,5 @@ export const videoTest: BattleVfxTemplate =
       sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
       sprite.filters = [new BlackToAlphaFilter()];
     }),
-  vfxWillTriggerEffect: false,
-};
-export const placeholder: BattleVfxTemplate =
-{
-  duration: 1000,
-  battleOverlay: placeholderFunction,
   vfxWillTriggerEffect: false,
 };
