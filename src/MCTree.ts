@@ -13,10 +13,12 @@ export class MCTree
 
   private _rootNode: MCTreeNode;
   private readonly battle: Battle;
+  private readonly isBetweenAi: boolean;
 
   constructor(battle: Battle, sideId: string)
   {
     this.battle = battle;
+    this.isBetweenAi = battle.side1Player.isAi && battle.side2Player.isAi;
 
     this.remakeRootNode();
   }
@@ -60,7 +62,7 @@ export class MCTree
 
     const sortedMoves = this._rootNode.children.flatten().sort(MCTree.sortByCombinedScoreFN);
 
-    if (debug.shouldLog("ai"))
+    if (!this.isBetweenAi && debug.shouldLog("ai"))
     {
       debug.table("ai", "AI move evaluation", sortedMoves.map(node => node.getDebugInformation()));
     }
@@ -77,7 +79,7 @@ export class MCTree
       move: null,
       depth: 0,
       parent: null,
-      isBetweenAi: this.battle.side1Player.isAi && this.battle.side2Player.isAi,
+      isBetweenAi: this.isBetweenAi,
     });
   }
 }
