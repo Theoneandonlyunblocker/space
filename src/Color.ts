@@ -15,6 +15,14 @@ export class Color
     this.g = g;
     this.b = b;
   }
+  public static from8BitRgb(r: number, g: number, b: number): Color
+  {
+    return new Color(
+      r / 255,
+      g / 255,
+      b / 255,
+    );
+  }
   // 0x000000-0xFFFFFF
   public static fromHex(hex: number): Color
   {

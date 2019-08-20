@@ -171,8 +171,8 @@ export function extractImageData(target: PIXI.DisplayObject, extract: PIXI.extra
   wrappingContainer.addChild(target);
 
   const pixels = extract.pixels(wrappingContainer);
-  const bounds = target.getBounds();
   const clampedPixelsArray = Uint8ClampedArray.from(pixels);
+  const bounds = target.getBounds();
 
   return new ImageData(clampedPixelsArray, bounds.width, bounds.height);
 }

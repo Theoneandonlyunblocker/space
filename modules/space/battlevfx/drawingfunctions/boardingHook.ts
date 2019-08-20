@@ -13,8 +13,9 @@ const tauteningTime = 0.55;
 const yankTime = 0.7;
 const yankSpriteDisplacementEndTime = 0.8;
 
-let activeYankProjectile: Projectile;
+let activeYankProjectile: Projectile | null;
 let hookXAtYankStart: number;
+
 
 export function boardingHookEnemySprite(params: VfxParams)
 {
@@ -38,6 +39,8 @@ export function boardingHookEnemySprite(params: VfxParams)
     }
     else
     {
+      activeYankProjectile = null;
+
       params.triggerEnd();
     }
   }
