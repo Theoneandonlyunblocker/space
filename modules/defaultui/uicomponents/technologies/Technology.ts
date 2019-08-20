@@ -94,6 +94,9 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
             onClick: unlocksForTech ?
               this.toggleUnlocksPopup :
               null,
+            title: unlocksForTech ?
+              localize("viewUnlocksForTech")() :
+              localize("technologyHasNoUnlocks")(),
           },
             localize("technologyLevel")(techData.level),
           ),
@@ -101,6 +104,9 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
         ReactDOMElements.div(
         {
           className: "technology-progress-bar-container",
+          title: techData.priorityIsLocked ?
+            localize("cantAdjustTechnologyPriorityAsItsLocked")() :
+            localize("adjustTechnologyPriority")(),
         },
           ReactDOMElements.div(
           {
@@ -129,6 +135,9 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
           className: "technology-toggle-priority-lock" + (techData.priorityIsLocked ? " locked" : " unlocked"),
           onClick: this.togglePriorityLock,
           disabled: isAtMaxLevel,
+          title: techData.priorityIsLocked ?
+            localize("unlockTechnologyPriority")() :
+            localize("lockTechnologyPriority")(),
         },
           null,
         ),

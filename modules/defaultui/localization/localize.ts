@@ -21,6 +21,7 @@ import {production as en_production} from "./en/production";
 import {saves as en_saves} from "./en/saves";
 import {setupGame as en_setupGame} from "./en/setupGame";
 import {trade as en_trade} from "./en/trade";
+import {technology as en_technology} from "./en/technology";
 import {unit as en_unit} from "./en/unit";
 import {unitUpgrade as en_unitUpgrade} from "./en/unitUpgrade";
 
@@ -41,6 +42,7 @@ export type AllMessages =
   typeof en_saves &
   typeof en_setupGame &
   typeof en_trade &
+  typeof en_technology &
   typeof en_unit &
   typeof en_unitUpgrade;
 
@@ -62,6 +64,7 @@ const mergedMessages = shallowExtend<AllMessages>(
   en_saves,
   en_setupGame,
   en_trade,
+  en_technology,
   en_unit,
   en_unitUpgrade,
 );
