@@ -89,9 +89,9 @@ const defaultOptionsValues: OptionsValues =
   {
     animationTiming:
     {
-      before: 750,
+      before: 400,
       effectDuration: 1,
-      after: 1500,
+      after: 800,
       unitEnter: 200,
       unitExit: 100,
       turnTransition: 500,

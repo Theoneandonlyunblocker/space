@@ -102,7 +102,7 @@ export const thePyramids: BuildingTemplate =
   type: "thePyramids",
   kind: "building",
   displayName: "The Pyramids",
-  description: "",
+  description: "testing globally limited buildings, +1000 money on build",
   families: [],
 
   onBuild: (star, player) =>
@@ -120,7 +120,7 @@ export const nationalEpic: BuildingTemplate =
   type: "nationalEpic",
   kind: "building",
   displayName: "National Epic",
-  description: "",
+  description: "testing player limited buildings, +999 money on build",
   families: [],
 
   onBuild: (star, player) =>

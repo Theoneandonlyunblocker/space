@@ -15,7 +15,6 @@ import {eventManager} from "./eventManager";
 import
 {
   clamp,
-  randInt,
   reverseSide,
 } from "./utility";
 
@@ -401,18 +400,8 @@ export class Battle
     const losingSide = reverseSide(winningSide);
 
     const losingUnits = this.getUnitsForSide(losingSide);
-    losingUnits.sort((a, b) =>
-    {
-      const captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
-      if (captureChanceSort)
-      {
-        return captureChanceSort;
-      }
-      else
-      {
-        return randInt(0, 1) * 2 - 1; // -1 or 1
-      }
-    });
+    // TODO 2019.08.20 | shuffle losingUnits
+    losingUnits.sort((a, b) => b.battleStats.captureChance - a.battleStats.captureChance);
 
     const capturedUnits: Unit[] = [];
 
