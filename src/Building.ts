@@ -3,7 +3,7 @@
 import {BuildingUpgradeData} from "./BuildingUpgradeData";
 import {idGenerators} from "./idGenerators";
 import {BuildingSaveData} from "./savedata/BuildingSaveData";
-import {BuildingEffect} from "./BuildingEffect";
+import {PartialBuildingEffect} from "./BuildingEffect";
 import {BuildingTemplate} from "./templateinterfaces/BuildingTemplate";
 
 import {Player} from "./Player";
@@ -43,7 +43,7 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     this.controller = props.controller || this.location.owner;
     this.totalCost = props.totalCost || this.template.buildCost || 0;
   }
-  public getEffect(): BuildingEffect
+  public getEffect(): PartialBuildingEffect
   {
     if (!this.template.getEffect)
     {

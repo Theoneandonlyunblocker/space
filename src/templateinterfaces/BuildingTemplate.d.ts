@@ -1,4 +1,4 @@
-import {BuildingEffect} from "../BuildingEffect";
+import {PartialBuildingEffect} from "../BuildingEffect";
 import {UnitEffectTemplate} from "./UnitEffectTemplate";
 import {Star} from "../Star";
 import {Player} from "../Player";
@@ -21,7 +21,7 @@ export interface BuildingTemplate extends UnlockableThing
   canBeBuiltInLocation?: (star: Star) => boolean;
 
   onBuild?: (location: Star, player: Player) => void;
-  getEffect?: () => BuildingEffect;
+  getEffect?: () => PartialBuildingEffect;
 
   // player race can define their own special upgrades as well
   getStandardUpgradeTargets?: (location: Star) => BuildingTemplate[];
