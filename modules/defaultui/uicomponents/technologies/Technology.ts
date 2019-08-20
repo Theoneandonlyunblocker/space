@@ -50,6 +50,7 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
     let isAtMaxLevel: boolean = false;
     const playerTechnology = this.props.playerTechnology;
     const techData = playerTechnology.technologies[technology.key];
+    const unlocksForTech = activeModuleData.technologyUnlocks[this.props.technology.key];
 
     const forCurrentLevel = playerTechnology.getResearchNeededForTechnologyLevel(techData.level);
     const forNextLevel = playerTechnology.getResearchNeededForTechnologyLevel(techData.level + 1);
@@ -79,7 +80,6 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
         ReactDOMElements.div(
         {
           className: "technology-listing-label",
-          onClick: this.toggleUnlocksPopup,
         },
           ReactDOMElements.div(
           {
@@ -90,7 +90,10 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
           ),
           ReactDOMElements.div(
           {
-            className: "technology-level",
+            className: `technology-level ${unlocksForTech ? "has-unlocks" : ""}`,
+            onClick: unlocksForTech ?
+              this.toggleUnlocksPopup :
+              null,
           },
             localize("technologyLevel")(techData.level),
           ),
@@ -144,7 +147,7 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
           TechnologyUnlocks(
           {
             technologyDisplayName: this.props.technology.displayName,
-            unlocksPerLevel: activeModuleData.technologyUnlocks[this.props.technology.key],
+            unlocksPerLevel: unlocksForTech,
           }),
         ),
       )

@@ -3437,8 +3437,6 @@ ul, ol
 
 .technology-listing-label
 {
-  cursor: pointer;
-
   display: flex;
   flex-flow: row;
   flex: 0 0 9em;
@@ -3452,6 +3450,14 @@ ul, ol
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 5em;
+}
+
+.technology-level
+{
+  &.has-unlocks
+  {
+    cursor: pointer;
+  }
 }
 
 .technology-progress-bar-container
