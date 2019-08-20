@@ -7,6 +7,7 @@ import {Fleet} from "./Fleet";
 import {Point} from "./Point";
 import {Star} from "./Star";
 import {eventManager} from "./eventManager";
+import { getAngleBetweenPoints } from "./utility";
 
 
 interface PathfindingArrowCurveStyle
@@ -469,11 +470,7 @@ export class PathfindingArrow
 
     if (sourcePoint)
     {
-      const dx = sourcePoint.x - target.x;
-      const dy = sourcePoint.y - target.y;
-      const approachAngle = Math.atan2(dy, dx);
-
-      angle += approachAngle;
+      angle += getAngleBetweenPoints(sourcePoint, target);
     }
 
     const x = Math.sin(angle) * distance;

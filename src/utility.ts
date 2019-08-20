@@ -697,3 +697,17 @@ export function stringIsSignedFloat(toCheck: string): boolean
 
   return signedFloatRegex.test(toCheck);
 }
+export function getDistanceBetweenPoints(a: Point, b: Point): number
+{
+  const deltaX = a.x - b.x;
+  const deltaY = a.y - b.y;
+
+  return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+}
+export function getAngleBetweenPoints(a: Point, b: Point): number
+{
+  const deltaX = a.x - b.x;
+  const deltaY = a.y - b.y;
+
+  return Math.atan2(deltaY, deltaX);
+}
