@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {UnlockableThing} from "../../../../src/templateinterfaces/UnlockableThing";
+import {TechnologyUnlocksByLevel} from "../../../../src/ModuleData";
 
 import {TechnologyUnlocksForLevel} from "./TechnologyUnlocksForLevel";
 
@@ -9,7 +9,7 @@ import {TechnologyUnlocksForLevel} from "./TechnologyUnlocksForLevel";
 export interface PropTypes extends React.Props<any>
 {
   technologyDisplayName: string;
-  unlocksPerLevel: {[level: number]: UnlockableThing[]};
+  unlocksPerLevel: TechnologyUnlocksByLevel | undefined;
 }
 
 interface StateType

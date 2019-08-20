@@ -68,12 +68,13 @@ interface Templates
 }
 // tslint:enable:no-any
 
-type TechnologyUnlocks =
+export type TechnologyUnlocksByLevel =
 {
-  [technologyKey: string]:
-  {
-    [techLevel: number]: UnlockableThing[];
-  };
+  [techLevel: number]: UnlockableThing[];
+};
+type TechnologyUnlocksByLevelByTech =
+{
+  [technologyKey: string]: TechnologyUnlocksByLevel;
 };
 
 export class ModuleData
@@ -118,7 +119,7 @@ export class ModuleData
 
   };
 
-  public get technologyUnlocks(): TechnologyUnlocks
+  public get technologyUnlocks(): TechnologyUnlocksByLevelByTech
   {
     if (this.technologyUnlocksAreDirty)
     {
@@ -129,7 +130,7 @@ export class ModuleData
   }
 
   private technologyUnlocksAreDirty: boolean = true;
-  private cachedTechnologyUnlocks: TechnologyUnlocks = {};
+  private cachedTechnologyUnlocks: TechnologyUnlocksByLevelByTech = {};
 
   constructor()
   {
@@ -255,9 +256,9 @@ export class ModuleData
     });
   }
 
-  private getAllTechnologyUnlocks(): TechnologyUnlocks
+  private getAllTechnologyUnlocks(): TechnologyUnlocksByLevelByTech
   {
-    const technologyUnlocks: TechnologyUnlocks = {};
+    const technologyUnlocks: TechnologyUnlocksByLevelByTech = {};
 
     const allUnlockableTemplateCollections =
     [
