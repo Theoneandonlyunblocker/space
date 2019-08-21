@@ -57,6 +57,8 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   }
   public render()
   {
+    const saveNameInputHtmlName = "save-name";
+
     return(
       ReactDOMElements.div(
       {
@@ -87,9 +89,17 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           onSubmit: this.handleSave,
           action: "javascript:void(0);",
         },
+          ReactDOMElements.label(
+          {
+            className: "save-game-name-label",
+            htmlFor: saveNameInputHtmlName,
+          },
+            `${localize("saveName")()}:`,
+          ),
           ReactDOMElements.input(
           {
             className: "save-game-name",
+            name: saveNameInputHtmlName,
             ref: this.saveNameElement,
             type: "text",
             value: this.state.saveName,

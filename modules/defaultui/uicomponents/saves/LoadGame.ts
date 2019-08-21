@@ -52,6 +52,8 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   }
   public render()
   {
+    const saveNameInputHtmlName = "save-name";
+
     return(
       ReactDOMElements.div(
       {
@@ -98,9 +100,17 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           onSubmit: this.handleLoad,
           action: "javascript:void(0);",
         },
+          ReactDOMElements.label(
+          {
+            className: "save-game-name-label",
+            htmlFor: saveNameInputHtmlName,
+          },
+            `${localize("saveName")()}:`,
+          ),
           ReactDOMElements.input(
           {
             className: "save-game-name",
+            name: saveNameInputHtmlName,
             type: "text",
             value: this.state.selectedSaveKey ? this.state.selectedSaveKey.replace(storageStrings.savePrefix, "") : "",
             readOnly: true,
