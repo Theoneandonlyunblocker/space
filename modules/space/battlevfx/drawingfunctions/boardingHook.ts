@@ -5,7 +5,7 @@ import { WavyLine } from "./vfxfragments/WavyLine";
 import { ProjectileWithImpact } from "./vfxfragments/ProjectileWithImpact";
 import { Projectile } from "./vfxfragments/Projectile";
 import { solveInitialVelocity, solveAcceleration } from "../../../../src/kinematics";
-import { smoothStep } from "../../../../src/utility";
+import { linearStep } from "../../../../src/utility";
 import { resources } from "../resources";
 
 const impactTime = 0.3;
@@ -168,8 +168,8 @@ export function boardingHookBattleOverlay(params: VfxParams)
       const closenessToCenter = 1 - relativeDistanceFromCenter;
 
       const slacknessFromLaunch = Math.min(time, 0.5) * 2;
-      const slacknessFromTautening = smoothStep(time, impactTime, tauteningTime) * -1;
-      const slacknessFromYank = smoothStep(time, yankTime, 1) * 1;
+      const slacknessFromTautening = linearStep(time, impactTime, tauteningTime) * -1;
+      const slacknessFromYank = linearStep(time, yankTime, 1) * 1;
       const slackness = slacknessFromLaunch + slacknessFromTautening + slacknessFromYank;
 
       return closenessToCenter * slackness;

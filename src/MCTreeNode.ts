@@ -14,7 +14,7 @@ import
 import
 {
   getRandomKeyWithWeights,
-  smoothStep,
+  linearStep,
 } from "./utility";
 
 
@@ -328,7 +328,7 @@ export class MCTreeNode
     // if victory seems certain, put less weight on exploring strictly optimal moves
     // should help with both exploiting and avoiding blunders
     const winRate = this.wins / this.visits;
-    const decidedness = Math.pow(smoothStep(winRate, 0.925, 1.0), 3) / 2;
+    const decidedness = Math.pow(linearStep(winRate, 0.925, 1.0), 3) / 2;
 
     this.evaluationWeight = this.getCombinedScore() * (1 - decidedness) +
       Math.sqrt(explorationBias * Math.log(this.parent.visits) / this.visits) +
