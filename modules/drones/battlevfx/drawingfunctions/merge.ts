@@ -35,8 +35,8 @@ export function mergeRelease(props: VfxParams): void
 {
   lastUsedImageZone = null;
 
-  const offsetTargetData = props.target.drawingFunctionData.normalizeForBattleVfx(
-    props.targetOffset, props.width, "target");
+  const offsetUserData = props.user.drawingFunctionData.normalizeForBattleVfx(
+    props.userOffset, props.width, "user");
 
   const container = new PIXI.Container();
   if (!props.facingRight)
@@ -46,7 +46,7 @@ export function mergeRelease(props: VfxParams): void
   }
 
 
-  const bbox = offsetTargetData.boundingBox;
+  const bbox = offsetUserData.boundingBox;
 
   const origin =
   {
@@ -78,7 +78,7 @@ export function mergeRelease(props: VfxParams): void
   });
 
   const spritesContainer = new PIXI.Container();
-  offsetTargetData.individualUnitDisplayObjects.forEach(displayObject =>
+  offsetUserData.individualUnitDisplayObjects.forEach(displayObject =>
   {
     spritesContainer.addChild(displayObject);
   });
@@ -161,8 +161,8 @@ export function mergeRelease(props: VfxParams): void
 
 export function mergeAbsorb(props: VfxParams): void
 {
-  const offsetTargetData = props.target.drawingFunctionData.normalizeForBattleVfx(
-    props.targetOffset, props.width, "target");
+  const offsetUserData = props.user.drawingFunctionData.normalizeForBattleVfx(
+    props.userOffset, props.width, "user");
 
   const container = new PIXI.Container();
   if (!props.facingRight)
@@ -174,8 +174,8 @@ export function mergeAbsorb(props: VfxParams): void
 
   const origin =
   {
-    x: offsetTargetData.boundingBox.x + offsetTargetData.boundingBox.width / 2,
-    y: offsetTargetData.boundingBox.y + offsetTargetData.boundingBox.height / 2,
+    x: offsetUserData.boundingBox.x + offsetUserData.boundingBox.width / 2,
+    y: offsetUserData.boundingBox.y + offsetUserData.boundingBox.height / 2,
   };
   const emitZoneAngle = 360;
   const emitZoneHeading = 0;
@@ -223,10 +223,10 @@ export function mergeAbsorb(props: VfxParams): void
     getEmitZone: () => emitZone,
 
     getKillZone: () => new CollisionRectZone(
-      offsetTargetData.boundingBox.width  * -0.25,
-      offsetTargetData.boundingBox.height * -0.25,
-      offsetTargetData.boundingBox.width  * 0.25,
-      offsetTargetData.boundingBox.height * 0.25,
+      offsetUserData.boundingBox.width  * -0.25,
+      offsetUserData.boundingBox.height * -0.25,
+      offsetUserData.boundingBox.width  * 0.25,
+      offsetUserData.boundingBox.height * 0.25,
     ),
     onEnd: end,
   });
