@@ -95,8 +95,7 @@ export const merge: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
-    // TODO 2019.08.20 | we have vfx for this
-    vfx: makePlaceholderVfx("merge"),
+    vfx: DroneBattleVfx.mergeRelease,
   },
   secondaryEffects:
   [
@@ -109,6 +108,7 @@ export const merge: AbilityTemplate =
         targetType: AbilityTargetType.Primary,
         targetEffect: AbilityTargetEffect.Positive,
       }),
+      vfx: DroneBattleVfx.mergeAbsorb,
       trigger: (user, target, battle, executedEffectsResult) =>
       {
         return Boolean(executedEffectsResult[ResultType.HealthChanged]);
