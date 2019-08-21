@@ -121,14 +121,38 @@ ul, ol
     lighten(@c1, 0%) 100%
   );
 }
-.disabled-button-style
+.disabled-button-style(@gradient-direction: to bottom)
 {
   cursor: default;
   color: darken(@text-color, 20%);
   .double-gradient(
-    to bottom,
+    @gradient-direction,
     darken(@bg-color2, 8%),
     darken(@bg-color, 16%)
+  );
+}
+.hovered-button-style(@gradient-direction: to bottom)
+{
+  .double-gradient(
+    @gradient-direction,
+    lighten(@bg-color2, 12%),
+    lighten(@bg-color, 8%)
+  );
+}
+.focused-button-style(@gradient-direction: to bottom)
+{
+  .double-gradient(
+    @gradient-direction,
+    lighten(@bg-color, 8%),
+    lighten(@bg-color2, 4%)
+  );
+}
+.active-button-style(@gradient-direction: to bottom)
+{
+  .double-gradient(
+    @gradient-direction,
+    lighten(@bg-color2, 8%),
+    lighten(@bg-color, 4%)
   );
 }
 
@@ -142,25 +166,21 @@ ul, ol
   color: @text-color;
   cursor: pointer;
 
-  &:hover, &:focus
+  &:hover
   {
-    .double-gradient(
-      @gradient-direction,
-      lighten(@bg-color2, 12%),
-      lighten(@bg-color, 8%)
-    );
+    .hovered-button-style(@gradient-direction);
+  }
+  &:focus
+  {
+    .focused-button-style(@gradient-direction);
   }
   &:active
   {
-    .double-gradient(
-      @gradient-direction,
-      lighten(@bg-color2, 8%),
-      lighten(@bg-color, 4%)
-    );
+    .active-button-style(@gradient-direction);
   }
   &:disabled, &.disabled
   {
-    .disabled-button-style;
+    .disabled-button-style(@gradient-direction);
   }
 }
 
@@ -285,7 +305,7 @@ ul, ol
     tr
     {
       cursor: pointer;
-      &:hover, &:focus
+      &:hover, &:focus, &:active
       {
         .button-style-no-border;
       }
@@ -4551,11 +4571,7 @@ button.player-setup-remove-player
 
   &.active-tab
   {
-    .double-gradient(
-      to bottom,
-      lighten(@bg-color2, 8%),
-      lighten(@bg-color, 4%)
-    );
+    .active-button-style;
   }
 
   +.manufacturable-things-tab-button
