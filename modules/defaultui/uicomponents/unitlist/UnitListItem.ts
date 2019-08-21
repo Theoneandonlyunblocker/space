@@ -15,7 +15,8 @@ import {applyMixins} from "../mixins/applyMixins";
 export interface PropTypes extends ListItemProps, React.Props<any>
 {
   id: number;
-  typeName: string;
+  unitName: string;
+  unitTypeName: string;
   strength: string;
   maxActionPoints: number;
   attack: number;
@@ -38,8 +39,6 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   onDragEnd?: (dropSuccessful?: boolean) => void;
   onDragStart?: (unit: Unit) => void;
   dragPositionerProps?: DragPositionerProps;
-
-  name: string; // unused
 }
 
 interface StateType
@@ -207,60 +206,28 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   {
     this.props.onMouseUp(this.props.unit);
   }
-
-
   private makeCell(type: string): React.ReactHTMLElement<HTMLTableDataCellElement>
   {
     const unit = this.props.unit;
-    const cellProps: React.HTMLProps<HTMLTableCellElement> = {};
-    cellProps.key = type;
-    cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
 
-    let cellContent: string | number | React.ReactElement<any>;
-
-    switch (type)
+    const cellContent: string | number | React.ReactElement<any> = (() =>
     {
-      case "strength":
+      switch (type)
       {
-        cellContent = UnitStrength(
+        case "strength":
         {
-          maxHealth: this.props.maxHealth,
-          currentHealth: this.props.currentHealth,
-          isSquadron: true,
-        });
-
-        break;
-      }
-      case "attack":
-      case "defence":
-      case "intelligence":
-      case "speed":
-      {
-        cellContent = this.props[type];
-
-        if (unit.attributes[type] < unit.baseAttributes[type])
-        {
-          cellProps.className += " lowered-stat";
+          return UnitStrength(
+          {
+            maxHealth: this.props.maxHealth,
+            currentHealth: this.props.currentHealth,
+            isSquadron: true,
+          });
         }
-        else if (unit.attributes[type] > unit.baseAttributes[type])
+        default:
         {
-          cellProps.className += " raised-stat";
+          return this.props[type];
         }
-
-        break;
       }
-      default:
-      {
-        cellContent = this.props[type];
-
-        break;
-      }
-    }
-
-    return(
-      ReactDOMElements.td(cellProps, cellContent)
-    );
-  }
     })();
 
     const cellProps: React.HTMLProps<HTMLTableDataCellElement> = (() =>

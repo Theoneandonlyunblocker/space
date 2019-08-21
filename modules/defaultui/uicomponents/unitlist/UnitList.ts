@@ -54,8 +54,8 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
           unit: unit,
 
           id: unit.id,
-          name: unit.name,
-          typeName: unit.template.displayName,
+          unitName: unit.name,
+          unitTypeName: unit.template.displayName,
           strength: `${unit.currentHealth} / ${unit.maxHealth}`,
           currentHealth: unit.currentHealth,
           maxHealth: unit.maxHealth,
@@ -90,12 +90,12 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
     [
       {
         label: localize("unitName")(),
-        key: "name",
+        key: "unitName",
         defaultOrder: "asc",
       },
       {
         label: localize("unitType")(),
-        key: "typeName",
+        key: "unitTypeName",
         defaultOrder: "asc",
       },
       {
