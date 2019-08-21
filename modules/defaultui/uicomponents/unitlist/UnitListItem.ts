@@ -50,7 +50,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   public displayName = "UnitListItem";
   public state: StateType;
 
-  dragPositioner: DragPositioner<UnitListItemComponent>;
+  private readonly dragPositioner: DragPositioner<UnitListItemComponent>;
   private readonly ownDOMNode = React.createRef<HTMLTableRowElement>();
 
   constructor(props: PropTypes)
@@ -69,20 +69,8 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
       applyMixins(this, this.dragPositioner);
     }
   }
-  private bindMethods()
-  {
-    this.handleMouseEnter = this.handleMouseEnter.bind(this);
-    this.handleMouseLeave = this.handleMouseLeave.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
-    this.makeCell = this.makeCell.bind(this);
 
-    this.onDragEnd = this.onDragEnd.bind(this);
-    this.onDragStart = this.onDragStart.bind(this);
-    this.makeDragClone = this.makeDragClone.bind(this);
-    // this.onDragMove = this.onDragMove.bind(this);
-  }
-
-  componentDidMount()
+  public componentDidMount()
   {
     if (!this.props.isDraggable) { return; }
 
@@ -94,117 +82,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
       y: container.offsetHeight / 2,
     };
   }
-
-  onDragStart()
-  {
-    if (!this.props.onDragStart)
-    {
-      throw new Error("Draggable list item must specify props.onDragStart handler");
-    }
-    this.props.onDragStart(this.props.unit);
-  }
-  makeDragClone()
-  {
-    const container = document.createElement("div");
-
-    ReactDOM.render(
-      UnitComponentFactory(shallowExtend(
-        this.props.unit.getDisplayData("battlePrep"),
-        {id: this.props.unit.id},
-      )),
-      container,
-    );
-
-    const renderedElement = <HTMLElement> container.firstChild;
-    const wrapperElement = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
-
-    renderedElement.classList.add("draggable", "dragging");
-
-    renderedElement.style.width = "" + wrapperElement.offsetWidth + "px";
-    renderedElement.style.height = "" + wrapperElement.offsetHeight + "px";
-    this.dragPositioner.forcedDragOffset =
-    {
-      x: wrapperElement.offsetWidth / 2,
-      y: wrapperElement.offsetHeight / 2,
-    };
-
-    return renderedElement;
-  }
-
-  onDragEnd()
-  {
-    this.props.onDragEnd();
-  }
-
-
-  handleMouseEnter()
-  {
-    this.props.onMouseEnter(this.props.unit);
-  }
-  handleMouseLeave()
-  {
-    this.props.onMouseLeave();
-  }
-  private handleMouseUp(): void
-  {
-    this.props.onMouseUp(this.props.unit);
-  }
-
-
-  makeCell(type: string)
-  {
-    const unit = this.props.unit;
-    const cellProps: React.HTMLProps<HTMLTableCellElement> = {};
-    cellProps.key = type;
-    cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
-
-    let cellContent: string | number | React.ReactElement<any>;
-
-    switch (type)
-    {
-      case "strength":
-      {
-        cellContent = UnitStrength(
-        {
-          maxHealth: this.props.maxHealth,
-          currentHealth: this.props.currentHealth,
-          isSquadron: true,
-        });
-
-        break;
-      }
-      case "attack":
-      case "defence":
-      case "intelligence":
-      case "speed":
-      {
-        cellContent = this.props[type];
-
-        if (unit.attributes[type] < unit.baseAttributes[type])
-        {
-          cellProps.className += " lowered-stat";
-        }
-        else if (unit.attributes[type] > unit.baseAttributes[type])
-        {
-          cellProps.className += " raised-stat";
-        }
-
-        break;
-      }
-      default:
-      {
-        cellContent = this.props[type];
-
-        break;
-      }
-    }
-
-    return(
-      ReactDOMElements.td(cellProps, cellContent)
-    );
-  }
-
-  render(): React.ReactElement<any>
+  public render(): React.ReactElement<any>
   {
     const columns = this.props.activeColumns;
 
@@ -263,6 +141,171 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
       ReactDOMElements.tr(rowProps,
         cells,
       )
+    );
+  }
+
+  private bindMethods(): void
+  {
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.makeCell = this.makeCell.bind(this);
+
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);
+    this.makeDragClone = this.makeDragClone.bind(this);
+    // this.onDragMove = this.onDragMove.bind(this);
+  }
+  private onDragStart()
+  {
+    if (!this.props.onDragStart)
+    {
+      throw new Error("Draggable list item must specify props.onDragStart handler");
+    }
+    this.props.onDragStart(this.props.unit);
+  }
+  private makeDragClone()
+  {
+    const container = document.createElement("div");
+
+    ReactDOM.render(
+      UnitComponentFactory(shallowExtend(
+        this.props.unit.getDisplayData("battlePrep"),
+        {id: this.props.unit.id},
+      )),
+      container,
+    );
+
+    const renderedElement = <HTMLElement> container.firstChild;
+    const wrapperElement = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
+
+    renderedElement.classList.add("draggable", "dragging");
+
+    renderedElement.style.width = "" + wrapperElement.offsetWidth + "px";
+    renderedElement.style.height = "" + wrapperElement.offsetHeight + "px";
+    this.dragPositioner.forcedDragOffset =
+    {
+      x: wrapperElement.offsetWidth / 2,
+      y: wrapperElement.offsetHeight / 2,
+    };
+
+    return renderedElement;
+  }
+  private onDragEnd()
+  {
+    this.props.onDragEnd();
+  }
+  private handleMouseEnter()
+  {
+    this.props.onMouseEnter(this.props.unit);
+  }
+  private handleMouseLeave()
+  {
+    this.props.onMouseLeave();
+  }
+  private handleMouseUp(): void
+  {
+    this.props.onMouseUp(this.props.unit);
+  }
+
+
+  private makeCell(type: string): React.ReactHTMLElement<HTMLTableDataCellElement>
+  {
+    const unit = this.props.unit;
+    const cellProps: React.HTMLProps<HTMLTableCellElement> = {};
+    cellProps.key = type;
+    cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
+
+    let cellContent: string | number | React.ReactElement<any>;
+
+    switch (type)
+    {
+      case "strength":
+      {
+        cellContent = UnitStrength(
+        {
+          maxHealth: this.props.maxHealth,
+          currentHealth: this.props.currentHealth,
+          isSquadron: true,
+        });
+
+        break;
+      }
+      case "attack":
+      case "defence":
+      case "intelligence":
+      case "speed":
+      {
+        cellContent = this.props[type];
+
+        if (unit.attributes[type] < unit.baseAttributes[type])
+        {
+          cellProps.className += " lowered-stat";
+        }
+        else if (unit.attributes[type] > unit.baseAttributes[type])
+        {
+          cellProps.className += " raised-stat";
+        }
+
+        break;
+      }
+      default:
+      {
+        cellContent = this.props[type];
+
+        break;
+      }
+    }
+
+    return(
+      ReactDOMElements.td(cellProps, cellContent)
+    );
+  }
+    })();
+
+    const cellProps: React.HTMLProps<HTMLTableDataCellElement> = (() =>
+    {
+      const props: React.HTMLProps<HTMLTableDataCellElement> = {};
+      props.key = type;
+      props.className = "unit-list-item-cell" + " unit-list-" + type;
+
+      switch (type)
+      {
+        case "unitName":
+        {
+          props.title = this.props.unitName;
+
+          break;
+        }
+        case "unitTypeName":
+        {
+          props.title = this.props.unitTypeName;
+
+          break;
+        }
+        case "attack":
+        case "defence":
+        case "intelligence":
+        case "speed":
+        {
+          if (unit.attributes[type] < unit.baseAttributes[type])
+          {
+            props.className += " lowered-stat";
+          }
+          else if (unit.attributes[type] > unit.baseAttributes[type])
+          {
+            props.className += " raised-stat";
+          }
+
+          break;
+        }
+      }
+
+      return props;
+    })();
+
+    return(
+      ReactDOMElements.td(cellProps, cellContent)
     );
   }
 }
