@@ -14,6 +14,7 @@ export const starIncome: MapRendererLayerTemplate =
 {
   key: "starIncome",
   displayName: "Income",
+  initialAlpha: 0.6,
   interactive: false,
   isUsedForCameraBounds: true,
   drawingFunction: (map, perspectivePlayer) =>
@@ -63,7 +64,7 @@ export const starIncome: MapRendererLayerTemplate =
 
       const poly = makePolygonFromPoints(star.voronoiCell.vertices);
       const gfx = new PIXI.Graphics();
-      gfx.beginFill(color, 0.6);
+      gfx.beginFill(color, 1);
       gfx.drawShape(poly);
       gfx.endFill();
       doc.addChild(gfx);
