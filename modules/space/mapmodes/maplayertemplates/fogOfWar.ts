@@ -29,9 +29,7 @@ export const fogOfWar: MapRendererLayerTemplate =
   {
     for (const starId in fogOfWarMeshesByStarId)
     {
-      const mesh = fogOfWarMeshesByStarId[starId];
-      mesh.renderable = false;
-      mesh.texture.destroy(true);
+      fogOfWarMeshesByStarId[starId].renderable = false;
 
       delete fogOfWarMeshesByStarId[starId];
     }
