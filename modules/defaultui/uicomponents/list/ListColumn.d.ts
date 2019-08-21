@@ -1,6 +1,15 @@
 import {ListItem} from "./ListItem";
 import {ListOrder} from "./ListOrder";
 
+
+type SortingFunction<T> = (a: ListItem<T>, b: ListItem<T>) => number;
+
+/**
+ * sorting priority:
+ * custom sorting function column.sortingFunction
+ * compare specified props column.propToSortby
+ * compare item keys
+ */
 export declare interface ListColumn<T>
 {
   key: string;
@@ -8,8 +17,7 @@ export declare interface ListColumn<T>
   title?: string;
 
   defaultOrder: ListOrder;
-  notSortable?: boolean;                                  // if true sort by VVVV
-  sortingFunction?: (a: ListItem<T>, b: ListItem<T>) => number; // sortingFunction(a, b)
-  propToSortBy?: string;                                  // sort(a.sortingProps[propToSortBy], b.sortingProps[propToSortBy])
-                                                          // sort(a.key, b.key)
+  notSortable?: boolean;
+  sortingFunction?: SortingFunction<T>;
+  propToSortBy?: string;
 }
