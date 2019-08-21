@@ -13,9 +13,8 @@ interface WavyLineProps
   endPositionX: number;
 
   getLineEndRelativePosition?: (relativeTime: number, lineLength?: number) => number;
+  getYBaseSway?: (relativeTime: number, relativePositionInLine: number) => number;
   getSwayFactor?: (relativeTime: number, relativePositionInLine: number) => number;
-  maxSway?: number;
-  timeScale?: number;
   smoothness?: number;
 }
 
@@ -31,6 +30,14 @@ export class WavyLine extends VfxFragment<WavyLineProps>
     endPositionX: new PropInfo.Number(350),
 
     getLineEndRelativePosition: new PropInfo.Function((time: number) => time),
+    getYBaseSway: new PropInfo.Function((relativeTime: number, relativePositionInLine: number) =>
+    {
+      const timeScale = 40;
+      const maxSway = 10;
+      const waveFrequency = 20;
+
+      return Math.sin(relativePositionInLine * waveFrequency + relativeTime * timeScale) * maxSway;
+    }),
     getSwayFactor: new PropInfo.Function((time: number, relativePositionInLine: number) =>
     {
       const relativeDistanceFromCenter = Math.abs(0.5 - relativePositionInLine) * 2;
@@ -38,8 +45,6 @@ export class WavyLine extends VfxFragment<WavyLineProps>
 
       return closenessToCenter * time;
     }),
-    maxSway: new PropInfo.Number(10),
-    timeScale: new PropInfo.Number(5),
     smoothness: new PropInfo.Number(1),
   };
 
@@ -69,10 +74,8 @@ export class WavyLine extends VfxFragment<WavyLineProps>
     {
       const relativePositionInLine = i / (this.ropeSegmentsCount - 1);
 
-      // TODO 2019.08.11 | allow doign this with custom function
-      const yFromSway = Math.sin((i * 0.5) + time * this.props.timeScale) * this.props.maxSway;
-
-      const swayFactor = this.props.getSwayFactor(time, relativePositionInLine)
+      const yFromSway = this.props.getYBaseSway(time, relativePositionInLine);
+      const swayFactor = this.props.getSwayFactor(time, relativePositionInLine);
 
       point.x = originX + lineEndPosition * relativePositionInLine;
       point.y = originY + yFromSway * swayFactor;

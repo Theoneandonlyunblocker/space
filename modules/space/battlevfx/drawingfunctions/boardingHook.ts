@@ -66,6 +66,8 @@ export function boardingHookBattleOverlay(params: VfxParams)
 {
   const launchDecelerationFactor = 4;
   const ropeTimeScale = 40;
+  const ropeMaxSway = 10;
+  const ropeWaveFrequency = 20;
 
   const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleVfx(
     params.targetOffset, params.width, "target");
@@ -156,6 +158,10 @@ export function boardingHookBattleOverlay(params: VfxParams)
     {
       return (visibleProjectile.position.x - startPosition.x + hookSpriteRopePosition) / ropeLength;
     },
+    getYBaseSway: (time, relativePositionInLine) =>
+    {
+      return Math.sin(relativePositionInLine * ropeWaveFrequency + time * ropeTimeScale) * ropeMaxSway;
+    },
     getSwayFactor: (time, relativePositionInLine) =>
     {
       const relativeDistanceFromCenter = Math.abs(0.5 - relativePositionInLine) * 2;
@@ -170,7 +176,6 @@ export function boardingHookBattleOverlay(params: VfxParams)
     },
     originPoint: startPosition,
     endPositionX: impactX,
-    timeScale: ropeTimeScale,
   });
   ropeFragment.draw();
 
