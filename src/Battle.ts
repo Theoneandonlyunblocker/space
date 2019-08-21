@@ -16,6 +16,7 @@ import
 {
   clamp,
   reverseSide,
+  shuffleArrayInPlace,
 } from "./utility";
 
 
@@ -400,7 +401,7 @@ export class Battle
     const losingSide = reverseSide(winningSide);
 
     const losingUnits = this.getUnitsForSide(losingSide);
-    // TODO 2019.08.20 | shuffle losingUnits
+    shuffleArrayInPlace(losingUnits);
     losingUnits.sort((a, b) => b.battleStats.captureChance - a.battleStats.captureChance);
 
     const capturedUnits: Unit[] = [];

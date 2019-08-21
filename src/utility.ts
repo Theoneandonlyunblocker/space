@@ -711,3 +711,13 @@ export function getAngleBetweenPoints(a: Point, b: Point): number
 
   return Math.atan2(deltaY, deltaX);
 }
+export function shuffleArrayInPlace<T>(toShuffle: T[]): void
+{
+  for (let i = 0; i < toShuffle.length - 2; i++)
+  {
+    const j = randInt(i, toShuffle.length - 1);
+    const temp = toShuffle[j];
+    toShuffle[j] = toShuffle[i];
+    toShuffle[i] = temp;
+  }
+}
