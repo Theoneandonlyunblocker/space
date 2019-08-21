@@ -1713,8 +1713,10 @@ ul, ol
   }
 }
 
-
-// ITEM LIST
+.sortable
+{
+  cursor: pointer;
+}
 
 .sort-icons(@maxWidth)
 {
@@ -1727,7 +1729,6 @@ ul, ol
 
   .sortable
   {
-    cursor: pointer;
     //position: relative;
     padding-right: 20px;
 
@@ -3356,6 +3357,7 @@ ul, ol
 {
   height: 100%;
   .hover-only-fancy-table-style-without-splitters(2px, 0);
+  .sort-icons(500px);
 }
 
 .diplomatic-status-player

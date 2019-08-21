@@ -2,7 +2,6 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {DiplomacyState} from "../../../../src/DiplomacyState";
 import {Player} from "../../../../src/Player";
 import {List} from "../list/List";
 import {ListColumn} from "../list/ListColumn";
@@ -58,12 +57,11 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         {
           player: player,
           name: player.name.fullName,
-          status: DiplomacyState[status],
+          status: status,
           opinion: player.diplomacy.getOpinionOf(this.props.player),
           flag: player.flag,
           canInteractWith: this.props.player.diplomacy.canDoDiplomacyWithPlayer(player),
 
-          statusSortingNumber: status,
           attitudeModifiers: player.diplomacy.getAttitudeModifiersForPlayer(this.props.player)!,
         }),
       });
@@ -76,12 +74,10 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         {
           player: player,
           name: player.name.fullName,
-          status: localize("deadPlayer")(),
+          status: "dead",
           opinion: null,
           flag: player.flag,
           canInteractWith: this.props.player.diplomacy.canDoDiplomacyWithPlayer(player),
-
-          statusSortingNumber: -99999,
         }),
       });
     }));
@@ -103,6 +99,16 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         label: localize("diplomaticStatus")(),
         key: "status",
         defaultOrder: "desc",
+        // most peaceful == highest
+        sortingFunction: (a, b) =>
+        {
+          function getSortingValue(item: ListItem<DiplomaticStatusPlayerProps>): number
+          {
+            return item.content.props.status === "dead" ? -Infinity : item.content.props.status;
+          }
+
+          return getSortingValue(b) - getSortingValue(a);
+        },
         propToSortBy: "statusSortingNumber",
       },
       {
