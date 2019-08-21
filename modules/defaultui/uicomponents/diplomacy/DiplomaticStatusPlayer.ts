@@ -41,11 +41,44 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
 
     this.bindMethods();
   }
+
+  public render()
+  {
+    const columns = this.props.activeColumns;
+
+    const cells: React.ReactHTMLElement<any>[] = [];
+
+    for (let i = 0; i < columns.length; i++)
+    {
+      const cell = this.makeCell(columns[i].key);
+
+      cells.push(cell);
+    }
+
+    const rowProps =
+    {
+      className: "diplomatic-status-player",
+      onClick: this.props.canInteractWith ?
+        this.props.handleClick :
+        null,
+    };
+
+    if (!this.props.canInteractWith)
+    {
+      rowProps.className += " disabled";
+    }
+
+    return(
+      ReactDOMElements.tr(rowProps,
+        cells,
+      )
+    );
+  }
+
   private bindMethods()
   {
     this.makeCell = this.makeCell.bind(this);
   }
-
   private getInitialStateTODO(): StateType
   {
     return(
@@ -53,7 +86,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
       hasAttitudeModifierTootlip: false,
     });
   }
-  makeCell(type: string)
+  private makeCell(type: string)
   {
     let className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
     let cellContent: React.ReactElement<any> = this.props[type];
@@ -89,39 +122,6 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
         className: className,
       },
         cellContent,
-      )
-    );
-  }
-
-  render()
-  {
-    const columns = this.props.activeColumns;
-
-    const cells: React.ReactHTMLElement<any>[] = [];
-
-    for (let i = 0; i < columns.length; i++)
-    {
-      const cell = this.makeCell(columns[i].key);
-
-      cells.push(cell);
-    }
-
-    const rowProps =
-    {
-      className: "diplomatic-status-player",
-      onClick: this.props.canInteractWith ?
-        this.props.handleClick :
-        null,
-    };
-
-    if (!this.props.canInteractWith)
-    {
-      rowProps.className += " disabled";
-    }
-
-    return(
-      ReactDOMElements.tr(rowProps,
-        cells,
       )
     );
   }
