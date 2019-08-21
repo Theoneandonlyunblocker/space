@@ -136,6 +136,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
       {
         label: localize("del")(),
         key: "delete",
+        title: localize("markForDeletion")(),
         defaultOrder: "asc",
         notSortable: true,
       });

@@ -5,6 +5,8 @@ export const saves =
   promptOverwrite: "Are you sure you want to overwrite '{toOverWrite}'?",
   confirmOverwrite: "Confirm overwrite",
   load_action: "Load",
+  markForDeletion: "Mark for deletion",
+  undoMarkForDeletion: "Undo mark for deletion",
   confirmSaveDeletion: "Are you sure you want to delete the following {count, plural," +
       "  one {save}" +
       "other {saves}" +

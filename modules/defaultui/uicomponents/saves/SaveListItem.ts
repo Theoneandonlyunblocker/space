@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {ListItemProps} from "../list/ListItemProps";
+import { localize } from "../../localization/localize";
 
 
 export interface PropTypes extends ListItemProps, React.Props<any>
@@ -64,6 +65,13 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
 
     switch (type)
     {
+      case "name":
+      {
+        cellContent = this.props.name;
+        cellProps.title = this.props.name;
+
+        break;
+      }
       case "delete":
       {
         cellContent = "";
@@ -73,10 +81,12 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
         {
           cellProps.className += " undo-delete-button";
           cellProps.onClick = this.handleUndoMarkForDeletion;
+          cellProps.title = localize("undoMarkForDeletion")();
         }
         else
         {
           cellProps.onClick = this.handleMarkForDeletion;
+          cellProps.title = localize("markForDeletion")();
         }
         break;
       }
