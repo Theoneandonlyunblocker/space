@@ -8,6 +8,7 @@ import { localize } from "../../localization/localize";
 export interface PropTypes extends ListItemProps, React.Props<any>
 {
   isMarkedForDeletion: boolean;
+  isSelected: boolean;
   onUndoMarkForDeletion: (callback?: () => void) => void;
   onMarkForDeletion: () => void;
   onDoubleClick?: () => void;
@@ -125,6 +126,10 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
     if (this.props.isMarkedForDeletion)
     {
       rowProps.className += " marked-for-deletion";
+    }
+    if (this.props.isSelected)
+    {
+      rowProps.className += " selected";
     }
 
     return(

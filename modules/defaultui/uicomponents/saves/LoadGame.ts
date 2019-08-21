@@ -86,8 +86,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
 
             this.handleUndoMarkForDeletion(row.content.props.storageKey);
           },
-          autoSelect: !Boolean(app.game.gameStorageKey),
-          selectedKey: app.game.gameStorageKey,
+          selectedKey: this.state.selectedSaveKey,
           allowDeletion: true,
           onMarkForDeletion: this.handleMarkForDeletion,
           onUndoMarkForDeletion: this.handleUndoMarkForDeletion,

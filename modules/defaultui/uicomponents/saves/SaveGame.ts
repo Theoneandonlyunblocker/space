@@ -79,8 +79,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
         SaveList(
         {
           onRowChange: this.handleRowChange,
-          selectedKey: app.game.gameStorageKey,
-          autoSelect: false,
+          selectedKey: this.getCurrentSaveKey(),
           onDoubleClick: this.saveGame,
         }),
         ReactDOMElements.form(
@@ -156,8 +155,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   }
   private handleSave()
   {
-    const saveName = this.state.saveName;
-    const saveKey = storageStrings.savePrefix + saveName;
+    const saveKey = this.getCurrentSaveKey();
 
     localForage.getItem(saveKey).then(item =>
     {
@@ -183,6 +181,12 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   private handleClose()
   {
     this.props.handleClose();
+  }
+  private getCurrentSaveKey(): string
+  {
+    const saveName = this.state.saveName;
+
+    return storageStrings.savePrefix + saveName;
   }
 }
 

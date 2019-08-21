@@ -25,7 +25,6 @@ export interface PropTypes extends React.Props<any>
   onRowChange: (row: ListItem<SaveListItemProps>) => void;
   saveKeysMarkedForDeletion?: string[];
   selectedKey: string;
-  autoSelect: boolean;
   allowDeletion?: boolean;
   onUndoMarkForDeletion?: (saveKey: string, callBack?: () => void) => void;
   onMarkForDeletion?: (saveKey: string) => void;
@@ -88,6 +87,8 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
       const isMarkedForDeletion = this.props.saveKeysMarkedForDeletion &&
         this.props.saveKeysMarkedForDeletion.indexOf(parsedData.key) !== -1;
 
+      const isSelected = this.props.selectedKey === parsedData.key;
+
       const row: ListItem<SaveListItemProps> =
       {
         key: parsedData.key,
@@ -98,6 +99,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
           date: prettifyDate(parsedData.date),
           accurateDate: parsedData.date.toISOString(),
           isMarkedForDeletion: isMarkedForDeletion,
+          isSelected: isSelected,
           onMarkForDeletion: this.props.onMarkForDeletion ?
             this.props.onMarkForDeletion.bind(null, parsedData.key) :
             null,
@@ -109,7 +111,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
       };
 
       rows.push(row);
-      if (this.props.selectedKey === parsedData.key)
+      if (isSelected)
       {
         selected = row;
       }
@@ -150,7 +152,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
           initialColumns: columns,
           initialSortOrder: [columns[1], columns[0]], // date, name
           onRowChange: this.props.onRowChange,
-          autoSelect: selected ? false : this.props.autoSelect,
+          autoSelect: Boolean(selected),
           initialSelected: selected,
           keyboardSelect: true,
           addSpacer: true,
