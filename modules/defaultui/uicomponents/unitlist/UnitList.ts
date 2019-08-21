@@ -94,12 +94,12 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
         defaultOrder: "asc",
       },
       {
-        label: localize("type")(),
+        label: localize("unitType")(),
         key: "typeName",
         defaultOrder: "asc",
       },
       {
-        label: localize("strength")(),
+        label: localize("unitStrength")(),
         key: "strength",
         defaultOrder: "desc",
         sortingFunction: (a, b) =>
@@ -109,30 +109,34 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
       },
       {
         label: localize("act")(),
+        title: `${localize("maxActionPoints")()}\n\n${localize("maxActionPoints_description")()}`,
         key: "maxActionPoints",
         defaultOrder: "desc",
       },
       {
         label: localize("atk")(),
+        title: `${localize("attack")()}\n\n${localize("attack_description")()}`,
         key: "attack",
         defaultOrder: "desc",
       },
       {
         label: localize("def")(),
+        title: `${localize("defence")()}\n\n${localize("defence_description")()}`,
         key: "defence",
         defaultOrder: "desc",
       },
       {
         label: localize("int")(),
+        title: `${localize("intelligence")()}\n\n${localize("intelligence_description")()}`,
         key: "intelligence",
         defaultOrder: "desc",
       },
       {
         label: localize("spd")(),
+        title: `${localize("speed")()}\n\n${localize("speed_description")()}`,
         key: "speed",
         defaultOrder: "desc",
       },
-
     ];
 
     return(

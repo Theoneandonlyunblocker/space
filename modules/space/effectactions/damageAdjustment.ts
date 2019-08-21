@@ -25,6 +25,7 @@ export function getAdjustedTroopSize(unit: Unit): number
   }
 }
 
+// TODO 2019.08.21 | rewrite to use Attributes.modifyValueByAttributes
 export function getAttackDamageIncrease(unit: Unit, damageType: DamageType): number
 {
   let attackStat: number;

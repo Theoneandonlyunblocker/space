@@ -54,6 +54,8 @@ export class UnitAttributes implements UnitAttributesObject
   public attack: number;
   public defence: number;
   public intelligence: number;
+  // TODO 2019.08.21 | should also make this influence move delay added by taking actions
+  // currently only affects initial turn order
   public speed: number;
 
   constructor(initialAttributes: UnitAttributesObject)

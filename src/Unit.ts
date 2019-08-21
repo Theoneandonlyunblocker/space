@@ -412,6 +412,8 @@ export class Unit
 
   private getBaseMoveDelay()
   {
+    // TODO 2019.08.21 | randomize this a little?
+
     return 30 - this.attributes.speed;
   }
   public resetMovePoints()
