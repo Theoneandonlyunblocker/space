@@ -426,7 +426,8 @@ export function getRelativeWeightsFromObject(byCount: {[prop: string]: number})
 
   return relativeWeights;
 }
-export function getDropTargetAtLocation(x: number, y: number)
+// TODO 2019.08.21 | rework this into a more robust and typesafe system
+export function getDropTargetAtLocation(x: number, y: number): HTMLElement | null
 {
   const dropTargets = document.getElementsByClassName("drop-target");
   const point =

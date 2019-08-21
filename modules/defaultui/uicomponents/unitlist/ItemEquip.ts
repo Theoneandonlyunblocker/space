@@ -121,7 +121,6 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
       const item = this.state.currentDragItem;
       if (this.state.selectedUnit.items.hasItem(item))
       {
-        console.log("fail drag remove");
         this.state.selectedUnit.items.removeItem(item);
       }
     }
