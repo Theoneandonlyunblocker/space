@@ -18,9 +18,9 @@ import
 } from "../../../../src/battleAbilityDisplay";
 import
 {
-  AbilityUseEffect,
   useAbilityAndGetUseEffects,
 } from "../../../../src/battleAbilityUsage";
+import {AbilityUseEffect} from "../../../../src/AbilityUseEffect";
 import {AbilityTemplate} from "../../../../src/templateinterfaces/AbilityTemplate";
 import
 {

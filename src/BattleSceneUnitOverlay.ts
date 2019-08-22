@@ -103,7 +103,6 @@ export class BattleSceneUnitOverlay
       facingRight: this.activeUnit.battleStats.side === "side1",
       renderer: this.renderer,
       triggerStart: triggerStart,
-      triggerEffect: () => {},
       triggerEnd: triggerEnd || (() => {}),
     });
   }

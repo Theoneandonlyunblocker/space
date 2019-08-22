@@ -1,7 +1,7 @@
 import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
 import {AbilityTemplate} from "./templateinterfaces/AbilityTemplate";
-import {BattleVfxTemplate} from "./templateinterfaces/BattleVfxTemplate";
 
+import {AbilityUseEffect} from "./AbilityUseEffect";
 import {Battle} from "./Battle";
 import {Unit} from "./Unit";
 import {UnitDisplayData} from "./UnitDisplayData";
@@ -12,17 +12,6 @@ import
   getAbilityEffectDataByPhase,
 } from "./battleAbilityProcessing";
 
-
-export interface AbilityUseEffect
-{
-  effectId: string;
-  changedUnitDisplayData: {[unitId: number]: UnitDisplayData};
-  executedEffectsResult: ExecutedEffectsResult;
-  vfx: BattleVfxTemplate;
-  vfxUser: Unit;
-  vfxTarget: Unit;
-  newEvaluation: number;
-}
 
 export function useAbility(
   battle: Battle,

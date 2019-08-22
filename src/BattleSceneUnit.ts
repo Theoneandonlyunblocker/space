@@ -254,7 +254,6 @@ export class BattleSceneUnit
       facingRight: props.unit.battleStats.side === "side1",
       renderer: this.renderer,
       triggerStart: props.triggerStart,
-      triggerEffect: () => {},
       triggerEnd: props.triggerEnd || (() => {}),
     });
   }

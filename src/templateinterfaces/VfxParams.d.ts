@@ -2,9 +2,11 @@ import * as PIXI from "pixi.js";
 
 import {Point} from "../Point";
 import {Unit} from "../Unit";
-import {AbilityUseEffect} from "../battleAbilityUsage";
+import {AbilityUseEffectsById} from "../AbilityUseEffect";
+import {AbilityUseEffectsForVfx} from "../AbilityUseEffectsForVfx";
 
-export interface VfxParams
+
+export interface VfxParams<E extends AbilityUseEffectsById = {}>
 {
   user: Unit;
   target?: Unit;
@@ -12,11 +14,14 @@ export interface VfxParams
   targetOffset?: Point;
   width: number;
   height: number;
-  duration: number; // in milliseconds
+  /**
+   * milliseconds
+   */
+  duration: number;
+  // TODO 2019.08.21 | rename userIsFacingRight?
   facingRight: boolean;
   renderer: PIXI.Renderer;
-  abilityUseEffect?: AbilityUseEffect;
+  abilityUseEffects?: AbilityUseEffectsForVfx<E>;
   triggerStart: (displayObject: PIXI.DisplayObject) => void;
-  triggerEffect: () => void;
   triggerEnd: () => void;
 }

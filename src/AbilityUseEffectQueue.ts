@@ -1,170 +1,131 @@
 import {BattleScene} from "./BattleScene";
-import {AbilityUseEffect} from "./battleAbilityUsage";
-import
-{
-  shallowExtend,
-} from "./utility";
+import {AbilityUseEffect, AbilityUseEffectsById} from "./AbilityUseEffect";
+import { AbilityUseEffectsForVfx } from "./AbilityUseEffectsForVfx";
 
+
+type AbilityUseEffectsGroup =
+{
+  withVfx: AbilityUseEffect;
+  withoutVfx: AbilityUseEffect[]; // freshest last
+};
 
 export class AbilityUseEffectQueue
 {
-  private onEffectStart: (effect: AbilityUseEffect) => void;
-  private onVfxStart: () => void;
-  private onCurrentFinished: () => void;
-  private onAllFinished: () => void;
-  private onEffectTrigger: (abilityUseEffect: AbilityUseEffect) => void;
+  private currentEffectsGroup: AbilityUseEffectsGroup | null;
+  private readonly queue: AbilityUseEffectsGroup[] = [];
+  private readonly battleScene: BattleScene;
 
-  private queue: AbilityUseEffect[] = [];
-  private currentEffect: AbilityUseEffect | null;
-  private battleScene: BattleScene;
-
+  private readonly onEffectStart: (effect: AbilityUseEffect) => void;
+  private readonly onVfxStart: () => void;
+  private readonly onCurrentFinished: () => void;
+  private readonly onAllFinished: () => void;
+  private readonly onEffectTrigger: (abilityUseEffect: AbilityUseEffect) => void;
 
   constructor(battleScene: BattleScene, callbacks:
   {
-    onEffectStart?: (effect: AbilityUseEffect) => void;
-    onVfxStart?: () => void;
-    onCurrentFinished?: () => void;
-    onAllFinished?: () => void;
-    onEffectTrigger?: (abilityUseEffect: AbilityUseEffect) => void;
+    onEffectStart: (effect: AbilityUseEffect) => void;
+    onVfxStart: () => void;
+    onCurrentFinished: () => void;
+    onAllFinished: () => void;
+    onEffectTrigger: (abilityUseEffect: AbilityUseEffect) => void;
   })
   {
     this.battleScene = battleScene;
 
-    for (const key in callbacks)
-    {
-      this[key] = callbacks[key];
-    }
-
-    this.triggerEffect = this.triggerEffect.bind(this);
-    this.finishEffect = this.finishEffect.bind(this);
-  }
-
-  private static squashEffects(
-    parent: AbilityUseEffect,
-    toSquash: AbilityUseEffect[],
-    parentIsMostRecent: boolean = false,
-  ): AbilityUseEffect
-  {
-    const squashedchangedUnitDisplayData = shallowExtend(
-      {},
-      parent.changedUnitDisplayData,
-      ...toSquash.map(effect => effect.changedUnitDisplayData),
-    );
-
-    if (parentIsMostRecent)
-    {
-      const squashedEffect = shallowExtend(
-        {},
-        {changedUnitDisplayData: squashedchangedUnitDisplayData},
-        parent,
-      );
-
-      return squashedEffect;
-    }
-    else
-    {
-      const squashedEffect = shallowExtend(
-        {},
-        parent,
-        {changedUnitDisplayData: squashedchangedUnitDisplayData},
-      );
-
-      return squashedEffect;
-    }
-  }
-  private static squashEffectsWithoutVfx(sourceEffects: AbilityUseEffect[]): AbilityUseEffect[]
-  {
-    const squashed: AbilityUseEffect[] = [];
-    let effectsToSquash: AbilityUseEffect[] = [];
-    for (let i = sourceEffects.length - 1; i >= 0; i--)
-    {
-      const effect = sourceEffects[i];
-      if (effect.vfx)
-      {
-        if (effectsToSquash.length > 0)
-        {
-          const squashedEffect = AbilityUseEffectQueue.squashEffects(effect, effectsToSquash);
-          effectsToSquash = [];
-
-          squashed.push(squashedEffect);
-        }
-        else
-        {
-          squashed.push(effect);
-        }
-      }
-      else
-      {
-        effectsToSquash.unshift(effect);
-      }
-    }
-
-    if (effectsToSquash.length > 0)
-    {
-      const lastEffectWithVfx = squashed.pop()!;
-      squashed.push(AbilityUseEffectQueue.squashEffects(lastEffectWithVfx, effectsToSquash, true));
-    }
-
-    squashed.reverse();
-
-    return squashed;
+    this.onEffectStart = callbacks.onEffectStart;
+    this.onVfxStart = callbacks.onVfxStart;
+    this.onCurrentFinished = callbacks.onCurrentFinished;
+    this.onAllFinished = callbacks.onAllFinished;
+    this.onEffectTrigger = callbacks.onEffectTrigger;
   }
 
   public addEffects(effects: AbilityUseEffect[]): void
   {
-    this.queue.push(...AbilityUseEffectQueue.squashEffectsWithoutVfx(effects));
+    this.queue.push(...AbilityUseEffectQueue.createGroupsOfEffectsWithOneVfx(effects));
   }
   public playOnce(): void
   {
-    this.currentEffect = this.queue.shift() || null;
+    this.currentEffectsGroup = this.queue.shift() || null;
 
-    if (!this.currentEffect)
+    if (!this.currentEffectsGroup)
     {
       this.handleEndOfQueue();
 
       return;
     }
 
-    if (this.onEffectStart)
-    {
-      this.onEffectStart(this.currentEffect);
-    }
+    const mainEffect = this.currentEffectsGroup.withVfx;
+    const allEffects = AbilityUseEffectQueue.flattenEffectsGroup(this.currentEffectsGroup);
+
+    this.onEffectStart(mainEffect);
 
     this.battleScene.handleAbilityUse(
     {
-      vfxTemplate: this.currentEffect.vfx,
-      abilityUseEffect: this.currentEffect,
-      user: this.currentEffect.vfxUser,
-      target: this.currentEffect.vfxTarget,
-      triggerEffectCallback: this.triggerEffect,
-      onVfxStartCallback: this.onVfxStart,
-      afterFinishedCallback: this.finishEffect,
+      vfxTemplate: mainEffect.vfx,
+      user: mainEffect.vfxUser,
+      target: mainEffect.vfxTarget,
+      abilityUseEffects: this.mapEffectsForVfx(allEffects),
+      onVfxStart: () => this.onVfxStart,
+      afterFinished: () => this.finishEffect,
     });
   }
 
-  private triggerEffect(): void
-  {
-    if (this.onEffectTrigger)
-    {
-      this.onEffectTrigger(this.currentEffect!);
-    }
-  }
   private finishEffect(): void
   {
-    this.currentEffect = null;
-    if (this.onCurrentFinished)
-    {
-      this.onCurrentFinished();
-    }
+    this.currentEffectsGroup = null;
+
+    this.onCurrentFinished();
   }
   private handleEndOfQueue(): void
   {
     this.battleScene.updateUnits(() =>
     {
-      if (this.onAllFinished)
-      {
-        this.onAllFinished();
-      }
+      this.onAllFinished();
     });
+  }
+  private mapEffectsForVfx(effects: AbilityUseEffect[]): AbilityUseEffectsForVfx
+  {
+    const effectsById = effects.reduce((obj: AbilityUseEffectsById, effect) =>
+    {
+      obj[effect.effectId] = effect;
+
+      return obj;
+    }, {});
+
+    return new AbilityUseEffectsForVfx(effectsById, this.onEffectTrigger);
+  }
+
+  private static flattenEffectsGroup(effectsGroup: AbilityUseEffectsGroup): AbilityUseEffect[]
+  {
+    return [effectsGroup.withVfx, ... effectsGroup.withoutVfx];
+  }
+  private static createGroupsOfEffectsWithOneVfx(effects: AbilityUseEffect[]): AbilityUseEffectsGroup[]
+  {
+    return effects.reduce((grouped: AbilityUseEffectsGroup[], newEffect: AbilityUseEffect, i) =>
+    {
+      const currentGroup = grouped[grouped.length - 1];
+      const newEffectHasVfx = Boolean(newEffect.vfx);
+
+      if (newEffectHasVfx)
+      {
+        const currentGroupHasVfx = Boolean(currentGroup.withVfx);
+
+        if (currentGroupHasVfx)
+        {
+          const newGroup: AbilityUseEffectsGroup = {withVfx: newEffect, withoutVfx: []};
+          grouped.push(newGroup);
+        }
+        else
+        {
+          currentGroup.withVfx = newEffect;
+        }
+      }
+      else
+      {
+        currentGroup.withoutVfx.push(newEffect);
+      }
+
+      return grouped;
+    }, [{withVfx: undefined, withoutVfx: []}]);
   }
 }
