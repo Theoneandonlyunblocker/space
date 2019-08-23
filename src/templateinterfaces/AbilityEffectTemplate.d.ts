@@ -29,6 +29,7 @@ export type AbilityEffectTrigger = (
 // TODO 2019.08.23 | plug in generics to members
 export interface AbilityEffectTemplate<EffectId extends string = any, R extends ExecutedEffectsResult = any>
 {
+  // TODO 2019.08.23 | might have to go through all these and make sure they're prefixed by source ability/effect to avoid clobbering
   id: string;
 
   /**

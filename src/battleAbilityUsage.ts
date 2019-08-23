@@ -129,20 +129,6 @@ function executeAbilityEffectData(
 
   return true;
 }
-function getIdForAbilityUseEffect(abilityEffectData: AbilityEffectData): string
-{
-  let sourceString = "";
-  if (abilityEffectData.sourceStatusEffect)
-  {
-    sourceString = abilityEffectData.sourceStatusEffect.template.type + ".";
-  }
-  else if (abilityEffectData.sourceAbility)
-  {
-    sourceString = abilityEffectData.sourceAbility.type + ".";
-  }
-
-  return `${sourceString}${abilityEffectData.effectTemplate.id}`;
-}
 function executeAbilityEffectDataAndGetUseEffect(
   battle: Battle,
   abilityEffectData: AbilityEffectData,
@@ -161,7 +147,7 @@ function executeAbilityEffectDataAndGetUseEffect(
 
   return(
   {
-    effectId: getIdForAbilityUseEffect(abilityEffectData),
+    effectId: abilityEffectData.effectTemplate.id,
     changedUnitDisplayData: changedUnitDisplayData,
     executedEffectsResult: {...executedEffectsResult},
     vfx: abilityEffectData.effectTemplate.vfx,
