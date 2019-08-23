@@ -49,7 +49,7 @@ export const assimilate: VfxDrawingFunction<EffectIds, EffectResults> = props =>
     duration: props.duration,
     onFirstParticleImpact: () =>
     {
-      props.abilityUseEffects.triggerEffect("increaseUserHealth");
+      props.abilityUseEffects.triggerRemainingEffects();
     },
     onEnd: end,
     particleCount: getParticleCount(props),
@@ -90,7 +90,7 @@ export const assimilate: VfxDrawingFunction<EffectIds, EffectResults> = props =>
   }
 
   props.triggerStart(container);
-  props.abilityUseEffects.triggerAllEffectsBut("increaseUserHealth");
+  props.abilityUseEffects.triggerEffectsUntil("increaseUserHealth");
   const startTime = Date.now();
 
   animationHandle = requestAnimationFrame(animate);

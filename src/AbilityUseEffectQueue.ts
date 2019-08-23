@@ -1,5 +1,5 @@
 import {BattleScene} from "./BattleScene";
-import {AbilityUseEffect, AbilityUseEffectsById} from "./AbilityUseEffect";
+import {AbilityUseEffect} from "./AbilityUseEffect";
 import { AbilityUseEffectsForVfx } from "./AbilityUseEffectsForVfx";
 
 
@@ -64,9 +64,9 @@ export class AbilityUseEffectQueue
       vfxTemplate: mainEffect.vfx,
       user: mainEffect.vfxUser,
       target: mainEffect.vfxTarget,
-      abilityUseEffects: this.mapEffectsForVfx(allEffects),
       onVfxStart: () => this.onVfxStart,
       afterFinished: () => this.finishEffect,
+      abilityUseEffects: new AbilityUseEffectsForVfx(allEffects, this.onEffectTrigger),
     });
   }
 
@@ -82,17 +82,6 @@ export class AbilityUseEffectQueue
     {
       this.onAllFinished();
     });
-  }
-  private mapEffectsForVfx(effects: AbilityUseEffect[]): AbilityUseEffectsForVfx
-  {
-    const effectsById = effects.reduce((obj: AbilityUseEffectsById, effect) =>
-    {
-      obj[effect.effectId] = effect;
-
-      return obj;
-    }, {});
-
-    return new AbilityUseEffectsForVfx(effectsById, this.onEffectTrigger);
   }
 
   private static flattenEffectsGroup(effectsGroup: AbilityUseEffectsGroup): AbilityUseEffect[]

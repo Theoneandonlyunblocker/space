@@ -4,8 +4,6 @@ import {Unit} from "./Unit";
 import {UnitDisplayData} from "./UnitDisplayData";
 
 
-export type AbilityUseEffectsById<R extends ExecutedEffectsResult = {}> = {[id: string]: AbilityUseEffect<R>};
-
 export interface AbilityUseEffect<R extends ExecutedEffectsResult = {}>
 {
   effectId: string;

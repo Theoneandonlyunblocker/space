@@ -2,6 +2,7 @@ import {AbilityUseEffect} from "./AbilityUseEffect";
 import { ExecutedEffectsResult } from "./templateinterfaces/ExecutedEffectsResult";
 
 
+// all effects need to be triggered in order, as effects don't store atomic changes in display data, only snapshots of it
 export class AbilityUseEffectsForVfx<EffectId extends string = any, R extends ExecutedEffectsResult = any>
 {
   public readonly individualEffects: {[K in EffectId]: AbilityUseEffect<Partial<R>>};
@@ -14,54 +15,54 @@ export class AbilityUseEffectsForVfx<EffectId extends string = any, R extends Ex
 
     return this._squashed;
   }
+  public triggerAllEffects = this.triggerRemainingEffects;
 
   private readonly onTrigger: (effect: AbilityUseEffect) => void;
-  private readonly hasTriggered: {[K in EffectId]: boolean};
+  private readonly unTriggeredEffectIds: EffectId[];
   private _squashed: AbilityUseEffect<R>;
 
-  constructor(effectsById: {[K in EffectId]: AbilityUseEffect<Partial<R>>}, onTrigger: (effect: AbilityUseEffect) => void)
+  constructor(effects: AbilityUseEffect<Partial<R>>[], onTrigger: (effect: AbilityUseEffect) => void)
   {
-    this.individualEffects = effectsById;
     this.onTrigger = onTrigger;
-
-    this.hasTriggered = Object.keys(effectsById).reduce((triggered: {[K in EffectId]: boolean}, effectId: string) =>
+    this.unTriggeredEffectIds = effects.map(effect => (effect.effectId as EffectId));
+    this.individualEffects = effects.reduce((effectsById, effect) =>
     {
-      triggered[effectId] = false;
+      effectsById[effect.effectId] = effect;
 
-      return triggered;
-    }, <{[K in EffectId]: boolean}>{});
+      return effectsById;
+    }, <{[K in EffectId]: AbilityUseEffect<Partial<R>>}>{});
+
   }
 
-  public triggerEffect(...effectIds: EffectId[]): void
+  public triggerEffectsUntil(effectToStopBefore: EffectId): void
   {
-    const alreadyTriggeredEffectIds = effectIds.filter(effectId => this.hasTriggered[effectId]);
-    if (alreadyTriggeredEffectIds.length !== 0)
+    const indexOfEffectToStopBefore = this.unTriggeredEffectIds.indexOf(effectToStopBefore);
+
+    if (!effectToStopBefore)
     {
-      throw new Error(`Tried to trigger AbilityUseEffect(s) '${alreadyTriggeredEffectIds.join(", ")}' that had already been triggered.`);
+      // shouldn't happen with properly typed templates
+      throw new Error(`Vfx tried to trigger ability use effect '${effectToStopBefore}', but no such effect was provided`);
+    }
+    else if (indexOfEffectToStopBefore === -1)
+    {
+      throw new Error(`Vfx tried to trigger ability use effect '${effectToStopBefore}', but that effect had already been triggered`)
     }
 
-    const effectToTrigger = this.getSquashedEffect(...effectIds);
+    const effectsToTrigger = this.unTriggeredEffectIds.slice(0, indexOfEffectToStopBefore);
+    this.unTriggeredEffectIds.splice(0, indexOfEffectToStopBefore);
 
-    this.onTrigger(effectToTrigger);
-    effectIds.forEach(effectId => this.hasTriggered[effectId] = true);
+    this.triggerEffects(effectsToTrigger);
   }
-  public triggerAllEffects(): void
+  public triggerRemainingEffects(): void
   {
-    this.triggerEffect(...this.getUnTriggeredEffectIds());
-  }
-  public triggerAllEffectsBut(effectIdToExclude: EffectId, ...additionalEffectIdsToExclude: EffectId[]): void
-  {
-    const effectIdsToExclude = [effectIdToExclude, ...additionalEffectIdsToExclude];
-
-    const unTriggeredEffectIdsNotInExclusion =
-      this.getUnTriggeredEffectIds().filter(effectId => effectIdsToExclude.indexOf(effectId) === -1);
-
-    this.triggerEffect(...unTriggeredEffectIdsNotInExclusion);
+    this.triggerEffects(this.unTriggeredEffectIds);
   }
 
-  private getUnTriggeredEffectIds(): EffectId[]
+  private triggerEffects(effectIds: EffectId[]): void
   {
-    return <EffectId[]>Object.keys(this.hasTriggered).filter(effectId => !this.hasTriggered[effectId]);
+    const squashedEffect = this.getSquashedEffect(...effectIds);
+
+    this.onTrigger(squashedEffect);
   }
   private getSquashedEffect(...effectIdsToSquash: EffectId[]): AbilityUseEffect<R>
   {
