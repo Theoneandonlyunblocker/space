@@ -64,9 +64,9 @@ export class AbilityUseEffectQueue
       vfxTemplate: mainEffect.vfx,
       user: mainEffect.vfxUser,
       target: mainEffect.vfxTarget,
-      onVfxStart: () => this.onVfxStart,
-      afterFinished: () => this.finishEffect,
       abilityUseEffects: new AbilityUseEffectsForVfx(allEffects, this.onEffectTrigger),
+      onVfxStart: this.onVfxStart,
+      afterFinished: this.onCurrentFinished,
     });
   }
 
