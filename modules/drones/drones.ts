@@ -3,7 +3,7 @@ import {ModuleData} from "../../src/ModuleData";
 import {GameModule} from "../../src/GameModule";
 import {GameModuleInitializationPhase} from "../../src/GameModuleInitializationPhase";
 
-import {abilityTemplates} from "./abilities";
+import {abilityTemplates} from "./abilityTemplates";
 import {raceTemplates} from "./raceTemplate";
 import {unitEffectTemplates} from "./unitEffects";
 import {unitTemplates} from "./unitTemplates";

@@ -7,7 +7,9 @@ import * as CommonAbility from "../../space/abilities/abilities";
 import {distributionGroups} from "../../common/distributionGroups";
 import {getAssetSrc} from "../../common/assets";
 
-import * as DroneAbility from "../abilities";
+import {assimilate} from "../abilities/assimilate";
+import {repair} from "../abilities/repair";
+import {infest} from "../abilities/infest";
 
 
 export const droneCommander: UnitTemplate =
@@ -48,21 +50,21 @@ export const droneCommander: UnitTemplate =
       flatProbability: 1,
       probabilityItems:
       [
-        DroneAbility.assimilate,
-        DroneAbility.repair,
+        assimilate,
+        repair,
         CommonAbility.standBy,
       ],
     },
     {
       flatProbability: 0.25,
-      probabilityItems: [DroneAbility.infest],
+      probabilityItems: [infest],
     },
   ],
   possibleLearnableAbilities:
   [
     {
       flatProbability: 1,
-      probabilityItems: [DroneAbility.infest],
+      probabilityItems: [infest],
     },
   ],
   itemSlots: {},

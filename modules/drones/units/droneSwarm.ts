@@ -7,7 +7,8 @@ import * as CommonAbility from "../../space/abilities/abilities";
 import {distributionGroups} from "../../common/distributionGroups";
 import {getAssetSrc} from "../../common/assets";
 
-import * as DroneAbility from "../abilities";
+import {assimilate} from "../abilities/assimilate";
+import {merge} from "../abilities/merge";
 
 
 export const droneSwarm: UnitTemplate =
@@ -48,20 +49,20 @@ export const droneSwarm: UnitTemplate =
       flatProbability: 1,
       probabilityItems:
       [
-        DroneAbility.assimilate,
+        assimilate,
         CommonAbility.standBy,
       ],
     },
     {
       flatProbability: 0.25,
-      probabilityItems: [DroneAbility.merge],
+      probabilityItems: [merge],
     },
   ],
   possibleLearnableAbilities:
   [
     {
       flatProbability: 1,
-      probabilityItems: [DroneAbility.merge],
+      probabilityItems: [merge],
     },
   ],
   itemSlots: {},

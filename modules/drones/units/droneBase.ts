@@ -7,7 +7,9 @@ import * as CommonAbility from "../../space/abilities/abilities";
 import {distributionGroups} from "../../common/distributionGroups";
 import {getAssetSrc} from "../../common/assets";
 
-import * as DroneAbility from "../abilities";
+import {assimilate} from "../abilities/assimilate";
+import {repair} from "../abilities/repair";
+import {massRepair} from "../abilities/massRepair";
 
 
 export const droneBase: UnitTemplate =
@@ -48,7 +50,7 @@ export const droneBase: UnitTemplate =
       flatProbability: 1,
       probabilityItems:
       [
-        DroneAbility.assimilate,
+        assimilate,
         CommonAbility.standBy,
       ],
     },
@@ -58,11 +60,11 @@ export const droneBase: UnitTemplate =
       [
         {
           flatProbability: 0.5,
-          probabilityItems: [DroneAbility.repair],
+          probabilityItems: [repair],
         },
         {
           flatProbability: 0.5,
-          probabilityItems: [DroneAbility.massRepair],
+          probabilityItems: [massRepair],
         },
       ],
     },
