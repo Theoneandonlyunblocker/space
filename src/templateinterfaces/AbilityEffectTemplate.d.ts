@@ -25,7 +25,9 @@ export type AbilityEffectTrigger = (
   sourceStatusEffect: StatusEffect | null,
 ) => boolean;
 
-export interface AbilityEffectTemplate
+
+// TODO 2019.08.23 | plug in generics to members
+export interface AbilityEffectTemplate<EffectId extends string = any, R extends ExecutedEffectsResult = any>
 {
   id: string;
 
@@ -40,7 +42,7 @@ export interface AbilityEffectTemplate
   executeAction: AbilityEffectAction;
 
   trigger?: AbilityEffectTrigger;
-  vfx?: BattleVfxTemplate;
+  vfx?: BattleVfxTemplate<EffectId, R>;
 
   /**
    * called for each unit affected by parent effect
@@ -49,8 +51,8 @@ export interface AbilityEffectTemplate
   attachedEffects?: AbilityEffectTemplate[];
 }
 
-export interface AbilityMainEffectTemplate extends AbilityEffectTemplate
+export interface AbilityMainEffectTemplate<EffectId extends string = any, R extends ExecutedEffectsResult = any> extends AbilityEffectTemplate<EffectId, R>
 {
-  vfx: BattleVfxTemplate;
+  vfx: BattleVfxTemplate<EffectId, R>;
   getDisplayDataForTarget: GetUnitsInAreaFN<AbilityTargetDisplayDataById>;
 }

@@ -9,8 +9,10 @@ import
   AbilityEffectTemplate,
   AbilityMainEffectTemplate,
 } from "./AbilityEffectTemplate";
+import {ExecutedEffectsResult} from "./ExecutedEffectsResult";
 
-export interface AbilityTemplate extends AbilityBase
+
+export interface AbilityTemplate<EffectId extends string = any, R extends ExecutedEffectsResult = any> extends AbilityBase<EffectId, R>
 {
   type: string;
   displayName: string;
@@ -34,12 +36,12 @@ export interface AbilityTemplate extends AbilityBase
   getPossibleTargets: GetBattleTargetsFN;
 
   // called first
-  mainEffect: AbilityMainEffectTemplate;
+  mainEffect: AbilityMainEffectTemplate<EffectId, R>;
   // called after mainEffect with same user & target
-  secondaryEffects?: AbilityEffectTemplate[];
+  secondaryEffects?: AbilityEffectTemplate<EffectId, R>[];
 
-  beforeUse?: AbilityEffectTemplate[];
-  afterUse?: AbilityEffectTemplate[];
+  beforeUse?: AbilityEffectTemplate<EffectId, R>[];
+  afterUse?: AbilityEffectTemplate<EffectId, R>[];
 
   /**
    * how likely the AI will consider using this ability relative to other available ones
