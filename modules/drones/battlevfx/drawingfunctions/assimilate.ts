@@ -47,6 +47,10 @@ export const assimilate: VfxDrawingFunction<EffectIds, EffectResults> = props =>
       return graphics;
     },
     duration: props.duration,
+    onFirstParticleImpact: () =>
+    {
+      props.abilityUseEffects.triggerEffect("increaseUserHealth");
+    },
     onEnd: end,
     particleCount: getParticleCount(props),
   });
@@ -86,7 +90,6 @@ export const assimilate: VfxDrawingFunction<EffectIds, EffectResults> = props =>
   }
 
   props.triggerStart(container);
-  // TODO 2019.08.23 | trigger increaseUserHealth when first particle is absorbed
   props.abilityUseEffects.triggerAllEffectsBut("increaseUserHealth");
   const startTime = Date.now();
 

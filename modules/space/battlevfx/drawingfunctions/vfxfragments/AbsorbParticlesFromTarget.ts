@@ -1,4 +1,4 @@
-// TODO 2019.08.19 | worht making this use AbsorbParticles ?
+// TODO 2019.08.19 | worth converting absorbParticles so that this could utilize it?
 import * as PIXI from "pixi.js";
 import * as Proton from "proton-js";
 
@@ -23,6 +23,7 @@ interface AbsorbParticlesFromTargetProps
   getParticleDisplayObject: (particle: PixiParticle, colorAtTarget: Color) => PIXI.DisplayObject;
   duration: number;
 
+  onFirstParticleImpact?: () => void;
   onEnd?: () => void;
   particleCount?: number;
   baseInitialBurstVelocity?: number; // px/s
@@ -39,12 +40,14 @@ export class AbsorbParticlesFromTarget extends VfxFragment<AbsorbParticlesFromTa
     getParticleDisplayObject: new PropInfo.Function(undefined),
     duration: new PropInfo.Number(baseDuration),
 
+    onFirstParticleImpact: new PropInfo.Function(undefined),
     onEnd: new PropInfo.Function(undefined),
     particleCount: new PropInfo.Number(150),
     baseInitialBurstVelocity: new PropInfo.Number(150),
   };
 
   private isAnimating: boolean = false;
+  private hasHadFirstImpact: boolean = false;
 
   private readonly container: PIXI.Container;
   private readonly proton: Proton;
@@ -67,6 +70,7 @@ export class AbsorbParticlesFromTarget extends VfxFragment<AbsorbParticlesFromTa
   public startAnimation(): void
   {
     this.isAnimating = true;
+    this.hasHadFirstImpact = false;
 
     this.emitters.forEach(emitter => emitter.emit("once"));
   }
@@ -167,6 +171,12 @@ export class AbsorbParticlesFromTarget extends VfxFragment<AbsorbParticlesFromTa
         if (x < particle.killLine)
         {
           particle.dead = true;
+
+          if (!this.hasHadFirstImpact && this.props.onFirstParticleImpact)
+          {
+            this.hasHadFirstImpact = true;
+            this.props.onFirstParticleImpact();
+          }
 
           if (emitter.particles.length <= 1)
           {
