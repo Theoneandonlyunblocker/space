@@ -11,7 +11,6 @@ type AbilityUseEffectsGroup =
 
 export class AbilityUseEffectQueue
 {
-  private currentEffectsGroup: AbilityUseEffectsGroup | null;
   private readonly queue: AbilityUseEffectsGroup[] = [];
   private readonly battleScene: BattleScene;
 
@@ -45,17 +44,17 @@ export class AbilityUseEffectQueue
   }
   public playOnce(): void
   {
-    this.currentEffectsGroup = this.queue.shift() || null;
+    const currentEffectsGroup = this.queue.shift();
 
-    if (!this.currentEffectsGroup)
+    if (!currentEffectsGroup)
     {
       this.handleEndOfQueue();
 
       return;
     }
 
-    const mainEffect = this.currentEffectsGroup.withVfx;
-    const allEffects = AbilityUseEffectQueue.flattenEffectsGroup(this.currentEffectsGroup);
+    const mainEffect = currentEffectsGroup.withVfx;
+    const allEffects = AbilityUseEffectQueue.flattenEffectsGroup(currentEffectsGroup);
 
     this.onEffectStart(mainEffect);
 
@@ -68,13 +67,6 @@ export class AbilityUseEffectQueue
       onVfxStart: this.onVfxStart,
       afterFinished: this.onCurrentFinished,
     });
-  }
-
-  private finishEffect(): void
-  {
-    this.currentEffectsGroup = null;
-
-    this.onCurrentFinished();
   }
   private handleEndOfQueue(): void
   {
