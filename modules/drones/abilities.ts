@@ -1,4 +1,4 @@
-import {ExecutedEffectsResult} from "../../src/templateinterfaces/AbilityEffectAction";
+import {ExecutedEffectsResult} from "../../src/templateinterfaces/ExecutedEffectsResult";
 import {AbilityTemplate} from "../../src/templateinterfaces/AbilityTemplate";
 import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
 

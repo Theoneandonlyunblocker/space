@@ -1,5 +1,5 @@
 import {activeModuleData} from "./activeModuleData";
-import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
+import {ExecutedEffectsResult} from "./templateinterfaces/ExecutedEffectsResult";
 
 import {BattleData} from "./BattleData";
 import {BattleTurnOrder} from "./BattleTurnOrder";

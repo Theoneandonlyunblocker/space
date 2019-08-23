@@ -8,7 +8,7 @@ import {UnitAttributeAdjustments} from "../../../src/UnitAttributes";
 import
 {
   ExecutedEffectsResult,
-} from "../../../src/templateinterfaces/AbilityEffectAction";
+} from "../../../src/templateinterfaces/ExecutedEffectsResult";
 import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
 import
 {

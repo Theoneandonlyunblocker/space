@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 
 import {Point} from "../Point";
 import {Unit} from "../Unit";
-import {AbilityUseEffectsById} from "../AbilityUseEffect";
+import {CustomExecutedEffectsResultsBySource} from "./ExecutedEffectsResult";
 import {AbilityUseEffectsForVfx} from "../AbilityUseEffectsForVfx";
 
 

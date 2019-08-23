@@ -4,7 +4,7 @@ import {Unit} from "../../../src/Unit";
 import
 {
   ExecutedEffectsResult,
-} from "../../../src/templateinterfaces/AbilityEffectAction";
+} from "../../../src/templateinterfaces/ExecutedEffectsResult";
 
 
 export type AbilityEffectActionWithData<T> = (

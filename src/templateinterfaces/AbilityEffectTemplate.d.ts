@@ -13,9 +13,9 @@ import
 import
 {
   AbilityEffectAction,
-  ExecutedEffectsResult,
 } from "./AbilityEffectAction";
 import {BattleVfxTemplate} from "./BattleVfxTemplate";
+import {ExecutedEffectsResult} from "./ExecutedEffectsResult";
 
 export type AbilityEffectTrigger = (
   user: Unit,

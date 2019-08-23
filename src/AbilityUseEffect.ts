@@ -1,5 +1,5 @@
 import {BattleVfxTemplate} from "./templateinterfaces/BattleVfxTemplate";
-import {ExecutedEffectsResult} from "./templateinterfaces/AbilityEffectAction";
+import {ExecutedEffectsResult} from "./templateinterfaces/ExecutedEffectsResult";
 import {Unit} from "./Unit";
 import {UnitDisplayData} from "./UnitDisplayData";
 
