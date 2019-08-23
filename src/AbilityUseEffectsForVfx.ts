@@ -72,20 +72,23 @@ export class AbilityUseEffectsForVfx<EffectId extends string = any, R extends Ex
   }
 
   private static squashEffects<R extends ExecutedEffectsResult>(
-    toSquash: AbilityUseEffect<Partial<R>>[],
+    effectsToSquash: AbilityUseEffect<Partial<R>>[],
   ): AbilityUseEffect<R>
   {
-    const squashedChangedUnitDisplayData =
+    const allChangedUnitDisplayData = effectsToSquash.map(effect => effect.changedUnitDisplayData);
+    const squashedChangedUnitDisplayData = allChangedUnitDisplayData.reduce((squashed, toSquash) =>
     {
-      ...toSquash.map(effect => effect.changedUnitDisplayData),
-    };
-    const freshestEffect = toSquash[toSquash.length - 1];
+      return {...squashed, ...toSquash};
+    }, {});
+
+    const freshestEffect = effectsToSquash[effectsToSquash.length - 1];
+    const effectToUseAsBase = freshestEffect;
 
     const squashedEffect = <AbilityUseEffect<R>>
     {
+      ...effectToUseAsBase,
       changedUnitDisplayData: squashedChangedUnitDisplayData,
-      ...freshestEffect,
-      effectId: `squashed | ${toSquash.map(e => e.effectId).join(", ")}`,
+      effectId: `squashed | ${effectsToSquash.map(e => e.effectId).join(", ")}`,
     };
 
     return squashedEffect;
