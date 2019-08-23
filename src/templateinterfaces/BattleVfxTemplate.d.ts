@@ -7,7 +7,7 @@ import {ExecutedEffectsResult} from "./ExecutedEffectsResult";
 export interface BattleVfxTemplate<EffectId extends string = any, R extends ExecutedEffectsResult = any>
 {
   duration: number;
-  vfxWillTriggerEffect?: boolean; // true if one of the vfx functions will trigger // TODO 2019.08.22 | name this
+  vfxWillTriggerEffect?: boolean; // set to true if the vfx functions will trigger all ability use effects
   userSprite?: VfxDrawingFunction<EffectId, R>;
   enemySprite?: VfxDrawingFunction<EffectId, R>;
   userOverlay?: VfxDrawingFunction<EffectId, R>;

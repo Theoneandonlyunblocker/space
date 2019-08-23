@@ -234,7 +234,7 @@ export class BattleScene
   private getVfxParams(props:
   {
     triggerStart: (container: PIXI.DisplayObject) => void;
-    triggerEnd?: () => void;
+    triggerEnd: () => void;
   }): VfxParams
   {
     const bounds = this.getSceneBounds();

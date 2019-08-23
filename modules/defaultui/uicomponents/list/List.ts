@@ -142,6 +142,7 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
     this.setDesiredHeight();
   }
 
+  // TODO 2019.08.21 | this is a bit off i think
   setDesiredHeight()
   {
     const ownNode = this.ownDOMNode.current;

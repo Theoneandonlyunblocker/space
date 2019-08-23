@@ -24,8 +24,6 @@ export function getAdjustedTroopSize(unit: Unit): number
     return effectiveHealth / 4 + 750;
   }
 }
-
-// TODO 2019.08.21 | rewrite to use Attributes.modifyValueByAttributes
 export function getAttackDamageIncrease(unit: Unit, damageType: DamageType): number
 {
   let attackStat: number;
