@@ -42,7 +42,7 @@ export class BattleScene
   private side2Overlay: BattleSceneUnitOverlay;
 
   private activeVfx: BattleVfxTemplate | null;
-  private activeVfxAbilityUseEffects: AbilityUseEffectsForVfx<any> | null;
+  private activeVfxAbilityUseEffects: AbilityUseEffectsForVfx | null;
 
   private side1UnitHasFinishedUpdating: boolean = false;
   private side2UnitHasFinishedUpdating: boolean = false;
@@ -120,7 +120,7 @@ export class BattleScene
   public handleAbilityUse(props:
   {
     vfxTemplate: BattleVfxTemplate;
-    abilityUseEffects: AbilityUseEffectsForVfx<any>;
+    abilityUseEffects: AbilityUseEffectsForVfx;
     onVfxStart: () => void;
     user: Unit;
     target: Unit;

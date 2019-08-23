@@ -1,37 +1,38 @@
-import {AbilityUseEffect, AbilityUseEffectsById} from "./AbilityUseEffect";
+import {AbilityUseEffect} from "./AbilityUseEffect";
+import { ExecutedEffectsResult } from "./templateinterfaces/ExecutedEffectsResult";
 
 
-export class AbilityUseEffectsForVfx<E extends AbilityUseEffectsById = {}>
+export class AbilityUseEffectsForVfx<EffectId extends string = never, R extends ExecutedEffectsResult = {}>
 {
-  public readonly individualEffects: E;
-  public get squashed(): AbilityUseEffect
+  public readonly individualEffects: {[K in EffectId]: AbilityUseEffect<Partial<R>>};
+  public get squashed(): AbilityUseEffect<R>
   {
     if (!this._squashed)
     {
-      this._squashed = this.getSquashedEffect(...Object.keys(this.individualEffects));
+      this._squashed = this.getSquashedEffect(...<EffectId[]>Object.keys(this.individualEffects));
     }
 
     return this._squashed;
   }
 
   private readonly onTrigger: (effect: AbilityUseEffect) => void;
-  private readonly hasTriggered: {[K in keyof E]: boolean};
-  private _squashed: AbilityUseEffect;
+  private readonly hasTriggered: {[K in EffectId]: boolean};
+  private _squashed: AbilityUseEffect<R>;
 
-  constructor(effectsById: E, onTrigger: (effect: AbilityUseEffect) => void)
+  constructor(effectsById: {[K in EffectId]: AbilityUseEffect<Partial<R>>}, onTrigger: (effect: AbilityUseEffect) => void)
   {
     this.individualEffects = effectsById;
     this.onTrigger = onTrigger;
 
-    this.hasTriggered = Object.keys(effectsById).reduce((triggered: {[K in keyof E]: boolean}, effectId: keyof E) =>
+    this.hasTriggered = Object.keys(effectsById).reduce((triggered: {[K in EffectId]: boolean}, effectId: string) =>
     {
       triggered[effectId] = false;
 
       return triggered;
-    }, <{[K in keyof E]: boolean}>{});
+    }, <{[K in EffectId]: boolean}>{});
   }
 
-  public triggerEffect(...effectIds: (keyof E)[]): void
+  public triggerEffect(...effectIds: EffectId[]): void
   {
     const alreadyTriggeredEffectIds = effectIds.filter(effectId => this.hasTriggered[effectId]);
     if (alreadyTriggeredEffectIds.length !== 0)
@@ -48,7 +49,7 @@ export class AbilityUseEffectsForVfx<E extends AbilityUseEffectsById = {}>
   {
     this.triggerEffect(...this.getUnTriggeredEffectIds());
   }
-  public triggerAllEffectsBut(effectIdToExclude: keyof E, ...additionalEffectIdsToExclude: (keyof E)[]): void
+  public triggerAllEffectsBut(effectIdToExclude: EffectId, ...additionalEffectIdsToExclude: EffectId[]): void
   {
     const effectIdsToExclude = [effectIdToExclude, ...additionalEffectIdsToExclude];
 
@@ -58,20 +59,20 @@ export class AbilityUseEffectsForVfx<E extends AbilityUseEffectsById = {}>
     this.triggerEffect(...unTriggeredEffectIdsNotInExclusion);
   }
 
-  private getUnTriggeredEffectIds(): (keyof E)[]
+  private getUnTriggeredEffectIds(): EffectId[]
   {
-    return Object.keys(this.hasTriggered).filter(effectId => !this.hasTriggered[effectId]);
+    return <EffectId[]>Object.keys(this.hasTriggered).filter(effectId => !this.hasTriggered[effectId]);
   }
-  private getSquashedEffect(...effectIdsToSquash: (keyof E)[]): AbilityUseEffect
+  private getSquashedEffect(...effectIdsToSquash: EffectId[]): AbilityUseEffect<R>
   {
     const effectsToSquash = effectIdsToSquash.map(effectId => this.individualEffects[effectId]);
 
     return AbilityUseEffectsForVfx.squashEffects(effectsToSquash);
   }
 
-  private static squashEffects(
-    toSquash: AbilityUseEffect[],
-  ): AbilityUseEffect
+  private static squashEffects<R extends ExecutedEffectsResult>(
+    toSquash: AbilityUseEffect<Partial<R>>[],
+  ): AbilityUseEffect<R>
   {
     const squashedChangedUnitDisplayData =
     {
@@ -79,7 +80,7 @@ export class AbilityUseEffectsForVfx<E extends AbilityUseEffectsById = {}>
     };
     const freshestEffect = toSquash[toSquash.length - 1];
 
-    const squashedEffect: AbilityUseEffect =
+    const squashedEffect = <AbilityUseEffect<R>>
     {
       changedUnitDisplayData: squashedChangedUnitDisplayData,
       ...freshestEffect,
