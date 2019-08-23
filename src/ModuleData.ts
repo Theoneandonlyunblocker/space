@@ -46,7 +46,7 @@ interface Templates
   Abilities: TemplateCollection<AbilityTemplate>;
   AiTemplateConstructors: TemplateCollection<AiTemplateConstructor<any>>;
   AttitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
-  BattleVfx: TemplateCollection<BattleVfxTemplate>;
+  BattleVfx: TemplateCollection<BattleVfxTemplate<any, any>>;
   Buildings: TemplateCollection<BuildingTemplate>;
   Items: TemplateCollection<ItemTemplate>;
   Languages: TemplateCollection<Language>;

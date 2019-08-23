@@ -2,7 +2,7 @@ import {AbilityUseEffect} from "./AbilityUseEffect";
 import { ExecutedEffectsResult } from "./templateinterfaces/ExecutedEffectsResult";
 
 
-export class AbilityUseEffectsForVfx<EffectId extends string = never, R extends ExecutedEffectsResult = {}>
+export class AbilityUseEffectsForVfx<EffectId extends string = any, R extends ExecutedEffectsResult = any>
 {
   public readonly individualEffects: {[K in EffectId]: AbilityUseEffect<Partial<R>>};
   public get squashed(): AbilityUseEffect<R>

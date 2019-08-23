@@ -8,7 +8,7 @@ import {AbilityUseEffectsForVfx} from "../AbilityUseEffectsForVfx";
 import { ExecutedEffectsResult } from "./ExecutedEffectsResult";
 
 
-export interface VfxParams<EffectId extends string = never, R extends ExecutedEffectsResult = {}>
+export interface VfxParams<EffectId extends string = any, R extends ExecutedEffectsResult = any>
 {
   user: Unit;
   target?: Unit;
