@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
+import {VfxDrawingFunction} from "../../../../src/VfxDrawingFunction";
 import { WavyLine } from "./vfxfragments/WavyLine";
 import { ProjectileWithImpact } from "./vfxfragments/ProjectileWithImpact";
 import { Projectile } from "./vfxfragments/Projectile";
@@ -17,7 +17,7 @@ let activeYankProjectile: Projectile | null;
 let hookXAtYankStart: number;
 
 
-export function boardingHookEnemySprite(params: VfxParams)
+export const boardingHookEnemySprite: VfxDrawingFunction = params =>
 {
   const container = new PIXI.Container();
 
@@ -62,7 +62,7 @@ export function boardingHookEnemySprite(params: VfxParams)
   animate(startTime);
 }
 
-export function boardingHookBattleOverlay(params: VfxParams)
+export const boardingHookBattleOverlay: VfxDrawingFunction = params =>
 {
   const launchDecelerationFactor = 4;
   const ropeTimeScale = 40;

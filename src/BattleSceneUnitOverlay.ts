@@ -5,6 +5,7 @@ import {VfxParams} from "./templateinterfaces/VfxParams";
 
 import {options} from "./Options";
 import {Unit} from "./Unit";
+import { VfxDrawingFunction } from "./VfxDrawingFunction";
 
 
 export class BattleSceneUnitOverlay
@@ -68,7 +69,7 @@ export class BattleSceneUnitOverlay
     this.overlayContainer = new PIXI.Container();
     this.container.addChild(this.overlayContainer);
   }
-  private setOverlay(overlayFN: (props: VfxParams) => void, unit: Unit, duration: number): void
+  private setOverlay(drawOverlayFN: VfxDrawingFunction, unit: Unit, duration: number): void
   {
     this.clearOverlay();
     if (duration <= 0)
@@ -83,7 +84,7 @@ export class BattleSceneUnitOverlay
     this.activeUnit = unit;
     const vfxParams = this.getVfxParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
 
-    overlayFN(vfxParams);
+    drawOverlayFN(vfxParams);
   }
   private getVfxParams(
     duration: number,

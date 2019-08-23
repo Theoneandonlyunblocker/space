@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import * as Proton from "proton-js";
 
-import { VfxParams } from "../../../../src/templateinterfaces/VfxParams";
+import { VfxDrawingFunction } from "../../../../src/VfxDrawingFunction";
 import { solveAcceleration } from "../../../../src/kinematics";
 import { extractImageData } from "../../../../src/pixiWrapperFunctions";
 
@@ -31,7 +31,7 @@ function makeParticleDisplayObject(imageZone: Proton.ImageZone, positionToSample
   return graphics;
 }
 
-export function mergeRelease(props: VfxParams): void
+export const mergeRelease: VfxDrawingFunction = props =>
 {
   lastUsedImageZone = null;
 
@@ -159,7 +159,7 @@ export function mergeRelease(props: VfxParams): void
   animationHandle = requestAnimationFrame(animate);
 }
 
-export function mergeAbsorb(props: VfxParams): void
+export const mergeAbsorb: VfxDrawingFunction = props =>
 {
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleVfx(
     props.userOffset, props.width, "user");

@@ -1,4 +1,4 @@
-import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
+import {VfxDrawingFunction} from "../../../../src/VfxDrawingFunction";
 import { makeShaderSprite } from "../../../../src/pixiWrapperFunctions";
 import
 {
@@ -8,7 +8,7 @@ import
 import {GuardShader} from "./shaders/GuardShader";
 
 
-export function guard(props: VfxParams)
+export const guard: VfxDrawingFunction = props =>
 {
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleVfx(
     props.userOffset, props.width, "user");

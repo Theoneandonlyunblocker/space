@@ -1,3 +1,4 @@
+import { VfxDrawingFunction } from "../../../../src/VfxDrawingFunction";
 import { VfxParams } from "../../../../src/templateinterfaces/VfxParams";
 
 import { AbsorbParticlesFromTarget } from "../../../space/battlevfx/drawingfunctions/vfxfragments/AbsorbParticlesFromTarget";
@@ -13,7 +14,7 @@ function getParticleCount(props: VfxParams): number
   return Math.log(damageDealt) * 20;
 }
 
-export function assimilate(props: VfxParams)
+export const assimilate: VfxDrawingFunction = props =>
 {
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleVfx(
     props.userOffset, props.width, "user");

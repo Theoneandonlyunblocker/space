@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js";
 
-import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
+import {VfxDrawingFunction} from "../../../../src/VfxDrawingFunction";
 
 import {ProjectileAttack} from "./vfxfragments/ProjectileAttack";
 import {resources} from "../resources";
 
 
-export function rocketAttack(params: VfxParams)
+export const rocketAttack: VfxDrawingFunction = params =>
 {
   const offsetTargetData = params.target.drawingFunctionData.normalizeForBattleVfx(
     params.targetOffset, params.width, "target");

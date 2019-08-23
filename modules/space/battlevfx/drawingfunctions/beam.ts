@@ -8,7 +8,7 @@ import
   generateTextureWithBounds,
   makeCenteredShaderSprite,
 } from "../../../../src/pixiWrapperFunctions";
-import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
+import {VfxDrawingFunction} from "../../../../src/VfxDrawingFunction";
 
 import {Beam} from "./vfxfragments/Beam";
 import {LightBurst} from "./vfxfragments/LightBurst";
@@ -23,7 +23,7 @@ import { ProtonEmitter } from "./proton/ProtonEmitter";
 
 const relativeImpactTime = 0.18;
 
-export function beam(props: VfxParams)
+export const beam: VfxDrawingFunction = props =>
 {
   // ----------INIT GENERAL
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleVfx(
