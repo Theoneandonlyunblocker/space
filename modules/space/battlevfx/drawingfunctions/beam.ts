@@ -369,7 +369,7 @@ export const beam: VfxDrawingFunction = props =>
         smallEmitter.rate = new Proton.Rate(6 * particlesAmountScale, 0.02);
         smallEmitter.emit();
 
-        props.triggerEffect();
+        props.abilityUseEffects.triggerAllEffects();
       }
 
       syncSmallParticleUniforms(relativeElapsedTime);

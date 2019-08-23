@@ -133,7 +133,7 @@ export function snipe(type: UnitAttribute, params: VfxParams)
       {
         impactHasOccurred = true;
 
-        params.triggerEffect();
+        params.abilityUseEffects.triggerAllEffects();
 
         emitters.forEach(emitter =>
         {

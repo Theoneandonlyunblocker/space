@@ -62,7 +62,7 @@ export const rocketAttack: VfxDrawingFunction = params =>
     {
       if (!impactHasOccurred)
       {
-        params.triggerEffect();
+        params.abilityUseEffects.triggerAllEffects();
         impactHasOccurred = true;
       }
 

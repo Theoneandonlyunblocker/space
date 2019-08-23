@@ -200,7 +200,7 @@ export const boardingHookBattleOverlay: VfxDrawingFunction = params =>
 
         if (!hasTriggeredEffect)
         {
-          params.triggerEffect();
+          params.abilityUseEffects.triggerAllEffects();
           hasTriggeredEffect = true;
         }
       }

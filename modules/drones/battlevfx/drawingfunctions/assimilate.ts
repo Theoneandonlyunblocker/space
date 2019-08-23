@@ -5,16 +5,22 @@ import { AbsorbParticlesFromTarget } from "../../../space/battlevfx/drawingfunct
 import { ResultType } from "../../../space/effectactions/ResultType";
 
 
-function getParticleCount(props: VfxParams): number
+export type EffectIds = "damage" | "increaseUserHealth";
+export type EffectResults =
 {
-  const damageDealt = props.abilityUseEffect ?
-    -1 * props.abilityUseEffect.executedEffectsResult[ResultType.HealthChanged] :
+  [ResultType.HealthChanged]: number;
+}
+
+function getParticleCount(props: VfxParams<EffectIds, EffectResults>): number
+{
+  const damageDealt = props.abilityUseEffects ?
+    -1 * props.abilityUseEffects.squashed.executedEffectsResult[ResultType.HealthChanged] :
     400;
 
   return Math.log(damageDealt) * 20;
 }
 
-export const assimilate: VfxDrawingFunction = props =>
+export const assimilate: VfxDrawingFunction<EffectIds, EffectResults> = props =>
 {
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleVfx(
     props.userOffset, props.width, "user");
@@ -80,7 +86,8 @@ export const assimilate: VfxDrawingFunction = props =>
   }
 
   props.triggerStart(container);
-  props.triggerEffect();
+  // TODO 2019.08.23 | trigger increaseUserHealth when first particle is absorbed
+  props.abilityUseEffects.triggerAllEffectsBut("increaseUserHealth");
   const startTime = Date.now();
 
   animationHandle = requestAnimationFrame(animate);

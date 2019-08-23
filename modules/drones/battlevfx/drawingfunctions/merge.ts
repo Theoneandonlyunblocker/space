@@ -153,7 +153,7 @@ export const mergeRelease: VfxDrawingFunction = props =>
   }
 
   props.triggerStart(container);
-  props.triggerEffect();
+  props.abilityUseEffects.triggerAllEffects();
   const startTime = Date.now();
 
   animationHandle = requestAnimationFrame(animate);
@@ -269,7 +269,7 @@ export const mergeAbsorb: VfxDrawingFunction = props =>
   }
 
   props.triggerStart(container);
-  props.triggerEffect();
+  props.abilityUseEffects.triggerAllEffects();
   const startTime = Date.now();
 
   animationHandle = requestAnimationFrame(animate);

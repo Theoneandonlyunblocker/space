@@ -45,10 +45,10 @@ export const guard: VfxDrawingFunction = props =>
     }
     else
     {
-      if (props.triggerEffect && !hasTriggeredEffect)
+      if (props.abilityUseEffects && !hasTriggeredEffect)
       {
         hasTriggeredEffect = true;
-        props.triggerEffect();
+        props.abilityUseEffects.triggerAllEffects();
       }
       const relativeTime = getRelativeValue(time, travelTime - 0.02, 1);
       const adjustedtime = Math.pow(relativeTime, 4);
