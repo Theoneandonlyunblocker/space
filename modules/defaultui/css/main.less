@@ -1923,17 +1923,15 @@ ul, ol
   height: @unit-list-item-height;
 }
 
-// creates border around unit when hovered in unit list
 // using ::after element to preserve table layout
-// applied to first td inside the row to avoid adding the ::after element
-// to table row, messing up the table width
+// applied to first td inside the row to avoid adding the ::after element to table row,
+// which would mess up the table width
 .unit-list-item-hovered > td:first-child::after
 {
   content: "";
   position: absolute;
   left: 5px;
   pointer-events: none;
-  z-index: 150;
   width: ~"calc(100% - 10px)";
   height: @unit-list-item-height;
   box-sizing: border-box;
